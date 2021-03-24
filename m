@@ -2,388 +2,544 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F2534758F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E74233475A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbhCXKNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:13:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39960 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229669AbhCXKNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:13:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BFFF6AD9F;
-        Wed, 24 Mar 2021 10:13:02 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 11:12:59 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <20210324101259.GB16560@linux>
-References: <20210319092635.6214-1-osalvador@suse.de>
- <20210319092635.6214-2-osalvador@suse.de>
- <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
+        id S235603AbhCXKOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:14:53 -0400
+Received: from regular1.263xmail.com ([211.150.70.201]:39402 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235619AbhCXKO3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 06:14:29 -0400
+Received: from localhost (unknown [192.168.167.69])
+        by regular1.263xmail.com (Postfix) with ESMTP id 6460BD68;
+        Wed, 24 Mar 2021 18:14:10 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.236] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P1826T139669733877504S1616580848215820_;
+        Wed, 24 Mar 2021 18:14:09 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <f22c26093101f93084f537449d599e29>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: enric.balletbo@collabora.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH v4 2/4] dt-bindings: power: rockchip: Convert to
+ json-schema
+To:     Johan Jonker <jbx6244@gmail.com>, robh+dt@kernel.org,
+        heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20210324071609.7531-1-zhangqing@rock-chips.com>
+ <20210324071609.7531-3-zhangqing@rock-chips.com>
+ <be921bd8-a878-3131-15a7-27400786e67a@gmail.com>
+From:   "elaine.zhang" <zhangqing@rock-chips.com>
+Organization: rockchip
+Message-ID: <42489358-8a3e-698e-7d10-816899de75cd@rock-chips.com>
+Date:   Wed, 24 Mar 2021 18:14:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFm+7ifpyzm6eNy8@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <be921bd8-a878-3131-15a7-27400786e67a@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 11:11:58AM +0100, Michal Hocko wrote:
-> [Sorry for a long overdue review. I didn't have time to follow previous
-> versions so I am sorry if some of my concerns have been discussed
-> already]
+Hi, Johan:
+
+在 2021/3/24 下午5:17, Johan Jonker 写道:
+> Hi Elaine,
+>
+> >From Rob's build log it turns out that 2 more properties must be added.
+> Add these new properties in separate patch.
+> Retest with commands below.
+> ====
+> See rk3288.dtsi
+>
+> 			assigned-clocks = <&cru SCLK_EDP_24M>;
+> 			assigned-clock-parents = <&xin24m>;
+This should not be in the power node.
+It should be on the CRU node, or on the EDP's own node.
+I could have added it just to solve dtbs_check .
+> ====
+> https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210324071609.7531-3-zhangqing@rock-chips.com/
+>
+> make ARCH=arm dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+>
+> make ARCH=arm64 dtbs_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+>
+> On 3/24/21 8:16 AM, Elaine Zhang wrote:
+>> Convert the soc/rockchip/power_domain.txt binding document to
+>> json-schema and move to the power bindings directory.
+>>
+>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+>> ---
+>>   .../power/rockchip,power-controller.yaml      | 284 ++++++++++++++++++
+>>   .../bindings/soc/rockchip/power_domain.txt    | 136 ---------
+>>   2 files changed, 284 insertions(+), 136 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+>>   delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+>> new file mode 100644
+>> index 000000000000..a220322c5139
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+>> @@ -0,0 +1,284 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Rockchip Power Domains
+>> +
+>> +maintainers:
+>> +  - Elaine Zhang <zhangqing@rock-chips.com>
+>> +  - Rob Herring <robh+dt@kernel.org>
+>> +  - Heiko Stuebner <heiko@sntech.de>
+>> +
+>> +description: |
+>> +  Rockchip processors include support for multiple power domains which can be
+>> +  powered up/down by software based on different application scenarios to save power.
+>> +
+>> +  Power domains contained within power-controller node are generic power domain
+>> +  providers documented in Documentation/devicetree/bindings/power/power-domain.yaml.
+>> +
+>> +  IP cores belonging to a power domain should contain a "power-domains"
+>> +  property that is a phandle for the power domain node representing the domain.
+>> +
+>> +properties:
+>> +  $nodename:
+>> +    const: power-controller
+>> +
+>> +  compatible:
+>> +    enum:
+>> +      - rockchip,px30-power-controller
+>> +      - rockchip,rk3036-power-controller
+>> +      - rockchip,rk3066-power-controller
+>> +      - rockchip,rk3128-power-controller
+>> +      - rockchip,rk3188-power-controller
+>> +      - rockchip,rk3228-power-controller
+>> +      - rockchip,rk3288-power-controller
+>> +      - rockchip,rk3328-power-controller
+>> +      - rockchip,rk3366-power-controller
+>> +      - rockchip,rk3368-power-controller
+>> +      - rockchip,rk3399-power-controller
+>> +
+>> +  "#power-domain-cells":
+>> +    const: 1
+>> +
+>> +  "#address-cells":
+>> +    const: 1
+>> +
+>> +  "#size-cells":
+>> +    const: 0
+>
+> assigned-clocks:
+>    maxItems: 1
+>
+> assigned-clock-parents:
+>    maxItems: 1
+>
+>> +
+>> +patternProperties:
+>> +  "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
+>> +    type: object
+>> +    description: |
+>> +      Represents the power domains within the power controller node as documented
+>> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
+>> +
+>> +    properties:
+>> +
+>> +      "#power-domain-cells":
+>> +        description:
+>> +          Must be 0 for nodes representing a single PM domain and 1 for nodes
+>> +          providing multiple PM domains.
+>> +
+>> +      "#address-cells":
+>> +        const: 1
+>> +
+>> +      "#size-cells":
+>> +        const: 0
+>> +
+>> +      reg:
+>> +        maxItems: 1
+>> +        description: |
+>> +          Power domain index. Valid values are defined in
+>> +          "include/dt-bindings/power/px30-power.h"
+>> +          "include/dt-bindings/power/rk3036-power.h"
+>> +          "include/dt-bindings/power/rk3066-power.h"
+>> +          "include/dt-bindings/power/rk3128-power.h"
+>> +          "include/dt-bindings/power/rk3188-power.h"
+>> +          "include/dt-bindings/power/rk3228-power.h"
+>> +          "include/dt-bindings/power/rk3288-power.h"
+>> +          "include/dt-bindings/power/rk3328-power.h"
+>> +          "include/dt-bindings/power/rk3366-power.h"
+>> +          "include/dt-bindings/power/rk3368-power.h"
+>> +          "include/dt-bindings/power/rk3399-power.h"
+>> +
+>> +      clocks:
+>> +        description: |
+>> +          A number of phandles to clocks that need to be enabled while power domain
+>> +          switches state.
+>> +
+>> +      pm_qos:
+>> +        description: |
+>> +          A number of phandles to qos blocks which need to be saved and restored
+>> +          while power domain switches state.
+>> +
+>> +    patternProperties:
+>> +      "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
+>> +        type: object
+>> +        description: |
+>> +          Represents a power domain child within a power domain parent node.
+>> +
+>> +        properties:
+>> +
+>> +          "#power-domain-cells":
+>> +            description:
+>> +              Must be 0 for nodes representing a single PM domain and 1 for nodes
+>> +              providing multiple PM domains.
+>> +
+>> +          "#address-cells":
+>> +            const: 1
+>> +
+>> +          "#size-cells":
+>> +            const: 0
+>> +
+>> +          reg:
+>> +            maxItems: 1
+>> +
+>> +          clocks:
+>> +            description: |
+>> +              A number of phandles to clocks that need to be enabled while power domain
+>> +              switches state.
+>> +
+>> +          pm_qos:
+>> +            description: |
+>> +              A number of phandles to qos blocks which need to be saved and restored
+>> +              while power domain switches state.
+>> +
+>> +        patternProperties:
+>> +          "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
+>> +            type: object
+>> +            description: |
+>> +              Represents a power domain child within a power domain parent node.
+>> +
+>> +            properties:
+>> +
+>> +              "#power-domain-cells":
+>> +                description:
+>> +                  Must be 0 for nodes representing a single PM domain and 1 for nodes
+>> +                  providing multiple PM domains.
+>> +
+>> +              "#address-cells":
+>> +                const: 1
+>> +
+>> +              "#size-cells":
+>> +                const: 0
+>> +
+>> +              reg:
+>> +                maxItems: 1
+>> +
+>> +              clocks:
+>> +                description: |
+>> +                  A number of phandles to clocks that need to be enabled while power domain
+>> +                  switches state.
+>> +
+>> +              pm_qos:
+>> +                description: |
+>> +                  A number of phandles to qos blocks which need to be saved and restored
+>> +                  while power domain switches state.
+>> +
+>> +            required:
+>> +              - reg
+>> +
+>> +            additionalProperties: false
+>> +
+>> +        required:
+>> +          - reg
+>> +
+>> +        additionalProperties: false
+>> +
+>> +    required:
+>> +      - reg
+>> +
+>> +    additionalProperties: false
+>> +
+>> +required:
+>> +  - compatible
+>> +  - "#power-domain-cells"
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/rk3399-cru.h>
+>> +    #include <dt-bindings/power/rk3399-power.h>
+>> +
+>> +    soc {
+>> +        #address-cells = <2>;
+>> +        #size-cells = <2>;
+>> +
+>> +        qos_hdcp: qos@ffa90000 {
+>> +            compatible = "rockchip,rk3399-qos", "syscon";
+>> +            reg = <0x0 0xffa90000 0x0 0x20>;
+>> +        };
+>> +
+>> +        qos_iep: qos@ffa98000 {
+>> +            compatible = "rockchip,rk3399-qos", "syscon";
+>> +            reg = <0x0 0xffa98000 0x0 0x20>;
+>> +        };
+>> +
+>> +        qos_rga_r: qos@ffab0000 {
+>> +            compatible = "rockchip,rk3399-qos", "syscon";
+>> +            reg = <0x0 0xffab0000 0x0 0x20>;
+>> +        };
+>> +
+>> +        qos_rga_w: qos@ffab0080 {
+>> +            compatible = "rockchip,rk3399-qos", "syscon";
+>> +            reg = <0x0 0xffab0080 0x0 0x20>;
+>> +        };
+>> +
+>> +        qos_video_m0: qos@ffab8000 {
+>> +            compatible = "rockchip,rk3399-qos", "syscon";
+>> +            reg = <0x0 0xffab8000 0x0 0x20>;
+>> +        };
+>> +
+>> +        qos_video_m1_r: qos@ffac0000 {
+>> +            compatible = "rockchip,rk3399-qos", "syscon";
+>> +            reg = <0x0 0xffac0000 0x0 0x20>;
+>> +        };
+>> +
+>> +        qos_video_m1_w: qos@ffac0080 {
+>> +            compatible = "rockchip,rk3399-qos", "syscon";
+>> +            reg = <0x0 0xffac0080 0x0 0x20>;
+>> +        };
+>> +
+>> +        power-management@ff310000 {
+>> +            compatible = "rockchip,rk3399-pmu", "syscon", "simple-mfd";
+>> +            reg = <0x0 0xff310000 0x0 0x1000>;
+>> +
+>> +            power-controller {
+>> +                compatible = "rockchip,rk3399-power-controller";
+>> +                #power-domain-cells = <1>;
+>> +                #address-cells = <1>;
+>> +                #size-cells = <0>;
+>> +
+>> +                /* These power domains are grouped by VD_CENTER */
+>> +                pd_iep@RK3399_PD_IEP {
+>> +                    reg = <RK3399_PD_IEP>;
+>> +                    clocks = <&cru ACLK_IEP>,
+>> +                             <&cru HCLK_IEP>;
+>> +                    pm_qos = <&qos_iep>;
+>> +                    #power-domain-cells = <0>;
+>> +                };
+>> +                pd_rga@RK3399_PD_RGA {
+>> +                    reg = <RK3399_PD_RGA>;
+>> +                    clocks = <&cru ACLK_RGA>,
+>> +                             <&cru HCLK_RGA>;
+>> +                    pm_qos = <&qos_rga_r>,
+>> +                             <&qos_rga_w>;
+>> +                    #power-domain-cells = <0>;
+>> +                };
+>> +                pd_vcodec@RK3399_PD_VCODEC {
+>> +                    reg = <RK3399_PD_VCODEC>;
+>> +                    clocks = <&cru ACLK_VCODEC>,
+>> +                             <&cru HCLK_VCODEC>;
+>> +                    pm_qos = <&qos_video_m0>;
+>> +                    #power-domain-cells = <0>;
+>> +                };
+>> +                pd_vdu@RK3399_PD_VDU {
+>> +                    reg = <RK3399_PD_VDU>;
+>> +                    clocks = <&cru ACLK_VDU>,
+>> +                             <&cru HCLK_VDU>;
+>> +                    pm_qos = <&qos_video_m1_r>,
+>> +                             <&qos_video_m1_w>;
+>> +                    #power-domain-cells = <0>;
+>> +                };
+>> +                pd_vio@RK3399_PD_VIO {
+>> +                    reg = <RK3399_PD_VIO>;
+>> +                    #power-domain-cells = <1>;
+>> +                    #address-cells = <1>;
+>> +                    #size-cells = <0>;
+>> +
+>> +                    pd_hdcp@RK3399_PD_HDCP {
+>> +                        reg = <RK3399_PD_HDCP>;
+>> +                        clocks = <&cru ACLK_HDCP>,
+>> +                                 <&cru HCLK_HDCP>,
+>> +                                 <&cru PCLK_HDCP>;
+>> +                        pm_qos = <&qos_hdcp>;
+>> +                        #power-domain-cells = <0>;
+>> +                    };
+>> +                };
+>> +            };
+>> +        };
+>> +    };
+>> diff --git a/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt b/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+>> deleted file mode 100644
+>> index 8304eceb62e4..000000000000
+>> --- a/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+>> +++ /dev/null
+>> @@ -1,136 +0,0 @@
+>> -* Rockchip Power Domains
+>> -
+>> -Rockchip processors include support for multiple power domains which can be
+>> -powered up/down by software based on different application scenes to save power.
+>> -
+>> -Required properties for power domain controller:
+>> -- compatible: Should be one of the following.
+>> -	"rockchip,px30-power-controller" - for PX30 SoCs.
+>> -	"rockchip,rk3036-power-controller" - for RK3036 SoCs.
+>> -	"rockchip,rk3066-power-controller" - for RK3066 SoCs.
+>> -	"rockchip,rk3128-power-controller" - for RK3128 SoCs.
+>> -	"rockchip,rk3188-power-controller" - for RK3188 SoCs.
+>> -	"rockchip,rk3228-power-controller" - for RK3228 SoCs.
+>> -	"rockchip,rk3288-power-controller" - for RK3288 SoCs.
+>> -	"rockchip,rk3328-power-controller" - for RK3328 SoCs.
+>> -	"rockchip,rk3366-power-controller" - for RK3366 SoCs.
+>> -	"rockchip,rk3368-power-controller" - for RK3368 SoCs.
+>> -	"rockchip,rk3399-power-controller" - for RK3399 SoCs.
+>> -- #power-domain-cells: Number of cells in a power-domain specifier.
+>> -	Should be 1 for multiple PM domains.
+>> -- #address-cells: Should be 1.
+>> -- #size-cells: Should be 0.
+>> -
+>> -Required properties for power domain sub nodes:
+>> -- reg: index of the power domain, should use macros in:
+>> -	"include/dt-bindings/power/px30-power.h" - for PX30 type power domain.
+>> -	"include/dt-bindings/power/rk3036-power.h" - for RK3036 type power domain.
+>> -	"include/dt-bindings/power/rk3066-power.h" - for RK3066 type power domain.
+>> -	"include/dt-bindings/power/rk3128-power.h" - for RK3128 type power domain.
+>> -	"include/dt-bindings/power/rk3188-power.h" - for RK3188 type power domain.
+>> -	"include/dt-bindings/power/rk3228-power.h" - for RK3228 type power domain.
+>> -	"include/dt-bindings/power/rk3288-power.h" - for RK3288 type power domain.
+>> -	"include/dt-bindings/power/rk3328-power.h" - for RK3328 type power domain.
+>> -	"include/dt-bindings/power/rk3366-power.h" - for RK3366 type power domain.
+>> -	"include/dt-bindings/power/rk3368-power.h" - for RK3368 type power domain.
+>> -	"include/dt-bindings/power/rk3399-power.h" - for RK3399 type power domain.
+>> -- clocks (optional): phandles to clocks which need to be enabled while power domain
+>> -	switches state.
+>> -- pm_qos (optional): phandles to qos blocks which need to be saved and restored
+>> -	while power domain switches state.
+>> -
+>> -Qos Example:
+>> -
+>> -	qos_gpu: qos_gpu@ffaf0000 {
+>> -		compatible ="syscon";
+>> -		reg = <0x0 0xffaf0000 0x0 0x20>;
+>> -	};
+>> -
+>> -Example:
+>> -
+>> -	power: power-controller {
+>> -		compatible = "rockchip,rk3288-power-controller";
+>> -		#power-domain-cells = <1>;
+>> -		#address-cells = <1>;
+>> -		#size-cells = <0>;
+>> -
+>> -		pd_gpu {
+>> -			reg = <RK3288_PD_GPU>;
+>> -			clocks = <&cru ACLK_GPU>;
+>> -			pm_qos = <&qos_gpu>;
+>> -		};
+>> -	};
+>> -
+>> -	 power: power-controller {
+>> -                compatible = "rockchip,rk3368-power-controller";
+>> -                #power-domain-cells = <1>;
+>> -                #address-cells = <1>;
+>> -                #size-cells = <0>;
+>> -
+>> -                pd_gpu_1 {
+>> -                        reg = <RK3368_PD_GPU_1>;
+>> -                        clocks = <&cru ACLK_GPU_CFG>;
+>> -                };
+>> -        };
+>> -
+>> -Example 2:
+>> -		power: power-controller {
+>> -			compatible = "rockchip,rk3399-power-controller";
+>> -			#power-domain-cells = <1>;
+>> -			#address-cells = <1>;
+>> -			#size-cells = <0>;
+>> -
+>> -			pd_vio {
+>> -				#address-cells = <1>;
+>> -				#size-cells = <0>;
+>> -				reg = <RK3399_PD_VIO>;
+>> -
+>> -				pd_vo {
+>> -					#address-cells = <1>;
+>> -					#size-cells = <0>;
+>> -					reg = <RK3399_PD_VO>;
+>> -
+>> -					pd_vopb {
+>> -						reg = <RK3399_PD_VOPB>;
+>> -					};
+>> -
+>> -					pd_vopl {
+>> -						reg = <RK3399_PD_VOPL>;
+>> -					};
+>> -				};
+>> -			};
+>> -		};
+>> -
+>> -Node of a device using power domains must have a power-domains property,
+>> -containing a phandle to the power device node and an index specifying which
+>> -power domain to use.
+>> -The index should use macros in:
+>> -	"include/dt-bindings/power/px30-power.h" - for px30 type power domain.
+>> -	"include/dt-bindings/power/rk3036-power.h" - for rk3036 type power domain.
+>> -	"include/dt-bindings/power/rk3128-power.h" - for rk3128 type power domain.
+>> -	"include/dt-bindings/power/rk3128-power.h" - for rk3228 type power domain.
+>> -	"include/dt-bindings/power/rk3288-power.h" - for rk3288 type power domain.
+>> -	"include/dt-bindings/power/rk3328-power.h" - for rk3328 type power domain.
+>> -	"include/dt-bindings/power/rk3366-power.h" - for rk3366 type power domain.
+>> -	"include/dt-bindings/power/rk3368-power.h" - for rk3368 type power domain.
+>> -	"include/dt-bindings/power/rk3399-power.h" - for rk3399 type power domain.
+>> -
+>> -Example of the node using power domain:
+>> -
+>> -	node {
+>> -		/* ... */
+>> -		power-domains = <&power RK3288_PD_GPU>;
+>> -		/* ... */
+>> -	};
+>> -
+>> -	node {
+>> -                /* ... */
+>> -                power-domains = <&power RK3368_PD_GPU_1>;
+>> -                /* ... */
+>> -        };
+>> -
+>> -	node {
+>> -		/* ... */
+>> -		power-domains = <&power RK3399_PD_VOPB>;
+>> -		/* ... */
+>> -	};
+>>
+>
+>
 
-No worries, let's go ;-)
 
-> I was playing with movable_node and performance implications back in
-> 2017 (unfortunately I do not have specific numbers anymore) and the
-> setup was a bit extreme - a single node (0) with normal zones and all
-> other nodes with movable memory only. So not only struct pages but any
-> other kernel metadata were on a remote node. I remember I could see
-> clear performance drop scaling with the distance from node 0 somewhere
-> betweem 5-10% on kbuild bound on a movable node.
-
-I see. Yes, it is a rather extreme case, but I think it clearly shows the impact
-of having metadata structures on a non-local node.
-
- 
-> In fact beginning of the memory block should be sufficient as sections
-> cannot be hotremoved without the rest of the memory block.
-
-Sorry, I meant memory block here.
-
-> > struct pages which back the allocated space then just need to be treated
-> > carefully.
-> > 
-> > Implementation wise we will reuse vmem_altmap infrastructure to override
-> > the default allocator used by __populate_section_memmap.
-> > Part of the implementation also relies on memory_block structure gaining
-> > a new field which specifies the number of vmemmap_pages at the beginning.
-> 
-> Here you are talking about memory block rather than section.
-
-Yes, see above, it should have been memory block in both cases.
-
-> > Hot-remove:
-> > 
-> >  We need to be careful when removing memory, as adding and
-> >  removing memory needs to be done with the same granularity.
-> >  To check that this assumption is not violated, we check the
-> >  memory range we want to remove and if a) any memory block has
-> >  vmemmap pages and b) the range spans more than a single memory
-> >  block, we scream out loud and refuse to proceed.
-> 
-> Is this a real problem? If each memory block has its own vmemmap then we
-> should be just fine, no?
-
-Not entirely.
-
-Assume this:
-
-- memory_block_size = 128MB
-- add_memory(256MB) : no uses altmap because size != memory_block_size
-- add_memory(128MB) : uses altmap
-
-Now, when trying to remove the memory, we should construct the altmap to let
-remove_pmd_table->free_hugepage_table() know that it needs to call vmem_altmap_free()
-instead of free_pagetable() for those sections that were populated using altmap.
-
-But that becomes trickier to handle if user does remove_memory(384MB) at once.
-
-The only reasonable way I can think of is something like:
-
-/*
- * Try to diferentiate which ranges used altmap when populating vmemmap,
- * and construct the altmap for those
- */
- loop(size / section_size)
-  if (range_used altmap)
-   arch_remove_memory(nid, start, size, altmap);
-  else
-   arch_remove_memory(nid, start, size, NULL);
-   
-But I do not think this is any better than make this scenario completely a NO-NO,
-because in the end, this is asking for trouble.
-And yes, normal qemu/barematal users does not have the hability to play these
-kind of tricks, as baremetal has HW limitations and qemu creates a device for
-every range you hot-add (so you are tied to that device when removing memory
-as well), but other users e.g: virtio-mem can do that.
-
-> I would appreciate some more description of the patch itself. The above
-> outlines a highlevel problems and design. The patch is quite large and
-> it acts on several layers - physical hotplug, {on,off}lining and sysfs
-> layer.
-
-Ok, will try to come up with something more complete wrt changelog.
-
-> Let me capture my thinking:
-> - from the top level 
-> - sysfs interfaces - memory block is extended to contain the number of
->   vmemmap pages reserved from the beginning of the block for all
->   memory sections belonging to the block.
-yes
-
-> - add_memory_resource is the entry point to reserve the vmemmap space
->   for the block. This is an opt-in feature (MHP_MEMMAP_ON_MEMORY) and
->   there is no current user at this stage.
-yes
-
-> - vmem_altmap is instructed to use the reserved vmemmap space as the
->   backing storage for the vmemmap struct pages. Via arch_add_memory->
->   __populate_section_memmap.
-yes
-
-> - online_pages for some reason needs to know about the reserved vmemmap
->   space. Why? It already knows the intial pfn to online. Why cannot
->   caller simply alter both start pfn and nr_pages to online everything
->   after the vmemmap space? This is somehow conflating the mem block
->   concept deeper into onlining.
-> - the same applies to offlining.
-
-Because some counters need not only the buddy_nr_pages, but the complete
-range.
-
-So, let us see what online_pages() do (offline_pages() as well but slightly
-different in some areas)
-
-- move_pfn_range_to_zone():
-  1) Resize node and zone spanned pages
-     * If we were only to pass the nr_pages without the vmemmap pages,
-       node/zone's spanned pages would be wrong as vmemmap pages would not
-       be accounted in there.
-
-  2) Inits struct pages by memmap_init_range() and sets its migratetype
-     * If we were only to pass the nr_pages without the vmemmap pages,
-       vmemmap pages would be totally unitialized.
-       We also set its migratetype to MIGRATE_UNMOVABLE.
-       Previous versions initialize vmemmap pages in another place but
-       there was a consensus to do it here.
-
- So on, this case, we have:
-
- if (nr_vmemmap_pages)
-    move_pfn_range_to_zone(zone, pfn, nr_vmemmap_pages, NULL,
-                                       MIGRATE_UNMOVABLE);
- move_pfn_range_to_zone(zone, buddy_start_pfn, buddy_nr_pages, NULL
-                        MIGRATE_ISOLATE);
-
-- Increment zone->present_pages
-  * We need to account buddy_pages + vmemmap_pages here
-
-- zone->zone_pgdat->node_present_pages
-  * Same as above
-
-- online_pages_range() (onlines the pages, __and__ the sections)
-  * Here do not only need the (buddy_pages, end_pages), but (vmemmap_pages, end_pages)
-    as well, because on one hand we do:
-
-    online_pages_range()
-    {
-       for (pfn = start_pfn; pfn < end_pfn; pfn += MAX_ORDER_NR_PAGES)
-                (*online_page_callback)(pfn_to_page(pfn), MAX_ORDER - 1);
-
-       online_mem_sections(start_pfn, end_pfn);
-   }
-
-   For the call to online_mem_sections, we need to whole range (including the vmemmap
-   pages), otherwise, if a whole section only contains vmemmap pages, the section
-   might be left marked as offline, and that is troublesome.
-
-
-As I said, the same applies to offline_pages(), but with slightly tweaks here and
-there because it handles somewhat different things.
-
-I kind of understand to be reluctant to use vmemmap_pages terminology here, but
-unfortunately we need to know about it.
-We could rename nr_vmemmap_pages to offset_buddy_pages or something like that.
-
-
-> - finally hotremove - which is the most tricky part. try_remove_memory
->   learns about vmemmap reserved space and provides it to __remove_pages
->   and eventually all the way down to remove_pagetable via altmap
->   Now a question and something I have stumbled over few years back when
->   looking into this. Let's say you have multi section memblock so the
->   first section of the block backs vmemmaps for all other sections.
->   What happens when you drop the first worth of section before tearing
->   down all other vmemmaps?
-
-I guess you refer to the case were:
-
-- memory_block_size: 1GB (8 sections)
-[memory_block] : first 4096 pfns are for vmemmap
-
-Nothing happens, but I see where your comment is comming from.
-
-Back in 2017, in your prototype, there were two different things:
-
-- try_remove_memory (I dunno how it was called back then) still worked
-  with pages, not pfns
-- arch_memory_memory() either did not have the altmap stuff, or we were
-  not setting it properly, but I remember that in your prototype
-  you were handling vmemmap pages in free_hugepage_table()->free_pagetable()
-  being carefull to not free them.
-
-Back then, when removing the first vmemmap backing further sections, when
-then dereferencing those sections in free_pagetable(), we would crash because
-the mapping was not there anymore.
-This cannot longer happen.
-
-> [...]
-> > @@ -185,10 +185,11 @@ memory_block_action(unsigned long start_section_nr, unsigned long action,
-> >  
-> >  	switch (action) {
-> >  	case MEM_ONLINE:
-> > -		ret = online_pages(start_pfn, nr_pages, online_type, nid);
-> > +		ret = online_pages(start_pfn, nr_pages, nr_vmemmap_pages,
-> > +				   online_type, nid);
-> >  		break;
-> 
-> I would just offset start_pfn and nr_pages.
-
-As stated above, this is not possible.
-
- 
-> > @@ -603,7 +606,7 @@ static int add_memory_block(unsigned long base_section_nr)
-> >  	if (section_count == 0)
-> >  		return 0;
-> >  	return init_memory_block(memory_block_id(base_section_nr),
-> > -				 MEM_ONLINE);
-> > +				 MEM_ONLINE, 0);
-> 
-> This would deserve a comment.
-> 	/* Early init code to create memory blocks for all the memory.
-> 	 * Backed by bootmem struct pages so no vmemmap reserved space.
-> 	 */
-
-Ok, will add it.
-
-> >  {
-> >  	const unsigned long end_pfn = start_pfn + nr_pages;
-> > -	unsigned long pfn;
-> > +	unsigned long pfn = buddy_start_pfn;
-> > +
-> > +	/*
-> > +	 * When using memmap_on_memory, the range might be unaligned as the
-> > +	 * first pfns are used for vmemmap pages. Align it in case we need to.
-> > +	 */
-> > +	VM_BUG_ON(!IS_ALIGNED(pfn, pageblock_nr_pages));
-> 
-> No this is not something VM_BUG_ON should be used for. This is perfectly
-> recoverable situation. Besides that this is a wrong layer to care. All
-> the fixup should happen up in the call chain.
-
-This should not happen anymore as mhp_support_memmap_on_memory() does not let
-to use MHP_MEMMAP_ON_MEMORY if range is not pageblock_nr_pages.
-
-So this can go.
-
-> >  int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
-> > -		       int online_type, int nid)
-> > +		       unsigned long nr_vmemmap_pages, int online_type, int nid)
-> >  {
-> > -	unsigned long flags;
-> > +	unsigned long flags, buddy_start_pfn, buddy_nr_pages;
-> >  	struct zone *zone;
-> >  	int need_zonelists_rebuild = 0;
-> >  	int ret;
-> 
-> As already mentioned I believe this would be much easier to follow if
-> the given pfn really denotes a first pfn to online rather than learn the
-> code about vmemmap space which is not really interesting from the
-> onlining POV. Struct pages are already create. All we need is to online
-> them for using.
-> Just have a look at pfn vs. buddy_start_pfn usage. Why should
-> zone_for_pfn_range, node_states_check_changes_online, memory_notify ase
-> the former rather than later? As mentioned above online_pages_range is
-> just more complex by doing that.
-> 
-> Sure there are some consistency checks which are more convenient with
-> the actual pfn start but I believe those shouldn't be a reason for
-> obfuscating the code and mixing layers.
-
-I think I explained this above, but let me repeat just in case.
-Take into account that boot vmemmap_pages are also accounted to:
-- zone's spanned_pages/present_pages
-- node's spanned_pages/present_pages
-
-And those pages are also initialized somehow, so we need to initialize the hotplug
-vmemmap pages as well, and account them.
-
-As I said, we can use a different terminology and name it different, but we need to
-- properly account them
-- properly initialize them
-
-And I __guess__ we could do it somewhere off the {online,offline_pages()) land,
-but I see that trickier and not worh it.
-
-> > +	       IS_ENABLED(CONFIG_MHP_MEMMAP_ON_MEMORY) &&
-> > +	       size == memory_block_size_bytes() &&
-> > +	       IS_ALIGNED(vmemmap_size, PMD_SIZE) &&
-> > +	       IS_ALIGNED(remaining_size, (pageblock_nr_pages << PAGE_SHIFT));
-> 
-> This is likely more complex than necessary. Is it ever possible that
-> remaining_size won't be aligned properly when vmemmap_size is PMD_SIZE
-> aligned?
-
-Yes, on arm64 with large pages depending on HUGETLB support this can lead to
-one condition be true while the other not.
-
-> > @@ -1563,10 +1639,11 @@ static int count_system_ram_pages_cb(unsigned long start_pfn,
-> >  	return 0;
-> >  }
-> >  
-> > -int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
-> > +int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages,
-> > +			unsigned long nr_vmemmap_pages)
-> 
-> same concern as online pages. Nobody should really care about vmemmap
-> reserved space. Maybe the accounting (count_system_ram_pages_cb) will
-> need some compensation but I have to say I got lost in this accounting
-> wrt to memory hotplugged memory. Where do we account hotadded memory to
-> system_ram_pages?
-
-Quick summary of account:
-
-- online_pages()->move_pfn_range_to_zone(): Accounts for node/zone's spanned pages
-- online_pages()->zone->present_pages += nr_pages;
-- zone->zone_pgdat->node_present_pages += nr_pages;
-- online_pages()->online_pages_range()->generic_online_page()->totalram_pages_add():
-  Accounts for totalram_pages
-- online_pages()->adjust_managed_page_count(): Accounts for zone->managed_pages
-
-So, as you can see, we have a mix with of spanned_pages,present_pages and
-managed_pages in both {offline,online}_pages().
-Vmemmap pages need to be properly accounted to spanned_pages,present_pages,
-as we account bootmem vmemmap pages, but they do not be accounted in
-managed_pages.
-
-> This made me scratch my head. I do not think this works for size
-> spanning multiple memory blocks. Maybe we do not allow something like
-> that happening. The logic seems inside out to me. I believe you want to
-> either pull arch_remove_memory into the walk_memory_blocks callback and
-> handle each memory block this way.
-
-Here, what we fence off is the scenario I mentioned at the beginning, where
-someone may call try_remove_memory() with memory_blocks both containing and
-not vmemmap_pages.
-
-So, if the user opt-in the feature, he needs to work with the same granularity
-in the add and remove operations.
-
-Well, that was a good feedback indeed, and a large one, I hope to have clarified
-some of the questions raised.
-
--- 
-Oscar Salvador
-SUSE L3
