@@ -2,339 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBBB3481D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931823481D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237956AbhCXTVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:21:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237893AbhCXTUt (ORCPT
+        id S237821AbhCXTY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:24:28 -0400
+Received: from smtprelay0082.hostedemail.com ([216.40.44.82]:58252 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237667AbhCXTYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:20:49 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADCDC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:20:49 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x26so18087577pfn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lvb7hlibIPwzR60x/yUMbLm1jxf0Ps+EL44ahkPgqgk=;
-        b=sP+UjYtD0EYGlXpp6dl2cOxcX20AueElPepb+bh68mFOcQQWIC9ArIpI/5bWe3KZaq
-         rnVfmYjeeRC9tXa59+w6AU80c0EfhHcteOZvRxe/NE4p4jWGIMxIjrleJZ5juPW4AH9q
-         lUW+aHzbPPJuLrHwkIiJB3Q2qfJs64IPmGDD1Hr3oEPUro7bGS95HN8tnQw7b5GO58Ey
-         QtaR16tnU9yKP907tmHy3mK7ofnbaGyWSdQ7vZfg+AA3PCTHThFIFKug8EmfFVnow5aB
-         zgZFQpZho2QmU2rHa5Q2krToeM7iSI6andvc+nPJBNbvzs2dGyeN7x3mq9FcvPLQhayH
-         eybA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=lvb7hlibIPwzR60x/yUMbLm1jxf0Ps+EL44ahkPgqgk=;
-        b=qTF3w3oqt8nuPus1m4V9I3+2XiPJ08ndvvopbEMFhnlzUOCkMu4pSen1Mz4tFCtzJr
-         LG7qygU+KN6sfB7XhpIYWb/7YaJiMJvMlZPH1welvdSCMGxUClt1eIDVau8m8686LCJE
-         vekC7gTZWGDjQWUQZ3fs0JZHzn/WpYhoghj5vFAv5QDaCjvuK8Vm5TyKgEtaZUdcNEBp
-         rUKqpQ8gZBrZ3hhlsJ4eq2cXlLtmkcMUzJ0ayMYCazRR3qiC4IeNQbAiyswp78s812hZ
-         JXcUoxj+F5aaJloP+fGs1MLyblFKS/QSO1yjb0OhK1ANpDR2cU9shhdvA+Jyk5h2R0+M
-         mq5A==
-X-Gm-Message-State: AOAM533Vwbij1Gluzd3HVmHjCVjHukNdSvkIyOKvcwIoZGxAOzPOu8rL
-        22gffYBbqFQVXmdUg4wXcbo=
-X-Google-Smtp-Source: ABdhPJyl7WMk3WqPOcoEn2Z9BfcptKKY4nyp60428xzj+BuWTbxRuruwfPWC380+G8Rid0RvvyUZ4Q==
-X-Received: by 2002:a63:5343:: with SMTP id t3mr4354311pgl.136.1616613649042;
-        Wed, 24 Mar 2021 12:20:49 -0700 (PDT)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id e20sm3337210pgm.1.2021.03.24.12.20.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 12:20:48 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
-        jhubbard@nvidia.com, willy@infradead.org, digetx@gmail.com,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH] mm: cma: fix corruption cma_sysfs_alloc_pages_count
-Date:   Wed, 24 Mar 2021 12:20:44 -0700
-Message-Id: <20210324192044.1505747-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        Wed, 24 Mar 2021 15:24:15 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id BB3571801AC84;
+        Wed, 24 Mar 2021 19:24:14 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:421:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1605:1711:1730:1747:1777:1792:1801:2198:2199:2393:2553:2559:2562:2689:2731:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:6120:6691:6742:7652:7903:10004:10400:10848:11026:11232:11233:11473:11657:11658:11783:11914:12043:12048:12296:12297:12438:12740:12895:13894:14181:14659:14721:21080:21433:21451:21627:21740:21990:30012:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: fish34_600c2bf2777d
+X-Filterd-Recvd-Size: 4692
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 24 Mar 2021 19:24:11 +0000 (UTC)
+Message-ID: <d184069de43135a9c9e5f031447faf98ab3f437d.camel@perches.com>
+Subject: Re: [RFC patch] vsprintf: Allow %pe to print non PTR_ERR %pe uses
+ as decimal
+From:   Joe Perches <joe@perches.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Liu Ying <victor.liu@nxp.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Wed, 24 Mar 2021 12:24:10 -0700
+In-Reply-To: <9feab1e8-4dee-6b79-03f7-7b9f0cb24f6e@rasmusvillemoes.dk>
+References: <20210324121832.3714570-1-arnd@kernel.org>
+         <e1310273dcc577f3a772380ada7b6cc1906d680b.camel@perches.com>
+         <CAK8P3a0JyoAtTYTi+M_mJ3_KtUJ6NeJB=FNWhzezqcXMac++mQ@mail.gmail.com>
+         <810d36184b9fa2880d3ba7738a8f182e27f5107b.camel@perches.com>
+         <3252fd83141aa9e0e6001acee1dd98e87c676b9a.camel@perches.com>
+         <9feab1e8-4dee-6b79-03f7-7b9f0cb24f6e@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct cma_stat's lifespan for cma_sysfs is different with
-struct cma because kobject for sysfs requires dynamic object
-while CMA is static object[1]. When CMA is initialized,
-it couldn't use slab to allocate cma_stat since slab was not
-initialized yet. Thus, it allocates the dynamic object
-in subsys_initcall.
+On Wed, 2021-03-24 at 18:33 +0100, Rasmus Villemoes wrote:
+> On 24/03/2021 18.20, Joe Perches wrote:
+> > On Wed, 2021-03-24 at 09:52 -0700, Joe Perches wrote:
+> > > On Wed, 2021-03-24 at 17:42 +0100, Arnd Bergmann wrote:
+> > > > On Wed, Mar 24, 2021 at 3:20 PM Joe Perches <joe@perches.com> wrote:
+> > > []
+> > > > > > diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
+> > > > > []
+> > > > > > @@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
+> > > > > >       int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
+> > > > > >       int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
+> > > > > > 
+> > > > > > +     if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
+> > > > > > +             dev_warn(ldb->dev, "%s: invalid mux %d\n",
+> > > > > > +                      __func__, ERR_PTR(mux));
+> > > > > 
+> > > > > This does not compile without warnings.
+> > > > > 
+> > > > > drivers/gpu/drm/imx/imx-ldb.c: In function ‘imx_ldb_encoder_enable’:
+> > > > > drivers/gpu/drm/imx/imx-ldb.c:201:22: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘void *’ [-Wformat=]
+> > > > >   201 |   dev_warn(ldb->dev, "%s: invalid mux %d\n",
+> > > > >       |                      ^~~~~~~~~~~~~~~~~~~~~~
+> > > > > 
+> > > > > If you want to use ERR_PTR, the %d should be %pe as ERR_PTR
+> > > > > is converting an int a void * to decode the error type and
+> > > > > emit it as a string.
+> > > > 
+> > > > Sorry about that.
+> > > > 
+> > > > I decided against using ERR_PTR() in order to also check for
+> > > > positive array overflow, but the version I tested was different from
+> > > > the version I sent.
+> > > > 
+> > > > v3 coming.
+> > > 
+> > > Thanks.  No worries.
+> > > 
+> > > Up to you, vsprintf would emit the positive mux as a funky hashed
+> > > hex value by default if you use ERR_PTR with mux > ARRAY_SIZE so
+> > > perhaps %d without the ERR_PTR use makes the most sense.
+> > > 
+> 
+> > 
+> > Maybe it's better to output non PTR_ERR %pe uses as decimal so this
+> > sort of code would work.
+> 
+> No, because that would leak the pointer value when somebody has
+> accidentally passed a real kernel pointer to %pe.
 
-However, the cma allocation can happens before subsys_initcall
-then, it goes crash.
+I think it's not really an issue.
 
-Dmitry reported[2]:
+_All_ code that uses %p<foo> extensions need inspection anyway.
 
-..
-[    1.226190] [<c027762f>] (cma_sysfs_alloc_pages_count) from [<c027706f>] (cma_alloc+0x153/0x274)
-[    1.226720] [<c027706f>] (cma_alloc) from [<c01112ab>] (__alloc_from_contiguous+0x37/0x8c)
-[    1.227272] [<c01112ab>] (__alloc_from_contiguous) from [<c1104af9>] (atomic_pool_init+0x7b/0x126)
-[    1.233596] [<c1104af9>] (atomic_pool_init) from [<c0101d69>] (do_one_initcall+0x45/0x1e4)
-[    1.234188] [<c0101d69>] (do_one_initcall) from [<c1101141>] (kernel_init_freeable+0x157/0x1a6)
-[    1.234741] [<c1101141>] (kernel_init_freeable) from [<c0a27fd1>] (kernel_init+0xd/0xe0)
-[    1.235289] [<c0a27fd1>] (kernel_init) from [<c0100155>] (ret_from_fork+0x11/0x1c)
+It's already possible to intentionally 'leak' the ptr value
+by using %pe, -ptr so I think that's not really an issue.
 
-This patch moves those statistic fields of cma_stat into struct cma
-and introduces cma_kobject wrapper to follow kobject's rule.
+> 
+> If the code wants a cute -EFOO string explaining what's wrong, what
+> about "%pe", ERR_PTR(mux < 0 : mux : -ERANGE)? Or two separate error
+> messages
+> 
+> if (mux < 0)
+>   ...
+> else if (mux >= ARRAY_SIZE())
+>   ...
 
-At the same time, it fixes other routines based on suggestions[3][4].
+Multiple tests, more unnecessary code, multiple format strings, etc...
 
-[1] https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
-[2] https://lore.kernel.org/linux-mm/fead70a2-4330-79ff-e79a-d8511eab1256@gmail.com/
-[3] https://lore.kernel.org/linux-mm/20210323195050.2577017-1-minchan@kernel.org/
-[4] https://lore.kernel.org/linux-mm/20210324010547.4134370-1-minchan@kernel.org/
-
-Reported-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
-Suggested-by: Dmitry Osipenko <digetx@gmail.com>
-Suggested-by: John Hubbard <jhubbard@nvidia.com>
-Suggested-by: Matthew Wilcox <willy@infradead.org>
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
-I belive it's worth to have separate patch rather than replacing
-original patch. It will also help to merge without conflict
-since we already filed other patch based on it.
-Strictly speaking, separating fix part and readbility part
-in this patch would be better but it's gray to separate them
-since most code in this patch was done while we were fixing
-the bug. Since we don't release it yet, I hope it will work.
-Otherwise, I can send a replacement patch inclucing all of
-changes happend until now with gathering SoB.
-
- mm/cma.c       |  4 +--
- mm/cma.h       | 25 +++++++-------
- mm/cma_sysfs.c | 88 ++++++++++++++++++++++++++++----------------------
- 3 files changed, 65 insertions(+), 52 deletions(-)
-
-diff --git a/mm/cma.c b/mm/cma.c
-index 90e27458ddb7..08c45157911a 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -509,11 +509,11 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
- out:
- 	if (page) {
- 		count_vm_event(CMA_ALLOC_SUCCESS);
--		cma_sysfs_alloc_pages_count(cma, count);
-+		cma_sysfs_account_success_pages(cma, count);
- 	} else {
- 		count_vm_event(CMA_ALLOC_FAIL);
- 		if (cma)
--			cma_sysfs_fail_pages_count(cma, count);
-+			cma_sysfs_account_fail_pages(cma, count);
- 	}
- 
- 	return page;
-diff --git a/mm/cma.h b/mm/cma.h
-index 95d1aa2d808a..37b9b7858c8e 100644
---- a/mm/cma.h
-+++ b/mm/cma.h
-@@ -5,12 +5,8 @@
- #include <linux/debugfs.h>
- #include <linux/kobject.h>
- 
--struct cma_stat {
--	spinlock_t lock;
--	/* the number of CMA page successful allocations */
--	unsigned long nr_pages_succeeded;
--	/* the number of CMA page allocation failures */
--	unsigned long nr_pages_failed;
-+struct cma_kobject {
-+	struct cma *cma;
- 	struct kobject kobj;
- };
- 
-@@ -27,7 +23,12 @@ struct cma {
- #endif
- 	char name[CMA_MAX_NAME];
- #ifdef CONFIG_CMA_SYSFS
--	struct cma_stat	*stat;
-+	/* the number of CMA page successful allocations */
-+	atomic64_t nr_pages_succeeded;
-+	/* the number of CMA page allocation failures */
-+	atomic64_t nr_pages_failed;
-+	/* kobject requires dynamic object */
-+	struct cma_kobject *cma_kobj;
- #endif
- };
- 
-@@ -40,10 +41,12 @@ static inline unsigned long cma_bitmap_maxno(struct cma *cma)
- }
- 
- #ifdef CONFIG_CMA_SYSFS
--void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count);
--void cma_sysfs_fail_pages_count(struct cma *cma, size_t count);
-+void cma_sysfs_account_success_pages(struct cma *cma, unsigned long nr_pages);
-+void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages);
- #else
--static inline void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count) {};
--static inline void cma_sysfs_fail_pages_count(struct cma *cma, size_t count) {};
-+static inline void cma_sysfs_account_success_pages(struct cma *cma,
-+						   unsigned long nr_pages) {};
-+static inline void cma_sysfs_account_fail_pages(struct cma *cma,
-+						unsigned long nr_pages) {};
- #endif
- #endif
-diff --git a/mm/cma_sysfs.c b/mm/cma_sysfs.c
-index 3134b2b3a96d..a670a80aad6f 100644
---- a/mm/cma_sysfs.c
-+++ b/mm/cma_sysfs.c
-@@ -11,50 +11,54 @@
- 
- #include "cma.h"
- 
--static struct cma_stat *cma_stats;
--
--void cma_sysfs_alloc_pages_count(struct cma *cma, size_t count)
-+void cma_sysfs_account_success_pages(struct cma *cma, unsigned long nr_pages)
- {
--	spin_lock(&cma->stat->lock);
--	cma->stat->nr_pages_succeeded += count;
--	spin_unlock(&cma->stat->lock);
-+	atomic64_add(nr_pages, &cma->nr_pages_succeeded);
- }
- 
--void cma_sysfs_fail_pages_count(struct cma *cma, size_t count)
-+void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages)
- {
--	spin_lock(&cma->stat->lock);
--	cma->stat->nr_pages_failed += count;
--	spin_unlock(&cma->stat->lock);
-+	atomic64_add(nr_pages, &cma->nr_pages_failed);
- }
- 
- #define CMA_ATTR_RO(_name) \
- 	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
- 
--static struct kobject *cma_kobj;
-+static inline struct cma *cma_from_kobj(struct kobject *kobj)
-+{
-+	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject,
-+						    kobj);
-+	struct cma *cma = cma_kobj->cma;
-+
-+	return cma;
-+}
- 
- static ssize_t alloc_pages_success_show(struct kobject *kobj,
--			struct kobj_attribute *attr, char *buf)
-+					struct kobj_attribute *attr, char *buf)
- {
--	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-+	struct cma *cma = cma_from_kobj(kobj);
- 
--	return sysfs_emit(buf, "%lu\n", stat->nr_pages_succeeded);
-+	return sysfs_emit(buf, "%llu\n",
-+			atomic64_read(&cma->nr_pages_succeeded));
- }
- CMA_ATTR_RO(alloc_pages_success);
- 
- static ssize_t alloc_pages_fail_show(struct kobject *kobj,
--			struct kobj_attribute *attr, char *buf)
-+				     struct kobj_attribute *attr, char *buf)
- {
--	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-+	struct cma *cma = cma_from_kobj(kobj);
- 
--	return sysfs_emit(buf, "%lu\n", stat->nr_pages_failed);
-+	return sysfs_emit(buf, "%llu\n", atomic64_read(&cma->nr_pages_failed));
- }
- CMA_ATTR_RO(alloc_pages_fail);
- 
- static void cma_kobj_release(struct kobject *kobj)
- {
--	struct cma_stat *stat = container_of(kobj, struct cma_stat, kobj);
-+	struct cma *cma = cma_from_kobj(kobj);
-+	struct cma_kobject *cma_kobj = cma->cma_kobj;
- 
--	kfree(stat);
-+	kfree(cma_kobj);
-+	cma->cma_kobj = NULL;
- }
- 
- static struct attribute *cma_attrs[] = {
-@@ -67,44 +71,50 @@ ATTRIBUTE_GROUPS(cma);
- static struct kobj_type cma_ktype = {
- 	.release = cma_kobj_release,
- 	.sysfs_ops = &kobj_sysfs_ops,
--	.default_groups = cma_groups
-+	.default_groups = cma_groups,
- };
- 
- static int __init cma_sysfs_init(void)
- {
--	int i = 0;
-+	struct kobject *cma_kobj_root;
-+	struct cma_kobject *cma_kobj;
- 	struct cma *cma;
-+	unsigned int i;
-+	int err;
- 
--	cma_kobj = kobject_create_and_add("cma", mm_kobj);
--	if (!cma_kobj)
-+	cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
-+	if (!cma_kobj_root)
- 		return -ENOMEM;
- 
--	cma_stats = kmalloc_array(cma_area_count, sizeof(struct cma_stat),
--				GFP_KERNEL|__GFP_ZERO);
--	if (ZERO_OR_NULL_PTR(cma_stats))
--		goto out;
-+	for (i = 0; i < cma_area_count; i++) {
-+		cma_kobj = kzalloc(sizeof(*cma_kobj), GFP_KERNEL);
-+		if (!cma_kobj) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
- 
--	do {
- 		cma = &cma_areas[i];
--		cma->stat = &cma_stats[i];
--		spin_lock_init(&cma->stat->lock);
--		if (kobject_init_and_add(&cma->stat->kobj, &cma_ktype,
--					cma_kobj, "%s", cma->name)) {
--			kobject_put(&cma->stat->kobj);
-+		cma->cma_kobj = cma_kobj;
-+		cma_kobj->cma = cma;
-+		err = kobject_init_and_add(&cma_kobj->kobj, &cma_ktype,
-+				cma_kobj_root, "%s", cma->name);
-+		if (err) {
-+			kobject_put(&cma_kobj->kobj);
- 			goto out;
- 		}
--	} while (++i < cma_area_count);
-+	}
- 
- 	return 0;
- out:
- 	while (--i >= 0) {
- 		cma = &cma_areas[i];
--		kobject_put(&cma->stat->kobj);
--	}
- 
--	kfree(cma_stats);
--	kobject_put(cma_kobj);
-+		kobject_put(&cma->cma_kobj->kobj);
-+		kfree(cma->cma_kobj);
-+		cma->cma_kobj = NULL;
-+	}
-+	kobject_put(cma_kobj_root);
- 
--	return -ENOMEM;
-+	return err;
- }
- subsys_initcall(cma_sysfs_init);
--- 
-2.31.0.291.g576ba9dcdaf-goog
 
