@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BA334764F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FDA347654
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhCXKji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:39:38 -0400
-Received: from mga17.intel.com ([192.55.52.151]:17580 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233141AbhCXKj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:39:26 -0400
-IronPort-SDR: OasJ0VLNRIjTPMaedq3CQfSMh8nA47dytzFkjrSIuQHKgQiBJqXlN7Enqh04ltAuLN2II2upkc
- OPDc2C5JoTLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="170650664"
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="170650664"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 03:39:26 -0700
-IronPort-SDR: 3KuTO0JoxT8SXmgX21poq3U5q2s70H8CwL4wp4ui3Uvj+JEBjxzCxmLOx3PDyfgt5TN1fmLlBf
- pb3emPBz62xQ==
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="514139851"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 03:39:25 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lP0v5-00Fdt8-Ew; Wed, 24 Mar 2021 12:39:23 +0200
-Date:   Wed, 24 Mar 2021 12:39:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
-Message-ID: <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
-References: <20210323123433.45371-1-andriy.shevchenko@linux.intel.com>
- <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
- <20210324102931.GH2916463@dell>
+        id S233399AbhCXKkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:40:05 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56712 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233854AbhCXKkB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 06:40:01 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-129-cK_RaveBM8aprN2x6jOm4g-1; Wed, 24 Mar 2021 10:39:58 +0000
+X-MC-Unique: cK_RaveBM8aprN2x6jOm4g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 10:39:57 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Wed, 24 Mar 2021 10:39:57 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Martin Sebor' <msebor@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>, Arnd Bergmann <arnd@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Martin Sebor" <msebor@gcc.gnu.org>, Ning Sun <ning.sun@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "x86@kernel.org" <x86@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Simon Kelley <simon@thekelleys.org.uk>,
+        James Smart <james.smart@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Imre Deak <imre.deak@intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "tboot-devel@lists.sourceforge.net" 
+        <tboot-devel@lists.sourceforge.net>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "ath11k@lists.infradead.org" <ath11k@lists.infradead.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Will Deacon <will@kernel.org>
+Subject: RE: [PATCH 02/11] x86: tboot: avoid Wstringop-overread-warning
+Thread-Topic: [PATCH 02/11] x86: tboot: avoid Wstringop-overread-warning
+Thread-Index: AQHXH2fn7jNrPkUb50e9k3rL2a+D9qqS2/oQgAAX0+A=
+Date:   Wed, 24 Mar 2021 10:39:57 +0000
+Message-ID: <7e05de6cbb554b09ac532c073fab7386@AcuMS.aculab.com>
+References: <20210322160253.4032422-1-arnd@kernel.org>
+ <20210322160253.4032422-3-arnd@kernel.org>
+ <20210322202958.GA1955909@gmail.com>
+ <b944a853-0e4b-b767-0175-cc2c1edba759@gmail.com>
+ <0aa198a1dd904231bcc29454bf19a812@AcuMS.aculab.com>
+In-Reply-To: <0aa198a1dd904231bcc29454bf19a812@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324102931.GH2916463@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:29:31AM +0000, Lee Jones wrote:
-> On Tue, 23 Mar 2021, Andy Shevchenko wrote:
-> 
-> > Allow interrupts to be MSI if supported by hardware.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> > v2: new patch
-> >  drivers/mfd/intel_quark_i2c_gpio.c | 21 +++++++++++++++------
-> >  1 file changed, 15 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-> > index 52728a963c17..16ce9cb3aa2f 100644
-> > --- a/drivers/mfd/intel_quark_i2c_gpio.c
-> > +++ b/drivers/mfd/intel_quark_i2c_gpio.c
-> > @@ -169,8 +169,8 @@ static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
-> >  	res[INTEL_QUARK_IORES_MEM].end =
-> >  		pci_resource_end(pdev, MFD_I2C_BAR);
-> >  
-> > -	res[INTEL_QUARK_IORES_IRQ].start = pdev->irq;
-> > -	res[INTEL_QUARK_IORES_IRQ].end = pdev->irq;
-> > +	res[INTEL_QUARK_IORES_IRQ].start = pci_irq_vector(pdev, 0);
-> > +	res[INTEL_QUARK_IORES_IRQ].end = pci_irq_vector(pdev, 0);
-> >  
-> >  	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-> >  	if (!pdata)
-> > @@ -217,7 +217,7 @@ static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
-> >  	pdata->properties->idx		= 0;
-> >  	pdata->properties->ngpio	= INTEL_QUARK_MFD_NGPIO;
-> >  	pdata->properties->gpio_base	= INTEL_QUARK_MFD_GPIO_BASE;
-> > -	pdata->properties->irq[0]	= pdev->irq;
-> > +	pdata->properties->irq[0]	= pci_irq_vector(pdev, 0);
-> >  
-> >  	cell->platform_data = pdata;
-> >  	cell->pdata_size = sizeof(*pdata);
-> > @@ -245,22 +245,30 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > +	pci_set_master(pdev);
-> > +
-> > +	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
-> 
-> Is there any way these magic number can be defined or sizeof()'ed?
-
-Grep for it in the kernel, it's rarely defined.
-
-The semantic is min-max range and having two defines (*) here for these seems
-to me as an utter overkill.
-
-Of course, if you insist I may do it.
-
-*) since value is the same, we might have one definition, but it will be even
-   more confusion to have it as a min and max at the same time.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDI0IE1hcmNoIDIwMjEgMDk6MTINCj4gDQo+IEZy
+b206IE1hcnRpbiBTZWJvcg0KPiA+IFNlbnQ6IDIyIE1hcmNoIDIwMjEgMjI6MDgNCj4gLi4uDQo+
+ID4gSW4gR0NDIDExLCBhbGwgYWNjZXNzIHdhcm5pbmdzIGV4cGVjdCBvYmplY3RzIHRvIGJlIGVp
+dGhlciBkZWNsYXJlZA0KPiA+IG9yIGFsbG9jYXRlZC4gIFBvaW50ZXJzIHdpdGggY29uc3RhbnQg
+dmFsdWVzIGFyZSB0YWtlbiB0byBwb2ludCB0bw0KPiA+IG5vdGhpbmcgdmFsaWQgKGFzIEFybmQg
+bWVudGlvbmVkIGFib3ZlLCB0aGlzIGlzIHRvIGRldGVjdCBpbnZhbGlkDQo+ID4gYWNjZXNzZXMg
+dG8gbWVtYmVycyBvZiBzdHJ1Y3RzIGF0IGFkZHJlc3MgemVybykuDQo+ID4NCj4gPiBPbmUgcG9z
+c2libGUgc29sdXRpb24gdG8gdGhlIGtub3duIGFkZHJlc3MgcHJvYmxlbSBpcyB0byBleHRlbmQg
+R0NDDQo+ID4gYXR0cmlidXRlcyBhZGRyZXNzIGFuZCBpbyB0aGF0IHBpbiBhbiBvYmplY3QgdG8g
+YSBoYXJkd2lyZWQgYWRkcmVzcw0KPiA+IHRvIGFsbCB0YXJnZXRzIChhdCB0aGUgbW9tZW50IHRo
+ZXkncmUgc3VwcG9ydGVkIG9uIGp1c3Qgb25lIG9yIHR3bw0KPiA+IHRhcmdldHMpLiAgSSdtIG5v
+dCBzdXJlIHRoaXMgY2FuIHN0aWxsIGhhcHBlbiBiZWZvcmUgR0NDIDExIHJlbGVhc2VzDQo+ID4g
+c29tZXRpbWUgaW4gQXByaWwgb3IgTWF5Lg0KPiANCj4gQSBkaWZmZXJlbnQgc29sdXRpb24gaXMg
+dG8gZGVmaW5lIGEgbm9ybWFsIEMgZXh0ZXJuYWwgZGF0YSBpdGVtDQo+IGFuZCB0aGVuIGFzc2ln
+biBhIGZpeGVkIGFkZHJlc3Mgd2l0aCBhbiBhc20gc3RhdGVtZW50IG9yIGluDQo+IHRoZSBsaW5r
+ZXIgc2NyaXB0Lg0KDQpPciBzdG9wIGdjYyB0cmFja2luZyB0aGUgdmFsdWUgYnkgdXNpbmc6DQoJ
+c3RydWN0IGZvbyAqZm9vID0gKHZvaWQgKil4eHh4eDsNCglhc20gKCIiLCAiK3IiIChmb28pKTsN
+Cg0KSWYgdGhlIGFkZHJlc3MgaXMgdXNlZCBtb3JlIHRoYW4gb25jZSBmb3JjaW5nIGl0IGludG8N
+CmEgcmVnaXN0ZXIgaXMgYWxzbyBsaWtlbHkgdG8gZ2VuZXJhdGUgYmV0dGVyIGNvZGUuDQoNCglE
+YXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91
+bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5
+NzM4NiAoV2FsZXMpDQo=
 
