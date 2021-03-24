@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE3D347FD1
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE8B347FD0
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237334AbhCXRwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237290AbhCXRwF (ORCPT
+        id S237230AbhCXRw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:52:27 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:34526 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236526AbhCXRvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:52:05 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148F8C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=cWD1YkAT602Bo4ovvV2QDn6jkJrROrkUMXV1Y4u1zvo=; b=rafG6BzZ8GeOVQwTMWlD9nvQjW
-        S3i5Xkk1WjYAT74bBSg5+zjx5LgImQVIdrIfRhqNKLlTOfmgXn6Rh+rnxhrpJ8S4cQL767+IUPrGn
-        +NojTCgFP5waIB35XQf30goq9Psg5AuDtucB+Ue8w9b40pE++dOGozNlgpYpd9SQki+8jJSmuDz1x
-        DwJskEuaZAsW0O7qwzWGpRbH4PUTHjQZztGCssPkr5QP3XRy986b2BiGNwBuRRJ4VSxXwVzwPc2dQ
-        1SLhlvabLE40l4ky1kbQIhLc/x4Vfu0ZlQ2/OjJmRnIQfhvZgvUYXGvaFIo3Ez9uTl6BeD8ADU2sO
-        F1agfxAw==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP7ex-00Beb1-Cw; Wed, 24 Mar 2021 17:51:29 +0000
-Subject: Re: [PATCH] ALSA: pcm: A typo fix
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, perex@perex.cz,
-        tiwai@suse.com, broonie@kernel.org, mirq-linux@rere.qmqm.pl,
-        lars@metafoo.de, joe@perches.com, huawei@kernel.org,
-        viro@zeniv.linux.org.uk, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20210324065612.31362-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6d2e91a2-a013-c9b1-8725-1715253d0646@infradead.org>
-Date:   Wed, 24 Mar 2021 10:51:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 24 Mar 2021 13:51:53 -0400
+Received: by mail-io1-f54.google.com with SMTP id x16so22417072iob.1;
+        Wed, 24 Mar 2021 10:51:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=17TKIF0QgDUzTxJGnuM465tbTrl6KEfcXDq37nKfdvc=;
+        b=nshaLLuqQvChe4Mcer+IULnyq4fFJ2+nySWFhiYwRkP2u2/799swfvAEEPZYyX45hb
+         Ldn5aZ6GhQ5SbCklM5P+mVFUV1JUU7JwHz5zPEw31BC6Wdgz3zCgpnc2DoIBGjfoZgN5
+         Wfu3iCQV+JIbmT1yPlEDKzqWWRSjqQymrymFkzt9kQmADN7lt+j7p13+FInGHli42ofX
+         tLQV7JN4MPmV2r79S6RqKD9Oi+fRTKMev7PyqrVYg6+NMAYIq51uNEgFGs1KI1aCGz0F
+         ptYQtkIIVXipcSYUkUAzFSQV2diH7RF2UeVIlMddLUkMFAaofHSVjA/l7m2eiSPuzTBw
+         hsAQ==
+X-Gm-Message-State: AOAM533zpHDZvX8K+kSJ0zdvndDBxd4DCKUMPwgky84O6bhvRVXitGPb
+        gcPGkwn70z0CwI3G8jv37w==
+X-Google-Smtp-Source: ABdhPJx7hPRAeDLMlQ3t6S4EyGJIm+TvC3ilVZW8FSTOnuKiHnkj+ZxNsVYm6pnIJjby7DwcY3TeQA==
+X-Received: by 2002:a02:a90f:: with SMTP id n15mr4000419jam.110.1616608312821;
+        Wed, 24 Mar 2021 10:51:52 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id v17sm1361275ios.46.2021.03.24.10.51.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 10:51:52 -0700 (PDT)
+Received: (nullmailer pid 3326340 invoked by uid 1000);
+        Wed, 24 Mar 2021 17:51:49 -0000
+Date:   Wed, 24 Mar 2021 11:51:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Pratyush Yadav <p.yadav@ti.com>,
+        Kuldeep Singh <kuldeep.singh@nxp.com>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to json schema
+Message-ID: <20210324175149.GA3320002@robh.at.kernel.org>
+References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+ <20210315183051.ugvmz4zqrvuo6iqq@ti.com>
+ <067c42f3726578ebe60d201a141dfdb6@walle.cc>
+ <20210316180655.6oidvffum7yuwknr@ti.com>
+ <97410b24785492f9e80999dd7a1ffdea@walle.cc>
 MIME-Version: 1.0
-In-Reply-To: <20210324065612.31362-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <97410b24785492f9e80999dd7a1ffdea@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 11:56 PM, Bhaskar Chowdhury wrote:
+On Tue, Mar 16, 2021 at 07:22:56PM +0100, Michael Walle wrote:
+> Am 2021-03-16 19:06, schrieb Pratyush Yadav:
+> > On 16/03/21 06:45PM, Michael Walle wrote:
+> > > Am 2021-03-15 19:30, schrieb Pratyush Yadav:
+> > > 
+> > > ..
+> > > > > +patternProperties:
+> > > > > +  "@[0-9a-f]+":
+> > > 
+> > > Shouldn't this be "^.*@[0-9a-f]+$"?
+> > 
+> > The pattern has to match _anywhere_ in the string so both should match
+> > the flash node. Your pattern is more "strict" or "precise". See the note
+> > at [0].
 > 
-> s/unconditonally/unconditionally/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  sound/core/pcm_native.c | 80 ++++++++++++++++++++---------------------
->  1 file changed, 40 insertions(+), 40 deletions(-)
-> 
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 17a85f4815d5..9884961bca7d 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> 
-> -	return 0; /* unconditonally stop all substreams */
-> +	return 0; /* unconditionally stop all substreams */
->  }
-> 
-> --
+> I know, but specifying the whole line is widely used in the bindings.
 
-Please fix line 1472 (in linux-next) while you are touching this file:
+It should be '@[0-9a-f]+$' which is equivalent to Michael's suggestion.
 
- * Return: Zero if succesful, or a negative error code.
-
-
--- 
-~Randy
-
+Rob
