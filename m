@@ -2,107 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 737A9347999
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D8C34799E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbhCXN24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
+        id S234574AbhCXNaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233465AbhCXN2s (ORCPT
+        with ESMTP id S235252AbhCXN3w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:28:48 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C897EC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:28:47 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id o16so24475392wrn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:28:47 -0700 (PDT)
+        Wed, 24 Mar 2021 09:29:52 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A9F3C0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:29:52 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u9so32863559ejj.7
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 06:29:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytesatwork-ch.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9I4AZHWv0YWI2h8e398dfx117Hw+f6MFnU7XsPYdq2Y=;
-        b=TDXRRSmx+Po/IKLV9wl6cmct9YX37QWmMqlDV+ScNn0aCH4whg01yX7ZE/yRLFx10K
-         He7SyfCeDGPRVad89rMTMF8Boy+EbAOm23OP9af3LA4EkwDtBgpLa2FuVwngpgYFeooo
-         q4Z7UoTn48nGTfOAAk7qsnUJe0P/6IXZdmHXj6dlEcWR7Uou7p0M6jYsu6K0ckI59goX
-         6Zt9XW1x/0e8OoAIXDAqj1FIdWE8fuKdCzjQ3SDPbRuQXhogW9sFX/CSpPstpfmr8qlO
-         AzzW6wQVHbdA5KqiecntYTm51fEeuXJqJQVl2EfHDSFEQ5/cHkeD03QN8P3znX5BiaJa
-         kYNA==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PgVEYZSY9NfCWwR2RJxuZCY5immorWw9IvrU7FEyMZY=;
+        b=UfacaA3RcLXv73AcHDgJVuzH7YaisiE/ItZkS1uBCiSsqiLdWBFj5OF+zflnrnsnYx
+         thUzVL+tmZYONqMfijfYvZh9KKy38ZVe3ey1RBu19Et4GjUIPC2BNLhXkOOj251o6RaW
+         8XtBzRFZKyeNdJxct3Rszmmy3GIlPfZ2VEtjw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9I4AZHWv0YWI2h8e398dfx117Hw+f6MFnU7XsPYdq2Y=;
-        b=ba8XMTfmNNaVPh6+5Xmq/GDPBhuOUpXLmM+/foKmQNe7dIF6vu3W2zc3JgscTjoHAo
-         wrTnm4Z8t3QUYN+Y/r6OiN5GKcfheM1NX50QsZupOQibD2l+FmmGhDcmHTB2qG9800PX
-         P4dyGQDARLsHpsVwC6rzKRjnVvYvVtgS9DYQbzUCJgaGGcyZEGVp2H5/t9gNs2L6Kc50
-         TepD1L1mvJSg/Twjeh6dcP9zxqNUkAz4Vcn2zuBdjFOypEZlYpgS/K957siD11pxdTJW
-         /N8LkU4ZaSoU/XhJQj3MGQcHPcJ9quIb0uKIkk6bsUXphXWGqZ7s9vo94qv7gJTDvVfI
-         u0ig==
-X-Gm-Message-State: AOAM530j0sFqaqP3MlLYVK1c/1KOo5s8rcSapmuQtuYrTFtHpLMBRqDN
-        pI2rJEr0q2HJtQlRhKFavqi9GA==
-X-Google-Smtp-Source: ABdhPJxaGkQM+Z2rWDJmOL0reSHlkr4v+WrkCxrQLCoOFiHS65bSSHZY/cHcyf8bOUCEJ/SraArL3w==
-X-Received: by 2002:a5d:5411:: with SMTP id g17mr3559714wrv.194.1616592526581;
-        Wed, 24 Mar 2021 06:28:46 -0700 (PDT)
-Received: from localhost.localdomain ([2001:171b:c9a6:940:259a:e996:942a:832f])
-        by smtp.gmail.com with ESMTPSA id x6sm2645645wmj.32.2021.03.24.06.28.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 06:28:46 -0700 (PDT)
-From:   =?UTF-8?q?Oliver=20St=C3=A4bler?= <oliver.staebler@bytesatwork.ch>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com
-Cc:     oliver.staebler@bytesatwork.ch, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] arm64: dts: imx8mm/q: Fix pad control of SD1_DATA0
-Date:   Wed, 24 Mar 2021 14:28:41 +0100
-Message-Id: <20210324132841.5841-1-oliver.staebler@bytesatwork.ch>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <CAOMZO5B_uHS_Z2LuMwHDmn9erORrsrNBMHMjkW-hW+pnfHZThQ@mail.gmail.com>
-References: <CAOMZO5B_uHS_Z2LuMwHDmn9erORrsrNBMHMjkW-hW+pnfHZThQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PgVEYZSY9NfCWwR2RJxuZCY5immorWw9IvrU7FEyMZY=;
+        b=dmNgdG3u9mUCb+aXYKCl6RXemrpqO9ryFSUfKbDVczA7FE8oGp1nOzjKrg5yQ9bIsr
+         +aqc9PfSGj4w88ruf9jed5wTjPSatlFtUO8MNJ3xLk0E+p86LZoFc4mG1kWnsAVDTl3R
+         7nT9v/vvUfShiHOuLKsg+rExW3MtkgX/ZW7DuJWln6Mq95+Hg+oDnN4hWWEyvdYGqzhM
+         d4W/nU/xsAZcHEGWyRzdayWKq5k1vtKbDryotvusUmh78U26QTpfA72d4TXEwCD2RWE4
+         RD/KI97ynJOUtXMJ6JAlXsosMP6PiEqkUedN0fuX6hl+9Oisg1ccTEdE308cZ/3IHuX3
+         kUeg==
+X-Gm-Message-State: AOAM530p2re7+uj7WaY+poERffFx5APtvt4wlPymXv4zBk/7qwKuOHF0
+        IzbfnPouvdw+j72blYKBgIC/N23shwU0BlTh
+X-Google-Smtp-Source: ABdhPJxwxP/zoW96bzshYo9WwqHEtz/uzdvBB0Uh76Zv+xKUOFCRnDORCj3YobzDL1Kd8hSaa2YApQ==
+X-Received: by 2002:a17:906:3159:: with SMTP id e25mr3694270eje.303.1616592590531;
+        Wed, 24 Mar 2021 06:29:50 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id u16sm1178887edq.4.2021.03.24.06.29.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 06:29:50 -0700 (PDT)
+Subject: Re: [PATCH] [v2] hinic: avoid gcc -Wrestrict warning
+To:     Arnd Bergmann <arnd@kernel.org>, Bin Luo <luobin9@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210324130731.1513798-1-arnd@kernel.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <f3d1c643-56ef-7fe0-52f0-1f030c890a38@rasmusvillemoes.dk>
+Date:   Wed, 24 Mar 2021 14:29:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210324130731.1513798-1-arnd@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix address of the pad control register
-(IOMUXC_SW_PAD_CTL_PAD_SD1_DATA0) for SD1_DATA0_GPIO2_IO2.  This seems
-to be a typo but it leads to an exception when pinctrl is applied due to
-wrong memory address access.
+On 24/03/2021 14.07, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> With extra warnings enabled, gcc complains that snprintf should not
+> take the same buffer as source and destination:
+> 
+> drivers/net/ethernet/huawei/hinic/hinic_ethtool.c: In function 'hinic_set_settings_to_hw':
+> drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:480:9: error: 'snprintf' argument 4 overlaps destination object 'set_link_str' [-Werror=restrict]
+>   480 |   err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   481 |           "%sspeed %d ", set_link_str, speed);
+>       |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/net/ethernet/huawei/hinic/hinic_ethtool.c:464:7: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
+>   464 |  char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
+> 
+> Rewrite this to avoid the nested sprintf and instead use separate
+> buffers, which is simpler.
+> 
 
-Signed-off-by: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
----
- arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h | 2 +-
- arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+This looks much better. Thanks.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-index 5ccc4cc91959d..a003e6af33533 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-@@ -124,7 +124,7 @@
- #define MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
- #define MX8MM_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
--#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
-+#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
- #define MX8MM_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-index b94b02080a344..68e8fa1729741 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-@@ -130,7 +130,7 @@
- #define MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
- #define MX8MQ_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
--#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
-+#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
- #define MX8MQ_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
--- 
-2.26.2
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2: rework according to feedback from Rasmus. This one could
+>     easily avoid most of the pitfalls
+> ---
+>  .../net/ethernet/huawei/hinic/hinic_ethtool.c | 25 ++++++++-----------
+>  1 file changed, 10 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+> index c340d9acba80..d7e20dab6e48 100644
+> --- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+> +++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
+> @@ -34,7 +34,7 @@
+>  #include "hinic_rx.h"
+>  #include "hinic_dev.h"
+>  
+> -#define SET_LINK_STR_MAX_LEN	128
+> +#define SET_LINK_STR_MAX_LEN	16
+>  
+>  #define GET_SUPPORTED_MODE	0
+>  #define GET_ADVERTISED_MODE	1
+> @@ -462,24 +462,19 @@ static int hinic_set_settings_to_hw(struct hinic_dev *nic_dev,
+>  {
+>  	struct hinic_link_ksettings_info settings = {0};
+>  	char set_link_str[SET_LINK_STR_MAX_LEN] = {0};
+> +	const char *autoneg_str;
+>  	struct net_device *netdev = nic_dev->netdev;
+>  	enum nic_speed_level speed_level = 0;
+>  	int err;
+>  
+> -	err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN, "%s",
+> -		       (set_settings & HILINK_LINK_SET_AUTONEG) ?
+> -		       (autoneg ? "autong enable " : "autong disable ") : "");
+> -	if (err < 0 || err >= SET_LINK_STR_MAX_LEN) {
+> -		netif_err(nic_dev, drv, netdev, "Failed to snprintf link state, function return(%d) and dest_len(%d)\n",
+> -			  err, SET_LINK_STR_MAX_LEN);
+> -		return -EFAULT;
+> -	}
+> +	autoneg_str = (set_settings & HILINK_LINK_SET_AUTONEG) ?
+> +		      (autoneg ? "autong enable " : "autong disable ") : "";
+>  
+>  	if (set_settings & HILINK_LINK_SET_SPEED) {
+>  		speed_level = hinic_ethtool_to_hw_speed_level(speed);
+>  		err = snprintf(set_link_str, SET_LINK_STR_MAX_LEN,
+> -			       "%sspeed %d ", set_link_str, speed);
+> -		if (err <= 0 || err >= SET_LINK_STR_MAX_LEN) {
+> +			       "speed %d ", speed);
+> +		if (err >= SET_LINK_STR_MAX_LEN) {
+>  			netif_err(nic_dev, drv, netdev, "Failed to snprintf link speed, function return(%d) and dest_len(%d)\n",
+>  				  err, SET_LINK_STR_MAX_LEN);
+>  			return -EFAULT;
+
+It's not your invention of course, but this both seems needlessly harsh
+and EFAULT is a weird error to return. It's just a printk() message that
+might be truncated, and now that the format string only has a %d
+specifier, it can actually be verified statically that overflow will
+never happen (though I don't know or think gcc can do that, perhaps
+there's some locale nonsense in the standard that allows using
+utf16-encoded sanskrit runes). So probably that test should just be
+dropped, but that's a separate thing.
+
+Reviewed-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 
