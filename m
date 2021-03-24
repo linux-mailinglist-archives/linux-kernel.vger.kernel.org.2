@@ -2,233 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CCC347535
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E8C347536
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbhCXJ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:58:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S235285AbhCXJ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235285AbhCXJ6c (ORCPT
+        with ESMTP id S235222AbhCXJ6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Mar 2021 05:58:32 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5835C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:58:29 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id o16so23794795wrn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:58:28 -0700 (PDT)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7FCC0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:58:31 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo813308wmq.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:58:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4IAizyz2Z8XBPiRZXX7HoIXc5iBlfx6vmHmpCSg2ErI=;
-        b=DugpnjoWYYb/RRr0XkYUd7rw/VTVh0IKX2MtqhYuqjRT2kUTGK5XFhCAobCMPFRr/Z
-         KyVRs6Xtw99fy/r6AZZ4oPGG8G+maxoJ9fgeD9gfwVesIwlqUcbyG/chMQOqvnqr5J2F
-         PJVih8t8F3alpJRpEVZWYAWjXN8h3wfCIpNqdDWfQaRKdfHhQwGJ6SF2D2ldVH3yax8q
-         l926lDJv94B12xqF7Bw+g6klWPrJYRBsE1gDvU+R0A4j1hSIX/cBJwRBKw2d6IJD+j7b
-         gtcJ/bIOUoPjRXAMtphqbp5R39m0sgjDioEWtQ8HIgjX2VztXvDUJYNQZQYi+6U7SlbX
-         pL5w==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=21lx1XKTgIyEE/5VMZ8Qm6fLn097QzloxjnfqNNT1ZQ=;
+        b=IskXKKJt0n34jbY6p0Qq2XnJ3B2KYreze8cG9V12QxYKHqjR1+sMwqd1XwbzUSp4ZD
+         5OVtuN4oN/u0fC1Lzk6+7syNkfwboqjlLvBQAheeMJtKkJPWfMZAEvyoB+onjTtNIM4x
+         uiDRR9tSDGxpp2cidX9yS5na7MD8H8tVxQurQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4IAizyz2Z8XBPiRZXX7HoIXc5iBlfx6vmHmpCSg2ErI=;
-        b=Q6mOGtZRJI3kxwcTqiRnQW7M4v7A5zR0Vs+j/zu5YHvbBLU4Vj937gtArCiGXS64Ai
-         bQjTmxzQZbshEYkIBffmiREzHtslzLXjiQA7zOqUkt2epEHTO2qH+p7IMVdQBnWIWSDq
-         NqoFbkkXG05B63VrMON5o3QppRyYx+gaTfKmJXTco0xd7s0K0e6csj5ku5Eq3MEuzUaK
-         lIJwAJU9MKqPMgSA55aSthuW5n9MpmkPR2F1PnP9OEQWHstBKRhGoC1J0gMroRtabKL5
-         cpeqdmUVCw8m9dvn8zwe/pWuCqmhCeNVDu9Ly3XfAFGI8OUxB5eh5zspX293MBvEv8xA
-         ffSA==
-X-Gm-Message-State: AOAM530vKsxIl0/ub41VQd/fpAiqa8FE8p5LVei1E+PElbcLE4N0wQf8
-        tUCcx3UmhLGpmVd4TxGzYSJdFLXjECs=
-X-Google-Smtp-Source: ABdhPJyaKM8k/Qfk0w0ggcQCOmDe/PyRhryEmODm3bmXXbl3lJHyY4HGCLh7TMkWB0JGix/oMHU9kw==
-X-Received: by 2002:adf:b345:: with SMTP id k5mr2628459wrd.14.1616579907759;
-        Wed, 24 Mar 2021 02:58:27 -0700 (PDT)
-Received: from agape.jhs ([5.170.80.89])
-        by smtp.gmail.com with ESMTPSA id n6sm2542229wrt.1.2021.03.24.02.58.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=21lx1XKTgIyEE/5VMZ8Qm6fLn097QzloxjnfqNNT1ZQ=;
+        b=TOyTpWOx9GqHeVtGc+3DWmDjWICoHQEWk3CJFVMpwXC/uv1HWFF7KxcuWxsPN7FY8J
+         jwr8qISwlW3kr1GbEwpK4qt6Ok0QRp3ZxMaeTFe4d+lzf0qVCLMJhu/xKsgj6UPdTp27
+         1+iC312R/TiSiNaqBpK2kI01Vx+Y91a8Pzn4Rge74UbGbRkQsLb3c5zSu0mEVfOWHqy3
+         6S1GRNzJrBF1AZ4beTcGAv6qrPdAVa7IrkDei71FU3SQ+DknhpZIwzlDy/DSCKHL57Ds
+         alY/VOu/le2EY1lhtgpEQuoq7un2IMCkUDNiFdETuh4mAP43F/VeqQuOkqZqOFQB8Wl4
+         Ao8g==
+X-Gm-Message-State: AOAM533T6pNxHwpOKgoXkOj5rzhnFStzDSNBF8c9Cp2AyKGBJ9NdC6Vx
+        R1Kb0IAleaQAdL2bl7QiD6MxqjkSYC9jFpg2
+X-Google-Smtp-Source: ABdhPJwZIBgLGHXn/QNIGKntkctRuF7sTo3S5PNdweokZQ6ttJuFqd/ULSxIfXm5SgSCIgWZXGgd0Q==
+X-Received: by 2002:a7b:cb89:: with SMTP id m9mr2084820wmi.27.1616579910680;
+        Wed, 24 Mar 2021 02:58:30 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id 9sm1719104wmf.13.2021.03.24.02.58.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 02:58:27 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 10:58:24 +0100
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org, joe@perches.com
-Cc:     dan.carpenter@oracle.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: CHECKPATCH: missing a warning soon after include files decl -c
-Message-ID: <20210324095820.GA2259@agape.jhs>
-References: <20210320105424.GA3698@agape.jhs>
- <YFXVoHvk/VesFn14@kroah.com>
- <c27ae8926ccbc0f520045fea9127811f6e8fa706.camel@perches.com>
+        Wed, 24 Mar 2021 02:58:30 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 10:58:28 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <YFsNRIUYrwVQanVF@phenom.ffwll.local>
+Mail-Followup-To: Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+ <ec99146c7abc35d16b245816aba3e9d14862e624.camel@intel.com>
+ <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <c27ae8926ccbc0f520045fea9127811f6e8fa706.camel@perches.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 04:28:51AM -0700, Joe Perches wrote:
+On Tue, Mar 23, 2021 at 09:42:18PM +0100, Thomas Hellström (Intel) wrote:
 > 
-> Actually, these would seem to be better as one or multiple functions with
-> local statics or even as static inlines functions in the .h file
+> On 3/23/21 8:52 PM, Williams, Dan J wrote:
+> > On Sun, 2021-03-21 at 19:45 +0100, Thomas Hellström (Intel) wrote:
+> > > TTM sets up huge page-table-entries both to system- and device
+> > > memory,
+> > > and we don't want gup to assume there are always valid backing struct
+> > > pages for these. For PTEs this is handled by setting the pte_special
+> > > bit,
+> > > but for the huge PUDs and PMDs, we have neither pmd_special nor
+> > > pud_special. Normally, huge TTM entries are identified by looking at
+> > > vma_is_special_huge(), but fast gup can't do that, so as an
+> > > alternative
+> > > define _devmap entries for which there are no backing dev_pagemap as
+> > > special, update documentation and make huge TTM entries _devmap,
+> > > after
+> > > verifying that there is no backing dev_pagemap.
+> > Please do not abuse p{m,u}d_devmap like this. I'm in the process of
+> > removing get_devpagemap() from the gup-fast path [1]. Instead there
+> > should be space for p{m,u}d_special in the page table entries (at least
+> > for x86-64). So the fix is to remove that old assumption that huge
+> > pages can never be special.
+> > 
+> > [1]:
+> > http://lore.kernel.org/r/161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com
+> > 
+> Hmm, yes with that patch it will obviously not work as intended.
 > 
-> $ git grep -w RTW_WPA_OUI drivers/staging/rtl8723bs/core
-> drivers/staging/rtl8723bs/core/rtw_ap.c:extern unsigned char RTW_WPA_OUI[];
-> drivers/staging/rtl8723bs/core/rtw_ap.c:        if (!memcmp(RTW_WPA_OUI, oui, 4))
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:unsigned char RTW_WPA_OUI[] = {0x00, 0x50, 0xf2, 0x01};
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:                  if ((!memcmp(pIE->data, RTW_WPA_OUI, 4)) ||
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:extern unsigned char RTW_WPA_OUI[];
-> drivers/staging/rtl8723bs/core/rtw_wlan_util.c:                         if ((!memcmp(pIE->data, RTW_WPA_OUI, 4)) && (!memcmp((pIE->data + 12), WPA_TKIP_CIPHER, 4)))
-> 
-> $ git grep -w WMM_OUI drivers/staging/rtl8723bs/core
-> drivers/staging/rtl8723bs/core/rtw_ap.c:extern unsigned char WMM_OUI[];
-> drivers/staging/rtl8723bs/core/rtw_ap.c:        else if (!memcmp(WMM_OUI, oui, 4))
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:unsigned char WMM_OUI[] = {0x00, 0x50, 0xf2, 0x02};
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:                                  (!memcmp(pIE->data, WMM_OUI, 4)) ||
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:                  if (!memcmp(pIE->data, WMM_OUI, 4))
-> drivers/staging/rtl8723bs/include/rtw_mlme_ext.h:extern unsigned char WMM_OUI[];
-> 
-> $ git grep -w WPS_OUI drivers/staging/rtl8723bs/core
-> drivers/staging/rtl8723bs/core/rtw_ap.c:extern unsigned char WPS_OUI[];
-> drivers/staging/rtl8723bs/core/rtw_ap.c:        else if (!memcmp(WPS_OUI, oui, 4))
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:unsigned char WPS_OUI[] = {0x00, 0x50, 0xf2, 0x04};
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:                                  (!memcmp(pIE->data, WPS_OUI, 4))) {
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:                          if ((!padapter->registrypriv.wifi_spec) && (!memcmp(pIE->data, WPS_OUI, 4))) {
-> 
-> $ git grep -w P2P_OUI drivers/staging/rtl8723bs/core
-> drivers/staging/rtl8723bs/core/rtw_ap.c:extern unsigned char P2P_OUI[];
-> drivers/staging/rtl8723bs/core/rtw_ap.c:        else if (!memcmp(P2P_OUI, oui, 4))
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:unsigned char P2P_OUI[] = {0x50, 0x6F, 0x9A, 0x09};
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:  if (!memcmp(frame_body + 2, P2P_OUI, 4)) {
-> 
-> So maybe something like the below (written in email client, maybe typos)
-> 
-> enum oui_type {
-> 	RTW_WPA,
-> 	WMM,
-> 	WPS,
-> 	P2P
-> };
-> 
-> bool is_oui_type(const u8 *mem, enum oui_type type)
-> {
-> 	static const u8 rtw_wpa[] = {0x00, 0x50, 0xf2, 0x01};
-> 	static const u8 wmm[] = {0x00, 0x50, 0xf2, 0x02};
-> 	static const u8 wps[] = {0x00, 0x50, 0xf2, 0x04};
-> 	static const u8 p2p[] = {0x50, 0x6F, 0x9A, 0x09};
-> 
-> 	const u8 *oui;
-> 
-> 	if (type == RTW_WPA)
-> 		oui = rtw_wpa;
-> 	else if (type == WMM)
-> 		oui = wmm;
-> 	else if (type == WPS)
-> 		oui = wps;
-> 	else if (type == P2P)
-> 		oui = p2p;
-> 	else
-> 		return false;
-> 
-> 	return !memcmp(mem, oui, 4);
-> }
-> 
-> so for instance the P2P uses would become
-> 
-> 	else if (is_oui_type(oui, P2P))
-> and
-> 	if (is_oui_type(frame_body + 2, P2P)) {
-> 
-> though I think 4 byte OUIs are just odd.
-> 
-> https://en.wikipedia.org/wiki/Organizationally_unique_identifier
-> 
-> An organizationally unique identifier (OUI) is a 24-bit number that uniquely identifies a vendor, manufacturer, or other organization.
-> 
-> 
-> 
+> Given that, I think we'll need to disable the TTM huge pages for now until
+> we can sort out and agree on using a page table entry bit.
 
-Hi,
+Yeah :-/
 
-is that good? May I do the same for others ouis? One small inline for each oui type instead
-of a switch...
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
-index 3cd9c61eec99..7d31f359cf37 100644
---- a/drivers/staging/rtl8723bs/core/rtw_ap.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
-@@ -1664,7 +1664,7 @@ static void update_bcn_p2p_ie(struct adapter *padapter)
- 
- static void update_bcn_vendor_spec_ie(struct adapter *padapter, u8 *oui)
- {
--	if (!memcmp(RTW_WPA_OUI, oui, 4))
-+	if (is_rtw_wpa_oui(oui))
- 		update_bcn_wpa_ie(padapter);
- 
- 	else if (!memcmp(WMM_OUI, oui, 4))
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-index 8aadcf72a7ba..e05f70e434a2 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-@@ -57,7 +57,6 @@ static u8 null_addr[ETH_ALEN] = {0, 0, 0, 0, 0, 0};
- /**************************************************
- OUI definitions for the vendor specific IE
- ***************************************************/
--unsigned char RTW_WPA_OUI[] = {0x00, 0x50, 0xf2, 0x01};
- unsigned char WMM_OUI[] = {0x00, 0x50, 0xf2, 0x02};
- unsigned char WPS_OUI[] = {0x00, 0x50, 0xf2, 0x04};
- unsigned char P2P_OUI[] = {0x50, 0x6F, 0x9A, 0x09};
-@@ -3194,7 +3193,7 @@ void issue_assocreq(struct adapter *padapter)
- 
- 		switch (pIE->ElementID) {
- 		case WLAN_EID_VENDOR_SPECIFIC:
--			if ((!memcmp(pIE->data, RTW_WPA_OUI, 4)) ||
-+			if ((is_rtw_wpa_oui(pIE->data)) ||
- 					(!memcmp(pIE->data, WMM_OUI, 4)) ||
- 					(!memcmp(pIE->data, WPS_OUI, 4))) {
- 				vs_ie_length = pIE->Length;
-diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-index 760b0ea4e9bd..8c73e44459eb 100644
---- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -1490,7 +1490,7 @@ unsigned int is_ap_in_tkip(struct adapter *padapter)
- 
- 			switch (pIE->ElementID) {
- 			case WLAN_EID_VENDOR_SPECIFIC:
--				if ((!memcmp(pIE->data, RTW_WPA_OUI, 4)) && (!memcmp((pIE->data + 12), WPA_TKIP_CIPHER, 4)))
-+				if ((is_rtw_wpa_oui(pIE->data)) && (!memcmp((pIE->data + 12), WPA_TKIP_CIPHER, 4)))
- 					return true;
- 
- 				break;
-diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
-index 1658450b386e..95ff682ef877 100644
---- a/drivers/staging/rtl8723bs/include/drv_types.h
-+++ b/drivers/staging/rtl8723bs/include/drv_types.h
-@@ -541,4 +541,10 @@ extern u32 g_wait_hiq_empty;
- extern u8 g_fwdl_wintint_rdy_fail;
- extern u8 g_fwdl_chksum_fail;
- 
-+/* OUI verification ruotines */
-+static inline bool is_rtw_wpa_oui(const u8 *mem)
-+{
-+	static const char rtw_wpa[] = {0x00, 0x50, 0xf2, 0x01};
-+	return !memcmp(mem, rtw_wpa, 4);
-+}
- #endif /* __DRV_TYPES_H__ */
-diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-index fb283dc04ee2..14b570658b77 100644
---- a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
-@@ -96,8 +96,6 @@ MCS rate definitions
- #define MCS_RATE_4R	(0xffffffff)
- #define MCS_RATE_2R_13TO15_OFF	(0x00001fff)
- 
--
--extern unsigned char RTW_WPA_OUI[];
- extern unsigned char WMM_OUI[];
- extern unsigned char WPS_OUI[];
- extern unsigned char WFD_OUI[];
-
-thank you in advance,
-
-fabio
+I think going full pud/pmd_mkspecial should then also mesh well with
+Jason's request to wrap it all up into a vmf_insert_* helper, so at least
+it would all look rather pretty in the end.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
