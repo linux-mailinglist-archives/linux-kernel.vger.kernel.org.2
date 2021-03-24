@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128093478FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:57:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E14E43478EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhCXM4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
+        id S234485AbhCXMyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233711AbhCXM4B (ORCPT
+        with ESMTP id S233228AbhCXMyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:56:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FDC3C061763;
-        Wed, 24 Mar 2021 05:55:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tHp+k1OitbRlspde73UjQtr/BpbC8h6lYxWD13OBqjk=; b=tf1rnOdWTwyzbMBVWRfPe5nYqp
-        zIMdh2lwopsG94dkMaorDBV8dt0SzG2QSjD5XtAFtIqKUjLvzBf4uAbcCGOtjr7jXFL27hLLF0CGu
-        dtdsxAtG1dZd87NgIAGBq0hwifQnAHV0ZFGokUXAMouaXYXAbLh9MPWiNjGUX0h4GUkNWaauMkJaQ
-        tkB4piLWaBw0dGDwmbWUxblTMYOT797DbhWCnOxSAGJtARFaJ7dWQz53CCAiwv+7z5CKBsZdWNsQ3
-        WTDQ3rzj7x0ehPTucy5FQnlywr0M3JX//RiJySTUE64QVaLVb061tCtFoBbMEKoZ2qs54paYWZMHB
-        MBgjKCkA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP31B-00BM08-Uc; Wed, 24 Mar 2021 12:53:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 92E65300F7A;
-        Wed, 24 Mar 2021 13:53:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7823A20693983; Wed, 24 Mar 2021 13:53:48 +0100 (CET)
-Date:   Wed, 24 Mar 2021 13:53:48 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
-        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
-        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
-        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
-        mascasa@google.com, pcc@google.com, irogers@google.com,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on
- SIGTRAP
-Message-ID: <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net>
-References: <20210324112503.623833-1-elver@google.com>
- <20210324112503.623833-8-elver@google.com>
+        Wed, 24 Mar 2021 08:54:05 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8131CC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:54:04 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id n138so31780479lfa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:54:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0x8/eOR8jBnzEM8stTetLIzcLMcnZLJokgA4zekf+j0=;
+        b=IUsdx7gTHzToc2R8nVOw084aJxUAVpPQdGLRVFk3aSkpDZRQUSJ7a/f9KkLbM81RWy
+         ceXojVRk5jfbOgZI4gNUC5KLnSkNaKvNLPG9EsNqDPkvoSkgbIyfJnCjCaciZyj0b7C8
+         DHGsVCyQPXK+pMNgaJy2znETUe1ALYjz1yzJ+WCyiWjjqCx9tteYZREiYyBVMnLM7wP6
+         HfAJrFlJe2QBlLD9FT+d5es32brgS9c5cY8ZUkfU6St8WIfre30ui1IRi0K1RYdxHBGC
+         xl99QutYbN0T7beWSQ+/NZCv+1oLh9FOfwsokyVxcNNr7p6t54wtrrSB16IRoc8etrbi
+         Ibew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0x8/eOR8jBnzEM8stTetLIzcLMcnZLJokgA4zekf+j0=;
+        b=gSSam/LsufQHdvWm5Jv9WFV0MEYuXMb3MdGoxhwHCZu6Y0kzyWO11KIpXgrqZfFeLG
+         rq+NqKmx/VEOgxqPqeSSk/pLa9eLG9b0kUsCoi6cgcib2eX2yt7mW0fuMV+kX1c/AHlQ
+         UsuvA/zBIqr4VmujICMz3fd8cxRZy3V/lRVp98dE4OrEXlXLpxy2rbk19gCL7QrGQUbg
+         DOecYgS3NFhpJH99Ywo4ylBp9u3LOhDs4M09nz47Ou0cjxuyNjfLnZNL1zkc6GMMMtk4
+         0yD9GDq24qBgzOkBaJf7noLTxwr7wURSBM7apj1DWp0O/40EjI6S4dMRzd5f5+89Vsk0
+         tpfA==
+X-Gm-Message-State: AOAM531iyLGe0F3nAmpRrU8ec95rxLYzuHyM0UCFj4pgdHhsLnkHljKE
+        OIfVs+mw5cZV1tf+AKlb0l42sNPiqq0EWoVx9qHfnw==
+X-Google-Smtp-Source: ABdhPJw3zXWj17ytjGUcJXrPBhqSrf/SVUB//Qqzw55UnOxrq3HR3/eH04quGqhpPfVKlJ6pV8HKE+t1UT6KCYmskaE=
+X-Received: by 2002:ac2:50d0:: with SMTP id h16mr1917793lfm.369.1616590443029;
+ Wed, 24 Mar 2021 05:54:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324112503.623833-8-elver@google.com>
+References: <1616580892-80815-1-git-send-email-guoren@kernel.org>
+ <CAAhSdy2FPHX7Mhg5bRUOTk8SAw+jfWxhKquGZpC6YD0MPLSu0A@mail.gmail.com> <YFsylL7cJqVtVqBI@hirez.programming.kicks-ass.net>
+In-Reply-To: <YFsylL7cJqVtVqBI@hirez.programming.kicks-ass.net>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Wed, 24 Mar 2021 18:23:51 +0530
+Message-ID: <CAAhSdy1JHLUFwu7RuCaQ+RUWRBks2KsDva7EpRt8--4ZfofSUQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: locks: introduce ticket-based spinlock implementation
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:24:59PM +0100, Marco Elver wrote:
-> Encode information from breakpoint attributes into siginfo_t, which
-> helps disambiguate which breakpoint fired.
-> 
-> Note, providing the event fd may be unreliable, since the event may have
-> been modified (via PERF_EVENT_IOC_MODIFY_ATTRIBUTES) between the event
-> triggering and the signal being delivered to user space.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> v2:
-> * Add comment about si_perf==0.
-> ---
->  kernel/events/core.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 1e4c949bf75f..0316d39e8c8f 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -6399,6 +6399,22 @@ static void perf_sigtrap(struct perf_event *event)
->  	info.si_signo = SIGTRAP;
->  	info.si_code = TRAP_PERF;
->  	info.si_errno = event->attr.type;
-> +
-> +	switch (event->attr.type) {
-> +	case PERF_TYPE_BREAKPOINT:
-> +		info.si_addr = (void *)(unsigned long)event->attr.bp_addr;
-> +		info.si_perf = (event->attr.bp_len << 16) | (u64)event->attr.bp_type;
+On Wed, Mar 24, 2021 at 6:08 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Mar 24, 2021 at 05:58:58PM +0530, Anup Patel wrote:
+> > On Wed, Mar 24, 2021 at 3:45 PM <guoren@kernel.org> wrote:
+> > >
+> > > From: Guo Ren <guoren@linux.alibaba.com>
+> > >
+> > > This patch introduces a ticket lock implementation for riscv, along the
+> > > same lines as the implementation for arch/arm & arch/csky.
+> > >
+> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > > Cc: Will Deacon <will.deacon@arm.com>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> > > Cc: Anup Patel <anup@brainfault.org>
+> > > Cc: Arnd Bergmann <arnd@arndb.de>
+> > > ---
+> > >  arch/riscv/Kconfig                      |   1 +
+> > >  arch/riscv/include/asm/Kbuild           |   1 +
+> > >  arch/riscv/include/asm/spinlock.h       | 158 ++++++++++++--------------------
+> > >  arch/riscv/include/asm/spinlock_types.h |  19 ++--
+> >
+> > NACK from myside.
+> >
+> > Linux ARM64 has moved away from ticket spinlock to qspinlock.
+> >
+> > We should directly go for qspinlock.
+>
+> I think it is a sensible intermediate step, even if you want to go
+> qspinlock. Ticket locks are more or less trivial and get you fairness
+> and all that goodness without the mind bending complexity of qspinlock.
+>
+> Once you have the ticket lock implementation solid (and qrwlock) and
+> everything, *then* start to carefully look at qspinlock.
 
-Ahh, here's the si_perf user. I wasn't really clear to me what was
-supposed to be in that field at patch #5 where it was introduced.
+I do understand qspinlock are relatively complex but the best thing
+about qspinlock is it tries to ensure each CPU spins on it's own location.
 
-Would it perhaps make sense to put the user address of struct
-perf_event_attr in there instead? (Obviously we'd have to carry it from
-the syscall to here, but it might be more useful than a random encoding
-of some bits therefrom).
+Instead of adding ticket spinlock now and later replacing it with qspinlock,
+it is better to straight away explore qspinlock hence my NACK.
 
-Then we can also clearly document that's in that field, and it might be
-more useful for possible other uses.
+>
+> Now, arguably arm64 did the heavy lifting of making qspinlock good on
+> weak architectures, but if you want to do it right, you still have to
+> analyze the whole thing for your own architecture.
+
+Most of the RISC-V implementations are weak memory ordering so it
+makes more sense to explore qspinlock first.
+
+Regards,
+Anup
