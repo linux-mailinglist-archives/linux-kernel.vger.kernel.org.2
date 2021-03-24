@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379C9347B33
+	by mail.lfdr.de (Postfix) with ESMTP id 3376F347B30
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236336AbhCXOx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:53:58 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:34780 "EHLO gloria.sntech.de"
+        id S235911AbhCXOxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:53:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236399AbhCXOxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:53:18 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lP4sX-0000qF-Gw; Wed, 24 Mar 2021 15:53:01 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     dri-devel@lists.freedesktop.org,
-        Helen Koike <helen.koike@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        hjc@rock-chips.com, robh+dt@kernel.org,
-        sebastian.fricke@posteo.net, linux-media@vger.kernel.org,
-        dafna.hirschfeld@collabora.com, ezequiel@collabora.com,
-        cmuellner@linux.com
-Subject: Re: [PATCH 3/6] drm/rockchip: dsi: add ability to work as a phy instead of full dsi
-Date:   Wed, 24 Mar 2021 15:52:59 +0100
-Message-ID: <12741091.uLZWGnKmhe@diego>
-In-Reply-To: <d7b8137c-66ce-935a-c8d7-e507146143d7@collabora.com>
-References: <20210210111020.2476369-1-heiko@sntech.de> <20210210111020.2476369-4-heiko@sntech.de> <d7b8137c-66ce-935a-c8d7-e507146143d7@collabora.com>
+        id S236398AbhCXOxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:53:15 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8466561A10;
+        Wed, 24 Mar 2021 14:53:14 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 10:53:13 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] tee: optee: add invoke_fn tracepoints
+Message-ID: <20210324105313.4ff3ad07@gandalf.local.home>
+In-Reply-To: <20210324144853.GA5718@roeck-us.net>
+References: <20210210144409.36ecdaed@xhacker.debian>
+        <20210324143407.GA8717@roeck-us.net>
+        <20210324144853.GA5718@roeck-us.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 15. Februar 2021, 15:33:19 CET schrieb Helen Koike:
-> > From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-> > diff --git a/drivers/gpu/drm/rockchip/Kconfig b/drivers/gpu/drm/rockchip/Kconfig
-> > index cb25c0e8fc9b..3094d4533ad6 100644
-> > --- a/drivers/gpu/drm/rockchip/Kconfig
-> > +++ b/drivers/gpu/drm/rockchip/Kconfig
-> > @@ -9,6 +9,8 @@ config DRM_ROCKCHIP
-> >   	select DRM_ANALOGIX_DP if ROCKCHIP_ANALOGIX_DP
-> >   	select DRM_DW_HDMI if ROCKCHIP_DW_HDMI
-> >   	select DRM_DW_MIPI_DSI if ROCKCHIP_DW_MIPI_DSI
-> > +	select GENERIC_PHY if ROCKCHIP_DW_MIPI_DSI
-> > +	select GENERIC_PHY_MIPI_DPHY if ROCKCHIP_DW_MIPI_DSI
+On Wed, 24 Mar 2021 07:48:53 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
+
+> On Wed, Mar 24, 2021 at 07:34:07AM -0700, Guenter Roeck wrote:
+> > On Wed, Feb 10, 2021 at 02:44:09PM +0800, Jisheng Zhang wrote:  
+> > > Add tracepoints to retrieve information about the invoke_fn. This would
+> > > help to measure how many invoke_fn are triggered and how long it takes
+> > > to complete one invoke_fn call.
+> > > 
+> > > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>  
+> > 
+> > arm64:defconfig:
+> > 
+> > make-arm64 -j drivers/tee/optee/call.o
+> >   CALL    scripts/atomic/check-atomics.sh
+> >   CALL    scripts/checksyscalls.sh
+> >   CC      drivers/tee/optee/call.o
+> > In file included from drivers/tee/optee/optee_trace.h:67,
+> >                  from drivers/tee/optee/call.c:18:
+> > ./include/trace/define_trace.h:95:42: fatal error: ./optee_trace.h: No such file or directory
+> >    95 | #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
+> >       |                                          ^
+> > compilation terminated.
+> >   
 > 
-> maybe alphabetical order?
-
-ok
-
-> > +static int dw_mipi_dsi_dphy_power_on(struct phy *phy)
-> > +{
-> > +	struct dw_mipi_dsi_rockchip *dsi = phy_get_drvdata(phy);
-> > +	int i, ret;
+> The problem also affects arm:imx_v6_v7_defconfig.
 > 
-> It seems "i" could be removed, use ret instead.
 
-I don't think so
+I think it affects everything. The problem is that the
+drivers/tee/optee/Makefile needs to be updated with:
 
-I.e. the driver does
+CFLAGS_call.o := -I$(src)
 
-	i = max_mbps_to_parameter(...)
-	...
-	ret = power-on-clocks-and-stuff
-	...
-	dw_mipi_dsi_phy_write(.... dppa_map[i].hsfreqrange)
+otherwise the compiler wont know how to find the path to optee_tree.h.
 
-So will need to keep the param index separate.
+This is described in:
 
+   samples/trace_events/Makefile
 
-> In general, the patch doesn't look wrong to me.
-> 
-> For the whole serie:
-> Acked-by: Helen Koike <helen.koike@collabora.com>
-
-Thanks a lot :-)
-
-
-Heiko
-
-
+-- Steve
