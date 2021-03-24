@@ -2,185 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A891347B9F
+	by mail.lfdr.de (Postfix) with ESMTP id 416A5347BA0
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236457AbhCXPEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236408AbhCXPEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:04:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D02AA619A4;
-        Wed, 24 Mar 2021 15:04:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616598252;
-        bh=x7SH3yA/mzmsnH/hrV2pehEtDfcK1K7ccJXFfQNsj0g=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=SEJSAB564QkDcEBxa4kkqRIb3Ik/vUs4bkVbqHvJNbIYe2fSsv7ftrYdpByDO0YGv
-         GUii5Fx2HKPYpvj4cIULD+XTNHy2a/yRCaRlE68CYvx8jKLyoLhFKDsgdWTe74ftrh
-         mIWypR6eZcjRTQ+4SiRjmDOlZQhUPZA6H3yZMe5UGeOp4uVA3zSxjaCEmDq6szv6Uj
-         mLrNVjGmXEJVKUG6Edtff9UAxNiX7xeZ+rUuXdikoFpxDcf3mgeuZXtRRNByf6z+gQ
-         U98Nz1buOAhXJjI0YXJ6vTqPTJi4Dq9skB/1aZbdSInOslz5MfpeWN57kPZmF9jfBB
-         RvFskDn1kpZsw==
-Message-ID: <ffff6f72c5ab4b5916aaeb73435ed8141876ac1f.camel@kernel.org>
-Subject: Re: [PATCH] ceph: convert {n}ref from atomic_t to refcount_t
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Yejune Deng <yejune.deng@gmail.com>, idryomov@gmail.com
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 24 Mar 2021 11:04:10 -0400
-In-Reply-To: <20210324102625.112640-1-yejune.deng@gmail.com>
-References: <20210324102625.112640-1-yejune.deng@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S236465AbhCXPEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236459AbhCXPEd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:04:33 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE097C061763;
+        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so1319517pjc.2;
+        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y7euH5yOXTToONzoAXK5U4+rRHWz0rknjZEdozlEFGw=;
+        b=VDCYMZ2i+UIkF0bRoD2Wegyzez8CwM5rqvICzEoxsB6zjeY9rww4o0iyd1EWqC3TeO
+         bXZcKWFXVblSc7OAxQr9xSGNT2IiDH3VHWAz8jADMbKCtaWx2roO443CZoI2UieiTbRi
+         0wQxzd8MLUhO62RdnK8yGw+26dDTL/T7rlfaDCFBvoCtnkiuJg+KdYLr2eYHVPp7ZFWU
+         b+Wsv3vyNjjMpEL4iA3kKvAj77w+mJJl7puk53sBCE+q0XFCuJL7qT9gnywZyDTg9SKy
+         TNyWf50ojJ/8SmQGYyh4qmt12gB+9LLA+gqKicBQYfkLzgk2v4JHQ8dJ9o83P28PHBtU
+         vxLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Y7euH5yOXTToONzoAXK5U4+rRHWz0rknjZEdozlEFGw=;
+        b=PGPyQQliw8HS5TgXjzIgNjUgC57PpJ4p50HbzmbYNa6U2HRE3HL6U8oMfGLnpkjwl+
+         +1CJbi5buLRklo+F2VAh9+si3CVBUz0dqzTtgbevg/XtLvBJjxrFnf7MlY/1ah5/2nWp
+         nyXDGSXk2MiTYwIgtDoS1/jJR1tpoCbLxA1gl3ZW3gy48dwHllO0xljveF7enBdkW8RL
+         +ZLLo6OC+noYFrACjU7U1ItlYLNN3AlrUFzb9MqkFkQ/eB+ptYZ32uY6M3CuXdbVFxm9
+         1UbrixF7DfgDCbuo4U6PYfTwfPDmuUgksHPID3YpiHtsjIsyi6Tt4wrZSvtKHDqSP4HX
+         CgnQ==
+X-Gm-Message-State: AOAM5303IsgS5xdBzMXti8NWPtjT/yxNmGSBbFKaQY3W4c3rfsKG9/4P
+        u6fj9gasLVb5Cet89ndxCGOpQ+BMOpxJn0Iv
+X-Google-Smtp-Source: ABdhPJwG07AWe19Exd7mzxFlBqC6ckXmmi3aIfICqr07BirPFjhw2GdWzyAu02x8ucx4dzOJdxJdjg==
+X-Received: by 2002:a17:902:8bc3:b029:e6:8d84:4d50 with SMTP id r3-20020a1709028bc3b02900e68d844d50mr3959677plo.31.1616598272391;
+        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id l20sm3070700pfd.82.2021.03.24.08.04.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 08:04:32 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH] of/fdt: Check dtb pointer first in unflatten_device_tree
+Date:   Wed, 24 Mar 2021 23:04:25 +0800
+Message-Id: <20210324150425.20688-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 18:26 +0800, Yejune Deng wrote:
-> refcount_t type should be used instead of atomic_t when the variable
-> is used as a reference counter. This is because the implementation of
-> refcount_t can prevent overflows and detect possible use-after-free.
-> 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  fs/ceph/mds_client.h |  2 +-
->  fs/ceph/snap.c       | 27 +++++++++++++++------------
->  fs/ceph/super.h      |  2 +-
->  3 files changed, 17 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
-> index eaa7c5422116..bf99c5ba47fc 100644
-> --- a/fs/ceph/mds_client.h
-> +++ b/fs/ceph/mds_client.h
-> @@ -351,7 +351,7 @@ struct ceph_pool_perm {
->  struct ceph_snapid_map {
->  	struct rb_node node;
->  	struct list_head lru;
-> -	atomic_t ref;
-> +	refcount_t ref;
->  	u64 snap;
->  	dev_t dev;
->  	unsigned long last_used;
-> diff --git a/fs/ceph/snap.c b/fs/ceph/snap.c
-> index 0728b01d4d43..c0fbbb56b259 100644
-> --- a/fs/ceph/snap.c
-> +++ b/fs/ceph/snap.c
-> @@ -66,14 +66,15 @@ void ceph_get_snap_realm(struct ceph_mds_client *mdsc,
->  			 struct ceph_snap_realm *realm)
->  {
->  	dout("get_realm %p %d -> %d\n", realm,
-> -	     atomic_read(&realm->nref), atomic_read(&realm->nref)+1);
-> +	     refcount_read(&realm->nref), refcount_read(&realm->nref)+1);
->  	/*
->  	 * since we _only_ increment realm refs or empty the empty
->  	 * list with snap_rwsem held, adjusting the empty list here is
->  	 * safe.  we do need to protect against concurrent empty list
->  	 * additions, however.
->  	 */
-> -	if (atomic_inc_return(&realm->nref) == 1) {
-> +	refcount_inc(&realm->nref);
-> +	if (refcount_read(&realm->nref) == 1) {
->  		spin_lock(&mdsc->snap_empty_lock);
->  		list_del_init(&realm->empty_item);
->  		spin_unlock(&mdsc->snap_empty_lock);
-> @@ -117,7 +118,7 @@ static struct ceph_snap_realm *ceph_create_snap_realm(
->  	if (!realm)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	atomic_set(&realm->nref, 1);    /* for caller */
-> +	refcount_set(&realm->nref, 1);    /* for caller */
->  	realm->ino = ino;
->  	INIT_LIST_HEAD(&realm->children);
->  	INIT_LIST_HEAD(&realm->child_item);
-> @@ -199,8 +200,8 @@ static void __put_snap_realm(struct ceph_mds_client *mdsc,
->  			     struct ceph_snap_realm *realm)
->  {
->  	dout("__put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
-> -	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
-> -	if (atomic_dec_and_test(&realm->nref))
-> +	     refcount_read(&realm->nref), refcount_read(&realm->nref)-1);
-> +	if (refcount_dec_and_test(&realm->nref))
->  		__destroy_snap_realm(mdsc, realm);
->  }
->  
-> @@ -211,8 +212,8 @@ void ceph_put_snap_realm(struct ceph_mds_client *mdsc,
->  			 struct ceph_snap_realm *realm)
->  {
->  	dout("put_snap_realm %llx %p %d -> %d\n", realm->ino, realm,
-> -	     atomic_read(&realm->nref), atomic_read(&realm->nref)-1);
-> -	if (!atomic_dec_and_test(&realm->nref))
-> +	     refcount_read(&realm->nref), refcount_read(&realm->nref)-1);
-> +	if (!refcount_dec_and_test(&realm->nref))
->  		return;
->  
->  	if (down_write_trylock(&mdsc->snap_rwsem)) {
-> @@ -1034,7 +1035,8 @@ struct ceph_snapid_map* ceph_get_snapid_map(struct ceph_mds_client *mdsc,
->  		} else if (snap < exist->snap) {
->  			p = &(*p)->rb_right;
->  		} else {
-> -			if (atomic_inc_return(&exist->ref) == 1)
-> +			refcount_inc(&exist->ref);
-> +			if (refcount_read(&exist->ref) == 1)
->  				list_del_init(&exist->lru);
->  			break;
->  		}
-> @@ -1057,7 +1059,7 @@ struct ceph_snapid_map* ceph_get_snapid_map(struct ceph_mds_client *mdsc,
->  	}
->  
->  	INIT_LIST_HEAD(&sm->lru);
-> -	atomic_set(&sm->ref, 1);
-> +	refcount_set(&sm->ref, 1);
->  	sm->snap = snap;
->  
->  	exist = NULL;
-> @@ -1076,7 +1078,8 @@ struct ceph_snapid_map* ceph_get_snapid_map(struct ceph_mds_client *mdsc,
->  		exist = NULL;
->  	}
->  	if (exist) {
-> -		if (atomic_inc_return(&exist->ref) == 1)
-> +		refcount_inc(&exist->ref);
-> +		if (refcount_read(&exist->ref) == 1)
->  			list_del_init(&exist->lru);
->  	} else {
->  		rb_link_node(&sm->node, parent, p);
-> @@ -1099,7 +1102,7 @@ void ceph_put_snapid_map(struct ceph_mds_client* mdsc,
->  {
->  	if (!sm)
->  		return;
-> -	if (atomic_dec_and_lock(&sm->ref, &mdsc->snapid_map_lock)) {
-> +	if (refcount_dec_and_lock(&sm->ref, &mdsc->snapid_map_lock)) {
->  		if (!RB_EMPTY_NODE(&sm->node)) {
->  			sm->last_used = jiffies;
->  			list_add_tail(&sm->lru, &mdsc->snapid_map_lru);
-> @@ -1161,7 +1164,7 @@ void ceph_cleanup_snapid_map(struct ceph_mds_client *mdsc)
->  		sm = list_first_entry(&to_free, struct ceph_snapid_map, lru);
->  		list_del(&sm->lru);
->  		free_anon_bdev(sm->dev);
-> -		if (WARN_ON_ONCE(atomic_read(&sm->ref))) {
-> +		if (WARN_ON_ONCE(refcount_read(&sm->ref))) {
->  			pr_err("snapid map %llx -> %x still in use\n",
->  			       sm->snap, sm->dev);
->  		}
-> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> index c48bb30c8d70..062123a73ef1 100644
-> --- a/fs/ceph/super.h
-> +++ b/fs/ceph/super.h
-> @@ -835,7 +835,7 @@ struct ceph_readdir_cache_control {
->  struct ceph_snap_realm {
->  	u64 ino;
->  	struct inode *inode;
-> -	atomic_t nref;
-> +	refcount_t nref;
->  	struct rb_node node;
->  
->  	u64 created, seq;
+The setup_arch() would invoke unflatten_device_tree() even no
+valid fdt found. So we'd better check it first and return early.
 
-Thanks, merged into ceph-client/testing branch. This should make v5.13.
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+---
+ drivers/of/fdt.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Cheers,
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index dcc1dd96911a..05d439d63bc5 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -1225,6 +1225,11 @@ bool __init early_init_dt_scan(void *params)
+  */
+ void __init unflatten_device_tree(void)
+ {
++	if (!initial_boot_params) {
++		pr_warn("No valid device tree found, continuing without\n");
++		return;
++	}
++
+ 	__unflatten_device_tree(initial_boot_params, NULL, &of_root,
+ 				early_init_dt_alloc_memory_arch, false);
+ 
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.30.2
 
