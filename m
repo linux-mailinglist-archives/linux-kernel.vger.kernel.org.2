@@ -2,103 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 615183480DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C163480E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:47:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237598AbhCXSpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237345AbhCXSpU (ORCPT
+        id S237639AbhCXSrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:47:02 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:57474 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237532AbhCXSqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:45:20 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A49C061763;
-        Wed, 24 Mar 2021 11:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=HTSdwoRP5dmxsgCF/xA6hkpSAAHIJMb2ezjmo0YktMo=; b=KykvmMgjsL+ZpU2ypuOiwW8NaY
-        jZZn0Vk4VucY5RM/Fjms3j/17U4XRl14dIOIH7UbL/ZJQIPzd4gx7GyZeyMEPGAKFV6Az2Dk3AA2K
-        aOegWKg09XYGT5zTfV4SluWDNk9+vfjfB9wYF+R/QbaTmiYDKJiC6TQ/kMafOM/PADySxxWr/3d9P
-        oWhKpStTM76Y3pizH6t799phwF0IGRhQS1MyZThhRGJwHPEgrDVBwCkinC0p1kkPoyB/CfUu7IKlg
-        L3S7jnmSr7+BLGhvPzRpTUqC8CGZMDDCgcajzd8eV+ZNHJKiJ/p9nmLkTpS9CTT9mf8w3pY4kiqSj
-        yUMrBNcA==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP8VI-0004lw-PM; Wed, 24 Mar 2021 18:45:17 +0000
-Subject: Re: [PATCH] iio: adc: Kconfig: make AD9467 depend on ADI_AXI_ADC
- symbol
-To:     Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jic23@kernel.org, linux@deviqon.com
-References: <20210324182746.9337-1-aardelean@deviqon.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c0220f77-da29-56a0-d528-90cafc0b391b@infradead.org>
-Date:   Wed, 24 Mar 2021 11:45:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 24 Mar 2021 14:46:36 -0400
+Received: from x64host.home (unknown [47.187.194.202])
+        by linux.microsoft.com (Postfix) with ESMTPSA id CD89720B5680;
+        Wed, 24 Mar 2021 11:46:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CD89720B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1616611596;
+        bh=/DQ0Kpr6KrIt6d8Mcz3Cfl93aJt8TaoUE+dzxu5+xMc=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=bhn7c10geVPdJG/vxrJ9h2WuUMZKX/mlZQHOKRsUpVgRpPl03f5COUpFd4KC18/yr
+         EAxlelM7NrsTSevOm+Ci+m3RCTifs6wDZmd01LTKIaoQSVmPEdOxuCCnygmKo9yvlg
+         p0q0BFUjbXEppZuyA/NTrs3MgiazVfozsYtOtpkA=
+From:   madvenka@linux.microsoft.com
+To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        madvenka@linux.microsoft.com
+Subject: [RFC PATCH v1 0/1] arm64: Implement stack trace termination record
+Date:   Wed, 24 Mar 2021 13:46:06 -0500
+Message-Id: <20210324184607.120948-1-madvenka@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <b6144b5b1dc66bf775fe66374bba31af7e5f1d54>
+References: <b6144b5b1dc66bf775fe66374bba31af7e5f1d54>
 MIME-Version: 1.0
-In-Reply-To: <20210324182746.9337-1-aardelean@deviqon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 11:27 AM, Alexandru Ardelean wrote:
-> Because a dependency on HAS_IOMEM and OF was added for the ADI AXI ADC
-> driver, this makes the AD9467 driver have some build/dependency issues
-> when OF is disabled (typically on ACPI archs like x86).
-> 
-> This is because the selection of the AD9467 enforces the ADI_AXI_ADC symbol
-> which is blocked by the OF (and potentially HAS_IOMEM) being disabled.
-> 
-> To fix this, we make the AD9467 driver depend on the ADI_AXI_ADC symbol.
-> The AD9467 driver cannot operate on it's own. It requires the ADI AXI ADC
-> driver to stream data (or some similar IIO interface).
-> 
-> So, the fix here is to make the AD9467 symbol depend on the ADI_AXI_ADC
-> symbol. At some point this could become it's own subgroup of high-speed
-> ADCs.
-> 
-> Fixes: be24c65e9fa24 ("iio: adc: adi-axi-adc: add proper Kconfig dependencies")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+The unwinder needs to be able to reliably tell when it has reached the end
+of a stack trace. One way to do this is to have the last stack frame at a
+fixed offset from the base of the task stack. When the unwinder reaches
+that offset, it knows it is done.
 
-Thanks.
+All tasks have a pt_regs structure right after the task stack in the stack
+page. The pt_regs structure contains a stackframe field. Make this stackframe
+field the last frame in the task stack so all stack traces end at a fixed
+stack offset.
 
-> ---
-> 
-> Apologies for this being too late.
-> I made the patch but forgot it in a local tree.
-> 
-> Related to discussion:
->    https://lkml.org/lkml/2021/3/18/1007
-> 
->  drivers/iio/adc/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> index e0667c4b3c08..dda0f1e37ec1 100644
-> --- a/drivers/iio/adc/Kconfig
-> +++ b/drivers/iio/adc/Kconfig
-> @@ -249,7 +249,7 @@ config AD799X
->  config AD9467
->  	tristate "Analog Devices AD9467 High Speed ADC driver"
->  	depends on SPI
-> -	select ADI_AXI_ADC
-> +	depends on ADI_AXI_ADC
->  	help
->  	  Say yes here to build support for Analog Devices:
->  	  * AD9467 16-Bit, 200 MSPS/250 MSPS Analog-to-Digital Converter
-> 
+For kernel tasks, this is simple to understand. For user tasks, there is
+some extra detail. User tasks get created via fork() et al. Once they return
+from fork, they enter the kernel only on an EL0 exception. In arm64,
+system calls are also EL0 exceptions.
+
+The EL0 exception handler uses the task pt_regs mentioned above to save
+register state and call different exception functions. All stack traces
+from EL0 exception code must end at the pt_regs. So, make pt_regs->stackframe
+the last frame in the EL0 exception stack.
+
+To summarize, task_pt_regs(task)->stackframe will always be the stack
+termination record.
+
+Sample stack traces
+===================
+
+These stack traces were taken using a test driver called callfd from
+certain locations.
+
+Primary CPU's idle task
+=======================
+
+[    0.022932]   arch_stack_walk+0x0/0xd0
+[    0.022944]   callfd_stack+0x30/0x60
+[    0.022955]   rest_init+0xd8/0xf8
+[    0.022968]   arch_call_rest_init+0x18/0x24
+[    0.022984]   start_kernel+0x5b8/0x5f4
+[    0.022993]   ret_from_fork+0x0/0x18
+
+Secondary CPU's idle task
+=========================
+
+[    0.023043]   arch_stack_walk+0x0/0xd0
+[    0.023052]   callfd_stack+0x30/0x60
+[    0.023061]   secondary_start_kernel+0x188/0x1e0
+[    0.023071]   ret_from_fork+0x0/0x18
+
+Sample kernel thread
+====================
+
+[   12.000679]   arch_stack_walk+0x0/0xd0
+[   12.007616]   callfd_stack+0x30/0x60
+[   12.014347]   kernel_init+0x84/0x148
+[   12.021026]   ret_from_fork+0x10/0x18
+
+kernel_clone() system call
+==========================
+
+Showing EL0 exception:
+
+[  364.152827]   arch_stack_walk+0x0/0xd0
+[  364.152833]   callfd_stack+0x30/0x60
+[  364.152839]   kernel_clone+0x57c/0x590
+[  364.152846]   __do_sys_clone+0x58/0x88
+[  364.152851]   __arm64_sys_clone+0x28/0x38
+[  364.152856]   el0_svc_common.constprop.0+0x70/0x1a8
+[  364.152863]   do_el0_svc+0x2c/0x98
+[  364.152868]   el0_svc+0x2c/0x70
+[  364.152873]   el0_sync_handler+0xb0/0xb8
+[  364.152879]   el0_sync+0x178/0x180
+
+Timer interrupt
+===============
+
+Showing EL1 exception (Interrupt happened on a secondary CPU):
+
+[  364.195456]   arch_stack_walk+0x0/0xd0
+[  364.195467]   callfd_stack+0x30/0x60
+[  364.195475]   callfd_callback+0x2c/0x38
+[  364.195482]   call_timer_fn+0x38/0x180
+[  364.195489]   run_timer_softirq+0x43c/0x6b8
+[  364.195495]   __do_softirq+0x138/0x37c
+[  364.195501]   irq_exit+0xc0/0xe8
+[  364.195512]   __handle_domain_irq+0x70/0xc8
+[  364.195521]   gic_handle_irq+0xd4/0x2f4
+[  364.195527]   el1_irq+0xc0/0x180
+[  364.195533]   arch_cpu_idle+0x18/0x40
+[  364.195540]   default_idle_call+0x44/0x170
+[  364.195548]   do_idle+0x224/0x278
+[  364.195567]   cpu_startup_entry+0x2c/0x98
+[  364.195573]   secondary_start_kernel+0x198/0x1e0
+[  364.195581]   ret_from_fork+0x0/0x18
+---
+Changelog:
+
+v1
+	- Set up task_pt_regs(current)->stackframe as the last frame
+	  when a new task is initialized in copy_thread().
+
+	- Create pt_regs for the idle tasks and set up pt_regs->stackframe
+	  as the last frame for the idle tasks.
+
+	- Set up task_pt_regs(current)->stackframe as the last frame in
+	  the EL0 exception handler so the EL0 exception stack trace ends
+	  there.
+
+	- Terminate the stack trace successfully in unwind_frame() when
+	  the FP reaches task_pt_regs(current)->stackframe.
+
+	- The stack traces (above) in the kernel will terminate at the
+	  correct place. Debuggers may show an extra record 0x0 at the end
+	  for pt_regs->stackframe. That said, I did not see that extra frame
+	  when I did stack traces using gdb.
+
+Madhavan T. Venkataraman (1):
+  arm64: Implement stack trace termination record
+
+ arch/arm64/kernel/entry.S      |  8 +++++---
+ arch/arm64/kernel/head.S       | 28 ++++++++++++++++++++++++----
+ arch/arm64/kernel/process.c    |  5 +++++
+ arch/arm64/kernel/stacktrace.c |  8 ++++----
+ 4 files changed, 38 insertions(+), 11 deletions(-)
 
 
+base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
 -- 
-~Randy
+2.25.1
 
