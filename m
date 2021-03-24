@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB2B347A0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7711B347A02
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 14:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235886AbhCXN5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 09:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42802 "EHLO
+        id S235783AbhCXNzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 09:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235785AbhCXN4n (ORCPT
+        with ESMTP id S235776AbhCXNzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 09:56:43 -0400
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E81C061763;
-        Wed, 24 Mar 2021 06:56:43 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4F58sz32hLz1sHHY;
-        Wed, 24 Mar 2021 14:56:39 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4F58sz0rwWz1qsk8;
-        Wed, 24 Mar 2021 14:56:39 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id b0EY_bXTK-ox; Wed, 24 Mar 2021 14:56:38 +0100 (CET)
-X-Auth-Info: VfJp0AaRJ905mdNW4KKeAflxaJ6T5GkmMDFPGmFJZjA=
-Received: from [10.88.0.186] (dslb-084-056-254-233.084.056.pools.vodafone-ip.de [84.56.254.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Wed, 24 Mar 2021 14:56:37 +0100 (CET)
-Subject: Re: [PATCH v3 1/2] dt-bindings: display: bridge: Add bindings for
- SN65DSI83/84/85
-To:     Jagan Teki <jagan@amarulasolutions.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-amarula@amarulasolutions.com
-References: <20210214174453.104616-1-jagan@amarulasolutions.com>
-From:   Claudius Heine <ch@denx.de>
-Organization: Denx Software Engineering
-Message-ID: <d7f9b241-3cfc-836a-2519-3b6621899108@denx.de>
-Date:   Wed, 24 Mar 2021 14:56:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 24 Mar 2021 09:55:06 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F318C061763;
+        Wed, 24 Mar 2021 06:55:03 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id z10so18022236qkz.13;
+        Wed, 24 Mar 2021 06:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bl+twAxTABzyYq2Klqss4Te0Jt29mShp2MJ9BTS37Kk=;
+        b=SP47RER0wtPvVgzy95KQ4pLZMs76Df4F1moWk7n1OHLD6ElO2H/wteAe0TLwhQ3DRY
+         lpUTdLIl43m2zAvR2d5tOkv4gVE1GrtF2rfE75oL8r3BIrnqgzdBi09mtSYA4xZuHWIz
+         0P0p3azDVo4n5pFS3uMGZBULXru74uE2rMlIf3NcUCIU7gZiOO2Nlk3yyLCp+62tWn5A
+         Na76qcpAj5lY7cvR+eur0fUzR23pjtgHtP0Jq+0SVMURlucmalPXzr/yFn7pZl7Zs4GK
+         5GKIkl0PhF+Hl3vCbqJYyPseOOZIqNPhDgrglbb+htnfhU2UDLgdeRoY5jMSV9TjtLRK
+         0V+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bl+twAxTABzyYq2Klqss4Te0Jt29mShp2MJ9BTS37Kk=;
+        b=TaB72kK3T7khwnbkyDZ4QTNwe565a2wtVja7lQoZA1bj88k/LIajcL1tE0e5LCrTjC
+         6vgtbkqL/K+/+2tU0s7IpTFk6wPPJapFtfeFAiUSW8c8TKmvye7RdBGvwiTApNtx/LbK
+         GDdKD9Wi8Ih/TIWDNLCs5mw3h8pEoH4tSg4MBnEoDvrwtzyw2hzVPiqdSctuzrDTlVXC
+         bTV6YgaJruAWgqsmB5CDxr3+iEHO6aqZps6oTQWTwFcm8M3DNst8Z7ZI0Wh2rhFe4V+p
+         LEjiB7IRpFC8UALbWOKrRCl5D7PAHROr8o+1TfWluDWKIeW/YvZi9gJco3nrjoMfsaOY
+         3+7A==
+X-Gm-Message-State: AOAM533LZSvoImE/7qRy3q5+j1MRLPyq7/pjHypKhjYehO6fDH1shckW
+        yYAoogWemkFxrWFJ/vwfcro=
+X-Google-Smtp-Source: ABdhPJxPieUj7toob6UDD8yMp3VtqUFsKRFjK79RWJFyXQggM3E+g66VFMH1wvf3SvasVQJpWyhvWg==
+X-Received: by 2002:a37:9dc1:: with SMTP id g184mr3317778qke.285.1616594102913;
+        Wed, 24 Mar 2021 06:55:02 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.36.138])
+        by smtp.gmail.com with ESMTPSA id x10sm1390816qtw.17.2021.03.24.06.54.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 06:55:02 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, unixbhaskar@gmail.com,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] media: atomisp-ov2680: A trivial typo fix
+Date:   Wed, 24 Mar 2021 19:26:42 +0530
+Message-Id: <20210324135642.30054-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <20210214174453.104616-1-jagan@amarulasolutions.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
 
-On 2021-02-14 18:44, Jagan Teki wrote:
-> SN65DSI83/84/85 devices are MIPI DSI to LVDS based bridge
-> controller IC's from Texas Instruments.
-> 
-> SN65DSI83 - Single Channel DSI to Single-link LVDS bridge
-> SN65DSI84 - Single Channel DSI to Dual-link LVDS bridge
-> SN65DSI85 - Dual Channel DSI to Dual-link LVDS bridge
-> 
-> Right now the bridge driver is supporting Channel A with single
-> link, so dt-bindings documented according to it.
+s/miror/mirror/
 
-Do you know when we can expect a v4 for this?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/staging/media/atomisp/i2c/ov2680.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I am currently working on top of your patch set to setup a dual-link 
-LVDS bridge of SN65DSI84.
+diff --git a/drivers/staging/media/atomisp/i2c/ov2680.h b/drivers/staging/media/atomisp/i2c/ov2680.h
+index 49920245e064..889395933099 100644
+--- a/drivers/staging/media/atomisp/i2c/ov2680.h
++++ b/drivers/staging/media/atomisp/i2c/ov2680.h
+@@ -627,7 +627,7 @@ static struct ov2680_reg const ov2680_1296x976_30fps[] = {
+ 	{0x5706, 0x0c},
+ 	{0x5707, 0x78},
+ 	{0x3820, 0xc0},
+-	{0x3821, 0x00}, //miror/flip
++	{0x3821, 0x00}, //mirror/flip
+ 	// {0x5090, 0x0c},
+ 	{}
+ };
+--
+2.30.1
 
-thanks and kind regards,
-Claudius
