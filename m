@@ -2,114 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094C0347630
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC3AB3474BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235830AbhCXKeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:34:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55204 "EHLO
+        id S236153AbhCXJei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233398AbhCXKe0 (ORCPT
+        with ESMTP id S232548AbhCXJef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:34:26 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CD00C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:34:25 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id b16so27050464eds.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 03:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xbhw/ZDmJTjBytyPJI4UoxBWXtQ1ngIRpvlPehMK2p8=;
-        b=K5eF6tArEz7YZ2z0SVz1j+SY3aWkpkm/lMhGoxxmkXIldsJwPb5kfAzOSN0zkPVgwE
-         xq+o94WZliHVWgIsTUQY8P6nSgPdrIumCDyXVJd8Ledi0nEjytIuL05OvkIS+wi6C+dx
-         uyu5K/7mJsQrZNNyiR2L3gCLKKfHRrykP00+GgjWrhqYm0LyY4iYvUJZ50y/pyReWft7
-         MqyjC1I8FU2kdmepFT5TA6QTL1nd1MLkaHElSY9uexyV1WRz2w6YgSJbq3oyWtNRF/OO
-         f859NY9Xx9u6gRS/WJd0PGyrbdCxM0q3Sn5uu/nHScF63Esgw/e8CtvIEmX391Z7Cgv6
-         ltQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xbhw/ZDmJTjBytyPJI4UoxBWXtQ1ngIRpvlPehMK2p8=;
-        b=TOxLjv7VwbI1tbYvQB3G0LK7SDBdOLZEPWTI9pSh1PmM9fpHlwLZ12Js3kL891M0eD
-         Fe6KymIIfYG/xvpqXcuxAiqfd7Mw2TLAXU6DbguPRUpknTg5EfoSc6Pq+HZA7xVYfB0L
-         w1ooIXi69H48Xucsvcbi6ddIAz24H/rYJD7Y+QEsStZaCNJe3X86S97JPh/PtjtSdZj4
-         OfFlSmUmEXN5pysUliACT/q8Z/ajzC5xaud2xRDDdtmpG5WoyR576eE1ZRgB0zak6kuz
-         V8SKHAIM1wE6oKU9KuIiE6XMvlzw43OWAX23cywlB/koUkYOUd9qj/oUH97U1A+aE2m2
-         mv6g==
-X-Gm-Message-State: AOAM530A/MtGvM/EijiOnH9ryYQW7snEvcCe37l+m02Fcz2JbA1O5GWm
-        2mRNC0nOIiCxtFsXHS5rTHilrqZtY0K4MsUYPUUf+w==
-X-Google-Smtp-Source: ABdhPJzd+cqvYyBPZHJeB8/Vy81pM52Ij0bfN/tp45Qzn+7LGL6qmwPViYVX7+JE7pz+I6/Hr+AfwXfKBsXlE5DyyxY=
-X-Received: by 2002:a50:f38f:: with SMTP id g15mr2652251edm.262.1616582059297;
- Wed, 24 Mar 2021 03:34:19 -0700 (PDT)
+        Wed, 24 Mar 2021 05:34:35 -0400
+Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486BFC061763;
+        Wed, 24 Mar 2021 02:34:35 -0700 (PDT)
+Received: from thinkpad (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id A0E62140A26;
+        Wed, 24 Mar 2021 10:34:32 +0100 (CET)
+Date:   Wed, 24 Mar 2021 10:34:31 +0000
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Hermes Zhang <chenhui.zhang@axis.com>
+Cc:     <pavel@ucw.cz>, <dmurphy@ti.com>, <robh+dt@kernel.org>,
+        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <chenhuiz@axis.com>,
+        <lkml@axis.com>, <kernel@axis.com>
+Subject: Re: [PATCH 1/2] leds: leds-multi-gpio: Add multiple GPIOs LED
+ driver
+Message-ID: <20210324103431.4b945915@thinkpad>
+In-Reply-To: <20210324075631.5004-2-chenhui.zhang@axis.com>
+References: <20210324075631.5004-1-chenhui.zhang@axis.com>
+        <20210324075631.5004-2-chenhui.zhang@axis.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210323125535.1866249-1-arnd@kernel.org>
-In-Reply-To: <20210323125535.1866249-1-arnd@kernel.org>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Wed, 24 Mar 2021 11:34:08 +0100
-Message-ID: <CAMGffE=XZ_5ibx2jMxC_kLLKSLmV882XGk6yHAc2B4y2VRvTrw@mail.gmail.com>
-Subject: Re: [PATCH] block/rnbd-clt: fix overlapping snprintf arguments
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-block <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 1:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The -Wrestrict warning (disabled by default) points out undefined
-> behavior calling snprintf():
->
-> drivers/block/rnbd/rnbd-clt-sysfs.c: In function 'rnbd_clt_get_path_name':
-> drivers/block/rnbd/rnbd-clt-sysfs.c:486:8: error: 'snprintf' argument 4 overlaps destination object 'buf' [-Werror=restrict]
->   486 |  ret = snprintf(buf, len, "%s@%s", buf, dev->sess->sessname);
->       |        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/block/rnbd/rnbd-clt-sysfs.c:472:67: note: destination object referenced by 'restrict'-qualified argument 1 was declared here
->   472 | static int rnbd_clt_get_path_name(struct rnbd_clt_dev *dev, char *buf,
->       |                                                             ~~~~~~^~~
->
-> This can be simplified by using a single snprintf() to print the
-> whole buffer, avoiding the undefined behavior.
->
-> Fixes: 91f4acb2801c ("block/rnbd-clt: support mapping two devices with the same name from different servers")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/block/rnbd/rnbd-clt-sysfs.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
->
-> diff --git a/drivers/block/rnbd/rnbd-clt-sysfs.c b/drivers/block/rnbd/rnbd-clt-sysfs.c
-> index d4aa6bfc9555..38251b749664 100644
-> --- a/drivers/block/rnbd/rnbd-clt-sysfs.c
-> +++ b/drivers/block/rnbd/rnbd-clt-sysfs.c
-> @@ -479,11 +479,7 @@ static int rnbd_clt_get_path_name(struct rnbd_clt_dev *dev, char *buf,
->         while ((s = strchr(pathname, '/')))
->                 s[0] = '!';
->
-> -       ret = snprintf(buf, len, "%s", pathname);
-> -       if (ret >= len)
-> -               return -ENAMETOOLONG;
-> -
-> -       ret = snprintf(buf, len, "%s@%s", buf, dev->sess->sessname);
-> +       ret = snprintf(buf, len, "%s@%s", pathname, dev->sess->sessname);
->         if (ret >= len)
->                 return -ENAMETOOLONG;
->
-> --
-> 2.29.2
->
-Thanks Arnd, We have a same patch will send out soon as part of a
-bigger patchset.
+On Wed, 24 Mar 2021 15:56:30 +0800
+Hermes Zhang <chenhui.zhang@axis.com> wrote:
+
+> From: Hermes Zhang <chenhuiz@axis.com>
+> 
+> Introduce a new multiple GPIOs LED driver. This LED will made of
+> multiple GPIOs (up to 8) and will map different brightness to different
+> GPIOs states which defined in dts file.
+
+I wonder how many boards have such LEDs.
+
+Also if it wouldn't be better to expand the original leds-gpio driver.
+Probably depends on how much larger would such expansion make the
+leds-gpio driver.
+
+> +#include <linux/err.h>
+> +#include <linux/gpio.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/kernel.h>
+> +#include <linux/leds.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +#include <linux/slab.h>
+
+Why do you include slab.h?
+
+> +
+> +#define MAX_GPIO_NUM  8
+> +
+> +struct multi_gpio_led_priv {
+> +	struct led_classdev cdev;
+> +
+> +	struct gpio_descs *gpios;
+> +
+> +	u8 *states;
+> +	int nr_states;
+> +};
+
+Use flexible array members. Allocate with
+  devm_kzalloc(dev, struct_size(priv, states, priv->nr_states),
+               GFP_KERNEL)
+
+> +
+> +
+> +static void multi_gpio_led_set(struct led_classdev *led_cdev,
+> +	enum led_brightness value)
+> +{
+> +	struct multi_gpio_led_priv *priv;
+> +	int idx;
+> +
+> +	DECLARE_BITMAP(values, MAX_GPIO_NUM);
+> +
+> +	priv = container_of(led_cdev, struct multi_gpio_led_priv, cdev);
+> +
+> +	idx = (value - LED_OFF) * priv->nr_states / (LED_FULL + 1);
+
+LED_FULL / LED_OFF are deprecated, don't use them.
+
+> +
+> +	values[0] = priv->states[idx];
+> +
+> +	gpiod_set_array_value(priv->gpios->ndescs, priv->gpios->desc,
+> +	    priv->gpios->info, values);
+> +}
+> +
+> +static int multi_gpio_led_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *node = dev->of_node;
+> +	struct multi_gpio_led_priv *priv = NULL;
+> +	int ret;
+> +	const char *state = NULL;
+> +	struct led_init_data init_data = {};
+> +
+> +	priv = devm_kzalloc(dev, sizeof(struct multi_gpio_led_priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->gpios = devm_gpiod_get_array(dev, "led", GPIOD_OUT_LOW);
+> +	if (IS_ERR(priv->gpios))
+> +		return PTR_ERR(priv->gpios);
+> +
+> +	if (priv->gpios->ndescs >= MAX_GPIO_NUM) {
+> +		dev_err(dev, "Too many GPIOs\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = of_property_count_u8_elems(node, "led-states");
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	priv->nr_states = ret;
+> +	priv->states = devm_kzalloc(dev, sizeof(*priv->states) * priv->nr_states, GFP_KERNEL);
+> +	if (!priv->states)
+> +		return -ENOMEM;
+> +
+> +	ret = of_property_read_u8_array(node, "led-states", priv->states, priv->nr_states);
+> +	if (ret)
+> +		return ret;
+> +
+> +	priv->cdev.max_brightness = LED_FULL;
+
+???? max_brightness is not 255 (= LED_FULL). max_brightness must be
+derived from the led-states property.
+
+
+> +	priv->cdev.default_trigger = of_get_property(node, "linux,default-trigger", NULL);
+> +	priv->cdev.brightness_set = multi_gpio_led_set;
+> +
+> +	init_data.fwnode = of_fwnode_handle(node);
+> +
+> +	ret = devm_led_classdev_register_ext(dev, &priv->cdev, &init_data);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	of_property_read_string(node, "default-state", &state);
+> +	if (!strcmp(state, "on"))
+> +		multi_gpio_led_set(&priv->cdev, LED_FULL);
+> +	else
+> +		multi_gpio_led_set(&priv->cdev, LED_OFF);
+
+Again LED_FULL and LED_OFF...
+What about default-state = "keep" ?
+
+Hermes, do you actually have a device that controls LEDs this way? How
+many brightness options do they have?
+
+Also I think this functionality could be easily incorporated into the
+existing leds-gpio driver, instead of creating new driver.
+
+Moreover your driver can control only one LED, so it needs to be
+probed multiple times for multiple LEDs. Meanwhile the leds-gpio driver
+can register multiple LEDs in one probe...
+
+Marek
