@@ -2,203 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1092A3483C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56FB3483C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 22:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238451AbhCXVcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 17:32:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238489AbhCXVbz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 17:31:55 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59E39C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:31:54 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id s17so487934ljc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 14:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GXCHwCjIojzQra6Ybo8a6ubZkkqtpIUTfy1bdb9pub8=;
-        b=lrwPb0OwRuF4bqws2EJVVX5j0uiXIFTIr2bAgHN/bzUHYfymLk2LM7VDU3LXmidK0i
-         bXBwWghuY/RV0QdKb7L8MAAwIiU43qvbC2j3VUGxWhINR97vi0mClUWlb0ugOuvrxVhg
-         7yuaV32pEYwNNMeqBAWYrcA7z5P3Df43dTILzg41SoOUOsqOlSJfc599iONwRuVBj34Q
-         BAMm3RiVw7hYomiB9gt5kUyXp3qNlW4MOKyrfynVuNeC/FrMV0oCSAgbNTNJLB48wzD5
-         aU46LmJe7lbhAxidq8v3T7oj1diu1Qh7UcoP0B2Cn96LwMxVq1tnOCja0Vb0D9ILq17d
-         6Fxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GXCHwCjIojzQra6Ybo8a6ubZkkqtpIUTfy1bdb9pub8=;
-        b=MmUAr/cWfxAL1oPLmsJXVsjVBfFLtpDFTi9wLIWvXTqnEE3mbJFP7tFoQ0CY1Kz2Jh
-         v/eRFWmivTlJVdiiE0275nVf1zYFzgNm2/RcOdJJxTe8AJQ0PalBswBIgEvZiK8hSJ7s
-         Ows1hCuSdYgRQ/rriF07QT1HLQWuddvHsP1ISNgJkXpXy94H5moprZei5+hduIZfJD2N
-         ayGDiFmRWoXw1+xvkuN+zv9zS+DpBJH/jcvRltdUo+OcAWTCwjA2XpTZQGc0YMYfxhJ0
-         hJyFbntFWoKRjmyYxeHzUkHnIZw5npHUmmste7vyLCcMb2AkMk7lgzK2hKJdf/MVT4Cv
-         v1jw==
-X-Gm-Message-State: AOAM530TRZAfoSY3FqxKTzTHQugmSbinXKmQfd9FOYsn7Cyb1tRbrwNx
-        naWAJfwTEGGLNUlfJXSpnQU=
-X-Google-Smtp-Source: ABdhPJzBtOjhGlUc6Vg44/mMvTfBcv1StLpDGOr8ECeh+GUX875JodrX5Ivs3aMrj//h3c23tXyLUw==
-X-Received: by 2002:a2e:700a:: with SMTP id l10mr3362086ljc.368.1616621512815;
-        Wed, 24 Mar 2021 14:31:52 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
-        by smtp.googlemail.com with ESMTPSA id u9sm444852ljd.130.2021.03.24.14.31.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 14:31:52 -0700 (PDT)
-Subject: Re: [PATCH v7] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
-        jhubbard@nvidia.com, willy@infradead.org,
-        Colin Ian King <colin.king@canonical.com>
-References: <20210324205503.2132082-1-minchan@kernel.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <65840bfd-4471-7c8d-ce71-c4705baf3bfe@gmail.com>
-Date:   Thu, 25 Mar 2021 00:31:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233833AbhCXVcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 17:32:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238488AbhCXVce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 17:32:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A80AB61A01;
+        Wed, 24 Mar 2021 21:32:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616621554;
+        bh=Rb5aGgF5XSHVHPvvz0Biht5ShVFVbaxFO6erPbXbWRQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=psapsN6KxcLfNEO9rGI8wJGzJoV5zV/B8oTJuMQGLBIcmOtCH6MG1gfszKpNf122o
+         w2gYUNkqL3HZDF5TNOZu2xHor/OSOEAnmX1dSSu8jQ4CfkUjEfh7CfpryJgvd3+LUN
+         YKpRQYAnc/ebJrWA33iJsfsIavNEeXczjLkn+byjDMPa0+CcE/MtfEh0lSt9xRCBtf
+         taY4LpiQMKmTp2z4fUiLeJVRZ7u7ZmJ72Y4jEMRigRUyreiqnZKLGGiP8Qu/1gM0Dr
+         CaxNO1kW55kNXh3D/gcSAMOrWRFJlggunPjwdWGO7+opD5/0O3E8Q6PeQGYtXGDhL3
+         0e3QGzn1QpH7w==
+Date:   Wed, 24 Mar 2021 21:32:26 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: ensure timely release of driver-allocated resources
+Message-ID: <20210324213225.GD4596@sirena.org.uk>
+References: <YFf2RD931nq3RudJ@google.com>
+ <20210322123707.GB4681@sirena.org.uk>
+ <YFjyJycuAXdTX42D@google.com>
+ <20210323173606.GB5490@sirena.org.uk>
+ <YFo7wkq037P2Dosz@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210324205503.2132082-1-minchan@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="W5WqUoFLvi1M7tJE"
+Content-Disposition: inline
+In-Reply-To: <YFo7wkq037P2Dosz@google.com>
+X-Cookie: The eyes of taxes are upon you.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-24.03.2021 23:55, Minchan Kim пишет:
-> Since CMA is getting used more widely, it's more important to
-> keep monitoring CMA statistics for system health since it's
-> directly related to user experience.
-> 
-> This patch introduces sysfs statistics for CMA, in order to provide
-> some basic monitoring of the CMA allocator.
-> 
->  * the number of CMA page successful allocations
->  * the number of CMA page allocation failures
-> 
-> These two values allow the user to calcuate the allocation
-> failure rate for each CMA area.
-> 
-> e.g.)
->   /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
->   /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
->   /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
-> 
-> The cma_stat was intentionally allocated by dynamic allocation
-> to harmonize with kobject lifetime management.
-> https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
-> 
-> Reported-by: Dmitry Osipenko <digetx@gmail.com>
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
-> Suggested-by: Dmitry Osipenko <digetx@gmail.com>
 
-The tags are incorrect, I haven't suggested this change.
+--W5WqUoFLvi1M7tJE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Suggested-by: John Hubbard <jhubbard@nvidia.com>
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+On Tue, Mar 23, 2021 at 12:04:34PM -0700, Dmitry Torokhov wrote:
+> On Tue, Mar 23, 2021 at 05:36:06PM +0000, Mark Brown wrote:
 
-> Addresses-Coverity: ("Dereference after null check")
+> No it is ordering issue. I do not have a proven real-life example for
+> SPI, but we do have one for I2C:
 
-There are no dereferences fixed by this patch.
+> https://lore.kernel.org/linux-devicetree/20210305041236.3489-7-jeff@labundy.com/
 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
-...
+TBH that looks like a fairly standard case where you probably don't want
+to be using devm for the interrupts in the first place.  Leaving the
+interrupts live after the bus thinks it freed the device doesn't seem
+like the best idea, I'm not sure I'd expect that to work reliably when
+the device tries to call into the bus code to interact with the device
+that the bus thought was already freed anyway.
 
->  #include <linux/debugfs.h>
-> +#include <linux/kobject.h>
-> +
-> +struct cma_kobject {
-> +	struct cma *cma;
-> +	struct kobject kobj;
+If we want this to work reliably it really feels like we should have two
+remove callbacks in the driver core doing this rather than open coding
+in every single bus which is what we'd need to do - this is going to
+affect any bus that does anything other than just call the device's
+remove() callback.  PCI looks like it might have issues too for example,
+and platform does as well and those were simply the first two buses I
+looked at.  Possibly we want a driver core callback which is scheduled
+via devm (remove_devm(), cleanup() or something).  We'd still need to
+move things about in all the buses but it seems preferable to do it that
+way rather than open coding opening a group and the comments about
+what's going on and the ordering requirements everywhere, it's a little
+less error prone going forward.
 
-If you'll place the kobj as the first member of the struct, then
-container_of will be a no-op.
+> Note how dev_pm_domain_detach() jumped ahead of everything, and
+> strictly speaking past this point we can no longer guarantee that we can
+> access the chip and disable it.
 
-...
-> +#include <linux/cma.h>
-> +#include <linux/kernel.h>
-> +#include <linux/slab.h>
-> +
-> +#include "cma.h"
-> +
-> +void cma_sysfs_account_success_pages(struct cma *cma, unsigned long nr_pages)
-> +{
-> +	atomic64_add(nr_pages, &cma->nr_pages_succeeded);
-> +}
-> +
-> +void cma_sysfs_account_fail_pages(struct cma *cma, unsigned long nr_pages)
-> +{
-> +	atomic64_add(nr_pages, &cma->nr_pages_failed);
-> +}
-> +
-> +#define CMA_ATTR_RO(_name) \
-> +	static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+Frankly it looks like the PM domain stuff shouldn't be in the probe()
+and remove() paths at all and this has been bogusly copies from other
+buses, it should be in the device registration paths.  The device is in
+the domain no matter what's going on with binding it.  Given how generic
+code is I'm not even sure why it's in the buses.
 
-nit: #defines and inlined helpers typically are placed at the top of the
-code, after includes.
+--W5WqUoFLvi1M7tJE
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +static inline struct cma *cma_from_kobj(struct kobject *kobj)
-> +{
-> +	struct cma_kobject *cma_kobj = container_of(kobj, struct cma_kobject,
-> +						    kobj);
-> +	struct cma *cma = cma_kobj->cma;
-> +
-> +	return cma;
+-----BEGIN PGP SIGNATURE-----
 
-nit: you can write this as:
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBbr+kACgkQJNaLcl1U
+h9Cragf8C50+G8gLDvLBvBvm+Ko43dFwGt2cZIwVyrwRJleFlHvl1Ao+1xVNBDvW
+h1KWWY1LhXRDrRIxmDPKsstiFb8HSDjmZPea/lZ/OG7E/plYmgtg2VTT2mKEUp06
++vD2ciF90VODAgBqlJX10/kFI7K23S55NW/6J167vKd11kfG5y7KtVBeD2Rp1w2u
+795aNs4LyGKr1DSEq1GMoif1wILj7ruXF5Iq5gZdrIePRW1tQ+3ZriWgr7SXM5i6
+A5c9Q7NaiS4EoOLlxwgd9yltViJmt6ROBLpUM0ASqi+lxtaJ84/V4UgZm3g7h/MH
+vXUBrg/FarZKaHuR8A5q/i1yI3oPTw==
+=uQy2
+-----END PGP SIGNATURE-----
 
-return container_of(kobj, struct cma_kobject, kobj)->cma;
-
-> +}
-> +
-> +static ssize_t alloc_pages_success_show(struct kobject *kobj,
-> +					struct kobj_attribute *attr, char *buf)
-> +{
-> +	struct cma *cma = cma_from_kobj(kobj);
-> +
-> +	return sysfs_emit(buf, "%llu\n",
-> +			atomic64_read(&cma->nr_pages_succeeded));
-
-nit: Algnment isn't right, should be better to write it as single line, IMO.
-
-...
-> +static int __init cma_sysfs_init(void)
-> +{
-> +	struct kobject *cma_kobj_root;
-> +	struct cma_kobject *cma_kobj;
-> +	struct cma *cma;
-> +	int i, err;
-> +
-> +	cma_kobj_root = kobject_create_and_add("cma", mm_kobj);
-> +	if (!cma_kobj_root)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < cma_area_count; i++) {
-> +		cma_kobj = kzalloc(sizeof(*cma_kobj), GFP_KERNEL);
-> +		if (!cma_kobj) {
-> +			err = -ENOMEM;
-> +			goto out;
-> +		}
-> +
-> +		cma = &cma_areas[i];
-> +		cma->cma_kobj = cma_kobj;
-> +		cma_kobj->cma = cma;
-> +		err = kobject_init_and_add(&cma_kobj->kobj, &cma_ktype,
-> +				cma_kobj_root, "%s", cma->name);
-
-nit: Previousy algnment of the code was better here.
-
-Otherwise this is okay to me:
-
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+--W5WqUoFLvi1M7tJE--
