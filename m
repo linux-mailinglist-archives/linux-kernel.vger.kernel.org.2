@@ -2,230 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 068653480E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:47:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E8D3480E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237673AbhCXSrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:47:04 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:57482 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237587AbhCXSqh (ORCPT
+        id S237693AbhCXSrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237678AbhCXSrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:46:37 -0400
-Received: from x64host.home (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A55A120B5681;
-        Wed, 24 Mar 2021 11:46:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A55A120B5681
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616611597;
-        bh=O0Xo222j3HUUqYE2adi3j5rA6WqxDaOVPOHeGftjrmQ=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=VDTbhvoS2Y1trI16NROtHj/UZMJGrJ9AIY7JjFMdJFZIbgs3TAnneRMs/QWcezPCg
-         msx0Km0tj9cpMNoXk8cxR3meguqewfKmXqcKcczV8oZKspBYVP/tiwWAyV9Ng9c0zK
-         TTwgLoyzyPFOFWRfYT897U22AZ2/75Uu9sLwUWCM=
-From:   madvenka@linux.microsoft.com
-To:     mark.rutland@arm.com, broonie@kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        madvenka@linux.microsoft.com
-Subject: [RFC PATCH v1 1/1] arm64: Implement stack trace termination record
-Date:   Wed, 24 Mar 2021 13:46:07 -0500
-Message-Id: <20210324184607.120948-2-madvenka@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210324184607.120948-1-madvenka@linux.microsoft.com>
-References: <b6144b5b1dc66bf775fe66374bba31af7e5f1d54>
- <20210324184607.120948-1-madvenka@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 24 Mar 2021 14:47:09 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC66C0613DF
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:47:08 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u128so3313409ybf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:47:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=rKcNbR+LxTP4j4KG6QhvAtJ90pK5ENJOnzBCgg91Onk=;
+        b=tHmA+b14JUxfjas7gHzGU6el3u3kffAUHUkD+sPuAhvVTGZmCTtIEJYIH1lxofX4qA
+         Fng0ME678PGbmGlVLsIfQgNeZz6r6QSH542Ex82lanWrbWfn5G9aUYLoppQDYIjlO9aD
+         x5HrVs0t+AgFqfePObi9np1MxOJObRbzom4bWTjbV/TcSu4i0ACNCJCG9fwDq2k2cKv2
+         EjW1sPVQcMF/hPRN+lVWQoocH/B5UJK0T9jaeM1+ofq8yESoDPtECfhdsVW22pfdn6tc
+         auPPqHm6ZeoP0dveluUbzuc9a5aHJrlyHpbkZiXIfGaMZ0inBit7rrZCSUJ+NawQWlry
+         GVaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=rKcNbR+LxTP4j4KG6QhvAtJ90pK5ENJOnzBCgg91Onk=;
+        b=H5rsDE/CrbHLZ6hWLho+RGaztcAVSmlviI82MnzLmbE9PBPgIySLU6tQ1IAZvUwlMG
+         yuX3vBlFjUtfA2WWPgDXQkPmXXxTKMh+0KlIXLHPU4it4Lf6Z43uOtK7oI2qrKV/xZv0
+         ic5oMLQjDoyjQl88+8iAt3ov/MOMM5Z6QWVT2ooJpWM9nsXyfZdjw24VqOHk4b6HIbs3
+         gHib0eMXIDXEBy8s9L7aLPycPYlR3zOp9lMnuoaJUjZDAV9o9ZjYQc+e2RrDoXaG4mgx
+         JDXtXc7kt8coIyjnaloGS+8qUTM12bFHQQG1w2hqCIZohEgPMC/rJpr5EsW8MDqIEBit
+         KGPg==
+X-Gm-Message-State: AOAM533rv8gETn8p6LcpYSW6EYuFVKoVi3DgLC1yLA1xHN73KlBzx4eN
+        coTKXyyHCRX5vbgPvGzrp4YB0zyBNOg+v/dcO95h
+X-Google-Smtp-Source: ABdhPJw5jhML1zb+OVbUM2/vBIFd6z6LjwoP90Rg2G6aIKnjRPTyyQjQDggU3LK8VY9QFoCVintXXoK5ZaOWnp3RTHlh
+X-Received: from danielwinkler-linux.mtv.corp.google.com ([2620:15c:202:201:f18d:a314:46c6:7a97])
+ (user=danielwinkler job=sendgmr) by 2002:a25:ba10:: with SMTP id
+ t16mr6021053ybg.222.1616611627661; Wed, 24 Mar 2021 11:47:07 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 11:47:03 -0700
+Message-Id: <20210324114645.v2.1.I53e6be1f7df0be198b7e55ae9fc45c7f5760132d@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2] Bluetooth: Always call advertising disable before setting params
+From:   Daniel Winkler <danielwinkler@google.com>
+To:     linux-bluetooth@vger.kernel.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Daniel Winkler <danielwinkler@google.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+In __hci_req_enable_advertising, the HCI_LE_ADV hdev flag is temporarily
+cleared to allow the random address to be set, which exposes a race
+condition when an advertisement is configured immediately (<10ms) after
+software rotation starts to refresh an advertisement.
 
-The unwinder needs to be able to reliably tell when it has reached the end
-of a stack trace. One way to do this is to have the last stack frame at a
-fixed offset from the base of the task stack. When the unwinder reaches
-that offset, it knows it is done.
+In normal operation, the HCI_LE_ADV flag is updated as follows:
 
-Kernel Tasks
-============
+1. adv_timeout_expire is called, HCI_LE_ADV gets cleared in
+   __hci_req_enable_advertising, but hci_req configures an enable
+   request
+2. hci_req is run, enable callback re-sets HCI_LE_ADV flag
 
-All tasks except the idle task have a pt_regs structure right after the
-task stack. This is called the task pt_regs. The pt_regs structure has a
-special stackframe field. Make this stackframe field the last frame in the
-task stack. This needs to be done in copy_thread() which initializes a new
-task's pt_regs and initial CPU context.
+However, in this race condition, the following occurs:
 
-For the idle task, there is no task pt_regs. For our purpose, we need one.
-So, create a pt_regs just like other kernel tasks and make
-pt_regs->stackframe the last frame in the idle task stack. This needs to be
-done at two places:
+1. adv_timeout_expire is called, HCI_LE_ADV gets cleared in
+   __hci_req_enable_advertising, but hci_req configures an enable
+   request
+2. add_advertising is called, which also calls
+   __hci_req_enable_advertising. Because HCI_LE_ADV was cleared in Step
+   1, no "disable" command is queued.
+3. hci_req for adv_timeout_expire is run, which enables advertising and
+   re-sets HCI_LE_ADV
+4. hci_req for add_advertising is run, but because no "disable" command
+   was queued, we try to set advertising parameters while advertising is
+   active, causing a Command Disallowed error, failing the registration.
 
-	- On the primary CPU, the boot task runs. It calls start_kernel()
-	  and eventually becomes the idle task for the primary CPU. Just
-	  before start_kernel() is called, set up the last frame.
+To resolve the issue, this patch removes the check for the HCI_LE_ADV
+flag, and always queues the "disable" request, since HCI_LE_ADV could be
+very temporarily out-of-sync. According to the spec, there is no harm in
+calling "disable" when advertising is not active.
 
-	- On each secondary CPU, a startup task runs that calls
-	  secondary_startup_kernel() and eventually becomes the idle task
-	  on the secondary CPU. Just before secondary_start_kernel() is
-	  called, set up the last frame.
+An example trace showing the HCI error in setting advertising parameters
+is included below, with some notes annotating the states I mentioned
+above:
 
-User Tasks
-==========
+@ MGMT Command: Add Ext Adv.. (0x0055) plen 35  {0x0001} [hci0]04:05.884
+        Instance: 3
+        Advertising data length: 24
+        16-bit Service UUIDs (complete): 2 entries
+          Location and Navigation (0x1819)
+          Phone Alert Status Service (0x180e)
+        Company: not assigned (65283)
+          Data: 3a3b3c3d3e
+        Service Data (UUID 0x9993): 3132333435
+        Scan response length: 0
+@ MGMT Event: Advertising Ad.. (0x0023) plen 1  {0x0005} [hci0]04:05.885
+        Instance: 3
 
-User tasks are initially set up like kernel tasks when they are created.
-Then, they return to userland after fork via ret_from_fork(). After that,
-they enter the kernel only on an EL0 exception. (In arm64, system calls are
-also EL0 exceptions). The EL0 exception handler stores state in the task
-pt_regs and calls different functions based on the type of exception. The
-stack trace for an EL0 exception must end at the task pt_regs. So, make
-task pt_regs->stackframe as the last frame in the EL0 exception stack.
+=== adv_timeout_expire request starts running. This request was created
+before our add advertising request
+> HCI Event: Command Complete (0x0e) plen 4         #220 [hci0]04:05.993
+      LE Set Advertising Data (0x08|0x0008) ncmd 1
+        Status: Success (0x00)
+< HCI Command: LE Set Scan.. (0x08|0x0009) plen 32  #221 [hci0]04:05.993
+        Length: 24
+        Service Data (UUID 0xabcd): 161718191a1b1c1d1e1f2021222324252627
+> HCI Event: Command Complete (0x0e) plen 4         #222 [hci0]04:05.995
+      LE Set Scan Response Data (0x08|0x0009) ncmd 1
+        Status: Success (0x00)
+< HCI Command: LE Set Adver.. (0x08|0x000a) plen 1  #223 [hci0]04:05.995
+        Advertising: Disabled (0x00)
+> HCI Event: Command Complete (0x0e) plen 4         #224 [hci0]04:05.997
+      LE Set Advertise Enable (0x08|0x000a) ncmd 1
+        Status: Success (0x00)
+< HCI Command: LE Set Adve.. (0x08|0x0006) plen 15  #225 [hci0]04:05.997
+        Min advertising interval: 200.000 msec (0x0140)
+        Max advertising interval: 200.000 msec (0x0140)
+        Type: Connectable undirected - ADV_IND (0x00)
+        Own address type: Public (0x00)
+        Direct address type: Public (0x00)
+        Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
+        Channel map: 37, 38, 39 (0x07)
+        Filter policy: Allow Scan Request, Connect from Any (0x00)
+> HCI Event: Command Complete (0x0e) plen 4         #226 [hci0]04:05.998
+      LE Set Advertising Parameters (0x08|0x0006) ncmd 1
+        Status: Success (0x00)
+< HCI Command: LE Set Adver.. (0x08|0x000a) plen 1  #227 [hci0]04:05.999
+        Advertising: Enabled (0x01)
+> HCI Event: Command Complete (0x0e) plen 4         #228 [hci0]04:06.000
+      LE Set Advertise Enable (0x08|0x000a) ncmd 1
+        Status: Success (0x00)
 
-In summary, task pt_regs->stackframe is where a successful stack trace ends.
+=== Our new add_advertising request starts running
+< HCI Command: Read Local N.. (0x03|0x0014) plen 0  #229 [hci0]04:06.001
+> HCI Event: Command Complete (0x0e) plen 252       #230 [hci0]04:06.005
+      Read Local Name (0x03|0x0014) ncmd 1
+        Status: Success (0x00)
+        Name: Chromebook_FB3D
 
-Stack trace termination
-=======================
+=== Although the controller is advertising, no disable command is sent
+< HCI Command: LE Set Adve.. (0x08|0x0006) plen 15  #231 [hci0]04:06.005
+        Min advertising interval: 200.000 msec (0x0140)
+        Max advertising interval: 200.000 msec (0x0140)
+        Type: Connectable undirected - ADV_IND (0x00)
+        Own address type: Public (0x00)
+        Direct address type: Public (0x00)
+        Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
+        Channel map: 37, 38, 39 (0x07)
+        Filter policy: Allow Scan Request, Connect from Any (0x00)
+> HCI Event: Command Complete (0x0e) plen 4         #232 [hci0]04:06.005
+      LE Set Advertising Parameters (0x08|0x0006) ncmd 1
+        Status: Command Disallowed (0x0c)
 
-In the unwinder, terminate the stack trace successfully when
-task_pt_regs(task)->stackframe is reached. For stack traces in the kernel,
-this will correctly terminate the stack trace at the right place.
-
-However, debuggers terminate the stack trace when FP == 0. In the
-pt_regs->stackframe, the PC is 0 as well. So, stack traces taken in the
-debugger may print an extra record 0x0 at the end. While this is not
-pretty, this does not do any harm. This is a small price to pay for
-having reliable stack trace termination in the kernel.
-
-Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Signed-off-by: Daniel Winkler <danielwinkler@google.com>
 ---
- arch/arm64/kernel/entry.S      |  8 +++++---
- arch/arm64/kernel/head.S       | 28 ++++++++++++++++++++++++----
- arch/arm64/kernel/process.c    |  5 +++++
- arch/arm64/kernel/stacktrace.c |  8 ++++----
- 4 files changed, 38 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index a31a0a713c85..e2dc2e998934 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -261,16 +261,18 @@ alternative_else_nop_endif
- 	stp	lr, x21, [sp, #S_LR]
+Changes in v2:
+- Added btmon snippet showing HCI command failure
+
+ net/bluetooth/hci_request.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 8ace5d34b01efe..2b4b99f4cedf21 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1547,8 +1547,10 @@ void __hci_req_enable_advertising(struct hci_request *req)
+ 	if (!is_advertising_allowed(hdev, connectable))
+ 		return;
  
- 	/*
--	 * For exceptions from EL0, terminate the callchain here.
-+	 * For exceptions from EL0, terminate the callchain here at
-+	 * task_pt_regs(current)->stackframe.
-+	 *
- 	 * For exceptions from EL1, create a synthetic frame record so the
- 	 * interrupted code shows up in the backtrace.
- 	 */
- 	.if \el == 0
--	mov	x29, xzr
-+	stp	xzr, xzr, [sp, #S_STACKFRAME]
- 	.else
- 	stp	x29, x22, [sp, #S_STACKFRAME]
--	add	x29, sp, #S_STACKFRAME
- 	.endif
-+	add	x29, sp, #S_STACKFRAME
- 
- #ifdef CONFIG_ARM64_SW_TTBR0_PAN
- alternative_if_not ARM64_HAS_PAN
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 840bda1869e9..b8003fb9cfa5 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -393,6 +393,28 @@ SYM_FUNC_START_LOCAL(__create_page_tables)
- 	ret	x28
- SYM_FUNC_END(__create_page_tables)
- 
-+	/*
-+	 * The boot task becomes the idle task for the primary CPU. The
-+	 * CPU startup task on each secondary CPU becomes the idle task
-+	 * for the secondary CPU.
-+	 *
-+	 * The idle task does not require pt_regs. But create a dummy
-+	 * pt_regs so that task_pt_regs(idle_task)->stackframe can be
-+	 * set up to be the last frame on the idle task stack just like
-+	 * all the other kernel tasks. This helps the unwinder to
-+	 * terminate the stack trace at a well-known stack offset.
-+	 *
-+	 * Also, set up the last return PC to be ret_from_fork() just
-+	 * like all the other kernel tasks so that the stack trace of
-+	 * all kernel tasks ends with the same function.
+-	if (hci_dev_test_flag(hdev, HCI_LE_ADV))
+-		__hci_req_disable_advertising(req);
++	/* Request that the controller stop advertising. This can be called
++	 * whether or not there is an active advertisement.
 +	 */
-+	.macro setup_last_frame
-+	sub	sp, sp, #PT_REGS_SIZE
-+	stp	xzr, xzr, [sp, #S_STACKFRAME]
-+	add	x29, sp, #S_STACKFRAME
-+	ldr	x30, =ret_from_fork
-+	.endm
-+
- /*
-  * The following fragment of code is executed with the MMU enabled.
-  *
-@@ -447,8 +469,7 @@ SYM_FUNC_START_LOCAL(__primary_switched)
- #endif
- 	bl	switch_to_vhe			// Prefer VHE if possible
- 	add	sp, sp, #16
--	mov	x29, #0
--	mov	x30, #0
-+	setup_last_frame
- 	b	start_kernel
- SYM_FUNC_END(__primary_switched)
++	__hci_req_disable_advertising(req);
  
-@@ -606,8 +627,7 @@ SYM_FUNC_START_LOCAL(__secondary_switched)
- 	cbz	x2, __secondary_too_slow
- 	msr	sp_el0, x2
- 	scs_load x2, x3
--	mov	x29, #0
--	mov	x30, #0
-+	setup_last_frame
- 
- #ifdef CONFIG_ARM64_PTR_AUTH
- 	ptrauth_keys_init_cpu x2, x3, x4, x5
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 325c83b1a24d..7ffa689e8b60 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -437,6 +437,11 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
- 	}
- 	p->thread.cpu_context.pc = (unsigned long)ret_from_fork;
- 	p->thread.cpu_context.sp = (unsigned long)childregs;
-+	/*
-+	 * For the benefit of the unwinder, set up childregs->stackframe
-+	 * as the last frame for the new task.
-+	 */
-+	p->thread.cpu_context.fp = (unsigned long)childregs->stackframe;
- 
- 	ptrace_hw_copy_thread(p);
- 
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index ad20981dfda4..a35b760a1892 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -44,16 +44,16 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
- 	unsigned long fp = frame->fp;
- 	struct stack_info info;
- 
-+	if (!tsk)
-+		tsk = current;
-+
- 	/* Terminal record; nothing to unwind */
--	if (!fp)
-+	if (fp == (unsigned long) task_pt_regs(tsk)->stackframe)
- 		return -ENOENT;
- 
- 	if (fp & 0xf)
- 		return -EINVAL;
- 
--	if (!tsk)
--		tsk = current;
--
- 	if (!on_accessible_stack(tsk, fp, &info))
- 		return -EINVAL;
- 
+ 	/* Clear the HCI_LE_ADV bit temporarily so that the
+ 	 * hci_update_random_address knows that it's safe to go ahead
 -- 
-2.25.1
+2.31.0.291.g576ba9dcdaf-goog
 
