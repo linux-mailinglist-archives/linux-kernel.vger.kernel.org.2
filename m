@@ -2,132 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DA1347FBF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50922347FC3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237238AbhCXRqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:46:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
+        id S237207AbhCXRsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237207AbhCXRp7 (ORCPT
+        with ESMTP id S237048AbhCXRrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:45:59 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B12C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:45:54 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id e7so28546202edu.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 10:45:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gGg9bkmQmUrJEoYO//o+38WT2vp4tDvJ1YauvHLK3w0=;
-        b=FvQlkmFH+tOQEZcfLr3Wsp0O5iLofV5GNtUxR5JyPoM5RLG5vHO0fVqWiayt+ShEiq
-         6fOcX+/MeA/YjC57p8CPqmLsGiGYJLmRra8KGCVinVIoroyCsik+dyIWDBQTzm+1KveI
-         3phrbMjz/WSkCRSI41RGGf+W0S888ZEPvbBpYLoK3GfRyXt5qIb2rnZx9IzUiipPH6jt
-         zozhTgF1kG6BbfK756qY10AQSO1h33cgsHI0KI8CSfl3kX3LQVP7SGifZKvRhMAeV4d9
-         n+fPrenlEA+w78JYAcQjAowrJAfquHk2wnR7aqBvBIpXV+h1NRlYakr+HiETBpvDrqwm
-         drfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gGg9bkmQmUrJEoYO//o+38WT2vp4tDvJ1YauvHLK3w0=;
-        b=V3oGgTMPT9H0G/qG37kE3NRfLyfDrpMsPTddlTglWDZEB2npnHSmQS9LrK5WEPymAC
-         82TZkZN47eMXGQkjKdO56WYikLJrSetFsb1XlYpzxXXJAtDg4EkMl0rLkaVJhwnI+PiG
-         ngJA8ddEgze+3K6PAyBpavEQFtUEV5Sxk2O8pa8+D6qdl0fhSV82+wq9eZe0vhi8fbm1
-         NEWKEyAx7GdT77uTfy1b2zIislBXCXMXdzi/rqIYVgYqJuOp/ZT20/guogc5u/r78tqx
-         P6zOfnpPfzIrFACcXOEeO32VtRGAfCBIegQYxetCQNqSZMjjiG20x4ZcJ4hil5FTu4Sf
-         cHCg==
-X-Gm-Message-State: AOAM53202w8RCBnDuse6P3xgwgoUh+m10h/tA+tn3OW5d4sTNT9ZzHTS
-        WZy2ZhKgM3LFgOUWjBvo1tOyBlUogAbl0rLQDtJKERP6JuJSPA==
-X-Google-Smtp-Source: ABdhPJzYwYdMUsSiaziQc4bOwaRP/eIf8tsvN1+MbwfleMPszchzvYZawTUvBNwx7NAPJcu1DDlQkg6IjQ7Aaw/eheI=
-X-Received: by 2002:aa7:dd05:: with SMTP id i5mr4696265edv.300.1616607953325;
- Wed, 24 Mar 2021 10:45:53 -0700 (PDT)
+        Wed, 24 Mar 2021 13:47:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347B1C061763;
+        Wed, 24 Mar 2021 10:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=Fe2Ntedj1fEygPskrv8dOfCakXuESrZ2efaZ4udfr00=; b=Nz9W58huRMptcMqar1qWusPP8x
+        WbBiSxSxCx7r3sRMO79QKM/JJ9tIdVyagEAoHazgqR+LVnZKbD7S5wbP+uxVNcEX5VzTL01rfBWB+
+        5y31FiAhfLQK8yFBx3D2xRspfc1TIKkGEc58z1rLY7dfQkpF7XbsO+QyX8e5EgYj3zc295QDVNcxn
+        SvZW6ZyhGstCjL88jh8fKrqqdATFODyGaKuoDmsDHMF/oesZJIIKRSPKeTehz+BZHdSUJl9Z8Qo5H
+        Cz3HUPRMThpLUJko3I4+gokI3QcpyzPvXABQXDSd4mWdlYpjM/ajH5g47qA2E4QrYCadGsYGggWVu
+        4Xjdy3Vw==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lP7aI-00BeGN-Jz; Wed, 24 Mar 2021 17:46:30 +0000
+Subject: Re: [PATCH] docs: rbtree.rst: Fix a typo
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, corbet@lwn.net,
+        walken@google.com, grandmaster@al2klimov.de, willy@infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210324080046.20709-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5ea2fe0d-1013-d526-b3d4-47fdcfa8f396@infradead.org>
+Date:   Wed, 24 Mar 2021 10:46:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com>
- <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
-In-Reply-To: <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 24 Mar 2021 10:45:42 -0700
-Message-ID: <CAPcyv4jidaz=33oWFMB_aBPtYDLe-AA_NP-k_pfGADVt=w5Vng@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm/devmap: Remove pgmap accounting in the
- get_user_pages_fast() path
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210324080046.20709-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 3:02 AM Joao Martins <joao.m.martins@oracle.com> wrote:
->
-> On 3/18/21 4:08 AM, Dan Williams wrote:
-> > Now that device-dax and filesystem-dax are guaranteed to unmap all user
-> > mappings of devmap / DAX pages before tearing down the 'struct page'
-> > array, get_user_pages_fast() can rely on its traditional synchronization
-> > method "validate_pte(); get_page(); revalidate_pte()" to catch races with
-> > device shutdown. Specifically the unmap guarantee ensures that gup-fast
-> > either succeeds in taking a page reference (lock-less), or it detects a
-> > need to fall back to the slow path where the device presence can be
-> > revalidated with locks held.
->
-> [...]
->
-> > @@ -2087,21 +2078,26 @@ static int gup_pte_range(pmd_t pmd, unsigned long addr, unsigned long end,
-> >  #endif /* CONFIG_ARCH_HAS_PTE_SPECIAL */
-> >
-> >  #if defined(CONFIG_ARCH_HAS_PTE_DEVMAP) && defined(CONFIG_TRANSPARENT_HUGEPAGE)
-> > +
-> >  static int __gup_device_huge(unsigned long pfn, unsigned long addr,
-> >                            unsigned long end, unsigned int flags,
-> >                            struct page **pages, int *nr)
-> >  {
-> >       int nr_start = *nr;
-> > -     struct dev_pagemap *pgmap = NULL;
-> >
-> >       do {
-> > -             struct page *page = pfn_to_page(pfn);
-> > +             struct page *page;
-> > +
-> > +             /*
-> > +              * Typically pfn_to_page() on a devmap pfn is not safe
-> > +              * without holding a live reference on the hosting
-> > +              * pgmap. In the gup-fast path it is safe because any
-> > +              * races will be resolved by either gup-fast taking a
-> > +              * reference or the shutdown path unmapping the pte to
-> > +              * trigger gup-fast to fall back to the slow path.
-> > +              */
-> > +             page = pfn_to_page(pfn);
-> >
-> > -             pgmap = get_dev_pagemap(pfn, pgmap);
-> > -             if (unlikely(!pgmap)) {
-> > -                     undo_dev_pagemap(nr, nr_start, flags, pages);
-> > -                     return 0;
-> > -             }
-> >               SetPageReferenced(page);
-> >               pages[*nr] = page;
-> >               if (unlikely(!try_grab_page(page, flags))) {
->
-> So for allowing FOLL_LONGTERM[0] would it be OK if we used page->pgmap after
-> try_grab_page() for checking pgmap type to see if we are in a device-dax
-> longterm pin?
+On 3/24/21 1:00 AM, Bhaskar Chowdhury wrote:
+> 
+> s/maintanence/maintenance/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-So, there is an effort to add a new pte bit p{m,u}d_special to disable
-gup-fast for huge pages [1]. I'd like to investigate whether we could
-use devmap + special as an encoding for "no longterm" and never
-consult the pgmap in the gup-fast path.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-[1]: https://lore.kernel.org/linux-mm/a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org/
+> ---
+>  Documentation/core-api/rbtree.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/core-api/rbtree.rst b/Documentation/core-api/rbtree.rst
+> index 6b88837fbf82..ed1a9fbc779e 100644
+> --- a/Documentation/core-api/rbtree.rst
+> +++ b/Documentation/core-api/rbtree.rst
+> @@ -201,7 +201,7 @@ search trees, such as for traversals or users relying on a the particular
+>  order for their own logic. To this end, users can use 'struct rb_root_cached'
+>  to optimize O(logN) rb_first() calls to a simple pointer fetch avoiding
+>  potentially expensive tree iterations. This is done at negligible runtime
+> -overhead for maintanence; albeit larger memory footprint.
+> +overhead for maintenance; albeit larger memory footprint.
+> 
+>  Similar to the rb_root structure, cached rbtrees are initialized to be
+>  empty via::
+> --
+
+
+-- 
+~Randy
+
