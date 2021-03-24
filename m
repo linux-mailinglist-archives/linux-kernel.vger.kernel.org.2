@@ -2,72 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D2C347328
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F373473EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhCXICy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:02:54 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13677 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhCXICc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:02:32 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F50yP2JmSznVBR;
-        Wed, 24 Mar 2021 15:59:57 +0800 (CST)
-Received: from hulk-robot-4.huawei.com (10.175.124.27) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 24 Mar 2021 16:02:19 +0800
-From:   Zou Wei <zou_wei@huawei.com>
-To:     <robinmholt@gmail.com>, <steve.wahl@hpe.com>, <arnd@arndb.de>,
-        <mike.travis@hpe.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] misc: sgi-xp: xp_main: make some symbols static
-Date:   Wed, 24 Mar 2021 08:48:23 +0000
-Message-ID: <20210324084823.7393-1-zou_wei@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S234366AbhCXIts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:49:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233665AbhCXIth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 04:49:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36334619F3;
+        Wed, 24 Mar 2021 08:49:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616575776;
+        bh=2BfN8HjU6Yqu1jm8Q2KPZxQUG2HzfOk+giTYXadvfxk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i68Wn4kRgN9HOH4r+Hu9KZ4lEeWOj/4xq/sEICeE+8Slo08DZslqXbDQSYl7Ws/6N
+         9ok96yCg4UHx6go58CHP092FvzvwVYJzPKkqUnC7y5PP+KncLkFRJZEJ76rowpo8oV
+         Yt62DpXuYcDXrUB9Im29qd3Zkpzb4chGE1FWE0GM=
+Date:   Wed, 24 Mar 2021 09:49:30 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        git@xilinx.com, saikrishna12468@gmail.com
+Subject: Re: [PATCH v4 3/3] pinctrl: Add Xilinx ZynqMP pinctrl driver support
+Message-ID: <YFr9GqNmYuEG2OvZ@kroah.com>
+References: <1615969516-87663-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1615969516-87663-4-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <YFnwN6mqXml5xdR3@kroah.com>
+ <e0a2c5b6-ff05-644c-8c88-b614a37b4929@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0a2c5b6-ff05-644c-8c88-b614a37b4929@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sparse tool complains as follows:
+On Wed, Mar 24, 2021 at 09:29:12AM +0100, Michal Simek wrote:
+> On 3/23/21 2:42 PM, Greg Kroah-Hartman wrote:
+> > On Wed, Mar 17, 2021 at 01:55:16PM +0530, Sai Krishna Potthuri wrote:
+> >> Adding pinctrl driver for Xilinx ZynqMP platform.
+> >> This driver queries pin information from firmware and registers
+> >> pin control accordingly.
+> >>
+> >> Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+> >> ---
+> >>  drivers/pinctrl/Kconfig          |   13 +
+> >>  drivers/pinctrl/Makefile         |    1 +
+> >>  drivers/pinctrl/pinctrl-zynqmp.c | 1030 ++++++++++++++++++++++++++++++
+> >>  3 files changed, 1044 insertions(+)
+> >>  create mode 100644 drivers/pinctrl/pinctrl-zynqmp.c
+> >>
+> >> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
+> >> index 815095326e2d..25d3c7208975 100644
+> >> --- a/drivers/pinctrl/Kconfig
+> >> +++ b/drivers/pinctrl/Kconfig
+> >> @@ -341,6 +341,19 @@ config PINCTRL_ZYNQ
+> >>  	help
+> >>  	  This selects the pinctrl driver for Xilinx Zynq.
+> >>  
+> >> +config PINCTRL_ZYNQMP
+> >> +	bool "Pinctrl driver for Xilinx ZynqMP"
+> > 
+> > Please make this work as a module.
+> 
+> The most of pinctrl drivers are builtin modules now which is not excuse
+> it is just fact.
+> $ git grep module_pla drivers/pinctrl/ | wc -l
+> 40
+> $ git grep  builtin_pla drivers/pinctrl/ | wc -l
+> 64
 
-drivers/misc/sgi-xp/xp_main.c:24:22: warning:
- symbol 'xp_dbg_name' was not declared. Should it be static?
-drivers/misc/sgi-xp/xp_main.c:28:15: warning:
- symbol 'xp_dbg_subname' was not declared. Should it be static?
+For new ones, we can do better, don't make us have to go back and fix
+this up later.
 
-These symbols are not used outside of xp_main.c, so this
-commit marks them static.
+> Also at least last 3 pinctrl drivers which have been merged are not modules.
+> d4c34d09ab03 ("pinctrl: Add RISC-V Canaan Kendryte K210 FPIOA driver")
+> 7e5ea974e61c ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for
+> Microsemi Serial GPIO")
+> a68a7844264e ("pinctrl: visconti: Add Toshiba Visconti SoCs pinctrl
+> support")
+> 
+> None is saying that it can't be done but that cases where you use
+> pinctrl as module are really very limited. When you start to use pinctrl
+> and its functionality you need to have it as the part of the kernel to
+> be to get console, mmc, ethernet, usb, etc.
+> 
+> That's why I would like to know what functionality and use case you have
+> in mind that this driver should be made module.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zou Wei <zou_wei@huawei.com>
----
- drivers/misc/sgi-xp/xp_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The "functionality" of building a kernel image that works on all
+hardware types.  Just like x86-64 has been for a very long time :)
 
-diff --git a/drivers/misc/sgi-xp/xp_main.c b/drivers/misc/sgi-xp/xp_main.c
-index cf2965aa5c05..87d156c15f35 100644
---- a/drivers/misc/sgi-xp/xp_main.c
-+++ b/drivers/misc/sgi-xp/xp_main.c
-@@ -21,11 +21,11 @@
- 
- /* define the XP debug device structures to be used with dev_dbg() et al */
- 
--struct device_driver xp_dbg_name = {
-+static struct device_driver xp_dbg_name = {
- 	.name = "xp"
- };
- 
--struct device xp_dbg_subname = {
-+static struct device xp_dbg_subname = {
- 	.init_name = "",		/* set to "" */
- 	.driver = &xp_dbg_name
- };
--- 
-2.17.1
+thanks,
 
+greg k-h
