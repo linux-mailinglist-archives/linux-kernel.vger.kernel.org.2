@@ -2,133 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77A6347594
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96074347577
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 11:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235553AbhCXKNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 06:13:32 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:36596 "EHLO inva021.nxp.com"
+        id S236306AbhCXKJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 06:09:06 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55104 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230096AbhCXKNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 06:13:05 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id B17DB202743;
-        Wed, 24 Mar 2021 11:13:03 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A7526202740;
-        Wed, 24 Mar 2021 11:12:59 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 63D8040341;
-        Wed, 24 Mar 2021 11:12:36 +0100 (CET)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] ASoC: fsl_micfil: Don't use devm_regmap_init_mmio_clk
-Date:   Wed, 24 Mar 2021 17:58:48 +0800
-Message-Id: <1616579928-22428-7-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1616579928-22428-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S235379AbhCXKIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 06:08:44 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lP0RM-0008Sw-02; Wed, 24 Mar 2021 11:08:40 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 3EDC2C1C69; Wed, 24 Mar 2021 10:59:47 +0100 (CET)
+Date:   Wed, 24 Mar 2021 10:59:47 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 04/10] MIPS: disable CONFIG_IDE in sb1250_swarm_defconfig
+Message-ID: <20210324095947.GC2378@alpha.franken.de>
+References: <20210318045706.200458-1-hch@lst.de>
+ <20210318045706.200458-5-hch@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318045706.200458-5-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there is power domain bind with ipg_clk clock,
+On Thu, Mar 18, 2021 at 05:57:00AM +0100, Christoph Hellwig wrote:
+> sb1250_swarm_defconfig enables CONFIG_IDE but no actual host controller
+> driver, so just drop CONFIG_IDE, CONFIG_BLK_DEV_IDECD and
+> CONFIG_BLK_DEV_IDETAPE as they are useless.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/mips/configs/sb1250_swarm_defconfig | 3 ---
+>  1 file changed, 3 deletions(-)
 
-The call flow:
-devm_regmap_init_mmio_clk
-   - clk_prepare()
-      - clk_pm_runtime_get()
+applied to mips-next.
 
-cause the power domain of clock always be enabled after
-regmap_init(). which impact the power consumption.
+Thomas.
 
-So use devm_regmap_init_mmio instead of
-devm_regmap_init_mmio_clk,but explicitly enable
-clock when it is used.
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Reviewed-by: Viorel Suman <viorel.suman@nxp.com>
----
- sound/soc/fsl/fsl_micfil.c | 25 ++++++++++++++++++++-----
- 1 file changed, 20 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/fsl/fsl_micfil.c b/sound/soc/fsl/fsl_micfil.c
-index 2b9edd4bb94d..3cf789ed6cbe 100644
---- a/sound/soc/fsl/fsl_micfil.c
-+++ b/sound/soc/fsl/fsl_micfil.c
-@@ -31,6 +31,7 @@ struct fsl_micfil {
- 	struct platform_device *pdev;
- 	struct regmap *regmap;
- 	const struct fsl_micfil_soc_data *soc;
-+	struct clk *busclk;
- 	struct clk *mclk;
- 	struct snd_dmaengine_dai_dma_data dma_params_rx;
- 	unsigned int dataline;
-@@ -660,16 +661,22 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 		return PTR_ERR(micfil->mclk);
- 	}
- 
-+	micfil->busclk = devm_clk_get(&pdev->dev, "ipg_clk");
-+	if (IS_ERR(micfil->busclk)) {
-+		dev_err(&pdev->dev, "failed to get ipg clock: %ld\n",
-+			PTR_ERR(micfil->busclk));
-+		return PTR_ERR(micfil->busclk);
-+	}
-+
- 	/* init regmap */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	regs = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
- 
--	micfil->regmap = devm_regmap_init_mmio_clk(&pdev->dev,
--						   "ipg_clk",
--						   regs,
--						   &fsl_micfil_regmap_config);
-+	micfil->regmap = devm_regmap_init_mmio(&pdev->dev,
-+					       regs,
-+					       &fsl_micfil_regmap_config);
- 	if (IS_ERR(micfil->regmap)) {
- 		dev_err(&pdev->dev, "failed to init MICFIL regmap: %ld\n",
- 			PTR_ERR(micfil->regmap));
-@@ -729,6 +736,7 @@ static int fsl_micfil_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, micfil);
- 
- 	pm_runtime_enable(&pdev->dev);
-+	regcache_cache_only(micfil->regmap, true);
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev, &fsl_micfil_component,
- 					      &fsl_micfil_dai, 1);
-@@ -752,6 +760,7 @@ static int __maybe_unused fsl_micfil_runtime_suspend(struct device *dev)
- 	regcache_cache_only(micfil->regmap, true);
- 
- 	clk_disable_unprepare(micfil->mclk);
-+	clk_disable_unprepare(micfil->busclk);
- 
- 	return 0;
- }
-@@ -761,10 +770,16 @@ static int __maybe_unused fsl_micfil_runtime_resume(struct device *dev)
- 	struct fsl_micfil *micfil = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = clk_prepare_enable(micfil->mclk);
-+	ret = clk_prepare_enable(micfil->busclk);
- 	if (ret < 0)
- 		return ret;
- 
-+	ret = clk_prepare_enable(micfil->mclk);
-+	if (ret < 0) {
-+		clk_disable_unprepare(micfil->busclk);
-+		return ret;
-+	}
-+
- 	regcache_cache_only(micfil->regmap, false);
- 	regcache_mark_dirty(micfil->regmap);
- 	regcache_sync(micfil->regmap);
 -- 
-2.27.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
