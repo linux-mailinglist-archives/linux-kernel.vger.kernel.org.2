@@ -2,135 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E8934752C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781B034752F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235282AbhCXJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:56:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46972 "EHLO
+        id S235360AbhCXJ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233094AbhCXJ4r (ORCPT
+        with ESMTP id S235338AbhCXJ5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:56:47 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0995C061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:56:46 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id x7so1301731wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:56:46 -0700 (PDT)
+        Wed, 24 Mar 2021 05:57:16 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6ECC0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:57:16 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id u5so31812519ejn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 02:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zd3a1Pha0wUYu2R6zdy8s+B646l7d3Lvae5TuckR0EY=;
-        b=U0que7K2B4rkwiuPtiy5Z9egdK8jGRMux9SNxVBJwoKA/8fIqWHNOiXgZdOQBD4wBF
-         R4HV7PdWRSTicWsPpeKx1pIetzbOCPRKf4L0MR10b5XVl7hcx7e1IarY+Kft4dwbqGoQ
-         l5M1M5De9IAoENpbX1pZ/6jQVF0BtMU/0AeuQ=
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ui3KK3mzwqbV9eLNTYNhSvBlcu0bQi8tP4Sx/vLrsFM=;
+        b=RW6zzpKKOYU4TonZHWyHu86rXkdv9zk1Kn+dfUmAdQHSnL8x7WIErObnzx9/rde0cl
+         R+mxfCOCbfNcgLEiAGTKpJyJgLqMS6bNhmImpdWBezU4dPQpX08sZi9eQdcsYiiyIJ2U
+         Im+zCCfJX8PghtZ0tLRFjRwUsEypOLYW/flzA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=zd3a1Pha0wUYu2R6zdy8s+B646l7d3Lvae5TuckR0EY=;
-        b=DshlLe1pRoN8ziSX6p4Q6U4sMxc1vFa84dhhqeUdext9wa74m39NJEWyjP4ph0JMmp
-         rAo4TMsAg4NdJkMq2o8yQMU2gyJWH+J7sp+f/pkaa+G2PvcuDWjg/KEw/Xp/B9rJPkiM
-         vWyqxTP62EcTCtZTfHTEJxImMYLM0mQwBcLRh8fZBMhhxvHwiRaUjxpdmalvnB/VgB6W
-         NYPbuCPiUhalqEcN0oiMb+EPgYM6apZq5kCYpX1SfUOgsFeyAqPbD4wYhDsxkYFK/4GZ
-         JJB6dGskFrtDjNIW5MJRxA+30PKCulJX+1h6f24vifesCrE9EPMdfC9e8eYArFl9L05m
-         /Opg==
-X-Gm-Message-State: AOAM53173oyV600voVT0yx8uyeTM2nPRsiAIrCycVGo6wz0/QJkH7tpE
-        cZtGmVrFpB58IfdFJbRkcf7sQw==
-X-Google-Smtp-Source: ABdhPJw4rrg4IlYNXkGJgQdvOCEud4BerOq8bkSdWc8ME0hAviDkH4obUmQPJdQhxUmV4BS7vFMCpQ==
-X-Received: by 2002:a05:6000:181b:: with SMTP id m27mr2571542wrh.363.1616579805501;
-        Wed, 24 Mar 2021 02:56:45 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id a131sm1771261wmc.48.2021.03.24.02.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 02:56:45 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 10:56:43 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, David Airlie <airlied@linux.ie>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Koenig <christian.koenig@amd.com>
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-Message-ID: <YFsM23t2niJwhpM/@phenom.ffwll.local>
-Mail-Followup-To: Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= <thomas_os@shipmail.org>,
-        Jason Gunthorpe <jgg@nvidia.com>, David Airlie <airlied@linux.ie>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Christian Koenig <christian.koenig@amd.com>
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-2-thomas_os@shipmail.org>
- <YFnST5VLcEgv9q+s@phenom.ffwll.local>
- <314fc020-d243-dbf0-acb3-ecfcc9c2443c@shipmail.org>
- <20210323163715.GJ2356281@nvidia.com>
- <5824b731-ca6a-92fd-e314-d986b6a7b101@shipmail.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ui3KK3mzwqbV9eLNTYNhSvBlcu0bQi8tP4Sx/vLrsFM=;
+        b=Bl9OGLYmwR8Gq4AHwTLNcPQ8X8HuAP8Lc3yjqFZ8kRErqoo2XSD1Avb+huTiJRM85Y
+         Si2SpRtoEnOYJRFE20XM/w0+1w3qlamAi53NYfjX4Cp5WTORzRk9uGw71SiZfCIyQ5DL
+         W/9yszw11rpRW89T7WZ0mt8fwpoy8cmSt0gQqVT/YbUoqDpLKthbonNqB7VX+dSkRDxJ
+         KLRNRV/MeMESoBpdCA41TF14UWx7rmRC4Gv4P7/+O7KPCoMCaHtHBWq4uBE1s4Y6ORwl
+         9wLDRbsaGTUphlAtu+DLMGKnORmG8p1wjnoAioNFmfSnTVeQvlEFLPVqvv55fLQMnGi8
+         b8xg==
+X-Gm-Message-State: AOAM533nlYabqbaUNKC5LioST/yKJGlReK3gkZtiiGx3ZkrwS5d7JbmD
+        AXSFXQVZCEgAzAzAyQD+DLcHxA==
+X-Google-Smtp-Source: ABdhPJzkMnHFljq3UR0armBnzHqGg/eD2m9c6+lIJW0if0dtjP6SqF8bGhC7DR7RD/5M3+15p/J/xg==
+X-Received: by 2002:a17:906:2710:: with SMTP id z16mr2752772ejc.176.1616579834782;
+        Wed, 24 Mar 2021 02:57:14 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id hd37sm645541ejc.114.2021.03.24.02.57.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 02:57:14 -0700 (PDT)
+Subject: Re: [PATCH v2 04/12] module: Add printk format to add module build ID
+ to stacktraces
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+References: <20210324020443.1815557-1-swboyd@chromium.org>
+ <20210324020443.1815557-5-swboyd@chromium.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <6dfb8ca2-20f3-e58a-ad6b-db6a6472afe0@rasmusvillemoes.dk>
+Date:   Wed, 24 Mar 2021 10:57:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5824b731-ca6a-92fd-e314-d986b6a7b101@shipmail.org>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210324020443.1815557-5-swboyd@chromium.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 06:06:53PM +0100, Thomas Hellström (Intel) wrote:
-> 
-> On 3/23/21 5:37 PM, Jason Gunthorpe wrote:
-> > On Tue, Mar 23, 2021 at 05:34:51PM +0100, Thomas Hellström (Intel) wrote:
-> > 
-> > > > > @@ -210,6 +211,20 @@ static vm_fault_t ttm_bo_vm_insert_huge(struct vm_fault *vmf,
-> > > > >    	if ((pfn & (fault_page_size - 1)) != 0)
-> > > > >    		goto out_fallback;
-> > > > > +	/*
-> > > > > +	 * Huge entries must be special, that is marking them as devmap
-> > > > > +	 * with no backing device map range. If there is a backing
-> > > > > +	 * range, Don't insert a huge entry.
-> > > > > +	 * If this check turns out to be too much of a performance hit,
-> > > > > +	 * we can instead have drivers indicate whether they may have
-> > > > > +	 * backing device map ranges and if not, skip this lookup.
-> > > > > +	 */
-> > > > I think we can do this statically:
-> > > > - if it's system memory we know there's no devmap for it, and we do the
-> > > >     trick to block gup_fast
-> > > Yes, that should work.
-> > > > - if it's iomem, we know gup_fast wont work anyway if don't set PFN_DEV,
-> > > >     so might as well not do that
-> > > I think gup_fast will unfortunately mistake a huge iomem page for an
-> > > ordinary page and try to access a non-existant struct page for it, unless we
-> > > do the devmap trick.
-> > > 
-> > > And the lookup would then be for the rare case where a driver would have
-> > > already registered a dev_pagemap for an iomem area which may also be mapped
-> > > through TTM (like the patch from Felix a couple of weeks ago). If a driver
-> > > can promise not to do that, then we can safely remove the lookup.
-> > Isn't the devmap PTE flag arch optional? Does this fall back to not
-> > using huge pages on arches that don't support it?
-> 
-> Good point. No, currently it's only conditioned on transhuge page support.
-> Need to condition it on also devmap support.
-> 
-> > 
-> > Also, I feel like this code to install "pte_special" huge pages does
-> > not belong in the drm subsystem..
-> 
-> I could add helpers in huge_memory.c:
-> 
-> vmf_insert_pfn_pmd_prot_special() and
-> vmf_insert_pfn_pud_prot_special()
+On 24/03/2021 03.04, Stephen Boyd wrote:
 
-The somewhat annoying thing is that we'd need an error code so we fall
-back to pte fault handling. That's at least my understanding of how
-pud/pmd fault handling works. Not sure how awkward that is going to be
-with the overall fault handling flow.
+> @@ -2778,6 +2793,10 @@ static inline void layout_symtab(struct module *mod, struct load_info *info)
+>  static void add_kallsyms(struct module *mod, const struct load_info *info)
+>  {
+>  }
+> +
+> +static void init_build_id(struct module *mod, const struct load_info *info)
+> +{
+> +}
+>  #endif /* CONFIG_KALLSYMS */
+>  
+>  static void dynamic_debug_setup(struct module *mod, struct _ddebug *debug, unsigned int num)
+> @@ -4004,6 +4023,7 @@ static int load_module(struct load_info *info, const char __user *uargs,
+>  		goto free_arch_cleanup;
+>  	}
+>  
+> +	init_build_id(mod, info);
+>  	dynamic_debug_setup(mod, info->debug, info->num_debug);
+>  
+>  	/* Ftrace init must be called in the MODULE_STATE_UNFORMED state */
+> @@ -4235,7 +4255,7 @@ void * __weak dereference_module_function_descriptor(struct module *mod,
+>  const char *module_address_lookup(unsigned long addr,
+>  			    unsigned long *size,
+>  			    unsigned long *offset,
+> -			    char **modname,
+> +			    char **modname, unsigned char **modbuildid,
 
-But aside from that I think this makes tons of sense.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+It's an existing defect with modname, but surely this should take a
+"const unsigned char **modbuildid", no?
+
+>  			    char *namebuf)
+>  {
+>  	const char *ret = NULL;
+> @@ -4246,6 +4266,8 @@ const char *module_address_lookup(unsigned long addr,
+>  	if (mod) {
+>  		if (modname)
+>  			*modname = mod->name;
+> +		if (modbuildid)
+> +			*modbuildid = mod->build_id;
+>  
+>  		ret = find_kallsyms_symbol(mod, addr, size, offset);
+>  	}
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 41ddc353ebb8..9cd62e84e4aa 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -961,13 +961,15 @@ char *symbol_string(char *buf, char *end, void *ptr,
+>  	char sym[KSYM_SYMBOL_LEN];
+>  #endif
+>  
+> -	if (fmt[1] == 'R')
+> +	if (fmt[1] == 'R' || fmt[1] == 'r')
+>  		ptr = __builtin_extract_return_addr(ptr);
+>  	value = (unsigned long)ptr;
+>  
+>  #ifdef CONFIG_KALLSYMS
+>  	if (*fmt == 'B')
+>  		sprint_backtrace(sym, value);
+> +	else if (*fmt == 'S' && (fmt[1] == 'b' || fmt[1] == 'r'))
+> +		sprint_symbol_stacktrace(sym, value);
+>  	else if (*fmt != 's')
+>  		sprint_symbol(sym, value);
+>  	else
+> @@ -2129,6 +2131,8 @@ early_param("no_hash_pointers", no_hash_pointers_enable);
+>   * - 'S' For symbolic direct pointers (or function descriptors) with offset
+>   * - 's' For symbolic direct pointers (or function descriptors) without offset
+>   * - '[Ss]R' as above with __builtin_extract_return_addr() translation
+> + * - '[Ss]r' as above with __builtin_extract_return_addr() translation and module build ID
+> + * - '[Ss]b' as above with module build ID (for use in backtraces)
+
+The code doesn't quite match the comment. The lowercase s is not handled
+(i.e., there's no way to say "without offset, with build ID"). You don't
+have to fix the code to support that right now, the whole kallsyms
+vsprintf code needs to be reworked inside-out anyway (having vsnprint
+call sprint_symbol* which builds the output using snprintf() calls makes
+me cringe), so please just replace [Ss] by S to make the comment match
+the code - I notice that you did only document the S variant in
+printk-formats.rst.
+
+Is there any reason you didn't just make b an optional flag that could
+be specified with or without R? I suppose the parsing is more difficult
+with several orthogonal flags (see escaped_string()), but it's a little
+easier to understand. Dunno, it's not like we're gonna think of 10 other
+things that could be printed for a symbol, so perhaps it's fine.
+
+Rasmus
