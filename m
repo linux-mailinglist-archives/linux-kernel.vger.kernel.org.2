@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13BDE347430
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D08334742E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 10:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbhCXJK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 05:10:26 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14458 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234263AbhCXJJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 05:09:55 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F52Sl4svczwPvB;
-        Wed, 24 Mar 2021 17:07:51 +0800 (CST)
-Received: from huawei.com (10.67.174.47) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Mar 2021
- 17:09:44 +0800
-From:   He Ying <heying24@huawei.com>
-To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <a.zummo@towertech.it>,
-        <alexandre.belloni@bootlin.com>, <christophe.leroy@csgroup.eu>,
-        <npiggin@gmail.com>, <msuchanek@suse.de>, <heying24@huawei.com>,
-        <tglx@linutronix.de>, <peterz@infradead.org>,
-        <geert@linux-m68k.org>, <geert+renesas@glider.be>,
-        <kernelfans@gmail.com>, <frederic@kernel.org>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rtc@vger.kernel.org>
-Subject: [PATCH V3 -next] powerpc: kernel/time.c - cleanup warnings
-Date:   Wed, 24 Mar 2021 05:09:39 -0400
-Message-ID: <20210324090939.143477-1-heying24@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S234507AbhCXJJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 05:09:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234461AbhCXJJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 05:09:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9EC619C9;
+        Wed, 24 Mar 2021 09:09:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616576985;
+        bh=jnRQ8XZk0O0MVorAp4ULBhBFeVXaOntVyd1dhKGu/08=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J9SxtN4tax4jDCHzd7N2lDjj/TnkkirePg7ebZQZFE14lMDngpFfc1MMbZ6M5yE8r
+         ZU6Ta8fVY0MHn6l1LHxaI6D2AAMXJlLAkM4TVQ5Dvcu6KbTC2pPHoApRXO+X5bo1Sa
+         tA9tgMnawow1GlrTJSK3cCEP0Hc+v8OgITKyw6liFGLoCmb3Xsq3zNKImNxbU1j76c
+         ES1vqy2c4TYHlx3Yr/N2bgG7Ub5zFG3H2ThQztLUD2uL8cHZGyeKN3w/dhCLPeG668
+         ahyRkW0k2tmt8dAU/PcQTOokqNikXMrX0K+wQvEGZCDo7QC80LmKqiBIpyAhHmBAUG
+         4TKpcgPS9iGHw==
+Received: by pali.im (Postfix)
+        id 6F3F2A7E; Wed, 24 Mar 2021 10:09:42 +0100 (CET)
+Date:   Wed, 24 Mar 2021 10:09:42 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com,
+        Krzysztof Wilczyski <kw@linux.com>
+Subject: Re: [v9,2/7] PCI: Export pci_pio_to_address() for module use
+Message-ID: <20210324090942.kmhxnxzm7tz3ynuy@pali>
+References: <20210324030510.29177-1-jianjun.wang@mediatek.com>
+ <20210324030510.29177-3-jianjun.wang@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.47]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324030510.29177-3-jianjun.wang@mediatek.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We found these warnings in arch/powerpc/kernel/time.c as follows:
-warning: symbol 'decrementer_max' was not declared. Should it be static?
-warning: symbol 'rtc_lock' was not declared. Should it be static?
-warning: symbol 'dtl_consumer' was not declared. Should it be static?
+On Wednesday 24 March 2021 11:05:05 Jianjun Wang wrote:
+> This interface will be used by PCI host drivers for PIO translation,
+> export it to support compiling those drivers as kernel modules.
+> 
+> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
+> ---
+>  drivers/pci/pci.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 16a17215f633..12bba221c9f2 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -4052,6 +4052,7 @@ phys_addr_t pci_pio_to_address(unsigned long pio)
+>  
+>  	return address;
+>  }
+> +EXPORT_SYMBOL(pci_pio_to_address);
 
-Declare 'decrementer_max' in powerpc asm/time.h.
-Include linux/mc146818rtc.h in powerpc kernel/time.c where 'rtc_lock'
-is declared. And remove duplicated declaration of 'rtc_lock' in powerpc
-platforms/chrp/time.c because it has included linux/mc146818rtc.h.
-Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
-is declared there.
+Hello! I'm not sure if EXPORT_SYMBOL is correct because file has GPL-2.0
+header. Should not be in this case used only EXPORT_SYMBOL_GPL? Maybe
+other people would know what is correct?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
----
-V2:
-- Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
-  rtc_lock in powerpc asm/time.h.
-V3:
-- Recover to V1, that is including linux/mc146818rtc.h in powerpc
-  kernel/time.c. And remove duplicated declaration of 'rtc_lock' in powerpc
-  platforms/chrp/time.c because it has included linux/mc146818rtc.h.
-
- arch/powerpc/include/asm/time.h    | 1 +
- arch/powerpc/kernel/time.c         | 9 ++++-----
- arch/powerpc/platforms/chrp/time.c | 2 --
- 3 files changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/arch/powerpc/include/asm/time.h b/arch/powerpc/include/asm/time.h
-index 8dd3cdb25338..2cd2b50bedda 100644
---- a/arch/powerpc/include/asm/time.h
-+++ b/arch/powerpc/include/asm/time.h
-@@ -22,6 +22,7 @@ extern unsigned long tb_ticks_per_jiffy;
- extern unsigned long tb_ticks_per_usec;
- extern unsigned long tb_ticks_per_sec;
- extern struct clock_event_device decrementer_clockevent;
-+extern u64 decrementer_max;
- 
- 
- extern void generic_calibrate_decr(void);
-diff --git a/arch/powerpc/kernel/time.c b/arch/powerpc/kernel/time.c
-index b67d93a609a2..ac81f043bf49 100644
---- a/arch/powerpc/kernel/time.c
-+++ b/arch/powerpc/kernel/time.c
-@@ -55,8 +55,9 @@
- #include <linux/sched/cputime.h>
- #include <linux/sched/clock.h>
- #include <linux/processor.h>
--#include <asm/trace.h>
-+#include <linux/mc146818rtc.h>
- 
-+#include <asm/trace.h>
- #include <asm/interrupt.h>
- #include <asm/io.h>
- #include <asm/nvram.h>
-@@ -150,10 +151,6 @@ bool tb_invalid;
- u64 __cputime_usec_factor;
- EXPORT_SYMBOL(__cputime_usec_factor);
- 
--#ifdef CONFIG_PPC_SPLPAR
--void (*dtl_consumer)(struct dtl_entry *, u64);
--#endif
--
- static void calc_cputime_factors(void)
- {
- 	struct div_result res;
-@@ -179,6 +176,8 @@ static inline unsigned long read_spurr(unsigned long tb)
- 
- #include <asm/dtl.h>
- 
-+void (*dtl_consumer)(struct dtl_entry *, u64);
-+
- /*
-  * Scan the dispatch trace log and count up the stolen time.
-  * Should be called with interrupts disabled.
-diff --git a/arch/powerpc/platforms/chrp/time.c b/arch/powerpc/platforms/chrp/time.c
-index acde7bbe0716..b94dfd5090d8 100644
---- a/arch/powerpc/platforms/chrp/time.c
-+++ b/arch/powerpc/platforms/chrp/time.c
-@@ -30,8 +30,6 @@
- 
- #include <platforms/chrp/chrp.h>
- 
--extern spinlock_t rtc_lock;
--
- #define NVRAM_AS0  0x74
- #define NVRAM_AS1  0x75
- #define NVRAM_DATA 0x77
--- 
-2.17.1
-
+>  
+>  unsigned long __weak pci_address_to_pio(phys_addr_t address)
+>  {
+> -- 
+> 2.25.1
+> 
