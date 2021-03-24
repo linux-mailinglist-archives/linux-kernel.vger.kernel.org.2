@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8D034706F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 05:13:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393B3347074
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 05:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232489AbhCXEM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 00:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S232446AbhCXEVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 00:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbhCXEMO (ORCPT
+        with ESMTP id S229788AbhCXEUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 00:12:14 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7779C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 21:12:13 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id e33so13782939pgm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 21:12:13 -0700 (PDT)
+        Wed, 24 Mar 2021 00:20:49 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD45C061763
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 21:20:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id t18so11047329pjs.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 21:20:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p25/A4gvraG4GrSK0QNzOG7a5VxfROedfZ595WlOtfc=;
-        b=dcybOyPrXjytyX5pqMpHq8KRfUwYSfHAcYJklNkF9C0WqV2l8aCcMxYGdOP4D7qhdp
-         copt+iCQiFQ4KuUx9E+HAFPPUgnrXOPsETJnboSF5n22AHxlpHcp2Agbpes9Zkz2UAOD
-         qC1Y2WXXcu5ITAMwqykA1uqqWA9fAChSeddHX4PwUcNjUIHpIzkrL5rfQfZQqhPBpfxb
-         kVtqT35+slxDS0ArWP5GlCCCFg4+rUw+Qy3RJQZ/2pUqDDgZLYu7PdJ1BWFKg9JvT9ac
-         YYlghi1IuADLX0m0e2vfIKIjOk445huOG8NAWzL/MTCPoDrTCtJ75wyCOvP8wfeN3zHt
-         Gt9A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=a/afWGdGSFNXJr7csXPGWYa00EkTSTONmeMOpMJ1SaM=;
+        b=XiLjGp1stdvKpQHizWW/ll5mPZgehWA9t0Rnisnqa8NmCv07d9Siqs7eUy+/KGuJuF
+         ICY6jizwg+2xSNrqUHbsuNKlUpmu/QJWyHfSrnJ3fcNm9Y6cFZ+wpIu9sFvBlBx1tO3G
+         ZElvXAY5N9S9d63tr2bMJoZ2lfO/RAsrSIsTzEsx/pVN53CcKQg1jGXoJdpYLMF2vAxH
+         dAMCXAW3mZQcD8jTIpdy9ZJ5J66EA1BuIQUrK1nVEGdACqiYVgerrq2+Ip+dnbTerPFG
+         gdeuGCfQj7SPZlsyo5iaeLxUJHNBUK3tXWJBgSaEAyHWkUccs5Y8MM9ih/6sPXy8l+nI
+         Si3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p25/A4gvraG4GrSK0QNzOG7a5VxfROedfZ595WlOtfc=;
-        b=PBnHhnqxB3zRyfUDPKfSo/Xh5g8ov5N/V7OH35pKSw2OftoGYJLfqsN0rTIsDKLT4m
-         CJ3BRTo29fGKoLQMutpnKNm1OIHha0JcBDBawzAFP3f9DCLk05iOXZpot7PGnq4Trw/G
-         fWSMszSf6A7o6Y+rcg9HCaxfNu65yHMmp5iefBIZtobslNUQr4EnlnIVBRlfDq34ksUd
-         hp9g0WcXs+KjT4matgJTtmnrb2gDhK3j5rWCSOMGa/dkUmTffx+NGmNbZrO1FdbmKVcg
-         xG78ZlRDDNpTXYjJAE5Pvu9loE28mxN7/hV1n8AuISn5/6uemb1b5KaP89NKGrxJN0JD
-         +g0Q==
-X-Gm-Message-State: AOAM531/7r+3ou2G1xZk9veubQBZYbaUrN6cwpWcMqKyertS/rN0CSyL
-        2qfdvpSoXsl+VpdbLqw/I+o4tfFLL+eNs6M5HJwUdA==
-X-Google-Smtp-Source: ABdhPJzhnlivy0sipBYYKv2VrxoVNvIAAAZInhgxCH+QDjHCo855VaazR7l4bm1Vgd+lSac03FJFIeqwomdjoNGFR80=
-X-Received: by 2002:a65:6645:: with SMTP id z5mr1312058pgv.273.1616559133180;
- Tue, 23 Mar 2021 21:12:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=a/afWGdGSFNXJr7csXPGWYa00EkTSTONmeMOpMJ1SaM=;
+        b=aiEfb+wIYELryxY1cuQMh+IA6nPucFszQcuh2VV2GH55WsYb1MPnPYSty/8xS/fZfv
+         N3McVt8twfGlqg8xGrnDbheWcDYL1oC7sZQsclaA0Lk323r56kZqGPZou8l7w/jje6YM
+         cYBCndFS9gpG5NmZojldlKciZB/TEy3yH9i9pSRb5pVF09FL/qVaR/5suOB95G/KVlnj
+         yi3rUjTMWJpPLf//lrTFT6ts2Y2k3B+gvkS7s4ZwTZ3m4RHt4vm6i1EDKejHrNZx9dUJ
+         4LHUTFcVF0y1CS/61+l3ulvR7vQ7uk1E3aEFeYtOdnsJqcgJ0IYkUkXDk9fQkPbFX9FQ
+         TFeg==
+X-Gm-Message-State: AOAM53161olb/NOOXBH6IOZaiD7AvvpL2vNZgcvQJ/6s9xhEIejYPs/4
+        3frIn+gww4t0yd2SY+Bd5eRsig==
+X-Google-Smtp-Source: ABdhPJzzNbNptUENuuBe+67fTNok5AkA8Q+dvT7nlnxwW5tKps+et+igtpXYVKWYh29pGLhOvVh4/A==
+X-Received: by 2002:a17:902:eac3:b029:e6:f010:6ecb with SMTP id p3-20020a170902eac3b02900e6f0106ecbmr1766125pld.37.1616559648644;
+        Tue, 23 Mar 2021 21:20:48 -0700 (PDT)
+Received: from localhost ([122.172.6.13])
+        by smtp.gmail.com with ESMTPSA id e65sm698992pfe.9.2021.03.23.21.20.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Mar 2021 21:20:48 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 09:50:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Jie Deng <jie.deng@intel.com>
+Cc:     linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com, wsa@kernel.org,
+        jasowang@redhat.com, wsa+renesas@sang-engineering.com,
+        andriy.shevchenko@linux.intel.com, conghui.chen@intel.com,
+        arnd@arndb.de, kblaiech@mellanox.com,
+        jarkko.nikula@linux.intel.com, Sergey.Semin@baikalelectronics.ru,
+        rppt@kernel.org, loic.poulain@linaro.org, tali.perry1@gmail.com,
+        u.kleine-koenig@pengutronix.de, bjorn.andersson@linaro.org,
+        yu1.wang@intel.com, shuo.a.liu@intel.com, stefanha@redhat.com,
+        pbonzini@redhat.com
+Subject: Re: [PATCH v10] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <20210324042046.idkctj2t7cxi53jf@vireshk-i7>
+References: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
 MIME-Version: 1.0
-References: <20210323145653.25684-1-songmuchun@bytedance.com>
-In-Reply-To: <20210323145653.25684-1-songmuchun@bytedance.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 24 Mar 2021 12:11:35 +0800
-Message-ID: <CAMZfGtWT8XXDtg0Jcv=1qJpdLD6foJWE=kB_i1ZyHjvrku=vrw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: fix memsw uncharge for root_mem_cgroup
-To:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <226a8d5663b7bb6f5d06ede7701eedb18d1bafa1.1616493817.git.jie.deng@intel.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 11:04 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> The pages aren't accounted at the root level, so we cannot uncharge the
-> page to the memsw counter for the root memcg. Fix this.
->
-> Fixes: 1f47b61fb407 ("mm: memcontrol: fix swap counter leak on swapout from offline cgroup")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+On 23-03-21, 22:19, Jie Deng wrote:
+> +static int virtio_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs, int num)
+> +{
+> +	struct virtio_i2c *vi = i2c_get_adapdata(adap);
+> +	struct virtqueue *vq = vi->vq;
+> +	struct virtio_i2c_req *reqs;
+> +	unsigned long time_left;
+> +	int ret, nr;
+> +
+> +	reqs = kcalloc(num, sizeof(*reqs), GFP_KERNEL);
+> +	if (!reqs)
+> +		return -ENOMEM;
+> +
+> +	mutex_lock(&vi->lock);
+> +
+> +	ret = virtio_i2c_send_reqs(vq, reqs, msgs, num);
+> +	if (ret == 0)
+> +		goto err_unlock_free;
+> +
+> +	nr = ret;
+> +	reinit_completion(&vi->completion);
+> +	virtqueue_kick(vq);
 
-I am very sorry. I should repent. I suddenly realise the fix is totally
-wrong. Because the @memcg cannot be root memcg when
-@memcg != @swap_memcg. Please ignore this patch. I am very
-sorry for the noise. And sorry to Michal.
+Coming back to this again, what is the expectation from the other side for this
+? I mean there is no obvious relation between the *msgs* which we are going to
+transfer (from the other side's or host's point of view). When should the host
+OS call its virtqueue_kick() counterpart ?
 
+Lemme give an example for this. Lets say that we need to transfer 3 messages
+here in this routine. What we did was we prepared virtqueue for all 3 messages
+together and then called virtqueue_kick().
 
-> ---
->  mm/memcontrol.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 533b4b31b464..7d765a106684 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7155,7 +7155,8 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
->         if (!cgroup_memory_noswap && memcg != swap_memcg) {
->                 if (!mem_cgroup_is_root(swap_memcg))
->                         page_counter_charge(&swap_memcg->memsw, nr_entries);
-> -               page_counter_uncharge(&memcg->memsw, nr_entries);
-> +               if (!mem_cgroup_is_root(memcg))
-> +                       page_counter_uncharge(&memcg->memsw, nr_entries);
->         }
->
->         /*
-> --
-> 2.11.0
->
+Now if the other side (host) processes the first message and sends its reply
+(with virtqueue_kick() counterpart) before processing the other two messages,
+then it will end up calling virtio_i2c_msg_done() here. That will make us call
+virtio_i2c_complete_reqs(), while only the first messages is processed until
+now and so we will fail for the other two messages straight away.
+
+Should we send only 1 message from i2c-virtio linux driver and then wait for
+virtio_i2c_msg_done() to be called, before sending the next message to make sure
+it doesn't break ?
+
+-- 
+viresh
