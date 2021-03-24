@@ -2,140 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9876347C0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA231347C36
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236514AbhCXPTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:19:20 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:45929 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236428AbhCXPSz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:18:55 -0400
-Received: by mail-io1-f51.google.com with SMTP id k8so21874851iop.12;
-        Wed, 24 Mar 2021 08:18:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mHWIX01g5QwAZ8qLk5RpjZQyq2xV+NH9VhPdBzNv998=;
-        b=NLZ/SbkMReiudueDGuLUBu3Bae5GE0GT2v6AkGmQCVd6qdJZC4BVMniGDkHENt8VWd
-         qR4kOHTzyA2r1vjkMD3aJ5HeaOhHWWDW95fThiDSHKQ60aDoXAj5nYbaCsV04cMnav6W
-         t6FpBTMAuAij+J6pT2TD40LO3HjIlfepbMWQO/+/HrBEQ4FEt7GULM+WvcXXgUZhd9VK
-         sCXRPnVuBN3KMpUx6LiH8XI8AxOBstfNyRslpIczy9GDZUla9q9yEOWY6B8B2bD/xCzm
-         EvgNBdF1i0WbmTLWtpRgtff7RTOekiGztUulMxKDelClDgO9giCUeyPaVAKlRzp5AAQ6
-         y11g==
-X-Gm-Message-State: AOAM5300V1b4WTVKYqIzbI5AyBFOLlDvEkpY2VXNvbUX9kJgM4OXKaQi
-        PuUDyOqq1jusKgtil13FbU9HzIo3pg==
-X-Google-Smtp-Source: ABdhPJyYehFovzVqPSlDFqfKh5uY8GMU71gp2Kc8r4Nc+hKYTdtZOlPiFGXnKWZsYxztRDEZm1EN4A==
-X-Received: by 2002:a5d:87d5:: with SMTP id q21mr2809629ios.105.1616599134524;
-        Wed, 24 Mar 2021 08:18:54 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id i67sm1264206ioa.3.2021.03.24.08.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 08:18:52 -0700 (PDT)
-Received: (nullmailer pid 3084914 invoked by uid 1000);
-        Wed, 24 Mar 2021 15:18:50 -0000
-Date:   Wed, 24 Mar 2021 09:18:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        devicetree@vger.kernel.org, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        bgodavar@codeaurora.org, rjliao@codeaurora.org,
-        hbandi@codeaurora.org, abhishekpandit@chromium.org
-Subject: Re: [PATCH v1 2/2] dt-bindings: net: bluetooth: Add device tree
- bindings for QTI chip wcn6750
-Message-ID: <20210324151850.GA3083022@robh.at.kernel.org>
-References: <1615481904-9400-1-git-send-email-gubbaven@codeaurora.org>
- <1615481904-9400-3-git-send-email-gubbaven@codeaurora.org>
+        id S236594AbhCXPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:19:48 -0400
+Received: from mga17.intel.com ([192.55.52.151]:40171 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236558AbhCXPTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:19:22 -0400
+IronPort-SDR: Zn2GkqVZDV+F27jZEWhPIo4v809vj+WwdIe1hiu8zJJkYuSlmP+btzDNhGaj7rzIy1HwxNyrnF
+ YuM5wdTearMg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="170704278"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="170704278"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:19:18 -0700
+IronPort-SDR: 7OdYXiQ2/SO/jBlIPUYfsq3QhvVySrWY7+SL5h6fg1FFxGXiQEKM1fD9XX7ik7aZ+mxpx9ISAC
+ P753hWlfB6YQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="514231841"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Mar 2021 08:19:17 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1441F16A; Wed, 24 Mar 2021 17:19:30 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH v3 1/1] mfd: intel_quark_i2c_gpio: enable MSI interrupt
+Date:   Wed, 24 Mar 2021 17:19:29 +0200
+Message-Id: <20210324151929.36844-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615481904-9400-3-git-send-email-gubbaven@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 10:28:24PM +0530, Venkata Lakshmi Narayana Gubba wrote:
-> This patch enables regulators and gpios for the Qualcomm Bluetooth wcn6750
-> controller.
-> 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> ---
->  .../devicetree/bindings/net/qualcomm-bluetooth.txt | 43 ++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
+Allow interrupts to be MSI if supported by hardware.
 
-This is a large change. Please convert to DT schema first.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v3: added a comment about magic 1s (Lee)
 
-> 
-> diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-> index 709ca6d..e70fcb7 100644
-> --- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-> @@ -15,6 +15,7 @@ Required properties:
->     * "qcom,wcn3991-bt"
->     * "qcom,wcn3998-bt"
->     * "qcom,qca6390-bt"
-> +   * "qcom,wcn6750-bt"
->  
->  Optional properties for compatible string qcom,qca6174-bt:
->  
-> @@ -39,6 +40,26 @@ Optional properties for compatible string qcom,wcn399x-bt:
->   - firmware-name: specify the name of nvm firmware to load
->   - clocks: clock provided to the controller
->  
-> +Required properties for compatible string qcom,wcn6750-bt:
-> +
-> + - enable-gpios: gpio specifier used to enable chip
-> + - swctrl-gpios: gpio specifier is output from SoC,used to find status
-> +		 of clock supply to SoC.
-> + - vddio-supply: VDD_IO supply regulator handle.
-> + - vddaon-supply: VDD_AON supply regulator handle.
-> + - vddbtcxmx-suppl: VDD_BT_CXMX supply regualtor handle.
-> + - vddrfacmn-supply: VDD_RFA_CMN supply regulator handle.
-> + - vddrfa0p8-supply: VDD_RFA_0P8 suppply regulator handle.
-> + - vddrfa1p7-supply: VDD_RFA_1P7 supply regulator handle.
-> + - vddrfa1p2-supply: VDD_RFA_1P2 supply regulator handle.
-> + - vddrfa2p2-supply: VDD_RFA_2P2 supply regulator handle.
-> + - vddasd-supply: VDD_ASD supply regulator handle.
-> +
-> +Optional properties for compatible string qcom,wcn6750-bt:
-> +
-> + - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
-> + - firmware-name: specify the name of nvm firmware to load
-> +
->  Examples:
->  
->  serial@7570000 {
-> @@ -67,3 +88,25 @@ serial@898000 {
->  		clocks = <&rpmhcc RPMH_RF_CLK2>;
->  	};
->  };
-> +
-> +serial@99c000 {
-> +	bluetooth {
-> +		compatible = "qcom,wcn6750-bt";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&bt_en_default>;
-> +		enable-gpios = <&tlmm 85 GPIO_ACTIVE_HIGH>;
-> +		swctrl-gpios = <&tlmm 86 GPIO_ACTIVE_HIGH>;
-> +		vddio-supply = <&vreg_l19b_1p8>;
-> +		vddaon-supply = <&vreg_s7b_0p9>;
-> +		vddbtcxmx-supply = <&vreg_s7b_0p9>;
-> +		vddrfacmn-supply = <&vreg_s7b_0p9>;
-> +		vddrfa0p8-supply = <&vreg_s7b_0p9>;
-> +		vddrfa1p7-supply = <&vreg_s1b_1p8>;
-> +		vddrfa1p2-supply = <&vreg_s8b_1p2>;
-> +		vddrfa2p2-supply = <&vreg_s1c_2p2>;
-> +		vddasd-supply = <&vreg_l11c_2p8>;
-> +		max-speed = <3200000>;
-> +		firmware-name = "msnv11.bin";
-> +	};
-> +};
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+ drivers/mfd/intel_quark_i2c_gpio.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
+index 52728a963c17..7f90e6f022ba 100644
+--- a/drivers/mfd/intel_quark_i2c_gpio.c
++++ b/drivers/mfd/intel_quark_i2c_gpio.c
+@@ -169,8 +169,8 @@ static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
+ 	res[INTEL_QUARK_IORES_MEM].end =
+ 		pci_resource_end(pdev, MFD_I2C_BAR);
+ 
+-	res[INTEL_QUARK_IORES_IRQ].start = pdev->irq;
+-	res[INTEL_QUARK_IORES_IRQ].end = pdev->irq;
++	res[INTEL_QUARK_IORES_IRQ].start = pci_irq_vector(pdev, 0);
++	res[INTEL_QUARK_IORES_IRQ].end = pci_irq_vector(pdev, 0);
+ 
+ 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+ 	if (!pdata)
+@@ -217,7 +217,7 @@ static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
+ 	pdata->properties->idx		= 0;
+ 	pdata->properties->ngpio	= INTEL_QUARK_MFD_NGPIO;
+ 	pdata->properties->gpio_base	= INTEL_QUARK_MFD_GPIO_BASE;
+-	pdata->properties->irq[0]	= pdev->irq;
++	pdata->properties->irq[0]	= pci_irq_vector(pdev, 0);
+ 
+ 	cell->platform_data = pdata;
+ 	cell->pdata_size = sizeof(*pdata);
+@@ -245,22 +245,31 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
+ 	if (ret)
+ 		return ret;
+ 
++	pci_set_master(pdev);
++
++	/* This driver only requires 1 IRQ vector */
++	ret = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
++	if (ret < 0)
++		goto err_unregister_i2c_clk;
++
+ 	ret = intel_quark_i2c_setup(pdev, &intel_quark_mfd_cells[MFD_I2C_BAR]);
+ 	if (ret)
+-		goto err_unregister_i2c_clk;
++		goto err_free_irq_vectors;
+ 
+ 	ret = intel_quark_gpio_setup(pdev, &intel_quark_mfd_cells[MFD_GPIO_BAR]);
+ 	if (ret)
+-		goto err_unregister_i2c_clk;
++		goto err_free_irq_vectors;
+ 
+ 	ret = mfd_add_devices(&pdev->dev, 0, intel_quark_mfd_cells,
+ 			      ARRAY_SIZE(intel_quark_mfd_cells), NULL, 0,
+ 			      NULL);
+ 	if (ret)
+-		goto err_unregister_i2c_clk;
++		goto err_free_irq_vectors;
+ 
+ 	return 0;
+ 
++err_free_irq_vectors:
++	pci_free_irq_vectors(pdev);
+ err_unregister_i2c_clk:
+ 	intel_quark_unregister_i2c_clk(&pdev->dev);
+ 	return ret;
+@@ -269,6 +278,7 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
+ static void intel_quark_mfd_remove(struct pci_dev *pdev)
+ {
+ 	mfd_remove_devices(&pdev->dev);
++	pci_free_irq_vectors(pdev);
+ 	intel_quark_unregister_i2c_clk(&pdev->dev);
+ }
+ 
+-- 
+2.30.2
+
