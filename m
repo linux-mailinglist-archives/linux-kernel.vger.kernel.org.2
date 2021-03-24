@@ -2,139 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E8C347FF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C51347FF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237281AbhCXSAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:00:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236683AbhCXSA3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:00:29 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9597C0613DF
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:00:28 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id kt15so24906636ejb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 11:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2KFNkl1or0mmtXA1jvsRAF0OANfT9njIYX+exK4jOos=;
-        b=vFzEiq5fNjCN/7R0WwqtTXBrQesBMnmm7Yt0aIk36IUzb9nz2Iwwjuku88ov5xGoo7
-         I2nZHiAzvvorrWHog5G+fz0o6Iwgp6fPe5BX5ALrKM8J8rriLQBF2bQ6iQmCTySTWQeW
-         U//yvsIy1PSHAhs/SX8wnQHVLy4lhbL9aV+PelAq1xjXUrvVSvyfV6E/eLWQI3REFqaQ
-         He1p0+EQfwXwRd5c1XOplbo7llR+YgnDVh0Qw+Ot0l9QZsjaixzo1kAkhZJUMzGxY+ki
-         n7X09BFlfP5Sp9r65op8Vg3Ww+4V6SnFtzm8Ym0iKZ0MacVqsqNvp80/mc20puyxivuG
-         ceGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2KFNkl1or0mmtXA1jvsRAF0OANfT9njIYX+exK4jOos=;
-        b=b4tnB3EkS+0M5Y1ZwfuB3EOuMtxIjD4SUBDbPHQqA/IfOrGPXgFPMXa3KBh8VcuF7k
-         at/p4FXtZX2FcrcglAGIPQyNjXkLEXpJ4JidxcfgCjfGoihvQ1bUZAWFm5DSlJnOWnPu
-         dA7lNdX086mj44aqQvalAl+pw+Z5qGi05Qh/4YC+loq3pUNKA86vaLL0w8EbmUxa/qyq
-         MsXE8ZTF0E5OdL2XYKU06oAa1z6tFIIEQeij1Qs+NDxCcG10Stkc6VkJ/90cI7L5gKg2
-         zeRPwefeIHvyS6KnKhq8nLT8BDcQlwYcnyykrVAprC7oQKRBm2FyutRqaF/384FfaqHb
-         5J1A==
-X-Gm-Message-State: AOAM53286gCzZ1zigzhcQOaGlVlXEcQ8NeWnqQg7YLMcNVnHN/sK2I+L
-        tjfe88GSYpq3JNHYfPo/ZGfQxXEUF5kQEILO5BruSQ==
-X-Google-Smtp-Source: ABdhPJy9J40IqLa/d+cck6PXVVGYBFPLo6iqEOA+v2R4s6asbN5wOCf5ZJ6fNNbFdsT8bCsuZH/tAzIMp5hm7zOGEdw=
-X-Received: by 2002:a17:906:8447:: with SMTP id e7mr5154772ejy.523.1616608827202;
- Wed, 24 Mar 2021 11:00:27 -0700 (PDT)
+        id S237299AbhCXSEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:04:05 -0400
+Received: from mga18.intel.com ([134.134.136.126]:16360 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236337AbhCXSDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:03:23 -0400
+IronPort-SDR: TE3b4YvcZRuxApmyaZTtcsDw9M/4tjHRAQUhqOgqKvYfq9r36zgFzFGJRlKBhdKCN7t/qjA1EV
+ xbf8t/NzwEiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178314106"
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="178314106"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 11:03:22 -0700
+IronPort-SDR: sSBQFJDIMkaAFQhKUYM4T6YxLdf6bS0bcJAvv8kSJCyI0gNU0bA1iaezTY2MBat9A4twUNtPZJ
+ AnOZYEaUqS2g==
+X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
+   d="scan'208";a="443072053"
+Received: from chihjung-mobl.amr.corp.intel.com (HELO [10.213.191.210]) ([10.213.191.210])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 11:03:20 -0700
+Subject: Re: [RFC Part2 PATCH 05/30] x86: define RMP violation #PF error code
+To:     Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Cc:     ak@linux.intel.com, herbert@gondor.apana.org.au,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210324170436.31843-1-brijesh.singh@amd.com>
+ <20210324170436.31843-6-brijesh.singh@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <1fa50927-9e5a-fb23-3763-490310df12a9@intel.com>
+Date:   Wed, 24 Mar 2021 11:03:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAPcyv4jqEdPoF5YM+jSYJd74KqRTwbbEum7=moa3=Wyn6UyU9g@mail.gmail.com>
- <OSBPR01MB29207A1C06968705C2FEBACFF4939@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <CAPcyv4iBnWbG0FYw6-K0MaH--rq62s7RY_yoT9rOYWMa94Yakw@mail.gmail.com>
- <OSBPR01MB29203F891F9584CC53616FB8F4939@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <CAPcyv4gn_AvT6BA7g4jLKRFODSpt7_ORowVd3KgyWxyaFG0k9g@mail.gmail.com>
- <OSBPR01MB2920E46CBE4816CDF711E004F46F9@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <OSBPR01MB29208779955B49F84D857F80F4689@OSBPR01MB2920.jpnprd01.prod.outlook.com>
- <CAPcyv4jhUU3NVD8HLZnJzir+SugB6LnnrgJZ-jP45BZrbJ1dJQ@mail.gmail.com>
- <20210324074751.GA1630@lst.de> <CAPcyv4hOrYCW=wjkxkCP+JbyD+A_Po0rW-61qQWAOm3zp_eyUQ@mail.gmail.com>
- <20210324173935.GB12770@lst.de>
-In-Reply-To: <20210324173935.GB12770@lst.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 24 Mar 2021 11:00:16 -0700
-Message-ID: <CAPcyv4iyS0EB0zLNxLwML1C0E2Eqk3TweHvmgpNWpZKVPVpz5Q@mail.gmail.com>
-Subject: Re: [PATCH v3 01/11] pagemap: Introduce ->memory_failure()
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "ruansy.fnst@fujitsu.com" <ruansy.fnst@fujitsu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        david <david@fromorbit.com>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        "qi.fuli@fujitsu.com" <qi.fuli@fujitsu.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210324170436.31843-6-brijesh.singh@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:39 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Mar 24, 2021 at 09:37:01AM -0700, Dan Williams wrote:
-> > > Eww.  As I said I think the right way is that the file system (or
-> > > other consumer) can register a set of callbacks for opening the device.
-> >
-> > How does that solve the problem of the driver being notified of all
-> > pfn failure events?
->
-> Ok, I probably just showed I need to spend more time looking at
-> your proposal vs the actual code..
->
-> Don't we have a proper way how one of the nvdimm layers own a
-> spefific memory range and call directly into that instead of through
-> a notifier?
+> diff --git a/arch/x86/include/asm/trap_pf.h b/arch/x86/include/asm/trap_pf.h
+> index 10b1de500ab1..107f9d947e8d 100644
+> --- a/arch/x86/include/asm/trap_pf.h
+> +++ b/arch/x86/include/asm/trap_pf.h
+> @@ -12,6 +12,7 @@
+>   *   bit 4 ==				1: fault was an instruction fetch
+>   *   bit 5 ==				1: protection keys block access
+>   *   bit 15 ==				1: SGX MMU page-fault
+> + *   bit 31 ==				1: fault was an RMP violation
+>   */
+>  enum x86_pf_error_code {
+>  	X86_PF_PROT	=		1 << 0,
+> @@ -21,6 +22,7 @@ enum x86_pf_error_code {
+>  	X86_PF_INSTR	=		1 << 4,
+>  	X86_PF_PK	=		1 << 5,
+>  	X86_PF_SGX	=		1 << 15,
+> +	X86_PF_RMP	=		1ull << 31,
+>  };
 
-So that could be a new dev_pagemap operation as Ruan has here. I was
-thinking that other agents would be interested in non-dev_pagemap
-managed ranges, but we could leave that for later and just make the
-current pgmap->memory_failure() callback proposal range based.
+Man, I hope AMD and Intel are talking to each other about these bits.  :)
 
->
-> > Today pmem only finds out about the ones that are
-> > notified via native x86 machine check error handling via a notifier
-> > (yes "firmware-first" error handling fails to do the right thing for
-> > the pmem driver),
->
-> Did any kind of firmware-first error handling ever get anything
-> right?  I wish people would have learned that by now.
+Either way, this is hitting the limits of what I know about how enums
+are implemented.  I had internalized that they are just an 'int', but
+that doesn't seem quite right.  It sounds like they must be implemented
+using *an* integer type, but not necessarily 'int' itself.
 
-Part of me wants to say if you use firmware-first you get to keep the
-pieces, but it's not always the end user choice as far as I
-understand.
+Either way, '1<<31' doesn't fit in a 32-bit signed int.  But, gcc at
+least doesn't seem to blow the enum up into a 64-bit type, which is nice.
 
-> > or the ones that are eventually reported via address
-> > range scrub, but only for the nvdimms that implement range scrubbing.
-> > memory_failure() seems a reasonable catch all point to route pfn
-> > failure events, in an arch independent way, to interested drivers.
->
-> Yeah.
->
-> > I'm fine swapping out dax_device blocking_notiier chains for your
-> > proposal, but that does not address all the proposed reworks in my
-> > list which are:
-> >
-> > - delete "drivers/acpi/nfit/mce.c"
-> >
-> > - teach memory_failure() to be able to communicate range failure
-> >
-> > - enable memory_failure() to defer to a filesystem that can say
-> > "critical metadata is impacted, no point in trying to do file-by-file
-> > isolation, bring the whole fs down".
->
-> This all sounds sensible.
-
-Ok, Ruan, I think this means rework your dev_pagemap_ops callback to
-be range based. Add a holder concept for dax_devices and then layer
-that on Christoph's eventual dax_device callback mechanism that a
-dax_device holder can register.
+Could we at least start declaring these with BIT()?
