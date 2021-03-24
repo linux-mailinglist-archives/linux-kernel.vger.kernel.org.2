@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D4A34788A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CF834788D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 13:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233536AbhCXMdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 08:33:01 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:44648 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhCXMcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 08:32:45 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lP2gi-00CmAt-27; Wed, 24 Mar 2021 13:32:40 +0100
-Date:   Wed, 24 Mar 2021 13:32:40 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     praneeth@ti.com
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Geet Modi <geet.modi@ti.com>
-Subject: Re: [PATCH] net: phy: dp83867: perform soft reset and retain
- established link
-Message-ID: <YFsxaBj/AvPpo13W@lunn.ch>
-References: <20210324010006.32576-1-praneeth@ti.com>
+        id S233835AbhCXMdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 08:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232958AbhCXMdK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 08:33:10 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0DFC061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:33:10 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id g8so24559264lfv.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 05:33:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ETqBMU69OiVYdMvCczpxH6iSVMFBbrvvC1c+Nearczk=;
+        b=XypW53avmJ4g2E1pKslW36bigwllw9bzame6yU/kPt6JgEqriLu1KCO3Usk1g6d6pR
+         hgWgRfZ4sFu3UglyoEsbQgwrdXnDY0ygCkG1ChPaSYVxVKMtr0aFVa8CZQiJVKTPdPns
+         IsPOu6DtiVIbhj7laA0Wftj3art0pxx0RlAr0j7Hfbs9RoBlqXZFWgmuPaxCVHYSk5zZ
+         az0nvJlTD9fgs0TngACy8f0K6oqGqnPkxFYDhAt8NnmKaCGo+rOazlGEoKNQBFMk73Vv
+         gZhZk7sOA+P7zWKLfDJvfDIJg5LhW6ZQe/5Km5QSehqd76nQnNOFn6Svum3niOluJClx
+         gpgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ETqBMU69OiVYdMvCczpxH6iSVMFBbrvvC1c+Nearczk=;
+        b=Qt8qq2tc9w7NrxPIFyqpd1WKQtEiR/1TaQsBIS4ZUDQXdKAWt9yZKv6HS53dqOIuf7
+         wOEr21XYPWq886IR8ye09SgklZgcnz1F4Wyp5aSCc7l6/5RZkivc9LbhyEARU2bq9py/
+         zHjajBzlLRoAJb/4uYdecHKX5S9QlwEynyg+z6f74wswHaWHd6U9OXZxKr7+psweaWMa
+         RZHaUXU0P6l0h42UGqpeBNsqbuxvVmqOUK1AlBAHO6ni5tX3ljt+530MJ31MzgTbKxyp
+         vcuIBv307MLwuDI4UMgku2cqU/blnHMhA3tXjx7MGrkYmEifG9uv/lxuvnmAGFEAXQne
+         q85Q==
+X-Gm-Message-State: AOAM532F1qKPEFf65g1ELTAehp+FxG8hAFmYu7gjSENfY2lBUpvIqjTF
+        aB8d1Em049sXp3CvGhHsIX8=
+X-Google-Smtp-Source: ABdhPJzKeCr5gBrukru+Rp9XMBBi9uUxkaJnWxEsEaxThFvI60q4T0jOf+vT8goDZgzawCC9To6XSQ==
+X-Received: by 2002:ac2:4826:: with SMTP id 6mr1830392lft.629.1616589188609;
+        Wed, 24 Mar 2021 05:33:08 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id h24sm295528ljg.77.2021.03.24.05.33.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 05:33:08 -0700 (PDT)
+Subject: Re: [PATCH v6] mm: cma: support sysfs
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        gregkh@linuxfoundation.org, surenb@google.com, joaodias@google.com,
+        jhubbard@nvidia.com, willy@infradead.org
+References: <20210324010547.4134370-1-minchan@kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <3d90177b-e143-03b9-0f78-77740690266f@gmail.com>
+Date:   Wed, 24 Mar 2021 15:33:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324010006.32576-1-praneeth@ti.com>
+In-Reply-To: <20210324010547.4134370-1-minchan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 08:00:06PM -0500, praneeth@ti.com wrote:
-> From: Praneeth Bajjuri <praneeth@ti.com>
-> 
-> Current logic is performing hard reset and causing the programmed
-> registers to be wiped out.
-> 
-> as per datasheet: https://www.ti.com/lit/ds/symlink/dp83867cr.pdf
-> 8.6.26 Control Register (CTRL)
-> do SW_RESTART to perform a reset not including the registers and is
-> acceptable to do this if a link is already present.
+24.03.2021 04:05, Minchan Kim пишет:
+> +static struct kobject *cma_kobj_root;
 
-I don't see any code here to determine if the like is present. What if
-the cable is not plugged in?
+This should be a local variable.
 
-> @@ -826,7 +826,7 @@ static int dp83867_phy_reset(struct phy_device *phydev)
->  {
->  	int err;
->  
-> -	err = phy_write(phydev, DP83867_CTRL, DP83867_SW_RESET);
-> +	err = phy_write(phydev, DP83867_CTRL, DP83867_SW_RESTART);
->  	if (err < 0)
->  		return err;
+> +static struct kobj_type cma_ktype = {
+> +	.release = cma_kobj_release,
+> +	.sysfs_ops = &kobj_sysfs_ops,
+> +	.default_groups = cma_groups
 
-The code continues
+I'd add a comma to the end, for consistency.
 
-       usleep_range(10, 20);
+> +};
 
-        /* After reset FORCE_LINK_GOOD bit is set. Although the
-         * default value should be unset. Disable FORCE_LINK_GOOD
-         * for the phy to work properly.
-         */
-        return phy_modify(phydev, MII_DP83867_PHYCTRL,
-                         DP83867_PHYCR_FORCE_LINK_GOOD, 0);
-}
-
-Do you still need to clear the FORCE_LINK_GOOD bit after a restart?
-
-   Andrew
