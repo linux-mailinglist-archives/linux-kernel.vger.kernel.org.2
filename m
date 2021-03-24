@@ -2,233 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC10834700C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:19:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54919347016
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhCXDTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:19:09 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14439 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbhCXDSn (ORCPT
+        id S232735AbhCXDYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:24:38 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:54866 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232136AbhCXDXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:18:43 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F4th04Bbjzkf4N;
-        Wed, 24 Mar 2021 11:17:04 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 24 Mar 2021 11:18:31 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v2] f2fs: fix to avoid touching checkpointed data in get_victim()
-Date:   Wed, 24 Mar 2021 11:18:28 +0800
-Message-ID: <20210324031828.67133-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+        Tue, 23 Mar 2021 23:23:30 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 9FCEEF3344;
+        Wed, 24 Mar 2021 11:23:10 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P13109T139929674307328S1616556189578495_;
+        Wed, 24 Mar 2021 11:23:10 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <cdee19ffc678ee8e11142310d3e75f1e>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: robh+dt@kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     robh+dt@kernel.org, heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v3 0/3] soc: rockchip: power-domain: add rk3568 powerdomains
+Date:   Wed, 24 Mar 2021 11:23:05 +0800
+Message-Id: <20210324032308.6309-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In CP disabling mode, there are two issues when using LFS or SSR | AT_SSR
-mode to select victim:
+Support power domain function for RK3568 Soc.
 
-1. LFS is set to find source section during GC, the victim should have
-no checkpointed data, since after GC, section could not be set free for
-reuse.
+Change in V3:
+[PATCH v3 1/3]: No change.
+[PATCH v3 2/3]: Fix up the code styles and add rk3568 base on:
+https://patchwork.kernel.org/project/linux-rockchip/patch/20210225102643.653095-1-enric.balletbo@collabora.com/
+[PATCH v3 3/3]: No change.
 
-Previously, we only check valid chpt blocks in current segment rather
-than section, fix it.
+Change in V2:
+[PATCH v2 1/3]: No change.
+[PATCH v2 2/3]: Fix up yaml code styles.
+[PATCH v2 3/3]: No change.
 
-2. SSR | AT_SSR are set to find target segment for writes which can be
-fully filled by checkpointed and newly written blocks, we should never
-select such segment, otherwise it can cause panic or data corruption
-during allocation, potential case is described as below:
+Elaine Zhang (3):
+  dt-bindings: add power-domain header for RK3568 SoCs
+  dt-bindings: Convert the rockchip power_domain to YAML and extend
+  soc: rockchip: power-domain: add rk3568 powerdomains
 
- a) target segment has 128 ckpt valid blocks
- b) GC migrates 'n' (n < 512) valid blocks to other segment (segment is
-    still in dirty list)
- c) GC migrates '512 - n' blocks to target segment (segment has 'n'
-    cp_vblocks and '512 - n' vblocks)
- d) If GC selects target segment via {AT,}SSR allocator, however there
-    is no free space in targe segment.
+ .../power/rockchip,power-controller.yaml      | 286 ++++++++++++++++++
+ .../bindings/soc/rockchip/power_domain.txt    | 136 ---------
+ drivers/soc/rockchip/pm_domains.c             |  31 ++
+ include/dt-bindings/power/rk3568-power.h      |  32 ++
+ 4 files changed, 349 insertions(+), 136 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+ create mode 100644 include/dt-bindings/power/rk3568-power.h
 
-Fixes: 4354994f097d ("f2fs: checkpoint disabling")
-Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v2:
-- fix to check checkpointed data in section rather than segment for
-LFS mode.
-- update commit title and message.
- fs/f2fs/f2fs.h    |  1 +
- fs/f2fs/gc.c      | 28 ++++++++++++++++++++--------
- fs/f2fs/segment.c | 39 ++++++++++++++++++++++++---------------
- fs/f2fs/segment.h | 14 +++++++++++++-
- 4 files changed, 58 insertions(+), 24 deletions(-)
-
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index eb154d9cb063..29e634d08a27 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3387,6 +3387,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi);
- int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
- void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
- int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
-+bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
- void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
- void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
- void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index d96acc6531f2..4d9616373a4a 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -392,10 +392,6 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
- 		if (p->gc_mode == GC_AT &&
- 			get_valid_blocks(sbi, segno, true) == 0)
- 			return;
--
--		if (p->alloc_mode == AT_SSR &&
--			get_seg_entry(sbi, segno)->ckpt_valid_blocks == 0)
--			return;
- 	}
- 
- 	for (i = 0; i < sbi->segs_per_sec; i++)
-@@ -728,11 +724,27 @@ static int get_victim_by_default(struct f2fs_sb_info *sbi,
- 
- 		if (sec_usage_check(sbi, secno))
- 			goto next;
-+
- 		/* Don't touch checkpointed data */
--		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED) &&
--					get_ckpt_valid_blocks(sbi, segno) &&
--					p.alloc_mode == LFS))
--			goto next;
-+		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
-+			if (p.alloc_mode == LFS) {
-+				/*
-+				 * LFS is set to find source section during GC.
-+				 * The victim should have no checkpointed data.
-+				 */
-+				if (get_ckpt_valid_blocks(sbi, segno, true))
-+					goto next;
-+			} else {
-+				/*
-+				 * SSR | AT_SSR are set to find target segment
-+				 * for writes which can be full by checkpointed
-+				 * and newly written blocks.
-+				 */
-+				if (!segment_has_free_slot(sbi, segno))
-+					goto next;
-+			}
-+		}
-+
- 		if (gc_type == BG_GC && test_bit(secno, dirty_i->victim_secmap))
- 			goto next;
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 6e1a5f5657bf..f6a30856ceda 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -865,7 +865,7 @@ static void locate_dirty_segment(struct f2fs_sb_info *sbi, unsigned int segno)
- 	mutex_lock(&dirty_i->seglist_lock);
- 
- 	valid_blocks = get_valid_blocks(sbi, segno, false);
--	ckpt_valid_blocks = get_ckpt_valid_blocks(sbi, segno);
-+	ckpt_valid_blocks = get_ckpt_valid_blocks(sbi, segno, false);
- 
- 	if (valid_blocks == 0 && (!is_sbi_flag_set(sbi, SBI_CP_DISABLED) ||
- 		ckpt_valid_blocks == usable_blocks)) {
-@@ -950,7 +950,7 @@ static unsigned int get_free_segment(struct f2fs_sb_info *sbi)
- 	for_each_set_bit(segno, dirty_i->dirty_segmap[DIRTY], MAIN_SEGS(sbi)) {
- 		if (get_valid_blocks(sbi, segno, false))
- 			continue;
--		if (get_ckpt_valid_blocks(sbi, segno))
-+		if (get_ckpt_valid_blocks(sbi, segno, false))
- 			continue;
- 		mutex_unlock(&dirty_i->seglist_lock);
- 		return segno;
-@@ -2643,6 +2643,26 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
- 		seg->next_blkoff++;
- }
- 
-+bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
-+{
-+	struct sit_info *sit = SIT_I(sbi);
-+	struct seg_entry *se = get_seg_entry(sbi, segno);
-+	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
-+	unsigned long *target_map = SIT_I(sbi)->tmp_map;
-+	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
-+	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
-+	int i, pos;
-+
-+	down_write(&sit->sentry_lock);
-+	for (i = 0; i < entries; i++)
-+		target_map[i] = ckpt_map[i] | cur_map[i];
-+
-+	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, 0);
-+	up_write(&sit->sentry_lock);
-+
-+	return pos < sbi->blocks_per_seg;
-+}
-+
- /*
-  * This function always allocates a used segment(from dirty seglist) by SSR
-  * manner, so it should recover the existing segment information of valid blocks
-@@ -2913,19 +2933,8 @@ static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
- 		get_valid_blocks(sbi, curseg->segno, new_sec))
- 		goto alloc;
- 
--	if (new_sec) {
--		unsigned int segno = START_SEGNO(curseg->segno);
--		int i;
--
--		for (i = 0; i < sbi->segs_per_sec; i++, segno++) {
--			if (get_ckpt_valid_blocks(sbi, segno))
--				goto alloc;
--		}
--	} else {
--		if (!get_ckpt_valid_blocks(sbi, curseg->segno))
--			return;
--	}
--
-+	if (!get_ckpt_valid_blocks(sbi, curseg->segno, new_sec))
-+		return;
- alloc:
- 	old_segno = curseg->segno;
- 	SIT_I(sbi)->s_ops->allocate_segment(sbi, type, true);
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 144980b62f9e..dab87ecba2b5 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -359,8 +359,20 @@ static inline unsigned int get_valid_blocks(struct f2fs_sb_info *sbi,
- }
- 
- static inline unsigned int get_ckpt_valid_blocks(struct f2fs_sb_info *sbi,
--				unsigned int segno)
-+				unsigned int segno, bool use_section)
- {
-+	if (use_section && __is_large_section(sbi)) {
-+		unsigned int start_segno = START_SEGNO(segno);
-+		unsigned int blocks = 0;
-+		int i;
-+
-+		for (i = 0; i < sbi->segs_per_sec; i++, start_segno++) {
-+			struct seg_entry *se = get_seg_entry(sbi, start_segno);
-+
-+			blocks += se->ckpt_valid_blocks;
-+		}
-+		return blocks;
-+	}
- 	return get_seg_entry(sbi, segno)->ckpt_valid_blocks;
- }
- 
 -- 
-2.29.2
+2.17.1
+
+
 
