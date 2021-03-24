@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A51347B99
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5209347B98
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbhCXPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 11:03:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        id S236429AbhCXPDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236430AbhCXPDY (ORCPT
+        with ESMTP id S236290AbhCXPDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:03:24 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1115DC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:03:24 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 32so8684977pgm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:03:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FItyqxViIAmB8amy4A5vlzdR20mnIAmC2uA+KNkY1Gg=;
-        b=Jq0HmIdidI3kiESpgQ+BC0vj3o2mde7P42Kiw+pHEnQOKhGpfCRFTJoME2bvKapawN
-         WP3pLEgKYrF2sAzB+mmJAvjsOcdvNMbmGjx4Ocrubfo7asrx5cIXJ1m44gnw6MYYZHgK
-         0vPgZFKLr1mCyHexFNM0oCV2bvsUhTT+mT/NMt3q5LtQENk6Hm94IGJAFp7BLPtqtSKB
-         1dGEmDy8q2ksos80WZ2TTqJ+5mZr8kzVPJpPj/qqa615R5yJzuxPxd1NwgYsyc12UK1J
-         LMI1FbMgNxiKkj/uloEBxOXsYX4tWQuP+aOM4rAIvmWEz9JYOW+bQIIz0RAOegSdVi8t
-         SaIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FItyqxViIAmB8amy4A5vlzdR20mnIAmC2uA+KNkY1Gg=;
-        b=J8ESuUYnEXxfnqlMEzLxPktcgC7WqwPMaZYK4IqeIiO8ZShXzt4nnVZ0LmlAUlTQkB
-         8FRhGgVw1PCzI+DnPIFlVx0nfGBHnmO6hbw+yHdhA8PV3I9RJIrBGlE648ZWMHO0pPHM
-         AlW63QD+j+c1eG6nrzZSEv4nLKGdWb+6+dQbIAMZRGt0y07JUmslEAh10qk+G5wTxksC
-         VTCD8qtGDpV7pyanEwGTbp5Bw4KtcnVERpT9lCMv17nDgpLpFnWaLbYYXQZf/ov24EvC
-         eNxKNeIkTkA2UgGKHO0xC1G43jj2aLVCmWf59Wkyp+Ut+zQbvRCCOrBmMLMG98VRJXfN
-         FGig==
-X-Gm-Message-State: AOAM532bGdtFFOLVAQvdIotgvl8g66HajDZKR7FMUXGppZhhRSGf/hPl
-        6qDcE8psQ+UHmrs8z8XqQBk=
-X-Google-Smtp-Source: ABdhPJwFpEAvfqb+Zf7dyN0fn8XR4KvnxGeNssHrQoAba19JdnU4KnnFx00vSGIC4VzlJ00m72fkzw==
-X-Received: by 2002:a62:683:0:b029:1ec:c88c:8ea2 with SMTP id 125-20020a6206830000b02901ecc88c8ea2mr3309240pfg.27.1616598203601;
-        Wed, 24 Mar 2021 08:03:23 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id f2sm2916749pfq.129.2021.03.24.08.03.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 08:03:23 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>
-Subject: [PATCH] riscv: Do not invoke early_init_dt_verify() twice
-Date:   Wed, 24 Mar 2021 23:03:12 +0800
-Message-Id: <20210324150312.20535-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 24 Mar 2021 11:03:05 -0400
+Received: from smtp-8faa.mail.infomaniak.ch (smtp-8faa.mail.infomaniak.ch [IPv6:2001:1600:4:17::8faa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA496C061763
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:03:04 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F5BLY1j83zMq3Y5;
+        Wed, 24 Mar 2021 16:03:01 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F5BLT1HXmzlh8TT;
+        Wed, 24 Mar 2021 16:02:57 +0100 (CET)
+Subject: Re: [PATCH v30 08/12] landlock: Add syscall implementations
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20210316204252.427806-1-mic@digikod.net>
+ <20210316204252.427806-9-mic@digikod.net> <202103191157.CF13C34@keescook>
+ <380d65b2-f515-f3f5-5d57-7f99c528e5c7@digikod.net>
+Message-ID: <9062d586-8fa7-a972-9615-ca3a5fe38cef@digikod.net>
+Date:   Wed, 24 Mar 2021 16:03:36 +0100
+User-Agent: 
 MIME-Version: 1.0
+In-Reply-To: <380d65b2-f515-f3f5-5d57-7f99c528e5c7@digikod.net>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the setup_arch() of riscv, function early_init_dt_verify() has
-been done by parse_dtb(). So no need to call it again. Just directly
-invoke unflatten_device_tree().
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
----
- arch/riscv/kernel/setup.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+On 19/03/2021 22:53, Mickaël Salaün wrote:
+> 
+> On 19/03/2021 20:06, Kees Cook wrote:
+>> On Tue, Mar 16, 2021 at 09:42:48PM +0100, Mickaël Salaün wrote:
+>>> From: Mickaël Salaün <mic@linux.microsoft.com>
 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index f8f15332caa2..2a3d487e1710 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -255,10 +255,7 @@ void __init setup_arch(char **cmdline_p)
- #if IS_ENABLED(CONFIG_BUILTIN_DTB)
- 	unflatten_and_copy_device_tree();
- #else
--	if (early_init_dt_verify(__va(dtb_early_pa)))
--		unflatten_device_tree();
--	else
--		pr_err("No DTB found in kernel mappings\n");
-+	unflatten_device_tree();
- #endif
- 	misc_mem_init();
- 
--- 
-2.30.2
+[...]
 
+>>> +/**
+>>> + * sys_landlock_create_ruleset - Create a new ruleset
+>>> + *
+>>> + * @attr: Pointer to a &struct landlock_ruleset_attr identifying the scope of
+>>> + *        the new ruleset.
+>>> + * @size: Size of the pointed &struct landlock_ruleset_attr (needed for
+>>> + *        backward and forward compatibility).
+>>> + * @flags: Must be 0.
+>>> + *
+>>> + * This system call enables to create a new Landlock ruleset, and returns the
+>>> + * related file descriptor on success.
+>>> + *
+>>> + * Possible returned errors are:
+>>> + *
+>>> + * - EOPNOTSUPP: Landlock is supported by the kernel but disabled at boot time;
+>>> + * - EINVAL: @flags is not 0, or unknown access, or too small @size;
+>>> + * - E2BIG or EFAULT: @attr or @size inconsistencies;
+>>> + * - ENOMSG: empty &landlock_ruleset_attr.handled_access_fs.
+>>> + */
+>>> +SYSCALL_DEFINE3(landlock_create_ruleset,
+>>> +		const struct landlock_ruleset_attr __user *const, attr,
+>>> +		const size_t, size, const __u32, flags)
+>>> +{
+>>> +	struct landlock_ruleset_attr ruleset_attr;
+>>> +	struct landlock_ruleset *ruleset;
+>>> +	int err, ruleset_fd;
+>>> +
+>>> +	/* Build-time checks. */
+>>> +	build_check_abi();
+>>> +
+>>> +	if (!landlock_initialized)
+>>> +		return -EOPNOTSUPP;
+>>> +
+>>> +	/* No flag for now. */
+>>> +	if (flags)
+>>> +		return -EINVAL;
+>>> +
+>>> +	/* Copies raw user space buffer. */
+>>> +	err = copy_min_struct_from_user(&ruleset_attr, sizeof(ruleset_attr),
+>>> +			offsetofend(typeof(ruleset_attr), handled_access_fs),
+>>
+>> The use of offsetofend() here appears to be kind of the "V1", "V2", ...
+>> sizes used in other extensible syscall implementations?
+> 
+> ruleset_attr is an extensible argument.
+
+offsetofen() is used to set the minimum size of a valid argument. This
+code will then not change with future extended ruleset_attr.
