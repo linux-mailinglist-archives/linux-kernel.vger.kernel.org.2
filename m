@@ -2,138 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A739347A81
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB4E347A83
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236170AbhCXOUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:20:32 -0400
-Received: from mga02.intel.com ([134.134.136.20]:64294 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236110AbhCXOUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:20:23 -0400
-IronPort-SDR: 2F6HmT+9DYliSUoXyRss3ao0hzxL4kKuLpWwqFXeG4SMC4JGCmjPg/DtmFCBgA6Lni4z807TrU
- uqzFgZRiztqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="177829549"
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="177829549"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:20:23 -0700
-IronPort-SDR: 80dv7UvpNv1i8WG1lBlSw+Fv8hMmck+YI2sStRQkvtAL//Zh/58tt/rojbLhh4Xui1TOQ+3nhp
- xDcmaWNfksoQ==
-X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
-   d="scan'208";a="452611824"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:20:22 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lP4Mt-00FiAw-TE; Wed, 24 Mar 2021 16:20:19 +0200
-Date:   Wed, 24 Mar 2021 16:20:19 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mfd: intel_quark_i2c_gpio: enable MSI interrupt
-Message-ID: <YFtKo4IrOGWoX6O3@smile.fi.intel.com>
-References: <20210323123433.45371-1-andriy.shevchenko@linux.intel.com>
- <20210323123433.45371-2-andriy.shevchenko@linux.intel.com>
- <20210324102931.GH2916463@dell>
- <YFsW26BH1LZM9ZBs@smile.fi.intel.com>
- <20210324104729.GL2916463@dell>
- <YFsgf9J+hQjfrZCb@smile.fi.intel.com>
- <20210324115033.GM2916463@dell>
- <YFsv6DijMMiv3D10@smile.fi.intel.com>
- <20210324130723.GN2916463@dell>
+        id S236128AbhCXOVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:21:04 -0400
+Received: from smtprelay0195.hostedemail.com ([216.40.44.195]:59940 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236123AbhCXOU3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:20:29 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id E3CBF8406;
+        Wed, 24 Mar 2021 14:20:27 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2689:2901:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:6742:7522:7576:7652:7903:10004:10400:11026:11232:11473:11657:11658:11783:11914:12043:12048:12295:12296:12297:12438:12740:12895:13069:13311:13357:13894:14181:14659:14721:21080:21433:21451:21627:21660:21939:21966:30034:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: mist41_450a56a2777b
+X-Filterd-Recvd-Size: 3203
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 24 Mar 2021 14:20:25 +0000 (UTC)
+Message-ID: <e1310273dcc577f3a772380ada7b6cc1906d680b.camel@perches.com>
+Subject: Re: [PATCH] [v2] drm/imx: imx-ldb: fix out of bounds array access
+ warning
+From:   Joe Perches <joe@perches.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Liu Ying <victor.liu@nxp.com>, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Wed, 24 Mar 2021 07:20:23 -0700
+In-Reply-To: <20210324121832.3714570-1-arnd@kernel.org>
+References: <20210324121832.3714570-1-arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324130723.GN2916463@dell>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 01:07:23PM +0000, Lee Jones wrote:
-> On Wed, 24 Mar 2021, Andy Shevchenko wrote:
+On Wed, 2021-03-24 at 13:17 +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> > On Wed, Mar 24, 2021 at 11:50:33AM +0000, Lee Jones wrote:
-> > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-> > > 
-> > > > On Wed, Mar 24, 2021 at 10:47:29AM +0000, Lee Jones wrote:
-> > > > > On Wed, 24 Mar 2021, Andy Shevchenko wrote:
-> > > > > > On Wed, Mar 24, 2021 at 10:29:31AM +0000, Lee Jones wrote:
-> > > > > > > On Tue, 23 Mar 2021, Andy Shevchenko wrote:
-> > > > 
-> > > > ...
-> > > > 
-> > > > > Also, past acceptance does not guarantee ideal/correct usage.
-> > > > 
-> > > > In this case it's hardly can be misused. But I heard you.
-> > > > 
-> > > > ...
-> > > > 
-> > > > > > The semantic is min-max range and having two defines (*) here for these seems
-> > > > > > to me as an utter overkill.
-> > > > > > 
-> > > > > > Of course, if you insist I may do it.
-> > > > > > 
-> > > > > > *) since value is the same, we might have one definition, but it will be even
-> > > > > >    more confusion to have it as a min and max at the same time.
-> > > > > 
-> > > > > It's just tricky to decypher for people who do not know the API, which
-> > > > > is most people, myself included.  For APIs like usleep_range() et al.,
-> > > > > obviously this makes no sense at all.
-> > > > 
-> > > > Seem like you are insisting. Okay, I will define them. What do you prefer one
-> > > > or two definitions?
-> > > 
-> > > Actually I'm not.  I'm just trying to get my head around where the
-> > > data comes from and what the values actually mean.
-> > > 
-> > > > ...
-> > > > 
-> > > > > What defines a vector?
-> > > > 
-> > > > The combination is solely of the driver-hardware. Driver explicitly tells that
-> > > > how many vectors it may consume (taking into account the range asked) and API
-> > > > returns amount given or an error.
-> > > 
-> > > So, where does the information actually come from?
-> > > 
-> > > Information that comes from a datasheet is usually defined.
-> > > 
-> > > Information that comes from the F/W is usually read and popped into a
-> > > variable.
-> > 
-> > It's a two way road:
-> > a) driver states that it needs only 1 vector and it's enough to it
-> > b) hardware must provide at least 1 vector to be served by this driver.
-> > 
-> > Look again into grepped output. Most of drivers that define it as an variable
-> > may dynamically adapt to the different amount of IRQ vectors. When it's static,
-> > usually drivers just hard code those values.
-> > 
-> > I'm really don't see a point to define them _in this driver_.
+> When CONFIG_OF is disabled, building with 'make W=1' produces warnings
+> about out of bounds array access:
 > 
-> That's fine.  I just felt like I had to ask.
+> drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
+> drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
 > 
-> Would you consider a comment that lets people unfamiliar with the API
-> what the values mean?
+> Add an error check before the index is used, which helps with the
+> warning, as well as any possible other error condition that may be
+> triggered at runtime.
 > 
-> Something to the tune of:
+> The warning could be fixed by adding a Kconfig depedency on CONFIG_OF,
+> but Liu Ying points out that the driver may hit the out-of-bounds
+> problem at runtime anyway.
 > 
->   "This driver requests 1 (and only 1) IRQ vector"
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2: fix subject line
+>     expand patch description
+>     print mux number
+>     check upper bound as well
+[]
+> diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
+[]
+> @@ -197,6 +197,12 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
+>  	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
+>  	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
+> 
+> +	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
+> +		dev_warn(ldb->dev, "%s: invalid mux %d\n",
+> +			 __func__, ERR_PTR(mux));
 
+This does not compile without warnings.
 
-Rather
+drivers/gpu/drm/imx/imx-ldb.c: In function ‘imx_ldb_encoder_enable’:
+drivers/gpu/drm/imx/imx-ldb.c:201:22: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘void *’ [-Wformat=]
+  201 |   dev_warn(ldb->dev, "%s: invalid mux %d\n",
+      |                      ^~~~~~~~~~~~~~~~~~~~~~
 
-    "This driver requests only 1 (and it's enough) IRQ vector"
-
-or something like this.
-
-Should I send a patch with the comment included? If so, please suggest if it's
-good from English grammar/style perspective.
-
--- 
-With Best Regards,
-Andy Shevchenko
+If you want to use ERR_PTR, the %d should be %pe as ERR_PTR
+is converting an int a void * to decode the error type and
+emit it as a string.
 
 
