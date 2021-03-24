@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C5534738A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420A5347391
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 09:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhCXIVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 04:21:32 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:45821 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236052AbhCXIUK (ORCPT
+        id S233472AbhCXIWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 04:22:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60578 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233850AbhCXIVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 04:20:10 -0400
-Received: by mail-vs1-f41.google.com with SMTP id 124so10890133vsg.12;
-        Wed, 24 Mar 2021 01:20:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b99vyQcaCpQD3pMXQougjwNkTLQcQ7H7qW0vVRZg68k=;
-        b=aJEHB6tfRRbMSsc6eWDmNQPjwEa5QQBZxqYg2zBEhniG7TJ+Fc5gDViUwai+DBLUTz
-         paTBJF+FNaa3YnWk+KPYlaHejZUiWnVlS7V3P0WpjSD7G1cwsusD9LFzZD0/OiqsO3/E
-         TXrTRHLeI558ifwSwjBFRXRXReg/Abs/ftqgtjE5lEz5ciH9LJV+BW654d6qhh7wLc3q
-         PTBIziRnd1mUSfHLi/piVP3QjVeq+7mEX94YqXUDnwrlXMi3ycHj51wflKqUgbOjQJ/K
-         GB+QnhiYlZ1wi8tURcgJ+slFVFuQaYti7U6QrTkqPGSqzXVKPB8ka5SbXNrK8VdT9O8A
-         xBSw==
-X-Gm-Message-State: AOAM532wW9DZLgSRIOt4yqSl6D+fAFU2zkmxue3KqqQk//3frn134ExA
-        +tKAREL/Plmkvb0CbumcaAbTInyjKo3QpDXpxmc=
-X-Google-Smtp-Source: ABdhPJyjNSyRygty85egDfQ+7ndwN29LWZNv+wRv4AgkR+qa6UdFybjZKqvGwrDgePDt/lvLzh/gWVwzhx66YKHThC4=
-X-Received: by 2002:a67:8883:: with SMTP id k125mr950544vsd.18.1616574009774;
- Wed, 24 Mar 2021 01:20:09 -0700 (PDT)
+        Wed, 24 Mar 2021 04:21:41 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12O8KlL6013728;
+        Wed, 24 Mar 2021 08:21:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Apl7iBU+rkoAZbuqIafD2/G0po9c8kIFgEDAuBoBx9Y=;
+ b=vj9JHeGzgCZLEkvspzvbVoHBN4Pkz1I4YljQPvE2qm1gR8tfrCDHDwnMF+072pkx+xvM
+ sZVibBPZ/Q2L+cP7C+GMpbLD/7k6TeGEFb9HRAxoHoHvTAm5Jne4LsTEhuFC0EhGDLxX
+ oDtWx0vDQaqe5I+Qo4cH7Rxia9858OCy8OcFys5mzV2K5Hg2hE88S6QEUo1lB3P7WVz9
+ OzafDIsdjyUC8XHgwjSbQwSOLpcb+0X5oSAJRkPXqe9lidaL1sslKFqMiTesouEZcNj6
+ A9quh2I8UNj6EU4gQX5QuYX6jjjeMALo4U8vC7H2ocKRGB0aAk4MnNfDjLzJ3f9az3Py qQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 37d9pn1rue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Mar 2021 08:21:17 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12O8LAQR110096;
+        Wed, 24 Mar 2021 08:21:15 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 37dtmqht7e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Mar 2021 08:21:15 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12O8L37j007580;
+        Wed, 24 Mar 2021 08:21:03 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 24 Mar 2021 08:21:03 +0000
+Date:   Wed, 24 Mar 2021 11:20:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     caizhichao <tomstomsczc@163.com>
+Cc:     mchehab@kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        gregkh@linuxfoundation.org, sakari.ailus@linux.intel.com,
+        Zhichao Cai <caizhichao@yulong.com>
+Subject: Re: [PATCH] drivers:staging: Simplify the if condition
+Message-ID: <20210324082055.GL1717@kadam>
+References: <20210324054535.1716-1-tomstomsczc@163.com>
 MIME-Version: 1.0
-References: <20210323091257.90054-1-heying24@huawei.com> <YFppJkpZRHMJFay0@piout.net>
-In-Reply-To: <YFppJkpZRHMJFay0@piout.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 24 Mar 2021 09:19:58 +0100
-Message-ID: <CAMuHMdWfFtJOQQf0b-2QJRd1EMLSW7rDsjNYzjjZhg6=JNZ0AA@mail.gmail.com>
-Subject: Re: [PATCH v2 -next] powerpc: kernel/time.c - cleanup warnings
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     He Ying <heying24@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        kernelfans@gmail.com, frederic@kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rtc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324054535.1716-1-tomstomsczc@163.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103240065
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9932 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
+ mlxlogscore=989 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
+ adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103240065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+On Wed, Mar 24, 2021 at 01:45:35PM +0800, caizhichao wrote:
+> From: Zhichao Cai <caizhichao@yulong.com>
+> 
+> Fixes coccicheck warning:
+> drivers/staging/media/atomisp/pci/sh_css_params.c:4652:24-26: WARNING !A || A && B is equivalent to !A || B
+> 
 
-On Tue, Mar 23, 2021 at 11:18 PM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
-> On 23/03/2021 05:12:57-0400, He Ying wrote:
-> > We found these warnings in arch/powerpc/kernel/time.c as follows:
-> > warning: symbol 'decrementer_max' was not declared. Should it be static?
-> > warning: symbol 'rtc_lock' was not declared. Should it be static?
-> > warning: symbol 'dtl_consumer' was not declared. Should it be static?
-> >
-> > Declare 'decrementer_max' and 'rtc_lock' in powerpc asm/time.h.
-> > Rename 'rtc_lock' in drviers/rtc/rtc-vr41xx.c to 'vr41xx_rtc_lock' to
-> > avoid the conflict with the variable in powerpc asm/time.h.
-> > Move 'dtl_consumer' definition behind "include <asm/dtl.h>" because it
-> > is declared there.
-> >
-> > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > Signed-off-by: He Ying <heying24@huawei.com>
-> > ---
-> > v2:
-> > - Instead of including linux/mc146818rtc.h in powerpc kernel/time.c, declare
-> >   rtc_lock in powerpc asm/time.h.
-> >
->
-> V1 was actually the correct thing to do. rtc_lock is there exactly
-> because chrp and maple are using mc146818 compatible RTCs. This is then
-> useful because then drivers/char/nvram.c is enabled. The proper fix
-> would be to scrap all of that and use rtc-cmos for those platforms as
-> this drives the RTC properly and exposes the NVRAM for the mc146818.
->
-> Or at least, if there are no users for the char/nvram driver on those
-> two platforms, remove the spinlock and stop enabling CONFIG_NVRAM or
-> more likely rename the symbol as it seems to be abused by both chrp and
-> powermac.
+Thanks, but someone already did this.  Please work against linux-next.
 
-IIRC, on CHRP LongTrail, NVRAM was inherited from CHRP's Mac ancestry,
-not from CHRP's PC ancestry, and thus NVRAM is not the one in the
-mc146818-compatible RTC.
+regards,
+dan carpenter
 
-http://users.telenet.be/geertu/Linux/PPC/DeviceTree.html confirms that,
-showing that nvram is a different device node than rtc.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
