@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDE33482EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4349F3482F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbhCXUbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:31:34 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:53678
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237892AbhCXUbZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:31:25 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ApUwnRqgmawWInLhM+gfn6+LDFnBQXjsji2hD?=
- =?us-ascii?q?6mlwRA09T+WzkceykPMHkSLlkTp5YgBFpfmsMLSNKEm2ybdb+o8UVI3JYCDHvy?=
- =?us-ascii?q?+SIJhm/c/exVTbehHW0s54+eNef7NlCNv2ZGIK6PrSxAWjCd4vzJ2m3cmT5dv2?=
- =?us-ascii?q?9HtmQQF0Z6wI1W4QNi+hHkJ7XwVAD5YifaDshfZvnSaqengcc62AaEUtYu6rnb?=
- =?us-ascii?q?H2va79bQVDLxAq7xTmt0LL1JfKVynd5BsYXj9VqI1OzUHOmWXCiZmejw=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.81,275,1610406000"; 
-   d="scan'208";a="376775754"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 21:31:24 +0100
-Date:   Wed, 24 Mar 2021 21:31:23 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coccinelle: misc: update uninitialized_var.cocci
- documentation
-In-Reply-To: <20210308073018.108487-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2103242131140.7838@hadrien>
-References: <20210308073018.108487-1-efremov@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S238164AbhCXUfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:35:04 -0400
+Received: from namei.org ([65.99.196.166]:51268 "EHLO mail.namei.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238128AbhCXUen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 16:34:43 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.namei.org (Postfix) with ESMTPS id 8051F4E1;
+        Wed, 24 Mar 2021 20:31:47 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 07:31:47 +1100 (AEDT)
+From:   James Morris <jmorris@namei.org>
+To:     =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        David Howells <dhowells@redhat.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Shuah Khan <shuah@kernel.org>,
+        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-security-module@vger.kernel.org, x86@kernel.org,
+        =?ISO-8859-15?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
+Subject: Re: [PATCH v30 02/12] landlock: Add ruleset and domain management
+In-Reply-To: <acda4be1-4076-a31d-fcfd-27764dd598c8@digikod.net>
+Message-ID: <c9dc8adb-7fab-14a1-a658-40b288419fdf@namei.org>
+References: <20210316204252.427806-1-mic@digikod.net> <20210316204252.427806-3-mic@digikod.net> <202103191114.C87C5E2B69@keescook> <acda4be1-4076-a31d-fcfd-27764dd598c8@digikod.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="1665246916-200031253-1616617907=:3442585"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--1665246916-200031253-1616617907=:3442585
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8BIT
 
-On Mon, 8 Mar 2021, Denis Efremov wrote:
+On Fri, 19 Mar 2021, Mickaël Salaün wrote:
 
-> Remove the documentation link from the warning message because commit
-> 3942ea7a10c9 ("deprecated.rst: Remove now removed uninitialized_var")
-> removed the section from documentation. Update the rule documentation
-> accordingly.
->
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+> 
+> >> Cc: Kees Cook <keescook@chromium.org>
+> >> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+> >> Acked-by: Serge Hallyn <serge@hallyn.com>
+> >> Link: https://lore.kernel.org/r/20210316204252.427806-3-mic@digikod.net
+> > 
+> > (Aside: you appear to be self-adding your Link: tags -- AIUI, this is
+> > normally done by whoever pulls your series. I've only seen Link: tags
+> > added when needing to refer to something else not included in the
+> > series.)
+> 
+> It is an insurance to not lose history. :)
 
-Applied, thanks.
+How will history be lost? The code is in the repo and discussions can 
+easily be found by searching for subjects or message IDs.
 
-julia
+Is anyone else doing this self linking?
 
-> ---
->  scripts/coccinelle/misc/uninitialized_var.cocci | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
->
-> diff --git a/scripts/coccinelle/misc/uninitialized_var.cocci b/scripts/coccinelle/misc/uninitialized_var.cocci
-> index 8fa845cefe11..69bbaae47e73 100644
-> --- a/scripts/coccinelle/misc/uninitialized_var.cocci
-> +++ b/scripts/coccinelle/misc/uninitialized_var.cocci
-> @@ -1,7 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0-only
->  ///
->  /// Please, don't reintroduce uninitialized_var().
-> -/// From Documentation/process/deprecated.rst:
-> +///
-> +/// From Documentation/process/deprecated.rst,
-> +/// commit 4b19bec97c88 ("docs: deprecated.rst: Add uninitialized_var()"):
->  ///  For any compiler warnings about uninitialized variables, just add
->  ///  an initializer. Using warning-silencing tricks is dangerous as it
->  ///  papers over real bugs (or can in the future), and suppresses unrelated
-> @@ -11,6 +13,11 @@
->  ///  obviously redundant, the compiler's dead-store elimination pass will make
->  ///  sure there are no needless variable writes.
->  ///
-> +/// Later, commit 3942ea7a10c9 ("deprecated.rst: Remove now removed
-> +/// uninitialized_var") removed this section because all initializations of
-> +/// this kind were cleaned-up from the kernel. This cocci rule checks that
-> +/// the macro is not explicitly or implicitly reintroduced.
-> +///
->  // Confidence: High
->  // Copyright: (C) 2020 Denis Efremov ISPRAS
->  // Options: --no-includes --include-headers
-> @@ -40,12 +47,10 @@ position p;
->  p << r.p;
->  @@
->
-> -coccilib.report.print_report(p[0],
-> -  "WARNING this kind of initialization is deprecated (https://www.kernel.org/doc/html/latest/process/deprecated.html#uninitialized-var)")
-> +coccilib.report.print_report(p[0], "WARNING this kind of initialization is deprecated")
->
->  @script:python depends on org@
->  p << r.p;
->  @@
->
-> -coccilib.org.print_todo(p[0],
-> -  "WARNING this kind of initialization is deprecated (https://www.kernel.org/doc/html/latest/process/deprecated.html#uninitialized-var)")
-> +coccilib.org.print_todo(p[0], "WARNING this kind of initialization is deprecated")
-> --
-> 2.26.2
->
->
+-- 
+James Morris
+<jmorris@namei.org>
+
+--1665246916-200031253-1616617907=:3442585--
