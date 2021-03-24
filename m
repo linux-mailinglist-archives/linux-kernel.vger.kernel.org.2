@@ -2,126 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB960347CA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:31:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FAE347CA8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 16:32:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236528AbhCXPbA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Mar 2021 11:31:00 -0400
-Received: from mga09.intel.com ([134.134.136.24]:1310 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236683AbhCXPaj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 11:30:39 -0400
-IronPort-SDR: TDT8xas+TqaIoJVkNiEXLLro6tSxpW0oapG8TPTC6sWKawxhr1Y2bBwLEzL0ayTAGLvsVAhDyD
- h+K9Yw2upJzQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190823083"
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="190823083"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:30:38 -0700
-IronPort-SDR: /4dqq/0JWisBWvhTbTEBIBwFyl3ZwxDSlbNQvn9KHdRvSPPQs9Sb14vUi+jgB7se4K1pbShwF/
- LGKAbJDldGYw==
-X-IronPort-AV: E=Sophos;i="5.81,275,1610438400"; 
-   d="scan'208";a="415534424"
-Received: from hcarliss-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.54.166])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 08:30:27 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
-        Martin Sebor <msebor@gcc.gnu.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        Ning Sun <ning.sun@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Simon Kelley <simon@thekelleys.org.uk>,
-        James Smart <james.smart@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Anders Larsen <al@alarsen.net>, Tejun Heo <tj@kernel.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Imre Deak <imre.deak@intel.com>,
-        linux-arm-kernel@lists.infradead.org,
-        tboot-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        =?utf-8?Q?Jos=C3=A9?= Roberto de Souza <jose.souza@intel.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Aditya Swarup <aditya.swarup@intel.com>
-Subject: Re: [PATCH 10/11] drm/i915: avoid stringop-overread warning on pri_latency
-In-Reply-To: <20210322160253.4032422-11-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210322160253.4032422-1-arnd@kernel.org> <20210322160253.4032422-11-arnd@kernel.org>
-Date:   Wed, 24 Mar 2021 17:30:24 +0200
-Message-ID: <874kh04lin.fsf@intel.com>
+        id S236668AbhCXPbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 11:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236663AbhCXPbD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 11:31:03 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D16C0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:31:01 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id e13so11543279vsl.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 08:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cc2uWcmOYHsuFaDaziuqmdBB7HXaAseMJtvKA68Mmns=;
+        b=fgVNZ/IDRPoyZoHD31LkoInkXHTy1IwCgAtx21pvGa67w88TdtZKHj3DPqEmSFUBE7
+         jxwQOpaCEFAmP+Z0CfkPSiblkqKw52T+DfiHYhYkoT1DBx1ZtPgKrozdMzxIURueDQWO
+         i0zTqQ5yGF608We/Ym1CTK4nXTi0CJr2AXaSo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cc2uWcmOYHsuFaDaziuqmdBB7HXaAseMJtvKA68Mmns=;
+        b=GUfO0CRcCeiBWBVegyb/zEkjQXFvE2niLxEulxRZUp5YMgPBiPGjYxNzaWyHIop78u
+         KJX8vrBf9KKqKgffurA9aCAvXsLOuBca9demhXiEjleSohkG/h9u8DpupFLOi6XpTnkT
+         zmsV1hRKxsqbSGVGao9bkiHv8zcpCIfjGHDoiKIpDt0IVt8NDdh3e3DlYr3vDjYFQTpp
+         3+Krcj/GxzUgzFDV5R38qi3lBvEBNtU/4VhnvnwzTknXQDtwDhYQmjsIFvvBiEvEQELW
+         0g8YEkiqTYudP4fKSjdtNnUKQvt3al8lQDtbN6I0c6EjyHFIL8RptV5VpAJOQaSKmOdw
+         OC+Q==
+X-Gm-Message-State: AOAM532lFgplHwzOp39gs2rn7rh/o1SLj8PLiQlza2+DaAPeHx4Q2H7a
+        iUzKM218igGPE5w9Wxjleve3B5nwU5TseRNs0sfAyg==
+X-Google-Smtp-Source: ABdhPJwm579irBFtm4RC1b0MKE8RnV15CUYnl01EApVoeqFUk6shtoofjqWy/7jG4DVpJLbWCmm/Y2I+XyzB+kSlBj4=
+X-Received: by 2002:a67:6786:: with SMTP id b128mr2413476vsc.9.1616599860174;
+ Wed, 24 Mar 2021 08:31:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <20210318135223.1342795-1-ckuehl@redhat.com> <20210318135223.1342795-3-ckuehl@redhat.com>
+ <YFNvH8w4l7WyEMyr@miu.piliscsaba.redhat.com> <04e46a8c-df26-3b58-71f8-c0b94c546d70@redhat.com>
+In-Reply-To: <04e46a8c-df26-3b58-71f8-c0b94c546d70@redhat.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Wed, 24 Mar 2021 16:30:49 +0100
+Message-ID: <CAJfpeguzdPV13LhXFL0U_bfKcpOHQCvg2wfxF6ryksp==tjVWA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] virtiofs: split requests that exceed virtqueue size
+To:     Connor Kuehl <ckuehl@redhat.com>
+Cc:     virtio-fs-list <virtio-fs@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021, Arnd Bergmann <arnd@kernel.org> wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Mar 24, 2021 at 4:09 PM Connor Kuehl <ckuehl@redhat.com> wrote:
 >
-> gcc-11 warns about what appears to be an out-of-range array access:
+> On 3/18/21 10:17 AM, Miklos Szeredi wrote:
+> > I removed the conditional compilation and renamed the limit.  Also made
+> > virtio_fs_get_tree() bail out if it hit the WARN_ON().  Updated patch below.
 >
-> In function ‘snb_wm_latency_quirk’,
->     inlined from ‘ilk_setup_wm_latency’ at drivers/gpu/drm/i915/intel_pm.c:3108:3:
-> drivers/gpu/drm/i915/intel_pm.c:3057:9: error: ‘intel_print_wm_latency’ reading 16 bytes from a region of size 10 [-Werror=stringop-overread]
->  3057 |         intel_print_wm_latency(dev_priv, "Primary", dev_priv->wm.pri_latency);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/i915/intel_pm.c: In function ‘ilk_setup_wm_latency’:
-> drivers/gpu/drm/i915/intel_pm.c:3057:9: note: referencing argument 3 of type ‘const u16 *’ {aka ‘const short unsigned int *’}
-> drivers/gpu/drm/i915/intel_pm.c:2994:13: note: in a call to function ‘intel_print_wm_latency’
->  2994 | static void intel_print_wm_latency(struct drm_i915_private *dev_priv,
->       |             ^~~~~~~~~~~~~~~~~~~~~~
+> Hi Miklos,
 >
-> My guess is that this code is actually safe because the size of the
-> array depends on the hardware generation, and the function checks for
-> that, but at the same time I would not expect the compiler to work it
-> out correctly, and the code seems a little fragile with regards to
-> future changes. Simply increasing the size of the array should help.
+> Has this patch been queued?
 
-Agreed, I don't think there's an issue, but the code could use a bunch
-of improvements.
+It's in my internal patch queue at the moment.   Will push to
+fuse.git#for-next in a couple of days.
 
-Like, we have intel_print_wm_latency() for debug logging and
-wm_latency_show() for debugfs, and there's a bunch of duplication and
-ugh.
-
-But this seems like the easiest fix for the warning.
-
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
-
-
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/gpu/drm/i915/i915_drv.h | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-> index 26d69d06aa6d..3567602e0a35 100644
-> --- a/drivers/gpu/drm/i915/i915_drv.h
-> +++ b/drivers/gpu/drm/i915/i915_drv.h
-> @@ -1095,11 +1095,11 @@ struct drm_i915_private {
->  		 * in 0.5us units for WM1+.
->  		 */
->  		/* primary */
-> -		u16 pri_latency[5];
-> +		u16 pri_latency[8];
->  		/* sprite */
-> -		u16 spr_latency[5];
-> +		u16 spr_latency[8];
->  		/* cursor */
-> -		u16 cur_latency[5];
-> +		u16 cur_latency[8];
->  		/*
->  		 * Raw watermark memory latency values
->  		 * for SKL for all 8 levels
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Thanks,
+Miklos
