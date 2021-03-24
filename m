@@ -2,46 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986334722A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C80347234
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 08:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235760AbhCXHNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 03:13:13 -0400
-Received: from verein.lst.de ([213.95.11.211]:35696 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235726AbhCXHNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 03:13:10 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 1FC2268B02; Wed, 24 Mar 2021 08:13:06 +0100 (CET)
-Date:   Wed, 24 Mar 2021 08:13:05 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     akpm@linux-foundation.org, peterz@infradead.org,
-        paulmck@kernel.org, ast@kernel.org, tglx@linutronix.de,
-        rostedt@goodmis.org, hch@lst.de, m.szyprowski@samsung.com,
-        song.bao.hua@hisilicon.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dma-mapping: make map_benchmark compile into module
-Message-ID: <20210324071305.GB647@lst.de>
-References: <1616552258-22282-1-git-send-email-tiantao6@hisilicon.com>
+        id S235759AbhCXHPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 03:15:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231455AbhCXHPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 03:15:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4680AC061763;
+        Wed, 24 Mar 2021 00:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WZNXlX3eOEcZWcovU9zwR1I2oqNzGrOjWZWd75LU5ZE=; b=dkGd8++747v3h/hYgkBJiJdwk5
+        PWwJAEoFe4SEvtib+PWo8O1uHz83djehIMQSdnlmb1REGO5EV+ai1XfGZioyH8Ql1EhLRkR5p2ZnG
+        1pkAuvYWEkKMLqDvjStL4l9A78QhLzRsPKxflpkfjhZ2hPNag18sMT1dpjWG2WWE+Uc0BBQ/s4dBy
+        6o1fFxinChsqDoPC9wz4p5NvxQWN+AGPjQkubFEVBSKNdmvEPii7GNy/yM3eT1P9iSLUd2Wy8Rhod
+        prA0XCpf7vR/OA/R9UVZ9PZsy/YnOuA17GWykOo2KsrhKISaP/P7KLnX9JfhPBfXzaEy9Ohhktqgn
+        wAvphNNA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lOxiH-00B54e-77; Wed, 24 Mar 2021 07:14:16 +0000
+Date:   Wed, 24 Mar 2021 07:13:57 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 03/17] mm: add generic __va_function and __pa_function
+ macros
+Message-ID: <20210324071357.GB2639075@infradead.org>
+References: <20210323203946.2159693-1-samitolvanen@google.com>
+ <20210323203946.2159693-4-samitolvanen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616552258-22282-1-git-send-email-tiantao6@hisilicon.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20210323203946.2159693-4-samitolvanen@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:17:38AM +0800, Tian Tao wrote:
-> under some scenarios, it is necessary to compile map_benchmark
-> into module to test iommu, so this patch changed Kconfig and
-> export_symbol to implement map_benchmark compiled into module.
+On Tue, Mar 23, 2021 at 01:39:32PM -0700, Sami Tolvanen wrote:
+> With CONFIG_CFI_CLANG, the compiler replaces function addresses
+> in instrumented C code with jump table addresses. This means that
+> __pa_symbol(function) returns the physical address of the jump table
+> entry instead of the actual function, which may not work as the jump
+> table code will immediately jump to a virtual address that may not be
+> mapped.
 > 
-> On the other hand, map_benchmark is a driver, which is supposed
-> to be able to run as a module.
-> 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> To avoid this address space confusion, this change adds generic
+> definitions for __va_function and __pa_function, which architectures
+> that support CFI can override. The typical implementation of the
+> __va_function macro would use inline assembly to take the function
+> address, which avoids compiler instrumentation.
 
-Nope, we're not going to export more kthread internals for a test
-module.
+I think these helper are sensible, but shouldn't they have somewhat
+less arcane names and proper documentation?
