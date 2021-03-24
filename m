@@ -2,156 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23048347ADD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A82F7347AE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236326AbhCXOgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236139AbhCXOga (ORCPT
+        id S236347AbhCXOiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:38:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33304 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236277AbhCXOhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:36:30 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119EAC061763;
-        Wed, 24 Mar 2021 07:36:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gZNDVx2/PlbsIgQ9b2b5kJPlJKUPEQS2/HXJQTw43w4=; b=k3/gF41UIwj1Pdt2mjIaGfHC5U
-        coWuLaceQXKwR1Ko7RAtOy4xlyIXbxBRo4NgLh92ENxXW93dwqBSE6N2Svtedapqpuy+wsf0bdBE1
-        J2frHCckHbfJHmAGN49DtjD98oKjUMOov+CRq6KSmv9a/4K0bKEvxGMuDBy1kkz/Rr5VsZ/AXAnXo
-        ok++/B3yzrxaSg0JIxD2aHLt6uo6LGvq5YqXGdg1e09a4M6UEzABlQ8eAPuHqvYbxk0YLz7fNqrA5
-        ZNsDQDomwsrnfpUxLWDLS5PK1K/jvJ0N5EgRyNkkP5Uzgo1V64zqrrlVhy0UtsXZziAaw9dCabZt9
-        99Y0wJMQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lP4cJ-00HDi6-Gc; Wed, 24 Mar 2021 14:36:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9E615306099;
-        Wed, 24 Mar 2021 15:36:14 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 65EF720693989; Wed, 24 Mar 2021 15:36:14 +0100 (CET)
-Date:   Wed, 24 Mar 2021 15:36:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Josh Don <joshdon@google.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>, linux-doc@vger.kernel.org,
-        Paul Turner <pjt@google.com>
-Subject: Re: [PATCH v2] sched: Warn on long periods of pending need_resched
-Message-ID: <YFtOXpl1vWp47Qud@hirez.programming.kicks-ass.net>
-References: <20210323035706.572953-1-joshdon@google.com>
- <YFsIZjhCFbxKyos3@hirez.programming.kicks-ass.net>
- <YFsaYBO/UqMHSpGS@hirez.programming.kicks-ass.net>
- <20210324114224.GP15768@suse.de>
- <YFssoD5NDl6dFfg/@hirez.programming.kicks-ass.net>
- <20210324133916.GQ15768@suse.de>
+        Wed, 24 Mar 2021 10:37:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616596671;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=36On/MZVZK9J50S/ENtrT9lDH1ORl6BouIE2J0nqrFE=;
+        b=dOGH5QZaUGaqhKtPf+UeDd7kr7P8eS5ck1LYBiyKfr2vxf1KAyWXBfbTehGnQbj1hg2TIy
+        aOwW2p75nRoGtL/nkhnjsHVLDc5y9y6XkfoxaPEqBFa/RjbQUFDLrSOEnhdkPwIML9jnN6
+        IxQF3EQFsL1hQulyFjV6YmhSAnfgp+Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-188-juNwz2lXNM6Dp7ntU_nQCA-1; Wed, 24 Mar 2021 10:37:47 -0400
+X-MC-Unique: juNwz2lXNM6Dp7ntU_nQCA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C299B107ACCA;
+        Wed, 24 Mar 2021 14:37:45 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EADA0866DC;
+        Wed, 24 Mar 2021 14:37:44 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 08:37:43 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Amey Narkhede <ameynarkhede03@gmail.com>,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <20210324083743.791d6191@omen.home.shazbot.org>
+In-Reply-To: <YFsOVNM1zIqNUN8f@unreal>
+References: <YFMYzkg101isRXIM@unreal>
+        <20210318103935.2ec32302@omen.home.shazbot.org>
+        <YFOMShJAm4j/3vRl@unreal>
+        <a2b9dc7e-e73a-3a70-5899-8ed37a8ef700@metux.net>
+        <YFSgQ2RWqt4YyIV4@unreal>
+        <20210319102313.179e9969@omen.home.shazbot.org>
+        <YFW78AfbhYpn16H4@unreal>
+        <20210320085942.3cefcc48@x1.home.shazbot.org>
+        <YFcGlzbaSzQ5Qota@unreal>
+        <20210322111003.50d64f2c@omen.home.shazbot.org>
+        <YFsOVNM1zIqNUN8f@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324133916.GQ15768@suse.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 01:39:16PM +0000, Mel Gorman wrote:
+On Wed, 24 Mar 2021 12:03:00 +0200
+Leon Romanovsky <leon@kernel.org> wrote:
 
-> > Yeah, lets say I was pleasantly surprised to find it there :-)
+> On Mon, Mar 22, 2021 at 11:10:03AM -0600, Alex Williamson wrote:
+> > On Sun, 21 Mar 2021 10:40:55 +0200
+> > Leon Romanovsky <leon@kernel.org> wrote:
+> >   
+> > > On Sat, Mar 20, 2021 at 08:59:42AM -0600, Alex Williamson wrote:  
+> > > > On Sat, 20 Mar 2021 11:10:08 +0200
+> > > > Leon Romanovsky <leon@kernel.org> wrote:    
+> > > > > On Fri, Mar 19, 2021 at 10:23:13AM -0600, Alex Williamson wrote:     
+> > > > > > 
+> > > > > > What if we taint the kernel or pci_warn() for cases where either all
+> > > > > > the reset methods are disabled, ie. 'echo none > reset_method', or any
+> > > > > > time a device specific method is disabled?      
+> > > > > 
+> > > > > What does it mean "none"? Does it mean nothing supported? If yes, I think that
+> > > > > pci_warn() will be enough. At least for me, taint is usable during debug stages,
+> > > > > probably if device doesn't crash no one will look to see /proc/sys/kernel/tainted.    
+> > > > 
+> > > > "none" as implemented in this patch, clearing the enabled function
+> > > > reset methods.    
+> > > 
+> > > It is far from intuitive, the empty string will be easier to understand,
+> > > because "none" means no reset at all.  
 > > 
+> > "No reset at all" is what "none" achieves, the
+> > pci_dev.reset_methods_enabled bitmap is cleared.  We can use an empty
+> > string, but I think we want a way to clear all enabled resets and a way
+> > to return it to the default.  I could see arguments for an empty string
+> > serving either purpose, so this version proposed explicitly using
+> > "none" and "default", as included in the ABI update.  
 > 
-> Minimally, lets move that out before it gets kicked out. Patch below.
+> I will stick with "default" only and leave "none" for something else.
 
-OK, stuck that in front.
-
-> > > Moving something like sched_min_granularity_ns will break a number of
-> > > tuning guides as well as the "tuned" tool which ships by default with
-> > > some distros and I believe some of the default profiles used for tuned
-> > > tweak kernel.sched_min_granularity_ns
+Are you suggesting writing "default" restores the unmodified behavior
+and writing an empty string clears all enabled reset methods?
+ 
+> > > > > > I'd almost go so far as to prevent disabling a device specific reset
+> > > > > > altogether, but for example should a device specific reset that fixes
+> > > > > > an aspect of FLR behavior prevent using a bus reset?  I'd prefer in that
+> > > > > > case if direct FLR were disabled via a device flag introduced with the
+> > > > > > quirk and the remaining resets can still be selected by preference.      
+> > > > > 
+> > > > > I don't know enough to discuss the PCI details, but you raised good point.
+> > > > > This sysfs is user visible API that is presented as is from device point
+> > > > > of view. It can be easily run into problems if PCI/core doesn't work with
+> > > > > user's choice.
+> > > > >     
+> > > > > > 
+> > > > > > Theoretically all the other reset methods work and are available, it's
+> > > > > > only a policy decision which to use, right?      
+> > > > > 
+> > > > > But this patch was presented as a way to overcome situations where
+> > > > > supported != working and user magically knows which reset type to set.    
+> > > > 
+> > > > It's not magic, the new sysfs attributes expose which resets are
+> > > > enabled and the order that they're used, the user can simply select the
+> > > > next one.  Being able to bypass a broken reset method is a helpful side
+> > > > effect of getting to select a preferred reset method.    
+> > > 
+> > > Magic in a sense that user has no idea what those resets mean, the
+> > > expectation is that he will blindly iterate till something works.  
 > > 
-> > Yeah, can't say I care. I suppose some people with PREEMPT=n kernels
-> > increase that to make their server workloads 'go fast'. But I'll
-> > absolutely suck rock on anything desktop.
+> > Which ought to actually be a safe thing to do.  We should have quirks to
+> > exclude resets that are known broken but still probe as present and I'd
+> > be perfectly fine if we issue a warning if the user disables all resets
+> > for a given device.
+> >    
+> > > > > If you want to take this patch to be policy decision tool,
+> > > > > it will need to accept "reset_type1,reset_type2,..." sort of input,
+> > > > > so fallback will work natively.    
+> > > > 
+> > > > I don't see that as a requirement.  We have fall-through support in the
+> > > > kernel, but for a given device we're really only ever going to make use
+> > > > of one of those methods.  If a user knows enough about a device to have
+> > > > a preference, I think it can be singular.  That also significantly
+> > > > simplifies the interface and supporting code.  Thanks,    
+> > > 
+> > > I'm struggling to get requirements from this thread. You talked about
+> > > policy decision to overtake fallback mechanism, Amey wanted to avoid
+> > > quirks.
+> > > 
+> > > Do you have an example of such devices or we are talking about
+> > > theoretical case?  
 > > 
+> > Look at any device that already has a reset quirk and the process it
+> > took to get there.  Those are more than just theoretical cases.  
 > 
-> Broadly speaking yes and despite the lack of documentation, enough people
-> think of that parameter when tuning for throughput vs latency depending on
-> the expected use of the machine.  kernel.sched_wakeup_granularity_ns might
-> get tuned if preemption is causing overscheduling. Same potentially with
-> kernel.sched_min_granularity_ns and kernel.sched_latency_ns. That said, I'm
-> struggling to think of an instance where I've seen tuning recommendations
-> properly quantified other than the impact on microbenchmarks but I
-> think there will be complaining if they disappear. I suspect that some
-> recommended tuning is based on "I tried a number of different values and
-> this seemed to work reasonably well".
+> So let's fix the process. The long standing kernel policy is that kernel
+> bugs (and missing quirk can be seen as such bug) should be fixed in the
+> kernel and not workaround by the users.
 
-Right, except that due to that scaling thing, you'd have to re-evaluate
-when you change machine.
+I don't see an actual proposal here to fix the process.  Allowing
+specific reset methods to be trivially tested is a step towards fixing
+the process.  Unfortunately we can't tell the difference between
+someone setting a policy because they prefer a reset mechanism, are
+testing a reset mechanism, or they're avoiding a broken reset mechanism.
+We can't force participation if we've made it clear that the interface
+should not be used long term for anything other than policy preference
+and testing.
 
-Also, do you have any inclination on the perf difference we're talking
-about? (I should probably ask Google and not you...)
-
-> kernel.sched_schedstats probably should not depend in SCHED_DEBUG because
-> it has value for workload analysis which is not necessarily about debugging
-> per-se. It might simply be informing whether another variable should be
-> tuned or useful for debugging applications rather than the kernel.
-
-Dubious, if you're that far down the rabit hole, you're dang near
-debugging.
-
-> As an aside, I wonder how often SCHED_DEBUG has been enabled simply
-> because LATENCYTOP selects it -- no idea offhand why LATENCYTOP even
-> needs SCHED_DEBUG.
-
-Perhaps schedstats used to rely on debug? I can't remember. I don't
-think I've used latencytop in at least 10 years. ftrace and perf sorta
-killed the need for it.
-
-> > These knobs really shouldn't have been as widely available as they are.
+> > For policy preference, I already described how I've configured QEMU to
+> > prefer a bus reset rather than a PM reset due to lack of specification
+> > regarding the scope of a PM "soft reset".  This interface would allow a
+> > system policy to do that same thing.
 > > 
+> > I don't think anyone is suggesting this as a means to avoid quirks that
+> > would resolve reset issues and create the best default general behavior.
+> > This provides a mechanism to test various reset methods, and thereby
+> > identify broken methods, and set a policy.  Sure, that policy might be
+> > to avoid a broken reset in the interim before it gets quirked and
+> > there's potential for abuse there, but I think the benefits outweigh
+> > the risks.  
 > 
-> Probably not. Worse, some of the tuning is probably based on "this worked
-> for workload X 10 years ago so I'll just keep doing that"
+> This interface is proposed as first class citizen in the general sysfs
+> layout. Of course, it will be seen as a way to bypass the kernel.
+> 
+> At least, put it under CONFIG_EXPERT option, so no distro will enable it
+> by default.
 
-That sounds like an excellent reason to disrupt ;-)
-
-> > And guides, well, the writes have to earn a living too, right.
+Of course we're proposing it to be accessible, it should also require
+admin privileges to modify, sysfs has lots of such things.  If it's
+relegated to non-default accessibility, it won't be used for testing
+and it won't be available for system policy and it's pointless.
+ 
+> > > And I don't see why simple line parser with loop iterator over strchr()
+> > > suddenly becomes complicated code.  
 > > 
+> > Setting multiple bits in a bitmap is easy.  How do you then go on to
+> > allow the user to specify an ordering preference?  If you have an
+> > algorithm you'd like to propose that allows the user to manage the
+> > ordering when enabling multiple methods without substantially
+> > increasing the complexity, please share.  IMO, a given device will
+> > generally use one reset method and it seems sufficient to restrict user
+> > preference to achieve all the use cases I've noted.  Thanks,  
 > 
-> For most of the guides I've seen they either specify values without
-> explaining why or just describe roughly what the parameter does and it's
-> not always that accurate a description.
+> Linked list + iterator will do the trick.
 
-Another good reason.
+So you're suggesting to add potentially multiple dynamic allocations per
+device and list locking and management for an unspecified use case for
+an interface you seem to be opposed to anyway.  It should be pretty
+clear why the keep-it-simple approach was taken in this series.  Thanks,
 
-> > > Whether there are legimiate reasons to modify those values or not,
-> > > removing them may generate fun bug reports.
-> > 
-> > Which I'll close with -EDONTCARE, userspace has to cope with
-> > SCHED_DEBUG=n in any case.
-> 
-> True but removing the throughput vs latency parameters is likely to
-> generate a lot of noise even if the reasons for tuning are bad ones.
-> Some definitely should not be depending on SCHED_DEBUG, others may
-> need to be moved to debugfs one patch at a time so they can be reverted
-> individually if complaining is excessive and there is a legiminate reason
-> why it should be tuned. It's possible that complaining will be based on
-> a workload regression that really depended on tuned changing parameters.
+Alex
 
-The way I've done it, you can simply re-instate the systl table entry
-and it'll work again, except for the entries that had a custom handler.
-
-I'm ready to disrupt :-)
