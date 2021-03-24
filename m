@@ -2,281 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9897B348494
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CDE348489
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:23:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbhCXWYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        id S238730AbhCXWWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhCXWYn (ORCPT
+        with ESMTP id S238833AbhCXWWO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:24:43 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F4BC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:24:42 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id q5so18569731pfh.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:24:42 -0700 (PDT)
+        Wed, 24 Mar 2021 18:22:14 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86996C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:22:14 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id m7so15755065pgj.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 15:22:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+f7vy8L6BaKbuHNfVQy1QFqCIe47nQIq59LKEtEf7QU=;
-        b=BLDat+XvSUT0zkvpExCAkP6lb6FeIM4gmxj5t5SuthD1U3Z8c0HWR68B+v4oP0aVcO
-         4XFNeBu8YTbZ4ty4BhcQFDG5Nh6ni8eX3QYFKejzs879ryF6/d1p+timMlNgBNpOetaX
-         2ZQ2QNjdA49jqsc+Gl0sdffK7L17uw39UdvdB4fsDjkSHcoICb+OwvjkeYfOE2+L8hP1
-         jHOuqROv6fj/jqnnrraJZbOOU13qKbcfqlTdQZZqZCf+YO21Sk2X5QKZ4PmUfLfvttzn
-         6uHT0ozJFVbYu4L2ISi2AymJoYr3eC0JWKPx3IYAg57sWcCCCa4WCtxZTQl4YKHGgjwM
-         5YTQ==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=/48dhgHDHZre46tBf8aePXg6q2Dde6pSRdqmAz+ycAY=;
+        b=A8DAbCnd0l9fDtqdYkr/Nn72/s9Zi3UynAvoqz+r5wGJd0U0yoyPQpc46VY93XuP6/
+         Yk8tpcPM3i1S90vjj2cxGzOSbz+1I8ot51rAZWd9Cd7Pe9791Rb1rFdj1hzSFhC6f8eC
+         76oDbhS/1H9i3cFwPQCM2gBARn0J/15uAS5Zo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+f7vy8L6BaKbuHNfVQy1QFqCIe47nQIq59LKEtEf7QU=;
-        b=lMQaMHTrmMAeqR5RMsd9uhZLTtDDNR1WNifcRbFrCgVhQrjjdMsn9R+dekAZXCsfiz
-         +6v0wUOuMBZts4GwAto40j0GAO342QvBtkFxkbt9CRjr9NZh7e+lJucI2bqZQ63p5dbi
-         JsGcLcSMsluKM0U1iadyU75t53DirPJLDIARUb8qcPp1YOeG53/aeE2xK2jecLYVVF9f
-         YsUyM7qPX6mYyeCXLBiceAi3A36on8EXT+2pgBdjJPlX2llNE4eERwb7xVjE1lpzqvjW
-         dFzCGlmY7KJC5vnfER6jxAt4ixYzx6i3sobalig+hlsBabYUNzVG5/ERn0+HWvGBiCMU
-         vGZQ==
-X-Gm-Message-State: AOAM533bqLFRc+Aa7tqLj9Y9eSbKWwLApJEUnEPEWQbMWlep++8KGBzC
-        L7PnyF/4f5se0o5u7AA5VsJS8kY9cNFSdBLB
-X-Google-Smtp-Source: ABdhPJw4bZ+bZPEpzltN4cKXjYCf3h7CebEwVwZhyFqqluFlYz9hDBItR/ZydLAcUALfeyxTjlILDg==
-X-Received: by 2002:a17:902:8494:b029:e6:cb9a:9fd5 with SMTP id c20-20020a1709028494b02900e6cb9a9fd5mr5581678plo.81.1616624682358;
-        Wed, 24 Mar 2021 15:24:42 -0700 (PDT)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:2535:883:67bb:5fbf])
-        by smtp.gmail.com with ESMTPSA id f11sm3445015pga.34.2021.03.24.15.24.41
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=/48dhgHDHZre46tBf8aePXg6q2Dde6pSRdqmAz+ycAY=;
+        b=F5CJH+xicDKAWfKaiQV9GP5S4/bONKM4zCKtR0xrjBjevTS4DjSeHqaiuE7H5yQHLB
+         WMzRLGg2H9ES1AcekI1cUQxvIeowzO6H7khXWqeGgAeBYXqx3KcDYUdKmYmw40RpBaEM
+         c4oCXF+3v2x5SoH0J5QMVEh2plVLpXrRawmOCWuZlv9FuuWIwrb/iZPcJDvxUMb4VKmm
+         yaETWm/hUW5ZQOQgWE63gR8ZVN/CV4NrtXOjUpF0E7rp1m/bLjQmR0lDOUV/ZMGjCrCJ
+         eA7vFCHSHHdb+qYqoPALO65updS2YCokfoJkhYJJ1cCvsB9+Np+AWi5R9swLXiWtdOLV
+         dVMA==
+X-Gm-Message-State: AOAM530YOqFXfV2DVWGph8DeYaGo6mrK8/H5Hz1oF/6co4bhbF5u/QX9
+        uZzrBsZXaS96811sVAc1v9cWjg==
+X-Google-Smtp-Source: ABdhPJyauwhSo+lJ2UsS32ctOdOvo0/1VQ3+mMErQ1WcyR2ND2cDzF0M5zIcTCj/RhYOGeGnOo+bNg==
+X-Received: by 2002:a63:c807:: with SMTP id z7mr4706221pgg.363.1616624534052;
+        Wed, 24 Mar 2021 15:22:14 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:84ac:62f7:16a8:ccc7])
+        by smtp.gmail.com with ESMTPSA id f6sm3564775pfk.11.2021.03.24.15.22.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 15:24:41 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>, bcousson@baylibre.com,
-        Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH] ARM: dts: am335x-boneblack.dts: unique gpio-line-names
-Date:   Wed, 24 Mar 2021 15:22:02 -0700
-Message-Id: <20210324222201.674905-1-drew@beagleboard.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 24 Mar 2021 15:22:13 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YFsiOe7RYjSDJ6A+@smile.fi.intel.com>
+References: <20210324020443.1815557-1-swboyd@chromium.org> <20210324020443.1815557-8-swboyd@chromium.org> <YFsiOe7RYjSDJ6A+@smile.fi.intel.com>
+Subject: Re: [PATCH v2 07/12] scripts/decode_stacktrace.sh: Support debuginfod
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Sasha Levin <sashal@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Matthew Wilcox <willy@infradead.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date:   Wed, 24 Mar 2021 15:22:11 -0700
+Message-ID: <161662453186.3012082.16246196278552144536@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on linux-gpio discussion [1], it is best practice to make the
-gpio-line-names unique. Generic names like "[ethernet]" are replaced
-with the name of the unique signal on the AM3358 SoC ball corresponding
-to the gpio line. "[NC]" is also renamed to the standard "NC" name to
-represent "not connected".
+Quoting Andy Shevchenko (2021-03-24 04:27:53)
+> On Tue, Mar 23, 2021 at 07:04:38PM -0700, Stephen Boyd wrote:
+> > Now that stacktraces contain the build ID information we can update this
+> > script to use debuginfod-find to locate the debuginfo for the vmlinux
+> > and modules automatically. This can replace the existing code that
+> > requires specifying a path to vmlinux or tries to find the vmlinux and
+> > modules automatically by using the release number. Work it into the
+> > script as a fallback option if the vmlinux isn't specified on the
+> > commandline.
+>=20
+> One wish for the shell scripts: try to avoid bashisms as much as possible,
+> please.
+>=20
 
-[1] https://lore.kernel.org/linux-gpio/20201216195357.GA2583366@x1/
-
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
-Tony - I have fixed the conflict so this now applies against mainline.
-
- arch/arm/boot/dts/am335x-boneblack.dts | 132 ++++++++++++-------------
- 1 file changed, 66 insertions(+), 66 deletions(-)
-
-diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
-index b4feb85e171a..e2ee8b8c07bc 100644
---- a/arch/arm/boot/dts/am335x-boneblack.dts
-+++ b/arch/arm/boot/dts/am335x-boneblack.dts
-@@ -26,54 +26,54 @@ oppnitro-1000000000 {
- 
- &gpio0 {
- 	gpio-line-names =
--		"[ethernet]",
--		"[ethernet]",
-+		"[mdio_data]",
-+		"[mdio_clk]",
- 		"P9_22 [spi0_sclk]",
- 		"P9_21 [spi0_d0]",
- 		"P9_18 [spi0_d1]",
- 		"P9_17 [spi0_cs0]",
--		"[sd card]",
--		"P9_42A [ecappwm0]",
--		"P8_35 [hdmi]",
--		"P8_33 [hdmi]",
--		"P8_31 [hdmi]",
--		"P8_32 [hdmi]",
-+		"[mmc0_cd]",
-+		"P8_42A [ecappwm0]",
-+		"P8_35 [lcd d12]",
-+		"P8_33 [lcd d13]",
-+		"P8_31 [lcd d14]",
-+		"P8_32 [lcd d15]",
- 		"P9_20 [i2c2_sda]",
- 		"P9_19 [i2c2_scl]",
- 		"P9_26 [uart1_rxd]",
- 		"P9_24 [uart1_txd]",
--		"[ethernet]",
--		"[ethernet]",
--		"[usb]",
--		"[hdmi]",
-+		"[rmii1_txd3]",
-+		"[rmii1_txd2]",
-+		"[usb0_drvvbus]",
-+		"[hdmi cec]",
- 		"P9_41B",
--		"[ethernet]",
-+		"[rmii1_txd1]",
- 		"P8_19 [ehrpwm2a]",
- 		"P8_13 [ehrpwm2b]",
--		"[NC]",
--		"[NC]",
-+		"NC",
-+		"NC",
- 		"P8_14",
- 		"P8_17",
--		"[ethernet]",
--		"[ethernet]",
-+		"[rmii1_txd0]",
-+		"[rmii1_refclk]",
- 		"P9_11 [uart4_rxd]",
- 		"P9_13 [uart4_txd]";
- };
- 
- &gpio1 {
- 	gpio-line-names =
--		"P8_25 [emmc]",
--		"[emmc]",
--		"P8_5 [emmc]",
--		"P8_6 [emmc]",
--		"P8_23 [emmc]",
--		"P8_22 [emmc]",
--		"P8_3 [emmc]",
--		"P8_4 [emmc]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
-+		"P8_25 [mmc1_dat0]",
-+		"[mmc1_dat1]",
-+		"P8_5 [mmc1_dat2]",
-+		"P8_6 [mmc1_dat3]",
-+		"P8_23 [mmc1_dat4]",
-+		"P8_22 [mmc1_dat5]",
-+		"P8_3 [mmc1_dat6]",
-+		"P8_4 [mmc1_dat7]",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
- 		"P8_12",
- 		"P8_11",
- 		"P8_16",
-@@ -82,13 +82,13 @@ &gpio1 {
- 		"P9_23",
- 		"P9_14 [ehrpwm1a]",
- 		"P9_16 [ehrpwm1b]",
--		"[emmc]",
-+		"[emmc rst]",
- 		"[usr0 led]",
- 		"[usr1 led]",
- 		"[usr2 led]",
- 		"[usr3 led]",
--		"[hdmi]",
--		"[usb]",
-+		"[hdmi irq]",
-+		"[usb vbus oc]",
- 		"[hdmi audio]",
- 		"P9_12",
- 		"P8_26",
-@@ -116,38 +116,38 @@ &gpio2 {
- 		"P8_38 [hdmi]",
- 		"P8_36 [hdmi]",
- 		"P8_34 [hdmi]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
-+		"[rmii1_rxd3]",
-+		"[rmii1_rxd2]",
-+		"[rmii1_rxd1]",
-+		"[rmii1_rxd0]",
- 		"P8_27 [hdmi]",
- 		"P8_29 [hdmi]",
- 		"P8_28 [hdmi]",
- 		"P8_30 [hdmi]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]",
--		"[emmc]";
-+		"[mmc0_dat3]",
-+		"[mmc0_dat2]",
-+		"[mmc0_dat1]",
-+		"[mmc0_dat0]",
-+		"[mmc0_clk]",
-+		"[mmc0_cmd]";
- };
- 
- &gpio3 {
- 	gpio-line-names =
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[ethernet]",
--		"[i2c0]",
--		"[i2c0]",
--		"[emu]",
--		"[emu]",
--		"[ethernet]",
--		"[ethernet]",
--		"[NC]",
--		"[NC]",
--		"[usb]",
-+		"[mii col]",
-+		"[mii crs]",
-+		"[mii rx err]",
-+		"[mii tx en]",
-+		"[mii rx dv]",
-+		"[i2c0 sda]",
-+		"[i2c0 scl]",
-+		"[jtag emu0]",
-+		"[jtag emu1]",
-+		"[mii tx clk]",
-+		"[mii rx clk]",
-+		"NC",
-+		"NC",
-+		"[usb vbus en]",
- 		"P9_31 [spi1_sclk]",
- 		"P9_29 [spi1_d0]",
- 		"P9_30 [spi1_d1]",
-@@ -156,14 +156,14 @@ &gpio3 {
- 		"P9_27",
- 		"P9_41A",
- 		"P9_25",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]",
--		"[NC]";
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC",
-+		"NC";
- };
--- 
-2.27.0
-
+I wish too but the script has /bin/bash at the start and I was trying to
+follow similar style to what was already in here. Feel free to send a
+patch to remove the bashisms.
