@@ -2,211 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A6034821A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:41:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAF8348223
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 20:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238023AbhCXTlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 15:41:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237755AbhCXTkl (ORCPT
+        id S237972AbhCXTpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 15:45:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237892AbhCXTpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 15:40:41 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9AEC061763
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:40:41 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id l3so18161449pfc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 12:40:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+yeH7O+SKmNDPP8TaHxytA3G6HzMFIl42cJgSOThu2I=;
-        b=JGo/mcB0YjtnR+1GHNKVXI4+AHEvSmgx9OJfb33Luzzg9+3aeFAtBJUnWv5ZEJA2bU
-         m+X2Z6tsiQ/vUUTpmstfSR/G0sURbnhrFMuGEcYq+NOfTVNuzQzO3XtvkZJqfN2UifDc
-         cyKGgD8bt4VZQdK5qieDyLa4r/1OB/PNRwRaEOC1XwATI066WMl/K40+hWZg8nOw+RGB
-         ZTbU5t2ccI/7e+zk+xUx76fNcFfpMfzV+BbgnGzizOkcq8ELSJPMVGemRvZDsoOGKe72
-         UFJuNzZvF3C1nUj+b/sU1EusgmrCiY8BvPZE8aY9i+XhKgcmyuOD7UuQsdHWRJ6FFkpA
-         2E7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+yeH7O+SKmNDPP8TaHxytA3G6HzMFIl42cJgSOThu2I=;
-        b=rj1gjdSoID0/AqVCz8V3WrVtxWYySSGeCkp5VUzFV+1mvXz26EpuZjJAhfxWoaSLsa
-         MZqSj2Buh1DCDgjUPGdqeBqbEf6aI8vdCg1hFa52ibHN8lrm53jElTqhqtX5TJvNMpCA
-         WfcTLlQMDBxwgRy1oAkKdWkhGfd8UiVfr2slIyS+zTEFLtL5m97MCrNWnu6nKgPTi7GY
-         CQNAGJ1XMn2yS14nfa4GZePrazNjy0SiWUSN8KW0y70rbUypyhBNQw/aH4avcKwHXmAG
-         DK6tgLGaspDzX3Deucu5MvYs1/sfPW4eRBqGtrzvAw8rHkyLiE7pKnWXACjFiROsmapG
-         U8wg==
-X-Gm-Message-State: AOAM531g5g5SiZS54vnxUXT2xHyNUKGb1Ie2EJ7Y4kQ0GHvbyiE7+8RW
-        4ZjmVCqWjB875jad7GnJH8k=
-X-Google-Smtp-Source: ABdhPJwWh1njqQv18gD4oaqp7GkE5xybIFL6i/QKhoBhPPVRekGPEeI/W0C6j5PpfBchLdHrsvVMhA==
-X-Received: by 2002:a17:902:c317:b029:e4:aecd:8539 with SMTP id k23-20020a170902c317b02900e4aecd8539mr5184277plx.61.1616614840185;
-        Wed, 24 Mar 2021 12:40:40 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:7dfa:1e53:536:7976])
-        by smtp.gmail.com with ESMTPSA id h2sm3085493pfq.139.2021.03.24.12.40.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 12:40:38 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Wed, 24 Mar 2021 12:40:36 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     rostedt@goodmis.org, akpm@linux-foundation.org, mingo@redhat.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Liam Mark <lmark@codeaurora.org>
-Subject: Re: [PATCH] mm: cma: add trace events for CMA alloc perf testing
-Message-ID: <YFuVtDn+FdJuCpVE@google.com>
-References: <20210324160740.15901-1-georgi.djakov@linaro.org>
+        Wed, 24 Mar 2021 15:45:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616615131;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=71BnMFS9rn8SPVKmnpmhBKFC1i10nRCVkAwJRE2/qiI=;
+        b=WAnyVc4vQPgUSBT6VTSOiWkm47nmkrvPMxdi4w2QEPKzjJiiVsgdHAymJU0Z5RHQ7KuVWL
+        Q2xo/iH2+Dj9mdUSJKiOfT5ZAIj/B3uAB5Rwy4+61myfPfnl3yk4B+7cAcGOUXtnuLJfRL
+        o7rG5i3r6evpTLQQts18PkG9OQsTzgM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-9-9ef1xfLNNA2T-RmkDksVBg-1; Wed, 24 Mar 2021 15:43:49 -0400
+X-MC-Unique: 9ef1xfLNNA2T-RmkDksVBg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F1C21922037;
+        Wed, 24 Mar 2021 19:43:47 +0000 (UTC)
+Received: from krava (unknown [10.40.196.25])
+        by smtp.corp.redhat.com (Postfix) with SMTP id A716262677;
+        Wed, 24 Mar 2021 19:43:44 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 20:43:43 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mpe@ellerman.id.au,
+        acme@kernel.org, jolsa@kernel.org, maddy@linux.ibm.com,
+        ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, peterz@infradead.org
+Subject: Re: [PATCH V2 3/5] tools/perf: Add powerpc support for
+ PERF_SAMPLE_WEIGHT_STRUCT
+Message-ID: <YFuWb3S8p0ZGjmGu@krava>
+References: <1616425047-1666-1-git-send-email-atrajeev@linux.vnet.ibm.com>
+ <1616425047-1666-4-git-send-email-atrajeev@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324160740.15901-1-georgi.djakov@linaro.org>
+In-Reply-To: <1616425047-1666-4-git-send-email-atrajeev@linux.vnet.ibm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 06:07:40PM +0200, Georgi Djakov wrote:
-> From: Liam Mark <lmark@codeaurora.org>
+On Mon, Mar 22, 2021 at 10:57:25AM -0400, Athira Rajeev wrote:
+> Add arch specific arch_evsel__set_sample_weight() to set the new
+> sample type for powerpc.
 > 
-> Add cma and migrate trace events to enable CMA allocation
-> performance to be measured via ftrace.
+> Add arch specific arch_perf_parse_sample_weight() to store the
+> sample->weight values depending on the sample type applied.
+> if the new sample type (PERF_SAMPLE_WEIGHT_STRUCT) is applied,
+> store only the lower 32 bits to sample->weight. If sample type
+> is 'PERF_SAMPLE_WEIGHT', store the full 64-bit to sample->weight.
 > 
-> Signed-off-by: Liam Mark <lmark@codeaurora.org>
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 > ---
->  include/trace/events/cma.h     | 39 +++++++++++++++++++++++++++++++++-
->  include/trace/events/migrate.h | 22 +++++++++++++++++++
->  mm/cma.c                       |  4 ++++
->  mm/migrate.c                   |  2 ++
->  4 files changed, 66 insertions(+), 1 deletion(-)
+>  tools/perf/arch/powerpc/util/Build   |  2 ++
+>  tools/perf/arch/powerpc/util/event.c | 32 ++++++++++++++++++++++++++++++++
+>  tools/perf/arch/powerpc/util/evsel.c |  8 ++++++++
+>  3 files changed, 42 insertions(+)
+>  create mode 100644 tools/perf/arch/powerpc/util/event.c
+>  create mode 100644 tools/perf/arch/powerpc/util/evsel.c
 > 
-> diff --git a/include/trace/events/cma.h b/include/trace/events/cma.h
-> index 5017a8829270..cdfd06afb39a 100644
-> --- a/include/trace/events/cma.h
-> +++ b/include/trace/events/cma.h
-> @@ -8,7 +8,7 @@
->  #include <linux/types.h>
->  #include <linux/tracepoint.h>
+> diff --git a/tools/perf/arch/powerpc/util/Build b/tools/perf/arch/powerpc/util/Build
+> index b7945e5a543b..8a79c4126e5b 100644
+> --- a/tools/perf/arch/powerpc/util/Build
+> +++ b/tools/perf/arch/powerpc/util/Build
+> @@ -4,6 +4,8 @@ perf-y += kvm-stat.o
+>  perf-y += perf_regs.o
+>  perf-y += mem-events.o
+>  perf-y += sym-handling.o
+> +perf-y += evsel.o
+> +perf-y += event.o
 >  
-> -TRACE_EVENT(cma_alloc,
-> +DECLARE_EVENT_CLASS(cma_alloc_class,
->  
->  	TP_PROTO(unsigned long pfn, const struct page *page,
->  		 unsigned int count, unsigned int align),
-> @@ -61,6 +61,43 @@ TRACE_EVENT(cma_release,
->  		  __entry->count)
->  );
->  
-> +TRACE_EVENT(cma_alloc_start,
+>  perf-$(CONFIG_DWARF) += dwarf-regs.o
+>  perf-$(CONFIG_DWARF) += skip-callchain-idx.o
+> diff --git a/tools/perf/arch/powerpc/util/event.c b/tools/perf/arch/powerpc/util/event.c
+> new file mode 100644
+> index 000000000000..f49d32c2c8ae
+> --- /dev/null
+> +++ b/tools/perf/arch/powerpc/util/event.c
+> @@ -0,0 +1,32 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/types.h>
+> +#include <linux/string.h>
+> +#include <linux/zalloc.h>
 > +
-> +	TP_PROTO(unsigned int count, unsigned int align),
-> +
-> +	TP_ARGS(count, align),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(unsigned int, count)
-> +		__field(unsigned int, align)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->count = count;
-> +		__entry->align = align;
-> +	),
-> +
-> +	TP_printk("count=%u align=%u",
-> +		  __entry->count,
-> +		  __entry->align)
-> +);
-> +
-> +DEFINE_EVENT(cma_alloc_class, cma_alloc,
-> +
-> +	TP_PROTO(unsigned long pfn, const struct page *page,
-> +		 unsigned int count, unsigned int align),
-> +
-> +	TP_ARGS(pfn, page, count, align)
-> +);
-> +
-> +DEFINE_EVENT(cma_alloc_class, cma_alloc_busy_retry,
-> +
-> +	TP_PROTO(unsigned long pfn, const struct page *page,
-> +		 unsigned int count, unsigned int align),
-> +
-> +	TP_ARGS(pfn, page, count, align)
-> +);
-> +
->  #endif /* _TRACE_CMA_H */
->  
->  /* This part must be outside protection */
-> diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
-> index 363b54ce104c..9fb2a3bbcdfb 100644
-> --- a/include/trace/events/migrate.h
-> +++ b/include/trace/events/migrate.h
-> @@ -82,6 +82,28 @@ TRACE_EVENT(mm_migrate_pages,
->  		__print_symbolic(__entry->mode, MIGRATE_MODE),
->  		__print_symbolic(__entry->reason, MIGRATE_REASON))
->  );
-> +
-> +TRACE_EVENT(mm_migrate_pages_start,
-> +
-> +	TP_PROTO(enum migrate_mode mode, int reason),
-> +
-> +	TP_ARGS(mode, reason),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(enum migrate_mode, mode)
-> +		__field(int, reason)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->mode	= mode;
-> +		__entry->reason	= reason;
-> +	),
-> +
-> +	TP_printk("mode=%s reason=%s",
-> +		  __print_symbolic(__entry->mode, MIGRATE_MODE),
-> +		  __print_symbolic(__entry->reason, MIGRATE_REASON))
-> +);
-> +
->  #endif /* _TRACE_MIGRATE_H */
->  
->  /* This part must be outside protection */
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 90e27458ddb7..984c85fd16ec 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -443,6 +443,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->  	if (!count)
->  		goto out;
->  
-> +	trace_cma_alloc_start(count, align);
+> +#include "../../../util/event.h"
+> +#include "../../../util/synthetic-events.h"
+> +#include "../../../util/machine.h"
+> +#include "../../../util/tool.h"
+> +#include "../../../util/map.h"
+> +#include "../../../util/debug.h"
 
-Can we add cma->name here to identify what cma instance would be?
+nit, just #include "utils/...h" should work no?
+
+other than that, the patchset looks ok to me
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
 
 > +
->  	mask = cma_bitmap_aligned_mask(cma, align);
->  	offset = cma_bitmap_aligned_offset(cma, align);
->  	bitmap_maxno = cma_bitmap_maxno(cma);
-> @@ -483,6 +485,8 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->  
->  		pr_debug("%s(): memory range at %p is busy, retrying\n",
->  			 __func__, pfn_to_page(pfn));
+> +void arch_perf_parse_sample_weight(struct perf_sample *data,
+> +				   const __u64 *array, u64 type)
+> +{
+> +	union perf_sample_weight weight;
 > +
-> +		trace_cma_alloc_busy_retry(pfn, pfn_to_page(pfn), count, align);
->  		/* try again with a bit different memory target */
->  		start = bitmap_no + mask + 1;
->  	}
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index 47df0df8f21a..58b1b03e0c98 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -1445,6 +1445,8 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
->  	int rc, nr_subpages;
->  	LIST_HEAD(ret_pages);
->  
-> +	trace_mm_migrate_pages_start(mode, reason);
+> +	weight.full = *array;
+> +	if (type & PERF_SAMPLE_WEIGHT)
+> +		data->weight = weight.full;
+> +	else
+> +		data->weight = weight.var1_dw;
+> +}
 > +
->  	if (!swapwrite)
->  		current->flags |= PF_SWAPWRITE;
->  
+> +void arch_perf_synthesize_sample_weight(const struct perf_sample *data,
+> +					__u64 *array, u64 type)
+> +{
+> +	*array = data->weight;
+> +
+> +	if (type & PERF_SAMPLE_WEIGHT_STRUCT)
+> +		*array &= 0xffffffff;
+> +}
+> diff --git a/tools/perf/arch/powerpc/util/evsel.c b/tools/perf/arch/powerpc/util/evsel.c
+> new file mode 100644
+> index 000000000000..2f733cdc8dbb
+> --- /dev/null
+> +++ b/tools/perf/arch/powerpc/util/evsel.c
+> @@ -0,0 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <stdio.h>
+> +#include "util/evsel.h"
+> +
+> +void arch_evsel__set_sample_weight(struct evsel *evsel)
+> +{
+> +	evsel__set_sample_bit(evsel, WEIGHT_STRUCT);
+> +}
+> -- 
+> 1.8.3.1
 > 
+
