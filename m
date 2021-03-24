@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66AC347F03
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1152347F11
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 18:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237271AbhCXRNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 13:13:02 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:36455 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237109AbhCXRMl (ORCPT
+        id S237139AbhCXRPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 13:15:05 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51344 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237151AbhCXROo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 13:12:41 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-175-kENySIPJPJOErBFbNqf-iw-1; Wed, 24 Mar 2021 17:12:38 +0000
-X-MC-Unique: kENySIPJPJOErBFbNqf-iw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 17:12:38 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Wed, 24 Mar 2021 17:12:38 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alex Elder' <elder@ieee.org>, 'Alex Elder' <elder@linaro.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "evgreen@chromium.org" <evgreen@chromium.org>,
-        "cpratapa@codeaurora.org" <cpratapa@codeaurora.org>,
-        "subashab@codeaurora.org" <subashab@codeaurora.org>,
-        "elder@kernel.org" <elder@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next] net: ipa: avoid 64-bit modulus
-Thread-Topic: [PATCH net-next] net: ipa: avoid 64-bit modulus
-Thread-Index: AQHXH4CsHuvM6SpiNkO+MERkTuT8kKqTVWfggAAL7ICAAABBYA==
-Date:   Wed, 24 Mar 2021 17:12:38 +0000
-Message-ID: <aa5a91defcca4a4cb8e2317e26385010@AcuMS.aculab.com>
-References: <20210323010505.2149882-1-elder@linaro.org>
- <f77f12f117934e9d9e3b284ed37e87a7@AcuMS.aculab.com>
- <fea8c425-2af0-0526-4ad7-73c523253e08@ieee.org>
-In-Reply-To: <fea8c425-2af0-0526-4ad7-73c523253e08@ieee.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 24 Mar 2021 13:14:44 -0400
+Received: from 1-171-92-165.dynamic-ip.hinet.net ([1.171.92.165] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lP75D-0002q7-UY; Wed, 24 Mar 2021 17:14:16 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Chris Chiu <chiu@endlessm.com>,
+        Mark Brown <broonie@kernel.org>, Joe Perches <joe@perches.com>,
+        Tom Yan <tom.ty89@gmail.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] ALSA: usb-audio: Carve out connector value checking into a helper
+Date:   Thu, 25 Mar 2021 01:14:07 +0800
+Message-Id: <20210324171410.285848-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQWxleCBFbGRlcg0KPiBTZW50OiAyNCBNYXJjaCAyMDIxIDE3OjA3DQo+IA0KPiBPbiAz
-LzI0LzIxIDExOjI3IEFNLCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4gRnJvbTogQWxleCBFbGRl
-cg0KPiA+PiBTZW50OiAyMyBNYXJjaCAyMDIxIDAxOjA1DQo+ID4+IEl0IGlzIHBvc3NpYmxlIGZv
-ciBhIDMyIGJpdCB4ODYgYnVpbGQgdG8gdXNlIGEgNjQgYml0IERNQSBhZGRyZXNzLg0KPiA+Pg0K
-PiA+PiBUaGVyZSBhcmUgdHdvIHJlbWFpbmluZyBzcG90cyB3aGVyZSB0aGUgSVBBIGRyaXZlciBk
-b2VzIGEgbW9kdWxvDQo+ID4+IG9wZXJhdGlvbiB0byBjaGVjayBhbGlnbm1lbnQgb2YgYSBETUEg
-YWRkcmVzcywgYW5kIHVuZGVyIGNlcnRhaW4NCj4gPj4gY29uZGl0aW9ucyB0aGlzIGNhbiBsZWFk
-IHRvIGEgYnVpbGQgZXJyb3Igb24gaTM4NiAoYXQgbGVhc3QpLg0KPiA+Pg0KPiA+PiBUaGUgYWxp
-Z25tZW50IGNoZWNrcyB3ZSdyZSBkb2luZyBhcmUgZm9yIHBvd2VyLW9mLTIgdmFsdWVzLCBhbmQg
-dGhpcw0KPiA+PiBtZWFucyB0aGUgbG93ZXIgMzIgYml0cyBvZiB0aGUgRE1BIGFkZHJlc3MgY2Fu
-IGJlIHVzZWQuICBUaGlzIGVuc3VyZXMNCj4gPj4gYm90aCBvcGVyYW5kcyB0byB0aGUgbW9kdWxv
-IG9wZXJhdG9yIGFyZSAzMiBiaXRzIHdpZGUuDQo+ID4+DQo+ID4+IFJlcG9ydGVkLWJ5OiBSYW5k
-eSBEdW5sYXAgPHJkdW5sYXBAaW5mcmFkZWFkLm9yZz4NCj4gPj4gU2lnbmVkLW9mZi1ieTogQWxl
-eCBFbGRlciA8ZWxkZXJAbGluYXJvLm9yZz4NCj4gPj4gLS0tDQo+ID4+ICAgZHJpdmVycy9uZXQv
-aXBhL2dzaS5jICAgICAgIHwgMTEgKysrKysrKy0tLS0NCj4gPj4gICBkcml2ZXJzL25ldC9pcGEv
-aXBhX3RhYmxlLmMgfCAgOSArKysrKystLS0NCj4gPj4gICAyIGZpbGVzIGNoYW5nZWQsIDEzIGlu
-c2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pDQo+ID4+DQo+ID4+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL25ldC9pcGEvZ3NpLmMgYi9kcml2ZXJzL25ldC9pcGEvZ3NpLmMNCj4gPj4gaW5kZXggN2Yz
-ZTMzOGNhN2E3Mi4uYjYzNTU4MjdiZjkwMCAxMDA2NDQNCj4gPj4gLS0tIGEvZHJpdmVycy9uZXQv
-aXBhL2dzaS5jDQo+ID4+ICsrKyBiL2RyaXZlcnMvbmV0L2lwYS9nc2kuYw0KPiA+PiBAQCAtMTQz
-NiwxNSArMTQzNiwxOCBAQCBzdGF0aWMgdm9pZCBnc2lfZXZ0X3JpbmdfcnhfdXBkYXRlKHN0cnVj
-dCBnc2lfZXZ0X3JpbmcgKmV2dF9yaW5nLCB1MzINCj4gaW5kZXgpDQo+ID4+ICAgLyogSW5pdGlh
-bGl6ZSBhIHJpbmcsIGluY2x1ZGluZyBhbGxvY2F0aW5nIERNQSBtZW1vcnkgZm9yIGl0cyBlbnRy
-aWVzICovDQo+ID4+ICAgc3RhdGljIGludCBnc2lfcmluZ19hbGxvYyhzdHJ1Y3QgZ3NpICpnc2ks
-IHN0cnVjdCBnc2lfcmluZyAqcmluZywgdTMyIGNvdW50KQ0KPiA+PiAgIHsNCj4gPj4gLQlzaXpl
-X3Qgc2l6ZSA9IGNvdW50ICogR1NJX1JJTkdfRUxFTUVOVF9TSVpFOw0KPiA+PiArCXUzMiBzaXpl
-ID0gY291bnQgKiBHU0lfUklOR19FTEVNRU5UX1NJWkU7DQo+ID4+ICAgCXN0cnVjdCBkZXZpY2Ug
-KmRldiA9IGdzaS0+ZGV2Ow0KPiA+PiAgIAlkbWFfYWRkcl90IGFkZHI7DQo+ID4+DQo+ID4+IC0J
-LyogSGFyZHdhcmUgcmVxdWlyZXMgYSAyXm4gcmluZyBzaXplLCB3aXRoIGFsaWdubWVudCBlcXVh
-bCB0byBzaXplICovDQo+ID4+ICsJLyogSGFyZHdhcmUgcmVxdWlyZXMgYSAyXm4gcmluZyBzaXpl
-LCB3aXRoIGFsaWdubWVudCBlcXVhbCB0byBzaXplLg0KPiA+PiArCSAqIFRoZSBzaXplIGlzIGEg
-cG93ZXIgb2YgMiwgc28gd2UgY2FuIGNoZWNrIGFsaWdubWVudCB1c2luZyBqdXN0DQo+ID4+ICsJ
-ICogdGhlIGJvdHRvbSAzMiBiaXRzIGZvciBhIERNQSBhZGRyZXNzIG9mIGFueSBzaXplLg0KPiA+
-PiArCSAqLw0KPiA+PiAgIAlyaW5nLT52aXJ0ID0gZG1hX2FsbG9jX2NvaGVyZW50KGRldiwgc2l6
-ZSwgJmFkZHIsIEdGUF9LRVJORUwpOw0KPiA+DQo+ID4gRG9lc24ndCBkbWFfYWxsb2NfY29oZXJl
-bnQoKSBndWFyYW50ZWUgdGhhdCBhbGlnbm1lbnQ/DQo+ID4gSSBkb3VidCBhbnl3aGVyZSBlbHNl
-IGNoZWNrcz8NCj4gDQo+IEkgbm9ybWFsbHkgd291bGRuJ3QgY2hlY2sgc29tZXRoaW5nIGxpa2Ug
-dGhpcyBpZiBpdA0KPiB3ZXJlbid0IGd1YXJhbnRlZWQuICBJJ20gbm90IHN1cmUgd2h5IEkgZGlk
-IGl0IGhlcmUuDQo+IA0KPiBJIHNlZSBpdCdzICJndWFyYW50ZWVkIHRvIGJlIGFsaWduZWQgdG8g
-dGhlIHNtYWxsZXN0DQo+IFBBR0VfU0laRSBvcmRlciB3aGljaCBpcyBncmVhdGVyIHRoYW4gb3Ig
-ZXF1YWwgdG8NCj4gdGhlIHJlcXVlc3RlZCBzaXplLiIgIFNvIEkgdGhpbmsgdGhlIGFuc3dlciB0
-byB5b3VyDQo+IHF1ZXN0aW9uIGlzICJ5ZXMsIGl0IGRvZXMgZ3VhcmFudGVlIHRoYXQuIg0KPiAN
-Cj4gSSdsbCBtYWtlIGEgbm90ZSB0byByZW1vdmUgdGhpcyBjaGVjayBpbiBhIGZ1dHVyZQ0KPiBw
-YXRjaCwgYW5kIHdpbGwgY3JlZGl0IHlvdSB3aXRoIHRoZSBzdWdnZXN0aW9uLg0KDQpJIHRoaW5r
-ICdjb3VudCcgaXMgYWxzbyByZXF1aXJlZCB0byBiZSBhIHBvd2VyIG9mIDIuDQpzbyB5b3UgY291
-bGQgaGF2ZSBjaGVja2VkICdhZGRyICYgKHNpemUgLSAxKScuDQoNCglEYXZpZA0KDQotDQpSZWdp
-c3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9u
-IEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+This is preparation for next patch, no functional change intended.
+
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ sound/usb/mixer.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b004b2e63a5d..98f5417a70e4 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1446,13 +1446,11 @@ static int mixer_ctl_master_bool_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
+-/* get the connectors status and report it as boolean type */
+-static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+-				   struct snd_ctl_elem_value *ucontrol)
++static int get_connector_value(struct usb_mixer_elem_info *cval,
++			       char *name, int *val)
+ {
+-	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+ 	struct snd_usb_audio *chip = cval->head.mixer->chip;
+-	int idx = 0, validx, ret, val;
++	int idx = 0, validx, ret;
+ 
+ 	validx = cval->control << 8 | 0;
+ 
+@@ -1467,21 +1465,24 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+ 		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+ 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				      validx, idx, &uac2_conn, sizeof(uac2_conn));
+-		val = !!uac2_conn.bNrChannels;
++		if (val)
++			*val = !!uac2_conn.bNrChannels;
+ 	} else { /* UAC_VERSION_3 */
+ 		struct uac3_insertion_ctl_blk uac3_conn;
+ 
+ 		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+ 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				      validx, idx, &uac3_conn, sizeof(uac3_conn));
+-		val = !!uac3_conn.bmConInserted;
++		if (val)
++			*val = !!uac3_conn.bmConInserted;
+ 	}
+ 
+ 	snd_usb_unlock_shutdown(chip);
+ 
+ 	if (ret < 0) {
+-		if (strstr(kcontrol->id.name, "Speaker")) {
+-			ucontrol->value.integer.value[0] = 1;
++		if (name && strstr(name, "Speaker")) {
++			if (val)
++				*val = 1;
+ 			return 0;
+ 		}
+ error:
+@@ -1491,6 +1492,21 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+ 		return filter_error(cval, ret);
+ 	}
+ 
++	return ret;
++}
++
++/* get the connectors status and report it as boolean type */
++static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_elem_info *cval = kcontrol->private_data;
++	int ret, val;
++
++	ret = get_connector_value(cval, kcontrol->id.name, &val);
++
++	if (ret)
++		return ret;
++
+ 	ucontrol->value.integer.value[0] = val;
+ 	return 0;
+ }
+-- 
+2.30.2
 
