@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF80346E39
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 01:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F41346E3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 01:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbhCXAUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 20:20:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40212 "EHLO mail.kernel.org"
+        id S234468AbhCXAUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 20:20:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231374AbhCXAUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231488AbhCXAUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 23 Mar 2021 20:20:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 07798619E6;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 114B1619E5;
         Wed, 24 Mar 2021 00:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616545210;
-        bh=kHLBGVKJ3fl7L+jP2KrvLdy5Z63m8GqqvbdZsFlyBhw=;
+        bh=pvFSCsQteMKLG3j5p3RTkF/r3M1yio3aIx38XqSSOrQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=S/POvoe9D5WikKcIY+SMwT0juCCVGD4cyHwMUnIiWLDoXXS1pYHFGSkbzbTeFh5Vc
-         X9jxPaiGcRdxiUyqvFalsPq4mk4buYH8WayG5s2ZlRLC879oWXTAFkU89m53zOl2lw
-         WfMIPx0yyP3r7XnCZ3eom4YfBl2cs22TaPDzcZchbN5i2t8jR9gL/bA4cbUxZVw6gs
-         T/1dBNOga+/c20h6FpN0RGntl9CzIOR80I1pm8BIE8wFc/kMQ5g6A6X78xsBYrPDDE
-         3GivnCn5uNg6yAJvKhfe2TEFWZyKuE+YRtj0e5RKdCs12dYKrXt5oKVlpQlt95nOZA
-         8XgSJ2iIQr0hg==
+        b=alNT8FG9L3nstDrO5pxDyUeU2Vm992Rka3A6SbwLjoTgDCcSNCWpwSqhxUlfHAH4g
+         sA7xaz01LhieqFYUKxk8S0uOaw5Q8gw3a0ctnBh5UhUNSR7t4zLzeAIaGxK2vdjf5N
+         All+uzbYMQTGrf/bNyPm9SsT9LTmfhgRTwiAl5xpfGRa/RRqOSXIdlPStJQqiPbKrt
+         2lnjqz+9E8mLtB4ioNYkV4MgskmnvoNvYg8OORvFC+Z0vaDGAHg+ryOumPMerO4jqf
+         nXSPPzeawkzVVm3LRGgE3DB42yDJESu4giX+++WNi/3YO2qEkRe1zNgqI836Z9Op4L
+         IVCTnnUk4fxcQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EBBFD60A6A;
-        Wed, 24 Mar 2021 00:20:09 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0135660A3E;
+        Wed, 24 Mar 2021 00:20:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: ipa: avoid 64-bit modulus
+Subject: Re: [PATCH] net: ethernet: indir_table.h is included twice
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161654520996.13502.14966166701949033388.git-patchwork-notify@kernel.org>
-Date:   Wed, 24 Mar 2021 00:20:09 +0000
-References: <20210323010505.2149882-1-elder@linaro.org>
-In-Reply-To: <20210323010505.2149882-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, rdunlap@infradead.org,
-        bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <161654521000.13502.90773102608216924.git-patchwork-notify@kernel.org>
+Date:   Wed, 24 Mar 2021 00:20:10 +0000
+References: <20210323020013.138697-1-wanjiabing@vivo.com>
+In-Reply-To: <20210323020013.138697-1-wanjiabing@vivo.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,22 +48,18 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 22 Mar 2021 20:05:05 -0500 you wrote:
-> It is possible for a 32 bit x86 build to use a 64 bit DMA address.
+On Tue, 23 Mar 2021 10:00:12 +0800 you wrote:
+> indir_table.h has been included at line 41, so remove
+> the duplicate one at line 43.
 > 
-> There are two remaining spots where the IPA driver does a modulo
-> operation to check alignment of a DMA address, and under certain
-> conditions this can lead to a build error on i386 (at least).
-> 
-> The alignment checks we're doing are for power-of-2 values, and this
-> means the lower 32 bits of the DMA address can be used.  This ensures
-> both operands to the modulo operator are 32 bits wide.
-> 
-> [...]
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 1 -
+>  1 file changed, 1 deletion(-)
 
 Here is the summary with links:
-  - [net-next] net: ipa: avoid 64-bit modulus
-    https://git.kernel.org/netdev/net-next/c/437c78f976f5
+  - net: ethernet: indir_table.h is included twice
+    https://git.kernel.org/netdev/net-next/c/ea6c8635d5d5
 
 You are awesome, thank you!
 --
