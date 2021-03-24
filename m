@@ -2,122 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61063482A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E0C3482BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 21:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbhCXUPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 16:15:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51996 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238093AbhCXUOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 16:14:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616616880; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ZvO4bLgfFn9xC1bGt/85XVYApIlAKrqXvbjT5soJ30=;
-        b=Hdts+h7S6uNGYbzOryP7weX1281E8hNc/iaCcLywcYBZslF7NrfEl5kSKeF99aYUehrV70
-        +a3ZiA6Ft5/JcHWLVc1g1Ro/toMEDxvF438H6wbOkTK3eL3Wo5+sqzjj6EaEeKv4G/dhs7
-        rsvRW9yUJr4qVNK1KPw+NvgPzsStGWs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BA470AC6E;
-        Wed, 24 Mar 2021 20:14:39 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 21:14:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Zankel <chris@zankel.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
-        huang ying <huang.ying.caritas@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        James Troup <james.troup@canonical.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kairui Song <kasong@redhat.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Rich Felker <dalias@libc.org>,
-        Robert Richter <rric@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Theodore Dubois <tblodt@icloud.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        William Cohen <wcohen@redhat.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH v1 0/3] drivers/char: remove /dev/kmem for good
-Message-ID: <YFudq2NVLIOAsCgl@dhcp22.suse.cz>
-References: <20210324102351.6932-1-david@redhat.com>
+        id S238071AbhCXUQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 16:16:44 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:6518 "EHLO
+        mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238153AbhCXUQc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 16:16:32 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Agtl5mq0h1werp35a+9f/ogqjBFMkLtp033Aq?=
+ =?us-ascii?q?2lEZdDV+dMuEm8ey2MkKzBOcskd0ZFgMkc2NUZPqfVry7phwiLN6AZ6DW03ctH?=
+ =?us-ascii?q?KsPMVe6+LZogHIPw3b2qpj2bx7c654YeeAaGRSqcrh+gG3H5IB7bC8kJyAvuvV?=
+ =?us-ascii?q?w3dzQQwCUcgJ0y5DBgmWCUFwTgVdbKBJd6a03NZNpDarZB0sAPiTO39tZYT+ju?=
+ =?us-ascii?q?HQmImjSRALAANP0njtsRqYrI+/KRSe0xsEOgkj/Z4p+wH+/DDE2g=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.81,275,1610406000"; 
+   d="scan'208";a="376775116"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 21:16:30 +0100
+Date:   Wed, 24 Mar 2021 21:16:30 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Denis Efremov <efremov@linux.com>
+cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coccinelle: misc: restrict patch mode in
+ flexible_array.cocci
+In-Reply-To: <20210308191215.1362498-1-efremov@linux.com>
+Message-ID: <alpine.DEB.2.22.394.2103242116040.7838@hadrien>
+References: <20210308191215.1362498-1-efremov@linux.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324102351.6932-1-david@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Acked-by: Michal Hocko <mhocko@suse.com>
 
-for the series.
+On Mon, 8 Mar 2021, Denis Efremov wrote:
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+> Skip patches generation for structs/unions with a single field.
+> Changing a zero-length array to a flexible array member in a struct
+> with no named members breaks the compilation. However, reporting
+> such cases is still valuable, e.g. commit 637464c59e0b
+> ("ACPI: NFIT: Fix flexible_array.cocci warnings").
+>
+> Signed-off-by: Denis Efremov <efremov@linux.com>
+
+Applied.  I changed the log message to remove "/unions", since the change
+doesn't mention unions.
+
+julia
+
+> ---
+>  scripts/coccinelle/misc/flexible_array.cocci | 23 ++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/coccinelle/misc/flexible_array.cocci b/scripts/coccinelle/misc/flexible_array.cocci
+> index 947fbaff82a9..f427fd68ed2d 100644
+> --- a/scripts/coccinelle/misc/flexible_array.cocci
+> +++ b/scripts/coccinelle/misc/flexible_array.cocci
+> @@ -51,21 +51,40 @@ position p : script:python() { relevant(p) };
+>    };
+>  )
+>
+> +@only_field depends on patch@
+> +identifier name, array;
+> +type T;
+> +position q;
+> +@@
+> +
+> +(
+> +  struct name {@q
+> +    T array[0];
+> +  };
+> +|
+> +  struct {@q
+> +    T array[0];
+> +  };
+> +)
+> +
+>  @depends on patch@
+>  identifier name, array;
+>  type T;
+>  position p : script:python() { relevant(p) };
+> +// position @q with rule "only_field" simplifies
+> +// handling of bitfields, arrays, etc.
+> +position q != only_field.q;
+>  @@
+>
+>  (
+> -  struct name {
+> +  struct name {@q
+>      ...
+>      T array@p[
+>  -       0
+>      ];
+>    };
+>  |
+> -  struct {
+> +  struct {@q
+>      ...
+>      T array@p[
+>  -       0
+> --
+> 2.26.2
+>
+>
