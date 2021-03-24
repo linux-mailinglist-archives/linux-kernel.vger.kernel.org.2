@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87B503484E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 975083484E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 23:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234012AbhCXWtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 18:49:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54944 "EHLO mail.kernel.org"
+        id S234086AbhCXWti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 18:49:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231246AbhCXWtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 18:49:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B852561A0A;
-        Wed, 24 Mar 2021 22:48:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1616626140;
-        bh=/2JN7xPIvupL7Dhrc68JtcoNj5OcggfcovxjyrRYVn4=;
+        id S231246AbhCXWtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 18:49:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1346619B8;
+        Wed, 24 Mar 2021 22:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616626150;
+        bh=Cqk1Tcctuh5GKJLKrU8S+5l1h9txxfO/b7fBxXmnIGM=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nq2n5Hk6CTzOMvCgcJoeRwkkcUV7MvInTRScZwWsWdhAwZ8szan6kVzSgBNAfjs+8
-         Sk/DnI7P6nvdkFDJSHlFahtgQadHFZlWe830VjnLhd4He1FMM6z7Y+7s2SkaRE0Wy5
-         81gFW9WCq/zSSwqpQj1zuPpXtF2P6Da31gQdvx18=
-Date:   Wed, 24 Mar 2021 15:48:59 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] kasan: fix hwasan build for gcc
-Message-Id: <20210324154859.4de61fdafd1b4ea85bec869f@linux-foundation.org>
-In-Reply-To: <CANpmjNM8D+yp==DmKP0aa+g6=P38o0v6gd7y5iV52yyDUv91qw@mail.gmail.com>
-References: <20210323124112.1229772-1-arnd@kernel.org>
-        <CANpmjNM8D+yp==DmKP0aa+g6=P38o0v6gd7y5iV52yyDUv91qw@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        b=hla6cBC0qIjxQYtBAqO+10bqJlx5C7jnm7ST7G8pgWRQCjxq9LdJk99eBvDhDbD/y
+         zXw9L53n5AdTuwcWCipMRt8mPr0Jp5aTe4EJqCLhxRDlJyE1HbwM61wKHcB8GG9Iqp
+         DA/DYdl90bgfC6pn1gbPhawyEPzcaePdpi+5R5SBlODVj/Fqz8ib8GoDuyaUiaVVUX
+         eHrqp67s5iuHNaaqH0shJUJUDbTrEp/UNBFLWj+3n7QFjrivldJeTvjppOPfCUwe8M
+         4LcXuUJJ8eJsTY0rZWWACYdOzniNUlGL8L6vVrwvD8IeG6u7InICKRCf0+Aqjn2T/D
+         khe7zTbdw2WeQ==
+Date:   Thu, 25 Mar 2021 07:49:06 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     'Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        "Hulk Robot" <hulkci@huawei.com>
+Subject: Re: [PATCH -next] x86/kprobes: Fix old-style-declaration warning
+Message-Id: <20210325074906.27fb5fd5528da9b3bee72d53@kernel.org>
+In-Reply-To: <20210324144502.1154883-1-weiyongjun1@huawei.com>
+References: <20210324144502.1154883-1-weiyongjun1@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -50,189 +46,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 13:51:32 +0100 Marco Elver <elver@google.com> wrote:
+On Wed, 24 Mar 2021 14:45:02 +0000
+'Wei Yongjun <weiyongjun1@huawei.com> wrote:
 
-> On Tue, 23 Mar 2021 at 13:41, Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > gcc-11 adds support for -fsanitize=kernel-hwaddress, so it becomes
-> > possible to enable CONFIG_KASAN_SW_TAGS.
-> >
-> > Unfortunately this fails to build at the moment, because the
-> > corresponding command line arguments use llvm specific syntax.
-> >
-> > Change it to use the cc-param macro instead, which works on both
-> > clang and gcc.
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> From: Wei Yongjun <weiyongjun1@huawei.com>
 > 
-> Reviewed-by: Marco Elver <elver@google.com>
+> Gcc reports build warning as follows:
 > 
-> Although I think you need to rebase against either -mm or -next,
-> because there have been changes to the CONFIG_KASAN_STACK variable.
+> arch/x86/kernel/kprobes/core.c:940:1:
+>  warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
+>   940 | static int nokprobe_inline kprobe_is_ss(struct kprobe_ctlblk *kcb)
+>       | ^~~~~~
+> 
+> This commit fix it by moving nokprobe_inline to the beginning
+> of declaration.
+> 
 
-This fix is applicable to 5.12, so it's better than the 5.13 patches in
--mm be changed to accomodate this patch.
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-afaict the only needed change was to update
-kasan-remove-redundant-config-option.patch as below.  The
-scripts/Makefile.kasan part was changed:
+Thank you!
 
-@@ -42,7 +48,7 @@ else
- endif
- 
- CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
--		$(call cc-param,hwasan-instrument-stack=$(CONFIG_KASAN_STACK)) \
-+		$(call cc-param,hwasan-instrument-stack=$(stack_enable)) \
- 		$(call cc-param,hwasan-use-short-granules=0) \
- 		$(instrumentation_flags)
- 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  arch/x86/kernel/kprobes/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+> index 89d9f26785c7..5abf251f12ec 100644
+> --- a/arch/x86/kernel/kprobes/core.c
+> +++ b/arch/x86/kernel/kprobes/core.c
+> @@ -937,7 +937,7 @@ static int reenter_kprobe(struct kprobe *p, struct pt_regs *regs,
+>  }
+>  NOKPROBE_SYMBOL(reenter_kprobe);
+>  
+> -static int nokprobe_inline kprobe_is_ss(struct kprobe_ctlblk *kcb)
+> +static nokprobe_inline int kprobe_is_ss(struct kprobe_ctlblk *kcb)
+>  {
+>  	return (kcb->kprobe_status == KPROBE_HIT_SS ||
+>  		kcb->kprobe_status == KPROBE_REENTER);
+> 
 
 
-Whole patch:
-
---- a/arch/arm64/kernel/sleep.S~kasan-remove-redundant-config-option
-+++ a/arch/arm64/kernel/sleep.S
-@@ -134,7 +134,7 @@ SYM_FUNC_START(_cpu_resume)
- 	 */
- 	bl	cpu_do_resume
- 
--#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
- 	mov	x0, sp
- 	bl	kasan_unpoison_task_stack_below
- #endif
---- a/arch/x86/kernel/acpi/wakeup_64.S~kasan-remove-redundant-config-option
-+++ a/arch/x86/kernel/acpi/wakeup_64.S
-@@ -115,7 +115,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
- 	movq	pt_regs_r14(%rax), %r14
- 	movq	pt_regs_r15(%rax), %r15
- 
--#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
- 	/*
- 	 * The suspend path may have poisoned some areas deeper in the stack,
- 	 * which we now need to unpoison.
---- a/include/linux/kasan.h~kasan-remove-redundant-config-option
-+++ a/include/linux/kasan.h
-@@ -330,7 +330,7 @@ static inline bool kasan_check_byte(cons
- 
- #endif /* CONFIG_KASAN */
- 
--#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
- void kasan_unpoison_task_stack(struct task_struct *task);
- #else
- static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
---- a/lib/Kconfig.kasan~kasan-remove-redundant-config-option
-+++ a/lib/Kconfig.kasan
-@@ -138,9 +138,10 @@ config KASAN_INLINE
- 
- endchoice
- 
--config KASAN_STACK_ENABLE
-+config KASAN_STACK
- 	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
- 	depends on KASAN_GENERIC || KASAN_SW_TAGS
-+	default y if CC_IS_GCC
- 	help
- 	  The LLVM stack address sanitizer has a know problem that
- 	  causes excessive stack usage in a lot of functions, see
-@@ -155,7 +156,7 @@ config KASAN_STACK_ENABLE
- 	  to use and enabled by default.
- 
- config KASAN_STACK
--	int
-+	bool
- 	depends on KASAN_GENERIC || KASAN_SW_TAGS
- 	default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
- 	default 0
---- a/mm/kasan/common.c~kasan-remove-redundant-config-option
-+++ a/mm/kasan/common.c
-@@ -63,7 +63,7 @@ void __kasan_unpoison_range(const void *
- 	kasan_unpoison(address, size);
- }
- 
--#if CONFIG_KASAN_STACK
-+#ifdef CONFIG_KASAN_STACK
- /* Unpoison the entire stack for a task. */
- void kasan_unpoison_task_stack(struct task_struct *task)
- {
---- a/mm/kasan/kasan.h~kasan-remove-redundant-config-option
-+++ a/mm/kasan/kasan.h
-@@ -231,7 +231,7 @@ void *kasan_find_first_bad_addr(void *ad
- const char *kasan_get_bug_type(struct kasan_access_info *info);
- void kasan_metadata_fetch_row(char *buffer, void *row);
- 
--#if defined(CONFIG_KASAN_GENERIC) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN_GENERIC) && defined(CONFIG_KASAN_STACK)
- void kasan_print_address_stack_frame(const void *addr);
- #else
- static inline void kasan_print_address_stack_frame(const void *addr) { }
---- a/mm/kasan/report_generic.c~kasan-remove-redundant-config-option
-+++ a/mm/kasan/report_generic.c
-@@ -128,7 +128,7 @@ void kasan_metadata_fetch_row(char *buff
- 	memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
- }
- 
--#if CONFIG_KASAN_STACK
-+#ifdef CONFIG_KASAN_STACK
- static bool __must_check tokenize_frame_descr(const char **frame_descr,
- 					      char *token, size_t max_tok_len,
- 					      unsigned long *value)
---- a/scripts/Makefile.kasan~kasan-remove-redundant-config-option
-+++ a/scripts/Makefile.kasan
-@@ -2,6 +2,12 @@
- CFLAGS_KASAN_NOSANITIZE := -fno-builtin
- KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
- 
-+ifdef CONFIG_KASAN_STACK
-+	stack_enable := 1
-+else
-+	stack_enable := 0
-+endif
-+
- ifdef CONFIG_KASAN_GENERIC
- 
- ifdef CONFIG_KASAN_INLINE
-@@ -27,7 +33,7 @@ else
- 	CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
- 	 $(call cc-param,asan-globals=1) \
- 	 $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
--	 $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
-+	 $(call cc-param,asan-stack=$(stack_enable)) \
- 	 $(call cc-param,asan-instrument-allocas=1)
- endif
- 
-@@ -42,7 +48,7 @@ else
- endif
- 
- CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
--		$(call cc-param,hwasan-instrument-stack=$(CONFIG_KASAN_STACK)) \
-+		$(call cc-param,hwasan-instrument-stack=$(stack_enable)) \
- 		$(call cc-param,hwasan-use-short-granules=0) \
- 		$(instrumentation_flags)
- 
---- a/security/Kconfig.hardening~kasan-remove-redundant-config-option
-+++ a/security/Kconfig.hardening
-@@ -64,7 +64,7 @@ choice
- 	config GCC_PLUGIN_STRUCTLEAK_BYREF
- 		bool "zero-init structs passed by reference (strong)"
- 		depends on GCC_PLUGINS
--		depends on !(KASAN && KASAN_STACK=1)
-+		depends on !(KASAN && KASAN_STACK)
- 		select GCC_PLUGIN_STRUCTLEAK
- 		help
- 		  Zero-initialize any structures on the stack that may
-@@ -82,7 +82,7 @@ choice
- 	config GCC_PLUGIN_STRUCTLEAK_BYREF_ALL
- 		bool "zero-init anything passed by reference (very strong)"
- 		depends on GCC_PLUGINS
--		depends on !(KASAN && KASAN_STACK=1)
-+		depends on !(KASAN && KASAN_STACK)
- 		select GCC_PLUGIN_STRUCTLEAK
- 		help
- 		  Zero-initialize any stack variables that may be passed
-_
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
