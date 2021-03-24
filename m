@@ -2,88 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE745347D62
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:13:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1A4347D64
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhCXQMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:12:30 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48748 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbhCXQMK (ORCPT
+        id S232720AbhCXQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:13:02 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:33319 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhCXQMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:12:10 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lP676-0006jy-Ok; Wed, 24 Mar 2021 16:12:08 +0000
-Subject: Re: [PATCH][next] staging: rtl8188eu: Fix null pointer dereference on
- free_netdev call
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210324152135.254152-1-colin.king@canonical.com>
- <20210324161107.m7gbexp4e7e5vf77@viti.kaiser.cx>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <028e75cd-6229-6004-84bb-ca751346420d@canonical.com>
-Date:   Wed, 24 Mar 2021 16:12:08 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 24 Mar 2021 12:12:38 -0400
+Received: by mail-io1-f52.google.com with SMTP id n198so22090563iod.0;
+        Wed, 24 Mar 2021 09:12:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LQe8mB4Zgg4XFKf9gTgpkrZrwD2w0XrO12e5gW6IipQ=;
+        b=UXqRCwic7O/veasV43oNR+95O30rsEKgNHRWFBIaUZBFEhf/1aXwFoHvHcCyEyGEGt
+         zqCK0GEYHefxg0FEmgOq44NMXk3malDhg3NfVG7cPa/sKDFhagtA0mQaJtk9e8wqz1/D
+         BIrAhVb6fbKx8c07Ss3erRMOG3t4mUGnahfVrQJ5iMEZqw7IlfxP5VwOWGzQ6AaqoVYk
+         tskp4/SaCf6E88lAEnXZ0KGPC9kyoVWTylGLh3mnMlSn03P/3Y/+SEI8tLyMisJBGfp3
+         VF8QbVMR9gx9X7wbzE/3VA+v10iNKxGsrMD+aSkAA+nV/WNGi9cy8Cgp47XrqURMNZ7O
+         wD4Q==
+X-Gm-Message-State: AOAM530IQrED/cLaC0Tm/Gd2MnjyBBDrgfwfavKgbPYmGmSAQj16Rhg8
+        vYlS8+AB55c4DKaEeoenxw==
+X-Google-Smtp-Source: ABdhPJwX4gV2lhVI6+HX3+Erc3mPYuI2WdlwXzBahI+PyLQt9TmCbprlf42MQp8SkKsbMlZQFVt6Sg==
+X-Received: by 2002:a05:6602:80d:: with SMTP id z13mr2999536iow.17.1616602358385;
+        Wed, 24 Mar 2021 09:12:38 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id i12sm1250140ila.1.2021.03.24.09.12.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 09:12:37 -0700 (PDT)
+Received: (nullmailer pid 3170148 invoked by uid 1000);
+        Wed, 24 Mar 2021 16:12:35 -0000
+Date:   Wed, 24 Mar 2021 10:12:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     matthias.bgg@kernel.org
+Cc:     lee.jones@linaro.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        lgirdwood@gmail.com, matthias.bgg@gmail.com, broonie@kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Matthias Brugger <mbrugger@suse.com>
+Subject: Re: [PATCH 1/7] dt-bindings: mfd: mediatek: Fix regulator description
+Message-ID: <20210324161235.GA3170092@robh.at.kernel.org>
+References: <20210312145545.26050-1-matthias.bgg@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210324161107.m7gbexp4e7e5vf77@viti.kaiser.cx>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312145545.26050-1-matthias.bgg@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 16:11, Martin Kaiser wrote:
-> Hello Colin,
+On Fri, 12 Mar 2021 15:55:39 +0100, matthias.bgg@kernel.org wrote:
+> From: Matthias Brugger <mbrugger@suse.com>
 > 
-> Thus wrote Colin King (colin.king@canonical.com):
+> Having a separate compatible for the regulator node is redundant and not
+> needed. Delete the corresponding requierement.
 > 
->> From: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+> ---
 > 
->> An unregister_netdev call checks if pnetdev is null, hence a later
->> call to free_netdev can potentially be passing a null pointer, causing
->> a null pointer dereference. Avoid this by adding a null pointer check
->> on pnetdev before calling free_netdev.
-> 
->> Fixes: 1665c8fdffbb ("staging: rtl8188eu: use netdev routines for private data")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  drivers/staging/rtl8188eu/os_dep/usb_intf.c | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
->> diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
->> index 518e9feb3f46..91a3d34a1050 100644
->> --- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
->> +++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
->> @@ -446,7 +446,8 @@ static void rtw_usb_if1_deinit(struct adapter *if1)
->>  	pr_debug("+r871xu_dev_remove, hw_init_completed=%d\n",
->>  		 if1->hw_init_completed);
->>  	rtw_free_drv_sw(if1);
->> -	free_netdev(pnetdev);
->> +	if (pnetdev)
->> +		free_netdev(pnetdev);
->>  }
-> 
->>  static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device_id *pdid)
->> -- 
->> 2.30.2
-> 
-> you're right. I removed the NULL check that was part of rtw_free_netdev.
-> Sorry for the mistake and thanks for your fix.
-
-Thank static analysis :-)
-
-> 
-> Reviewed-by: Martin Kaiser <martin@kaiser.cx>
-> 
-> Best regards,
-> Martin
+>  Documentation/devicetree/bindings/mfd/mt6397.txt | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
 
+Acked-by: Rob Herring <robh@kernel.org>
