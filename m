@@ -2,162 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAEB347E4D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79BF347E51
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 17:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236897AbhCXQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 12:55:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:36442 "EHLO foss.arm.com"
+        id S236669AbhCXQ4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 12:56:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236624AbhCXQza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 12:55:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89B40D6E;
-        Wed, 24 Mar 2021 09:55:28 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 336FE3F7D7;
-        Wed, 24 Mar 2021 09:55:26 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 16:55:19 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com,
-        lorenzo.pieralisi@arm.com, sudeep.holla@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
-        daniel.lezcano@linaro.org, kys@microsoft.com
-Subject: Re: [PATCH v9 1/7] smccc: Add HVC call variant with result registers
- other than 0 thru 3
-Message-ID: <20210324165519.GA24528@C02TD0UTHF1T.local>
-References: <1615233439-23346-1-git-send-email-mikelley@microsoft.com>
- <1615233439-23346-2-git-send-email-mikelley@microsoft.com>
+        id S236954AbhCXQ4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 12:56:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FB98619D5;
+        Wed, 24 Mar 2021 16:56:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616604994;
+        bh=IjT8ks42t54B0PsxkI6Yx9Mt8/2cYsxEH6Mf39wNzuQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=psAd6bkZ609VOTv9dfgf5ceanQAZR12Lf2SizqoLgRO8CKQ3Hn+8Od0UxXLvDmVlb
+         g3Z+lOwsxu21osfem/fZkaZ85xgMnrxZtegMcsIyWJ0ywTiiw9ZCLNtVNR7EpBKtP2
+         GngEfaClfOSa6H0ilQJ5POAvGhdxNV66vIWywPC1gOq5ObJTD8zWf9uTjH1KVVidKH
+         KBBmMp8BM4wvOBZVkwA4qJk6BrgWsCegNT0QS55NmgDBSENPEvWTqaQpvMjfNAqoe7
+         RpW3A0F1XG6nt5GoBZoKTwVsIjQ4LhiJqLv5wQpfEk0Hn7zfXVAa600sXuZMGL2HVb
+         1DzF+YS6awdjw==
+Date:   Wed, 24 Mar 2021 16:56:30 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
+        maz@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCHv3 4/6] arm64: entry: factor irq triage logic into macros
+Message-ID: <20210324165629.GC13030@willie-the-truck>
+References: <20210315115629.57191-1-mark.rutland@arm.com>
+ <20210315115629.57191-5-mark.rutland@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1615233439-23346-2-git-send-email-mikelley@microsoft.com>
+In-Reply-To: <20210315115629.57191-5-mark.rutland@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On Mon, Mar 08, 2021 at 11:57:13AM -0800, Michael Kelley wrote:
-> Hypercalls to Hyper-V on ARM64 may return results in registers other
-> than X0 thru X3, as permitted by the SMCCC spec version 1.2 and later.
-> Accommodate this by adding a variant of arm_smccc_1_1_hvc that allows
-> the caller to specify which 3 registers are returned in addition to X0.
+On Mon, Mar 15, 2021 at 11:56:27AM +0000, Mark Rutland wrote:
+> From: Marc Zyngier <maz@kernel.org>
 > 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+> In subsequent patches we'll allow an FIQ handler to be registered, and
+> FIQ exceptions will need to be triaged very similarly to IRQ exceptions.
+> So that we can reuse the existing logic, this patch factors the IRQ
+> triage logic out into macros that can be reused for FIQ.
+> 
+> The macros are named to follow the elX_foo_handler scheme used by the C
+> exception handlers. For consistency with other top-level exception
+> handlers, the kernel_entry/kernel_exit logic is not moved into the
+> macros. As FIQ will use a different C handler, this handler name is
+> provided as an argument to the macros.
+> 
+> There should be no functional change as a result of this patch.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> [Mark: rework macros, commit message, rebase before DAIF rework]
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Tested-by: Hector Martin <marcan@marcan.st>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Will Deacon <will@kernel.org>
 > ---
-> There are several ways to support returning results from registers
-> other than X0 thru X3, and Hyper-V usage should be compatible with
-> whatever the maintainers prefer.  What's implemented in this patch
-> may be the most flexible, but it has the downside of not being a
-> true function interface in that args 0 thru 2 must be fixed strings,
-> and not general "C" expressions.
+>  arch/arm64/kernel/entry.S | 80 +++++++++++++++++++++++++----------------------
+>  1 file changed, 43 insertions(+), 37 deletions(-)
 
-For the benefit of others here, SMCCCv1.2 allows:
+Acked-by: Will Deacon <will@kernel.org>
 
-* SMC64/HVC64 to use all of x1-x17 for both parameters and return values
-* SMC32/HVC32 to use all of r1-r7 for both parameters and return values
-
-The rationale for this was to make it possible to pass a large number of
-arguments in one call without the hypervisor/firmware needing to access
-the memory of the caller.
-
-My preference would be to add arm_smccc_1_2_{hvc,smc}() assembly
-functions which read all the permitted argument registers from a struct,
-and write all the permitted result registers to a struct, leaving it to
-callers to set those up and decompose them.
-
-That way we only have to write one implementation that all callers can
-use, which'll be far easier to maintain. I suspect that in general the
-cost of temporarily bouncing the values through memory will be dominated
-by whatever the hypervisor/firmware is going to do, and if it's not we
-can optimize that away in future.
-
-> Other alternatives include:
-> * Create a variant that hard codes to return X5 thru X7, though
->   in the future there may be Hyper-V hypercalls that need a
->   different hard-coded variant.
-> * Return all of X0 thru X7 in a larger result structure. That
->   approach may execute more memory stores, but performance is unlikely
->   to be an issue for the Hyper-V hypercalls that would use it.
->   However, it's possible in the future that Hyper-V results might
->   be beyond X7, as allowed by the SMCCC v1.3 spec.
-
-As above, something of this sort would be my preferred approach.
-
-Thanks,
-Mark.
-
-> * The macro __arm_smccc_1_1() could be cloned in Hyper-V specific
->   code and modified to meet Hyper-V specific needs, but this seems
->   undesirable since Hyper-V is operating within the v1.2 spec.
-> 
-> In any of these cases, the call might be renamed from "_1_1_" to
-> "_1_2_" to reflect conformance to the later spec version.
-> 
-> 
->  include/linux/arm-smccc.h | 29 +++++++++++++++++++++++------
->  1 file changed, 23 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-> index f860645..acda958 100644
-> --- a/include/linux/arm-smccc.h
-> +++ b/include/linux/arm-smccc.h
-> @@ -300,12 +300,12 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
->   * entitled to optimise the whole sequence away. "volatile" is what
->   * makes it stick.
->   */
-> -#define __arm_smccc_1_1(inst, ...)					\
-> +#define __arm_smccc_1_1(inst, reg1, reg2, reg3, ...)			\
->  	do {								\
->  		register unsigned long r0 asm("r0");			\
-> -		register unsigned long r1 asm("r1");			\
-> -		register unsigned long r2 asm("r2");			\
-> -		register unsigned long r3 asm("r3"); 			\
-> +		register unsigned long r1 asm(reg1);			\
-> +		register unsigned long r2 asm(reg2);			\
-> +		register unsigned long r3 asm(reg3);			\
->  		__declare_args(__count_args(__VA_ARGS__), __VA_ARGS__);	\
->  		asm volatile(inst "\n" :				\
->  			     "=r" (r0), "=r" (r1), "=r" (r2), "=r" (r3)	\
-> @@ -328,7 +328,8 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
->   * to the SMC instruction. The return values are updated with the content
->   * from register 0 to 3 on return from the SMC instruction if not NULL.
->   */
-> -#define arm_smccc_1_1_smc(...)	__arm_smccc_1_1(SMCCC_SMC_INST, __VA_ARGS__)
-> +#define arm_smccc_1_1_smc(...)\
-> +	__arm_smccc_1_1(SMCCC_SMC_INST, "r1", "r2", "r3", __VA_ARGS__)
->  
->  /*
->   * arm_smccc_1_1_hvc() - make an SMCCC v1.1 compliant HVC call
-> @@ -344,7 +345,23 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0, unsigned long a1,
->   * to the HVC instruction. The return values are updated with the content
->   * from register 0 to 3 on return from the HVC instruction if not NULL.
->   */
-> -#define arm_smccc_1_1_hvc(...)	__arm_smccc_1_1(SMCCC_HVC_INST, __VA_ARGS__)
-> +#define arm_smccc_1_1_hvc(...) \
-> +	__arm_smccc_1_1(SMCCC_HVC_INST, "r1", "r2", "r3", __VA_ARGS__)
-> +
-> +/*
-> + * arm_smccc_1_1_hvc_reg() - make an SMCCC v1.1 compliant HVC call
-> + * specifying output registers
-> + *
-> + * This is a variant of arm_smccc_1_1_hvc() that allows specifying
-> + * three registers from which result values will be returned in
-> + * addition to r0.
-> + *
-> + * @a0-a2: register specifications for 3 return registers (e.g., "r5")
-> + * @a3-a10: arguments passed in registers 0 to 7
-> + * @res: result values from register 0 and the three registers specified
-> + * in a0-a2.
-> + */
-> +#define arm_smccc_1_1_hvc_reg(...) __arm_smccc_1_1(SMCCC_HVC_INST, __VA_ARGS__)
->  
->  /*
->   * Like arm_smccc_1_1* but always returns SMCCC_RET_NOT_SUPPORTED.
-> -- 
-> 1.8.3.1
-> 
+Will
