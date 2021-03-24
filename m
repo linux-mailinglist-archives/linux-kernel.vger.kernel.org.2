@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C2B348025
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6889348028
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 19:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237437AbhCXSOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 14:14:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237271AbhCXSNw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 14:13:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0856061A21;
-        Wed, 24 Mar 2021 18:13:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616609632;
-        bh=X7ZZ1K8yRlc3sjxUN2zWkg4HnGzejqNeoIB193YqAuU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RiJEkfaTP+Uen8vZPx08TZfz2O4B2E4Jbts1WzbndAkPMUEMQoJvrsnN+U/bJLmTH
-         pVTA0/r7Gk0GCF9whuI4YmGzO/o72dZazKNuHqd7bV0DpFEef719sLvvwKvY9iAr7q
-         +qBXqQLp04H4DkhH62GKRNonA49dLZ8Tw2H2gLrTcnr7O/KfCadLbfk3cdO+2Fo1cX
-         32toJLHE9ebuAzNP1NiAdbSrgCi6aIgsbZLbp7vFajnFvOM2CCwwuWmTdupZsf86zU
-         4z63TEn3XKszEZPlQfMx8zAufv562PnxYYKJLLOTIGXaKCt4ISmf7Y5AZ3EM2Z4ne2
-         JT2COynBoTLrQ==
-Date:   Wed, 24 Mar 2021 18:13:44 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFT PATCH v3 05/27] arm64: cputype: Add CPU implementor & types
- for the Apple M1 cores
-Message-ID: <20210324181344.GC13181@willie-the-truck>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-6-marcan@marcan.st>
+        id S237448AbhCXSOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 14:14:32 -0400
+Received: from mail-il1-f181.google.com ([209.85.166.181]:38908 "EHLO
+        mail-il1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237440AbhCXSOG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 14:14:06 -0400
+Received: by mail-il1-f181.google.com with SMTP id d10so15452907ils.5;
+        Wed, 24 Mar 2021 11:14:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ssoghzsOG5hysFjvkRd4198Oad5+uJEC9oHKsrVndbM=;
+        b=d0cgPi+GBQxdRrHdS6VMZxfQ7AZ4wl3SnAb7xrE7K7pDb+WhkrkTDnCYUMuDrBrJpN
+         f1UPDlpkaTiVEocb1wYNOwPVCitI9VqYPCrUyk1qjX7KLIRGAUmf+14WlNSsIIp3AG72
+         gkGWgQBm1o0Z1vsRmzAU5pa0CT78pJhOOtrWxh1beNKDyevR6XIlrMAfkC2KKQfeqqwC
+         CLRvYzOvGe9Ja3MBXICGUgxhhp1N/MFKrf0X+fZg4We07oLNujZmxt24FJLJTfJk+E6X
+         iuPfOERw2xySws/tRkHtaAU3gYUB92Ukj96cTn80x5T6wcAULIbLXhog4ToNuZ5O4cHz
+         Aotw==
+X-Gm-Message-State: AOAM533iqSGqmMnFt9rqBCJWkRoyE4SwB7N1BGLBcSWuZ4MzzdrV4S6Q
+        jKC0zTFc8NfV37ILSsoV5iVXkL+cvOD6
+X-Google-Smtp-Source: ABdhPJzt7P0oMiJe000k25s5sJgAwOYPu8ykRtIWOfIcyq4DDbe6ysw5OMrnPS2VJk+7If0OfXIBNw==
+X-Received: by 2002:a05:6e02:965:: with SMTP id q5mr3356487ilt.95.1616609645405;
+        Wed, 24 Mar 2021 11:14:05 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k11sm1441183iok.1.2021.03.24.11.14.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 11:14:04 -0700 (PDT)
+Received: (nullmailer pid 3360900 invoked by uid 1000);
+        Wed, 24 Mar 2021 18:14:03 -0000
+Date:   Wed, 24 Mar 2021 12:14:03 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Kuldeep Singh <kuldeep.singh@nxp.com>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [EXT] Re: [PATCH] dt-bindings: spi: Convert Freescale DSPI to
+ json schema
+Message-ID: <20210324181403.GC3320002@robh.at.kernel.org>
+References: <20210315121518.3710171-1-kuldeep.singh@nxp.com>
+ <20210315205440.lb6hcrvzxtqxdb5x@skbuf>
+ <DB6PR0402MB27580AF77ED738B995616EB5E06B9@DB6PR0402MB2758.eurprd04.prod.outlook.com>
+ <20210316101506.rkqcxkw6slv4vuhr@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304213902.83903-6-marcan@marcan.st>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210316101506.rkqcxkw6slv4vuhr@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 06:38:40AM +0900, Hector Martin wrote:
-> The implementor will be used to condition the FIQ support quirk.
+On Tue, Mar 16, 2021 at 12:15:06PM +0200, Vladimir Oltean wrote:
+> On Tue, Mar 16, 2021 at 06:08:17AM +0000, Kuldeep Singh wrote:
+> > Compatible entries in conjugation require enum and const pair.
+> > For example, ls1012a.dtsi uses compatible = "fsl,ls1012a-dspi","fsl,ls1021a-v1.0-dspi";
+> > Same goes for LS1028 as well.
+> > 
+> > Therefore, can't mention the compatible entry as single entity otherwise
+> > it may fail "make dt_binding_check" and "make dtbs_check".
+> > 
+> > > 
+> > > > +examples:
+> > > > +  - |
+> > > > +    #include <dt-bindings/clock/fsl,qoriq-clockgen.h>
+> > > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > > > +
+> > > > +    soc {
+> > > > +        #address-cells = <2>;
+> > > > +        #size-cells = <2>;
+> > > > +
+> > > > +        spi@2100000 {
+> > > > +            compatible = "fsl,ls1028a-dspi", "fsl,ls1021a-v1.0-dspi";
+> > > 
+> > > This doesn't need the "fsl,ls1021a-v1.0-dspi" compatible, can you please remove
+> > > it?
+> > 
+> > I have taken this example from LS1028a.dtsi and it uses these compatibles in conjugation.
+> > If "fsl,ls1021a-v1.0-dspi" is not required, then it should also be removed from device-tree
+> > As well as from bindings both.
 > 
-> The specific CPU types are not used at the moment, but let's add them
-> for documentation purposes.
-> 
-> Signed-off-by: Hector Martin <marcan@marcan.st>
-> ---
->  arch/arm64/include/asm/cputype.h | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-> index ef5b040dee44..6231e1f0abe7 100644
-> --- a/arch/arm64/include/asm/cputype.h
-> +++ b/arch/arm64/include/asm/cputype.h
-> @@ -59,6 +59,7 @@
->  #define ARM_CPU_IMP_NVIDIA		0x4E
->  #define ARM_CPU_IMP_FUJITSU		0x46
->  #define ARM_CPU_IMP_HISI		0x48
-> +#define ARM_CPU_IMP_APPLE		0x61
->  
->  #define ARM_CPU_PART_AEM_V8		0xD0F
->  #define ARM_CPU_PART_FOUNDATION		0xD00
-> @@ -99,6 +100,9 @@
->  
->  #define HISI_CPU_PART_TSV110		0xD01
->  
-> +#define APPLE_CPU_PART_M1_ICESTORM	0x022
-> +#define APPLE_CPU_PART_M1_FIRESTORM	0x023
-> +
->  #define MIDR_CORTEX_A53 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A53)
->  #define MIDR_CORTEX_A57 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A57)
->  #define MIDR_CORTEX_A72 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A72)
-> @@ -127,6 +131,8 @@
->  #define MIDR_NVIDIA_CARMEL MIDR_CPU_MODEL(ARM_CPU_IMP_NVIDIA, NVIDIA_CPU_PART_CARMEL)
->  #define MIDR_FUJITSU_A64FX MIDR_CPU_MODEL(ARM_CPU_IMP_FUJITSU, FUJITSU_CPU_PART_A64FX)
->  #define MIDR_HISI_TSV110 MIDR_CPU_MODEL(ARM_CPU_IMP_HISI, HISI_CPU_PART_TSV110)
-> +#define MIDR_APPLE_M1_ICESTORM MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M1_ICESTORM)
-> +#define MIDR_APPLE_M1_FIRESTORM MIDR_CPU_MODEL(ARM_CPU_IMP_APPLE, APPLE_CPU_PART_M1_FIRESTORM)
+> Yes, the second compatible is never required by the driver and should be
+> removed from existing device trees if that makes "make dtbs_check" fail.
 
-We usually only merge these when they're needed, but this SoC seems broken
-enough that I can see the value in having them from the start :(
+Can you say that is true for every possible driver implementation? 
+u-boot, *BSD, etc.?
 
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
+Rob
