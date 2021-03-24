@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA258347038
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D273E347039
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 04:48:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235120AbhCXDoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Mar 2021 23:44:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbhCXDnq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Mar 2021 23:43:46 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F027C061763
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Mar 2021 20:43:46 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id BB58D891AE;
-        Wed, 24 Mar 2021 16:43:43 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1616557423;
-        bh=MlvuM4GZ54JuNtp8slC5y2UBaxE0XHJISV1jRWwPpEk=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=RUmO63bq/huEx9xw385En31UWuXQO8QubsO/9LKmH7fZlf7piCdjqQ3YF6Daf2mDO
-         YpbENQfysCBrgbGIFb4MUcVa6VTQh1DNk42LkGU75mcgiKd6bbONypaJGV5y3t+tCg
-         CtdEcj8/WHjecVanjHm7p/raJcMWaO0zkSiMRZtagneVDd13YqjYxjEdMn4fzeLTc2
-         s6s1SfyszjHXM++7d38AL5akXRRZkRARE3RQvPsBdpMdPGHVE+yU/i06EJDZhj535d
-         TyKwlDNw0kJe3oy17+YrePOBlxX5Jkzmww9AZ+CPGULAmc/YunkfzyJK1KVu0WzA3h
-         rXV74RNjR0MCA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B605ab56f0001>; Wed, 24 Mar 2021 16:43:43 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 24 Mar 2021 16:43:43 +1300
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Wed, 24 Mar 2021 16:43:43 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>
-CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/6] i2c: mpc: Refactor to improve responsiveness
-Thread-Topic: [PATCH 0/6] i2c: mpc: Refactor to improve responsiveness
-Thread-Index: AQHXH523mfZMZexLwESnYJyd01Nd66qRppyA
-Date:   Wed, 24 Mar 2021 03:43:43 +0000
-Message-ID: <7d6acdfe-87f5-6096-a870-58d7d802f975@alliedtelesis.co.nz>
-References: <20210323043331.21878-1-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20210323043331.21878-1-chris.packham@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <23E09B1CC76F0A4293EB5F0C879B8922@atlnz.lc>
-Content-Transfer-Encoding: base64
+        id S235140AbhCXDrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Mar 2021 23:47:02 -0400
+Received: from mga11.intel.com ([192.55.52.93]:64879 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232037AbhCXDq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Mar 2021 23:46:59 -0400
+IronPort-SDR: sw5vsIl0SR7dcwEHaVguD+YFn+IZNEPrZc7bMRpPgdq3JqNNszXpGCXiQ9vuDyj0zzwajkydJm
+ btEI070tQWGw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9932"; a="187306899"
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="187306899"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 20:46:59 -0700
+IronPort-SDR: LR427PnCI1tTW84ijuYJ1LfZxN+jp8JYaGJpV1UQPcTzoUOBrFL6WYhKU5FEtqEzkyGoyl1BXi
+ vOFLQfb0N4sQ==
+X-IronPort-AV: E=Sophos;i="5.81,272,1610438400"; 
+   d="scan'208";a="514027862"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Mar 2021 20:46:55 -0700
+Subject: Re: [PATCH v4 RESEND 3/5] perf/x86/lbr: Move cpuc->lbr_xsave
+ allocation out of sleeping region
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210322060635.821531-1-like.xu@linux.intel.com>
+ <20210322060635.821531-4-like.xu@linux.intel.com>
+ <CAM9d7ci7qj47xDC3z2AzYGjnFdPRNsuEPGivZ1_re-XGhoBwMg@mail.gmail.com>
+From:   Like Xu <like.xu@linux.intel.com>
+Organization: Intel OTC
+Message-ID: <5fda3599-1b51-5f58-fdcc-2afcf6d4968b@linux.intel.com>
+Date:   Wed, 24 Mar 2021 11:46:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=dESyimp9J3IA:10 a=B-IRwknogWAUFU2Uo84A:9 a=QEXdDO2ut3YA:10 a=fCgQI5UlmZDRPDxm0A3o:22
-X-SEG-SpamProfiler-Score: 0
+In-Reply-To: <CAM9d7ci7qj47xDC3z2AzYGjnFdPRNsuEPGivZ1_re-XGhoBwMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAyMy8wMy8yMSA1OjMzIHBtLCBDaHJpcyBQYWNraGFtIHdyb3RlOg0KPiBUaGUgIm1lYXQi
-IG9mIHRoaXMgc2VyaWVzIGlzIGluIHRoZSBsYXN0IHBhdGNoIHdoaWNoIGlzIHRoZSBjaGFuZ2Ug
-dGhhdA0KPiBhY3R1YWxseSBzdGFydHMgbWFraW5nIHVzZSBvZiB0aGUgaW50ZXJydXB0cyB0byBk
-cml2ZSBhIHN0YXRlIG1hY2hpbmUuDQo+IFRoZSBkdC1iaW5kaW5ncyBwYXRjaGVzIGNhbiBwcm9i
-YWJseSBnbyBpbiBhdCBhbnkgdGltZS4gVGhlIHJlc3Qgb2YgdGhlDQo+IHNlcmllcyBpc24ndCBk
-ZXBlbmRlbnQgb24gdGhlbS4NCj4NCj4gSSd2ZSB0ZXN0ZWQgaXQgb24gYSBUMjA4MSBiYXNlZCBz
-eXN0ZW0gd2l0aCBhIG51bWJlciBvZiBpMmMgYW5kIHNtYnVzDQo+IGRldmljZXMuICBJdHMgdGhl
-IGVuZCBvZiBteSB3b3JrIGRheSBzbyBJIGZpZ3VyZWQgSSdkIGdldCB0aGlzIG91dCBub3cNCj4g
-YnV0IEknbGwgZG8gc29tZSBtb3JlIHRlc3Rpbmcgb24gYSBQMjA0MSBib2FyZCBhbmQgYSBmZXcg
-ZGlmZmVyZW50IGkyYw0KPiBkZXZpY2VzIHRvbW9ycm93Lg0KDQpJJ3ZlIGRvbmUgbW9yZSB0ZXN0
-aW5nIG9uIGEgVDIwODEgYW5kIFAyMDQxIGJvYXJkLiBCb3RoIGxvb2sgZ29vZC4NCg0KSSd2ZSBo
-YWQgc29tZSBmZWVkYmFjayBmcm9tIFJvYiBvbiB0aGUgZHQtYmluZGluZ3Mgd2hpY2ggSSB0aGlu
-ayBJJ3ZlIA0KZ290IHNvcnRlZCBub3cuIEkndmUgZ290IGEgY291cGxlIG9mIG1pbm9yIGNvc21l
-dGljIGNoYW5nZXMgdG8gNi82IGJ1dCANCkknbGwgaG9sZCBmaXJlIG9uIHNlbmRpbmcgYSB2MiB0
-byBnaXZlIHBlb3BsZSBhIGNoYW5jZSB0byBsb29rIGF0IHRoZSANCmZ1bmN0aW9uYWwgY2hhbmdl
-cy4NCg0KPiBDaHJpcyBQYWNraGFtICg2KToNCj4gICAgZHQtYmluZGluZ3M6IGkyYy1tcGM6IERv
-Y3VtZW50IGludGVycnVwdCBwcm9wZXJ0eSBhcyByZXF1aXJlZA0KPiAgICBkdC1iaW5kaW5nczog
-aTJjOiBjb252ZXJ0IGkyYy1tcGMgdG8ganNvbi1zY2hlbWENCj4gICAgaTJjOiBtcGM6IE1ha2Ug
-dXNlIG9mIGkyY19yZWNvdmVyX2J1cygpDQo+ICAgIGkyYzogbXBjOiBtYWtlIGludGVycnVwdCBt
-YW5kYXRvcnkgYW5kIHJlbW92ZSBwb2xsaW5nIGNvZGUNCj4gICAgaTJjOiBtcGM6IHVzZSBkZXZp
-Y2UgbWFuYWdlZCBBUElzDQo+ICAgIGkyYzogbXBjOiBJbnRlcnJ1cHQgZHJpdmVuIHRyYW5zZmVy
-DQo+DQo+ICAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1tcGMudHh0ICAgICAgIHwg
-IDYyIC0tLQ0KPiAgIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXBjLnlhbWwgICAg
-ICB8ICA5OSArKysrDQo+ICAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tcGMuYyAgICAgICAgICAg
-ICAgICAgIHwgNTEzICsrKysrKysrKystLS0tLS0tLQ0KPiAgIDMgZmlsZXMgY2hhbmdlZCwgMzcz
-IGluc2VydGlvbnMoKyksIDMwMSBkZWxldGlvbnMoLSkNCj4gICBkZWxldGUgbW9kZSAxMDA2NDQg
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXBjLnR4dA0KPiAgIGNy
-ZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2ky
-Yy1tcGMueWFtbA0KPg==
+Hi Namhyung,
+
+On 2021/3/24 9:32, Namhyung Kim wrote:
+> Hello,
+> 
+> On Mon, Mar 22, 2021 at 3:14 PM Like Xu <like.xu@linux.intel.com> wrote:
+>> +void reserve_lbr_buffers(struct perf_event *event)
+>> +{
+>> +       struct kmem_cache *kmem_cache = x86_get_pmu()->task_ctx_cache;
+>> +       struct cpu_hw_events *cpuc;
+>> +       int cpu;
+>> +
+>> +       if (!static_cpu_has(X86_FEATURE_ARCH_LBR))
+>> +               return;
+>> +
+>> +       for_each_possible_cpu(cpu) {
+>> +               cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
+>> +               if (kmem_cache && !cpuc->lbr_xsave && !event->attr.precise_ip)
+>> +                       cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
+>> +       }
+>> +}
+> 
+> I think we should use kmem_cache_alloc_node().
+
+"kmem_cache_alloc_node - Allocate an object on the specified node"
+
+The reserve_lbr_buffers() is called in __x86_pmu_event_init().
+When the LBR perf_event is scheduled to another node, it seems
+that we will not call init() and allocate again.
+
+Do you mean use kmem_cache_alloc_node() for each numa_nodes_parsed ?
+
+> 
+> Thanks,
+> Namhyung
+> 
+
