@@ -2,146 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A683347AAD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DC1347AB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Mar 2021 15:31:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236172AbhCXO3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 10:29:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35728 "EHLO mail.kernel.org"
+        id S236247AbhCXObQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 10:31:16 -0400
+Received: from mga04.intel.com ([192.55.52.120]:34034 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236115AbhCXO2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 10:28:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7755361963;
-        Wed, 24 Mar 2021 14:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616596126;
-        bh=qFllmIRbdCUQn/B4kQjIVSKhp52Kl0isMHDaEUkABLY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cplZGGi1ra2GAKUoROJa/SNuLgZ5comITDHOXLsNYHLiYokO9V4V6aPv7WjAdCpGf
-         XI2SVZg9Zf7/4JoUzW/VruCV+o8Upd5EASOmGeby4z2ve8l8ju6gnI3CBZzZXyg3cv
-         pSjbI6Uye73ZMqXSCxXGrbMqMZPCUoQavaYTGvHaQtkn6VG/7hWhVTOQNAlwAYdTha
-         ytEEEDMEeZNdZv6G1WCADx5hRICTuDu1fiknCXIVZ8TDUNpKEIMmp/cmCBCsrAIZSh
-         crrVgSTd5fSYprMPTSQaM4YgFdvbcYjM9MXFHsQgciWGR9GlRTOYuuKwcLCI5Efi9c
-         YT2SwMTnNw57g==
-Date:   Wed, 24 Mar 2021 10:28:45 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 5.10 104/157] mptcp: put subflow sock on connect error
-Message-ID: <YFtMnS1l7armuoZh@sashalap>
-References: <20210322121933.746237845@linuxfoundation.org>
- <20210322121937.071435221@linuxfoundation.org>
- <CA+G9fYvRM+9DmGuKM0ErDnrYBOmZ6zzmMkrWevMJqOzhejWwZg@mail.gmail.com>
- <20210324090412.GB27244@breakpoint.cc>
- <YFsE1cQy3tJASGob@kroah.com>
+        id S236060AbhCXOan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 10:30:43 -0400
+IronPort-SDR: otvsXyJKYrfJJOPxHym+EcwGdhwA4LGqQ+yqhHloeIzhDcX6lBqifRBHK7U+ohxhNJ7eljdFS5
+ H+X6i/35Yl2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="188412844"
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="188412844"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 07:30:42 -0700
+IronPort-SDR: s8tn25PiIL+NV9WprSn2czs6pK9LXPIBYrKBe0KkBJanJf/jNTFvNMqOCBfsWYvDUC/MprvVmQ
+ QryS7G0ACw9w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,274,1610438400"; 
+   d="scan'208";a="391319426"
+Received: from nntpdsd52-183.inn.intel.com ([10.125.52.183])
+  by orsmga002.jf.intel.com with ESMTP; 24 Mar 2021 07:30:38 -0700
+From:   Alexander Antonov <alexander.antonov@linux.intel.com>
+To:     acme@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jolsa@redhat.com, ak@linux.intel.com,
+        alexander.shishkin@linux.intel.com, mark.rutland@arm.com,
+        namhyung@kernel.org, irogers@google.com, mingo@redhat.com,
+        peterz@infradead.org, alexey.v.bayduraev@linux.intel.com,
+        alexander.antonov@linux.intel.com
+Subject: [PATCH v5 0/4] perf stat: Introduce iostat mode to provide I/O performance metrics
+Date:   Wed, 24 Mar 2021 17:30:33 +0300
+Message-Id: <20210324143037.3810-1-alexander.antonov@linux.intel.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YFsE1cQy3tJASGob@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:22:29AM +0100, Greg Kroah-Hartman wrote:
->On Wed, Mar 24, 2021 at 10:04:12AM +0100, Florian Westphal wrote:
->> Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->> > On Mon, 22 Mar 2021 at 18:15, Greg Kroah-Hartman
->> > <gregkh@linuxfoundation.org> wrote:
->> > >
->> > > From: Florian Westphal <fw@strlen.de>
->> > >
->> > > [ Upstream commit f07157792c633b528de5fc1dbe2e4ea54f8e09d4 ]
->> > >
->> > > mptcp_add_pending_subflow() performs a sock_hold() on the subflow,
->> > > then adds the subflow to the join list.
->> > >
->> > > Without a sock_put the subflow sk won't be freed in case connect() fails.
->> > >
->> > > unreferenced object 0xffff88810c03b100 (size 3000):
->> > > [..]
->> > >     sk_prot_alloc.isra.0+0x2f/0x110
->> > >     sk_alloc+0x5d/0xc20
->> > >     inet6_create+0x2b7/0xd30
->> > >     __sock_create+0x17f/0x410
->> > >     mptcp_subflow_create_socket+0xff/0x9c0
->> > >     __mptcp_subflow_connect+0x1da/0xaf0
->> > >     mptcp_pm_nl_work+0x6e0/0x1120
->> > >     mptcp_worker+0x508/0x9a0
->> > >
->> > > Fixes: 5b950ff4331ddda ("mptcp: link MPC subflow into msk only after accept")
->>
->> I don't see this change in 5.10, so why is this fix queued up?
->>
->> > I have reported the following warnings and kernel crash on 5.10.26-rc2 [1]
->> > The bisect reported that issue pointing out to this commit.
->> >
->> > commit 460916534896e6d4f80a37152e0948db33376873
->> > mptcp: put subflow sock on connect error
->> >
->> > This problem is specific to 5.10.26-rc2.
->> >
->> > Warning:
->> > --------
->> > [ 1040.114695] refcount_t: addition on 0; use-after-free.
->> > [ 1040.119857] WARNING: CPU: 3 PID: 31925 at
->> > /usr/src/kernel/lib/refcount.c:25 refcount_warn_saturate+0xd7/0x100
->> > [ 1040.129769] Modules linked in: act_mirred cls_u32 sch_netem sch_etf
->> > ip6table_nat xt_nat iptable_nat nf_nat ip6table_filter xt_conntrack
->> > nf_conntrack nf_defrag_ipv4 libcrc32c ip6_tables nf_defrag_ipv6 sch_fq
->> > iptable_filter xt_mark ip_tables cls_bpf sch_ingress algif_hash
->> > x86_pkg_temp_thermal fuse [last unloaded: test_blackhole_dev]
->> > [ 1040.159030] CPU: 3 PID: 31925 Comm: mptcp_connect Tainted: G
->> > W     K   5.10.26-rc2 #1
->> > [ 1040.167459] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
->> > 2.2 05/23/2018
->> > [ 1040.174851] RIP: 0010:refcount_warn_saturate+0xd7/0x100
->> >
->> > And
->> >
->> > Kernel Panic:
->> > -------------
->> > [ 1069.557485] BUG: kernel NULL pointer dereference, address: 0000000000000010
->> > [ 1069.564446] #PF: supervisor read access in kernel mode
->> > [ 1069.569583] #PF: error_code(0x0000) - not-present page
->> > [ 1069.574714] PGD 0 P4D 0
->> > [ 1069.577246] Oops: 0000 [#1] SMP PTI
->> > > index 16adba172fb9..591546d0953f 100644
->> > > --- a/net/mptcp/subflow.c
->> > > +++ b/net/mptcp/subflow.c
->> > > @@ -1133,6 +1133,7 @@ int __mptcp_subflow_connect(struct sock *sk, const struct mptcp_addr_info *loc,
->> > >         spin_lock_bh(&msk->join_list_lock);
->> > >         list_add_tail(&subflow->node, &msk->join_list);
->> > >         spin_unlock_bh(&msk->join_list_lock);
->> > > +       sock_put(mptcp_subflow_tcp_sock(subflow));
->> > >
->> > >         return err;
->>
->> Crash is not surprising, the backport puts the socket in the 'success' path
->> (list_add_tail).
->>
->> I don't see why this is in -stable, the faulty commit is not there?
->>
->> The upstream patch is:
->>         list_del(&subflow->node);
->>         spin_unlock_bh(&msk->join_list_lock);
->> +	sock_put(mptcp_subflow_tcp_sock(subflow));
->>
->> [ Note the 'list_del', this is in the error unwind path ]
->
->Odd, I think something went wrong with Sasha's scripts.
+The previous version can be found at:
+v4: https://lkml.kernel.org/r/20210203135830.38568-1-alexander.antonov@linux.intel.com/
+Changes in this revision are:
+v4 -> v5:
+- Addressed comments from Namhyung Kim:
+  1. Removed AGGR_PCIE_PORT aggregation mode
+  2. Added iostat_prepare() function
+  3. Moved implementation specific fprintf() calls to separate x86-related function
+  4. Fixed code-related issues
+- Moved __weak iostat's functions to separate util/iostat.c file
 
-I brought in the commit it depends on as a dependency for something
-else, but ended up throwing it away, forgetting about this commit. Sorry
-:(
+The previous version can be found at:
+v3: https://lkml.kernel.org/r/20210126080619.30275-1-alexander.antonov@linux.intel.com/
+Changes in this revision are:
+v3 -> v4:
+- Addressed comment from Namhyung Kim:
+  1. Removed NULL-termination of root ports list
 
+The previous version can be found at:
+v2: https://lkml.kernel.org/r/20201223130320.3930-1-alexander.antonov@linux.intel.com
+
+Changes in this revision are:
+v2 -> v3:
+- Addressed comments from Namhyung Kim:
+  1. Removed perf_device pointer from evsel structure. Use priv field instead
+  2. Renamed 'iiostat' to 'iostat'
+  3. Renamed 'show' mode to 'list' mode
+  4. Renamed iiostat_delete_root_ports() to iiostat_release() and
+     iostat_show_root_ports() to iostat_list()
+
+The previous version can be found at:
+v1: https://lkml.kernel.org/r/20201210090340.14358-1-alexander.antonov@linux.intel.com
+
+Changes in this revision are:
+v1 -> v2:
+- Addressed comment from Arnaldo Carvalho de Melo:
+  1. Using 'perf iiostat' subcommand instead of 'perf stat --iiostat':
+    - Added perf-iiostat.sh script to use short command
+    - Updated manual pages to get help for 'perf iiostat'
+    - Added 'perf-iiostat' to perf's gitignore file
+
+Mode is intended to provide four I/O performance metrics in MB per each
+root port:
+ - Inbound Read:   I/O devices below root port read from the host memory
+ - Inbound Write:  I/O devices below root port write to the host memory
+ - Outbound Read:  CPU reads from I/O devices below root port
+ - Outbound Write: CPU writes to I/O devices below root port
+
+Each metric requiries only one uncore event which increments at every 4B
+transfer in corresponding direction. The formulas to compute metrics
+are generic:
+    #EventCount * 4B / (1024 * 1024)
+
+Note: iostat introduces new perf data aggregation mode - per PCIe root port
+hence -e and -M options are not supported.
+
+Usage examples:
+
+1. List all PCIe root ports (example for 2-S platform):
+   $ perf iostat list
+   S0-uncore_iio_0<0000:00>
+   S1-uncore_iio_0<0000:80>
+   S0-uncore_iio_1<0000:17>
+   S1-uncore_iio_1<0000:85>
+   S0-uncore_iio_2<0000:3a>
+   S1-uncore_iio_2<0000:ae>
+   S0-uncore_iio_3<0000:5d>
+   S1-uncore_iio_3<0000:d7>
+
+2. Collect metrics for all PCIe root ports:
+   $ perf iostat -- dd if=/dev/zero of=/dev/nvme0n1 bs=1M oflag=direct
+   357708+0 records in
+   357707+0 records out
+   375083606016 bytes (375 GB, 349 GiB) copied, 215.974 s, 1.7 GB/s
+
+    Performance counter stats for 'system wide':
+
+      port             Inbound Read(MB)    Inbound Write(MB)    Outbound Read(MB)   Outbound Write(MB) 
+   0000:00                    1                    0                    2                    3 
+   0000:80                    0                    0                    0                    0 
+   0000:17               352552                   43                    0                   21 
+   0000:85                    0                    0                    0                    0 
+   0000:3a                    3                    0                    0                    0 
+   0000:ae                    0                    0                    0                    0 
+   0000:5d                    0                    0                    0                    0 
+   0000:d7                    0                    0                    0                    0
+
+3. Collect metrics for comma separated list of PCIe root ports:
+   $ perf iostat 0000:17,0:3a -- dd if=/dev/zero of=/dev/nvme0n1 bs=1M oflag=direct
+   357708+0 records in
+   357707+0 records out
+   375083606016 bytes (375 GB, 349 GiB) copied, 197.08 s, 1.9 GB/s
+
+    Performance counter stats for 'system wide':
+
+      port             Inbound Read(MB)    Inbound Write(MB)    Outbound Read(MB)   Outbound Write(MB) 
+   0000:17               358559                   44                    0                   22 
+   0000:3a                    3                    2                    0                    0 
+
+        197.081983474 seconds time elapsed
+
+Alexander Antonov (4):
+  perf stat: Basic support for iostat in perf
+  perf stat: Helper functions for PCIe root ports list in iostat mode
+  perf stat: Enable iostat mode for x86 platforms
+  perf: Update .gitignore file
+
+ tools/perf/.gitignore                    |   1 +
+ tools/perf/Documentation/perf-iostat.txt |  88 +++++
+ tools/perf/Makefile.perf                 |   5 +-
+ tools/perf/arch/x86/util/Build           |   1 +
+ tools/perf/arch/x86/util/iostat.c        | 470 +++++++++++++++++++++++
+ tools/perf/builtin-stat.c                |  21 +-
+ tools/perf/command-list.txt              |   1 +
+ tools/perf/perf-iostat.sh                |  12 +
+ tools/perf/util/Build                    |   1 +
+ tools/perf/util/iostat.c                 |  53 +++
+ tools/perf/util/iostat.h                 |  47 +++
+ tools/perf/util/stat-display.c           |  40 +-
+ tools/perf/util/stat-shadow.c            |   5 +-
+ tools/perf/util/stat.h                   |   1 +
+ 14 files changed, 733 insertions(+), 13 deletions(-)
+ create mode 100644 tools/perf/Documentation/perf-iostat.txt
+ create mode 100644 tools/perf/arch/x86/util/iostat.c
+ create mode 100644 tools/perf/perf-iostat.sh
+ create mode 100644 tools/perf/util/iostat.c
+ create mode 100644 tools/perf/util/iostat.h
+
+
+base-commit: 6859bc0e78c6a699599cbb21404fdb6c8125da74
 -- 
-Thanks,
-Sasha
+2.19.1
+
