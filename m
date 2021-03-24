@@ -2,166 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AB2348528
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013C634852B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239011AbhCXXSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51890 "EHLO
+        id S239019AbhCXXTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239022AbhCXXRd (ORCPT
+        with ESMTP id S239024AbhCXXTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:17:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5CFC06174A;
-        Wed, 24 Mar 2021 16:17:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=B9IH6Bm0/kSsdrM6qZIGkSgskCeTe3eOs2ebC18G4xk=; b=I9pvyFT7SGaMOckWRDIUkuRQ6h
-        zc9X56fajLFpQqlSCiB3ZkBNvDVyaeR08XJg97C/thMELzmLH/afH/EN+2hpwWOWvhJxH5WiPVsjr
-        xd+2GezB6NY1Rj60GB2vCqorV5iLk4iovY2DBYaLHvAM7f3w6rCUQQsbaED2vKmgo3VMDTBHtIu1V
-        d5qq7tIbqGDkN1VugJczq49BKfYcS+VvK0RRiVr0B45mo1GJC2zWbrTLhlXMAD+IuQ9IzxLnCW+X8
-        YxEdf2hqRijO2qfKUF3YpJlWYTGl7I22v7PNDzn7+wRSBb3uUFzLOpYn+HX867WFmtVvq7A2a6Fcp
-        fakzrhmg==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPCkj-000LE1-DV; Wed, 24 Mar 2021 23:17:29 +0000
-Subject: Re: [PATCH, -v2] perf tools: Fix various typos in comments
-To:     Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>
-References: <20210321113734.GA248990@gmail.com>
- <20210323160915.GA61903@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <543bd87e-5059-002b-4cc4-a262fe5eb1ff@infradead.org>
-Date:   Wed, 24 Mar 2021 16:17:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Wed, 24 Mar 2021 19:19:00 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3E2C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:19:00 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id j7so400399qtx.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:19:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KOQ7esl90KWEmnjDE6UGjHvYuLkknu4oxnEsJM3fbxk=;
+        b=I8LLHJTXiSFwWG08KpCjmbhYHB4+bJ5Jr1PMvkhPb9guXt4kPXwXSDBb5w3pW6YKP+
+         Y3MXDdkhlUigcRn9Soo3y9HjPiYeIjslYj/gs3Qu595nmPh/ErNtubV8ayh2yO3Z4/6B
+         tB6bIdWPlgC++IeivTg9oL6lj9EFP1EHRtvFo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KOQ7esl90KWEmnjDE6UGjHvYuLkknu4oxnEsJM3fbxk=;
+        b=nos1PAx9095g4slYm0JMYGZUj+rAfhE6GzDIADsrTEIdkoxs/US/8vjrqhbtp5vRFt
+         V7d1jJ8AA1S+Tq1bl3B9u1ZZNe21wppzxigk1C23jPFSCnDhiDENIUwiUXOgERyX0Dxu
+         A4NWui3iIj3amC1bMVoxFDOSFLorqw1dS6GyIY+CrJdiYlnO1fTUmNKpStkj3GNtUwgX
+         fZQQ5RgskwMTJDunZDlzqBpm+/AGQZKzuo4jYkfqbii316z8XnZL/mf6orjPx/jVXric
+         Fd/n2kpCzkd4h0Nw4txx+fb4roWJ7mD/t4cl6XrgOBWgYj5a1O+2jQ8VM6fDXh1ZaYvl
+         aZ+w==
+X-Gm-Message-State: AOAM530XY5t/Ibew4kIqdBW+b45bnUWoy8RaqjCJyUbQd8DodZNfPEUt
+        N6Jt5ZLY9zaR6+JnwVzieGbcbm9nyI1JEQ==
+X-Google-Smtp-Source: ABdhPJzUN6oNwo/qjUNOl0WFiWDqUz/zzESIDSSoi++D62OPkON38KxbsZ6ST8tWC9pOOdMpiKPuHw==
+X-Received: by 2002:ac8:70d3:: with SMTP id g19mr5110977qtp.227.1616627939437;
+        Wed, 24 Mar 2021 16:18:59 -0700 (PDT)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id v6sm2725030qkf.132.2021.03.24.16.18.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 16:18:59 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id o66so320202ybg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:18:58 -0700 (PDT)
+X-Received: by 2002:a25:ab54:: with SMTP id u78mr8405375ybi.276.1616627938513;
+ Wed, 24 Mar 2021 16:18:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323160915.GA61903@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210324231424.2890039-1-swboyd@chromium.org>
+In-Reply-To: <20210324231424.2890039-1-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 24 Mar 2021 16:18:47 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VQSzanPn03-98L5KT89rkz4D1CcNLrtz2pXOHW8XOORw@mail.gmail.com>
+Message-ID: <CAD=FV=VQSzanPn03-98L5KT89rkz4D1CcNLrtz2pXOHW8XOORw@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: qcom: c630: Add no-hpd to DSI bridge node
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Steev Klimaszewski <steev@kali.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 9:09 AM, Ingo Molnar wrote:
-> 
-> * Ingo Molnar <mingo@kernel.org> wrote:
-> 
->> Fix ~81 single-word typos in the perf tooling code - accumulated over the years.
-> 
-> Found a few more:
-> 
-> =============>
-> From: Ingo Molnar <mingo@kernel.org>
-> Date: Sun, 21 Mar 2021 12:37:34 +0100
-> Subject: [PATCH] perf tools: Fix various typos in comments
-> 
-> Fix ~124 single-word typos and a few spelling errors in the perf tooling code,
-> accumulated over the years.
-> 
-> Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> Link: https://lore.kernel.org/r/20210321113734.GA248990@gmail.com
+Hi,
+
+On Wed, Mar 24, 2021 at 4:14 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> We should indicate that we're not using the HPD pin on this device, per
+> the binding document. Otherwise if code in the future wants to enable
+> HPD in the bridge when this property is absent we'll be enabling HPD
+> when it isn't supposed to be used. Presumably this board isn't using hpd
+> on the bridge.
+>
+> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Steev Klimaszewski <steev@kali.org>
+> Fixes: 956e9c85f47b ("arm64: dts: qcom: c630: Define eDP bridge and panel")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 > ---
->  tools/perf/Documentation/perf-buildid-cache.txt        |  2 +-
->  tools/perf/Documentation/perf-report.txt               |  2 +-
->  tools/perf/Documentation/perf-top.txt                  |  2 +-
->  tools/perf/arch/arm/util/cs-etm.c                      |  2 +-
->  tools/perf/arch/arm64/util/machine.c                   |  8 ++++----
->  tools/perf/arch/arm64/util/perf_regs.c                 |  2 +-
->  tools/perf/arch/powerpc/util/kvm-stat.c                |  2 +-
->  tools/perf/arch/powerpc/util/utils_header.h            |  2 +-
->  tools/perf/arch/x86/tests/bp-modify.c                  |  2 +-
->  tools/perf/arch/x86/util/perf_regs.c                   |  4 ++--
->  tools/perf/bench/epoll-wait.c                          |  4 ++--
->  tools/perf/bench/numa.c                                |  2 +-
->  tools/perf/builtin-annotate.c                          |  2 +-
->  tools/perf/builtin-diff.c                              |  2 +-
->  tools/perf/builtin-lock.c                              |  2 +-
->  tools/perf/builtin-sched.c                             |  2 +-
->  tools/perf/builtin-script.c                            |  4 ++--
->  tools/perf/builtin-stat.c                              |  4 ++--
->  tools/perf/builtin-top.c                               |  2 +-
->  tools/perf/examples/bpf/augmented_raw_syscalls.c       |  4 ++--
->  tools/perf/jvmti/jvmti_agent.c                         |  4 ++--
->  tools/perf/pmu-events/arch/powerpc/power8/metrics.json | 12 ++++++------
->  tools/perf/pmu-events/arch/powerpc/power9/metrics.json |  2 +-
->  tools/perf/pmu-events/jevents.c                        |  2 +-
->  tools/perf/scripts/python/netdev-times.py              |  2 +-
->  tools/perf/tests/bp_signal.c                           |  6 +++---
->  tools/perf/tests/code-reading.c                        |  2 +-
->  tools/perf/tests/hists_cumulate.c                      |  4 ++--
->  tools/perf/tests/parse-events.c                        |  2 +-
->  tools/perf/tests/parse-metric.c                        |  2 +-
->  tools/perf/tests/topology.c                            |  2 +-
->  tools/perf/trace/beauty/include/linux/socket.h         |  2 +-
->  tools/perf/ui/browsers/annotate.c                      |  2 +-
->  tools/perf/ui/browsers/hists.c                         |  2 +-
->  tools/perf/util/bpf-loader.c                           |  2 +-
->  tools/perf/util/call-path.h                            |  2 +-
->  tools/perf/util/callchain.c                            |  2 +-
->  tools/perf/util/config.c                               |  2 +-
->  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c        |  2 +-
->  tools/perf/util/cs-etm.c                               |  8 ++++----
->  tools/perf/util/cs-etm.h                               |  5 +++--
->  tools/perf/util/data-convert-bt.c                      |  2 +-
->  tools/perf/util/demangle-java.c                        |  4 ++--
->  tools/perf/util/dso.h                                  |  2 +-
->  tools/perf/util/dwarf-aux.c                            |  6 +++---
->  tools/perf/util/dwarf-aux.h                            |  2 +-
->  tools/perf/util/events_stats.h                         |  2 +-
->  tools/perf/util/evlist.c                               |  2 +-
->  tools/perf/util/evsel.c                                |  4 ++--
->  tools/perf/util/expr.h                                 |  2 +-
->  tools/perf/util/header.c                               | 18 +++++++++---------
->  tools/perf/util/intel-pt.c                             |  2 +-
->  tools/perf/util/levenshtein.c                          |  2 +-
->  tools/perf/util/libunwind/arm64.c                      |  2 +-
->  tools/perf/util/libunwind/x86_32.c                     |  2 +-
->  tools/perf/util/llvm-utils.c                           |  2 +-
->  tools/perf/util/machine.c                              |  8 ++++----
->  tools/perf/util/map.h                                  |  4 ++--
->  tools/perf/util/mem-events.h                           |  2 +-
->  tools/perf/util/metricgroup.c                          |  2 +-
->  tools/perf/util/parse-events.c                         | 10 +++++-----
->  tools/perf/util/pmu.c                                  |  4 ++--
->  tools/perf/util/probe-event.c                          |  4 ++--
->  tools/perf/util/probe-finder.c                         |  6 +++---
->  tools/perf/util/s390-cpumsf.c                          | 10 +++++-----
->  tools/perf/util/scripting-engines/trace-event-python.c |  2 +-
->  tools/perf/util/session.c                              |  4 ++--
->  tools/perf/util/strbuf.h                               |  2 +-
->  tools/perf/util/strfilter.h                            |  4 ++--
->  tools/perf/util/symbol-elf.c                           |  2 +-
->  tools/perf/util/synthetic-events.c                     |  4 ++--
->  tools/perf/util/unwind-libunwind-local.c               |  2 +-
->  72 files changed, 125 insertions(+), 124 deletions(-)
-> 
+>  arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 2 ++
+>  1 file changed, 2 insertions(+)
 
-> diff --git a/tools/perf/arch/arm64/util/machine.c b/tools/perf/arch/arm64/util/machine.c
-> index 40c5e0b5bda8..acdf8dc1189b 100644
-> --- a/tools/perf/arch/arm64/util/machine.c
-> +++ b/tools/perf/arch/arm64/util/machine.c
-> @@ -1,4 +1,4 @@
-> -// SPDX-License-Identifier: GPL-2.0
-> +/ SPDX-License-Identifier: GPL-2.0
-
-That is the only problem that I found, and I see that found
-that one.
-
->  #include <inttypes.h>
->  #include <stdio.h>
-
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-(yeah, I'm late)
-
--- 
-~Randy
-
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
