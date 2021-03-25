@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A083498CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8412B3498D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhCYRzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:55:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhCYRzn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:55:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DEEC06174A;
-        Thu, 25 Mar 2021 10:55:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616694942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNbiGGnvlAl57iwhF/VDCo8GHxOkRS0/W0QutwgSyhI=;
-        b=mTxi4UL05VaerFfKcKou9M8yGT3e8D1hO3la7xMZinEAIXOZiiDi62KrX/eSNcrdSmyJgy
-        Q3F2bLMixneoEgJ79SdSN2K3qaK/SUfT/wzH8FKyrbDkMRW7U9lrvWLR2Ufwb/g+OmyaZz
-        AckXK3Eq0O08sAnRRXkCMWV8BYzrAAbupXIby3lD5Gzc8hX5LKIJez0LrwhflJIt8dQUnO
-        Gwi+FWeVsuM3b0o69fDBFhxcK3ZrTPGKPRZQypUE3x9Fozr5wYlCPbwL3WtCkUBVkSPZyN
-        Ldu2kTt9YqvLovBXyPafCn15CQRdhP3VA8A9e0ejzE0J4+Cvg/uKpiZxI8W0/g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616694942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oNbiGGnvlAl57iwhF/VDCo8GHxOkRS0/W0QutwgSyhI=;
-        b=ymd2Br2CLWxwB3KSPpw3BK9FkQ9t5owK+Fmj6H9OpK3RRnBeWbujZ1yjedLJ+9DBvkQwRB
-        wtqzQjCk0LySiDCA==
-To:     Heiko Carstens <hca@linux.ibm.com>, Li Wang <liwang@redhat.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ltp@lists.linux.it, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org
-Subject: Re: [PATCH 3/3] lib/vdso: remove struct arch_vdso_data from vdso data struct
-In-Reply-To: <20210323215819.4161164-4-hca@linux.ibm.com>
-References: <YFmUrVOyX4q+8Dy9@osiris> <20210323215819.4161164-1-hca@linux.ibm.com> <20210323215819.4161164-4-hca@linux.ibm.com>
-Date:   Thu, 25 Mar 2021 18:55:41 +0100
-Message-ID: <87sg4jw21u.fsf@nanos.tec.linutronix.de>
+        id S230104AbhCYR53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:57:29 -0400
+Received: from ms.lwn.net ([45.79.88.28]:45092 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230009AbhCYR5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:57:02 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 535256A2;
+        Thu, 25 Mar 2021 17:57:02 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 535256A2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1616695022; bh=yeEA3l06qlC6l30C1E9Uq5HCWKl9+nik4n17LBkoWyQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NJ2IV830oOhY0bldr3HdsthczGADNjQiEVmLT+vIsyzQctzMpBHHYaij+YrArZGQn
+         p56PEmyuKeFyei6Rr/jRgA68Knp1Q+xE2LvuJesK3gakulxNFeAgoMG6uZ7A1N899r
+         5F+TiRjCYO9s61izH+UhMrZfNwtRr+xBheiXNZRGat4VzJuMB7K0963jZssGaYt2L5
+         Fem4eUe5PSnCzjQ2IzEhc3+cv6SSxPaHIrgyMJEH/Sya1s96FG+jt1levJh/+A559q
+         uB/ANnYYxUxjLwPZ5zAZs++4DAOihThIr9EVY6nRTafDCMjTBR8ToyU0xZ4Djb85a3
+         a2JTXGpid1eXw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, unixbhaskar@gmail.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: Re: [PATCH] docs: sphinx:  Trivial fix of a typo in the file
+ rstFlatTable.py
+In-Reply-To: <20210317102056.3003768-1-unixbhaskar@gmail.com>
+References: <20210317102056.3003768-1-unixbhaskar@gmail.com>
+Date:   Thu, 25 Mar 2021 11:57:01 -0600
+Message-ID: <877dlv15hu.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23 2021 at 22:58, Heiko Carstens wrote:
-> Since commit d60d7de3e16d ("lib/vdso: Allow to add architecture-specific
-> vdso data") it is possible to provide arch specific VDSO data.
->
-> This was only added for s390, which doesn't make use this anymore.
-> Therefore remove it again.
->
-> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
-Please route that with the rest of the fixes.
+> s/buidler/builder/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Documentation/sphinx/rstFlatTable.py | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/sphinx/rstFlatTable.py b/Documentation/sphinx/rstFlatTable.py
+> index a3eea0bbe6ba..1d2b9be6b6c5 100755
+> --- a/Documentation/sphinx/rstFlatTable.py
+> +++ b/Documentation/sphinx/rstFlatTable.py
+> @@ -161,7 +161,7 @@ class ListTableBuilder(object):
+>          for colwidth in colwidths:
+>              colspec = nodes.colspec(colwidth=colwidth)
+>              # FIXME: It seems, that the stub method only works well in the
+> -            # absence of rowspan (observed by the html buidler, the docutils-xml
+> +            # absence of rowspan (observed by the html builder, the docutils-xml
+>              # build seems OK).  This is not extraordinary, because there exists
+>              # no table directive (except *this* flat-table) which allows to
+>              # define coexistent of rowspan and stubs (there was no use-case
+> --
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+This was fixed in your previous patch from March 2.  Bhaskar, please
+slow down a bit and try not to create needless work for the recipients
+of your patches, OK?
+
+Thanks,
+
+jon
