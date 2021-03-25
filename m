@@ -2,156 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633F834981A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10672349820
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhCYRdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
+        id S230120AbhCYRe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:34:28 -0400
+Received: from mga02.intel.com ([134.134.136.20]:57950 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhCYRdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:33:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A18261A28;
-        Thu, 25 Mar 2021 17:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616693597;
-        bh=qGpX3MaAi6iipXhij0xGuclaojia9d6LXGpZk4lS3FA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OpgdYXmTWs8MRabNzxRiFlKzCDpQS5h96vnrJxN9G4TZvg0WRGitBgXLTk+GnnXil
-         f8b5nAYnfp30PmCcOMovoLPgDhNtradrGc8Y6FhFhQ36jubqzqqO6zBwewg68FYuJf
-         Jv7k7kjnmjdLlFV3ePCk4UFG8Vd9Clf1rwUIugVfKpJsBtO7/w+BaxYqHIGJ7eDHwI
-         mCIthIJWR0FmNz1DYmj+Kqua1EmULEJwj1xk8HRopvlZ1bKjcDSPYNKMZbYPYp8xr5
-         TB9H5N62ZZMc3cBLXsUHr1mLRfZ6+pM2RtMNb99RhaB1IXnJpl6MiGYMIdbKb9KY+r
-         w0OsMID+O3r1w==
-Date:   Thu, 25 Mar 2021 17:33:11 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>, " 
-        <iommu@lists.linux-foundation.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Sean Paul <sean@poorly.run>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
- flag
-Message-ID: <20210325173311.GA15504@willie-the-truck>
-References: <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <20210129090516.GB3998@willie-the-truck>
- <5d23fce629323bcda71594010824aad0@codeaurora.org>
- <20210201111556.GA7172@willie-the-truck>
- <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
- <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
- <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
- <20210203214612.GB19847@willie-the-truck>
- <4988e2ef35f76a0c2f1fe3f66f023a3b@codeaurora.org>
- <9362873a3bcf37cdd073a6128f29c683@codeaurora.org>
+        id S230026AbhCYReM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:34:12 -0400
+IronPort-SDR: gJ/n/6PCDRkl8cJ6G7vRtlTFvGau1KWklpOjESEEHwN4EazM/5Tw0GYgCyZBDa05fFVhjyOX3T
+ PXEaVCeiMz8Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="178105030"
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="178105030"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 10:34:11 -0700
+IronPort-SDR: 9YmMhz0+uRVUwlGWpEue8VBU64p7OgE04s8ZEhcZO2UG5RHejlphQCuow5CGSyxF4a2IfURziS
+ VzrsqBCq4BDQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="391828625"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga002.jf.intel.com with ESMTP; 25 Mar 2021 10:34:09 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 290C01ED; Thu, 25 Mar 2021 19:34:22 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Flavio Suligoi <f.suligoi@asem.it>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH net-next v2 0/5] net: pch: fix and a few cleanups
+Date:   Thu, 25 Mar 2021 19:34:07 +0200
+Message-Id: <20210325173412.82911-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9362873a3bcf37cdd073a6128f29c683@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 09, 2021 at 12:10:44PM +0530, Sai Prakash Ranjan wrote:
-> On 2021-02-05 17:38, Sai Prakash Ranjan wrote:
-> > On 2021-02-04 03:16, Will Deacon wrote:
-> > > On Tue, Feb 02, 2021 at 11:56:27AM +0530, Sai Prakash Ranjan wrote:
-> > > > On 2021-02-01 23:50, Jordan Crouse wrote:
-> > > > > On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
-> > > > > > On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
-> > > > > > > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
-> > > > > > > > On 2021-01-29 14:35, Will Deacon wrote:
-> > > > > > > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
-> > > > > > > > > > +#define IOMMU_LLC        (1 << 6)
-> > > > > > > > >
-> > > > > > > > > On reflection, I'm a bit worried about exposing this because I think it
-> > > > > > > > > will
-> > > > > > > > > introduce a mismatched virtual alias with the CPU (we don't even have a
-> > > > > > > > > MAIR
-> > > > > > > > > set up for this memory type). Now, we also have that issue for the PTW,
-> > > > > > > > > but
-> > > > > > > > > since we always use cache maintenance (i.e. the streaming API) for
-> > > > > > > > > publishing the page-tables to a non-coheren walker, it works out.
-> > > > > > > > > However,
-> > > > > > > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
-> > > > > > > > > allocation, then they're potentially in for a nasty surprise due to the
-> > > > > > > > > mismatched outer-cacheability attributes.
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > Can't we add the syscached memory type similar to what is done on android?
-> > > > > > >
-> > > > > > > Maybe. How does the GPU driver map these things on the CPU side?
-> > > > > >
-> > > > > > Currently we use writecombine mappings for everything, although there
-> > > > > > are some cases that we'd like to use cached (but have not merged
-> > > > > > patches that would give userspace a way to flush/invalidate)
-> > > > > >
-> > > > >
-> > > > > LLC/system cache doesn't have a relationship with the CPU cache.  Its
-> > > > > just a
-> > > > > little accelerator that sits on the connection from the GPU to DDR and
-> > > > > caches
-> > > > > accesses. The hint that Sai is suggesting is used to mark the buffers as
-> > > > > 'no-write-allocate' to prevent GPU write operations from being cached in
-> > > > > the LLC
-> > > > > which a) isn't interesting and b) takes up cache space for read
-> > > > > operations.
-> > > > >
-> > > > > Its easiest to think of the LLC as a bonus accelerator that has no cost
-> > > > > for
-> > > > > us to use outside of the unfortunate per buffer hint.
-> > > > >
-> > > > > We do have to worry about the CPU cache w.r.t I/O coherency (which is a
-> > > > > different hint) and in that case we have all of concerns that Will
-> > > > > identified.
-> > > > >
-> > > > 
-> > > > For mismatched outer cacheability attributes which Will
-> > > > mentioned, I was
-> > > > referring to [1] in android kernel.
-> > > 
-> > > I've lost track of the conversation here :/
-> > > 
-> > > When the GPU has a buffer mapped with IOMMU_LLC, is the buffer also
-> > > mapped
-> > > into the CPU and with what attributes? Rob said "writecombine for
-> > > everything" -- does that mean ioremap_wc() / MEMREMAP_WC?
-> > > 
-> > 
-> > Rob answered this.
-> > 
-> > > Finally, we need to be careful when we use the word "hint" as
-> > > "allocation
-> > > hint" has a specific meaning in the architecture, and if we only
-> > > mismatch on
-> > > those then we're actually ok. But I think IOMMU_LLC is more than
-> > > just a
-> > > hint, since it actually drives eviction policy (i.e. it enables
-> > > writeback).
-> > > 
-> > > Sorry for the pedantry, but I just want to make sure we're all talking
-> > > about the same things!
-> > > 
-> > 
-> > Sorry for the confusion which probably was caused by my mentioning of
-> > android, NWA(no write allocate) is an allocation hint which we can
-> > ignore
-> > for now as it is not introduced yet in upstream.
-> > 
-> 
-> Any chance of taking this forward? We do not want to miss out on small fps
-> gain when the product gets released.
+The series provides one fix (patch 1) for GPIO to be able to wait for
+the GPIO driver to appear. This is separated from the conversion to
+the GPIO descriptors (patch 2) in order to have a possibility for
+backporting. Patches 3 and 4 fix a minor warnings from Sparse while
+moving to a new APIs. Patch 5 is MODULE_VERSION() clean up.
 
-Do we have a solution to the mismatched virtual alias?
+Tested on Intel Minnowboard (v1).
 
-Will
+Since v2:
+- added a few cleanups on top of the fix
+
+Andy Shevchenko (5):
+  net: pch_gbe: Propagate error from devm_gpio_request_one()
+  net: pch_gbe: Convert to use GPIO descriptors
+  net: pch_gbe: use readx_poll_timeout_atomic() variant
+  net: pch_gbe: Use proper accessors to BE data in pch_ptp_match()
+  net: pch_gbe: remove unneeded MODULE_VERSION() call
+
+ .../net/ethernet/oki-semi/pch_gbe/pch_gbe.h   |   2 -
+ .../oki-semi/pch_gbe/pch_gbe_ethtool.c        |   2 +
+ .../ethernet/oki-semi/pch_gbe/pch_gbe_main.c  | 103 +++++++++---------
+ 3 files changed, 54 insertions(+), 53 deletions(-)
+
+-- 
+2.30.2
+
