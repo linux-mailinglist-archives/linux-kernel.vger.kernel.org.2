@@ -2,385 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7463734917A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A84B9349162
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhCYMDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:03:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhCYMC6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:02:58 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22E9DC06174A;
-        Thu, 25 Mar 2021 05:02:58 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so2615440pjc.2;
-        Thu, 25 Mar 2021 05:02:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EBCc1b3VS8OAWVirBhTJFkz3T9KQdBDUNva6rSRKOyc=;
-        b=YtdfuQmfquFeqs9/wkrr6hcvZcyGec5OWKtR/QYXwyGuDhleOgBluZI6q7jPcLbTec
-         81XJdXmbvgR/v8mHTB3ihFAkkj5R90bk8hP4kDy9wevfIZ9lJYyV4qGZdrcbYDqU8Rx7
-         2PCM0EvEZX3yUAywih94in7FiPB5YyZRXDxf7HNqjT5yKsX1DRc/VWoMocYMTCo4aQIM
-         o/VpjKy09pPRXD3knn+oAEdBxy+L4J4aal/YPHF4kJPz6OMFPqoe0YkWPDOSSlfb1z6N
-         jGWus99jdg9EVHrBP7ZZ1ep8YUh00CuQ0GiZ7yyoONk+ZgabAGkwrLe5oxdkUH6HDXi0
-         ZTdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EBCc1b3VS8OAWVirBhTJFkz3T9KQdBDUNva6rSRKOyc=;
-        b=Gdyl8Nbgl42KWTxCMPfOgTJJW4CuPWDyj1OSv4Yr4sa9M+8QWU1TPZWpqmlcfbaiXr
-         JyaB/2jTUsVDHE5ZVGjmQ2OYJrZfdqQepGTlqiYfTuDnLNHyS1yHJ2Dg6UIWHm98Q4A/
-         nGJuUwYzOaS96d2gobET8I7GUqZ9TvP93MoEL1T5pb++ejsnhsfUdDArS3Rr/Mg7ueg4
-         5ffwLitC1NqnpIHf3wJFtayZhpBFCY6+4hq5zcoV3e4YUlX/kIYF6rSQILKvGiH68Emy
-         Xm15AmYKMm3nrig+dASecU0ZbhecBeoGqBoQIayTYBJFIJHHUsjq6lKx3Raak+y4hJ6G
-         GA2A==
-X-Gm-Message-State: AOAM533hm7T0wFDY41MBrPusrQR1VtwarwnbcnKKJBQN8Wqie2J8rzFh
-        JLx8MwOn7cOCiaAQWnEw/tEJMFvh4jDiUw==
-X-Google-Smtp-Source: ABdhPJzRLzxXur1jJPtFOouZ41pHnvy6ZvO1lbd0T3GjZTi0VRpCQW29ZcHvSTnOsYMUx4wzuFRn0g==
-X-Received: by 2002:a17:90a:5b11:: with SMTP id o17mr8909425pji.32.1616673777368;
-        Thu, 25 Mar 2021 05:02:57 -0700 (PDT)
-Received: from localhost ([112.79.237.176])
-        by smtp.gmail.com with ESMTPSA id y24sm5718750pfn.213.2021.03.25.05.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 05:02:57 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     brouer@redhat.com, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
-Date:   Thu, 25 Mar 2021 17:30:03 +0530
-Message-Id: <20210325120020.236504-6-memxor@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210325120020.236504-1-memxor@gmail.com>
-References: <20210325120020.236504-1-memxor@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S230346AbhCYMBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:01:37 -0400
+Received: from mail-eopbgr750043.outbound.protection.outlook.com ([40.107.75.43]:61956
+        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230153AbhCYMBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:01:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WJxRPD+czrwekw9vWFmeoKwnSKfHiibwDA3roc+yz8jXj9kKMKn0I7S1mJOGcxGaR734IXW84/OSKgmYwnMxruA68lN11zpYMSGcpC/wtxXquEEl0CaQ70kh4dMY/riGzeJW0n2fUKeGC7zNpPUQZwVEpjntqGziWcYnQrMFPiQAI8RoDBDLWToHPo/k5/8fmsBwyzi26syHLxXqhU5xXoJCW9sqgNx1t4EJivMTutLG1R1dV6FWSk/BWaFXMlumnQuF+QE+IYP1kAw5IwxVpYAzkgvcKHucm1OLN10FzoVH+GlMAo/CeuCLJoHdJxV5hSCiF1EM4S0vKae5fizgTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P8iG5vl2N09Ic3bEBrnqZpuvKvIPEqACnv7r+y0sttg=;
+ b=DgwN00m/e2ryLzCSG5QGYClk16cMAbyAcUDJOYYFYq5OBwm0bloa6/0WXSZVLWO1nwXUv/nc8BZKcGKQrrP5w8Sved5asBSmCkdJnGe/EZRHB8s1pbj6kH0QoHAFF2AYwHfIeTNN8ouwMfivAT3/Mg6/RviT7cCpUYRBqMKg3hBrQRYnr4tNryWfbXTQaU/YaHg57/AJNsirvYjKMJdViN0tiAZNuLzRYTjGIDT6VM1MlbkqyMmMslu/QPLtEea3Cxz9x3dFD6y9bfdEIDgEQXamaZUlo1cx2f4HWlU63QECd2eWYaE3tghg6dpDfjm7PXX0bAGbyJjWWpsknzV4Jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=P8iG5vl2N09Ic3bEBrnqZpuvKvIPEqACnv7r+y0sttg=;
+ b=YuEQFFd47gXGea/3MAx/S5MqJsJ9N/qRgprey4cUNoltBaKV0TeHWhUFd7CX7+E49Rpywps9jPy7HaOns/setetAMQwcumrqNoKti3p8lBZFn2VCYVb3y6hF7Cc6Ht6KHtrA0YmssRupagC1vpuNULHAjZ5W+kakU4mW0V4hWnpDSwxf0U1911BsqUcOpVCI48LbMNmM0WdEW8CVpuCe9idtpdNyd/rnEc/wbiG03yFdKv7e+yNIVsIpiz34XRZcKoVFGpYl1BJQlAMXBG6HQHrznsAhoFqFrn7h39NOy7j/BDyLM7V6cSnOMTQ7LSmjopvWEdJsFqNhiqXhULKivg==
+Authentication-Results: shipmail.org; dkim=none (message not signed)
+ header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4137.namprd12.prod.outlook.com (2603:10b6:5:218::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 25 Mar
+ 2021 12:01:06 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
+ 12:01:06 +0000
+Date:   Thu, 25 Mar 2021 09:01:03 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <20210325120103.GV2356281@nvidia.com>
+References: <0b984f96-00fb-5410-bb16-02e12b2cc024@shipmail.org>
+ <20210324163812.GJ2356281@nvidia.com>
+ <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
+ <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
+ <20210324231419.GR2356281@nvidia.com>
+ <607ecbeb-e8a5-66e9-6fe2-9a8d22f12bc2@shipmail.org>
+ <fb74efd9-55be-9a8d-95b0-6103e263aab8@amd.com>
+ <15da5784-96ca-25e5-1485-3ce387ee6695@shipmail.org>
+ <20210325113023.GT2356281@nvidia.com>
+ <afad3159-9aa8-e052-3bef-d00dee1ba51e@shipmail.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <afad3159-9aa8-e052-3bef-d00dee1ba51e@shipmail.org>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0073.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::12) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0073.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Thu, 25 Mar 2021 12:01:05 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPOff-002VD3-KG; Thu, 25 Mar 2021 09:01:03 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fb51c72f-4372-4a84-eb23-08d8ef85ab45
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4137:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB413780DE27F1BE24A927AE32C2629@DM6PR12MB4137.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NUJhG0JmUhiW9lnKGM729ncCYqpbFymjkCNaQm0QU7KwsJE75Te8Kmn2LMP4q7sSFjmW6MOjQJhP5o5rAIYUcayFMvm0rt18x1FsO7cYb0GdvYA8/vhBKjJ8UR4dsE22nqDRi/FW8IxoBHu+aJEGikFE1V1VCmVrJ4a1S/L6WEmCvcdu2rduF3v/0PBs/G5NqaFgZwBwGI6bRee3rwM5zMHB+3D7VlRGJrPy4HS/3vaah+F911iNHIaljtoP/IfZu6YNcT15CxwuPyAZM7W1ty+eUhPVyDgGc/f4fZ0UPpLj/2QIKFXH75uIscETcc/W2qC6hMSEIbjP2WgLnrX3FG0RgbrADp2AemnTQNRTEUeWMIKzwusdFfM2v1wFVH5hzNHiFM+PdDAAIDd/vqDEtzKGCTYimLyWABp6e+OgjmH5m6/oj5GnaU0vN5Nc1F9HeX5sy569Tw6NuCkgx47j9+Ymg4KOQZfS+jDM6E8+io8H41/XjrnGrR39pRUrxJ+RDw3M1Sr8JiLg+E5fLVxozvdK1bj+id23/A4IT93TMPKbkRWLVlyLL6AykT3z67wbMVoyEIunNwiSbtRtsM5+lWLTxrsNlPifl3JVCQE7zK9SeqTAUmJb4yBYGNzVJVuJgciwQq+oeEKJfHf/OQAbFQX+nOzwfdirmO3bz6ydTR4Mm7oG3+cz82LDjBqLyx6p
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(39860400002)(366004)(346002)(66556008)(1076003)(66946007)(66476007)(2906002)(38100700001)(8676002)(26005)(9786002)(9746002)(5660300002)(4326008)(2616005)(36756003)(6916009)(54906003)(8936002)(33656002)(426003)(86362001)(316002)(478600001)(186003)(4744005)(14583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eER2ZjgwbG9vRC9TaWpicVNRWXhhWTY1ZjdDT1p0djFNZkZYL05PclB4K1Qz?=
+ =?utf-8?B?V0l6emNCT09pQzh1cG9WYjlzanRQRUFiZUlGdzZkb1hST09HandXU21hbEh2?=
+ =?utf-8?B?YmpWWlJweExBWGFhQTk0RTNFcFlhZUVwWE9MZjZBTWhCOVJ2S0VPbDBFR3lG?=
+ =?utf-8?B?Q0I3YmxxQzQ3TEI3U05zbzdjZU9kL3gyNkdzNlRTL1U5TVVMdDVNOENYRzky?=
+ =?utf-8?B?cW9yRlFvWFYrU1ZkdUM4SlpuTEdvOE5yNVVpekprN2oyYUp1WjdSL2oxaWZW?=
+ =?utf-8?B?SXE0VFlGeFpzUDgvbDNaSzYxa2JiTms1NXc3NGd4ak43R0NVbHJyWHZhOTRF?=
+ =?utf-8?B?K2VPbUQ3WC9vTVZnbTJtMk5xeWp5T01Zcm9xMFlubWE5UnFlVUtOUExUYVFw?=
+ =?utf-8?B?czVTTXBMTDNuajVlcUtUUWJBbmd2SnBhNkNPbzRWMWhydjZMbWtORlhXZFRQ?=
+ =?utf-8?B?LzhSdXoxajN2cGJCRklCZWxYY2xDUEU3NkE2OElHZnh1N05zN1A1V1QvdFda?=
+ =?utf-8?B?UXdWdkNtZmN5ZEVQWGJJenBZWGdGM1lzVTVRNUdxSy9zUTV5TElyUlNET1hk?=
+ =?utf-8?B?aDdxNkRSdW5BaUNMZFRRb1dqMEhYTTcxOHdyelpoZUp0NmxRaDJROS8wV1BZ?=
+ =?utf-8?B?bzdQUjQ3ZTBrdERyYWpDNXFIeHVXOVZVSmhSQ2N4TFkyVDZUS0hZck83YzdL?=
+ =?utf-8?B?ckhqdHRLZ2ZpclF2Z25TWFEycGdGbG4vYzFGUUdEWnlkNG8rZGtTYTBHOEZl?=
+ =?utf-8?B?UHRldy9vWlJwdGhKNk1oMzF0bmc3M1BYZ2piZmNTMjVzUjZyR0I4YkVpU2NW?=
+ =?utf-8?B?cC96ai8rWTNOYlF1RzZ2QXlJdEhPRHY2cmNtZ3VmZWZVWjZqUEgzdzhjUWxK?=
+ =?utf-8?B?cWdvR1BMb0graFI1N1JWb3RxL3RSUzVvRXNoUmViY3BIVlRyZXhVN09oTENy?=
+ =?utf-8?B?UmtuUlZBZnFkZ0dZem1BbjZOaTY3ejgwcnU2NGdZYS94TkpmSFhCcXdTek40?=
+ =?utf-8?B?b1lCNDlTVnJZVWtpd2NpOFIzd05iUmNMb3A4ek03UzZpcEFjVjJ6akpic0hr?=
+ =?utf-8?B?VS9USENpNUZBRVJFTDlVRUpDUTJjbjVBQlY2RFlFczd0WW5NY1RGT2FEVWlV?=
+ =?utf-8?B?UlkzNHFaRVZzSjJSMkk1RURQTk9GVXE1S2FSMHArWXpiR0Zad3hmRFhjUHQ3?=
+ =?utf-8?B?VVZpajcxQys3ZWU4NXdPNGRHQ2ZBNjNRZlM1MlFXd3pPOHdsbjJaQWtENWxQ?=
+ =?utf-8?B?Z2NYcitCY01kQlZ6R25OaXQ3RG9IYlhsOGJMQ2FpbWtLb2o5RGJRS2NuYURk?=
+ =?utf-8?B?b2YyL240L0JXL2VrTlI3UVRXQ3JidkdoQk1tQTBYM3crTHpYMC92cXNuVmR1?=
+ =?utf-8?B?dHBQWGNlYU9KS3FSVm9pVHlOTXQ2VUo2aGF6Z0UrbXVESmtNekRjbFUvWjY3?=
+ =?utf-8?B?SDFwbTVQR3RXcXZ2Ry9DTElUejEyV0hzL2RJcW9mK0xhaUczaEZKZU1lT0tL?=
+ =?utf-8?B?aFFmSit3OWlnMnF3MHYrNjZhVFNxb25LK1Y5RUNETWV0ZUp1VTF1RUhPeVdl?=
+ =?utf-8?B?Y2tHZDh1K2h0QmdLcEFPOTZ0cFZRS3IvVHFUU2p6enIzZlF1VjdEczZ4Z0pP?=
+ =?utf-8?B?ZE1iZHUrUDdqYVlnLytvNkd1WE5va3ZBSWtpOGdJVnVlN3VFV1RMT2VoSmlZ?=
+ =?utf-8?B?cElja0lzMDl5ejRadVVOd0ZBU1pqVTNFR1hGZndma2ZLcUdGakFKcE10OGVF?=
+ =?utf-8?Q?HTrok8mZ9P905B98rmDYmo5qgKiX+J0dk7f0aA8?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb51c72f-4372-4a84-eb23-08d8ef85ab45
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 12:01:05.9258
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aoweMP5MeVENl2JUqMlFVDfoy8ND6oUEJGODq+4RoBPbBWg/zkOG/IRwfCNQ1QWL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4137
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds some basic tests for the low level bpf_tc_* API and its
-bpf_program__attach_tc_* wrapper on top.
+On Thu, Mar 25, 2021 at 12:53:15PM +0100, Thomas Hellström (Intel) wrote:
 
-Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/test_tc_bpf.c    | 261 ++++++++++++++++++
- .../selftests/bpf/progs/test_tc_bpf_kern.c    |  18 ++
- 2 files changed, 279 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
+> Nope. The point here was that in this case, to make sure mmap uses the
+> correct VA to give us a reasonable chance of alignement, the driver might
+> need to be aware of and do trickery with the huge page-table-entry sizes
+> anyway, although I think in most cases a standard helper for this can be
+> supplied.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c b/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
-new file mode 100644
-index 000000000000..8bab56b4dea0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tc_bpf.c
-@@ -0,0 +1,261 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <linux/err.h>
-+#include <bpf/libbpf.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <test_progs.h>
-+#include <linux/if_ether.h>
-+
-+#define LO_IFINDEX 1
-+
-+static int test_tc_cls_internal(int fd, __u32 parent_id)
-+{
-+	struct bpf_tc_cls_attach_id id = {};
-+	struct bpf_tc_cls_info info = {};
-+	int ret;
-+	DECLARE_LIBBPF_OPTS(bpf_tc_cls_opts, opts, .handle = 1, .priority = 10,
-+			    .class_id = TC_H_MAKE(1UL << 16, 1),
-+			    .chain_index = 5);
-+
-+	ret = bpf_tc_cls_attach_dev(fd, LO_IFINDEX, parent_id, ETH_P_IP, &opts,
-+				    &id);
-+	if (CHECK_FAIL(ret < 0))
-+		return ret;
-+
-+	ret = bpf_tc_cls_get_info_dev(fd, LO_IFINDEX, parent_id, ETH_P_IP, NULL,
-+				      &info);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = -1;
-+
-+	if (CHECK_FAIL(info.id.ifindex != id.ifindex) ||
-+	    CHECK_FAIL(info.id.parent_id != id.parent_id) ||
-+	    CHECK_FAIL(info.id.handle != id.handle) ||
-+	    CHECK_FAIL(info.id.protocol != id.protocol) ||
-+	    CHECK_FAIL(info.id.chain_index != id.chain_index) ||
-+	    CHECK_FAIL(info.id.priority != id.priority) ||
-+	    CHECK_FAIL(info.id.ifindex != LO_IFINDEX) ||
-+	    CHECK_FAIL(info.id.parent_id != parent_id) ||
-+	    CHECK_FAIL(info.id.handle != 1) ||
-+	    CHECK_FAIL(info.id.priority != 10) ||
-+	    CHECK_FAIL(info.id.protocol != ETH_P_IP) ||
-+	    CHECK_FAIL(info.class_id != TC_H_MAKE(1UL << 16, 1)) ||
-+	    CHECK_FAIL(info.id.chain_index != 5))
-+		goto end;
-+
-+	opts.direct_action = true;
-+	ret = bpf_tc_cls_replace_dev(fd, id.ifindex, id.parent_id, id.protocol,
-+				     &opts, &id);
-+	if (CHECK_FAIL(ret < 0))
-+		return ret;
-+
-+end:;
-+	ret = bpf_tc_cls_detach_dev(&id);
-+	CHECK_FAIL(ret < 0);
-+	return ret;
-+}
-+
-+static int test_tc_cls(struct bpf_program *prog, __u32 parent_id)
-+{
-+	struct bpf_tc_cls_info info = {};
-+	struct bpf_link *link;
-+	int ret;
-+	DECLARE_LIBBPF_OPTS(bpf_tc_cls_opts, opts, .priority = 10, .handle = 1,
-+			    .class_id = TC_H_MAKE(1UL << 16, 1));
-+
-+	link = bpf_program__attach_tc_cls_dev(prog, LO_IFINDEX, parent_id,
-+					      ETH_P_ALL, &opts);
-+	if (CHECK_FAIL(IS_ERR_OR_NULL(link)))
-+		return PTR_ERR(link);
-+
-+	ret = bpf_tc_cls_get_info_dev(bpf_program__fd(prog), LO_IFINDEX,
-+				      parent_id, ETH_P_ALL, NULL, &info);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = -1;
-+
-+	if (CHECK_FAIL(info.id.ifindex != LO_IFINDEX) ||
-+	    CHECK_FAIL(info.id.handle != 1) ||
-+	    CHECK_FAIL(info.id.priority != 10) ||
-+	    CHECK_FAIL(info.id.protocol != ETH_P_ALL) ||
-+	    CHECK_FAIL(info.class_id != TC_H_MAKE(1UL << 16, 1)))
-+		goto end;
-+
-+	/* Demonstrate changing attributes (e.g. to direct action) */
-+	opts.class_id = TC_H_MAKE(1UL << 16, 2);
-+	opts.direct_action = true;
-+
-+	/* Disconnect as we drop to the lower level API, which invalidates the
-+	 * link.
-+	 */
-+	bpf_link__disconnect(link);
-+
-+	ret = bpf_tc_cls_change_dev(bpf_program__fd(prog), info.id.ifindex,
-+				    info.id.parent_id, info.id.protocol, &opts,
-+				    &info.id);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = bpf_tc_cls_get_info_dev(bpf_program__fd(prog), info.id.ifindex,
-+				      info.id.parent_id, info.id.protocol, NULL,
-+				      &info);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = -1;
-+
-+	if (CHECK_FAIL(info.class_id != TC_H_MAKE(1UL << 16, 2)))
-+		goto end;
-+	if (CHECK_FAIL((info.bpf_flags & TCA_BPF_FLAG_ACT_DIRECT) != 1))
-+		goto end;
-+
-+	ret = bpf_tc_cls_detach_dev(&info.id);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+end:
-+	ret = bpf_link__destroy(link);
-+	CHECK_FAIL(ret < 0);
-+	return ret;
-+}
-+
-+static int test_tc_act_internal(int fd)
-+{
-+	struct bpf_tc_act_info info = {};
-+	__u32 index = 0;
-+	int ret;
-+	DECLARE_LIBBPF_OPTS(bpf_tc_act_opts, opts, 0);
-+
-+	ret = bpf_tc_act_attach(fd, &opts, &index);
-+	if (CHECK_FAIL(ret < 0 || !index))
-+		goto end;
-+
-+	index = 0;
-+	ret = bpf_tc_act_attach(fd, &opts, &index);
-+	if (CHECK_FAIL(ret < 0 || !index))
-+		goto end;
-+
-+	opts.index = 3;
-+	index = 0;
-+	ret = bpf_tc_act_attach(fd, &opts, &index);
-+	if (CHECK_FAIL(ret < 0 || !index))
-+		goto end;
-+
-+	index = 0;
-+	ret = bpf_tc_act_replace(fd, &opts, &index);
-+	if (CHECK_FAIL(ret < 0 || !index))
-+		goto end;
-+
-+	opts.index = 1;
-+	ret = bpf_tc_act_attach(fd, &opts, &index);
-+	if (CHECK_FAIL(!ret || ret != -EEXIST)) {
-+		ret = -1;
-+		goto end;
-+	}
-+
-+	for (int i = 0; i < 3; i++) {
-+		memset(&info, 0, sizeof(info));
-+
-+		ret = bpf_tc_act_get_info(fd, &info);
-+		if (CHECK_FAIL(ret < 0 && ret != -ESRCH))
-+			goto end;
-+
-+		if (CHECK_FAIL(ret == -ESRCH))
-+			goto end;
-+
-+		if (CHECK_FAIL(info.refcnt != 1))
-+			goto end;
-+
-+		ret = bpf_tc_act_detach(info.index);
-+		if (CHECK_FAIL(ret < 0))
-+			goto end;
-+	}
-+
-+	CHECK_FAIL(bpf_tc_act_get_info(fd, &info) == -ESRCH);
-+
-+end:
-+	ret = bpf_tc_act_detach(0);
-+	CHECK_FAIL(ret < 0);
-+	return ret;
-+}
-+
-+static int test_tc_act(struct bpf_program *prog)
-+{
-+	struct bpf_tc_act_info info = {};
-+	struct bpf_link *link;
-+	int ret;
-+	DECLARE_LIBBPF_OPTS(bpf_tc_act_opts, opts, .index = 42);
-+
-+	link = bpf_program__attach_tc_act(prog, &opts);
-+	if (CHECK_FAIL(IS_ERR_OR_NULL(link)))
-+		return PTR_ERR(link);
-+
-+	ret = bpf_tc_act_get_info(bpf_program__fd(prog), &info);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	if (CHECK_FAIL(info.index != 42))
-+		goto end;
-+
-+end:
-+	ret = bpf_link__destroy(link);
-+	CHECK_FAIL(ret < 0);
-+	return ret;
-+}
-+
-+void test_test_tc_bpf(void)
-+{
-+	const char *file = "./test_tc_bpf_kern.o";
-+	int cls_fd, act_fd, ret;
-+	struct bpf_program *clsp, *actp;
-+	struct bpf_object *obj;
-+
-+	obj = bpf_object__open(file);
-+	if (CHECK_FAIL(IS_ERR_OR_NULL(obj)))
-+		return;
-+
-+	clsp = bpf_object__find_program_by_title(obj, "classifier");
-+	if (CHECK_FAIL(IS_ERR_OR_NULL(clsp)))
-+		goto end;
-+
-+	actp = bpf_object__find_program_by_title(obj, "action");
-+	if (CHECK_FAIL(IS_ERR_OR_NULL(clsp)))
-+		goto end;
-+
-+	ret = bpf_object__load(obj);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	cls_fd = bpf_program__fd(clsp);
-+	act_fd = bpf_program__fd(actp);
-+
-+	if (CHECK_FAIL(system("tc qdisc add dev lo clsact")))
-+		goto end;
-+
-+	ret = test_tc_cls_internal(cls_fd, BPF_TC_CLSACT_INGRESS);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = test_tc_cls(clsp, BPF_TC_CLSACT_EGRESS);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	system("tc qdisc del dev lo clsact");
-+
-+	ret = test_tc_act_internal(act_fd);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+	ret = test_tc_act(actp);
-+	if (CHECK_FAIL(ret < 0))
-+		goto end;
-+
-+end:
-+	bpf_object__close(obj);
-+	return;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c b/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
-new file mode 100644
-index 000000000000..d39644ea0fd7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_tc_bpf_kern.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+// Dummy prog to test tc_bpf API
-+
-+SEC("classifier")
-+int cls(struct __sk_buff *skb)
-+{
-+	return 0;
-+}
-+
-+SEC("action")
-+int act(struct __sk_buff *skb)
-+{
-+	return 0;
-+}
--- 
-2.30.2
+Of course the driver needs some way to influence the VA mmap uses,
+gernally it should align to the natural page size of the device
 
+Jason
