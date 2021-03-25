@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A812348E0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435B9348E0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhCYKbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhCYKbL (ORCPT
+        id S230209AbhCYKcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:32:21 -0400
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:34455 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230062AbhCYKcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:31:11 -0400
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9168C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:31:10 -0700 (PDT)
-Received: by mail-wm1-x34a.google.com with SMTP id v5so1496545wml.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:31:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=dLw4VRosCkcZw85W/pqml6ocuJW2bn9GiHagNmFx+8U=;
-        b=Bf5ebED3GpabknwxA53RGJzTH7lTgdn22pnG8hkWiSy0ulq7dYOwCFduXnv8+EYfGr
-         VE4uYG/PyUKhvusQRxDxsv4ujB6f05W/QZ+WGhEkduABSWt1uxv7DjXu0wEZfppWRmCK
-         ddkJOF6Ke3U345SAuTSXWu+jBqzEdc9pd10kHrQk4tVm19ccCdUpzhqevmqfALQmC67m
-         LaV1/AfrVpCFQ+awQgHcesBAA0LOa1BLyRSEokVlEfDz8K2LFje5cPvM5JMxMpj/l/o+
-         gg0JV65ZOPz+ztHqRx8D0TLF92Hh0Ttxcckcn1eA/nN6wEHB/T7nIWvDokcsjTedgGV3
-         1ryA==
+        Thu, 25 Mar 2021 06:32:13 -0400
+Received: by mail-lj1-f176.google.com with SMTP id f16so2481863ljm.1;
+        Thu, 25 Mar 2021 03:32:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=dLw4VRosCkcZw85W/pqml6ocuJW2bn9GiHagNmFx+8U=;
-        b=JAHOmjzODUBB7miFwOlcL/rFCosT+rmf8rVGMlBMNVn+VjOIXEgS/hTIKZMfTRReOc
-         bxgyZVVtZt2J73vxI7VCwQPKlZm9AmMxD8BWmuj0vThBX1NjJomU+yjdEz/6edbml0bM
-         eRt0lsNiBSC42nluEl32GYM3BFuiRqV2Oh74+aASmqAbK9bRiNY8Wpxoc8ObXT99xgrp
-         BMI8E0lO33rjAs9qVVy9FaApG9y/l0I/7CltfYuHVKyclGaWpLWgqTTvoT0GzimOD+eE
-         CvVc03e1PMFg9q6gXC3EbP76L3vsw2eC+iM0TRoiRVGP3zfrTCSa09bPuAC92pZs0gLE
-         d5ew==
-X-Gm-Message-State: AOAM530As2P8oeoncmoF1is+Bxj0KcO+7DdZbAuVU/wNOGXusAFY3cNC
-        L6SvAgfULNjkKP3VLMtI2cGa2WC9/7ns
-X-Google-Smtp-Source: ABdhPJz2gE/3uf2IECinj1iOuPsPf+EOohmNIGs7zU6PAJNFr7DoRP57q7FXuPGLz7QHPPRoECb2yqID8ceR
-X-Received: from dvyukov-desk.muc.corp.google.com ([2a00:79e0:15:13:8903:2da7:c857:1a50])
- (user=dvyukov job=sendgmr) by 2002:a05:6000:23c:: with SMTP id
- l28mr8410551wrz.251.1616668269433; Thu, 25 Mar 2021 03:31:09 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:31:05 +0100
-Message-Id: <20210325103105.3090303-1-dvyukov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH] net: change netdev_unregister_timeout_secs min value to 1
-From:   Dmitry Vyukov <dvyukov@google.com>
-To:     edumazet@google.com, davem@davemloft.net
-Cc:     leon@kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=faLPl7dFJfBc9wUMKlika3avN8VfJYiGHtpkcOchfg4=;
+        b=EaNSFVkM5bnjFgnu1+AE0QvqIq3rlgy3R05hOiUiKJgyAW4WdTe4vPgOceOG5qSGi/
+         oidAa40y/FZHfzvfqAsED04ynUlx+AWRxs2R0WYzH5k2hBiNo3+GGIWQnqLmReAc/KxD
+         D1V5uDCkKV2luRxIpDUx0p2cHi1QhYYEQY4qsDfB8XKt+YNpLG6UYY0YkXVemk1ixoms
+         XUN2p5iqn1oAaOSm/7rowm73oLdPvS/IEkW+RrfKT7RPEpBXF6FMnbs52rIhLZJ9uzCd
+         1Mp5Xhe7aTbitZQxQAlqwG88qsd8yCzYcPG363sz9G04HUdB6urUdg+rI7ziym0xKh5b
+         acZg==
+X-Gm-Message-State: AOAM531sfnIrN1ZmTHdRu7jZJKYq9YiqByMgx5jk17FkCgMfdwYZly0t
+        utq8+ohqkGnH9pyGyCwZTzQ=
+X-Google-Smtp-Source: ABdhPJzLlwtpNHVd/GL3u2kyRHuWUfHkpqqpTtdCWSkei4+bFaw0r1J/K2urn0pBPteK1WSfjLlNyQ==
+X-Received: by 2002:a2e:8e33:: with SMTP id r19mr5091616ljk.40.1616668331621;
+        Thu, 25 Mar 2021 03:32:11 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id p10sm727834ljg.99.2021.03.25.03.32.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 03:32:11 -0700 (PDT)
+Message-ID: <c5a4ef7341b5b0b56d1ad950867828463cfdb7fc.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v4 09/16] gpio: support ROHM BD71815 GPOs
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-power@fi.rohmeurope.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+In-Reply-To: <CACRpkdZnrkiYGaOTZLvCnp72WYiV0+YhCe+TbMjN_3CLyJHvgA@mail.gmail.com>
+References: <cover.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
+         <b2164e5965218f270e17bf29e00ad5c5a0b54bcf.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
+         <CACRpkdZnrkiYGaOTZLvCnp72WYiV0+YhCe+TbMjN_3CLyJHvgA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Date:   Thu, 25 Mar 2021 12:32:04 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-netdev_unregister_timeout_secs=0 can lead to printing the
-"waiting for dev to become free" message every jiffy.
-This is too frequent and unnecessary.
-Set the min value to 1 second.
+Hello Linus,
 
-Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Fixes: 5aa3afe107d9 ("net: make unregister netdev warning timeout configurable")
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- Documentation/admin-guide/sysctl/net.rst | 2 +-
- net/core/sysctl_net_core.c               | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Thu, 2021-03-25 at 10:35 +0100, Linus Walleij wrote:
+> On Wed, Mar 24, 2021 at 8:29 AM Matti Vaittinen
+> <matti.vaittinen@fi.rohmeurope.com> wrote:
+> 
+> > Support GPO(s) found from ROHM BD71815 power management IC. The IC
+> > has two
+> > GPO pins but only one is properly documented in data-sheet. The
+> > driver
+> > exposes by default only the documented GPO. The second GPO is
+> > connected to
+> > E5 pin and is marked as GND in data-sheet. Control for this
+> > undocumented
+> > pin can be enabled using a special DT property.
+> > 
+> > This driver is derived from work by Peter Yang <
+> > yanglsh@embest-tech.com>
+> > although not so much of original is left.
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > ---
+> > Changes since v3:
+> >   - No changes
+> 
+> This looks OK to me:
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> It could potentially (like the other Rohm GPIO MFD PMIC drivers)
+> make some use of the gpio regmap library, but we have some
+> pending changes for that so look into it after the next merge
+> window.
+> 
+> I.e. for your TODO: look at the GPIO_REGMAP helper.
 
-diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
-index 2090bfc69aa50..c941b214e0b7f 100644
---- a/Documentation/admin-guide/sysctl/net.rst
-+++ b/Documentation/admin-guide/sysctl/net.rst
-@@ -320,7 +320,7 @@ waiting for a network device refcount to drop to 0 during device
- unregistration. A lower value may be useful during bisection to detect
- a leaked reference faster. A larger value may be useful to prevent false
- warnings on slow/loaded systems.
--Default value is 10, minimum 0, maximum 3600.
-+Default value is 10, minimum 1, maximum 3600.
- 
- optmem_max
- ----------
-diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-index d84c8a1b280e2..c8496c1142c9d 100644
---- a/net/core/sysctl_net_core.c
-+++ b/net/core/sysctl_net_core.c
-@@ -577,7 +577,7 @@ static struct ctl_table net_core_table[] = {
- 		.maxlen		= sizeof(unsigned int),
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec_minmax,
--		.extra1		= SYSCTL_ZERO,
-+		.extra1		= SYSCTL_ONE,
- 		.extra2		= &int_3600,
- 	},
- 	{ }
+I just took a quick peek at gpio_regmap and it looks pretty good to me!
 
-base-commit: 84c7f6c33f42a12eb036ebf0f0e3670799304120
--- 
-2.31.0.291.g576ba9dcdaf-goog
+Any particular reason why gpio_regmap is not just part of gpio_chip? I
+guess providing the 'gpio_regmap_direction_*()', 'gpio_regmap_get()',
+'gpio_regmap_set()' as exported helpers and leaving calling the
+(devm_)gpiochip_add_data() to IC driver would have allowed more
+flexibility. Drivers could then use the gpio_regamap features which fit
+the IC (by providing pointers to helper functions in gpio_chip) - and
+handle potential oddball-features by using pointers to some customized
+functions in gpio_chip.
+
+Anyways, definitely worth getting familiar with! Thanks for the pointer
+:]
+
+Best Regards,
+	Matti Vaittinen
+
 
