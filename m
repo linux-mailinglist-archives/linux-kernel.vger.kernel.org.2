@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0511A3493E0
+	by mail.lfdr.de (Postfix) with ESMTP id 509963493E1
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhCYOSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        id S231189AbhCYOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCYOSb (ORCPT
+        with ESMTP id S229869AbhCYOSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:18:31 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3267C06174A;
-        Thu, 25 Mar 2021 07:18:29 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id ce10so3191127ejb.6;
-        Thu, 25 Mar 2021 07:18:29 -0700 (PDT)
+        Thu, 25 Mar 2021 10:18:35 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05156C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:18:34 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 184so3307550ljf.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:18:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lMu1u0tgdpKUYdK0Y2edV56h3EG24/y18/fAyUCWVWo=;
-        b=RbjSEQfqNEssxKbJqIH/emUW3jSbq9bgkMVtMsexGztaajgm+fopQefEDxTPfEaDIb
-         FVO53ZNlI1hsSzxMiyfd+OssWBBSeB+fZTI4mw22lXVF+ItJhweULzi3KcSISHl9fc6Z
-         uyYcjwB/mOGr56dLrk9UO608Wg1Kg8l7Egglol76u7z9losnL8FdpcIQAqW1bsRXaX0U
-         qlRjkh/aG1c225VZti7tuHpguitH9L+1frIE2ZwhHSPkVsXy31F14bWaCM1Qx9S00rLx
-         rMIMXH0WQRMuKUuMEaiiyYgRmbo75EQVt9xEZGWlRyjFMTHA0UQPlet9J8xEeaFAnxhZ
-         tHJg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PpLGFAuP0zRhD8ECDASmtUCCqZyWadUjjPsdXLkzDqI=;
+        b=GcElBKS7rrZsXIzL8iL2fQTZM8mDFRhoxCQqgNhE2t3ljVlmcmNMBY7kAMMAzBbihx
+         gqzHnHfFAj9ZXx3DZXOZqh0LtqVKx1J5v7fsuJaDFCCVAai5EN4IqNAOW/tjGW/brPQD
+         0EV1aJmpGsFksorq1eaSc1o5KkTawtb3FbnNqHkkDIuWR8DUBbawVg80hW4ePgfKvnmi
+         GMvcRzBY7svPva0XAfjZ6XkJbWtFKxMNM0+PtvG0J1knJnlLYGtWgYpqBwwnkZCF4EXA
+         YA92oWT5fMP+946UT/jpXl2+uJn8y7TgZIZj/DEgEhjK2lcS6DsSBTyyB6N0+9HCKrgD
+         j8PA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=lMu1u0tgdpKUYdK0Y2edV56h3EG24/y18/fAyUCWVWo=;
-        b=owSoQKmvPLxfGvn1I/xv7A0VM9Oj2f5XOFByaA74Jq4WUbQlzlAW9yKc22iY1zIv1s
-         Qs3f+fFRvORZinkGNpC3Ghwq9+ymH65CK70OY/RDuyCNw7mC6Mqzn0Qq2TQYs5oaw8yp
-         PW/R8wMZh1mTZsDvgtaIXlOg2QRJKGnOe7yuRDRFfUz9blpmVE5DiBSH/i2ircZwZ/q6
-         kenEzOsqoEckuLw5BXr+desAB4Kmz1e42eq+KdhhunBzf/1iw2ys7DMfwOLDaMg6P1Ke
-         EBAmIiOEFqtzLfzmcBQgHQ7e6l7LUZhpJWTSjMMNon4JqkrG6nPgyvLlTpFGdeS0FJ8a
-         aUng==
-X-Gm-Message-State: AOAM533S3B2qpzuKhVd5gwL1+7uuJ3Qic6cbmJRfrgS4DfrpwJhnscam
-        f9uY5F+Fw9LRKA7jl5iy0s8=
-X-Google-Smtp-Source: ABdhPJx99KPo9V0jaqGGq7Ye9JnyXiJfOF3Cm5/DRDHl9roTqWzH+YfFFqt8ZH8gC0LIsPotgBYXig==
-X-Received: by 2002:a17:907:e8f:: with SMTP id ho15mr9886768ejc.541.1616681908525;
-        Thu, 25 Mar 2021 07:18:28 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id p19sm2793453edr.57.2021.03.25.07.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:18:28 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 25 Mar 2021 15:18:20 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Marco Elver <elver@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on
- SIGTRAP
-Message-ID: <20210325141820.GA1456211@gmail.com>
-References: <20210324112503.623833-1-elver@google.com>
- <20210324112503.623833-8-elver@google.com>
- <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net>
- <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
- <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net>
- <YFtB+Ta9pkMg4C2h@hirez.programming.kicks-ass.net>
- <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net>
- <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
- <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PpLGFAuP0zRhD8ECDASmtUCCqZyWadUjjPsdXLkzDqI=;
+        b=rxl4Fs1YDk7isaBzCNXG6ibq9DQZ6WnNXQTR7N5T5TJrmtwGKmNIVM7e4k29whIs00
+         +Gt/EtpSeV0hgQk5siUi9N/i5PRtfy0NCmxXgfvWPOewv5SpR564R7EKkTFYuaGY1IrO
+         gb1j0IUbYGj77bkV9UgaveevMA/ycFV9rOEUriPs2CKHMilOIWQEXlrSbrJ1iGilj91f
+         XDO7yCeuekHOUuvooKDynkZTrVTngnvzcdWMtIHV1JVqtxa7lPGEl3rLCx7WcCDessl6
+         Niu825xn2Ovc3SUNo6Clms7J8SpcDl+7JdvsmnbzDBuU1Pswg71Ev0oe14x3/ckQzHGL
+         uP0g==
+X-Gm-Message-State: AOAM531rOH45YrZSQVFAWR+AZ6d7qs3ev4gnY0f4+M6dlE+M3UVwhJnR
+        RblzUnEwQu4HlmCa85XLP0ZmHbLCV7x1Aw6/XE31fNQv5fF0A3Gl
+X-Google-Smtp-Source: ABdhPJzqBnu7s32WbSm2YB1vrx+f2AwqOgTvQHwo6CsZ23JU6Gjcrr6cxc4ueNfjn2fOB4L827PYnnDupurtTvx0o8c=
+X-Received: by 2002:a2e:868a:: with SMTP id l10mr5626263lji.343.1616681912438;
+ Thu, 25 Mar 2021 07:18:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com>
+References: <cover.1616409291.git.jerome@forissier.org> <010001785986e9be-63aa88ce-3cf8-425f-87da-b2e3f84f6ef5-000000@email.amazonses.com>
+In-Reply-To: <010001785986e9be-63aa88ce-3cf8-425f-87da-b2e3f84f6ef5-000000@email.amazonses.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 25 Mar 2021 19:48:21 +0530
+Message-ID: <CAFA6WYPryB+9W6EGXvea07=JH8_cfHKF8a4BDEyPeqPVkzvutw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] tee: optee: do not check memref size on return from
+ Secure World
+To:     Jerome Forissier <jerome@forissier.org>
+Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
+        op-tee@lists.trustedfirmware.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 22 Mar 2021 at 16:11, Jerome Forissier via OP-TEE
+<op-tee@lists.trustedfirmware.org> wrote:
+>
+> When Secure World returns, it may have changed the size attribute of the
+> memory references passed as [in/out] parameters. The GlobalPlatform TEE
+> Internal Core API specification does not restrict the values that this
+> size can take. In particular, Secure World may increase the value to be
+> larger than the size of the input buffer to indicate that it needs more.
+>
+> Therefore, the size check in optee_from_msg_param() is incorrect and
+> needs to be removed. This fixes a number of failed test cases in the
+> GlobalPlatform TEE Initial Configuratiom Test Suite v2_0_0_0-2017_06_09
+> when OP-TEE is compiled without dynamic shared memory support
+> (CFG_CORE_DYN_SHM=n).
+>
+> Suggested-by: Jens Wiklander <jens.wiklander@linaro.org>
+> Signed-off-by: Jerome Forissier <jerome@forissier.org>
+> ---
+>  drivers/tee/optee/core.c | 10 ----------
+>  1 file changed, 10 deletions(-)
+>
 
-* Dmitry Vyukov <dvyukov@google.com> wrote:
+Looks good to me.
 
-> On Wed, Mar 24, 2021 at 3:05 PM Marco Elver <elver@google.com> wrote:
-> >
-> > On Wed, 24 Mar 2021 at 15:01, Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > One last try, I'll leave it alone now, I promise :-)
-> >
-> > This looks like it does what you suggested, thanks! :-)
-> >
-> > I'll still need to think about it, because of the potential problem
-> > with modify-signal-races and what the user's synchronization story
-> > would look like then.
-> 
-> I agree that this looks inherently racy. The attr can't be allocated
-> on stack, user synchronization may be tricky and expensive. The API
-> may provoke bugs and some users may not even realize the race problem.
+Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 
-Yeah, so why cannot we allocate enough space from the signal handler 
-user-space stack and put the attr there, and point to it from 
-sig_info?
+-Sumit
 
-The idea would be to create a stable, per-signal snapshot of whatever 
-the perf_attr state is at the moment the event happens and the signal 
-is generated - which is roughly what user-space wants, right?
-
-Thanks,
-
-	Ingo
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index 319a1e701163..ddb8f9ecf307 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -79,16 +79,6 @@ int optee_from_msg_param(struct tee_param *params, size_t num_params,
+>                                 return rc;
+>                         p->u.memref.shm_offs = mp->u.tmem.buf_ptr - pa;
+>                         p->u.memref.shm = shm;
+> -
+> -                       /* Check that the memref is covered by the shm object */
+> -                       if (p->u.memref.size) {
+> -                               size_t o = p->u.memref.shm_offs +
+> -                                          p->u.memref.size - 1;
+> -
+> -                               rc = tee_shm_get_pa(shm, o, NULL);
+> -                               if (rc)
+> -                                       return rc;
+> -                       }
+>                         break;
+>                 case OPTEE_MSG_ATTR_TYPE_RMEM_INPUT:
+>                 case OPTEE_MSG_ATTR_TYPE_RMEM_OUTPUT:
+> --
+> 2.25.1
+>
