@@ -2,186 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 875C8348673
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAEC348672
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:36:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbhCYBgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:36:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S231966AbhCYBfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232128AbhCYBfm (ORCPT
+        with ESMTP id S231557AbhCYBfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:35:42 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA7AC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 18:35:41 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id x26so405380pfn.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 18:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PNclna4r96z+ADs9Z6sKNU7TGol0SXSB3VYQsdRhSU4=;
-        b=hBxECUX1Vkcjb71TpZJ98CXLuQr84nnIqLkomuaWFi3m+H6fZ2NSrM49RBs5o5bq11
-         MyjI2tenjLJYYDG6wo07g94ffQSH5rly9K/9y6ne3voOIEhEsy81mTQOAyTM1viam5yE
-         KVUA1B+unox70IVa0Jj+OdAzv67Za8B0nswRM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PNclna4r96z+ADs9Z6sKNU7TGol0SXSB3VYQsdRhSU4=;
-        b=A01C4YyzwdBAUT8U/7lftbz1xdNj4V/4MtZCZ1rqN8DKJcsrfCkRtHY9tpJTivbAU7
-         XGiRhbFllsVqQNfMTDsKdtuwR7UeshAIbQrrHO211rj1I8d0oOA8k9PRkiAODLw0kTuw
-         hB53ymx2kF8XYhW4o0JlweZ/UtVM2zIVIzL2kreTyg00cmTrecW9DrsaemfNGB+1k8uR
-         sDgY+AWR4IzYCaJ2QDrgwrBAufNZwAQDtiq5sZCbRn6tyDx92uAOV8E6znvPARXhdPMD
-         ZiSvGwzlZ1HbNfzQor5VLc1Gu/VJvCerqVyiso+U6Njuq/DEzWss/nQiValieTSQK/o6
-         ZYdw==
-X-Gm-Message-State: AOAM532ZWzDrZtWHKHe4K6Q+5b4wsv7skEwweC1dKF9j7m1UVr/kJyei
-        5x3mGKsdekHgldPnBKM3zmp9HA==
-X-Google-Smtp-Source: ABdhPJyaMBulk3s1mm/SNbnsxJGB+1AhFTA5Tqmuc39h8ixwGUrWDFzcvYQdzesbAeUlzQjkr6jIXA==
-X-Received: by 2002:a17:902:7c94:b029:e6:e1d7:62b7 with SMTP id y20-20020a1709027c94b02900e6e1d762b7mr6522874pll.29.1616636141541;
-        Wed, 24 Mar 2021 18:35:41 -0700 (PDT)
-Received: from evanbenn1.syd.corp.google.com ([2401:fa00:9:15:5d74:fcca:830d:3b2f])
-        by smtp.gmail.com with ESMTPSA id w203sm3645602pfc.188.2021.03.24.18.35.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 18:35:41 -0700 (PDT)
-From:   Evan Benn <evanbenn@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Stanley Chu <stanley.chu@mediatek.com>,
-        Alexey Klimov <alexey.klimov@linaro.org>,
-        Julia Lawall <Julia.Lawall@lip6.fr>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-mediatek@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Evan Benn <evanbenn@chromium.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH v2] drivers/clocksource/mediatek: Ack and disable interrupts on shutdown
-Date:   Thu, 25 Mar 2021 12:35:00 +1100
-Message-Id: <20210325123446.v2.1.I1d9917047de06715da16e1620759f703fcfdcbcb@changeid>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        Wed, 24 Mar 2021 21:35:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8DEC06174A;
+        Wed, 24 Mar 2021 18:35:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=AGo/RMTNezhheUtkI8URNy+6PhuTvYtFQE2ScXnP62Q=; b=KaDrh4nqakuEYlQCesxZ5Mf9qa
+        Fc3RM5WaCkUuxuIb+Sxr3EZOoYSNDUF0XJfYnjadh0R48lli0Xj/710Yp9jk+ATLMkhcv1meMRCjP
+        B1H7b+/y8OOJnzQxz65o690jtrG8ZZjgx9xQfWOqhuCEPV00bWACoh42RLkR8hK9aAQnjoGrBiD6X
+        DM5zoDSSj2KwtvRR9vFptuGMNqnTaH80S5J5TtreXGIMW1+S1Pwr0bYL0tHd0zVnT2kbgUDZM6iF1
+        /ljKRAKqL248tUaJwk4n96pqrmMzGni9jIKmLUOOnSjQrSTSic/1UD/BWbhJUYD4oI3BOUnlbqFlB
+        D2S4Yjkg==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPEtt-000RQk-Tx; Thu, 25 Mar 2021 01:35:07 +0000
+Subject: Re: [PATCH] tools: usbip: list.h: fix kernel-doc for list_del()
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, linux-usb@vger.kernel.org
+References: <20210324000223.22043-1-rdunlap@infradead.org>
+ <0af7bfad-fff7-84be-8e7c-2ad3e93fb785@linuxfoundation.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <0064f460-de49-98c8-1448-3489aa036384@infradead.org>
+Date:   Wed, 24 Mar 2021 18:35:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <0af7bfad-fff7-84be-8e7c-2ad3e93fb785@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-set_state_shutdown is called during system suspend after interrupts have
-been disabled. If the timer has fired in the meantime, there will be
-a pending IRQ. So we ack that now and disable the timer. Without this
-ARM trusted firmware will abort the suspend due to the pending
-interrupt.
+On 3/24/21 4:32 PM, Shuah Khan wrote:
+> On 3/23/21 6:02 PM, Randy Dunlap wrote:
+>> In list.h, the kernel-doc for list_del() should be immediately
+>> preceding the implementation and not separated from it by
+>> another function implementation.
+>>
+>> Eliminates this kernel-doc error:
+>> list.h:1: warning: 'list_del' not found
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Valentina Manea <valentina.manea.m@gmail.com>
+>> Cc: Shuah Khan <shuah@kernel.org>
+>> Cc: Shuah Khan <skhan@linuxfoundation.org>
+>> Cc: linux-usb@vger.kernel.org
+>> ---
+>>   tools/usb/usbip/libsrc/list.h |   10 +++++-----
+>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>
+>> --- linux-next-20210323.orig/tools/usb/usbip/libsrc/list.h
+>> +++ linux-next-20210323/tools/usb/usbip/libsrc/list.h
+>> @@ -77,17 +77,17 @@ static inline void __list_del(struct lis
+>>   #define LIST_POISON1  ((void *) 0x00100100 + POISON_POINTER_DELTA)
+>>   #define LIST_POISON2  ((void *) 0x00200200 + POISON_POINTER_DELTA)
+>>   +static inline void __list_del_entry(struct list_head *entry)
+>> +{
+>> +    __list_del(entry->prev, entry->next);
+>> +}
+>> +
+>>   /**
+>>    * list_del - deletes entry from list.
+>>    * @entry: the element to delete from the list.
+>>    * Note: list_empty() on entry does not return true after this, the entry is
+>>    * in an undefined state.
+>>    */
+>> -static inline void __list_del_entry(struct list_head *entry)
+>> -{
+>> -    __list_del(entry->prev, entry->next);
+>> -}
+>> -
+>>   static inline void list_del(struct list_head *entry)
+>>   {
+>>       __list_del(entry->prev, entry->next);
+>>
+> 
+> Thank you for fixing this.
+> 
+> Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Now always disable the IRQ in state transitions, and re-enable in
-set_periodic and next_event.
 
-Signed-off-by: Evan Benn <evanbenn@chromium.org>
----
+Thanks. Who do you think should merge this patch?
 
-Changes in v2:
-Remove the patch that splits the drivers into 2 files.
-
- drivers/clocksource/timer-mediatek.c | 49 +++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/clocksource/timer-mediatek.c b/drivers/clocksource/timer-mediatek.c
-index 9318edcd8963..fba2f9494d90 100644
---- a/drivers/clocksource/timer-mediatek.c
-+++ b/drivers/clocksource/timer-mediatek.c
-@@ -132,13 +132,33 @@ static u64 notrace mtk_gpt_read_sched_clock(void)
- 	return readl_relaxed(gpt_sched_reg);
- }
- 
-+static void mtk_gpt_disable_ack_interrupts(struct timer_of *to, u8 timer)
-+{
-+	u32 val;
-+
-+	/* Disable interrupts */
-+	val = readl(timer_of_base(to) + GPT_IRQ_EN_REG);
-+	writel(val & ~GPT_IRQ_ENABLE(timer), timer_of_base(to) +
-+	       GPT_IRQ_EN_REG);
-+
-+	/* Ack interrupts */
-+	writel(GPT_IRQ_ACK(timer), timer_of_base(to) + GPT_IRQ_ACK_REG);
-+}
-+
- static void mtk_gpt_clkevt_time_stop(struct timer_of *to, u8 timer)
- {
- 	u32 val;
- 
-+	/* Disable timer */
- 	val = readl(timer_of_base(to) + GPT_CTRL_REG(timer));
- 	writel(val & ~GPT_CTRL_ENABLE, timer_of_base(to) +
- 	       GPT_CTRL_REG(timer));
-+
-+	/* This may be called with interrupts disabled,
-+	 * so we need to ack any interrupt that is pending
-+	 * Or for example ATF will prevent a suspend from completing.
-+	 */
-+	mtk_gpt_disable_ack_interrupts(to, timer);
- }
- 
- static void mtk_gpt_clkevt_time_setup(struct timer_of *to,
-@@ -152,8 +172,10 @@ static void mtk_gpt_clkevt_time_start(struct timer_of *to,
- {
- 	u32 val;
- 
--	/* Acknowledge interrupt */
--	writel(GPT_IRQ_ACK(timer), timer_of_base(to) + GPT_IRQ_ACK_REG);
-+	/* Enable interrupts */
-+	val = readl(timer_of_base(to) + GPT_IRQ_EN_REG);
-+	writel(val | GPT_IRQ_ENABLE(timer),
-+	       timer_of_base(to) + GPT_IRQ_EN_REG);
- 
- 	val = readl(timer_of_base(to) + GPT_CTRL_REG(timer));
- 
-@@ -226,21 +248,6 @@ __init mtk_gpt_setup(struct timer_of *to, u8 timer, u8 option)
- 	       timer_of_base(to) + GPT_CTRL_REG(timer));
- }
- 
--static void mtk_gpt_enable_irq(struct timer_of *to, u8 timer)
--{
--	u32 val;
--
--	/* Disable all interrupts */
--	writel(0x0, timer_of_base(to) + GPT_IRQ_EN_REG);
--
--	/* Acknowledge all spurious pending interrupts */
--	writel(0x3f, timer_of_base(to) + GPT_IRQ_ACK_REG);
--
--	val = readl(timer_of_base(to) + GPT_IRQ_EN_REG);
--	writel(val | GPT_IRQ_ENABLE(timer),
--	       timer_of_base(to) + GPT_IRQ_EN_REG);
--}
--
- static struct timer_of to = {
- 	.flags = TIMER_OF_IRQ | TIMER_OF_BASE | TIMER_OF_CLOCK,
- 
-@@ -292,6 +299,12 @@ static int __init mtk_gpt_init(struct device_node *node)
- 	if (ret)
- 		return ret;
- 
-+	/* In case the firmware left the interrupts enabled
-+	 * disable and ack those now
-+	 */
-+	mtk_gpt_disable_ack_interrupts(&to, TIMER_CLK_SRC);
-+	mtk_gpt_disable_ack_interrupts(&to, TIMER_CLK_EVT);
-+
- 	/* Configure clock source */
- 	mtk_gpt_setup(&to, TIMER_CLK_SRC, GPT_CTRL_OP_FREERUN);
- 	clocksource_mmio_init(timer_of_base(&to) + GPT_CNT_REG(TIMER_CLK_SRC),
-@@ -305,8 +318,6 @@ static int __init mtk_gpt_init(struct device_node *node)
- 	clockevents_config_and_register(&to.clkevt, timer_of_rate(&to),
- 					TIMER_SYNC_TICKS, 0xffffffff);
- 
--	mtk_gpt_enable_irq(&to, TIMER_CLK_EVT);
--
- 	return 0;
- }
- TIMER_OF_DECLARE(mtk_mt6577, "mediatek,mt6577-timer", mtk_gpt_init);
 -- 
-2.31.0.291.g576ba9dcdaf-goog
+~Randy
 
