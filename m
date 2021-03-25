@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B795C349721
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED7D349722
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhCYQoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
+        id S229934AbhCYQoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhCYQnt (ORCPT
+        with ESMTP id S229728AbhCYQnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:43:49 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3865C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:43:49 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id z136so2520904iof.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:43:49 -0700 (PDT)
+        Thu, 25 Mar 2021 12:43:51 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5310C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:43:50 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id u10so2724350ilb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:43:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Zelrk36zpmC+2fEIaTzCe8iAs0QYE8m4zqDOwegDXxU=;
-        b=QLqByaEHTRPwGeUS1pOq5E8tTBozcYgNoU0DBDvnF2zaT4Moftc+JhKY6s7sagWObm
-         pQuhuSWdD53SqSqWiQ60vUU+WrpJwTOLrbdnSAOrv5FHd1mf8yi8JX0S//j4bZxzhlKR
-         qt1E1tR5X1rsX31PtU4jNGpbucp+ruUSzfDwXIXyCwHi4MNqLoK6shp9KlsyA429DdMW
-         kpnB/Y4xtQp39aO8MK36jUB27WAfnrN6XfftZCG1cEb/pGnaLwgTFRMjrBtXXvyRrbRI
-         uHc6sPcSmCOmCTU0OtWuynAM15qkhs2Dr68y+h07fTmhtexCh63eoQT7dhmOZWz96LnE
-         4tnQ==
+        bh=3dp61o6F3hqxMbMpN9J8E9x3tY2eyW4PS/mGGFHMbvA=;
+        b=dL5jZOqPFrSb9Oj9FLfuY4FAbj8v8dXvuyG1H2e2jy3Epf4WMDngkcwDf/GDjlEqeq
+         BrT84yl0cCzQQtqcUYiiHF2mqWSmtBlESC8TaZVNXe9NVGAmtX1BUNN34UteLmwJjpxd
+         oP7QA1j9pguI2UI7+D2a2TlQdw6w4W5mtttT6msMI18lLSMJ2sIn82ljFY2WUl1gXofE
+         frs1SpctbE0XjMIttEzkYHfXcAe3TP/TAWqtkuzcSHv5xqisOJrHMqxapB68t+Wa2dmS
+         CiO/0mZRvRqi1VPXqAVC9QQC3KDZfK2HJFAadvP1QHURIKQzUFV1koVsYPBLFHSmAZLo
+         xjtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Zelrk36zpmC+2fEIaTzCe8iAs0QYE8m4zqDOwegDXxU=;
-        b=KVBQTCJ5HiyA43J11u5MZpskgCWqsqU7g4wxks+svEaQd5Kd54R5KTBcc89JeWz3aJ
-         nVmAglpqcZJ4D1s8EQHOhgYF/ZxK874dRz0NEePTUlR8CkUDjJLNx4WsuMpo0H96mQlu
-         Yw3bUs0QxEf3Ctnr0C/wd/cqnVdEE7ZTiR+WjKQvoCFGF9etfBZ5oC+Yry6QUkGdRcw9
-         kwALywu58ZtxB/OP1ef56bWZTO3cZLvnkQHumpZeDfK+8FGoMKx+9U3QqqIQKS1g3cm1
-         GkOz5KgB2JXpK/Qj9PALsmqSohEWza8pRhgB8IGxhj5RgApjnP5hWZ1D7SPeVR+42298
-         h8sA==
-X-Gm-Message-State: AOAM532NqfNDTdKcf1faP45KnSlLhtc9TqAyXh+Keyio42Y/HaFC6JSM
-        0MyJCbXTvdRnyxoz971Y6R0kSJLs+jAnkg==
-X-Google-Smtp-Source: ABdhPJyFxG6jE4JyH3R/U5GLHMaVOP8xt4cFnvszKiM7dZP9MvQ6l80nPe2d2VkNep1HFuDssJGtFQ==
-X-Received: by 2002:a02:714f:: with SMTP id n15mr8440902jaf.6.1616690629100;
+        bh=3dp61o6F3hqxMbMpN9J8E9x3tY2eyW4PS/mGGFHMbvA=;
+        b=YB6jHc0PmS/jUYC5mgfFrL7ZybabNpjtJkOsFntzM9ACZV9ZOD8JRLm8x1A6PIENn1
+         RCTB3xcvZCqmTUTLcCj4Zt6Nz6KXwauGPcwluwolfm1Q53ti7muzrpZLzX0mOw7OUPL0
+         PZpHIBq5y2mfS2NXcdq2xQeJVqRv37gMZ64glQntim1qqmgVx0LzzYQserlrXFwIXQls
+         ROnhce6qUY8ehMfIw0hVL07JgNda8wNbftjk6dGQYj1E8zXExcpryp8+5KHIGOKfhVO6
+         +i7pQAqAaPkHNFgn6OyD0x4gLecVxR+kw/Im9nejZeWKlbLEAwEIYbAM+eAqvRauaFRM
+         kpcg==
+X-Gm-Message-State: AOAM5325aumUtA/4MEeB+099PSqcbZiaiKhN2SFbuqM6DqwXdQ27DWwg
+        CX70Bsc1er3J7Vfe5I0HmMQ4Tw==
+X-Google-Smtp-Source: ABdhPJxwxYjP5S4lA8SJOW+4pNwM6kgk9NMYjp4EfBYFflCceicfN5WxY49qjwu9LCrK/G/hMq9KVQ==
+X-Received: by 2002:a05:6e02:1b86:: with SMTP id h6mr7051197ili.145.1616690629868;
         Thu, 25 Mar 2021 09:43:49 -0700 (PDT)
 Received: from p1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id k12sm2990605ios.2.2021.03.25.09.43.48
+        by smtp.gmail.com with ESMTPSA id k12sm2990605ios.2.2021.03.25.09.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 09:43:48 -0700 (PDT)
+        Thu, 25 Mar 2021 09:43:49 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
 To:     io-uring@vger.kernel.org
 Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
         linux-kernel@vger.kernel.org, oleg@redhat.com, metze@samba.org,
         Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 1/2] kernel: don't include PF_IO_WORKERs as part of same_thread_group()
-Date:   Thu, 25 Mar 2021 10:43:42 -0600
-Message-Id: <20210325164343.807498-2-axboe@kernel.dk>
+Subject: [PATCH 2/2] proc: don't show PF_IO_WORKER threads as threads in /proc/<pid>/task/
+Date:   Thu, 25 Mar 2021 10:43:43 -0600
+Message-Id: <20210325164343.807498-3-axboe@kernel.dk>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210325164343.807498-1-axboe@kernel.dk>
 References: <20210325164343.807498-1-axboe@kernel.dk>
@@ -65,57 +65,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't pretend that the IO threads are in the same thread group, the only
-case where that seems to be desired is for accounting purposes. Add
-a special accounting function for that and make the scheduler side use it.
+We don't allow SIGSTOP and ptrace attach to these threads, and that
+confuses applications like gdb that assume they can attach to any thread
+listed in /proc/<pid>/task/. gdb then enters an infinite loop of retrying
+attach, even though it fails with the same error (-EPERM) every time.
 
-For signals and ptrace, we don't allow them to be treated as threads
-anyway.
+Skip over PF_IO_WORKER threads in the proc task setup. We can't just
+terminate the when we find a PF_IO_WORKER thread, as there's no real
+ordering here. It's perfectly feasible to have the first thread be an
+IO worker, and then a real thread after that. Hence just implement the
+skip.
 
 Reported-by: Stefan Metzmacher <metze@samba.org>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- include/linux/sched/signal.h | 9 ++++++++-
- kernel/sched/cputime.c       | 2 +-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ fs/proc/base.c | 22 ++++++++++++++--------
+ 1 file changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
-index 3f6a0fcaa10c..4f621e386abf 100644
---- a/include/linux/sched/signal.h
-+++ b/include/linux/sched/signal.h
-@@ -668,11 +668,18 @@ static inline bool thread_group_leader(struct task_struct *p)
- }
- 
- static inline
--bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
-+bool same_thread_group_account(struct task_struct *p1, struct task_struct *p2)
- {
- 	return p1->signal == p2->signal;
- }
- 
-+static inline
-+bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
-+{
-+	return same_thread_group_account(p1, p2) &&
-+			!((p1->flags | p2->flags) & PF_IO_WORKER);
-+}
-+
- static inline struct task_struct *next_thread(const struct task_struct *p)
- {
- 	return list_entry_rcu(p->thread_group.next,
-diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
-index 5f611658eeab..625110cacc2a 100644
---- a/kernel/sched/cputime.c
-+++ b/kernel/sched/cputime.c
-@@ -307,7 +307,7 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
- 	 * those pending times and rely only on values updated on tick or
- 	 * other scheduler action.
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 3851bfcdba56..abff2fe10bfa 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3723,7 +3723,7 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
  	 */
--	if (same_thread_group(current, tsk))
-+	if (same_thread_group_account(current, tsk))
- 		(void) task_sched_runtime(current);
- 
+ 	pos = task = task->group_leader;
+ 	do {
+-		if (!nr--)
++		if (same_thread_group(task, pos) && !nr--)
+ 			goto found;
+ 	} while_each_thread(task, pos);
+ fail:
+@@ -3744,16 +3744,22 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
+  */
+ static struct task_struct *next_tid(struct task_struct *start)
+ {
+-	struct task_struct *pos = NULL;
++	struct task_struct *tmp, *pos = NULL;
++
  	rcu_read_lock();
+-	if (pid_alive(start)) {
+-		pos = next_thread(start);
+-		if (thread_group_leader(pos))
+-			pos = NULL;
+-		else
+-			get_task_struct(pos);
++	if (!pid_alive(start))
++		goto no_thread;
++	list_for_each_entry_rcu(tmp, &start->thread_group, thread_group) {
++		if (!thread_group_leader(tmp) && same_thread_group(start, tmp)) {
++			get_task_struct(tmp);
++			pos = tmp;
++			break;
++		}
+ 	}
++no_thread:
+ 	rcu_read_unlock();
++	if (!pos)
++		return NULL;
+ 	put_task_struct(start);
+ 	return pos;
+ }
 -- 
 2.31.0
 
