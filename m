@@ -2,159 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA25A34884E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:22:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BB9348851
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229709AbhCYFVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 01:21:32 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:27696 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhCYFVR (ORCPT
+        id S229759AbhCYFXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 01:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhCYFXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 01:21:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616649677; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=WHPiw1feldgt4gfcCUTFJNoBPpp+MESLBL9s3gDzyOw=;
- b=emu4T4wr/fzEdAwWyzc0fRn/yF1SOdm+OgZ9PstRDEL0zWcVKGWqJT0zYc3NlsoTTlewUgDI
- R/5BDl2n3pxBpAMBh5OJgyp/UQwvFx6MxZgUoSSEPXuPPVHRe5ExbkUgj+GoI1u8ucCJwaYx
- G1KPzQtT/F2M9kUd+nnCFFDs74Q=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 605c1dbbc32ceb3a916dd6c6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 05:20:59
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 99879C433ED; Thu, 25 Mar 2021 05:20:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C02B9C433CA;
-        Thu, 25 Mar 2021 05:20:57 +0000 (UTC)
+        Thu, 25 Mar 2021 01:23:25 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BE5C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:23:24 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id i26so717843lfl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:23:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=0/X6qmOpTFkflHLwG5Y7CmNtgLZQ02wndvSmkfHAtWc=;
+        b=nQs3Zs8kV1VcOEKNyIViTbjetkSr1lw2JxMH52KYHw+l1Y3+WGDC1S5wWSUo8dA3ab
+         0klri2Ws6y4fpcgnaw2Th6POagxHv/3GUcBsylAa0iuuvHErvUFbIjkSEgKPkOwILfv7
+         q0bkyFclN+aXaZBNXmMMGk3IJ5wNoJNXJ/XdGabOJrIT2yunSRZ6AWtU2Q3eSYIDr40F
+         jJpa0D1TZ+CXx8h9QjmXn4+eUkWJEZ9DjVEkIcL2H4wGbDs7KcUQSEYDRmSOtyp1anQI
+         E0gmq12o6lKatJpWDeemgoJ27J3Ho5c/kyolvbstBy7g5AQVsSciZGAuEZY8pJzkHmXA
+         t3+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=0/X6qmOpTFkflHLwG5Y7CmNtgLZQ02wndvSmkfHAtWc=;
+        b=DyY9f8KeS11FTYrH991EP8rky12JnB1M9VkhoWllIby+CTd4jZKgED4Id/HdzTAEXk
+         xbFjPjetnkAkZuu+/cak1bsFbK2zuBCNHn5YrmHyOiRWvIp/6IQcc5gfseO4UdDybx70
+         j+MzPoRUCYni8Kfn3QcK7oTiuOuxxkDnzIgbLywXwDCDN0yHnHgmOqwyUFNcKpfc1IPS
+         QieMcP+TrmgWZDDJ2nBW/1IcO8Xe3uGDq/oiz18TESkO8B4W4wsgQ1VCXqyQfYQ0z6vC
+         4PPir5LECj7ra2rsxCWgbZlgoXnDHqM7l91Tz5SV9jXYCA9Skwfm7WzfCX14veeLhSsJ
+         pTQA==
+X-Gm-Message-State: AOAM5339ZEE79Q46/UJf0sNn+lvNp2t3r2xYkJcTGzNvnbQfIkwiC9L/
+        ybT91x+0YNO1T9w0Cz1GX1W9RAjoFV8vEBeghl4=
+X-Google-Smtp-Source: ABdhPJy4VOm8LLpaEcHMjgM6rs/cOwkLzkO+yQBt5HlLJv1ADI8Dp5qVoSU9TAuiE5taYOULyPWDXfEPC0Qft2MSLyo=
+X-Received: by 2002:a19:7d0:: with SMTP id 199mr4157630lfh.390.1616649803017;
+ Wed, 24 Mar 2021 22:23:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 25 Mar 2021 10:50:57 +0530
-From:   skakit@codeaurora.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add PMIC peripherals for SC7280
-In-Reply-To: <YFjVEjcx36J97hVW@google.com>
-References: <1615459229-27573-1-git-send-email-skakit@codeaurora.org>
- <YEvR1kDm32tE7mK3@google.com>
- <4dc784eb3c00a9805141148732476838@codeaurora.org>
- <YFjVEjcx36J97hVW@google.com>
-Message-ID: <e8af9692a9a54e44ad687bb8984fad7a@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Sender: messaneze@gmail.com
+Received: by 2002:ac2:4a8c:0:0:0:0:0 with HTTP; Wed, 24 Mar 2021 22:23:22
+ -0700 (PDT)
+From:   Kayla Manthey <sgt.kayla12@gmail.com>
+Date:   Thu, 25 Mar 2021 05:23:22 +0000
+X-Google-Sender-Auth: 38Ecw0PcI1aWrSMvQGfoVuZoAgk
+Message-ID: <CAJ0JpXcfp+sj9fw9qAQhkvoEpxMRp4mzpFnEtNhM6EzjGsU70g@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias,
-
-On 2021-03-22 23:04, Matthias Kaehlcke wrote:
-> Hi Satya,
-> 
-> On Mon, Mar 22, 2021 at 06:50:47PM +0530, skakit@codeaurora.org wrote:
->> Hi Matthias,
->> 
->> On 2021-03-13 02:10, Matthias Kaehlcke wrote:
->> > Hi Satya,
->> >
->> > On Thu, Mar 11, 2021 at 04:10:29PM +0530, satya priya wrote:
->> > > Add PM7325/PM8350C/PMK8350/PMR735A peripherals such as PON,
->> > > GPIOs, RTC and other PMIC infra modules for SC7280.
->> > >
->> > > Signed-off-by: satya priya <skakit@codeaurora.org>
->> > > ---
->> > > This patch depends on base DT and board files for SC7280 to merge
->> > > first
->> > > https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
->> > >
->> > >  arch/arm64/boot/dts/qcom/pm7325.dtsi  |  60 ++++++++++++++++++++
->> > >  arch/arm64/boot/dts/qcom/pm8350c.dtsi |  60 ++++++++++++++++++++
->> > >  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 104
->> > > ++++++++++++++++++++++++++++++++++
->> > >  arch/arm64/boot/dts/qcom/pmr735a.dtsi |  60 ++++++++++++++++++++
->> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi  |   8 +++
->> > >  5 files changed, 292 insertions(+)
->> > >  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
->> > >  create mode 100644 arch/arm64/boot/dts/qcom/pm8350c.dtsi
->> > >  create mode 100644 arch/arm64/boot/dts/qcom/pmk8350.dtsi
->> > >  create mode 100644 arch/arm64/boot/dts/qcom/pmr735a.dtsi
->> > >
->> > > diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi
->> > > b/arch/arm64/boot/dts/qcom/pm7325.dtsi
->> > > new file mode 100644
->> > > index 0000000..393b256
->> > > --- /dev/null
->> > > +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
->> > > @@ -0,0 +1,60 @@
->> >
->> > ...
->> >
->> > > +		polling-delay-passive = <100>;
->> > > +		polling-delay = <0>;
->> >
->> > Are you sure that no polling delay is needed? How does the thermal
->> > framework
->> > detect that the temperatures is >= the passive trip point and that it
->> > should
->> > start polling at 'polling-delay-passive' rate?
->> >
->> 
->> As the temp-alarm has interrupt support, whenever preconfigured 
->> threshold
->> violates it notifies thermal framework, so I think the polling delay 
->> is not
->> needed here.
-> 
-> From the documentation I found it's not clear to me how exactly these
-> interrupts work. Is a single interrupt triggered when the threshold is
-> violated or are there periodic (?) interrupts as long as the 
-> temperature
-> is above the stage 0 threshold?
-> 
-> Why is 'polling-delay-passive' passive needed if there are interrupts? 
-> Maybe
-> to detect that the zone should transition from passive to no cooling 
-> when the
-> temperature drops below the stage 0 threshold?
-
-The PMIC TEMP_ALARM peripheral maintains an internal over-temperature 
-stage: 0, 1, 2, or 3.  Stage 0 is normal operation below the lowest 
-(stage 1) threshold [usually 95 C].  When in stage 1, the temperature is 
-between the stage 1 and 2 thresholds [stage 2 threshold is usually 115 
-C].  Upon hitting the stage 3 threshold [usually 145 C], the PMIC 
-hardware will automatically shut down the system.
-
-The TEMP_ALARM IRQ fires on stage 0 -> 1 and 1 -> 0 transitions.  We 
-therefore set polling-delay = <0> since there is no need for software to 
-monitor the temperature periodically when operating in stage 0.  Upon 
-crossing the stage 1 threshold, SW receives the IRQ and the thermal 
-framework hits its first trip changing the thermal zone to passive mode. 
-  This then engages the 100 ms polling enabled via polling-delay-passive 
-= <100>.  If the temperate keeps climbing and passes the stage 2 
-threshold, the thermal framework hits the second trip (which is 
-critical) and it initiates an orderly shutdown.  If the temperature 
-drops below the stage 1 threshold, then the thermal framework exits 
-passive mode and stops polling.  This approach reduces/eliminates the 
-software overhead when not at an elevated temperature.
-
-Thanks,
-Satya Priya
+Hej min k=C3=A6re, jeg vil gerne vide, om du har min tidligere besked, tak.
