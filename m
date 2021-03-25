@@ -2,142 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8243034850D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:08:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EDD348511
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238964AbhCXXHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 19:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
+        id S238953AbhCXXJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233937AbhCXXHW (ORCPT
+        with ESMTP id S234723AbhCXXJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 19:07:22 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDF5C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:07:20 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id 7so36538qka.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:07:20 -0700 (PDT)
+        Wed, 24 Mar 2021 19:09:40 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD20FC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:09:39 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id q26so45390qkm.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:in-reply-to;
-        bh=unU9mIXis029RymGHdH7V1zjjWKUJpo7L/5r2jBdOHw=;
-        b=Aw54LjN39oNkovcR3V4TfpdwnEylMj/oVtzW/NXQdaYCxg3Z1Ec6YWTJf/U+L1LIjf
-         35ZXylU6/XHmVtfM6knNs2/JPE81nifQvV5LbfJPqpX/txjlJFIpkoNMXSvXNR45JeN4
-         scwViwmTM2ZaZcE4fK8t6bREcUD+COLNZBIQkktPUelFaQ64yTnrwNX3B7V0pGztfYQY
-         UHxVmGhKa4Vcmg8LjpzVCWi5T78/dOtGgBzxKDzrdcJHyIjkuM24Fcc8qbKHGFlWy6Qo
-         p3HTj2YIogqMHlwBlzT5cTsiAG43mqH3xFT3Ei4RnVgk6mk9UtlMkWge4kpsPogcioxs
-         IXiQ==
+        bh=cuOj5//9riQXrPV0AOArTf2D2hzQCDXJelqtkIQ3CS4=;
+        b=Dq8ykserwOD6vHjFVyUbjFISKppu2VCHryCiVU2plJN1BX9YcV3VmAIlIlTWIB2teT
+         my8Mu+S+XLFbrJdCp9Payj6xXq8NeBhlM18bm0ZcG3Lnx0vafuorUPU0BxXrV+D7dV1k
+         hnLmPTGZCf1kmFJYXaNbAeWfSyCSSTFjSmxxfLU1vTjbUbxcgItxDyOaoF/q2HGPYOYR
+         HBY03TZa4K7uh9dIx6ywRcwIV8yBEN3qGgkVn5lrLmxeU2EjCU1AnHfAgMg7bNKF6dLZ
+         67QjajFhiWzWEkE5xEFSF1LMSLQfIL1OcdiFf/htLO3+W4/VrUoTKO5Nzwfour4Q8y5G
+         JxMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=unU9mIXis029RymGHdH7V1zjjWKUJpo7L/5r2jBdOHw=;
-        b=iphcrZgXx1T7ZIunSVf1+aR44TyL2yVyV3jojqiIE2dgWhgOSdUpsVPFQbG5/kaL3y
-         WQjofxiWWgjDLB/1+6o3zTJMiXJ29FGKYUF6HdNB2Da6/H4ztzUi0Bs66/UIS6cF2KUC
-         PLPp1i82zGu9iaUomnKsFa6O7bHlJilkrVeedD+Kalbnu11nXWrHYTeE0xu7zo8lZgOl
-         KdDAthovyzK7nxL0lmlOumnno6ROpYnol1b+TMGFRW/g/6apCOhwaDQ0QYxqdyBDlBf7
-         Mv9yLJCBYB1qyhNVKVYrnWrgsMdWtDKtQ+S2kFy8f+Fgw2AocYGTI5fcQz+KFcU9gUgK
-         HDpg==
-X-Gm-Message-State: AOAM530shLpFvJo5NdrlyUZMumdSD5SrpwmzX5Z5fOGZ9ARdrFMNeYvu
-        3kPfoNJsM/fhF0XqqUulVTs9kA7EWeA2TQBM
-X-Google-Smtp-Source: ABdhPJy0XDX6xf+AUtITEYmLy/Evqhue1H4jw/H6OCKGGRWyxuZQkdH3VsEtvbV9hUJzchPL3P/mIA==
-X-Received: by 2002:a37:2749:: with SMTP id n70mr5477245qkn.105.1616627239714;
-        Wed, 24 Mar 2021 16:07:19 -0700 (PDT)
+        bh=cuOj5//9riQXrPV0AOArTf2D2hzQCDXJelqtkIQ3CS4=;
+        b=htrpJNr+HJJVj/3w9oOvTBxepmvD/NfT9eNQzbD7kkHJhIbDn4Jz6xtlSJSr2ULxGy
+         AW6l3Lw3WNr/oR1tMAzK9mSbYCzXZ/4daJ05QsPDrkMBlEaL7OGHZ6lRdkELpULxgIf2
+         2UuAdxPxKsDw0KCgpObWoXGg13BMiKONX5PicOkW4wqbShhFozPr0taV86RXWctf52RS
+         lKMXcqN2ChbNNXqtXhn4GGtzHrwtijZa0SoxuLhJbiyQmbVIflIzyHjRf2DOjqEN+Aie
+         rEneX75LkcOlKrWai+DaoX63ppjeFfOHe7+ebtHp7Qc2fB/to07xBsJcbsj77/u96ywI
+         +CRw==
+X-Gm-Message-State: AOAM533B/mIDbWuhlPFxJC7aorsxtT4z/fI/8XWWSX0Mi8Zb/BmZ3zzH
+        hY8JZk34Kavi/le5neFveLZ3ZgblUejGjbO7
+X-Google-Smtp-Source: ABdhPJwH5VYmja6bELjKhI250JOH0T6FUwOYJCtXm5RsZa+5LFw0byBP9fCRBofE+B7zkIZH+5z40A==
+X-Received: by 2002:a05:620a:14f:: with SMTP id e15mr5429307qkn.315.1616627379109;
+        Wed, 24 Mar 2021 16:09:39 -0700 (PDT)
 Received: from Slackware ([156.146.55.193])
-        by smtp.gmail.com with ESMTPSA id m13sm2793041qkm.103.2021.03.24.16.07.15
+        by smtp.gmail.com with ESMTPSA id z24sm2865453qkz.65.2021.03.24.16.09.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 16:07:18 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 10:07:08 +0530
+        Wed, 24 Mar 2021 16:09:38 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 10:09:28 +0530
 From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>, linux@armlinux.org.uk,
-        xen-devel@lists.xenproject.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jgross@suse.com, boris.ostrovsky@oracle.com
-Subject: Re: [PATCH] ARM: xen/mm.c: A mundane typo fix
-Message-ID: <YFwTdAnamANFsBPZ@Slackware>
+To:     David Rientjes <rientjes@google.com>
+Cc:     cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] mm/slub.c: Trivial typo fixes
+Message-ID: <YFwUAGytY+/9bqZn@Slackware>
 Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stefano Stabellini <sstabellini@kernel.org>, linux@armlinux.org.uk,
-        xen-devel@lists.xenproject.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jgross@suse.com, boris.ostrovsky@oracle.com
-References: <20210324133036.17665-1-unixbhaskar@gmail.com>
- <alpine.DEB.2.21.2103241154320.439@sstabellini-ThinkPad-T480s>
- <5e1b573a-6dc7-7f28-28ae-c509e6782fbf@infradead.org>
+        David Rientjes <rientjes@google.com>, cl@linux.com,
+        penberg@kernel.org, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+References: <20210324130619.16872-1-unixbhaskar@gmail.com>
+ <8a21e996-93f9-d22a-65b9-4bdafc43b36e@google.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TCrfE9v/6+6uxuTN"
+        protocol="application/pgp-signature"; boundary="Nb6rbk1WH+Fwfqhe"
 Content-Disposition: inline
-In-Reply-To: <5e1b573a-6dc7-7f28-28ae-c509e6782fbf@infradead.org>
+In-Reply-To: <8a21e996-93f9-d22a-65b9-4bdafc43b36e@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---TCrfE9v/6+6uxuTN
+--Nb6rbk1WH+Fwfqhe
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
 
-On 11:59 Wed 24 Mar 2021, Randy Dunlap wrote:
->On 3/24/21 11:55 AM, Stefano Stabellini wrote:
->> On Wed, 24 Mar 2021, Bhaskar Chowdhury wrote:
->>> s/acrros/across/
->>>
->>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->>
->> Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
->>
->>
+On 11:49 Wed 24 Mar 2021, David Rientjes wrote:
+>On Wed, 24 Mar 2021, Bhaskar Chowdhury wrote:
 >
->Hi,
->It seems to me like some of those "page" should be "pages".
+>> diff --git a/mm/slub.c b/mm/slub.c
+>> index 3021ce9bf1b3..cd3c7be33f69 100644
+>> --- a/mm/slub.c
+>> +++ b/mm/slub.c
+>> @@ -3,7 +3,7 @@
+>>   * SLUB: A slab allocator that limits cache line use instead of queuing
+>>   * objects in per cpu and per node lists.
+>>   *
+>> - * The allocator synchronizes using per slab locks or atomic operatios
+>> + * The allocator synchronizes using per slab locks or atomic operation
 >
->>> ---
->>>  arch/arm/xen/mm.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
->>> index 467fa225c3d0..be7c942c74bf 100644
->>> --- a/arch/arm/xen/mm.c
->>> +++ b/arch/arm/xen/mm.c
->>> @@ -105,7 +105,7 @@ bool xen_arch_need_swiotlb(struct device *dev,
->>>  	 *	- The Linux page refers to foreign memory
->>>  	 *	- The device doesn't support coherent DMA request
->>>  	 *
->>> -	 * The Linux page may be spanned acrros multiple Xen page, although>> +	 * The Linux page may be spanned across multiple Xen page, although
->
->	                                                     pages,
->
->>>  	 * it's not possible to have a mix of local and foreign Xen page.
->
->	                                                            pages.
->
->>>  	 * Furthermore, range_straddles_page_boundary is already checking
->>>  	 * if buffer is physically contiguous in the host RAM.
->>> --
->
-Thank you....I have sent a V2 now.
->
->
->~Randy
->
+>operations
 
---TCrfE9v/6+6uxuTN
+Thanks..V2 on the way..
+
+--Nb6rbk1WH+Fwfqhe
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBcE20ACgkQsjqdtxFL
-KRUvIggA0Bu+io2ijz60vfhZz7xZNVSid1OoUl1Om/MMq2kve/J9NbkNzt7dGSaO
-Nb8vdiEZT77497MkjBJ8U/pxck9POJdv7RJ4S5s949pPcbuP6PsGhlzk35nN7NqM
-vZ42o9L0cEtLrIrAxWtl3Rscy6x7W90BHhDMhix174CXg5S8ciQ+MCPdo3EyBwuN
-crlJJJZ6VbQiaxOkjGnxyRobSz+WpFCJa/XPioII8xf3p854qdgbVE0GLRaC5f9y
-koN0TLULWOVyX8tm1LOkP8ACv6wIQehPlFCkxRLk8C67CUdmQdx+Mz/u6hQK54K2
-WjwbqPHASv5QkWa+p9PHbF+GjV7yqg==
-=PKSI
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBcFAAACgkQsjqdtxFL
+KRUjyQgAizd8ZubhIzA0IV+JSW9zwO/chPRXez6PgaWGaBCg69GlXKw9wHSnBZzJ
+7eU3EtLkog4V+6tBuMfngjSB1cnhCtA+urVIL0lZIdyggky8h06pEdjK9Auxr0Iq
+LSQztArHcKBNp07yVSb2MT8thHeIRBhFgk4//aZLAgmOWpM/3+3qP4coyzPDnywY
+gsm6yTYC/drhXV5gj3xbOz0vuuoZhZ+NjUpK6EJtcSEo3BD4ENMw8IfjAHArwPSu
+M2L87JgZlyvlZHwTyoR5UtAH02g5dKB/UrwLxF3rPgqkWIGNMFkmmy6uDt2JL7Yc
+oxJ+mPLZ4ttYp2IOEpfaRdcacFM6NA==
+=rFhS
 -----END PGP SIGNATURE-----
 
---TCrfE9v/6+6uxuTN--
+--Nb6rbk1WH+Fwfqhe--
