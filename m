@@ -2,155 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD79349516
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5C0349521
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhCYPOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:14:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230241AbhCYPOQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:14:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616685255;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C00CdzusvAGi2U6TMJ7rYAJxzxg6IJ+1BL3U6X7eoPk=;
-        b=Gf4vgh265euKzU6+hZAuCjgGGN9XG4c4xi0LPjyW9a6/1rTdvc+u8QJCSiOAz+yry2/p/V
-        SAnjAiiW7KCzUBi6OetDugWBmo4Bx7xAtqyOuZMRKDF3wIXxVjXfl2JrIURKmTO8vjeLeI
-        uqYxqB2Rqhv5CopRzZmRre7/uV8befQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-PUiCKOryMKqns6LEMcbHYA-1; Thu, 25 Mar 2021 11:14:13 -0400
-X-MC-Unique: PUiCKOryMKqns6LEMcbHYA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 80A451009E29;
-        Thu, 25 Mar 2021 15:14:11 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3EA0D5C3DF;
-        Thu, 25 Mar 2021 15:14:08 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 11:14:07 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Cc:     Christoph Hellwig <hch@infradead.org>, agk@redhat.com,
-        dm-devel@redhat.com, "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linfeilong <linfeilong@huawei.com>,
-        lixiaokeng <lixiaokeng@huawei.com>,
-        "wubo (T)" <wubo40@huawei.com>
-Subject: Re: md/dm-mpath: check whether all pgpaths have same uuid in
- multipath_ctr()
-Message-ID: <20210325151407.GA17059@redhat.com>
-References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
- <20210322081155.GE1946905@infradead.org>
- <20210322142207.GB30698@redhat.com>
- <cd71d0fa-31d1-5cd8-74a1-8b124724b3b1@huawei.com>
+        id S231284AbhCYPOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:14:51 -0400
+Received: from mga03.intel.com ([134.134.136.65]:13685 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230228AbhCYPOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:14:47 -0400
+IronPort-SDR: i12DxxhFiulNY1iTLgEep5JOaQKOWaoaajaXpmjfWrDdNWhcD23Oscmu8flz7sZBdnaGrFgshh
+ Q07ls9dLFtVg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="190980311"
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="190980311"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 08:14:46 -0700
+IronPort-SDR: Fl8C4t/1qRdCaqrCapvO4wN/tDVXCMZMIEecbtX8pcjgHkY8Kb8/Q3hDvMidrnQqsrC+k7U+Vh
+ PQ1cTbtp+mCQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="514675412"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 25 Mar 2021 08:14:42 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 25 Mar 2021 17:14:42 +0200
+Date:   Thu, 25 Mar 2021 17:14:42 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Benson Leung <bleung@google.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] usb: Iterator for ports
+Message-ID: <YFyo4vM91xdtzacE@kuha.fi.intel.com>
+References: <20210325122926.58392-1-heikki.krogerus@linux.intel.com>
+ <20210325122926.58392-2-heikki.krogerus@linux.intel.com>
+ <20210325144109.GB785961@rowland.harvard.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cd71d0fa-31d1-5cd8-74a1-8b124724b3b1@huawei.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210325144109.GB785961@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24 2021 at  9:21pm -0400,
-Zhiqiang Liu <liuzhiqiang26@huawei.com> wrote:
-
-> 
-> 
-> On 2021/3/22 22:22, Mike Snitzer wrote:
-> > On Mon, Mar 22 2021 at  4:11am -0400,
-> > Christoph Hellwig <hch@infradead.org> wrote:
+On Thu, Mar 25, 2021 at 10:41:09AM -0400, Alan Stern wrote:
+> On Thu, Mar 25, 2021 at 03:29:21PM +0300, Heikki Krogerus wrote:
+> > Introducing usb_for_each_port(). It works the same way as
+> > usb_for_each_dev(), but instead of going through every USB
+> > device in the system, it walks through the USB ports in the
+> > system.
 > > 
-> >> On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
-> >>> From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> >>>
-> >>> When we make IO stress test on multipath device, there will
-> >>> be a metadata err because of wrong path. In the test, we
-> >>> concurrent execute 'iscsi device login|logout' and
-> >>> 'multipath -r' command with IO stress on multipath device.
-> >>> In some case, systemd-udevd may have not time to process
-> >>> uevents of iscsi device logout|login, and then 'multipath -r'
-> >>> command triggers multipathd daemon calls ioctl to load table
-> >>> with incorrect old device info from systemd-udevd.
-> >>> Then, one iscsi path may be incorrectly attached to another
-> >>> multipath which has different uuid. Finally, the metadata err
-> >>> occurs when umounting filesystem to down write metadata on
-> >>> the iscsi device which is actually not owned by the multipath
-> >>> device.
-> >>>
-> >>> So we need to check whether all pgpaths of one multipath have
-> >>> the same uuid, if not, we should throw a error.
-> >>>
-> >>> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> >>> Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
-> >>> Signed-off-by: linfeilong <linfeilong@huawei.com>
-> >>> Signed-off-by: Wubo <wubo40@huawei.com>
-> >>> ---
-> >>>  drivers/md/dm-mpath.c   | 52 +++++++++++++++++++++++++++++++++++++++++
-> >>>  drivers/scsi/scsi_lib.c |  1 +
-> >>>  2 files changed, 53 insertions(+)
-> >>>
-> >>> diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
-> >>> index bced42f082b0..f0b995784b53 100644
-> >>> --- a/drivers/md/dm-mpath.c
-> >>> +++ b/drivers/md/dm-mpath.c
-> >>> @@ -24,6 +24,7 @@
-> >>>  #include <linux/workqueue.h>
-> >>>  #include <linux/delay.h>
-> >>>  #include <scsi/scsi_dh.h>
-> >>> +#include <linux/dm-ioctl.h>
-> >>>  #include <linux/atomic.h>
-> >>>  #include <linux/blk-mq.h>
-> >>>
-> >>> @@ -1169,6 +1170,45 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
-> >>>  	return r;
-> >>>  }
-> >>>
-> >>> +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
-> >>> +#define MPATH_UUID_PREFIX_LEN 7
-> >>> +static int check_pg_uuid(struct priority_group *pg, char *md_uuid)
-> >>> +{
-> >>> +	char pgpath_uuid[DM_UUID_LEN] = {0};
-> >>> +	struct request_queue *q;
-> >>> +	struct pgpath *pgpath;
-> >>> +	struct scsi_device *sdev;
-> >>> +	ssize_t count;
-> >>> +	int r = 0;
-> >>> +
-> >>> +	list_for_each_entry(pgpath, &pg->pgpaths, list) {
-> >>> +		q = bdev_get_queue(pgpath->path.dev->bdev);
-> >>> +		sdev = scsi_device_from_queue(q);
-> >>
-> >> Common dm-multipath code should never poke into scsi internals.  This
-> >> is something for the device handler to check.  It probably also won't
-> >> work for all older devices.
-> > 
-> > Definitely.
-> > 
-> > But that aside, userspace (multipathd) _should_ be able to do extra
-> > validation, _before_ pushing down a new table to the kernel, rather than
-> > forcing the kernel to do it.
+> > Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 > 
-> As your said, it is better to do extra validation in userspace (multipathd).
-> However, in some cases, the userspace cannot see the real-time present devices
-> info as Martin (committer of multipath-tools) said.
-> In addition, the kernel can see right device info in the table at any time,
-> so the uuid check in kernel can ensure one multipath is composed with paths mapped to
-> the same device.
+> This has a couple of nasty errors.
 > 
-> Considering the severity of the wrong path in multipath, I think it worths more
-> checking.
+> > ---
+> >  drivers/usb/core/usb.c | 43 ++++++++++++++++++++++++++++++++++++++++++
+> >  include/linux/usb.h    |  1 +
+> >  2 files changed, 44 insertions(+)
+> > 
+> > diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
+> > index 2ce3667ec6fae..6d49db9a1b208 100644
+> > --- a/drivers/usb/core/usb.c
+> > +++ b/drivers/usb/core/usb.c
+> > @@ -398,6 +398,49 @@ int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *))
+> >  }
+> >  EXPORT_SYMBOL_GPL(usb_for_each_dev);
+> >  
+> > +struct each_hub_arg {
+> > +	void *data;
+> > +	int (*fn)(struct device *, void *);
+> > +};
+> > +
+> > +static int __each_hub(struct device *dev, void *data)
+> > +{
+> > +	struct each_hub_arg *arg = (struct each_hub_arg *)data;
+> > +	struct usb_device *hdev = to_usb_device(dev);
+> 
+> to_usb_device() won't work properly if the struct device isn't embedded 
+> in an actual usb_device structure.  And that will happen, since the USB 
+> bus type holds usb_interface structures as well as usb_devices.
 
-As already said: this should be fixable in userspace.  Please work with
-multipath-tools developers to address this.
+OK, so I need to filter them out.
 
-Mike
+> In fact, you should use usb_for_each_dev here; it already does what you 
+> want.
 
+Unfortunately I can't use usb_for_each_dev here, because it deals with
+struct usb_device while I need to deal with struct device in the
+callback.
+
+> > +	struct usb_hub *hub;
+> > +	int ret;
+> > +	int i;
+> > +
+> > +	hub = usb_hub_to_struct_hub(hdev);
+> > +	if (!hub)
+> > +		return 0;
+> > +
+> > +	for (i = 0; i < hdev->maxchild; i++) {
+> > +		ret = arg->fn(&hub->ports[i]->dev, arg->data);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> 
+> Don't you need some sort of locking or refcounting here?  What would 
+> happen if this hub got removed while the routine was running?
+
+I'll use a lock then.
+
+thanks,
+
+-- 
+heikki
