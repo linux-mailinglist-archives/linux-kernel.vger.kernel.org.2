@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5460348E6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEC3348E73
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbhCYKzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:55:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41532 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230325AbhCYKzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:55:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616669706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aZbrWvjcrrKg8+bBJwUTS8hNI4fbjg0t3/5rrIErIXY=;
-        b=R7rle/gUrBDB+hT/r8WlhU7R33LIYdabqGJM9rgEGy58PSKG6+VG+r9rGraLzv6rA6zwb8
-        hD21UcexlOJ7daH4V+Zf9jhR72/Mb6ljS/mdnR24HaPWbKtMoOFGpaWYlGcbWox6q2Yadn
-        j4Ocqkrg+re5ztKBn6c/SMuMySHpDXA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 99F11AC6A;
-        Thu, 25 Mar 2021 10:55:06 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 11:55:03 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 5/8] hugetlb: call update_and_free_page without
- hugetlb_lock
-Message-ID: <YFxsB4YLXCobtGGv@dhcp22.suse.cz>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
- <20210325002835.216118-6-mike.kravetz@oracle.com>
+        id S230225AbhCYK4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:56:38 -0400
+Received: from mail-eopbgr700085.outbound.protection.outlook.com ([40.107.70.85]:45933
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230299AbhCYK4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:56:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YOQ6BOFnUPF5a66vnjFvoPzjAP17HxISo7Jq4+3qbvDg5/nEXV1BfPZBLQOtA6cMtuPWwe5y7JFQ4PDMBQAHO+Yy1NKF3DvMU7NQQPGSOjV81EpdTfGZgnkOazXgVjb7Zk/q9PZVBOX0QYpwOmGCw7XlafDE5m3rwhrfEuBr0dhOGHpCCeJGNcPOPprBv0e561SWxtTEqoFlEes0wdpE/YtyGzZbIsNoaavDHy8YC75rZEF6DjScZI6hfPu9Kdrc1XiYSkaK3VS0F2MNMq3/3V+l6S9wERYAxkRgWAsN79YmpJPvIG0B82Ep7vN5XtZkCVKF5cfj7bRkYK/sOoNiJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LedYCvuORPOFHq+8WYlKzMtGus1zR1pWbGhueK7Uagg=;
+ b=YUa4NUeRu7xU1aec6ZmLnD69koIGntLZCMr++rspffB55iuSrN6blKSFhhTjHr8FbXJY5PlQH1To55pLuTA+7+NoVq7bu2ldhymceCp/3Le9tMAfup/0uQJDUTTzM8HxTD8L5ZN0i7n6r/ndGeRE+b8HTmvFNHqy4ObgsTFn/oMqYiL1S8MrAXLdPlnsrQE940ocQNwPkt6OMNcksCfBhIHtnbsE32Iwcun+QOHeGFRjZPxS0XgxfQA6vFKoolCHo7V81RxDrb76gejns7yelOVYGd7lPySliX2rnK6ifSJLGOT4k8UgqBiftSfWItmTd58SGnXsu90A6aGEqkxM3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LedYCvuORPOFHq+8WYlKzMtGus1zR1pWbGhueK7Uagg=;
+ b=bUHHvUwrDPJtNVbg8MhOiV760ZaEL4wasossClJ+I3qFjnBMC/bJkOlya+pr+eY2VQuIiLrrmQqMBEkNOeMoQEGMC77jbs1MtUPLu7IIAgZKcbYhYKFABst8D6iV2iX3vWAjNxOud00uoZV05f/EegenWDfYpWGquy50AOT9Qxd5pcczFBlEsnJLv+xKJwruAdvY195E47TX1SgTyhypKn/J0kqxWVsQgW4O8eCA6JVKT6yJRYVuQFWWwi1Td84PaTv+bHHChh/L+t4Wuehj+6cXjLXBFXtvtnKu0EleyNjTim8s1oxMwuAvEq/XnBYNcjGI4EaC1lsQKbU98PCtbA==
+Received: from BN9PR03CA0303.namprd03.prod.outlook.com (2603:10b6:408:112::8)
+ by CH2PR12MB5018.namprd12.prod.outlook.com (2603:10b6:610:65::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Thu, 25 Mar
+ 2021 10:56:17 +0000
+Received: from BN8NAM11FT005.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:112:cafe::7) by BN9PR03CA0303.outlook.office365.com
+ (2603:10b6:408:112::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.28 via Frontend
+ Transport; Thu, 25 Mar 2021 10:56:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT005.mail.protection.outlook.com (10.13.176.69) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.3955.18 via Frontend Transport; Thu, 25 Mar 2021 10:56:17 +0000
+Received: from [172.27.0.10] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Mar
+ 2021 10:56:15 +0000
+Subject: Re: [PATCH v2] infiniband: Fix a use after free in
+ isert_connect_request
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, <sagi@grimberg.me>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210322161325.7491-1-lyl2019@mail.ustc.edu.cn>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <413a083c-83b3-fcc8-f5e2-d9721874fad5@nvidia.com>
+Date:   Thu, 25 Mar 2021 12:56:12 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325002835.216118-6-mike.kravetz@oracle.com>
+In-Reply-To: <20210322161325.7491-1-lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3c96affd-8ce5-4d60-7839-08d8ef7c9e05
+X-MS-TrafficTypeDiagnostic: CH2PR12MB5018:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB50181F14BE77B913B0FF393EDE629@CH2PR12MB5018.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KMAbCAB9qS2DPpkVzNR2CSs7innOdBpZJhBc5KyRywUvbb528M304s2CyNdbGJqc6qcjQ0U24Bs9DU85BdI0eWxrVtupsT4b8VAD3yp6MGtYjorixywgKuaIk+Fn2UhfLTb3WnQy5p3PMGU23Nvf3QrqkdyY+QvOTeG8qAGLdnBNvAfDLE8G21p3gIlgVNLSXNpvSIXqU4W/GK8ZRnDOslU00qKekytoWAsI0pTN53mtFtGj1R1qtqTvCHmmEWkDKzeRTWnRqjNgHqRxb2LgvYspra3eEvmdFHRV19toPi2tP+YduPNMii9SGGdOMSd19/Kfj4wZUkVWVkZakoZKT18R6OJmVsdpb8iOa/L7PYkgGtTDr5SY5Snd3H2otvJ3Qjt8wxRb9dKrmBSRG7g9uyMb9/wPo6WN3ZoaNKR9GJ/ldCMa/GO96E+znvawwqgFcF/EBa3dRVmyrGjPfX6VRcPXt7I4Che+tnNMUyCBImCulRPBnVhrFAWQyCEEEEW/ufc+VRKOi0uPqridQ7wmXvkTU5dQTG1ZcC2tPdVzn1hK08Z+uOH1Pes2sA7L1fZRZa9O5g/H08m0ikCeW2qbpHR8OmAmDP4SwQd7jtYTaIl9xg16vSKhWBO4SxtjcHqmLEm7XaJ2hF7bVFtBLJyOURt28XO+NgzEGKkoQ6Xq6LyIsT3EyfSBCxZ4ZIYT5yQ5
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(376002)(36840700001)(46966006)(31686004)(4744005)(5660300002)(2616005)(2906002)(83380400001)(16526019)(8676002)(82740400003)(478600001)(82310400003)(53546011)(70586007)(70206006)(8936002)(7636003)(36756003)(426003)(316002)(356005)(186003)(47076005)(86362001)(110136005)(36906005)(54906003)(31696002)(26005)(336012)(4326008)(6666004)(36860700001)(16576012)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 10:56:17.6398
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c96affd-8ce5-4d60-7839-08d8ef7c9e05
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT005.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB5018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24-03-21 17:28:32, Mike Kravetz wrote:
-> With the introduction of remove_hugetlb_page(), there is no need for
-> update_and_free_page to hold the hugetlb lock.  Change all callers to
-> drop the lock before calling.
-> 
-> With additional code modifications, this will allow loops which decrease
-> the huge page pool to drop the hugetlb_lock with each page to reduce
-> long hold times.
-> 
-> The ugly unlock/lock cycle in free_pool_huge_page will be removed in
-> a subsequent patch which restructures free_pool_huge_page.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+On 3/22/2021 6:13 PM, Lv Yunlong wrote:
+> The device is got by isert_device_get() with refcount is 1,
+> and is assigned to isert_conn by isert_conn->device = device.
+> When isert_create_qp() failed, device will be freed with
+> isert_device_put().
+>
+> Later, the device is used in isert_free_login_buf(isert_conn)
+> by the isert_conn->device->ib_device statement. This patch
+> free the device in the correct order.
+>
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>   drivers/infiniband/ulp/isert/ib_isert.c | 16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
 
-One minor thing below
+looks good,
 
-[...]
-> @@ -2563,22 +2572,37 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
->  						nodemask_t *nodes_allowed)
->  {
->  	int i;
-> +	struct list_head page_list;
-> +	struct page *page, *next;
->  
->  	if (hstate_is_gigantic(h))
->  		return;
->  
-> +	/*
-> +	 * Collect pages to be freed on a list, and free after dropping lock
-> +	 */
-> +	INIT_LIST_HEAD(&page_list);
->  	for_each_node_mask(i, *nodes_allowed) {
-> -		struct page *page, *next;
->  		struct list_head *freel = &h->hugepage_freelists[i];
->  		list_for_each_entry_safe(page, next, freel, lru) {
->  			if (count >= h->nr_huge_pages)
-> -				return;
-> +				goto out;
->  			if (PageHighMem(page))
->  				continue;
->  			remove_hugetlb_page(h, page, false);
-> -			update_and_free_page(h, page);
-> +			INIT_LIST_HEAD(&page->lru);
+Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-What is the point of rhis INIT_LIST_HEAD? Page has been removed from the
-list by remove_hugetlb_page so it can be added to a new one without any
-reinitialization.
 
-> +			list_add(&page->lru, &page_list);
->  		}
->  	}
-> +
-> +out:
-> +	spin_unlock(&hugetlb_lock);
-> +	list_for_each_entry_safe(page, next, &page_list, lru) {
-> +		list_del(&page->lru);
-> +		update_and_free_page(h, page);
-> +		cond_resched();
-> +	}
-> +	spin_lock(&hugetlb_lock);
->  }
->  #else
->  static inline void try_to_free_low(struct hstate *h, unsigned long count,
-> -- 
-> 2.30.2
-> 
-
--- 
-Michal Hocko
-SUSE Labs
