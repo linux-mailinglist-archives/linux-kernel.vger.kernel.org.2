@@ -2,83 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FA9349440
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E0B349441
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhCYOhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52494 "EHLO
+        id S231289AbhCYOhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:37:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhCYOhC (ORCPT
+        with ESMTP id S230517AbhCYOhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:37:02 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464CCC06174A;
-        Thu, 25 Mar 2021 07:37:02 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id i81so2330227oif.6;
-        Thu, 25 Mar 2021 07:37:02 -0700 (PDT)
+        Thu, 25 Mar 2021 10:37:03 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499DCC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:37:03 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id k25so2138881iob.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:37:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5HYasr7IY/8XwHx1NlRobjOS/dHG1ecTWNThYkY5xdo=;
-        b=RchW1oa4U2bmklzvmAePB3oIvCNx+VRLxY3aTJZ6Av5cva9DwsX0ZWS1//ivB+g2LG
-         /qi3D2OpGyVtbv3hI0N31XieorACdAuqxLj779OHBAhMHcaf+Ln5I13glWxw5c0+Wm6s
-         oB4uLRVD79z6pFk9LQhPgiXNjy2dU8msfT8rlENbhPfivi89LKPZJqtkWXiL8KkIZu59
-         TsjfRf4Wf8bqQMVOKPLheJC1zuiYat9grDwor+C2DJYRv18m6w6LhnlsfToyaJUjicvU
-         XKiRNK2tu9q+SC7sosOxiFFdCqTiDjLNHGtXEvcpSiWXmRaHuHpMnSh4bAxltpEexz4G
-         eGSg==
+        d=cosmicpenguin-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G3cOV8DtVL9po2vtJRX7EdJuczfbIOHklG7/OvU7p9I=;
+        b=lf1dMrmMF5QvhZ1+B7SmvRDk7M8p1OD8InFdZqiFJNjSdBajqnrICrLJtsoRnsn8wy
+         Rkdcl6L0XvIHo580Q9zUvZu6EnKKy+Dfhka4ZNUDwoxLo0MWvw36tiGCFkLZyOZuAU6k
+         gj8aG0KJkkmWnrwekqkTaHAQEqIUgkgaVRXqo5gJQGn6Vm2lHnmDMkHdI5k2c+vlLMiF
+         dps7xn+vmbb5f2/qOGZx3tPmmTuBoipgjmEUdws5MnIQ+5t7qpIJxlBjRlJG79lZMDlD
+         nSQPUYTanpxjvhN9AUT6iHLVTk08z+qVk7M21WQvxQcLMja3kS25PQCU2gEBPWvjkRb7
+         B5oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5HYasr7IY/8XwHx1NlRobjOS/dHG1ecTWNThYkY5xdo=;
-        b=t7FPlekqHXLCRhDFG8+E8E5qV9OV+yMZw7o0EYz41mR/cvag1jUEboljaDMPVII6eB
-         7odLVUp7+DY7/RMQoIR0eSfZa9jIoNvbljBQsfT1Mm1+QwhxCrIxppu34QBhcZgNQ19l
-         0BGyq3A2qKND12M9YT9FU7Q+17pmln/oZbeZoGKcItv1Ajv0wX6F2EUmd3sHuvUva/hK
-         2P2TQYXw2M0UtMX9xnhBcOMyzMnKjDlKehiaTBGxGbXl15GMWbxqUpaNj2ET140O6QUc
-         T9C4m120VDUVivmQb2MpNFnRs9V8XAza/mIe8XTjfLDICBItJ6QKmT/sZnqo+7fCpmGg
-         zl/w==
-X-Gm-Message-State: AOAM533538x18vnrDVL5b8tSOxmjZYoFmf4Sujf4EZAXHXn71SZO/IP9
-        VTOebjjZNMqHeUq2btC9BO9OKd+cQ6w=
-X-Google-Smtp-Source: ABdhPJwXnulTzZPmpN1ewdsD543fhZiWwBETUe2aYs9K4NTvlq1n5iV+JyBmgMXXKolWxezolAWPHw==
-X-Received: by 2002:a05:6808:3d9:: with SMTP id o25mr6456812oie.4.1616683021762;
+        bh=G3cOV8DtVL9po2vtJRX7EdJuczfbIOHklG7/OvU7p9I=;
+        b=LXAgSPpGplRWwk1ICX3+FEd8/Px2/WXvEpbntJczHTloShSn+rZxFy7enNDsF41Vt2
+         GNkgZPYsX6Hdgfs6gPKfBFjGKCfLgo0glXRbJHDNBZ1vmd2s/G/frSriQ5kl49K/gYwa
+         Nemo+I30qjDb9k2gRNmCghJzctuBJJ6z/1HH9drpk34wdPTZ9SutqdqQpWeU92sCtzlD
+         VhrzVXrGVL+v9Qsg2ZwnvPsyasXKViheM8Lo3vZW9wUHONLEJMJDl9/dEnIRPT3nG5W9
+         dRckPC5ww+kfWBT75UEyaOdy6logMvT9Uy4SnzCoRM7+HI69W7iQd+ZCAj2RV+8f7hfd
+         hBpQ==
+X-Gm-Message-State: AOAM533+TipjrusS0m1oInRyWXe1RKtlUlWdwbaJdepZMgtZu6e+Vawo
+        h+KcvBudcxCyT/FXOI89fIv5hv31NMGUSrPO
+X-Google-Smtp-Source: ABdhPJyN8CG8Dj/tyOUZgYG6FC1ZRwDa9neTBVcT/5MlZ8wzGsR93KrVS08fPYwlV/8lr9GyMLGmEQ==
+X-Received: by 2002:a02:ce8d:: with SMTP id y13mr7737038jaq.29.1616683022413;
+        Thu, 25 Mar 2021 07:37:02 -0700 (PDT)
+Received: from jordan-laptop.lan (c-71-237-100-236.hsd1.co.comcast.net. [71.237.100.236])
+        by smtp.gmail.com with ESMTPSA id g8sm2501023ile.44.2021.03.25.07.37.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 25 Mar 2021 07:37:01 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.56])
-        by smtp.googlemail.com with ESMTPSA id i25sm1403371otf.37.2021.03.25.07.37.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 07:37:01 -0700 (PDT)
-Subject: Re: [PATCH 2/2] net: ipv4: route.c: Remove unnecessary if()
-To:     Yejune Deng <yejune.deng@gmail.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yejune@gmail.com
-References: <20210324031057.17416-1-yejune.deng@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <53746589-33fa-e5bd-037e-952f9c2d9cc3@gmail.com>
-Date:   Thu, 25 Mar 2021 08:36:59 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+From:   Jordan Crouse <jordan@cosmicpenguin.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        freedreno@lists.freedesktop.org
+Subject: [PATCH] mailmap: Update email address for Jordan Crouse
+Date:   Thu, 25 Mar 2021 08:37:00 -0600
+Message-Id: <20210325143700.1490518-1-jordan@cosmicpenguin.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210324031057.17416-1-yejune.deng@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/23/21 9:10 PM, Yejune Deng wrote:
-> negative_advice handler is only called when dst is non-NULL hence the
-> 'if (rt)' check can be removed. 'if' and 'else if' can be merged together.
-> And use container_of() instead of (struct rtable *).
-> 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  net/ipv4/route.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
+jcrouse at codeaurora.org ha started bouncing. Redirect to a
+more permanent address.
 
+Signed-off-by: Jordan Crouse <jordan@cosmicpenguin.net>
+---
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+ .mailmap | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/.mailmap b/.mailmap
+index 85b93cdefc87..8c489cb1d1ce 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -165,6 +165,7 @@ Johan Hovold <johan@kernel.org> <jhovold@gmail.com>
+ Johan Hovold <johan@kernel.org> <johan@hovoldconsulting.com>
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+ John Stultz <johnstul@us.ibm.com>
++Jordan Crouse <jordan@cosmicpenguin.net> <jcrouse@codeaurora.org>
+ <josh@joshtriplett.org> <josh@freedesktop.org>
+ <josh@joshtriplett.org> <josh@kernel.org>
+ <josh@joshtriplett.org> <josht@linux.vnet.ibm.com>
+-- 
+2.25.1
+
