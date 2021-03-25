@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18083349436
+	by mail.lfdr.de (Postfix) with ESMTP id 63EF0349437
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCYOee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbhCYOeW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:34:22 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB7DC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:34:21 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id l13so1756365qtu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EBYoeSyDCelHfJ08uskYOli02Uf/rlFwmOTlzuC7hgI=;
-        b=N+fdDxgVQQYMaT/p6QFW+V+ir33fgy01dD+fxi2S7KZNbrlN0AKe9IlL/J1vJWeJnz
-         hDQZQOIunjFFjO8/Jo+aGOaXBeoSrUgkbdCqiGfXW7noLO5+gnskrV0qxQbbRE40LJkk
-         ziNgqfdxF7bKl35iD7YXDKSgmva/aIGNM+q1myQy5V9FMBTxaL17ESoplXA7WfzuR5pU
-         TnaNXA2Ff4Gn7s8apv0fssxRfjCBVhYRqE21LX+Ef/XjQlA11SY/LFfjgVU+1vZ/eHZ9
-         /fgdB/rMEifTJ16pYmqArjc3KG7IFBW7u6A7EEZEn8cGeucy5yC0ULc0S1+papQW7uC0
-         yGUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EBYoeSyDCelHfJ08uskYOli02Uf/rlFwmOTlzuC7hgI=;
-        b=FE6W1fvodFCPpOxzyVpccnGrRJM3pdYXwqq2jSxLCo0QUyHt0524IXUTLbfOiOOtOm
-         uVBRDQnbNAP/u2WoSotGPBifQwDFK/pbUBhZdK+Zf52Pi2pQ5/yTAF8k7mexuJaLGETi
-         kvXUnst6S/fteCc5PlurZAdIDf9e7O/ikC4/Ihby5LHK7dr4Q1P/gRivKInm/PC+rM5i
-         WIKRrHc2NzSv6Z0ujJGPJctl7ooaSHWiEC9Na8Hy7ynlDwMcfU2jugffgqrP1InwRkd+
-         ggIsG9ZeqpJhtS+bmOuXUfRn3erVfadkASRvjP5ldR874iWbsKQjLxTkUamqy+RSeYIV
-         50Bw==
-X-Gm-Message-State: AOAM53323RUUpxkScAvdLCfB/ySaiHVmP1mDp8N45ZArQOxUlaGz00Cz
-        K0qXH5UqX9GexPy1FX5A9lw/9A==
-X-Google-Smtp-Source: ABdhPJyvtuKX2zV8mCdrg2NYsULLUlLCccMHLxDM/TG/XquL4LiIlTucJUYDBbZjw339FUqKik+Tow==
-X-Received: by 2002:ac8:4412:: with SMTP id j18mr8003677qtn.387.1616682860918;
-        Thu, 25 Mar 2021 07:34:20 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id 73sm4206300qkk.131.2021.03.25.07.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:34:20 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lPR3z-002fmd-5a; Thu, 25 Mar 2021 11:34:19 -0300
-Date:   Thu, 25 Mar 2021 11:34:19 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Joao Martins <joao.m.martins@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Shiyang Ruan <ruansy.fnst@fujitsu.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        id S231426AbhCYOeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:34:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45056 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231542AbhCYOea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:34:30 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616682869; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rQyiQpFwMhuD5ITkTwCrWydGje5dIypOBktLJq2OuU4=;
+        b=HY3ZsQQiGnASD2kTsESf4GZkBVpt/IiMrRvrT21gDf2FUntBW4QcETycfPZHQ0NxluwEgV
+        FQbRUF/Ap/dPEPuYJETFeKcp0Dkky3APE75w+vGHTQihF4gKBaXD9Hf9X606kOLgxUA4h7
+        X9d8ipi2ErjGxzNHrKOXjejp/NtBHlE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 87383ADAA;
+        Thu, 25 Mar 2021 14:34:29 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 15:34:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        david <david@fromorbit.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>
-Subject: Re: [PATCH 3/3] mm/devmap: Remove pgmap accounting in the
- get_user_pages_fast() path
-Message-ID: <20210325143419.GK2710221@ziepe.ca>
-References: <161604048257.1463742.1374527716381197629.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161604050866.1463742.7759521510383551055.stgit@dwillia2-desk3.amr.corp.intel.com>
- <66514812-6a24-8e2e-7be5-c61e188fecc4@oracle.com>
- <CAPcyv4g8=kGoQiY14CDEZryb-7T1_tePnC_-21w-wTfA7fQcDg@mail.gmail.com>
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
+References: <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+ <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
+ <YFxEp0cfcJmcz5bP@localhost.localdomain>
+ <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
+ <YFxsBRORtgqUF/FZ@localhost.localdomain>
+ <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
+ <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
+ <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
+ <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+ <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPcyv4g8=kGoQiY14CDEZryb-7T1_tePnC_-21w-wTfA7fQcDg@mail.gmail.com>
+In-Reply-To: <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 10:03:06AM -0700, Dan Williams wrote:
-> Yes. I still need to answer the question of whether mapping
-> invalidation triggers longterm pin holders to relinquish their hold,
-> but that's a problem regardless of whether gup-fast is supported or
-> not.
+On Thu 25-03-21 15:09:35, David Hildenbrand wrote:
+> On 25.03.21 15:08, Michal Hocko wrote:
+> > On Thu 25-03-21 13:40:45, David Hildenbrand wrote:
+> > > On 25.03.21 13:35, Michal Hocko wrote:
+> > > > On Thu 25-03-21 12:08:43, David Hildenbrand wrote:
+> > > > > On 25.03.21 11:55, Oscar Salvador wrote:
+> > [...]
+> > > > > > - When moving the initialization/accounting to hot-add/hot-remove,
+> > > > > >      the section containing the vmemmap pages will remain offline.
+> > > > > >      It might get onlined once the pages get online in online_pages(),
+> > > > > >      or not if vmemmap pages span a whole section.
+> > > > > >      I remember (but maybe David rmemeber better) that that was a problem
+> > > > > >      wrt. pfn_to_online_page() and hybernation/kdump.
+> > > > > >      So, if that is really a problem, we would have to care of ot setting
+> > > > > >      the section to the right state.
+> > > > > 
+> > > > > Good memory. Indeed, hibernation/kdump won't save the state of the vmemmap,
+> > > > > because the memory is marked as offline and, thus, logically without any
+> > > > > valuable content.
 
-It does not, GUP users do not interact with addres_space or mmu
-notifiers
+^^^^ THIS
 
-Jason
+> > > > 
+> > > > Could you point me to the respective hibernation code please? I always
+> > > > get lost in that area. Anyway, we do have the same problem even if the
+> > > > whole accounting is handled during {on,off}lining, no?
+> > > 
+> > > kernel/power/snapshot.c:saveable_page().
+> > 
+> > Thanks! So this is as I've suspected. The very same problem is present
+> > if the memory block is marked offline. So we need a solution here
+> > anyway. One way to go would be to consider these vmemmap pages always
+> > online. pfn_to_online_page would have to special case them but we would
+> > need to identify them first. I used to have PageVmemmap or something
+> > like that in my early attempt to do this.
+> > 
+> > That being said this is not an argument for one or the other aproach.
+> > Both need fixing.
+> 
+> Can you elaborate? What is the issue there? What needs fixing?
+
+offline section containing vmemmap will be lost during hibernation cycle
+IIU the above correctly.
+-- 
+Michal Hocko
+SUSE Labs
