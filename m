@@ -2,180 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A163034878F
+	by mail.lfdr.de (Postfix) with ESMTP id EF233348790
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 04:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbhCYDhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 23:37:21 -0400
-Received: from mail-eopbgr690116.outbound.protection.outlook.com ([40.107.69.116]:21223
-        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229670AbhCYDgk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 23:36:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=czrIyGroAzIqfMwJWLekKe4ysVHmU3W2Zvn0sHgyF230l9jaSgcw73XEmDOhBKfN8bN+5H0+hRNL5RUzThugMKl83x2RWIxTftif2Q1zvv7AkBrUyn4plcJdabhh7wELmxqr8qf8N2dwTM1uzZqFDVAzWL9N68tGT5O36n02xLH28wXib43XouoN38fLPSqd1oeDtsM4uZrwpRveSnqHV+xz/GnFx5EyT1vlSfjl7LGUcMF1oQ13Bi51bhcfpYEv4TiIQNKQDbqljT3YrzamR3l0b6O6I6V13O5dHi6nADJINecxhi+pC1drCvQZ87VNbK/8jPhqCx1Jdrxhbgo9SQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+wDd7n5cgXIcltEj8IDCLemSRUOR5/Ppb2B5PRam3yo=;
- b=PA7JeROCSKPimThY/o0QUkJs9h70b/JLhQOUZ1ytq8Ii501sqYxzlT723r5vnjtxL2NR+7QaJNqG60FrxPxSX53xdfNkP3XJcALwa9rhd7ay5MC/up9mcG/siao1ghFb7xadS+fAqAGvX5dWrFpKFNbllmw6JabGMz8nc39KBiR9VdA7Yx3Va0ECmsIgeZtFr474c0GxroBuiV36PxUwKlwkkh2H+XAk1MhBFVqkYFJ0sJihV5ZF13OgZ2RjyvzdPbXFjt+sVTqlgp2peuMgbD/ODzI1af6aRP0Xgob8Cz5mW/wT7S31yA7oYjeGSIeZqax/vclZHihTM1GNfymfoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
- header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=maximintegrated.onmicrosoft.com;
- s=selector2-maximintegrated-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+wDd7n5cgXIcltEj8IDCLemSRUOR5/Ppb2B5PRam3yo=;
- b=J2APmxxYal1Jn8Lhem0RGi0eclC328mZbfD+XzIXdmbIL4oZ/K3QjqtxdxuouOKj61fVWRgixnEAVttFO2LftsLUb/aNpbmCCSwxKctiMSIPc/LAPLM2ZYKTxN8IACKB9n/YA6byVMJ9ShaXPUES0x0q44vT4nsSLTsCNHh1BpA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none
- header.from=maximintegrated.com;
-Received: from BYAPR11MB3382.namprd11.prod.outlook.com (2603:10b6:a03:7f::15)
- by SJ0PR11MB4798.namprd11.prod.outlook.com (2603:10b6:a03:2d5::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 25 Mar
- 2021 03:36:39 +0000
-Received: from BYAPR11MB3382.namprd11.prod.outlook.com
- ([fe80::cce5:1aa1:302f:a956]) by BYAPR11MB3382.namprd11.prod.outlook.com
- ([fe80::cce5:1aa1:302f:a956%5]) with mapi id 15.20.3977.025; Thu, 25 Mar 2021
- 03:36:39 +0000
-From:   Ryan Lee <ryans.lee@maximintegrated.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
-        kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
-        rander.wang@linux.intel.com, ryans.lee@maximintegrated.com,
-        guennadi.liakhovetski@linux.intel.com, vkoul@kernel.org,
-        yong.zhi@intel.com, judyhsiao@google.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     ryan.lee.maxim@gmail.com
-Subject: [PATCH 3/3] ASoC:codec:max98373: Added controls for autorestart config
-Date:   Wed, 24 Mar 2021 20:35:55 -0700
-Message-Id: <20210325033555.29377-3-ryans.lee@maximintegrated.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210325033555.29377-1-ryans.lee@maximintegrated.com>
-References: <20210325033555.29377-1-ryans.lee@maximintegrated.com>
-Content-Type: text/plain
-X-Originating-IP: [73.189.52.211]
-X-ClientProxiedBy: BY5PR04CA0001.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::11) To BYAPR11MB3382.namprd11.prod.outlook.com
- (2603:10b6:a03:7f::15)
+        id S230483AbhCYDhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 23:37:22 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18801 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229676AbhCYDgw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 23:36:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616643411; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gIiZOo+rQG4ZKk1TVmSGdcjoWQ9eXC7zr1XIk8x6G40=; b=qlUEWkEG2CV0kX51nb/e00Vn1d9lbotDqNIEx2M+0LYiZPOgi8Z4vKrQ2oaXbUdMEnxsE+Fm
+ BDjptvrh+r9V4wkusF+HxjZ2pKzUH7jLD57InfLZJxRgAfJy9+6+nBubyaf8Gjrifbg7l90e
+ rqGSfi2MJ1H/6Ez95xT2qDAeOv0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 605c05539a60a4db7c636191 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 03:36:51
+ GMT
+Sender: vbadigan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B29A5C433CA; Thu, 25 Mar 2021 03:36:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.0.102] (unknown [49.205.242.72])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78DC0C433C6;
+        Thu, 25 Mar 2021 03:36:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78DC0C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD
+ card
+To:     Stephen Boyd <swboyd@chromium.org>, sbhanu@codeaurora.org
+Cc:     adrian.hunter@intel.com, robh+dt@kernel.org,
+        ulf.hansson@linaro.org, asutoshd@codeaurora.org,
+        stummala@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        sibis@codeaurora.org, cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org
+References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
+ <161648289959.3012082.11356063123403968180@swboyd.mtv.corp.google.com>
+ <363c5b7d9baca5a010552137f80a1cf4@codeaurora.org>
+ <161660145349.3012082.16210818967187877873@swboyd.mtv.corp.google.com>
+ <161660331135.3012082.15196616622122288364@swboyd.mtv.corp.google.com>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <781df94a-b916-76eb-10c9-e95ba789f0b7@codeaurora.org>
+Date:   Thu, 25 Mar 2021 09:06:33 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (73.189.52.211) by BY5PR04CA0001.namprd04.prod.outlook.com (2603:10b6:a03:1d0::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Thu, 25 Mar 2021 03:36:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 075c2253-ac2e-41b1-1d13-08d8ef3f321a
-X-MS-TrafficTypeDiagnostic: SJ0PR11MB4798:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR11MB47984DB8FBDF51CEDF09D2B0E7629@SJ0PR11MB4798.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:327;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DGaaZwVfZxeMRqYrqJjyYbWEE2NdYWRIdhR38zJw+7tD4Gu5b76hfGiRYO5o5dW+zjcxh+dd8fU4VxLmIWAbfOkvfrZoXiDhozTIACIDlhlcdvX/ffEFqoSUgv/B/v58YsT2OqBPbWkEN+eMrXQ4+nZbav7c0RRQjbL8iznu9WZxiacW+V1ibCMo8B8fkWjz0VOr1O3hBWeWg3Qm46V39C1xsN1q/jbIV9uif0UufTm+W1pEWICLdSX4M7MwQPZDZQWWcDIVyoM3itKd03niAz5kuP6ClPYjsxeDLGuT5Qw0ONbsSdBmfVSkit18iyH70LkpmoG1GufyyM9Xk0I3v/cl6QqGa85vj/6uHqQiOJiETXlekJIAebsXUN37fT17H8J5DaT7znB4fbutuvCMyxgV2wxsMSX6K4IMD1d5k8PLS2aKN7CDUPOvbcLbB3zn19gOBo670ga9b2g/ZuOsmW/viGM9PJDw2XnBdN2hLS60y4tQ+GQPvF++ucsrA92tVo4YFWA8fNQuXUW/p9SmmtX7H1cboaOTjidA5pW6uE1UOvadeobBami1emKUo1FI6zAkIg4iEKTn2TI7V/ppw/oNWNva3zsg7mXhWQOfq1rC9R8k7Qe5a41qPV6qs+FPJTu38aU5uOJQof8lMdac8qFgdilstWRC1SJKSf2yVWkANouhceEQwjOksPoR0qrpEMnieAJztbmU7pw5lzQtkg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3382.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(136003)(396003)(346002)(921005)(478600001)(52116002)(6486002)(4326008)(6666004)(7416002)(186003)(69590400012)(26005)(2906002)(6506007)(16526019)(6512007)(316002)(8676002)(2616005)(83380400001)(66476007)(1076003)(36756003)(66556008)(5660300002)(66946007)(86362001)(38100700001)(956004)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?taFvgZS9P2jsiijG4g+f4TpAM0iUuY/xAbWv33f0opHlXk8RkGuP0zD2vQMe?=
- =?us-ascii?Q?pAjSm83PWk+ygFUaDkUvGwXGOMZp/7VkuLGsXQF6Lyf736LKkpf4CLcrri51?=
- =?us-ascii?Q?OupE35JU1PAKwmQf0abcHcWdbJ6jWAGGj7Z8q20CgJetnaFOZePzVGh7qowD?=
- =?us-ascii?Q?LKgBo6UmPmtWV0frp9cTRF7QpKcfH/6tbV4ETGGh/HkN98B1pu1yW9S/g1Kx?=
- =?us-ascii?Q?GbOgLr53ADqhRz6ZEWe1vjr9t0HiU496UPYkSJSfxJLTubMsSmiDydC6v4y8?=
- =?us-ascii?Q?u2G66y6k9+sH2Lm2M9whbvrk7MPjHN8HqYqOYwl+Plm4zyOcR5+I5feg6hD3?=
- =?us-ascii?Q?waT5pBhohJzVP0RR+HyX/I5QQbvEhHL0gG2qOaRpztmc2RuTPzGLr3Wf70HU?=
- =?us-ascii?Q?HRR0LTAl9+TD5ghSnzujFz2g3HiOZ7x1whOvVH/8Lb4I2E8+mONTPJBJbGyi?=
- =?us-ascii?Q?gtE5dDNi2M4DbPVWOodNoCadGn36SMDtlW0Rq9GJuV70Z0NTyNEIrQLTJLkG?=
- =?us-ascii?Q?TYkYqxyqLOxHtYpyJtaUc7LkxLUzI9Zcj2ioFkOxk+8gqw9R15qzZYK28qM9?=
- =?us-ascii?Q?VktyCKq+53G1f4MDdN4L23arzRWGTuAoKzp2PfP1G+uCRoKBvi+YxIeiGhYB?=
- =?us-ascii?Q?eNUhFKjRRLO69DW7Quw0z+3TNTtKL4ccRtQJp2sUH79BbhHqXtcoH6kUbcJg?=
- =?us-ascii?Q?c0UyZ5PIVKDHoyw4Qr2/teb9UeUJ1x0fbgNSICH5XyJbghaCDZcza9uTglgY?=
- =?us-ascii?Q?Ln0QVKMcRpr8xNClcbPCT168ixyP/c7rJ7jqBK7p3FQtlrxd3gvNCkacCfP9?=
- =?us-ascii?Q?DnVtTg2HTPPTg0AP+FM7xLPNhCEstnQ4y+sqeZ2tFG8eUZaRNE+kjkndGchl?=
- =?us-ascii?Q?BNaCQaVRy2f/5rv6JXEMry2pcW9WXeQ6d/YTV7qDEl+H+SM0NMgdBDifB5PM?=
- =?us-ascii?Q?QMQItETIlKiF2PYEC2toglhJzVabAu2iG9GkmDcSohGt9uaX9at5SgzKxXXj?=
- =?us-ascii?Q?UzzaxEvp+DMIapeZ5bAORdcvlJfDllYv8GVRm2kO9n/lOG/FE5eWEPJev0kC?=
- =?us-ascii?Q?2bDhHFq64olIwGjfqK8Oby3ZtCa0DLowCz8bctJpGob3v+gVFQo3HlLlLKrF?=
- =?us-ascii?Q?5kMVJR57BXrdUfRtTKL2eiNma/ligZshBmim7tJW1Q9qqTdPFf62myuXDvXx?=
- =?us-ascii?Q?/hU/Fc7xfzrCzvsHibkogD2KAKmg4i6g6dtmId+Yef7S0wLmI8SGpPUD4BrS?=
- =?us-ascii?Q?Dj72tX8668g9kxA0QJtGSg9/jja1765xx6FGzw+MKENyz+o+FD0khaySU4IQ?=
- =?us-ascii?Q?F+/6mFL0X4FaTn8NIdIRsZXV?=
-X-OriginatorOrg: maximintegrated.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 075c2253-ac2e-41b1-1d13-08d8ef3f321a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3382.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 03:36:38.7168
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0BoOj3FFX98oUJjoYulgb3ocflQI8y9hR2mDS0ZkV5lW5xH1C6nFOvG4u8zEI7f8pzC5TFNb5/lEltNqX8g8/3tOZJ0Q1MC/vIPPNHFOu6Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4798
+In-Reply-To: <161660331135.3012082.15196616622122288364@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-3 new controls are added.
-"OVC Autorestart Switch" : controls whether or not the speaker amplifier
-automatically re-enables after an overcurrent fault condition.
-"THERM Autorestart Switch" : controls whether or not the device
-automatically resumes playback when the die temperature recovers from
-thermal shutdown.
-"CMON Autorestart Switch" : controls whether or not the device
-automatically resumes playback when the clock returns after stopping.
 
-Above Auto Restart functions are enabled by default.
+On 3/24/2021 9:58 PM, Stephen Boyd wrote:
+> Quoting Stephen Boyd (2021-03-24 08:57:33)
+>> Quoting sbhanu@codeaurora.org (2021-03-24 08:23:55)
+>>> On 2021-03-23 12:31, Stephen Boyd wrote:
+>>>> Quoting Shaik Sajida Bhanu (2021-03-20 11:17:00)
+>>>>> +
+>>>>> +                       bus-width = <8>;
+>>>>> +                       non-removable;
+>>>>> +                       supports-cqe;
+>>>>> +                       no-sd;
+>>>>> +                       no-sdio;
+>>>>> +
+>>>>> +                       max-frequency = <192000000>;
+>>>> Is this necessary?
+>>> yes, to avoid lower speed modes running with high clock rates.
+>> Is it part of the DT binding? I don't see any mention of it.
+> Nevermind, found it in mmc-controller.yaml. But I think this is to work
+> around some problem with the clk driver picking lower speeds than
+> requested? That has been fixed on the clk driver side (see commit like
+> 148ddaa89d4a "clk: qcom: gcc-sc7180: Use floor ops for the correct sdcc1
+> clk") so ideally this property can be omitted.
+This is a good have dt node.
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
----
- sound/soc/codecs/max98373.c | 14 ++++++++++++++
- sound/soc/codecs/max98373.h |  3 +++
- 2 files changed, 17 insertions(+)
+This will align clock requests between mmc core layer and sdhci-msm
+platform driver. Say, for HS200/HS400 modes of eMMC, mmc-core layer
+tries to set clock at 200Mhz, whereas sdhci-msm expects 192Mhz for
+these modes. So we have to rely on clock driver floor/ceil values.
+By having this property, mmc-core layer itself request for 192Mhz.
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index 1346a98ce8a1..e14fe98349a5 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -204,6 +204,15 @@ SOC_SINGLE("Ramp Up Switch", MAX98373_R203F_AMP_DSP_CFG,
- 	MAX98373_AMP_DSP_CFG_RMP_UP_SHIFT, 1, 0),
- SOC_SINGLE("Ramp Down Switch", MAX98373_R203F_AMP_DSP_CFG,
- 	MAX98373_AMP_DSP_CFG_RMP_DN_SHIFT, 1, 0),
-+/* Speaker Amplifier Overcurrent Automatic Restart Enable */
-+SOC_SINGLE("OVC Autorestart Switch", MAX98373_R20FE_DEVICE_AUTO_RESTART_CFG,
-+	MAX98373_OVC_AUTORESTART_SHIFT, 1, 0),
-+/* Thermal Shutdown Automatic Restart Enable */
-+SOC_SINGLE("THERM Autorestart Switch", MAX98373_R20FE_DEVICE_AUTO_RESTART_CFG,
-+	MAX98373_THERM_AUTORESTART_SHIFT, 1, 0),
-+/* Clock Monitor Automatic Restart Enable */
-+SOC_SINGLE("CMON Autorestart Switch", MAX98373_R20FE_DEVICE_AUTO_RESTART_CFG,
-+	MAX98373_CMON_AUTORESTART_SHIFT, 1, 0),
- SOC_SINGLE("CLK Monitor Switch", MAX98373_R20FE_DEVICE_AUTO_RESTART_CFG,
- 	MAX98373_CLOCK_MON_SHIFT, 1, 0),
- SOC_SINGLE("Dither Switch", MAX98373_R203F_AMP_DSP_CFG,
-@@ -392,6 +401,11 @@ static int max98373_probe(struct snd_soc_component *component)
- 			MAX98373_R2021_PCM_TX_HIZ_EN_2,
- 			1 << (max98373->i_slot - 8), 0);
- 
-+	/* enable auto restart function by default */
-+	regmap_write(max98373->regmap,
-+		MAX98373_R20FE_DEVICE_AUTO_RESTART_CFG,
-+		0xF);
-+
- 	/* speaker feedback slot configuration */
- 	regmap_write(max98373->regmap,
- 		MAX98373_R2023_PCM_TX_SRC_2,
-diff --git a/sound/soc/codecs/max98373.h b/sound/soc/codecs/max98373.h
-index 71f5a5228f34..73a2cf69d84a 100644
---- a/sound/soc/codecs/max98373.h
-+++ b/sound/soc/codecs/max98373.h
-@@ -195,6 +195,9 @@
- #define MAX98373_LIMITER_EN_SHIFT (0)
- 
- /* MAX98373_R20FE_DEVICE_AUTO_RESTART_CFG */
-+#define MAX98373_OVC_AUTORESTART_SHIFT (3)
-+#define MAX98373_THERM_AUTORESTART_SHIFT (2)
-+#define MAX98373_CMON_AUTORESTART_SHIFT (1)
- #define MAX98373_CLOCK_MON_SHIFT (0)
- 
- /* MAX98373_R20FF_GLOBAL_SHDN */
--- 
-2.17.1
+Same is for SD card SDR104 mode, core layer expects clock at 208Mhz
+whereas sdhci-msm can max operate only at 202Mhz. By having this
+property, core layer requests only for 202Mhz for SDR104 mode.
+
+BTW, this helps only for max possible speed modes.
+In case of lower-speed modes (for DDR52) we still need to rely on clock
+floor rounding.
 
