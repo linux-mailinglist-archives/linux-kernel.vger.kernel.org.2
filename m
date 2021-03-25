@@ -2,67 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD003489CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D693489CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhCYHGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:06:24 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:62654 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhCYHGK (ORCPT
+        id S229664AbhCYHG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:06:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45614 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCYHGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:06:10 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 48BBC980136;
-        Thu, 25 Mar 2021 15:06:07 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] include: net: struct sock is declared twice
-Date:   Thu, 25 Mar 2021 15:06:02 +0800
-Message-Id: <20210325070602.858024-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 25 Mar 2021 03:06:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616655979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qtOSCAcacChPRUdAo0KnSFEyBG7D6PRUlhsVYvdS+4w=;
+        b=CteCm5YtEyxr1gpAGn0H16skKQ6cKyaoEWKnaTjvHWKDKRGk0lRaCzF8FcQwgxeElgKyrD
+        9o48Tcp/YMWdu+KTcDy7DS0UNmU3OU/7gFLf9gK6tTylZNw1Kya+nhfsXJmrrPnOHG3ZCE
+        mbNXme/0ySjL29Y7Wq7lUoL4mAqObx4YFE3BBkVU02FO2xe7n5gzLiYZGNyQUwUUl5eEZc
+        hnuUA+J5xC66EYblKbJMVsYiUeBqFL/lnpsiAA8Pf+903bTAtTdfrf29bWFzOCxgIfKZLF
+        qQ7XKB5PiDdHquVUath1SvtmlGc6G6ORvUfPFx3uVFjf0au9fYtAealnMIp/pw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616655979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qtOSCAcacChPRUdAo0KnSFEyBG7D6PRUlhsVYvdS+4w=;
+        b=44U9bX+fjOho4Of8zG3fIdRwqf2BZf64r/+X62gEv/ijcPX6+MqQqyw8mTDY/DxW/xYxav
+        cK/xpLJIsDDBGoAA==
+To:     Manish Varma <varmam@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kelly Rossmoyer <krossmo@google.com>, kernel-team@android.com
+Subject: Re: [PATCH] fs: Improve eventpoll logging to stop indicting timerfd
+In-Reply-To: <CAMyCerKf4MfsjAcVhXi7DVuP9mvt0X6VamwMiHa3KgRvnr7p9Q@mail.gmail.com>
+References: <20210302034928.3761098-1-varmam@google.com> <87pmzw7gvy.fsf@nanos.tec.linutronix.de> <CAMyCerL7UkcU1YgZ=dUTZadv-YPHGccO3PR-DCt2nX7nz0afgA@mail.gmail.com> <87zgyurhoe.fsf@nanos.tec.linutronix.de> <CAMyCerKf4MfsjAcVhXi7DVuP9mvt0X6VamwMiHa3KgRvnr7p9Q@mail.gmail.com>
+Date:   Thu, 25 Mar 2021 08:06:19 +0100
+Message-ID: <87h7kzbtlg.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTBhKHx1DGklJSUhKVkpNSk1NTk5CTUxNTEhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MzI6LQw5Az8ICj4tMxkhCwwW
-        FzEaCThVSlVKTUpNTU5OQk1DTkNKVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJS0JJNwY+
-X-HM-Tid: 0a7868346563d992kuws48bbc980136
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct sock has been declared. Remove the duplicate.
+Manish,
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- include/net/bpf_sk_storage.h | 1 -
- 1 file changed, 1 deletion(-)
+On Wed, Mar 24 2021 at 22:18, Manish Varma wrote:
+> On Mon, Mar 22, 2021 at 2:40 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> Not that I expect any real dependencies on it, but as always the devil
+>> is in the details.
+>
+> Right, there are some userspace which depends on "[timerfd]" string
+> https://codesearch.debian.net/search?q=%22%5Btimerfd%5D%22&literal=1
 
-diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
-index 0e85713f56df..2926f1f00d65 100644
---- a/include/net/bpf_sk_storage.h
-+++ b/include/net/bpf_sk_storage.h
-@@ -27,7 +27,6 @@ struct bpf_local_storage_elem;
- struct bpf_sk_storage_diag;
- struct sk_buff;
- struct nlattr;
--struct sock;
- 
- #ifdef CONFIG_BPF_SYSCALL
- int bpf_sk_storage_clone(const struct sock *sk, struct sock *newsk);
--- 
-2.25.1
+Details :)
 
+> So, modifying file descriptor names at-least for timerfd will definitely
+> break those.
+>
+> With that said, I am now thinking about leaving alone the file descriptor
+> names as is, and instead, adding those extra information about the
+> associated processes (i.e. process name or rather PID of the
+> process) along with token ID directly into wakesource name, at the
+> time of creating new wakesource i.e. in ep_create_wakeup_source().
+>
+> So, the wakesource names, that currently named as "[timerfd]", will be
+> named something like:
+> "epollitem<N>:<PID>.[timerfd]"
+>
+> Where N is the number of wakesource created since boot.
+
+Where N is a unique ID token. :)
+
+> This way we can still associate the process with the wakesource
+> name and also distinguish multiple instances of wakesources using
+> the integer identifier.
+
+If that solves your problem and does not make anything else breaks which
+relies on the exisitng epollitem naming convention, then I don't see a
+problem with that.
+
+Thanks,
+
+        tglx
