@@ -2,151 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FDD348606
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 693BD3486CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239382AbhCYAqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 20:46:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239378AbhCYApz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 20:45:55 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31E4961A13;
-        Thu, 25 Mar 2021 00:45:54 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 20:45:52 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] printk: rename vprintk_func to vprintk
-Message-ID: <20210324204552.7470f992@oasis.local.home>
-In-Reply-To: <20210323144201.486050-1-linux@rasmusvillemoes.dk>
-References: <20210323144201.486050-1-linux@rasmusvillemoes.dk>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234171AbhCYCH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 22:07:29 -0400
+Received: from gateway20.websitewelcome.com ([192.185.55.25]:24030 "EHLO
+        gateway20.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233732AbhCYCGy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 22:06:54 -0400
+X-Greylist: delayed 1208 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Mar 2021 22:06:54 EDT
+Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
+        by gateway20.websitewelcome.com (Postfix) with ESMTP id B3730400D2611
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 20:37:04 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id PF5AlmROf1cHePF5AlFk4I; Wed, 24 Mar 2021 20:46:44 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ARp6l6XyGFRCRrhLJmTKi/VHzAiBKs0aN+5y9cJbGsU=; b=p7AUZuJrSLjG9Izr8yGa03cQAF
+        6Stx9tQGXORllkuk2Ynh1tIujjdsjjmPyTJ9bnKLb+Hg+RkKzBCqzBxQqzkjjoN8fLFFv90rknxBI
+        MgM9AyV3zlbdo0H/M2EqDMGwok+TOrd1rQ8+6sk2OUC4/Ps/54EnRhHmTenAPhYuX45z1zsWGxmkM
+        gH3mDjo/ppnEgqZqFoaSN3vFUU1FEDln+zwNhq4ug9tieFjWhxbJBpiVUoYwwLJvzzjqgoqahY99x
+        j43vrlFWltJXvnPRPtTj34z1MyLv6iaMUHrvJYEPjFwxcJwl9eFKRGpa9ytzxcKILh+4pqbDbo42j
+        z3LtzqKg==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:38484 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lPF59-003rfr-NW; Wed, 24 Mar 2021 20:46:43 -0500
+Subject: Re: [PATCH][next] scsi: aacraid: Replace one-element array with
+ flexible-array member
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210304203822.GA102218@embeddedor>
+ <yq135wkm410.fsf@ca-mkp.ca.oracle.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <668e3f30-1ffb-31e3-231b-705489993885@embeddedor.com>
+Date:   Wed, 24 Mar 2021 19:46:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <yq135wkm410.fsf@ca-mkp.ca.oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lPF59-003rfr-NW
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:38484
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 6
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 15:42:01 +0100
-Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+Hi Martin,
 
-> The printk code is already hard enough to understand. Remove an
-> unnecessary indirection by renaming vprintk_func to vprintk (adding
-> the asmlinkage annotation), and removing the vprintk definition from
-> printk.c. That way, printk is implemented in terms of vprintk as one
-> would expect, and there's no "vprintk_func, what's that? Some function
-> pointer that gets set where?"
+On 3/24/21 20:18, Martin K. Petersen wrote:
 > 
-> The declaration of vprintk in linux/printk.h already has the
-> __printf(1,0) attribute, there's no point repeating that with the
-> definition - it's for diagnostics in callers.
+> Hi Gustavo!
 > 
-> linux/printk.h already contains a static inline {return 0;} definition
-> of vprintk when !CONFIG_PRINTK.
+> Your changes and the original code do not appear to be functionally
+> equivalent.
 > 
-> Since the corresponding stub definition of vprintk_func was not marked
-> "static inline", any translation unit including internal.h would get a
-> definition of vprintk_func - it just so happens that for
-> !CONFIG_PRINTK, there is precisely one such TU, namely printk.c. Had
-> there been more, it would be a link error; now it's just a silly waste
-> of a few bytes of .text, which one must assume are rather precious to
-> anyone disabling PRINTK.
-
-I'm guessing that at commit: 42a0bb3f7138 ("printk/nmi: generic
-solution for safe printk in NMI"), the special name for vprintk_func()
-became obsolete.
-
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
-
+>> @@ -1235,8 +1235,8 @@ static int aac_read_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u3
+>>  		if (ret < 0)
+>>  			return ret;
+>>  		command = ContainerRawIo2;
+>> -		fibsize = sizeof(struct aac_raw_io2) +
+>> -			((le32_to_cpu(readcmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
+>> +		fibsize = struct_size(readcmd2, sge,
+>> +				     le32_to_cpu(readcmd2->sgeCnt));
 > 
-> $ objdump -dr kernel/printk/printk.o
-> 00000330 <vprintk_func>:
->  330:   31 c0                   xor    %eax,%eax
->  332:   c3                      ret
->  333:   8d b4 26 00 00 00 00    lea    0x0(%esi,%eiz,1),%esi
->  33a:   8d b6 00 00 00 00       lea    0x0(%esi),%esi
-> 
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> ---
->  kernel/printk/internal.h    | 3 ---
->  kernel/printk/printk.c      | 8 +-------
->  kernel/printk/printk_safe.c | 3 ++-
->  3 files changed, 3 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-> index 3a8fd491758c..1c7554f0e71b 100644
-> --- a/kernel/printk/internal.h
-> +++ b/kernel/printk/internal.h
-> @@ -21,7 +21,6 @@ int vprintk_store(int facility, int level,
->  
->  __printf(1, 0) int vprintk_default(const char *fmt, va_list args);
->  __printf(1, 0) int vprintk_deferred(const char *fmt, va_list args);
-> -__printf(1, 0) int vprintk_func(const char *fmt, va_list args);
->  void __printk_safe_enter(void);
->  void __printk_safe_exit(void);
->  
-> @@ -56,8 +55,6 @@ void defer_console_output(void);
->  
->  #else
->  
-> -__printf(1, 0) int vprintk_func(const char *fmt, va_list args) { return 0; }
-> -
->  /*
->   * In !PRINTK builds we still export logbuf_lock spin_lock, console_sem
->   * semaphore and some of console functions (console_unlock()/etc.), so
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 575a34b88936..458707a06124 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -2104,12 +2104,6 @@ asmlinkage int vprintk_emit(int facility, int level,
->  }
->  EXPORT_SYMBOL(vprintk_emit);
->  
-> -asmlinkage int vprintk(const char *fmt, va_list args)
-> -{
-> -	return vprintk_func(fmt, args);
-> -}
-> -EXPORT_SYMBOL(vprintk);
-> -
->  int vprintk_default(const char *fmt, va_list args)
->  {
->  	return vprintk_emit(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
-> @@ -2143,7 +2137,7 @@ asmlinkage __visible int printk(const char *fmt, ...)
->  	int r;
->  
->  	va_start(args, fmt);
-> -	r = vprintk_func(fmt, args);
-> +	r = vprintk(fmt, args);
->  	va_end(args);
->  
->  	return r;
-> diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
-> index 2e9e3ed7d63e..87d2e86af122 100644
-> --- a/kernel/printk/printk_safe.c
-> +++ b/kernel/printk/printk_safe.c
-> @@ -367,7 +367,7 @@ void __printk_safe_exit(void)
->  	this_cpu_dec(printk_context);
->  }
->  
-> -__printf(1, 0) int vprintk_func(const char *fmt, va_list args)
-> +asmlinkage int vprintk(const char *fmt, va_list args)
->  {
->  #ifdef CONFIG_KGDB_KDB
->  	/* Allow to pass printk() to kdb but avoid a recursion. */
-> @@ -420,3 +420,4 @@ void __init printk_safe_init(void)
->  	/* Flush pending messages that did not have scheduled IRQ works. */
->  	printk_safe_flush();
->  }
-> +EXPORT_SYMBOL(vprintk);
+> The old code allocated sgeCnt-1 elements (whether that was a mistake or
+> not I do not know) whereas the new code would send a larger fib to the
+> ASIC. I don't have any aacraid adapters and I am hesitant to merging
+> changes that have not been validated on real hardware.
 
+Precisely this sort of confusion is one of the things we want to avoid
+by using flexible-array members instead of one-element arrays.
+
+fibsize is actually the same for both the old and the new code. The
+difference is that in the original code, the one-element array _sge_
+at the bottom of struct aac_raw_io2, contributes to the size of the
+structure, as it occupies at least as much space as a single object
+of its type. On the other hand, flexible-array members don't contribute
+to the size of the enclosing structure. See below...
+
+Old code:
+
+$ pahole -C aac_raw_io2 drivers/scsi/aacraid/aachba.o
+struct aac_raw_io2 {
+	__le32                     blockLow;             /*     0     4 */
+	__le32                     blockHigh;            /*     4     4 */
+	__le32                     byteCount;            /*     8     4 */
+	__le16                     cid;                  /*    12     2 */
+	__le16                     flags;                /*    14     2 */
+	__le32                     sgeFirstSize;         /*    16     4 */
+	__le32                     sgeNominalSize;       /*    20     4 */
+	u8                         sgeCnt;               /*    24     1 */
+	u8                         bpTotal;              /*    25     1 */
+	u8                         bpComplete;           /*    26     1 */
+	u8                         sgeFirstIndex;        /*    27     1 */
+	u8                         unused[4];            /*    28     4 */
+	struct sge_ieee1212        sge[1];               /*    32    16 */
+
+	/* size: 48, cachelines: 1, members: 13 */
+	/* last cacheline: 48 bytes */
+};
+
+New code:
+
+$ pahole -C aac_raw_io2 drivers/scsi/aacraid/aachba.o
+struct aac_raw_io2 {
+	__le32                     blockLow;             /*     0     4 */
+	__le32                     blockHigh;            /*     4     4 */
+	__le32                     byteCount;            /*     8     4 */
+	__le16                     cid;                  /*    12     2 */
+	__le16                     flags;                /*    14     2 */
+	__le32                     sgeFirstSize;         /*    16     4 */
+	__le32                     sgeNominalSize;       /*    20     4 */
+	u8                         sgeCnt;               /*    24     1 */
+	u8                         bpTotal;              /*    25     1 */
+	u8                         bpComplete;           /*    26     1 */
+	u8                         sgeFirstIndex;        /*    27     1 */
+	u8                         unused[4];            /*    28     4 */
+	struct sge_ieee1212        sge[];                /*    32     0 */
+
+	/* size: 32, cachelines: 1, members: 13 */
+	/* last cacheline: 32 bytes */
+};
+
+So, the old code allocates sgeCnt-1 elements because sizeof(struct aac_raw_io2) is
+already counting one element of the _sge_ array.
+
+Please, let me know if this is clear now.
+
+Thanks!
+--
+Gustavo
