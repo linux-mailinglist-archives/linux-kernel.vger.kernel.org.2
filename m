@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED7D349722
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA56349729
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:47:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhCYQoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbhCYQnv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:43:51 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5310C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:43:50 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id u10so2724350ilb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:43:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3dp61o6F3hqxMbMpN9J8E9x3tY2eyW4PS/mGGFHMbvA=;
-        b=dL5jZOqPFrSb9Oj9FLfuY4FAbj8v8dXvuyG1H2e2jy3Epf4WMDngkcwDf/GDjlEqeq
-         BrT84yl0cCzQQtqcUYiiHF2mqWSmtBlESC8TaZVNXe9NVGAmtX1BUNN34UteLmwJjpxd
-         oP7QA1j9pguI2UI7+D2a2TlQdw6w4W5mtttT6msMI18lLSMJ2sIn82ljFY2WUl1gXofE
-         frs1SpctbE0XjMIttEzkYHfXcAe3TP/TAWqtkuzcSHv5xqisOJrHMqxapB68t+Wa2dmS
-         CiO/0mZRvRqi1VPXqAVC9QQC3KDZfK2HJFAadvP1QHURIKQzUFV1koVsYPBLFHSmAZLo
-         xjtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3dp61o6F3hqxMbMpN9J8E9x3tY2eyW4PS/mGGFHMbvA=;
-        b=YB6jHc0PmS/jUYC5mgfFrL7ZybabNpjtJkOsFntzM9ACZV9ZOD8JRLm8x1A6PIENn1
-         RCTB3xcvZCqmTUTLcCj4Zt6Nz6KXwauGPcwluwolfm1Q53ti7muzrpZLzX0mOw7OUPL0
-         PZpHIBq5y2mfS2NXcdq2xQeJVqRv37gMZ64glQntim1qqmgVx0LzzYQserlrXFwIXQls
-         ROnhce6qUY8ehMfIw0hVL07JgNda8wNbftjk6dGQYj1E8zXExcpryp8+5KHIGOKfhVO6
-         +i7pQAqAaPkHNFgn6OyD0x4gLecVxR+kw/Im9nejZeWKlbLEAwEIYbAM+eAqvRauaFRM
-         kpcg==
-X-Gm-Message-State: AOAM5325aumUtA/4MEeB+099PSqcbZiaiKhN2SFbuqM6DqwXdQ27DWwg
-        CX70Bsc1er3J7Vfe5I0HmMQ4Tw==
-X-Google-Smtp-Source: ABdhPJxwxYjP5S4lA8SJOW+4pNwM6kgk9NMYjp4EfBYFflCceicfN5WxY49qjwu9LCrK/G/hMq9KVQ==
-X-Received: by 2002:a05:6e02:1b86:: with SMTP id h6mr7051197ili.145.1616690629868;
-        Thu, 25 Mar 2021 09:43:49 -0700 (PDT)
-Received: from p1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id k12sm2990605ios.2.2021.03.25.09.43.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 09:43:49 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     io-uring@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
-        linux-kernel@vger.kernel.org, oleg@redhat.com, metze@samba.org,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 2/2] proc: don't show PF_IO_WORKER threads as threads in /proc/<pid>/task/
-Date:   Thu, 25 Mar 2021 10:43:43 -0600
-Message-Id: <20210325164343.807498-3-axboe@kernel.dk>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210325164343.807498-1-axboe@kernel.dk>
-References: <20210325164343.807498-1-axboe@kernel.dk>
+        id S229533AbhCYQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:47:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhCYQq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 12:46:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17FE661A16;
+        Thu, 25 Mar 2021 16:46:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616690817;
+        bh=XDSpgiMwLXpSi0DeO5zI9TpSBGRc8mVOW9ocu02P7hw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pANO59Hy9KdhMWb8VT+AJRkMbByYezSLJpEwH5huqGS0A6kK6tx1totwF35nP+T7u
+         ARlUyhHyIwPuYKW9PE82J0pbkIsWgga1ETzKR36BjR7mRmn+OO5QyKVFFwmJ+ktjsJ
+         jO1mz+Ebo3ysTRJOf0/Spcv4NwZbEwbV9m3obh70dR0vWDJO4rWZ3YuZjnQ+rgzwqU
+         2rgfyNkqix3RBtsNj7NVLHUpajYmsMJNED4muy5qjfyNGlEG7yhKc61i/8TtbylEdw
+         0EbVeG9hw4dOtEaxOAPPjCUxOZqeXcabkU42oKqzn6X3zDHus8QAdfyKM5UIyQo5ss
+         5pcJV5Dvm+0wQ==
+Date:   Thu, 25 Mar 2021 18:46:53 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     info@metux.net, raphael.norwitz@nutanix.com,
+        alex.williamson@redhat.com, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
+        shyam.rajendran@nutanix.com, felipe@nutanix.com
+Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
+ reset mechanism
+Message-ID: <YFy+fdL8PdD2CgOy@unreal>
+References: <YFW78AfbhYpn16H4@unreal>
+ <20210320085942.3cefcc48@x1.home.shazbot.org>
+ <YFcGlzbaSzQ5Qota@unreal>
+ <20210322111003.50d64f2c@omen.home.shazbot.org>
+ <YFsOVNM1zIqNUN8f@unreal>
+ <20210324083743.791d6191@omen.home.shazbot.org>
+ <YFtXNF+t/0G26dwS@unreal>
+ <20210324111729.702b3942@omen.home.shazbot.org>
+ <YFxL4o/QpmhM8KiH@unreal>
+ <20210325162637.6ewxkxhvogdsgdxv@archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325162637.6ewxkxhvogdsgdxv@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't allow SIGSTOP and ptrace attach to these threads, and that
-confuses applications like gdb that assume they can attach to any thread
-listed in /proc/<pid>/task/. gdb then enters an infinite loop of retrying
-attach, even though it fails with the same error (-EPERM) every time.
+On Thu, Mar 25, 2021 at 09:56:37PM +0530, Amey Narkhede wrote:
+> On 21/03/25 10:37AM, Leon Romanovsky wrote:
+> > On Wed, Mar 24, 2021 at 11:17:29AM -0600, Alex Williamson wrote:
+> > > On Wed, 24 Mar 2021 17:13:56 +0200
+> > > Leon Romanovsky <leon@kernel.org> wrote:
 
-Skip over PF_IO_WORKER threads in the proc task setup. We can't just
-terminate the when we find a PF_IO_WORKER thread, as there's no real
-ordering here. It's perfectly feasible to have the first thread be an
-IO worker, and then a real thread after that. Hence just implement the
-skip.
+<...>
 
-Reported-by: Stefan Metzmacher <metze@samba.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- fs/proc/base.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+> > I expect that QEMU sets same reset policy for all devices at the same
+> > time instead of trying per-device to guess which one works.
+> >
+> The current reset attribute does the same thing internally you described
+> at the end.
+> > And yes, you will be able to bypass kernel, but at least this interface
+> > will be broader than initial one that serves only SO and workarounds.
+> >
+> What does it mean by "bypassing" kernel?
+> I don't see any problem with SO and workaround if that is the only
+> way an user can use their device. Why are you expecting every vendor to
+> develop quirk? Also I don't see any point of using linked list to
+> unnecessarily complicate a simple thing.
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 3851bfcdba56..abff2fe10bfa 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -3723,7 +3723,7 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
- 	 */
- 	pos = task = task->group_leader;
- 	do {
--		if (!nr--)
-+		if (same_thread_group(task, pos) && !nr--)
- 			goto found;
- 	} while_each_thread(task, pos);
- fail:
-@@ -3744,16 +3744,22 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
-  */
- static struct task_struct *next_tid(struct task_struct *start)
- {
--	struct task_struct *pos = NULL;
-+	struct task_struct *tmp, *pos = NULL;
-+
- 	rcu_read_lock();
--	if (pid_alive(start)) {
--		pos = next_thread(start);
--		if (thread_group_leader(pos))
--			pos = NULL;
--		else
--			get_task_struct(pos);
-+	if (!pid_alive(start))
-+		goto no_thread;
-+	list_for_each_entry_rcu(tmp, &start->thread_group, thread_group) {
-+		if (!thread_group_leader(tmp) && same_thread_group(start, tmp)) {
-+			get_task_struct(tmp);
-+			pos = tmp;
-+			break;
-+		}
- 	}
-+no_thread:
- 	rcu_read_unlock();
-+	if (!pos)
-+		return NULL;
- 	put_task_struct(start);
- 	return pos;
- }
--- 
-2.31.0
+Please reread our conversation with Alex, it has answers to both of your
+questions.
 
+Thanks
+
+> 
+> Thanks,
+> Amey
