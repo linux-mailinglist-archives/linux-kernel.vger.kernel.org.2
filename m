@@ -2,106 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A92348C02
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1A55348BD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhCYI7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:59:02 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:57014 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229666AbhCYI6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:58:35 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6CDA91A133E;
-        Thu, 25 Mar 2021 09:58:34 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 59C8C1A313B;
-        Thu, 25 Mar 2021 09:58:29 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 72B2A40307;
-        Thu, 25 Mar 2021 09:58:22 +0100 (CET)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     l.stach@pengutronix.de, andrew.smirnov@gmail.com,
-        shawnguo@kernel.org, kw@linux.com, bhelgaas@google.com,
-        stefan@agner.ch, lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH v3 3/3] PCI: imx: clear vreg bypass when pcie vph voltage is 3v3
-Date:   Thu, 25 Mar 2021 16:44:42 +0800
-Message-Id: <1616661882-26487-4-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616661882-26487-1-git-send-email-hongxing.zhu@nxp.com>
-References: <1616661882-26487-1-git-send-email-hongxing.zhu@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S229461AbhCYIpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:45:50 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:59857 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhCYIpX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 04:45:23 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 821681BF20C;
+        Thu, 25 Mar 2021 08:45:19 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 09:45:17 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     "heying (H)" <heying24@huawei.com>
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        a.zummo@towertech.it, christophe.leroy@csgroup.eu,
+        npiggin@gmail.com, msuchanek@suse.de, tglx@linutronix.de,
+        peterz@infradead.org, geert@linux-m68k.org,
+        geert+renesas@glider.be, kernelfans@gmail.com, frederic@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH V3 -next] powerpc: kernel/time.c - cleanup warnings
+Message-ID: <YFxNneWEFO4m5Glt@piout.net>
+References: <20210324090939.143477-1-heying24@huawei.com>
+ <YFsGYgdNH5HrlqDJ@piout.net>
+ <18a8d444-f1a5-61e0-b9f2-f85c03d71686@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18a8d444-f1a5-61e0-b9f2-f85c03d71686@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
-In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
-sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
-the VREG_BYPASS bits of GPR registers should be cleared from default
-value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
-turned on.
+On 24/03/2021 17:46:19+0800, heying (H) wrote:
+> Many thanks for your suggestion. As you suggest, rtc_lock should be local to
+> platforms.
+> 
+> Does it mean not only powerpc but also all other platforms should adapt this
+> change?
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
----
- drivers/pci/controller/dwc/pci-imx6.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Not all the other ones, in the current state, x86 still needs it. I'll
+work on that. Again, the patch is fine as is.
 
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 853ea8e82952..d9d534f0840f 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -37,6 +37,7 @@
- #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
- #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE_EN	BIT(10)
- #define IMX8MQ_GPR_PCIE_CLK_REQ_OVERRIDE	BIT(11)
-+#define IMX8MQ_GPR_PCIE_VREG_BYPASS		BIT(12)
- #define IMX8MQ_GPR12_PCIE2_CTRL_DEVICE_TYPE	GENMASK(11, 8)
- #define IMX8MQ_PCIE2_BASE_ADDR			0x33c00000
- 
-@@ -80,6 +81,7 @@ struct imx6_pcie {
- 	u32			tx_swing_full;
- 	u32			tx_swing_low;
- 	struct regulator	*vpcie;
-+	struct regulator	*vph;
- 	void __iomem		*phy_base;
- 
- 	/* power domain for pcie */
-@@ -621,6 +623,17 @@ static void imx6_pcie_init_phy(struct imx6_pcie *imx6_pcie)
- 				   imx6_pcie_grp_offset(imx6_pcie),
- 				   IMX8MQ_GPR_PCIE_REF_USE_PAD,
- 				   IMX8MQ_GPR_PCIE_REF_USE_PAD);
-+		/*
-+		 * Regarding to the datasheet, the PCIE_VPH is suggested
-+		 * to be 1.8V. If the PCIE_VPH is supplied by 3.3V, the
-+		 * VREG_BYPASS should be cleared to zero.
-+		 */
-+		if (imx6_pcie->vph &&
-+		    regulator_get_voltage(imx6_pcie->vph) > 3000000)
-+			regmap_update_bits(imx6_pcie->iomuxc_gpr,
-+					   imx6_pcie_grp_offset(imx6_pcie),
-+					   IMX8MQ_GPR_PCIE_VREG_BYPASS,
-+					   0);
- 		break;
- 	case IMX7D:
- 		regmap_update_bits(imx6_pcie->iomuxc_gpr, IOMUXC_GPR12,
-@@ -1130,6 +1143,13 @@ static int imx6_pcie_probe(struct platform_device *pdev)
- 		imx6_pcie->vpcie = NULL;
- 	}
- 
-+	imx6_pcie->vph = devm_regulator_get_optional(&pdev->dev, "vph");
-+	if (IS_ERR(imx6_pcie->vph)) {
-+		if (PTR_ERR(imx6_pcie->vph) != -ENODEV)
-+			return PTR_ERR(imx6_pcie->vph);
-+		imx6_pcie->vph = NULL;
-+	}
-+
- 	platform_set_drvdata(pdev, imx6_pcie);
- 
- 	ret = imx6_pcie_attach_pd(dev);
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+
+
 -- 
-2.17.1
-
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
