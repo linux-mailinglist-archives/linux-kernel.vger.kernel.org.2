@@ -2,204 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354403494EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:08:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C46D6349502
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbhCYPHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:07:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230433AbhCYPHY (ORCPT
+        id S231220AbhCYPKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:10:34 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63178 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230512AbhCYPKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:07:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616684844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sdW+h3VAQThOQw07Y6OKhgA+HyJmyOTTSfSPPcXsFkY=;
-        b=X9/PomG8yFZQk/32HmrbwMgp/AMeW4EF//uRfVn58AfG2vVpqdCNbyl/mChHJ9ooww1wpD
-        1CPvKlhfhX6AQoovgmgh6p1SkGhLAZEBG4zAXy3VC0CB2wni0C90VE8b3zWpIF9wfNkenT
-        ymJA/5tuodIt43XojPZrncvtaoWShCY=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-sNkj-PMCMHqNzjmwOQZRSQ-1; Thu, 25 Mar 2021 11:07:17 -0400
-X-MC-Unique: sNkj-PMCMHqNzjmwOQZRSQ-1
-Received: by mail-ed1-f69.google.com with SMTP id m8so2828762edv.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:07:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sdW+h3VAQThOQw07Y6OKhgA+HyJmyOTTSfSPPcXsFkY=;
-        b=hZ36+od5u7dN2sb3+lnuEmcfnxRBMW0eTpk6TtScNEC5iaaB+2Z0aQsVcmZv0qJ3xu
-         qXS2cChBIqmqtY+74c9vPzoVcVnEbeJpaJfM9U4n1lem1yJ0yFE6LDJcQ50zqDBv7vY6
-         nQ369USw0a+uMgnIh56NNw5F3SNMyJIm/Wy6ma4dniBqksoVy9VEp0kQ4+sLW9yRY6nB
-         3Dmnq1hWVw2OtLpqFbrobdPIzQdI6ToP5dDKTYCw+2aN19QxxaCpiDRYjGdVut3IKgka
-         UcAU9ds6ptdbeEofMOVSssaIsRQQDlYZj7OaxJVW2r68tldVknj85ypX7GI8gK2pY25F
-         qSVw==
-X-Gm-Message-State: AOAM5308bJqG2gfX0spHaus6NxWoBuhD3UywHuuIJD5ojHJms5Q6bxZF
-        n6LnJsgkhkIaWa3pJvieVGLAGxvkOx2EmS60ClagJ3/Kjp/DMZ2D7YfrBiBZEzsBpeO0UJzB6/u
-        lxiR2JzOI5tv5gtmnUAqn2g1E
-X-Received: by 2002:aa7:cb97:: with SMTP id r23mr9506799edt.106.1616684835557;
-        Thu, 25 Mar 2021 08:07:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJydmbo8ZKmhunzAF9C+bbWnixIH0gXNfgg9UZR6Jx+UkTqtnCZVem1uAMv94NPAhu43ZR44SA==
-X-Received: by 2002:aa7:cb97:: with SMTP id r23mr9506770edt.106.1616684835320;
-        Thu, 25 Mar 2021 08:07:15 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id oy8sm2537376ejb.58.2021.03.25.08.07.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 08:07:14 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state control supports
-To:     "Yuan, Perry" <Perry.Yuan@dell.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "Limonciello, Mario" <Mario.Limonciello@dell.com>
-Cc:     "pobrn@protonmail.com" <pobrn@protonmail.com>,
-        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-References: <20210301093834.19524-1-Perry_Yuan@Dell.com>
- <20210308172409.GF4656@sirena.org.uk>
- <SJ0PR19MB4528847687FEEE4A4DED8E3F84659@SJ0PR19MB4528.namprd19.prod.outlook.com>
- <604693cc-08c7-2b5f-632a-58ed537c54a0@perex.cz>
- <5cad3045-7948-3282-c999-926095818d5f@redhat.com>
- <SJ0PR19MB452851406C9B48DE688F1C1384629@SJ0PR19MB4528.namprd19.prod.outlook.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <11d7916c-5e8a-f3a2-5906-ed007ed146a3@redhat.com>
-Date:   Thu, 25 Mar 2021 16:07:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <SJ0PR19MB452851406C9B48DE688F1C1384629@SJ0PR19MB4528.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        Thu, 25 Mar 2021 11:10:09 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PF5NOS076836;
+        Thu, 25 Mar 2021 11:09:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=rravADpvfL0QIpujNbNT4TsZjUwxpTDGUfrXBRxDamg=;
+ b=CqxNirFAAmoKb+ExR3AYjFmjJ1aO9lcbYCUlvTdRD/5Ba2upzBGtIAAFrwvWN7mB9/lh
+ 1yKnhebjCl78NkELKLmRqp8p6xssl3K85c/W/ZevnxtdZ0pmdDhI77bqe0w2LkksnhkZ
+ Ky4TP9on1jSrJECfQpXN14BZR+WlcMOrRiHh1Wvw+hojC65HqDf6sFH858BSdkANaCCi
+ 2YtQBH0umOzTlBeOGfD2onttusZ040LMUuZnNawhEgMpZIvlMK8WUsUezuH6sQ8hF6+7
+ QVCGRH8nDlz5Ks1mtE6AURhWFe8HHznidnU7/DrJki5aGRaa/V/eQeId9zXpkKdjS20o AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37gvavhb3y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 11:09:41 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12PF5YeG077253;
+        Thu, 25 Mar 2021 11:09:40 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37gvavhb0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 11:09:39 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12PEvhBg027442;
+        Thu, 25 Mar 2021 15:09:34 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 37d9bptvqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 15:09:34 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12PF9V3N38142278
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 15:09:31 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BBA6C52050;
+        Thu, 25 Mar 2021 15:09:31 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.163.11.141])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 44CBD5204F;
+        Thu, 25 Mar 2021 15:09:29 +0000 (GMT)
+Message-ID: <39af167527d6478f86431c2ce29f68177700e82d.camel@linux.ibm.com>
+Subject: Re: [PATCH] ima: Fix the error code for restoring the PCR value
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        lihuafei <lihuafei1@huawei.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
+        "jmorris@namei.org" <jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        yangjihong <yangjihong1@huawei.com>,
+        Zhangjinhao <zhangjinhao2@huawei.com>
+Date:   Thu, 25 Mar 2021 11:09:27 -0400
+In-Reply-To: <0764ed04a7e84546a8b31fc13b264c47@huawei.com>
+References: <20210303032824.124112-1-lihuafei1@huawei.com>
+         <9df8d712-0e58-f95d-8f95-5feae2150b42@huawei.com>
+         <0764ed04a7e84546a8b31fc13b264c47@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-25_04:2021-03-24,2021-03-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 clxscore=1011 malwarescore=0
+ phishscore=0 impostorscore=0 spamscore=0 priorityscore=1501 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103250110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 3/25/21 3:11 PM, Yuan, Perry wrote:
-> Hi Hans
+On Wed, 2021-03-24 at 09:00 +0000, Roberto Sassu wrote:
+> > From: lihuafei
+> > Sent: Tuesday, March 23, 2021 2:41 PM
+> > ping. :-)
+> > 
+> > On 2021/3/3 11:28, Li Huafei wrote:
+> > > In ima_restore_measurement_list(), hdr[HDR_PCR].data is pointing to a
+> > > buffer of type u8, which contains the dumped 32-bit pcr value.
+> > > Currently, only the least significant byte is used to restore the pcr
+> > > value. We should convert hdr[HDR_PCR].data to a pointer of type u32
+> > > before fetching the value to restore the correct pcr value.
+> > >
+> > > Fixes: 47fdee60b47f ("ima: use ima_parse_buf() to parse measurements
+> > headers")
+> > > Signed-off-by: Li Huafei <lihuafei1@huawei.com>
 > 
->> -----Original Message-----
->> From: Hans de Goede <hdegoede@redhat.com>
->> Sent: Monday, March 22, 2021 11:02 PM
->> To: Jaroslav Kysela; Yuan, Perry; Mark Brown; pierre-
->> louis.bossart@linux.intel.com; Limonciello, Mario
->> Cc: pobrn@protonmail.com; oder_chiou@realtek.com; tiwai@suse.com;
->> mgross@linux.intel.com; lgirdwood@gmail.com; alsa-devel@alsa-project.org;
->> linux-kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org
->> Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state control
->> supports
->>
->>
->> [EXTERNAL EMAIL]
->>
->> Hi,
->>
->> On 3/22/21 3:37 PM, Jaroslav Kysela wrote:
->>> Dne 22. 03. 21 v 10:25 Yuan, Perry napsal(a):
->>>> Hi Mark:
->>>>
->>>>> -----Original Message-----
->>>>> From: Mark Brown <broonie@kernel.org>
->>>>> Sent: Tuesday, March 9, 2021 1:24 AM
->>>>> To: Yuan, Perry
->>>>> Cc: pobrn@protonmail.com; pierre-louis.bossart@linux.intel.com;
->>>>> oder_chiou@realtek.com; perex@perex.cz; tiwai@suse.com;
->>>>> hdegoede@redhat.com; mgross@linux.intel.com; Limonciello, Mario;
->>>>> lgirdwood@gmail.com; alsa-devel@alsa-project.org; linux-
->>>>> kernel@vger.kernel.org; platform-driver-x86@vger.kernel.org
->>>>> Subject: Re: [PATCH v4 2/2] ASoC: rt715:add micmute led state
->>>>> control supports
->>>>>
->>>>> On Mon, Mar 01, 2021 at 05:38:34PM +0800, Perry Yuan wrote:
->>>>>
->>>>>> +	/* Micmute LED state changed by muted/unmute switch */
->>>>>> +	if (mc->invert) {
->>>>>> +		if (ucontrol->value.integer.value[0] || ucontrol-
->>>>>> value.integer.value[1]) {
->>>>>> +			micmute_led = LED_OFF;
->>>>>> +		} else {
->>>>>> +			micmute_led = LED_ON;
->>>>>> +		}
->>>>>> +		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
->>>>>> +	}
->>>>>
->>>>> These conditionals on inversion seem weird and counterintuitive.  If
->>>>> we're going with this approach it would probably be clearer to
->>>>> define a custom operation for the affected controls that wraps the
->>>>> standard one and adds the LED setting rather than keying off invert like
->> this.
->>>>
->>>> Currently the sof soundwire driver has no generic led control yet.
->>>> This patch can handle the led control needs for MIC mute LED, definitely
->> the patch is a short term solution.
->>>> There is a feature request discussion when we started to implement this
->> solution.
->>>> https://github.com/thesofproject/linux/issues/2496#issuecomment-
->> 71389
->>>> 2620
->>>>
->>>> The workable way for now is that we put the LED mute control to the
->> codec driver.
->>>> When there is new and full sound LED solution implemented, this part will
->> be also optimized.
->>>> The Hardware privacy feature needs this patch to handle the Mic mute led
->> state change.
->>>> Before that full solution ready in kernel, could we take this as short term
->> solution?
->>>
->>> Perry, it's about the machine detection. Your code is too much generic
->>> even for the top-level LED trigger implementation. We need an extra
->>> check, if the proper LED's are really controlled on the specific
->>> hardware. Other hardware may use RT715 for a different purpose. Use
->>> DMI / ACPI checks to detect this hardware and don't misuse the inversion
->> flag to enable this code.
->>
->> I think this would be a goo candidate for the new generic LED handling:
->>
->> https://lore.kernel.org/alsa-devel/20210317172945.842280-1-
->> perex@perex.cz/
->>
->> And then use a udev-rule + hwdb and/or UCM profiles to configure the LED
->> trigger for specific models from userspace ?
->>
->> Regards,
->>
->> Hans
->>
->>
->>
-> Because the SOF SDW design has no mic mute led control yet.
-> So I add one short term solution to make Dell privacy working for now 
-> Definitely , that is new solution I can add my patch on that to test as one user case .
-> We really need to take the short term solution work for some system which support new SOF soundwire hardware which have  dependence on the MIC mute feature
-> Meanwhile we can continue working on the new  "udev-rule + hwdb and/or UCM profiles" solution as to replace this one.
-> If we agree that, I will submit another V6 addressing new feedback. 
+> Hi Li Huafei
+> 
+> yes, correct. Thanks for the patch.
+> 
+> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-The triggering of the LED trigger and the code registering the led_classdev
-are in 2 separate subsystems; and should be merged separately.
+The patch set is now queued in next-integrity-testing.
 
-If you post a new version of patch 1/2 addressing my review remarks then
-I can merge that.
+thanks,
 
-For merging the sound side of this you need to talk to the sound folks
-(Jaroslav Kysela, Takashi Iwai, Mark Brown for files under sound/soc).
-
-Regards,
-
-Hans
+Mimi
 
