@@ -2,158 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC9B348A44
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBE7348A47
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhCYHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:39:02 -0400
-Received: from out28-170.mail.aliyun.com ([115.124.28.170]:35317 "EHLO
-        out28-170.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCYHic (ORCPT
+        id S229744AbhCYHkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:40:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhCYHjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:38:32 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08722985|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.129203-0.000181781-0.870616;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Jq-HMsz_1616657908;
-Received: from 192.168.88.129(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Jq-HMsz_1616657908)
-          by smtp.aliyun-inc.com(10.147.40.44);
-          Thu, 25 Mar 2021 15:38:29 +0800
-Subject: Re: [PATCH v3 02/10] pinctrl: Ingenic: Add support for read the pin
- configuration of X1830.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1615975084-68203-3-git-send-email-zhouyanjie@wanyeetech.com>
- <YXTDQQ.OYIQVLSUOAPB3@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <a278847d-da2d-eeec-98d0-4bbca0b90cee@wanyeetech.com>
-Date:   Thu, 25 Mar 2021 15:38:28 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Thu, 25 Mar 2021 03:39:42 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EF6CC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:39:42 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id x27so720886qvd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=55u5Yc65Bxv+UbNocPWeMvSZQF1sJaJoYpbFW9jy0Co=;
+        b=kdEgL9YyR0l316YAq+cfnhXQ/w2pQuXgaci7bO2KBuJuvGIG6sWUqvtptKBdl6MxEA
+         9bDTNsHw9Fr3hv1N/ShFznT5n2iTYeHhS6wQzVGOoNafc8rYOIbcUyEdotig+Qi+GrIb
+         Om0KtglVQch7itYaG8xqr0me+fXgYRFkW2z0rynxNAkKXXXFpnYre+pFTFQ7/7ntkgE7
+         A4fxsKqDb+CR5kYNKTxCbJ2BPYeShUQeHFEZdkfZRuSYEU3jxHtY0uVMOZTvRsrbM25+
+         7wQIbKqQDSwRp6ZxfEIh3R7X387CBUhtBwa8kGI2WFhDuM9io3zzMke7BkEgSSjjKThq
+         0OZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=55u5Yc65Bxv+UbNocPWeMvSZQF1sJaJoYpbFW9jy0Co=;
+        b=HK4frw8Gp4tJ4bkAupOMgZJFbGx/oyl6k10ElqDVVXH4xkKfc3gakEtt7uxwNJzVhk
+         +SjDQt8YQb694KnCMSLrcxGzWl8AtU1Bt5s2VltYVjMGbqTs6Z1/pFKlR4zf2D7Uy1Lw
+         GUR2WRO9mLCtlti7uC8M0xOUNAjYqYqNdlj4DV1sJoGIlhIDhhNxODaPJyieXW41lBDR
+         pBdFXuy9zFATfT5AuFDi2q9iZCpk6jY63lNjmhdVAZHjZxvv2ACGppXePflMo794xVbG
+         QPJXZYanMKXaptTHAL7Nfpp7pxeyAq32pNk5IedPmEe2wGYMX/lpBH8oTEy7K28lFyr1
+         tvCw==
+X-Gm-Message-State: AOAM533OWZVNYONuy8rfkPBcmtsD8fVmWCTBhBsGiqF+gL/nMaVlDui0
+        DmSa1qAsdjgZxf5AwZkdB3OcpFbBMcHnwyxXzTrKqA==
+X-Google-Smtp-Source: ABdhPJx1jyA9I6ZZ0Y4L4xLi4PlTOW+KZzNs3iqB2RPUGRFZAX/86alVqHCIcCVm17Ic9/4vAu4Xy293EIREZJl/1pA=
+X-Received: by 2002:ad4:410d:: with SMTP id i13mr6814280qvp.44.1616657981372;
+ Thu, 25 Mar 2021 00:39:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YXTDQQ.OYIQVLSUOAPB3@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210323064923.2098711-1-dvyukov@google.com> <CANn89iJOignHVg-QOtEB_RVqca=pMczJv-k=CEtPRH0d4fSdgA@mail.gmail.com>
+In-Reply-To: <CANn89iJOignHVg-QOtEB_RVqca=pMczJv-k=CEtPRH0d4fSdgA@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 25 Mar 2021 08:39:30 +0100
+Message-ID: <CACT4Y+YjJBkbi-u6VTikhHO4OjXhdKnQTqDiHxB5BEZG2Qn7qg@mail.gmail.com>
+Subject: Re: [PATCH v2] net: make unregister netdev warning timeout configurable
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Mar 24, 2021 at 10:40 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Tue, Mar 23, 2021 at 7:49 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > netdev_wait_allrefs() issues a warning if refcount does not drop to 0
+> > after 10 seconds. While 10 second wait generally should not happen
+> > under normal workload in normal environment, it seems to fire falsely
+> > very often during fuzzing and/or in qemu emulation (~10x slower).
+> > At least it's not possible to understand if it's really a false
+> > positive or not. Automated testing generally bumps all timeouts
+> > to very high values to avoid flake failures.
+> > Add net.core.netdev_unregister_timeout_secs sysctl to make
+> > the timeout configurable for automated testing systems.
+> > Lowering the timeout may also be useful for e.g. manual bisection.
+> > The default value matches the current behavior.
+> >
+> > Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> > Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
+> > Cc: netdev@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> >
+> > ---
+> > Changes since v1:
+> >  - use sysctl instead of a config
+> > ---
+>
+> >         },
+> > +       {
+> > +               .procname       = "netdev_unregister_timeout_secs",
+> > +               .data           = &netdev_unregister_timeout_secs,
+> > +               .maxlen         = sizeof(unsigned int),
+> > +               .mode           = 0644,
+> > +               .proc_handler   = proc_dointvec_minmax,
+> > +               .extra1         = SYSCTL_ZERO,
+> > +               .extra2         = &int_3600,
+> > +       },
+> >         { }
+> >  };
+> >
+>
+> If we allow the sysctl to be 0, then we risk a flood of pr_emerg()
+> (one per jiffy ?)
 
-On 2021/3/23 上午1:58, Paul Cercueil wrote:
->
->
-> Le mer. 17 mars 2021 à 17:57, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> Add X1830 support in "ingenic_pinconf_get()", so that it can read the
->> configuration of X1830 SoC correctly.
->>
->> Fixes: d7da2a1e4e08 ("pinctrl: Ingenic: Add pinctrl driver for X1830.")
->>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->>
->> Notes:
->>     v2:
->>     New patch.
->>
->>     v2->v3:
->>     1.Add fixes tag.
->>     2.Adjust the code, simplify the ingenic_pinconf_get() function.
->>
->>  drivers/pinctrl/pinctrl-ingenic.c | 38 
->> ++++++++++++++++++++++++++++++--------
->>  1 file changed, 30 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
->> b/drivers/pinctrl/pinctrl-ingenic.c
->> index 05dfa0a..1d43b98 100644
->> --- a/drivers/pinctrl/pinctrl-ingenic.c
->> +++ b/drivers/pinctrl/pinctrl-ingenic.c
->> @@ -2109,26 +2109,48 @@ static int ingenic_pinconf_get(struct 
->> pinctrl_dev *pctldev,
->>      enum pin_config_param param = pinconf_to_config_param(*config);
->>      unsigned int idx = pin % PINS_PER_GPIO_CHIP;
->>      unsigned int offt = pin / PINS_PER_GPIO_CHIP;
->> -    bool pull;
->> +    unsigned int bias;
->> +    bool pull, pullup, pulldown;
->>
->> -    if (jzpc->info->version >= ID_JZ4770)
->> -        pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
->> -    else
->> -        pull = !ingenic_get_pin_config(jzpc, pin, 
->> JZ4740_GPIO_PULL_DIS);
->> +    if (jzpc->info->version >= ID_X1830) {
->> +        unsigned int half = PINS_PER_GPIO_CHIP / 2;
->> +        unsigned int idxh = pin % half * 2;
->
-> I had to look up operator precedence in C, '*' and '%' have the same 
-> priority so this reads left-to-right.
->
-> I'd suggest adding parentheses around the '%' to make it more obvious.
->
+My reasoning was that it's up to the user. Some spammy output on the
+console for rare events is probably not the worst way how root can
+misconfigure the kernel :)
+It allows one to check (more or less) if we are reaching
+unregister_netdevice with non-zero refcount, which may be useful for
+some debugging maybe.
+But I don't mind changing it to 1 (or 5) if you prefer. On syzbot we
+only want to increase it.
 
-Sure.
-
-
-> With that:
+> If you really want the zero value, you need to change pr_emerg() to
+> pr_emerg_ratelimited()
 >
-> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
->
-> Cheers,
-> -Paul
->
->> +
->> +        if (idx < half)
->> +            regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
->> +                    X1830_GPIO_PEL, &bias);
->> +        else
->> +            regmap_read(jzpc->map, offt * jzpc->info->reg_offset +
->> +                    X1830_GPIO_PEH, &bias);
->> +
->> +        bias = (bias >> idxh) & (GPIO_PULL_UP | GPIO_PULL_DOWN);
->> +
->> +        pullup = (bias == GPIO_PULL_UP) && 
->> (jzpc->info->pull_ups[offt] & BIT(idx));
->> +        pulldown = (bias == GPIO_PULL_DOWN) && 
->> (jzpc->info->pull_downs[offt] & BIT(idx));
->> +
->> +    } else {
->> +        if (jzpc->info->version >= ID_JZ4770)
->> +            pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
->> +        else
->> +            pull = !ingenic_get_pin_config(jzpc, pin, 
->> JZ4740_GPIO_PULL_DIS);
->> +
->> +        pullup = pull && (jzpc->info->pull_ups[offt] & BIT(idx));
->> +        pulldown = pull && (jzpc->info->pull_downs[offt] & BIT(idx));
->> +    }
->>
->>      switch (param) {
->>      case PIN_CONFIG_BIAS_DISABLE:
->> -        if (pull)
->> +        if (pullup || pulldown)
->>              return -EINVAL;
->>          break;
->>
->>      case PIN_CONFIG_BIAS_PULL_UP:
->> -        if (!pull || !(jzpc->info->pull_ups[offt] & BIT(idx)))
->> +        if (!pullup)
->>              return -EINVAL;
->>          break;
->>
->>      case PIN_CONFIG_BIAS_PULL_DOWN:
->> -        if (!pull || !(jzpc->info->pull_downs[offt] & BIT(idx)))
->> +        if (!pulldown)
->>              return -EINVAL;
->>          break;
->>
->> -- 
->> 2.7.4
->>
->
+> Also, please base your patch on net-next, to avoid future merge conflicts
+> with my prior patch add2d7363107 "net: set initial device refcount to 1".
