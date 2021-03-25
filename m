@@ -2,61 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A6D3491C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2943491C4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhCYMRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:17:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33256 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230343AbhCYMR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:17:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A165661A10;
-        Thu, 25 Mar 2021 12:17:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616674642;
-        bh=kkFyY9n0VOz+8ngV5G7XeEy2AAU13smXdeCJVNnyhtE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1rBxlV9BZc9jyAT8+4JpDSnwtn7ZFBFhLg9lDNsrrrHAtO7waKcEQPZRbrLWb7IU/
-         wqzYKqPy/rZDPnnuajnwo4uEnoWw2pT66bVupTCh1Pb5din2hDy/eMRQycRe5N+eDY
-         4EmT13/oOCThGqkE9zVogYYppn1qnwonBDVlcN20=
-Date:   Thu, 25 Mar 2021 13:17:19 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
-Subject: Re: linux-next: Tree for Mar 24 (drivers/tty/serial/pch_uart.c)
-Message-ID: <YFx/T86yuA8+OogL@kroah.com>
-References: <20210324210718.0c2e6d62@canb.auug.org.au>
- <635dac0e-a82c-d3d0-c03b-e9d87585b39a@infradead.org>
+        id S230210AbhCYMTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:19:23 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:57278 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229659AbhCYMTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:19:02 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT8usf1xgr7AAAA--.2327S3;
+        Thu, 25 Mar 2021 20:18:52 +0800 (CST)
+Subject: Re: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
+ <alpine.DEB.2.21.2103220540591.21463@angie.orcam.me.uk>
+ <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
+ <20210325101712.GA6893@alpha.franken.de>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Christoph Hellwig <hch@lst.de>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <38cf6f7c-28dd-20a0-8193-776fa7bdb83a@loongson.cn>
+Date:   Thu, 25 Mar 2021 20:18:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <635dac0e-a82c-d3d0-c03b-e9d87585b39a@infradead.org>
+In-Reply-To: <20210325101712.GA6893@alpha.franken.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxT8usf1xgr7AAAA--.2327S3
+X-Coremail-Antispam: 1UD129KBjvJXoWruF47Gry5tFW7WrW7Kw48WFg_yoW8JrWkp3
+        4qyFsrtF42gry3WFs2y34xWr17trykKrWUWF4UtF1YkF909r95Gw40gw1agF1UXr4Iv3yI
+        9Fy8Wa40gFyFy37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
+        IFyTuYvjfUeWlkDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 08:54:15AM -0700, Randy Dunlap wrote:
-> On 3/24/21 3:07 AM, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20210323:
-> > 
-> 
-> 
-> on x86_64:
-> # CONFIG_DEBUG_FS is not set
-> 
-> 
-> ../drivers/tty/serial/pch_uart.c: In function ‘pch_uart_init_port’:
-> ../drivers/tty/serial/pch_uart.c:1815:9: error: ‘port_regs_ops’ undeclared (first use in this function); did you mean ‘kobj_ns_ops’?
->         &port_regs_ops);
-> 
+On 03/25/2021 06:17 PM, Thomas Bogendoerfer wrote:
+> On Mon, Mar 22, 2021 at 03:12:59PM +0800, Tiezhu Yang wrote:
+>> On 03/22/2021 12:46 PM, Maciej W. Rozycki wrote:
+>>> On Thu, 18 Mar 2021, Tiezhu Yang wrote:
+>>>
+>>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+>>>> index 160b3a8..4b94ec7 100644
+>>>> --- a/arch/mips/Kconfig
+>>>> +++ b/arch/mips/Kconfig
+>>>> @@ -6,6 +6,7 @@ config MIPS
+>>>>    	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
+>>>>    	select ARCH_HAS_FORTIFY_SOURCE
+>>>>    	select ARCH_HAS_KCOV
+>>>> +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+>>>    Hmm, documentation on ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE seems rather
+>>> scarce, but based on my guess shouldn't this be "if !EVA"?
+>>>
+>>>     Maciej
+>> I do not quite know what the effect if MIPS EVA (Enhanced Virtual
+>> Addressing)
+>> is set, I saw that ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be
+>> restricted
+>> to archs with non-overlapping address ranges.
+>>
+>> I wonder whether MIPS EVA will generate overlapping address ranges?
+> they can overlap in EVA mode.
+>
+>> If yes, it is better to make ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE depend
+>> on !EVA on MIPS.
+> Could please add the change ?
 
-Should already be fixed now, thanks.
+OK, thank you, I will do it soon.
 
-greg k-h
+>
+> Thomas.
+>
+
