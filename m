@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45518348B4D
+	by mail.lfdr.de (Postfix) with ESMTP id B4FCE348B4E
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhCYIOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S229890AbhCYIOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:14:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhCYIOE (ORCPT
+        with ESMTP id S229519AbhCYIOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:14:04 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FB0C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:14:03 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id n138so1227003lfa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:14:03 -0700 (PDT)
+        Thu, 25 Mar 2021 04:14:07 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52919C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:14:07 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id w3so1459834ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:14:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MiLTBuOYON0mmjwVXAuCho4Q8c3JY+XxyqaaZQopoXU=;
-        b=q6I10zPF8jYgHSj89yolaw2lySm4+tAhYarqBWhZ/q1+cAh9X+5nIFfc5xeZR7+9/d
-         v0I5OgWmXMIaTLmXBXo03CEKFwdbkixAgNaLpX7cNHzSDH9e+FxefAx8h9vg48UXFzJI
-         coJc8zBPxlcmcdPZwCE3iyLkxMPPnSD2/WtrX/sOJ636ewvw7oVYIAdag5GaRhAb3ElY
-         ETLrlFf4L1T1W9z1Ivz8t6YqBHicWj4JqKwM6bl08uYCmlld59diBcHrXxx7E8N3+8AW
-         tjOvHe8Z5hFcZhvdQ8f7zq5SIMQ88J202lzQCi6HGbCDy7iHpcxEy5eZJUiCOh61Xnj6
-         irXg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=78aguTeECvUqJlFCjkOA3FPCTCA4cU4wQo18ZlFqVds=;
+        b=A7YyUkwtr95GFkpeaWC4lArNds0PM2j+ltyi94/BVLKquE2TPOuZoUIXYvTSWNp9yy
+         I8wY5UUIXbbJepSAEs0aG4Cx1UrU4YNSmKKTbyTZ/hQRQ3/mg6tY/OL0dFumP/mgMOOj
+         ktomNhRkhvDRI86UBoXPx2nczQ0dp9K+79Lmd6OVSTJUKeLAxQ5WZkC1Es9f6NJxi5+k
+         3V3zpH8sUBYfhDsoef/Gn7JwUtYcxLjLuOVMtLJHIGor4cLhJT7CurAQ4T6H2pKJodQn
+         Mq9hz7cWghbRpCEcKp9rHcDca1KvfK+oiFKBopJhojtquG8C9W4p2u1vzy9yt2pNKwBC
+         YzeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MiLTBuOYON0mmjwVXAuCho4Q8c3JY+XxyqaaZQopoXU=;
-        b=WBmtFrtDHLn17rnsh7dawkvuqR+8A15D99aHpwCS9nTJexzc6Cex9XgF+ekXyoz8SN
-         Jn6EoBMFzFXI6ysNjbA+XKsSQx21W6W/2ci6TI4XBHqvt1BJp3dePpRV17HTawqm54P+
-         L1uy7E3+kByqHrMWU3BIVsUL6mflEsTCvSNdExh+MIJsvpkas1WEe084tcdA2GE6r9cZ
-         FPe1LrGXaoMAw+3I/63PBwaELicxw1kTZ/oHiqUYkcUcL2aKuKsOgD+koJpzZXRQEdBn
-         MJ7F2Z3XhFtiJt5ZGvsRBphke77xTJ4YwawjRl2DUszATCwP45kSJCJL+JjRI1mNkGxY
-         Omqg==
-X-Gm-Message-State: AOAM532D4LcajRJsAS0RV3iDYWswQxtP9B7EpurJkL9Q6qzY++oxP8Mb
-        xeXaFONGd4zETAoDRzzfbv4jzLpvjPtGvtI7NHGqDg==
-X-Google-Smtp-Source: ABdhPJyZYg4I5cQP6CTtXyp/9MqAFeYPZVw5Y2tnnAEVdhSwOdGGnFgN/R1jBUmYq9S7/CfkJklFEW6hiGcKf3BWIFo=
-X-Received: by 2002:a05:6512:c0b:: with SMTP id z11mr4413581lfu.586.1616660042259;
- Thu, 25 Mar 2021 01:14:02 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=78aguTeECvUqJlFCjkOA3FPCTCA4cU4wQo18ZlFqVds=;
+        b=a9c0MuOwP4qCwtvc2sh+eiE18jyC3BikXxLttXyvV/8y5rs6bxx1zwPhEdrqUAg7e4
+         E2aa4tlIAG2i/+ShQloCH13IZ+Ah7Q2y/VaW8Ab2M/kv07tK9EFOTzE3KYGDH69ALiAt
+         ieMgnbvobRjciUT4o1HKZ0ngHIXDw7nn/RtoLwRQukkPYMh+fenjGb8Dv6Go6g4j9HKv
+         WPMXyiA5fmxgOzx032MqT2TaNR0oYKnFiRR19fFWb078F895+s9EYuuVydK1C+h/2bzN
+         ookM/F3ijxPJ0NF4cmkxK83lrCrdcp4Sa591XZNLH+PFhdty0o5p3VKV1iHW4owDkvPz
+         mPNQ==
+X-Gm-Message-State: AOAM533PEYNOTHfkiC257pQrKoYmzcQVx2WmsCwOVyBHJthGs95lOybJ
+        2ks9p9Xv8bRitxTlZG0DD7jHVA==
+X-Google-Smtp-Source: ABdhPJxu076cJzW6tB5muGPClE9084UQpEb68XbJV1pH77d5TlcH9qR+ghus+bT1v176SEyeawViaw==
+X-Received: by 2002:a17:906:4f02:: with SMTP id t2mr7888320eju.121.1616660046098;
+        Thu, 25 Mar 2021 01:14:06 -0700 (PDT)
+Received: from [192.168.1.54] (hst-208-220.medicom.bg. [84.238.208.220])
+        by smtp.googlemail.com with ESMTPSA id nd36sm2056890ejc.21.2021.03.25.01.14.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 01:14:05 -0700 (PDT)
+Subject: Re: linux-next: manual merge of the opp tree with the v4l-dvb tree
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Yangtao Li <tiny.windzz@gmail.com>
+References: <20210323112705.3094525d@canb.auug.org.au>
+ <20225c7e-1151-7865-2bc6-a1e5694c3d65@linaro.org>
+ <20210325042530.5clexogqy77v75sm@vireshk-i7>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <49a8bca3-d18b-9977-23c2-1dba6e61ef85@linaro.org>
+Date:   Thu, 25 Mar 2021 10:14:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com> <20210317151928.41544-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210317151928.41544-2-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 25 Mar 2021 09:13:51 +0100
-Message-ID: <CACRpkdaZwAg4X9QT4QMR2GSH6Cekc7Xuk+-pqhCyON-Y3cnCrA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] gpio: sch: Add edge event support
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210325042530.5clexogqy77v75sm@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 4:19 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Hi Viresh,
 
-> From: Jan Kiszka <jan.kiszka@siemens.com>
->
-> Add the required infrastructure to enable and report edge events
-> of the pins to the GPIO core. The actual hook-up of the event interrupt
-> will happen separately.
->
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> Co-developed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On 3/25/21 6:25 AM, Viresh Kumar wrote:
+> On 24-03-21, 16:49, Stanimir Varbanov wrote:
+>> Thanks Stephen!
+>>
+>> On 3/23/21 2:27 AM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Today's linux-next merge of the opp tree got a conflict in:
+>>>
+>>>   drivers/media/platform/qcom/venus/pm_helpers.c
+>>>
+>>> between commit:
+>>>
+>>>   08b1cf474b7f ("media: venus: core, venc, vdec: Fix probe dependency error")
+>>>
+>>> from the v4l-dvb tree and commit:
+>>>
+>>>   857219ae4043 ("media: venus: Convert to use resource-managed OPP API")
+>>>
+>>> from the opp tree.
+>>>
+>>> I fixed it up (see below) and can carry the fix as necessary. This
+>>> is now fixed as far as linux-next is concerned, but any non trivial
+>>> conflicts should be mentioned to your upstream maintainer when your tree
+>>> is submitted for merging.  You may also want to consider cooperating
+>>> with the maintainer of the conflicting tree to minimise any particularly
+>>> complex conflicts.
+>>>
+>>
+>> I don't know what is the best solution here.
+>>
+>> Viresh, Can I take the OPP API changes through media-tree to avoid
+>> conflicts?
+> 
+> I already suggested something similar earlier, and I was expecting
+> Thierry to respond to that.. Not sure who should pick those patches.
+> 
+> https://lore.kernel.org/lkml/20210318103250.shjyd66pxw2g2nsd@vireshk-i7/
 
-I can't believe it that nobody added irq support to this driver for 10
-years given how widely deployed it is! (Good work.)
+I guess you meant this thread.
 
-Don't you need to add
+https://lore.kernel.org/lkml/20210314163408.22292-1-digetx@gmail.com/
 
-select GPIOLIB_IRQCHIP
+> 
+> Can you please respond to this series then ?
+> 
 
-to Kconfig? So the gpio_chip contains the .irq member you're using.
+Done.
 
-> +       sch->irqchip.name = "sch_gpio";
-> +       sch->irqchip.irq_ack = sch_irq_ack;
-> +       sch->irqchip.irq_mask = sch_irq_mask;
-> +       sch->irqchip.irq_unmask = sch_irq_unmask;
-> +       sch->irqchip.irq_set_type = sch_irq_type;
-> +
-> +       sch->chip.irq.chip = &sch->irqchip;
-> +       sch->chip.irq.num_parents = 0;
-> +       sch->chip.irq.parents = NULL;
-> +       sch->chip.irq.parent_handler = NULL;
-> +       sch->chip.irq.default_type = IRQ_TYPE_NONE;
-> +       sch->chip.irq.handler = handle_bad_irq;
-
-I always add a local variable like:
-
-struct gpio_irq_chip *girq;
-
-And assign with the arrow, so as to make it easier to read:
-
-girq->parent_handler = NULL
-
-etc.
-
-+/- the above:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+-- 
+regards,
+Stan
