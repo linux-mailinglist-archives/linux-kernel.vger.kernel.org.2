@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0611C348E5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC713348E60
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhCYKwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230151AbhCYKv6 (ORCPT
+        id S229898AbhCYKww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:52:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230151AbhCYKwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:51:58 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B67C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:51:57 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id w8so863830pjf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WDOizguRq8drFQk38ZzODxVZB2x4EMxsWev3Revxw0Y=;
-        b=zYoH9SeD75+2AEee+MIyjm+CGETXAGt5ool7XVwt5VHXTCeLsNfwfxPW8ES+c3w+nX
-         fW9GlSqKq13/anpmrmCSJW/kZZhthS1o+wjnS3Tn4jDA1nuT78dfI3e+MD3fHlM1cP0V
-         XzMGwmppRoygu40/SU1OZoMqka7aeCURyD6ONSlWLVZpcRc/U/uTbOoKea4Ohj9maMaD
-         x8I/7XkC7tgTemyUHgg36Afo5H4okssw7PzL3Y/94+5UlBRLS45739+9MRjVisZQ4Tpu
-         aozx8K8B9sso8mDfZy9GB/BKvsYKIpBm3XUnnOQQ8ddLDuk1eb05haiWBFc43OrLOucg
-         sTEQ==
+        Thu, 25 Mar 2021 06:52:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616669561;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bpc7MIQzDWxL2dXyalkYoq9pW+R2aTSeVpfg3G/26SY=;
+        b=KxJhd9+GqExnOCCl/3aGrqpPL6tlIkqevjzp4gCiTt/d1MQPkLk++z0G51QvQn7ks+X1fC
+        zCTNJwf3YOTId/YW1EDSywjFviAbFoYLiyIP+glCD7CmBIczEWJ+fardUjjnIyRYDDNUXA
+        mKWq5FjJcRqzlo+h8OrjcfJll8ZFruo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-iheQ0nTOOfyP9bo7_BMYng-1; Thu, 25 Mar 2021 06:52:37 -0400
+X-MC-Unique: iheQ0nTOOfyP9bo7_BMYng-1
+Received: by mail-wr1-f71.google.com with SMTP id n16so2483068wro.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:52:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WDOizguRq8drFQk38ZzODxVZB2x4EMxsWev3Revxw0Y=;
-        b=fUABasP3D1iSidSOdqRYL79U1YL8+58u7ZaYuTdDQR4Hc2mJMCsiQS/NKa7DLal4C8
-         BkQixKO54OarUJQbeRmDTzUzGfnRRFnV0l8DSD7mnIgHveM2jWGFdLTps6ZqvWZLSaDr
-         nkkvglFUD6JpIxc0ZQACI8z5hKCLDpNko9KR3OLOqQ0hkyXFRWgQ3zx+8omIJRbstnyl
-         QK8yCedbfYum4t1a2UrRb4l6LUlThKWv9HXJDcY3K9CNHRquInoov/1Q/LQ0VpTgcU2y
-         9zTxcRhMAxTkcEiomrRatHl59FBOwdopIor79sVgpJzxzyKuk3MR+3hOVdHRXp2cLt29
-         T8Yw==
-X-Gm-Message-State: AOAM533SX7q6NZFv8yAjuSmhf7o+NE+aZNSp3McRkb4ZWTPgYtAZqtTI
-        kJelvU54vcHwpKbTM/onE1z3gw==
-X-Google-Smtp-Source: ABdhPJzJ88HGwhjdHY9GCeoUb+nzbyyDI7PQS65b0tAaHdH75UzKxuxTPXW/sj/RZBXVjkKpy4Cz2A==
-X-Received: by 2002:a17:90a:a96:: with SMTP id 22mr8391016pjw.200.1616669517416;
-        Thu, 25 Mar 2021 03:51:57 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id p1sm5409324pfn.22.2021.03.25.03.51.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Mar 2021 03:51:57 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 16:21:55 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jian Dong <dj0227@163.com>
-Cc:     vireshk@kernel.org, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org, greybus-dev@lists.linaro.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, Jian Dong <dongjian@yulong.com>
-Subject: Re: [PATCH]  staging: greybus: fix fw is NULL but dereferenced
-Message-ID: <20210325105155.c52zc7mswoh33yjz@vireshk-i7>
-References: <1616667566-58997-1-git-send-email-dj0227@163.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Bpc7MIQzDWxL2dXyalkYoq9pW+R2aTSeVpfg3G/26SY=;
+        b=H7mHeBGXLH9DHULCYSM1l/8BIl3xLt19SVriyUOcJXgWuAxYmqkYP1oNiJHoH5uI/R
+         i4PCSGhXv7+13DgpK9E3tLMxZ2Z1jzd/nxJGkJfU5X3g2YkIi39PIakyHUnsA/tiiN8K
+         C19meZjmBcZaUaKrqxeXYCuiHwTDIiHjg/t0kSVg5TnZH5yoTEJtSEhMRv+3Cn/fYbWv
+         +/bLOPwWXfTLocK8TgBTurJuthfzVEnOOy2jAKTFMvMSvhsJ4nsQkWEz4B4NJ+kaVNVD
+         JBfAn36I6efIBca+t4SsHv7g7o4SQF09XGUpon0aBmYW78tfQjtogr/9AGFTXKP87B3o
+         cXDw==
+X-Gm-Message-State: AOAM532J2RV8LzLXBYgCj0TUXLkQIG8mHTCUtZKlWVx4fyrGCgvElpQg
+        smaLrObPw2/lJZumCLmO5PZhhxq2EgaGiogbF08F0lE2BT02RQQGgoh5xHGTPcHxjjLL2hKAaBh
+        zur+YhVV5O3mTadw31d4NWhL7
+X-Received: by 2002:adf:edc3:: with SMTP id v3mr7986370wro.79.1616669556763;
+        Thu, 25 Mar 2021 03:52:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzsUgct9zaROKZvtJ/6Sc0qgVzQx3QyxP9sxC9MzKk2U3lH3e1Vx2J/tCBc9a2L2dFxBbcUfg==
+X-Received: by 2002:adf:edc3:: with SMTP id v3mr7986338wro.79.1616669556579;
+        Thu, 25 Mar 2021 03:52:36 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id b65sm5957962wmh.4.2021.03.25.03.52.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 03:52:36 -0700 (PDT)
+Subject: Re: [PATCH] x86/tlb: Flush global mappings when KAISER is disabled
+To:     Borislav Petkov <bp@alien8.de>, Hugh Dickins <hughd@google.com>
+Cc:     Babu Moger <babu.moger@amd.com>, Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com>
+ <20210311214013.GH5829@zn.tnic>
+ <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com>
+ <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com>
+ <20210311235215.GI5829@zn.tnic>
+ <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
+ <20210324212139.GN5010@zn.tnic>
+ <alpine.LSU.2.11.2103241651280.9593@eggly.anvils>
+ <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
+ <20210325095619.GC31322@zn.tnic> <20210325102959.GD31322@zn.tnic>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <757ba616-c2df-1ae8-5682-1059b33c78f9@redhat.com>
+Date:   Thu, 25 Mar 2021 11:52:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616667566-58997-1-git-send-email-dj0227@163.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210325102959.GD31322@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-03-21, 18:19, Jian Dong wrote:
-> From: Jian Dong <dongjian@yulong.com>
+On 25/03/21 11:29, Borislav Petkov wrote:
+> diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+> index f5ca15622dc9..2bfa4deb8cae 100644
+> --- a/arch/x86/include/asm/tlbflush.h
+> +++ b/arch/x86/include/asm/tlbflush.h
+> @@ -245,12 +245,15 @@ static inline void __native_flush_tlb_single(unsigned long addr)
+>   	 * ASID.  But, userspace flushes are probably much more
+>   	 * important performance-wise.
+>   	 *
+> -	 * Make sure to do only a single invpcid when KAISER is
+> -	 * disabled and we have only a single ASID.
+> +	 * In the KAISER disabled case, do an INVLPG to make sure
+> +	 * the mapping is flushed in case it is a global one.
+>   	 */
+> -	if (kaiser_enabled)
+> +	if (kaiser_enabled) {
+>   		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
+> -	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
+> +		invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
+> +	} else {
+> +		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
+> +	}
+>   }
+>   
+>   static inline void __flush_tlb_all(void)
 > 
->  fixes coccicheck Error:
-> 
->  drivers/staging/greybus/bootrom.c:301:41-45: ERROR:
->  fw is NULL but dereferenced.
-> 
->  if procedure goto label directly, ret will be nefative, so the fw is NULL
->  and the if(condition) end with dereferenced fw. let's fix it.
 
-No, fw is accessed only for !ret case.
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 
-> Signed-off-by: Jian Dong <dongjian@yulong.com>
-> ---
->  drivers/staging/greybus/bootrom.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/bootrom.c b/drivers/staging/greybus/bootrom.c
-> index a8efb86..0439efa 100644
-> --- a/drivers/staging/greybus/bootrom.c
-> +++ b/drivers/staging/greybus/bootrom.c
-> @@ -246,7 +246,7 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
->  	struct gb_bootrom_get_firmware_response *firmware_response;
->  	struct device *dev = &op->connection->bundle->dev;
->  	unsigned int offset, size;
-> -	enum next_request_type next_request;
-> +	enum next_request_type next_request = NEXT_REQ_GET_FIRMWARE;
->  	int ret = 0;
->  
->  	/* Disable timeouts */
-> @@ -298,10 +298,10 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
->  
->  queue_work:
->  	/* Refresh timeout */
-> -	if (!ret && (offset + size == fw->size))
-> -		next_request = NEXT_REQ_READY_TO_BOOT;
-> -	else
-> +	if (!!ret)
->  		next_request = NEXT_REQ_GET_FIRMWARE;
-> +	else if (offset + size == fw->size)
-> +		next_request = NEXT_REQ_READY_TO_BOOT;
->  
->  	gb_bootrom_set_timeout(bootrom, next_request, NEXT_REQ_TIMEOUT_MS);
-
-The code is fine AFAICT, the coccicheck is buggy as it is detecting a
-bug here.
-
--- 
-viresh
