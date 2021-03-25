@@ -2,77 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31453488A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594513488A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhCYFqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 01:46:09 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48806 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229493AbhCYFpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 01:45:53 -0400
+        id S229676AbhCYFqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 01:46:11 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:20002 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhCYFqA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 01:46:00 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616651152; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=H3qPpljZpFYQCoabZShuEip3O75YDupnvePqgF/RtyY=; b=L2i85rOCZ5fNPLC1xyRt0DDVoQrWH9kewycqEVUM1XXfHScnzzF3f1CfLvQZB/Szt1hWmMqA
- 16rXRbONqIQ5C2lBfXj+3ugt7XW3Y97zr1TxObvWwJWfcp/nwnxw1M65HdtyxVbKmOI99AZ2
- lQfrBbOhL9RdN3qmLh05SkVukHg=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ s=smtp; t=1616651160; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=XAdG2pe22wdwAROVJ7SA4Os2DkiE2XGKKAT0Ug3Dp8w=; b=aF0NrRSyvqrFHXNUJWcoL4IvlRvk6VY/0Dbk2RU/ZM9XDEQAAx8CFerdxFXjUVSWUm/jWBte
+ NqEeTW3y2WZrnl4/G7D/6EbDyiM0KgedfGYMnhCIPyVxKAquMhshcuINiDsiTAnljXhwIF+f
+ bOOGCbcLbOskayy+Tj+NZ1zF4tc=
+X-Mailgun-Sending-Ip: 198.61.254.9
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 605c23893c13ce31ec360f97 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 05:45:45
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 605c238c1de5dd7b99272a09 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 05:45:48
  GMT
 Sender: rnayak=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44367C433ED; Thu, 25 Mar 2021 05:45:45 +0000 (UTC)
+        id 25479C433ED; Thu, 25 Mar 2021 05:45:48 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
 Received: from blr-ubuntu-173.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 87D1DC433C6;
-        Thu, 25 Mar 2021 05:45:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 87D1DC433C6
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 46CD9C43463;
+        Thu, 25 Mar 2021 05:45:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 46CD9C43463
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
 From:   Rajendra Nayak <rnayak@codeaurora.org>
 To:     srinivas.kandagatla@linaro.org, robh+dt@kernel.org
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, dianders@chromium.org,
-        Rajendra Nayak <rnayak@codeaurora.org>
-Subject: [PATCH 1/2] dt-bindings: nvmem: Add SoC compatible for sc7280
-Date:   Thu, 25 Mar 2021 11:14:15 +0530
-Message-Id: <1616651056-11844-1-git-send-email-rnayak@codeaurora.org>
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Ravi Kumar Bokka <rbokka@codeaurora.org>
+Subject: [PATCH 2/2] nvmem: qfprom: Add support for fuse blowing on sc7280
+Date:   Thu, 25 Mar 2021 11:14:16 +0530
+Message-Id: <1616651056-11844-2-git-send-email-rnayak@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1616651056-11844-1-git-send-email-rnayak@codeaurora.org>
+References: <1616651056-11844-1-git-send-email-rnayak@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document SoC compatible for sc7280
+Handle the differences across LDO voltage needed for blowing fuses,
+and the blow timer value, identified using a minor version of 15
+on sc7280.
 
 Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+Signed-off-by: Ravi Kumar Bokka <rbokka@codeaurora.org>
 ---
- Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Applies on top of https://lore.kernel.org/patchwork/patch/1376175/
 
-diff --git a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-index 992777c..861b205 100644
---- a/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-+++ b/Documentation/devicetree/bindings/nvmem/qcom,qfprom.yaml
-@@ -24,6 +24,7 @@ properties:
-           - qcom,msm8998-qfprom
-           - qcom,qcs404-qfprom
-           - qcom,sc7180-qfprom
-+          - qcom,sc7280-qfprom
-           - qcom,sdm845-qfprom
-       - const: qcom,qfprom
+ drivers/nvmem/qfprom.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+index 100d69d..d6d3f24 100644
+--- a/drivers/nvmem/qfprom.c
++++ b/drivers/nvmem/qfprom.c
+@@ -45,11 +45,13 @@ MODULE_PARM_DESC(read_raw_data, "Read raw instead of corrected data");
+  * @qfprom_blow_timer_value: The timer value of qfprom when doing efuse blow.
+  * @qfprom_blow_set_freq:    The frequency required to set when we start the
+  *                           fuse blowing.
++ * @qfprom_blow_uV:          LDO voltage to be set when doing efuse blow
+  */
+ struct qfprom_soc_data {
+ 	u32 accel_value;
+ 	u32 qfprom_blow_timer_value;
+ 	u32 qfprom_blow_set_freq;
++	int qfprom_blow_uV;
+ };
  
+ /**
+@@ -111,6 +113,15 @@ static const struct qfprom_soc_compatible_data sc7180_qfprom = {
+ 	.nkeepout = ARRAY_SIZE(sc7180_qfprom_keepout)
+ };
+ 
++static const struct nvmem_keepout sc7280_qfprom_keepout[] = {
++	{.start = 0x128, .end = 0x148},
++	{.start = 0x238, .end = 0x248}
++};
++
++static const struct qfprom_soc_compatible_data sc7280_qfprom = {
++	.keepout = sc7280_qfprom_keepout,
++	.nkeepout = ARRAY_SIZE(sc7280_qfprom_keepout)
++};
+ /**
+  * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
+  * @priv: Our driver data.
+@@ -168,6 +179,7 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
+ 				      struct qfprom_touched_values *old)
+ {
+ 	int ret;
++	int qfprom_blow_uV = priv->soc_data->qfprom_blow_uV;
+ 
+ 	ret = clk_prepare_enable(priv->secclk);
+ 	if (ret) {
+@@ -187,9 +199,9 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
+ 	 * a rail shared do don't specify a max--regulator constraints
+ 	 * will handle.
+ 	 */
+-	ret = regulator_set_voltage(priv->vcc, 1800000, INT_MAX);
++	ret = regulator_set_voltage(priv->vcc, qfprom_blow_uV, INT_MAX);
+ 	if (ret) {
+-		dev_err(priv->dev, "Failed to set 1.8 voltage\n");
++		dev_err(priv->dev, "Failed to set %duV\n", qfprom_blow_uV);
+ 		goto err_clk_rate_set;
+ 	}
+ 
+@@ -311,6 +323,14 @@ static const struct qfprom_soc_data qfprom_7_8_data = {
+ 	.accel_value = 0xD10,
+ 	.qfprom_blow_timer_value = 25,
+ 	.qfprom_blow_set_freq = 4800000,
++	.qfprom_blow_uV = 1800000,
++};
++
++static const struct qfprom_soc_data qfprom_7_15_data = {
++	.accel_value = 0xD08,
++	.qfprom_blow_timer_value = 24,
++	.qfprom_blow_set_freq = 4800000,
++	.qfprom_blow_uV = 1900000,
+ };
+ 
+ static int qfprom_probe(struct platform_device *pdev)
+@@ -379,6 +399,8 @@ static int qfprom_probe(struct platform_device *pdev)
+ 
+ 		if (major_version == 7 && minor_version == 8)
+ 			priv->soc_data = &qfprom_7_8_data;
++		if (major_version == 7 && minor_version == 15)
++			priv->soc_data = &qfprom_7_15_data;
+ 
+ 		priv->vcc = devm_regulator_get(&pdev->dev, "vcc");
+ 		if (IS_ERR(priv->vcc))
+@@ -405,6 +427,7 @@ static int qfprom_probe(struct platform_device *pdev)
+ static const struct of_device_id qfprom_of_match[] = {
+ 	{ .compatible = "qcom,qfprom",},
+ 	{ .compatible = "qcom,sc7180-qfprom", .data = &sc7180_qfprom},
++	{ .compatible = "qcom,sc7280-qfprom", .data = &sc7280_qfprom},
+ 	{/* sentinel */},
+ };
+ MODULE_DEVICE_TABLE(of, qfprom_of_match);
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
 of Code Aurora Forum, hosted by The Linux Foundation
