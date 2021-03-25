@@ -2,185 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC213491CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC203491DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhCYMWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:22:36 -0400
-Received: from mga07.intel.com ([134.134.136.100]:6964 "EHLO mga07.intel.com"
+        id S230057AbhCYM0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230242AbhCYMWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:22:10 -0400
-IronPort-SDR: AnDiDpFQp4oa6FW2pb4ahfFcKaGu7VwCkBff3u+ZiW8n/I6K3D+3wRislfuwZidIaaR+BudVpN
- gwTS7AYvAKeg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="254910244"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="254910244"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 05:22:09 -0700
-IronPort-SDR: whx/PZZB6VXvzysSHlXd7SJWmA7iG8ZD+edjdKAIFS+n6RBaN2a899pzT64Hgu975uiJ5/Si4x
- pwalzFPYQIRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="436441438"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Mar 2021 05:22:08 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lPP03-0001vp-Ic; Thu, 25 Mar 2021 12:22:07 +0000
-Date:   Thu, 25 Mar 2021 20:21:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.03.18a] BUILD SUCCESS
- 31531c0247544b81d26d4dc4e4aa7dd6ef466f12
-Message-ID: <605c8061.lDpj9t0ODYjN9nnK%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229617AbhCYMZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:25:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C4B461A02;
+        Thu, 25 Mar 2021 12:25:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616675152;
+        bh=+s4xM0Lyz3jyD1nMjPUWpzDFZqWRYVY9+ICqQhQ1i/g=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XDYkAB6hdGdlqyl1jGYORZsDc8NO6yWXuKM8ENB31agKA4iivkfDkcfsKgFq+55Gw
+         AFPlCreyFLWB4WUqVIbNyVGJBQWjAis4Q1lMIga7acjFvv6gtyYZwm3znr1F603pW4
+         pjpRGvBRtXJmtOrHC+MxW5JZtU0lBuUjCuiPFsbED2KEVt6q+0JYCHZVTqsrbzP6rB
+         g8BiU0hS0XEFzarEs7ti5gef9mHbfnbySBvfyNif/5eKya3XzN06zcr6xdstcix5Yv
+         lOocgfGrg0rQP79JwJJR7n3SV4e5c7hCNhytiNQqJ5B3c5D0rMtG/hqgD3qt6YfBoO
+         +GFNN08Dok6Ag==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Ray Chi <raychi@google.com>, gregkh@linuxfoundation.org,
+        Thinh.Nguyen@synopsys.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        albertccwang@google.com, Ray Chi <raychi@google.com>
+Subject: Re: [PATCH] usb: dwc3: add cancelled reason for dwc3 requests
+In-Reply-To: <20210325115436.861299-1-raychi@google.com>
+References: <20210325115436.861299-1-raychi@google.com>
+Date:   Thu, 25 Mar 2021 14:25:44 +0200
+Message-ID: <87y2ebju7r.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.03.18a
-branch HEAD: 31531c0247544b81d26d4dc4e4aa7dd6ef466f12  fixup! torture: Add prototype kvm-remote.sh script
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-elapsed time: 721m
+Hi,
 
-configs tested: 123
-configs skipped: 2
+Ray Chi <raychi@google.com> writes:
+> diff --git a/drivers/usb/dwc3/gadget.h b/drivers/usb/dwc3/gadget.h
+> index 0cd281949970..a23e85bd3933 100644
+> --- a/drivers/usb/dwc3/gadget.h
+> +++ b/drivers/usb/dwc3/gadget.h
+> @@ -56,6 +56,12 @@ struct dwc3;
+>=20=20
+>  /* Frame/Microframe Number Mask */
+>  #define DWC3_FRNUMBER_MASK		0x3fff
+> +
+> +/* Cancel reason for dwc3 request */
+> +#define DWC3_REQUEST_DEQUEUED		-ECONNRESET  /* Request get dequeued */
+> +#define DWC3_REQUEST_DISCONNECTED	-ESHUTDOWN   /* Device is disconnected=
+/disabled */
+> +#define DWC3_REQUEST_STALL		-EPIPE       /* Bus or protocol error */
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+this is just obfuscation, pass the errors directly. Also, make sure
+these are documented in the API.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                         hackkit_defconfig
-powerpc                    klondike_defconfig
-powerpc                     tqm8555_defconfig
-h8300                    h8300h-sim_defconfig
-sh                          lboxre2_defconfig
-mips                           ip28_defconfig
-powerpc                    adder875_defconfig
-sh                             sh03_defconfig
-sh                           se7343_defconfig
-sh                               j2_defconfig
-sh                        apsh4ad0a_defconfig
-mips                          ath25_defconfig
-arm                      integrator_defconfig
-mips                        bcm63xx_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                        workpad_defconfig
-powerpc64                           defconfig
-arm                          pcm027_defconfig
-xtensa                    smp_lx200_defconfig
-arm                        keystone_defconfig
-mips                           ip27_defconfig
-arm                       netwinder_defconfig
-arm                        cerfcube_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                      ppc44x_defconfig
-sh                           se7705_defconfig
-arm                          moxart_defconfig
-m68k                        m5407c3_defconfig
-powerpc                     sequoia_defconfig
-arc                           tb10x_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                       m5208evb_defconfig
-powerpc                 linkstation_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      katmai_defconfig
-arm                        vexpress_defconfig
-sh                          urquell_defconfig
-powerpc                          g5_defconfig
-arm                         mv78xx0_defconfig
-arm                          exynos_defconfig
-riscv                             allnoconfig
-sh                      rts7751r2d1_defconfig
-arm                      tct_hammer_defconfig
-powerpc                       ebony_defconfig
-powerpc                  iss476-smp_defconfig
-mips                      maltaaprp_defconfig
-arm                       imx_v6_v7_defconfig
-arm64                            alldefconfig
-arm                           viper_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210325
-x86_64               randconfig-a003-20210325
-x86_64               randconfig-a006-20210325
-x86_64               randconfig-a001-20210325
-x86_64               randconfig-a005-20210325
-x86_64               randconfig-a004-20210325
-i386                 randconfig-a003-20210325
-i386                 randconfig-a004-20210325
-i386                 randconfig-a001-20210325
-i386                 randconfig-a002-20210325
-i386                 randconfig-a006-20210325
-i386                 randconfig-a005-20210325
-i386                 randconfig-a014-20210325
-i386                 randconfig-a011-20210325
-i386                 randconfig-a015-20210325
-i386                 randconfig-a016-20210325
-i386                 randconfig-a013-20210325
-i386                 randconfig-a012-20210325
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-x86_64                           allyesconfig
+=2D-=20
+balbi
 
-clang tested configs:
-x86_64               randconfig-a012-20210325
-x86_64               randconfig-a015-20210325
-x86_64               randconfig-a014-20210325
-x86_64               randconfig-a013-20210325
-x86_64               randconfig-a011-20210325
-x86_64               randconfig-a016-20210325
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAmBcgUgRHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQbkIBAAo0rcWRTbI1kOE56uyHRCFxKcIhRb6hr1
+WG2Md+N3TXpnwEEAVp04kp+MSBFBBzLKZHGaR4vhxM3wWVoG/QLzCz8VI6Q7/IMT
+Jrh3rm7mCO0Jsd4JGn5R4dXDzFgOdP8F3+T6izh/XiJt5maOsaOOjLy3S2PbQnCh
+KvsvyZJ8Apcw7fquObgURibkwP5W/AZl1hTT9LNxsg+umXgNu2jNg7PHqK9+Wtq9
+oz8PkumUqhZ4yDkYSUmKYwdoCQYgQIdmq2OMA/sKjD6L5ogGXZJ7qLqcGLgKJFC3
+X1X3HF2gjzScmKttP4XIPn35xtY3HSPyGs5/e88ohqrMBFAzf9nNasJpy6oSV6/Z
+0baVSjcLjAPTWjse5UgTOIZdeQ1DaJRuBUTyRR3mTqCv60vQmYWd2WfJA34jMqo7
+0xqfyr/Xyr0UcSbZBxPa0VaIz6FVqhrg8ZAr3gviD7ARdoKl0eGOlEzLtTpKhLAj
+NfU1n0gP/Id6tF11oxxnydqrBn50St7fEuHtxFiZCB+EhExrUJH0GLlguD8W5GaO
+JtrXSoYC5GwO21yBvVztmfbrwHX3n/+NLsudyUXEVqzfv0PtAqYEtX9jnMcSA+w1
+CG3DvbDDKe1Pb+UZBWBF6rpebdJ6DtaE1O2PTo/LLaLNBgm5b++pd7LHnvkDWSZl
+336XHQjpjnc=
+=FB4s
+-----END PGP SIGNATURE-----
+--=-=-=--
