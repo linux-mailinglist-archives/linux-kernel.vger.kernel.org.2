@@ -2,191 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA77349858
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:39:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38218349865
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhCYRin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:38:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhCYRiT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:38:19 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60454C06174A;
-        Thu, 25 Mar 2021 10:38:19 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id f16so4248442ljm.1;
-        Thu, 25 Mar 2021 10:38:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IWF2rjUL4RNwP8tqxzEk+CP2xWiPvF7wgM2YggJx29k=;
-        b=Glpk9vDYOel/oYy7nTxAS0XwpNBQzx7ylsJKz74gzs46Eg2558qdSoJDyl+XTKMsk0
-         oNmILuqlxpG+5fw8XZLVvup+A0wXMbs17UWj68DkZcO09STg6NO7DjiYbRIQ4gsCpKx3
-         +ZZE5UKC36gzw4bW3qXcVbLik+GHLeGdbfJoTyIVeWJUpHJLgVtayZsMG/3vgT9Cmncn
-         qihMzZ8p1ZeL89p9vF6AkWK6AFMlTC+slsTCRCqLG8r7GzIlxy6SUuE5RcHojopU8gnP
-         yJ263VxCri8YwQJ+RqpS7Tn6CSAsc7v7H3GV3b1J0dwAd6Hs21OoSBdVLSYVV6ztZ/+I
-         0mDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IWF2rjUL4RNwP8tqxzEk+CP2xWiPvF7wgM2YggJx29k=;
-        b=pWWjIhjXWTVh1vGkkNYvIlKxO9OJ7C9I/YZVSveCQkQ6RY1sXYdFqUG/hoKF7qZp/1
-         JblIBJFoCL77Uqm12f26QrUfPhxz5NHjgwzhhXVKrVSpnx0dDFvh9xHASnDujdNuw9Sp
-         oNuHEA+mK8tMB5ag5wAxoN+Z/7MSwDoOix9xJsLaTW3lR9wzbnaQQFotJYCRVZAwHVB/
-         Rso2+6Wanz8I8970kw8hW6W9a36E8Gc9FwB16vYpgUznB9wrCelQrm4SU8V4g7xdImMi
-         VtHOf6I8WP+f9UPpkKLQdcRC/TFhGqAB5nEmQVBp1XjsAbFXySKqQCQ/cZT6xSkXEB50
-         cC6A==
-X-Gm-Message-State: AOAM533r+emAQIVXPk97IwJSxB0/qEUWF4eszdHksuIut9b95wGSvDPx
-        kC7eoAuSkK/q93zBZG96ytXvtXgG8aY=
-X-Google-Smtp-Source: ABdhPJy+HFyDQ+YADIRrHEHy+wVQ5U68wTuP3H8gv88XId02H1UxV0aV3nF1ktHee9bm7TnbQmkaWA==
-X-Received: by 2002:a2e:8051:: with SMTP id p17mr6307832ljg.130.1616693897519;
-        Thu, 25 Mar 2021 10:38:17 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
-        by smtp.googlemail.com with ESMTPSA id m20sm836193ljj.93.2021.03.25.10.38.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 10:38:17 -0700 (PDT)
-Subject: Re: [PATCH v4 3/6] dt-bindings: power: tegra: Add binding for core
- power domain
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210314164810.26317-1-digetx@gmail.com>
- <20210314164810.26317-4-digetx@gmail.com>
- <20210323224826.GA1490612@robh.at.kernel.org>
- <fd60e507-37b4-acc1-b19a-a3904cd13f65@gmail.com>
- <YFyjDNYAkbTQU5G0@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <80410199-3b5f-13b7-25b7-3fbd009c31e7@gmail.com>
-Date:   Thu, 25 Mar 2021 20:38:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <YFyjDNYAkbTQU5G0@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S230059AbhCYRjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:39:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27389 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230115AbhCYRjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:39:21 -0400
+IronPort-SDR: eCMT3yTW2EGZfcHUZ2cznwuD39V1r3Wv8rWYBODxCpbcZsPd8dLMaJUQBDcigvG3+HOb4pWxD+
+ oOH07vNPzr7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="191016762"
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="191016762"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 10:39:20 -0700
+IronPort-SDR: 0TVUNNIh1zGMOZkz9T8MOMTbvezKxkBGMPrRwvQYfSYl3crsztv7KNCfOsmDbicfxRs66uxUql
+ uPdv8m+t/djg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="416112200"
+Received: from climb.png.intel.com ([10.221.118.165])
+  by orsmga008.jf.intel.com with ESMTP; 25 Mar 2021 10:39:16 -0700
+From:   Voon Weifeng <weifeng.voon@intel.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>
+Subject: [PATCH v2 net-next 0/5] net: stmmac: enable multi-vector MSI
+Date:   Fri, 26 Mar 2021 01:39:11 +0800
+Message-Id: <20210325173916.13203-1-weifeng.voon@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.03.2021 17:49, Thierry Reding пишет:
-> On Wed, Mar 24, 2021 at 02:01:29AM +0300, Dmitry Osipenko wrote:
->> 24.03.2021 01:48, Rob Herring пишет:
->>> On Sun, Mar 14, 2021 at 07:48:07PM +0300, Dmitry Osipenko wrote:
->>>> All NVIDIA Tegra SoCs have a core power domain where majority of hardware
->>>> blocks reside. Add binding for the core power domain.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->>>> ---
->>>>  .../power/nvidia,tegra20-core-domain.yaml     | 51 +++++++++++++++++++
->>>>  1 file changed, 51 insertions(+)
->>>>  create mode 100644 Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml b/Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml
->>>> new file mode 100644
->>>> index 000000000000..4692489d780a
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/power/nvidia,tegra20-core-domain.yaml
->>>> @@ -0,0 +1,51 @@
->>>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: http://devicetree.org/schemas/power/nvidia,tegra20-core-domain.yaml#
->>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>> +
->>>> +title: NVIDIA Tegra Core Power Domain
->>>> +
->>>> +maintainers:
->>>> +  - Dmitry Osipenko <digetx@gmail.com>
->>>> +  - Jon Hunter <jonathanh@nvidia.com>
->>>> +  - Thierry Reding <thierry.reding@gmail.com>
->>>> +
->>>> +allOf:
->>>> +  - $ref: power-domain.yaml#
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    enum:
->>>> +      - nvidia,tegra20-core-domain
->>>> +      - nvidia,tegra30-core-domain
->>>> +
->>>> +  operating-points-v2:
->>>> +    description:
->>>> +      Should contain level, voltages and opp-supported-hw property.
->>>> +      The supported-hw is a bitfield indicating SoC speedo or process
->>>> +      ID mask.
->>>> +
->>>> +  "#power-domain-cells":
->>>> +    const: 0
->>>> +
->>>> +  power-supply:
->>>> +    description:
->>>> +      Phandle to voltage regulator connected to the SoC Core power rail.
->>>> +
->>>> +required:
->>>> +  - compatible
->>>> +  - operating-points-v2
->>>> +  - "#power-domain-cells"
->>>> +  - power-supply
->>>> +
->>>> +additionalProperties: false
->>>> +
->>>> +examples:
->>>> +  - |
->>>> +    power-domain {
->>>> +        compatible = "nvidia,tegra20-core-domain";
->>>> +        operating-points-v2 = <&opp_table>;
->>>> +        power-supply = <&regulator>;
->>>> +        #power-domain-cells = <0>;
->>>
->>> AFAICT, there's no way to access this 'hardware'?
->> correct
-> 
-> To avoid exposing this "virtual" device in device tree, could this
-> instead be modelled as a child node of the PMC node? We already expose a
-> couple of generic power domains that way on Tegra210 and later, so
-> perhaps some of that infrastructure can be reused? I suppose given that
-> this is different from the standard powergate domains that we expose so
-> far, this may need a different implementation, but from a device tree
-> bindings point of view it could fit in with that.
+This patchset adds support for multi MSI interrupts in addition to
+current single common interrupt implementation. Each MSI interrupt is tied
+to a newly introduce interrupt service routine(ISR). Hence, each interrupt
+will only go through the corresponding ISR.
 
-At a quick glance this should be too troublesome because OPP and regulator frameworks require a proper/real backing device.
+In order to increase the efficiency, enabling multi MSI interrupt will
+automatically select the interrupt mode configuration INTM=1. When INTM=1,
+the TX/RX transfer complete signal will only asserted on corresponding
+sbd_perch_tx_intr_o[] or sbd_perch_rx_intr_o[] without asserting signal
+on the common sbd_intr_o. Hence, for each TX/RX interrupts, only the
+corresponding ISR will be triggered.
 
-Perhaps we could either turn the whole PMC into a core-domain or add a virtual device as a child of PMC, like this:
+Every vendor might have different MSI vector assignment. So, this patchset
+only includes multi-vector MSI assignment for Intel platform.
 
-diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
-index 79364cdafeab..717273048caf 100644
---- a/arch/arm/boot/dts/tegra20.dtsi
-+++ b/arch/arm/boot/dts/tegra20.dtsi
-@@ -850,6 +850,12 @@ pd_mpe: mpe {
- 				#power-domain-cells = <0>;
- 			};
- 		};
-+
-+		pd_core: core-domain {
-+			compatible = "nvidia,tegra20-core-domain";
-+			operating-points-v2 = <&core_opp_table>;
-+			#power-domain-cells = <0>;
-+		};
- 	};
- 
- 	mc: memory-controller@7000f000 {
+Changes:
+v1 -> v2
+ patch 2/5
+ -Remove defensive check for invalid dev pointer
 
-but then this is still a virtual device, although in a bit nicer way.
+ patch 3/5
+ - Refactor out a huge if statement into separate subfunctions.
+ - Removed the netdev_info for every successful request of IRQs.
+ - Return 0 for each successful request of IRQs.
 
-It feels like yours suggestion might result in a hardware description that is closer to reality since PMC controls fan out of all power rails within SoC.
+ patch 4/5
+ - Moved the msi tx/rx base vector check before alloc irq
+ - Restuctured the clean up code after fail to alloc irq and fail to probe
+ - Unprepared and unregistered the stmmac-clk if fail to alloc irq
+
+ patch 5/5
+ -Moved the readl and writel into the if statement as it is only executed
+  when multi msi is enabled
+
+Ong Boon Leong (4):
+  net: stmmac: introduce DMA interrupt status masking per traffic
+    direction
+  net: stmmac: make stmmac_interrupt() function more friendly to MSI
+  net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX
+  stmmac: intel: add support for multi-vector msi and msi-x
+
+Wong, Vee Khee (1):
+  net: stmmac: use interrupt mode INTM=1 for multi-MSI
+
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  21 +
+ .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 120 ++++-
+ .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  24 +-
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.c  |   7 +
+ .../net/ethernet/stmicro/stmmac/dwmac4_dma.h  |  24 +-
+ .../net/ethernet/stmicro/stmmac/dwmac4_lib.c  |  30 +-
+ .../net/ethernet/stmicro/stmmac/dwmac_dma.h   |  22 +-
+ .../net/ethernet/stmicro/stmmac/dwmac_lib.c   |   8 +-
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |   6 +
+ .../ethernet/stmicro/stmmac/dwxgmac2_dma.c    |   8 +-
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  16 +
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 499 +++++++++++++++---
+ include/linux/stmmac.h                        |   9 +
+ 14 files changed, 697 insertions(+), 99 deletions(-)
+
+-- 
+2.17.1
+
