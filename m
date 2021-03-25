@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AF7349B1E
+	by mail.lfdr.de (Postfix) with ESMTP id 982B0349B1D
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhCYUkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:40:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37542 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230284AbhCYUkW (ORCPT
+        id S230325AbhCYUkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230166AbhCYUkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:40:22 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PKYmvP180694;
-        Thu, 25 Mar 2021 16:39:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- message-id : references : content-type : in-reply-to : mime-version :
- subject; s=pp1; bh=E83qJwL994tWNvZoPHAqPVwTyBeNoD1TzqnUPAxaQi8=;
- b=TtbtDhGsaVgN6T5Me7RI043XlPc9psFADWN94RUl91jwvI5PUDpEWSebjgG3Jx2XJaZW
- UB2+bDoaOqg66OiJmivYSYJxqWC0INU4L64kFbbkhixDYvTBIsP8iMZH+uTgB/kRNKN5
- DaBJzAVnp+iGs0k028A64r6t0Z2QIfVJI8X2EqaMxKJ/Zz0ktyit2SQ5aF84H9LHnNcm
- 2CrDK2IMzv1ATdjenC1vzAbCM7yhvvvXDUlN4acCoUmt69BdqlhqgK0NrRRQIiP7+Lci
- z0W6VAUWcMFjCft4vZkxBGqPQ/SkwQpaYHvrSW+3yTJ5GnShDZEh2Dmqg53xKfpTanls 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37h17jrvs6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 16:39:51 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12PKZ029182096;
-        Thu, 25 Mar 2021 16:39:51 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37h17jrvrm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 16:39:51 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12PKaeAb021668;
-        Thu, 25 Mar 2021 20:39:49 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02wdc.us.ibm.com with ESMTP id 37h158073b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 20:39:49 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12PKdmR827918840
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 20:39:48 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ACF9E7805F;
-        Thu, 25 Mar 2021 20:39:48 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A21E478063;
-        Thu, 25 Mar 2021 20:39:46 +0000 (GMT)
-Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.228.20])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Thu, 25 Mar 2021 20:39:46 +0000 (GMT)
-Date:   Thu, 25 Mar 2021 15:39:44 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, irogers@google.com,
-        linuxarm@huawei.com, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, zhangshaokun@hisilicon.com
-Message-ID: <20210325203944.GD8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yu9QP0jAGjDtuV-JEzmB9W5Rh6qNAlIt
-X-Proofpoint-GUID: OOybH2SzF2Q0pP8gIM3wn6_U6x3VLvlp
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 25 Mar 2021 16:40:11 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC33C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:40:11 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id k8so3210434iop.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jxjYVyzv0VtmRagBbn7C6REHsWZ6v6VeVCUpgEtMtPM=;
+        b=A5TRe8F7xZOkW5UJYIYX4JMYMOCw5JF4Tva1AvGvdKbXp/2SuptkuI5qoau9ekKpMC
+         pY22tcBlTXTXeU8KteJmKMJuIL1fnfQ4a+0rTj3ad8H3rvfMaUm26zRVho/uD8TWAJTT
+         J/5egllh7nn/gy61+l0XhbcNzmpgAU19jHc7M4VWmoWEgLuj+k1Xn/rNR7K0wkKFjC7j
+         94XhDvtciMEiAmpMe5j7w8psDCmvwHvLJ9Qw88BJg4AjoV+uhLl8gu5WsE7wmV/5NJgh
+         IezcePq+ZV1FFYnlYBmrHS3Ty5fsSVj7h9eVtLT/iHPL2DrGFaR8C2uDjfFVO8g8qJL/
+         Rm1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jxjYVyzv0VtmRagBbn7C6REHsWZ6v6VeVCUpgEtMtPM=;
+        b=FF/nnV2D1aH6oCT0ruFfV57yAN/x4dGZC028VgrZXfNvEL2dqg+4j2d/tKG5j9VpMu
+         +JO5J9Ym2g0x8Usf//C+EdkcE6G7HwkPDQzDivg8JeoVhRZ1mlyRInd9QCYeR78kjhqD
+         XaSW613LdhhtTPl7G1MPDsGIMWgbovzV+0yuO+IfGeNMg9X0TxKaaHOmhDfctTzMl+iY
+         JoLomjhwIJ/EXHzDCOB6YaeyOPxSgxcndoC3JY/hwuWphzI+uGsmHlMpP1r62y9FBmkX
+         Sd2Bzyurfpj4K/Wz97lRaSEM858lEVigyje2Y0IfEeu5xDB7xQISMUeTCm+iYrBiPRGp
+         RCQg==
+X-Gm-Message-State: AOAM533WczMmxRwHu+KfjOivZ53trn5Fob99IbsTND/IPQFpHVpFf7HL
+        ttk9aefse6eT60HMnuMQeRv41D2d7AsIZQ==
+X-Google-Smtp-Source: ABdhPJw26OPXsttfpqFcAPc3t3g3KrF8DIkFEO9xWkPI6UJ53qkOox3NCB/jnRNGS4c+YwJmd1LF+g==
+X-Received: by 2002:a02:7419:: with SMTP id o25mr8954187jac.100.1616704811098;
+        Thu, 25 Mar 2021 13:40:11 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id v17sm3134802ios.46.2021.03.25.13.40.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 13:40:10 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Stefan Metzmacher <metze@samba.org>
+References: <20210325164343.807498-1-axboe@kernel.dk>
+ <m1ft0j3u5k.fsf@fess.ebiederm.org>
+ <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+ <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
+ <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <ad21da2b-01ea-e77c-70b2-0401059e322b@kernel.dk>
+Date:   Thu, 25 Mar 2021 14:40:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Subject: Re:  [PATCH v2 0/6] perf arm64 metricgroup support
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-25_08:2021-03-25,2021-03-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- suspectscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 priorityscore=1501 clxscore=1011 adultscore=0
- impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103250143
+In-Reply-To: <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 06:33:12PM +0800, John Garry wrote:
-> Metric reuse support is added for pmu-events parse metric testcase.
-> This had been broken on power9 recentlty:
-> https://lore.kernel.org/lkml/20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com/
+On 3/25/21 2:12 PM, Linus Torvalds wrote:
+> On Thu, Mar 25, 2021 at 12:42 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> On Thu, Mar 25, 2021 at 12:38 PM Linus Torvalds
+>> <torvalds@linux-foundation.org> wrote:
+>>>
+>>> I don't know what the gdb logic is, but maybe there's some other
+>>> option that makes gdb not react to them?
+>>
+>> .. maybe we could have a different name for them under the task/
+>> subdirectory, for example (not  just the pid)? Although that probably
+>> messes up 'ps' too..
+> 
+> Actually, maybe the right model is to simply make all the io threads
+> take signals, and get rid of all the special cases.
+> 
+> Sure, the signals will never be delivered to user space, but if we
+> 
+>  - just made the thread loop do "get_signal()" when there are pending signals
+> 
+>  - allowed ptrace_attach on them
+> 
+> they'd look pretty much like regular threads that just never do the
+> user-space part of signal handling.
+> 
+> The whole "signals are very special for IO threads" thing has caused
+> so many problems, that maybe the solution is simply to _not_ make them
+> special?
 
-Much better.  Before:
---
-$ perf test -v 10 2>&1 | grep -i error | wc -l
-112
---
-After:
---
-$ perf test -v 10 2>&1 | grep -i error | wc -l
-17
---
+Just to wrap up the previous one, yes it broke all sorts of things to
+make the 'tid' directory different. They just end up being hidden anyway
+through that, for both ps and top.
 
-And these seem like different types of issues:
---
-$ perf test -v 10 2>&1 | grep -i error
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_powerbus0_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
-Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
---
+Yes, I do think that maybe it's better to just embrace maybe just
+embrace the signals, and have everything just work by default. It's
+better than continually trying to make the threads special. I'll see
+if there are some demons lurking down that path.
 
-(Added Kajol Jain to CC)
+-- 
+Jens Axboe
 
-PC
