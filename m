@@ -2,180 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B294F348E7F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADBA348E8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhCYLGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:06:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47778 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229626AbhCYLGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:06:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616670384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S229847AbhCYLIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229801AbhCYLId (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:08:33 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096B6C06174A;
+        Thu, 25 Mar 2021 04:08:33 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 11:08:30 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616670511;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wkoiOF43ahZ9DErK2et0KPyZmKWgEdCs4O7A2c26vl0=;
-        b=gBHpt56eZwbsQ9bWe8v+weTxpjBLKRgNLwuYbnrT7+WCCtOS1XVGJPu2kolRd9uQ6pnsM4
-        TiubaN+Ns9ADjrJ2ViMK0L9cP4I4F8RLlfT92/v7d4fRa9V4fnaCQdeKbhovYuuy6zegum
-        wPeyRYjypif6yML0Jjrwc8y5vf5E4Ac=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 76CBDAC16;
-        Thu, 25 Mar 2021 11:06:24 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 12:06:22 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 6/8] hugetlb: change free_pool_huge_page to
- remove_pool_huge_page
-Message-ID: <YFxurrhDuZZG1FlQ@dhcp22.suse.cz>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
- <20210325002835.216118-7-mike.kravetz@oracle.com>
+        bh=5DWOJYsfzcf2MYVUyOlGSR2fQztWAZ2/OrFW58S9EME=;
+        b=a+tuLQclAmQh9OTyE1zKvC53T3ze1j8U6CeiBpDtEOjcYGJoLei1boXghihitpsa7OSYe9
+        9MCnqaitZtOvHygjXfOqXrt5byv/Jo9VZU4t5t0t1QbXaOFZw9ysCtpCeYF8VVjSn7jPJC
+        n0MS3sYpbpBo8LQDPJLoKq4tnlKQvZEMtCFmeI7zSJYCPEVmwBcMMFKIqQBZ1g1cWoNquo
+        3X09oiZl+Ypp8KxIlcYobV9f/twVDFIdVH6lVgiKATg0JOtfwXKsPyYrBRhrqCsyyMgosY
+        r8M9IfaINHCXNX6IHVTNV43txSb18ukC3lZdvuTAKS1KMBzqS4LSnb17DsogMg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616670511;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5DWOJYsfzcf2MYVUyOlGSR2fQztWAZ2/OrFW58S9EME=;
+        b=/wgN0FnOxKgKJ2l8XTdFjuK/P4oHr2zGuOrBs4Ne7CDNha8hVvJ8WWrPk2i82NBMUQKmKo
+        cK1eTdVh0FTuXRBw==
+From:   "tip-bot2 for Shaokun Zhang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/mutex: Remove repeated declaration
+Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Waiman Long <longman@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1616564440-61318-1-git-send-email-zhangshaokun@hisilicon.com>
+References: <1616564440-61318-1-git-send-email-zhangshaokun@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325002835.216118-7-mike.kravetz@oracle.com>
+Message-ID: <161667051052.398.6239082761517753119.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24-03-21 17:28:33, Mike Kravetz wrote:
-[...]
-> @@ -2074,17 +2067,16 @@ static int gather_surplus_pages(struct hstate *h, long delta)
->   *    to the associated reservation map.
->   * 2) Free any unused surplus pages that may have been allocated to satisfy
->   *    the reservation.  As many as unused_resv_pages may be freed.
-> - *
-> - * Called with hugetlb_lock held.  However, the lock could be dropped (and
-> - * reacquired) during calls to cond_resched_lock.  Whenever dropping the lock,
-> - * we must make sure nobody else can claim pages we are in the process of
-> - * freeing.  Do this by ensuring resv_huge_page always is greater than the
-> - * number of huge pages we plan to free when dropping the lock.
->   */
->  static void return_unused_surplus_pages(struct hstate *h,
->  					unsigned long unused_resv_pages)
->  {
->  	unsigned long nr_pages;
-> +	struct page *page, *t_page;
-> +	struct list_head page_list;
-> +
-> +	/* Uncommit the reservation */
-> +	h->resv_huge_pages -= unused_resv_pages;
+The following commit has been merged into the locking/core branch of tip:
 
-Is this ok for cases where remove_pool_huge_page fails early? I have to
-say I am kinda lost in the resv_huge_pages accounting here. The original
-code was already quite supicious to me. TBH.
->  
->  	/* Cannot return gigantic pages currently */
->  	if (hstate_is_gigantic(h))
-> @@ -2101,24 +2093,27 @@ static void return_unused_surplus_pages(struct hstate *h,
->  	 * evenly across all nodes with memory. Iterate across these nodes
->  	 * until we can no longer free unreserved surplus pages. This occurs
->  	 * when the nodes with surplus pages have no free pages.
-> -	 * free_pool_huge_page() will balance the freed pages across the
-> +	 * remove_pool_huge_page() will balance the freed pages across the
->  	 * on-line nodes with memory and will handle the hstate accounting.
-> -	 *
-> -	 * Note that we decrement resv_huge_pages as we free the pages.  If
-> -	 * we drop the lock, resv_huge_pages will still be sufficiently large
-> -	 * to cover subsequent pages we may free.
->  	 */
-> +	INIT_LIST_HEAD(&page_list);
->  	while (nr_pages--) {
-> -		h->resv_huge_pages--;
-> -		unused_resv_pages--;
-> -		if (!free_pool_huge_page(h, &node_states[N_MEMORY], 1))
-> +		page = remove_pool_huge_page(h, &node_states[N_MEMORY], 1);
-> +		if (!page)
->  			goto out;
-> -		cond_resched_lock(&hugetlb_lock);
-> +
-> +		INIT_LIST_HEAD(&page->lru);
+Commit-ID:     8af856d18bfbe89676ade38caa2a5d06f75f211d
+Gitweb:        https://git.kernel.org/tip/8af856d18bfbe89676ade38caa2a5d06f75f211d
+Author:        Shaokun Zhang <zhangshaokun@hisilicon.com>
+AuthorDate:    Wed, 24 Mar 2021 13:40:40 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 25 Mar 2021 12:02:06 +01:00
 
-again unnecessary INIT_LIST_HEAD
+locking/mutex: Remove repeated declaration
 
-> +		list_add(&page->lru, &page_list);
->  	}
->  
->  out:
-> -	/* Fully uncommit the reservation */
-> -	h->resv_huge_pages -= unused_resv_pages;
-> +	spin_unlock(&hugetlb_lock);
-> +	list_for_each_entry_safe(page, t_page, &page_list, lru) {
-> +		list_del(&page->lru);
-> +		update_and_free_page(h, page);
-> +		cond_resched();
-> +	}
+Commit 0cd39f4600ed ("locking/seqlock, headers: Untangle the spaghetti monster")
+introduces 'struct ww_acquire_ctx' again, remove the repeated declaration and move
+the pre-declarations to the top.
 
-You have the same construct at 3 different places maybe it deserves a
-little helper update_and_free_page_batch.
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Waiman Long <longman@redhat.com>
+Link: https://lore.kernel.org/r/1616564440-61318-1-git-send-email-zhangshaokun@hisilicon.com
+---
+ include/linux/mutex.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> +	spin_lock(&hugetlb_lock);
->  }
->  
->  
-> @@ -2648,6 +2643,8 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
->  			      nodemask_t *nodes_allowed)
->  {
->  	unsigned long min_count, ret;
-> +	struct page *page, *t_page;
-> +	struct list_head page_list;
->  	NODEMASK_ALLOC(nodemask_t, node_alloc_noretry, GFP_KERNEL);
->  
->  	/*
-> @@ -2757,11 +2754,28 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
->  	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
->  	min_count = max(count, min_count);
->  	try_to_free_low(h, min_count, nodes_allowed);
-> +
-> +	/*
-> +	 * Collect pages to be removed on list without dropping lock
-> +	 */
-> +	INIT_LIST_HEAD(&page_list);
->  	while (min_count < persistent_huge_pages(h)) {
-> -		if (!free_pool_huge_page(h, nodes_allowed, 0))
-> +		page = remove_pool_huge_page(h, nodes_allowed, 0);
-> +		if (!page)
->  			break;
-> -		cond_resched_lock(&hugetlb_lock);
-> +
-> +		INIT_LIST_HEAD(&page->lru);
-
-INIT_LIST_HEAD again.
-
-> +		list_add(&page->lru, &page_list);
->  	}
-> +	/* free the pages after dropping lock */
-> +	spin_unlock(&hugetlb_lock);
-> +	list_for_each_entry_safe(page, t_page, &page_list, lru) {
-> +		list_del(&page->lru);
-> +		update_and_free_page(h, page);
-> +		cond_resched();
-> +	}
-> +	spin_lock(&hugetlb_lock);
-> +
->  	while (count < persistent_huge_pages(h)) {
->  		if (!adjust_pool_surplus(h, nodes_allowed, 1))
->  			break;
-> -- 
-> 2.30.2
-
--- 
-Michal Hocko
-SUSE Labs
+diff --git a/include/linux/mutex.h b/include/linux/mutex.h
+index 0cd631a..e7a1267 100644
+--- a/include/linux/mutex.h
++++ b/include/linux/mutex.h
+@@ -20,6 +20,7 @@
+ #include <linux/osq_lock.h>
+ #include <linux/debug_locks.h>
+ 
++struct ww_class;
+ struct ww_acquire_ctx;
+ 
+ /*
+@@ -65,9 +66,6 @@ struct mutex {
+ #endif
+ };
+ 
+-struct ww_class;
+-struct ww_acquire_ctx;
+-
+ struct ww_mutex {
+ 	struct mutex base;
+ 	struct ww_acquire_ctx *ctx;
