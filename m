@@ -2,64 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3B03499A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7313499AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhCYSoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:44:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCYSoB (ORCPT
+        id S230137AbhCYSpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:45:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49514 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230140AbhCYSou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:44:01 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDEDC06174A;
-        Thu, 25 Mar 2021 11:44:01 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 1ED12381;
-        Thu, 25 Mar 2021 18:44:01 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 1ED12381
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1616697841; bh=YcqsL03pJI2WiLO6wkq6SWxkDP0PGSii+GjhwvaeqPw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Ne2pjuxyQfKyGKcYDkAPjerw4XLdCr7VlbjQnRiV4RDttTEc7VYvHw1sftS+JnsXG
-         VgWGxXtO3vLr7IusTPwdZBtu9vPbEe3HYbvxceQ+Oj2tUVLHA1waF4bZ7Pwyw588Cy
-         CU/iWX0Z/4EU8SyzPhXoADWNWgLw8Z7wM5MGH5d8LCe/Sb+3qEmZXcnbUyHqYRmXOO
-         5O/Cb03EFYpdgnfFxYfAcBbDb0TJ3dqCojyeFt3HPVY1B0a3zTssJZ4RYo7mvhbnmu
-         hjK7xNXbk+s7DCPCwVMBhCdfGXAsiCWihrCBHIzXbuRNeDCH1mJmEGBSPRvmtkAWcW
-         ldutH8YufTr5A==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] docs: reporting-issues: streamline process and
- solve a FIXME
-In-Reply-To: <c8770353-3d0d-17af-115a-efa4a31fd97b@leemhuis.info>
-References: <cover.1616181657.git.linux@leemhuis.info>
- <c8770353-3d0d-17af-115a-efa4a31fd97b@leemhuis.info>
-Date:   Thu, 25 Mar 2021 12:43:59 -0600
-Message-ID: <87y2ebysy8.fsf@meer.lwn.net>
+        Thu, 25 Mar 2021 14:44:50 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616697888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sc4ikcvtPux6cS4O7kxP+ZUa35wiLI0ZiU6P4R8vLds=;
+        b=gKFxuNfsW+Vl9i0a62FLBGLtEjS1oiWtTzcoKGlxwwcIUkOZ19AIp7e/7xDAtFsOjoO+q0
+        CD5ikVGKd4QBstoT/QVAaj3rc9/mYbGV0TC1z9gxYHlfA0QL/E0FgqWfMcgigg5c24lipg
+        +N9qaY1tUcDHsKpjlKfflwWw1V30P0IBTgMWClvx2+IgQfAqC+ePAwGvMC0kemqjDlQd04
+        nsB3ZNNmPoy14AnvNNwtFmB59GMjC8PZPETs5j5IeVMc9RRt4DkTSHWYQW6hZTOSniCkWf
+        eh9YIIpUbp55YG0oSPoR4gCUkEt+EBaAygJ3ZEx2jY3h6LVsn80P3uLtsoE/Bw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616697888;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Sc4ikcvtPux6cS4O7kxP+ZUa35wiLI0ZiU6P4R8vLds=;
+        b=qmchaHgbktj5g1ZW7Fad7vH+aDWR4zgUUjC2juXG48RpTVOp8FNuX94Gq1nnM012a9qPrp
+        vukNwVgphsGYiiBA==
+To:     Marc Zyngier <maz@kernel.org>, Megha Dey <megha.dey@intel.com>
+Cc:     linux-kernel@vger.kernel.org, dave.jiang@intel.com,
+        ashok.raj@intel.com, kevin.tian@intel.com, dwmw@amazon.co.uk,
+        x86@kernel.org, tony.luck@intel.com, dan.j.williams@intel.com,
+        jgg@mellanox.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+Subject: Re: [Patch V2 07/13] irqdomain/msi: Provide msi_alloc/free_store() callbacks
+In-Reply-To: <8735wjrwjm.wl-maz@kernel.org>
+References: <1614370277-23235-1-git-send-email-megha.dey@intel.com> <1614370277-23235-8-git-send-email-megha.dey@intel.com> <8735wjrwjm.wl-maz@kernel.org>
+Date:   Thu, 25 Mar 2021 19:44:48 +0100
+Message-ID: <87lfabvzrz.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thorsten Leemhuis <linux@leemhuis.info> writes:
+On Thu, Mar 25 2021 at 17:08, Marc Zyngier wrote:
+> Megha Dey <megha.dey@intel.com> wrote:
+>> @@ -434,6 +434,12 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> +	if (ops->msi_alloc_store) {
+>> +		ret = ops->msi_alloc_store(domain, dev, nvec);
+>
+> What is supposed to happen if we get aliasing devices (similar to what
+> we have with devices behind a PCI bridge)?
+>
+> The ITS code goes through all kind of hoops to try and detect this
+> case when sizing the translation tables (in the .prepare callback),
+> and I have the feeling that sizing the message store is analogous.
 
-> That's why I'd like to speed things up a little. But for that it would
-> be good to have something from you: a kind of "I like the direction
-> where this patch set is heading and I'm optimistic that we get it merged
-> for 5.13-rc1" message from you. With something like that I could move
-> ahead as outlined above already. Do you maybe have a minute for that?
+No. The message store itself is sized upfront by the underlying 'master'
+device. Each 'master' device has it's own irqdomain.
 
-Honestly, I don't see any reason to delay this work any further, so I've
-just applied the set.
+This is the allocation for the subdevice and this is not part of PCI and
+therefore not subject to PCI aliasing.
 
-Sorry for the slowness, it has been a rather harsh week.
+  |-----------|
+  |  PCI dev  |         <- driver creates irqdomain and manages MSI
+  |-----------|            Sizing is either fixed (hardware property)
+                           or just managed by that irqdomain/driver
+                           with some hardware constraints
+       |subdev|         <- subdev gets ^^irqdomain assigned and
+                           allocates from it.
+       .....
+       |subdev|
+
+So this is fundamentally different from ITS because ITS has to size the
+translation memory, i.e. where the MSI message is written to by the
+device.
+
+IMS just handles the storage of the message in the (sub)device. So if
+that needs to be supported on ARM then the issue is not with the
+subdevices, the issue is with the 'master' device, but that does not use
+that alloc_store() callback as it provides it with the irqdomain it
+manages.
 
 Thanks,
 
-jon
+        tglx
+
+
