@@ -2,102 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47203496DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27E73496E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbhCYQcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49934 "EHLO
+        id S229761AbhCYQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCYQbi (ORCPT
+        with ESMTP id S229760AbhCYQdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:31:38 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE6E4C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:31:37 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id l1so2334566pgb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:31:37 -0700 (PDT)
+        Thu, 25 Mar 2021 12:33:37 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1654C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:33:36 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id n12-20020a4ad12c0000b02901b63e7bc1b4so630481oor.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1rk0lMdfic6T8FzgQX46kyAy/H7cmQtjKeViSHPt/tc=;
-        b=Oymlkos7+dYkFe689RLE6JqTySCe5lGo30nijzNu/xlA67II/D0MTcuokaPt0Ec7An
-         22NENOJwiiU6SBiMqJ6jr0ykPSNnm0HSU4TzBMtNqUOwaMzRNvyULYgtNyw52HD3oPq+
-         /Sbj7D+lqzfGxHDdq9I+yQaBhdIo4/IGyRHoQZxhTfbJm51OFCKz91kFe46Oq4Kh5Z7M
-         qO23FtQz7six/ftkTZcf/QA4MWzAgWDtJlJP+nNRQkhz39sd0E4uhUaq6cQgDNmkwSiF
-         vf5rbhwaGBYbcjD6kuW2y63/lBLm1jQURAOW9INo5W90QZb/am8HkPhzaC2CgSYQeLxy
-         xLDQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=icx8/ROiUGbXEvPXqjuw1B6ZehL0QY6lhCYqvdH4CJ8=;
+        b=eUCzvhUoDqhYbjAH/SCI1XADZLyN9X7jUMHfbTvpOy+csA1Cd9M43F9i7MlUaxXEz5
+         yjZ9APiih/xX2QvOayE8n2i48Pm03qMcm/gKdnnrSPrxls0mSoFpGG7OhwS9/mxLYnZw
+         BHer52FF/fh/x1nUmykh3jFZQWB1CRBhXMAefu1mGtIWjD7OVai7eoZLk8lNe9MmofEh
+         UqzW2fDxQU0jHq4ksI/9OZGcJ6DGWY4axXrtkMbrvBIgfhnctemnFSOIFa/BNTL049Dm
+         +kyxe8PMkzbTxJlue49Lr2ed3MnhWbVbvpz+QaY9l7MhFUoG+4bw5YJcw+j548AvwYuY
+         xtug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1rk0lMdfic6T8FzgQX46kyAy/H7cmQtjKeViSHPt/tc=;
-        b=RvvJXYE9V94wnwQujdb8EnqeIcnWux/nEfmo0BNGQY5YUI1X2CaiUtlt9Rg9q5EroX
-         Wio2cDDXz9czLLgyo+It/8Wslrr/QcqYcDO1DmmokaBwZAb8x4d+Mn4K3VtiK3C9QlGG
-         D6mzBuea2cCsajFxfA09MR1lHnsfIax/t7YQ1F+JaSUt4+QkxY3VEbjvOd0W690aSoWV
-         UDwo6gzamJFaLTo1QpG6m9II+oNWANlrk14S1IGkuM8ZSW8bRElImBn6s1mg0FbPA3MC
-         dAL93Pgyee5e5flUWmlyQP26K0hMlsf3UPub/chgdPPPZ+ksD+BLxS7lBptGV8fU+1tH
-         Xh9A==
-X-Gm-Message-State: AOAM533H9mj63hAdjNkebTaamqtMPXCGmqNBO7FwwnqoWDkt77sfNRYd
-        aQiZ4PyQBdB+ZD/t5EXB5+KZ+X7hTd5lz4Zb5bIlPw==
-X-Google-Smtp-Source: ABdhPJwEMYCDOMvtNtf62LxlQetuFPcjrxC72s4cpA+AUgsRz7y/xZBYsBvAVTWJ8AOGwiqKr5YWUH+koOSXOkvwlLM=
-X-Received: by 2002:a05:6a00:b54:b029:207:2a04:7b05 with SMTP id
- p20-20020a056a000b54b02902072a047b05mr8916394pfo.12.1616689897368; Thu, 25
- Mar 2021 09:31:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=icx8/ROiUGbXEvPXqjuw1B6ZehL0QY6lhCYqvdH4CJ8=;
+        b=oLhuKMUDZTPhbmUdIjUli4O15laex9oUPvw8q+RBo8tHs/QqoX3Xp7eNKrcOdwoRgj
+         CTSvnKBdPRV5AzyHa9Ph+J2pJXUMBVYyWyWqEgalf14yt0bRjXTM/7pAHfpw7Q+uIbiL
+         33QNNUqIspsaNpMS9WEJXAvmnNNr5qy30K5+v8uS8VZWt5K5Ob8jmkKLu0+xkYFQP5ce
+         tL6ql8S4bXGRGysFVkHCQYmcksSkVsAEwI88cCrc1LM0hZM8U1mkD8i7xjMSFo5k7F0C
+         zoieMk4kdr0z1whQR20AlbVd71+D3CprQ3O4LCAmYSTXbYgGgWvtpdZBBrMtPGrNA+O9
+         1qYg==
+X-Gm-Message-State: AOAM5333Fd9EW6TtMdywJwvhkciWYblB2VkGv3pHasIxIGLxs4YkSNgb
+        mjSp0dhgJ+CphgGojfNLpiyN3w==
+X-Google-Smtp-Source: ABdhPJytwirDMt+cb8gz0ZuTetwO20FIEReA2W/wsPOb73esowNet2q0uFtGoqomeSGLfCo344U6aQ==
+X-Received: by 2002:a4a:c316:: with SMTP id c22mr7878829ooq.65.1616690015522;
+        Thu, 25 Mar 2021 09:33:35 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id h24sm1442657otg.20.2021.03.25.09.33.34
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 25 Mar 2021 09:33:35 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 09:33:18 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Borislav Petkov <bp@alien8.de>
+cc:     Hugh Dickins <hughd@google.com>, Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH] x86/tlb: Flush global mappings when KAISER is disabled
+In-Reply-To: <20210325102959.GD31322@zn.tnic>
+Message-ID: <alpine.LSU.2.11.2103250929110.10977@eggly.anvils>
+References: <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com> <20210311214013.GH5829@zn.tnic> <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com> <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com> <20210311235215.GI5829@zn.tnic> <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
+ <20210324212139.GN5010@zn.tnic> <alpine.LSU.2.11.2103241651280.9593@eggly.anvils> <alpine.LSU.2.11.2103241913190.10112@eggly.anvils> <20210325095619.GC31322@zn.tnic> <20210325102959.GD31322@zn.tnic>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <1612689000-64577-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1612689000-64577-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Thu, 25 Mar 2021 17:31:26 +0100
-Message-ID: <CAG3jFyshwH3szLESkYXjFokVbBqELHswpwkLDAArJg+dWJ3nbw@mail.gmail.com>
-Subject: Re: [PATCH] drm: bridge: convert sysfs sprintf/snprintf family to sysfs_emit
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pushed to drm-misc-next
+On Thu, 25 Mar 2021, Borislav Petkov wrote:
 
-https://cgit.freedesktop.org/drm/drm-misc/commit/?id=fffa69aa6b1c89853cd00dea969e4754633596d7
-
-On Sun, 7 Feb 2021 at 10:12, Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warning:
->
-> drivers/gpu/drm/bridge/lontium-lt9611uxc.c:858:8-16: WARNING: use
-> scnprintf or sprintf.
->
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Ok,
+> 
+> I tried to be as specific as possible in the commit message so that we
+> don't forget. Please lemme know if I've missed something.
+> 
+> Babu, Jim, I'd appreciate it if you ran this to confirm.
+> 
+> Thx.
+> 
 > ---
->  drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> index fee2795..3cac16d 100644
-> --- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> +++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
-> @@ -855,7 +855,7 @@ static ssize_t lt9611uxc_firmware_show(struct device *dev, struct device_attribu
->  {
->         struct lt9611uxc *lt9611uxc = dev_get_drvdata(dev);
->
-> -       return snprintf(buf, PAGE_SIZE, "%02x\n", lt9611uxc->fw_version);
-> +       return sysfs_emit(buf, "%02x\n", lt9611uxc->fw_version);
+> From: Borislav Petkov <bp@suse.de>
+> Date: Thu, 25 Mar 2021 11:02:31 +0100
+> 
+> Jim Mattson reported that Debian 9 guests using a 4.9-stable kernel
+> are exploding during alternatives patching:
+> 
+>   kernel BUG at /build/linux-dqnRSc/linux-4.9.228/arch/x86/kernel/alternative.c:709!
+>   invalid opcode: 0000 [#1] SMP
+>   Modules linked in:
+>   CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.0-13-amd64 #1 Debian 4.9.228-1
+>   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>   Call Trace:
+>    swap_entry_free
+>    swap_entry_free
+>    text_poke_bp
+>    swap_entry_free
+>    arch_jump_label_transform
+>    set_debug_rodata
+>    __jump_label_update
+>    static_key_slow_inc
+>    frontswap_register_ops
+>    init_zswap
+>    init_frontswap
+>    do_one_initcall
+>    set_debug_rodata
+>    kernel_init_freeable
+>    rest_init
+>    kernel_init
+>    ret_from_fork
+> 
+> triggering the BUG_ON in text_poke() which verifies whether patched
+> instruction bytes have actually landed at the destination.
+> 
+> Further debugging showed that the TLB flush before that check is
+> insufficient because there could be global mappings left in the TLB,
+> leading to a stale mapping getting used.
+> 
+> I say "global mappings" because the hardware configuration is a new one:
+> machine is an AMD, which means, KAISER/PTI doesn't need to be enabled
+> there, which also means there's no user/kernel pagetables split and
+> therefore the TLB can have global mappings.
+> 
+> And the configuration is new one for a second reason: because that AMD
+> machine supports PCID and INVPCID, which leads the CPU detection code to
+> set the synthetic X86_FEATURE_INVPCID_SINGLE flag.
+> 
+> Now, __native_flush_tlb_single() does invalidate global mappings when
+> X86_FEATURE_INVPCID_SINGLE is *not* set and returns.
+> 
+> When X86_FEATURE_INVPCID_SINGLE is set, however, it invalidates the
+> requested address from both PCIDs in the KAISER-enabled case. But if
+> KAISER is not enabled and the machine has global mappings in the TLB,
+> then those global mappings do not get invalidated, which would lead to
+> the above mismatch from using a stale TLB entry.
+> 
+> So make sure to flush those global mappings in the KAISER disabled case.
+> 
+> Co-debugged by Babu Moger <babu.moger@amd.com>.
+> 
+> Reported-by: Jim Mattson <jmattson@google.com>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> Link: https://lkml.kernel.org/r/CALMp9eRDSW66%2BXvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com
+
+Acked-by: Hugh Dickins <hughd@google.com>
+
+Great write-up too: many thanks.
+
+> ---
+>  arch/x86/include/asm/tlbflush.h | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+> index f5ca15622dc9..2bfa4deb8cae 100644
+> --- a/arch/x86/include/asm/tlbflush.h
+> +++ b/arch/x86/include/asm/tlbflush.h
+> @@ -245,12 +245,15 @@ static inline void __native_flush_tlb_single(unsigned long addr)
+>  	 * ASID.  But, userspace flushes are probably much more
+>  	 * important performance-wise.
+>  	 *
+> -	 * Make sure to do only a single invpcid when KAISER is
+> -	 * disabled and we have only a single ASID.
+> +	 * In the KAISER disabled case, do an INVLPG to make sure
+> +	 * the mapping is flushed in case it is a global one.
+>  	 */
+> -	if (kaiser_enabled)
+> +	if (kaiser_enabled) {
+>  		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
+> -	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
+> +		invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
+> +	} else {
+> +		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
+> +	}
 >  }
->
->  static DEVICE_ATTR_RW(lt9611uxc_firmware);
-> --
-> 1.8.3.1
->
+>  
+>  static inline void __flush_tlb_all(void)
+> -- 
+> 2.29.2
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
