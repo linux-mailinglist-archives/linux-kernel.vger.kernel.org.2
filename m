@@ -2,84 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345EA348C06
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0035348C09
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhCYI7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
+        id S229533AbhCYJAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbhCYI7X (ORCPT
+        with ESMTP id S229854AbhCYJAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:59:23 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C94C06174A;
-        Thu, 25 Mar 2021 01:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=YSMq9K94SLMNFk6Q3E9dbxOo81Ihzvj6PbV9ppKeRHo=; b=mL5eEQ85y+GHxmHEaDsecPFYY
-        m5ssBOR51oWbueT4dvzHRMp4WWe2Y30EgpGawMsc3VkUxA6MQUuNLdvroWpddKI9TCEgKEXVn4moz
-        yWup6vpz185Wzn8rSeFuXsf6BabGxj7WjrttETRAwKvdvhwQr6RSfD29jp5Sj62JaFCCrBMDs4ckA
-        RIVTzKtdIj7f5+lZrb1L2os+5sUScVkacrjqLvVJVBIGGWA+Nsq7hSm/Wy7E9ooTSIghJU1KnMoub
-        0q3ZpOQC+DKE22yELVoUgBEZbiFeCksnutuNBhkp8yu+tX5+sKyDhxkQeq176RUGXQoJP3ewweLr/
-        vU6XWMdqA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51708)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lPLpa-0001Sm-Nv; Thu, 25 Mar 2021 08:59:06 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lPLpX-0005t4-2i; Thu, 25 Mar 2021 08:59:03 +0000
-Date:   Thu, 25 Mar 2021 08:59:03 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, weifeng.voon@intel.com,
-        boon.leong.ong@intel.com, qiangqing.zhang@nxp.com,
-        vee.khee.wong@intel.com, fugang.duan@nxp.com,
-        kim.tatt.chuah@intel.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com
-Subject: Re: [PATCH net-next v3 2/2] net: pcs: configure xpcs 2.5G speed mode
-Message-ID: <20210325085902.GK1463@shell.armlinux.org.uk>
-References: <20210325083806.19382-1-michael.wei.hong.sit@intel.com>
- <20210325083806.19382-3-michael.wei.hong.sit@intel.com>
+        Thu, 25 Mar 2021 05:00:19 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49320C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:00:19 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 75so1407200lfa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:00:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9hVRMkQ0tHL9uVXvm233X7lLnnZ2hno7sFzdBZfFdOI=;
+        b=Kc1IpBZxWVTOYw66WGTB1QyddKnYREmW1xtY3GcCADOywwhEb8Z3AFFd+id2LunKuy
+         33cR2Qoh205LF926p5IOG4T7etcLoiDHisk4rtvgDkiC6rkf7rYYQroi9PGiM66UPmRL
+         IhkMDH3h+u7Ph+RpUvZciDY5/n4bhiV8AtDigdjW5hdZnENDceYmQZytQJEPjTyWi/UJ
+         qNAmMBPTGJt+BVFUvU0fbwPciqtkv2oE/JE5648hLqsKC3RXAdzBot4Gtv5IObVrGHZe
+         tsoC6JsHDJL6A3HjA8Hw4DgoJHdvTdMC+ob8r0MzFgQkuZsF3ptYkyTk+IZtZCUh/vRr
+         dmvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9hVRMkQ0tHL9uVXvm233X7lLnnZ2hno7sFzdBZfFdOI=;
+        b=g/Vd/F3atnMi+Ei+NZoKXyjkfOCDClpxTZ/OKj4/htHVheFuMiRaLWituzRpbQkJmb
+         dXxt/Fhuc/GAB1zasXt/LudPtvSjJtQPn9IaTQWtxbkRJOesULze4l+WzXfCcWFqsxEo
+         6dhRKKfj6+hYgnknbs02VJEqgXkDvcWwc7B+WmYF82m4+5kB7EhkBwJ04GhEcsy51UFM
+         MWSUGigTNFaZrGiP8zH/wv2Vaz+vKuSRn8tMGMb6vjHjkWW9WB9K3LHsk3gKv2bEM+LT
+         GGl37TrHLK9x4Ni4t6mbaEQWtz2DFXft41onynxoWLCxTDsvLDnD/gpfkHRfJnV03w5h
+         8zrw==
+X-Gm-Message-State: AOAM533VbjKB/q/VLre8KTtcAhXFRhfCJ5Bn+dzQCELBIPUZhkHwS1N+
+        cQTG0COfHz/PW1NoMXkM9gnFaIS+HU5gsqK3N3sJ7g==
+X-Google-Smtp-Source: ABdhPJwaQP4N7d6gaupRLo89RKDhrzwRsCXYPYHFvTrbyAYIZ4AwHthQskkvtSOpJPpQUNbeNE169N/PfjYTs7sQF/w=
+X-Received: by 2002:a05:6512:243:: with SMTP id b3mr4510008lfo.529.1616662817810;
+ Thu, 25 Mar 2021 02:00:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325083806.19382-3-michael.wei.hong.sit@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <1615969516-87663-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+ <1615969516-87663-3-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+In-Reply-To: <1615969516-87663-3-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 25 Mar 2021 10:00:06 +0100
+Message-ID: <CACRpkdaWrhEY1izoEm4=Hsysh3RWgNdLVpjDCt=ybd-qZProfA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] dt-bindings: pinctrl: Add binding for ZynqMP
+ pinctrl driver
+To:     Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        git <git@xilinx.com>, saikrishna12468@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 04:38:06PM +0800, Michael Sit Wei Hong wrote:
-> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-> index 12a047d47dec..c95dfe4e5310 100644
-> --- a/drivers/net/phy/phylink.c
-> +++ b/drivers/net/phy/phylink.c
-> @@ -290,6 +290,8 @@ static int phylink_parse_mode(struct phylink *pl, struct fwnode_handle *fwnode)
->  
->  		switch (pl->link_config.interface) {
->  		case PHY_INTERFACE_MODE_SGMII:
-> +			phylink_set(pl->supported, 2500baseT_Full);
-> +			fallthrough;
+On Wed, Mar 17, 2021 at 9:26 AM Sai Krishna Potthuri
+<lakshmi.sai.krishna.potthuri@xilinx.com> wrote:
 
-This is wrong. "SGMII" here means 1G SGMII. See the documentation in
-Documentation/networking/phy.rst.
+> +          io-standard:
+> +            description:
+> +              Selects the IO standard for MIO pins, this is driver specific.
+> +            $ref: "/schemas/types.yaml#/definitions/uint32"
+> +            enum: [0, 1]
 
-If we want to have this at 2.5G speed, then we need a separate
-enumeration for that mode, just like we make a distinction between
-1000BASE-X and 2500BASE-X.
+As concluded from driver review, replace this with
+power-source  which is already defined in
+Documentation/devicetree/bindings/pinctrl/pincfg-node.yaml
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Yours,
+Linus Walleij
