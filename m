@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E55A3493A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:06:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94CB53493AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhCYOFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
+        id S231202AbhCYOH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhCYOFp (ORCPT
+        with ESMTP id S230101AbhCYOHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:05:45 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFBDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:05:44 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id o19so2571169edc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:05:44 -0700 (PDT)
+        Thu, 25 Mar 2021 10:07:02 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAB7C06174A;
+        Thu, 25 Mar 2021 07:07:02 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id o126so2772010lfa.0;
+        Thu, 25 Mar 2021 07:07:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rX//Uhpuk8en/W5znqrGRfTGBgMGuB8Bz5tQH5NTtjY=;
-        b=Ke5pbsg3S83cZVxueHYhsSWsAkyRWGbSfn3ua0smoXTJhDVSfjR4g/OrYyR8AZjjdL
-         cMAwBISi3S2UcIYw31DtbddDU4MQ8/N5K2wSEJfHY+lce0snCQn0e3VJ4e6JnWuT2JFN
-         MovoFjawftKT5yqrSgyCJYtLw5IcYQzEpMKmBMfutMbepJf2ihVhhEj/kHamqcbli7PH
-         A+5Lv7XC6uaOLZHWcUjb5vSzaAyVtEsVsepf1rFqu/AAkZ2Dj1JhQejXUhfO/4exi9TD
-         KaiykHYERPfJ3tnjgqH80EchXt8jcZOxjimAkTR/NHtebcQRU3zm6YUcs5rD90hl8qri
-         WmPA==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=pdIHv4/PD3czenmhqB9tk+MCiZEZtlstx+3pXZSdYn4=;
+        b=F12bWCPR2Sk/Xp80UpS74JjBunFCXBeGVh+ZXV3vONkt0eMBNYFrL/dpr5xerdl9EE
+         i2fyMsvej+qJO5pLJx63a4npSLONUy84IQxRp+1zwrY1UBl5ucLfjWLUZt1ysf6PnQ0M
+         saJ0XzaKxaeg+gAH/wC0vDOvC1b7wrOCGmURVTMW1ebZj/u0LkyOkF01zvXQLcIjyr95
+         ZKtRuwmHtZ0+1LrWaAeEKPLCeCYjHqOdlc3PYGJuvlCqXSp+44+QhvaMe/nTA6dGtBUo
+         5XmWXgb4z/0AEQJb212Rbj7z4OXIS1YXKZNOYdjmL/lEw3p8Ww3WIdTX2P+3MMrwh6H4
+         mjiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rX//Uhpuk8en/W5znqrGRfTGBgMGuB8Bz5tQH5NTtjY=;
-        b=U+I0Ee2hm2YJl7bKAUwlNBuS+sF+HXORY8iI2Rxd2KeyfmPcbtVSRw49DuPLZ4jx0v
-         6SBS1IcBU9suhBiTf5fD74v12Ql5aW8rlJfBWjeqH8RUUdWa0Xl/VeTQoUMePT8XdIRP
-         mzIXYTZg+riwnbpO5nGP5IbcwaWpxdCuxvxcz11AVbksiz1enzkBJAlm6yhaeYlbWFol
-         Bj+B1xwaNW4qx5p4EmaLohz5/8O638d5rAZeGIi573F9lwXMcTy7YjvCrvfPF1Fd4BgW
-         RtLPXZsQeLyv+GP3c01+rM2XxAkEdZqSghPqNKctQFx1/vRc1TuSOCaUVVZf3mJ0Fwko
-         DN7A==
-X-Gm-Message-State: AOAM531IEGnP07LKkmZDFXPC3vAPRhHfrSVhFrm6AZJC1KDwCY8c/Yk4
-        iFieZ6A3ll0gJsxgX6u2J/E=
-X-Google-Smtp-Source: ABdhPJwNMwu6BnKM1FLOlHciYyThwzUmtmx8/MmZpCGMdWZMeYH9qJBvym6uIe8OHEtOoyFcuzqTjA==
-X-Received: by 2002:a05:6402:4245:: with SMTP id g5mr9384904edb.306.1616681143331;
-        Thu, 25 Mar 2021 07:05:43 -0700 (PDT)
-Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
-        by smtp.gmail.com with ESMTPSA id r5sm2795891eds.49.2021.03.25.07.05.42
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=pdIHv4/PD3czenmhqB9tk+MCiZEZtlstx+3pXZSdYn4=;
+        b=h6imK0qvdjPPzhR3XdfzbUVSaZkKGeRdZFCUlAOyAfB3MMVvbmeh4gUn/n2Pyt88gk
+         9yxdyKrcqvMKNCDbhH8NB71ezqPaDoKFJcQZZKsjg2rAaYfCPMSoEleLyRriYWztQbEr
+         koDLA3EnJQUoMjhPipCZsGjiK6OoUyYJtCX1B/HQS2yHo+GqL1QM7dgQAJWD1BfIoX0v
+         s5/jq51Xi14p7cIKYty39sEHVNf6Xirnx2pQ71FxAGWSxvUxEEkUyn1Xe0SYYTgEkZHG
+         k3dprFIzEyajfh7qSN/DYuq3nZQV3DMmQ76ZDcDaxAE4bCN/H0322Sx/185yVLMoPRjP
+         eTGA==
+X-Gm-Message-State: AOAM532GNtRzphAwI1wY6skBtCbzHyavvgM/4nHKkUHZ8OTORK5XQvY8
+        oMLC3FoNBCUvCyqYqKuWNB0=
+X-Google-Smtp-Source: ABdhPJxuXe7GPMoX2rzQ9o37NfAMuSKZftGbZ2nH6SMWR56QnP9ZM9G8QG3JrpaL5VlbnllG5eee/g==
+X-Received: by 2002:a19:7d7:: with SMTP id 206mr5283288lfh.98.1616681220353;
+        Thu, 25 Mar 2021 07:07:00 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id g5sm771424ljj.21.2021.03.25.07.06.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:05:42 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Thu, 25 Mar 2021 15:05:34 +0100
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dwmw@amazon.co.uk, luto@kernel.org,
-        dave.hansen@linux.intel.com, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] x86/apic: Rudimentary typo fixes
-Message-ID: <20210325140534.GA4167881@gmail.com>
-References: <20210324134149.30445-1-unixbhaskar@gmail.com>
+        Thu, 25 Mar 2021 07:06:59 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 25 Mar 2021 15:06:57 +0100
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
+ in-tree users
+Message-ID: <20210325140657.GA1908@pc638.lan>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+ <20210325125001.GW1719932@casper.infradead.org>
+ <20210325132556.GS3697@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324134149.30445-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210325132556.GS3697@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
-
-> s/preferrable/preferable/
-> s/serivced/serviced/
-> s/distributon/distribution/
+> On Thu, Mar 25, 2021 at 12:50:01PM +0000, Matthew Wilcox wrote:
+> > On Thu, Mar 25, 2021 at 11:42:19AM +0000, Mel Gorman wrote:
+> > > This series introduces a bulk order-0 page allocator with sunrpc and
+> > > the network page pool being the first users. The implementation is not
+> > > efficient as semantics needed to be ironed out first. If no other semantic
+> > > changes are needed, it can be made more efficient.  Despite that, this
+> > > is a performance-related for users that require multiple pages for an
+> > > operation without multiple round-trips to the page allocator. Quoting
+> > > the last patch for the high-speed networking use-case
+> > > 
+> > >             Kernel          XDP stats       CPU     pps           Delta
+> > >             Baseline        XDP-RX CPU      total   3,771,046       n/a
+> > >             List            XDP-RX CPU      total   3,940,242    +4.49%
+> > >             Array           XDP-RX CPU      total   4,249,224   +12.68%
+> > > 
+> > > >From the SUNRPC traces of svc_alloc_arg()
+> > > 
+> > > 	Single page: 25.007 us per call over 532,571 calls
+> > > 	Bulk list:    6.258 us per call over 517,034 calls
+> > > 	Bulk array:   4.590 us per call over 517,442 calls
+> > > 
+> > > Both potential users in this series are corner cases (NFS and high-speed
+> > > networks) so it is unlikely that most users will see any benefit in the
+> > > short term. Other potential other users are batch allocations for page
+> > > cache readahead, fault around and SLUB allocations when high-order pages
+> > > are unavailable. It's unknown how much benefit would be seen by converting
+> > > multiple page allocation calls to a single batch or what difference it may
+> > > make to headline performance.
+> > 
+> > We have a third user, vmalloc(), with a 16% perf improvement.  I know the
+> > email says 21% but that includes the 5% improvement from switching to
+> > kvmalloc() to allocate area->pages.
+> > 
+> > https://lore.kernel.org/linux-mm/20210323133948.GA10046@pc638.lan/
+> > 
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  arch/x86/kernel/apic/apic.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> That's fairly promising. Assuming the bulk allocator gets merged, it would
+> make sense to add vmalloc on top. That's for bringing it to my attention
+> because it's far more relevant than my imaginary potential use cases.
 > 
-> diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-> index bda4f2a36868..e26ee6e67f47 100644
-> --- a/arch/x86/kernel/apic/apic.c
-> +++ b/arch/x86/kernel/apic/apic.c
-> @@ -619,7 +619,7 @@ static void setup_APIC_timer(void)
-> 
->  	if (this_cpu_has(X86_FEATURE_ARAT)) {
->  		lapic_clockevent.features &= ~CLOCK_EVT_FEAT_C3STOP;
-> -		/* Make LAPIC timer preferrable over percpu HPET */
-> +		/* Make LAPIC timer preferable over percpu HPET */
->  		lapic_clockevent.rating = 150;
->  	}
-> 
-> @@ -1532,7 +1532,7 @@ static bool apic_check_and_ack(union apic_ir *irr, union apic_ir *isr)
->   * Most probably by now the CPU has serviced that pending interrupt and it
->   * might not have done the ack_APIC_irq() because it thought, interrupt
->   * came from i8259 as ExtInt. LAPIC did not get EOI so it does not clear
-> - * the ISR bit and cpu thinks it has already serivced the interrupt. Hence
-> + * the ISR bit and cpu thinks it has already serviced the interrupt. Hence
->   * a vector might get locked. It was noticed for timer irq (vector
->   * 0x31). Issue an extra EOI to clear ISR.
->   *
-> @@ -1657,7 +1657,7 @@ static void setup_local_APIC(void)
->  	 */
->  	/*
->  	 * Actually disabling the focus CPU check just makes the hang less
-> -	 * frequent as it makes the interrupt distributon model be more
-> +	 * frequent as it makes the interrupt distribution model be more
->  	 * like LRU than MRU (the short-term load is more even across CPUs).
->  	 */
+For the vmalloc we should be able to allocating on a specific NUMA node,
+at least the current interface takes it into account. As far as i see
+the current interface allocate on a current node:
 
-This and many more comment typos are already fixed in the latest x86 
-tree, which you can find at:
+static inline unsigned long
+alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
+{
+    return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
+}
 
-  git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
+Or am i missing something?
 
-Thanks,
-
-	Ingo
+--
+Vlad Rezki
