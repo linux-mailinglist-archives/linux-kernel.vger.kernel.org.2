@@ -2,198 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83909349BC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7923349BB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhCYVkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:40:03 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:56455 "EHLO mout02.posteo.de"
+        id S230401AbhCYVj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:39:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56116 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhCYVjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:39:35 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id CA0C42400FD
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 22:39:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1616708373; bh=KdsRNnvFwA87wgl2QBB2wW9QE36s9vpzeA4RiwDJPBc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hbNiISK+bPdIj1IHAiROnGd4rGSphwzX7p4vsivNZ+OphZBQDgavAEJNbHYa9i8Ej
-         8Jl4tb/SoSnZC9lW/vx5t2DNn3UKUg/kRCsGSRI4ApWdSX8w4uGUqSUsT9qM0vk/Gz
-         9w2kXYJUjRIgN48MeInrtqfr4Q9++8KK93rNrKz3UlIzTJHdSoS+gXVtpOOsfnzvde
-         x/WoYaxDe1oBQysABfpkQ1nhnJYCfE7sbG9ehij0Bc/28oZSxzFCwLPc0D3rTusrfR
-         uOvv1r1TOpt5zzzj8FN1dE8FrPBe5gH6aWcaAaWqitFqcmD1g0t+waOKIbNIbeF7sY
-         njq2ahrpzHhLQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4F5z5c4fg7z6tmJ;
-        Thu, 25 Mar 2021 22:39:32 +0100 (CET)
-From:   Benjamin Drung <bdrung@posteo.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Adam Goode <agoode@google.com>,
-        Benjamin Drung <bdrung@posteo.de>
-Subject: [PATCH] media: uvcvideo: Fix pixel format change for Elgato Cam Link 4K
-Date:   Thu, 25 Mar 2021 22:34:59 +0100
-Message-Id: <20210325213458.51309-1-bdrung@posteo.de>
-X-Mailer: git-send-email 2.27.0
+        id S230215AbhCYVjD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 17:39:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616708342; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=z3BG5U3x049EYsQC5Opp/vswO9id6Cc9V2vrNMIpcFs=;
+        b=SHWijGRlQfWbmuGiqHSFTkPWppBqswWuwZ6mCztSD+cEhdqppFSBh782KsKFKp7isQdZno
+        kZGs8i3E/rcfgXSv4nzaP7TmiS27Qy8sgcfstcHp6npgSzQw5KUdRFGiXb1ubVMDIYPxiZ
+        K9/HViMcbRd+lPbtMHHm6RRyjR7Z6k4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EDD33AD8D;
+        Thu, 25 Mar 2021 21:39:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CAF17DA732; Thu, 25 Mar 2021 22:36:55 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.12-rc5
+Date:   Thu, 25 Mar 2021 22:36:55 +0100
+Message-Id: <cover.1616690512.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Elgato Cam Link 4K HDMI video capture card reports to support three
-different pixel formats, where the first format depends on the connected
-HDMI device.
+From: David Sterba <dsterba@suse.cz>
 
-```
-$ v4l2-ctl -d /dev/video0 --list-formats-ext
-ioctl: VIDIOC_ENUM_FMT
-	Type: Video Capture
+Hi,
 
-	[0]: 'NV12' (Y/CbCr 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-	[1]: 'NV12' (Y/CbCr 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-	[2]: 'YU12' (Planar YUV 4:2:0)
-		Size: Discrete 3840x2160
-			Interval: Discrete 0.033s (29.970 fps)
-```
+there are few fixes for issues that have some user visibility and are
+simple enough for this time of development cycle.
 
-Changing the pixel format to anything besides the first pixel format
-does not work:
+Please pull thanks.
 
-```
-v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
-Format Video Capture:
-	Width/Height      : 3840/2160
-	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
-	Field             : None
-	Bytes per Line    : 3840
-	Size Image        : 12441600
-	Colorspace        : sRGB
-	Transfer Function : Rec. 709
-	YCbCr/HSV Encoding: Rec. 709
-	Quantization      : Default (maps to Limited Range)
-	Flags             :
-```
+- a few fixes for rescue= mount option, adding more checks for missing
+  trees
 
-User space applications like VLC might show an error message on the
-terminal in that case:
+- fix sleeping in atomic context on qgroup deletion
 
-```
-libv4l2: error set_fmt gave us a different result than try_fmt!
-```
+- fix subvolume deletion on mount
 
-Depending on the error handling of the user space applications, they
-might display a distorted video, because they use the wrong pixel format
-for decoding the stream.
+- fix build with M= syntax
 
-The Elgato Cam Link 4K responds to the USB video probe
-VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
-second byte contains bFormatIndex (instead of being the second byte of
-bmHint). The first byte is always zero. The third byte is always 1.
+- fix checksum mismatch error message for direct io
 
-The firmware bug was reported to Elgato on 2020-12-01 and it was
-forwarded by the support team to the developers as feature request.
-There is no firmware update available since then. The latest firmware
-for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
+----------------------------------------------------------------
+The following changes since commit 485df75554257e883d0ce39bb886e8212349748e:
 
-Therefore add a quirk to correct the malformed data structure.
+  btrfs: always pin deleted leaves when there are active tree mod log users (2021-03-16 20:32:22 +0100)
 
-The quirk was successfully tested with VLC, OBS, and Chromium using
-different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
-1920x1080), and frame rates (29.970 and 59.940 fps).
+are available in the Git repository at:
 
-Signed-off-by: Benjamin Drung <bdrung@posteo.de>
----
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.12-rc4-tag
 
-Feel free to propose a better name for the quirk than
-UVC_QUIRK_FIX_FORMAT_INDEX.
+for you to fetch changes up to c1d6abdac46ca8127274bea195d804e3f2cec7ee:
 
-To backport to version 5.11 and earlier, the line
+  btrfs: fix check_data_csum() error message for direct I/O (2021-03-18 21:25:11 +0100)
 
-```
-uvc_dbg(stream->dev, CONTROL,
-```
+----------------------------------------------------------------
+David Sterba (1):
+      btrfs: fix build when using M=fs/btrfs
 
-needs to be changed back to
+Filipe Manana (2):
+      btrfs: fix subvolume/snapshot deletion not triggered on mount
+      btrfs: fix sleep while in non-sleep context during qgroup removal
 
-```
-uvc_trace(UVC_TRACE_CONTROL,
-```
+Johannes Thumshirn (1):
+      btrfs: zoned: remove outdated WARN_ON in direct IO
 
- drivers/media/usb/uvc/uvc_driver.c | 13 +++++++++++++
- drivers/media/usb/uvc/uvc_video.c  | 17 +++++++++++++++++
- drivers/media/usb/uvc/uvcvideo.h   |  1 +
- 3 files changed, 31 insertions(+)
+Josef Bacik (3):
+      btrfs: do not initialize dev stats if we have no dev_root
+      btrfs: initialize device::fs_info always
+      btrfs: do not initialize dev replace for bad dev root
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 30ef2a3110f7..4f245b3f8bd9 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -3132,6 +3132,19 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= UVC_INFO_META(V4L2_META_FMT_D4XX) },
-+	/*
-+	 * Elgato Cam Link 4K
-+	 * Latest firmware as of 2021-03-23 needs this quirk.
-+	 * MCU: 20.02.19, FPGA: 67
-+	 */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x0fd9,
-+	  .idProduct		= 0x0066,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FIX_FORMAT_INDEX) },
- 	/* Generic USB Video Class */
- 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_UNDEFINED) },
- 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_15) },
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index f2f565281e63..e348e1794d93 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -128,6 +128,23 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
- 	struct uvc_frame *frame = NULL;
- 	unsigned int i;
- 
-+	/*
-+	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
-+	 * contains bFormatIndex (instead of being the second byte of bmHint).
-+	 * The first byte is always zero. The third byte is always 1.
-+	 */
-+	if (stream->dev->quirks & UVC_QUIRK_FIX_FORMAT_INDEX && ctrl->bmHint > 255) {
-+		__u8 corrected_format_index;
-+
-+		corrected_format_index = ctrl->bmHint >> 8;
-+		uvc_dbg(stream->dev, CONTROL,
-+			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
-+			ctrl->bmHint, ctrl->bFormatIndex,
-+			ctrl->bFormatIndex, corrected_format_index);
-+		ctrl->bmHint = ctrl->bFormatIndex;
-+		ctrl->bFormatIndex = corrected_format_index;
-+	}
-+
- 	for (i = 0; i < stream->nformats; ++i) {
- 		if (stream->format[i].index == ctrl->bFormatIndex) {
- 			format = &stream->format[i];
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 97df5ecd66c9..bf401d5ba27d 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -209,6 +209,7 @@
- #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
- #define UVC_QUIRK_FORCE_Y8		0x00000800
- #define UVC_QUIRK_FORCE_BPP		0x00001000
-+#define UVC_QUIRK_FIX_FORMAT_INDEX	0x00002000
- 
- /* Format flags */
- #define UVC_FMT_FLAG_COMPRESSED		0x00000001
--- 
-2.27.0
+Omar Sandoval (1):
+      btrfs: fix check_data_csum() error message for direct I/O
 
+ fs/btrfs/Makefile      | 10 ++++++----
+ fs/btrfs/dev-replace.c |  3 +++
+ fs/btrfs/disk-io.c     | 19 +++++++++++++++++--
+ fs/btrfs/inode.c       | 18 +++++++++---------
+ fs/btrfs/qgroup.c      | 12 ++++++++++--
+ fs/btrfs/volumes.c     |  3 +++
+ 6 files changed, 48 insertions(+), 17 deletions(-)
