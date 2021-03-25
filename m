@@ -2,163 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA66A3494E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F223494EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCYPFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:05:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34420 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCYPFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:05:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3605661A10;
-        Thu, 25 Mar 2021 15:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616684712;
-        bh=n14K+ZB1lA7IMk1Xs/vk0MsKfm+3TbQdanrbmyKqpNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FHwTNUwG1zuMokZAgMv+sMZgUup0IwNDeUPoK80BWyBn6qBaK8/0r77noT9b22CO1
-         +QgJ4wRl9+tw0cyi4qCWLyJF/8jj4VXdjJWlroSsAGz5sTz+4hqG+gID7Zopt9ijcM
-         Nq1V2NLzcjRvgMF5It9za/kecF7ySF4YGllMEHjAMZxuFr+e7443N9/wcoh72w8n1H
-         PrLPze1Dj5JEvhLsmuOYyVYE0/fcFm79OMJ3h9TeiLoJt3KK3tUPr1YWoU9xfO44D2
-         kv94bWZc/lZUuS4UIQhWJQb6A5Bg3xT14NfpujrO4I3P4si32tHsCWOSAtyyx7ZcT0
-         P3uFFMlej36iQ==
-Date:   Thu, 25 Mar 2021 15:05:07 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     akhilpo@codeaurora.org, iommu@lists.linux-foundation.org,
-        jcrouse@codeaurora.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robdclark@gmail.com, robin.murphy@arm.com,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>
-Subject: Re: [PATCHv2 2/2] iommu/arm-smmu-qcom: Move the adreno smmu specific
- impl earlier
-Message-ID: <20210325150506.GD15172@willie-the-truck>
-References: <YDlIrjkfv16o4Nu3@builder.lan>
- <20210227135321.420-1-saiprakash.ranjan@codeaurora.org>
- <YEqn1SjsGgK0V8K4@builder.lan>
- <8cfaed1915ad6dd0c34ac7eb2391b410@codeaurora.org>
- <727fa9fe2e644f88ba35c2877d71788e@codeaurora.org>
+        id S230458AbhCYPGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230242AbhCYPFw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:05:52 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DB2C06174A;
+        Thu, 25 Mar 2021 08:05:52 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id u9so3507462ljd.11;
+        Thu, 25 Mar 2021 08:05:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7RcTgadN1TUXN3W2iKmjC/8qnntHUEdCcz8BIRBIozo=;
+        b=M7tBiZGb6F8WVKmoMnXZuzz2pnJ3BZrYvcEaO0/2YjBr1CIEEx4VUZB0EwQsLmsQJE
+         SXsIdfsJTkjOXCDUzJtL8Ii0mPp5S3Q2ypCOxsLe7mA5VGu+FZvJCjC+rimXKMsQNbxD
+         6WNtcIbi9KFg33a4LLZysKG4PGpVS+VZK3h8w1gXqDl0xLr0TzJjAjvAmuF4YE0bIsjR
+         SwKbpLKdbezBcaHGRp4BYRIoRZ7bMb23sxihCVIkYUGPZ+RvSD+HFOWDt6He3dVBN+Qm
+         dIiMimX//9X0i13UUBS3aTw/gtL5ehKFyDfr9ZzMeryx8HJ6PKywVFHR4X+CRRjOyxL+
+         5nDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7RcTgadN1TUXN3W2iKmjC/8qnntHUEdCcz8BIRBIozo=;
+        b=V4evvAHKCnhmhjP3ZU2YkHawd9X/OUkZuADQbqKM0XJLT7NAiOcFH5Kjzq3kHC4sJ6
+         5ZPfJ7pogmQupwGj2wG/D+MDPl0VmQ/TFWYlqVT1tDU0e1Grl3WA9frRvR7ruhrXBBzR
+         JdSqma04IrzCBw3SRDF5nh7siAW8ps6cdPq1oKldz59oPAyJPoW7hWpKvV/zJknHNNT7
+         9giGCmpsF9XZn3YPLMcx2GjtCI5WWECTumlFfrmdIEt0oa4GPM6yoOAkQU+qv4j0sDHf
+         CTywcKBIQump3EBD6reYSJMmSe1Rfbd/80KEDP6t5frbVlQz01X8Pu575s5n3yc4+56h
+         xxyA==
+X-Gm-Message-State: AOAM5330MO5IIt0o7lPswCG8n40SoFEt0oJ8QeVxdGh/SWgEMepUtY3G
+        hcvHxMNa6+5sNcMK7YPFH1qFwy5sg/M=
+X-Google-Smtp-Source: ABdhPJwLp6WhaXL+Rix/X8SXRoEBaHjU81LRyts5SXg66QT5gSGF/VDrr1wINuuSgLlKTOWzNXKxPw==
+X-Received: by 2002:a2e:908a:: with SMTP id l10mr6221981ljg.38.1616684750275;
+        Thu, 25 Mar 2021 08:05:50 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id w14sm572497lfl.305.2021.03.25.08.05.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 08:05:49 -0700 (PDT)
+Subject: Re: [PATCH v4 3/5] soc/tegra: pmc: Ensure that clock rates aren't too
+ high
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210302122502.20874-1-digetx@gmail.com>
+ <20210302122502.20874-4-digetx@gmail.com> <YFygotHKjgPQ/R4G@orome.fritz.box>
+ <a730ef9d-1bf7-32a3-4797-6273ad139d25@gmail.com>
+Message-ID: <ad58e9d7-f867-5dc4-642f-02ffc16109ce@gmail.com>
+Date:   Thu, 25 Mar 2021 18:05:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <727fa9fe2e644f88ba35c2877d71788e@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a730ef9d-1bf7-32a3-4797-6273ad139d25@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 01:10:12PM +0530, Sai Prakash Ranjan wrote:
-> On 2021-03-15 00:31, Sai Prakash Ranjan wrote:
-> > On 2021-03-12 04:59, Bjorn Andersson wrote:
-> > > On Sat 27 Feb 07:53 CST 2021, Sai Prakash Ranjan wrote:
-> > > > On 2021-02-27 00:44, Bjorn Andersson wrote:
-> > > > > On Fri 26 Feb 12:23 CST 2021, Rob Clark wrote:
-> > > > >
-> > > > >
-> > > > > The current logic picks one of:
-> > > > > 1) is the compatible mentioned in qcom_smmu_impl_of_match[]
-> > > > > 2) is the compatible an adreno
-> > > > > 3) no quirks needed
-> > > > >
-> > > > > The change flips the order of these, so the only way I can see this
-> > > > > change affecting things is if we expected a match on #2, but we got one
-> > > > > on #1.
-> > > > >
-> > > > > Which implies that the instance that we want to act according to the
-> > > > > adreno impl was listed in qcom_smmu_impl_of_match[] - which either is
-> > > > > wrong, or there's a single instance that needs both behaviors.
-> > > > >
-> > > > > (And I believe Jordan's answer confirms the latter - there's a single
-> > > > > SMMU instance that needs all them quirks at once)
-> > > > >
-> > > > 
-> > > > Let me go through the problem statement in case my commit
-> > > > message wasn't
-> > > > clear. There are two SMMUs (APSS and GPU) on SC7280 and both are
-> > > > SMMU500
-> > > > (ARM SMMU IP).
-> > > > 
-> > > > APSS SMMU compatible - ("qcom,sc7280-smmu-500", "arm,mmu-500")
-> > > > GPU SMMU compatible - ("qcom,sc7280-smmu-500",
-> > > > "qcom,adreno-smmu", "arm,mmu-500")
-> > > > 
-> > > > Now if we take SC7180 as an example, GPU SMMU was QSMMU(QCOM SMMU IP)
-> > > > and APSS SMMU was SMMU500(ARM SMMU IP).
-> > > > 
-> > > > APSS SMMU compatible - ("qcom,sc7180-smmu-500", "arm,mmu-500")
-> > > > GPU SMMU compatible - ("qcom,sc7180-smmu-v2",
-> > > > "qcom,adreno-smmu", "qcom,smmu-v2")
-> > > > 
-> > > > Current code sequence without this patch,
-> > > > 
-> > > > if (of_match_node(qcom_smmu_impl_of_match, np))
-> > > >                  return qcom_smmu_create(smmu, &qcom_smmu_impl);
-> > > > 
-> > > > if (of_device_is_compatible(np, "qcom,adreno-smmu"))
-> > > >         return qcom_smmu_create(smmu, &qcom_adreno_smmu_impl);
-> > > > 
-> > > > Now if we look at the compatible for SC7180, there is no problem
-> > > > because
-> > > > the APSS SMMU will match the one in qcom_smmu_impl_of_match[]
-> > > > and GPU SMMU
-> > > > will match "qcom,adreno-smmu" because the compatible strings are
-> > > > different.
-> > > > But for SC7280, both the APSS SMMU and GPU SMMU
-> > > > compatible("qcom,sc7280-smmu-500")
-> > > > are same. So GPU SMMU will match with the one in
-> > > > qcom_smmu_impl_of_match[]
-> > > > i.e.., "qcom,sc7280-smmu-500" which functionally doesn't cause
-> > > > any problem
-> > > > but we will miss settings for split pagetables which are part of
-> > > > GPU SMMU
-> > > > specific implementation.
-> > > > 
-> > > > We can avoid this with yet another new compatible for GPU SMMU
-> > > > something like
-> > > > "qcom,sc7280-adreno-smmu-500" but since we can handle this
-> > > > easily in the
-> > > > driver and since the IPs are same, meaning if there was a
-> > > > hardware quirk
-> > > > required, then we would need to apply to both of them and would
-> > > > this additional
-> > > > compatible be of any help?
-> > > > 
-> > > 
-> > > No, I think you're doing the right thing of having them both. I just
-> > > didn't remember us doing that.
-> > > 
-> > > > Coming to the part of quirks now, you are right saying both
-> > > > SMMUs will need
-> > > > to have the same quirks in SC7280 and similar others where both
-> > > > are based on
-> > > > same IPs but those should probably be *hardware quirks* and if
-> > > > they are
-> > > > software based like the S2CR quirk depending on the firmware,
-> > > > then it might
-> > > > not be applicable to both. In case if it is applicable, then as
-> > > > Jordan mentioned,
-> > > > we can add the same quirks in GPU SMMU implementation.
-> > > > 
-> > > 
-> > > I do suspect that at some point (probably sooner than later) we'd have
-> > > to support both inheriting of stream from the bootloader and the
-> > > Adreno
-> > > "quirks" in the same instance.
-> > > 
-> > > But for now this is okay to me.
-> > > 
-> > 
-> > Sure, let me know if you or anyone face any issues without it and I will
-> > add it. I will resend this series with the dt-bindings patch for sc7280
-> > smmu
-> > which wasn't cc'd to smmu folks by mistake.
-> > 
+25.03.2021 18:02, Dmitry Osipenko пишет:
+> 25.03.2021 17:39, Thierry Reding пишет:
+>> On Tue, Mar 02, 2021 at 03:25:00PM +0300, Dmitry Osipenko wrote:
+>>> Switch all clocks of a power domain to a safe rate which is suitable
+>>> for all possible voltages in order to ensure that hardware constraints
+>>> aren't violated when power domain state toggles.
+>>>
+>>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+>>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+>>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>  drivers/soc/tegra/pmc.c | 92 ++++++++++++++++++++++++++++++++++++++++-
+>>>  1 file changed, 90 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+>>> index f970b615ee27..a87645fac735 100644
+>>> --- a/drivers/soc/tegra/pmc.c
+>>> +++ b/drivers/soc/tegra/pmc.c
+>>> @@ -237,6 +237,7 @@ struct tegra_powergate {
+>>>  	unsigned int id;
+>>>  	struct clk **clks;
+>>>  	unsigned int num_clks;
+>>> +	unsigned long *clk_rates;
+>>>  	struct reset_control *reset;
+>>>  };
+>>>  
+>>> @@ -641,6 +642,57 @@ static int __tegra_powergate_remove_clamping(struct tegra_pmc *pmc,
+>>>  	return 0;
+>>>  }
+>>>  
+>>> +static int tegra_powergate_prepare_clocks(struct tegra_powergate *pg)
+>>> +{
+>>> +	unsigned long safe_rate = 100 * 1000 * 1000;
+>>
+>> This seems a bit arbitrary. Where did you come up with that value?
+>>
+>> I'm going to apply this to see how it fares in our testing.
 > 
-> I think there is consensus on this series. I can resend if required but it
-> still applies cleanly, let me know if you have any comments?
+> This value is chosen based on the OPP table voltages and frequencies.
+> 
+> Maybe you could add this clarifying comment to the code(?):
+> 
+> "There is no hardware unit on any of Tegra SoCs which requires higher
+> voltages for the rates above 100MHz."
 
-Please resend with the bindings patch, and I'd like Bjorn's Ack as well.
-
-Will
+I meant below, of course :)
