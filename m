@@ -2,162 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908A03498C7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FECB3498CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhCYRzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:55:22 -0400
-Received: from mail-bn8nam11on2073.outbound.protection.outlook.com ([40.107.236.73]:24438
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229533AbhCYRzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:55:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Yi07RyDik0B5V6RM97LE1vrBQT4NgRGtEeZ0+HhpRC9lws+tSGBSmfv4qtH1KfX/LsJlU8KfVRQT3vUpXtsNT10aOKYBCdvZRimtV0FjHdyCaBWnMVLO0/t1Cjm3kNzvPbAsXT4Bo+Y9UwgLBlf/tlMQNt2JjZ+Ko1A90pavnzNxrAuFJ3lm8pvfrRIS2EY064IO07Q9/epfO9ylUmf71H38UfwK6PnXtHkuhzAZs3/egZMFikLSg53KjrqZR0q3kcKuL1kMV300a85OZRll3gfde3s9AAY0zsPLVQsgVKqK6qbMkTGmtI6iap1mL8TtSG3JveS4a2pQRAQ9WbjbMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zdFtt0EQcpoECw2jJpsAIBrtuUZaqxnwX0fV6qM4dsE=;
- b=X2kGdjA1wxEAIqDA78okh5kFVjWH8UoNgjib7BBTTV4ZM/aTN7du8MjLFFrlPsHcRI5gG1ND9a0usz2nXREGoR/WI5VomnaB3siX4YEaX25vHt7Jox58nTNk3Pn5VKzHKYuy42mIPZe0xvlNzfYDMTaUAwttrSP4S9Mqr4FLyjphw9zCsqHZqmmZ94LnTtIc3cTqT4UQuCJBvo0hI6sBVQLYoaSKVsqGdkLc+V/MODyi3n0KRi6y/VYngJNtpYm0tO00cI0mGwbbsCrUbCy0808XNEBGUoxv0J/1gHRCDQ9yFwBOm1QWjsJjMkogzaW/kFHsVTzj9JzJmrK1Cz1x7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zdFtt0EQcpoECw2jJpsAIBrtuUZaqxnwX0fV6qM4dsE=;
- b=PRkbOjGr/HPV1r5CnvgMT5+oQcs2FPx5Z+PXwXGnJ+oVcmd6230A0HEwfYpXj7/lHi4cAL51sZBB+mm5kekNpBjwhvyq8+U61VAtawgWv+4RNsNnPG1XciuIDyEB+MxBUreB2LbZgaoqHA5FujNnoFc86gDut35g055G34OgaxrCRIyXhMAGhk3hL4/DrDvMdVsDMOwVuE16zbW8+J/j5ceine2N85+jsWgV8s7l9E5xjQz18hyteXxUBU/qZBEw3nQ7J7hamKzx/JF4swPoJhwq2tiM7vkjDkNlFnBjLX61feQlDVx0b1gHKCpzwEQT903Z7+cvqaa9osyfBSgNMQ==
-Authentication-Results: shipmail.org; dkim=none (message not signed)
- header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2811.namprd12.prod.outlook.com (2603:10b6:5:45::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
- 2021 17:55:06 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
- 17:55:06 +0000
-Date:   Thu, 25 Mar 2021 14:55:04 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "christian.koenig@amd.com" <christian.koenig@amd.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-Message-ID: <20210325175504.GH2356281@nvidia.com>
-References: <20210321184529.59006-1-thomas_os@shipmail.org>
- <20210321184529.59006-2-thomas_os@shipmail.org>
- <ec99146c7abc35d16b245816aba3e9d14862e624.camel@intel.com>
- <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
- <YFsNRIUYrwVQanVF@phenom.ffwll.local>
- <a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org>
- <75423f64-adef-a2c4-8e7d-2cb814127b18@intel.com>
- <e5199438-9a0d-2801-f9f6-ceb13d7a9c61@shipmail.org>
- <6b0de827-738d-b3c5-fc79-8ca9047bad35@intel.com>
- <9f789d64-940f-c728-8d5e-aab74d562fb6@shipmail.org>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9f789d64-940f-c728-8d5e-aab74d562fb6@shipmail.org>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH2PR18CA0014.namprd18.prod.outlook.com
- (2603:10b6:610:4f::24) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S229930AbhCYR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229979AbhCYR4Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:56:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513F5C06174A;
+        Thu, 25 Mar 2021 10:56:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=OEsHTd9VHEuZfaQWzvpG+FxcEk7+095Kppam4iUyfmc=; b=nNZ+NMyuuFuksNSmO1feJ14bhi
+        Qtbok3eHOCX6rD49ii+2s0FkTJtAaPWmwvJimqJhl89849URjtc3kWFoDPMO+PocJ4tTZHVCPZWGD
+        jXABHqzmX4G+4jPy12OzNGVcnEOWfWm+V8xJWwuWT+TGVkieaSuXfZROVzdpc6yqVNH7yAlCPpMkU
+        YdvvNH9YpOFRNFDgYT7CmExbNfP/CRyHggb5CtX26S9K3pXTDIIp1ZQsc+HesawT1ywoF0GjM3u7b
+        oBdQcZLbB4tMZz/7uxjeec1TghHh4NxGBsW1N6P4Z8c5nAoSA6slkuS7Xs6gg3f8V/7QskSGfqjtm
+        ejrc57sw==;
+Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPUCp-00DTVt-CV; Thu, 25 Mar 2021 17:55:51 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH] tools: gpio-utils: fix various kernel-doc warnings
+Date:   Thu, 25 Mar 2021 10:55:36 -0700
+Message-Id: <20210325175536.14695-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR18CA0014.namprd18.prod.outlook.com (2603:10b6:610:4f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend Transport; Thu, 25 Mar 2021 17:55:06 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPUCG-002l1l-Nu; Thu, 25 Mar 2021 14:55:04 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98d2eb9c-d903-4edd-dff9-08d8efb71fa4
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2811:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB281103FF8C2AE2E6D307013CC2629@DM6PR12MB2811.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: reIwC5hkCOBeatCkj5TeEe09+ZY9INv6/7MS5iLiih2zT99+leHub/hCtcD/b0uO3bYMF/YI/xddke5Nm47UIYNunMC2NvZOR1MP1thCyzP50JntjsED3mV/BuvbOEq3jv9Ysl9enRIwnIgM+WSAX0k0Dv7MrQYBi0IjswHSyyDvt8uAITp5rFe2v+pqfQ9SCjdVovL2geukEGCYALT9HLlDzsB79JDXriqtMRxUyDxImX+9FwuFujmhTCLxrcm+iikUAtIGS8veM8si6022KEvCiY81dxMb64crvfk+CiP1p11KRa4mx4a3y7GA7ur5aXRGd2/fctfL95jAcvctWk9JJQFrN2QEjrlFR5e2bgVuXcude1460giB/scT23xa3/NTBYH1S/2Q1pXWolCvw5TLnWcWB8oR4gEgqww3bJf6NLcQAncTfvpWhPhenW3St3H84pQJF12RqwiqUwpwSozdOVQOJnZuq+Kr8TG2csxowAbU4z5kzaadUHrS/5V8AL993CqLqO/4zMo8xjh1VM1DnZhjrr7rvAysR3Jn1T61DWLjQLU4V3X8a3v7yo183Vs+VBwU9OTPY1+uHcha1KlwdM5S4LIEYtsl3fOhTFJ3BbLcSktS3JG2195Nyw9EWvoSrruTxbRWPMLD2VKNI5xjjk4G3+Y7XzYKP7/02Kd1q8sOHmuRNomSbcOc4VK0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(376002)(396003)(346002)(8936002)(4326008)(33656002)(26005)(9786002)(66476007)(478600001)(66556008)(86362001)(53546011)(5660300002)(1076003)(9746002)(186003)(54906003)(2616005)(426003)(316002)(8676002)(38100700001)(6916009)(36756003)(2906002)(66946007)(14583001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WmtRY081WEVsSmRNMFJXcDcyd1dYK3dmeEd2eDQ5ZTFYQ0g2TlBISFhtcThJ?=
- =?utf-8?B?TksvMGJ3aC9xc1hFQk0rZGFwV2FpaWp0andKWmVYWW1XSUY5OWR6eVRXajJt?=
- =?utf-8?B?YW1vNFQ0MlhMdm40YmplNE5xaUZQTU1VZWxyTXhmNUZpaytxOHdDVmRuVUEy?=
- =?utf-8?B?MFhleVdPNUZIM2dTVGh4VWpqRmtRMHBsV2U1ZTBiTDlpWFh2Q3RHRkZiTU1m?=
- =?utf-8?B?WDN1RUF4bU9pa01pcHBqeHpWRG9FMFY1QmJQdCs3dHBkOVM2UTVEQ2dMR1ls?=
- =?utf-8?B?eXRySGgyT094M1FERkFnZGdmQ3Q4Q3BlZWlGbUtGSlBoYlo0S1ZHZW50SHN2?=
- =?utf-8?B?aHJ5OGFDVzRrcEk3VHhpNkhWZ3FZZkpROFpTbFhFWm9kZ2NBQnNneFQ3Z2FQ?=
- =?utf-8?B?ZTY5dS8rdVh4YmtFQlNUeGtPNXlzYTBhMG1obDlSbndpY1JlMWRBc3BmNzhr?=
- =?utf-8?B?b1l1ZzdzOVJBNjFOK3JVbEVHdlJzMTdpV0ZzTmlpVlp0MEFMc1VtdSt4OFpy?=
- =?utf-8?B?WGNqM0U5d1Nkc0JnTzI2aTZreElSMVczNEJhQWNLM0tnWENDWE42b09XcjVF?=
- =?utf-8?B?NnE0a3VneGFMWWpXNHVXTEcramZYMCs0Y0pHN3liajRvT21zR0dYT2F3M0Jk?=
- =?utf-8?B?UTBQbVpHZ3lvM3BsekcxcUFVNUdRZGRtYkJsRFZmNXNVd1VHZXlSSVYrSnhr?=
- =?utf-8?B?OWlLTXlaclcrRjIraW5BQW5UcjJFS1ZUWjVpWEd2VlBtTGt6ajlKa0xXRlBG?=
- =?utf-8?B?Nnh0UDFneFlyaXBIYWdGZHdWVXl4RXp2QU1mR1FmSTBMMlQzVlg4U0h1MzFQ?=
- =?utf-8?B?bUZIa0tYeWxLVy9iTkNrck9zc2xKYkhCUGIzczFiM01mR0FveUN1dGtPbEcv?=
- =?utf-8?B?UzliRzQvSXFrRDlrMUZZc0ZSVE14UzgzRk5MVnBuVSs2QTduNU9KSWtpUm1r?=
- =?utf-8?B?RkI4czBXZlA4WEtBZGcxNHgraEhIOTJxcnBlVWFFLzFqb3AzVXBmTFc2bWpt?=
- =?utf-8?B?b1A3VkxSR01BaENKRWFPYm0rZDZkSE14UlRvYkRLV2VZN1Z0Nk5XOU1INFky?=
- =?utf-8?B?aUhWSFdvV2VJQ0JJVlZxWDdraGU3ODJZblF1NC9FRHordUI3U3ZZOHhZMlZQ?=
- =?utf-8?B?Q1RlVllITFZWNUJEU3hNRjZuN29xMEltZ09jeVNhV0NPY2VuaDYzSVd5d2VB?=
- =?utf-8?B?eXlBU1ZLcFcvVGhFYXp0bjJLdnQ2ZHBUUDlRZ3ZGM1A3Q3hXMEQ1eWVTYmlH?=
- =?utf-8?B?VGpvbHFsQ2pCUlBYY1h6V2dtSi90SmpZT3RkM212YUlCYjZpNWkyMVMwclE1?=
- =?utf-8?B?aW1DbjJKdmhJS0tFTDNKWFBReTBSS1VpNGVhZUV1bWRIdWJ5aXFjMGVDYWtJ?=
- =?utf-8?B?MnRpZXdhVWY0VXVuZXVBalZPTkRLYTFSTTczSUFQb1ZSc1FINE5QL1djVDJu?=
- =?utf-8?B?TUFQWmtuM29JdnAyVjRQNHZ6bWJBYW1pTjBRNE45dXEvc3Z3S2c0WGVtTEN4?=
- =?utf-8?B?Q3ZQSnU5cDJsRlBETllKWXgyRzl1VEhwZ0dkcmxZemE2Yjg0OUNxNWM5VERX?=
- =?utf-8?B?cjVNYk5sL3E5V3JmNExrQXlNRHZNU2pFaitmc09JcFg5enRkUWJlbXRySFpI?=
- =?utf-8?B?VUYwNjhVK01xNGI5TmFMM1owSHZVTlZ1clI5d2FmZ3ExNnphK1RPTVBleExJ?=
- =?utf-8?B?MWNhaXhJdW9wR1ZpalVzNmN5cGIzQk9PVmQycTEycUhSSC9oeWZocFhoTm1L?=
- =?utf-8?Q?dNWBxVOvYo0xarzKJ4jy9aVM5FqL7hAXQmi7eiI?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98d2eb9c-d903-4edd-dff9-08d8efb71fa4
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 17:55:06.3196
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tqrKTe5f83nRFnPsED0nO9FNBw8DwuDdIVsdf5ibIOjUxl13os5xweV/2fEZd8J1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2811
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 06:51:26PM +0100, Thomas Hellström (Intel) wrote:
-> 
-> On 3/24/21 9:25 PM, Dave Hansen wrote:
-> > On 3/24/21 1:22 PM, Thomas Hellström (Intel) wrote:
-> > > > We also have not been careful at *all* about how _PAGE_BIT_SOFTW* are
-> > > > used.  It's quite possible we can encode another use even in the
-> > > > existing bits.
-> > > > 
-> > > > Personally, I'd just try:
-> > > > 
-> > > > #define _PAGE_BIT_SOFTW5        57      /* available for programmer */
-> > > > 
-> > > OK, I'll follow your advise here. FWIW I grepped for SW1 and it seems
-> > > used in a selftest, but only for PTEs AFAICT.
-> > > 
-> > > Oh, and we don't care about 32-bit much anymore?
-> > On x86, we have 64-bit PTEs when running 32-bit kernels if PAE is
-> > enabled.  IOW, we can handle the majority of 32-bit CPUs out there.
-> > 
-> > But, yeah, we don't care about 32-bit. :)
-> 
-> Hmm,
-> 
-> Actually it makes some sense to use SW1, to make it end up in the same dword
-> as the PSE bit, as from what I can tell, reading of a 64-bit pmd_t on 32-bit
-> PAE is not atomic, so in theory a huge pmd could be modified while reading
-> the pmd_t making the dwords inconsistent.... How does that work with fast
-> gup anyway?
+Fix several problems in kernel-doc notation in gpio-utils.c.
 
-It loops to get an atomic 64 bit value if the arch can't provide an
-atomic 64 bit load
+gpio-utils.c:37: warning: Incorrect use of kernel-doc format:  * gpiotools_request_line() - request gpio lines in a gpiochip
+gpio-utils.c:61: warning: expecting prototype for doc(). Prototype was for gpiotools_request_line() instead
+gpio-utils.c:265: warning: Excess function parameter 'value' description in 'gpiotools_sets'
+gpio-utils.c:1: warning: 'gpiotools_request_lines' not found
 
-Jason
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org
+---
+ tools/gpio/gpio-utils.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+--- linux-next-20210323.orig/tools/gpio/gpio-utils.c
++++ linux-next-20210323/tools/gpio/gpio-utils.c
+@@ -20,7 +20,7 @@
+ #define CONSUMER "gpio-utils"
+ 
+ /**
+- * doc: Operation of gpio
++ * DOC: Operation of gpio
+  *
+  * Provide the api of gpiochip for chardev interface. There are two
+  * types of api.  The first one provide as same function as each
+@@ -100,7 +100,7 @@ exit_free_name:
+ }
+ 
+ /**
+- * gpiotools_set_values(): Set the value of gpio(s)
++ * gpiotools_set_values() - Set the value of gpio(s)
+  * @fd:			The fd returned by
+  *			gpiotools_request_line().
+  * @values:		The array of values want to set.
+@@ -124,7 +124,7 @@ int gpiotools_set_values(const int fd, s
+ }
+ 
+ /**
+- * gpiotools_get_values(): Get the value of gpio(s)
++ * gpiotools_get_values() - Get the value of gpio(s)
+  * @fd:			The fd returned by
+  *			gpiotools_request_line().
+  * @values:		The array of values get from hardware.
+@@ -148,7 +148,7 @@ int gpiotools_get_values(const int fd, s
+ }
+ 
+ /**
+- * gpiotools_release_line(): Release the line(s) of gpiochip
++ * gpiotools_release_line() - Release the line(s) of gpiochip
+  * @fd:			The fd returned by
+  *			gpiotools_request_line().
+  *
+@@ -169,7 +169,7 @@ int gpiotools_release_line(const int fd)
+ }
+ 
+ /**
+- * gpiotools_get(): Get value from specific line
++ * gpiotools_get() - Get value from specific line
+  * @device_name:	The name of gpiochip without prefix "/dev/",
+  *			such as "gpiochip0"
+  * @line:		number of line, such as 2.
+@@ -191,7 +191,7 @@ int gpiotools_get(const char *device_nam
+ 
+ 
+ /**
+- * gpiotools_gets(): Get values from specific lines.
++ * gpiotools_gets() - Get values from specific lines.
+  * @device_name:	The name of gpiochip without prefix "/dev/",
+  *			such as "gpiochip0".
+  * @lines:		An array desired lines, specified by offset
+@@ -230,7 +230,7 @@ int gpiotools_gets(const char *device_na
+ }
+ 
+ /**
+- * gpiotools_set(): Set value to specific line
++ * gpiotools_set() - Set value to specific line
+  * @device_name:	The name of gpiochip without prefix "/dev/",
+  *			such as "gpiochip0"
+  * @line:		number of line, such as 2.
+@@ -248,13 +248,13 @@ int gpiotools_set(const char *device_nam
+ }
+ 
+ /**
+- * gpiotools_sets(): Set values to specific lines.
++ * gpiotools_sets() - Set values to specific lines.
+  * @device_name:	The name of gpiochip without prefix "/dev/",
+  *			such as "gpiochip0".
+  * @lines:		An array desired lines, specified by offset
+  *			index for the associated GPIO device.
+  * @num_lines:		The number of lines to request.
+- * @value:		The array of values set to gpiochip, must be
++ * @values:		The array of values set to gpiochip, must be
+  *			0(low) or 1(high).
+  *
+  * Return:		On success return 0;
