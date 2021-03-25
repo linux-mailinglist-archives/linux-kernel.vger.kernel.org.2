@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1052A348732
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B7A348748
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 04:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbhCYCwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 22:52:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44241 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235358AbhCYCvy (ORCPT
+        id S230282AbhCYDEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 23:04:13 -0400
+Received: from mx316.baidu.com ([180.101.52.236]:44955 "EHLO
+        njjs-sys-mailin04.njjs.baidu.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229719AbhCYDDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 22:51:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616640714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O40ZXFmREbbNLPasEc4QZD9qoO27te5cNeANN7AvMJs=;
-        b=A+IyFcCGqNIqlH7qF/O7BEDllR+/fQ0M55rO5KVXz1HxLBvJA0VE1b3tvI6nxmXv4cl8w0
-        QOAzS+muWp/bdHEqe8v6m99P9WS6pAw5sK8Xi+HCKolIzWEOO74zn7NfhiqrgumidozCDt
-        BXxsSy0MaQmiAWFpp4Wq6f4z40/8Hmc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-joTU2e24NFarjDDTNS2ftw-1; Wed, 24 Mar 2021 22:51:49 -0400
-X-MC-Unique: joTU2e24NFarjDDTNS2ftw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8EC9988127C;
-        Thu, 25 Mar 2021 02:51:48 +0000 (UTC)
-Received: from [10.10.112.16] (ovpn-112-16.rdu2.redhat.com [10.10.112.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1731E5C257;
-        Thu, 25 Mar 2021 02:51:47 +0000 (UTC)
-Subject: Re: [PATCH] livepatch: klp_send_signal should treat PF_IO_WORKER like
- PF_KTHREAD
-To:     Dong Kai <dongkai11@huawei.com>, jpoimboe@redhat.com,
-        jikos@kernel.org, mbenes@suse.cz, pmladek@suse.com
-Cc:     axboe@kernel.dk, live-patching@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210325014836.40649-1-dongkai11@huawei.com>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Message-ID: <cd701421-f2c6-56f6-5798-106bc9de0084@redhat.com>
-Date:   Wed, 24 Mar 2021 22:51:46 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210325014836.40649-1-dongkai11@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Wed, 24 Mar 2021 23:03:46 -0400
+X-Greylist: delayed 393 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Mar 2021 23:03:45 EDT
+Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+        by njjs-sys-mailin04.njjs.baidu.com (Postfix) with ESMTP id C60681180004B;
+        Thu, 25 Mar 2021 10:57:09 +0800 (CST)
+From:   Li RongQing <lirongqing@baidu.com>
+To:     zhaolei27@baidu.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf x86 kvm-stat: support to analyze kvm msr
+Date:   Thu, 25 Mar 2021 10:57:09 +0800
+Message-Id: <1616641029-20644-1-git-send-email-lirongqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 9:48 PM, Dong Kai wrote:
-> commit 15b2219facad ("kernel: freezer should treat PF_IO_WORKER like
-> PF_KTHREAD for freezing") is to fix the freezeing issue of IO threads
+From: Lei Zhao <zhaolei27@baidu.com>
 
-nit: s/freezeing/freezing
+usage:
+    - kvm stat
+      run a command and gather performance counter statistics
 
-> by making the freezer not send them fake signals.
-> 
-> Here live patching consistency model call klp_send_signals to wake up
-> all tasks by send fake signal to all non-kthread which only check the
-> PF_KTHREAD flag, so it still send signal to io threads which may lead to
-> freezeing issue of io threads.
-> 
-> Here we take the same fix action by treating PF_IO_WORKERS as PF_KTHREAD
-> within klp_send_signal function.
-> 
-> Signed-off-by: Dong Kai <dongkai11@huawei.com>
-> ---
-> note:
-> the io threads freeze issue links:
-> [1] https://lore.kernel.org/io-uring/YEgnIp43%2F6kFn8GL@kevinlocke.name/
-> [2] https://lore.kernel.org/io-uring/d7350ce7-17dc-75d7-611b-27ebf2cb539b@kernel.dk/
-> 
->   kernel/livepatch/transition.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-> index f6310f848f34..0e1c35c8f4b4 100644
-> --- a/kernel/livepatch/transition.c
-> +++ b/kernel/livepatch/transition.c
-> @@ -358,7 +358,7 @@ static void klp_send_signals(void)
->   		 * Meanwhile the task could migrate itself and the action
->   		 * would be meaningless. It is not serious though.
->   		 */
-> -		if (task->flags & PF_KTHREAD) {
-> +		if (task->flags & (PF_KTHREAD | PF_IO_WORKER)) {
->   			/*
->   			 * Wake up a kthread which sleeps interruptedly and
->   			 * still has not been migrated.
-> 
+    - show the result:
+      perf kvm stat report --event=msr
 
-(PF_KTHREAD | PF_IO_WORKER) is open coded in soo many places maybe this 
-is a silly question, but...
+See the msr events:
 
-If the livepatch code could use fake_signal_wake_up(), we could 
-consolidate the pattern in klp_send_signals() with the one in 
-freeze_task().  Then there would only one place for wake up / fake 
-signal logic.
+Analyze events for all VMs, all VCPUs:
 
-I don't fully understand the differences in the freeze_task() version, 
-so I only pose this as a question and not v2 request.
+MSR Access Samples  Samples% Time%  Min Time Max Time  Avg time
 
-As it is, this change seems logical to me, so:
-Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
+  0x6e0:W   67007  98.17%   98.31%  0.59us   10.69us  0.90us ( +-  0.10% )
+  0x830:W    1186   1.74%    1.60%  0.53us  108.34us  0.82us ( +- 11.02% )
+   0x3b:R      66   0.10%    0.09%  0.56us    1.26us  0.80us ( +-  3.24% )
 
-Thanks,
+Total Samples:68259, Total events handled time:61150.95us.
 
--- Joe
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Signed-off-by: Lei Zhao <zhaolei27@baidu.com>
+---
+ tools/perf/arch/x86/util/kvm-stat.c | 46 +++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+
+diff --git a/tools/perf/arch/x86/util/kvm-stat.c b/tools/perf/arch/x86/util/kvm-stat.c
+index 072920475b65..c5dd54f6ef5e 100644
+--- a/tools/perf/arch/x86/util/kvm-stat.c
++++ b/tools/perf/arch/x86/util/kvm-stat.c
+@@ -133,11 +133,56 @@ static struct kvm_events_ops ioport_events = {
+ 	.name = "IO Port Access"
+ };
+ 
++ /* The time of emulation msr is from kvm_msr to kvm_entry. */
++static void msr_event_get_key(struct evsel *evsel,
++				 struct perf_sample *sample,
++				 struct event_key *key)
++{
++	key->key  = evsel__intval(evsel, sample, "ecx");
++	key->info = evsel__intval(evsel, sample, "write");
++}
++
++static bool msr_event_begin(struct evsel *evsel,
++			       struct perf_sample *sample,
++			       struct event_key *key)
++{
++	if (!strcmp(evsel->name, "kvm:kvm_msr")) {
++		msr_event_get_key(evsel, sample, key);
++		return true;
++	}
++
++	return false;
++}
++
++static bool msr_event_end(struct evsel *evsel,
++			     struct perf_sample *sample __maybe_unused,
++			     struct event_key *key __maybe_unused)
++{
++	return kvm_entry_event(evsel);
++}
++
++static void msr_event_decode_key(struct perf_kvm_stat *kvm __maybe_unused,
++				    struct event_key *key,
++				    char *decode)
++{
++	scnprintf(decode, decode_str_len, "%#llx:%s",
++		  (unsigned long long)key->key,
++		  key->info ? "W" : "R");
++}
++
++static struct kvm_events_ops msr_events = {
++	.is_begin_event = msr_event_begin,
++	.is_end_event = msr_event_end,
++	.decode_key = msr_event_decode_key,
++	.name = "MSR Access"
++};
++
+ const char *kvm_events_tp[] = {
+ 	"kvm:kvm_entry",
+ 	"kvm:kvm_exit",
+ 	"kvm:kvm_mmio",
+ 	"kvm:kvm_pio",
++	"kvm:kvm_msr",
+ 	NULL,
+ };
+ 
+@@ -145,6 +190,7 @@ struct kvm_reg_events_ops kvm_reg_events_ops[] = {
+ 	{ .name = "vmexit", .ops = &exit_events },
+ 	{ .name = "mmio", .ops = &mmio_events },
+ 	{ .name = "ioport", .ops = &ioport_events },
++	{ .name = "msr", .ops = &msr_events },
+ 	{ NULL, NULL },
+ };
+ 
+-- 
+2.17.3
 
