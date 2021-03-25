@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E643496CC
+	by mail.lfdr.de (Postfix) with ESMTP id 947253496CD
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhCYQaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:30:00 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:51932 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229666AbhCYQ32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:29:28 -0400
-Received: from zn.tnic (p200300ec2f0d5d002e2bf1176a5b9def.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5d00:2e2b:f117:6a5b:9def])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ACE2A1EC0324;
-        Thu, 25 Mar 2021 17:29:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616689766;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=U5AbQYqSWYiIyNY16bCDiOGriUAPmZSlf40Ry/wtqLY=;
-        b=pvgGt8lu2T1nrG6UKKpAqFrefEPVbQlxEf8B0KE7H+xry5fswYBQ77VGZbkqlESRguu88C
-        BcdoA7l9Ya8wPyloj2ZRlmpVWFw47l5Esa1k9d78sYNCOJnnQmOJu8fYCgDLR8ZKFE4g3+
-        ujwyHWx2cHgWPrKiLJ7B6TYeJD82ouA=
-Date:   Thu, 25 Mar 2021 17:29:30 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 01/13] x86/cpufeatures: Add SEV-SNP CPU feature
-Message-ID: <20210325162930.GF31322@zn.tnic>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-2-brijesh.singh@amd.com>
- <20210325105417.GE31322@zn.tnic>
- <98917857-69d2-971c-d78d-b1d60159c037@amd.com>
+        id S229833AbhCYQaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229779AbhCYQ3q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 12:29:46 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD58C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:29:46 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id f19so2518202ion.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PSF0pivwzy3fBYbfzo8IgvCNBR/Hw3crvEop98fZXCg=;
+        b=n/ll6FIqeHJKlpZG8seLI/5tmNYd1JNATCmHWlxI1aibGm2zob8+SEERP8L/XkU0UT
+         aoPUovkhVPFlyxakHzue+mQ+SDVZK0BPhyCywSivUGhdOeewfRNOFPdqFRk3qavaoE2A
+         KWhPPy8RE/oAsQW3LO6DUnC4LGTsetvZt5ZKwI96360hTpqwkl5a136I6bdXoXAVJ5OT
+         yXVPCmcYQLEeUYYAU4D1u0aGZpSI6CmlLdCy2nnAPAnLHnl7f6EUu8MOe2UaMSrvnQdm
+         vUHd0tJJqp81YYy3K1jLxT1LMIvoF6WiwLHVFYNrigG4Xhu3ADxWsUhtzWgPaiSBk+1g
+         nrDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PSF0pivwzy3fBYbfzo8IgvCNBR/Hw3crvEop98fZXCg=;
+        b=MkM9AcHEtkjJ9EoYvynh+sx3jQZprjDgksAZWekQ0pgizn7Cq9vCkgAMA0dyuBnJ+H
+         zmkVhi09Q18vlFNW2gSbuEX9mb5V9OYocQMIPVjN4aUdZzEls81+5zrtmmeQSNTZ2JDs
+         xXAPHvAIyRySXxdLIM4xt3OS0kweeuUiHaleUinPIvfI0UkxsbMMUAMZ1ECDgyDXM43C
+         d8qKq6J4cpJp59OfyUoT1D+MOU9g789EKCWjp6ETftdIm0hVYdWQwS1lRqp6ts1T+huv
+         HQx0RhR+J/UWOwqegzbECVNk7es6h3U4cG2e/S2vRIXUl195FublRo8VXjxSj433oJ0c
+         e7Ew==
+X-Gm-Message-State: AOAM533kHdX+4exyxaEOPtwM0iKEziyJ9/2xUcYylt98P4RpQODokCZ4
+        O2NjUhQsLRdYsBWOdPvV2XcNbh04TivH+g==
+X-Google-Smtp-Source: ABdhPJydx5+yyeRQGFt1qi82utbriCQ1JZmy6qkm1FzVoBRb9wH/6bcFzkNbgwRAr4rpxnTwHrw3Ag==
+X-Received: by 2002:a05:6602:26cc:: with SMTP id g12mr6746649ioo.169.1616689785483;
+        Thu, 25 Mar 2021 09:29:45 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id m1sm2667686ilh.69.2021.03.25.09.29.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 09:29:45 -0700 (PDT)
+Subject: Re: [PATCH] livepatch: klp_send_signal should treat PF_IO_WORKER like
+ PF_KTHREAD
+To:     Dong Kai <dongkai11@huawei.com>, jpoimboe@redhat.com,
+        jikos@kernel.org, mbenes@suse.cz, pmladek@suse.com,
+        joe.lawrence@redhat.com
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210325014836.40649-1-dongkai11@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <832b5870-b926-3ccb-155d-3c364ee5508d@kernel.dk>
+Date:   Thu, 25 Mar 2021 10:29:44 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210325014836.40649-1-dongkai11@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <98917857-69d2-971c-d78d-b1d60159c037@amd.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:50:20AM -0500, Brijesh Singh wrote:
-> For the early feedback I was trying to find one tree which can be used
-> for building both the guest and hypervisor at once. In future, I will
-> submit the part-1 against the tip/master and part-2 against the
-> kvm/master. thanks
+On 3/24/21 7:48 PM, Dong Kai wrote:
+> commit 15b2219facad ("kernel: freezer should treat PF_IO_WORKER like
+> PF_KTHREAD for freezing") is to fix the freezeing issue of IO threads
+> by making the freezer not send them fake signals.
+> 
+> Here live patching consistency model call klp_send_signals to wake up
+> all tasks by send fake signal to all non-kthread which only check the
+> PF_KTHREAD flag, so it still send signal to io threads which may lead to
+> freezeing issue of io threads.
+> 
+> Here we take the same fix action by treating PF_IO_WORKERS as PF_KTHREAD
+> within klp_send_signal function.
 
-Then I think you could base ontop of current linux-next because it has
-both trees. I presume test-applying the patches on our trees then should
-work. I think...
-
-Thx.
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
 -- 
-Regards/Gruss,
-    Boris.
+Jens Axboe
 
-https://people.kernel.org/tglx/notes-about-netiquette
