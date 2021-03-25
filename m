@@ -2,166 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CF0348B70
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8BD348B71
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhCYIWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        id S229758AbhCYIWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:22:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhCYIWP (ORCPT
+        with ESMTP id S229728AbhCYIWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:22:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87580C06175F;
-        Thu, 25 Mar 2021 01:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=+rMCIoW7pA9LHheP4AD2vUH1j8gzDA0578xBrBuuLkU=; b=0pFdJY9A4UdALQUlD9PmA0KXgM
-        WVCQAe5hvjOzQw+9nEmscHTvFKGvdGoyY2wykYvjlAfrByYQqvhp7ZkDM/eqXWYwRpI0+4+Wr02Hh
-        7dWCo16BSmG9Na9l1ApMPwaU/MpyD1wtTuF6HmK42DKSVkQIJ83KKvBirBowGbsynrMCKiacwgxWg
-        aVx+MVz1WMUvXoJpdQwpmna3IGO1MRI1XXoAtu5zGCftq7gAbzjyUZJJ+faZjzbVt1BHA2p5f/i5S
-        wsf2ImXlxUTGyNEjh2bsV4CCoQh/FEXaFc6DKwsoiyMUNc7MAF1nAZPkKuhddI83WAOrBHH9W6O9y
-        AUaerolg==;
-Received: from [2001:4bb8:191:f692:9658:56e2:eade:cbfa] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPLFu-004X66-Oe; Thu, 25 Mar 2021 08:22:15 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: [PATCH] fs: split receive_fd_replace from __receive_fd
-Date:   Thu, 25 Mar 2021 09:22:09 +0100
-Message-Id: <20210325082209.1067987-2-hch@lst.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210325082209.1067987-1-hch@lst.de>
-References: <20210325082209.1067987-1-hch@lst.de>
+        Thu, 25 Mar 2021 04:22:24 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56583C06174A;
+        Thu, 25 Mar 2021 01:22:24 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id b83so1219346lfd.11;
+        Thu, 25 Mar 2021 01:22:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=G826T6os5KhrXWhgWWSol9eRD4q55UejsVL4Aih0kVk=;
+        b=nkK7ygHCjzogkk85Hs85aPvKDl9+y9aHUUxCc/JPwvqHRwreCYcqEoBSlHZJRAC526
+         meVjDtOWr3Ub1/hGxUxqgGg23+WyX1Q3jXCxhvy0T8e8vEwq/Kg0ulhjPdpUuQpD4odT
+         zP3buTH4Crg4mBy7ydWLObie0uC0qdQYAYwZmxwD2bPwxYLZXAgi6/K+kTe4PVTAmxpf
+         2caREH833aSsd+iiEll92r2kWBUdOh+mh2F+em2BveLKygEEd1vCAcpW0tJhSp2mtGhv
+         cpEfskC2Ce0sPmwnC40/XP/LGo1gpO9MhCBwm8r0noLNnPP2iS442cFkXcJdQh5fRb8i
+         asPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=G826T6os5KhrXWhgWWSol9eRD4q55UejsVL4Aih0kVk=;
+        b=jc0mnAUyklBH9FR3lIdmWROTe38EbHWngYs4qnEj3UmP3hPCnE8LgkT3dprmyh8hm1
+         VHja+H85vtb9HEYRA30py6Jopavx87US39ZOi2+D2thff0f8zJJ1cWQwrYidO9Dz7uvQ
+         akcUu1ivqzc+OSom9FfKct2Vy0X/HaS6hKO47tp0QTECVak8cL4bLNy5mPmM/CygS/6u
+         zA6Op3t8VHcNwf4IvmTw+SQJETKnvUDLyzF6j4rpN/vwF91nVhoVXUr8x9kXdk3RQYJ4
+         Q1FAFr+JVXZoW8U2WFMpVWB1WalnDK/GvXzs46sE80w30kmcfG+vnd+05qNx7Hp+TN7d
+         IekA==
+X-Gm-Message-State: AOAM530IB7FqrP5GvunvIjZwPJ6x4uJepgVziJSljqWdk9+OIcmQsOHO
+        Hb6ulMZQKxGL7/IOjTQcfxaL0LwEhaJowiX/eiw=
+X-Google-Smtp-Source: ABdhPJyilmo5xJ3ryeQb1hDSfMNJ6g9UEiWKYjSioLwKiFVpAG+2I7g0hvodsspIy0sK9ApNIQWpYBymBEszsmTSPio=
+X-Received: by 2002:a05:6512:1192:: with SMTP id g18mr4084205lfr.408.1616660542638;
+ Thu, 25 Mar 2021 01:22:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+References: <1608217244-314-1-git-send-email-u0084500@gmail.com> <1608217244-314-5-git-send-email-u0084500@gmail.com>
+In-Reply-To: <1608217244-314-5-git-send-email-u0084500@gmail.com>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Thu, 25 Mar 2021 16:22:11 +0800
+Message-ID: <CADiBU38aafx9H1Skz_hHmmkQgCGJSssE1VYBC6WddnGfR3ux1w@mail.gmail.com>
+Subject: Re: [PATCH v5 5/6] backlight: rt4831: Adds support for Richtek RT4831 backlight
+To:     Lee Jones <lee.jones@linaro.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        jingoohan1@gmail.com, b.zolnierkie@samsung.com
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        ChiYuan Huang <cy_huang@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-receive_fd_replace shares almost no code with the general case, so split
-it out.  Also remove the "Bump the sock usage counts" comment from
-both copies, as that is now what __receive_sock actually does.
+Dear reviewers:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/file.c            | 39 +++++++++++++++++++--------------------
- include/linux/file.h | 11 ++++-------
- 2 files changed, 23 insertions(+), 27 deletions(-)
+           Didn't get any response about this backlight patch.
+Is there any part need to be refined?
 
-diff --git a/fs/file.c b/fs/file.c
-index f3a4bac2cbe915..d8ccb95a7f4138 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -1068,8 +1068,6 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
- 
- /**
-  * __receive_fd() - Install received file into file descriptor table
-- *
-- * @fd: fd to install into (if negative, a new fd will be allocated)
-  * @file: struct file that was received from another process
-  * @ufd: __user pointer to write new fd number to
-  * @o_flags: the O_* flags to apply to the new fd entry
-@@ -1083,7 +1081,7 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
-  *
-  * Returns newly install fd or -ve on error.
-  */
--int __receive_fd(int fd, struct file *file, int __user *ufd, unsigned int o_flags)
-+int __receive_fd(struct file *file, int __user *ufd, unsigned int o_flags)
+cy_huang <u0084500@gmail.com> =E6=96=BC 2020=E5=B9=B412=E6=9C=8817=E6=97=A5=
+ =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=8811:01=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: ChiYuan Huang <cy_huang@richtek.com>
+>
+> Adds support for Richtek RT4831 backlight.
+>
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> ---
+>  drivers/video/backlight/Kconfig            |   8 ++
+>  drivers/video/backlight/Makefile           |   1 +
+>  drivers/video/backlight/rt4831-backlight.c | 219 +++++++++++++++++++++++=
+++++++
+>  3 files changed, 228 insertions(+)
+>  create mode 100644 drivers/video/backlight/rt4831-backlight.c
+>
+> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kc=
+onfig
+> index d83c87b..666bdb0 100644
+> --- a/drivers/video/backlight/Kconfig
+> +++ b/drivers/video/backlight/Kconfig
+> @@ -289,6 +289,14 @@ config BACKLIGHT_QCOM_WLED
+>           If you have the Qualcomm PMIC, say Y to enable a driver for the
+>           WLED block. Currently it supports PM8941 and PMI8998.
+>
+> +config BACKLIGHT_RT4831
+> +       tristate "Richtek RT4831 Backlight Driver"
+> +       depends on MFD_RT4831
+> +       help
+> +         This enables support for Richtek RT4831 Backlight driver.
+> +         It's commont used to drive the display WLED. There're four chan=
+nels
+> +         inisde, and each channel can provide up to 30mA current.
+> +
+>  config BACKLIGHT_SAHARA
+>         tristate "Tabletkiosk Sahara Touch-iT Backlight Driver"
+>         depends on X86
+> diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/M=
+akefile
+> index 685f3f1..cae2c83 100644
+> --- a/drivers/video/backlight/Makefile
+> +++ b/drivers/video/backlight/Makefile
+> @@ -49,6 +49,7 @@ obj-$(CONFIG_BACKLIGHT_PANDORA)               +=3D pand=
+ora_bl.o
+>  obj-$(CONFIG_BACKLIGHT_PCF50633)       +=3D pcf50633-backlight.o
+>  obj-$(CONFIG_BACKLIGHT_PWM)            +=3D pwm_bl.o
+>  obj-$(CONFIG_BACKLIGHT_QCOM_WLED)      +=3D qcom-wled.o
+> +obj-$(CONFIG_BACKLIGHT_RT4831)         +=3D rt4831-backlight.o
+>  obj-$(CONFIG_BACKLIGHT_SAHARA)         +=3D kb3886_bl.o
+>  obj-$(CONFIG_BACKLIGHT_SKY81452)       +=3D sky81452-backlight.o
+>  obj-$(CONFIG_BACKLIGHT_TOSA)           +=3D tosa_bl.o
+> diff --git a/drivers/video/backlight/rt4831-backlight.c b/drivers/video/b=
+acklight/rt4831-backlight.c
+> new file mode 100644
+> index 00000000..816c4d6
+> --- /dev/null
+> +++ b/drivers/video/backlight/rt4831-backlight.c
+> @@ -0,0 +1,219 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#include <dt-bindings/leds/rt4831-backlight.h>
+> +#include <linux/backlight.h>
+> +#include <linux/bitops.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +
+> +#define RT4831_REG_BLCFG       0x02
+> +#define RT4831_REG_BLDIML      0x04
+> +#define RT4831_REG_ENABLE      0x08
+> +
+> +#define BL_MAX_BRIGHTNESS      2048
+> +
+> +#define RT4831_BLOVP_MASK      GENMASK(7, 5)
+> +#define RT4831_BLOVP_SHIFT     5
+> +#define RT4831_BLPWMEN_MASK    BIT(0)
+> +#define RT4831_BLEN_MASK       BIT(4)
+> +#define RT4831_BLCH_MASK       GENMASK(3, 0)
+> +#define RT4831_BLDIML_MASK     GENMASK(2, 0)
+> +#define RT4831_BLDIMH_MASK     GENMASK(10, 3)
+> +#define RT4831_BLDIMH_SHIFT    3
+> +
+> +struct rt4831_priv {
+> +       struct regmap *regmap;
+> +       struct mutex lock;
+> +       struct backlight_device *bl;
+> +};
+> +
+> +static int rt4831_bl_update_status(struct backlight_device *bl_dev)
+> +{
+> +       struct rt4831_priv *priv =3D bl_get_data(bl_dev);
+> +       int brightness =3D backlight_get_brightness(bl_dev);
+> +       unsigned int enable =3D brightness ? RT4831_BLEN_MASK : 0;
+> +       u8 v[2];
+> +       int ret;
+> +
+> +       mutex_lock(&priv->lock);
+> +
+> +       if (brightness) {
+> +               v[0] =3D (brightness - 1) & RT4831_BLDIML_MASK;
+> +               v[1] =3D ((brightness - 1) & RT4831_BLDIMH_MASK) >> RT483=
+1_BLDIMH_SHIFT;
+> +
+> +               ret =3D regmap_raw_write(priv->regmap, RT4831_REG_BLDIML,=
+ v, sizeof(v));
+> +               if (ret)
+> +                       goto unlock;
+> +       }
+> +
+> +       ret =3D regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT483=
+1_BLEN_MASK, enable);
+> +
+> +unlock:
+> +       mutex_unlock(&priv->lock);
+> +       return ret;
+> +}
+> +
+> +static int rt4831_bl_get_brightness(struct backlight_device *bl_dev)
+> +{
+> +       struct rt4831_priv *priv =3D bl_get_data(bl_dev);
+> +       unsigned int val;
+> +       u8 v[2];
+> +       int ret;
+> +
+> +       mutex_lock(&priv->lock);
+> +
+> +       ret =3D regmap_read(priv->regmap, RT4831_REG_ENABLE, &val);
+> +       if (ret)
+> +               return ret;
+> +
+> +       if (!(val & RT4831_BLEN_MASK)) {
+> +               ret =3D 0;
+> +               goto unlock;
+> +       }
+> +
+> +       ret =3D regmap_raw_read(priv->regmap, RT4831_REG_BLDIML, v, sizeo=
+f(v));
+> +       if (ret)
+> +               goto unlock;
+> +
+> +       ret =3D (v[1] << RT4831_BLDIMH_SHIFT) + (v[0] & RT4831_BLDIML_MAS=
+K) + 1;
+> +
+> +unlock:
+> +       mutex_unlock(&priv->lock);
+> +       return ret;
+> +}
+> +
+> +static const struct backlight_ops rt4831_bl_ops =3D {
+> +       .options =3D BL_CORE_SUSPENDRESUME,
+> +       .update_status =3D rt4831_bl_update_status,
+> +       .get_brightness =3D rt4831_bl_get_brightness,
+> +};
+> +
+> +static int rt4831_init_device_properties(struct rt4831_priv *priv, struc=
+t device *dev,
+> +                                         struct backlight_properties *bl=
+_props)
+> +{
+> +       u8 propval;
+> +       u32 brightness;
+> +       unsigned int val =3D 0;
+> +       int ret;
+> +
+> +       /* common properties */
+> +       ret =3D device_property_read_u32(dev, "max-brightness", &brightne=
+ss);
+> +       if (ret) {
+> +               dev_warn(dev, "max-brightness DT property missing, use HW=
+ max as default\n");
+> +               brightness =3D BL_MAX_BRIGHTNESS;
+> +       }
+> +
+> +       bl_props->max_brightness =3D min_t(u32, brightness, BL_MAX_BRIGHT=
+NESS);
+> +
+> +       ret =3D device_property_read_u32(dev, "default-brightness", &brig=
+htness);
+> +       if (ret) {
+> +               dev_warn(dev, "default-brightness DT property missing, us=
+e max limit as default\n");
+> +               brightness =3D bl_props->max_brightness;
+> +       }
+> +
+> +       bl_props->brightness =3D min_t(u32, brightness, bl_props->max_bri=
+ghtness);
+> +
+> +       /* vendor properties */
+> +       if (device_property_read_bool(dev, "richtek,pwm-enable"))
+> +               val =3D RT4831_BLPWMEN_MASK;
+> +
+> +       ret =3D regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831=
+_BLPWMEN_MASK, val);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret =3D device_property_read_u8(dev, "richtek,bled-ovp-sel", &pro=
+pval);
+> +       if (ret) {
+> +               dev_warn(dev, "richtek,bled-ovp-sel DT property missing, =
+use default 21V\n");
+> +               propval =3D RT4831_BLOVPLVL_21V;
+> +       }
+> +
+> +       propval =3D min_t(u8, propval, RT4831_BLOVPLVL_29V);
+> +       ret =3D regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831=
+_BLOVP_MASK,
+> +                                propval << RT4831_BLOVP_SHIFT);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret =3D device_property_read_u8(dev, "richtek,channel-use", &prop=
+val);
+> +       if (ret) {
+> +               dev_err(dev, "richtek,channel-use DT property missing\n")=
+;
+> +               return ret;
+> +       }
+> +
+> +       if (!(propval & RT4831_BLCH_MASK)) {
+> +               dev_err(dev, "No channel specified\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       return regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831=
+_BLCH_MASK, propval);
+> +}
+> +
+> +static int rt4831_bl_probe(struct platform_device *pdev)
+> +{
+> +       struct rt4831_priv *priv;
+> +       struct backlight_properties bl_props =3D { .type =3D BACKLIGHT_RA=
+W, };
+> +       int ret;
+> +
+> +       priv =3D devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +       if (!priv)
+> +               return -ENOMEM;
+> +
+> +       mutex_init(&priv->lock);
+> +
+> +       priv->regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
+> +       if (IS_ERR(priv->regmap)) {
+> +               dev_err(&pdev->dev, "Failed to init regmap\n");
+> +               return PTR_ERR(priv->regmap);
+> +       }
+> +
+> +       ret =3D rt4831_init_device_properties(priv, &pdev->dev, &bl_props=
+);
+> +       if (ret) {
+> +               dev_err(&pdev->dev, "Failed to init device properties\n")=
+;
+> +               return ret;
+> +       }
+> +
+> +       priv->bl =3D devm_backlight_device_register(&pdev->dev, pdev->nam=
+e, &pdev->dev, priv,
+> +                                                 &rt4831_bl_ops, &bl_pro=
+ps);
+> +       if (IS_ERR(priv->bl)) {
+> +               dev_err(&pdev->dev, "Failed to register backlight\n");
+> +               return PTR_ERR(priv->bl);
+> +       }
+> +
+> +       backlight_update_status(priv->bl);
+> +       platform_set_drvdata(pdev, priv);
+> +
+> +       return 0;
+> +}
+> +
+> +static int rt4831_bl_remove(struct platform_device *pdev)
+> +{
+> +       struct rt4831_priv *priv =3D platform_get_drvdata(pdev);
+> +       struct backlight_device *bl_dev =3D priv->bl;
+> +
+> +       bl_dev->props.brightness =3D 0;
+> +       backlight_update_status(priv->bl);
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct of_device_id __maybe_unused rt4831_bl_of_match[] =3D=
  {
- 	int new_fd;
- 	int error;
-@@ -1092,32 +1090,33 @@ int __receive_fd(int fd, struct file *file, int __user *ufd, unsigned int o_flag
- 	if (error)
- 		return error;
- 
--	if (fd < 0) {
--		new_fd = get_unused_fd_flags(o_flags);
--		if (new_fd < 0)
--			return new_fd;
--	} else {
--		new_fd = fd;
--	}
-+	new_fd = get_unused_fd_flags(o_flags);
-+	if (new_fd < 0)
-+		return new_fd;
- 
- 	if (ufd) {
- 		error = put_user(new_fd, ufd);
- 		if (error) {
--			if (fd < 0)
--				put_unused_fd(new_fd);
-+			put_unused_fd(new_fd);
- 			return error;
- 		}
- 	}
- 
--	if (fd < 0) {
--		fd_install(new_fd, get_file(file));
--	} else {
--		error = replace_fd(new_fd, file, o_flags);
--		if (error)
--			return error;
--	}
-+	fd_install(new_fd, get_file(file));
-+	__receive_sock(file);
-+	return new_fd;
-+}
- 
--	/* Bump the sock usage counts, if any. */
-+int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags)
-+{
-+	int error;
-+
-+	error = security_file_receive(file);
-+	if (error)
-+		return error;
-+	error = replace_fd(new_fd, file, o_flags);
-+	if (error)
-+		return error;
- 	__receive_sock(file);
- 	return new_fd;
- }
-diff --git a/include/linux/file.h b/include/linux/file.h
-index 225982792fa20e..2de2e4613d7bc3 100644
---- a/include/linux/file.h
-+++ b/include/linux/file.h
-@@ -92,23 +92,20 @@ extern void put_unused_fd(unsigned int fd);
- 
- extern void fd_install(unsigned int fd, struct file *file);
- 
--extern int __receive_fd(int fd, struct file *file, int __user *ufd,
-+extern int __receive_fd(struct file *file, int __user *ufd,
- 			unsigned int o_flags);
- static inline int receive_fd_user(struct file *file, int __user *ufd,
- 				  unsigned int o_flags)
- {
- 	if (ufd == NULL)
- 		return -EFAULT;
--	return __receive_fd(-1, file, ufd, o_flags);
-+	return __receive_fd(file, ufd, o_flags);
- }
- static inline int receive_fd(struct file *file, unsigned int o_flags)
- {
--	return __receive_fd(-1, file, NULL, o_flags);
--}
--static inline int receive_fd_replace(int fd, struct file *file, unsigned int o_flags)
--{
--	return __receive_fd(fd, file, NULL, o_flags);
-+	return __receive_fd(file, NULL, o_flags);
- }
-+int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags);
- 
- extern void flush_delayed_fput(void);
- extern void __fput_sync(struct file *);
--- 
-2.30.1
-
+> +       { .compatible =3D "richtek,rt4831-backlight", },
+> +       {}
+> +};
+> +MODULE_DEVICE_TABLE(of, rt4831_bl_of_match);
+> +
+> +static struct platform_driver rt4831_bl_driver =3D {
+> +       .driver =3D {
+> +               .name =3D "rt4831-backlight",
+> +               .of_match_table =3D rt4831_bl_of_match,
+> +       },
+> +       .probe =3D rt4831_bl_probe,
+> +       .remove =3D rt4831_bl_remove,
+> +};
+> +module_platform_driver(rt4831_bl_driver);
+> +
+> +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
+> +MODULE_LICENSE("GPL v2");
+> --
+> 2.7.4
+>
