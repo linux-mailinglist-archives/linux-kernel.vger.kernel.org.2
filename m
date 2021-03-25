@@ -2,140 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6DE349935
+	by mail.lfdr.de (Postfix) with ESMTP id D91BB349936
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCYSJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:09:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56547 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229734AbhCYSJD (ORCPT
+        id S230236AbhCYSJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229592AbhCYSJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:09:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616695740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=drU5tvVMYvfs+I6S2meKDKFJotJ/fm7RW4NXE7uUIV0=;
-        b=aeykNZaSajnBxrghl5lAjmjpWxBOwGFQHaG7ewnu6OUU7DssCTKNZbL3NcrkEt3S6RcZ2T
-        IaxA/4jghDJkNUhQSH/K4MDexkEm0TWfPej2Y5CHgrrkqnpIvbLdDVSPsI/l+0OqXAtgND
-        A6HQ8AR4bes2R5rx1V1jSqHbgz7omjk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-362-oRnjcgSyPHi1ps1zZeKWrg-1; Thu, 25 Mar 2021 14:08:54 -0400
-X-MC-Unique: oRnjcgSyPHi1ps1zZeKWrg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FBD1835B74;
-        Thu, 25 Mar 2021 18:08:08 +0000 (UTC)
-Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 924EE1A8F2;
-        Thu, 25 Mar 2021 18:08:06 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
- <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
- <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
- <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
- <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
- <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
- <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
- <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz> <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
- <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
- <YFy8ARml4R7/snVs@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <5a755ff6-4085-da64-08d5-49dd232029eb@redhat.com>
-Date:   Thu, 25 Mar 2021 19:08:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 25 Mar 2021 14:09:08 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B583C06174A;
+        Thu, 25 Mar 2021 11:09:08 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id l18so3449222edc.9;
+        Thu, 25 Mar 2021 11:09:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QkSCPQFeXPyylmo56pnd0Y7oq0+FKHeReHMorAr/nVQ=;
+        b=IOZ4zWJHJ59pqf0Z0YMXJ5qCLpApLxy92Bs0NInudYQZuY2OvYGCyTvh6yYYtPpY4e
+         AHuWIp3p/wwe+g9a2igcGnxcJaLXtMOZk6zGhu6LHO/BympOI2AJgxRoePfJfSURd2Hq
+         Na76cUVW9PAq3RKecTMomPZSfl6+lIIdFtov1V2sxx1g95ip2Tok/6xqnHi0oQj8tJPy
+         aVg043xZn09cqHHZvO9dvKoYwGeCX9RLVmFxZ+mbDbBz9T+XVqCs0XKmW6+OqLWn0n6w
+         xqxcR/1sEY7vMaXXRuUHYS+Eg7uKYmko0CcnR3Rx7vMGBMR9Jky93Y/+YbgrcQs9ppTu
+         H+ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QkSCPQFeXPyylmo56pnd0Y7oq0+FKHeReHMorAr/nVQ=;
+        b=k+jdriOz+jKKPXbNL1iw+NqQucZz6U+9OQrE3Za65hL3IKXXrInfKBbtV0u91xcKEz
+         vhhncaAUojfxZhh4tKmFs4H7A1Zkzsl23ZRl2rEx5UoKzF7o6kFzs1EJZA+voK9opqAg
+         aMAtn4/x58TrunWygsInWmlWU4zux06DzJ8foMDMaJgJufjLmv09ktO2P9KFyJ9Z/20A
+         ZWTisC6hShM257p2CIp+1chwOtifu7wlDFUsr8VoT8d5SjvpDdSLuSz6aCu96gUB+lFC
+         rC5IPBWuFDDzBSoj+PFvrQ1U10c12IxiJ+iEPq8LD2dl4MU9Ob0vCqqMvhUY6RgEp78Q
+         lj7w==
+X-Gm-Message-State: AOAM533dqcFWDLi4YKpkoFbkncWmKKvDIkS1uV8iej1EPZVPH7ggT4U2
+        fKDnee/C0ma9Re8mWOR6lxY=
+X-Google-Smtp-Source: ABdhPJxT9M6yMYhq1vt19t4zlzgariVKMULdoL1b0+4I9yNyqmcfyt5JwCqj6k6MLdq21EzvOERiKg==
+X-Received: by 2002:aa7:dad7:: with SMTP id x23mr10472177eds.292.1616695746814;
+        Thu, 25 Mar 2021 11:09:06 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id ym4sm2738417ejb.100.2021.03.25.11.09.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 11:09:06 -0700 (PDT)
+Subject: Re: [PATCH net] net: dsa: lantiq_gswip: Let GSWIP automatically set
+ the xMII clock
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        hauke@hauke-m.de, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, andrew@lunn.ch,
+        vivien.didelot@gmail.com, olteanv@gmail.com, davem@davemloft.net,
+        kuba@kernel.org
+References: <20210324193604.1433230-1-martin.blumenstingl@googlemail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <a5c0e846-c838-83b8-9c85-34b3f53dc54e@gmail.com>
+Date:   Thu, 25 Mar 2021 11:09:01 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YFy8ARml4R7/snVs@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210324193604.1433230-1-martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.03.21 17:36, Michal Hocko wrote:
-> On Thu 25-03-21 17:20:23, David Hildenbrand wrote:
->> On 25.03.21 17:07, Michal Hocko wrote:
->>> On Thu 25-03-21 16:35:58, Michal Hocko wrote:
->>> [...]
->>>> So there is indeed a difference. One way around that would be to mark
->>>> vmemmap pages (e.g. PageReserved && magic value stored somewhere in the
->>>> struct page - resembling bootmem vmemmaps) or mark section fully backing
->>>> vmemmaps as online (ugly).
->>>
->>> I am not yet ready to give up on this. Here is a quick stab at the
->>> pfn_to_online_page approach. It is not great but it is not really
->>> terrible either. I think we can do better and skip
->>
->> We both seem to have a different taste, to phrase it in a nice way :) ; but
->> well, you seem to have set your mind (just like I seem to have set mine when
->> trying to find a nice and somewhat-clean way to handle this when discussing
->> it in the past).
+
+
+On 3/24/2021 12:36 PM, Martin Blumenstingl wrote:
+> The xMII interface clock depends on the PHY interface (MII, RMII, RGMII)
+> as well as the current link speed. Explicitly configure the GSWIP to
+> automatically select the appropriate xMII interface clock.
 > 
-> I definitely do not want to fight for a certain solution just for the
-> sake of it. I really dislike how the lifetime of the reserved space and
-> its accounting are completely detached. But hey, I do understand that
-> a worse solution from the design perspective can be better due to
-> practical reasons or constrains.
+> This fixes an issue seen by some users where ports using an external
+> RMII or RGMII PHY were deaf (no RX or TX traffic could be seen). Most
+> likely this is due to an "invalid" xMII clock being selected either by
+> the bootloader or hardware-defaults.
 > 
-> I haven't seen the hibernation problem before and I do recognize it is
-> a nasty one. If all it takes is to make pfn_to_online_page work (and my
-> previous attempt is incorrect because it should consult block rather
-> than section pfn range) and there are no other downsides then I would
-> still prefer to go with my proposal.  If there are still other things to
-> plug then, well, practicality is going to win.
+> Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+
+> ---
+> It would be great to have this fix backported to Linux 5.4 and 5.10 to
+> get rid of one more blocker which prevents OpenWrt from switching to
+> this new in-tree driver.
+
+Given there is a Fixes: tag this should land at some point in the stable
+tree auto-selection. Stable fixes for networking patches follows a
+slightly different path:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/netdev-FAQ.rst#n145
+
 > 
-> So before I give up on the "proper" design card, are there more
-> subtleties to watch for? You have certainly given this much more thought
-> than I have.
 > 
-
-"Just one more thing" :)
-
-With the pfn_to_online_page() change, I think what remains is
-
-
-1. The contiguous zone thingy, which we discussed is not a deal breaker, 
-although sub-optimal and most probably not to be optimized in the future.
-
-2. There corner cases issue with /dev/mem use case with offline memory 
-blocks I mentioned. Existing setups (!memmap_on_memory) are not 
-affected, so I guess we're fine.
-
-3. valid_zones_show() has to be taught to only look at the !vmemmap 
-part, otherwise we'll no longer indicate "movable" after onlining to the 
-movable zone. Should be fairly easy.
-
-
-We'll have pfn_to_online_section() succeed without SECTION_IS_ONLINE. I 
-think I/we removed all such code that purely relied on that flag for 
-optimizations like
-
-if (!online_section(s))
-	continue;
-
-
-I can give it some more thought, it could fly. At least zone shrinking 
-and hibernation should continue working as expected, which is a relief.
+>  drivers/net/dsa/lantiq_gswip.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+> index 52e865a3912c..809dfa3be6bb 100644
+> --- a/drivers/net/dsa/lantiq_gswip.c
+> +++ b/drivers/net/dsa/lantiq_gswip.c
+> @@ -799,10 +799,15 @@ static int gswip_setup(struct dsa_switch *ds)
+>  	/* Configure the MDIO Clock 2.5 MHz */
+>  	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
+>  
+> -	/* Disable the xMII link */
+> -	for (i = 0; i < priv->hw_info->max_ports; i++)
+> +	for (i = 0; i < priv->hw_info->max_ports; i++) {
+> +		/* Disable the xMII link */
+>  		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, i);
+>  
+> +		/* Automatically select the xMII interface clock */
+> +		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_RATE_MASK,
+> +				   GSWIP_MII_CFG_RATE_AUTO, i);
+> +	}
+> +
+>  	/* enable special tag insertion on cpu port */
+>  	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
+>  			  GSWIP_FDMA_PCTRLp(cpu_port));
+> 
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Florian
