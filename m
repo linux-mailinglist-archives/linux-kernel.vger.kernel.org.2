@@ -2,118 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E143348DF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B2C5348DFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhCYK13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:27:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21493 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229989AbhCYK1B (ORCPT
+        id S230203AbhCYK1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:27:34 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53070 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhCYK1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:27:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616668021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YnnJOjLqRsNOiRCl1VmxWYaDtnFLgBh+G/O9tqpx3N4=;
-        b=eQBdZo0ZAFBCEb79grPnk85P9vptY2tbCFgwjUTqUW7IhML5wO6/qWqZ/cZRv/KeEcshyb
-        XjaEx/+lScB3AwZyapjoQF7KfRc3zut3hc43eAVMmXg/QDHZGkGE2j82E+NmsnQL6fBVNk
-        73w75ob4bN3PIrUDeIOEjvN3jpH+H/c=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-Nyx0Qiv7Mh-zfzVwuPke7Q-1; Thu, 25 Mar 2021 06:26:59 -0400
-X-MC-Unique: Nyx0Qiv7Mh-zfzVwuPke7Q-1
-Received: by mail-wm1-f69.google.com with SMTP id i14so1494485wmq.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:26:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YnnJOjLqRsNOiRCl1VmxWYaDtnFLgBh+G/O9tqpx3N4=;
-        b=PXA85nBkWl/WV1w+48jBthFRNz6S6pb3pEW2hiblgGzCfGLxUutLNyjOadWythDeor
-         3Vkx4Vwi5MiFelenjwTdNKpWd19gotitvvuVb4Aem5f0MhAdJBdLLtYDCuSk18/vgMS+
-         6YOGB6zvjrlyXKqyotxboYO4eeoJG+zMNt7/PtNqORrhWB1rtmgjoCZNzLqwK3Jumkiz
-         0W9dubtUjjD+muc4aDqHiH1wOFEWw11IDaRHbBxs4jLfYRwgmwgG2xjEUpy6qA59sfPK
-         FfXYKuwcF27XVhbrUW3O05W53+/9jh4xXLxCBZcOEn8w8LcuFnaew4uALdxbsTQ/PTjs
-         j91w==
-X-Gm-Message-State: AOAM532mv7WiS/dIMUZNgaVuADZ3OqWQxAyEDtbCaQiay6m5alLxxbHH
-        zXWRlA2waVIVhipv0PNBIChFUJCwoPzfQqKtD4DRHY8kROPbsmoRA0EXAa2fR82dlzuZWASAGI3
-        kF6DZQzGbhaXRK/U7Ff8OxeuK
-X-Received: by 2002:adf:fd48:: with SMTP id h8mr8238604wrs.229.1616668018214;
-        Thu, 25 Mar 2021 03:26:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBTujIWNkDzf/wNwRNzZd57i5I9jgY+9t+YqLrMxkr/bkSu6aLA/urK8lINmqRAJa9Wu/cyw==
-X-Received: by 2002:adf:fd48:: with SMTP id h8mr8238578wrs.229.1616668018030;
-        Thu, 25 Mar 2021 03:26:58 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id p17sm5370291wmq.47.2021.03.25.03.26.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 03:26:57 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:26:55 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v7 15/22] virtio/vsock: SEQPACKET support feature bit
-Message-ID: <20210325102655.ujyfpapvwnubcggn@steredhat>
-References: <20210323130716.2459195-1-arseny.krasnov@kaspersky.com>
- <20210323131352.2461534-1-arseny.krasnov@kaspersky.com>
+        Thu, 25 Mar 2021 06:27:22 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BD35D1C0B92; Thu, 25 Mar 2021 11:27:19 +0100 (CET)
+Date:   Thu, 25 Mar 2021 11:27:19 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     ChiYuan Huang <u0084500@gmail.com>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] leds: rt4505: Add support for Richtek RT4505
+ flash LED controller
+Message-ID: <20210325102718.GA7158@amd>
+References: <1604284946-16254-1-git-send-email-u0084500@gmail.com>
+ <3cf3ee50-3dd8-d3b1-66a9-cea2ba487de3@gmail.com>
+ <CADiBU3-pDdoCioKc1mZwx7tp+_kfcN=4j-iMOT9LupXW03qwNA@mail.gmail.com>
+ <20210325100122.GA4619@amd>
+ <CADiBU3-J7nUav98t=inpt-UzkLkARtJBRgO8q5GXFX4wRoWmgw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="opJtzjQTFsWo+cga"
 Content-Disposition: inline
-In-Reply-To: <20210323131352.2461534-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <CADiBU3-J7nUav98t=inpt-UzkLkARtJBRgO8q5GXFX4wRoWmgw@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:13:49PM +0300, Arseny Krasnov wrote:
->This adds new virtio vsock specific feature bit which means
->SOCK_SEQPACKET support. Guest negotiates this bit with vhost,
->thus checking that vhost side supports SEQPACKET.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> include/uapi/linux/virtio_vsock.h | 3 +++
-> 1 file changed, 3 insertions(+)
 
-Since you have this patch, I think you can generalize the title, update 
-the description, and merge here the changes I mentioned in patch 11/22 
-about changes of include/uapi/linux/virtio_vsock.h.
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So you can have a single patch with the new virtio-spec defines and 
-structs related to SEQPACKET, of course then we move it before patch 11.
+On Thu 2021-03-25 18:19:03, ChiYuan Huang wrote:
+> Pavel Machek <pavel@ucw.cz> =E6=96=BC 2021=E5=B9=B43=E6=9C=8825=E6=97=A5 =
+=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=886:01=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > Hi!
+> >
+> > > > >   create mode 100644 drivers/leds/flash/Kconfig
+> > > > >   create mode 100644 drivers/leds/flash/Makefile
+> > > > >   create mode 100644 drivers/leds/flash/leds-rt4505.c
+> > > >
+> > > > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> > > >
+> > > Any problem with this patch? Do I need to submit it again?
+> >
+> > It won't apply on current next.
+> >
+> > So please: Merge ACKs, reorder it so that docs goes first, port it to
+> >
+> > To gitolite.kernel.org:pub/scm/linux/kernel/git/pavel/linux-leds.git
+> >    34731ed13e8a..85674b0e40d9  for-next -> for-next
+> >
+> > and resubmit.
+>=20
+> Thx. It's clear.
+> So the next I need to do is
+> 1. Merge ACKs
+> 2. Reorder this patch from the docs first
+>=20
+> After done, do I need to change the patch revision from v2 to v3
+> before submitng it?
 
-What do you think?
+Most important step is
 
-Stefano
+0. port it to the for-next tree.
 
->
->diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
->index 692f8078cced..619aaebb355a 100644
->--- a/include/uapi/linux/virtio_vsock.h
->+++ b/include/uapi/linux/virtio_vsock.h
->@@ -38,6 +38,9 @@
-> #include <linux/virtio_ids.h>
-> #include <linux/virtio_config.h>
->
->+/* The feature bitmap for virtio vsock */
->+#define VIRTIO_VSOCK_F_SEQPACKET	0	/* SOCK_SEQPACKET supported */
->+
-> struct virtio_vsock_config {
-> 	__le64 guest_cid;
-> } __attribute__((packed));
->-- 
->2.25.1
->
+And yes, you can increase patch revision.
 
+Best regards,
+
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--opJtzjQTFsWo+cga
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBcZYYACgkQMOfwapXb+vKWXgCeNkZr3KczfGCvufCwFoH/Rvhz
+irQAn169QQXLy+DeDICBiumXT+IHKqV/
+=mO7l
+-----END PGP SIGNATURE-----
+
+--opJtzjQTFsWo+cga--
