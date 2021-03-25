@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F1B3493BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8163493BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhCYOJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:09:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33973 "EHLO
+        id S231387AbhCYOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:10:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38144 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231395AbhCYOJe (ORCPT
+        by vger.kernel.org with ESMTP id S231264AbhCYOJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:09:34 -0400
+        Thu, 25 Mar 2021 10:09:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616681373;
+        s=mimecast20190719; t=1616681384;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=iaDke1NgQpj10lzGIPu+G9iEQAtRNGG6aKLxoB2aQKQ=;
-        b=Z7/E6IGJnGgqaPKBx1/UgELB2GmUeq4tfCCF9h/Ea/O9AIXyVYeHb0irKFQ7jFn5f93y5K
-        1xMY+Z5V/bCkCsbKzX1UlA9kGPB350c2AP6Vqbn+3IPPuf/DyPjaj/ZoKJ9s2jvyNqOOza
-        hvnBv85DhVt/yXHeXlzMAlp2YtA6+Ig=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-zdAVWK5VPESRmX3nIfpWRQ-1; Thu, 25 Mar 2021 10:09:32 -0400
-X-MC-Unique: zdAVWK5VPESRmX3nIfpWRQ-1
-Received: by mail-wr1-f71.google.com with SMTP id o11so2699877wrc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:09:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iaDke1NgQpj10lzGIPu+G9iEQAtRNGG6aKLxoB2aQKQ=;
-        b=BHnq9C2i3QSixh12eyIEwqedULTug0qZe4PEdpKdq7eDrro6pJHuLT9rddfeFu4+c6
-         7W1rKobfaG5lmX13+uHIJd6qV5e8SwWkDDY3/Kybmy8I2TSbO6oCEWpifF4aLbBhmUYH
-         TF2y934Z186k82UQ+zhwLhXJy5lL+ssGOORsTDIQl/lrMflsYpdZuJ3fEnjjiF4icQ9a
-         ULc0fI+egsPXWBxlOSCT7Hemg+QCL32UJ2RCUg4aScpZOcX2wEBPMWGxwNt+NleNCJuQ
-         GQt7bgyxgpOrfNR8/NA8g9r06bEVo7SeYOY3eXfD+hHroGBcA7BoRkJYeSfRgCol5iSi
-         qcBA==
-X-Gm-Message-State: AOAM5329nEbdmvrAt20mzvR9Cje0QmBvt5OB1GD+lbaNw19gncwbVYNQ
-        GDYLDz7RzYgnL39OGXeWyOOII5zudl8St3k1f68/T/lb5/aNbB3WOjhObuqoK7DXF6hOhCcvkdB
-        boSEGNWpp2EbYTWV5uKKPVky+
-X-Received: by 2002:a05:600c:290a:: with SMTP id i10mr8272479wmd.91.1616681370908;
-        Thu, 25 Mar 2021 07:09:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyMy3i2A1hdSFW1ZkN1C1u1NvHTtrAalRIM+aRukLMYU90MuvjYASV0lEQmFAfYwRtdc9GnNg==
-X-Received: by 2002:a05:600c:290a:: with SMTP id i10mr8272448wmd.91.1616681370673;
-        Thu, 25 Mar 2021 07:09:30 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id y1sm6355140wmq.29.2021.03.25.07.09.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:09:30 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 15:09:28 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Are CAP_SYS_ADMIN and CAP_SYS_NICE still needed for SQPOLL?
-Message-ID: <20210325140928.fuu2iap54ysevssz@steredhat>
-References: <20210325113322.ecnji3xejozqdpwt@steredhat>
- <842e6993-8cde-bc00-4de1-7b8689a397a8@gmail.com>
- <46016d10-7b87-c0f6-ed0f-18f89a2572d0@kernel.dk>
+        bh=ByfSI5VQlkUqIXhFO5RAp8f/3O7Cm7NtKxYn964lR8s=;
+        b=Qkn6STlhqshY7KpU0ir8SMoAEo74UAiNR7uHJP6zGHUs7qQjA28XMWg7WVCJpP+BlH/7FK
+        pBtCcw7TPd3bUFsbVHSpQPqelpRvV7J2hUTKbPDKza5pk86ZADmLoBRs4v8qnPhcSP//Lp
+        1YMygj/bOQpzopzlQcKKI3HqrYG9rxc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-533-XJftUXH_Nf2r6LqaUjWvUw-1; Thu, 25 Mar 2021 10:09:40 -0400
+X-MC-Unique: XJftUXH_Nf2r6LqaUjWvUw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A367B190D341;
+        Thu, 25 Mar 2021 14:09:38 +0000 (UTC)
+Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A799C5D736;
+        Thu, 25 Mar 2021 14:09:36 +0000 (UTC)
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
+ <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
+ <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+ <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
+ <YFxEp0cfcJmcz5bP@localhost.localdomain> <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
+ <YFxsBRORtgqUF/FZ@localhost.localdomain>
+ <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
+ <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
+ <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
+ <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
+Date:   Thu, 25 Mar 2021 15:09:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <46016d10-7b87-c0f6-ed0f-18f89a2572d0@kernel.dk>
+In-Reply-To: <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 08:02:45AM -0600, Jens Axboe wrote:
->On 3/25/21 7:44 AM, Pavel Begunkov wrote:
->> On 25/03/2021 11:33, Stefano Garzarella wrote:
->>> Hi Jens, Hi Pavel,
->>> I was taking a look at the new SQPOLL handling with io_thread instead of kthread. Great job! Really nice feature that maybe can be reused also in other scenarios (e.g. vhost).
+On 25.03.21 15:08, Michal Hocko wrote:
+> On Thu 25-03-21 13:40:45, David Hildenbrand wrote:
+>> On 25.03.21 13:35, Michal Hocko wrote:
+>>> On Thu 25-03-21 12:08:43, David Hildenbrand wrote:
+>>>> On 25.03.21 11:55, Oscar Salvador wrote:
+> [...]
+>>>>> - When moving the initialization/accounting to hot-add/hot-remove,
+>>>>>      the section containing the vmemmap pages will remain offline.
+>>>>>      It might get onlined once the pages get online in online_pages(),
+>>>>>      or not if vmemmap pages span a whole section.
+>>>>>      I remember (but maybe David rmemeber better) that that was a problem
+>>>>>      wrt. pfn_to_online_page() and hybernation/kdump.
+>>>>>      So, if that is really a problem, we would have to care of ot setting
+>>>>>      the section to the right state.
+>>>>
+>>>> Good memory. Indeed, hibernation/kdump won't save the state of the vmemmap,
+>>>> because the memory is marked as offline and, thus, logically without any
+>>>> valuable content.
 >>>
->>> Regarding SQPOLL, IIUC these new threads are much closer to user threads, so is there still a need to require CAP_SYS_ADMIN and CAP_SYS_NICE to enable SQPOLL?
+>>> Could you point me to the respective hibernation code please? I always
+>>> get lost in that area. Anyway, we do have the same problem even if the
+>>> whole accounting is handled during {on,off}lining, no?
 >>
->> Hmm, good question. If there are under same cgroup (should be in
->> theory), and if we add more scheduling points (i.e. need_resched()), and
->> don't see a reason why not. Jens?
->>
->> Better not right away though. IMHO it's safer to let the change settle
->> down for some time.
->
->Yes, agree on both counts - we are not going to need elevated privileges
->going forward, but I'd also rather defer making that change until 5.13
->so we have a bit more time on the current (new) base first.
+>> kernel/power/snapshot.c:saveable_page().
+> 
+> Thanks! So this is as I've suspected. The very same problem is present
+> if the memory block is marked offline. So we need a solution here
+> anyway. One way to go would be to consider these vmemmap pages always
+> online. pfn_to_online_page would have to special case them but we would
+> need to identify them first. I used to have PageVmemmap or something
+> like that in my early attempt to do this.
+> 
+> That being said this is not an argument for one or the other aproach.
+> Both need fixing.
 
-Yeah, that makes sense to me!
+Can you elaborate? What is the issue there? What needs fixing?
 
-Thank you both for the quick clarification,
-Stefano
+-- 
+Thanks,
+
+David / dhildenb
 
