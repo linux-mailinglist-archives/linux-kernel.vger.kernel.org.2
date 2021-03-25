@@ -2,156 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085BA349C6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2C3B349C66
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhCYWjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:39:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230486AbhCYWia (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:38:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 980E261A3F;
-        Thu, 25 Mar 2021 22:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616711910;
-        bh=YOqY1pCqDVwIwgnlGDQ6eRUuwWftFL3Tzwr2ZTIYg5M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LgZ2XfmoZhKDXO8+GEY6vInykeD1x16nUT+xsvmc0+MePMXKAg0LX2QTBnAgY7HyF
-         T00kv7f5BsPm3ckUQabQ5hRwZSMruZ6QirLyGHewQY1VBFYnRidaiUsSSqq+tC7W/x
-         3l75uOOeTnJRcyVWqPO3svMJvSCLeCgajQJ5a18r0LXLqnFF4roHzpNx10/zrum8T9
-         DLjad31A6LgHsSRmsyzCG+AphPYhFQzNal+1MUfVVmd4jLcjIcD30K4i83yE9DWX89
-         6uWYDw/Olt7ku0p+WH0D/H74upJsfFV0zBSGySTvzcOl+wxky97ePMa9cd5kpSoXAR
-         /qU6k5hm6yzJw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH 2/3] riscv: Workaround mcount name prior to clang-13
-Date:   Thu, 25 Mar 2021 15:38:06 -0700
-Message-Id: <20210325223807.2423265-3-nathan@kernel.org>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210325223807.2423265-1-nathan@kernel.org>
-References: <20210325223807.2423265-1-nathan@kernel.org>
+        id S231278AbhCYWi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230461AbhCYWiL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 18:38:11 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7440C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:38:10 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id q5so3515924pfh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:38:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=Viesl3SOA9sAZGG5g0Ymx9V0nEVwiaBaiNca5kFC9o8=;
+        b=pwSvIdTnB7b/1ewr28GnoTMJXrr/H5Wz4XefWScNSUkL5Q6L48PeXORJqnI248uDqL
+         3QtwtPAXPAqEqb8f7aNgX4uRL0zQwhAxx1Bn1/l8FeiuLWT18kD118mrn+xOFa7DgOFv
+         f9Ikp0x6WLkQXXEZaW/fkYrG4aZqAZm7H0sEw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Viesl3SOA9sAZGG5g0Ymx9V0nEVwiaBaiNca5kFC9o8=;
+        b=qrsMXW4UrOAGllaOaojCMg93nUOlohEDqXfvbRb8Kf6qKfjGEBWbUoUN90PuastwJY
+         9ujpBxz4xnz2px9UCmh7HdbcOQQjf5P+eCf7UpVMP1gZ/DFyGkIjZIZBdEmwzBwUyrjH
+         eggaPZXbcjGmWvnHmpND5u3Q77yZY2vXqzcxQvAyZlh3FEearsi/v+TbkJYeLIOOZ8Zg
+         tv6eh7mTB96UUErb/ihhohhMIjUvg84Lys7VApbfG4C/nU713yC2WfureAD7JL5RvKci
+         k0OtglwMNzCWhaAt7f1qWZ7l/uEId/BA0QFStOftT/zeBTw5qsK2YKnFAmUOSQ0mItQg
+         JmgQ==
+X-Gm-Message-State: AOAM533PwMDr3ncY8gUCAClRI6UTbbCV69kLovBY+lxBJ+1vZLZSDFbv
+        FoBIJ1AKXCT03EVT5kQYiofqujDgxfA2Zg==
+X-Google-Smtp-Source: ABdhPJzRrJ1fg4o+4Go+a298DfimH7DXQEYRGCVuiqNmf/2spTGSN4+X4ZxN4tP+YBk/Il6g6gnTsw==
+X-Received: by 2002:aa7:99c6:0:b029:1f5:c49d:dce7 with SMTP id v6-20020aa799c60000b02901f5c49ddce7mr9617426pfi.78.1616711890452;
+        Thu, 25 Mar 2021 15:38:10 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-5199-f2bf-3cbb-22e6.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:5199:f2bf:3cbb:22e6])
+        by smtp.gmail.com with ESMTPSA id i10sm8143257pgo.75.2021.03.25.15.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 15:38:10 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 07/15] powerpc/uaccess: Call might_fault() inconditionaly
+In-Reply-To: <e0a980a4dc7a2551183dd5cb30f46eafdbee390c.1615398265.git.christophe.leroy@csgroup.eu>
+References: <cover.1615398265.git.christophe.leroy@csgroup.eu> <e0a980a4dc7a2551183dd5cb30f46eafdbee390c.1615398265.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 26 Mar 2021 09:38:07 +1100
+Message-ID: <874kgykgfk.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to clang 13.0.0, the RISC-V name for the mcount symbol was
-"mcount", which differs from the GCC version of "_mcount", which results
-in the following errors:
+Hi Christophe,
 
-riscv64-linux-gnu-ld: init/main.o: in function `__traceiter_initcall_level':
-main.c:(.text+0xe): undefined reference to `mcount'
-riscv64-linux-gnu-ld: init/main.o: in function `__traceiter_initcall_start':
-main.c:(.text+0x4e): undefined reference to `mcount'
-riscv64-linux-gnu-ld: init/main.o: in function `__traceiter_initcall_finish':
-main.c:(.text+0x92): undefined reference to `mcount'
-riscv64-linux-gnu-ld: init/main.o: in function `.LBB32_28':
-main.c:(.text+0x30c): undefined reference to `mcount'
-riscv64-linux-gnu-ld: init/main.o: in function `free_initmem':
-main.c:(.text+0x54c): undefined reference to `mcount'
+> Commit 6bfd93c32a50 ("powerpc: Fix incorrect might_sleep in
+> __get_user/__put_user on kernel addresses") added a check to not call
+> might_sleep() on kernel addresses. This was to enable the use of
+> __get_user() in the alignment exception handler for any address.
+>
+> Then commit 95156f0051cb ("lockdep, mm: fix might_fault() annotation")
+> added a check of the address space in might_fault(), based on
+> set_fs() logic. But this didn't solve the powerpc alignment exception
+> case as it didn't call set_fs(KERNEL_DS).
+>
+> Nowadays, set_fs() is gone, previous patch fixed the alignment
+> exception handler and __get_user/__put_user are not supposed to be
+> used anymore to read kernel memory.
+>
+> Therefore the is_kernel_addr() check has become useless and can be
+> removed.
 
-This has been corrected in https://reviews.llvm.org/D98881 but the
-minimum supported clang version is 10.0.1. To avoid build errors and to
-gain a working function tracer, adjust the name of the mcount symbol for
-older versions of clang in mount.S and recordmcount.pl.
+While I agree that __get_user/__put_user should not be used on kernel
+memory, I'm not sure that we have covered every case where they might be
+used on kernel memory yet. I did a git grep for __get_user - there are
+several callers in arch/powerpc and it looks like at least lib/sstep.c
+might be using __get_user to read kernel memory while single-stepping.
 
-Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1331
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/riscv/include/asm/ftrace.h | 14 ++++++++++++--
- arch/riscv/kernel/mcount.S      | 10 +++++-----
- scripts/recordmcount.pl         |  2 +-
- 3 files changed, 18 insertions(+), 8 deletions(-)
+I am not sure if might_sleep has got logic to cover the powerpc case -
+it uses uaccess_kernel, but we don't supply a definition for that on
+powerpc, so if we do end up calling __get_user on a kernel address, I
+think we might now throw a warning. (Unless we are saved by
+pagefault_disabled()?)
 
-diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
-index 845002cc2e57..04dad3380041 100644
---- a/arch/riscv/include/asm/ftrace.h
-+++ b/arch/riscv/include/asm/ftrace.h
-@@ -13,9 +13,19 @@
- #endif
- #define HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
- 
-+/*
-+ * Clang prior to 13 had "mcount" instead of "_mcount":
-+ * https://reviews.llvm.org/D98881
-+ */
-+#if defined(CONFIG_CC_IS_GCC) || CONFIG_CLANG_VERSION >= 130000
-+#define MCOUNT_NAME _mcount
-+#else
-+#define MCOUNT_NAME mcount
-+#endif
-+
- #define ARCH_SUPPORTS_FTRACE_OPS 1
- #ifndef __ASSEMBLY__
--void _mcount(void);
-+void MCOUNT_NAME(void);
- static inline unsigned long ftrace_call_adjust(unsigned long addr)
- {
- 	return addr;
-@@ -36,7 +46,7 @@ struct dyn_arch_ftrace {
-  * both auipc and jalr at the same time.
-  */
- 
--#define MCOUNT_ADDR		((unsigned long)_mcount)
-+#define MCOUNT_ADDR		((unsigned long)MCOUNT_NAME)
- #define JALR_SIGN_MASK		(0x00000800)
- #define JALR_OFFSET_MASK	(0x00000fff)
- #define AUIPC_OFFSET_MASK	(0xfffff000)
-diff --git a/arch/riscv/kernel/mcount.S b/arch/riscv/kernel/mcount.S
-index 8a5593ff9ff3..6d462681c9c0 100644
---- a/arch/riscv/kernel/mcount.S
-+++ b/arch/riscv/kernel/mcount.S
-@@ -47,8 +47,8 @@
- 
- ENTRY(ftrace_stub)
- #ifdef CONFIG_DYNAMIC_FTRACE
--       .global _mcount
--       .set    _mcount, ftrace_stub
-+       .global MCOUNT_NAME
-+       .set    MCOUNT_NAME, ftrace_stub
- #endif
- 	ret
- ENDPROC(ftrace_stub)
-@@ -78,7 +78,7 @@ ENDPROC(return_to_handler)
- #endif
- 
- #ifndef CONFIG_DYNAMIC_FTRACE
--ENTRY(_mcount)
-+ENTRY(MCOUNT_NAME)
- 	la	t4, ftrace_stub
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- 	la	t0, ftrace_graph_return
-@@ -124,6 +124,6 @@ do_trace:
- 	jalr	t5
- 	RESTORE_ABI_STATE
- 	ret
--ENDPROC(_mcount)
-+ENDPROC(MCOUNT_NAME)
- #endif
--EXPORT_SYMBOL(_mcount)
-+EXPORT_SYMBOL(MCOUNT_NAME)
-diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
-index a36df04cfa09..7b83a1aaec98 100755
---- a/scripts/recordmcount.pl
-+++ b/scripts/recordmcount.pl
-@@ -392,7 +392,7 @@ if ($arch eq "x86_64") {
-     $mcount_regex = "^\\s*([0-9a-fA-F]+):.*\\s_mcount\$";
- } elsif ($arch eq "riscv") {
-     $function_regex = "^([0-9a-fA-F]+)\\s+<([^.0-9][0-9a-zA-Z_\\.]+)>:";
--    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL(_PLT)?\\s_mcount\$";
-+    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL(_PLT)?\\s_?mcount\$";
-     $type = ".quad";
-     $alignment = 2;
- } elsif ($arch eq "nds32") {
--- 
-2.31.0
+(But I haven't tested this yet, so it's possible I misunderstood
+something.)
 
+Do you expect any consequences if we've missed a case where
+__(get|put)_user is called on a kernel address because it hasn't been
+converted to use better helpers yet?
+
+Kind regards,
+Daniel
+
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/include/asm/uaccess.h | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
+> index eaa828a6a419..c4bbc64758a0 100644
+> --- a/arch/powerpc/include/asm/uaccess.h
+> +++ b/arch/powerpc/include/asm/uaccess.h
+> @@ -77,8 +77,7 @@ __pu_failed:							\
+>  	__typeof__(*(ptr)) __pu_val = (x);			\
+>  	__typeof__(size) __pu_size = (size);			\
+>  								\
+> -	if (!is_kernel_addr((unsigned long)__pu_addr))		\
+> -		might_fault();					\
+> +	might_fault();						\
+>  	__chk_user_ptr(__pu_addr);				\
+>  	__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err);	\
+>  								\
+> @@ -238,12 +237,12 @@ do {								\
+>  	__typeof__(size) __gu_size = (size);			\
+>  								\
+>  	__chk_user_ptr(__gu_addr);				\
+> -	if (do_allow && !is_kernel_addr((unsigned long)__gu_addr)) \
+> +	if (do_allow) {								\
+>  		might_fault();					\
+> -	if (do_allow)								\
+>  		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err);	\
+> -	else									\
+> +	} else {									\
+>  		__get_user_size_allowed(__gu_val, __gu_addr, __gu_size, __gu_err); \
+> +	}									\
+>  	(x) = (__typeof__(*(ptr)))__gu_val;			\
+>  								\
+>  	__gu_err;						\
+> -- 
+> 2.25.0
