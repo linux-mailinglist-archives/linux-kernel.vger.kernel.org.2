@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E59F349986
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6396D34998E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhCYScG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhCYSbf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:31:35 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBF8C06174A;
-        Thu, 25 Mar 2021 11:31:34 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id o19so3555254edc.3;
-        Thu, 25 Mar 2021 11:31:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PiL9j/suNPiqT63LXOFnc8ju7FQs9EVh9TDhZe4Iqpk=;
-        b=RL2QPcuSQkyYutZ0Z2BpbrGCf/+8SF8LifMZrVPIkd0/3WtwtAiS+wBwkiOr/675GF
-         QgUGfXii13EJWRi6zgL1Oeva3Q0r6MtmoYKCjmZSyw9s5jDV4LLSBD44kiSRCG5W1Le4
-         P8I3bjMmDg+v89C0RoZd8NBz/yTM5h8C+Swwe9KYcNCPeKYyR0nUsguUk+1Fr7e1U6Bl
-         BD59+RTnMoo+AP/UkXHtiLR7EptD+D/S2VpjPLsXuutTAslDbjLI592OyavRnZilvQO/
-         RRIATJjreWrYVtB3xqnkqDZHgBTQ5pQmABA9tNhfZjeZlUNE4ECRCgn8Ti0pG4slm0x0
-         H9cQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PiL9j/suNPiqT63LXOFnc8ju7FQs9EVh9TDhZe4Iqpk=;
-        b=ZcSwIidTZDI4EGoQEq3nR7Dpfb0PlGtlX5vTtMFdVVmGh785vPOnMXn1FEfsW6D7bD
-         Mxbxwk/5NYATbtKyiTg9svlPfNmNALWUPUTeMTK8RJJ496BNIcyvAB6MvLz9Zz/ywsmC
-         t2YHkvbn7p7KlOvLBzViZdkmRdcSa7N5X5ijOuQ3mRFYg7G7yR8FUHLX1xTJLwhvcOLw
-         MrL7mK5q5Us60+WfIhpfEYM96D/V84SwAGpepJaT8YuEZ+KzYIAOVer1ffOMmVSriBI8
-         i2q6SWOoia26Vo/H0p6Nyh61FcjKLWRBizjgMg5hqVAPDW7ksZthMFKeWAJqD8AXFSzE
-         2wlA==
-X-Gm-Message-State: AOAM531popn9i53GQQgp5kOYRIheMZO9GPPjhRqKzRGW5mUlKQc1KX6/
-        rNSjJXVQtbqd5IqB6PG6VuYNLZQemYw+lXZIjrw=
-X-Google-Smtp-Source: ABdhPJy4dwOVypqWw1k25ARoLWwqpz0Q7tBFT8mFFf0JVmLOt5xSw/jZpBjfAkWmkPeaxvBt1cF4z2IG5Sz/FyEok5M=
-X-Received: by 2002:a05:6402:2ce:: with SMTP id b14mr10578652edx.13.1616697093235;
- Thu, 25 Mar 2021 11:31:33 -0700 (PDT)
+        id S229614AbhCYSeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:34:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230057AbhCYSdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 14:33:55 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1ABA561A01;
+        Thu, 25 Mar 2021 18:33:54 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 14:33:52 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, adobriyan@gmail.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [RFC][PATCH] task_struct::state frobbing
+Message-ID: <20210325143352.0e459baf@gandalf.local.home>
+In-Reply-To: <YFzSWR6mAGitxMqA@hirez.programming.kicks-ass.net>
+References: <YFzSWR6mAGitxMqA@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210324193604.1433230-1-martin.blumenstingl@googlemail.com> <a5c0e846-c838-83b8-9c85-34b3f53dc54e@gmail.com>
-In-Reply-To: <a5c0e846-c838-83b8-9c85-34b3f53dc54e@gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 25 Mar 2021 19:31:22 +0100
-Message-ID: <CAFBinCBLdMnHtXk1-oTS1fC_r=-JTrbzucTVxBE4iH0Hz_sUVQ@mail.gmail.com>
-Subject: Re: [PATCH net] net: dsa: lantiq_gswip: Let GSWIP automatically set
- the xMII clock
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrew@lunn.ch,
-        vivien.didelot@gmail.com, olteanv@gmail.com, davem@davemloft.net,
-        kuba@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On Thu, 25 Mar 2021 19:11:37 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-On Thu, Mar 25, 2021 at 7:09 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-[...]
-> > It would be great to have this fix backported to Linux 5.4 and 5.10 to
-> > get rid of one more blocker which prevents OpenWrt from switching to
-> > this new in-tree driver.
->
-> Given there is a Fixes: tag this should land at some point in the stable
-> tree auto-selection. Stable fixes for networking patches follows a
-> slightly different path:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/networking/netdev-FAQ.rst#n145
-thank you very much for this link - I missed the news that net patches
-should now also be Cc'ed to linux-stable
-I think this simplifies the process (at least for me as contributor)
+> diff --git a/drivers/net/ethernet/qualcomm/qca_spi.c b/drivers/net/ethernet/qualcomm/qca_spi.c
+> index 5a3b65a6eb4f..17ee771e0051 100644
+> --- a/drivers/net/ethernet/qualcomm/qca_spi.c
+> +++ b/drivers/net/ethernet/qualcomm/qca_spi.c
+> @@ -653,8 +653,7 @@ qcaspi_intr_handler(int irq, void *data)
+>  	struct qcaspi *qca = data;
+>  
+>  	qca->intr_req++;
+> -	if (qca->spi_thread &&
+> -	    qca->spi_thread->state != TASK_RUNNING)
+> +	if (qca->spi_thread)
+>  		wake_up_process(qca->spi_thread);
+>  
+>  	return IRQ_HANDLED;
+> @@ -777,8 +776,7 @@ qcaspi_netdev_xmit(struct sk_buff *skb, struct net_device *dev)
+>  
+>  	netif_trans_update(dev);
+>  
+> -	if (qca->spi_thread &&
+> -	    qca->spi_thread->state != TASK_RUNNING)
+> +	if (qca->spi_thread)
+>  		wake_up_process(qca->spi_thread);
+>  
+>  	return NETDEV_TX_OK;
 
-Also thank you for the Reviewed-by!
+I would break out the above changes (and the like) into a separate patch,
+as it's changing the logic that doesn't match what the change log is doing.
 
+That is, I would make all the changes that doesn't care about what the
+state variable is (that is, removing the reference to it) first. Then do
+the type change in a later patch.
 
-Best regards,
-Martin
+-- Steve
