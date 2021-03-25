@@ -2,105 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454C4348E4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2442E348E4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhCYKqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbhCYKqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:46:01 -0400
-Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9538AC06174A;
-        Thu, 25 Mar 2021 03:46:00 -0700 (PDT)
-Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
-        by postout1.mail.lrz.de (Postfix) with ESMTP id 4F5hbV0PZKzyVY;
-        Thu, 25 Mar 2021 11:45:58 +0100 (CET)
-Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
-        reason="pass (just generated, assumed good)" header.d=tum.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :x-mailer:organization:references:in-reply-to:message-id:subject
-        :subject:from:from:date:date:received:received; s=postout; t=
-        1616669157; bh=0zQu36A+UYAjZS5c03bWBg4k4HTiugSj4FAoFKqWZ9c=; b=v
-        a7QNFdTS/CFph8yXgNHhEYp2+ED52cx/WDXS2yKYJxLS2Au7zmhoF+7NEwRsiOf9
-        MqGRsBL5mEG88bL6o7t6K9yMMRVWvVHOI4UjWeqRrjUQZDFk+RUPznS0D0qGi2KS
-        nwZhPXHA/6NqRpDqxm4htX8905ZHraacf8TkBeXrkeNtj8uZd8Sp+0hUDPioHsVd
-        BKzYpgZf1s4dMJjlaLVOwT4qurJwT0CNYD4ZGunaD3OEVdXCD4dIRd/pM6hn8wNK
-        SBHXXoK/A+U1lz19qicxw58pDwAr+ynWvQlLY5Taiqbp0/1zG97fIb/nxJQD02ux
-        XQdwhZdaSEfPcqJfivLqA==
-X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
-X-Spam-Flag: NO
-X-Spam-Score: -2.875
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.875 tagged_above=-999 required=5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
-        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
-        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
-        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
-        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
-        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
-        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
-        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
-        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
-        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
-        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
-        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
-        LRZ_MSGID_AN_AN=0.001, LRZ_URL_HTTP_SINGLE=0.001,
-        LRZ_URL_PLAIN_SINGLE=0.001] autolearn=no autolearn_force=no
-Received: from postout1.mail.lrz.de ([127.0.0.1])
-        by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
-        with LMTP id HYf0Fbb7Y3UA; Thu, 25 Mar 2021 11:45:57 +0100 (CET)
-Received: from yaviniv.e18.physik.tu-muenchen.de (yaviniv.e18.physik.tu-muenchen.de [10.152.72.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by postout1.mail.lrz.de (Postfix) with ESMTPSA id 4F5hbT2QXQzyTr;
-        Thu, 25 Mar 2021 11:45:57 +0100 (CET)
-Date:   Thu, 25 Mar 2021 11:45:56 +0100
-From:   Andrei Rabusov <a.rabusov@tum.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/150] 5.10.26-rc3 review
-Message-ID: <20210325114556.3227ebdf@yaviniv.e18.physik.tu-muenchen.de>
-In-Reply-To: <20210324093435.962321672@linuxfoundation.org>
-References: <20210324093435.962321672@linuxfoundation.org>
-Organization: TUM E18
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229979AbhCYKr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:47:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39196 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230236AbhCYKrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:47:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616669227; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cG0AzQK4074+rn9gesZQ2PJkz4OIzsNWxFZQsnN9pwc=;
+        b=JbtjUS+UE8pQVw8wCDbXME5aE9cW4/Ur1GPkmPeiUzn7CEvIRh5Zgt1JCvsuBsAjMV+2he
+        stwh4NjkAXrpbdKKR5FBsZbdUE2Ihgq7Ujn+JGEhsn8l6NYvnJkqGYjgkvG6A2XQ8Bt5fQ
+        dJTWQIrsQfD7RaH5DGM4rLJv5ab10Jo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 60609AC3C;
+        Thu, 25 Mar 2021 10:47:07 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 11:47:04 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 3/8] hugetlb: add per-hstate mutex to synchronize user
+ adjustments
+Message-ID: <YFxqKH0OQoFMEiIb@dhcp22.suse.cz>
+References: <20210325002835.216118-1-mike.kravetz@oracle.com>
+ <20210325002835.216118-4-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325002835.216118-4-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 10:40:21 +0100
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Wed 24-03-21 17:28:30, Mike Kravetz wrote:
+> The helper routine hstate_next_node_to_alloc accesses and modifies the
+> hstate variable next_nid_to_alloc.  The helper is used by the routines
+> alloc_pool_huge_page and adjust_pool_surplus.  adjust_pool_surplus is
+> called with hugetlb_lock held.  However, alloc_pool_huge_page can not
+> be called with the hugetlb lock held as it will call the page allocator.
+> Two instances of alloc_pool_huge_page could be run in parallel or
+> alloc_pool_huge_page could run in parallel with adjust_pool_surplus
+> which may result in the variable next_nid_to_alloc becoming invalid
+> for the caller and pages being allocated on the wrong node.
+> 
+> Both alloc_pool_huge_page and adjust_pool_surplus are only called from
+> the routine set_max_huge_pages after boot.  set_max_huge_pages is only
+> called as the reusult of a user writing to the proc/sysfs nr_hugepages,
+> or nr_hugepages_mempolicy file to adjust the number of hugetlb pages.
+> 
+> It makes little sense to allow multiple adjustment to the number of
+> hugetlb pages in parallel.  Add a mutex to the hstate and use it to only
+> allow one hugetlb page adjustment at a time.  This will synchronize
+> modifications to the next_nid_to_alloc variable.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-> This is the start of the stable review cycle for the 5.10.26 release.
-> There are 150 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied,
-> please let me know.
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+I would just recommend s@mutex@resize_lock@ so that the intention is
+more clear from the name.
+> ---
+>  include/linux/hugetlb.h | 1 +
+>  mm/hugetlb.c            | 5 +++++
+>  2 files changed, 6 insertions(+)
 > 
-> Responses should be made by Fri, 26 Mar 2021 09:33:54 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.26-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> linux-5.10.y and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index a7f7d5f328dc..8817ec987d68 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -566,6 +566,7 @@ HPAGEFLAG(Freed, freed)
+>  #define HSTATE_NAME_LEN 32
+>  /* Defines one hugetlb page size */
+>  struct hstate {
+> +	struct mutex mutex;
+>  	int next_nid_to_alloc;
+>  	int next_nid_to_free;
+>  	unsigned int order;
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index f9ba63fc1747..404b0b1c5258 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2616,6 +2616,8 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  	else
+>  		return -ENOMEM;
+>  
+> +	/* mutex prevents concurrent adjustments for the same hstate */
+> +	mutex_lock(&h->mutex);
+>  	spin_lock(&hugetlb_lock);
+>  
+>  	/*
+> @@ -2648,6 +2650,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  	if (hstate_is_gigantic(h) && !IS_ENABLED(CONFIG_CONTIG_ALLOC)) {
+>  		if (count > persistent_huge_pages(h)) {
+>  			spin_unlock(&hugetlb_lock);
+> +			mutex_unlock(&h->mutex);
+>  			NODEMASK_FREE(node_alloc_noretry);
+>  			return -EINVAL;
+>  		}
+> @@ -2722,6 +2725,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+>  out:
+>  	h->max_huge_pages = persistent_huge_pages(h);
+>  	spin_unlock(&hugetlb_lock);
+> +	mutex_unlock(&h->mutex);
+>  
+>  	NODEMASK_FREE(node_alloc_noretry);
+>  
+> @@ -3209,6 +3213,7 @@ void __init hugetlb_add_hstate(unsigned int order)
+>  	BUG_ON(hugetlb_max_hstate >= HUGE_MAX_HSTATE);
+>  	BUG_ON(order == 0);
+>  	h = &hstates[hugetlb_max_hstate++];
+> +	mutex_init(&h->mutex);
+>  	h->order = order;
+>  	h->mask = ~(huge_page_size(h) - 1);
+>  	for (i = 0; i < MAX_NUMNODES; ++i)
+> -- 
+> 2.30.2
 > 
 
-I found no issues for -rc3 (i686, gcc 10.2)
-
-Tested-by: Andrei Rabusov <a.rabusov@tum.de>
+-- 
+Michal Hocko
+SUSE Labs
