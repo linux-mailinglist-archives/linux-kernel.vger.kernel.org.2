@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C9A3486B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417843486BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233640AbhCYB4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCYB4D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:56:03 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17E7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 18:56:02 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id y5so354334qkl.9
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 18:56:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y12RqPVb5onZRkqmcNXS/4VG3RBAeiyXVnjI/3Uhls8=;
-        b=ZgnYR8R0rs3YeBUDDccQCJ19kQS2EPyPE/NYONcfDI0XZw5R1+jZxYREdEw9hREs8U
-         ea/EN8FzaZE8LAweYEbXz8zJOBwQ7nkKc+aaHmk4NduYBGOmKuxKDZeZnIYjSdTwB2UO
-         Qw1oGz0oAPGZ3N67aQ9m5f+F+Nl4LNKJyJXpgeq9/T3j3TyYDN4tvh/dqrWZ2CNJN6ag
-         D9iCYhB+E9xW893qIhmwZguhkiF7RSjbsfcyocl8fBjYr+bKqP/FcGqtKxIctteM/MUH
-         +mw2dE93Xwh+SWZMohfK4aUsjO7OfFyCmJp42I3vYO8n8ouZGA5rLhSllDN4TzYnHGAP
-         3eaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y12RqPVb5onZRkqmcNXS/4VG3RBAeiyXVnjI/3Uhls8=;
-        b=VF5MHY0pkBNEJAhtdx9acbzKQjPKaMESJULdlNRsu0QJaXe9Av4q9103OwLEbxCSjs
-         /pCLvB3KjhgDHIIOmg3GDjzrNt7+GlBEyrr15BxwXmZCHvzwaHXvmLTpb4IFPvN0hdw0
-         FSMGCW3zwyU1CFEhzogQdIV8F1SzCMy308IRYIkw29bdmZ5BuyvJsGqaMo0maOhsyGtV
-         cOk39hNZbyoAI2Jd3muwxTN1a/Bmkz9OXnm/TW8aczy2gP1qTuLxfeLFT1ZUUsJhgg7b
-         LtOB1mZ/NNB39TR6WVjEOjyk2ZiBB+RB6s+IYiQtQIijPh4pPSV8i05Ys7Naemg+URSX
-         GWIw==
-X-Gm-Message-State: AOAM531/7wIXRhAWSSiXdD0Spwn4Kjx7/DLfb7MWy1lusiYpy1G/tH8+
-        ebKPVcY56HbWOlqt7sLluVI=
-X-Google-Smtp-Source: ABdhPJw95i6Gz517xj0DGjtll6pHM0cTlZNeLuoxedxyJCt9BrYYe9B3MB8VDhZczbsQJTLz9ogmrQ==
-X-Received: by 2002:a37:9b82:: with SMTP id d124mr6014031qke.489.1616637361819;
-        Wed, 24 Mar 2021 18:56:01 -0700 (PDT)
-Received: from Slackware.localdomain ([156.146.55.193])
-        by smtp.gmail.com with ESMTPSA id f20sm2704752qtp.67.2021.03.24.18.55.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 18:56:01 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     haver@linux.ibm.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        id S231288AbhCYB5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:57:16 -0400
+Received: from mail.synology.com ([211.23.38.101]:57326 "EHLO synology.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233661AbhCYB4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 21:56:46 -0400
+Received: from localhost.localdomain (unknown [10.17.32.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by synology.com (Postfix) with ESMTPSA id 0E547CE7820E;
+        Thu, 25 Mar 2021 09:56:45 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+        t=1616637405; bh=krI28xV4SCJ+OHpQAF/KvRf/HkegVa0mjl+q4jhFiM4=;
+        h=From:To:Cc:Subject:Date;
+        b=SLPcDuXIeKsmQrrlT50zyPHmrpSXBXQeoxG/8XUaTe/JSGyOwyjf9l3P6HxjfWatH
+         QB6oz1ZvVqK8i4IJq4N+Pr9ehlOpuh26ISrvbjmC+zvQTiqYg7EmUW9cT0m+tSDmIb
+         1G0Js19iXXZ3Nn+JcL5eA1WTEIqJ/H3XIOkv5Wa4=
+From:   bingjingc <bingjingc@synology.com>
+To:     josef@toxicpanda.com, dsterba@suse.com, quwenruo@cn.fujitsu.com,
+        clm@fb.com, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V2] misc: genwqe: Rudimentary typo fixes
-Date:   Thu, 25 Mar 2021 07:25:13 +0530
-Message-Id: <20210325015513.9373-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Cc:     bingjingc@synology.com, cccheng@synology.com, robbieko@synology.com
+Subject: [PATCH v2] btrfs: fix a potential hole-punching failure
+Date:   Thu, 25 Mar 2021 09:56:22 +0800
+Message-Id: <1616637382-27311-1-git-send-email-bingjingc@synology.com>
+X-Mailer: git-send-email 2.7.4
+X-Synology-MCP-Status: no
+X-Synology-Spam-Flag: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Virus-Status: no
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/requsted/requested/
-s/equests/requests/
-s/occured/occurred/
-s/conditon/condition/
-s/emtpy/empty/
+From: BingJing Chang <bingjingc@synology.com>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+In commit d77815461f04 ("btrfs: Avoid trucating page or punching hole
+in a already existed hole."), existed holes can be skipped by calling
+find_first_non_hole() to adjust *start and *len. However, if the given
+len is invalid and large, when an EXTENT_MAP_HOLE extent is found, the
+*len will not be set to zero because (em->start + em->len) is less than
+(*start + *len). Then the ret will be 1 but the *len will not be set to
+0. The propagated non-zero ret will result in fallocate failure.
+
+In the while-loop of btrfs_replace_file_extents(), len is not updated
+every time before it calls find_first_non_hole(). That is, after
+btrfs_drop_extents() successfully drops the last non-hole file extent,
+it may fail with -ENOSPC when attempting to drop a file extent item
+representing a hole. The problem can happen. After it calls
+find_first_non_hole(), the cur_offset will be adjusted to be larger
+than or equal to end. However, since the len is not set to zero. The
+break-loop condition (ret && !len) will not meet. After it leaves the
+while-loop, fallocate will return 1, which is an unexpected return
+value.
+
+We're not able to construct a reproducible way to let
+btrfs_drop_extents() fail with -ENOSPC after it drops the last non-hole
+file extent but with remaining holes left. However, it's quite easy to
+fix. We just need to update and check the len every time before we call
+find_first_non_hole(). To make the while loop more readable, we also
+pull the variable updates to the bottom of loop like this:
+while (cur_offset < end) {
+        ...
+        // update cur_offset & len
+        // advance cur_offset & len in hole-punching case if needed
+}
+
+Reported-by: Robbie Ko <robbieko@synology.com>
+Fixes: d77815461f04 ("btrfs: Avoid trucating page or punching hole in a
+already existed hole.")
+Reviewed-by: Robbie Ko <robbieko@synology.com>
+Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+Signed-off-by: BingJing Chang <bingjingc@synology.com>
 ---
- Changes from V1:
-  One change incorporated and one elimilated , as Randy found
+ fs/btrfs/file.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- drivers/misc/genwqe/card_ddcb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/misc/genwqe/card_ddcb.c b/drivers/misc/genwqe/card_ddcb.c
-index 0db4000dedf2..500b1feaf1f6 100644
---- a/drivers/misc/genwqe/card_ddcb.c
-+++ b/drivers/misc/genwqe/card_ddcb.c
-@@ -316,7 +316,7 @@ static int enqueue_ddcb(struct genwqe_dev *cd, struct ddcb_queue *queue,
-
- /**
-  * copy_ddcb_results() - Copy output state from real DDCB to request
-- * @req:        pointer to requsted DDCB parameters
-+ * @req:        pointer to requested DDCB parameters
-  * @ddcb_no:    pointer to ddcb number being tapped
-  *
-  * Copy DDCB ASV to request struct. There is no endian
-@@ -356,7 +356,7 @@ static void copy_ddcb_results(struct ddcb_requ *req, int ddcb_no)
- }
-
- /**
-- * genwqe_check_ddcb_queue() - Checks DDCB queue for completed work equests.
-+ * genwqe_check_ddcb_queue() - Checks DDCB queue for completed work requests.
-  * @cd:         pointer to genwqe device descriptor
-  * @queue:	queue to be checked
-  *
-@@ -498,7 +498,7 @@ int __genwqe_wait_ddcb(struct genwqe_dev *cd, struct ddcb_requ *req)
-
- 	/*
- 	 * We need to distinguish 3 cases here:
--	 *   1. rc == 0              timeout occured
-+	 *   1. rc == 0              timeout occurred
- 	 *   2. rc == -ERESTARTSYS   signal received
- 	 *   3. rc > 0               remaining jiffies condition is true
- 	 */
-@@ -982,7 +982,7 @@ static int genwqe_next_ddcb_ready(struct genwqe_dev *cd)
-
- 	spin_lock_irqsave(&queue->ddcb_lock, flags);
-
--	if (queue_empty(queue)) { /* emtpy queue */
-+	if (queue_empty(queue)) { /* empty queue */
- 		spin_unlock_irqrestore(&queue->ddcb_lock, flags);
- 		return 0;
- 	}
-@@ -1002,7 +1002,7 @@ static int genwqe_next_ddcb_ready(struct genwqe_dev *cd)
-  * @cd:         pointer to genwqe device descriptor
-  *
-  * Keep track on the number of DDCBs which ware currently in the
-- * queue. This is needed for statistics as well as conditon if we want
-+ * queue. This is needed for statistics as well as condition if we want
-  * to wait or better do polling in case of no interrupts available.
-  */
- int genwqe_ddcbs_in_flight(struct genwqe_dev *cd)
---
-2.30.1
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 0e155f0..dccb017 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2735,8 +2735,6 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
+ 			extent_info->file_offset += replace_len;
+ 		}
+ 
+-		cur_offset = drop_args.drop_end;
+-
+ 		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
+ 		if (ret)
+ 			break;
+@@ -2756,7 +2754,9 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
+ 		BUG_ON(ret);	/* shouldn't happen */
+ 		trans->block_rsv = rsv;
+ 
+-		if (!extent_info) {
++		cur_offset = drop_args.drop_end;
++		len = end - cur_offset;
++		if (!extent_info && len) {
+ 			ret = find_first_non_hole(BTRFS_I(inode), &cur_offset,
+ 						  &len);
+ 			if (unlikely(ret < 0))
+-- 
+2.7.4
 
