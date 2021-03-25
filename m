@@ -2,94 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB80348BA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECC6348BB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhCYIhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:37:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhCYIgt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:36:49 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FC8C06174A;
-        Thu, 25 Mar 2021 01:36:49 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id j7so1411730wrd.1;
-        Thu, 25 Mar 2021 01:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=wLwX43sqMguThpcBykUYgc+AsOMBNPl22fadIMTuvtM=;
-        b=Y++QGZqVYNYn7ssoMZMclCbA5pPVrSfJTkftRwlqfj82YrQ2qTjKTBMbpOvh+IkIum
-         XV2bk+HVHkWcjhDqxdPpD9BEm9o1B1E+yyOArhd6YkE374byePBA0WMOYSUSGjW/Hmrk
-         6i06MoqUdiYaiCa7Avc8KPKlk06dwkMWHr/2MmODVkOfIKLEd11oRHagCJwrqJqjSGfS
-         vgG4ITYq+LiZYFb/mjX5hD0Psz9NDrqThEd05zRaLBKkZkO3zgOr9VGXvrRiY6gmZv6A
-         VLlxVURNVNRfUtC+0dhZwXALp+D+iR2FAs0L9qngdm6GvfvwYs5PlC5jkoWbBPOgYKo9
-         w3Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=wLwX43sqMguThpcBykUYgc+AsOMBNPl22fadIMTuvtM=;
-        b=IyNsK8ntcE8lEIxy6sbaIUJAovCLvaQyn48UArJ7BQ88swoi8aJErXkCFCR+u5t/24
-         Y2bbAPDlPrKomxQl9JjBmjrcXu70aIjwLAzCP66WbVGeALCzh9MVm5F/letcFBWk214g
-         ZiS2hCVh3iWx7pUhWmwSaXM4RSgsQ6FV/Mz+oGqJMQpj5NNw/pakhvdcVuY75kohXtwf
-         AMar/a03NXsyVp7zD3JJhmFINT0Vf9XY14dW0l36yhH5t+WIe43v6jQWBOLV4tSFeAFe
-         GCpMyhrf139DP0QouXYpSkUztR0CuHORrbh0FxBQk3kHH4xgkWpzFuhRQJAKnDQxa7EM
-         hX0w==
-X-Gm-Message-State: AOAM5328tVb3CdPgcuKrOxlVM8ZvK5CWie0sc6BLvZcIRMEgmuNynvgi
-        f1nUaDC53koJvCc5SrbhFTs=
-X-Google-Smtp-Source: ABdhPJyWUVZENNN58hChrtwyEfvCgyUEsQpBYbWURoHNC4hTzQXVW3cFg1Km9x1s6i0QcYb/TlZsrg==
-X-Received: by 2002:adf:c40b:: with SMTP id v11mr7482901wrf.320.1616661407792;
-        Thu, 25 Mar 2021 01:36:47 -0700 (PDT)
-Received: from LEGION ([39.46.39.200])
-        by smtp.gmail.com with ESMTPSA id u17sm5369687wmq.3.2021.03.25.01.36.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 01:36:47 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 13:36:41 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, colin.king@canonical.com,
-        dan.carpenter@oracle.com
-Cc:     musamaanjum@gmail.com
-Subject: [PATCH] ALSA: usb-audio: Don't store returned value and check for
- errors
-Message-ID: <20210325083641.GA644957@LEGION>
+        id S229744AbhCYIj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:39:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhCYIjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 04:39:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17E09619FC;
+        Thu, 25 Mar 2021 08:39:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616661572;
+        bh=Nn2Jcv819TwFo7idy1EDIUI0hC6JZl8FR/VnF46+dAs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fzjB58/mMkdetAG2DUodmx4z/aTXZVCCOgbCoBg6lr22xv5inJelHrVOkfaPIoqEo
+         01ki6HAF5IujAtG7PBgmeaXXFXjieEgqgUejpn0ap1Nc5585jhhRfeqrq6yTRLbMxB
+         DyFfXeAz1T7gU5y6vEf1EHG1PTVVWEqwVowEiHdEXv8PYHxe8ebojBPojcs/c4Zc68
+         MwqDSKJbMZOXyGV3gXFXc2YgGd9177VDwmyi7COXtXUBj7sollk2EjYNklzMko5jv3
+         E0yYcEBixhgB3c6+JjgdrWEpn4g6ClvcH+3ZUiezGfEfmE+HrTul5pcOwelchn4o8Q
+         uRhbjEcaD3L2A==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH] fanotify_user: use upper_32_bits() to verify mask
+Date:   Thu, 25 Mar 2021 09:37:43 +0100
+Message-Id: <20210325083742.2334933-1-brauner@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Patch-Hashes: v=1; h=sha256; i=rV9DYAGqrBf84r/PvZ7PvFiRieUiTS332qKv+sF3M/Q=; m=u8tAo1c2Johpj/6wlhfYIK/O9fj5xWHs290nbl91tJA=; p=0i8coRLdVQPAx3eF5AqlJR9QPc2ttbnOFB0cU2euChg=; g=0279421931c80ebb10d6b34605ab0d3d166d0bfc
+X-Patch-Sig: m=pgp; i=christian.brauner@ubuntu.com; s=0x0x91C61BC06578DCA2; b=iHUEABYKAB0WIQRAhzRXHqcMeLMyaSiRxhvAZXjcogUCYFxLYQAKCRCRxhvAZXjcog/lAPwMZQ8 eCaX8/fs1p5JKDfagK35WK9xrGpXk5SV+nvxp/AEApnZF/kCXAL1T+opmSPt71VlVXVatn7dRT2YY gZDfNAs=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The returned value by create_autodetect_quirk isn't being used other
-than in the success check on next line. Remove the return value
-assignement. Check for error values instead of success check.
+From: Christian Brauner <christian.brauner@ubuntu.com>
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+I don't see an obvious reason why the upper 32 bit check needs to be
+open-coded this way. Switch to upper_32_bits() which is more idiomatic and
+should conceptually be the same check.
+
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: Jan Kara <jack@suse.cz>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- sound/usb/quirks.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/notify/fanotify/fanotify_user.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 9e5e37eff10e..5ce5f4ecb9d0 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -425,9 +425,9 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
- 							USB_CLASS_VENDOR_SPEC)
- 			continue;
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index 9e0c1afac8bd..d5683fa9d495 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -1126,7 +1126,7 @@ static int do_fanotify_mark(int fanotify_fd, unsigned int flags, __u64 mask,
+ 		 __func__, fanotify_fd, flags, dfd, pathname, mask);
  
--		err = create_autodetect_quirk(chip, iface, driver);
--		if (err >= 0)
--			usb_driver_claim_interface(driver, iface, (void *)-1L);
-+		if (create_autodetect_quirk(chip, iface, driver) < 0)
-+			continue;
-+		usb_driver_claim_interface(driver, iface, (void *)-1L);
- 	}
+ 	/* we only use the lower 32 bits as of right now. */
+-	if (mask & ((__u64)0xffffffff << 32))
++	if (upper_32_bits(mask))
+ 		return -EINVAL;
  
- 	return 0;
+ 	if (flags & ~FANOTIFY_MARK_FLAGS)
+
+base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
 -- 
-2.25.1
+2.27.0
 
