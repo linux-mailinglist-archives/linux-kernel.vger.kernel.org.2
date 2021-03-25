@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D593490F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 325573490F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhCYLlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41370 "EHLO
+        id S231816AbhCYLln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbhCYLfd (ORCPT
+        with ESMTP id S232098AbhCYLhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:35:33 -0400
-Received: from smtp-8fac.mail.infomaniak.ch (smtp-8fac.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fac])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68D9BC0613E0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:35:29 -0700 (PDT)
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F5jhb2yFfzMq3tQ;
-        Thu, 25 Mar 2021 12:35:27 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4F5jhW3mRTzlh8V1;
-        Thu, 25 Mar 2021 12:35:23 +0100 (CET)
-Subject: Re: [PATCH v7 0/5] Enable root to update the blacklist keyring
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20210312171232.2681989-1-mic@digikod.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <44ea1b45-1eca-89b2-34b5-e282f543cb99@digikod.net>
-Date:   Thu, 25 Mar 2021 12:36:04 +0100
-User-Agent: 
+        Thu, 25 Mar 2021 07:37:14 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01086C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:37:14 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id hq27so2321779ejc.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6HWoPxM8hpk9JxBFaoub7bFIy6vZThqR9gg08XcEbko=;
+        b=dmyFQGi74gKIFq9DVjKs30EVsi5QoIbBhdc9HQS88PneRCRYoL/By5GOedItfwkq3w
+         rwzL6+LjwFkPWqBmbTYziTuYlnk183OFpKsAEm8kHhxxUbeBQ2qXI63PgDmlJNs1saCT
+         E2moVBwUeqgQK6Cx48X2vAHF4eq+8GOIEXnX/D9unOqilAmy5bSlroNPw0+/P4rAU5ej
+         AvgVL/FXzWzmNOzsC6TCWbLP4TcN5THCCcdVLIroHypBCsQkM9as2ENqD+ThwQWAK9Z0
+         cWM99bCAzBKHoORQegFN9oYF240SPtT69CT7hD3W6vU6vdOMw/qFL7e6ZsBfN58AU8xJ
+         JvDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6HWoPxM8hpk9JxBFaoub7bFIy6vZThqR9gg08XcEbko=;
+        b=A1IuxJ4tRWLsOumhDHdOShCWVn4kV5FMczTVe7H3Az1pw344dURcalBka3lD5M3H6k
+         zDZ0NBxilXec6khbb7WgYMKov4O/s/6pfZcmcUlZAqxNBJLxf46luHdVwbbFQrSkZqiC
+         Wb3Pp7pIBbrIgUBru9HeQ0Ud5pEDXWnNsgj1FTvHs4vnPvu6acXT9BVlazTG9w80bnvX
+         IPPIGLYYiToHMMsMHek27CiSaKkC8qP6HLypfDW8OVV3lEDUeV4PzVtWtOZp9fUGJrRI
+         fV7ej9X1w5CcD0ibmy/BApTA3hhN4Y37wucARX0Dh0DWkWwArzhp/XhAL2559YsSVhPb
+         KboQ==
+X-Gm-Message-State: AOAM532kaRqNJv4+0MLCCvsVcjay7wgN/W9wZok0ZqIPMCswH1JoM5sM
+        Sgejv0+fhaEVdemmq9w7VUkA9BR4r4P8+Q==
+X-Google-Smtp-Source: ABdhPJwfluv3C/XrzGXSCWStwVwpVt5Z13jHN67KqsPWwc1Bi29dt/ow/Y7IN/LT8hhQ75A/rwhLsQ==
+X-Received: by 2002:a17:906:1749:: with SMTP id d9mr3579372eje.12.1616672232631;
+        Thu, 25 Mar 2021 04:37:12 -0700 (PDT)
+Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
+        by smtp.gmail.com with ESMTPSA id c17sm2623237edw.32.2021.03.25.04.37.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 04:37:11 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 12:37:10 +0100
+From:   Simon Horman <simon.horman@netronome.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, oss-drivers@netronome.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
+Subject: Re: [PATCH] drivers: net: ethernet: struct sk_buff is declared
+ duplicately
+Message-ID: <20210325113709.GA31168@netronome.com>
+References: <20210325063559.853282-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <20210312171232.2681989-1-mic@digikod.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325063559.853282-1-wanjiabing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Thu, Mar 25, 2021 at 02:35:55PM +0800, Wan Jiabing wrote:
+> struct sk_buff has been declared. Remove the duplicate.
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-What is the status of this patchset? Could you please push it to -next?
+Thanks, nice catch.
 
-Regards,
- Mickaël
-
-On 12/03/2021 18:12, Mickaël Salaün wrote:
-> This new patch series is a rebase on David Howells's and Eric Snowberg's
-> keys-cve-2020-26541-v3.
-> 
-> I successfully tested this patch series with the 186 entries from
-> https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin (184
-> binary hashes and 2 certificates).
-> 
-> The goal of these patches is to add a new configuration option to enable the
-> root user to load signed keys in the blacklist keyring.  This keyring is useful
-> to "untrust" certificates or files.  Enabling to safely update this keyring
-> without recompiling the kernel makes it more usable.
-> 
-> This can be applied on top of David Howells's keys-cve-2020-26541-branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-cve-2020-26541-branch
-> 
-> Previous patch series:
-> https://lore.kernel.org/lkml/20210210120410.471693-1-mic@digikod.net/
-> 
-> Regards,
-> 
-> Mickaël Salaün (5):
->   tools/certs: Add print-cert-tbs-hash.sh
->   certs: Check that builtin blacklist hashes are valid
->   certs: Make blacklist_vet_description() more strict
->   certs: Factor out the blacklist hash creation
->   certs: Allow root user to append signed hashes to the blacklist
->     keyring
-> 
->  MAINTAINERS                                   |   2 +
->  certs/.gitignore                              |   1 +
->  certs/Kconfig                                 |  17 +-
->  certs/Makefile                                |  17 +-
->  certs/blacklist.c                             | 218 ++++++++++++++----
->  crypto/asymmetric_keys/x509_public_key.c      |   3 +-
->  include/keys/system_keyring.h                 |  14 +-
->  scripts/check-blacklist-hashes.awk            |  37 +++
->  .../platform_certs/keyring_handler.c          |  26 +--
->  tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
->  10 files changed, 346 insertions(+), 80 deletions(-)
->  create mode 100755 scripts/check-blacklist-hashes.awk
->  create mode 100755 tools/certs/print-cert-tbs-hash.sh
-> 
-> 
-> base-commit: ebd9c2ae369a45bdd9f8615484db09be58fc242b
-> 
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
