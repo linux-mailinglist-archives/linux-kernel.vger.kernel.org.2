@@ -2,388 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428B53497AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7693497A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCYRMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:12:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhCYRL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:11:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C3A461A28;
-        Thu, 25 Mar 2021 17:11:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616692317;
-        bh=y6zLbPcyEVvhtg21rb9MrFdi1B6TTMd2WOeytxfT9NM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LoTBoSQYGbyXwj1tZJwuOrtwLd3+fk/ndxemCb09N3qCgWlZoCKRAQuvdc3KYkTPK
-         j6r8DM1K9LeqTFUyY1vRT+YKCJL8gCiIvUNSyMicaT4Ky81zLNzTlHFDzLiaU9KMwb
-         BNVDYWsIKzYXVpOJbf4gEaYrcCb927ncIrSZ+OorA97HeewxaCxKwxYJNJ6661DHH8
-         BbBvzghbJIJoFV1HzT0X7CGhAWoMuer59WV4qr9jxm8WaiT3IZs0wiQDo92eERiulb
-         GIhIaY8seFGDKF/CGXucCgrMCSFMWZmuIPYodReXX3TdxH/voKMKxUWNVWkbrLUnNt
-         R0m8Z3PxXTmaw==
-From:   =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Subject: [PATCH 2/2] treewide: change my e-mail address, fix my name
-Date:   Thu, 25 Mar 2021 18:11:23 +0100
-Message-Id: <20210325171123.28093-2-kabel@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210325171123.28093-1-kabel@kernel.org>
-References: <20210325171123.28093-1-kabel@kernel.org>
+        id S229760AbhCYRLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:11:47 -0400
+Received: from mail-dm6nam11on2070.outbound.protection.outlook.com ([40.107.223.70]:40697
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229734AbhCYRL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:11:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gZHo8EDX4AZXdZCrG1Jg8jKfSQY1fqWW2/UPjVsRDueq7bmSorsO/TtumWhzmTSkh6SsydJ8AuAQep87lGdZas4SiZ144gkzdB7sMokUh1yrnTbIGxlKaa7dT48WGlw/5o0UBeD60DLLEJc7RyvJJKKyslJOGWjzDAw47h54RkfJ7/egCixQsFjPGkIfssDUeKwF4ZHWvmqBxieZBY91BIWwtzTlUbnKyKBQoBrbp1MC9U7zJdWmJD9AS/AYk70q8d27O4KLdBK596gdFbzlzWZKi/WgS5jTf3o4Zu3oUG0p28nHOUEXLrW8yQBSpxbEw7rhYWxJ1n631Tg5XyBOXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wECcuz/ez3qqxqdlDXxvrDjPLpQl5+3+MJV99aOVOM8=;
+ b=KX+PwemN38ua6VFBxSmtuxNS9t9fl2u0lPV5EgD1jBfmsaU7NWprz+9TpiJm7u4y7EzY58PPY+cUl39lkvsCqYG9DImGd/nIcBeC7Oxaoub0tEyma4vPPEEnshiILnJdWSCbxEaawF5Lhd8+05QHUOJzwbOxTh4gevAiqH/wUMstQaU0ShTb3eOoFlFHz8YjIWc0LyHAJm1z96I8KvFZCxTAOBIDPouhv7gONGD2DFZnb8XWaK/mnD/SEjoEkAGZ4DfDnyQpCkhOkUC9gdhgy97vGD3X2jst2IdLxlxmw/PmuxEapARIU+06FFhYI7arktk5brX9EiGLy/oMVgLY/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wECcuz/ez3qqxqdlDXxvrDjPLpQl5+3+MJV99aOVOM8=;
+ b=FNztyw/gypcsrB/X64idi0yKDBVVVI/GcVjjqPZ5R4OfuaVe6sOCn49G5VocZQSq6AiOUv4HmVDMdbk+1LZdwvmikUzmF/I+KlWuXIV159lWTBKG9HMB8pWREoUpy+bpbWOxpgG6rlONjCeC5DdU6H9UXsJb9/oIjIGFpazV2rIAnt3nliawlqRg1TigT3fNO8J6P6WAmFf2Za9iIJGIjENHeC1W2JwXNlh1De47OslvhiU0Me86beleXa7SSLsohkr/Ozz0wX+BCaDCyNUvfJaZS8sbiIsbI4OS5r21k0P/xY8KPoZrTWGBfgZnreQ3v28SFkWvxtb4h6u6AXrtGQ==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3308.namprd12.prod.outlook.com (2603:10b6:5:182::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Thu, 25 Mar
+ 2021 17:11:28 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
+ 17:11:27 +0000
+Date:   Thu, 25 Mar 2021 14:11:26 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-cxl@vger.kernel.org, ira.weiny@intel.com,
+        vishal.l.verma@intel.com, alison.schofield@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] cxl/mem: Fix cdev_device_add() error handling
+Message-ID: <20210325171126.GD2356281@nvidia.com>
+References: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161661971651.1721612.7457823773061754064.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161661971651.1721612.7457823773061754064.stgit@dwillia2-desk3.amr.corp.intel.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH0PR03CA0131.namprd03.prod.outlook.com
+ (2603:10b6:610:cf::16) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0131.namprd03.prod.outlook.com (2603:10b6:610:cf::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend Transport; Thu, 25 Mar 2021 17:11:27 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPTW2-002k8j-5x; Thu, 25 Mar 2021 14:11:26 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 651982e4-f836-46e6-329a-08d8efb106d4
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3308:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB33081691E09DDA9219A27607C2629@DM6PR12MB3308.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MTwb34yzJpylpltM4blYvopi22rHoqMBZ18GJiKUUWBShI+q3RB01SgQiUUmoqgT/PuiHieMsnHv3/WUJ+CN7kecbYhD9XWVPrcgLTH3/umvySjc6MJALDCCl1n/zUwEx0ANtJy2Pmg14DZ03YIb4MGbb2OGL2Bc1/Jbi8ChrvwLacK6a5vW+MNtbYKLacja94bzJXhuMDn/0dvtWFFVxxnq7/TxbFzQt5IBVQuxwGA9sPZlDTBGBavrcEdaVSnDelA7AeunIpGf2MlBtikSjgMQXvuYsJ/kvTKyfuVWFwJSMeWoAjwSpOQdF4IH3iyv8kIZ8mmYAinIO4mgPvFiZoqJ3uTz/VIigr34ozwGU3qTEGDqJiE6i+Iani58l2pVRJjrFB3zrBf+e0qs8giPKnzcbbm2A+3BlPzO2HmvIPXCqzlWxb0K03LRlani1LM7162cGuAAb4LcIh+2qqnWOIXyJaN2ESQPgnMe688Wkop+Q93vf7cUkZ/F32HJqz0DF90jYhmhyPy7ltBbjxuEiBD4a0VFJz9O96J0D8iuM7X/wbBks/NLlArsOmjGDoMv84XPYBQMdD2X9eJYSRzSmGgXGc5KRhyVFsE7sOeHDmQ0jt7dQe3zM6dWyfiR0QPGuJJ3E6TeTMf6IZ9zMij22bykiw2/q1Vv5cUkf44trAE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(376002)(136003)(366004)(2906002)(66476007)(66946007)(66556008)(33656002)(86362001)(83380400001)(316002)(38100700001)(36756003)(26005)(9746002)(8936002)(1076003)(6916009)(478600001)(9786002)(5660300002)(4326008)(2616005)(186003)(8676002)(426003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?I07MT0ctyYTUeOghVKa2Y9/lLfOQOzp7+rd6LUeXRyjuinKomXbFC2IDRBsi?=
+ =?us-ascii?Q?CkEyFR5xxB8+UT7fXW1pT9hq5dTJHQ9sv+esbFzS599yyCbu01W9MidNGi7+?=
+ =?us-ascii?Q?EfOHwEl2Op+vrZNP2dHkam4dQo/3FVgVU70Wzbip7p4/IySjhJNc0NoIZXBa?=
+ =?us-ascii?Q?PUWjCX9RCZYFNlxTUD2bsFAEVcxts8S4VI3oMTHTOgyeyOejlNKvstIHZgTp?=
+ =?us-ascii?Q?sBN8TNdsm96leeLehYXIgk+7pFrzGaLPBRHqQkJ5rna5HplYh9RzABgL2lN4?=
+ =?us-ascii?Q?pj+fsU3G4wnPiwBXvutTR7GedhB/UUO62V5RIQazU5ZdLfJ/F6M46JXK+PwZ?=
+ =?us-ascii?Q?6rdcHiZC9QQ4u97GgS7ZAC2D6jY4ZXoVt+4Z4rYnVvu8Gq5LVz3LziBZT0Cl?=
+ =?us-ascii?Q?Btz2khmwNzCNFQ4nrt/uFjcwcMk3ol+ty/0PwA+CMClqelHBiGSqH8CXS/7r?=
+ =?us-ascii?Q?zh+MKhJbdZ/p6FWhmZKo3ZPp2h8y35D1tGJxSac88hjEAxq7gZrgqDvZH72T?=
+ =?us-ascii?Q?AfdFQKNln+R382f0onTTYXscc7v2IWn+lIH4Tn4x6wg0ZF5dt40bSgZCtddl?=
+ =?us-ascii?Q?M7BDi+IXsB14Am5r/GE+rJlmZJUtiKkucx81T6A4XW71clUwNyt5QuF1RwX+?=
+ =?us-ascii?Q?UCzZCwRq84apvtQW6dcCYXfgqejo03N3XxRFCOWKEGaOpMYEbjp/NGCdYnYt?=
+ =?us-ascii?Q?MD0NmThFfaeZCEm4MlsDOhgwJUB2OC0SfCdjgpnJs4LqKVC5DwbLDAoSXdpR?=
+ =?us-ascii?Q?+ZWuCoImuye8rVGLqaHNkOXLjVeM5ERI+6ZpmadFVEtRHP4D1hHiSv16vosg?=
+ =?us-ascii?Q?pW++uDX5BXvZQux5cAzvNJaMHQD+FI217A7+NpfxtT1mC8yraYc3jlrnRv5T?=
+ =?us-ascii?Q?Jl3V0WzeZwX0/A2mwYr2d4jIWLfD+Iqm6SZCZeEVR7D7yuRm0QN1MYnDNNmG?=
+ =?us-ascii?Q?yOwJbQxF/8KNGygKQcoZdIf9++3bJgiM3tDgdMj2n8of3MWhACPtKvDltfQ2?=
+ =?us-ascii?Q?x9JwZhOLms4YNzr/fygzsTm0Nc4XWuxw+xhHMtLGlu7cIquTvvYkJedGDiA6?=
+ =?us-ascii?Q?DpIrtBhVMTE0yigBwQRvlV2WwhZ1zQV198mOgWESzrxlouc+bYntmPCHtdHx?=
+ =?us-ascii?Q?MvtiWK7I8P6lTKglzvTm2J7vVlDnssHGdvMLil1r4+UntJU40dYSFdV93TXS?=
+ =?us-ascii?Q?JkxGQ9LleRAeSLlgVZXIqTjsK8QlUsFnT4HXxcCxL6reSFJUT/KAKK7GzwUk?=
+ =?us-ascii?Q?GnU+L5XcyPuyC977m3yr8mbWdH1Mrl4S0cl/li9/EmWmUu/nA9ot54rME961?=
+ =?us-ascii?Q?rqMw09Hb49vRfTwF2YFLbM8h?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 651982e4-f836-46e6-329a-08d8efb106d4
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 17:11:27.8293
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l5JffYDR0QACWiIGcSVAN6E6CDU2zxB4ilH7CUQa0SpmTxiIfUb2fGpDPiyKbMNf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3308
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change my e-mail address to kabel@kernel.org, and fix my name in
-non-code parts (add diacritical mark).
+On Wed, Mar 24, 2021 at 02:01:56PM -0700, Dan Williams wrote:
+> If cdev_device_add() fails then the allocation performed by
+> dev_set_name() is leaked. Use put_device(), not open coded release, for
+> device_add() failures.
+> 
+> The comment is obsolete because direct err_id failures need not worry
+> about the device being live.
+> 
+> The release method expects the percpu_ref is already dead, so
+> percpu_ref_kill() is needed before put_device(). However, given that the
+> cdev was partially live wait_for_completion() also belongs in the
+> release method.
+> 
+> Fixes: b39cb1052a5c ("cxl/mem: Register CXL memX devices")
+> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>  drivers/cxl/mem.c |   16 ++++++----------
+>  1 file changed, 6 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index 30bf4f0f3c17..e53d573ae4ab 100644
+> +++ b/drivers/cxl/mem.c
+> @@ -1049,6 +1049,7 @@ static void cxl_memdev_release(struct device *dev)
+>  {
+>  	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+>  
+> +	wait_for_completion(&cxlmd->ops_dead);
 
-Signed-off-by: Marek Behún <kabel@kernel.org>
----
- Documentation/ABI/testing/debugfs-moxtet               |  4 ++--
- Documentation/ABI/testing/debugfs-turris-mox-rwtm      |  2 +-
- Documentation/ABI/testing/sysfs-bus-moxtet-devices     |  6 +++---
- .../ABI/testing/sysfs-class-led-driver-turris-omnia    |  2 +-
- .../ABI/testing/sysfs-firmware-turris-mox-rwtm         | 10 +++++-----
- .../bindings/leds/cznic,turris-omnia-leds.yaml         |  2 +-
- MAINTAINERS                                            |  2 +-
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts |  2 +-
- drivers/bus/moxtet.c                                   |  4 ++--
- drivers/firmware/turris-mox-rwtm.c                     |  4 ++--
- drivers/gpio/gpio-moxtet.c                             |  4 ++--
- drivers/leds/leds-turris-omnia.c                       |  4 ++--
- drivers/mailbox/armada-37xx-rwtm-mailbox.c             |  4 ++--
- drivers/watchdog/armada_37xx_wdt.c                     |  4 ++--
- include/dt-bindings/bus/moxtet.h                       |  2 +-
- include/linux/armada-37xx-rwtm-mailbox.h               |  2 +-
- include/linux/moxtet.h                                 |  2 +-
- 17 files changed, 30 insertions(+), 30 deletions(-)
+This only works because the fops stuff is not right, a kref shouldn't
+have a completion like this.
 
-diff --git a/Documentation/ABI/testing/debugfs-moxtet b/Documentation/ABI/testing/debugfs-moxtet
-index 6eee10c3d5a1..637d8587d03d 100644
---- a/Documentation/ABI/testing/debugfs-moxtet
-+++ b/Documentation/ABI/testing/debugfs-moxtet
-@@ -1,7 +1,7 @@
- What:		/sys/kernel/debug/moxtet/input
- Date:		March 2019
- KernelVersion:	5.3
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) Read input from the shift registers, in hexadecimal.
- 		Returns N+1 bytes, where N is the number of Moxtet connected
- 		modules. The first byte is from the CPU board itself.
-@@ -19,7 +19,7 @@ Description:	(Read) Read input from the shift registers, in hexadecimal.
- What:		/sys/kernel/debug/moxtet/output
- Date:		March 2019
- KernelVersion:	5.3
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(RW) Read last written value to the shift registers, in
- 		hexadecimal, or write values to the shift registers, also
- 		in hexadecimal.
-diff --git a/Documentation/ABI/testing/debugfs-turris-mox-rwtm b/Documentation/ABI/testing/debugfs-turris-mox-rwtm
-index 326df1b74707..813987d5de4e 100644
---- a/Documentation/ABI/testing/debugfs-turris-mox-rwtm
-+++ b/Documentation/ABI/testing/debugfs-turris-mox-rwtm
-@@ -1,7 +1,7 @@
- What:		/sys/kernel/debug/turris-mox-rwtm/do_sign
- Date:		Jun 2020
- KernelVersion:	5.8
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:
- 
- 		======= ===========================================================
-diff --git a/Documentation/ABI/testing/sysfs-bus-moxtet-devices b/Documentation/ABI/testing/sysfs-bus-moxtet-devices
-index 4a6d61b44f3f..32dccc00d57d 100644
---- a/Documentation/ABI/testing/sysfs-bus-moxtet-devices
-+++ b/Documentation/ABI/testing/sysfs-bus-moxtet-devices
-@@ -1,17 +1,17 @@
- What:		/sys/bus/moxtet/devices/moxtet-<name>.<addr>/module_description
- Date:		March 2019
- KernelVersion:	5.3
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) Moxtet module description. Format: string
- 
- What:		/sys/bus/moxtet/devices/moxtet-<name>.<addr>/module_id
- Date:		March 2019
- KernelVersion:	5.3
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) Moxtet module ID. Format: %x
- 
- What:		/sys/bus/moxtet/devices/moxtet-<name>.<addr>/module_name
- Date:		March 2019
- KernelVersion:	5.3
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) Moxtet module name. Format: string
-diff --git a/Documentation/ABI/testing/sysfs-class-led-driver-turris-omnia b/Documentation/ABI/testing/sysfs-class-led-driver-turris-omnia
-index 795a5de12fc1..c4d46970c1cf 100644
---- a/Documentation/ABI/testing/sysfs-class-led-driver-turris-omnia
-+++ b/Documentation/ABI/testing/sysfs-class-led-driver-turris-omnia
-@@ -1,7 +1,7 @@
- What:		/sys/class/leds/<led>/device/brightness
- Date:		July 2020
- KernelVersion:	5.9
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(RW) On the front panel of the Turris Omnia router there is also
- 		a button which can be used to control the intensity of all the
- 		LEDs at once, so that if they are too bright, user can dim them.
-diff --git a/Documentation/ABI/testing/sysfs-firmware-turris-mox-rwtm b/Documentation/ABI/testing/sysfs-firmware-turris-mox-rwtm
-index b8631f5a29c4..ea5e5b489bc7 100644
---- a/Documentation/ABI/testing/sysfs-firmware-turris-mox-rwtm
-+++ b/Documentation/ABI/testing/sysfs-firmware-turris-mox-rwtm
-@@ -1,21 +1,21 @@
- What:		/sys/firmware/turris-mox-rwtm/board_version
- Date:		August 2019
- KernelVersion:	5.4
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) Board version burned into eFuses of this Turris Mox board.
- 		Format: %i
- 
- What:		/sys/firmware/turris-mox-rwtm/mac_address*
- Date:		August 2019
- KernelVersion:	5.4
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) MAC addresses burned into eFuses of this Turris Mox board.
- 		Format: %pM
- 
- What:		/sys/firmware/turris-mox-rwtm/pubkey
- Date:		August 2019
- KernelVersion:	5.4
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) ECDSA public key (in pubkey hex compressed form) computed
- 		as pair to the ECDSA private key burned into eFuses of this
- 		Turris Mox Board.
-@@ -24,7 +24,7 @@ Description:	(Read) ECDSA public key (in pubkey hex compressed form) computed
- What:		/sys/firmware/turris-mox-rwtm/ram_size
- Date:		August 2019
- KernelVersion:	5.4
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) RAM size in MiB of this Turris Mox board as was detected
- 		during manufacturing and burned into eFuses. Can be 512 or 1024.
- 		Format: %i
-@@ -32,6 +32,6 @@ Description:	(Read) RAM size in MiB of this Turris Mox board as was detected
- What:		/sys/firmware/turris-mox-rwtm/serial_number
- Date:		August 2019
- KernelVersion:	5.4
--Contact:	Marek Behún <marek.behun@nic.cz>
-+Contact:	Marek Behún <kabel@kernel.org>
- Description:	(Read) Serial number burned into eFuses of this Turris Mox device.
- 		Format: %016X
-diff --git a/Documentation/devicetree/bindings/leds/cznic,turris-omnia-leds.yaml b/Documentation/devicetree/bindings/leds/cznic,turris-omnia-leds.yaml
-index fe7fa25877fd..c7ed2871da06 100644
---- a/Documentation/devicetree/bindings/leds/cznic,turris-omnia-leds.yaml
-+++ b/Documentation/devicetree/bindings/leds/cznic,turris-omnia-leds.yaml
-@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: CZ.NIC's Turris Omnia LEDs driver
- 
- maintainers:
--  - Marek Behún <marek.behun@nic.cz>
-+  - Marek Behún <kabel@kernel.org>
- 
- description:
-   This module adds support for the RGB LEDs found on the front panel of the
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2cf388c89196..91078690dac5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1791,7 +1791,7 @@ F:	drivers/pinctrl/pinctrl-gemini.c
- F:	drivers/rtc/rtc-ftrtc010.c
- 
- ARM/CZ.NIC TURRIS SUPPORT
--M:	Marek Behun <marek.behun@nic.cz>
-+M:	Marek Behun <kabel@kernel.org>
- S:	Maintained
- W:	https://www.turris.cz/
- F:	Documentation/ABI/testing/debugfs-moxtet
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index d239ab70ed99..53e817c5f6f3 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- /*
-  * Device Tree file for CZ.NIC Turris Mox Board
-- * 2019 by Marek Behun <marek.behun@nic.cz>
-+ * 2019 by Marek Behún <kabel@kernel.org>
-  */
- 
- /dts-v1/;
-diff --git a/drivers/bus/moxtet.c b/drivers/bus/moxtet.c
-index b20fdcbd035b..fd87a59837fa 100644
---- a/drivers/bus/moxtet.c
-+++ b/drivers/bus/moxtet.c
-@@ -2,7 +2,7 @@
- /*
-  * Turris Mox module configuration bus driver
-  *
-- * Copyright (C) 2019 Marek Behun <marek.behun@nic.cz>
-+ * Copyright (C) 2019 Marek Behún <kabel@kernel.org>
-  */
- 
- #include <dt-bindings/bus/moxtet.h>
-@@ -879,6 +879,6 @@ static void __exit moxtet_exit(void)
- }
- module_exit(moxtet_exit);
- 
--MODULE_AUTHOR("Marek Behun <marek.behun@nic.cz>");
-+MODULE_AUTHOR("Marek Behun <kabel@kernel.org>");
- MODULE_DESCRIPTION("CZ.NIC's Turris Mox module configuration bus");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
-index 50bb2a6d6ccf..62f0d1a5dd32 100644
---- a/drivers/firmware/turris-mox-rwtm.c
-+++ b/drivers/firmware/turris-mox-rwtm.c
-@@ -2,7 +2,7 @@
- /*
-  * Turris Mox rWTM firmware driver
-  *
-- * Copyright (C) 2019 Marek Behun <marek.behun@nic.cz>
-+ * Copyright (C) 2019 Marek Behún <kabel@kernel.org>
-  */
- 
- #include <linux/armada-37xx-rwtm-mailbox.h>
-@@ -547,4 +547,4 @@ module_platform_driver(turris_mox_rwtm_driver);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Turris Mox rWTM firmware driver");
--MODULE_AUTHOR("Marek Behun <marek.behun@nic.cz>");
-+MODULE_AUTHOR("Marek Behun <kabel@kernel.org>");
-diff --git a/drivers/gpio/gpio-moxtet.c b/drivers/gpio/gpio-moxtet.c
-index 8299909318f4..61f9efd6c64f 100644
---- a/drivers/gpio/gpio-moxtet.c
-+++ b/drivers/gpio/gpio-moxtet.c
-@@ -2,7 +2,7 @@
- /*
-  *  Turris Mox Moxtet GPIO expander
-  *
-- *  Copyright (C) 2018 Marek Behun <marek.behun@nic.cz>
-+ *  Copyright (C) 2018 Marek Behún <kabel@kernel.org>
-  */
- 
- #include <linux/bitops.h>
-@@ -174,6 +174,6 @@ static struct moxtet_driver moxtet_gpio_driver = {
- };
- module_moxtet_driver(moxtet_gpio_driver);
- 
--MODULE_AUTHOR("Marek Behun <marek.behun@nic.cz>");
-+MODULE_AUTHOR("Marek Behun <kabel@kernel.org>");
- MODULE_DESCRIPTION("Turris Mox Moxtet GPIO expander");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/leds/leds-turris-omnia.c b/drivers/leds/leds-turris-omnia.c
-index 7b2f4d0ae3fe..2f9a289ab245 100644
---- a/drivers/leds/leds-turris-omnia.c
-+++ b/drivers/leds/leds-turris-omnia.c
-@@ -2,7 +2,7 @@
- /*
-  * CZ.NIC's Turris Omnia LEDs driver
-  *
-- * 2020 by Marek Behun <marek.behun@nic.cz>
-+ * 2020 by Marek Behún <kabel@kernel.org>
-  */
- 
- #include <linux/i2c.h>
-@@ -287,6 +287,6 @@ static struct i2c_driver omnia_leds_driver = {
- 
- module_i2c_driver(omnia_leds_driver);
- 
--MODULE_AUTHOR("Marek Behun <marek.behun@nic.cz>");
-+MODULE_AUTHOR("Marek Behun <kabel@kernel.org>");
- MODULE_DESCRIPTION("CZ.NIC's Turris Omnia LEDs");
- MODULE_LICENSE("GPL v2");
-diff --git a/drivers/mailbox/armada-37xx-rwtm-mailbox.c b/drivers/mailbox/armada-37xx-rwtm-mailbox.c
-index 9f2ce7f03c67..456a117a65fd 100644
---- a/drivers/mailbox/armada-37xx-rwtm-mailbox.c
-+++ b/drivers/mailbox/armada-37xx-rwtm-mailbox.c
-@@ -2,7 +2,7 @@
- /*
-  * rWTM BIU Mailbox driver for Armada 37xx
-  *
-- * Author: Marek Behun <marek.behun@nic.cz>
-+ * Author: Marek Behún <kabel@kernel.org>
-  */
- 
- #include <linux/device.h>
-@@ -203,4 +203,4 @@ module_platform_driver(armada_37xx_mbox_driver);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("rWTM BIU Mailbox driver for Armada 37xx");
--MODULE_AUTHOR("Marek Behun <marek.behun@nic.cz>");
-+MODULE_AUTHOR("Marek Behun <kabel@kernel.org>");
-diff --git a/drivers/watchdog/armada_37xx_wdt.c b/drivers/watchdog/armada_37xx_wdt.c
-index e5dcb26d85f0..1635f421ef2c 100644
---- a/drivers/watchdog/armada_37xx_wdt.c
-+++ b/drivers/watchdog/armada_37xx_wdt.c
-@@ -2,7 +2,7 @@
- /*
-  * Watchdog driver for Marvell Armada 37xx SoCs
-  *
-- * Author: Marek Behun <marek.behun@nic.cz>
-+ * Author: Marek Behún <kabel@kernel.org>
-  */
- 
- #include <linux/clk.h>
-@@ -366,7 +366,7 @@ static struct platform_driver armada_37xx_wdt_driver = {
- 
- module_platform_driver(armada_37xx_wdt_driver);
- 
--MODULE_AUTHOR("Marek Behun <marek.behun@nic.cz>");
-+MODULE_AUTHOR("Marek Behun <kabel@kernel.org>");
- MODULE_DESCRIPTION("Armada 37xx CPU Watchdog");
- 
- MODULE_LICENSE("GPL v2");
-diff --git a/include/dt-bindings/bus/moxtet.h b/include/dt-bindings/bus/moxtet.h
-index dc9345440ebe..10528de7b3ef 100644
---- a/include/dt-bindings/bus/moxtet.h
-+++ b/include/dt-bindings/bus/moxtet.h
-@@ -2,7 +2,7 @@
- /*
-  * Constant for device tree bindings for Turris Mox module configuration bus
-  *
-- * Copyright (C) 2019 Marek Behun <marek.behun@nic.cz>
-+ * Copyright (C) 2019 Marek Behún <kabel@kernel.org>
-  */
- 
- #ifndef _DT_BINDINGS_BUS_MOXTET_H
-diff --git a/include/linux/armada-37xx-rwtm-mailbox.h b/include/linux/armada-37xx-rwtm-mailbox.h
-index 57bb54f6767a..ef4bd705eb65 100644
---- a/include/linux/armada-37xx-rwtm-mailbox.h
-+++ b/include/linux/armada-37xx-rwtm-mailbox.h
-@@ -2,7 +2,7 @@
- /*
-  * rWTM BIU Mailbox driver for Armada 37xx
-  *
-- * Author: Marek Behun <marek.behun@nic.cz>
-+ * Author: Marek Behún <kabel@kernel.org>
-  */
- 
- #ifndef _LINUX_ARMADA_37XX_RWTM_MAILBOX_H_
-diff --git a/include/linux/moxtet.h b/include/linux/moxtet.h
-index 490db6886dcc..79184948fab4 100644
---- a/include/linux/moxtet.h
-+++ b/include/linux/moxtet.h
-@@ -2,7 +2,7 @@
- /*
-  * Turris Mox module configuration bus driver
-  *
-- * Copyright (C) 2019 Marek Behun <marek.behun@nic.cz>
-+ * Copyright (C) 2019 Marek Behún <kabel@kernel.org>
-  */
- 
- #ifndef __LINUX_MOXTET_H
--- 
-2.26.2
+Also, don't use devm for unregister. That just makes it extra-hard to
+write the driver remove function correctly.
 
+> @@ -1157,7 +1158,6 @@ static void cxlmdev_unregister(void *_cxlmd)
+>  
+>  	percpu_ref_kill(&cxlmd->ops_active);
+>  	cdev_device_del(&cxlmd->cdev, dev);
+> -	wait_for_completion(&cxlmd->ops_dead);
+>  	cxlmd->cxlm = NULL;
+>  	put_device(dev);
+>  }
+> @@ -1210,20 +1210,16 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
+>  	cdev_init(cdev, &cxl_memdev_fops);
+>  
+>  	rc = cdev_device_add(cdev, dev);
+> -	if (rc)
+> -		goto err_add;
+> +	if (rc) {
+> +		percpu_ref_kill(&cxlmd->ops_active);
+> +		put_device(dev);
+
+This must be one high performance ioctl to warrant the percpu ref.. If
+it is not high performance use a rwsem, otherwise I'd suggest srcu as
+a faster/simpler alternative.
+
+This is a use-after-free:
+
+static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
+			     unsigned long arg)
+{
+	struct cxl_memdev *cxlmd;
+	struct inode *inode;
+	int rc = -ENOTTY;
+
+	inode = file_inode(file);
+	cxlmd = container_of(inode->i_cdev, typeof(*cxlmd), cdev);
+       ^^^^^ can be freed memory
+
+ioctl needs to store the cxlmd in file->private_data and
+open()/release() need to do get/put device on it so the memory stays
+around. This is why open gets the inode as an argument and ioctl/etc
+does not.
+
+The ordering cxlmdev_unregister should mirror the ordering in create
+so cdev_device_del should be first
+
+Jason
