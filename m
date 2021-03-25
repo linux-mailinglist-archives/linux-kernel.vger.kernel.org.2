@@ -2,115 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80FC2348EBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3489B348EC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhCYLNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:13:02 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:34402 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230121AbhCYLMu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:12:50 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PB8KZQ029488;
-        Thu, 25 Mar 2021 12:12:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=selector1;
- bh=sx81ySGR8bPSutf92/n2FFZ8Gn5Yxf3a1PbQ8ivsBJk=;
- b=THaUiffSVEE09/leQ/NJbBiJbM4G1JPDHfCcK6+DhsFlXjCaGLbUaB+JK1i7rujBaId1
- kHkC6iMyqIWdE9QxaRsmFW0+Unglqba0mCW1sYkecTtcwu3RfukLTZ50xGXSZy/9ookb
- VLp5dRBvYgm8oeEyCaGwKiXz0ptn9JBiAP4R0pm9FTc93EhyV1HuRvmF6IQ+hHoQ6XlU
- P1Z34fDFKPaZEy4Y3gt+IVEEq4AIC5JIw+JamI4Ptfo3IkuH7yMzZkgOddTChf1oNLad
- KwjmowvdAf3V+6/Ni3hHS6c3Iu+L3o5loaR1H1pgbg5UIHh7uh2aZP8GkGdqWfs5qiOI zQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37d8tpv3wk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 12:12:23 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7509510002A;
-        Thu, 25 Mar 2021 12:12:22 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 36D142463E6;
-        Thu, 25 Mar 2021 12:12:22 +0100 (CET)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Mar
- 2021 12:12:21 +0100
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1497.012; Thu, 25 Mar 2021 12:12:21 +0100
-From:   Valentin CARON - foss <valentin.caron@foss.st.com>
-To:     "dillon.minfei@gmail.com" <dillon.minfei@gmail.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        "rong.a.chen@intel.com" <rong.a.chen@intel.com>,
-        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "vladimir.murzin@arm.com" <vladimir.murzin@arm.com>,
-        "afzal.mohd.ma@gmail.com" <afzal.mohd.ma@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "Erwan LE-RAY - foss" <erwan.leray@foss.st.com>,
-        Erwan LE RAY <erwan.leray@st.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Subject: Re: [PATCH v5 9/9] dt-bindings: serial: stm32: Use 'type: object'
- instead of false for 'additionalProperties'
-Thread-Topic: [PATCH v5 9/9] dt-bindings: serial: stm32: Use 'type: object'
- instead of false for 'additionalProperties'
-Thread-Index: AQHXIT7ih+t4cxLl+EWQ55a6uRUl+aqUfCqA
-Date:   Thu, 25 Mar 2021 11:12:21 +0000
-Message-ID: <068cb7ae-9afc-606d-2579-189e46516cd5@foss.st.com>
-References: <1616653162-19954-1-git-send-email-dillon.minfei@gmail.com>
- <1616653162-19954-8-git-send-email-dillon.minfei@gmail.com>
-In-Reply-To: <1616653162-19954-8-git-send-email-dillon.minfei@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.47]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <82932ED2BBCA05459E35290288E3E327@st.com>
-Content-Transfer-Encoding: base64
+        id S229676AbhCYLOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:14:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229716AbhCYLN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:13:57 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88287619E8;
+        Thu, 25 Mar 2021 11:13:56 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lPNw2-003iXB-8y; Thu, 25 Mar 2021 11:13:54 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     suzuki.poulose@arm.com, julien.thierry.kdev@gmail.com,
+        catalin.marinas@arm.com, james.morse@arm.com,
+        Quentin Perret <qperret@google.com>, will@kernel.org
+Cc:     android-kvm@google.com, robh+dt@kernel.org, seanjc@google.com,
+        tabba@google.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, mate.toth-pal@arm.com
+Subject: Re: [PATCH v6 00/38] KVM: arm64: Stage-2 for the host
+Date:   Thu, 25 Mar 2021 11:13:40 +0000
+Message-Id: <161667080109.939459.4905727760554980398.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210319100146.1149909-1-qperret@google.com>
+References: <20210319100146.1149909-1-qperret@google.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-25_02:2021-03-24,2021-03-25 signatures=0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: suzuki.poulose@arm.com, julien.thierry.kdev@gmail.com, catalin.marinas@arm.com, james.morse@arm.com, qperret@google.com, will@kernel.org, android-kvm@google.com, robh+dt@kernel.org, seanjc@google.com, tabba@google.com, linux-kernel@vger.kernel.org, kernel-team@android.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, mate.toth-pal@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGlsbG9uLA0KDQpJdCdzIG9rYXkgZm9yIG1lLg0KDQpSZWdhcmRzLA0KDQpWYWxlbnRpbg0K
-DQpPbiAzLzI1LzIxIDc6MTkgQU0sIGRpbGxvbi5taW5mZWlAZ21haWwuY29tIHdyb3RlOg0KPiBG
-cm9tOiBkaWxsb24gbWluIDxkaWxsb24ubWluZmVpQGdtYWlsLmNvbT4NCj4NCj4gVG8gdXNlIGFk
-ZGl0aW9uYWwgcHJvcGVydGllcyAnYmx1ZXRvb3RoJyBvbiBzZXJpYWwsIG5lZWQgcmVwbGFjZSBm
-YWxzZSB3aXRoDQo+ICd0eXBlOiBvYmplY3QnIGZvciAnYWRkaXRpb25hbFByb3BlcnRpZXMnIHRv
-IG1ha2UgaXQgYXMgYSBub2RlLCBlbHNlIHdpbGwNCj4gcnVuIGludG8gZHRic19jaGVjayB3YXJu
-aW5ncy4NCj4NCj4gJ2FyY2gvYXJtL2Jvb3QvZHRzL3N0bTMyaDc1MGktYXJ0LXBpLmR0LnlhbWw6
-IHNlcmlhbEA0MDAwNDgwMDoNCj4gJ2JsdWV0b290aCcgZG9lcyBub3QgbWF0Y2ggYW55IG9mIHRo
-ZSByZWdleGVzOiAncGluY3RybC1bMC05XSsnDQo+DQo+IEZpeGVzOiBhZjFjMmQ4MTY5NWIgKCJk
-dC1iaW5kaW5nczogc2VyaWFsOiBDb252ZXJ0IFNUTTMyIFVBUlQgdG8ganNvbi1zY2hlbWEiKQ0K
-PiBSZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+IFRlc3Rl
-ZC1ieTogVmFsZW50aW4gQ2Fyb24gPHZhbGVudGluLmNhcm9uQGZvc3Muc3QuY29tPg0KPiBTaWdu
-ZWQtb2ZmLWJ5OiBkaWxsb24gbWluIDxkaWxsb24ubWluZmVpQGdtYWlsLmNvbT4NCj4gLS0tDQo+
-DQo+IHY1OiBhY2Nyb2RpbmcgdG8gcm9iJ3Mgc3VnZ2VzdGlvbiwgcmVwbGFjZSBmYWxzZSB3aXRo
-ICd0eXBlOiBvYmplY3QnDQo+ICAgICAgb2YgJ2FkZGl0aW9uYWxQcm9wZXJ0aWVzJy4NCj4NCj4g
-ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMyLXVhcnQu
-eWFtbCB8IDMgKystDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxl
-dGlvbigtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3NlcmlhbC9zdCxzdG0zMi11YXJ0LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3Mvc2VyaWFsL3N0LHN0bTMyLXVhcnQueWFtbA0KPiBpbmRleCA4NjMxNjc4MjgzZjku
-Ljg2NWJlMDUwODNjMyAxMDA2NDQNCj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
-bmRpbmdzL3NlcmlhbC9zdCxzdG0zMi11YXJ0LnlhbWwNCj4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NlcmlhbC9zdCxzdG0zMi11YXJ0LnlhbWwNCj4gQEAgLTgwLDcg
-KzgwLDggQEAgcmVxdWlyZWQ6DQo+ICAgICAtIGludGVycnVwdHMNCj4gICAgIC0gY2xvY2tzDQo+
-ICAgDQo+IC1hZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UNCj4gK2FkZGl0aW9uYWxQcm9wZXJ0
-aWVzOg0KPiArICB0eXBlOiBvYmplY3QNCj4gICANCj4gICBleGFtcGxlczoNCj4gICAgIC0gfA==
+On Fri, 19 Mar 2021 10:01:08 +0000, Quentin Perret wrote:
+> This is the v6 of the series previously posted here:
+> 
+>   https://lore.kernel.org/r/20210315143536.214621-1-qperret@google.com/
+> 
+> This basically allows us to wrap the host with a stage 2 when running in
+> nVHE, hence paving the way for protecting guest memory from the host in
+> the future (among other use-cases). For more details about the
+> motivation and the design angle taken here, I would recommend to have a
+> look at the cover letter of v1, and/or to watch these presentations at
+> LPC [1] and KVM forum 2020 [2].
+> 
+> [...]
+
+Applied to next, thanks!
+
+[01/38] arm64: lib: Annotate {clear, copy}_page() as position-independent
+        commit: 8d9902055c57548bb342dc3ca78caa21e9643024
+[02/38] KVM: arm64: Link position-independent string routines into .hyp.text
+        commit: 7b4a7b5e6fefd15f708f959dd43e188444e252ec
+[03/38] arm64: kvm: Add standalone ticket spinlock implementation for use at hyp
+        commit: 67c2d326332ee28079348e43cf4f17bbfe63b260
+[04/38] KVM: arm64: Initialize kvm_nvhe_init_params early
+        commit: 9cc7758145fd24b17cff0734b7cfd80de30be052
+[05/38] KVM: arm64: Avoid free_page() in page-table allocator
+        commit: cc706a63894fdcc25d226378898921e1ab7dd64e
+[06/38] KVM: arm64: Factor memory allocation out of pgtable.c
+        commit: 7aef0cbcdcd0995efde9957b3eda9f31a219613d
+[07/38] KVM: arm64: Introduce a BSS section for use at Hyp
+        commit: 380e18ade4a51334e8806160e6f0fdfaca0b4428
+[08/38] KVM: arm64: Make kvm_call_hyp() a function call at Hyp
+        commit: 40a50853d37af3fd2e98b769e1a79839ad16b107
+[09/38] KVM: arm64: Allow using kvm_nvhe_sym() in hyp code
+        commit: fa21472a316af8ad7af3114049db89678444c7ed
+[10/38] KVM: arm64: Introduce an early Hyp page allocator
+        commit: e759604087231c672f91564cc805336e70d333a0
+[11/38] KVM: arm64: Stub CONFIG_DEBUG_LIST at Hyp
+        commit: 40d9e41e525c13d07bc72d49968926f4502e5b33
+[12/38] KVM: arm64: Introduce a Hyp buddy page allocator
+        commit: 8e17c66249e9ea08b44879c7af0315e70a83316c
+[13/38] KVM: arm64: Enable access to sanitized CPU features at EL2
+        commit: 7a440cc78392c3caf805ef0afc7ead031e4d0830
+[14/38] KVM: arm64: Provide __flush_dcache_area at EL2
+        commit: d460df12926825a3926da91f054f9f11f88bb33e
+[15/38] KVM: arm64: Factor out vector address calculation
+        commit: bc1d2892e9aa6dcf6cd83adbd3616051cbd4c429
+[16/38] arm64: asm: Provide set_sctlr_el2 macro
+        commit: 8f4de66e247b805e1b3d1c15367ee0ef4cbb6003
+[17/38] KVM: arm64: Prepare the creation of s1 mappings at EL2
+        commit: f320bc742bc23c1d43567712fe2814bf04b19ebc
+[18/38] KVM: arm64: Elevate hypervisor mappings creation at EL2
+        commit: bfa79a805454f768b8d76ab683659d9e219a037a
+[19/38] KVM: arm64: Use kvm_arch for stage 2 pgtable
+        commit: 834cd93deb75f3a43420e479f133dd02fba95aa6
+[20/38] KVM: arm64: Use kvm_arch in kvm_s2_mmu
+        commit: cfb1a98de7a9aa51931ff5b336fc5c3c201d01cc
+[21/38] KVM: arm64: Set host stage 2 using kvm_nvhe_init_params
+        commit: 734864c177bca5148adfe7a96744993d61513430
+[22/38] KVM: arm64: Refactor kvm_arm_setup_stage2()
+        commit: bcb25a2b86b4b96385ffbcc54d51c400793b7393
+[23/38] KVM: arm64: Refactor __load_guest_stage2()
+        commit: 6ec7e56d3265f6e7673d0788bfa3a76820c9bdfe
+[24/38] KVM: arm64: Refactor __populate_fault_info()
+        commit: 159b859beed76836a2c7cfa6303c312a40bb9dc7
+[25/38] KVM: arm64: Make memcache anonymous in pgtable allocator
+        commit: e37f37a0e780f23210b2a5cb314dab39fea7086a
+[26/38] KVM: arm64: Reserve memory for host stage 2
+        commit: 04e5de03093f669ccc233e56b7838bfa7a7af6e1
+[27/38] KVM: arm64: Sort the hypervisor memblocks
+        commit: a14307f5310c737744641ff8da7a8d491c3c85cd
+[28/38] KVM: arm64: Always zero invalid PTEs
+        commit: f60ca2f9321a71ee3d2a7bd620c1827b82ce05f2
+[29/38] KVM: arm64: Use page-table to track page ownership
+        commit: 807923e04a0f5c6c34dc2eb52ae544cb0e4e4e66
+[30/38] KVM: arm64: Refactor the *_map_set_prot_attr() helpers
+        commit: 3fab82347ffb36c8b7b38dabc8e79276eeb1a81c
+[31/38] KVM: arm64: Add kvm_pgtable_stage2_find_range()
+        commit: 2fcb3a59401d2d12b5337b62c799eeb22cf40a2c
+[32/38] KVM: arm64: Introduce KVM_PGTABLE_S2_NOFWB stage 2 flag
+        commit: bc224df155c466178128a2950af16cba37b6f218
+[33/38] KVM: arm64: Introduce KVM_PGTABLE_S2_IDMAP stage 2 flag
+        commit: 8942a237c771b65f8bc1232536e4b4b829c7701f
+[34/38] KVM: arm64: Provide sanitized mmfr* registers at EL2
+        commit: def1aaf9e0bc6987bb4b417aac37226e994a1a74
+[35/38] KVM: arm64: Wrap the host with a stage 2
+        commit: 1025c8c0c6accfcbdc8f52ca1940160f65cd87d6
+[36/38] KVM: arm64: Page-align the .hyp sections
+        commit: b83042f0f143a5e9e899924987b542b2ac766e53
+[37/38] KVM: arm64: Disable PMU support in protected mode
+        commit: 9589a38cdfeba0889590e6ef4627b439034d456c
+[38/38] KVM: arm64: Protect the .hyp sections from the host
+        commit: 90134ac9cabb69972d0a509bf08e108a73442184
+
+Cheers,
+
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
