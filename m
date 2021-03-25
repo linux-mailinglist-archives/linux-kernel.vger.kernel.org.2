@@ -2,223 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5711348E56
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A23348E5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhCYKtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:49:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39694 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhCYKtV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:49:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616669360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6QdxzzroCgUOdRL70W7p4VSDcvj9eC8PKxqMJmtZ9YM=;
-        b=ewtSMh5646bY3cviDnJwEibtlRxYaOdua4iAN205UTjSY2vKhRHPVBeJE1xAB8t0+NjVlC
-        tGs6tMrBV7hHZKDL3xJUpbCQnlV9qZ64xQVCPv+i4qqyqaw1LZqMRvFZvPUqMmkYigo1TH
-        qZu9rE4YdV8RZt8Hj6z9iBxV/+MU4WM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8C54FAC3C;
-        Thu, 25 Mar 2021 10:49:20 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 11:49:19 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 4/8] hugetlb: create remove_hugetlb_page() to separate
- functionality
-Message-ID: <YFxqr0igkFldyFdv@dhcp22.suse.cz>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
- <20210325002835.216118-5-mike.kravetz@oracle.com>
+        id S230026AbhCYKvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:51:44 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34288 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhCYKvS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:51:18 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PAml4B047691;
+        Thu, 25 Mar 2021 10:51:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=p2pVh/GarV+SSYuz6AKALq2b748OF7eFUk/PJ9yVAYY=;
+ b=faUdxoez6LJoIsWK4dKLHITjESkXqi6YeVh7iUHPeMF2VrsNaucF3avuz3ioMok2oaoc
+ xMi4yR3tdFQokCd5rXXqVfVMScaaV9IFsacRH4jOlV4xbDm7zHN5uzCe/qCFHjiNCrwr
+ 0WvwNsYBlXoVzFTtvgD9lVZPCEh3jh3H7cP9/nKvN+JJYBHK7wH8NgDdPSc6n99wv7yM
+ C14kRQieFfBc2XN3JDaHKgVKDFO8dekC4FqJNICRBPjCAFPCvfR5qYU5wee/LHyQBVr8
+ 6c1r20Kv1pKzoEoir+23kw42vHIS+I98QT5/Wq+E2VUms/zam2wI0h51VtGVO45nYaKC 9Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 37d8frdtx3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 10:51:07 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PAoG9n010831;
+        Thu, 25 Mar 2021 10:51:06 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 37dttugwq2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 10:51:06 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12PAox18010326;
+        Thu, 25 Mar 2021 10:50:59 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 25 Mar 2021 03:50:58 -0700
+Date:   Thu, 25 Mar 2021 13:50:50 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jian Dong <dj0227@163.com>
+Cc:     vireshk@kernel.org, johan@kernel.org, elder@kernel.org,
+        gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        greybus-dev@lists.linaro.org, huyue2@yulong.com,
+        Jian Dong <dongjian@yulong.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH]  staging: greybus: fix fw is NULL but dereferenced
+Message-ID: <20210325105050.GW1717@kadam>
+References: <1616667566-58997-1-git-send-email-dj0227@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325002835.216118-5-mike.kravetz@oracle.com>
+In-Reply-To: <1616667566-58997-1-git-send-email-dj0227@163.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103250081
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 bulkscore=0 adultscore=0 malwarescore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2103250081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24-03-21 17:28:31, Mike Kravetz wrote:
-> The new remove_hugetlb_page() routine is designed to remove a hugetlb
-> page from hugetlbfs processing.  It will remove the page from the active
-> or free list, update global counters and set the compound page
-> destructor to NULL so that PageHuge() will return false for the 'page'.
-> After this call, the 'page' can be treated as a normal compound page or
-> a collection of base size pages.
-> 
-> remove_hugetlb_page is to be called with the hugetlb_lock held.
-> 
-> Creating this routine and separating functionality is in preparation for
-> restructuring code to reduce lock hold times.
+The commit description is not clear but this patch doesn't change how
+the code works, it just silences a static checker false positive.
 
-Call out that this is not intended to introduce any functional change.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+Just ignore the false positive.  Always just ignore static checkers
+when they are wrong.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+regards,
+dan carpenter
 
-Thanks!
-
-> ---
->  mm/hugetlb.c | 70 +++++++++++++++++++++++++++++++++-------------------
->  1 file changed, 45 insertions(+), 25 deletions(-)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 404b0b1c5258..3938ec086b5c 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1327,6 +1327,46 @@ static inline void destroy_compound_gigantic_page(struct page *page,
->  						unsigned int order) { }
->  #endif
->  
-> +/*
-> + * Remove hugetlb page from lists, and update dtor so that page appears
-> + * as just a compound page.  A reference is held on the page.
-> + * NOTE: hugetlb specific page flags stored in page->private are not
-> + *	 automatically cleared.  These flags may be used in routines
-> + *	 which operate on the resulting compound page.
-> + *
-> + * Must be called with hugetlb lock held.
-> + */
-> +static void remove_hugetlb_page(struct hstate *h, struct page *page,
-> +							bool adjust_surplus)
-> +{
-> +	int nid = page_to_nid(page);
-> +
-> +	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
-> +		return;
-> +
-> +	list_del(&page->lru);
-> +
-> +	if (HPageFreed(page)) {
-> +		h->free_huge_pages--;
-> +		h->free_huge_pages_node[nid]--;
-> +		ClearHPageFreed(page);
-> +	}
-> +	if (adjust_surplus) {
-> +		h->surplus_huge_pages--;
-> +		h->surplus_huge_pages_node[nid]--;
-> +	}
-> +
-> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> +	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
-> +
-> +	ClearHPageTemporary(page);
-> +	set_page_refcounted(page);
-> +	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> +
-> +	h->nr_huge_pages--;
-> +	h->nr_huge_pages_node[nid]--;
-> +}
-> +
->  static void update_and_free_page(struct hstate *h, struct page *page)
->  {
->  	int i;
-> @@ -1335,8 +1375,6 @@ static void update_and_free_page(struct hstate *h, struct page *page)
->  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
->  		return;
->  
-> -	h->nr_huge_pages--;
-> -	h->nr_huge_pages_node[page_to_nid(page)]--;
->  	for (i = 0; i < pages_per_huge_page(h);
->  	     i++, subpage = mem_map_next(subpage, page, i)) {
->  		subpage->flags &= ~(1 << PG_locked | 1 << PG_error |
-> @@ -1344,10 +1382,6 @@ static void update_and_free_page(struct hstate *h, struct page *page)
->  				1 << PG_active | 1 << PG_private |
->  				1 << PG_writeback);
->  	}
-> -	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
-> -	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
-> -	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
-> -	set_page_refcounted(page);
->  	if (hstate_is_gigantic(h)) {
->  		destroy_compound_gigantic_page(page, huge_page_order(h));
->  		free_gigantic_page(page, huge_page_order(h));
-> @@ -1415,15 +1449,12 @@ static void __free_huge_page(struct page *page)
->  		h->resv_huge_pages++;
->  
->  	if (HPageTemporary(page)) {
-> -		list_del(&page->lru);
-> -		ClearHPageTemporary(page);
-> +		remove_hugetlb_page(h, page, false);
->  		update_and_free_page(h, page);
->  	} else if (h->surplus_huge_pages_node[nid]) {
->  		/* remove the page from active list */
-> -		list_del(&page->lru);
-> +		remove_hugetlb_page(h, page, true);
->  		update_and_free_page(h, page);
-> -		h->surplus_huge_pages--;
-> -		h->surplus_huge_pages_node[nid]--;
->  	} else {
->  		arch_clear_hugepage_flags(page);
->  		enqueue_huge_page(h, page);
-> @@ -1708,13 +1739,7 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
->  			struct page *page =
->  				list_entry(h->hugepage_freelists[node].next,
->  					  struct page, lru);
-> -			list_del(&page->lru);
-> -			h->free_huge_pages--;
-> -			h->free_huge_pages_node[node]--;
-> -			if (acct_surplus) {
-> -				h->surplus_huge_pages--;
-> -				h->surplus_huge_pages_node[node]--;
-> -			}
-> +			remove_hugetlb_page(h, page, acct_surplus);
->  			update_and_free_page(h, page);
->  			ret = 1;
->  			break;
-> @@ -1752,7 +1777,6 @@ int dissolve_free_huge_page(struct page *page)
->  	if (!page_count(page)) {
->  		struct page *head = compound_head(page);
->  		struct hstate *h = page_hstate(head);
-> -		int nid = page_to_nid(head);
->  		if (h->free_huge_pages - h->resv_huge_pages == 0)
->  			goto out;
->  
-> @@ -1783,9 +1807,7 @@ int dissolve_free_huge_page(struct page *page)
->  			SetPageHWPoison(page);
->  			ClearPageHWPoison(head);
->  		}
-> -		list_del(&head->lru);
-> -		h->free_huge_pages--;
-> -		h->free_huge_pages_node[nid]--;
-> +		remove_hugetlb_page(h, page, false);
->  		h->max_huge_pages--;
->  		update_and_free_page(h, head);
->  		rc = 0;
-> @@ -2553,10 +2575,8 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
->  				return;
->  			if (PageHighMem(page))
->  				continue;
-> -			list_del(&page->lru);
-> +			remove_hugetlb_page(h, page, false);
->  			update_and_free_page(h, page);
-> -			h->free_huge_pages--;
-> -			h->free_huge_pages_node[page_to_nid(page)]--;
->  		}
->  	}
->  }
-> -- 
-> 2.30.2
-> 
-
--- 
-Michal Hocko
-SUSE Labs
