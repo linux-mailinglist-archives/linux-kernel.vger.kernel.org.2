@@ -2,122 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE383491BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:17:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A6D3491C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhCYMQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbhCYMQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:16:19 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BBFC06174A;
-        Thu, 25 Mar 2021 05:16:19 -0700 (PDT)
-Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lPOuM-0005y8-Kz; Thu, 25 Mar 2021 13:16:15 +0100
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1616181657.git.linux@leemhuis.info>
-Subject: Re: [PATCH v3 0/5] docs: reporting-issues: streamline process and
- solve a FIXME
-Message-ID: <c8770353-3d0d-17af-115a-efa4a31fd97b@leemhuis.info>
-Date:   Thu, 25 Mar 2021 13:16:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230206AbhCYMRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:17:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230343AbhCYMR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:17:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A165661A10;
+        Thu, 25 Mar 2021 12:17:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616674642;
+        bh=kkFyY9n0VOz+8ngV5G7XeEy2AAU13smXdeCJVNnyhtE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1rBxlV9BZc9jyAT8+4JpDSnwtn7ZFBFhLg9lDNsrrrHAtO7waKcEQPZRbrLWb7IU/
+         wqzYKqPy/rZDPnnuajnwo4uEnoWw2pT66bVupTCh1Pb5din2hDy/eMRQycRe5N+eDY
+         4EmT13/oOCThGqkE9zVogYYppn1qnwonBDVlcN20=
+Date:   Thu, 25 Mar 2021 13:17:19 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Subject: Re: linux-next: Tree for Mar 24 (drivers/tty/serial/pch_uart.c)
+Message-ID: <YFx/T86yuA8+OogL@kroah.com>
+References: <20210324210718.0c2e6d62@canb.auug.org.au>
+ <635dac0e-a82c-d3d0-c03b-e9d87585b39a@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <cover.1616181657.git.linux@leemhuis.info>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616674579;95de1c9e;
-X-HE-SMSGID: 1lPOuM-0005y8-Kz
+In-Reply-To: <635dac0e-a82c-d3d0-c03b-e9d87585b39a@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan!
-
-On 19.03.21 20:27, Thorsten Leemhuis wrote:
-> This series bundle a few patches that piled up for
-> Documentation/admin-guide/reporting-issues.rst. The main changes are these:
-
-Sorry to bring the following up, as I saw you mentioning in another mail
-on linux-doc you have a lot on your plate already. I really would prefer
-to not add something to it, but something came up.
-
-My vague hope had been to get this patchset merged for 5.13-rc1 and
-after its release post the text to Greg, Sasha, ksummit-list and LKML
-for a round of really public review. That would make sure at least all
-the important maintainers are aware of the text and have a chance to
-intervene before it gets fully official. Depending on the outcome I had
-hoped to remove the the two last remaining "FIXME" boxes and the "WIP"
-box at the top of reporting-issues.rst for 5.14-rc1 and also remove
-reporting-bugs.rst.
-
-
-
-
-But a few days ago Konstantin put a visible admonition on the front of
-
-bugzilla.kernel.org that links to the rendered version of
-reporting-issues.rst – for context see
-
-https://lore.kernel.org/lkml/CAMwyc-Sqbkg=VxCWcfRazkGG7vkwEQ43m9Dov_Nawia5MN_oUQ@mail.gmail.com/
-
-And then Tytso brought up that it might be a good time to bless the
-text: https://lore.kernel.org/lkml/YFovanxCgq1lF4Ah@mit.edu/
-
-
-
-That's why I'd like to speed things up a little. But for that it would
-be good to have something from you: a kind of "I like the direction
-where this patch set is heading and I'm optimistic that we get it merged
-for 5.13-rc1" message from you. With something like that I could move
-ahead as outlined above already. Do you maybe have a minute for that?
-
-Ciao, Thorsten
-
-
->  * patch 2/5: tones down 'test vanilla mainline' a little and mention that
-> vendor kernel might be find in some cases if they are close to vanilla. Gets rid
-> of a "FIXME" box.
-> 
->  * patch 5/5: creates a streamlined process for users wanting to report
-> regressions within a stable and longterm kernel series. The existing process is
-> too demanding, complicated and takes too much time for this case. I didn't CC
-> the stable maintainers here, they need to review the whole document anyway once
-> the last few details have been sorted out.
-> 
-> Patch 1/5 are just small fixes I wanted to keep separated. Patch 3/4 and 4/5 are
-> mainly there to make the diff in the last patch of this series easier to read in
-> the review phase. They can easily be squashed into the patches that follow them.
-> 
-> v3:
-> * add patch to fix a typo and an existing style-issue that came up during review
-> that until now handled separately
-> * add related patch that tones down 'test vanilla mainline' a bit
-> * add another patch to make the diff easier to read
-> 
-> v2: https://lore.kernel.org/linux-doc/cover.1615116592.git.linux@leemhuis.info/
-> * initial version, starting straight with v2 to avoid confusion, as one of the
-> patches was submitted earlier already
-> 
-> Thorsten Leemhuis (5):
->   docs: reporting-issues.rst: fix small typos and style issues
->   docs: reporting-issues.rst: tone down 'test vanilla mainline' a little
->   docs: reporting-issues.rst: reorder some steps
->   docs: reporting-issues.rst: duplicate sections for reviewing purposes
->   docs: reporting-issues.rst: improved process esp. for stable
->     regressions
-> 
->  .../admin-guide/reporting-issues.rst          | 832 ++++++++++--------
->  1 file changed, 471 insertions(+), 361 deletions(-)
+On Wed, Mar 24, 2021 at 08:54:15AM -0700, Randy Dunlap wrote:
+> On 3/24/21 3:07 AM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20210323:
+> > 
 > 
 > 
-> base-commit: a8f2a68e42d19e6fc1e0eb6eaef548ef07b19d75
+> on x86_64:
+> # CONFIG_DEBUG_FS is not set
 > 
+> 
+> ../drivers/tty/serial/pch_uart.c: In function ‘pch_uart_init_port’:
+> ../drivers/tty/serial/pch_uart.c:1815:9: error: ‘port_regs_ops’ undeclared (first use in this function); did you mean ‘kobj_ns_ops’?
+>         &port_regs_ops);
+> 
+
+Should already be fixed now, thanks.
+
+greg k-h
