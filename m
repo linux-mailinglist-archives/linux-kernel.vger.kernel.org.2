@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCC4349A91
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:41:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C24349A92
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhCYTkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:40:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60708 "EHLO mx2.suse.de"
+        id S230359AbhCYTkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231260AbhCYTjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:39:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616701191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b0888TBfmWBnV5AafdCEkU4aD3WyTEXqOjET2rCeeBw=;
-        b=dJBsZf98L8e5tQDlne/q8amQKIljJOO0PDtoSw5NGJTWWsriMwKS8K22jbpvHwGShmECGz
-        4lspJ2Ww9sVjz26i9DeaSZQ+sEZ62QltIRJoDiORdmyH14hHtZXY1fihlhx8q9H/MZehx9
-        jyeXn5W3Zmsa+OjyN+zF04jdCwkKVX0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1A671AF57;
-        Thu, 25 Mar 2021 19:39:51 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 20:39:48 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 5/8] hugetlb: call update_and_free_page without
- hugetlb_lock
-Message-ID: <YFznBKyLx2JYPkO1@dhcp22.suse.cz>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
- <20210325002835.216118-6-mike.kravetz@oracle.com>
- <YFxsB4YLXCobtGGv@dhcp22.suse.cz>
- <d60a13c9-24c0-1d24-85bc-08a0090d282e@oracle.com>
+        id S230393AbhCYTkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:40:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D84361A33;
+        Thu, 25 Mar 2021 19:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616701218;
+        bh=t73TCDPbW8CCPOT1gnPyZLIMzYIWH/PeC5jyFO3S+hU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PIo7ZcQ+itFZRv3GceyXjflqxbkDu13DtfYPAWifjUac73uuPiFjWbj9C9nr0ZcUN
+         xWAznZsIAk/FOT5bePJvRU1zYETQu+HdvYuGBO3U8Y6vi5XE8q5DDzJ+avczZeM6+2
+         g0mxoBg8wEg7tiev7kuEm2nJ30wUR05wxTUCCacXpn2IB5gE0J9LsqzHSyv8Eli/U4
+         Sf34dqc2TWQDlcvF0Frfs7aynPXOc8LA9tq90P+TuRYE0KvE3hGRi7bIZT2ZYvIFhH
+         K91heJwiLnEj7isnTgbBg/cR8Pwfc8eSG+A6yf8KVr6qKn+Ysvfy29RZbyvQggBblR
+         bS2uTt4RC1YlA==
+Date:   Thu, 25 Mar 2021 12:40:17 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v4 5/5] fs: unicode: Add utf8 module and a unicode layer
+Message-ID: <YFznIVf/F68oEuC6@sol.localdomain>
+References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
+ <20210325000811.1379641-6-shreeya.patel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d60a13c9-24c0-1d24-85bc-08a0090d282e@oracle.com>
+In-Reply-To: <20210325000811.1379641-6-shreeya.patel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-03-21 10:12:05, Mike Kravetz wrote:
-> On 3/25/21 3:55 AM, Michal Hocko wrote:
-> > On Wed 24-03-21 17:28:32, Mike Kravetz wrote:
-> >> With the introduction of remove_hugetlb_page(), there is no need for
-> >> update_and_free_page to hold the hugetlb lock.  Change all callers to
-> >> drop the lock before calling.
-> >>
-> >> With additional code modifications, this will allow loops which decrease
-> >> the huge page pool to drop the hugetlb_lock with each page to reduce
-> >> long hold times.
-> >>
-> >> The ugly unlock/lock cycle in free_pool_huge_page will be removed in
-> >> a subsequent patch which restructures free_pool_huge_page.
-> >>
-> >> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > 
-> > Acked-by: Michal Hocko <mhocko@suse.com>
-> > 
-> > One minor thing below
-> > 
-> > [...]
-> >> @@ -2563,22 +2572,37 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
-> >>  						nodemask_t *nodes_allowed)
-> >>  {
-> >>  	int i;
-> >> +	struct list_head page_list;
-> >> +	struct page *page, *next;
-> >>  
-> >>  	if (hstate_is_gigantic(h))
-> >>  		return;
-> >>  
-> >> +	/*
-> >> +	 * Collect pages to be freed on a list, and free after dropping lock
-> >> +	 */
-> >> +	INIT_LIST_HEAD(&page_list);
-> >>  	for_each_node_mask(i, *nodes_allowed) {
-> >> -		struct page *page, *next;
-> >>  		struct list_head *freel = &h->hugepage_freelists[i];
-> >>  		list_for_each_entry_safe(page, next, freel, lru) {
-> >>  			if (count >= h->nr_huge_pages)
-> >> -				return;
-> >> +				goto out;
-> >>  			if (PageHighMem(page))
-> >>  				continue;
-> >>  			remove_hugetlb_page(h, page, false);
-> >> -			update_and_free_page(h, page);
-> >> +			INIT_LIST_HEAD(&page->lru);
-> > 
-> > What is the point of rhis INIT_LIST_HEAD? Page has been removed from the
-> > list by remove_hugetlb_page so it can be added to a new one without any
-> > reinitialization.
-> 
-> remove_hugetlb_page just does a list_del.  list_del will poison the
-> pointers in page->lru.  The following list_add will then complain about
-> list corruption.
+On Thu, Mar 25, 2021 at 05:38:11AM +0530, Shreeya Patel wrote:
+> Also, indirect calls using function pointers are easily exploitable by
+> speculative execution attacks, hence use static_call() in unicode.h and
+> unicode-core.c files inorder to prevent these attacks by making direct
+> calls and also to improve the performance of function pointers.
 
-Are you sure? list_del followed by list_add is a normal API usage
-pattern AFAIK. INIT_LIST_HEAD is to do the first initialization before
-first use.
+I don't think you need to worry about avoiding indirect calls to prevent
+speculative execution attacks.  That's what the mitigations like Retpoline are
+for.  Instead my concern was just that indirect calls are *slow*, especially
+when those mitigations are enabled.  Some of the casefolding operations are
+called a lot (e.g., repeatedly during path resolution), and it would be
+desirable to avoid adding more overhead there.
 
--- 
-Michal Hocko
-SUSE Labs
+> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+> index 2c27b9a5cd6c..2961b0206b4d 100644
+> --- a/fs/unicode/Kconfig
+> +++ b/fs/unicode/Kconfig
+> @@ -8,7 +8,16 @@ config UNICODE
+>  	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
+>  	  support.
+>  
+> +# UTF-8 encoding can be compiled as a module using UNICODE_UTF8 option.
+> +# Having UTF-8 encoding as a module will avoid carrying large
+> +# database table present in utf8data.h_shipped into the kernel
+> +# by being able to load it only when it is required by the filesystem.
+> +config UNICODE_UTF8
+> +	tristate "UTF-8 module"
+> +	depends on UNICODE
+> +	default m
+> +
+
+The help for UNICODE still says that it enables UTF-8 support.  But now there is
+a separate option that people will need to remember to enable.
+
+Please document each of these options properly.
+
+Perhaps EXT4_FS and F2FS_FS just should select UNICODE_UTF8 if UNICODE, so that
+UNICODE_UTF8 doesn't have to be a user-selectable symbol?
+
+> +DEFINE_STATIC_CALL(validate, unicode_validate_static_call);
+> +EXPORT_STATIC_CALL(validate);
+
+Global symbols can't have generic names like "validate".  Please add an
+appropriate prefix like "unicode_".
+
+Also, the thing called "unicode_validate_static_call" isn't actually a static
+call as the name suggests, but rather the default function used by the static
+call.  It should be called something like unicode_validate_default.
+
+Likewise for all the others.
+
+- Eric
