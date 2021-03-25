@@ -2,131 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1262C348E93
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C7B348E96
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhCYLJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCYLIu (ORCPT
+        id S230008AbhCYLKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:10:52 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:47062 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhCYLKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:08:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A836C06174A;
-        Thu, 25 Mar 2021 04:08:50 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:08:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616670528;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yv0wg4BBDtIp0Fhlk8BfonH9lmiGYRhu8FrQlcso514=;
-        b=Axp7VeHNQggxWis0fjI9tUoKq5/KNkSz/bsFA9LpC1Ppxe1m2TvxEff45fJUUI9LVTaPP7
-        GXxInFqETjDLOhJba5TI3ygjjQ6Nqk7Bt6IsFDl4NQWQWWszFsIJMdn4ykGZ8hshltA5RA
-        RVX38efsRqxsfH++CywE7gh43QarwjbyTHaLhgm/BWDM+3Qv6X/fkkUSwsSJttnBJcVTjh
-        uyaJwfpkKOaDbMGLf2CC9HwCnBXk8BybVcmexwkKVO/SaQdgXeDP+gqNYIBgLO3TvUBhP3
-        0bd9eU4+P20sGcx/rqXhDoGzOMMDPLzQm8Lyc7B51/Bg7Fhxuzq17KuLrgsNpQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616670528;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yv0wg4BBDtIp0Fhlk8BfonH9lmiGYRhu8FrQlcso514=;
-        b=BznofWAAp3vlS/8enblG43YyxDI6MuddKT9vrN7CN3bctO+BxSaPl5pKZxS2SJGR4X0Ibr
-        ltcF4jMM0ecujQAg==
-From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/kprobes: Fix to check non boostable prefixes correctly
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <161666691162.1120877.2808435205294352583.stgit@devnote2>
-References: <161666691162.1120877.2808435205294352583.stgit@devnote2>
+        Thu, 25 Mar 2021 07:10:39 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id C58D29803E4;
+        Thu, 25 Mar 2021 19:10:33 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Tomi Valkeinen <tomba@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Wan Jiabing <wanjiabing@vivo.com>, Jyri Sarha <jsarha@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] [v2] drivers: gpu: drm: Remove duplicate declaration
+Date:   Thu, 25 Mar 2021 19:10:24 +0800
+Message-Id: <20210325111028.864628-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <161667052824.398.11248339831534465911.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTx9MTx8eSR0aTB4fVkpNSk1NTEtNSE9LQ05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pio6PCo*Aj8VKD4NKw9CCigR
+        TQ8KCjdVSlVKTUpNTUxLTUhPT0NNVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJSEhPNwY+
+X-HM-Tid: 0a7869143022d992kuwsc58d29803e4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+struct dss_device has been declared. Remove the duplicate.
+And sort these forward declarations alphabetically.
 
-Commit-ID:     6dd3b8c9f58816a1354be39559f630cd1bd12159
-Gitweb:        https://git.kernel.org/tip/6dd3b8c9f58816a1354be39559f630cd1bd12159
-Author:        Masami Hiramatsu <mhiramat@kernel.org>
-AuthorDate:    Thu, 25 Mar 2021 19:08:31 +09:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 25 Mar 2021 11:37:21 +01:00
-
-x86/kprobes: Fix to check non boostable prefixes correctly
-
-There are 2 bugs in the can_boost() function because of using
-x86 insn decoder. Since the insn->opcode never has a prefix byte,
-it can not find CS override prefix in it. And the insn->attr is
-the attribute of the opcode, thus inat_is_address_size_prefix(
-insn->attr) always returns false.
-
-Fix those by checking each prefix bytes with for_each_insn_prefix
-loop and getting the correct attribute for each prefix byte.
-Also, this removes unlikely, because this is a slow path.
-
-Fixes: a8d11cd0714f ("kprobes/x86: Consolidate insn decoder users for copying code")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/161666691162.1120877.2808435205294352583.stgit@devnote2
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- arch/x86/kernel/kprobes/core.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+Changelog:
+v2:
+- Sort forward declarations alphabetically.
+---
+ drivers/gpu/drm/omapdrm/dss/omapdss.h | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 3a14e8a..81e1432 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -139,6 +139,8 @@ NOKPROBE_SYMBOL(synthesize_relcall);
- int can_boost(struct insn *insn, void *addr)
- {
- 	kprobe_opcode_t opcode;
-+	insn_byte_t prefix;
-+	int i;
+diff --git a/drivers/gpu/drm/omapdrm/dss/omapdss.h b/drivers/gpu/drm/omapdrm/dss/omapdss.h
+index a40abeafd2e9..040d5a3e33d6 100644
+--- a/drivers/gpu/drm/omapdrm/dss/omapdss.h
++++ b/drivers/gpu/drm/omapdrm/dss/omapdss.h
+@@ -48,16 +48,15 @@
+ #define DISPC_IRQ_ACBIAS_COUNT_STAT3	(1 << 29)
+ #define DISPC_IRQ_FRAMEDONE3		(1 << 30)
  
- 	if (search_exception_tables((unsigned long)addr))
- 		return 0;	/* Page fault may occur on this address. */
-@@ -151,9 +153,14 @@ int can_boost(struct insn *insn, void *addr)
- 	if (insn->opcode.nbytes != 1)
- 		return 0;
+-struct dss_device;
+-struct omap_drm_private;
+-struct omap_dss_device;
+ struct dispc_device;
++struct drm_connector;
+ struct dss_device;
+ struct dss_lcd_mgr_config;
++struct hdmi_avi_infoframe;
++struct omap_drm_private;
++struct omap_dss_device;
+ struct snd_aes_iec958;
+ struct snd_cea_861_aud_if;
+-struct hdmi_avi_infoframe;
+-struct drm_connector;
  
--	/* Can't boost Address-size override prefix */
--	if (unlikely(inat_is_address_size_prefix(insn->attr)))
--		return 0;
-+	for_each_insn_prefix(insn, i, prefix) {
-+		insn_attr_t attr;
-+
-+		attr = inat_get_opcode_attribute(prefix);
-+		/* Can't boost Address-size override prefix and CS override prefix */
-+		if (prefix == 0x2e || inat_is_address_size_prefix(attr))
-+			return 0;
-+	}
- 
- 	opcode = insn->opcode.bytes[0];
- 
-@@ -181,8 +188,8 @@ int can_boost(struct insn *insn, void *addr)
- 		/* indirect jmp is boostable */
- 		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
- 	default:
--		/* CS override prefix and call are not boostable */
--		return (opcode != 0x2e && opcode != 0x9a);
-+		/* call is not boostable */
-+		return opcode != 0x9a;
- 	}
- }
- 
+ enum omap_display_type {
+ 	OMAP_DISPLAY_TYPE_NONE		= 0,
+-- 
+2.25.1
+
