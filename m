@@ -2,117 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D06348C41
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:10:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3B2348C4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:10:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhCYJJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhCYJJM (ORCPT
+        id S229946AbhCYJKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:10:22 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51562 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhCYJKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:09:12 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515E7C0613DE
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:09:12 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id v3so1161156pgq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:09:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VWsn6esj8imf1uae7i0PYfEIqahCeH1CMSkS7p/mVYk=;
-        b=HIBYhMJ3tP1aKPSwg0gUFOAmtXGabKSCvtt0vxq0cKr4wnvUWwGpH5l0/daMM0gb/q
-         eIwN1cktfuMgY07XYtnR4aTFv6SgzyJlgqyBDscikKf+wOHVSMQVAuIXcbyikkFclA/K
-         MuGM/06m6QL2fjldeVmJVaoJ/1ivyC1rsOIPx9oWGRx1XrxxHELz9ghFbUAAZcItYjAX
-         62xPTBRZVJzPGGYRrt1LTVxDKe/NVKOQ3EyxKwXzDRmp9/8Q35XveLxwWjLE3b4jWTiY
-         TguamkqvVDR4TQ+2YgOyTpHcp1WGhmTN0kndzst7ijFQqpPPyH+K2OR8r/0QkVhkChQD
-         PfFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VWsn6esj8imf1uae7i0PYfEIqahCeH1CMSkS7p/mVYk=;
-        b=g0yAOGmtBoTqSKz1wulYm80dYH1VprDw3JcxnAIWOBAf6CL1sKlgkSGmiy9iSKR7iW
-         Rgo+JyFvep55AIZOjWLD3eY1wQKCeTSEQ7Wm9Hd8Xp0LmsHYFkYdF3oPS3wXPXStmp7u
-         ooziRGivxDsPtnjgEJRi/QTQpaZFX1DooIvMTpEed2wPAtvfMpBM5jCI1r7tfoAEYwun
-         bcTsXO37UIGah8AcaqYB5PtemOQcIRjexWVwqM5xH5UL7H6MtPNg0HaKsEuAKPJz4POs
-         NnV41zGamTI9cjOmOXDDXpDqlTvjD5cVq7QQHaaQ8pnh+UXMzRbYahfcsAmEH3dsJqdH
-         BI1w==
-X-Gm-Message-State: AOAM532i/yBltXi2Wyb74MPFbrMCc16GpQdRxDwLpA64RDyCNk8H9lHY
-        UR3m+OBKuBT47wUZgqu253hC8g==
-X-Google-Smtp-Source: ABdhPJx75YaqoIXZKRzV6JNv+rXXkBOJ5fO88bVSyJdWvRiD9Mrig/3TUZdgxk+pZ1DK2jZHu6G8NA==
-X-Received: by 2002:a63:e44a:: with SMTP id i10mr6546829pgk.404.1616663351651;
-        Thu, 25 Mar 2021 02:09:11 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id s184sm5341831pgb.63.2021.03.25.02.09.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Mar 2021 02:09:10 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 14:39:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, Qiang Yu <yuq825@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, lima@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v3 14/15] media: venus: Convert to use resource-managed
- OPP API
-Message-ID: <20210325090909.pyzyt3xds2ajvm7i@vireshk-i7>
-References: <20210314163408.22292-1-digetx@gmail.com>
- <20210314163408.22292-15-digetx@gmail.com>
- <b780c19f-7f5d-5453-dec1-062fa7c1dc07@linaro.org>
+        Thu, 25 Mar 2021 05:10:05 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12P99gVs038622;
+        Thu, 25 Mar 2021 04:09:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616663382;
+        bh=mwt4wwrEtUJHC8wDADVD1cxRcCICZUaomOKQFuestNU=;
+        h=From:To:CC:Subject:Date;
+        b=Ej9vGqU3JieiGcS+yps0nI4AAEVAbYgFZBEMwX0B+oZSiaLhZxIS+SIdHD9PMQ1B4
+         oJMt8iWovE9fnwFare97h5UMk34HpM+qpi6Mr6tFJSniPvVnTQq42lO/cxt7X1Hq+d
+         2uZaUbSJ8W2w6s/gWBHETOVvgXgUIPpv18K2U5W4=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12P99gUn069105
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 25 Mar 2021 04:09:42 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 25
+ Mar 2021 04:09:42 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 25 Mar 2021 04:09:42 -0500
+Received: from a0393678-ssd.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12P99b9v078373;
+        Thu, 25 Mar 2021 04:09:38 -0500
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+CC:     Tom Joseph <tjoseph@cadence.com>, <linux-omap@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: [PATCH 0/4] PCI: Add legacy interrupt support in pci-j721e
+Date:   Thu, 25 Mar 2021 14:39:32 +0530
+Message-ID: <20210325090936.9306-1-kishon@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b780c19f-7f5d-5453-dec1-062fa7c1dc07@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-03-21, 10:13, Stanimir Varbanov wrote:
-> Hi,
-> 
-> On 3/14/21 6:34 PM, Dmitry Osipenko wrote:
-> > From: Yangtao Li <tiny.windzz@gmail.com>
-> > 
-> > Use resource-managed OPP API to simplify code.
-> > 
-> > Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > ---
-> >  drivers/media/platform/qcom/venus/core.h      |  1 -
-> >  .../media/platform/qcom/venus/pm_helpers.c    | 35 +++++--------------
-> >  2 files changed, 8 insertions(+), 28 deletions(-)
-> 
-> 
-> I'll take this through media-tree once OPP API changes are merged.
+Patch series adds support for legacy interrupt in pci-j721e. There are
+two HW implementations of legacy interrupt controller, one specific to
+J721E and the other for J7200/AM64.
 
-Okay, dropped from my tree.
+In both these implementations, the legacy interrupt is connect to pulse
+interrupt of GIC and level to pulse is handled by configuring EOI
+register.
 
-Thanks.
+Kishon Vijay Abraham I (4):
+  dt-bindings: PCI: ti,j721e: Add bindings to specify legacy interrupts
+  PCI: j721e: Add PCI legacy interrupt support for J721E
+  PCI: j721e: Add PCIe support for j7200
+  PCI: j721e: Add PCIe support for AM64
+
+ .../bindings/pci/ti,j721e-pci-host.yaml       |  13 ++
+ drivers/pci/controller/cadence/pci-j721e.c    | 194 +++++++++++++++++-
+ 2 files changed, 201 insertions(+), 6 deletions(-)
 
 -- 
-viresh
+2.17.1
+
