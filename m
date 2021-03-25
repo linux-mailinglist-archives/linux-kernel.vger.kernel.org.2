@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CEA348980
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15B9348986
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:56:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCYGzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:55:39 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:38484 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229548AbhCYGzU (ORCPT
+        id S229930AbhCYGzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:55:44 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40946 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229635AbhCYGzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:55:20 -0400
-X-UUID: 99f378f4f3bc403ab5ff05afd09e0d9e-20210325
-X-UUID: 99f378f4f3bc403ab5ff05afd09e0d9e-20210325
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        Thu, 25 Mar 2021 02:55:22 -0400
+X-UUID: b9985f24fd144109844c9cd76055326d-20210325
+X-UUID: b9985f24fd144109844c9cd76055326d-20210325
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1032022078; Thu, 25 Mar 2021 14:55:10 +0800
+        with ESMTP id 274709755; Thu, 25 Mar 2021 14:55:10 +0800
 Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Thu, 25 Mar 2021 14:55:08 +0800
 Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas07.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -38,11 +38,10 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         Jie Qiu <jie.qiu@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH RESEND v5 04/12] arm64: dts: mt8173: fix property typo of 'phys' in dsi node
-Date:   Thu, 25 Mar 2021 14:54:50 +0800
-Message-ID: <20210325065458.43363-4-chunfeng.yun@mediatek.com>
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH RESEND v5 05/12] arm64: dts: mediatek: mt8173: fix dtbs_check warning
+Date:   Thu, 25 Mar 2021 14:54:51 +0800
+Message-ID: <20210325065458.43363-5-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210325065458.43363-1-chunfeng.yun@mediatek.com>
 References: <20210325065458.43363-1-chunfeng.yun@mediatek.com>
@@ -53,31 +52,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use 'phys' instead of 'phy'.
+Harmonize nodes names, compatibles and remove unused property.
 
-Fixes: 81ad4dbaf7af ("arm64: dts: mt8173: Add display subsystem related nodes")
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
-v5: merged into this series, add Reviewed-by CK
+v2~v5: no changes
 ---
- arch/arm64/boot/dts/mediatek/mt8173.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8173-evb.dts |  4 +---
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi    | 13 +++++++------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173-evb.dts b/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
+index 6dffada2e66b..0ce81c4fe81e 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8173-evb.dts
+@@ -516,10 +516,8 @@
+ 	extcon = <&extcon_usb>;
+ 	dr_mode = "otg";
+ 	wakeup-source;
+-	pinctrl-names = "default", "id_float", "id_ground";
++	pinctrl-names = "default";
+ 	pinctrl-0 = <&usb_id_pins_float>;
+-	pinctrl-1 = <&usb_id_pins_float>;
+-	pinctrl-2 = <&usb_id_pins_ground>;
+ 	status = "okay";
+ };
+ 
 diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-index 7fa870e4386a..ecb37a7e6870 100644
+index ecb37a7e6870..003a5653c505 100644
 --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
 +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
-@@ -1235,7 +1235,7 @@
- 				 <&mmsys CLK_MM_DSI1_DIGITAL>,
- 				 <&mipi_tx1>;
- 			clock-names = "engine", "digital", "hs";
--			phy = <&mipi_tx1>;
-+			phys = <&mipi_tx1>;
- 			phy-names = "dphy";
+@@ -631,7 +631,7 @@
+ 			#mbox-cells = <2>;
+ 		};
+ 
+-		mipi_tx0: mipi-dphy@10215000 {
++		mipi_tx0: dsi-phy@10215000 {
+ 			compatible = "mediatek,mt8173-mipi-tx";
+ 			reg = <0 0x10215000 0 0x1000>;
+ 			clocks = <&clk26m>;
+@@ -641,7 +641,7 @@
  			status = "disabled";
  		};
+ 
+-		mipi_tx1: mipi-dphy@10216000 {
++		mipi_tx1: dsi-phy@10216000 {
+ 			compatible = "mediatek,mt8173-mipi-tx";
+ 			reg = <0 0x10216000 0 0x1000>;
+ 			clocks = <&clk26m>;
+@@ -926,7 +926,7 @@
+ 		};
+ 
+ 		ssusb: usb@11271000 {
+-			compatible = "mediatek,mt8173-mtu3";
++			compatible = "mediatek,mt8173-mtu3", "mediatek,mtu3";
+ 			reg = <0 0x11271000 0 0x3000>,
+ 			      <0 0x11280700 0 0x0100>;
+ 			reg-names = "mac", "ippc";
+@@ -943,8 +943,9 @@
+ 			ranges;
+ 			status = "disabled";
+ 
+-			usb_host: xhci@11270000 {
+-				compatible = "mediatek,mt8173-xhci";
++			usb_host: usb@11270000 {
++				compatible = "mediatek,mt8173-xhci",
++					     "mediatek,mtk-xhci";
+ 				reg = <0 0x11270000 0 0x1000>;
+ 				reg-names = "mac";
+ 				interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_LOW>;
+@@ -955,7 +956,7 @@
+ 			};
+ 		};
+ 
+-		u3phy: usb-phy@11290000 {
++		u3phy: t-phy@11290000 {
+ 			compatible = "mediatek,mt8173-u3phy";
+ 			reg = <0 0x11290000 0 0x800>;
+ 			#address-cells = <2>;
 -- 
 2.18.0
 
