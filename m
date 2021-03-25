@@ -2,128 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7B53490E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB06349094
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:37:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231936AbhCYLk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231814AbhCYLeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:34:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CAD3761A8A;
-        Thu, 25 Mar 2021 11:28:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616671725;
-        bh=b4jFzIN2WpyeuB0Ec75kbI+N6+NiOD9f6rjxXDCsEHs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m4q9lf7TsO37b1MjOcO6YiRh5sPGTUV8+mqlTuT7ZAyY0+PGZ/NSIAMQtA9QGW0I4
-         iTvrw43np9PoXz0Ps3JCmv8qHIQCi2OieuTbb7raM5o2JwcfcMp13M0PwrBZRh699A
-         cgWmI4irTAx/YSAZSAQlh6k8Jfa6mGeyeAtzI2WhywAXHDpDlU9tYcZxPntLLxyDQP
-         tkUqDU32r/9O63X2QqYZUgR0OXvnl7fMnPtYBz91GkWBQJW2eQcY1m5mCxfz9fMpG5
-         eujHJD3+r4g6CaDoMWbxh6Gt+Mg+MYukJEnSutOea/vFI58GPQAXEim0pM34RvJxfd
-         538xGHizDZT5g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "zhangyi (F)" <yi.zhang@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 10/10] ext4: do not iput inode under running transaction in ext4_rename()
-Date:   Thu, 25 Mar 2021 07:28:31 -0400
-Message-Id: <20210325112832.1928898-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210325112832.1928898-1-sashal@kernel.org>
-References: <20210325112832.1928898-1-sashal@kernel.org>
+        id S232031AbhCYLg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:36:29 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:25172 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231741AbhCYL3c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:29:32 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id B905F980397;
+        Thu, 25 Mar 2021 19:29:29 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] [v3] drivers: watchdog: Remove duplicate include of kernel.h
+Date:   Thu, 25 Mar 2021 19:29:16 +0800
+Message-Id: <20210325112916.865510-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHRhIH0NDTkpLTx1DVkpNSk1NTEpMTUJCSUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MBA6GQw5Ez8WCj4zQgg9A1ZD
+        PyMwCipVSlVKTUpNTUxKTExLSUNDVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJSkJDNwY+
+X-HM-Tid: 0a786925850ad992kuwsb905f980397
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "zhangyi (F)" <yi.zhang@huawei.com>
+linux/kernel.h has been included. Remove the duplicate.
+Reorder include files to be in alphabetic order.
 
-[ Upstream commit 5dccdc5a1916d4266edd251f20bbbb113a5c495f ]
-
-In ext4_rename(), when RENAME_WHITEOUT failed to add new entry into
-directory, it ends up dropping new created whiteout inode under the
-running transaction. After commit <9b88f9fb0d2> ("ext4: Do not iput inode
-under running transaction"), we follow the assumptions that evict() does
-not get called from a transaction context but in ext4_rename() it breaks
-this suggestion. Although it's not a real problem, better to obey it, so
-this patch add inode to orphan list and stop transaction before final
-iput().
-
-Signed-off-by: zhangyi (F) <yi.zhang@huawei.com>
-Link: https://lore.kernel.org/r/20210303131703.330415-2-yi.zhang@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- fs/ext4/namei.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Changelog:
+v3:
+- Reorder include files to be in alphabetic order.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index d5b3216585cf..50e2be89e056 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -3529,7 +3529,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	 */
- 	retval = -ENOENT;
- 	if (!old.bh || le32_to_cpu(old.de->inode) != old.inode->i_ino)
--		goto end_rename;
-+		goto release_bh;
+v2:
+- Remove the duplicate which won't make worse.
+---
+ drivers/watchdog/dw_wdt.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
+index 32d0e1781e63..cd578843277e 100644
+--- a/drivers/watchdog/dw_wdt.c
++++ b/drivers/watchdog/dw_wdt.c
+@@ -13,22 +13,21 @@
+  */
  
- 	if ((old.dir != new.dir) &&
- 	    ext4_encrypted_inode(new.dir) &&
-@@ -3544,7 +3544,7 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
- 	if (IS_ERR(new.bh)) {
- 		retval = PTR_ERR(new.bh);
- 		new.bh = NULL;
--		goto end_rename;
-+		goto release_bh;
- 	}
- 	if (new.bh) {
- 		if (!new.inode) {
-@@ -3561,15 +3561,13 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
- 		handle = ext4_journal_start(old.dir, EXT4_HT_DIR, credits);
- 		if (IS_ERR(handle)) {
- 			retval = PTR_ERR(handle);
--			handle = NULL;
--			goto end_rename;
-+			goto release_bh;
- 		}
- 	} else {
- 		whiteout = ext4_whiteout_for_rename(&old, credits, &handle);
- 		if (IS_ERR(whiteout)) {
- 			retval = PTR_ERR(whiteout);
--			whiteout = NULL;
--			goto end_rename;
-+			goto release_bh;
- 		}
- 	}
+ #include <linux/bitops.h>
+-#include <linux/limits.h>
+-#include <linux/kernel.h>
+ #include <linux/clk.h>
++#include <linux/debugfs.h>
+ #include <linux/delay.h>
+ #include <linux/err.h>
++#include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/limits.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+-#include <linux/interrupt.h>
+ #include <linux/of.h>
+-#include <linux/pm.h>
+ #include <linux/platform_device.h>
++#include <linux/pm.h>
+ #include <linux/reset.h>
+ #include <linux/watchdog.h>
+-#include <linux/debugfs.h>
  
-@@ -3677,16 +3675,18 @@ static int ext4_rename(struct inode *old_dir, struct dentry *old_dentry,
- 			ext4_setent(handle, &old,
- 				old.inode->i_ino, old_file_type);
- 			drop_nlink(whiteout);
-+			ext4_orphan_add(handle, whiteout);
- 		}
- 		unlock_new_inode(whiteout);
-+		ext4_journal_stop(handle);
- 		iput(whiteout);
--
-+	} else {
-+		ext4_journal_stop(handle);
- 	}
-+release_bh:
- 	brelse(old.dir_bh);
- 	brelse(old.bh);
- 	brelse(new.bh);
--	if (handle)
--		ext4_journal_stop(handle);
- 	return retval;
- }
- 
+ #define WDOG_CONTROL_REG_OFFSET		    0x00
+ #define WDOG_CONTROL_REG_WDT_EN_MASK	    0x01
 -- 
-2.30.1
+2.25.1
 
