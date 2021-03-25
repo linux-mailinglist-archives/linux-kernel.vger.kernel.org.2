@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F763496A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728183496A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhCYQTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
+        id S229734AbhCYQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhCYQTT (ORCPT
+        with ESMTP id S229782AbhCYQTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:19:19 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09289C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:19 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id g15so2583124pfq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:19 -0700 (PDT)
+        Thu, 25 Mar 2021 12:19:41 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E842FC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id w2so2131272ilj.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MCV8tTXwt23kg/ET1qXEihrVIfNfi06vHFXn1NDdH3A=;
-        b=nZZetF9JWy5xcMCmo3Yn0UK7VYeG8tMRcqTK7ptGVmKWp72v+hNnYiNSGRAJP4uRlv
-         f+Umlb47elqWESHI9rnOzq9NUmHhXdwRmrqnY1XKu2iuU6kUsRhOm6GT4rHrjW0arGgT
-         HJiNsPTnf/d3FJMNk22f3rAEJj+bY8lyLBKNKIYJe/ccU3IyaGlJaXoHaxoxl9VirEyI
-         1tyMyKT2noLFOcRLKPVbMyfNPpjA4w44jIZpiKqczMyu3tGWTg1SoM45lfQ1HyADX5g+
-         HsbujivDo+NDH3Jyp06AU0X6VMAF1pziMt1hSlxgb4SMMmrjOn9ar4PkTX2zI44j46uE
-         nUnQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Ny7W7nmNL0f2kx37U2KnK1Y8GB/j8Ew/zS7FydXgYaM=;
+        b=1TGzRoP4nzflQ7ef524XsMC5b59L/6l0xgoIgzNCTrNcUS1VME115hs3xwgV6mGnge
+         +9G2c/WV50zaaZiRDp1VLK4g+3BmuHfrWrShAzfVhcjyeTpAo6GHkQ36oLrx6yKN/mJw
+         MB5KPOhm/nWfft5X4tv9sPXgmBctYm1VAfqabhoFrSfOIjb9X6DhPhKYa9GzeL3QCRq9
+         oY8lL/72pOiAKGvMfeARfH+tcuAkCPWIrBpl0tkzYrAPKoUMiIuyhlUjGB844dmrE7Vp
+         GUOkyEGWhlq5NerzHwWVM4jU8scYLe7FIVStGMbq75nsXjBjf+m+ITz+HKpaKbl2GZFP
+         TwvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=MCV8tTXwt23kg/ET1qXEihrVIfNfi06vHFXn1NDdH3A=;
-        b=Gs/rnfcLUbzfRqJJ9mDiA8B4qZPyLrlw8f/bwYGSNe9U9HB9iBrNnhY5FSWXJ1PDgq
-         8BK4M6eDvVrIoYYRv/GYPTcf1pZcU/vJlMRtfspAML3GYvc8eY2aXqa3gUSbGr9/SUeG
-         Ms9btD4Rij9j6mqslc2Moh0fakiz5Bfx1VlEKQwSsULWOeVhzXU1B3lKpDLx7jeZ/u+6
-         akZxcJMh2E/GvRYEmDtUJsm2DM579x42LoRu5R//8QZop29M3LjRIVCdfhYRP5m9/4Og
-         T0zULJ/lzYesUUdP98p/rSSxRQQgHIjSGLaw3oiOgbCLjNWQgWVU1HMC8+M4zVzu+8pC
-         yfCg==
-X-Gm-Message-State: AOAM531O2w/rqUST/4iPEeBCxRascLdvsu0n3ibmWfSuEKud6lg87UGS
-        vGUD59iTKx6Y6rtUX4Xd3ZI=
-X-Google-Smtp-Source: ABdhPJyUSLogmtUdpYJjkJY0a2rIxIHDfyXLYseaWe7rp6TpI4hlBnKoLmkcIa73vJ5ChIXh/S2oBg==
-X-Received: by 2002:a62:7ed2:0:b029:21d:1806:fe30 with SMTP id z201-20020a627ed20000b029021d1806fe30mr8828200pfc.5.1616689158635;
-        Thu, 25 Mar 2021 09:19:18 -0700 (PDT)
-Received: from localhost (li1758-18.members.linode.com. [172.104.167.18])
-        by smtp.gmail.com with ESMTPSA id q19sm6608224pff.91.2021.03.25.09.19.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 09:19:18 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH v2] tracing: Update create_system_filter() kernel-doc comment
-Date:   Thu, 25 Mar 2021 16:19:10 +0000
-Message-Id: <20210325161911.123452-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=Ny7W7nmNL0f2kx37U2KnK1Y8GB/j8Ew/zS7FydXgYaM=;
+        b=pz3JTP4Pq+Idndv+Rm9BvpO0wgRwfvknrKYcLEkA352FrSSJtWcPXPY+OrYmLqKGOB
+         wTZ5o2X8043s8GwgwsIuMWAcSwIeQiZ8u+jhi29X9X8rANblVNSdt5CvIW55RqrF3pGy
+         i5MbeSvmAsUOoOLv123OF7qrVdyrtZ7vT59SNpSHUe9Fq0N5WabXfB/yC+8OCqW0EgL0
+         gs0lGvEC8X1AHOjWfyjPt3HTiyuSpCfMRTYTGGDU6g9qS3eJnR3awCfym1c300oTwARA
+         kNu3uEcje2uoAraQtBrI3e/iA1wbGdGpDCIlbxJoydw25qlyyzlfdW6zhP+XeDCH6VbZ
+         jzcA==
+X-Gm-Message-State: AOAM5308y71yvinyhAbGm9K1/qni/GJsYGaYg1lfryJFgAvrDaxEHrEp
+        zOqvxN6uGOLuRMwvvyp8IZlO2Q==
+X-Google-Smtp-Source: ABdhPJxIiA6R39HdNvXHx3c2SyTFeZMos+ZQ8unpx6kmIyvJnm570Oh9mTJuA/yqkjHsyzOj8jW0Yw==
+X-Received: by 2002:a05:6e02:e91:: with SMTP id t17mr7396763ilj.258.1616689180302;
+        Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id 7sm931320ilx.81.2021.03.25.09.19.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
+Subject: Re: [syzbot] WARNING in io_wq_put
+To:     syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000007a49c105be013f72@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4befa1ec-11d8-fca8-692a-492b72b219f4@kernel.dk>
+Date:   Thu, 25 Mar 2021 10:19:39 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0000000000007a49c105be013f72@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit f306cc82a93d ("tracing: Update event filters for multibuffer")
-added the parameter @tr for create_system_filter().
+On 3/20/21 6:44 PM, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    1c273e10 Merge tag 'zonefs-5.12-rc4' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13853506d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c51293a9ca630f6d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
+> compiler:       Debian clang version 11.0.1-2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ec259ed00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13acfa62d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com
 
-commit bb9ef1cb7d86 ("tracing: Change apply_subsystem_event_filter()
-paths to
-check file->system == dir")
-changed the parameter from @system to @dir.
+#syz test: git://git.kernel.dk/linux-block io_uring-5.12
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
-v2:
-Update the description of @dir, and leave @tr to another patch.
----
- kernel/trace/trace_events_filter.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index e91259f6a722..e6efb5dfec5d 100644
---- a/kernel/trace/trace_events_filter.c
-+++ b/kernel/trace/trace_events_filter.c
-@@ -1693,6 +1693,7 @@ static void create_filter_finish(struct filter_parse_error *pe)
- 
- /**
-  * create_filter - create a filter for a trace_event_call
-+ * @tr: the trace array associated with these events
-  * @call: trace_event_call to create a filter for
-  * @filter_str: filter string
-  * @set_str: remember @filter_str and enable detailed error in filter
-@@ -1741,8 +1742,8 @@ int create_event_filter(struct trace_array *tr,
- }
- 
- /**
-- * create_system_filter - create a filter for an event_subsystem
-- * @system: event_subsystem to create a filter for
-+ * create_system_filter - create a filter for an event subsystem
-+ * @dir: the descriptor for the subsystem directory
-  * @filter_str: filter string
-  * @filterp: out param for created filter (always updated on return)
-  *
 -- 
-2.25.1
+Jens Axboe
 
