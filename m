@@ -2,94 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65375349AC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77C8349AC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhCYUAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:00:18 -0400
-Received: from rcdn-iport-4.cisco.com ([173.37.86.75]:26333 "EHLO
-        rcdn-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbhCYUAC (ORCPT
+        id S230290AbhCYUBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhCYUBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:00:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=704; q=dns/txt; s=iport;
-  t=1616702402; x=1617912002;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=iWag3nlhZsh0PSEeVxiaq1tQo7jXl7/iI10UazG4Z0Q=;
-  b=M1sgcMdvuLeFe5RJXflSTsJ/QfZUmEMQmGFKRC4qsaYqFxiM3twYU1OH
-   ew7XqKP4/Hp902sm/HsXlBOynQUI+OqNopBOHN5wey0N6FiKjKNHnt8Pf
-   kFmxT7TMI1QnQSYj1eJmSkkRUuFS9xvYZ3hBqgaRVlE1yGEn/N6Vb7TYo
-   U=;
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Aekwar6MSi0olHsBcT5r155DYdL4zR+YMi2?=
- =?us-ascii?q?QD/UoZc3NoW+afkN2jm+le+B/vkTAKWGwhn9foAtjkfVr385lp7Y4NeYqzRQ?=
- =?us-ascii?q?WOghrLEKhO5ZbvqgeLJwTQ7ehYvJ0MT4FfD5nKAUF+nYLG5mCDYrId6f2m1I?=
- =?us-ascii?q?ztuuvE1XdqSmhRGsJdxiN0EBySHEEzZCQuP/sEPaGR7MZGuDasEE5/Bq+GL0?=
- =?us-ascii?q?IIUOTZq9rAmIiOW347LiQ64wqDhy7A0tDHOiWfty1zbxp/hZ8/7G6AqADi/6?=
- =?us-ascii?q?Olqf3+8APEznTe9Y4+oqqH9vJzQOqRl8MSNjLgziGvaYgJYcz6gBkF5Mey9V?=
- =?us-ascii?q?0tjN7A5y0FAv02wXbQcmapyCGdvTXd7A=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0AnAABg61xg/4QNJK1aGgEBAQEBAQE?=
- =?us-ascii?q?BAQEDAQEBARIBAQEBAgIBAQEBQIE+AwEBAQELAYIqgUwBOZY/kAeKWxSBaAs?=
- =?us-ascii?q?BAQENAQE0BAEBhFACgXwCJTYHDgIDAQELAQEFAQEBAgEGBHGFboZFAQU6PxA?=
- =?us-ascii?q?LGBUZPBsGhgurKXWBNIkWgUQUDoEXAY1CJhyBSUKELj6DeYEGhRUiBIFlYYE?=
- =?us-ascii?q?QggRYFJErgkCKTJwfgxCBIpsxMRCDOIptlhu4EAIEBgUCFoFaATOBWTMaCBs?=
- =?us-ascii?q?VgyVPGQ2dByEDZwIGCgEBAwmHbQEB?=
-X-IronPort-AV: E=Sophos;i="5.81,278,1610409600"; 
-   d="scan'208";a="852860109"
-Received: from alln-core-10.cisco.com ([173.36.13.132])
-  by rcdn-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 25 Mar 2021 19:59:59 +0000
-Received: from zorba ([10.24.0.17])
-        by alln-core-10.cisco.com (8.15.2/8.15.2) with ESMTPS id 12PJxvYJ009948
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 25 Mar 2021 19:59:58 GMT
-Date:   Thu, 25 Mar 2021 12:59:56 -0700
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-Message-ID: <20210325195956.GM109100@zorba>
-References: <20210309000247.2989531-4-danielwa@cisco.com>
- <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
- <20210309212944.GR109100@zorba>
- <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
- <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
- <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.0.17, [10.24.0.17]
-X-Outbound-Node: alln-core-10.cisco.com
+        Thu, 25 Mar 2021 16:01:23 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6B5C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:01:23 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id p2so845718qvi.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:01:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=OPHCEnv3IH5HETxShRsKAPF8udKnECk6wv4oHyblTuE=;
+        b=BeKSruwHWTA4iEPdpdv8zEnockAVt0H6lVRsdLVGy1ARx/rQo9+bQfI8FB5R7ca4B7
+         Ad7V67Vox0OAwiKdMGfa2qX7ghT59Av/Sy5AfDbjoeTFQgD+Sh6DEHVZeMO0HkcQo0J3
+         5UOzagrJC0pkuJXeGO6LKICwkWMCu5lzxniRU093oZqronMoWUb2/gdQLtSw71PdpY3V
+         eD/IQSY0WYoP0SLbXcWAyh6m9KzUArB7dVwgKKu6J5uBCrLu0Mj5hronPOTlgHy7BGtR
+         KTPLyBqYqODwlcMQZhmthuuX1CzTNsZ74cSEIJsWgG6KJoPtxPS3K5cEj0f2Cq5HyMJk
+         PNtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=OPHCEnv3IH5HETxShRsKAPF8udKnECk6wv4oHyblTuE=;
+        b=kHxNshMiNzT7y54XnDwKAcnT4kVdTiNkEh1DHke4Zl5hu+j5hmzOytk+edysfovUHv
+         qeSXKUjRBnhwplfxp7AWI8kpLrj1LO2BI78Su4Po+6Vxqa+MZFl76HtMdFUDSpy+gHl0
+         qy+depZjZqqKohyMmZECUY/48y2APBqBfNfvIqZw8H1+FqVwxv7bdO0ImadwZIoHEgAY
+         KreR4YvZdncf9vJbnJk9+Lxy8+23l0x4EvUCT37W9Sxx3usK3UAhO/kk/01+d1duSFBR
+         /0Idy6b/uLjgPYiSf47X0nS7QFRZNG0ZqdThbTC7q/M7A3sRbWnRLkmj5j/MTh7EfvIC
+         OAqQ==
+X-Gm-Message-State: AOAM532ukeXj5IOJ+GQl3QOmet9vPcaiqeDUFpBQdTrWeJIPPTKQhSRH
+        1PPMUfA7VeyeST98DLHIXlwsJLD9Qsg=
+X-Google-Smtp-Source: ABdhPJx+c2hqxP76WsAheoxmp/+Z8PsVvpwZCAHUHbhEJTX8ymTXvaKwyhSoBOkmsppO8Rve+FVcIAebtPI=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
+ (user=seanjc job=sendgmr) by 2002:a05:6214:425:: with SMTP id
+ a5mr10117188qvy.55.1616702482646; Thu, 25 Mar 2021 13:01:22 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 25 Mar 2021 13:01:16 -0700
+Message-Id: <20210325200119.1359384-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH v2 0/3] KVM: x86/mmu: Fix TLB flushing bugs in TDP MMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
-> 
-> Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
-> 
-> Let's only provide once CMDLINE as of today, and ask the user to select
-> whether he wants it appended or prepended or replacee. Then no need to
-> change all existing config to rename CONFIG_CMDLINE into either of the new
-> ones.
-> 
-> That's the main difference between my series and Daniel's series. So I'll
-> finish taking Will's comment into account and we'll send out a v3 soon.
+Two bug fixes and a clean up involving the TDP MMU, found by inspection.
 
-It doesn't solve the needs of Cisco, I've stated many times your changes have
-little value. Please stop submitting them.
+Patch 1 fixes a bug where KVM yields, e.g. due to lock contention, without
+performing a pending TLB flush that was required from a previous root.
 
-Daniel
+Patch 2 fixes a much more egregious bug where it fails to handle TDP MMU
+flushes in NX huge page recovery.
+
+Patch 3 explicitly disallows yielding in the TDP MMU to prevent a similar
+bug to patch 1 from sneaking in.
+
+v2:
+ - Collect a review. [Ben]
+ - Disallowing yielding instead of feeding "flush" into the TDP MMU. [Ben]
+ - Move the yielding logic to a separate patch since it's not strictly a
+   bug fix and it's standalone anyways (the flush feedback loop was not).
+
+v1:
+ - https://lkml.kernel.org/r/20210319232006.3468382-1-seanjc@google.com
+
+Sean Christopherson (3):
+  KVM: x86/mmu: Ensure TLBs are flushed when yielding during GFN range
+    zap
+  KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
+  KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
+
+ arch/x86/kvm/mmu/mmu.c     |  9 +++++----
+ arch/x86/kvm/mmu/tdp_mmu.c | 26 ++++++++++++++------------
+ arch/x86/kvm/mmu/tdp_mmu.h | 23 ++++++++++++++++++++++-
+ 3 files changed, 41 insertions(+), 17 deletions(-)
+
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
