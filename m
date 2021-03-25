@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797CC348627
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B9834862E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239474AbhCYBAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51062 "EHLO mail.kernel.org"
+        id S239516AbhCYBAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:00:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239444AbhCYBAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239458AbhCYBAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Mar 2021 21:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BBADC61A13;
+Received: by mail.kernel.org (Postfix) with ESMTPS id AB5DF619F8;
         Thu, 25 Mar 2021 01:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616634008;
-        bh=c1GsxziC1SL/5Zo/0LfKJx/xYjd+9aMHtvY+RB2yUm0=;
+        bh=WQS90v8cd/NZB6/cY/FZu1u1kCW9dDxmV2X0fFkJP+I=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jLyMYnJ65yDa41x7HeNc3IwlcJtvfjJ0UWO54PtbIuFKBY49WNVrxlO7jWGbcSz2i
-         dmxKbn0j9W/eQ2X0QKceB0PVWAkDHkS8oAP+CRXFgN0vPlWkF7CCthy4mUNZ+b87De
-         +9Hk8wGtm1T+MznCQZ0ssFaFat+LVkvGrrj7iXPxeJIf2ycqJwtTcrUVXfHmfK3wVA
-         fs2Dxdy5bVlBX15JKvajLJ8X0XrouX4yQzegbGjrbcqnrzmwkFoVXyfFulYFyfz1Ju
-         UbDlD77dJupfhh0aUC2DotNWIP0wYC1w55nQNPGhf6VPhTYchWqTcjUvDeF1l3cSBg
-         OOucnSM57Z9TQ==
+        b=bZu3EWiw6wvQI2hgg+plg+My2+Gq/M84is+8jc9Z5iEhwtr2wdE57affJw/mJBmte
+         q1KGfbgH6WM4XJs93MnMu+YBLDStwdvKL7uk1ECAJH3uqc6hrLcvwrBn7a4Zqdwugi
+         JN1iObRlUvwYrZBLTFVw3jp6vJwPbRMiOOPzGooqv02/zv/1/S77ODW9ur2/z08cTi
+         uB87tuBCeEt6JDWMlA73guSwjlmyVTHg3XY/HLpg2lvP/V7iiFbV9UOTheLSwixZdE
+         Zcx2JraWqHPoWwcSg+shSiBrKDdk4EsMffmkXVOKLVvaeeL8UOkTEmjtNSCbQMzFTd
+         i/cPiga6uaD1Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AB69060A6A;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 984936096E;
         Thu, 25 Mar 2021 01:00:08 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] 6lowpan: Fix some typos in nhc_udp.c
+Subject: Re: [PATCH net-next] net/packet: Fix a typo in af_packet.c
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161663400869.21739.6444031329527811807.git-patchwork-notify@kernel.org>
+Message-Id: <161663400861.21739.10283902101076452089.git-patchwork-notify@kernel.org>
 Date:   Thu, 25 Mar 2021 01:00:08 +0000
-References: <20210324062224.13032-1-wanghai38@huawei.com>
-In-Reply-To: <20210324062224.13032-1-wanghai38@huawei.com>
+References: <20210324061931.11012-1-wanghai38@huawei.com>
+In-Reply-To: <20210324061931.11012-1-wanghai38@huawei.com>
 To:     Wang Hai <wanghai38@huawei.com>
-Cc:     alex.aring@gmail.com, jukka.rissanen@linux.intel.com,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, willemb@google.com,
+        xie.he.0141@gmail.com, john.ogness@linutronix.de,
+        yonatanlinik@gmail.com, gustavoars@kernel.org,
+        tannerlove@google.com, eyal.birger@gmail.com,
+        orcohen@paloaltonetworks.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,19 +50,18 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 24 Mar 2021 14:22:24 +0800 you wrote:
-> s/Orignal/Original/
-> s/infered/inferred/
+On Wed, 24 Mar 2021 14:19:31 +0800 you wrote:
+> s/sequencially/sequentially/
 > 
 > Reported-by: Hulk Robot <hulkci@huawei.com>
 > Signed-off-by: Wang Hai <wanghai38@huawei.com>
 > ---
->  net/6lowpan/nhc_udp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  net/packet/af_packet.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [net-next] 6lowpan: Fix some typos in nhc_udp.c
-    https://git.kernel.org/netdev/net-next/c/da1da87fa7fc
+  - [net-next] net/packet: Fix a typo in af_packet.c
+    https://git.kernel.org/netdev/net-next/c/0e4161d0eda5
 
 You are awesome, thank you!
 --
