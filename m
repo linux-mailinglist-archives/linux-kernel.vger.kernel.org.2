@@ -2,152 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB97834932D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDBA349336
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhCYNiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:38:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhCYNiv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:38:51 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E58EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:38:51 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id x16so1956132iob.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eM1i1Yk87DzUyuufIUGNIKd4zH4tVzCeadWKa9Xb/JU=;
-        b=XdHRtgYk0+DLpDrv3ToQu5LWl0EYWRXpd/TbmPrRxtPCCkTI1FtzSRyh+dBxxClmvL
-         +q9RzafC27umFrgzVkXSOeHFGrfjKrrqJTm7RqEDtLXp7PwkuxLlD46X/G1Tssmszq6G
-         H3bjL9t24Wj3tcTTmVqNoHu/QwKYDo76LNFmaag0zJ9hhsFJ0dJ4VNFm70qp+KBVcXpJ
-         M1thxus4OrUpRTyMkoXMORYOiKpO+fQx3AnD0lUgQ0Wih12kQpF+7omp4c3lv1Uihm8i
-         n94wWdDv7paeA6/5WbaZxsn/dwpQScoYDCcQKuTXN4/s52NloR4Al9i92lhhyd0lTdCF
-         GfTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eM1i1Yk87DzUyuufIUGNIKd4zH4tVzCeadWKa9Xb/JU=;
-        b=h5DC9Wn6QDZ7Qs/2Z0CTyJPhNltyWL5zwtRrkEwRgFQiFOp+RY6IfHU/tzg/HJRfd9
-         yUesZLoVa1PsxLqfVHkmYTvmjbO+l2zC17CeKcZkguvFUCIQuurTsGahYhspgGApnOLb
-         2N+iJghwxP6EbrGUgTdtmsn9msdV6ieAZ7epYy67lA4cWdFHWP8/e2wdEfGvINA5eQmt
-         fA6NxBMyLcdcmAPNYlb4n3rfzFCk4PsxiXuIxX42ev6JMtjI2VIvn4a0uc/sWF04QWc0
-         xd2iC98JYHgaEBzYjf3LRtEFyHX1mdpBemKaxNl+PFCctshp9VRkcauumg8p+Qathbau
-         qWew==
-X-Gm-Message-State: AOAM531A1HNG2yiTqYnXapZVTJjuEsJGkOHpg27hRyBxqnsro06dCPBd
-        3Mjezd8bTlQVBVW20QqbHdoB9wAoHJzPWQ==
-X-Google-Smtp-Source: ABdhPJztg2JZ0lfPBKpRS5e6PcjYOMvW4/3r4DT52HfPZ2N9pX0RvjFWOsn0Ee82mHqUxfdIURFLbw==
-X-Received: by 2002:a02:11c9:: with SMTP id 192mr7529596jaf.135.1616679530405;
-        Thu, 25 Mar 2021 06:38:50 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v7sm2770160ilu.72.2021.03.25.06.38.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 06:38:50 -0700 (PDT)
-Subject: Re: [PATCH AUTOSEL 5.11 43/44] signal: don't allow STOP on
- PF_IO_WORKER threads
-To:     Stefan Metzmacher <metze@samba.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, io-uring <io-uring@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20210325112459.1926846-1-sashal@kernel.org>
- <20210325112459.1926846-43-sashal@kernel.org>
- <f4c932b4-b787-651e-dd9f-584b386acddb@samba.org>
- <m1r1k34ey1.fsf@fess.ebiederm.org>
- <41589c56-9219-3ec2-55b3-3f010752ac7b@samba.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2b2a9701-cbe0-4538-ed3b-6917b85bebf8@kernel.dk>
-Date:   Thu, 25 Mar 2021 07:38:51 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <41589c56-9219-3ec2-55b3-3f010752ac7b@samba.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230296AbhCYNmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:42:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37220 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229731AbhCYNlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:41:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B34ABAD6D;
+        Thu, 25 Mar 2021 13:41:44 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 14:41:43 +0100
+Message-ID: <s5hczvnmju0.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Chris Chiu <chiu@endlessm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Tom Yan <tom.ty89@gmail.com>, Joe Perches <joe@perches.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH v2 2/2] ALSA: usb-audio: Check connector value on resume
+In-Reply-To: <20210325121250.133009-2-kai.heng.feng@canonical.com>
+References: <20210325121250.133009-1-kai.heng.feng@canonical.com>
+        <20210325121250.133009-2-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 6:11 AM, Stefan Metzmacher wrote:
+On Thu, 25 Mar 2021 13:12:48 +0100,
+Kai-Heng Feng wrote:
 > 
-> Am 25.03.21 um 13:04 schrieb Eric W. Biederman:
->> Stefan Metzmacher <metze@samba.org> writes:
->>
->>> Am 25.03.21 um 12:24 schrieb Sasha Levin:
->>>> From: "Eric W. Biederman" <ebiederm@xmission.com>
->>>>
->>>> [ Upstream commit 4db4b1a0d1779dc159f7b87feb97030ec0b12597 ]
->>>>
->>>> Just like we don't allow normal signals to IO threads, don't deliver a
->>>> STOP to a task that has PF_IO_WORKER set. The IO threads don't take
->>>> signals in general, and have no means of flushing out a stop either.
->>>>
->>>> Longer term, we may want to look into allowing stop of these threads,
->>>> as it relates to eg process freezing. For now, this prevents a spin
->>>> issue if a SIGSTOP is delivered to the parent task.
->>>>
->>>> Reported-by: Stefan Metzmacher <metze@samba.org>
->>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
->>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
->>>> ---
->>>>  kernel/signal.c | 3 ++-
->>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/kernel/signal.c b/kernel/signal.c
->>>> index 55526b941011..00a3840f6037 100644
->>>> --- a/kernel/signal.c
->>>> +++ b/kernel/signal.c
->>>> @@ -288,7 +288,8 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
->>>>  			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
->>>>  	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
->>>>  
->>>> -	if (unlikely(fatal_signal_pending(task) || (task->flags & PF_EXITING)))
->>>> +	if (unlikely(fatal_signal_pending(task) ||
->>>> +		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
->>>>  		return false;
->>>>  
->>>>  	if (mask & JOBCTL_STOP_SIGMASK)
->>>>
->>>
->>> Again, why is this proposed for 5.11 and 5.10 already?
->>
->> Has the bit about the io worker kthreads been backported?
->> If so this isn't horrible.  If not this is nonsense.
-
-No not yet - my plan is to do that, but not until we're 100% satisfied
-with it.
-
-> I don't know, I hope not...
+> Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
+> error and the other two functions of the USB audio, Line In and Line
+> Out, work just fine.
 > 
-> But I just tested v5.12-rc4 and attaching to
-> an application with iothreads with gdb is still not possible,
-> it still loops forever trying to attach to the iothreads.
-
-I do see the looping, gdb apparently doesn't give up when it gets
--EPERM trying to attach to the threads. Which isn't really a kernel
-thing, but:
-
-> And I tested 'kill -9 $pidofiothread', and it feezed the whole
-> machine...
-
-that sounds very strange, I haven't seen anything like that running
-the exact same scenario.
-
-> So there's still work to do in order to get 5.12 stable.
+> The mic starts to work again after running userspace app like "alsactl
+> store". Following the lead, the evidence shows that as soon as connector
+> status is queried, the mic can work again.
 > 
-> I'm short on time currently, but I hope to send more details soon.
+> So also check connector value on resume to "wake up" the USB audio to
+> make it functional.
+> 
+> This can be device specific, however I think this generic approach may
+> benefit more than one device.
+> 
+> While at it, also remove reset-resume path to consolidate mixer resume
+> path.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2:
+>  - Remove reset-resume.
+>  - Fold the connector checking to the mixer resume callback.
 
-Thanks! I'll play with it this morning and see if I can provoke
-something odd related to STOP/attach.
+That's not what I meant exactly...  I meant to put both into the
+single resume callback, but handle each part conditionally depending
+on reset_resume argument.
 
--- 
-Jens Axboe
+But this turned out to need more changes in mixer_quirks.c
+unnecessarily.  Maybe adding the two resume functions is a better
+approach in the end, but not for the specific connection thing but
+generically both resume and reset_resume callbacks.  Something like
+below.
 
+
+thanks,
+
+Takashi
+
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b004b2e63a5d..1dab281bb269 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -3615,20 +3615,43 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
+ 	return 0;
+ }
+ 
++static int default_mixer_resume(struct usb_mixer_elem_list *list)
++{
++	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
++
++	/* get connector value to "wake up" the USB audio */
++	if (cval->val_type == USB_MIXER_BOOLEAN && cval->channels == 1)
++		get_connector_value(cval, NULL, NULL);
++
++	return 0;
++}
++
++static int default_mixer_reset_resume(struct usb_mixer_elem_list *list)
++{
++	int err = default_mixer_resume(list);
++
++	if (err < 0)
++		return err;
++	return restore_mixer_value(list);
++}
++
+ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
+ {
+ 	struct usb_mixer_elem_list *list;
++	usb_mixer_elem_resume_func_t f;
+ 	int id, err;
+ 
+-	if (reset_resume) {
+-		/* restore cached mixer values */
+-		for (id = 0; id < MAX_ID_ELEMS; id++) {
+-			for_each_mixer_elem(list, mixer, id) {
+-				if (list->resume) {
+-					err = list->resume(list);
+-					if (err < 0)
+-						return err;
+-				}
++	/* restore cached mixer values */
++	for (id = 0; id < MAX_ID_ELEMS; id++) {
++		for_each_mixer_elem(list, mixer, id) {
++			if (reset_resume)
++				f = list->reset_resume;
++			else
++				f = list->resume;
++			if (f) {
++				err = list->resume(list);
++				if (err < 0)
++					return err;
+ 			}
+ 		}
+ 	}
+@@ -3647,6 +3670,7 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
+ 	list->id = unitid;
+ 	list->dump = snd_usb_mixer_dump_cval;
+ #ifdef CONFIG_PM
+-	list->resume = restore_mixer_value;
++	list->resume = default_mixer_resume;
++	list->reset_resume = default_mixer_reset_resume;
+ #endif
+ }
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index c29e27ac43a7..e5a01f17bf3c 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
+ 	bool is_std_info;
+ 	usb_mixer_elem_dump_func_t dump;
+ 	usb_mixer_elem_resume_func_t resume;
++	usb_mixer_elem_resume_func_t reset_resume;
+ };
+ 
+ /* iterate over mixer element list of the given unit id */
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index ffd922327ae4..b7f9c2fded05 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -151,7 +151,7 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
+ 		*listp = list;
+ 	list->mixer = mixer;
+ 	list->id = id;
+-	list->resume = resume;
++	list->reset_resume = resume;
+ 	kctl = snd_ctl_new1(knew, list);
+ 	if (!kctl) {
+ 		kfree(list);
