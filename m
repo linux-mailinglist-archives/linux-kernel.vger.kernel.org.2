@@ -2,293 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022FF348BC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442F2348BAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbhCYIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:43:44 -0400
-Received: from mga05.intel.com ([192.55.52.43]:26256 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229651AbhCYIn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:43:29 -0400
-IronPort-SDR: 0/lKPcsptuxyvX88gbhsE7GiRVFO7dAC0DOeyV6KgVbMe3R0TovAB0dPAxMoOjAZHiS9YjNnja
- yTU+kfGYgb9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="276008711"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="276008711"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 01:43:29 -0700
-IronPort-SDR: tWueMzg3hqLScUXwbEniJ64NgVorsjT5hfpIjRpOnwwfG9P1PTLb09AhIgjmaBX74JbwCyZCof
- s9r5WO+5EYFw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="452976328"
-Received: from mike-ilbpg1.png.intel.com ([10.88.227.76])
-  by orsmga001.jf.intel.com with ESMTP; 25 Mar 2021 01:43:24 -0700
-From:   Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
-To:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, linux@armlinux.org.uk,
-        weifeng.voon@intel.com, boon.leong.ong@intel.com,
-        qiangqing.zhang@nxp.com, vee.khee.wong@intel.com,
-        fugang.duan@nxp.com, kim.tatt.chuah@intel.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        andrew@lunn.ch, hkallweit1@gmail.com
-Subject: [PATCH net-next v3 1/2] net: stmmac: enable 2.5Gbps link speed
-Date:   Thu, 25 Mar 2021 16:38:05 +0800
-Message-Id: <20210325083806.19382-2-michael.wei.hong.sit@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210325083806.19382-1-michael.wei.hong.sit@intel.com>
-References: <20210325083806.19382-1-michael.wei.hong.sit@intel.com>
+        id S229738AbhCYIiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:38:22 -0400
+Received: from out28-98.mail.aliyun.com ([115.124.28.98]:34102 "EHLO
+        out28-98.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhCYIiN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 04:38:13 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.45552-0.000499857-0.54398;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Jq0Qwl6_1616661486;
+Received: from 192.168.88.129(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Jq0Qwl6_1616661486)
+          by smtp.aliyun-inc.com(10.147.44.118);
+          Thu, 25 Mar 2021 16:38:08 +0800
+Subject: Re: [PATCH v3 08/10] pinctrl: Ingenic: Add pinctrl driver for JZ4755.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        sernia.zhou@foxmail.com
+References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1615975084-68203-9-git-send-email-zhouyanjie@wanyeetech.com>
+ <I4VDQQ.76WDCH9W4MSC3@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <cb82712a-44e8-f960-2a1d-f66788323ca0@wanyeetech.com>
+Date:   Thu, 25 Mar 2021 16:38:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <I4VDQQ.76WDCH9W4MSC3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Voon Weifeng <weifeng.voon@intel.com>
+Hi,
 
-The MAC support 2.5G mode when the PCS is in 1000BASE-T mode. The
-2.5G mode of operation is functionally same as 1000BASE-T mode,
-except that the clock rate is 2.5 times the original rate.
-In this mode, the serdes/PHY operates at a serial baud rate of
-3.125 Gbps and the PCS data path and GMII interface of the MAC
-operate at 312.5 MHz instead of 125 MHz.
+On 2021/3/23 上午2:24, Paul Cercueil wrote:
+>
+>
+> Le mer. 17 mars 2021 à 17:58, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> Add support for probing the pinctrl-ingenic driver on the
+>> JZ4755 SoC from Ingenic.
+>>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> ---
+>>
+>> Notes:
+>>     v3:
+>>     New patch.
+>>
+>>  drivers/pinctrl/pinctrl-ingenic.c | 132 
+>> ++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 132 insertions(+)
+>>
+>> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
+>> b/drivers/pinctrl/pinctrl-ingenic.c
+>> index d98767b..d8b37fa 100644
+>> --- a/drivers/pinctrl/pinctrl-ingenic.c
+>> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+>> @@ -86,6 +86,7 @@ enum jz_version {
+>>      ID_JZ4740,
+>>      ID_JZ4725B,
+>>      ID_JZ4750,
+>> +    ID_JZ4755,
+>>      ID_JZ4760,
+>>      ID_JZ4770,
+>>      ID_JZ4780,
+>> @@ -557,6 +558,131 @@ static const struct ingenic_chip_info 
+>> jz4750_chip_info = {
+>>      .pull_downs = jz4750_pull_downs,
+>>  };
+>>
+>> +static const u32 jz4755_pull_ups[6] = {
+>> +    0xffffffff, 0xffffffff, 0x0fffffff, 0xffffffff, 0x33dc3fff, 
+>> 0x0000fc00,
+>> +};
+>> +
+>> +static const u32 jz4755_pull_downs[6] = {
+>> +    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 
+>> 0x00000000,
+>> +};
+>> +
+>> +static int jz4755_uart0_data_pins[] = { 0x7c, 0x7d, };
+>> +static int jz4755_uart0_hwflow_pins[] = { 0x7e, 0x7f, };
+>> +static int jz4755_uart1_data_pins[] = { 0x97, 0x99, };
+>> +static int jz4755_uart2_data_pins[] = { 0x9f, };
+>> +static int jz4755_mmc0_1bit_pins[] = { 0x2f, 0x50, 0x5c, };
+>> +static int jz4755_mmc0_4bit_pins[] = { 0x5d, 0x5b, 0x51, };
+>> +static int jz4755_mmc1_1bit_pins[] = { 0x3a, 0x3d, 0x3c, };
+>> +static int jz4755_mmc1_4bit_pins[] = { 0x3b, 0x3e, 0x3f, };
+>> +static int jz4755_i2c_pins[] = { 0x8c, 0x8d, };
+>> +static int jz4755_cim_pins[] = {
+>> +    0x89, 0x8b, 0x8a, 0x88,
+>> +    0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
+>> +};
+>> +static int jz4755_lcd_24bit_pins[] = {
+>> +    0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
+>> +    0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f,
+>> +    0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77,
+>> +    0x78, 0x79, 0x7a, 0x7b,
+>> +};
+>> +static int jz4755_nand_cs1_pins[] = { 0x55, };
+>> +static int jz4755_nand_cs2_pins[] = { 0x56, };
+>> +static int jz4755_nand_cs3_pins[] = { 0x57, };
+>> +static int jz4755_nand_cs4_pins[] = { 0x58, };
+>> +static int jz4755_nand_fre_fwe_pins[] = { 0x5c, 0x5d, };
+>> +static int jz4755_pwm_pwm0_pins[] = { 0x94, };
+>> +static int jz4755_pwm_pwm1_pins[] = { 0xab, };
+>> +static int jz4755_pwm_pwm2_pins[] = { 0x96, };
+>> +static int jz4755_pwm_pwm3_pins[] = { 0x97, };
+>> +static int jz4755_pwm_pwm4_pins[] = { 0x98, };
+>> +static int jz4755_pwm_pwm5_pins[] = { 0x99, };
+>> +
+>> +static u8 jz4755_mmc0_1bit_funcs[] = { 2, 2, 1, };
+>> +static u8 jz4755_mmc0_4bit_funcs[] = { 1, 0, 1, };
+>> +static u8 jz4755_lcd_24bit_funcs[] = {
+>> +    0, 0, 0, 0, 0, 0, 0, 0,
+>> +    0, 0, 0, 0, 0, 0, 0, 0,
+>> +    0, 0, 0, 0, 0, 0, 1, 1,
+>> +    1, 1, 0, 0,
+>> +};
+>> +
+>> +static const struct group_desc jz4755_groups[] = {
+>> +    INGENIC_PIN_GROUP("uart0-data", jz4755_uart0_data, 0),
+>> +    INGENIC_PIN_GROUP("uart0-hwflow", jz4755_uart0_hwflow, 0),
+>> +    INGENIC_PIN_GROUP("uart1-data", jz4755_uart1_data, 0),
+>> +    INGENIC_PIN_GROUP("uart2-data", jz4755_uart2_data, 1),
+>> +    INGENIC_PIN_GROUP_FUNCS("mmc0-1bit", jz4755_mmc0_1bit,
+>> +                jz4755_mmc0_1bit_funcs),
+>> +    INGENIC_PIN_GROUP_FUNCS("mmc0-4bit", jz4755_mmc0_4bit,
+>> +                jz4755_mmc0_4bit_funcs),
+>> +    INGENIC_PIN_GROUP("mmc1-1bit", jz4755_mmc1_1bit, 1),
+>> +    INGENIC_PIN_GROUP("mmc1-4bit", jz4755_mmc1_4bit, 1),
+>> +    INGENIC_PIN_GROUP("i2c-data", jz4755_i2c, 0),
+>> +    INGENIC_PIN_GROUP("cim-data", jz4755_cim, 0),
+>> +    INGENIC_PIN_GROUP_FUNCS("lcd-24bit", jz4755_lcd_24bit,
+>> +                jz4755_lcd_24bit_funcs),
+>
+> Coud you either split this into several groups (lcd-8bit, lcd-16bit, 
+> lcd-18bit, lcd-24bit, lcd-special, lcd-generic) like it is done for 
+> the JZ4725B? Same for the other SoCs.
+>
 
-The MAC running in 10M/100M/1G mode or 2.5G mode depends on
-the link speed mode in the serdes.
+Sure, and do we need to change the JZ4740 (and the previous JZ4750) to 
+the lcd-special + lcd-generic model? It looks more reasonable than the 
+original lcd-tft and makes the style more uniform.
 
-Signed-off-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: Michael Sit Wei Hong <michael.wei.hong.sit@intel.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 44 ++++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.h | 13 ++++++
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  1 +
- .../net/ethernet/stmicro/stmmac/stmmac_main.c | 35 ++++++++++++++-
- include/linux/stmmac.h                        |  2 +
- 5 files changed, 92 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 8e4dbfdca237..750e7b7c554e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -96,6 +96,22 @@ static int intel_serdes_powerup(struct net_device *ndev, void *priv_data)
- 
- 	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
- 
-+	/* Set the serdes rate and the PCLK rate */
-+	data = mdiobus_read(priv->mii, serdes_phy_addr,
-+			    SERDES_GCR0);
-+
-+	data &= ~SERDES_RATE_MASK;
-+	data &= ~SERDES_PCLK_MASK;
-+
-+	if (priv->plat->speed_2500_en)
-+		data |= SERDES_RATE_PCIE_GEN2 << SERDES_RATE_PCIE_SHIFT |
-+			SERDES_PCLK_37p5MHZ << SERDES_PCLK_SHIFT;
-+	else
-+		data |= SERDES_RATE_PCIE_GEN1 << SERDES_RATE_PCIE_SHIFT |
-+			SERDES_PCLK_70MHZ << SERDES_PCLK_SHIFT;
-+
-+	mdiobus_write(priv->mii, serdes_phy_addr, SERDES_GCR0, data);
-+
- 	/* assert clk_req */
- 	data = mdiobus_read(priv->mii, serdes_phy_addr, SERDES_GCR0);
- 	data |= SERDES_PLL_CLK;
-@@ -214,6 +230,28 @@ static void intel_serdes_powerdown(struct net_device *ndev, void *intel_data)
- 	}
- }
- 
-+static bool intel_speed_mode_2500(struct net_device *ndev, void *intel_data)
-+{
-+	struct intel_priv_data *intel_priv = intel_data;
-+	struct stmmac_priv *priv = netdev_priv(ndev);
-+	int serdes_phy_addr = 0;
-+	u32 data = 0;
-+
-+	serdes_phy_addr = intel_priv->mdio_adhoc_addr;
-+
-+	/* Determine the link speed mode: 2.5Gbps/1Gbps */
-+	data = mdiobus_read(priv->mii, serdes_phy_addr,
-+			    SERDES_GCR);
-+
-+	if (((data & SERDES_LINK_MODE_MASK) >> SERDES_LINK_MODE_SHIFT) ==
-+	    SERDES_LINK_MODE_2G5) {
-+		dev_info(priv->device, "Link Speed Mode: 2.5Gbps\n");
-+		return true;
-+	} else {
-+		return false;
-+	}
-+}
-+
- /* Program PTP Clock Frequency for different variant of
-  * Intel mGBE that has slightly different GPO mapping
-  */
-@@ -405,7 +443,7 @@ static int ehl_sgmii_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 1;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
--
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 
-@@ -456,6 +494,7 @@ static int ehl_pse0_sgmii1g_data(struct pci_dev *pdev,
- 				 struct plat_stmmacenet_data *plat)
- {
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return ehl_pse0_common_data(pdev, plat);
-@@ -492,6 +531,7 @@ static int ehl_pse1_sgmii1g_data(struct pci_dev *pdev,
- 				 struct plat_stmmacenet_data *plat)
- {
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return ehl_pse1_common_data(pdev, plat);
-@@ -516,6 +556,7 @@ static int tgl_sgmii_phy0_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 1;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return tgl_common_data(pdev, plat);
-@@ -530,6 +571,7 @@ static int tgl_sgmii_phy1_data(struct pci_dev *pdev,
- {
- 	plat->bus_id = 2;
- 	plat->phy_interface = PHY_INTERFACE_MODE_SGMII;
-+	plat->speed_mode_2500 = intel_speed_mode_2500;
- 	plat->serdes_powerup = intel_serdes_powerup;
- 	plat->serdes_powerdown = intel_serdes_powerdown;
- 	return tgl_common_data(pdev, plat);
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-index e723096c0b15..021a5c178d97 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.h
-@@ -9,6 +9,7 @@
- #define POLL_DELAY_US 8
- 
- /* SERDES Register */
-+#define SERDES_GCR	0x0	/* Global Conguration */
- #define SERDES_GSR0	0x5	/* Global Status Reg0 */
- #define SERDES_GCR0	0xb	/* Global Configuration Reg0 */
- 
-@@ -16,8 +17,20 @@
- #define SERDES_PLL_CLK		BIT(0)		/* PLL clk valid signal */
- #define SERDES_RST		BIT(2)		/* Serdes Reset */
- #define SERDES_PWR_ST_MASK	GENMASK(6, 4)	/* Serdes Power state*/
-+#define SERDES_RATE_MASK	GENMASK(9, 8)
-+#define SERDES_PCLK_MASK	GENMASK(14, 12)	/* PCLK rate to PHY */
-+#define SERDES_LINK_MODE_MASK	GENMASK(2, 1)
-+#define SERDES_LINK_MODE_SHIFT	1
- #define SERDES_PWR_ST_SHIFT	4
- #define SERDES_PWR_ST_P0	0x0
- #define SERDES_PWR_ST_P3	0x3
-+#define SERDES_LINK_MODE_2G5	0x3
-+#define SERSED_LINK_MODE_1G	0x2
-+#define SERDES_PCLK_37p5MHZ	0x0
-+#define SERDES_PCLK_70MHZ	0x1
-+#define SERDES_RATE_PCIE_GEN1	0x0
-+#define SERDES_RATE_PCIE_GEN2	0x1
-+#define SERDES_RATE_PCIE_SHIFT	8
-+#define SERDES_PCLK_SHIFT	12
- 
- #endif /* __DWMAC_INTEL_H__ */
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index 29f765a246a0..cbfc4de7e9a3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -1349,6 +1349,7 @@ int dwmac4_setup(struct stmmac_priv *priv)
- 	mac->link.speed10 = GMAC_CONFIG_PS;
- 	mac->link.speed100 = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
- 	mac->link.speed1000 = 0;
-+	mac->link.speed2500 = GMAC_CONFIG_FES;
- 	mac->link.speed_mask = GMAC_CONFIG_FES | GMAC_CONFIG_PS;
- 	mac->mii.addr = GMAC_MDIO_ADDR;
- 	mac->mii.data = GMAC_MDIO_DATA;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index c89f0421bfdb..df582ad7892a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -877,6 +877,25 @@ static void stmmac_validate(struct phylink_config *config,
- 	phylink_set(mac_supported, Asym_Pause);
- 	phylink_set_port_modes(mac_supported);
- 
-+	if (priv->plat->has_gmac ||
-+	    priv->plat->has_gmac4 ||
-+	    priv->plat->has_xgmac) {
-+		phylink_set(mac_supported, 1000baseT_Half);
-+		phylink_set(mac_supported, 1000baseT_Full);
-+		phylink_set(mac_supported, 1000baseKX_Full);
-+	}
-+
-+	/* 2.5G mode only support 2500baseT full duplex only */
-+	if (priv->plat->has_gmac4 && priv->plat->speed_2500_en) {
-+		phylink_set(mac_supported, 2500baseT_Full);
-+		phylink_set(mask, 10baseT_Half);
-+		phylink_set(mask, 10baseT_Full);
-+		phylink_set(mask, 100baseT_Half);
-+		phylink_set(mask, 100baseT_Full);
-+		phylink_set(mask, 1000baseT_Half);
-+		phylink_set(mask, 1000baseT_Full);
-+	}
-+
- 	/* Cut down 1G if asked to */
- 	if ((max_speed > 0) && (max_speed < 1000)) {
- 		phylink_set(mask, 1000baseT_Full);
-@@ -1166,8 +1185,14 @@ static int stmmac_phy_setup(struct stmmac_priv *priv)
- 	priv->phylink_config.dev = &priv->dev->dev;
- 	priv->phylink_config.type = PHYLINK_NETDEV;
- 	priv->phylink_config.pcs_poll = true;
--	priv->phylink_config.ovr_an_inband =
--		priv->plat->mdio_bus_data->xpcs_an_inband;
-+	/* For 2.5G, we do not use SGMII in-band AN */
-+	if (priv->plat->speed_2500_en) {
-+		priv->phylink_config.ovr_an_inband = false;
-+	} else {
-+		priv->phylink_config.ovr_an_inband =
-+			priv->plat->mdio_bus_data->xpcs_an_inband;
-+	}
-+
- 
- 	if (!fwnode)
- 		fwnode = dev_fwnode(priv->device);
-@@ -5284,6 +5309,12 @@ int stmmac_dvr_probe(struct device *device,
- 		}
- 	}
- 
-+	if (priv->plat->speed_mode_2500) {
-+		priv->plat->speed_2500_en = priv->plat->speed_mode_2500(ndev,
-+									priv->plat->bsp_priv);
-+		priv->hw->xpcs_args.speed_2500_en = priv->plat->speed_2500_en;
-+	}
-+
- 	ret = stmmac_phy_setup(priv);
- 	if (ret) {
- 		netdev_err(ndev, "failed to setup phy (%d)\n", ret);
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index bf73982f92b3..d68805a57eb4 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -182,6 +182,7 @@ struct plat_stmmacenet_data {
- 	void (*fix_mac_speed)(void *priv, unsigned int speed);
- 	int (*serdes_powerup)(struct net_device *ndev, void *priv);
- 	void (*serdes_powerdown)(struct net_device *ndev, void *priv);
-+	bool (*speed_mode_2500)(struct net_device *ndev, void *priv);
- 	void (*ptp_clk_freq_config)(void *priv);
- 	int (*init)(struct platform_device *pdev, void *priv);
- 	void (*exit)(struct platform_device *pdev, void *priv);
-@@ -205,6 +206,7 @@ struct plat_stmmacenet_data {
- 	int has_xgmac;
- 	bool vlan_fail_q_en;
- 	u8 vlan_fail_q;
-+	bool speed_2500_en;
- 	unsigned int eee_usecs_rate;
- 	struct pci_dev *pdev;
- 	bool has_safety_feat;
--- 
-2.17.1
-
+> Alternatively just remove the "lcd" function for now.
+>
+>> +    { "lcd-no-pins", },
+>
+> And remove this.
+>
+> Cheers,
+> -Paul
+>
+>> +    INGENIC_PIN_GROUP("nand-cs1", jz4755_nand_cs1, 0),
+>> +    INGENIC_PIN_GROUP("nand-cs2", jz4755_nand_cs2, 0),
+>> +    INGENIC_PIN_GROUP("nand-cs3", jz4755_nand_cs3, 0),
+>> +    INGENIC_PIN_GROUP("nand-cs4", jz4755_nand_cs4, 0),
+>> +    INGENIC_PIN_GROUP("nand-fre-fwe", jz4755_nand_fre_fwe, 0),
+>> +    INGENIC_PIN_GROUP("pwm0", jz4755_pwm_pwm0, 0),
+>> +    INGENIC_PIN_GROUP("pwm1", jz4755_pwm_pwm1, 1),
+>> +    INGENIC_PIN_GROUP("pwm2", jz4755_pwm_pwm2, 0),
+>> +    INGENIC_PIN_GROUP("pwm3", jz4755_pwm_pwm3, 0),
+>> +    INGENIC_PIN_GROUP("pwm4", jz4755_pwm_pwm4, 0),
+>> +    INGENIC_PIN_GROUP("pwm5", jz4755_pwm_pwm5, 0),
+>> +};
+>> +
+>> +static const char *jz4755_uart0_groups[] = { "uart0-data", 
+>> "uart0-hwflow", };
+>> +static const char *jz4755_uart1_groups[] = { "uart1-data", };
+>> +static const char *jz4755_uart2_groups[] = { "uart2-data", };
+>> +static const char *jz4755_mmc0_groups[] = { "mmc0-1bit", 
+>> "mmc0-4bit", };
+>> +static const char *jz4755_mmc1_groups[] = { "mmc0-1bit", 
+>> "mmc0-4bit", };
+>> +static const char *jz4755_i2c_groups[] = { "i2c-data", };
+>> +static const char *jz4755_cim_groups[] = { "cim-data", };
+>> +static const char *jz4755_lcd_groups[] = { "lcd-24bit", 
+>> "lcd-no-pins", };
+>> +static const char *jz4755_nand_groups[] = {
+>> +    "nand-cs1", "nand-cs2", "nand-cs3", "nand-cs4", "nand-fre-fwe",
+>> +};
+>> +static const char *jz4755_pwm0_groups[] = { "pwm0", };
+>> +static const char *jz4755_pwm1_groups[] = { "pwm1", };
+>> +static const char *jz4755_pwm2_groups[] = { "pwm2", };
+>> +static const char *jz4755_pwm3_groups[] = { "pwm3", };
+>> +static const char *jz4755_pwm4_groups[] = { "pwm4", };
+>> +static const char *jz4755_pwm5_groups[] = { "pwm5", };
+>> +
+>> +static const struct function_desc jz4755_functions[] = {
+>> +    { "uart0", jz4755_uart0_groups, ARRAY_SIZE(jz4755_uart0_groups), },
+>> +    { "uart1", jz4755_uart1_groups, ARRAY_SIZE(jz4755_uart1_groups), },
+>> +    { "uart2", jz4755_uart2_groups, ARRAY_SIZE(jz4755_uart2_groups), },
+>> +    { "mmc0", jz4755_mmc0_groups, ARRAY_SIZE(jz4755_mmc0_groups), },
+>> +    { "mmc1", jz4755_mmc1_groups, ARRAY_SIZE(jz4755_mmc1_groups), },
+>> +    { "i2c", jz4755_i2c_groups, ARRAY_SIZE(jz4755_i2c_groups), },
+>> +    { "cim", jz4755_cim_groups, ARRAY_SIZE(jz4755_cim_groups), },
+>> +    { "lcd", jz4755_lcd_groups, ARRAY_SIZE(jz4755_lcd_groups), },
+>> +    { "nand", jz4755_nand_groups, ARRAY_SIZE(jz4755_nand_groups), },
+>> +    { "pwm0", jz4755_pwm0_groups, ARRAY_SIZE(jz4755_pwm0_groups), },
+>> +    { "pwm1", jz4755_pwm1_groups, ARRAY_SIZE(jz4755_pwm1_groups), },
+>> +    { "pwm2", jz4755_pwm2_groups, ARRAY_SIZE(jz4755_pwm2_groups), },
+>> +    { "pwm3", jz4755_pwm3_groups, ARRAY_SIZE(jz4755_pwm3_groups), },
+>> +    { "pwm4", jz4755_pwm4_groups, ARRAY_SIZE(jz4755_pwm4_groups), },
+>> +    { "pwm5", jz4755_pwm5_groups, ARRAY_SIZE(jz4755_pwm5_groups), },
+>> +};
+>> +
+>> +static const struct ingenic_chip_info jz4755_chip_info = {
+>> +    .num_chips = 6,
+>> +    .reg_offset = 0x100,
+>> +    .version = ID_JZ4755,
+>> +    .groups = jz4755_groups,
+>> +    .num_groups = ARRAY_SIZE(jz4755_groups),
+>> +    .functions = jz4755_functions,
+>> +    .num_functions = ARRAY_SIZE(jz4755_functions),
+>> +    .pull_ups = jz4755_pull_ups,
+>> +    .pull_downs = jz4755_pull_downs,
+>> +};
+>> +
+>>  static const u32 jz4760_pull_ups[6] = {
+>>      0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 
+>> 0xfffff00f,
+>>  };
+>> @@ -2646,6 +2772,7 @@ static const struct of_device_id 
+>> ingenic_gpio_of_match[] __initconst = {
+>>      { .compatible = "ingenic,jz4740-gpio", },
+>>      { .compatible = "ingenic,jz4725b-gpio", },
+>>      { .compatible = "ingenic,jz4750-gpio", },
+>> +    { .compatible = "ingenic,jz4755-gpio", },
+>>      { .compatible = "ingenic,jz4760-gpio", },
+>>      { .compatible = "ingenic,jz4770-gpio", },
+>>      { .compatible = "ingenic,jz4780-gpio", },
+>> @@ -2853,6 +2980,11 @@ static const struct of_device_id 
+>> ingenic_pinctrl_of_match[] = {
+>>          .compatible = "ingenic,jz4750-pinctrl",
+>>          .data = IF_ENABLED(CONFIG_MACH_JZ4750, &jz4750_chip_info)
+>>      },
+>> +    {
+>> +        .compatible = "ingenic,jz4755-pinctrl",
+>> +        .data = IF_ENABLED(CONFIG_MACH_JZ4755, &jz4755_chip_info)
+>> +    },
+>> +    {
+>>          .compatible = "ingenic,jz4760-pinctrl",
+>>          .data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
+>>      },
+>> -- 
+>> 2.7.4
+>>
+>
