@@ -2,78 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7309A348C2B
+	by mail.lfdr.de (Postfix) with ESMTP id BEC42348C2C
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhCYJF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:05:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhCYJFb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:05:31 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96307C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:05:31 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8985E8C9;
-        Thu, 25 Mar 2021 10:05:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616663124;
-        bh=/SywUhKN0TyjTDbmFwZZQmOsTEDAh0nvpn/dDHY+Nrc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E7IpUKonP2G+CJe0y9GlvUurm3qlQRRoNc7AkmcfWBCfMISo5Ik/lbtQ6istzeDaS
-         xZmjZw3gtxKL0qrD/M+DDg84q4Up8U+Dpph2k+j5GBQI4zrazi5GVvUw0KFJztt9D1
-         SLXV047N1+/VlnlDZoqEXc8KZhd4SJ8vcXPRHdts=
-Date:   Thu, 25 Mar 2021 11:04:39 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Tomi Valkeinen <tomba@kernel.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Jyri Sarha <jsarha@ti.com>, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: Re: [PATCH] drivers: gpu: drm: Remove duplicate declaration
-Message-ID: <YFxSJ/EQWilHfT51@pendragon.ideasonboard.com>
-References: <20210325045022.847135-1-wanjiabing@vivo.com>
+        id S229662AbhCYJF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:05:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41220 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229508AbhCYJFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 05:05:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6BBCEAC6A;
+        Thu, 25 Mar 2021 09:05:46 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 10:05:46 +0100 (CET)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
+        joe.lawrence@redhat.com, corbet@lwn.net,
+        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] docs: livepatch: Fix a typo
+In-Reply-To: <20210325065646.7467-1-unixbhaskar@gmail.com>
+Message-ID: <alpine.LSU.2.21.2103250956530.30447@pobox.suse.cz>
+References: <20210325065646.7467-1-unixbhaskar@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210325045022.847135-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wan,
+Hi,
 
-Thank you for the patch.
+On Thu, 25 Mar 2021, Bhaskar Chowdhury wrote:
 
-On Thu, Mar 25, 2021 at 12:50:19PM +0800, Wan Jiabing wrote:
-> struct dss_device has been declared at 51st line. 
-> Remove the duplicate.
 > 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> s/varibles/variables/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->  drivers/gpu/drm/omapdrm/dss/omapdss.h | 1 -
->  1 file changed, 1 deletion(-)
+>  Documentation/livepatch/shadow-vars.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/omapdrm/dss/omapdss.h b/drivers/gpu/drm/omapdrm/dss/omapdss.h
-> index a40abeafd2e9..2658aadee09a 100644
-> --- a/drivers/gpu/drm/omapdrm/dss/omapdss.h
-> +++ b/drivers/gpu/drm/omapdrm/dss/omapdss.h
-> @@ -52,7 +52,6 @@ struct dss_device;
->  struct omap_drm_private;
->  struct omap_dss_device;
->  struct dispc_device;
-> -struct dss_device;
->  struct dss_lcd_mgr_config;
->  struct snd_aes_iec958;
->  struct snd_cea_861_aud_if;
+> diff --git a/Documentation/livepatch/shadow-vars.rst b/Documentation/livepatch/shadow-vars.rst
+> index c05715aeafa4..8464866d18ba 100644
+> --- a/Documentation/livepatch/shadow-vars.rst
+> +++ b/Documentation/livepatch/shadow-vars.rst
+> @@ -165,7 +165,7 @@ In-flight parent objects
+> 
+>  Sometimes it may not be convenient or possible to allocate shadow
+>  variables alongside their parent objects.  Or a livepatch fix may
+> -require shadow varibles to only a subset of parent object instances.  In
+> +require shadow variables to only a subset of parent object instances.  In
+>  these cases, the klp_shadow_get_or_alloc() call can be used to attach
+>  shadow variables to parents already in-flight.
 
-While at it, could you sort these forward declarations alphabetically,
-so that duplicates are easier to see ?
+you sent the same fix a couple of weeks ago and Jon applied it.
 
--- 
-Regards,
-
-Laurent Pinchart
+Miroslav
