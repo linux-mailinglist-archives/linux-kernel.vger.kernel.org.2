@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA62B3495DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D8F3495E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhCYPpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39608 "EHLO
+        id S231481AbhCYPpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbhCYPok (ORCPT
+        with ESMTP id S230229AbhCYPol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:44:40 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC4AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:44:39 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id b83so3169588lfd.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:44:39 -0700 (PDT)
+        Thu, 25 Mar 2021 11:44:41 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE2FC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:44:40 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id o126so3261532lfa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:44:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xCv397QUGgHoDE+Q2AV20/g8OqLkWLBfz3K3eMlY0VM=;
-        b=XhAfOdZ8NHxWB287FSrtdPh/m9sUMQl7FX2x5uuSaMnzyWV/XNzj6cjZRrdX3yz0E7
-         26az/uO2fO7fgBdQ90VXdBhM4Zoh1CDvgzO/kEP5lTrhD712tmqPSReMd54G7vMOzDkk
-         ZBtqGk8T2Ru3qPkZ9q/SRtECA8gPjhoNwObVFvYdioJjypdFNKn3clZ5XWwD+rbW0Hon
-         DfU8WvLsfIospBrM/cl4TQA6sKUC/WYym0RIoEV3p1XVolV/L3D9pOah3FXnP/9OOdrO
-         qmMNAVhuaVZoFhZui01fbNvrQjt6FiCgv3RChYOucXcYx20I48HwhSCXhImR/k5baI7s
-         f4QA==
+        bh=HKGQkmjYFlp1QKgdqI/K0D1B4H5SAHhvTMGmrzdGD40=;
+        b=odAnMeVznKNHQWAAoHdEMx4TLwC48WB5rn4nnCuGjpxWkXmCZMZkTrBjgEAUZe0RL1
+         5pskbyX0GolshiXUAqvS5loh3pLVdj4q4J7BkirF29HmTR2k5myM0tX6w5FrMTDJFsXl
+         2ABhP1UgKrDjCoRZBswTObg0EoY9c4w5t/W7AYdB3Oq8S++zkUJskdTcd48LH40faGMU
+         OwC87F2oRAhBEq7Jnxs4dIiCkrUucP0yr6+9qMt/BkFflykvjQyMjTDLgHzwz2rjjrJa
+         Izt1rVewukPs+0d15HMxViDUTaREnXhL8MP14dnH9G167G1iGhRhAj3xBfc0khpDxAQA
+         HpoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xCv397QUGgHoDE+Q2AV20/g8OqLkWLBfz3K3eMlY0VM=;
-        b=DNVMDtXqlw6g+mC0XiwrnS8osWKri3vsXseJEZZAi5Dyc8cV4r2qxTB4DBxZgU4WqG
-         f/GCRP4iYMZKr4JUZpfeUKjoAUTYDkadbwJWe6e8WoZ/R2kU53EdBaoZd+1UekDRP+uB
-         Ecc74bmQDYnPP6CYXBTKrBQoFQXJ0dY1xtT77pJR8IoRddL1jtutxUJm+cdF0T/gBqEi
-         2YX6QZwdd7aymHokYfn5jPlBD4k//7bvxiIOM1ptXSrZG4+NPb2MKWm8PaFaEYh2vrI2
-         qFMh8h9TW759FRCv4MP4D7MVMd6uicRYsuQcokHP5PLIZHLZ0nv3HZtZsM/vD2KMUtF6
-         xL1w==
-X-Gm-Message-State: AOAM530zDcODWlAIJHupwDzY2o7rKI20gDpah59auxHbHZRIqIrOJyH8
-        d1p/ODnYLIVEZXfUU0+PT0oVotHDow1FAWv5
-X-Google-Smtp-Source: ABdhPJzyMpGMD7Wh2ePkDNY2Et2kYSedwMSEb2MVhczxmjf9lx2FmB8OAxAzKD0bQgbK/IbDPeNH1A==
-X-Received: by 2002:ac2:5a49:: with SMTP id r9mr5314036lfn.23.1616687077180;
-        Thu, 25 Mar 2021 08:44:37 -0700 (PDT)
+        bh=HKGQkmjYFlp1QKgdqI/K0D1B4H5SAHhvTMGmrzdGD40=;
+        b=ctxQD0GTLlYltxbStVGZTwtbRjmfg0yGJ5VNX8fLJoGT1N38OFULGt9nswLRuyIUWg
+         vkgravUNRh9b+51kuQH/g5IQZpn7qNdgs/6wGdOhxT6DGWUcgYvKkENV7kcUsOOnskMU
+         Q3tfKXtMxNvZHEE7WNhwohloOL8UGd/020z5+wfrbDHZczkiStDIuD3Z38njfADYhxVJ
+         Y6RdWykftQz6QF3so+vZydxFaq8S69xFi6WgWSFyjUVjb48eRK1wG1aqyBNYybN0aq7F
+         mBDB7q4kfPTts/W5A59wNuJHP53cgdoi72jOBEyU+tM8Q+8Y0eVwdn92tErZu4JccanL
+         REUQ==
+X-Gm-Message-State: AOAM531pAocs4E1rfj1bquczkD5moab179p6Glt3p+ZeFcFJW4rZnuTU
+        O3b1XDLSq5j/+dkap5ATxsqnDUEnaglIkhC1
+X-Google-Smtp-Source: ABdhPJxZELUvnYkrpeY8xplfbhpqLmucVpbFdaW5R3w9CH3IgJZfORDODjRSg6Mjh3CQSdQcVuC1zg==
+X-Received: by 2002:a05:6512:3d1b:: with SMTP id d27mr5262363lfv.248.1616687078154;
+        Thu, 25 Mar 2021 08:44:38 -0700 (PDT)
 Received: from jade.urgonet (h-249-223.A175.priv.bahnhof.se. [98.128.249.223])
-        by smtp.gmail.com with ESMTPSA id m27sm770916ljc.109.2021.03.25.08.44.36
+        by smtp.gmail.com with ESMTPSA id m27sm770916ljc.109.2021.03.25.08.44.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 08:44:36 -0700 (PDT)
+        Thu, 25 Mar 2021 08:44:37 -0700 (PDT)
 From:   Jens Wiklander <jens.wiklander@linaro.org>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         op-tee@lists.trustedfirmware.org
@@ -55,9 +55,9 @@ Cc:     Sudeep Holla <sudeep.holla@arm.com>,
         Marc Bonnici <marc.bonnici@arm.com>,
         Jerome Forissier <jerome@forissier.org>,
         Jens Wiklander <jens.wiklander@linaro.org>
-Subject: [PATCH 2/6] optee: simplify optee_release()
-Date:   Thu, 25 Mar 2021 16:44:22 +0100
-Message-Id: <20210325154426.3520148-3-jens.wiklander@linaro.org>
+Subject: [PATCH 3/6] optee: sync optee_msg.h and optee_rpc_cmd.h
+Date:   Thu, 25 Mar 2021 16:44:23 +0100
+Message-Id: <20210325154426.3520148-4-jens.wiklander@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210325154426.3520148-1-jens.wiklander@linaro.org>
 References: <20210325154426.3520148-1-jens.wiklander@linaro.org>
@@ -67,175 +67,681 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplifies optee_release() with a new helper function,
-optee_close_session_helper() which has been factored out from
-optee_close_session().
+Updates to latest optee_msg.h and optee_rpc_cmd.h. There's no changes in
+the ABI. Only some clarifications and a complete specification of RPC
+requests where the latter is now in a separate file, optee_rpc_cmd.h.
 
-A separate optee_release_supp() is added for the supplicant device.
+Most of the RPC requests are not served by the OP-TEE driver instead
+they are forwarded as opaque requests to tee-supplicant.
 
 Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 ---
- drivers/tee/optee/call.c          | 31 ++++++++++-------
- drivers/tee/optee/core.c          | 55 +++++++++++--------------------
- drivers/tee/optee/optee_private.h |  1 +
- 3 files changed, 39 insertions(+), 48 deletions(-)
+ drivers/tee/optee/optee_msg.h     | 143 +------------
+ drivers/tee/optee/optee_rpc_cmd.h | 333 ++++++++++++++++++++++++++++++
+ drivers/tee/optee/rpc.c           |  32 +--
+ 3 files changed, 360 insertions(+), 148 deletions(-)
+ create mode 100644 drivers/tee/optee/optee_rpc_cmd.h
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index 780d7c4fd756..c0eca4d7d7f2 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -283,12 +283,28 @@ int optee_open_session(struct tee_context *ctx,
- 	return rc;
- }
+diff --git a/drivers/tee/optee/optee_msg.h b/drivers/tee/optee/optee_msg.h
+index 7b2d919da2ac..de96882f7b9b 100644
+--- a/drivers/tee/optee/optee_msg.h
++++ b/drivers/tee/optee/optee_msg.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) */
+ /*
+- * Copyright (c) 2015-2019, Linaro Limited
++ * Copyright (c) 2015-2021, Linaro Limited
+  */
+ #ifndef _OPTEE_MSG_H
+ #define _OPTEE_MSG_H
+@@ -11,12 +11,6 @@
+ /*
+  * This file defines the OP-TEE message protocol used to communicate
+  * with an instance of OP-TEE running in secure world.
+- *
+- * This file is divided into three sections.
+- * 1. Formatting of messages.
+- * 2. Requests from normal world
+- * 3. Requests from secure world, Remote Procedure Call (RPC), handled by
+- *    tee-supplicant.
+  */
  
--int optee_close_session(struct tee_context *ctx, u32 session)
-+int optee_close_session_helper(struct tee_context *ctx, u32 session)
- {
--	struct optee_context_data *ctxdata = ctx->data;
+ /*****************************************************************************
+@@ -54,14 +48,14 @@
+  * Every entry in buffer should point to a 4k page beginning (12 least
+  * significant bits must be equal to zero).
+  *
+- * 12 least significant bints of optee_msg_param.u.tmem.buf_ptr should hold page
+- * offset of the user buffer.
++ * 12 least significant bits of optee_msg_param.u.tmem.buf_ptr should hold
++ * page offset of user buffer.
+  *
+  * So, entries should be placed like members of this structure:
+  *
+  * struct page_data {
+- *   uint64_t pages_array[OPTEE_MSG_NONCONTIG_PAGE_SIZE/sizeof(uint64_t) - 1];
+- *   uint64_t next_page_data;
++ *   u64 pages_array[OPTEE_MSG_NONCONTIG_PAGE_SIZE/sizeof(u64) - 1];
++ *   u64 next_page_data;
+  * };
+  *
+  * Structure is designed to exactly fit into the page size
+@@ -150,7 +144,7 @@ struct optee_msg_param_value {
+  * @attr & OPTEE_MSG_ATTR_TYPE_MASK indicates if tmem, rmem or value is used in
+  * the union. OPTEE_MSG_ATTR_TYPE_VALUE_* indicates value,
+  * OPTEE_MSG_ATTR_TYPE_TMEM_* indicates @tmem and
+- * OPTEE_MSG_ATTR_TYPE_RMEM_* indicates @rmem,
++ * OPTEE_MSG_ATTR_TYPE_RMEM_* indicates @rmem.
+  * OPTEE_MSG_ATTR_TYPE_NONE indicates that none of the members are used.
+  */
+ struct optee_msg_param {
+@@ -176,17 +170,9 @@ struct optee_msg_param {
+  * @params: the parameters supplied to the OS Command
+  *
+  * All normal calls to Trusted OS uses this struct. If cmd requires further
+- * information than what these field holds it can be passed as a parameter
++ * information than what these fields hold it can be passed as a parameter
+  * tagged as meta (setting the OPTEE_MSG_ATTR_META bit in corresponding
+- * attrs field). All parameters tagged as meta has to come first.
+- *
+- * Temp memref parameters can be fragmented if supported by the Trusted OS
+- * (when optee_smc.h is bearer of this protocol this is indicated with
+- * OPTEE_SMC_SEC_CAP_UNREGISTERED_SHM). If a logical memref parameter is
+- * fragmented then has all but the last fragment the
+- * OPTEE_MSG_ATTR_FRAGMENT bit set in attrs. Even if a memref is fragmented
+- * it will still be presented as a single logical memref to the Trusted
+- * Application.
++ * attrs field). All parameters tagged as meta have to come first.
+  */
+ struct optee_msg_arg {
+ 	u32 cmd;
+@@ -199,7 +185,7 @@ struct optee_msg_arg {
+ 	u32 num_params;
+ 
+ 	/* num_params tells the actual number of element in params */
+-	struct optee_msg_param params[0];
++	struct optee_msg_param params[];
+ };
+ 
+ /**
+@@ -290,13 +276,10 @@ struct optee_msg_arg {
+  * OPTEE_MSG_CMD_REGISTER_SHM registers a shared memory reference. The
+  * information is passed as:
+  * [in] param[0].attr			OPTEE_MSG_ATTR_TYPE_TMEM_INPUT
+- *					[| OPTEE_MSG_ATTR_FRAGMENT]
++ *					[| OPTEE_MSG_ATTR_NONCONTIG]
+  * [in] param[0].u.tmem.buf_ptr		physical address (of first fragment)
+  * [in] param[0].u.tmem.size		size (of first fragment)
+  * [in] param[0].u.tmem.shm_ref		holds shared memory reference
+- * ...
+- * The shared memory can optionally be fragmented, temp memrefs can follow
+- * each other with all but the last with the OPTEE_MSG_ATTR_FRAGMENT bit set.
+  *
+  * OPTEE_MSG_CMD_UNREGISTER_SHM unregisteres a previously registered shared
+  * memory reference. The information is passed as:
+@@ -313,112 +296,6 @@ struct optee_msg_arg {
+ #define OPTEE_MSG_CMD_UNREGISTER_SHM	5
+ #define OPTEE_MSG_FUNCID_CALL_WITH_ARG	0x0004
+ 
+-/*****************************************************************************
+- * Part 3 - Requests from secure world, RPC
+- *****************************************************************************/
+-
+-/*
+- * All RPC is done with a struct optee_msg_arg as bearer of information,
+- * struct optee_msg_arg::arg holds values defined by OPTEE_MSG_RPC_CMD_* below
+- *
+- * RPC communication with tee-supplicant is reversed compared to normal
+- * client communication desribed above. The supplicant receives requests
+- * and sends responses.
+- */
+-
+-/*
+- * Load a TA into memory, defined in tee-supplicant
+- */
+-#define OPTEE_MSG_RPC_CMD_LOAD_TA	0
+-
+-/*
+- * Reserved
+- */
+-#define OPTEE_MSG_RPC_CMD_RPMB		1
+-
+-/*
+- * File system access, defined in tee-supplicant
+- */
+-#define OPTEE_MSG_RPC_CMD_FS		2
+-
+-/*
+- * Get time
+- *
+- * Returns number of seconds and nano seconds since the Epoch,
+- * 1970-01-01 00:00:00 +0000 (UTC).
+- *
+- * [out] param[0].u.value.a	Number of seconds
+- * [out] param[0].u.value.b	Number of nano seconds.
+- */
+-#define OPTEE_MSG_RPC_CMD_GET_TIME	3
+-
+-/*
+- * Wait queue primitive, helper for secure world to implement a wait queue.
+- *
+- * If secure world need to wait for a secure world mutex it issues a sleep
+- * request instead of spinning in secure world. Conversely is a wakeup
+- * request issued when a secure world mutex with a thread waiting thread is
+- * unlocked.
+- *
+- * Waiting on a key
+- * [in] param[0].u.value.a OPTEE_MSG_RPC_WAIT_QUEUE_SLEEP
+- * [in] param[0].u.value.b wait key
+- *
+- * Waking up a key
+- * [in] param[0].u.value.a OPTEE_MSG_RPC_WAIT_QUEUE_WAKEUP
+- * [in] param[0].u.value.b wakeup key
+- */
+-#define OPTEE_MSG_RPC_CMD_WAIT_QUEUE	4
+-#define OPTEE_MSG_RPC_WAIT_QUEUE_SLEEP	0
+-#define OPTEE_MSG_RPC_WAIT_QUEUE_WAKEUP	1
+-
+-/*
+- * Suspend execution
+- *
+- * [in] param[0].value	.a number of milliseconds to suspend
+- */
+-#define OPTEE_MSG_RPC_CMD_SUSPEND	5
+-
+-/*
+- * Allocate a piece of shared memory
+- *
+- * Shared memory can optionally be fragmented, to support that additional
+- * spare param entries are allocated to make room for eventual fragments.
+- * The spare param entries has .attr = OPTEE_MSG_ATTR_TYPE_NONE when
+- * unused. All returned temp memrefs except the last should have the
+- * OPTEE_MSG_ATTR_FRAGMENT bit set in the attr field.
+- *
+- * [in]  param[0].u.value.a		type of memory one of
+- *					OPTEE_MSG_RPC_SHM_TYPE_* below
+- * [in]  param[0].u.value.b		requested size
+- * [in]  param[0].u.value.c		required alignment
+- *
+- * [out] param[0].u.tmem.buf_ptr	physical address (of first fragment)
+- * [out] param[0].u.tmem.size		size (of first fragment)
+- * [out] param[0].u.tmem.shm_ref	shared memory reference
+- * ...
+- * [out] param[n].u.tmem.buf_ptr	physical address
+- * [out] param[n].u.tmem.size		size
+- * [out] param[n].u.tmem.shm_ref	shared memory reference (same value
+- *					as in param[n-1].u.tmem.shm_ref)
+- */
+-#define OPTEE_MSG_RPC_CMD_SHM_ALLOC	6
+-/* Memory that can be shared with a non-secure user space application */
+-#define OPTEE_MSG_RPC_SHM_TYPE_APPL	0
+-/* Memory only shared with non-secure kernel */
+-#define OPTEE_MSG_RPC_SHM_TYPE_KERNEL	1
+-
+-/*
+- * Free shared memory previously allocated with OPTEE_MSG_RPC_CMD_SHM_ALLOC
+- *
+- * [in]  param[0].u.value.a		type of memory one of
+- *					OPTEE_MSG_RPC_SHM_TYPE_* above
+- * [in]  param[0].u.value.b		value of shared memory reference
+- *					returned in param[0].u.tmem.shm_ref
+- *					above
+- */
+-#define OPTEE_MSG_RPC_CMD_SHM_FREE	7
+-
+ /*
+  * Access a device on an i2c bus
+  *
+diff --git a/drivers/tee/optee/optee_rpc_cmd.h b/drivers/tee/optee/optee_rpc_cmd.h
+new file mode 100644
+index 000000000000..712aa32513d7
+--- /dev/null
++++ b/drivers/tee/optee/optee_rpc_cmd.h
+@@ -0,0 +1,333 @@
++/* SPDX-License-Identifier: BSD-2-Clause */
++/*
++ * Copyright (c) 2016-2018, Linaro Limited
++ */
++
++#ifndef __OPTEE_RPC_CMD_H
++#define __OPTEE_RPC_CMD_H
++
++/*
++ * All RPC is done with a struct optee_msg_arg as bearer of information,
++ * struct optee_msg_arg::arg holds values defined by OPTEE_RPC_CMD_* below.
++ * Only the commands handled by the kernel driver are defined here.
++ *
++ * RPC communication with tee-supplicant is reversed compared to normal
++ * client communication described above. The supplicant receives requests
++ * and sends responses.
++ */
++
++/*
++ * Load a TA into memory
++ *
++ * Since the size of the TA isn't known in advance the size of the TA is
++ * can be queried with a NULL buffer.
++ *
++ * [in]     value[0].a-b    UUID
++ * [out]    memref[1]	    Buffer with TA
++ */
++#define OPTEE_RPC_CMD_LOAD_TA		0
++
++/*
++ * Replay Protected Memory Block access
++ *
++ * [in]     memref[0]	    Frames to device
++ * [out]    memref[1]	    Frames from device
++ */
++#define OPTEE_RPC_CMD_RPMB		1
++
++/*
++ * File system access, see definition of protocol below
++ */
++#define OPTEE_RPC_CMD_FS		2
++
++/*
++ * Get time
++ *
++ * Returns number of seconds and nano seconds since the Epoch,
++ * 1970-01-01 00:00:00 +0000 (UTC).
++ *
++ * [out]    value[0].a	    Number of seconds
++ * [out]    value[0].b	    Number of nano seconds.
++ */
++#define OPTEE_RPC_CMD_GET_TIME		3
++
++/*
++ * Wait queue primitive, helper for secure world to implement a wait queue.
++ *
++ * If secure world needs to wait for a secure world mutex it issues a sleep
++ * request instead of spinning in secure world. Conversely is a wakeup
++ * request issued when a secure world mutex with a thread waiting thread is
++ * unlocked.
++ *
++ * Waiting on a key
++ * [in]    value[0].a	    OPTEE_RPC_WAIT_QUEUE_SLEEP
++ * [in]    value[0].b	    Wait key
++ *
++ * Waking up a key
++ * [in]    value[0].a	    OPTEE_RPC_WAIT_QUEUE_WAKEUP
++ * [in]    value[0].b	    Wakeup key
++ */
++#define OPTEE_RPC_CMD_WAIT_QUEUE	4
++#define OPTEE_RPC_WAIT_QUEUE_SLEEP	0
++#define OPTEE_RPC_WAIT_QUEUE_WAKEUP	1
++
++/*
++ * Suspend execution
++ *
++ * [in]    value[0].a	Number of milliseconds to suspend
++ */
++#define OPTEE_RPC_CMD_SUSPEND		5
++
++/*
++ * Allocate a piece of shared memory
++ *
++ * [in]    value[0].a	    Type of memory one of
++ *			    OPTEE_RPC_SHM_TYPE_* below
++ * [in]    value[0].b	    Requested size
++ * [in]    value[0].c	    Required alignment
++ * [out]   memref[0]	    Buffer
++ */
++#define OPTEE_RPC_CMD_SHM_ALLOC		6
++/* Memory that can be shared with a non-secure user space application */
++#define OPTEE_RPC_SHM_TYPE_APPL		0
++/* Memory only shared with non-secure kernel */
++#define OPTEE_RPC_SHM_TYPE_KERNEL	1
++/*
++ * Memory shared with non-secure kernel and exported to a non-secure user
++ * space application
++ */
++#define OPTEE_RPC_SHM_TYPE_GLOBAL	2
++
++/*
++ * Free shared memory previously allocated with OPTEE_RPC_CMD_SHM_ALLOC
++ *
++ * [in]     value[0].a	    Type of memory one of
++ *			    OPTEE_RPC_SHM_TYPE_* above
++ * [in]     value[0].b	    Value of shared memory reference or cookie
++ */
++#define OPTEE_RPC_CMD_SHM_FREE		7
++
++/* Was OPTEE_RPC_CMD_SQL_FS, which isn't supported any longer */
++#define OPTEE_RPC_CMD_SQL_FS_RESERVED	8
++
++/*
++ * Send TA profiling information to normal world
++ *
++ * [in/out] value[0].a	    File identifier. Must be set to 0 on
++ *			    first call. A value >= 1 will be
++ *			    returned on success. Re-use this value
++ *			    to append data to the same file.
++ * [in]     memref[1]	    TA UUID
++ * [in]     memref[2]	    Profile data
++ */
++#define OPTEE_RPC_CMD_GPROF		9
++
++/*
++ * Socket command, see definition of protocol below
++ */
++#define OPTEE_RPC_CMD_SOCKET		10
++
++/*
++ * Send TA function graph data to normal world
++ *
++ * [in/out] value[0].a	    File identifier. Must be set to 0 on
++ *			    first call. A value >= 1 will be
++ *			    returned on success. Re-use this value
++ *			    to append data to the same file.
++ * [in]     memref[1]	    TA UUID
++ * [in]     memref[2]	    function graph data
++ */
++#define OPTEE_RPC_CMD_FTRACE		11
++
++/*
++ * Register timestamp buffer in the linux kernel optee driver
++ *
++ * [in]     value[0].a	    Subcommand (register buffer, unregister buffer)
++ *			    OPTEE_RPC_CMD_BENCH_REG_* below
++ * [in]     value[0].b	    Physical address of timestamp buffer
++ * [in]     value[0].c	    Size of buffer
++ */
++#define OPTEE_RPC_CMD_BENCH_REG_NEW	0
++#define OPTEE_RPC_CMD_BENCH_REG_DEL	1
++#define OPTEE_RPC_CMD_BENCH_REG		20
++
++/*
++ * Definition of protocol for command OPTEE_RPC_CMD_FS
++ */
++
++/*
++ * Open a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_OPEN
++ * [in]     memref[1]	    A string holding the file name
++ * [out]    value[2].a	    File descriptor of open file
++ */
++#define OPTEE_RPC_FS_OPEN		0
++
++/*
++ * Create a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_CREATE
++ * [in]     memref[1]	    A string holding the file name
++ * [out]    value[2].a	    File descriptor of open file
++ */
++#define OPTEE_RPC_FS_CREATE		1
++
++/*
++ * Close a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_CLOSE
++ * [in]     value[0].b	    File descriptor of open file.
++ */
++#define OPTEE_RPC_FS_CLOSE		2
++
++/*
++ * Read from a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_READ
++ * [in]     value[0].b	    File descriptor of open file
++ * [in]     value[0].c	    Offset into file
++ * [out]    memref[1]	    Buffer to hold returned data
++ */
++#define OPTEE_RPC_FS_READ		3
++
++/*
++ * Write to a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_WRITE
++ * [in]     value[0].b	    File descriptor of open file
++ * [in]     value[0].c	    Offset into file
++ * [in]     memref[1]	    Buffer holding data to be written
++ */
++#define OPTEE_RPC_FS_WRITE		4
++
++/*
++ * Truncate a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_TRUNCATE
++ * [in]     value[0].b	    File descriptor of open file
++ * [in]     value[0].c	    Length of file.
++ */
++#define OPTEE_RPC_FS_TRUNCATE		5
++
++/*
++ * Remove a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_REMOVE
++ * [in]     memref[1]	    A string holding the file name
++ */
++#define OPTEE_RPC_FS_REMOVE		6
++
++/*
++ * Rename a file
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_RENAME
++ * [in]     value[0].b	    True if existing target should be removed
++ * [in]     memref[1]	    A string holding the old file name
++ * [in]     memref[2]	    A string holding the new file name
++ */
++#define OPTEE_RPC_FS_RENAME		7
++
++/*
++ * Opens a directory for file listing
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_OPENDIR
++ * [in]     memref[1]	    A string holding the name of the directory
++ * [out]    value[2].a	    Handle to open directory
++ */
++#define OPTEE_RPC_FS_OPENDIR		8
++
++/*
++ * Closes a directory handle
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_CLOSEDIR
++ * [in]     value[0].b	    Handle to open directory
++ */
++#define OPTEE_RPC_FS_CLOSEDIR		9
++
++/*
++ * Read next file name of directory
++ *
++ *
++ * [in]     value[0].a	    OPTEE_RPC_FS_READDIR
++ * [in]     value[0].b	    Handle to open directory
++ * [out]    memref[1]	    A string holding the file name
++ */
++#define OPTEE_RPC_FS_READDIR		10
++
++/* End of definition of protocol for command OPTEE_RPC_CMD_FS */
++
++/*
++ * Definition of protocol for command OPTEE_RPC_CMD_SOCKET
++ */
++
++#define OPTEE_RPC_SOCKET_TIMEOUT_NONBLOCKING	0
++#define OPTEE_RPC_SOCKET_TIMEOUT_BLOCKING	0xffffffff
++
++/*
++ * Open socket
++ *
++ * [in]     value[0].a	    OPTEE_RPC_SOCKET_OPEN
++ * [in]     value[0].b	    TA instance id
++ * [in]     value[1].a	    Server port number
++ * [in]     value[1].b	    Protocol, TEE_ISOCKET_PROTOCOLID_*
++ * [in]     value[1].c	    Ip version TEE_IP_VERSION_* from tee_ipsocket.h
++ * [in]     memref[2]	    Server address
++ * [out]    value[3].a	    Socket handle (32-bit)
++ */
++#define OPTEE_RPC_SOCKET_OPEN	0
++
++/*
++ * Close socket
++ *
++ * [in]     value[0].a	    OPTEE_RPC_SOCKET_CLOSE
++ * [in]     value[0].b	    TA instance id
++ * [in]     value[0].c	    Socket handle
++ */
++#define OPTEE_RPC_SOCKET_CLOSE	1
++
++/*
++ * Close all sockets
++ *
++ * [in]     value[0].a	    OPTEE_RPC_SOCKET_CLOSE_ALL
++ * [in]     value[0].b	    TA instance id
++ */
++#define OPTEE_RPC_SOCKET_CLOSE_ALL 2
++
++/*
++ * Send data on socket
++ *
++ * [in]     value[0].a	    OPTEE_RPC_SOCKET_SEND
++ * [in]     value[0].b	    TA instance id
++ * [in]     value[0].c	    Socket handle
++ * [in]     memref[1]	    Buffer to transmit
++ * [in]     value[2].a	    Timeout ms or OPTEE_RPC_SOCKET_TIMEOUT_*
++ * [out]    value[2].b	    Number of transmitted bytes
++ */
++#define OPTEE_RPC_SOCKET_SEND	3
++
++/*
++ * Receive data on socket
++ *
++ * [in]     value[0].a	    OPTEE_RPC_SOCKET_RECV
++ * [in]     value[0].b	    TA instance id
++ * [in]     value[0].c	    Socket handle
++ * [out]    memref[1]	    Buffer to receive
++ * [in]     value[2].a	    Timeout ms or OPTEE_RPC_SOCKET_TIMEOUT_*
++ */
++#define OPTEE_RPC_SOCKET_RECV	4
++
++/*
++ * Perform IOCTL on socket
++ *
++ * [in]     value[0].a	    OPTEE_RPC_SOCKET_IOCTL
++ * [in]     value[0].b	    TA instance id
++ * [in]     value[0].c	    Socket handle
++ * [in/out] memref[1]	    Buffer
++ * [in]     value[2].a	    Ioctl command
++ */
++#define OPTEE_RPC_SOCKET_IOCTL	5
++
++/* End of definition of protocol for command OPTEE_RPC_CMD_SOCKET */
++
++#endif /*__OPTEE_RPC_CMD_H*/
+diff --git a/drivers/tee/optee/rpc.c b/drivers/tee/optee/rpc.c
+index 1e3614e4798f..a3a1aa59f639 100644
+--- a/drivers/tee/optee/rpc.c
++++ b/drivers/tee/optee/rpc.c
+@@ -10,7 +10,9 @@
+ #include <linux/i2c.h>
+ #include <linux/slab.h>
+ #include <linux/tee_drv.h>
++#include "optee_msg.h"
+ #include "optee_private.h"
++#include "optee_rpc_cmd.h"
+ #include "optee_smc.h"
+ 
+ struct wq_entry {
+@@ -194,10 +196,10 @@ static void handle_rpc_func_cmd_wq(struct optee *optee,
+ 		goto bad;
+ 
+ 	switch (arg->params[0].u.value.a) {
+-	case OPTEE_MSG_RPC_WAIT_QUEUE_SLEEP:
++	case OPTEE_RPC_WAIT_QUEUE_SLEEP:
+ 		wq_sleep(&optee->wait_queue, arg->params[0].u.value.b);
+ 		break;
+-	case OPTEE_MSG_RPC_WAIT_QUEUE_WAKEUP:
++	case OPTEE_RPC_WAIT_QUEUE_WAKEUP:
+ 		wq_wakeup(&optee->wait_queue, arg->params[0].u.value.b);
+ 		break;
+ 	default:
+@@ -267,11 +269,11 @@ static struct tee_shm *cmd_alloc_suppl(struct tee_context *ctx, size_t sz)
  	struct tee_shm *shm;
- 	struct optee_msg_arg *msg_arg;
- 	phys_addr_t msg_parg;
-+
-+	shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
-+	if (IS_ERR(shm))
-+		return PTR_ERR(shm);
-+
-+	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
-+	msg_arg->session = session;
-+	optee_do_call_with_arg(ctx, msg_parg);
-+
-+	tee_shm_free(shm);
-+
-+	return 0;
-+}
-+
-+int optee_close_session(struct tee_context *ctx, u32 session)
-+{
-+	struct optee_context_data *ctxdata = ctx->data;
- 	struct optee_session *sess;
  
- 	/* Check that the session is valid and remove it from the list */
-@@ -301,16 +317,7 @@ int optee_close_session(struct tee_context *ctx, u32 session)
- 		return -EINVAL;
- 	kfree(sess);
+ 	param.attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT;
+-	param.u.value.a = OPTEE_MSG_RPC_SHM_TYPE_APPL;
++	param.u.value.a = OPTEE_RPC_SHM_TYPE_APPL;
+ 	param.u.value.b = sz;
+ 	param.u.value.c = 0;
  
--	shm = get_msg_arg(ctx, 0, &msg_arg, &msg_parg);
--	if (IS_ERR(shm))
--		return PTR_ERR(shm);
--
--	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
--	msg_arg->session = session;
--	optee_do_call_with_arg(ctx, msg_parg);
--
--	tee_shm_free(shm);
--	return 0;
-+	return optee_close_session_helper(ctx, session);
+-	ret = optee_supp_thrd_req(ctx, OPTEE_MSG_RPC_CMD_SHM_ALLOC, 1, &param);
++	ret = optee_supp_thrd_req(ctx, OPTEE_RPC_CMD_SHM_ALLOC, 1, &param);
+ 	if (ret)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -308,10 +310,10 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+ 
+ 	sz = arg->params[0].u.value.b;
+ 	switch (arg->params[0].u.value.a) {
+-	case OPTEE_MSG_RPC_SHM_TYPE_APPL:
++	case OPTEE_RPC_SHM_TYPE_APPL:
+ 		shm = cmd_alloc_suppl(ctx, sz);
+ 		break;
+-	case OPTEE_MSG_RPC_SHM_TYPE_KERNEL:
++	case OPTEE_RPC_SHM_TYPE_KERNEL:
+ 		shm = tee_shm_alloc(ctx, sz, TEE_SHM_MAPPED);
+ 		break;
+ 	default:
+@@ -383,7 +385,7 @@ static void cmd_free_suppl(struct tee_context *ctx, struct tee_shm *shm)
+ 	struct tee_param param;
+ 
+ 	param.attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INOUT;
+-	param.u.value.a = OPTEE_MSG_RPC_SHM_TYPE_APPL;
++	param.u.value.a = OPTEE_RPC_SHM_TYPE_APPL;
+ 	param.u.value.b = tee_shm_get_id(shm);
+ 	param.u.value.c = 0;
+ 
+@@ -400,7 +402,7 @@ static void cmd_free_suppl(struct tee_context *ctx, struct tee_shm *shm)
+ 	 */
+ 	tee_shm_put(shm);
+ 
+-	optee_supp_thrd_req(ctx, OPTEE_MSG_RPC_CMD_SHM_FREE, 1, &param);
++	optee_supp_thrd_req(ctx, OPTEE_RPC_CMD_SHM_FREE, 1, &param);
  }
  
- int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
-diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-index cf4718c6d35d..0ffe0c7d68ff 100644
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -273,59 +273,42 @@ static int optee_open(struct tee_context *ctx)
- 	return 0;
- }
+ static void handle_rpc_func_cmd_shm_free(struct tee_context *ctx,
+@@ -418,10 +420,10 @@ static void handle_rpc_func_cmd_shm_free(struct tee_context *ctx,
  
--static void optee_release(struct tee_context *ctx)
-+static void optee_release_helper(struct tee_context *ctx,
-+				 int (*close_session)(struct tee_context *ctx,
-+						      u32 session))
- {
- 	struct optee_context_data *ctxdata = ctx->data;
--	struct tee_device *teedev = ctx->teedev;
--	struct optee *optee = tee_get_drvdata(teedev);
--	struct tee_shm *shm;
--	struct optee_msg_arg *arg = NULL;
--	phys_addr_t parg;
- 	struct optee_session *sess;
- 	struct optee_session *sess_tmp;
- 
- 	if (!ctxdata)
- 		return;
- 
--	shm = tee_shm_alloc(ctx, sizeof(struct optee_msg_arg), TEE_SHM_MAPPED);
--	if (!IS_ERR(shm)) {
--		arg = tee_shm_get_va(shm, 0);
--		/*
--		 * If va2pa fails for some reason, we can't call into
--		 * secure world, only free the memory. Secure OS will leak
--		 * sessions and finally refuse more sessions, but we will
--		 * at least let normal world reclaim its memory.
--		 */
--		if (!IS_ERR(arg))
--			if (tee_shm_va2pa(shm, arg, &parg))
--				arg = NULL; /* prevent usage of parg below */
--	}
--
- 	list_for_each_entry_safe(sess, sess_tmp, &ctxdata->sess_list,
- 				 list_node) {
- 		list_del(&sess->list_node);
--		if (!IS_ERR_OR_NULL(arg)) {
--			memset(arg, 0, sizeof(*arg));
--			arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
--			arg->session = sess->session_id;
--			optee_do_call_with_arg(ctx, parg);
--		}
-+		close_session(ctx, sess->session_id);
- 		kfree(sess);
+ 	shm = (struct tee_shm *)(unsigned long)arg->params[0].u.value.b;
+ 	switch (arg->params[0].u.value.a) {
+-	case OPTEE_MSG_RPC_SHM_TYPE_APPL:
++	case OPTEE_RPC_SHM_TYPE_APPL:
+ 		cmd_free_suppl(ctx, shm);
+ 		break;
+-	case OPTEE_MSG_RPC_SHM_TYPE_KERNEL:
++	case OPTEE_RPC_SHM_TYPE_KERNEL:
+ 		tee_shm_free(shm);
+ 		break;
+ 	default:
+@@ -458,20 +460,20 @@ static void handle_rpc_func_cmd(struct tee_context *ctx, struct optee *optee,
  	}
- 	kfree(ctxdata);
-+	ctx->data = NULL;
-+}
  
--	if (!IS_ERR(shm))
--		tee_shm_free(shm);
-+static void optee_release(struct tee_context *ctx)
-+{
-+	optee_release_helper(ctx, optee_close_session_helper);
-+}
- 
--	ctx->data = NULL;
-+static void optee_release_supp(struct tee_context *ctx)
-+{
-+	struct optee *optee = tee_get_drvdata(ctx->teedev);
- 
--	if (teedev == optee->supp_teedev) {
--		if (optee->scan_bus_wq) {
--			destroy_workqueue(optee->scan_bus_wq);
--			optee->scan_bus_wq = NULL;
--		}
--		optee_supp_release(&optee->supp);
-+	optee_release_helper(ctx, optee_close_session_helper);
-+	if (optee->scan_bus_wq) {
-+		destroy_workqueue(optee->scan_bus_wq);
-+		optee->scan_bus_wq = NULL;
- 	}
-+	optee_supp_release(&optee->supp);
- }
- 
- static const struct tee_driver_ops optee_ops = {
-@@ -349,7 +332,7 @@ static const struct tee_desc optee_desc = {
- static const struct tee_driver_ops optee_supp_ops = {
- 	.get_version = optee_get_version,
- 	.open = optee_open,
--	.release = optee_release,
-+	.release = optee_release_supp,
- 	.supp_recv = optee_supp_recv,
- 	.supp_send = optee_supp_send,
- 	.shm_register = optee_shm_register_supp,
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index e25b216a14ef..2b63b796645e 100644
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -152,6 +152,7 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg);
- int optee_open_session(struct tee_context *ctx,
- 		       struct tee_ioctl_open_session_arg *arg,
- 		       struct tee_param *param);
-+int optee_close_session_helper(struct tee_context *ctx, u32 session);
- int optee_close_session(struct tee_context *ctx, u32 session);
- int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
- 		      struct tee_param *param);
+ 	switch (arg->cmd) {
+-	case OPTEE_MSG_RPC_CMD_GET_TIME:
++	case OPTEE_RPC_CMD_GET_TIME:
+ 		handle_rpc_func_cmd_get_time(arg);
+ 		break;
+-	case OPTEE_MSG_RPC_CMD_WAIT_QUEUE:
++	case OPTEE_RPC_CMD_WAIT_QUEUE:
+ 		handle_rpc_func_cmd_wq(optee, arg);
+ 		break;
+-	case OPTEE_MSG_RPC_CMD_SUSPEND:
++	case OPTEE_RPC_CMD_SUSPEND:
+ 		handle_rpc_func_cmd_wait(arg);
+ 		break;
+-	case OPTEE_MSG_RPC_CMD_SHM_ALLOC:
++	case OPTEE_RPC_CMD_SHM_ALLOC:
+ 		free_pages_list(call_ctx);
+ 		handle_rpc_func_cmd_shm_alloc(ctx, arg, call_ctx);
+ 		break;
+-	case OPTEE_MSG_RPC_CMD_SHM_FREE:
++	case OPTEE_RPC_CMD_SHM_FREE:
+ 		handle_rpc_func_cmd_shm_free(ctx, arg);
+ 		break;
+ 	case OPTEE_MSG_RPC_CMD_I2C_TRANSFER:
 -- 
 2.25.1
 
