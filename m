@@ -2,130 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCAA3493C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963533493CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhCYOKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        id S231425AbhCYOLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:11:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhCYOKj (ORCPT
+        with ESMTP id S231208AbhCYOK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:10:39 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6012AC06174A;
-        Thu, 25 Mar 2021 07:10:38 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo1253533wmq.4;
-        Thu, 25 Mar 2021 07:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0mydIUmMhYaLpC0TGBq89wR0dneeiZBlHKPe/4EHYHQ=;
-        b=a3ElJQirlWF+dI7K4n4nvo1sQoIkDsrGHGpI4TzD8Q5dkBmsANAOjtijDLR8aeCdWR
-         8tCnfIctyLhIYTyi3nRP9xBG++vnW4KpmYe2cgU6/VrlpGHn5kxHvkc1nbEHx9+IkLTu
-         JX9Y+Y5VZzMWpX7/slK0YHqJa3j3akJd/6q2EPGBfY/7cZ7cgtAluRg/XaAEKd0NoI6W
-         vcQqcDUErX9vXyhoqOIN57vWwpAiRFPR1Ow9C8kpGsTD5pnMZ/Ti5FEyDF3bsu2/CFEw
-         uGUDIfA+7kVWW73Trqoqcs51olgm+RdQndp1ISFmn5oQyOaWauPmg3Gj+uP1LiMloreC
-         md8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0mydIUmMhYaLpC0TGBq89wR0dneeiZBlHKPe/4EHYHQ=;
-        b=e9pF3P3xjno5Q22mUYEuydk4vbUDmOl3EzxH3dAx/bT0/2LI8H7mC8UZ2G2GIbYvxr
-         jfWDhVySvFkD86MGc1oKJ+2WRAR4ghIPemODrtRHusetV3oLFNPkA5sC5hYcb/AyB0Ia
-         bPqylkTbKWMlXN4RR/fSLdtr0rEn7vbJhfa4LO+xzpK7j0doTEiQlcF+0TI4kvFuuJOL
-         jSuDu9V/z4zVhiO4bF3BvDMzEFaFchhUKk8oRM0J/GgBWtm7lEuitERt5j3WBTSuDUJw
-         nfZWSFWfLEOZmjnD4WgreDss8VOFNzoXEw3IQefnq399iUzylzNU+QH52fox9NWs0doV
-         asaA==
-X-Gm-Message-State: AOAM532f3/LLmUpm3jW61oIQq5uehWXklqpKek2f+tI2RkfBnngU6HLB
-        vVgMZ9wev1D07ZsY+kPlyPc=
-X-Google-Smtp-Source: ABdhPJwbRUVbk/fkcAVvW+Lw1raZb6rUBMJ2PSvmm+rVzBFiu8qDlP16L2ma9KZzOWdSnZHxzfPaBg==
-X-Received: by 2002:a1c:22c2:: with SMTP id i185mr8179035wmi.99.1616681437080;
-        Thu, 25 Mar 2021 07:10:37 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id v14sm7684745wrd.48.2021.03.25.07.10.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:10:17 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 15:10:25 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, Nick Dyer <nick@shmanahar.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jiada Wang <jiada_wang@mentor.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] ARM: tegra: acer-a500: Add atmel,wakeup-method
- property
-Message-ID: <YFyZ0ejrSxWc3JZT@orome.fritz.box>
-References: <20210302102158.10533-1-digetx@gmail.com>
- <20210302102158.10533-4-digetx@gmail.com>
- <YFfLXLDIuRdj2bWs@google.com>
+        Thu, 25 Mar 2021 10:10:59 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0832DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=lgDxr472HzVsceFaWX9FCws+z+Dv6gd3htj2S1VADz0=; b=BXSgkdufodM52TvQu3niXghYW
+        cqgWSiY7CmEMPV4MZFdIVIw5QlRoFgVqYjFMehLPlISSOij9mSQ3BOCh8qg3YeY8x1UAvpEAGwc4x
+        VJhz6VbLBCKwnGK8zNU0GlnzlRqTFXyieMPQ10jmWCktePFUJHtHoTkJ+tHYAQi2kwdKQxzcJvMyF
+        hHD3HPIDi5dgFqhRjgBQyWsgpO38go1r6eHH+///dj4E50jd2FLhS6jdxJi4RBRcY6Ty4IKGvZ1kk
+        nsQ8LWOAHxNoOWJSA4oDlGcr9MDd8PdAdIS1SAiIdPB/dC3zH4rb+p7mwcfikks0+Zm3+DGCcio3v
+        JK6sOhV9w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51718)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lPQh8-0001oL-QQ; Thu, 25 Mar 2021 14:10:42 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lPQh4-00064v-MA; Thu, 25 Mar 2021 14:10:38 +0000
+Date:   Thu, 25 Mar 2021 14:10:38 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, patches@arm.linux.org.uk,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] ARM: syscalls: switch to generic syscalltbl.sh
+Message-ID: <20210325141038.GM1463@shell.armlinux.org.uk>
+References: <20210301142834.345062-1-masahiroy@kernel.org>
+ <CACRpkdZ8niLC8+LFs3+Wa79HCzYGSmKN4uLbkHsY_zk881nPQA@mail.gmail.com>
+ <CAK7LNASmu5EocRpQP5DLhkAz5ryHwHw24jO4w0au2tE+2jCo=w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="JZH7iAiIxO3WXnjv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YFfLXLDIuRdj2bWs@google.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <CAK7LNASmu5EocRpQP5DLhkAz5ryHwHw24jO4w0au2tE+2jCo=w@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 05, 2021 at 11:53:39PM +0900, Masahiro Yamada wrote:
+> On Fri, Mar 5, 2021 at 7:04 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> > On Mon, Mar 1, 2021 at 3:29 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > > Many architectures duplicate similar shell scripts.
+> > >
+> > > This commit converts ARM to use scripts/syscalltbl.sh.
+> > >
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> >
+> > This looks good to me to FWIW:
+> > Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> Thanks for the review.
+> This patch is already in Russell's patch tracker.
+> 
+> I manually copy/pasted your Ack:
+> https://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=9068/1
 
---JZH7iAiIxO3WXnjv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I see you added a note to 9067/1 about the order of 9067/1 and 9068/1:
 
-On Sun, Mar 21, 2021 at 03:40:28PM -0700, Dmitry Torokhov wrote:
-> On Tue, Mar 02, 2021 at 01:21:58PM +0300, Dmitry Osipenko wrote:
-> > Acer A500 uses Atmel Maxtouch 1386 touchscreen controller. This control=
-ler
-> > has WAKE line which could be connected to I2C clock lane, dedicated GPIO
-> > or fixed to HIGH level. Controller wakes up from a deep sleep when WAKE
-> > line is asserted low. Acer A500 has WAKE line connected to I2C clock and
-> > Linux device driver doesn't work property without knowing what wakeup
-> > method is used by h/w.
-> >=20
-> > Add atmel,wakeup-method property to the touchscreen node.
-> >=20
-> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->=20
-> Applied, thank you.
+"Obviously, 9068 was submitted 30 seconds before 9067, but the patch
+tracking system unfortunately picked them in reverse order,
+unfortunately."
 
-I noticed that you had applied this as I was applying a different patch
-that touches the same area and it causes a conflict. In general I prefer
-to pick up all device tree changes into the Tegra tree, specifically to
-avoid such conflicts.
+The patch system doesn't "pick" the patches. It merely accepts them in
+the order that it receives them. I also received them in reverse order
+into my personal mailbox as well, and also in reverse order from
+infradead's mailing list.
 
-That said, I didn't see an email from Stephen about this causing a
-conflict in linux-next, so perhaps it's fine. If this pops up again it
-might be worth considering to drop this from your tree so that I can
-resolve the conflict in the Tegra tree.
+2021-03-01 14:29:57 1lGjYa-0004Dd-Ok <= masahiroy@kernel.org
+H=conuserg-10.nifty.com [210.131.2.77]:21701 I=[78.32.30.218]:25
+P=esmtps X=TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256 S=5966 DKIM=nifty.com
+id=20210301142903.345278-1-masahiroy@kernel.org T="[PATCH] ARM:
+syscalls: switch to generic syscallhdr.sh" for linux@armlinux.org.uk
+2021-03-01 14:30:06 1lGjYj-0004Di-B3 <= masahiroy@kernel.org
+H=conuserg-07.nifty.com [210.131.2.74]:55987 I=[78.32.30.218]:25
+P=esmtps X=TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256 S=5811 DKIM=nifty.com
+id=20210301142834.345062-1-masahiroy@kernel.org T="[PATCH] ARM:
+syscalls: switch to generic syscalltbl.sh" for linux@armlinux.org.uk
 
-Thierry
+2021-03-01 14:32:46 1lGjbK-0004E2-0t <= masahiroy@kernel.org
+H=condef-10.nifty.com [202.248.20.75]:19522 I=[78.32.30.218]:25 P=esmtps
+X=TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256 S=6136 DKIM=nifty.com
+id=20210301142903.345278-1-masahiroy@kernel.org T="[PATCH] ARM:
+syscalls: switch to generic syscallhdr.sh" for patches@arm.linux.org.uk
+2021-03-01 14:33:47 1lGjcI-0004EF-Ny <= masahiroy@kernel.org
+H=condef-09.nifty.com [202.248.20.74]:45947 I=[78.32.30.218]:25 P=esmtps
+X=TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256 S=5981 DKIM=nifty.com
+id=20210301142834.345062-1-masahiroy@kernel.org T="[PATCH] ARM:
+syscalls: switch to generic syscalltbl.sh" for patches@arm.linux.org.uk
 
---JZH7iAiIxO3WXnjv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcmdEACgkQ3SOs138+
-s6HM1hAAv6/5w7f5FRWHIHF5G+bDGgIf2T9Bf6XOXEaLGpXdXYQjypKwmY9bZ2tg
-ksZQ5Bo4Yf0lFKOfFRVJq8yrxYXGzrA2lj28RHOAgs8H6+KKw04/WIAv+/ySLeUl
-w2fYrmlTlu6SEdMC0mpEhtB1nZcJFIZNOs2Yb1wBeh3bfUDcSt14vDcYxryUn57r
-KV3jt5+djsRYkpp+uf6vQe1/YGoSnqSbWjKb4zpaF0YTK/FkHZfq3/p91F2YbiEi
-3Ru+tB2W1AGoP+z5t/HL0qW2bnCssosm6vfZkO78L/zjagSVSIYshIYMLjVyczKv
-4axWH0LRIcEKben0NczDyXjU+oN2gbDAeay7RYmpLM11HzjSpVWVmhHT27z1lIw1
-tMKMCceERaqWJclInwv/62mv8rLs3QsyefzZEUQe039MgMzFTZBT4WYt+42qG6Fs
-ZseZ/2ujdvXsTnwiMbjqxD1jBQCUchStvKLcXH8rHWE82QrwjulTxElAyAJ6LGJw
-u3dN85bhfYQdry7TR9V5+zDHPabkJddVzb8BaHrJbjbbH2mLsk8RZOeJ6LjhKfDK
-z6TnRacuY1E7li6BDaHbgCayUqRiDbhxfi90l88+Y7qIT2fPvlpwe4+gpp8llIsM
-7jd6hNl19c6C66EsO9vAD5xBUz7ub283rbp1umk3vol8LbToUOc=
-=RvcD
------END PGP SIGNATURE-----
-
---JZH7iAiIxO3WXnjv--
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
