@@ -2,106 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60E9349454
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B5F34944E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:39:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231340AbhCYOjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
+        id S231376AbhCYOj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhCYOjb (ORCPT
+        with ESMTP id S231211AbhCYOjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:39:31 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079EBC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:39:31 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id m7so1750716qtq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:39:30 -0700 (PDT)
+        Thu, 25 Mar 2021 10:39:12 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6D7C06174A;
+        Thu, 25 Mar 2021 07:39:11 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id e18so2529277wrt.6;
+        Thu, 25 Mar 2021 07:39:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6iXLF/lKSG8S51IUrl5KoCZW79Du1xNlnz6N6/Diyn4=;
-        b=mJ0/eVxlyR5iEOAhqAIyhEp8iJaZZoKGL9mo9LeKqskmGim8MQCxW/vE49ORAaoi9o
-         PYSyPhswm0JKFEdhb2Q+Msn5dNWpQJBZnN68QL1gtHEoVfoDDZ+JM8YytOH/ndrRRfhs
-         SS5GuFcdsYqRucVnpe+73VvdEXaDMO9FkqfT7xoydiDq52yxko+FDCssdThCAQWzrHPv
-         mR+NCglz5hvRmMcjf4JwDMsqX6SjzbOTDsPMAp5X5lr9FQ4iYmpxz/q7/pQpAk7ABkBR
-         q12p0o/PM0ucHPgv9YP3K8mFlB63AboI6/9zSnuBpCu6V4s5KNgxz6Ed3rbZTVa2gjDB
-         8Ieg==
+         :content-disposition:in-reply-to:user-agent;
+        bh=eVMg9U8Kdz9xJ+s917StRu9WI7qS3OmAkOKawdzzeY4=;
+        b=Sv0VCIJljaIN3OM4TNc131cDMS3qydGQPSbjknsIPQCiIolufWD9r65z1ZtsWtFjj7
+         gvwXYvyUTBdwl/KZWLkLcOZ+agkT6Z4LU9xCo7O/c31Nb1xL9GyhFVF9+XVwguKN7z05
+         et9m6FTMLBb5LG+aBmawx/JQ60/8/917as9wQ3wP30Kod13WwziNbVH3GrRtpwzuvfwu
+         DmP/IcHoYeQeEVTC7c50ivewRk3F1vFGOLEeC263WZPFqosQOkRy8DvKtnFFgLYLh6Ou
+         yAoz4x2MIsWUcZmF5fxbHibNh839BvPxSc8F5xrfwvyeGVcRL/SmSebINU9p2jyR2EHn
+         BYXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6iXLF/lKSG8S51IUrl5KoCZW79Du1xNlnz6N6/Diyn4=;
-        b=d3vOLsXDAgwLDGH+uezd88oSKY6BRvfX8ua7n0swZEGMBz+QIf0mlcMI+jCEfK/npP
-         8ct2dJFJ+HSZE3yQVReIjtWC94USM92mAuXVwsmo39pmknZQnPSOLPTmMWJckClGi7bP
-         dWU1U5OmIzEbmyZHLuVBP+oxovUHrc5DneYwHO7Z5DsO+DxahYNGW9S4xI1HeSu3A1Rn
-         EsPPcFRdxYP01heTAEKJLbvlcLDn9BkTV2huwQtvn94TEs2EOxuCSJWaQqyDR6CWFSe9
-         8uvva3kDyjti0l6b8bAJw/us6imT/jLe/RrRfJ7tTPG5ThNAdbD7/PKW8U0YWnV7qgza
-         6m0g==
-X-Gm-Message-State: AOAM530zu2CMM2KrT6yiwBdVM+wiKfz2jD89wfbph2lKNHREiM08ROIF
-        MAqZWqc+UNyUBTApAsjmNnOevQ==
-X-Google-Smtp-Source: ABdhPJxZDMo7r+XfXWQKy6rexnqyaa+VI9LcE8cZzoNWbcySugAq3xtJGYmwPJ9UloynDbQAf0RQ0Q==
-X-Received: by 2002:ac8:5e8a:: with SMTP id r10mr8045937qtx.13.1616683170204;
-        Thu, 25 Mar 2021 07:39:30 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id v7sm3536639qtw.51.2021.03.25.07.39.29
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=eVMg9U8Kdz9xJ+s917StRu9WI7qS3OmAkOKawdzzeY4=;
+        b=jZpnm8zFJ2w1bwGazAN2OIcMyPko3Q7IfOLblWdRWuomANPJeASf2WNzo0obefZExQ
+         c1hf3sUmyyIwHunCbzZJAwaadbV7SXMLx0RJhvZ9I6orFZRuhOJwOSMiqNwTqzqWtNAy
+         Tj8lkcK1o9L6ljORJX7vKzCnPjL23ndpAwUyFQr5y9MWAtvMiMiTLkjkfvgVg+9glQHu
+         ADMTlwIAYL63H4fUXctO7GUG/MoLFuM5wcAE/lWVVwIQwOjHO7V0GrUTm7S3E77qadXt
+         2II+Li2uprhRwa7IvidBHK7GhV/E8gFQjHlfZlJiUEajKpUtB+jK0gXTBaElujLccAaq
+         z3nQ==
+X-Gm-Message-State: AOAM532/b9ys4D6AT+05Vqhh8Bx/hHxoOwCiL2dAyqoEIJ8WUWweVs3G
+        b6rVfbiQPmVAWXQ38myfExw=
+X-Google-Smtp-Source: ABdhPJy8EOX1pW7R72AiKQ4GwnutLnz5MMzh8zqbBLSCvfdKFtjg/AAh6mLClf/2txlZt6HexfxLag==
+X-Received: by 2002:a5d:570c:: with SMTP id a12mr9441809wrv.209.1616683149870;
+        Thu, 25 Mar 2021 07:39:09 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id l9sm6232289wmq.2.2021.03.25.07.39.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:39:29 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lPR8y-002fsw-N6; Thu, 25 Mar 2021 11:39:28 -0300
-Date:   Thu, 25 Mar 2021 11:39:28 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
-Cc:     Praveen Kumar Kannoju <praveen.kannoju@oracle.com>,
-        leon@kernel.org, dledford@redhat.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Rajesh Sivaramasubramaniom 
-        <rajesh.sivaramasubramaniom@oracle.com>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Jeffery Yoder <jeffery.yoder@oracle.com>
-Subject: Re: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt
- update
-Message-ID: <20210325143928.GM2710221@ziepe.ca>
-References: <1615900141-14012-1-git-send-email-praveen.kannoju@oracle.com>
- <20210323160756.GE2710221@ziepe.ca>
- <80966C8E-341B-4F5D-9DCA-C7D82AB084D5@oracle.com>
- <20210323231321.GF2710221@ziepe.ca>
- <0DFF7518-8818-445B-94AC-8EB2096446BE@oracle.com>
+        Thu, 25 Mar 2021 07:39:08 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:39:30 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/5] soc/tegra: pmc: Ensure that clock rates aren't
+ too high
+Message-ID: <YFygotHKjgPQ/R4G@orome.fritz.box>
+References: <20210302122502.20874-1-digetx@gmail.com>
+ <20210302122502.20874-4-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Tcr+9zq/JqP5m3Qd"
 Content-Disposition: inline
-In-Reply-To: <0DFF7518-8818-445B-94AC-8EB2096446BE@oracle.com>
+In-Reply-To: <20210302122502.20874-4-digetx@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 09:27:38PM -0700, Aruna Ramakrishna wrote:
 
-> > Do you have benchmarks that show the performance of the high order
-> > pages is not relavent? I'm a bit surprised to hear that
-> > 
-> 
-> I guess my point was more to the effect that an order-8 alloc will
-> fail more often than not, in this flow. For instance, when we were
-> debugging the latency spikes here, this was the typical buddyinfo
-> output on that system:
-> 
-> Node 0, zone      DMA      0      1      1      2      3      0      1      0      1      1      3 
-> Node 0, zone    DMA32      7      7      7      6     10      2      6      7      6      2    306 
-> Node 0, zone   Normal   3390  51354  17574   6556   1586     26      2      1      0      0      0 
-> Node 1, zone   Normal  11519  23315  23306   9738     73      2      0      1      0      0      0 
-> 
-> I think this level of fragmentation is pretty normal on long running
-> systems. Here, in the reg_mr flow, the first try (order-8) alloc
-> will probably fail 9 times out of 10 (esp. after the addition of
-> GFP_NORETRY flag), and then as fallback, the code tries to allocate
-> a lower order, and if that too fails, it allocates a page. I think
-> it makes sense to just avoid trying an order-8 alloc here.
+--Tcr+9zq/JqP5m3Qd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But a system like this won't get THPs either, so I'm not sure it is
-relevant. The function was designed as it is to consume a "THP" if it
-is available.
+On Tue, Mar 02, 2021 at 03:25:00PM +0300, Dmitry Osipenko wrote:
+> Switch all clocks of a power domain to a safe rate which is suitable
+> for all possible voltages in order to ensure that hardware constraints
+> aren't violated when power domain state toggles.
+>=20
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/soc/tegra/pmc.c | 92 ++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 90 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+> index f970b615ee27..a87645fac735 100644
+> --- a/drivers/soc/tegra/pmc.c
+> +++ b/drivers/soc/tegra/pmc.c
+> @@ -237,6 +237,7 @@ struct tegra_powergate {
+>  	unsigned int id;
+>  	struct clk **clks;
+>  	unsigned int num_clks;
+> +	unsigned long *clk_rates;
+>  	struct reset_control *reset;
+>  };
+> =20
+> @@ -641,6 +642,57 @@ static int __tegra_powergate_remove_clamping(struct =
+tegra_pmc *pmc,
+>  	return 0;
+>  }
+> =20
+> +static int tegra_powergate_prepare_clocks(struct tegra_powergate *pg)
+> +{
+> +	unsigned long safe_rate =3D 100 * 1000 * 1000;
 
-Jason
+This seems a bit arbitrary. Where did you come up with that value?
+
+I'm going to apply this to see how it fares in our testing.
+
+Thierry
+
+--Tcr+9zq/JqP5m3Qd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcoKIACgkQ3SOs138+
+s6EX/g/+J6USwbUaTKlXIziLfJz1hm2pPY/lsfoXVaA24s+d6nfV8Lq3hFtJ/A3K
+Wfs/MtOEE8CUX5zMIhSlxVKNkl+ZVlypEG6/cMxpARlFNxaOuq/3+y3l7GdoM26m
+o/PYrZV624lgbusvtmQQwMEbrnSggDJgO3irSRPJHy4y83guoj8vg+XVSdxIT9dP
+2XOotLgyMd3SfbU480wE8MZw+q0mhsBKFMZxoeRjibUCER4RKJP8iT9CNBKQBMS1
+96cHdEip/avubYiCY1H+vMntYdfkukNF3cw9baNfEKvSpsMixPMcYibuEJ14/qjS
+15yr88EucjWfsr4P4PX7aqgGfJOUWFcOFpBinHQk+0O8IVTMXYXe/eyhbX//jr8X
+jYFj8Bum6FD3zaWiEKSuo2efMdVTAr54Bm5D51KzlAsJnJ9H4AshMiJFl/0JQnDc
+1XNtsrDsGpr3oBcUsSbn/gcNbRy3pEHweD1izUG3WCg8khrBbUnhWNSJgwk314ua
+Z8soVf9kXOiuW1KLPYKHNst8OwqufhNUDU8tRs5rdNOHJQAykWKBLxPtLI88nP1F
+4UFqpQMMJ2bSw7/N9iE4pMeJiM3QVpOQQ6HdGamdqjCJL2SPGP9/++EV1cB7v/8d
+F4kxvFc88IPS7zNxejMfxcLFVK9MYC6tezjvEkZLNSOZj5MBzkM=
+=OQxL
+-----END PGP SIGNATURE-----
+
+--Tcr+9zq/JqP5m3Qd--
