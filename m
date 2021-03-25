@@ -2,114 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5C0348B48
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45518348B4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhCYINh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53966 "EHLO
+        id S229695AbhCYIOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhCYINT (ORCPT
+        with ESMTP id S229659AbhCYIOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:13:19 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5C6C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:13:18 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a7so1459098ejs.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:13:18 -0700 (PDT)
+        Thu, 25 Mar 2021 04:14:04 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FB0C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:14:03 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id n138so1227003lfa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HejjARvJ9xPzmvq9Kb1zqDu3RAw9VmmzKI0Ua2yVZWY=;
-        b=kYALy9LoxNSmT31hMkqKdDwmBUCwkQQPfZRxqVfaQNb6SSyyhqEVXORGQlZ/gsHHyL
-         rXpU596MLUA5ZE1M/vgYekdE1EiSfL+awNober1qR+38waVNDhZ1gogY3f6If/6rPjhm
-         tRHSt8U2JKFMBMwQDjjbXDRbBau0NanR76FFbkd5R/qeAwZ0ZCRAzI7AeMp6TkSG6HQG
-         enuNkyUis7EzsT9InqgX6kqC7sIJoX7DJGAu2WSZaeBhJnYPd8xc4IAJ1kkBUp17OoIR
-         pSRo1pEVuBU8iSze/ZeCLFzmGo/bjTsymjwcGQ43kDa4b7elG140bCFf2S9J0OvntzLF
-         YQRQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MiLTBuOYON0mmjwVXAuCho4Q8c3JY+XxyqaaZQopoXU=;
+        b=q6I10zPF8jYgHSj89yolaw2lySm4+tAhYarqBWhZ/q1+cAh9X+5nIFfc5xeZR7+9/d
+         v0I5OgWmXMIaTLmXBXo03CEKFwdbkixAgNaLpX7cNHzSDH9e+FxefAx8h9vg48UXFzJI
+         coJc8zBPxlcmcdPZwCE3iyLkxMPPnSD2/WtrX/sOJ636ewvw7oVYIAdag5GaRhAb3ElY
+         ETLrlFf4L1T1W9z1Ivz8t6YqBHicWj4JqKwM6bl08uYCmlld59diBcHrXxx7E8N3+8AW
+         tjOvHe8Z5hFcZhvdQ8f7zq5SIMQ88J202lzQCi6HGbCDy7iHpcxEy5eZJUiCOh61Xnj6
+         irXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HejjARvJ9xPzmvq9Kb1zqDu3RAw9VmmzKI0Ua2yVZWY=;
-        b=e290lugVol9TNM3ikZAPomKoH9MC482x+YcaQUOGJwAnMVE67JscZEJe+d74M53Zdo
-         /SHbeLpvr7QgJzUk/0T12X/x00rPPUoCn6AVgjSQ0F8sufuLkgXknLbm6r8BfYo0twuI
-         qx5/bqYcmsHjb5B3jb2g1IQTnqcbxpRoRCN76xu08Zvw5gzJrp6/WSHYkob6Fe3oHvph
-         8vWTzBk+DNMImF4l1ROHbPuLdiFDuNvhM+5rk7EF5SAgX0t7AThLi8gWzkEPH8VoPz/u
-         hYNIbjRVGUydtGnVlu8Xo+/4ozLA6CkC0zzTpK0TZu7P5/k6k+fg40ZNJRqiVIsSFN1Q
-         Us3Q==
-X-Gm-Message-State: AOAM533bW8meEAdckRVOFa9yKHP8VnejhQtUHxL1T0XBbNnzDRk6Rmdu
-        Ztt/h+lg9O8SK16cei9Br7CwSA==
-X-Google-Smtp-Source: ABdhPJxQhbpkhmqgC6PVpNJ3hc23dX6UiyLifzKp1AQpw+OE0HW4RV3jfMUeAGihMpu5JSftIMhv/g==
-X-Received: by 2002:a17:906:2404:: with SMTP id z4mr7851672eja.14.1616659997026;
-        Thu, 25 Mar 2021 01:13:17 -0700 (PDT)
-Received: from [192.168.1.54] (hst-208-220.medicom.bg. [84.238.208.220])
-        by smtp.googlemail.com with ESMTPSA id u24sm2049805ejr.34.2021.03.25.01.13.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 01:13:16 -0700 (PDT)
-Subject: Re: [PATCH v3 14/15] media: venus: Convert to use resource-managed
- OPP API
-To:     Dmitry Osipenko <digetx@gmail.com>, Qiang Yu <yuq825@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
-        lima@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210314163408.22292-1-digetx@gmail.com>
- <20210314163408.22292-15-digetx@gmail.com>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <b780c19f-7f5d-5453-dec1-062fa7c1dc07@linaro.org>
-Date:   Thu, 25 Mar 2021 10:13:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MiLTBuOYON0mmjwVXAuCho4Q8c3JY+XxyqaaZQopoXU=;
+        b=WBmtFrtDHLn17rnsh7dawkvuqR+8A15D99aHpwCS9nTJexzc6Cex9XgF+ekXyoz8SN
+         Jn6EoBMFzFXI6ysNjbA+XKsSQx21W6W/2ci6TI4XBHqvt1BJp3dePpRV17HTawqm54P+
+         L1uy7E3+kByqHrMWU3BIVsUL6mflEsTCvSNdExh+MIJsvpkas1WEe084tcdA2GE6r9cZ
+         FPe1LrGXaoMAw+3I/63PBwaELicxw1kTZ/oHiqUYkcUcL2aKuKsOgD+koJpzZXRQEdBn
+         MJ7F2Z3XhFtiJt5ZGvsRBphke77xTJ4YwawjRl2DUszATCwP45kSJCJL+JjRI1mNkGxY
+         Omqg==
+X-Gm-Message-State: AOAM532D4LcajRJsAS0RV3iDYWswQxtP9B7EpurJkL9Q6qzY++oxP8Mb
+        xeXaFONGd4zETAoDRzzfbv4jzLpvjPtGvtI7NHGqDg==
+X-Google-Smtp-Source: ABdhPJyZYg4I5cQP6CTtXyp/9MqAFeYPZVw5Y2tnnAEVdhSwOdGGnFgN/R1jBUmYq9S7/CfkJklFEW6hiGcKf3BWIFo=
+X-Received: by 2002:a05:6512:c0b:: with SMTP id z11mr4413581lfu.586.1616660042259;
+ Thu, 25 Mar 2021 01:14:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210314163408.22292-15-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com> <20210317151928.41544-2-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210317151928.41544-2-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 25 Mar 2021 09:13:51 +0100
+Message-ID: <CACRpkdaZwAg4X9QT4QMR2GSH6Cekc7Xuk+-pqhCyON-Y3cnCrA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] gpio: sch: Add edge event support
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Mar 17, 2021 at 4:19 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-On 3/14/21 6:34 PM, Dmitry Osipenko wrote:
-> From: Yangtao Li <tiny.windzz@gmail.com>
-> 
-> Use resource-managed OPP API to simplify code.
-> 
-> Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/media/platform/qcom/venus/core.h      |  1 -
->  .../media/platform/qcom/venus/pm_helpers.c    | 35 +++++--------------
->  2 files changed, 8 insertions(+), 28 deletions(-)
+> From: Jan Kiszka <jan.kiszka@siemens.com>
+>
+> Add the required infrastructure to enable and report edge events
+> of the pins to the GPIO core. The actual hook-up of the event interrupt
+> will happen separately.
+>
+> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+> Co-developed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+I can't believe it that nobody added irq support to this driver for 10
+years given how widely deployed it is! (Good work.)
 
-I'll take this through media-tree once OPP API changes are merged.
+Don't you need to add
 
--- 
-regards,
-Stan
+select GPIOLIB_IRQCHIP
+
+to Kconfig? So the gpio_chip contains the .irq member you're using.
+
+> +       sch->irqchip.name = "sch_gpio";
+> +       sch->irqchip.irq_ack = sch_irq_ack;
+> +       sch->irqchip.irq_mask = sch_irq_mask;
+> +       sch->irqchip.irq_unmask = sch_irq_unmask;
+> +       sch->irqchip.irq_set_type = sch_irq_type;
+> +
+> +       sch->chip.irq.chip = &sch->irqchip;
+> +       sch->chip.irq.num_parents = 0;
+> +       sch->chip.irq.parents = NULL;
+> +       sch->chip.irq.parent_handler = NULL;
+> +       sch->chip.irq.default_type = IRQ_TYPE_NONE;
+> +       sch->chip.irq.handler = handle_bad_irq;
+
+I always add a local variable like:
+
+struct gpio_irq_chip *girq;
+
+And assign with the arrow, so as to make it easier to read:
+
+girq->parent_handler = NULL
+
+etc.
+
++/- the above:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
