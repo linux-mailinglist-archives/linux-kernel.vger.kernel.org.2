@@ -2,106 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF99348787
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 04:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F4734878E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 04:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhCYDfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 23:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbhCYDeh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 23:34:37 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A8FC06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 20:34:37 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id x126so573831pfc.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 20:34:37 -0700 (PDT)
+        id S230261AbhCYDhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 23:37:14 -0400
+Received: from mail-eopbgr690097.outbound.protection.outlook.com ([40.107.69.97]:34772
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229448AbhCYDgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 23:36:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gxvqn/Mv0vpDgvPY8RFu4LUp/AiBJZX23HgeXn+OhcvY71OBfPDg08b2aHomwFmv5LCxAklU2bDjc8htCJ5y48cQ8tJhwKMS8Vi9YuvtEE2OPK6eHuXJvKaV3MdK1KY/rRNzmuZP+sWjWWTOcS95jHLSaTeqnOoBZNgjE80updy8oAi4T4t/lISvr+2mqvqpmkjFCQSMbTwGAHsscLH2I+sXs3JAlxO52ZY480X73u5L94kQ+GLnW8S4gtko5Gq8Joz+g0u6H0K4FNl2suFHjXfOxlen5lYi/XihDjDZ343y2q4OLB3CbMDd7Hyq4QHXlWwZbLw6D8nMOMrSiMzImQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D1N1bLfntiyv0Dz7c/VGfeIsYpZDEd5Lw66+H1uF/v0=;
+ b=VQoMzmQEjyW1ZBycoOmaqNbUpa2OUiAISK6GQlQVC9GLCx5joOk9D0co8cEvW4KGwoK0DRy9+fgF9gnU4PgqFoGFRN+BYmw8G7hhyz5TXYclVsLwy0w45GADaUM0lrdxEvQBirtfaabGo1B/7lHCs2aAdBzxvGUvjE5+sg2XKbjFec6jIfvvWolu5Ha6Z3e5zJznIIx3RNronWTf4ROAlbr8R6+1GXVxxMEENa4jBeQDfUwSHXMfWu23mPXPejeA0Sw6uI5gqUXBa/+ygHwgQId+8CRZf+gfBy6UJavms8tmPs1AS/bJVsGf2bebnUItTzMT8HDbO9fS41oCbR7Fig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=maximintegrated.com; dmarc=pass action=none
+ header.from=maximintegrated.com; dkim=pass header.d=maximintegrated.com;
+ arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=uiHuANgZnUbs15erWI7jFJ06CQL/PCIuoG5tp+3N4nE=;
-        b=Avv86z6t3Wlrh6ex01MDKbR5Qe9MemwRgAj1PIprTZWNVr5vpe2TpYSZANV1n5OATL
-         zZaJ5qQDZiEGkKvCSOgAzKB5ZRAWg5HSq1KkfAKxYbEZHJh8sIb/XK14yCwGXMBGtS20
-         0U5XPJ/LWeAlNBbnHotvyKWXTpSt1e8cT+ux9w14OrihPnXYnQW/chh2WGfXisDqBNJv
-         N0cozmY90iTzeixUAC/W76VPTg9kexWXW8wfUB3Lo0VVwQ1Iz7Hq6ZnFdIudcvtjxsau
-         qhM7nGl4xM9XkTONd2PpCzC/OUDC0ssP7urAYzZ/amK+kCESzmhH7+6zuxySYcgxDqu0
-         qmCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=uiHuANgZnUbs15erWI7jFJ06CQL/PCIuoG5tp+3N4nE=;
-        b=JCfGtmxrrcCcKy15qnAOIiFmRAfnv8eJyrdsh+LhcEP+h6bmUJ65j1Up6MKK08s+0L
-         GESjKYsigWq340FIbzWLQBMDA9M+4dfUu8RHenNJ9pAX68cw7pLXEjfB2MzeRVZP8owL
-         qIhzxEJBCeqWhI17w64xnAyMxT2kYjNe8b758mUzrK4KmN1OLUMNAL+zPU7AoCNiMl48
-         IX7GG+dnOqT71YkM50NpnEzGwL4MNCEtEJwoo5SHoNP9tMOQjrnuace4ZDevqx4DTQjQ
-         M4nD4Yhks2E9YTdL10qXzFchseLezUmXVf+WA8SlM3P5xR9kISH5TFGDZGU22RwvUyeL
-         5k0Q==
-X-Gm-Message-State: AOAM533I+Nt6QdYs5zRjlglZZ28OHOjvntwSYzscYfJGhlDKs3/s2rSA
-        yThxEv5qQUYKXufNAJ5A2Rwbj8ofrJGvNA==
-X-Google-Smtp-Source: ABdhPJxImsKBAHNehdnBOjZGwfMv4q2M2pY7ju3E01s04z4pvRiTdZAPGc2tU3JodE7AeVEWfWa/mA==
-X-Received: by 2002:a62:7f86:0:b029:20a:a195:bb36 with SMTP id a128-20020a627f860000b029020aa195bb36mr6160832pfd.4.1616643276590;
-        Wed, 24 Mar 2021 20:34:36 -0700 (PDT)
-Received: from rashmica (150.24.220.111.sta.wbroadband.net.au. [111.220.24.150])
-        by smtp.googlemail.com with ESMTPSA id m3sm3528784pgk.47.2021.03.24.20.34.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 20:34:36 -0700 (PDT)
-Message-ID: <fa0803a7ca3c88835e113e06e32bed68adbc45c2.camel@gmail.com>
-Subject: Re: [PATCH] powerpc/asm-offsets: GPR14 is not needed either
-From:   Rashmica Gupta <rashmica.g@gmail.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 25 Mar 2021 14:34:31 +1100
-In-Reply-To: <9881c68fbca004f9ea18fc9473f630e11ccd6417.1615806071.git.christophe.leroy@csgroup.eu>
-References: <9881c68fbca004f9ea18fc9473f630e11ccd6417.1615806071.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+ d=maximintegrated.onmicrosoft.com;
+ s=selector2-maximintegrated-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D1N1bLfntiyv0Dz7c/VGfeIsYpZDEd5Lw66+H1uF/v0=;
+ b=YeT9qLgzWH9iWfADpD4Td95JwXzdENTvGgl9rWzGvHqgBEoYOwUnwuSL6FvmRGGfjqjlJxaGf3Hys157boze8VdzLLDy17aOz3t3ExV4EQRC4tWhpOQoFBKglf/AmI1rhqUFDTqgO7o7pvNOePHiWFrQntU/1SNN9D993q/iPkg=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none
+ header.from=maximintegrated.com;
+Received: from BYAPR11MB3382.namprd11.prod.outlook.com (2603:10b6:a03:7f::15)
+ by SJ0PR11MB4798.namprd11.prod.outlook.com (2603:10b6:a03:2d5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 25 Mar
+ 2021 03:36:35 +0000
+Received: from BYAPR11MB3382.namprd11.prod.outlook.com
+ ([fe80::cce5:1aa1:302f:a956]) by BYAPR11MB3382.namprd11.prod.outlook.com
+ ([fe80::cce5:1aa1:302f:a956%5]) with mapi id 15.20.3977.025; Thu, 25 Mar 2021
+ 03:36:35 +0000
+From:   Ryan Lee <ryans.lee@maximintegrated.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        kai.vehmanen@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        rander.wang@linux.intel.com, ryans.lee@maximintegrated.com,
+        guennadi.liakhovetski@linux.intel.com, vkoul@kernel.org,
+        yong.zhi@intel.com, judyhsiao@google.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     ryan.lee.maxim@gmail.com
+Subject: [PATCH 1/3] ASoC:codec:max98373: Changed amp shutdown register as volatile
+Date:   Wed, 24 Mar 2021 20:35:53 -0700
+Message-Id: <20210325033555.29377-1-ryans.lee@maximintegrated.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [73.189.52.211]
+X-ClientProxiedBy: BY5PR04CA0001.namprd04.prod.outlook.com
+ (2603:10b6:a03:1d0::11) To BYAPR11MB3382.namprd11.prod.outlook.com
+ (2603:10b6:a03:7f::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (73.189.52.211) by BY5PR04CA0001.namprd04.prod.outlook.com (2603:10b6:a03:1d0::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Thu, 25 Mar 2021 03:36:34 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e763d465-6eb6-4bfb-7e54-08d8ef3f304c
+X-MS-TrafficTypeDiagnostic: SJ0PR11MB4798:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR11MB4798086D74B7E34D4EB2E750E7629@SJ0PR11MB4798.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qdsDGkXNF1fMRFea5hSbyJ9dAAOv6mVoVnyCS2I+OOSlmmFPXWi8YJo7/vNuOgMtX9UFdmBomoqLpDT4NBU60ohiygXVUNNEUb85Kdj3D2fQaH+QGPfM96kaSI6bB1tCute7IhIgStz1MAXqDbgOdOp0QuqGyFygxcXlY/IwNxrGi1apkQs9wZi+iibmRO2ZTdzL4IH39DDR9dYmifQpSERzYGiV8z7H4WoSDsmE6gjjItMyUoi4ZrsFEke26Hn6jgVZp+8O9QlIvm1ubcyJSxvTd3WRCTKL83kMSsQOZ0KYm2PGYIp9/dX6g+WMYQ6wjqwTCBTnPsGnobO9yMEkg+dCzPdMx4kwf2uzEabVO0dqIrcsr/FRgcn2nsnLlY9da7MxWmMlOpeaCLs132IWEmOzK7o0BYPVi9J0zMiKE1Ijpq4U9xRJ+OYtDTs6mceOQhrbiZTK9+pZ9t5LSWqqcZ2rEROHynOQCEScq4NJZ51kuNSX6wgbnUxj3KzsudT8HUJdNuSU8U+AKdt5GykgoP80+62KkU1yENKkPL6bOJ0g/quHtNR5V/zkZ4YMALfRvGdQnFPXFgzwE4TNW0Rs5254uYBoKplGYWE1RpD3Xwu/LRgmXb8qIpZ7jylvR47ERD86teB9t0Sudym6RcJFp/8SPRZEqqCSIfKSOJfpgq/VYbp8O5NKvsaM3dnAkEmWzaEbZikqFMJ0vfu/dfO9zA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3382.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(136003)(396003)(346002)(921005)(478600001)(52116002)(6486002)(4326008)(6666004)(7416002)(186003)(69590400012)(26005)(2906002)(6506007)(16526019)(6512007)(316002)(8676002)(2616005)(66476007)(1076003)(36756003)(66556008)(5660300002)(66946007)(86362001)(38100700001)(956004)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?petIvoBotv8fUya4cWFqEVAn/xLAAC3GESGZKN8s7ooOGohJR2jUhiM+dXZV?=
+ =?us-ascii?Q?NeF+58AcPcUGNXBnEfnInD/DVqJC+7a4M3Lya0shgIfL/lfIj+euiVAqHxBp?=
+ =?us-ascii?Q?wMlhOcAdaFGOR+N87PBfin5uZy6Uk1J306SyZ4E7qgvRdTuG+SbMY/BXVS0Y?=
+ =?us-ascii?Q?jk1Iu9DeSVU988AZMoNbxyiZOtPdr5JB6SKoVax86taOExsPRuOmDCYahKaR?=
+ =?us-ascii?Q?O1Zo3hPipqLnk3OyQXkS8G9SI5WH9Eya4IDaWu0vZeiz3XzBu7hVTngaGtHf?=
+ =?us-ascii?Q?v+bLr34J4CYtFLLt6ESweq8YkTFZkrv2FYO0ksRucW9rTqEcrKslwHygPydA?=
+ =?us-ascii?Q?f6A4PbIJTRhyvw3YZcFpSLitNn/piwyGLZ5/Va65SjzfdCpmyRfecYg+shxi?=
+ =?us-ascii?Q?v7iCJ4oLj4Ffg59xsCEiAv3lwl12SSboiL4vAir0EtBPp0jclfxOsxwFkkqS?=
+ =?us-ascii?Q?wJbMEdVuWuaCn1F/dFyN6a2whAXODLRzFMwFrX0eWRBwRIyQcQbGyTl+I7bV?=
+ =?us-ascii?Q?5cOP6TYaE5RExZHAgbXCj9gy4GXS5uK8fNWBBTfFRvX+/4CcuUhHjxGS5p5v?=
+ =?us-ascii?Q?ogMR88/Auep9zJeZ7jkkzvJswALRAp/db2clOiIVq5ddjYU7/FAdXHXzYpNI?=
+ =?us-ascii?Q?EXjhVHqa87b9kte+Iqq+E8QLRXTUTOoQPgkFQU/di0mBTyo4xMnYXsSDS97G?=
+ =?us-ascii?Q?WCYcsMk1PgQz7JYkppbnKWUu3R54Lp2IshjajegYrDZnmS9kvJfwga1gvSL4?=
+ =?us-ascii?Q?93zwvkg3C1Dnv2jv/fWpkbME71wSY1sZZnCuMSM9RXRj25a3AMdlbci3nqFi?=
+ =?us-ascii?Q?c8G1kKS8bbT8iO3Ws5NWze/7hLGpXS2siTBbQrmSuIQNVlo94StnTDYoFCJM?=
+ =?us-ascii?Q?y3I2t7HV7KVHoDRxJYnYVqST7SXte83yVsJpyVWNm4cCZhbzyeGviNmJFoMi?=
+ =?us-ascii?Q?q/0y46OifHXvBMeb+s1bI35mCz3btDcy++a58JMfscoeQGBarSCexAwZ/+sC?=
+ =?us-ascii?Q?PrabDACRAwn/1OQvrQpiiDuqn6OST6KiaZyDaxascQazLqlZeQ+lCPfrwSoD?=
+ =?us-ascii?Q?KCOyFvA57oJGtS3DmrsKBhZtC0E5e2Ojc5yY3Yfp6SE/MSmHQ8hf4r/zZc2J?=
+ =?us-ascii?Q?jGm0+wGdigwpmzxomUrIu7GS0BldB9oI4smnlMWjr1pOGrrC8lDSBKyxgf/k?=
+ =?us-ascii?Q?xXzbRQfUApGe5gMVOhOkFiWhhaPLbZDvpa6qoPVphKE2+i9nwHUgp/T275nf?=
+ =?us-ascii?Q?EBI2kfNo9+KE3I26hUiAVgBpKS9/j0npPRjSjE5EFt3KExmwgjtcf+Z0mnVz?=
+ =?us-ascii?Q?5jiiIi7GOfR7xitB/0Qd4YC4?=
+X-OriginatorOrg: maximintegrated.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e763d465-6eb6-4bfb-7e54-08d8ef3f304c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3382.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 03:36:34.9180
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fbd909df-ea69-4788-a554-f24b7854ad03
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MIS5gcr1AdFc7EJDwKsu+frR8HxwbAkFq5ihl6SSN2jjWuGPPhLcMl5IDLHiw3CZ2dj8okdhZZbdcuUTGXvxpygslW1yolIyvINNZ5DU79g=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4798
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-15 at 11:01 +0000, Christophe Leroy wrote:
-> Commit aac6a91fea93 ("powerpc/asm: Remove unused symbols in
-> asm-offsets.c") removed GPR15 to GPR31 but kept GPR14,
-> probably because it pops up in a couple of comments when doing
-> a grep.
-> 
-> However, it was never used either, so remove it as well.
-> 
+0x20FF(amp global enable) register was defined as non-volatile,
+but it is not. Overheating, overcurrent can cause amp shutdown
+in hardware.
+'regmap_write' compare register readback value before writing
+to avoid same value writing. 'regmap_read' just read cache
+not actual hardware value for the non-volatile register.
+When amp is internally shutdown by some reason, next 'AMP ON'
+command can be ignored because regmap think amp is already ON.
 
-Looks good to me.
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+---
+ sound/soc/codecs/max98373-i2c.c | 1 +
+ sound/soc/codecs/max98373-sdw.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-Reviewed-by: Rashmica Gupta <rashmica.g@gmail.com>
-
-> Fixes: aac6a91fea93 ("powerpc/asm: Remove unused symbols in asm-
-> offsets.c")
-> Cc: Rashmica Gupta <rashmicy@gmail.com>
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/powerpc/kernel/asm-offsets.c | 3 ---
->  1 file changed, 3 deletions(-)
-> 
-> diff --git a/arch/powerpc/kernel/asm-offsets.c
-> b/arch/powerpc/kernel/asm-offsets.c
-> index f3a662201a9f..4d230c5c7099 100644
-> --- a/arch/powerpc/kernel/asm-offsets.c
-> +++ b/arch/powerpc/kernel/asm-offsets.c
-> @@ -323,9 +323,6 @@ int main(void)
->  	STACK_PT_REGS_OFFSET(GPR11, gpr[11]);
->  	STACK_PT_REGS_OFFSET(GPR12, gpr[12]);
->  	STACK_PT_REGS_OFFSET(GPR13, gpr[13]);
-> -#ifndef CONFIG_PPC64
-> -	STACK_PT_REGS_OFFSET(GPR14, gpr[14]);
-> -#endif /* CONFIG_PPC64 */
->  	/*
->  	 * Note: these symbols include _ because they overlap with
-> special
->  	 * register names
+diff --git a/sound/soc/codecs/max98373-i2c.c b/sound/soc/codecs/max98373-i2c.c
+index 85f6865019d4..ddb6436835d7 100644
+--- a/sound/soc/codecs/max98373-i2c.c
++++ b/sound/soc/codecs/max98373-i2c.c
+@@ -446,6 +446,7 @@ static bool max98373_volatile_reg(struct device *dev, unsigned int reg)
+ 	case MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK:
+ 	case MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK:
+ 	case MAX98373_R20B6_BDE_CUR_STATE_READBACK:
++	case MAX98373_R20FF_GLOBAL_SHDN:
+ 	case MAX98373_R21FF_REV_ID:
+ 		return true;
+ 	default:
+diff --git a/sound/soc/codecs/max98373-sdw.c b/sound/soc/codecs/max98373-sdw.c
+index d8c47667a9ea..f3a12205cd48 100644
+--- a/sound/soc/codecs/max98373-sdw.c
++++ b/sound/soc/codecs/max98373-sdw.c
+@@ -220,6 +220,7 @@ static bool max98373_volatile_reg(struct device *dev, unsigned int reg)
+ 	case MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK:
+ 	case MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK:
+ 	case MAX98373_R20B6_BDE_CUR_STATE_READBACK:
++	case MAX98373_R20FF_GLOBAL_SHDN:
+ 	case MAX98373_R21FF_REV_ID:
+ 	/* SoundWire Control Port Registers */
+ 	case MAX98373_R0040_SCP_INIT_STAT_1 ... MAX98373_R0070_SCP_FRAME_CTLR:
+-- 
+2.17.1
 
