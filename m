@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FDE3491AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8449B3491AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhCYMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhCYMM0 (ORCPT
+        id S230198AbhCYMOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:14:00 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54656 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhCYMN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:12:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE51DC06174A;
-        Thu, 25 Mar 2021 05:12:25 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 12:12:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616674344;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XLDtoXm7aBWKdTn5SLecnTgVSGHF4sHYAWrkXJ1OvmQ=;
-        b=kgMHZV4jryWO3FAw3Wb1POqM4czNzLYuks7R3V4oYwlOJv8FwtHbmZHZB+je9qey782KZC
-        U/tTcURhotuG0MbwZcu10a0NC8LF0dZNZHJTP37KgLmEM2d6y7SX2RQ0Tcj/MvaBeIMamM
-        e+UZDLy5xBBzW0SHIahPzbHFWVIPN4NJbqRaRCbEtu8FP1H1StuU+ygn4B5U079+jtDqXc
-        1drKmP213A+odJeavN3j205tXU/HYnuaX3esadiJvEZ46+htBUl0wcAeL/N6h9iDlNx4v1
-        sBf/C3I3fdn/5Kr107dla0dXFLw/j78vN+WMoivHFBhErQneJxuOOB2ApP38tQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616674344;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XLDtoXm7aBWKdTn5SLecnTgVSGHF4sHYAWrkXJ1OvmQ=;
-        b=zSoBfU5IlTXFt3VgxWl/xMMGS1i7c+9TlRjv2Y2Vd/QPaIlsLq65DPraix7xKovSQe+fjh
-        vJGz/sNcMlxvcjBQ==
-From:   "tip-bot2 for Wei Yongjun" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/kprobes: Move 'inline' to the beginning of the
- kprobe_is_ss() declaration
-Cc:     Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210324144502.1154883-1-weiyongjun1@huawei.com>
-References: <20210324144502.1154883-1-weiyongjun1@huawei.com>
+        Thu, 25 Mar 2021 08:13:27 -0400
+Received: from 1-171-92-165.dynamic-ip.hinet.net ([1.171.92.165] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lPOr9-00017D-J3; Thu, 25 Mar 2021 12:12:56 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>, Tom Yan <tom.ty89@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Chris Chiu <chiu@endlessm.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v2 1/2] ALSA: usb-audio: Carve out connector value checking into a helper
+Date:   Thu, 25 Mar 2021 20:12:47 +0800
+Message-Id: <20210325121250.133009-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-ID: <161667434353.398.10598940136488963988.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+This is preparation for next patch, no functional change intended.
 
-Commit-ID:     2304d14db6595bea5292bece06c4c625b12d8f89
-Gitweb:        https://git.kernel.org/tip/2304d14db6595bea5292bece06c4c625b12d8f89
-Author:        Wei Yongjun <weiyongjun1@huawei.com>
-AuthorDate:    Wed, 24 Mar 2021 14:45:02 
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 25 Mar 2021 13:07:58 +01:00
-
-x86/kprobes: Move 'inline' to the beginning of the kprobe_is_ss() declaration
-
-Address this GCC warning:
-
-  arch/x86/kernel/kprobes/core.c:940:1:
-   warning: 'inline' is not at beginning of declaration [-Wold-style-declaration]
-    940 | static int nokprobe_inline kprobe_is_ss(struct kprobe_ctlblk *kcb)
-        | ^~~~~~
-
-[ mingo: Tidied up the changelog. ]
-
-Fixes: 6256e668b7af: ("x86/kprobes: Use int3 instead of debug trap for single-step")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Link: https://lore.kernel.org/r/20210324144502.1154883-1-weiyongjun1@huawei.com
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 ---
- arch/x86/kernel/kprobes/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+ - Only return early when ret < 0.
 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 922a6e2..dd09021 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -940,7 +940,7 @@ static int reenter_kprobe(struct kprobe *p, struct pt_regs *regs,
+ sound/usb/mixer.c | 34 +++++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index b004b2e63a5d..5a2d9a768f70 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1446,13 +1446,11 @@ static int mixer_ctl_master_bool_get(struct snd_kcontrol *kcontrol,
+ 	return 0;
  }
- NOKPROBE_SYMBOL(reenter_kprobe);
  
--static int nokprobe_inline kprobe_is_ss(struct kprobe_ctlblk *kcb)
-+static nokprobe_inline int kprobe_is_ss(struct kprobe_ctlblk *kcb)
+-/* get the connectors status and report it as boolean type */
+-static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+-				   struct snd_ctl_elem_value *ucontrol)
++static int get_connector_value(struct usb_mixer_elem_info *cval,
++			       char *name, int *val)
  {
- 	return (kcb->kprobe_status == KPROBE_HIT_SS ||
- 		kcb->kprobe_status == KPROBE_REENTER);
+-	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+ 	struct snd_usb_audio *chip = cval->head.mixer->chip;
+-	int idx = 0, validx, ret, val;
++	int idx = 0, validx, ret;
+ 
+ 	validx = cval->control << 8 | 0;
+ 
+@@ -1467,21 +1465,24 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+ 		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+ 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				      validx, idx, &uac2_conn, sizeof(uac2_conn));
+-		val = !!uac2_conn.bNrChannels;
++		if (val)
++			*val = !!uac2_conn.bNrChannels;
+ 	} else { /* UAC_VERSION_3 */
+ 		struct uac3_insertion_ctl_blk uac3_conn;
+ 
+ 		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+ 				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 				      validx, idx, &uac3_conn, sizeof(uac3_conn));
+-		val = !!uac3_conn.bmConInserted;
++		if (val)
++			*val = !!uac3_conn.bmConInserted;
+ 	}
+ 
+ 	snd_usb_unlock_shutdown(chip);
+ 
+ 	if (ret < 0) {
+-		if (strstr(kcontrol->id.name, "Speaker")) {
+-			ucontrol->value.integer.value[0] = 1;
++		if (name && strstr(name, "Speaker")) {
++			if (val)
++				*val = 1;
+ 			return 0;
+ 		}
+ error:
+@@ -1491,6 +1492,21 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+ 		return filter_error(cval, ret);
+ 	}
+ 
++	return ret;
++}
++
++/* get the connectors status and report it as boolean type */
++static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct usb_mixer_elem_info *cval = kcontrol->private_data;
++	int ret, val;
++
++	ret = get_connector_value(cval, kcontrol->id.name, &val);
++
++	if (ret < 0)
++		return ret;
++
+ 	ucontrol->value.integer.value[0] = val;
+ 	return 0;
+ }
+-- 
+2.30.2
+
