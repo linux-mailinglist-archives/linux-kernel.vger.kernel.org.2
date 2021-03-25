@@ -2,88 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3B13493F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CC63493FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhCYO0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbhCYO0T (ORCPT
+        id S231372AbhCYO1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:27:07 -0400
+Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:53575 "EHLO
+        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231299AbhCYO03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:26:19 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9CCC061760
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:26:18 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id z25so3389453lja.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:26:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hwetcsVKboaaGI7NOXNHnyGvYuGd+RB0dddZvR4dJYk=;
-        b=HnLlDdBGzEt/TgWGyKUmPogRtz8oZQVM03CogodEU/UwYa+YsG6vZA7EP9aRbbnP4f
-         E5yi95rKRs907JDF6G/+3OYef1fTAFAP1+qBFhSW7mzeyVUJL237u2l7LBm2jZ3H+/2l
-         d9hQZeA5U3EiqJ6rDsZ9HdQy4Eh1gp92TIuRu+KPXd8ctc0e1g7GvTHGTX5c1pufvpKW
-         u6NNHIZ6ohMKcDirddqaRBk8zLyijioUnrVIobCFccwipmEmlL0rDZeA1PgAiSlA8cGr
-         Y9D1i8QPt2nrKY4y7L1y+ExWE3cSuS2hRVSBmseu/TONVYtDkiMOz9tyz6uNUuWt4yQn
-         iukw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hwetcsVKboaaGI7NOXNHnyGvYuGd+RB0dddZvR4dJYk=;
-        b=q8e/sOtbPsZP3hUAIdyBMVQ7aU3PmiJJzPnLvrEBdwp6slq26tiGKlm6B5+C4Nr6N3
-         VRlF9Z45zMqAvXQGHfmConYxrDo3rhujEZcTU9JELIwBZKhi+Ye+9Bmria0JgX9S74NQ
-         bI8DdFa30QvhgK9C70AKRApxJ6/JKUsIZwhZyzauSX+hq/HPyN/fKlf3cJLjhHLdRFN2
-         qVyR2cVqP0YfosvAb4kH/tvYMg+eTxLOhPNVTZKMKvYICONtK7dEXOcl7maX/EbyTeni
-         BMF1r9/c1wsoO7FJ0d0w5mIq9I+2CzZnVfpY5kkg4tlbO8ljRPqYS1nj6ke1z9HS9Dyz
-         fb+g==
-X-Gm-Message-State: AOAM533rBvEdNeeiJ5t1iCQS4DTiFFmMUvQkf1QUTnJqXQKbtAvoCDLR
-        67gqM0lpIW6UI82/Rez/M4Cn7lZMHDC+AtQdM5dFBg==
-X-Google-Smtp-Source: ABdhPJwXghMxC+jJkN24Dc68V+VPVcQEjT4VLmT55y6SQ+X6rU7+oMMn50hB89bI9yQv19zi6WlDqbz5VNk4XxOb0gA=
-X-Received: by 2002:a05:651c:103a:: with SMTP id w26mr5808808ljm.273.1616682376700;
- Thu, 25 Mar 2021 07:26:16 -0700 (PDT)
+        Thu, 25 Mar 2021 10:26:29 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id E8D28F8065
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:26:25 +0000 (GMT)
+Received: (qmail 8307 invoked from network); 25 Mar 2021 14:26:25 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Mar 2021 14:26:25 -0000
+Date:   Thu, 25 Mar 2021 14:26:24 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
+ in-tree users
+Message-ID: <20210325142624.GT3697@techsingularity.net>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+ <20210325125001.GW1719932@casper.infradead.org>
+ <20210325132556.GS3697@techsingularity.net>
+ <20210325140657.GA1908@pc638.lan>
 MIME-Version: 1.0
-References: <20210323131728.2702789-1-arnd@kernel.org>
-In-Reply-To: <20210323131728.2702789-1-arnd@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 25 Mar 2021 15:26:05 +0100
-Message-ID: <CACRpkdYS9JVnbdW_+_Qi9ujA8j9p-1r7c1UeeKToukQffN1u5w@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: qcom: fix unintentional string concatenation
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jeevan Shriram <jshriram@codeaurora.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210325140657.GA1908@pc638.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 2:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Thu, Mar 25, 2021 at 03:06:57PM +0100, Uladzislau Rezki wrote:
+> > On Thu, Mar 25, 2021 at 12:50:01PM +0000, Matthew Wilcox wrote:
+> > > On Thu, Mar 25, 2021 at 11:42:19AM +0000, Mel Gorman wrote:
+> > > > This series introduces a bulk order-0 page allocator with sunrpc and
+> > > > the network page pool being the first users. The implementation is not
+> > > > efficient as semantics needed to be ironed out first. If no other semantic
+> > > > changes are needed, it can be made more efficient.  Despite that, this
+> > > > is a performance-related for users that require multiple pages for an
+> > > > operation without multiple round-trips to the page allocator. Quoting
+> > > > the last patch for the high-speed networking use-case
+> > > > 
+> > > >             Kernel          XDP stats       CPU     pps           Delta
+> > > >             Baseline        XDP-RX CPU      total   3,771,046       n/a
+> > > >             List            XDP-RX CPU      total   3,940,242    +4.49%
+> > > >             Array           XDP-RX CPU      total   4,249,224   +12.68%
+> > > > 
+> > > > >From the SUNRPC traces of svc_alloc_arg()
+> > > > 
+> > > > 	Single page: 25.007 us per call over 532,571 calls
+> > > > 	Bulk list:    6.258 us per call over 517,034 calls
+> > > > 	Bulk array:   4.590 us per call over 517,442 calls
+> > > > 
+> > > > Both potential users in this series are corner cases (NFS and high-speed
+> > > > networks) so it is unlikely that most users will see any benefit in the
+> > > > short term. Other potential other users are batch allocations for page
+> > > > cache readahead, fault around and SLUB allocations when high-order pages
+> > > > are unavailable. It's unknown how much benefit would be seen by converting
+> > > > multiple page allocation calls to a single batch or what difference it may
+> > > > make to headline performance.
+> > > 
+> > > We have a third user, vmalloc(), with a 16% perf improvement.  I know the
+> > > email says 21% but that includes the 5% improvement from switching to
+> > > kvmalloc() to allocate area->pages.
+> > > 
+> > > https://lore.kernel.org/linux-mm/20210323133948.GA10046@pc638.lan/
+> > > 
+> > 
+> > That's fairly promising. Assuming the bulk allocator gets merged, it would
+> > make sense to add vmalloc on top. That's for bringing it to my attention
+> > because it's far more relevant than my imaginary potential use cases.
+> > 
+> For the vmalloc we should be able to allocating on a specific NUMA node,
+> at least the current interface takes it into account. As far as i see
+> the current interface allocate on a current node:
+> 
+> static inline unsigned long
+> alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
+> {
+>     return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
+> }
+> 
+> Or am i missing something?
+> 
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> clang is clearly correct to point out a typo in a silly
-> array of strings:
->
-> drivers/pinctrl/qcom/pinctrl-sdx55.c:426:61: error: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-concatenation]
->         "gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
->                                                                    ^
-> Add the missing comma that must have accidentally been removed.
->
-> Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+No, you're not missing anything. Options would be to add a helper similar
+alloc_pages_node or to directly call __alloc_pages_bulk specifying a node
+and using GFP_THISNODE. prepare_alloc_pages() should pick the correct
+zonelist containing only the required node.
 
-Patch applied.
+> --
+> Vlad Rezki
 
-Yours,
-Linus Walleij
+-- 
+Mel Gorman
+SUSE Labs
