@@ -2,50 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9DB3485A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC02B3485AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239113AbhCYAHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 20:07:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232062AbhCYAGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 20:06:38 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5D6661A19;
-        Thu, 25 Mar 2021 00:06:37 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 20:06:36 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "John (Warthog9) Hawley" <warthog9@kernel.org>
-Subject: Re: [PATCH 2/2] streamline_config.pl: Add softtabstop=4 for vim
- users
-Message-ID: <20210324200636.0ae28505@oasis.local.home>
-In-Reply-To: <20210324095417.49c6377b@gandalf.local.home>
-References: <20210322213806.089334551@goodmis.org>
-        <20210322214032.293992979@goodmis.org>
-        <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com>
-        <20210324095417.49c6377b@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239132AbhCYAIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 20:08:43 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41366 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232062AbhCYAIb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 20:08:31 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id B47521F45F25
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: [PATCH v4 0/5] Make UTF-8 encoding loadable
+Date:   Thu, 25 Mar 2021 05:38:06 +0530
+Message-Id: <20210325000811.1379641-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 09:54:17 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel.
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a layer between the filesystems and the utf8 module which will
+load the module whenever any filesystem that needs unicode is mounted.
 
-> This code doesn't change much, so I'm fine with that. But for ktest.pl, I'm
-> adding it.
+1st patch in the series resolves the warning reported by kernel test robot
+and 2nd patch fixes the incorrect use of utf8_unload() in ext4 and
+f2fs filesystems.
 
-Anyway, I'm not going to ask you to take the second patch if you don't
-like it, but would you take the first patch?
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence 3rd and 4th patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
 
--- Steve
+Last patch in the series adds the layer and utf8 module and also uses
+static_call() function introducted for preventing speculative execution
+attacks.
+
+---
+Changes in v4
+  - Return error from the static calls instead of doing nothing and
+    succeeding even without loading the module.
+  - Remove the complete usage of utf8_ops and use static calls at all
+    places.
+  - Restore the static calls to default values when module is unloaded.
+  - Decrement the reference of module after calling the unload function.
+  - Remove spinlock as there will be no race conditions after removing
+    utf8_ops.
+
+Changes in v3
+  - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+    in ext4 and f2fs filesystems
+  - Return error if strscpy() returns value < 0
+  - Correct the conditions to prevent NULL pointer dereference while
+    accessing functions via utf8_ops variable.
+  - Add spinlock to avoid race conditions.
+  - Use static_call() for preventing speculative execution attacks.
+
+Changes in v2
+  - Remove the duplicate file from the last patch.
+  - Make the wrapper functions inline.
+  - Remove msleep and use try_module_get() and module_put()
+    for ensuring that module is loaded correctly and also
+    doesn't get unloaded while in use.
+  - Resolve the warning reported by kernel test robot.
+  - Resolve all the checkpatch.pl warnings.
+
+Shreeya Patel (5):
+  fs: unicode: Use strscpy() instead of strncpy()
+  fs: Check if utf8 encoding is loaded before calling utf8_unload()
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
+  fs: unicode: Add utf8 module and a unicode layer
+
+ fs/ext4/hash.c                             |   2 +-
+ fs/ext4/namei.c                            |  12 +-
+ fs/ext4/super.c                            |   8 +-
+ fs/f2fs/dir.c                              |  12 +-
+ fs/f2fs/super.c                            |  11 +-
+ fs/libfs.c                                 |   6 +-
+ fs/unicode/Kconfig                         |  11 +-
+ fs/unicode/Makefile                        |   5 +-
+ fs/unicode/unicode-core.c                  |  84 +++++++++++++
+ fs/unicode/{utf8-core.c => unicode-utf8.c} |  93 +++++++++-----
+ fs/unicode/utf8-selftest.c                 |   8 +-
+ include/linux/unicode.h                    | 133 ++++++++++++++++++---
+ 12 files changed, 307 insertions(+), 78 deletions(-)
+ create mode 100644 fs/unicode/unicode-core.c
+ rename fs/unicode/{utf8-core.c => unicode-utf8.c} (59%)
+
+-- 
+2.30.1
+
