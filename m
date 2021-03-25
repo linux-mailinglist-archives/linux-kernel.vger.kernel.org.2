@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EA63494A2
+	by mail.lfdr.de (Postfix) with ESMTP id 763DF3494A3
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhCYOwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhCYOwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:52:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B21961A02;
-        Thu, 25 Mar 2021 14:51:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616683920;
-        bh=xtiUPNT+gkTEazvbg7RxBkrQf7RL170bGGKjxpmjJS8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WeDkvV8rzROkU74VYQUxbJHUUZAOMbF8D7fDqwaptHpMqTjdhwAGiAi18DGzzrcdh
-         NpYMo1iRR08fJHEi6H3fCFVdXZlTAtYrh2BrnTbgymBTaWJjSDKQ7Vm+3UmZ7niky9
-         yQ2BuA/9CoBf76Nqfih8q0oTES8Sd6skCRb7MoxfWEo61ZYDh2uBfO4KHr5e/DmpRW
-         UbaSq/T7qQHcpIvO7EtIGeoTcXc4Tcq3KGYDVpp5wHHMU10/M7dP1Zduv7iOpcyubM
-         /XF9J8TuAkBNm9hiyDwezoV/ATqTZ791t/YnrJIF1LwTQio+Goq+Kr018vTXU/4Deb
-         bMaOlprtLjY/w==
-Date:   Thu, 25 Mar 2021 14:51:52 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Eddie James <eajames@linux.ibm.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joel@jms.id.au
-Subject: Re: [PATCH] spi: fsi: Remove multiple sequenced ops for restricted
- chips
-Message-ID: <20210325145152.GB4620@sirena.org.uk>
-References: <20210324220516.41192-1-eajames@linux.ibm.com>
- <20210325135038.GA4620@sirena.org.uk>
- <d79291deaa1e9960a177dd887884724f22eb0ea6.camel@linux.ibm.com>
+        id S230472AbhCYOwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:52:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhCYOwC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:52:02 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE58C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:52:01 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id l4so3346556ejc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:52:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H9BwsVXG91jgXFtlxcwsuCYPu/uAtylFJ/7wlB90EsM=;
+        b=ThQwdbB6EHnVPFYmQLl0CNmYhnzSpjXXD3yQ+aMmVyDV64U7e1PFFNZSAJHxe7fRQi
+         uO4tachQEOxeGXXeTm5h7K5lAtrcmKGGqeEXjtyN1jRymHgSLERjADD3ir9JV8q8FHkB
+         emMkeUnHbQCRZhuTxZKkf8ER03AemaSTdASL6Bek0UeS/9sAhyyGt5CyVJgpkJdD3ntF
+         Oo8SkUrpTw70vnnIdWc4mxjUKjLXMQ6D/Ya4U+HNCodLvkcabRpkl6JaBhxGf52aP8qE
+         DgZ1tWWfU4jDcu2hpHHMPPN+z4R/6De84YlftsTFY1sLphq7n6Q0pdqxSokRKtm8AdU8
+         4rrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H9BwsVXG91jgXFtlxcwsuCYPu/uAtylFJ/7wlB90EsM=;
+        b=uJuZNc5Q5c1gtzVTPzgifWK+nPkzriNDHJb2tEbSRvy4peh8KJ2l4dnv8QoHRjxCfx
+         Wy04JVn8F75s9RF8Aj0Up1KpTPzlITaPpheFQn+HmrvbJqbWbHAK+XG1GY7panckyffe
+         yPdyr9YG7b+zIyEzXKuALYJWpTf0KVgMvJvSehtmwq8PaXcTHwXCFKGm3ViFRKer/j1T
+         JGp8SAmTUjm7hiXE2gMf5nsiup6f+xxnrkF05SkwbnAaTzREJZrqegrmWXMFGiXPWiEK
+         GH83PNApLDQc88uGCj5fBER607WM/4MviM4NJcwOSOulsvvbpVQq7BjKX70deEj/Wm6x
+         b8mg==
+X-Gm-Message-State: AOAM531log5oeoV2LOFGYII1OlmZDUtDnwDR1bPJZjehOjIMV/giWERR
+        XjyxQ+IZhwAEaUL8h/pXO37z/oMqmhCB3OFo
+X-Google-Smtp-Source: ABdhPJzo2y8llq+CpVkAFkhymReAfRiHhRsSYjPAPr1zopkcSFAtgRWPDwGlOSIm3ab8DaN9HLC7HA==
+X-Received: by 2002:a17:906:2dda:: with SMTP id h26mr9891858eji.163.1616683919867;
+        Thu, 25 Mar 2021 07:51:59 -0700 (PDT)
+Received: from localhost.localdomain ([37.120.1.234])
+        by smtp.gmail.com with ESMTPSA id si3sm2569953ejb.90.2021.03.25.07.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 07:51:59 -0700 (PDT)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     linux-kernel@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org,
+        Robert Foss <robert.foss@linaro.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: [PATCH v2] MAINTAINERS: Update Maintainers of DRM Bridge Drivers
+Date:   Thu, 25 Mar 2021 15:51:54 +0100
+Message-Id: <20210325145154.1433060-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.31.0.30.g398dba342d.dirty
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
-Content-Disposition: inline
-In-Reply-To: <d79291deaa1e9960a177dd887884724f22eb0ea6.camel@linux.ibm.com>
-X-Cookie: Offer void where prohibited by law.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add myself as co-maintainer of DRM Bridge Drivers. Repository
+commit access has already been granted.
 
---UHN/qo2QbUvPLonB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+https://gitlab.freedesktop.org/freedesktop/freedesktop/-/issues/338
 
-On Thu, Mar 25, 2021 at 09:46:50AM -0500, Eddie James wrote:
-> On Thu, 2021-03-25 at 13:50 +0000, Mark Brown wrote:
-> > On Wed, Mar 24, 2021 at 05:05:16PM -0500, Eddie James wrote:
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Jonas Karlman <jonas@kwiboo.se>
+Cc: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Jernej Škrabec <jernej.skrabec@siol.net>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Acked-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Maxime Ripard <maxime@cerno.tech>
+Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Acked-by: Andrzej Hajda <a.hajda@samsung.com>
+---
 
-> > > Updated restricted chips have trouble processing multiple sequenced
-> > > operations. So remove the capability to sequence multiple
-> > > operations and
-> > > reduce the maximum transfer size to 8 bytes.
+Add maintainer Acks.
 
-> > That's a very small limit, it would be nice to be able to identify
-> > devices that can use the larger limit so they don't suffer
-> > needlessly.
+Submitted to follow proper dim workflow.
 
-> Yes, this is only for the "restricted" controllers which are marked by
-> a different compatible string. I guess the commit message isn't
-> perfectly clear.
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-The commit message reads like there's a new version of the restricted
-controllers that have even more limits.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4b705ba51c54..16ace8f58649 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5902,6 +5902,7 @@ F:	drivers/gpu/drm/atmel-hlcdc/
+ DRM DRIVERS FOR BRIDGE CHIPS
+ M:	Andrzej Hajda <a.hajda@samsung.com>
+ M:	Neil Armstrong <narmstrong@baylibre.com>
++M:	Robert Foss <robert.foss@linaro.org>
+ R:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+ R:	Jonas Karlman <jonas@kwiboo.se>
+ R:	Jernej Skrabec <jernej.skrabec@siol.net>
+-- 
+2.31.0.30.g398dba342d.dirty
 
---UHN/qo2QbUvPLonB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBco4YACgkQJNaLcl1U
-h9CDvQf/UtiQ7EaCZ+2IcZpzTTE1c/bJov/6eb3QLgO84bk1cVoyKuiVGpYlaW9I
-7Dvi/yDWbpueWJyXAXbplps0ME5HdjVJnIn5h81Yc4cPCAN5co8aBwndiZBlyU6c
-N/8aqhG6mtT4oC4+9V7HxyCtePpiXPieSkG5vydJrtoTwEhWI0fw/lpzPDreuyjm
-Mlwya1G0SA6oPtVAWFQ0y5h71zYSpAio5AYgVEBe9cMCwfVzOBCJGjcTrkKE1mkS
-v2LyXr1uTrgr0SQnRiGmZhBpXCL2Pb8Tb/7n0Djb9c9m9ylmn4zfGulq8Bx43Ewd
-tPojaow/meTZ9YHT3egJVXK1zs2HQQ==
-=YPnl
------END PGP SIGNATURE-----
-
---UHN/qo2QbUvPLonB--
