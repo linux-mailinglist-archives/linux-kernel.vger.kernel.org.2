@@ -2,294 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D39349BCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:45:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEE7349BD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhCYVov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:44:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60934 "EHLO
+        id S230500AbhCYVrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhCYVoZ (ORCPT
+        with ESMTP id S230260AbhCYVqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:44:25 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6869C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:44:25 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id v3so3168607pgq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:44:25 -0700 (PDT)
+        Thu, 25 Mar 2021 17:46:31 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C18C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:46:29 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id z3so3393126ioc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:46:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=J/IaPDWlyESPBjuEFjvieEnFpJiImUCs8aDCvk5o8PQ=;
-        b=L/C9NLOeQ2l5FZ0u4/4VhunOoS4k/oStnVH9K/855kJYoapep6I0g5UR8D+VRegpdt
-         DpuQZeDzSGpivq/6+xhi93Of0bYWtSO/0EWbodikfDmSprLAHDgSPktTQ9qGalcHWiJb
-         jaC1EQrLmzlYCnaFvXOMv+gRPBKiqrzz1f6pLv7pKcs9G7Spd8ClTPrigMz7upJTQFPc
-         Gpl6TNYwQO1IH3hztybaQ27txI3FZjz2FzIEiLZnGzjFh8geuyuZGxhmgA9F88lx2krq
-         dYhhGOTq5KPFBOIccmI2/Kyvsbi+XiX4ov5LYVcMHKFMwSn+wFavhU1e8kZuZT+gr7YP
-         btkg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nBrMkW25RTecIM3hEhR4kecTK3fFu6wpCbY5kwZyG4Q=;
+        b=JHYJgUhUsYqX55rxamtclZPCfo9DHHOSOIa400JzWWukiP0pWGpCVdS09EUr0vb6Wb
+         1H3V94hFDzq/SVSN+Aa2myni0ER19Ozl0oprp5ky29Eu7QL4bqWb71pen/MEIItv/RyT
+         fRyxrDfYM7V4EQXKGvCtuVsKA1wBhiw8kEo8hApRIHz8ULhN467IypVPO1lxYL6ZF9qG
+         3cMWvcLwQP4nqnpbYuEHsK2OfyiNuuoWxoYkDPUZE0e+ZYae36X6LDwp/fZ47ViU8ve2
+         lbC+VWys7LvZhAEdCGlXubP1n4qNnTXa2bMr7mXUUjYG2dIM6PGJqqVFDu2RX6jJRHEK
+         8iDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J/IaPDWlyESPBjuEFjvieEnFpJiImUCs8aDCvk5o8PQ=;
-        b=iLCgVrlLJq20D5mFCedH4JDxAMC//Ezv8sos32bwOCIWoCluZ0T+IL0TVwIAFGgiYP
-         ALh/BPOkPwM1o4tCt7zrNSxvcMaCnhHBJf1TakEf00mzZy8meUJqjKmGnL4VrigtCLit
-         9qE1vlVhahfq0XHNlks3gV2nX4VuwS2A8uK0wW1vYco1H+lEOXyKp8NommqodazAcYdS
-         wKV6Lk1ireZqwk3l8OXGZ+BUFpCAb+0/4YthPhVv7J8gkeUEP5x32uKC8XRNdZa6KO1+
-         rrVK5ihGa+elabng33rIpfAR+gnJnzHbqedOs2Yo8p+PoABPV3oCeJ4pe4+uU4Vwog8l
-         8Y7A==
-X-Gm-Message-State: AOAM531KC/9l9dIFExVu2o6n19uQSodJ4ShMGtrWTytiXSuDuDCHvsJT
-        OecIRUTl7TV80R6YMm6plbmESn4CHyEPxw==
-X-Google-Smtp-Source: ABdhPJyjR3Khh6xoFGMAl9gDuU2mVXTbqmKEFb7RFPctOhkXnBij9eaTDNdSIhPolZ/ZMvX/vd23Pg==
-X-Received: by 2002:a17:902:708b:b029:e6:77ca:3cb6 with SMTP id z11-20020a170902708bb02900e677ca3cb6mr12027570plk.84.1616708665154;
-        Thu, 25 Mar 2021 14:44:25 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id mp19sm10220294pjb.2.2021.03.25.14.44.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 14:44:24 -0700 (PDT)
-Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Stefan Metzmacher <metze@samba.org>
-References: <20210325164343.807498-1-axboe@kernel.dk>
- <m1ft0j3u5k.fsf@fess.ebiederm.org>
- <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
- <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
- <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
- <ad21da2b-01ea-e77c-70b2-0401059e322b@kernel.dk>
-Message-ID: <f9bc0bac-2ad9-827e-7360-099e1e310df5@kernel.dk>
-Date:   Thu, 25 Mar 2021 15:44:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nBrMkW25RTecIM3hEhR4kecTK3fFu6wpCbY5kwZyG4Q=;
+        b=Gx8l+z+bs6r8oYvDNLyBR1mz5nKCGGSDFBNIecH30lzZnEqO62iejD0FygPTWKA4uM
+         oqziwRm0V0GnnNF9XBTzx16mscEJTfVkC+3XraJZN9NM1iui470CsaYB7XbUuhK/j3Iq
+         d9irwkszpVw67uEYsaHmIPWLc7KBXr7U1iQndC/KEfmGaBZKOcUlWGjgx4B/+NSUOhL/
+         elv5OEU3PEH00AYIjbhALOCzqcdX96f4xKKQR0knRFiSWbgD7wzBm2lLHgRULnajHg3f
+         c8W4XxuOGRW49BGYb74OBqrK2EKA1SOBfWftelZo5iOchAC8p8IRv5RUhtDrTHkb47gd
+         90KA==
+X-Gm-Message-State: AOAM532WqKbyGaKy114Wah3SxiA5GgYyeRvfJN+MIZ5wO7ETh1o1nvSv
+        dIoMOsIylI2DIlpmLPZMApYtYQIGIAwkg8SgCvVOwQ==
+X-Google-Smtp-Source: ABdhPJzJ1j4xAYyTbhVWfvYseFDA+FKV9V1JQ8vx8/TCWTP6rrcFtYabFuGm5F1H7XIQgSAa2IkDvb6yNX4Bqb63WNs=
+X-Received: by 2002:a05:6638:3049:: with SMTP id u9mr9142192jak.57.1616708788964;
+ Thu, 25 Mar 2021 14:46:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ad21da2b-01ea-e77c-70b2-0401059e322b@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210325200119.1359384-1-seanjc@google.com> <20210325200119.1359384-4-seanjc@google.com>
+In-Reply-To: <20210325200119.1359384-4-seanjc@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 25 Mar 2021 14:46:18 -0700
+Message-ID: <CANgfPd8N1+oxPWyO+Ob=hSs4nkdedusde6RQ5TXTX8hi48mvOw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] KVM: x86/mmu: Don't allow TDP MMU to yield when
+ recovering NX pages
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 2:40 PM, Jens Axboe wrote:
-> On 3/25/21 2:12 PM, Linus Torvalds wrote:
->> On Thu, Mar 25, 2021 at 12:42 PM Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->>>
->>> On Thu, Mar 25, 2021 at 12:38 PM Linus Torvalds
->>> <torvalds@linux-foundation.org> wrote:
->>>>
->>>> I don't know what the gdb logic is, but maybe there's some other
->>>> option that makes gdb not react to them?
->>>
->>> .. maybe we could have a different name for them under the task/
->>> subdirectory, for example (not  just the pid)? Although that probably
->>> messes up 'ps' too..
->>
->> Actually, maybe the right model is to simply make all the io threads
->> take signals, and get rid of all the special cases.
->>
->> Sure, the signals will never be delivered to user space, but if we
->>
->>  - just made the thread loop do "get_signal()" when there are pending signals
->>
->>  - allowed ptrace_attach on them
->>
->> they'd look pretty much like regular threads that just never do the
->> user-space part of signal handling.
->>
->> The whole "signals are very special for IO threads" thing has caused
->> so many problems, that maybe the solution is simply to _not_ make them
->> special?
-> 
-> Just to wrap up the previous one, yes it broke all sorts of things to
-> make the 'tid' directory different. They just end up being hidden anyway
-> through that, for both ps and top.
-> 
-> Yes, I do think that maybe it's better to just embrace maybe just
-> embrace the signals, and have everything just work by default. It's
-> better than continually trying to make the threads special. I'll see
-> if there are some demons lurking down that path.
+On Thu, Mar 25, 2021 at 1:01 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Prevent the TDP MMU from yielding when zapping a gfn range during NX
+> page recovery.  If a flush is pending from a previous invocation of the
+> zapping helper, either in the TDP MMU or the legacy MMU, but the TDP MMU
+> has not accumulated a flush for the current invocation, then yielding
+> will release mmu_lock with stale TLB entriesr
 
-In the spirit of "let's just try it", I ran with the below patch. With
-that, I can gdb attach just fine to a test case that creates an io_uring
-and a regular thread with pthread_create(). The regular thread uses
-the ring, so you end up with two iou-mgr threads. Attach:
+Extra r here.
 
-[root@archlinux ~]# gdb -p 360
-[snip gdb noise]
-Attaching to process 360
-[New LWP 361]
-[New LWP 362]
-[New LWP 363]
+>
+> That being said, this isn't technically a bug fix in the current code, as
+> the TDP MMU will never yield in this case.  tdp_mmu_iter_cond_resched()
+> will yield if and only if it has made forward progress, as defined by the
+> current gfn vs. the last yielded (or starting) gfn.  Because zapping a
+> single shadow page is guaranteed to (a) find that page and (b) step
+> sideways at the level of the shadow page, the TDP iter will break its loop
+> before getting a chance to yield.
+>
+> But that is all very, very subtle, and will break at the slightest sneeze,
+> e.g. zapping while holding mmu_lock for read would break as the TDP MMU
+> wouldn't be guaranteed to see the present shadow page, and thus could step
+> sideways at a lower level.
+>
+> Cc: Ben Gardon <bgardon@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c     |  4 +---
+>  arch/x86/kvm/mmu/tdp_mmu.c |  5 +++--
+>  arch/x86/kvm/mmu/tdp_mmu.h | 23 ++++++++++++++++++++++-
+>  3 files changed, 26 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 5a53743b37bc..7a99e59c8c1c 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5940,7 +5940,6 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
+>         unsigned int ratio;
+>         LIST_HEAD(invalid_list);
+>         bool flush = false;
+> -       gfn_t gfn_end;
+>         ulong to_zap;
+>
+>         rcu_idx = srcu_read_lock(&kvm->srcu);
+> @@ -5962,8 +5961,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
+>                                       lpage_disallowed_link);
+>                 WARN_ON_ONCE(!sp->lpage_disallowed);
+>                 if (is_tdp_mmu_page(sp)) {
+> -                       gfn_end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
+> -                       flush = kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, gfn_end);
+> +                       flush = kvm_tdp_mmu_zap_sp(kvm, sp);
+>                 } else {
+>                         kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
+>                         WARN_ON_ONCE(sp->lpage_disallowed);
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 6cf08c3c537f..08667e3cf091 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -709,13 +709,14 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+>   * SPTEs have been cleared and a TLB flush is needed before releasing the
+>   * MMU lock.
+>   */
+> -bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
+> +bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
+> +                                bool can_yield)
+>  {
+>         struct kvm_mmu_page *root;
+>         bool flush = false;
+>
+>         for_each_tdp_mmu_root_yield_safe(kvm, root)
+> -               flush = zap_gfn_range(kvm, root, start, end, true, flush);
+> +               flush = zap_gfn_range(kvm, root, start, end, can_yield, flush);
+>
+>         return flush;
+>  }
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> index 3b761c111bff..715aa4e0196d 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> @@ -8,7 +8,28 @@
+>  hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+>  void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root);
+>
+> -bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end);
+> +bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
+> +                                bool can_yield);
+> +static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start,
+> +                                            gfn_t end)
+> +{
+> +       return __kvm_tdp_mmu_zap_gfn_range(kvm, start, end, true);
+> +}
+> +static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
 
-warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
+I'm a little leary of adding an interface which takes a non-root
+struct kvm_mmu_page as an argument to the TDP MMU.
+In the TDP MMU, the struct kvm_mmu_pages are protected rather subtly.
+I agree this is safe because we hold the MMU lock in write mode here,
+but if we ever wanted to convert to holding it in read mode things
+could get complicated fast.
+Maybe this is more of a concern if the function started to be used
+elsewhere since NX recovery is already so dependent on the write lock.
+Ideally though, NX reclaim could use MMU read lock +
+tdp_mmu_pages_lock to protect the list and do reclaim in parallel with
+everything else.
+The nice thing about drawing the TDP MMU interface in terms of GFNs
+and address space IDs instead of SPs is that it doesn't put
+constraints on the implementation of the TDP MMU because those GFNs
+are always going to be valid / don't require any shared memory.
+This is kind of innocuous because it's immediately converted into that
+gfn interface, so I don't know how much it really matters.
 
-warning: Architecture rejected target-supplied description
-Error while reading shared library symbols for /usr/lib/libpthread.so.0:
-Cannot find user-level thread for LWP 363: generic error
-0x00007f7aa526e125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-(gdb) info threads
-  Id   Target Id             Frame 
-* 1    LWP 360 "io_uring"    0x00007f7aa526e125 in clock_nanosleep@GLIBC_2.2.5 ()
-   from /usr/lib/libc.so.6
-  2    LWP 361 "iou-mgr-360" 0x0000000000000000 in ?? ()
-  3    LWP 362 "io_uring"    0x00007f7aa52a0a9d in syscall () from /usr/lib/libc.so.6
-  4    LWP 363 "iou-mgr-362" 0x0000000000000000 in ?? ()
-(gdb) thread 2
-[Switching to thread 2 (LWP 361)]
-#0  0x0000000000000000 in ?? ()
-(gdb) bt
-#0  0x0000000000000000 in ?? ()
-Backtrace stopped: Cannot access memory at address 0x0
-(gdb) cont
-Continuing.
-^C
-Thread 1 "io_uring" received signal SIGINT, Interrupt.
-[Switching to LWP 360]
-0x00007f7aa526e125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-(gdb) q
-A debugging session is active.
+In any case this change looks correct and I don't want to hold up
+progress with bikeshedding.
+WDYT?
 
-	Inferior 1 [process 360] will be detached.
-
-Quit anyway? (y or n) y
-Detaching from program: /root/git/fio/t/io_uring, process 360
-[Inferior 1 (process 360) detached]
-
-The iou-mgr-x threads are stopped just fine, gdb obviously can't get any
-real info out of them. But it works... Regular test cases work fine too,
-just a sanity check. Didn't expect them not to.
-
-Only thing that I dislike a bit, but I guess that's just a Linuxism, is
-that if can now kill an io_uring owning task by sending a signal to one
-of its IO thread workers.
-
-
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index b7c1fa932cb3..2dbdc552f3ba 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -505,8 +505,14 @@ static int io_wqe_worker(void *data)
- 		ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
- 		if (try_to_freeze() || ret)
- 			continue;
--		if (fatal_signal_pending(current))
--			break;
-+		if (signal_pending(current)) {
-+			struct ksignal ksig;
-+
-+			if (fatal_signal_pending(current))
-+				break;
-+			get_signal(&ksig);
-+			continue;
-+		}
- 		/* timed out, exit unless we're the fixed worker */
- 		if (test_bit(IO_WQ_BIT_EXIT, &wq->state) ||
- 		    !(worker->flags & IO_WORKER_F_FIXED))
-@@ -715,8 +721,15 @@ static int io_wq_manager(void *data)
- 		io_wq_check_workers(wq);
- 		schedule_timeout(HZ);
- 		try_to_freeze();
--		if (fatal_signal_pending(current))
--			set_bit(IO_WQ_BIT_EXIT, &wq->state);
-+		if (signal_pending(current)) {
-+			struct ksignal ksig;
-+
-+			if (fatal_signal_pending(current))
-+				set_bit(IO_WQ_BIT_EXIT, &wq->state);
-+			else
-+				get_signal(&ksig);
-+			continue;
-+		}
- 	} while (!test_bit(IO_WQ_BIT_EXIT, &wq->state));
- 
- 	io_wq_check_workers(wq);
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 54ea561db4a5..3a9d021db328 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6765,8 +6765,14 @@ static int io_sq_thread(void *data)
- 			timeout = jiffies + sqd->sq_thread_idle;
- 			continue;
- 		}
--		if (fatal_signal_pending(current))
--			break;
-+		if (signal_pending(current)) {
-+			struct ksignal ksig;
-+
-+			if (fatal_signal_pending(current))
-+				break;
-+			get_signal(&ksig);
-+			continue;
-+		}
- 		sqt_spin = false;
- 		cap_entries = !list_is_singular(&sqd->ctx_list);
- 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
-diff --git a/kernel/fork.c b/kernel/fork.c
-index d3171e8e88e5..3b45d0f04044 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2436,6 +2436,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
- 	if (!IS_ERR(tsk)) {
- 		sigfillset(&tsk->blocked);
- 		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
-+		sigdelsetmask(&tsk->blocked, sigmask(SIGSTOP));
- 	}
- 	return tsk;
- }
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 821cf1723814..61db50f7ca86 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -375,7 +375,7 @@ static int ptrace_attach(struct task_struct *task, long request,
- 	audit_ptrace(task);
- 
- 	retval = -EPERM;
--	if (unlikely(task->flags & (PF_KTHREAD | PF_IO_WORKER)))
-+	if (unlikely(task->flags & PF_KTHREAD))
- 		goto out;
- 	if (same_thread_group(task, current))
- 		goto out;
-diff --git a/kernel/signal.c b/kernel/signal.c
-index f2a1b898da29..a5700557eb50 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -91,7 +91,7 @@ static bool sig_task_ignored(struct task_struct *t, int sig, bool force)
- 		return true;
- 
- 	/* Only allow kernel generated signals to this kthread */
--	if (unlikely((t->flags & (PF_KTHREAD | PF_IO_WORKER)) &&
-+	if (unlikely((t->flags & PF_KTHREAD) &&
- 		     (handler == SIG_KTHREAD_KERNEL) && !force))
- 		return true;
- 
-@@ -288,8 +288,7 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
- 			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
- 	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
- 
--	if (unlikely(fatal_signal_pending(task) ||
--		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
-+	if (unlikely(fatal_signal_pending(task) || task->flags & PF_EXITING))
- 		return false;
- 
- 	if (mask & JOBCTL_STOP_SIGMASK)
-@@ -834,9 +833,6 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
- 
- 	if (!valid_signal(sig))
- 		return -EINVAL;
--	/* PF_IO_WORKER threads don't take any signals */
--	if (t->flags & PF_IO_WORKER)
--		return -ESRCH;
- 
- 	if (!si_fromuser(info))
- 		return 0;
-
--- 
-Jens Axboe
-
+> +{
+> +       gfn_t end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
+> +
+> +       /*
+> +        * Don't allow yielding, as the caller may have a flush pending.  Note,
+> +        * if mmu_lock is held for write, zapping will never yield in this case,
+> +        * but explicitly disallow it for safety.  The TDP MMU does not yield
+> +        * until it has made forward progress (steps sideways), and when zapping
+> +        * a single shadow page that it's guaranteed to see (thus the mmu_lock
+> +        * requirement), its "step sideways" will always step beyond the bounds
+> +        * of the shadow page's gfn range and stop iterating before yielding.
+> +        */
+> +       return __kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, end, false);
+> +}
+>  void kvm_tdp_mmu_zap_all(struct kvm *kvm);
+>
+>  int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+> --
+> 2.31.0.291.g576ba9dcdaf-goog
+>
