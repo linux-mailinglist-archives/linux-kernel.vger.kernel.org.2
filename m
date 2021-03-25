@@ -2,87 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C98348C5E
+	by mail.lfdr.de (Postfix) with ESMTP id 19601348C5C
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230054AbhCYJLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhCYJKX (ORCPT
+        id S230035AbhCYJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:10:56 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:53122 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229913AbhCYJKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:10:23 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4758DC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:10:23 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id r17so1189344pgi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:10:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TYj9k0I7RZEz57gwWvDtRISrOqiColW76Vz6PZDGR6s=;
-        b=TqYqOhOD0CvZC4dj/wLI3VHgqJuEer0t8ullOBdtdiMBPAjfgrEoB9rQDHzus8Wl/S
-         ooEFjb0JZWvX6wSGCMlaow0RaBJzepLMEXarC/snZFEHLnaNwDrQmKvCDDjcEaQP3yK7
-         szBWGlDNZSyIOKcI8FeFnvlAQExN0a61aCv70YFT1B5i+x9smSMx6o18FwpKD+fhV5pB
-         HF5j3IpeURPIfHzp7TD1ojoJuyCj61HWA2KoowO4dHKLqDntQRsnPXmJdD7+ZN/IuqFF
-         YF0jeojxf3IuTl5qVh8wjKzywSP+fyWxhzr9VCJXpbuyXQIPo7Y7jttWZsDyxQ1xnp0p
-         HxiQ==
+        Thu, 25 Mar 2021 05:10:19 -0400
+Received: by mail-io1-f69.google.com with SMTP id v5so3229925ioq.19
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:10:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TYj9k0I7RZEz57gwWvDtRISrOqiColW76Vz6PZDGR6s=;
-        b=P7faBJFOesK1ROz4/+syFJMnnVhc/4+YThNEXG3aPUtfeEPQXo9kWcWU5nnIqjq6EM
-         tPEEo3YdzYYdIl250LF1NTgMPJ6dC//OY7v4Wp316+YYENKLjDEbDRQXj9he+af7rboL
-         C7N7I9mlT4YvTqYg6paWI9yuHWIR2A0iju8tTlxCdyBEqNXUr2QagisITKT6OqVVfzVf
-         prKXctiRnIfyF1NVLIfidUEVca7QII27RYynpnVidy+/E2p0vx9WBMiUActAlNWShyZw
-         K4DpiE4KzgX3WBMwb2S46LLN5dx50CRYjctVWOOExNJI3Vw3Od86vsNkM2QJLl+MlkPK
-         8UOg==
-X-Gm-Message-State: AOAM531w1Nc1FaI41SP8ukrCfSMA0+5QfLgx1YNeLstj21l1aqSQypVu
-        EW497Fm/a+C15F1dJlmD54q9Tg==
-X-Google-Smtp-Source: ABdhPJz7TLT7iPZVbNsDge2Vn4xwLRmNGeBrurRVRwgs3nBM1CYnETndoftqZcYMPjvn7d82H8YIJw==
-X-Received: by 2002:a63:6a84:: with SMTP id f126mr6552366pgc.352.1616663422831;
-        Thu, 25 Mar 2021 02:10:22 -0700 (PDT)
-Received: from localhost ([122.172.6.13])
-        by smtp.gmail.com with ESMTPSA id w17sm4854759pgg.41.2021.03.25.02.10.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Mar 2021 02:10:18 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 14:40:16 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Yangtao Li <tiny.windzz@gmail.com>
-Subject: Re: linux-next: manual merge of the opp tree with the v4l-dvb tree
-Message-ID: <20210325091016.hcbbysmvtren32e6@vireshk-i7>
-References: <20210323112705.3094525d@canb.auug.org.au>
- <20225c7e-1151-7865-2bc6-a1e5694c3d65@linaro.org>
- <20210325042530.5clexogqy77v75sm@vireshk-i7>
- <49a8bca3-d18b-9977-23c2-1dba6e61ef85@linaro.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gtEyF9gyo74WALZnume6M2OCrV7EyWoD5V6eC8Sn638=;
+        b=t8JQvQRQdNDJorIxYEL8q9Yodyma26ABrRXWXWCepktyJjVoqX8BzsTXS+GWGk0atZ
+         oWU/ZZsmngDXm3/a+v7DFamCtvdrX+Jja3iy2u1pzcBD/iKSQCf7X6O//X3oo3b0TfN4
+         MYxWeWbcfYpuTRri5H6HxzhhgzdMOeixkRGzIMsYk3/pkqovrLurKAnXvYsWVPVtODGf
+         +xy55A94sTqbZCtNp0g7mq1uzXD+/eF1OhLd0TPwsH2ose602Fc9pv03mMk5e9syZLqq
+         eqvNLcCT8ikrpFtIh6ozMaye1HEIiq+5FMFrF9XUnoYo8tOcrhS3hkikBQrxVpCtGfLD
+         cAbw==
+X-Gm-Message-State: AOAM533uzBVAYfUJJPRVkynsMHIatpqX9URR/1EU5tRGC40zPbZ06Acm
+        dJqEQ4INVvpsC0fatJUGDh0B1dEd95sFoIWlz/cIP+lctgMg
+X-Google-Smtp-Source: ABdhPJyjmY8VWn2i4p2YiY5Skcb6zPy6H54VKwNmTXDVSKBuLtjrJTlGKB9Jy+67op1pOjRGctX1tnMAiLITeA15mjsJqmR/ZyUf
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <49a8bca3-d18b-9977-23c2-1dba6e61ef85@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+X-Received: by 2002:a6b:f00a:: with SMTP id w10mr5773216ioc.2.1616663418824;
+ Thu, 25 Mar 2021 02:10:18 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 02:10:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ccf0e005be58c811@google.com>
+Subject: [syzbot] WARNING in get_page_from_freelist
+From:   syzbot <syzbot+ae79dc7907428bdb3fc9@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-03-21, 10:14, Stanimir Varbanov wrote:
-> I guess you meant this thread.
-> 
-> https://lore.kernel.org/lkml/20210314163408.22292-1-digetx@gmail.com/
+Hello,
 
-I actually thought some other stuff is having the merge issues (as I
-was expecting something to happen there) :)
+syzbot found the following issue on:
 
-Anyway, you did the right thing. Thanks.
+HEAD commit:    a5406a7f riscv: Correct SPARSEMEM configuration
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
+console output: https://syzkaller.appspot.com/x/log.txt?x=154738bed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8436efa4b70702e6
+dashboard link: https://syzkaller.appspot.com/bug?extid=ae79dc7907428bdb3fc9
+userspace arch: riscv64
 
--- 
-viresh
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ae79dc7907428bdb3fc9@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3271 at mm/page_alloc.c:3488 rmqueue mm/page_alloc.c:3488 [inline]
+WARNING: CPU: 0 PID: 3271 at mm/page_alloc.c:3488 get_page_from_freelist+0x286/0x1782 mm/page_alloc.c:3943
+Modules linked in:
+CPU: 0 PID: 3271 Comm: syz-executor.1 Not tainted 5.12.0-rc2-syzkaller-00474-ga5406a7ff56e #0
+Hardware name: riscv-virtio,qemu (DT)
+epc : rmqueue mm/page_alloc.c:3488 [inline]
+epc : get_page_from_freelist+0x286/0x1782 mm/page_alloc.c:3943
+ ra : get_page_from_freelist+0x11a8/0x1782 mm/page_alloc.c:3943
+epc : ffffffe00036abee ra : ffffffe00036bb10 sp : ffffffe01fd57480
+ gp : ffffffe004588910 tp : ffffffe01fa95f00 t0 : ffffffc403acde00
+ t1 : 0000000000000001 t2 : 0000003fffad1d06 s0 : ffffffe01fd57670
+ s1 : 0000000000000000 a0 : ffffffe01fd57688 a1 : 0000000000000003
+ a2 : 1ffffffc03faaed1 a3 : ffffffe00036bb10 a4 : 0000000000000003
+ a5 : 0000000000000001 a6 : 0000000000000008 a7 : 781560e8875b1000
+ s2 : ffffffe07fdf5d00 s3 : 0000000000000001 s4 : ffffffe07fdf5758
+ s5 : 0000000000047df2 s6 : 0000000000000000 s7 : ffffffe07fdf5740
+ s8 : ffffffe07fdf5740 s9 : ffffffe01fd57670 s10: 0000000000000001
+ s11: ffffffe07fdf5740 t3 : 781560e8875b1000 t4 : ffffffc40133fbf0
+ t5 : ffffffc40133fbf1 t6 : ffffffe01fd57af5
+status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
+Call Trace:
+[<ffffffe00036abee>] rmqueue mm/page_alloc.c:3488 [inline]
+[<ffffffe00036abee>] get_page_from_freelist+0x286/0x1782 mm/page_alloc.c:3943
+[<ffffffe00036d996>] __alloc_pages_nodemask+0x19a/0x480 mm/page_alloc.c:4996
+[<ffffffe00039fd8e>] alloc_pages_current+0x114/0x234 mm/mempolicy.c:2277
+[<ffffffe0003b092e>] alloc_pages include/linux/gfp.h:561 [inline]
+[<ffffffe0003b092e>] alloc_slab_page mm/slub.c:1638 [inline]
+[<ffffffe0003b092e>] allocate_slab+0x282/0x406 mm/slub.c:1778
+[<ffffffe0003b4638>] new_slab mm/slub.c:1841 [inline]
+[<ffffffe0003b4638>] new_slab_objects mm/slub.c:2587 [inline]
+[<ffffffe0003b4638>] ___slab_alloc+0x2fc/0x4d8 mm/slub.c:2750
+[<ffffffe0003b4b72>] __slab_alloc.constprop.0+0xa4/0xce mm/slub.c:2790
+[<ffffffe0003b627e>] slab_alloc_node mm/slub.c:2871 [inline]
+[<ffffffe0003b627e>] slab_alloc mm/slub.c:2915 [inline]
+[<ffffffe0003b627e>] kmem_cache_alloc_trace+0x29a/0x2bc mm/slub.c:2932
+[<ffffffe00079bb14>] kmalloc include/linux/slab.h:554 [inline]
+[<ffffffe00079bb14>] tomoyo_print_header security/tomoyo/audit.c:156 [inline]
+[<ffffffe00079bb14>] tomoyo_init_log+0xb4/0x1402 security/tomoyo/audit.c:255
+[<ffffffe0007a4648>] tomoyo_supervisor+0x1b0/0xaaa security/tomoyo/common.c:2097
+[<ffffffe0007ae608>] tomoyo_audit_path_number_log security/tomoyo/file.c:235 [inline]
+[<ffffffe0007ae608>] tomoyo_path_number_perm+0x2ae/0x33c security/tomoyo/file.c:734
+[<ffffffe0007b630a>] tomoyo_file_ioctl+0x28/0x34 security/tomoyo/tomoyo.c:329
+[<ffffffe000790950>] security_file_ioctl+0x48/0x90 security/security.c:1495
+[<ffffffe00041f2a8>] __do_sys_ioctl fs/ioctl.c:747 [inline]
+[<ffffffe00041f2a8>] sys_ioctl+0x76/0xd56 fs/ioctl.c:739
+[<ffffffe000005572>] ret_from_syscall+0x0/0x2
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
