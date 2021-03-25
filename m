@@ -2,214 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C431C348CB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8815348CBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhCYJYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:24:46 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:57273 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhCYJYc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:24:32 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210325092430euoutp02c669a6f63095207a0d005f994906ef2c~vi5akrz8C2144121441euoutp02H
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:24:30 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210325092430euoutp02c669a6f63095207a0d005f994906ef2c~vi5akrz8C2144121441euoutp02H
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616664270;
-        bh=4nZTfqFXPrsScvJfwc/c+eBJ5+ZNv+Y/FOMxLuWtpZc=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Hr2FGZ+DlKP1jpGs488NkHjciE+HB8Gx1NCcC3TPMgOaM4izbW6n+wOJwTrq5h2Nq
-         q0ftz/8/9xXPyjgY+d70lX/5G52FC3MNXuYs5cilj11z4Ct10srziNuCgnqR39xZOm
-         Rq2WagvDCi9ivZ4mo5kbSxg9oZkYR3SOl76B9PzM=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210325092429eucas1p106479fc7bf90e39b3074f303b535a37a~vi5aJCOTf1386513865eucas1p1P;
-        Thu, 25 Mar 2021 09:24:29 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id D3.4A.09444.DC65C506; Thu, 25
-        Mar 2021 09:24:29 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210325092429eucas1p25e95dd1920f2a1c9f808c72d10d1952d~vi5ZvzGiJ2937029370eucas1p2V;
-        Thu, 25 Mar 2021 09:24:29 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210325092429eusmtrp185501bcc08513c92f0f956c63ed1afce~vi5ZvDUiI0207502075eusmtrp1e;
-        Thu, 25 Mar 2021 09:24:29 +0000 (GMT)
-X-AuditID: cbfec7f4-dd5ff700000024e4-7c-605c56cd9c68
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 60.09.08696.DC65C506; Thu, 25
-        Mar 2021 09:24:29 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210325092428eusmtip1278fea7145449b5197a62306e9c55020~vi5ZFerjl1001710017eusmtip1j;
-        Thu, 25 Mar 2021 09:24:28 +0000 (GMT)
-Subject: Re: [PATCH] PCI: dwc: Move forward the iATU detection process
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com
-Cc:     robh@kernel.org, bhelgaas@google.com,
-        gustavo.pimentel@synopsys.com, jingoohan1@gmail.com,
-        =?UTF-8?B?7KCV7J6s7ZuI?= <jh80.chung@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <21daa79d-cdb3-f31c-0fbf-5d653de02517@samsung.com>
-Date:   Thu, 25 Mar 2021 10:24:28 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
+        id S229590AbhCYJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:26:22 -0400
+Received: from mail-dm6nam11on2070.outbound.protection.outlook.com ([40.107.223.70]:35552
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229626AbhCYJ0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 05:26:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eHVryk+MYngjx8DgS6hpu3WE1TXusmr17IEPMelbD09mCpGn7lQb6NFyILx4zS6hQpwtwwz8JRMjs7JQp5pHLihQ4X85s3ylnH3ESmOjx2+cnwhju9YOMNbqg+Fu795O9e0gU9P1u06zSRbZuS2xpp5sx8PnyRO0tPZdOAst5iS9h7kLLRPE7aAXHwyevuPSscbjs2IDOEE4e+AlNHPlS6saVMCJH31JJ7xZFRSplsEjl9kdB7zNc2cwFIJHxn1OO7gG+aUREl1SN8GmNh5oPnRsSWVqJLYshqtjQZBZawOY9Rp8g9pV9JOluSMgfYlmwpUBTavn+ynAeYm6sqYqFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=27sKSXJnn5++at6ztZelSkJJ5QNWl4VqMfUjNZ110us=;
+ b=nEBgixywFRRSYGwzQ8FLk01yDKwaCpybi1so9Q+QX0VcLt4k+R2RBiJMgnnuh4U/i6ZgJt61YTfikFsrruEaSb3cJYo8JCIyrgqp9zzgbT7EfqffqkLtGsXsi136N9QLcNHY3Cww4/umUHXJlX2KaKTvHUrc+1qoAoSBO32QmGbcFy7CFTOH+levuOKQ1Asa7kYiUULOPf7G7IIuVzRA+L39J8p7hS+EjgGULFCG1mh1Djf79RVj9hur/y7P51v4A5qo0dHZsK5nTkpfcch964c6npKqu3HwRR8I/DyTbB5vkQfOTHi2QgrSE3rzq0mR48dhwcWLvia9eDrKmMWxsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=27sKSXJnn5++at6ztZelSkJJ5QNWl4VqMfUjNZ110us=;
+ b=ajQ9hTk8LDL04EbqmYikblr8q7yjcwkrFxKHhAv15say1n46mzXS6pwCVLzt/u5erYAHjMjKXL+LD5fvClDqg0QInMMupFPJc8krMK55WoasSD55ew09PJ4KLSXj0QS8NXGetZFkVb5rqJ08C2eafEG6GL+hDJe5cJKEF3I7Tgc=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=amd.com;
+Received: from CY4PR12MB1463.namprd12.prod.outlook.com (2603:10b6:910:e::19)
+ by CY4PR1201MB2469.namprd12.prod.outlook.com (2603:10b6:903:d5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 25 Mar
+ 2021 09:26:03 +0000
+Received: from CY4PR12MB1463.namprd12.prod.outlook.com
+ ([fe80::6504:7fc4:d02f:77f2]) by CY4PR12MB1463.namprd12.prod.outlook.com
+ ([fe80::6504:7fc4:d02f:77f2%3]) with mapi id 15.20.3955.027; Thu, 25 Mar 2021
+ 09:26:03 +0000
+Subject: Re: [PATCH] drm/amd/amdgpu/gfx_v7_0: Trivial typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, sumit.semwal@linaro.org,
+        nirmoy.das@amd.com, ray.huang@amd.com, lee.jones@linaro.org,
+        andrey.grodzovsky@amd.com, luben.tuikov@amd.com,
+        marek.olsak@amd.com, Felix.Kuehling@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org
+Cc:     rdunlap@infradead.org
+References: <20210325085324.30224-1-unixbhaskar@gmail.com>
+From:   Nirmoy <nirmodas@amd.com>
+Message-ID: <8109ef99-1ea7-a11a-bbe3-1fac9851834d@amd.com>
+Date:   Thu, 25 Mar 2021 10:25:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210325085324.30224-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCKsWRmVeSWpSXmKPExsWy7djPc7pnw2ISDI4vMrZY0pRhsetuB7vF
-        jV9trBYrvsxkt7i8aw6bxdl5x9ks3vx+wW7xf88OdosTbR/YHTg91sxbw+ixc9Zddo8Fm0o9
-        Nq3qZPPY+G4Hk0ffllWMHlv2f2b0+LxJLoAjissmJTUnsyy1SN8ugStj58ZNbAUbFSvaJi1i
-        amC8Jt3FyMkhIWAi0X+vk6WLkYtDSGAFo8Sp56uhnC+MEof7l7BDOJ8ZJSb/OM3cxcgB1rLw
-        WxFEfDmjxIYv+5kgnI+MEp3b/rOBzBUWcJOY+3oqO0iDiECtxMxjQiA1zAKTGCUWbLvMDFLD
-        JmAo0fW2C6yeV8BO4sPlRSwgNouAqkTz7NtgvaICSRIbDsVClAhKnJz5BKyEU8BS4tL8xWBj
-        mAXkJba/nQNli0vcejIf7B4Jgf8cEg0X9zBC/Oki0XrqF5QtLPHq+BZ2CFtG4vTkHhaIhmZG
-        iYfn1rJDOD2MEpebZkB1WEvcOfeLDeQiZgFNifW79CHCjhKt/WdZIKHCJ3HjrSDEEXwSk7ZN
-        hwYWr0RHmxBEtZrErOPr4NYevHCJeQKj0iwkr81C8s4sJO/MQti7gJFlFaN4amlxbnpqsVFe
-        arlecWJucWleul5yfu4mRmDCOv3v+JcdjMtffdQ7xMjEwXiIUYKDWUmEN8k3JkGINyWxsiq1
-        KD++qDQntfgQozQHi5I4b9KWNfFCAumJJanZqakFqUUwWSYOTqkGpgk3fpodWLr8cfGZJ88y
-        /KbkL1jpEztZSPRUx7+zztc3+TZ/u3rN99etLQen13ZpxjXcslonqKvkUFtwi/uI9OH/jHIy
-        Rfq7ZXyOC/YKBT59VyzzLDLqp8IDK93IxSKT/aOaKnpv7eqwNfzz9N6OADGWE9paYXf4pP/p
-        nhSY/KHhc+TXFUEuU5IuHBS4pK4w9bDq+0sxGS1qFQptH492HEvWvqwXc/zbPtM5Rl+Es7kW
-        r368K/6psv5qvaVbFxQ2Xn7Rv/O1U49josc/s2Az4z+Op4351NbbmHzqY9FokFOofZAqvoVb
-        7dVthdV3lPaxCi08fDxh7wml6Xs8nipIPHvUqZO+Kyhlypo1/DLT/ymxFGckGmoxFxUnAgBP
-        oY8bxwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xu7pnw2ISDDZOlbRY0pRhsetuB7vF
-        jV9trBYrvsxkt7i8aw6bxdl5x9ks3vx+wW7xf88OdosTbR/YHTg91sxbw+ixc9Zddo8Fm0o9
-        Nq3qZPPY+G4Hk0ffllWMHlv2f2b0+LxJLoAjSs+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRS
-        z9DYPNbKyFRJ384mJTUnsyy1SN8uQS9j58ZNbAUbFSvaJi1iamC8Jt3FyMEhIWAisfBbURcj
-        J4eQwFJGiStT5UFsCQEZiZPTGlghbGGJP9e62LoYuYBq3jNKbNv4kA0kISzgJjH39VR2EFtE
-        oFaibeF9ZpAiZoFJjBJn2vczQ0y1kHh0bwYTiM0mYCjR9bYLrJlXwE7iw+VFLCA2i4CqRPPs
-        22CDRAWSJC4vmcgKUSMocXLmE7AaTgFLiUvzF4PNZBYwk5i3+SGULS+x/e0cKFtc4taT+UwT
-        GIVmIWmfhaRlFpKWWUhaFjCyrGIUSS0tzk3PLTbSK07MLS7NS9dLzs/dxAiM0G3Hfm7Zwbjy
-        1Ue9Q4xMHIyHGCU4mJVEeJN8YxKEeFMSK6tSi/Lji0pzUosPMZoC/TORWUo0OR+YIvJK4g3N
-        DEwNTcwsDUwtzYyVxHlNjqyJFxJITyxJzU5NLUgtgulj4uCUamBanONc2yfxMOtRuafJpyJB
-        g6LZV4JyUzVEuhj91SWUwjbd3rhu6izL7tplFx/e5dU8WycpPHXzMc5czkIXs7La7ctbqr9I
-        MRVVs11jUy78ttL079qt7sa7A9tSBA9HLuibeLE/Jm75Bw0xQx1PH8MZc17en/TiaEJ2t/LT
-        kgar3kXJP+9n+y7iNLay4HGJlUk4tXJZQMvWlauzcnwipXnnzmYJOW5ztU3ZR5Ov68w5s+s8
-        fp1G64Pm7N3MEW6aJr7TdP0kf25rUY0irbe8ETFBEXMPXOvUVDy2fHeypdkL3mIzCftdQsqC
-        Wardlfdk2X9NPLK5svcqh7Kw5B2RXy+z80PL39jOyXxhMLdGiaU4I9FQi7moOBEA0C1GaFkD
-        AAA=
-X-CMS-MailID: 20210325092429eucas1p25e95dd1920f2a1c9f808c72d10d1952d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210325092429eucas1p25e95dd1920f2a1c9f808c72d10d1952d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210325092429eucas1p25e95dd1920f2a1c9f808c72d10d1952d
-References: <20210125044803.4310-1-Zhiqiang.Hou@nxp.com>
-        <CGME20210325092429eucas1p25e95dd1920f2a1c9f808c72d10d1952d@eucas1p2.samsung.com>
+X-Originating-IP: [165.204.84.11]
+X-ClientProxiedBy: BN9PR03CA0648.namprd03.prod.outlook.com
+ (2603:10b6:408:13b::23) To CY4PR12MB1463.namprd12.prod.outlook.com
+ (2603:10b6:910:e::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.7.117] (165.204.84.11) by BN9PR03CA0648.namprd03.prod.outlook.com (2603:10b6:408:13b::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Thu, 25 Mar 2021 09:25:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 894c1bef-00a8-4480-cdf2-08d8ef7002b7
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB2469:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB2469EA206E62ACDF7F103EED8B629@CY4PR1201MB2469.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:51;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2VQRY1YNxHSUOv1JwmvzM7/Cgs0AWZcnAUgcMdDqyiT/KQfz4apOXJUsHNL1/yIfckPiZUN54pdx5dQtnssbSFaDsDjbqBqeRQUGCbon5OJhYlTUIJ6cwWgHRmhcghXxg0VUYWMddvIPRaWDEH9PRuyuaUQTODfNulcBhdxloC2MgJnPoYWqKik6XpPTg6/gB5DMyBI8APkM+nQrKYNSnSijYjhSxL6fHwX6fiTD6NSP1v6Ro4/smFwIPNhPhiiu4JQGyB1uuxZ39LUYS0H/euMkcn9WhlyaEWZx86z2gsUMiGTTLOD9ZxZMUAxQySxYbb0Ol7ub8R9fhUAy+eCsIKBQRLDXge5OC4iugLtk4IWz1kB1/+somsr/H3P2GPB89Jt05UpkQ8LD3J/IcNiw+qJwh99qMRHLCqXw/B+yGisjBOG+lyLkd/yvdpnougp3NX4kV+9iIZLYZMz0nj6Z8kzBcrrG7hiZrhPNjvR7Cymnnrm48Ge1fFdHvPDl54XNY6O6QlprKcWreZJ/cBdaWmK1b/qhK5qBOaM6bq1LhBvJHgPtV7fbmsWaOjgbnnfkEq4fPTXPwpaDkcVa7E48cN1EIEXqP+7OPqufXGq68fNHFchdfMTagEIAKUd6KesRoRjgimQSVal44lmdH1tmSNh4s9fkVAk/mUjaYuY4finNhU9CtaqT5/5us00cAtq8YQPNfHKl2Yg13nzo6m/LrzAhe6Y1JXU8l3dvD6vn/Xk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1463.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(39860400002)(346002)(376002)(8936002)(66556008)(8676002)(66476007)(4326008)(6666004)(66946007)(31696002)(5660300002)(36756003)(956004)(2616005)(316002)(2906002)(16576012)(26005)(7416002)(38100700001)(186003)(921005)(53546011)(83380400001)(6486002)(52116002)(16526019)(478600001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MUxTejMzVGhCYzlKaFY1L1NhNjFqTXArQXFwWEZPSUE5SVd4Vjl2T2pOVFMz?=
+ =?utf-8?B?Y253QURLRksrQkRVejhIS3NhZjJYWi9uNHNTbG1pNVdKYTdPdXMyQm95MnQy?=
+ =?utf-8?B?WTBGRjJHeXVBKzFablJuTDFXVGNHWit0MGFYN3I4WVpwdm9hQklFbjNVNlBH?=
+ =?utf-8?B?TnpaZjZhSWJMdFhMVmtmOFllb2szUit5OVFEeThlUmN4UmJPZHVOWXhaUzNt?=
+ =?utf-8?B?ZW1oVDNNRWtvMTB3QUo1a28yK2FlTGFvTjBHcVFTc1NOZDNyQXRuRDQ3NXVU?=
+ =?utf-8?B?bXo5SVVIeVdCZXlrRnl5ZHE0Qkp4M1VYMndTY3hZWEYxMEpkVzArNDlUZFZM?=
+ =?utf-8?B?MlZZQjRDc1JGV2Q1YzI4QWphL0VOTDRab1dTMmE3NEJIbTBHdlFSWHgxUTNC?=
+ =?utf-8?B?MXNNbEpnRGp2Vlp0anVrakYzWkRoUkNZWjZKOTk2eEV1SEN4YXRJNTQxRlNp?=
+ =?utf-8?B?QVZrM01FR1BoZEtoU2pwSzRXdWcrZFRMSW9DeEg1OGd1cCtRcmJYdzVrV2Ez?=
+ =?utf-8?B?cGR0S0p0bEl0cGMyWlMrcVBoR200bjVVWlFJdWtMYVNZWVhzTGxDWFAvcVpy?=
+ =?utf-8?B?ZFk3b0JSSm5ORkVTdmtqZ2ZqUXhiVFZkMUZDUHhHS1JMdERabEQ5WkNwblRH?=
+ =?utf-8?B?VWcxT1M3YVd3Q0NCc05OSTZGNmUzVXlIcmxCZ1J0VkVzQkdhd2dDaVJGT2Nq?=
+ =?utf-8?B?VGVOSHBGa1NCWjMyN0Y0MW9lNjlSVVd6dGVNL2UvdC9MUFZZbCtEWGdvdVhG?=
+ =?utf-8?B?emtmSEozeTVCdEYzQVpabWtIbWxmTlB6dUludGREbXFqMEtSRlRWOVUzK3k5?=
+ =?utf-8?B?ZHVFMEVjRWRUaEptNEFPemFYT1EvZ3FCN20zT1RsNU1QTGtVL2xOenBEeG81?=
+ =?utf-8?B?NlJ2UlRUUlRIajVJMTNuNVZPMkpWbjRsUm1xYTlRb3RDNno0ampYVGwvTm9K?=
+ =?utf-8?B?WEl2Z0g3U2RKZ0huYVgxNXVka1YwRTNSUUVFRnVjOVFkMDJVQ0dpYUxuYlNz?=
+ =?utf-8?B?M3dRd2d1M2hndVRZRkdnNEFKempjSEV6WjFrcHV6Mkk0NXhGdWt2SnB5MWFF?=
+ =?utf-8?B?T0lDc09EQlZmWWhYK2paenBKMFlDdGJvNExQSGdubmppa0RGZ0NFSGhaV1pi?=
+ =?utf-8?B?YmF6M2RiM216aXV1c3RFNmpxNVJROGFKRnBEUnlUWWhBdWxSUTlkaE5EcDhU?=
+ =?utf-8?B?TStxNnRwU0RJbTJ3cWNmaVRubjM2bUFyekdYZTliTm1XOGxucCtlWkZzOHd6?=
+ =?utf-8?B?bTJQSUI2MW5Uc3dLK2RHaDk0MThtOWU0OTY1NmpDUVROaERTbjJlZjRzaDJw?=
+ =?utf-8?B?WHE0T0ZSREpOOXlsbFNib3FGcHJYaGxDZlRzUnFMVHU0RVB5dnY5eUNkS21y?=
+ =?utf-8?B?QjE5cTRQdmM0b2lkTWNkWlh0Y3ZHdEZXT2IwMjZ2a1YwdWRscStYcWFabkNT?=
+ =?utf-8?B?R3ZWMHYreFp0QnA3TkVQeFhobit6dXhoY0hUSGlKS0dhL1RZL0tEWlhTd3pl?=
+ =?utf-8?B?c3BUSFpBNzFNWHprVFN0cFBVR3J0NE10Q0xXWlY0c2xKUDdQUEZmTTVPUTlj?=
+ =?utf-8?B?RHZwcVJQZUtZa2pFcWpOOUtVb29WMDdoTnpjVnFXckpZZ1ZRTll1U0lyZHBn?=
+ =?utf-8?B?eldNTmNkbXA4c1RRZnhmZmN3NDMzUGxzNDJaSGFOaURDZXpsUitnQnBnYXlI?=
+ =?utf-8?B?OXJ0K3E3SUdIY3VNa1dRQnNHSm0rcmY0TmhsbXM4WHNUZ2M1RWhDUlJ3dDlT?=
+ =?utf-8?Q?Pw+L335xXw+mIlNNBAqWErXZM4BWRBTDVbfDsrn?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 894c1bef-00a8-4480-cdf2-08d8ef7002b7
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1463.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 09:26:03.6839
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sRG4G3AdzJsPHAIswOYnr88tVG3pPkCs+Sy2JdPtSU+K/7BnrEBqm+K0gW6BsPUO1Qr4TCNzXaqiOFzY1JzXcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB2469
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 25.01.2021 05:48, Zhiqiang Hou wrote:
-> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
->
-> In the dw_pcie_ep_init(), it depends on the detected iATU region
-> numbers to allocate the in/outbound window management bit map.
-> It fails after the commit 281f1f99cf3a ("PCI: dwc: Detect number
-> of iATU windows").
->
-> So this patch move the iATU region detection into a new function,
-> move forward the detection to the very beginning of functions
-> dw_pcie_host_init() and dw_pcie_ep_init(). And also remove it
-> from the dw_pcie_setup(), since it's more like a software
-> perspective initialization step than hardware setup.
->
-> Fixes: 281f1f99cf3a ("PCI: dwc: Detect number of iATU windows")
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Reviewed-by: Nirmoy Das<nirmoy.das@amd.com>
 
-This patch causes exynos-pcie to hang during the initialization. It 
-looks that some resources are not enabled yet, so calling 
-dw_pcie_iatu_detect() much earlier causes a hang. When I have some time, 
-I will try to identify what is needed to call it properly.
-
+On 3/25/21 9:53 AM, Bhaskar Chowdhury wrote:
+> s/acccess/access/
+> s/inferface/interface/
+> s/sequnce/sequence/  .....two different places.
+> s/retrive/retrieve/
+> s/sheduling/scheduling/
+> s/independant/independent/
+> s/wether/whether/ ......two different places.
+> s/emmit/emit/
+> s/synce/sync/
+>
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 > ---
->   drivers/pci/controller/dwc/pcie-designware-ep.c   |  2 ++
->   drivers/pci/controller/dwc/pcie-designware-host.c |  2 ++
->   drivers/pci/controller/dwc/pcie-designware.c      | 11 ++++++++---
->   drivers/pci/controller/dwc/pcie-designware.h      |  1 +
->   4 files changed, 13 insertions(+), 3 deletions(-)
+>   drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c | 22 +++++++++++-----------
+>   1 file changed, 11 insertions(+), 11 deletions(-)
 >
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index bcd1cd9ba8c8..fcf935bf6f5e 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -707,6 +707,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->   		}
->   	}
->   
-> +	dw_pcie_iatu_detect(pci);
-> +
->   	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "addr_space");
->   	if (!res)
->   		return -EINVAL;
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index 8a84c005f32b..8eae817c138d 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -316,6 +316,8 @@ int dw_pcie_host_init(struct pcie_port *pp)
->   			return PTR_ERR(pci->dbi_base);
->   	}
->   
-> +	dw_pcie_iatu_detect(pci);
-> +
->   	bridge = devm_pci_alloc_host_bridge(dev, 0);
->   	if (!bridge)
->   		return -ENOMEM;
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 5b72a5448d2e..5b9bf02d918b 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -654,11 +654,9 @@ static void dw_pcie_iatu_detect_regions(struct dw_pcie *pci)
->   	pci->num_ob_windows = ob;
->   }
->   
-> -void dw_pcie_setup(struct dw_pcie *pci)
-> +void dw_pcie_iatu_detect(struct dw_pcie *pci)
->   {
-> -	u32 val;
->   	struct device *dev = pci->dev;
-> -	struct device_node *np = dev->of_node;
->   	struct platform_device *pdev = to_platform_device(dev);
->   
->   	if (pci->version >= 0x480A || (!pci->version &&
-> @@ -687,6 +685,13 @@ void dw_pcie_setup(struct dw_pcie *pci)
->   
->   	dev_info(pci->dev, "Detected iATU regions: %u outbound, %u inbound",
->   		 pci->num_ob_windows, pci->num_ib_windows);
-> +}
-> +
-> +void dw_pcie_setup(struct dw_pcie *pci)
-> +{
-> +	u32 val;
-> +	struct device *dev = pci->dev;
-> +	struct device_node *np = dev->of_node;
->   
->   	if (pci->link_gen > 0)
->   		dw_pcie_link_set_max_speed(pci, pci->link_gen);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 5d979953800d..867369d4c4f7 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -305,6 +305,7 @@ int dw_pcie_prog_inbound_atu(struct dw_pcie *pci, u8 func_no, int index,
->   void dw_pcie_disable_atu(struct dw_pcie *pci, int index,
->   			 enum dw_pcie_region_type type);
->   void dw_pcie_setup(struct dw_pcie *pci);
-> +void dw_pcie_iatu_detect(struct dw_pcie *pci);
->   
->   static inline void dw_pcie_writel_dbi(struct dw_pcie *pci, u32 reg, u32 val)
->   {
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c b/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+> index a368724c3dfc..4502b95ddf6b 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c
+> @@ -1877,7 +1877,7 @@ static void gfx_v7_0_init_compute_vmid(struct amdgpu_device *adev)
+>   	mutex_unlock(&adev->srbm_mutex);
+>
+>   	/* Initialize all compute VMIDs to have no GDS, GWS, or OA
+> -	   acccess. These should be enabled by FW for target VMIDs. */
+> +	   access. These should be enabled by FW for target VMIDs. */
+>   	for (i = adev->vm_manager.first_kfd_vmid; i < AMDGPU_NUM_VMID; i++) {
+>   		WREG32(amdgpu_gds_reg_offset[i].mem_base, 0);
+>   		WREG32(amdgpu_gds_reg_offset[i].mem_size, 0);
+> @@ -2058,7 +2058,7 @@ static void gfx_v7_0_constants_init(struct amdgpu_device *adev)
+>    * @adev: amdgpu_device pointer
+>    *
+>    * Set up the number and offset of the CP scratch registers.
+> - * NOTE: use of CP scratch registers is a legacy inferface and
+> + * NOTE: use of CP scratch registers is a legacy interface and
+>    * is not used by default on newer asics (r6xx+).  On newer asics,
+>    * memory buffers are used for fences rather than scratch regs.
+>    */
+> @@ -2172,7 +2172,7 @@ static void gfx_v7_0_ring_emit_vgt_flush(struct amdgpu_ring *ring)
+>    * @seq: sequence number
+>    * @flags: fence related flags
+>    *
+> - * Emits a fence sequnce number on the gfx ring and flushes
+> + * Emits a fence sequence number on the gfx ring and flushes
+>    * GPU caches.
+>    */
+>   static void gfx_v7_0_ring_emit_fence_gfx(struct amdgpu_ring *ring, u64 addr,
+> @@ -2215,7 +2215,7 @@ static void gfx_v7_0_ring_emit_fence_gfx(struct amdgpu_ring *ring, u64 addr,
+>    * @seq: sequence number
+>    * @flags: fence related flags
+>    *
+> - * Emits a fence sequnce number on the compute ring and flushes
+> + * Emits a fence sequence number on the compute ring and flushes
+>    * GPU caches.
+>    */
+>   static void gfx_v7_0_ring_emit_fence_compute(struct amdgpu_ring *ring,
+> @@ -2245,14 +2245,14 @@ static void gfx_v7_0_ring_emit_fence_compute(struct amdgpu_ring *ring,
+>    * gfx_v7_0_ring_emit_ib - emit an IB (Indirect Buffer) on the ring
+>    *
+>    * @ring: amdgpu_ring structure holding ring information
+> - * @job: job to retrive vmid from
+> + * @job: job to retrieve vmid from
+>    * @ib: amdgpu indirect buffer object
+>    * @flags: options (AMDGPU_HAVE_CTX_SWITCH)
+>    *
+>    * Emits an DE (drawing engine) or CE (constant engine) IB
+>    * on the gfx ring.  IBs are usually generated by userspace
+>    * acceleration drivers and submitted to the kernel for
+> - * sheduling on the ring.  This function schedules the IB
+> + * scheduling on the ring.  This function schedules the IB
+>    * on the gfx ring for execution by the GPU.
+>    */
+>   static void gfx_v7_0_ring_emit_ib_gfx(struct amdgpu_ring *ring,
+> @@ -2402,7 +2402,7 @@ static int gfx_v7_0_ring_test_ib(struct amdgpu_ring *ring, long timeout)
+>
+>   /*
+>    * CP.
+> - * On CIK, gfx and compute now have independant command processors.
+> + * On CIK, gfx and compute now have independent command processors.
+>    *
+>    * GFX
+>    * Gfx consists of a single ring and can process both gfx jobs and
+> @@ -2630,7 +2630,7 @@ static int gfx_v7_0_cp_gfx_resume(struct amdgpu_device *adev)
+>   	ring->wptr = 0;
+>   	WREG32(mmCP_RB0_WPTR, lower_32_bits(ring->wptr));
+>
+> -	/* set the wb address wether it's enabled or not */
+> +	/* set the wb address whether it's enabled or not */
+>   	rptr_addr = adev->wb.gpu_addr + (ring->rptr_offs * 4);
+>   	WREG32(mmCP_RB0_RPTR_ADDR, lower_32_bits(rptr_addr));
+>   	WREG32(mmCP_RB0_RPTR_ADDR_HI, upper_32_bits(rptr_addr) & 0xFF);
+> @@ -2985,7 +2985,7 @@ static void gfx_v7_0_mqd_init(struct amdgpu_device *adev,
+>   	mqd->cp_hqd_pq_wptr_poll_addr_lo = wb_gpu_addr & 0xfffffffc;
+>   	mqd->cp_hqd_pq_wptr_poll_addr_hi = upper_32_bits(wb_gpu_addr) & 0xffff;
+>
+> -	/* set the wb address wether it's enabled or not */
+> +	/* set the wb address whether it's enabled or not */
+>   	wb_gpu_addr = adev->wb.gpu_addr + (ring->rptr_offs * 4);
+>   	mqd->cp_hqd_pq_rptr_report_addr_lo = wb_gpu_addr & 0xfffffffc;
+>   	mqd->cp_hqd_pq_rptr_report_addr_hi =
+> @@ -3198,7 +3198,7 @@ static int gfx_v7_0_cp_resume(struct amdgpu_device *adev)
+>   /**
+>    * gfx_v7_0_ring_emit_vm_flush - cik vm flush using the CP
+>    *
+> - * @ring: the ring to emmit the commands to
+> + * @ring: the ring to emit the commands to
+>    *
+>    * Sync the command pipeline with the PFP. E.g. wait for everything
+>    * to be completed.
+> @@ -3220,7 +3220,7 @@ static void gfx_v7_0_ring_emit_pipeline_sync(struct amdgpu_ring *ring)
+>   	amdgpu_ring_write(ring, 4); /* poll interval */
+>
+>   	if (usepfp) {
+> -		/* synce CE with ME to prevent CE fetch CEIB before context switch done */
+> +		/* sync CE with ME to prevent CE fetch CEIB before context switch done */
+>   		amdgpu_ring_write(ring, PACKET3(PACKET3_SWITCH_BUFFER, 0));
+>   		amdgpu_ring_write(ring, 0);
+>   		amdgpu_ring_write(ring, PACKET3(PACKET3_SWITCH_BUFFER, 0));
+> --
+> 2.30.1
+>
