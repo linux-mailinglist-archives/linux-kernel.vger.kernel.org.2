@@ -2,57 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5B93494BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9603494F0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhCYO5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:57:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58916 "EHLO mail.kernel.org"
+        id S230260AbhCYPIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:08:25 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:46881 "EHLO gecko.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231225AbhCYO51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:57:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E2261A01;
-        Thu, 25 Mar 2021 14:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616684247;
-        bh=+MGOAS/02TPE6GFrT+w8Tf+8MdBv5X5AeEce0i//TeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RTnuiXXLkEsn4crF73TAZrj0cXe7YMEDsHkZMFAFnZJMb1Jzxyu9+62FuSNT/G9TU
-         XZzFp4gdAeWsRtEsWiHLERdVq3Z/5yPkMCq45tIWj0YzZXWIbU/3ZfMindIVANJDyQ
-         jd2AkjbpLp4Vty+7gkGtOEZJnG5hVkhypEQzQjB348anIbXIZPHjnjvKoGmIsbLNYY
-         XEppwNk+b63CdQYy90SzqZlk1sbmLNuYX0Voe0ar9NUKr9H/hk9a9Oqrmv+24VJozD
-         14gxdzWLvPV4WPh/t/5PQMn7vIC/JfPSSevrQgQ8MkWHbruaAil+rCjCgHP0s2bFok
-         l9O2J3KWYyZUA==
-Date:   Thu, 25 Mar 2021 14:57:23 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        id S231151AbhCYPIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:08:07 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12PF7vaV028108
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 16:07:57 +0100
+Received: from [139.22.38.170] ([139.22.38.170])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12PEvufl013703;
+        Thu, 25 Mar 2021 15:57:56 +0100
+Subject: Re: [PATCH] staging: gasket: remove it from the kernel
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>,
+        Ben Chan <benchan@chromium.org>, Richard Yeh <rcy@google.com>,
+        linux-staging@lists.linux.dev, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] iommu: Don't use lazy flush for untrusted device
-Message-ID: <20210325145723.GB15172@willie-the-truck>
-References: <20210225061454.2864009-1-baolu.lu@linux.intel.com>
+References: <20210315154413.3084149-1-gregkh@linuxfoundation.org>
+ <CALTjKEP_+uBU8K-=Cnose8wCv9Wrv8oFnKfRUywLEHV4U_jWjQ@mail.gmail.com>
+ <30ee6d6b-9206-acad-b224-591fdeb0dad7@siemens.com>
+ <YFyjsAtilH+3fggx@kroah.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <842fccfa-30a6-d40a-bf9a-8e7dea355666@siemens.com>
+Date:   Thu, 25 Mar 2021 15:57:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210225061454.2864009-1-baolu.lu@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFyjsAtilH+3fggx@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 02:14:54PM +0800, Lu Baolu wrote:
-> The lazy IOTLB flushing setup leaves a time window, in which the device
-> can still access some system memory, which has already been unmapped by
-> the device driver. It's not suitable for untrusted devices. A malicious
-> device might use this to attack the system by obtaining data that it
-> shouldn't obtain.
+On 25.03.21 15:52, Greg KH wrote:
+> On Thu, Mar 25, 2021 at 03:46:10PM +0100, Jan Kiszka wrote:
+>> On 15.03.21 17:10, Rob Springer wrote:
+>>> Acked-by: Rob Springer <rspringer@google.com>
+>>>
+>>>
+>>> On Mon, Mar 15, 2021 at 8:44 AM <gregkh@linuxfoundation.org> wrote:
+>>>>
+>>>> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>>>
+>>>> As none of the proposed things that need to be changed in the gasket
+>>>> drivers have ever been done, and there has not been any forward progress
+>>>> to get this out of staging, it seems totally abandonded so remove the
+>>>> code entirely so that people do not spend their time doing tiny cleanups
+>>>> for code that will never get out of staging.
+>>>>
+>>>> If this code is actually being used, it can be reverted simply and then
+>>>> cleaned up properly, but as it is abandoned, let's just get rid of it.
+>>>>
+>>>> Cc: Rob Springer <rspringer@google.com>
+>>>> Cc: Todd Poynor <toddpoynor@google.com>
+>>>> Cc: Ben Chan <benchan@chromium.org>
+>>>> Cc: Richard Yeh <rcy@google.com>
+>>>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>
+>> OK, so is there a plan of the HW vendor to improve the user experience
+>> for this hardware? Is there a different software architecture in sight
+>> which will not need a kernel driver?
 > 
-> Fixes: c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/dma-iommu.c | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
+> What hardware vendor makes this thing?  What systems require it?  And
+> why can't you use UIO instead?
+> 
+>> Just wondering loudly while fiddling with dkms packages and starring at
+>> the code diffs between what was removed here and what I still have to
+>> install manually from remote sources.
+> 
+> Where are the remote sources for this thing and why didn't they ever get
+> synced into the kernel tree?
+> 
 
-Acked-by: Will Deacon <will@kernel.org>
+Very good questions, and I'm curious to learn if someone in CC can
+answer them.
 
-Will
+I was just starting to play with this thing, using Google's binary
+Debian repo. But that is not... optimal. Even more when thinking beyond
+a try-out stage.
+
+Jan
+
+-- 
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
