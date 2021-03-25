@@ -2,74 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66245349BFC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834D4349BFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhCYVvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:51:49 -0400
-Received: from mail-pj1-f49.google.com ([209.85.216.49]:41584 "EHLO
-        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhCYVve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:51:34 -0400
-Received: by mail-pj1-f49.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so1521678pjb.0;
-        Thu, 25 Mar 2021 14:51:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1zlx7U8zMxFMkzfA5vorsSxNONk+fwIqBOsm+WJihPg=;
-        b=K2p7OaLNES7ysHOV9EiD1OySRUBom5Qnq4S625kSHdBZbOB2BT8MTkznZrAcHe3dmq
-         H6Gs/NKdC7WFSUo5FlPryIw705We8BvG8w38lkumnqs05c4GFPHx1a/q7D6DfgJUK6Vv
-         Yq7SVYM1UYsH5a7xYH2DV5dNSC4Chmt+C7jyB6jTNsVb4nsV1OSe7JBtQ9/5+17OGwEE
-         9R1Djcpg88uAxTnvBp2tEF2tNgwpq2nrstHiBgvAZ2u7dN7YIQ1Q4En4h76Vtdks/xnU
-         cPgzFp/6sWarIUaUJTkKHTHdywnS9wnaxzW+euQcewOK1uyOd9v6GLWb68Y15/wL1V1z
-         FXHQ==
-X-Gm-Message-State: AOAM530nhIWGYmuPU5qnsq8QQSAzWIgPY/OCL0oPE+ITjafZXI0pJoPC
-        7Mr6IpG8KKoOGUOfvoWTjW8=
-X-Google-Smtp-Source: ABdhPJznDSZthWmbnsJAFrBGlFNhVvQtF5BmGswKFtsmyQpJntQg/FdFYUaEoqmBK2DEJVkGjJZ3hA==
-X-Received: by 2002:a17:90a:3809:: with SMTP id w9mr10481793pjb.79.1616709093981;
-        Thu, 25 Mar 2021 14:51:33 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:c5af:7b7c:edac:ee67? ([2601:647:4000:d7:c5af:7b7c:edac:ee67])
-        by smtp.gmail.com with ESMTPSA id z25sm6685401pfn.37.2021.03.25.14.51.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 14:51:33 -0700 (PDT)
-Subject: Re: [PATCH v2 0/8] ensure bios aren't split in middle of crypto data
- unit
-To:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>
-References: <20210325212609.492188-1-satyat@google.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <e0248d93-e880-6a6d-92d6-dfcfb6f9d661@acm.org>
-Date:   Thu, 25 Mar 2021 14:51:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231241AbhCYVwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230357AbhCYVwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 17:52:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37C0C61A27;
+        Thu, 25 Mar 2021 21:52:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616709135;
+        bh=YtDhb3Z8cilmN9rnRVuyvYpXzUlic0PVSJKa43SR7pw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c4O6fgS9TGJZv9FSlb2zLmj1hrBLMBabLoEz40x7zGWV9vj0lWWdnr2KoqF8iW3CW
+         UX4JmMqoedKAiMy1raldxlU0UPboSKnljxVq3AE2FNz5QOvE3sYZtFAFVHJSIZJ22Y
+         rjAnCGARLNFDjwJcCg5JnY36hSv/mGOLIVsh+/SVCdP0lEqdsZpxL8qt1qOEBuiTyP
+         KkFJySwbz/xeO0Jf3tOzv7yyua/CBSeS2eUaKjkAkWdMnB7qPsWGUWI6foCDwuYwDl
+         br6c3wS9Hokiib/y9w11tQKW+oRZPTXIxFLhbPwJTuPMRYTl46+2ZSidnwIgtW1qoy
+         q180k/Q4lgKwQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] riscv: Use $(LD) instead of $(CC) to link vDSO
+Date:   Thu, 25 Mar 2021 14:51:56 -0700
+Message-Id: <20210325215156.1986901-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-In-Reply-To: <20210325212609.492188-1-satyat@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 2:26 PM, Satya Tangirala wrote:
-> When a bio has an encryption context, its size must be aligned to its
-> crypto data unit size. A bio must not be split in the middle of a data
-> unit. Currently, bios are split at logical block boundaries [...]
+Currently, the VDSO is being linked through $(CC). This does not match
+how the rest of the kernel links objects, which is through the $(LD)
+variable.
 
-Hi Satya,
+When linking with clang, there are a couple of warnings about flags that
+will not be used during the link:
 
-Are you sure that the block layer core splits bios at logical block
-boundaries? Commit 9cc5169cd478 ("block: Improve physical block
-alignment of split bios") should have changed the behavior from
-splitting at logical block boundaries into splitting at physical block
-boundaries. Without having looked at this patch series, can the same
-effect be achieved by reporting the crypto data unit size as the
-physical block size?
+clang-12: warning: argument unused during compilation: '-no-pie' [-Wunused-command-line-argument]
+clang-12: warning: argument unused during compilation: '-pg' [-Wunused-command-line-argument]
 
-Thanks,
+'-no-pie' was added in commit 85602bea297f ("RISC-V: build vdso-dummy.o
+with -no-pie") to override '-pie' getting added to the ld command from
+distribution versions of GCC that enable PIE by default. It is
+technically no longer needed after commit c2c81bb2f691 ("RISC-V: Fix the
+VDSO symbol generaton for binutils-2.35+"), which removed vdso-dummy.o
+in favor of generating vdso-syms.S from vdso.so with $(NM) but this also
+resolves the issue in case it ever comes back due to having full control
+over the $(LD) command. '-pg' is for function tracing, it is not used
+during linking as clang states.
 
-Bart.
+These flags could be removed/filtered to fix the warnings but it is
+easier to just match the rest of the kernel and use $(LD) directly for
+linking. See commits
+
+  fe00e50b2db8 ("ARM: 8858/1: vdso: use $(LD) instead of $(CC) to link VDSO")
+  691efbedc60d ("arm64: vdso: use $(LD) instead of $(CC) to link VDSO")
+  2ff906994b6c ("MIPS: VDSO: Use $(LD) instead of $(CC) to link VDSO")
+  2b2a25845d53 ("s390/vdso: Use $(LD) instead of $(CC) to link vDSO")
+
+for more information.
+
+The flags are converted to linker flags and '--eh-frame-hdr' is added to
+match what is added by GCC implicitly, which can be seen by adding '-v'
+to GCC's invocation.
+
+Additionally, since this area is being modified, use the $(OBJCOPY)
+variable instead of an open coded $(CROSS_COMPILE)objcopy so that the
+user's choice of objcopy binary is respected.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/803
+Link: https://github.com/ClangBuiltLinux/linux/issues/970
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ arch/riscv/kernel/vdso/Makefile | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 71a315e73cbe..ca2b40dfd24b 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -41,11 +41,10 @@ KASAN_SANITIZE := n
+ $(obj)/vdso.o: $(obj)/vdso.so
+ 
+ # link rule for the .so file, .lds has to be first
+-SYSCFLAGS_vdso.so.dbg = $(c_flags)
+ $(obj)/vdso.so.dbg: $(src)/vdso.lds $(obj-vdso) FORCE
+ 	$(call if_changed,vdsold)
+-SYSCFLAGS_vdso.so.dbg = -shared -s -Wl,-soname=linux-vdso.so.1 \
+-	-Wl,--build-id=sha1 -Wl,--hash-style=both
++LDFLAGS_vdso.so.dbg = -shared -s -soname=linux-vdso.so.1 \
++	--build-id=sha1 --hash-style=both --eh-frame-hdr
+ 
+ # We also create a special relocatable object that should mirror the symbol
+ # table and layout of the linked DSO. With ld --just-symbols we can then
+@@ -60,13 +59,10 @@ $(obj)/%.so: $(obj)/%.so.dbg FORCE
+ 
+ # actual build commands
+ # The DSO images are built using a special linker script
+-# Add -lgcc so rv32 gets static muldi3 and lshrdi3 definitions.
+ # Make sure only to export the intended __vdso_xxx symbol offsets.
+ quiet_cmd_vdsold = VDSOLD  $@
+-      cmd_vdsold = $(CC) $(KBUILD_CFLAGS) $(call cc-option, -no-pie) -nostdlib -nostartfiles $(SYSCFLAGS_$(@F)) \
+-                           -Wl,-T,$(filter-out FORCE,$^) -o $@.tmp && \
+-                   $(CROSS_COMPILE)objcopy \
+-                           $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
++      cmd_vdsold = $(LD) $(ld_flags) -T $(filter-out FORCE,$^) -o $@.tmp && \
++                   $(OBJCOPY) $(patsubst %, -G __vdso_%, $(vdso-syms)) $@.tmp $@ && \
+                    rm $@.tmp
+ 
+ # Extracts symbol offsets from the VDSO, converting them into an assembly file
+-- 
+2.31.0
+
