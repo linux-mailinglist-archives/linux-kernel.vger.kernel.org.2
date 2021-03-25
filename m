@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF5E34970E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0727F349719
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhCYQl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        id S229624AbhCYQnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCYQlZ (ORCPT
+        with ESMTP id S229854AbhCYQmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:41:25 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FECC06174A;
-        Thu, 25 Mar 2021 09:41:25 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id v26so2515485iox.11;
-        Thu, 25 Mar 2021 09:41:25 -0700 (PDT)
+        Thu, 25 Mar 2021 12:42:52 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE173C06174A;
+        Thu, 25 Mar 2021 09:42:52 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id g15so2410463qkl.4;
+        Thu, 25 Mar 2021 09:42:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OdbHY0RnzXW9ln9u58UHELCJWkEnS2LU09uY7jHKHhU=;
-        b=lt3Hqv6lHrHwGZtQRrQ38hRcDah6BT3R+RyYwSI+RZP0u9c/rC6oVratLljSq2SigX
-         H2UxOLfe7Woo6m5o982ut9cTCFvthqQMvwXclLOuqSHaOGyOFM2zLxTNnbBmhM5TYk8D
-         x616ICnc69sZ1QMlbwlZhz+B8JsnbDM/a1vYkg6R2GjUOWWeLKmdFLJ2uVJlYD+iPVhw
-         AeDBQjlYUVKZvnZbODqbTLAZnl3lCd8gaFjdg2HJYxV3FUumtAKMiudPRrqB434EF1pm
-         q47nf8xQPVnhPk6DKzRlK/N04bcmCTWOC22OUZGoMmpBEaS92bznVdEIwKWgWC0xSG+e
-         1Eqg==
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=nQz2FFQOVbXdb1nbA7usuQscVjdcM+pKQXNSzOfg+hY=;
+        b=ALPbykLRvkeSQXAwHyRm4zfDOnJh4b6/wRGs+aUYsGZSIjDlbhhMFjIDFemRMdYPMq
+         V0mugNl66OVvvLY4jcKxG7wlEQuZ2tLNJdsfpx92KDNEcH49zxOL/VVSD7apxqvXSUIa
+         cZzdX2nJ79iU7+K/cs9CqIYV/Q01Y35WOKKOyv0S/g79GK0wo8hDMCU68nlXyohluUUN
+         pDP/R++uPfjtJVXnpDEYJK8/A0SerROMRL4of8IsPM/gk69UYSZhANaIOS3vPEK2L7IQ
+         eVUj5BnMsLefSjObFHH8VfsrWGXoAl1+QTErTvGryQrBIXXp+I5IxNEgU3CnnKc34rVj
+         Sszw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OdbHY0RnzXW9ln9u58UHELCJWkEnS2LU09uY7jHKHhU=;
-        b=EFyP5zy4DIFedsVa3vqPLI7SG3CiPgNIg8akWfwS5ttr58hOorR6Fei4YAnkcya9L1
-         6aRr61NEeWqEUFHMEDSYMZFqyfof4yGYqXsEAbrqYladbMxGYQ21d579mmfY7SjkLtW7
-         aBOw7mXvCidH/ZbcXg5WjXMkZz07RZWkz1t0XjJFQjs5OrR6Ldn44COBqt4OgR48GlZV
-         vioEGhkwLsSn84YckkhqaydV/9Uu9BCl2N1ea2PtPB6esef6HbL0XHQsTOmPJgoqKmIa
-         YR1PC4MZr/DDMsp6tCkThKdhGuMTKO9SM9/vXR/GAeLmiz/K5qoFS9/W8kCbOYZkCF9A
-         j/oA==
-X-Gm-Message-State: AOAM5315bl5Nsj1QENAeynp8cMUvrORlWXKRnb28JqMWlRAEXgQlQCVq
-        pmrDQUWm7MrTmekN5bf7+Tr9w7zZqiYf0q6w4a0=
-X-Google-Smtp-Source: ABdhPJxbrlydndu7n5u97K0HgoGx9Fx7r5H7yg7JN5zcWAYel05Svrjq2W6LDfFYaZts37+Sii4p9iLuRyVB+S8mVS4=
-X-Received: by 2002:a02:8801:: with SMTP id r1mr8496177jai.51.1616690485097;
- Thu, 25 Mar 2021 09:41:25 -0700 (PDT)
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=nQz2FFQOVbXdb1nbA7usuQscVjdcM+pKQXNSzOfg+hY=;
+        b=ESEJ4V4L31W7Tm0BDekVLFEzgsKMy1rJ4nBtxDIdLX/1Cta5FrbdO5CshY0iSK3Eb2
+         hvl42/ge2fyHRNIMZbrHJrdGhGjr5z+BVcTe3lynE9IVJGttKYDkuSJecenB76KnD7LH
+         XifV+NUEsqAkAtnxxF79wgkowJsW0DnUH0bxkkNcas2x9WllWO64U/85aV2Rr4Og6Clr
+         EyH5gudXS90ltFspR64MfsFzOIjON2R6l0SCZ4bg89a6cc0td4vT7hwD0f2U5yXM13hU
+         ufaopkCEm/UMlof9e3E8y6TKsaK0iaqtmY7fQYr2UHuCRANrCbcMBJLUZXLhH6q+djfo
+         2e6A==
+X-Gm-Message-State: AOAM533iULsqqB3DwQZUlvXLa5x62jzLPRgl/cAD4hT9iL3bE3ushJrq
+        O5f71aUrP0juF0obSF3KupWW/TmVdRh1GQ==
+X-Google-Smtp-Source: ABdhPJwFootViaDnm/L5OAhIV4/loi9y5igxc62Na47b2/oBl1G7aIZhhS0rvK90N5qsxuI7E3p/ZA==
+X-Received: by 2002:a37:9e4e:: with SMTP id h75mr8931214qke.180.1616690571930;
+        Thu, 25 Mar 2021 09:42:51 -0700 (PDT)
+Received: from [172.16.141.208] ([187.68.194.76])
+        by smtp.gmail.com with ESMTPSA id a187sm4512112qkd.69.2021.03.25.09.42.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 09:42:51 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 13:42:23 -0300
+User-Agent: K-9 Mail for Android
+In-Reply-To: <YFygSdFOT5B0DwRU@hirez.programming.kicks-ass.net>
+References: <1616425047-1666-1-git-send-email-atrajeev@linux.vnet.ibm.com> <1616425047-1666-2-git-send-email-atrajeev@linux.vnet.ibm.com> <d7dd633b-e28a-155a-a8e2-0e5a83b4eead@linux.ibm.com> <YFyJr+R24TlrMNrC@kernel.org> <YFygSdFOT5B0DwRU@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210325063825.228167-1-luwei32@huawei.com> <20210325063825.228167-2-luwei32@huawei.com>
-In-Reply-To: <20210325063825.228167-2-luwei32@huawei.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Thu, 25 Mar 2021 17:41:16 +0100
-Message-ID: <CAOi1vP9uuaY9OMmW0Xni5iUztyAviFH3N11ohWbb2zqXsGYMiQ@mail.gmail.com>
-Subject: Re: [PATCH -next 1/5] net: ceph: Fix a typo in osdmap.c
-To:     Lu Wei <luwei32@huawei.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, xiyou.wangcong@gmail.com,
-        ap420073@gmail.com, linux-decnet-user@lists.sourceforge.net,
-        Andrew Lunn <andrew@lunn.ch>, vivien.didelot@gmail.com,
-        Florian Fainelli <f.fainelli@gmail.com>, olteanv@gmail.com,
-        steffen.klassert@secunet.com,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH V2 1/5] powerpc/perf: Expose processor pipeline stage cycles using PERF_SAMPLE_WEIGHT_STRUCT
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mpe@ellerman.id.au,
+        jolsa@kernel.org, ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com
+From:   Arnaldo <arnaldo.melo@gmail.com>
+Message-ID: <2BAC42AE-6BD3-45EF-8867-1A15F25FE80B@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 7:37 AM Lu Wei <luwei32@huawei.com> wrote:
->
-> Modify "inital" to "initial" in net/ceph/osdmap.c.
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Lu Wei <luwei32@huawei.com>
-> ---
->  net/ceph/osdmap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/ceph/osdmap.c b/net/ceph/osdmap.c
-> index 2b1dd252f231..c959320c4775 100644
-> --- a/net/ceph/osdmap.c
-> +++ b/net/ceph/osdmap.c
-> @@ -1069,7 +1069,7 @@ static struct crush_work *get_workspace(struct workspace_manager *wsm,
->
->                 /*
->                  * Do not return the error but go back to waiting.  We
-> -                * have the inital workspace and the CRUSH computation
-> +                * have the initial workspace and the CRUSH computation
->                  * time is bounded so we will get it eventually.
->                  */
->                 WARN_ON(atomic_read(&wsm->total_ws) < 1);
-> --
-> 2.17.1
->
 
-Hi Lu,
 
-There is at least one other legit typo in that file: "ambigous".
-I'd rather fix all typos at once, so curious why Hulk Robot didn't
-catch it.
+On March 25, 2021 11:38:01 AM GMT-03:00, Peter Zijlstra <peterz@infradead=
+=2Eorg> wrote:
+>On Thu, Mar 25, 2021 at 10:01:35AM -0300, Arnaldo Carvalho de Melo
+>wrote:=2E
+>> > > Also for CPU_FTR_ARCH_31, capture the two cycle counter
+>information in
+>> > > two 16 bit fields of perf_sample_weight structure=2E
+>> >=20
+>> > Changes looks fine to me=2E
+>> >=20
+>> > Reviewed-by: Madhavan Srinivasan <maddy@linux=2Eibm=2Ecom>
+>>=20
+>> So who will process the kernel bits? I'm merging the tooling parts,
+>
+>I was sorta expecting these to go through the powerpc tree=2E Let me know
+>if you want them in tip/perf/core instead=2E
 
-Thanks,
+Shouldn't matter by which tree it gets upstream, as long as it gets picked=
+ :-)
 
-                Ilya
+- Arnaldo
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
