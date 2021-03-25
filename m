@@ -2,70 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4872E3497CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAE23497D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhCYRWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:22:06 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36390 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhCYRVw (ORCPT
+        id S230034AbhCYRXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229670AbhCYRWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:21:52 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lPTg4-00053q-Gy; Thu, 25 Mar 2021 17:21:48 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] thermal/drivers/devfreq_cooling: Fix error return if kasprintf returns NULL
-Date:   Thu, 25 Mar 2021 17:21:48 +0000
-Message-Id: <20210325172148.485259-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 25 Mar 2021 13:22:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0915AC06174A;
+        Thu, 25 Mar 2021 10:22:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=fd+YSWCmuNgmoKSLYqtfvKsiI6YnkssysiIkHOs21QQ=; b=DsB5oT+FJPywUs1Z4knMdOjmtC
+        4oytI+VCd/Q65mM1pHDdCuXdOjEw7BjNAcUf75cQK/VGRklbXK5hD2iY/Bv8ygam47uDrMl8PrTx3
+        fmMNvHVj/tDN2YShNsq1VmX/L3/NW4jue8xtYiclJ1lo5A2ymRBnAksM+GmB750DORIw+mvDYJtnw
+        KlsTMlr5LUEksSSVc/oyfh/ELqyQIBIjcS2payygeF7fd0WBJ7syKuauD3q9BeBO2pTehY+SneHj/
+        GNqKKq0VKV0VhTyT8gZTUnuFhWnYL4Y9wThmcykOkAv020pPipw9ohqk+vytyKqe2d6dsdVnFsKAx
+        jqLhJKPQ==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPTh6-001u0o-6n; Thu, 25 Mar 2021 17:22:52 +0000
+Subject: Re: [PATCH] fddi: skfp: Rudimentary spello fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210325070835.32041-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c75e92a7-077c-44ee-4fef-1d5efdb89ff4@infradead.org>
+Date:   Thu, 25 Mar 2021 10:22:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210325070835.32041-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 3/25/21 12:08 AM, Bhaskar Chowdhury wrote:
+> 
+> s/autohorized/authorized/
+> s/recsource/resource/
+> s/measuered/measured/
+> sauthoriziation/authorization/
 
-Currently when kasprintf fails and returns NULL, the error return -ENOMEM
-is being assigned to cdev instead of err causing the return via the label
-remove_qos_re to return the incorrect error code. Fix this by explicitly
-setting err before taking the error return path.
+  s/
 
-Addresses-Coverity: ("Unused valued")
-Fixes: f8d354e821b2 ("thermal/drivers/devfreq_cooling: Use device name instead of auto-numbering")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/thermal/devfreq_cooling.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-index fb250ac16f50..2c7e9e9cfbe1 100644
---- a/drivers/thermal/devfreq_cooling.c
-+++ b/drivers/thermal/devfreq_cooling.c
-@@ -402,10 +402,11 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
- 	if (err < 0)
- 		goto free_table;
- 
--	cdev = ERR_PTR(-ENOMEM);
- 	name = kasprintf(GFP_KERNEL, "devfreq-%s", dev_name(dev));
--	if (!name)
-+	if (!name) {
-+		err = -ENOMEM;
- 		goto remove_qos_req;
-+	}
- 
- 	cdev = thermal_of_cooling_device_register(np, name, dfc,
- 						  &devfreq_cooling_ops);
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  drivers/net/fddi/skfp/h/smt.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/fddi/skfp/h/smt.h b/drivers/net/fddi/skfp/h/smt.h
+> index a0dbc0f57a55..8d104f13e2c3 100644
+> --- a/drivers/net/fddi/skfp/h/smt.h
+> +++ b/drivers/net/fddi/skfp/h/smt.h
+> @@ -411,7 +411,7 @@ struct smt_p_reason {
+>  #define SMT_RDF_ILLEGAL 0x00000005	/* read only (PMF) */
+>  #define SMT_RDF_NOPARAM	0x6		/* parameter not supported (PMF) */
+>  #define SMT_RDF_RANGE	0x8		/* out of range */
+> -#define SMT_RDF_AUTHOR	0x9		/* not autohorized */
+> +#define SMT_RDF_AUTHOR	0x9		/* not authorized */
+>  #define SMT_RDF_LENGTH	0x0a		/* length error */
+>  #define SMT_RDF_TOOLONG	0x0b		/* length error */
+>  #define SMT_RDF_SBA	0x0d		/* SBA denied */
+> @@ -450,7 +450,7 @@ struct smt_p_version {
+> 
+>  struct smt_p_0015 {
+>  	struct smt_para	para ;		/* generic parameter header */
+> -	u_int		res_type ;	/* recsource type */
+> +	u_int		res_type ;	/* resource type */
+>  } ;
+> 
+>  #define	SYNC_BW		0x00000001L	/* Synchronous Bandwidth */
+> @@ -489,7 +489,7 @@ struct smt_p_0017 {
+>  struct smt_p_0018 {
+>  	struct smt_para	para ;		/* generic parameter header */
+>  	int		sba_ov_req ;	/* total sync bandwidth req for overhead*/
+> -} ;					/* measuered in bytes per T_Neg */
+> +} ;					/* measured in bytes per T_Neg */
+> 
+>  /*
+>   * P19 : SBA Allocation Address
+> @@ -562,7 +562,7 @@ struct smt_p_fsc {
+>  #define FSC_TYPE2	2		/* Special A/C indicator forwarding */
+> 
+>  /*
+> - * P00 21 : user defined authoriziation (see pmf.c)
+> + * P00 21 : user defined authorization (see pmf.c)
+>   */
+>  #define SMT_P_AUTHOR	0x0021
+> 
+> --
+
+
 -- 
-2.30.2
+~Randy
 
