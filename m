@@ -2,100 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C709F349AE1
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA9A349AE0
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbhCYUNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41314 "EHLO
+        id S230153AbhCYUNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhCYUNB (ORCPT
+        with ESMTP id S229576AbhCYUMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:13:01 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C78C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:13:01 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id a198so4353223lfd.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:13:01 -0700 (PDT)
+        Thu, 25 Mar 2021 16:12:55 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AE5C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:12:55 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id u19so2914829pgh.10
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iSCZD0WysGru/kVbyNvevo1VRTVBoKkOp1lzPAHeWdQ=;
-        b=GemDuBlk7PzUL2Fb3Mi1u+hLLL1HEDKYeh2Hbjs1BW61m4FQbvXD22/IGQ38dao6HV
-         y9nQhMQjlF47CrpXbP9GKzIRwhDsvNCl/DEmzolXE3cUG1JXPp/jR8UzT/LgJ0KaFCpR
-         rf/4UWJ4RL0zAyhp4Qc+xCgBMm7YF057ScHws=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oKCCJvFAhyXitm2ivJmoGad7JQ14zbFEvHLYcmjzujI=;
+        b=Wal6MNfKxDi8FAcS76nifM2uKxeApjUPR6pWBvMdiVwjENJ41KMHuiuBFSD68Kmsw9
+         Lj6aeh5bHVzjXrKYdh9GN1E7DYqrLpMbFN1uWSjgjJcQO31d2CqzRn7VCrDuQmvRJq5i
+         ghv9+NKQw3gSb5VzPnb/wS2syQWGS9UA1m8l9bIRQwdx0L+mDejM52xy2/1a1zUgHQ5w
+         T8Za1iMNlpdEB1QMt8LOvKaKvCJ9EGTHwARD+iyvYFOkmdhhyeGoEjuiQFERdgJ9DSXg
+         2YXTUduQqMJCfgkJkzxBISnilOSBCSMM5bjvQAPbkVHrgkS32OEc9h5xpBGeOlvVcTdw
+         iRyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iSCZD0WysGru/kVbyNvevo1VRTVBoKkOp1lzPAHeWdQ=;
-        b=kiZ53RSOIptx/WQRX68jyhlqBQDAvdAKZJ1810cVzgA8xYV+pig9rhPYv1tKloP46u
-         aR3CKRoeQ2h76YSQCDlYe5Fx5qe1CocbQGT3oBz1S8Zo+Dq7gzJtM0CLeorC5NsVlTA7
-         l/7zNnVZKjGbpUNUxK2LXjjkf0XvXmItXWhzCyXQLj3zP7NtloWeBj2OXBAPcuFbwcl6
-         9vBE/yd2hWBRD8rGJnTnXiO1jp3fsjC3ox1XabgFfwwd72E6jY8GFUjA8TOB4CuHFo21
-         pagkc9SyQD5+7/16JgVpKnCBx4BfvED3Y+Ue7kaI9AIRW3lBjS04swZz0aNBknQDQuKm
-         GIXg==
-X-Gm-Message-State: AOAM532os74pjSE24oFZTPLh8tekb6qLQNoaVTe+Id8QsHRbCD16g8vu
-        +a4AsXxr0TatOBLYP6SonjITTpvkCsef8Q==
-X-Google-Smtp-Source: ABdhPJwnyPYyMnI8Nu0RN6ZoGsSRdT8J+u60oGOEpeRTkzv0aVvv7UpxdoVU7ncNFl48/HUztWSctw==
-X-Received: by 2002:a05:6512:3327:: with SMTP id l7mr6081061lfe.639.1616703179434;
-        Thu, 25 Mar 2021 13:12:59 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id p5sm883663ljj.26.2021.03.25.13.12.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 13:12:58 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id a1so4795936ljp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:12:58 -0700 (PDT)
-X-Received: by 2002:a2e:864d:: with SMTP id i13mr6644465ljj.48.1616703178433;
- Thu, 25 Mar 2021 13:12:58 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=oKCCJvFAhyXitm2ivJmoGad7JQ14zbFEvHLYcmjzujI=;
+        b=Cj0gIwlUWMHOje2QEzEYemy18oU9a8G7gn5RMr04QzcLzoxK8nKRx6bXS7XxFtC+vd
+         h3f9HA6dtZu9YZw2+8fqvRkPaFxYlJSD5Jt5+Ynws+ENWXCyFD8p9VqqrQUege8Tgo3f
+         iSW2MK/YHdRigRgviFSpPGe2bZ1KuLuljd4vKe/9SSmhxlf74fw1oXI4pcZ3d+UkNek6
+         K17/ypbcFtFISwYb5r+CpJOySfbbLKbx6OxDMcT/kYdio3xhgXr1eBTbFFdAH9frfShw
+         /mOswsB8eotLFI0vbcXdaipSfw98PFNQVOXDv/6+cFijGE3hBZH6919Wq5W0bxBE0xqi
+         n6mg==
+X-Gm-Message-State: AOAM5319rlv33QPCSeqwPn9KR4cSFApUeQt1SmqtJz2ghCVzYu8jSflJ
+        OzCjYdez2sdWnWPO86AsrT8=
+X-Google-Smtp-Source: ABdhPJxpPtICV9qH7Mky40gHzeB9G0a1Pe1w3UI8+/0GeVw7mcKrL6dozLNBYQNgTSj/eg1Zn1KqDw==
+X-Received: by 2002:a63:ce03:: with SMTP id y3mr8974310pgf.414.1616703175343;
+        Thu, 25 Mar 2021 13:12:55 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:4c1e:8d39:76c4:59d7])
+        by smtp.gmail.com with ESMTPSA id b84sm6519072pfb.162.2021.03.25.13.12.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 13:12:54 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 25 Mar 2021 13:12:51 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH 1/8] mm: cma: introduce cma_release_nowait()
+Message-ID: <YFzuw0S5S/aG7nVk@google.com>
+References: <20210325002835.216118-1-mike.kravetz@oracle.com>
+ <20210325002835.216118-2-mike.kravetz@oracle.com>
+ <aba43427-0f51-7eb9-fa73-6e55237c8ddb@redhat.com>
+ <YFxkXEXMpcMM/KWd@dhcp22.suse.cz>
+ <76aaf359-9496-04df-a585-3662d0375749@oracle.com>
+ <4bc3c5d8-f1a7-6439-8fee-582364a7c021@redhat.com>
 MIME-Version: 1.0
-References: <20210325164343.807498-1-axboe@kernel.dk> <m1ft0j3u5k.fsf@fess.ebiederm.org>
- <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com> <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
-In-Reply-To: <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 25 Mar 2021 13:12:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
-Message-ID: <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Stefan Metzmacher <metze@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4bc3c5d8-f1a7-6439-8fee-582364a7c021@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 12:42 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Mar 25, 2021 at 12:38 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > I don't know what the gdb logic is, but maybe there's some other
-> > option that makes gdb not react to them?
->
-> .. maybe we could have a different name for them under the task/
-> subdirectory, for example (not  just the pid)? Although that probably
-> messes up 'ps' too..
+On Thu, Mar 25, 2021 at 06:15:11PM +0100, David Hildenbrand wrote:
+> On 25.03.21 17:56, Mike Kravetz wrote:
+> > On 3/25/21 3:22 AM, Michal Hocko wrote:
+> > > On Thu 25-03-21 10:56:38, David Hildenbrand wrote:
+> > > > On 25.03.21 01:28, Mike Kravetz wrote:
+> > > > > From: Roman Gushchin <guro@fb.com>
+> > > > > 
+> > > > > cma_release() has to lock the cma_lock mutex to clear the cma bitmap.
+> > > > > It makes it a blocking function, which complicates its usage from
+> > > > > non-blocking contexts. For instance, hugetlbfs code is temporarily
+> > > > > dropping the hugetlb_lock spinlock to call cma_release().
+> > > > > 
+> > > > > This patch introduces a non-blocking cma_release_nowait(), which
+> > > > > postpones the cma bitmap clearance. It's done later from a work
+> > > > > context. The first page in the cma allocation is used to store
+> > > > > the work struct. Because CMA allocations and de-allocations are
+> > > > > usually not that frequent, a single global workqueue is used.
+> > > > > 
+> > > > > To make sure that subsequent cma_alloc() call will pass, cma_alloc()
+> > > > > flushes the cma_release_wq workqueue. To avoid a performance
+> > > > > regression in the case when only cma_release() is used, gate it
+> > > > > by a per-cma area flag, which is set by the first call
+> > > > > of cma_release_nowait().
+> > > > > 
+> > > > > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > > > > [mike.kravetz@oracle.com: rebased to v5.12-rc3-mmotm-2021-03-17-22-24]
+> > > > > Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> > > > > ---
+> > > > 
+> > > > 
+> > > > 1. Is there a real reason this is a mutex and not a spin lock? It seems to
+> > > > only protect the bitmap. Are bitmaps that huge that we spend a significant
+> > > > amount of time in there?
+> > > 
+> > > Good question. Looking at the code it doesn't seem that there is any
+> > > blockable operation or any heavy lifting done under the lock.
+> > > 7ee793a62fa8 ("cma: Remove potential deadlock situation") has introduced
+> > > the lock and there was a simple bitmat protection back then. I suspect
+> > > the patch just followed the cma_mutex lead and used the same type of the
+> > > lock. cma_mutex used to protect alloc_contig_range which is sleepable.
+> > > 
+> > > This all suggests that there is no real reason to use a sleepable lock
+> > > at all and we do not need all this heavy lifting.
+> > > 
+> > 
+> > When Roman first proposed these patches, I brought up the same issue:
+> > 
+> > https://lore.kernel.org/linux-mm/20201022023352.GC300658@carbon.dhcp.thefacebook.com/
+> > 
+> > Previously, Roman proposed replacing the mutex with a spinlock but
+> > Joonsoo was opposed.
+> > 
+> > Adding Joonsoo on Cc:
+> > 
+> 
+> There has to be a good reason not to. And if there is a good reason,
+> lockless clearing might be one feasible alternative.
 
-Actually, maybe the right model is to simply make all the io threads
-take signals, and get rid of all the special cases.
-
-Sure, the signals will never be delivered to user space, but if we
-
- - just made the thread loop do "get_signal()" when there are pending signals
-
- - allowed ptrace_attach on them
-
-they'd look pretty much like regular threads that just never do the
-user-space part of signal handling.
-
-The whole "signals are very special for IO threads" thing has caused
-so many problems, that maybe the solution is simply to _not_ make them
-special?
-
-           Linus
+I also don't think nowait variant is good idea. If the scanning of
+bitmap is *really* significant, it might be signal that we need to
+introduce different technique or data structure not bitmap rather
+than a new API variant.
