@@ -2,141 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 227C6349328
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB97834932D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhCYNfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
+        id S230133AbhCYNiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:38:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231202AbhCYNfY (ORCPT
+        with ESMTP id S230095AbhCYNiv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:35:24 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC68EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:35:23 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id z2so2311715wrl.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:35:23 -0700 (PDT)
+        Thu, 25 Mar 2021 09:38:51 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E58EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:38:51 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id x16so1956132iob.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:38:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=sgVSDNtewl13Faq2L7m0VtnnssegF5rNrygJnFP8kVQ=;
-        b=V87PaBpvHuLPd8si+rBOURH9tvykrSdIEVgRyxYNGleHug7Pet20eoPwfqrKedmoIO
-         xNyOiDnaGrRpgOWGqZIt7Ra3rkDGcRPc35bca/HZIO+b2B9oxyKF73LPvbC2MY+aG+3z
-         gDJYeUMjH9jjxGofh5eJsQbE8bH+8z1EHCOQsmxALu+OE6nxImZWEkWVliEazofNk/M5
-         iLO/jTivjtWTGjH5oUq9vEDwcOmF1mQNSjBQjzgWUkZiCfXymAjksiSwb7zhAzRPT7Nz
-         xfuzouQfGNxeKnTgbFj4YROOe5NSYCUdP7NoF+jDDAFpV02rgPuqXQT+MX6PAdVvZy3U
-         mjJg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eM1i1Yk87DzUyuufIUGNIKd4zH4tVzCeadWKa9Xb/JU=;
+        b=XdHRtgYk0+DLpDrv3ToQu5LWl0EYWRXpd/TbmPrRxtPCCkTI1FtzSRyh+dBxxClmvL
+         +q9RzafC27umFrgzVkXSOeHFGrfjKrrqJTm7RqEDtLXp7PwkuxLlD46X/G1Tssmszq6G
+         H3bjL9t24Wj3tcTTmVqNoHu/QwKYDo76LNFmaag0zJ9hhsFJ0dJ4VNFm70qp+KBVcXpJ
+         M1thxus4OrUpRTyMkoXMORYOiKpO+fQx3AnD0lUgQ0Wih12kQpF+7omp4c3lv1Uihm8i
+         n94wWdDv7paeA6/5WbaZxsn/dwpQScoYDCcQKuTXN4/s52NloR4Al9i92lhhyd0lTdCF
+         GfTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=sgVSDNtewl13Faq2L7m0VtnnssegF5rNrygJnFP8kVQ=;
-        b=WLP15c+mVCCQ+zWSqhKvh3QEjlaR3atme3uzitVTZEoc1t+IdHho+O0VTtJ/F7NPjt
-         NEF7gZP7/9vHhew97n6R/p6WWghfCWEkzc89JwCWUORQGCRYopyY9RKKXEF4R5xMEd5F
-         YRp9yF3KpWRPvLvvbjcSlD+M7V0PxseCpFPcqd5vMxLzzjipSLR5PftsqPP8EEOW43pw
-         BHW5H1XN1o3Py391jvUrqV1nha4+hVTSczSooVgcnKUTFQeVrx5/eJ1h3ekjdoklLXvV
-         8D9VG00pL8uHihBaMMRpqBHsK2ktF7IdDbpFzp3LYh4EVvBQCL+dff5UYVEK23hckAiM
-         HMKg==
-X-Gm-Message-State: AOAM533vMd+TQjeqNjbiXKolnYr9KanqFjwnEo+p3vqdfOqvZKB+XXFT
-        xwS5eFP/lxCPS6+c6iW+Bvg=
-X-Google-Smtp-Source: ABdhPJwd7KMb+NBqOikfxgscq6R+fEgzdyHZZgsSGwNvgD1/Fl9xQHJKrszuzrDkcxvQ6aeWoBxONQ==
-X-Received: by 2002:adf:f0c1:: with SMTP id x1mr8952882wro.7.1616679322564;
-        Thu, 25 Mar 2021 06:35:22 -0700 (PDT)
-Received: from m17r3en ([46.11.141.4])
-        by smtp.gmail.com with ESMTPSA id o2sm6491758wmc.23.2021.03.25.06.35.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 06:35:21 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 14:35:20 +0100
-From:   Swen Kalski <kalski.swen@gmail.com>
-To:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] Staging: comedi: remove unnecessary else statement
-Message-ID: <20210325133520.GA594125@m17r3en>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eM1i1Yk87DzUyuufIUGNIKd4zH4tVzCeadWKa9Xb/JU=;
+        b=h5DC9Wn6QDZ7Qs/2Z0CTyJPhNltyWL5zwtRrkEwRgFQiFOp+RY6IfHU/tzg/HJRfd9
+         yUesZLoVa1PsxLqfVHkmYTvmjbO+l2zC17CeKcZkguvFUCIQuurTsGahYhspgGApnOLb
+         2N+iJghwxP6EbrGUgTdtmsn9msdV6ieAZ7epYy67lA4cWdFHWP8/e2wdEfGvINA5eQmt
+         fA6NxBMyLcdcmAPNYlb4n3rfzFCk4PsxiXuIxX42ev6JMtjI2VIvn4a0uc/sWF04QWc0
+         xd2iC98JYHgaEBzYjf3LRtEFyHX1mdpBemKaxNl+PFCctshp9VRkcauumg8p+Qathbau
+         qWew==
+X-Gm-Message-State: AOAM531A1HNG2yiTqYnXapZVTJjuEsJGkOHpg27hRyBxqnsro06dCPBd
+        3Mjezd8bTlQVBVW20QqbHdoB9wAoHJzPWQ==
+X-Google-Smtp-Source: ABdhPJztg2JZ0lfPBKpRS5e6PcjYOMvW4/3r4DT52HfPZ2N9pX0RvjFWOsn0Ee82mHqUxfdIURFLbw==
+X-Received: by 2002:a02:11c9:: with SMTP id 192mr7529596jaf.135.1616679530405;
+        Thu, 25 Mar 2021 06:38:50 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id v7sm2770160ilu.72.2021.03.25.06.38.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 06:38:50 -0700 (PDT)
+Subject: Re: [PATCH AUTOSEL 5.11 43/44] signal: don't allow STOP on
+ PF_IO_WORKER threads
+To:     Stefan Metzmacher <metze@samba.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, io-uring <io-uring@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210325112459.1926846-1-sashal@kernel.org>
+ <20210325112459.1926846-43-sashal@kernel.org>
+ <f4c932b4-b787-651e-dd9f-584b386acddb@samba.org>
+ <m1r1k34ey1.fsf@fess.ebiederm.org>
+ <41589c56-9219-3ec2-55b3-3f010752ac7b@samba.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2b2a9701-cbe0-4538-ed3b-6917b85bebf8@kernel.dk>
+Date:   Thu, 25 Mar 2021 07:38:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <41589c56-9219-3ec2-55b3-3f010752ac7b@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removal of an unnecessary else in statging/comedi/comedi_buf.c
-Add an early Return and removed the unleashed the else condition
-for better readability int staging/comedi drivers.
+On 3/25/21 6:11 AM, Stefan Metzmacher wrote:
+> 
+> Am 25.03.21 um 13:04 schrieb Eric W. Biederman:
+>> Stefan Metzmacher <metze@samba.org> writes:
+>>
+>>> Am 25.03.21 um 12:24 schrieb Sasha Levin:
+>>>> From: "Eric W. Biederman" <ebiederm@xmission.com>
+>>>>
+>>>> [ Upstream commit 4db4b1a0d1779dc159f7b87feb97030ec0b12597 ]
+>>>>
+>>>> Just like we don't allow normal signals to IO threads, don't deliver a
+>>>> STOP to a task that has PF_IO_WORKER set. The IO threads don't take
+>>>> signals in general, and have no means of flushing out a stop either.
+>>>>
+>>>> Longer term, we may want to look into allowing stop of these threads,
+>>>> as it relates to eg process freezing. For now, this prevents a spin
+>>>> issue if a SIGSTOP is delivered to the parent task.
+>>>>
+>>>> Reported-by: Stefan Metzmacher <metze@samba.org>
+>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>>> ---
+>>>>  kernel/signal.c | 3 ++-
+>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/kernel/signal.c b/kernel/signal.c
+>>>> index 55526b941011..00a3840f6037 100644
+>>>> --- a/kernel/signal.c
+>>>> +++ b/kernel/signal.c
+>>>> @@ -288,7 +288,8 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
+>>>>  			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
+>>>>  	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
+>>>>  
+>>>> -	if (unlikely(fatal_signal_pending(task) || (task->flags & PF_EXITING)))
+>>>> +	if (unlikely(fatal_signal_pending(task) ||
+>>>> +		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
+>>>>  		return false;
+>>>>  
+>>>>  	if (mask & JOBCTL_STOP_SIGMASK)
+>>>>
+>>>
+>>> Again, why is this proposed for 5.11 and 5.10 already?
+>>
+>> Has the bit about the io worker kthreads been backported?
+>> If so this isn't horrible.  If not this is nonsense.
 
-Signed-off-by: Swen Kalski <kalski.swen@gmail.com>
----
- drivers/staging/comedi/comedi_buf.c | 52 ++++++++++++++---------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
+No not yet - my plan is to do that, but not until we're 100% satisfied
+with it.
 
-diff --git a/drivers/staging/comedi/comedi_buf.c b/drivers/staging/comedi/comedi_buf.c
-index 3ef3ddabf139..06bfc859ab31 100644
---- a/drivers/staging/comedi/comedi_buf.c
-+++ b/drivers/staging/comedi/comedi_buf.c
-@@ -371,35 +371,35 @@ static unsigned int comedi_buf_munge(struct comedi_subdevice *s,
- 
- 	if (!s->munge || (async->cmd.flags & CMDF_RAWDATA)) {
- 		async->munge_count += num_bytes;
--		count = num_bytes;
--	} else {
--		/* don't munge partial samples */
--		num_bytes -= num_bytes % num_sample_bytes;
--		while (count < num_bytes) {
--			int block_size = num_bytes - count;
--			unsigned int buf_end;
-+		return num_bytes;
-+	}
- 
--			buf_end = async->prealloc_bufsz - async->munge_ptr;
--			if (block_size > buf_end)
--				block_size = buf_end;
-+	/* don't munge partial samples */
-+	num_bytes -= num_bytes % num_sample_bytes;
-+	while (count < num_bytes) {
-+		int block_size = num_bytes - count;
-+		unsigned int buf_end;
- 
--			s->munge(s->device, s,
--				 async->prealloc_buf + async->munge_ptr,
--				 block_size, async->munge_chan);
-+		buf_end = async->prealloc_bufsz - async->munge_ptr;
-+		if (block_size > buf_end)
-+			block_size = buf_end;
- 
--			/*
--			 * ensure data is munged in buffer before the
--			 * async buffer munge_count is incremented
--			 */
--			smp_wmb();
--
--			async->munge_chan += block_size / num_sample_bytes;
--			async->munge_chan %= async->cmd.chanlist_len;
--			async->munge_count += block_size;
--			async->munge_ptr += block_size;
--			async->munge_ptr %= async->prealloc_bufsz;
--			count += block_size;
--		}
-+		s->munge(s->device, s,
-+			 async->prealloc_buf + async->munge_ptr,
-+			 block_size, async->munge_chan);
-+
-+		/*
-+		 * ensure data is munged in buffer before the
-+		 * async buffer munge_count is incremented
-+		 */
-+		smp_wmb();
-+
-+		async->munge_chan += block_size / num_sample_bytes;
-+		async->munge_chan %= async->cmd.chanlist_len;
-+		async->munge_count += block_size;
-+		async->munge_ptr += block_size;
-+		async->munge_ptr %= async->prealloc_bufsz;
-+		count += block_size;
- 	}
- 
- 	return count;
+> I don't know, I hope not...
+> 
+> But I just tested v5.12-rc4 and attaching to
+> an application with iothreads with gdb is still not possible,
+> it still loops forever trying to attach to the iothreads.
+
+I do see the looping, gdb apparently doesn't give up when it gets
+-EPERM trying to attach to the threads. Which isn't really a kernel
+thing, but:
+
+> And I tested 'kill -9 $pidofiothread', and it feezed the whole
+> machine...
+
+that sounds very strange, I haven't seen anything like that running
+the exact same scenario.
+
+> So there's still work to do in order to get 5.12 stable.
+> 
+> I'm short on time currently, but I hope to send more details soon.
+
+Thanks! I'll play with it this morning and see if I can provoke
+something odd related to STOP/attach.
+
 -- 
-2.25.1
+Jens Axboe
 
