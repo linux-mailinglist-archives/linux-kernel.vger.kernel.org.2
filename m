@@ -2,44 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908F8348B95
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368E6348B61
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhCYIao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:30:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCYIaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:30:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D53A161A16;
-        Thu, 25 Mar 2021 08:30:18 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 09:30:16 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: split receive_fd_replace from __receive_fd
-Message-ID: <20210325083016.nwn2dbtuyearrxfd@wittgenstein>
-References: <20210325082209.1067987-1-hch@lst.de>
+        id S229944AbhCYIRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:17:19 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14471 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229744AbhCYIQ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 04:16:57 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5dFB67lZzwQNl;
+        Thu, 25 Mar 2021 16:14:54 +0800 (CST)
+Received: from huawei.com (10.175.104.82) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
+ 16:16:47 +0800
+From:   Xu Jia <xujia39@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <ross.schm.dev@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        <hulkcommits@huawei.com>
+Subject: [PATCH -next] staging: rtl8723bs: core: fix error return
+Date:   Thu, 25 Mar 2021 16:30:41 +0800
+Message-ID: <20210325083041.1881347-1-xujia39@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210325082209.1067987-1-hch@lst.de>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:22:08AM +0100, Christoph Hellwig wrote:
-> The receive_fd_replace case shares almost no logic with the more general
-> __receive_fd case, so split it into a separate function.
-> 
-> BTW, I'm not sure if receive_fd_replace is such a useful primitive to
-> start with, why not just open code it in seccomp?
+Function rtw_init_bcmc_stainfo() is always return success.
+Variable 'ret' set but not used.
 
-I tend to agree and argued in a similar fashion back when we added this
-but we ultimately decided to add it. So now we're back to the original
-argument. :)
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Xu Jia <xujia39@huawei.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_sta_mgt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Christian
+diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+index f96dd0b40e04..7b578192adf5 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
++++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
+@@ -551,7 +551,7 @@ u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
+ 	psta->mac_id = 1;
+ 
+ exit:
+-	return _SUCCESS;
++	return res;
+ }
+ 
+ struct sta_info *rtw_get_bcmc_stainfo(struct adapter *padapter)
+-- 
+2.25.1
+
