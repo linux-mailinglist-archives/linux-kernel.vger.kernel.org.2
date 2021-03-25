@@ -2,249 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9C0348C31
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CB7348C36
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhCYJHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:07:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55785 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229676AbhCYJGk (ORCPT
+        id S229893AbhCYJIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:08:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46320 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhCYJH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:06:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616663199;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 25 Mar 2021 05:07:56 -0400
+Date:   Thu, 25 Mar 2021 09:07:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616663274;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yTJfubzS7O7K/IVv79ceaGJUkFP1xXgqWQXScYQW8Qg=;
-        b=KPMgKeHe1M4rNt90kQPeg92UwjzdRDdECWr4SfV3d/gt7U2WJjChz7H21XGkJyeKNsXewa
-        iAveY1X/ApWWC/T0/Uci/PPXGuuI6F3Ktbg0rTNSX2lzLloqgls5Jvvi+73OrlPLS9PXRE
-        s6c97C5uizL7xkifrhgzuJvs+rJWREk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-mZNDnOpSOearqlXJCeqKBQ-1; Thu, 25 Mar 2021 05:06:37 -0400
-X-MC-Unique: mZNDnOpSOearqlXJCeqKBQ-1
-Received: by mail-wr1-f70.google.com with SMTP id h5so2334207wrr.17
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:06:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yTJfubzS7O7K/IVv79ceaGJUkFP1xXgqWQXScYQW8Qg=;
-        b=cVtuH/gkdnDB/fISwFzWva3J0jkIKIot/cuAMgMBM7YOUAIMjF8i6EHu7l/FCXUV4q
-         mKVR1fyXambuzJRkIjgzLIipj2lNaajGfmJRvS24Sio2Vqj4x4IMssCfav9hk873PdcF
-         mtQiguhB+Fgkl5+x1Rlbonc3w0UEyhzLbXFj5Ghiuw2yn8vZXc4WkmExPLyJPMKc/pOq
-         wGJ0YfWRvo0d5b3hpUAVNdmGQ6UOlCw4Six29Nhv33KqfMt76VZHWjBdG+FhvxLmm9Ql
-         osYBEqZqjrEPnh5JQFIv1Pq9uoUbxwOCZO6pUFcWUt8UxFr27OpTeGgkSTJiZHdFz7o2
-         d0dA==
-X-Gm-Message-State: AOAM5311OYcv/zXwUqYReQI5u7zgRJTxbI0SyvagrLN6KgSYOmQv6Jqv
-        EmoOLVCaVvSpPjXxNDCqnkE7+Xr8sxCpr9ma16enjQ2AZxb0YoEIGDU5am3kUSpx3xQ9H2SxHiE
-        dDm4zneOsTkCLRo6bIYsolrBO
-X-Received: by 2002:a05:600c:4f8e:: with SMTP id n14mr6987779wmq.34.1616663195629;
-        Thu, 25 Mar 2021 02:06:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxor6DwX21nVsRBJYaahvDSiYmgc/i+EkrFRyebbt+hCSZ3Fo4Ng/+V2eKVoZdbnmON15WOqQ==
-X-Received: by 2002:a05:600c:4f8e:: with SMTP id n14mr6987710wmq.34.1616663194922;
-        Thu, 25 Mar 2021 02:06:34 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id 81sm5626680wmc.11.2021.03.25.02.06.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 02:06:34 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 10:06:31 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v7 03/22] af_vsock: separate receive data loop
-Message-ID: <20210325090631.4o5lc2kgyb4uzslh@steredhat>
-References: <20210323130716.2459195-1-arseny.krasnov@kaspersky.com>
- <20210323130939.2459901-1-arseny.krasnov@kaspersky.com>
+        bh=81eaf/nkiDPYhHM7PQGZ088hidFdMbgdiYH1vBt0h2g=;
+        b=w6NU+GsVosNOnV8bcLt3VXbLD6+M2JFrNHFHOKa+Icahfk4LotV4im7SIWEZyp/HZJ+fXj
+        EpWiS+xoT8nngnVRZaocoFyo+u2igBr0eQSXZNwPAPEC0P+5RX8r4YgXwHyUAlvXKAiwgD
+        vzMM0NbzQsyEoYGEYSwJ+uhpL5SbwPFxN11fv2DPRG9tu4CeC4600AOiA43LvgbxceZpjH
+        fSfG2ycr47ebBXuPloVAcesR2JecXcNmivKr0YuoaasskXtIYYSl/gOl6HM4t7pCkGtKaX
+        bDIpfo3EVlYWuqM4ML2SGOrsP3WIihnK9Dad2uGWalE2qsVs7PQJBiAF95MifQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616663274;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=81eaf/nkiDPYhHM7PQGZ088hidFdMbgdiYH1vBt0h2g=;
+        b=/ZP2SMSGJ26712uvYo18d/x2t5GrkkHo8Rvkv+IGHj8b9cDVuBQHrV+Xo5h8mQmBwIwC35
+        ayBgpZVKSPYe9pBQ==
+From:   "tip-bot2 for Ira Weiny" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/sgx] x86/sgx: Remove unnecessary kmap() from sgx_ioc_enclave_init()
+Cc:     Ira Weiny <ira.weiny@intel.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210324182246.2484875-1-ira.weiny@intel.com>
+References: <20210324182246.2484875-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210323130939.2459901-1-arseny.krasnov@kaspersky.com>
+Message-ID: <161666327367.398.13497317317824782755.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:09:36PM +0300, Arseny Krasnov wrote:
->Move STREAM specific data receive logic to '__vsock_stream_recvmsg()'
->dedicated function, while checks, that will be same for both STREAM
->and SEQPACKET sockets, stays in 'vsock_connectible_recvmsg()' shared
->functions.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> net/vmw_vsock/af_vsock.c | 116 ++++++++++++++++++++++-----------------
-> 1 file changed, 67 insertions(+), 49 deletions(-)
+The following commit has been merged into the x86/sgx branch of tip:
 
-I had already reviewed this in v5 and in v6 you reported the R-b tag.
+Commit-ID:     633b0616cfe085679471a4c0fae02e8c3a1a9866
+Gitweb:        https://git.kernel.org/tip/633b0616cfe085679471a4c0fae02e8c3a1a9866
+Author:        Ira Weiny <ira.weiny@intel.com>
+AuthorDate:    Wed, 24 Mar 2021 11:22:46 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Thu, 25 Mar 2021 09:50:32 +01:00
 
-Usually the tag gets removed if you make changes to the patch or the 
-reviewer is no longer happy. But this doesn't seem to be the case.
+x86/sgx: Remove unnecessary kmap() from sgx_ioc_enclave_init()
 
-So please keep the tags between versions :-)
+kmap() is inefficient and is being replaced by kmap_local_page(), if
+possible. There is no readily apparent reason why initp_page needs to be
+allocated and kmap'ed() except that 'sigstruct' needs to be page-aligned
+and 'token' 512 byte-aligned.
 
+Rather than change it to kmap_local_page(), use kmalloc() instead
+because kmalloc() can give this alignment when allocating PAGE_SIZE
+bytes.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Remove the alloc_page()/kmap() and replace with kmalloc(PAGE_SIZE, ...)
+to get a page aligned kernel address.
 
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 421c0303b26f..0bc661e54262 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1895,65 +1895,22 @@ static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
-> 	return data;
-> }
->
->-static int
->-vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->-			  int flags)
->+static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
->+				  size_t len, int flags)
-> {
->-	struct sock *sk;
->-	struct vsock_sock *vsk;
->+	struct vsock_transport_recv_notify_data recv_data;
-> 	const struct vsock_transport *transport;
->-	int err;
->-	size_t target;
->+	struct vsock_sock *vsk;
-> 	ssize_t copied;
->+	size_t target;
-> 	long timeout;
->-	struct vsock_transport_recv_notify_data recv_data;
->+	int err;
->
-> 	DEFINE_WAIT(wait);
->
->-	sk = sock->sk;
-> 	vsk = vsock_sk(sk);
->-	err = 0;
->-
->-	lock_sock(sk);
->-
-> 	transport = vsk->transport;
->
->-	if (!transport || sk->sk_state != TCP_ESTABLISHED) {
->-		/* Recvmsg is supposed to return 0 if a peer performs an
->-		 * orderly shutdown. Differentiate between that case and when a
->-		 * peer has not connected or a local shutdown occured with the
->-		 * SOCK_DONE flag.
->-		 */
->-		if (sock_flag(sk, SOCK_DONE))
->-			err = 0;
->-		else
->-			err = -ENOTCONN;
->-
->-		goto out;
->-	}
->-
->-	if (flags & MSG_OOB) {
->-		err = -EOPNOTSUPP;
->-		goto out;
->-	}
->-
->-	/* We don't check peer_shutdown flag here since peer may actually shut
->-	 * down, but there can be data in the queue that a local socket can
->-	 * receive.
->-	 */
->-	if (sk->sk_shutdown & RCV_SHUTDOWN) {
->-		err = 0;
->-		goto out;
->-	}
->-
->-	/* It is valid on Linux to pass in a zero-length receive buffer.  This
->-	 * is not an error.  We may as well bail out now.
->-	 */
->-	if (!len) {
->-		err = 0;
->-		goto out;
->-	}
->-
-> 	/* We must not copy less than target bytes into the user's buffer
-> 	 * before returning successfully, so we wait for the consume queue to
-> 	 * have that much data to consume before dequeueing.  Note that this
->@@ -2012,6 +1969,67 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 	if (copied > 0)
-> 		err = copied;
->
->+out:
->+	return err;
->+}
->+
->+static int
->+vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
->+			  int flags)
->+{
->+	struct sock *sk;
->+	struct vsock_sock *vsk;
->+	const struct vsock_transport *transport;
->+	int err;
->+
->+	DEFINE_WAIT(wait);
->+
->+	sk = sock->sk;
->+	vsk = vsock_sk(sk);
->+	err = 0;
->+
->+	lock_sock(sk);
->+
->+	transport = vsk->transport;
->+
->+	if (!transport || sk->sk_state != TCP_ESTABLISHED) {
->+		/* Recvmsg is supposed to return 0 if a peer performs an
->+		 * orderly shutdown. Differentiate between that case and when a
->+		 * peer has not connected or a local shutdown occurred with the
->+		 * SOCK_DONE flag.
->+		 */
->+		if (sock_flag(sk, SOCK_DONE))
->+			err = 0;
->+		else
->+			err = -ENOTCONN;
->+
->+		goto out;
->+	}
->+
->+	if (flags & MSG_OOB) {
->+		err = -EOPNOTSUPP;
->+		goto out;
->+	}
->+
->+	/* We don't check peer_shutdown flag here since peer may actually shut
->+	 * down, but there can be data in the queue that a local socket can
->+	 * receive.
->+	 */
->+	if (sk->sk_shutdown & RCV_SHUTDOWN) {
->+		err = 0;
->+		goto out;
->+	}
->+
->+	/* It is valid on Linux to pass in a zero-length receive buffer.  This
->+	 * is not an error.  We may as well bail out now.
->+	 */
->+	if (!len) {
->+		err = 0;
->+		goto out;
->+	}
->+
->+	err = __vsock_stream_recvmsg(sk, msg, len, flags);
->+
-> out:
-> 	release_sock(sk);
-> 	return err;
->-- 
->2.25.1
->
+In addition, add a comment to document the alignment requirements so that
+others don't attempt to 'fix' this again.
 
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210324182246.2484875-1-ira.weiny@intel.com
+---
+ arch/x86/kernel/cpu/sgx/ioctl.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+index 90a5caf..2e10367 100644
+--- a/arch/x86/kernel/cpu/sgx/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ {
+ 	struct sgx_sigstruct *sigstruct;
+ 	struct sgx_enclave_init init_arg;
+-	struct page *initp_page;
+ 	void *token;
+ 	int ret;
+ 
+@@ -615,11 +614,15 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ 	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
+ 		return -EFAULT;
+ 
+-	initp_page = alloc_page(GFP_KERNEL);
+-	if (!initp_page)
++	/*
++	 * 'sigstruct' must be on a page boundary and 'token' on a 512 byte
++	 * boundary.  kmalloc() will give this alignment when allocating
++	 * PAGE_SIZE bytes.
++	 */
++	sigstruct = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!sigstruct)
+ 		return -ENOMEM;
+ 
+-	sigstruct = kmap(initp_page);
+ 	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
+ 	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
+ 
+@@ -645,8 +648,7 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
+ 	ret = sgx_encl_init(encl, sigstruct, token);
+ 
+ out:
+-	kunmap(initp_page);
+-	__free_page(initp_page);
++	kfree(sigstruct);
+ 	return ret;
+ }
+ 
