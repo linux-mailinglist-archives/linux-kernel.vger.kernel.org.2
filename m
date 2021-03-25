@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F318A349B9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADF2349B9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhCYV1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57166 "EHLO
+        id S231149AbhCYV1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhCYV1N (ORCPT
+        with ESMTP id S230340AbhCYV1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:27:13 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4731C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:27:12 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id w7so5661025ybq.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:27:12 -0700 (PDT)
+        Thu, 25 Mar 2021 17:27:14 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F852C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:27:14 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id j4so4917703pgs.18
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:27:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=sXfRUgmRe7kH6AU5n/x2XWTuNQDYYUL8f3DAKwSKEzw=;
-        b=AnRR1mnKpdEoFdG1gN035lAY93R2KGeI6lEzSv4jdsznjZwNgsmypdE7iioWFPasJ9
-         kkpo9QDUQhkLE5C/7Im6GCZo6xSTN4rTX93pOPcxYDT55LOOCRgw0oZ5Hl6+jy62ShYu
-         6OutHCkIzXZoEU0+M0hWhBgE/PbHpI0Tv3Xc20Z50n1j891rZd1mijgvr8lVeuv649yP
-         JGok9RRTZQ8m/AoapgbgajjfTsU+JR+/E5B0C6KuqYkzh7Vh5vYDsWGyARRnQ1bLwF9n
-         7YhbC+dut7xa7s27Pv/EkiHvBju9UKIIgcaFyDyeJk6LvSYkF5dQX8znbwtFWD0PsWGi
-         6/1A==
+        bh=QKM/4VqqpmQG/v1vBmAPZ1ISyc7q5p1Ut3IkXJNTNn8=;
+        b=HnZP67MIz1eIz5tJHXkYxrlB8XA9q1/hNkdl64gZMD8f1fs8z86c1elcZMmZdB/nuX
+         6P9jm3LlxYD5GOYi1ujnffTpXxivasaXLyKswn65Ol5OPrEAi4wI+/A+FnJp6E0f8D5X
+         3pyybitU+IYLhnjIw91JgrNv00utQRdL1aJ2lqJk0Oq1pQ/DH9vwu2ndEp9NpmewwOm5
+         rYqa+yhnRYdPlvSaHasT2eg0tUjqw7DT+LVWuIja4ZNs7XWUzSFNovoUHtL76JTah/x5
+         LEudfg6bZ1EC6cESObW51z9UUaOazOTGb56yvMbwSYZtgrDGBpxLWOJWOLP9huNS/pv6
+         Ud3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=sXfRUgmRe7kH6AU5n/x2XWTuNQDYYUL8f3DAKwSKEzw=;
-        b=DFHs+R8pDmNzna/I9f//OLnnh299LBN4uwHb1sXt3xivCOvXDVdXS55uA2bbGH5GDU
-         3s3bvma5NOdXSJCgjQOTe7Dvh7MPXRuA7C3cSdIW49TtdUElGYQyvMDEL6ZBkkRbsfqr
-         05/uWVF1h+sCLe0oiDtV34qTC1biOj/EzMKrQ6uS+bTR1Y22UK7Gyl916ADHEhU62sO6
-         r04yIlcsb/AgShag5GSDqBKZeOFaIHX8VupSdg5x6wXjjnDtQTed6kl/t1rsmf97o+wk
-         +PIhKnxY3LclUrECdSc7/FEi8Y4QaVfYDTi/lgqwolMTcl1j1PVD4uJQggAXs/dsHv7B
-         cBvg==
-X-Gm-Message-State: AOAM533sroM2y136DF97FnTrq4KM1uifmHZPecXJAvDrlB1RE17EJiY2
-        OfDkoiQDzsxYc7YOSQSO1CoU/rWSWe4=
-X-Google-Smtp-Source: ABdhPJz7DN29DrVMX+YcK1AWw6+N8szReisPV6zaP6Y2M4RZL7AZWIt95VSCM5um9M2HM8lBbP8Iet4DGCA=
+        bh=QKM/4VqqpmQG/v1vBmAPZ1ISyc7q5p1Ut3IkXJNTNn8=;
+        b=Gt1g3vnQJB6ab544OdHCMVmKjxkq3ax6JNIDIipY4dFmBD4BXq0jD3p9RqiL0xqB07
+         Ucw7YSR51k+qcqeCOcx59mkdNZLvxTskLIUMidzttDRyDPWHWVR81il2XFQZvsJ0s3Pr
+         oyirfrRn87i/ENDMVb8IxvKMPHuX2mFvaiE0WVnqI4Sws/rtD5S2cqQBTzf+6VEhXENE
+         EyCIbkAO247gZWkZbvvkVZE9NzNO+O/Imcgbb2ATDss810U7tOUviv8QeFVg40iSk5r6
+         6txq/bSxdqsEmZ2QidvnHg3IQ36IvvZ9DrlD4eyicUNSLUUMjVZVf5gsqtMkbzC3mrcu
+         OK+A==
+X-Gm-Message-State: AOAM531wrx8NPS28VM9uHGnUhqN32rBksnRz7+F9swxTL0fhq1yfu479
+        wYN5AF7mlBSybRpuvGKR/h6NIrk3pSY=
+X-Google-Smtp-Source: ABdhPJzjoTfGpe0TgBdqASEdyBajTp1H9OebPba0STb+/HWBLKkUrFjrqDgv+AdBd422n4nIJ88hy9WUxEg=
 X-Received: from satyaprateek.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1092])
- (user=satyat job=sendgmr) by 2002:a25:a0cd:: with SMTP id i13mr15307478ybm.302.1616707632232;
- Thu, 25 Mar 2021 14:27:12 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 21:26:03 +0000
+ (user=satyat job=sendgmr) by 2002:a17:902:56c:b029:e7:1052:a7c6 with SMTP id
+ 99-20020a170902056cb02900e71052a7c6mr11045345plf.75.1616707633890; Thu, 25
+ Mar 2021 14:27:13 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 21:26:04 +0000
 In-Reply-To: <20210325212609.492188-1-satyat@google.com>
-Message-Id: <20210325212609.492188-3-satyat@google.com>
+Message-Id: <20210325212609.492188-4-satyat@google.com>
 Mime-Version: 1.0
 References: <20210325212609.492188-1-satyat@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v2 2/8] dm,mmc,ufshcd: handle error from blk_ksm_register()
+Subject: [PATCH v2 3/8] block: blk-crypto: introduce blk_crypto_bio_sectors_alignment()
 From:   Satya Tangirala <satyat@google.com>
 To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>,
@@ -61,65 +62,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handle any error from blk_ksm_register() in the callers. Previously,
-the callers ignored the return value because blk_ksm_register() wouldn't
-fail as long as the request_queue didn't have integrity support too, but
-as this is no longer the case, it's safer for the callers to just handle
-the return value appropriately.
+The size of any bio must be aligned to the data unit size of the bio crypt
+context (if it exists) of that bio. This must also be ensured whenever a
+bio is split. Introduce blk_crypto_bio_sectors_alignment() that returns
+the required alignment in sectors. The number of sectors passed to
+any call of bio_split() should be aligned to
+blk_crypto_bio_sectors_alignment().
 
 Signed-off-by: Satya Tangirala <satyat@google.com>
 ---
- drivers/md/dm-table.c            | 3 ++-
- drivers/mmc/core/crypto.c        | 6 ++++--
- drivers/scsi/ufs/ufshcd-crypto.c | 6 ++++--
- 3 files changed, 10 insertions(+), 5 deletions(-)
+ block/blk-crypto-internal.h | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
-index db18a58adad7..1225b9050f29 100644
---- a/drivers/md/dm-table.c
-+++ b/drivers/md/dm-table.c
-@@ -1372,7 +1372,8 @@ static void dm_update_keyslot_manager(struct request_queue *q,
- 
- 	/* Make the ksm less restrictive */
- 	if (!q->ksm) {
--		blk_ksm_register(t->ksm, q);
-+		if (WARN_ON(!blk_ksm_register(t->ksm, q)))
-+			dm_destroy_keyslot_manager(t->ksm);
- 	} else {
- 		blk_ksm_update_capabilities(q->ksm, t->ksm);
- 		dm_destroy_keyslot_manager(t->ksm);
-diff --git a/drivers/mmc/core/crypto.c b/drivers/mmc/core/crypto.c
-index 419a368f8402..616103393557 100644
---- a/drivers/mmc/core/crypto.c
-+++ b/drivers/mmc/core/crypto.c
-@@ -21,8 +21,10 @@ void mmc_crypto_set_initial_state(struct mmc_host *host)
- 
- void mmc_crypto_setup_queue(struct request_queue *q, struct mmc_host *host)
- {
--	if (host->caps2 & MMC_CAP2_CRYPTO)
--		blk_ksm_register(&host->ksm, q);
-+	if (host->caps2 & MMC_CAP2_CRYPTO) {
-+		if (WARN_ON(!blk_ksm_register(&host->ksm, q)))
-+			host->caps2 &= ~MMC_CAP2_CRYPTO;
-+	}
+diff --git a/block/blk-crypto-internal.h b/block/blk-crypto-internal.h
+index 0d36aae538d7..304e90ed99f5 100644
+--- a/block/blk-crypto-internal.h
++++ b/block/blk-crypto-internal.h
+@@ -60,6 +60,19 @@ static inline bool blk_crypto_rq_is_encrypted(struct request *rq)
+ 	return rq->crypt_ctx;
  }
- EXPORT_SYMBOL_GPL(mmc_crypto_setup_queue);
  
-diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
-index d70cdcd35e43..f47a72fefe9e 100644
---- a/drivers/scsi/ufs/ufshcd-crypto.c
-+++ b/drivers/scsi/ufs/ufshcd-crypto.c
-@@ -233,6 +233,8 @@ void ufshcd_init_crypto(struct ufs_hba *hba)
- void ufshcd_crypto_setup_rq_keyslot_manager(struct ufs_hba *hba,
- 					    struct request_queue *q)
- {
--	if (hba->caps & UFSHCD_CAP_CRYPTO)
--		blk_ksm_register(&hba->ksm, q);
-+	if (hba->caps & UFSHCD_CAP_CRYPTO) {
-+		if (WARN_ON(!blk_ksm_register(&hba->ksm, q)))
-+			hba->caps &= ~UFSHCD_CAP_CRYPTO;
-+	}
++/*
++ * Returns the alignment requirement for the number of sectors in this bio based
++ * on its bi_crypt_context. Any bios split from this bio must follow this
++ * alignment requirement as well.
++ */
++static inline unsigned int blk_crypto_bio_sectors_alignment(struct bio *bio)
++{
++	if (!bio_has_crypt_ctx(bio))
++		return 1;
++	return bio->bi_crypt_context->bc_key->crypto_cfg.data_unit_size >>
++								SECTOR_SHIFT;
++}
++
+ #else /* CONFIG_BLK_INLINE_ENCRYPTION */
+ 
+ static inline bool bio_crypt_rq_ctx_compatible(struct request *rq,
+@@ -93,6 +106,11 @@ static inline bool blk_crypto_rq_is_encrypted(struct request *rq)
+ 	return false;
  }
+ 
++static inline unsigned int blk_crypto_bio_sectors_alignment(struct bio *bio)
++{
++	return 1;
++}
++
+ #endif /* CONFIG_BLK_INLINE_ENCRYPTION */
+ 
+ void __bio_crypt_advance(struct bio *bio, unsigned int bytes);
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
