@@ -2,114 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9EE348D83
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB7A348D89
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhCYJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:57:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
+        id S229635AbhCYJ5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:57:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhCYJ4d (ORCPT
+        with ESMTP id S230006AbhCYJ5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:56:33 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701FAC06174A;
-        Thu, 25 Mar 2021 02:56:33 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d5d00784c9f440731cfd1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5d00:784c:9f44:731:cfd1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 57DD71EC0402;
-        Thu, 25 Mar 2021 10:56:20 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616666180;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=vZugkItkHUxPGcT3QUZAnpg+cYnx/DrzW+0wDfNLiPw=;
-        b=UF6icgnek4xGi8in1o07q1ka9DdlhnOqBGKmkXqdcrrulx0OwsDEVflxSjOkdZW/9KOe47
-        Tjl68G+ZKPbAPGDOdsjUuiXm3rljUeybhO8iMS0W79NfMvzG4KmlAy5vAWH4PL46qcgMxs
-        CA9fMH5T5ZSoSWr9EqhkAB/wFpWsPUU=
-Date:   Thu, 25 Mar 2021 10:56:19 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
-Message-ID: <20210325095619.GC31322@zn.tnic>
-References: <20210311203206.GF5829@zn.tnic>
- <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com>
- <20210311214013.GH5829@zn.tnic>
- <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com>
- <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com>
- <20210311235215.GI5829@zn.tnic>
- <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
- <20210324212139.GN5010@zn.tnic>
- <alpine.LSU.2.11.2103241651280.9593@eggly.anvils>
- <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
+        Thu, 25 Mar 2021 05:57:15 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47FEC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:57:13 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id b9so1610070wrt.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:57:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZS88VoX8ZZlakrWWcv16+p54kgnbozpp/01RtCA8wMQ=;
+        b=Dr9wbqWxgaGT3xu69eZKsUhoP4rMuflsB4BORRHGacKySHutIurjd2gOQgbpxi/ht1
+         cJcU/LsVh0UDrdAWnPZCgtr+TLb66VG/XVlvNgSKVDUmqWJ5pngDTHRh86voH5vaZ3+F
+         Q4P81DCQbCXeoH01g2zf5p7KH0j5IGTLhOENXrG0sHEBy3iBJnaVh5a5pbKcAgGr6rwd
+         T/qRhsnO4lszIJMhN2BVB3T9UfiJRpoD8aVZfR3BwdEZjZSIm0I0gHOzZ0ZlZhykODxR
+         CjpIak7iIvcWrFndDQFy49tBmRWoNL8NNxFfUiOEDprEP/Mh6tzR5NB+PLsvKYhjmKc+
+         JJOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZS88VoX8ZZlakrWWcv16+p54kgnbozpp/01RtCA8wMQ=;
+        b=Gsi1prVnRmsyVH6Fgrhd1kzSr4YMuevG+fa/T4X2mNJJL7XkatjYnkC2vkNnkXrEnD
+         XlGu7Ev1EtZkjsJCGVOFSp7RzSEmjNRTQgjqpwxrCzNOgexvi6o0yNkRLmkrl9hGpWaY
+         VO3thwlG6diL9XcOZzxwNz/s1ThyHJ59H9TOmRavaOHdRIlhXV4NNPXJev7UZahNojFO
+         USp30x9uRSR266jrJHSqnk+oHM6XGztHVnhQweJPrl9Wj+4Iq/ZaxZE5iGixJaUDoL2J
+         fugHk5Qy/Lc6cm5GVOlKngZXyac5fSLmiQnGXjh+yD7kEvYm9ZM++vznZ4RY36H0EkhA
+         Nd3w==
+X-Gm-Message-State: AOAM531CGkYSPoZFPzgGUvpGZfPFzn83ZhNTNO0GBkaskr+mThnZ5e/C
+        81eW2zXS1LxdqCHbQiLXlf8=
+X-Google-Smtp-Source: ABdhPJzOqMoRetThYDOZu10Es0oWF6yRvuFTRNTOAl4zuslzDGZGzdXlvhMAMfmkEj2WCJW6kFEceg==
+X-Received: by 2002:a5d:6048:: with SMTP id j8mr8332721wrt.115.1616666232709;
+        Thu, 25 Mar 2021 02:57:12 -0700 (PDT)
+Received: from agape ([5.171.80.127])
+        by smtp.gmail.com with ESMTPSA id e17sm7101891wra.65.2021.03.25.02.57.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 02:57:12 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     dan.carpenter@oracle.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH] staging: rtl8723bs: fix indentation broken by previous patch
+Date:   Thu, 25 Mar 2021 10:56:20 +0100
+Message-Id: <20210325095620.11251-1-fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <YFxQSJXXQ4dFPGS4@mwanda>
+References: <YFxQSJXXQ4dFPGS4@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 07:43:29PM -0700, Hugh Dickins wrote:
-> Right, after looking into it more, I completely agree with you:
-> the Kaiser series (in both 4.4-stable and 4.9-stable) was simply
-> wrong to lose that invlpg - fine in the kaiser case when we don't
-> enable Globals at all, but plain wrong in the !kaiser_enabled case.
-> One way or another, we have somehow got away with it for three years.
+fix indentation broken by patch removing conditional
+code blocks checked by unused
+CONFIG_INTERRUPT_BASED_TXBCN family defines
 
-Yeah, because there were no boxes with kaiser_enabled=0 *and* PCID
-which would set INVPCID_SINGLE. Before those, it would INVLPG in the
-!INVPCID_SINGLE case.
+https://lore.kernel.org/r/9157000821fd6febf25566b8c712fad1995c7c78.1615907632.git.fabioaiuto83@gmail.com
 
-Oh, btw, booting with "pci=on" "fixes" the issue too. And I tried
-reproducing this on an Intel box with "pti=off" but it booted fine
-so I'm probably missing some other aspect or triggering it there is
-harder/different due to TLB differences or whatnot.
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_ap.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-And Babu triggered the same issue on a AMD baremetal yesterday.
-
-> I do agree with Paolo that the PCID_ASID_KERN flush would be better
-> moved under the "if (kaiser_enabled)" now.
-
-Ok.
-
-> (And if this were ongoing development, I'd want to rewrite the
-> function altogether: but no, these old stable trees are not the place
-> for that.)
-
-Bah, it brought some very mixed memories, wading through that code
-after years. And yeah, people should stop using all these dead kernels
-already! So yeah, no, you don't want to clean up stuff there - let
-sleeping dogs lie.
-
-> Boris, may I leave both -stable fixes to you?
-> Let me know if you'd prefer me to clean up my mess.
-
-No worries, I'll take care of it.
-
-> Thanks a lot for tracking this down,
-
-Thanks for double-checking me so quickly, lemme whip up a patch.
-
-Thx.
-
+diff --git a/drivers/staging/rtl8723bs/core/rtw_ap.c b/drivers/staging/rtl8723bs/core/rtw_ap.c
+index 3cd9c61eec99..dc56477eb084 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_ap.c
++++ b/drivers/staging/rtl8723bs/core/rtw_ap.c
+@@ -907,9 +907,9 @@ void start_bss_network(struct adapter *padapter, u8 *pbuf)
+ 	if (pmlmeext->bstart_bss) {
+ 		update_beacon(padapter, WLAN_EID_TIM, NULL, true);
+ 
+-	/* issue beacon frame */
+-	if (send_beacon(padapter) == _FAIL)
+-		DBG_871X("issue_beacon, fail!\n");
++		/* issue beacon frame */
++		if (send_beacon(padapter) == _FAIL)
++			DBG_871X("issue_beacon, fail!\n");
+ 
+ 	}
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.20.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
