@@ -2,110 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417843486BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C983486C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhCYB5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:57:16 -0400
-Received: from mail.synology.com ([211.23.38.101]:57326 "EHLO synology.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233661AbhCYB4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:56:46 -0400
-Received: from localhost.localdomain (unknown [10.17.32.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by synology.com (Postfix) with ESMTPSA id 0E547CE7820E;
-        Thu, 25 Mar 2021 09:56:45 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
-        t=1616637405; bh=krI28xV4SCJ+OHpQAF/KvRf/HkegVa0mjl+q4jhFiM4=;
-        h=From:To:Cc:Subject:Date;
-        b=SLPcDuXIeKsmQrrlT50zyPHmrpSXBXQeoxG/8XUaTe/JSGyOwyjf9l3P6HxjfWatH
-         QB6oz1ZvVqK8i4IJq4N+Pr9ehlOpuh26ISrvbjmC+zvQTiqYg7EmUW9cT0m+tSDmIb
-         1G0Js19iXXZ3Nn+JcL5eA1WTEIqJ/H3XIOkv5Wa4=
-From:   bingjingc <bingjingc@synology.com>
-To:     josef@toxicpanda.com, dsterba@suse.com, quwenruo@cn.fujitsu.com,
-        clm@fb.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     bingjingc@synology.com, cccheng@synology.com, robbieko@synology.com
-Subject: [PATCH v2] btrfs: fix a potential hole-punching failure
-Date:   Thu, 25 Mar 2021 09:56:22 +0800
-Message-Id: <1616637382-27311-1-git-send-email-bingjingc@synology.com>
-X-Mailer: git-send-email 2.7.4
-X-Synology-MCP-Status: no
-X-Synology-Spam-Flag: no
-X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
-X-Synology-Virus-Status: no
+        id S233669AbhCYB7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:59:54 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13682 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231374AbhCYB7t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 21:59:49 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5SsR4NqLznTTn;
+        Thu, 25 Mar 2021 09:57:15 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 25 Mar
+ 2021 09:59:43 +0800
+Subject: Re: [PATCH] Revert "f2fs: give a warning only for readonly partition"
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210323064155.12582-1-yuchao0@huawei.com>
+ <YFo16ADpWJ7OUAvK@google.com>
+ <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
+ <YFq+aQW7eihFuSst@google.com>
+ <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
+ <YFvA6uzDLeD7dRdY@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <8b0b0782-a667-9edc-5ee9-98ac9f67b7b7@huawei.com>
+Date:   Thu, 25 Mar 2021 09:59:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <YFvA6uzDLeD7dRdY@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: BingJing Chang <bingjingc@synology.com>
+On 2021/3/25 6:44, Jaegeuk Kim wrote:
+> On 03/24, Chao Yu wrote:
+>> On 2021/3/24 12:22, Jaegeuk Kim wrote:
+>>> On 03/24, Chao Yu wrote:
+>>>> On 2021/3/24 2:39, Jaegeuk Kim wrote:
+>>>>> On 03/23, Chao Yu wrote:
+>>>>>> This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+>>>>>>
+>>>>>> Because that commit fails generic/050 testcase which expect failure
+>>>>>> during mount a recoverable readonly partition.
+>>>>>
+>>>>> I think we need to change generic/050, since f2fs can recover this partition,
+>>>>
+>>>> Well, not sure we can change that testcase, since it restricts all generic
+>>>> filesystems behavior. At least, ext4's behavior makes sense to me:
+>>>>
+>>>> 	journal_dev_ro = bdev_read_only(journal->j_dev);
+>>>> 	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
+>>>>
+>>>> 	if (journal_dev_ro && !sb_rdonly(sb)) {
+>>>> 		ext4_msg(sb, KERN_ERR,
+>>>> 			 "journal device read-only, try mounting with '-o ro'");
+>>>> 		err = -EROFS;
+>>>> 		goto err_out;
+>>>> 	}
+>>>>
+>>>> 	if (ext4_has_feature_journal_needs_recovery(sb)) {
+>>>> 		if (sb_rdonly(sb)) {
+>>>> 			ext4_msg(sb, KERN_INFO, "INFO: recovery "
+>>>> 					"required on readonly filesystem");
+>>>> 			if (really_read_only) {
+>>>> 				ext4_msg(sb, KERN_ERR, "write access "
+>>>> 					"unavailable, cannot proceed "
+>>>> 					"(try mounting with noload)");
+>>>> 				err = -EROFS;
+>>>> 				goto err_out;
+>>>> 			}
+>>>> 			ext4_msg(sb, KERN_INFO, "write access will "
+>>>> 			       "be enabled during recovery");
+>>>> 		}
+>>>> 	}
+>>>>
+>>>>> even though using it as readonly. And, valid checkpoint can allow for user to
+>>>>> read all the data without problem.
+>>>>
+>>>>>>     		if (f2fs_hw_is_readonly(sbi)) {
+>>>>
+>>>> Since device is readonly now, all write to the device will fail, checkpoint can
+>>>> not persist recovered data, after page cache is expired, user can see stale data.
+>>>
+>>> My point is, after mount with ro, there'll be no data write which preserves the
+>>> current status. So, in the next time, we can recover fsync'ed data later, if
+>>> user succeeds to mount as rw. Another point is, with the current checkpoint, we
+>>> should not have any corrupted metadata. So, why not giving a chance to show what
+>>> data remained to user? I think this can be doable only with CoW filesystems.
+>>
+>> I guess we're talking about the different things...
+>>
+>> Let me declare two different readonly status:
+>>
+>> 1. filesystem readonly: file system is mount with ro mount option, and
+>> app from userspace can not modify any thing of filesystem, but filesystem
+>> itself can modify data on device since device may be writable.
+>>
+>> 2. device readonly: device is set to readonly status via 'blockdev --setro'
+>> command, and then filesystem should never issue any write IO to the device.
+>>
+>> So, what I mean is, *when device is readonly*, rather than f2fs mountpoint
+>> is readonly (f2fs_hw_is_readonly() returns true as below code, instead of
+>> f2fs_readonly() returns true), in this condition, we should not issue any
+>> write IO to device anyway, because, AFAIK, write IO will fail due to
+>> bio_check_ro() check.
+> 
+> In that case, mount(2) will try readonly, no?
 
-In commit d77815461f04 ("btrfs: Avoid trucating page or punching hole
-in a already existed hole."), existed holes can be skipped by calling
-find_first_non_hole() to adjust *start and *len. However, if the given
-len is invalid and large, when an EXTENT_MAP_HOLE extent is found, the
-*len will not be set to zero because (em->start + em->len) is less than
-(*start + *len). Then the ret will be 1 but the *len will not be set to
-0. The propagated non-zero ret will result in fallocate failure.
+Yes, if device is readonly, mount (2) can not mount/remount device to rw
+mountpoint.
 
-In the while-loop of btrfs_replace_file_extents(), len is not updated
-every time before it calls find_first_non_hole(). That is, after
-btrfs_drop_extents() successfully drops the last non-hole file extent,
-it may fail with -ENOSPC when attempting to drop a file extent item
-representing a hole. The problem can happen. After it calls
-find_first_non_hole(), the cur_offset will be adjusted to be larger
-than or equal to end. However, since the len is not set to zero. The
-break-loop condition (ret && !len) will not meet. After it leaves the
-while-loop, fallocate will return 1, which is an unexpected return
-value.
+Thanks,
 
-We're not able to construct a reproducible way to let
-btrfs_drop_extents() fail with -ENOSPC after it drops the last non-hole
-file extent but with remaining holes left. However, it's quite easy to
-fix. We just need to update and check the len every time before we call
-find_first_non_hole(). To make the while loop more readable, we also
-pull the variable updates to the bottom of loop like this:
-while (cur_offset < end) {
-        ...
-        // update cur_offset & len
-        // advance cur_offset & len in hole-punching case if needed
-}
-
-Reported-by: Robbie Ko <robbieko@synology.com>
-Fixes: d77815461f04 ("btrfs: Avoid trucating page or punching hole in a
-already existed hole.")
-Reviewed-by: Robbie Ko <robbieko@synology.com>
-Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-Signed-off-by: BingJing Chang <bingjingc@synology.com>
----
- fs/btrfs/file.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 0e155f0..dccb017 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -2735,8 +2735,6 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 			extent_info->file_offset += replace_len;
- 		}
- 
--		cur_offset = drop_args.drop_end;
--
- 		ret = btrfs_update_inode(trans, root, BTRFS_I(inode));
- 		if (ret)
- 			break;
-@@ -2756,7 +2754,9 @@ int btrfs_replace_file_extents(struct inode *inode, struct btrfs_path *path,
- 		BUG_ON(ret);	/* shouldn't happen */
- 		trans->block_rsv = rsv;
- 
--		if (!extent_info) {
-+		cur_offset = drop_args.drop_end;
-+		len = end - cur_offset;
-+		if (!extent_info && len) {
- 			ret = find_first_non_hole(BTRFS_I(inode), &cur_offset,
- 						  &len);
- 			if (unlikely(ret < 0))
--- 
-2.7.4
-
+> 
+> # blockdev --setro /dev/vdb
+> # mount -t f2fs /dev/vdb /mnt/test/
+> mount: /mnt/test: WARNING: source write-protected, mounted read-only.
+> 
+>>
+>>   		if (f2fs_hw_is_readonly(sbi)) {
+>> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+>> -				err = -EROFS;
+>> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+>>   				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+>> -				goto free_meta;
+>> -			}
+>> -			f2fs_info(sbi, "write access unavailable, skipping recovery");
+>> +			else
+>> +				f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>   			goto reset_checkpoint;
+>>   		}
+>>
+>> For the case of filesystem is readonly and device is writable, it's fine
+>> to do recovery in order to let user to see fsynced data.
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> Am I missing something?
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
+>>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>>>> ---
+>>>>>>     fs/f2fs/super.c | 8 +++++---
+>>>>>>     1 file changed, 5 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>>>>> index b48281642e98..2b78ee11f093 100644
+>>>>>> --- a/fs/f2fs/super.c
+>>>>>> +++ b/fs/f2fs/super.c
+>>>>>> @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>>>>>>     		 * previous checkpoint was not done by clean system shutdown.
+>>>>>>     		 */
+>>>>>>     		if (f2fs_hw_is_readonly(sbi)) {
+>>>>>> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+>>>>>> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+>>>>>> +				err = -EROFS;
+>>>>>>     				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+>>>>>> -			else
+>>>>>> -				f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>>>> +				goto free_meta;
+>>>>>> +			}
+>>>>>> +			f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>>>>     			goto reset_checkpoint;
+>>>>>>     		}
+>>>>>> -- 
+>>>>>> 2.29.2
+>>>>> .
+>>>>>
+>>> .
+>>>
+> .
+> 
