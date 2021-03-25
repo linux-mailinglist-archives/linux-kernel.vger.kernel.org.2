@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 965EE349953
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4395E34995A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhCYSQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        id S229642AbhCYSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhCYSP6 (ORCPT
+        with ESMTP id S229629AbhCYSSQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:15:58 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94581C06174A;
-        Thu, 25 Mar 2021 11:15:58 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id j25so2910935pfe.2;
-        Thu, 25 Mar 2021 11:15:58 -0700 (PDT)
+        Thu, 25 Mar 2021 14:18:16 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6B99C06174A;
+        Thu, 25 Mar 2021 11:18:15 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id h7so2386577qtx.3;
+        Thu, 25 Mar 2021 11:18:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fFkDrhnvgiRe+loeaLRgeNukDq8LEqELpmrdaCkopMk=;
-        b=HznVWzNJ1uepmVFF9ibp2m0G4d+aUeOI9jzVNUXtjwhubrus/JeqYekm0Lw8o2BFas
-         IUMOJ1r173SjyJLkPug3QBVlY/z2L9zJ+z5NJKsyFfSYC7Nfhr7ldZO1AWt21OkKRmGn
-         M6RGbv7fV86asTQEhuROVut2nwiIR9XEs8Wt7A4QtWQjn25SrlVtbzvKFjeblhusWXBA
-         ucHR46nw/BgE0ZFr71nbNROo0jAWfgqC1K4TlEf86ZfPlChJ2+hVSnwgCbIIFa3zft6R
-         AZjBY1msCu3CY+depDV/ShzBmRMk+2q5yzY3rWoKBaxrjmH2x0oWWWvYiRDU8erpjLsK
-         dLPg==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LAlhghiYAQdF1ZeVykS90mEP5fU8MsPbtOd43fGe81o=;
+        b=QmLTNedXYulGed8Q9vmYpLLGfyXgM4EuiVWcN1DrY1llt7DfjHsx/pmpASbKLxlAOh
+         siSPTR8ToAhRfr/m9GZ+U1g30VTQ/j2/ogTdTtf7oR21leSTpof+vpAdo6/jgDwMnSj3
+         71bJfn4ZkND/Hqdqe+L8kHUktBYEx5r7WOZolW8WzGGEg2+BWh0TKWgtKOaXNCy/44C0
+         fxNnTvC/VuvtZTurNJnAh/HBBAx3TwejHbSA3X6xm6JvUuo/VgOX9eK51Bwq2PLpO4ji
+         mKi7FS1rDQwERR6pMHa+V+ucV7vM96kfjhwsraZqG53+fCLiZcWOrWqGcBKSjaDW+HCI
+         vOMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fFkDrhnvgiRe+loeaLRgeNukDq8LEqELpmrdaCkopMk=;
-        b=ce1Fe5P/FHD5zkmMOGyugvVBo/9pPysJRe4YHcrIUKcXz4P4sbSKahLwD2VJ4vEtQk
-         o/ixJiaciROrM3HB0axRyVkOiyBo01JRRZYGpbEym/IoELGijrxcbwN2d5b27uJnjDQX
-         h8uuADvbW6NNsYPWbhQZmZc50rrbVWYdHX4hLNCBzVpXG/LL4aqNbD2SKY/nzh5fgJuG
-         3v/ClXcHhwXB+IQdVV7z4IFxM5bD+GRv5Ng8+I/S/jg5gZwnyzJqiKObPRMq8LymzSyf
-         q7f+ax/w8BQSwni1PQ03y26tAD7SVQnhOD1/1YztjJom/4OtZWrnjogalGwODP1Vj6WF
-         vlXw==
-X-Gm-Message-State: AOAM530zdHcdIWYBrkCwwWKydbI2q8ZC/Szf1XNqtE2ijTL2dwUmm0eF
-        8fAj/2eF3ZTzFRQdY/LGr2c=
-X-Google-Smtp-Source: ABdhPJzj9ne5PO3D+01uzhXw6K+GiAchPv6g8QNXVVUSEghBRxDYpUWhXoVje64VW97iM8PFp5/xUw==
-X-Received: by 2002:aa7:881a:0:b029:1f1:6148:15c3 with SMTP id c26-20020aa7881a0000b02901f1614815c3mr9273155pfo.30.1616696158022;
-        Thu, 25 Mar 2021 11:15:58 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:3991:e59d:d2d4:59dd])
-        by smtp.gmail.com with ESMTPSA id a21sm6618880pfk.83.2021.03.25.11.15.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=LAlhghiYAQdF1ZeVykS90mEP5fU8MsPbtOd43fGe81o=;
+        b=fanyPLdBZ+YtXvfMwqyXLJTCRO637GOBU6vY2ZI4tokiYs+FJZrV4oOi1LzRSmc27Y
+         a0DJa4qVsAocXtNR9YSq2T1hRyuNSRoQwUA1Au8qGMp5vgd6wDo71FmLCpZJR0xFMAyG
+         kCA0b1RlVxjcLNN/IXD8DwDndRJISXWBjVSTDQ8rprVgeYL/0l6W/SEK5sxuhqqeaA26
+         gvwzDvnNiIrEvUqXryJnJ9bE216v64Fq2rF1YwV3D6XxiYnimBh4AfhR0gxEzJY3obIe
+         XP9UAHlkuEPboe+Qr4K49e58UokOlr9qn2RAQToQHBBCdjCYlAmW9wow6OMh+UK/CCqw
+         n9ew==
+X-Gm-Message-State: AOAM531ez8zXSUBDZn3p5LJmPRicn0QceC038y0oeih93gN4sItmoZzy
+        88Ix+5thjYxTh4jnnzu/IJaY1RRNIjBMpPRT
+X-Google-Smtp-Source: ABdhPJyYN5DDjmsIs1uMwA1jClPu+viWhzn0pCMzqKGh/VlrGdxKDWkcaBHkfbtYIEkO4sZk//5t8w==
+X-Received: by 2002:ac8:7215:: with SMTP id a21mr9096103qtp.199.1616696295025;
+        Thu, 25 Mar 2021 11:18:15 -0700 (PDT)
+Received: from Gentoo ([37.19.198.30])
+        by smtp.gmail.com with ESMTPSA id a14sm3972065qtw.80.2021.03.25.11.18.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 11:15:56 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:15:54 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Dmitry Osipenko <digetx@gmail.com>, Nick Dyer <nick@shmanahar.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jiada Wang <jiada_wang@mentor.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 3/3] ARM: tegra: acer-a500: Add atmel,wakeup-method
- property
-Message-ID: <YFzTWuUZbdXvnpHC@google.com>
-References: <20210302102158.10533-1-digetx@gmail.com>
- <20210302102158.10533-4-digetx@gmail.com>
- <YFfLXLDIuRdj2bWs@google.com>
- <YFyZ0ejrSxWc3JZT@orome.fritz.box>
+        Thu, 25 Mar 2021 11:18:14 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 23:48:07 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] docs: sphinx:  Trivial fix of a typo in the file
+ rstFlatTable.py
+Message-ID: <YFzT3/sLrrBrZQhE@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+References: <20210317102056.3003768-1-unixbhaskar@gmail.com>
+ <877dlv15hu.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uwfhAObxCzy0VF27"
 Content-Disposition: inline
-In-Reply-To: <YFyZ0ejrSxWc3JZT@orome.fritz.box>
+In-Reply-To: <877dlv15hu.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:10:25PM +0100, Thierry Reding wrote:
-> On Sun, Mar 21, 2021 at 03:40:28PM -0700, Dmitry Torokhov wrote:
-> > On Tue, Mar 02, 2021 at 01:21:58PM +0300, Dmitry Osipenko wrote:
-> > > Acer A500 uses Atmel Maxtouch 1386 touchscreen controller. This controller
-> > > has WAKE line which could be connected to I2C clock lane, dedicated GPIO
-> > > or fixed to HIGH level. Controller wakes up from a deep sleep when WAKE
-> > > line is asserted low. Acer A500 has WAKE line connected to I2C clock and
-> > > Linux device driver doesn't work property without knowing what wakeup
-> > > method is used by h/w.
-> > > 
-> > > Add atmel,wakeup-method property to the touchscreen node.
-> > > 
-> > > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > 
-> > Applied, thank you.
-> 
-> I noticed that you had applied this as I was applying a different patch
-> that touches the same area and it causes a conflict. In general I prefer
-> to pick up all device tree changes into the Tegra tree, specifically to
-> avoid such conflicts.
-> 
-> That said, I didn't see an email from Stephen about this causing a
-> conflict in linux-next, so perhaps it's fine. If this pops up again it
-> might be worth considering to drop this from your tree so that I can
-> resolve the conflict in the Tegra tree.
 
-Sorry about that, I went ahead and dropped the patch from my branch.
+--uwfhAObxCzy0VF27
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-Thanks.
+On 11:57 Thu 25 Mar 2021, Jonathan Corbet wrote:
+>Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
+>
+>> s/buidler/builder/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  Documentation/sphinx/rstFlatTable.py | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/sphinx/rstFlatTable.py b/Documentation/sphinx/rstFlatTable.py
+>> index a3eea0bbe6ba..1d2b9be6b6c5 100755
+>> --- a/Documentation/sphinx/rstFlatTable.py
+>> +++ b/Documentation/sphinx/rstFlatTable.py
+>> @@ -161,7 +161,7 @@ class ListTableBuilder(object):
+>>          for colwidth in colwidths:
+>>              colspec = nodes.colspec(colwidth=colwidth)
+>>              # FIXME: It seems, that the stub method only works well in the
+>> -            # absence of rowspan (observed by the html buidler, the docutils-xml
+>> +            # absence of rowspan (observed by the html builder, the docutils-xml
+>>              # build seems OK).  This is not extraordinary, because there exists
+>>              # no table directive (except *this* flat-table) which allows to
+>>              # define coexistent of rowspan and stubs (there was no use-case
+>> --
+>
+>This was fixed in your previous patch from March 2.  Bhaskar, please
+>slow down a bit and try not to create needless work for the recipients
+>of your patches, OK?
+>
+Apologies. I am sorry to cause pain to others, this was not true intension of
+the trivial work I am trying to do.
 
--- 
-Dmitry
+I shall be prudent in the future. My sincere apology to gobbles up peoples
+time.
+
+>Thanks,
+>
+>jon
+
+--uwfhAObxCzy0VF27
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBc09sACgkQsjqdtxFL
+KRWRfQgAxtlSUDaK3PRwydBMzegQn6OqiSVYMtsjm3MTxnxmOMrD7XyGK2Hf0aYC
+1Nf8shTMtygZcL6nmhBB20azXxu3WjdYFGzfKVxXp7q4c5tiLfiOkRGSYAApf6d3
+fj+KDwmSUPKw1Zhd2BznRVZRSakng5iz4mcGzF5IknLEYPh4io3AfY8dep4mbvxE
+jPya3W/AnK2dMcgm2cwE5oYc5QG9qMeyUGdUIk2XrWfxdxuA1b9Qslgv+9Rb1nNH
+XtTRcoTp+HzMPnGYyLE/m9Y1IRxvgd8ICaSoicGoRxMoE2xVKZ4pXPKSHvTNngem
+2v1YAtRvAS3UfjRiwqh0RjIwRGcxGw==
+=y58k
+-----END PGP SIGNATURE-----
+
+--uwfhAObxCzy0VF27--
