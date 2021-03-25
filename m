@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117D9349A85
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703BF349A86
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhCYTjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:39:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30207 "EHLO
+        id S231193AbhCYTjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:39:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39793 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230333AbhCYTiT (ORCPT
+        by vger.kernel.org with ESMTP id S230336AbhCYTiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:38:19 -0400
+        Thu, 25 Mar 2021 15:38:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616701098;
+        s=mimecast20190719; t=1616701100;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2CmF2Ok/7Yvm6l2sa99yQDF58c2hGs4kIiRgKHoCIgs=;
-        b=CLIA95UysxhL7GpEKHs/DvRktv82R0gpAteU9D1HTiDq8z7tHYmgGa0MQ0xsXM7ScKUIXx
-        vr1IKarxD+7LZpAJljDV8vukNlQW0xxARDvqY417dVvO9u3GGnj/LQ3x+cUyGJIR4OcUok
-        5x5dIW/rI6T9lxkpolF8+NSKN2H8Eqg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-X54qy3NnPAuNossN3gwVDw-1; Thu, 25 Mar 2021 15:38:17 -0400
-X-MC-Unique: X54qy3NnPAuNossN3gwVDw-1
-Received: by mail-ej1-f69.google.com with SMTP id r26so3067988eja.22
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
+        bh=Xe1RgBQE/G9XF6ytQooX6iFiFRZ4POCra4z89XvkUPk=;
+        b=bv8rVwqgg4vp37IELv55gLkTJ5dxGXVtjj218QPj++8Y4/7s9AtJHIW0QAokH03CpvMxsd
+        Cz2iwJbyuEjPavwmKGNQXgPguMoLecRQjXublQQvqrwuwO0XkTNq6KMgVveFi+RLOQlkQ6
+        4N6BN8SQpYNgEhIJK5qWHC41VQc/xuU=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-wB4Z5PwgMg2JXO-aYHtpcQ-1; Thu, 25 Mar 2021 15:38:18 -0400
+X-MC-Unique: wB4Z5PwgMg2JXO-aYHtpcQ-1
+Received: by mail-ed1-f70.google.com with SMTP id bi17so3202115edb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:38:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2CmF2Ok/7Yvm6l2sa99yQDF58c2hGs4kIiRgKHoCIgs=;
-        b=RmB/uRTbKPWUBc/tq3F/RI6uqTZpMz1eocFqA27Hf7Rukxe7tUqfZ9T0xpubv9U7+1
-         02Skig6QlPC1XX9mVFNTYm5y7ha3gKSYyj48hIUCMLdBYEapmed+vrx7Gv1grER/mr3L
-         b9rhNdDUr1rtq++a87HiXZVAdvmQZAnBtnLyTDiX8ABxPi23Gmnpvyzt//0fIffPhP+m
-         mxQ/EecPGb240ClGsPExJsGWB11jX5O4hG80RskdVngaLF7D01zqGdtvc7R6UrsHxt9C
-         bnzkarpYbh0YwuPvRIA5KyXDxUUOBSDSWxP1FvbtZA1jxrGXLTHKxxm80l8K4Tiw9A2h
-         2xDw==
-X-Gm-Message-State: AOAM532LKzk/SZh4GyY76/svbVYAvgMwluSJmpl43PzZx8YATWDHT6TC
-        RoOD1Y5lq27UTPJhR8Dr4Q4cZvTC74t1Q69JfFNeVeYfmEDRVX0sBMm9U/7lEnB+7erP7O9dM4S
-        fc/ooMHDZ7NM4sOvv2LhnlVyG
-X-Received: by 2002:a17:906:828e:: with SMTP id h14mr11382613ejx.529.1616701095859;
-        Thu, 25 Mar 2021 12:38:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy6XJUonAtbewCZ8Qz+G85LrYfaJA0lmTPg5npkZw8WwtZXu86Ao2ZtuI9y0QL+5MvOL3XrKw==
-X-Received: by 2002:a17:906:828e:: with SMTP id h14mr11382598ejx.529.1616701095716;
-        Thu, 25 Mar 2021 12:38:15 -0700 (PDT)
+        bh=Xe1RgBQE/G9XF6ytQooX6iFiFRZ4POCra4z89XvkUPk=;
+        b=Hgc5KKGS8K35nIbabtJouNRg6xEx+Wi7AipBD0jlMtQSzNJIvX5LZihL65r0aWIxXl
+         akOBfmK3K6QC7+jEm5Ku4hAZxBOOyzQ7l5IVgct3tnjPgH9FfB+in1zM3CQJQNwuAgiX
+         3kHkt12qx65igCC6P3SyAR0LsJt41tofveCvTh3ZoK4N3Omx2d45NuzJ/KvEpZpw2kz5
+         mn6++kcd4H5RdZ2J8PKZ8xq5qATUmUeBvkqAMNP3DDD7QrhPq7bQWN1tKNbSILIvC0Rg
+         gKy5F1oVjOMoCd49wOfu6zQrMtmjD50A0GTNqG4fbjVN6aZ2Cv9QtXMkv5V01byu52fM
+         v9Mg==
+X-Gm-Message-State: AOAM531H187CHywu/jEUCFTQR9OkU15Z/ueu3CjdrML/MYEctKEKv6HF
+        IrWK3q6L2SpvyQMNkc2tDT1bjY5EWnw4f9HXAKzLkKaUTkxtkKO0BK6IAYEY20e432RiYhr1ArE
+        mirEIqdsFbso7X4HCBUTRflwG
+X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr11045117ejc.375.1616701096907;
+        Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxFV1oZ+BK7v8WO040FkXSjAZV626OHX3ZFmSFkpTQMQ85TXUe3JuTEsoL0uvpq7ySkkOUKOw==
+X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr11045102ejc.375.1616701096688;
+        Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.38.14
+        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.38.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 12:38:15 -0700 (PDT)
+        Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
-        Richard Weinberger <richard@nod.at>
-Subject: [PATCH v3 17/18] ubifs: convert to fileattr
-Date:   Thu, 25 Mar 2021 20:37:54 +0100
-Message-Id: <20210325193755.294925-18-mszeredi@redhat.com>
+        "Darrick J . Wong" <djwong@kernel.org>
+Subject: [PATCH v3 18/18] vfs: remove unused ioctl helpers
+Date:   Thu, 25 Mar 2021 20:37:55 +0100
+Message-Id: <20210325193755.294925-19-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210325193755.294925-1-mszeredi@redhat.com>
 References: <20210325193755.294925-1-mszeredi@redhat.com>
@@ -67,175 +67,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the fileattr API to let the VFS handle locking, permission checking and
-conversion.
+Remove vfs_ioc_setflags_prepare(), vfs_ioc_fssetxattr_check() and
+simple_fill_fsxattr(), which are no longer used.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Richard Weinberger <richard@nod.at>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 ---
- fs/ubifs/dir.c   |  2 ++
- fs/ubifs/file.c  |  2 ++
- fs/ubifs/ioctl.c | 74 ++++++++++++++++++++----------------------------
- fs/ubifs/ubifs.h |  3 ++
- 4 files changed, 38 insertions(+), 43 deletions(-)
+ fs/inode.c         | 87 ----------------------------------------------
+ include/linux/fs.h | 12 -------
+ 2 files changed, 99 deletions(-)
 
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index d9d8d7794eff..5bd8482e660a 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -1637,6 +1637,8 @@ const struct inode_operations ubifs_dir_inode_operations = {
- 	.listxattr   = ubifs_listxattr,
- 	.update_time = ubifs_update_time,
- 	.tmpfile     = ubifs_tmpfile,
-+	.fileattr_get = ubifs_fileattr_get,
-+	.fileattr_set = ubifs_fileattr_set,
- };
- 
- const struct file_operations ubifs_dir_operations = {
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 0e4b4be3aa26..2e4e1d159969 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1648,6 +1648,8 @@ const struct inode_operations ubifs_file_inode_operations = {
- 	.getattr     = ubifs_getattr,
- 	.listxattr   = ubifs_listxattr,
- 	.update_time = ubifs_update_time,
-+	.fileattr_get = ubifs_fileattr_get,
-+	.fileattr_set = ubifs_fileattr_set,
- };
- 
- const struct inode_operations ubifs_symlink_inode_operations = {
-diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
-index 2326d5122beb..073855b56c82 100644
---- a/fs/ubifs/ioctl.c
-+++ b/fs/ubifs/ioctl.c
-@@ -14,6 +14,7 @@
- 
- #include <linux/compat.h>
+diff --git a/fs/inode.c b/fs/inode.c
+index a047ab306f9a..ae526fd9c0a4 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -12,7 +12,6 @@
+ #include <linux/security.h>
+ #include <linux/cdev.h>
+ #include <linux/memblock.h>
+-#include <linux/fscrypt.h>
+ #include <linux/fsnotify.h>
  #include <linux/mount.h>
-+#include <linux/fileattr.h>
- #include "ubifs.h"
- 
- /* Need to be kept consistent with checked flags in ioctl2ubifs() */
-@@ -103,7 +104,7 @@ static int ubifs2ioctl(int ubifs_flags)
- 
- static int setflags(struct inode *inode, int flags)
- {
--	int oldflags, err, release;
-+	int err, release;
- 	struct ubifs_inode *ui = ubifs_inode(inode);
- 	struct ubifs_info *c = inode->i_sb->s_fs_info;
- 	struct ubifs_budget_req req = { .dirtied_ino = 1,
-@@ -114,11 +115,6 @@ static int setflags(struct inode *inode, int flags)
- 		return err;
- 
- 	mutex_lock(&ui->ui_mutex);
--	oldflags = ubifs2ioctl(ui->flags);
--	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
--	if (err)
--		goto out_unlock;
--
- 	ui->flags &= ~ioctl2ubifs(UBIFS_SETTABLE_IOCTL_FLAGS);
- 	ui->flags |= ioctl2ubifs(flags);
- 	ubifs_set_inode_flags(inode);
-@@ -132,54 +128,46 @@ static int setflags(struct inode *inode, int flags)
- 	if (IS_SYNC(inode))
- 		err = write_inode_now(inode, 1);
- 	return err;
--
--out_unlock:
--	mutex_unlock(&ui->ui_mutex);
--	ubifs_release_budget(c, &req);
--	return err;
+ #include <linux/posix_acl.h>
+@@ -2314,89 +2313,3 @@ struct timespec64 current_time(struct inode *inode)
+ 	return timestamp_truncate(now, inode);
  }
- 
--long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+int ubifs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
- {
--	int flags, err;
--	struct inode *inode = file_inode(file);
-+	struct inode *inode = d_inode(dentry);
-+	int flags = ubifs2ioctl(ubifs_inode(inode)->flags);
- 
--	switch (cmd) {
--	case FS_IOC_GETFLAGS:
--		flags = ubifs2ioctl(ubifs_inode(inode)->flags);
-+	dbg_gen("get flags: %#x, i_flags %#x", flags, inode->i_flags);
-+	fileattr_fill_flags(fa, flags);
- 
--		dbg_gen("get flags: %#x, i_flags %#x", flags, inode->i_flags);
--		return put_user(flags, (int __user *) arg);
-+	return 0;
-+}
- 
--	case FS_IOC_SETFLAGS: {
--		if (IS_RDONLY(inode))
--			return -EROFS;
-+int ubifs_fileattr_set(struct user_namespace *mnt_userns,
-+		       struct dentry *dentry, struct fileattr *fa)
-+{
-+	struct inode *inode = d_inode(dentry);
-+	int flags = fa->flags;
- 
--		if (!inode_owner_or_capable(&init_user_ns, inode))
--			return -EACCES;
-+	if (fileattr_has_fsx(fa))
-+		return -EOPNOTSUPP;
- 
--		if (get_user(flags, (int __user *) arg))
--			return -EFAULT;
-+	if (flags & ~UBIFS_GETTABLE_IOCTL_FLAGS)
-+		return -EOPNOTSUPP;
- 
--		if (flags & ~UBIFS_GETTABLE_IOCTL_FLAGS)
--			return -EOPNOTSUPP;
--		flags &= UBIFS_SETTABLE_IOCTL_FLAGS;
-+	flags &= UBIFS_SETTABLE_IOCTL_FLAGS;
- 
--		if (!S_ISDIR(inode->i_mode))
--			flags &= ~FS_DIRSYNC_FL;
-+	if (!S_ISDIR(inode->i_mode))
-+		flags &= ~FS_DIRSYNC_FL;
- 
--		/*
--		 * Make sure the file-system is read-write and make sure it
--		 * will not become read-only while we are changing the flags.
--		 */
--		err = mnt_want_write_file(file);
--		if (err)
--			return err;
--		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
--		err = setflags(inode, flags);
--		mnt_drop_write_file(file);
--		return err;
+ EXPORT_SYMBOL(current_time);
+-
+-/*
+- * Generic function to check FS_IOC_SETFLAGS values and reject any invalid
+- * configurations.
+- *
+- * Note: the caller should be holding i_mutex, or else be sure that they have
+- * exclusive access to the inode structure.
+- */
+-int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
+-			     unsigned int flags)
+-{
+-	/*
+-	 * The IMMUTABLE and APPEND_ONLY flags can only be changed by
+-	 * the relevant capability.
+-	 *
+-	 * This test looks nicer. Thanks to Pauline Middelink
+-	 */
+-	if ((flags ^ oldflags) & (FS_APPEND_FL | FS_IMMUTABLE_FL) &&
+-	    !capable(CAP_LINUX_IMMUTABLE))
+-		return -EPERM;
+-
+-	return fscrypt_prepare_setflags(inode, oldflags, flags);
+-}
+-EXPORT_SYMBOL(vfs_ioc_setflags_prepare);
+-
+-/*
+- * Generic function to check FS_IOC_FSSETXATTR values and reject any invalid
+- * configurations.
+- *
+- * Note: the caller should be holding i_mutex, or else be sure that they have
+- * exclusive access to the inode structure.
+- */
+-int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
+-			     struct fsxattr *fa)
+-{
+-	/*
+-	 * Can't modify an immutable/append-only file unless we have
+-	 * appropriate permission.
+-	 */
+-	if ((old_fa->fsx_xflags ^ fa->fsx_xflags) &
+-			(FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND) &&
+-	    !capable(CAP_LINUX_IMMUTABLE))
+-		return -EPERM;
+-
+-	/*
+-	 * Project Quota ID state is only allowed to change from within the init
+-	 * namespace. Enforce that restriction only if we are trying to change
+-	 * the quota ID state. Everything else is allowed in user namespaces.
+-	 */
+-	if (current_user_ns() != &init_user_ns) {
+-		if (old_fa->fsx_projid != fa->fsx_projid)
+-			return -EINVAL;
+-		if ((old_fa->fsx_xflags ^ fa->fsx_xflags) &
+-				FS_XFLAG_PROJINHERIT)
+-			return -EINVAL;
 -	}
-+	dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
-+	return setflags(inode, flags);
-+}
-+
-+long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-+{
-+	int err;
-+	struct inode *inode = file_inode(file);
-+
-+	switch (cmd) {
- 	case FS_IOC_SET_ENCRYPTION_POLICY: {
- 		struct ubifs_info *c = inode->i_sb->s_fs_info;
+-
+-	/* Check extent size hints. */
+-	if ((fa->fsx_xflags & FS_XFLAG_EXTSIZE) && !S_ISREG(inode->i_mode))
+-		return -EINVAL;
+-
+-	if ((fa->fsx_xflags & FS_XFLAG_EXTSZINHERIT) &&
+-			!S_ISDIR(inode->i_mode))
+-		return -EINVAL;
+-
+-	if ((fa->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
+-	    !S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
+-		return -EINVAL;
+-
+-	/*
+-	 * It is only valid to set the DAX flag on regular files and
+-	 * directories on filesystems.
+-	 */
+-	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
+-	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+-		return -EINVAL;
+-
+-	/* Extent size hints of zero turn off the flags. */
+-	if (fa->fsx_extsize == 0)
+-		fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
+-	if (fa->fsx_cowextsize == 0)
+-		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(vfs_ioc_fssetxattr_check);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 156b78f42a28..820fdc62ac30 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3571,18 +3571,6 @@ extern int vfs_fadvise(struct file *file, loff_t offset, loff_t len,
+ extern int generic_fadvise(struct file *file, loff_t offset, loff_t len,
+ 			   int advice);
  
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 7fdfdbda4b8a..b65c599a386a 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -2053,6 +2053,9 @@ int ubifs_recover_size(struct ubifs_info *c, bool in_place);
- void ubifs_destroy_size_tree(struct ubifs_info *c);
- 
- /* ioctl.c */
-+int ubifs_fileattr_get(struct dentry *dentry, struct fileattr *fa);
-+int ubifs_fileattr_set(struct user_namespace *mnt_userns,
-+		       struct dentry *dentry, struct fileattr *fa);
- long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- void ubifs_set_inode_flags(struct inode *inode);
- #ifdef CONFIG_COMPAT
+-int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
+-			     unsigned int flags);
+-
+-int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
+-			     struct fsxattr *fa);
+-
+-static inline void simple_fill_fsxattr(struct fsxattr *fa, __u32 xflags)
+-{
+-	memset(fa, 0, sizeof(*fa));
+-	fa->fsx_xflags = xflags;
+-}
+-
+ /*
+  * Flush file data before changing attributes.  Caller must hold any locks
+  * required to prevent further writes to this file until we're done setting
 -- 
 2.30.2
 
