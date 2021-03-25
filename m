@@ -2,151 +2,468 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB927349A25
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5168A349A27
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhCYTZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCYTZG (ORCPT
+        id S230248AbhCYT0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:26:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229622AbhCYT0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:25:06 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDD8C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:25:06 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id x9so2529433qto.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BH1rH6caE39g0jiGK70AFedQ5v5dokTeZNKhqTkmX2s=;
-        b=IRyc9FFAqElCbGemY1KCq9/RoV8KmD7cggTOOPBanhNENLNuJHxLEB42OGsXSGwdD/
-         BvuKH+lQqy/5wxBzh/CwNBLPveUQdXHulwbst0Y2ogYm3pE91nBpp1gQJsee3ODCkAdc
-         atYaTp8GtEi7tjFyTGnyAi/ZBWyvjDi4rd/e3mNzNk5LhSANV5mD75BTXCMRYXYl0xIq
-         kzIso6ezn8Xs8+cPakmGFeF/3NN4LHE8C1TvDcIK34eX2IFqDEAuFY7MP2eqivwl6cYP
-         r0yH4fRkAM4JzQME8N/kYAY5s6JMvmMMhVz1Cr4zaInWdxqTQ3SP/TI2Nwe9PGgbT3c6
-         UJVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BH1rH6caE39g0jiGK70AFedQ5v5dokTeZNKhqTkmX2s=;
-        b=i/ZgUdPG1Ss2AxmCBw2IcCAy+tNaQDvXVbLBm6NZeEUPCzsiFerZWXHzxXvq1VF2Ld
-         BQBfZ0S/oQ2mDADpQbTdGX8pUyK53PMgRVjL+jDZNhgL7A8BdUwq+JQMTkmLoO02KefW
-         /WMWYXRz7OmVfkgw3PG7lIFm92lwKJvbkg08EG4b+fXQ87A+bUq1/HIShczPWQArJUg1
-         x5J51oVabSDtIzfkFMXrYk3Iv11dX9UUG262ak5zD7+J1ASasZHhvLCkVl+hDLQHE1iI
-         y06jtzTeHXihzDC1pKew8tVgwB+lWdhaXoB8NGLwQeTjk9ieirHhJbS1L5ZjORb3+eH8
-         bCzA==
-X-Gm-Message-State: AOAM5327FZJhz9had7edK1lM9LHLELPVU1L5xq9WNvPSvY32uVOsnGH9
-        8GD13U0MAgK8WGN90Mimo+ch1tlE0ng0SM6Xwvh5jLb44uvukg==
-X-Google-Smtp-Source: ABdhPJzaaXwX20v3NiqHfohJ32Zo0GA4QEkkDe8IObPTlCwdXwL/E9UZWjDpgXw6Zg/5DXDYCK+x5Rl4DXsDf6eh7Dw=
-X-Received: by 2002:ac8:4558:: with SMTP id z24mr9125555qtn.66.1616700305523;
- Thu, 25 Mar 2021 12:25:05 -0700 (PDT)
+        Thu, 25 Mar 2021 15:26:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616700363;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VUCFhgt8H3pD4Jc06Dq2JQVvaymrLHwIOpHt+OwmdAw=;
+        b=NkLJ97PkwJ9no8Gk4y5aOoRqGEXiNoz2/LG8dvM8LTXkuwSFRU4p+iCU47qx2dyRVMG96s
+        MhdlJHBIM4ns4yfNDXOEVrs2jTjkzONrv4M4KxCKUo5rZi7zbpPvFY5UleToCgiaNnCRqS
+        fO4B+XHUewpcRDhk2ONDbKlypOtGX84=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-gRb8uOYuP9OvZPjY131i6A-1; Thu, 25 Mar 2021 15:25:54 -0400
+X-MC-Unique: gRb8uOYuP9OvZPjY131i6A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 551B6107ACCD;
+        Thu, 25 Mar 2021 19:25:53 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-120.phx2.redhat.com [10.3.112.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B3F8C5C3DF;
+        Thu, 25 Mar 2021 19:25:52 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 13:25:51 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Steven Sistare <steven.sistare@oracle.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio/type1: Empty batch for pfnmap pages
+Message-ID: <20210325132551.4c7ce805@omen.home.shazbot.org>
+In-Reply-To: <20210325010552.185481-1-daniel.m.jordan@oracle.com>
+References: <20210325010552.185481-1-daniel.m.jordan@oracle.com>
 MIME-Version: 1.0
-References: <000000000000ce4c9505bdd4a48f@google.com> <CACT4Y+a4S-oXsjgwDh3SmERqKFF1QbapvX6NiSpn51KRtqvTiQ@mail.gmail.com>
- <20210325182046.GA15860@willie-the-truck> <CACT4Y+b833yyxekjK61PpFKLmdJq0Jb6vLUo=EBYCLKr9+ksow@mail.gmail.com>
- <20210325191006.GE15860@willie-the-truck>
-In-Reply-To: <20210325191006.GE15860@willie-the-truck>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 25 Mar 2021 20:24:53 +0100
-Message-ID: <CACT4Y+Y-iROPw8bvpjzpSoUfHs+6ridjKfnLbs8Hhv9ciP7dYw@mail.gmail.com>
-Subject: Re: [syzbot] BUG: soft lockup in do_wp_page (4)
-To:     Will Deacon <will@kernel.org>
-Cc:     syzbot <syzbot+0b036374a865ba0efa8e@syzkaller.appspotmail.com>,
-        kernel-team@android.com, Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="MP_/0bR2E+FyYp1zvNwC+5IteY."
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 8:10 PM Will Deacon <will@kernel.org> wrote:
->
-> On Thu, Mar 25, 2021 at 07:34:54PM +0100, Dmitry Vyukov wrote:
-> > On Thu, Mar 25, 2021 at 7:20 PM Will Deacon <will@kernel.org> wrote:
-> > >
-> > > On Thu, Mar 18, 2021 at 08:34:16PM +0100, Dmitry Vyukov wrote:
-> > > > On Thu, Mar 18, 2021 at 8:31 PM syzbot
-> > > > <syzbot+0b036374a865ba0efa8e@syzkaller.appspotmail.com> wrote:
-> > > > >
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following issue on:
-> > > > >
-> > > > > HEAD commit:    bf152b0b Merge tag 'for_linus' of git://git.kernel.org/pub..
-> > > > > git tree:       upstream
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=17d5264ed00000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=2c9917c41f0bc04b
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=0b036374a865ba0efa8e
-> > > > > userspace arch: arm64
-> > > > >
-> > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > >
-> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+0b036374a865ba0efa8e@syzkaller.appspotmail.com
-> > > > >
-> > > > > watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [syz-executor.1:3684]
-> > > >
-> > > > +Will, arm
-> > > >
-> > > > If I am reading this commit correctly, this is caused by:
-> > > >
-> > > > commit cae118b6acc309539b33339e846cbb19187c164c
-> > > > Author: Will Deacon
-> > > > Date:   Wed Mar 3 13:49:27 2021 +0000
-> > > >     arm64: Drop support for CMDLINE_EXTEND
-> > > >
-> > > > syzbot passes lots of critical things in CONFIG_CMDLINE:
-> > > > https://github.com/google/syzkaller/blob/c3c81c94865791469d376eba84f4a2d7763d3f71/dashboard/config/linux/upstream-arm64-kasan.config#L495
-> > > > but also wants the bootloader args to be appended.
-> > > > What is the way to do it now?
-> > >
-> > > For now, there isn't a way to do it with CONFIG_CMDLINE, so I think you can
-> > > either:
-> > >
-> > >   * Revert my patch for your kernels
-> > >   * Pass the arguments via QEMU's -append option
-> > >   * Take a look at one of the series which should hopefully add this
-> > >     functionality back (but with well-defined semantics) [1] [2]
-> >
-> > Unfortunately none of these work for syzbot (and I assume other
-> > testing environments).
-> >
-> > syzbot does not support custom patches by design:
-> > http://bit.do/syzbot#no-custom-patches
-> > As any testing system, it tests the official trees.
-> >
-> > It's not humans who start these VMs, so it's not as easy as changing
-> > the command line after typing...
-> > There is no support for passing args specifically to qemu, syzkaller
-> > support not just qemu, so these things are specifically localized in
-> > the config. Additionally there is an issue of communicating all these
-> > scattered details to developers in bug reports. Currently syzbot
-> > reports the kernel config and it as well captures command line.
-> >
-> > Could you revert the patch? Is there any point in removing the
-> > currently supported feature before the new feature lands?
->
-> Well, we only just merged it (in 5.10 I think?), and the semantics of the
-> new version will be different, so I really don't see the value in supporting
-> both (even worse, Android has its own implementation which is different
-> again). The timeline was: we merged CMDLINE_EXTEND, then we noticed it was
-> broken, my fixes were rejected, so we removed the feature rather than
-> support the broken version. In the relatively small window while it was
-> merged, syzbot started using it :(
+--MP_/0bR2E+FyYp1zvNwC+5IteY.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I didn't realize it was just introduced :)
-We used CMDLINE_EXTEND on x86, and I looked for a similar option for
-arm64 and found it.
+On Wed, 24 Mar 2021 21:05:52 -0400
+Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
 
-> So I really think the best bet is to wait until the patches are sorted out.
-> I think Christophe is about to spin a new version, and I reviewed his last
-> copy, so I don't see this being far off,
+> When vfio_pin_pages_remote() returns with a partial batch consisting of
+> a single VM_PFNMAP pfn, a subsequent call will unfortunately try
+> restoring it from batch->pages, resulting in vfio mapping the wrong page
+> and unbalancing the page refcount.
+> 
+> Prevent the function from returning with this kind of partial batch to
+> avoid the issue.  There's no explicit check for a VM_PFNMAP pfn because
+> it's awkward to do so, so infer it from characteristics of the batch
+> instead.  This may result in occasional false positives but keeps the
+> code simpler.
+> 
+> Fixes: 4d83de6da265 ("vfio/type1: Batch page pinning")
+> Link: https://lkml.kernel.org/r/20210323133254.33ed9161@omen.home.shazbot.org/
+> Reported-by: Alex Williamson <alex.williamson@redhat.com>
+> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> ---
+> 
+> Alex, I couldn't immediately find a way to trigger this bug, but I can
+> run your test case if you like.
+> 
+> This is the minimal fix, but it should still protect all calls of
+> vfio_batch_unpin() from this problem.
 
-If it's expected to be merged soon, let's wait.
+Thanks, applied to my for-linus branch for v5.12.  The attached unit
+test triggers the issue, I don't have any real world examples and was
+only just experimenting with this for another series earlier this week.
+Thanks,
+
+Alex
+
+--MP_/0bR2E+FyYp1zvNwC+5IteY.
+Content-Type: text/x-c++src
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename=alternate-pfnmap.c
+
+/*
+ * Alternate pages of device memory and anonymous memory within a single DMA
+ * mapping.
+ *
+ * Run with argv[1] as a fully specified PCI device already bound to vfio-pci.
+ * ex. "alternate-pfnmap 0000:01:00.0"
+ */
+#include <errno.h>
+#include <libgen.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/eventfd.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
+
+#include <linux/ioctl.h>
+#include <linux/vfio.h>
+#include <linux/pci_regs.h>
+
+void *vaddr = (void *)0x100000000;
+size_t map_size = 0;
+
+int get_container(void)
+{
+	int container = open("/dev/vfio/vfio", O_RDWR);
+
+	if (container < 0)
+		fprintf(stderr, "Failed to open /dev/vfio/vfio, %d (%s)\n",
+		       container, strerror(errno));
+
+	return container;
+}
+
+int get_group(char *name)
+{
+	int seg, bus, slot, func;
+	int ret, group, groupid;
+	char path[50], iommu_group_path[50], *group_name;
+	struct stat st;
+	ssize_t len;
+	struct vfio_group_status group_status = {
+		.argsz = sizeof(group_status)
+	};
+
+	ret = sscanf(name, "%04x:%02x:%02x.%d", &seg, &bus, &slot, &func);
+	if (ret != 4) {
+		fprintf(stderr, "Invalid device\n");
+		return -EINVAL;
+	}
+
+	snprintf(path, sizeof(path),
+		 "/sys/bus/pci/devices/%04x:%02x:%02x.%01x/",
+		 seg, bus, slot, func);
+
+	ret = stat(path, &st);
+	if (ret < 0) {
+		fprintf(stderr, "No such device\n");
+		return ret;
+	}
+
+	strncat(path, "iommu_group", sizeof(path) - strlen(path) - 1);
+
+	len = readlink(path, iommu_group_path, sizeof(iommu_group_path));
+	if (len <= 0) {
+		fprintf(stderr, "No iommu_group for device\n");
+		return -EINVAL;
+	}
+
+	iommu_group_path[len] = 0;
+	group_name = basename(iommu_group_path);
+
+	if (sscanf(group_name, "%d", &groupid) != 1) {
+		fprintf(stderr, "Unknown group\n");
+		return -EINVAL;
+	}
+
+	snprintf(path, sizeof(path), "/dev/vfio/%d", groupid);
+	group = open(path, O_RDWR);
+	if (group < 0) {
+		fprintf(stderr, "Failed to open %s, %d (%s)\n",
+		       path, group, strerror(errno));
+		return group;
+	}
+
+	ret = ioctl(group, VFIO_GROUP_GET_STATUS, &group_status);
+	if (ret) {
+		fprintf(stderr, "ioctl(VFIO_GROUP_GET_STATUS) failed\n");
+		return ret;
+	}
+
+	if (!(group_status.flags & VFIO_GROUP_FLAGS_VIABLE)) {
+		fprintf(stderr,
+			"Group not viable, all devices attached to vfio?\n");
+		return -1;
+	}
+
+	return group;
+}
+
+int group_set_container(int group, int container)
+{
+	int ret = ioctl(group, VFIO_GROUP_SET_CONTAINER, &container);
+
+	if (ret)
+		fprintf(stderr, "Failed to set group container\n");
+
+	return ret;
+}
+
+int container_set_iommu(int container)
+{
+	int ret = ioctl(container, VFIO_SET_IOMMU, VFIO_TYPE1_IOMMU);
+
+	if (ret)
+		fprintf(stderr, "Failed to set IOMMU\n");
+
+	return ret;
+}
+
+int group_get_device(int group, char *name)
+{
+	int device = ioctl(group, VFIO_GROUP_GET_DEVICE_FD, name);
+
+	if (device < 0)
+		fprintf(stderr, "Failed to get device\n");
+
+	return device;
+}
+
+void *mmap_device_page(int device, int prot)
+{
+	struct vfio_region_info config_info = {
+		.argsz = sizeof(config_info),
+		.index = VFIO_PCI_CONFIG_REGION_INDEX
+	};
+	struct vfio_region_info region_info = {
+		.argsz = sizeof(region_info)
+	};
+	void *map = MAP_FAILED;
+	unsigned int bar;
+	int i, ret;
+
+	ret = ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &config_info);
+	if (ret) {
+		fprintf(stderr, "Failed to get config space region info\n");
+		return map;
+	}
+
+	for (i = 0; i < 6; i++) {
+		if (pread(device, &bar, sizeof(bar), config_info.offset +
+			  PCI_BASE_ADDRESS_0 + (4 * i)) != sizeof(bar)) {
+			fprintf(stderr, "Error reading BAR%d\n", i);
+			return map;
+		}
+
+		if (!(bar & PCI_BASE_ADDRESS_SPACE)) {
+			break;
+tryagain:
+			if (bar & PCI_BASE_ADDRESS_MEM_TYPE_64)
+				i++;
+		}
+	}
+
+	if (i >= 6) {
+		fprintf(stderr, "No memory BARs found\n");
+		return map;
+	}
+
+	region_info.index = VFIO_PCI_BAR0_REGION_INDEX + i;
+	ret = ioctl(device, VFIO_DEVICE_GET_REGION_INFO, &region_info);
+	if (ret) {
+		fprintf(stderr, "Failed to get BAR%d region info\n", i);
+		return map;
+	}
+  
+	if (!(region_info.flags & VFIO_REGION_INFO_FLAG_MMAP)) {
+		printf("No mmap support, try next\n");
+		goto tryagain;
+	}
+
+	if (region_info.size < getpagesize()) {
+		printf("Too small for mmap, try next\n");
+		goto tryagain;
+	}
+
+	map = mmap(vaddr + map_size, getpagesize(), prot, 
+		   MAP_SHARED, device, region_info.offset);
+	if (map == MAP_FAILED) {
+		fprintf(stderr, "Error mmap'ing BAR: %m\n");
+		goto tryagain;
+	}
+
+	fprintf(stderr, "\t\tmmap_device_page @0x%016lx\n",
+						(unsigned long long)map);
+	if (!vaddr) {
+		vaddr = map;
+	} else if (map != vaddr + map_size) {
+		fprintf(stderr, "Did not get contiguous mmap\n");
+		munmap(map, getpagesize());
+		return MAP_FAILED;
+	}
+
+	map_size += getpagesize();
+
+	return map;
+}
+
+void *mmap_mem_page(int prot)
+{
+	void *map = mmap(vaddr + map_size, getpagesize(), prot,
+			 MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
+
+	if (map == MAP_FAILED) {
+		fprintf(stderr, "Map anonymous page failed: %m\n");
+		return map;
+	}
+
+	fprintf(stderr, "\t\tmmap_mem_page @0x%016lx\n",
+						(unsigned long long)map);
+	if (!vaddr) {
+		vaddr = map;
+	} else if (map != vaddr + map_size) {
+		fprintf(stderr, "Did not get contiguous mmap\n");
+		munmap(map, getpagesize());
+		return MAP_FAILED;
+	}
+
+	map_size += getpagesize();
+
+	return map;
+}
+
+int dma_map(int container, void *map, int size, unsigned long iova)
+{
+	struct vfio_iommu_type1_dma_map dma_map = {
+		.argsz = sizeof(dma_map),
+		.size = size,
+		.vaddr = (__u64)map,
+		.iova = iova,
+		.flags = VFIO_DMA_MAP_FLAG_READ | VFIO_DMA_MAP_FLAG_WRITE
+	};
+	int ret;
+
+	ret = ioctl(container, VFIO_IOMMU_MAP_DMA, &dma_map);
+	if (ret)
+		fprintf(stderr, "Failed to DMA map: %m\n");
+
+	return ret;
+}
+
+int dma_unmap(int container, int size, unsigned long iova)
+{
+	struct vfio_iommu_type1_dma_unmap dma_unmap = {
+		.argsz = sizeof(dma_unmap),
+		.iova = iova,
+		.size = size,
+	};
+	int ret;
+
+	ret = ioctl(container, VFIO_IOMMU_UNMAP_DMA, &dma_unmap);
+	if (ret)
+		fprintf(stderr, "Failed to DMA unmap: %m\n");
+
+	return dma_unmap.size;
+}
+
+int main(int argc, char **argv)
+{
+	int container1;
+	int group1;
+	int device1;
+	int ret;
+	void *map, *map_base;
+
+	group1 = get_group(argv[1]);
+	if (group1 < 0) {
+		fprintf(stderr, "Failed to get group for %s\n", argv[1]);
+		return group1;
+	}
+
+	fprintf(stderr, "\tGot group for %s\n", argv[1]);
+
+	container1 = get_container();
+
+	if (container1 < 0) {
+		fprintf(stderr, "Failed to get container\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tGot container\n");
+
+	if (group_set_container(group1, container1)) {
+		fprintf(stderr, "Failed to set container\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tAttached group to container\n");
+
+	if (container_set_iommu(container1)) {
+		fprintf(stderr, "Failed to set iommu\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tSet IOMMU model for container\n");
+
+	device1 = group_get_device(group1, argv[1]);
+
+	if (device1 < 0) {
+		fprintf(stderr, "Failed to get devices\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tGot device file descriptors\n");
+
+	map = mmap_device_page(device1, PROT_READ | PROT_WRITE);
+	if (map == MAP_FAILED) {
+		fprintf(stderr, "Failed to mmap device page\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tGot mmap to device %s\n", argv[1]);
+
+	map_base = map;
+	
+	map = mmap_mem_page(PROT_READ | PROT_WRITE);
+	if (map == MAP_FAILED) {
+		fprintf(stderr, "Failed to mmap memory page\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tGot memory page\n");
+
+	map = mmap_device_page(device1, PROT_READ | PROT_WRITE);
+	if (map == MAP_FAILED) {
+		fprintf(stderr, "Failed to mmap device page\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tGot mmap to device %s\n", argv[1]);
+
+	map = mmap_mem_page(PROT_READ | PROT_WRITE);
+	if (map == MAP_FAILED) {
+		fprintf(stderr, "Failed to mmap memory page\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tGot memory page\n");
+
+	if (dma_map(container1, map_base, getpagesize() * 4,
+						1024 * 1024 * 1024)) {
+		fprintf(stderr, "Failed to DMA map pages\n");
+		return -EFAULT;
+	}
+
+	fprintf(stderr, "\tDMA mapped pages into container for device %s\n",
+		argv[1]);
+
+	return 0;
+}
+
+--MP_/0bR2E+FyYp1zvNwC+5IteY.--
+
