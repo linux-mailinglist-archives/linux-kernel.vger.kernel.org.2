@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B3D349A46
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE47349A4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbhCYT35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:29:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230059AbhCYT3Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:29:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB40761A26;
-        Thu, 25 Mar 2021 19:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616700564;
-        bh=mP2NouLDus9q94+GA0gdi+r3nEQsG5iXHcIixE8bd94=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hC8YAnn8yxndfhJ9e1Cxb8w9k0Fkk54vFTDaFZ58BLD2VK2opByIRzjm/+MFra0hP
-         XOKroJa5ZZNtc05/h4eJDzyhAswNHLa/+aB9k7VGeCN+OffuoaS/oJsfxlMsnYJ4cw
-         ALQdfLkphsF9Oe0D/NVUVAq1ausScmmRY9DV3H9B0AhSzr2SFUuHaGYIX7aXKVINlt
-         lAVaHObSdO7pHnam+GRuBiE35yFr8snAC7dnNm5L/3p1q7CzwUGmA78XErDHkEAlHE
-         vDB+DyoCv2rsnM8pz+50LI3k39PbKiiVhtXyMfyyCSTnli2bC1wHygX+oFpyCiOAIJ
-         IM26YWjJ/AdYg==
-Date:   Thu, 25 Mar 2021 19:29:19 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+0b036374a865ba0efa8e@syzkaller.appspotmail.com>,
-        kernel-team@android.com, Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: [syzbot] BUG: soft lockup in do_wp_page (4)
-Message-ID: <20210325192918.GB16123@willie-the-truck>
-References: <000000000000ce4c9505bdd4a48f@google.com>
- <CACT4Y+a4S-oXsjgwDh3SmERqKFF1QbapvX6NiSpn51KRtqvTiQ@mail.gmail.com>
- <20210325182046.GA15860@willie-the-truck>
- <CACT4Y+b833yyxekjK61PpFKLmdJq0Jb6vLUo=EBYCLKr9+ksow@mail.gmail.com>
- <20210325191006.GE15860@willie-the-truck>
- <CACT4Y+Y-iROPw8bvpjzpSoUfHs+6ridjKfnLbs8Hhv9ciP7dYw@mail.gmail.com>
+        id S230153AbhCYTcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCYTbr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:31:47 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D45AC06174A;
+        Thu, 25 Mar 2021 12:31:47 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 0A0F11F46850
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Shreeya Patel <shreeya.patel@collabora.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v4 2/5] fs: Check if utf8 encoding is loaded before
+ calling utf8_unload()
+Organization: Collabora
+References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
+        <20210325000811.1379641-3-shreeya.patel@collabora.com>
+        <YFziza/VMyzEs4s1@sol.localdomain>
+Date:   Thu, 25 Mar 2021 15:31:42 -0400
+In-Reply-To: <YFziza/VMyzEs4s1@sol.localdomain> (Eric Biggers's message of
+        "Thu, 25 Mar 2021 12:21:49 -0700")
+Message-ID: <878s6bt4gx.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+Y-iROPw8bvpjzpSoUfHs+6ridjKfnLbs8Hhv9ciP7dYw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 08:24:53PM +0100, Dmitry Vyukov wrote:
-> On Thu, Mar 25, 2021 at 8:10 PM Will Deacon <will@kernel.org> wrote:
-> > On Thu, Mar 25, 2021 at 07:34:54PM +0100, Dmitry Vyukov wrote:
-> > > On Thu, Mar 25, 2021 at 7:20 PM Will Deacon <will@kernel.org> wrote:
-> > > > On Thu, Mar 18, 2021 at 08:34:16PM +0100, Dmitry Vyukov wrote:
-> > > > > On Thu, Mar 18, 2021 at 8:31 PM syzbot
-> > > > > <syzbot+0b036374a865ba0efa8e@syzkaller.appspotmail.com> wrote:
-> > > > > commit cae118b6acc309539b33339e846cbb19187c164c
-> > > > > Author: Will Deacon
-> > > > > Date:   Wed Mar 3 13:49:27 2021 +0000
-> > > > >     arm64: Drop support for CMDLINE_EXTEND
-> > > > >
-> > > > > syzbot passes lots of critical things in CONFIG_CMDLINE:
-> > > > > https://github.com/google/syzkaller/blob/c3c81c94865791469d376eba84f4a2d7763d3f71/dashboard/config/linux/upstream-arm64-kasan.config#L495
-> > > > > but also wants the bootloader args to be appended.
-> > > > > What is the way to do it now?
-> > > >
-> > > > For now, there isn't a way to do it with CONFIG_CMDLINE, so I think you can
-> > > > either:
-> > > >
-> > > >   * Revert my patch for your kernels
-> > > >   * Pass the arguments via QEMU's -append option
-> > > >   * Take a look at one of the series which should hopefully add this
-> > > >     functionality back (but with well-defined semantics) [1] [2]
-> > >
-> > > Unfortunately none of these work for syzbot (and I assume other
-> > > testing environments).
-> > >
-> > > syzbot does not support custom patches by design:
-> > > http://bit.do/syzbot#no-custom-patches
-> > > As any testing system, it tests the official trees.
-> > >
-> > > It's not humans who start these VMs, so it's not as easy as changing
-> > > the command line after typing...
-> > > There is no support for passing args specifically to qemu, syzkaller
-> > > support not just qemu, so these things are specifically localized in
-> > > the config. Additionally there is an issue of communicating all these
-> > > scattered details to developers in bug reports. Currently syzbot
-> > > reports the kernel config and it as well captures command line.
-> > >
-> > > Could you revert the patch? Is there any point in removing the
-> > > currently supported feature before the new feature lands?
-> >
-> > Well, we only just merged it (in 5.10 I think?), and the semantics of the
-> > new version will be different, so I really don't see the value in supporting
-> > both (even worse, Android has its own implementation which is different
-> > again). The timeline was: we merged CMDLINE_EXTEND, then we noticed it was
-> > broken, my fixes were rejected, so we removed the feature rather than
-> > support the broken version. In the relatively small window while it was
-> > merged, syzbot started using it :(
-> 
-> I didn't realize it was just introduced :)
-> We used CMDLINE_EXTEND on x86, and I looked for a similar option for
-> arm64 and found it.
-> 
-> > So I really think the best bet is to wait until the patches are sorted out.
-> > I think Christophe is about to spin a new version, and I reviewed his last
-> > copy, so I don't see this being far off,
-> 
-> If it's expected to be merged soon, let's wait.
+Eric Biggers <ebiggers@kernel.org> writes:
 
-Thanks, and knowing that we have a keen user helps to prioritise the review
-:)
+> On Thu, Mar 25, 2021 at 05:38:08AM +0530, Shreeya Patel wrote:
+>> utf8_unload is being called if CONFIG_UNICODE is enabled.
+>> The ifdef block doesn't check if utf8 encoding has been loaded
+>> or not before calling the utf8_unload() function.
+>> This is not the expected behavior since it would sometimes lead
+>> to unloading utf8 even before loading it.
+>> Hence, add a condition which will check if sb->encoding is NOT NULL
+>> before calling the utf8_unload().
+>> 
+>> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+>> ---
+>>  fs/ext4/super.c | 6 ++++--
+>>  fs/f2fs/super.c | 9 ++++++---
+>>  2 files changed, 10 insertions(+), 5 deletions(-)
+>> 
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index ad34a37278cd..e438d14f9a87 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -1259,7 +1259,8 @@ static void ext4_put_super(struct super_block *sb)
+>>  	fs_put_dax(sbi->s_daxdev);
+>>  	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
+>>  #ifdef CONFIG_UNICODE
+>> -	utf8_unload(sb->s_encoding);
+>> +	if (sb->s_encoding)
+>> +		utf8_unload(sb->s_encoding);
+>>  #endif
+>>  	kfree(sbi);
+>>  }
+>
+>
+> What's the benefit of this change?  utf8_unload is a no-op when passed a NULL
+> pointer; why not keep it that way?
 
-Will
+For the record, it no longer is a no-op after patch 5 of this series.
+Honestly, I prefer making it explicitly at the caller that we are not
+entering the function, like the patch does, instead of returning from it
+immediately.  Makes it more readable, IMO.
+
+-- 
+Gabriel Krisman Bertazi
