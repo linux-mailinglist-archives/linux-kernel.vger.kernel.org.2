@@ -2,70 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B9834862E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C42348630
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:03:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239516AbhCYBAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:00:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239458AbhCYBAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:00:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AB5DF619F8;
-        Thu, 25 Mar 2021 01:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616634008;
-        bh=WQS90v8cd/NZB6/cY/FZu1u1kCW9dDxmV2X0fFkJP+I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bZu3EWiw6wvQI2hgg+plg+My2+Gq/M84is+8jc9Z5iEhwtr2wdE57affJw/mJBmte
-         q1KGfbgH6WM4XJs93MnMu+YBLDStwdvKL7uk1ECAJH3uqc6hrLcvwrBn7a4Zqdwugi
-         JN1iObRlUvwYrZBLTFVw3jp6vJwPbRMiOOPzGooqv02/zv/1/S77ODW9ur2/z08cTi
-         uB87tuBCeEt6JDWMlA73guSwjlmyVTHg3XY/HLpg2lvP/V7iiFbV9UOTheLSwixZdE
-         Zcx2JraWqHPoWwcSg+shSiBrKDdk4EsMffmkXVOKLVvaeeL8UOkTEmjtNSCbQMzFTd
-         i/cPiga6uaD1Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 984936096E;
-        Thu, 25 Mar 2021 01:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230514AbhCYBCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:02:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14524 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhCYBCA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 21:02:00 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5RZk00YTzNq7B;
+        Thu, 25 Mar 2021 08:59:25 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Mar 2021 09:01:56 +0800
+Subject: Re: [PATCH 5.10 000/150] 5.10.26-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210324093435.962321672@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <6f9b4fa5-5970-e821-98f9-4d41f216ff69@huawei.com>
+Date:   Thu, 25 Mar 2021 09:01:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net/packet: Fix a typo in af_packet.c
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161663400861.21739.10283902101076452089.git-patchwork-notify@kernel.org>
-Date:   Thu, 25 Mar 2021 01:00:08 +0000
-References: <20210324061931.11012-1-wanghai38@huawei.com>
-In-Reply-To: <20210324061931.11012-1-wanghai38@huawei.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, willemb@google.com,
-        xie.he.0141@gmail.com, john.ogness@linutronix.de,
-        yonatanlinik@gmail.com, gustavoars@kernel.org,
-        tannerlove@google.com, eyal.birger@gmail.com,
-        orcohen@paloaltonetworks.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <20210324093435.962321672@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 24 Mar 2021 14:19:31 +0800 you wrote:
-> s/sequencially/sequentially/
+On 2021/3/24 17:40, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.26 release.
+> There are 150 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
->  net/packet/af_packet.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Responses should be made by Fri, 26 Mar 2021 09:33:54 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.26-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Here is the summary with links:
-  - [net-next] net/packet: Fix a typo in af_packet.c
-    https://git.kernel.org/netdev/net-next/c/0e4161d0eda5
+Tested on arm64 and x86 for 5.10.26-rc3,
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.10.y
+Version: 5.10.26-rc3
+Commit: f6bd595b6fdae1933a752242cfb77a1a0bc3117d
+Compiler: gcc version 7.3.0 (GCC)
 
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4720
+passed: 4720
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4720
+passed: 4720
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
 
