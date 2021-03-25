@@ -2,171 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34A4349523
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DCB349531
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhCYPPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:15:21 -0400
-Received: from mail-bn8nam11on2058.outbound.protection.outlook.com ([40.107.236.58]:18497
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231319AbhCYPPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:15:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CFGdgnipvncVDp8tR+0bZ+iFc0Aa/Fe74WExk5Y6kelbZdsoxJ/SIgNIK1ucAqilwPMuLlUFxr19GBq+/nuaHDKo24AHXNcDfIXpt5B57fGOUnismmvaCwBD4xIF9D35A4PEJHINH3od2i3ZQP7JPWOiw2KuPPfkNgt1ddU8bcUr2+g68MgStuGzj2UArk3QcSqsYcLmfCgE576gzRsInXaI3ObIfJRrSwBmpvGv69nCEsApLNpLTNyJFmtp3OuX5dksnjsYR3efEVAF8T9c3zPigQtsXdKe6zJAz1B675dbk1J6/BmP60z9529vPPlx43k367BKD1jaeM9wkhul1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5g8Km8Pg25YFNhsXEHye2rR2PBLTHgsNqdzcWH4TzHw=;
- b=k8ZQmQIKvvdtUPHMPT5sRiSM1Q0ThF/rUN/dHnMzwhvAuXckSQpV09Np+NAK5ZhUWo6orn0Ak5+Lt3EKXvCwIW17DSej7VxgV9Y4OVanVqtLxUOrAtW0ARSTpD+5wDJSdwRqeoFy74mnfT4ddygahLS4mZC/0yHjTKWWv8O6qzjH0JH6LQX+FCtE/c04G8+8kjs3udQrhgkP+g1GigewUK4Xplk5n7+ubUx8PPMyUdUFnQOSXGWACFSlFbs7iKF/3F88K6kTBH8F4Nv7JQ1C3Mp8hn2spyimB3veMgkY4zM5A3LxlUn7S7gYLOLItopiU9wWwT53xGvgMqZGC8mKzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5g8Km8Pg25YFNhsXEHye2rR2PBLTHgsNqdzcWH4TzHw=;
- b=BbUqMdq7pdQNUUBtAwBS479Tdk/e1rJn6O/sEY5bBqdN1ddZBBUi6HnBcAN73EeWkt+8wRO8w1DSF8jW8ZFkDz78PAyVd63JdoYE0TQ98yuPDbQ/P4AeUwYSwAWk1+L/XMF26ove+q+HIPuXgOMFs/4mAnjdA7cRT1UMdSMeLJQ=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB4707.namprd12.prod.outlook.com (2603:10b6:208:8a::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 25 Mar
- 2021 15:15:00 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
- 15:15:00 +0000
-Subject: Re: drm/ttm: switch to per device LRU lock
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Huang Rui <ray.huang@amd.com>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        spice-devel@lists.freedesktop.org
-References: <22ad0b20-b879-bcad-5c94-80c162a9da74@canonical.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <aaef965f-608a-e77d-9a4a-b91951298836@amd.com>
-Date:   Thu, 25 Mar 2021 16:14:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <22ad0b20-b879-bcad-5c94-80c162a9da74@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:72d1:2a48:a80e:e149]
-X-ClientProxiedBy: AM0PR10CA0079.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:208:15::32) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S231175AbhCYPSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:18:03 -0400
+Received: from mga01.intel.com ([192.55.52.88]:39055 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhCYPRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:17:39 -0400
+IronPort-SDR: PIogS7633jq9gojUFhAhUcrc671kWqGxebmaDFcmftHU5EWtDxealf+B7c7rYIeaj8t054ooce
+ frK8bpzpJZcg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211085087"
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="211085087"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 08:17:38 -0700
+IronPort-SDR: KxOv+9GIvQccakzc6rdWZGCrdCbd7hzZK/0rru50hCNDXbo/HIaoJoq50NQG00AOLyo2Et9ntx
+ NvUJHaLehoQw==
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="391771424"
+Received: from jeffche1-mobl.amr.corp.intel.com (HELO [10.209.73.71]) ([10.209.73.71])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 08:17:37 -0700
+Subject: Re: [RFC Part2 PATCH 04/30] x86/mm: split the physmap when adding the
+ page in RMP table
+To:     Brijesh Singh <brijesh.singh@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Cc:     ak@linux.intel.com, herbert@gondor.apana.org.au,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+References: <20210324170436.31843-1-brijesh.singh@amd.com>
+ <20210324170436.31843-5-brijesh.singh@amd.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <f6e84aa4-422b-4ab5-5fa4-f3a4a4bb2471@intel.com>
+Date:   Thu, 25 Mar 2021 08:17:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:72d1:2a48:a80e:e149] (2a02:908:1252:fb60:72d1:2a48:a80e:e149) by AM0PR10CA0079.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:15::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Thu, 25 Mar 2021 15:14:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 67f27be6-de8a-4171-8778-08d8efa0c1f3
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4707:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB4707A0F51772F086D7C926F383629@BL0PR12MB4707.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xanag8VqMuT3tGtaP8gpQd6F5RFEm9xJHf9SnpCg874dq1VRwmiFOPXeMgtRsKVFBNwHkW20ybkA8Zq4ViV5iw96f+if645/CoguXvDOlByo60Dpjyw34uASqTRMr9KEWgAIYg9LQkrNpZsmdknm0WnIPECerxxrWTT9Aeum89t53xWPp2J8/pIxr51nlONmNo4OrqD3sdiQ6oYk08L6I0aBaUCokurTc8T0UD2GzaV8LIAmSgoHxT0Y/vBrc2v1TDxa8zDFM/7IIQsNIvmP7IhApSg2iuhJupEHOpOiQD3l6du92ZnUisuYECZzlUTzLUehVF20+Q4PBOGFiLZUqTlzRFmaX3YTdzHEFDf24iYCM0aFfc2WdBuBpecbg6kqaJxko9ZpE2E/gKjiE0uOzibdEufjFis6ZDB8dmwyoHQpPfGcnZCbljNhvNmQgKdo509kboyzbaDiLHxPEPTO9qsurs7U0La2tDmHjWERSoxEKrqEPY67cde51iGkyk2FZqdYXspJpsot4yuT+ax3obZjQ7/aVfBGo2HHZO+VQ5ANfeiwsUyuHYRc0B0Jb03s/lpWe9MvcS5xsQTr2gTadxjpADVaOhAWmIjiHpSUIcyOvr+HneuNeEtaDHcJfshNH4i0RutcmgxOzSvCDGDEhqmOU8Xotwiqgt8UKRAm9vcxF2Ouy1/lNM+WW95khrxQ8iyNhsR5C+TXRKGTxsoM6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(346002)(366004)(66556008)(66946007)(2906002)(6666004)(38100700001)(6486002)(31686004)(31696002)(66476007)(52116002)(8676002)(36756003)(6916009)(83380400001)(4326008)(2616005)(54906003)(5660300002)(8936002)(86362001)(66574015)(16526019)(478600001)(316002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZlZTUDVmcEpSMXB4VGZhTmZBSHNwSmJIMWhzQzJ4NW5ibHovTkRmTFF3SW10?=
- =?utf-8?B?dEJMTXF0c2N1Ym9wcncvYXlZcTF1Zy9TSVBwcDcxWldvemFMTDBHUVp0Q3FG?=
- =?utf-8?B?cHByenN2RTVzUWdmZ3ZKaUJwT2hXaGR1cndndXRMUE92dnhWdUVtV1F6dzNM?=
- =?utf-8?B?S0drV3JyTjZQNXNPSFViVWZGeXhicW54RDBLSlRKUG41Yk5MUTg0NCtHZUlE?=
- =?utf-8?B?dERPcnM4bmdSa3EzMjdpN2VJaXp4L2k1a3JKYmQ4N2tWRDFmVlBqdzQ2WkdH?=
- =?utf-8?B?RlY3c2pGZ0FRZ1dBaXhPTUZjcnp4L0pOVzZWdUhyOHI3Yy9BU0N5QTNHY0Zo?=
- =?utf-8?B?Y2NXK1ZobzRwVS84em1randwOWN1UFVsYXFvUmJpa0h3cGovdDNnak9rV1dU?=
- =?utf-8?B?Y2RTUEpQbnFmMjNYVGxNaEg3RlV4aDVwUVdBa3M5WmZ4cTFSS1dXbTFzV3V1?=
- =?utf-8?B?Vjk1UWtWb2ZnUU9VQlhMR2liYkpVUlFIZjVZK2dvMEhhcC83eDBQWTRsWFlE?=
- =?utf-8?B?TDIybW16eUxuVFNKMzVXMlJpb3o2NWg2UFU3eXN2eUo5c1IzTG05WSs1VGNq?=
- =?utf-8?B?b2gxRm9HaHV1VDAzOWRZd2xBdHVtSURDUnVMdlhxQURrbldWaXZTaTR3cDhV?=
- =?utf-8?B?SG94WFNQeXhIVGRRbGphWVlKR3U3MnZNZ2hoSVc5Qzl3VmV3N0lqcm52UVJj?=
- =?utf-8?B?WDJEaDFPN2xGTHZHNi8yQXlIMFBuSEJJb01jakdrSVVBcE1TaVpiQytJaC91?=
- =?utf-8?B?ZlIzbkIrR3Y4YXBzbUwvUkNoMlFna0NrQ1hkVW9QdkVDRzNpVUZEU1NHVGth?=
- =?utf-8?B?MWZPMWxQZEdkQXBpQVVsTTVxRVpUSU1zMlArN2dzZzRhZmNNU095SmNQb3pD?=
- =?utf-8?B?eHJPcG43N01qbUJucHF6Z1lDKzNLWnVlMDNjWVNVSlFvaWpiTXFoZ3FmSkU3?=
- =?utf-8?B?MjcrakJBQ2c4MVFaMTZWdXVWN3VJZG5xS2pteVRaQlFUb0xJSTAyakdKVlpy?=
- =?utf-8?B?K25aMFkzYmRyR2FsU3pUd1pDbnBMeTcwdnVoN2FCcXZ0cmwvbTZCOTJXV2Y0?=
- =?utf-8?B?ODNaaExJcnZrSVNGVm4vYVo1ZjVMOXBlTjh1U2NqSzBSVTlIdUpYNjJRemNu?=
- =?utf-8?B?Mm5MVG15V2cvanZyelJVMW5ZODBCalVFTjE5c3RmcTVNdnFHTU0yMDJXSU9C?=
- =?utf-8?B?WUY3bWdtcnk5WW04VWVJaHUybjkzVEZiUEJOV29YK3djajd1U3lhVlN1K2xR?=
- =?utf-8?B?OHF2cDBhVHBacUdXcGVsK1pldFJucmUxTjJJaXUzbkptVzRzMHc3OFpnRDQ0?=
- =?utf-8?B?KzgvRDcrclVFUmZIUk9pcjlFR2ZjUjZwM1ZOTytPMHpEMmdFTHdIeGZJZE12?=
- =?utf-8?B?K2dSTGRITlg1RVdFNzNneVNPRUJNTFFHeXVvL01vSW9wbmZwd3J2K2g4Zm1P?=
- =?utf-8?B?NkNkNXFrVXhrUmg3UDdSMHA2NW5BNlphb1l1UUk2Wnh4NjFZRE1KZTRkMlYv?=
- =?utf-8?B?ZEJxNk1mQ0lISDRtMjVPZitUTHoxSEVNaHd3Z1VkOVZIOXpDTXFBWVUxZUZ3?=
- =?utf-8?B?REx1OTU1dWhJUjVTYkNiZWNTcUtWWGdjZ3lDMGg1Nlh2ZHpYNUdZN3FSb0Iv?=
- =?utf-8?B?NUR1TnE2cEg0akxqeDBsRC9NV2hyOW9YSzllaEFjL0dHM0tNc2FDRndvNW01?=
- =?utf-8?B?ODdaYkhaaGFkZEdNZUFGVG42dTJFL0Q3aVJKR3VFeThNNEFXendnQkp4UzA2?=
- =?utf-8?B?bDRlYitEYkcxMmp6WVAwSklXcVJRaWhzTlVGZlcybC9EZjFHREJ6KzN6Qkc3?=
- =?utf-8?B?dlJscXdZVHUrUitiN1RSRmZMcnVQOThScEQ1QXppcnRBbThLMkRuWWlGYVJQ?=
- =?utf-8?Q?PP4cAASUWcxGc?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67f27be6-de8a-4171-8778-08d8efa0c1f3
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 15:15:00.3172
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9vYN0UjV+Je/g0Xll1k2Fj7wTorfjV+R8/+6lWQTJaoBDDeYbzctyZYFfnH3Lr3g
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4707
+In-Reply-To: <20210324170436.31843-5-brijesh.singh@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks! Just a copy&paste issue.
+On 3/24/21 10:04 AM, Brijesh Singh wrote:
+> The spliting of the physmap is a temporary solution until we work to
+> improve the kernel page fault handler to split the pages on demand.
+> One of the disadvtange of splitting is that eventually, we will end up
+> breaking down the entire physmap unless we combine the split pages back to
+> a large page. I am open to the suggestation on various approaches we could
+> take to address this problem.
 
-Patch to fix this is on the mailing list.
+Other than suggesting that the hardware be fixed to do the fracturing
+itself?  :)
 
-Christian.
+I suspect that this code is trying to be *too* generic.  I would expect
+that very little of guest memory is actually shared with the host.  It's
+also not going to be random guest pages.  The guest and the host have to
+agree on these things, and I *think* the host is free to move the
+physical backing around once it's shared.
 
-Am 25.03.21 um 16:00 schrieb Colin Ian King:
-> Hi,
->
-> Static analysis with Coverity in linux-next has detected an issue in
-> drivers/gpu/drm/ttm/ttm_bo.c with the follow commit:
->
-> commit a1f091f8ef2b680a5184db065527612247cb4cae
-> Author: Christian König <christian.koenig@amd.com>
-> Date:   Tue Oct 6 17:26:42 2020 +0200
->
->      drm/ttm: switch to per device LRU lock
->
->      Instead of having a global lock for potentially less contention.
->
->
-> The analysis is as follows:
->
-> 617 int ttm_mem_evict_first(struct ttm_device *bdev,
-> 618                        struct ttm_resource_manager *man,
-> 619                        const struct ttm_place *place,
-> 620                        struct ttm_operation_ctx *ctx,
-> 621                        struct ww_acquire_ctx *ticket)
-> 622 {
->     1. assign_zero: Assigning: bo = NULL.
->
-> 623        struct ttm_buffer_object *bo = NULL, *busy_bo = NULL;
-> 624        bool locked = false;
-> 625        unsigned i;
-> 626        int ret;
-> 627
->
->     Explicit null dereferenced (FORWARD_NULL)2. var_deref_op:
-> Dereferencing null pointer bo.
->
-> 628        spin_lock(&bo->bdev->lru_lock);
-> 629        for (i = 0; i < TTM_MAX_BO_PRIORITY; ++i) {
->
-> The spin_lock on bo is dereferencing a null bo pointer.
->
-> Colin
+So, let's say that there a guest->host paravirt interface where the
+guest says in advance, "I want to share this page."  The host can split
+at *that* point and *only* split that one page's mapping.  Any page
+faults would occur only if the host screws up, and would result in an oops.
+
+That also gives a point where the host can say, "nope, that hugetlbfs, I
+can't split it".
 
