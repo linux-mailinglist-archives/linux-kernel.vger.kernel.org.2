@@ -2,133 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3E0348CA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D02348CA9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhCYJT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S229664AbhCYJU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbhCYJTD (ORCPT
+        with ESMTP id S229624AbhCYJUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:19:03 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31823C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:19:03 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so1263129oty.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:19:03 -0700 (PDT)
+        Thu, 25 Mar 2021 05:20:33 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49042C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:20:32 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id r20so2225217ljk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:20:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=s8gaLzfKO51sv2EAdyYwOBAav4JswI+vzWWUFTJdNYY=;
-        b=ZkxfOIKsj2q9i0xgCpJIWPTGgfJnpexFD69S2YCMtm7qz9+Vz3iFYeeL/zq8cW43eJ
-         ZxJ0JznpvlRjP0MCLr3dVA6OrS5dUJtNyIVuvegpRL22m1fimwU5A2IkRinyZfD/MOg9
-         pdBoeBEUs7bsM2BitRB3evCfcTP2TuuWcIMoc=
+        bh=cbPaGAG5CAB0O4WGdpPnr+Sds1cjZTPECOXQC9BbXNk=;
+        b=pYLbaOfTMQbkVSB6G6vGj9z8hc/1FIha2+mYDWVgN1lUtBBPkh3B91pPPnBZxGsM3V
+         a3G3UL/93yayuuxVsqJZ6VbMzCAY6QeV+5AtYzQh0EQAsdWl5WKLe2FNfpewa3lp/pFH
+         Z4YKHNPSZqmo86VhSNxkt41SJAzldNXoTqzfsLQ6r/t+8WBQZ5E/oTeEAOxfo4bSYMPN
+         /mw/+lDIpn0YyWcQdBKO+XfWyGyN3dcpWnK8LiC63JitC79Rtds6d/ZzbSM84vbd7RKS
+         rFysDCHPZhVydoK6HadZt2Dr/5PvtKsSks3mSFAwxv3xtsaaBDZCkCZThp3vvieW7l0+
+         4jTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=s8gaLzfKO51sv2EAdyYwOBAav4JswI+vzWWUFTJdNYY=;
-        b=R1bJv4VxedpM9CLDzFocxXNPUAJXZINP4KzD3Ad36Uey+z4eWAs0SQcUOMS/K2vpIh
-         U1t232e7IZ6aOm52LJLcMrbO2wZVONBqas5A6HFtcK6OsKYePi2oIhPJNhu11QQEv2Iw
-         fSVSdsdJeZ/QvCfszNDVTKevO5PFfLEWrSbHV7KUeML2BsgjbCGV91Je0KRRxA35ZNUH
-         7binlYzr6EixpIychdCcNxKBrgpGkKWog2phsueOpkcR4Rn7K/AUE8E0a6bh8caundWJ
-         ikLEL/5m83uArCxmPvOEShzIiBV1BVDGhIc0Ipz1mspHBbAHx5FVClxXga9mKs8/NAWA
-         pBhA==
-X-Gm-Message-State: AOAM530V4hMvin9eqiwYZ7hTR/a34M8L+ZcfGkooril9baeFHYvhKbZp
-        B7ilTjFPoCChHy0coIKwBw+1ujTNJ2Ed+cAarg5SMQ==
-X-Google-Smtp-Source: ABdhPJwuRBoHhQ1X/QBIV1XedaouhUZsXyPMY5vgD/AZosvW57FTBULFoCWN1cliFURZtu4WwmxByGgjBHWXJVPUY/M=
-X-Received: by 2002:a9d:845:: with SMTP id 63mr4608787oty.303.1616663942428;
- Thu, 25 Mar 2021 02:19:02 -0700 (PDT)
+        bh=cbPaGAG5CAB0O4WGdpPnr+Sds1cjZTPECOXQC9BbXNk=;
+        b=tzR/r2t9zTsr/DErbFr87WZzk/AAzmVRt8PNki9T+YDnBeK63zLIw/doNF5aQeBNKo
+         D06fj9vHE1+89KeQboQFspsTmSBa4ESy3J147eHE4/lwjKHEXXCqR7hrF9S+y6o9xEZz
+         CEwWVFIYzcwxz2KY1mdqZ8yFM5QIFpMRdp17sBM4oq3a7Kq0frOiQyfsGqi5SxD9eKnE
+         VYWuPrj2iLHZVg8Of4HaXsUBFpxVjyciWlQOwaTyO775V5LTv17i58UVecbFTqzdKbQl
+         KEKJei8OY48ojvRusI5EAziNnu5NkBluuyYBqArpmgpRx7OjY+W/fve1fzwkn0lKtSLs
+         lH/w==
+X-Gm-Message-State: AOAM532lO3uycUvtHADl1znF4DsNcKkOnHTf86R6rkoox1QgqcZskYxm
+        Fmgaa/0FmM0S1gCKlTzhvM53YtFYTb6ERq7HOjHZnX8daRHVFtqJ
+X-Google-Smtp-Source: ABdhPJybjsVb89v9uAJdjlwZfTJw+gqm3MOeXLPzPvLtf9sa/2OdqT/k6EbskWPpzRq2RgOkMBrUlwRqgv9PGwua6f0=
+X-Received: by 2002:a2e:9cb:: with SMTP id 194mr4923513ljj.438.1616664030854;
+ Thu, 25 Mar 2021 02:20:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325061901.851273-1-wanjiabing@vivo.com> <e45d6b24-5e74-17f6-eb18-c6e51fed923a@epam.com>
- <CAKMK7uEpNexmDYar36ZEX0hbHoxH3Y+_D42NqjRwAqxpiCXHRA@mail.gmail.com>
-In-Reply-To: <CAKMK7uEpNexmDYar36ZEX0hbHoxH3Y+_D42NqjRwAqxpiCXHRA@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 25 Mar 2021 10:18:51 +0100
-Message-ID: <CAKMK7uGsjv5S8eKGwmM1ErQPnx+UdxgF5c8YXewEDEyMakpEig@mail.gmail.com>
-Subject: Re: [PATCH] drivers: gpu: drm: xen_drm_front_drm_info is declared twice
-To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Wan Jiabing <wanjiabing@vivo.com>, David Airlie <airlied@linux.ie>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+References: <20210323153626.54908-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210323153626.54908-1-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 25 Mar 2021 10:20:19 +0100
+Message-ID: <CACRpkdb4BoOdVPao3_GbDdpD0b6p_P1_8_L6bUeSMt_Ez296zA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] usb: gadget: pch_udc: Replace cpu_to_le32() by lower_32_bits()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-usb <linux-usb@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kael_w@yeah.net" <kael_w@yeah.net>
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:16 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Thu, Mar 25, 2021 at 7:53 AM Oleksandr Andrushchenko
-> <Oleksandr_Andrushchenko@epam.com> wrote:
-> >
-> > Hi,
-> >
-> > On 3/25/21 8:19 AM, Wan Jiabing wrote:
-> > > struct xen_drm_front_drm_info has been declared.
-> > > Remove the duplicate.
-> > >
-> > > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> >
-> > Thank you for the patch,
-> >
-> > Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
-> >
-> > Will apply to drm-misc-next-fixes
->
-> drm-misc-next-fixes is the wrong tree, bugfixes outside of the merge
-> window belong into drm-misc-fixes. Please consult
->
-> https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.html#where-do-i-apply-my-patch
->
-> We need to hard-reset drm-misc-next-fixes back, please re-apply the
-> patches (both of them) to drm-misc-fixes. Also adding drm-misc
-> maintainers.
+On Tue, Mar 23, 2021 at 4:36 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-Also simple cleanup like this should be pushed to drm-misc-next, not
-any of the -fixes branches.
--Daniel
-
-> -Daniel
+> Either way ~0 will be in the correct byte order, hence
+> replace cpu_to_le32() by lower_32_bits(). Moreover,
+> it makes sparse happy, otherwise it complains:
 >
-> >
-> > Thank you,
-> >
-> > Oleksandr
-> >
-> > > ---
-> > >   drivers/gpu/drm/xen/xen_drm_front_conn.h | 1 -
-> > >   1 file changed, 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/xen/xen_drm_front_conn.h b/drivers/gpu/drm/xen/xen_drm_front_conn.h
-> > > index 3adacba9a23b..e5f4314899ee 100644
-> > > --- a/drivers/gpu/drm/xen/xen_drm_front_conn.h
-> > > +++ b/drivers/gpu/drm/xen/xen_drm_front_conn.h
-> > > @@ -16,7 +16,6 @@
-> > >   struct drm_connector;
-> > >   struct xen_drm_front_drm_info;
-> > >
-> > > -struct xen_drm_front_drm_info;
-> > >
-> > >   int xen_drm_front_conn_init(struct xen_drm_front_drm_info *drm_info,
-> > >                           struct drm_connector *connector);
+> .../pch_udc.c:1813:27: warning: incorrect type in assignment (different base types)
+> .../pch_udc.c:1813:27:    expected unsigned int [usertype] dataptr
+> .../pch_udc.c:1813:27:    got restricted __le32 [usertype]
 >
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> Fixes: f646cf94520e ("USB device driver of Topcliff PCH")
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
+Nice fix! Also easier to understand.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Yours,
+Linus Walleij
