@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728183496A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:20:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166B33496AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:21:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhCYQTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
+        id S229873AbhCYQUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhCYQTl (ORCPT
+        with ESMTP id S229764AbhCYQUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:19:41 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E842FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id w2so2131272ilj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
+        Thu, 25 Mar 2021 12:20:19 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A12C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:20:19 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id l15so2922416ybm.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:20:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Ny7W7nmNL0f2kx37U2KnK1Y8GB/j8Ew/zS7FydXgYaM=;
-        b=1TGzRoP4nzflQ7ef524XsMC5b59L/6l0xgoIgzNCTrNcUS1VME115hs3xwgV6mGnge
-         +9G2c/WV50zaaZiRDp1VLK4g+3BmuHfrWrShAzfVhcjyeTpAo6GHkQ36oLrx6yKN/mJw
-         MB5KPOhm/nWfft5X4tv9sPXgmBctYm1VAfqabhoFrSfOIjb9X6DhPhKYa9GzeL3QCRq9
-         oY8lL/72pOiAKGvMfeARfH+tcuAkCPWIrBpl0tkzYrAPKoUMiIuyhlUjGB844dmrE7Vp
-         GUOkyEGWhlq5NerzHwWVM4jU8scYLe7FIVStGMbq75nsXjBjf+m+ITz+HKpaKbl2GZFP
-         TwvA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fOuKmIQ20L11UPWLO5kGS488XZNnGHyBfsTGAiMlJ00=;
+        b=BcAU+OB9uKAgG1mFbnckboc98myqWiCKQAi9N++VHHqxShBZT0Wr29Z2btbS1v+V7W
+         05VgmjXppB2By/tSjPVV8J7TVtN2dzn194gyWjJCRdNLDYz8izU2TSx3zBXDSwve4UvZ
+         aMix5bmuD7bIs/cH/STPd3gQ5FQCctVTMinFSezavQTVORb+Cz5Y6Eaj+SfffM8BY58z
+         4XjIaYy3DoOi4nok6yMdGldn4vpfN2i8SgEg1kRk3IMLSpXFaIAVJpi0yUzROgnTVVWy
+         bfbtVTtkLDI1QqsFvBSrRRS9vm3psHvWqhTF5qC7nfSSYZ7mYLHjvM0WdqYAGZVvROfU
+         DpNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ny7W7nmNL0f2kx37U2KnK1Y8GB/j8Ew/zS7FydXgYaM=;
-        b=pz3JTP4Pq+Idndv+Rm9BvpO0wgRwfvknrKYcLEkA352FrSSJtWcPXPY+OrYmLqKGOB
-         wTZ5o2X8043s8GwgwsIuMWAcSwIeQiZ8u+jhi29X9X8rANblVNSdt5CvIW55RqrF3pGy
-         i5MbeSvmAsUOoOLv123OF7qrVdyrtZ7vT59SNpSHUe9Fq0N5WabXfB/yC+8OCqW0EgL0
-         gs0lGvEC8X1AHOjWfyjPt3HTiyuSpCfMRTYTGGDU6g9qS3eJnR3awCfym1c300oTwARA
-         kNu3uEcje2uoAraQtBrI3e/iA1wbGdGpDCIlbxJoydw25qlyyzlfdW6zhP+XeDCH6VbZ
-         jzcA==
-X-Gm-Message-State: AOAM5308y71yvinyhAbGm9K1/qni/GJsYGaYg1lfryJFgAvrDaxEHrEp
-        zOqvxN6uGOLuRMwvvyp8IZlO2Q==
-X-Google-Smtp-Source: ABdhPJxIiA6R39HdNvXHx3c2SyTFeZMos+ZQ8unpx6kmIyvJnm570Oh9mTJuA/yqkjHsyzOj8jW0Yw==
-X-Received: by 2002:a05:6e02:e91:: with SMTP id t17mr7396763ilj.258.1616689180302;
-        Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id 7sm931320ilx.81.2021.03.25.09.19.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 09:19:40 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in io_wq_put
-To:     syzbot <syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <0000000000007a49c105be013f72@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4befa1ec-11d8-fca8-692a-492b72b219f4@kernel.dk>
-Date:   Thu, 25 Mar 2021 10:19:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fOuKmIQ20L11UPWLO5kGS488XZNnGHyBfsTGAiMlJ00=;
+        b=RY6jSyJyGhbEIQm6dVMmRu1xycMEJSU+Im1n5d+BQ00nSiUY68F73mmD7DKcB6/Djm
+         lHOThFkaHZWOqxkU8KvPwsimFJxDgiN/hJuRH2InQe+5xyUPepcil17yXDLc65FIRo1F
+         f4tr4nuBPRAGi6rUnDmrTeJAMc3YpF4ivK1Fdy0GV77UPY+pVBolpUhpaobVfGDwtPZA
+         W8W0rndvZM4SQ3B51ikYadqM+sQFAE1pGTzlSa/uulIlsYhaEpWdjg8MBB8vodeJOfmK
+         oy9aix6xSSVy6z1c6fcszaK6BzDHwzHrW9Q0y4IOkv12ZlJzFzaeLvXS0xtxhgH3vqHH
+         JWTQ==
+X-Gm-Message-State: AOAM53263ChcHPRBz7B1j4J2ubLDMm/poPxIXEGDXyKvXPih2fTb9Sa6
+        8maSHv8933BTrKoQSQVejmRYEBy89j6oOcO2eQrFXQ==
+X-Google-Smtp-Source: ABdhPJyNkfTlzFw0oaZmJisGggR5uQ4R0412RTuJp2lStNkv6U/jRbMcTGtGz5SquKyOR4UKKYFOAKmGYyNCBJ+rdd4=
+X-Received: by 2002:a25:3741:: with SMTP id e62mr12327870yba.343.1616689218020;
+ Thu, 25 Mar 2021 09:20:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0000000000007a49c105be013f72@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
+ <161648289959.3012082.11356063123403968180@swboyd.mtv.corp.google.com>
+ <363c5b7d9baca5a010552137f80a1cf4@codeaurora.org> <161660145349.3012082.16210818967187877873@swboyd.mtv.corp.google.com>
+ <161660331135.3012082.15196616622122288364@swboyd.mtv.corp.google.com> <781df94a-b916-76eb-10c9-e95ba789f0b7@codeaurora.org>
+In-Reply-To: <781df94a-b916-76eb-10c9-e95ba789f0b7@codeaurora.org>
+From:   Doug Anderson <dianders@google.com>
+Date:   Thu, 25 Mar 2021 09:20:06 -0700
+Message-ID: <CAD=FV=URGPTCgXdj910tbJK-ydnE2eB21DGzhZQRqHKAt9vhSw@mail.gmail.com>
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
+To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/20/21 6:44 PM, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    1c273e10 Merge tag 'zonefs-5.12-rc4' of git://git.kernel.o..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13853506d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c51293a9ca630f6d
-> dashboard link: https://syzkaller.appspot.com/bug?extid=77a738a6bc947bf639ca
-> compiler:       Debian clang version 11.0.1-2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ec259ed00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13acfa62d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+77a738a6bc947bf639ca@syzkaller.appspotmail.com
+Hi,
 
-#syz test: git://git.kernel.dk/linux-block io_uring-5.12
+On Wed, Mar 24, 2021 at 8:37 PM Veerabhadrarao Badiganti
+<vbadigan@codeaurora.org> wrote:
+>
+>
+> On 3/24/2021 9:58 PM, Stephen Boyd wrote:
+> > Quoting Stephen Boyd (2021-03-24 08:57:33)
+> >> Quoting sbhanu@codeaurora.org (2021-03-24 08:23:55)
+> >>> On 2021-03-23 12:31, Stephen Boyd wrote:
+> >>>> Quoting Shaik Sajida Bhanu (2021-03-20 11:17:00)
+> >>>>> +
+> >>>>> +                       bus-width = <8>;
+> >>>>> +                       non-removable;
+> >>>>> +                       supports-cqe;
+> >>>>> +                       no-sd;
+> >>>>> +                       no-sdio;
+> >>>>> +
+> >>>>> +                       max-frequency = <192000000>;
+> >>>> Is this necessary?
+> >>> yes, to avoid lower speed modes running with high clock rates.
+> >> Is it part of the DT binding? I don't see any mention of it.
+> > Nevermind, found it in mmc-controller.yaml. But I think this is to work
+> > around some problem with the clk driver picking lower speeds than
+> > requested? That has been fixed on the clk driver side (see commit like
+> > 148ddaa89d4a "clk: qcom: gcc-sc7180: Use floor ops for the correct sdcc1
+> > clk") so ideally this property can be omitted.
+> This is a good have dt node.
+>
+> This will align clock requests between mmc core layer and sdhci-msm
+> platform driver. Say, for HS200/HS400 modes of eMMC, mmc-core layer
+> tries to set clock at 200Mhz, whereas sdhci-msm expects 192Mhz for
+> these modes. So we have to rely on clock driver floor/ceil values.
+> By having this property, mmc-core layer itself request for 192Mhz.
+>
+> Same is for SD card SDR104 mode, core layer expects clock at 208Mhz
+> whereas sdhci-msm can max operate only at 202Mhz. By having this
+> property, core layer requests only for 202Mhz for SDR104 mode.
+>
+> BTW, this helps only for max possible speed modes.
+> In case of lower-speed modes (for DDR52) we still need to rely on clock
+> floor rounding.
 
--- 
-Jens Axboe
+Just let the clock driver figure it out and remove this from the
+devicetree, please. As you said, the clock driver needs to understand
+how to round rates anyway for the non-maximum requests. Putting the
+information here just duplicates the data.
 
+-Doug
