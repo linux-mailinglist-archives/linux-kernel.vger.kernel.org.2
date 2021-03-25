@@ -2,225 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76FE9348DDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6867C348DE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhCYKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:20:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        id S230063AbhCYKWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:22:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhCYKUR (ORCPT
+        with ESMTP id S229898AbhCYKWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:20:17 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9457C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:20:14 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id p19so853788wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:20:14 -0700 (PDT)
+        Thu, 25 Mar 2021 06:22:00 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF231C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:21:59 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v4so1667346wrp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:21:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:references:in-reply-to
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=6HdnO52Awha3IyzRgXLtenextHIzKUQswyTRoTsHAfY=;
-        b=vA7pgeA5oaUtMpr5uOwzAJhGKI8jYSF7M48seY75d9EA2CptifVwvMqCWCGZvKtWtO
-         7YlGyk3EerlP/pNPPaK5SLRasVonS5jchx3MenbdmuRs7rCV1eHYlrYxCJDYEC0tng3f
-         CnI9pZof5k70NSGNNhlpmXliV1JaaZOzNlShpkDyC5rrgUguuLUhI/6ZpMe6SIqht2yE
-         l/DPYXfI0kM/6OJuFIkFGafU79lIgmZVWE5aLypa8Jy2skFhdJe2DbsbSoRueQGv88/c
-         NRKuJAc4NC3CCs+mNiNBq7J+l0fofdMjRsBBRNdGxTEUP1T+4H48sWVZVIoqvqJbSW3j
-         V2wA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2bl+T//9tmIfvggnKu8W5/72RtiA3Lc/gNcBZ4TaNT0=;
+        b=HDBMmQHjxhDfBDa8NUpbssXQOf02VdhzwNOvL6z/sjlS/ob6nTDjDFdk7Rx19nR1hs
+         SQS1m7CNqJDQUJQrPvFOlRsKplOR4HvnzIgwuwJzay62ap35JEwN/qhpACoPzMAWxfWI
+         XO4MYnlDxfTay5ZNPPLBaE8XvkwnoB0y15l1GoemjCgivvxfYqd4SqDye10bL/U1sDgq
+         2q58EeYToO3fsZktwBu5V51IOdt2ibMB1IaBNKKSb4cr+C+as3JCUfzbgdL92Xba3w9V
+         ql45gXFLeCm10iNBjvSTa/BEbpZQtQ6N4qHGai0lWRLpSVaztsL2TRhlDZbX05OJR9Pk
+         EKxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
-         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
-        bh=6HdnO52Awha3IyzRgXLtenextHIzKUQswyTRoTsHAfY=;
-        b=Xp1lhfmJrfzex+VPYoNVE1V9Q3tObkJBdYlWsLk2OP7jkoxisiym64y7kNjXsEU9Gu
-         LBxUJrb42gjDgt72WrsYvdOGKwYafhzaGuVB/s0oNADR90+dmldAfQhngpauj4+dEUAz
-         d5QlhcceODB9cLVbZI4yhHNYT30xsOfyYJVGbiCdtlRV9j5Y5XRIfL1+P9wSK6203j1t
-         YNDiGNdv0kgqdqCWsl1MinggeNXzLf1g6VIvBDWBnLHLotzZUtT5Vkuz9yx9sfu7x4uN
-         402bXSYSFHyHyE5LSt7vWS5E7gsiE+PDNoA1/cRBn/3jPlfTIlMUePQTMar1Zh2mj5vj
-         FZmQ==
-X-Gm-Message-State: AOAM532we+rdn8PfqJsckwLDAIhO2FJZ8t4jixr14eCXI8pTwTbXjw3M
-        +AzfPsCTHhAEAqfaQp7FvkioDA==
-X-Google-Smtp-Source: ABdhPJwgUpTWyyX1ExJG+CsleZ0S1w/S1bfvTk1hOaBxRdpBJOkuq8riQ3zlAFAPbPMmKCKDCJqDSw==
-X-Received: by 2002:a05:600c:2106:: with SMTP id u6mr7277079wml.55.1616667613220;
-        Thu, 25 Mar 2021 03:20:13 -0700 (PDT)
-Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
-        by smtp.gmail.com with ESMTPSA id m10sm5839232wmh.13.2021.03.25.03.20.12
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 25 Mar 2021 03:20:12 -0700 (PDT)
-From:   John Cox <jc@kynesim.co.uk>
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
-        kernel@collabora.com, linux-kernel@vger.kernel.org,
-        laurent.pinchart@ideasonboard.com, dave.stevenson@raspberrypi.org,
-        tfiga@chromium.org, Helen Koike <helen.koike@collabora.com>
-Subject: Re: [PATCH 1/2] media: videobuf2: use dmabuf size for length
-Date:   Thu, 25 Mar 2021 10:20:11 +0000
-Message-ID: <afno5g9a14fmf7tj1uq0e9pciflop2rv3k@4ax.com>
-References: <20210325001712.197837-1-helen.koike@collabora.com>
-In-Reply-To: <20210325001712.197837-1-helen.koike@collabora.com>
-User-Agent: ForteAgent/8.00.32.1272
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2bl+T//9tmIfvggnKu8W5/72RtiA3Lc/gNcBZ4TaNT0=;
+        b=BUQ6U3ciYZ331+I4eM5mHCFbzP0/vsPCEsbGtsTQpDfPuYQWAJv35524PUgB0fdnTN
+         hEFiC0aMUUTU7exV0kucss56aj0b5OIIj2TA9doXoEoNwLHzx/21G1vJWs55RT89goWb
+         24N1rKeG7Dcz2FL3YFU4jiGF3SDiuIgseu0ReXxYlB1DY8JNDXUI2f0K2tP4Iht7Ru7n
+         MayKARTBOwBLW8bYBG7EloqYt8Hql1s4+npq7+7zMvYWYos3G6mMl0qSCZUnpThQfcal
+         D9GcVzTzYc/APKEGs33h8gfbzELOLmWgwRXBu1pTIr1SdXtFEBkJw7XGNiImJNsO+8FE
+         fHcg==
+X-Gm-Message-State: AOAM531/mRwrPa+qFaOg2Qy8m1z/6z2RDWuPKGEO1TrCIBQ8jYngk4im
+        iJzsn4EhDBxifryo2Rarv8jmSA==
+X-Google-Smtp-Source: ABdhPJxdNpCXhheQbUGXl/BE6FBzNDPbXq78nFO9owhDJs9Gl4Mz6+SKSrv2in7tl4ijY3NP8j4Dxw==
+X-Received: by 2002:a05:6000:12c5:: with SMTP id l5mr7958343wrx.208.1616667718538;
+        Thu, 25 Mar 2021 03:21:58 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id g15sm5458756wmq.31.2021.03.25.03.21.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 03:21:58 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 11:21:40 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YFxkNEz3THJKzW0b@myrica>
+References: <20210318172234.3e8c34f7@jacob-builder>
+ <YFR10eeDVf5ZHV5l@myrica>
+ <20210319124645.GP2356281@nvidia.com>
+ <YFSqDNJ5yagk4eO+@myrica>
+ <20210319135432.GT2356281@nvidia.com>
+ <20210319112221.5123b984@jacob-builder>
+ <YFhiMLR35WWMW/Hu@myrica>
+ <20210324100246.4e6b8aa1@jacob-builder>
+ <20210324170338.GM2356281@nvidia.com>
+ <20210324151230.466fd47a@jacob-builder>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <20210324151230.466fd47a@jacob-builder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, Mar 24, 2021 at 03:12:30PM -0700, Jacob Pan wrote:
+> Hi Jason,
+> 
+> On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> 
+> > On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:
+> > > > Also wondering about device driver allocating auxiliary domains for
+> > > > their private use, to do iommu_map/unmap on private PASIDs (a clean
+> > > > replacement to super SVA, for example). Would that go through the
+> > > > same path as /dev/ioasid and use the cgroup of current task?  
+> > >
+> > > For the in-kernel private use, I don't think we should restrict based on
+> > > cgroup, since there is no affinity to user processes. I also think the
+> > > PASID allocation should just use kernel API instead of /dev/ioasid. Why
+> > > would user space need to know the actual PASID # for device private
+> > > domains? Maybe I missed your idea?  
+> > 
+> > There is not much in the kernel that isn't triggered by a process, I
+> > would be careful about the idea that there is a class of users that
+> > can consume a cgroup controlled resource without being inside the
+> > cgroup.
+> > 
+> > We've got into trouble before overlooking this and with something
+> > greenfield like PASID it would be best built in to the API to prevent
+> > a mistake. eg accepting a cgroup or process input to the allocator.
+> > 
+> Make sense. But I think we only allow charging the current cgroup, how about
+> I add the following to ioasid_alloc():
+> 
+> 	misc_cg = get_current_misc_cg();
+> 	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
+> 	if (ret) {
+> 		put_misc_cg(misc_cg);
+> 		return ret;
+> 	}
 
->Always use dmabuf size when considering the length of the buffer.
->Discard userspace provided length.
->Fix length check error in _verify_length(), which was handling single =
-and
->multiplanar diferently, and also not catching the case where userspace
->provides a bigger length and bytesused then the underlying buffer.
->
->Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
->Signed-off-by: Helen Koike <helen.koike@collabora.com>
->---
->
->Hello,
->
->As discussed on
->https://patchwork.linuxtv.org/project/linux-media/patch/gh5kef5bkeel3o6b=
-2dkgc2dfagu9klj4c0@4ax.com/
->
->This patch also helps the conversion layer of the Ext API patchset,
->where we are not exposing the length field.
->
->It was discussed that userspace might use a smaller length field to
->limit the usage of the underlying buffer, but I'm not sure if this is
->really usefull and just complicates things.
->
->If this is usefull, then we should also expose a length field in the Ext
->API, and document this feature properly.
->
->What do you think?
->---
-> .../media/common/videobuf2/videobuf2-core.c   | 21 ++++++++++++++++---
-> .../media/common/videobuf2/videobuf2-v4l2.c   |  8 +++----
-> include/uapi/linux/videodev2.h                |  7 +++++--
-> 3 files changed, 27 insertions(+), 9 deletions(-)
->
->diff --git a/drivers/media/common/videobuf2/videobuf2-core.c =
-b/drivers/media/common/videobuf2/videobuf2-core.c
->index 02281d13505f..2cbde14af051 100644
->--- a/drivers/media/common/videobuf2/videobuf2-core.c
->+++ b/drivers/media/common/videobuf2/videobuf2-core.c
->@@ -1205,6 +1205,7 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
->=20
-> 	for (plane =3D 0; plane < vb->num_planes; ++plane) {
-> 		struct dma_buf *dbuf =3D dma_buf_get(planes[plane].m.fd);
->+		unsigned int bytesused;
->=20
-> 		if (IS_ERR_OR_NULL(dbuf)) {
-> 			dprintk(q, 1, "invalid dmabuf fd for plane %d\n",
->@@ -1213,9 +1214,23 @@ static int __prepare_dmabuf(struct vb2_buffer =
-*vb)
-> 			goto err;
-> 		}
->=20
->-		/* use DMABUF size if length is not provided */
->-		if (planes[plane].length =3D=3D 0)
->-			planes[plane].length =3D dbuf->size;
->+		planes[plane].length =3D dbuf->size;
->+		bytesused =3D planes[plane].bytesused ?
->+			    planes[plane].bytesused : dbuf->size;
->+
->+		if (planes[plane].bytesused > planes[plane].length) {
->+			dprintk(q, 1, "bytesused is bigger then dmabuf length for plane =
-%d\n",
->+				plane);
->+			ret =3D -EINVAL;
->+			goto err;
->+		}
->+
->+		if (planes[plane].data_offset >=3D bytesused) {
->+			dprintk(q, 1, "data_offset >=3D bytesused for plane %d\n",
->+				plane);
->+			ret =3D -EINVAL;
->+			goto err;
->+		}
->=20
-> 		if (planes[plane].length < vb->planes[plane].min_length) {
-> 			dprintk(q, 1, "invalid dmabuf length %u for plane %d, minimum length=
- %u\n",
->diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c =
-b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->index 7e96f67c60ba..ffc7ed46f74a 100644
->--- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->@@ -98,14 +98,14 @@ static int __verify_length(struct vb2_buffer *vb, =
-const struct v4l2_buffer *b)
-> 	unsigned int bytesused;
-> 	unsigned int plane;
->=20
->-	if (V4L2_TYPE_IS_CAPTURE(b->type))
->+	/* length check for dmabuf is performed in _prepare_dmabuf() */
->+	if (V4L2_TYPE_IS_CAPTURE(b->type) || b->memory =3D=3D =
-VB2_MEMORY_DMABUF)
-> 		return 0;
->=20
-> 	if (V4L2_TYPE_IS_MULTIPLANAR(b->type)) {
-> 		for (plane =3D 0; plane < vb->num_planes; ++plane) {
->-			length =3D (b->memory =3D=3D VB2_MEMORY_USERPTR ||
->-				  b->memory =3D=3D VB2_MEMORY_DMABUF)
->-			       ? b->m.planes[plane].length
->+			length =3D b->memory =3D=3D VB2_MEMORY_USERPTR
->+				? b->m.planes[plane].length
-> 				: vb->planes[plane].length;
-> 			bytesused =3D b->m.planes[plane].bytesused
-> 				  ? b->m.planes[plane].bytesused : length;
->diff --git a/include/uapi/linux/videodev2.h =
-b/include/uapi/linux/videodev2.h
->index 8d15f6ccc4b4..79b3b2893513 100644
->--- a/include/uapi/linux/videodev2.h
->+++ b/include/uapi/linux/videodev2.h
->@@ -968,7 +968,9 @@ struct v4l2_requestbuffers {
-> /**
->  * struct v4l2_plane - plane info for multi-planar buffers
->  * @bytesused:		number of bytes occupied by data in the plane (payload)
->- * @length:		size of this plane (NOT the payload) in bytes
->+ * @length:		size of this plane (NOT the payload) in bytes. Filled
->+ *			by userspace for USERPTR and by the driver for DMABUF
->+ *			and MMAP.
->  * @mem_offset:		when memory in the associated struct v4l2_buffer is
->  *			V4L2_MEMORY_MMAP, equals the offset from the start of
->  *			the device memory for this plane (or is a "cookie" that
->@@ -1025,7 +1027,8 @@ struct v4l2_plane {
->  * @m:		union of @offset, @userptr, @planes and @fd
->  * @length:	size in bytes of the buffer (NOT its payload) for =
-single-plane
->  *		buffers (when type !=3D *_MPLANE); number of elements in the
->- *		planes array for multi-plane buffers
->+ *		planes array for multi-plane buffers. Filled by userspace for
->+ *		USERPTR and by the driver for DMABUF and MMAP.
->  * @reserved2:	drivers and applications must zero this field
->  * @request_fd: fd of the request that this buffer should use
->  * @reserved:	for backwards compatibility with applications that do not=
- know
+Does that allow PASID allocation during driver probe, in kernel_init or
+modprobe context?
 
-I think this does what I want. But I'm going to restate my usage desires
-and check that you agree that it covers them.
+Thanks,
+Jean
 
-I'm interested in passing compressed bitstreams to a decoder.  The size
-of these buffers can be very variable and the worst case will nearly
-always be much larger than the typical case and that size cannot be
-known in advance of usage.  It can be very wasteful to have to allocate
-buffers that are over an order of magnitude bigger than are likely to
-ever be used.  If you have a fixed pool of fixed size buffers allocated
-at the start of time this wastefulness is unavoidable, but dmabufs can
-be dynamically sized to be as big as required and so there should be no
-limitation on passing in buffers that are smaller than the maximum.  It
-also seems plausible that dmabufs that are larger than the maximum
-should be allowed as long as their bytesused is smaller or equal.
-
-As an aside, even when using dynamically sized dmabufs they are often
-way larger than the data they contain and forcing cache flushes or maps
-of their entire length rather than just the used portion is also
-wasteful.  This might be a use for the incoming size field.
-
-Regards
-
-John Cox
