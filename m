@@ -2,257 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE8C349947
+	by mail.lfdr.de (Postfix) with ESMTP id AABA2349948
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhCYSOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:14:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229670AbhCYSNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:13:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37D7561A33
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 18:13:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616696017;
-        bh=hZbr/YAUwDJRi/e7rsYBbBBiGANyECd5A/VOAhqz7wk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hJkyC37npz3ddXbIxwl22nrSkR1wgVdAr30SQdWH16OikLxFGYPUIZKB7Kgm1+IdJ
-         Wl6wmXT50eIzxF/ImTZ/27DFiiuZvLbC6rEvRss8A6jOeono+DOZAtmCiHkqGDXvLW
-         a1zW1Gpf3jhLcl2h50cg3oM5lqc+8dmy585KdNRV47qvN+vZFCQ/QZKBLMCjGpdwoE
-         nE3RBL12VeWueZnSnqrLTcXXGyw53gYPReh8cpDwH682fpZZecTis4CD+s8VG11Fxj
-         9Cj365Q7yy1+NI4l6kZtzHjJzwkVvPwEtpwDsL3nWsLMMsvukjQbmXR4gjcmtVSqWx
-         imoMtzohC4JNg==
-Received: by mail-lj1-f180.google.com with SMTP id f16so4387982ljm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 11:13:37 -0700 (PDT)
-X-Gm-Message-State: AOAM5326vucHS7IccqHxQge6aQY+VpYRXnp97W3mQt7BGfLyIezAVpas
-        LkaXwVejaOUUnu0gbueDpXSx83qSVuihijwp0CQtLA==
-X-Google-Smtp-Source: ABdhPJyx+eCOdwHkNoC4wXQ2v057iyu0Pe04Uri0ZrEq6Y2j1ldA+VoHipL2EZfdXYWLwCD4h12QT/xvPxqxP5wxNEI=
-X-Received: by 2002:a17:907:e88:: with SMTP id ho8mr11290121ejc.199.1616696004901;
- Thu, 25 Mar 2021 11:13:24 -0700 (PDT)
+        id S230059AbhCYSOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:14:16 -0400
+Received: from pio-pvt-msa1.bahnhof.se ([79.136.2.40]:56178 "EHLO
+        pio-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhCYSNk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 14:13:40 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTP id 1B9DE3F58A;
+        Thu, 25 Mar 2021 19:13:39 +0100 (CET)
+Authentication-Results: pio-pvt-msa1.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b="bOXPgDuL";
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 36X5fsGQR3cs; Thu, 25 Mar 2021 19:13:38 +0100 (CET)
+Received: by pio-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id D7A783F377;
+        Thu, 25 Mar 2021 19:13:36 +0100 (CET)
+Received: from [10.249.254.165] (unknown [192.198.151.44])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id 880B636059E;
+        Thu, 25 Mar 2021 19:13:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1616696016; bh=ccthR8+3Hk5Ox8PeQv8Va4F118+/tBSCEPzJg3VAxZs=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=bOXPgDuLyt0NMxRDWcFUkrudDGfPZJamxR9X+vliH4e3m8vKYTc82qLVR8olQEqM8
+         hcUxNVANfDq+5Nctk1NCiDllhxuzOm4XGIHFqcLQXqRHDFnlY2Vx6P+zBjxrbpuxD8
+         EqoNkJCXBXHo0CgJvGJiCHN4wBh83heMYUFA76xg=
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+ <ec99146c7abc35d16b245816aba3e9d14862e624.camel@intel.com>
+ <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
+ <YFsNRIUYrwVQanVF@phenom.ffwll.local>
+ <a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org>
+ <75423f64-adef-a2c4-8e7d-2cb814127b18@intel.com>
+ <e5199438-9a0d-2801-f9f6-ceb13d7a9c61@shipmail.org>
+ <6b0de827-738d-b3c5-fc79-8ca9047bad35@intel.com>
+ <9f789d64-940f-c728-8d5e-aab74d562fb6@shipmail.org>
+ <20210325175504.GH2356281@nvidia.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <1ed48d99-1cd9-d87b-41dd-4169afc77f70@shipmail.org>
+Date:   Thu, 25 Mar 2021 19:13:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210316065215.23768-1-chang.seok.bae@intel.com> <20210316065215.23768-6-chang.seok.bae@intel.com>
-In-Reply-To: <20210316065215.23768-6-chang.seok.bae@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 25 Mar 2021 11:13:12 -0700
-X-Gmail-Original-Message-ID: <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
-Message-ID: <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
-Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate signal
- stack overflow
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. J. Lu" <hjl.tools@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Jann Horn <jannh@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Carlos O'Donell" <carlos@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: multipart/mixed; boundary="0000000000001546ed05be605f58"
+In-Reply-To: <20210325175504.GH2356281@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000001546ed05be605f58
-Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 15, 2021 at 11:57 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+On 3/25/21 6:55 PM, Jason Gunthorpe wrote:
+> On Thu, Mar 25, 2021 at 06:51:26PM +0100, Thomas Hellström (Intel) wrote:
+>> On 3/24/21 9:25 PM, Dave Hansen wrote:
+>>> On 3/24/21 1:22 PM, Thomas Hellström (Intel) wrote:
+>>>>> We also have not been careful at *all* about how _PAGE_BIT_SOFTW* are
+>>>>> used.  It's quite possible we can encode another use even in the
+>>>>> existing bits.
+>>>>>
+>>>>> Personally, I'd just try:
+>>>>>
+>>>>> #define _PAGE_BIT_SOFTW5        57      /* available for programmer */
+>>>>>
+>>>> OK, I'll follow your advise here. FWIW I grepped for SW1 and it seems
+>>>> used in a selftest, but only for PTEs AFAICT.
+>>>>
+>>>> Oh, and we don't care about 32-bit much anymore?
+>>> On x86, we have 64-bit PTEs when running 32-bit kernels if PAE is
+>>> enabled.  IOW, we can handle the majority of 32-bit CPUs out there.
+>>>
+>>> But, yeah, we don't care about 32-bit. :)
+>> Hmm,
+>>
+>> Actually it makes some sense to use SW1, to make it end up in the same dword
+>> as the PSE bit, as from what I can tell, reading of a 64-bit pmd_t on 32-bit
+>> PAE is not atomic, so in theory a huge pmd could be modified while reading
+>> the pmd_t making the dwords inconsistent.... How does that work with fast
+>> gup anyway?
+> It loops to get an atomic 64 bit value if the arch can't provide an
+> atomic 64 bit load
+
+Hmm, ok, I see a READ_ONCE() in gup_pmd_range(), and then the resulting 
+pmd is dereferenced either in try_grab_compound_head() or 
+__gup_device_huge(), before the pmd is compared to the value the pointer 
+is currently pointing to. Couldn't those dereferences be on invalid 
+pointers?
+
+/Thomas
+
 >
-> The kernel pushes context on to the userspace stack to prepare for the
-> user's signal handler. When the user has supplied an alternate signal
-> stack, via sigaltstack(2), it is easy for the kernel to verify that the
-> stack size is sufficient for the current hardware context.
->
-> Check if writing the hardware context to the alternate stack will exceed
-> it's size. If yes, then instead of corrupting user-data and proceeding with
-> the original signal handler, an immediate SIGSEGV signal is delivered.
->
-> Instead of calling on_sig_stack(), directly check the new stack pointer
-> whether in the bounds.
->
-> While the kernel allows new source code to discover and use a sufficient
-> alternate signal stack size, this check is still necessary to protect
-> binaries with insufficient alternate signal stack size from data
-> corruption.
-
-This patch results in excessively complicated control and data flow.
-
-> -       int onsigstack = on_sig_stack(sp);
-> +       bool onsigstack = on_sig_stack(sp);
-
-Here onsigstack means "we were already using the altstack".
-
->         int ret;
->
->         /* redzone */
-> @@ -251,8 +251,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
->
->         /* This is the X/Open sanctioned signal stack switching.  */
->         if (ka->sa.sa_flags & SA_ONSTACK) {
-> -               if (sas_ss_flags(sp) == 0)
-> +               if (sas_ss_flags(sp) == 0) {
->                         sp = current->sas_ss_sp + current->sas_ss_size;
-> +                       /* On the alternate signal stack */
-> +                       onsigstack = true;
-> +               }
-
-But now onsigstack is also true if we are using the legacy path to
-*enter* the altstack.  So now it's (was on altstack) || (entering
-altstack via legacy path).
-
->         } else if (IS_ENABLED(CONFIG_X86_32) &&
->                    !onsigstack &&
->                    regs->ss != __USER_DS &&
-> @@ -272,7 +275,8 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
->          * If we are on the alternate signal stack and would overflow it, don't.
->          * Return an always-bogus address instead so we will die with SIGSEGV.
->          */
-> -       if (onsigstack && !likely(on_sig_stack(sp)))
-> +       if (onsigstack && unlikely(sp <= current->sas_ss_sp ||
-> +                                  sp - current->sas_ss_sp > current->sas_ss_size))
-
-And now we fail if ((was on altstack) || (entering altstack via legacy
-path)) && (new sp is out of bounds).
-
-
-The condition we actually want is that, if we are entering the
-altstack and we don't fit, we should fail.  This is tricky because of
-the autodisarm stuff and the possibility of nonlinear stack segments,
-so it's not even clear to me exactly what we should be doing.  I
-propose:
-
-
-
-
->                 return (void __user *)-1L;
-
-Can we please log something (if (show_unhandled_signals ||
-printk_ratelimit()) that says that we overflowed the altstack?
-
-How about:
-
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index ea794a083c44..53781324a2d3 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -237,7 +237,8 @@ get_sigframe(struct k_sigaction *ka, struct
-pt_regs *regs, size_t frame_size,
-     unsigned long math_size = 0;
-     unsigned long sp = regs->sp;
-     unsigned long buf_fx = 0;
--    int onsigstack = on_sig_stack(sp);
-+    bool already_onsigstack = on_sig_stack(sp);
-+    bool entering_altstack = false;
-     int ret;
-
-     /* redzone */
-@@ -246,15 +247,25 @@ get_sigframe(struct k_sigaction *ka, struct
-pt_regs *regs, size_t frame_size,
-
-     /* This is the X/Open sanctioned signal stack switching.  */
-     if (ka->sa.sa_flags & SA_ONSTACK) {
--        if (sas_ss_flags(sp) == 0)
-+        /*
-+         * This checks already_onsigstack via sas_ss_flags().
-+         * Sensible programs use SS_AUTODISARM, which disables
-+         * that check, and programs that don't use
-+         * SS_AUTODISARM get compatible but potentially
-+         * bizarre behavior.
-+         */
-+        if (sas_ss_flags(sp) == 0) {
-             sp = current->sas_ss_sp + current->sas_ss_size;
-+            entering_altstack = true;
-+        }
-     } else if (IS_ENABLED(CONFIG_X86_32) &&
--           !onsigstack &&
-+           !already_onsigstack &&
-            regs->ss != __USER_DS &&
-            !(ka->sa.sa_flags & SA_RESTORER) &&
-            ka->sa.sa_restorer) {
-         /* This is the legacy signal stack switching. */
-         sp = (unsigned long) ka->sa.sa_restorer;
-+        entering_altstack = true;
-     }
-
-     sp = fpu__alloc_mathframe(sp, IS_ENABLED(CONFIG_X86_32),
-@@ -267,8 +278,16 @@ get_sigframe(struct k_sigaction *ka, struct
-pt_regs *regs, size_t frame_size,
-      * If we are on the alternate signal stack and would overflow it, don't.
-      * Return an always-bogus address instead so we will die with SIGSEGV.
-      */
--    if (onsigstack && !likely(on_sig_stack(sp)))
-+    if (unlikely(entering_altstack &&
-+             (sp <= current->sas_ss_sp ||
-+              sp - current->sas_ss_sp > current->sas_ss_size))) {
-+        if (show_unhandled_signals && printk_ratelimit()) {
-+            pr_info("%s[%d] overflowed sigaltstack",
-+                tsk->comm, task_pid_nr(tsk));
-+        }
-+
-         return (void __user *)-1L;
-+    }
-
-     /* save i387 and extended state */
-     ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
-
-Apologies for whitespace damage.  I attached it, too.
-
---0000000000001546ed05be605f58
-Content-Type: text/x-patch; charset="US-ASCII"; name="stack.patch"
-Content-Disposition: attachment; filename="stack.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kmp71t930>
-X-Attachment-Id: f_kmp71t930
-
-ZGlmZiAtLWdpdCBhL2FyY2gveDg2L2tlcm5lbC9zaWduYWwuYyBiL2FyY2gveDg2L2tlcm5lbC9z
-aWduYWwuYwppbmRleCBlYTc5NGEwODNjNDQuLjUzNzgxMzI0YTJkMyAxMDA2NDQKLS0tIGEvYXJj
-aC94ODYva2VybmVsL3NpZ25hbC5jCisrKyBiL2FyY2gveDg2L2tlcm5lbC9zaWduYWwuYwpAQCAt
-MjM3LDcgKzIzNyw4IEBAIGdldF9zaWdmcmFtZShzdHJ1Y3Qga19zaWdhY3Rpb24gKmthLCBzdHJ1
-Y3QgcHRfcmVncyAqcmVncywgc2l6ZV90IGZyYW1lX3NpemUsCiAJdW5zaWduZWQgbG9uZyBtYXRo
-X3NpemUgPSAwOwogCXVuc2lnbmVkIGxvbmcgc3AgPSByZWdzLT5zcDsKIAl1bnNpZ25lZCBsb25n
-IGJ1Zl9meCA9IDA7Ci0JaW50IG9uc2lnc3RhY2sgPSBvbl9zaWdfc3RhY2soc3ApOworCWJvb2wg
-YWxyZWFkeV9vbnNpZ3N0YWNrID0gb25fc2lnX3N0YWNrKHNwKTsKKwlib29sIGVudGVyaW5nX2Fs
-dHN0YWNrID0gZmFsc2U7CiAJaW50IHJldDsKIAogCS8qIHJlZHpvbmUgKi8KQEAgLTI0NiwxNSAr
-MjQ3LDI1IEBAIGdldF9zaWdmcmFtZShzdHJ1Y3Qga19zaWdhY3Rpb24gKmthLCBzdHJ1Y3QgcHRf
-cmVncyAqcmVncywgc2l6ZV90IGZyYW1lX3NpemUsCiAKIAkvKiBUaGlzIGlzIHRoZSBYL09wZW4g
-c2FuY3Rpb25lZCBzaWduYWwgc3RhY2sgc3dpdGNoaW5nLiAgKi8KIAlpZiAoa2EtPnNhLnNhX2Zs
-YWdzICYgU0FfT05TVEFDSykgewotCQlpZiAoc2FzX3NzX2ZsYWdzKHNwKSA9PSAwKQorCQkvKgor
-CQkgKiBUaGlzIGNoZWNrcyBhbHJlYWR5X29uc2lnc3RhY2sgdmlhIHNhc19zc19mbGFncygpLgor
-CQkgKiBTZW5zaWJsZSBwcm9ncmFtcyB1c2UgU1NfQVVUT0RJU0FSTSwgd2hpY2ggZGlzYWJsZXMK
-KwkJICogdGhhdCBjaGVjaywgYW5kIHByb2dyYW1zIHRoYXQgZG9uJ3QgdXNlCisJCSAqIFNTX0FV
-VE9ESVNBUk0gZ2V0IGNvbXBhdGlibGUgYnV0IHBvdGVudGlhbGx5CisJCSAqIGJpemFycmUgYmVo
-YXZpb3IuCisJCSAqLworCQlpZiAoc2FzX3NzX2ZsYWdzKHNwKSA9PSAwKSB7CiAJCQlzcCA9IGN1
-cnJlbnQtPnNhc19zc19zcCArIGN1cnJlbnQtPnNhc19zc19zaXplOworCQkJZW50ZXJpbmdfYWx0
-c3RhY2sgPSB0cnVlOworCQl9CiAJfSBlbHNlIGlmIChJU19FTkFCTEVEKENPTkZJR19YODZfMzIp
-ICYmCi0JCSAgICFvbnNpZ3N0YWNrICYmCisJCSAgICFhbHJlYWR5X29uc2lnc3RhY2sgJiYKIAkJ
-ICAgcmVncy0+c3MgIT0gX19VU0VSX0RTICYmCiAJCSAgICEoa2EtPnNhLnNhX2ZsYWdzICYgU0Ff
-UkVTVE9SRVIpICYmCiAJCSAgIGthLT5zYS5zYV9yZXN0b3JlcikgewogCQkvKiBUaGlzIGlzIHRo
-ZSBsZWdhY3kgc2lnbmFsIHN0YWNrIHN3aXRjaGluZy4gKi8KIAkJc3AgPSAodW5zaWduZWQgbG9u
-Zykga2EtPnNhLnNhX3Jlc3RvcmVyOworCQllbnRlcmluZ19hbHRzdGFjayA9IHRydWU7CiAJfQog
-CiAJc3AgPSBmcHVfX2FsbG9jX21hdGhmcmFtZShzcCwgSVNfRU5BQkxFRChDT05GSUdfWDg2XzMy
-KSwKQEAgLTI2Nyw4ICsyNzgsMTYgQEAgZ2V0X3NpZ2ZyYW1lKHN0cnVjdCBrX3NpZ2FjdGlvbiAq
-a2EsIHN0cnVjdCBwdF9yZWdzICpyZWdzLCBzaXplX3QgZnJhbWVfc2l6ZSwKIAkgKiBJZiB3ZSBh
-cmUgb24gdGhlIGFsdGVybmF0ZSBzaWduYWwgc3RhY2sgYW5kIHdvdWxkIG92ZXJmbG93IGl0LCBk
-b24ndC4KIAkgKiBSZXR1cm4gYW4gYWx3YXlzLWJvZ3VzIGFkZHJlc3MgaW5zdGVhZCBzbyB3ZSB3
-aWxsIGRpZSB3aXRoIFNJR1NFR1YuCiAJICovCi0JaWYgKG9uc2lnc3RhY2sgJiYgIWxpa2VseShv
-bl9zaWdfc3RhY2soc3ApKSkKKwlpZiAodW5saWtlbHkoZW50ZXJpbmdfYWx0c3RhY2sgJiYKKwkJ
-ICAgICAoc3AgPD0gY3VycmVudC0+c2FzX3NzX3NwIHx8CisJCSAgICAgIHNwIC0gY3VycmVudC0+
-c2FzX3NzX3NwID4gY3VycmVudC0+c2FzX3NzX3NpemUpKSkgeworCQlpZiAoc2hvd191bmhhbmRs
-ZWRfc2lnbmFscyAmJiBwcmludGtfcmF0ZWxpbWl0KCkpIHsKKwkJCXByX2luZm8oIiVzWyVkXSBv
-dmVyZmxvd2VkIHNpZ2FsdHN0YWNrIiwKKwkJCQl0c2stPmNvbW0sIHRhc2tfcGlkX25yKHRzaykp
-OworCQl9CisKIAkJcmV0dXJuICh2b2lkIF9fdXNlciAqKS0xTDsKKwl9CiAKIAkvKiBzYXZlIGkz
-ODcgYW5kIGV4dGVuZGVkIHN0YXRlICovCiAJcmV0ID0gY29weV9mcHN0YXRlX3RvX3NpZ2ZyYW1l
-KCpmcHN0YXRlLCAodm9pZCBfX3VzZXIgKilidWZfZngsIG1hdGhfc2l6ZSk7Cg==
---0000000000001546ed05be605f58--
+> Jason
