@@ -2,74 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790E4348DA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C9EE348D83
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhCYKBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:01:43 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58849 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhCYKBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:01:12 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lPMnd-00074f-00; Thu, 25 Mar 2021 11:01:09 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 10399C1C6A; Thu, 25 Mar 2021 10:55:30 +0100 (CET)
-Date:   Thu, 25 Mar 2021 10:55:29 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ralink: mt7621: add memory detection support
-Message-ID: <20210325095529.GA5775@alpha.franken.de>
-References: <20210317055902.506773-1-ilya.lipnitskiy@gmail.com>
+        id S230079AbhCYJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCYJ4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 05:56:33 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701FAC06174A;
+        Thu, 25 Mar 2021 02:56:33 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d5d00784c9f440731cfd1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5d00:784c:9f44:731:cfd1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 57DD71EC0402;
+        Thu, 25 Mar 2021 10:56:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616666180;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vZugkItkHUxPGcT3QUZAnpg+cYnx/DrzW+0wDfNLiPw=;
+        b=UF6icgnek4xGi8in1o07q1ka9DdlhnOqBGKmkXqdcrrulx0OwsDEVflxSjOkdZW/9KOe47
+        Tjl68G+ZKPbAPGDOdsjUuiXm3rljUeybhO8iMS0W79NfMvzG4KmlAy5vAWH4PL46qcgMxs
+        CA9fMH5T5ZSoSWr9EqhkAB/wFpWsPUU=
+Date:   Thu, 25 Mar 2021 10:56:19 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
+Message-ID: <20210325095619.GC31322@zn.tnic>
+References: <20210311203206.GF5829@zn.tnic>
+ <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com>
+ <20210311214013.GH5829@zn.tnic>
+ <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com>
+ <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com>
+ <20210311235215.GI5829@zn.tnic>
+ <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
+ <20210324212139.GN5010@zn.tnic>
+ <alpine.LSU.2.11.2103241651280.9593@eggly.anvils>
+ <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210317055902.506773-1-ilya.lipnitskiy@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 10:59:02PM -0700, Ilya Lipnitskiy wrote:
-> From: Chuanhong Guo <gch981213@gmail.com>
-> 
-> mt7621 has the following memory map:
-> 0x0-0x1c000000: lower 448m memory
-> 0x1c000000-0x2000000: peripheral registers
-> 0x20000000-0x2400000: higher 64m memory
-> 
-> detect_memory_region in arch/mips/kernel/setup.c only adds the first
-> memory region and isn't suitable for 512m memory detection because
-> it may accidentally read the memory area for peripheral registers.
-> 
-> This commit adds memory detection capability for mt7621:
->   1. Add the highmem area when 512m is detected.
->   2. Guard memcmp from accessing peripheral registers:
->      This only happens when a user decided to change kernel load address
->      to 256m or higher address. Since this is a quite unusual case, we
->      just skip 512m testing and return 256m as memory size.
-> 
-> [...]
+On Wed, Mar 24, 2021 at 07:43:29PM -0700, Hugh Dickins wrote:
+> Right, after looking into it more, I completely agree with you:
+> the Kaiser series (in both 4.4-stable and 4.9-stable) was simply
+> wrong to lose that invlpg - fine in the kaiser case when we don't
+> enable Globals at all, but plain wrong in the !kaiser_enabled case.
+> One way or another, we have somehow got away with it for three years.
 
-I get
+Yeah, because there were no boxes with kaiser_enabled=0 *and* PCID
+which would set INVPCID_SINGLE. Before those, it would INVLPG in the
+!INVPCID_SINGLE case.
 
-WARNING: modpost: vmlinux.o(.text+0x132c): Section mismatch in reference from the function prom_soc_init() to the function .init.text:mt7621_memory_detect()
-The function prom_soc_init() references
-the function __init mt7621_memory_detect().
-This is often because prom_soc_init lacks a __init 
-annotation or the annotation of mt7621_memory_detect is wrong.
+Oh, btw, booting with "pci=on" "fixes" the issue too. And I tried
+reproducing this on an Intel box with "pti=off" but it booted fine
+so I'm probably missing some other aspect or triggering it there is
+harder/different due to TLB differences or whatnot.
 
-Can you please fix this ?
+And Babu triggered the same issue on a AMD baremetal yesterday.
 
-Thomas.
+> I do agree with Paolo that the PCID_ASID_KERN flush would be better
+> moved under the "if (kaiser_enabled)" now.
+
+Ok.
+
+> (And if this were ongoing development, I'd want to rewrite the
+> function altogether: but no, these old stable trees are not the place
+> for that.)
+
+Bah, it brought some very mixed memories, wading through that code
+after years. And yeah, people should stop using all these dead kernels
+already! So yeah, no, you don't want to clean up stuff there - let
+sleeping dogs lie.
+
+> Boris, may I leave both -stable fixes to you?
+> Let me know if you'd prefer me to clean up my mess.
+
+No worries, I'll take care of it.
+
+> Thanks a lot for tracking this down,
+
+Thanks for double-checking me so quickly, lemme whip up a patch.
+
+Thx.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
