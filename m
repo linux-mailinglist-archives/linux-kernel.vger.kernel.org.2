@@ -2,144 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD5F349748
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7038349745
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhCYQsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:48:10 -0400
-Received: from mail-il1-f180.google.com ([209.85.166.180]:34773 "EHLO
-        mail-il1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhCYQrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:47:49 -0400
-Received: by mail-il1-f180.google.com with SMTP id u2so2693350ilk.1;
-        Thu, 25 Mar 2021 09:47:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1O1E/xRwZme5NOHcXojTDxawVUZizZj5kgRyChIK9Ao=;
-        b=sfi7ror6M6j9nyTvcoRvlWfNcETGxKZaeUeJtcOY1SOnTUmKBhzakvuSGzT0IfPxxl
-         beEfrwA+u2bm+8jQE/+yDv6jWvXs1049j0lv7fQ7tsAELZ7qn1XJvC+BrpPn8l6IMh9G
-         nwYDhFEz4MP/6gJSO28dpkGSoWUfLfM3KliIjCXarWhClpVAK1lEIattqqlOhi+mk8yN
-         /Wunr4bdbGXJU1XknqA+zCOxhiLzqXMeWDRVklOtBXw+fWYVTb77RiA6LAUEH9/gIZ7z
-         OSqhWIW48NxO+vIna50tiFAHd7cLOw4uWrM1X01uSSWNE2yiwOXN7WlzNaghFYlhM8x3
-         uVPw==
-X-Gm-Message-State: AOAM5326XItPh+mNexOp7fxztIrmwm4alh3nCyIYoPeycmMAd3ZYtQfC
-        7Q4jaYmBBraPFHIsv9OnaBqxeVB5rg==
-X-Google-Smtp-Source: ABdhPJyYIbxtyMkD85vDHkGNFWPiFlXHfzohxPgp8c0NXKytdpBdfMpWXOPqzFN5cE03yAPqwtByVA==
-X-Received: by 2002:a05:6e02:1d9b:: with SMTP id h27mr7501787ila.279.1616690868432;
-        Thu, 25 Mar 2021 09:47:48 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id h13sm2868615ila.82.2021.03.25.09.47.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 09:47:47 -0700 (PDT)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH 8/8] docs: dt: Add DT API documentation
-Date:   Thu, 25 Mar 2021 10:47:13 -0600
-Message-Id: <20210325164713.1296407-9-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210325164713.1296407-1-robh@kernel.org>
-References: <20210325164713.1296407-1-robh@kernel.org>
+        id S230062AbhCYQsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:48:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47302 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229833AbhCYQri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 12:47:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616690857; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wUJU1ZyQiULOm2uGJekEhkNryIBe6sBb+u3KEnxtjyw=;
+        b=ixR9H4iP2iyMq+Ghj46uhoTg/mK9jfek7tT7cuk/lK9zT/cE5RnNCHVi3EVfKiHw6ShxZG
+        /9HAKYeF56YpVnE/MF+0ZhH1ulfaWsuR4VXIT8oaS9CzZMWhfulU4d39gakKEWL5i6DSle
+        LklhJ9PmjCZJ9lajmaRFRY1VdOjb+kY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DAE63AA55;
+        Thu, 25 Mar 2021 16:47:36 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 17:47:30 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFy+olsdS4iwrovN@dhcp22.suse.cz>
+References: <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+ <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
+ <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
+ <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
+ <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
+ <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
+ <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz>
+ <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
+ <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
+ <YFy8ARml4R7/snVs@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFy8ARml4R7/snVs@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel-doc for the DT APIs are not included in the documentation
-build. Add them.
+On Thu 25-03-21 17:36:22, Michal Hocko wrote:
+> If all it takes is to make pfn_to_online_page work (and my
+> previous attempt is incorrect because it should consult block rather
+> than section pfn range)
 
-Cc: Frank Rowand <frowand.list@gmail.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- Documentation/devicetree/index.rst      |  1 +
- Documentation/devicetree/kernel-api.rst | 57 +++++++++++++++++++++++++
- 2 files changed, 58 insertions(+)
- create mode 100644 Documentation/devicetree/kernel-api.rst
+This should work.
 
-diff --git a/Documentation/devicetree/index.rst b/Documentation/devicetree/index.rst
-index 70b5dcdbcf07..1a2fc8014996 100644
---- a/Documentation/devicetree/index.rst
-+++ b/Documentation/devicetree/index.rst
-@@ -11,6 +11,7 @@ Kernel Devicetree Usage
+diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+index 9697acfe96eb..e50d685be8ab 100644
+--- a/drivers/base/memory.c
++++ b/drivers/base/memory.c
+@@ -510,6 +510,23 @@ static struct memory_block *find_memory_block_by_id(unsigned long block_id)
+ 	return mem;
+ }
  
-    usage-model
-    of_unittest
-+   kernel-api
++struct page *is_vmemmap_page(unsigned long pfn)
++{
++	unsigned long nr = pfn_to_section_nr(pfn);
++	struct memory_block *mem;
++	unsigned long block_pfn;
++
++	mem = find_memory_block_by_id(memory_block_id(nr));
++	if (!mem || !mem->nr_vmemmap_pages)
++		return NULL;
++
++	block_pfn = section_nr_to_pfn(mem->start_section_nr);
++	if (pfn - block_pfn > mem->nr_vmemmap_pages)
++		return NULL;
++
++	return pfn_to_page(pfn);
++}
++
+ /*
+  * Called under device_hotplug_lock.
+  */
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 754026a9164d..760bf3ad48d5 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -304,8 +304,16 @@ struct page *pfn_to_online_page(unsigned long pfn)
+ 		return NULL;
  
- Devicetree Overlays
- ===================
-diff --git a/Documentation/devicetree/kernel-api.rst b/Documentation/devicetree/kernel-api.rst
-new file mode 100644
-index 000000000000..b7429e6ed6d5
---- /dev/null
-+++ b/Documentation/devicetree/kernel-api.rst
-@@ -0,0 +1,57 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+.. _devicetree:
-+
-+======================================
-+DeviceTree Kernel API
-+======================================
-+
-+Core functions
-+--------------
-+
-+.. kernel-doc:: drivers/of/base.c
-+   :export:
-+
-+.. kernel-doc:: include/linux/of.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/of/property.c
-+   :export:
-+
-+.. kernel-doc:: include/linux/of_graph.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/of/address.c
-+   :export:
-+
-+.. kernel-doc:: drivers/of/irq.c
-+   :export:
-+
-+.. kernel-doc:: drivers/of/fdt.c
-+   :export:
-+
-+Driver model functions
-+----------------------
-+
-+.. kernel-doc:: include/linux/of_device.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/of/device.c
-+   :export:
-+
-+.. kernel-doc:: include/linux/of_platform.h
-+   :internal:
-+
-+.. kernel-doc:: drivers/of/platform.c
-+   :export:
-+
-+Overlay and Dynamic DT functions
-+--------------------------------
-+
-+.. kernel-doc:: drivers/of/resolver.c
-+   :export:
-+
-+.. kernel-doc:: drivers/of/dynamic.c
-+   :export:
-+
-+.. kernel-doc:: drivers/of/overlay.c
-+   :export:
+ 	ms = __nr_to_section(nr);
+-	if (!online_section(ms))
++	if (!online_section(ms)) {
++		/*
++		 * vmemmap reserved space can eat up a whole section which then
++		 * never gets onlined because it doesn't contain any memory to
++		 * online.
++		 */
++		if (memmap_on_memory)
++			return is_vmemmap_page(pfn);
+ 		return NULL;
++	}
+ 
+ 	/*
+ 	 * Save some code text when online_section() +
 -- 
-2.27.0
-
+Michal Hocko
+SUSE Labs
