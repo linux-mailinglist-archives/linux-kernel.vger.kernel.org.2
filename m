@@ -2,104 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6A93493D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0511A3493E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCYON7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S230250AbhCYOSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhCYONX (ORCPT
+        with ESMTP id S229547AbhCYOSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:13:23 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56861C06174A;
-        Thu, 25 Mar 2021 07:13:20 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id n138so2758742lfa.3;
-        Thu, 25 Mar 2021 07:13:20 -0700 (PDT)
+        Thu, 25 Mar 2021 10:18:31 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3267C06174A;
+        Thu, 25 Mar 2021 07:18:29 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id ce10so3191127ejb.6;
+        Thu, 25 Mar 2021 07:18:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VAvP7bHgJVthEA6tXep78PEg1OIgagyy2ck803C3+C8=;
-        b=QmBr4F3dyAhpQDZi73XbNsQ2sHduQfoFXI2Q2/+dUFFqxAipew/I6QUdQ4Z5pNWc54
-         cIuUbg1Y0GHU5u3D/DICn8ZEkxXhVOz/AT9Lz3/lYf0MXLT9qhqSK8ta6yTphtcujRVx
-         S+p4sBF/LODeJo9pAJL8vq4+g3o6iJkkARj6XD+Sh2Vh7jz9mb8ohU/4ton2D9HDs40F
-         SrKsBKYlJAUfN1oPgmxk/YyAF0Cu3vNyIKzZI2rWosl5RXWJF94hSqIWa937GHh0xqCQ
-         sumd6+0yML8dmVr/rGB6xl1gSEWUb0ld+lMqL+cm+YLN8IoAiGKykZQDYkVCQw2NFH1F
-         Fn6g==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lMu1u0tgdpKUYdK0Y2edV56h3EG24/y18/fAyUCWVWo=;
+        b=RbjSEQfqNEssxKbJqIH/emUW3jSbq9bgkMVtMsexGztaajgm+fopQefEDxTPfEaDIb
+         FVO53ZNlI1hsSzxMiyfd+OssWBBSeB+fZTI4mw22lXVF+ItJhweULzi3KcSISHl9fc6Z
+         uyYcjwB/mOGr56dLrk9UO608Wg1Kg8l7Egglol76u7z9losnL8FdpcIQAqW1bsRXaX0U
+         qlRjkh/aG1c225VZti7tuHpguitH9L+1frIE2ZwhHSPkVsXy31F14bWaCM1Qx9S00rLx
+         rMIMXH0WQRMuKUuMEaiiyYgRmbo75EQVt9xEZGWlRyjFMTHA0UQPlet9J8xEeaFAnxhZ
+         tHJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VAvP7bHgJVthEA6tXep78PEg1OIgagyy2ck803C3+C8=;
-        b=HDZnq8MmO9LEkUXi9zLP2XnJcVKZ+6ofCWG7gDzosGeNmxPnkb+i1Bm5Lv4x87hYzG
-         qdRUKAhVWG0ms1UbPi1H3ZIFdd6yfSyJe0iAdq0XURNXXOL2SBlx6s4FNx/Rk1Wp3lCu
-         HT/wmJ/jgpZ2Ciccnjs49N3S3oskUYS9ouDZJErxtd1fqlc6414N7yGEUAh7gHqKZPAK
-         L97Q6RSMtOB9pQi+fnN3TKzs2CJDSNZHg3gv7Aw2J3gW2izgTMlKFLoFqpJpyYt0RBOi
-         qblWEKItem7OZ9TeEEdSYLX67mYGILb3/4KpcZoijZuxAOZZmQjhogQcTtitQRXif0hD
-         bV3w==
-X-Gm-Message-State: AOAM533fYmoJcUZYoe6TbSoIUEHJ2sAmufIOJknZC4kEbmKC0Puiwr3D
-        SlnTDsXkkdOJEt3WeHWjars=
-X-Google-Smtp-Source: ABdhPJxoNKK13uTKp11JZ98lxY1Zh1fctCxAwf6AVllaevDLbiGzUpnEJIgZXQcof0kFpWiNxS2ooA==
-X-Received: by 2002:ac2:520f:: with SMTP id a15mr4921497lfl.223.1616681598809;
-        Thu, 25 Mar 2021 07:13:18 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id m8sm562303lfa.274.2021.03.25.07.13.17
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=lMu1u0tgdpKUYdK0Y2edV56h3EG24/y18/fAyUCWVWo=;
+        b=owSoQKmvPLxfGvn1I/xv7A0VM9Oj2f5XOFByaA74Jq4WUbQlzlAW9yKc22iY1zIv1s
+         Qs3f+fFRvORZinkGNpC3Ghwq9+ymH65CK70OY/RDuyCNw7mC6Mqzn0Qq2TQYs5oaw8yp
+         PW/R8wMZh1mTZsDvgtaIXlOg2QRJKGnOe7yuRDRFfUz9blpmVE5DiBSH/i2ircZwZ/q6
+         kenEzOsqoEckuLw5BXr+desAB4Kmz1e42eq+KdhhunBzf/1iw2ys7DMfwOLDaMg6P1Ke
+         EBAmIiOEFqtzLfzmcBQgHQ7e6l7LUZhpJWTSjMMNon4JqkrG6nPgyvLlTpFGdeS0FJ8a
+         aUng==
+X-Gm-Message-State: AOAM533S3B2qpzuKhVd5gwL1+7uuJ3Qic6cbmJRfrgS4DfrpwJhnscam
+        f9uY5F+Fw9LRKA7jl5iy0s8=
+X-Google-Smtp-Source: ABdhPJx99KPo9V0jaqGGq7Ye9JnyXiJfOF3Cm5/DRDHl9roTqWzH+YfFFqt8ZH8gC0LIsPotgBYXig==
+X-Received: by 2002:a17:907:e8f:: with SMTP id ho15mr9886768ejc.541.1616681908525;
+        Thu, 25 Mar 2021 07:18:28 -0700 (PDT)
+Received: from gmail.com (54033286.catv.pool.telekom.hu. [84.3.50.134])
+        by smtp.gmail.com with ESMTPSA id p19sm2793453edr.57.2021.03.25.07.18.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:13:18 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 25 Mar 2021 15:13:16 +0100
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Thu, 25 Mar 2021 07:18:28 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 25 Mar 2021 15:18:20 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
- in-tree users
-Message-ID: <20210325141316.GA2558@pc638.lan>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325125001.GW1719932@casper.infradead.org>
- <20210325132556.GS3697@techsingularity.net>
- <20210325140657.GA1908@pc638.lan>
- <20210325140927.GX1719932@casper.infradead.org>
+        the arch/x86 maintainers <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on
+ SIGTRAP
+Message-ID: <20210325141820.GA1456211@gmail.com>
+References: <20210324112503.623833-1-elver@google.com>
+ <20210324112503.623833-8-elver@google.com>
+ <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net>
+ <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
+ <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net>
+ <YFtB+Ta9pkMg4C2h@hirez.programming.kicks-ass.net>
+ <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net>
+ <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
+ <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325140927.GX1719932@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 02:09:27PM +0000, Matthew Wilcox wrote:
-> On Thu, Mar 25, 2021 at 03:06:57PM +0100, Uladzislau Rezki wrote:
-> > For the vmalloc we should be able to allocating on a specific NUMA node,
-> > at least the current interface takes it into account. As far as i see
-> > the current interface allocate on a current node:
-> > 
-> > static inline unsigned long
-> > alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
-> > {
-> >     return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
-> > }
-> > 
-> > Or am i missing something?
-> 
-> You can call __alloc_pages_bulk() directly; there's no need to indirect
-> through alloc_pages_bulk_array().
->
-OK. It is accessible then.
 
---
-Vlad Rezki
+* Dmitry Vyukov <dvyukov@google.com> wrote:
+
+> On Wed, Mar 24, 2021 at 3:05 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Wed, 24 Mar 2021 at 15:01, Peter Zijlstra <peterz@infradead.org> wrote:
+> > >
+> > > One last try, I'll leave it alone now, I promise :-)
+> >
+> > This looks like it does what you suggested, thanks! :-)
+> >
+> > I'll still need to think about it, because of the potential problem
+> > with modify-signal-races and what the user's synchronization story
+> > would look like then.
+> 
+> I agree that this looks inherently racy. The attr can't be allocated
+> on stack, user synchronization may be tricky and expensive. The API
+> may provoke bugs and some users may not even realize the race problem.
+
+Yeah, so why cannot we allocate enough space from the signal handler 
+user-space stack and put the attr there, and point to it from 
+sig_info?
+
+The idea would be to create a stable, per-signal snapshot of whatever 
+the perf_attr state is at the moment the event happens and the signal 
+is generated - which is roughly what user-space wants, right?
+
+Thanks,
+
+	Ingo
