@@ -2,184 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217E7349BF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66245349BFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhCYVvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbhCYVuo (ORCPT
+        id S231220AbhCYVvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:51:49 -0400
+Received: from mail-pj1-f49.google.com ([209.85.216.49]:41584 "EHLO
+        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231209AbhCYVve (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:50:44 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D29DC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:50:44 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id i9so3398806qka.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xPDX5Uvos2ib1btitjeT/DSWvnYPpsVpIIBrEV7n3/w=;
-        b=PzOKsYkvSBTrup8k68oKcP/7M5mr/IMYCggyr9Hm87+hGOn4uL95lVBiZBBTMOkXHT
-         HvoPF6CNNcatwoKgem1fPZrwSAsRyOsgln2qBQzGjFFMdIt3pHGOP2OsBg/6EfWlN6Ja
-         d9OUfAkVRzSkl7ABsAtFHIoonu2udIrkVOYeBO2zijSc5TjfkJLYcjoMuOv82TG7UVia
-         CKdnKHs46LcMt2keeeFQeqvWcgvbk8nQhFOgqHAXMOV31h5j5LBjzvfNALECOOwnl8PF
-         jk9myShHlWo3z4p3nwHUXt3yPfILtuSDw20e4sW3DtGoHOp12hw50vVRugbvXCdvU3kb
-         VN0A==
+        Thu, 25 Mar 2021 17:51:34 -0400
+Received: by mail-pj1-f49.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so1521678pjb.0;
+        Thu, 25 Mar 2021 14:51:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xPDX5Uvos2ib1btitjeT/DSWvnYPpsVpIIBrEV7n3/w=;
-        b=tUmQjgsI0gVhtzRORm8bdwiBRUxfRggTxP6cmOHq2erH+Ju4b45wnNT/MOoCKv9vVw
-         A+y3RlLj0+j50+ZbHnVnhioCro6et5e6xXgjWNJRuh6rIZ1GZL2KzeSYXMCUgMwH2lD8
-         wCa9rAGNhS54+GUFM4dEaMxiiwVxFJa2plAMdIO4uxr5flaKBAXTfjAVNI0qqe0SXnAv
-         m2qtM1opijf5p+sSe7PcqWoBJeHaNLao0v5EszUy+CdXMGM59Lrx+Qb2j4EVpPBuj5iR
-         fxo9fs+k1iVJJaMLCdFN+QEQe9kihXTNL4zwDvn4Xp+4hPGq11hNYYZXqoe6JdzShMal
-         55VA==
-X-Gm-Message-State: AOAM532AkeIR9l7pGVP/VUlv/t/syhDtbGhrzGLkfABgP+17OWrfwdOe
-        ohxkK9oBtNH/u3LaoZLQBMWpujVA10OcbG8sQRI+yAsqoLE=
-X-Google-Smtp-Source: ABdhPJxEiUL0lGnCquAGKAV2sAwzIEC9u8umV+RueZW7xY12lFzwzA1Izpo96Rl35iofOmhm0lCrpflesYZL3xmoEEo=
-X-Received: by 2002:a37:a643:: with SMTP id p64mr9830973qke.276.1616709043374;
- Thu, 25 Mar 2021 14:50:43 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1zlx7U8zMxFMkzfA5vorsSxNONk+fwIqBOsm+WJihPg=;
+        b=K2p7OaLNES7ysHOV9EiD1OySRUBom5Qnq4S625kSHdBZbOB2BT8MTkznZrAcHe3dmq
+         H6Gs/NKdC7WFSUo5FlPryIw705We8BvG8w38lkumnqs05c4GFPHx1a/q7D6DfgJUK6Vv
+         Yq7SVYM1UYsH5a7xYH2DV5dNSC4Chmt+C7jyB6jTNsVb4nsV1OSe7JBtQ9/5+17OGwEE
+         9R1Djcpg88uAxTnvBp2tEF2tNgwpq2nrstHiBgvAZ2u7dN7YIQ1Q4En4h76Vtdks/xnU
+         cPgzFp/6sWarIUaUJTkKHTHdywnS9wnaxzW+euQcewOK1uyOd9v6GLWb68Y15/wL1V1z
+         FXHQ==
+X-Gm-Message-State: AOAM530nhIWGYmuPU5qnsq8QQSAzWIgPY/OCL0oPE+ITjafZXI0pJoPC
+        7Mr6IpG8KKoOGUOfvoWTjW8=
+X-Google-Smtp-Source: ABdhPJznDSZthWmbnsJAFrBGlFNhVvQtF5BmGswKFtsmyQpJntQg/FdFYUaEoqmBK2DEJVkGjJZ3hA==
+X-Received: by 2002:a17:90a:3809:: with SMTP id w9mr10481793pjb.79.1616709093981;
+        Thu, 25 Mar 2021 14:51:33 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:c5af:7b7c:edac:ee67? ([2601:647:4000:d7:c5af:7b7c:edac:ee67])
+        by smtp.gmail.com with ESMTPSA id z25sm6685401pfn.37.2021.03.25.14.51.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 14:51:33 -0700 (PDT)
+Subject: Re: [PATCH v2 0/8] ensure bios aren't split in middle of crypto data
+ unit
+To:     Satya Tangirala <satyat@google.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>
+References: <20210325212609.492188-1-satyat@google.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <e0248d93-e880-6a6d-92d6-dfcfb6f9d661@acm.org>
+Date:   Thu, 25 Mar 2021 14:51:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210323035706.572953-1-joshdon@google.com> <20210324112739.GO15768@suse.de>
-In-Reply-To: <20210324112739.GO15768@suse.de>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 25 Mar 2021 14:50:32 -0700
-Message-ID: <CABk29Nv7qwWcn4nUe_cxH-pJnppUVjHan+f-iHc8hEyPJ37jxA@mail.gmail.com>
-Subject: Re: [PATCH v2] sched: Warn on long periods of pending need_resched
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        David Rientjes <rientjes@google.com>,
-        Oleg Rombakh <olegrom@google.com>, linux-doc@vger.kernel.org,
-        Paul Turner <pjt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210325212609.492188-1-satyat@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 4:27 AM Mel Gorman <mgorman@suse.de> wrote:
->
-> I'm not a fan of the name. I know other sysctls have _enabled in the
-> name but it's redundant. If you say the name out loud, it sounds weird.
-> I would suggest an alternative but see below.
+On 3/25/21 2:26 PM, Satya Tangirala wrote:
+> When a bio has an encryption context, its size must be aligned to its
+> crypto data unit size. A bio must not be split in the middle of a data
+> unit. Currently, bios are split at logical block boundaries [...]
 
-Now using the version rebased by Peter; this control has gone away and
-we have simply a scheduling feature "LATENCY WARN"
+Hi Satya,
 
-> I suggest semantics and naming similar to hung_task_warnings
-> because it's sortof similar. resched_latency_warnings would combine
-> resched_latency_warn_enabled and resched_latency_warn_once. 0 would mean
-> "never warn", -1 would mean always warn and any positive value means
-> "warn X number of times".
+Are you sure that the block layer core splits bios at logical block
+boundaries? Commit 9cc5169cd478 ("block: Improve physical block
+alignment of split bios") should have changed the behavior from
+splitting at logical block boundaries into splitting at physical block
+boundaries. Without having looked at this patch series, can the same
+effect be achieved by reporting the crypto data unit size as the
+physical block size?
 
-See above. I'm happy with the enabled bit being toggled separately by
-a sched feature; the warn_once behavior is not overloaded with the
-enabling/disabling. Also, I don't see value in "warn X number of
-times", given the warning is rate limited anyway.
+Thanks,
 
-> > +int sysctl_resched_latency_warn_ms = 100;
-> > +int sysctl_resched_latency_warn_once = 1;
->
-> Use __read_mostly
-
-Good point, done.
-
-> > +#ifdef CONFIG_SCHED_DEBUG
-> > +static u64 resched_latency_check(struct rq *rq)
-> > +{
-> > +     int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
-> > +     u64 need_resched_latency, now = rq_clock(rq);
-> > +     static bool warned_once;
-> > +
-> > +     if (sysctl_resched_latency_warn_once && warned_once)
-> > +             return 0;
-> > +
->
-> That is a global variable that can be modified in parallel and I do not
-> think it's properly locked (scheduler_tick is holding rq lock which does
-> not protect this).
->
-> Consider making resched_latency_warnings atomic and use
-> atomic_dec_if_positive. If it drops to zero in this path, disable the
-> static branch.
->
-> That said, it may be overkill. hung_task_warnings does not appear to have
-> special protection that prevents it going to -1 or lower values by accident
-> either. Maybe it can afford to be a bit more relaxed because a system that
-> is spamming hung task warnings is probably dead or might as well be dead.
-
-There's no real issue if we race over modification to that sysctl.
-This is intentionally not more strongly synchronized for that reason.
-
-> > +     if (!need_resched() || WARN_ON_ONCE(latency_warn_ms < 2))
-> > +             return 0;
-> > +
->
-> Why is 1ms special? Regardless of the answer, if the sysctl should not
-> be 1 then the user should not be able to set it to 1.
-
-Yea let me change that to !latency_warn_ms so it isn't HZ specific.
-
->
-> > +     /* Disable this warning for the first few mins after boot */
-> > +     if (now < resched_boot_quiet_sec * NSEC_PER_SEC)
-> > +             return 0;
-> > +
->
-> Check system_state == SYSTEM_BOOTING instead?
-
-Yea, that might be better; let me test that.
-
-> > +     if (!rq->last_seen_need_resched_ns) {
-> > +             rq->last_seen_need_resched_ns = now;
-> > +             rq->ticks_without_resched = 0;
-> > +             return 0;
-> > +     }
-> > +
-> > +     rq->ticks_without_resched++;
-> > +     need_resched_latency = now - rq->last_seen_need_resched_ns;
-> > +     if (need_resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
-> > +             return 0;
-> > +
->
-> The naming need_resched_latency implies it's a boolean but it's not.
-> Maybe just resched_latency?
->
-> Similarly, resched_latency_check implies it returns a boolean but it
-> returns an excessive latency value. At this point I've been reading the
-> patch for a long time so I've ran out of naming suggestions :)
-
-The "need_" part does confuse it a bit; I reworded these to hopefully
-make it more clear.
-
-> > +     warned_once = true;
-> > +
-> > +     return need_resched_latency;
-> > +}
-> > +
->
-> I note that you split when a warning is needed and printing the warning
-> but it's not clear why. Sure you are under the RQ lock but there are other
-> places that warn under the RQ lock. I suppose for consistency it could
-> use SCHED_WARN_ON even though all this code is under SCHED_DEBUG already.
-
-We had seen a circular lock dependency warning (console_sem, pi lock,
-rq lock), since printing might need to wake a waiter. However, I do
-see plenty of warns under rq->lock, so maybe I missed a patch to
-address this?
+Bart.
