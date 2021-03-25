@@ -2,223 +2,440 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3879234870A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F84D34870B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235136AbhCYCoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 22:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbhCYCns (ORCPT
+        id S235172AbhCYCp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 22:45:26 -0400
+Received: from mail-lf1-f54.google.com ([209.85.167.54]:38406 "EHLO
+        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235357AbhCYCoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 22:43:48 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0912C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 19:43:46 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id by2so449274qvb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 19:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=KPgNseh8yYhheSsYQuED4Rz4kqyVes0PKuxx8Zc5Pzk=;
-        b=BdIRT1S5lkykj3PvB/gG74m7dcanhvDfxsY84m9i/OkWLHWNw6KkyuuSD1aE/8W0nn
-         hnAXpKxLL2vzXDs6ek8vgALNt0Xj2b+Zh52/nTXHCKdl+jUPO8X67v40EPD2WSyallrs
-         BKUvrT+pexeE2vRqu+JPiUZT1Aha1NBgQqQDsezN8OVmrplKEzfFId0XzsOsXy7cu84d
-         Fifq1EhNAZyhoCgUH6qCNUmfXXJYhxuPpYBHwd7lJ6f0teYtEcmCOp//h18PWoSXGpu+
-         eYlTvIPFjjWXxFXBBEdfZ5z2zx2mXgAR7FSgGEP0M2/Eu2rXAEe6AfxFlMOe9NFZFCus
-         3s4g==
+        Wed, 24 Mar 2021 22:44:55 -0400
+Received: by mail-lf1-f54.google.com with SMTP id v15so314431lfq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 19:44:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=KPgNseh8yYhheSsYQuED4Rz4kqyVes0PKuxx8Zc5Pzk=;
-        b=VCTAnjVqOayHw0Z1VpmP66yVqBKThCXo+h8r4DLHtxEiM3acRyG36DmcUYTI1/ZTda
-         KqlSmq5kRoRUyFJE68SPCac2A2OGsF+5bBKlFS9MdUePGp8neTcDQxXflacGsJtc+UZK
-         NGfhZW8nMdGH8dihxqbieTjS/YQhpBENWWQ9tEJVjjVC4XDPHT6SrUVhARSzsRJ1V12L
-         VmVwEpaUHn+Ox9uM+X4l9mepiU4GcuM8wmyEuuR9+CYGWYjMbURZJXtb7lqyEzdNSylJ
-         PW2w4PMCuyEG+T171+OOGaOvwWH396RpsPfkOhk2M1AFUfHrlcvcIIf9988OH+6mKbRk
-         Ougw==
-X-Gm-Message-State: AOAM531x3ncEcPkZ080GPpM4vDmPol8CVr/TPZrByxbBGkIPj6/RrIUh
-        6C8ujRO1hu9K5GBOsu16bZ2sbg==
-X-Google-Smtp-Source: ABdhPJwcyeXHhO8Q3sUImkphN8YEfHa9SN9UJo5Q0zYpmr3RNeLZ8JXaXB7Mf8ncQ4rzefPHRXy05w==
-X-Received: by 2002:ad4:584d:: with SMTP id de13mr6421434qvb.17.1616640225605;
-        Wed, 24 Mar 2021 19:43:45 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id b1sm3243761qkk.117.2021.03.24.19.43.43
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Wed, 24 Mar 2021 19:43:45 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 19:43:29 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Borislav Petkov <bp@alien8.de>
-cc:     Hugh Dickins <hughd@google.com>, Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH v6 00/12] SVM cleanup and INVPCID feature support
-In-Reply-To: <alpine.LSU.2.11.2103241651280.9593@eggly.anvils>
-Message-ID: <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
-References: <78cc2dc7-a2ee-35ac-dd47-8f3f8b62f261@redhat.com> <d7c6211b-05d3-ec3f-111a-f69f09201681@amd.com> <20210311200755.GE5829@zn.tnic> <20210311203206.GF5829@zn.tnic> <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com> <20210311214013.GH5829@zn.tnic>
- <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com> <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com> <20210311235215.GI5829@zn.tnic> <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com> <20210324212139.GN5010@zn.tnic> <alpine.LSU.2.11.2103241651280.9593@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lMAYxqeDZR7ASvNFPmICMdWuP0no9TDz7dvV3tmPFXY=;
+        b=bDaxDI9fTpogWBUjsed2CPopjXY5yPK6xa9ydcqTzkb0gspiWS5soLNNPcp4Uzo5Tc
+         Svxin0HMYJ3u2GbJiw0cFd0gtQzrr5KBfmwWIry2H5MNkYutErfpV0YJ0WdYlmp0pS9S
+         WxAKZ/XodIf1TXv0OSnvwsTz+JMV5Lnxx0Zu1sK2fg6Gyo/vNS03DqACzpYipLhJkqXY
+         7aiw0ZbLTca8Fc3RMFBpdols+IjaxISGT/EjUXV7C8gh+uPhjQRWluM5pVXliHUMPMhr
+         HSrRpDZi7m11LrEul/uLzwbqbCwSbXDefR8bEJFy4dR1rN3ibUoFUsef2ACQZWVx7gPw
+         MhqQ==
+X-Gm-Message-State: AOAM530wH9pP5hj1ua9uo2WcL9cbGfqBENCl3LbY3DdPbqK2V2SUVjQY
+        vkBOsPkEu3QAIXVjD5g5USLui1zwvFOWL3vFM0w=
+X-Google-Smtp-Source: ABdhPJxiM7nv8y1BdUP1mQLyEZAwD/nDbGMHuTo58LeLboqCzyu3qHghVnpytpyd0dH5T+F94B8Rj4/uoNhvTnVI31Y=
+X-Received: by 2002:ac2:51b4:: with SMTP id f20mr3706153lfk.509.1616640291938;
+ Wed, 24 Mar 2021 19:44:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210323162156.1340260-1-namhyung@kernel.org> <20210323162156.1340260-2-namhyung@kernel.org>
+ <C0AF9F1F-F525-4047-AD89-F75E3FEFC215@fb.com>
+In-Reply-To: <C0AF9F1F-F525-4047-AD89-F75E3FEFC215@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 25 Mar 2021 11:44:40 +0900
+Message-ID: <CAM9d7cjwj_0eujj5YUd+XG=je7Yjei00L228mzSo7ZrH4U0qug@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf/core: Share an event with multiple cgroups
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021, Hugh Dickins wrote:
-> On Wed, 24 Mar 2021, Borislav Petkov wrote:
-> 
-> > Ok,
-> > 
-> > some more experimenting Babu and I did lead us to:
-> > 
+Hi Song,
+
+Thanks for your review!
+
+On Thu, Mar 25, 2021 at 9:56 AM Song Liu <songliubraving@fb.com> wrote:
+> > On Mar 23, 2021, at 9:21 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > As we can run many jobs (in container) on a big machine, we want to
+> > measure each job's performance during the run.  To do that, the
+> > perf_event can be associated to a cgroup to measure it only.
+> >
+> > However such cgroup events need to be opened separately and it causes
+> > significant overhead in event multiplexing during the context switch
+> > as well as resource consumption like in file descriptors and memory
+> > footprint.
+> >
+> > As a cgroup event is basically a cpu event, we can share a single cpu
+> > event for multiple cgroups.  All we need is a separate counter (and
+> > two timing variables) for each cgroup.  I added a hash table to map
+> > from cgroup id to the attached cgroups.
+> >
+> > With this change, the cpu event needs to calculate a delta of event
+> > counter values when the cgroups of current and the next task are
+> > different.  And it attributes the delta to the current task's cgroup.
+> >
+> > This patch adds two new ioctl commands to perf_event for light-weight
+> > cgroup event counting (i.e. perf stat).
+> >
+> > * PERF_EVENT_IOC_ATTACH_CGROUP - it takes a buffer consists of a
+> >     64-bit array to attach given cgroups.  The first element is a
+> >     number of cgroups in the buffer, and the rest is a list of cgroup
+> >     ids to add a cgroup info to the given event.
+> >
+> > * PERF_EVENT_IOC_READ_CGROUP - it takes a buffer consists of a 64-bit
+> >     array to get the event counter values.  The first element is size
+> >     of the array in byte, and the second element is a cgroup id to
+> >     read.  The rest is to save the counter value and timings.
+> >
+> > This attaches all cgroups in a single syscall and I didn't add the
+> > DETACH command deliberately to make the implementation simple.  The
+> > attached cgroup nodes would be deleted when the file descriptor of the
+> > perf_event is closed.
+> >
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > > ---
-> > diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-> > index f5ca15622dc9..259aa4889cad 100644
-> > --- a/arch/x86/include/asm/tlbflush.h
-> > +++ b/arch/x86/include/asm/tlbflush.h
-> > @@ -250,6 +250,9 @@ static inline void __native_flush_tlb_single(unsigned long addr)
-> >  	 */
-> >  	if (kaiser_enabled)
-> >  		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
-> > +	else
-> > +		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
+> > include/linux/perf_event.h      |  22 ++
+> > include/uapi/linux/perf_event.h |   2 +
+> > kernel/events/core.c            | 474 ++++++++++++++++++++++++++++++--
+> > 3 files changed, 471 insertions(+), 27 deletions(-)
+> >
+> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> > index 3f7f89ea5e51..2760f3b07534 100644
+> > --- a/include/linux/perf_event.h
+> > +++ b/include/linux/perf_event.h
+> > @@ -771,6 +771,18 @@ struct perf_event {
+> >
+> > #ifdef CONFIG_CGROUP_PERF
+> >       struct perf_cgroup              *cgrp; /* cgroup event is attach to */
 > > +
-> >  	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-> >  }
-> > 
-> > applied on the guest kernel which fixes the issue. And let me add Hugh
-> > who did that PCID stuff at the time. So lemme summarize for Hugh and to
-> > ask him nicely to sanity-check me. :-)
-> 
-> Just a brief interim note to assure you that I'm paying attention,
-> but wow, it's a long time since I gave any thought down here!
-> Trying to page it all back in...
-> 
-> I see no harm in your workaround if it works, but it's not as if
-> this is a previously untried path: so I'm suspicious how an issue
-> here with Globals could have gone unnoticed for so long, and need
-> to understand it better.
-
-Right, after looking into it more, I completely agree with you:
-the Kaiser series (in both 4.4-stable and 4.9-stable) was simply
-wrong to lose that invlpg - fine in the kaiser case when we don't
-enable Globals at all, but plain wrong in the !kaiser_enabled case.
-One way or another, we have somehow got away with it for three years.
-
-I do agree with Paolo that the PCID_ASID_KERN flush would be better
-moved under the "if (kaiser_enabled)" now. (And if this were ongoing
-development, I'd want to rewrite the function altogether: but no,
-these old stable trees are not the place for that.)
-
-Boris, may I leave both -stable fixes to you?
-Let me know if you'd prefer me to clean up my mess.
-
-Thanks a lot for tracking this down,
-Hugh
-
-> > 
-> > Basically, you have an AMD host which supports PCID and INVPCID and you
-> > boot on it a 4.9 guest. It explodes like the panic below.
-> > 
-> > What fixes it is this:
-> > 
-> > diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-> > index f5ca15622dc9..259aa4889cad 100644
-> > --- a/arch/x86/include/asm/tlbflush.h
-> > +++ b/arch/x86/include/asm/tlbflush.h
-> > @@ -250,6 +250,9 @@ static inline void __native_flush_tlb_single(unsigned long addr)
-> >  	 */
-> >  	if (kaiser_enabled)
-> >  		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
-> > +	else
-> > +		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
+> > +     /* to share an event for multiple cgroups */
+> > +     struct hlist_head               *cgrp_node_hash;
+> > +     struct perf_cgroup_node         *cgrp_node_entries;
+> > +     int                             nr_cgrp_nodes;
+> > +     int                             cgrp_node_hash_bits;
 > > +
-> >  	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-> >  }
-> > 
-> > ---
-> > 
-> > and the reason why it does, IMHO, is because on AMD, kaiser_enabled is
-> > false because AMD is not affected by Meltdown, which means, there's no
-> > user/kernel pagetables split.
-> > 
-> > And that also means, you have global TLB entries which means that if you
-> > look at that __native_flush_tlb_single() function, it needs to flush
-> > global TLB entries on CPUs with X86_FEATURE_INVPCID_SINGLE by doing an
-> > INVLPG in the kaiser_enabled=0 case. Errgo, the above hunk.
-> > 
-> > But I might be completely off here thus this note...
-> > 
-> > Thoughts?
-> > 
-> > Thx.
-> > 
-> > 
-> > [    1.235726] ------------[ cut here ]------------
-> > [    1.237515] kernel BUG at /build/linux-dqnRSc/linux-4.9.228/arch/x86/kernel/alternative.c:709!
-> > [    1.240926] invalid opcode: 0000 [#1] SMP
-> > [    1.243301] Modules linked in:
-> > [    1.244585] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.0-13-amd64 #1 Debian 4.9.228-1
-> > [    1.247657] Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > [    1.251249] task: ffff909363e94040 task.stack: ffffa41bc0194000
-> > [    1.253519] RIP: 0010:[<ffffffff8fa2e40c>]  [<ffffffff8fa2e40c>] text_poke+0x18c/0x240
-> > [    1.256593] RSP: 0018:ffffa41bc0197d90  EFLAGS: 00010096
-> > [    1.258657] RAX: 000000000000000f RBX: 0000000001020800 RCX: 00000000feda3203
-> > [    1.261388] RDX: 00000000178bfbff RSI: 0000000000000000 RDI: ffffffffff57a000
-> > [    1.264168] RBP: ffffffff8fbd3eca R08: 0000000000000000 R09: 0000000000000003
-> > [    1.266983] R10: 0000000000000003 R11: 0000000000000112 R12: 0000000000000001
-> > [    1.269702] R13: ffffa41bc0197dcf R14: 0000000000000286 R15: ffffed1c40407500
-> > [    1.272572] FS:  0000000000000000(0000) GS:ffff909366300000(0000) knlGS:0000000000000000
-> > [    1.275791] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    1.278032] CR2: 0000000000000000 CR3: 0000000010c08000 CR4: 00000000003606f0
-> > [    1.280815] Stack:
-> > [    1.281630]  ffffffff8fbd3eca 0000000000000005 ffffa41bc0197e03 ffffffff8fbd3ecb
-> > [    1.284660]  0000000000000000 0000000000000000 ffffffff8fa2e835 ccffffff8fad4326
-> > [    1.287729]  1ccd0231874d55d3 ffffffff8fbd3eca ffffa41bc0197e03 ffffffff90203844
-> > [    1.290852] Call Trace:
-> > [    1.291782]  [<ffffffff8fbd3eca>] ? swap_entry_free+0x12a/0x300
-> > [    1.294900]  [<ffffffff8fbd3ecb>] ? swap_entry_free+0x12b/0x300
-> > [    1.297267]  [<ffffffff8fa2e835>] ? text_poke_bp+0x55/0xe0
-> > [    1.299473]  [<ffffffff8fbd3eca>] ? swap_entry_free+0x12a/0x300
-> > [    1.301896]  [<ffffffff8fa2b64c>] ? arch_jump_label_transform+0x9c/0x120
-> > [    1.304557]  [<ffffffff9073e81f>] ? set_debug_rodata+0xc/0xc
-> > [    1.306790]  [<ffffffff8fb81d92>] ? __jump_label_update+0x72/0x80
-> > [    1.309255]  [<ffffffff8fb8206f>] ? static_key_slow_inc+0x8f/0xa0
-> > [    1.311680]  [<ffffffff8fbd7a57>] ? frontswap_register_ops+0x107/0x1d0
-> > [    1.314281]  [<ffffffff9077078c>] ? init_zswap+0x282/0x3f6
-> > [    1.316547]  [<ffffffff9077050a>] ? init_frontswap+0x8c/0x8c
-> > [    1.318784]  [<ffffffff8fa0223e>] ? do_one_initcall+0x4e/0x180
-> > [    1.321067]  [<ffffffff9073e81f>] ? set_debug_rodata+0xc/0xc
-> > [    1.323366]  [<ffffffff9073f08d>] ? kernel_init_freeable+0x16b/0x1ec
-> > [    1.325873]  [<ffffffff90011d50>] ? rest_init+0x80/0x80
-> > [    1.327989]  [<ffffffff90011d5a>] ? kernel_init+0xa/0x100
-> > [    1.330092]  [<ffffffff9001f424>] ? ret_from_fork+0x44/0x70
-> > [    1.332311] Code: 00 0f a2 4d 85 e4 74 4a 0f b6 45 00 41 38 45 00 75 19 31 c0 83 c0 01 48 63 d0 49 39 d4 76 33 41 0f b6 4c 15 00 38 4c 15 00 74 e9 <0f> 0b 48 89 ef e8 da d6 19 00 48 8d bd 00 10 00 00 48 89 c3 e8 
-> > [    1.342818] RIP  [<ffffffff8fa2e40c>] text_poke+0x18c/0x240
-> > [    1.345859]  RSP <ffffa41bc0197d90>
-> > [    1.347285] ---[ end trace 0a1c5ab5eb16de89 ]---
-> > [    1.349169] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> > [    1.349169] 
-> > [    1.352885] Kernel Offset: 0xea00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> > [    1.357039] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> > [    1.357039] 
-> > 
-> > 
-> > -- 
-> > Regards/Gruss,
-> >     Boris.
-> > 
-> > https://people.kernel.org/tglx/notes-about-netiquette
+> > +     struct list_head                cgrp_node_entry;
+> > +
+> > +     u64                             cgrp_node_count;
+> > +     u64                             cgrp_node_time_enabled;
+> > +     u64                             cgrp_node_time_running;
+>
+> A comment saying the above values are from previous reading would be helpful.
+
+Sure, will add.
+
+>
+> > #endif
+> >
+> > #ifdef CONFIG_SECURITY
+> > @@ -780,6 +792,14 @@ struct perf_event {
+> > #endif /* CONFIG_PERF_EVENTS */
+> > };
+> >
+> > +struct perf_cgroup_node {
+> > +     struct hlist_node               node;
+> > +     u64                             id;
+> > +     u64                             count;
+> > +     u64                             time_enabled;
+> > +     u64                             time_running;
+> > +     u64                             padding[2];
+>
+> Do we really need the padding? For cache line alignment?
+
+Yeah I was thinking about it.  It seems I need to use the
+___cacheline_aligned macro instead.
+
+>
+> > +};
+> >
+> > struct perf_event_groups {
+> >       struct rb_root  tree;
+> > @@ -843,6 +863,8 @@ struct perf_event_context {
+> >       int                             pin_count;
+> > #ifdef CONFIG_CGROUP_PERF
+> >       int                             nr_cgroups;      /* cgroup evts */
+> > +     struct list_head                cgrp_node_list;
+> > +     struct list_head                cgrp_ctx_entry;
+> > #endif
+> >       void                            *task_ctx_data; /* pmu specific data */
+> >       struct rcu_head                 rcu_head;
+> > diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> > index ad15e40d7f5d..06bc7ab13616 100644
+> > --- a/include/uapi/linux/perf_event.h
+> > +++ b/include/uapi/linux/perf_event.h
+> > @@ -479,6 +479,8 @@ struct perf_event_query_bpf {
+> > #define PERF_EVENT_IOC_PAUSE_OUTPUT           _IOW('$', 9, __u32)
+> > #define PERF_EVENT_IOC_QUERY_BPF              _IOWR('$', 10, struct perf_event_query_bpf *)
+> > #define PERF_EVENT_IOC_MODIFY_ATTRIBUTES      _IOW('$', 11, struct perf_event_attr *)
+> > +#define PERF_EVENT_IOC_ATTACH_CGROUP         _IOW('$', 12, __u64 *)
+> > +#define PERF_EVENT_IOC_READ_CGROUP           _IOWR('$', 13, __u64 *)
+> >
+> > enum perf_event_ioc_flags {
+> >       PERF_IOC_FLAG_GROUP             = 1U << 0,
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index f07943183041..38c26a23418a 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -379,6 +379,7 @@ enum event_type_t {
+> >  * perf_cgroup_events: >0 per-cpu cgroup events exist on this cpu
+> >  */
+> >
+> > +static void perf_sched_enable(void);
+> > static void perf_sched_delayed(struct work_struct *work);
+> > DEFINE_STATIC_KEY_FALSE(perf_sched_events);
+> > static DECLARE_DELAYED_WORK(perf_sched_work, perf_sched_delayed);
+> > @@ -2124,6 +2125,322 @@ static int perf_get_aux_event(struct perf_event *event,
+> >       return 1;
+> > }
+> >
+> > +#ifdef CONFIG_CGROUP_PERF
+> > +static DEFINE_PER_CPU(struct list_head, cgroup_ctx_list);
+> > +
+> > +static bool event_can_attach_cgroup(struct perf_event *event)
+> > +{
+> > +     if (is_sampling_event(event))
+> > +             return false;
+> > +     if (event->attach_state & PERF_ATTACH_TASK)
+> > +             return false;
+> > +     if (is_cgroup_event(event))
+> > +             return false;
+> > +
+> > +     return true;
+> > +}
+> > +
+> > +static bool event_has_cgroup_node(struct perf_event *event)
+> > +{
+> > +     return event->nr_cgrp_nodes > 0;
+> > +}
+> > +
+> > +static struct perf_cgroup_node *
+> > +find_cgroup_node(struct perf_event *event, u64 cgrp_id)
+> > +{
+> > +     struct perf_cgroup_node *cgrp_node;
+> > +     int key = hash_64(cgrp_id, event->cgrp_node_hash_bits);
+> > +
+> > +     hlist_for_each_entry(cgrp_node, &event->cgrp_node_hash[key], node) {
+> > +             if (cgrp_node->id == cgrp_id)
+> > +                     return cgrp_node;
+> > +     }
+> > +
+> > +     return NULL;
+> > +}
+> > +
+> > +static void perf_update_cgroup_node(struct perf_event *event, struct cgroup *cgrp)
+> > +{
+> > +     u64 delta_count, delta_time_enabled, delta_time_running;
+> > +     int i;
+> > +
+> > +     if (event->cgrp_node_count == 0)
+>
+> Do you mean to use nr_cgrp_nodes above?
+
+No, this is to calculate delta so it needs to be set first.
+If it's the first call, it just updates the count and time and
+skips the delta accounting.
+
+>
+> > +             goto out;
+> > +
+> > +     delta_count = local64_read(&event->count) - event->cgrp_node_count;
+> > +     delta_time_enabled = event->total_time_enabled - event->cgrp_node_time_enabled;
+> > +     delta_time_running = event->total_time_running - event->cgrp_node_time_running;
+> > +
+> > +     /* account delta to all ancestor cgroups */
+> > +     for (i = 0; i <= cgrp->level; i++) {
+> > +             struct perf_cgroup_node *node;
+> > +
+> > +             node = find_cgroup_node(event, cgrp->ancestor_ids[i]);
+> > +             if (node) {
+> > +                     node->count += delta_count;
+> > +                     node->time_enabled += delta_time_enabled;
+> > +                     node->time_running += delta_time_running;
+> > +             }
+> > +     }
+> > +
+> > +out:
+> > +     event->cgrp_node_count = local64_read(&event->count);
+> > +     event->cgrp_node_time_enabled = event->total_time_enabled;
+> > +     event->cgrp_node_time_running = event->total_time_running;
+> > +}
+> > +
+> > +static void update_cgroup_node(struct perf_event *event, struct cgroup *cgrp)
+> > +{
+> > +     if (event->state == PERF_EVENT_STATE_ACTIVE)
+> > +             event->pmu->read(event);
+> > +
+> > +     perf_event_update_time(event);
+> > +     perf_update_cgroup_node(event, cgrp);
+> > +}
+> > +
+> > +/* this is called from context switch */
+> > +static void update_cgroup_node_events(struct perf_event_context *ctx,
+> > +                                   struct cgroup *cgrp)
+> > +{
+> > +     struct perf_event *event;
+> > +
+> > +     lockdep_assert_held(&ctx->lock);
+> > +
+> > +     if (ctx->is_active & EVENT_TIME)
+> > +             update_context_time(ctx);
+> > +
+> > +     list_for_each_entry(event, &ctx->cgrp_node_list, cgrp_node_entry)
+> > +             update_cgroup_node(event, cgrp);
+> > +}
+> > +
+> > +static void cgroup_node_sched_out(struct task_struct *task)
+> > +{
+> > +     struct list_head *cgrp_ctx_list = this_cpu_ptr(&cgroup_ctx_list);
+> > +     struct perf_cgroup *cgrp = perf_cgroup_from_task(task, NULL);
+> > +     struct perf_event_context *ctx;
+> > +
+> > +     list_for_each_entry(ctx, cgrp_ctx_list, cgrp_ctx_entry) {
+> > +             raw_spin_lock(&ctx->lock);
+> > +             update_cgroup_node_events(ctx, cgrp->css.cgroup);
+> > +             raw_spin_unlock(&ctx->lock);
+> > +     }
+> > +}
+> > +
+> > +/* this is called from the when event is enabled/disabled */
+>
+> I don't think we call this when the event is disabled.
+
+Oh, sorry.  I meant 'add' for enable, 'del' for disable..
+Maybe I can change it to 'these are called from ...'.
+
+>
+> > +static void perf_add_cgrp_node_list(struct perf_event *event,
+> > +                                 struct perf_event_context *ctx)
+> > +{
+> > +     struct list_head *cgrp_ctx_list = this_cpu_ptr(&cgroup_ctx_list);
+> > +     struct perf_cgroup *cgrp = perf_cgroup_from_task(current, ctx);
+> > +     bool is_first;
+> > +
+> > +     lockdep_assert_irqs_disabled();
+> > +     lockdep_assert_held(&ctx->lock);
+> > +
+> > +     is_first = list_empty(&ctx->cgrp_node_list);
+> > +     list_add_tail(&event->cgrp_node_entry, &ctx->cgrp_node_list);
+> > +
+> > +     if (is_first)
+> > +             list_add_tail(&ctx->cgrp_ctx_entry, cgrp_ctx_list);
+> > +
+> > +     update_cgroup_node(event, cgrp->css.cgroup);
+>
+> Will this add some readings before PERF_EVENT_IOC_ATTACH_CGROUP to the counters?
+
+At this moment, the event is just enabled so the cgrp_node_count
+is 0 like I said above.  So it'll update the timestamp and count in
+the event but won't update the cgroup nodes.
+
+>
+> > +
+> > }
+> > +
+> > +static void perf_del_cgrp_node_list(struct perf_event *event,
+> > +                                 struct perf_event_context *ctx)
+> > +{
+> > +     struct perf_cgroup *cgrp = perf_cgroup_from_task(current, ctx);
+> > +
+> > +     lockdep_assert_irqs_disabled();
+> > +     lockdep_assert_held(&ctx->lock);
+> > +
+> > +     update_cgroup_node(event, cgrp->css.cgroup);
+> > +     /* to refresh delta when it's enabled */
+> > +     event->cgrp_node_count = 0;
+> > +
+> > +     list_del(&event->cgrp_node_entry);
+> > +
+> > +     if (list_empty(&ctx->cgrp_node_list))
+> > +             list_del(&ctx->cgrp_ctx_entry);
+> > +}
+> > +
+> [...]
+> > +
+> > +/* this is called from ioctl */
+> > +static int perf_event_attach_cgroup_node(struct perf_event *event, u64 nr_cgrps,
+> > +                                      u64 *cgroup_ids)
+> > +{
+> > +     struct perf_cgroup_node *cgrp_node;
+> > +     struct perf_event_context *ctx = event->ctx;
+> > +     struct hlist_head *cgrp_node_hash;
+> > +     int node = (event->cpu >= 0) ? cpu_to_node(event->cpu) : -1;
+> > +     unsigned long flags;
+> > +     bool is_first = true;
+> > +     bool enabled;
+> > +     int i, nr_hash;
+> > +     int hash_bits;
+> > +
+> > +     if (nr_cgrps < MIN_CGRP_NODE_HASH)
+> > +             nr_hash = MIN_CGRP_NODE_HASH;
+> > +     else
+> > +             nr_hash = roundup_pow_of_two(nr_cgrps);
+> > +     hash_bits = ilog2(nr_hash);
+> > +
+> > +     cgrp_node_hash = kcalloc_node(nr_hash, sizeof(*cgrp_node_hash),
+> > +                                   GFP_KERNEL, node);
+> > +     if (cgrp_node_hash == NULL)
+> > +             return -ENOMEM;
+> > +
+> > +     cgrp_node = kcalloc_node(nr_cgrps, sizeof(*cgrp_node), GFP_KERNEL, node);
+> > +     if (cgrp_node == NULL) {
+> > +             kfree(cgrp_node_hash);
+> > +             return -ENOMEM;
+> > +     }
+> > +
+> > +     for (i = 0; i < (int)nr_cgrps; i++) {
+> > +             int key = hash_64(cgroup_ids[i], hash_bits);
+> > +
+> > +             cgrp_node[i].id = cgroup_ids[i];
+> > +             hlist_add_head(&cgrp_node[i].node, &cgrp_node_hash[key]);
+> > +     }
+> > +
+> > +     raw_spin_lock_irqsave(&ctx->lock, flags);
+> > +
+> > +     enabled = event->state >= PERF_EVENT_STATE_INACTIVE;
+> > +
+> > +     if (event->nr_cgrp_nodes != 0) {
+> > +             kfree(event->cgrp_node_hash);
+> > +             kfree(event->cgrp_node_entries);
+> > +             is_first = false;
+> > +     }
+>
+> To add another cgroup to the list, we use PERF_EVENT_IOC_ATTACH_CGROUP to
+> do the whole list. So we may lost some readings during this, right?
+
+So the basic use case is perf stat which can have a list of all
+cgroups to measure
+when it calls the ioctl.  Then it creates all nodes in the table at
+once and sets it.
+
+If someone wants to measure more cgroups, [s]he can call the ioctl again with
+the update cgroup list (original + new).
+
+Thanks,
+Namhyung
+
+>
+> > +
+> > +     event->cgrp_node_hash = cgrp_node_hash;
+> > +     event->cgrp_node_entries = cgrp_node;
+> > +     event->cgrp_node_hash_bits = hash_bits;
+> > +     event->nr_cgrp_nodes = nr_cgrps;
+> > +
+> > +     raw_spin_unlock_irqrestore(&ctx->lock, flags);
+> > +
+> > +     if (is_first && enabled)
+> > +             event_function_call(event, perf_attach_cgroup_node, NULL);
+> > +
+> > +     return 0;
+> > +}
+>
+> [...]
+> >
+>
