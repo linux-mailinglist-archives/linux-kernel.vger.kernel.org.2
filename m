@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF8D349D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C946B349D10
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhCYXzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhCYXzu (ORCPT
+        id S229812AbhCYX5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 19:57:30 -0400
+Received: from maynard.decadent.org.uk ([95.217.213.242]:35590 "EHLO
+        maynard.decadent.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhCYX47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:55:50 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFFEC06174A;
-        Thu, 25 Mar 2021 16:55:50 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id g8so2140554qvx.1;
-        Thu, 25 Mar 2021 16:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5MP2PxgWADvsrOSFuhaJ2os8rXXykLrd3KRlQltq1ac=;
-        b=EJpGYQqtkzRc7/ZE31DqfVIOvVZo+9Shgs87OK2lo3dYCjM4WuGA50NaUFsYweAgiQ
-         Ip3xa9ZiJTccaXMsjtfwil5haZKLMWCb4mKPuKI9Fn9kgRmaSpgccrpB6BU/4xS5nn7a
-         W3nad+6zL556grdY3wKbEnvhcRkStPI5YnT5mcmKhlHQRll6V3A8xmErT1Y/FKIPou+j
-         6CdP6jkUiyLlBZ0b2kbH4iQpYTulog7WbwhlBBTdpJ5wUKuQY/baGtr5Sb5zvdSRjUzq
-         YYgjsWZl1rbMDuWwFFPOtoMO/NVsMq5UW97cC2Ly+fwJYzcY0MUJ/33zqndeMyQVv5RC
-         QR5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5MP2PxgWADvsrOSFuhaJ2os8rXXykLrd3KRlQltq1ac=;
-        b=M/Dvqs4nv+14xAkl6PhfIWdAROmEHDi9PXjkVVVJmFQHpezMBE8WeXLE43wn3dBPhZ
-         62piFHY1yd+8WWbc9C8GE+elUnDN5KWwuVsq1aPlYX6XVr6GhqAn1nwq49vJEgnkECa9
-         550m70uCfgdyaMeOkkKzA5wDoCofNeTV6Tt/JjZw/vDIKjx+yWuxSgBLIeWLfOjJXWFW
-         88zwDpOJ6dsgzdQaXQth/NtIiyviyMDxkFQ42GNjOOGf8M7q6RCM1yg1syoxk1TjKZkc
-         IeyDRdZF4nkbqT2L8oRsOD8Ngtugbbsk7AVe+MPBrKMRU4A6oKscFNyu/Q0e4eo8jgwX
-         gl9A==
-X-Gm-Message-State: AOAM532qtzxXgXKoeSQVKrwELJas0LoTShMJx/urbBlfgJfyRYu3Rg1i
-        s+LC4fsb+Mizs/lTUrKbwes=
-X-Google-Smtp-Source: ABdhPJzHSKL2A1TZdO599D/nZqn+iirp77Riai+iU1fQFlmpVHptvk5ER85WcWh8BwlraLKaLDK5DA==
-X-Received: by 2002:ad4:510d:: with SMTP id g13mr11104362qvp.3.1616716549388;
-        Thu, 25 Mar 2021 16:55:49 -0700 (PDT)
-Received: from Gentoo ([37.19.198.107])
-        by smtp.gmail.com with ESMTPSA id n77sm5463757qkn.128.2021.03.25.16.55.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 16:55:48 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 05:25:39 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] btrfs: fixed rudimentary typos
-Message-ID: <YF0i+2N7NSyHkTYB@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-References: <20210325042113.12484-1-unixbhaskar@gmail.com>
- <20210325124954.GL7604@twin.jikos.cz>
- <YFzR/E+GFlrYyxdm@Gentoo>
- <20210325214704.GM7604@twin.jikos.cz>
+        Thu, 25 Mar 2021 19:56:59 -0400
+Received: from [2a02:1811:d34:3700:3b8d:b310:d327:e418] (helo=deadeye)
+        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1lPZqF-000196-4c; Fri, 26 Mar 2021 00:56:43 +0100
+Received: from ben by deadeye with local (Exim 4.94)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1lPZqD-00210q-FM; Fri, 26 Mar 2021 00:56:41 +0100
+Message-ID: <7e2ab5dbd76773c03f6e27af6fb8254c13e6402f.camel@decadent.org.uk>
+Subject: Re: [PATCH] x86/tlb: Flush global mappings when KAISER is disabled
+From:   Ben Hutchings <ben@decadent.org.uk>
+To:     Sasha Levin <sashal@kernel.org>, Borislav Petkov <bp@alien8.de>
+Cc:     stable <stable@vger.kernel.org>, Hugh Dickins <hughd@google.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Makarand Sonare <makarandsonare@google.com>,
+        Sean Christopherson <seanjc@google.com>, carnil@debian.org
+Date:   Fri, 26 Mar 2021 00:56:23 +0100
+In-Reply-To: <YF0anj5TFU5D8tXD@sashalap>
+References: <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com>
+         <20210311235215.GI5829@zn.tnic>
+         <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
+         <20210324212139.GN5010@zn.tnic>
+         <alpine.LSU.2.11.2103241651280.9593@eggly.anvils>
+         <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
+         <20210325095619.GC31322@zn.tnic> <20210325102959.GD31322@zn.tnic>
+         <20210325200942.GJ31322@zn.tnic> <YFz0Z8/6eeYI72fq@sashalap>
+         <YF0anj5TFU5D8tXD@sashalap>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-BZCkuB3+koKnPKrmigAc"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="M5A017CyFTkYggv5"
-Content-Disposition: inline
-In-Reply-To: <20210325214704.GM7604@twin.jikos.cz>
+X-SA-Exim-Connect-IP: 2a02:1811:d34:3700:3b8d:b310:d327:e418
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---M5A017CyFTkYggv5
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+--=-BZCkuB3+koKnPKrmigAc
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 22:47 Thu 25 Mar 2021, David Sterba wrote:
->On Thu, Mar 25, 2021 at 11:40:04PM +0530, Bhaskar Chowdhury wrote:
->> On 13:49 Thu 25 Mar 2021, David Sterba wrote:
->> >On Thu, Mar 25, 2021 at 09:51:13AM +0530, Bhaskar Chowdhury wrote:
->> >>
->> >> s/contaning/containing
->> >> s/clearning/clearing/
->> >
->> >Have hou scanned the whole subdirectory for typos? We do typo fixing
->> >about once a year in one big patch and won't fix them one by one.
->>
->> Once a year???? You must be kidding! that is not good whatever the workflow
->> you have .
->
->No kidding. It's even worse, we get that every two years.
->
->* 2016 0132761017e012ab4dc8584d679503f2ba26ca86
->  33 files changed, 106 insertions(+), 105 deletions(-)
->
->* 2018 52042d8e82ff50d40e76a275ac0b97aa663328b0
->  25 files changed, 70 insertions(+), 69 deletions(-)
->
->You can see the diffstat touches nearly all the files, almost hundred of
->fixed typos per patch. Now compare that to sending 70-100 individual
->patches. Time spent on any patch is not zero and for such trivial
->changes it's not justified so the workflow is to do that in batches.
->If you care about fixing typos in fs/btrfs/, please fix them all. I've
->found about 50.
+On Thu, 2021-03-25 at 19:19 -0400, Sasha Levin wrote:
+> On Thu, Mar 25, 2021 at 04:36:55PM -0400, Sasha Levin wrote:
+> > On Thu, Mar 25, 2021 at 09:09:42PM +0100, Borislav Petkov wrote:
+> > > Hi stable folks,
+> > >=20
+> > > the patch below fixes kernels 4.4 and 4.9 booting on AMD platforms wi=
+th
+> > > PCID support. It doesn't have an upstream counterpart because it patc=
+hes
+> > > the KAISER code which didn't go upstream. It applies fine to both of =
+the
+> > > aforementioned kernels - please pick it up.
+> >=20
+> > Queued up for 4.9 and 4.4, thanks!
+> >=20
+> > > Jim Mattson reported that Debian 9 guests using a 4.9-stable kernel
+> > > are exploding during alternatives patching:
+> >=20
+> > (Cc Ben & Salvatore)
+> >=20
+> > I'm not sure if 4.9 or Debian is still alive or not, but FYI...
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *on
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 :)
 
-I certainly do , not only for btrfs but for the whole kernel, it might sound
-ridiculous , but someone has to bell the cat , right?
+We're supporting both 4.9 and 4.19 in Debian 9.  The general rule is we
+carry on with the same stable kernel branch for the whole 5 year
+support period, but add the option of using the kernel version from the
+next stable release.
 
-If I get little cooperation from everyone , we can pull it through, it would
-be good for the future generation.
+Ben.
 
---M5A017CyFTkYggv5
+--=20
+Ben Hutchings
+Teamwork is essential - it allows you to blame someone else.
+
+--=-BZCkuB3+koKnPKrmigAc
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBdIvgACgkQsjqdtxFL
-KRVLHgf9FL2CWA78IL6FlhJRhO3nGm4RlSegdJCW63FUhBlECEXeHc2GosYi52FU
-DnIHElBn1Mt5uM4eeP6zgg2/i7i3qe/3lTJZjXo55mRulS/zZC3W5bX99rgcCW92
-dfinWgqBAjURS7qrBZFX6ScyU6oFTusIvZA03khmS/qZnEdyObmilJm3Ik1vKV1E
-P/YF3Fpb6d9kKVPoIdXE3aKWEKP5yB6DGOErWjwZ+/vdou9uVnW3DXdozJ0Z/JeP
-yodc+87BJa+X0u8xfk2FOw7/9dX5BEmIhLMvz/VNcf0wLr4+ShvxyrO5PDojCg3L
-0hqqntTNzBUTcDCql+beISSRoIpDKw==
-=ABQC
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAmBdIygACgkQ57/I7JWG
+EQmePRAAou+cNc9EAXhWMu8MifMJaX2sqIkYtavWuhzOsy6IuDpi129ppi2m/7kv
+rzTjBYKj7AYz0N/az8lPhEtOPE3mfiusppv2a1f4HnHWkjRZMegw9JKjR9cANxN3
+ZaXrvPRciV0Afv4KVsPTX2NhqQwjMILB646X69/CmOgmq8KP5OQQ4wM7RpIleeWA
+Q/MDBD0HO9lIr/16HxSOUUhhezZHBxE27tNjWMRrWALntlKUxc6Z/upr3A89Uyte
+ggEYiI7JIp4jTbvG7GW7qyMSYT2zs69iE17TayzZQUl4L2iSfDDI2jQtg4OgKDel
+XEkwUy/S7PHP5hSHglwf+W+ef1e3946z3J9eJ5XFDPDR0WIj/+dFNzKBi/iM+1JW
+SQyZ1XHNEYXDW9WrfGKaqYpZEefcjZhCvYmhHFrmWUaYS0upb7vM2Un56BRufNJ9
+34k2BKCFs4e5G7HDeVBSIQ2LChvx+05b0KVP83I9m5ghGr3kVOgH2L6sCPiEeAPF
+E53DBNf8lL7xiwL10HERNUVgxLbE7yp+K0JKC9B6CTOr/VDUEilQmGb16j4EIucc
+HiPlqUiomHTcaExu/lSBET3HZxunTWGoA1ju+C/rlE6mjK+JKP7dRhpxbq7KUmBS
+bW6vzaiys+AJJm/9paGDCiYvjAynu/wZT/PY62TpWp0LjZDHq1M=
+=CDeP
 -----END PGP SIGNATURE-----
 
---M5A017CyFTkYggv5--
+--=-BZCkuB3+koKnPKrmigAc--
