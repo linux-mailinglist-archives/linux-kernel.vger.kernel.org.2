@@ -2,211 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0A3349274
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A23B349276
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhCYMwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:52:36 -0400
-Received: from mga18.intel.com ([134.134.136.126]:55288 "EHLO mga18.intel.com"
+        id S231148AbhCYMxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:53:00 -0400
+Received: from foss.arm.com ([217.140.110.172]:48298 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230350AbhCYMwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:52:16 -0400
-IronPort-SDR: SgpyEuTIgQlPsAr5YErQaZgFni8wYIETWnHPAsk3/waLhEoHadoXlUIUZdv0h3AcGLk3QLP+ks
- SNhJ+bYeRD8Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178473335"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="178473335"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 05:52:16 -0700
-IronPort-SDR: rszMn68O13K3AOyp9a3LFNKbXinmyqlmZbv23Hd6ion3s/M1t9rHKw7K7mVJfQpam8/GfyWlGw
- +2KRyFRiC5wQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="409357696"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 25 Mar 2021 05:52:15 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lPPTC-0001wm-Ch; Thu, 25 Mar 2021 12:52:14 +0000
-Date:   Thu, 25 Mar 2021 20:52:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.03.22a] BUILD SUCCESS
- 27cbc21bc1b24dd014f778e95711bfa91ac15564
-Message-ID: <605c877a.ig67Le4U3Z4sevfJ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230514AbhCYMwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:52:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AEAC71474;
+        Thu, 25 Mar 2021 05:52:40 -0700 (PDT)
+Received: from [10.57.50.37] (unknown [10.57.50.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A5083F792;
+        Thu, 25 Mar 2021 05:52:39 -0700 (PDT)
+Subject: Re: [PATCH v2 3/4] iommu: Delete iommu_dma_free_cpu_cached_iovas()
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org, baolu.lu@linux.intel.com
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+References: <1616675401-151997-1-git-send-email-john.garry@huawei.com>
+ <1616675401-151997-4-git-send-email-john.garry@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <9852e410-eec8-1d82-8704-cd7bc8b0a07b@arm.com>
+Date:   Thu, 25 Mar 2021 12:52:34 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1616675401-151997-4-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.03.22a
-branch HEAD: 27cbc21bc1b24dd014f778e95711bfa91ac15564  rcu: Fix various typos in comments
+On 2021-03-25 12:30, John Garry wrote:
+> Function iommu_dma_free_cpu_cached_iovas() no longer has any caller, so
+> delete it.
+> 
+> With that, function free_cpu_cached_iovas() may be made static.
 
-elapsed time: 726m
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
 
-configs tested: 149
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm64                               defconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                         hackkit_defconfig
-powerpc                    klondike_defconfig
-powerpc                     tqm8555_defconfig
-h8300                    h8300h-sim_defconfig
-sh                          lboxre2_defconfig
-mips                           ip28_defconfig
-powerpc                    adder875_defconfig
-sh                             sh03_defconfig
-sh                           se7343_defconfig
-powerpc                      pcm030_defconfig
-mips                    maltaup_xpa_defconfig
-powerpc                      acadia_defconfig
-mips                         tb0226_defconfig
-powerpc                        cell_defconfig
-alpha                            alldefconfig
-mips                      pic32mzda_defconfig
-ia64                          tiger_defconfig
-parisc                generic-32bit_defconfig
-sh                               j2_defconfig
-sh                        apsh4ad0a_defconfig
-mips                          ath25_defconfig
-arm                      integrator_defconfig
-mips                        bcm63xx_defconfig
-mips                         tb0287_defconfig
-m68k                          atari_defconfig
-arm                          pcm027_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                        workpad_defconfig
-powerpc64                           defconfig
-xtensa                    smp_lx200_defconfig
-arm                        keystone_defconfig
-mips                           ip27_defconfig
-arm                       netwinder_defconfig
-arm                        cerfcube_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                      ppc44x_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc834x_mds_defconfig
-arc                          axs103_defconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                     tqm8548_defconfig
-arm                        multi_v5_defconfig
-sh                           sh2007_defconfig
-xtensa                  cadence_csp_defconfig
-sh                           se7705_defconfig
-arm                          moxart_defconfig
-m68k                        m5407c3_defconfig
-powerpc                     sequoia_defconfig
-arc                           tb10x_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                       m5208evb_defconfig
-powerpc                 linkstation_defconfig
-sh                   secureedge5410_defconfig
-powerpc                      katmai_defconfig
-arm                        vexpress_defconfig
-xtensa                    xip_kc705_defconfig
-arc                      axs103_smp_defconfig
-mips                  maltasmvp_eva_defconfig
-sh                          urquell_defconfig
-powerpc                          g5_defconfig
-arm                         mv78xx0_defconfig
-arm                          exynos_defconfig
-riscv                             allnoconfig
-arm                          gemini_defconfig
-sh                           se7751_defconfig
-openrisc                    or1ksim_defconfig
-sh                      rts7751r2d1_defconfig
-arm                      tct_hammer_defconfig
-powerpc                       ebony_defconfig
-powerpc                  iss476-smp_defconfig
-mips                      maltaaprp_defconfig
-arm                       imx_v6_v7_defconfig
-arm64                            alldefconfig
-arm                           viper_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                                defconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210325
-x86_64               randconfig-a003-20210325
-x86_64               randconfig-a006-20210325
-x86_64               randconfig-a001-20210325
-x86_64               randconfig-a005-20210325
-x86_64               randconfig-a004-20210325
-i386                 randconfig-a003-20210325
-i386                 randconfig-a004-20210325
-i386                 randconfig-a001-20210325
-i386                 randconfig-a002-20210325
-i386                 randconfig-a006-20210325
-i386                 randconfig-a005-20210325
-i386                 randconfig-a014-20210325
-i386                 randconfig-a011-20210325
-i386                 randconfig-a015-20210325
-i386                 randconfig-a016-20210325
-i386                 randconfig-a013-20210325
-i386                 randconfig-a012-20210325
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-x86_64               randconfig-a012-20210325
-x86_64               randconfig-a015-20210325
-x86_64               randconfig-a014-20210325
-x86_64               randconfig-a013-20210325
-x86_64               randconfig-a011-20210325
-x86_64               randconfig-a016-20210325
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   drivers/iommu/dma-iommu.c | 9 ---------
+>   drivers/iommu/iova.c      | 3 ++-
+>   include/linux/dma-iommu.h | 8 --------
+>   include/linux/iova.h      | 5 -----
+>   4 files changed, 2 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index af765c813cc8..9da7e9901bec 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -53,15 +53,6 @@ struct iommu_dma_cookie {
+>   
+>   static DEFINE_STATIC_KEY_FALSE(iommu_deferred_attach_enabled);
+>   
+> -void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+> -		struct iommu_domain *domain)
+> -{
+> -	struct iommu_dma_cookie *cookie = domain->iova_cookie;
+> -	struct iova_domain *iovad = &cookie->iovad;
+> -
+> -	free_cpu_cached_iovas(cpu, iovad);
+> -}
+> -
+>   static void iommu_dma_entry_dtor(unsigned long data)
+>   {
+>   	struct page *freelist = (struct page *)data;
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index c78312560425..8a493ee92c79 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -22,6 +22,7 @@ static unsigned long iova_rcache_get(struct iova_domain *iovad,
+>   				     unsigned long size,
+>   				     unsigned long limit_pfn);
+>   static void init_iova_rcaches(struct iova_domain *iovad);
+> +static void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
+>   static void free_iova_rcaches(struct iova_domain *iovad);
+>   static void fq_destroy_all_entries(struct iova_domain *iovad);
+>   static void fq_flush_timeout(struct timer_list *t);
+> @@ -998,7 +999,7 @@ static void free_iova_rcaches(struct iova_domain *iovad)
+>   /*
+>    * free all the IOVA ranges cached by a cpu (used when cpu is unplugged)
+>    */
+> -void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad)
+> +static void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad)
+>   {
+>   	struct iova_cpu_rcache *cpu_rcache;
+>   	struct iova_rcache *rcache;
+> diff --git a/include/linux/dma-iommu.h b/include/linux/dma-iommu.h
+> index 706b68d1359b..2112f21f73d8 100644
+> --- a/include/linux/dma-iommu.h
+> +++ b/include/linux/dma-iommu.h
+> @@ -37,9 +37,6 @@ void iommu_dma_compose_msi_msg(struct msi_desc *desc,
+>   
+>   void iommu_dma_get_resv_regions(struct device *dev, struct list_head *list);
+>   
+> -void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+> -		struct iommu_domain *domain);
+> -
+>   #else /* CONFIG_IOMMU_DMA */
+>   
+>   struct iommu_domain;
+> @@ -81,10 +78,5 @@ static inline void iommu_dma_get_resv_regions(struct device *dev, struct list_he
+>   {
+>   }
+>   
+> -static inline void iommu_dma_free_cpu_cached_iovas(unsigned int cpu,
+> -		struct iommu_domain *domain)
+> -{
+> -}
+> -
+>   #endif	/* CONFIG_IOMMU_DMA */
+>   #endif	/* __DMA_IOMMU_H */
+> diff --git a/include/linux/iova.h b/include/linux/iova.h
+> index 4be6c0ab4997..71d8a2de6635 100644
+> --- a/include/linux/iova.h
+> +++ b/include/linux/iova.h
+> @@ -157,7 +157,6 @@ int init_iova_flush_queue(struct iova_domain *iovad,
+>   			  iova_flush_cb flush_cb, iova_entry_dtor entry_dtor);
+>   struct iova *find_iova(struct iova_domain *iovad, unsigned long pfn);
+>   void put_iova_domain(struct iova_domain *iovad);
+> -void free_cpu_cached_iovas(unsigned int cpu, struct iova_domain *iovad);
+>   #else
+>   static inline int iova_cache_get(void)
+>   {
+> @@ -234,10 +233,6 @@ static inline void put_iova_domain(struct iova_domain *iovad)
+>   {
+>   }
+>   
+> -static inline void free_cpu_cached_iovas(unsigned int cpu,
+> -					 struct iova_domain *iovad)
+> -{
+> -}
+>   #endif
+>   
+>   #endif
+> 
