@@ -2,240 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5485349672
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE60349681
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:15:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhCYQKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:10:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229508AbhCYQKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:10:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3C3A61A0D;
-        Thu, 25 Mar 2021 16:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616688602;
-        bh=t7yeY1z0BauNAWk15avxzjr6vJPLadfI3zsiPITu6yM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c0bfoyxxOAwdppVmu7ffg0bws2/yldUaeELEVB/pnLNDqMawunyKzNEEAUugcHAtU
-         2ADPIgZLZfc/G2oOE1ojopVzMp72Blu5pw1ZNdPnmsYWMepp0PrNewwpFcGZCGdkf+
-         bkH/FiATqaqK528GKoaUVhjfpaPw6xAaRmPOkFvCywcwtHAgedlmuD/+/rH+a1mSJr
-         Y9ZO/L71jX/WBcrw/81hL2C8I9byITHQuv0UGPtK7hX0OduZNvuvLD+VY8yEbitBdo
-         KAi99VH1P6ZIUKpBtJyf72ukl5JPW+IxirPBKZhHiJ6DgUYg5CWpYDCCfbRlyVC8F0
-         +gcZa38/XRSZQ==
-Date:   Thu, 25 Mar 2021 18:09:58 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFy11u+fm4MEGU5X@unreal>
-References: <YFW78AfbhYpn16H4@unreal>
- <20210320085942.3cefcc48@x1.home.shazbot.org>
- <YFcGlzbaSzQ5Qota@unreal>
- <20210322111003.50d64f2c@omen.home.shazbot.org>
- <YFsOVNM1zIqNUN8f@unreal>
- <20210324083743.791d6191@omen.home.shazbot.org>
- <YFtXNF+t/0G26dwS@unreal>
- <20210324111729.702b3942@omen.home.shazbot.org>
- <YFxL4o/QpmhM8KiH@unreal>
- <20210325085504.051e93f2@omen.home.shazbot.org>
+        id S229635AbhCYQO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:14:56 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:54998 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhCYQOu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 12:14:50 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12PGEY7n005196;
+        Thu, 25 Mar 2021 11:14:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616688874;
+        bh=UZV0sP5zmB6zPNXJrR1Ox1Q35jJB3ri0g+Wh2TcKb4c=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=y9PfDf0wKAE1ajuH/pftgC9pEZGEpIqxbE6bSfAqTBBzzKqziMAHO9vv5A5gE3O97
+         pvxREFi9GTymVgG+nFy7YjIIH/QWA5HnOQKV+lWu6VWox8zslpqPwlNgrFtLsq272S
+         LZO7f7bR0JOF+qeRRxo7jXNGATHd2sbrMs9Y6F2k=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12PGEY1U129582
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 25 Mar 2021 11:14:34 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 25
+ Mar 2021 11:14:34 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 25 Mar 2021 11:14:34 -0500
+Received: from [10.250.233.62] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12PGEUSZ073840;
+        Thu, 25 Mar 2021 11:14:31 -0500
+Subject: Re: [PATCH v8 3/3] arm64: dts: ti: k3-j7200: Add support for higher
+ speed modes and update delay select values for MMCSD subsystems
+To:     Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210324063759.5837-1-a-govindraju@ti.com>
+ <20210324063759.5837-4-a-govindraju@ti.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <b8799a32-2461-988a-4a88-177e672ab64e@ti.com>
+Date:   Thu, 25 Mar 2021 21:44:29 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325085504.051e93f2@omen.home.shazbot.org>
+In-Reply-To: <20210324063759.5837-4-a-govindraju@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 08:55:04AM -0600, Alex Williamson wrote:
-> On Thu, 25 Mar 2021 10:37:54 +0200
-> Leon Romanovsky <leon@kernel.org> wrote:
-> 
-> > On Wed, Mar 24, 2021 at 11:17:29AM -0600, Alex Williamson wrote:
-> > > On Wed, 24 Mar 2021 17:13:56 +0200
-> > > Leon Romanovsky <leon@kernel.org> wrote:  
-> > 
-> > <...>
-> > 
-> > > > Yes, and real testing/debugging almost always requires kernel rebuild.
-> > > > Everything else is waste of time.  
-> > > 
-> > > Sorry, this is nonsense.  Allowing users to debug issues without a full
-> > > kernel rebuild is a good thing.  
-> > 
-> > It is far from debug, this interface doesn't give you any answers why
-> > the reset didn't work, it just helps you to find the one that works.
-> > 
-> > Unless you believe that this information will be enough to understand
-> > the root cause, you will need to ask from the user to perform extra
-> > tests, maybe try some quirk. All of that requires from the users to
-> > rebuild their kernel.
-> > 
-> > So no, it is not debug.
-> 
-> It allows a user to experiment to determine (a) my device doesn't work
-> in a given scenario with the default configuration, but (b) if I change
-> the reset to this other thing it does work.  That is a step in
-> debugging.
-> 
-> It's absurd to think that a sysfs attribute could provide root cause,
-> but it might be enough for someone to further help that user.  It would
-> be a useful clue for a bug report.  Yes, reaching root cause might
-> involve building a kernel, but that doesn't invalidate that having a
-> step towards debugging in the base kernel might be a useful tool.
+Hi Aswath,
 
-Let's agree to do not agree.
+On 24/03/21 12:07 pm, Aswath Govindraju wrote:
+> The following speed modes are now supported in J7200 SoC,
+> - HS200 and HS400 modes at 1.8 V card voltage, in MMCSD0 subsystem [1].
+> - UHS-I speed modes in MMCSD1 subsystem [1].
+> 
+> Add support for UHS-I modes by adding voltage regulator device tree nodes
+> and corresponding pinmux details, to power cycle and voltage switch cards.
+> Set respective tags in sdhci0 and remove no-1-8-v tag from sdhci1
+> device tree nodes.
+> 
+> Also update the delay values for various speed modes supported, based on
+> the revised january 2021 J7200 datasheet[2].
+> 
+> [1] - section 12.3.6.1.1 MMCSD Features, in
+>       https://www.ti.com/lit/ug/spruiu1a/spruiu1a.pdf,
+>       (SPRUIU1A – JULY 2020 – REVISED JANUARY 2021)
+> 
+> [2] - https://www.ti.com/lit/ds/symlink/dra821u.pdf,
+>       (SPRSP57B – APRIL 2020 – REVISED JANUARY 2021)
+minor comments below.. once you fix them, please add
 
+Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
 > 
-> > > > > > > For policy preference, I already described how I've configured QEMU to
-> > > > > > > prefer a bus reset rather than a PM reset due to lack of specification
-> > > > > > > regarding the scope of a PM "soft reset".  This interface would allow a
-> > > > > > > system policy to do that same thing.
-> > > > > > > 
-> > > > > > > I don't think anyone is suggesting this as a means to avoid quirks that
-> > > > > > > would resolve reset issues and create the best default general behavior.
-> > > > > > > This provides a mechanism to test various reset methods, and thereby
-> > > > > > > identify broken methods, and set a policy.  Sure, that policy might be
-> > > > > > > to avoid a broken reset in the interim before it gets quirked and
-> > > > > > > there's potential for abuse there, but I think the benefits outweigh
-> > > > > > > the risks.      
-> > > > > > 
-> > > > > > This interface is proposed as first class citizen in the general sysfs
-> > > > > > layout. Of course, it will be seen as a way to bypass the kernel.
-> > > > > > 
-> > > > > > At least, put it under CONFIG_EXPERT option, so no distro will enable it
-> > > > > > by default.    
-> > > > > 
-> > > > > Of course we're proposing it to be accessible, it should also require
-> > > > > admin privileges to modify, sysfs has lots of such things.  If it's
-> > > > > relegated to non-default accessibility, it won't be used for testing
-> > > > > and it won't be available for system policy and it's pointless.    
-> > > > 
-> > > > We probably have difference in view of what testing is. I expect from
-> > > > the users who experience issues with reset to do extra steps and one of
-> > > > them is to require from them to compile their kernel.  
-> > > 
-> > > I would define the ability to generate a CI test that can pick a
-> > > device, unbind it from its driver, and iterate reset methods as a
-> > > worthwhile improvement in testing.  
-> > 
-> > Who is going to run this CI? At least all kernel CIs (external and
-> > internal to HW vendors) that I'm familiar are building kernel themselves.
-> > 
-> > Distro kernel is too bloat to be really usable for CI.
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  .../dts/ti/k3-j7200-common-proc-board.dts     | 78 +++++++++++++++++++
+>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 14 +++-
+>  2 files changed, 90 insertions(+), 2 deletions(-)
 > 
-> At this point I'm suspicious you're trolling.  A distro kernel CI
-> certainly uses the kernel they intend to ship and support in their
-> environment. You're concerned about a bloated kernel, but the proposal
-> here adds 2-bytes per device to track reset methods and a trivial array
-> in text memory, meanwhile you're proposing multiple per-device memory
-> allocations to enhance the feature you think is too bloated for CI.
+> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> index b493f939b09a..a069787e1783 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+> @@ -16,6 +16,65 @@
+>  		stdout-path = "serial2:115200n8";
+>  		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
+>  	};
+> +
+> +	evm_12v0: fixedregulator-evm12v0 {
+> +		/* main supply */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "evm_12v0";
+> +		regulator-min-microvolt = <12000000>;
+> +		regulator-max-microvolt = <12000000>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	vsys_3v3: fixedregulator-vsys3v3 {
+> +		/* Output of LMS140 */
 
-I don't know why you decided to focus on memory footprint which is not
-important at all during CI runs. The bloat is in Kconfig options that
-are not needed. Those extra options add significant overhead during
-builds and runs itself.
+%s/LMS140/LM5140
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vsys_3v3";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		vin-supply = <&evm_12v0>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	vsys_5v0: fixedregulator-vsys5v0 {
+> +		/* Output of LM5140 */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vsys_5v0";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +		vin-supply = <&evm_12v0>;
+> +		regulator-always-on;
+> +		regulator-boot-on;
+> +	};
+> +
+> +	vdd_mmc1: fixedregulator-sd {
+> +		/* Output of TPS22918  */
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vdd_mmc1";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-boot-on;
+> +		enable-active-high;
+> +		vin-supply = <&vsys_3v3>;
+> +		gpio = <&exp2 2 GPIO_ACTIVE_HIGH>;
+> +	};
+> +
+> +	vdd_sd_dv: gpio-regulator-vdd-sd-dv {
+> +		/* Output of TLV71033 */
 
-And not, I'm not trolling, but representing HW vendor that pushes its CI
-and developers environment to the limit, by running full kernel builds with
-less than 30 seconds and boot-to-test with less than 6 seconds for full
-Fedora VM.
+Would have preferred to keep this similar to j721e.
+gpio-regulator-TLV71033 is used in j721e
+> +		compatible = "regulator-gpio";
+> +		regulator-name = "vdd_sd_dv";
 
-> 
-> > > > The root permissions doesn't protect from anything, SO lovers will use
-> > > > root without even thinking twice.  
-> > > 
-> > > Yes, with great power comes great responsibility.  Many admins ignore
-> > > this.  That's far beyond the scope of this series.  
-> > 
-> > <...>
-> > 
-> > > > I'm trying to help you with your use case of providing reset policy
-> > > > mechanism, which can be without CONFIG_EXPERT. However if you want
-> > > > to continue path of having specific reset type only, please ensure
-> > > > that this is not taken to the "bypass kernel" direction.  
-> > > 
-> > > You've lost me, are you saying you'd be in favor of an interface that
-> > > allows an admin to specify an arbitrary list of reset methods because
-> > > that's somehow more in line with a policy choice than a userspace
-> > > workaround?  This seems like unnecessary bloat because (a) it allows
-> > > the same bypass mechanism, and (b) a given device is only going to use
-> > > a single method anyway, so the functionality is unnecessary.  Please
-> > > help me understand how this favors the policy use case.  Thanks,  
-> > 
-> > The policy decision is global logic that is easier to grasp. At some
-> > point of our discussion, you presented the case where PM reset is not
-> > defined well and you prefer to do bus reset (something like that).
-> > 
-> > I expect that QEMU sets same reset policy for all devices at the same
-> > time instead of trying per-device to guess which one works.
-> > 
-> > And yes, you will be able to bypass kernel, but at least this interface
-> > will be broader than initial one that serves only SO and workarounds.
-> 
-> I still think allocating objects for a list and managing that list is
-> too bloated and complicated, but I agree that being able to have more
-> fine grained control could be useful.  Is it necessary to be able to
-> re-order reset methods or might it still be better aligned to a policy
-> use case if we allow plus and minus operators?  For example, a device
-> might list:
-> 
-> [pm] [bus]
-> 
-> Indicating that PM and bus reset are both available and enabled.  The
-> user could do:
-> 
-> echo -pm > reset_methods
-> 
-> This would result in:
-> 
-> pm [bus]
-> 
-> Indicating that both PM and bus resets are available, but only bus reset
-> is enabled (note this is the identical result to "echo bus >" in the
-> current proposal).  "echo +pm" or "echo default" could re-enable the PM
-> reset.  Would something like that be satisfactory?
+same comment here..
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&vdd_sd_dv_pins_default>;
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		regulator-boot-on;
+> +		vin-supply = <&vsys_5v0>;
+> +		gpios = <&main_gpio0 55 GPIO_ACTIVE_HIGH>;
+> +		states = <1800000 0x0>,
+> +			 <3300000 0x1>;
+> +	};
+>  };
+>  
+>  &wkup_pmx0 {
+> @@ -45,6 +104,13 @@
+>  };
+>  
+>  &main_pmx0 {
+> +	main_i2c0_pins_default: main-i2c0-pins-default {
+> +		pinctrl-single,pins = <
+> +			J721E_IOPAD(0xd4, PIN_INPUT_PULLUP, 0) /* (V3) I2C0_SCL */
+> +			J721E_IOPAD(0xd8, PIN_INPUT_PULLUP, 0) /* (W2) I2C0_SDA */
+> +		>;
+> +	};
+> +
+>  	main_i2c1_pins_default: main-i2c1-pins-default {
+>  		pinctrl-single,pins = <
+>  			J721E_IOPAD(0xdc, PIN_INPUT_PULLUP, 3) /* (U3) ECAP0_IN_APWM_OUT.I2C1_SCL */
+> @@ -70,6 +136,12 @@
+>  			J721E_IOPAD(0x120, PIN_OUTPUT, 0) /* (T4) USB0_DRVVBUS */
+>  		>;
+>  	};
+> +
+> +	vdd_sd_dv_pins_default: vdd-sd-dv-pins-default {
+> +		pinctrl-single,pins = <
+> +			J721E_IOPAD(0xd0, PIN_INPUT, 7) /* (T5) SPI0_D1.GPIO0_55 */
 
-Yes, I actually imagined simpler interface:
-To set specific type:
-echo pm > reset_methods
-To set policy:
-echo "pm,bus" > reset_methods
+This should ideally be PIN_OUTPUT. Can you check the latest sysconfig?
 
-But your proposal is nicer.
-
-> 
-> If we need to allow re-ording, we'd want to use a byte-array where each
-> byte indicates a type of reset and perhaps a non-zero value in the
-> array indicates the method is enabled and the value indicates priority.
-> For example writing "dev_spec,flr,bus" would parse to write 1 to the
-> byte associated with the device specific reset, 2 to flr, 3 to bus
-> reset, then we'd process low to high (or maybe starting at a high value
-> to count down to zero might be more simple).  We could do that with
-> only adding less than a fixed 8-bytes per device and no dynamic
-> allocation.  Thoughts?  Thanks,
-
-Like I suggested, linked list will be easier and the reset will be
-something like:
- for_each_reset_type(device, type) { 
-   switch (type) {
-   	case PM:
-	       ret = do_some_reset(device);
-	       break;
-	case BUS:
-		.....
-	}
-   if (!ret || ret == -ENOMEM)  <-- go to next type in linked list
-     return ret;
-   }
-     
-
-> 
-> Alex
-> 
+Thanks
+Kishon
