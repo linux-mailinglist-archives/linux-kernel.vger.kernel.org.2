@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD64D34945D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752DE34945F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhCYOlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:41:32 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:36153 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231270AbhCYOlK (ORCPT
+        id S231271AbhCYOmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230406AbhCYOl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:41:10 -0400
-Received: (qmail 788698 invoked by uid 1000); 25 Mar 2021 10:41:09 -0400
-Date:   Thu, 25 Mar 2021 10:41:09 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Benson Leung <bleung@google.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] usb: Iterator for ports
-Message-ID: <20210325144109.GB785961@rowland.harvard.edu>
-References: <20210325122926.58392-1-heikki.krogerus@linux.intel.com>
- <20210325122926.58392-2-heikki.krogerus@linux.intel.com>
+        Thu, 25 Mar 2021 10:41:56 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB87C06174A;
+        Thu, 25 Mar 2021 07:41:56 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso3239641wmi.3;
+        Thu, 25 Mar 2021 07:41:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=GdzCq3T7om+pz7j3QFSfZ1tOXdUKrpb/92e4E3T8X/I=;
+        b=sEX8x2yXmoK2+jNeXGqdrLWtGN8XkGHih83bo6i4pWoDgm315ZiLPmZLEkutLlcgRS
+         BYHXUTbEzgCOKDmPW8znEBAzCNw3+b9o/mLm3CNDFYzXZsDVm7tTwFigT5XBr6FyJLMh
+         C6JuSVw90tTcsf0XakBET4XeiNMcwiJ/+GmAzLWPAJqXqUbAKPDe/ZWqGHv9w46VJuEw
+         +wf6B6XaOT2POfeVL9xmPkMhSca41fMyoSp4jx8Vj9q8DMDeaYZbYG7Wgnj/XSG+qMvo
+         d5CU1OQ7P0IFo0c19ogxitd+irSkYK5+4nqfqJcCQ2/9zxEQeOWaNrlsTSMLkjlRjqC9
+         B6Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=GdzCq3T7om+pz7j3QFSfZ1tOXdUKrpb/92e4E3T8X/I=;
+        b=oHtUIU8a0ItogdSoP8NGhbeDFvE3FgbEd7gah7fQ4opxXYHQPY68k3SjGGX9Iql9RA
+         bAVfhbQ7GwWLnHXsUSmBHrPwW+FElctkkOmUmCJlO9077Vt2sbcK+H8kK6OkXpdobobQ
+         u0/5Npy5gMzshGkq0iud1H7oIbAPfbZo1DoHGIW2GBtHoVNfFf92/7MIxwELif5X9KRO
+         pfyqy5TYP33ReraGXyMx0FTvBI+0WkdLzcOw30Mg+Wpprnia13VaNlPODfh/6J/jnCf2
+         l/bvxnMYvzvUp8EHuqqnrSap35q6vMyDHxcIiieP7GWgRVOosnhkcUNjRjmTEIDXoWxT
+         bZ+w==
+X-Gm-Message-State: AOAM531NoMsVy9+ocB+fzm2LA5KNFW7gk3M1Glaqnmsz5idgCrQn66TI
+        ahM8vZHQ+F4lcIGQx+LdKeY=
+X-Google-Smtp-Source: ABdhPJySZkKzjV/v8FlhtQAHJjlx8GmO+AH2O1lmpuklKLuQbbCNqUFB/SVDO1YCUPGnF910Ooyt3w==
+X-Received: by 2002:a1c:e041:: with SMTP id x62mr8195659wmg.95.1616683314744;
+        Thu, 25 Mar 2021 07:41:54 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id b15sm7506572wmd.41.2021.03.25.07.41.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 07:41:53 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:42:15 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 5/5] soc/tegra: pmc: Rate-limit error message about
+ failed to acquire of reset
+Message-ID: <YFyhR1XgFGzJkkLt@orome.fritz.box>
+References: <20210302122502.20874-1-digetx@gmail.com>
+ <20210302122502.20874-6-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="RJVjZmigLjAB8zEk"
 Content-Disposition: inline
-In-Reply-To: <20210325122926.58392-2-heikki.krogerus@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210302122502.20874-6-digetx@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:29:21PM +0300, Heikki Krogerus wrote:
-> Introducing usb_for_each_port(). It works the same way as
-> usb_for_each_dev(), but instead of going through every USB
-> device in the system, it walks through the USB ports in the
-> system.
-> 
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-This has a couple of nasty errors.
+--RJVjZmigLjAB8zEk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Mar 02, 2021 at 03:25:02PM +0300, Dmitry Osipenko wrote:
+> PMC domain could be easily bombarded with the enable requests if there is
+> a problem in regards to acquiring reset control of a domain and kernel
+> log will be flooded with the error message in this case. Hence rate-limit
+> the message in order to prevent missing other important messages.
+>=20
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  drivers/usb/core/usb.c | 43 ++++++++++++++++++++++++++++++++++++++++++
->  include/linux/usb.h    |  1 +
->  2 files changed, 44 insertions(+)
-> 
-> diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-> index 2ce3667ec6fae..6d49db9a1b208 100644
-> --- a/drivers/usb/core/usb.c
-> +++ b/drivers/usb/core/usb.c
-> @@ -398,6 +398,49 @@ int usb_for_each_dev(void *data, int (*fn)(struct usb_device *, void *))
->  }
->  EXPORT_SYMBOL_GPL(usb_for_each_dev);
->  
-> +struct each_hub_arg {
-> +	void *data;
-> +	int (*fn)(struct device *, void *);
-> +};
-> +
-> +static int __each_hub(struct device *dev, void *data)
-> +{
-> +	struct each_hub_arg *arg = (struct each_hub_arg *)data;
-> +	struct usb_device *hdev = to_usb_device(dev);
+>  drivers/soc/tegra/pmc.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+> index bf29ea22480a..84ab27d85d92 100644
+> --- a/drivers/soc/tegra/pmc.c
+> +++ b/drivers/soc/tegra/pmc.c
+> @@ -868,8 +868,8 @@ static int tegra_genpd_power_off(struct generic_pm_do=
+main *domain)
+> =20
+>  	err =3D reset_control_acquire(pg->reset);
+>  	if (err < 0) {
+> -		dev_err(dev, "failed to acquire resets for PM domain %s: %d\n",
+> -			pg->genpd.name, err);
+> +		dev_err_ratelimited(dev, "failed to acquire resets for PM domain %s: %=
+d\n",
+> +				    pg->genpd.name, err);
 
-to_usb_device() won't work properly if the struct device isn't embedded 
-in an actual usb_device structure.  And that will happen, since the USB 
-bus type holds usb_interface structures as well as usb_devices.
+That doesn't look right. This is a serious error condition that
+shouldn't happen at all. Ever. If this shows up even once we've got a
+serious bug somewhere and we need to fix it rather than "downplay" it
+by ratelimiting these errors.
 
-In fact, you should use usb_for_each_dev here; it already does what you 
-want.
+What's the exact use-case where you see this?
 
-> +	struct usb_hub *hub;
-> +	int ret;
-> +	int i;
-> +
-> +	hub = usb_hub_to_struct_hub(hdev);
-> +	if (!hub)
-> +		return 0;
-> +
-> +	for (i = 0; i < hdev->maxchild; i++) {
-> +		ret = arg->fn(&hub->ports[i]->dev, arg->data);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
+Thierry
 
-Don't you need some sort of locking or refcounting here?  What would 
-happen if this hub got removed while the routine was running?
+--RJVjZmigLjAB8zEk
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Alan Stern
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcoUcACgkQ3SOs138+
+s6FFhhAAtIJuqjxGYDFRf1CJZP0iY2TPW4F7PvvDMsjmFbmqZuYMORvoE1+qV4MO
+5CkG/3KCAYMhdxrIB6eTz5C6latwUGHvrbW3VjYaDr9843aF+qvGSq0I1BXN5Lqs
+CkZVtg04DpMYopyoNJqDh4PcYF/+AdI1vSNm+m6z/x9FAbQJdH5yU/4pPFAR/SMh
+IEu1Ku0r2z904Z6H2yY+BaodLTV3r5QUQXdZ05ep+/JxeluHipZ91mnuq/XSyC1V
+gkuqesTGfephbUTZFWg8qUifEUfj8Z7V0Tzcvha5zyawNWVJ03caGvtwDPbeLkv+
+g409K2hT/ubkT4PQTSkO+f3u9Ez3qRy/lD38kJGhuHuuXn5EZ2vRfapsbUQ+D8YJ
+QXUIbkaxBfhqO6mYcpT+Pm43C4tzaxZqo6047aKQqTVdsYDbvvdRDuLUoZeYYUSU
+5MtUVYjrAP1unFdqOfDvU9uymjpHYF4PImTEBrPd70XkqPDYR68QMHJG/Ag8GaBP
+JkyPyWfaIrjKjsgInut3zmNGCcqL4k9LT9HUJyuwv1iUgEIsICn49lxclp+Tat1C
+Jog61+Z4oDPpOOJ3NpZnA6fb28eTKVOFN06vOVaHcuJcV7pMRzHI0EhfHT0t4n0H
+MKREKdH6aV8SfKqC+6WwoV/T49WZEmXMT2oX4qJvI/+TkR3mhcA=
+=WO4j
+-----END PGP SIGNATURE-----
+
+--RJVjZmigLjAB8zEk--
