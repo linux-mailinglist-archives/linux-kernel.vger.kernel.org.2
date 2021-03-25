@@ -2,81 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1E6348A24
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B24348A26
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhCYH0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:26:35 -0400
-Received: from mga11.intel.com ([192.55.52.93]:6371 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCYH0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:26:15 -0400
-IronPort-SDR: M+pd+nCG5c7YBvlqyOv7H32KokVtfkeJ4uTscnzMRMJ54OgEf+dBtHkCuGxD4RJOK6QQ3mXYMs
- aulZPyJQ1q3w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="187570299"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="187570299"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 00:26:14 -0700
-IronPort-SDR: 5YUFgyEOmHp/+MWrN7JiWpc6CggC+fZhcCS9g7MCs9puzXcGvQ41vXaUw9ODLfEgKGWFXk1e8n
- qEK6gUaHOmZg==
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="415870120"
-Received: from unknown (HELO [10.238.130.187]) ([10.238.130.187])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 00:26:10 -0700
-Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
- first use of dynamic user state
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Len Brown <lenb@kernel.org>, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        X86 ML <x86@kernel.org>, "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-15-chang.seok.bae@intel.com>
- <87o8fda2ye.fsf@nanos.tec.linutronix.de>
- <CALCETrVaCmG4jzLCSuy7WYP2K7r-MVZntfugWa8HiVxQ7LpF_A@mail.gmail.com>
- <CAJvTdKmz7aePcpi4i+d3vnqLuNAJEuJCjpGDv5WTYcSUfuxoDg@mail.gmail.com>
- <6ed9d725-a6cb-4147-9c8a-2fe240e4bb10@linux.intel.com>
- <CAJvTdKm_uP-RqoprWWatg725WZOm3T-BHZU8S08dpWe2=1apGw@mail.gmail.com>
- <87fb254f-a904-303e-daee-c9a3e9bf13b7@linux.intel.com>
- <A2F31E33-4F15-431B-8407-438750186895@intel.com>
-From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
-Message-ID: <84047b4a-48e3-6efc-643a-06cfcc0630cc@linux.intel.com>
-Date:   Thu, 25 Mar 2021 15:26:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S229949AbhCYH0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:26:38 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45830 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhCYH0Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:26:24 -0400
+Received: from mail-lj1-f198.google.com ([209.85.208.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lPKNp-0006HJ-FL
+        for linux-kernel@vger.kernel.org; Thu, 25 Mar 2021 07:26:21 +0000
+Received: by mail-lj1-f198.google.com with SMTP id j21so2572898ljg.18
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:26:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h65iB8fJxtr3WXADdRV0fzAhv+9Eb2KmvqOOMl04h9E=;
+        b=Oc95dYjwYsOWxY00YPH7xzfBq/bTbxVL9b206uPxD50NdS/nXf8/YecfGCYWYe/5m6
+         d58yBocMyZkYScSaMQEyt2jWWXqUh6n9+mOxbnsFpesHFm4PApOJWWRJfkEwLBIPehNG
+         QLS4StiX56sIbRjtDp7GdqQ9LZVlVXpbjfnbUFh3VAnMkStX58q5S0hBzVIa5HqpWLHf
+         CJrsBJTOXy6yxM5ktzgDbMwtgwdk10r9tamrG48twI34N0uvtf5yeLnpggGMW3X0AkXN
+         pvXxrKqachK3KskG4Tznt6gL6enj6KviDGsLUK517lKREZYhzsvyeVr3ENoqH9CBii6/
+         Inng==
+X-Gm-Message-State: AOAM5332yHzaPpcRNoKM5IXyVi2QtCVAYoQ3BbyAIOqzWNM+XeyzVB03
+        UuI8gEn7Tu+cnWLm+LGz+r9paZtQ8dnlj8GOsnd2Op6JPT9iPlNsUBaLkdb42ZVWqWHA8gHWl7/
+        9cW2Y8kqVWiE1djGMkV+aUrYfeQzikjcGnxhVMXEFZI6/cew8FdD6av17fg==
+X-Received: by 2002:a05:6512:3582:: with SMTP id m2mr4267452lfr.10.1616657180879;
+        Thu, 25 Mar 2021 00:26:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxWhSFaP7Ao1JcRgKv4+ndiMSYVHoI38U66PJbVh7i1QaGIDxdSdC/uz+tig0tTd5RsHT71ayOnRogMl8iDzOs=
+X-Received: by 2002:a05:6512:3582:: with SMTP id m2mr4267441lfr.10.1616657180598;
+ Thu, 25 Mar 2021 00:26:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <A2F31E33-4F15-431B-8407-438750186895@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210324171410.285848-1-kai.heng.feng@canonical.com>
+ <20210324171410.285848-2-kai.heng.feng@canonical.com> <s5hzgyrn1id.wl-tiwai@suse.de>
+In-Reply-To: <s5hzgyrn1id.wl-tiwai@suse.de>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 25 Mar 2021 15:26:09 +0800
+Message-ID: <CAAd53p7F=TWu5aYT00C03kDvtF-Wfw2YzeweGHecRHT87oNb+A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: usb-audio: Check connector value on resume
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Chris Chiu <chiu@endlessm.com>, Joe Perches <joe@perches.com>,
+        Tom Yan <tom.ty89@gmail.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
->>> For AMX, we must still reserve the space, but we are not going to write zeros
->>> for clean state.  We so this in software by checking XINUSE=0, and clearing
->>> the xstate_bf for the XSAVE.  As a result, for XINUSE=0, we can skip
->>> writing the zeros, even though we can't compress the space.
->> So my understanding is that clearing xstate_bv will not help prevent saving
->> zeros, but only not masking EDX:EAX, since the following logic. Not sure if
->> this is just what you mean. :)
-> FWIW, PATCH21 [1] uses the instruction mask to skip writing zeros on sigframe.
-> Then, XSAVE will clear the xstate_bv for the xtile data state bit.
+On Thu, Mar 25, 2021 at 3:19 PM Takashi Iwai <tiwai@suse.de> wrote:
 >
-> [1] https://lore.kernel.org/lkml/20210221185637.19281-22-chang.seok.bae@intel.com/
-Yes, no mask in EDX:EAX works in such case. Thanks for pointing out the 
-patch.
-
-BRs,
-Jing
+> On Wed, 24 Mar 2021 18:14:08 +0100,
+> Kai-Heng Feng wrote:
+> >
+> > Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
+> > error and the other two functions of the USB audio, Line In and Line
+> > Out, work just fine.
+> >
+> > The mic starts to work again after running userspace app like "alsactl
+> > store". Following the lead, the evidence shows that as soon as connector
+> > status is queried, the mic can work again.
+> >
+> > So also check connector value on resume to "wake up" the USB audio to
+> > make it functional.
+> >
+> > This can be device specific, however I think this generic approach may
+> > benefit more than one device.
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 >
-> Thanks,
-> Chang
+> Just to be sure: this workaround is always needed no matter whether
+> reset_resume is set or not?
 
+Yes, reset_resume is irrelevant for this issue. Getting connector
+status is the key.
+
+> If so, it's better to change the resume
+> callback to take reset_resume argument and call it always.  The
+> resume_connector() can be folded into there.
+
+OK, will send V2.
+
+Kai-Heng
+
+>
+>
+> thanks,
+>
+> Takashi
+>
+> > ---
+> >  sound/usb/mixer.c | 18 ++++++++++++++++++
+> >  sound/usb/mixer.h |  1 +
+> >  2 files changed, 19 insertions(+)
+> >
+> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> > index 98f5417a70e4..6a553d891b0f 100644
+> > --- a/sound/usb/mixer.c
+> > +++ b/sound/usb/mixer.c
+> > @@ -3631,11 +3631,28 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
+> >       return 0;
+> >  }
+> >
+> > +static int resume_connector(struct usb_mixer_elem_list *list)
+> > +{
+> > +     struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
+> > +
+> > +     if (cval->val_type != USB_MIXER_BOOLEAN || cval->channels != 1)
+> > +             return 0;
+> > +
+> > +     return get_connector_value(cval, NULL, NULL);
+> > +}
+> > +
+> >  int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
+> >  {
+> >       struct usb_mixer_elem_list *list;
+> >       int id, err;
+> >
+> > +     for (id = 0; id < MAX_ID_ELEMS; id++) {
+> > +             for_each_mixer_elem(list, mixer, id) {
+> > +                     if (list->resume_connector)
+> > +                             list->resume_connector(list);
+> > +             }
+> > +     }
+> > +
+> >       if (reset_resume) {
+> >               /* restore cached mixer values */
+> >               for (id = 0; id < MAX_ID_ELEMS; id++) {
+> > @@ -3664,5 +3681,6 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
+> >       list->dump = snd_usb_mixer_dump_cval;
+> >  #ifdef CONFIG_PM
+> >       list->resume = restore_mixer_value;
+> > +     list->resume_connector = resume_connector;
+> >  #endif
+> >  }
+> > diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+> > index c29e27ac43a7..843ccff0eea3 100644
+> > --- a/sound/usb/mixer.h
+> > +++ b/sound/usb/mixer.h
+> > @@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
+> >       bool is_std_info;
+> >       usb_mixer_elem_dump_func_t dump;
+> >       usb_mixer_elem_resume_func_t resume;
+> > +     usb_mixer_elem_resume_func_t resume_connector;
+> >  };
+> >
+> >  /* iterate over mixer element list of the given unit id */
+> > --
+> > 2.30.2
+> >
