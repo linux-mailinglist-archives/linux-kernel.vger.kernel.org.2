@@ -2,74 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB18349AD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F1A349ADA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:10:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhCYUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:09:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCYUI1 (ORCPT
+        id S230270AbhCYUKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:10:10 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:55352 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229977AbhCYUJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:08:27 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8BB4C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:08:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=Shyze7IYwmhdHuk7ciduosr01KilslJO6pqTFNfikQU=; b=ioLIImccLGwVIYrkNdnjxiaVcf
-        ShZvZlyqF0RC+1EwtkpAaKvmZ3F/reGuOBnAF+eGpmRq84NTpac7IOd1PiSzatcp981MN0NBoCSNe
-        rzH8Sbaqy0lQaOHHCCDR30u5gtFY85brlJ/UevK3T5pZrbzWjSoa/RCZgvpOVsR2gemv6G6MSgxs6
-        weea96UMKae3zacfKBPPr/5EKDdkH9bq+NTBMD7hZOEp5uuKdR2igTQKMoHy6WOyvfU/Ndh7E7Q1e
-        yooSWs+En8usHn07bxSFa97Av8CBl3K6iENrax5BV3TdkIfEuSsscpl3nj951frli0zlbhlMSwdt+
-        KDs4uihw==;
-Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPWHH-0028a1-W4; Thu, 25 Mar 2021 20:08:24 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] selftests: powerpc: unmark non-kernel-doc comments
-Date:   Thu, 25 Mar 2021 13:08:20 -0700
-Message-Id: <20210325200820.16594-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Thu, 25 Mar 2021 16:09:56 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12PK9e9X093749;
+        Thu, 25 Mar 2021 15:09:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616702980;
+        bh=D2vku1A4QvBUs3er+RFyi03Y9hQGsZzmhfOh4GWoyxg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=RcFJXNF8iaDsCYT1UNDl3ibmGk5VNUk8KVlZ9Qcv6NrVvMmaNH5kbMcZnQI1sYYOd
+         vkG7+x/LbuKOCTBDlNDrCZChOxPdESbJSocAQy4FEcgIguibpDVp6/y0VUc/AqxfDP
+         ezhynDXb/du9Okgv+ztHYJC9cm0wni7UPFENFyr8=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12PK9eIe001197
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 25 Mar 2021 15:09:40 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 25
+ Mar 2021 15:09:40 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 25 Mar 2021 15:09:40 -0500
+Received: from [10.250.33.213] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12PK9edB130879;
+        Thu, 25 Mar 2021 15:09:40 -0500
+Subject: Re: [PATCH] remoteproc: pru: Fix firmware loading crashes on K3 SoCs
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210315205859.19590-1-s-anna@ti.com>
+ <20210323232014.GA1782475@xps15>
+ <2f8bfc4f-e43d-5e38-fc6d-7045c69af364@ti.com>
+ <CANLsYkw75yTfzXBOV4u03XETYH4zfOPUozKRxp=RroYvzfXR9Q@mail.gmail.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <eac64cf8-79bf-692d-8884-2cb340598e04@ti.com>
+Date:   Thu, 25 Mar 2021 15:09:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANLsYkw75yTfzXBOV4u03XETYH4zfOPUozKRxp=RroYvzfXR9Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the 'beginning of kernel-doc' notation markers (/**)
-in places that are not in kernel-doc format.
+On 3/25/21 12:36 PM, Mathieu Poirier wrote:
+> On Wed, 24 Mar 2021 at 11:09, Suman Anna <s-anna@ti.com> wrote:
+>>
+>> On 3/23/21 6:20 PM, Mathieu Poirier wrote:
+>>> On Mon, Mar 15, 2021 at 03:58:59PM -0500, Suman Anna wrote:
+>>>> The K3 PRUs are 32-bit processors and in general have some limitations
+>>>> in using the standard ARMv8 memcpy function for loading firmware segments,
+>>>> so the driver already uses a custom memcpy implementation. This added
+>>>> logic however is limited to only IRAMs at the moment, but the loading
+>>>> into Data RAMs is not completely ok either and does generate a kernel
+>>>> crash for unaligned accesses.
+>>>>
+>>>> Fix these crashes by removing the existing IRAM logic limitation and
+>>>> extending the custom memcpy usage to Data RAMs as well for all K3 SoCs.
+>>>>
+>>>> Fixes: 1d39f4d19921 ("remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs")
+>>>> Signed-off-by: Suman Anna <s-anna@ti.com>
+>>>
+>>> Probably a good idea to CC stable as well...
+>>>
+>>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>
+>> Thanks Mathieu. This patch is already staged on Bjorn's rproc-fixes branch
+>> though and part of linux-next since next-20210319. I have posted an additional
+>> 3-patch series for some more PRU fixes. Do you want me to post a v2 for those
+>> with stable Cc'd?
+> 
+> I didn't notice Bjorn had already picked it up.  Since the object is
+> now public there is no need to send a V2 for this one.  I haven't
+> looked at your other 3-patch series but if you think it is stable
+> material then yes, please send a new revision that CC stable.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linuxppc-dev@lists.ozlabs.org
----
- tools/testing/selftests/powerpc/tm/tm-trap.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Alright, will do.
 
---- linux-next-20210323.orig/tools/testing/selftests/powerpc/tm/tm-trap.c
-+++ linux-next-20210323/tools/testing/selftests/powerpc/tm/tm-trap.c
-@@ -66,7 +66,7 @@ void trap_signal_handler(int signo, sigi
- 	/* Get thread endianness: extract bit LE from MSR */
- 	thread_endianness = MSR_LE & ucp->uc_mcontext.gp_regs[PT_MSR];
- 
--	/***
-+	/*
- 	 * Little-Endian Machine
- 	 */
- 
-@@ -126,7 +126,7 @@ void trap_signal_handler(int signo, sigi
- 		}
- 	}
- 
--	/***
-+	/*
- 	 * Big-Endian Machine
- 	 */
- 
+regards
+Suman
+
+> 
+> Mathieu
+> 
+>>
+>> regards
+>> Suman
+>>
+>>>
+>>>> ---
+>>>>  drivers/remoteproc/pru_rproc.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+>>>> index 2667919d76b3..16979c1cd2f4 100644
+>>>> --- a/drivers/remoteproc/pru_rproc.c
+>>>> +++ b/drivers/remoteproc/pru_rproc.c
+>>>> @@ -585,7 +585,7 @@ pru_rproc_load_elf_segments(struct rproc *rproc, const struct firmware *fw)
+>>>>                      break;
+>>>>              }
+>>>>
+>>>> -            if (pru->data->is_k3 && is_iram) {
+>>>> +            if (pru->data->is_k3) {
+>>>>                      ret = pru_rproc_memcpy(ptr, elf_data + phdr->p_offset,
+>>>>                                             filesz);
+>>>>                      if (ret) {
+>>>> --
+>>>> 2.30.1
+>>>>
+>>
+
