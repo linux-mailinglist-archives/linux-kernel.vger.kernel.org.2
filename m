@@ -2,172 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9A5349A50
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D795349A52
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhCYTco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:32:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229629AbhCYTcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:32:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43EF861A39;
-        Thu, 25 Mar 2021 19:32:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616700742;
-        bh=wPQ5Sea1VKNbkcHcSE2wOkcPab+jTWd/uy3MX0n6t8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qhPz13AMwoqBiPYoRSp+sOrqs8xLR1phPnSElfXaT3SrbfZRHiaZgO6D7YxgFZFFB
-         oYa7bMFovpREENQs5jwQgUYDLkzu2gcrVCPDsaBy6SzeQvaW1qrofhoLHr6Wq6E1CS
-         KMdfhVDAoQwH/bhQKHL6qSPnxH+MpGsDZdurCpwfuSeXSV6DGHtZ9Fdftq9PoXLTtS
-         VR152Oo7hAfi8Zdxu/F1l7A4k8xXQKOqYBWtJAYNCqivBoeVVWU4ZgtKVn4Gt+lrBU
-         bmmEoQwh5ps8MzGegpOwIpYOQNtaD7Lg+t46gFEMs2T6iX+7F6kF2hWshOdydJPQ3n
-         9ZQrmixlOTDcA==
-Date:   Thu, 25 Mar 2021 19:32:17 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, danielwa@cisco.com,
-        robh@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] cmdline: Gives architectures opportunity to use
- generically defined boot cmdline manipulation
-Message-ID: <20210325193216.GC16123@willie-the-truck>
-References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
- <2eb6fad3470256fff5c9f33cd876f344abb1628b.1614705851.git.christophe.leroy@csgroup.eu>
- <20210303175747.GD19713@willie-the-truck>
- <8db81511-3f28-4ef1-5e66-188cf7cafad1@csgroup.eu>
+        id S230195AbhCYTdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230226AbhCYTd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:33:28 -0400
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384C6C06174A;
+        Thu, 25 Mar 2021 12:33:28 -0700 (PDT)
+Received: from fencepost.gnu.org ([2001:470:142:3::e]:58621)
+        by eggs.gnu.org with esmtp (Exim 4.90_1)
+        (envelope-from <marius@gnu.org>)
+        id 1lPVjN-0003nh-Pj; Thu, 25 Mar 2021 15:33:21 -0400
+Received: from host-37-191-226-238.lynet.no ([37.191.226.238]:41772 helo=localhost)
+        by fencepost.gnu.org with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.82)
+        (envelope-from <marius@gnu.org>)
+        id 1lPVjL-0005TK-0E; Thu, 25 Mar 2021 15:33:20 -0400
+From:   Marius Bakke <marius@gnu.org>
+To:     ricky_wu@realtek.com
+Cc:     arnd@arndb.de, bhelgaas@google.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        puranjay12@gmail.com, rui_feng@realsil.com.cn,
+        ulf.hansson@linaro.org, vailbhavgupta40@gamail.com
+Subject: Sudden poweroffs when idle on ThinkPad x290s since v5.10-rc1
+ (bisected to 7c33e3c4c79a)
+In-Reply-To: 20200907100731.7722-1-ricky_wu@realtek.com
+Date:   Thu, 25 Mar 2021 20:33:16 +0100
+Message-ID: <87tuozm3k3.fsf@gnu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8db81511-3f28-4ef1-5e66-188cf7cafad1@csgroup.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 12:18:38PM +0100, Christophe Leroy wrote:
-> 
-> 
-> Le 03/03/2021 à 18:57, Will Deacon a écrit :
-> > On Tue, Mar 02, 2021 at 05:25:22PM +0000, Christophe Leroy wrote:
-> > > Most architectures have similar boot command line manipulation
-> > > options. This patchs adds the definition in init/Kconfig, gated by
-> > > CONFIG_HAVE_CMDLINE that the architectures can select to use them.
-> > > 
-> > > In order to use this, a few architectures will have to change their
-> > > CONFIG options:
-> > > - riscv has to replace CMDLINE_FALLBACK by CMDLINE_FROM_BOOTLOADER
-> > > - architectures using CONFIG_CMDLINE_OVERRIDE or
-> > > CONFIG_CMDLINE_OVERWRITE have to replace them by CONFIG_CMDLINE_FORCE.
-> > > 
-> > > Architectures also have to define CONFIG_DEFAULT_CMDLINE.
-> > > 
-> > > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > > ---
-> > >   init/Kconfig | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 56 insertions(+)
-> > > 
-> > > diff --git a/init/Kconfig b/init/Kconfig
-> > > index 22946fe5ded9..a0f2ad9467df 100644
-> > > --- a/init/Kconfig
-> > > +++ b/init/Kconfig
-> > > @@ -117,6 +117,62 @@ config INIT_ENV_ARG_LIMIT
-> > >   	  Maximum of each of the number of arguments and environment
-> > >   	  variables passed to init from the kernel command line.
-> > > +config HAVE_CMDLINE
-> > > +	bool
-> > > +
-> > > +config CMDLINE_BOOL
-> > > +	bool "Default bootloader kernel arguments"
-> > > +	depends on HAVE_CMDLINE
-> > > +	help
-> > > +	  On some platforms, there is currently no way for the boot loader to
-> > > +	  pass arguments to the kernel. For these platforms, you can supply
-> > > +	  some command-line options at build time by entering them here.  In
-> > > +	  most cases you will need to specify the root device here.
-> > 
-> > Why is this needed as well as CMDLINE_FROM_BOOTLOADER? IIUC, the latter
-> > will use CONFIG_CMDLINE if it fails to get anything from the bootloader,
-> > which sounds like the same scenario.
-> > 
-> > > +config CMDLINE
-> > > +	string "Initial kernel command string"
-> > 
-> > s/Initial/Default
-> > 
-> > which is then consistent with the rest of the text here.
-> > 
-> > > +	depends on CMDLINE_BOOL
-> > 
-> > Ah, so this is a bit different and I don't think lines-up with the
-> > CMDLINE_BOOL help text.
-> > 
-> > > +	default DEFAULT_CMDLINE
-> > > +	help
-> > > +	  On some platforms, there is currently no way for the boot loader to
-> > > +	  pass arguments to the kernel. For these platforms, you can supply
-> > > +	  some command-line options at build time by entering them here.  In
-> > > +	  most cases you will need to specify the root device here.
-> > 
-> > (same stale text)
-> > 
-> > > +choice
-> > > +	prompt "Kernel command line type" if CMDLINE != ""
-> > > +	default CMDLINE_FROM_BOOTLOADER
-> > > +	help
-> > > +	  Selects the way you want to use the default kernel arguments.
-> > 
-> > How about:
-> > 
-> > "Determines how the default kernel arguments are combined with any
-> >   arguments passed by the bootloader"
-> > 
-> > > +config CMDLINE_FROM_BOOTLOADER
-> > > +	bool "Use bootloader kernel arguments if available"
-> > > +	help
-> > > +	  Uses the command-line options passed by the boot loader. If
-> > > +	  the boot loader doesn't provide any, the default kernel command
-> > > +	  string provided in CMDLINE will be used.
-> > > +
-> > > +config CMDLINE_EXTEND
-> > 
-> > Can we rename this to CMDLINE_APPEND, please? There is code in the tree
-> > which disagrees about what CMDLINE_EXTEND means, so that will need be
-> > to be updated to be consistent (e.g. the EFI stub parsing order). Having
-> > the generic option with a different name means we won't accidentally end
-> > up with the same inconsistent behaviours.
-> 
-> Argh, yes. Seems like the problem is even larger than that IIUC:
-> 
-> - For ARM it means to append the bootloader arguments to the CONFIG_CMDLINE
-> - For Powerpc it means to append the CONFIG_CMDLINE to the bootloader arguments
-> - For SH  it means to append the CONFIG_CMDLINE to the bootloader arguments
-> - For EFI it means to append the bootloader arguments to the CONFIG_CMDLINE
-> - For OF it means to append the CONFIG_CMDLINE to the bootloader arguments
-> 
-> So what happens on ARM for instance when it selects CONFIG_OF for instance ?
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-I think ARM gets different behaviour depending on whether it uses ATAGs or
-FDT.
+Hello,
 
-> Or should we consider that EXTEND means APPEND or PREPEND, no matter which ?
-> Because EXTEND is for instance used for:
-> 
-> 	config INITRAMFS_FORCE
-> 		bool "Ignore the initramfs passed by the bootloader"
-> 		depends on CMDLINE_EXTEND || CMDLINE_FORCE
+After updating to the 5.10 kernel, my laptop will spontaneously poweroff
+when idle after some time (between 30 minutes and three days).
 
-Oh man, I didn't spot that one :(
+I have bisected it down to a rtsx driver update in 7c33e3c4c79a:
 
-I think I would make the generic options explicit: either APPEND or PREPEND.
-Then architectures which choose to define CMDLINE_EXTEND in their Kconfigs
-can select the generic option that matches their behaviour.
+commit 7c33e3c4c79ac5def79e7c773e38a7113eb14204
+Author: Ricky Wu <ricky_wu@realtek.com>
+Date:   Mon Sep 7 18:07:31 2020 +0800
 
-INITRAMFS_FORCE sounds like it should depend on APPEND (assuming that means
-CONFIG_CMDLINE is appended to the bootloader arguments).
+    misc: rtsx: Add power saving functions and fix driving parameter
+=20=20=20=20
+    v4:
+    split power down flow and power saving function to two patch
+=20=20=20=20
+    v5:
+    fix up modified change under the --- line
+=20=20=20=20
+    Add rts522a L1 sub-state support
+    Save more power on rts5227 rts5249 rts525a rts5260
+    Fix rts5260 driving parameter
+=20=20=20=20
+    Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
+    Link: https://lore.kernel.org/r/20200907100731.7722-1-ricky_wu@realtek.=
+com
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Will
+ drivers/misc/cardreader/rts5227.c  | 112 +++++++++++++++++++++++++++-
+ drivers/misc/cardreader/rts5249.c  | 145 +++++++++++++++++++++++++++++++++=
++++-
+ drivers/misc/cardreader/rts5260.c  |  28 +++----
+ drivers/misc/cardreader/rtsx_pcr.h |  17 +++++
+ 4 files changed, 283 insertions(+), 19 deletions(-)
+
+(See also <https://bugzilla.kernel.org/show_bug.cgi?id=3D211809>.)
+
+I'm not sure whether this is a driver or hardware problem and am seeking
+feedback on how to further debug the issue.
+
+FWIW the problem does not seem to reproduce on an AMD ThinkPad T14 Gen 1
+with the same RTS522A PCIe card reader (on stock Arch 5.10.16 kernel).
+
+Thanks & happy hacking,
+Marius
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIUEARYKAC0WIQRNTknu3zbaMQ2ddzTocYulkRQQdwUCYFzlfA8cbWFyaXVzQGdu
+dS5vcmcACgkQ6HGLpZEUEHf4ngD+LGctGYG2EYdNavgHwhsvYsfyjXRMo6lrr+fO
+NCX2074A/3dOuSD880jXBrGi/NymBDhkUGID/X0MwUrzxoYzXwgN
+=DJhI
+-----END PGP SIGNATURE-----
+--=-=-=--
