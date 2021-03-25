@@ -2,253 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C301349837
+	by mail.lfdr.de (Postfix) with ESMTP id DB34734983A
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhCYRgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230098AbhCYRgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:36:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA63761A1E;
-        Thu, 25 Mar 2021 17:36:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616693767;
-        bh=eT9zfN+78m5/pu1eHoRBGPw92wW17X08L+rDfR3REwY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nvdobjEGdT9GkQZoo68ZxCnYmJm/WZgYKr5TmRFa3x649yc6anm8bTNCFRjp3inaX
-         8Hyp5cJa/mQjZFGs+FCqv1FRrYb/fUPASkppiGvff0AneqUMZz6I5TQELbFhEYIROR
-         1RQuQW0CfbAx63SQ3GAfZGpruOJfcsHj8FC8R+1oIN5B5OO6eVmDwenEdmaqhsfEzC
-         GZd/jsI0x0RYEi2p+u8/A0s6c8x9+XddpJuVq5mZdoPrjf9iqQIjzFgELhuYsdxamw
-         g7QirNv0CsclGIi78/MW2imByTrqLRlfzI1L3Kmgn6m1KGvO/N6oAZU2W9m+3obv34
-         g93NvJCR0bYEQ==
-Date:   Thu, 25 Mar 2021 19:36:03 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     info@metux.net, raphael.norwitz@nutanix.com,
-        alex.williamson@redhat.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YFzKA8Qd4phT+IrK@unreal>
-References: <YFcGlzbaSzQ5Qota@unreal>
- <20210322111003.50d64f2c@omen.home.shazbot.org>
- <YFsOVNM1zIqNUN8f@unreal>
- <20210324083743.791d6191@omen.home.shazbot.org>
- <YFtXNF+t/0G26dwS@unreal>
- <20210324111729.702b3942@omen.home.shazbot.org>
- <YFxL4o/QpmhM8KiH@unreal>
- <20210325085504.051e93f2@omen.home.shazbot.org>
- <YFy11u+fm4MEGU5X@unreal>
- <20210325172257.jo67q62zxw45adwi@archlinux>
+        id S230220AbhCYRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhCYRg0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:36:26 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125E0C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 10:36:26 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id n21so2700835ioa.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 10:36:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VdRMge6sdV5ktctESiFYyHXwrU2yYoKNxmrhqMmsgLI=;
+        b=sxIVW0xGPaqdod1D5xroR1WaBxP6OVj9rIkErpr3i1SoDZENmnhlvZzq3jBCFNT+du
+         HkDwWD3SXwKChk39ZH01ZvDu5VGSb1YaV1XXprk/p92QQrAK1ntI9v/Mf9Dd4xqsf2wT
+         8IRuW4X9P+9zKsllBMJwznAg6rVzyMmm/mv7PdZISYVep20GNxBLJ+3H9Gk9PGgCIopm
+         rn4ud13+0IAg8JwmMftLbo76hCNEBk7JwcXxnLhehQopFoJRJmy7I9vo0oJBCDQJ1jjM
+         Yn7Q5S7C6IIP0sTWmXZz0qIuNdwK9V1hiHtTFfxCafZipgbC6/I+hh7LKw2gG32ZLgXc
+         1AZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VdRMge6sdV5ktctESiFYyHXwrU2yYoKNxmrhqMmsgLI=;
+        b=i5pMzbuc/YYS6giTzzQLr8qzqGB8iLBxF2/X4MDeXJSjz6iyKVew4Mt0sPCNDuTWky
+         3jatl4qOH8LUkBtgeFrsYAysZA9mPGjo+KzM3S87Gxi9jhD2m6ljXGWk+WwagC8ugrM3
+         ILFfvde2JZBc41b9x1PyHluwLoiax2O0rR3mL2vztp9gggydFUqXdmskPfRv4c2upIJU
+         00Kd9xG9IhF4hTR3ZOoZRqNV5SKKhO1hFOguJZwdpl3zez3e5WMARKbRw7H5dqKdC8Xs
+         vMqDW3OGhpHEJw+tlnqY9TdHnE5GREfGpOHhQmUr0zQMi2WKmIWM0dZB5pKlwy3JwqVE
+         J2wA==
+X-Gm-Message-State: AOAM531wKNP3z6obP4w4roDjekRkWJXoF+RmWVUBztKRRMDWbFPcU7Hs
+        8wZkU9gC4MUnywUydDqQ0eAW1v2w232cWSWCzLjrog==
+X-Google-Smtp-Source: ABdhPJwYh/LvLq5CzlRSuR5Ap+0Jdp6R+ZxP6fBfPH97VRXkhW6qBS/78XiXeEl1k1fe8eV+JXKIWx5cq7xtnMnU5Ms=
+X-Received: by 2002:a05:6638:1390:: with SMTP id w16mr8544589jad.83.1616693785388;
+ Thu, 25 Mar 2021 10:36:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325172257.jo67q62zxw45adwi@archlinux>
+References: <20210315205859.19590-1-s-anna@ti.com> <20210323232014.GA1782475@xps15>
+ <2f8bfc4f-e43d-5e38-fc6d-7045c69af364@ti.com>
+In-Reply-To: <2f8bfc4f-e43d-5e38-fc6d-7045c69af364@ti.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Thu, 25 Mar 2021 11:36:14 -0600
+Message-ID: <CANLsYkw75yTfzXBOV4u03XETYH4zfOPUozKRxp=RroYvzfXR9Q@mail.gmail.com>
+Subject: Re: [PATCH] remoteproc: pru: Fix firmware loading crashes on K3 SoCs
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-omap@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:52:57PM +0530, Amey Narkhede wrote:
-> On 21/03/25 06:09PM, Leon Romanovsky wrote:
-> > On Thu, Mar 25, 2021 at 08:55:04AM -0600, Alex Williamson wrote:
-> > > On Thu, 25 Mar 2021 10:37:54 +0200
-> > > Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > > On Wed, Mar 24, 2021 at 11:17:29AM -0600, Alex Williamson wrote:
-> > > > > On Wed, 24 Mar 2021 17:13:56 +0200
-> > > > > Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > <...>
-> > > >
-> > > > > > Yes, and real testing/debugging almost always requires kernel rebuild.
-> > > > > > Everything else is waste of time.
-> > > > >
-> > > > > Sorry, this is nonsense.  Allowing users to debug issues without a full
-> > > > > kernel rebuild is a good thing.
-> > > >
-> > > > It is far from debug, this interface doesn't give you any answers why
-> > > > the reset didn't work, it just helps you to find the one that works.
-> > > >
-> > > > Unless you believe that this information will be enough to understand
-> > > > the root cause, you will need to ask from the user to perform extra
-> > > > tests, maybe try some quirk. All of that requires from the users to
-> > > > rebuild their kernel.
-> > > >
-> > > > So no, it is not debug.
-> > >
-> > > It allows a user to experiment to determine (a) my device doesn't work
-> > > in a given scenario with the default configuration, but (b) if I change
-> > > the reset to this other thing it does work.  That is a step in
-> > > debugging.
-> > >
-> > > It's absurd to think that a sysfs attribute could provide root cause,
-> > > but it might be enough for someone to further help that user.  It would
-> > > be a useful clue for a bug report.  Yes, reaching root cause might
-> > > involve building a kernel, but that doesn't invalidate that having a
-> > > step towards debugging in the base kernel might be a useful tool.
+On Wed, 24 Mar 2021 at 11:09, Suman Anna <s-anna@ti.com> wrote:
+>
+> On 3/23/21 6:20 PM, Mathieu Poirier wrote:
+> > On Mon, Mar 15, 2021 at 03:58:59PM -0500, Suman Anna wrote:
+> >> The K3 PRUs are 32-bit processors and in general have some limitations
+> >> in using the standard ARMv8 memcpy function for loading firmware segments,
+> >> so the driver already uses a custom memcpy implementation. This added
+> >> logic however is limited to only IRAMs at the moment, but the loading
+> >> into Data RAMs is not completely ok either and does generate a kernel
+> >> crash for unaligned accesses.
+> >>
+> >> Fix these crashes by removing the existing IRAM logic limitation and
+> >> extending the custom memcpy usage to Data RAMs as well for all K3 SoCs.
+> >>
+> >> Fixes: 1d39f4d19921 ("remoteproc: pru: Add support for various PRU cores on K3 AM65x SoCs")
+> >> Signed-off-by: Suman Anna <s-anna@ti.com>
 > >
-> > Let's agree to do not agree.
+> > Probably a good idea to CC stable as well...
 > >
-> > >
-> > > > > > > > > For policy preference, I already described how I've configured QEMU to
-> > > > > > > > > prefer a bus reset rather than a PM reset due to lack of specification
-> > > > > > > > > regarding the scope of a PM "soft reset".  This interface would allow a
-> > > > > > > > > system policy to do that same thing.
-> > > > > > > > >
-> > > > > > > > > I don't think anyone is suggesting this as a means to avoid quirks that
-> > > > > > > > > would resolve reset issues and create the best default general behavior.
-> > > > > > > > > This provides a mechanism to test various reset methods, and thereby
-> > > > > > > > > identify broken methods, and set a policy.  Sure, that policy might be
-> > > > > > > > > to avoid a broken reset in the interim before it gets quirked and
-> > > > > > > > > there's potential for abuse there, but I think the benefits outweigh
-> > > > > > > > > the risks.
-> > > > > > > >
-> > > > > > > > This interface is proposed as first class citizen in the general sysfs
-> > > > > > > > layout. Of course, it will be seen as a way to bypass the kernel.
-> > > > > > > >
-> > > > > > > > At least, put it under CONFIG_EXPERT option, so no distro will enable it
-> > > > > > > > by default.
-> > > > > > >
-> > > > > > > Of course we're proposing it to be accessible, it should also require
-> > > > > > > admin privileges to modify, sysfs has lots of such things.  If it's
-> > > > > > > relegated to non-default accessibility, it won't be used for testing
-> > > > > > > and it won't be available for system policy and it's pointless.
-> > > > > >
-> > > > > > We probably have difference in view of what testing is. I expect from
-> > > > > > the users who experience issues with reset to do extra steps and one of
-> > > > > > them is to require from them to compile their kernel.
-> > > > >
-> > > > > I would define the ability to generate a CI test that can pick a
-> > > > > device, unbind it from its driver, and iterate reset methods as a
-> > > > > worthwhile improvement in testing.
-> > > >
-> > > > Who is going to run this CI? At least all kernel CIs (external and
-> > > > internal to HW vendors) that I'm familiar are building kernel themselves.
-> > > >
-> > > > Distro kernel is too bloat to be really usable for CI.
-> > >
-> > > At this point I'm suspicious you're trolling.  A distro kernel CI
-> > > certainly uses the kernel they intend to ship and support in their
-> > > environment. You're concerned about a bloated kernel, but the proposal
-> > > here adds 2-bytes per device to track reset methods and a trivial array
-> > > in text memory, meanwhile you're proposing multiple per-device memory
-> > > allocations to enhance the feature you think is too bloated for CI.
-> >
-> > I don't know why you decided to focus on memory footprint which is not
-> > important at all during CI runs. The bloat is in Kconfig options that
-> > are not needed. Those extra options add significant overhead during
-> > builds and runs itself.
-> >
-> > And not, I'm not trolling, but representing HW vendor that pushes its CI
-> > and developers environment to the limit, by running full kernel builds with
-> > less than 30 seconds and boot-to-test with less than 6 seconds for full
-> > Fedora VM.
-> >
-> > >
-> > > > > > The root permissions doesn't protect from anything, SO lovers will use
-> > > > > > root without even thinking twice.
-> > > > >
-> > > > > Yes, with great power comes great responsibility.  Many admins ignore
-> > > > > this.  That's far beyond the scope of this series.
-> > > >
-> > > > <...>
-> > > >
-> > > > > > I'm trying to help you with your use case of providing reset policy
-> > > > > > mechanism, which can be without CONFIG_EXPERT. However if you want
-> > > > > > to continue path of having specific reset type only, please ensure
-> > > > > > that this is not taken to the "bypass kernel" direction.
-> > > > >
-> > > > > You've lost me, are you saying you'd be in favor of an interface that
-> > > > > allows an admin to specify an arbitrary list of reset methods because
-> > > > > that's somehow more in line with a policy choice than a userspace
-> > > > > workaround?  This seems like unnecessary bloat because (a) it allows
-> > > > > the same bypass mechanism, and (b) a given device is only going to use
-> > > > > a single method anyway, so the functionality is unnecessary.  Please
-> > > > > help me understand how this favors the policy use case.  Thanks,
-> > > >
-> > > > The policy decision is global logic that is easier to grasp. At some
-> > > > point of our discussion, you presented the case where PM reset is not
-> > > > defined well and you prefer to do bus reset (something like that).
-> > > >
-> > > > I expect that QEMU sets same reset policy for all devices at the same
-> > > > time instead of trying per-device to guess which one works.
-> > > >
-> > > > And yes, you will be able to bypass kernel, but at least this interface
-> > > > will be broader than initial one that serves only SO and workarounds.
-> > >
-> > > I still think allocating objects for a list and managing that list is
-> > > too bloated and complicated, but I agree that being able to have more
-> > > fine grained control could be useful.  Is it necessary to be able to
-> > > re-order reset methods or might it still be better aligned to a policy
-> > > use case if we allow plus and minus operators?  For example, a device
-> > > might list:
-> > >
-> > > [pm] [bus]
-> > >
-> > > Indicating that PM and bus reset are both available and enabled.  The
-> > > user could do:
-> > >
-> > > echo -pm > reset_methods
-> > >
-> > > This would result in:
-> > >
-> > > pm [bus]
-> > >
-> > > Indicating that both PM and bus resets are available, but only bus reset
-> > > is enabled (note this is the identical result to "echo bus >" in the
-> > > current proposal).  "echo +pm" or "echo default" could re-enable the PM
-> > > reset.  Would something like that be satisfactory?
-> >
-> > Yes, I actually imagined simpler interface:
-> > To set specific type:
-> > echo pm > reset_methods
-> > To set policy:
-> > echo "pm,bus" > reset_methods
-> >
-> > But your proposal is nicer.
-> >
-> Okay I'll include this in v2
-> > >
-> > > If we need to allow re-ording, we'd want to use a byte-array where each
-> > > byte indicates a type of reset and perhaps a non-zero value in the
-> > > array indicates the method is enabled and the value indicates priority.
-> > > For example writing "dev_spec,flr,bus" would parse to write 1 to the
-> > > byte associated with the device specific reset, 2 to flr, 3 to bus
-> > > reset, then we'd process low to high (or maybe starting at a high value
-> > > to count down to zero might be more simple).  We could do that with
-> > > only adding less than a fixed 8-bytes per device and no dynamic
-> > > allocation.  Thoughts?  Thanks,
-> >
-> > Like I suggested, linked list will be easier and the reset will be
-> > something like:
-> >  for_each_reset_type(device, type) {
-> >    switch (type) {
-> >    	case PM:
-> > 	       ret = do_some_reset(device);
-> > 	       break;
-> > 	case BUS:
-> > 		.....
-> > 	}
-> >    if (!ret || ret == -ENOMEM)  <-- go to next type in linked list
-> >      return ret;
-> >    }
-> >
-> Maybe we can use a byte array here. Lets consider current pci_reset_fn_methods
-> array. If a input is "pm, flr" we can have byte array with index of
-> those methods in pci_reset_fn_methods like [3, 1]. So when user triggers a
-> reset we use reset method at index 3(pm) and then at index 1(flr).
-> Does that make sense?
+> > Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>
+> Thanks Mathieu. This patch is already staged on Bjorn's rproc-fixes branch
+> though and part of linux-next since next-20210319. I have posted an additional
+> 3-patch series for some more PRU fixes. Do you want me to post a v2 for those
+> with stable Cc'd?
 
-I'm not worried about in-kernel implementation, we will rewrite it if
-needed. The most important part is user visible ABI, which we won't be
-able to fix.
+I didn't notice Bjorn had already picked it up.  Since the object is
+now public there is no need to send a V2 for this one.  I haven't
+looked at your other 3-patch series but if you think it is stable
+material then yes, please send a new revision that CC stable.
 
-Thanks
+Mathieu
 
-> 
-> Thanks,
-> Amey
+>
+> regards
+> Suman
+>
+> >
+> >> ---
+> >>  drivers/remoteproc/pru_rproc.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+> >> index 2667919d76b3..16979c1cd2f4 100644
+> >> --- a/drivers/remoteproc/pru_rproc.c
+> >> +++ b/drivers/remoteproc/pru_rproc.c
+> >> @@ -585,7 +585,7 @@ pru_rproc_load_elf_segments(struct rproc *rproc, const struct firmware *fw)
+> >>                      break;
+> >>              }
+> >>
+> >> -            if (pru->data->is_k3 && is_iram) {
+> >> +            if (pru->data->is_k3) {
+> >>                      ret = pru_rproc_memcpy(ptr, elf_data + phdr->p_offset,
+> >>                                             filesz);
+> >>                      if (ret) {
+> >> --
+> >> 2.30.1
+> >>
+>
