@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D77BC3496E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 121B53496E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbhCYQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
+        id S229733AbhCYQf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhCYQeC (ORCPT
+        with ESMTP id S229879AbhCYQfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:34:02 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A51AC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:34:01 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id y6so3157143eds.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=IHZjGjcwG93Iiom25k9jNG9Fywlor+CHx0u3IjlOi3U=;
-        b=vlvmJnQ46DIUjbAYm/ooeFWWmhIECTvZf05lFfizVU67lHn7Q/ZnPTCbcv+7zhOaR9
-         r1tVgnvlLbsnIw/Ig1DZO+qcE/xHf70701wra9f13nR6VToGTTE41VlSqfubG3T0ultW
-         qz0wFt8IRLHEKmCKo1n2T81vag4p8eftJ9FsNZSm+kAID+Hp/jPQK9JBAzjKHSc9QxUZ
-         shOw0evwGGSpqWz99fcpoSmCFeHNLgBDSWPjpH9kHwHX7rufJ2BE47Ve6QG7WeKCqIcr
-         lMnjTjFLS2081Q/6CH81AAWOA7hfX5NP8GWSqwoAd1UucmWTW4ZRTHsgWFepF7H+EPO+
-         WS/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=IHZjGjcwG93Iiom25k9jNG9Fywlor+CHx0u3IjlOi3U=;
-        b=JlM6OKder6Fc9DClq8L9qf3OBlvauaNxIzzzqf9IYyE12/z5iNgCPPoMAbA34ryxyZ
-         Rm4+JS7XTS1SzZdYf56EdQH4HTechBa1OC3X0SZYfp25cK69dv0qIwQbLK6HSsyO+wdt
-         FuEyQxpMEXIbygyjlwFrXAFdGTj4c2RLtKxtYqLt5hW3XlXtgQv+RZlI2X4WdXT9X2rJ
-         6S8qUYLA+J9p5eSX1dMYh3hTcGIwYez4FRiH4TLieVKrq/RXmgQ8QMoHgQkGLMYvbZMH
-         aheR9FKywcCaN51NDE9EL3RtRZpv0wsQLEUsNEnEHi1hqIgAYDVVKWAhuaX7zt+v0zWa
-         ZXTw==
-X-Gm-Message-State: AOAM532O6QQK/H52cuLQLw9Ja2F+ufZAe2QH9Yx5m2SFBWwXcJlZIWLI
-        dZEOyd251Zp8gKUNbrJHC5AJYy6LLPESvw==
-X-Google-Smtp-Source: ABdhPJzTUhYBhwDaIrlGTm+42WMXaSrSrafPKglxDZuPz2tEzbDBRMWAEL+oyqTd1XABMmTFpt5pjA==
-X-Received: by 2002:aa7:d445:: with SMTP id q5mr9836851edr.382.1616690040248;
-        Thu, 25 Mar 2021 09:34:00 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id q20sm2615889ejs.41.2021.03.25.09.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 09:33:59 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 16:33:58 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] MFD fixes for v5.12
-Message-ID: <20210325163358.GU2916463@dell>
+        Thu, 25 Mar 2021 12:35:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726CAC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:35:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=h2N5iTiUFJ30HZ922DZJoQ06P2tgZV8TgUIzLXMpsNo=; b=gESznxqrHPN0xxGejOYX743xQW
+        YxhPNRjWpg29B6n6KDIwrG0iO//727RcronAP+ckAslO8wnk9RsHPw7/yJdtDUaEw8BXNl9jAJV56
+        JQwD800182XMaEIBjYVqqb9k9Ma27zfuRj9FJ5usM5WIPmeHSMODB80zj2bL0+sXDUQIt0Q+BBM7L
+        +kCT1DZM1aZ9Xjr7SD5E9I3KzBFFZXGhlqJz3VlPpV4LqVMof5Xx1S+RFVzKPLuSOQSE/9VbKIEOn
+        uA7SeFRYP8RwKTCo3gr2qcdAyL8r8brBbLSyxgJzZXVBhgJx3mVQAfashSDr8FoLd+3mEGFX2U9+B
+        dgLN96Ww==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPSww-001phl-Ls; Thu, 25 Mar 2021 16:35:10 +0000
+Subject: Re: [PATCH V3] ALSA: pcm: Fix couple of typos
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, perex@perex.cz, tiwai@suse.com,
+        broonie@kernel.org, mirq-linux@rere.qmqm.pl, lars@metafoo.de,
+        gustavoars@kernel.org, huawei@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20210325090609.10372-1-unixbhaskar@gmail.com>
+ <s5ho8f7mv5k.wl-tiwai@suse.de> <20210325095617.GB32566@debian>
+ <s5hk0pvmrwp.wl-tiwai@suse.de> <20210325120717.GA9273@debian>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c611e36d-f11e-0c80-6dcb-2176c9ecd449@infradead.org>
+Date:   Thu, 25 Mar 2021 09:35:06 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+In-Reply-To: <20210325120717.GA9273@debian>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good afternoon Linus,
+On 3/25/21 5:07 AM, Bhaskar Chowdhury wrote:
+> On 11:47 Thu 25 Mar 2021, Takashi Iwai wrote:
+>> On Thu, 25 Mar 2021 10:56:39 +0100,
+>> Bhaskar Chowdhury wrote:
+>>>
+>>> On 10:37 Thu 25 Mar 2021, Takashi Iwai wrote:
+>>> >On Thu, 25 Mar 2021 10:06:09 +0100,
+>>> >Bhaskar Chowdhury wrote:
+>>> >>
+>>> >> s/unconditonally/unconditionally/
+>>> >> s/succesful/successful/
+>>> >>
+>>> >> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>>> >> ---
+>>> >>  Changes from V2:
+>>> >>  Takashi pointed out that the patch was not applicable due to some unwanted
+>>> >>  stuff get into it. Resending it with the new patch creation.
+>>> >
+>>> >Hrm, still not applicable.  Can you apply the patch from your own post
+>>> >via git-am in your side?
+>>> >
+>>> Here is what I do for this specific case :
+>>>
+>>> ✔ ~/git-linux/linux-next [patch L|✔]
+>>> 15:18 $ sed -i 's/unconditonally/unconditionally/' sound/core/pcm_native.c
+>>> ✔ ~/git-linux/linux-next [patch L|✚ 1]
+>>> 15:19 $ sed -i 's/succesful/successful/' sound/core/pcm_native.c
+>>> ✔ ~/git-linux/linux-next [patch L|✚ 1]
+>>> 15:19 $ git add .
+>>> ✔ ~/git-linux/linux-next [patch L|●1]
+>>> 15:19 $ git ci "Fix some patch error"
+>>> [patch 88d5af187dbb] Fix some patch error
+>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> 15:21 $ git_fetch_single_file.sh sound/core/pcm_native.c
+>>> Looks alright!✔ ~/git-linux/linux-next [patch L|●1]
+>>> 15:21 $ git add .
+>>> ✔ ~/git-linux/linux-next [patch L|●1]
+>>> 15:21 $ git ci "Bring for patch"
+>>> [patch 352e1ce8dacf] Bring for patch
+>>> 1 file changed, 2 insertions(+), 2 deletions(-)
+>>> ✔ ~/git-linux/linux-next [patch L|✔]
+>>> 15:22 $ git apply --verbose 0001-Made-patche-for-this.patch
+>>> Checking patch sound/core/pcm_native.c...
+>>> Applied patch sound/core/pcm_native.c cleanly.
+>>
+>> I meant to try to apply the patch from mail fetched from the ML, not
+>> the patch you made from your git tree.
+>>
+>>
+> 
+> Hmmmmmm
+> 
+> bhaskar@debian_16:18:41_Thu Mar 25 :~> mutt
+> Applying: ALSA: pcm: Fix couple of typos
+> error: corrupt patch at line 29
+> Patch failed at 0001 ALSA: pcm: Fix couple of typos
+> hint: Use 'git am --show-current-patch' to see the failed patch
+> When you have resolved this problem, run "git am --continue".
+> If you prefer to skip this patch, run "git am --skip" instead.
+> To restore the original branch and stop patching, run "git am --abort".
+> Press any key to continue...
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+I get:
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+patch: **** malformed patch at line 40: 2.30.1
 
-are available in the Git repository at:
+which is this block:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/mfd-fixes-5.12
+@@ -1469,7 +1469,7 @@ EXPORT_SYMBOL(snd_pcm_stop);
+  * After stopping, the state is changed to SETUP.
+  * Unlike snd_pcm_stop(), this affects only the given stream.
+  *
+- * Return: Zero if succesful, or a negative error code.
++ * Return: Zero if successful, or a negative error code.
+--
+2.30.1
 
-for you to fetch changes up to a61f4661fba404418a7c77e86586dc52a58a93c6:
 
-  mfd: intel_quark_i2c_gpio: Revert "Constify static struct resources" (2021-03-23 09:14:12 +0000)
+That means that this "diff" block should contain 7 lines of contextual
+diff source code, but the trailing 2 lines are missing (after the "+"
+line). I don't know how that happens.
 
-----------------------------------------------------------------
- - Bug Fixes
-   - Unconstify editable placeholder structures
+~Randy
 
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      mfd: intel_quark_i2c_gpio: Revert "Constify static struct resources"
-
- drivers/mfd/intel_quark_i2c_gpio.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
