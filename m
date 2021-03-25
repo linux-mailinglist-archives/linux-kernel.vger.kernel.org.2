@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D795349A52
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD76349A53
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCYTdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:33:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhCYTd2 (ORCPT
+        id S230241AbhCYTev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:34:51 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:52784 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229616AbhCYTep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:33:28 -0400
-Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384C6C06174A;
-        Thu, 25 Mar 2021 12:33:28 -0700 (PDT)
-Received: from fencepost.gnu.org ([2001:470:142:3::e]:58621)
-        by eggs.gnu.org with esmtp (Exim 4.90_1)
-        (envelope-from <marius@gnu.org>)
-        id 1lPVjN-0003nh-Pj; Thu, 25 Mar 2021 15:33:21 -0400
-Received: from host-37-191-226-238.lynet.no ([37.191.226.238]:41772 helo=localhost)
-        by fencepost.gnu.org with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.82)
-        (envelope-from <marius@gnu.org>)
-        id 1lPVjL-0005TK-0E; Thu, 25 Mar 2021 15:33:20 -0400
-From:   Marius Bakke <marius@gnu.org>
-To:     ricky_wu@realtek.com
-Cc:     arnd@arndb.de, bhelgaas@google.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        puranjay12@gmail.com, rui_feng@realsil.com.cn,
-        ulf.hansson@linaro.org, vailbhavgupta40@gamail.com
-Subject: Sudden poweroffs when idle on ThinkPad x290s since v5.10-rc1
- (bisected to 7c33e3c4c79a)
-In-Reply-To: 20200907100731.7722-1-ricky_wu@realtek.com
-Date:   Thu, 25 Mar 2021 20:33:16 +0100
-Message-ID: <87tuozm3k3.fsf@gnu.org>
+        Thu, 25 Mar 2021 15:34:45 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lPVki-008Fxh-5l; Thu, 25 Mar 2021 13:34:44 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lPVkh-0000za-GY; Thu, 25 Mar 2021 13:34:43 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org, oleg@redhat.com, metze@samba.org
+References: <20210325164343.807498-1-axboe@kernel.dk>
+Date:   Thu, 25 Mar 2021 14:33:43 -0500
+In-Reply-To: <20210325164343.807498-1-axboe@kernel.dk> (Jens Axboe's message
+        of "Thu, 25 Mar 2021 10:43:41 -0600")
+Message-ID: <m1ft0j3u5k.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain
+X-XM-SPF: eid=1lPVkh-0000za-GY;;;mid=<m1ft0j3u5k.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18mfvkY8hIovTxtqn4/JaJ6qC3aJXoeS3A=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,T_TooManySym_04,XMNoVowels,XMSubLong
+        autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4945]
+        *  0.7 XMSubLong Long Subject
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_04 7+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Jens Axboe <axboe@kernel.dk>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 316 ms - load_scoreonly_sql: 0.08 (0.0%),
+        signal_user_changed: 16 (5.1%), b_tie_ro: 13 (4.2%), parse: 0.92
+        (0.3%), extract_message_metadata: 13 (4.1%), get_uri_detail_list: 1.45
+        (0.5%), tests_pri_-1000: 16 (4.9%), tests_pri_-950: 1.32 (0.4%),
+        tests_pri_-900: 1.12 (0.4%), tests_pri_-90: 77 (24.3%), check_bayes:
+        75 (23.7%), b_tokenize: 5 (1.7%), b_tok_get_all: 8 (2.5%),
+        b_comp_prob: 2.6 (0.8%), b_tok_touch_all: 53 (16.9%), b_finish: 1.24
+        (0.4%), tests_pri_0: 172 (54.5%), check_dkim_signature: 0.52 (0.2%),
+        check_dkim_adsp: 3.0 (0.9%), poll_dns_idle: 1.33 (0.4%), tests_pri_10:
+        2.9 (0.9%), tests_pri_500: 12 (3.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Jens Axboe <axboe@kernel.dk> writes:
 
-Hello,
+> Hi,
+>
+> Stefan reports that attaching to a task with io_uring will leave gdb
+> very confused and just repeatedly attempting to attach to the IO threads,
+> even though it receives an -EPERM every time. This patchset proposes to
+> skip PF_IO_WORKER threads as same_thread_group(), except for accounting
+> purposes which we still desire.
+>
+> We also skip listing the IO threads in /proc/<pid>/task/ so that gdb
+> doesn't think it should stop and attach to them. This makes us consistent
+> with earlier kernels, where these async threads were not related to the
+> ring owning task, and hence gdb (and others) ignored them anyway.
+>
+> Seems to me that this is the right approach, but open to comments on if
+> others agree with this. Oleg, I did see your messages as well on SIGSTOP,
+> and as was discussed with Eric as well, this is something we most
+> certainly can revisit. I do think that the visibility of these threads
+> is a separate issue. Even with SIGSTOP implemented (which I did try as
+> well), we're never going to allow ptrace attach and hence gdb would still
+> be broken. Hence I'd rather treat them as separate issues to attack.
 
-After updating to the 5.10 kernel, my laptop will spontaneously poweroff
-when idle after some time (between 30 minutes and three days).
+A quick skim shows that these threads are not showing up anywhere in
+proc which appears to be a problem, as it hides them from top.
 
-I have bisected it down to a rtsx driver update in 7c33e3c4c79a:
+Sysadmins need the ability to dig into a system and find out where all
+their cpu usage or io's have gone when there is a problem.  I general I
+think this argues that these threads should show up as threads of the
+process so I am not even certain this is the right fix to deal with gdb.
 
-commit 7c33e3c4c79ac5def79e7c773e38a7113eb14204
-Author: Ricky Wu <ricky_wu@realtek.com>
-Date:   Mon Sep 7 18:07:31 2020 +0800
-
-    misc: rtsx: Add power saving functions and fix driving parameter
-=20=20=20=20
-    v4:
-    split power down flow and power saving function to two patch
-=20=20=20=20
-    v5:
-    fix up modified change under the --- line
-=20=20=20=20
-    Add rts522a L1 sub-state support
-    Save more power on rts5227 rts5249 rts525a rts5260
-    Fix rts5260 driving parameter
-=20=20=20=20
-    Signed-off-by: Ricky Wu <ricky_wu@realtek.com>
-    Link: https://lore.kernel.org/r/20200907100731.7722-1-ricky_wu@realtek.=
-com
-    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
- drivers/misc/cardreader/rts5227.c  | 112 +++++++++++++++++++++++++++-
- drivers/misc/cardreader/rts5249.c  | 145 +++++++++++++++++++++++++++++++++=
-+++-
- drivers/misc/cardreader/rts5260.c  |  28 +++----
- drivers/misc/cardreader/rtsx_pcr.h |  17 +++++
- 4 files changed, 283 insertions(+), 19 deletions(-)
-
-(See also <https://bugzilla.kernel.org/show_bug.cgi?id=3D211809>.)
-
-I'm not sure whether this is a driver or hardware problem and am seeking
-feedback on how to further debug the issue.
-
-FWIW the problem does not seem to reproduce on an AMD ThinkPad T14 Gen 1
-with the same RTS522A PCIe card reader (on stock Arch 5.10.16 kernel).
-
-Thanks & happy hacking,
-Marius
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIUEARYKAC0WIQRNTknu3zbaMQ2ddzTocYulkRQQdwUCYFzlfA8cbWFyaXVzQGdu
-dS5vcmcACgkQ6HGLpZEUEHf4ngD+LGctGYG2EYdNavgHwhsvYsfyjXRMo6lrr+fO
-NCX2074A/3dOuSD880jXBrGi/NymBDhkUGID/X0MwUrzxoYzXwgN
-=DJhI
------END PGP SIGNATURE-----
---=-=-=--
+Eric
