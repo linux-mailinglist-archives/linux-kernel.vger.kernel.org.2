@@ -2,114 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8982349CF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E4B349CF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhCYXhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbhCYXgp (ORCPT
+        id S231425AbhCYXiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 19:38:16 -0400
+Received: from mail-il1-f172.google.com ([209.85.166.172]:43556 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhCYXiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:36:45 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF5BC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:36:45 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id c17so3642213pfn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:36:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8ub3+KaVHR67U2QACzlICSww+btiIMyI8S4cGZM+QbM=;
-        b=YNP3csUtke1uWeppGyLz3d/mgtKAW3dwkcruzfL+2fTZ9nCh9raBIGfyKTsPQgdbdd
-         RNO3cYBsYF4/4yjZ7h+dF05qxq6/lb7hjDmm1od/dg7dmW9SUazvNNUWdtSarZhh4oMR
-         bhf2VaYwkD+R02AHCM41L9lJSqs+Ha24dbFD2A3iTZjx/hNHeYjXQ5vdY5crbT+w8cu9
-         N//W8D8jy2WtBCkYL9naqXhCCF+dCQxR/lKsQtMnq4Ml38nim+7M7y8QzDZ5NmgdwDKa
-         l+jMnJE3i38tUeQfjk4F7KAMwYzbtIqpLpwqLlCLrkzo1p+9Mlk2SEAZqwbiuok83yQy
-         RF3Q==
+        Thu, 25 Mar 2021 19:38:14 -0400
+Received: by mail-il1-f172.google.com with SMTP id d2so3583263ilm.10;
+        Thu, 25 Mar 2021 16:38:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8ub3+KaVHR67U2QACzlICSww+btiIMyI8S4cGZM+QbM=;
-        b=YiH/Eo9A14+k7maJJEjfqvkO4zmm70YSYwEGJzE6TeL5yJd9rHthy/q245Bj2zk60F
-         mtALrqLE02YGzEYodzO9DyKIBD43GHu/G3ho3UVFrk6vdfFm4XErMX1yV76pF23yRTQk
-         aIoccDiV1CKn8UfLg2E2oWkRHCo80A2Cmea6mV7PmyyfN3OE3ETYJqmcC6VVvBPK0foY
-         OX9irmSSVtQ78y4nA841XZsuqL+giXZfhn+rBNVpPVp+eK+/tPKATE6RguaG/F0jEegH
-         IgwFmKXTmGMUpiNz05gV41yZ4xy5vXAy+Gmp1PVXwduuHahaJOnPhfMpcejnN+11Strf
-         70dg==
-X-Gm-Message-State: AOAM532kSclkQqGBH84ZxAc0TpVA14wicDKkEsGil+KeHaCAyVCP7EEf
-        Xj+eosWbWKNaH2rYtPjmZSIXxA==
-X-Google-Smtp-Source: ABdhPJxeSjRgYZMHzSWbNBum6+QgRSNLMUeyLP99yS84q++2Qmz+Pr18oxx1VuVkVBZwVk53X4csDg==
-X-Received: by 2002:aa7:942d:0:b029:1f2:cbc6:8491 with SMTP id y13-20020aa7942d0000b02901f2cbc68491mr10125053pfo.53.1616715404666;
-        Thu, 25 Mar 2021 16:36:44 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:0:1532:a374:78cc:c35c])
-        by smtp.gmail.com with ESMTPSA id j3sm6263561pjf.36.2021.03.25.16.36.43
+        bh=fSf0ZNyZVaDp/Q6TMA1lW2i5RIZolhAWaOpqwUzEOq8=;
+        b=K5Z52YuOMgatmXQ/+wVMh8ew26UKgnL/EeBjgwaLwul3ACPqKYp6BTCUuE+SspaNkn
+         U12KkuuLk/JRLZGrOMh4OcN1NhdpurSj3lROprLhfGPKjVd9YGBzJDirx2yZZ19VYFzT
+         7FnuePgTwEclfDCrxVSWuCGomzpchNgrmS6QeL13Sgt5CYiz1TTmWmOuW9TKkqXAEdEy
+         v/GUhjdnBs7o9gX3AzEkUkJXVIFaxYjmeDwen3aP8pRhdRFsgI2kpj+czf5bb4kwvT8k
+         JHlGQJGuBaRHyqrZNklbMxfA4yy/7AsFTU2x7c8MjdWPpzVjcIeOXTAMRdBs9L0yJDor
+         G7tA==
+X-Gm-Message-State: AOAM532INGxHDjfLGWCexu9rc21hDI5yAwcKIGcmGRSVPTySLGJ+KCp6
+        65e9jlrQhglnrnNd1FcOLw==
+X-Google-Smtp-Source: ABdhPJwuv6Q3EGM4X8aIYQO3cyFAmqK0aMZ10NrbNU9nmrJF3KSV3GJFpwHx+cd5GpYEuT6eSrf7Pg==
+X-Received: by 2002:a05:6e02:6d2:: with SMTP id p18mr1651444ils.251.1616715494212;
+        Thu, 25 Mar 2021 16:38:14 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k10sm3384472iop.42.2021.03.25.16.38.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 16:36:44 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 16:36:40 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, stable@vger.kernel.org
-Subject: Re: [PATCH 1/3] scripts/recordmcount.pl: Fix RISC-V regex for clang
-Message-ID: <20210325233640.jzi7uvaohvqwixiu@google.com>
-References: <20210325223807.2423265-1-nathan@kernel.org>
- <20210325223807.2423265-2-nathan@kernel.org>
+        Thu, 25 Mar 2021 16:38:13 -0700 (PDT)
+Received: (nullmailer pid 1949077 invoked by uid 1000);
+        Thu, 25 Mar 2021 23:38:12 -0000
+Date:   Thu, 25 Mar 2021 17:38:12 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 1/6] dt-bindings: PCI: ti,am65: Add PCIe host mode
+ dt-bindings for TI's AM65 SoC
+Message-ID: <20210325233812.GA1943834@robh.at.kernel.org>
+References: <20210325090026.8843-1-kishon@ti.com>
+ <20210325090026.8843-2-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325223807.2423265-2-nathan@kernel.org>
+In-Reply-To: <20210325090026.8843-2-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-25, Nathan Chancellor wrote:
->Clang can generate R_RISCV_CALL_PLT relocations to _mcount:
->
->$ llvm-objdump -dr build/riscv/init/main.o | rg mcount
->                000000000000000e:  R_RISCV_CALL_PLT     _mcount
->                000000000000004e:  R_RISCV_CALL_PLT     _mcount
->
->After this, the __start_mcount_loc section is properly generated and
->function tracing still works.
->
+On Thu, Mar 25, 2021 at 02:30:21PM +0530, Kishon Vijay Abraham I wrote:
+> Add PCIe host mode dt-bindings for TI's AM65 SoC.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../bindings/pci/ti,am65-pci-host.yaml        | 111 ++++++++++++++++++
+>  1 file changed, 111 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> new file mode 100644
+> index 000000000000..b77e492886fa
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/ti,am65-pci-host.yaml
+> @@ -0,0 +1,111 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Texas Instruments Incorporated - http://www.ti.com/
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/pci/ti,am65-pci-host.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: TI AM65 PCI Host
+> +
+> +maintainers:
+> +  - Kishon Vijay Abraham I <kishon@ti.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,am654-pcie-rc
+> +
+> +  reg:
+> +    maxItems: 4
+> +
+> +  reg-names:
+> +    items:
+> +      - const: app
+> +      - const: dbics
 
-R_RISCV_CALL_PLT can replace R_RISCV_CALL in all use cases.
-R_RISCV_CALL can/may be deprecated:
-https://github.com/ClangBuiltLinux/linux/issues/1331#issuecomment-802468296
+Please use 'dbi' like everyone else if this isn't shared with the other 
+TI DW PCI bindings.
 
-Reviewed-by: Fangrui Song <maskray@google.com>
+> +      - const: config
+> +      - const: atu
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  ti,syscon-pcie-id:
+> +    description: Phandle to the SYSCON entry required for getting PCIe device/vendor ID
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  ti,syscon-pcie-mode:
+> +    description: Phandle to the SYSCON entry required for configuring PCIe in RC or EP mode.
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  msi-map: true
+> +
+> +  dma-coherent: true
+> +
+> +patternProperties:
+> +  "interrupt-controller":
 
+Don't need quotes.
 
->Cc: stable@vger.kernel.org
->Link: https://github.com/ClangBuiltLinux/linux/issues/1331
->Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->---
-> scripts/recordmcount.pl | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
->index 867860ea57da..a36df04cfa09 100755
->--- a/scripts/recordmcount.pl
->+++ b/scripts/recordmcount.pl
->@@ -392,7 +392,7 @@ if ($arch eq "x86_64") {
->     $mcount_regex = "^\\s*([0-9a-fA-F]+):.*\\s_mcount\$";
-> } elsif ($arch eq "riscv") {
->     $function_regex = "^([0-9a-fA-F]+)\\s+<([^.0-9][0-9a-zA-Z_\\.]+)>:";
->-    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL\\s_mcount\$";
->+    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL(_PLT)?\\s_mcount\$";
->     $type = ".quad";
->     $alignment = 2;
-> } elsif ($arch eq "nds32") {
->-- 
->2.31.0
->
->-- 
->You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
->To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
->To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210325223807.2423265-2-nathan%40kernel.org.
+> +    type: object
+> +    description: interrupt controller to handle legacy interrupts.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - max-link-speed
+> +  - num-lanes
+> +  - power-domains
+> +  - ti,syscon-pcie-id
+> +  - ti,syscon-pcie-mode
+> +  - msi-map
+> +  - ranges
+> +  - reset-gpios
+> +  - phys
+> +  - phy-names
+> +  - dma-coherent
+
+'interrupt-controller' node is optional?
+
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        pcie0_rc: pcie@5500000 {
+> +                compatible = "ti,am654-pcie-rc";
+> +                reg =  <0x0 0x5500000 0x0 0x1000>,
+> +                       <0x0 0x5501000 0x0 0x1000>,
+> +                       <0x0 0x10000000 0x0 0x2000>,
+> +                       <0x0 0x5506000 0x0 0x1000>;
+> +                reg-names = "app", "dbics", "config", "atu";
+> +                power-domains = <&k3_pds 120 TI_SCI_PD_EXCLUSIVE>;
+> +                #address-cells = <3>;
+> +                #size-cells = <2>;
+> +                ranges = <0x81000000 0 0          0x0 0x10020000 0 0x00010000>,
+> +                         <0x82000000 0 0x10030000 0x0 0x10030000 0 0x07FD0000>;
+> +                ti,syscon-pcie-id = <&pcie_devid>;
+> +                ti,syscon-pcie-mode = <&pcie0_mode>;
+> +                bus-range = <0x0 0xff>;
+> +                num-viewport = <16>;
+> +                max-link-speed = <2>;
+> +                dma-coherent;
+> +                interrupts = <GIC_SPI 340 IRQ_TYPE_EDGE_RISING>;
+> +                msi-map = <0x0 &gic_its 0x0 0x10000>;
+> +                #interrupt-cells = <1>;
+> +                interrupt-map-mask = <0 0 0 7>;
+> +                interrupt-map = <0 0 0 1 &pcie0_intc 0>, /* INT A */
+> +                                <0 0 0 2 &pcie0_intc 0>, /* INT B */
+> +                                <0 0 0 3 &pcie0_intc 0>, /* INT C */
+> +                                <0 0 0 4 &pcie0_intc 0>; /* INT D */
+> +
+> +                pcie0_intc: interrupt-controller {
+> +                        interrupt-controller;
+> +                        #interrupt-cells = <1>;
+> +                        interrupt-parent = <&gic500>;
+> +                        interrupts = <GIC_SPI 328 IRQ_TYPE_EDGE_RISING>;
+> +                };
+> +        };
+> -- 
+> 2.17.1
+> 
