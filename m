@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364343493B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BF23493B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhCYOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231370AbhCYOJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:09:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58286 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230516AbhCYOIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Mar 2021 10:08:31 -0400
-Received: from [212.63.208.185] ([212.63.208.185]:40364 "EHLO
-        mail.marcansoft.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230093AbhCYOID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:08:03 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 354CF41A6E;
-        Thu, 25 Mar 2021 14:07:42 +0000 (UTC)
-To:     Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210304213902.83903-1-marcan@marcan.st>
- <20210304213902.83903-9-marcan@marcan.st>
- <20210324181210.GB13181@willie-the-truck>
- <CAK8P3a0913Hs4VfHjdDY1WTAQvMzC83LJcP=9zeE0C-terfBhA@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [RFT PATCH v3 08/27] asm-generic/io.h: Add a non-posted variant
- of ioremap()
-Message-ID: <9e510158-551a-3feb-bdba-17e070f12a8e@marcan.st>
-Date:   Thu, 25 Mar 2021 23:07:40 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616681310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ESAA6ThVbjxDwvrgI7oZbg7SXTWiqqrNoNLZkKKalh4=;
+        b=tzDk5ICtnXG7UJmZ8DpY6U1BkuC8D1+8dPNDnnlOOpvOAWVIxnmuVjMZzsJBnI4o23vNa3
+        ZfwNLnTDS1jWHUwwFpu2yhiWEI+8YhdGvMEGSKjVyqKi5ykvubchfi/vGyBcQ5scNA72Bp
+        sWuqWpNUXdNN8ormZOk2m/JxOTpwPAw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 08DEEADAA;
+        Thu, 25 Mar 2021 14:08:30 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 15:08:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+References: <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
+ <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
+ <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+ <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
+ <YFxEp0cfcJmcz5bP@localhost.localdomain>
+ <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
+ <YFxsBRORtgqUF/FZ@localhost.localdomain>
+ <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
+ <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
+ <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0913Hs4VfHjdDY1WTAQvMzC83LJcP=9zeE0C-terfBhA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/03/2021 04.09, Arnd Bergmann wrote:
-> On Wed, Mar 24, 2021 at 7:12 PM Will Deacon <will@kernel.org> wrote:
->>
->>> +/*
->>> + * ioremap_np needs an explicit architecture implementation, as it
->>> + * requests stronger semantics than regular ioremap(). Portable drivers
->>> + * should instead use one of the higher-level abstractions, like
->>> + * devm_ioremap_resource(), to choose the correct variant for any given
->>> + * device and bus. Portable drivers with a good reason to want non-posted
->>> + * write semantics should always provide an ioremap() fallback in case
->>> + * ioremap_np() is not available.
->>> + */
->>> +#ifndef ioremap_np
->>> +#define ioremap_np ioremap_np
->>> +static inline void __iomem *ioremap_np(phys_addr_t offset, size_t size)
->>> +{
->>> +     return NULL;
->>> +}
->>> +#endif
->>
->> Can we implement the generic pci_remap_cfgspace() in terms of ioremap_np()
->> if it is supported by the architecture? That way, we could avoid defining
->> both on arm64.
+On Thu 25-03-21 13:40:45, David Hildenbrand wrote:
+> On 25.03.21 13:35, Michal Hocko wrote:
+> > On Thu 25-03-21 12:08:43, David Hildenbrand wrote:
+> > > On 25.03.21 11:55, Oscar Salvador wrote:
+[...]
+> > > > - When moving the initialization/accounting to hot-add/hot-remove,
+> > > >     the section containing the vmemmap pages will remain offline.
+> > > >     It might get onlined once the pages get online in online_pages(),
+> > > >     or not if vmemmap pages span a whole section.
+> > > >     I remember (but maybe David rmemeber better) that that was a problem
+> > > >     wrt. pfn_to_online_page() and hybernation/kdump.
+> > > >     So, if that is really a problem, we would have to care of ot setting
+> > > >     the section to the right state.
+> > > 
+> > > Good memory. Indeed, hibernation/kdump won't save the state of the vmemmap,
+> > > because the memory is marked as offline and, thus, logically without any
+> > > valuable content.
+> > 
+> > Could you point me to the respective hibernation code please? I always
+> > get lost in that area. Anyway, we do have the same problem even if the
+> > whole accounting is handled during {on,off}lining, no?
 > 
-> Good idea. It needs a fallback in case the ioremap_np() fails on most
-> architectures, but that sounds easy enough.
-> 
-> Since pci_remap_cfgspace() only has custom implementations, it sounds like
-> we can actually make the generic implementation unconditional in the end,
-> but that requires adding ioremap_np() on 32-bit as well, and I would keep
-> that separate from this series.
+> kernel/power/snapshot.c:saveable_page().
 
-Sounds good; I'm adding a patch to adjust the generic implementation and 
-remove the arm64 one in v4, and we can then complete the cleanup for 
-other arches later.
+Thanks! So this is as I've suspected. The very same problem is present
+if the memory block is marked offline. So we need a solution here
+anyway. One way to go would be to consider these vmemmap pages always
+online. pfn_to_online_page would have to special case them but we would
+need to identify them first. I used to have PageVmemmap or something
+like that in my early attempt to do this.
 
+That being said this is not an argument for one or the other aproach.
+Both need fixing.
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Michal Hocko
+SUSE Labs
