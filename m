@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE32D349266
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD5D349272
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhCYMuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:50:11 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:34996 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229524AbhCYMuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:50:06 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxGcr6hlxgELMAAA--.2323S2;
-        Thu, 25 Mar 2021 20:50:03 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH v3] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-Date:   Thu, 25 Mar 2021 20:50:01 +0800
-Message-Id: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9CxGcr6hlxgELMAAA--.2323S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw4rWFy3KF4fJF4kuFWUtwb_yoW8CF4xpa
-        nYyas3Kr4UWrW5GF4vy3yxuryrJrZ7CrW3WF4ftF4Fvas09r98Xr4xKa13tryUZr4vqw1a
-        93yUZa4UGaykCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkm14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xr1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1L0eDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S230370AbhCYMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:52:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhCYMwJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:52:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31285C06174A;
+        Thu, 25 Mar 2021 05:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+fJyRPjPHNtlghEko2J6bkm8lY/1dD+5carH2dkRuBY=; b=A54uDjel/l4krSoFnRy/JdfLER
+        qeJhhESqagjhx8b7io6lqkwGBhhoSEta5dPJoijGsTJ0QwK1EKxLi2XKv0eUa2pMdj4M+VKv+9+Ss
+        LxU8E8mh9hzYI+tc3wU29i6e1QG9eHMFADnARRDg93i7elTemxwP/hccNuc0Gm5lP1GKlgiBbfEUi
+        gj0+meXzcXIQFpV7zrYlhAESkDdpOStg40WFVeRPGJuCQGeia/ftJrH0e2v3Fe5oQd0uBcr2PK5EN
+        LgAG8CK2bXfnHT0XBAfIniFa/xDR53t9k2btD6RNVC7ajWgpu34wRUY4aOk5LvnpkPvH8uRc8CZwH
+        0Oa5ybVw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPPR3-00Cv3Q-IW; Thu, 25 Mar 2021 12:50:42 +0000
+Date:   Thu, 25 Mar 2021 12:50:01 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
+ in-tree users
+Message-ID: <20210325125001.GW1719932@casper.infradead.org>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325114228.27719-1-mgorman@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-archs where they work"), bpf_probe_read{, str}() functions were no longer
-available on MIPS, so there exist some errors when running bpf program:
+On Thu, Mar 25, 2021 at 11:42:19AM +0000, Mel Gorman wrote:
+> This series introduces a bulk order-0 page allocator with sunrpc and
+> the network page pool being the first users. The implementation is not
+> efficient as semantics needed to be ironed out first. If no other semantic
+> changes are needed, it can be made more efficient.  Despite that, this
+> is a performance-related for users that require multiple pages for an
+> operation without multiple round-trips to the page allocator. Quoting
+> the last patch for the high-speed networking use-case
+> 
+>             Kernel          XDP stats       CPU     pps           Delta
+>             Baseline        XDP-RX CPU      total   3,771,046       n/a
+>             List            XDP-RX CPU      total   3,940,242    +4.49%
+>             Array           XDP-RX CPU      total   4,249,224   +12.68%
+> 
+> >From the SUNRPC traces of svc_alloc_arg()
+> 
+> 	Single page: 25.007 us per call over 532,571 calls
+> 	Bulk list:    6.258 us per call over 517,034 calls
+> 	Bulk array:   4.590 us per call over 517,442 calls
+> 
+> Both potential users in this series are corner cases (NFS and high-speed
+> networks) so it is unlikely that most users will see any benefit in the
+> short term. Other potential other users are batch allocations for page
+> cache readahead, fault around and SLUB allocations when high-order pages
+> are unavailable. It's unknown how much benefit would be seen by converting
+> multiple page allocation calls to a single batch or what difference it may
+> make to headline performance.
 
-root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
-bpf: Failed to load program: Invalid argument
-[...]
-11: (85) call bpf_probe_read#4
-unknown func bpf_probe_read#4
-[...]
-Exception: Failed to load BPF program count_sched: Invalid argument
+We have a third user, vmalloc(), with a 16% perf improvement.  I know the
+email says 21% but that includes the 5% improvement from switching to
+kvmalloc() to allocate area->pages.
 
-ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be restricted to archs
-with non-overlapping address ranges, but they can overlap in EVA mode
-on MIPS, so select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA in
-arch/mips/Kconfig, otherwise the bpf old helper bpf_probe_read() will
-not be available.
+https://lore.kernel.org/linux-mm/20210323133948.GA10046@pc638.lan/
 
-This is similar with the commit d195b1d1d119 ("powerpc/bpf: Enable
-bpf_probe_read{, str}() on powerpc again").
-
-Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v3: Select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA
-    on MIPS.
-
-v2: update the commit message to fix typos found by
-    Sergei Shtylyov, thank you!
-
-    not longer --> no longer
-    there exists --> there exist
-
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 160b3a8..32158c2 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -6,6 +6,7 @@ config MIPS
- 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_KCOV
-+	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA
- 	select ARCH_HAS_PTE_SPECIAL if !(32BIT && CPU_HAS_RIXI)
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
--- 
-2.1.0
-
+I don't know how many _frequent_ vmalloc users we have that will benefit
+from this, but it's probably more than will benefit from improvements
+to 200Gbit networking performance.
