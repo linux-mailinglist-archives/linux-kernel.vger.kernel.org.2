@@ -2,118 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A40E23489C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E383489C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229728AbhCYHCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhCYHB7 (ORCPT
+        id S229871AbhCYHA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:00:27 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:34108 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCYHAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:01:59 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01379C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:01:58 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so1020392otk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Er9VTBwwaI4g9NSWPaQXCrSglwdU7EBlM0d7c0+OO70=;
-        b=hbSQau/S0befhroiNXRd5O8t1oN/3OjEIMZCtSzpFl/RHERsBfwJwZVn6Nm5FDuLsn
-         X3sE96eypk30BXKU2tgnMTmXLdrLEFveDKo4zr0M36qJwyT8nWlLcajgqON0Zz4xNSQ/
-         qR7Ue/CQkq4CWUE6EA9jQngra/S/MAhRUej/W/rdhbXE+iGxs7vYzwRaKTIeH8lM7+t1
-         KvLnUbsb4cs3XNHr3mNjZaNPjUnVAAqg/zKjDtUE3LJcrtlIva+eWdqE5sxgHi3R6Hk/
-         M3ySio+sobh7dR7VNABom34tFO67Dp2oeR7GPXWNr1TW0hlyDutwoxRZ8vUjvvmRIcDk
-         FQuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Er9VTBwwaI4g9NSWPaQXCrSglwdU7EBlM0d7c0+OO70=;
-        b=SQVOEUxqa0WPghGFxp2cNQT61FBiR+ZiEUrzrzKw/8xf/BnrMBMekDSiaOANHknnD8
-         /BsSa8OR0AGJv5kJlq7jAE6oCxBRpHZSwledwg0MhVKfS+svFVzilsYMCn1O+9lwhrdf
-         lFdMEQmc7LdDNtrhR336AM8ABxXZdjt3c0Bxaba30tiQ+4XagtUyzSAkbP/J5X+qu9kz
-         9n6/Uoal6s+BRLxIZheB5noz4cpeuea5VW+VMnCOkq2iPZ+vt0tUTsyR5OVTv79mJO1P
-         miQ+WGjH4CIfbUwCnN2BkEbZHHSRqOTkvTSxCRVA1BbP0MPjJbNAt0afY+b0z70D1+x3
-         coXA==
-X-Gm-Message-State: AOAM531nFAnyx5HMw+oNwVDfA6qLJEcw9FwpQsHeyRYJt8W1nT2nOlIs
-        K8mp1mzsoSbxv0G5o+p3/fqEbNYoILybBU1/hTzAiQ==
-X-Google-Smtp-Source: ABdhPJwPvrgsJnGrZMxNyLh8qM0Q/+YmupqLk+E6MqWkru1DKR/2BrqUxCJaMzwupgu4U06ClSQ0DcQAkr86B5+pQP8=
-X-Received: by 2002:a05:6830:1c6e:: with SMTP id s14mr6341695otg.17.1616655718013;
- Thu, 25 Mar 2021 00:01:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210324112503.623833-1-elver@google.com> <20210324112503.623833-8-elver@google.com>
- <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net> <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
- <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net> <YFtB+Ta9pkMg4C2h@hirez.programming.kicks-ass.net>
- <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net> <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
- <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com> <CACT4Y+aRaNSaeWRA2H_q3k9+OpG0Lc3V7JWU8+whZ9s3gob-Kw@mail.gmail.com>
-In-Reply-To: <CACT4Y+aRaNSaeWRA2H_q3k9+OpG0Lc3V7JWU8+whZ9s3gob-Kw@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 25 Mar 2021 08:00:00 +0100
-Message-ID: <CANpmjNOysjStB6VPDNaBnQe37VWtWq5c-7_p0kFbsbN5ohD0Lg@mail.gmail.com>
-Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on SIGTRAP
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexander Potapenko <glider@google.com>,
+        Thu, 25 Mar 2021 03:00:18 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id E90809804B6;
+        Thu, 25 Mar 2021 15:00:14 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
         Al Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Matt Morehouse <mascasa@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Ian Rogers <irogers@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mattias Nissler <mnissler@chromium.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Eric Biggers <ebiggers@google.com>,
+        Wan Jiabing <wanjiabing@vivo.com>, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] include: linux: struct path is declared twice
+Date:   Thu, 25 Mar 2021 15:00:06 +0800
+Message-Id: <20210325070008.856967-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSEgeQh1ITUpNQ0MYVkpNSk1NTk5NSk5JTEtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Njo6TSo4ED8LFj4IIzEWMxw9
+        DC0aFBdVSlVKTUpNTU5OTUpNSk1CVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ0xDNwY+
+X-HM-Tid: 0a78682f04c1d992kuwse90809804b6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 at 15:15, Dmitry Vyukov <dvyukov@google.com> wrote:
-> On Wed, Mar 24, 2021 at 3:12 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > On Wed, 24 Mar 2021 at 15:01, Peter Zijlstra <peterz@infradead.org> wrote:
-> > > >
-> > > > One last try, I'll leave it alone now, I promise :-)
-> > >
-> > > This looks like it does what you suggested, thanks! :-)
-> > >
-> > > I'll still need to think about it, because of the potential problem
-> > > with modify-signal-races and what the user's synchronization story
-> > > would look like then.
-> >
-> > I agree that this looks inherently racy. The attr can't be allocated
-> > on stack, user synchronization may be tricky and expensive. The API
-> > may provoke bugs and some users may not even realize the race problem.
-> >
-> > One potential alternative is use of an opaque u64 context (if we could
-> > shove it into the attr). A user can pass a pointer to the attr in
-> > there (makes it equivalent to this proposal), or bit-pack size/type
-> > (as we want), pass some sequence number or whatever.
->
-> Just to clarify what I was thinking about, but did not really state:
-> perf_event_attr_t includes u64 ctx, and we return it back to the user
-> in siginfo_t. Kernel does not treat it in any way. This is a pretty
-> common API pattern in general.
+struct path has been declared at 85th line. 
+Remove the duplicate.
 
-Ok, let's go for a new field in perf_event_attr which is copied to
-si_perf. This gives user space full flexibility to decide what to
-stick in it, and the kernel does not prescribe some weird encoding or
-synchronization that user space would have to live with. I'll probably
-call it perf_event_attr::sig_data, because all si_* things are macros.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ include/linux/mount.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks,
--- Marco
+diff --git a/include/linux/mount.h b/include/linux/mount.h
+index 5d92a7e1a742..30272f961af7 100644
+--- a/include/linux/mount.h
++++ b/include/linux/mount.h
+@@ -94,7 +94,6 @@ extern struct vfsmount *mnt_clone_internal(const struct path *path);
+ extern bool __mnt_is_readonly(struct vfsmount *mnt);
+ extern bool mnt_may_suid(struct vfsmount *mnt);
+ 
+-struct path;
+ extern struct vfsmount *clone_private_mount(const struct path *path);
+ extern int __mnt_want_write(struct vfsmount *);
+ extern void __mnt_drop_write(struct vfsmount *);
+-- 
+2.25.1
+
