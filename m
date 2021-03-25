@@ -2,108 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3295A349AF9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA89349B04
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhCYU0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:26:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhCYU0N (ORCPT
+        id S230329AbhCYUcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:32:25 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61916 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229977AbhCYUcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:26:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0B5C06174A;
-        Thu, 25 Mar 2021 13:26:12 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: shreeya)
-        with ESMTPSA id 407901F4684B
-Subject: Re: [PATCH v4 5/5] fs: unicode: Add utf8 module and a unicode layer
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, krisman@collabora.com, drosen@google.com,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
- <20210325000811.1379641-6-shreeya.patel@collabora.com>
- <YFznIVf/F68oEuC6@sol.localdomain>
-From:   Shreeya Patel <shreeya.patel@collabora.com>
-Message-ID: <2db48ab8-1297-e044-dcec-6c8b8875fdb0@collabora.com>
-Date:   Fri, 26 Mar 2021 01:56:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 25 Mar 2021 16:32:20 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PK5MPi112725;
+        Thu, 25 Mar 2021 16:32:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oEpHvDI3puLg+Vq05BFMSURNGiOqUaXOZOQzdNfRnn8=;
+ b=VsjPK/h/a14XiyiZzBLZYZnGWylzon8Hh/Awb8F1M7OwOD9WKnmYH6Nc2Zp/f9g8u+TJ
+ CFFFVQLuxJqZs7mupOr9BbYgmPIwZMa9U5l+FiXwHZadc2eDRPP557qYaXnnI8eW939c
+ CbY/rVGxgKk5AfCaanpZ7cWWfygHvyesgUvySULy0qZ1cmIreV1WbHrFdQNOxHX5JurH
+ h/fVlEeOFi5T4OdQtKw3YmA3z2hFfruTlp1Tub1PoGKeby7RjDYHhSDwqSvbcXj0J4ao
+ /sD15n1E2acERF+wOA+J5S4fApwZalWfDp/iWKeLEIYsPW7xdff64NsRp3OqaLpAlLe5 nQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37h18egr2m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 16:32:18 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12PK5jpV114396;
+        Thu, 25 Mar 2021 16:32:17 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37h18egr17-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 16:32:17 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12PKRdK4025569;
+        Thu, 25 Mar 2021 20:32:15 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 37h15100pn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 20:32:15 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12PKVsF835455354
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 20:31:54 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E71EFA4053;
+        Thu, 25 Mar 2021 20:32:12 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 306E2A4051;
+        Thu, 25 Mar 2021 20:32:12 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.84.230])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 25 Mar 2021 20:32:12 +0000 (GMT)
+Date:   Thu, 25 Mar 2021 21:32:10 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com, kwankhede@nvidia.com,
+        pbonzini@redhat.com, alex.williamson@redhat.com,
+        pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v5 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+Message-ID: <20210325213210.62cb11b9.pasic@linux.ibm.com>
+In-Reply-To: <20210325124640.23995-2-akrowiak@linux.ibm.com>
+References: <20210325124640.23995-1-akrowiak@linux.ibm.com>
+        <20210325124640.23995-2-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YFznIVf/F68oEuC6@sol.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5qRJTkiymQM0dqZpHznUPt1kLU6qfsUH
+X-Proofpoint-GUID: QXXZp66eNcmEuopvnEsEfdxFpPwpWzli
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-25_07:2021-03-25,2021-03-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
+ mlxlogscore=999 priorityscore=1501 impostorscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103250146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 25 Mar 2021 08:46:40 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-On 26/03/21 1:10 am, Eric Biggers wrote:
-> On Thu, Mar 25, 2021 at 05:38:11AM +0530, Shreeya Patel wrote:
->> Also, indirect calls using function pointers are easily exploitable by
->> speculative execution attacks, hence use static_call() in unicode.h and
->> unicode-core.c files inorder to prevent these attacks by making direct
->> calls and also to improve the performance of function pointers.
-> I don't think you need to worry about avoiding indirect calls to prevent
-> speculative execution attacks.  That's what the mitigations like Retpoline are
-> for.  Instead my concern was just that indirect calls are *slow*, especially
-> when those mitigations are enabled.  Some of the casefolding operations are
-> called a lot (e.g., repeatedly during path resolution), and it would be
-> desirable to avoid adding more overhead there.
->
->> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
->> index 2c27b9a5cd6c..2961b0206b4d 100644
->> --- a/fs/unicode/Kconfig
->> +++ b/fs/unicode/Kconfig
->> @@ -8,7 +8,16 @@ config UNICODE
->>   	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
->>   	  support.
->>   
->> +# UTF-8 encoding can be compiled as a module using UNICODE_UTF8 option.
->> +# Having UTF-8 encoding as a module will avoid carrying large
->> +# database table present in utf8data.h_shipped into the kernel
->> +# by being able to load it only when it is required by the filesystem.
->> +config UNICODE_UTF8
->> +	tristate "UTF-8 module"
->> +	depends on UNICODE
->> +	default m
->> +
-> The help for UNICODE still says that it enables UTF-8 support.  But now there is
-> a separate option that people will need to remember to enable.
->
-> Please document each of these options properly.
->
-> Perhaps EXT4_FS and F2FS_FS just should select UNICODE_UTF8 if UNICODE, so that
-> UNICODE_UTF8 doesn't have to be a user-selectable symbol?
+> This patch fixes a lockdep splat introduced by commit f21916ec4826
+> ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated").
+> The lockdep splat only occurs when starting a Secure Execution guest.
+> Crypto virtualization (vfio_ap) is not yet supported for SE guests;
+> however, in order to avoid this problem when support becomes available,
+> this fix is being provided.
+> 
+> The circular locking dependency was introduced when the setting of the
+> masks in the guest's APCB was executed while holding the matrix_dev->lock.
+> While the lock is definitely needed to protect the setting/unsetting of the
+> matrix_mdev->kvm pointer, it is not necessarily critical for setting the
+> masks; so, the matrix_dev->lock will be released while the masks are being
+> set or cleared.
+> 
+> Keep in mind, however, that another process that takes the matrix_dev->lock
+> can get control while the masks in the guest's APCB are being set or
+> cleared as a result of the driver being notified that the KVM pointer
+> has been set or unset. This could result in invalid access to the
+> matrix_mdev->kvm pointer by the intervening process. To avoid this
+> scenario, two new fields are being added to the ap_matrix_mdev struct:
+> 
+> struct ap_matrix_mdev {
+> 	...
+> 	bool kvm_busy;
+> 	wait_queue_head_t wait_for_kvm;
+>    ...
+> };
+> 
+> The functions that handle notification that the KVM pointer value has
+> been set or cleared will set the kvm_busy flag to true until they are done
+> processing at which time they will set it to false and wake up the tasks on
+> the matrix_mdev->wait_for_kvm wait queue. Functions that require
+> access to matrix_mdev->kvm will sleep on the wait queue until they are
+> awakened at which time they can safely access the matrix_mdev->kvm
+> field.
+> 
+> Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
 
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
 
-It is not a user-selectable symbol. It depends on UNICODE and if someone 
-enables it,
-by default UNICODE_UTF8 will be enabled as a module.
+I intend to give a couple of work-days to others, and if nobody objects
+merge this. (I will wait till Tuesday.)
 
+I've tested it and it does silence the lockdep splat.
 
->> +DEFINE_STATIC_CALL(validate, unicode_validate_static_call);
->> +EXPORT_STATIC_CALL(validate);
-> Global symbols can't have generic names like "validate".  Please add an
-> appropriate prefix like "unicode_".
->
-> Also, the thing called "unicode_validate_static_call" isn't actually a static
-> call as the name suggests, but rather the default function used by the static
-> call.  It should be called something like unicode_validate_default.
->
-> Likewise for all the others.
-
-
-Thanks for your reviews, I'll make the change suggested by you in v5.
-
-
->
-> - Eric
->
+Regards,
+Halil
