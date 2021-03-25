@@ -2,188 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DF7349C1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3AD349C1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhCYWIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
+        id S230505AbhCYWMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230453AbhCYWHy (ORCPT
+        with ESMTP id S230285AbhCYWM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:07:54 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC4BC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:07:54 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so3428823oty.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:07:54 -0700 (PDT)
+        Thu, 25 Mar 2021 18:12:26 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D358BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:12:25 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id r17so3254896pgi.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=omnibond-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v6OKtVcub91dYSaPvyVsAKXW46SJTqq4WnXTgmnLs34=;
-        b=0PUwv+2PWVwlpW2aY6aHp8veUSgV1FbtZZmbXE8kWXLn6kdy+7rzbDa/+V5mmbbrEt
-         AOfEBoXrka87yEaZQHFnCsejLWkmne27iK3YLpqywus5zS0wwZT3nS3UTuhbfGMWgRWD
-         m842yD6gV5XIpagYVFfqPb41gFq7J29Ge846sZxrnQQ0e4FDdz6AP7wfz4O8dUSYHLH2
-         iQtz+2YubiPAf24waYs4pSWRZe/pxj/U0pzHRmWTw9tV3jEfAS5l6mGtJvONwwAWiGI5
-         a9gE4rDA9kjwIfdDvyxIcV3O8DwaYgxGf60S4SbNvbJ2AqY6JH7zsg1Iw2PHlXqPKvRf
-         sGsQ==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=DYUjSc1vAjGrU7Upg//GwkOyzK5I7lVAlzXmtTspUfQ=;
+        b=il68+HICDOpc315fwdeM5b5fe9U1OGmrgs8JA1Q4TimO7bh5f4kHrj87ZxXtRKuDVK
+         lp+v5uD/1rHtyYh4J4hyvUcDa0a5JtY3jBtNgDZvnFz8WNrBCg+rxevJntyvuxlbO3yG
+         LfmGszSXA9rGeLIiuuQTOjGLoQ1VPel2tP9d8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v6OKtVcub91dYSaPvyVsAKXW46SJTqq4WnXTgmnLs34=;
-        b=EtRAw0NG+E+96A52/lOxYb4v31+LXlnRp3PNxA8mrW3jKL9HZsAOeFcts8TNlyPI3a
-         3b2shsaH735jDe8v7nth1C6V55otngkIMXTr5JQMMX5l017ws3xiD9C/7LlxsquHMuBh
-         +jBP9Ag+CXhc3c4DIk9zQHAyUdqBhXKypPpP4/hmNcz/vKcoijJiJBj80d8a+Lclc7Aj
-         4kP7PD6irr7JqcXZv5i1WwRg9WhqIy88DBS/7t/TV1LGVmKh0zpRutxERXw3etSY0eZp
-         liobqz9qjos7Hr+wZqMAmtZEy3px9+4H4rn4X3EEjrjfw9afeeWdR+nlawLpuaYl9iJr
-         UDgQ==
-X-Gm-Message-State: AOAM532GLgZtetFBSz3fj5JRNp+Bm+t70VRPKpFMK0fO3jlp4htDyp0w
-        hurUCFtIIOvgwDruC6J7PdHwuGlRaqmgFLwQvwjIog==
-X-Google-Smtp-Source: ABdhPJwK306fhpDZcWKAG8rYKhHVg0IIoH9R6ksOA+8ZuRcYlXWpw3NJPAgdIg8RbLTcf3DIrF7UYdDXEy1jeHcm71I=
-X-Received: by 2002:a9d:ef1:: with SMTP id 104mr8984223otj.180.1616710073626;
- Thu, 25 Mar 2021 15:07:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=DYUjSc1vAjGrU7Upg//GwkOyzK5I7lVAlzXmtTspUfQ=;
+        b=avpZXpK9vtn2iDAzX3CfFjRiBF1b5ZcC8+ehl+0+y57wHkQU9TJJ3hC29us4zItVbu
+         Wwjsf8sYELQlcCRxtlBjm9XZxf1vgf/7oqBdDkWTXCqmC7xy2CWIR8I6FpE8JB28Fq2W
+         r4pcqPCW5c6YNCChi9tUJvpa9F6nb6czU/T4iec/Dxay1lpXOs+9AAupOhgM3l/0hvIe
+         c8YbnrO6k9DPoycHRYk2myjummIQRwOIxoIEBp92PqflPs7hCFlDBea+OeHsjMjhXi5X
+         jwxbqwmVLRpPam/a9Y6WmsWYBtk69dvdHf6hgoDAOpu3VkBBa02ZTGwjntu8fyC05myj
+         uiew==
+X-Gm-Message-State: AOAM533tbGV5Nl0pQXFwSYL69Q0TqxehaHGo+K/njHlAeqx+b7jU2vMP
+        Gm7V1x/IxHd2GobDrIvLqp9IDQcNHWJyIw==
+X-Google-Smtp-Source: ABdhPJzyk3/6T2KTl3Q2oxAZNwgaIDL+ylwu4Jhi1U3VGe0zniFZfT/tDO/a8nD10ys8oqpnYWsUpw==
+X-Received: by 2002:a63:1b5c:: with SMTP id b28mr9670244pgm.186.1616710345290;
+        Thu, 25 Mar 2021 15:12:25 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-5199-f2bf-3cbb-22e6.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:5199:f2bf:3cbb:22e6])
+        by smtp.gmail.com with ESMTPSA id w37sm6555685pgl.13.2021.03.25.15.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 15:12:24 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 06/15] powerpc/align: Don't use __get_user_instr() on kernel addresses
+In-Reply-To: <d9ecbce00178484e66ca7adec2ff210058037704.1615398265.git.christophe.leroy@csgroup.eu>
+References: <cover.1615398265.git.christophe.leroy@csgroup.eu> <d9ecbce00178484e66ca7adec2ff210058037704.1615398265.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 26 Mar 2021 09:12:21 +1100
+Message-ID: <877dlukhmi.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-References: <20210325193755.294925-1-mszeredi@redhat.com>
-In-Reply-To: <20210325193755.294925-1-mszeredi@redhat.com>
-From:   Mike Marshall <hubcap@omnibond.com>
-Date:   Thu, 25 Mar 2021 18:07:42 -0400
-Message-ID: <CAOg9mSQ+D2UwzuQFCivyvfQ-uRgZ2i7tKcpNR-nSivkNLSwR8Q@mail.gmail.com>
-Subject: Re: [PATCH v3 00/18] new kAPI for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
-To:     Miklos Szeredi <mszeredi@redhat.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Amir Goldstein <amir73il@gmail.com>,
-        David Sterba <dsterba@suse.cz>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miklos...
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-While you were sending out v3, I was running xfstests on v2...
-no orangefs problems with your changes.
+> In the old days, when we didn't have kernel userspace access
+> protection and had set_fs(), it was wise to use __get_user()
+> and friends to read kernel memory.
+>
+> Nowadays, get_user() is granting userspace access and is exclusively
+> for userspace access.
+>
+> In alignment exception handler, use probe_kernel_read_inst()
+> instead of __get_user_instr() for reading instructions in kernel.
+>
+> This will allow to remove the is_kernel_addr() check in
+> __get/put_user() in a following patch.
+>
 
--Mike
+Looks good to me!
 
-On Thu, Mar 25, 2021 at 3:38 PM Miklos Szeredi <mszeredi@redhat.com> wrote:
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+
+Kind regards,
+Daniel
+
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/powerpc/kernel/align.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> Thanks for the feedback, I think all comments are addressed.  Seems
-> "fileattr" has won a small majority of bikesheders' preference, so
-> switching over to that.
->
-> Changes since v2:
->
->  - renaming, most notably miscattr -> fileattr
->  - use memset instead of structure initialization
->  - drop gratuitous use of file_dentry()
->  - kerneldoc, comments, spelling improvements
->  - xfs: enable getting/setting FS_PROJINHERIT_FL and other tweaks
->  - btrfs: patch logistics
->
-> Changes since v1:
->
->  - rebased on 5.12-rc1 (mnt_userns churn)
->  - fixed LSM hook on overlayfs
->
-> Git tree is available here:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git#fileattr_v3
->
->
-> Miklos Szeredi (18):
->   vfs: add fileattr ops
->   ecryptfs: stack fileattr ops
->   ovl: stack fileattr ops
->   btrfs: convert to fileattr
->   ext2: convert to fileattr
->   ext4: convert to fileattr
->   f2fs: convert to fileattr
->   gfs2: convert to fileattr
->   orangefs: convert to fileattr
->   xfs: convert to fileattr
->   efivars: convert to fileattr
->   hfsplus: convert to fileattr
->   jfs: convert to fileattr
->   nilfs2: convert to fileattr
->   ocfs2: convert to fileattr
->   reiserfs: convert to fileattr
->   ubifs: convert to fileattr
->   vfs: remove unused ioctl helpers
->
->  Documentation/filesystems/locking.rst |   5 +
->  Documentation/filesystems/vfs.rst     |  15 ++
->  fs/btrfs/ctree.h                      |   3 +
->  fs/btrfs/inode.c                      |   4 +
->  fs/btrfs/ioctl.c                      | 226 +++---------------
->  fs/ecryptfs/inode.c                   |  22 ++
->  fs/efivarfs/file.c                    |  77 ------
->  fs/efivarfs/inode.c                   |  44 ++++
->  fs/ext2/ext2.h                        |   7 +-
->  fs/ext2/file.c                        |   2 +
->  fs/ext2/ioctl.c                       |  88 +++----
->  fs/ext2/namei.c                       |   2 +
->  fs/ext4/ext4.h                        |  12 +-
->  fs/ext4/file.c                        |   2 +
->  fs/ext4/ioctl.c                       | 208 ++++------------
->  fs/ext4/namei.c                       |   2 +
->  fs/f2fs/f2fs.h                        |   3 +
->  fs/f2fs/file.c                        | 216 +++--------------
->  fs/f2fs/namei.c                       |   2 +
->  fs/gfs2/file.c                        |  57 ++---
->  fs/gfs2/inode.c                       |   4 +
->  fs/gfs2/inode.h                       |   3 +
->  fs/hfsplus/dir.c                      |   2 +
->  fs/hfsplus/hfsplus_fs.h               |  14 +-
->  fs/hfsplus/inode.c                    |  54 +++++
->  fs/hfsplus/ioctl.c                    |  84 -------
->  fs/inode.c                            |  87 -------
->  fs/ioctl.c                            | 331 ++++++++++++++++++++++++++
->  fs/jfs/file.c                         |   6 +-
->  fs/jfs/ioctl.c                        | 105 +++-----
->  fs/jfs/jfs_dinode.h                   |   7 -
->  fs/jfs/jfs_inode.h                    |   4 +-
->  fs/jfs/namei.c                        |   6 +-
->  fs/nilfs2/file.c                      |   2 +
->  fs/nilfs2/ioctl.c                     |  61 ++---
->  fs/nilfs2/namei.c                     |   2 +
->  fs/nilfs2/nilfs.h                     |   3 +
->  fs/ocfs2/file.c                       |   2 +
->  fs/ocfs2/ioctl.c                      |  59 ++---
->  fs/ocfs2/ioctl.h                      |   3 +
->  fs/ocfs2/namei.c                      |   3 +
->  fs/ocfs2/ocfs2_ioctl.h                |   8 -
->  fs/orangefs/file.c                    |  79 ------
->  fs/orangefs/inode.c                   |  50 ++++
->  fs/overlayfs/dir.c                    |   2 +
->  fs/overlayfs/inode.c                  |  77 ++++++
->  fs/overlayfs/overlayfs.h              |   3 +
->  fs/reiserfs/file.c                    |   2 +
->  fs/reiserfs/ioctl.c                   | 121 +++++-----
->  fs/reiserfs/namei.c                   |   2 +
->  fs/reiserfs/reiserfs.h                |   7 +-
->  fs/reiserfs/super.c                   |   2 +-
->  fs/ubifs/dir.c                        |   2 +
->  fs/ubifs/file.c                       |   2 +
->  fs/ubifs/ioctl.c                      |  74 +++---
->  fs/ubifs/ubifs.h                      |   3 +
->  fs/xfs/libxfs/xfs_fs.h                |   4 -
->  fs/xfs/xfs_ioctl.c                    | 252 +++++---------------
->  fs/xfs/xfs_ioctl.h                    |  11 +
->  fs/xfs/xfs_ioctl32.c                  |   2 -
->  fs/xfs/xfs_ioctl32.h                  |   2 -
->  fs/xfs/xfs_iops.c                     |   7 +
->  include/linux/fileattr.h              |  59 +++++
->  include/linux/fs.h                    |  16 +-
->  64 files changed, 1136 insertions(+), 1490 deletions(-)
->  create mode 100644 include/linux/fileattr.h
->
-> --
-> 2.30.2
->
+> diff --git a/arch/powerpc/kernel/align.c b/arch/powerpc/kernel/align.c
+> index c4d7b445b459..8d4c7af262e2 100644
+> --- a/arch/powerpc/kernel/align.c
+> +++ b/arch/powerpc/kernel/align.c
+> @@ -310,7 +310,11 @@ int fix_alignment(struct pt_regs *regs)
+>  	 */
+>  	CHECK_FULL_REGS(regs);
+>  
+> -	if (unlikely(__get_user_instr(instr, (void __user *)regs->nip)))
+> +	if (is_kernel_addr(regs->nip))
+> +		r = probe_kernel_read_inst(&instr, (void *)regs->nip);
+> +	else
+> +		r = __get_user_instr(instr, (void __user *)regs->nip);
+> +	if (unlikely(r))
+>  		return -EFAULT;
+>  	if ((regs->msr & MSR_LE) != (MSR_KERNEL & MSR_LE)) {
+>  		/* We don't handle PPC little-endian any more... */
+> -- 
+> 2.25.0
