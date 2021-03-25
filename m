@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CC63493FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502633493FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhCYO1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:27:07 -0400
-Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:53575 "EHLO
-        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231299AbhCYO03 (ORCPT
+        id S231391AbhCYO1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:27:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230113AbhCYO1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:26:29 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id E8D28F8065
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:26:25 +0000 (GMT)
-Received: (qmail 8307 invoked from network); 25 Mar 2021 14:26:25 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Mar 2021 14:26:25 -0000
-Date:   Thu, 25 Mar 2021 14:26:24 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
- in-tree users
-Message-ID: <20210325142624.GT3697@techsingularity.net>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325125001.GW1719932@casper.infradead.org>
- <20210325132556.GS3697@techsingularity.net>
- <20210325140657.GA1908@pc638.lan>
+        Thu, 25 Mar 2021 10:27:01 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955E4C06174A;
+        Thu, 25 Mar 2021 07:27:00 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so3220903wml.2;
+        Thu, 25 Mar 2021 07:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AX6+kHKK/qwOM4FzMEsGgoKG3nu6wTe2Lo/9dWt/bdY=;
+        b=ctWyWNVRu8jSWez3kmcrzujTjN/ZaAFPuBuHHOTElAlkfW46jESUdyDfAMCRmCzuKR
+         JUM1TMlVktiOvRlmuxlEAHY1FHVZjSW2PBG3D0NU0m2T7OJRBLDrxKV3nyogedZBBfb/
+         km1wyxCWfbn67KdWnqg6UbfHNHVufL9whM9FhBgemgwI+XXNNKa/4g7ZSM7GIk8aRJSk
+         K96d/CDb2WLfnjvV7UnIuBIE/YwsG+5h17hVKkuztB/qbkbuB1K4szAjrtwGN4FtFd+u
+         JpFwckJBDlCkF35mW/51AtGYWg7vaX4tYmAGvNb2BdONGVEc140GMDo0+HHyrGR55m4r
+         0Jcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AX6+kHKK/qwOM4FzMEsGgoKG3nu6wTe2Lo/9dWt/bdY=;
+        b=URTjXU1b0C68VlYHudiIjsvcXnL4xhIu2SEiT1LOtj5cCV81G0ChTGnBHSUkGMKcq1
+         2Q/hPUx/hqDTkxvfb40gxnwJuNNQXKcxk/4AeOVtNI4iWGOjxxJwrLp1ALNHmO+vrC3d
+         vJAWXt0MUoGREYvrBtlLe3meB31+8elZCeqCl7Fn1/a5UBBtNO9RkN70+5PHW8klvTJq
+         w27sBu5ACif7UNCaQ9697MZGw69/FKssvp3AD8wkcWqcsU00yhilrovwaD7oHFdN38gN
+         Ykrb/TaGdDrzj+lNPwxEgz1tyDGBwtDT8gQG/Kki/2a5rG75eqEbJN3i57MW8U/i6tHC
+         wf+A==
+X-Gm-Message-State: AOAM532ExUZBlbYNxzCpzvyUXpQzcbEYN1Ptn48B6HJl8W03D7lc+UAI
+        JCGLJ5Vn/64971erBEbOMSJLGuGrTPI=
+X-Google-Smtp-Source: ABdhPJyrR4ncok+DuO7e04LqHdGMrK/QDtmw9FEUugwXv2Xa9ePbBAbXSyEzsc3dsX/mDPpk3fMOEg==
+X-Received: by 2002:a1c:541a:: with SMTP id i26mr8069918wmb.75.1616682419352;
+        Thu, 25 Mar 2021 07:26:59 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id p10sm8032235wrw.33.2021.03.25.07.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 07:26:58 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:27:20 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/5] soc/tegra: pmc: Fix imbalanced clock disabling in
+ error code path
+Message-ID: <YFydyG+ZmG2gU1QA@orome.fritz.box>
+References: <20210302122502.20874-1-digetx@gmail.com>
+ <20210302122502.20874-2-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TnDqhOWTa3f6ocxD"
 Content-Disposition: inline
-In-Reply-To: <20210325140657.GA1908@pc638.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210302122502.20874-2-digetx@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:06:57PM +0100, Uladzislau Rezki wrote:
-> > On Thu, Mar 25, 2021 at 12:50:01PM +0000, Matthew Wilcox wrote:
-> > > On Thu, Mar 25, 2021 at 11:42:19AM +0000, Mel Gorman wrote:
-> > > > This series introduces a bulk order-0 page allocator with sunrpc and
-> > > > the network page pool being the first users. The implementation is not
-> > > > efficient as semantics needed to be ironed out first. If no other semantic
-> > > > changes are needed, it can be made more efficient.  Despite that, this
-> > > > is a performance-related for users that require multiple pages for an
-> > > > operation without multiple round-trips to the page allocator. Quoting
-> > > > the last patch for the high-speed networking use-case
-> > > > 
-> > > >             Kernel          XDP stats       CPU     pps           Delta
-> > > >             Baseline        XDP-RX CPU      total   3,771,046       n/a
-> > > >             List            XDP-RX CPU      total   3,940,242    +4.49%
-> > > >             Array           XDP-RX CPU      total   4,249,224   +12.68%
-> > > > 
-> > > > >From the SUNRPC traces of svc_alloc_arg()
-> > > > 
-> > > > 	Single page: 25.007 us per call over 532,571 calls
-> > > > 	Bulk list:    6.258 us per call over 517,034 calls
-> > > > 	Bulk array:   4.590 us per call over 517,442 calls
-> > > > 
-> > > > Both potential users in this series are corner cases (NFS and high-speed
-> > > > networks) so it is unlikely that most users will see any benefit in the
-> > > > short term. Other potential other users are batch allocations for page
-> > > > cache readahead, fault around and SLUB allocations when high-order pages
-> > > > are unavailable. It's unknown how much benefit would be seen by converting
-> > > > multiple page allocation calls to a single batch or what difference it may
-> > > > make to headline performance.
-> > > 
-> > > We have a third user, vmalloc(), with a 16% perf improvement.  I know the
-> > > email says 21% but that includes the 5% improvement from switching to
-> > > kvmalloc() to allocate area->pages.
-> > > 
-> > > https://lore.kernel.org/linux-mm/20210323133948.GA10046@pc638.lan/
-> > > 
-> > 
-> > That's fairly promising. Assuming the bulk allocator gets merged, it would
-> > make sense to add vmalloc on top. That's for bringing it to my attention
-> > because it's far more relevant than my imaginary potential use cases.
-> > 
-> For the vmalloc we should be able to allocating on a specific NUMA node,
-> at least the current interface takes it into account. As far as i see
-> the current interface allocate on a current node:
-> 
-> static inline unsigned long
-> alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
-> {
->     return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
-> }
-> 
-> Or am i missing something?
-> 
 
-No, you're not missing anything. Options would be to add a helper similar
-alloc_pages_node or to directly call __alloc_pages_bulk specifying a node
-and using GFP_THISNODE. prepare_alloc_pages() should pick the correct
-zonelist containing only the required node.
+--TnDqhOWTa3f6ocxD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> --
-> Vlad Rezki
+On Tue, Mar 02, 2021 at 03:24:58PM +0300, Dmitry Osipenko wrote:
+> The tegra_powergate_power_up() has a typo in the error code path where it
+> will try to disable clocks twice, fix it. In practice that error never
+> happens, so this is a minor correction.
+>=20
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/soc/tegra/pmc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Mel Gorman
-SUSE Labs
+Applied, thanks.
+
+Thierry
+
+--TnDqhOWTa3f6ocxD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcncgACgkQ3SOs138+
+s6HmthAAg2B9ykkDo47tixsHqUBy+Gx1aVwux9aneN6mTlFerK3j/pPQH4fhEkSN
+fcsBqdmiivMYRxEAN2Bns9zxp82ves/mjGK2vGxmun3PvM2Ob9fJlrz7bWxUu9Zg
++qVDQQ46JXk0zBTBrTFuTQIPG3goSCtLPH/b3RSY+Bm7NJcOorN8fStjKiMMPqbO
+3+6Yd7h87ov4qMV1peLTq+huVYK+C5R/NDvrCAj7BI/0Reu2WsByAcYhFYkai+w8
+K0Zyd0Ny4TYKzWN7l+yQMbafHyIkSLIK5+9AwGoabZzjhLGilcoOFbbqOM0gfqNo
+nTb5c8qhOouQ12OWudIMJNyPa+CLlqrrDByBHJE7nS59rupOd+x3pVCPiUZm1U0x
+8iFMrcypQid4sTEdW83DcVxKRlIObTAVBcwnibdI51+BBxLZ93WppG2oUTWwVsEU
+yL40ShoZEBZ0qW2qI2KmAVmW5lYvYNZGYO4O6QfJroDhCvt87rQBZ44t8eaRMygC
+oJvi1yNutW5woxfVJK7SrMuC7yj4DjxKrtlQkGNMK3PGMdYoi+dAfcF4A7Jff4CG
+A8ae3y46P27UD/ysO4ErM+r5qWSXiVUB57RIsugCeZvzMxYItLPlx+gQHYAYwf5s
+zfe1UvzTDTYNkRDld8mbq8wy1rjoSc3VpEyOqxa0DHRfBclBl+Q=
+=ILRw
+-----END PGP SIGNATURE-----
+
+--TnDqhOWTa3f6ocxD--
