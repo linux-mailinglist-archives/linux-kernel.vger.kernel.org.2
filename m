@@ -2,165 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087E934883B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6E434883F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCYFGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 01:06:34 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:11705 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230005AbhCYFGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 01:06:04 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616648764; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=QRkGP8oNQ4HUG6AhWC1iZNjpu8Q5Rb4eb4prWpYL2Dc=; b=gTOIJsrX/A8w4TLWSytHjigFrbKhrpoUf/k9nGQrrI1MMeqqIDpuY9s67DLkKcSzruQFoIc+
- i3SxpTIxRFTru53rWknCxj0uuLMTyy48o1UUVG2lNxHBJPEjVZLWVnUbIS+sQaRChRLI+zWl
- rcrLc0QFb0/Xs2CNVVu0ajZVJCw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 605c1a3a4db3bb6801149e48 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 05:06:02
- GMT
-Sender: sanm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E4A2AC43462; Thu, 25 Mar 2021 05:06:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.103] (unknown [124.123.189.29])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sanm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 39A0FC433C6;
-        Thu, 25 Mar 2021 05:05:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 39A0FC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sanm@codeaurora.org
-Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
- <161655669850.3012082.11672497224863339022@swboyd.mtv.corp.google.com>
-From:   Sandeep Maheswaram <sanm@codeaurora.org>
-Message-ID: <ea2da8e3-c0f6-5785-02e3-eb37e364631e@codeaurora.org>
-Date:   Thu, 25 Mar 2021 10:35:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229629AbhCYFL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 01:11:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhCYFLK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 01:11:10 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE048C06174A;
+        Wed, 24 Mar 2021 22:11:09 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id q26so665040qkm.6;
+        Wed, 24 Mar 2021 22:11:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uGf+dE7GQDA/q97rbo/pU30+TTPhkjhLne7muyW7Be4=;
+        b=kCaMYagqmf6cvSo7H9RVTi2CIPRgYneyJfFyVXUfYFY9kGHMhC4GDIcuzDIjG2I5CT
+         shOIoRPhPggUBohwEdtZRKmiKPp1aI5Dqe8CgllmjHd4qSKpCSLLWdgireBTvPqFPuKP
+         R28hcKO+SYZx+9HPNoW1Bge7bV2wYIHmMfdFbn+pntTZE1zH8j9MAv8+08hRz0iRojLR
+         /7ylFajEOsWgUBWjoKGcDaROr7TgjAZn2AU/mJRB6FBQ7GRp5otXheVySnm0zmLojdjv
+         SX5mA+LVWf94JEAwTVa9j/N8WtRNimfugtdT4+vhGlpj3WP7EaE2yPql15tJLquPgnNz
+         PYhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uGf+dE7GQDA/q97rbo/pU30+TTPhkjhLne7muyW7Be4=;
+        b=LGsmmbZMQS82P0odAq0hxSrc2xsSyBMzH40H1nPO8qLxHJ6DRLBKYmLRf7ct19Qqme
+         Uy0DJPPdifZImyfWBbwq4tdnTNWp/BwlTdwbOi/xwvhI6o4Dtzl/ejPLLJjCmusYvDCj
+         vVFxubsmkybR5QolqvRyzDHHvZZNaA/P3HW+hsU34EOboWeeiLATBaPR1NcNEJpflYb3
+         Jaa7deQiYm+su1FyRZGGtGTH18wCm2nHFv3omTwzrqDN5Bi2mTbhaD3i8mIBZ4Cb3xDr
+         t+qxcxQicXN5U/Ybfb/x2zmXs5Wc8VAhfD2ONaLZui3NxGb4O1uDeOByDjVO3RWss/3W
+         znZA==
+X-Gm-Message-State: AOAM533+ZrnkoWsqZh8IdEVbALHNhM+SXx6oqmBfuIOR8SssWLknxIwQ
+        gc9vgcSd6uCUbQyaTgic8snmFvA7qdlRgMPJ
+X-Google-Smtp-Source: ABdhPJyLl9mA+WPApFiVI/wV81903QfIR1lqJgahu50ViLn48/toUxzc3uMjlfNnQrgySWeSmjNtnQ==
+X-Received: by 2002:a37:9fd2:: with SMTP id i201mr6227260qke.435.1616649069097;
+        Wed, 24 Mar 2021 22:11:09 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.55.176])
+        by smtp.gmail.com with ESMTPSA id s13sm3433913qkg.17.2021.03.24.22.11.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 22:11:08 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        hdegoede@redhat.com, linux@roeck-us.net, abhilash.k.v@intel.com,
+        mrana@codeaurora.org, lee.jones@linaro.org, bberg@redhat.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] usb: typec: Fix a typo
+Date:   Thu, 25 Mar 2021 10:40:23 +0530
+Message-Id: <20210325051023.27914-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <161655669850.3012082.11672497224863339022@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 3/24/2021 9:01 AM, Stephen Boyd wrote:
-> Quoting Sandeep Maheswaram (2021-03-23 12:27:32)
->> This patch adds a shutdown callback to USB DWC core driver to ensure that
->> it is properly shutdown in reboot/shutdown path. This is required
->> where SMMU address translation is enabled like on SC7180
->> SoC and few others. If the hardware is still accessing memory after
->> SMMU translation is disabled as part of SMMU shutdown callback in
->> system reboot or shutdown path, then IOVAs(I/O virtual address)
->> which it was using will go on the bus as the physical addresses which
->> might result in unknown crashes (NoC/interconnect errors).
->>
->> Previously this was added in dwc3 qcom glue driver.
->> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
->> But observed kernel panic as glue driver shutdown getting called after
->> iommu shutdown. As we are adding iommu nodes in dwc core node
->> in device tree adding shutdown callback in core driver seems correct.
->>
->> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
->> ---
->>   drivers/usb/dwc3/core.c | 26 +++++++++++++++++++-------
->>   1 file changed, 19 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
->> index 94fdbe5..777b2b5 100644
->> --- a/drivers/usb/dwc3/core.c
->> +++ b/drivers/usb/dwc3/core.c
->> @@ -1634,11 +1634,9 @@ static int dwc3_probe(struct platform_device *pdev)
->>          return ret;
->>   }
->>   
->> -static int dwc3_remove(struct platform_device *pdev)
->> +static void __dwc3_teardown(struct dwc3 *dwc)
->>   {
->> -       struct dwc3     *dwc = platform_get_drvdata(pdev);
->> -
->> -       pm_runtime_get_sync(&pdev->dev);
->> +       pm_runtime_get_sync(dwc->dev);
->>   
->>          dwc3_debugfs_exit(dwc);
->>          dwc3_core_exit_mode(dwc);
->> @@ -1646,19 +1644,32 @@ static int dwc3_remove(struct platform_device *pdev)
->>          dwc3_core_exit(dwc);
->>          dwc3_ulpi_exit(dwc);
->>   
->> -       pm_runtime_disable(&pdev->dev);
->> -       pm_runtime_put_noidle(&pdev->dev);
->> -       pm_runtime_set_suspended(&pdev->dev);
->> +       pm_runtime_disable(dwc->dev);
->> +       pm_runtime_put_noidle(dwc->dev);
->> +       pm_runtime_set_suspended(dwc->dev);
->>   
->>          dwc3_free_event_buffers(dwc);
->>          dwc3_free_scratch_buffers(dwc);
->>   
->>          if (dwc->usb_psy)
->>                  power_supply_put(dwc->usb_psy);
->> +}
->> +
->> +static int dwc3_remove(struct platform_device *pdev)
->> +{
->> +       struct dwc3     *dwc = platform_get_drvdata(pdev);
->> +
->> +       __dwc3_teardown(dwc);
->>   
->>          return 0;
->>   }
->>   
->> +static void dwc3_shutdown(struct platform_device *pdev)
->> +{
->> +       struct dwc3     *dwc = platform_get_drvdata(pdev);
->> +
->> +       __dwc3_teardown(dwc);
->> +}
-> Can't this be
->
-> 	static void dwc3_shutdown(struct platform_device *pdev)
-> 	{
-> 	       dwc3_remove(pdev);
-> 	}
->
-> and then there's nothing else to change? Basically ignore return value
-> of dwc3_remove() to make shutdown and remove harmonize. I also wonder if
-> this is more common than we think and a struct driver flag could be set
-> to say "call remove for shutdown" and then have driver core swizzle on
-> that and save some duplicate functions.
+s/Acknowlege/Acknowledge/
 
-I was referring to similar patch 
-https://patchwork.kernel.org/project/linux-usb/patch/20190817174140.6394-1-vicencb@gmail.com/
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/usb/typec/ucsi/ucsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->>   #ifdef CONFIG_PM
->>   static int dwc3_core_init_for_resume(struct dwc3 *dwc)
->>   {
->> @@ -1976,6 +1987,7 @@ MODULE_DEVICE_TABLE(acpi, dwc3_acpi_match);
->>   static struct platform_driver dwc3_driver = {
->>          .probe          = dwc3_probe,
->>          .remove         = dwc3_remove,
->> +       .shutdown   = dwc3_shutdown,
+diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+index 244270755ae6..282c3c825c13 100644
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -63,7 +63,7 @@ static int ucsi_read_error(struct ucsi *ucsi)
+ 	u16 error;
+ 	int ret;
+
+-	/* Acknowlege the command that failed */
++	/* Acknowledge the command that failed */
+ 	ret = ucsi_acknowledge_command(ucsi);
+ 	if (ret)
+ 		return ret;
+--
+2.30.1
+
