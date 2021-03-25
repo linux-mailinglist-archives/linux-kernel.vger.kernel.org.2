@@ -2,152 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CE5349C86
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D67349C92
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhCYWqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhCYWqH (ORCPT
+        id S231284AbhCYW5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:57:35 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40374 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231191AbhCYW5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:46:07 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24995C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:46:07 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id f19so3565428ion.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:46:07 -0700 (PDT)
+        Thu, 25 Mar 2021 18:57:13 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PMt9HB112748;
+        Thu, 25 Mar 2021 22:57:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=EzPllQmjJ2MAsdxWEpVbMU/4HFnw55suz1Vf+Qgmp8o=;
+ b=ezKt0RoSUO/x38TlCk3BB8JdFdq+OaO3kCHqVan9MuApOoCGnm6/F1+0SxUxZyzcBLJK
+ x/38tIcY5FyJ4ofobZjFVbnv/LFzytIwrPJYtauj/fG9du/rHZfNq9x0sXfJyTlwm6Di
+ O4QvOnGx/EfNntogrzhgUEp0IwKyvW71Dp5Ce+Sy8aRHIDJe8n/n7Y8idQdgcF1KfT6M
+ q25pb8Q1Kp9sU8TFFh28n5acasjNaQJXuR7CWrhJL8wakZfSiDV4Pv2EBlB+b5qe+lfU
+ m/+MoSe7PmYdcAJVNdJOCU0bSOBHLLBnaLG03MVQosWpKZH+Dk5rNcFgas3ZHHtZy3qG pg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 37h13e8d89-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 22:57:04 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12PMtIRM182826;
+        Thu, 25 Mar 2021 22:57:03 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
+        by aserp3030.oracle.com with ESMTP id 37h140n4bs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 22:57:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EzHFnq1mLxCO2zln+KgfJRE1oppDnK4dcGZxZqfEurOD1hCsi3vL/ntSigPTf9oH3d6LozU9hHrmM3Zz2PfyIlN4wKpoCi20KBZuACjaleFEL/2xHzLLEBU3YgKnVhxI63B0fhANYq05p9CqqRb4IJ48LZfuWU8uX86zqXVQswTQU/1rrS1L3iBXsziOPnmZH85ogMi2PQJdRIFVs8NyU0aeZphtsbPLzbJDDflfjPgiXK1bNQEym5NqNwQqqLIe2zHB/I8qKc1JoovV6OeEvU1ZUQAyi7S70cWC5lPhR/znnV1rk3ODgjvw1ywspzhd9NQsy9fy8GBlqCkffNR6xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EzPllQmjJ2MAsdxWEpVbMU/4HFnw55suz1Vf+Qgmp8o=;
+ b=PfU6LjUia6xjBqTmRbhfg5+INxzzA77cE0WA9CzmzpRS7/T+Ouo6MqGLd9rY9rk8oUNZ9El4+Y8qwWNfLBCQ3qVGv0mbinkM7//wEk2QWgD2Kl+siK81ol4D7BiS3jZ//MATrKnGRXyKwtf3QAYgN8aVT88foG+dq+eZ9PrV4M+KdX+RJF5GCc4YQ38egzi44WEoPRR2uCDZR6UYR9U41ZQ3wXhbTkH0D9aoE1kvXMyeBUdcv6K0q2Bt9Xd4C55i6yftBPQiH7nVXqAcK+eHTT+dUG2zh9o23a+DKEDAlQOE/4YVqcrQk3tzxovQ5bfearjJuoYoHlF+EdehHui9jg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vr8jx5HqmowOc9mzzRH8nyvNiCy6SLGQQdzTOO7BYQc=;
-        b=J47+cqdvpvEehRJITiM/Qtsv3h7cnBc6W92nj4YaE7DygkqoWd81DOYTqN9bT1sG0a
-         AmdfzNY/pE1IsK0q3MiC0UGwtYUcXloTq0fPoflXHTn0Vp2GX6Y6uRiymYU7hPNaS9OU
-         WcMOe4R/BKiIax1n36Vjtl39sYWAz4ozk90GJCkhU4UrX367AQw4kwKuXN1ZspLyPkCG
-         tqE8W8h8pJChZSovYuFVC9hSbOVekGQ2uKi7mYLlMXK5GJYNQQbRhyf/06UJnxKL9VzT
-         6RXd4BPjKYhSvnDyAd+DpAFfJkkbP9TWF9eMgz/K6a7zkOdltYOvCWS8hzY8ab/8SwuA
-         tl2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vr8jx5HqmowOc9mzzRH8nyvNiCy6SLGQQdzTOO7BYQc=;
-        b=IePX2ajqe5+0km7Ck65ZH9I9EpadotmOJxA9dLe1xHPfAvhiLP1EUbZ68Cyv6adnJ0
-         yYj5qbYhuB+oIVoDwwU4bMBciEw8oSDNGj3w9Bqxt/FhCXC7JPPVpSmyiOwHpuZTrulg
-         PqBQn4w7MsupbgLcUKQ9NOfQHdpa/KXeRsltrzmBjl+2PbxApyrmEnOqJWiHl78MzB/9
-         aodaOSRtXN8dTVc4pTpdYkxTk2TDZ8uIw5ynuq1F9CtrxM5mytMSiVdI6rR3QFza3CyP
-         DwCHflga8F239uCXQwVH8nK3mnvbZxexJFlllfz2HILwgInCTVxpkKrxvwOBG2Yem4qd
-         LGlg==
-X-Gm-Message-State: AOAM531XxFY7ba5G89nO3IZ2gNHQH4h29YMBCIiL/Lx/6SZD0ACHaj7/
-        DngW0c4CpysumK2VdjpA/6/Y2BJK1DFf4rq3rZ9WNA==
-X-Google-Smtp-Source: ABdhPJxJVBy3q940UtG8JRVlEvPnmQI5YHDSUhNDkkxec39bCTxnOvwhIW1qXTfrVjtC6MCUD8kx1f0JO6Ww72HdUJQ=
-X-Received: by 2002:a6b:ee0b:: with SMTP id i11mr8493762ioh.157.1616712366324;
- Thu, 25 Mar 2021 15:46:06 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EzPllQmjJ2MAsdxWEpVbMU/4HFnw55suz1Vf+Qgmp8o=;
+ b=jHE00/XxYg8YwP9GE+qhh4BdwlOdszEs1Ye2H3vR4L2LpK6AnSTN8R7iPxHhND1FgrnPYVifocAZEMAGgJs+oyzBQp/70+ItJoYClq7+cTqW6xDKze8qWZy1glV5TPBcGNhTkApKWAZ4Iff6wh3TD7Oz52q7zlDEnvi05JygwBY=
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BYAPR10MB3288.namprd10.prod.outlook.com (2603:10b6:a03:156::21)
+ by BY5PR10MB4340.namprd10.prod.outlook.com (2603:10b6:a03:210::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Thu, 25 Mar
+ 2021 22:57:01 +0000
+Received: from BYAPR10MB3288.namprd10.prod.outlook.com
+ ([fe80::f489:4e25:63e0:c721]) by BYAPR10MB3288.namprd10.prod.outlook.com
+ ([fe80::f489:4e25:63e0:c721%7]) with mapi id 15.20.3977.025; Thu, 25 Mar 2021
+ 22:57:01 +0000
+Subject: Re: [PATCH v2 0/2] xen/x86: alternative fix for XSA-369
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+To:     Roger Pau Monne <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jan Beulich <jbeulich@suse.com>, xen-devel@lists.xenproject.org
+References: <20210324122424.58685-1-roger.pau@citrix.com>
+ <6b70700e-667b-03a7-8f5e-937d5c45c79d@oracle.com>
+Message-ID: <62cde005-9aff-39a2-0b4f-eb262b411d2e@oracle.com>
+Date:   Thu, 25 Mar 2021 18:56:57 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
+In-Reply-To: <6b70700e-667b-03a7-8f5e-937d5c45c79d@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [138.3.201.47]
+X-ClientProxiedBy: CH0PR03CA0285.namprd03.prod.outlook.com
+ (2603:10b6:610:e6::20) To BYAPR10MB3288.namprd10.prod.outlook.com
+ (2603:10b6:a03:156::21)
 MIME-Version: 1.0
-References: <20210325200119.1359384-1-seanjc@google.com> <20210325200119.1359384-4-seanjc@google.com>
- <CANgfPd8N1+oxPWyO+Ob=hSs4nkdedusde6RQ5TXTX8hi48mvOw@mail.gmail.com> <YF0N5/qsmsNHQeVy@google.com>
-In-Reply-To: <YF0N5/qsmsNHQeVy@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 25 Mar 2021 15:45:56 -0700
-Message-ID: <CANgfPd98XttnW0VTN3nSyd=ZWO8sQR53C2oygC6OH+DecMnioA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] KVM: x86/mmu: Don't allow TDP MMU to yield when
- recovering NX pages
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.74.101.239] (138.3.201.47) by CH0PR03CA0285.namprd03.prod.outlook.com (2603:10b6:610:e6::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Thu, 25 Mar 2021 22:57:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e0eb42eb-5422-44a1-1bdb-08d8efe14d04
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4340:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB43401BAD65D62D6AD228D6848A629@BY5PR10MB4340.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u6wAxLNl0WNWBSZP4mR4ATFqC3SSLebgrICEjkBTu6fXU/3ChEiaQ0/yxfuH7+2B3NEb8fSdOqxIJNG26omvS36rujjzMsIfENLBT9e+CJuCnk+cQ3IkJO08W73W6pr9z7c1TYTGebZd9R9wquM6r6+L1/8IuRp6r9ZdMx0CexCckMpfxUOGHaFLSkVm5wOK/w2b3OhNJJiU6o0LU+csG/0GqQip27XDJsUx2/Zm3PyVVvANyyvKxep7knPvFOoY4Sxd4FFo49GAsk34TZH9c9djHf70LIoyd1eE/jHORXMY2yFUX/P/VawbqmVyn3/fZQ1Ijkgb7zFYmRRpyjDOsF/YCLRkLgbnw2Ub/vKh8vnOGh1pVlfWKu07Lq00CnqRDmBpDa6bTGglQKQUgQ9oSbv8geJMmqsomTelV8zr4fe8xsMpskU6cjuQ2AV2BxA4bZ/4eazTdBBttk7BmpjgJyIIGe28xi2f20sDzT0mQAams0CC0zDkdm8kKN3/iq37cZDUJTSaWCedS5mgPFgQQd7fGsaId8BV/mKc/iNoiVBWbUmNX9grHDYexvzql/ZMBBOc7NTG6mn9T3mRRWoVBFUo0wceB9qAbZEPHsCs+2XCYcLmp/aoRPWBKntw0xdmkddTiG8FHainmC5O78DOh1sx+Lc0msZZwaRt338N6qKWqgsEJtOChE7rjV3aaEOSJCFor+bUSY9haLzRs6YKlimyHl9hFuJzsgoGyGuuEF0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3288.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(346002)(366004)(376002)(5660300002)(186003)(44832011)(53546011)(38100700001)(36756003)(31686004)(26005)(31696002)(16526019)(2906002)(6486002)(956004)(4326008)(66946007)(2616005)(478600001)(66556008)(66476007)(316002)(16576012)(54906003)(8936002)(8676002)(6666004)(83380400001)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eENhRmNtWnh3Ui9udkowWVc4NE1KZ2ZGU0NWdHpIOXR6U1o5aXV0YXMxa3lQ?=
+ =?utf-8?B?akc4bXFDNWtwM0JFeXN0MS9aSkZCbElKVWRZOFIrRUF5ZGE3WWorR3hYL1dt?=
+ =?utf-8?B?RzlHS25FSW9qMFhnNm5wRk5IY2xZSktwMWpHN0VUZDdRS3JRRTI3UWdxQXJH?=
+ =?utf-8?B?czU0dTNqZHJhSzJjLzdRbk90VnRuT05EeWYzNjcyK0cvTEJseTA2RUpDT3pi?=
+ =?utf-8?B?TWMvUDI2ODc5SjNTK25PWFFxczBXNmZ2Si9nWnJ6c2QxQitYTDI3SDhlbnBM?=
+ =?utf-8?B?WDN1Y0V6cHRUR3BlcVFIM0ViSldLRmM1a2piSVNTSEVhOUVyZUNCU3NSWkRy?=
+ =?utf-8?B?VHVzNmtKTkE1ektkZXlsUWpPTlZTZGdzQ3pGdGZsRndTWTY4YUM3NEVuaGhj?=
+ =?utf-8?B?RG1tTzBuT21ucVNmNmN2c21tdSs5UVRGTHZQMzkzMVdzMkJkeHhZaXd1TE9J?=
+ =?utf-8?B?bERoZzMvSFR6OFQwS3dQMWlMSkFRZUljTDg5Y01rZjdUQXo3amFHbjNNTnBz?=
+ =?utf-8?B?bmVYbWpTZ1FCS1JxWGN5UTRJQ2JScHJ3SWRKUmhXQk03ZDJWK1R4NTU4ZHFE?=
+ =?utf-8?B?aVpiLzJrdmNIMEI4b2tOSVJCSjJLWXg4aVhHMzlSU25Dakl5eFQ5YjJESy92?=
+ =?utf-8?B?ZjIzaW1ucUE2ZUxRaTVsaUtrcisvRVZ2MkJLcDFBU29QTXRTclVwRXp1WkFn?=
+ =?utf-8?B?QTllTkZyVUU5L3RQSVBKcUZ4R0VxTG5PVVBhVmNsUWUzdGI4K3lZeC9EalB6?=
+ =?utf-8?B?RksxaHgzWDk3bXNQUXdzMWlUbUx4SE1LWXZhTnRBTlkzbjluY1c3aU5TSUZ2?=
+ =?utf-8?B?V1VSdmhRTlVmSThKS0huaVRPVThRMnN2OVpnOE5jRmFDMGlQSEJmUWkzTGFY?=
+ =?utf-8?B?cWpqVElhOWpCWGZsR2NIUW5jbmVOakRycXR1Njg1SWhnZkxPd09mekJkeVZs?=
+ =?utf-8?B?WklYYms0V2lqNzE5RXBGWGJNb2FtWjBiZitEdTB2MDIvZWtIWGRoTnJFbFBT?=
+ =?utf-8?B?YW1ZbUQvVkoxcDl3UDhRN0RiaVN1NUp0NXhBTm1hUEJERVQvSlZ1cnRrRHdp?=
+ =?utf-8?B?SHNVbzVhUzhocVdDMEozTEtmYzI4SW1remtoQlBxSVdkL2RiMlRqZ0RFUnUx?=
+ =?utf-8?B?ZWZ2Z0V3R1BQMUc2eStCMDZJZy9KOVpmUWl1bXo0SDA3ZG5LK1FNQnJta0pP?=
+ =?utf-8?B?VzlwaEl4dnB1ZUVtd1d0RFRZa005L0h5ckZvNzVjTHBUYkpIVW1EbC9tMVMz?=
+ =?utf-8?B?SXVkMGtHMDZ4OTRmUGc4WVQ1bEJ1ZTkzbjZzN2d6Kzg0czFwNElkeS9WSHUw?=
+ =?utf-8?B?ZWJSbDBYTEx5V1pZdEo4ejVvT05Kb0ZNd053NmJjNEFNYnVBRU9lUGtaSHRX?=
+ =?utf-8?B?akxWVVNJSzZLQmlrWW1Dc2w2M1MvTlpyUmwveHN0Z2F2VWRZZUxlRkcrb25h?=
+ =?utf-8?B?SnBFSUFoS2NwV240WFNQZzVBaUtNUWNaRlF6VWRxRDMwQVVEL3YxS3BTSXNn?=
+ =?utf-8?B?NFNDeDVidDRob0N4TkdWeDNjUU9tM0MxdDJBdmFIakJhWGlLUDUweEI0QUJx?=
+ =?utf-8?B?d2JTcTBFNHlvamwyRi9RVjcybW9vRmVYL0g2dUYweXBxVjdEalU2NXBidEZY?=
+ =?utf-8?B?K01LbmpaRmU4VzB6bEhQQks4ZFR2dWpzL3NPRkpWM1VxNzRaMnhaQzYzU0Er?=
+ =?utf-8?B?dUFzS2tIUXdlZGxSOVFVK0JuMys4MERHS3NZNElidWZsVUw2V2dqTkk4WnlF?=
+ =?utf-8?Q?4iWTx0Nqm3t2zmP7FH7kDXCky34d+G9CxhHuQMo?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0eb42eb-5422-44a1-1bdb-08d8efe14d04
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3288.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 22:57:01.4588
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nZd4EPoEB+LiklUJ1kXWueADHMoUqKR6qXVdOnlmJDcTSHPFggfA5UZE8Vt3Uj/ks6ZZsR/1JoorYaCMW0ax895/ia2tTcl26DGq+BZTuaY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4340
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103250169
+X-Proofpoint-ORIG-GUID: uYNVyr4eGFm5HZDWJX-UssneCXGmvXK4
+X-Proofpoint-GUID: uYNVyr4eGFm5HZDWJX-UssneCXGmvXK4
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103250169
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 3:25 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Thu, Mar 25, 2021, Ben Gardon wrote:
-> > On Thu, Mar 25, 2021 at 1:01 PM Sean Christopherson <seanjc@google.com> wrote:
-> > > +static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start,
-> > > +                                            gfn_t end)
-> > > +{
-> > > +       return __kvm_tdp_mmu_zap_gfn_range(kvm, start, end, true);
-> > > +}
-> > > +static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
-> >
-> > I'm a little leary of adding an interface which takes a non-root
-> > struct kvm_mmu_page as an argument to the TDP MMU.
-> > In the TDP MMU, the struct kvm_mmu_pages are protected rather subtly.
-> > I agree this is safe because we hold the MMU lock in write mode here,
-> > but if we ever wanted to convert to holding it in read mode things
-> > could get complicated fast.
-> > Maybe this is more of a concern if the function started to be used
-> > elsewhere since NX recovery is already so dependent on the write lock.
->
-> Agreed.  Even writing the comment below felt a bit awkward when thinking about
-> additional users holding mmu_lock for read.  Actually, I should remove that
-> specific blurb since zapping currently requires holding mmu_lock for write.
->
-> > Ideally though, NX reclaim could use MMU read lock +
-> > tdp_mmu_pages_lock to protect the list and do reclaim in parallel with
-> > everything else.
->
-> Yar, processing all legacy MMU pages, and then all TDP MMU pages to avoid some
-> of these dependencies crossed my mind.  But, it's hard to justify effectively
-> walking the list twice.  And maintaining two lists might lead to balancing
-> issues, e.g. the legacy MMU and thus nested VMs get zapped more often than the
-> TDP MMU, or vice versa.
 
-I think in an earlier version of the TDP that I sent out, NX reclaim
-was a seperate thread for the two MMUs, sidestepping the balance
-issue.
-I think the TDP MMU also had a seperate NX reclaim list.
-That would also make it easier to do something under the read lock.
+On 3/24/21 7:09 PM, Boris Ostrovsky wrote:
+> On 3/24/21 8:24 AM, Roger Pau Monne wrote:
+>> Hello,
+>>
+>> This is a proposal for an alternative fix for XSA-369 that instead of
+>> special casing XEN_UNPOPULATED_ALLOC to size the p2m relies on making
+>> XEN_BALLOON_MEMORY_HOTPLUG_LIMIT depend on the generic MEMORY_HOTPLUG
+>> option rather than XEN_BALLOON_MEMORY_HOTPLUG.
+>>
+>> I think this is safer, as we don't want to be special casing any option
+>> that pulls in generic MEMORY_HOTPLUG without XEN_BALLOON_MEMORY_HOTPLUG.
+>> Without this we would also need to at least special case ZONE_DEVICE
+>> which also relies on MEMORY_HOTPLUG, and is what pulls the generic
+>> MEMORY_HOTPLUG option even when XEN_BALLOON_MEMORY_HOTPLUG is disabled
+>> with XEN_UNPOPULATED_ALLOC.
+>>
+>> Thanks, Roger.
+>>
+>> Roger Pau Monne (2):
+>>   xen/x86: make XEN_BALLOON_MEMORY_HOTPLUG_LIMIT depend on
+>>     MEMORY_HOTPLUG
+>>   Revert "xen: fix p2m size in dom0 for disabled memory hotplug case"
+>>
+>>  arch/x86/include/asm/xen/page.h | 12 ------------
+>>  arch/x86/xen/p2m.c              |  7 ++-----
+>>  arch/x86/xen/setup.c            | 16 ++++++++++++++--
+>>  drivers/xen/Kconfig             |  4 ++--
+>>  4 files changed, 18 insertions(+), 21 deletions(-)
+>
+> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 
->
-> > The nice thing about drawing the TDP MMU interface in terms of GFNs
-> > and address space IDs instead of SPs is that it doesn't put
-> > constraints on the implementation of the TDP MMU because those GFNs
-> > are always going to be valid / don't require any shared memory.
-> > This is kind of innocuous because it's immediately converted into that
-> > gfn interface, so I don't know how much it really matters.
-> >
-> > In any case this change looks correct and I don't want to hold up
-> > progress with bikeshedding.
-> > WDYT?
->
-> I think we're kind of hosed either way.  Either we add a helper in the TDP MMU
-> that takes a SP, or we bleed a lot of information about the details of TDP MMU
-> into the common MMU.  E.g. the function could be open-coded verbatim, but the
-> whole comment below, and the motivation for not feeding in flush is very
-> dependent on the internal details of TDP MMU.
->
-> I don't have a super strong preference.  One thought would be to assert that
-> mmu_lock is held for write, and then it largely come future person's problem :-)
 
-Yeah, I agree and I'm happy to kick this proverbial can down the road
-until we actually add an NX reclaim implementation that uses the MMU
-read lock.
+Applied to for-linus-5.12b.
 
->
-> > > +{
-> > > +       gfn_t end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
-> > > +
-> > > +       /*
-> > > +        * Don't allow yielding, as the caller may have a flush pending.  Note,
-> > > +        * if mmu_lock is held for write, zapping will never yield in this case,
-> > > +        * but explicitly disallow it for safety.  The TDP MMU does not yield
-> > > +        * until it has made forward progress (steps sideways), and when zapping
-> > > +        * a single shadow page that it's guaranteed to see (thus the mmu_lock
-> > > +        * requirement), its "step sideways" will always step beyond the bounds
-> > > +        * of the shadow page's gfn range and stop iterating before yielding.
-> > > +        */
-> > > +       return __kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, end, false);
-> > > +}
-> > >  void kvm_tdp_mmu_zap_all(struct kvm *kvm);
-> > >
-> > >  int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> > > --
-> > > 2.31.0.291.g576ba9dcdaf-goog
-> > >
+
+-boris
+
