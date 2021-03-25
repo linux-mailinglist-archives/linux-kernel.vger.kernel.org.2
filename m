@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4068F3494A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3CB3494A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhCYOwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230228AbhCYOwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:52:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BB77619FC;
-        Thu, 25 Mar 2021 14:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616683955;
-        bh=ANaYj3ch1gtGahdxMwsKFrqXT9ozTgZoAdbtYKveX4M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QuBq+Pboh8ELbtdKroOFreFMOcms+2OVhrdOE6KnCV59LEbH6uxVO/JCBCdpiFc2Q
-         nsAdBF0XSzP1mbrgNb+anznpQNLL96NSJ3bNY2V+Gfkh8MdNTUuZAaE1aCyreTKeJk
-         yCL232OPaON/QglO54yCoVGJQemmYrsKbd/UojV8=
-Date:   Thu, 25 Mar 2021 15:52:32 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Rob Springer <rspringer@google.com>,
-        Todd Poynor <toddpoynor@google.com>,
-        Ben Chan <benchan@chromium.org>, Richard Yeh <rcy@google.com>,
-        linux-staging@lists.linux.dev, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: gasket: remove it from the kernel
-Message-ID: <YFyjsAtilH+3fggx@kroah.com>
-References: <20210315154413.3084149-1-gregkh@linuxfoundation.org>
- <CALTjKEP_+uBU8K-=Cnose8wCv9Wrv8oFnKfRUywLEHV4U_jWjQ@mail.gmail.com>
- <30ee6d6b-9206-acad-b224-591fdeb0dad7@siemens.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <30ee6d6b-9206-acad-b224-591fdeb0dad7@siemens.com>
+        id S231243AbhCYOxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231334AbhCYOwv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:52:51 -0400
+Received: from mail-ed1-x549.google.com (mail-ed1-x549.google.com [IPv6:2a00:1450:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92460C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:52:50 -0700 (PDT)
+Received: by mail-ed1-x549.google.com with SMTP id a2so2805379edx.0
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:52:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=STCmlN6hY8DEQEj8NFVnXDEzIL1GeEra4hxCSiYhbXY=;
+        b=taC5jvh3MEbb3x/VpcyVnUS3GzEsskrjQBkhyFLV30MQ4LFf3yzzz/YJtsLTdFLLun
+         r88T+m7Z7VF1FGbuY1jO1iOr0tcZSYdfVC4MNkEIJ5ykJFVIeKhfIm79GpIQxFDCo1uK
+         rzGOvi2nsHDB5FRbgtvxAn4L4+PIaQ9nzGuUUAyw1BFFrdigBOEE2wBUgMuCJ8d1XpeI
+         rA6WgbNFTJG+MNYYkR7SiYZI+vibj3Mb+s+di0nKviqVpyg/FOCEUTzm25ApV8lo7iUR
+         fWSYWf/jIoJ9g0I56MVR8c4dA8INEfM7G2L0QE61UAeLgU/WHTlTqIbWm0nARqyWB/0x
+         3Ahw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=STCmlN6hY8DEQEj8NFVnXDEzIL1GeEra4hxCSiYhbXY=;
+        b=oCUFnKmLnVsh//gzidwdfCnen6KPFAUVjtpyG6U4WU1/4s9T8VjK0EiKGszQR+y1sj
+         iBXNVaG2WEK8ytP8I61mL843Vm/XmyZVYO2pmDWT0HyXQRkiiM4ZC1bwIcEzOok3/+wO
+         xxKLHgLdNk7xLwajHSNCnRCJmUUnpeqvkxQtVmb62l03S1jaKRr9oEYXORxIwpC9qnCI
+         +bDaFjoOt6gEAR1MWqOL5gYGT+k1XYSNJveF9aqRJgtDoS7XZDaEtgvT9SwV0VcrMraX
+         b9hRhjqA3Loweskv8l5tgQPA6jWy8DP9ym00gkOHkMSePCYRIKveqoZCcyqowd2T1Yz7
+         b0hA==
+X-Gm-Message-State: AOAM530oMAh7f1sVyX/nldmsI4elhz7IpJgwKhcUI1dDmjmrkXwp3vKN
+        OvuG4YvD8Qq4rh+/Y7gW0645uX8xk+LD
+X-Google-Smtp-Source: ABdhPJzPMq20S+OQH/A85v07sokOWto4Kz4w81RF3hg0Dh+DAdDletZLiRIbANYepwqvHntnpNuAOAMbtxOv
+X-Received: from dvyukov-desk.muc.corp.google.com ([2a00:79e0:15:13:8903:2da7:c857:1a50])
+ (user=dvyukov job=sendgmr) by 2002:a17:906:524f:: with SMTP id
+ y15mr9740993ejm.65.1616683968822; Thu, 25 Mar 2021 07:52:48 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:52:45 +0100
+Message-Id: <20210325145245.3160366-1-dvyukov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH net-next v2] net: change netdev_unregister_timeout_secs min
+ value to 1
+From:   Dmitry Vyukov <dvyukov@google.com>
+To:     edumazet@google.com, davem@davemloft.net
+Cc:     leon@kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:46:10PM +0100, Jan Kiszka wrote:
-> On 15.03.21 17:10, Rob Springer wrote:
-> > Acked-by: Rob Springer <rspringer@google.com>
-> > 
-> > 
-> > On Mon, Mar 15, 2021 at 8:44 AM <gregkh@linuxfoundation.org> wrote:
-> >>
-> >> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>
-> >> As none of the proposed things that need to be changed in the gasket
-> >> drivers have ever been done, and there has not been any forward progress
-> >> to get this out of staging, it seems totally abandonded so remove the
-> >> code entirely so that people do not spend their time doing tiny cleanups
-> >> for code that will never get out of staging.
-> >>
-> >> If this code is actually being used, it can be reverted simply and then
-> >> cleaned up properly, but as it is abandoned, let's just get rid of it.
-> >>
-> >> Cc: Rob Springer <rspringer@google.com>
-> >> Cc: Todd Poynor <toddpoynor@google.com>
-> >> Cc: Ben Chan <benchan@chromium.org>
-> >> Cc: Richard Yeh <rcy@google.com>
-> >> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> OK, so is there a plan of the HW vendor to improve the user experience
-> for this hardware? Is there a different software architecture in sight
-> which will not need a kernel driver?
+netdev_unregister_timeout_secs=0 can lead to printing the
+"waiting for dev to become free" message every jiffy.
+This is too frequent and unnecessary.
+Set the min value to 1 second.
 
-What hardware vendor makes this thing?  What systems require it?  And
-why can't you use UIO instead?
+Also fix the merge issue introduced by
+"net: make unregister netdev warning timeout configurable":
+it changed "refcnt != 1" to "refcnt".
 
-> Just wondering loudly while fiddling with dkms packages and starring at
-> the code diffs between what was removed here and what I still have to
-> install manually from remote sources.
+Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Fixes: 5aa3afe107d9 ("net: make unregister netdev warning timeout configurable")
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+Changes since v1:
+ - fix merge issue related to refcnt check
+---
+ Documentation/admin-guide/sysctl/net.rst | 2 +-
+ net/core/dev.c                           | 2 +-
+ net/core/sysctl_net_core.c               | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Where are the remote sources for this thing and why didn't they ever get
-synced into the kernel tree?
+diff --git a/Documentation/admin-guide/sysctl/net.rst b/Documentation/admin-guide/sysctl/net.rst
+index 2090bfc69aa50..c941b214e0b7f 100644
+--- a/Documentation/admin-guide/sysctl/net.rst
++++ b/Documentation/admin-guide/sysctl/net.rst
+@@ -320,7 +320,7 @@ waiting for a network device refcount to drop to 0 during device
+ unregistration. A lower value may be useful during bisection to detect
+ a leaked reference faster. A larger value may be useful to prevent false
+ warnings on slow/loaded systems.
+-Default value is 10, minimum 0, maximum 3600.
++Default value is 10, minimum 1, maximum 3600.
+ 
+ optmem_max
+ ----------
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 4bb6dcdbed8b8..7bb00b8b86c64 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10431,7 +10431,7 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 
+ 		refcnt = netdev_refcnt_read(dev);
+ 
+-		if (refcnt &&
++		if (refcnt != 1 &&
+ 		    time_after(jiffies, warning_time +
+ 			       netdev_unregister_timeout_secs * HZ)) {
+ 			pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
+diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
+index d84c8a1b280e2..c8496c1142c9d 100644
+--- a/net/core/sysctl_net_core.c
++++ b/net/core/sysctl_net_core.c
+@@ -577,7 +577,7 @@ static struct ctl_table net_core_table[] = {
+ 		.maxlen		= sizeof(unsigned int),
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec_minmax,
+-		.extra1		= SYSCTL_ZERO,
++		.extra1		= SYSCTL_ONE,
+ 		.extra2		= &int_3600,
+ 	},
+ 	{ }
 
-thanks,
+base-commit: 84c7f6c33f42a12eb036ebf0f0e3670799304120
+-- 
+2.31.0.291.g576ba9dcdaf-goog
 
-greg k-h
