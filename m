@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A3C9348810
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 05:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68ACC348537
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbhCYEs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 00:48:56 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:54528 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCYEsZ (ORCPT
+        id S239032AbhCXXUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239041AbhCXXTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 00:48:25 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 12P4mAOE031060;
-        Thu, 25 Mar 2021 13:48:10 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 12P4mAOE031060
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1616647691;
-        bh=/uaZX3bCHOhFgcOqswzfVAViushV7RuOF8pV66D1nrg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q8OTIEn9NFEfW46vVlA3Gy5OryaGw1dFcr0YmQ8octAuFAqWoT8nPfvup/gwjXAmG
-         9ZWRde5n0Ct/LJgx+9XpazLWnwL62/ynhmb+nVPCZWtUOxh+4JxkDK+pu327A7X97H
-         Rlfn64ZyqAGl6Gv3Alcq/VGh3EibG3hXWXvCfpWLBKCuAmp6K5pDbGSuwxM94MHpNl
-         l6MFp5sJElnyXz54qqzNqiCoAyBYple2PhKc1Xh0vHvHUGqTQL+JudYYxRVuOFsi2O
-         5gTihHS/Kp82q/EGrHjiA6dpxVEma9iDQPnXJ+WIDe0ZKEFNxEYllUk2gWh1YBODQs
-         4k7Ku/Fibed1w==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so402530pjg.5;
-        Wed, 24 Mar 2021 21:48:10 -0700 (PDT)
-X-Gm-Message-State: AOAM530OoO05615gt0LXBM8HKL/ktP5pIGybdNFiQoWDYh89nJDwQ/78
-        fQrt3Z0VdfWn5w7MZSYaYN71DYh4PCrBLgWAZLU=
-X-Google-Smtp-Source: ABdhPJzQ4olnrldKlvYZdZkbfK800ZGmJQ6jon4C54m8CM+h+8pA+VuQT3T8IBjM3dm+RKXXaiF+D02hDVLye7GEbAg=
-X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr6924507pjb.87.1616647690109;
- Wed, 24 Mar 2021 21:48:10 -0700 (PDT)
+        Wed, 24 Mar 2021 19:19:55 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12540C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:19:55 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id y2so358660qtw.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pwqp4woCEM/8lkZdfdADrpPJtfyqEYwcyiw1y1Z2UXo=;
+        b=BlD7Buk9Y+AzuOUep782IAd8wo1KZFUJVVfIubRgq41To90R1iWqse5RlihObYj0kH
+         j+qQ+ZUXi/bPzIhC+ZTo1Xph3IEDLsK4ZwOF6Jxlvzi+92cQuVI3O9fRvxrGGuufQ7UJ
+         I7NQnDecy5L8ZxFa20fY0Ndzd8ah8HR21Ufy2Dd6k5x0avW6LKJgk549GxptXNe3l0Rw
+         suJB7WghFX7yui45HzyK9a/PLGMQj4fIA7cPwypVSYOoLXYsXK/f4X6TBNxf9uLhmU84
+         cmoqvb9pPQZVhc9bK+64ITKvRMrZHCGU4KizbH/vdDo0KpWZuXkwYfWRHHDvab5+MIRn
+         OabQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Pwqp4woCEM/8lkZdfdADrpPJtfyqEYwcyiw1y1Z2UXo=;
+        b=R+QyVHwXsYWNfkR0bxqlOeChsgnvPKdW6mseNDbFkDbCxanJA9pH+451o2D8v3wo4O
+         X3poxHOPWisD/Wuvlitu2SiCWml5qF+rh8Xp7rr/tU+UAHfAyc03v/Pmd4y9aiftz5t3
+         lZUxP8vNwwANkl/sKe7iBvuYOLNB5gE97qBiKidJwypC7UTqkjSqhZOLkMp9P85HrUiS
+         m8v0QK65ETDo04a1jUxr3pmSTnBjbrn6rD3lLsirVUx5LD5+S/gynucwmaD4hu1Uu02g
+         R7NBqTfFx4p64IxHH9/a2LUQEeWJFxIgl+7QpkRxx+u8lAmk4OSElHisQ8BkI7dS9gQA
+         HmwA==
+X-Gm-Message-State: AOAM533Yn34BJ79YjX1a8gpWfAUUIwlJ8F67lkP5snolkMvto6ABW3NB
+        WSNllo84Bm2fXJlcHGir7F0=
+X-Google-Smtp-Source: ABdhPJziZ8mCry71FBaEfUaQWrt+PfkhXsYOFfv1qsNM0L6QD9aLqQT/Sy8Ruw4tUuX93Wd0Sy0RDA==
+X-Received: by 2002:ac8:44b2:: with SMTP id a18mr5092462qto.285.1616627994380;
+        Wed, 24 Mar 2021 16:19:54 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.55.193])
+        by smtp.gmail.com with ESMTPSA id v137sm2947861qkb.109.2021.03.24.16.19.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 16:19:53 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] mm/slub.c: Trivial typo fixes
+Date:   Thu, 25 Mar 2021 10:19:40 +0530
+Message-Id: <20210325044940.14516-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210313194836.372585-1-masahiroy@kernel.org>
-In-Reply-To: <20210313194836.372585-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 25 Mar 2021 13:47:33 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARk6rZbJtCM50zx6XyPbWJrL8zPvCQU74jmMbLFvO-cpA@mail.gmail.com>
-Message-ID: <CAK7LNARk6rZbJtCM50zx6XyPbWJrL8zPvCQU74jmMbLFvO-cpA@mail.gmail.com>
-Subject: Re: [PATCH 01/13] kconfig: split randconfig setup code into set_randconfig_seed()
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 4:48 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> This code is too big to be placed in the switch statement.
->
-> Move the code into a new helper function. I slightly refactor the code
-> without changing the behavior.
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+s/operatios/operations/
+s/Mininum/Minimum/
+s/mininum/minimum/  ......two different places.
 
-All applied to linux-kbuild/kconfig.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Changes from V1:
+  David's finding incorporated.i.e operation->operations
+ mm/slub.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/mm/slub.c b/mm/slub.c
+index 3021ce9bf1b3..75d103ad5d2e 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3,7 +3,7 @@
+  * SLUB: A slab allocator that limits cache line use instead of queuing
+  * objects in per cpu and per node lists.
+  *
+- * The allocator synchronizes using per slab locks or atomic operatios
++ * The allocator synchronizes using per slab locks or atomic operations
+  * and only uses a centralized lock to manage a pool of partial slabs.
+  *
+  * (C) 2007 SGI, Christoph Lameter
+@@ -160,7 +160,7 @@ static inline bool kmem_cache_has_cpu_partial(struct kmem_cache *s)
+ #undef SLUB_DEBUG_CMPXCHG
 
+ /*
+- * Mininum number of partial slabs. These will be left on the partial
++ * Minimum number of partial slabs. These will be left on the partial
+  * lists even if they are empty. kmem_cache_shrink may reclaim them.
+  */
+ #define MIN_PARTIAL 5
+@@ -832,7 +832,7 @@ static int check_bytes_and_report(struct kmem_cache *s, struct page *page,
+  *
+  * 	A. Free pointer (if we cannot overwrite object on free)
+  * 	B. Tracking data for SLAB_STORE_USER
+- * 	C. Padding to reach required alignment boundary or at mininum
++ * 	C. Padding to reach required alignment boundary or at minimum
+  * 		one word if debugging is on to be able to detect writes
+  * 		before the word boundary.
+  *
+@@ -3421,7 +3421,7 @@ static unsigned int slub_min_objects;
+  *
+  * Higher order allocations also allow the placement of more objects in a
+  * slab and thereby reduce object handling overhead. If the user has
+- * requested a higher mininum order then we start with that one instead of
++ * requested a higher minimum order then we start with that one instead of
+  * the smallest order which will fit the object.
+  */
+ static inline unsigned int slab_order(unsigned int size,
+--
+2.30.1
 
-
->  scripts/kconfig/conf.c | 54 ++++++++++++++++++++++++------------------
->  1 file changed, 31 insertions(+), 23 deletions(-)
->
-> diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
-> index 957d2a0832f7..063c9e7a34c1 100644
-> --- a/scripts/kconfig/conf.c
-> +++ b/scripts/kconfig/conf.c
-> @@ -82,6 +82,36 @@ static void xfgets(char *str, int size, FILE *in)
->                 printf("%s", str);
->  }
->
-> +static void set_randconfig_seed(void)
-> +{
-> +       unsigned int seed;
-> +       char *env;
-> +       bool seed_set = false;
-> +
-> +       env = getenv("KCONFIG_SEED");
-> +       if (env && *env) {
-> +               char *endp;
-> +
-> +               seed = strtol(env, &endp, 0);
-> +               if (*endp == '\0')
-> +                       seed_set = true;
-> +       }
-> +
-> +       if (!seed_set) {
-> +               struct timeval now;
-> +
-> +               /*
-> +                * Use microseconds derived seed, compensate for systems where it may
-> +                * be zero.
-> +                */
-> +               gettimeofday(&now, NULL);
-> +               seed = (now.tv_sec + 1) * (now.tv_usec + 1);
-> +       }
-> +
-> +       printf("KCONFIG_SEED=0x%X\n", seed);
-> +       srand(seed);
-> +}
-> +
->  static int conf_askvalue(struct symbol *sym, const char *def)
->  {
->         if (!sym_has_value(sym))
-> @@ -515,30 +545,8 @@ int main(int ac, char **av)
->                         defconfig_file = optarg;
->                         break;
->                 case randconfig:
-> -               {
-> -                       struct timeval now;
-> -                       unsigned int seed;
-> -                       char *seed_env;
-> -
-> -                       /*
-> -                        * Use microseconds derived seed,
-> -                        * compensate for systems where it may be zero
-> -                        */
-> -                       gettimeofday(&now, NULL);
-> -                       seed = (unsigned int)((now.tv_sec + 1) * (now.tv_usec + 1));
-> -
-> -                       seed_env = getenv("KCONFIG_SEED");
-> -                       if( seed_env && *seed_env ) {
-> -                               char *endp;
-> -                               int tmp = (int)strtol(seed_env, &endp, 0);
-> -                               if (*endp == '\0') {
-> -                                       seed = tmp;
-> -                               }
-> -                       }
-> -                       fprintf( stderr, "KCONFIG_SEED=0x%X\n", seed );
-> -                       srand(seed);
-> +                       set_randconfig_seed();
->                         break;
-> -               }
->                 case oldaskconfig:
->                 case oldconfig:
->                 case allnoconfig:
-> --
-> 2.27.0
->
-
-
--- 
-Best Regards
-Masahiro Yamada
