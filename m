@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4EA349C53
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:35:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440FE349C65
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhCYWej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
+        id S231267AbhCYWi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhCYWec (ORCPT
+        with ESMTP id S230285AbhCYWh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:34:32 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13898C06174A;
-        Thu, 25 Mar 2021 15:34:32 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id 11so3511612pfn.9;
-        Thu, 25 Mar 2021 15:34:32 -0700 (PDT)
+        Thu, 25 Mar 2021 18:37:59 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47AC7C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:37:59 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id z25so5209039lja.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:37:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x3pI3wTYnfce9h5pWOGPoILRK7UaH+G2udckcHEub78=;
-        b=swIEOgu95QCf9KedaX4yebvnrTZZGdBVpIzFChRQI1+PDRhRc8qNWJ0rsN55FErMs/
-         aGEz2YRI6HAYgD56wlV8BxeL18ERak8ArONscIHBhrE101A6ls8PbTY8bhzm6lN3hwNQ
-         pDFicK8np9QJDCtC1fSDSotZ+wt7z1HDrl4zKes6lycrqaxquEyHSPdzTxmWh5HGHPxy
-         c0dcz/1ddgTJRgbGPA3/0ZY/Q+oNLk7KtJbq5PWs40mN3M/fxOsdV0VahEZ9a4b50BR6
-         YBX2+hOSYMZwGtFx2osqj+YQf7dI4TOZSZJaukpLcN/70CGrzLxSJiwCZbCcLHjvUp3b
-         2ajQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5e4oQJs7D+v1Fp3qOgnpvnuKs8stkr9RsHaAFeuS1Fc=;
+        b=ZFU9nYcCw1i1YZLwUD9j6hzdpJn7J4V1dZU6rfkkC0CTqlwogXdIkiC/7xKG04aIBY
+         PA92xy40DUv5AHeYhyJTT93+bTuuKfpRfF5xBzIpvKm63s6OjulKUT/Cp/9KZOQC72Hw
+         QdfoxCxgbz5pWPRCuETEw+RkR53XEtwLJFTq4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x3pI3wTYnfce9h5pWOGPoILRK7UaH+G2udckcHEub78=;
-        b=sEY9mLXF30ju+Iej/qc4GUTmp6pq191zuaWU5K4Rodbqrp1oePExZgAsQYb2WeXHqT
-         J4vJunT6wbMUvZ07m3UufM80Xa6/x/GnB7aIt6t1D+QY64ddaqk+ZceUbvdpNK9cEvKh
-         BVx4wd1xdmDW3elZj1YNjKH729jy9QQaJgq2PdrdUWkxMsczirWj/TY3CIPfP0Lk0mpd
-         GHgs2V0BE6PRuW+utbnGW0B4dtS+51WfzwOiCXXD+ackDicK0W0DDQtzGntOCFW93ulU
-         pFrmMDVVMi2yrg/RqjnWNhIaeTNjdnJFIRO5VT0jNyNWo6PJJrX1qcHogkCPG3waox4E
-         F4Lg==
-X-Gm-Message-State: AOAM5313pLvbFzwK7kFwYl/wfMoxXJ2P6ykEPpvUMotQp3hXQmpQv3xK
-        IhzU0CIIQia6TCRuoS4wCek=
-X-Google-Smtp-Source: ABdhPJzSOVWrd0ZUTVMt0ZJVpx/V91m8aCUSh+Plu+or3dSadNjlWXEUd9ymA+N2OtQFNRJZCgjooQ==
-X-Received: by 2002:a17:903:228d:b029:e7:1f01:bab0 with SMTP id b13-20020a170903228db02900e71f01bab0mr173917plh.80.1616711671394;
-        Thu, 25 Mar 2021 15:34:31 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id f19sm7297452pgl.49.2021.03.25.15.34.29
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5e4oQJs7D+v1Fp3qOgnpvnuKs8stkr9RsHaAFeuS1Fc=;
+        b=O1vszWHFgb+AcRh6gf6tJpFct6DWURZnO8NgnxdpQsYPWf+EdmxFzA9YKh4R/6fup2
+         0BOgx09vgeUKqkbrU4Azl2vj+quSUXjQQl/p6iD59ifGj1+Q/xRCSQziWncUGteBpIbW
+         efExMs8mTll52PDuLGRVBs9kuQrz5qAZbpVWH637PCo36pefwv/G6he23mxAvdTQV7U7
+         svEdR/ZLzhQsbQV6yeFg/FO+yRHJh4aJ/rmZcW71krVvDNDCDvB89JDkqs4QGYUJKsbH
+         AQMbi9Ss6lzZJoQX9Zc26Z956z3hG+1B7DYY/MFtjEVAiFq5SOwehiKFaTQNSxi2SE95
+         efCQ==
+X-Gm-Message-State: AOAM530Sj1v6CezTcAP7Q5GGY88fstR9rv7+mNZQ0+U4iChdLJ3oAD2C
+        DKdZLWoSwZhK8XzAxaCc1pmnsVtTVl0wig==
+X-Google-Smtp-Source: ABdhPJwVmiIO0JolhcTVflOQUEmvhEb46FwsFQtab6eEp90p3XwQIet0dEf8UlZ7C7cUDEBGid0QeQ==
+X-Received: by 2002:a2e:b60d:: with SMTP id r13mr7126679ljn.30.1616711877684;
+        Thu, 25 Mar 2021 15:37:57 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id z28sm955379ljn.117.2021.03.25.15.37.56
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 15:34:30 -0700 (PDT)
-Subject: Re: [PATCH] mmc: sdhci-brcmstb: Remove CQE quirk
-To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-References: <20210325192834.42955-1-alcooperx@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <8736770f-69e9-579b-0762-83884c8cb4d9@gmail.com>
-Date:   Thu, 25 Mar 2021 15:34:28 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.8.1
+        Thu, 25 Mar 2021 15:37:56 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id g8so4820723lfv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:37:56 -0700 (PDT)
+X-Received: by 2002:a05:6512:3ba9:: with SMTP id g41mr5979179lfv.421.1616711875760;
+ Thu, 25 Mar 2021 15:37:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210325192834.42955-1-alcooperx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210325164343.807498-1-axboe@kernel.dk> <m1ft0j3u5k.fsf@fess.ebiederm.org>
+ <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+ <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
+ <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
+ <ad21da2b-01ea-e77c-70b2-0401059e322b@kernel.dk> <f9bc0bac-2ad9-827e-7360-099e1e310df5@kernel.dk>
+In-Reply-To: <f9bc0bac-2ad9-827e-7360-099e1e310df5@kernel.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 25 Mar 2021 15:37:39 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgmHRvoYdsA2ZL4aEOYvNx-5c7typsUbFcqq+GmOMcoDQ@mail.gmail.com>
+Message-ID: <CAHk-=wgmHRvoYdsA2ZL4aEOYvNx-5c7typsUbFcqq+GmOMcoDQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Stefan Metzmacher <metze@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 25, 2021 at 2:44 PM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> In the spirit of "let's just try it", I ran with the below patch. With
+> that, I can gdb attach just fine to a test case that creates an io_uring
+> and a regular thread with pthread_create(). The regular thread uses
+> the ring, so you end up with two iou-mgr threads. Attach:
+>
+> [root@archlinux ~]# gdb -p 360
+> [snip gdb noise]
+> Attaching to process 360
+> [New LWP 361]
+> [New LWP 362]
+> [New LWP 363]
+[..]
 
+Looks fairly sane to me.
 
-On 3/25/2021 12:28 PM, Al Cooper wrote:
-> Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
-> latest chips have this fixed and earlier chips have other
-> CQE problems that prevent the feature from being enabled.
-> 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+I think this ends up being the right approach - just the final part
+(famous last words) of "io_uring threads act like normal threads".
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Doing it for VM and FS got rid of all the special cases there, and now
+doing it for signal handling gets rid of all these ptrace etc issues.
+
+And the fact that a noticeable part of the patch was removing the
+PF_IO_WORKER tests again looks like a very good sign to me.
+
+In fact, I think you could now remove all the freezer hacks too -
+because get_signal() will now do the proper try_to_freeze(), so all
+those freezer things are stale as well.
+
+Yeah, it's still going to be different in that there's no real user
+space return, and so it will never look _entirely_ like a normal
+thread, but on the whole I really like how this does seem to get rid
+of another batch of special cases.
+
+               Linus
