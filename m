@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE0E3489BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCA43489BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhCYG7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
+        id S229653AbhCYG7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhCYG60 (ORCPT
+        with ESMTP id S229872AbhCYG7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:58:26 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98726C06174A;
-        Wed, 24 Mar 2021 23:58:26 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so515369pjg.5;
-        Wed, 24 Mar 2021 23:58:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=o1CvHWMNIVE9JRrHuZNAemnGtuIBJ5AIryKfD1r6v+8=;
-        b=WhK2TyCXaTs5nWrXgXWnQsFcAVspW+OYbTmTY1PFOrUpXe7RBtPozCnn0xEc5Qy4eE
-         8yfrTdCLndDjDf18f4IOpLauyPoXRE/W0828gduqXyl2vBp06UZ77uoCknocQdBk5inR
-         dfNe8bQuUdeiTFpTuvsJfP2XKBgDX0Egzn4Rq0agjFHydy27vVfUhGMbaOginJwoFTPo
-         Ke4/UfL/shnb3yXKJjIRHHnJNqWiPIK0Ji1Qx+yKkYUngmycm82Xrm4ew4b9SoWVJwF6
-         70BDWtIclqhyQxdyAlby3e7B347wzJf2UMdFXxokiZ/6XhkiWAwcn1uf8mV5sNsb90Zg
-         vE5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=o1CvHWMNIVE9JRrHuZNAemnGtuIBJ5AIryKfD1r6v+8=;
-        b=Gz7JODLh4KkynRE4DC1F05F563FEBvTDz+5XuAp4Vkmeiqny5BhOLjQM+C58pEq9ZJ
-         ldrcR2N2eo9RweCLhVSbclj2/kNOflnAyGaqUwEYKX2Zl7drxIIyetc8My0uQn++ngLF
-         otux8zkA5gXBVgWFenLe/nifohqukYK1Nwr7VyKSiOLpJsc6lYSAyPVm95L6qe/Qu8UX
-         FSjAqmMyOTsKOVTbZfXsSqif9M5E5KQqx8ZvDdjYT5GJL931qVBEmud4cvCqvFkVitHv
-         FbTB4IsUR+BybHXoNr/fok5kli3u64EWzoSdJzjsugI9RQUSqovlSOyNbyFUksEci3qA
-         +XUg==
-X-Gm-Message-State: AOAM533WOaGp2j7UCR2/Smd2wGOu5qUxKqU9V+X34Z2/UWe5C2ltAwAQ
-        8mG5OI5NCoGTDnyUU0mIofw/SMDErWojFw==
-X-Google-Smtp-Source: ABdhPJzUNdaogeNBEnC+EmL59MLkV0as67JwWbBW+WHXYEyRO5zUNhjpHveDJhruO3f/WQEwKYrdUw==
-X-Received: by 2002:a17:90a:eac7:: with SMTP id ev7mr7501137pjb.158.1616655506236;
-        Wed, 24 Mar 2021 23:58:26 -0700 (PDT)
-Received: from VM-0-3-centos.localdomain ([101.32.213.191])
-        by smtp.gmail.com with ESMTPSA id x19sm4470202pfc.152.2021.03.24.23.58.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 24 Mar 2021 23:58:25 -0700 (PDT)
-From:   brookxu <brookxu.cn@gmail.com>
-To:     paolo.valente@linaro.org, axboe@kernel.dk, tj@kernel.org
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 14/14] bfq: optimize the calculation of bfq_weight_to_ioprio()
-Date:   Thu, 25 Mar 2021 14:57:58 +0800
-Message-Id: <0d36b7d249e0890298e222424f524d3f9bfedbc8.1616649216.git.brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1616649216.git.brookxu@tencent.com>
-References: <cover.1616649216.git.brookxu@tencent.com>
-In-Reply-To: <cover.1616649216.git.brookxu@tencent.com>
-References: <cover.1616649216.git.brookxu@tencent.com>
+        Thu, 25 Mar 2021 02:59:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5519C06174A;
+        Wed, 24 Mar 2021 23:59:47 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616655584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YqIq49+N7fAmgfwvFt9RMFYxAW8A3Q2mHvTPkDOHwzk=;
+        b=MVGWO/pbseUMXOMFBa+WH9by1oc6bUfmHsHOrXlIWbAjuRWysK8YjJCQS+RocNIh2JH84L
+        QW4p+2tzgj/p56xaooDTauWms5aHH58NkZDeKsdOgxSLyRwZrYXq6KaWJUQC4Sg1dDlTeh
+        vxh9oo1s+/qbCGtT4VliFyZXaUltAk2tnuN2YjKCjsDIZXf1VBuuL50reKCutzYQWTPXLo
+        8ppi1Hp3lPQb7cO218gYHK5L0Dzm3UvkFUMEVm4+EI5Ksbnd319gYEk6OYubF25CZXxi6V
+        9uH+/sc63mYwHfueJGgK21kj+DxrD5+hejgKmOZpy4VDXcFOOxf4KivBSF5uqw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616655584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YqIq49+N7fAmgfwvFt9RMFYxAW8A3Q2mHvTPkDOHwzk=;
+        b=NZNRgyVgWOoVaPf55SsCjNCUTkFt3IKEPS0tzeSZBOg8LsSvQc0LCYG8jULfZlGEcAJjaw
+        DSf7f/KAhsEB5oBg==
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     tip-bot2 for Barry Song <tip-bot2@linutronix.de>,
+        linux-tip-commits@vger.kernel.org,
+        Barry Song <song.bao.hua@hisilicon.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org
+Subject: Re: [tip: irq/core] genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
+In-Reply-To: <YFpvU30bKEZu0CSh@google.com>
+References: <20210302224916.13980-2-song.bao.hua@hisilicon.com> <161485523394.398.10007682711343433706.tip-bot2@tip-bot2> <87zgzj5gpo.fsf@nanos.tec.linutronix.de> <87o8fy69e0.fsf@nanos.tec.linutronix.de> <YFpvU30bKEZu0CSh@google.com>
+Date:   Thu, 25 Mar 2021 07:59:44 +0100
+Message-ID: <87k0pvbtwf.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+Dmitry,
 
-The value range of ioprio is [0, 7], but the result of
-bfq_weight_to_ioprio() may exceed this range, so simple
-optimization is required.
+On Tue, Mar 23 2021 at 15:44, Dmitry Torokhov wrote:
+> On Thu, Mar 04, 2021 at 07:50:31PM +0100, Thomas Gleixner wrote:
+>> Please hold on:
+>> 
+>>   https://lkml.kernel.org/r/CAHk-=wgZjJ89jeH72TC3i6N%2Bz9WEY=3ysp8zR9naRUcSqcAvTA@mail.gmail.com
+>> 
+>> I'll recreate a tag for you once rc2 is out.
+>
+> It looks like the change has been picked up as
+> cbe16f35bee6880becca6f20d2ebf6b457148552i on top of -rc2,
+> but I don't think there is tag for it?
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
----
- block/bfq-wf2q.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Sorry, forgot about it. Here you go:
 
-diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
-index b477a9b..1b91c8b 100644
---- a/block/bfq-wf2q.c
-+++ b/block/bfq-wf2q.c
-@@ -586,8 +586,9 @@ unsigned short bfq_ioprio_to_weight(int ioprio)
-  */
- static unsigned short bfq_weight_to_ioprio(int weight)
- {
--	return max_t(int, 0,
--		     IOPRIO_BE_NR * BFQ_WEIGHT_CONVERSION_COEFF - weight);
-+	int ioprio = IOPRIO_BE_NR  - weight / BFQ_WEIGHT_CONVERSION_COEFF;
-+
-+	return ioprio < 0 ? 0 : min_t(int, ioprio, IOPRIO_BE_NR - 1);
- }
- 
- static void bfq_get_entity(struct bfq_entity *entity)
--- 
-1.8.3.1
+      git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-no-autoen-2021-03-25
 
+Thanks,
+
+        tglx
