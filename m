@@ -2,136 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61764349462
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA85F3492FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhCYOnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:43:40 -0400
-Received: from gateway36.websitewelcome.com ([50.116.124.69]:31643 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229666AbhCYOnH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:43:07 -0400
-X-Greylist: delayed 1476 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Mar 2021 10:43:07 EDT
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id 02BD94014AFC1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:18:21 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id PQoWljDDFMGeEPQoWlQMCn; Thu, 25 Mar 2021 09:18:20 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ftWEDx8v476hGOZEcPFPchsIBVQcBxVefriypsWkOc8=; b=kD/h5OHFeyxFsVx3dDayCG9hzk
-        aE2yU+0QElXNw+W4f29/uEglzeoqZyJNjWrcmWlaZujl6IzVIdfgYyzYjBAWdgZUPRGo3LTiSzvtQ
-        Au5XKzQJGTpmQ91qKWm0Fv9tX5XFGg1TCiYzSJKreVaeeDxvfa+AxEchFrD26Iy9YYxGqaU0u9p6j
-        UvIVOF14+OAO2tWGRKfaJzl72SM+aeszkSOw7VIlvUzm7rYvxlrhRikDKd7xW876xsGVD5zChhgkk
-        kKp09cNAczXKzsaggpL9DFtFvjvK+VroFpKHoOKeKl3HG+tHtntCcSChIZtRR1+23/jmNvG20yRqe
-        HVn34eNg==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:45782 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lPQoW-004LKQ-EH; Thu, 25 Mar 2021 09:18:20 -0500
-Subject: Re: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
- flexible-array member
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "'Gustavo A. R. Silva'" <gustavoars@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <20210323224858.GA293698@embeddedor>
- <629154ce566b4c9c9b7f4124b3260fc3@AcuMS.aculab.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <5331b4e2-eeef-1c27-5efe-bf3986fd6683@embeddedor.com>
-Date:   Thu, 25 Mar 2021 08:18:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230252AbhCYNVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:21:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230239AbhCYNVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:21:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B723DAC16;
+        Thu, 25 Mar 2021 13:21:21 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 14:21:19 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Wang Wensheng <wangwensheng4@huawei.com>
+Cc:     akpm@linux-foundation.org, pasha.tatashin@oracle.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        rui.xiang@huawei.com
+Subject: Re: [PATCH] mm/sparse: Add the missing sparse_buffer_fini() in error
+ branch
+Message-ID: <YFyOT/1j95uON6/9@localhost.localdomain>
+References: <20210325113155.118574-1-wangwensheng4@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <629154ce566b4c9c9b7f4124b3260fc3@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lPQoW-004LKQ-EH
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:45782
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 8
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325113155.118574-1-wangwensheng4@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/25/21 08:45, David Laight wrote:
-> From: Gustavo A. R. Silva
->> Sent: 23 March 2021 22:49
->>
->> There is a regular need in the kernel to provide a way to declare having
->> a dynamically sized set of trailing elements in a structure. Kernel code
->> should always use “flexible array members”[1] for these cases. The older
->> style of one-element or zero-length arrays should no longer be used[2].
->>
->> Use an anonymous union with a couple of anonymous structs in order to
->> keep userspace unchanged:
->>
->> $ pahole -C nfs_fhbase_new fs/nfsd/nfsfh.o
->> struct nfs_fhbase_new {
->>         union {
->>                 struct {
->>                         __u8       fb_version_aux;       /*     0     1 */
->>                         __u8       fb_auth_type_aux;     /*     1     1 */
->>                         __u8       fb_fsid_type_aux;     /*     2     1 */
->>                         __u8       fb_fileid_type_aux;   /*     3     1 */
->>                         __u32      fb_auth[1];           /*     4     4 */
->>                 };                                       /*     0     8 */
->>                 struct {
->>                         __u8       fb_version;           /*     0     1 */
->>                         __u8       fb_auth_type;         /*     1     1 */
->>                         __u8       fb_fsid_type;         /*     2     1 */
->>                         __u8       fb_fileid_type;       /*     3     1 */
->>                         __u32      fb_auth_flex[0];      /*     4     0 */
->>                 };                                       /*     0     4 */
->>         };                                               /*     0     8 */
->>
->>         /* size: 8, cachelines: 1, members: 1 */
->>         /* last cacheline: 8 bytes */
->> };
+On Thu, Mar 25, 2021 at 11:31:55AM +0000, Wang Wensheng wrote:
+> sparse_buffer_init() and sparse_buffer_fini() should appear in pair, or
+> a WARN issue would be through the next time sparse_buffer_init() runs.
 > 
-> Could you use the simpler:
->> struct nfs_fhbase_new {
->>          __u8       fb_version;
->>          __u8       fb_auth_type;
->>          __u8       fb_fsid_type;
->>          __u8       fb_fileid_type;
->>          union {
->>                 __u32      fb_auth[1];
->>                 __u32      fb_auth_flex[0];
->>          };
->> };
+> Add the missing sparse_buffer_fini() in error branch.
 > 
-> Although I'm not certain flexible arrays are supported
-> as the last element of a union.
+> Fixes: 85c77f791390 ("mm/sparse: add new sparse_init_nid() and sparse_init()")
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
 
-Nope; this is not allowed: https://godbolt.org/z/14vd4o8na
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
---
-Gustavo
+
+-- 
+Oscar Salvador
+SUSE L3
