@@ -2,69 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C417C3489D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6C43489D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229719AbhCYHIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
+        id S229816AbhCYHJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhCYHIE (ORCPT
+        with ESMTP id S229635AbhCYHIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:08:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B232C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:08:03 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPK64-0007Ul-PZ; Thu, 25 Mar 2021 08:08:00 +0100
-Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPK64-0000eS-9w; Thu, 25 Mar 2021 08:08:00 +0100
-Date:   Thu, 25 Mar 2021 08:08:00 +0100
-From:   Philipp Zabel <pza@pengutronix.de>
-To:     Liu Ying <victor.liu@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        airlied@linux.ie, daniel@ffwll.ch, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com
-Subject: Re: [PATCH] drm/imx: imx-ldb: Register LDB channel1 when it is the
- only channel to be used
-Message-ID: <20210325070800.GB22419@pengutronix.de>
-References: <1616381800-4862-1-git-send-email-victor.liu@nxp.com>
+        Thu, 25 Mar 2021 03:08:45 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23FFC06174A;
+        Thu, 25 Mar 2021 00:08:44 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id i9so856831qka.2;
+        Thu, 25 Mar 2021 00:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fAaFyGmcLp/6mN6SbzcCVOr5euR0ZFtFGN0hhuRKlK4=;
+        b=bpGBlCIgmy+04lV1TeMp4a/L4t1ONubZta2ECn7fWMa7X4OHY91OUXQn3YUh8yS/TH
+         xKIAzsPrBCS/ZrF/wr17lmcWmOea1hKTGvuMN7nGY7hTKxTrbSkIxodZlw3KyjwIRk6H
+         TniGcnaZhWdMnvnwX2wzw1giXDrfgusjIZRnnRLAb1i9BFoI2/dWANdR4sKFQ7Gg1lvN
+         BON/ISAyr31KpSKBBFyMrrcLC4qrc2t5X5ZWI/Hvmod4oskUj1MpJuN8MRmvfphLTLVv
+         GwlB/uI2eWluAKctGGmC2X43sjjNSWGYwzsZ9yBFLElYuDw2DJRGpjanPgm4+mwNBqQr
+         iafw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fAaFyGmcLp/6mN6SbzcCVOr5euR0ZFtFGN0hhuRKlK4=;
+        b=Gn2FkmdnbqrsrSoslCTZr+ZSOpPCtjc5NI4aUvvAF6iC3dPtj+bIsfNgL39lTmYjck
+         t9B3NwO2CFc0WODIWIOe8Pfqrod7FE9DeOxgoVVxnb9BSnmfRsvef0XBl8SjvevEDDsd
+         42SoJO2SpboJg/FBbyqS541z7cG87y6v8fsKf6atV6sVQaKP0nVn8qMpWx97qPf861UI
+         LNwttfgemp8TN8oHhOlsGww21xlEzpau/3W+jgrttQYEDy9KNzdIlnqCHH2KRhPMjj9e
+         9/K98Z3b1U8dJV5CNyG8F0jafriQMCBiTS87YEIbX8o3fs+9TSIPScm8Cd38kqysSAPI
+         LdpQ==
+X-Gm-Message-State: AOAM530+2DdWY1oOtm83NItoerKreUgwAdifbGws9/xTckuA6DEFXP8H
+        tyVF6N4969Ep/i6T4WOZF74=
+X-Google-Smtp-Source: ABdhPJwSwWVYqgxA+X1qLW4aAuinqdxUpbBODRiMfLkfPqZpbdZicWQnpaQrF61yjfEjO9g2dc+/ig==
+X-Received: by 2002:a37:a74e:: with SMTP id q75mr6683630qke.165.1616656124124;
+        Thu, 25 Mar 2021 00:08:44 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.58.54])
+        by smtp.gmail.com with ESMTPSA id 7sm3628957qkm.64.2021.03.25.00.08.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 00:08:43 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, unixbhaskar@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] fddi: skfp: Rudimentary spello fixes
+Date:   Thu, 25 Mar 2021 12:38:35 +0530
+Message-Id: <20210325070835.32041-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616381800-4862-1-git-send-email-victor.liu@nxp.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:07:41 up 35 days, 10:31, 66 users,  load average: 0.36, 0.41,
- 0.40
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: pza@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 10:56:40AM +0800, Liu Ying wrote:
-> LDB channel1 should be registered if it is the only channel to be used.
-> Without this patch, imx_ldb_bind() would skip registering LDB channel1
-> if LDB channel0 is not used, no matter LDB channel1 needs to be used or
-> not.
-> 
-> Fixes: 8767f4711b2b (drm/imx: imx-ldb: move initialization into probe)
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
 
-Thank you, applied to imx-drm/fixes.
+s/autohorized/authorized/
+s/recsource/resource/
+s/measuered/measured/
+sauthoriziation/authorization/
 
-regards
-Philipp
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ drivers/net/fddi/skfp/h/smt.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/fddi/skfp/h/smt.h b/drivers/net/fddi/skfp/h/smt.h
+index a0dbc0f57a55..8d104f13e2c3 100644
+--- a/drivers/net/fddi/skfp/h/smt.h
++++ b/drivers/net/fddi/skfp/h/smt.h
+@@ -411,7 +411,7 @@ struct smt_p_reason {
+ #define SMT_RDF_ILLEGAL 0x00000005	/* read only (PMF) */
+ #define SMT_RDF_NOPARAM	0x6		/* parameter not supported (PMF) */
+ #define SMT_RDF_RANGE	0x8		/* out of range */
+-#define SMT_RDF_AUTHOR	0x9		/* not autohorized */
++#define SMT_RDF_AUTHOR	0x9		/* not authorized */
+ #define SMT_RDF_LENGTH	0x0a		/* length error */
+ #define SMT_RDF_TOOLONG	0x0b		/* length error */
+ #define SMT_RDF_SBA	0x0d		/* SBA denied */
+@@ -450,7 +450,7 @@ struct smt_p_version {
+
+ struct smt_p_0015 {
+ 	struct smt_para	para ;		/* generic parameter header */
+-	u_int		res_type ;	/* recsource type */
++	u_int		res_type ;	/* resource type */
+ } ;
+
+ #define	SYNC_BW		0x00000001L	/* Synchronous Bandwidth */
+@@ -489,7 +489,7 @@ struct smt_p_0017 {
+ struct smt_p_0018 {
+ 	struct smt_para	para ;		/* generic parameter header */
+ 	int		sba_ov_req ;	/* total sync bandwidth req for overhead*/
+-} ;					/* measuered in bytes per T_Neg */
++} ;					/* measured in bytes per T_Neg */
+
+ /*
+  * P19 : SBA Allocation Address
+@@ -562,7 +562,7 @@ struct smt_p_fsc {
+ #define FSC_TYPE2	2		/* Special A/C indicator forwarding */
+
+ /*
+- * P00 21 : user defined authoriziation (see pmf.c)
++ * P00 21 : user defined authorization (see pmf.c)
+  */
+ #define SMT_P_AUTHOR	0x0021
+
+--
+2.30.1
+
