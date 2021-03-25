@@ -2,163 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A29348AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A72348B0D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhCYIB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:01:27 -0400
-Received: from mail-bn7nam10on2069.outbound.protection.outlook.com ([40.107.92.69]:57922
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229669AbhCYIBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:01:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QYK1bCOQbZN3N0S9gP+NevKu7N3HMBAERCDnNIGCvWJJc9ZxnKisiE0NibH5sx2ovrkKj7azHJZxQze7PkxLJzBThOC0LMyHIfHdskNcb2+vV9Amx+OfRc066PQJcEw05OU0wj/zqN1jd5KH/6dite80OKaYUL6bIpsTGsh23FqaXXqU8WUjcchnDRMSqfwYnkcct9DCiEc3E9nOuWWPzQAIOQOByhKmP/DazLFIJiizvUpK/LC+V5YuNf4Vj4Py9CcN4WcroqJW1/LEjeQKQTQLa8m8V3E/rfVXhgIXaA4e141thjKd4YVrYhSe1o6FcV0dHxGW+S23hFfORXtLvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+c8+HktjxTcP1ZRonkxpUpkjZM3VCzEbIBVevr69M/0=;
- b=ntu00z4SeP/eDcTJtu1o8G/PusSJ/4DO3clRpe6KLINDF2e7aL0/5xJ4Z+xngj2fPYdtCmQ9q9tTBEWtJRfzoj3LurHPfxpx+WRZDmR+bjyq7xuX1IAJOatdoPEyKfnMEEVUGPtXboLrwP8WjbJWZ89C1keqlT2P/+06fhBOFzeL0mQHpQZhImDyXfREWCDYAowbYlG0sC/9ZaI//ylQEUN6C9goYu1iJP0kzCwYbFtAI8c6RpYwefiHaVLb3faR9Iu8vIS1m1mejEmT1n6QyQzyQg/ve+ZoDrdH6X5IwHReYqE5dra+V5q/OFQtwDCXARr2EzlYhhlvbJKb8CmL7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+c8+HktjxTcP1ZRonkxpUpkjZM3VCzEbIBVevr69M/0=;
- b=I4FHg3N9iTVUGrlU0aFcsmSguQ9XVNH+VSlsG+6tKbBIMLatE2lrl24sKEbiS7Gd4n/7JjmxRWX3RNwbLg9/Ce78wQxEDcxYcqb8toQ7C9x643x20TmAyXxRw1zFXfAg4NM42rAAnP0oRLyjd5NGu9k4DRCH9k4XpUD3JTAvh8eXeFygcLYDMcAYh4evtq6MIVfwuu8nhknYLjNwfqjK3Zlp8pAuNnWhIiQZyuIe8iTO5q0wVf4gC/1vsj+Sz8mOZAR7Mh3JWAC5NAVwj45zzFp6aKiZ3Vii5E12/EVN8T/5dqPckk+bw14il6QrWxdrMmGc9ZFCWhDK2K2LPjFVXw==
-Received: from MWHPR15CA0052.namprd15.prod.outlook.com (2603:10b6:301:4c::14)
- by MN2PR12MB3933.namprd12.prod.outlook.com (2603:10b6:208:162::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Thu, 25 Mar
- 2021 08:01:00 +0000
-Received: from CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:4c:cafe::2a) by MWHPR15CA0052.outlook.office365.com
- (2603:10b6:301:4c::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26 via Frontend
- Transport; Thu, 25 Mar 2021 08:01:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT042.mail.protection.outlook.com (10.13.174.250) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3955.18 via Frontend Transport; Thu, 25 Mar 2021 08:01:00 +0000
-Received: from [10.26.49.14] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 25 Mar
- 2021 08:00:59 +0000
-Subject: Re: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
- resume back
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <708edb92-a5df-ecc4-3126-5ab36707e275@nvidia.com>
- <DB8PR04MB679546EC2493ABC35414CCF9E6639@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <0d0ddc16-dc74-e589-1e59-91121c1ad4e0@nvidia.com>
- <DB8PR04MB6795863753DAD71F1F64F81DE6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <8e92b562-fa8f-0a2b-d8da-525ee52fc2d4@nvidia.com>
-Date:   Thu, 25 Mar 2021 08:00:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB6795863753DAD71F1F64F81DE6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dbe294b6-d1bf-4ee1-b586-08d8ef64214b
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3933:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB3933161D6F6464F5C1B90239D9629@MN2PR12MB3933.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pBfxkR8zR6tKex88d5Tontn7ovsJTSKAHlDdnou06mVuWuF43Xo36tUWvbMnRFRnKgFD6e48cyJW/wYy87srRz9Hw+uLmRmpkhph1PS2JTVXNVMwkhHs5t9CCXZqwRbKrsVfc58xykq3EAfXMCXR2MJihPxN4123lO3hBOOal1eL6TMUdIaHKG8XDxtFSwD9Mmw3f6h40atiLeZqGkMJeUs/SS7r8das8mOlAwnOGQeO0bhIiKghq+vpbTUfIfNb9RXaN4F8Rt6cGk5uAIQZc1tjquvCTzlg6VuJViFo+o5PvSDlr5j8fjijyzWeTc8n+V7YsLX5j0oESzgteeE42lr71EFtVn4iXd3++WGEShHOFWDi4JFVMeIjZD/FgLyY5Eh/IjO8HtBbtFAapzfiY7bJombaKG0OTN0ZDURZ+n0k6x1WZY3wvWCZab0qU6pS7r8hPStlFB3yDLvzUDVjrQCriwR8un3hiCDUxkZExpOsK3JvRzgavQyaXEhDPR1OHM0aU8nVI8WLXsg2JFPchGC7+skiKBUkImHcZN7/G81pW36vxKqQZmbPRtPmwFex35DIgh4OKcbUSBgCWKLyFVopvNMVFlaMXyioFcHW9k3fVQ8FlUhYGf0GC/7Y6bV7+G1HVbNrscAkgXG6ED8BFoi4WCwd+WK25sTB0rTdg9JQmq6IAIWkJKJSs+xMdHXK
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(376002)(346002)(36840700001)(46966006)(70586007)(316002)(8936002)(70206006)(31686004)(82310400003)(53546011)(5660300002)(336012)(31696002)(8676002)(186003)(4326008)(6916009)(16576012)(6666004)(36756003)(26005)(83380400001)(86362001)(36906005)(478600001)(2616005)(2906002)(54906003)(426003)(7636003)(356005)(47076005)(16526019)(36860700001)(82740400003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 08:01:00.6263
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dbe294b6-d1bf-4ee1-b586-08d8ef64214b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3933
+        id S229882AbhCYIDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:03:51 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:38165 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhCYIDQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 04:03:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616659396; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=oiHaIhlTw6rdY/eG8o6o068eoRZ8/VbUZDj7L5CPEUU=; b=GVbUi0aWdILGDGoi1lullBwsmIRRewuV+lTFYqAsq/ZKxlH5AmoEp575luNtO+/LARXaIBGQ
+ TLdtOycjfp0h6K0DnOdFmqvyitDryn2SKLVpWi3SPa2MeEKgdRXMNB3BYLehXk24sgPqZ6Mg
+ CkHgq0+UGCBw+5eUnL3UEzxloHY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 605c43b39a60a4db7cda2f24 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 08:02:59
+ GMT
+Sender: schowdhu=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37E09C433CA; Thu, 25 Mar 2021 08:02:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: schowdhu)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2E06AC433ED;
+        Thu, 25 Mar 2021 08:02:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2E06AC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
+From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, vkoul@kernel.org,
+        Souradeep Chowdhury <schowdhu@codeaurora.org>
+Subject: [PATCH V2 0/5] Add driver support for Data Capture and Compare Engine(DCC) for SM8150
+Date:   Thu, 25 Mar 2021 13:32:31 +0530
+Message-Id: <cover.1616651305.git.schowdhu@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+DCC(Data Capture and Compare) is a DMA engine designed for debugging purposes.In case of a system
+crash or manual software triggers by the user the DCC hardware stores the value at the register
+addresses which can be used for debugging purposes.The DCC driver provides the user with sysfs
+interface to configure the register addresses.The options that the DCC hardware provides include
+reading from registers,writing to registers,first reading and then writing to registers and looping
+through the values of the same register.
 
-On 25/03/2021 07:53, Joakim Zhang wrote:
-> 
->> -----Original Message-----
->> From: Jon Hunter <jonathanh@nvidia.com>
->> Sent: 2021年3月24日 20:39
->> To: Joakim Zhang <qiangqing.zhang@nxp.com>
->> Cc: netdev@vger.kernel.org; Linux Kernel Mailing List
->> <linux-kernel@vger.kernel.org>; linux-tegra <linux-tegra@vger.kernel.org>;
->> Jakub Kicinski <kuba@kernel.org>
->> Subject: Re: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
->> resume back
->>
->>
->>
->> On 24/03/2021 12:20, Joakim Zhang wrote:
->>
->> ...
->>
->>> Sorry for this breakage at your side.
->>>
->>> You mean one of your boards? Does other boards with STMMAC can work
->> fine?
->>
->> We have two devices with the STMMAC and one works OK and the other fails.
->> They are different generation of device and so there could be some
->> architectural differences which is causing this to only be seen on one device.
-> It's really strange, but I also don't know what architectural differences could affect this. Sorry.
+In certain cases a register write needs to be executed for accessing the rest of the registers,
+also the user might want to record the changing values of a register with time for which he has the
+option to use the loop feature.
 
+The options mentioned above are exposed to the user by sysfs files once the driver is probed.The
+details and usage of this sysfs files are documented in Documentation/ABI/testing/sysfs-driver-dcc.
 
-Maybe caching somewhere? In other words, could there be any cache
-flushing that we are missing here?
+As an example let us consider a couple of debug scenarios where DCC has been proved to be effective
+for debugging purposes:-
 
->>> We do daily test with NFS to mount rootfs, on issue found. And I add this
->> patch at the resume patch, and on error check, this should not break suspend.
->>> I even did the overnight stress test, there is no issue found.
->>>
->>> Could you please do more test to see where the issue happen?
->>
->> The issue occurs 100% of the time on the failing board and always on the first
->> resume from suspend. Is there any more debug I can enable to track down
->> what the problem is?
->>
-> 
-> As commit messages described, the patch aims to re-init rx buffers address, since the address is not fixed, so I only can 
-> recycle and then re-allocate all of them. The page pool is allocated once when open the net device.
-> 
-> Could you please debug if it fails at some functions, such as page_pool_dev_alloc_pages() ?
+i)TimeStamp Related Issue
 
+On SC7180, there was a coresight timestamp issue where it would occasionally be all 0 instead of proper
+timestamp values.
 
-Yes that was the first thing I tried, but no obvious failures from
-allocating the pools.
+Proper timestamp:
+Idx:3373; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x13004d8f5b7aa; CC=0x9e
 
-Are you certain that the problem you are seeing, that is being fixed by
-this change, is generic to all devices? The commit message states that
-'descriptor write back by DMA could exhibit unusual behavior', is this a
-known issue in the STMMAC controller? If so does this impact all
-versions and what is the actual problem?
+Zero timestamp:
+Idx:3387; ID:10; I_TIMESTAMP : Timestamp.; Updated val = 0x0; CC=0xa2
 
-Jon
+Now this is a non-fatal issue and doesn't need a system reset, but still needs
+to be rootcaused and fixed for those who do care about coresight etm traces.
+Since this is a timestamp issue, we would be looking for any timestamp related
+clocks and such.
 
--- 
-nvpublic
+o we get all the clk register details from IP documentation and configure it
+via DCC config syfs node. Before that we set the current linked list.
+
+/* Set the current linked list */
+echo 3 > /sys/bus/platform/devices/10a2000.dcc/curr_list
+
+/* Program the linked list with the addresses */
+echo 0x10c004 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c008 > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c00c > /sys/bus/platform/devices/10a2000.dcc/config
+echo 0x10c010 > /sys/bus/platform/devices/10a2000.dcc/config
+..... and so on for other timestamp related clk registers
+
+/* Other way of specifying is in "addr len" pair, in below case it
+specifies to capture 4 words starting 0x10C004 */
+
+echo 0x10C004 4 > /sys/bus/platform/devices/10a2000.dcc/config
+
+/* Enable DCC */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/enable
+
+/* Run the timestamp test for working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram1.bin
+
+/* Run the timestamp test for non-working case */
+
+/* Send SW trigger */
+echo 1 > /sys/bus/platform/devices/10a2000.dcc/trigger
+
+/* Read SRAM */
+cat /dev/dcc_sram > dcc_sram2.bin
+
+Get the parser from [1] and checkout the latest branch.
+
+/* Parse the SRAM bin */
+python dcc_parser.py -s dcc_sram1.bin --v2 -o output/
+python dcc_parser.py -s dcc_sram2.bin --v2 -o output/
+
+Sample parsed output of dcc_sram1.bin:
+
+<hwioDump version="1">
+        <timestamp>03/14/21</timestamp>
+	        <generator>Linux DCC Parser</generator>
+		        <chip name="None" version="None">
+				<register address="0x0010c004" value="0x80000000" />
+				<register address="0x0010c008" value="0x00000008" />
+				<register address="0x0010c00c" value="0x80004220" />
+				<register address="0x0010c010" value="0x80000000" />
+			</chip>
+	<next_ll_offset>next_ll_offset : 0x1c </next_ll_offset>
+</hwioDump>
+
+ii)NOC register errors
+
+A particular class of registers called NOC which are functional registers was reporting
+errors while logging the values.To trace these errors the DCC has been used effectively.
+The steps followed were similar to the ones mentioned above.
+In addition to NOC registers a few other dependent registers were configured in DCC to
+monitor it's values during a crash. A look at the dependent register values revealed that
+the crash was happening due to a secured access to one of these dependent registers.
+All these debugging activity and finding the root cause was achieved using DCC.
+
+DCC parser is available at the following open source location
+
+https://source.codeaurora.org/quic/la/platform/vendor/qcom-opensource/tools/tree/dcc_parser
+
+Souradeep Chowdhury (5):
+  dt-bindings: Added the yaml bindings for DCC
+  soc: qcom: dcc:Add driver support for Data Capture and Compare
+    unit(DCC)
+  DCC: Added the sysfs entries for DCC(Data Capture and Compare) driver
+  MAINTAINERS:Add the entry for DCC(Data Capture and Compare) driver
+    support
+  arm64: dts: qcom: sm8150: Add Data Capture and Compare(DCC) support
+    node
+
+ Documentation/ABI/testing/sysfs-driver-dcc         |  114 ++
+ .../devicetree/bindings/arm/msm/qcom,dcc.yaml      |   49 +
+ MAINTAINERS                                        |    8 +
+ arch/arm64/boot/dts/qcom/sm8150.dtsi               |    7 +
+ drivers/soc/qcom/Kconfig                           |    8 +
+ drivers/soc/qcom/Makefile                          |    1 +
+ drivers/soc/qcom/dcc.c                             | 1549 ++++++++++++++++++++
+ 7 files changed, 1736 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-dcc
+ create mode 100644 Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
+ create mode 100644 drivers/soc/qcom/dcc.c
+
+--
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
