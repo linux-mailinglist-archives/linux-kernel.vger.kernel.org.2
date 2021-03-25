@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFFE3494DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0DE3494E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhCYPC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
+        id S231173AbhCYPDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230494AbhCYPCB (ORCPT
+        with ESMTP id S230337AbhCYPCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:02:01 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF50C06174A;
-        Thu, 25 Mar 2021 08:02:01 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id x14so2019609qki.10;
-        Thu, 25 Mar 2021 08:02:01 -0700 (PDT)
+        Thu, 25 Mar 2021 11:02:52 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FB8C06174A;
+        Thu, 25 Mar 2021 08:02:50 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id y1so3497959ljm.10;
+        Thu, 25 Mar 2021 08:02:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D6lqBkmqDi36o04hy81nixhjopIa3qv0i9AAEd/fUWA=;
-        b=QjNiajmB8gVa1mycAekPlCc88I7cNIkFrq1JW4JZPgh1nb9NQ+NvVOA5X9tVtkqwaQ
-         0tEj4Zr1igynSalGkTsxc5QMi6/DuPBUBzuu7tchXbMgLj00Mv6e/2IgblTY3GzuGvGk
-         MkmONWAcnjYZ9G2tjitB2Zk7oeaRewtFB+p+xR0+jUUxGPfmX7jDuSkVS3dajFc6gFRR
-         hRwmJdSgxakAVPgkj+UwXAglqqbjZVcUSt2J3LI9IwmymGOMzXm+9nidW8v86aXpSRrA
-         GTTnLK+XX0ofgrMfQ0UtZQ/Kre9X7gF1gDtYBABIVy/mOo4cV5jpJzO+cgG7lp/J1Qx3
-         E3Ew==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rdZBB0BuoC8yoRtINCYB3pF2jzYjGjzE3V+drn/nGNM=;
+        b=AzGG12Nlz55GzyvS//O/RSU/py+WmnMkJQ+F/+5ADWfWwy0o44o4sIVfLmXRploTWV
+         Pt0WHw6DVEhzWS6w6dJ4n8ZCRfSGjYgW4BcO9tcZaaPV6+tS6vr5jEi4gMpgqgDGhAgy
+         wua5RacpGhp6uAAmRtUOkgnwP4vcWbf5G5UTiYHIASxdX5QK++KkM4XfgZ6OzqJHdERd
+         XdHgjUf3V2rcNwXLR3FLv+hIvknZ6tqq8cr5SGBCbh9dR2oJIZtovP3ehDMIjvRUkUli
+         QtW4HPu1AdtqVPdeCzFFwMyvd+75/e6oV2tDve43gRQaFgthbtuMSQK3BXxCz4n6iIw6
+         Dtgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=D6lqBkmqDi36o04hy81nixhjopIa3qv0i9AAEd/fUWA=;
-        b=AgCMc7NGvaM/aDlY608nauW4xLhp3lgACs5lUfR+4/N7thgAOi7qQCpyqhe8TJHEKW
-         z60DTwwkhaYLYF7ZqCBkRLsHYyHliEn8vfM3gYAvSYkH/3UHBdBbhVNX3x0eUUJkuhQI
-         8fSeJfD5APDWc+MX/wjNhGD/DflNaF9XVhD5MGNk8RKBqdqFfAdDxoL3moV4r1/y4tXJ
-         hiulYexFlkT+a4gHkZSGnhrO99T8q6WHXxHrDmARHgm+KYLpD1RUySnaptXTXHSVOFPy
-         cQtvmx2VKNzSgM8Xq/UcG2dxz694pRkjNJbn3njd8piFhhjj7hBP6NwVwkTo8vHPbzpn
-         7vfA==
-X-Gm-Message-State: AOAM530qcfFPE2vsFCldCS/h3nN+yd2Y44DJ2Zgj0C7l+Y5s7wITXW8+
-        PS33PQrmDex6a5hHIk9p92A=
-X-Google-Smtp-Source: ABdhPJyfq2qXFDWvIbGbYdWsuxBVQZT7cmtz7Mh3rfp4HUM45O97U1d5wQivOPeOLXkRRQOsN4ko1Q==
-X-Received: by 2002:a05:620a:11ad:: with SMTP id c13mr8570692qkk.282.1616684520625;
-        Thu, 25 Mar 2021 08:02:00 -0700 (PDT)
-Received: from localhost.localdomain ([179.218.4.27])
-        by smtp.gmail.com with ESMTPSA id c19sm4006766qkl.78.2021.03.25.08.01.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 08:02:00 -0700 (PDT)
-From:   Pedro Tammela <pctammela@gmail.com>
-X-Google-Original-From: Pedro Tammela <pctammela@mojatatu.com>
-Cc:     Pedro Tammela <pctammela@mojatatu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next] libbpf: fix bail out from 'ringbuf_process_ring()' on error
-Date:   Thu, 25 Mar 2021 12:01:15 -0300
-Message-Id: <20210325150115.138750-1-pctammela@mojatatu.com>
-X-Mailer: git-send-email 2.25.1
+        bh=rdZBB0BuoC8yoRtINCYB3pF2jzYjGjzE3V+drn/nGNM=;
+        b=ZETbW1SSmW9mgLyoD8NFAaKcNodID0bQqzqm7waOOf0NIX8HEBxqOe8qwj2BS8vSEd
+         OriNR0Y2B2NxambH+gwRkfaPjp8HTQfRfbPtft01kQnb+80ECnHHl8X4mzLsFynpHH6k
+         D6XhNh5L6RWiizTN7VKNJH9GxmQbnhVa2iP9qoSuqf++VhoonciVfC8j/iAAU/ndq9yD
+         uKi935nMEdVwDRmg7cVYrIj63x97UCn1Vh2UI7mK0IIp01tuBQNlNd1ScLktk8N/KEa4
+         iO2VRkVA3FlVyBV0e5CdG6xcL51yTbBDvHOezDEUeQE6RlnLGNbvF9BRHPjTqLL4ICwG
+         oRTw==
+X-Gm-Message-State: AOAM531OP/IXj2g6gxUpeJW3v+tT94/T0lWU/tdaPjRu479ROgK7D8kg
+        WicaDRpBmxQhcvmnqv63aUw2xQcvxqQ=
+X-Google-Smtp-Source: ABdhPJwGzmILsgqm+0MIms19GD/Hd+hcJaY3Qw+NVnf2raAkbF3UfPlAFml7c+GmJdigdbrkteHGKg==
+X-Received: by 2002:a2e:b52a:: with SMTP id z10mr5769197ljm.320.1616684568415;
+        Thu, 25 Mar 2021 08:02:48 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
+        by smtp.googlemail.com with ESMTPSA id b25sm791740ljo.80.2021.03.25.08.02.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 08:02:48 -0700 (PDT)
+Subject: Re: [PATCH v4 3/5] soc/tegra: pmc: Ensure that clock rates aren't too
+ high
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210302122502.20874-1-digetx@gmail.com>
+ <20210302122502.20874-4-digetx@gmail.com> <YFygotHKjgPQ/R4G@orome.fritz.box>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a730ef9d-1bf7-32a3-4797-6273ad139d25@gmail.com>
+Date:   Thu, 25 Mar 2021 18:02:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <YFygotHKjgPQ/R4G@orome.fritz.box>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code bails out with negative and positive returns.
-If the callback returns a positive return code, 'ring_buffer__consume()'
-and 'ring_buffer__poll()' will return a spurious number of records
-consumed, but mostly important will continue the processing loop.
+25.03.2021 17:39, Thierry Reding пишет:
+> On Tue, Mar 02, 2021 at 03:25:00PM +0300, Dmitry Osipenko wrote:
+>> Switch all clocks of a power domain to a safe rate which is suitable
+>> for all possible voltages in order to ensure that hardware constraints
+>> aren't violated when power domain state toggles.
+>>
+>> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+>> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+>> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  drivers/soc/tegra/pmc.c | 92 ++++++++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 90 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
+>> index f970b615ee27..a87645fac735 100644
+>> --- a/drivers/soc/tegra/pmc.c
+>> +++ b/drivers/soc/tegra/pmc.c
+>> @@ -237,6 +237,7 @@ struct tegra_powergate {
+>>  	unsigned int id;
+>>  	struct clk **clks;
+>>  	unsigned int num_clks;
+>> +	unsigned long *clk_rates;
+>>  	struct reset_control *reset;
+>>  };
+>>  
+>> @@ -641,6 +642,57 @@ static int __tegra_powergate_remove_clamping(struct tegra_pmc *pmc,
+>>  	return 0;
+>>  }
+>>  
+>> +static int tegra_powergate_prepare_clocks(struct tegra_powergate *pg)
+>> +{
+>> +	unsigned long safe_rate = 100 * 1000 * 1000;
+> 
+> This seems a bit arbitrary. Where did you come up with that value?
+> 
+> I'm going to apply this to see how it fares in our testing.
 
-This patch makes positive returns from the callback a no-op.
+This value is chosen based on the OPP table voltages and frequencies.
 
-Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
----
- tools/lib/bpf/ringbuf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Maybe you could add this clarifying comment to the code(?):
 
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 8caaafe7e312..e7a8d847161f 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -227,7 +227,7 @@ static int ringbuf_process_ring(struct ring* r)
- 			if ((len & BPF_RINGBUF_DISCARD_BIT) == 0) {
- 				sample = (void *)len_ptr + BPF_RINGBUF_HDR_SZ;
- 				err = r->sample_cb(r->ctx, sample, len);
--				if (err) {
-+				if (err < 0) {
- 					/* update consumer pos and bail out */
- 					smp_store_release(r->consumer_pos,
- 							  cons_pos);
--- 
-2.25.1
-
+"There is no hardware unit on any of Tegra SoCs which requires higher
+voltages for the rates above 100MHz."
