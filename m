@@ -2,135 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CB53493AA
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364343493B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbhCYOH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhCYOHC (ORCPT
+        id S231237AbhCYOIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:08:31 -0400
+Received: from [212.63.208.185] ([212.63.208.185]:40364 "EHLO
+        mail.marcansoft.com" rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230093AbhCYOID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:07:02 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAB7C06174A;
-        Thu, 25 Mar 2021 07:07:02 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id o126so2772010lfa.0;
-        Thu, 25 Mar 2021 07:07:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pdIHv4/PD3czenmhqB9tk+MCiZEZtlstx+3pXZSdYn4=;
-        b=F12bWCPR2Sk/Xp80UpS74JjBunFCXBeGVh+ZXV3vONkt0eMBNYFrL/dpr5xerdl9EE
-         i2fyMsvej+qJO5pLJx63a4npSLONUy84IQxRp+1zwrY1UBl5ucLfjWLUZt1ysf6PnQ0M
-         saJ0XzaKxaeg+gAH/wC0vDOvC1b7wrOCGmURVTMW1ebZj/u0LkyOkF01zvXQLcIjyr95
-         ZKtRuwmHtZ0+1LrWaAeEKPLCeCYjHqOdlc3PYGJuvlCqXSp+44+QhvaMe/nTA6dGtBUo
-         5XmWXgb4z/0AEQJb212Rbj7z4OXIS1YXKZNOYdjmL/lEw3p8Ww3WIdTX2P+3MMrwh6H4
-         mjiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pdIHv4/PD3czenmhqB9tk+MCiZEZtlstx+3pXZSdYn4=;
-        b=h6imK0qvdjPPzhR3XdfzbUVSaZkKGeRdZFCUlAOyAfB3MMVvbmeh4gUn/n2Pyt88gk
-         9yxdyKrcqvMKNCDbhH8NB71ezqPaDoKFJcQZZKsjg2rAaYfCPMSoEleLyRriYWztQbEr
-         koDLA3EnJQUoMjhPipCZsGjiK6OoUyYJtCX1B/HQS2yHo+GqL1QM7dgQAJWD1BfIoX0v
-         s5/jq51Xi14p7cIKYty39sEHVNf6Xirnx2pQ71FxAGWSxvUxEEkUyn1Xe0SYYTgEkZHG
-         k3dprFIzEyajfh7qSN/DYuq3nZQV3DMmQ76ZDcDaxAE4bCN/H0322Sx/185yVLMoPRjP
-         eTGA==
-X-Gm-Message-State: AOAM532GNtRzphAwI1wY6skBtCbzHyavvgM/4nHKkUHZ8OTORK5XQvY8
-        oMLC3FoNBCUvCyqYqKuWNB0=
-X-Google-Smtp-Source: ABdhPJxuXe7GPMoX2rzQ9o37NfAMuSKZftGbZ2nH6SMWR56QnP9ZM9G8QG3JrpaL5VlbnllG5eee/g==
-X-Received: by 2002:a19:7d7:: with SMTP id 206mr5283288lfh.98.1616681220353;
-        Thu, 25 Mar 2021 07:07:00 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id g5sm771424ljj.21.2021.03.25.07.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:06:59 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 25 Mar 2021 15:06:57 +0100
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Thu, 25 Mar 2021 10:08:03 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 354CF41A6E;
+        Thu, 25 Mar 2021 14:07:42 +0000 (UTC)
+To:     Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
- in-tree users
-Message-ID: <20210325140657.GA1908@pc638.lan>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325125001.GW1719932@casper.infradead.org>
- <20210325132556.GS3697@techsingularity.net>
+        "David S. Miller" <davem@davemloft.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-9-marcan@marcan.st>
+ <20210324181210.GB13181@willie-the-truck>
+ <CAK8P3a0913Hs4VfHjdDY1WTAQvMzC83LJcP=9zeE0C-terfBhA@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFT PATCH v3 08/27] asm-generic/io.h: Add a non-posted variant
+ of ioremap()
+Message-ID: <9e510158-551a-3feb-bdba-17e070f12a8e@marcan.st>
+Date:   Thu, 25 Mar 2021 23:07:40 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325132556.GS3697@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAK8P3a0913Hs4VfHjdDY1WTAQvMzC83LJcP=9zeE0C-terfBhA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Thu, Mar 25, 2021 at 12:50:01PM +0000, Matthew Wilcox wrote:
-> > On Thu, Mar 25, 2021 at 11:42:19AM +0000, Mel Gorman wrote:
-> > > This series introduces a bulk order-0 page allocator with sunrpc and
-> > > the network page pool being the first users. The implementation is not
-> > > efficient as semantics needed to be ironed out first. If no other semantic
-> > > changes are needed, it can be made more efficient.  Despite that, this
-> > > is a performance-related for users that require multiple pages for an
-> > > operation without multiple round-trips to the page allocator. Quoting
-> > > the last patch for the high-speed networking use-case
-> > > 
-> > >             Kernel          XDP stats       CPU     pps           Delta
-> > >             Baseline        XDP-RX CPU      total   3,771,046       n/a
-> > >             List            XDP-RX CPU      total   3,940,242    +4.49%
-> > >             Array           XDP-RX CPU      total   4,249,224   +12.68%
-> > > 
-> > > >From the SUNRPC traces of svc_alloc_arg()
-> > > 
-> > > 	Single page: 25.007 us per call over 532,571 calls
-> > > 	Bulk list:    6.258 us per call over 517,034 calls
-> > > 	Bulk array:   4.590 us per call over 517,442 calls
-> > > 
-> > > Both potential users in this series are corner cases (NFS and high-speed
-> > > networks) so it is unlikely that most users will see any benefit in the
-> > > short term. Other potential other users are batch allocations for page
-> > > cache readahead, fault around and SLUB allocations when high-order pages
-> > > are unavailable. It's unknown how much benefit would be seen by converting
-> > > multiple page allocation calls to a single batch or what difference it may
-> > > make to headline performance.
-> > 
-> > We have a third user, vmalloc(), with a 16% perf improvement.  I know the
-> > email says 21% but that includes the 5% improvement from switching to
-> > kvmalloc() to allocate area->pages.
-> > 
-> > https://lore.kernel.org/linux-mm/20210323133948.GA10046@pc638.lan/
-> > 
+On 25/03/2021 04.09, Arnd Bergmann wrote:
+> On Wed, Mar 24, 2021 at 7:12 PM Will Deacon <will@kernel.org> wrote:
+>>
+>>> +/*
+>>> + * ioremap_np needs an explicit architecture implementation, as it
+>>> + * requests stronger semantics than regular ioremap(). Portable drivers
+>>> + * should instead use one of the higher-level abstractions, like
+>>> + * devm_ioremap_resource(), to choose the correct variant for any given
+>>> + * device and bus. Portable drivers with a good reason to want non-posted
+>>> + * write semantics should always provide an ioremap() fallback in case
+>>> + * ioremap_np() is not available.
+>>> + */
+>>> +#ifndef ioremap_np
+>>> +#define ioremap_np ioremap_np
+>>> +static inline void __iomem *ioremap_np(phys_addr_t offset, size_t size)
+>>> +{
+>>> +     return NULL;
+>>> +}
+>>> +#endif
+>>
+>> Can we implement the generic pci_remap_cfgspace() in terms of ioremap_np()
+>> if it is supported by the architecture? That way, we could avoid defining
+>> both on arm64.
 > 
-> That's fairly promising. Assuming the bulk allocator gets merged, it would
-> make sense to add vmalloc on top. That's for bringing it to my attention
-> because it's far more relevant than my imaginary potential use cases.
+> Good idea. It needs a fallback in case the ioremap_np() fails on most
+> architectures, but that sounds easy enough.
 > 
-For the vmalloc we should be able to allocating on a specific NUMA node,
-at least the current interface takes it into account. As far as i see
-the current interface allocate on a current node:
+> Since pci_remap_cfgspace() only has custom implementations, it sounds like
+> we can actually make the generic implementation unconditional in the end,
+> but that requires adding ioremap_np() on 32-bit as well, and I would keep
+> that separate from this series.
 
-static inline unsigned long
-alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
-{
-    return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
-}
+Sounds good; I'm adding a patch to adjust the generic implementation and 
+remove the arm64 one in v4, and we can then complete the cleanup for 
+other arches later.
 
-Or am i missing something?
-
---
-Vlad Rezki
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
