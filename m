@@ -2,103 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E488348DD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AD3348DDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhCYKTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:19:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhCYKTR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:19:17 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE994C06174A;
-        Thu, 25 Mar 2021 03:19:16 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u4so2398948ljo.6;
-        Thu, 25 Mar 2021 03:19:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dXFiNAmmBesTKt1kaQDc049bmW8fXL2vJKahfURMQQc=;
-        b=LM17N+65apGl0Gwobb+yb+lQMpgXm9Qf3oVQGmz5nbzRMjqgYSksXHoMESb4T2Dfh+
-         COj7BdtQxfeMpljdj0CQBihpWd8aNiZx2psPvY2nynrg9Q9TmLldzZVJNcNRHlrWdR7i
-         SgrpQaCgWNLuJbq06GxO1bVqIVP9s+nPfVc6TsMlyho3WRVSruDR9T8QAxXS7Kp2nuMq
-         /LlKoEENQNH2/M/VaEJTv4t584hmE+Ws+FEt1IEZtaWL6g1JuYkfkBQp4cV5HPYc6pfn
-         Kb+22xWej7hywb+EEow7leHgQrZF8rpmb3DFbciPdOv0NZeAo2vAOgzsP9zTW99ypPs/
-         Yk9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dXFiNAmmBesTKt1kaQDc049bmW8fXL2vJKahfURMQQc=;
-        b=dKD1phqwcNoBShn3xp11o4Fbqs+WyEyzNVCcLt8EvNG+h2UKohq3ge/G36Air8I2ZZ
-         KirS7ol3UVG1dlIUwkuZmIGlPwvK8DI1NFDJl5hvcjCnXFTTAm7NnZw4pPmTiUJM/594
-         PwLWdMuS6GxTv3pcOXj+Aotkb7KPs//IRtZeJ3kpMR5UPAChDYY8jdE7IK7TmngQXo7U
-         Gy+/BokZTM3ES933jR90C2m35FDPiLwYdOT9w5uPkSWAWGoka3yLzIhbO0WUgTVIlCDS
-         GIAcbR+MogFDqYXz6fG4lwyQl9NGKi30IlTyj1+YjXicLgi68yygfZXLHoEzykcytxuc
-         V8og==
-X-Gm-Message-State: AOAM532GvuVHaOHbG3HpM1t7kQICPZf/baeoAOhwo7gmHzLDnazdCKZ6
-        2F093U9FyVfOaiedDr5z4xNAM7iKqc1KOHvI8MQ=
-X-Google-Smtp-Source: ABdhPJz0DLjktFfVkiFjRwlEvNDVJ6oNlmBkBftZ4UBWppOTcXi3j2/DioJENx4ueefyS5nnOKbiQ3wkHpf3f8x10Ew=
-X-Received: by 2002:a2e:bc25:: with SMTP id b37mr5144021ljf.342.1616667555360;
- Thu, 25 Mar 2021 03:19:15 -0700 (PDT)
-MIME-Version: 1.0
-References: <1604284946-16254-1-git-send-email-u0084500@gmail.com>
- <3cf3ee50-3dd8-d3b1-66a9-cea2ba487de3@gmail.com> <CADiBU3-pDdoCioKc1mZwx7tp+_kfcN=4j-iMOT9LupXW03qwNA@mail.gmail.com>
- <20210325100122.GA4619@amd>
-In-Reply-To: <20210325100122.GA4619@amd>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Thu, 25 Mar 2021 18:19:03 +0800
-Message-ID: <CADiBU3-J7nUav98t=inpt-UzkLkARtJBRgO8q5GXFX4wRoWmgw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] leds: rt4505: Add support for Richtek RT4505 flash
- LED controller
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S230165AbhCYKUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:20:31 -0400
+Received: from m12-16.163.com ([220.181.12.16]:59704 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230093AbhCYKUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:20:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=VG5pv2GH8R52rludct
+        6hPThVPq000PA+eCG5zTVpFZ8=; b=lNCJORMsqfxyz6ufstQVvB8PbIKTVysx/4
+        TL4Oq6wh+B2MXJkA3Z9dJc6sDx7zEjigP4u4rCOOScpo8R24kVWi07E52GReB3Dq
+        n7alQPVK+E3XSMxRvUIXPs6r/iiFhaU7V4g3LjaU11P6EDUvsf2iqabDZoS5mYHg
+        zny8qmpu0=
+Received: from bf-rmnj-02.ccdomain.com (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowAD3BFGyY1xgGRBqiQ--.42582S2;
+        Thu, 25 Mar 2021 18:19:36 +0800 (CST)
+From:   Jian Dong <dj0227@163.com>
+To:     vireshk@kernel.org, johan@kernel.org, elder@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, huyue2@yulong.com,
+        Jian Dong <dongjian@yulong.com>
+Subject: [PATCH]  staging: greybus: fix fw is NULL but dereferenced
+Date:   Thu, 25 Mar 2021 18:19:26 +0800
+Message-Id: <1616667566-58997-1-git-send-email-dj0227@163.com>
+X-Mailer: git-send-email 1.9.1
+X-CM-TRANSID: EMCowAD3BFGyY1xgGRBqiQ--.42582S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZrW8ZFyfWw13uFyfWrW3KFg_yoW8XrW5pF
+        4UA3sFk3WrWa4Yqa45CFWDXFyrKFWxJrWxG348G3s5Jr4rZFnYqr1Utry3WF1fAFZ3Jw15
+        Xanagr4Fq3WIyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j7nYrUUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: dgmqjjqx6rljoofrz/1tbiEBhg3V8YFVxYfwAAsc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Machek <pavel@ucw.cz> =E6=96=BC 2021=E5=B9=B43=E6=9C=8825=E6=97=A5 =
-=E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=886:01=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Hi!
->
-> > > >   create mode 100644 drivers/leds/flash/Kconfig
-> > > >   create mode 100644 drivers/leds/flash/Makefile
-> > > >   create mode 100644 drivers/leds/flash/leds-rt4505.c
-> > >
-> > > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> > >
-> > Any problem with this patch? Do I need to submit it again?
->
-> It won't apply on current next.
->
-> So please: Merge ACKs, reorder it so that docs goes first, port it to
->
-> To gitolite.kernel.org:pub/scm/linux/kernel/git/pavel/linux-leds.git
->    34731ed13e8a..85674b0e40d9  for-next -> for-next
->
-> and resubmit.
+From: Jian Dong <dongjian@yulong.com>
 
-Thx. It's clear.
-So the next I need to do is
-1. Merge ACKs
-2. Reorder this patch from the docs first
+ fixes coccicheck Error:
 
-After done, do I need to change the patch revision from v2 to v3
-before submitng it?
->
-> Thanks you,
->                                                                 Pavel
-> --
-> http://www.livejournal.com/~pavelmachek
+ drivers/staging/greybus/bootrom.c:301:41-45: ERROR:
+ fw is NULL but dereferenced.
+
+ if procedure goto label directly, ret will be nefative, so the fw is NULL
+ and the if(condition) end with dereferenced fw. let's fix it.
+
+Signed-off-by: Jian Dong <dongjian@yulong.com>
+---
+ drivers/staging/greybus/bootrom.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/greybus/bootrom.c b/drivers/staging/greybus/bootrom.c
+index a8efb86..0439efa 100644
+--- a/drivers/staging/greybus/bootrom.c
++++ b/drivers/staging/greybus/bootrom.c
+@@ -246,7 +246,7 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
+ 	struct gb_bootrom_get_firmware_response *firmware_response;
+ 	struct device *dev = &op->connection->bundle->dev;
+ 	unsigned int offset, size;
+-	enum next_request_type next_request;
++	enum next_request_type next_request = NEXT_REQ_GET_FIRMWARE;
+ 	int ret = 0;
+ 
+ 	/* Disable timeouts */
+@@ -298,10 +298,10 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
+ 
+ queue_work:
+ 	/* Refresh timeout */
+-	if (!ret && (offset + size == fw->size))
+-		next_request = NEXT_REQ_READY_TO_BOOT;
+-	else
++	if (!!ret)
+ 		next_request = NEXT_REQ_GET_FIRMWARE;
++	else if (offset + size == fw->size)
++		next_request = NEXT_REQ_READY_TO_BOOT;
+ 
+ 	gb_bootrom_set_timeout(bootrom, next_request, NEXT_REQ_TIMEOUT_MS);
+ 
+-- 
+1.9.1
+
+
