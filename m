@@ -2,170 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA24349136
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:51:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A7434913D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhCYLvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:51:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:47310 "EHLO foss.arm.com"
+        id S230173AbhCYLxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhCYLuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:50:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79DDE1474;
-        Thu, 25 Mar 2021 04:50:53 -0700 (PDT)
-Received: from [10.57.50.37] (unknown [10.57.50.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EC35C3F792;
-        Thu, 25 Mar 2021 04:50:50 -0700 (PDT)
-Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
-To:     Sven Peter <sven@svenpeter.dev>, Rob Herring <robh@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     iommu@lists.linux-foundation.org, joro@8bytes.org, will@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>, marcan@marcan.st,
-        Marc Zyngier <maz@kernel.org>, mohamed.mediouni@caramail.com,
-        stan@corellium.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210320151903.60759-1-sven@svenpeter.dev>
- <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
- <20210323205346.GA1283560@robh.at.kernel.org>
- <43685c67-6d9c-4e72-b320-0462c2273bf0@www.fastmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <33b3ce35-c42f-331a-79a2-e38917d588ef@arm.com>
-Date:   Thu, 25 Mar 2021 11:50:45 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229617AbhCYLxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:53:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88FFB61A24;
+        Thu, 25 Mar 2021 11:53:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616673189;
+        bh=NsPDV+Q0M1j6YnK0APDSgpnNUw2rzo4WQAGweu5O1S4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JIsJubSgNp1vQdOLfLqztFMepHItIrRXCBrjwk+j+ytnFJZWlZCcUW0CupFkIek8W
+         ltKjtQMNwSem9aNt6oY2M6KlllnzYZ4Fouu0wXz/J3i1ckJ4mlPklCMB1+MsKxEyEx
+         cUg2g7ciSim36p37MfZ18N+7MPm0ynVwFo5udnJd0XsaDwJDkgXhUReP3r+buDKQbh
+         ELcpuw1dXd1PDf47AawJnnYQLbOTVU1U/P8sj6K2oT80Hugo1/bcY/9Mi8/704o0NS
+         BkNynteEzm66DWlwMRYAzkmZpRZV7g0D94XYDoVkpYkJkrRmDWFJxAQAWSce2VOqK3
+         wy9G1TU5g5srw==
+Received: by mail-lj1-f176.google.com with SMTP id u9so2682173ljd.11;
+        Thu, 25 Mar 2021 04:53:09 -0700 (PDT)
+X-Gm-Message-State: AOAM533iiXq19jA2/32Aml/3okfiQlojGRCcK06OVT+e0Ns6cM0TT6Df
+        ZJ/292qaw02a8DD4g6nZf4BQLbMHhtGtKke3NkA=
+X-Google-Smtp-Source: ABdhPJxDid/H9g+ccXoiu4wXt6PEyymXG/HEfZErzfWdHRSCnezNgcD4AkGYRPbX9YdGN/eH3bMRH5bdykAWHGEAcCk=
+X-Received: by 2002:a2e:9084:: with SMTP id l4mr5231252ljg.498.1616673187659;
+ Thu, 25 Mar 2021 04:53:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <43685c67-6d9c-4e72-b320-0462c2273bf0@www.fastmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <1616658937-82063-5-git-send-email-guoren@kernel.org>
+ <202103251923.MFrI3wnb-lkp@intel.com> <CAJF2gTQgXzAB0NiTNTY1MvR=4BYx5+379W0PeOuHzayR3dWUng@mail.gmail.com>
+In-Reply-To: <CAJF2gTQgXzAB0NiTNTY1MvR=4BYx5+379W0PeOuHzayR3dWUng@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Thu, 25 Mar 2021 19:52:55 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRiG+5f7y5HXe9EhfDWc3Q+pTEW_8sSFc0iGkbuMJO+NA@mail.gmail.com>
+Message-ID: <CAJF2gTRiG+5f7y5HXe9EhfDWc3Q+pTEW_8sSFc0iGkbuMJO+NA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] riscv: Convert custom spinlock/rwlock to generic qspinlock/qrwlock
+To:     kernel test robot <lkp@intel.com>
+Cc:     Anup Patel <Anup.Patel@wdc.com>, kbuild-all@lists.01.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        tech-unixplatformspec@lists.riscv.org,
+        Michael Clark <michaeljclark@mac.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anup Patel <anup@brainfault.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-25 07:53, Sven Peter wrote:
-> 
-> 
-> On Tue, Mar 23, 2021, at 21:53, Rob Herring wrote:
->> On Sun, Mar 21, 2021 at 05:00:50PM +0100, Mark Kettenis wrote:
->>>> Date: Sat, 20 Mar 2021 15:19:33 +0000
->>>> From: Sven Peter <sven@svenpeter.dev>
->>>> I have just noticed today though that at least the USB DWC3 controller in host
->>>> mode uses *two* darts at the same time. I'm not sure yet which parts seem to
->>>> require which DART instance.
->>>>
->>>> This means that we might need to support devices attached to two iommus
->>>> simultaneously and just create the same iova mappings. Currently this only
->>>> seems to be required for USB according to Apple's Device Tree.
->>>>
->>>> I see two options for this and would like to get feedback before
->>>> I implement either one:
->>>>
->>>>      1) Change #iommu-cells = <1>; to #iommu-cells = <2>; and use the first cell
->>>>         to identify the DART and the second one to identify the master.
->>>>         The DART DT node would then also take two register ranges that would
->>>>         correspond to the two DARTs. Both instances use the same IRQ and the
->>>>         same clocks according to Apple's device tree and my experiments.
->>>>         This would keep a single device node and the DART driver would then
->>>>         simply map iovas in both DARTs if required.
->>>>
->>>>      2) Keep #iommu-cells as-is but support
->>>>              iommus = <&usb_dart1a 1>, <&usb_dart1b 0>;
->>>>         instead.
->>>>         This would then require two devices nodes for the two DART instances and
->>>>         some housekeeping in the DART driver to support mapping iovas in both
->>>>         DARTs.
->>>>         I believe omap-iommu.c supports this setup but I will have to read
->>>>         more code to understand the details there and figure out how to implement
->>>>         this in a sane way.
->>>>
->>>> I currently prefer the first option but I don't understand enough details of
->>>> the iommu system to actually make an informed decision.
->>
->> Please don't mix what does the h/w look like and what's easy to
->> implement in Linux's IOMMU subsytem. It's pretty clear (at least
->> from the description here) that option 2 reflects the h/w.
->>
-> 
-> Good point, I'll keep that in mind and give option 2 a try.
-> 
->>>
->>> As I mentioned before, not all DARTs support the full 32-bit aperture.
->>> In particular the PCIe DARTs support a smaller address-space.  It is
->>> not clear whether this is a restriction of the PCIe host controller or
->>> the DART, but the Apple Device Tree has "vm-base" and "vm-size"
->>> properties that encode the base address and size of the aperture.
->>> These single-cell properties which is probably why for the USB DARTs
->>> only "vm-base" is given; since "vm-base" is 0, a 32-bit number
->>> wouldn't be able to encode the full aperture size.  We could make them
->>> 64-bit numbers in the Linux device tree though and always be explicit
->>> about the size.  Older Sun SPARC machines used a single "virtual-dma"
->>> property to encode the aperture.  We could do someting similar.  You
->>> would use this property to initialize domain->geometry.aperture_start
->>> and domain->geometry.aperture_end in diff 3/3 of this series.
->>
->> 'dma-ranges' is what should be used here.
->>
-> 
-> The iommu binding documentation [1] mentions that
-> 
->      The device tree node of the IOMMU device's parent bus must contain a valid
->      "dma-ranges" property that describes how the physical address space of the
->      IOMMU maps to memory. An empty "dma-ranges" property means that there is a
->      1:1 mapping from IOMMU to memory.
-> 
-> which, if I understand this correctly, means that the 'dma-ranges' for the
-> parent bus of the iommu should be empty since the DART hardware can see the
-> full physical address space with a 1:1 mapping.
-> 
-> 
-> The documentation also mentions that
-> 
->       When an "iommus" property is specified in a device tree node, the IOMMU
->       will be used for address translation. If a "dma-ranges" property exists
->       in the device's parent node it will be ignored.
-> 
-> which means that specifying a 'dma-ranges' in the parent bus of any devices
-> that use the iommu will just be ignored.
+diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+index 5ca41152cf4b..894e170c503e 100644
+--- a/arch/riscv/include/asm/cmpxchg.h
++++ b/arch/riscv/include/asm/cmpxchg.h
+@@ -17,6 +17,14 @@
+ #define __local_release_fence()
+         \
+        __asm__ __volatile__(RISCV_RELEASE_BARRIER "" ::: "memory")
 
-I think that's just wrong and wants updating (or at least clarifying). 
-The high-level view now is that we use "dma-ranges" to describe 
-limitations imposed by a bridge or interconnect segment, and that can 
-certainly happen upstream of an IOMMU. As it happens, I've just recently 
-sent a patch for precisely that case[1].
++#ifdef CONFIG_32BIT
++#define __ASM_SLLIW "slli\t"
++#define __ASM_SRLIW "srli\t"
++#else
++#define __ASM_SLLIW "slliw\t"
++#define __ASM_SRLIW "srliw\t"
++#endif
++
+ #define __xchg_relaxed(ptr, new, size)                                 \
+ ({                                                                     \
+        __typeof__(ptr) __ptr = (ptr);                                  \
+@@ -31,14 +39,14 @@
+                        __asm__ __volatile__ (                          \
+                        "0:     lr.w    %0, (%4)        \n"             \
+                        "       mv      %1, %0          \n"             \
+-                       "       slliw   %1, %1, 16      \n"             \
+-                       "       srliw   %1, %1, 16      \n"             \
++                       __ASM_SLLIW    "%1, %1, 16      \n"             \
++                       __ASM_SRLIW    "%1, %1, 16      \n"             \
+                        "       mv      %2, %3          \n"             \
+-                       "       slliw   %2, %2, 16      \n"             \
++                       __ASM_SLLIW    "%2, %2, 16      \n"             \
+                        "       or      %1, %2, %1      \n"             \
+                        "       sc.w    %2, %1, (%4)    \n"             \
+                        "       bnez    %2, 0b          \n"             \
+-                       "       srliw   %0, %0, 16      \n"             \
++                       __ASM_SRLIW    "%0, %0, 16      \n"             \
+                        : "=&r" (__ret), "=&r" (tmp), "=&r" (__rc)      \
+                        : "r" (__new), "r"(addr)                        \
+                        : "memory");                                    \
+@@ -46,14 +54,14 @@
+                        __asm__ __volatile__ (                          \
+                        "0:     lr.w    %0, (%4)        \n"             \
+                        "       mv      %1, %0          \n"             \
+-                       "       srliw   %1, %1, 16      \n"             \
+-                       "       slliw   %1, %1, 16      \n"             \
++                       __ASM_SRLIW    "%1, %1, 16      \n"             \
++                       __ASM_SLLIW    "%1, %1, 16      \n"             \
+                        "       mv      %2, %3          \n"             \
+                        "       or      %1, %2, %1      \n"             \
+                        "       sc.w    %2, %1, 0(%4)   \n"             \
+                        "       bnez    %2, 0b          \n"             \
+-                       "       slliw   %0, %0, 16      \n"             \
+-                       "       srliw   %0, %0, 16      \n"             \
++                       __ASM_SLLIW    "%0, %0, 16      \n"             \
++                       __ASM_SRLIW    "%0, %0, 16      \n"             \
+                        : "=&r" (__ret), "=&r" (tmp), "=&r" (__rc)      \
+                        : "r" (__new), "r"(addr)                        \
+                        : "memory");                                    \
 
-I guess what it might have been trying to say is that "dma-ranges" 
-*does* become irrelevant in terms of constraining what physical memory 
-is usable for DMA, but that shouldn't imply that its meaning doesn't 
-just shift to a different purpose.
+On Thu, Mar 25, 2021 at 7:34 PM Guo Ren <guoren@kernel.org> wrote:
+>
+> haha, I forgot RV32, it needs a
+>
+> #ifdef RV32
+>     srliw
+> #else
+>     srli
+> #endif
+>
+> On Thu, Mar 25, 2021 at 7:16 PM kernel test robot <lkp@intel.com> wrote:
+> >
+> > Hi,
+> >
+> > Thank you for the patch! Yet something to improve:
+> >
+> > [auto build test ERROR on tip/locking/core]
+> > [also build test ERROR on linux/master linus/master v5.12-rc4 next-20210325]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/guoren-kernel-org/riscv-Add-qspinlock-qrwlock/20210325-155933
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 5965a7adbd72dd9b288c0911cb73719fed1efa08
+> > config: riscv-rv32_defconfig (attached as .config)
+> > compiler: riscv32-linux-gcc (GCC) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # https://github.com/0day-ci/linux/commit/2bf2d117ab34b007089e20e1c46eff89b5da097e
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review guoren-kernel-org/riscv-Add-qspinlock-qrwlock/20210325-155933
+> >         git checkout 2bf2d117ab34b007089e20e1c46eff89b5da097e
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    kernel/locking/qspinlock.c: Assembler messages:
+> >    kernel/locking/qspinlock.c:184: Error: unrecognized opcode `srliw t1,t1,16'
+> >    kernel/locking/qspinlock.c:185: Error: unrecognized opcode `slliw t1,t1,16'
+> > >> kernel/locking/qspinlock.c:190: Error: unrecognized opcode `slliw a6,a6,16'
+> > >> kernel/locking/qspinlock.c:191: Error: unrecognized opcode `srliw a6,a6,16'
+> >    kernel/locking/qspinlock.c:184: Error: unrecognized opcode `slliw t1,t1,16'
+> >    kernel/locking/qspinlock.c:185: Error: unrecognized opcode `srliw t1,t1,16'
+> >    kernel/locking/qspinlock.c:187: Error: unrecognized opcode `slliw t3,t3,16'
+> > >> kernel/locking/qspinlock.c:191: Error: unrecognized opcode `srliw a6,a6,16'
+> >
+> >
+> > vim +190 kernel/locking/qspinlock.c
+> >
+> > 69f9cae90907e0 Peter Zijlstra (Intel  2015-04-24  187)
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  188  /**
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  189   * clear_pending - clear the pending bit.
+> > 59fb586b4a07b4 Will Deacon            2018-04-26 @190   * @lock: Pointer to queued spinlock structure
+> > 59fb586b4a07b4 Will Deacon            2018-04-26 @191   *
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  192   * *,1,* -> *,0,*
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  193   */
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  194  static __always_inline void clear_pending(struct qspinlock *lock)
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  195  {
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  196   atomic_andnot(_Q_PENDING_VAL, &lock->val);
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  197  }
+> > 59fb586b4a07b4 Will Deacon            2018-04-26  198
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
 
-> As a concrete example, the PCIe DART IOMMU only allows translations from iovas
-> within 0x00100000...0x3ff00000 to the entire physical address space (though
-> realistically it will only map to 16GB RAM starting at 0x800000000 on the M1).
-> 
-> I'm probably just confused or maybe the documentation is outdated but I don't
-> see how I could specify "this device can only use DMA addresses from
-> 0x00100000...0x3ff00000 but can map these via the iommu to any physical
-> address" using 'dma-ranges'.
-> 
-> Could you maybe point me to the right direction or give me a small example?
-> That would help a lot!
 
-PCI is easy, since it's already standard practice to use "dma-ranges" to 
-describe host bridge inbound windows. Even if the restriction is really 
-out in the host-side interconnect rather than in the bridge itself, to 
-all intents and purposes it's indistinguishable so can still be 
-described the same way.
 
-The case of a standalone device having fewer address bits wired up than 
-both its output and the corresponding IOMMU input might expect is a 
-little more awkward, since that often *does* require adding an extra 
-level of "bus" to explicitly represent that interconnect link in the DT 
-model, e.g. [2].
+-- 
+Best Regards
+ Guo Ren
 
-Robin.
-
-[1] 
-https://lore.kernel.org/linux-arm-kernel/720d0a9a42e33148fcac45cd39a727093a32bf32.1614965598.git.robin.murphy@arm.com/
-[2] 
-https://lore.kernel.org/linux-arm-kernel/20180926132247.10971-23-laurentiu.tudor@nxp.com/
+ML: https://lore.kernel.org/linux-csky/
