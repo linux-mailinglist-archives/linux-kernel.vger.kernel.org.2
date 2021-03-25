@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A42349CFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47E2349D05
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhCYXoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:44:12 -0400
-Received: from mail-il1-f177.google.com ([209.85.166.177]:43930 "EHLO
-        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhCYXns (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:43:48 -0400
-Received: by mail-il1-f177.google.com with SMTP id d2so3591718ilm.10;
-        Thu, 25 Mar 2021 16:43:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p59ML68zK60wq9YD60V5pptsxHulU7hq4xvqJD4wijM=;
-        b=RW90zVF7jF9fBKktnDYRj9GsPbCSqm147WHJaDCxYbf4TAh9i5q3Ffm11FhqKVgpB1
-         62lmWx5hZWAMmN/xe8WiLidPbil6pT4aEny9qp811VsbUU3h0/FqUxbd+iR7c+HR0jPR
-         v9RQYBwLPBDp4JPMoBSgthHGYNzJglW25PPkCk8hsz/MlPt/L3SM7SO4bt9Rui4d8p3o
-         p699gSGlKwBU5LbdqoJQi+u/BVHuF0N8M0drZ8s5OO+QTY/gQtEhHb7mYR9BgIpJgnjI
-         BO80roifCtAjGSCApWHarv3CiRZ4DvuH6pbLgBt8w75N22AeuOpo+i3+onlmdkhdXJCr
-         YLZQ==
-X-Gm-Message-State: AOAM533ID90DBcVQXOZOuv5v1WsTpQfcbtCWFMSRm+AnJBUHGCsoUTtQ
-        97sCtry4W8d849+MkohfoA==
-X-Google-Smtp-Source: ABdhPJwfa4q5Qfn77dFh+CE0bpIsOOj53QrW0DhxciTZq+4XZ0reu29n+NslYP5CilZsWawJZ8U8TA==
-X-Received: by 2002:a05:6e02:2182:: with SMTP id j2mr8950348ila.89.1616715827402;
-        Thu, 25 Mar 2021 16:43:47 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id j5sm3442416ile.52.2021.03.25.16.43.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 16:43:46 -0700 (PDT)
-Received: (nullmailer pid 1960656 invoked by uid 1000);
-        Thu, 25 Mar 2021 23:43:43 -0000
-Date:   Thu, 25 Mar 2021 17:43:43 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Joe Sandom <joe.g.sandom@gmail.com>
-Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, jic23@kernel.org,
-        Rob Herring <robh+dt@kernel.org>, andy.shevchenko@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v6 2/2] Added AMS tsl2591 device tree binding
-Message-ID: <20210325234343.GA1959978@robh.at.kernel.org>
-References: <20210325220505.14507-1-joe.g.sandom@gmail.com>
- <20210325220505.14507-2-joe.g.sandom@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325220505.14507-2-joe.g.sandom@gmail.com>
+        id S231406AbhCYXuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 19:50:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231309AbhCYXtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 19:49:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id EDEAC61A32;
+        Thu, 25 Mar 2021 23:49:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616716157;
+        bh=DlwVGUKvp/Zjp+HKHJeRTWneAHPtk8cqgn326jBbpYA=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=WO+3vct3y1IsQIamAe5elgOpC5+sGCoI0jRu0I6L+gYftb6lb053zya5SBibFWPlM
+         kgmywyTnKqj7MvzNi/DQ/z+Ck3g0cQmCeVmMJD6hBvZLkXofnywtZ312CDs16jIyov
+         8BSqgJleOcOcO8BR6bbMSHqpXOiw1gB2/yN5nu6wgnqzcHbZjLNn3HbALlzUQCR5M3
+         JsjZ2Hfs18qYPFycycc5KntUK5oJng9N3nveixfK0OFCUcKo68pVj/Z896ZqeEO8nT
+         LiL23ka4xRS1pIsqVihTrBQFhUKdsb3XIhGkEpCOfvDC7pZiuC2qjCxedblbB3uqmE
+         r20mg2ORZPbuA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D4022609E8;
+        Thu, 25 Mar 2021 23:49:16 +0000 (UTC)
+Subject: Re: [GIT PULL] integrity subsystem fix for v5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <98cd4b74a0658c14acc0071349122b13e7238a53.camel@linux.ibm.com>
+References: <98cd4b74a0658c14acc0071349122b13e7238a53.camel@linux.ibm.com>
+X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
+X-PR-Tracked-Message-Id: <98cd4b74a0658c14acc0071349122b13e7238a53.camel@linux.ibm.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.12-fix
+X-PR-Tracked-Commit-Id: 92063f3ca73aab794bd5408d3361fd5b5ea33079
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: db24726bfefa68c606947a86132591568a06bfb4
+Message-Id: <161671615680.12710.6635035561217735131.pr-tracker-bot@kernel.org>
+Date:   Thu, 25 Mar 2021 23:49:16 +0000
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 22:05:04 +0000, Joe Sandom wrote:
-> Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
-> 
-> This driver supports configuration via device tree and sysfs.
-> Supported channels for raw infrared light intensity,
-> raw combined light intensity and illuminance in lux.
-> The driver additionally supports iio events on lower and
-> upper thresholds.
-> 
-> This is a very-high sensitivity light-to-digital converter that
-> transforms light intensity into a digital signal.
-> 
-> Datasheet: https://ams.com/tsl25911#tab/documents
-> 
-> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
-> ---
-> Changes in v6:
-> - No changes
-> 
-> Notes:
-> - Re-submitted to align the version with part 1 of the patch series
-> 
->  .../bindings/iio/light/amstaos,tsl2591.yaml   | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
-> 
+The pull request you sent on Thu, 25 Mar 2021 19:01:34 -0400:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.12-fix
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/db24726bfefa68c606947a86132591568a06bfb4
 
-If a tag was not added on purpose, please state why and what changed.
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
