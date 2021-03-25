@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF0D348953
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D82B348958
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhCYGqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:46:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCYGqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:46:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 496EA61A13;
-        Thu, 25 Mar 2021 06:46:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616654809;
-        bh=0iAgjPbQNoDytTuxcEELGkTrqenVMnKQD+gC/+w17r4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v+4OxtIzEgY84vfS5AeDv+d+SoYmAf4USLgqsfd7oegwYT4ggXI+5QgGTdIzlKVl8
-         7R7E5va738AvUmQ/ud4x6gjium9GmQq7k0oZsuKovrkjkhmD5pLNq3ZJt2IpfwJS3m
-         96mMjUtkGjUOcDCeC9kRqRdTNmIMFbqkI1KLT2Hs=
-Date:   Thu, 25 Mar 2021 07:46:45 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Zankel <chris@zankel.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Hillf Danton <hdanton@sina.com>,
-        huang ying <huang.ying.caritas@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        James Troup <james.troup@canonical.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kairui Song <kasong@redhat.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "Pavel Machek (CIP)" <pavel@denx.de>, Pavel Machek <pavel@ucw.cz>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Rich Felker <dalias@libc.org>,
-        Robert Richter <rric@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Theodore Dubois <tblodt@icloud.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        William Cohen <wcohen@redhat.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Yoshinori Sato <ysato@users.osdn.me>
-Subject: Re: [PATCH v1 0/3] drivers/char: remove /dev/kmem for good
-Message-ID: <YFwx1YEaQhwxACe0@kroah.com>
-References: <20210324102351.6932-1-david@redhat.com>
- <20210324122412.e77247e6d3259d5493951019@linux-foundation.org>
+        id S229629AbhCYGtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhCYGsp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 02:48:45 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76017C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 23:48:44 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id c3so810493qkc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 23:48:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T5CjvFYDEtZ3kZrOVFQv//2YoZQXvV6dPPPaR37s0/M=;
+        b=u42vQyq9npwV6wo2mn8Gb/P1O4BKWJjfNNG5ECMFoYSDSFss54BNtiHnMhfRKhUqzx
+         VMQCcv1pQTcH8MdxkNVnqDbVq4Z0DO+M7qeBayVDyGX5HK9ZmMOoZ7nycbQxHf79vHe2
+         +9pax28kyxhcroqAnfSj991jH1gDW3lfFsbaUVCeoNqFgfWfGxCxfm6dNfeko+wTgFqK
+         6ilRMOP5Mfxv7VRmSYnoA0BiqAiEZz5PcHw7MnG5SK5op6YdIneMsomUX+zeElFgHuNS
+         6HA92jwaWhlLcgJ7NKQUlyi8XTPkn9vKtRr0pOZozf1btzfuN9pPRza+fSwitlcwvoWU
+         bQww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T5CjvFYDEtZ3kZrOVFQv//2YoZQXvV6dPPPaR37s0/M=;
+        b=hj92w2xr//QWz/vLFYtlftsjsDux9f8XPaf3+nTQ6t1K+EF30cRGfEu2VwqynO6gU1
+         +3OHOku1GcLIWO9Im9gFJjFpctdiC0vTJwmd1de1cm17HiTvKyVkEqtCVmGqRr42PgQe
+         deZ+uwpW2HzkENPjxobVNQiy7UOSlz/xQ36u0HJUyN4NMfBTKEYHUbufGXyt17z6IFiU
+         9vkf83CLMcsbBNjNThw8pZKJ9DALy76P/r5svq7heg1THplFbyJGR8kcMx4t1UNP4tQQ
+         +cuf3g/ogbzul/cINMHYbaS8jKRPgUOW6SuToy4iMPjONBCbhPIKerZ2BNV9nEn4zzux
+         elvQ==
+X-Gm-Message-State: AOAM530kfMnYbU1Cds08ZPg7yXiYYJe6/7HyUB1rV2BB8qBCyKr+Pjns
+        lJuVlXZ4KpJxLHRlU6e/5zLpfTaMAIe38D3dE6l00w==
+X-Google-Smtp-Source: ABdhPJzvuHIQMu8gosf36fWYs8QS4hqDSnRtedbl/Y969KzsphbiRmzb3t2DsUCOrDtiq1damp2ZtQBFoes/LA2xwVA=
+X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr6771758qko.424.1616654923419;
+ Wed, 24 Mar 2021 23:48:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210324122412.e77247e6d3259d5493951019@linux-foundation.org>
+References: <20210320132840.1315853-1-dvyukov@google.com> <20210324220008.nqwwwfugyfngbn3x@smtp.gmail.com>
+In-Reply-To: <20210324220008.nqwwwfugyfngbn3x@smtp.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 25 Mar 2021 07:48:32 +0100
+Message-ID: <CACT4Y+bDcd+hdgkQyEvPRM1eSWSoud4EDhq4tLKS8wxFjr1F6w@mail.gmail.com>
+Subject: Re: [PATCH] drm/vkms: fix misuse of WARN_ON
+To:     Melissa Wen <melissa.srw@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        syzbot+4fc21a003c8332eb0bdd@syzkaller.appspotmail.com,
+        DRI <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:24:12PM -0700, Andrew Morton wrote:
-> 
-> > Let's remove /dev/kmem, which is unused and obsolete.
-> 
-> I grabbed these.  Silently - the cc list is amazing ;)
+On Wed, Mar 24, 2021 at 11:00 PM Melissa Wen <melissa.srw@gmail.com> wrote:
+>
+> On 03/20, Dmitry Vyukov wrote:
+> > vkms_vblank_simulate() uses WARN_ON for timing-dependent condition
+> > (timer overrun). This is a mis-use of WARN_ON, WARN_ON must be used
+> > to denote kernel bugs. Use pr_warn() instead.
+> >
+> > Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> > Reported-by: syzbot+4fc21a003c8332eb0bdd@syzkaller.appspotmail.com
+> > Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+> > Cc: Melissa Wen <melissa.srw@gmail.com>
+> > Cc: Haneen Mohammed <hamohammed.sa@gmail.com>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Change-Id: I7f01c288092bc7e472ec63af198f93ce3d8c49f7
+> > ---
+> >  drivers/gpu/drm/vkms/vkms_crtc.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
+> > index 0443b7deeaef6..758d8a98d96b3 100644
+> > --- a/drivers/gpu/drm/vkms/vkms_crtc.c
+> > +++ b/drivers/gpu/drm/vkms/vkms_crtc.c
+> > @@ -18,7 +18,8 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
+> >
+> >       ret_overrun = hrtimer_forward_now(&output->vblank_hrtimer,
+> >                                         output->period_ns);
+> > -     WARN_ON(ret_overrun != 1);
+> > +     if (ret_overrun != 1)
+> > +             pr_warn("%s: vblank timer overrun\n", __func__);
+>
+> Hi Dmitry,
+>
+> Thanks for your patch.
+>
+> Looks good to me.
+> The Change-Id tag just seems a little noisy to me, but can be
+> fixed while applying.
 
-Thanks, I was going to do so, but your tree is fine with me:
+Yes, please drop Change-Id when applying if possible. Sorry for that.
+Thanks for the review, Melissa.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Acked-by: Melissa Wen <melissa.srw@gmail.com>
+>
+> >
+> >       spin_lock(&output->lock);
+> >       ret = drm_crtc_handle_vblank(crtc);
+> >
+> > base-commit: e94c55b8e0a0bbe9a026250cf31e2fa45957d776
+> > --
+> > 2.31.0.291.g576ba9dcdaf-goog
+> >
