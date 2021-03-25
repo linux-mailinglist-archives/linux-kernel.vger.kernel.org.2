@@ -2,60 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79574348A06
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D81A348A08
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhCYHUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:20:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229653AbhCYHUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:20:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4478061A1E;
-        Thu, 25 Mar 2021 07:20:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616656819;
-        bh=apXDG/9jYfIBFrCfWedmF8k03GKxmM8e1bEmTBDzhMA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YiDtu63mMVWwzbw+IO5YbcSvTfT276ecd8++ADpbG+YRw8V0tMTr7bRT49tJb8PhS
-         +FuyCTESxPzQrQpS8m3zsk0XIdxAwPfXQF0ABheLSC5qHjym7axk8L6xIz1BA1Jvwo
-         ha3S7W4lz3I/6aSKjeU2YfNrE61VMr/9UYWokqBzvDVXpai210o47qZfUh+Oa4Cdv5
-         IBYRIT7VcNFUqAEXD6gLrdqoASttXKJmOtnoANYwKe/vnrINuua+Gbuw/vPcPdZ1R0
-         jgHCamwIGTVxd7+0Fp1LSwYDgqdRJdjkrC2ZmyGeo1nn6cajURlFbrgKnQAiZvMgs3
-         HMkyOp1hp9YzA==
-Date:   Thu, 25 Mar 2021 12:50:15 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jie Qiu <jie.qiu@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
-        Cawa Cheng <cawa.cheng@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v5 04/13] dt-bindings: phy: mediatek: tphy: change
- patternProperties
-Message-ID: <YFw5rx7KLDU2bVu5@vkoul-mobl.Dlink>
-References: <20210316092232.9806-1-chunfeng.yun@mediatek.com>
- <20210316092232.9806-4-chunfeng.yun@mediatek.com>
+        id S229670AbhCYHVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:21:40 -0400
+Received: from mail-vs1-f42.google.com ([209.85.217.42]:37624 "EHLO
+        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhCYHVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:21:11 -0400
+Received: by mail-vs1-f42.google.com with SMTP id e5so373532vse.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:21:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sMarrIE38dJEGoCFm+8xTDCMMQZuIlyX+BPxsk59mEM=;
+        b=RVJqOQ6973WcVsWLDMDHvlgrX5p6N/P+8t4JfQh1aL+nD4ci5TZD5N1ojRscKxziCT
+         slzTM7i7mfOtpXFUILoACdiwfztY3HyKvg2S7Vtgoo8K/3pqTSQ6JRm4zG0zIt3K6kJw
+         M7sTa3YVyzeT2rWOKqCCkIt/Av5AQBnskdo9QdO/Jd80wpIzNtlyPohdfp0m9TeXp2i5
+         K4xcpyQm+oVcITbvKqSGGp4yeg5PfgE/6sjX9Wnw5SkmOXiBbHRfKnP9Mc9FbkShVv6g
+         uWUsOraz25MFLjScHr3Ub7mSyfYN2hOk2RjJLB2nSpc0yoEd4lQaCsYkrICwUoYxDx72
+         rr0w==
+X-Gm-Message-State: AOAM533vO+/r6zIf4XCmrODMZKhyrDp/prMlBiYXHu8gjzwxvz2y9iF2
+        FT/W8hNByOAKFEH7uRgqRf7emA25t9cEOjnwy5d2PaUqIZU=
+X-Google-Smtp-Source: ABdhPJykN2WtoS5LVmYgNfg4/Q5c6loOf7Fd249EzTP/ih6CQbx/XPfYAkF0/xjyek7EuV4nxyPmii6zZXhX840+1+0=
+X-Received: by 2002:a67:8883:: with SMTP id k125mr4290806vsd.18.1616656870193;
+ Thu, 25 Mar 2021 00:21:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210316092232.9806-4-chunfeng.yun@mediatek.com>
+References: <20210320001518.93149-1-julianbraha@gmail.com> <20857798.apSVmgY6Dz@ubuntu-mate-laptop>
+ <CAMuHMdU+27du_WVSzWQF3O7Y2E2TDHRfpYzspH2XQXhgd+XZJA@mail.gmail.com> <2598523.FcGXNBlX6l@ubuntu-mate-laptop>
+In-Reply-To: <2598523.FcGXNBlX6l@ubuntu-mate-laptop>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 25 Mar 2021 08:20:59 +0100
+Message-ID: <CAMuHMdVaByX=ph82etGn5a0hV6+rGitD=gG8Y1zNkz7+UO+Uew@mail.gmail.com>
+Subject: Re: [PATCH] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-03-21, 17:22, Chunfeng Yun wrote:
-> The phy may be named as pcie-phy when the T-PHY only supports
-> PCIe mode, it's also the similar case for SATA, named as
-> sata-phy.
+Hi Julian,
 
-Applied, thanks
+On Thu, Mar 25, 2021 at 1:09 AM Julian Braha <julianbraha@gmail.com> wrote:
+> On Wednesday, March 24, 2021 4:12:34 AM EDT you wrote:
+
+> > On Wed, Mar 24, 2021 at 7:48 AM Julian Braha <julianbraha@gmail.com> wrote:
+> > > On Monday, March 22, 2021 3:43:41 AM EDT you wrote:
+> > > > On Sun, Mar 21, 2021 at 11:40 PM Julian Braha <julianbraha@gmail.com> wrote:
+> > > > > On Sunday, March 21, 2021 2:28:43 PM EDT you wrote:
+> > > > > > On Sat, Mar 20, 2021 at 1:17 AM Julian Braha <julianbraha@gmail.com> wrote:
+> > > > > > > When LATENCYTOP is enabled and ARCH_WANT_FRAME_POINTERS
+> > > > > > > is disabled, Kbuild gives the following warning:
+> > > > > > >
+> > > > > > > WARNING: unmet direct dependencies detected for FRAME_POINTER
+> > > > > > >   Depends on [n]: DEBUG_KERNEL [=y] && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS [=n] || MCOUNT [=n]
+> > > > > > >   Selected by [y]:
+> > > > > > >   - LATENCYTOP [=y] && DEBUG_KERNEL [=y] && STACKTRACE_SUPPORT [=y] && PROC_FS [=y] && !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+> > > > > > >
+> > > > > > > This is because LATENCYTOP selects FRAME_POINTER,
+> > > > > > > without selecting or depending on ARCH_WANT_FRAME_POINTERS,
+> > > > > > > despite FRAME_POINTER depending on ARCH_WANT_FRAME_POINTERS.
+> > > > > > >
+> > > > > > > Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> > > > > >
+> > > > > > Thanks for your patch!
+> > > > > >
+> > > > > > > --- a/lib/Kconfig.debug
+> > > > > > > +++ b/lib/Kconfig.debug
+> > > > > > > @@ -1675,6 +1675,7 @@ config LATENCYTOP
+> > > > > > >         depends on DEBUG_KERNEL
+> > > > > > >         depends on STACKTRACE_SUPPORT
+> > > > > > >         depends on PROC_FS
+> > > > > > > +       select ARCH_WANT_FRAME_POINTERS if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+> > > > > >
+> > > > > > ARCH_WANT_FRAME_POINTERS is a symbol that is only to be selected by
+> > > > > > architecture-specific configuration, and must not be overridden:
+> > > > > >
+> > > > > >     # Select this config option from the architecture Kconfig, if it
+> > > > > >     # is preferred to always offer frame pointers as a config
+> > > > > >     # option on the architecture (regardless of KERNEL_DEBUG):
+> > > > > >
+> > > > > > Probably this should be turned into a depends instead?
+> > > > > >
+> > > > > > >         select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+> > > > > > >         select KALLSYMS
+> > > > > > >         select KALLSYMS_ALL
+> > > >
+> > > > > Making this a 'depends' causes a recursive dependency error.
+> > > > > Any other ideas?
+> > > >
+> > > > What about
+> > > >
+> > > >     -select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE &&
+> > > > !ARM && !ARC && !X86
+> > > >     +depends on FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE
+> > > > && !ARM && !ARC && !X86
+> > > >
+> > > > ?
+> > >
+> > > Sadly, this won't work either. In Kconfig, 'depends' cannot have an 'if' after it (only 'select' can.)
+> > > Kbuild gives an error for this.
+> >
+> > Oops
+> >
+> >     select FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM
+> > || ARC || X86
+> >
+> > of course.
+
+> I think it's a typo, but if you meant:
+> select FRAME_POINTER if MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+> Then that works.
+
+(Bummer, I shouldn't reply to emails before my morning coffee)
+Yes, it is a typo.  I meant:
+
+    depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE ||
+ARM || ARC || X86
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-~Vinod
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
