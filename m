@@ -2,109 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46FF34934F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36919349358
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhCYNu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:50:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230095AbhCYNum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:50:42 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 74D9B61A1A;
-        Thu, 25 Mar 2021 13:50:41 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 09:50:39 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "John (Warthog9) Hawley" <warthog9@kernel.org>
-Subject: Re: [PATCH 2/2] streamline_config.pl: Add softtabstop=4 for vim
- users
-Message-ID: <20210325095039.7202d675@gandalf.local.home>
-In-Reply-To: <CAK7LNAQ4uRB+9M4h0KVwEQUnX1XZrsE30KP_pqJqYjF2FcsHZA@mail.gmail.com>
-References: <20210322213806.089334551@goodmis.org>
-        <20210322214032.293992979@goodmis.org>
-        <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com>
-        <20210324095417.49c6377b@gandalf.local.home>
-        <CAK7LNAQ4uRB+9M4h0KVwEQUnX1XZrsE30KP_pqJqYjF2FcsHZA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230348AbhCYNw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:52:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:47938 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhCYNwR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:52:17 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616680336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zdZuv5qViJW6TxpdwVe1meCCykhxshraNSFiUmJNMFo=;
+        b=RFBnytgDMaeLc68XaRZma8Y2H0vlt+5RRHVJh+rdkJe6ypx1GgjWdPxHK80j3YPxNHSOdz
+        z5smaBxvfpVUkBff2z/b8/0K8VDHNDs5VmzFFrpF3gIBAuN3IIA4h5UXrgylxSi09RUP5b
+        DTSW78BAO++LCpeTzYZJ96HtU6kSDIq93wlvxL9Jfd+LTBAv+nMeL0bJtdvC8VSmr2rM5K
+        GuxUX2NMVM1TykCLvkieNPpFVQdIhNSEEqqwwQHd8UEDKEZkIzfoBLhXx0I7/GpoNebPJd
+        lZEjWMlLrPJVtv2I1B+lEY7SYB2qr+nBs6T6lNQrqNOW4vCcfiMFAfZ2HuzHNQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616680336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zdZuv5qViJW6TxpdwVe1meCCykhxshraNSFiUmJNMFo=;
+        b=CrSGauAmfnpk6Pnz0PQNYOVRhYeW8VLivbNZTV06PsSz3zcmN+i+qn8Rfmjxa/aHrap7Jb
+        EwCam3yFz084A9BQ==
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH] genirq: Add missing IRQF_ONESHOT
+In-Reply-To: <1616492321-72383-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1616492321-72383-1-git-send-email-yang.lee@linux.alibaba.com>
+Date:   Thu, 25 Mar 2021 14:52:15 +0100
+Message-ID: <87zgyrwdbk.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 15:20:13 +0900
-Masahiro Yamada <masahiroy@kernel.org> wrote:
+On Tue, Mar 23 2021 at 17:38, Yang Li wrote:
+> fixed the following coccicheck:
+> ./kernel/irq/manage.c:2193:8-28: ERROR: Threaded IRQ with no primary
+> handler requested without IRQF_ONESHOT
 
-> 
-> The root cause of inconsistency is that
-> you mix up space-indentation and tab-indentation.
-> I do not know if it is a standard way either.
+This fixes nothing because it's for a nested thread and not relevant to
+that check at all.
 
-This is the default way emacs has edited perl files for as long as I can
-remember (back to 1996). It became my standard of editing perl files just
-because of that. For everything else, I use tabs.
+Thanks,
 
-> 
-> For example, scripts/checkpatch.pl uses only tabs,
-> which I think is more robust.
-
-Probably because Joe probably uses vim ;-)
-
-> 
-> Unfortunately, we do not have standardized indentation style
-> for scripts yet, and people can go in any direction.
-> 
-> The editorconfig patch [1] proposed to always use 4-space
-> indentation for *.pl files.
-> (that is, do not replace 8 spaces with a tab).
-
-I rather have all tabs, or the tab and spaces. I find 8 spaces to be a
-waste of memory and disk space.
-
-> 
-> I do not know whether the kernel will adopt .editorconfig or not,
-> but if that patch is applied, your 1/2 will be a step backward.
-
-My 1/2 only made it consistent, as the original code had the tab/spaces mix
-and just a few lines that were modified by others broke it by adding all
-spaces.
-
-> 
-> My got-feeling is, you will never reach the goal as long as
-> you adopt a strange indentation style, which is obscure
-> to other contributors.
-
-I'm guessing this is not strange to other perl developers who uses emacs.
-
-> 
-> Not all people use vim.
-
-I don't use it either. I was trying to make vim match emacs. Of course for
-those that use something else, it wont help. I'm curious, what's your main
-editor that you use?
-
-> I am not interested in 1/2 either.
-
-OK.
-
-> 
-> If you insist on this patch set, apply it to your tree
-> and send a pull request by yourself.
-
-I'm fine with that.
-
-> 
-> 
-> [1]: https://lore.kernel.org/lkml/20200703073143.423557-1-danny@kdrag0n.dev/
-
-Thanks for the link.
-
--- Steve
+        tglx
