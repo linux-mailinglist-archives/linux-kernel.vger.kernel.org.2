@@ -2,116 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A1A3488BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E98C83488C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229760AbhCYGE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:04:56 -0400
-Received: from smtp1.axis.com ([195.60.68.17]:37558 "EHLO smtp1.axis.com"
+        id S229629AbhCYGIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:08:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhCYGEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:04:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616652285;
-  x=1648188285;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=KgAikQLc0a+uXf9MpMW7lcoLMvJvsmQiWu5c216iOEU=;
-  b=YkOnfD8ctxMyXt5arXrn2Ev3sDRIHh4iGKvg0wX9O++uVdI5o5n+IwGU
-   yPoZklOVTmytyHClVO+72rsSO0za4Ljg8HP0i0BwhFTDhaPQkF3HcoZri
-   DQV4jHS7BxQQ5jZmPumWtsG1vM1/2Ift4SbcSVoS8T1hlb16GdKVSHH4h
-   EnoeFLyn672Gssjq/WNV3WNgoiGlIrR8sFUeSwL9FyfcXdu4Cfb8uMz0E
-   is68ketGT7/Ztq62AJuPi8UxdvT6ypTRGfF0z0cFreLwTQNmqwJdT/Vu4
-   TpuyUPeWMQfaxLD1YKyloDQxuvJF49hdfGK9TQDzyUAMfPdobW2yyv9pl
-   Q==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     Marek Behun <marek.behun@nic.cz>,
-        Hermes Zhang <Hermes.Zhang@axis.com>
-CC:     "pavel@ucw.cz" <pavel@ucw.cz>, "dmurphy@ti.com" <dmurphy@ti.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "lkml@axis.com" <lkml@axis.com>, kernel <kernel@axis.com>
-Subject: Re: [PATCH 1/2] leds: leds-multi-gpio: Add multiple GPIOs LED driver
-Thread-Topic: [PATCH 1/2] leds: leds-multi-gpio: Add multiple GPIOs LED driver
-Thread-Index: AQHXIINVpz7s49aciUujD1l9rQIjiw==
-Date:   Thu, 25 Mar 2021 06:04:43 +0000
-Message-ID: <7ea3f7e6ea7a464fa4bb59b94857a755@XBOX01.axis.com>
-References: <20210324075631.5004-1-chenhui.zhang@axis.com>
- <20210324075631.5004-2-chenhui.zhang@axis.com>
- <20210324103431.4b945915@thinkpad>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S229461AbhCYGI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 02:08:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0490761A1E;
+        Thu, 25 Mar 2021 06:08:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616652507;
+        bh=50XHICVED2w0OW9kAp/7/1VgbR+doRNa3zBU6nckmQA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JV+74+jd5KF87nLnt/1vq9jBMuxGUFf1ykdCuuDkVgN+OMviJaJtgUb/hgk19G3Xw
+         3N8MPm3eBpMGKG+UTTqQWT536Lngxtp4RxRYnvfkRrawuFQhN72/9zzKu7yOzvauJ5
+         SD9NXkvIjQSzGAvnk2Uzv4mB7D11apv0naOB9IYtudXcE5+NHZQJtPs/+/FCVipoZL
+         aTGoqj2XiL0TIg3T1S8Q1N21TsISc5B99zJ2jSRqkL3qJhdJCyVwdS2uIGfa1haqua
+         8HymMgTQbtxo2HlpwCofsFeSRcUKx1xeEcHupwaX8G6aggeURGjcaheVgfpxM5y0g3
+         ioDIGL0fTXr5A==
+Date:   Thu, 25 Mar 2021 11:38:24 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: mailbox: Add compatible for SM8350 IPCC
+Message-ID: <YFwo2FrCMYJ4AhCs@vkoul-mobl.Dlink>
+References: <20210312051203.3555751-1-vkoul@kernel.org>
+ <YEukrpG06PBdgGAF@builder.lan>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YEukrpG06PBdgGAF@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,=0A=
-=0A=
-On 3/24/21 5:34 PM, Marek Behun wrote:=0A=
->> +#include <linux/err.h>=0A=
->> +#include <linux/gpio.h>=0A=
->> +#include <linux/gpio/consumer.h>=0A=
->> +#include <linux/kernel.h>=0A=
->> +#include <linux/leds.h>=0A=
->> +#include <linux/module.h>=0A=
->> +#include <linux/of.h>=0A=
->> +#include <linux/of_gpio.h>=0A=
->> +#include <linux/platform_device.h>=0A=
->> +#include <linux/property.h>=0A=
->> +#include <linux/slab.h>=0A=
-> Why do you include slab.h?=0A=
-Yeah, I will clean it in next commit.=0A=
->> +=0A=
->> +=0A=
->> +static void multi_gpio_led_set(struct led_classdev *led_cdev,=0A=
->> +	enum led_brightness value)=0A=
->> +{=0A=
->> +	struct multi_gpio_led_priv *priv;=0A=
->> +	int idx;=0A=
->> +=0A=
->> +	DECLARE_BITMAP(values, MAX_GPIO_NUM);=0A=
->> +=0A=
->> +	priv =3D container_of(led_cdev, struct multi_gpio_led_priv, cdev);=0A=
->> +=0A=
->> +	idx =3D (value - LED_OFF) * priv->nr_states / (LED_FULL + 1);=0A=
-> LED_FULL / LED_OFF are deprecated, don't use them.=0A=
-=0A=
-Then could I use just 0 (instead LED_OFF) and led_cdev->max_brightness=0A=
-=0A=
-(instead of LED_FULL) here? The idea here is map the states defined in dts=
-=0A=
-=0A=
-to the full brightness range.=0A=
-=0A=
-> +=0A=
-> +	priv->nr_states =3D ret;=0A=
-> +	priv->states =3D devm_kzalloc(dev, sizeof(*priv->states) * priv->nr_sta=
-tes, GFP_KERNEL);=0A=
-> +	if (!priv->states)=0A=
-> +		return -ENOMEM;=0A=
-> +=0A=
-> +	ret =3D of_property_read_u8_array(node, "led-states", priv->states, pri=
-v->nr_states);=0A=
-> +	if (ret)=0A=
-> +		return ret;=0A=
-> +=0A=
-> +	priv->cdev.max_brightness =3D LED_FULL;=0A=
-> ???? max_brightness is not 255 (=3D LED_FULL). max_brightness must be=0A=
-> derived from the led-states property.=0A=
-=0A=
-Yeah, I will fix this. the max-brightness should for the whole LED,=0A=
-right? So=0A=
-=0A=
-it will at same level with led-states.=0A=
-=0A=
-=0A=
-=0A=
+On 12-03-21, 11:28, Bjorn Andersson wrote:
+> On Thu 11 Mar 23:12 CST 2021, Vinod Koul wrote:
+> 
+> Adding Jassi as recipient. Please let Vinod know if you want him to
+> resend this patch to you. (I send a patch for MAINTAINERS yesterday)
+
+Jassi, should I resend or you can pick from lore?
+> 
+> > Add the compatible string for SM8350 IPCC block on this SoC
+> > 
+> 
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> Regards,
+> Bjorn
+> 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >  Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml b/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+> > index 168beeb7e9f7..fe17ba9b84f2 100644
+> > --- a/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+> > +++ b/Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+> > @@ -25,6 +25,7 @@ properties:
+> >      items:
+> >        - enum:
+> >            - qcom,sm8250-ipcc
+> > +          - qcom,sm8350-ipcc
+> >        - const: qcom,ipcc
+> >  
+> >    reg:
+> > -- 
+> > 2.26.2
+> > 
+
+-- 
+~Vinod
