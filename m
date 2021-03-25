@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D769348CE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F2B348CED
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhCYJ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
+        id S229833AbhCYJaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbhCYJ3I (ORCPT
+        with ESMTP id S230005AbhCYJaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:29:08 -0400
-Received: from smtp-190f.mail.infomaniak.ch (smtp-190f.mail.infomaniak.ch [IPv6:2001:1600:3:17::190f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C905C06175F;
-        Thu, 25 Mar 2021 02:29:03 -0700 (PDT)
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4F5ftj1bChzMqSFq;
-        Thu, 25 Mar 2021 10:29:01 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4F5ftZ3sl9zlh8TD;
-        Thu, 25 Mar 2021 10:28:54 +0100 (CET)
-Subject: Re: [PATCH v30 02/12] landlock: Add ruleset and domain management
-To:     James Morris <jmorris@namei.org>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-References: <20210316204252.427806-1-mic@digikod.net>
- <20210316204252.427806-3-mic@digikod.net> <202103191114.C87C5E2B69@keescook>
- <acda4be1-4076-a31d-fcfd-27764dd598c8@digikod.net>
- <c9dc8adb-7fab-14a1-a658-40b288419fdf@namei.org>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <25f701bf-fddf-8e9c-1ac1-c50a38579096@digikod.net>
-Date:   Thu, 25 Mar 2021 10:29:35 +0100
-User-Agent: 
+        Thu, 25 Mar 2021 05:30:00 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4501EC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:29:59 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s17so2241048ljc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vmKMFioY0zVZQp03F1ln+3gU2DK5top6vTpPu+FZnDs=;
+        b=KpfFtXzYNEauysABC3X5zU0EiEkxsudLmFnRzACbzQq+9rckx4xi2e6dfZb7bQEFEB
+         ifq+Mx5xaYTPSVq8raYbw2/d1ssOGWbNiaLpnDe9IQmUsl35oIXzDA6JfoQkdoEyc7c2
+         8BmEZUd55RaM2Xc3PUVnujU99sZ5neuBVDcIaeTDh+YxJ02gkwPjjkOMqHL8hKJ/DCgh
+         Md5dTPVuajkoRQ63aJsG9MgYGrEYzvNbdWhR+VZE4jlYrtoGCRSLVQy45hjLbPDYPPsZ
+         5lo5rnjwY8dC/cGe12ryE4X/bRn4zVP8nlY4b++QsDtHpXheRVaMwxWnAO03UzYoAtZg
+         rZew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vmKMFioY0zVZQp03F1ln+3gU2DK5top6vTpPu+FZnDs=;
+        b=N14jViq4bOef5T7fdrntxrKd1AFE3MKSvDAzNADkblp1G7au0GdERm1EIp3hczueNS
+         oVI4LMQwXyMioMZuQNAdUVLdRHMCY6Y8w1WF07PZvYMPArw2jp4E3VtJQlDdrlaPDzT9
+         zsPQyzr8xFAw3nUZu9fzksFqok1x+59VxC1s936s4C3OdHXUTKUxZTB2gTN1JCGFFfX9
+         yw6SRaA70ToHecJmPexnVhOb/D93lunh/BjI6LSvvtns/pj6fsxJzo6v/dKoj3HP7+D3
+         nJiUzDADSuzMW/QZ1D2j3IjciJWcyxn6c7X25xPmcokUUE1fQAjmBnQQ53mXRqbcQiOJ
+         lmOw==
+X-Gm-Message-State: AOAM533esiIc8HwCzRR7vhur47BvxpbBZkRrfhh+35wUm1jUm2SQCDm6
+        Ku0NzQVwg01Poja40vs7z/ae4Y27zeuEeqbVBy/ynQ==
+X-Google-Smtp-Source: ABdhPJxB/I6kt1nPORWmNNUzemQAZpFOwtiNSsfBP3HL3imlrcuJEDouMOsJrxmy/ls2i8ggSYMfVxwKEFHNH5/x3N0=
+X-Received: by 2002:a2e:1649:: with SMTP id 9mr5244812ljw.74.1616664597825;
+ Thu, 25 Mar 2021 02:29:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c9dc8adb-7fab-14a1-a658-40b288419fdf@namei.org>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210315091400.13772-1-brgl@bgdev.pl> <CAMRc=MfQnofWQKz9tbnTA_1M8BkN37FcxbJpK4hs0RoRebWWkw@mail.gmail.com>
+In-Reply-To: <CAMRc=MfQnofWQKz9tbnTA_1M8BkN37FcxbJpK4hs0RoRebWWkw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 25 Mar 2021 10:29:46 +0100
+Message-ID: <CACRpkdZbGDjAJarJJN91gGfHqXEG3puj=OwsQu=OZ5L+tpWt6A@mail.gmail.com>
+Subject: Re: [PATCH v5 00/11] gpio: implement the configfs testing module
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 22, 2021 at 3:32 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-On 24/03/2021 21:31, James Morris wrote:
-> On Fri, 19 Mar 2021, Mickaël Salaün wrote:
-> 
->>
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
->>>> Acked-by: Serge Hallyn <serge@hallyn.com>
->>>> Link: https://lore.kernel.org/r/20210316204252.427806-3-mic@digikod.net
->>>
->>> (Aside: you appear to be self-adding your Link: tags -- AIUI, this is
->>> normally done by whoever pulls your series. I've only seen Link: tags
->>> added when needing to refer to something else not included in the
->>> series.)
->>
->> It is an insurance to not lose history. :)
-> 
-> How will history be lost? The code is in the repo and discussions can 
-> easily be found by searching for subjects or message IDs.
+> FYI The configfs patches from this series have been on the mailing
+> list for months (long before the GPIO part) and have been re-sent
+> several times. You have neither acked or opposed these changes. I
+> don't want to delay the new testing driver anymore so I intend to
+> apply the entire series and take it upstream through the GPIO tree by
+> the end of this week.
 
-The (full and ordered) history may be hard to find without any
-Message-ID in commit messages. The Lore links keep that information (in
-the commit message) and redirect to the related archived email thread,
-which is very handy. For instance, Linus can rely on those links to
-judge the quality of a patch:
-https://lore.kernel.org/lkml/CAHk-=wh7xY3UF7zEc0BNVNjOox59jYBW-Gfi7=emm+BXPWc6nQ@mail.gmail.com/
+I say go ahead.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-> 
-> Is anyone else doing this self linking?
-> 
-
-I don't know, but it doesn't hurt. This way, if you're using git am
-without b4 am -l (or forgot to add links manually), the history is still
-pointed out by these self-reference links. I find it convenient and it
-is a safeguard to not forget them, no matter who takes the patches.
+Yours,
+Linus Walleij
