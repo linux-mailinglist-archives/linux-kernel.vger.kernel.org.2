@@ -2,114 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B8C349226
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 229A234922C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhCYMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:37:42 -0400
-Received: from outbound-smtp18.blacknight.com ([46.22.139.245]:39695 "EHLO
-        outbound-smtp18.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230467AbhCYMhQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:37:16 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp18.blacknight.com (Postfix) with ESMTPS id 415EC1C35EC
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:37:15 +0000 (GMT)
-Received: (qmail 32076 invoked from network); 25 Mar 2021 12:37:15 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Mar 2021 12:37:14 -0000
-Date:   Thu, 25 Mar 2021 12:37:13 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/9] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210325123713.GQ3697@techsingularity.net>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325114228.27719-3-mgorman@techsingularity.net>
- <20210325120525.GU1719932@casper.infradead.org>
+        id S231130AbhCYMiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:38:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhCYMhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50B7661A1B;
+        Thu, 25 Mar 2021 12:37:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616675867;
+        bh=StmC7cD/Q5ldcGD4tf65NroLfMLVM+HrJXECHsPjaIQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LzWIWBR2EdBeyyN7rpPOnfOcE8Hf37zujQ5HcLppgm6W2OsdH+HkxiwJCBsTyt8lU
+         vhH2PVP6sI0W4K18ZCT9CpQBQ2zvJl8VXpE+1NEfSA81Deg68+pyXrXiaW/GXagdip
+         bbRDcsY5sEBKQchcGC/j4CEDzUmbFG6Ykt4M87cNGs3C9XCS+gD8jOVhDia9jciwO7
+         qaHIIqHwpf1cPs5yh1AtLVN/Er/TJ3BZcjZ/ty0kGPBKW4ohLFyOqMd8uDoXsUTN8Y
+         /yUdNMCEgUWe2TVGcGca/PvP/UhrFXgMcNbIWTuQ1l08d/0aOLPXMqdAZGMLRZ/Oe1
+         xYPwxgXYAn65w==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lPPFB-001Coh-4S; Thu, 25 Mar 2021 13:37:45 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: [PATCH v4] docs: experimental: build PDF with rst2pdf
+Date:   Thu, 25 Mar 2021 13:37:34 +0100
+Message-Id: <ca4759045f92716cc190e5e27d2cd011e4843064.1616675785.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210325120525.GU1719932@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 12:05:25PM +0000, Matthew Wilcox wrote:
-> On Thu, Mar 25, 2021 at 11:42:21AM +0000, Mel Gorman wrote:
-> > +int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-> > +				nodemask_t *nodemask, int nr_pages,
-> > +				struct list_head *list);
-> > +
-> > +/* Bulk allocate order-0 pages */
-> > +static inline unsigned long
-> > +alloc_pages_bulk(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
-> > +{
-> > +	return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, list);
-> 
-> Discrepancy in the two return types here.  Suspect they should both
-> be 'unsigned int' so there's no question about "can it return an errno".
-> 
+Add an experimental PDF builder using rst2pdf.
 
-I'll make it unsigned long as the nr_pages parameter is unsigned long.
-It's a silly range to have for pages but it matches alloc_contig_range
-even though free_contig_range takes unsigned int *sigh*
+This extension is only enabled when "pdf" builder is selected.
+So, it won't interfere with normal documentation builds. I opted
+to not add a try..except block, as the message is already
+good enough if one tries to do a "make rst2pdf" but the extension
+is missed:
 
-> >  
-> > +/*
-> 
-> If you could make that "/**" instead ...
-> 
+	Extension error:
+	Could not import extension rst2pdf.pdfbuilder (exception: No module named 'rst2pdf')
 
-I decided not to until we're reasonably sure the semantics are not going
-to change.
+This won't affect "make pdfdocs", as it uses the "latex" builder
+instead.
 
----8<---
-mm/page_alloc: Add a bulk page allocator -fix
-
-Matthew Wilcox pointed out that the return type for alloc_pages_bulk()
-and __alloc_pages_bulk() is inconsistent. Fix it.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- include/linux/gfp.h | 2 +-
- mm/page_alloc.c     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 4a304fd39916..a2be8f4174a9 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -518,7 +518,7 @@ static inline int arch_make_page_accessible(struct page *page)
- struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
- 		nodemask_t *nodemask);
+v4:
+- only enable the rst2pdf extension when required, e. g. when
+
+    $ make rst2pdf
+
+  is used.
+
+ Documentation/Makefile                     |  5 +++++
+ Documentation/conf.py                      | 20 ++++++++++++++------
+ Documentation/sphinx/load_config.py        | 12 ++++++++++++
+ Documentation/userspace-api/media/Makefile |  1 +
+ Makefile                                   |  4 ++--
+ 5 files changed, 34 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/Makefile b/Documentation/Makefile
+index 9c42dde97671..42b76f25681f 100644
+--- a/Documentation/Makefile
++++ b/Documentation/Makefile
+@@ -115,6 +115,10 @@ pdfdocs: latexdocs
  
--int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-+unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 				nodemask_t *nodemask, int nr_pages,
- 				struct list_head *list);
+ endif # HAVE_PDFLATEX
  
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index eb547470a7e4..92d55f80c289 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4978,7 +4978,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-  *
-  * Returns the number of pages on the list.
-  */
--int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-+unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 			nodemask_t *nodemask, int nr_pages,
- 			struct list_head *page_list)
- {
++rst2pdf:
++	@$(srctree)/scripts/sphinx-pre-install --version-check
++	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,pdf,$(var),pdf,$(var)))
++
+ epubdocs:
+ 	@$(srctree)/scripts/sphinx-pre-install --version-check
+ 	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,epub,$(var),epub,$(var)))
+@@ -140,6 +144,7 @@ dochelp:
+ 	@echo  '  htmldocs        - HTML'
+ 	@echo  '  latexdocs       - LaTeX'
+ 	@echo  '  pdfdocs         - PDF'
++	@echo  '  rst2pdf         - PDF, using experimental rst2pdf support'
+ 	@echo  '  epubdocs        - EPUB'
+ 	@echo  '  xmldocs         - XML'
+ 	@echo  '  linkcheckdocs   - check for broken external links'
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 879e86dbea66..217a9e682099 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -118,6 +118,11 @@ autosectionlabel_maxdepth = 2
+ 
+ extensions.append("sphinx.ext.imgmath")
+ 
++# Enable experimental rst2pdf, if available and selected by the user
++for i in range(1, len(sys.argv)):
++    if sys.argv[i] == "pdf":
++        extensions.append('rst2pdf.pdfbuilder')
++
+ # Add any paths that contain templates here, relative to this directory.
+ templates_path = ['_templates']
+ 
+@@ -553,12 +558,15 @@ epub_exclude_files = ['search.html']
+ #
+ # See the Sphinx chapter of https://ralsina.me/static/manual.pdf
+ #
+-# FIXME: Do not add the index file here; the result will be too big. Adding
+-# multiple PDF files here actually tries to get the cross-referencing right
+-# *between* PDF files.
+-pdf_documents = [
+-    ('kernel-documentation', u'Kernel', u'Kernel', u'J. Random Bozo'),
+-]
++
++# Add all LaTeX files to PDF documents as well
++pdf_documents = []
++for l in latex_documents:
++    doc = l[0]
++    fn = l[1].replace(".tex", "")
++    name = l[2]
++    authors = l[3]
++    pdf_documents.append((doc, fn, name, authors))
+ 
+ # kernel-doc extension configuration for running Sphinx directly (e.g. by Read
+ # the Docs). In a normal build, these are supplied from the Makefile via command
+diff --git a/Documentation/sphinx/load_config.py b/Documentation/sphinx/load_config.py
+index eeb394b39e2c..8266afd438aa 100644
+--- a/Documentation/sphinx/load_config.py
++++ b/Documentation/sphinx/load_config.py
+@@ -43,6 +43,18 @@ def loadConfig(namespace):
+ 
+             namespace['latex_documents'] = new_latex_docs
+ 
++            new_pdf_docs = []
++            pdf_documents = namespace['pdf_documents']
++
++            for l in pdf_documents:
++                if l[0].find(dir + '/') == 0:
++                    has = True
++                    fn = l[0][len(dir) + 1:]
++                    new_pdf_docs.append((fn, l[1], l[2], l[3]))
++                    break
++
++            namespace['pdf_documents'] = new_pdf_docs
++
+         # If there is an extra conf.py file, load it
+         if os.path.isfile(config_file):
+             sys.stdout.write("load additional sphinx-config: %s\n" % config_file)
+diff --git a/Documentation/userspace-api/media/Makefile b/Documentation/userspace-api/media/Makefile
+index 81a4a1a53bce..8c6b3ac4ecb0 100644
+--- a/Documentation/userspace-api/media/Makefile
++++ b/Documentation/userspace-api/media/Makefile
+@@ -59,6 +59,7 @@ all: $(IMGDOT) $(BUILDDIR) ${TARGETS}
+ html: all
+ epub: all
+ xml: all
++pdf: all
+ latex: $(IMGPDF) all
+ linkcheck:
+ 
+diff --git a/Makefile b/Makefile
+index 193ebb83c34a..741c580b3626 100644
+--- a/Makefile
++++ b/Makefile
+@@ -270,7 +270,7 @@ no-dot-config-targets := $(clean-targets) \
+ 			 cscope gtags TAGS tags help% %docs check% coccicheck \
+ 			 $(version_h) headers headers_% archheaders archscripts \
+ 			 %asm-generic kernelversion %src-pkg dt_binding_check \
+-			 outputmakefile rustfmt rustfmtcheck
++			 outputmakefile rustfmt rustfmtcheck rst2pdf
+ # Installation targets should not require compiler. Unfortunately, vdso_install
+ # is an exception where build artifacts may be updated. This must be fixed.
+ no-compiler-targets := $(no-dot-config-targets) install dtbs_install \
+@@ -1816,7 +1816,7 @@ $(help-board-dirs): help-%:
+ 
+ # Documentation targets
+ # ---------------------------------------------------------------------------
+-DOC_TARGETS := xmldocs latexdocs pdfdocs htmldocs epubdocs cleandocs \
++DOC_TARGETS := xmldocs latexdocs pdfdocs rst2pdf htmldocs epubdocs cleandocs \
+ 	       linkcheckdocs dochelp refcheckdocs
+ PHONY += $(DOC_TARGETS)
+ $(DOC_TARGETS):
+-- 
+2.30.2
+
+
