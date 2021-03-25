@@ -2,89 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC90F3485F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97593485F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239344AbhCYAhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 20:37:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45001 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239387AbhCYAhV (ORCPT
+        id S235041AbhCYAm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 20:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232170AbhCYAmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 20:37:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616632640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GRfuu7xpZ85/H49Tpuw4jfovznEhXIxKCB64SyS/4Ro=;
-        b=LT/FGhxcoVBhV5eFTYq1rIX1rh7aY/7jyObrlo7VwYUZe2A3CWqZNcSFlyg7TKqCELMnQf
-        I5X2cDCCDGEJxTpk1MZhPnU1rdrwtCeUtW8BOGdxdFM2n6aHdyf8KUA/uAq+jPv2hT5ynJ
-        b3Dw86noeUJv9Kl7kugP1hoaW9ASW60=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-276-oBwuWkYnP_eRPn3j4L8KIA-1; Wed, 24 Mar 2021 20:37:16 -0400
-X-MC-Unique: oBwuWkYnP_eRPn3j4L8KIA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BB48B80006E;
-        Thu, 25 Mar 2021 00:37:15 +0000 (UTC)
-Received: from T590 (ovpn-12-137.pek2.redhat.com [10.72.12.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3044D19C71;
-        Thu, 25 Mar 2021 00:37:08 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 08:37:04 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Gulam Mohamed <gulam.mohamed@oracle.com>
-Cc:     "hch@infradead.org" <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        Martin Petersen <martin.petersen@oracle.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>
-Subject: Re: Race condition in Kernel
-Message-ID: <YFvbMERoGwJPFGFu@T590>
-References: <CO1PR10MB4563A6404AD789EEF93F995798639@CO1PR10MB4563.namprd10.prod.outlook.com>
+        Wed, 24 Mar 2021 20:42:44 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58190C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 17:42:44 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u5so134569ejn.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 17:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=zbtIvx8prt/59GU2+17T3QSZCP2O7IYU5EaIH8z8ooY=;
+        b=dcfFruffT48nw3IEb84VxfoujfhSonYjaE6ud1bqd2yOih1E9suWOex2BtnkN/PRW0
+         o7j+dse62649+dev4YshoEhg9Cx9m6IEdzu2gbo5Mi3i8ik/Ma/9Snfh1Gn+QiBnQaiz
+         L6caFO7fP5Vce6J0ul0BYsdKoAtSbDDV6qXzc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zbtIvx8prt/59GU2+17T3QSZCP2O7IYU5EaIH8z8ooY=;
+        b=eznILDjoCcqbVBDgf9BImkzdGUq+2ujptEZlW0/qf509Oc5aWX32W54Pqq6Fj/nmSd
+         FmtmIMCPkzG0oOw5Q15qz/oWTRpEN/irpi7gxi66hHNncVNv9msVBilY7oePIBYdXbo8
+         dVFWArErOo2P2OzLOrj9MJANeks8F5KTUrOvrP6bOfDsLntzbFbLKVjpDQ9CwR5DKd7o
+         yj4PszX+ZQjnWFBu3YKjVCg2NYGGo75FFuhCiqeaxtPZB9kg1Z+M/sXsU8YMiQX7Q8JH
+         Mk238wWRiEZfw/BQCDAdshoNOxqieE1uPGDn7cWX5F9ivJjuBLOnXVLhkarMrl2cCWSH
+         c6rg==
+X-Gm-Message-State: AOAM533T2daa5lUf6Qniq2Vu5hXcHMAij/w14q86ntPIxSF59UuDpa7/
+        8beY2tbcvv7XhbgrtlTQIn+PInjheipWeKYm
+X-Google-Smtp-Source: ABdhPJyX9iHYWwi42bhLIUAgkerSjT55wIaAa7uzryvkl8Td2gr8UiiBQCkKvGiNX2XgT5k1dqvKew==
+X-Received: by 2002:a17:906:9bdb:: with SMTP id de27mr6661175ejc.459.1616632962701;
+        Wed, 24 Mar 2021 17:42:42 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id hy13sm1662598ejc.32.2021.03.24.17.42.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 17:42:42 -0700 (PDT)
+Subject: Re: [PATCH] static_call: fix function type mismatch
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210322170711.1855115-1-arnd@kernel.org>
+ <20210322153214.25d869b1@gandalf.local.home>
+ <YFkCZuOwe37d2bV+@hirez.programming.kicks-ass.net>
+ <CAK8P3a2sz4emewH_HA+nsf0e5tP6qtAxhBOFucmzW4OPDJASdQ@mail.gmail.com>
+ <20210322172921.56350a69@gandalf.local.home>
+ <YFmdJlESrCh4iC9A@hirez.programming.kicks-ass.net>
+ <0f4679d6-44a4-d045-f249-a9cffb126fd4@rasmusvillemoes.dk>
+ <CABCJKuf1-GWda9_BiBO=nNP_drh3a8471G+LEqPzdVrLBhVqZQ@mail.gmail.com>
+ <b2d77e78-751e-283c-8cff-e9c4f16e27ef@prevas.dk>
+ <YFt382FImjQQ+10f@hirez.programming.kicks-ass.net>
+ <a758cace-99ed-5c60-e59c-9f4f6b3a39c7@rasmusvillemoes.dk>
+ <CABCJKuek8Set48v5wa2sbCN1fN7DYSczJ9MdH4BcQBdky1YNaA@mail.gmail.com>
+ <2b38d13f-9f90-b94b-7de4-c924696e6a9f@rasmusvillemoes.dk>
+ <CABCJKudx9bkvkOsAVi7Wzgr3AVFGwa64Kre1d59v0tTr6GOgcA@mail.gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <170687fb-13ef-e9b8-ac69-032202b344fe@rasmusvillemoes.dk>
+Date:   Thu, 25 Mar 2021 01:42:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CO1PR10MB4563A6404AD789EEF93F995798639@CO1PR10MB4563.namprd10.prod.outlook.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <CABCJKudx9bkvkOsAVi7Wzgr3AVFGwa64Kre1d59v0tTr6GOgcA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:37:03PM +0000, Gulam Mohamed wrote:
-> Hi All,
+On 25/03/2021 00.40, Sami Tolvanen wrote:
+> On Wed, Mar 24, 2021 at 3:53 PM Rasmus Villemoes
+> <linux@rasmusvillemoes.dk> wrote:
+>>
+>> On 24/03/2021 23.34, Sami Tolvanen wrote:
+>>> On Wed, Mar 24, 2021 at 2:51 PM Rasmus Villemoes
+>>> <linux@rasmusvillemoes.dk> wrote:
+>>>>
+>>>> On 24/03/2021 18.33, Peter Zijlstra wrote:
+>>>>> On Wed, Mar 24, 2021 at 05:45:52PM +0100, Rasmus Villemoes wrote:
+>>>>>> Sorry, I think I misread the code. The static calls are indeed
+>>>>>> initialized with a function with the right prototype. Try adding
+>>>>>> "preempt=full" on the command line so that we exercise these lines
+>>>>>>
+>>>>>>                static_call_update(cond_resched,
+>>>>>> (typeof(&__cond_resched)) __static_call_return0);
+>>>>>>                 static_call_update(might_resched,
+>>>>>> (typeof(&__cond_resched)) __static_call_return0);
+>>>>>>
+>>>>>> I would expect that to blow up, since we end up calling a long (*)(void)
+>>>>>> function using a function pointer of type int (*)(void).
+>>>>>
+>>>>> Note that on x86 there won't actually be any calling of function
+>>>>> pointers. See what arch/x86/kernel/static_call.c does :-)
+>>>>
+>>>> I know, but so far x86 is the only one with HAVE_STATIC_CALL, so for
+>>>> arm64 which is where CFI seems to be targeted initially, static_calls
+>>>> are function pointers. And unless CFI ignores the return type, I'd
+>>>> really expect the above to fail.
+>>>
+>>> I think you're correct, this would trip CFI without HAVE_STATIC_CALL.
+>>> However, arm64 also doesn't support PREEMPT_DYNAMIC at the moment, so
+>>> this isn't currently a problem there.
+>>
+>> Well, there's PREEMPT_DYNAMIC and HAVE_PREEMPT_DYNAMIC. The former
+>> doesn't depend on the latter (and the latter does depend on
+>> HAVE_STATIC_CALL, so effectively not for anything but x86). You should
+>> be able to select both PREEMPT_DYNAMIC and CFI_CLANG, and test if
+>> booting with preempt=full does give the fireworks one expects.
 > 
-> We are facing a stale link (of the device) issue during the iscsi-logout process if we use parted command just before the iscsi logout. Here are the details:
-> 	 	 
-> As part of iscsi logout, the partitions and the disk will be removed. The parted command, used to list the partitions, will open the disk in RW mode which results in systemd-udevd re-reading the partitions. This will trigger the rescan partitions which will also delete and re-add the partitions. So, both iscsi logout processing and the parted (through systemd-udevd) will be involved in add/delete of partitions. In our case, the following sequence of operations happened (the iscsi device is /dev/sdb with partition sdb1):
-> 	
-> 	1. sdb1 was removed by PARTED
-> 	2. kworker, as part of iscsi logout, couldn't remove sdb1 as it was already removed by PARTED
-> 	3. sdb1 was added by parted
-> 	4. sdb was NOW removed as part of iscsi logout (the last part of the device removal after remoing the partitions)
-> 
-> Since the symlink /sys/class/block/sdb1 points to /sys/class/devices/platform/hostx/sessionx/targetx:x:x:x/x:x:x:x/block/sdb/sdb1 and since sdb is already removed, the symlink /sys/class/block/sdb1 will be orphan and stale. So, this stale link is a result of the race condition in kernel between the systemd-udevd and iscsi-logout processing as described above. We are able to reproduce this even with latest upstream kernel.
-> 	
-> We have come across a patch from Ming Lei which was created for "avoid to drop & re-add partitions if partitions aren't changed":
-> https://lore.kernel.org/linux-block/20210216084430.GA23694@lst.de/T/
+> Actually, it looks like I can't select PREEMPT_DYNAMIC> and tweaking Kconfig
 
-BTW,  there is a newer version of this patchset:
+Ah, there's no prompt on the "bool" line, so it doesn't show up. That
+seems to be a mistake, since there's an elaborate help text which says
 
-https://lore.kernel.org/linux-block/20210224081825.GA1339@lst.de/#r
+          The runtime overhead is negligible with
+HAVE_STATIC_CALL_INLINE enabled
+          but if runtime patching is not available for the specific
+architecture
+          then the potential overhead should be considered.
 
-> 	
-> This patch could resolve our problem of stale link but it just seems to be a work-around and not the actual fix for the race. We were looking for help to fix this race in kernel. Do you have any idea how to fix this race condition?
->
+So it seems that it was meant to be "you can enable this if you really
+want".
 
-IMO, that isn't a work-around, kernel shouldn't drop partitions if
-partition table isn't changed. But Christoph thought the current approach
-is taken since beginning of kernel, and he suggested to fix systemd-udev.
+to force enable it on arm64 results in a build error
+> ("implicit declaration of function 'static_call_mod'").
 
+Seems to be an omission in the last !HAVE_STATIC_CALL branch in
+static_call_types.h, and there's also no
+EXPORT_STATIC_CALL_TRAMP{,_GPL} in static_call.h for that case.
 
-
-Thanks, 
-Ming
-
+Rasmus
