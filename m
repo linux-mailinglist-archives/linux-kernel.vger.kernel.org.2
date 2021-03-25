@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2943491C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2013491CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhCYMTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:19:23 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:57278 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229659AbhCYMTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:19:02 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT8usf1xgr7AAAA--.2327S3;
-        Thu, 25 Mar 2021 20:18:52 +0800 (CST)
-Subject: Re: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
- <alpine.DEB.2.21.2103220540591.21463@angie.orcam.me.uk>
- <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
- <20210325101712.GA6893@alpha.franken.de>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Christoph Hellwig <hch@lst.de>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <38cf6f7c-28dd-20a0-8193-776fa7bdb83a@loongson.cn>
-Date:   Thu, 25 Mar 2021 20:18:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S230295AbhCYMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:21:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229981AbhCYMVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:21:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C7E619C7;
+        Thu, 25 Mar 2021 12:21:15 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 13:21:12 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>,
+        "agruenba@redhat.com" <agruenba@redhat.com>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 08/11] evm: Allow setxattr() and setattr() for
+ unmodified metadata
+Message-ID: <20210325122112.htkwkt3emura5day@wittgenstein>
+References: <20210305151923.29039-1-roberto.sassu@huawei.com>
+ <20210305151923.29039-9-roberto.sassu@huawei.com>
+ <ad33c998ee834a588e0ca1a31ee2a530@huawei.com>
+ <20210325121341.q2ufjhnqe3osjc7c@wittgenstein>
 MIME-Version: 1.0
-In-Reply-To: <20210325101712.GA6893@alpha.franken.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxT8usf1xgr7AAAA--.2327S3
-X-Coremail-Antispam: 1UD129KBjvJXoWruF47Gry5tFW7WrW7Kw48WFg_yoW8JrWkp3
-        4qyFsrtF42gry3WFs2y34xWr17trykKrWUWF4UtF1YkF909r95Gw40gw1agF1UXr4Iv3yI
-        9Fy8Wa40gFyFy37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-        IFyTuYvjfUeWlkDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210325121341.q2ufjhnqe3osjc7c@wittgenstein>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/25/2021 06:17 PM, Thomas Bogendoerfer wrote:
-> On Mon, Mar 22, 2021 at 03:12:59PM +0800, Tiezhu Yang wrote:
->> On 03/22/2021 12:46 PM, Maciej W. Rozycki wrote:
->>> On Thu, 18 Mar 2021, Tiezhu Yang wrote:
->>>
->>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->>>> index 160b3a8..4b94ec7 100644
->>>> --- a/arch/mips/Kconfig
->>>> +++ b/arch/mips/Kconfig
->>>> @@ -6,6 +6,7 @@ config MIPS
->>>>    	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
->>>>    	select ARCH_HAS_FORTIFY_SOURCE
->>>>    	select ARCH_HAS_KCOV
->>>> +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
->>>    Hmm, documentation on ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE seems rather
->>> scarce, but based on my guess shouldn't this be "if !EVA"?
->>>
->>>     Maciej
->> I do not quite know what the effect if MIPS EVA (Enhanced Virtual
->> Addressing)
->> is set, I saw that ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be
->> restricted
->> to archs with non-overlapping address ranges.
->>
->> I wonder whether MIPS EVA will generate overlapping address ranges?
-> they can overlap in EVA mode.
->
->> If yes, it is better to make ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE depend
->> on !EVA on MIPS.
-> Could please add the change ?
+On Thu, Mar 25, 2021 at 01:13:41PM +0100, Christian Brauner wrote:
+> On Thu, Mar 25, 2021 at 10:53:43AM +0000, Roberto Sassu wrote:
+> > > From: Roberto Sassu
+> > > Sent: Friday, March 5, 2021 4:19 PM
+> > > With the patch to allow xattr/attr operations if a portable signature
+> > > verification fails, cp and tar can copy all xattrs/attrs so that at the
+> > > end of the process verification succeeds.
+> > > 
+> > > However, it might happen that the xattrs/attrs are already set to the
+> > > correct value (taken at signing time) and signature verification succeeds
+> > > before the copy has completed. For example, an archive might contains files
+> > > owned by root and the archive is extracted by root.
+> > > 
+> > > Then, since portable signatures are immutable, all subsequent operations
+> > > fail (e.g. fchown()), even if the operation is legitimate (does not alter
+> > > the current value).
+> > > 
+> > > This patch avoids this problem by reporting successful operation to user
+> > > space when that operation does not alter the current value of xattrs/attrs.
+> > > 
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > ---
+> > >  security/integrity/evm/evm_main.c | 96
+> > > +++++++++++++++++++++++++++++++
+> > >  1 file changed, 96 insertions(+)
+> > > 
+> > > diff --git a/security/integrity/evm/evm_main.c
+> > > b/security/integrity/evm/evm_main.c
+> > > index eab536fa260f..a07516dcb920 100644
+> > > --- a/security/integrity/evm/evm_main.c
+> > > +++ b/security/integrity/evm/evm_main.c
+> > > @@ -18,6 +18,7 @@
+> > >  #include <linux/integrity.h>
+> > >  #include <linux/evm.h>
+> > >  #include <linux/magic.h>
+> > > +#include <linux/posix_acl_xattr.h>
+> > > 
+> > >  #include <crypto/hash.h>
+> > >  #include <crypto/hash_info.h>
+> > > @@ -328,6 +329,79 @@ static enum integrity_status
+> > > evm_verify_current_integrity(struct dentry *dentry)
+> > >  	return evm_verify_hmac(dentry, NULL, NULL, 0, NULL);
+> > >  }
+> > > 
+> > > +/*
+> > > + * evm_xattr_acl_change - check if passed ACL changes the inode mode
+> > > + * @dentry: pointer to the affected dentry
+> > > + * @xattr_name: requested xattr
+> > > + * @xattr_value: requested xattr value
+> > > + * @xattr_value_len: requested xattr value length
+> > > + *
+> > > + * Check if passed ACL changes the inode mode, which is protected by
+> > > EVM.
+> > > + *
+> > > + * Returns 1 if passed ACL causes inode mode change, 0 otherwise.
+> > > + */
+> > > +static int evm_xattr_acl_change(struct dentry *dentry, const char
+> > > *xattr_name,
+> > > +				const void *xattr_value, size_t
+> > > xattr_value_len)
+> > > +{
+> > > +	umode_t mode;
+> > > +	struct posix_acl *acl = NULL, *acl_res;
+> > > +	struct inode *inode = d_backing_inode(dentry);
+> > > +	int rc;
+> > > +
+> > > +	/* UID/GID in ACL have been already converted from user to init ns
+> > > */
+> > > +	acl = posix_acl_from_xattr(&init_user_ns, xattr_value,
+> > > xattr_value_len);
+> > > +	if (!acl)
+> > 
+> > Based on Mimi's review, I will change this to:
+> > 
+> > if (IS_ERR_OR_NULL(acl))
+> > 
+> > > +		return 1;
+> > > +
+> > > +	acl_res = acl;
+> > > +	rc = posix_acl_update_mode(&init_user_ns, inode, &mode,
+> > > &acl_res);
+> > 
+> > About this part, probably it is not correct.
+> > 
+> > I'm writing a test for this patch that checks if operations
+> > that don't change the file mode succeed and those that
+> > do fail.
+> > 
+> > mount-idmapped --map-mount b:3001:0:1 /mnt /mnt-idmapped
+> > pushd /mnt
+> > echo "test" > test-file
+> > chown 3001 test-file
+> > chgrp 3001 test-file
+> > chmod 2644 test-file
+> > <check enabled>
+> > setfacl --set u::rw,g::r,o::r,m:r test-file (expected to succeed, caller has CAP_FSETID, so S_ISGID is not dropped)
+> > setfacl --set u::rw,g::r,o::r,m:rw test-file (expected to fail)
+> > pushd /mnt-idmapped
+> > capsh --drop=cap_fsetid -- -c setfacl --set u::rw,g::r,o::r test-file (expected to succeed, caller is in the owning group of test-file, so S_ISGID is not dropped)
+> > 
+> > After adding a debug line in posix_acl_update_mode():
+> > printk("%s: %d(%d) %d\n", __func__, in_group_p(i_gid_into_mnt(mnt_userns, inode)), __kgid_val(i_gid_into_mnt(mnt_userns, inode)), capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID));
+> > 
+> > without passing mnt_userns:
+> > [  748.262582] setfacl --set u::rw,g::r,o::r,m:r test-file
+> > [  748.268021] posix_acl_update_mode: 0(3001) 1
+> > [  748.268035] posix_acl_update_mode: 0(3001) 1
+> > [  748.268570] setfacl --set u::rw,g::r,o::r,m:rw test-file
+> > [  748.274193] posix_acl_update_mode: 0(3001) 1
+> > [  748.279198] capsh --drop=cap_fsetid -- -c setfacl --set u::rw,g::r,o::r test-file
+> > [  748.287894] posix_acl_update_mode: 0(3001) 0
+> > 
+> > passing mnt_userns:
+> > [   81.159766] setfacl --set u::rw,g::r,o::r,m:r test-file
+> > [   81.165207] posix_acl_update_mode: 0(3001) 1
+> > [   81.165226] posix_acl_update_mode: 0(3001) 1
+> > [   81.165732] setfacl --set u::rw,g::r,o::r,m:rw test-file
+> > [   81.170978] posix_acl_update_mode: 0(3001) 1
+> > [   81.176014] capsh --drop=cap_fsetid -- -c setfacl --set u::rw,g::r,o::r test-file
+> > [   81.184648] posix_acl_update_mode: 1(0) 0
+> > [   81.184663] posix_acl_update_mode: 1(0) 0
+> > 
+> > The difference is that, by passing mnt_userns, the caller (root) is
+> > in the owning group of the file (3001 -> 0). Without passing mnt_userns,
+> > it is not (3001 -> 3001).
+> > 
+> > Christian, Andreas, could you confirm that this is correct?
+> 
+> Hey Robert,
 
-OK, thank you, I will do it soon.
+s/Robert/Roberto/
 
->
-> Thomas.
->
-
+Sorry for the typo.
