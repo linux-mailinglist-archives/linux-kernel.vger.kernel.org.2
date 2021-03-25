@@ -2,114 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C68348A65
+	by mail.lfdr.de (Postfix) with ESMTP id DF9E1348A67
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhCYHst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:48:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhCYHsT (ORCPT
+        id S229866AbhCYHsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:48:50 -0400
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:65488 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhCYHsp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:48:19 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5CCBC06175F;
-        Thu, 25 Mar 2021 00:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=z9FCqpsB9l6HPQ6oPyLY6esBHgWBKxYV7LOs
-        NPRYT5U=; b=MKWL5pKjyvtVX39bX2ccsMNCY5j750hEJ9tU55H5iTcQWV9xcmvp
-        ejSNAFU7t5I+T6itJ8KRx7JV0h2TQs1rnINn881xF3+r0LXMOGXxQqPKyzZCDaPh
-        rTnd4Pr0nUgZUNm0vYoUq8X/cgjpL/xOIsIaOaraxa3y4PoHJPBNcPo=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 25 Mar
- 2021 15:48:11 +0800 (GMT+08:00)
-X-Originating-IP: [202.38.69.14]
-Date:   Thu, 25 Mar 2021 15:48:11 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     michael.christie@oracle.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] target: Fix a double put in transport_free_session
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <9d02b016-c924-79e3-9593-c073da0c769d@oracle.com>
-References: <20210323025851.11782-1-lyl2019@mail.ustc.edu.cn>
- <9d02b016-c924-79e3-9593-c073da0c769d@oracle.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 25 Mar 2021 03:48:45 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 4CB603FAC2;
+        Thu, 25 Mar 2021 08:48:43 +0100 (CET)
+Authentication-Results: ste-pvt-msa2.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=rjjw6b5f;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
+        dkim=pass (1024-bit key) header.d=shipmail.org
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id pDGIQe96YS27; Thu, 25 Mar 2021 08:48:42 +0100 (CET)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 6B3183F8A2;
+        Thu, 25 Mar 2021 08:48:40 +0100 (CET)
+Received: from [10.249.254.165] (unknown [192.198.151.44])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id 515933600A8;
+        Thu, 25 Mar 2021 08:48:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1616658520; bh=M6Y7VQAxKQqKu/9EYXFH7+a9T3OZ0ie/KAWLd3bLZts=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rjjw6b5fgH1LdcpVtK0ueVUajLTSvJd7xFsQYN7SPJFPF9OT/xBFD4+h4NJ3K+wWn
+         g8Oi44qjXy9oB1y+OJDu+ZOueVkT7h81/iB08c0KDigaUbqUEiV3XQpP5GzPGysnM+
+         o8/A/vJaZHQojYyB6lxob8XeRJAIPCLYpTIR7aH0=
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <YFsM23t2niJwhpM/@phenom.ffwll.local>
+ <20210324122430.GW2356281@nvidia.com>
+ <e12e2c49-afaf-dbac-b18c-272c93c83e06@shipmail.org>
+ <20210324124127.GY2356281@nvidia.com>
+ <6c9acb90-8e91-d8af-7abd-e762d9a901aa@shipmail.org>
+ <20210324134833.GE2356281@nvidia.com>
+ <0b984f96-00fb-5410-bb16-02e12b2cc024@shipmail.org>
+ <20210324163812.GJ2356281@nvidia.com>
+ <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
+ <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
+ <20210324231419.GR2356281@nvidia.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <607ecbeb-e8a5-66e9-6fe2-9a8d22f12bc2@shipmail.org>
+Date:   Thu, 25 Mar 2021 08:48:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Message-ID: <7378433a.12fee.178685ae745.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygCXnUk7QFxgxLc+AA--.0W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsKBlQhn5ZgeQAEsn
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+In-Reply-To: <20210324231419.GR2356281@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogbWljaGFlbC5jaHJp
-c3RpZUBvcmFjbGUuY29tDQo+IOWPkemAgeaXtumXtDogMjAyMS0wMy0yNCAwMDoyODozNSAo5pif
-5pyf5LiJKQ0KPiDmlLbku7bkuro6ICJMdiBZdW5sb25nIiA8bHlsMjAxOUBtYWlsLnVzdGMuZWR1
-LmNuPiwgbWFydGluLnBldGVyc2VuQG9yYWNsZS5jb20NCj4g5oqE6YCBOiBsaW51eC1zY3NpQHZn
-ZXIua2VybmVsLm9yZywgdGFyZ2V0LWRldmVsQHZnZXIua2VybmVsLm9yZywgbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZw0KPiDkuLvpopg6IFJlOiBbUEFUQ0hdIHRhcmdldDogRml4IGEgZG91
-YmxlIHB1dCBpbiB0cmFuc3BvcnRfZnJlZV9zZXNzaW9uDQo+IA0KPiBPbiAzLzIyLzIxIDk6NTgg
-UE0sIEx2IFl1bmxvbmcgd3JvdGU6DQo+ID4gSW4gdHJhbnNwb3J0X2ZyZWVfc2Vzc2lvbiwgc2Vf
-bmFjbCBpcyBnb3QgZnJvbSBzZV9zZXNzDQo+ID4gd2l0aCB0aGUgaW5pdGlhbCByZWZlcmVuY2Uu
-IElmIHNlX25hY2wtPmFjbF9zZXNzX2xpc3QgaXMNCj4gPiBlbXB0eSwgc2VfbmFjbC0+ZHluYW1p
-Y19zdG9wIGlzIHNldCB0byB0cnVlLiBUaGVuIHRoZSBmaXJzdA0KPiA+IHRhcmdldF9wdXRfbmFj
-bChzZV9uYWNsKSB3aWxsIGRyb3AgdGhlIGluaXRpYWwgcmVmZXJlbmNlDQo+ID4gYW5kIGZyZWUg
-c2VfbmFjbC4gTGF0ZXIgdGhlcmUgaXMgYSBzZWNvbmQgdGFyZ2V0X3B1dF9uYWNsKCkNCj4gPiB0
-byBwdXQgc2VfbmFjbC4gSXQgbWF5IGNhdXNlIGVycm9yIGluIHJhY2UuDQo+ID4+IE15IHBhdGNo
-IHNldHMgc2VfbmFjbC0+ZHluYW1pY19zdG9wIHRvIGZhbHNlIHRvIGF2b2lkIHRoZQ0KPiA+IGRv
-dWJsZSBwdXQuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTHYgWXVubG9uZyA8bHlsMjAxOUBt
-YWlsLnVzdGMuZWR1LmNuPg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3RhcmdldC90YXJnZXRfY29y
-ZV90cmFuc3BvcnQuYyB8IDQgKysrLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25z
-KCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdGFyZ2V0
-L3RhcmdldF9jb3JlX3RyYW5zcG9ydC5jIGIvZHJpdmVycy90YXJnZXQvdGFyZ2V0X2NvcmVfdHJh
-bnNwb3J0LmMNCj4gPiBpbmRleCA1ZWNiOWYxOGE1M2QuLmMyNjZkZWZlNjk0ZiAxMDA2NDQNCj4g
-PiAtLS0gYS9kcml2ZXJzL3RhcmdldC90YXJnZXRfY29yZV90cmFuc3BvcnQuYw0KPiA+ICsrKyBi
-L2RyaXZlcnMvdGFyZ2V0L3RhcmdldF9jb3JlX3RyYW5zcG9ydC5jDQo+ID4gQEAgLTU4NCw4ICs1
-ODQsMTAgQEAgdm9pZCB0cmFuc3BvcnRfZnJlZV9zZXNzaW9uKHN0cnVjdCBzZV9zZXNzaW9uICpz
-ZV9zZXNzKQ0KPiA+ICAJCX0NCj4gPiAgCQltdXRleF91bmxvY2soJnNlX3RwZy0+YWNsX25vZGVf
-bXV0ZXgpOw0KPiA+ICANCj4gPiAtCQlpZiAoc2VfbmFjbC0+ZHluYW1pY19zdG9wKQ0KPiA+ICsJ
-CWlmIChzZV9uYWNsLT5keW5hbWljX3N0b3ApIHsNCj4gPiAgCQkJdGFyZ2V0X3B1dF9uYWNsKHNl
-X25hY2wpOw0KPiA+ICsJCQlzZV9uYWNsLT5keW5hbWljX3N0b3AgPSBmYWxzZTsNCj4gPiArCQl9
-DQo+ID4gIA0KPiA+ICAJCXRhcmdldF9wdXRfbmFjbChzZV9uYWNsKTsNCj4gQ291bGQgeW91IGRl
-c2NyaWJlIHRoZSByYWNlIGEgbGl0dGxlIG1vcmU/DQo+IA0KPiBJcyB0aGUgcmFjZToNCj4gDQo+
-IDEuIHRocmVhZDEgY2FsbGVkIGNvcmVfdHBnX2NoZWNrX2luaXRpYXRvcl9ub2RlX2FjbCBhbmQg
-Zm91bmQgdGhlIGFjbC4NCj4gc2Vzcy0+c2Vfbm9kZV9hY2wgaXMgc2V0IHRvIHRoZSBmb3VuZCBh
-Y2wuDQo+IDIuIHRocmVhZDIgaXMgcnVubmluZyB0cmFuc3BvcnRfZnJlZV9zZXNzaW9uLiBJdCBu
-b3cgZ3JhYnMgdGhlIGFjbF9ub2RlX211dGV4DQo+IGFuZCBzZWVzIHNlX25hY2wtPmFjbF9zZXNz
-X2xpc3QgaXMgZW1wdHkuDQo+IDMuIHRocmVhZDIgZG9lcyB0aGUgZHluYW1pY19zdG9wPXRydWUg
-b3BlcmF0aW9ucyBpbiB0cmFuc3BvcnRfZnJlZV9zZXNzaW9uLg0KPiA0LiB0aHJlYWQxIG5vdyBj
-YWxscyB0cmFuc3BvcnRfcmVnaXN0ZXJfc2Vzc2lvbiBub3cgYWRkcyB0aGUgc2VzcyB0byBhY2wn
-cw0KPiBhY2xfc2Vzc19saXN0Lg0KPiANCj4gTGF0ZXIgd2hlbiB0aGUgc2Vzc2lvbiB0aGF0IHRo
-cmVhZCAxIGNyZWF0ZWQgaXMgZGVsZXRlZCBkeW5hbWljX3N0b3AgaXMgc3RpbGwNCj4gc2V0LCBz
-byB3ZSBkbyBhbiBleHRyYSB0YXJnZXRfcHV0X25hY2w/DQo+IA0KPiBJJ20gbm90IHN1cmUgeW91
-ciBwYXRjaCB3aWxsIGhhbmRsZSB0aGlzIHJhY2UuIFdoZW4gd2UgZGVsZXRlIHRoZSBzZXNzaW9u
-IHRocmVhZDENCj4gY3JlYXRlZCBkeW5hbWljX25vZGVfYWNsIGlzIHN0aWxsIHNldCwgc28gdGhp
-czoNCj4gDQo+ICAgICAgICAgICAgICAgICBtdXRleF9sb2NrKCZzZV90cGctPmFjbF9ub2RlX211
-dGV4KTsNCj4gICAgICAgICAgICAgICAgIGlmIChzZV9uYWNsLT5keW5hbWljX25vZGVfYWNsICYm
-DQo+ICAgICAgICAgICAgICAgICAgICAgIXNlX3Rmby0+dHBnX2NoZWNrX2RlbW9fbW9kZV9jYWNo
-ZShzZV90cGcpKSB7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIHNwaW5fbG9ja19pcnFzYXZl
-KCZzZV9uYWNsLT5uYWNsX3Nlc3NfbG9jaywgZmxhZ3MpOw0KPiAgICAgICAgICAgICAgICAgICAg
-ICAgICBpZiAobGlzdF9lbXB0eSgmc2VfbmFjbC0+YWNsX3Nlc3NfbGlzdCkpDQo+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgc2VfbmFjbC0+ZHluYW1pY19zdG9wID0gdHJ1ZTsNCj4g
-DQo+IGNhbiBzZXQgZHluYW1pY19zdG9wIHRvIHRydWUgYWdhaW4gYW5kIHdlIGNhbiBlbmQgdXAg
-ZG9pbmcgdGhlIGV4dHJhIHB1dCBzdGlsbC4NCj4gDQo+IE9uIHRvcCBvZiB0aGUgZXh0cmEgcHV0
-IHdlIGFsc28gZG8NCj4gDQo+IGxpc3RfZGVsKCZzZV9uYWNsLT5hY2xfbGlzdCk7DQo+IA0KPiB0
-d2ljZSBzbyB3ZSBoYXZlIHRvIGhhbmRsZSB0aGF0IGFzIHdlbGwuDQo+IA0KPiBJcyB0aGVyZSBh
-bHNvIGFub3RoZXIgYnVnIGluIHRoaXMgY29kZS4gSWYgc29tZW9uZSBhZGRzIGFuIGFjbCB3aGls
-ZSB0aGVyZSBpcyBhDQo+IGR5bmFtaWMgYWNsIGluIHBsYWNlIGNvcmVfdHBnX2FkZF9pbml0aWF0
-b3Jfbm9kZV9hY2wgd2lsbCBjbGVhciBkeW5hbWljX25vZGVfYWNsDQo+IGJ1dCB3ZSBsZWF2ZSB0
-aGUgZXh0cmEgcmVmZXJlbmNlLCBzbyBsYXRlciB3aGVuIHRyYW5zcG9ydF9mcmVlX3Nlc3Npb24g
-aXMgY2FsbGVkDQo+IHdlIHdpbGwgbm90IGRvIHRoZSBleHRyYSBwdXQuDQo+IA0KDQpPaywgdGhh
-bmtzIGZvciB5b3VyIGFuc3dlci4gQWNjb3JkaW5nIHRoZSBkZXNjcmlwdGlvbiBhYm92ZSwgaSB0
-aGluayBpdCBpcyBhIGZhbHNlDQpwb3NpdGl2ZSBub3cuDQoNClRoYW5rcy4=
+
+On 3/25/21 12:14 AM, Jason Gunthorpe wrote:
+> On Wed, Mar 24, 2021 at 09:07:53PM +0100, Thomas Hellström (Intel) wrote:
+>> On 3/24/21 7:31 PM, Christian König wrote:
+>>>
+>>> Am 24.03.21 um 17:38 schrieb Jason Gunthorpe:
+>>>> On Wed, Mar 24, 2021 at 04:50:14PM +0100, Thomas Hellström (Intel)
+>>>> wrote:
+>>>>> On 3/24/21 2:48 PM, Jason Gunthorpe wrote:
+>>>>>> On Wed, Mar 24, 2021 at 02:35:38PM +0100, Thomas Hellström
+>>>>>> (Intel) wrote:
+>>>>>>
+>>>>>>>> In an ideal world the creation/destruction of page
+>>>>>>>> table levels would
+>>>>>>>> by dynamic at this point, like THP.
+>>>>>>> Hmm, but I'm not sure what problem we're trying to solve
+>>>>>>> by changing the
+>>>>>>> interface in this way?
+>>>>>> We are trying to make a sensible driver API to deal with huge pages.
+>>>>>>> Currently if the core vm requests a huge pud, we give it
+>>>>>>> one, and if we
+>>>>>>> can't or don't want to (because of dirty-tracking, for
+>>>>>>> example, which is
+>>>>>>> always done on 4K page-level) we just return
+>>>>>>> VM_FAULT_FALLBACK, and the
+>>>>>>> fault is retried at a lower level.
+>>>>>> Well, my thought would be to move the pte related stuff into
+>>>>>> vmf_insert_range instead of recursing back via VM_FAULT_FALLBACK.
+>>>>>>
+>>>>>> I don't know if the locking works out, but it feels cleaner that the
+>>>>>> driver tells the vmf how big a page it can stuff in, not the vm
+>>>>>> telling the driver to stuff in a certain size page which it might not
+>>>>>> want to do.
+>>>>>>
+>>>>>> Some devices want to work on a in-between page size like 64k so they
+>>>>>> can't form 2M pages but they can stuff 64k of 4K pages in a batch on
+>>>>>> every fault.
+>>>>> Hmm, yes, but we would in that case be limited anyway to insert ranges
+>>>>> smaller than and equal to the fault size to avoid extensive and
+>>>>> possibly
+>>>>> unnecessary checks for contigous memory.
+>>>> Why? The insert function is walking the page tables, it just updates
+>>>> things as they are. It learns the arragement for free while doing the
+>>>> walk.
+>>>>
+>>>> The device has to always provide consistent data, if it overlaps into
+>>>> pages that are already populated that is fine so long as it isn't
+>>>> changing their addresses.
+>>>>
+>>>>> And then if we can't support the full fault size, we'd need to
+>>>>> either presume a size and alignment of the next level or search for
+>>>>> contigous memory in both directions around the fault address,
+>>>>> perhaps unnecessarily as well.
+>>>> You don't really need to care about levels, the device should be
+>>>> faulting in the largest memory regions it can within its efficiency.
+>>>>
+>>>> If it works on 4M pages then it should be faulting 4M pages. The page
+>>>> size of the underlying CPU doesn't really matter much other than some
+>>>> tuning to impact how the device's allocator works.
+>> Yes, but then we'd be adding a lot of complexity into this function that is
+>> already provided by the current interface for DAX, for little or no gain, at
+>> least in the drm/ttm setting. Please think of the following situation: You
+>> get a fault, you do an extensive time-consuming scan of your VRAM buffer
+>> object into which the fault goes and determine you can fault 1GB. Now you
+>> hand it to vmf_insert_range() and because the user-space address is
+>> misaligned, or already partly populated because of a previous eviction, you
+>> can only fault single pages, and you end up faulting a full GB of single
+>> pages perhaps for a one-time small update.
+> Why would "you can only fault single pages" ever be true? If you have
+> 1GB of pages then the vmf_insert_range should allocate enough page
+> table entries to consume it, regardless of alignment.
+
+Ah yes, What I meant was you can only insert PTE size entries, either 
+because of misalignment or because the page-table is alredy 
+pre-populated with pmd size page directories, which you can't remove 
+with only the read side of the mmap lock held.
+
+>
+> And why shouldn't DAX switch to this kind of interface anyhow? It is
+> basically exactly the same problem. The underlying filesystem block
+> size is *not* necessarily aligned to the CPU page table sizes and DAX
+> would benefit from better handling of this mismatch.
+
+First, I think we must sort out what "better handling" means. This is my 
+takeout of the discussion so far:
+
+Claimed Pros: of vmf_insert_range()
+* We get an interface that doesn't require knowledge of CPU page table 
+entry level sizes.
+* We get the best efficiency when we look at what the GPU driver 
+provides. (I disagree on this one).
+
+Claimed Cons:
+* A new implementation that may get complicated particularly if it 
+involves modifying all of the DAX code
+* The driver would have to know about those sizes anyway to get 
+alignment right (Applies to DRM, because we mmap buffer objects, not 
+physical address ranges. But not to DAX AFAICT),
+* We loose efficiency, because we are prepared to spend an extra effort 
+for alignment- and continuity checks when we know we can insert a huge 
+page table entry, but not if we know we can't
+* We loose efficiency because we might unnecessarily prefault a number 
+of PTE size page-table entries (really a special case of the above one).
+
+Now in the context of quickly fixing a critical bug, the choice IMHO 
+becomes easy.
+
+>
+>> On top of this, unless we want to do the walk trying increasingly smaller
+>> sizes of vmf_insert_xxx(), we'd have to use apply_to_page_range() and teach
+>> it about transhuge page table entries, because pagewalk.c can't be used (It
+>> can't populate page tables). That also means apply_to_page_range() needs to
+>> be complicated with page table locks since transhuge pages aren't stable and
+>> can be zapped and refaulted under us while we do the walk.
+> I didn't say it would be simple :) But we also need to stop hacking
+> around the sides of all this huge page stuff and come up with sensible
+> APIs that drivers can actually implement correctly. Exposing drivers
+> to specific kinds of page levels really feels like the wrong level of
+> abstraction.
+
+I generally agree. But for the last sentence I think the potential gain 
+must be carefully weighed against the efficiency arguments.
+
+>
+> Once we start doing this we should do it everywhere, the io_remap_pfn
+> stuff should be able to create huge special IO pages as well, for
+> instance.
+
+I agree here as well. Here we can be more agressive as the contigous 
+range is already known and we IIRC hold the mmap lock in write mode.
+
+>   
+>> On top of this, the user-space address allocator needs to know how large gpu
+>> pages are aligned in buffer objects to have a reasonable chance of aligning
+>> with CPU huge page boundaries which is a requirement to be able to insert a
+>> huge CPU page table entry, so the driver would basically need the drm helper
+>> that can do this alignment anyway.
+> Don't you have this problem anyhow?
+
+Yes, but it sort of defeats the simplicity argument of the proposed 
+interface change.
+
+/Thomas
+
+
