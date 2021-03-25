@@ -2,122 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741F73496A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F763496A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhCYQSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47010 "EHLO
+        id S229624AbhCYQTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:19:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhCYQSL (ORCPT
+        with ESMTP id S229651AbhCYQTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:18:11 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F002C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:18:10 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id w8so2872983ybt.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:18:10 -0700 (PDT)
+        Thu, 25 Mar 2021 12:19:19 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09289C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:19 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id g15so2583124pfq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QQUSMG2MYvr7z2lGID3UbwL8eVjOA95JzM6A/R4Iu1E=;
-        b=IRAPbpwUGbuUSp2HYxkhC7c7pPoKfFtl7jbJslD/5YuRK/PXAtdEHHvefviHJJNJU8
-         /GNZ4Jvf/qQ0BFs1R+xzmZfjtVA6o+81OWemBKmiDSNjAWnip31eC5PgkpPyVCB0uwWR
-         OBeVkR2CBo6VbKoDIeLGSVzeL9PSH9zXyt/Uxj6OAPQAeJxGnVVv0hTRgBhlWAGkhKgv
-         oxHvU/MptLG2T5zdSLxoGRgVCwyjfl7VGTEv2bHv6Nqx9PCqD08DDB14ZIDdxPsoUGxA
-         nCxZznnptNnoDeEZwYSwC/yZT0w0BWchvcZpQ8ZhPQqWoQCM9X8XofRfO7wWT+wvnbR9
-         AdSQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCV8tTXwt23kg/ET1qXEihrVIfNfi06vHFXn1NDdH3A=;
+        b=nZZetF9JWy5xcMCmo3Yn0UK7VYeG8tMRcqTK7ptGVmKWp72v+hNnYiNSGRAJP4uRlv
+         f+Umlb47elqWESHI9rnOzq9NUmHhXdwRmrqnY1XKu2iuU6kUsRhOm6GT4rHrjW0arGgT
+         HJiNsPTnf/d3FJMNk22f3rAEJj+bY8lyLBKNKIYJe/ccU3IyaGlJaXoHaxoxl9VirEyI
+         1tyMyKT2noLFOcRLKPVbMyfNPpjA4w44jIZpiKqczMyu3tGWTg1SoM45lfQ1HyADX5g+
+         HsbujivDo+NDH3Jyp06AU0X6VMAF1pziMt1hSlxgb4SMMmrjOn9ar4PkTX2zI44j46uE
+         nUnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QQUSMG2MYvr7z2lGID3UbwL8eVjOA95JzM6A/R4Iu1E=;
-        b=sEE652MOindJ7DxFoibEUvNbcOxIaYekRj1Hk+6BFR4zssU2TLaNmfrUAMwcYuZMB3
-         xsIfAp+BtSJEjuZMWmxDFJTqAGhUWdHnM9LdMbmlzdxDUGaEuSvT8ZTS0b3iXX1plQ+K
-         G81Z+zJOiWIwGJ2X2pC6Ocx3sd/myntuQ/lRMJ+AAoTMz8IbZ5zh9vwSWwgfZTl7/L7j
-         7muqrTZd3VdX6i0jbDO0dsOZ/dqukAASrJJAJnlCq4uop6terZbqbOwi+THW32ff5uAy
-         xOvQsaMbI91tFIUwp5CZmxQYAi9wvvLuO+SlF9qYq+EPtXHya8Rpx0ZcDHuuLnSo3P25
-         9S6g==
-X-Gm-Message-State: AOAM530ZMAtiD+84CQXHNvSnoPL09Y4txzQKEk0I3OwXtoGG2rgL6YP+
-        AuE1RxuGf8143GVd04g9gLkf1DTJoN17/lST3Xy9xA==
-X-Google-Smtp-Source: ABdhPJyCI41mEQVSMR5OzYWKNCakBrYDxOD4TjekSAjXtIhStEvQQQrTQE12lRIasP2p34vK39aXj/x47+APczR7xLE=
-X-Received: by 2002:a5b:54a:: with SMTP id r10mr12095885ybp.476.1616689089164;
- Thu, 25 Mar 2021 09:18:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MCV8tTXwt23kg/ET1qXEihrVIfNfi06vHFXn1NDdH3A=;
+        b=Gs/rnfcLUbzfRqJJ9mDiA8B4qZPyLrlw8f/bwYGSNe9U9HB9iBrNnhY5FSWXJ1PDgq
+         8BK4M6eDvVrIoYYRv/GYPTcf1pZcU/vJlMRtfspAML3GYvc8eY2aXqa3gUSbGr9/SUeG
+         Ms9btD4Rij9j6mqslc2Moh0fakiz5Bfx1VlEKQwSsULWOeVhzXU1B3lKpDLx7jeZ/u+6
+         akZxcJMh2E/GvRYEmDtUJsm2DM579x42LoRu5R//8QZop29M3LjRIVCdfhYRP5m9/4Og
+         T0zULJ/lzYesUUdP98p/rSSxRQQgHIjSGLaw3oiOgbCLjNWQgWVU1HMC8+M4zVzu+8pC
+         yfCg==
+X-Gm-Message-State: AOAM531O2w/rqUST/4iPEeBCxRascLdvsu0n3ibmWfSuEKud6lg87UGS
+        vGUD59iTKx6Y6rtUX4Xd3ZI=
+X-Google-Smtp-Source: ABdhPJyUSLogmtUdpYJjkJY0a2rIxIHDfyXLYseaWe7rp6TpI4hlBnKoLmkcIa73vJ5ChIXh/S2oBg==
+X-Received: by 2002:a62:7ed2:0:b029:21d:1806:fe30 with SMTP id z201-20020a627ed20000b029021d1806fe30mr8828200pfc.5.1616689158635;
+        Thu, 25 Mar 2021 09:19:18 -0700 (PDT)
+Received: from localhost (li1758-18.members.linode.com. [172.104.167.18])
+        by smtp.gmail.com with ESMTPSA id q19sm6608224pff.91.2021.03.25.09.19.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 09:19:18 -0700 (PDT)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
+Cc:     Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH v2] tracing: Update create_system_filter() kernel-doc comment
+Date:   Thu, 25 Mar 2021 16:19:10 +0000
+Message-Id: <20210325161911.123452-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1616264220-25825-1-git-send-email-sbhanu@codeaurora.org>
- <CAD=FV=WLZCSd6D5VFyD+1KBp5n1qyszER2EVaEMwYjQfPSSDnA@mail.gmail.com> <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org>
-In-Reply-To: <b77f207b-2d90-3c8b-857f-625bd3867ed1@codeaurora.org>
-From:   Doug Anderson <dianders@google.com>
-Date:   Thu, 25 Mar 2021 09:17:57 -0700
-Message-ID: <CAD=FV=ULXU46C4jbx4nJEOuK4+wZmknoD=mZ_3=c0drfa32N=w@mail.gmail.com>
-Subject: Re: [PATCH V2] arm64: dts: qcom: sc7280: Add nodes for eMMC and SD card
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>, cang@codeaurora.org,
-        pragalla@codeaurora.org, nitirawa@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+commit f306cc82a93d ("tracing: Update event filters for multibuffer")
+added the parameter @tr for create_system_filter().
 
-On Wed, Mar 24, 2021 at 8:59 PM Veerabhadrarao Badiganti
-<vbadigan@codeaurora.org> wrote:
->
-> >> +                       clocks = <&gcc GCC_SDCC1_APPS_CLK>,
-> >> +                                       <&gcc GCC_SDCC1_AHB_CLK>,
-> >> +                                       <&rpmhcc RPMH_CXO_CLK>;
-> >> +                       clock-names = "core", "iface", "xo";
-> > I'm curious: why is the "xo" clock needed here but not for sc7180?
-> Actually its needed even for sc7180. We are making use of this clock in
-> msm_init_cm_dll()
-> The default PoR value is also same as calculated value for
-> HS200/HS400/SDR104 modes.
-> But just not to rely on default register values we need this entry.
+commit bb9ef1cb7d86 ("tracing: Change apply_subsystem_event_filter()
+paths to
+check file->system == dir")
+changed the parameter from @system to @dir.
 
-Can you post a patch for sc7180?
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+---
+v2:
+Update the description of @dir, and leave @tr to another patch.
+---
+ kernel/trace/trace_events_filter.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
+index e91259f6a722..e6efb5dfec5d 100644
+--- a/kernel/trace/trace_events_filter.c
++++ b/kernel/trace/trace_events_filter.c
+@@ -1693,6 +1693,7 @@ static void create_filter_finish(struct filter_parse_error *pe)
+ 
+ /**
+  * create_filter - create a filter for a trace_event_call
++ * @tr: the trace array associated with these events
+  * @call: trace_event_call to create a filter for
+  * @filter_str: filter string
+  * @set_str: remember @filter_str and enable detailed error in filter
+@@ -1741,8 +1742,8 @@ int create_event_filter(struct trace_array *tr,
+ }
+ 
+ /**
+- * create_system_filter - create a filter for an event_subsystem
+- * @system: event_subsystem to create a filter for
++ * create_system_filter - create a filter for an event subsystem
++ * @dir: the descriptor for the subsystem directory
+  * @filter_str: filter string
+  * @filterp: out param for created filter (always updated on return)
+  *
+-- 
+2.25.1
 
-> >> +                       bus-width = <4>;
-> >> +
-> >> +                       no-mmc;
-> >> +                       no-sdio;
-> > Similar question to above: why exactly would mmc not work? Are you
-> > saying that if someone hooked this up to a full sized SD card slot and
-> > placed an MMC card into the slot that it wouldn't work? Similar
-> > question about SDIO. If someone placed an external SDIO card into your
-> > slot, would it not work?
-> >
-> As mentioned above, its just to optimize SDcard scan time a little.
-
-OK. ...but while the eMMC one can make sense since the eMMC is
-soldered down (but in the board dts file, not in the SoC dtsi file) I
-think you should just remove these for SD card because:
-
-1. Even if only a uSD slot is exposed it's still _possible_ for
-someone to insert a card that uses MMC or SDIO signaling. If nothing
-else I have a (probably non-compliant) adapter that plugs into a uSD
-slot and provides a full sided SD slot. I could plug an MMC card or
-SDIO card in.
-
-2. Presumably the SD card scan time optimization is tiny.
-
-
--Doug
