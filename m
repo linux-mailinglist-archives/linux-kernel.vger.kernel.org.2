@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2944F348E47
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454C4348E4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:46:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhCYKos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:44:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58562 "EHLO
+        id S230064AbhCYKqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhCYKog (ORCPT
+        with ESMTP id S230096AbhCYKqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:44:36 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E50C06174A;
-        Thu, 25 Mar 2021 03:44:32 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id v4so1735332wrp.13;
-        Thu, 25 Mar 2021 03:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MZjis3vrfNS4o0432qm7e5nhATdqsIWVgffv/njY2mk=;
-        b=Ukk2S4Qydfdr4xZ5yBY5upwmcg/QvDRZdymH/Xt/x4VXYfaLh7NpAne0dJfIbJx/Fy
-         6G+k0D4Pbc0ZnfAUleUBNL1FMyWKcUFxrLrWUBJjiofGkCnLJWROhA/600JMJGmQlbm7
-         VhuCjiAlTXFdKp4FrJ1lutY93b/hia2CGVfQ1gxV4wTffOIkKDoM7z5yXAJqjN3Mnxvx
-         jCKWpSMxycVpKciAKIEuLDrSZgfnJd9CdBbDP7HwsnrFG/5v9KYdpusGe1A4b7gAQ5Iz
-         e3QxX9fUTxACR9wyM1pU6OW4gOHTLU7wTmZP864zP44R9FpPl3Y1OzNR/W//4fP2ciir
-         B50w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MZjis3vrfNS4o0432qm7e5nhATdqsIWVgffv/njY2mk=;
-        b=qZF8LEUHcAee4BLPuP1HiebecMKSywLTd4GH4R81BWwkM4xUkjndIhAL8sCLyE6E9I
-         hrzVbSsxn7507yjZ36+A/QVNpsG83Y4Zab5zRImBh6CEqtpKpm3g9jBeJlL+B0+lu6SD
-         fRChclvJ9PfwNZ5IuNmnwNbSfyxKG8P2JoZKeLFso8PgW8dNMS0+fE7Cdb54jkD1PRpk
-         mpGrAW5jcURE8Ky+ZiD6YnRxBUTtRq/cr3vH565UZL29CUeNs6okUDAS8lbWqJ42ek5z
-         yExJyeKT3MVqVGOClAB/6oim0KWtpXx1X1aN6pkNbVNucJeTfNOs5AjVk/pH3g5g9smP
-         Nwag==
-X-Gm-Message-State: AOAM532Z6XzRH0L5zg/52eHwhTR1VgQunMwcOH7+46nf6zYxBlk+1jiw
-        5Ct/lTh4IRFtPSeSlhPx1gXsDX7aC5vbt5VuFRyxnQ90
-X-Google-Smtp-Source: ABdhPJyjq5mQt67+NuxzwHKThOq9tL8kT3q1QFWgJeNLwCYhsScbs7UqkH2iHXhptMd8avdzmCYVbO9xalrVfYdykg4=
-X-Received: by 2002:adf:f2c3:: with SMTP id d3mr8320379wrp.380.1616669071289;
- Thu, 25 Mar 2021 03:44:31 -0700 (PDT)
+        Thu, 25 Mar 2021 06:46:01 -0400
+Received: from postout1.mail.lrz.de (postout1.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9538AC06174A;
+        Thu, 25 Mar 2021 03:46:00 -0700 (PDT)
+Received: from lxmhs51.srv.lrz.de (localhost [127.0.0.1])
+        by postout1.mail.lrz.de (Postfix) with ESMTP id 4F5hbV0PZKzyVY;
+        Thu, 25 Mar 2021 11:45:58 +0100 (CET)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+        reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :x-mailer:organization:references:in-reply-to:message-id:subject
+        :subject:from:from:date:date:received:received; s=postout; t=
+        1616669157; bh=0zQu36A+UYAjZS5c03bWBg4k4HTiugSj4FAoFKqWZ9c=; b=v
+        a7QNFdTS/CFph8yXgNHhEYp2+ED52cx/WDXS2yKYJxLS2Au7zmhoF+7NEwRsiOf9
+        MqGRsBL5mEG88bL6o7t6K9yMMRVWvVHOI4UjWeqRrjUQZDFk+RUPznS0D0qGi2KS
+        nwZhPXHA/6NqRpDqxm4htX8905ZHraacf8TkBeXrkeNtj8uZd8Sp+0hUDPioHsVd
+        BKzYpgZf1s4dMJjlaLVOwT4qurJwT0CNYD4ZGunaD3OEVdXCD4dIRd/pM6hn8wNK
+        SBHXXoK/A+U1lz19qicxw58pDwAr+ynWvQlLY5Taiqbp0/1zG97fIb/nxJQD02ux
+        XQdwhZdaSEfPcqJfivLqA==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs51.srv.lrz.de
+X-Spam-Flag: NO
+X-Spam-Score: -2.875
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.875 tagged_above=-999 required=5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
+        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
+        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
+        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
+        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
+        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
+        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
+        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
+        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
+        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
+        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
+        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
+        LRZ_MSGID_AN_AN=0.001, LRZ_URL_HTTP_SINGLE=0.001,
+        LRZ_URL_PLAIN_SINGLE=0.001] autolearn=no autolearn_force=no
+Received: from postout1.mail.lrz.de ([127.0.0.1])
+        by lxmhs51.srv.lrz.de (lxmhs51.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id HYf0Fbb7Y3UA; Thu, 25 Mar 2021 11:45:57 +0100 (CET)
+Received: from yaviniv.e18.physik.tu-muenchen.de (yaviniv.e18.physik.tu-muenchen.de [10.152.72.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by postout1.mail.lrz.de (Postfix) with ESMTPSA id 4F5hbT2QXQzyTr;
+        Thu, 25 Mar 2021 11:45:57 +0100 (CET)
+Date:   Thu, 25 Mar 2021 11:45:56 +0100
+From:   Andrei Rabusov <a.rabusov@tum.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/150] 5.10.26-rc3 review
+Message-ID: <20210325114556.3227ebdf@yaviniv.e18.physik.tu-muenchen.de>
+In-Reply-To: <20210324093435.962321672@linuxfoundation.org>
+References: <20210324093435.962321672@linuxfoundation.org>
+Organization: TUM E18
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <MWHPR18MB14217B983EFC521DAA2EEAD2DE649@MWHPR18MB1421.namprd18.prod.outlook.com>
- <YFpO7n9uDt167ANk@lunn.ch>
-In-Reply-To: <YFpO7n9uDt167ANk@lunn.ch>
-From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
-Date:   Thu, 25 Mar 2021 16:14:20 +0530
-Message-ID: <CA+sq2CeT2m2QcrzSn6g5rxUfmJDVQqjYFayW+bcuopCCoYuQ6Q@mail.gmail.com>
-Subject: Re: [net-next PATCH 0/8] configuration support for switch headers & phy
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Hariprasad Kelam <hkelam@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > Hi Hariprasad
-> > >
-> > > Private flags sound very wrong here. I would expect to see some integration
-> > > between the switchdev/DSA driver and the MAC driver.
-> > > Please show how this works in combination with drivers/net/dsa/mv88e6xxx
-> > > or drivers/net/ethernet/marvell/prestera.
-> > >
-> >       Octeontx2 silicon supports NPC (network parser and cam) unit , through which packet parsing and packet classification is achieved.
-> >               Packet parsing extracting different fields from each layer.
-> >                                 DMAC + SMAC  --> LA
-> >                                              VLAN ID --> LB
-> >                                              SIP + DIP --> LC
-> >                                                             TCP SPORT + DPORT --> LD
-> >     And packet classification is achieved through  flow identification in key extraction and mcam search key . User can install mcam rules
-> >     With action as
-> >               forward packet to PF and to receive  queue 0
-> >               forward packet to VF and  with as RSS ( Receive side scaling)
-> >               drop the packet
-> >               etc..
-> >
-> >    Now with switch header ( EDSA /FDSA) and HIGIG2 appended to regular packet , NPC can not parse these
-> >    Ingress packets as these headers does not have fixed headers. To achieve this Special PKIND( port kind) is allocated in hardware
-> >    which will help NPC to parse the packets.
-> >
-> >  For example incase of EDSA 8 byte header which is placed right after SMAC , special PKIND reserved for EDSA helps NPC to
-> >  Identify the  input packet is EDSA . Such that NPC can extract fields in this header and forward to
-> >  Parse rest of the headers.
-> >
-> >  Same is the case with higig2 header where 16 bytes header is placed at start of the packet.
-> >
-> > In this case private flags helps user to configure interface in EDSA/FDSA or HIGIG2. Such that special
-> > PKIND reserved for that header are assigned to the interface.  The scope of the patch series is how
-> > User can configure interface mode as switch header(HIGIG2/EDSA etc) .In our case no DSA logical
-> > Ports are created as these headers can be stripped by NPC.
->
-> So you completely skipped how this works with mv88e6xxx or
-> prestera. If you need this private flag for some out of mainline
-> Marvell SDK, it is very unlikely to be accepted.
->
->         Andrew
+On Wed, 24 Mar 2021 10:40:21 +0100
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-What we are trying to do here has no dependency on DSA drivers and
-neither impacts that functionality.
-Here we are just notifying the HW to parse the packets properly.
+> This is the start of the stable review cycle for the 5.10.26 release.
+> There are 150 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied,
+> please let me know.
+> 
+> Responses should be made by Fri, 26 Mar 2021 09:33:54 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.26-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+> linux-5.10.y and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Thanks,
-Sunil.
+I found no issues for -rc3 (i686, gcc 10.2)
+
+Tested-by: Andrei Rabusov <a.rabusov@tum.de>
