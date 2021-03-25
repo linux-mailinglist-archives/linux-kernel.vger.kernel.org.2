@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1022C349ABD
+	by mail.lfdr.de (Postfix) with ESMTP id 94701349ABE
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhCYT5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhCYT4b (ORCPT
+        id S230300AbhCYT5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:57:05 -0400
+Received: from alln-iport-5.cisco.com ([173.37.142.92]:33594 "EHLO
+        alln-iport-5.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCYT47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:56:31 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1920C06174A;
-        Thu, 25 Mar 2021 12:56:30 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id x21so3805994eds.4;
-        Thu, 25 Mar 2021 12:56:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cMxe7I7l2vSX0n+XPp1Pbjsdyyq6ZSpuIHYWB6ESO5o=;
-        b=D+Cw8CaDRyrGWV497QEgwi4O4sNpKjHdSOs+9Uzk1811L/Xsv1ab1O21+/S8NHveCH
-         lf+KjxAYYoCTEctlvAkWxva5dPQCRgQEawEfk0Z6XElHqcgKnxx9RAhhK6Z64S/NgRR8
-         C2edylmQbBF4od32hpzvhQxGc5UiD5viYy5eG6HRWT6o5Ow4h3r5z9rUmHWLKrTVezP7
-         86wv9X7ZLmXa2sSTDBi0Cq9Htg3WqY6f86UrlqnMeE7v3rzgHN+brXzZuk0jYjtCxj8e
-         xcWMVvKUhAFDXdbMMOcSg0DJSKTQqdLTbnhHLozqmqY+1IMvKTwbSgTw7KrQj7NhbcNY
-         rQ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cMxe7I7l2vSX0n+XPp1Pbjsdyyq6ZSpuIHYWB6ESO5o=;
-        b=d1d3ydwwMmnJjg9JEZ8xGOLGBDF478JP7hwGbxcZnmr9omDwruVI4A6l3R0PoU4FkL
-         v5W46YyeJjTm5aBtkWZrn8qSP450K7zC0ixn+eu2/HvuafVe8W5NRpNriUTbbLYyZzoW
-         ycO+h4xzINQSBhKG6gpf6L6e08Tt3iwKSnTBXNtro8KmpQ7+Jixp5YcskEhEBy4PFKdm
-         x9jIMiSCso5Xf/tCCZBut7jE3ew9UbXmgL1cJg6ehfq2Tg0NKM1bfQj+wuwiaFD8jsXW
-         drW+mdW/hQDdP35bo/YewFgfJSxt5x9IRbwK8/qJXSK+oTWiQwf5rea7SkSg1VZvbeUn
-         EyKA==
-X-Gm-Message-State: AOAM532rEqXBeJT9tYHoVdRvF0DzlZjABGk0Bg3L673Gv1fJGhLLPdiC
-        QhkxuZ8dTeR58mIF2Nh0YX41RxPyyN/PLQ==
-X-Google-Smtp-Source: ABdhPJyRgnmeZFf0kVwZSD5Xon7u769lr0EeDQWXEjIYbtA+q6WAJbuO1xZtIWSxVSuW/5wXqTGAhA==
-X-Received: by 2002:a05:6402:34c8:: with SMTP id w8mr11430998edc.235.1616702189436;
-        Thu, 25 Mar 2021 12:56:29 -0700 (PDT)
-Received: from localhost.localdomain (ip-178-202-123-242.hsi09.unitymediagroup.de. [178.202.123.242])
-        by smtp.googlemail.com with ESMTPSA id t17sm3144044edr.36.2021.03.25.12.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 12:56:29 -0700 (PDT)
-From:   Norman Maurer <norman.maurer@googlemail.com>
-X-Google-Original-From: Norman Maurer <norman_maurer@apple.com>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, dsahern@kernel.org
-Cc:     Norman Maurer <norman_maurer@apple.com>
-Subject: [PATCH] udp: Add support for getsockopt(..., ..., UDP_GRO, ..., ...);
-Date:   Thu, 25 Mar 2021 20:56:14 +0100
-Message-Id: <20210325195614.800687-1-norman_maurer@apple.com>
-X-Mailer: git-send-email 2.30.2
+        Thu, 25 Mar 2021 15:56:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1794; q=dns/txt; s=iport;
+  t=1616702219; x=1617911819;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pu2I9fiU+I/A1fLeU7DBkeJ7rBv/7jFx5HzFlCmOGBA=;
+  b=f1D0CuijH8Ug4coijfTkQIyxFLwbf0r4En58Yne3AmGuFSyv+Z8eikI3
+   3RM2fgdAQIHkZvq0BfS4SZsLtm4p4R1Uyc4SZLtZdk2CmlHLETZ+x7wg/
+   NSLXB4bNrI+C2gYRNhT02i8n72w/q9dM8YoJINFaruC3nwx4Axxy8Ryab
+   8=;
+X-IPAS-Result: =?us-ascii?q?A0AjAACo6lxgmIoNJK1aGwEBAQEBAQEBBQEBARIBAQEDA?=
+ =?us-ascii?q?wEBAUCBPgQBAQELAYN2ATmWPAOQB4pbgXwLAQEBDQEBNAQBAYRQAoF8AiU2B?=
+ =?us-ascii?q?w4CAwEBAQMCAwEBAQEFAQEBAgEGBBQBAQEBAQEBAYZDhkUBAgM6PxALGC48G?=
+ =?us-ascii?q?wYsgleDCKspdYE0iRaBRBQOgRcBjUImHIFJQoQuPoQxhWMiBIJGF3mBCGcVB?=
+ =?us-ascii?q?GI1kCxRjQuKQ5BIgRSDEIEimEiCaTEQgziKbZYbuBACBAYFAhaBWgExgVszG?=
+ =?us-ascii?q?ggbFTuCak8ZDY44jk8hA2cCBgoBAQMJhSqCQwEB?=
+IronPort-HdrOrdr: A9a23:EyzLJ6OQ0cmmLsBcT5r155DYdL4zR+YMi2QD/UoZc3NoW+afkN
+ 2jm+le+B/vkTAKWGwhn9foAtjkfVr385lp7Y4NeYqzRQWOghrLEKhO5ZbvqgeLJwTQ7ehYvJ
+ 0MT4FfD5nKAUF+nYLG5mCDYrId6f2m1IztuuvE1XdqSmhRGsJdxiN0EBySHEEzZCQuP/sEPa
+ GR7MZGuDasEE5/Bq+GL0IIUOTZq9rAmIiOW347LiQ64wqDhy7A0tDHOiWfty1zbxp/hZ8/7G
+ 6AqADi/6Olqf3+8APEznTe9Y4+oqqH9vJzQOqRl8MSNjLgziGvaYgJYcz6gBkF5Mey9V0tjN
+ 7A5y0FAv02wXbQcmapyCGdvTXd7A==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.81,278,1610409600"; 
+   d="scan'208";a="686872034"
+Received: from alln-core-5.cisco.com ([173.36.13.138])
+  by alln-iport-5.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 25 Mar 2021 19:56:56 +0000
+Received: from zorba ([10.24.0.17])
+        by alln-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 12PJurCb006095
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 25 Mar 2021 19:56:55 GMT
+Date:   Thu, 25 Mar 2021 12:56:53 -0700
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
+Message-ID: <20210325195653.GL109100@zorba>
+References: <20210309000247.2989531-4-danielwa@cisco.com>
+ <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
+ <20210309212944.GR109100@zorba>
+ <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.0.17, [10.24.0.17]
+X-Outbound-Node: alln-core-5.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Norman Maurer <norman_maurer@apple.com>
-
-Support for UDP_GRO was added in the past but the implementation for
-getsockopt was missed which did lead to an error when we tried to
-retrieve the setting for UDP_GRO. This patch adds the missing switch
-case for UDP_GRO
-
-Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
-Signed-off-by: Norman Maurer <norman_maurer@apple.com>
----
- net/ipv4/udp.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 4a0478b17243..99d743eb9dc4 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2754,6 +2754,10 @@ int udp_lib_getsockopt(struct sock *sk, int level, int optname,
- 		val = up->gso_size;
- 		break;
+On Wed, Mar 24, 2021 at 05:59:59PM +0100, Christophe Leroy wrote:
+> > I think my changes maintain most of this due to the override of
+> > CONFIG_CMDLINE_PREPEND. This is an upgrade and the inflexibility in powerpc is
+> > an example of why these changes were created in the first place.
+> 
+> "inflexibility in powerpc" : Can you elaborate ?
  
-+	case UDP_GRO:
-+		val = up->gro_enabled;
-+		break;
-+
- 	/* The following two cannot be changed on UDP sockets, the return is
- 	 * always 0 (which corresponds to the full checksum coverage of UDP). */
- 	case UDPLITE_SEND_CSCOV:
--- 
-2.30.2
+the prom environment.
 
+> > 
+> > For example , say the default command line is "root=/dev/issblk0" from iss476
+> > platform. And the bootloader adds "root=/dev/sda1"
+> > 
+> > The result is <prepend><bootloader><append>.
+> 
+> 
+> I'm still having hard time understanding the benefit of having both <prepend> and <append>.
+> Could you please provide a complete exemple from real life, ie what exactly
+> the problem is and what it solves ?
+ 
+Say the boot loader of an old product is released with a command line of
+"root=/dev/sda" and per the needs of the company or product the boot loader can
+not be upgraded to change this command line. To change this behavior you would
+need append or EXTEND.
+
+Below I detail an example of PREPEND due to your list question.
+
+> > 
+> > Then you have,
+> > 
+> > root=/dev/issblk0 root=/dev/sda1
+> > 
+> > and the bootloader has precedent over the default command line. So root= in the
+> > above cases is defined by the bootloader.
+
+A person could input a command line into a boot loader, and it would override
+the PREPEND values.
+
+Can you imagine you have a default command line which makes root=/dev/issblk0 ,
+but that doesn't work for you testing purpose. So you input into the boot loader
+root=/dev/sda1 , since you have the default input in the bootloader OVERRIDEABLE
+you can do this without re-compiling and just input the single root= command
+into the bootloader.
+
+Daniel
