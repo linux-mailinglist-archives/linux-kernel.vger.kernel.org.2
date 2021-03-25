@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADBA348E8A
+	by mail.lfdr.de (Postfix) with ESMTP id D7381348E8B
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhCYLIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        id S230151AbhCYLIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhCYLId (ORCPT
+        with ESMTP id S229576AbhCYLIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:08:33 -0400
+        Thu, 25 Mar 2021 07:08:39 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096B6C06174A;
-        Thu, 25 Mar 2021 04:08:33 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:08:30 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48818C06174A;
+        Thu, 25 Mar 2021 04:08:39 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 11:08:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616670511;
+        s=2020; t=1616670517;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5DWOJYsfzcf2MYVUyOlGSR2fQztWAZ2/OrFW58S9EME=;
-        b=a+tuLQclAmQh9OTyE1zKvC53T3ze1j8U6CeiBpDtEOjcYGJoLei1boXghihitpsa7OSYe9
-        9MCnqaitZtOvHygjXfOqXrt5byv/Jo9VZU4t5t0t1QbXaOFZw9ysCtpCeYF8VVjSn7jPJC
-        n0MS3sYpbpBo8LQDPJLoKq4tnlKQvZEMtCFmeI7zSJYCPEVmwBcMMFKIqQBZ1g1cWoNquo
-        3X09oiZl+Ypp8KxIlcYobV9f/twVDFIdVH6lVgiKATg0JOtfwXKsPyYrBRhrqCsyyMgosY
-        r8M9IfaINHCXNX6IHVTNV43txSb18ukC3lZdvuTAKS1KMBzqS4LSnb17DsogMg==
+        bh=e5FJf/9gAfhIa69rIi7DlZbWHqYsyI+QVnFdy6ztUbg=;
+        b=Q1wCsXYrSZsNRQNR8Ylyn6G+H2VUd767Up7kOa1WN/ij/I4NHdv7S4LQ95nkPPnaUV/ScB
+        vN0BeovfDFYSjG8qpddWMOMEJ5V7gWU2P+6oKSRkIIY/SlVZUWuRn3yE6IGg87WoesaNQS
+        dDRHFENUS8YPvNxMne3vm5cmuIvh9iR+mlsEA0ZR3x1Vw3dPcmXiHKHtnv0ZRRiTw8WfUi
+        yDCPwa3biBAA4V/2jpIRhI+cwlWeSBnQ+D6hB3PeItb216CBatU/aWZPLMy8luuuPgg65i
+        9FR00XHe0ArT5f3u380LUvnNor3Itbl2nKX1tp6jDX80GH1HvFf/jZz9DrLnXg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616670511;
+        s=2020e; t=1616670517;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=5DWOJYsfzcf2MYVUyOlGSR2fQztWAZ2/OrFW58S9EME=;
-        b=/wgN0FnOxKgKJ2l8XTdFjuK/P4oHr2zGuOrBs4Ne7CDNha8hVvJ8WWrPk2i82NBMUQKmKo
-        cK1eTdVh0FTuXRBw==
-From:   "tip-bot2 for Shaokun Zhang" <tip-bot2@linutronix.de>
+        bh=e5FJf/9gAfhIa69rIi7DlZbWHqYsyI+QVnFdy6ztUbg=;
+        b=T7iGkjfM9yOPo0EKGbE1I7JIKsm1jYYlbST0DabFqvIge+b2MWn7Z1k5R8X7oLvYrjSgFV
+        jAyl+8q3ahnj5YAg==
+From:   "tip-bot2 for Barry Song" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/mutex: Remove repeated declaration
-Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+Subject: [tip: sched/core] sched/topology: Remove redundant cpumask_and() in
+ init_overlap_sched_group()
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
         Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <1616564440-61318-1-git-send-email-zhangshaokun@hisilicon.com>
-References: <1616564440-61318-1-git-send-email-zhangshaokun@hisilicon.com>
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210325023140.23456-1-song.bao.hua@hisilicon.com>
+References: <20210325023140.23456-1-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Message-ID: <161667051052.398.6239082761517753119.tip-bot2@tip-bot2>
+Message-ID: <161667051732.398.15690730249125096642.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,48 +61,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     8af856d18bfbe89676ade38caa2a5d06f75f211d
-Gitweb:        https://git.kernel.org/tip/8af856d18bfbe89676ade38caa2a5d06f75f211d
-Author:        Shaokun Zhang <zhangshaokun@hisilicon.com>
-AuthorDate:    Wed, 24 Mar 2021 13:40:40 +08:00
+Commit-ID:     0a2b65c03e9b47493e1442bf9c84badc60d9bffb
+Gitweb:        https://git.kernel.org/tip/0a2b65c03e9b47493e1442bf9c84badc60d9bffb
+Author:        Barry Song <song.bao.hua@hisilicon.com>
+AuthorDate:    Thu, 25 Mar 2021 15:31:40 +13:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 25 Mar 2021 12:02:06 +01:00
+CommitterDate: Thu, 25 Mar 2021 11:41:23 +01:00
 
-locking/mutex: Remove repeated declaration
+sched/topology: Remove redundant cpumask_and() in init_overlap_sched_group()
 
-Commit 0cd39f4600ed ("locking/seqlock, headers: Untangle the spaghetti monster")
-introduces 'struct ww_acquire_ctx' again, remove the repeated declaration and move
-the pre-declarations to the top.
+mask is built in build_balance_mask() by for_each_cpu(i, sg_span), so
+it must be a subset of sched_group_span(sg).
 
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+So the cpumask_and() call is redundant - remove it.
+
+[ mingo: Adjusted the changelog a bit. ]
+
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lore.kernel.org/r/1616564440-61318-1-git-send-email-zhangshaokun@hisilicon.com
+Reviewed-by: Valentin Schneider <Valentin.Schneider@arm.com>
+Link: https://lore.kernel.org/r/20210325023140.23456-1-song.bao.hua@hisilicon.com
 ---
- include/linux/mutex.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/sched/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 0cd631a..e7a1267 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -20,6 +20,7 @@
- #include <linux/osq_lock.h>
- #include <linux/debug_locks.h>
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index f2066d6..d1aec24 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -934,7 +934,7 @@ static void init_overlap_sched_group(struct sched_domain *sd,
+ 	int cpu;
  
-+struct ww_class;
- struct ww_acquire_ctx;
+ 	build_balance_mask(sd, sg, mask);
+-	cpu = cpumask_first_and(sched_group_span(sg), mask);
++	cpu = cpumask_first(mask);
  
- /*
-@@ -65,9 +66,6 @@ struct mutex {
- #endif
- };
- 
--struct ww_class;
--struct ww_acquire_ctx;
--
- struct ww_mutex {
- 	struct mutex base;
- 	struct ww_acquire_ctx *ctx;
+ 	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+ 	if (atomic_inc_return(&sg->sgc->ref) == 1)
