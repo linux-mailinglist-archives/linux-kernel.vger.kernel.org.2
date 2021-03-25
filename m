@@ -2,155 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F1A3492F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D44703492C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhCYNRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:17:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
+        id S230041AbhCYNKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbhCYNRN (ORCPT
+        with ESMTP id S230076AbhCYNKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:17:13 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBDEC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:17:07 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id l1so1755472pgb.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:17:07 -0700 (PDT)
+        Thu, 25 Mar 2021 09:10:21 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6632C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:10:20 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a7so2819801ejs.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:10:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
-        b=CHCSKCxbgD75vPy7GBmaC+lu5Gdm/xpjvojVhcyniq7PoE4xTJuXHj2xevxFtHTCNW
-         UEKT37DVZ7WcRdjA7C1CAlZc5MhFKkYPAY1t60r0FyfzWNcDitAryEFs0J1qxZBleUx3
-         o7xee5TlGpwgr2/KMW7p1oPBv2YfiP5kUetJDKR9O7EcMm2jtBEfFG0bZJp9LmEdFWxW
-         OVT6M0hJqlK48SYggDqs5gGauRHSCjKdeUCOTySP2cLjnl2FnGX0UAC9QQ5plAjdgKXZ
-         I29UkSYU7Rljj6gUTZZ6zBo80qRfX+XkNlSXIaBosQFVJaJjsp6mOLj+/lqcKRi8yng/
-         TLgQ==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zxzcvSpuW5BzO5KFJl2Jtm9u8hATZIardWi4yi/tUdw=;
+        b=dhpkGEz7F7VPrF8qt11YAdUTNN38LDOuNBbwCKRx2c85T7s4WhMdIbYl94FrwIJ4/4
+         xcNrf+3rO8Y2AdkQago6LnTWOk+7BYbz9kXaVU1QUL+3dK19s0KpfORr+a/TcQJz0SQk
+         2laK69ap1j96hgTefznUvFGAUInNLKiCdgVVicYTwiyva5nYgqQTJoY3gr+EeqVe1nVw
+         FaIvqAqf6+CzlYR5cvkR4Juf9AXHo92HOZhumHRmHVK8tu2VVOP+7CeZdzdAQzj4tkUg
+         lj0MxLolDyCuuxH3vOdmAHHChDeUOoDeMrlN6udNiA33yLoq+yc/9lw7OXRTiSPjE111
+         LkEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
-        b=scPnewVXLg7Lgeak7DKIf/EF3WV6liliVraAK9WAW74TXnbhL8NOHDPB7bBaBF/LDj
-         SwpCgI0/WX4Bsyi3lhtYYcLCs7yRvul68VvSCDT6MjF52ncA8iLr0Q5zp5m37jn3K1/S
-         v8XI1z9e0pqCUCPg4rwg+Hdb9whOJR/RGerTnefPKCg0dwPApq8r/zc13+0wbHtmXGNP
-         GE4tUx56XFJuJRnIPGDON+Wp45xz6IrGWNmHu5ILx2QmZG8sUrSWM0UQnz77b4Zzf4z5
-         LUtxpcra1GAfxpL/IBxlZUtQnsFAMvPm+8V8y1qX+iyKLk3dlCNpVQbjLsUbucxHbUTQ
-         TOVQ==
-X-Gm-Message-State: AOAM532QkE+B8eVkjcf/XJYJ6qEwFJSwVyTO1QCurA0Conn6zfSL164a
-        XzaXDMpRfeRECe7slazeOUk=
-X-Google-Smtp-Source: ABdhPJw3Ic8tUJ2aS7Jsk1SSYArmiRvtfKvVoWJgvx1GdeMSm6uK4kR76zy6g+sCheTo9uJOsvFVbA==
-X-Received: by 2002:a63:d848:: with SMTP id k8mr7347767pgj.72.1616678226501;
-        Thu, 25 Mar 2021 06:17:06 -0700 (PDT)
-Received: from localhost.localdomain ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id i22sm5566963pjz.56.2021.03.25.06.17.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Mar 2021 06:17:05 -0700 (PDT)
-From:   Qianli Zhao <zhaoqianligood@gmail.com>
-To:     christian@brauner.io, axboe@kernel.dk, ebiederm@xmission.com,
-        oleg@redhat.com, tglx@linutronix.de, pcc@google.com
-Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
-Subject: [PATCH V4] exit: trigger panic when global init has exited
-Date:   Thu, 25 Mar 2021 21:08:01 +0800
-Message-Id: <1616677681-60183-1-git-send-email-zhaoqianligood@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zxzcvSpuW5BzO5KFJl2Jtm9u8hATZIardWi4yi/tUdw=;
+        b=lGa4Wl4e20sfrdL3aHQV0XB0cNMs7bA40EEvoh4IfUToYaB/yhWFvpm6OmHQ/wYP8l
+         CNuZAApQsQ13LFBpt11PX0gUP6ZjFX3i33A3OFsrNaTsU0Z/d+Mf6cVJ7cj47Vc8i3Bh
+         5A9XiLSLm1mMN4iEcgoN19fw2wICAuZZdJscUYaiw5Qz9nvpt5ma5gu30Pwegaeqy1hZ
+         RCC417j9Fy6dawxiFTUROVniJQJFM8eLsLFFsexWkLMb2UUwcIaZY1CwMWRY4zlNAm3T
+         So29b5iHWKns9DkKrplavAv04QvjzIhiGO4/KF2CJDaPA3MOTnI6g40xG3UVtKJ0cZSb
+         FIZg==
+X-Gm-Message-State: AOAM530/ikk0q9Dm9T5YuvJd42EfvoZyCwAno5Qf2kS/gu1QlyA4zWQU
+        6SNF0EK7D/gDf8hPUhVBiRrPV4rDsWPztfSJ8n1u5g==
+X-Google-Smtp-Source: ABdhPJxmOrGZbR5jfPwo23eClqK/B4EIJuvV/F2TH8vBmojVqBN7770nnzNKZZa+b3hqNNvrrPmTHy0HqErHFzSFD2w=
+X-Received: by 2002:a17:906:3409:: with SMTP id c9mr9284256ejb.314.1616677815208;
+ Thu, 25 Mar 2021 06:10:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210325092203.10251-1-qiang.zhang@windriver.com>
+In-Reply-To: <20210325092203.10251-1-qiang.zhang@windriver.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Thu, 25 Mar 2021 09:09:39 -0400
+Message-ID: <CA+CK2bCS9Ab+F9gzGEJejW6J3R26j1JNBOV3tvcR6+fz2uRfpw@mail.gmail.com>
+Subject: Re: [PATCH] loop: Fix use of unsafe lo->lo_mutex locks
+To:     qiang.zhang@windriver.com
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qianli Zhao <zhaoqianli@xiaomi.com>
+Hi Qiang,
 
-When init sub-threads running on different CPUs exit at the same time,
-zap_pid_ns_processe()->BUG() may be happened(timing is as below),move
-panic() before set PF_EXITING to fix this problem.
+Thank you for root causing this issue. Did you encounter this issue or
+found by inspection?
 
-In addition,if panic() after other sub-threads finish do_exit(),
-some key variables (task->mm,task->nsproxy etc) of sub-thread will be lost,
-which makes it difficult to parse coredump from fulldump,checking SIGNAL_GROUP_EXIT
-to prevent init sub-threads exit.
+I would change the title to what actually being changed, something like:
 
-[   24.705376] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
-[   24.705382] CPU: 4 PID: 552 Comm: init Tainted: G S         O    4.14.180-perf-g4483caa8ae80-dirty #1
-[   24.705390] kernel BUG at include/linux/pid_namespace.h:98!
+loop: call __loop_clr_fd() with lo_mutex locked to avoid autoclear race
 
-PID: 552   CPU: 4   COMMAND: "init"
-PID: 1     CPU: 7   COMMAND: "init"
-core4                           core7
-...                             sys_exit_group()
-                                do_group_exit()
-                                   - sig->flags = SIGNAL_GROUP_EXIT
-                                   - zap_other_threads()
-                                do_exit() //PF_EXITING is set
-ret_to_user()
-do_notify_resume()
-get_signal()
-    - signal_group_exit
-    - goto fatal;
-do_group_exit()
-do_exit() //PF_EXITING is set
-    - panic("Attempted to kill init! exitcode=0x%08x\n")
-                                exit_notify()
-                                find_alive_thread() //no alive sub-threads
-                                zap_pid_ns_processes()//CONFIG_PID_NS is not set
-                                BUG()
 
-Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
----
-V4:
-- Changelog update
+>   ......                                       kfree(lo)
+>        UAF
+>
+> When different tasks on two CPUs perform the above operations on the same
+> lo device, UAF may occur.
 
-V3:
-- Use group_dead instead of thread_group_empty() to test single init exit.
+Please also explain the fix:
 
-V2:
-- Changelog update
-- Remove wrong useage of SIGNAL_UNKILLABLE. 
-- Add thread_group_empty() test to handle single init thread exit
+Do not drop lo->lo_mutex before calling __loop_clr_fd(), so refcnt and
+LO_FLAGS_AUTOCLEAR check in lo_release stay in sync.
 
----
- kernel/exit.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+>
+> Fixes: 6cc8e7430801 ("loop: scale loop device by introducing per device lock")
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  drivers/block/loop.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> index d58d68f3c7cd..5712f1698a66 100644
+> --- a/drivers/block/loop.c
+> +++ b/drivers/block/loop.c
+> @@ -1201,7 +1201,6 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
+>         bool partscan = false;
+>         int lo_number;
+>
+> -       mutex_lock(&lo->lo_mutex);
+>         if (WARN_ON_ONCE(lo->lo_state != Lo_rundown)) {
+>                 err = -ENXIO;
+>                 goto out_unlock;
+> @@ -1257,7 +1256,6 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
+>         lo_number = lo->lo_number;
+>         loop_unprepare_queue(lo);
+>  out_unlock:
+> -       mutex_unlock(&lo->lo_mutex);
+>         if (partscan) {
+>                 /*
+>                  * bd_mutex has been held already in release path, so don't
+> @@ -1288,12 +1286,11 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
+>          * protects us from all the other places trying to change the 'lo'
+>          * device.
+>          */
+> -       mutex_lock(&lo->lo_mutex);
+> +
+>         lo->lo_flags = 0;
+>         if (!part_shift)
+>                 lo->lo_disk->flags |= GENHD_FL_NO_PART_SCAN;
+>         lo->lo_state = Lo_unbound;
+> -       mutex_unlock(&lo->lo_mutex);
+>
+>         /*
+>          * Need not hold lo_mutex to fput backing file. Calling fput holding
+> @@ -1332,9 +1329,10 @@ static int loop_clr_fd(struct loop_device *lo)
+>                 return 0;
+>         }
+>         lo->lo_state = Lo_rundown;
+> +       err = __loop_clr_fd(lo, false);
+>         mutex_unlock(&lo->lo_mutex);
+>
+> -       return __loop_clr_fd(lo, false);
+> +       return err;
+>  }
+>
+>  static int
+> @@ -1916,13 +1914,12 @@ static void lo_release(struct gendisk *disk, fmode_t mode)
+>                 if (lo->lo_state != Lo_bound)
+>                         goto out_unlock;
+>                 lo->lo_state = Lo_rundown;
+> -               mutex_unlock(&lo->lo_mutex);
+>                 /*
+>                  * In autoclear mode, stop the loop thread
+>                  * and remove configuration after last close.
+>                  */
+>                 __loop_clr_fd(lo, true);
+> -               return;
+> +               goto out_unlock;
+>         } else if (lo->lo_state == Lo_bound) {
+>                 /*
+>                  * Otherwise keep thread (if running) and config,
+> --
+> 2.17.1
+>
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 04029e3..f95f8dc 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -766,6 +766,17 @@ void __noreturn do_exit(long code)
- 
- 	validate_creds_for_do_exit(tsk);
- 
-+	group_dead = atomic_dec_and_test(&tsk->signal->live);
-+	/*
-+	 * If global init has exited,
-+	 * panic immediately to get a useable coredump.
-+	 */
-+	if (unlikely(is_global_init(tsk) &&
-+	    (group_dead || (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
-+			panic("Attempted to kill init! exitcode=0x%08x\n",
-+				tsk->signal->group_exit_code ?: (int)code);
-+	}
-+
- 	/*
- 	 * We're taking recursive faults here in do_exit. Safest is to just
- 	 * leave this task alone and wait for reboot.
-@@ -784,16 +795,8 @@ void __noreturn do_exit(long code)
- 	if (tsk->mm)
- 		sync_mm_rss(tsk->mm);
- 	acct_update_integrals(tsk);
--	group_dead = atomic_dec_and_test(&tsk->signal->live);
--	if (group_dead) {
--		/*
--		 * If the last thread of global init has exited, panic
--		 * immediately to get a useable coredump.
--		 */
--		if (unlikely(is_global_init(tsk)))
--			panic("Attempted to kill init! exitcode=0x%08x\n",
--				tsk->signal->group_exit_code ?: (int)code);
- 
-+	if (group_dead) {
- #ifdef CONFIG_POSIX_TIMERS
- 		hrtimer_cancel(&tsk->signal->real_timer);
- 		exit_itimers(tsk->signal);
--- 
-1.9.1
+LGTM
+Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
 
+Thank you,
+Pasha
