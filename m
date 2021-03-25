@@ -2,63 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8960A349304
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AEA349306
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhCYNYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:24:18 -0400
-Received: from mga04.intel.com ([192.55.52.120]:7598 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229731AbhCYNXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:23:47 -0400
-IronPort-SDR: o0ZTxGrFrj72cbYX36iDdY7EUOiQLoNcVQdU6o2sufIAenHjrtAdCuwak3/01eaoxdOH/F/zrE
- oxOFzOSUd9Fw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="188628354"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="188628354"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 06:23:47 -0700
-IronPort-SDR: j2N33Qd84WMcvnjdw27sNTAmh6DExk6dS+RDKkgYTwUzZhsG6p6MlvV+YRPOqzWUwOI+0oiAU3
- oRmrbEpLLV6w==
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="375068246"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 06:23:44 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lPPxb-00G3Ks-0i; Thu, 25 Mar 2021 15:23:39 +0200
-Date:   Thu, 25 Mar 2021 15:23:39 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: Re: [PATCH] include: linux: debug_locks: Remove duplicate declaration
-Message-ID: <YFyO2/AtZ6RHkTVU@smile.fi.intel.com>
-References: <20210325022707.840531-1-wanjiabing@vivo.com>
- <YFyOjtTI8XXPKgph@smile.fi.intel.com>
+        id S229764AbhCYN03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:26:29 -0400
+Received: from outbound-smtp63.blacknight.com ([46.22.136.252]:56987 "EHLO
+        outbound-smtp63.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229533AbhCYNZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:25:59 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp63.blacknight.com (Postfix) with ESMTPS id 60B74FA894
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:25:58 +0000 (GMT)
+Received: (qmail 25209 invoked from network); 25 Mar 2021 13:25:58 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Mar 2021 13:25:58 -0000
+Date:   Thu, 25 Mar 2021 13:25:56 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
+ in-tree users
+Message-ID: <20210325132556.GS3697@techsingularity.net>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+ <20210325125001.GW1719932@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <YFyOjtTI8XXPKgph@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210325125001.GW1719932@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:22:22PM +0200, Andy Shevchenko wrote:
-> On Thu, Mar 25, 2021 at 10:26:58AM +0800, Wan Jiabing wrote:
-> > struct task_struct is declared at 9th line. Remove the duplicate.
+On Thu, Mar 25, 2021 at 12:50:01PM +0000, Matthew Wilcox wrote:
+> On Thu, Mar 25, 2021 at 11:42:19AM +0000, Mel Gorman wrote:
+> > This series introduces a bulk order-0 page allocator with sunrpc and
+> > the network page pool being the first users. The implementation is not
+> > efficient as semantics needed to be ironed out first. If no other semantic
+> > changes are needed, it can be made more efficient.  Despite that, this
+> > is a performance-related for users that require multiple pages for an
+> > operation without multiple round-trips to the page allocator. Quoting
+> > the last patch for the high-speed networking use-case
+> > 
+> >             Kernel          XDP stats       CPU     pps           Delta
+> >             Baseline        XDP-RX CPU      total   3,771,046       n/a
+> >             List            XDP-RX CPU      total   3,940,242    +4.49%
+> >             Array           XDP-RX CPU      total   4,249,224   +12.68%
+> > 
+> > >From the SUNRPC traces of svc_alloc_arg()
+> > 
+> > 	Single page: 25.007 us per call over 532,571 calls
+> > 	Bulk list:    6.258 us per call over 517,034 calls
+> > 	Bulk array:   4.590 us per call over 517,442 calls
+> > 
+> > Both potential users in this series are corner cases (NFS and high-speed
+> > networks) so it is unlikely that most users will see any benefit in the
+> > short term. Other potential other users are batch allocations for page
+> > cache readahead, fault around and SLUB allocations when high-order pages
+> > are unavailable. It's unknown how much benefit would be seen by converting
+> > multiple page allocation calls to a single batch or what difference it may
+> > make to headline performance.
 > 
-> It seems the duplicate is the other one and you removed wrong one.
+> We have a third user, vmalloc(), with a 16% perf improvement.  I know the
+> email says 21% but that includes the 5% improvement from switching to
+> kvmalloc() to allocate area->pages.
+> 
+> https://lore.kernel.org/linux-mm/20210323133948.GA10046@pc638.lan/
+> 
 
-Okay, they are on the same level of ifdeffery, technically there is no
-difference. Practically the other one closer to its user.
+That's fairly promising. Assuming the bulk allocator gets merged, it would
+make sense to add vmalloc on top. That's for bringing it to my attention
+because it's far more relevant than my imaginary potential use cases.
+
+> I don't know how many _frequent_ vmalloc users we have that will benefit
+> from this, but it's probably more than will benefit from improvements
+> to 200Gbit networking performance.
+
+I think it was 100Gbit being looked at but your point is still valid and
+there is no harm in incrementally improving over time.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Mel Gorman
+SUSE Labs
