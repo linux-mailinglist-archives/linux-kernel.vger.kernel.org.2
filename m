@@ -2,194 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3447A3486C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730E63486CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbhCYCFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 22:05:48 -0400
-Received: from mail-eopbgr00050.outbound.protection.outlook.com ([40.107.0.50]:6816
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229693AbhCYCFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 22:05:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JiKkWZujUy1N3m/0FrCIDaWP1pXeECSDdzA0qNKZrDTvqK+XGUE1YCP4QzIaF6K9UHfvXgkb2jg0BqZEvNwuhRvBSaiOZ0/rkO8XhPO6tnsrNz40Szenks5j7Sa9RkZgzE54QNTOGerX9l0sOKkanOX5WKAvcQVmOFBkM8XqxH3RZHsCUpbuxEzFbthRSyRhOtsA1Q8Ex7XZrZK/Cd2JP+x0a0OoBOF/BKGToMzXDKxsp/0FjftAViBkp00dRdHZkCuY7mqFUWJouttSqoBJIfEygOAI9JWDXW5m7MJUsrLO5CTyfLuzuNSjOXIhPEpsny1r+QMsGhpHSgw+uldp5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L0KR2G95ebUlVYdomKy5FRz2A3DEHgpjonaDI3qGiBI=;
- b=cnlehInPxCBtQZHSyBkHTGJW2MdS/lmvYNDzEKDoMTUb+hKEpJAb2GI/FUDxY92tbLFphJa7D6lS6FSRjwZW2qEAIOkLUvLuufqkLLiF2LrSWImIzON3Z/WrCSYupbwUYBHTZei0riMfvAU8m1HrNqRWkOmu/0TWjW14wEM9bZPxTPAgcfOniU5o0wkX2dPNQSckrQ5OIaV4pzkt3s8rIdNLstIz5yci3h4D0cIPCPG9KeQkbf9lcajnWQIFKsiJcT0JQ2D/r6uol7bLdS+Dyhp9U/V8JmmTeSFxbuWXCl04+gZFpyW/4yqv69gjpsXYVQ7AfcH/eAb8TGc5kjfoKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L0KR2G95ebUlVYdomKy5FRz2A3DEHgpjonaDI3qGiBI=;
- b=ONNvYSv5LJs1/Spglk/qtIatOv5RwVsPLrci+oYynEDQ5vhROXfVF2sdsxuOfAr31d/XHX01h84ufY68jCMjG160i6jtaskwF7wLXzakRefj2jkpeDDFd09Cf2BRC/23SrITfk1M5p/Dtut8E+t8CMR7Ro7nHtaxbyOIfYvS5xc=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB4237.eurprd04.prod.outlook.com (2603:10a6:803:3e::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
- 2021 02:05:19 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::3ce1:4759:5c33:514c%5]) with mapi id 15.20.3977.026; Thu, 25 Mar 2021
- 02:05:18 +0000
-Message-ID: <42e9cf4dd5f12ca437787d80fee0945b0af9424c.camel@nxp.com>
-Subject: Re: [PATCH] [v3] drm/imx: imx-ldb: fix out of bounds array access
- warning
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Sam Ravnborg <sam@ravnborg.org>, Joe Perches <joe@perches.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Thu, 25 Mar 2021 10:03:23 +0800
-In-Reply-To: <20210324164750.3833773-1-arnd@kernel.org>
-References: <20210324164750.3833773-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK0PR03CA0117.apcprd03.prod.outlook.com
- (2603:1096:203:b0::33) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S233814AbhCYCGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 22:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233732AbhCYCG3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 22:06:29 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A38DC06174A;
+        Wed, 24 Mar 2021 19:06:29 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id z136so353926iof.10;
+        Wed, 24 Mar 2021 19:06:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PCmATWxWzGsdvC0bhPmdLm7Vp6wPPAQcv+Ld4R4h/gk=;
+        b=lsy7l0VpOOB75uBNWFvkCziYTjvQi0HzEWtJCcg38GryyDua8Kc65qK6gm4SWYkQGm
+         6QkwABaUsj6pG7fUwe8PpGXCMbojSAvyVzd8txHZBHykpPBzbz6mMSdFW6DzhMyESL8G
+         HbNmT7mWHa/KRqoeLVNt/tfWGlxwaSdJe1KRRsP7A3P0WrsW1SHoAZonJrbib0iyh7yF
+         PvGQ56mPr3qc3+7Xei+dWHARdaqtBSlKd12Z089fN08yLjbDgCH4CGCU0jk8P1oR4WZ5
+         S4vKnxt8YOtxDAVQmvnaxDTkeqecPNuMvoZBiYGYXuD79WtObpC74JgI5hwra0SGEVhs
+         skCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PCmATWxWzGsdvC0bhPmdLm7Vp6wPPAQcv+Ld4R4h/gk=;
+        b=AkdcMmcfUKyJGaz23KD3ZFqTTaFxN7UVfi6o3XIVG7eE74FIrvr6w1Elrk3OYGLpFU
+         asfi8gLYnCLtnBL+tq+LLaMx5Bbsv+YyKwgI72nQSDjjZBOGUWZcZJbQQ4xEPzzm1fJ7
+         XQLwY45l1p/6QT9MD2NLrlp1+ghoozOcv6IL/1KFnXHb+iACKFhXcvUaSeaKZ59+cycC
+         rNrK60On+hz1nnD06Ph2LZKHtYlFw6paPFwrfyeWceUA7wqkeCgIgT8V8hoAuMFlvu6y
+         GeFwO+kMXT5XiO5e/jbc1MqocEzq5mDOd8VlBn5JIBlbp5Z6z/gOa/uMd5BkoHAhLVZx
+         3CXw==
+X-Gm-Message-State: AOAM531nsh1QZyBRtLCpOyTMiS3LU7jbYDG0k89lwo3YomsKD8WwPCzt
+        QZX8/ZCV5A5v7OE7lA+U+RJb9nolaWaRbEMH/gcd22TJuFirTA==
+X-Google-Smtp-Source: ABdhPJyY4puJCDw1KnaRIiQ/GXlKVX40G7Mc1BPeTx6qKqGbHPE7b42iOcITjM0i1IxaoXmP2+YjlQyWAT5nrCl6xys=
+X-Received: by 2002:a6b:d318:: with SMTP id s24mr4761591iob.89.1616637988528;
+ Wed, 24 Mar 2021 19:06:28 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry (119.31.174.66) by HK0PR03CA0117.apcprd03.prod.outlook.com (2603:1096:203:b0::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29 via Frontend Transport; Thu, 25 Mar 2021 02:05:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 7c12862e-ca84-4c78-2cae-08d8ef32705b
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4237:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB42378B097CEB42839B8D42BC98629@VI1PR04MB4237.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:335;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7SX0t4LNK2xq9QKNcVMj7qioNx9WGg6F8WpsZXz5SJRLXy7cVKh+5Zqm4eVhzQmUxcMV93oJ2X5rnZp+z2QIGcegw9VVpYCjb5nliXsS+CLJu9PQ+RRsvKLzPEMKuWtau5GeSGuJ1DRlAKbgIOl2cfdBoRcv6k/7Dg6SOaE/1jyZeKq1Vb3njc4tmpelDA6iLO04ivuuJAgydmH28j7HUZvxHpv8MTvFZM4ZegyjgPrZPHBYGap8Sz40qE0zcP2tWm94ECGTdFWs4QcbPk8q0E6wXs9uHsHjbalwprqImwKOosIfxucfajJIDGOxX+kJT3sw4adt8Q+pkhODTFQWBulLEa2JgJtT8yCeZiDUXNH2Ha3c4MSQPodAi/qgq0Y345dnMyum/qiZ4P3rDZbpSvHtKPxKivmIgk/JZkQB159SwTD4GlayTWKqkO14aD+nB3wIkQzOq76eadVY4KLG4y1wfktkTJ/4+W3mXmD0mqlsz5dgnzPmyiBpKcoU4Dmeqzait/10xqNqzykpCcweFF1h3gYdoo0oJdqIe8rUq27h43UCz5CBsWmvQQ7qUBARZbiusgKL+GGvF9tpjMwoALyXarFDuH9zy1ks8H9sow9QszpbdK6t4O3OwEYzO5uic178q5AiG6yivr2hyRIaZQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(376002)(346002)(136003)(26005)(54906003)(110136005)(186003)(86362001)(478600001)(4326008)(16526019)(5660300002)(52116002)(6666004)(316002)(38100700001)(956004)(8936002)(2616005)(83380400001)(2906002)(6496006)(66476007)(7416002)(66556008)(8676002)(6486002)(66946007)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VGJ6T0ZCbTlIRW9iS0M5UzlFTDJiVFdhSWxobm9lVGsxREd2SGNhQ0NhN21i?=
- =?utf-8?B?REtUeUhIUDE5VWhwNzg4YnhyZkMwMFk0ckZuWVE2SzJEMXJrTldJNjlRbGY4?=
- =?utf-8?B?M1EyazI0VWVEbXg1bUFidHhvR01qRWFua25yZVZjQVMrZTJqUGZTQU5WV21l?=
- =?utf-8?B?cjFxczVMOGNCdm1JaTZ6OHIyOXBUQS96TWFVRzdKRktCOXI3NDRRLzBhQ2lV?=
- =?utf-8?B?RVVOSjNwS1BzaUQzVG91eFZHSkNraHRKZm5NRUkyUE14Q2QrQkxrYXh3RkJQ?=
- =?utf-8?B?V2ovZlY0TXdtK0lSOGc1bVJXTGdXSkRKUW9lZk91bnhuUUlXU3pNd2tlMnpm?=
- =?utf-8?B?NVEya3JSY0hsNy9UaG1qOGpIOFVoWWY4WEtpOVc2cXdKUVhzR2tUSDNmeUNN?=
- =?utf-8?B?S0o4bzFtYUgweVEzVW95NUFucCtDcU9odFEwb1N3SmowcUR0SXJ4WXVHYmVm?=
- =?utf-8?B?Qkp6YzI0ZTA2SDkrdFl4bXF6UmN5bmNqNGh5MnlocW1oTTQwa1hydVNEcCtP?=
- =?utf-8?B?a3ZVSmwxL1NrZm1DS1ZHc082RnlVZnE4bWJ5SjB1Ym5FQjgzQk84L2o3bWpa?=
- =?utf-8?B?OHlwbGdOelRhNEZwb2tXb29qblFJTk5XNFJRbU5YdytneVdnUnkzS1VSRGJq?=
- =?utf-8?B?dFBtTzRIQ29QelQ3eFVsODg0YjJreDRLZVlLWGYyaFVQanJOckdsUHdGeU9C?=
- =?utf-8?B?THAwRnc2VTUvUzIzTkNoZEg5Yi90MHFuRDBJdWhOaWtOWGJmZ1orNXF5NDRo?=
- =?utf-8?B?YnhFMmxxREgwL0t4YzJWd09nSjBoc1dLbzRlS0twT3MyTldjQkVYKzZNN05O?=
- =?utf-8?B?SWh3Vm96YVBrOHB0WjZxTjVha0JsZUJERWcrSjNyWDdSZTZ5VzNxU1liQXg0?=
- =?utf-8?B?dnFYc3BJKy9UdjRMYVFlYzBLNkxkNE1YUXlydUd3TUkzRjc3YU5nL3UwV1Qr?=
- =?utf-8?B?WGZtKzhqZEsweDBpbkU4RitPSkZHYUcyaGtzVWF6WkFvODFtczJjWnFRdHg2?=
- =?utf-8?B?Tk84c1BWR1BkaGJ0RVRpS1RjbVM0Si9NRi93eEFUUTRwWFpFVFdDb0I1WkZz?=
- =?utf-8?B?YXp1SWpieU43T0g0WFhNZnU4aXp5cDlQY3RpREdzd3Z2eFA4a3VmVGtheGNh?=
- =?utf-8?B?VFV1cHZ3NGZjMmhpY0w3SXk4RUlrRkJSRWlRRWFUWHIyZ2tGaGkrQmR5SUls?=
- =?utf-8?B?ZnBEM0owSFltRFlZMm5LWHlYYlNWbmYxd3g1bDFQY2R4eGduUkhpQkZibytX?=
- =?utf-8?B?NTlkOC80Y2tZR3BWVU1xTFpTTS9YbWRlSmdWRzBxb0pZODFOZm5zWkxrTXhD?=
- =?utf-8?B?SWRYdUVUWEphTGRDVjZ5c09lZ0RIUU5zVm1tbE8yUnowMlFNeUhEVThHMU55?=
- =?utf-8?B?WmJrdUFqWWlBb1dJbG9WakRkakxhWUJJaHZDNkd3eUM5QkhiUkNyQzhsLzc4?=
- =?utf-8?B?VzdrOW9rOWJXbkdXc05kTUtaK2lpT1VwOHFvV3FEb3RMY01uM1hYdUFMNDhK?=
- =?utf-8?B?M0pnSlNlRTZTN0hRQmV1c09TVWRPNUZsTnFERzhld0ZnUEdERjFNV1ozSlVI?=
- =?utf-8?B?aHp4UXlSYjQ1U1lhVjZXU1ptNjRMcWgxcE9XdkQxMnVuZXl6Ym1RWGdVZ2o2?=
- =?utf-8?B?SGpoZ1MxRkJKdFE0QXVxQWlQSUo5MzNXZEl1dVNvRGRTVXpUUXB6YTVmUjAv?=
- =?utf-8?B?dUFzTmRWZkJLWVB4bXlTdmlXOFc0Kzk3dldEZXVNdnBuc1N0QW44THpqNkxR?=
- =?utf-8?Q?I68CyTaN1kU7deKtnzEQHX2AGHj2+mp3hQhRkM4?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c12862e-ca84-4c78-2cae-08d8ef32705b
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 02:05:18.8130
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H0Kfsb4GFy35z//uvAqnrGizFd3G6OEKHiB9pIdK2eD6U/rDsPm1w+EZOxGh1rto59G3n+7oPoOKrqZuluZ4bw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4237
+References: <1616578270-7365-1-git-send-email-bingjingc@synology.com> <CAL3q7H7YGA0PFJp6J7vFvK0EPSixY7chnReS6Zbqa_9S2p_QRQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H7YGA0PFJp6J7vFvK0EPSixY7chnReS6Zbqa_9S2p_QRQ@mail.gmail.com>
+From:   bingjing chang <bxxxjxxg@gmail.com>
+Date:   Thu, 25 Mar 2021 10:06:17 +0800
+Message-ID: <CAMmgxWFc7O6=Pwbv4T=Z3PAotj+3xn+q+KRCnss4ZKOOgC9iTA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix a potential hole-punching failure
+To:     fdmanana@gmail.com
+Cc:     bingjingc <bingjingc@synology.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Qu Wenruo <quwenruo@cn.fujitsu.com>, Chris Mason <clm@fb.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        cccheng@synology.com, Robbie Ko <robbieko@synology.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 17:47 +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When CONFIG_OF is disabled, building with 'make W=1' produces warnings
-> about out of bounds array access:
-> 
-> drivers/gpu/drm/imx/imx-ldb.c: In function 'imx_ldb_set_clock.constprop':
-> drivers/gpu/drm/imx/imx-ldb.c:186:8: error: array subscript -22 is below array bounds of 'struct clk *[4]' [-Werror=array-bounds]
-> 
-> Add an error check before the index is used, which helps with the
-> warning, as well as any possible other error condition that may be
-> triggered at runtime.
-> 
-> The warning could be fixed by adding a Kconfig depedency on CONFIG_OF,
-> but Liu Ying points out that the driver may hit the out-of-bounds
-> problem at runtime anyway.
+In order to reply in plain text, I send the mail from Gmail.
 
-Almost impossible to hit the out-of-bounds problem at runtime, unless
-something wrong happens and makes unexpected parameters(node and/or
-encoder) be handed over to drm_of_encoder_active_port_id(). Anyway, an
-error check on return value from drm_of_encoder_active_port_id() looks
-ok to me.
+Filipe Manana <fdmanana@gmail.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=8824=E6=
+=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=888:16=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Wed, Mar 24, 2021 at 11:15 AM bingjingc <bingjingc@synology.com> wrote=
+:
+> >
+> > From: BingJing Chang <bingjingc@synology.com>
+> >
+> > In commit d77815461f04 ("btrfs: Avoid trucating page or punching hole i=
+n
+> > a already existed hole."), existed holes can be skipped by calling
+> > find_first_non_hole() to adjust *start and *len. However, if the given
+> > len is invalid and large, when an EXTENT_MAP_HOLE extent is found, the
+> > *len will not be set to zero because (em->start + em->len) is less than
+> > (*start + *len). Then the ret will be 1 but the *len will not be set to
+> > 0. The propagated non-zero ret will result in fallocate failure.
+> >
+> > In the while-loop of btrfs_replace_file_extents(), len is not updated
+> > every time before it calls find_first_non_hole(). That is, if the last
+> > file extent in the given hole-punching range has been dropped but
+> > btrfs_drop_extents() fails with -ENOSPC (btrfs_drop_extents() runs out
+> > of reserved space of the given transaction), the problem can happen.
+>
+> This is not entirely clear. Dropping the last extent and still
+> returning ENOSPC is confusing.
+> I think you mean that it drops the last file extent item that does not
+> represent hole (disk_bytenr > 0), and after it there's only one file
+> extent item representing a hole (disk_bytenr =3D=3D 0).
+> It fails with -ENOSPC when attempting to drop the file extent item
+> representing the hole, after successfully dropping the non-hole file
+> extent item.
+> Is that it?
+>
 
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Thank you for your comments. You're right.
+Saying the last file extent is not correct and confusing.
+I revised and send the v2 patch for fixing the commit message. Thank you.
 
-Reviewed-by: Liu Ying <victor.liu@nxp.com>
+> > After it calls find_first_non_hole(), the cur_offset will be adjusted
+> > to be larger than or equal to end. However, since the len is not set to
+> > zero. The break-loop condition (ret && !len) will not meet. After it
+> > leaves the while-loop, uncleared ret will result in fallocate failure.
+>
+> Ok, fallocate will return 1, an unexpected return value.
+>
+> >
+> > We're not able to construct a reproducible way to let
+> > btrfs_drop_extents() fails with -ENOSPC after it drops the last file
+> > extent but with remaining holes. However, it's quite easy to fix. We
+> > just need to update and check the len every time before we call
+> > find_first_non_hole(). To make the while loop more readable, we also
+> > pull the variable updates to the bottom of loop like this:
+> > while (cur_offset < end) {
+> >         ...
+> >         // update cur_offset & len
+> >         // advance cur_offset & len in hole-punching case if needed
+> > }
+> >
+> > Reported-by: Robbie Ko <robbieko@synology.com>
+> > Fixes: d77815461f04 ("btrfs: Avoid trucating page or punching hole in a
+> > already existed hole.")
+> > Reviewed-by: Robbie Ko <robbieko@synology.com>
+> > Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
+>
+> Looks good.
+> Please just update that paragraph to be more clear about what is going on=
+.
+>
+> Thanks.
+>
+> > ---
+> >  fs/btrfs/file.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > index 0e155f0..dccb017 100644
+> > --- a/fs/btrfs/file.c
+> > +++ b/fs/btrfs/file.c
+> > @@ -2735,8 +2735,6 @@ int btrfs_replace_file_extents(struct inode *inod=
+e, struct btrfs_path *path,
+> >                         extent_info->file_offset +=3D replace_len;
+> >                 }
+> >
+> > -               cur_offset =3D drop_args.drop_end;
+> > -
+> >                 ret =3D btrfs_update_inode(trans, root, BTRFS_I(inode))=
+;
+> >                 if (ret)
+> >                         break;
+> > @@ -2756,7 +2754,9 @@ int btrfs_replace_file_extents(struct inode *inod=
+e, struct btrfs_path *path,
+> >                 BUG_ON(ret);    /* shouldn't happen */
+> >                 trans->block_rsv =3D rsv;
+> >
+> > -               if (!extent_info) {
+> > +               cur_offset =3D drop_args.drop_end;
+> > +               len =3D end - cur_offset;
+> > +               if (!extent_info && len) {
+> >                         ret =3D find_first_non_hole(BTRFS_I(inode), &cu=
+r_offset,
+> >                                                   &len);
+> >                         if (unlikely(ret < 0))
+> > --
+> > 2.7.4
+> >
+>
+>
+> --
+> Filipe David Manana,
+>
+> =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you'=
+re right.=E2=80=9D
 
 Thanks,
-Liu Ying
-
-> ---
-> v3: fix build regression from v2
-> v2: fix subject line
->     expand patch description
->     print mux number
->     check upper bound as well
-> ---
->  drivers/gpu/drm/imx/imx-ldb.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/imx/imx-ldb.c b/drivers/gpu/drm/imx/imx-ldb.c
-> index dbfe39e2f7f6..565482e2b816 100644
-> --- a/drivers/gpu/drm/imx/imx-ldb.c
-> +++ b/drivers/gpu/drm/imx/imx-ldb.c
-> @@ -197,6 +197,11 @@ static void imx_ldb_encoder_enable(struct drm_encoder *encoder)
->  	int dual = ldb->ldb_ctrl & LDB_SPLIT_MODE_EN;
->  	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
->  
-> +	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-> +		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-> +		return;
-> +	}
-> +
->  	drm_panel_prepare(imx_ldb_ch->panel);
->  
->  	if (dual) {
-> @@ -255,6 +260,11 @@ imx_ldb_encoder_atomic_mode_set(struct drm_encoder *encoder,
->  	int mux = drm_of_encoder_active_port_id(imx_ldb_ch->child, encoder);
->  	u32 bus_format = imx_ldb_ch->bus_format;
->  
-> +	if (mux < 0 || mux >= ARRAY_SIZE(ldb->clk_sel)) {
-> +		dev_warn(ldb->dev, "%s: invalid mux %d\n", __func__, mux);
-> +		return;
-> +	}
-> +
->  	if (mode->clock > 170000) {
->  		dev_warn(ldb->dev,
->  			 "%s: mode exceeds 170 MHz pixel clock\n", __func__);
-
+BingJing Chang
