@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE693497C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C375B3497C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhCYRU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60564 "EHLO
+        id S229991AbhCYRVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhCYRUe (ORCPT
+        with ESMTP id S229547AbhCYRVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:20:34 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4915AC06174A;
-        Thu, 25 Mar 2021 10:20:34 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 75so3671266lfa.2;
-        Thu, 25 Mar 2021 10:20:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p1KeodbuGWMDyTs6ausZFxyrBcpgyG8oe8WdaIAVZPs=;
-        b=h0k8p75+H2fkeOXitrFSXG3rb+8KB9COOng/LwUdtO1tGAoWANJ4F/v4HUiT007UwR
-         PNwiwHnwcBPVVJqsQM9/p15w1PnxvB3CayUORBHlTphE1gjgM799B5JJKMdxOgUGlhPL
-         u6U0QDqxA6F3LeAF6vADjVz7/FZ5EjkDWl1PmaBN/rxE0JAqd+fYSmqbGPewTAfcCASH
-         Ypf2i8k4B5cdAZtkMde2pVXUTEWErNShkf04lr6JPOLJQqjPNRelhzFPJpt0TVUkm35W
-         xC+fNi+bYDJBIZ0Yclp/NZu53gD77bICvvfgHmTh0qh/q1aiug1pqSpNuiCcmgsMd4QT
-         TrUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p1KeodbuGWMDyTs6ausZFxyrBcpgyG8oe8WdaIAVZPs=;
-        b=eCqX8q+tel+kky5aXqxSfmap+AXsleZrSRPycC3sYkEHKP5F6In4t1na0jXjOtS4Gd
-         Z9YJRUH8E9mGGLA5KJHr2I4wNJuhsL+XyImwzLHZgfCaRQdSc6QZQjX7Mu49dflhxOcu
-         xdEynEpAakEpgcQfTvRYcE/TM337JEgtMMktqWurxiWII+uHeDxEkya6ZIifIGRRRv7F
-         Pe0vVDB82sl5349zxy+34DQBtA+6FjX0yUiSYC/v4X/gOROXvQkwElxu9Omr+goPh0dz
-         DtJmNUzhLuH/HptY/Fg2O+RGFxvQHSnjGk4sA8NErKA2l4/J+jmuUkmzZjp0c/cmVJlg
-         zuDQ==
-X-Gm-Message-State: AOAM533wOlAQS9xVUfLkuJ4RVTyCeX4aIvsbZWDwP0H2ZbwinjlmbmER
-        nNqwm1NNVFQtT8jk8bwicES6s5NIDQI=
-X-Google-Smtp-Source: ABdhPJyEeAMez5OVsm0Xv98iTg+rCo6MWO3Jq3trdKl35QrRfwaaDs6zrH3QCnm1cUolICCZ/qT7Jg==
-X-Received: by 2002:a05:6512:3327:: with SMTP id l7mr5728175lfe.639.1616692832603;
-        Thu, 25 Mar 2021 10:20:32 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
-        by smtp.googlemail.com with ESMTPSA id g7sm285491lfc.179.2021.03.25.10.20.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 10:20:32 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] memory: tegra20: Correct comment to MC_STAT
- registers writes
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210323210446.24867-1-digetx@gmail.com>
-Message-ID: <799f54f6-6023-338f-4e8f-cc0dfbac30d8@gmail.com>
-Date:   Thu, 25 Mar 2021 20:20:31 +0300
+        Thu, 25 Mar 2021 13:21:03 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A4CDC06174A;
+        Thu, 25 Mar 2021 10:21:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=hPUcNfmFYXF+F9jzXnSZaB8Uasyr3U6TOgw5rvhcYrY=; b=Pju/W9tTFQ8NqKnBc9hn5aiZf7
+        5MZdWFrRCsSJeG3WwZKteFexx8AGhGs4v7gUv7LPSO6KXE5rTBOWY4VCYnyfvdl+i68DpHbmFVVNW
+        4sqbp1+2uQXcSeRp4qqFx+zdEx1AcG6LiG1laL7bmSjpmQHBFHK5apmvAchS55xwRqdVeRXYTh2LZ
+        Lqr/4n132NWt4qd+JhVgW2F8+HaRDwM9mkNUHghhnaH4ARrybguOkg2ynm3g2YewZnALnBGem24Ne
+        D4T4Ts/us/WD9vLPbLqnI6UK4GIu0Qe72p1s1w79kFgdSq1sNT5jJXcZJ6twV+CRSaF4/UP0q8/bb
+        zYaL1EAA==;
+Received: from [2601:1c0:6280:3f0::3ba4]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPTfH-001tq9-7b; Thu, 25 Mar 2021 17:20:59 +0000
+Subject: Re: [PATCH] Bluetooth: L2CAP: Rudimentary typo fixes
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210325043544.29248-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <2c93a1a3-2717-29ef-4fc1-b41c61e02780@infradead.org>
+Date:   Thu, 25 Mar 2021 10:20:56 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210323210446.24867-1-digetx@gmail.com>
+In-Reply-To: <20210325043544.29248-1-unixbhaskar@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-24.03.2021 00:04, Dmitry Osipenko пишет:
-> The code was changed multiple times and the comment to MC_STAT
-> registers writes became slightly outdated. The MC_STAT programming
-> now isn't hardcoded to the "bandwidth" mode, let's clarify this in
-> the comment.
+On 3/24/21 9:35 PM, Bhaskar Chowdhury wrote:
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/memory/tegra/tegra20.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+> s/minium/minimum/
+> s/procdure/procedure/
 > 
-> diff --git a/drivers/memory/tegra/tegra20.c b/drivers/memory/tegra/tegra20.c
-> index 14caf5b9324c..4659c0cea30d 100644
-> --- a/drivers/memory/tegra/tegra20.c
-> +++ b/drivers/memory/tegra/tegra20.c
-> @@ -451,9 +451,8 @@ static void tegra20_mc_stat_gather(struct tegra20_mc_stat *stat)
->  	control_1 = tegra20_mc_stat_gather_control(&stat->gather1);
->  
->  	/*
-> -	 * Reset statistic gathers state, select bandwidth mode for the
-> -	 * statistics collection mode and set clocks counter saturation
-> -	 * limit to maximum.
-> +	 * Reset statistic gathers state, select statistics collection mode
-> +	 * and set clocks counter saturation limit to maximum.
->  	 */
->  	mc_writel(mc, 0x00000000, MC_STAT_CONTROL);
->  	mc_writel(mc,  control_0, MC_STAT_EMC_CONTROL_0);
-> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Krzysztof, please feel free to squash these 2 minor follow up patches
-into the original patch which added the the debug support, if you prefer
-this way more. I happened to notice these small itches only after you
-already picked up the previous patch.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+> ---
+>  net/bluetooth/l2cap_core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+> index 72c2f5226d67..b38e80a0e819 100644
+> --- a/net/bluetooth/l2cap_core.c
+> +++ b/net/bluetooth/l2cap_core.c
+> @@ -1690,7 +1690,7 @@ static void l2cap_le_conn_ready(struct l2cap_conn *conn)
+>  		smp_conn_security(hcon, hcon->pending_sec_level);
+> 
+>  	/* For LE slave connections, make sure the connection interval
+> -	 * is in the range of the minium and maximum interval that has
+> +	 * is in the range of the minimum and maximum interval that has
+>  	 * been configured for this connection. If not, then trigger
+>  	 * the connection update procedure.
+>  	 */
+> @@ -7542,7 +7542,7 @@ static void l2cap_data_channel(struct l2cap_conn *conn, u16 cid,
+>  	BT_DBG("chan %p, len %d", chan, skb->len);
+> 
+>  	/* If we receive data on a fixed channel before the info req/rsp
+> -	 * procdure is done simply assume that the channel is supported
+> +	 * procedure is done simply assume that the channel is supported
+>  	 * and mark it as ready.
+>  	 */
+>  	if (chan->chan_type == L2CAP_CHAN_FIXED)
+> --
+
+
+-- 
+~Randy
+
