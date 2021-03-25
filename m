@@ -2,125 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153CC348E11
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0831348E2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbhCYKcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhCYKcj (ORCPT
+        id S230262AbhCYKi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:38:56 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14901 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230151AbhCYKiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:32:39 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FCFC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:32:39 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id t5so879739qvs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=riedSrKtxw3fAlSP6DjMpmEAF9/MIT8ZMEFek292R7I=;
-        b=YcMr+TvI4OCyWLgDrnHkhv9PzsxmuqCIDPmMKU8XdQq0lWz3VVZpEHHpBG4sZcjE9K
-         q/mDJnqzGVAiMGNV5Ch08qUvW7yJLFR7siZWCDmuTKcAajDeJHVmZiJLtpbbzJoqw9JP
-         AfCGOasvb0O/XPFzPrBdlP9sae+99QbV4AagFSDwZqZdK6lOh/J61GZF091PvZ9QY+td
-         4LqEBxzSi5jAI3yWiUw+jxOGaOrAWGVOCzl9GWVCVuNMCw7PgYDkOgOE8YsJDWX7sdOl
-         vN/Rsfwhdblgnd5I2oBFF7VrT3xOW0zzhIYbeIhjR77U7Iqyv+oHdRvpPr1bMu6nmgjr
-         Klew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=riedSrKtxw3fAlSP6DjMpmEAF9/MIT8ZMEFek292R7I=;
-        b=bHiTEiqu9ZvTqu+3dtso7eBMNcEluVUe5ohDIbUAm+sDn5KDRyllFPU1m975/xuO6/
-         8Kk6g5JSzvnDA/tZ1kG5vPqlNpsX5BAwZVIobt/OiQfdGp3xmtYPE1lA9U0kjTbul5or
-         MXFJNc1SDGHp/IXknvU3C39sNS6b11WVTYxHn0BfRWEgJ5G0ak5DO0Csmne9hSghUPUW
-         nRh6j4xWMaruc+aAwTC25MoUfhePLy73y5QoC5BoDiKFwmu4B529oKrWSio9HDtH3C/c
-         eTTIsecUoEGzXfvDa496oXR0u6pP+HxIHkL+Y7g2LWpYKqdpKq3nQ+QJhp3g2/PLWyNA
-         /eqQ==
-X-Gm-Message-State: AOAM5329un6k//STNowDTJVC/K2GJrWWZ7PxZc12uGKtLZNlyfCDUNAd
-        /9O1rhQ1kmSeSAj3vz69t1ZJVvlCH9rk/H56RjC2Ee6vmjgi8A==
-X-Google-Smtp-Source: ABdhPJxGROXp5MxcFZvufqmTL1sh8SUTKf370i2ucKM2mfF4xF/OXdIVhXNeW6UbM6KFxRZjwlxFUBW/tA6q51kVcmY=
-X-Received: by 2002:a05:6214:1870:: with SMTP id eh16mr7366855qvb.23.1616668358041;
- Thu, 25 Mar 2021 03:32:38 -0700 (PDT)
+        Thu, 25 Mar 2021 06:38:19 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F5hNj5jFyzkfVN;
+        Thu, 25 Mar 2021 18:36:37 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Mar 2021 18:38:06 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <irogers@google.com>
+CC:     <linuxarm@huawei.com>, <kjain@linux.ibm.com>,
+        <kan.liang@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <zhangshaokun@hisilicon.com>, <pc@us.ibm.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH v2 0/6] perf arm64 metricgroup support
+Date:   Thu, 25 Mar 2021 18:33:12 +0800
+Message-ID: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-References: <20210323064923.2098711-1-dvyukov@google.com> <CANn89iJOignHVg-QOtEB_RVqca=pMczJv-k=CEtPRH0d4fSdgA@mail.gmail.com>
- <CACT4Y+YjJBkbi-u6VTikhHO4OjXhdKnQTqDiHxB5BEZG2Qn7qg@mail.gmail.com> <CANn89iJBz4NjRzaAyP8gFGzu1y=3YeLOEZ8CLMqv5aUkP7wRvw@mail.gmail.com>
-In-Reply-To: <CANn89iJBz4NjRzaAyP8gFGzu1y=3YeLOEZ8CLMqv5aUkP7wRvw@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 25 Mar 2021 11:32:27 +0100
-Message-ID: <CACT4Y+bSaYREQgtDX-wCMObjyMO0=8FbWduRHxk5nHAkZFc6WQ@mail.gmail.com>
-Subject: Re: [PATCH v2] net: make unregister netdev warning timeout configurable
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Leon Romanovsky <leon@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 9:46 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Thu, Mar 25, 2021 at 8:39 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Wed, Mar 24, 2021 at 10:40 AM Eric Dumazet <edumazet@google.com> wrote:
-> > >
-> > > On Tue, Mar 23, 2021 at 7:49 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > >
-> > > > netdev_wait_allrefs() issues a warning if refcount does not drop to 0
-> > > > after 10 seconds. While 10 second wait generally should not happen
-> > > > under normal workload in normal environment, it seems to fire falsely
-> > > > very often during fuzzing and/or in qemu emulation (~10x slower).
-> > > > At least it's not possible to understand if it's really a false
-> > > > positive or not. Automated testing generally bumps all timeouts
-> > > > to very high values to avoid flake failures.
-> > > > Add net.core.netdev_unregister_timeout_secs sysctl to make
-> > > > the timeout configurable for automated testing systems.
-> > > > Lowering the timeout may also be useful for e.g. manual bisection.
-> > > > The default value matches the current behavior.
-> > > >
-> > > > Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
-> > > > Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
-> > > > Cc: netdev@vger.kernel.org
-> > > > Cc: linux-kernel@vger.kernel.org
-> > > >
-> > > > ---
-> > > > Changes since v1:
-> > > >  - use sysctl instead of a config
-> > > > ---
-> > >
-> > > >         },
-> > > > +       {
-> > > > +               .procname       = "netdev_unregister_timeout_secs",
-> > > > +               .data           = &netdev_unregister_timeout_secs,
-> > > > +               .maxlen         = sizeof(unsigned int),
-> > > > +               .mode           = 0644,
-> > > > +               .proc_handler   = proc_dointvec_minmax,
-> > > > +               .extra1         = SYSCTL_ZERO,
-> > > > +               .extra2         = &int_3600,
-> > > > +       },
-> > > >         { }
-> > > >  };
-> > > >
-> > >
-> > > If we allow the sysctl to be 0, then we risk a flood of pr_emerg()
-> > > (one per jiffy ?)
-> >
-> > My reasoning was that it's up to the user. Some spammy output on the
-> > console for rare events is probably not the worst way how root can
-> > misconfigure the kernel :)
-> > It allows one to check (more or less) if we are reaching
-> > unregister_netdevice with non-zero refcount, which may be useful for
-> > some debugging maybe.
-> > But I don't mind changing it to 1 (or 5) if you prefer. On syzbot we
-> > only want to increase it.
-> >
->
-> Yes, please use a lower limit of one to avoid spurious reports.
+This series contains support to get basic metricgroups working for
+arm64 CPUs.
 
-This commit is already in net-next and net-next is not rebased, right?
-I sent a separate fix as "net: change netdev_unregister_timeout_secs
-min value to 1".
+Initial support is added for HiSilicon hip08 platform.
+
+Some sample usage on Huawei D06 board:
+
+ $ ./perf list metric    
+
+List of pre-defined events (to be used in -e): 
+
+Metrics:     
+
+  bp_misp_flush
+       [BP misp flush L3 topdown metric]
+  branch_mispredicts
+       [Branch mispredicts L2 topdown metric]
+  core_bound
+       [Core bound L2 topdown metric]
+  divider
+       [Divider L3 topdown metric]
+  exe_ports_util
+       [EXE ports util L3 topdown metric]
+  fetch_bandwidth_bound
+       [Fetch bandwidth bound L2 topdown metric]
+  fetch_latency_bound
+       [Fetch latency bound L2 topdown metric]
+  fsu_stall
+       [FSU stall L3 topdown metric]
+  idle_by_icache_miss
+
+$ sudo ./perf stat -v -M core_bound sleep 1
+Using CPUID 0x00000000480fd010
+metric expr (exe_stall_cycle - (mem_stall_anyload + armv8_pmuv3_0@event\=0x7005@)) / cpu_cycles for core_bound
+found event cpu_cycles
+found event armv8_pmuv3_0/event=0x7005/
+found event exe_stall_cycle
+found event mem_stall_anyload
+adding {cpu_cycles -> armv8_pmuv3_0/event=0x7001/
+mem_stall_anyload -> armv8_pmuv3_0/event=0x7004/
+Control descriptor is not initialized
+cpu_cycles: 989433 385050 385050
+armv8_pmuv3_0/event=0x7005/: 19207 385050 385050
+exe_stall_cycle: 900825 385050 385050
+mem_stall_anyload: 253516 385050 385050
+
+Performance counter stats for 'sleep':
+
+989,433      cpu_cycles      #     0.63 core_bound
+  19,207      armv8_pmuv3_0/event=0x7005/
+ 900,825      exe_stall_cycle
+ 253,516      mem_stall_anyload
+
+       0.000805809 seconds time elapsed
+
+       0.000875000 seconds user
+       0.000000000 seconds sys
+       
+perf stat --topdown is not supported, as this requires the CPU PMU to
+expose (alias) events for the TopDown L1 metrics from sysfs, which arm 
+does not do. To get that to work, we probably need to make perf use the
+pmu-events cpumap to learn about those alias events.
+
+Metric reuse support is added for pmu-events parse metric testcase.
+This had been broken on power9 recentlty:
+https://lore.kernel.org/lkml/20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com/ 
+
+Differences to v1:
+- Add pmu_events_map__find() as arm64-specific function
+- Fix metric reuse for pmu-events parse metric testcase 
+
+John Garry (6):
+  perf metricgroup: Make find_metric() public with name change
+  perf test: Handle metric reuse in pmu-events parsing test
+  perf pmu: Add pmu_events_map__find()
+  perf vendor events arm64: Add Hisi hip08 L1 metrics
+  perf vendor events arm64: Add Hisi hip08 L2 metrics
+  perf vendor events arm64: Add Hisi hip08 L3 metrics
+
+ tools/perf/arch/arm64/util/Build              |   1 +
+ tools/perf/arch/arm64/util/pmu.c              |  25 ++
+ .../arch/arm64/hisilicon/hip08/metrics.json   | 233 ++++++++++++++++++
+ tools/perf/tests/pmu-events.c                 |  82 +++++-
+ tools/perf/util/metricgroup.c                 |  12 +-
+ tools/perf/util/metricgroup.h                 |   3 +-
+ tools/perf/util/pmu.c                         |   5 +
+ tools/perf/util/pmu.h                         |   1 +
+ tools/perf/util/s390-sample-raw.c             |   4 +-
+ 9 files changed, 355 insertions(+), 11 deletions(-)
+ create mode 100644 tools/perf/arch/arm64/util/pmu.c
+ create mode 100644 tools/perf/pmu-events/arch/arm64/hisilicon/hip08/metrics.json
+
+-- 
+2.26.2
+
