@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778B33496F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF5E34970E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhCYQiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:38:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
+        id S229904AbhCYQl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhCYQh4 (ORCPT
+        with ESMTP id S229664AbhCYQlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:37:56 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08B7C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:37:56 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so2955284pjh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:37:56 -0700 (PDT)
+        Thu, 25 Mar 2021 12:41:25 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98FECC06174A;
+        Thu, 25 Mar 2021 09:41:25 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id v26so2515485iox.11;
+        Thu, 25 Mar 2021 09:41:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j1pZAvYAVzsZZHp5KG97j4wvqJJqp/GZGQpxZqyCZkU=;
-        b=BsSAhpPMJzxPlpEJmhErAxRen8+OVU/RHJ8REDjIz0DB6TQ/Jkz4O+370avLr5UDVc
-         NmBlde+ypDu0ck6udR7USi6swGM/BPzpVgrxE/M+xGPWWvgEviY0DQXUc1LhIpqtc3dw
-         mXvxNgkru6tOr5rpSwaT4jpDu/qBaiVg19IuPo/XMfo6moY8qhm0iMO5z4xIie9jwEKc
-         2ke76QWEJSDYSQgrAbvPTTW/yyvplDw3sZQAsuobvuuBn6ffYm48fn4vk3bVU/m3v9eb
-         dBSqUWKHsZJeSzPA9QMlB+Ip1fZEuEkV0W90AzHadzG1RI/sjz7r89BuixDXYQxZqtJS
-         iEJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OdbHY0RnzXW9ln9u58UHELCJWkEnS2LU09uY7jHKHhU=;
+        b=lt3Hqv6lHrHwGZtQRrQ38hRcDah6BT3R+RyYwSI+RZP0u9c/rC6oVratLljSq2SigX
+         H2UxOLfe7Woo6m5o982ut9cTCFvthqQMvwXclLOuqSHaOGyOFM2zLxTNnbBmhM5TYk8D
+         x616ICnc69sZ1QMlbwlZhz+B8JsnbDM/a1vYkg6R2GjUOWWeLKmdFLJ2uVJlYD+iPVhw
+         AeDBQjlYUVKZvnZbODqbTLAZnl3lCd8gaFjdg2HJYxV3FUumtAKMiudPRrqB434EF1pm
+         q47nf8xQPVnhPk6DKzRlK/N04bcmCTWOC22OUZGoMmpBEaS92bznVdEIwKWgWC0xSG+e
+         1Eqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j1pZAvYAVzsZZHp5KG97j4wvqJJqp/GZGQpxZqyCZkU=;
-        b=VzDWpBXtKr+2nIyls4GJJzXDMbgyAfWYCkK+c0IOw+vyY1YHBWBXCKG3phAd5gYzxp
-         szoEb3kRr+JOIIm7RfeXexKDSZjsYNExFuER+8BJ/gxolbKo6lTBdQrgUdTMQVi2Vy7O
-         CUZFMCQIT/dtaNNQe88WEBjGJGUyim7BbrEqGameR3FOq2W+rM3LNKZajE2h37Q+OwvM
-         Y5VTi8948AIVH2EtELZk0NV+ZwWKxdctdZMVjnxdWwsDp/xsJqLZUvJYbJCAJXLzFRAI
-         25AF+NFDLTO7NzN9b6wRVCXZGux1hPP+eNL66lZH95LKCiOQqdKI8Mto11e2bmTBZQIW
-         a6ZQ==
-X-Gm-Message-State: AOAM530Y1yugi9F/AWGkRg1fa2xM57xzzVOKD+CQu4fHxr6m5C/DcZhX
-        2t8OOm8JaAYLe4JaRqxvcsA=
-X-Google-Smtp-Source: ABdhPJwhluULfw4IngVOapNHkaDeImTPjLtclujWSATtfPPty2e9n8r/vn7LjKPPIw3nyeJk1+egLw==
-X-Received: by 2002:a17:90a:c981:: with SMTP id w1mr10001536pjt.176.1616690276201;
-        Thu, 25 Mar 2021 09:37:56 -0700 (PDT)
-Received: from localhost (li1758-18.members.linode.com. [172.104.167.18])
-        by smtp.gmail.com with ESMTPSA id t12sm5804940pga.85.2021.03.25.09.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 09:37:55 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH] tracing: A minor cleanup for create_system_filter()
-Date:   Thu, 25 Mar 2021 16:37:52 +0000
-Message-Id: <20210325163752.128407-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OdbHY0RnzXW9ln9u58UHELCJWkEnS2LU09uY7jHKHhU=;
+        b=EFyP5zy4DIFedsVa3vqPLI7SG3CiPgNIg8akWfwS5ttr58hOorR6Fei4YAnkcya9L1
+         6aRr61NEeWqEUFHMEDSYMZFqyfof4yGYqXsEAbrqYladbMxGYQ21d579mmfY7SjkLtW7
+         aBOw7mXvCidH/ZbcXg5WjXMkZz07RZWkz1t0XjJFQjs5OrR6Ldn44COBqt4OgR48GlZV
+         vioEGhkwLsSn84YckkhqaydV/9Uu9BCl2N1ea2PtPB6esef6HbL0XHQsTOmPJgoqKmIa
+         YR1PC4MZr/DDMsp6tCkThKdhGuMTKO9SM9/vXR/GAeLmiz/K5qoFS9/W8kCbOYZkCF9A
+         j/oA==
+X-Gm-Message-State: AOAM5315bl5Nsj1QENAeynp8cMUvrORlWXKRnb28JqMWlRAEXgQlQCVq
+        pmrDQUWm7MrTmekN5bf7+Tr9w7zZqiYf0q6w4a0=
+X-Google-Smtp-Source: ABdhPJxbrlydndu7n5u97K0HgoGx9Fx7r5H7yg7JN5zcWAYel05Svrjq2W6LDfFYaZts37+Sii4p9iLuRyVB+S8mVS4=
+X-Received: by 2002:a02:8801:: with SMTP id r1mr8496177jai.51.1616690485097;
+ Thu, 25 Mar 2021 09:41:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210325063825.228167-1-luwei32@huawei.com> <20210325063825.228167-2-luwei32@huawei.com>
+In-Reply-To: <20210325063825.228167-2-luwei32@huawei.com>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Thu, 25 Mar 2021 17:41:16 +0100
+Message-ID: <CAOi1vP9uuaY9OMmW0Xni5iUztyAviFH3N11ohWbb2zqXsGYMiQ@mail.gmail.com>
+Subject: Re: [PATCH -next 1/5] net: ceph: Fix a typo in osdmap.c
+To:     Lu Wei <luwei32@huawei.com>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, xiyou.wangcong@gmail.com,
+        ap420073@gmail.com, linux-decnet-user@lists.sourceforge.net,
+        Andrew Lunn <andrew@lunn.ch>, vivien.didelot@gmail.com,
+        Florian Fainelli <f.fainelli@gmail.com>, olteanv@gmail.com,
+        steffen.klassert@secunet.com,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first two parameters should be reduced to one, as @tr is simply
-@dir->tr.
+On Thu, Mar 25, 2021 at 7:37 AM Lu Wei <luwei32@huawei.com> wrote:
+>
+> Modify "inital" to "initial" in net/ceph/osdmap.c.
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Lu Wei <luwei32@huawei.com>
+> ---
+>  net/ceph/osdmap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/net/ceph/osdmap.c b/net/ceph/osdmap.c
+> index 2b1dd252f231..c959320c4775 100644
+> --- a/net/ceph/osdmap.c
+> +++ b/net/ceph/osdmap.c
+> @@ -1069,7 +1069,7 @@ static struct crush_work *get_workspace(struct workspace_manager *wsm,
+>
+>                 /*
+>                  * Do not return the error but go back to waiting.  We
+> -                * have the inital workspace and the CRUSH computation
+> +                * have the initial workspace and the CRUSH computation
+>                  * time is bounded so we will get it eventually.
+>                  */
+>                 WARN_ON(atomic_read(&wsm->total_ws) < 1);
+> --
+> 2.17.1
+>
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
- kernel/trace/trace_events_filter.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Hi Lu,
 
-diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index e6efb5dfec5d..cf7fc61f71f7 100644
---- a/kernel/trace/trace_events_filter.c
-+++ b/kernel/trace/trace_events_filter.c
-@@ -1751,7 +1751,6 @@ int create_event_filter(struct trace_array *tr,
-  * and always remembers @filter_str.
-  */
- static int create_system_filter(struct trace_subsystem_dir *dir,
--				struct trace_array *tr,
- 				char *filter_str, struct event_filter **filterp)
- {
- 	struct filter_parse_error *pe = NULL;
-@@ -1759,13 +1758,13 @@ static int create_system_filter(struct trace_subsystem_dir *dir,
- 
- 	err = create_filter_start(filter_str, true, &pe, filterp);
- 	if (!err) {
--		err = process_system_preds(dir, tr, pe, filter_str);
-+		err = process_system_preds(dir, dir->tr, pe, filter_str);
- 		if (!err) {
- 			/* System filters just show a default message */
- 			kfree((*filterp)->filter_string);
- 			(*filterp)->filter_string = NULL;
- 		} else {
--			append_filter_err(tr, pe, *filterp);
-+			append_filter_err(dir->tr, pe, *filterp);
- 		}
- 	}
- 	create_filter_finish(pe);
-@@ -1853,7 +1852,7 @@ int apply_subsystem_event_filter(struct trace_subsystem_dir *dir,
- 		goto out_unlock;
- 	}
- 
--	err = create_system_filter(dir, tr, filter_string, &filter);
-+	err = create_system_filter(dir, filter_string, &filter);
- 	if (filter) {
- 		/*
- 		 * No event actually uses the system filter
--- 
-2.25.1
+There is at least one other legit typo in that file: "ambigous".
+I'd rather fix all typos at once, so curious why Hulk Robot didn't
+catch it.
 
+Thanks,
+
+                Ilya
