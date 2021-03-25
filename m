@@ -2,151 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DC4349317
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67C634931D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhCYNbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:31:53 -0400
-Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:41594 "EHLO
-        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhCYNba (ORCPT
+        id S230306AbhCYNc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:32:29 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:22995 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhCYNcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:31:30 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 9C0E83FEFF;
-        Thu, 25 Mar 2021 14:31:28 +0100 (CET)
-Authentication-Results: ste-pvt-msa2.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=Mdg8AKwx;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
-        dkim=pass (1024-bit key) header.d=shipmail.org
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9qCSgkHCCOe7; Thu, 25 Mar 2021 14:31:26 +0100 (CET)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 2D72E3FFA0;
-        Thu, 25 Mar 2021 14:31:23 +0100 (CET)
-Received: from [10.249.254.165] (unknown [192.198.151.44])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 1F61C3600A8;
-        Thu, 25 Mar 2021 14:31:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1616679083; bh=XL8BQAJQEgz/HLXrzxugZdd/kAGy1RzLvj1mQCzDRCE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Mdg8AKwxGQ6V9ZBKUXVtboLF2eXHKU4JPoHnip24gLaK3C4SzHyvsdQrTgwIx3H12
-         //oJQ3EAvuZ6AsyBKb8g7S5z/CB5gVqkdUJoVB9PX/F4eR+WeBp/o12nWyHtUX1mLu
-         ZFIriU2fBftCSzwXnUdi8riG3/KApf6l9HFkBiBk=
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <0b984f96-00fb-5410-bb16-02e12b2cc024@shipmail.org>
- <20210324163812.GJ2356281@nvidia.com>
- <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
- <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
- <20210324231419.GR2356281@nvidia.com>
- <607ecbeb-e8a5-66e9-6fe2-9a8d22f12bc2@shipmail.org>
- <fb74efd9-55be-9a8d-95b0-6103e263aab8@amd.com>
- <15da5784-96ca-25e5-1485-3ce387ee6695@shipmail.org>
- <20210325113023.GT2356281@nvidia.com>
- <afad3159-9aa8-e052-3bef-d00dee1ba51e@shipmail.org>
- <20210325120103.GV2356281@nvidia.com>
- <a0d0ffd7-3c34-5002-f4fe-cb9d4ba0279e@amd.com>
- <d8c5b688-ede1-b952-1bc9-f2aae870a7a6@shipmail.org>
- <fc548803-7e12-83d7-10b8-4774cae4747f@amd.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <9e924f37-c638-afc7-0354-7258836772b1@shipmail.org>
-Date:   Thu, 25 Mar 2021 14:31:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 25 Mar 2021 09:32:02 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210325133200euoutp0166aeba5f1b3f5b211cb2314ff2f3acce~vmRhOz2re0077800778euoutp01B
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:32:00 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210325133200euoutp0166aeba5f1b3f5b211cb2314ff2f3acce~vmRhOz2re0077800778euoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1616679120;
+        bh=Z/DNfCxQzs0IDWoaY5k0ggzsNxFtNfsppQC7SUo3Oxc=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=PMtE0N/GN5n23FKdJXoe8fmfFE0n4PTHJd3YgoYKQPYCm535bMH5dylBD/7xAPS6A
+         q4+0hT/utbRMOzRFTSeYrVtJswhqbLyjqTM7c8/0pfbxpLlEFTUpA/GJHzeLLuskvt
+         JfW95ozqwAKxC+A8pj2zaJLFcCbZ+vpPvtNEovU0=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210325133200eucas1p220f7c0abe8506fb7c14ee5a19048e6d5~vmRgcvosb0792407924eucas1p2T;
+        Thu, 25 Mar 2021 13:32:00 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 5F.25.09452.FC09C506; Thu, 25
+        Mar 2021 13:31:59 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e~vmRfxkYzT0793607936eucas1p2M;
+        Thu, 25 Mar 2021 13:31:59 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210325133159eusmtrp2092b54a21cf01982167e7e9aebd38641~vmRfwEGGD3060130601eusmtrp2q;
+        Thu, 25 Mar 2021 13:31:59 +0000 (GMT)
+X-AuditID: cbfec7f2-a9fff700000024ec-a5-605c90cf87a7
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id FA.32.08705.FC09C506; Thu, 25
+        Mar 2021 13:31:59 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210325133157eusmtip1093d76ecea4c2fb8cbe03e117ac26715~vmReav6BN2222222222eusmtip1s;
+        Thu, 25 Mar 2021 13:31:57 +0000 (GMT)
+Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>, corbet@lwn.net,
+        gregkh@linuxfoundation.org, rafael@kernel.org, khilman@kernel.org,
+        ulf.hansson@linaro.org, len.brown@intel.com, lenb@kernel.org,
+        pavel@ucw.cz, mturquette@baylibre.com, sboyd@kernel.org,
+        robh+dt@kernel.org, frowand.list@gmail.com, maz@kernel.org,
+        tglx@linutronix.de, saravanak@google.com
+Cc:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
+        geert@linux-m68k.org, kernel-team@android.com,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com>
+Date:   Thu, 25 Mar 2021 14:31:57 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <fc548803-7e12-83d7-10b8-4774cae4747f@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210210114435.122242-2-tudor.ambarus@microchip.com>
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA01SfUxTVxzdfa99rxDrHgXTO2aYNJM5l/FhMN6NxjDF7S1EQzYXF4KjFd/A
+        FSq2sM0tGQhUoSoUi1FrCZiiMD4E21GtCKylriBLy4ZjjCGufJTJhqbW+S2O55ON/8459/zO
+        73eSK8BFViJcsEuZx6iU8mwJEcyz/vDA86ZHlyaLNfqkyNP1mEST3x8AqMbp5qMTfz8lkG+k
+        E0PFplYCXTgfhqYsExgyVM1LNu8sgeq7KgDyHxrjo1P763ho8KKRQIHDToAqf28jkc3Yx0c/
+        XdmEzltO4chqqCfQtSuXCVR95yiONJ1OEmkdTwg0N3SOhyzmec1fl4hcLdsSl9PWDiufvjWs
+        IWmb4RpJ15rzadOlGxhtbiwj6NGhSwR90+0maUdPKaC7q5tJ2lJXQJvK9Xx69P5pQFv6v6Yb
+        mu6RdMAckUKlBkt3Mtm7PmdUMetlwVnlk5O83PGILzXXrUQhKAnXgiABpOJhwPYLoQXBAhHV
+        AKDe1P+c3AFwYrYFZ10iKgBgYb1kYaLn0a3npnoAL3fcAxzxA+g3dWBaIBCEUu9DszGL1cOo
+        GxjU+1p5LMGpUhz2/OHlsVEEFQe1s1qCxUJqPTzS58RYzKNWwqkBL58NWkbtgG2O7ZwlBPad
+        mHw2GkRtgP0VTc/sOPUKLG4/iXNYDEcmazB2F6TswVBnbAZsDqSS4F9VG7kGoXDG9R3J4eXw
+        qW3BXwyg191CcuQQgINFxwHnSoCj7ocEG4RTr8PWizGc/A4sDdzmc/lL4fBsCHfDUnjEegzn
+        ZCEs3S/i3FHQ4Dr731r7wM+4DkgMi5oZFrUxLGpj+H9vLeA1AjGTr87JZNRxSuaLaLU8R52v
+        zIzO2J1jBvNfu3/OdfsCqJ7xRzsAJgAOAAW4JEy4Y3OaTCTcKd/7FaPana7Kz2bUDvCygCcR
+        CxtPNqeLqEx5HqNgmFxGtfCKCYLCCzGj8u25pMGOo70vvXo38rcl/Kzjvc6QtYel7mPnIh+t
+        Ufu2JXVRSQV2YpOqL8Ja9GdKXfnVkUp7e9QKRTf2ickzkLCltnt8YxSpV0wcgOsG8E5F6bS1
+        KUCLtQW/vmUs8qTBD8+KKl6bmrbpM16sHz4T8vjT7pLte+7aNQZP+B51WmjDhoS8j6XK96qS
+        /Vs0kaHJg5qxis3XpaMfpH8kU6DuJLtuXEp4qCWf+eIPrvJthS0Pl4l/FL/xZPXVWBQpWrPu
+        4Kqw9sq9qSUZutah1JmBM15Jb3LN/fgU3YPeqH2935QpX2jwrV3R5oopc347nfhu/D9BUxL9
+        ygTZvrFYUe7NZAlPnSWPW42r1PJ/AU4O5fpJBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNKsWRmVeSWpSXmKPExsVy+t/xu7rnJ8QkGHxey29xft8fdosnB9oZ
+        LeYfOcdqMfPNfzaLZ7f2Mlk0L17PZrFju4jF082PmSxmTQEK7Xz4ls1i+b5+RouPPfdYLRa2
+        LWGxuLxrDpvF594jjBYTb29gt9g55ySrxcVTrhbbNy9kttg2azmbxd1TR9ks5n6ZymzRuvcI
+        u0XXob9sFv+ubWSx2LwJKPZxiYPF8bXhDjIe23ZvY/V4f6OV3WPnrLvsHgs2lXos3vOSyWPT
+        qk42jzvX9rB5vDt3jt3j0OEORo/9c9ewe2xeUu+xuG8yq8edH0sZPTafrvZYsfo7u8fnTXIB
+        AlF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqGxuaxVkamSvp2NimpOZllqUX6dgl6GX1P
+        nrAUPJKraL2/ja2BsUWqi5GTQ0LAROLw7/dsXYxcHEICSxklXi58ygyRkJE4Oa2BFcIWlvhz
+        rQuq6D2jxNfLk1i6GDk4hAU8JTbNyQCJiwi8ZJJ4tWkfK4jDLNDBLHHpeDc7RMdqRolr//4y
+        gYxiEzCU6HoLMoqTg1fATmLSySNgcRYBVYmnFx6CrRMVSJK4vGQiK0SNoMTJmU9YQGxOASeJ
+        0/2rweqZBcwk5m1+yAxhy0s0b50NZYtL3Hoyn2kCo9AsJO2zkLTMQtIyC0nLAkaWVYwiqaXF
+        uem5xYZ6xYm5xaV56XrJ+bmbGIGpatuxn5t3MM579VHvECMTB+MhRgkOZiUR3iTfmAQh3pTE
+        yqrUovz4otKc1OJDjKZA/0xklhJNzgcmy7ySeEMzA1NDEzNLA1NLM2Mlcd6tc9fECwmkJ5ak
+        ZqemFqQWwfQxcXBKNTAd2sJbqSZ3ZsaPzGfXT7892/3YTKtiQ9tn8Uotpq/7Vv/eOMFRykax
+        f9X+bd3fMqdxfRQOq8644Xc84WpJhHE/l5e34oIXxnuWx20si5L5cfMpf4Xw7UvfJ/VwPhDp
+        vCLSv+JQwxyZy3Fs5oZTPvSd5FS1P7OizyJ5wqU+jdStk1N7BZpe7bjLEW2uz+kq/WY189uc
+        iD/7X9Tty5ygu6FvX/cS+wWdN7h1dvzw4nI+s2xVvZRG6HJJdsei0s2PeBhV8rM+W77YcOaW
+        3OHwtypHjH52xRW/zlP8cmjp/LKXbQb9hs99v2hc8/RLCE35pZ3Rxq8R9lOSkeGU8+xXyZOt
+        zl9h95nyPz8mQIOnh0+JpTgj0VCLuag4EQC4OsQT3gMAAA==
+X-CMS-MailID: 20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e
+References: <20210205222644.2357303-9-saravanak@google.com>
+        <20210210114435.122242-1-tudor.ambarus@microchip.com>
+        <20210210114435.122242-2-tudor.ambarus@microchip.com>
+        <CGME20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi
 
-On 3/25/21 2:02 PM, Christian König wrote:
+On 10.02.2021 12:44, Tudor Ambarus wrote:
+> This is a follow-up for:
+> commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
 >
+> The above commit updated the deprecated of_clk_add_provider(),
+> but missed to update the preferred of_clk_add_hw_provider().
+> Update it now.
 >
-> Am 25.03.21 um 13:36 schrieb Thomas Hellström (Intel):
->>
->> On 3/25/21 1:09 PM, Christian König wrote:
->>> Am 25.03.21 um 13:01 schrieb Jason Gunthorpe:
->>>> On Thu, Mar 25, 2021 at 12:53:15PM +0100, Thomas Hellström (Intel) 
->>>> wrote:
->>>>
->>>>> Nope. The point here was that in this case, to make sure mmap uses 
->>>>> the
->>>>> correct VA to give us a reasonable chance of alignement, the 
->>>>> driver might
->>>>> need to be aware of and do trickery with the huge page-table-entry 
->>>>> sizes
->>>>> anyway, although I think in most cases a standard helper for this 
->>>>> can be
->>>>> supplied.
->>>> Of course the driver needs some way to influence the VA mmap uses,
->>>> gernally it should align to the natural page size of the device
->>>
->>> Well a mmap() needs to be aligned to the page size of the CPU, but 
->>> not necessarily to the one of the device.
->>>
->>> So I'm pretty sure the device driver should not be involved in any 
->>> way the choosing of the VA for the CPU mapping.
->>>
->>> Christian.
->>>
->> We've had this discussion before and at that time I managed to 
->> convince you by pointing to the shmem helper for this, 
->> shmem_get_umapped_area().
->
-> No, you didn't convinced me. I was just surprised that this is 
-> something under driver control.
->
->>
->> Basically there are two ways to do this. Either use a standard helper 
->> similar to shmem's, and then the driver needs to align physical 
->> (device) huge page boundaries to address space offset huge page 
->> boundaries. If you don't do that you can just as well use a custom 
->> function that adjusts for you not doing that 
->> (drm_get_unmapped_area()). Both require driver knowledge of the size 
->> of huge pages.
->
-> And once more, at least for GPU drivers that looks like the totally 
-> wrong approach to me.
->
-> Aligning the VMA so that huge page allocations become possible is the 
-> job of the MM subsystem and not that of the drivers.
->
-Previous discussion here
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
 
-https://www.spinics.net/lists/linux-mm/msg205291.html
+This patch, which landed in linux-next as commit 6579c8d97ad7 ("clk: 
+Mark fwnodes when their clock provider is added") causes the following 
+NULL pointer dereference on Raspberry Pi 3b+ boards:
 
->>
->> Without a function to adjust, mmap will use it's default (16 byte?) 
->> alignment and chance of alignment becomes very small.
->
-> Well it's 4KiB at least.
-Yes :/ ...
->
-> Regards,
-> Christian.
->
-Thanks,
+--->8---
 
-Thomas
+raspberrypi-firmware soc:firmware: Attached to firmware from 
+2020-01-06T13:05:25
+Unable to handle kernel NULL pointer dereference at virtual address 
+0000000000000050
+Mem abort info:
+   ESR = 0x96000004
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+Data abort info:
+   ISV = 0, ISS = 0x00000004
+   CM = 0, WnR = 0
+[0000000000000050] user address but active_mm is swapper
+Internal error: Oops: 96000004 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 PID: 10 Comm: kworker/0:1 Not tainted 5.12.0-rc4+ #2764
+Hardware name: Raspberry Pi 3 Model B (DT)
+Workqueue: events deferred_probe_work_func
+pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+pc : of_clk_add_hw_provider+0xac/0xe8
+lr : of_clk_add_hw_provider+0x94/0xe8
+sp : ffff8000130936b0
+x29: ffff8000130936b0 x28: ffff800012494e04
+x27: ffff00003b18cb05 x26: ffff00003aa5c010
+x25: 0000000000000000 x24: 0000000000000000
+x23: ffff00003aa1e380 x22: ffff8000106830d0
+x21: ffff80001233f180 x20: 0000000000000018
+x19: 0000000000000000 x18: ffff8000124d38b0
+x17: 0000000000000013 x16: 0000000000000014
+x15: ffff8000125758b0 x14: 00000000000184e0
+x13: 000000000000292e x12: ffff80001258dd98
+x11: 0000000000000001 x10: 0101010101010101
+x9 : ffff80001233f288 x8 : 7f7f7f7f7f7f7f7f
+x7 : fefefefeff6c626f x6 : 5d636d8080808080
+x5 : 00000000006d635d x4 : 0000000000000000
+x3 : 0000000000000000 x2 : 540eb5edae191600
+x1 : 0000000000000000 x0 : 0000000000000000
+Call trace:
+  of_clk_add_hw_provider+0xac/0xe8
+  devm_of_clk_add_hw_provider+0x5c/0xb8
+  raspberrypi_clk_probe+0x110/0x210
+  platform_probe+0x90/0xd8
+  really_probe+0x108/0x3c0
+  driver_probe_device+0x60/0xc0
+  __device_attach_driver+0x9c/0xd0
+  bus_for_each_drv+0x70/0xc8
+  __device_attach+0xec/0x150
+  device_initial_probe+0x10/0x18
+  bus_probe_device+0x94/0xa0
+  device_add+0x47c/0x780
+  platform_device_add+0x110/0x248
+  platform_device_register_full+0x120/0x150
+  rpi_firmware_probe+0x158/0x1f8
+  platform_probe+0x90/0xd8
+  really_probe+0x108/0x3c0
+  driver_probe_device+0x60/0xc0
+  __device_attach_driver+0x9c/0xd0
+  bus_for_each_drv+0x70/0xc8
+  __device_attach+0xec/0x150
+  device_initial_probe+0x10/0x18
+  bus_probe_device+0x94/0xa0
+  deferred_probe_work_func+0x70/0xa8
+  process_one_work+0x2a8/0x718
+  worker_thread+0x48/0x460
+  kthread+0x134/0x160
+  ret_from_fork+0x10/0x18
+Code: b1006294 540000c0 b140069f 54000088 (3940e280)
+---[ end trace 7ead5ec2f0c51cfe ]---
 
+This patch mainly revealed that clk/bcm/clk-raspberrypi.c driver calls 
+devm_of_clk_add_hw_provider(), with a device pointer, which has a NULL 
+dev->of_node. I'm not sure if adding a check for a NULL np in 
+of_clk_add_hw_provider() is a right fix, though.
+
+> ---
+>   drivers/clk/clk.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index 27ff90eacb1f..9370e4dfecae 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -4594,6 +4594,8 @@ int of_clk_add_hw_provider(struct device_node *np,
+>   	if (ret < 0)
+>   		of_clk_del_provider(np);
+>   
+> +	fwnode_dev_initialized(&np->fwnode, true);
+> +
+>   	return ret;
+>   }
+>   EXPORT_SYMBOL_GPL(of_clk_add_hw_provider);
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
