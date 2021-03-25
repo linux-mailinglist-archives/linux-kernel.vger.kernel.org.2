@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F884349A7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0FE349A81
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhCYTiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:38:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39592 "EHLO
+        id S231139AbhCYTjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:39:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49416 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230305AbhCYTiN (ORCPT
+        by vger.kernel.org with ESMTP id S230327AbhCYTiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:38:13 -0400
+        Thu, 25 Mar 2021 15:38:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616701092;
+        s=mimecast20190719; t=1616701096;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bu7iD2JNFeJr1COLeY9ucECdTeYKd3yywrM1RjfNkh0=;
-        b=WMrphnkkWyGGM8iKuXXHBURO3aYpTk3QUwNHplAd3kDype+sxU/aJq50Qdg7aLVVqBekZe
-        46L1m9g0ZubBQZjgqb3CbsQjuMWtMhNe8NXRt253GcKr5HK4u9gOQsOWYRKGYKwfUNkqTi
-        WAW6btp7wda4dCWaxfbuo7339FU82XM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-FLvoX0bePnSI29JFifrspw-1; Thu, 25 Mar 2021 15:38:11 -0400
-X-MC-Unique: FLvoX0bePnSI29JFifrspw-1
-Received: by mail-ed1-f69.google.com with SMTP id t27so3212148edi.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:38:10 -0700 (PDT)
+        bh=4I62ZeV758StJHD6zAT4ZM8Oc+0WC8KR6jURCyMpN5A=;
+        b=X3LN2D335HJFSCN+Go4dJOUGGi0S057a+p2WUVSOOGo3swcwXKqlxUNuzCzn8DEgg7jt/y
+        m2BCT0264JFjmyEzSYj7TBIUYYeS7Vc55iW48wmBRC1sWbG/lluBC/xI8fA+8qaueRf0/B
+        /jlFARGs35+rY7De7XVMBCpvQgSRLpM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-5BNhIDl5PamhrcWiWElnXg-1; Thu, 25 Mar 2021 15:38:12 -0400
+X-MC-Unique: 5BNhIDl5PamhrcWiWElnXg-1
+Received: by mail-ej1-f69.google.com with SMTP id d6so3060634ejd.15
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:38:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bu7iD2JNFeJr1COLeY9ucECdTeYKd3yywrM1RjfNkh0=;
-        b=pB4tLg43XntgP2Q4Tk7PdLbyP1j1GCnClIRQz5dCKVC3fk/m3ct2JW7cEYK9qJG6GH
-         pSjsHy7GTMqwECd4OOTvuYCC8BQf/LonbMLG36oCd3ENBFFkCsRYm9a3PTX5dSyDIJT3
-         yxNpEFSLwhke9sRSuHV6+qNluoZviQGn1SvyKbFiyjY/i9+s2fSt03303+r3Tkq3pStb
-         M4W4M7gtR4jxrN+rJPwrzArLG7vsW/IXGRcGQyQrA0h7gmjmFVVnZxEAdnbq1qrnkmm6
-         lMNvYBUfLY1cLRwrjlO3DN6rvHQJ1tvhr4BX4N/NGs5fGU4MZeJNL6kUueACfMaC+jky
-         1IVQ==
-X-Gm-Message-State: AOAM532mr2SOeWpXKrC/31uh/deSeR4eGVU16PkqPnFhtQxqOxLYVWuS
-        A6F/j9lz7VgAGABrnFYOCsQ4PfaxIvTH6wxkRDFc6P0VVUMicQVU31hy6s8H3DmvD1wzwxWaedJ
-        +spm4ZhHChCJbAav1Nyfvix7X
-X-Received: by 2002:a17:906:5012:: with SMTP id s18mr10790449ejj.100.1616701089832;
-        Thu, 25 Mar 2021 12:38:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy3TJ3DjfXm9eilGBXZGXHzWeb/gniKX0IvWcETDgfl6MJIL5RKcBa8i+baa+vnmjZmPNqBUA==
-X-Received: by 2002:a17:906:5012:: with SMTP id s18mr10790434ejj.100.1616701089703;
-        Thu, 25 Mar 2021 12:38:09 -0700 (PDT)
+        bh=4I62ZeV758StJHD6zAT4ZM8Oc+0WC8KR6jURCyMpN5A=;
+        b=fozE8oDBWQjagJIZrWQrSs59uUBwKEIxa2l4Cu3dxO9Xrnd8ABGzW6la0myJWBzMEA
+         MNmWS1mXzjSOIKVY5jzrseGJfw8/9LVtWTrRALaSjFXFTtgcgN838PJ+2gj+YxntLvqo
+         IS92ZM2o507hPT5xTsfWYeJ7fJ6GjTSGprM46bVwSuC4Aw26K0lkLhGtjhd0JBBP7FN/
+         u9cK6UXor6Dnwd6kPB5xoUSAuth34wdkczcTpQPs86XAXKnfmary1B7Xc+8aNwKVa5Wi
+         Q/ooBumerTzy8qE8hhKHVdnYNi6ZilywYXyvmX0CxJ0H/w0EmO2clS+JbfnNy37iiMx0
+         EmBw==
+X-Gm-Message-State: AOAM5316KRho39QXF0JHG5TSRPVuXmE8kVQAg/8Ne0RwH/kbN+VLzGv5
+        LxPeyuL6/uBvFf13+J5qBj86Rpe4mbJ+53k3n3xeN/SHulrFvxlEYhQenkociYzJ9MCnhiVV3Xl
+        2fgRDP7VOUlI1DdDl6KXodIzR
+X-Received: by 2002:a17:907:75c7:: with SMTP id jl7mr11739390ejc.191.1616701090679;
+        Thu, 25 Mar 2021 12:38:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx9IDCy14/ii/VXZ9lBkfgSodsD1DwmHTuVQzbXFXQATQ4fSIjHkw+R1FkaS/5paG3nCB+0zA==
+X-Received: by 2002:a17:907:75c7:: with SMTP id jl7mr11739378ejc.191.1616701090538;
+        Thu, 25 Mar 2021 12:38:10 -0700 (PDT)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.38.08
+        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.38.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 12:38:08 -0700 (PDT)
+        Thu, 25 Mar 2021 12:38:10 -0700 (PDT)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-Subject: [PATCH v3 11/18] efivars: convert to fileattr
-Date:   Thu, 25 Mar 2021 20:37:48 +0100
-Message-Id: <20210325193755.294925-12-mszeredi@redhat.com>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 12/18] hfsplus: convert to fileattr
+Date:   Thu, 25 Mar 2021 20:37:49 +0100
+Message-Id: <20210325193755.294925-13-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210325193755.294925-1-mszeredi@redhat.com>
 References: <20210325193755.294925-1-mszeredi@redhat.com>
@@ -71,172 +70,234 @@ Use the fileattr API to let the VFS handle locking, permission checking and
 conversion.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Matthew Garrett <mjg59@srcf.ucam.org>
 ---
- fs/efivarfs/file.c  | 77 ---------------------------------------------
- fs/efivarfs/inode.c | 44 ++++++++++++++++++++++++++
- 2 files changed, 44 insertions(+), 77 deletions(-)
+ fs/hfsplus/dir.c        |  2 +
+ fs/hfsplus/hfsplus_fs.h | 14 ++-----
+ fs/hfsplus/inode.c      | 54 ++++++++++++++++++++++++++
+ fs/hfsplus/ioctl.c      | 84 -----------------------------------------
+ 4 files changed, 59 insertions(+), 95 deletions(-)
 
-diff --git a/fs/efivarfs/file.c b/fs/efivarfs/file.c
-index e6bc0302643b..d57ee15874f9 100644
---- a/fs/efivarfs/file.c
-+++ b/fs/efivarfs/file.c
-@@ -106,86 +106,9 @@ static ssize_t efivarfs_file_read(struct file *file, char __user *userbuf,
- 	return size;
- }
- 
--static inline unsigned int efivarfs_getflags(struct inode *inode)
--{
--	unsigned int i_flags;
--	unsigned int flags = 0;
--
--	i_flags = inode->i_flags;
--	if (i_flags & S_IMMUTABLE)
--		flags |= FS_IMMUTABLE_FL;
--	return flags;
--}
--
--static int
--efivarfs_ioc_getxflags(struct file *file, void __user *arg)
--{
--	struct inode *inode = file->f_mapping->host;
--	unsigned int flags = efivarfs_getflags(inode);
--
--	if (copy_to_user(arg, &flags, sizeof(flags)))
--		return -EFAULT;
--	return 0;
--}
--
--static int
--efivarfs_ioc_setxflags(struct file *file, void __user *arg)
--{
--	struct inode *inode = file->f_mapping->host;
--	unsigned int flags;
--	unsigned int i_flags = 0;
--	unsigned int oldflags = efivarfs_getflags(inode);
--	int error;
--
--	if (!inode_owner_or_capable(&init_user_ns, inode))
--		return -EACCES;
--
--	if (copy_from_user(&flags, arg, sizeof(flags)))
--		return -EFAULT;
--
--	if (flags & ~FS_IMMUTABLE_FL)
--		return -EOPNOTSUPP;
--
--	if (flags & FS_IMMUTABLE_FL)
--		i_flags |= S_IMMUTABLE;
--
--
--	error = mnt_want_write_file(file);
--	if (error)
--		return error;
--
--	inode_lock(inode);
--
--	error = vfs_ioc_setflags_prepare(inode, oldflags, flags);
--	if (error)
--		goto out;
--
--	inode_set_flags(inode, i_flags, S_IMMUTABLE);
--out:
--	inode_unlock(inode);
--	mnt_drop_write_file(file);
--	return error;
--}
--
--static long
--efivarfs_file_ioctl(struct file *file, unsigned int cmd, unsigned long p)
--{
--	void __user *arg = (void __user *)p;
--
--	switch (cmd) {
--	case FS_IOC_GETFLAGS:
--		return efivarfs_ioc_getxflags(file, arg);
--	case FS_IOC_SETFLAGS:
--		return efivarfs_ioc_setxflags(file, arg);
--	}
--
--	return -ENOTTY;
--}
--
- const struct file_operations efivarfs_file_operations = {
- 	.open	= simple_open,
- 	.read	= efivarfs_file_read,
- 	.write	= efivarfs_file_write,
- 	.llseek	= no_llseek,
--	.unlocked_ioctl = efivarfs_file_ioctl,
+diff --git a/fs/hfsplus/dir.c b/fs/hfsplus/dir.c
+index 03e6c046faf4..84714bbccc12 100644
+--- a/fs/hfsplus/dir.c
++++ b/fs/hfsplus/dir.c
+@@ -569,6 +569,8 @@ const struct inode_operations hfsplus_dir_inode_operations = {
+ 	.rename			= hfsplus_rename,
+ 	.getattr		= hfsplus_getattr,
+ 	.listxattr		= hfsplus_listxattr,
++	.fileattr_get		= hfsplus_fileattr_get,
++	.fileattr_set		= hfsplus_fileattr_set,
  };
-diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
-index 14e2947975fd..939e5e242b98 100644
---- a/fs/efivarfs/inode.c
-+++ b/fs/efivarfs/inode.c
-@@ -10,9 +10,12 @@
- #include <linux/kmemleak.h>
- #include <linux/slab.h>
- #include <linux/uuid.h>
+ 
+ const struct file_operations hfsplus_dir_operations = {
+diff --git a/fs/hfsplus/hfsplus_fs.h b/fs/hfsplus/hfsplus_fs.h
+index 12b20479ed2b..1798949f269b 100644
+--- a/fs/hfsplus/hfsplus_fs.h
++++ b/fs/hfsplus/hfsplus_fs.h
+@@ -344,17 +344,6 @@ static inline unsigned short hfsplus_min_io_size(struct super_block *sb)
+ #define hfs_brec_goto hfsplus_brec_goto
+ #define hfs_part_find hfsplus_part_find
+ 
+-/*
+- * definitions for ext2 flag ioctls (linux really needs a generic
+- * interface for this).
+- */
+-
+-/* ext2 ioctls (EXT2_IOC_GETFLAGS and EXT2_IOC_SETFLAGS) to support
+- * chattr/lsattr */
+-#define HFSPLUS_IOC_EXT2_GETFLAGS	FS_IOC_GETFLAGS
+-#define HFSPLUS_IOC_EXT2_SETFLAGS	FS_IOC_SETFLAGS
+-
+-
+ /*
+  * hfs+-specific ioctl for making the filesystem bootable
+  */
+@@ -493,6 +482,9 @@ int hfsplus_getattr(struct user_namespace *mnt_userns, const struct path *path,
+ 		    unsigned int query_flags);
+ int hfsplus_file_fsync(struct file *file, loff_t start, loff_t end,
+ 		       int datasync);
++int hfsplus_fileattr_get(struct dentry *dentry, struct fileattr *fa);
++int hfsplus_fileattr_set(struct user_namespace *mnt_userns,
++			 struct dentry *dentry, struct fileattr *fa);
+ 
+ /* ioctl.c */
+ long hfsplus_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
+diff --git a/fs/hfsplus/inode.c b/fs/hfsplus/inode.c
+index 078c5c8a5156..8ea447e5c470 100644
+--- a/fs/hfsplus/inode.c
++++ b/fs/hfsplus/inode.c
+@@ -17,6 +17,7 @@
+ #include <linux/sched.h>
+ #include <linux/cred.h>
+ #include <linux/uio.h>
 +#include <linux/fileattr.h>
  
- #include "internal.h"
- 
-+static const struct inode_operations efivarfs_file_inode_operations;
-+
- struct inode *efivarfs_get_inode(struct super_block *sb,
- 				const struct inode *dir, int mode,
- 				dev_t dev, bool is_removable)
-@@ -26,6 +29,7 @@ struct inode *efivarfs_get_inode(struct super_block *sb,
- 		inode->i_flags = is_removable ? 0 : S_IMMUTABLE;
- 		switch (mode & S_IFMT) {
- 		case S_IFREG:
-+			inode->i_op = &efivarfs_file_inode_operations;
- 			inode->i_fop = &efivarfs_file_operations;
- 			break;
- 		case S_IFDIR:
-@@ -138,3 +142,43 @@ const struct inode_operations efivarfs_dir_inode_operations = {
- 	.unlink = efivarfs_unlink,
- 	.create = efivarfs_create,
+ #include "hfsplus_fs.h"
+ #include "hfsplus_raw.h"
+@@ -353,6 +354,8 @@ static const struct inode_operations hfsplus_file_inode_operations = {
+ 	.setattr	= hfsplus_setattr,
+ 	.getattr	= hfsplus_getattr,
+ 	.listxattr	= hfsplus_listxattr,
++	.fileattr_get	= hfsplus_fileattr_get,
++	.fileattr_set	= hfsplus_fileattr_set,
  };
+ 
+ static const struct file_operations hfsplus_file_operations = {
+@@ -628,3 +631,54 @@ int hfsplus_cat_write_inode(struct inode *inode)
+ 	hfs_find_exit(&fd);
+ 	return 0;
+ }
 +
-+static int
-+efivarfs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
++int hfsplus_fileattr_get(struct dentry *dentry, struct fileattr *fa)
 +{
-+	unsigned int i_flags;
++	struct inode *inode = d_inode(dentry);
++	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
 +	unsigned int flags = 0;
 +
-+	i_flags = d_inode(dentry)->i_flags;
-+	if (i_flags & S_IMMUTABLE)
++	if (inode->i_flags & S_IMMUTABLE)
 +		flags |= FS_IMMUTABLE_FL;
++	if (inode->i_flags & S_APPEND)
++		flags |= FS_APPEND_FL;
++	if (hip->userflags & HFSPLUS_FLG_NODUMP)
++		flags |= FS_NODUMP_FL;
 +
 +	fileattr_fill_flags(fa, flags);
 +
 +	return 0;
 +}
 +
-+static int
-+efivarfs_fileattr_set(struct user_namespace *mnt_userns,
-+		      struct dentry *dentry, struct fileattr *fa)
++int hfsplus_fileattr_set(struct user_namespace *mnt_userns,
++			 struct dentry *dentry, struct fileattr *fa)
 +{
-+	unsigned int i_flags = 0;
++	struct inode *inode = d_inode(dentry);
++	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
++	unsigned int new_fl = 0;
 +
 +	if (fileattr_has_fsx(fa))
 +		return -EOPNOTSUPP;
 +
-+	if (fa->flags & ~FS_IMMUTABLE_FL)
++	/* don't silently ignore unsupported ext2 flags */
++	if (fa->flags & ~(FS_IMMUTABLE_FL|FS_APPEND_FL|FS_NODUMP_FL))
 +		return -EOPNOTSUPP;
 +
 +	if (fa->flags & FS_IMMUTABLE_FL)
-+		i_flags |= S_IMMUTABLE;
++		new_fl |= S_IMMUTABLE;
 +
-+	inode_set_flags(d_inode(dentry), i_flags, S_IMMUTABLE);
++	if (fa->flags & FS_APPEND_FL)
++		new_fl |= S_APPEND;
++
++	inode_set_flags(inode, new_fl, S_IMMUTABLE | S_APPEND);
++
++	if (fa->flags & FS_NODUMP_FL)
++		hip->userflags |= HFSPLUS_FLG_NODUMP;
++	else
++		hip->userflags &= ~HFSPLUS_FLG_NODUMP;
++
++	inode->i_ctime = current_time(inode);
++	mark_inode_dirty(inode);
 +
 +	return 0;
 +}
-+
-+static const struct inode_operations efivarfs_file_inode_operations = {
-+	.fileattr_get = efivarfs_fileattr_get,
-+	.fileattr_set = efivarfs_fileattr_set,
-+};
+diff --git a/fs/hfsplus/ioctl.c b/fs/hfsplus/ioctl.c
+index 3edb1926d127..5661a2e24d03 100644
+--- a/fs/hfsplus/ioctl.c
++++ b/fs/hfsplus/ioctl.c
+@@ -57,95 +57,11 @@ static int hfsplus_ioctl_bless(struct file *file, int __user *user_flags)
+ 	return 0;
+ }
+ 
+-static inline unsigned int hfsplus_getflags(struct inode *inode)
+-{
+-	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
+-	unsigned int flags = 0;
+-
+-	if (inode->i_flags & S_IMMUTABLE)
+-		flags |= FS_IMMUTABLE_FL;
+-	if (inode->i_flags & S_APPEND)
+-		flags |= FS_APPEND_FL;
+-	if (hip->userflags & HFSPLUS_FLG_NODUMP)
+-		flags |= FS_NODUMP_FL;
+-	return flags;
+-}
+-
+-static int hfsplus_ioctl_getflags(struct file *file, int __user *user_flags)
+-{
+-	struct inode *inode = file_inode(file);
+-	unsigned int flags = hfsplus_getflags(inode);
+-
+-	return put_user(flags, user_flags);
+-}
+-
+-static int hfsplus_ioctl_setflags(struct file *file, int __user *user_flags)
+-{
+-	struct inode *inode = file_inode(file);
+-	struct hfsplus_inode_info *hip = HFSPLUS_I(inode);
+-	unsigned int flags, new_fl = 0;
+-	unsigned int oldflags = hfsplus_getflags(inode);
+-	int err = 0;
+-
+-	err = mnt_want_write_file(file);
+-	if (err)
+-		goto out;
+-
+-	if (!inode_owner_or_capable(&init_user_ns, inode)) {
+-		err = -EACCES;
+-		goto out_drop_write;
+-	}
+-
+-	if (get_user(flags, user_flags)) {
+-		err = -EFAULT;
+-		goto out_drop_write;
+-	}
+-
+-	inode_lock(inode);
+-
+-	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+-	if (err)
+-		goto out_unlock_inode;
+-
+-	/* don't silently ignore unsupported ext2 flags */
+-	if (flags & ~(FS_IMMUTABLE_FL|FS_APPEND_FL|FS_NODUMP_FL)) {
+-		err = -EOPNOTSUPP;
+-		goto out_unlock_inode;
+-	}
+-
+-	if (flags & FS_IMMUTABLE_FL)
+-		new_fl |= S_IMMUTABLE;
+-
+-	if (flags & FS_APPEND_FL)
+-		new_fl |= S_APPEND;
+-
+-	inode_set_flags(inode, new_fl, S_IMMUTABLE | S_APPEND);
+-
+-	if (flags & FS_NODUMP_FL)
+-		hip->userflags |= HFSPLUS_FLG_NODUMP;
+-	else
+-		hip->userflags &= ~HFSPLUS_FLG_NODUMP;
+-
+-	inode->i_ctime = current_time(inode);
+-	mark_inode_dirty(inode);
+-
+-out_unlock_inode:
+-	inode_unlock(inode);
+-out_drop_write:
+-	mnt_drop_write_file(file);
+-out:
+-	return err;
+-}
+-
+ long hfsplus_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	void __user *argp = (void __user *)arg;
+ 
+ 	switch (cmd) {
+-	case HFSPLUS_IOC_EXT2_GETFLAGS:
+-		return hfsplus_ioctl_getflags(file, argp);
+-	case HFSPLUS_IOC_EXT2_SETFLAGS:
+-		return hfsplus_ioctl_setflags(file, argp);
+ 	case HFSPLUS_IOC_BLESS:
+ 		return hfsplus_ioctl_bless(file, argp);
+ 	default:
 -- 
 2.30.2
 
