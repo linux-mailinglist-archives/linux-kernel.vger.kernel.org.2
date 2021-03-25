@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48B1349414
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:31:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2A7349418
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhCYOa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:30:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:40637 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231349AbhCYOak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:30:40 -0400
-IronPort-SDR: ZcnnUDpgbt/UvPzV5i2kE5QG0yCwqzwgL+PUPoSBShmo8mYpL3GSHQ2pSGU/Saf9gQ3nDSuzMW
- BqMwMFcJ6xVg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="178059523"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="178059523"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 07:30:38 -0700
-IronPort-SDR: LRtMPgKm+RxTc8EC/mkI4ya+1Z9PuaUNwCu/kY+c1SP/1VlLkB3f0Dspx7CjpKTK1jYkDMs8TN
- bSxDAcNa/IOA==
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="391752222"
-Received: from jeffche1-mobl.amr.corp.intel.com (HELO [10.209.73.71]) ([10.209.73.71])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 07:30:38 -0700
-Subject: Re: [RFC Part2 PATCH 07/30] mm: add support to split the large THP
- based on RMP violation
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Cc:     ak@linux.intel.com, herbert@gondor.apana.org.au,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <20210324170436.31843-1-brijesh.singh@amd.com>
- <20210324170436.31843-8-brijesh.singh@amd.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <fdb37d54-f513-8928-ba5a-80427f02bfc1@intel.com>
-Date:   Thu, 25 Mar 2021 07:30:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231446AbhCYObW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:31:22 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57591 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S231349AbhCYObG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:31:06 -0400
+Received: (qmail 788278 invoked by uid 1000); 25 Mar 2021 10:31:04 -0400
+Date:   Thu, 25 Mar 2021 10:31:04 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     liulongfang <liulongfang@huawei.com>, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
+        tanxiaofei@huawei.com, liudongdong3@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] USB:XHCI:Adjust the log level of hub
+Message-ID: <20210325143104.GA785961@rowland.harvard.edu>
+References: <1616666652-37920-1-git-send-email-liulongfang@huawei.com>
+ <YFxmaEtKclXXpBfy@kroah.com>
+ <d2fc6d09-c8e7-436f-3e0d-b2cfa9c75b9f@huawei.com>
+ <YFyXJ1Zq5yP7vRWn@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210324170436.31843-8-brijesh.singh@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFyXJ1Zq5yP7vRWn@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 10:04 AM, Brijesh Singh wrote:
-> @@ -1377,6 +1442,22 @@ void do_user_addr_fault(struct pt_regs *regs,
->  	if (hw_error_code & X86_PF_INSTR)
->  		flags |= FAULT_FLAG_INSTRUCTION;
->  
-> +	/*
-> +	 * If its an RMP violation, see if we can resolve it.
-> +	 */
-> +	if ((hw_error_code & X86_PF_RMP)) {
-> +		ret = handle_rmp_page_fault(hw_error_code, address);
-> +		if (ret == RMP_FAULT_PAGE_SPLIT) {
-> +			flags |= FAULT_FLAG_PAGE_SPLIT;
-> +		} else if (ret == RMP_FAULT_KILL) {
-> +			fault |= VM_FAULT_SIGBUS;
-> +			mm_fault_error(regs, hw_error_code, address, fault);
-> +			return;
-> +		} else {
-> +			return;
-> +		}
-> +	}
+On Thu, Mar 25, 2021 at 02:59:03PM +0100, Greg KH wrote:
+> On Thu, Mar 25, 2021 at 09:33:53PM +0800, liulongfang wrote:
+> > On 2021/3/25 18:31, Greg KH wrote:
+> > > On Thu, Mar 25, 2021 at 06:04:12PM +0800, Longfang Liu wrote:
+> > >> When the number of ports of the hub is not between 1 and Maxports,
+> > >> it will only exit the registration of the hub on the current controller,
+> > >> but it will not affect the function of the controller itself. Its other
+> > >> hubs can operate normally, so the log level here can be changed from
+> > >> error to information.
+> > >>
+> > >> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> > >> ---
+> > >>  drivers/usb/core/hub.c | 10 ++++------
+> > >>  1 file changed, 4 insertions(+), 6 deletions(-)
+> > >>
+> > >> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> > >> index b1e14be..70294ad 100644
+> > >> --- a/drivers/usb/core/hub.c
+> > >> +++ b/drivers/usb/core/hub.c
+> > >> @@ -1409,13 +1409,11 @@ static int hub_configure(struct usb_hub *hub,
+> > >>  		maxchild = min_t(unsigned, maxchild, USB_SS_MAXPORTS);
+> > >>  
+> > >>  	if (hub->descriptor->bNbrPorts > maxchild) {
+> > >> -		message = "hub has too many ports!";
+> > >> -		ret = -ENODEV;
+> > >> -		goto fail;
+> > >> +		dev_info(hub_dev, "hub has too many ports!\n");
+> > > 
+> > > Is this an error?  If so, report it as such, not as "information".
+> > > 
+> > >> +		return -ENODEV;
+> > >>  	} else if (hub->descriptor->bNbrPorts == 0) {
+> > >> -		message = "hub doesn't have any ports!";
+> > >> -		ret = -ENODEV;
+> > >> -		goto fail;
+> > >> +		dev_info(hub_dev, "hub doesn't have any ports!\n");
+> > > 
+> > > Same here.
+> > > 
+> > > What problem are you trying to solve here?
+> > > 
+> > > What hub do you have that has no ports, or too many, that you think
+> > > should still be able to work properly?
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > > .
+> > On our test platform, the xhci usb3 hub has no port.
+> 
+> Sounds like a broken device, why not fix that?
 
-Won't khugepaged come right back around and coalesce this page again?
+If this device is used only for testing and not for production, who 
+cares how severe the log message is?
+
+> > when initializing the usb3 hub, an error will be reported
+> > because the port is 0, but in fact it will not affect
+> > the use of usb2, and the usb2 hub is working normally.
+> 
+> But you can not have a USB3 hub with no ports, isn't that against
+> against the USB spec?  How does this device pass the USB-IF
+> certification?
+> 
+> > thanks, therefore, in order to reduce the severity of the log,
+> > we hope to lower the level of this log.
+> 
+> You did not reduce the severity at all, everyone can still see it.
+> 
+> Please try fixing your hardware :
+
+Alternatively, you could change the xhci-hcd driver.  Make it skip 
+registering the USB-3 root hub if that hub has no ports.
+
+But don't change these log messages.  They describe real errors, so they 
+should be actual error messages.
+
+Alan Stern
