@@ -2,100 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021E03493E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D003493E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:22:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhCYOUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhCYOUY (ORCPT
+        id S230478AbhCYOWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:22:18 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36053 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230078AbhCYOVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:20:24 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A5CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:20:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Bwkza07CK3I496mJr/hRCcP/6zzNBPLmmcQvRMvQpIk=; b=bNiYsVmUPdL0JtJJdhnG+Pjgt
-        nNOQ2c0vi3MKCbNbXiAQ9lkCp1aSp7x6yBuZfpJE7/LYeFhyi9rfZB4XRS6L++c0eWn6aks6doT+m
-        WOdDyXJfpbLlN//9cHJb22+tenfVjS20UEuDRRpoVy9t4yzjH1cK8eyN+Qs55vl1EnbqMzDBPnx6p
-        J389/4oPWk8pUYgQvP3qq5V+J2mCoYxCb+85SwAu1onF0zvs+TjgijaCqV4iI+TH7FDgRxkVGq6gI
-        TpPDa0TYEnyYDtaBXhWLs2XfQlt1dGQOE8NtsXDA9TRiUf6Sktze9xjLNdgjIEF1BGYhZfzL9XVOw
-        0uZiBLjNw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51724)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lPQqO-0001pW-Ar; Thu, 25 Mar 2021 14:20:16 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lPQqJ-000658-TU; Thu, 25 Mar 2021 14:20:11 +0000
-Date:   Thu, 25 Mar 2021 14:20:11 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Liu Xiang <liuxiang1999@gmail.com>
-Cc:     Liu Xiang <liu.xiang@zlingsmart.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        liuxiang_1999@126.com
-Subject: Re: [PATCH] ARM: fix smp_processor_id() in preemptible warning in
- harden_branch_predictor()
-Message-ID: <20210325142011.GN1463@shell.armlinux.org.uk>
-References: <20210325095049.6948-1-liu.xiang@zlingsmart.com>
- <20210325100605.GL1463@shell.armlinux.org.uk>
- <CAPPcxxSzNvGu3y+3Fpc5FtV-6mOBPWMihmGhHnbq_qAHe3oYTA@mail.gmail.com>
+        Thu, 25 Mar 2021 10:21:42 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id BF7D05C0074;
+        Thu, 25 Mar 2021 10:21:41 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 25 Mar 2021 10:21:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=allmail.cc; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-type; s=fm3; bh=/1uwORJgtqX2AKdFgSIUIsZCA9
+        bG2x+J5XTahF1nYqM=; b=xec8mjI27dwJcdAlPaoxvG2+l3NmM6r9JNH3casyzK
+        9msC/Mr+fEb/BKnjovXif3gfnW7cr0p70Cl0HsRPv/7ujZnXcpzVALbZTqatlWVp
+        pjcbw7l5BvlzMUoCvYWCXApv9pyNVaWAo1NgUtRrXANJbjSlqSjT3U33fNWu6myZ
+        2KXc5YPacCimc4DaIPbgqxuMgt0IOTnr/Yv7NrzZP+yqiydmDwcE6FA1nusiPPQL
+        zmmDSUDw/Oz4hY0MzzLRf6TQow3MUGMl2uX2Zv3VZmX4uTHhvyvUhvsCzOQ7xscX
+        Rn4nveBrTGBDsppq+ceaKUYwvMMZX9C35ByOujoYxiEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=/1uwOR
+        JgtqX2AKdFgSIUIsZCA9bG2x+J5XTahF1nYqM=; b=kJ0/Hsl1TlV0sXNne8ZLOu
+        iP8L/u46DS57yYZPEZqiUPvEDdCdrfOTa6ftZU7p1TQoKcYh1OTNscM/JqJOaGZc
+        59d5GJhl1evGZaxpcAL1EXDYcDx2uuj6f1mH/1rqtyORJhaOJo9agw1ky22MShIH
+        lM6kRWAjiIy+BytId1IooNXyAOyzxtzHJPJfr61u1kn6iTr3BCd8KXpa5V8dZsJW
+        0kFaDhZtMqXXEIuWaTAcL0Xzmo4rlpu8wCC2rvucS3rjG8AdXqwFCc29/F8Ic/m1
+        WqUr7L8f+n4W5doEaNYDj8o2dRkbF8pyZt8Cl2sEdy1pDvuSYgpT2hvGn1jVwgtg
+        ==
+X-ME-Sender: <xms:dJxcYFGhljANUck8-beGRlpeTXTgjB_KfctoNVTfbtLoDPrgCxXHFw>
+    <xme:dJxcYLFEM2CsMSN8TOAbSp8CbA1ZmzyvA3brYbxlfaVrzghv4NQ-FSE1b3qQEAbWV
+    0nwqxhz1Is-6T3HQg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehtddgieefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdludehmdenucfjughrpefhvffufffokfgjfhggtgesghdtmherredt
+    jeenucfhrhhomhepfdgkihcujggrnhdfuceoiihirdihrghnsegrlhhlmhgrihhlrdgttg
+    eqnecuggftrfgrthhtvghrnhepudfhueeiveeifeevgfethfdvteekteelgeeludelkefh
+    ieefkeelueduheehfeeinecukfhppedvtdelrdeirdejuddrvddufeenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeiiihdrhigrnhesrghllhhm
+    rghilhdrtggt
+X-ME-Proxy: <xmx:dJxcYDRk52USQcwf1KOFPyj_QbjuQ2RjA39BWVPcznHs4vJSv1x2ZQ>
+    <xmx:dJxcYMLYhM1ppUodsefW9dZQbo1sH1vni4zOk_EF8BdnVIFDa0MbSg>
+    <xmx:dJxcYOaa9OmjYnKliQCiE2m2OuF4UiLBNNeLEG0xHNVzEDIobCB25g>
+    <xmx:dZxcYG7PEX0f78dFw-_3JVnfvil22vFPzbDC9AildPONbYR5ZMI_QA>
+Received: from [10.2.50.1] (209-6-71-213.s2259.c3-0.abr-cbr1.sbo-abr.ma.cable.rcncustomer.com [209.6.71.213])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AD1CC1080073;
+        Thu, 25 Mar 2021 10:21:40 -0400 (EDT)
+From:   "Zi Yan" <zi.yan@allmail.cc>
+To:     "Miaohe Lin" <linmiaohe@huawei.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 0/3] Cleanup for khugepaged
+Date:   Thu, 25 Mar 2021 10:21:28 -0400
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <5A180A76-511A-4094-A54A-ED8275B36A60@allmail.cc>
+In-Reply-To: <20210325135647.64106-1-linmiaohe@huawei.com>
+References: <20210325135647.64106-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPPcxxSzNvGu3y+3Fpc5FtV-6mOBPWMihmGhHnbq_qAHe3oYTA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_53BA68FD-D858-4E2E-97C6-386E8D00805A_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:32:35PM +0800, Liu Xiang wrote:
-> Russell King - ARM Linux admin <linux@armlinux.org.uk> 于2021年3月25日周四 下午6:06写道：
-> >
-> > On Thu, Mar 25, 2021 at 05:50:49PM +0800, Liu Xiang wrote:
-> > > When CONFIG_HARDEN_BRANCH_PREDICTOR is selected and user aborts occur,
-> > > there is a warning:
-> > >
-> > > BUG: using smp_processor_id() in preemptible [00000000] code: errnotest/577
-> > > caller is __do_user_fault.constprop.4+0x24/0x88
-> > > CPU: 1 PID: 577 Comm: errnotest Not tainted 4.14.188-rt87-fmsh-00004-g58055877a #1
-> > > Hardware name: FMSH PSOC Platform
-> > > [<8010d6d4>] (unwind_backtrace) from [<8010a228>] (show_stack+0x10/0x14)
-> > > [<8010a228>] (show_stack) from [<80698f44>] (dump_stack+0x7c/0x98)
-> > > [<80698f44>] (dump_stack) from [<803d17d0>] (check_preemption_disabled+0xc4/0xfc)
-> > > [<803d17d0>] (check_preemption_disabled) from [<80110eb8>] (__do_user_fault.constprop.4+0x24/0x88)
-> > > [<80110eb8>] (__do_user_fault.constprop.4) from [<801112e4>] (do_page_fault+0x2dc/0x310)
-> > > [<801112e4>] (do_page_fault) from [<801012a8>] (do_DataAbort+0x38/0xb8)
-> > > [<801012a8>] (do_DataAbort) from [<8010b03c>] (__dabt_usr+0x3c/0x40)
-> > > Exception stack(0xb21d1fb0 to 0xb21d1ff8)
-> > > 1fa0:                                     fffffff4 00000000 00000054 fffffff4
-> > > 1fc0: 00000000 00000000 7ed81cc8 7ed81ca0 0007a440 00000000 00000000 00000000
-> > > 1fe0: 00000000 7ed81ca0 00010493 0001f330 20030010 ffffffff
-> >
-> > This is not the right fix - preemption is supposed to be disabled before
-> > this function is called. I'm not sure at the present time what the right
-> > fix is supposed to be because I've forgotten most of the background
-> > behind why this was placed where it is.
-> >
-> > --
-> > RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> > FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
-> 
-> I have tested with the current mainline kernel, the warning still exists.
+This is an OpenPGP/MIME signed message (RFC 3156 and 4880).
 
-Yes, it still exists, because it's never been fixed, but the way you are
-fixing it is not correct. We do not paper over warnings with incorrect
-fixes.
+--=_MailMate_53BA68FD-D858-4E2E-97C6-386E8D00805A_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+On 25 Mar 2021, at 9:56, Miaohe Lin wrote:
+
+> Hi all,
+> This series contains cleanups to remove unnecessary out label and
+> meaningless !pte_present() check. Also use helper function to simplify
+> the code. More details can be found in the respective changelogs.
+> Thanks!
+>
+> Miaohe Lin (3):
+>   khugepaged: use helper function range_in_vma() in
+>     collapse_pte_mapped_thp()
+>   khugepaged: remove unnecessary out label in collapse_huge_page()
+>   khugepaged: remove meaningless !pte_present() check in
+>     khugepaged_scan_pmd()
+>
+>  mm/khugepaged.c | 14 ++++----------
+>  1 file changed, 4 insertions(+), 10 deletions(-)
+
+All looks good to me. Thanks.
+
+Reviewed-by: Zi Yan <ziy@nvidia.com>
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_53BA68FD-D858-4E2E-97C6-386E8D00805A_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJGBAEBCgAwFiEEycohpi8xVoF1thvbLf9QgFMZricFAmBcnGgSHHppLnlhbkBh
+bGxtYWlsLmNjAAoJEC3/UIBTGa4n0jkP/11ZJi7G0LgB+zPsOG/TRoxFafDBMoFx
+stJ8+gZgyem9JN2kxPaf/SRY8RA8xPZ80KqqHuX4RUeJk+bu5p7PvAjirZSmZ+yj
+ARrIiXbqm7ObToE+5YenllPV9XSrjHpTZFtZ0GTGqblylzeZsp2XuECyOTCA4zzC
+MAQIXwGUTfZ3ZOXt6JUu+3vzmrrR2j9FTTtJKk8lOzzIB+Oo4Ubc+/HAJs260ZuC
+j64BbXkL58w5PmbCt9ZzkIGreg5OzNEVxYofNkhKQqla4Eo/kMNxBvfE1XW7GN4H
+BoSy1eq2LW55QfxPjxzONx5JZG/GkSOHuXrU7P0pkqynqvqwFH6iKDzsQpmPhWyb
+UmC281qDRJuRCszd2Si90jn098vZPtyRxP/j9Udh3mXn1vD1T4W3/YDV4MLlvNvW
+nH6u9ifxNn2qL5BzJSZCTMBv68gJcbJIDqZ4C6TPEj1FZyScFKMS/SIKu24SWCCj
+sBrd9DjBAjV41tq/+1Z1Y0uFFNtUw+528nfWQZ46DbJcuk38TJgwsemFIz8hwWik
+N1OzZ7A7PmWIpLJRrSEF0GRn31/gzlX/cFx+K3NLFFVmtQR5dGsz/lfZCSsFn4/j
+fhIG1SzKYXx9bBP1cZPWXXxictJBhcy7g7rXJGgiqNTynP1liklbIS4jHRyPqYbb
+tj1K0HqIdw09
+=cEf/
+-----END PGP SIGNATURE-----
+
+--=_MailMate_53BA68FD-D858-4E2E-97C6-386E8D00805A_=--
