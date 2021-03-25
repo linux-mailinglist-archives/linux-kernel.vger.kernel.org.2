@@ -2,60 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24919349A9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59A5349A9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhCYTn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:43:27 -0400
-Received: from ms.lwn.net ([45.79.88.28]:48662 "EHLO ms.lwn.net"
+        id S230332AbhCYTn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229670AbhCYTnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:43:18 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 0BD30381;
-        Thu, 25 Mar 2021 19:43:18 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0BD30381
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1616701398; bh=5hHvYfGKy00AO1jp6nvrSOoBWs+WfPCTQJFYb9ajUMY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=AZ6wQpr9Az2pkrzhzBjOs1mgUTExSx3HJf5/x59h2NFBBsAU6UnvT390tVI5Yxx0Q
-         sZP3k96/PqEI3Fh9ZeRoRbjp7ytI8dZvSYRE8ihOp5bDOodp78a1NLzjS8i4QEyvq9
-         sGN2aW3Qz+kUK++uENTgFOGfQIYbO2Q7FOEb2v6WH+24DTckg1xfnCavhdrhw7oBr6
-         lWzCHemq6Xhyb3lLWl3lz76K4Qz62J9avgdIOYmcLSYCkFk2PeVqrwEqWFo4og2G2Y
-         wEfavm0VGpjUnIUsSVGWYABLOLknwjSxBPkFE57w2hGGOD/BmG5g45CVEqnmT87h12
-         k/8eVsQJhM+Mg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Thorsten Leemhuis <linux@leemhuis.info>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/5] docs: reporting-issues: streamline process and
- solve a FIXME
-In-Reply-To: <4bc573bf-3dc1-fb6b-e6d7-d51993725c29@leemhuis.info>
-References: <cover.1616181657.git.linux@leemhuis.info>
- <c8770353-3d0d-17af-115a-efa4a31fd97b@leemhuis.info>
- <87y2ebysy8.fsf@meer.lwn.net>
- <4bc573bf-3dc1-fb6b-e6d7-d51993725c29@leemhuis.info>
-Date:   Thu, 25 Mar 2021 13:43:17 -0600
-Message-ID: <87v99fxbmy.fsf@meer.lwn.net>
+        id S229833AbhCYTnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:43:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD9D0619C9;
+        Thu, 25 Mar 2021 19:43:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616701404;
+        bh=1r+GeFGCMbDDIXeRYKJ4Hm8F51/bPaP4XF8mxybzx2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JGP1DZMB24r/DF69LXH/qos9xWt+IB2JQD2/pxxusRzuFj7yp8XP9X6ZX11xq7UI3
+         SqgDqD5EeTOq9jkARGuGO2Y0JjS2eKLD1lvQ4i83zw0FkGZLqPEa3b/DEr7vJrFQWM
+         rHRuNJnaf0MP6CSUnAClzOox/qpLeEiVup7Sm+LLExLdFtmcCn/BLnD9OtQ7Oo6VBs
+         d7Fde1+FRBsdZGBPah8hBCy9p2ot8rPBJtccyc2DJhao2COhMdQJ//x2+YRTz5xxdN
+         EXnfAdx8UBx9lXiF0DKxfcGOPjRXFd0HRnsj3Zr8bwt/TO151jqIYDrDv/W5Pcm7br
+         j61kk91T6iVTA==
+Date:   Thu, 25 Mar 2021 12:43:22 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Shreeya Patel <shreeya.patel@collabora.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
+        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v4 2/5] fs: Check if utf8 encoding is loaded before
+ calling utf8_unload()
+Message-ID: <YFzn2rbN6P0LvdA+@sol.localdomain>
+References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
+ <20210325000811.1379641-3-shreeya.patel@collabora.com>
+ <YFziza/VMyzEs4s1@sol.localdomain>
+ <878s6bt4gx.fsf@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878s6bt4gx.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thorsten Leemhuis <linux@leemhuis.info> writes:
+On Thu, Mar 25, 2021 at 03:31:42PM -0400, Gabriel Krisman Bertazi wrote:
+> Eric Biggers <ebiggers@kernel.org> writes:
+> 
+> > On Thu, Mar 25, 2021 at 05:38:08AM +0530, Shreeya Patel wrote:
+> >> utf8_unload is being called if CONFIG_UNICODE is enabled.
+> >> The ifdef block doesn't check if utf8 encoding has been loaded
+> >> or not before calling the utf8_unload() function.
+> >> This is not the expected behavior since it would sometimes lead
+> >> to unloading utf8 even before loading it.
+> >> Hence, add a condition which will check if sb->encoding is NOT NULL
+> >> before calling the utf8_unload().
+> >> 
+> >> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> >> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+> >> ---
+> >>  fs/ext4/super.c | 6 ++++--
+> >>  fs/f2fs/super.c | 9 ++++++---
+> >>  2 files changed, 10 insertions(+), 5 deletions(-)
+> >> 
+> >> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> >> index ad34a37278cd..e438d14f9a87 100644
+> >> --- a/fs/ext4/super.c
+> >> +++ b/fs/ext4/super.c
+> >> @@ -1259,7 +1259,8 @@ static void ext4_put_super(struct super_block *sb)
+> >>  	fs_put_dax(sbi->s_daxdev);
+> >>  	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
+> >>  #ifdef CONFIG_UNICODE
+> >> -	utf8_unload(sb->s_encoding);
+> >> +	if (sb->s_encoding)
+> >> +		utf8_unload(sb->s_encoding);
+> >>  #endif
+> >>  	kfree(sbi);
+> >>  }
+> >
+> >
+> > What's the benefit of this change?  utf8_unload is a no-op when passed a NULL
+> > pointer; why not keep it that way?
+> 
+> For the record, it no longer is a no-op after patch 5 of this series.
+> Honestly, I prefer making it explicitly at the caller that we are not
+> entering the function, like the patch does, instead of returning from it
+> immediately.  Makes it more readable, IMO.
+> 
 
-> BTW, I wondered it it would make sense to add a entry to the MAINTAINERS
-> file for the text so I can keep and eye on things and help with fine
-> tuning. Let me known if you think that idea is overblown, otherwise I'll
-> likely add one with the patch that I'll send sooner or later to remove
-> the WIP box near the top.
+I don't think making all the callers do the NULL check is more readable.  It's
+conventional for free-like functions to accept NULL pointers.  See for example
+every other function in the code snippet above -- fs_put_dax(),
+fscrypt_free_dummy_policy(), and kfree().
 
-A MAINTAINERS entry makes sense for a document like that; I think it's a
-fine idea to add yourself.
+This seems more like an issue with patch 5; it shouldn't be dropping the NULL
+check from unicode_unload().
 
-Thanks,
-
-jon
+- Eric
