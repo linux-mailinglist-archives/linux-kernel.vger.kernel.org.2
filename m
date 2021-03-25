@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAEC348672
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DD8348675
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231966AbhCYBfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:35:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53322 "EHLO
+        id S232308AbhCYBh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhCYBfK (ORCPT
+        with ESMTP id S233654AbhCYBhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:35:10 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8DEC06174A;
-        Wed, 24 Mar 2021 18:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=AGo/RMTNezhheUtkI8URNy+6PhuTvYtFQE2ScXnP62Q=; b=KaDrh4nqakuEYlQCesxZ5Mf9qa
-        Fc3RM5WaCkUuxuIb+Sxr3EZOoYSNDUF0XJfYnjadh0R48lli0Xj/710Yp9jk+ATLMkhcv1meMRCjP
-        B1H7b+/y8OOJnzQxz65o690jtrG8ZZjgx9xQfWOqhuCEPV00bWACoh42RLkR8hK9aAQnjoGrBiD6X
-        DM5zoDSSj2KwtvRR9vFptuGMNqnTaH80S5J5TtreXGIMW1+S1Pwr0bYL0tHd0zVnT2kbgUDZM6iF1
-        /ljKRAKqL248tUaJwk4n96pqrmMzGni9jIKmLUOOnSjQrSTSic/1UD/BWbhJUYD4oI3BOUnlbqFlB
-        D2S4Yjkg==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPEtt-000RQk-Tx; Thu, 25 Mar 2021 01:35:07 +0000
-Subject: Re: [PATCH] tools: usbip: list.h: fix kernel-doc for list_del()
-To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Wed, 24 Mar 2021 21:37:18 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF52C06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 18:37:17 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id q12so399760qvc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 18:37:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CBfD39CaynpQgCKTDXt+Ey2bhdeDPIw8xNayuX1gvNI=;
+        b=tkSJEzz4MdthtO/noCz+GYoWMideoK2fIU7YBK3anLLtJ/rpbOLJPjJEweevsQxCMb
+         LwIbVceEzsAoc1Wc5MfZ4vaGx81nvmTopixzcE3n4IcrAjS0aCJd31mlka04iFdHiKHs
+         bxc7JSxlVxe0W0bKwvfQEqwV4sI6hmALLa/giFWRAnM2VPcI9/+ukByqwiQexQcivAmP
+         Hb2hRHzZ4QqhBetmS65B2AmAERiE2PmcnsclTFOm9SJbB0qZKAgiqEDEnJf4+8Kg9qxs
+         ShLyapNXngIRKV91014YJb+W2tiozU7Jwzf2M6xjvRraxsYYCG4eNoR52mOaQN4hA8fz
+         wGew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CBfD39CaynpQgCKTDXt+Ey2bhdeDPIw8xNayuX1gvNI=;
+        b=qZaeDts0M3RoDVVIv9oV5FC7anYFI4vrScWZxWxOu786ngF1yvjSHoyQvdHkfkGtWV
+         rbTBaKxuuK38pNd/FsWmhvRd1wsfD0LvbpDfFawo0uWkzCiPSUFIz9o/LplMVT82gnC4
+         iwJniVDeGXioRemKbVe7Qwlr/Sp3Nnzugv/bYZZOisObM6hWp0+IFuRMl+VlCJkA+xYN
+         m624dTrGnHRryLOWTSZHd4BCxn3WVOmPasKfgmgKFvStB3TCtCEGTT2qa3I09kMRF8gU
+         mjXM4Hqdz5aU7OHq638LNycEqaE1uOk4b2RuNah2ivVyY6vNHLSCg0l+G3gIda3PoAbm
+         XQmQ==
+X-Gm-Message-State: AOAM533DOsOL/t+xAtEkSBWYvL4en7ZbUB7t0XBNfFtX0kjw0Zv0Td55
+        JbiL0jaQRjm5vXGRDgXwlBY=
+X-Google-Smtp-Source: ABdhPJw2N5ddoYsi+u9n9JbiYQFBrWepnSG67mIipZoIz9Zt6KWWa1TPEBml4tthPj4GgRuP8Dj3fA==
+X-Received: by 2002:a0c:fa0d:: with SMTP id q13mr6007931qvn.15.1616636237025;
+        Wed, 24 Mar 2021 18:37:17 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.55.193])
+        by smtp.gmail.com with ESMTPSA id q24sm3005165qki.120.2021.03.24.18.37.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 18:37:16 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, broonie@kernel.org,
+        mirq-linux@rere.qmqm.pl, huawei@kernel.org, joe@perches.com,
+        viro@zeniv.linux.org.uk, gustavoars@kernel.org,
+        unixbhaskar@gmail.com, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Cc:     Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, linux-usb@vger.kernel.org
-References: <20210324000223.22043-1-rdunlap@infradead.org>
- <0af7bfad-fff7-84be-8e7c-2ad3e93fb785@linuxfoundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0064f460-de49-98c8-1448-3489aa036384@infradead.org>
-Date:   Wed, 24 Mar 2021 18:35:01 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+Cc:     rdunlap@infradead.org
+Subject: [PATCH V2] ALSA: pcm: Fix couple of typos
+Date:   Thu, 25 Mar 2021 07:06:31 +0530
+Message-Id: <20210325013631.3935-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <0af7bfad-fff7-84be-8e7c-2ad3e93fb785@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 4:32 PM, Shuah Khan wrote:
-> On 3/23/21 6:02 PM, Randy Dunlap wrote:
->> In list.h, the kernel-doc for list_del() should be immediately
->> preceding the implementation and not separated from it by
->> another function implementation.
->>
->> Eliminates this kernel-doc error:
->> list.h:1: warning: 'list_del' not found
->>
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Valentina Manea <valentina.manea.m@gmail.com>
->> Cc: Shuah Khan <shuah@kernel.org>
->> Cc: Shuah Khan <skhan@linuxfoundation.org>
->> Cc: linux-usb@vger.kernel.org
->> ---
->>   tools/usb/usbip/libsrc/list.h |   10 +++++-----
->>   1 file changed, 5 insertions(+), 5 deletions(-)
->>
->> --- linux-next-20210323.orig/tools/usb/usbip/libsrc/list.h
->> +++ linux-next-20210323/tools/usb/usbip/libsrc/list.h
->> @@ -77,17 +77,17 @@ static inline void __list_del(struct lis
->>   #define LIST_POISON1  ((void *) 0x00100100 + POISON_POINTER_DELTA)
->>   #define LIST_POISON2  ((void *) 0x00200200 + POISON_POINTER_DELTA)
->>   +static inline void __list_del_entry(struct list_head *entry)
->> +{
->> +    __list_del(entry->prev, entry->next);
->> +}
->> +
->>   /**
->>    * list_del - deletes entry from list.
->>    * @entry: the element to delete from the list.
->>    * Note: list_empty() on entry does not return true after this, the entry is
->>    * in an undefined state.
->>    */
->> -static inline void __list_del_entry(struct list_head *entry)
->> -{
->> -    __list_del(entry->prev, entry->next);
->> -}
->> -
->>   static inline void list_del(struct list_head *entry)
->>   {
->>       __list_del(entry->prev, entry->next);
->>
-> 
-> Thank you for fixing this.
-> 
-> Acked-by: Shuah Khan <skhan@linuxfoundation.org>
 
+s/unconditonally/unconditionally/
+s/succesful/successful/
 
-Thanks. Who do you think should merge this patch?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Changes from V1:
+  Randy's finding incorporated ,plus the subject line adjusted.
 
--- 
-~Randy
+ sound/core/pcm_native.c | 82 ++++++++++++++++++++---------------------
+ 1 file changed, 41 insertions(+), 41 deletions(-)
+
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 17a85f4815d5..afb670d7fd53 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1425,7 +1425,7 @@ static int snd_pcm_do_stop(struct snd_pcm_substream *substream,
+ 		substream->ops->trigger(substream, SNDRV_PCM_TRIGGER_STOP);
+ 		substream->runtime->stop_operating = true;
+ 	}
+-	return 0; /* unconditonally stop all substreams */
++	return 0; /* unconditionally stop all substreams */
+ }
+
+ static void snd_pcm_post_stop(struct snd_pcm_substream *substream,
+@@ -1469,7 +1469,7 @@ EXPORT_SYMBOL(snd_pcm_stop);
+  * After stopping, the state is changed to SETUP.
+  * Unlike snd_pcm_stop(), this affects only the given stream.
+  *
+- * Return: Zero if succesful, or a negative error code.
++ * Return: Zero if successful, or a negative error code.
+--
+2.30.1
 
