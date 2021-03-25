@@ -2,153 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34CC34923F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 043C4349242
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhCYMlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:41:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28200 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230239AbhCYMkz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:40:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616676054;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YOKQNCijii7AvVDUdkRjAl0wBlJEDwK56PtHxBH068U=;
-        b=Mx22iVg5S9fgnUMQsHQJO6wc8cOvHT9eK4IsRfEb9plQr8Hp9Od7ebOqQsILvcsORavy0X
-        cOwDwHazpagaeDPssJ6vouS2ooaDwOEXRId/+Fays5feZC09JX8VF8pfkZJzTopdzXzJKa
-        sJX9/5gLRTuEn5IQU6M4tbfxgxzjyf0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-599-vhZ3or8tPvKgo6MfvPI6dA-1; Thu, 25 Mar 2021 08:40:50 -0400
-X-MC-Unique: vhZ3or8tPvKgo6MfvPI6dA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1984D814256;
-        Thu, 25 Mar 2021 12:40:49 +0000 (UTC)
-Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CB46E60CCF;
-        Thu, 25 Mar 2021 12:40:46 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210324101259.GB16560@linux> <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
- <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
- <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
- <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
- <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
- <YFxEp0cfcJmcz5bP@localhost.localdomain> <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
- <YFxsBRORtgqUF/FZ@localhost.localdomain>
- <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
- <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
-Date:   Thu, 25 Mar 2021 13:40:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S230313AbhCYMmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:42:39 -0400
+Received: from mail-dm6nam11hn2218.outbound.protection.outlook.com ([52.100.172.218]:7932
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230186AbhCYMmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:42:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TYviRlvCd5i1yeU/8vwW6mQGp+U9yqOrnZg3NuJDWBBVjVS07HL2wKqeLtJFnb7uOYD/Ynzi9MvF651SJ9h7vE3TH0M+AApWyFpHEBAZVP7C6EhH40bPbIIssFm2NqpssYizHFfLHx9cL/gqkw5I23/0qIUIlAq8hwDmRsgUPuAH+pq5A1iPPeYAhbbLP/PRU/JUf3j6KPZv33zXs126OxnwiY3vMpultY6EG/DM0n3nDJq0TUSp75BYrCtKV7UAWdrPEdsPIChm3wFlMmxbgoDZg7Otg6ozESw/RBmmKU8sznL09cDczi5DzUZ8WPLCC2mv54wtg1k0m3mjx0Uejg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=03WsnaROWyQiNOtnNuK+LyaWG3JHivZ5BcANgGg9Qa0=;
+ b=LaoGvPiR6OA/q48VgN8Vf31eGc7yIok2ZE8w2eyK7afsS8zLAuDEw05VUH3aL8f8J79JVJJpuILx/p+fchgQ+9ObCOcj7aq4Z4uSdBAbpxCQ6LIdNJVKMyEdMTPFEEEOS12Gf4msOAZta9fjCnR8axTYHwnI3AU542fcYsP0r+Yk3o3+8X+eJQVEHWKBBwo4d76tyzFG0Dxh5fxDti5stH7FdDfEsTmRFPY42Zo5FJeTdnBhy3V+kBIKABKoF/35unQyd2O3nIWrXte1jbvDcbsZ1E+uKWwpArFpVpMbIsQ386ztQLLzLGUi80MVZ2NO1QaVPf8+PT1evSoxov20kw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=03WsnaROWyQiNOtnNuK+LyaWG3JHivZ5BcANgGg9Qa0=;
+ b=UESgxSIkytOeADoG/TR/ete4m4W/CQIBs0NjlqfPUf/mA03FgVmhGMPheBsPzGYFQSqO+1GCmuH/98j6VoiS7yuSlYcHQgpVwZpH0aVIrf8USQSCIghmPFLKEXJzw/D/zLq/4bLuTzt9+Egoe1H7vIxwHWL6HO7rr2QZYnhF7MNVS9H7UM5vWPYxS4TbdXHNEocnDIri73JZjvOdCO9Od07sx6TuKu0kw2fEdxBD8jjSordOZZOKCWybucHoreKHma+hmf44NCXiKtqiKr9ghpeWwelcK07yrvw+pF46klOqB1mpOh3ic+s4mxaney/+PTVIxPMTPc9gcqOKw+/LYw==
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1147.namprd12.prod.outlook.com (2603:10b6:3:79::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
+ 2021 12:42:08 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
+ 12:42:08 +0000
+Date:   Thu, 25 Mar 2021 09:42:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <20210325124206.GA599656@nvidia.com>
+References: <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
+ <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
+ <20210324231419.GR2356281@nvidia.com>
+ <607ecbeb-e8a5-66e9-6fe2-9a8d22f12bc2@shipmail.org>
+ <fb74efd9-55be-9a8d-95b0-6103e263aab8@amd.com>
+ <15da5784-96ca-25e5-1485-3ce387ee6695@shipmail.org>
+ <20210325113023.GT2356281@nvidia.com>
+ <afad3159-9aa8-e052-3bef-d00dee1ba51e@shipmail.org>
+ <20210325120103.GV2356281@nvidia.com>
+ <a0d0ffd7-3c34-5002-f4fe-cb9d4ba0279e@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <a0d0ffd7-3c34-5002-f4fe-cb9d4ba0279e@amd.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: CH0PR03CA0064.namprd03.prod.outlook.com
+ (2603:10b6:610:cc::9) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0064.namprd03.prod.outlook.com (2603:10b6:610:cc::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Thu, 25 Mar 2021 12:42:08 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPPJO-002W22-RE; Thu, 25 Mar 2021 09:42:06 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d679322f-21f3-415d-5ea8-08d8ef8b6713
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1147:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB114785AD2D729764EB08E05BC2629@DM5PR12MB1147.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?aStBa1hUays5WnhGQUkzanUyOHBhYnc1YjRtT2dxcHNVMHMxZVBBdVByVE1K?=
+ =?utf-8?B?cEFoWVc2RmdQSkpHaWN5RDF3Mlc0QkNRZlN5bzBJZjBZNjZJS3AzRlc4NFQv?=
+ =?utf-8?B?d0NvZmYzT0Q4WkVvK3RheTZtcWw1WUMwTHQ5ZUtJa3BBM1dQTld5M2ZnSGxj?=
+ =?utf-8?B?VkdtL2FvWTg1YXJzWEcvSHdFREZxRXcvNys1Y1NMYlBpSXdkNGlwbjc4Vmtw?=
+ =?utf-8?B?TFBhbXYzY2JUeTNHdGd3MEhROHFoSVRlaWVwYmJ4TWlMTTRSSDMyT2Q0VCtq?=
+ =?utf-8?B?ajdQSlZRcDBvNnl5RnFmT2Z4MXVxM0xyQkIyUHVNQnpiTDZnQ1ZiaENpZ2g4?=
+ =?utf-8?B?dU9oeHlGVXdFM1NhTEtZMHV4dHh4bnIxeWlMVm0yMnpjeTZTdC96NFdldXhG?=
+ =?utf-8?B?OHBkblM2ckJpcTczTXZuaVB3NHRUMTZQaVM3VzJpcm5lWVVxeW4vZFM0VWFx?=
+ =?utf-8?B?YXcxaTVqbVU4RHVuc0J3blFMa3pyL3FLWEVBby83clkreHR6WXgzYzgrVEd4?=
+ =?utf-8?B?bDluQnIxaC9XT21GZk4zbEhQV0JIMWJkRmlyWFhiL012QVcxSWp1Q1lXdm5m?=
+ =?utf-8?B?ZHNkSEVyWnZ6Si9aRjJicVZ2WU13MTR5QnhQeWVDa3JRVjE5bVMxZlF5QWJ3?=
+ =?utf-8?B?TXZ6QVl1MFZMaXd2QzRlWFJUZzlPc0JqR2trRHlSblBBalB0WGlmb2dCZzg5?=
+ =?utf-8?B?U2FQdDZiYUZ4UENkUzhGQUNwcDJ5QmVIMjZmVHl3aWx2YURFS3N1QXFmMThp?=
+ =?utf-8?B?ZjgrcUEvbFEzZWV5em9HcE0wQzFOYVFhc3VQTVF5UnEzcis4anQrZ2xkeHVw?=
+ =?utf-8?B?TnRDNjU3L2JGS1J0M09mSmp1K3l5enhadEQxSVc4SG9oVVBBWmhmNCt2R1FE?=
+ =?utf-8?B?Qmo2NEpFS3hEUnJpU1pVRWpwYmJJVEtkMHBMenRHUEtDS2ZxamJzSUhHNit6?=
+ =?utf-8?B?MUtwN0RPY04wNTF5QjN0V3RQY1R3a0czM0t4SVFEM1lOVmV2NzhROUQ0ejhI?=
+ =?utf-8?B?QlZLbjVrTmlLem1qOFIycTZ6anJ6WnlJWjR6eWhYN2plbmNVK1owb1daLzh2?=
+ =?utf-8?B?U1d5SUNzRDBQano2TlVEbjVGYkJnWXEvWUhyTEZ4MEhzT1VmVzhsVGgramsw?=
+ =?utf-8?B?Zld5dTJWUC91ZHdkTlI1SWExTk93VHVIS3Z5eUtockZvVWJESk9hZTZQYzNi?=
+ =?utf-8?B?ajB4cHkrWlFucDBSWElkN2RsVFg2eEFwZW1qUEEvQSt4aUY5RXc3Mlg4aDVV?=
+ =?utf-8?B?QjdnT0dPbzRrWDhYaS91YmdpV3FtU3FrMFBJWmhsZTN4QXFKMFJmMjl1enJV?=
+ =?utf-8?B?V09NOWwxSXdDREtDSXZ1ZUMrYWVkbUhCQVNjNTRkUDJ2MEhRZUZ4RTlSR1o1?=
+ =?utf-8?B?RUdsa3JzRWRTbFE9PQ==?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:OSPM;SFS:(4636009)(366004)(346002)(136003)(396003)(39860400002)(376002)(26005)(6916009)(426003)(86362001)(66946007)(5660300002)(2616005)(478600001)(8936002)(66476007)(66556008)(2906002)(186003)(38100700001)(54906003)(4326008)(1076003)(9786002)(33656002)(8676002)(9746002)(316002)(36756003)(27376004)(14583001);DIR:OUT;SFP:1501;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VGRLSUFndi91UDdSL3I0aDNVa28vMVZqQUpKUzdYVitNOERSVUNNeXVuejds?=
+ =?utf-8?B?MEE1VmI0dzc3VjdDbmtCRWJ3Kzl2TWUxcS9IbzlBQ3dQRXg5aXgvSHZGU09Q?=
+ =?utf-8?B?S2hvWllUbWF2TEZTRDRwVTMzckZzRnV3YkNFcHl4NThYdlF1d0FubmFtVk16?=
+ =?utf-8?B?K3FwWTBzWEg0b0pkbnRUV1lycElYRFVrR2VqQU40Mkh0THpndkZZTGhsV01X?=
+ =?utf-8?B?NGUyNFE5NUtReFNyVUgvRFJMWXRmM1RJQ2pGQXZ5SHJDT0hzSTdkcXVsS05H?=
+ =?utf-8?B?WHV4ZnJKZUVOL3lvdC95R0hZbzhyeXd4bEJZbDdFNjRYUGs4aXhseG1TYlBQ?=
+ =?utf-8?B?eHZRenY5WEhmbGZmb2FMT1hhdkhlQUtEWktnVmxqbllEcHFLMlFSc1ZKcVZ5?=
+ =?utf-8?B?UDBqeHJRakhzZFI2NytCV1pad1N2akVXUzdnaEk3MVUrQ1lOUTF4RU1QYU5C?=
+ =?utf-8?B?anRxYUx4L3NHa3RZci9WYmtuaUlIb1ZLbm8rVGF5bGt0cFdSZ3dkWVdSU0t5?=
+ =?utf-8?B?QUVHNzBRVE9WUHUrLzJITGhrUUl4cmYvOG5IRDVKKytpMXJlVHUzTXJpckVt?=
+ =?utf-8?B?WDNiR2FNL3g0TFNHamN6U1hFVll2K04xcjNzMmd2VDVZQU11UnNMVGdQc3ZX?=
+ =?utf-8?B?NGNmaVducHpnMlNseXU4MjdqTHVHcHJRTFltQ09WTllyN2dGTFJDVThBcjF5?=
+ =?utf-8?B?RUhwbnVxc29CVUtMcy9pMkVCbDB6YTNvY0x2MnlTUWdETnkxcTBoRmVDK1NE?=
+ =?utf-8?B?N09USklnOXVOT0k3c1R2RGUxUWR4VHhzbGprUTdSM2Z4YXIvQzJ3cWVRUFY1?=
+ =?utf-8?B?Vml1QU10d1I5VVZQR0pROGZ5QTcrYmZtR256VElXS0RVSk8vdW9MQ2QxYXU1?=
+ =?utf-8?B?NHE5MDRkc1hBME44UExUQjRvT1FZU29FVEY1VCtmdTNieWw0R1FQUTlVL2Fu?=
+ =?utf-8?B?bTdPeUwyYkhZeGlYckZNMmNzZ285K2llUGU4TGRyWWtYNlJSNEtlMmQ1bnI5?=
+ =?utf-8?B?VGVyRkxERUFOdUJDdm5NMVpNcEhrNDZUdm9jd1U4TitmdVQvbjViQTdSV3Rx?=
+ =?utf-8?B?dXF0bXRCUFdDa3NKbmtnTlBXTkRGak9LdlNScHo0QysxMnFzSnBtWEdEWFVT?=
+ =?utf-8?B?SWUyNjd1THJQUVU5cnF4Ym5VZGNUZE1TbElDdGVJNmFWM0RGc01VVjNjWHZa?=
+ =?utf-8?B?c1BYaU5sTXlKYWp2V3JncnAvc29oY0hpTUJTemhUWFZ4ZzJUMUF3TUtOMVl5?=
+ =?utf-8?B?bVVORi9vSjJwR0dJamt2T2luTngwK0EyMEtqbnhOTVd3NURUUHgzUm5LNXZa?=
+ =?utf-8?B?cGxZcFZtN1RTdDAxNzQxR3NaK1R1RnVPZFQ4MHJrQ1F3STBBdGlLQ2Z5cVl2?=
+ =?utf-8?B?N1N5a3Bmajg3V3N3SmhOQ05wdEhmcElGYjAzcEtaam5jK2NtalJvMDJOMUJu?=
+ =?utf-8?B?ZVJXVmZtV1pVZTkwNDdvWTdXWGhWRkQyUnZTRFlodU5xQjlhZ3RPRTV3cGtI?=
+ =?utf-8?B?OWxaYnRXUE1WcWNBV05aMkVWK1BxZmp1OFAvVXpwb3NVc2F5bXNqY3ZZcEVS?=
+ =?utf-8?B?K3M3VjJpVkVsVXFtT0JzaTRqOVhiaC9TbWlCTDRld2R2ckVKNnRBNkJybXNu?=
+ =?utf-8?B?ZFhlV0d3VjNZbkhQRlBFSmdnZElKVTRoVEJiclNZWDc3bFRrOXpveU9DOURZ?=
+ =?utf-8?B?Q2ZMdGE0N1duNUhrQWhlRldLUHNEcUpDV1gzQlQxc0FSeEt2aDlMTWNIeFNV?=
+ =?utf-8?Q?ZE+WeRoMdfm0DKrlsBsMP4Wg+w85K7+2H1l/I4m?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d679322f-21f3-415d-5ea8-08d8ef8b6713
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 12:42:08.3589
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LhysqdtGajmH68GMu1ec8ndeg6WxZDKljetdriwFZDIRnyD0pnuJrXZ80kDV6/8v
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.03.21 13:35, Michal Hocko wrote:
-> On Thu 25-03-21 12:08:43, David Hildenbrand wrote:
->> On 25.03.21 11:55, Oscar Salvador wrote:
->>> On Thu, Mar 25, 2021 at 10:17:33AM +0100, Michal Hocko wrote:
->>>> Why do you think it is wrong to initialize/account pages when they are
->>>> used? Keep in mind that offline pages are not used until they are
->>>> onlined. But vmemmap pages are used since the vmemmap is established
->>>> which happens in the hotadd stage.
->>>
->>> Yes, that is true.
->>> vmemmap pages are used right when we populate the vmemmap space.
->>>
->>
->> Note: I once herd of a corner-case use case where people offline memory
->> blocks to then use the "free" memory via /dev/mem for other purposes ("large
->> physical memory"). Not that I encourage such use cases, but they would be
->> fundamentally broken if the vmemmap ends up on offline memory and is
->> supposed to keep its state ...
+On Thu, Mar 25, 2021 at 01:09:14PM +0100, Christian König wrote:
+> Am 25.03.21 um 13:01 schrieb Jason Gunthorpe:
+> > On Thu, Mar 25, 2021 at 12:53:15PM +0100, Thomas Hellström (Intel) wrote:
+> > 
+> > > Nope. The point here was that in this case, to make sure mmap uses the
+> > > correct VA to give us a reasonable chance of alignement, the driver might
+> > > need to be aware of and do trickery with the huge page-table-entry sizes
+> > > anyway, although I think in most cases a standard helper for this can be
+> > > supplied.
+> > Of course the driver needs some way to influence the VA mmap uses,
+> > gernally it should align to the natural page size of the device
 > 
-> I am not aware of such a use case, it surely sounds, ehm creative, but
-> nothing really new. But such a usecase sounds quite incompatible with
-> this feature whether we account vmemmap at hotadd or hotremove because
-> they would need to understand that part of the memory they have hotadded
-> is not useable.
-
-I think they can use it just fine via /dev/mem, which explicitly avoids 
-any kind of "struct page" references IIRC. They would be overwriting the 
-vmemmap, but that part scan happily read/write until onlining, where the 
-vmemmap would get reinitialized and set online - from which point on 
-pfn_to_online_page() would succeed also on the vmemmap itself.
-
+> Well a mmap() needs to be aligned to the page size of the CPU, but not
+> necessarily to the one of the device.
 > 
-> [...]
->>> - When moving the initialization/accounting to hot-add/hot-remove,
->>>     the section containing the vmemmap pages will remain offline.
->>>     It might get onlined once the pages get online in online_pages(),
->>>     or not if vmemmap pages span a whole section.
->>>     I remember (but maybe David rmemeber better) that that was a problem
->>>     wrt. pfn_to_online_page() and hybernation/kdump.
->>>     So, if that is really a problem, we would have to care of ot setting
->>>     the section to the right state.
->>
->> Good memory. Indeed, hibernation/kdump won't save the state of the vmemmap,
->> because the memory is marked as offline and, thus, logically without any
->> valuable content.
-> 
-> Could you point me to the respective hibernation code please? I always
-> get lost in that area. Anyway, we do have the same problem even if the
-> whole accounting is handled during {on,off}lining, no?
+> So I'm pretty sure the device driver should not be involved in any way the
+> choosing of the VA for the CPU mapping.
 
-kernel/power/snapshot.c:saveable_page().
+No, if the device wants to use huge pages it must influence the mmap
+VA or it can't form huge pgaes.
 
-> 
-> I am not really worried about kdump though. As the memory is offline
-> then losing itse vmemmap is a mere annoyance.
+It is the same reason why mmap returns 2M stuff these days to make THP
+possible
 
-Yep, kdump was relevant in our previous discussions when we were talking 
-about memory blocks having their altmap located on other memory blocks.
-
-> 
-> 
->>> - AFAICS, doing all the above brings us to former times were some
->>>     initialization/accounting was done in a previous stage, and I remember
->>>     it was pushed hard to move those in online/offline_pages().
->>>     Are we ok with that?
->>>     As I said, we might have to set the right zone in hot-add stage, as
->>>     otherwise problems might come up.
->>>     Being that case, would not that also be conflating different concepts
->>>     at a wrong phases?
->>>
->>
->> I expressed my opinion already, no need to repeat. Sub-section online maps
->> would make it cleaner, but I am still not convinced we want/need that.
-> 
-> Nah, subsections are more tricky than necessary and if we can live
-> without them and have it just as pmem weirdness is more than enough ;)
-
-Yes, absolutely :)
-
--- 
-Thanks,
-
-David / dhildenb
-
+Jason
