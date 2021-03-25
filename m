@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5F7349C4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4EA349C53
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhCYWca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
+        id S231246AbhCYWej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhCYWcV (ORCPT
+        with ESMTP id S230341AbhCYWec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:32:21 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48663C06174A;
-        Thu, 25 Mar 2021 15:32:21 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id y5so3541318pfn.1;
-        Thu, 25 Mar 2021 15:32:21 -0700 (PDT)
+        Thu, 25 Mar 2021 18:34:32 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13898C06174A;
+        Thu, 25 Mar 2021 15:34:32 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id 11so3511612pfn.9;
+        Thu, 25 Mar 2021 15:34:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KWr6YmeCPBgFiRrFsiGoA2C03PVzpKkKUx6udec6Wzg=;
-        b=ly3RUg2yjRwQxI2vL5btgxJ7UXsk+e1NOwd+QE7oxEUCcXpzIOUqqxuHLdc0KLJ1OR
-         EG/2XuTzcv9LoRylsxJZZHS4p7xRoAG2l+N5aQtVahW+atAV3df3c2Mcbw7MfMyYVwbq
-         0m4IDcGrfcb5QBhQauiaP1TJxhaSbBZ8tZ05JL1FUDpUF9scesn7KAQNZcEZ9DpTXFpV
-         GqkMgjUc+QuBeAninyH1+D5901+2wkFH4KyepESnlcgsbwOMG82dho8JDEJZYIpScntJ
-         B4BPrxyfN8cFftefUqvpVXG8ra5bmMdEGhYqTUHYhSiVTWGsIhDv03eP4Ub8ih8drv4H
-         sPdg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=x3pI3wTYnfce9h5pWOGPoILRK7UaH+G2udckcHEub78=;
+        b=swIEOgu95QCf9KedaX4yebvnrTZZGdBVpIzFChRQI1+PDRhRc8qNWJ0rsN55FErMs/
+         aGEz2YRI6HAYgD56wlV8BxeL18ERak8ArONscIHBhrE101A6ls8PbTY8bhzm6lN3hwNQ
+         pDFicK8np9QJDCtC1fSDSotZ+wt7z1HDrl4zKes6lycrqaxquEyHSPdzTxmWh5HGHPxy
+         c0dcz/1ddgTJRgbGPA3/0ZY/Q+oNLk7KtJbq5PWs40mN3M/fxOsdV0VahEZ9a4b50BR6
+         YBX2+hOSYMZwGtFx2osqj+YQf7dI4TOZSZJaukpLcN/70CGrzLxSJiwCZbCcLHjvUp3b
+         2ajQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KWr6YmeCPBgFiRrFsiGoA2C03PVzpKkKUx6udec6Wzg=;
-        b=BDswrxY+lKPFF5V2gGZoFOcMM75ql/ecJXHpw8qVZb7qB+5XCfa6/3LJWAFKbTEnMi
-         q1EnEF+/ZrjkGs/JgYRq72fY7pZBeBJbntggglLACtotVygaYD2lD69M1aLgyTR5gzMi
-         MEkWoz0Ocst8Aeyrb1laARjRiSYvWwcMZ6l+kPH8hpjfLvlwWeACl6ifkqH7vIJZ4qxB
-         RS+Byl+cjYGK6ge9DT0jZAfFnNAyzdO8PzHQLY/QI+mYIVJryX4j+LXTzay98Ag3g8G1
-         wcQXMv6NXteBU+BWTg1FRdvyuj6Yis6Vj/ILNLqlk3L0hlgnQ21VOj/wSgM1gHIJlDQG
-         +GnA==
-X-Gm-Message-State: AOAM530d4xTQtMEitKItaf3QfkTJQpL+AYHAA3Ck2Eo7JCklLsw1lGqZ
-        bcBKGE0GBVCULdgm/tUHSCQ=
-X-Google-Smtp-Source: ABdhPJyCIicHrlr07TQJ1TPEOEr+B02s8/kbcng7MscHMQctksaRu7im4QFqN6NmXDvDv7HgIJN8RQ==
-X-Received: by 2002:a63:1d52:: with SMTP id d18mr9632586pgm.403.1616711540794;
-        Thu, 25 Mar 2021 15:32:20 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:3991:e59d:d2d4:59dd])
-        by smtp.gmail.com with ESMTPSA id w37sm6574783pgl.13.2021.03.25.15.32.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 15:32:19 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 15:32:16 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     tip-bot2 for Barry Song <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org,
-        Barry Song <song.bao.hua@hisilicon.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-Subject: Re: [tip: irq/core] genirq: Add IRQF_NO_AUTOEN for request_irq/nmi()
-Message-ID: <YF0PcJG4g1kMLZ25@google.com>
-References: <20210302224916.13980-2-song.bao.hua@hisilicon.com>
- <161485523394.398.10007682711343433706.tip-bot2@tip-bot2>
- <87zgzj5gpo.fsf@nanos.tec.linutronix.de>
- <87o8fy69e0.fsf@nanos.tec.linutronix.de>
- <YFpvU30bKEZu0CSh@google.com>
- <87k0pvbtwf.fsf@nanos.tec.linutronix.de>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x3pI3wTYnfce9h5pWOGPoILRK7UaH+G2udckcHEub78=;
+        b=sEY9mLXF30ju+Iej/qc4GUTmp6pq191zuaWU5K4Rodbqrp1oePExZgAsQYb2WeXHqT
+         J4vJunT6wbMUvZ07m3UufM80Xa6/x/GnB7aIt6t1D+QY64ddaqk+ZceUbvdpNK9cEvKh
+         BVx4wd1xdmDW3elZj1YNjKH729jy9QQaJgq2PdrdUWkxMsczirWj/TY3CIPfP0Lk0mpd
+         GHgs2V0BE6PRuW+utbnGW0B4dtS+51WfzwOiCXXD+ackDicK0W0DDQtzGntOCFW93ulU
+         pFrmMDVVMi2yrg/RqjnWNhIaeTNjdnJFIRO5VT0jNyNWo6PJJrX1qcHogkCPG3waox4E
+         F4Lg==
+X-Gm-Message-State: AOAM5313pLvbFzwK7kFwYl/wfMoxXJ2P6ykEPpvUMotQp3hXQmpQv3xK
+        IhzU0CIIQia6TCRuoS4wCek=
+X-Google-Smtp-Source: ABdhPJzSOVWrd0ZUTVMt0ZJVpx/V91m8aCUSh+Plu+or3dSadNjlWXEUd9ymA+N2OtQFNRJZCgjooQ==
+X-Received: by 2002:a17:903:228d:b029:e7:1f01:bab0 with SMTP id b13-20020a170903228db02900e71f01bab0mr173917plh.80.1616711671394;
+        Thu, 25 Mar 2021 15:34:31 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id f19sm7297452pgl.49.2021.03.25.15.34.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 15:34:30 -0700 (PDT)
+Subject: Re: [PATCH] mmc: sdhci-brcmstb: Remove CQE quirk
+To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+References: <20210325192834.42955-1-alcooperx@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <8736770f-69e9-579b-0762-83884c8cb4d9@gmail.com>
+Date:   Thu, 25 Mar 2021 15:34:28 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0pvbtwf.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <20210325192834.42955-1-alcooperx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 07:59:44AM +0100, Thomas Gleixner wrote:
-> Dmitry,
-> 
-> On Tue, Mar 23 2021 at 15:44, Dmitry Torokhov wrote:
-> > On Thu, Mar 04, 2021 at 07:50:31PM +0100, Thomas Gleixner wrote:
-> >> Please hold on:
-> >> 
-> >>   https://lkml.kernel.org/r/CAHk-=wgZjJ89jeH72TC3i6N%2Bz9WEY=3ysp8zR9naRUcSqcAvTA@mail.gmail.com
-> >> 
-> >> I'll recreate a tag for you once rc2 is out.
-> >
-> > It looks like the change has been picked up as
-> > cbe16f35bee6880becca6f20d2ebf6b457148552i on top of -rc2,
-> > but I don't think there is tag for it?
-> 
-> Sorry, forgot about it. Here you go:
-> 
->       git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-no-autoen-2021-03-25
 
-Thank you!
 
+On 3/25/2021 12:28 PM, Al Cooper wrote:
+> Remove the CQHCI_QUIRK_SHORT_TXFR_DESC_SZ quirk because the
+> latest chips have this fixed and earlier chips have other
+> CQE problems that prevent the feature from being enabled.
+> 
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-Dmitry
+Florian
