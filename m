@@ -2,189 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B64B348849
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:19:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA25A34884E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhCYFSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 01:18:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhCYFSa (ORCPT
+        id S229709AbhCYFVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 01:21:32 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:27696 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229519AbhCYFVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 01:18:30 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8B1C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:18:19 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id r17so683198pgi.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I+FWj6Hf+dd6h4E3BP2IBzagIqQQDvwZ4ToIMDO5/Z8=;
-        b=HK/gIPDVvBDJhFuyEmwfS35eTr6KF6wDJvNgHK1+iG61S3NFxBtyZti28W0tSkjPUk
-         E6NiID7Ry+S235L4XryGcMzfF8sF0U208+/OruC7DhenX6HWurVqsxShYrvTVxVWBM29
-         6UFQOncwFs2WD/kXLzVtwRnQ6SYElYB3+fprE78+Yf8GaXPRjHCOW+aj2RCKUdmx6HI+
-         z4naA1S+k/4xNXgU0KDEYzMNuo4nWF8K1Atz8DGWjOkAdCTgG7zd7904sHW83gfcjXjg
-         NW+UKcxWXn0fzPi7MfwabywBNC3z7gSTjPDdaDh5F7tOLZzF2jd9TVIe5FRGxGQ2N5IQ
-         dnew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I+FWj6Hf+dd6h4E3BP2IBzagIqQQDvwZ4ToIMDO5/Z8=;
-        b=C36sCqQRXEY7zxDrZ8D6ox+sqvVOz8eTMosGoDj16L7xnn98EQEpJTRzrWUZvbzHca
-         V+XnmA8OZfFOhRHtAU1jZPofuQAYsWnWDIrPUgfRx9BRL6WiSGcfYNJLxOp76Wa5vqpY
-         buIaNzJ2kxrK0lf4fy4jAbGJl1Ph6gJN4QtxY0fhBh9hJSmkkKgOdmapveJ49qdvQ/It
-         NAdIShcmTYOCfJXRRNFXkkxKs0aYh1Fc5gd/t9DM8baXhq6+U+HcuAfDMzp2dPI4dYEK
-         W0wacRSKWlSk1sSl5JxqcAka3XO/i+uf9lwuRCbnDm9FoRAElwzrgYREiaaDARPJEpWr
-         J/6g==
-X-Gm-Message-State: AOAM532L6H1yOjyyhcgHcP8gfFZBx/jmxJwqJUUrioZ67wBnpfJTlzPn
-        HYCcqZdf8C+uXjRk11ZEvLKvd7nonucutn2VuS0TFQ==
-X-Google-Smtp-Source: ABdhPJzURfHQIbEBC2BERiZzIrhBy6J7YK+04JNLB6WYh45GG+YG1q+NNJu/oz0vcQW+i1pyhaVn5AM96gOKZJGDFPg=
-X-Received: by 2002:a63:1562:: with SMTP id 34mr5814651pgv.71.1616649498504;
- Wed, 24 Mar 2021 22:18:18 -0700 (PDT)
+        Thu, 25 Mar 2021 01:21:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616649677; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WHPiw1feldgt4gfcCUTFJNoBPpp+MESLBL9s3gDzyOw=;
+ b=emu4T4wr/fzEdAwWyzc0fRn/yF1SOdm+OgZ9PstRDEL0zWcVKGWqJT0zYc3NlsoTTlewUgDI
+ R/5BDl2n3pxBpAMBh5OJgyp/UQwvFx6MxZgUoSSEPXuPPVHRe5ExbkUgj+GoI1u8ucCJwaYx
+ G1KPzQtT/F2M9kUd+nnCFFDs74Q=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 605c1dbbc32ceb3a916dd6c6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 05:20:59
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 99879C433ED; Thu, 25 Mar 2021 05:20:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C02B9C433CA;
+        Thu, 25 Mar 2021 05:20:57 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210302034928.3761098-1-varmam@google.com> <87pmzw7gvy.fsf@nanos.tec.linutronix.de>
- <CAMyCerL7UkcU1YgZ=dUTZadv-YPHGccO3PR-DCt2nX7nz0afgA@mail.gmail.com> <87zgyurhoe.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87zgyurhoe.fsf@nanos.tec.linutronix.de>
-From:   Manish Varma <varmam@google.com>
-Date:   Wed, 24 Mar 2021 22:18:07 -0700
-Message-ID: <CAMyCerKf4MfsjAcVhXi7DVuP9mvt0X6VamwMiHa3KgRvnr7p9Q@mail.gmail.com>
-Subject: Re: [PATCH] fs: Improve eventpoll logging to stop indicting timerfd
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kelly Rossmoyer <krossmo@google.com>, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 25 Mar 2021 10:50:57 +0530
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add PMIC peripherals for SC7280
+In-Reply-To: <YFjVEjcx36J97hVW@google.com>
+References: <1615459229-27573-1-git-send-email-skakit@codeaurora.org>
+ <YEvR1kDm32tE7mK3@google.com>
+ <4dc784eb3c00a9805141148732476838@codeaurora.org>
+ <YFjVEjcx36J97hVW@google.com>
+Message-ID: <e8af9692a9a54e44ad687bb8984fad7a@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi Matthias,
 
-On Mon, Mar 22, 2021 at 2:40 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Manish,
->
-> On Mon, Mar 22 2021 at 10:15, Manish Varma wrote:
-> > On Thu, Mar 18, 2021 at 6:04 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> > +static atomic_t instance_count = ATOMIC_INIT(0);
-> >>
-> >> instance_count is misleading as it does not do any accounting of
-> >> instances as the name suggests.
-> >>
-> >
-> > Not sure if I am missing a broader point here, but the objective of this
-> > patch is to:
-> > A. To help find the process a given timerfd associated with, and
-> > B. one step further, if there are multiple fds created by a single
-> > process then label each instance using monotonically increasing integer
-> > i.e. "instance_count" to help identify each of them separately.
-> >
-> > So, instance_count in my mind helps with "B", i.e. to keep track and
-> > identify each instance of timerfd individually.
->
-> I know what you want to do. The point is that instance_count is the
-> wrong name as it suggests that it counts instances, and that in most
-> cases implies active instances.
->
-> It's not a counter, it's a token generator which allows you to create
-> unique ids. The fact that it is just incrementing once per created file
-> descriptor does not matter. That's just an implementation detail.
->
-> Name it something like timerfd_create_id or timerfd_session_id which
-> clearly tells that this is not counting any thing. It immediately tells
-> the purpose of generating an id.
->
-> Naming matters when reading code, really.
->
+On 2021-03-22 23:04, Matthias Kaehlcke wrote:
+> Hi Satya,
+> 
+> On Mon, Mar 22, 2021 at 06:50:47PM +0530, skakit@codeaurora.org wrote:
+>> Hi Matthias,
+>> 
+>> On 2021-03-13 02:10, Matthias Kaehlcke wrote:
+>> > Hi Satya,
+>> >
+>> > On Thu, Mar 11, 2021 at 04:10:29PM +0530, satya priya wrote:
+>> > > Add PM7325/PM8350C/PMK8350/PMR735A peripherals such as PON,
+>> > > GPIOs, RTC and other PMIC infra modules for SC7280.
+>> > >
+>> > > Signed-off-by: satya priya <skakit@codeaurora.org>
+>> > > ---
+>> > > This patch depends on base DT and board files for SC7280 to merge
+>> > > first
+>> > > https://lore.kernel.org/patchwork/project/lkml/list/?series=487403
+>> > >
+>> > >  arch/arm64/boot/dts/qcom/pm7325.dtsi  |  60 ++++++++++++++++++++
+>> > >  arch/arm64/boot/dts/qcom/pm8350c.dtsi |  60 ++++++++++++++++++++
+>> > >  arch/arm64/boot/dts/qcom/pmk8350.dtsi | 104
+>> > > ++++++++++++++++++++++++++++++++++
+>> > >  arch/arm64/boot/dts/qcom/pmr735a.dtsi |  60 ++++++++++++++++++++
+>> > >  arch/arm64/boot/dts/qcom/sc7280.dtsi  |   8 +++
+>> > >  5 files changed, 292 insertions(+)
+>> > >  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > >  create mode 100644 arch/arm64/boot/dts/qcom/pm8350c.dtsi
+>> > >  create mode 100644 arch/arm64/boot/dts/qcom/pmk8350.dtsi
+>> > >  create mode 100644 arch/arm64/boot/dts/qcom/pmr735a.dtsi
+>> > >
+>> > > diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > > b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > > new file mode 100644
+>> > > index 0000000..393b256
+>> > > --- /dev/null
+>> > > +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > > @@ -0,0 +1,60 @@
+>> >
+>> > ...
+>> >
+>> > > +		polling-delay-passive = <100>;
+>> > > +		polling-delay = <0>;
+>> >
+>> > Are you sure that no polling delay is needed? How does the thermal
+>> > framework
+>> > detect that the temperatures is >= the passive trip point and that it
+>> > should
+>> > start polling at 'polling-delay-passive' rate?
+>> >
+>> 
+>> As the temp-alarm has interrupt support, whenever preconfigured 
+>> threshold
+>> violates it notifies thermal framework, so I think the polling delay 
+>> is not
+>> needed here.
+> 
+> From the documentation I found it's not clear to me how exactly these
+> interrupts work. Is a single interrupt triggered when the threshold is
+> violated or are there periodic (?) interrupts as long as the 
+> temperature
+> is above the stage 0 threshold?
+> 
+> Why is 'polling-delay-passive' passive needed if there are interrupts? 
+> Maybe
+> to detect that the zone should transition from passive to no cooling 
+> when the
+> temperature drops below the stage 0 threshold?
 
-Noted, and thanks for the clarification!
+The PMIC TEMP_ALARM peripheral maintains an internal over-temperature 
+stage: 0, 1, 2, or 3.  Stage 0 is normal operation below the lowest 
+(stage 1) threshold [usually 95 C].  When in stage 1, the temperature is 
+between the stage 1 and 2 thresholds [stage 2 threshold is usually 115 
+C].  Upon hitting the stage 3 threshold [usually 145 C], the PMIC 
+hardware will automatically shut down the system.
 
-> >> > +     snprintf(file_name_buf, sizeof(file_name_buf), "[timerfd%d:%s]",
-> >> > +              instance, task_comm_buf);
-> >> > +     ufd = anon_inode_getfd(file_name_buf, &timerfd_fops, ctx,
-> >> >                              O_RDWR | (flags & TFD_SHARED_FCNTL_FLAGS));
-> >> >       if (ufd < 0)
-> >> >               kfree(ctx);
-> >>
-> >> I actually wonder, whether this should be part of anon_inode_get*().
-> >>
-> >
-> > I am curious (and open at the same time) if that will be helpful..
-> > In the case of timerfd, I could see it adds up value by stuffing more
-> > context to the file descriptor name as eventpoll is using the same file
-> > descriptor names as wakesource name, and hence the cost of slightly
-> > longer file descriptor name justifies. But I don't have a solid reason
-> > if this additional cost (of longer file descriptor names) will be
-> > helpful in general with other file descriptors.
->
-> Obviously you want to make that depend on a flag handed to anon_...().
-
-Unfortunately, changing file descriptor names does not seem to be a viable
-option here (more details in my answer in the next section), and
-hence changes in anon_...() does not seem to be required.
-
->
-> The point is that there will be the next anonfd usecase which needs
-> unique identification at some point. That is going to copy&pasta that
-> timerfd code and then make it slightly different just because and then
-> userspace needs to parse yet another format.
->
-> >> Aside of that this is a user space visible change both for eventpoll and
-> >> timerfd.
->
-> Not when done right.
->
-> >> Have you carefully investigated whether there is existing user space
-> >> which might depend on the existing naming conventions?
-> >>
-> > I am not sure how I can confirm that for all userspace, but open for
-> > suggestions if you can share some ideas.
-> >
-> > However, I have verified and can confirm for Android userspace that
-> > there is no dependency on existing naming conventions for timerfd and
-> > eventpoll wakesource names, if that helps.
->
-> Well, there is a world outside Android and you're working for a company
-> which should have tools to search for '[timerfd]' usage in a gazillion of
-> projects. The obvious primary targets are distros of all sorts. I'm sure
-> there are ways to figure this out without doing it manually.
->
-> Not that I expect any real dependencies on it, but as always the devil
-> is in the details.
->
-
-Right, there are some userspace which depends on "[timerfd]" string
-https://codesearch.debian.net/search?q=%22%5Btimerfd%5D%22&literal=1
-
-So, modifying file descriptor names at-least for timerfd will definitely
-break those.
-
-With that said, I am now thinking about leaving alone the file descriptor
-names as is, and instead, adding those extra information about the
-associated processes (i.e. process name or rather PID of the
-process) along with token ID directly into wakesource name, at the
-time of creating new wakesource i.e. in ep_create_wakeup_source().
-
-So, the wakesource names, that currently named as "[timerfd]", will be
-named something like:
-"epollitem<N>:<PID>.[timerfd]"
-
-Where N is the number of wakesource created since boot.
-
-This way we can still associate the process with the wakesource
-name and also distinguish multiple instances of wakesources using
-the integer identifier.
-
-Please share your thoughts!
-
-> Thanks,
->
->         tglx
+The TEMP_ALARM IRQ fires on stage 0 -> 1 and 1 -> 0 transitions.  We 
+therefore set polling-delay = <0> since there is no need for software to 
+monitor the temperature periodically when operating in stage 0.  Upon 
+crossing the stage 1 threshold, SW receives the IRQ and the thermal 
+framework hits its first trip changing the thermal zone to passive mode. 
+  This then engages the 100 ms polling enabled via polling-delay-passive 
+= <100>.  If the temperate keeps climbing and passes the stage 2 
+threshold, the thermal framework hits the second trip (which is 
+critical) and it initiates an orderly shutdown.  If the temperature 
+drops below the stage 1 threshold, then the thermal framework exits 
+passive mode and stops polling.  This approach reduces/eliminates the 
+software overhead when not at an elevated temperature.
 
 Thanks,
-Manish
---
-Manish Varma | Software Engineer | varmam@google.com | 650-686-0858
+Satya Priya
