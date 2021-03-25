@@ -2,124 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6052349A1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9B9349A22
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:25:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhCYTYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:24:01 -0400
-Received: from mga06.intel.com ([134.134.136.31]:45790 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhCYTXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:23:39 -0400
-IronPort-SDR: T52ZengW2qrDRGDlmqemAyRMsdolFte6AWZsAd12pym+dpoeFDKiqiAW6wact7zPsaQW2CJ9pa
- Zw2Cw6BCw5Iw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="252361417"
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="252361417"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 12:23:39 -0700
-IronPort-SDR: 8XoTRiTBoInAQeThsSpFVNuSrmA/UDezC793YWALlqhC6Ku6HojnjqxMlHSbqOdnilpmz0aOPv
- s2ZD2/j/nD9Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="416155750"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 25 Mar 2021 12:23:37 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id A5D93236; Thu, 25 Mar 2021 21:23:51 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v1 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick with const
-Date:   Thu, 25 Mar 2021 21:23:47 +0200
-Message-Id: <20210325192347.67326-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230195AbhCYTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:24:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhCYTYV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:24:21 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90792C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:24:20 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id v15so4171952lfq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=L8T2Txzb0BtewZ5F66NCn7EN1kBqfXmON7PRQ3Cxnj0=;
+        b=uz61an9M1dHhsmDDzYlBWKFkQ0xFbDqOq4tzPA/WEzSnTTQCl2j5f8LgyUWMqy2g09
+         rdNbc0rSfLnOZbF0YVzDhVv9e89BB5Og4wIpAp2lAyNINw48Noa07QzbgcsxalTXL4te
+         D9TmW4W0KtLb8SQ03Bb0h49PnnjNgh67Wbf+64r0HmxesLknzb/SBwbmT1MWQwu/Dwwb
+         UxwEmRS/qlYXp7WfviJPQzKD6EuRRh3cBE6TsOCveAzkZkR+ova0kT9Rv2sGUpN9hBNJ
+         xI5O2RvX7yTKVqc3T/l+xd0VUH+Z/ZT9EB//l7xYB73ukuS3iI1mdqcRLXdP03/MJvKB
+         eHvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=L8T2Txzb0BtewZ5F66NCn7EN1kBqfXmON7PRQ3Cxnj0=;
+        b=o9BCv8T26gD/QF6HtfBpA8cVXYSBoZzvZa9eFBItePjIU5Kjx8Qp4FgZ7aJnOweLNp
+         vbPUfanBNm6SYk1hoh0O4HjUbqye9vmuOV/H975+7/9bccVUt79Yk3776EReTBSJe178
+         OuND+VbiPFnDFifdmX3IdW0hUmC2AKgHPlnSE6sOHzUEwh+PFmcDX1eBz3s5SKd03Oad
+         Ddyy4WQfHy6uIjmi1Ax/ndjLCUfhJx26BUxz/nmaWWYGl8Ms62Wk1Z/dHolgrGk8MSOp
+         vfl/kj7nE2AzJOBAsiTDIe4vHj9rf7bWrmzGpoZ2+Dq7FH2ReG5WzFQsMc3daxBLoghP
+         r5Dw==
+X-Gm-Message-State: AOAM533wnQIwHN+UaCzDXe/Rm3/JG4o9yTEBS8FcRUu3/RWepPzu4lt3
+        Tj9/uzpJHZfpQT9eGXFr/XJaWmBYHCbtJNtXaTU8nw==
+X-Google-Smtp-Source: ABdhPJxEDGp3bUqaucqZOvhWWJyy62pP51Q7wESmTwcPqVi6x5pXOBqg5AJ+vA5ZqsgTOVe3+NhxCi9R/Xf9egb2B1o=
+X-Received: by 2002:a19:6a16:: with SMTP id u22mr5622616lfu.356.1616700258737;
+ Thu, 25 Mar 2021 12:24:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 25 Mar 2021 20:23:52 +0100
+Message-ID: <CAG48ez1wLkMCiyY+bWVonXZr2TjzhwKZjNZLD3Ads=Rds8YJSw@mail.gmail.com>
+Subject: ARM FDPIC_FUNCPTRS personality flag handling looks broken
+To:     Nicolas Pitre <nico@fluxnic.net>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Cc:     Tavis Ormandy <taviso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Linus rightfully noticed, the driver plays dirty trick with const,
-i.e. it assigns a place holder data structure to the const field
-in the MFD cell and then drops the const by explicit casting. This
-is not how it should be.
+Hi!
 
-Replace cell parameter by bar and assign local pointer res to the
-respective non-const place holder in the intel_quark_i2c_setup()
-and intel_quark_gpio_setup().
+Tavis noticed that on ARM kernels with CONFIG_BINFMT_ELF_FDPIC, it
+looks like the FDPIC_FUNCPTRS personality flag is not reset on
+execve(). This would mean that if a process first executes an ELF
+FDPIC binary (which forces the personality to PER_LINUX_FDPIC), and
+then executes a non-FDPIC binary, the signal handling code
+(setup_return()) will have bogus behavior (interpreting a normal
+function pointer as an FDPIC function handle).
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+I think FDPIC_FUNCPTRS should probably either be reset on every
+execve() or not be a personality flag at all (since AFAIU pretty much
+the whole point of personality flags is that they control behavior
+even across execve()).
 
-diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-index 7f90e6f022ba..f2bce2ade510 100644
---- a/drivers/mfd/intel_quark_i2c_gpio.c
-+++ b/drivers/mfd/intel_quark_i2c_gpio.c
-@@ -157,17 +157,16 @@ static void intel_quark_unregister_i2c_clk(struct device *dev)
- 	clk_unregister(quark_mfd->i2c_clk);
- }
- 
--static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
-+static int intel_quark_i2c_setup(struct pci_dev *pdev, int bar)
- {
-+	struct mfd_cell *cell = &intel_quark_mfd_cells[bar];
-+	struct resource *res = intel_quark_i2c_res;
- 	const struct dmi_system_id *dmi_id;
- 	struct dw_i2c_platform_data *pdata;
--	struct resource *res = (struct resource *)cell->resources;
- 	struct device *dev = &pdev->dev;
- 
--	res[INTEL_QUARK_IORES_MEM].start =
--		pci_resource_start(pdev, MFD_I2C_BAR);
--	res[INTEL_QUARK_IORES_MEM].end =
--		pci_resource_end(pdev, MFD_I2C_BAR);
-+	res[INTEL_QUARK_IORES_MEM].start = pci_resource_start(pdev, bar);
-+	res[INTEL_QUARK_IORES_MEM].end = pci_resource_end(pdev, bar);
- 
- 	res[INTEL_QUARK_IORES_IRQ].start = pci_irq_vector(pdev, 0);
- 	res[INTEL_QUARK_IORES_IRQ].end = pci_irq_vector(pdev, 0);
-@@ -189,16 +188,15 @@ static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
- 	return 0;
- }
- 
--static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
-+static int intel_quark_gpio_setup(struct pci_dev *pdev, int bar)
- {
-+	struct mfd_cell *cell = &intel_quark_mfd_cells[bar];
-+	struct resource *res = intel_quark_gpio_res;
- 	struct dwapb_platform_data *pdata;
--	struct resource *res = (struct resource *)cell->resources;
- 	struct device *dev = &pdev->dev;
- 
--	res[INTEL_QUARK_IORES_MEM].start =
--		pci_resource_start(pdev, MFD_GPIO_BAR);
--	res[INTEL_QUARK_IORES_MEM].end =
--		pci_resource_end(pdev, MFD_GPIO_BAR);
-+	res[INTEL_QUARK_IORES_MEM].start = pci_resource_start(pdev, bar);
-+	res[INTEL_QUARK_IORES_MEM].end = pci_resource_end(pdev, bar);
- 
- 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
- 	if (!pdata)
-@@ -252,11 +250,11 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
- 	if (ret < 0)
- 		goto err_unregister_i2c_clk;
- 
--	ret = intel_quark_i2c_setup(pdev, &intel_quark_mfd_cells[MFD_I2C_BAR]);
-+	ret = intel_quark_i2c_setup(pdev, MFD_I2C_BAR);
- 	if (ret)
- 		goto err_free_irq_vectors;
- 
--	ret = intel_quark_gpio_setup(pdev, &intel_quark_mfd_cells[MFD_GPIO_BAR]);
-+	ret = intel_quark_gpio_setup(pdev, MFD_GPIO_BAR);
- 	if (ret)
- 		goto err_free_irq_vectors;
- 
--- 
-2.30.2
-
+(I don't have an FDPIC toolchain, so I'm writing this solely based on
+having read the code, without having actually tested it.)
