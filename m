@@ -2,136 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9635E349BB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76903349BB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:35:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhCYVeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        id S230496AbhCYVfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbhCYVd6 (ORCPT
+        with ESMTP id S231129AbhCYVep (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:33:58 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF52C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:33:57 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j18so3745577wra.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:33:57 -0700 (PDT)
+        Thu, 25 Mar 2021 17:34:45 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFC9C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:34:44 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id e18so3730171wrt.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:34:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TXHI1OxX+D4iSzKCuoMMss3yjiQz/+KLKVrP99q3G2I=;
-        b=frvH/QuNUnODqvtDdusaUFppblhOygLUWsC1ixB43GNG2Cc+yxM2WFbRWpgjN4Ju8Y
-         95PeIsuDNMn98oqagJ3ef1Nu2yOkiL1vvMi/6inWwQyeTtLH5DD3GrBLCXNufjRYGMCK
-         r/gFSHALeS9GIhicmr/nrrhcB3MijIi/RQZtU=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vOuyD+8iJ6pChPVDl0VFGxY46KCmbNa2kfeUJDzMkXg=;
+        b=soMI3uWRUjktG04D2SQu8Qy97qHRJs7uo1iRTTUJnj71Tc1uQP8P984R/Y7LZalU1j
+         +gziByYDZXZLl7kF8Ob027LJQ1qyidDTVcI6awvzbJW0i1RbBtYRvZYh6bf5ls5CQIjk
+         xdmKmlte7+TYumQURsrVTuUWRbxJYrlpQdrHx1SPMk3DoqM7bmSr4y2Qoq0++a6I6MFX
+         PKS6qd9U/lVfCGA1DTHkKdMJw5iKC56pjQ6LMfmpbljVbHk3dvN3b8KnU1eetT23dlMO
+         2EKRrrutCsEjCxe5zt9+8hYwo/KfIfmNpD2R5OBzXDxOh+ibxUwkynf0OVLvV8N0RnrG
+         L1uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=TXHI1OxX+D4iSzKCuoMMss3yjiQz/+KLKVrP99q3G2I=;
-        b=f4+MbSbrB7uZKyoV/Wdt8ITCKgM3jhYPD8Ez1KvKCwEk2u4WgD2ZMAg0msI9Vqr9ja
-         KnX6J1F3QYK0giP5JM2iqORIIyvwLU8id0uv3iEpFMM3lZRT3ZH2Ij2yqJocj3BsyV6w
-         Vyy9l5nMMx2uBGPfqV4ruSEThoyjNTST67tAs1GdjPov8tXQq79hdsRARwmEeoToqsHI
-         i6hXuBxS1kBvp1/Pe1ceED/R2kkqy/BDlGJ3kj1uMzw4ZlVsvUIUuc8f1b0UotcrIsaC
-         aJLR2WExpPrWmXOc38cg89EOtYcbC2wpQWEKi5wWY5h2QcnKuGxVmLoKruTX27SwDP0j
-         VH5A==
-X-Gm-Message-State: AOAM5339TNKeBK5JlNgnGrUgKd++WOVNK3TCGJdE5rW4VUniPI3o5EqW
-        YqjCnBOwHcRqYOtI0Nuvld30Sg==
-X-Google-Smtp-Source: ABdhPJwn8UAApYENGs0EsRiOl6kaa4IOv1NsIwYwvHs5ZhbA+T+EIOa3Ak0sCs/YbuNvp+I4gerYDg==
-X-Received: by 2002:adf:e8c9:: with SMTP id k9mr10992298wrn.315.1616708036367;
-        Thu, 25 Mar 2021 14:33:56 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id x13sm1115693wmp.39.2021.03.25.14.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 14:33:55 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 22:33:53 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-Subject: Re: [PATCH 3/3] mm: unexport follow_pfn
-Message-ID: <YF0BwfzqpPLuFTw+@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@nvidia.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        3pvd@google.com, Jann Horn <jannh@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Daniel Vetter <daniel.vetter@intel.com>
-References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
- <20210316153303.3216674-4-daniel.vetter@ffwll.ch>
- <20210324125211.GA2356281@nvidia.com>
- <YFuQNj10P+uUHD4G@phenom.ffwll.local>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vOuyD+8iJ6pChPVDl0VFGxY46KCmbNa2kfeUJDzMkXg=;
+        b=iPrxTAs2RyQ0ZDRTVZ+bEluMh+p8SN8Fe/RV9GY0vdO2jScPdIzcKqjSgx5mgANgze
+         +yAu/cmIJ6KGlESnycE3I28eL0oyPygmOjOMKUJ56nEK+5UOBoMa1FR54Oyb9qFAj0za
+         KfkVAVMfJ2flgm2wTz722W84p4E6+hSlPT64WfViSPBuSCC2QJFY3pz7nLOGHN4TMWlT
+         rKDDgZeugK5avkfroKIhW9h67Bmwnu0CeI2TsihsasFNIRuB8C3it+2ACFIm4WooznvF
+         +brCrBqfd1Qlw5WK01p5JYU0Qw93Mya6PiPYj2s38xMI0JjkPqIZcJeFjKkrvsp6ci0X
+         wlrA==
+X-Gm-Message-State: AOAM532R4YMGiQaG2peNynksM1+jlbC2Qb99QgiDzRd51DPa9d40XDOw
+        Ol63NBjMleWvTJ3ervpMUQU=
+X-Google-Smtp-Source: ABdhPJzaBmLiCUF9fTMgpQMDGbGE00hcRi591iwKiRoYxb9iM1hwjDFmt01SSNbGWLnnoxFGqM3aBA==
+X-Received: by 2002:a5d:6a49:: with SMTP id t9mr11373439wrw.131.1616708083605;
+        Thu, 25 Mar 2021 14:34:43 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id i8sm7995314wmi.6.2021.03.25.14.34.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 14:34:43 -0700 (PDT)
+Subject: Re: [PATCH] mremap.2: MREMAP_DONTUNMAP to reflect to supported
+ mappings
+To:     Brian Geffon <bgeffon@google.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Dmitry Safonov <dima@arista.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210303175235.3308220-1-bgeffon@google.com>
+ <20210323182520.2712101-1-bgeffon@google.com>
+ <20210323182520.2712101-4-bgeffon@google.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <9c0b4b2a-3678-186a-072a-280628e5da02@gmail.com>
+Date:   Thu, 25 Mar 2021 22:34:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFuQNj10P+uUHD4G@phenom.ffwll.local>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210323182520.2712101-4-bgeffon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 08:17:10PM +0100, Daniel Vetter wrote:
-> On Wed, Mar 24, 2021 at 09:52:11AM -0300, Jason Gunthorpe wrote:
-> > On Tue, Mar 16, 2021 at 04:33:03PM +0100, Daniel Vetter wrote:
-> > > Both kvm (in bd2fae8da794 ("KVM: do not assume PTE is writable after
-> > > follow_pfn")) and vfio (in 07956b6269d3 ("vfio/type1: Use
-> > > follow_pte()")) have lost their callsites of follow_pfn(). All the
-> > > other ones have been switched over to unsafe_follow_pfn because they
-> > > cannot be fixed without breaking userspace api.
-> > > 
-> > > Argueably the vfio code is still racy, but that's kinda a bigger
-> > > picture. But since it does leak the pte beyond where it drops the pt
-> > > lock, without anything else like an mmu notifier guaranteeing
-> > > coherence, the problem is at least clearly visible in the vfio code.
-> > > So good enough with me.
-> > > 
-> > > I've decided to keep the explanation that after dropping the pt lock
-> > > you must have an mmu notifier if you keep using the pte somehow by
-> > > adjusting it and moving it into the kerneldoc for the new follow_pte()
-> > > function.
-> > > 
-> > > Cc: 3pvd@google.com
-> > > Cc: Jann Horn <jannh@google.com>
-> > > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > > Cc: Jason Gunthorpe <jgg@nvidia.com>
-> > > Cc: Cornelia Huck <cohuck@redhat.com>
-> > > Cc: Peter Xu <peterx@redhat.com>
-> > > Cc: Alex Williamson <alex.williamson@redhat.com>
-> > > Cc: linux-mm@kvack.org
-> > > Cc: linux-arm-kernel@lists.infradead.org
-> > > Cc: linux-samsung-soc@vger.kernel.org
-> > > Cc: linux-media@vger.kernel.org
-> > > Cc: kvm@vger.kernel.org
-> > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> > > ---
-> > >  include/linux/mm.h |  2 --
-> > >  mm/memory.c        | 26 +++++---------------------
-> > >  mm/nommu.c         | 13 +------------
-> > >  3 files changed, 6 insertions(+), 35 deletions(-)
-> > 
-> > I think this is the right thing to do.
-> 
-> Was just about to smash this into the topic branch for testing in
-> linux-next. Feel like an ack on the series, or at least the two mm
-> patches?
+Hello Brian,
 
-Pushed them to my topic branch for a bit of testing in linux-next,
-hopefully goes all fine for a pull for 5.13.
--Daniel
+Is this already merged in Linux?  I guess not, as I've seen a patch of 
+yous for the kernel, right?
+
+Thanks,
+
+Alex
+
+On 3/23/21 7:25 PM, Brian Geffon wrote:
+> mremap(2) now supports MREMAP_DONTUNMAP with mapping types other
+> than private anonymous.
+> 
+> Signed-off-by: Brian Geffon <bgeffon@google.com>
+> ---
+>   man2/mremap.2 | 13 ++-----------
+>   1 file changed, 2 insertions(+), 11 deletions(-)
+> 
+> diff --git a/man2/mremap.2 b/man2/mremap.2
+> index 3ed0c0c0a..72acbc111 100644
+> --- a/man2/mremap.2
+> +++ b/man2/mremap.2
+> @@ -118,16 +118,6 @@ This flag, which must be used in conjunction with
+>   remaps a mapping to a new address but does not unmap the mapping at
+>   .IR old_address .
+>   .IP
+> -The
+> -.B MREMAP_DONTUNMAP
+> -flag can be used only with private anonymous mappings
+> -(see the description of
+> -.BR MAP_PRIVATE
+> -and
+> -.BR MAP_ANONYMOUS
+> -in
+> -.BR mmap (2)).
+> -.IP
+>   After completion,
+>   any access to the range specified by
+>   .IR old_address
+> @@ -227,7 +217,8 @@ was specified, but one or more pages in the range specified by
+>   .IR old_address
+>   and
+>   .IR old_size
+> -were not private anonymous;
+> +were part of a special mapping or the mapping is one that
+> +does not support merging or expanding;
+>   .IP *
+>   .B MREMAP_DONTUNMAP
+>   was specified and
+> 
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
