@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53481349BF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 699C63499B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhCYVuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:50:13 -0400
-Received: from ma1-aaemail-dr-lapp03.apple.com ([17.171.2.72]:58916 "EHLO
-        ma1-aaemail-dr-lapp03.apple.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230440AbhCYVt7 (ORCPT
+        id S229930AbhCYSvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:51:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCYSv2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:49:59 -0400
-X-Greylist: delayed 10762 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Mar 2021 17:49:59 EDT
-Received: from pps.filterd (ma1-aaemail-dr-lapp03.apple.com [127.0.0.1])
-        by ma1-aaemail-dr-lapp03.apple.com (8.16.0.42/8.16.0.42) with SMTP id 12PImwn6031904;
-        Thu, 25 Mar 2021 11:50:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=apple.com; h=from : content-type :
- content-transfer-encoding : mime-version : subject : message-id : date :
- to; s=20180706; bh=HvRrQdHSok2zeZKp2kJcOzXJjsJYJ5UbdugaLvUYau4=;
- b=fE8/sF6ZnxpaWRmjmy6TT9V9wS+TntK/HxOCFmTa8CzJ4XDtUjpf39sP7UUr/qnhgwT6
- u1Fksx2eRdGyHiEeORwmO2gjz/l+3CvDf7dDzaV3vvUvCyqrPSOHauXbEKt5yraa29eg
- cSVW18wFlQOOdPNtQXGNMU14NYYsW/3HW+agSHPdxeX36luSaglt8raXK/KgZjNgZ+dm
- /3Cd0cJh6++KHEN77dG2e/FGc98Bk+zHdhm4B6CB4ULXLqHV89XIfa52guUd+uScJ8td
- EQgb/eO6REfEfFY0InNV5HeXHbxUz/t1DKL3nFO6ULlx/eqm63s1V9nonusNj5InVrKq vQ== 
-Received: from crk-mailsvcp-mta-lapp04.euro.apple.com (crk-mailsvcp-mta-lapp04.euro.apple.com [17.66.55.17])
-        by ma1-aaemail-dr-lapp03.apple.com with ESMTP id 37dg1vkg0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Thu, 25 Mar 2021 11:50:33 -0700
-Received: from crk-mailsvcp-mmp-lapp02.euro.apple.com
- (crk-mailsvcp-mmp-lapp02.euro.apple.com [17.72.136.16])
- by crk-mailsvcp-mta-lapp04.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020))
- with ESMTPS id <0QQJ00U0HGC8DA00@crk-mailsvcp-mta-lapp04.euro.apple.com>; Thu,
- 25 Mar 2021 18:50:32 +0000 (GMT)
-Received: from process_milters-daemon.crk-mailsvcp-mmp-lapp02.euro.apple.com by
- crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020)) id <0QQJ00300GBY6700@crk-mailsvcp-mmp-lapp02.euro.apple.com>; Thu,
- 25 Mar 2021 18:50:32 +0000 (GMT)
-X-Va-A: 
-X-Va-T-CD: bcd587c70f2b893a4541eb5ac66e0494
-X-Va-E-CD: 148ad133188105e62a3bc79cff51a8db
-X-Va-R-CD: e1500ae658eab21eaee7bfe5430b4792
-X-Va-CD: 0
-X-Va-ID: a53b4dfa-6596-4489-a58b-ec431952f546
-X-V-A:  
-X-V-T-CD: bcd587c70f2b893a4541eb5ac66e0494
-X-V-E-CD: 148ad133188105e62a3bc79cff51a8db
-X-V-R-CD: e1500ae658eab21eaee7bfe5430b4792
-X-V-CD: 0
-X-V-ID: d44ad4c3-bfcc-4bef-8e43-87676770cc53
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-25_07:2021-03-25,2021-03-25 signatures=0
-Received: from [17.232.106.97] (unknown [17.232.106.97])
- by crk-mailsvcp-mmp-lapp02.euro.apple.com
- (Oracle Communications Messaging Server 8.1.0.7.20201203 64bit (built Dec  3
- 2020))
- with ESMTPSA id <0QQJ00LDQGC7IZ00@crk-mailsvcp-mmp-lapp02.euro.apple.com>;
- Thu, 25 Mar 2021 18:50:32 +0000 (GMT)
-From:   Norman Maurer <norman_maurer@apple.com>
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: quoted-printable
-MIME-version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: udp: Add support for getsockopt(..., ..., UDP_GRO, ..., ...);
-Message-id: <5AFF0F2A-96FD-40D6-9CE6-74F7CE8CEB4F@apple.com>
-Date:   Thu, 25 Mar 2021 19:50:31 +0100
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, dsahern@kernel.org
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-25_07:2021-03-25,2021-03-25 signatures=0
+        Thu, 25 Mar 2021 14:51:28 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199E4C06174A;
+        Thu, 25 Mar 2021 11:51:26 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id A51DA381;
+        Thu, 25 Mar 2021 18:51:25 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A51DA381
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1616698285; bh=6GKuaafSwLMS1TJYKxk/ezj6pnyWddz/+K+ur+K8pX8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=r9gSjsEaDiboV/qK7sdQmcylTWRf1daiGELbPNJXk6CIdL1QeFQgY6047du4//Phd
+         USgJ5loUsLkY2XYcwb4QPhSNvpbEcFgCjGX9gL3rhyd7RaBDM60tKvUgKcDGlQhbtC
+         NE3rwR2ZGykNVLwjkZJYNM946kdZy14q1uzyJBVdZ7c4Ur5i196UwFC2f6HcaABPeA
+         JV9Tarq/hrCR1Txo25ykPB0N63g0DCkUmGGivzUrneO5kOewlopMqIBCguTfeddD56
+         a5ZNcqa9Upad/hkdFZ1lXU5JWJgovUiuNLmwdvwqd3Soj6MTleRRHgjf/XgyiIXFIr
+         1xZE87Zk7io4Q==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
+In-Reply-To: <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
+References: <20210325184615.08526aed@coco.lan>
+ <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
+Date:   Thu, 25 Mar 2021 12:51:25 -0600
+Message-ID: <87tuozyslu.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for UDP_GRO was added in the past but the implementation for
-getsockopt was missed which did lead to an error when we tried to
-retrieve the setting for UDP_GRO. This patch adds the missing switch
-case for UDP_GRO
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
-Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
-Signed-off-by: Norman Maurer <norman_maurer@apple.com>
----
- net/ipv4/udp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> Right now, if one of the following headers end with a '::', the
+> kernel-doc script will do the wrong thing:
+>
+> 	description|context|returns?|notes?|examples?
+>
+> The real issue is with examples, as people could try to write
+> something like:
+>
+> 	example::
+>
+> 		/* Some C code */
+>
+> and this won't be properly evaluated. So, improve the regex
+> to not catch '\w+::' regex for the above identifiers.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  scripts/kernel-doc | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 4a0478b17243..99d743eb9dc4 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2754,6 +2754,10 @@ int udp_lib_getsockopt(struct sock *sk, int =
-level, int optname,
- 		val =3D up->gso_size;
- 		break;
+Ah....wouldn't it be nice if kerneldoc comments had just been RST from
+the beginning?  I don't think we're fixing that at this point, though,
+so this makes sense; applied.
 
-+	case UDP_GRO:
-+		val =3D up->gro_enabled;
-+		break;
-+
- 	/* The following two cannot be changed on UDP sockets, the =
-return is
- 	 * always 0 (which corresponds to the full checksum coverage of =
-UDP). */
- 	case UDPLITE_SEND_CSCOV:
---
-2.29.2
+Thanks,
+
+jon
 
