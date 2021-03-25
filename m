@@ -2,320 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FB0348B7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE96348B83
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhCYI01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:26:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
+        id S229666AbhCYI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhCYI0C (ORCPT
+        with ESMTP id S229898AbhCYI1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:26:02 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95CF1C06174A;
-        Thu, 25 Mar 2021 01:26:01 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id z25so2056766lja.3;
-        Thu, 25 Mar 2021 01:26:01 -0700 (PDT)
+        Thu, 25 Mar 2021 04:27:09 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE0DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:27:08 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id x21so1438536eds.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:27:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YZ1kwpKBXbBYawzQ08p8cS23ZbN4Xx0sNP97wiSQUVo=;
-        b=XcTo9YWysSPSsH/DdCWOt4Mdp8KbbkAe2G/h8BfOstWs3VoSggWOaOhMxFaVrSeA0w
-         G54jcdkl1bZRziP4JI5wrjgRyqlXuh98hrhBh/l5FnwfZ1xQSdlmPVLQpo0TGkt/EsJj
-         C87YNNPVZQooEYG3K09wuX03/AN3LIba+qIecyhY/5WD4XYWXMpGn2XzgZenBauhJ6ny
-         /DCwy8QR0CgUD0lD91TTQ4ybLOGqQUnx1HwKVoo6hLcGXngZiAh6iKVLZX19UziE8eSW
-         0FAjSl86cNmVVrnyT9g48ZwYdCIXvYeX2gtoslchMR90Ho8z8D3CkZCcx8Murf6lunq9
-         yieQ==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XDJMrloCPc2qsa07p06WodbgmzYyye6+8dvpO5AaLD4=;
+        b=fZmSS+1yH7NSNBp7S7JA0BiPmzNkZ5OuERxGTCF+DtlMvk9/fYpz+SY8m/vjF9wHu4
+         VNkXrqQwxrNluuqHwHjG+xZVJazG7jzLfD6aNcWGIcjAhVpOVdBPyZmo9maMmnpaH3CW
+         XrHdgcehb8+rZGHiNpNa6d0l6Rc6beubofoAY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YZ1kwpKBXbBYawzQ08p8cS23ZbN4Xx0sNP97wiSQUVo=;
-        b=UP6D4DAIIYRreo0aW2K5STOnfSskbgToJ/POMGiTASr45rfQ83GFy9YoONIQpw2XE3
-         SF41KSl/WIJA74l9FTJxSpDN95+8qSEwK6Hp4htUdfM2kTlSW8XnjmJ80JyQmPRXPZ/f
-         OrJkPFpMTzIiQWiD4cvt5SDfhoc3/5H1A2ags0HIX/DzXQqUzyE7ZWQfwNLN4F+MvVmU
-         XmxxEmIilsLi+Ro7aYdB3eYU7qMz4oo0AndluWJFN9JkPhGhMnQC4kOlXtRe5Iv1i44h
-         +TqmzWDCd5EhQevI79UI7uS1b2GkF8lief/cPfSCdlGvatBnLdclb1JnXt2UjsJ+U+xw
-         qNVQ==
-X-Gm-Message-State: AOAM5332aYTjb0J4O/lhn/kX9uWv5iqJbaX2EVcQcBU8zza6dxl6wdil
-        /RzQmILSpjULlbZxjNCnnB5dbFVaD6CIS2MnFk0=
-X-Google-Smtp-Source: ABdhPJzef8u1yJme1lhwL7KdNMBln/T/A61jVOHvPmYCQlNJWJ5jklxv29ZU3rfwUqRLLB4K7p45/dIhm21TnyQal4o=
-X-Received: by 2002:a2e:9591:: with SMTP id w17mr4868498ljh.141.1616660759738;
- Thu, 25 Mar 2021 01:25:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XDJMrloCPc2qsa07p06WodbgmzYyye6+8dvpO5AaLD4=;
+        b=ZNrQs0ksfcQUqWJDM3LnNxFuFw80nTi2fFTbKFpiucSJkB21zUShheSog7iO2s9ghM
+         HiFcVfzhTjIfoZEwP62j2OLhgIQ82CBd/QCoi3TEe22Jzr2MXFM8zYOL9SKoI6JVIFqK
+         vhvo1YZyIsgAtboRpOiMhTZfnBO0ehZ1FAVaUDVfOSRuU/rvrQFsFdd4Fm8o4SahNJe3
+         ElHvqZOe06QWjKNVvBbksRQ9//JjNndambLcIKfR+V3uRj+FQIjOBg6kN1/+SgiENLEv
+         4HpkjN0NHD9XWczw3RPfwCr+iKk2U4T2OJ0NrqQm8nFcVpSHFpRSwTGHpXXdSXyxVMXX
+         AtGg==
+X-Gm-Message-State: AOAM531tKZVWPDR5fNKvpXnFeqN7F4+BXo681pUfSJNPzZBvf/7c2qLZ
+        kt6mEzuR8R1GD3eCD3nAgnVE7VTwjiJudufH
+X-Google-Smtp-Source: ABdhPJyZVeO6YMVwAYUBLYN+VL5uXvEYQtgfoT39cMXuq4XCuT0ifiSFeA79XNOGYHuR1LM4i8Uxrw==
+X-Received: by 2002:a05:6402:518d:: with SMTP id q13mr7690161edd.313.1616660827102;
+        Thu, 25 Mar 2021 01:27:07 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id j1sm2066842ejt.18.2021.03.25.01.27.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 01:27:06 -0700 (PDT)
+Subject: Re: [PATCH] static_call: fix function type mismatch
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <YFmdJlESrCh4iC9A@hirez.programming.kicks-ass.net>
+ <0f4679d6-44a4-d045-f249-a9cffb126fd4@rasmusvillemoes.dk>
+ <CABCJKuf1-GWda9_BiBO=nNP_drh3a8471G+LEqPzdVrLBhVqZQ@mail.gmail.com>
+ <b2d77e78-751e-283c-8cff-e9c4f16e27ef@prevas.dk>
+ <YFt382FImjQQ+10f@hirez.programming.kicks-ass.net>
+ <a758cace-99ed-5c60-e59c-9f4f6b3a39c7@rasmusvillemoes.dk>
+ <CABCJKuek8Set48v5wa2sbCN1fN7DYSczJ9MdH4BcQBdky1YNaA@mail.gmail.com>
+ <2b38d13f-9f90-b94b-7de4-c924696e6a9f@rasmusvillemoes.dk>
+ <CABCJKudx9bkvkOsAVi7Wzgr3AVFGwa64Kre1d59v0tTr6GOgcA@mail.gmail.com>
+ <170687fb-13ef-e9b8-ac69-032202b344fe@rasmusvillemoes.dk>
+ <YFw+4Ba5ci/Bmg0k@hirez.programming.kicks-ass.net>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <724911b8-f812-4857-0a14-0f6931842244@rasmusvillemoes.dk>
+Date:   Thu, 25 Mar 2021 09:27:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <1608217244-314-1-git-send-email-u0084500@gmail.com>
- <20210113122133.GC3975472@dell> <CADiBU39drqcQYgwp9p6XJuFfwFPGL2OCzm33n1dX-O1R8c4NrA@mail.gmail.com>
-In-Reply-To: <CADiBU39drqcQYgwp9p6XJuFfwFPGL2OCzm33n1dX-O1R8c4NrA@mail.gmail.com>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Thu, 25 Mar 2021 16:25:48 +0800
-Message-ID: <CADiBU3_p3dk1YMdwMG2EjFX1SrM=e5BVLS4kVvfAqPpdGcMq=w@mail.gmail.com>
-Subject: Re: [PATCH v5 1/6] mfd: rt4831: Adds support for Richtek RT4831 core
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        ChiYuan Huang <cy_huang@richtek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YFw+4Ba5ci/Bmg0k@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI, Lee:
+On 25/03/2021 08.42, Peter Zijlstra wrote:
+> On Thu, Mar 25, 2021 at 01:42:41AM +0100, Rasmus Villemoes wrote:
+>>> Actually, it looks like I can't select PREEMPT_DYNAMIC> and tweaking Kconfig
+>>
+>> Ah, there's no prompt on the "bool" line, so it doesn't show up. That
+>> seems to be a mistake, since there's an elaborate help text which says
+>>
+>>           The runtime overhead is negligible with
+>> HAVE_STATIC_CALL_INLINE enabled
+>>           but if runtime patching is not available for the specific
+>> architecture
+>>           then the potential overhead should be considered.
+>>
+>> So it seems that it was meant to be "you can enable this if you really
+>> want".
+>>
+>> to force enable it on arm64 results in a build error
+> 
+> Right, PREEMPT_DYNAMIC really hard relies on HAVE_STATIC_CALL
+> 
+> There's an implicit dependency in the select:
+> 
+> config PREEMPT
+> 	...
+> 	select PREEMPT_DYNAMIC if HAVE_PREEMPT_DYNAMIC
 
-ChiYuan Huang <u0084500@gmail.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=8813=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:09=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Lee Jones <lee.jones@linaro.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8813=E6=
-=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=888:21=E5=AF=AB=E9=81=93=EF=BC=9A
-> >
-> > On Thu, 17 Dec 2020, cy_huang wrote:
-> >
-> > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > >
-> > > This adds support Richtek RT4831 core. It includes four channel WLED =
-driver
-> > > and Display Bias Voltage outputs.
-> > >
-> > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > ---
-> > > since v5
-> > > - Rename file name from rt4831-core.c to rt4831.c
-> > > - Change RICHTEK_VID to RICHTEK_VENDOR_ID.
-> > > - Change gpio_desc nameing from 'enable' to 'enable_gpio' in probe.
-> > > - Change variable 'val' to the meaningful name 'chip_id'.
-> > > - Refine the error log when vendor id is not matched.
-> > > - Remove of_match_ptr.
-> > >
-> > > since v2
-> > > - Refine Kconfig descriptions.
-> > > - Add copyright.
-> > > - Refine error logs in probe.
-> > > - Refine comment lines in remove and shutdown.
-> > > ---
-> > >  drivers/mfd/Kconfig  |  10 +++++
-> > >  drivers/mfd/Makefile |   1 +
-> > >  drivers/mfd/rt4831.c | 124 +++++++++++++++++++++++++++++++++++++++++=
-++++++++++
-> > >  3 files changed, 135 insertions(+)
-> > >  create mode 100644 drivers/mfd/rt4831.c
-> > >
-> > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > index 8b99a13..dfb2640 100644
-> > > --- a/drivers/mfd/Kconfig
-> > > +++ b/drivers/mfd/Kconfig
-> > > @@ -1088,6 +1088,16 @@ config MFD_RDC321X
-> > >         southbridge which provides access to GPIOs and Watchdog using=
- the
-> > >         southbridge PCI device configuration space.
-> > >
-> > > +config MFD_RT4831
-> > > +     tristate "Richtek RT4831 four channel WLED and Display Bias Vol=
-tage"
-> > > +     depends on I2C
-> > > +     select MFD_CORE
-> > > +     select REGMAP_I2C
-> > > +     help
-> > > +       This enables support for the Richtek RT4831 that includes 4 c=
-hannel
-> > > +       WLED driving and Display Bias Voltage. It's commonly used to =
-provide
-> > > +       power to the LCD display and LCD backlight.
-> > > +
-> > >  config MFD_RT5033
-> > >       tristate "Richtek RT5033 Power Management IC"
-> > >       depends on I2C
-> > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> > > index 1780019..28d247b 100644
-> > > --- a/drivers/mfd/Makefile
-> > > +++ b/drivers/mfd/Makefile
-> > > @@ -235,6 +235,7 @@ obj-$(CONFIG_MFD_MENF21BMC)       +=3D menf21bmc.=
-o
-> > >  obj-$(CONFIG_MFD_HI6421_PMIC)        +=3D hi6421-pmic-core.o
-> > >  obj-$(CONFIG_MFD_HI655X_PMIC)   +=3D hi655x-pmic.o
-> > >  obj-$(CONFIG_MFD_DLN2)               +=3D dln2.o
-> > > +obj-$(CONFIG_MFD_RT4831)     +=3D rt4831.o
-> > >  obj-$(CONFIG_MFD_RT5033)     +=3D rt5033.o
-> > >  obj-$(CONFIG_MFD_SKY81452)   +=3D sky81452.o
-> > >
-> > > diff --git a/drivers/mfd/rt4831.c b/drivers/mfd/rt4831.c
-> > > new file mode 100644
-> > > index 00000000..2bf8364
-> > > --- /dev/null
-> > > +++ b/drivers/mfd/rt4831.c
-> > > @@ -0,0 +1,124 @@
-> > > +// SPDX-License-Identifier: GPL-2.0+
-> > > +/*
-> > > + * Copyright (c) 2020 Richtek Technology Corp.
-> >
-> > Nit: If you respin this, please bump the date.
-> >
-> Okay.
-> > > + * Author: ChiYuan Huang <cy_huang@richtek.com>
-> > > + */
-> > > +
-> > > +#include <linux/gpio/consumer.h>
-> > > +#include <linux/i2c.h>
-> > > +#include <linux/kernel.h>
-> > > +#include <linux/mfd/core.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/regmap.h>
-> > > +
-> > > +#define RT4831_REG_REVISION  0x01
-> > > +#define RT4831_REG_ENABLE    0x08
-> > > +#define RT4831_REG_I2CPROT   0x15
-> > > +
-> > > +#define RICHTEK_VENDOR_ID    0x03
-> > > +#define RT4831_VID_MASK              GENMASK(1, 0)
-> > > +#define RT4831_RESET_MASK    BIT(7)
-> > > +#define RT4831_I2CSAFETMR_MASK       BIT(0)
-> > > +
-> > > +static const struct mfd_cell rt4831_subdevs[] =3D {
-> > > +     OF_MFD_CELL("rt4831-backlight", NULL, NULL, 0, 0, "richtek,rt48=
-31-backlight"),
-> > > +     MFD_CELL_NAME("rt4831-regulator")
-> > > +};
-> > > +
-> > > +static bool rt4831_is_accessible_reg(struct device *dev, unsigned in=
-t reg)
-> > > +{
-> > > +     if (reg >=3D RT4831_REG_REVISION && reg <=3D RT4831_REG_I2CPROT=
-)
-> > > +             return true;
-> > > +     return false;
-> > > +}
-> > > +
-> > > +static const struct regmap_config rt4831_regmap_config =3D {
-> > > +     .reg_bits =3D 8,
-> > > +     .val_bits =3D 8,
-> > > +     .max_register =3D RT4831_REG_I2CPROT,
-> > > +
-> > > +     .readable_reg =3D rt4831_is_accessible_reg,
-> > > +     .writeable_reg =3D rt4831_is_accessible_reg,
-> > > +};
-> > > +
-> > > +static int rt4831_probe(struct i2c_client *client)
-> > > +{
-> > > +     struct gpio_desc *enable_gpio;
-> > > +     struct regmap *regmap;
-> > > +     unsigned int chip_id;
-> > > +     int ret;
-> > > +
-> > > +     enable_gpio =3D devm_gpiod_get_optional(&client->dev, "enable",=
- GPIOD_OUT_HIGH);
-> > > +     if (IS_ERR(enable_gpio)) {
-> > > +             dev_err(&client->dev, "Failed to get 'enable' GPIO\n");
-> > > +             return PTR_ERR(enable_gpio);
-> > > +     }
-> > > +
-> > > +     regmap =3D devm_regmap_init_i2c(client, &rt4831_regmap_config);
-> > > +     if (IS_ERR(regmap)) {
-> > > +             dev_err(&client->dev, "Failed to initialize regmap\n");
-> > > +             return PTR_ERR(regmap);
-> > > +     }
-> > > +
-> > > +     ret =3D regmap_read(regmap, RT4831_REG_REVISION, &chip_id);
-> > > +     if (ret) {
-> > > +             dev_err(&client->dev, "Failed to get H/W revision\n");
-> > > +             return ret;
-> > > +     }
-> > > +
-> > > +     if ((chip_id & RT4831_VID_MASK) !=3D RICHTEK_VENDOR_ID) {
-> > > +             dev_err(&client->dev, "Chip vendor ID 0x%02x not matche=
-d\n", chip_id);
-> > > +             return -ENODEV;
-> > > +     }
-> > > +
-> > > +     /*
-> > > +      * Used to prevent the abnormal shutdown.
-> > > +      * If SCL/SDA both keep low for one second to reset HW.
-> > > +      */
-> > > +     ret =3D regmap_update_bits(regmap, RT4831_REG_I2CPROT, RT4831_I=
-2CSAFETMR_MASK,
-> > > +                              RT4831_I2CSAFETMR_MASK);
-> > > +     if (ret) {
-> > > +             dev_err(&client->dev, "Failed to enable I2C safety time=
-r\n");
-> > > +             return ret;
-> > > +     }
-> > > +
-> > > +     return devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO, =
-rt4831_subdevs,
-> > > +                                 ARRAY_SIZE(rt4831_subdevs), NULL, 0=
-, NULL);
-> > > +}
-> > > +
-> > > +static int rt4831_remove(struct i2c_client *client)
-> > > +{
-> > > +     struct regmap *regmap =3D dev_get_regmap(&client->dev, NULL);
-> > > +
-> > > +     /* Disable WLED and DSV outputs */
-> > > +     return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RES=
-ET_MASK, RT4831_RESET_MASK);
-> > > +}
-> > > +
-> > > +static void rt4831_shutdown(struct i2c_client *client)
-> > > +{
-> > > +     struct regmap *regmap =3D dev_get_regmap(&client->dev, NULL);
-> > > +
-> > > +     /* Disable WLED and DSV outputs */
-> > > +     regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK=
-, RT4831_RESET_MASK);
-> > > +}
-> >
-> > What is your reason for providing a .shutdown() routine?
-> >
-> Just like as remove routine to make sure all output are off for the safet=
-y.
-> This chip only have one 'enable' pin and I2C as the control signal.
-> As normal shutdown, it can be make sure 'enable' will be pull low.
-> But for some case, if 'enable' always tied to high, like as ARM reset,
-> chip reset only triggered during next booting phase.
-> The period from arm  reset to next probe, if user doesn't call DSV and
-> WLED off before machine shutdown/reboot, the WLED/DSV voltage boost
-> circuit will be kept as on.
-> That's why I also put shutdown routine in the driver to reset the whole c=
-hip.
+That's not a dependency, that's a "force PREEMPT_DYNAMIC on", and users
+on x86 can't deselect PREEMPT_DYNAMIC even if they wanted to.
 
-If the shutdown routine is not suitable, I think it can be removed.
-There's the HWEN pin inside this IC to make sure all function will be disab=
-led.
+Having a help text but not providing a prompt string is rather unusual.
+What's the point of that paragraph I quoted above if PREEMPT_DYNAMIC is
+not supposed to be settable by the developer?
 
-There're changed part in my note
-1. respin the header date.
-2. Remove the shutdown routine
+>>> ("implicit declaration of function 'static_call_mod'").
+>>
+>> Seems to be an omission in the last !HAVE_STATIC_CALL branch in
+>> static_call_types.h, and there's also no
+>> EXPORT_STATIC_CALL_TRAMP{,_GPL} in static_call.h for that case.
+> 
+> That interface doesn't make sense for !HAVE_STATIC_CALL.
 
-Anything else?
+Perhaps, perhaps not. But I think it's silly to have code with such a
+random hidden dependency, especially when it's only a defense against
+crazy oot modules and not some fundamental requirement.
 
+> It's impossible
+> to not export the function pointer itself but still call it for
+> !HAVE_STATIC_CALL.
 
-> > > +static const struct of_device_id __maybe_unused rt4831_of_match[] =
-=3D {
-> > > +     { .compatible =3D "richtek,rt4831", },
-> > > +     {}
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, rt4831_of_match);
-> > > +
-> > > +static struct i2c_driver rt4831_driver =3D {
-> > > +     .driver =3D {
-> > > +             .name =3D "rt4831",
-> > > +             .of_match_table =3D rt4831_of_match,
-> > > +     },
-> > > +     .probe_new =3D rt4831_probe,
-> > > +     .remove =3D rt4831_remove,
-> > > +     .shutdown =3D rt4831_shutdown,
-> > > +};
-> > > +module_i2c_driver(rt4831_driver);
-> > > +
-> > > +MODULE_AUTHOR("ChiYuan Huang <cy_huang@richtek.com>");
-> > > +MODULE_LICENSE("GPL v2");
-> >
-> > --
-> > Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> > Senior Technical Lead - Developer Services
-> > Linaro.org =E2=94=82 Open source software for Arm SoCs
-> > Follow Linaro: Facebook | Twitter | Blog
+Well, I think there's a way. At this point, the audience is asked to
+wear sun glasses.
+
+// foo.h
+extern const int foo;
+extern int __foo_just_for_vmlinux;
+
+// foo.c
+int __foo_just_for_vmlinux;
+extern const int foo __attribute__((__alias__("__foo_just_for_vmlinux")));
+EXPORT_SYMBOL(foo);
+
+Modules can read foo, but can't do foo = 5. (Yeah, they can take the
+address and cast away the const...). Basically, this is a kind of
+top-level anonymous union trick a la i_nlink/__i_nlink. And it's more or
+less explicitly said in the gcc docs that this is supposed to work:
+"Except for top-level qualifiers the alias target must have the same
+type as the alias."
+
+Rasmus
