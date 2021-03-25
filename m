@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96853348910
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C25348918
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhCYGYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:24:19 -0400
-Received: from ozlabs.org ([203.11.71.1]:52359 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhCYGYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:24:07 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F5Zn55qxyz9sSC;
-        Thu, 25 Mar 2021 17:23:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616653434;
-        bh=jN8XQ6Q3EMAXfbzVHs8d+Y/Or+kO6E1qavxQZOtppgQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tkVlKW0nr4YUgJdy6wbALUE/Af174otKsyGI9jg46RtqCFNsqMRqr1gMY2PzV3SYO
-         WUbHVSyg8V72VSuNXdCUjTuNuAD0YsEBOS7vUEZnPnrvEq/57rTRGBVOW98Pu0xY3b
-         7N2hFqJu98ChRMfrcIYP8b4RwTX/YcG4uTfDD4Zl7GUCKHdW/ZwdlRUDhgg/E7rDrn
-         lB2KZFj9/tPwe6g/7GlrimLpdKPbgQpg3RrvpvPyrN7HH1c+mUku8B0iaCJT4EEW5Y
-         vknd+HGTsbkI5cUlz4nJrMt9zeeH/mMzr8OGLshhFNZtw1CPL7ZrkWCEtXZM5KXckG
-         tELLmNVTOPkTg==
-Date:   Thu, 25 Mar 2021 17:23:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the net-next tree
-Message-ID: <20210325172350.631fe2c0@canb.auug.org.au>
+        id S229574AbhCYG3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:29:08 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:13064 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhCYG3D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 02:29:03 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id CEA49980342;
+        Thu, 25 Mar 2021 14:29:01 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] drivers: staging: _adapter is declared twice
+Date:   Thu, 25 Mar 2021 14:28:40 +0800
+Message-Id: <20210325062843.852204-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S6Jm67LKO+X4Yk./3BtvRJy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGRlNQk5DHR1JGExLVkpNSk1NTkhMT0lLTUtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KzI6IRw5CT8UOD4RLDRNCQEL
+        TEIaCxVVSlVKTUpNTU5ITE9JSElMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTUpMNwY+
+X-HM-Tid: 0a7868126f95d992kuwscea49980342
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S6Jm67LKO+X4Yk./3BtvRJy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+struct _adapter has been declared at 23rd line. 
+Remove the duplicate.
 
-Hi all,
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/staging/rtl8712/drv_types.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-After merging the net-next tree, today's linux-next build (htmldocs)
-produced this warning:
+diff --git a/drivers/staging/rtl8712/drv_types.h b/drivers/staging/rtl8712/drv_types.h
+index 0c4325073c63..976d19cdcf87 100644
+--- a/drivers/staging/rtl8712/drv_types.h
++++ b/drivers/staging/rtl8712/drv_types.h
+@@ -36,7 +36,6 @@ enum _NIC_VERSION {
+ 	RTL8716_NIC
+ };
+ 
+-struct _adapter;
+ 
+ struct	qos_priv	{
+ 	/* bit mask option: u-apsd, s-apsd, ts, block ack... */
+-- 
+2.25.1
 
-Sphinx parallel build error:
-docutils.utils.SystemMessage: /home/sfr/next/next/Documentation/networking/=
-nf_flowtable.rst:176: (SEVERE/4) Unexpected section title.
-
-}
-...
-
-Introduced by commit
-
-  143490cde566 ("docs: nf_flowtable: update documentation with enhancements=
-")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/S6Jm67LKO+X4Yk./3BtvRJy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBcLHYACgkQAVBC80lX
-0GwYjAf9GQB45oGE4HAQXir4qvU46nkkv60gVwG0QIdGiKEawHEVMKzzvuTz3Rdx
-Zj5W2bQ1S9q71hjXxcYnrMgk6e1LDt0CVMNDMb+/Uk8WT9KSy8nHaaZ4voQym6yI
-kUAcdirhBLkc60c7/IH2kjJooYpewDbda9yiusBp/RCR8JdaGfg8WXtLJFx681OM
-4/f7u7srdqHmjVpojKHEXHmxK70xN64i/Ve+8KGqjM7DLBTPKqXDsPHHFQ1bUlAf
-i02nRp5NOg114kPkgoZqAS8jIfdQoUgytzLVxYkNh2JGb73pqjDezWSyjK4FQ/rS
-M2ysj3AYjyLg0lRBNg6P9ffrPAl2Mg==
-=/7i3
------END PGP SIGNATURE-----
-
---Sig_/S6Jm67LKO+X4Yk./3BtvRJy--
