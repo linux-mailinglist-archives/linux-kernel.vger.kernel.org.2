@@ -2,267 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B159B349346
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43263349354
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhCYNsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhCYNrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:47:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7088161A0F;
-        Thu, 25 Mar 2021 13:47:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616680070;
-        bh=rbWgT8Nk/uYvrxfv2Q3Zxu0QvvEsgpltMM38kZY5nns=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Is+XHdO3sb4UPUtdEOQelQf7JpDhKMGXlHz/+nMBUDGKMwzJxakfmypUKmWBwdELr
-         T8Uq990sjxW1hH+jU0jdKZacd8O6y5GqXd3aV88ddiNZCA7h9KTdcfYXKntMSIF8ej
-         FRBlOhM96UbHf+Hixl05+0W3kg+UTEQ+fodZquDanUac9xPXv+QoIwusCS6+5HszGy
-         9afklPQ6RhWF9fDktc6UwD4SU8TUI1WjKwY027QShsN2zqLWUru6idkVOG0hBL0jFD
-         SuwsI6hjhy3+XzIvyki3xHbXYym5jcxClyCRQOCblq763YB/7SwR4BcFRKQKM1eUlJ
-         U0Z9/e17lkaFA==
-Date:   Thu, 25 Mar 2021 14:47:43 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mayulong <mayulong1@huawei.com>, Stephen Boyd <sboyd@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 17/21] spmi: hisi-spmi-controller: move driver from
- staging
-Message-ID: <20210325144743.2d740a06@coco.lan>
-In-Reply-To: <20210205221947.GA3848249@robh.at.kernel.org>
-References: <cover.1611072387.git.mchehab+huawei@kernel.org>
-        <b74098493891d0e7386c3cdb4e466aed9450b1d9.1611072387.git.mchehab+huawei@kernel.org>
-        <20210205221947.GA3848249@robh.at.kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231182AbhCYNwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:52:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231202AbhCYNvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:51:42 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDD2C06174A;
+        Thu, 25 Mar 2021 06:51:40 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id u10so2237162ilb.0;
+        Thu, 25 Mar 2021 06:51:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6SqcI7wfV+RRHYGPRjS+pVaFs+2AUelArIaZQWbVrio=;
+        b=fHGDpiK3JBh/PsiCtP3z2LFWYIAz5AKbfErqmPootKMXzYWpSTTqPp0BQljhhwtOqj
+         PaOltLKGnzVNkFzGyUOvG1Wy6U4+JI0PTF3OC532D66DubQzlJB/Nwm3OtVEj7ycf43K
+         O6eA26dGlT51MJ8gXJ0VZQQl8aNMhQceyIcZh82ExO8PRhcozq6NkOkOWx/W3BqaZpkJ
+         uzuzA7cbdeffuYav3x5pU9My4r6VBWi2Y2hH9cVc40Z0PjjBYR7G1BkKYClFzx+0V7bk
+         xonk63iqekj2iHqqzSul0JPtOVV1WLn5Jbhbcx40tiAmh3pBAqQKhvhWSyKc0sK7uuzG
+         Z0rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6SqcI7wfV+RRHYGPRjS+pVaFs+2AUelArIaZQWbVrio=;
+        b=kDChoENCXZD+uaZtximapPc/6lv7PkX0GOZv5uhNPVacvx49bUabt738RE6JxxACGd
+         maRT0zDtMXbrJLZ5LlGWfsHslf01Z3ARIsln1w655bJ+4QebzixcmQE1+fhyB24gCYdB
+         u05CMmStFAaKCldxWq2eaJvZZ3FPz/ZW8JN0Vb7DFpY9XJvu6p3Fo5nEyVPgy5a7xgWW
+         yf7UWNC+arbfb1n2CINDVcB0oxM4hMwbCLhM2VRJnZTiEda6svPQNoel27WrDEaoobOm
+         rWULwQNX4XRnbfb/AKxhPtsGox7yD5wJb3ZXIsuNAjmwSuEoJiWns+4o4ovupbU54Dq4
+         WmkQ==
+X-Gm-Message-State: AOAM530RKZaYhHKTHG1Ax3TpWYI60624hvKeUx2zmQFacM4zPBU2OF+c
+        usiDsgMbaW/QqFZDCfMbCH+ScXBpezZX4W9yVD4=
+X-Google-Smtp-Source: ABdhPJx13+Xbo2EG3QB9CGCcNSzLt5MSw6DR7Ob9QMd0kl4el4ADLGx4iyB29+6HkjcKeyUVXZ1Q8ZQrsyfHhgXbtVQ=
+X-Received: by 2002:a92:da89:: with SMTP id u9mr3177383iln.131.1616680299834;
+ Thu, 25 Mar 2021 06:51:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210117042539.1609-1-alistair@alistair23.me> <20210117042539.1609-2-alistair@alistair23.me>
+ <20210204103126.GA2789116@dell> <CAKmqyKOJ251sRUaxUKJ_U=puYRkypPEHAVZOnAKbQtP2skMJBA@mail.gmail.com>
+ <20210323093541.GQ2916463@dell>
+In-Reply-To: <20210323093541.GQ2916463@dell>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Thu, 25 Mar 2021 09:49:39 -0400
+Message-ID: <CAKmqyKNaVmj2thEbuxZShjnX_UCsP0YW5gjBrjdAr3YtAn5Yhg@mail.gmail.com>
+Subject: Re: [PATCH 2/6] mfd: Initial commit of sy7636a
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Alistair Francis <alistair@alistair23.me>,
+        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 5 Feb 2021 16:19:47 -0600
-Rob Herring <robh@kernel.org> escreveu:
+On Tue, Mar 23, 2021 at 5:35 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Sat, 20 Mar 2021, Alistair Francis wrote:
+>
+> > On Thu, Feb 4, 2021 at 5:31 AM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > On Sat, 16 Jan 2021, Alistair Francis wrote:
+> > >
+> > > > Initial support for the Silergy SY7636A Power Management chip
+> > > > driver.
+> > >
+> > > Please remove "driver", as this is not support for the driver, it *is=
+*
+> > > the driver which supports the chip.
+> >
+> > Sorry for the long delay here.
+> >
+> > I have addressed your comments.
+>
+> [...]
+>
+> > > > diff --git a/drivers/mfd/sy7636a.c b/drivers/mfd/sy7636a.c
+> > > > new file mode 100644
+> > > > index 000000000000..39aac965d854
+> > > > --- /dev/null
+> > > > +++ b/drivers/mfd/sy7636a.c
+> > > > @@ -0,0 +1,252 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0+
+> > > > +/*
+> > > > + * MFD driver for SY7636A chip
+> > >
+> > > "Parent driver".
+> > >
+> > > > + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
+> > >
+> > > This is quite out of date.  Please update.
+> >
+> > I don't own this copyright, so I would rather not change it.
+>
+> I'm not comfortable taking a new driver with an old Copyright.
+>
+> Maybe ask reMarkable if it's okay to bump it.
+>
+> > > > + * Author: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com=
+>
+>
+> Or ping this guy.
 
-> On Tue, Jan 19, 2021 at 05:10:43PM +0100, Mauro Carvalho Chehab wrote:
-> > The Hisilicon 6421v600 SPMI driver is ready for mainstream.
-> > 
-> > So, move it from staging.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  75 ++++
-> >  MAINTAINERS                                   |   7 +
-> >  drivers/spmi/Kconfig                          |   9 +
-> >  drivers/spmi/Makefile                         |   1 +
-> >  drivers/spmi/hisi-spmi-controller.c           | 358 ++++++++++++++++++
-> >  drivers/staging/hikey9xx/Kconfig              |  11 -
-> >  drivers/staging/hikey9xx/Makefile             |   1 -
-> >  .../staging/hikey9xx/hisi-spmi-controller.c   | 358 ------------------
-> >  .../hisilicon,hisi-spmi-controller.yaml       |  75 ----
-> >  9 files changed, 450 insertions(+), 445 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-> >  create mode 100644 drivers/spmi/hisi-spmi-controller.c
-> >  delete mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
-> >  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-> > new file mode 100644
-> > index 000000000000..21f68a9c2df1
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
-> > @@ -0,0 +1,75 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/spmi/hisilicon,hisi-spmi-controller.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: HiSilicon SPMI controller
-> > +
-> > +maintainers:
-> > +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > +
-> > +description: |
-> > +  The HiSilicon SPMI BUS controller is found on some Kirin-based designs.
-> > +  It is a MIPI System Power Management (SPMI) controller.
-> > +
-> > +  The PMIC part is provided by
-> > +  drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
-> > +
-> > +properties:
-> > +  $nodename:
-> > +    pattern: "spmi@[0-9a-f]"
-> > +
-> > +  compatible:
-> > +    const: hisilicon,kirin970-spmi-controller  
-> 
-> '-controller' is kind of redundant.
+I reached out to him and have permission to bump the year.
 
-Ok. Will drop it.
+>
+> [...]
+>
+> > > > +int set_vcom_voltage_mv(struct regmap *regmap, unsigned int vcom)
+> > > > +{
+> > > > +     int ret;
+> > > > +     unsigned int val;
+> > > > +
+> > > > +     if (vcom < 0 || vcom > 5000)
+> > >
+> > > Please define min/max values.
+> > >
+> > > > +             return -EINVAL;
+> > > > +
+> > > > +     val =3D (unsigned int)(vcom / 10) & 0x1ff;
+> > >
+> > > As above.
+> >
+> > I have used defines for all of these.
+> >
+> > >
+> > > > +     ret =3D regmap_write(regmap, SY7636A_REG_VCOM_ADJUST_CTRL_L, =
+val);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     ret =3D regmap_write(regmap, SY7636A_REG_VCOM_ADJUST_CTRL_H, =
+val >> 8);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > >
+> > > Who calls these?
+> >
+> > They sysfs store and show functions.
+>
+> They should be in a power/regulator driver really.
 
-> 
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +  
-> 
-> > +  "#address-cells":
-> > +    const: 2
-> > +
-> > +  "#size-cells":
-> > +    const: 0  
-> 
-> These 2 are covered by spmi.yaml
+Ok, I have moved these to the regulator.
 
-Ok.
+>
+> [...]
+>
+> > > > +     if (val >=3D ARRAY_SIZE(states)) {
+> > > > +             dev_err(sy7636a->dev, "Unexpected value read from dev=
+ice: %u\n", val);
+> > > > +             return -EINVAL;
+> > > > +     }
+> > > > +
+> > > > +     return snprintf(buf, PAGE_SIZE, "%s\n", states[val]);
+> > > > +}
+> > > > +static DEVICE_ATTR(state, 0444, state_show, NULL);
+> > >
+> > > You need to document new sysfs entries.
+> >
+> > I'm not sure how to document this. Do you mind pointing out an example
+> > I can use?
+>
+> See the final paragraph in:
+>
+>   Documentation/filesystems/sysfs.rst
 
-> 
-> > +
-> > +  spmi-channel:
-> > +    description: |
-> > +      number of the Kirin 970 SPMI channel where the SPMI devices are connected.  
-> 
-> Common to SPMI? If not, needs a vendor prefix.
+Thanks!
 
-That's an interesting question. My understanding is that this is not
-vendor-specific, but maybe Stephen can give us more details.
+>
+> [...]
+>
+> > > > +static struct attribute *sy7636a_sysfs_attrs[] =3D {
+> > > > +     &dev_attr_state.attr,
+> > > > +     &dev_attr_power_good.attr,
+> > > > +     &dev_attr_vcom.attr,
+> > > > +     NULL,
+> > > > +};
+> > >
+> > > These all look like power options?  Do they really belong here?
+> >
+> > From what I can tell I think they do. Let me know if you don't think so=
+.
+>
+> As above, I think they should be in power or regulator.
 
-The spmi.h header calls it "nr", and documents it at include/linux/spmi.h
-as:
+Done.
 
-	/**
-	 * struct spmi_controller - interface to the SPMI master controller
-	 * @dev:	Driver model representation of the device.
-	 * @nr:		board-specific number identifier for this controller/bus
-	 * @cmd:	sends a non-data command sequence on the SPMI bus.
-	 * @read_cmd:	sends a register read command sequence on the SPMI bus.
-	 * @write_cmd:	sends a register write command sequence on the SPMI bus.
-	 */
+Alistair
 
-There, it says that this is "board-specific number identifier".
-
-Yet, as the SPMI is a serial bus with up to 4 masters (controller), I 
-suspect that the idea is to associate it with the master ID.
-
-This is used on boards with multiple SoCs. See, for instance, slide 5 of:
-
-	https://www.mipi.org/sites/default/files/Bangalore-Qualcomm-SPMI-1.0-Multi-master-Verification.pdf
-
-However, it is hard to know for sure, as no drivers use it, except by
-Hikey 970 controller:
-
-	$ grep "\b\->nr\b" $(git grep -l spmi.h)
-	drivers/spmi/spmi.c:	ida_simple_remove(&ctrl_ida, ctrl->nr);
-	drivers/spmi/spmi.c:	dev_set_name(&sdev->dev, "%d-%02x", ctrl->nr, sdev->usid);
-	drivers/spmi/spmi.c:	ctrl->nr = id;
-	drivers/spmi/spmi.c:		ctrl->nr, &ctrl->dev);
-	drivers/staging/hikey9xx/hisi-spmi-controller.c:	ctrl->nr = spmi_controller->channel;
-
-> 
-> Type? Range of values?
-
-The SPMI core defines it as "unsigned int". So, I would use:
-
-	    $ref: /schemas/types.yaml#/definitions/uint32
-
-as a type. 
-
-At the driver, this is used to calculate the channel offset with:
-
-	static int spmi_write_cmd(...) {
-		u32 chnl_ofst = SPMI_CHANNEL_OFFSET * spmi_controller->channel;
-...
-		writel((u32 __force)cpu_to_be32(data),
-		       spmi_controller->base + chnl_ofst +
-		       SPMI_APB_SPMI_WDATA0_BASE_ADDR +
-		       SPMI_PER_DATAREG_BYTE * i);
-...
-	}
-
-As on both spmi.h and the Hikey 970 SPMI controller defines it as uint32, 
-it doesn't seem to be a good idea to put a range of values, specially 
-since we don't have the datasheets for this SoC.
-
-> 
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - spmi-channel  
-> 
-> > +  - "#address-cells"
-> > +  - "#size-cells"  
-> 
-> Covered by spmi.yaml.
-> 
-> > +
-> > +patternProperties:
-> > +  "^pmic@[0-9a-f]$":  
-> 
-> Presumably you could have something besides a PMIC.
-
-Hmm... SPMI means MIPI System Power Management Interface.
-The MIPI says that [1]:
-
-	"The MIPI System Power Management Interface is a two-wire serial
-	 interface that uses CMOS I/Os for the physical layer. The interface
-	 connects the integrated power controller of a system-on-chip (SoC)
-	 processor system with one or more power management IC voltage
-	 regulation systems."
-
-[1] https://www.mipi.org/specifications/system-power-management-interface
-
-OK, as this is a serial bus, I guess one could abuse the interface
-and add non-PMIC devices on it. Also, some future version of SPMI
-might extend it to non-PMIC devices, but, IMO, if we ever add a 
-non-PMIC device, another patternProperties would be needed in order
-to describe the other device types that could be connected to the PM bus.
-
-> 
-> > +    description: |
-> > +      PMIC properties, which are specific to the used SPMI PMIC device(s).
-> > +      When used in combination with HiSilicon 6421v600, the properties
-> > +      are documented at
-> > +      drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    bus {
-> > +      #address-cells = <2>;
-> > +      #size-cells = <2>;
-> > +
-> > +      spmi: spmi@fff24000 {
-> > +        compatible = "hisilicon,kirin970-spmi-controller";
-> > +        #address-cells = <2>;
-> > +        #size-cells = <0>;
-> > +        status = "ok";  
-> 
-> Drop status.
-
-Ok.
-
-> 
-> > +        reg = <0x0 0xfff24000 0x0 0x1000>;
-> > +        spmi-channel = <2>;
-> > +
-> > +        pmic@0 {
-> > +          reg = <0 0>;
-> > +          /* pmic properties */
-> > +        };
-> > +      };
-> > +    };
-
-
-Thanks,
-Mauro
+>
+> [...]
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
