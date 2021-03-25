@@ -2,98 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1FC349255
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8AA34925A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230453AbhCYMpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:45:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31120 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230467AbhCYMpY (ORCPT
+        id S230100AbhCYMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:46:59 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57950 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230043AbhCYMqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:45:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616676324;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nkPx4zf9Ni/bunuCjgiQUNXyvd5n76YoLZH5aZWMja4=;
-        b=CIA/+zwiHZwM561L+gXOUKWntHLFDTfVXo6gturARjYne0xDxYQar+M1lehpoYOlxnsZst
-        oSZbR1I9j4fwB7ovli4s2VaGZt268Y48eWNjBfur+jcVzVT122IakYD/Tjeb6R829ADVgV
-        +UzPJZk6DZwrenAtyTCPD4Dm9nKO4Vw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-Lk-xWQidNiWyWuKCZR7yJQ-1; Thu, 25 Mar 2021 08:45:19 -0400
-X-MC-Unique: Lk-xWQidNiWyWuKCZR7yJQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C1138018A1;
-        Thu, 25 Mar 2021 12:45:18 +0000 (UTC)
-Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 04C1A5C3DF;
-        Thu, 25 Mar 2021 12:45:14 +0000 (UTC)
-Subject: Re: [PATCH] mm/sparse: Add the missing sparse_buffer_fini() in error
- branch
-To:     Wang Wensheng <wangwensheng4@huawei.com>,
-        akpm@linux-foundation.org, osalvador@suse.de,
-        pasha.tatashin@oracle.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     rui.xiang@huawei.com
-References: <20210325113155.118574-1-wangwensheng4@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <1f20f644-9f51-5f0b-a162-c340912b5212@redhat.com>
-Date:   Thu, 25 Mar 2021 13:45:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 25 Mar 2021 08:46:54 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PCXTQa100868;
+        Thu, 25 Mar 2021 08:46:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=81z+BR2YioPu6Y6pMoWaSPjcoO05O8RLN39gLy3H59U=;
+ b=AP21OXZcQT5WoqWnXAATAGMjM5W4QhR25GFvofJXxSvY9IDnFeoCX993KIaWZa0Vz+2q
+ 51e6tYStk1n0D2CgPMfvHiSdO4YCeV2v3ry/Icu/QnNncp0QW6UCet0jOBPc7RaipNso
+ GaoG/ZB5Tp8BluN5F/g3Q3DVSSWdcob33k3GaqncvVn3XvQo+jWyokpec6S9cP23qflq
+ v3I1B99jGJCSNdmDzZJVs/j+yi0uosrLQGoeCCgEXfx/ZoR2I+F7aQxEFbUtEqjmdI9+
+ Hmyi4ctUbmg9Leomh6V1XJvVjHB02zgqR+X35pV+IZEPP1obIh1cyXmv5NGx7dR7GSXg KA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ghn1pbny-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 08:46:52 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12PCYmbA110000;
+        Thu, 25 Mar 2021 08:46:52 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37ghn1pbnf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 08:46:52 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12PCkfqJ002811;
+        Thu, 25 Mar 2021 12:46:51 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma02dal.us.ibm.com with ESMTP id 37d9an6yua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 12:46:51 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12PCknHw19071268
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 12:46:49 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4FA3136059;
+        Thu, 25 Mar 2021 12:46:49 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93175136053;
+        Thu, 25 Mar 2021 12:46:48 +0000 (GMT)
+Received: from cpe-66-24-58-13.stny.res.rr.com.com (unknown [9.85.150.254])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Mar 2021 12:46:48 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     stable@vger.kernel.org, borntraeger@de.ibm.com, cohuck@redhat.com,
+        kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com,
+        Tony Krowiak <akrowiak@linux.ibm.com>
+Subject: [PATCH v5 0/1] s390/vfio-ap: fix circular lockdep when starting
+Date:   Thu, 25 Mar 2021 08:46:39 -0400
+Message-Id: <20210325124640.23995-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-In-Reply-To: <20210325113155.118574-1-wangwensheng4@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-25_03:2021-03-24,2021-03-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 spamscore=0 clxscore=1015 bulkscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103250093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.03.21 12:31, Wang Wensheng wrote:
-> sparse_buffer_init() and sparse_buffer_fini() should appear in pair, or
-> a WARN issue would be through the next time sparse_buffer_init() runs.
-> 
-> Add the missing sparse_buffer_fini() in error branch.
-> 
-> Fixes: 85c77f791390 ("mm/sparse: add new sparse_init_nid() and sparse_init()")
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-> ---
->   mm/sparse.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/mm/sparse.c b/mm/sparse.c
-> index 7bd23f9..33406ea 100644
-> --- a/mm/sparse.c
-> +++ b/mm/sparse.c
-> @@ -547,6 +547,7 @@ static void __init sparse_init_nid(int nid, unsigned long pnum_begin,
->   			pr_err("%s: node[%d] memory map backing failed. Some memory will not be available.",
->   			       __func__, nid);
->   			pnum_begin = pnum;
-> +			sparse_buffer_fini();
->   			goto failed;
->   		}
->   		check_usemap_section_nr(nid, usage);
-> 
+*Commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
+pointer invalidated") introduced a change that results in a circular
+lockdep when a Secure Execution guest that is configured with
+crypto devices is started. The problem resulted due to the fact that the
+patch moved the setting of the guest's AP masks within the protection of
+the matrix_dev->lock when the vfio_ap driver is notified that the KVM
+pointer has been set. Since it is not critical that setting/clearing of
+the guest's AP masks be done under the matrix_dev->lock when the driver
+is notified, the masks will not be updated under the matrix_dev->lock.
+The lock is necessary for the setting/unsetting of the KVM pointer,
+however, so that will remain in place.
 
-Did you actually manage to reproduce this? I would have thought that 
-__populate_section_memmap() barely fails during boot ...
+The dependency chain for the circular lockdep resolved by this patch
+is (in reverse order):
 
+2:	vfio_ap_mdev_group_notifier:	kvm->lock
+					matrix_dev->lock
 
-Anyhow, looks like the right think to do to me
+1:	handle_pqap:			matrix_dev->lock
+	kvm_vcpu_ioctl:			vcpu->mutex
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+0:	kvm_s390_cpus_to_pv:		vcpu->mutex
+	kvm_vm_ioctl:  			kvm->lock
 
--- 
-Thanks,
+Please note:
+-----------
+* If checkpatch is run against this patch series, you may
+  get a "WARNING: Unknown commit id 'f21916ec4826', maybe rebased or not
+  pulled?" message. The commit 'f21916ec4826', however, is definitely
+  in the master branch on top of which this patch series was built, so
+  I'm not sure why this message is being output by checkpatch.
+* All acks granted from previous review of this patch have been removed
+  due to the fact that this patch introduces non-trivial changes (see
+  change log below).
 
-David / dhildenb
+Change log v4=> v5:
+------------------
+* In vfio_ap_mdev_ioctl() function:
+  - Verify matrix_mdev is not NULL before doing reset
+  - Do reset regardless matrix_mdev->kvm is NULL or not
+
+Change log v3=> v4:
+------------------
+* In vfio_ap_mdev_set_kvm() function, moved the setting of
+  matrix_mdev->kvm_busy just prior to unlocking matrix_dev->lock.
+
+* Reset queues regardless of regardless of the value of matrix_mdev->kvm
+  in response to the VFIO_DEVICE_RESET ioctl.
+
+Change log v2=> v3:
+------------------
+* Added two fields - 'bool kvm_busy' and 'wait_queue_head_t wait_for_kvm'
+  to struct ap_matrix_mdev. The former indicates that the KVM
+  pointer is in the process of being updated and the second allows a
+  function that needs access to the KVM pointer to wait until it is
+  no longer being updated. Resolves problem of synchronization between
+  the functions that change the KVM pointer value and the functions that
+  required access to it.
+
+Change log v1=> v2:
+------------------
+* No longer holding the matrix_dev->lock prior to setting/clearing the
+  masks supplying the AP configuration to a KVM guest.
+* Make all updates to the data in the matrix mdev that is used to manage
+  AP resources used by the KVM guest in the vfio_ap_mdev_set_kvm()
+  function instead of the group notifier callback.
+* Check for the matrix mdev's KVM pointer in the vfio_ap_mdev_unset_kvm()
+  function instead of the vfio_ap_mdev_release() function.
+
+Tony Krowiak (1):
+  s390/vfio-ap: fix circular lockdep when setting/clearing crypto masks
+
+ drivers/s390/crypto/vfio_ap_ops.c     | 309 ++++++++++++++++++--------
+ drivers/s390/crypto/vfio_ap_private.h |   2 +
+ 2 files changed, 215 insertions(+), 96 deletions(-)
+
+--
+2.21.3
 
