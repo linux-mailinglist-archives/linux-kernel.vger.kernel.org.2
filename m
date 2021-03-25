@@ -2,152 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6640349472
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B406434947B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231448AbhCYOpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbhCYOor (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:44:47 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5829BC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:44:47 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id e8so2165588iok.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:44:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TR+eOD1Sgv6krEGwGa1mtPA/u4GDIWcIjsff8kozm8o=;
-        b=tDAQenlYVwlmpL4ZUJ9Y6cbL8CXxt0xiYcXnquAVRHvmZ3Oql6E/kn2Ug3JN84wT8y
-         x50z523MBQsMJfockIMY1vBk41CsMpRKxWxqL33lxgiBEdtj/hof9GDYvPfyKhE1z8JU
-         qFhkfVNicc607XTd5TALFsPzUaXPGTA74MgAMPLQjUnCRijPwIYoZXvwJSHHSmU/XIoJ
-         tXVpy+/i32ADw3MJIAzuFOIkhSelAuFO0mvxgMZlQtrcxRSE3xphibL4bVQYtXUfphnQ
-         lo/s73XXx8uYxs3xxxMdcRsFL3n4saz6ujARSn63sNWDy7MHUqedOM3oQSCoQVZOrH7s
-         t0UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TR+eOD1Sgv6krEGwGa1mtPA/u4GDIWcIjsff8kozm8o=;
-        b=qGnj8cjJomMDV/ORHxCGSnSncqJowAuBb5L+28uCkFjXYXKTnLsgF7omh1teaLP77i
-         r53FbB1km8fmJ7k+kPNeC/qK19JOXUV0aSoqa6+J8a7fn/DThWR/Q3HhgE2s1KN+oPkF
-         Pdr0QlP2z+uT7ztJ7IqscjAEyzAP5HHWiMpcEM47yKmWR+8rApbeISiSSCBw/hWq5zLM
-         iIogZNCycL1n4dD8mZX8cfk8lVNX7pOlifDaqSRVNA2ajBwmSS0x/0ja1H3vPY/9gJj3
-         C5OH2uoDxWhKY5A26OcYxAJPOb0ZULbRmk+LViBRaWEccwCTVtx47eTYI5Q5KUIjZJDG
-         40ug==
-X-Gm-Message-State: AOAM5323vav4gqgOHIsEGAqtYZ7CkJOY21lMeBzPf4EOFruhw6pLm38Q
-        b0E4Lcl7pQ4HCbY+e9VkUqxflg==
-X-Google-Smtp-Source: ABdhPJxB4NBLU22knFnVy9dEq5OZxY9TaoUIKsxCD6RHYe8eXiaE2g25OfK5vNeUOPDp6fddTjwi0A==
-X-Received: by 2002:a05:6602:2287:: with SMTP id d7mr6729223iod.42.1616683486761;
-        Thu, 25 Mar 2021 07:44:46 -0700 (PDT)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id x20sm2879196ilc.88.2021.03.25.07.44.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:44:46 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 6/6] net: ipa: expand GSI channel types
-Date:   Thu, 25 Mar 2021 09:44:37 -0500
-Message-Id: <20210325144437.2707892-7-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210325144437.2707892-1-elder@linaro.org>
-References: <20210325144437.2707892-1-elder@linaro.org>
+        id S231371AbhCYOq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:46:57 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:42821 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231419AbhCYOqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:46:36 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12PEkBps031174
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 15:46:11 +0100
+Received: from [139.22.38.170] ([139.22.38.170])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 12PEkABT019439;
+        Thu, 25 Mar 2021 15:46:11 +0100
+Subject: Re: [PATCH] staging: gasket: remove it from the kernel
+To:     Rob Springer <rspringer@google.com>
+Cc:     Todd Poynor <toddpoynor@google.com>,
+        Ben Chan <benchan@chromium.org>, Richard Yeh <rcy@google.com>,
+        linux-staging@lists.linux.dev, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
+References: <20210315154413.3084149-1-gregkh@linuxfoundation.org>
+ <CALTjKEP_+uBU8K-=Cnose8wCv9Wrv8oFnKfRUywLEHV4U_jWjQ@mail.gmail.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <30ee6d6b-9206-acad-b224-591fdeb0dad7@siemens.com>
+Date:   Thu, 25 Mar 2021 15:46:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALTjKEP_+uBU8K-=Cnose8wCv9Wrv8oFnKfRUywLEHV4U_jWjQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPA v4.5 (GSI v2.5) supports a larger set of channel protocols, and
-adds an additional field to hold the most-significant bits of the
-protocol identifier on a channel.
+On 15.03.21 17:10, Rob Springer wrote:
+> Acked-by: Rob Springer <rspringer@google.com>
+> 
+> 
+> On Mon, Mar 15, 2021 at 8:44 AM <gregkh@linuxfoundation.org> wrote:
+>>
+>> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>
+>> As none of the proposed things that need to be changed in the gasket
+>> drivers have ever been done, and there has not been any forward progress
+>> to get this out of staging, it seems totally abandonded so remove the
+>> code entirely so that people do not spend their time doing tiny cleanups
+>> for code that will never get out of staging.
+>>
+>> If this code is actually being used, it can be reverted simply and then
+>> cleaned up properly, but as it is abandoned, let's just get rid of it.
+>>
+>> Cc: Rob Springer <rspringer@google.com>
+>> Cc: Todd Poynor <toddpoynor@google.com>
+>> Cc: Ben Chan <benchan@chromium.org>
+>> Cc: Richard Yeh <rcy@google.com>
+>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Add an inline function that encodes the protocol (including the
-extra bits for newer versions of IPA), and define some additional
-protocols.  At this point we still use only GPI protocol.
+OK, so is there a plan of the HW vendor to improve the user experience
+for this hardware? Is there a different software architecture in sight
+which will not need a kernel driver?
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/gsi.c     |  2 +-
- drivers/net/ipa/gsi_reg.h | 38 +++++++++++++++++++++++++++++++-------
- 2 files changed, 32 insertions(+), 8 deletions(-)
+Just wondering loudly while fiddling with dkms packages and starring at
+the code diffs between what was removed here and what I still have to
+install manually from remote sources.
 
-diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 6f146288f9e41..585574af36ecd 100644
---- a/drivers/net/ipa/gsi.c
-+++ b/drivers/net/ipa/gsi.c
-@@ -801,7 +801,7 @@ static void gsi_channel_program(struct gsi_channel *channel, bool doorbell)
- 	channel->tre_ring.index = 0;
- 
- 	/* We program all channels as GPI type/protocol */
--	val = u32_encode_bits(GSI_CHANNEL_TYPE_GPI, CHTYPE_PROTOCOL_FMASK);
-+	val = chtype_protocol_encoded(gsi->version, GSI_CHANNEL_TYPE_GPI);
- 	if (channel->toward_ipa)
- 		val |= CHTYPE_DIR_FMASK;
- 	val |= u32_encode_bits(channel->evt_ring_id, ERINDEX_FMASK);
-diff --git a/drivers/net/ipa/gsi_reg.h b/drivers/net/ipa/gsi_reg.h
-index d964015a4409f..b4ac0258d6e10 100644
---- a/drivers/net/ipa/gsi_reg.h
-+++ b/drivers/net/ipa/gsi_reg.h
-@@ -64,6 +64,21 @@
- 			(0x0000c01c + 0x1000 * (ee))
- 
- /* All other register offsets are relative to gsi->virt */
-+
-+/** enum gsi_channel_type - CHTYPE_PROTOCOL field values in CH_C_CNTXT_0 */
-+enum gsi_channel_type {
-+	GSI_CHANNEL_TYPE_MHI			= 0x0,
-+	GSI_CHANNEL_TYPE_XHCI			= 0x1,
-+	GSI_CHANNEL_TYPE_GPI			= 0x2,
-+	GSI_CHANNEL_TYPE_XDCI			= 0x3,
-+	GSI_CHANNEL_TYPE_WDI2			= 0x4,
-+	GSI_CHANNEL_TYPE_GCI			= 0x5,
-+	GSI_CHANNEL_TYPE_WDI3			= 0x6,
-+	GSI_CHANNEL_TYPE_MHIP			= 0x7,
-+	GSI_CHANNEL_TYPE_AQC			= 0x8,
-+	GSI_CHANNEL_TYPE_11AD			= 0x9,
-+};
-+
- #define GSI_CH_C_CNTXT_0_OFFSET(ch) \
- 		GSI_EE_N_CH_C_CNTXT_0_OFFSET((ch), GSI_EE_AP)
- #define GSI_EE_N_CH_C_CNTXT_0_OFFSET(ch, ee) \
-@@ -78,13 +93,22 @@
- #define CHSTATE_FMASK			GENMASK(23, 20)
- #define ELEMENT_SIZE_FMASK		GENMASK(31, 24)
- 
--/** enum gsi_channel_type - CHTYPE_PROTOCOL field values in CH_C_CNTXT_0 */
--enum gsi_channel_type {
--	GSI_CHANNEL_TYPE_MHI			= 0x0,
--	GSI_CHANNEL_TYPE_XHCI			= 0x1,
--	GSI_CHANNEL_TYPE_GPI			= 0x2,
--	GSI_CHANNEL_TYPE_XDCI			= 0x3,
--};
-+/* Encoded value for CH_C_CNTXT_0 register channel protocol fields */
-+static inline u32
-+chtype_protocol_encoded(enum ipa_version version, enum gsi_channel_type type)
-+{
-+	u32 val;
-+
-+	val = u32_encode_bits(type, CHTYPE_PROTOCOL_FMASK);
-+	if (version < IPA_VERSION_4_5)
-+		return val;
-+
-+	/* Encode upper bit(s) as well */
-+	type >>= hweight32(CHTYPE_PROTOCOL_FMASK);
-+	val |= u32_encode_bits(type, CHTYPE_PROTOCOL_MSB_FMASK);
-+
-+	return val;
-+}
- 
- #define GSI_CH_C_CNTXT_1_OFFSET(ch) \
- 		GSI_EE_N_CH_C_CNTXT_1_OFFSET((ch), GSI_EE_AP)
+Thanks,
+Jan
+
 -- 
-2.27.0
-
+Siemens AG, T RDA IOT
+Corporate Competence Center Embedded Linux
