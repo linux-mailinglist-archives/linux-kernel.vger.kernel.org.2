@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65B7349B61
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:05:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A57349B66
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhCYVE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:04:29 -0400
-Received: from ms.lwn.net ([45.79.88.28]:52272 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhCYVEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:04:01 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230346AbhCYVGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhCYVGO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 17:06:14 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF15C06174A;
+        Thu, 25 Mar 2021 14:06:03 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B9C0D6A2;
-        Thu, 25 Mar 2021 21:04:00 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B9C0D6A2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1616706240; bh=iGv+gy+JQHLdwSA/W99xdBIG7NrXqMxzGHgpi0V8xoI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=C2xRhDozwuE/9W4G+Ys47QGMv+I4fWco5t/ATvwMaMp4ix+LysEWb+VLxr+jQ7lMv
-         f9QiKith1pPeLUTKEiZDcAszuJV11zNlxQtrDXSMfA7JPW3m44yjjb3xpdjZdTz9VC
-         6sTaZcPb/yOVcNi556/Z60567clHenopFODJDolSaGdR+9v17HmLmST339GkCb8wG3
-         U/luDihWgnJ05H4nyv+3zpLBylgglsljr0OxoOsSWBnTPEZ19wXr1JTSv8GMvZwW9m
-         PR5G/J6IghVOv46bZY77djDJFGNH8s6c7D7v1wE7Z0evThFHYLMUcaWxFclyER8R/7
-         EW3RkOa5dxU2Q==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
-In-Reply-To: <20210325191435.GZ1719932@casper.infradead.org>
-References: <20210325184615.08526aed@coco.lan>
- <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
- <87tuozyslu.fsf@meer.lwn.net>
- <20210325191435.GZ1719932@casper.infradead.org>
-Date:   Thu, 25 Mar 2021 15:04:00 -0600
-Message-ID: <87a6qrx7wf.fsf@meer.lwn.net>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F5yLx4q4mz9sW4;
+        Fri, 26 Mar 2021 08:06:01 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616706361;
+        bh=/bbsaWFrT3mbTxmmmEwMNqEr2ymMLIXimsZsQ6SJKa4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=kQqNBK4jeX2Ty2M8LP0E98g7n3E2gQwVVFecBbK1SCwuDdMJQnha2LMf3i754+H60
+         W1uL+E5aCwfe4Qq21TMSbwRPRh3OVdez7civtdH/1uYrCMnuxy4JUkNY/4ad1tQLz6
+         JNUjxIj7d5eTnOtuZQEi68gYHQFGayqauPWl32GyivQTpHvZonk4ciGnXTkHNzWZau
+         0U1m+MZizN/Y2htNhK52ezyo8EKO3Rc12OE3TWOXzv3QuG/GekO6a0/rFd+CGsq2yw
+         pqOw4eT8NHJEAcLHcYPoYvVrnsCnc8S61UJtZw0oI9taM3cHJJKoTTicsZHwGLgQ0W
+         BIFkIPEXWxtsQ==
+Date:   Fri, 26 Mar 2021 08:06:00 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the leds tree
+Message-ID: <20210326080600.5b707e08@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/1MVUZ/VJueeChGdDPd9s6vs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+--Sig_/1MVUZ/VJueeChGdDPd9s6vs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Thu, Mar 25, 2021 at 12:51:25PM -0600, Jonathan Corbet wrote:
->> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
->>=20
->> > Right now, if one of the following headers end with a '::', the
->> > kernel-doc script will do the wrong thing:
->> >
->> > 	description|context|returns?|notes?|examples?
->> >
->> > The real issue is with examples, as people could try to write
->> > something like:
->> >
->> > 	example::
->> >
->> > 		/* Some C code */
->> >
->> > and this won't be properly evaluated. So, improve the regex
->> > to not catch '\w+::' regex for the above identifiers.
->> >
->> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->> > ---
->> >  scripts/kernel-doc | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> Ah....wouldn't it be nice if kerneldoc comments had just been RST from
->> the beginning?  I don't think we're fixing that at this point, though,
->> so this makes sense; applied.
->
-> Well ...
->
-> If somebody wants to write a new tool (*) that extracts documentation
-> written in a different format, I think that could be done.  Because the
-> hard part of writing documentation is getting the person who knows the
-> code to get everything that's in their brain into words, not really
-> the formatting.
->
-> If somebody did want to write such a tool, I think we'd also want a
-> tool that turns the existing kernel-doc into the new format, because
-> maintaining two function-doc formats would be awful.
+Hi all,
 
-Yeah, the thing is that, as long as we're documenting code with
-something other than RST, we *do* have two formats, and they interact
-with each other in surprising and unwelcome ways.
+Commit
 
-I don't really see a fix, though.  Even if we come up with the Perfect
-New Format=E2=84=A2, I don't want to be the one trying to push through the
-patches changing tens of thousands of kerneldoc comments over...
+  feac7685def1 ("leds: Kconfig: LEDS_CLASS is usually selected.")
 
-jon
+is missing a Signed-off-by from its author and committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/1MVUZ/VJueeChGdDPd9s6vs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBc+zgACgkQAVBC80lX
+0GwRDQf+O1IiCSLzP3AJTfG7q9yDm9GCpkjqaz0LrJTGJ6OQyrlUyBuyA5tUBY6Y
+ES/8fH9vvMcfSIAIOC2ORxaQhswcjvCoUzgOquCvrKK0cjQ2Bdhs/+OxB1zuWqW1
+H782Ld2UWN0PexipvI0JcqOb15naPPE7fkNRcsXb+Ec1sJI/gy8TIv1dK4wnyd1W
+LD/2hoAS5TzusEYP6/JFvbq6bq32sBzi2PDoTZLIx91+t6fbS1KzibH1kg6muaue
+QMzA93eJHYW5XIvo/iFDl7lUzzM3QeAUVNMl3W1KOgbiwcZNGC/OkHMOd0LEv4u3
+V0CrWWDu4vvIWzn1xqylZ7X+99MW4w==
+=EpAI
+-----END PGP SIGNATURE-----
+
+--Sig_/1MVUZ/VJueeChGdDPd9s6vs--
