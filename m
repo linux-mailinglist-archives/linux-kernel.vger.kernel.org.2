@@ -2,75 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9B9349A22
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:25:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3F6349A24
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCYTYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhCYTYV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:24:21 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90792C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:24:20 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id v15so4171952lfq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=L8T2Txzb0BtewZ5F66NCn7EN1kBqfXmON7PRQ3Cxnj0=;
-        b=uz61an9M1dHhsmDDzYlBWKFkQ0xFbDqOq4tzPA/WEzSnTTQCl2j5f8LgyUWMqy2g09
-         rdNbc0rSfLnOZbF0YVzDhVv9e89BB5Og4wIpAp2lAyNINw48Noa07QzbgcsxalTXL4te
-         D9TmW4W0KtLb8SQ03Bb0h49PnnjNgh67Wbf+64r0HmxesLknzb/SBwbmT1MWQwu/Dwwb
-         UxwEmRS/qlYXp7WfviJPQzKD6EuRRh3cBE6TsOCveAzkZkR+ova0kT9Rv2sGUpN9hBNJ
-         xI5O2RvX7yTKVqc3T/l+xd0VUH+Z/ZT9EB//l7xYB73ukuS3iI1mdqcRLXdP03/MJvKB
-         eHvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=L8T2Txzb0BtewZ5F66NCn7EN1kBqfXmON7PRQ3Cxnj0=;
-        b=o9BCv8T26gD/QF6HtfBpA8cVXYSBoZzvZa9eFBItePjIU5Kjx8Qp4FgZ7aJnOweLNp
-         vbPUfanBNm6SYk1hoh0O4HjUbqye9vmuOV/H975+7/9bccVUt79Yk3776EReTBSJe178
-         OuND+VbiPFnDFifdmX3IdW0hUmC2AKgHPlnSE6sOHzUEwh+PFmcDX1eBz3s5SKd03Oad
-         Ddyy4WQfHy6uIjmi1Ax/ndjLCUfhJx26BUxz/nmaWWYGl8Ms62Wk1Z/dHolgrGk8MSOp
-         vfl/kj7nE2AzJOBAsiTDIe4vHj9rf7bWrmzGpoZ2+Dq7FH2ReG5WzFQsMc3daxBLoghP
-         r5Dw==
-X-Gm-Message-State: AOAM533wnQIwHN+UaCzDXe/Rm3/JG4o9yTEBS8FcRUu3/RWepPzu4lt3
-        Tj9/uzpJHZfpQT9eGXFr/XJaWmBYHCbtJNtXaTU8nw==
-X-Google-Smtp-Source: ABdhPJxEDGp3bUqaucqZOvhWWJyy62pP51Q7wESmTwcPqVi6x5pXOBqg5AJ+vA5ZqsgTOVe3+NhxCi9R/Xf9egb2B1o=
-X-Received: by 2002:a19:6a16:: with SMTP id u22mr5622616lfu.356.1616700258737;
- Thu, 25 Mar 2021 12:24:18 -0700 (PDT)
+        id S230226AbhCYTYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:24:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230140AbhCYTY0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:24:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF6A61A14;
+        Thu, 25 Mar 2021 19:24:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616700265;
+        bh=v2b29AUs3Bj/0T+rnMHy1+6cbej0x22tQEJGkL//C2o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sKekDYOHQGkQrJyiIor6517Zyy72wryWiMa63GsFEKRAmvlFTHCyND4FYrVxI9E2s
+         5WcmtWrMrq55/IEN/Fj1e7sF5TD9Y8+m6Ch1TonvaNjWx09asB+b8Kor3DBqkVs/3S
+         pR1mRJ8GJcr7QfJ9psJ3KWDHoTOCA/p5QIMiKLjhpmNle9BnDRt7ivFuMheGSbVkfl
+         QzBLEgzYJmPhmekTUOovHtpywzqvAVo7eOrIQa8Ew13NlqF7hTJnWUyDyd1Lh2dLFB
+         NPYdg73QaAmle3YLwj/1pycssLmnLZWeqoxTO2ELxeBvpjJe4o7x9C6irGJvniqDXF
+         KlFcvoHbXjHEw==
+Date:   Thu, 25 Mar 2021 12:24:23 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v4 3/5] fs: unicode: Rename function names from utf8 to
+ unicode
+Message-ID: <YFzjZ7u31PtAB9vQ@sol.localdomain>
+References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
+ <20210325000811.1379641-4-shreeya.patel@collabora.com>
 MIME-Version: 1.0
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 25 Mar 2021 20:23:52 +0100
-Message-ID: <CAG48ez1wLkMCiyY+bWVonXZr2TjzhwKZjNZLD3Ads=Rds8YJSw@mail.gmail.com>
-Subject: ARM FDPIC_FUNCPTRS personality flag handling looks broken
-To:     Nicolas Pitre <nico@fluxnic.net>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Cc:     Tavis Ormandy <taviso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325000811.1379641-4-shreeya.patel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Thu, Mar 25, 2021 at 05:38:09AM +0530, Shreeya Patel wrote:
+> Rename the function names from utf8 to unicode for taking the first step
+> towards the transformation of utf8-core file into the unicode subsystem
+> layer file.
+> 
+> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
 
-Tavis noticed that on ARM kernels with CONFIG_BINFMT_ELF_FDPIC, it
-looks like the FDPIC_FUNCPTRS personality flag is not reset on
-execve(). This would mean that if a process first executes an ELF
-FDPIC binary (which forces the personality to PER_LINUX_FDPIC), and
-then executes a non-FDPIC binary, the signal handling code
-(setup_return()) will have bogus behavior (interpreting a normal
-function pointer as an FDPIC function handle).
+Can you add some more explanation about why this change is beneficial?  The
+functions still seem tied to UTF-8 specifically.
 
-I think FDPIC_FUNCPTRS should probably either be reset on every
-execve() or not be a personality flag at all (since AFAIU pretty much
-the whole point of personality flags is that they control behavior
-even across execve()).
-
-(I don't have an FDPIC toolchain, so I'm writing this solely based on
-having read the code, without having actually tested it.)
+- Eric
