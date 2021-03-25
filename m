@@ -2,132 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34467348C62
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11A2348C68
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhCYJMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:12:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbhCYJLs (ORCPT
+        id S229719AbhCYJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:12:59 -0400
+Received: from out28-75.mail.aliyun.com ([115.124.28.75]:56443 "EHLO
+        out28-75.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhCYJMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:11:48 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DE4C06175F;
-        Thu, 25 Mar 2021 02:11:46 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id j7so1132380qtx.5;
-        Thu, 25 Mar 2021 02:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t3z/hxgoWLAQqM1wXkd9iVUgfneeCuSfJf4VH9I2W2k=;
-        b=KGC+VctVIhSIXX+cwcptqh63o3Ku4hn/hHJT1I89wfbFi3SPOIiRdlhq70+LrwPbdc
-         9oZAyq1iVLRwynhsMq2PVkhkyE0BnYIkNdhdhlYKGPFd5sgMO1ahG0KQjzlduR/ET26K
-         T2gczJ6cK7AgwgewNi5m3WpUkvz5M4ZkrNxW9+1THX3Zr/yjUJjWx5+NK9s11diWmpwI
-         TAvEdd8BY29jOrECSx7C+LkRgT/bNGrQGHLJtFWIFgQGcXjSDKYnVFTswelXKJpooEwX
-         84LhLVfwWNuIP1wXNFfnFcufRgu58hqS41ezvVbsEKDVAKgKFBjZYNyMMrnwuppGmhDb
-         QzKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=t3z/hxgoWLAQqM1wXkd9iVUgfneeCuSfJf4VH9I2W2k=;
-        b=A8Ig1vURBkZRdmQmsDaK6ebVIT9uRobOtPX9AmglGzt5lTi6JdhJ8iycVBcolGp1my
-         n9GGECZn6lS1+WuyjjdaXnc8jr7KvSnkakVDfbfylSNy/Sdox+NyB2H+bOZiaCHvAA01
-         JcCmK9YQ3alUyaDSWrFRNHsvaDeFOVroLPrIRHJx8QJDFLNcBbqOtI7L9/h4DEw4rEcf
-         S1Dgl6+m8y5oD3NdmuOoi9aka6mOdZzkmxWGXk4cccCT8U9RF8hVSR72FVuYlWZPYx+n
-         LUc++K0ETDLHFZLhE7F+6z3aCo7sYCU3EFEEE5kFhJ1Yaju0gP0g8q42BZH6d5U3SGbh
-         NQug==
-X-Gm-Message-State: AOAM530rocbiqZZr87hBoBepRHC01Ulx0vUuM5Ke2B5x+W3gScAd8ev7
-        w0alBoYn8gvcn62a4JvHh9g=
-X-Google-Smtp-Source: ABdhPJz4ZP6APn8BMvsoWvYlVGGrI4yMkHmZhkNcd39wrotMVGuaxdgyd1CdXFC0Ljo3+rrSGmXOXg==
-X-Received: by 2002:ac8:4412:: with SMTP id j18mr6791793qtn.387.1616663505844;
-        Thu, 25 Mar 2021 02:11:45 -0700 (PDT)
-Received: from OpenSuse ([156.146.58.54])
-        by smtp.gmail.com with ESMTPSA id z14sm3118079qti.87.2021.03.25.02.11.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 02:11:45 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 14:41:35 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
-        joe.lawrence@redhat.com, corbet@lwn.net,
-        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] docs: livepatch: Fix a typo
-Message-ID: <YFxTxxOkQDr2rb/J@OpenSuse>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Miroslav Benes <mbenes@suse.cz>, jpoimboe@redhat.com,
-        jikos@kernel.org, pmladek@suse.com, joe.lawrence@redhat.com,
-        corbet@lwn.net, live-patching@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-References: <20210325065646.7467-1-unixbhaskar@gmail.com>
- <alpine.LSU.2.21.2103250956530.30447@pobox.suse.cz>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="vJbGBnt7stF50BDq"
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2103250956530.30447@pobox.suse.cz>
+        Thu, 25 Mar 2021 05:12:53 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07634467|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0188312-0.000749819-0.980419;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=liu.xiang@zlingsmart.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.Jq15S-w_1616663568;
+Received: from localhost(mailfrom:liu.xiang@zlingsmart.com fp:SMTPD_---.Jq15S-w_1616663568)
+          by smtp.aliyun-inc.com(10.194.97.246);
+          Thu, 25 Mar 2021 17:12:48 +0800
+From:   Liu Xiang <liu.xiang@zlingsmart.com>
+To:     kraxel@redhat.com
+Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, liuxiang_1999@126.com,
+        liuxiang1999@gmail.com, Liu Xiang <liu.xiang@zlingsmart.com>
+Subject: [PATCH] drm/virtio: check the return value of virtio_gpu_alloc_cmd_resp()
+Date:   Thu, 25 Mar 2021 17:12:44 +0800
+Message-Id: <20210325091244.25322-1-liu.xiang@zlingsmart.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Now there is no check with the return value of virtio_gpu_alloc_cmd_resp().
+If it fails, the following operation will cause a fault.
 
---vJbGBnt7stF50BDq
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+---
+ drivers/gpu/drm/virtio/virtgpu_vq.c | 89 +++++++++++++++++++++++++++++
+ 1 file changed, 89 insertions(+)
 
-On 10:05 Thu 25 Mar 2021, Miroslav Benes wrote:
->Hi,
->
->On Thu, 25 Mar 2021, Bhaskar Chowdhury wrote:
->
->>
->> s/varibles/variables/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  Documentation/livepatch/shadow-vars.rst | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/Documentation/livepatch/shadow-vars.rst b/Documentation/livepatch/shadow-vars.rst
->> index c05715aeafa4..8464866d18ba 100644
->> --- a/Documentation/livepatch/shadow-vars.rst
->> +++ b/Documentation/livepatch/shadow-vars.rst
->> @@ -165,7 +165,7 @@ In-flight parent objects
->>
->>  Sometimes it may not be convenient or possible to allocate shadow
->>  variables alongside their parent objects.  Or a livepatch fix may
->> -require shadow varibles to only a subset of parent object instances.  In
->> +require shadow variables to only a subset of parent object instances.  In
->>  these cases, the klp_shadow_get_or_alloc() call can be used to attach
->>  shadow variables to parents already in-flight.
->
->you sent the same fix a couple of weeks ago and Jon applied it.
->
-Ah..difficult to remember....thanks for reminding ..it seems I need to keep
-track ...which I don't do at this moment ...so the patch get duplicated ..
+diff --git a/drivers/gpu/drm/virtio/virtgpu_vq.c b/drivers/gpu/drm/virtio/virtgpu_vq.c
+index cf84d382d..2e59ad55f 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_vq.c
++++ b/drivers/gpu/drm/virtio/virtgpu_vq.c
+@@ -507,6 +507,9 @@ void virtio_gpu_cmd_create_resource(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 	vbuf->objs = objs;
+ 
+@@ -540,6 +543,9 @@ void virtio_gpu_cmd_unref_resource(struct virtio_gpu_device *vgdev,
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd_cb(vgdev, &vbuf, sizeof(*cmd_p),
+ 					virtio_gpu_cmd_unref_cb);
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_UNREF);
+@@ -560,6 +566,9 @@ void virtio_gpu_cmd_set_scanout(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_SET_SCANOUT);
+@@ -582,6 +591,9 @@ void virtio_gpu_cmd_resource_flush(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_FLUSH);
+@@ -612,6 +624,9 @@ void virtio_gpu_cmd_transfer_to_host_2d(struct virtio_gpu_device *vgdev,
+ 					    shmem->pages, DMA_TO_DEVICE);
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 	vbuf->objs = objs;
+ 
+@@ -637,6 +652,9 @@ virtio_gpu_cmd_resource_attach_backing(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_ATTACH_BACKING);
+@@ -778,6 +796,11 @@ int virtio_gpu_cmd_get_display_info(struct virtio_gpu_device *vgdev)
+ 		(vgdev, &virtio_gpu_cmd_get_display_info_cb, &vbuf,
+ 		 sizeof(*cmd_p), sizeof(struct virtio_gpu_resp_display_info),
+ 		 resp_buf);
++	if (IS_ERR(cmd_p)) {
++		kfree(resp_buf);
++		return PTR_ERR(cmd_p);
++	}
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	vgdev->display_info_pending = true;
+@@ -801,6 +824,11 @@ int virtio_gpu_cmd_get_capset_info(struct virtio_gpu_device *vgdev, int idx)
+ 		(vgdev, &virtio_gpu_cmd_get_capset_info_cb, &vbuf,
+ 		 sizeof(*cmd_p), sizeof(struct virtio_gpu_resp_capset_info),
+ 		 resp_buf);
++	if (IS_ERR(cmd_p)) {
++		kfree(resp_buf);
++		return PTR_ERR(cmd_p);
++	}
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_GET_CAPSET_INFO);
+@@ -876,6 +904,13 @@ int virtio_gpu_cmd_get_capset(struct virtio_gpu_device *vgdev,
+ 		(vgdev, &virtio_gpu_cmd_capset_cb, &vbuf, sizeof(*cmd_p),
+ 		 sizeof(struct virtio_gpu_resp_capset) + max_size,
+ 		 resp_buf);
++	if (IS_ERR(cmd_p)) {
++		kfree(resp_buf);
++		kfree(cache_ent->caps_cache);
++		kfree(cache_ent);
++		return PTR_ERR(cmd_p);
++	}
++
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_GET_CAPSET);
+ 	cmd_p->capset_id = cpu_to_le32(vgdev->capsets[idx].id);
+ 	cmd_p->capset_version = cpu_to_le32(version);
+@@ -905,6 +940,11 @@ int virtio_gpu_cmd_get_edids(struct virtio_gpu_device *vgdev)
+ 			(vgdev, &virtio_gpu_cmd_get_edid_cb, &vbuf,
+ 			 sizeof(*cmd_p), sizeof(struct virtio_gpu_resp_edid),
+ 			 resp_buf);
++		if (IS_ERR(cmd_p)) {
++			kfree(resp_buf);
++			return PTR_ERR(cmd_p);
++		}
++
+ 		cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_GET_EDID);
+ 		cmd_p->scanout = cpu_to_le32(scanout);
+ 		virtio_gpu_queue_ctrl_buffer(vgdev, vbuf);
+@@ -920,6 +960,9 @@ void virtio_gpu_cmd_context_create(struct virtio_gpu_device *vgdev, uint32_t id,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_CTX_CREATE);
+@@ -937,6 +980,9 @@ void virtio_gpu_cmd_context_destroy(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_CTX_DESTROY);
+@@ -953,6 +999,9 @@ void virtio_gpu_cmd_context_attach_resource(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 	vbuf->objs = objs;
+ 
+@@ -971,6 +1020,9 @@ void virtio_gpu_cmd_context_detach_resource(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 	vbuf->objs = objs;
+ 
+@@ -991,6 +1043,9 @@ virtio_gpu_cmd_resource_create_3d(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 	vbuf->objs = objs;
+ 
+@@ -1034,6 +1089,9 @@ void virtio_gpu_cmd_transfer_to_host_3d(struct virtio_gpu_device *vgdev,
+ 	}
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	vbuf->objs = objs;
+@@ -1064,6 +1122,9 @@ void virtio_gpu_cmd_transfer_from_host_3d(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	vbuf->objs = objs;
+@@ -1090,6 +1151,9 @@ void virtio_gpu_cmd_submit(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	vbuf->data_buf = data;
+@@ -1120,6 +1184,8 @@ void virtio_gpu_cursor_ping(struct virtio_gpu_device *vgdev,
+ 
+ 	output->cursor.pos.scanout_id = cpu_to_le32(output->index);
+ 	cur_p = virtio_gpu_alloc_cursor(vgdev, &vbuf);
++	if (IS_ERR(cur_p))
++		return;
+ 	memcpy(cur_p, &output->cursor, sizeof(output->cursor));
+ 	virtio_gpu_queue_cursor(vgdev, vbuf);
+ }
+@@ -1169,6 +1235,15 @@ virtio_gpu_cmd_resource_assign_uuid(struct virtio_gpu_device *vgdev,
+ 	cmd_p = virtio_gpu_alloc_cmd_resp
+ 		(vgdev, virtio_gpu_cmd_resource_uuid_cb, &vbuf, sizeof(*cmd_p),
+ 		 sizeof(struct virtio_gpu_resp_resource_uuid), resp_buf);
++	if (IS_ERR(cmd_p)) {
++		spin_lock(&vgdev->resource_export_lock);
++		bo->uuid_state = STATE_ERR;
++		spin_unlock(&vgdev->resource_export_lock);
++		virtio_gpu_array_put_free(objs);
++		kfree(resp_buf);
++		return PTR_ERR(cmd_p);
++	}
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_ASSIGN_UUID);
+@@ -1217,6 +1292,11 @@ int virtio_gpu_cmd_map(struct virtio_gpu_device *vgdev,
+ 	cmd_p = virtio_gpu_alloc_cmd_resp
+ 		(vgdev, virtio_gpu_cmd_resource_map_cb, &vbuf, sizeof(*cmd_p),
+ 		 sizeof(struct virtio_gpu_resp_map_info), resp_buf);
++	if (IS_ERR(cmd_p)) {
++		kfree(resp_buf);
++		return PTR_ERR(cmd_p);
++	}
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_MAP_BLOB);
+@@ -1235,6 +1315,9 @@ void virtio_gpu_cmd_unmap(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_UNMAP_BLOB);
+@@ -1254,6 +1337,9 @@ virtio_gpu_cmd_resource_create_blob(struct virtio_gpu_device *vgdev,
+ 	struct virtio_gpu_vbuffer *vbuf;
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_RESOURCE_CREATE_BLOB);
+@@ -1285,6 +1371,9 @@ void virtio_gpu_cmd_set_scanout_blob(struct virtio_gpu_device *vgdev,
+ 	uint32_t format = virtio_gpu_translate_format(fb->format->format);
+ 
+ 	cmd_p = virtio_gpu_alloc_cmd(vgdev, &vbuf, sizeof(*cmd_p));
++	if (IS_ERR(cmd_p))
++		return;
++
+ 	memset(cmd_p, 0, sizeof(*cmd_p));
+ 
+ 	cmd_p->hdr.type = cpu_to_le32(VIRTIO_GPU_CMD_SET_SCANOUT_BLOB);
+-- 
+2.17.1
 
-So.do you have any better policy to keep track???
-
->Miroslav
-
---vJbGBnt7stF50BDq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBcU7sACgkQsjqdtxFL
-KRXpIQf/U2X4X8z8kzJAjGibPP2zSgFDF/PyvVHSP4mjmSzDqpUaCv+fgBDKnOg+
-LQ3Gv/ZPUrgz8FctnCFF2Z5rCJQ2pqmNK2EkJUInxifeyp/y8pBJn/q8oz0ZarxH
-IFWe52q3jdMgG8TUYJ2zky9ofX02ukuYWVtGFEgbinWEGocqr/5WU45nlWM3jTBt
-AjiMHprZiuiUmE2VsqaE+z6lfpEvp1iLw+xmTBTcnOe45bowj3MopNZ89FASD7UL
-d+9FSPhIMrlzAgqOwjSVkY6og33lYuhN0tFjHZd0rLl6feaLbRqDTCUXkR32+Dvr
-KP0bsTKRAsy36KgPVLR/A3i6sJdgdA==
-=ODuY
------END PGP SIGNATURE-----
-
---vJbGBnt7stF50BDq--
