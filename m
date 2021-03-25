@@ -2,238 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0097E348D09
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF16348D0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhCYJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:34:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34885 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229533AbhCYJeX (ORCPT
+        id S229919AbhCYJgB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:36:01 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34468 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229798AbhCYJfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:34:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616664862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nRf7NxGYGZiHnx9JPcY1YBSuqFXsi8pdHWs1zzP6w98=;
-        b=Sr32jQJOH11EsGmQif/fT0k5E1KNPMSqMZzvPkOguogN/aGuuXm/R+lC5Ln9WGMqNA2U9k
-        MmTl0LULMQw3jB/mxRnjAkiUJAhYSfPkt+OK8ZmuEk4+xNxwyj/DKnmXdSiprJmG6N3JkV
-        UPpgGEFi/AaTCKRA21timFojTMpsiwg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-4Jq5k2wcNSycY1zcxSYpuA-1; Thu, 25 Mar 2021 05:34:20 -0400
-X-MC-Unique: 4Jq5k2wcNSycY1zcxSYpuA-1
-Received: by mail-wr1-f70.google.com with SMTP id r12so2383524wro.15
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:34:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nRf7NxGYGZiHnx9JPcY1YBSuqFXsi8pdHWs1zzP6w98=;
-        b=owMT5JHLENiC9KDhqzL/jmvup4l7Vm/zVhcuOxyuBHgk4jGqIEBnjrDSpJSOLKZzkB
-         TiPU0XKv2gYfX8seXTTf2NQIIyooa8eto+z3n2zFptq3ltCWCFM36g0bd0kS0KrZ3nJK
-         D3DH4dXlZ/hVRJjUGRV848zm3V5joKHWAQCWEauoeudls2RgVK7s0yFRVDVGbf/Bfh06
-         A7bHVQlLYZdPJv/h9RrRq1sLqvHY/M1CfV+7fHV3fktfBUd08nL9Vij8N9PK1FVJtonv
-         TK/VLdqkneIg2CjwjH65Nluh0+gGY3fZWwAWrwB2ANn1m3Fm0YtiiCBa73HQ4myFVtvQ
-         iWww==
-X-Gm-Message-State: AOAM531QMoXE9RDzbICYCGfRS2UYVLwF8nv5OHeDaRT40tA8FJknZ9ct
-        2sn4Z14cbhhzkKgZQqlNU+Fu01Dqs8uwsEge3Nwp1bD2Ej7LLBxRgK84KM+EgEcCthN1xEByLDz
-        /ThpTLxGwfb39ZvbP5ZuWYdYZ
-X-Received: by 2002:a5d:6c67:: with SMTP id r7mr7831868wrz.373.1616664858980;
-        Thu, 25 Mar 2021 02:34:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwp7FkesHjnWfGl/YQCfTcHUdEisO/iTjMVOdjUfjZ9/ssRfZECVX4/rMdG4zKhoEe/0ngIDg==
-X-Received: by 2002:a5d:6c67:: with SMTP id r7mr7831840wrz.373.1616664858753;
-        Thu, 25 Mar 2021 02:34:18 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id u2sm7165948wmm.5.2021.03.25.02.34.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 02:34:18 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 10:34:15 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v7 04/22] af_vsock: implement SEQPACKET receive loop
-Message-ID: <20210325093415.mpysybt5vfnsl7fg@steredhat>
-References: <20210323130716.2459195-1-arseny.krasnov@kaspersky.com>
- <20210323131006.2460058-1-arseny.krasnov@kaspersky.com>
+        Thu, 25 Mar 2021 05:35:44 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12P9WxGP138663;
+        Thu, 25 Mar 2021 05:35:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=BMgp/SWNaMdfVQHbfPOtkHYWj1BnfRsN6pGvZKOE090=;
+ b=BuT2DQqAK/Rp18M4BCw9Nf1EczhcYhgAQZ4MTOFoB1fpH0+OXEzYJp6pGTPgtElt6BXE
+ PB3rJRpY305w9NColv0ivamdBLE8DGE+uok763qeDROriL7/YnmmWrF/hPeX9aLDCqhI
+ cOkAcrLQbq02u3Hh7YuGrVW0Y0yJlipu3PCLUInjpXyi8xNP0rp2T7CP7u6ANIz9kWz5
+ QYjyP6V4saaix+2itvZfrDschsKZt/pkTnOM3MQesxbBATLM4qzGV5HvZ1KlcBo6m/pi
+ Y9L16lSWRho49lr5sPG+A8HPVQVsUT/KgTmCRGpXCilCsxczAKbuygaKDmmrL6Wd+Dwp nQ== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37gjyjfkj2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 05:35:23 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12P9SSLT025767;
+        Thu, 25 Mar 2021 09:35:21 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 37d9a62r5a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 09:35:21 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12P9ZIhO45154806
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 09:35:18 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4BB3011C052;
+        Thu, 25 Mar 2021 09:35:18 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A395C11C04C;
+        Thu, 25 Mar 2021 09:35:15 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.211.86.32])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Mar 2021 09:35:15 +0000 (GMT)
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
+Cc:     nathanl@linux.ibm.com, cheloha@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] pseries: prevent free CPU ids to be reused on another node
+Date:   Thu, 25 Mar 2021 10:35:12 +0100
+Message-Id: <20210325093512.57856-1-ldufour@linux.ibm.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210323131006.2460058-1-arseny.krasnov@kaspersky.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-25_02:2021-03-24,2021-03-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
+ suspectscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103250072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:10:03PM +0300, Arseny Krasnov wrote:
->This adds receive loop for SEQPACKET. It looks like receive loop for
->STREAM, but there is a little bit difference:
->1) It doesn't call notify callbacks.
->2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
->   there is no sense for these values in SEQPACKET case.
->3) It waits until whole record is received or error is found during
->   receiving.
->4) It processes and sets 'MSG_TRUNC' flag.
->
->So to avoid extra conditions for two types of socket inside one loop, two
->independent functions were created.
->
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v6 -> v7:
-> 'seqpacket_get_len' callback now removed, length of message is returned
->  by 'seqpacket_dequeue' callback.
->
-> include/net/af_vsock.h   |  4 ++
-> net/vmw_vsock/af_vsock.c | 88 +++++++++++++++++++++++++++++++++++++++-
-> 2 files changed, 91 insertions(+), 1 deletion(-)
->
->diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->index b1c717286993..74ac8a4c4168 100644
->--- a/include/net/af_vsock.h
->+++ b/include/net/af_vsock.h
->@@ -135,6 +135,10 @@ struct vsock_transport {
-> 	bool (*stream_is_active)(struct vsock_sock *);
-> 	bool (*stream_allow)(u32 cid, u32 port);
->
->+	/* SEQ_PACKET. */
->+	int (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
->+				 int flags, bool *msg_ready, size_t *record_len);
->+
+When a CPU is hot added, the CPU ids are taken from the available mask from
+the lower possible set. If that set of values was previously used for CPU
+attached to a different node, this seems to application like if these CPUs
+have migrated from a node to another one which is not expected in real
+life.
 
-Why not using ssize_t as return value and return the length or a 
-negative value in case of error?
+To prevent this, it is needed to record the CPU ids used for each node and
+to not reuse them on another node. However, to prevent CPU hot plug to
+fail, in the case the CPU ids is starved on a node, the capability to reuse
+other nodes’ free CPU ids is kept. A warning is displayed in such a case
+to warn the user.
 
-In this way we can remove the 'record_len' parameter.
+A new CPU bit mask (node_recorded_ids_map) is introduced for each possible
+node. It is populated with the CPU onlined at boot time, and then when a
+CPU is hot plug to a node. The bits in that mask remain when the CPU is hot
+unplugged, to remind this CPU ids have been used for this node.
 
-> 	/* Notification. */
-> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
-> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 0bc661e54262..fa0c37f97330 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1973,6 +1973,89 @@ static int __vsock_stream_recvmsg(struct sock 
->*sk, struct msghdr *msg,
-> 	return err;
-> }
->
->+static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr 
->*msg,
->+				     size_t len, int flags)
->+{
->+	const struct vsock_transport *transport;
->+	const struct iovec *orig_iov;
->+	unsigned long orig_nr_segs;
->+	bool msg_ready;
->+	struct vsock_sock *vsk;
->+	size_t record_len;
->+	long timeout;
->+	int err = 0;
->+	DEFINE_WAIT(wait);
->+
->+	vsk = vsock_sk(sk);
->+	transport = vsk->transport;
->+
->+	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
->+	orig_nr_segs = msg->msg_iter.nr_segs;
->+	orig_iov = msg->msg_iter.iov;
->+	msg_ready = false;
->+	record_len = 0;
->+
->+	while (1) {
->+		err = vsock_wait_data(sk, &wait, timeout, NULL, 0);
->+
->+		if (err <= 0) {
->+			/* In case of any loop break(timeout, signal
->+			 * interrupt or shutdown), we report user that
->+			 * nothing was copied.
->+			 */
->+			err = 0;
->+			break;
->+		}
->+
->+		err = transport->seqpacket_dequeue(vsk, msg, flags, &msg_ready, &record_len);
->+
->+		if (err < 0) {
->+			if (err == -EAGAIN) {
->+				iov_iter_init(&msg->msg_iter, READ,
->+					      orig_iov, orig_nr_segs,
->+					      len);
->+				/* Clear 'MSG_EOR' here, because dequeue
->+				 * callback above set it again if it was
->+				 * set by sender. This 'MSG_EOR' is from
->+				 * dropped record.
->+				 */
->+				msg->msg_flags &= ~MSG_EOR;
->+				record_len = 0;
->+				continue;
->+			}
->+
->+			err = -ENOMEM;
->+			break;
->+		}
->+
->+		if (msg_ready)
->+			break;
->+	}
->+
->+	if (sk->sk_err)
->+		err = -sk->sk_err;
->+	else if (sk->sk_shutdown & RCV_SHUTDOWN)
->+		err = 0;
->+
->+	if (msg_ready) {
+If no id set was found, a retry is made without removing the ids used on
+the other nodes to try reusing them. This is the way ids have been
+allocated prior to this patch.
 
-If 'err' is not 0, should we skip this branch?
+The effect of this patch can be seen by removing and adding CPUs using the
+Qemu monitor. In the following case, the first CPU from the node 2 is
+removed, then the first one from the node 1 is removed too. Later, the
+first CPU of the node 2 is added back. Without that patch, the kernel will
+numbered these CPUs using the first CPU ids available which are the ones
+freed when removing the second CPU of the node 0. This leads to the CPU ids
+16-23 to move from the node 1 to the node 2. With the patch applied, the
+CPU ids 32-39 are used since they are the lowest free ones which have not
+been used on another node.
 
->+		/* User sets MSG_TRUNC, so return real length of
->+		 * packet.
->+		 */
->+		if (flags & MSG_TRUNC)
->+			err = record_len;
->+		else
->+			err = len - msg->msg_iter.count;
->+
->+		/* Always set MSG_TRUNC if real length of packet is
->+		 * bigger than user's buffer.
->+		 */
->+		if (record_len > len)
->+			msg->msg_flags |= MSG_TRUNC;
->+	}
->+
->+	return err;
->+}
->+
-> static int
-> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 			  int flags)
->@@ -2028,7 +2111,10 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
-> 		goto out;
-> 	}
->
->-	err = __vsock_stream_recvmsg(sk, msg, len, flags);
->+	if (sk->sk_type == SOCK_STREAM)
->+		err = __vsock_stream_recvmsg(sk, msg, len, flags);
->+	else
->+		err = __vsock_seqpacket_recvmsg(sk, msg, len, flags);
->
-> out:
-> 	release_sock(sk);
->-- 
->2.25.1
->
+At boot time:
+[root@vm40 ~]# numactl -H | grep cpus
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 1 cpus: 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+
+Vanilla kernel, after the CPU hot unplug/plug operations:
+[root@vm40 ~]# numactl -H | grep cpus
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 1 cpus: 24 25 26 27 28 29 30 31
+node 2 cpus: 16 17 18 19 20 21 22 23 40 41 42 43 44 45 46 47
+
+Patched kernel, after the CPU hot unplug/plug operations:
+[root@vm40 ~]# numactl -H | grep cpus
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+node 1 cpus: 24 25 26 27 28 29 30 31
+node 2 cpus: 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47
+
+Changes since V1 (no functional changes):
+ - update the test's output in the commit's description
+ - node_recorded_ids_map should be static
+
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+---
+ arch/powerpc/platforms/pseries/hotplug-cpu.c | 83 ++++++++++++++++++--
+ 1 file changed, 76 insertions(+), 7 deletions(-)
+
+diff --git a/arch/powerpc/platforms/pseries/hotplug-cpu.c b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+index 12cbffd3c2e3..48c7943b25b0 100644
+--- a/arch/powerpc/platforms/pseries/hotplug-cpu.c
++++ b/arch/powerpc/platforms/pseries/hotplug-cpu.c
+@@ -39,6 +39,8 @@
+ /* This version can't take the spinlock, because it never returns */
+ static int rtas_stop_self_token = RTAS_UNKNOWN_SERVICE;
+ 
++static cpumask_var_t node_recorded_ids_map[MAX_NUMNODES];
++
+ static void rtas_stop_self(void)
+ {
+ 	static struct rtas_args args;
+@@ -151,29 +153,61 @@ static void pseries_cpu_die(unsigned int cpu)
+  */
+ static int pseries_add_processor(struct device_node *np)
+ {
+-	unsigned int cpu;
++	unsigned int cpu, node;
+ 	cpumask_var_t candidate_mask, tmp;
+-	int err = -ENOSPC, len, nthreads, i;
++	int err = -ENOSPC, len, nthreads, i, nid;
+ 	const __be32 *intserv;
++	bool force_reusing = false;
+ 
+ 	intserv = of_get_property(np, "ibm,ppc-interrupt-server#s", &len);
+ 	if (!intserv)
+ 		return 0;
+ 
+-	zalloc_cpumask_var(&candidate_mask, GFP_KERNEL);
+-	zalloc_cpumask_var(&tmp, GFP_KERNEL);
++	alloc_cpumask_var(&candidate_mask, GFP_KERNEL);
++	alloc_cpumask_var(&tmp, GFP_KERNEL);
++
++	/*
++	 * Fetch from the DT nodes read by dlpar_configure_connector() the NUMA
++	 * node id the added CPU belongs to.
++	 */
++	nid = of_node_to_nid(np);
++	if (nid < 0 || !node_possible(nid))
++		nid = first_online_node;
+ 
+ 	nthreads = len / sizeof(u32);
+-	for (i = 0; i < nthreads; i++)
+-		cpumask_set_cpu(i, tmp);
+ 
+ 	cpu_maps_update_begin();
+ 
+ 	BUG_ON(!cpumask_subset(cpu_present_mask, cpu_possible_mask));
+ 
++again:
++	cpumask_clear(candidate_mask);
++	cpumask_clear(tmp);
++	for (i = 0; i < nthreads; i++)
++		cpumask_set_cpu(i, tmp);
++
+ 	/* Get a bitmap of unoccupied slots. */
+ 	cpumask_xor(candidate_mask, cpu_possible_mask, cpu_present_mask);
++
++	/*
++	 * Remove free ids previously assigned on the other nodes. We can walk
++	 * only online nodes because once a node became online it is not turned
++	 * offlined back.
++	 */
++	if (!force_reusing)
++		for_each_online_node(node) {
++			if (node == nid) /* Keep our node's recorded ids */
++				continue;
++			cpumask_andnot(candidate_mask, candidate_mask,
++				       node_recorded_ids_map[node]);
++		}
++
+ 	if (cpumask_empty(candidate_mask)) {
++		if (!force_reusing) {
++			force_reusing = true;
++			goto again;
++		}
++
+ 		/* If we get here, it most likely means that NR_CPUS is
+ 		 * less than the partition's max processors setting.
+ 		 */
+@@ -191,12 +225,36 @@ static int pseries_add_processor(struct device_node *np)
+ 			cpumask_shift_left(tmp, tmp, nthreads);
+ 
+ 	if (cpumask_empty(tmp)) {
++		if (!force_reusing) {
++			force_reusing = true;
++			goto again;
++		}
+ 		printk(KERN_ERR "Unable to find space in cpu_present_mask for"
+ 		       " processor %pOFn with %d thread(s)\n", np,
+ 		       nthreads);
+ 		goto out_unlock;
+ 	}
+ 
++	/* Record the newly used CPU ids for the associate node. */
++	cpumask_or(node_recorded_ids_map[nid], node_recorded_ids_map[nid], tmp);
++
++	/*
++	 * If we force reusing the id, remove these ids from any node which was
++	 * previously using it.
++	 */
++	if (force_reusing) {
++		cpu = cpumask_first(tmp);
++		pr_warn("Reusing free CPU ids %d-%d from another node\n",
++			cpu, cpu + nthreads - 1);
++
++		for_each_online_node(node) {
++			if (node == nid)
++				continue;
++			cpumask_andnot(node_recorded_ids_map[node],
++				       node_recorded_ids_map[node], tmp);
++		}
++	}
++
+ 	for_each_cpu(cpu, tmp) {
+ 		BUG_ON(cpu_present(cpu));
+ 		set_cpu_present(cpu, true);
+@@ -889,6 +947,7 @@ static struct notifier_block pseries_smp_nb = {
+ static int __init pseries_cpu_hotplug_init(void)
+ {
+ 	int qcss_tok;
++	unsigned int node;
+ 
+ #ifdef CONFIG_ARCH_CPU_PROBE_RELEASE
+ 	ppc_md.cpu_probe = dlpar_cpu_probe;
+@@ -910,8 +969,18 @@ static int __init pseries_cpu_hotplug_init(void)
+ 	smp_ops->cpu_die = pseries_cpu_die;
+ 
+ 	/* Processors can be added/removed only on LPAR */
+-	if (firmware_has_feature(FW_FEATURE_LPAR))
++	if (firmware_has_feature(FW_FEATURE_LPAR)) {
++		for_each_node(node) {
++			alloc_bootmem_cpumask_var(&node_recorded_ids_map[node]);
++
++			/* Record ids of CPU added at boot time */
++			cpumask_or(node_recorded_ids_map[node],
++				   node_recorded_ids_map[node],
++				   node_to_cpumask_map[node]);
++		}
++
+ 		of_reconfig_notifier_register(&pseries_smp_nb);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.31.0
 
