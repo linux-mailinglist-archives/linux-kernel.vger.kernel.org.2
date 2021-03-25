@@ -2,80 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A3D348661
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2FE3348664
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239620AbhCYBWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:22:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53094 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239566AbhCYBVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:21:13 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4596E61A14;
-        Thu, 25 Mar 2021 01:20:19 +0000 (UTC)
-Date:   Wed, 24 Mar 2021 21:20:17 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Li Huafei <lihuafei1@huawei.com>
-Cc:     <mingo@redhat.com>, <jolsa@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
-        <xukuohai@huawei.com>, <zhangjinhao2@huawei.com>
-Subject: Re: [PATCH 1/2] ftrace: Update ftrace_ops->next pointer with
- rcu_assign_pointer()
-Message-ID: <20210324212017.0cd11e7e@oasis.local.home>
-In-Reply-To: <20210317102529.226734-2-lihuafei1@huawei.com>
-References: <20210317102529.226734-1-lihuafei1@huawei.com>
-        <20210317102529.226734-2-lihuafei1@huawei.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S239588AbhCYBWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:22:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14525 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239566AbhCYBWC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 21:22:02 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5S1r5WxszNmxN;
+        Thu, 25 Mar 2021 09:19:28 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.117) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
+ 09:21:51 +0800
+Subject: Re: md/dm-mpath: check whether all pgpaths have same uuid in
+ multipath_ctr()
+To:     Mike Snitzer <snitzer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     <agk@redhat.com>, <dm-devel@redhat.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        linfeilong <linfeilong@huawei.com>,
+        lixiaokeng <lixiaokeng@huawei.com>,
+        "wubo (T)" <wubo40@huawei.com>
+References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
+ <20210322081155.GE1946905@infradead.org> <20210322142207.GB30698@redhat.com>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <cd71d0fa-31d1-5cd8-74a1-8b124724b3b1@huawei.com>
+Date:   Thu, 25 Mar 2021 09:21:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210322142207.GB30698@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 18:25:28 +0800
-Li Huafei <lihuafei1@huawei.com> wrote:
 
-> The unregistered ftrace_ops may be freed by the caller, so we should use
-> rcu_assign_pointer() in remove_ftrace_ops() to remove the ftrace_ops,
-> which ensures that no more users will reference the ftrace_ops after
-> synchronize_rcu() is called.
 
-The patch is fine, but we don't use synchronize_rcu() to protect the
-list. We use synchronize_rcu_tasks().
+On 2021/3/22 22:22, Mike Snitzer wrote:
+> On Mon, Mar 22 2021 at  4:11am -0400,
+> Christoph Hellwig <hch@infradead.org> wrote:
+> 
+>> On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
+>>> From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+>>>
+>>> When we make IO stress test on multipath device, there will
+>>> be a metadata err because of wrong path. In the test, we
+>>> concurrent execute 'iscsi device login|logout' and
+>>> 'multipath -r' command with IO stress on multipath device.
+>>> In some case, systemd-udevd may have not time to process
+>>> uevents of iscsi device logout|login, and then 'multipath -r'
+>>> command triggers multipathd daemon calls ioctl to load table
+>>> with incorrect old device info from systemd-udevd.
+>>> Then, one iscsi path may be incorrectly attached to another
+>>> multipath which has different uuid. Finally, the metadata err
+>>> occurs when umounting filesystem to down write metadata on
+>>> the iscsi device which is actually not owned by the multipath
+>>> device.
+>>>
+>>> So we need to check whether all pgpaths of one multipath have
+>>> the same uuid, if not, we should throw a error.
+>>>
+>>> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+>>> Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
+>>> Signed-off-by: linfeilong <linfeilong@huawei.com>
+>>> Signed-off-by: Wubo <wubo40@huawei.com>
+>>> ---
+>>>  drivers/md/dm-mpath.c   | 52 +++++++++++++++++++++++++++++++++++++++++
+>>>  drivers/scsi/scsi_lib.c |  1 +
+>>>  2 files changed, 53 insertions(+)
+>>>
+>>> diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
+>>> index bced42f082b0..f0b995784b53 100644
+>>> --- a/drivers/md/dm-mpath.c
+>>> +++ b/drivers/md/dm-mpath.c
+>>> @@ -24,6 +24,7 @@
+>>>  #include <linux/workqueue.h>
+>>>  #include <linux/delay.h>
+>>>  #include <scsi/scsi_dh.h>
+>>> +#include <linux/dm-ioctl.h>
+>>>  #include <linux/atomic.h>
+>>>  #include <linux/blk-mq.h>
+>>>
+>>> @@ -1169,6 +1170,45 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
+>>>  	return r;
+>>>  }
+>>>
+>>> +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
+>>> +#define MPATH_UUID_PREFIX_LEN 7
+>>> +static int check_pg_uuid(struct priority_group *pg, char *md_uuid)
+>>> +{
+>>> +	char pgpath_uuid[DM_UUID_LEN] = {0};
+>>> +	struct request_queue *q;
+>>> +	struct pgpath *pgpath;
+>>> +	struct scsi_device *sdev;
+>>> +	ssize_t count;
+>>> +	int r = 0;
+>>> +
+>>> +	list_for_each_entry(pgpath, &pg->pgpaths, list) {
+>>> +		q = bdev_get_queue(pgpath->path.dev->bdev);
+>>> +		sdev = scsi_device_from_queue(q);
+>>
+>> Common dm-multipath code should never poke into scsi internals.  This
+>> is something for the device handler to check.  It probably also won't
+>> work for all older devices.
+> 
+> Definitely.
+> 
+> But that aside, userspace (multipathd) _should_ be able to do extra
+> validation, _before_ pushing down a new table to the kernel, rather than
+> forcing the kernel to do it.
 
--- Steve
+As your said, it is better to do extra validation in userspace (multipathd).
+However, in some cases, the userspace cannot see the real-time present devices
+info as Martin (committer of multipath-tools) said.
+In addition, the kernel can see right device info in the table at any time,
+so the uuid check in kernel can ensure one multipath is composed with paths mapped to
+the same device.
+
+Considering the severity of the wrong path in multipath, I think it worths more
+checking.
+
+Regards
+Zhiqiang Liu.
 
 
 > 
-> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
-> ---
->  kernel/trace/ftrace.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> .
 > 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 4d8e35575549..2e315a145d20 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -282,7 +282,7 @@ static int remove_ftrace_ops(struct ftrace_ops __rcu **list,
->  			lockdep_is_held(&ftrace_lock)) == ops &&
->  	    rcu_dereference_protected(ops->next,
->  			lockdep_is_held(&ftrace_lock)) == &ftrace_list_end) {
-> -		*list = &ftrace_list_end;
-> +		rcu_assign_pointer(*list, &ftrace_list_end);
->  		return 0;
->  	}
->  
-> @@ -293,7 +293,7 @@ static int remove_ftrace_ops(struct ftrace_ops __rcu **list,
->  	if (*p != ops)
->  		return -1;
->  
-> -	*p = (*p)->next;
-> +	rcu_assign_pointer(*p, (*p)->next);
->  	return 0;
->  }
->  
 
