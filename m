@@ -2,99 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA06349A96
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9961A349A9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhCYTlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
+        id S230267AbhCYTn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhCYTlA (ORCPT
+        with ESMTP id S229576AbhCYTnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:41:00 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D047C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:41:00 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id 19so3140246ilj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:41:00 -0700 (PDT)
+        Thu, 25 Mar 2021 15:43:18 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7398DC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:43:17 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id o10so4223555lfb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:43:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=clN4iC9HkbcVp9or8nd11n5BRZo9b6ciBBEd3z5M6R8=;
-        b=tgJ/7YkwWoFgQk92tCce4LujIppTQLnjaZkN+uY0/Q1T8omSmLXq7wYifp4Qke8aTV
-         bdSXwFuA4x3K6yT1lGhEXdpstuJQMjY9pBnOYDzEyBzgv3yq41JKzvR9QHXYNDS9/F/B
-         ZAQgZKTUzShKmVCL6ti6NoTrET+cPhevxdWKL52m9P/FyW8MmgxoSIpXhYUFkYaxFYBY
-         /Tye0mE4XjxZB7+pvVXrh4HQqpF0QVWY6kTpf5jtxG/An+I7SmVr81Nux6+heVy/HRHo
-         nlGMTNL9xLvoa5az5nPa1jv3uXsnnbMC62JYGRCMRqeP0Kgo9fOMwcaMow8P4LHPdzSo
-         Q/Bw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+rfCXMw7Ia35+MkG3YYSaEH5EyHrXL8XWZ5oML2YGPk=;
+        b=Z84KI+gMz+ZuXDkBZLxeBsccvBv9x7Itvz6gYVLR5i/AiRsr1eRwDbto63Hft8YF2F
+         dfvVQJuY5GdhrM3hTV1dbPh3VhCsWJZaPM4Mc7Aco3XAThjwpvbocKfJM7KDJE3RvLet
+         w3UQqtNeYquPsnW4WlBmyK2PqnIMvsMs1aNBs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=clN4iC9HkbcVp9or8nd11n5BRZo9b6ciBBEd3z5M6R8=;
-        b=k7V6SoF4nzAKAGmmEBGmePNvLEAtHo+EiYMPFHH2wWVXk0JZYeJ+SnwYx90BSdVvnA
-         DqU6wpIpUlCKN4XmcpHuhpbH4kxA7kkSDo34ZkMGIa2rFcCi2O0FNfSQcrvOGvuKYwGw
-         ncT1al1uh2eFMjyj4UvaPqy6GJjCSY+QnotbkkyRoh4qUH5D0R/jBoIIVm6dgTBlrtVq
-         lEi9Dcn7qObjd4bNRXcXOQlq+C7B7oGCIuNYMI0K6SOyrjGyaAL7dMbDta56ZQnoLbXH
-         vkTLMI1bauggDVdcP7NMrlDDjxug4Z5IGArnqu1Cz+HCw8jETvfAYMQhbWZZXdo/umR+
-         WZ5g==
-X-Gm-Message-State: AOAM531BovQih5L6HigS+eck/YIchAvqLBEyWFjxtRCogX+NYNb7Y3Yd
-        zr7yIYUxOyJFCDbL5k1MxirUuA==
-X-Google-Smtp-Source: ABdhPJyeTALlRoxzUZfjQ8pHYLrJiXspny/Ug6SHgAMjSsEVt8ygPJ5ZlveW8VDNUrc37UGdXZMPQQ==
-X-Received: by 2002:a05:6e02:1069:: with SMTP id q9mr8138332ilj.97.1616701259682;
-        Thu, 25 Mar 2021 12:40:59 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id v17sm3074402ios.46.2021.03.25.12.40.59
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+rfCXMw7Ia35+MkG3YYSaEH5EyHrXL8XWZ5oML2YGPk=;
+        b=jIzi9Tz+CUY2WAzOFaPRRikLwj5fD0j9tsN/HMily6Ul6tNXjadPqE7tFMBp/DlGsf
+         F8vRg1hiT4D/ihjKX2DIK3yMPZl4FIFIrkFWEBYyX1tQIhQdbNZ6mYCCQTeQbiCvvDCT
+         unt8r5Rd6zUCoMMNC6Br24EBQft/MnJeARJ0K780XNexY4G4IJQMbS7nW4YA5EFAmXpJ
+         UZVN8duRR+nOGREvdeiwghku8JDJVltUovNZ0itgQr0xmg5TQFG+lLSezqyZiF18RSSB
+         l1A+I10Q0VdnUUanG/ROboc/FKENQRSUGotLSh5rqtXcuo2MLjHG9AaDn3dgmmvEgq87
+         cB9g==
+X-Gm-Message-State: AOAM530eykTte194JaW79eZDcgrBhyR0BSsRPxaC2lonSs6g68uGH3kk
+        r4Az2LCWJEzlRPEN64Gqh4orMrJO82FjdQ==
+X-Google-Smtp-Source: ABdhPJz7g7czC4A/p8xWNWgownr+/v/cw25ZFFe6pYaWtbzsAYJGailBreb27IkGl7H7upCDbgoMww==
+X-Received: by 2002:a19:c3ce:: with SMTP id t197mr5815090lff.351.1616701395727;
+        Thu, 25 Mar 2021 12:43:15 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id m20sm875621ljj.93.2021.03.25.12.43.15
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 12:40:59 -0700 (PDT)
+        Thu, 25 Mar 2021 12:43:15 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id q29so4237316lfb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:43:15 -0700 (PDT)
+X-Received: by 2002:a05:6512:25a:: with SMTP id b26mr5948990lfo.253.1616701394782;
+ Thu, 25 Mar 2021 12:43:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210325164343.807498-1-axboe@kernel.dk> <m1ft0j3u5k.fsf@fess.ebiederm.org>
+ <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 25 Mar 2021 12:42:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
+Message-ID: <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
 Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     io-uring <io-uring@vger.kernel.org>,
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Oleg Nesterov <oleg@redhat.com>,
         Stefan Metzmacher <metze@samba.org>
-References: <20210325164343.807498-1-axboe@kernel.dk>
- <m1ft0j3u5k.fsf@fess.ebiederm.org>
- <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <97c7c790-35ab-9dbd-78d7-f299f150b3ea@kernel.dk>
-Date:   Thu, 25 Mar 2021 13:40:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 1:38 PM, Linus Torvalds wrote:
-> On Thu, Mar 25, 2021 at 12:34 PM Eric W. Biederman
-> <ebiederm@xmission.com> wrote:
->>
->> A quick skim shows that these threads are not showing up anywhere in
->> proc which appears to be a problem, as it hides them from top.
->>
->> Sysadmins need the ability to dig into a system and find out where all
->> their cpu usage or io's have gone when there is a problem.  I general I
->> think this argues that these threads should show up as threads of the
->> process so I am not even certain this is the right fix to deal with gdb.
-> 
-> Yeah, I do think that hiding them is the wrong model, because it also
-> hides them from "ps" etc, which is very wrong.
-
-Totally agree.
-
+On Thu, Mar 25, 2021 at 12:38 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
 > I don't know what the gdb logic is, but maybe there's some other
 > option that makes gdb not react to them?
 
-Guess it's time to dig out the gdb source... I'll take a look.
+.. maybe we could have a different name for them under the task/
+subdirectory, for example (not  just the pid)? Although that probably
+messes up 'ps' too..
 
--- 
-Jens Axboe
-
+          Linus
