@@ -2,146 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A976349C9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AFFF349CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhCYXBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbhCYXAu (ORCPT
+        id S231363AbhCYXBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 19:01:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19454 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231310AbhCYXBo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:00:50 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2102C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:00:49 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y5so3600707pfn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NYtrjNLVWQTr/dq5ZWJC4E1PqUHmp98t32XFTCKiVw4=;
-        b=EZmqD8jxmBdlgeO8EZfB3JDqfJgcDTb2IC+XJ4WgJherysg5+d+VrBiP1bRB/J6gai
-         iq+bZmftHKnQiXYr9d7eBdUTXkLaRGYv0U983t6Usk8Dsuq+ou5WiS1TLizGOl6Ec+J+
-         Bvk/Yz5W80G3YVgJMpNz7nSR8y1/G318t/iLk7y3oOZUYFbBdqLdndcQms9GLeKNJCyH
-         DcH3qvHPg4NgUbNW5JqbzJdV1Nbq2ceomWP7PCS5PozXk/AiNyIO2sUiWs63qd8Au6Vj
-         BYfsWoWk9tlUdVSjKhoeUoR+SWjYjvp7/3pYjA6MgpzoDEtQQBK3Uw+tAcCFfGdiG0pw
-         Ff0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NYtrjNLVWQTr/dq5ZWJC4E1PqUHmp98t32XFTCKiVw4=;
-        b=qa+tMMzDAEwnKfOJIlvrZreB1fEZjR2m7rsXfl7gT5ddnyviNIr6pBzzjRGnNTg4pg
-         SxzVvGwEB/ND9hUolvJGyDWXmioJcKlrxflTHun0ZSOpI6uW74qQW4kwjWEcCX/3P7Ib
-         RgfMYkoqa2HvdSt2CDOka893avxm7SraiBuj0c3azVk1+nFYpbKzS7fqcxmtMdCv9Lj4
-         zCmC1iL0jAfp0dhrTbsARf/QuvtfGU4sNMZtO+rhG2aDmVA8le+/7at+A9fwk33b7PRx
-         mYQBEz93bk7mpxZFxFl2NJgbT8MVBhBr/WndYfaG1eht0c4HIgx/h3JcjYOY39X7fQIR
-         78mg==
-X-Gm-Message-State: AOAM5320UWyJ7MT5DmD9aEMCdaC3ejQt55FGRHDNVXrZZh6xJx8Ve3B2
-        mMz7PmJ1ymgIeROCQnlUbenl8A==
-X-Google-Smtp-Source: ABdhPJzvKiD1Kv9upD760EFR6AfmRIrLbT435H9CLx1xpc+/w2S9Ah1dIAy8zg0+rg3yq1M4Fx9J3Q==
-X-Received: by 2002:aa7:86c1:0:b029:203:900:2813 with SMTP id h1-20020aa786c10000b029020309002813mr9748625pfo.35.1616713249127;
-        Thu, 25 Mar 2021 16:00:49 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id c6sm6810901pfj.99.2021.03.25.16.00.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 16:00:44 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 17:00:42 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 1/2] remoteproc: imx_rproc: enlarge IMX7D_RPROC_MEM_MAX
-Message-ID: <20210325230042.GB1982573@xps15>
-References: <20210319104708.7754-1-peng.fan@oss.nxp.com>
+        Thu, 25 Mar 2021 19:01:44 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PMX4u6039549;
+        Thu, 25 Mar 2021 19:01:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=zxF/XDKGFeP4ewBd/n0tLOOKs681BRXZ/yDahaLJnuY=;
+ b=U852/r0YlzwlnZzAgR1pibwbA5wEDu3QprEtyhzY3nRTUT3pSTDMsBHDUtiaIrr2059z
+ skxlFUj5htfg6EgDHZXCrMErMa/FChV2TYBKX+6zaJM4TO6pRfXoE1XA332NsF8F/5vu
+ I7vwxi7AzReCjTpw36sPYXrF6hCNypdpUkgV+QFshk50g7ENXTcyJ2zfcV9WDANIIV5n
+ q2l/z7anWGEo6k1+meUcs2QAkJ55GhSJBqE35L14qZ3Y62vD8/EPXOSPQ6Bii6V2Geg0
+ Byadk9pNB/vzfqVCOe7GMpHmF+r78kbvUNdYo2VQb+Q0+pBdiUUjnwVKIonRbfhpNw+O qQ== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37h17n3xnv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 19:01:42 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12PMw7do027130;
+        Thu, 25 Mar 2021 23:01:40 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 37h15103km-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 23:01:40 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12PN1JEM30933278
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 23:01:19 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D731C4C052;
+        Thu, 25 Mar 2021 23:01:37 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7635D4C058;
+        Thu, 25 Mar 2021 23:01:36 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.163.11.141])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Mar 2021 23:01:36 +0000 (GMT)
+Message-ID: <98cd4b74a0658c14acc0071349122b13e7238a53.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity subsystem fix for v5.12
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Thu, 25 Mar 2021 19:01:34 -0400
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: cpmpSSkpYhZhTg8n3OAoi61RjdnqhXT3
+X-Proofpoint-GUID: cpmpSSkpYhZhTg8n3OAoi61RjdnqhXT3
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319104708.7754-1-peng.fan@oss.nxp.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-25_10:2021-03-25,2021-03-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ clxscore=1011 adultscore=0 lowpriorityscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103250166
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+Hi Linus,
 
-On Fri, Mar 19, 2021 at 06:47:07PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> 8 is not enough when we need more, so enlarge IMX7D_RPROC_MEM_MAX to 32,
-> and also rename it to IMX_RPROC_MEM_MAX which make more sense.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 6d3207ccbaef..24275429a7cc 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -48,7 +48,7 @@
->  					 | IMX6SX_SW_M4C_NON_SCLR_RST \
->  					 | IMX6SX_SW_M4C_RST)
->  
-> -#define IMX7D_RPROC_MEM_MAX		8
-> +#define IMX_RPROC_MEM_MAX		32
+Here's just one patch to address a NULL ptr dereferencing when there is
+a mismatch between the user enabled LSMs and IMA/EVM.
 
-The size of structure imx_rproc_att_imx7d and imx_rproc_att_imx6sx have
-not changed nor has there been an addition of new imx_rproc_att that would
-justify the change.
+thanks,
 
-It seems to me you are working on something internally and this patch is in
-preparation for that.  If that is the case then please resubmit this patch with
-the rest of the code.
+Mimi
 
-Thanks,
-Mathieu 
+The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
+  
+  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
 
->  
->  /**
->   * struct imx_rproc_mem - slim internal memory structure
-> @@ -88,7 +88,7 @@ struct imx_rproc {
->  	struct regmap			*regmap;
->  	struct rproc			*rproc;
->  	const struct imx_rproc_dcfg	*dcfg;
-> -	struct imx_rproc_mem		mem[IMX7D_RPROC_MEM_MAX];
-> +	struct imx_rproc_mem		mem[IMX_RPROC_MEM_MAX];
->  	struct clk			*clk;
->  	struct mbox_client		cl;
->  	struct mbox_chan		*tx_ch;
-> @@ -272,7 +272,7 @@ static void *imx_rproc_da_to_va(struct rproc *rproc, u64 da, size_t len, bool *i
->  	if (imx_rproc_da_to_sys(priv, da, len, &sys))
->  		return NULL;
->  
-> -	for (i = 0; i < IMX7D_RPROC_MEM_MAX; i++) {
-> +	for (i = 0; i < IMX_RPROC_MEM_MAX; i++) {
->  		if (sys >= priv->mem[i].sys_addr && sys + len <
->  		    priv->mem[i].sys_addr +  priv->mem[i].size) {
->  			unsigned int offset = sys - priv->mem[i].sys_addr;
-> @@ -425,7 +425,7 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  		if (!(att->flags & ATT_OWN))
->  			continue;
->  
-> -		if (b >= IMX7D_RPROC_MEM_MAX)
-> +		if (b >= IMX_RPROC_MEM_MAX)
->  			break;
->  
->  		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
-> @@ -459,7 +459,7 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  			return err;
->  		}
->  
-> -		if (b >= IMX7D_RPROC_MEM_MAX)
-> +		if (b >= IMX_RPROC_MEM_MAX)
->  			break;
->  
->  		/* Not use resource version, because we might share region */
-> -- 
-> 2.30.0
-> 
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git tags/integrity-v5.12-fix
+
+for you to fetch changes up to 92063f3ca73aab794bd5408d3361fd5b5ea33079:
+
+  integrity: double check iint_cache was initialized (2021-03-22 14:54:11 -0400)
+
+----------------------------------------------------------------
+integrity-v5.12-fix
+
+----------------------------------------------------------------
+Mimi Zohar (1):
+      integrity: double check iint_cache was initialized
+
+ security/integrity/iint.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
