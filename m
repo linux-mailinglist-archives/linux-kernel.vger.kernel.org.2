@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F43487ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 05:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236A0348508
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 00:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbhCYEeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 00:34:25 -0400
-Received: from mga12.intel.com ([192.55.52.136]:16247 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhCYEdx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 00:33:53 -0400
-IronPort-SDR: 8NhqkR12VuZuz81RaWDvTU8vii4T/cVt2dPgOPHnGCdcEgzo8LZoiSzqbez0fM7MLbTHJit6AC
- po9nOYAOezbg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="170196236"
-X-IronPort-AV: E=Sophos;i="5.81,276,1610438400"; 
-   d="scan'208";a="170196236"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 21:33:52 -0700
-IronPort-SDR: tHzt6cDrvoXuM/B9IGFOlkl8C4CZ/SkFxnqjMFGxCrgd2mWO858Q7kA6kMaAfmyJxC890w06V1
- zMkd7Ssg1j+g==
-X-IronPort-AV: E=Sophos;i="5.81,276,1610438400"; 
-   d="scan'208";a="452882743"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Mar 2021 21:33:48 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Yang Shi <shy828301@gmail.com>
-Subject: Re: [RFC] mm: activate access-more-than-once page via NUMA balancing
-References: <20210324083209.527427-1-ying.huang@intel.com>
-        <20210324103104.GN15768@suse.de>
-Date:   Thu, 25 Mar 2021 12:33:45 +0800
-In-Reply-To: <20210324103104.GN15768@suse.de> (Mel Gorman's message of "Wed,
-        24 Mar 2021 10:31:04 +0000")
-Message-ID: <87a6qrj1hy.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S234460AbhCXXGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 19:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231892AbhCXXFl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 19:05:41 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4368AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:05:41 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id u8so338293qtq.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 16:05:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v9ZgYPAV5pW+3XJfUObq1OKDOd+yO9AzIKh8BGAyxbg=;
+        b=KzoKhamrTRrMxphlj7fx+9rr9/duDd3NAJV74WetzwLcxfGF3aWdxrJqDlaEjdcZv8
+         OGjEIzp0SQ865SEX0+Pa960oUbKrZhLJS9+WSRLofUM6rCn1r/S23A57nfMMSG5QPxA4
+         U28uMnTQ2xZTkb6DXHm6vPi9TGRanq/4ebhS99MxtVGCNVjyWMAIPnkdwte29XDHKVG5
+         9gjU1dRChcSTbYXnpVmiSW+2mfVIgVsd6OxyD1BRKGAu8eaWq7HAwnaafzrlFYt7VZmn
+         hF/QbXeIx8C8LB4w00jJrnhj3NhbTSGpNLbhUa8dylq7TsE8u5Eq6ylnrNfEtXJKMS3j
+         g/UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v9ZgYPAV5pW+3XJfUObq1OKDOd+yO9AzIKh8BGAyxbg=;
+        b=gSzlAOirXSJo80wsy3PwxDH5WtRds8G9t3FZsg3rqjzD8nngTu//ExRU+HsbUyiD68
+         hxcY6sCTTZyKp4F0aFug9LSEmLECN72iy8Ca0T3QxSaPvNJaDC62czDkAzJ/CK726Lh8
+         V4+QUvLDkIl7LrIfcO6TpTJ7azRqa2FypQXyGm68OH0dGmSXFt808YLplYrQKEct1uQ5
+         mZ8TDBuwVyOqhkKMCB05G4E6ATH5TJkcaB3PgbEPMu0xCLt8k3tfVpo29yIysee2gRCg
+         3ebtWfzD6BwHv5ZYodPjdGB7shkEkMbgjqnFJgCg1VDfX699JNc5MV38zxUAGoyenlYr
+         sd0A==
+X-Gm-Message-State: AOAM530dT63ZgO9KT85nZqk3x5ceg3DzkRJ6FKW6KFD/siNkfcBwrIge
+        OG8YLOKiQ7Afb91dmpMrCaE=
+X-Google-Smtp-Source: ABdhPJz2BebuSA40Vdzk5htYesmp/PuEjJIxloaJ2qKs7iFRMQWVilb2ccB524lYZyZ9FyJ9LxGEQg==
+X-Received: by 2002:ac8:777c:: with SMTP id h28mr5133646qtu.63.1616627140346;
+        Wed, 24 Mar 2021 16:05:40 -0700 (PDT)
+Received: from Slackware.localdomain ([156.146.55.193])
+        by smtp.gmail.com with ESMTPSA id i14sm2469165qtq.81.2021.03.24.16.05.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 16:05:39 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     sstabellini@kernel.org, linux@armlinux.org.uk,
+        xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] ARM: xen/mm.c: A mundane typo fix
+Date:   Thu, 25 Mar 2021 10:05:26 +0530
+Message-Id: <20210325043526.16289-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Mel,
+s/acrros/across/
 
-Thanks for comment!
+Plus some words need prural version...so did it.(page->pages)
 
-Mel Gorman <mgorman@suse.de> writes:
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Changes from V1:
+  Randy's findings incorporated.
 
-> On Wed, Mar 24, 2021 at 04:32:09PM +0800, Huang Ying wrote:
->> One idea behind the LRU page reclaiming algorithm is to put the
->> access-once pages in the inactive list and access-more-than-once pages
->> in the active list.  This is true for the file pages that are accessed
->> via syscall (read()/write(), etc.), but not for the pages accessed via
->> the page tables.  We can only activate them via page reclaim scanning
->> now.  This may cause some problems.  For example, even if there are
->> only hot file pages accessed via the page tables in the inactive list,
->> we will enable the cache trim mode incorrectly to scan only the hot
->> file pages instead of cold anon pages.
->> 
->
-> I caution against this patch.
->
-> It's non-deterministic for a number of reasons. As it requires NUMA
-> balancing to be enabled, the pageout behaviour of a system changes when
-> NUMA balancing is active. If this led to pages being artificially and
-> inappropriately preserved, NUMA balancing could be disabled for the
-> wrong reasons.  It only applies to pages that have no target node so
-> memory policies affect which pages are activated differently. Similarly,
-> NUMA balancing does not scan all VMAs and some pages may never trap a
-> NUMA fault as a result. The timing of when an address space gets scanned
-> is driven by the locality of pages and so the timing of page activation
-> potentially becomes linked to whether pages are local or need to migrate
-> (although not right now for this patch as it only affects pages with a
-> target nid of NUMA_NO_NODE). In other words, changes in NUMA balancing
-> that affect migration potentially affect the aging rate.  Similarly,
-> the activate rate of a process with a single thread and multiple threads
-> potentially have different activation rates.
->
-> Finally, the NUMA balancing scan algorithm is sub-optimal. It potentially
-> scans the entire address space even though only a small number of pages
-> are scanned. This is particularly problematic when a process has a lot
-> of threads because threads are redundantly scanning the same regions. If
-> NUMA balancing ever introduced range tracking of faulted pages to limit
-> how much scanning it has to do, it would inadvertently cause a change in
-> page activation rate.
->
-> NUMA balancing is about page locality, it should not get conflated with
-> page aging.
+ arch/arm/xen/mm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I understand your concerns about binding the NUMA balancing and page
-reclaiming.  The requirement of the page locality and page aging is
-different, so the policies need to be different.  This is the wrong part
-of the patch.
+diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
+index 467fa225c3d0..8596dd32dcd5 100644
+--- a/arch/arm/xen/mm.c
++++ b/arch/arm/xen/mm.c
+@@ -105,8 +105,8 @@ bool xen_arch_need_swiotlb(struct device *dev,
+ 	 *	- The Linux page refers to foreign memory
+ 	 *	- The device doesn't support coherent DMA request
+ 	 *
+-	 * The Linux page may be spanned acrros multiple Xen page, although
+-	 * it's not possible to have a mix of local and foreign Xen page.
++	 * The Linux page may be spanned across multiple Xen pages, although
++	 * it's not possible to have a mix of local and foreign Xen pages.
+ 	 * Furthermore, range_straddles_page_boundary is already checking
+ 	 * if buffer is physically contiguous in the host RAM.
+ 	 *
+--
+2.30.1
 
-From another point of view, it's still possible to share some underlying
-mechanisms (and code) between them.  That is, scanning the page tables
-to make pages unaccessible and capture the page accesses via the page
-fault.  Now these page accessing information is used for the page
-locality.  Do you think it's a good idea to use these information for
-the page aging too (but with a different policy as you pointed out)?
-
-From yet another point of view :-), in current NUMA balancing
-implementation, it's assumed that the node private pages can fit in the
-accessing node.  But this may be not always true.  Is it a valid
-optimization to migrate the hot private pages first?
-
-Best Regards,
-Huang, Ying
