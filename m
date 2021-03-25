@@ -2,200 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5613C348887
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A8F34888E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhCYF0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 01:26:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
+        id S229810AbhCYF1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 01:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhCYF0W (ORCPT
+        with ESMTP id S229730AbhCYF1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 01:26:22 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E885AC0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:26:20 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id y1so1520068ljm.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:26:20 -0700 (PDT)
+        Thu, 25 Mar 2021 01:27:33 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F989C06174A;
+        Wed, 24 Mar 2021 22:27:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id b14so689439lfv.8;
+        Wed, 24 Mar 2021 22:27:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gFsXQtNcZc/jzBbc3KmHaNr8LuwlVaIo4tkNpXAhMCs=;
-        b=szUldggyNmVjxsrrTtlWnMRQPOMVT8cZCe5n98DB5e4AYjxCy/yawxRJYDhyjY6/HE
-         1zdQ2jBG3uJUxf4XjRDqgsZIjI/Zywasn9xRPTjryeG8OKkMdPujkQO4GFwQN4oyDFi6
-         o57TGNrEaoTRteOJ6W5ldogRM9nWPaTOxIpCyMiGsYB8nmVZ958quD6y0y3tWN2xtN0c
-         Ge2a1/y1yT3tD/qpV4vaIPTb089AVGdNEmBZ+xYZbA6zlapEXrvicmkhwUq7rM2dV1Vk
-         WnJ0YkTAlZVUzS3v5UkNOVRB6pTUtTAfpkqRIU76j8laN1/2CsRpNb8bW/Wr7tYlHzBj
-         l/xg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZxHGrWsGgW6TprfvvINnFETzyCVg5VNycGG4rTWxoNQ=;
+        b=bVHd3TJE0aQYr1W2z0J8gP18eIX/35mjuD+fGxsdk4GaHOvt9ZOm2WAaftPUlxmGSU
+         Vx0RLY1ljrKuFdl4rp3Fog88g2sCSR6lhDUn8BOx4GFhpmumW334P69LJ4F4XGqT0iut
+         CLaO6TQwTFoKuzb4/r4Qbx8JbJi/VhsfaOO363ZnfwyGZUhXL5p5h5Rc1S3uEwWMxFkS
+         /y5d76oDV6rS2xuoLMTYF/aYD1Bz64ll8KLZ6Wp76Ll6TTixRGhM0bXaGPypFaA8hfZ7
+         FxCjjk8QO4pw0KRMNY7LSBg6OCSGPK6BZy1S0uaAVdGAWipcae4cMwPE243wGxgpgJ+1
+         vzvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gFsXQtNcZc/jzBbc3KmHaNr8LuwlVaIo4tkNpXAhMCs=;
-        b=jbudsSiPJEdrJGn0Wlk94NhPtB3euvWU9HkmYNm6HcIBrcQQEJ6AZxOaLOfxYhPFnE
-         7aM83P2CtfLVi54JW7G51A03lNxG/qUtWgI6MjH4i6LboX1EWgW7kLExDWHQXYAPQVGo
-         Q1yoVbJfM27rEGUY+ZhEqMREi8kyotnBj3sFFjMHCpgBYsNOzxeRGPJYg3moeHKLWpGG
-         KOGnZSk1ECf7dIJuOHQxPcxnACs3oiTs0HpioYl/1KcCfYgTVMBYx8AeIwcGy9KcGBpq
-         niqFnrUUSaV9egheAzaruoCxdXFsu7vrECNHn+NaDle+A8JHO5OC659P1E5Nkza7CeLa
-         FKNQ==
-X-Gm-Message-State: AOAM530JxnRP7XD7DXR8KACjqXbgB7Y7TfhcUjmPDuLtNEJzcxhcCCG1
-        EuamPuep/eisDoWh4YNnWaZi0xCfi++tB0UZwE4qlw==
-X-Google-Smtp-Source: ABdhPJw0lZa1dN3iWsOiL7ok+NZMNVuTQq5qAq6ImnOTO2jdiouw6uWhb1mTAuET6Lx9AmotH317Ob91LGw7g0Kt1wE=
-X-Received: by 2002:a05:651c:481:: with SMTP id s1mr4183162ljc.152.1616649979216;
- Wed, 24 Mar 2021 22:26:19 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZxHGrWsGgW6TprfvvINnFETzyCVg5VNycGG4rTWxoNQ=;
+        b=SaxpYsN6rv8CahGT4kIGIxzi4TBUmBbQG5EN/YNciEOGJA2feuJldYWaaetlqPfjdZ
+         QjCP96XV+4Cn/NLjrWm3McU0C7DXRFJOMqyvkPmESIU5IJk0TIKYFX5porCKr2mPN7/N
+         k0+iKmpcPH/vzEP1xQEIgFugNkAcOGRb2SPvlEagyEDOmSs8kpq6nrTf0bDpWtVM8mZh
+         Gmc2l+deuDkiXoA6GbDqT105u1+psyKV2rOYig5S1xDjqlqo2vtNaKoZb8RMZxa5sUnv
+         mPsyvz3Ys3MivWMsyYJZ22AgBpX68Y7o9NEV6u3tMXDhpwRW4kNGt/QZc5nAOfwXHr3N
+         Mucw==
+X-Gm-Message-State: AOAM533zP1hzhreph6FNMB8sXZgpuCm2Auj5TG+XfCrwKggy/qxDBKDQ
+        zivc9w6BayUh91TkOeznkCI=
+X-Google-Smtp-Source: ABdhPJx9lhFLxGYM+AahSvAkF8cOfJkn8tZwFRFJBxg0JEMHz67z2DGN0eaXzeSnMbQPbyvDCNvu3w==
+X-Received: by 2002:ac2:48ab:: with SMTP id u11mr3913829lfg.79.1616650051160;
+        Wed, 24 Mar 2021 22:27:31 -0700 (PDT)
+Received: from [192.168.1.221] (87-92-162-34.rev.dnainternet.fi. [87.92.162.34])
+        by smtp.googlemail.com with ESMTPSA id l7sm578168lje.30.2021.03.24.22.27.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Mar 2021 22:27:30 -0700 (PDT)
+Subject: Re: [PATCH 2/2] dt-binding: leds: Document leds-multi-gpio bindings
+To:     Hermes Zhang <chenhui.zhang@axis.com>, pavel@ucw.cz,
+        dmurphy@ti.com, robh+dt@kernel.org
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chenhuiz@axis.com, lkml@axis.com,
+        kernel@axis.com
+References: <20210324075631.5004-1-chenhui.zhang@axis.com>
+ <20210324075631.5004-3-chenhui.zhang@axis.com>
+From:   =?UTF-8?B?VmVzYSBKw6TDpHNrZWzDpGluZW4=?= <dachaac@gmail.com>
+Message-ID: <0648fff2-5b38-66da-7eb0-9969e517421f@gmail.com>
+Date:   Thu, 25 Mar 2021 07:27:33 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
- <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
- <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com> <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
- <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
- <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de> <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
- <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
-In-Reply-To: <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 25 Mar 2021 10:56:07 +0530
-Message-ID: <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
- CAAM-based trusted keys
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Udit Agarwal <udit.agarwal@nxp.com>,
-        Jan Luebbe <j.luebbe@pengutronix.de>,
-        David Gstir <david@sigma-star.at>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210324075631.5004-3-chenhui.zhang@axis.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 at 19:37, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->
-> Hello Sumit,
->
-> On 24.03.21 11:47, Sumit Garg wrote:
-> > On Wed, 24 Mar 2021 at 14:56, Ahmad Fatoum <a.fatoum@pengutronix.de> wr=
-ote:
-> >>
-> >> Hello Mimi,
-> >>
-> >> On 23.03.21 19:07, Mimi Zohar wrote:
-> >>> On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
-> >>>> On 21.03.21 21:48, Horia Geant=C4=83 wrote:
-> >>>>> caam has random number generation capabilities, so it's worth using=
- that
-> >>>>> by implementing .get_random.
-> >>>>
-> >>>> If the CAAM HWRNG is already seeding the kernel RNG, why not use the=
- kernel's?
-> >>>>
-> >>>> Makes for less code duplication IMO.
-> >>>
-> >>> Using kernel RNG, in general, for trusted keys has been discussed
-> >>> before.   Please refer to Dave Safford's detailed explanation for not
-> >>> using it [1].
-> >>
-> >> The argument seems to boil down to:
-> >>
-> >>  - TPM RNG are known to be of good quality
-> >>  - Trusted keys always used it so far
-> >>
-> >> Both are fine by me for TPMs, but the CAAM backend is new code and nei=
-ther point
-> >> really applies.
-> >>
-> >> get_random_bytes_wait is already used for generating key material else=
-where.
-> >> Why shouldn't new trusted key backends be able to do the same thing?
-> >>
-> >
-> > Please refer to documented trusted keys behaviour here [1]. New
-> > trusted key backends should align to this behaviour and in your case
-> > CAAM offers HWRNG so we should be better using that.
->
-> Why is it better?
->
-> Can you explain what benefit a CAAM user would have if the trusted key
-> randomness comes directly out of the CAAM instead of indirectly from
-> the kernel entropy pool that is seeded by it?
+Hi,
 
-IMO, user trust in case of trusted keys comes from trusted keys
-backend which is CAAM here. If a user doesn't trust that CAAM would
-act as a reliable source for RNG then CAAM shouldn't be used as a
-trust source in the first place.
+See below.
 
-And I think building user's trust for kernel RNG implementation with
-multiple entropy contributions is pretty difficult when compared with
-CAAM HWRNG implementation.
+On 24.3.2021 9.56, Hermes Zhang wrote:
+> From: Hermes Zhang <chenhuiz@axis.com>
+> 
+> Document the device tree bindings of the multiple GPIOs LED driver
+> Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml.
+> 
+> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+> ---
+>   .../bindings/leds/leds-multi-gpio.yaml        | 50 +++++++++++++++++++
+>   1 file changed, 50 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+> new file mode 100644
+> index 000000000000..6f2b47487b90
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-multi-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Multiple GPIOs LED driver
+> +
+> +maintainers:
+> +  - Hermes Zhang <chenhuiz@axis.com>
+> +
+> +description:
+> +  This will support some LED made of multiple GPIOs and the brightness of the
+> +  LED could map to different states of the GPIOs.
+> +
+> +properties:
+> +  compatible:
+> +    const: multi-gpio-led
+> +
+> +  led-gpios:
+> +    description: Array of one or more GPIOs pins used to control the LED.
+> +    minItems: 1
+> +    maxItems: 8  # Should be enough
 
--Sumit
+We also have a case with multi color LEDs (which is probably a more 
+common than multi intensity LED. So I am wondering how these both could 
+co-exist.
 
->
-> > Also, do update documentation corresponding to CAAM as a trusted keys b=
-ackend.
->
-> Yes. The documentation should be updated for CAAM and it should describe
-> how the key material is derived. Will do so for v2.
->
-> Cheers,
-> Ahmad
->
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.=
-git/tree/Documentation/security/keys/trusted-encrypted.rst#n87
-> >
-> > -Sumit
-> >
-> >> Cheers,
-> >> Ahmad
-> >>
-> >>>
-> >>> thanks,
-> >>>
-> >>> Mimi
-> >>>
-> >>> [1]
-> >>> https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A=
-3C035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
-> >>>
-> >>>
-> >>>
-> >>
-> >> --
-> >> Pengutronix e.K.                           |                          =
-   |
-> >> Steuerwalder Str. 21                       | http://www.pengutronix.de=
-/  |
-> >> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0 =
-   |
-> >> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-55=
-55 |
-> >
->
-> --
-> Pengutronix e.K.                           |                             =
-|
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
-|
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
-|
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
-|
+From: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/leds/leds-gpio.yaml?h=v5.12-rc4#n58
+
+         led-0 {
+             gpios = <&mcu_pio 0 GPIO_ACTIVE_LOW>;
+             linux,default-trigger = "disk-activity";
+             function = LED_FUNCTION_DISK;
+         };
+
+Now 'gpios' (and in LED context) and 'led-gpios' is very close to each 
+other and could easily be confused.
+
+Perhaps this could be something like:
+
+intensity-gpios = ...
+
+or even simplified then just to gpios = <...>
+
+> +
+> +  led-states:
+> +    description: |
+> +      The array list the supported states here which will map to brightness
+> +      from 0 to maximum. Each item in the array will present all the GPIOs
+> +      value by bit.
+> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> +    minItems: 1
+> +    maxItems: 16 # Should be enough
+> +
+> +required:
+> +  - compatible
+> +  - led-gpios
+> +  - led-states
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    gpios-led {
+> +      compatible = "multi-gpio-led";
+> +
+> +      led-gpios = <&gpio0 23 0x1>,
+> +                  <&gpio0 24 0x1>;
+> +      led-states = /bits/ 8 <0x00 0x01 0x02 0x03>;
+> +    };
+> +...
+> 
+
+From: 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml?h=v5.12-rc4#n196
+
+There is example of multi color LED configuration. In example below I 
+used two-color LED with red and green as an example (which what we seem 
+to have most in use).
+
+Then if try to combine these into something like:
+
+# Multi color LED with single GPIO line per color
+multi-led@2 {
+   compatible = "gpio-leds";
+   color = <LED_COLOR_ID_MULTICOLOR>;
+   led@0 {
+     color = <LED_COLOR_ID_GREEN>;
+     gpios = <&mcu_pio 0 GPIO_ACTIVE_LOW>;
+   };
+
+   led@1 {
+     color = <LED_COLOR_ID_RED>;
+     gpios = <&mcu_pio 1 GPIO_ACTIVE_LOW>;
+   };
+};
+
+# And with intensity GPIOs:
+multi-led@2 {
+   compatible = "gpio-leds";
+   color = <LED_COLOR_ID_MULTICOLOR>;
+
+   led@0 {
+     color = <LED_COLOR_ID_GREEN>;
+     gpios = <&gpio0 23 0x1>,
+             <&gpio0 24 0x1>;
+     ... see below
+   };
+
+   led@1 {
+     color = <LED_COLOR_ID_RED>;
+     gpios = <&gpio0 25 0x1>,
+             <&gpio0 26 0x1>;
+     ... see below
+   };
+};
+
+# And then single GPIO with intensity GPIOs:
+led@2 {
+   compatible = "gpio-leds";
+   gpios = <&gpio0 23 0x1>,
+           <&gpio0 24 0x1>;
+   gpios-brightness-levels = <0 1 2 3>
+};
+
+I changed 'led-states' to 'gpios-brightness-levels' as it describe more 
+that this is about brightness and not some other state information.
+
+How would this sound?
+
+Thanks,
+Vesa Jääskeläinen
