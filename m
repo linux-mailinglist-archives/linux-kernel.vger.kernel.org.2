@@ -2,141 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FECB3498CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A083498CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:56:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCYR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S230106AbhCYRzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbhCYR4Y (ORCPT
+        with ESMTP id S230056AbhCYRzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:56:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513F5C06174A;
-        Thu, 25 Mar 2021 10:56:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=OEsHTd9VHEuZfaQWzvpG+FxcEk7+095Kppam4iUyfmc=; b=nNZ+NMyuuFuksNSmO1feJ14bhi
-        Qtbok3eHOCX6rD49ii+2s0FkTJtAaPWmwvJimqJhl89849URjtc3kWFoDPMO+PocJ4tTZHVCPZWGD
-        jXABHqzmX4G+4jPy12OzNGVcnEOWfWm+V8xJWwuWT+TGVkieaSuXfZROVzdpc6yqVNH7yAlCPpMkU
-        YdvvNH9YpOFRNFDgYT7CmExbNfP/CRyHggb5CtX26S9K3pXTDIIp1ZQsc+HesawT1ywoF0GjM3u7b
-        oBdQcZLbB4tMZz/7uxjeec1TghHh4NxGBsW1N6P4Z8c5nAoSA6slkuS7Xs6gg3f8V/7QskSGfqjtm
-        ejrc57sw==;
-Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPUCp-00DTVt-CV; Thu, 25 Mar 2021 17:55:51 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-Subject: [PATCH] tools: gpio-utils: fix various kernel-doc warnings
-Date:   Thu, 25 Mar 2021 10:55:36 -0700
-Message-Id: <20210325175536.14695-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Thu, 25 Mar 2021 13:55:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98DEEC06174A;
+        Thu, 25 Mar 2021 10:55:43 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616694942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oNbiGGnvlAl57iwhF/VDCo8GHxOkRS0/W0QutwgSyhI=;
+        b=mTxi4UL05VaerFfKcKou9M8yGT3e8D1hO3la7xMZinEAIXOZiiDi62KrX/eSNcrdSmyJgy
+        Q3F2bLMixneoEgJ79SdSN2K3qaK/SUfT/wzH8FKyrbDkMRW7U9lrvWLR2Ufwb/g+OmyaZz
+        AckXK3Eq0O08sAnRRXkCMWV8BYzrAAbupXIby3lD5Gzc8hX5LKIJez0LrwhflJIt8dQUnO
+        Gwi+FWeVsuM3b0o69fDBFhxcK3ZrTPGKPRZQypUE3x9Fozr5wYlCPbwL3WtCkUBVkSPZyN
+        Ldu2kTt9YqvLovBXyPafCn15CQRdhP3VA8A9e0ejzE0J4+Cvg/uKpiZxI8W0/g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616694942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oNbiGGnvlAl57iwhF/VDCo8GHxOkRS0/W0QutwgSyhI=;
+        b=ymd2Br2CLWxwB3KSPpw3BK9FkQ9t5owK+Fmj6H9OpK3RRnBeWbujZ1yjedLJ+9DBvkQwRB
+        wtqzQjCk0LySiDCA==
+To:     Heiko Carstens <hca@linux.ibm.com>, Li Wang <liwang@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     ltp@lists.linux.it, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 3/3] lib/vdso: remove struct arch_vdso_data from vdso data struct
+In-Reply-To: <20210323215819.4161164-4-hca@linux.ibm.com>
+References: <YFmUrVOyX4q+8Dy9@osiris> <20210323215819.4161164-1-hca@linux.ibm.com> <20210323215819.4161164-4-hca@linux.ibm.com>
+Date:   Thu, 25 Mar 2021 18:55:41 +0100
+Message-ID: <87sg4jw21u.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix several problems in kernel-doc notation in gpio-utils.c.
+On Tue, Mar 23 2021 at 22:58, Heiko Carstens wrote:
+> Since commit d60d7de3e16d ("lib/vdso: Allow to add architecture-specific
+> vdso data") it is possible to provide arch specific VDSO data.
+>
+> This was only added for s390, which doesn't make use this anymore.
+> Therefore remove it again.
+>
+> Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 
-gpio-utils.c:37: warning: Incorrect use of kernel-doc format:  * gpiotools_request_line() - request gpio lines in a gpiochip
-gpio-utils.c:61: warning: expecting prototype for doc(). Prototype was for gpiotools_request_line() instead
-gpio-utils.c:265: warning: Excess function parameter 'value' description in 'gpiotools_sets'
-gpio-utils.c:1: warning: 'gpiotools_request_lines' not found
+Please route that with the rest of the fixes.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org
----
- tools/gpio/gpio-utils.c |   18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
-
---- linux-next-20210323.orig/tools/gpio/gpio-utils.c
-+++ linux-next-20210323/tools/gpio/gpio-utils.c
-@@ -20,7 +20,7 @@
- #define CONSUMER "gpio-utils"
- 
- /**
-- * doc: Operation of gpio
-+ * DOC: Operation of gpio
-  *
-  * Provide the api of gpiochip for chardev interface. There are two
-  * types of api.  The first one provide as same function as each
-@@ -100,7 +100,7 @@ exit_free_name:
- }
- 
- /**
-- * gpiotools_set_values(): Set the value of gpio(s)
-+ * gpiotools_set_values() - Set the value of gpio(s)
-  * @fd:			The fd returned by
-  *			gpiotools_request_line().
-  * @values:		The array of values want to set.
-@@ -124,7 +124,7 @@ int gpiotools_set_values(const int fd, s
- }
- 
- /**
-- * gpiotools_get_values(): Get the value of gpio(s)
-+ * gpiotools_get_values() - Get the value of gpio(s)
-  * @fd:			The fd returned by
-  *			gpiotools_request_line().
-  * @values:		The array of values get from hardware.
-@@ -148,7 +148,7 @@ int gpiotools_get_values(const int fd, s
- }
- 
- /**
-- * gpiotools_release_line(): Release the line(s) of gpiochip
-+ * gpiotools_release_line() - Release the line(s) of gpiochip
-  * @fd:			The fd returned by
-  *			gpiotools_request_line().
-  *
-@@ -169,7 +169,7 @@ int gpiotools_release_line(const int fd)
- }
- 
- /**
-- * gpiotools_get(): Get value from specific line
-+ * gpiotools_get() - Get value from specific line
-  * @device_name:	The name of gpiochip without prefix "/dev/",
-  *			such as "gpiochip0"
-  * @line:		number of line, such as 2.
-@@ -191,7 +191,7 @@ int gpiotools_get(const char *device_nam
- 
- 
- /**
-- * gpiotools_gets(): Get values from specific lines.
-+ * gpiotools_gets() - Get values from specific lines.
-  * @device_name:	The name of gpiochip without prefix "/dev/",
-  *			such as "gpiochip0".
-  * @lines:		An array desired lines, specified by offset
-@@ -230,7 +230,7 @@ int gpiotools_gets(const char *device_na
- }
- 
- /**
-- * gpiotools_set(): Set value to specific line
-+ * gpiotools_set() - Set value to specific line
-  * @device_name:	The name of gpiochip without prefix "/dev/",
-  *			such as "gpiochip0"
-  * @line:		number of line, such as 2.
-@@ -248,13 +248,13 @@ int gpiotools_set(const char *device_nam
- }
- 
- /**
-- * gpiotools_sets(): Set values to specific lines.
-+ * gpiotools_sets() - Set values to specific lines.
-  * @device_name:	The name of gpiochip without prefix "/dev/",
-  *			such as "gpiochip0".
-  * @lines:		An array desired lines, specified by offset
-  *			index for the associated GPIO device.
-  * @num_lines:		The number of lines to request.
-- * @value:		The array of values set to gpiochip, must be
-+ * @values:		The array of values set to gpiochip, must be
-  *			0(low) or 1(high).
-  *
-  * Return:		On success return 0;
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
