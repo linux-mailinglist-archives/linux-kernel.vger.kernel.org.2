@@ -2,50 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72770348A22
+	by mail.lfdr.de (Postfix) with ESMTP id E4AD5348A23
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhCYH0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:26:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhCYHZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:25:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BAFE619FC;
-        Thu, 25 Mar 2021 07:25:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616657159;
-        bh=wpYnuZAV4B40clRZe6keD3ih6uMr+/+KYuGkr6YNpMQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S3WE/lKCnbk2/nJD4vweOxlgvKjoAjliy8J/MfXYc4sRjV4NwwbGMf0rDmsEJFdY8
-         sOLlBNrSelX8J5EgsJDrmgC3oygtSlatyy7GblIkH2+He5Sxt7a83xb4tUJyCFospx
-         262WdeS0qmMUfUAkdoa8CF/0Uc0Fs1cTn2a4mSbuTuQxZhRBTFOXTH5sUeeRnLAYsn
-         XyIjB/ABjtApC90Uvfc79rq1ki6WFrQ1PhT9FwaiGXpySc+4A678OHQ755KrTugYcu
-         /kcCiWtEK1xuNc70kmJ3uFpXX+dRzPTBTlau0itNgBDCll8k+XW+o9XurQfMrS8oHT
-         KCklyOrd7AWXA==
-Date:   Thu, 25 Mar 2021 12:55:55 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: Re: [PATCH] phy:qualcomm: remove duplicate argument
-Message-ID: <YFw7AxTiUIpc5bMc@vkoul-mobl.Dlink>
-References: <20210319113612.494623-1-zhang.yunkai@zte.com.cn>
+        id S229898AbhCYH0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:26:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14469 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229728AbhCYH0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:26:14 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5c6h2qlfzrZjK;
+        Thu, 25 Mar 2021 15:24:12 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.117) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
+ 15:26:01 +0800
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>, <bhelgaas@google.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linfeilong <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Subject: [PATCH v2] ACPI / hotplug / PCI: fix memory leak in enable_slot()
+Message-ID: <b411af88-5049-a1c6-83ac-d104a1f429be@huawei.com>
+Date:   Thu, 25 Mar 2021 15:26:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319113612.494623-1-zhang.yunkai@zte.com.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-03-21, 04:36, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
-> 
-> 'HSUSB_CTRL_DPSEHV_CLAMP' in 'val' is duplicated.
+From: Feilong Lin <linfeilong@huawei.com>
 
-Applied, thanks
+In enable_slot() in drivers/pci/hotplug/acpiphp_glue.c, if pci_get_slot()
+will return NULL, we will do not set SLOT_ENABLED flag of slot. if one
+device is found by calling pci_get_slot(), its reference count will be
+increased. In this case, we did not call pci_dev_put() to decrement the
+its reference count, the memory of the device (struct pci_dev type) will
+leak.
+
+Fix it by calling pci_dev_put() to decrement its reference count after that
+pci_get_slot() returns a PCI device.
+
+Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+--
+v2: rewrite subject and commit log as suggested by Bjorn Helgaas.
+---
+ drivers/pci/hotplug/acpiphp_glue.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+index 3365c93abf0e..f031302ad401 100644
+--- a/drivers/pci/hotplug/acpiphp_glue.c
++++ b/drivers/pci/hotplug/acpiphp_glue.c
+@@ -533,6 +533,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 			slot->flags &= ~SLOT_ENABLED;
+ 			continue;
+ 		}
++		pci_dev_put(dev);
+ 	}
+ }
 
 -- 
-~Vinod
+2.19.1
+
