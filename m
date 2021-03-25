@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8343349669
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E672234966A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229617AbhCYQHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:07:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55010 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229993AbhCYQHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:07:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616688424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ofJ/SzRjNvBQCBUiomtR9gZ1AM18bk0f0SRyUhB5O0=;
-        b=J1nkte6qbWXyQdsFzjlnnxqk6EmfvOa9lLcEYfxvqiNLe3GJ/PJO7Vi+fsl8qF5e+VXRfN
-        1Cd3xBI244n3QpZ1Ccc6d35dLsfwb+lrYDCPYrmagrfz9plh+tsRKj480Ih0zy0Z0v2BDi
-        PZV40Ptlvnjt1u3uxqu1rBM+Ru99ULY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CD600AA55;
-        Thu, 25 Mar 2021 16:07:04 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 17:07:03 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        id S229904AbhCYQHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhCYQHZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 12:07:25 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79675C06174A;
+        Thu, 25 Mar 2021 09:07:24 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so1489270wmj.2;
+        Thu, 25 Mar 2021 09:07:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eWpCpE1+dEBlLLFBkFHX/N/lZnfYujelxC3R7euwMPk=;
+        b=kZac+IZtuE3REeWsFl0JncKaTi7IibI543AXwLmh0EW5ppCVeTPNtm59dvWMbGFs/d
+         S0UeLnG4WxDRilGEuyQzW+s9t6mVCanWDTrb8b6MutCm8yHxnLLVg0iK1C66d83TfZXk
+         GC/BsvF+0w9WFftV88ovvbF5w2bF95kVG1EJmYuUKwQeOkVWnzywnYXty99xstCR9BP2
+         4K3ia1diopY9+iaOsvFRH+he9gLL3qDKCwNcvhUrolTwrcMhB5eUuvtLJfNjowaqEOR4
+         fXdK1SMEf7NyHoOOLqxJznu3ZcWKm7UoqhNqyjEtM6PGo3fwQgr9XiIwcfjetwz2mITP
+         iFSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eWpCpE1+dEBlLLFBkFHX/N/lZnfYujelxC3R7euwMPk=;
+        b=Uhp5EyCV3EfQhbziTi+XFB7lnDyRHI5+DhbGrCLxKcqROQYW/uNpmfTjjfwv+xRXwU
+         /bf0yga+SJJf+Cw9DD1Gg7C+1V7Gl+wxQzW94z522FlPTl5W8MCR+fKJutpkHTW8Rs01
+         BXXJmDZqSmScwtsBowZpTTM4ORIOgdmAHCp/yq4DCGp18wGqepyQLCT5zw4P54vAds5B
+         zT6FhssxX8uwR4J3y0JsJZZEsFgK7zgBAeJ30hmiODrawSFyA9PJ5zrJqyU/N/YiJ/Dz
+         GCJYBl6+sUcjZGqPsFW1ytYek9cDAaAD4WdcxX+9QCIEPDw0gBigeOZLQub79PhFvfNF
+         /9Qw==
+X-Gm-Message-State: AOAM530ZL+WPI7l93gsCtBdcTGRCDHU9x0YuslviB23czktcUjczizc8
+        GfeS8oSgqOzJ/I63mQGj0PlRXSZ50w4=
+X-Google-Smtp-Source: ABdhPJz4GxIgv7kIhqwJfdzPDbbkws+oUEJtSojtt7tWB4RMk4qpTAtrL3VofKD1lveiTsqdMLQGLQ==
+X-Received: by 2002:a7b:c7ca:: with SMTP id z10mr8597937wmk.117.1616688442909;
+        Thu, 25 Mar 2021 09:07:22 -0700 (PDT)
+Received: from [192.168.1.101] ([37.165.105.49])
+        by smtp.gmail.com with ESMTPSA id m2sm4321236wmp.1.2021.03.25.09.07.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 09:07:22 -0700 (PDT)
+Subject: Re: [PATCH net-next v2] net: change netdev_unregister_timeout_secs
+ min value to 1
+To:     Dmitry Vyukov <dvyukov@google.com>, edumazet@google.com,
+        davem@davemloft.net
+Cc:     leon@kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
-References: <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
- <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
- <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
- <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
- <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
- <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
- <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
- <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
- <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
- <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz>
+References: <20210325145245.3160366-1-dvyukov@google.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <ea4e412d-f8b3-8c77-88db-344f14a36869@gmail.com>
+Date:   Thu, 25 Mar 2021 17:07:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz>
+In-Reply-To: <20210325145245.3160366-1-dvyukov@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-03-21 16:35:58, Michal Hocko wrote:
-[...]
-> So there is indeed a difference. One way around that would be to mark
-> vmemmap pages (e.g. PageReserved && magic value stored somewhere in the
-> struct page - resembling bootmem vmemmaps) or mark section fully backing
-> vmemmaps as online (ugly).
 
-I am not yet ready to give up on this. Here is a quick stab at the
-pfn_to_online_page approach. It is not great but it is not really
-terrible either. I think we can do better and skip
-find_memory_block_by_id in most cases because nr_vmemmap_pages should be
-constant with our current implementation.
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 754026a9164d..0d2bc22c29d3 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -304,8 +304,20 @@ struct page *pfn_to_online_page(unsigned long pfn)
- 		return NULL;
- 
- 	ms = __nr_to_section(nr);
--	if (!online_section(ms))
-+	if (!online_section(ms)) {
-+		if (memmap_on_memory) {
-+			struct memory_block *mem;
-+			unsigned long section_pfn = section_nr_to_pfn(nr);
-+
-+			mem = find_memory_block_by_id(memory_block_id(nr));
-+			if (!mem || !mem->nr_vmemmap_pages || pfn - section_pfn > mem->nr_vmemmap_pages)
-+				return NULL;
-+
-+			return pfn_to_page(pfn);
-+
-+		}
- 		return NULL;
-+	}
- 
- 	/*
- 	 * Save some code text when online_section() +
--- 
-Michal Hocko
-SUSE Labs
+On 3/25/21 3:52 PM, Dmitry Vyukov wrote:
+> netdev_unregister_timeout_secs=0 can lead to printing the
+> "waiting for dev to become free" message every jiffy.
+> This is too frequent and unnecessary.
+> Set the min value to 1 second.
+> 
+> Also fix the merge issue introduced by
+> "net: make unregister netdev warning timeout configurable":
+> it changed "refcnt != 1" to "refcnt".
+> 
+> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> Suggested-by: Eric Dumazet <edumazet@google.com>
+> Fixes: 5aa3afe107d9 ("net: make unregister netdev warning timeout configurable")
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+> Changes since v1:
+>  - fix merge issue related to refcnt check
+
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+
+Thanks !
+
