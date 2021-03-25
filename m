@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59AA349546
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F9534954F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhCYPVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
+        id S231352AbhCYPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCYPV2 (ORCPT
+        with ESMTP id S231162AbhCYPWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:21:28 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433CAC06174A;
-        Thu, 25 Mar 2021 08:21:28 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id w37so3041191lfu.13;
-        Thu, 25 Mar 2021 08:21:28 -0700 (PDT)
+        Thu, 25 Mar 2021 11:22:34 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234C3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:22:34 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id j9so956188wrx.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:22:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DWdXrxswFdWMzj92Kr/qs8gPd/Sy1C2PZmeLqGsaT0g=;
-        b=JD88zvybm4xyFniHi1xZGqHj46f2jKSKyv3nO53GvqYvOJhjmA2Lj9kAXYVrbN2Pv/
-         n8IB5e9GtuizoQu3vYcWhMfdlZ2ssXfi4NbO4/ERozh8EJIsRMq7L0TMDs0URckQAsNZ
-         5+zZxvVSMMMn8JXoc3r6a32aIxQt23zlelsqJh3dD9caCez3mdeMAxirZYZ7E3IfWlC1
-         KUZHhvCrRvlSaqp65U5N+IdXIsP0NdShEwX2ek6t0d7I/PgBhvl6ei989QxI5YfQTG74
-         JaA/QrKYvfdX4ipXKDcLa+6FBqhUrilien0HIOOk6JaHBy8zfq887j100E/f2VFFLoMQ
-         zDxw==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ijnZ7UHj2HrGdWORqKGVBo/w2HVLEGIEyGldZdaNcc=;
+        b=ohCl3mcgx9MJD83BZNCDXICb17bkmYPA4J6WXFpObzECY0l+4fBGN8NJLRohXRzKQy
+         6Tr4OoS6Od7Pynjui91t92UKlZmTp1jttEy2O0+v0lA02XFpelHq6nqof3fS6g3WOV2A
+         NhVeYNyQoz7XEc1LeBej7MAUZU866l4kdWjwc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DWdXrxswFdWMzj92Kr/qs8gPd/Sy1C2PZmeLqGsaT0g=;
-        b=O1r1LkH/7ehA3rIhoT1pzKYy7uHmA/2Kn0KdmZIqVElPcWb5Jtac8EXPAZBP9g+0yA
-         9RTcP1vLOGcANNAtztb1GMOokd/XG2SIgkXUK1KVntip1FuOEORAbA6UA5V3EIuv4N3b
-         K6RJeE7fRHiQzKZTYnRMIZ/N4V7ccERS9ntva5lD+vXbadeEZQJOd51oZ331ijRrMYuX
-         mAGn4pTFKQg8xnv7sik3tetcny8vcI2VqlEq+2B/TYZxC+mCryoM9XHK31ah+Cx7K02+
-         wAqUw5cNvf14D+8/Gujl44PhCzYZcaVLjLqRBkMZbtifhQU9I9rMTnyCnOlkDWDLyYVr
-         qsZQ==
-X-Gm-Message-State: AOAM533iwKzwLysT3NgmMkJQUx/1AaZnJDJPuz89qMTLwM01dRYaKqkE
-        GNFRzwEC6dfQFTFFmNzT+WrBCeQjdgJLvF5Qr/w=
-X-Google-Smtp-Source: ABdhPJz8Jk01Oa9yQeykNwQUixDOSgogUkQOfoY+YTQEVaXTvbSeJRS3xejE5ZUVCAaKKtMrNQGRfvZWiMi1Ru5d3z0=
-X-Received: by 2002:a19:8c0a:: with SMTP id o10mr5538032lfd.175.1616685686587;
- Thu, 25 Mar 2021 08:21:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5ijnZ7UHj2HrGdWORqKGVBo/w2HVLEGIEyGldZdaNcc=;
+        b=TJAfrt3gYqpr0oB9axuiiGDcDv/Tn8RHIZTyOW/BQ7Kh5zl+ApSkDkD/jqXhTCTsWW
+         rtMVO/1FluRIWpNexMhM0//cBjpTQO58Dibv+z6ulGRIbibtoG0ZfD3S63BT9GTthql0
+         /fHqnzd+IPe9XZcJcC3MkexUAPlcUQpLg062EZGDMgWGB9EHacuQLky0jswRsyZiLZJ6
+         bzT4WWu45nQBF8A/jFMqByGYgl19njJhaQj4SVlCjXTagUWwhNYKYBKW/EeT5or+Hc3O
+         ExUoPv6fYtUyPjL7RzpqJMGaLXA+QaX3vL6Q0KpcCp82pnep8kwPCJ9ZVWFtyz+DETUu
+         NQRg==
+X-Gm-Message-State: AOAM532trLZ/bWMx5Ru4vHaGOqZL9nO0UYkKJRwh+3m1wwCL/ZsHNWxW
+        c0Zy1n8zBgA17XFV2hsBbr6/CA==
+X-Google-Smtp-Source: ABdhPJyvlBy5lSgL81rUOvbztdfWbEzKoftUxGhFnfW8XJCVt4d6WNQLPjN0Xb1ZKZfYoEAnd6RYQQ==
+X-Received: by 2002:adf:e485:: with SMTP id i5mr9653697wrm.26.1616685752802;
+        Thu, 25 Mar 2021 08:22:32 -0700 (PDT)
+Received: from localhost.localdomain (9.8.d.9.4.e.4.3.c.b.8.8.6.1.c.9.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:9c16:88bc:34e4:9d89])
+        by smtp.gmail.com with ESMTPSA id a6sm7183120wmm.0.2021.03.25.08.22.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 08:22:32 -0700 (PDT)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        Andrii Nakryiko <andriin@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf] bpf: link: refuse non-zero file_flags in BPF_OBJ_GET
+Date:   Thu, 25 Mar 2021 15:21:46 +0000
+Message-Id: <20210325152146.188654-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210319135711.11802-1-vincent.whitchurch@axis.com> <4ebdf34a-bd01-68ad-6d27-b1c02d21aebe@talpey.com>
-In-Reply-To: <4ebdf34a-bd01-68ad-6d27-b1c02d21aebe@talpey.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Thu, 25 Mar 2021 10:21:15 -0500
-Message-ID: <CAH2r5msWO8s9zfYOAnRhMj0uP+_phZu8=M3SKQYYi=j-KT5dxA@mail.gmail.com>
-Subject: Re: [PATCH v3] cifs: Silently ignore unknown oplock break handle
-To:     Tom Talpey <tom@talpey.com>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>, kernel <kernel@axis.com>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-merged into cifs-2.6.git for-next
+Invoking BPF_OBJ_GET on a pinned bpf_link checks the path access
+permissions based on file_flags, but the returned fd ignores flags.
+This means that any user can acquire a "read-write" fd for a pinned
+link with mode 0664 by invoking BPF_OBJ_GET with BPF_F_RDONLY in
+file_flags. The fd can be used to invoke BPF_LINK_DETACH, etc.
 
-On Fri, Mar 19, 2021 at 9:06 AM Tom Talpey via samba-technical
-<samba-technical@lists.samba.org> wrote:
->
-> LGTM feel free to add
->
-> Reviewed-By: Tom Talpey <tom@talpey.com>
->
-> On 3/19/2021 9:57 AM, Vincent Whitchurch wrote:
-> > Make SMB2 not print out an error when an oplock break is received for an
-> > unknown handle, similar to SMB1.  The debug message which is printed for
-> > these unknown handles may also be misleading, so fix that too.
-> >
-> > The SMB2 lease break path is not affected by this patch.
-> >
-> > Without this, a program which writes to a file from one thread, and
-> > opens, reads, and writes the same file from another thread triggers the
-> > below errors several times a minute when run against a Samba server
-> > configured with "smb2 leases = no".
-> >
-> >   CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
-> >   00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
-> >   00000010: 00000001 00000000 ffffffff ffffffff  ................
-> >   00000020: 00000000 00000000 00000000 00000000  ................
-> >   00000030: 00000000 00000000 00000000 00000000  ................
-> >
-> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> > ---
-> >
-> > Notes:
-> >      v3:
-> >      - Change debug print to Tom Talpey's suggestion
-> >
-> >      v2:
-> >      - Drop change to lease break
-> >      - Rewrite commit message
-> >
-> >   fs/cifs/smb2misc.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-> > index 60d4bd1eae2b..76cd05b8d53b 100644
-> > --- a/fs/cifs/smb2misc.c
-> > +++ b/fs/cifs/smb2misc.c
-> > @@ -754,8 +754,8 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
-> >               }
-> >       }
-> >       spin_unlock(&cifs_tcp_ses_lock);
-> > -     cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
-> > -     return false;
-> > +     cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
-> > +     return true;
-> >   }
-> >
-> >   void
-> >
->
+Fix this by refusing non-zero flags in BPF_OBJ_GET. Since zero flags
+imply O_RDWR this requires users to have read-write access to the
+pinned file, which matches the behaviour of the link primitive.
 
+libbpf doesn't expose a way to set file_flags for links, so this
+change is unlikely to break users.
 
+Fixes: 70ed506c3bbc ("bpf: Introduce pinnable bpf_link abstraction")
+Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
+---
+ kernel/bpf/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 1576ff331ee4..2f9e8115ad58 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -547,7 +547,7 @@ int bpf_obj_get_user(const char __user *pathname, int flags)
+ 	else if (type == BPF_TYPE_MAP)
+ 		ret = bpf_map_new_fd(raw, f_flags);
+ 	else if (type == BPF_TYPE_LINK)
+-		ret = bpf_link_new_fd(raw);
++		ret = (flags) ? -EINVAL : bpf_link_new_fd(raw);
+ 	else
+ 		return -ENOENT;
+ 
 -- 
-Thanks,
+2.27.0
 
-Steve
