@@ -2,123 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDE3348984
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF50C34897B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhCYGzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:55:41 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40938 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229581AbhCYGzU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:55:20 -0400
-X-UUID: 084e713c575c44c6893c03935f67b687-20210325
-X-UUID: 084e713c575c44c6893c03935f67b687-20210325
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 62350216; Thu, 25 Mar 2021 14:55:11 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 25 Mar 2021 14:55:10 +0800
-Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 25 Mar 2021 14:55:09 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Cawa Cheng <cawa.cheng@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Daniel Kurtz <djkurtz@chromium.org>,
-        Jie Qiu <jie.qiu@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-Subject: [PATCH RESEND v5 12/12] arm: dts: mt2701: harmonize node names and compatibles
-Date:   Thu, 25 Mar 2021 14:54:58 +0800
-Message-ID: <20210325065458.43363-12-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210325065458.43363-1-chunfeng.yun@mediatek.com>
-References: <20210325065458.43363-1-chunfeng.yun@mediatek.com>
+        id S229761AbhCYGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:55:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229448AbhCYGzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 02:55:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E96E361A1D;
+        Thu, 25 Mar 2021 06:55:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616655304;
+        bh=hwybfUkXNIWo6r4bPsiLbvcMETMTvuzLTW00G75yclU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L5AVpjVPu/bmnR3AjASe6v9IqahdEnjGta1yQfjaIxsCfg4N+gyr+1TCNsfDGBnCA
+         ZLNPYRYONuk7z2s/kNBRCGPEOCOKuA5Fun4YP8vzONTahGyghWRlaABlafugL3EFk7
+         aRVDYx18xR8qP0Ysz8VbA46GU061HejSaRXRzW44=
+Date:   Thu, 25 Mar 2021 07:54:59 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     bhelgaas@google.com,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Allow drivers to claim exclusive access to config
+ regions
+Message-ID: <YFwzw3VK0okr+taA@kroah.com>
+References: <161663543465.1867664.5674061943008380442.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161663543465.1867664.5674061943008380442.stgit@dwillia2-desk3.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is used to fix dtbs_check warning
+On Wed, Mar 24, 2021 at 06:23:54PM -0700, Dan Williams wrote:
+> The PCIE Data Object Exchange (DOE) mailbox is a protocol run over
+> configuration cycles. It assumes one initiator at a time is
+> reading/writing the data registers.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2~v5: no changes
----
- arch/arm/boot/dts/mt2701.dtsi | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+That sounds like a horrible protocol for a multi-processor system.
+Where is it described and who can we go complain to for creating such a
+mess?
 
-diff --git a/arch/arm/boot/dts/mt2701.dtsi b/arch/arm/boot/dts/mt2701.dtsi
-index fade14284017..4776f85d6d5b 100644
---- a/arch/arm/boot/dts/mt2701.dtsi
-+++ b/arch/arm/boot/dts/mt2701.dtsi
-@@ -607,7 +607,7 @@
- 	};
- 
- 	usb0: usb@1a1c0000 {
--		compatible = "mediatek,mt8173-xhci";
-+		compatible = "mediatek,mt2701-xhci", "mediatek,mtk-xhci";
- 		reg = <0 0x1a1c0000 0 0x1000>,
- 		      <0 0x1a1c4700 0 0x0100>;
- 		reg-names = "mac", "ippc";
-@@ -620,8 +620,9 @@
- 		status = "disabled";
- 	};
- 
--	u3phy0: usb-phy@1a1c4000 {
--		compatible = "mediatek,mt2701-u3phy";
-+	u3phy0: t-phy@1a1c4000 {
-+		compatible = "mediatek,mt2701-tphy",
-+			     "mediatek,generic-tphy-v1";
- 		reg = <0 0x1a1c4000 0 0x0700>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -646,7 +647,7 @@
- 	};
- 
- 	usb1: usb@1a240000 {
--		compatible = "mediatek,mt8173-xhci";
-+		compatible = "mediatek,mt2701-xhci", "mediatek,mtk-xhci";
- 		reg = <0 0x1a240000 0 0x1000>,
- 		      <0 0x1a244700 0 0x0100>;
- 		reg-names = "mac", "ippc";
-@@ -659,8 +660,9 @@
- 		status = "disabled";
- 	};
- 
--	u3phy1: usb-phy@1a244000 {
--		compatible = "mediatek,mt2701-u3phy";
-+	u3phy1: t-phy@1a244000 {
-+		compatible = "mediatek,mt2701-tphy",
-+			     "mediatek,generic-tphy-v1";
- 		reg = <0 0x1a244000 0 0x0700>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -700,8 +702,9 @@
- 		status = "disabled";
- 	};
- 
--	u2phy0: usb-phy@11210000 {
--		compatible = "mediatek,generic-tphy-v1";
-+	u2phy0: t-phy@11210000 {
-+		compatible = "mediatek,mt2701-tphy",
-+			     "mediatek,generic-tphy-v1";
- 		reg = <0 0x11210000 0 0x0800>;
- 		#address-cells = <2>;
- 		#size-cells = <2>;
--- 
-2.18.0
+> If userspace reads from the response
+> data payload it may steal data that a kernel driver was expecting to
+> read. If userspace writes to the request payload it may corrupt the
+> request a driver was trying to send.
 
+Fun!  So you want to keep root in userspace from doing this?  I thought
+we already do that today?
+
+> Introduce pci_{request,release}_config_region() for a driver to exclude
+> the possibility of userspace induced corruption while accessing the DOE
+> mailbox. Likely there are other configuration state assumptions that a
+> driver may want to assert are under its exclusive control, so this
+> capability is not limited to any specific configuration range.
+
+As you do not have a user for these functions, it's hard to see how they
+would be used.  We also really can't add new apis with no in-tree users,
+so do you have a patch series that requires this functionality
+somewhere?
+
+> Since writes are targeted and are already prepared for failure the
+> entire request is failed. The same can not be done for reads as the
+> device completely disappears from lspci output if any configuration
+> register in the request is exclusive. Instead skip the actual
+> configuration cycle on a per-access basis and return all f's as if the
+> read had failed.
+
+returning all ff is a huge hint to many drivers that the device is gone,
+not that it just failed.  So what happens to code that thinks that and
+then tears stuff down as if the device has been removed?
+
+Trying to protect drivers from userspace here feels odd, what userspace
+tools are trying to access these devices while they are under
+"exclusive" control from the kernel?  lspci not running as root should
+not be doing anything crazy, but if you want to run it as root,
+shouldn't you be allowed to access it properly?
+
+What hardware has this problem that we need to claim exclusive ownership
+over that differs from the old hardware we used to have that would do
+crazy things when reading from from userspace?  We had this problem a
+long time ago and lived with it, what changed now?
+
+thanks,
+
+greg k-h
