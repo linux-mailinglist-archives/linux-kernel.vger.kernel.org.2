@@ -2,234 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1064934901D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:33:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D766134900C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231979AbhCYLcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:32:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231371AbhCYL1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:27:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96E2661A40;
-        Thu, 25 Mar 2021 11:26:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616671613;
-        bh=KLBjUh0NbVXpYUdhYUG+1LhUg0044Upa/LI0aGSDFW8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JktrGBaWJSIMZD5vYdBKXsuEg0R5iKwEceifj3Sm0N3Aw8A3w4QAyKOq+v7Ob49M6
-         ORiyL3Dg44Wf/lY7jKdw3veJB/jxO3vGYTzpdDj+3QIZ9YLSwdD9TsFEMPNUYeXGXg
-         n3EYDnSvFXY6GQFB+vIYC5veP4XxZxhDVCKMb6Cv9bkbDYIXocogE0w8mspXpQ0xCY
-         J7b8yPeGFuVlVm1wo9vL093be5l7GgNkF6uaQk5r7+a9UfBbdQXjZvQS++K1Mp6OSr
-         L4ZpcjpuhUj7HH1/rw3kk12KPfmLTho/YF8/UMlQUhvOS8ypa/mPEHUNjgJtc27YF0
-         y7pBqmA99g30Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Whitney <enwlinux@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
-        Sasha Levin <sashal@kernel.org>, linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 01/24] ext4: shrink race window in ext4_should_retry_alloc()
-Date:   Thu, 25 Mar 2021 07:26:27 -0400
-Message-Id: <20210325112651.1927828-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+        id S231911AbhCYLbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:31:52 -0400
+Received: from mail-eopbgr70057.outbound.protection.outlook.com ([40.107.7.57]:18689
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231245AbhCYL0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:26:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hbL7hXEs3bb2ouc5OiVXZtY/8pxIMRrD0O/myBZjHrzTaLQyb8Mm7dbwMwsLqbWh2qDZfMpCLBH9itWgT6+geZoJ4oaax3Ylzu+fQFShvHNEOnsc1DI0e4HJAIV/EdBHv7nF2FivGFBwCdAI/4yBfWlSqzXgqnojR2WKJ5YHQWqIul3kOyM42TTgrrn8GYWx57MKPjZBzFDIdzpI9MVCGAQUjxTZFRvh+zxW+jzFGDxNrYb5Urps2/Cj0uL6uXev6ArNEU4pLdICRhO5dGZ7p0AsNUKS5t1zVw07LGeSb+ukHFKeTm01EweXGKS9pd38BLze9rQwFsdAaDGvkoMYRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H3kAqYUEq4uyGtXIjIk9j0olUm4392hcOUA5iNdKVBQ=;
+ b=bKRWFj1hvORYWrZT4h2M03VjR5q7B7cn9Gf+nDufWF6E5SQFfVVsyqttcM00MXha0twT6VydwQe4RB65XCdgmpDEwimCeHx0GgbbTLVlQp290ntsYz15VqRpcuZoivXZUJA8FC80I12g2aNrCo2GVX7R8tkLUtmGZ14Jsqtw3/iTXB/VOih6aNuimEdoWfnCTFKAxNJDv2VxeCW58iBJriJqlI+WjUVmEVjZcfB9vOJzN6VUS6PE3s9CkdpaSkLk1La2nB6E8r8hHW7fsO2oi9YFAULGjDnZkwJpn8+MWrzpkqiZGiER4TmlsCmq75fPs1vFed/nP1tRrscdAx8wbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H3kAqYUEq4uyGtXIjIk9j0olUm4392hcOUA5iNdKVBQ=;
+ b=LgOWPZcdz09oV/f9XI0FE66GR+PEcnkmEguYzkE7QdqXz0JDGMy1tcrmDbyXFGh9lbgMZTiAKJwKLPczaNEWYl0rDLLoRTBc7k4xWOyn8SslA8VcQxZWmnwcNb0zxrKtdNLXzN5GMQtqOjb/8i2VPMkGHZwvoFK0YEM4DuS3ugA=
+Authentication-Results: alsa-project.org; dkim=none (message not signed)
+ header.d=none;alsa-project.org; dmarc=none action=none
+ header.from=oss.nxp.com;
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19) by VE1PR04MB7232.eurprd04.prod.outlook.com
+ (2603:10a6:800:1af::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
+ 2021 11:26:41 +0000
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::a841:34f0:bc5c:3764]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::a841:34f0:bc5c:3764%2]) with mapi id 15.20.3977.025; Thu, 25 Mar 2021
+ 11:26:41 +0000
+From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
+To:     alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com
+Cc:     daniel.baluta@gmail.com, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com, ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, shengjiu.wang@nxp.com,
+        aisheng.dong@nxp.com, Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH v2] ASoC: core: Don't set platform name when of_node is set
+Date:   Thu, 25 Mar 2021 13:26:27 +0200
+Message-Id: <20210325112627.275632-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.27.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [86.127.155.38]
+X-ClientProxiedBy: AM4PR0701CA0041.eurprd07.prod.outlook.com
+ (2603:10a6:200:42::51) To VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (86.127.155.38) by AM4PR0701CA0041.eurprd07.prod.outlook.com (2603:10a6:200:42::51) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.15 via Frontend Transport; Thu, 25 Mar 2021 11:26:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: e8aaf26b-aae7-465d-e5ba-08d8ef80dc83
+X-MS-TrafficTypeDiagnostic: VE1PR04MB7232:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB7232052774CD896FCBBDAEA8B8629@VE1PR04MB7232.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:478;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j5mOh6sfGs+2Y5cWJpsY6JtRKh4sj59ovJMxfrQvUdkbz/THKTUwubpKouxJJ+/wsVNiOyFRxXQwxXCW++2xc0g2cQAw/0EUlIR9jYRWJolDiX9/tGIqK+/mowIEFAuuGM1fahbb5WrqOLKsxqwGD5omdZhkAyNPFWEIkyHTq3+zAz7bhqmMvEP0LNES7k8LpYi8gEklJGQEZLRyKiO/rQoqfwA7cv9EAuAAofjYSQ1DYdYzUSGhMKjKcNp0O+mc85Wb02xR9fjLUkYYY5Uj4oVA5UwxmoGFhTm2a//iJUQUdmNWfoDk+5kb27l+XM7XcUCuGeKz8OchujEZ/L48jVtmlfTsYLGspQutJbeR6fd/GbYjNuIOWugv32DEA3q6ciCr8vf4n78ddcWi91d/klrg9At+Ls8R0IrfarUteonLHy0U3buWSaZHtMfkY7CCjSNlZ+y4ORsVv/r7YtGCivqw3RHFMGAHMKwWFDeMrsTsSm5eSpDpeHquzHF5fJMNHE5BO52DXtOP6zmrAdngFJJ2RyZmNgL3LTohoHoiIRpxjE3V1P0ZukjM7c+bZmx2Wi8/emoqFnWIH0Y2SocjdSn+RY3kY++EOGXp2JfLHeL42p4J5/IQ0UEKC1G8GE1unv2GWxw2wMjQmbwvldTvQ3hxlE6iJTng3zF9ZC/MW5jDj6MIpq8nWAomDPfn1496
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(39860400002)(376002)(136003)(6512007)(8676002)(38100700001)(478600001)(66946007)(2906002)(66556008)(4326008)(66476007)(8936002)(69590400012)(83380400001)(5660300002)(6486002)(956004)(86362001)(6506007)(16526019)(2616005)(26005)(186003)(44832011)(52116002)(316002)(6666004)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ru3f9t1pZplDgvYfQUDYitA+PTcII/Xv5xcz7Uf3QO5xvbwiWCyOO2kvWE1V?=
+ =?us-ascii?Q?aUUI79W7d13Kov2/j4UgVASJU68Do9R2QZWygExUtj3wobqNyxbPgy3cKLJk?=
+ =?us-ascii?Q?vYF6BDzIlDOcRYTGoW5Zt5wMXSBCHkRaZGdGj1YwbHCMZfaVlnCR8Mvyg10R?=
+ =?us-ascii?Q?70bKCdC5DzRC4krkvUFlC06fct3TKgSVy+JvfhSu2yXrAOMYarqEFf0lM0Kz?=
+ =?us-ascii?Q?QIzv4ud336VMk06NOnX+NUfpcP8YMFstdH61P2O68kp8Nw/Ox/JtHJ9bXW4N?=
+ =?us-ascii?Q?9btDniXGwU7OdTMHAF22M2VBiBar+WyuBB9LrwJocswOwHrftqE9Fyr4dLOv?=
+ =?us-ascii?Q?hgtvEw+QpIk2p+FwIpWn+5PEjcxHDiCkLmj0r8B5QJ11nWKvLjgBeu0zE00K?=
+ =?us-ascii?Q?2Mwo1Mee3nOv2hSAUkQRJSkZX7IA2MO3h6m60Xn/oCAADz8t5I97myxG9ZFb?=
+ =?us-ascii?Q?V2dB0U8hS09LiM8MonMSwex1V5Qc+Rjcpmd4rDeSZlXOyRUVJe9IK4oAQXEM?=
+ =?us-ascii?Q?33FYgto0qT9MtMvRxEBVn74lg7P9NlG0AyVk/7LEnNbKjvlshfJl0nPG8ns3?=
+ =?us-ascii?Q?Z9pbKJWIgj1dM0KuxL3OJxIQ7UC5qo/WqDk0A74ETohHISaOE4CWYyPN28M7?=
+ =?us-ascii?Q?4deUxRni7XRSb+hYtv4N4Hca/QXQ/jJQ04w8tofXsH/p2X0BFlcXDuxm6j1J?=
+ =?us-ascii?Q?dDoTKIx6HtCExsSRrPQOwhKZA5cijEz/JR8Tu8J1JNIoF3QvXduNPk80Ebt5?=
+ =?us-ascii?Q?V9sWKRrYMEYnaFYx2R1jJ52JChOgrI3fTMo3CMSUZgxWiD+mMJXHvgs4IANe?=
+ =?us-ascii?Q?562Ccznd8xVre0uR1wzvEm076GBGp26wTunuoqxZDUvfrkdStbgycGO+oYwq?=
+ =?us-ascii?Q?YQQQOiVrWARMc/CQOWaGIhkNzNejS+TTGZa1qiDKR/qCU7olPMxhzK8o7AaX?=
+ =?us-ascii?Q?r1/qsNhqkpbwPyjpH1fVLSNJW5POY916e1bBnhOz4+NvxPpbuByf6sgWmU4i?=
+ =?us-ascii?Q?RMTNdiagDbF/fqrQJ8cir5a/ziZ9xDtB6/Uz6uZJ12U/O+Xlwl4PpcVIG0tt?=
+ =?us-ascii?Q?jm9YCFcvSWjre1zbyLy7FMz9p2UGOXFdOYwhRi6f2ERKZVWyBUEIAHRijg2A?=
+ =?us-ascii?Q?0Kvr8gkGdizVjHREWuW5x291mxyEMwe9BIPFni0zJjwlEmiukwNWdaCL873V?=
+ =?us-ascii?Q?jWqKRes8jB9ibzlvxIXS9YRzepBuldB9YPu+XXMVQrcS+juocxmT5LVMGz+D?=
+ =?us-ascii?Q?Sehc6vGJqZbhk2NsWiI0I7HBO+fkkGndreTnuZ4cyZAJU7kZSfz1bvbRj4lK?=
+ =?us-ascii?Q?FNWumS/Q89H3wF5+xeDVbOIy?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8aaf26b-aae7-465d-e5ba-08d8ef80dc83
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 11:26:41.0317
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aEsu2GFGHvnKmLxgfhCppRrlMw3DC3/8OUkOCDl53K5o0QgH+iNsk4eVynrofMryQyPBCqBd0GBiSa3RGjcPdg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7232
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Whitney <enwlinux@gmail.com>
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
-[ Upstream commit efc61345274d6c7a46a0570efbc916fcbe3e927b ]
+A DAI link has 3 components:
+	* CPU
+	* platform
+	* codec(s)
 
-When generic/371 is run on kvm-xfstests using 5.10 and 5.11 kernels, it
-fails at significant rates on the two test scenarios that disable
-delayed allocation (ext3conv and data_journal) and force actual block
-allocation for the fallocate and pwrite functions in the test.  The
-failure rate on 5.10 for both ext3conv and data_journal on one test
-system typically runs about 85%.  On 5.11, the failure rate on ext3conv
-sometimes drops to as low as 1% while the rate on data_journal
-increases to nearly 100%.
+A component is specified via:
+	* name
+	* of_node
+	* dai_name
 
-The observed failures are largely due to ext4_should_retry_alloc()
-cutting off block allocation retries when s_mb_free_pending (used to
-indicate that a transaction in progress will free blocks) is 0.
-However, free space is usually available when this occurs during runs
-of generic/371.  It appears that a thread attempting to allocate
-blocks is just missing transaction commits in other threads that
-increase the free cluster count and reset s_mb_free_pending while
-the allocating thread isn't running.  Explicitly testing for free space
-availability avoids this race.
+In order to avoid confusion when building a sound card we disallow
+matching by both name and of_node (1).
 
-The current code uses a post-increment operator in the conditional
-expression that determines whether the retry limit has been exceeded.
-This means that the conditional expression uses the value of the
-retry counter before it's increased, resulting in an extra retry cycle.
-The current code actually retries twice before hitting its retry limit
-rather than once.
+soc_check_tplg_fes allows overriding certain BE links by overriding
+BE link name. This doesn't work well if BE link was specified via DT,
+because we end up with a link with both name and of_node specified
+which is conflicting with (1).
 
-Increasing the retry limit to 3 from the current actual maximum retry
-count of 2 in combination with the change described above reduces the
-observed failure rate to less that 0.1% on both ext3conv and
-data_journal with what should be limited impact on users sensitive to
-the overhead caused by retries.
+In order to fix this we need to:
+	* override of_node if component was specified via DT
+	* override name, otherwise.
 
-A per filesystem percpu counter exported via sysfs is added to allow
-users or developers to track the number of times the retry limit is
-exceeded without resorting to debugging methods.  This should provide
-some insight into worst case retry behavior.
-
-Signed-off-by: Eric Whitney <enwlinux@gmail.com>
-Link: https://lore.kernel.org/r/20210218151132.19678-1-enwlinux@gmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 ---
- fs/ext4/balloc.c | 38 ++++++++++++++++++++++++++------------
- fs/ext4/ext4.h   |  1 +
- fs/ext4/super.c  |  5 +++++
- fs/ext4/sysfs.c  |  7 +++++++
- 4 files changed, 39 insertions(+), 12 deletions(-)
+ sound/soc/soc-core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ext4/balloc.c b/fs/ext4/balloc.c
-index 5aba67a504cf..031ff3f19018 100644
---- a/fs/ext4/balloc.c
-+++ b/fs/ext4/balloc.c
-@@ -612,27 +612,41 @@ int ext4_claim_free_clusters(struct ext4_sb_info *sbi,
- 
- /**
-  * ext4_should_retry_alloc() - check if a block allocation should be retried
-- * @sb:			super block
-- * @retries:		number of attemps has been made
-+ * @sb:			superblock
-+ * @retries:		number of retry attempts made so far
-  *
-- * ext4_should_retry_alloc() is called when ENOSPC is returned, and if
-- * it is profitable to retry the operation, this function will wait
-- * for the current or committing transaction to complete, and then
-- * return TRUE.  We will only retry once.
-+ * ext4_should_retry_alloc() is called when ENOSPC is returned while
-+ * attempting to allocate blocks.  If there's an indication that a pending
-+ * journal transaction might free some space and allow another attempt to
-+ * succeed, this function will wait for the current or committing transaction
-+ * to complete and then return TRUE.
-  */
- int ext4_should_retry_alloc(struct super_block *sb, int *retries)
- {
--	if (!ext4_has_free_clusters(EXT4_SB(sb), 1, 0) ||
--	    (*retries)++ > 1 ||
--	    !EXT4_SB(sb)->s_journal)
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 522bae73640a..7a1c011a7fe0 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1648,7 +1648,11 @@ static void soc_check_tplg_fes(struct snd_soc_card *card)
+ 				dev_err(card->dev, "init platform error");
+ 				continue;
+ 			}
+-			dai_link->platforms->name = component->name;
 +
-+	if (!sbi->s_journal)
- 		return 0;
++			if (component->dev->of_node)
++				dai_link->platforms->of_node = component->dev->of_node;
++			else
++				dai_link->platforms->name = component->name;
  
--	smp_mb();
--	if (EXT4_SB(sb)->s_mb_free_pending == 0)
-+	if (++(*retries) > 3) {
-+		percpu_counter_inc(&sbi->s_sra_exceeded_retry_limit);
- 		return 0;
-+	}
- 
-+	/*
-+	 * if there's no indication that blocks are about to be freed it's
-+	 * possible we just missed a transaction commit that did so
-+	 */
-+	smp_mb();
-+	if (sbi->s_mb_free_pending == 0)
-+		return ext4_has_free_clusters(sbi, 1, 0);
-+
-+	/*
-+	 * it's possible we've just missed a transaction commit here,
-+	 * so ignore the returned status
-+	 */
- 	jbd_debug(1, "%s: retrying operation after ENOSPC\n", sb->s_id);
--	jbd2_journal_force_commit_nested(EXT4_SB(sb)->s_journal);
-+	(void) jbd2_journal_force_commit_nested(sbi->s_journal);
- 	return 1;
- }
- 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 1c558b554788..bf3eaa903033 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1420,6 +1420,7 @@ struct ext4_sb_info {
- 	struct percpu_counter s_freeinodes_counter;
- 	struct percpu_counter s_dirs_counter;
- 	struct percpu_counter s_dirtyclusters_counter;
-+	struct percpu_counter s_sra_exceeded_retry_limit;
- 	struct blockgroup_lock *s_blockgroup_lock;
- 	struct proc_dir_entry *s_proc;
- 	struct kobject s_kobj;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 06568467b0c2..2ecf4594a20d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1017,6 +1017,7 @@ static void ext4_put_super(struct super_block *sb)
- 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
- 	percpu_counter_destroy(&sbi->s_dirs_counter);
- 	percpu_counter_destroy(&sbi->s_dirtyclusters_counter);
-+	percpu_counter_destroy(&sbi->s_sra_exceeded_retry_limit);
- 	percpu_free_rwsem(&sbi->s_writepages_rwsem);
- #ifdef CONFIG_QUOTA
- 	for (i = 0; i < EXT4_MAXQUOTAS; i++)
-@@ -4597,6 +4598,9 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!err)
- 		err = percpu_counter_init(&sbi->s_dirtyclusters_counter, 0,
- 					  GFP_KERNEL);
-+	if (!err)
-+		err = percpu_counter_init(&sbi->s_sra_exceeded_retry_limit, 0,
-+					  GFP_KERNEL);
- 	if (!err)
- 		err = percpu_init_rwsem(&sbi->s_writepages_rwsem);
- 
-@@ -4699,6 +4703,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
- 	percpu_counter_destroy(&sbi->s_dirs_counter);
- 	percpu_counter_destroy(&sbi->s_dirtyclusters_counter);
-+	percpu_counter_destroy(&sbi->s_sra_exceeded_retry_limit);
- 	percpu_free_rwsem(&sbi->s_writepages_rwsem);
- failed_mount5:
- 	ext4_ext_release(sb);
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index eb1efad0e20a..9394360ff137 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -23,6 +23,7 @@ typedef enum {
- 	attr_session_write_kbytes,
- 	attr_lifetime_write_kbytes,
- 	attr_reserved_clusters,
-+	attr_sra_exceeded_retry_limit,
- 	attr_inode_readahead,
- 	attr_trigger_test_error,
- 	attr_first_error_time,
-@@ -176,6 +177,7 @@ EXT4_ATTR_FUNC(delayed_allocation_blocks, 0444);
- EXT4_ATTR_FUNC(session_write_kbytes, 0444);
- EXT4_ATTR_FUNC(lifetime_write_kbytes, 0444);
- EXT4_ATTR_FUNC(reserved_clusters, 0644);
-+EXT4_ATTR_FUNC(sra_exceeded_retry_limit, 0444);
- 
- EXT4_ATTR_OFFSET(inode_readahead_blks, 0644, inode_readahead,
- 		 ext4_sb_info, s_inode_readahead_blks);
-@@ -207,6 +209,7 @@ static struct attribute *ext4_attrs[] = {
- 	ATTR_LIST(session_write_kbytes),
- 	ATTR_LIST(lifetime_write_kbytes),
- 	ATTR_LIST(reserved_clusters),
-+	ATTR_LIST(sra_exceeded_retry_limit),
- 	ATTR_LIST(inode_readahead_blks),
- 	ATTR_LIST(inode_goal),
- 	ATTR_LIST(mb_stats),
-@@ -308,6 +311,10 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
- 		return snprintf(buf, PAGE_SIZE, "%llu\n",
- 				(unsigned long long)
- 				atomic64_read(&sbi->s_resv_clusters));
-+	case attr_sra_exceeded_retry_limit:
-+		return snprintf(buf, PAGE_SIZE, "%llu\n",
-+				(unsigned long long)
-+			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
- 	case attr_inode_readahead:
- 	case attr_pointer_ui:
- 		if (!ptr)
+ 			/* convert non BE into BE */
+ 			if (!dai_link->no_pcm) {
 -- 
-2.30.1
+2.27.0
 
