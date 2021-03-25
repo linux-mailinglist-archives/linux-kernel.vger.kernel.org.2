@@ -2,65 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D10A349AE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2A9349AE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhCYUN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhCYUNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:13:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C3FFC06174A;
-        Thu, 25 Mar 2021 13:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
-        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=68o8jDraRG/5zbwxLlhq05M769Ic9hxiORbKB2o14bE=; b=aL3MBgZ+3WZNyaPZ/UMxIbkPWA
-        pyVk8i13iai3GlXHbwN7q7+24hxSHzvxSMrGPsry2IXw6qYSvLFEMlcJRA1aF19cdzGEkWd6Kdxxe
-        svLnKpzEl2yoP7L6GN/BmLXCI1qz0L1uVDzuhlvC41vd+oJ6FVNPNvxmgaZkA1WZgn/UJkKTHM63u
-        UxrOYrJknq86MiI4wJ+q8Wf0C00LBNX6/Z+/geeCd397g72GxamdNBMAQPXJGgz2XlHfclB/JMT+Y
-        0c3+3FRDksRxTFz8u2QWGrdEHqmcY6kxdLg5aQPh4cVxCWol4dyx/L3anT8CMPhNMN7z2Nhkv9LU/
-        YranBzwA==;
-Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPWML-0028qB-9K; Thu, 25 Mar 2021 20:13:38 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Borislav Petkov <bp@suse.de>,
-        "Len Brown" <lenb@kernel.org>, linux-pm@vger.kernel.org
-Subject: [PATCH] tools: turbostat: unmark non-kernel-doc comment
-Date:   Thu, 25 Mar 2021 13:13:33 -0700
-Message-Id: <20210325201333.16792-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S230306AbhCYUO7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Mar 2021 16:14:59 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:34524 "EHLO albireo.enyo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230270AbhCYUOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 16:14:36 -0400
+Received: from [172.17.203.2] (port=38035 helo=deneb.enyo.de)
+        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1lPWNA-0006VJ-Bh; Thu, 25 Mar 2021 20:14:28 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1lPWN9-00045D-5Z; Thu, 25 Mar 2021 21:14:27 +0100
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     "Bae\, Chang Seok via Libc-alpha" <libc-alpha@sourceware.org>
+Cc:     Borislav Petkov <bp@suse.de>,
+        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
+        "linux-arch\@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "Brown\, Len" <len.brown@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "jannh\@google.com" <jannh@google.com>,
+        "x86\@kernel.org" <x86@kernel.org>,
+        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Dave.Martin\@arm.com" <Dave.Martin@arm.com>,
+        "Hansen\, Dave" <dave.hansen@intel.com>,
+        "luto\@kernel.org" <luto@kernel.org>,
+        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "mingo\@kernel.org" <mingo@kernel.org>,
+        "Shankar\, Ravi V" <ravi.v.shankar@intel.com>
+Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate signal stack overflow
+References: <20210316065215.23768-1-chang.seok.bae@intel.com>
+        <20210316065215.23768-6-chang.seok.bae@intel.com>
+        <20210316115248.GB18822@zn.tnic>
+        <16A53D65-2460-49B3-892B-81EF8D7B12B9@intel.com>
+        <20210325162047.GA32296@zn.tnic>
+        <06722BDE-738A-4513-886E-2C1442C97369@intel.com>
+Date:   Thu, 25 Mar 2021 21:14:27 +0100
+In-Reply-To: <06722BDE-738A-4513-886E-2C1442C97369@intel.com> (Chang Seok via
+        Libc-alpha Bae's message of "Thu, 25 Mar 2021 17:21:04 +0000")
+Message-ID: <87o8f7j8ik.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not mark a comment as kernel-doc notation when it is not
-meant to be in kernel-doc notation.
+* Chang Seok via Libc-alpha Bae:
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: "Len Brown" <lenb@kernel.org>
-Cc: linux-pm@vger.kernel.org
----
- tools/power/x86/turbostat/turbostat.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mar 25, 2021, at 09:20, Borislav Petkov <bp@suse.de> wrote:
+>> 
+>> $ gcc tst-minsigstksz-2.c -DMY_MINSIGSTKSZ=3453 -o tst-minsigstksz-2
+>> $ ./tst-minsigstksz-2
+>> tst-minsigstksz-2: changed byte 50 bytes below configured stack
+>> 
+>> Whoops.
+>> 
+>> And the debug print said:
+>> 
+>> [ 5395.252884] signal: get_sigframe: sp: 0x7f54ec39e7b8, sas_ss_sp: 0x7f54ec39e6ce, sas_ss_size 0xd7d
+>> 
+>> which tells me that, AFAICT, your check whether we have enough alt stack
+>> doesn't seem to work in this case.
+>
+> Yes, in this case.
+>
+> tst-minsigstksz-2.c has this code:
+>
+> static void
+> handler (int signo)
+> {
+>   /* Clear a bit of on-stack memory.  */
+>   volatile char buffer[256];
+>   for (size_t i = 0; i < sizeof (buffer); ++i)
+>     buffer[i] = 0;
+>   handler_run = 1;
+> }
+> …
+>
+>   if (handler_run != 1)
+>     errx (1, "handler did not run");
+>
+>   for (void *p = stack_buffer; p < stack_bottom; ++p)
+>     if (*(unsigned char *) p != 0xCC)
+>       errx (1, "changed byte %zd bytes below configured stack\n",
+>             stack_bottom - p);
+> …
+>
+> I think the message comes from the handler’s overwriting, not from the kernel.
+>
+> The patch's check is to detect and prevent the kernel-induced overflow --
+> whether alt stack enough for signal delivery itself.  The stack is possibly
+> not enough for the signal handler's use as the kernel does not know for it.
 
---- linux-next-20210323.orig/tools/power/x86/turbostat/turbostat.c
-+++ linux-next-20210323/tools/power/x86/turbostat/turbostat.c
-@@ -2449,7 +2449,7 @@ dump_knl_turbo_ratio_limits(void)
- 	fprintf(outf, "cpu%d: MSR_TURBO_RATIO_LIMIT: 0x%08llx\n",
- 		base_cpu, msr);
- 
--	/**
-+	/*
- 	 * Turbo encoding in KNL is as follows:
- 	 * [0] -- Reserved
- 	 * [7:1] -- Base value of number of active cores of bucket 1.
+Ahh, right.  When I wrote the test, I didn't know which turn the
+kernel would eventually take, so the test is quite arbitrary.
+
+The glibc dynamic loader uses XSAVE/XSAVEC as well, so you can
+probably double the practical stack requirement if lazy binding is in
+use and can be triggered from the signal handler.  Estimating stack
+sizes is hard.
