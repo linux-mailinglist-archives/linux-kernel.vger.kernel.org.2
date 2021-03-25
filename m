@@ -2,59 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DA4348669
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:26:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 068B834866B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239566AbhCYB0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:26:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230269AbhCYBZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:25:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7400661A16;
-        Thu, 25 Mar 2021 01:25:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616635557;
-        bh=ditk0YZ9Nz9fLnjmSXlaeIWjilCXf8k1m49gq4EQY3c=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hdP3OybmDdZqN0BpyLGOGTfyFj/YztY0LRgi3kNooHSuBL+KB01WuERbOnwtHacJd
-         TjjvIJEryA8iOVGBr1FdjtegSb8s5xrWhY0SV+a+b3EvkxTy1NXVsTSw1kbqbQSiLd
-         Klt+xYmQ7dm10Sq/UPzvGx9K9gpXRofhg5DPO4waDGHfTA9CibsKmLXqBXKUuFKsx7
-         np10wNfHJ/Nf7+hndnM7ogt+wrYq6pHSb+/KEH0thsRmaIa+tefp8vPKURMwLbjrDV
-         4z1ynmhm++j9wJc8Yh2Ves4yLsDECMh4Y9w5wd9TM/u91P+yTWmnJ11qEDzJP8mkVN
-         66TqnpgEYTwbw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5F0AF60A3E;
-        Thu, 25 Mar 2021 01:25:57 +0000 (UTC)
-Subject: Re: [GIT] Networking
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210324.174744.896576515419596772.davem@davemloft.net>
-References: <20210324.174744.896576515419596772.davem@davemloft.net>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210324.174744.896576515419596772.davem@davemloft.net>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git refs/heads/master
-X-PR-Tracked-Commit-Id: e43accba9b071dcd106b5e7643b1b106a158cbb1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e138138003eb3b3d06cc91cf2e8c5dec77e2a31e
-Message-Id: <161663555733.31000.5501620001466622462.pr-tracker-bot@kernel.org>
-Date:   Thu, 25 Mar 2021 01:25:57 +0000
-To:     David Miller <davem@davemloft.net>
-Cc:     torvalds@linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S239629AbhCYB1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:27:40 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14578 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239810AbhCYB1F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 21:27:05 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5S8H1ySPz19H57;
+        Thu, 25 Mar 2021 09:25:03 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
+ 09:26:57 +0800
+Subject: Re: [PATCH] ACPI: AC: fix some errors and warnings reported by
+ checkpatch.pl
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+References: <1616504247-48744-1-git-send-email-tanxiaofei@huawei.com>
+ <CAJZ5v0jKBXuvuhMiLCRJKhk9Ctbmh6mTcRqSh-_WnwHVZ0PabQ@mail.gmail.com>
+CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <3d663f6a-69d7-56db-fa4d-593c7e7857f8@huawei.com>
+Date:   Thu, 25 Mar 2021 09:26:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAJZ5v0jKBXuvuhMiLCRJKhk9Ctbmh6mTcRqSh-_WnwHVZ0PabQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 24 Mar 2021 17:47:44 -0700 (PDT):
+Hi Rafael，
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git refs/heads/master
+On 2021/3/24 23:57, Rafael J. Wysocki wrote:
+> On Tue, Mar 23, 2021 at 2:01 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+>>
+>> Fix some errors and warnings reported by checkpatch.pl, including
+>> following five types:
+>
+> Well, they are coding style issues rather than errors.
+>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e138138003eb3b3d06cc91cf2e8c5dec77e2a31e
+Right, i could change the description.
 
-Thank you!
+>> ERROR: "foo * bar" should be "foo *bar"
+>> ERROR: code indent should use tabs where possible
+>> WARNING: Block comments use a trailing */ on a separate line
+>> WARNING: braces {} are not necessary for single statement blocks
+>> WARNING: void function return statements are not generally useful
+>>
+>> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+>> ---
+>>  drivers/acpi/ac.c | 32 +++++++++++++-------------------
+>>  1 file changed, 13 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/acpi/ac.c b/drivers/acpi/ac.c
+>> index b86ee6e..07987854 100644
+>> --- a/drivers/acpi/ac.c
+>> +++ b/drivers/acpi/ac.c
+>> @@ -78,17 +78,16 @@ static struct acpi_driver acpi_ac_driver = {
+>>  struct acpi_ac {
+>>         struct power_supply *charger;
+>>         struct power_supply_desc charger_desc;
+>> -       struct acpi_device * device;
+>> +       struct acpi_device *device;
+>>         unsigned long long state;
+>>         struct notifier_block battery_nb;
+>>  };
+>>
+>>  #define to_acpi_ac(x) power_supply_get_drvdata(x)
+>>
+>> -/* --------------------------------------------------------------------------
+>> -                               AC Adapter Management
+>> -   -------------------------------------------------------------------------- */
+>> -
+>> +/*
+>> + * AC Adapter Management
+>> + */
+>
+> Please use the /* ... */ (one-line) comment format here and below for
+> comments that aren't longer than one line.
+>
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Sure.
+
+>>  static int acpi_ac_get_state(struct acpi_ac *ac)
+>>  {
+>>         acpi_status status = AE_OK;
+>> @@ -109,9 +108,9 @@ static int acpi_ac_get_state(struct acpi_ac *ac)
+>>         return 0;
+>>  }
+>>
+>> -/* --------------------------------------------------------------------------
+>> -                            sysfs I/F
+>> -   -------------------------------------------------------------------------- */
+>> +/*
+>> + * sysfs I/F
+>> + */
+>>  static int get_ac_property(struct power_supply *psy,
+>>                            enum power_supply_property psp,
+>>                            union power_supply_propval *val)
+>> @@ -138,10 +137,9 @@ static enum power_supply_property ac_props[] = {
+>>         POWER_SUPPLY_PROP_ONLINE,
+>>  };
+>>
+>> -/* --------------------------------------------------------------------------
+>> -                                   Driver Model
+>> -   -------------------------------------------------------------------------- */
+>> -
+>> +/*
+>> + * Driver Model
+>> + */
+>>  static void acpi_ac_notify(struct acpi_device *device, u32 event)
+>>  {
+>>         struct acpi_ac *ac = acpi_driver_data(device);
+>> @@ -174,8 +172,6 @@ static void acpi_ac_notify(struct acpi_device *device, u32 event)
+>>                 acpi_notifier_call_chain(device, event, (u32) ac->state);
+>>                 kobject_uevent(&ac->charger->dev.kobj, KOBJ_CHANGE);
+>>         }
+>> -
+>> -       return;
+>>  }
+>>
+>>  static int acpi_ac_battery_notify(struct notifier_block *nb,
+>> @@ -282,9 +278,8 @@ static int acpi_ac_add(struct acpi_device *device)
+>>         ac->battery_nb.notifier_call = acpi_ac_battery_notify;
+>>         register_acpi_notifier(&ac->battery_nb);
+>>  end:
+>> -       if (result) {
+>> +       if (result)
+>>                 kfree(ac);
+>> -       }
+>>
+>>         return result;
+>>  }
+>> @@ -293,7 +288,7 @@ static int acpi_ac_add(struct acpi_device *device)
+>>  static int acpi_ac_resume(struct device *dev)
+>>  {
+>>         struct acpi_ac *ac;
+>> -       unsigned old_state;
+>> +       unsigned int old_state;
+>>
+>>         if (!dev)
+>>                 return -EINVAL;
+>> @@ -352,9 +347,8 @@ static int __init acpi_ac_init(void)
+>>         }
+>>
+>>         result = acpi_bus_register_driver(&acpi_ac_driver);
+>> -       if (result < 0) {
+>> +       if (result < 0)
+>>                 return -ENODEV;
+>> -       }
+>>
+>>         return 0;
+>>  }
+>> --
+>
+> .
+>
+
