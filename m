@@ -2,66 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E00349CF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8982349CF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhCYXgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:36:06 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:60036 "EHLO smtp.gentoo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231264AbhCYXfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:35:38 -0400
-Received: by sf.home (Postfix, from userid 1000)
-        id 823765A22061; Thu, 25 Mar 2021 23:35:33 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-ia64@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>
-Subject: [PATCH] ia64: simplify code flow around swiotlb init
-Date:   Thu, 25 Mar 2021 23:35:30 +0000
-Message-Id: <20210325233530.1397011-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.0
+        id S231394AbhCYXhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 19:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231397AbhCYXgp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 19:36:45 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF5BC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:36:45 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c17so3642213pfn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:36:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8ub3+KaVHR67U2QACzlICSww+btiIMyI8S4cGZM+QbM=;
+        b=YNP3csUtke1uWeppGyLz3d/mgtKAW3dwkcruzfL+2fTZ9nCh9raBIGfyKTsPQgdbdd
+         RNO3cYBsYF4/4yjZ7h+dF05qxq6/lb7hjDmm1od/dg7dmW9SUazvNNUWdtSarZhh4oMR
+         bhf2VaYwkD+R02AHCM41L9lJSqs+Ha24dbFD2A3iTZjx/hNHeYjXQ5vdY5crbT+w8cu9
+         N//W8D8jy2WtBCkYL9naqXhCCF+dCQxR/lKsQtMnq4Ml38nim+7M7y8QzDZ5NmgdwDKa
+         l+jMnJE3i38tUeQfjk4F7KAMwYzbtIqpLpwqLlCLrkzo1p+9Mlk2SEAZqwbiuok83yQy
+         RF3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ub3+KaVHR67U2QACzlICSww+btiIMyI8S4cGZM+QbM=;
+        b=YiH/Eo9A14+k7maJJEjfqvkO4zmm70YSYwEGJzE6TeL5yJd9rHthy/q245Bj2zk60F
+         mtALrqLE02YGzEYodzO9DyKIBD43GHu/G3ho3UVFrk6vdfFm4XErMX1yV76pF23yRTQk
+         aIoccDiV1CKn8UfLg2E2oWkRHCo80A2Cmea6mV7PmyyfN3OE3ETYJqmcC6VVvBPK0foY
+         OX9irmSSVtQ78y4nA841XZsuqL+giXZfhn+rBNVpPVp+eK+/tPKATE6RguaG/F0jEegH
+         IgwFmKXTmGMUpiNz05gV41yZ4xy5vXAy+Gmp1PVXwduuHahaJOnPhfMpcejnN+11Strf
+         70dg==
+X-Gm-Message-State: AOAM532kSclkQqGBH84ZxAc0TpVA14wicDKkEsGil+KeHaCAyVCP7EEf
+        Xj+eosWbWKNaH2rYtPjmZSIXxA==
+X-Google-Smtp-Source: ABdhPJxeSjRgYZMHzSWbNBum6+QgRSNLMUeyLP99yS84q++2Qmz+Pr18oxx1VuVkVBZwVk53X4csDg==
+X-Received: by 2002:aa7:942d:0:b029:1f2:cbc6:8491 with SMTP id y13-20020aa7942d0000b02901f2cbc68491mr10125053pfo.53.1616715404666;
+        Thu, 25 Mar 2021 16:36:44 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:1532:a374:78cc:c35c])
+        by smtp.gmail.com with ESMTPSA id j3sm6263561pjf.36.2021.03.25.16.36.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 16:36:44 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 16:36:40 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, stable@vger.kernel.org
+Subject: Re: [PATCH 1/3] scripts/recordmcount.pl: Fix RISC-V regex for clang
+Message-ID: <20210325233640.jzi7uvaohvqwixiu@google.com>
+References: <20210325223807.2423265-1-nathan@kernel.org>
+ <20210325223807.2423265-2-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210325223807.2423265-2-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before the change CONFIG_INTEL_IOMMU && !CONFIG_SWIOTLB && !CONFIG_FLATMEM
+On 2021-03-25, Nathan Chancellor wrote:
+>Clang can generate R_RISCV_CALL_PLT relocations to _mcount:
+>
+>$ llvm-objdump -dr build/riscv/init/main.o | rg mcount
+>                000000000000000e:  R_RISCV_CALL_PLT     _mcount
+>                000000000000004e:  R_RISCV_CALL_PLT     _mcount
+>
+>After this, the __start_mcount_loc section is properly generated and
+>function tracing still works.
+>
 
-could skip `set_max_mapnr(max_low_pfn);` is iommu is not present on system.
+R_RISCV_CALL_PLT can replace R_RISCV_CALL in all use cases.
+R_RISCV_CALL can/may be deprecated:
+https://github.com/ClangBuiltLinux/linux/issues/1331#issuecomment-802468296
 
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-ia64@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- arch/ia64/mm/init.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Reviewed-by: Fangrui Song <maskray@google.com>
 
-diff --git a/arch/ia64/mm/init.c b/arch/ia64/mm/init.c
-index 16d0d7d22657..a63585db94fe 100644
---- a/arch/ia64/mm/init.c
-+++ b/arch/ia64/mm/init.c
-@@ -644,13 +644,16 @@ mem_init (void)
- 	 * _before_ any drivers that may need the PCI DMA interface are
- 	 * initialized or bootmem has been freed.
- 	 */
-+	do {
- #ifdef CONFIG_INTEL_IOMMU
--	detect_intel_iommu();
--	if (!iommu_detected)
-+		detect_intel_iommu();
-+		if (iommu_detected)
-+			break;
- #endif
- #ifdef CONFIG_SWIOTLB
- 		swiotlb_init(1);
- #endif
-+	} while (0);
- 
- #ifdef CONFIG_FLATMEM
- 	BUG_ON(!mem_map);
--- 
-2.31.0
 
+>Cc: stable@vger.kernel.org
+>Link: https://github.com/ClangBuiltLinux/linux/issues/1331
+>Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>---
+> scripts/recordmcount.pl | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/scripts/recordmcount.pl b/scripts/recordmcount.pl
+>index 867860ea57da..a36df04cfa09 100755
+>--- a/scripts/recordmcount.pl
+>+++ b/scripts/recordmcount.pl
+>@@ -392,7 +392,7 @@ if ($arch eq "x86_64") {
+>     $mcount_regex = "^\\s*([0-9a-fA-F]+):.*\\s_mcount\$";
+> } elsif ($arch eq "riscv") {
+>     $function_regex = "^([0-9a-fA-F]+)\\s+<([^.0-9][0-9a-zA-Z_\\.]+)>:";
+>-    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL\\s_mcount\$";
+>+    $mcount_regex = "^\\s*([0-9a-fA-F]+):\\sR_RISCV_CALL(_PLT)?\\s_mcount\$";
+>     $type = ".quad";
+>     $alignment = 2;
+> } elsif ($arch eq "nds32") {
+>-- 
+>2.31.0
+>
+>-- 
+>You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+>To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210325223807.2423265-2-nathan%40kernel.org.
