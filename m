@@ -2,78 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F19E3488B8
+	by mail.lfdr.de (Postfix) with ESMTP id F1A1A3488BB
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhCYGEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:04:22 -0400
-Received: from mta-out1.inet.fi ([62.71.2.194]:41562 "EHLO julia1.inet.fi"
+        id S229760AbhCYGE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:04:56 -0400
+Received: from smtp1.axis.com ([195.60.68.17]:37558 "EHLO smtp1.axis.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCYGDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:03:54 -0400
-X-Greylist: delayed 365 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Mar 2021 02:03:53 EDT
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduledrudegledgkeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuuffpveftnecuuegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefjeenucfhrhhomhepkfhlkhhkrgcurfhruhhsihcuoehilhhkkhgrrdhprhhushhisehpphdrihhnvghtrdhfiheqnecuggftrfgrthhtvghrnhepvddtgeduiefgkeejfedvhefgledugffhheejgfehgeffhfegueelvdefvdevieefnecukfhppeekgedrvdehuddrudelgedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhephhgvlhhopegludelvddrudeikedruddrjeeingdpihhnvghtpeekgedrvdehuddrudelgedrudeigedpmhgrihhlfhhrohhmpeeophhruhhsihhlqddusehmsghogidrihhnvghtrdhfihequceuqfffjgepkeeukffvoffkoffgpdhrtghpthhtohepoehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgheq
-Received: from [192.168.1.76] (84.251.194.164) by julia1.inet.fi (9.0.019.26-1) (authenticated as prusil-1)
-        id 605B47EE00035105 for linux-kernel@vger.kernel.org; Thu, 25 Mar 2021 07:57:34 +0200
-Subject: Re: WARNING: AMDGPU DRM warning in 5.11.9
-To:     linux-kernel@vger.kernel.org
-References: <CAK2bqVJ+=nHTK-hnUC=qL1mcOvHWTCwDMYPBKJp77QCbBvBGGw@mail.gmail.com>
-From:   Ilkka Prusi <ilkka.prusi@pp.inet.fi>
-Message-ID: <a38a3c04-4ac8-01a6-da69-a2bdaa54f61d@pp.inet.fi>
-Date:   Thu, 25 Mar 2021 07:57:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAK2bqVJ+=nHTK-hnUC=qL1mcOvHWTCwDMYPBKJp77QCbBvBGGw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229533AbhCYGEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 02:04:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1616652285;
+  x=1648188285;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=KgAikQLc0a+uXf9MpMW7lcoLMvJvsmQiWu5c216iOEU=;
+  b=YkOnfD8ctxMyXt5arXrn2Ev3sDRIHh4iGKvg0wX9O++uVdI5o5n+IwGU
+   yPoZklOVTmytyHClVO+72rsSO0za4Ljg8HP0i0BwhFTDhaPQkF3HcoZri
+   DQV4jHS7BxQQ5jZmPumWtsG1vM1/2Ift4SbcSVoS8T1hlb16GdKVSHH4h
+   EnoeFLyn672Gssjq/WNV3WNgoiGlIrR8sFUeSwL9FyfcXdu4Cfb8uMz0E
+   is68ketGT7/Ztq62AJuPi8UxdvT6ypTRGfF0z0cFreLwTQNmqwJdT/Vu4
+   TpuyUPeWMQfaxLD1YKyloDQxuvJF49hdfGK9TQDzyUAMfPdobW2yyv9pl
+   Q==;
+From:   Hermes Zhang <Hermes.Zhang@axis.com>
+To:     Marek Behun <marek.behun@nic.cz>,
+        Hermes Zhang <Hermes.Zhang@axis.com>
+CC:     "pavel@ucw.cz" <pavel@ucw.cz>, "dmurphy@ti.com" <dmurphy@ti.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "lkml@axis.com" <lkml@axis.com>, kernel <kernel@axis.com>
+Subject: Re: [PATCH 1/2] leds: leds-multi-gpio: Add multiple GPIOs LED driver
+Thread-Topic: [PATCH 1/2] leds: leds-multi-gpio: Add multiple GPIOs LED driver
+Thread-Index: AQHXIINVpz7s49aciUujD1l9rQIjiw==
+Date:   Thu, 25 Mar 2021 06:04:43 +0000
+Message-ID: <7ea3f7e6ea7a464fa4bb59b94857a755@XBOX01.axis.com>
+References: <20210324075631.5004-1-chenhui.zhang@axis.com>
+ <20210324075631.5004-2-chenhui.zhang@axis.com>
+ <20210324103431.4b945915@thinkpad>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.0.5.60]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.3.2021 16.16, Chris Rankin wrote:
-> Hi,
-> 
-> Theee warnings ares not present in my dmesg log from 5.11.8:
-> 
-> [   43.390159] ------------[ cut here ]------------
-> [   43.393574] WARNING: CPU: 2 PID: 1268 at
-> drivers/gpu/drm/ttm/ttm_bo.c:517 ttm_bo_release+0x172/0x282 [ttm]
-> [   43.401940] Modules linked in: nf_nat_ftp nf_conntrack_ftp cfg80211
-
-Changing WARN_ON to WARN_ON_ONCE in drivers/gpu/drm/ttm/ttm_bo.c 
-ttm_bo_release() reduces the flood of messages into single splat.
-
-This warning appears to come from 57fcd550eb15bce ("drm/ttm: Warn on 
-pinning without holding a reference)" and reverting it might be one choice.
-
-
-> 
-> There are others, but I am assuming there is a common cause here.
-> 
-> Cheers,
-> Chris
-> 
-
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index a76eb2c14e8c..50b53355b265 100644
---- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -514,7 +514,7 @@ static void ttm_bo_release(struct kref *kref)
-                  * shrinkers, now that they are queued for
-                  * destruction.
-                  */
--               if (WARN_ON(bo->pin_count)) {
-+               if (WARN_ON_ONCE(bo->pin_count)) {
-                         bo->pin_count = 0;
-                         ttm_bo_del_from_lru(bo);
-                         ttm_bo_add_mem_to_lru(bo, &bo->mem);
-
-
-
---
-  - Ilkka
-
+Hi Marek,=0A=
+=0A=
+On 3/24/21 5:34 PM, Marek Behun wrote:=0A=
+>> +#include <linux/err.h>=0A=
+>> +#include <linux/gpio.h>=0A=
+>> +#include <linux/gpio/consumer.h>=0A=
+>> +#include <linux/kernel.h>=0A=
+>> +#include <linux/leds.h>=0A=
+>> +#include <linux/module.h>=0A=
+>> +#include <linux/of.h>=0A=
+>> +#include <linux/of_gpio.h>=0A=
+>> +#include <linux/platform_device.h>=0A=
+>> +#include <linux/property.h>=0A=
+>> +#include <linux/slab.h>=0A=
+> Why do you include slab.h?=0A=
+Yeah, I will clean it in next commit.=0A=
+>> +=0A=
+>> +=0A=
+>> +static void multi_gpio_led_set(struct led_classdev *led_cdev,=0A=
+>> +	enum led_brightness value)=0A=
+>> +{=0A=
+>> +	struct multi_gpio_led_priv *priv;=0A=
+>> +	int idx;=0A=
+>> +=0A=
+>> +	DECLARE_BITMAP(values, MAX_GPIO_NUM);=0A=
+>> +=0A=
+>> +	priv =3D container_of(led_cdev, struct multi_gpio_led_priv, cdev);=0A=
+>> +=0A=
+>> +	idx =3D (value - LED_OFF) * priv->nr_states / (LED_FULL + 1);=0A=
+> LED_FULL / LED_OFF are deprecated, don't use them.=0A=
+=0A=
+Then could I use just 0 (instead LED_OFF) and led_cdev->max_brightness=0A=
+=0A=
+(instead of LED_FULL) here? The idea here is map the states defined in dts=
+=0A=
+=0A=
+to the full brightness range.=0A=
+=0A=
+> +=0A=
+> +	priv->nr_states =3D ret;=0A=
+> +	priv->states =3D devm_kzalloc(dev, sizeof(*priv->states) * priv->nr_sta=
+tes, GFP_KERNEL);=0A=
+> +	if (!priv->states)=0A=
+> +		return -ENOMEM;=0A=
+> +=0A=
+> +	ret =3D of_property_read_u8_array(node, "led-states", priv->states, pri=
+v->nr_states);=0A=
+> +	if (ret)=0A=
+> +		return ret;=0A=
+> +=0A=
+> +	priv->cdev.max_brightness =3D LED_FULL;=0A=
+> ???? max_brightness is not 255 (=3D LED_FULL). max_brightness must be=0A=
+> derived from the led-states property.=0A=
+=0A=
+Yeah, I will fix this. the max-brightness should for the whole LED,=0A=
+right? So=0A=
+=0A=
+it will at same level with led-states.=0A=
+=0A=
+=0A=
+=0A=
