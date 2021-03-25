@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3ACE348DA3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:02:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AED8348DAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCYKBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:01:47 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:48988 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhCYKBZ (ORCPT
+        id S229994AbhCYKHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:07:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14589 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229533AbhCYKGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:01:25 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 04D6D1C0B92; Thu, 25 Mar 2021 11:01:23 +0100 (CET)
-Date:   Thu, 25 Mar 2021 11:01:22 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        cy_huang <cy_huang@richtek.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] leds: rt4505: Add support for Richtek RT4505
- flash LED controller
-Message-ID: <20210325100122.GA4619@amd>
-References: <1604284946-16254-1-git-send-email-u0084500@gmail.com>
- <3cf3ee50-3dd8-d3b1-66a9-cea2ba487de3@gmail.com>
- <CADiBU3-pDdoCioKc1mZwx7tp+_kfcN=4j-iMOT9LupXW03qwNA@mail.gmail.com>
+        Thu, 25 Mar 2021 06:06:50 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5ggz213lz19JH5;
+        Thu, 25 Mar 2021 18:04:47 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
+ 18:06:38 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <stern@rowland.harvard.edu>
+CC:     <linux-usb@vger.kernel.org>, <yisen.zhuang@huawei.com>,
+        <tanxiaofei@huawei.com>, <liudongdong3@huawei.com>,
+        <liulongfang@huawei.com>, <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH] USB:XHCI:Adjust the log level of hub
+Date:   Thu, 25 Mar 2021 18:04:12 +0800
+Message-ID: <1616666652-37920-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
-Content-Disposition: inline
-In-Reply-To: <CADiBU3-pDdoCioKc1mZwx7tp+_kfcN=4j-iMOT9LupXW03qwNA@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When the number of ports of the hub is not between 1 and Maxports,
+it will only exit the registration of the hub on the current controller,
+but it will not affect the function of the controller itself. Its other
+hubs can operate normally, so the log level here can be changed from
+error to information.
 
---G4iJoqBmSsgzjUCe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/usb/core/hub.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Hi!
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index b1e14be..70294ad 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -1409,13 +1409,11 @@ static int hub_configure(struct usb_hub *hub,
+ 		maxchild = min_t(unsigned, maxchild, USB_SS_MAXPORTS);
+ 
+ 	if (hub->descriptor->bNbrPorts > maxchild) {
+-		message = "hub has too many ports!";
+-		ret = -ENODEV;
+-		goto fail;
++		dev_info(hub_dev, "hub has too many ports!\n");
++		return -ENODEV;
+ 	} else if (hub->descriptor->bNbrPorts == 0) {
+-		message = "hub doesn't have any ports!";
+-		ret = -ENODEV;
+-		goto fail;
++		dev_info(hub_dev, "hub doesn't have any ports!\n");
++		return -ENODEV;
+ 	}
+ 
+ 	/*
+-- 
+2.8.1
 
-> > >   create mode 100644 drivers/leds/flash/Kconfig
-> > >   create mode 100644 drivers/leds/flash/Makefile
-> > >   create mode 100644 drivers/leds/flash/leds-rt4505.c
-> >
-> > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> >
-> Any problem with this patch? Do I need to submit it again?
-
-It won't apply on current next.
-
-So please: Merge ACKs, reorder it so that docs goes first, port it to
-
-To gitolite.kernel.org:pub/scm/linux/kernel/git/pavel/linux-leds.git
-   34731ed13e8a..85674b0e40d9  for-next -> for-next
-
-and resubmit.
-
-Thanks you,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---G4iJoqBmSsgzjUCe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBcX3EACgkQMOfwapXb+vIObwCffd6b9g3jXk6f/cdlPb+rlSfH
-MdAAoJdDJxSs2dbMDTPjQt1CSHnf3xe5
-=yFKW
------END PGP SIGNATURE-----
-
---G4iJoqBmSsgzjUCe--
