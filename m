@@ -2,288 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBEC434941A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F77A34941D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhCYOb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        id S231469AbhCYOce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbhCYObk (ORCPT
+        with ESMTP id S231299AbhCYOcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:31:40 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCA3C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:31:39 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a7so3282964ejs.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:31:39 -0700 (PDT)
+        Thu, 25 Mar 2021 10:32:01 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5372FC06174A;
+        Thu, 25 Mar 2021 07:32:01 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so1310850wmj.1;
+        Thu, 25 Mar 2021 07:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=kHK6PWPxNxHguzJerjyPzF4M6DDOJtTvhOkFYlg9BNU=;
-        b=pTrkks5srT7wZQZ6P9pcxINfvs19xLEyET94gPzo/5XBgxaeBczPLXNvL1zmt8vQM2
-         MH8JEQWfQOyPcO9udQDi93aQqlLCPmru57XQNOuybi0lXQLcwb6hzyfhD5L9YDbTFZIW
-         MTCh/BAqhue+ExQoKzBDvF0vMp7fGu0hp4s7u7acuF4+2VU4kWsSh8XxzzqIr+OHWi4E
-         C+YJV2FwhuboHDfFoWhv6xzYNnKYMg9bJ/A9EqmsJPzVp/aLuQn4BFx3gke9kx+6O15O
-         sUamHFsDkQKYIQgB8W2FsFhobvwSpvPG9df5iOJAylaGucVFtWJ6jYuuLfoIZX73fUoP
-         GqyA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=8X/ErCd/PUHyh7uEayt0AfWxZBWOxuGE5goHChuzl9M=;
+        b=oe5h4IjS1khlBr3H69CXdHoY3Sp2GPifGMVuufqgDA5wCqFRWdvs332qj+2YH+DEY4
+         /HVasUQEmhQTgFvsx5ibJ4PfnBZ9Ha+kGDeMOhu1KNWsWj8z1MOZrmoAKb/lX8AdLVZK
+         Wz2mdPdPWXL/yE9FOBA8t1wUesXMJrg/RhhgHE1XFCAAcgneyuesFhXIrpJlk/fFF16S
+         hStHlzjEwLGFseytjWQKrqwCk7t6Ncx1cYVCBFLGVAhfiHzQ8ww2JS9WnA1exqWjLhAG
+         sOevmWxzU5qZ8xUYpqcPg37fYq/10LPioJFnUA7ytetztSJ0IMmid5IVUsm2jbtfRLd9
+         efyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kHK6PWPxNxHguzJerjyPzF4M6DDOJtTvhOkFYlg9BNU=;
-        b=s/Y3T+uOvoC0mKp5BzkD5lt07h41MSMZfOrgYfQjUsjSWGqQNInPJ8H1D+ucj79xK9
-         XyaGM7TaCpYmHs9a3YWjL+b6QHVvJ9qJUpYvjBc0W8QZAosM3Kj6jr5ISdquIvwP8o5g
-         uQec/Ol92P7VYRtbI/cdyeMVARhYEyvSdg6K+ZX0FE+FBHHEUxyuEIfrON7h7AJuDgSy
-         yfkPs3gLK5VOucpODqoSJyasMDlukYEIfs+UB4zCFLq1X5lM93aW+HgyEnO1FdQvPj+k
-         HnVepQhUmyPHCblOAoaV6vSSpuMdZy1wDHostRo70YZ4rNxJf2i5HFmHI7aKuzicO7Eb
-         KHwQ==
-X-Gm-Message-State: AOAM533NCFhe2Z5j7lj819cVtJgnDL0ZjwbzqPGUqJBvTlGjmKmYNpdv
-        +g8LAJ3J/SMCYfViakEj1DTl8cj59+TDmQ==
-X-Google-Smtp-Source: ABdhPJzaqYjQtib8l3FnsGT3ScixkR3VzuVIpRxpkheMzajf7HSOar/R8viyQye9Pcm6cNmlmKSp7Q==
-X-Received: by 2002:a17:906:7f84:: with SMTP id f4mr9577897ejr.525.1616682697710;
-        Thu, 25 Mar 2021 07:31:37 -0700 (PDT)
-Received: from dell ([91.110.221.180])
-        by smtp.gmail.com with ESMTPSA id v24sm2515180ejw.17.2021.03.25.07.31.36
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8X/ErCd/PUHyh7uEayt0AfWxZBWOxuGE5goHChuzl9M=;
+        b=ciqssViPVa5cB2HHMC+XDWNYZUs8e2ohXgXLk5CHZgnQx4D0Hm0TGps3hY4Q8t8maG
+         XU7RI3SWHNCxlNzq5R/iORajdUGuWilfm6rzPhL5O7cL4gvrv18KpZYKdB7y9lLudkqd
+         eZ1XEc5XFFtIloqVRLdjclmc7aIv2QW39FcmqVFqP7C+O4gN87NYPsipfSdZDcmaBdJa
+         O/mehXwnE6oosEgkisFzWsl77yEXLrnA4wY8RQ9FPufCh6viv76wWOFXJur1IvZ/smN4
+         sjOS/dvGNTiiQDpUKniGpevLGQGH9ljEcIOCahWhWxJfC8RG8YheE/Z5+mhAJSnTkc5K
+         myKA==
+X-Gm-Message-State: AOAM530o2dNrjca3EwG34SS6zf6AVoLAUkPkRpEQk9d+kzvA5l8vp6eR
+        eehuqhekOoThAOHDckO6ihSLqnddT8o=
+X-Google-Smtp-Source: ABdhPJwCP8SyVnHbVU/Xq0ABavcKyhlBcdUKDjFNpnHjTjex3u9ZXgml/hz3Y+XZ5w4ETpW2CyUtmw==
+X-Received: by 2002:a1c:6305:: with SMTP id x5mr8097290wmb.156.1616682720074;
+        Thu, 25 Mar 2021 07:32:00 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id c8sm8927942wrd.55.2021.03.25.07.31.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:31:37 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 14:31:35 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     ChiYuan Huang <u0084500@gmail.com>
-Cc:     lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        ChiYuan Huang <cy_huang@richtek.com>
-Subject: Re: [PATCH v5 1/6] mfd: rt4831: Adds support for Richtek RT4831 core
-Message-ID: <20210325143135.GT2916463@dell>
-References: <1608217244-314-1-git-send-email-u0084500@gmail.com>
- <20210113122133.GC3975472@dell>
- <CADiBU39drqcQYgwp9p6XJuFfwFPGL2OCzm33n1dX-O1R8c4NrA@mail.gmail.com>
- <CADiBU3_p3dk1YMdwMG2EjFX1SrM=e5BVLS4kVvfAqPpdGcMq=w@mail.gmail.com>
+        Thu, 25 Mar 2021 07:31:59 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:32:21 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/5] soc/tegra: pmc: Fix completion of power-gate
+ toggling
+Message-ID: <YFye9WEL489M1KOk@orome.fritz.box>
+References: <20210302122502.20874-1-digetx@gmail.com>
+ <20210302122502.20874-3-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6sCD7rN+0LZ2PNul"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADiBU3_p3dk1YMdwMG2EjFX1SrM=e5BVLS4kVvfAqPpdGcMq=w@mail.gmail.com>
+In-Reply-To: <20210302122502.20874-3-digetx@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021, ChiYuan Huang wrote:
 
-> HI, Lee:
-> 
-> ChiYuan Huang <u0084500@gmail.com> 於 2021年1月13日 週三 下午10:09寫道：
-> >
-> > Lee Jones <lee.jones@linaro.org> 於 2021年1月13日 週三 下午8:21寫道：
-> > >
-> > > On Thu, 17 Dec 2020, cy_huang wrote:
-> > >
-> > > > From: ChiYuan Huang <cy_huang@richtek.com>
-> > > >
-> > > > This adds support Richtek RT4831 core. It includes four channel WLED driver
-> > > > and Display Bias Voltage outputs.
-> > > >
-> > > > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> > > > ---
-> > > > since v5
-> > > > - Rename file name from rt4831-core.c to rt4831.c
-> > > > - Change RICHTEK_VID to RICHTEK_VENDOR_ID.
-> > > > - Change gpio_desc nameing from 'enable' to 'enable_gpio' in probe.
-> > > > - Change variable 'val' to the meaningful name 'chip_id'.
-> > > > - Refine the error log when vendor id is not matched.
-> > > > - Remove of_match_ptr.
-> > > >
-> > > > since v2
-> > > > - Refine Kconfig descriptions.
-> > > > - Add copyright.
-> > > > - Refine error logs in probe.
-> > > > - Refine comment lines in remove and shutdown.
-> > > > ---
-> > > >  drivers/mfd/Kconfig  |  10 +++++
-> > > >  drivers/mfd/Makefile |   1 +
-> > > >  drivers/mfd/rt4831.c | 124 +++++++++++++++++++++++++++++++++++++++++++++++++++
-> > > >  3 files changed, 135 insertions(+)
-> > > >  create mode 100644 drivers/mfd/rt4831.c
-> > > >
-> > > > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> > > > index 8b99a13..dfb2640 100644
-> > > > --- a/drivers/mfd/Kconfig
-> > > > +++ b/drivers/mfd/Kconfig
-> > > > @@ -1088,6 +1088,16 @@ config MFD_RDC321X
-> > > >         southbridge which provides access to GPIOs and Watchdog using the
-> > > >         southbridge PCI device configuration space.
-> > > >
-> > > > +config MFD_RT4831
-> > > > +     tristate "Richtek RT4831 four channel WLED and Display Bias Voltage"
-> > > > +     depends on I2C
-> > > > +     select MFD_CORE
-> > > > +     select REGMAP_I2C
-> > > > +     help
-> > > > +       This enables support for the Richtek RT4831 that includes 4 channel
-> > > > +       WLED driving and Display Bias Voltage. It's commonly used to provide
-> > > > +       power to the LCD display and LCD backlight.
-> > > > +
-> > > >  config MFD_RT5033
-> > > >       tristate "Richtek RT5033 Power Management IC"
-> > > >       depends on I2C
-> > > > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> > > > index 1780019..28d247b 100644
-> > > > --- a/drivers/mfd/Makefile
-> > > > +++ b/drivers/mfd/Makefile
-> > > > @@ -235,6 +235,7 @@ obj-$(CONFIG_MFD_MENF21BMC)       += menf21bmc.o
-> > > >  obj-$(CONFIG_MFD_HI6421_PMIC)        += hi6421-pmic-core.o
-> > > >  obj-$(CONFIG_MFD_HI655X_PMIC)   += hi655x-pmic.o
-> > > >  obj-$(CONFIG_MFD_DLN2)               += dln2.o
-> > > > +obj-$(CONFIG_MFD_RT4831)     += rt4831.o
-> > > >  obj-$(CONFIG_MFD_RT5033)     += rt5033.o
-> > > >  obj-$(CONFIG_MFD_SKY81452)   += sky81452.o
-> > > >
-> > > > diff --git a/drivers/mfd/rt4831.c b/drivers/mfd/rt4831.c
-> > > > new file mode 100644
-> > > > index 00000000..2bf8364
-> > > > --- /dev/null
-> > > > +++ b/drivers/mfd/rt4831.c
-> > > > @@ -0,0 +1,124 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0+
-> > > > +/*
-> > > > + * Copyright (c) 2020 Richtek Technology Corp.
-> > >
-> > > Nit: If you respin this, please bump the date.
-> > >
-> > Okay.
-> > > > + * Author: ChiYuan Huang <cy_huang@richtek.com>
-> > > > + */
-> > > > +
-> > > > +#include <linux/gpio/consumer.h>
-> > > > +#include <linux/i2c.h>
-> > > > +#include <linux/kernel.h>
-> > > > +#include <linux/mfd/core.h>
-> > > > +#include <linux/module.h>
-> > > > +#include <linux/regmap.h>
-> > > > +
-> > > > +#define RT4831_REG_REVISION  0x01
-> > > > +#define RT4831_REG_ENABLE    0x08
-> > > > +#define RT4831_REG_I2CPROT   0x15
-> > > > +
-> > > > +#define RICHTEK_VENDOR_ID    0x03
-> > > > +#define RT4831_VID_MASK              GENMASK(1, 0)
-> > > > +#define RT4831_RESET_MASK    BIT(7)
-> > > > +#define RT4831_I2CSAFETMR_MASK       BIT(0)
-> > > > +
-> > > > +static const struct mfd_cell rt4831_subdevs[] = {
-> > > > +     OF_MFD_CELL("rt4831-backlight", NULL, NULL, 0, 0, "richtek,rt4831-backlight"),
-> > > > +     MFD_CELL_NAME("rt4831-regulator")
-> > > > +};
-> > > > +
-> > > > +static bool rt4831_is_accessible_reg(struct device *dev, unsigned int reg)
-> > > > +{
-> > > > +     if (reg >= RT4831_REG_REVISION && reg <= RT4831_REG_I2CPROT)
-> > > > +             return true;
-> > > > +     return false;
-> > > > +}
-> > > > +
-> > > > +static const struct regmap_config rt4831_regmap_config = {
-> > > > +     .reg_bits = 8,
-> > > > +     .val_bits = 8,
-> > > > +     .max_register = RT4831_REG_I2CPROT,
-> > > > +
-> > > > +     .readable_reg = rt4831_is_accessible_reg,
-> > > > +     .writeable_reg = rt4831_is_accessible_reg,
-> > > > +};
-> > > > +
-> > > > +static int rt4831_probe(struct i2c_client *client)
-> > > > +{
-> > > > +     struct gpio_desc *enable_gpio;
-> > > > +     struct regmap *regmap;
-> > > > +     unsigned int chip_id;
-> > > > +     int ret;
-> > > > +
-> > > > +     enable_gpio = devm_gpiod_get_optional(&client->dev, "enable", GPIOD_OUT_HIGH);
-> > > > +     if (IS_ERR(enable_gpio)) {
-> > > > +             dev_err(&client->dev, "Failed to get 'enable' GPIO\n");
-> > > > +             return PTR_ERR(enable_gpio);
-> > > > +     }
-> > > > +
-> > > > +     regmap = devm_regmap_init_i2c(client, &rt4831_regmap_config);
-> > > > +     if (IS_ERR(regmap)) {
-> > > > +             dev_err(&client->dev, "Failed to initialize regmap\n");
-> > > > +             return PTR_ERR(regmap);
-> > > > +     }
-> > > > +
-> > > > +     ret = regmap_read(regmap, RT4831_REG_REVISION, &chip_id);
-> > > > +     if (ret) {
-> > > > +             dev_err(&client->dev, "Failed to get H/W revision\n");
-> > > > +             return ret;
-> > > > +     }
-> > > > +
-> > > > +     if ((chip_id & RT4831_VID_MASK) != RICHTEK_VENDOR_ID) {
-> > > > +             dev_err(&client->dev, "Chip vendor ID 0x%02x not matched\n", chip_id);
-> > > > +             return -ENODEV;
-> > > > +     }
-> > > > +
-> > > > +     /*
-> > > > +      * Used to prevent the abnormal shutdown.
-> > > > +      * If SCL/SDA both keep low for one second to reset HW.
-> > > > +      */
-> > > > +     ret = regmap_update_bits(regmap, RT4831_REG_I2CPROT, RT4831_I2CSAFETMR_MASK,
-> > > > +                              RT4831_I2CSAFETMR_MASK);
-> > > > +     if (ret) {
-> > > > +             dev_err(&client->dev, "Failed to enable I2C safety timer\n");
-> > > > +             return ret;
-> > > > +     }
-> > > > +
-> > > > +     return devm_mfd_add_devices(&client->dev, PLATFORM_DEVID_AUTO, rt4831_subdevs,
-> > > > +                                 ARRAY_SIZE(rt4831_subdevs), NULL, 0, NULL);
-> > > > +}
-> > > > +
-> > > > +static int rt4831_remove(struct i2c_client *client)
-> > > > +{
-> > > > +     struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
-> > > > +
-> > > > +     /* Disable WLED and DSV outputs */
-> > > > +     return regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
-> > > > +}
-> > > > +
-> > > > +static void rt4831_shutdown(struct i2c_client *client)
-> > > > +{
-> > > > +     struct regmap *regmap = dev_get_regmap(&client->dev, NULL);
-> > > > +
-> > > > +     /* Disable WLED and DSV outputs */
-> > > > +     regmap_update_bits(regmap, RT4831_REG_ENABLE, RT4831_RESET_MASK, RT4831_RESET_MASK);
-> > > > +}
-> > >
-> > > What is your reason for providing a .shutdown() routine?
-> > >
-> > Just like as remove routine to make sure all output are off for the safety.
-> > This chip only have one 'enable' pin and I2C as the control signal.
-> > As normal shutdown, it can be make sure 'enable' will be pull low.
-> > But for some case, if 'enable' always tied to high, like as ARM reset,
-> > chip reset only triggered during next booting phase.
-> > The period from arm  reset to next probe, if user doesn't call DSV and
-> > WLED off before machine shutdown/reboot, the WLED/DSV voltage boost
-> > circuit will be kept as on.
-> > That's why I also put shutdown routine in the driver to reset the whole chip.
-> 
-> If the shutdown routine is not suitable, I think it can be removed.
-> There's the HWEN pin inside this IC to make sure all function will be disabled.
-> 
-> There're changed part in my note
-> 1. respin the header date.
-> 2. Remove the shutdown routine
-> 
-> Anything else?
+--6sCD7rN+0LZ2PNul
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Just respin and resend.
+On Tue, Mar 02, 2021 at 03:24:59PM +0300, Dmitry Osipenko wrote:
+> The SW-initiated power gate toggling is dropped by PMC if there is
+> contention with a HW-initiated toggling, i.e. when one of CPU cores is
+> gated by cpuidle driver. Software should retry the toggling after 10
+> microseconds on Tegra20/30 SoCs, hence add the retrying. On Tegra114+ the
+> toggling method was changed in hardware, the TOGGLE_START bit indicates
+> whether PMC is busy or could accept the command to toggle, hence handle
+> that bit properly.
+>=20
+> The problem pops up after enabling dynamic power gating of 3d hardware,
+> where 3d power domain fails to turn on/off "randomly".
+>=20
+> The programming sequence and quirks are documented in TRMs, but PMC
+> driver obliviously re-used the Tegra20 logic for Tegra30+, which strikes
+> back now. The 10 microseconds and other timeouts aren't documented in TRM,
+> they are taken from downstream kernel.
+>=20
+> Link: https://nv-tegra.nvidia.com/gitweb/?p=3Dlinux-2.6.git;a=3Dcommit;h=
+=3D311dd1c318b70e93bcefec15456a10ff2b9eb0ff
+> Link: https://nv-tegra.nvidia.com/gitweb/?p=3Dlinux-3.10.git;a=3Dcommit;h=
+=3D7f36693c47cb23730a6b2822e0975be65fb0c51d
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/soc/tegra/pmc.c | 70 ++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 65 insertions(+), 5 deletions(-)
 
-I will do a full review once it's back on the list.
+Applied, thanks.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thierry
+
+--6sCD7rN+0LZ2PNul
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcnvQACgkQ3SOs138+
+s6G5/Q/9FRt5aws4mzuM8015M9rGNntDN6xh2eUTzYsN2fQQopSFWmwCFr/3554P
+S5PyV7vuNtFmI8V7VH7RAZlNC3uA1XBeav4CUTfy/UqaZwZzrnwakKQMD+93djDd
+X0zZ07qzWdObTCYmQ/iZbv3kbl3F5DFg87Apv99vJMtc5SsA6n+lXhDhOHN4uqkt
++p/pcYQV2RFwXQ91mo6F8BKtqjxyuY+eL0dh1h0L888Vk0Z5vy8xd9t8gdudHZz4
+eT9s4pP9sencxWq48kpR+9KzEue5oNi6c8oVazEwlz/wUeV+mjVeleuIiDE2RFoH
+favsVTCFiJstqPBfxoZz/b6orcpgbukrsuALj0l6qjzJm5xparFy6Bxz/g5taRge
+oGs87AKTk+4Z+AkzRRgyBKSfNzBIHPY7iVSRfJpH9iFJatQFEvk9k3KuMC6A2s+H
+AR+NdEgS9Hw2I04caQo0LvzvfdkkxB2yApDssk3Sh2E4qwbVi/KQ3S4/94XIRAql
+PnnUk4OLbNgkPW1QUZN9qNFNiLqyOo0ymjqbC1VHEfIfHHuc/ub/iN8hJgYLPcy3
+WHD1ZrLflLl1vSx32rMpF7TxtUIiVAqgE+NpdL0tSL265xpnKHWZ0PVZTzADXw1m
+mv31taCkqVXQvsLuoJyX6PKIu+W56sptWcZ7uEp64ryITgOt3p8=
+=APmv
+-----END PGP SIGNATURE-----
+
+--6sCD7rN+0LZ2PNul--
