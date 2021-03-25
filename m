@@ -2,116 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F823494AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF643494B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbhCYOxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:53:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56176 "EHLO
+        id S231367AbhCYOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCYOxo (ORCPT
+        with ESMTP id S231296AbhCYOyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:53:44 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D1DC06174A;
-        Thu, 25 Mar 2021 07:53:42 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id z8so3442574ljm.12;
-        Thu, 25 Mar 2021 07:53:42 -0700 (PDT)
+        Thu, 25 Mar 2021 10:54:03 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF49C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:54:03 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id c3so2009886qkc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QYHZyeRIpj/WD3sjHB3UD6cGlHJJw+nSq8t67YyK3ag=;
-        b=EJENdKr4l4LGOV8iUHaXzVSNMQlI2W0C3mkZyu/yw/dYDDAGY1Rfpyh+cqoeUbDAI+
-         GPDQq33yDJPCYpgaAxqKVUNqzrfI7/oj/tSCGU56ckRiA4JVcEVn5sGAbu3HAlstz1St
-         13xo9SPW2/x6Ha2bWsxEYwRG9wOo3WY0mprJF1W1fNqOkomyCQti07J7qkHW+0XGF/1C
-         V58hfW3wqEgOXfbdWv4YC6Wk2koR/EpEHVTvOnPQhk0rJQoOHAUuutvkmgIFY6YQZVdo
-         B91vin8y+qDx7peYbvhAUgwZhRV5S1e+NqbUks7HBuPg6qYP/p/hCeKtytoegVkQmkyq
-         EJtA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WcUAfakiaRflXJsbFLsUfCZemSovJNHWXiRp28Iky/s=;
+        b=Dmt9ROX72lZBYf7Mz+uAwKzOzzentjY7qaEzLmonFU4p6Azby+5hx1JfR54diifhZN
+         7jWv9nyFfUSIav577e0aj/TpyaFG+OsmkUAc5BCy4jUtva24pRv0awSv16FF+ToV0IHu
+         gTP8UtqOO9kwpn9uTLT/iCe8z2cv+S8cP/C1yNfhFpi98RCX3ivUsqsvl4PmX/7S7nK5
+         6KlKeM46LvuLy6R04B6+lfqDIHpOtS49Xl8vqa+IiR79CMZl9hKUrTjG19iXjwIQWmch
+         PJyHMjeq5AnipQmDbxuV4Ivedfz3eaBNsAFHO9rOVbWExPQODOtQUe4ct9MfVmZGQ03w
+         TlDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QYHZyeRIpj/WD3sjHB3UD6cGlHJJw+nSq8t67YyK3ag=;
-        b=T31zrx5oXZQMoU1BtjrPbIv3sxNM4Bdzo+yAtuhsPHX1QMOSh6pFCkZ7BHrPXjatXZ
-         Pzr9KJl/+2w8+OQmk90Tyf9UH8r1aQPsHXIN29SyI57uAmQ8iYfDmvhz0BkNg1uPSf8n
-         uwGvrtX3cZ35CCsbEGLLNYenbcaVvm+jsu8rsCtyZc/htGE8Mvk9E3dA9A4ADVhqPs3h
-         AMpwMvV+13fW9ElG9Ls9dx+EyigOzX7ZbvxRlLjDUtdmoRzhdUgW74wVVyRxynt5yN/P
-         2N8rQg5Hd8Fh9sj/Jf/6HO4ASN6Y+44ZkzGQ1a7wQ8pAPyUGB6Zecj10nhAtnz89HMni
-         7y/w==
-X-Gm-Message-State: AOAM532tQiMh9UTpZjY0e9sLEsztN9mpP81Fpl9ksW8kCQizEG3Nxr2n
-        YkRZUaSk0eNOPEz1uYPHa5zLPIk5pWI=
-X-Google-Smtp-Source: ABdhPJzZgqSGy7M8wCp/o9tDT5WpUJ4ybu6FPLm2yMuuHQh2Ib4ratJXPsZtN/pw+bFV0TPaIkRzsQ==
-X-Received: by 2002:a2e:b5a5:: with SMTP id f5mr6053442ljn.336.1616684021256;
-        Thu, 25 Mar 2021 07:53:41 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-60.dynamic.spd-mgts.ru. [109.252.193.60])
-        by smtp.googlemail.com with ESMTPSA id u6sm573032lfm.56.2021.03.25.07.53.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 07:53:40 -0700 (PDT)
-Subject: Re: [PATCH v4 5/5] soc/tegra: pmc: Rate-limit error message about
- failed to acquire of reset
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210302122502.20874-1-digetx@gmail.com>
- <20210302122502.20874-6-digetx@gmail.com> <YFyhR1XgFGzJkkLt@orome.fritz.box>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <dc3eeba3-b319-8892-4fdb-9162f4d465ed@gmail.com>
-Date:   Thu, 25 Mar 2021 17:53:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WcUAfakiaRflXJsbFLsUfCZemSovJNHWXiRp28Iky/s=;
+        b=thTkU39a92s0WRY28NxuWOdfkGpb2j8qQPWT8h3cU6IiChwk3YqDFmHmLmhQZz6rYe
+         IcV9svlhM/932VveBNJLbixTNAdhc48wH3snYES5txDEfkZ1t2iwfeR5xkRupp4Xi32j
+         714TvFDpju80hNZAjez41hYC5MVaIbc3xtwSqH6tP+PxkiVdcvws0FxwqAbaPQsNMAVM
+         c+n7kUGIanbUDNA4PijYLtrokulPazbTXXNgnyYW8QzlCV5MHf45BX47c3bY0WU+EWim
+         943kFjf92r3vpbTbX3iJvnirTSxRqrIowjcpXtsVGGhbXlHdBp40MC9fX50QUXGhev0I
+         KYZw==
+X-Gm-Message-State: AOAM533u95fH99v9z912i5U2W1w3r4Rf1OzjdAnI3u3WMg6r9LoZqKwv
+        ICjIlNd8IihCE9aeUxg/stJHJKbfkCoMufGSEbWxmFGT5Y3h/Q==
+X-Google-Smtp-Source: ABdhPJySEzdLTk7YsG7O3I3ubTJVxsPdVO8ILzkXXeBfiykqa8dLEyAFFCePMfOYEQeo2m2g6DxfFSw4Uk9/L02NOfg=
+X-Received: by 2002:a05:620a:2095:: with SMTP id e21mr8353814qka.265.1616684042120;
+ Thu, 25 Mar 2021 07:54:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YFyhR1XgFGzJkkLt@orome.fritz.box>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210325103105.3090303-1-dvyukov@google.com> <651b7d2d-21b2-8bf4-3dc8-e351c35b5218@gmail.com>
+ <CACT4Y+ad6bwMbQ6OwrdypCsNRvYTMtMf0KR2EpVOhPOZvnxeNA@mail.gmail.com> <c6e79b82-50dd-633c-8d63-77c059538338@gmail.com>
+In-Reply-To: <c6e79b82-50dd-633c-8d63-77c059538338@gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 25 Mar 2021 15:53:50 +0100
+Message-ID: <CACT4Y+ZVPrZMs3Uq0O1iSCtmwnNHKzbYV2W2Mu43cerrWZt6rA@mail.gmail.com>
+Subject: Re: [PATCH] net: change netdev_unregister_timeout_secs min value to 1
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        David Miller <davem@davemloft.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.03.2021 17:42, Thierry Reding пишет:
-> On Tue, Mar 02, 2021 at 03:25:02PM +0300, Dmitry Osipenko wrote:
->> PMC domain could be easily bombarded with the enable requests if there is
->> a problem in regards to acquiring reset control of a domain and kernel
->> log will be flooded with the error message in this case. Hence rate-limit
->> the message in order to prevent missing other important messages.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
->> ---
->>  drivers/soc/tegra/pmc.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
->> index bf29ea22480a..84ab27d85d92 100644
->> --- a/drivers/soc/tegra/pmc.c
->> +++ b/drivers/soc/tegra/pmc.c
->> @@ -868,8 +868,8 @@ static int tegra_genpd_power_off(struct generic_pm_domain *domain)
->>  
->>  	err = reset_control_acquire(pg->reset);
->>  	if (err < 0) {
->> -		dev_err(dev, "failed to acquire resets for PM domain %s: %d\n",
->> -			pg->genpd.name, err);
->> +		dev_err_ratelimited(dev, "failed to acquire resets for PM domain %s: %d\n",
->> +				    pg->genpd.name, err);
-> 
-> That doesn't look right. This is a serious error condition that
-> shouldn't happen at all. Ever. If this shows up even once we've got a
-> serious bug somewhere and we need to fix it rather than "downplay" it
-> by ratelimiting these errors.
-> 
-> What's the exact use-case where you see this?
+On Thu, Mar 25, 2021 at 3:43 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> On 3/25/21 3:38 PM, Dmitry Vyukov wrote:
+> > On Thu, Mar 25, 2021 at 3:34 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> >> On 3/25/21 11:31 AM, Dmitry Vyukov wrote:
+> >>> netdev_unregister_timeout_secs=0 can lead to printing the
+> >>> "waiting for dev to become free" message every jiffy.
+> >>> This is too frequent and unnecessary.
+> >>> Set the min value to 1 second.
+> >>>
+> >>> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> >>> Suggested-by: Eric Dumazet <edumazet@google.com>
+> >>> Fixes: 5aa3afe107d9 ("net: make unregister netdev warning timeout configurable")
+> >>> Cc: netdev@vger.kernel.org
+> >>> Cc: linux-kernel@vger.kernel.org
+> >>> ---
+> >>
+> >> Please respin your patch, and fix the merge issue [1]
+> >
+> > Is net-next rebuilt and rebased? Do I send v4 of the whole change?
+> > I cannot base it on net-next now, because net-next already includes
+> > most of it... so what should I use as base then?
+> >
+> >> For networking patches it is customary to tell if its for net or net-next tree.
+> >>
+> >> [1]
+> >> diff --git a/net/core/dev.c b/net/core/dev.c
+> >> index 4bb6dcdbed8b856c03dc4af8b7fafe08984e803f..7bb00b8b86c6494c033cf57460f96ff3adebe081 100644
+> >> --- a/net/core/dev.c
+> >> +++ b/net/core/dev.c
+> >> @@ -10431,7 +10431,7 @@ static void netdev_wait_allrefs(struct net_device *dev)
+> >>
+> >>                 refcnt = netdev_refcnt_read(dev);
+> >>
+> >> -               if (refcnt &&
+> >> +               if (refcnt != 1 &&
+> >>                     time_after(jiffies, warning_time +
+> >>                                netdev_unregister_timeout_secs * HZ)) {
+> >>                         pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
+>
+> Please include my fix into your patch.
+>
+> Send a V2, based on current net-next.
+>
+> net-next is never rebased, we have to fix the bug by adding a fix on top of it.
 
-This was firing up badly while I was wiring up power management and
-GENPD support to the GR3D and VDE drivers and testing them because of
-the bugs that I was creating.
-
-Looking back again at this now, I agree that the commit message isn't
-good and could be improved. What about this variant:
-
-"Rate-limit error message about failing to acquire reset in order to
-prevent missing other important messages. This was proven to be very
-useful to have for development and debugging purposes of a power
-management support for various Tegra drivers".
+Ah, got it. Mailed:
+[PATCH net-next v2] net: change netdev_unregister_timeout_secs min value to 1
