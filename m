@@ -2,157 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BB4348CA5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C3E0348CA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhCYJSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:18:52 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:39312 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229953AbhCYJSn (ORCPT
+        id S229944AbhCYJT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229923AbhCYJTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:18:43 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-223-13BMoTGZMQaaO9FQ8WC1tA-1; Thu, 25 Mar 2021 09:18:39 +0000
-X-MC-Unique: 13BMoTGZMQaaO9FQ8WC1tA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 25 Mar 2021 09:18:37 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Thu, 25 Mar 2021 09:18:37 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Amey Narkhede' <ameynarkhede03@gmail.com>,
-        =?utf-8?B?UGFsaSBSb2jDoXI=?= <pali@kernel.org>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "helgaas@kernel.org" <helgaas@kernel.org>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "kabel@kernel.org" <kabel@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "raphael.norwitz@nutanix.com" <raphael.norwitz@nutanix.com>
-Subject: RE: How long should be PCIe card in Warm Reset state?
-Thread-Topic: How long should be PCIe card in Warm Reset state?
-Thread-Index: AQHXIAXnrcmc2gEB8kyyLgm3o0lr1qqUbNMg
-Date:   Thu, 25 Mar 2021 09:18:37 +0000
-Message-ID: <a8e256ece0334734b1ef568820b95a15@AcuMS.aculab.com>
-References: <20210310110535.zh4pnn4vpmvzwl5q@pali>
- <20210323161941.gim6msj3ruu3flnf@archlinux>
- <20210323162747.tscfovntsy7uk5bk@pali>
- <20210323165749.retjprjgdj7seoan@archlinux>
-In-Reply-To: <20210323165749.retjprjgdj7seoan@archlinux>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 25 Mar 2021 05:19:03 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31823C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:19:03 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 91-20020a9d08640000b0290237d9c40382so1263129oty.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s8gaLzfKO51sv2EAdyYwOBAav4JswI+vzWWUFTJdNYY=;
+        b=ZkxfOIKsj2q9i0xgCpJIWPTGgfJnpexFD69S2YCMtm7qz9+Vz3iFYeeL/zq8cW43eJ
+         ZxJ0JznpvlRjP0MCLr3dVA6OrS5dUJtNyIVuvegpRL22m1fimwU5A2IkRinyZfD/MOg9
+         pdBoeBEUs7bsM2BitRB3evCfcTP2TuuWcIMoc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s8gaLzfKO51sv2EAdyYwOBAav4JswI+vzWWUFTJdNYY=;
+        b=R1bJv4VxedpM9CLDzFocxXNPUAJXZINP4KzD3Ad36Uey+z4eWAs0SQcUOMS/K2vpIh
+         U1t232e7IZ6aOm52LJLcMrbO2wZVONBqas5A6HFtcK6OsKYePi2oIhPJNhu11QQEv2Iw
+         fSVSdsdJeZ/QvCfszNDVTKevO5PFfLEWrSbHV7KUeML2BsgjbCGV91Je0KRRxA35ZNUH
+         7binlYzr6EixpIychdCcNxKBrgpGkKWog2phsueOpkcR4Rn7K/AUE8E0a6bh8caundWJ
+         ikLEL/5m83uArCxmPvOEShzIiBV1BVDGhIc0Ipz1mspHBbAHx5FVClxXga9mKs8/NAWA
+         pBhA==
+X-Gm-Message-State: AOAM530V4hMvin9eqiwYZ7hTR/a34M8L+ZcfGkooril9baeFHYvhKbZp
+        B7ilTjFPoCChHy0coIKwBw+1ujTNJ2Ed+cAarg5SMQ==
+X-Google-Smtp-Source: ABdhPJwuRBoHhQ1X/QBIV1XedaouhUZsXyPMY5vgD/AZosvW57FTBULFoCWN1cliFURZtu4WwmxByGgjBHWXJVPUY/M=
+X-Received: by 2002:a9d:845:: with SMTP id 63mr4608787oty.303.1616663942428;
+ Thu, 25 Mar 2021 02:19:02 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20210325061901.851273-1-wanjiabing@vivo.com> <e45d6b24-5e74-17f6-eb18-c6e51fed923a@epam.com>
+ <CAKMK7uEpNexmDYar36ZEX0hbHoxH3Y+_D42NqjRwAqxpiCXHRA@mail.gmail.com>
+In-Reply-To: <CAKMK7uEpNexmDYar36ZEX0hbHoxH3Y+_D42NqjRwAqxpiCXHRA@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 25 Mar 2021 10:18:51 +0100
+Message-ID: <CAKMK7uGsjv5S8eKGwmM1ErQPnx+UdxgF5c8YXewEDEyMakpEig@mail.gmail.com>
+Subject: Re: [PATCH] drivers: gpu: drm: xen_drm_front_drm_info is declared twice
+To:     Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Wan Jiabing <wanjiabing@vivo.com>, David Airlie <airlied@linux.ie>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kael_w@yeah.net" <kael_w@yeah.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQW1leSBOYXJraGVkZQ0KPiBTZW50OiAyMyBNYXJjaCAyMDIxIDE2OjU4DQo+IA0KPiBP
-biAyMS8wMy8yMyAwNToyN1BNLCBQYWxpIFJvaMOhciB3cm90ZToNCj4gPiBPbiBUdWVzZGF5IDIz
-IE1hcmNoIDIwMjEgMjE6NDk6NDEgQW1leSBOYXJraGVkZSB3cm90ZToNCj4gPiA+IE9uIDIxLzAz
-LzEwIDEyOjA1UE0sIFBhbGkgUm9ow6FyIHdyb3RlOg0KPiA+ID4gPiBIZWxsbyENCj4gPiA+ID4N
-Cj4gPiA+ID4gSSB3b3VsZCBsaWtlIHRvIG9wZW4gYSBxdWVzdGlvbiBhYm91dCBQQ0llIFdhcm0g
-UmVzZXQuIFdhcm0gUmVzZXQgb2YNCj4gPiA+ID4gUENJZSBjYXJkIGlzIHRyaWdnZXJlZCBieSBh
-c3NlcnRpbmcgUEVSU1QjIHNpZ25hbCBhbmQgaW4gbW9zdCBjYXNlcw0KPiA+ID4gPiBQRVJTVCMg
-c2lnbmFsIGlzIGNvbnRyb2xsZWQgYnkgR1BJTy4NCj4gPiA+ID4NCj4gPiA+ID4gQmFzaWNhbGx5
-IGV2ZXJ5IG5hdGl2ZSBMaW51eCBQQ0llIGNvbnRyb2xsZXIgZHJpdmVyIGlzIGRvaW5nIHRoaXMg
-V2FybQ0KPiA+ID4gPiBSZXNldCBvZiBjb25uZWN0ZWQgUENJZSBjYXJkIGR1cmluZyBuYXRpdmUg
-ZHJpdmVyIGluaXRpYWxpemF0aW9uDQo+ID4gPiA+IHByb2NlZHVyZS4NCj4gPiA+ID4NCj4gPiA+
-ID4gQW5kIG5vdyB0aGUgaW1wb3J0YW50IHF1ZXN0aW9uIGlzOiBIb3cgbG9uZyBzaG91bGQgYmUg
-UENJZSBjYXJkIGluIFdhcm0NCj4gPiA+ID4gUmVzZXQgc3RhdGU/IEFmdGVyIHdoaWNoIHRpbWVv
-dXQgY2FuIGJlIFBFUlNUIyBzaWduYWwgZGUtYXNzZXJ0ZWQgYnkNCj4gPiA+ID4gTGludXggY29u
-dHJvbGxlciBkcml2ZXI/DQo+ID4gPiA+DQo+ID4gPiA+IExvcmVuem8gYW5kIFJvYiBhbHJlYWR5
-IGV4cHJlc3NlZCBjb25jZXJucyBbMV0gWzJdIHRoYXQgdGhpcyBXYXJtIFJlc2V0DQo+ID4gPiA+
-IHRpbWVvdXQgc2hvdWxkIG5vdCBiZSBkcml2ZXIgc3BlY2lmaWMgYW5kIEkgYWdyZWUgd2l0aCB0
-aGVtLg0KPiA+ID4gPg0KPiA+ID4gPiBJIGhhdmUgZG9uZSBpbnZlc3RpZ2F0aW9uIHdoaWNoIHRp
-bWVvdXQgaXMgdXNpbmcgd2hpY2ggbmF0aXZlIFBDSWUNCj4gPiA+ID4gZHJpdmVyIFszXSBhbmQg
-YmFzaWNhbGx5IGV2ZXJ5IGRyaXZlciBpcyB1c2luZyBkaWZmZXJlbnQgdGltZW91dC4NCj4gPiA+
-ID4NCj4gPiA+ID4gSSBoYXZlIHRyaWVkIHRvIGZpbmQgdGltZW91dHMgaW4gUENJZSBzcGVjaWZp
-Y2F0aW9ucywgSSB3YXMgbm90IGFibGUgdG8NCj4gPiA+ID4gdW5kZXJzdGFuZCBhbmQgZGVkdWNl
-IGNvcnJlY3QgdGltZW91dCB2YWx1ZSBmb3IgV2FybSBSZXNldCBmcm9tIFBDSWUNCj4gPiA+ID4g
-c3BlY2lmaWNhdGlvbnMuIFdoYXQgSSBoYXZlIGZvdW5kIGlzIHdyaXR0ZW4gaW4gbXkgZW1haWwg
-WzRdLg0KPiA+ID4gPg0KPiA+ID4gPiBBbGV4IChhcyBhICJyZXNldCBleHBlcnQiKSwgY291bGQg
-eW91IGxvb2sgYXQgdGhpcyBpc3N1ZT8NCj4gPiA+ID4NCj4gPiA+ID4gT3IgaXMgdGhlcmUgc29t
-ZWJvZHkgZWxzZSB3aG8gdW5kZXJzdGFuZCBQQ0llIHNwZWNpZmljYXRpb25zIGFuZCBQQ0llDQo+
-ID4gPiA+IGRpYWdyYW1zIHRvIGZpZ3VyZSBvdXQgd2hhdCBpcyB0aGUgbWluaW1hbCB0aW1lb3V0
-IGZvciBkZS1hc3NlcnRpbmcNCj4gPiA+ID4gUEVSU1QjIHNpZ25hbD8NCj4gPiA+ID4NCj4gPiA+
-ID4gVGhlcmUgYXJlIHN0aWxsIHNvbWUgaXNzdWVzIHdpdGggV2lGaSBjYXJkcyAoZS5nLiBDb21w
-ZXggb25lKSB3aGljaA0KPiA+ID4gPiBzb21ldGltZXMgZG8gbm90IGFwcGVhciBvbiBQQ0llIGJ1
-cy4gQW5kIGJhc2VkIG9uIHRoZXNlICJyZXNldCB0aW1lb3V0DQo+ID4gPiA+IGRpZmZlcmVuY2Vz
-IiBpbiBMaW51eCBQQ0llIGNvbnRyb2xsZXIgZHJpdmVycywgSSBzdXNwZWN0IHRoYXQgaXQgaXMg
-bm90DQo+ID4gPiA+IChvbmx5KSB0aGUgcHJvYmxlbXMgaW4gV2lGaSBjYXJkcyBidXQgYWxzbyBp
-biBMaW51eCBQQ0llIGNvbnRyb2xsZXINCj4gPiA+ID4gZHJpdmVycy4gSW4gbXkgZW1haWwgWzNd
-IEkgaGF2ZSB3cml0dGVuIHRoYXQgSSBmaWd1cmVkIG91dCB0aGF0IFdMRTEyMTYNCj4gPiA+ID4g
-Y2FyZCBuZWVkcyB0byBiZSBpbiBXYXJtIFJlc2V0IHN0YXRlIGZvciBhdCBsZWFzdCAxMG1zLCBv
-dGhlcndpc2UgY2FyZA0KPiA+ID4gPiBpcyBub3QgZGV0ZWN0ZWQuDQo+ID4gPiA+DQo+ID4gPiA+
-IFsxXSAtIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LXBjaS8yMDIwMDUxMzExNTk0MC5m
-aWVtdG54ZnFjeXFvNmlrQHBhbGkvDQo+ID4gPiA+IFsyXSAtIGh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL2xpbnV4LXBjaS8yMDIwMDUwNzIxMjAwMi5HQTMyMTgyQGJvZ3VzLw0KPiA+ID4gPiBbM10g
-LSBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1wY2kvMjAyMDA0MjQwOTI1NDYuMjVwM2hk
-dGtlaG9oZTN4d0BwYWxpLw0KPiA+ID4gPiBbNF0gLSBodHRwczovL2xvcmUua2VybmVsLm9yZy9s
-aW51eC1wY2kvMjAyMDA0MzAwODIyNDUueGJsdmI3eGVhbW00ZTMzNkBwYWxpLw0KPiA+ID4NCj4g
-PiA+IEkgc29tZWhvdyBnb3QgbXkgaGFuZHMgb24gUENJZSBHZW40IHNwZWMuIEl0IHNheXMgb24g
-cGFnZSBubyA1NTUtDQo+ID4gPiAiV2hlbiBQRVJTVCMgaXMgcHJvdmlkZWQgdG8gYSBjb21wb25l
-bnQgb3IgYWRhcHRlciwgdGhpcyBzaWduYWwgbXVzdCBiZQ0KPiA+ID4gdXNlZCBieSB0aGUgY29t
-cG9uZW50IG9yIGFkYXB0ZXIgYXMgRnVuZGFtZW50YWwgUmVzZXQuDQo+ID4gPiBXaGVuIFBFUlNU
-IyBpcyBub3QgcHJvdmlkZWQgdG8gYSBjb21wb25lbnQgb3IgYWRhcHRlciwgRnVuZGFtZW50YWwg
-UmVzZXQgaXMNCj4gPiA+IGdlbmVyYXRlZCBhdXRvbm9tb3VzbHkgYnkgdGhlIGNvbXBvbmVudCBv
-ciBhZGFwdGVyLCBhbmQgdGhlIGRldGFpbHMgb2YgaG93DQo+ID4gPiB0aGlzIGlzIGRvbmUgYXJl
-IG91dHNpZGUgdGhlIHNjb3BlIG9mIHRoaXMgZG9jdW1lbnQuIg0KPiA+ID4gTm90IHN1cmUgd2hh
-dCBjb21wb25lbnQvYWRhcHRlciBtZWFucyBpbiB0aGlzIGNvbnRleHQuDQo+ID4gPg0KPiA+ID4g
-VGhlbiBiZWxvdyBpdCBzYXlzLQ0KPiA+ID4gIkluIHNvbWUgY2FzZXMsIGl0IG1heSBiZSBwb3Nz
-aWJsZSBmb3IgdGhlIEZ1bmRhbWVudGFsIFJlc2V0IG1lY2hhbmlzbQ0KPiA+ID4gdG8gYmUgdHJp
-Z2dlcmVkICBieSBoYXJkd2FyZSB3aXRob3V0IHRoZSByZW1vdmFsIGFuZCByZS1hcHBsaWNhdGlv
-biBvZg0KPiA+ID4gcG93ZXIgdG8gdGhlIGNvbXBvbmVudC4gIFRoaXMgaXMgY2FsbGVkIGEgd2Fy
-bSByZXNldC4gVGhpcyBkb2N1bWVudCBkb2VzDQo+ID4gPiBub3Qgc3BlY2lmeSBhIG1lYW5zIGZv
-ciBnZW5lcmF0aW5nIGEgd2FybSByZXNldC4iDQo+ID4gPg0KPiA+ID4gVGhhbmtzLA0KPiA+ID4g
-QW1leQ0KPiA+DQo+ID4gSGVsbG8gQW1leSwgUENJZSBCYXNlIGRvY3VtZW50IGRvZXMgbm90IHNw
-ZWNpZnkgaG93IHRvIGNvbnRyb2wgUEVSU1QjDQo+ID4gc2lnbmFsIGFuZCBob3cgdG8gaXNzdWUg
-V2FybSBSZXNldC4gQnV0IGl0IGlzIGRvY3VtZW50ZWQgaW4gUENJZSBDRU0sDQo+ID4gTWluaSBQ
-Q0llIENFTSBhbmQgTS4yIENFTSBkb2N1bWVudHMgKG1heWJlIGluIHNvbWUgb3RoZXIgUENJZSBk
-b2NzIHRvbykuDQo+ID4NCj4gPiBJdCBpcyBuZWVkZWQgbG9vayBpbnRvIG1vcmUgZG9jdW1lbnRz
-LCAibWVyZ2UgdGhlbSBpbiBoZWFkIiBhbmQgdGhlbg0KPiA+IGRlZHVjZSBmaW5hbCBtZWFuaW5n
-Li4uDQo+IE9rYXkgc28gUENJZSBDRU0gcmV2aXNpb24gMi4wKGZyb20gMjAwNykgb24gcGFnZSBu
-byAyMiBzYXlzLQ0KPiAiT24gcG93ZXIgdXAsIHRoZSBkZWFzc2VydGlvbiBvZiBQRVJTVCMgaXMg
-ZGVsYXllZCAxMDAgbXMgKFRQVlBFUkwpDQo+IGZyb20gdGhlIHBvd2VyIHJhaWxzIGFjaGlldmlu
-ZyBzcGVjaWZpZWQgb3BlcmF0aW5nIGxpbWl0cy4gIEFsc28sIHdpdGhpbg0KPiB0aGlzIHRpbWUs
-IHRoZSByZWZlcmVuY2UgY2xvY2tzICAoUkVGQ0xLKywgUkVGQ0xLLSkgYWxzbyBiZWNvbWUgc3Rh
-YmxlLA0KPiBhdCBsZWFzdCBUUEVSU1QtQ0xLIGJlZm9yZSBQRVJTVCMgaXMgZGVhc3NlcnRlZC4i
-DQo+IA0KPiBUaGVuIGJlbG93IGl0IHNheXMtDQo+ICJBZnRlciB0aGVyZSBoYXMgYmVlbiB0aW1l
-IChUUFZQRVJMKSBmb3IgdGhlIHBvd2VyIGFuZCBjbG9jayB0byBiZWNvbWUNCj4gc3RhYmxlLCBQ
-RVJTVCMgaXMgZGVhc3NlcnRlZCBoaWdoIGFuZCB0aGUgUENJIEV4cHJlc3MgZnVuY3Rpb25zIGNh
-biBzdGFydA0KPiB1cC4iDQo+IA0KPiBBbmQgdGhlbiB0aGVyZSBpcyB0YWJsZSBvZiB0aW1pbmcg
-b24gcGFnZSBubyAzMy0NCj4gU3ltYm9sIAkJUGFyYW1ldGVyIAkJCQlNaW4NCj4gVFBWUEVSTCAJ
-UG93ZXIgU3RhYmxlIHRvIFBFUlNUIyBpbmFjdGl2ZSAJMTAwbXMNCj4gVFBFUlNULUNMSyAJUkVG
-Q0xLIHN0YWJsZSBiZWZvcmUgUEVSU1QjIGluYWN0aXZlIAkxMDDOvHMNCj4gVFBFUlNUIAkJUEVS
-U1QjIGFjdGl2ZSB0aW1lIAkJCTEwMM68cw0KPiBURkFJTCAJCVBvd2VyIGxldmVsIGludmFsaWQg
-dG8gUEVSU1QjIGFjdGl2ZSAJNTAwbnMNCj4gLi4uDQo+IA0KPiBJIGFncmVlIHRoaXMgaXMgY29u
-ZnVzaW5nLg0KDQpUaGVyZSBpcyBhbHNvIHRoZSByZWxhdGVkIGlzc3VlIG9mIHRoZSB0aW1lIGFm
-dGVyIHJlc2V0IGlzIHJlbW92ZWQNCmJlZm9yZSB0aGUgdGFyZ2V0IG11c3QgcmVzcG9uZCB0byB0
-aGUgZmlyc3QgY29uZmlndXJhdGlvbiBjeWNsZS4NCg0KSSBjYW4ndCBzZWUgdGhlIHZhbHVlIGlu
-IHRoZSAobmljZSBib3VuZCkgY29weSBvZiB0aGUgUENJIDIuMCBzcGVjIEkgaGF2ZS4NCkJ1dCBJ
-SVJDIGl0IGlzIDEwMG1zIChpdCBtaWdodCBqdXN0IG1lIDUwMG1zKS4NCldoaWxlIHRoaXMgbWln
-aHQgc2VlbSBsaWtlIGFnZXMgaXQgY2FuIGJlIHByb2JsZW1hdGljIGlmIHRhcmdldHMgaGF2ZQ0K
-dG8gbG9hZCBsYXJnZSBGUEdBIGltYWdlcyBmcm9tIHNlcmlhbCBFRVBST01zLg0KDQpNb3N0IHg4
-NiBzeXN0ZW1zIGhhdmUgbG90cyBvZiBzbG93IGJpb3MgY29kZSBzbyB0ZW5kIHRvIGJlIGZpbmUu
-DQpCdXQgc29tZSBvdGhlciBzeXN0ZW1zIGNhbiB0cnkgdG8gZW51bWVyYXRlIHRoZSBQQ0llIHRh
-cmdldCBiZWZvcmUNCml0IGlzIGFjdHVhbGx5IHJlYWR5IC0gY2F1c2luZyBzZW1pLXJhbmRvbSBm
-YWlsdXJlcy4NCg0KT3VyIGN1cnJlbnQgZnBnYXMgZG8gbG9hZCB0aGUgcGNpZSBpbnRlcmZhY2Ug
-YmVmb3JlIG1vc3Qgb2YgdGhlDQpsb2dpYywgYW5kIGNhbiBiZSBjb25maWd1cmVkIHRvIGZvcmNl
-IGN5Y2xlIHJlcnVucyBvbiB0aGUgY29uZmlnDQpzcGFjZSBhY2Nlc3NlcyB1bnRpbCBmdWxseSBs
-b2FkZWQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
-ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
-dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Thu, Mar 25, 2021 at 10:16 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Thu, Mar 25, 2021 at 7:53 AM Oleksandr Andrushchenko
+> <Oleksandr_Andrushchenko@epam.com> wrote:
+> >
+> > Hi,
+> >
+> > On 3/25/21 8:19 AM, Wan Jiabing wrote:
+> > > struct xen_drm_front_drm_info has been declared.
+> > > Remove the duplicate.
+> > >
+> > > Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> >
+> > Thank you for the patch,
+> >
+> > Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+> >
+> > Will apply to drm-misc-next-fixes
+>
+> drm-misc-next-fixes is the wrong tree, bugfixes outside of the merge
+> window belong into drm-misc-fixes. Please consult
+>
+> https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.html#where-do-i-apply-my-patch
+>
+> We need to hard-reset drm-misc-next-fixes back, please re-apply the
+> patches (both of them) to drm-misc-fixes. Also adding drm-misc
+> maintainers.
 
+Also simple cleanup like this should be pushed to drm-misc-next, not
+any of the -fixes branches.
+-Daniel
+
+> -Daniel
+>
+> >
+> > Thank you,
+> >
+> > Oleksandr
+> >
+> > > ---
+> > >   drivers/gpu/drm/xen/xen_drm_front_conn.h | 1 -
+> > >   1 file changed, 1 deletion(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/xen/xen_drm_front_conn.h b/drivers/gpu/drm/xen/xen_drm_front_conn.h
+> > > index 3adacba9a23b..e5f4314899ee 100644
+> > > --- a/drivers/gpu/drm/xen/xen_drm_front_conn.h
+> > > +++ b/drivers/gpu/drm/xen/xen_drm_front_conn.h
+> > > @@ -16,7 +16,6 @@
+> > >   struct drm_connector;
+> > >   struct xen_drm_front_drm_info;
+> > >
+> > > -struct xen_drm_front_drm_info;
+> > >
+> > >   int xen_drm_front_conn_init(struct xen_drm_front_drm_info *drm_info,
+> > >                           struct drm_connector *connector);
+>
+>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
