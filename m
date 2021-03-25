@@ -2,205 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB8B349367
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9977D349366
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhCYNzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:55:47 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57584 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbhCYNzT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:55:19 -0400
-Received: from mail-lj1-f197.google.com ([209.85.208.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lPQSE-0007cB-5o
-        for linux-kernel@vger.kernel.org; Thu, 25 Mar 2021 13:55:18 +0000
-Received: by mail-lj1-f197.google.com with SMTP id d16so3082107lja.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:55:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2ffsbwo16qlRWJVZeTtad+oHHzzSDUJ5bntqjE6nzNA=;
-        b=ncvtizwZCDiWDGO0XuuQXZ9E+iohD2dmqqGj/kv6Qx202n9Vcwi4QK+Ko1nr7QD2VZ
-         XYBX8L7eDCA8Nw1F2QpEE0Z429KmEP8MIMJH+yfG+v4RwSY9tHt6qRIynJIE+PXp36iI
-         6RTcbEqRyo8MY2xQ6p2YZJPxbgRWY8mgDLxWPAfh/EXpOf8M29q6bYaXkTz/BI+vc0+7
-         KJ2vWSafE1WV7tXvkUpRT6APCw/9HGaZ894q6BiGhFB5LiQGJ7tyl0Nju3ngxBDrjU2y
-         c3BPfXpBsLDghQwdWfMoCpK1/E66oGrMVM4CUi8GswpDs0wXG3TWM1+yHoL7KBQL9wGy
-         z5zw==
-X-Gm-Message-State: AOAM530fjV+O6adPiXKy6jpNVUz5IxKavMiXweB+B1XtPfhdzc6Vlf0G
-        Q/NjKg8l7aA4IuQB/5jwP1rDZIBJWZtVJZq8YBy99hNsDWzVke+2X8Klqin6lwjtKkyCV8136w/
-        3ETRmowO16m0Nde+UmeAhXL4Di4z1qwv/A2+vk+tt8vfOJRM8TfBICsatOg==
-X-Received: by 2002:a19:ee16:: with SMTP id g22mr5089504lfb.513.1616680517557;
-        Thu, 25 Mar 2021 06:55:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw94famgyJI0St0cjSn+Ge9wfeQQ75F6q36rk/xgF1AqvrBMX5mZOrZ+0oDkwfVW6coMicgAN/SK+fyxqI0TEU=
-X-Received: by 2002:a19:ee16:: with SMTP id g22mr5089489lfb.513.1616680517267;
- Thu, 25 Mar 2021 06:55:17 -0700 (PDT)
+        id S231293AbhCYNzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:55:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:60128 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230459AbhCYNzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:55:04 -0400
+IronPort-SDR: L9/zr1LuupBw+IaHv8PxVv2VMx1Psi+IO87XF27IAqNAZ0UT3fYFwqOC+KwYNvubTTmZ86ASk3
+ WHA3ZybNVI0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178483989"
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="178483989"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 06:55:03 -0700
+IronPort-SDR: frxC22Hq6Qfy/WZv8tWawXed1KPcDIMse80XzModv96u90kJigFMKA16z3BiBJF8PEduijy5Od
+ k21jqkRcCNMA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="593786943"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 25 Mar 2021 06:55:01 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id E5A3DE7; Thu, 25 Mar 2021 15:55:14 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v1 3/4] usb: gadget: pch_udc: Use PCI sub IDs instead of DMI
+Date:   Thu, 25 Mar 2021 15:55:07 +0200
+Message-Id: <20210325135508.70350-3-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210325135508.70350-1-andriy.shevchenko@linux.intel.com>
+References: <20210325135508.70350-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-References: <20210325121250.133009-1-kai.heng.feng@canonical.com>
- <20210325121250.133009-2-kai.heng.feng@canonical.com> <s5hczvnmju0.wl-tiwai@suse.de>
-In-Reply-To: <s5hczvnmju0.wl-tiwai@suse.de>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 25 Mar 2021 21:55:06 +0800
-Message-ID: <CAAd53p79HSpNKu69ZM7vRGWQT+9ydf59hGH-yNMT=Ymbg2NebA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ALSA: usb-audio: Check connector value on resume
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Chris Chiu <chiu@endlessm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tom Yan <tom.ty89@gmail.com>, Joe Perches <joe@perches.com>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 9:41 PM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Thu, 25 Mar 2021 13:12:48 +0100,
-> Kai-Heng Feng wrote:
-> >
-> > Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
-> > error and the other two functions of the USB audio, Line In and Line
-> > Out, work just fine.
-> >
-> > The mic starts to work again after running userspace app like "alsactl
-> > store". Following the lead, the evidence shows that as soon as connector
-> > status is queried, the mic can work again.
-> >
-> > So also check connector value on resume to "wake up" the USB audio to
-> > make it functional.
-> >
-> > This can be device specific, however I think this generic approach may
-> > benefit more than one device.
-> >
-> > While at it, also remove reset-resume path to consolidate mixer resume
-> > path.
-> >
-> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > ---
-> > v2:
-> >  - Remove reset-resume.
-> >  - Fold the connector checking to the mixer resume callback.
->
-> That's not what I meant exactly...  I meant to put both into the
-> single resume callback, but handle each part conditionally depending
-> on reset_resume argument.
+We don't need DMI to identify Intel Minnowboard (v1) since it has
+properly set PCI sub IDs. So, drop unneeded DMI level of identification.
 
-OK, I get what you mean now.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/usb/gadget/udc/pch_udc.c | 91 +++++++++++++++-----------------
+ 1 file changed, 44 insertions(+), 47 deletions(-)
 
->
-> But this turned out to need more changes in mixer_quirks.c
-> unnecessarily.  Maybe adding the two resume functions is a better
-> approach in the end, but not for the specific connection thing but
-> generically both resume and reset_resume callbacks.  Something like
-> below.
+diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
+index d5685d427158..db6b63f060f3 100644
+--- a/drivers/usb/gadget/udc/pch_udc.c
++++ b/drivers/usb/gadget/udc/pch_udc.c
+@@ -7,7 +7,6 @@
+ #include <linux/module.h>
+ #include <linux/pci.h>
+ #include <linux/delay.h>
+-#include <linux/dmi.h>
+ #include <linux/errno.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/gpio/machine.h>
+@@ -1356,43 +1355,6 @@ static irqreturn_t pch_vbus_gpio_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static struct gpiod_lookup_table minnowboard_udc_gpios = {
+-	.dev_id		= "0000:02:02.4",
+-	.table		= {
+-		GPIO_LOOKUP("sch_gpio.33158", 12, NULL, GPIO_ACTIVE_HIGH),
+-		{}
+-	},
+-};
+-
+-static const struct dmi_system_id pch_udc_gpio_dmi_table[] = {
+-	{
+-		.ident = "MinnowBoard",
+-		.matches = {
+-			DMI_MATCH(DMI_BOARD_NAME, "MinnowBoard"),
+-		},
+-		.driver_data = &minnowboard_udc_gpios,
+-	},
+-	{ }
+-};
+-
+-static void pch_vbus_gpio_remove_table(void *table)
+-{
+-	gpiod_remove_lookup_table(table);
+-}
+-
+-static int pch_vbus_gpio_add_table(struct pch_udc_dev *dev)
+-{
+-	struct device *d = &dev->pdev->dev;
+-	const struct dmi_system_id *dmi;
+-
+-	dmi = dmi_first_match(pch_udc_gpio_dmi_table);
+-	if (!dmi)
+-		return 0;
+-
+-	gpiod_add_lookup_table(dmi->driver_data);
+-	return devm_add_action_or_reset(d, pch_vbus_gpio_remove_table, dmi->driver_data);
+-}
+-
+ /**
+  * pch_vbus_gpio_init() - This API initializes GPIO port detecting VBUS.
+  * @dev:		Reference to the driver structure
+@@ -1411,10 +1373,6 @@ static int pch_vbus_gpio_init(struct pch_udc_dev *dev)
+ 	dev->vbus_gpio.port = NULL;
+ 	dev->vbus_gpio.intr = 0;
+ 
+-	err = pch_vbus_gpio_add_table(dev);
+-	if (err)
+-		return err;
+-
+ 	/* Retrieve the GPIO line from the USB gadget device */
+ 	gpiod = devm_gpiod_get_optional(d, NULL, GPIOD_IN);
+ 	if (IS_ERR(gpiod))
+@@ -2867,7 +2825,7 @@ static void pch_udc_pcd_reinit(struct pch_udc_dev *dev)
+  *
+  * Return codes:
+  *	0:		Success
+- *	-%ERRNO:	All kind of errors when retrieving VBUS GPIO
++ *	-ERRNO:		All kind of errors when retrieving VBUS GPIO
+  */
+ static int pch_udc_pcd_init(struct pch_udc_dev *dev)
+ {
+@@ -2978,6 +2936,30 @@ static int pch_udc_stop(struct usb_gadget *g)
+ 	return 0;
+ }
+ 
++static void pch_vbus_gpio_remove_table(void *table)
++{
++	gpiod_remove_lookup_table(table);
++}
++
++static int pch_vbus_gpio_add_table(struct device *d, void *table)
++{
++	gpiod_add_lookup_table(table);
++	return devm_add_action_or_reset(d, pch_vbus_gpio_remove_table, table);
++}
++
++static struct gpiod_lookup_table pch_udc_minnow_vbus_gpio_table = {
++	.dev_id		= "0000:02:02.4",
++	.table		= {
++		GPIO_LOOKUP("sch_gpio.33158", 12, NULL, GPIO_ACTIVE_HIGH),
++		{}
++	},
++};
++
++static int pch_udc_minnow_platform_init(struct device *d)
++{
++	return pch_vbus_gpio_add_table(d, &pch_udc_minnow_vbus_gpio_table);
++}
++
+ static void pch_udc_shutdown(struct pci_dev *pdev)
+ {
+ 	struct pch_udc_dev *dev = pci_get_drvdata(pdev);
+@@ -3043,9 +3025,11 @@ static int __maybe_unused pch_udc_resume(struct device *d)
+ 
+ static SIMPLE_DEV_PM_OPS(pch_udc_pm, pch_udc_suspend, pch_udc_resume);
+ 
+-static int pch_udc_probe(struct pci_dev *pdev,
+-			  const struct pci_device_id *id)
++typedef int (*platform_init_fn)(struct device *);
++
++static int pch_udc_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ {
++	platform_init_fn platform_init = (platform_init_fn)id->driver_data;
+ 	int			bar;
+ 	int			retval;
+ 	struct pch_udc_dev	*dev;
+@@ -3063,6 +3047,13 @@ static int pch_udc_probe(struct pci_dev *pdev,
+ 	dev->pdev = pdev;
+ 	pci_set_drvdata(pdev, dev);
+ 
++	/* Platform specific hook */
++	if (platform_init) {
++		retval = platform_init(&pdev->dev);
++		if (retval)
++			return retval;
++	}
++
+ 	/* Determine BAR based on PCI ID */
+ 	if (id->device == PCI_DEVICE_ID_INTEL_QUARK_X1000_UDC)
+ 		bar = PCH_UDC_PCI_BAR_QUARK_X1000;
+@@ -3119,10 +3110,16 @@ static int pch_udc_probe(struct pci_dev *pdev,
+ 
+ static const struct pci_device_id pch_udc_pcidev_id[] = {
+ 	{
+-		PCI_DEVICE(PCI_VENDOR_ID_INTEL,
+-			   PCI_DEVICE_ID_INTEL_QUARK_X1000_UDC),
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_QUARK_X1000_UDC),
++		.class = PCI_CLASS_SERIAL_USB_DEVICE,
++		.class_mask = 0xffffffff,
++	},
++	{
++		PCI_DEVICE_SUB(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_EG20T_UDC,
++			       PCI_VENDOR_ID_CIRCUITCO, PCI_SUBSYSTEM_ID_CIRCUITCO_MINNOWBOARD),
+ 		.class = PCI_CLASS_SERIAL_USB_DEVICE,
+ 		.class_mask = 0xffffffff,
++		.driver_data = (kernel_ulong_t)&pch_udc_minnow_platform_init,
+ 	},
+ 	{
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_EG20T_UDC),
+-- 
+2.30.2
 
-This approach looks good. Let me send another one.
-
-Kai-Heng
-
->
->
-> thanks,
->
-> Takashi
->
->
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index b004b2e63a5d..1dab281bb269 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -3615,20 +3615,43 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
->         return 0;
->  }
->
-> +static int default_mixer_resume(struct usb_mixer_elem_list *list)
-> +{
-> +       struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
-> +
-> +       /* get connector value to "wake up" the USB audio */
-> +       if (cval->val_type == USB_MIXER_BOOLEAN && cval->channels == 1)
-> +               get_connector_value(cval, NULL, NULL);
-> +
-> +       return 0;
-> +}
-> +
-> +static int default_mixer_reset_resume(struct usb_mixer_elem_list *list)
-> +{
-> +       int err = default_mixer_resume(list);
-> +
-> +       if (err < 0)
-> +               return err;
-> +       return restore_mixer_value(list);
-> +}
-> +
->  int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
->  {
->         struct usb_mixer_elem_list *list;
-> +       usb_mixer_elem_resume_func_t f;
->         int id, err;
->
-> -       if (reset_resume) {
-> -               /* restore cached mixer values */
-> -               for (id = 0; id < MAX_ID_ELEMS; id++) {
-> -                       for_each_mixer_elem(list, mixer, id) {
-> -                               if (list->resume) {
-> -                                       err = list->resume(list);
-> -                                       if (err < 0)
-> -                                               return err;
-> -                               }
-> +       /* restore cached mixer values */
-> +       for (id = 0; id < MAX_ID_ELEMS; id++) {
-> +               for_each_mixer_elem(list, mixer, id) {
-> +                       if (reset_resume)
-> +                               f = list->reset_resume;
-> +                       else
-> +                               f = list->resume;
-> +                       if (f) {
-> +                               err = list->resume(list);
-> +                               if (err < 0)
-> +                                       return err;
->                         }
->                 }
->         }
-> @@ -3647,6 +3670,7 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
->         list->id = unitid;
->         list->dump = snd_usb_mixer_dump_cval;
->  #ifdef CONFIG_PM
-> -       list->resume = restore_mixer_value;
-> +       list->resume = default_mixer_resume;
-> +       list->reset_resume = default_mixer_reset_resume;
->  #endif
->  }
-> diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-> index c29e27ac43a7..e5a01f17bf3c 100644
-> --- a/sound/usb/mixer.h
-> +++ b/sound/usb/mixer.h
-> @@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
->         bool is_std_info;
->         usb_mixer_elem_dump_func_t dump;
->         usb_mixer_elem_resume_func_t resume;
-> +       usb_mixer_elem_resume_func_t reset_resume;
->  };
->
->  /* iterate over mixer element list of the given unit id */
-> diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-> index ffd922327ae4..b7f9c2fded05 100644
-> --- a/sound/usb/mixer_quirks.c
-> +++ b/sound/usb/mixer_quirks.c
-> @@ -151,7 +151,7 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
->                 *listp = list;
->         list->mixer = mixer;
->         list->id = id;
-> -       list->resume = resume;
-> +       list->reset_resume = resume;
->         kctl = snd_ctl_new1(knew, list);
->         if (!kctl) {
->                 kfree(list);
