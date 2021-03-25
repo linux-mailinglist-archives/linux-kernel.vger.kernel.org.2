@@ -2,140 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76903349BB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:35:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83909349BC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230496AbhCYVfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhCYVep (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:34:45 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEFC9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:34:44 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id e18so3730171wrt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vOuyD+8iJ6pChPVDl0VFGxY46KCmbNa2kfeUJDzMkXg=;
-        b=soMI3uWRUjktG04D2SQu8Qy97qHRJs7uo1iRTTUJnj71Tc1uQP8P984R/Y7LZalU1j
-         +gziByYDZXZLl7kF8Ob027LJQ1qyidDTVcI6awvzbJW0i1RbBtYRvZYh6bf5ls5CQIjk
-         xdmKmlte7+TYumQURsrVTuUWRbxJYrlpQdrHx1SPMk3DoqM7bmSr4y2Qoq0++a6I6MFX
-         PKS6qd9U/lVfCGA1DTHkKdMJw5iKC56pjQ6LMfmpbljVbHk3dvN3b8KnU1eetT23dlMO
-         2EKRrrutCsEjCxe5zt9+8hYwo/KfIfmNpD2R5OBzXDxOh+ibxUwkynf0OVLvV8N0RnrG
-         L1uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vOuyD+8iJ6pChPVDl0VFGxY46KCmbNa2kfeUJDzMkXg=;
-        b=iPrxTAs2RyQ0ZDRTVZ+bEluMh+p8SN8Fe/RV9GY0vdO2jScPdIzcKqjSgx5mgANgze
-         +yAu/cmIJ6KGlESnycE3I28eL0oyPygmOjOMKUJ56nEK+5UOBoMa1FR54Oyb9qFAj0za
-         KfkVAVMfJ2flgm2wTz722W84p4E6+hSlPT64WfViSPBuSCC2QJFY3pz7nLOGHN4TMWlT
-         rKDDgZeugK5avkfroKIhW9h67Bmwnu0CeI2TsihsasFNIRuB8C3it+2ACFIm4WooznvF
-         +brCrBqfd1Qlw5WK01p5JYU0Qw93Mya6PiPYj2s38xMI0JjkPqIZcJeFjKkrvsp6ci0X
-         wlrA==
-X-Gm-Message-State: AOAM532R4YMGiQaG2peNynksM1+jlbC2Qb99QgiDzRd51DPa9d40XDOw
-        Ol63NBjMleWvTJ3ervpMUQU=
-X-Google-Smtp-Source: ABdhPJzaBmLiCUF9fTMgpQMDGbGE00hcRi591iwKiRoYxb9iM1hwjDFmt01SSNbGWLnnoxFGqM3aBA==
-X-Received: by 2002:a5d:6a49:: with SMTP id t9mr11373439wrw.131.1616708083605;
-        Thu, 25 Mar 2021 14:34:43 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id i8sm7995314wmi.6.2021.03.25.14.34.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 14:34:43 -0700 (PDT)
-Subject: Re: [PATCH] mremap.2: MREMAP_DONTUNMAP to reflect to supported
- mappings
-To:     Brian Geffon <bgeffon@google.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Dmitry Safonov <dima@arista.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210303175235.3308220-1-bgeffon@google.com>
- <20210323182520.2712101-1-bgeffon@google.com>
- <20210323182520.2712101-4-bgeffon@google.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <9c0b4b2a-3678-186a-072a-280628e5da02@gmail.com>
-Date:   Thu, 25 Mar 2021 22:34:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230523AbhCYVkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:40:03 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:56455 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230436AbhCYVjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 17:39:35 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id CA0C42400FD
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 22:39:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
+        t=1616708373; bh=KdsRNnvFwA87wgl2QBB2wW9QE36s9vpzeA4RiwDJPBc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hbNiISK+bPdIj1IHAiROnGd4rGSphwzX7p4vsivNZ+OphZBQDgavAEJNbHYa9i8Ej
+         8Jl4tb/SoSnZC9lW/vx5t2DNn3UKUg/kRCsGSRI4ApWdSX8w4uGUqSUsT9qM0vk/Gz
+         9w2kXYJUjRIgN48MeInrtqfr4Q9++8KK93rNrKz3UlIzTJHdSoS+gXVtpOOsfnzvde
+         x/WoYaxDe1oBQysABfpkQ1nhnJYCfE7sbG9ehij0Bc/28oZSxzFCwLPc0D3rTusrfR
+         uOvv1r1TOpt5zzzj8FN1dE8FrPBe5gH6aWcaAaWqitFqcmD1g0t+waOKIbNIbeF7sY
+         njq2ahrpzHhLQ==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4F5z5c4fg7z6tmJ;
+        Thu, 25 Mar 2021 22:39:32 +0100 (CET)
+From:   Benjamin Drung <bdrung@posteo.de>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Adam Goode <agoode@google.com>,
+        Benjamin Drung <bdrung@posteo.de>
+Subject: [PATCH] media: uvcvideo: Fix pixel format change for Elgato Cam Link 4K
+Date:   Thu, 25 Mar 2021 22:34:59 +0100
+Message-Id: <20210325213458.51309-1-bdrung@posteo.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210323182520.2712101-4-bgeffon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Brian,
+The Elgato Cam Link 4K HDMI video capture card reports to support three
+different pixel formats, where the first format depends on the connected
+HDMI device.
 
-Is this already merged in Linux?  I guess not, as I've seen a patch of 
-yous for the kernel, right?
+```
+$ v4l2-ctl -d /dev/video0 --list-formats-ext
+ioctl: VIDIOC_ENUM_FMT
+	Type: Video Capture
 
-Thanks,
+	[0]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[1]: 'NV12' (Y/CbCr 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+	[2]: 'YU12' (Planar YUV 4:2:0)
+		Size: Discrete 3840x2160
+			Interval: Discrete 0.033s (29.970 fps)
+```
 
-Alex
+Changing the pixel format to anything besides the first pixel format
+does not work:
 
-On 3/23/21 7:25 PM, Brian Geffon wrote:
-> mremap(2) now supports MREMAP_DONTUNMAP with mapping types other
-> than private anonymous.
-> 
-> Signed-off-by: Brian Geffon <bgeffon@google.com>
-> ---
->   man2/mremap.2 | 13 ++-----------
->   1 file changed, 2 insertions(+), 11 deletions(-)
-> 
-> diff --git a/man2/mremap.2 b/man2/mremap.2
-> index 3ed0c0c0a..72acbc111 100644
-> --- a/man2/mremap.2
-> +++ b/man2/mremap.2
-> @@ -118,16 +118,6 @@ This flag, which must be used in conjunction with
->   remaps a mapping to a new address but does not unmap the mapping at
->   .IR old_address .
->   .IP
-> -The
-> -.B MREMAP_DONTUNMAP
-> -flag can be used only with private anonymous mappings
-> -(see the description of
-> -.BR MAP_PRIVATE
-> -and
-> -.BR MAP_ANONYMOUS
-> -in
-> -.BR mmap (2)).
-> -.IP
->   After completion,
->   any access to the range specified by
->   .IR old_address
-> @@ -227,7 +217,8 @@ was specified, but one or more pages in the range specified by
->   .IR old_address
->   and
->   .IR old_size
-> -were not private anonymous;
-> +were part of a special mapping or the mapping is one that
-> +does not support merging or expanding;
->   .IP *
->   .B MREMAP_DONTUNMAP
->   was specified and
-> 
+```
+v4l2-ctl -d /dev/video0 --try-fmt-video pixelformat=YU12
+Format Video Capture:
+	Width/Height      : 3840/2160
+	Pixel Format      : 'NV12' (Y/CbCr 4:2:0)
+	Field             : None
+	Bytes per Line    : 3840
+	Size Image        : 12441600
+	Colorspace        : sRGB
+	Transfer Function : Rec. 709
+	YCbCr/HSV Encoding: Rec. 709
+	Quantization      : Default (maps to Limited Range)
+	Flags             :
+```
 
+User space applications like VLC might show an error message on the
+terminal in that case:
+
+```
+libv4l2: error set_fmt gave us a different result than try_fmt!
+```
+
+Depending on the error handling of the user space applications, they
+might display a distorted video, because they use the wrong pixel format
+for decoding the stream.
+
+The Elgato Cam Link 4K responds to the USB video probe
+VS_PROBE_CONTROL/VS_COMMIT_CONTROL with a malformed data structure: The
+second byte contains bFormatIndex (instead of being the second byte of
+bmHint). The first byte is always zero. The third byte is always 1.
+
+The firmware bug was reported to Elgato on 2020-12-01 and it was
+forwarded by the support team to the developers as feature request.
+There is no firmware update available since then. The latest firmware
+for Elgato Cam Link 4K as of 2021-03-23 has MCU 20.02.19 and FPGA 67.
+
+Therefore add a quirk to correct the malformed data structure.
+
+The quirk was successfully tested with VLC, OBS, and Chromium using
+different pixel formats (YUYV, NV12, YU12), resolutions (3840x2160,
+1920x1080), and frame rates (29.970 and 59.940 fps).
+
+Signed-off-by: Benjamin Drung <bdrung@posteo.de>
+---
+
+Feel free to propose a better name for the quirk than
+UVC_QUIRK_FIX_FORMAT_INDEX.
+
+To backport to version 5.11 and earlier, the line
+
+```
+uvc_dbg(stream->dev, CONTROL,
+```
+
+needs to be changed back to
+
+```
+uvc_trace(UVC_TRACE_CONTROL,
+```
+
+ drivers/media/usb/uvc/uvc_driver.c | 13 +++++++++++++
+ drivers/media/usb/uvc/uvc_video.c  | 17 +++++++++++++++++
+ drivers/media/usb/uvc/uvcvideo.h   |  1 +
+ 3 files changed, 31 insertions(+)
+
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 30ef2a3110f7..4f245b3f8bd9 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -3132,6 +3132,19 @@ static const struct usb_device_id uvc_ids[] = {
+ 	  .bInterfaceSubClass	= 1,
+ 	  .bInterfaceProtocol	= 0,
+ 	  .driver_info		= UVC_INFO_META(V4L2_META_FMT_D4XX) },
++	/*
++	 * Elgato Cam Link 4K
++	 * Latest firmware as of 2021-03-23 needs this quirk.
++	 * MCU: 20.02.19, FPGA: 67
++	 */
++	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
++				| USB_DEVICE_ID_MATCH_INT_INFO,
++	  .idVendor		= 0x0fd9,
++	  .idProduct		= 0x0066,
++	  .bInterfaceClass	= USB_CLASS_VIDEO,
++	  .bInterfaceSubClass	= 1,
++	  .bInterfaceProtocol	= 0,
++	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FIX_FORMAT_INDEX) },
+ 	/* Generic USB Video Class */
+ 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_UNDEFINED) },
+ 	{ USB_INTERFACE_INFO(USB_CLASS_VIDEO, 1, UVC_PC_PROTOCOL_15) },
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index f2f565281e63..e348e1794d93 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -128,6 +128,23 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+ 	struct uvc_frame *frame = NULL;
+ 	unsigned int i;
+ 
++	/*
++	 * The response of the Elgato Cam Link 4K is incorrect: The second byte
++	 * contains bFormatIndex (instead of being the second byte of bmHint).
++	 * The first byte is always zero. The third byte is always 1.
++	 */
++	if (stream->dev->quirks & UVC_QUIRK_FIX_FORMAT_INDEX && ctrl->bmHint > 255) {
++		__u8 corrected_format_index;
++
++		corrected_format_index = ctrl->bmHint >> 8;
++		uvc_dbg(stream->dev, CONTROL,
++			"Correct USB video probe response from {bmHint: 0x%04x, bFormatIndex: 0x%02x} to {bmHint: 0x%04x, bFormatIndex: 0x%02x}.\n",
++			ctrl->bmHint, ctrl->bFormatIndex,
++			ctrl->bFormatIndex, corrected_format_index);
++		ctrl->bmHint = ctrl->bFormatIndex;
++		ctrl->bFormatIndex = corrected_format_index;
++	}
++
+ 	for (i = 0; i < stream->nformats; ++i) {
+ 		if (stream->format[i].index == ctrl->bFormatIndex) {
+ 			format = &stream->format[i];
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 97df5ecd66c9..bf401d5ba27d 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -209,6 +209,7 @@
+ #define UVC_QUIRK_RESTORE_CTRLS_ON_INIT	0x00000400
+ #define UVC_QUIRK_FORCE_Y8		0x00000800
+ #define UVC_QUIRK_FORCE_BPP		0x00001000
++#define UVC_QUIRK_FIX_FORMAT_INDEX	0x00002000
+ 
+ /* Format flags */
+ #define UVC_FMT_FLAG_COMPRESSED		0x00000001
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+2.27.0
+
