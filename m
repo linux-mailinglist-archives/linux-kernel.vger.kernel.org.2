@@ -2,149 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C93348DD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2270348E02
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhCYKRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbhCYKRU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:17:20 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DE7C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:17:18 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so845919wmj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LQYU7AshaChrIv5/sVzoGBNv4W3iyRIKQFQCOFPAGsA=;
-        b=aDRT36p1kgh5L+6KKg2GcwiS2kGmCefS5501HJavEe4puOS1g2TQ0VuHvw36qpETS8
-         LGn2FqE3X73sM00xuU4VxjOnZDlS8V5fM5my0l10nMJMTRvOVQ9Q8JkQinW7Fp34nsoO
-         PXHDCVEJCtopx6frWA5kbIRLpvVq4jocMQA60C3Fu50GBgIPSuKoPp68yrHJs4dp1xUc
-         Dv7Yzn9q/OEj4x807SfvFVg5NACM0Fx9evH07uuLQtREde+JgW4MQO2Jm8QWtFEWDNSy
-         LoLRoewqMJyyuAT8VD03wG5ggvKkE8Fv1fHc+7GS98JX3699ko0naxQhd9XUoRqy8aI/
-         DMXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LQYU7AshaChrIv5/sVzoGBNv4W3iyRIKQFQCOFPAGsA=;
-        b=TpwrHY6yuseDofUGXbRHmDc33lYvIT59GMj3NE6hmTaIZCEIYSI3eyoscwvi8KYhHb
-         9H6W38Dslbs6xfe3ugiNUgQ40kLt/GWfaW2yARMTREpIIaBobMXxGJAQ6XF1pNo7kXVT
-         lpXV8bgHGVkn46SzVhJHgz5GFEjkuZc4hQzKDQMjFdF7DNgfV2KRHxL2aPtTYvRrLhro
-         p3ETrHG40oQuKFbWt6lJhP3gZuxtLdVghEnv2R5URKJiCEsWYyvWbK1AlEJX5JGs9xX4
-         gvN/1gsa8zEWUfcxnX+YXtpnwuEzm4+TBkqJ7pCyRGMPlmxl6gokq3N+mfRXQjMN2CQZ
-         AQKg==
-X-Gm-Message-State: AOAM530vcAI4/5MQS+q7RjNbv16IvNuQgcOF2Kyx6vmBwD56iyKZtsHI
-        eRBHXDqu3c+mK8MKAWtMT1YbFg==
-X-Google-Smtp-Source: ABdhPJzVfCraC/WgVtFV9wV6xcx3lYTzd3E+tTXoWs6K3Ut/rJgJlgIbqTjqqc2nUr8HNm0Gfnrk2Q==
-X-Received: by 2002:a1c:4986:: with SMTP id w128mr7098059wma.37.1616667436411;
-        Thu, 25 Mar 2021 03:17:16 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:248e:270b:f7ab:435d])
-        by smtp.gmail.com with ESMTPSA id 1sm5847116wmj.2.2021.03.25.03.17.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 03:17:15 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:17:09 +0100
-From:   Marco Elver <elver@google.com>
-To:     peterz@infradead.org
-Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
-        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
-        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
-        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
-        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
-        mascasa@google.com, pcc@google.com, irogers@google.com,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v3 01/11] perf: Rework perf_event_exit_event()
-Message-ID: <YFxjJam0ErVmk99i@elver.google.com>
-References: <20210324112503.623833-1-elver@google.com>
- <20210324112503.623833-2-elver@google.com>
+        id S230105AbhCYK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:29:06 -0400
+Received: from elvis.franken.de ([193.175.24.41]:58945 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229716AbhCYK2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:28:48 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lPNEM-0007Ug-00; Thu, 25 Mar 2021 11:28:46 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id CCBECC1C81; Thu, 25 Mar 2021 11:17:12 +0100 (CET)
+Date:   Thu, 25 Mar 2021 11:17:12 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
+Message-ID: <20210325101712.GA6893@alpha.franken.de>
+References: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
+ <alpine.DEB.2.21.2103220540591.21463@angie.orcam.me.uk>
+ <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324112503.623833-2-elver@google.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:24PM +0100, Marco Elver wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
+On Mon, Mar 22, 2021 at 03:12:59PM +0800, Tiezhu Yang wrote:
+> On 03/22/2021 12:46 PM, Maciej W. Rozycki wrote:
+> > On Thu, 18 Mar 2021, Tiezhu Yang wrote:
+> > 
+> > > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> > > index 160b3a8..4b94ec7 100644
+> > > --- a/arch/mips/Kconfig
+> > > +++ b/arch/mips/Kconfig
+> > > @@ -6,6 +6,7 @@ config MIPS
+> > >   	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
+> > >   	select ARCH_HAS_FORTIFY_SOURCE
+> > >   	select ARCH_HAS_KCOV
+> > > +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
+> >   Hmm, documentation on ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE seems rather
+> > scarce, but based on my guess shouldn't this be "if !EVA"?
+> > 
+> >    Maciej
 > 
-> Make perf_event_exit_event() more robust, such that we can use it from
-> other contexts. Specifically the up and coming remove_on_exec.
+> I do not quite know what the effect if MIPS EVA (Enhanced Virtual
+> Addressing)
+> is set, I saw that ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be
+> restricted
+> to archs with non-overlapping address ranges.
 > 
-> For this to work we need to address a few issues. Remove_on_exec will
-> not destroy the entire context, so we cannot rely on TASK_TOMBSTONE to
-> disable event_function_call() and we thus have to use
-> perf_remove_from_context().
-> 
-> When using perf_remove_from_context(), there's two races to consider.
-> The first is against close(), where we can have concurrent tear-down
-> of the event. The second is against child_list iteration, which should
-> not find a half baked event.
-> 
-> To address this, teach perf_remove_from_context() to special case
-> !ctx->is_active and about DETACH_CHILD.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> v3:
-> * New dependency for series:
->   https://lkml.kernel.org/r/YFn/I3aKF+TOjGcl@hirez.programming.kicks-ass.net
-> ---
+> I wonder whether MIPS EVA will generate overlapping address ranges?
 
-syzkaller found a crash with stack trace pointing at changes in this
-patch. Can't tell if this is an old issue or introduced in this series.
+they can overlap in EVA mode.
 
-It looks like task_pid_ptr() wants to access task_struct::signal, but
-the task_struct pointer is NULL.
+> If yes, it is better to make ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE depend
+> on !EVA on MIPS.
 
-Any ideas?
+Could please add the change ?
 
-general protection fault, probably for non-canonical address 0xdffffc0000000103: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000818-0x000000000000081f]
-CPU: 2 PID: 15084 Comm: syz-executor.1 Not tainted 5.12.0-rc4+ #5
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-RIP: 0010:task_pid_ptr kernel/pid.c:325 [inline]
-RIP: 0010:__task_pid_nr_ns+0x137/0x3e0 kernel/pid.c:500
-Code: 8b 75 00 eb 08 e8 59 28 29 00 45 31 f6 31 ff 44 89 fe e8 5c 2c 29 00 45 85 ff 74 49 48 81 c3 20 08 00 00 48 89 d8 48 c1 e8 03 <42> 80 3c 20 00 74 08 48 89 df e8 aa 03 6d 00 48 8b 2b 44 89 fb bf
-RSP: 0018:ffffc9000c76f6d0 EFLAGS: 00010007
-RAX: 0000000000000103 RBX: 000000000000081f RCX: ffff8880717d8000
-RDX: ffff8880717d8000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: 0000000000000001 R08: ffffffff814fe814 R09: fffffbfff1f296b1
-R10: fffffbfff1f296b1 R11: 0000000000000000 R12: dffffc0000000000
-R13: 1ffff1100e6dfc5c R14: ffff888057fba108 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff88802cf00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffcc3b05bc0 CR3: 0000000040ac0000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000600
-PKRU: 55555554
-Call Trace:
- perf_event_pid_type kernel/events/core.c:1412 [inline]
- perf_event_pid kernel/events/core.c:1421 [inline]
- perf_event_read_event kernel/events/core.c:7511 [inline]
- sync_child_event kernel/events/core.c:12521 [inline]
- perf_child_detach kernel/events/core.c:2223 [inline]
- __perf_remove_from_context+0x569/0xd30 kernel/events/core.c:2359
- perf_remove_from_context+0x19d/0x220 kernel/events/core.c:2395
- perf_event_exit_event+0x76/0x950 kernel/events/core.c:12559
- perf_event_exit_task_context kernel/events/core.c:12640 [inline]
- perf_event_exit_task+0x715/0xa40 kernel/events/core.c:12673
- do_exit+0x6c2/0x2290 kernel/exit.c:834
- do_group_exit+0x168/0x2d0 kernel/exit.c:922
- get_signal+0x1734/0x1ef0 kernel/signal.c:2779
- arch_do_signal_or_restart+0x41/0x620 arch/x86/kernel/signal.c:789
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0xac/0x1e0 kernel/entry/common.c:208
- irqentry_exit_to_user_mode+0x6/0x40 kernel/entry/common.c:314
- exc_general_protection+0x222/0x370 arch/x86/kernel/traps.c:530
- asm_exc_general_protection+0x1e/0x30 arch/x86/include/asm/idtentry.h:571
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
