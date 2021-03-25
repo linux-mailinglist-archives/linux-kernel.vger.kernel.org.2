@@ -2,105 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4945D349BA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A76E349BAF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhCYV2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
+        id S230287AbhCYVc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 17:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbhCYV2Z (ORCPT
+        with ESMTP id S230389AbhCYVcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:28:25 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68439C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:28:24 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id g15so3394022pfq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 14:28:24 -0700 (PDT)
+        Thu, 25 Mar 2021 17:32:24 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476AAC06174A;
+        Thu, 25 Mar 2021 14:32:24 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v11so3708701wro.7;
+        Thu, 25 Mar 2021 14:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ar68jm2yqLLP/HtYyEXI6uh/AJB1y8cS7PMCnpcIT0Y=;
-        b=TEhkRsQE/1x3MCeVcTv1S4X5n9NVnMa/jFa1XAMbvGy39rpRV1ols2bNLEAqx+w+h5
-         g2Q8Cf5S/EzPjEVGrOQzwY+XfoaFuzar68pfaJd/vxur40Pn9WtqXa1pHKYOkFb2L6Ii
-         ZRPcqJ7LOVPXZga+/NH+evnqAMK2sye1eGuMg=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nbNivWiWgaBMZuyO4MpN+8EYAa/41jtzT5v1aG+/fJw=;
+        b=Q2UpVjLeH9lnudNPvjqKIwJPfOC6tqAcXg1q/QxTB5RWQ721mgUIQFzRGc3Ln6q0rw
+         ycXPsWhmmhRPTgWTzpKj5FH5M5+QE5pxzQxnB4dOzzNSg8ucOm340vhce7Pun0LmAIPj
+         +5yJYXOru/sWeBKGS/yojEtJsmN10lzXrrPj6h/q7M9zl0w/nvdM/VtAzRRdN5uDF7aX
+         h8eWI6zYFtWS/Ql0mIcW2FrIpJ3Pw/Vo4gNfptnZT0Gfa7HKjG0x6rVL4dUJgvR5PmAz
+         eEGsg2mBdTogaI1NLHwkga45nKBp3NXTs3/ABFbB/RvBBVtJH1w9aCLt+/l04lAlt3kQ
+         wOxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Ar68jm2yqLLP/HtYyEXI6uh/AJB1y8cS7PMCnpcIT0Y=;
-        b=M1bZC6ljL2mV41FWuo03qzWCMBSo4hJXHnq8cZPCSjNHPv80HnGkrnvJArmOPAIzK4
-         jB0iI5tUWaKK05co4xEIkhLEWPQxjcJfMlDndTlFt//4PgN/+PwLMnPR2/OJZ4V+Tj+V
-         HETyLETPEKvX5OGpyfEhUYkpvgiV9iStzVgxuSqZIaNi5SAiAoIU7ZGnGTucBYQ+mrN8
-         pYkHKMOVx/cFUS+k7I9nPKAKhEg4QWLpMSAyDR36Lxm6lePjP965s/h8HO0Sb4Ewml+B
-         gkhZzIHweRi+9A87Seg+ZK3jWhgwbyjDorUrC29anlYd5T5m36yESz8hz6ZOvkArfd67
-         NDxw==
-X-Gm-Message-State: AOAM533DZNxt13fTNXCB3XFNK4j/FcBPDkig471H/xxmjF9TiYZ3Xi6u
-        ctdq8WVBrcJSt9R5GzQikN6i/A==
-X-Google-Smtp-Source: ABdhPJxb+M1K271yeV8ZJZrouwWTafpUJhJVRUBFQFGmitdZRBmwSGYAIxMD8Z4uVYOLg333mONJ/Q==
-X-Received: by 2002:a17:902:dad2:b029:e5:e7da:cbb0 with SMTP id q18-20020a170902dad2b02900e5e7dacbb0mr11705640plx.66.1616707703977;
-        Thu, 25 Mar 2021 14:28:23 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:18a3:238:26c5:1521])
-        by smtp.gmail.com with ESMTPSA id e21sm5880792pgv.74.2021.03.25.14.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 14:28:23 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Krishna Manikandan <mkrishn@codeaurora.org>
-Subject: [PATCH] drm/msm: Set drvdata to NULL when msm_drm_init() fails
-Date:   Thu, 25 Mar 2021 14:28:22 -0700
-Message-Id: <20210325212822.3663144-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+        bh=nbNivWiWgaBMZuyO4MpN+8EYAa/41jtzT5v1aG+/fJw=;
+        b=fZY1dD/q6MxlJpVG9MLwV7WANz7w+ut5RCsBdhZQtXSU+MrjjnEN/whSSQireH7Qr4
+         xgw1N+cJOckhpdoxr6W/2n0HXAdbu7p0DsakgpwPvlVN/J3AEGXMkbapBcVfTIYynbqi
+         /Rzs+dhsktVUyNCOaomSPp9GjGJlz/HjxKQLAlsdphfrnYI6iL3WGf9Ut/5Es6BOpyIA
+         x14DXM71YjkV1GTeBGW0i9Myw2aDACAovN9fJJRYkGaI8Dqk4arHvWZklqpfJmMaEZm3
+         obuUzjJYsPyyUXBJFtd2uwxHSGwlAKiVG8Kl+R9iRj54XZWrsvpPRMX5wjFi7kLzQoQi
+         YTAA==
+X-Gm-Message-State: AOAM532nCwkjFP04KHggWV+r44p+Tr2NilkIow0Ny1NGGYFDl7NGcQCM
+        zHSKi0pC35+F8K3k8eLL0kg=
+X-Google-Smtp-Source: ABdhPJz3FG0ilHrC2E5KSJQMQ8xEG4quMfDb50CMmWsBKp6l/vc9HCS8k5p5NWXIiNj3wcASIaputg==
+X-Received: by 2002:adf:a1d8:: with SMTP id v24mr10805038wrv.378.1616707942884;
+        Thu, 25 Mar 2021 14:32:22 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.51.130])
+        by smtp.gmail.com with ESMTPSA id 91sm9329621wrl.20.2021.03.25.14.32.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 14:32:22 -0700 (PDT)
+Subject: Re: [PATCH v4 4/4] ioctl_userfaultfd.2: Add write-protect mode docs
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210322220848.52162-1-peterx@redhat.com>
+ <20210322220848.52162-5-peterx@redhat.com>
+ <c65b5f04-4620-4c7e-e71f-91fc8394d164@gmail.com>
+ <20210323191618.GJ6486@xz-x1>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <dbc37834-9fb1-ca44-7ed5-9f8f6cc53741@gmail.com>
+Date:   Thu, 25 Mar 2021 22:32:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210323191618.GJ6486@xz-x1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should set the platform device's driver data to NULL here so that
-code doesn't assume the struct drm_device pointer is valid when it could
-have been destroyed. The lifetime of this pointer is managed by a kref
-but when msm_drm_init() fails we call drm_dev_put() on the pointer which
-will free the pointer's memory. This driver uses the component model, so
-there's sort of two "probes" in this file, one for the platform device
-i.e. msm_pdev_probe() and one for the component i.e. msm_drm_bind(). The
-msm_drm_bind() code is using the platform device's driver data to store
-struct drm_device so the two functions are intertwined.
+Hi Peter,
 
-This relationship becomes a problem for msm_pdev_shutdown() when it
-tests the NULL-ness of the pointer to see if it should call
-drm_atomic_helper_shutdown(). The NULL test is a proxy check for if the
-pointer has been freed by kref_put(). If the drm_device has been
-destroyed, then we shouldn't call the shutdown helper, and we know that
-is the case if msm_drm_init() failed, therefore set the driver data to
-NULL so that this pointer liveness is tracked properly.
+On 3/23/21 8:16 PM, Peter Xu wrote:
+> On Tue, Mar 23, 2021 at 07:11:04PM +0100, Alejandro Colomar (man-pages) wrote:
+>>> +.TP
+>>> +.B UFFDIO_COPY_MODE_WP
+>>> +Copy the page with read-only permission.
+>>> +This allows the user to trap the next write to the page,
+>>> +which will block and generate another write-protect userfault message.
+>>
+>> s/write-protect/write-protected/
+>> ?
+> 
+> I think here "write-protect" is the wording I wanted to use, it is the name of
+> the type of the message in plain text.
 
-Fixes: 9d5cbf5fe46e ("drm/msm: add shutdown support for display platform_driver")
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Krishna Manikandan <mkrishn@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/msm/msm_drv.c | 1 +
- 1 file changed, 1 insertion(+)
+Okay.
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index a5c6b8c23336..196907689c82 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -570,6 +570,7 @@ static int msm_drm_init(struct device *dev, const struct drm_driver *drv)
- 	kfree(priv);
- err_put_drm_dev:
- 	drm_dev_put(ddev);
-+	platform_set_drvdata(pdev, NULL);
- 	return ret;
- }
- 
+> 
+> [...]
+> 
+>>> +.B EAGAIN
+>>> +The process was interrupted and need to retry.
+>>
+>> Maybe: "The process was interrupted; retry this call."?
+>> I don't know what other pager say about this kind of error.
+> 
+> Frankly I see no difference between the two..  If you prefer the latter, I can
+> switch.
+
+I understand yours, but technically it's a bit incorrect:  The subject 
+of the sentence changes: in "The process was interrupted" it's the 
+process, and in "need to retry" it's [you].  By separating the sentence 
+into two, it's more natural. :)
+
+> 
+>>
+>>> +.TP
+>>> +.B ENOENT
+>>> +The range specified in
+>>> +.I range
+>>> +is not valid.
+>>
+>> I'm not sure how this is different from the wording above in EINVAL.  An
+>> "otherwise invalid range" was already giving EINVAL?
+> 
+> This can be returned when vma is not found (mwriteprotect_range()):
+> 
+> 	err = -ENOENT;
+> 	dst_vma = find_dst_vma(dst_mm, start, len);
+> 
+> 	if (!dst_vma)
+> 		goto out_unlock;
+> 
+> I think maybe I could simply remove this entry, because from an user app
+> developer pov I'd only be interested in specific error that I'd be able to
+> detect and (even better) recover from.  For such error I'd say there's not much
+> to do besides failing the app.
+
+If there's any possibility that the error can happen, it should be 
+documented, even if it's to say "Fatal error; abort!".  Just try to 
+explain the causes and how to avoid causing them and/or possibly what to 
+do when they happen (abort?).
+
+> 
+>>
+>>> +For example, the virtual address does not exist,
+>>> +or not registered with userfaultfd write-protect mode.
+>>> +.TP
+>>> +.B EFAULT
+>>> +Encountered a generic fault during processing.
+>>
+>> What is a "generic fault"?
+> 
+> For example when the user copy failed due to some reason.  See
+> userfaultfd_writeprotect():
+> 
+> 	if (copy_from_user(&uffdio_wp, user_uffdio_wp,
+> 			   sizeof(struct uffdio_writeprotect)))
+> 		return -EFAULT;
+> 
+> But I didn't check other places, generally I'd return -EFAULT if I can't find a
+> proper other replacement which has a clearer meaning.
+> 
+> I don't think this is really helpful to user app too because no user app would
+> start to read this -EFAULT to do anything useful.. how about I drop it too if
+> you think the description is confusing?
+
+Same as above.
+
+Thanks,
+
+Alex
+
+
 -- 
-https://chromeos.dev
-
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
