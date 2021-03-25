@@ -2,65 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097D3348DA1
+	by mail.lfdr.de (Postfix) with ESMTP id C3ACE348DA3
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhCYKBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:01:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58864 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229616AbhCYKBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:01:12 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lPMnd-00074f-04; Thu, 25 Mar 2021 11:01:09 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3205DC1C81; Thu, 25 Mar 2021 11:00:57 +0100 (CET)
-Date:   Thu, 25 Mar 2021 11:00:57 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sergei.shtylyov@gmail.com,
-        thierry.reding@gmail.com, linux-tegra@vger.kernel.org,
-        balbi@kernel.org, digetx@gmail.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2] MIPS: ralink: define stubs for clk_set_parent to fix
- compile testing
-Message-ID: <20210325100057.GE5775@alpha.franken.de>
-References: <20210317112644.24502-1-krzysztof.kozlowski@canonical.com>
+        id S230131AbhCYKBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:01:47 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48988 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229676AbhCYKBZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:01:25 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 04D6D1C0B92; Thu, 25 Mar 2021 11:01:23 +0100 (CET)
+Date:   Thu, 25 Mar 2021 11:01:22 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     ChiYuan Huang <u0084500@gmail.com>
+Cc:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        cy_huang <cy_huang@richtek.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] leds: rt4505: Add support for Richtek RT4505
+ flash LED controller
+Message-ID: <20210325100122.GA4619@amd>
+References: <1604284946-16254-1-git-send-email-u0084500@gmail.com>
+ <3cf3ee50-3dd8-d3b1-66a9-cea2ba487de3@gmail.com>
+ <CADiBU3-pDdoCioKc1mZwx7tp+_kfcN=4j-iMOT9LupXW03qwNA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="G4iJoqBmSsgzjUCe"
 Content-Disposition: inline
-In-Reply-To: <20210317112644.24502-1-krzysztof.kozlowski@canonical.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CADiBU3-pDdoCioKc1mZwx7tp+_kfcN=4j-iMOT9LupXW03qwNA@mail.gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 12:26:44PM +0100, Krzysztof Kozlowski wrote:
-> The Ralink MIPS platform does not use Common Clock Framework and does
-> not define certain clock operations leading to compile test failures:
-> 
->     /usr/bin/mips-linux-gnu-ld: drivers/usb/phy/phy-tegra-usb.o: in function `tegra_usb_phy_init':
->     phy-tegra-usb.c:(.text+0x1dd4): undefined reference to `clk_get_parent'
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Acked-by: John Crispin <john@phrozen.org>
-> 
-> ---
-> 
-> Changes since v1:
-> 1. Use EXPORT_SYMBOL_GPL like two other stubs in the file.
-> 2. Add Ack
-> ---
->  arch/mips/ralink/clk.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
 
-applied to mips-next.
+--G4iJoqBmSsgzjUCe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thomas.
+Hi!
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> > >   create mode 100644 drivers/leds/flash/Kconfig
+> > >   create mode 100644 drivers/leds/flash/Makefile
+> > >   create mode 100644 drivers/leds/flash/leds-rt4505.c
+> >
+> > Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> >
+> Any problem with this patch? Do I need to submit it again?
+
+It won't apply on current next.
+
+So please: Merge ACKs, reorder it so that docs goes first, port it to
+
+To gitolite.kernel.org:pub/scm/linux/kernel/git/pavel/linux-leds.git
+   34731ed13e8a..85674b0e40d9  for-next -> for-next
+
+and resubmit.
+
+Thanks you,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--G4iJoqBmSsgzjUCe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBcX3EACgkQMOfwapXb+vIObwCffd6b9g3jXk6f/cdlPb+rlSfH
+MdAAoJdDJxSs2dbMDTPjQt1CSHnf3xe5
+=yFKW
+-----END PGP SIGNATURE-----
+
+--G4iJoqBmSsgzjUCe--
