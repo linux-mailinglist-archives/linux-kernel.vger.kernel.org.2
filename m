@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C25348918
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A34834892B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229574AbhCYG3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:29:08 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:13064 "EHLO
+        id S229616AbhCYGge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:36:34 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:43826 "EHLO
         mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhCYG3D (ORCPT
+        with ESMTP id S229461AbhCYGgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:29:03 -0400
+        Thu, 25 Mar 2021 02:36:23 -0400
 Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id CEA49980342;
-        Thu, 25 Mar 2021 14:29:01 +0800 (CST)
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id B8E4D98047A;
+        Thu, 25 Mar 2021 14:36:04 +0800 (CST)
 From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+To:     Simon Horman <simon.horman@netronome.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Wan Jiabing <wanjiabing@vivo.com>, oss-drivers@netronome.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     kael_w@yeah.net
-Subject: [PATCH] drivers: staging: _adapter is declared twice
-Date:   Thu, 25 Mar 2021 14:28:40 +0800
-Message-Id: <20210325062843.852204-1-wanjiabing@vivo.com>
+Subject: [PATCH] drivers: net: ethernet: struct sk_buff is declared duplicately
+Date:   Thu, 25 Mar 2021 14:35:55 +0800
+Message-Id: <20210325063559.853282-1-wanjiabing@vivo.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGRlNQk5DHR1JGExLVkpNSk1NTkhMT0lLTUtVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KzI6IRw5CT8UOD4RLDRNCQEL
-        TEIaCxVVSlVKTUpNTU5ITE9JSElMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTUpMNwY+
-X-HM-Tid: 0a7868126f95d992kuwscea49980342
+        oVCBIfWUFZTRlJTB5PQ09JT01LVkpNSk1NTk9KTU5LTU9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pgw6Ggw6ED8WQz5KLCs#UTkp
+        SDQwChdVSlVKTUpNTU5PSk1OSElMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTUxLNwY+
+X-HM-Tid: 0a786818e3ebd992kuwsb8e4d98047a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct _adapter has been declared at 23rd line. 
-Remove the duplicate.
+struct sk_buff has been declared. Remove the duplicate.
 
 Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- drivers/staging/rtl8712/drv_types.h | 1 -
+ drivers/net/ethernet/netronome/nfp/nfp_app.h | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8712/drv_types.h b/drivers/staging/rtl8712/drv_types.h
-index 0c4325073c63..976d19cdcf87 100644
---- a/drivers/staging/rtl8712/drv_types.h
-+++ b/drivers/staging/rtl8712/drv_types.h
-@@ -36,7 +36,6 @@ enum _NIC_VERSION {
- 	RTL8716_NIC
- };
- 
--struct _adapter;
- 
- struct	qos_priv	{
- 	/* bit mask option: u-apsd, s-apsd, ts, block ack... */
+diff --git a/drivers/net/ethernet/netronome/nfp/nfp_app.h b/drivers/net/ethernet/netronome/nfp/nfp_app.h
+index 76d13af46a7a..3e9baff07100 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfp_app.h
++++ b/drivers/net/ethernet/netronome/nfp/nfp_app.h
+@@ -18,7 +18,6 @@ struct netdev_bpf;
+ struct netlink_ext_ack;
+ struct pci_dev;
+ struct sk_buff;
+-struct sk_buff;
+ struct nfp_app;
+ struct nfp_cpp;
+ struct nfp_pf;
 -- 
 2.25.1
 
