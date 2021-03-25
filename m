@@ -2,112 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9932E349303
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2DA349301
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhCYNXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhCYNWv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:22:51 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CD4C06174A;
-        Thu, 25 Mar 2021 06:22:50 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id o19so1147057qvu.0;
-        Thu, 25 Mar 2021 06:22:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FoPot4yn/913q2goHqTcmxadnQAVEQfJX7+M8LxXsgE=;
-        b=rBvpd6eAuDPCtv4GTnHqF5cEnKcd/vYdb7zaF/LQKNiEGr98XHARNeSQ+kqA4w/BrJ
-         vE8hAmHrarxvYnSGG2nrpeJbNjzsIiH5JJBd3ayc0XgQZ8Wm6emdqFCEUIGWGK/VD1qG
-         6kGxKnBfuLwUazgMHHl42Dd+0HR4RkmPMVOehCmOlpyhaypT4QgGADQHXi8KsFq3tsfm
-         EMFXQxWtmhCgqPP7WAHfrvnCQ69aQ1sFT9aVHLqsLEYuNyNwKonloXJmitUzF6PaLRVm
-         RVRnsUY3j74Z1uLw3Xn1gofGAl3IdgKmJUSJQ4st9Hvhw2Ue/r7bPF6xhRM1CY1yfzF5
-         eBIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FoPot4yn/913q2goHqTcmxadnQAVEQfJX7+M8LxXsgE=;
-        b=Va3iC0JEBP60CMW8WBzOnpt3kIGkCn7jdlx+gbXYayErxCmM/EQRjl1gxyaloLk3fx
-         4pI20ikMlenEPK+nnCQSiPdYNUr3Y/xHXO2rXW4pd8YwZhYPLqMfevCyIf2GSfAbS3Pf
-         n/526uGcbEi2SZEkCWn09TVIxgbO58aGEPEcR0lAg4ojBkNT6QrpSTR8F17n3LLe9QGP
-         nMucNUVLpbcHlkRccOZQ/XSROK0/SW1wJfp/0jO/Jc0OlFED7lsSTjEWaQqzKJEfK1m2
-         DrrprB1gJZe+2VuKPYv6MifeW+B8GWuvzmPtA7cwwokaqcJNi5SP+yNBgjVcKbHsongx
-         RLsg==
-X-Gm-Message-State: AOAM532btL+6FmaW82LTmEG1y+uj0nlhfF6N34br4oEaDHMm2dFeYfXj
-        6jsUQzXlrgr4LSIOzuUkJlhHx/BUlPA8Ysyj+PO+RuU=
-X-Google-Smtp-Source: ABdhPJza7igFu6VWFELWk0EHwwg70GuMYwiDkMzucnIWAMJnCS4eY5JJWo2E4NCvJGdV20Z2V2hPkoXKhvsze2FWDuc=
-X-Received: by 2002:ad4:4904:: with SMTP id bh4mr8207440qvb.53.1616678569993;
- Thu, 25 Mar 2021 06:22:49 -0700 (PDT)
+        id S230155AbhCYNWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:22:44 -0400
+Received: from mga18.intel.com ([134.134.136.126]:57585 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230425AbhCYNW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:22:28 -0400
+IronPort-SDR: P/KZAZhtWsb3siYJQ6aqApP/pSTIw/rOucAgNXdfnKqWtyCIWGUuL1Vzyaz50HARidKCrcy2jD
+ hMb4/Y4/Ob6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="178478717"
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="178478717"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 06:22:27 -0700
+IronPort-SDR: s84PZ1wzip9QzzxBwviK59uqJwLGtOiq2JCpygHpBsDVhsqnjkLz7in2OYc1bWHfFofW2mP8wa
+ Z91DucKLk+Xg==
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="376846989"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 06:22:25 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lPPwM-00G3Jl-U7; Thu, 25 Mar 2021 15:22:22 +0200
+Date:   Thu, 25 Mar 2021 15:22:22 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] include: linux: debug_locks: Remove duplicate declaration
+Message-ID: <YFyOjtTI8XXPKgph@smile.fi.intel.com>
+References: <20210325022707.840531-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-References: <20210323023726.28343-1-lihaiwei.kernel@gmail.com>
-In-Reply-To: <20210323023726.28343-1-lihaiwei.kernel@gmail.com>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Date:   Thu, 25 Mar 2021 21:22:11 +0800
-Message-ID: <CAB5KdOZq+2ETburoMv6Vnnj3MFAuvwnSBsSmiBO=nH1Ajdp5_g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: VMX: Check the corresponding bits according to the
- intel sdm
-To:     LKML <linux-kernel@vger.kernel.org>, kvm list <kvm@vger.kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325022707.840531-1-wanjiabing@vivo.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:37 AM <lihaiwei.kernel@gmail.com> wrote:
->
-> From: Haiwei Li <lihaiwei@tencent.com>
->
-> According to IA-32 SDM Vol.3D "A.1 BASIC VMX INFORMATION", two inspections
-> are missing.
-> * Bit 31 is always 0. Earlier versions of this manual specified that the
-> VMCS revision identifier was a 32-bit field in bits 31:0 of this MSR. For
-> all processors produced prior to this change, bit 31 of this MSR was read
-> as 0.
-> * The values of bits 47:45 and bits 63:57 are reserved and are read as 0.
->
-> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+On Thu, Mar 25, 2021 at 10:26:58AM +0800, Wan Jiabing wrote:
+> struct task_struct is declared at 9th line. Remove the duplicate.
+
+It seems the duplicate is the other one and you removed wrong one.
+
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 > ---
->  arch/x86/kvm/vmx/vmx.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 32cf828..0d6d13c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -2577,6 +2577,20 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
->
->         rdmsr(MSR_IA32_VMX_BASIC, vmx_msr_low, vmx_msr_high);
->
-> +       /*
-> +        * IA-32 SDM Vol 3D: Bit 31 is always 0.
-> +        * For all earlier processors, bit 31 of this MSR was read as 0.
-> +        */
-> +       if (vmx_msr_low & (1u<<31))
-> +               return -EIO;
+>  include/linux/debug_locks.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/include/linux/debug_locks.h b/include/linux/debug_locks.h
+> index 2915f56ad421..0b3187a5290d 100644
+> --- a/include/linux/debug_locks.h
+> +++ b/include/linux/debug_locks.h
+> @@ -46,7 +46,6 @@ extern int debug_locks_off(void);
+>  # define locking_selftest()	do { } while (0)
+>  #endif
+>  
+> -struct task_struct;
+>  
+>  #ifdef CONFIG_LOCKDEP
+>  extern void debug_show_all_locks(void);
+> -- 
+> 2.25.1
+> 
 
-Drop this code as Jim said.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> +
-> +       /*
-> +        * IA-32 SDM Vol 3D: bits 47:45 and bits 63:57 are reserved and are read
-> +        * as 0.
-> +        */
-> +       if (vmx_msr_high & 0xfe00e000)
-> +               return -EIO;
 
-Is this ok? Can we pick up the part? :)
-
---
-Haiwei Li
