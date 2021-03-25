@@ -2,173 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2013491CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC213491CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhCYMVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:21:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36636 "EHLO mail.kernel.org"
+        id S229981AbhCYMWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:22:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:6964 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229981AbhCYMVS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:21:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C7E619C7;
-        Thu, 25 Mar 2021 12:21:15 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 13:21:12 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>,
-        "agruenba@redhat.com" <agruenba@redhat.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 08/11] evm: Allow setxattr() and setattr() for
- unmodified metadata
-Message-ID: <20210325122112.htkwkt3emura5day@wittgenstein>
-References: <20210305151923.29039-1-roberto.sassu@huawei.com>
- <20210305151923.29039-9-roberto.sassu@huawei.com>
- <ad33c998ee834a588e0ca1a31ee2a530@huawei.com>
- <20210325121341.q2ufjhnqe3osjc7c@wittgenstein>
+        id S230242AbhCYMWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:22:10 -0400
+IronPort-SDR: AnDiDpFQp4oa6FW2pb4ahfFcKaGu7VwCkBff3u+ZiW8n/I6K3D+3wRislfuwZidIaaR+BudVpN
+ gwTS7AYvAKeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="254910244"
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="254910244"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 05:22:09 -0700
+IronPort-SDR: whx/PZZB6VXvzysSHlXd7SJWmA7iG8ZD+edjdKAIFS+n6RBaN2a899pzT64Hgu975uiJ5/Si4x
+ pwalzFPYQIRA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
+   d="scan'208";a="436441438"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 25 Mar 2021 05:22:08 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lPP03-0001vp-Ic; Thu, 25 Mar 2021 12:22:07 +0000
+Date:   Thu, 25 Mar 2021 20:21:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.03.18a] BUILD SUCCESS
+ 31531c0247544b81d26d4dc4e4aa7dd6ef466f12
+Message-ID: <605c8061.lDpj9t0ODYjN9nnK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210325121341.q2ufjhnqe3osjc7c@wittgenstein>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 01:13:41PM +0100, Christian Brauner wrote:
-> On Thu, Mar 25, 2021 at 10:53:43AM +0000, Roberto Sassu wrote:
-> > > From: Roberto Sassu
-> > > Sent: Friday, March 5, 2021 4:19 PM
-> > > With the patch to allow xattr/attr operations if a portable signature
-> > > verification fails, cp and tar can copy all xattrs/attrs so that at the
-> > > end of the process verification succeeds.
-> > > 
-> > > However, it might happen that the xattrs/attrs are already set to the
-> > > correct value (taken at signing time) and signature verification succeeds
-> > > before the copy has completed. For example, an archive might contains files
-> > > owned by root and the archive is extracted by root.
-> > > 
-> > > Then, since portable signatures are immutable, all subsequent operations
-> > > fail (e.g. fchown()), even if the operation is legitimate (does not alter
-> > > the current value).
-> > > 
-> > > This patch avoids this problem by reporting successful operation to user
-> > > space when that operation does not alter the current value of xattrs/attrs.
-> > > 
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > ---
-> > >  security/integrity/evm/evm_main.c | 96
-> > > +++++++++++++++++++++++++++++++
-> > >  1 file changed, 96 insertions(+)
-> > > 
-> > > diff --git a/security/integrity/evm/evm_main.c
-> > > b/security/integrity/evm/evm_main.c
-> > > index eab536fa260f..a07516dcb920 100644
-> > > --- a/security/integrity/evm/evm_main.c
-> > > +++ b/security/integrity/evm/evm_main.c
-> > > @@ -18,6 +18,7 @@
-> > >  #include <linux/integrity.h>
-> > >  #include <linux/evm.h>
-> > >  #include <linux/magic.h>
-> > > +#include <linux/posix_acl_xattr.h>
-> > > 
-> > >  #include <crypto/hash.h>
-> > >  #include <crypto/hash_info.h>
-> > > @@ -328,6 +329,79 @@ static enum integrity_status
-> > > evm_verify_current_integrity(struct dentry *dentry)
-> > >  	return evm_verify_hmac(dentry, NULL, NULL, 0, NULL);
-> > >  }
-> > > 
-> > > +/*
-> > > + * evm_xattr_acl_change - check if passed ACL changes the inode mode
-> > > + * @dentry: pointer to the affected dentry
-> > > + * @xattr_name: requested xattr
-> > > + * @xattr_value: requested xattr value
-> > > + * @xattr_value_len: requested xattr value length
-> > > + *
-> > > + * Check if passed ACL changes the inode mode, which is protected by
-> > > EVM.
-> > > + *
-> > > + * Returns 1 if passed ACL causes inode mode change, 0 otherwise.
-> > > + */
-> > > +static int evm_xattr_acl_change(struct dentry *dentry, const char
-> > > *xattr_name,
-> > > +				const void *xattr_value, size_t
-> > > xattr_value_len)
-> > > +{
-> > > +	umode_t mode;
-> > > +	struct posix_acl *acl = NULL, *acl_res;
-> > > +	struct inode *inode = d_backing_inode(dentry);
-> > > +	int rc;
-> > > +
-> > > +	/* UID/GID in ACL have been already converted from user to init ns
-> > > */
-> > > +	acl = posix_acl_from_xattr(&init_user_ns, xattr_value,
-> > > xattr_value_len);
-> > > +	if (!acl)
-> > 
-> > Based on Mimi's review, I will change this to:
-> > 
-> > if (IS_ERR_OR_NULL(acl))
-> > 
-> > > +		return 1;
-> > > +
-> > > +	acl_res = acl;
-> > > +	rc = posix_acl_update_mode(&init_user_ns, inode, &mode,
-> > > &acl_res);
-> > 
-> > About this part, probably it is not correct.
-> > 
-> > I'm writing a test for this patch that checks if operations
-> > that don't change the file mode succeed and those that
-> > do fail.
-> > 
-> > mount-idmapped --map-mount b:3001:0:1 /mnt /mnt-idmapped
-> > pushd /mnt
-> > echo "test" > test-file
-> > chown 3001 test-file
-> > chgrp 3001 test-file
-> > chmod 2644 test-file
-> > <check enabled>
-> > setfacl --set u::rw,g::r,o::r,m:r test-file (expected to succeed, caller has CAP_FSETID, so S_ISGID is not dropped)
-> > setfacl --set u::rw,g::r,o::r,m:rw test-file (expected to fail)
-> > pushd /mnt-idmapped
-> > capsh --drop=cap_fsetid -- -c setfacl --set u::rw,g::r,o::r test-file (expected to succeed, caller is in the owning group of test-file, so S_ISGID is not dropped)
-> > 
-> > After adding a debug line in posix_acl_update_mode():
-> > printk("%s: %d(%d) %d\n", __func__, in_group_p(i_gid_into_mnt(mnt_userns, inode)), __kgid_val(i_gid_into_mnt(mnt_userns, inode)), capable_wrt_inode_uidgid(mnt_userns, inode, CAP_FSETID));
-> > 
-> > without passing mnt_userns:
-> > [  748.262582] setfacl --set u::rw,g::r,o::r,m:r test-file
-> > [  748.268021] posix_acl_update_mode: 0(3001) 1
-> > [  748.268035] posix_acl_update_mode: 0(3001) 1
-> > [  748.268570] setfacl --set u::rw,g::r,o::r,m:rw test-file
-> > [  748.274193] posix_acl_update_mode: 0(3001) 1
-> > [  748.279198] capsh --drop=cap_fsetid -- -c setfacl --set u::rw,g::r,o::r test-file
-> > [  748.287894] posix_acl_update_mode: 0(3001) 0
-> > 
-> > passing mnt_userns:
-> > [   81.159766] setfacl --set u::rw,g::r,o::r,m:r test-file
-> > [   81.165207] posix_acl_update_mode: 0(3001) 1
-> > [   81.165226] posix_acl_update_mode: 0(3001) 1
-> > [   81.165732] setfacl --set u::rw,g::r,o::r,m:rw test-file
-> > [   81.170978] posix_acl_update_mode: 0(3001) 1
-> > [   81.176014] capsh --drop=cap_fsetid -- -c setfacl --set u::rw,g::r,o::r test-file
-> > [   81.184648] posix_acl_update_mode: 1(0) 0
-> > [   81.184663] posix_acl_update_mode: 1(0) 0
-> > 
-> > The difference is that, by passing mnt_userns, the caller (root) is
-> > in the owning group of the file (3001 -> 0). Without passing mnt_userns,
-> > it is not (3001 -> 3001).
-> > 
-> > Christian, Andreas, could you confirm that this is correct?
-> 
-> Hey Robert,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.03.18a
+branch HEAD: 31531c0247544b81d26d4dc4e4aa7dd6ef466f12  fixup! torture: Add prototype kvm-remote.sh script
 
-s/Robert/Roberto/
+elapsed time: 721m
 
-Sorry for the typo.
+configs tested: 123
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                               defconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                         hackkit_defconfig
+powerpc                    klondike_defconfig
+powerpc                     tqm8555_defconfig
+h8300                    h8300h-sim_defconfig
+sh                          lboxre2_defconfig
+mips                           ip28_defconfig
+powerpc                    adder875_defconfig
+sh                             sh03_defconfig
+sh                           se7343_defconfig
+sh                               j2_defconfig
+sh                        apsh4ad0a_defconfig
+mips                          ath25_defconfig
+arm                      integrator_defconfig
+mips                        bcm63xx_defconfig
+powerpc                 mpc836x_rdk_defconfig
+mips                        workpad_defconfig
+powerpc64                           defconfig
+arm                          pcm027_defconfig
+xtensa                    smp_lx200_defconfig
+arm                        keystone_defconfig
+mips                           ip27_defconfig
+arm                       netwinder_defconfig
+arm                        cerfcube_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                      ppc44x_defconfig
+sh                           se7705_defconfig
+arm                          moxart_defconfig
+m68k                        m5407c3_defconfig
+powerpc                     sequoia_defconfig
+arc                           tb10x_defconfig
+powerpc                    ge_imp3a_defconfig
+m68k                       m5208evb_defconfig
+powerpc                 linkstation_defconfig
+sh                   secureedge5410_defconfig
+powerpc                      katmai_defconfig
+arm                        vexpress_defconfig
+sh                          urquell_defconfig
+powerpc                          g5_defconfig
+arm                         mv78xx0_defconfig
+arm                          exynos_defconfig
+riscv                             allnoconfig
+sh                      rts7751r2d1_defconfig
+arm                      tct_hammer_defconfig
+powerpc                       ebony_defconfig
+powerpc                  iss476-smp_defconfig
+mips                      maltaaprp_defconfig
+arm                       imx_v6_v7_defconfig
+arm64                            alldefconfig
+arm                           viper_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a002-20210325
+x86_64               randconfig-a003-20210325
+x86_64               randconfig-a006-20210325
+x86_64               randconfig-a001-20210325
+x86_64               randconfig-a005-20210325
+x86_64               randconfig-a004-20210325
+i386                 randconfig-a003-20210325
+i386                 randconfig-a004-20210325
+i386                 randconfig-a001-20210325
+i386                 randconfig-a002-20210325
+i386                 randconfig-a006-20210325
+i386                 randconfig-a005-20210325
+i386                 randconfig-a014-20210325
+i386                 randconfig-a011-20210325
+i386                 randconfig-a015-20210325
+i386                 randconfig-a016-20210325
+i386                 randconfig-a013-20210325
+i386                 randconfig-a012-20210325
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+x86_64                           allyesconfig
+
+clang tested configs:
+x86_64               randconfig-a012-20210325
+x86_64               randconfig-a015-20210325
+x86_64               randconfig-a014-20210325
+x86_64               randconfig-a013-20210325
+x86_64               randconfig-a011-20210325
+x86_64               randconfig-a016-20210325
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
