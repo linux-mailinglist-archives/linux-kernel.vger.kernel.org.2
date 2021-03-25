@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA259349A84
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:39:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117D9349A85
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhCYTjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:39:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45074 "EHLO
+        id S231182AbhCYTjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:39:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30207 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230331AbhCYTiS (ORCPT
+        by vger.kernel.org with ESMTP id S230333AbhCYTiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:38:18 -0400
+        Thu, 25 Mar 2021 15:38:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1616701098;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/7NIBk6La/dqb6C44uocZQB5NEP7IgsPWWcJ4ROLNwg=;
-        b=USGMXRbYkwNOkik8t1nE/DYZ6GQDZ6E1nKt9hG8YPc27xk5e7+YGKb/KiseiCE05fZdwCM
-        10r9mUCSgKAYMQ05w3icySjNO0iR1AJxKHkwu7rCdEGqyC34wVtqlMLm0HFiVYsbw0TnpO
-        7eh79p0A31DXTaRpLWNrhGYMPGR8kh8=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-312-4D8icafQMDm7Sk5ynGN4wQ-1; Thu, 25 Mar 2021 15:38:16 -0400
-X-MC-Unique: 4D8icafQMDm7Sk5ynGN4wQ-1
-Received: by mail-ej1-f70.google.com with SMTP id sa29so3069088ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:38:15 -0700 (PDT)
+        bh=2CmF2Ok/7Yvm6l2sa99yQDF58c2hGs4kIiRgKHoCIgs=;
+        b=CLIA95UysxhL7GpEKHs/DvRktv82R0gpAteU9D1HTiDq8z7tHYmgGa0MQ0xsXM7ScKUIXx
+        vr1IKarxD+7LZpAJljDV8vukNlQW0xxARDvqY417dVvO9u3GGnj/LQ3x+cUyGJIR4OcUok
+        5x5dIW/rI6T9lxkpolF8+NSKN2H8Eqg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-X54qy3NnPAuNossN3gwVDw-1; Thu, 25 Mar 2021 15:38:17 -0400
+X-MC-Unique: X54qy3NnPAuNossN3gwVDw-1
+Received: by mail-ej1-f69.google.com with SMTP id r26so3067988eja.22
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/7NIBk6La/dqb6C44uocZQB5NEP7IgsPWWcJ4ROLNwg=;
-        b=l5fWkIxoQME0chA1fNiEbtzY1pmImBuJRVfvkD07rmUKwmoXimKP3ou40cLkNG8uno
-         gexQ5li1D36DseJuuZ9TsWOfwRbEPV1DbHzkfhfLzp6wvhKkNMlj21oJni+ZSbGRhXKV
-         SbYIuL8QMQ+surZ6Rh5mf09KuliKt00PPBs3X8x4fciuH8xBFVDe3lTcEczL7KVik8gr
-         A1zW9yAUUXZbCl0j+hmyxnYudq0FJXL/SlsEGCbUJroPN2DOwSaCBWmUyMLsZLxiNB13
-         xThn3D1M0r19u79KtGVOfQNsB/hCyBGfhf017sz/O0wmz8TgIl9SBbTJ5fra/F2xudF6
-         yZpQ==
-X-Gm-Message-State: AOAM533BKBkLqJLFqgK7zV8M01CRyCIBKDTGGq2TFq0YqEOnAVT3EB7M
-        mJSUxUfkL0j6YI5SwcgkF1TegZenZStO5f9t0CpyRDDPJt01okzNK4kbNyuGeRLZFtWTNUCBXw6
-        W6oeyuAW9E/gtV3vuXPzIwo30
-X-Received: by 2002:a17:906:f56:: with SMTP id h22mr11536018ejj.494.1616701094805;
-        Thu, 25 Mar 2021 12:38:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCfaqxaWTKq4yEr10PfJzWo9c2H6UizAKocA4OFfSS/sXX8O4cA0AQjbWHuhc5l33bw+YTnA==
-X-Received: by 2002:a17:906:f56:: with SMTP id h22mr11535997ejj.494.1616701094600;
-        Thu, 25 Mar 2021 12:38:14 -0700 (PDT)
+        bh=2CmF2Ok/7Yvm6l2sa99yQDF58c2hGs4kIiRgKHoCIgs=;
+        b=RmB/uRTbKPWUBc/tq3F/RI6uqTZpMz1eocFqA27Hf7Rukxe7tUqfZ9T0xpubv9U7+1
+         02Skig6QlPC1XX9mVFNTYm5y7ha3gKSYyj48hIUCMLdBYEapmed+vrx7Gv1grER/mr3L
+         b9rhNdDUr1rtq++a87HiXZVAdvmQZAnBtnLyTDiX8ABxPi23Gmnpvyzt//0fIffPhP+m
+         mxQ/EecPGb240ClGsPExJsGWB11jX5O4hG80RskdVngaLF7D01zqGdtvc7R6UrsHxt9C
+         bnzkarpYbh0YwuPvRIA5KyXDxUUOBSDSWxP1FvbtZA1jxrGXLTHKxxm80l8K4Tiw9A2h
+         2xDw==
+X-Gm-Message-State: AOAM532LKzk/SZh4GyY76/svbVYAvgMwluSJmpl43PzZx8YATWDHT6TC
+        RoOD1Y5lq27UTPJhR8Dr4Q4cZvTC74t1Q69JfFNeVeYfmEDRVX0sBMm9U/7lEnB+7erP7O9dM4S
+        fc/ooMHDZ7NM4sOvv2LhnlVyG
+X-Received: by 2002:a17:906:828e:: with SMTP id h14mr11382613ejx.529.1616701095859;
+        Thu, 25 Mar 2021 12:38:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6XJUonAtbewCZ8Qz+G85LrYfaJA0lmTPg5npkZw8WwtZXu86Ao2ZtuI9y0QL+5MvOL3XrKw==
+X-Received: by 2002:a17:906:828e:: with SMTP id h14mr11382598ejx.529.1616701095716;
+        Thu, 25 Mar 2021 12:38:15 -0700 (PDT)
 Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.38.13
+        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.38.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 12:38:14 -0700 (PDT)
+        Thu, 25 Mar 2021 12:38:15 -0700 (PDT)
 From:   Miklos Szeredi <mszeredi@redhat.com>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
-        Jan Kara <jack@suse.cz>
-Subject: [PATCH v3 16/18] reiserfs: convert to fileattr
-Date:   Thu, 25 Mar 2021 20:37:53 +0100
-Message-Id: <20210325193755.294925-17-mszeredi@redhat.com>
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH v3 17/18] ubifs: convert to fileattr
+Date:   Thu, 25 Mar 2021 20:37:54 +0100
+Message-Id: <20210325193755.294925-18-mszeredi@redhat.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210325193755.294925-1-mszeredi@redhat.com>
 References: <20210325193755.294925-1-mszeredi@redhat.com>
@@ -71,244 +71,171 @@ Use the fileattr API to let the VFS handle locking, permission checking and
 conversion.
 
 Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
+Cc: Richard Weinberger <richard@nod.at>
 ---
- fs/reiserfs/file.c     |   2 +
- fs/reiserfs/ioctl.c    | 121 +++++++++++++++++++----------------------
- fs/reiserfs/namei.c    |   2 +
- fs/reiserfs/reiserfs.h |   7 ++-
- fs/reiserfs/super.c    |   2 +-
- 5 files changed, 64 insertions(+), 70 deletions(-)
+ fs/ubifs/dir.c   |  2 ++
+ fs/ubifs/file.c  |  2 ++
+ fs/ubifs/ioctl.c | 74 ++++++++++++++++++++----------------------------
+ fs/ubifs/ubifs.h |  3 ++
+ 4 files changed, 38 insertions(+), 43 deletions(-)
 
-diff --git a/fs/reiserfs/file.c b/fs/reiserfs/file.c
-index 1db0254bc38b..203a47232707 100644
---- a/fs/reiserfs/file.c
-+++ b/fs/reiserfs/file.c
-@@ -258,4 +258,6 @@ const struct inode_operations reiserfs_file_inode_operations = {
- 	.permission = reiserfs_permission,
- 	.get_acl = reiserfs_get_acl,
- 	.set_acl = reiserfs_set_acl,
-+	.fileattr_get = reiserfs_fileattr_get,
-+	.fileattr_set = reiserfs_fileattr_set,
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index d9d8d7794eff..5bd8482e660a 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1637,6 +1637,8 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ 	.listxattr   = ubifs_listxattr,
+ 	.update_time = ubifs_update_time,
+ 	.tmpfile     = ubifs_tmpfile,
++	.fileattr_get = ubifs_fileattr_get,
++	.fileattr_set = ubifs_fileattr_set,
  };
-diff --git a/fs/reiserfs/ioctl.c b/fs/reiserfs/ioctl.c
-index 4f1cbd930179..4b86ecf5817e 100644
---- a/fs/reiserfs/ioctl.c
-+++ b/fs/reiserfs/ioctl.c
-@@ -10,6 +10,59 @@
- #include <linux/uaccess.h>
- #include <linux/pagemap.h>
+ 
+ const struct file_operations ubifs_dir_operations = {
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 0e4b4be3aa26..2e4e1d159969 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1648,6 +1648,8 @@ const struct inode_operations ubifs_file_inode_operations = {
+ 	.getattr     = ubifs_getattr,
+ 	.listxattr   = ubifs_listxattr,
+ 	.update_time = ubifs_update_time,
++	.fileattr_get = ubifs_fileattr_get,
++	.fileattr_set = ubifs_fileattr_set,
+ };
+ 
+ const struct inode_operations ubifs_symlink_inode_operations = {
+diff --git a/fs/ubifs/ioctl.c b/fs/ubifs/ioctl.c
+index 2326d5122beb..073855b56c82 100644
+--- a/fs/ubifs/ioctl.c
++++ b/fs/ubifs/ioctl.c
+@@ -14,6 +14,7 @@
+ 
  #include <linux/compat.h>
+ #include <linux/mount.h>
 +#include <linux/fileattr.h>
-+
-+int reiserfs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
-+{
+ #include "ubifs.h"
+ 
+ /* Need to be kept consistent with checked flags in ioctl2ubifs() */
+@@ -103,7 +104,7 @@ static int ubifs2ioctl(int ubifs_flags)
+ 
+ static int setflags(struct inode *inode, int flags)
+ {
+-	int oldflags, err, release;
++	int err, release;
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 	struct ubifs_budget_req req = { .dirtied_ino = 1,
+@@ -114,11 +115,6 @@ static int setflags(struct inode *inode, int flags)
+ 		return err;
+ 
+ 	mutex_lock(&ui->ui_mutex);
+-	oldflags = ubifs2ioctl(ui->flags);
+-	err = vfs_ioc_setflags_prepare(inode, oldflags, flags);
+-	if (err)
+-		goto out_unlock;
+-
+ 	ui->flags &= ~ioctl2ubifs(UBIFS_SETTABLE_IOCTL_FLAGS);
+ 	ui->flags |= ioctl2ubifs(flags);
+ 	ubifs_set_inode_flags(inode);
+@@ -132,54 +128,46 @@ static int setflags(struct inode *inode, int flags)
+ 	if (IS_SYNC(inode))
+ 		err = write_inode_now(inode, 1);
+ 	return err;
+-
+-out_unlock:
+-	mutex_unlock(&ui->ui_mutex);
+-	ubifs_release_budget(c, &req);
+-	return err;
+ }
+ 
+-long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++int ubifs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
+ {
+-	int flags, err;
+-	struct inode *inode = file_inode(file);
 +	struct inode *inode = d_inode(dentry);
-+
-+	if (!reiserfs_attrs(inode->i_sb))
-+		return -ENOTTY;
-+
-+	fileattr_fill_flags(fa, REISERFS_I(inode)->i_attrs);
-+
++	int flags = ubifs2ioctl(ubifs_inode(inode)->flags);
+ 
+-	switch (cmd) {
+-	case FS_IOC_GETFLAGS:
+-		flags = ubifs2ioctl(ubifs_inode(inode)->flags);
++	dbg_gen("get flags: %#x, i_flags %#x", flags, inode->i_flags);
++	fileattr_fill_flags(fa, flags);
+ 
+-		dbg_gen("get flags: %#x, i_flags %#x", flags, inode->i_flags);
+-		return put_user(flags, (int __user *) arg);
 +	return 0;
 +}
-+
-+int reiserfs_fileattr_set(struct user_namespace *mnt_userns,
-+			  struct dentry *dentry, struct fileattr *fa)
+ 
+-	case FS_IOC_SETFLAGS: {
+-		if (IS_RDONLY(inode))
+-			return -EROFS;
++int ubifs_fileattr_set(struct user_namespace *mnt_userns,
++		       struct dentry *dentry, struct fileattr *fa)
 +{
 +	struct inode *inode = d_inode(dentry);
-+	unsigned int flags = fa->flags;
-+	int err;
-+
-+	reiserfs_write_lock(inode->i_sb);
-+
-+	err = -ENOTTY;
-+	if (!reiserfs_attrs(inode->i_sb))
-+		goto unlock;
-+
-+	err = -EOPNOTSUPP;
++	int flags = fa->flags;
+ 
+-		if (!inode_owner_or_capable(&init_user_ns, inode))
+-			return -EACCES;
 +	if (fileattr_has_fsx(fa))
-+		goto unlock;
-+
-+	/*
-+	 * Is it quota file? Do not allow user to mess with it
-+	 */
-+	err = -EPERM;
-+	if (IS_NOQUOTA(inode))
-+		goto unlock;
-+
-+	if ((flags & REISERFS_NOTAIL_FL) && S_ISREG(inode->i_mode)) {
-+		err = reiserfs_unpack(inode);
-+		if (err)
-+			goto unlock;
-+	}
-+	sd_attrs_to_i_attrs(flags, inode);
-+	REISERFS_I(inode)->i_attrs = flags;
-+	inode->i_ctime = current_time(inode);
-+	mark_inode_dirty(inode);
-+	err = 0;
-+unlock:
-+	reiserfs_write_unlock(inode->i_sb);
-+
-+	return err;
++		return -EOPNOTSUPP;
+ 
+-		if (get_user(flags, (int __user *) arg))
+-			return -EFAULT;
++	if (flags & ~UBIFS_GETTABLE_IOCTL_FLAGS)
++		return -EOPNOTSUPP;
+ 
+-		if (flags & ~UBIFS_GETTABLE_IOCTL_FLAGS)
+-			return -EOPNOTSUPP;
+-		flags &= UBIFS_SETTABLE_IOCTL_FLAGS;
++	flags &= UBIFS_SETTABLE_IOCTL_FLAGS;
+ 
+-		if (!S_ISDIR(inode->i_mode))
+-			flags &= ~FS_DIRSYNC_FL;
++	if (!S_ISDIR(inode->i_mode))
++		flags &= ~FS_DIRSYNC_FL;
+ 
+-		/*
+-		 * Make sure the file-system is read-write and make sure it
+-		 * will not become read-only while we are changing the flags.
+-		 */
+-		err = mnt_want_write_file(file);
+-		if (err)
+-			return err;
+-		dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
+-		err = setflags(inode, flags);
+-		mnt_drop_write_file(file);
+-		return err;
+-	}
++	dbg_gen("set flags: %#x, i_flags %#x", flags, inode->i_flags);
++	return setflags(inode, flags);
 +}
++
++long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	int err;
++	struct inode *inode = file_inode(file);
++
++	switch (cmd) {
+ 	case FS_IOC_SET_ENCRYPTION_POLICY: {
+ 		struct ubifs_info *c = inode->i_sb->s_fs_info;
  
- /*
-  * reiserfs_ioctl - handler for ioctl for inode
-@@ -23,7 +76,6 @@
- long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- {
- 	struct inode *inode = file_inode(filp);
--	unsigned int flags;
- 	int err = 0;
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 7fdfdbda4b8a..b65c599a386a 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -2053,6 +2053,9 @@ int ubifs_recover_size(struct ubifs_info *c, bool in_place);
+ void ubifs_destroy_size_tree(struct ubifs_info *c);
  
- 	reiserfs_write_lock(inode->i_sb);
-@@ -32,7 +84,7 @@ long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 	case REISERFS_IOC_UNPACK:
- 		if (S_ISREG(inode->i_mode)) {
- 			if (arg)
--				err = reiserfs_unpack(inode, filp);
-+				err = reiserfs_unpack(inode);
- 		} else
- 			err = -ENOTTY;
- 		break;
-@@ -40,63 +92,6 @@ long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		 * following two cases are taken from fs/ext2/ioctl.c by Remy
- 		 * Card (card@masi.ibp.fr)
- 		 */
--	case REISERFS_IOC_GETFLAGS:
--		if (!reiserfs_attrs(inode->i_sb)) {
--			err = -ENOTTY;
--			break;
--		}
--
--		flags = REISERFS_I(inode)->i_attrs;
--		err = put_user(flags, (int __user *)arg);
--		break;
--	case REISERFS_IOC_SETFLAGS:{
--			if (!reiserfs_attrs(inode->i_sb)) {
--				err = -ENOTTY;
--				break;
--			}
--
--			err = mnt_want_write_file(filp);
--			if (err)
--				break;
--
--			if (!inode_owner_or_capable(&init_user_ns, inode)) {
--				err = -EPERM;
--				goto setflags_out;
--			}
--			if (get_user(flags, (int __user *)arg)) {
--				err = -EFAULT;
--				goto setflags_out;
--			}
--			/*
--			 * Is it quota file? Do not allow user to mess with it
--			 */
--			if (IS_NOQUOTA(inode)) {
--				err = -EPERM;
--				goto setflags_out;
--			}
--			err = vfs_ioc_setflags_prepare(inode,
--						     REISERFS_I(inode)->i_attrs,
--						     flags);
--			if (err)
--				goto setflags_out;
--			if ((flags & REISERFS_NOTAIL_FL) &&
--			    S_ISREG(inode->i_mode)) {
--				int result;
--
--				result = reiserfs_unpack(inode, filp);
--				if (result) {
--					err = result;
--					goto setflags_out;
--				}
--			}
--			sd_attrs_to_i_attrs(flags, inode);
--			REISERFS_I(inode)->i_attrs = flags;
--			inode->i_ctime = current_time(inode);
--			mark_inode_dirty(inode);
--setflags_out:
--			mnt_drop_write_file(filp);
--			break;
--		}
- 	case REISERFS_IOC_GETVERSION:
- 		err = put_user(inode->i_generation, (int __user *)arg);
- 		break;
-@@ -138,12 +133,6 @@ long reiserfs_compat_ioctl(struct file *file, unsigned int cmd,
- 	case REISERFS_IOC32_UNPACK:
- 		cmd = REISERFS_IOC_UNPACK;
- 		break;
--	case REISERFS_IOC32_GETFLAGS:
--		cmd = REISERFS_IOC_GETFLAGS;
--		break;
--	case REISERFS_IOC32_SETFLAGS:
--		cmd = REISERFS_IOC_SETFLAGS;
--		break;
- 	case REISERFS_IOC32_GETVERSION:
- 		cmd = REISERFS_IOC_GETVERSION;
- 		break;
-@@ -165,7 +154,7 @@ int reiserfs_commit_write(struct file *f, struct page *page,
-  * Function try to convert tail from direct item into indirect.
-  * It set up nopack attribute in the REISERFS_I(inode)->nopack
-  */
--int reiserfs_unpack(struct inode *inode, struct file *filp)
-+int reiserfs_unpack(struct inode *inode)
- {
- 	int retval = 0;
- 	int index;
-diff --git a/fs/reiserfs/namei.c b/fs/reiserfs/namei.c
-index e6eb05e2b2f1..017db70d0f48 100644
---- a/fs/reiserfs/namei.c
-+++ b/fs/reiserfs/namei.c
-@@ -1660,6 +1660,8 @@ const struct inode_operations reiserfs_dir_inode_operations = {
- 	.permission = reiserfs_permission,
- 	.get_acl = reiserfs_get_acl,
- 	.set_acl = reiserfs_set_acl,
-+	.fileattr_get = reiserfs_fileattr_get,
-+	.fileattr_set = reiserfs_fileattr_set,
- };
- 
- /*
-diff --git a/fs/reiserfs/reiserfs.h b/fs/reiserfs/reiserfs.h
-index 0ca2ac62e534..3aa928ec527a 100644
---- a/fs/reiserfs/reiserfs.h
-+++ b/fs/reiserfs/reiserfs.h
-@@ -18,8 +18,6 @@
- 
- /* the 32 bit compat definitions with int argument */
- #define REISERFS_IOC32_UNPACK		_IOW(0xCD, 1, int)
--#define REISERFS_IOC32_GETFLAGS		FS_IOC32_GETFLAGS
--#define REISERFS_IOC32_SETFLAGS		FS_IOC32_SETFLAGS
- #define REISERFS_IOC32_GETVERSION	FS_IOC32_GETVERSION
- #define REISERFS_IOC32_SETVERSION	FS_IOC32_SETVERSION
- 
-@@ -3408,7 +3406,10 @@ __u32 r5_hash(const signed char *msg, int len);
- #define SPARE_SPACE 500
- 
- /* prototypes from ioctl.c */
-+int reiserfs_fileattr_get(struct dentry *dentry, struct fileattr *fa);
-+int reiserfs_fileattr_set(struct user_namespace *mnt_userns,
-+			  struct dentry *dentry, struct fileattr *fa);
- long reiserfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg);
- long reiserfs_compat_ioctl(struct file *filp,
- 		   unsigned int cmd, unsigned long arg);
--int reiserfs_unpack(struct inode *inode, struct file *filp);
-+int reiserfs_unpack(struct inode *inode);
-diff --git a/fs/reiserfs/super.c b/fs/reiserfs/super.c
-index 1b9c7a387dc7..3ffafc73acf0 100644
---- a/fs/reiserfs/super.c
-+++ b/fs/reiserfs/super.c
-@@ -2408,7 +2408,7 @@ static int reiserfs_quota_on(struct super_block *sb, int type, int format_id,
- 	 * IO to work
- 	 */
- 	if (!(REISERFS_I(inode)->i_flags & i_nopack_mask)) {
--		err = reiserfs_unpack(inode, NULL);
-+		err = reiserfs_unpack(inode);
- 		if (err) {
- 			reiserfs_warning(sb, "super-6520",
- 				"Unpacking tail of quota file failed"
+ /* ioctl.c */
++int ubifs_fileattr_get(struct dentry *dentry, struct fileattr *fa);
++int ubifs_fileattr_set(struct user_namespace *mnt_userns,
++		       struct dentry *dentry, struct fileattr *fa);
+ long ubifs_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
+ void ubifs_set_inode_flags(struct inode *inode);
+ #ifdef CONFIG_COMPAT
 -- 
 2.30.2
 
