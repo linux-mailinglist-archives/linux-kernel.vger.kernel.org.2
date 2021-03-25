@@ -2,77 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A8B349C6D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4F1349C68
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhCYWjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:39:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhCYWid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:38:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F90961A38;
-        Thu, 25 Mar 2021 22:38:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616711913;
-        bh=4GybQa7x965w/lvJpnsuebjZBuJAklLkJS0kqW10SlI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AQI76ZNAc2kYisTlQkA41/g1kQ67/tVaO15bbvMmK88fkN0onr1G+Ko7wyP6xc0I+
-         6rClyDTLwT4L5Z4Rhr2wrCcJUDP5BbVPFEK+ph5So7pksluRk4ySFgHiPvBfQjB1ol
-         fMx3ZURFNR+HIl/jIaOGQIs38ZwQ8OupO3shL4zZnuWCRuvp/ts5HpaTXBtgee94rg
-         QCkviWbbq4M2Y+gIWqb7JnakATMHN3G2ybTG1/Eh3IEkR0pHwO6SkKZBoK0/VNqPwf
-         7sIWLJf0PAdRi+PTAgkl2koj6ruDAp9NEzK+ZkPLSjaTBEgBRScQJLQKpiZvHKitpR
-         oxI3MhBoZE8MA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 3/3] riscv: Select HAVE_DYNAMIC_FTRACE when -fpatchable-function-entry is available
-Date:   Thu, 25 Mar 2021 15:38:07 -0700
-Message-Id: <20210325223807.2423265-4-nathan@kernel.org>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210325223807.2423265-1-nathan@kernel.org>
-References: <20210325223807.2423265-1-nathan@kernel.org>
+        id S231304AbhCYWi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhCYWiT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 18:38:19 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAF2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:38:18 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id t18so1642665pjs.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:38:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SPJBpRy3R9mFfMF6pdvZDady42C+XlqArOxVCK6oVWM=;
+        b=GzjcNL0W6qznBEXmz0l/PS0tZuqWqpIbM+EHd/fQjdQjR/jyzcS3HTWKo/fqBj/qna
+         JTe4dWoj1S+mkS1xITOVLOWjomCs8AoPIIJyX9yXn9YbzP9nvmsk6Qu94mAolpJgH8MA
+         YQedl3lq8dvhSNcer0VHSrpU0F9vzDyB3cSWvzvL2EcG/3f9j/Im6Lxl1XorjpyzgO+I
+         eNHn0kKqeyEqdzpawXZIJObBlfEosHaYMEesZE2uFy30pKK7sJQSfMGpBj50IbfWs9Cf
+         Gx2DeVGYe6UMhrsB1MLFobFuVtuyShnvEt5hdm0ZIlntlRBXggH4vOjhPnLUM+thJgPX
+         nr6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SPJBpRy3R9mFfMF6pdvZDady42C+XlqArOxVCK6oVWM=;
+        b=rrOgfzcq4Am+PuS8j3lykFEXHxegFtkJm24eUY9MSFenGmpGlP/QA3rJpjQVcf9it5
+         Zod8M1SOFUeH+HbXu8Lwa8QLP14Av34kPIHsXMsd5+BEZ+bd3DzkptkQP9GBw60B8N5i
+         9I/azR/+XfF6rrqeVUts2gtXomWshHIpKQ4sHd+u40CWct8LIP/m1HL+szat8w+Eyssv
+         PvavJ3wYx4FAbeGUXSZ9qxZwSeldhD9tF0OMnh7j/Afb+4v7ZVjcl+FqvxkLkqxyrENj
+         QeIDHZx/VvChPewgjv6obzq3IZY6kO7XDqSiq+UuPO3DmXPoFHPmmvruuh5huq4XCyaa
+         2F3g==
+X-Gm-Message-State: AOAM53061aNeG9hMkd3SO0jARsetQ68FkQr3QOPe0q8U4KtnbPFDkzb5
+        JBPAqy+cDVeOuH43N8Nn2+Lr+w==
+X-Google-Smtp-Source: ABdhPJwSTTvB+/mfFyZ/jzgZP1pixjpzWPTWjiITbCA01sUAFTOJI+RnFl1vErKNPTHHu85TUYQKcw==
+X-Received: by 2002:a17:90b:1651:: with SMTP id il17mr11050782pjb.16.1616711898276;
+        Thu, 25 Mar 2021 15:38:18 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id p3sm6494878pgi.24.2021.03.25.15.38.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 15:38:17 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 16:38:15 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] remoteproc: stm32: add capability to detach
+Message-ID: <20210325223815.GA1982573@xps15>
+References: <20210322092651.7381-1-arnaud.pouliquen@foss.st.com>
+ <20210322092651.7381-3-arnaud.pouliquen@foss.st.com>
+ <20210323211911.GA1714890@xps15>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323211911.GA1714890@xps15>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang prior to 13.0.0 does not support -fpatchable-function-entry for
-RISC-V.
+On Tue, Mar 23, 2021 at 03:19:11PM -0600, Mathieu Poirier wrote:
+> Good day Arnaud,
+> 
+> On Mon, Mar 22, 2021 at 10:26:51AM +0100, Arnaud Pouliquen wrote:
+> > From: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
+> > 
+> > A mechanism similar to the shutdown mailbox signal is implemented to
+> > detach a remote processor.
+> > 
+> > Upon detachment, a signal is sent to the remote firmware, allowing it
+> > to perform specific actions such as stopping RPMsg communication.
+> > 
+> > The Cortex-M hold boot is also disabled to allow the remote processor
+> > to restart in case of crash.
+> > 
+> > Notice that for this feature to be supported, the remote firmware
+> > resource table must be stored at the beginning of a 1kB section
+> > (default size provided to the remoteproc core).
+> > 
+> > This restriction should be lifted in the future by using a backup
+> > register to store the actual size of the resource table.
+> 
+> I'm not sure the above two paragraphs add anything valuable to the changelog.
+> At this time the size of 1kB is fixed and future enhancement are, well, in the
+> future.  So for now this patch is working with the rest of the current
+> environment and that is the important part.
+> 
+> > 
+> > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
+> > ---
+> >  drivers/remoteproc/stm32_rproc.c | 38 ++++++++++++++++++++++++++++++--
+> >  1 file changed, 36 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> > index 3d45f51de4d0..298ef5b19e27 100644
+> > --- a/drivers/remoteproc/stm32_rproc.c
+> > +++ b/drivers/remoteproc/stm32_rproc.c
+> > @@ -28,7 +28,7 @@
+> >  #define RELEASE_BOOT		1
+> >  
+> >  #define MBOX_NB_VQ		2
+> > -#define MBOX_NB_MBX		3
+> > +#define MBOX_NB_MBX		4
+> >  
+> >  #define STM32_SMC_RCC		0x82001000
+> >  #define STM32_SMC_REG_WRITE	0x1
+> > @@ -38,6 +38,7 @@
+> >  #define STM32_MBX_VQ1		"vq1"
+> >  #define STM32_MBX_VQ1_ID	1
+> >  #define STM32_MBX_SHUTDOWN	"shutdown"
+> > +#define STM32_MBX_DETACH	"detach"
+> >  
+> >  #define RSC_TBL_SIZE		1024
+> >  
+> > @@ -336,6 +337,15 @@ static const struct stm32_mbox stm32_rproc_mbox[MBOX_NB_MBX] = {
+> >  			.tx_done = NULL,
+> >  			.tx_tout = 500, /* 500 ms time out */
+> >  		},
+> > +	},
+> > +	{
+> > +		.name = STM32_MBX_DETACH,
+> > +		.vq_id = -1,
+> > +		.client = {
+> > +			.tx_block = true,
+> > +			.tx_done = NULL,
+> > +			.tx_tout = 200, /* 200 ms time out to detach should be fair enough */
+> > +		},
+> >  	}
+> >  };
+> >  
+> > @@ -461,6 +471,25 @@ static int stm32_rproc_attach(struct rproc *rproc)
+> >  	return stm32_rproc_set_hold_boot(rproc, true);
+> >  }
+> >  
+> > +static int stm32_rproc_detach(struct rproc *rproc)
+> > +{
+> > +	struct stm32_rproc *ddata = rproc->priv;
+> > +	int err, dummy_data, idx;
+> > +
+> > +	/* Inform the remote processor of the detach */
+> > +	idx = stm32_rproc_mbox_idx(rproc, STM32_MBX_DETACH);
+> > +	if (idx >= 0 && ddata->mb[idx].chan) {
+> > +		/* A dummy data is sent to allow to block on transmit */
+> > +		err = mbox_send_message(ddata->mb[idx].chan,
+> > +					&dummy_data);
+> > +		if (err < 0)
+> > +			dev_warn(&rproc->dev, "warning: remote FW detach without ack\n");
+> > +	}
+> > +
+> > +	/* Allow remote processor to auto-reboot */
+> > +	return stm32_rproc_set_hold_boot(rproc, false);
+> > +}
+> > +
+> >  static int stm32_rproc_stop(struct rproc *rproc)
+> >  {
+> >  	struct stm32_rproc *ddata = rproc->priv;
+> > @@ -597,7 +626,11 @@ stm32_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
+> >  	}
+> >  
+> >  done:
+> > -	/* Assuming the resource table fits in 1kB is fair */
+> > +	/*
+> > +	 * Assuming the resource table fits in 1kB is fair.
+> > +	 * Notice for the detach, that this 1 kB memory area has to be reserved in the coprocessor
+> > +	 * firmware for the resource table. A clean of this whole area is done on detach.
+> > +	 */
+> 
+> Can you rework the last sentence?  I'm not sure if it means the M4 will clean
+> the resource table or if that should be the application processor... I'm also
+> not clear on what you mean by "clean".  Usually it means zero'ing out but in
+> this case it means a re-initialisation of the original values.
+> 
+> 
+> >  	*table_sz = RSC_TBL_SIZE;
+> >  	return (struct resource_table *)ddata->rsc_va;
+> >  }
+> > @@ -607,6 +640,7 @@ static const struct rproc_ops st_rproc_ops = {
+> >  	.start		= stm32_rproc_start,
+> >  	.stop		= stm32_rproc_stop,
+> >  	.attach		= stm32_rproc_attach,
+> > +	.detach		= stm32_rproc_detach,
+> 
+> With the above:
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-clang: error: unsupported option '-fpatchable-function-entry=8' for target 'riscv64-unknown-linux-gnu'
+Thanks for the firmware test image:
 
-To avoid this error, only select HAVE_DYNAMIC_FTRACE when this option is
-not available.
+Tested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Fixes: afc76b8b8011 ("riscv: Using PATCHABLE_FUNCTION_ENTRY instead of MCOUNT")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1268
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/riscv/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 87d7b52f278f..ba1d07640b66 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -227,7 +227,7 @@ config ARCH_RV64I
- 	bool "RV64I"
- 	select 64BIT
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
--	select HAVE_DYNAMIC_FTRACE if MMU
-+	select HAVE_DYNAMIC_FTRACE if MMU && $(cc-option,-fpatchable-function-entry=8)
- 	select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
- 	select HAVE_FTRACE_MCOUNT_RECORD
- 	select HAVE_FUNCTION_GRAPH_TRACER
--- 
-2.31.0
-
+> 
+> >  	.kick		= stm32_rproc_kick,
+> >  	.load		= rproc_elf_load_segments,
+> >  	.parse_fw	= stm32_rproc_parse_fw,
+> > -- 
+> > 2.17.1
+> > 
