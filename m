@@ -2,206 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703BF349A86
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D7D349A8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhCYTjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:39:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39793 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230336AbhCYTiU (ORCPT
+        id S231222AbhCYTjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230304AbhCYTjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:38:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616701100;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xe1RgBQE/G9XF6ytQooX6iFiFRZ4POCra4z89XvkUPk=;
-        b=bv8rVwqgg4vp37IELv55gLkTJ5dxGXVtjj218QPj++8Y4/7s9AtJHIW0QAokH03CpvMxsd
-        Cz2iwJbyuEjPavwmKGNQXgPguMoLecRQjXublQQvqrwuwO0XkTNq6KMgVveFi+RLOQlkQ6
-        4N6BN8SQpYNgEhIJK5qWHC41VQc/xuU=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-wB4Z5PwgMg2JXO-aYHtpcQ-1; Thu, 25 Mar 2021 15:38:18 -0400
-X-MC-Unique: wB4Z5PwgMg2JXO-aYHtpcQ-1
-Received: by mail-ed1-f70.google.com with SMTP id bi17so3202115edb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:38:17 -0700 (PDT)
+        Thu, 25 Mar 2021 15:39:16 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9A0C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:39:13 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id g8so4195953lfv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gzmi+VlURgVOiIckHYDGx4tksnLtuqPhZg704eyPPzc=;
+        b=axAO0RrZyNnOLPeJBC+lqlIBSFCA0+T5m0c+QTvjiesvzRhrSrhNAJGNBpPYO2w5yg
+         C8XEXbVJk+oVcSmsslcoGILcX1bst/8WI3rxAEQOD5N5m35uB129JOQ4p6zl6gjYV0hr
+         N9zXUzK0n6LOTT7Lnko6AXU/5hsgnyUwAG1QQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Xe1RgBQE/G9XF6ytQooX6iFiFRZ4POCra4z89XvkUPk=;
-        b=Hgc5KKGS8K35nIbabtJouNRg6xEx+Wi7AipBD0jlMtQSzNJIvX5LZihL65r0aWIxXl
-         akOBfmK3K6QC7+jEm5Ku4hAZxBOOyzQ7l5IVgct3tnjPgH9FfB+in1zM3CQJQNwuAgiX
-         3kHkt12qx65igCC6P3SyAR0LsJt41tofveCvTh3ZoK4N3Omx2d45NuzJ/KvEpZpw2kz5
-         mn6++kcd4H5RdZ2J8PKZ8xq5qATUmUeBvkqAMNP3DDD7QrhPq7bQWN1tKNbSILIvC0Rg
-         gKy5F1oVjOMoCd49wOfu6zQrMtmjD50A0GTNqG4fbjVN6aZ2Cv9QtXMkv5V01byu52fM
-         v9Mg==
-X-Gm-Message-State: AOAM531H187CHywu/jEUCFTQR9OkU15Z/ueu3CjdrML/MYEctKEKv6HF
-        IrWK3q6L2SpvyQMNkc2tDT1bjY5EWnw4f9HXAKzLkKaUTkxtkKO0BK6IAYEY20e432RiYhr1ArE
-        mirEIqdsFbso7X4HCBUTRflwG
-X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr11045117ejc.375.1616701096907;
-        Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFV1oZ+BK7v8WO040FkXSjAZV626OHX3ZFmSFkpTQMQ85TXUe3JuTEsoL0uvpq7ySkkOUKOw==
-X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr11045102ejc.375.1616701096688;
-        Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.38.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 12:38:16 -0700 (PDT)
-From:   Miklos Szeredi <mszeredi@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     Al Viro <viro@ZenIV.linux.org.uk>, linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>
-Subject: [PATCH v3 18/18] vfs: remove unused ioctl helpers
-Date:   Thu, 25 Mar 2021 20:37:55 +0100
-Message-Id: <20210325193755.294925-19-mszeredi@redhat.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210325193755.294925-1-mszeredi@redhat.com>
-References: <20210325193755.294925-1-mszeredi@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gzmi+VlURgVOiIckHYDGx4tksnLtuqPhZg704eyPPzc=;
+        b=b90wNJcmv4RqADur0sWI8oAF63vBuJwCOjP2Y/JH0Gn6yRnAOPzsNtNzVOl5lMi0rF
+         TA8r+jCNJzBiT5jc5JAbUHq82F5iYPBPd0B/z1dIMOx9VtwJ1z147pN/eKE55ozlx69r
+         tXZgYYklrk7qLL5FsQqOekUfnJ17iTvJqrOz7Yct5ZUkbyCXelKrKM2JZfe3tKM2fc2a
+         PqN3h4bRxRIc3Os6TcxOrtBHF7/Om+5zdduo1d8wGMXGI9iglNNv8SBj+pkMhc3ur3fN
+         OREqzG0pcdMu2V46LYH8T2VzUlaVOFdiO2tx6yD9yaCPAkLIpYWT5w9QkxqsH0DwKbfl
+         SLCQ==
+X-Gm-Message-State: AOAM530V+IqOL18VozcGeW2n5cM1Dnjq+OJ+uoUKUG+83WNq3Bvkdt5I
+        MMmv8M9AHpWcsg0OJ8BK4ZWpvv/jqOYzfg==
+X-Google-Smtp-Source: ABdhPJzpkJ0rjjugCQmhykMg3oWBuNt8cNBI3WGX7401Vc7e9UJIweqW0O5UJE5LR2iqFIAcnv875A==
+X-Received: by 2002:ac2:5ca7:: with SMTP id e7mr5911375lfq.646.1616701152168;
+        Thu, 25 Mar 2021 12:39:12 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id p13sm871027ljg.116.2021.03.25.12.39.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 12:39:11 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id n138so4246997lfa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:39:10 -0700 (PDT)
+X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr5719715lfd.487.1616701150641;
+ Thu, 25 Mar 2021 12:39:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210325164343.807498-1-axboe@kernel.dk> <m1ft0j3u5k.fsf@fess.ebiederm.org>
+In-Reply-To: <m1ft0j3u5k.fsf@fess.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 25 Mar 2021 12:38:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+Message-ID: <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Stefan Metzmacher <metze@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove vfs_ioc_setflags_prepare(), vfs_ioc_fssetxattr_check() and
-simple_fill_fsxattr(), which are no longer used.
+On Thu, Mar 25, 2021 at 12:34 PM Eric W. Biederman
+<ebiederm@xmission.com> wrote:
+>
+> A quick skim shows that these threads are not showing up anywhere in
+> proc which appears to be a problem, as it hides them from top.
+>
+> Sysadmins need the ability to dig into a system and find out where all
+> their cpu usage or io's have gone when there is a problem.  I general I
+> think this argues that these threads should show up as threads of the
+> process so I am not even certain this is the right fix to deal with gdb.
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
----
- fs/inode.c         | 87 ----------------------------------------------
- include/linux/fs.h | 12 -------
- 2 files changed, 99 deletions(-)
+Yeah, I do think that hiding them is the wrong model, because it also
+hides them from "ps" etc, which is very wrong.
 
-diff --git a/fs/inode.c b/fs/inode.c
-index a047ab306f9a..ae526fd9c0a4 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -12,7 +12,6 @@
- #include <linux/security.h>
- #include <linux/cdev.h>
- #include <linux/memblock.h>
--#include <linux/fscrypt.h>
- #include <linux/fsnotify.h>
- #include <linux/mount.h>
- #include <linux/posix_acl.h>
-@@ -2314,89 +2313,3 @@ struct timespec64 current_time(struct inode *inode)
- 	return timestamp_truncate(now, inode);
- }
- EXPORT_SYMBOL(current_time);
--
--/*
-- * Generic function to check FS_IOC_SETFLAGS values and reject any invalid
-- * configurations.
-- *
-- * Note: the caller should be holding i_mutex, or else be sure that they have
-- * exclusive access to the inode structure.
-- */
--int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
--			     unsigned int flags)
--{
--	/*
--	 * The IMMUTABLE and APPEND_ONLY flags can only be changed by
--	 * the relevant capability.
--	 *
--	 * This test looks nicer. Thanks to Pauline Middelink
--	 */
--	if ((flags ^ oldflags) & (FS_APPEND_FL | FS_IMMUTABLE_FL) &&
--	    !capable(CAP_LINUX_IMMUTABLE))
--		return -EPERM;
--
--	return fscrypt_prepare_setflags(inode, oldflags, flags);
--}
--EXPORT_SYMBOL(vfs_ioc_setflags_prepare);
--
--/*
-- * Generic function to check FS_IOC_FSSETXATTR values and reject any invalid
-- * configurations.
-- *
-- * Note: the caller should be holding i_mutex, or else be sure that they have
-- * exclusive access to the inode structure.
-- */
--int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
--			     struct fsxattr *fa)
--{
--	/*
--	 * Can't modify an immutable/append-only file unless we have
--	 * appropriate permission.
--	 */
--	if ((old_fa->fsx_xflags ^ fa->fsx_xflags) &
--			(FS_XFLAG_IMMUTABLE | FS_XFLAG_APPEND) &&
--	    !capable(CAP_LINUX_IMMUTABLE))
--		return -EPERM;
--
--	/*
--	 * Project Quota ID state is only allowed to change from within the init
--	 * namespace. Enforce that restriction only if we are trying to change
--	 * the quota ID state. Everything else is allowed in user namespaces.
--	 */
--	if (current_user_ns() != &init_user_ns) {
--		if (old_fa->fsx_projid != fa->fsx_projid)
--			return -EINVAL;
--		if ((old_fa->fsx_xflags ^ fa->fsx_xflags) &
--				FS_XFLAG_PROJINHERIT)
--			return -EINVAL;
--	}
--
--	/* Check extent size hints. */
--	if ((fa->fsx_xflags & FS_XFLAG_EXTSIZE) && !S_ISREG(inode->i_mode))
--		return -EINVAL;
--
--	if ((fa->fsx_xflags & FS_XFLAG_EXTSZINHERIT) &&
--			!S_ISDIR(inode->i_mode))
--		return -EINVAL;
--
--	if ((fa->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
--	    !S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
--		return -EINVAL;
--
--	/*
--	 * It is only valid to set the DAX flag on regular files and
--	 * directories on filesystems.
--	 */
--	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
--	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
--		return -EINVAL;
--
--	/* Extent size hints of zero turn off the flags. */
--	if (fa->fsx_extsize == 0)
--		fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
--	if (fa->fsx_cowextsize == 0)
--		fa->fsx_xflags &= ~FS_XFLAG_COWEXTSIZE;
--
--	return 0;
--}
--EXPORT_SYMBOL(vfs_ioc_fssetxattr_check);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 156b78f42a28..820fdc62ac30 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3571,18 +3571,6 @@ extern int vfs_fadvise(struct file *file, loff_t offset, loff_t len,
- extern int generic_fadvise(struct file *file, loff_t offset, loff_t len,
- 			   int advice);
- 
--int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
--			     unsigned int flags);
--
--int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
--			     struct fsxattr *fa);
--
--static inline void simple_fill_fsxattr(struct fsxattr *fa, __u32 xflags)
--{
--	memset(fa, 0, sizeof(*fa));
--	fa->fsx_xflags = xflags;
--}
--
- /*
-  * Flush file data before changing attributes.  Caller must hold any locks
-  * required to prevent further writes to this file until we're done setting
--- 
-2.30.2
+I don't know what the gdb logic is, but maybe there's some other
+option that makes gdb not react to them?
 
+          Linus
