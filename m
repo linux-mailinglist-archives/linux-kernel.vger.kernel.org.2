@@ -2,57 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95839348B5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE701348B60
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229716AbhCYIQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:16:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S229906AbhCYIRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhCYIQY (ORCPT
+        with ESMTP id S229676AbhCYIQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:16:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76FE4C06174A;
-        Thu, 25 Mar 2021 01:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/exH9O9awcWsxCz7+eapTVCjP1xnjzd++2TmK3g0wUA=; b=mza4LLBSMR5tgg00tK6/RqwQry
-        EAWd+m3DmQ5LsHRZKpQcVroIj4hHPKMXZeiDU6H8WaOSWgA3Px6N+76itUWRjbryxa4/LU5SIjTi4
-        kvOAg5i2hzYGoVV88qRszX0+ZYbQV2Oj460JUXXQc/Nf4PqndcOxoEzXahqHyolGihggvuIyBmkjc
-        vdRP9Kv8oS1sskhHLDQ7mVC4ucvxbxolI7CPsrMYx3Ud13XsNnHJHs9F7CaRYGF9XinZCMZrBb6eO
-        XWEvbq7mPzOiPd92WTnq8e0rKsrRKASUqwZ71WJTXp8wY5EldPpCxwS8yjlommcB3dE2wgohUPhsp
-        vQJgoTpQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPL9n-00CWsM-Ov; Thu, 25 Mar 2021 08:16:05 +0000
-Date:   Thu, 25 Mar 2021 08:15:55 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, ira.weiny@intel.com,
-        vishal.l.verma@intel.com, alison.schofield@intel.com,
-        ben.widawsky@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] cxl/mem: Introduce 'struct cxl_regs'
-Message-ID: <20210325081555.GA2983117@infradead.org>
-References: <161662142382.1723715.5934723983022398253.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161662143530.1723715.15800475088422813585.stgit@dwillia2-desk3.amr.corp.intel.com>
+        Thu, 25 Mar 2021 04:16:53 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DABC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:16:53 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id w37so1188973lfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wqv+mJd/yA9gAXhianZae/dsnbx6UuOD+QrLDaMhtRk=;
+        b=fVq82e+VWVzuGVVEGkCzUGHT10kKogZLvz9mlxXuyz5cQcPYIib7iG2c7FdCja7v/4
+         r2rd7mOX3oBmGg1WjXu1cknJCAAA3U9AlqitM+7O7IeQhgEm2kYJvPQ8wJ5X67u4DIuf
+         SOW+ERR1q2/R9NOwJJeG6atcgul0j0CuRsXidF4fHbxWdJGuVtNJ0GJ4N/tcbCw6LV3I
+         2/tDO88d9O0sn2dApl1OCRmFqHB/nDejKALf0t7xqt2adzUlEJj/AtdMwMeTFnw4y9hd
+         KEbVum9jA5nIpYe8YcY7vW2zvMYq4kwnB9gdBTHz2J/W/shQ/GbBCJVNB4R3pBPhumb4
+         VKlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wqv+mJd/yA9gAXhianZae/dsnbx6UuOD+QrLDaMhtRk=;
+        b=bc6n9KINm6M57piB2es+1r6CCY0AblKQkUNke4vP0lhJ+on9fd58XeKSZXPaWlSVNf
+         yfEGbLpjCOEFabXovGJ+kRtsXmVquXKrHpdEgc8ZoGeoTn+Hk3lH2Ww0ziBLEK6x+ODT
+         Gv8J6iCrz6Q3R2vWClftWS99+Uogu1dYfSf71SQ07RLe5mY2tTMMWkPy3NNb/C+FugBc
+         TNsjxthaYcH4Vjr+qvrNVgZNA9VIFiAHXVTxB3CE+6z4X/sZ8I1mGUPVdoJgwtSYiUx2
+         AcaM3FfkJ9r81zUVxU2THZ8WynMvM6bKQLDy0brrIeMTO+AGwaV89Utc/oNwt0OYFMs+
+         xhtA==
+X-Gm-Message-State: AOAM532bdno2UrEXsj2avsa3ahzne/0alNhctbrAGRxamah1lPUnnQ13
+        gRgKL9G/BIjqiXv1BIloFHq6FbA/zqBAfe0tkvVJDQuGlfPfg3jO
+X-Google-Smtp-Source: ABdhPJxvVeJgUu0O3xhLewVEaOBUd+mzRH+XmTPBOaLaRtuACuj0BDLPQ04xdBJmn9JFYlMmFTQ0rI4/j3gVXTbD4tE=
+X-Received: by 2002:a19:6b13:: with SMTP id d19mr4163840lfa.291.1616660211621;
+ Thu, 25 Mar 2021 01:16:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161662143530.1723715.15800475088422813585.stgit@dwillia2-desk3.amr.corp.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com> <20210317151928.41544-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210317151928.41544-3-andriy.shevchenko@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 25 Mar 2021 09:16:40 +0100
+Message-ID: <CACRpkdZNuu9h4aRsV5rSyxbS-4aN0BqbGJ=oYnDLAZT0D+csFA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] gpio: sch: Hook into ACPI GPE handler to catch
+ GPIO edge events
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 02:30:35PM -0700, Dan Williams wrote:
-> In preparation for common register mapping facility, introduce a generic
-> container, 'struct cxl_regs', for CXL device register and later
-> component register block base pointers. Some CXL device types implement
-> both.
+On Wed, Mar 17, 2021 at 4:19 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
-The code looks like complete gibberish to me with a struct of a union of
-a struct declaring members in a macro.  This needs a much more detailed
-explanation and rationale.
+> Neither the ACPI description on Intel Minnowboard (v1) platform provides
+> the required information to establish a generic handling nor the hardware
+> capable of doing it. According to the data sheet the hardware can generate
+> SCI events. Therefore, we need to hook from the driver into GPE handler of
+> the ACPI subsystem in order to catch and report GPIO-related events.
+>
+> Validated on the Inlel Minnowboard (v1) platform.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Looks good to me:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
