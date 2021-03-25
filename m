@@ -2,180 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4C9349A58
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BE2349A5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhCYThf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
+        id S230160AbhCYTiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230064AbhCYThA (ORCPT
+        with ESMTP id S229616AbhCYThd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:37:00 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120A9C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:36:59 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so1828994wmj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=c28V1qEol1I4QrexdXU8KtR/UuqWaDR44oRtym8omog=;
-        b=rqHrJiGtdaFIDWFvz2/YQL40pxirOdoQHfB+PAgJ0oYhv9k4vd3ALvRKEewsisgmtD
-         POIKgErjUeibWdmqe+uCwplydDvG1qzxc/1w1rB7cQqjpahs7gG5Ih2T/TqCplsPrInz
-         qUodO7S70wOSVekTbKaK+Hi11An+CrW4w73zPBAOen6GkfHjaJhXxY1M+Unl27tPHswB
-         /5P9kS+jkE5w/niDGNqWJBP3Mog7C2cklB7fGL9C2RRGRzyKsVEBPFOuHObqvKekM6WF
-         6sIuXkeeYNdqqRqzha5169RgSAQqEHdZ6jP/HJlOOEyMEaBktXCrlQImF040GvHlTU9K
-         imEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=c28V1qEol1I4QrexdXU8KtR/UuqWaDR44oRtym8omog=;
-        b=byJl2/KASuU4H7P8waZ+mcrNUawJClD+bN1yPYApr6o7KbYrzyBUnif81kiI6jnI/3
-         FlqR2UvN1N8OGhHg2UYZl6KNGPe9mNJb7IIENjziTTfVLxz44qJT4zLltOx86O/1NYl4
-         lE2X8KCKJbCRqxlHmm0GMLyGH5ToDLhfSviD1YcR5NbHu+bxgXUKMGxvAcxFhHNcXcvk
-         htij8zltXXi58Uyf/4jFgBX4p55v1i7mle0XxAfr06BtBx6HVBq2cL95mLm+z5BNb6Da
-         CHNsBFZOY00ueP2/AJV/3+p2oxJpFDicgN48NeE6q9lU8eQKBCjUOGD4F6qZqpMwnWDH
-         1J0g==
-X-Gm-Message-State: AOAM530GA34MLA38CE+8wEMQYp83vR8BOPKTZp6FJP1vkIP2Ei1DN8kv
-        23lif3OZqx3IJF+RIlDhTGfa4A==
-X-Google-Smtp-Source: ABdhPJzAgzLcQ9/+8u4JXx39HNXYUE0hH5J8RR+sFfQa2gG9t4cbr7wwLCsDJPg7ZmwASkeB9WA3aQ==
-X-Received: by 2002:a1c:df46:: with SMTP id w67mr9475403wmg.176.1616701017347;
-        Thu, 25 Mar 2021 12:36:57 -0700 (PDT)
-Received: from localhost.localdomain ([82.142.13.80])
-        by smtp.gmail.com with ESMTPSA id h12sm2240217wrv.58.2021.03.25.12.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 12:36:56 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org
-Cc:     rkumbako@quicinc.com, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-kernel@vger.kernel.org (open list),
-        linux-api@vger.kernel.org (open list:ABI/API)
-Subject: [PATCH] thermal/drivers/netlink: Add the temperature when crossing a trip point
-Date:   Thu, 25 Mar 2021 20:36:32 +0100
-Message-Id: <20210325193633.19592-1-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Thu, 25 Mar 2021 15:37:33 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3929C06174A;
+        Thu, 25 Mar 2021 12:37:32 -0700 (PDT)
+Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lPVnN-0004kc-Vg; Thu, 25 Mar 2021 20:37:30 +0100
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1616181657.git.linux@leemhuis.info>
+ <c8770353-3d0d-17af-115a-efa4a31fd97b@leemhuis.info>
+ <87y2ebysy8.fsf@meer.lwn.net>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [PATCH v3 0/5] docs: reporting-issues: streamline process and
+ solve a FIXME
+Message-ID: <4bc573bf-3dc1-fb6b-e6d7-d51993725c29@leemhuis.info>
+Date:   Thu, 25 Mar 2021 20:37:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <87y2ebysy8.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-BS
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616701053;a929d664;
+X-HE-SMSGID: 1lPVnN-0004kc-Vg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The slope of the temperature increase or decrease can be high and when
-the temperature crosses the trip point, there could be a significant
-difference between the trip temperature and the measured temperatures.
+On 25.03.21 19:43, Jonathan Corbet wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> writes:
+> 
+>> That's why I'd like to speed things up a little. But for that it would
+>> be good to have something from you: a kind of "I like the direction
+>> where this patch set is heading and I'm optimistic that we get it merged
+>> for 5.13-rc1" message from you. With something like that I could move
+>> ahead as outlined above already. Do you maybe have a minute for that?
+> Honestly, I don't see any reason to delay this work any further, so I've
+> just applied the set.
 
-That forces the userspace to read the temperature back right after
-receiving a trip violation notification.
+Ahh, great, many thx.
 
-In order to be efficient, give the temperature which resulted in the
-trip violation.
+> Sorry for the slowness,
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- drivers/thermal/thermal_core.c    |  6 ++++--
- drivers/thermal/thermal_netlink.c | 11 ++++++-----
- drivers/thermal/thermal_netlink.h |  8 ++++----
- include/uapi/linux/thermal.h      |  2 +-
- 4 files changed, 15 insertions(+), 12 deletions(-)
+No worries, it's improvements to a docs text, not a crucial security
+issue in core code. :-D
 
-diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-index 996c038f83a4..948020ef51b1 100644
---- a/drivers/thermal/thermal_core.c
-+++ b/drivers/thermal/thermal_core.c
-@@ -430,10 +430,12 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
- 	if (tz->last_temperature != THERMAL_TEMP_INVALID) {
- 		if (tz->last_temperature < trip_temp &&
- 		    tz->temperature >= trip_temp)
--			thermal_notify_tz_trip_up(tz->id, trip);
-+			thermal_notify_tz_trip_up(tz->id, trip,
-+						  tz->temperature);
- 		if (tz->last_temperature >= trip_temp &&
- 		    tz->temperature < (trip_temp - hyst))
--			thermal_notify_tz_trip_down(tz->id, trip);
-+			thermal_notify_tz_trip_down(tz->id, trip,
-+						    tz->temperature);
- 	}
- 
- 	if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
-diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
-index 1234dbe95895..a16dd4d5d710 100644
---- a/drivers/thermal/thermal_netlink.c
-+++ b/drivers/thermal/thermal_netlink.c
-@@ -121,7 +121,8 @@ static int thermal_genl_event_tz(struct param *p)
- static int thermal_genl_event_tz_trip_up(struct param *p)
- {
- 	if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
--	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id))
-+	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id) ||
-+	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TEMP, p->temp))
- 		return -EMSGSIZE;
- 
- 	return 0;
-@@ -285,16 +286,16 @@ int thermal_notify_tz_disable(int tz_id)
- 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
- }
- 
--int thermal_notify_tz_trip_down(int tz_id, int trip_id)
-+int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
- {
--	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
-+	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
- 
- 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
- }
- 
--int thermal_notify_tz_trip_up(int tz_id, int trip_id)
-+int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
- {
--	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
-+	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
- 
- 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
- }
-diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
-index 828d1dddfa98..e554f76291f4 100644
---- a/drivers/thermal/thermal_netlink.h
-+++ b/drivers/thermal/thermal_netlink.h
-@@ -11,8 +11,8 @@ int thermal_notify_tz_create(int tz_id, const char *name);
- int thermal_notify_tz_delete(int tz_id);
- int thermal_notify_tz_enable(int tz_id);
- int thermal_notify_tz_disable(int tz_id);
--int thermal_notify_tz_trip_down(int tz_id, int id);
--int thermal_notify_tz_trip_up(int tz_id, int id);
-+int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
-+int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
- int thermal_notify_tz_trip_delete(int tz_id, int id);
- int thermal_notify_tz_trip_add(int tz_id, int id, int type,
- 			       int temp, int hyst);
-@@ -49,12 +49,12 @@ static inline int thermal_notify_tz_disable(int tz_id)
- 	return 0;
- }
- 
--static inline int thermal_notify_tz_trip_down(int tz_id, int id)
-+static inline int thermal_notify_tz_trip_down(int tz_id, int id, int temp)
- {
- 	return 0;
- }
- 
--static inline int thermal_notify_tz_trip_up(int tz_id, int id)
-+static inline int thermal_notify_tz_trip_up(int tz_id, int id, int temp)
- {
- 	return 0;
- }
-diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
-index c105054cbb57..bf5d9c8ef16f 100644
---- a/include/uapi/linux/thermal.h
-+++ b/include/uapi/linux/thermal.h
-@@ -18,7 +18,7 @@ enum thermal_trip_type {
- 
- /* Adding event notification support elements */
- #define THERMAL_GENL_FAMILY_NAME		"thermal"
--#define THERMAL_GENL_VERSION			0x01
-+#define THERMAL_GENL_VERSION			0x02
- #define THERMAL_GENL_SAMPLING_GROUP_NAME	"sampling"
- #define THERMAL_GENL_EVENT_GROUP_NAME		"event"
- 
--- 
-2.17.1
+> it has been a rather harsh week.
+
+I hope things will get better soon!
+
+BTW, I wondered it it would make sense to add a entry to the MAINTAINERS
+file for the text so I can keep and eye on things and help with fine
+tuning. Let me known if you think that idea is overblown, otherwise I'll
+likely add one with the patch that I'll send sooner or later to remove
+the WIP box near the top.
+
+Ciao (and make sure to take care of yourself!), Thorsten
+
 
