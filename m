@@ -2,197 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679683499CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:55:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7533499D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhCYSzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:55:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48274 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230166AbhCYSyn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:54:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CC244AC16;
-        Thu, 25 Mar 2021 18:54:40 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 19:54:35 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
+        id S229989AbhCYS4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:56:43 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:47470 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229642AbhCYS4P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 14:56:15 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.3)
+ id ecdf7dd5ee01525c; Thu, 25 Mar 2021 19:56:13 +0100
+Received: from kreacher.localnet (89-64-80-106.dynamic.chello.pl [89.64.80.106])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 282A4669104;
+        Thu, 25 Mar 2021 19:56:12 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "H. J. Lu" <hjl.tools@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Jann Horn <jannh@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Carlos O'Donell <carlos@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate
- signal stack overflow
-Message-ID: <20210325185435.GB32296@zn.tnic>
-References: <20210316065215.23768-1-chang.seok.bae@intel.com>
- <20210316065215.23768-6-chang.seok.bae@intel.com>
- <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
+        LKML <linux-kernel@vger.kernel.org>,
+        Yunfeng Ye <yeyunfeng@huawei.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: =?UTF-8?B?5Zue5aSNOg==?= [PATCH 01/10] tick/nohz: Prevent tick_nohz_get_sleep_length() from returning negative value
+Date:   Thu, 25 Mar 2021 19:56:11 +0100
+Message-ID: <5712356.lOV4Wx5bFT@kreacher>
+In-Reply-To: <20210325131400.GA938586@lothringen>
+References: <20210311123708.23501-1-frederic@kernel.org> <YTBPR01MB3262D78448BD2FB3AD5EB4F9C46B9@YTBPR01MB3262.CANPRD01.PROD.OUTLOOK.COM> <20210325131400.GA938586@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrudehtddguddvudcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdektddruddtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdektddruddtiedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehfrhgvuggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepgidvtddulegtfihmsehsthhfgidrtggrpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprhgrfhgrvghlrdhjrdifhihsohgtkhhisehinhhtvghlrdgtohhmpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghp
+ thhtohepthhglhigsehlihhnuhhtrhhonhhigidruggvpdhrtghpthhtohephigvhihunhhfvghngheshhhurgifvghirdgtohhmpdhrtghpthhtohepphgruhhlmhgtkheskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhtohhsrghtthhisehrvgguhhgrthdrtghomhdprhgtphhtthhopehmihhnghhosehkvghrnhgvlhdrohhrghdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=13 Fuz1=13 Fuz2=13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 11:13:12AM -0700, Andy Lutomirski wrote:
-> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> index ea794a083c44..53781324a2d3 100644
-> --- a/arch/x86/kernel/signal.c
-> +++ b/arch/x86/kernel/signal.c
-> @@ -237,7 +237,8 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
->  	unsigned long math_size = 0;
->  	unsigned long sp = regs->sp;
->  	unsigned long buf_fx = 0;
-> -	int onsigstack = on_sig_stack(sp);
-> +	bool already_onsigstack = on_sig_stack(sp);
-> +	bool entering_altstack = false;
->  	int ret;
->  
->  	/* redzone */
-> @@ -246,15 +247,25 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
->  
->  	/* This is the X/Open sanctioned signal stack switching.  */
->  	if (ka->sa.sa_flags & SA_ONSTACK) {
-> -		if (sas_ss_flags(sp) == 0)
-> +		/*
-> +		 * This checks already_onsigstack via sas_ss_flags().
-> +		 * Sensible programs use SS_AUTODISARM, which disables
-> +		 * that check, and programs that don't use
-> +		 * SS_AUTODISARM get compatible but potentially
-> +		 * bizarre behavior.
-> +		 */
-> +		if (sas_ss_flags(sp) == 0) {
->  			sp = current->sas_ss_sp + current->sas_ss_size;
-> +			entering_altstack = true;
-> +		}
->  	} else if (IS_ENABLED(CONFIG_X86_32) &&
-> -		   !onsigstack &&
-> +		   !already_onsigstack &&
->  		   regs->ss != __USER_DS &&
->  		   !(ka->sa.sa_flags & SA_RESTORER) &&
->  		   ka->sa.sa_restorer) {
->  		/* This is the legacy signal stack switching. */
->  		sp = (unsigned long) ka->sa.sa_restorer;
-> +		entering_altstack = true;
->  	}
+On Thursday, March 25, 2021 2:14:00 PM CET Frederic Weisbecker wrote:
+> On Tue, Mar 16, 2021 at 04:08:08PM +0000, Zhou Ti (x2019cwm) wrote:
+> > But I don't think it's a good idea to handle this in callers, because logically the function shouldn't return negative values. Returning 0 directly would allow idle governors to get another chance to select again.
+> 
+> Hmm, I'm going to leave the last word to Rafael since cpuidle are the only
+> callers of this. In any case we need to fix it.
 
-What a mess this whole signal handling is. I need a course in signal
-handling to understand what's going on here...
+Yes, we do.
 
->  
->  	sp = fpu__alloc_mathframe(sp, IS_ENABLED(CONFIG_X86_32),
-> @@ -267,8 +278,16 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
->  	 * If we are on the alternate signal stack and would overflow it, don't.
->  	 * Return an always-bogus address instead so we will die with SIGSEGV.
->  	 */
-> -	if (onsigstack && !likely(on_sig_stack(sp)))
-> +	if (unlikely(entering_altstack &&
-> +		     (sp <= current->sas_ss_sp ||
-> +		      sp - current->sas_ss_sp > current->sas_ss_size))) {
+So I said that I preferred to address this in the callers and the reason why
+is because, for example, for the teo governor it would be a matter of using
+a different data type to store the tick_nohz_get_sleep_length() return value,
+like in the (untested) patch below.
 
-You could've simply done
+So at least in this case there is no need to add any new branches anywhere.
 
-	if (unlikely(entering_altstack && !on_sig_stack(sp)))
-
-here.
-
-
-> +		if (show_unhandled_signals && printk_ratelimit()) {
-> +			pr_info("%s[%d] overflowed sigaltstack",
-> +				tsk->comm, task_pid_nr(tsk));
-> +		}
-
-Why do you even wanna issue that? It looks like callers will propagate
-an error value up and people don't look at dmesg all the time.
-
-Btw, s/tsk/current/g
-
-IOW, this builds:
+I'm still not sure about menu, because it is more complicated, but even if
+that one needs an extra branch, that is a win already.
 
 ---
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index a06cb107c0e8..c00e932b5f18 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -234,10 +234,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
- 	     void __user **fpstate)
+ drivers/cpuidle/governors/teo.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -100,8 +100,8 @@ struct teo_idle_state {
+  * @intervals: Saved idle duration values.
+  */
+ struct teo_cpu {
+-	u64 time_span_ns;
+-	u64 sleep_length_ns;
++	s64 time_span_ns;
++	s64 sleep_length_ns;
+ 	struct teo_idle_state states[CPUIDLE_STATE_MAX];
+ 	int interval_idx;
+ 	u64 intervals[INTERVALS];
+@@ -216,7 +216,7 @@ static bool teo_time_ok(u64 interval_ns)
+  */
+ static int teo_find_shallower_state(struct cpuidle_driver *drv,
+ 				    struct cpuidle_device *dev, int state_idx,
+-				    u64 duration_ns)
++				    s64 duration_ns)
  {
- 	/* Default to using normal stack */
-+	bool already_onsigstack = on_sig_stack(regs->sp);
-+	bool entering_altstack = false;
- 	unsigned long math_size = 0;
- 	unsigned long sp = regs->sp;
- 	unsigned long buf_fx = 0;
--	int onsigstack = on_sig_stack(sp);
- 	int ret;
+ 	int i;
  
- 	/* redzone */
-@@ -246,15 +247,24 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
- 
- 	/* This is the X/Open sanctioned signal stack switching.  */
- 	if (ka->sa.sa_flags & SA_ONSTACK) {
--		if (sas_ss_flags(sp) == 0)
-+		/*
-+		 * This checks already_onsigstack via sas_ss_flags(). Sensible
-+		 * programs use SS_AUTODISARM, which disables that check, and
-+		 * programs that don't use SS_AUTODISARM get compatible but
-+		 * potentially bizarre behavior.
-+		 */
-+		if (sas_ss_flags(sp) == 0) {
- 			sp = current->sas_ss_sp + current->sas_ss_size;
-+			entering_altstack = true;
-+		}
- 	} else if (IS_ENABLED(CONFIG_X86_32) &&
--		   !onsigstack &&
-+		   !already_onsigstack &&
- 		   regs->ss != __USER_DS &&
- 		   !(ka->sa.sa_flags & SA_RESTORER) &&
- 		   ka->sa.sa_restorer) {
- 		/* This is the legacy signal stack switching. */
- 		sp = (unsigned long) ka->sa.sa_restorer;
-+		entering_altstack = true;
- 	}
- 
- 	sp = fpu__alloc_mathframe(sp, IS_ENABLED(CONFIG_X86_32),
-@@ -267,8 +277,14 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
- 	 * If we are on the alternate signal stack and would overflow it, don't.
- 	 * Return an always-bogus address instead so we will die with SIGSEGV.
- 	 */
--	if (onsigstack && !likely(on_sig_stack(sp)))
-+	if (unlikely(entering_altstack && !on_sig_stack(sp))) {
-+
-+		if (show_unhandled_signals && printk_ratelimit())
-+			pr_info("%s[%d] overflowed sigaltstack",
-+				current->comm, task_pid_nr(current));
-+
- 		return (void __user *)-1L;
-+	}
- 
- 	/* save i387 and extended state */
- 	ret = copy_fpstate_to_sigframe(*fpstate, (void __user *)buf_fx, math_size);
+@@ -242,7 +242,7 @@ static int teo_select(struct cpuidle_dri
+ {
+ 	struct teo_cpu *cpu_data = per_cpu_ptr(&teo_cpus, dev->cpu);
+ 	s64 latency_req = cpuidle_governor_latency_req(dev->cpu);
+-	u64 duration_ns;
++	s64 duration_ns;
+ 	unsigned int hits, misses, early_hits;
+ 	int max_early_idx, prev_max_early_idx, constraint_idx, idx, i;
+ 	ktime_t delta_tick;
 
 
--- 
-Regards/Gruss,
-    Boris.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
