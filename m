@@ -2,249 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3E33495F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:47:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8346F349608
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231578AbhCYPrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:47:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhCYPqs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:46:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C92D61A2C;
-        Thu, 25 Mar 2021 15:46:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616687207;
-        bh=nkCtyv6nqbjB3xhLDtW5bcrSiyNpGcFcq5delNjN5+8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r5oHDu3Hn+cZZLx5C9SbK6qWPJ64/AfoXM6vrZO+M69GSHR2CQJkE/7dR2p6848KE
-         iHK7Rhd5ymNtDlklPDPQksH6cSE4U8kKKHbLSv2Z8akA+Okn6XumrFD457oeL+/Van
-         MR0p/bif++DrwtmoS8kx/hCq+u/ToB55KRd8VMO8D739wHmCBD18sr3gyygcAPGhVv
-         kH37yGkDLIFcumd05UqkjQ6w1ThgFbe7hABoGzSl2M4Ofgc0d7t7ym4yPukbbT28qC
-         jm2TuqJAzflxf/aok8W1vXDf8LWjfV0Qj49k1PnEt6HSi5dGViOHrvVnv3X5jISKJO
-         zgzMSX01NhxCg==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lPSC4-001FYy-DD; Thu, 25 Mar 2021 16:46:44 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 7/7] dts: hisilicon: add support for USB3 on Hikey 970
-Date:   Thu, 25 Mar 2021 16:46:41 +0100
-Message-Id: <df29d871b2d47e845316b9aabd0ac062af25c714.1616686958.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1616686958.git.mchehab+huawei@kernel.org>
-References: <cover.1616686958.git.mchehab+huawei@kernel.org>
+        id S231138AbhCYPsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:48:24 -0400
+Received: from mail-ua1-f46.google.com ([209.85.222.46]:38665 "EHLO
+        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230322AbhCYPrp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:47:45 -0400
+Received: by mail-ua1-f46.google.com with SMTP id h34so646723uah.5;
+        Thu, 25 Mar 2021 08:47:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VORyg37KyhTM2pEju2vrHYnS2b444LAJS39AyI1tLyU=;
+        b=NIbnJ/1DUbHA/K0FQzgEn+Ml5S10WVEPFyT3/1vYjTjpW6U7GEpOwvhiMco+9NXhUn
+         pM8GXczkW4Y+qLQv1zdt3fRLRdpmBulI+eYp9vlx1uUh7Ze2zmwdIVUbIYzVwkSjK2nE
+         XdzH1O5k/IaC7hnqpDWr9Je+wFj7T7EwkhTp77XknpPIhumlQIuI2QqP6K9tB9s7M1N/
+         n+sT0E/xaUFXeVhmMoF2VeKcg7306o62/30lfniz+RxDsd6psnA7u8Cts4LD7E9Vn5MP
+         Ga02gLhpGFlRTMhcgphZpOk0rNhH+gqPzrGRCt80N8pQKRbiOjnKsp6qKsNXwNb2f10k
+         FOQg==
+X-Gm-Message-State: AOAM532az4ky0wLWB4fzXHMsA1IsqEZ5xy9OqfmLSj0GtIpE0Z8nTwgC
+        qVTxrGTkph8BWpxvBKMfCwjTKFuPIIu1Q34jfVc=
+X-Google-Smtp-Source: ABdhPJz9ribtsSNo45nfPsfI32D2+XmTQUPrUgHfSYuhDyGOQqll7eBC8nUPPybEDHZ0rx9LbEO15UIVaXecG/fpF7Q=
+X-Received: by 2002:ab0:2c16:: with SMTP id l22mr5452914uar.100.1616687264304;
+ Thu, 25 Mar 2021 08:47:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20210205222644.2357303-9-saravanak@google.com>
+ <20210210114435.122242-1-tudor.ambarus@microchip.com> <CGME20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e@eucas1p2.samsung.com>
+ <20210210114435.122242-2-tudor.ambarus@microchip.com> <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com>
+In-Reply-To: <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 25 Mar 2021 16:47:33 +0100
+Message-ID: <CAMuHMdUaROcMbjAM1fu8und4g=BFZe3C3f8-rbB3q+85RWvgeA@mail.gmail.com>
+Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Saravana Kannan <saravanak@google.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3 bindings for Kirin 970 phy and Hikey 970 board.
+Hi Marek,
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- .../boot/dts/hisilicon/hi3670-hikey970.dts    | 102 ++++++++++++++++++
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi     |  58 ++++++++++
- 2 files changed, 160 insertions(+)
+On Thu, Mar 25, 2021 at 2:32 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+> On 10.02.2021 12:44, Tudor Ambarus wrote:
+> > This is a follow-up for:
+> > commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is added/removed")
+> >
+> > The above commit updated the deprecated of_clk_add_provider(),
+> > but missed to update the preferred of_clk_add_hw_provider().
+> > Update it now.
+> >
+> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>
+> This patch, which landed in linux-next as commit 6579c8d97ad7 ("clk:
+> Mark fwnodes when their clock provider is added") causes the following
+> NULL pointer dereference on Raspberry Pi 3b+ boards:
+>
+> --->8---
+>
+> raspberrypi-firmware soc:firmware: Attached to firmware from
+> 2020-01-06T13:05:25
+> Unable to handle kernel NULL pointer dereference at virtual address
+> 0000000000000050
+> Mem abort info:
+>    ESR = 0x96000004
+>    EC = 0x25: DABT (current EL), IL = 32 bits
+>    SET = 0, FnV = 0
+>    EA = 0, S1PTW = 0
+> Data abort info:
+>    ISV = 0, ISS = 0x00000004
+>    CM = 0, WnR = 0
+> [0000000000000050] user address but active_mm is swapper
+> Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 0 PID: 10 Comm: kworker/0:1 Not tainted 5.12.0-rc4+ #2764
+> Hardware name: Raspberry Pi 3 Model B (DT)
+> Workqueue: events deferred_probe_work_func
+> pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=--)
+> pc : of_clk_add_hw_provider+0xac/0xe8
+> lr : of_clk_add_hw_provider+0x94/0xe8
+> sp : ffff8000130936b0
+> x29: ffff8000130936b0 x28: ffff800012494e04
+> x27: ffff00003b18cb05 x26: ffff00003aa5c010
+> x25: 0000000000000000 x24: 0000000000000000
+> x23: ffff00003aa1e380 x22: ffff8000106830d0
+> x21: ffff80001233f180 x20: 0000000000000018
+> x19: 0000000000000000 x18: ffff8000124d38b0
+> x17: 0000000000000013 x16: 0000000000000014
+> x15: ffff8000125758b0 x14: 00000000000184e0
+> x13: 000000000000292e x12: ffff80001258dd98
+> x11: 0000000000000001 x10: 0101010101010101
+> x9 : ffff80001233f288 x8 : 7f7f7f7f7f7f7f7f
+> x7 : fefefefeff6c626f x6 : 5d636d8080808080
+> x5 : 00000000006d635d x4 : 0000000000000000
+> x3 : 0000000000000000 x2 : 540eb5edae191600
+> x1 : 0000000000000000 x0 : 0000000000000000
+> Call trace:
+>   of_clk_add_hw_provider+0xac/0xe8
+>   devm_of_clk_add_hw_provider+0x5c/0xb8
+>   raspberrypi_clk_probe+0x110/0x210
+>   platform_probe+0x90/0xd8
+>   really_probe+0x108/0x3c0
+>   driver_probe_device+0x60/0xc0
+>   __device_attach_driver+0x9c/0xd0
+>   bus_for_each_drv+0x70/0xc8
+>   __device_attach+0xec/0x150
+>   device_initial_probe+0x10/0x18
+>   bus_probe_device+0x94/0xa0
+>   device_add+0x47c/0x780
+>   platform_device_add+0x110/0x248
+>   platform_device_register_full+0x120/0x150
+>   rpi_firmware_probe+0x158/0x1f8
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 5e6d7b329771..1f221cb97690 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -53,6 +53,29 @@ wlan_en: wlan-en-1-8v {
- 		startup-delay-us = <70000>;
- 		enable-active-high;
- 	};
-+	hikey_usbhub: hikey_usbhub {
-+		compatible = "hisilicon,kirin970_hikey_usbhub";
-+
-+		typec-vbus-gpios = <&gpio26 1 0>;
-+		otg-switch-gpios = <&gpio4 2 0>;
-+		hub_reset_en_gpio = <&gpio0 3 0>;
-+		hub-vdd-supply = <&ldo17>;
-+		usb-role-switch;
-+
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			hikey_usb_ep0: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&dwc3_role_switch>;
-+			};
-+			hikey_usb_ep1: endpoint@1 {
-+				reg = <1>;
-+				remote-endpoint = <&rt1711h_ep>;
-+			};
-+		};
-+	};
- };
- 
- /*
-@@ -430,3 +453,82 @@ &uart6 {
- 	label = "LS-UART1";
- 	status = "okay";
- };
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	rt1711h: rt1711h@4e {
-+		compatible = "richtek,rt1711h";
-+		reg = <0x4e>;
-+		status = "okay";
-+		interrupt-parent = <&gpio27>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&usb_cfg_func>;
-+
-+		usb_con: connector {
-+			compatible = "usb-c-connector";
-+			label = "USB-C";
-+			data-role = "dual";
-+			power-role = "dual";
-+			try-power-role = "sink";
-+			source-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)>;
-+			sink-pdos = <PDO_FIXED(5000, 500, PDO_FIXED_USB_COMM)
-+				PDO_VAR(5000, 5000, 1000)>;
-+			op-sink-microwatt = <10000000>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+				port@1 {
-+					reg = <1>;
-+					usb_con_ss: endpoint {
-+						remote-endpoint = <&dwc3_ss>;
-+					};
-+				};
-+			};
-+		};
-+		port {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			rt1711h_ep: endpoint@0 {
-+				reg = <0>;
-+				remote-endpoint = <&hikey_usb_ep1>;
-+			};
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	/* USB HUB is on this bus at address 0x44 */
-+	status = "okay";
-+};
-+
-+&dwc3 { /* USB */
-+	dr_mode = "otg";
-+	maximum-speed = "super-speed";
-+	phy_type = "utmi";
-+	snps,dis-del-phy-power-chg-quirk;
-+	snps,dis_u2_susphy_quirk;
-+	snps,dis_u3_susphy_quirk;
-+	snps,tx_de_emphasis_quirk;
-+	snps,tx_de_emphasis = <1>;
-+	snps,dis-split-quirk;
-+	snps,gctl-reset-quirk;
-+	usb-role-switch;
-+	role-switch-default-mode = "host";
-+	port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dwc3_role_switch: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hikey_usb_ep0>;
-+		};
-+
-+		dwc3_ss: endpoint@1 {
-+			reg = <1>;
-+			remote-endpoint = <&usb_con_ss>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 8830795c8efc..5522a5de07a8 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -8,6 +8,7 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/clock/hi3670-clock.h>
-+#include <dt-bindings/usb/pd.h>
- 
- / {
- 	compatible = "hisilicon,hi3670";
-@@ -785,5 +786,62 @@ i2c4: i2c@fdf0d000 {
- 			pinctrl-0 = <&i2c4_pmx_func &i2c4_cfg_func>;
- 			status = "disabled";
- 		};
-+
-+		usb3_otg_bc: usb3_otg_bc@ff200000 {
-+			compatible = "syscon", "simple-mfd";
-+			reg = <0x0 0xff200000 0x0 0x1000>;
-+
-+			usb_phy: usbphy {
-+				compatible = "hisilicon,hi3670-usb-phy";
-+				#phy-cells = <0>;
-+				hisilicon,pericrg-syscon = <&crg_ctrl>;
-+				hisilicon,pctrl-syscon = <&pctrl>;
-+				hisilicon,sctrl-syscon = <&sctrl>;
-+				hisilicon,eye-diagram-param = <0xFDFEE4>;
-+				hisilicon,tx-vboost-lvl = <0x5>;
-+
-+				phy-supply = <&ldo17>;
-+			};
-+		};
-+
-+		usb31_misc_rst: usb31_misc_rst_controller {
-+			compatible = "hisilicon,hi3660-reset";
-+			#reset-cells = <2>;
-+			hisi,rst-syscon = <&usb3_otg_bc>;
-+		};
-+
-+		usb3: hisi_dwc3 {
-+			compatible = "hisilicon,hi3670-dwc3";
-+			#address-cells = <2>;
-+			#size-cells = <2>;
-+			ranges;
-+
-+			clocks = <&crg_ctrl HI3670_CLK_GATE_ABB_USB>,
-+				  <&crg_ctrl HI3670_HCLK_GATE_USB3OTG>,
-+				  <&crg_ctrl HI3670_CLK_GATE_USB3OTG_REF>,
-+				  <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			clock-names = "clk_gate_abb_usb",
-+				      "hclk_gate_usb3otg",
-+				      "clk_gate_usb3otg_ref",
-+				      "aclk_gate_usb3dvfs";
-+
-+			assigned-clocks = <&crg_ctrl HI3670_ACLK_GATE_USB3DVFS>;
-+			assigned-clock-rates = <238000000>;
-+			resets = <&crg_rst 0x90 6>,
-+				 <&crg_rst 0x90 7>,
-+				 <&usb31_misc_rst 0xA0 8>,
-+				 <&usb31_misc_rst 0xA0 9>;
-+
-+			dwc3: dwc3@ff100000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x0 0xff100000 0x0 0x100000>;
-+
-+				interrupts = <0 159 IRQ_TYPE_LEVEL_HIGH>,
-+					    <0 161 IRQ_TYPE_LEVEL_HIGH>;
-+
-+				phys = <&usb_phy>;
-+				phy-names = "usb3-phy";
-+			};
-+		};
- 	};
- };
+> This patch mainly revealed that clk/bcm/clk-raspberrypi.c driver calls
+> devm_of_clk_add_hw_provider(), with a device pointer, which has a NULL
+> dev->of_node. I'm not sure if adding a check for a NULL np in
+> of_clk_add_hw_provider() is a right fix, though.
+
+raspberrypi_clk_probe():
+
+        /*
+         * We can be probed either through the an old-fashioned
+         * platform device registration or through a DT node that is a
+         * child of the firmware node. Handle both cases.
+         */
+
+So the real issue is rpi_register_clk_driver() creating a platform
+device for the firmware clocks if they're missing in DT.
+
+Then, the clock driver calls devm_of_clk_add_hw_provider(),
+regardless of a DT node being present or not.
+I'm wondering how power consumers are supposed to refer
+to these firmware clocks, without a DT node?
+
+> > --- a/drivers/clk/clk.c
+> > +++ b/drivers/clk/clk.c
+> > @@ -4594,6 +4594,8 @@ int of_clk_add_hw_provider(struct device_node *np,
+> >       if (ret < 0)
+> >               of_clk_del_provider(np);
+> >
+> > +     fwnode_dev_initialized(&np->fwnode, true);
+> > +
+> >       return ret;
+> >   }
+> >   EXPORT_SYMBOL_GPL(of_clk_add_hw_provider);
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.30.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
