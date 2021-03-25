@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 594FB34944D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E60E9349454
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhCYOjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
+        id S231340AbhCYOjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhCYOjE (ORCPT
+        with ESMTP id S231211AbhCYOjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:39:04 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD333C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:39:03 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id o16so2589662wrn.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:39:03 -0700 (PDT)
+        Thu, 25 Mar 2021 10:39:31 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079EBC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:39:31 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id m7so1750716qtq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:39:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g92DQRpj4341IE0FJkhTl6/KuF8V1aQgWgXHMG4KpIs=;
-        b=f6FPk+hIMfO1HoVzf0OFcZudpBPRbRJt8nc7qYMvG+4Xs1+h19a8C8FcUFTmZm7XYb
-         uEkMdLKPHq0wYSzZpxYMvK6WLqvfwqz6kLWt7lH9WPcwasjrDP/8jN6C0/guDU/6NhI3
-         dcoRLB04Dmeaq4O2OPuumjz5lYKb6f+0ky1hD6735pwB+cvpvGVtuKBSVUjEC5jAswCj
-         1NnUNvoEJezpYhofHaMpkgLwvTYj1kKdqHfp9ywM2XgyqIlmEZ0srrhU3YeelsbaottW
-         dLbvAU0ooWWkVBIw1VmPXiG2qtO92qPTcatASOt3EtSq3KFx0QBDKQScGlasPLD/lUCc
-         BZYQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6iXLF/lKSG8S51IUrl5KoCZW79Du1xNlnz6N6/Diyn4=;
+        b=mJ0/eVxlyR5iEOAhqAIyhEp8iJaZZoKGL9mo9LeKqskmGim8MQCxW/vE49ORAaoi9o
+         PYSyPhswm0JKFEdhb2Q+Msn5dNWpQJBZnN68QL1gtHEoVfoDDZ+JM8YytOH/ndrRRfhs
+         SS5GuFcdsYqRucVnpe+73VvdEXaDMO9FkqfT7xoydiDq52yxko+FDCssdThCAQWzrHPv
+         mR+NCglz5hvRmMcjf4JwDMsqX6SjzbOTDsPMAp5X5lr9FQ4iYmpxz/q7/pQpAk7ABkBR
+         q12p0o/PM0ucHPgv9YP3K8mFlB63AboI6/9zSnuBpCu6V4s5KNgxz6Ed3rbZTVa2gjDB
+         8Ieg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g92DQRpj4341IE0FJkhTl6/KuF8V1aQgWgXHMG4KpIs=;
-        b=r09luNfTPcJlf+Tga3upFHvfIxWZdTcc7OxXeDm5LYsLThZbtWsidi+ArgVSTSlmOu
-         KDowkC2zqXKQ53nscFwEW06AxKNwu5JpmVIzLHCd9tIu1CVhohcQPUy607drKNQeihTd
-         UA08EwGvKCkn2Jjh+WwsE4JxnnTjApay7KnF7Ee58ey60KWtC+vze8vHzCH9rF+XDVLL
-         8G7qQnB0xsuNurmcBLcPd16Xt47P2puXI5mP3YUG5YnvI1Pc90N1uuLyX3P1YE57FPCB
-         wwodiFMJtEijKJs5yzfKHgFjW2voRjdovcZHsi91fYaamFWKuIICzOPe5xIGlYGiVAe5
-         HEfw==
-X-Gm-Message-State: AOAM5318O3yrz3DK2dej60TgGopl4FLoSqyCwSAxCkCgxIJEv82ayq0h
-        YlkF7HKDIP8Tud8Y/TsobQZj95Qp+n8WQw==
-X-Google-Smtp-Source: ABdhPJxV5FxA+PvBaKmW6zOxP3MPdclWa+C2HgDCzIagvT2DX3MdmUnXN7w6vzxsxGIAyVLdvLWiTg==
-X-Received: by 2002:a5d:4532:: with SMTP id j18mr9166557wra.239.1616683142323;
-        Thu, 25 Mar 2021 07:39:02 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id v3sm6688473wmj.25.2021.03.25.07.39.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Mar 2021 07:39:01 -0700 (PDT)
-Subject: Re: [PATCH] drivers: nvmem: Fix voltage settings for QTI qfprom-efuse
-To:     Rajendra Nayak <rnayak@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Ravi Kumar Bokka <rbokka@codeaurora.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        dhavalp@codeaurora.org, mturney@codeaurora.org
-References: <1612524533-3970-1-git-send-email-rbokka@codeaurora.org>
- <CAD=FV=W9YWxVY6cEEXBr1wMcMzEPak3PeyROSvmnOWewL9BiUQ@mail.gmail.com>
- <4956f067-4079-84b4-191d-c1036e04c42f@codeaurora.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <ba1854f0-a3e4-28c1-9829-bba4678156d9@linaro.org>
-Date:   Thu, 25 Mar 2021 14:39:00 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6iXLF/lKSG8S51IUrl5KoCZW79Du1xNlnz6N6/Diyn4=;
+        b=d3vOLsXDAgwLDGH+uezd88oSKY6BRvfX8ua7n0swZEGMBz+QIf0mlcMI+jCEfK/npP
+         8ct2dJFJ+HSZE3yQVReIjtWC94USM92mAuXVwsmo39pmknZQnPSOLPTmMWJckClGi7bP
+         dWU1U5OmIzEbmyZHLuVBP+oxovUHrc5DneYwHO7Z5DsO+DxahYNGW9S4xI1HeSu3A1Rn
+         EsPPcFRdxYP01heTAEKJLbvlcLDn9BkTV2huwQtvn94TEs2EOxuCSJWaQqyDR6CWFSe9
+         8uvva3kDyjti0l6b8bAJw/us6imT/jLe/RrRfJ7tTPG5ThNAdbD7/PKW8U0YWnV7qgza
+         6m0g==
+X-Gm-Message-State: AOAM530zu2CMM2KrT6yiwBdVM+wiKfz2jD89wfbph2lKNHREiM08ROIF
+        MAqZWqc+UNyUBTApAsjmNnOevQ==
+X-Google-Smtp-Source: ABdhPJxZDMo7r+XfXWQKy6rexnqyaa+VI9LcE8cZzoNWbcySugAq3xtJGYmwPJ9UloynDbQAf0RQ0Q==
+X-Received: by 2002:ac8:5e8a:: with SMTP id r10mr8045937qtx.13.1616683170204;
+        Thu, 25 Mar 2021 07:39:30 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id v7sm3536639qtw.51.2021.03.25.07.39.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 07:39:29 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lPR8y-002fsw-N6; Thu, 25 Mar 2021 11:39:28 -0300
+Date:   Thu, 25 Mar 2021 11:39:28 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Aruna Ramakrishna <aruna.ramakrishna@oracle.com>
+Cc:     Praveen Kumar Kannoju <praveen.kannoju@oracle.com>,
+        leon@kernel.org, dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Rajesh Sivaramasubramaniom 
+        <rajesh.sivaramasubramaniom@oracle.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Jeffery Yoder <jeffery.yoder@oracle.com>
+Subject: Re: [PATCH v2] IB/mlx5: Reduce max order of memory allocated for xlt
+ update
+Message-ID: <20210325143928.GM2710221@ziepe.ca>
+References: <1615900141-14012-1-git-send-email-praveen.kannoju@oracle.com>
+ <20210323160756.GE2710221@ziepe.ca>
+ <80966C8E-341B-4F5D-9DCA-C7D82AB084D5@oracle.com>
+ <20210323231321.GF2710221@ziepe.ca>
+ <0DFF7518-8818-445B-94AC-8EB2096446BE@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <4956f067-4079-84b4-191d-c1036e04c42f@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0DFF7518-8818-445B-94AC-8EB2096446BE@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 09:27:38PM -0700, Aruna Ramakrishna wrote:
 
-
-On 25/03/2021 07:15, Rajendra Nayak wrote:
->>>
->>
->> Looks right to me.  Assuming that this works.
->>
->> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > Do you have benchmarks that show the performance of the high order
+> > pages is not relavent? I'm a bit surprised to hear that
+> > 
 > 
-> Srini, any plans to queue this up for merge?
+> I guess my point was more to the effect that an order-8 alloc will
+> fail more often than not, in this flow. For instance, when we were
+> debugging the latency spikes here, this was the typical buddyinfo
+> output on that system:
+> 
+> Node 0, zone      DMA      0      1      1      2      3      0      1      0      1      1      3 
+> Node 0, zone    DMA32      7      7      7      6     10      2      6      7      6      2    306 
+> Node 0, zone   Normal   3390  51354  17574   6556   1586     26      2      1      0      0      0 
+> Node 1, zone   Normal  11519  23315  23306   9738     73      2      0      1      0      0      0 
+> 
+> I think this level of fragmentation is pretty normal on long running
+> systems. Here, in the reg_mr flow, the first try (order-8) alloc
+> will probably fail 9 times out of 10 (esp. after the addition of
+> GFP_NORETRY flag), and then as fallback, the code tries to allocate
+> a lower order, and if that too fails, it allocates a page. I think
+> it makes sense to just avoid trying an order-8 alloc here.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/nvmem?id=4d57a383a437e63909ccfe15b8a116f7ff5bb673
+But a system like this won't get THPs either, so I'm not sure it is
+relevant. The function was designed as it is to consume a "THP" if it
+is available.
 
-This is already in next queued up for next merge.
-
-thanks,
-srini
+Jason
