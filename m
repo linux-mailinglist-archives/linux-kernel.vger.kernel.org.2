@@ -2,215 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD8B3493EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D3B13493F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhCYOZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:25:25 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58663 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhCYOY5 (ORCPT
+        id S231281AbhCYO0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231288AbhCYO0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:24:57 -0400
-Received: from mail-lj1-f197.google.com ([209.85.208.197])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lPQuu-0001Ky-GW
-        for linux-kernel@vger.kernel.org; Thu, 25 Mar 2021 14:24:56 +0000
-Received: by mail-lj1-f197.google.com with SMTP id d16so3127027lja.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:24:56 -0700 (PDT)
+        Thu, 25 Mar 2021 10:26:19 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9CCC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:26:18 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id z25so3389453lja.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:26:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hwetcsVKboaaGI7NOXNHnyGvYuGd+RB0dddZvR4dJYk=;
+        b=HnLlDdBGzEt/TgWGyKUmPogRtz8oZQVM03CogodEU/UwYa+YsG6vZA7EP9aRbbnP4f
+         E5yi95rKRs907JDF6G/+3OYef1fTAFAP1+qBFhSW7mzeyVUJL237u2l7LBm2jZ3H+/2l
+         d9hQZeA5U3EiqJ6rDsZ9HdQy4Eh1gp92TIuRu+KPXd8ctc0e1g7GvTHGTX5c1pufvpKW
+         u6NNHIZ6ohMKcDirddqaRBk8zLyijioUnrVIobCFccwipmEmlL0rDZeA1PgAiSlA8cGr
+         Y9D1i8QPt2nrKY4y7L1y+ExWE3cSuS2hRVSBmseu/TONVYtDkiMOz9tyz6uNUuWt4yQn
+         iukw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C6GP4Z3q3QGtdVDSvOH0+jTBijfgDZ/MgAqVve/FMLw=;
-        b=ZPSt7QEn1TP1cP1rXOiFZxgperXo9wqZOWk4jgtsxwiepOQi/b18Yn3L6f75CjaESw
-         kEFoM2Lh1Bn8h5khGzbir1OCl9HmSkjLDwkyCAluyZACB63bXyQbM+BAKRnPp8Sph0p/
-         GTbxggmS/QQcJEDViPHTGFxG4qoAIT1Im1toF/UJ6fgMQ/eJ9SzzRFe1FVGbbl7V2vo2
-         9PJEdZ+g7kpvYdJ2L8DI5ippDRa07/0eVmibBStPMDiY1EfMKCpb4NxW27wKrgD9xVh3
-         3rZ4xeAvnYWWoC/W/76gjY+bVbj+rvVAbeB+wcisyE+zomJZHu0wxhB90xsJWWvJ/DzG
-         RX1w==
-X-Gm-Message-State: AOAM533+KacGNIvB+o0bJHV64JFRKDTEKxQaPoMxBJdmx7NALvNry+Ag
-        z7sMMP6bzPeB0voIKaEp/I3bhekXrB4AfZJfB1e647p1by1kf/hazr4CnsORpcfvKEj5yqYwLun
-        Z7+XQwKXg0/nP9H16Sg1hW5ss1RKMlHZfflmZ1goxgFAe0Hfzec2AqHqsOA==
-X-Received: by 2002:a05:6512:1084:: with SMTP id j4mr5089761lfg.194.1616682295897;
-        Thu, 25 Mar 2021 07:24:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJybRtwMnLSv5W91bPNdCQ0Ll+OOUT0gDTbVf3mgYnvZsrJS9Lur+rlgxs/FXiQYqkz2/2vgtosKyAFqFIHeoRU=
-X-Received: by 2002:a05:6512:1084:: with SMTP id j4mr5089742lfg.194.1616682295598;
- Thu, 25 Mar 2021 07:24:55 -0700 (PDT)
+        bh=hwetcsVKboaaGI7NOXNHnyGvYuGd+RB0dddZvR4dJYk=;
+        b=q8e/sOtbPsZP3hUAIdyBMVQ7aU3PmiJJzPnLvrEBdwp6slq26tiGKlm6B5+C4Nr6N3
+         VRlF9Z45zMqAvXQGHfmConYxrDo3rhujEZcTU9JELIwBZKhi+Ye+9Bmria0JgX9S74NQ
+         bI8DdFa30QvhgK9C70AKRApxJ6/JKUsIZwhZyzauSX+hq/HPyN/fKlf3cJLjhHLdRFN2
+         qVyR2cVqP0YfosvAb4kH/tvYMg+eTxLOhPNVTZKMKvYICONtK7dEXOcl7maX/EbyTeni
+         BMF1r9/c1wsoO7FJ0d0w5mIq9I+2CzZnVfpY5kkg4tlbO8ljRPqYS1nj6ke1z9HS9Dyz
+         fb+g==
+X-Gm-Message-State: AOAM533rBvEdNeeiJ5t1iCQS4DTiFFmMUvQkf1QUTnJqXQKbtAvoCDLR
+        67gqM0lpIW6UI82/Rez/M4Cn7lZMHDC+AtQdM5dFBg==
+X-Google-Smtp-Source: ABdhPJwXghMxC+jJkN24Dc68V+VPVcQEjT4VLmT55y6SQ+X6rU7+oMMn50hB89bI9yQv19zi6WlDqbz5VNk4XxOb0gA=
+X-Received: by 2002:a05:651c:103a:: with SMTP id w26mr5808808ljm.273.1616682376700;
+ Thu, 25 Mar 2021 07:26:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210325121250.133009-1-kai.heng.feng@canonical.com>
- <20210325121250.133009-2-kai.heng.feng@canonical.com> <s5hczvnmju0.wl-tiwai@suse.de>
- <CAAd53p79HSpNKu69ZM7vRGWQT+9ydf59hGH-yNMT=Ymbg2NebA@mail.gmail.com>
-In-Reply-To: <CAAd53p79HSpNKu69ZM7vRGWQT+9ydf59hGH-yNMT=Ymbg2NebA@mail.gmail.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 25 Mar 2021 22:24:42 +0800
-Message-ID: <CAAd53p4NagjhwSsdGbpzGM7Wwc60kJP53+ew4Ub72KcFB5q-dQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ALSA: usb-audio: Check connector value on resume
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Chris Chiu <chiu@endlessm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Tom Yan <tom.ty89@gmail.com>, Joe Perches <joe@perches.com>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20210323131728.2702789-1-arnd@kernel.org>
+In-Reply-To: <20210323131728.2702789-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 25 Mar 2021 15:26:05 +0100
+Message-ID: <CACRpkdYS9JVnbdW_+_Qi9ujA8j9p-1r7c1UeeKToukQffN1u5w@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: qcom: fix unintentional string concatenation
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Jeevan Shriram <jshriram@codeaurora.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 9:55 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> On Thu, Mar 25, 2021 at 9:41 PM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > On Thu, 25 Mar 2021 13:12:48 +0100,
-> > Kai-Heng Feng wrote:
-> > >
-> > > Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
-> > > error and the other two functions of the USB audio, Line In and Line
-> > > Out, work just fine.
-> > >
-> > > The mic starts to work again after running userspace app like "alsactl
-> > > store". Following the lead, the evidence shows that as soon as connector
-> > > status is queried, the mic can work again.
-> > >
-> > > So also check connector value on resume to "wake up" the USB audio to
-> > > make it functional.
-> > >
-> > > This can be device specific, however I think this generic approach may
-> > > benefit more than one device.
-> > >
-> > > While at it, also remove reset-resume path to consolidate mixer resume
-> > > path.
-> > >
-> > > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> > > ---
-> > > v2:
-> > >  - Remove reset-resume.
-> > >  - Fold the connector checking to the mixer resume callback.
-> >
-> > That's not what I meant exactly...  I meant to put both into the
-> > single resume callback, but handle each part conditionally depending
-> > on reset_resume argument.
->
-> OK, I get what you mean now.
->
-> >
-> > But this turned out to need more changes in mixer_quirks.c
-> > unnecessarily.  Maybe adding the two resume functions is a better
-> > approach in the end, but not for the specific connection thing but
-> > generically both resume and reset_resume callbacks.  Something like
-> > below.
->
-> This approach looks good. Let me send another one.
+On Tue, Mar 23, 2021 at 2:17 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-Actually, it works really well and I don't I think I should send the
-code you wrote.
-Is it possible to push your version with my commit log, and with my tested tag?
-
-Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-
-> Kai-Heng
+> From: Arnd Bergmann <arnd@arndb.de>
 >
-> >
-> >
-> > thanks,
-> >
-> > Takashi
-> >
-> >
-> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> > index b004b2e63a5d..1dab281bb269 100644
-> > --- a/sound/usb/mixer.c
-> > +++ b/sound/usb/mixer.c
-> > @@ -3615,20 +3615,43 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
-> >         return 0;
-> >  }
-> >
-> > +static int default_mixer_resume(struct usb_mixer_elem_list *list)
-> > +{
-> > +       struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
-> > +
-> > +       /* get connector value to "wake up" the USB audio */
-> > +       if (cval->val_type == USB_MIXER_BOOLEAN && cval->channels == 1)
-> > +               get_connector_value(cval, NULL, NULL);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int default_mixer_reset_resume(struct usb_mixer_elem_list *list)
-> > +{
-> > +       int err = default_mixer_resume(list);
-> > +
-> > +       if (err < 0)
-> > +               return err;
-> > +       return restore_mixer_value(list);
-> > +}
-> > +
-> >  int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
-> >  {
-> >         struct usb_mixer_elem_list *list;
-> > +       usb_mixer_elem_resume_func_t f;
-> >         int id, err;
-> >
-> > -       if (reset_resume) {
-> > -               /* restore cached mixer values */
-> > -               for (id = 0; id < MAX_ID_ELEMS; id++) {
-> > -                       for_each_mixer_elem(list, mixer, id) {
-> > -                               if (list->resume) {
-> > -                                       err = list->resume(list);
-> > -                                       if (err < 0)
-> > -                                               return err;
-> > -                               }
-> > +       /* restore cached mixer values */
-> > +       for (id = 0; id < MAX_ID_ELEMS; id++) {
-> > +               for_each_mixer_elem(list, mixer, id) {
-> > +                       if (reset_resume)
-> > +                               f = list->reset_resume;
-> > +                       else
-> > +                               f = list->resume;
-> > +                       if (f) {
-> > +                               err = list->resume(list);
-> > +                               if (err < 0)
-> > +                                       return err;
-> >                         }
-> >                 }
-> >         }
-> > @@ -3647,6 +3670,7 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
-> >         list->id = unitid;
-> >         list->dump = snd_usb_mixer_dump_cval;
-> >  #ifdef CONFIG_PM
-> > -       list->resume = restore_mixer_value;
-> > +       list->resume = default_mixer_resume;
-> > +       list->reset_resume = default_mixer_reset_resume;
-> >  #endif
-> >  }
-> > diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-> > index c29e27ac43a7..e5a01f17bf3c 100644
-> > --- a/sound/usb/mixer.h
-> > +++ b/sound/usb/mixer.h
-> > @@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
-> >         bool is_std_info;
-> >         usb_mixer_elem_dump_func_t dump;
-> >         usb_mixer_elem_resume_func_t resume;
-> > +       usb_mixer_elem_resume_func_t reset_resume;
-> >  };
-> >
-> >  /* iterate over mixer element list of the given unit id */
-> > diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-> > index ffd922327ae4..b7f9c2fded05 100644
-> > --- a/sound/usb/mixer_quirks.c
-> > +++ b/sound/usb/mixer_quirks.c
-> > @@ -151,7 +151,7 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
-> >                 *listp = list;
-> >         list->mixer = mixer;
-> >         list->id = id;
-> > -       list->resume = resume;
-> > +       list->reset_resume = resume;
-> >         kctl = snd_ctl_new1(knew, list);
-> >         if (!kctl) {
-> >                 kfree(list);
+> clang is clearly correct to point out a typo in a silly
+> array of strings:
+>
+> drivers/pinctrl/qcom/pinctrl-sdx55.c:426:61: error: suspicious concatenation of string literals in an array initialization; did you mean to separate the elements with a comma? [-Werror,-Wstring-concatenation]
+>         "gpio14", "gpio15", "gpio16", "gpio17", "gpio18", "gpio19" "gpio20", "gpio21", "gpio22",
+>                                                                    ^
+> Add the missing comma that must have accidentally been removed.
+>
+> Fixes: ac43c44a7a37 ("pinctrl: qcom: Add SDX55 pincontrol driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Patch applied.
+
+Yours,
+Linus Walleij
