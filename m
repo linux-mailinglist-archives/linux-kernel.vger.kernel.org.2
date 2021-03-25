@@ -2,152 +2,603 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C47B348AC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781CE348ACD
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhCYHxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:53:35 -0400
-Received: from mail-eopbgr70079.outbound.protection.outlook.com ([40.107.7.79]:62279
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229693AbhCYHxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:53:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jTGs0liMf9zRYxtzVkg9u1f06dAb6plhik8zfUkAqY+Y0cKgyqXBzekAtG4NkZUs6ioK09vwlu2wdaZuTOqlipt4Ef25cIN2AWOFFoCSJUUtKYiu2F8ULrOrnGpNfpdohrQbCGc2PkBRSYSNSH2eyJHt8XYL+eMAbDYps77gvu6BK4tGaoaxoMfCECWEcXyvxCbc099+MLn5sbGa5ZjjOnul8BSLU8mJPZQfO6NQqcYdnBCxspZTmeAHYXS1kF8Vnu0DHA/m+bBkJ7iRPJPm9pqsonOX8KLmikxmL5jwiXUAZNVM3uIi0q/6Mp4vc4se3wDd8rn3qYgSGf+sXLAlrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XnK/0XXwjbkRf66/YJAm52LD4JDIy8kzfVGw4bwcImg=;
- b=LgEzKadWvFRTGXOkTHiiIELt7tnUfF9NvZFjPr1lCUwTyFxAli1AcZrr+niXX8I3ByKTkOowKDt22jLTNdJE9iE/lP0T34MKLPg9YCodP1HWOJObFWY1gKPBm0eFU2xjlbswJ/lgPFk3GU9tSzSq7awzLTh/5Uy6RWjBh4ZrfVq/RPcijLyptZ6vmfBfgXI4BN1qz+T1IauNppW3tclDuHXPe/ts1ZkKjHds+O1bM2mfyT+Ld2B2VTbqMw7ISg8J47dkHzDLPM/oZLag2b3aZE2HvxcFRuJwiwSHDy2rz6Ngp7APpaipvppCTEXqI4DxPPcLR9P6tvmv6DQTll4r6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XnK/0XXwjbkRf66/YJAm52LD4JDIy8kzfVGw4bwcImg=;
- b=XIvMGzqaj9VlZvpgTZx3zHQ1Kcg0pjAOxDR3wNgSwn8c6gMRWe0AFrsV+4CyHieqDlJC5yEEc8VSbx6YiqaTmlW3nYQ75Tpnc7lSyxF5MZR1CklpmyJ7l0y4zyr7JJbWSzqoDfsC16C9S2pB3HgR36HY4u0s5l+mG22iQZz2C7U=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB7PR04MB5193.eurprd04.prod.outlook.com (2603:10a6:10:15::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
- 2021 07:53:26 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9598:ace0:4417:d1d5]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::9598:ace0:4417:d1d5%6]) with mapi id 15.20.3977.025; Thu, 25 Mar 2021
- 07:53:26 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     Jon Hunter <jonathanh@nvidia.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: RE: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
- resume back
-Thread-Topic: Regression v5.12-rc3: net: stmmac: re-init rx buffers when mac
- resume back
-Thread-Index: AQHXIJuN/Okb/PN4nkWB+yH0VnH6i6qTC9OwgAAITACAAT8a8A==
-Date:   Thu, 25 Mar 2021 07:53:26 +0000
-Message-ID: <DB8PR04MB6795863753DAD71F1F64F81DE6629@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <708edb92-a5df-ecc4-3126-5ab36707e275@nvidia.com>
- <DB8PR04MB679546EC2493ABC35414CCF9E6639@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <0d0ddc16-dc74-e589-1e59-91121c1ad4e0@nvidia.com>
-In-Reply-To: <0d0ddc16-dc74-e589-1e59-91121c1ad4e0@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 61520ed1-b210-4c3c-4485-08d8ef631295
-x-ms-traffictypediagnostic: DB7PR04MB5193:
-x-microsoft-antispam-prvs: <DB7PR04MB5193B81CC88360D371881E50E6629@DB7PR04MB5193.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fQVR8VXSkuuXxkK2C8GnRqZ+s/UinPsEvr0Atx231FuqqPL4o/Tw+G5VxU4BAc7uoWkS+eNwI56oODJDmbuvfOoLOuwzuOGplr4Qg5Dp/xkEtt99EeGivy9Q5JRWRV98xaCPpx69jm4b69IXqz/7LoA9gseskhxZSBdm5hv9jykd3C5yXnq7M2N0QCr3/R1Rl45JK0cViDCz6llG2yafhisxxlWIj6OFKz+YAJXFKAbVv5iGsJV2kgX7/7FzG2zNc6PfjTO6ge3nCX67n8t7DP6H4JGKof1jAF0J3Gykwwcg2eaxp7p+8xP2o0dcULtvRPoq5UBD0ZVi7f7tWwQko7UJwykDjoljKvp5w6c4xP4LbOnfKYF5AF+bNISPjMP6g/GnpTJ9psa3BbEEUbrlLxMq1W929Ix+0Hp52NFbIZNapTdgfCFDexkBPy7kLareV3RFEm8KafumpVn7gYxA8W4YUjRLFcFrIY0XGNAvcuV1oGiirPnR39e6YS/Xcy5M9XQ0TejqPaJg7OE9y6Do92wIShhhEW3RnKsCpR5qpP3cPsNCS5muQT9ds4FYuf5Gwzu+rwmTttm1BDf1KPUibUgAK1EFC6wPvy9j8/YuEfSOWQONZJ+LLoTySnyBvUvIMPuvwUq0RWuIAThDiXDiOtUKvuBWT7jBvTL+uYyhYCY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(366004)(346002)(376002)(6916009)(52536014)(9686003)(83380400001)(4326008)(26005)(316002)(55016002)(186003)(76116006)(8676002)(86362001)(8936002)(478600001)(66446008)(66476007)(66556008)(64756008)(66946007)(6506007)(7696005)(71200400001)(33656002)(54906003)(5660300002)(2906002)(38100700001)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?akU2cnQ4STNXeGJ1ZHFEK25tVno1OXM4N0JCaU1lVktFaWhPeExNNVMrdCt0?=
- =?utf-8?B?cjEyb2syZDVaMXRMekJaWnhIYWd1T3JTVjJzMU42ZVFhbXJBZ3RERFhjTno3?=
- =?utf-8?B?UGNHTEdHWmMxaVBYeER1ditORG5waWdrZFdhT1NGSWNWM1FReUpqYlFkbE9h?=
- =?utf-8?B?enFPZ1UrS0t5SkJIQUhTZDA3VnVOM09JQXVnYmpjc3FpUytNZ3g5dWQwY2pu?=
- =?utf-8?B?d1pFcUFXMTZZeHRxTjdqanJkREVxQ1RpOHJ5RXN1eTlteUpETklCUDNwaTFo?=
- =?utf-8?B?c29GMENNMmsvazBsMkxhbk5GaHU0eHFmZkk4UDRiREtYKzlmU3BIRkF6YUVp?=
- =?utf-8?B?UlVwckxvRHVFUmcvelowMG9oVUtxcXFsQy8zSjNGTHlJeVhZTHBuOXFhdnFR?=
- =?utf-8?B?YWJlc0kySElXWGMxRWJHaDNsd0dIRFYwYmRDVlMrYVJQNElOUDB1Um1BUS8r?=
- =?utf-8?B?ZTEwZzdQVUdIbm1KV3lrU2ViVThxYnR5c0VhQ3B6WWxmSGFiZWZ2VWdyMnk5?=
- =?utf-8?B?MElobnBVdzJneWV5SHkyUkdvZHh3KzdlRk44N1o3djdIU00yclRaMm9IQXov?=
- =?utf-8?B?MTJwdjdHNzlBUGh3RnF3eTM1YzJ4MGpmRWhrdnVJL3FLbEJpdHQrOVBvTTlB?=
- =?utf-8?B?U1E3bG5KV0dtN1pQNkR2VFM4UitMblEwcmVBdS9ySHgzMTZNQTJXMzdaUG5y?=
- =?utf-8?B?Vms3bTNYOGxzREIyZFgyZHVGdG5UL0NCVnJKNXlXUzNtS3NvZmx1ODQwVS9o?=
- =?utf-8?B?a2x3cmhmaHltaXpaZWpYdGJRUFdublhJSVJ3NTlydlRKUEdWVnVwSUt5cFdV?=
- =?utf-8?B?bTAzc1p6Y2puK0RlejFoTkVpeTF3RFlIUFVuczljdG5Cd0pxa2g4UTQ1Q3Uw?=
- =?utf-8?B?SmxrbE4rb0xwaDJnaXo1V055b1p2WjFNTmZ1RDgwb0NLdDRWTGptN1NvNENC?=
- =?utf-8?B?WUhUdVRmRFZ6Smt2SjFuZjFJVlR6dGorK20xVm9SdlFGeFpLVVAyRTYwWE9N?=
- =?utf-8?B?ZjFIL1JwK1RlZzd3QytxTWQwcXBwT0VHSGdYZ0VKcW1uRjI5YWUrY25hQXhM?=
- =?utf-8?B?eHFxdHVUWExjdkZ4KzFWaUdRRkhsQlZtRXhwUk5SeU1ZZkRGTUhPTHB2REVy?=
- =?utf-8?B?TTNvSmRXZmozcSt4d2NHeHVlNTJ1SW5EVnhWTjViWUFTcStheGQyajdTZjhT?=
- =?utf-8?B?Z1RmSmZPc0NvUTVVd0gvWHhPUVJ6UTZnSHZsQ0FaQkFRUS92SFA3UHE3M3Zt?=
- =?utf-8?B?N1MrK1l4Q1k2R3QyRE9uY2twR2NsSWE4UU1PZDREQ2xiTkpnUGxNd3d1Q2hv?=
- =?utf-8?B?MGJvcjRwb3Z3UVBuaEVnQ3p1c1E1eURRN2t1V0o1YnFpY1QwdXlGQ0RCTjBm?=
- =?utf-8?B?a0pKTVZtRjVvTFFnbFBpMXBBNmNRbEJPZlhEZzVFWDBOTEc5czNOcEtORlNu?=
- =?utf-8?B?Wjg0cy9mRkhobE56OG9aY3lOQ3JOM2NFRGgwMEVwRE9NNEJ3QnFVN0F5ZVQ4?=
- =?utf-8?B?SkwwOEllY29TMGpUQmcrUEdkbFhxZmhrc2x3S1BaVVhpbHNaUEJUUzI1cGxP?=
- =?utf-8?B?aUFjN3psLzE0KzZBUlVUbFc0K21GRVU4eGZXTmwxeC90SlNaUzZqdlh1R1Nk?=
- =?utf-8?B?MjdlZ21DK3VjaXQ3YzdBWEl4STNhWWlSOVJpNUppUXA0cHZiTjBoTXZWa0dj?=
- =?utf-8?B?MS9wVjBtNFA2QWNvL0QzYmllZVVQc2xwSEpKbkFuRUc4U2J0Si9zTlNnNy9O?=
- =?utf-8?Q?xAXLFeR0OPHDeAsfWL8aoq3tncohKywhAAQi1Qr?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229635AbhCYHzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:55:15 -0400
+Received: from out28-193.mail.aliyun.com ([115.124.28.193]:36693 "EHLO
+        out28-193.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhCYHzF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:55:05 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.032749-0.000254866-0.966996;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Jq.Hzyd_1616658900;
+Received: from 192.168.88.129(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Jq.Hzyd_1616658900)
+          by smtp.aliyun-inc.com(10.147.42.16);
+          Thu, 25 Mar 2021 15:55:01 +0800
+Subject: Re: [PATCH v3 06/10] pinctrl: Ingenic: Add pinctrl driver for JZ4730.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        sernia.zhou@foxmail.com
+References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1615975084-68203-7-git-send-email-zhouyanjie@wanyeetech.com>
+ <7TUDQQ.JZT9QP7ORNAD3@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <8e1ad843-54f8-7f19-1593-840b1caa728e@wanyeetech.com>
+Date:   Thu, 25 Mar 2021 15:55:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61520ed1-b210-4c3c-4485-08d8ef631295
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Mar 2021 07:53:26.4283
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: usNYedo5Zv1C5nCh0NEBi+wk0k8C8z0HQRrPiaf1f0fWI6P08Cxu3MRKbtnKzOjac1oCH+KtseiEfZQzDvNpNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5193
+In-Reply-To: <7TUDQQ.JZT9QP7ORNAD3@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvbiBIdW50ZXIgPGpvbmF0
-aGFuaEBudmlkaWEuY29tPg0KPiBTZW50OiAyMDIx5bm0M+aciDI05pelIDIwOjM5DQo+IFRvOiBK
-b2FraW0gWmhhbmcgPHFpYW5ncWluZy56aGFuZ0BueHAuY29tPg0KPiBDYzogbmV0ZGV2QHZnZXIu
-a2VybmVsLm9yZzsgTGludXggS2VybmVsIE1haWxpbmcgTGlzdA0KPiA8bGludXgta2VybmVsQHZn
-ZXIua2VybmVsLm9yZz47IGxpbnV4LXRlZ3JhIDxsaW51eC10ZWdyYUB2Z2VyLmtlcm5lbC5vcmc+
-Ow0KPiBKYWt1YiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSZTogUmVn
-cmVzc2lvbiB2NS4xMi1yYzM6IG5ldDogc3RtbWFjOiByZS1pbml0IHJ4IGJ1ZmZlcnMgd2hlbiBt
-YWMNCj4gcmVzdW1lIGJhY2sNCj4gDQo+IA0KPiANCj4gT24gMjQvMDMvMjAyMSAxMjoyMCwgSm9h
-a2ltIFpoYW5nIHdyb3RlOg0KPiANCj4gLi4uDQo+IA0KPiA+IFNvcnJ5IGZvciB0aGlzIGJyZWFr
-YWdlIGF0IHlvdXIgc2lkZS4NCj4gPg0KPiA+IFlvdSBtZWFuIG9uZSBvZiB5b3VyIGJvYXJkcz8g
-RG9lcyBvdGhlciBib2FyZHMgd2l0aCBTVE1NQUMgY2FuIHdvcmsNCj4gZmluZT8NCj4gDQo+IFdl
-IGhhdmUgdHdvIGRldmljZXMgd2l0aCB0aGUgU1RNTUFDIGFuZCBvbmUgd29ya3MgT0sgYW5kIHRo
-ZSBvdGhlciBmYWlscy4NCj4gVGhleSBhcmUgZGlmZmVyZW50IGdlbmVyYXRpb24gb2YgZGV2aWNl
-IGFuZCBzbyB0aGVyZSBjb3VsZCBiZSBzb21lDQo+IGFyY2hpdGVjdHVyYWwgZGlmZmVyZW5jZXMg
-d2hpY2ggaXMgY2F1c2luZyB0aGlzIHRvIG9ubHkgYmUgc2VlbiBvbiBvbmUgZGV2aWNlLg0KSXQn
-cyByZWFsbHkgc3RyYW5nZSwgYnV0IEkgYWxzbyBkb24ndCBrbm93IHdoYXQgYXJjaGl0ZWN0dXJh
-bCBkaWZmZXJlbmNlcyBjb3VsZCBhZmZlY3QgdGhpcy4gU29ycnkuDQoNCj4gPiBXZSBkbyBkYWls
-eSB0ZXN0IHdpdGggTkZTIHRvIG1vdW50IHJvb3Rmcywgb24gaXNzdWUgZm91bmQuIEFuZCBJIGFk
-ZCB0aGlzDQo+IHBhdGNoIGF0IHRoZSByZXN1bWUgcGF0Y2gsIGFuZCBvbiBlcnJvciBjaGVjaywg
-dGhpcyBzaG91bGQgbm90IGJyZWFrIHN1c3BlbmQuDQo+ID4gSSBldmVuIGRpZCB0aGUgb3Zlcm5p
-Z2h0IHN0cmVzcyB0ZXN0LCB0aGVyZSBpcyBubyBpc3N1ZSBmb3VuZC4NCj4gPg0KPiA+IENvdWxk
-IHlvdSBwbGVhc2UgZG8gbW9yZSB0ZXN0IHRvIHNlZSB3aGVyZSB0aGUgaXNzdWUgaGFwcGVuPw0K
-PiANCj4gVGhlIGlzc3VlIG9jY3VycyAxMDAlIG9mIHRoZSB0aW1lIG9uIHRoZSBmYWlsaW5nIGJv
-YXJkIGFuZCBhbHdheXMgb24gdGhlIGZpcnN0DQo+IHJlc3VtZSBmcm9tIHN1c3BlbmQuIElzIHRo
-ZXJlIGFueSBtb3JlIGRlYnVnIEkgY2FuIGVuYWJsZSB0byB0cmFjayBkb3duDQo+IHdoYXQgdGhl
-IHByb2JsZW0gaXM/DQo+IA0KDQpBcyBjb21taXQgbWVzc2FnZXMgZGVzY3JpYmVkLCB0aGUgcGF0
-Y2ggYWltcyB0byByZS1pbml0IHJ4IGJ1ZmZlcnMgYWRkcmVzcywgc2luY2UgdGhlIGFkZHJlc3Mg
-aXMgbm90IGZpeGVkLCBzbyBJIG9ubHkgY2FuIA0KcmVjeWNsZSBhbmQgdGhlbiByZS1hbGxvY2F0
-ZSBhbGwgb2YgdGhlbS4gVGhlIHBhZ2UgcG9vbCBpcyBhbGxvY2F0ZWQgb25jZSB3aGVuIG9wZW4g
-dGhlIG5ldCBkZXZpY2UuDQoNCkNvdWxkIHlvdSBwbGVhc2UgZGVidWcgaWYgaXQgZmFpbHMgYXQg
-c29tZSBmdW5jdGlvbnMsIHN1Y2ggYXMgcGFnZV9wb29sX2Rldl9hbGxvY19wYWdlcygpID8NCg0K
-QmVzdCBSZWdhcmRzLA0KSm9ha2ltIFpoYW5nDQo+IEpvbg0KPiANCj4gLS0NCj4gbnZwdWJsaWMN
-Cg==
+
+On 2021/3/23 上午2:17, Paul Cercueil wrote:
+>
+>
+> Le mer. 17 mars 2021 à 17:58, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> Add support for probing the pinctrl-ingenic driver on the
+>> JZ4730 SoC from Ingenic.
+>>
+>> This driver is derived from Paul Boddie. It is worth to
+>> noting that the JZ4730 SoC is special in having two control
+>> registers (upper/lower), so add code to handle the JZ4730
+>> specific register offsets and some register pairs which have
+>> 2 bits for each GPIO pin.
+>>
+>> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>  # on Letux400
+>> Co-developed-by: Paul Boddie <paul@boddie.org.uk>
+>> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+>> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>> ---
+>>
+>> Notes:
+>>     v3:
+>>     New patch.
+>>
+>>  drivers/pinctrl/pinctrl-ingenic.c | 222 
+>> +++++++++++++++++++++++++++++++++++---
+>>  1 file changed, 206 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
+>> b/drivers/pinctrl/pinctrl-ingenic.c
+>> index b8165f5..25458d6 100644
+>> --- a/drivers/pinctrl/pinctrl-ingenic.c
+>> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+>> @@ -3,8 +3,8 @@
+>>   * Ingenic SoCs pinctrl driver
+>>   *
+>>   * Copyright (c) 2017 Paul Cercueil <paul@crapouillou.net>
+>> - * Copyright (c) 2019 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>>   * Copyright (c) 2017, 2019 Paul Boddie <paul@boddie.org.uk>
+>> + * Copyright (c) 2019, 2020 周琰杰 (Zhou Yanjie) 
+>> <zhouyanjie@wanyeetech.com>
+>>   */
+>>
+>>  #include <linux/compiler.h>
+>> @@ -29,6 +29,17 @@
+>>  #define GPIO_PIN                    0x00
+>>  #define GPIO_MSK                    0x20
+>>
+>> +#define JZ4730_GPIO_DATA            0x00
+>> +#define JZ4730_GPIO_GPDIR            0x04
+>> +#define JZ4730_GPIO_GPPUR            0x0c
+>> +#define JZ4730_GPIO_GPALR            0x10
+>> +#define JZ4730_GPIO_GPAUR            0x14
+>> +#define JZ4730_GPIO_GPIDLR            0x18
+>> +#define JZ4730_GPIO_GPIDUR            0x1c
+>> +#define JZ4730_GPIO_GPIER            0x20
+>> +#define JZ4730_GPIO_GPIMR            0x24
+>> +#define JZ4730_GPIO_GPFR            0x28
+>> +
+>>  #define JZ4740_GPIO_DATA            0x10
+>>  #define JZ4740_GPIO_PULL_DIS        0x30
+>>  #define JZ4740_GPIO_FUNC            0x40
+>> @@ -57,6 +68,7 @@
+>>  #define GPIO_PULL_DOWN                2
+>>
+>>  #define PINS_PER_GPIO_CHIP            32
+>> +#define JZ4730_PINS_PER_PAIRED_REG    16
+>>
+>>  #define INGENIC_PIN_GROUP_FUNCS(name, id, funcs)        \
+>>      {                        \
+>> @@ -70,6 +82,7 @@
+>>      INGENIC_PIN_GROUP_FUNCS(name, id, (void *)(func))
+>>
+>>  enum jz_version {
+>> +    ID_JZ4730,
+>>      ID_JZ4740,
+>>      ID_JZ4725B,
+>>      ID_JZ4760,
+>> @@ -110,6 +123,96 @@ struct ingenic_gpio_chip {
+>>      unsigned int irq, reg_base;
+>>  };
+>>
+>> +static const u32 jz4730_pull_ups[4] = {
+>> +    0x3fa3320f, 0xf200ffff, 0xffffffff, 0xffffffff,
+>> +};
+>> +
+>> +static const u32 jz4730_pull_downs[4] = {
+>> +    0x00000df0, 0x0dff0000, 0x00000000, 0x00000000,
+>> +};
+>> +
+>> +static int jz4730_mmc_1bit_pins[] = { 0x27, 0x26, 0x22, };
+>> +static int jz4730_mmc_4bit_pins[] = { 0x23, 0x24, 0x25, };
+>> +static int jz4730_uart0_data_pins[] = { 0x7e, 0x7f, };
+>> +static int jz4730_uart1_data_pins[] = { 0x18, 0x19, };
+>> +static int jz4730_uart2_data_pins[] = { 0x6f, 0x7d, };
+>> +static int jz4730_uart3_data_pins[] = { 0x10, 0x15, };
+>> +static int jz4730_uart3_hwflow_pins[] = { 0x11, 0x17, };
+>> +static int jz4730_lcd_8bit_pins[] = {
+>> +    0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x3a, 0x39, 0x38,
+>> +};
+>> +static int jz4730_lcd_16bit_pins[] = {
+>> +    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x3b,
+>> +};
+>> +static int jz4730_lcd_16bit_tft_pins[] = { 0x3e, 0x3f, 0x3d, 0x3c, };
+>> +static int jz4730_nand_cs1_pins[] = { 0x53, };
+>> +static int jz4730_nand_cs2_pins[] = { 0x54, };
+>> +static int jz4730_nand_cs3_pins[] = { 0x55, };
+>> +static int jz4730_nand_cs4_pins[] = { 0x56, };
+>> +static int jz4730_nand_cs5_pins[] = { 0x57, };
+>> +static int jz4730_pwm_pwm0_pins[] = { 0x5e, };
+>> +static int jz4730_pwm_pwm1_pins[] = { 0x5f, };
+>> +
+>> +static u8 jz4730_lcd_8bit_funcs[] = { 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 
+>> 2, };
+>> +
+>> +static const struct group_desc jz4730_groups[] = {
+>> +    INGENIC_PIN_GROUP("mmc-1bit", jz4730_mmc_1bit, 1),
+>> +    INGENIC_PIN_GROUP("mmc-4bit", jz4730_mmc_4bit, 1),
+>> +    INGENIC_PIN_GROUP("uart0-data", jz4730_uart0_data, 1),
+>> +    INGENIC_PIN_GROUP("uart1-data", jz4730_uart1_data, 1),
+>> +    INGENIC_PIN_GROUP("uart2-data", jz4730_uart2_data, 1),
+>> +    INGENIC_PIN_GROUP("uart3-data", jz4730_uart3_data, 1),
+>> +    INGENIC_PIN_GROUP("uart3-hwflow", jz4730_uart3_hwflow, 1),
+>> +    INGENIC_PIN_GROUP_FUNCS("lcd-8bit", jz4730_lcd_8bit, 
+>> jz4730_lcd_8bit_funcs),
+>> +    INGENIC_PIN_GROUP("lcd-16bit", jz4730_lcd_16bit, 1),
+>> +    INGENIC_PIN_GROUP("lcd-16bit-tft", jz4730_lcd_16bit_tft, 1),
+>> +    INGENIC_PIN_GROUP("nand-cs1", jz4730_nand_cs1, 1),
+>> +    INGENIC_PIN_GROUP("nand-cs2", jz4730_nand_cs2, 1),
+>> +    INGENIC_PIN_GROUP("nand-cs3", jz4730_nand_cs3, 1),
+>> +    INGENIC_PIN_GROUP("nand-cs4", jz4730_nand_cs4, 1),
+>> +    INGENIC_PIN_GROUP("nand-cs5", jz4730_nand_cs5, 1),
+>> +    INGENIC_PIN_GROUP("pwm0", jz4730_pwm_pwm0, 1),
+>> +    INGENIC_PIN_GROUP("pwm1", jz4730_pwm_pwm1, 1),
+>> +};
+>> +
+>> +static const char *jz4730_mmc_groups[] = { "mmc-1bit", "mmc-4bit", };
+>> +static const char *jz4730_uart0_groups[] = { "uart0-data", };
+>> +static const char *jz4730_uart1_groups[] = { "uart1-data", };
+>> +static const char *jz4730_uart2_groups[] = { "uart2-data", };
+>> +static const char *jz4730_uart3_groups[] = { "uart3-data", 
+>> "uart3-hwflow", };
+>> +static const char *jz4730_lcd_groups[] = {
+>> +    "lcd-8bit", "lcd-16bit", "lcd-16bit-tft",
+>> +};
+>> +static const char *jz4730_nand_groups[] = {
+>> +    "nand-cs1", "nand-cs2", "nand-cs3", "nand-cs4", "nand-cs5",
+>> +};
+>> +static const char *jz4730_pwm0_groups[] = { "pwm0", };
+>> +static const char *jz4730_pwm1_groups[] = { "pwm1", };
+>> +
+>> +static const struct function_desc jz4730_functions[] = {
+>> +    { "mmc", jz4730_mmc_groups, ARRAY_SIZE(jz4730_mmc_groups), },
+>> +    { "uart0", jz4730_uart0_groups, ARRAY_SIZE(jz4730_uart0_groups), },
+>> +    { "uart1", jz4730_uart1_groups, ARRAY_SIZE(jz4730_uart1_groups), },
+>> +    { "uart2", jz4730_uart2_groups, ARRAY_SIZE(jz4730_uart2_groups), },
+>> +    { "uart3", jz4730_uart3_groups, ARRAY_SIZE(jz4730_uart3_groups), },
+>> +    { "lcd", jz4730_lcd_groups, ARRAY_SIZE(jz4730_lcd_groups), },
+>> +    { "nand", jz4730_nand_groups, ARRAY_SIZE(jz4730_nand_groups), },
+>> +    { "pwm0", jz4730_pwm0_groups, ARRAY_SIZE(jz4730_pwm0_groups), },
+>> +    { "pwm1", jz4730_pwm1_groups, ARRAY_SIZE(jz4730_pwm1_groups), },
+>> +};
+>> +
+>> +static const struct ingenic_chip_info jz4730_chip_info = {
+>> +    .num_chips = 4,
+>> +    .reg_offset = 0x30,
+>> +    .version = ID_JZ4730,
+>> +    .groups = jz4730_groups,
+>> +    .num_groups = ARRAY_SIZE(jz4730_groups),
+>> +    .functions = jz4730_functions,
+>> +    .num_functions = ARRAY_SIZE(jz4730_functions),
+>> +    .pull_ups = jz4730_pull_ups,
+>> +    .pull_downs = jz4730_pull_downs,
+>> +};
+>> +
+>>  static const u32 jz4740_pull_ups[4] = {
+>>      0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff,
+>>  };
+>> @@ -1669,6 +1772,12 @@ static u32 ingenic_gpio_read_reg(struct 
+>> ingenic_gpio_chip *jzgc, u8 reg)
+>>  static void ingenic_gpio_set_bit(struct ingenic_gpio_chip *jzgc,
+>>          u8 reg, u8 offset, bool set)
+>>  {
+>> +    if (jzgc->jzpc->info->version == ID_JZ4730) {
+>> +        regmap_update_bits(jzgc->jzpc->map, jzgc->reg_base + reg,
+>> +                    BIT(offset), set ? BIT(offset) : 0);
+>> +        return;
+>> +    }
+>> +
+>>      if (set)
+>>          reg = REG_SET(reg);
+>>      else
+>> @@ -1677,6 +1786,20 @@ static void ingenic_gpio_set_bit(struct 
+>> ingenic_gpio_chip *jzgc,
+>>      regmap_write(jzgc->jzpc->map, jzgc->reg_base + reg, BIT(offset));
+>>  }
+>>
+>> +static void ingenic_gpio_set_bits(struct ingenic_gpio_chip *jzgc,
+>> +        u8 reg_upper, u8 reg_lower, u8 offset, u8 value)
+>> +{
+>> +    /* JZ4730 function and IRQ registers support two-bits-per-pin
+>> +     * definitions, split into two groups of 16.
+>> +     */
+>
+> Two things:
+>
+> - this is only used on the JZ4730, so please change the function name 
+> to something like "jz4730_gpio_set_bits". And the 
+> "ingenic_gpio_set_bits" is too close to the already existing 
+> "ingenic_gpio_set_bit" which would get pretty confusing.
+>
+> - multi-line comments should have the opening /* on its own line. 
+> scripts/checkpatch.pl should have warned about that.
+>
+
+Sure, I will change them in the next version.
+
+
+>> +
+>> +    u8 reg = offset < JZ4730_PINS_PER_PAIRED_REG ? reg_lower : 
+>> reg_upper;
+>> +    unsigned int idx = offset % JZ4730_PINS_PER_PAIRED_REG;
+>> +
+>> +    regmap_update_bits(jzgc->jzpc->map, jzgc->reg_base + reg,
+>> +                3 << (idx * 2), value << (idx * 2));
+>
+> You can do:
+>
+> unsigned int mask = GENMASK(1, 0) << idx * 2;
+>
+> regmap_update_bits(jzgc->jzpc->map, jzgc->reg_base + reg,
+>                   mask, FIELD_PREP(mask, value));
+>
+
+Sure.
+
+
+>> +}
+>> +
+>>  static void ingenic_gpio_shadow_set_bit(struct ingenic_gpio_chip *jzgc,
+>>          u8 reg, u8 offset, bool set)
+>>  {
+>> @@ -1709,8 +1832,10 @@ static void ingenic_gpio_set_value(struct 
+>> ingenic_gpio_chip *jzgc,
+>>  {
+>>      if (jzgc->jzpc->info->version >= ID_JZ4770)
+>>          ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_PAT0, offset, !!value);
+>> -    else
+>> +    else if (jzgc->jzpc->info->version >= ID_JZ4740)
+>>          ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, offset, !!value);
+>> +    else
+>> +        ingenic_gpio_set_bit(jzgc, JZ4730_GPIO_DATA, offset, !!value);
+>>  }
+>>
+>>  static void irq_set_type(struct ingenic_gpio_chip *jzgc,
+>> @@ -1740,9 +1865,15 @@ static void irq_set_type(struct 
+>> ingenic_gpio_chip *jzgc,
+>>      if (jzgc->jzpc->info->version >= ID_JZ4770) {
+>>          reg1 = JZ4770_GPIO_PAT1;
+>>          reg2 = JZ4770_GPIO_PAT0;
+>> -    } else {
+>> +    } else if (jzgc->jzpc->info->version >= ID_JZ4740) {
+>>          reg1 = JZ4740_GPIO_TRIG;
+>>          reg2 = JZ4740_GPIO_DIR;
+>> +    } else {
+>> +        ingenic_gpio_set_bit(jzgc, JZ4730_GPIO_GPDIR, offset, false);
+>> +        ingenic_gpio_set_bits(jzgc, JZ4730_GPIO_GPIDUR,
+>> +                    JZ4730_GPIO_GPIDLR, offset,
+>> +                    (val2 ? 2 : 0) | (val1 ? 1 : 0));
+>
+> This would look better:
+> (val2 << 1) | val1
+>
+
+Sure.
+
+
+>> +        return;
+>>      }
+>>
+>>      if (jzgc->jzpc->info->version >= ID_X1000) {
+>> @@ -1759,16 +1890,24 @@ static void ingenic_gpio_irq_mask(struct 
+>> irq_data *irqd)
+>>  {
+>>      struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
+>>      struct ingenic_gpio_chip *jzgc = gpiochip_get_data(gc);
+>> +    int irq = irqd->hwirq;
+>>
+>> -    ingenic_gpio_set_bit(jzgc, GPIO_MSK, irqd->hwirq, true);
+>> +    if (jzgc->jzpc->info->version >= ID_JZ4740)
+>> +        ingenic_gpio_set_bit(jzgc, GPIO_MSK, irq, true);
+>> +    else
+>> +        ingenic_gpio_set_bit(jzgc, JZ4730_GPIO_GPIMR, irq, true);
+>>  }
+>>
+>>  static void ingenic_gpio_irq_unmask(struct irq_data *irqd)
+>>  {
+>>      struct gpio_chip *gc = irq_data_get_irq_chip_data(irqd);
+>>      struct ingenic_gpio_chip *jzgc = gpiochip_get_data(gc);
+>> +    int irq = irqd->hwirq;
+>>
+>> -    ingenic_gpio_set_bit(jzgc, GPIO_MSK, irqd->hwirq, false);
+>> +    if (jzgc->jzpc->info->version >= ID_JZ4740)
+>> +        ingenic_gpio_set_bit(jzgc, GPIO_MSK, irq, false);
+>> +    else
+>> +        ingenic_gpio_set_bit(jzgc, JZ4730_GPIO_GPIMR, irq, false);
+>>  }
+>>
+>>  static void ingenic_gpio_irq_enable(struct irq_data *irqd)
+>> @@ -1779,8 +1918,10 @@ static void ingenic_gpio_irq_enable(struct 
+>> irq_data *irqd)
+>>
+>>      if (jzgc->jzpc->info->version >= ID_JZ4770)
+>>          ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_INT, irq, true);
+>> -    else
+>> +    else if (jzgc->jzpc->info->version >= ID_JZ4740)
+>>          ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, true);
+>> +    else
+>> +        ingenic_gpio_set_bit(jzgc, JZ4730_GPIO_GPIER, irq, true);
+>>
+>>      ingenic_gpio_irq_unmask(irqd);
+>>  }
+>> @@ -1795,8 +1936,10 @@ static void ingenic_gpio_irq_disable(struct 
+>> irq_data *irqd)
+>>
+>>      if (jzgc->jzpc->info->version >= ID_JZ4770)
+>>          ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_INT, irq, false);
+>> -    else
+>> +    else if (jzgc->jzpc->info->version >= ID_JZ4740)
+>>          ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_SELECT, irq, false);
+>> +    else
+>> +        ingenic_gpio_set_bit(jzgc, JZ4730_GPIO_GPIER, irq, false);
+>>  }
+>>
+>>  static void ingenic_gpio_irq_ack(struct irq_data *irqd)
+>> @@ -1820,8 +1963,10 @@ static void ingenic_gpio_irq_ack(struct 
+>> irq_data *irqd)
+>>
+>>      if (jzgc->jzpc->info->version >= ID_JZ4770)
+>>          ingenic_gpio_set_bit(jzgc, JZ4770_GPIO_FLAG, irq, false);
+>> -    else
+>> +    else if (jzgc->jzpc->info->version >= ID_JZ4740)
+>>          ingenic_gpio_set_bit(jzgc, JZ4740_GPIO_DATA, irq, true);
+>> +    else
+>> +        ingenic_gpio_set_bit(jzgc, JZ4730_GPIO_GPFR, irq, false);
+>>  }
+>>
+>>  static int ingenic_gpio_irq_set_type(struct irq_data *irqd, unsigned 
+>> int type)
+>> @@ -1877,8 +2022,10 @@ static void ingenic_gpio_irq_handler(struct 
+>> irq_desc *desc)
+>>
+>>      if (jzgc->jzpc->info->version >= ID_JZ4770)
+>>          flag = ingenic_gpio_read_reg(jzgc, JZ4770_GPIO_FLAG);
+>> -    else
+>> +    else if (jzgc->jzpc->info->version >= ID_JZ4740)
+>>          flag = ingenic_gpio_read_reg(jzgc, JZ4740_GPIO_FLAG);
+>> +    else
+>> +        flag = ingenic_gpio_read_reg(jzgc, JZ4730_GPIO_GPFR);
+>>
+>>      for_each_set_bit(i, &flag, 32)
+>>          generic_handle_irq(irq_linear_revmap(gc->irq.domain, i));
+>> @@ -1919,8 +2066,27 @@ static inline void ingenic_config_pin(struct 
+>> ingenic_pinctrl *jzpc,
+>>      unsigned int idx = pin % PINS_PER_GPIO_CHIP;
+>>      unsigned int offt = pin / PINS_PER_GPIO_CHIP;
+>>
+>> -    regmap_write(jzpc->map, offt * jzpc->info->reg_offset +
+>> -            (set ? REG_SET(reg) : REG_CLEAR(reg)), BIT(idx));
+>> +    if (jzpc->info->version >= ID_JZ4740)
+>> +        regmap_write(jzpc->map, offt * jzpc->info->reg_offset +
+>> +                (set ? REG_SET(reg) : REG_CLEAR(reg)), BIT(idx));
+>> +    else
+>> +        regmap_update_bits(jzpc->map, offt * jzpc->info->reg_offset 
+>> + reg,
+>> +                    BIT(idx), set ? BIT(idx) : 0);
+>
+> I'd prefer:
+>
+> if (set) {
+>    if (jzpc->info->version >= ID_JZ4740)
+>        regmap_write(jzpc->map, offt * jzpc->info->reg_offset + 
+> REG_SET(reg), BIT(idx));
+>    else
+>        regmap_set_bits(jzpc->map, offt * jzpc->info->reg_offset + reg, 
+> BIT(idx));
+> } else {
+>    if (jzpc->info->version >= ID_JZ4740)
+>        regmap_write(jzpc->map, offt * jzpc->info->reg_offset + 
+> REG_CLEAR(reg), BIT(idx));
+>    else
+>        regmap_clear_bits(jzpc->map, offt * jzpc->info->reg_offset + 
+> reg, BIT(idx));
+> }
+>
+
+Okay.
+
+
+>> +}
+>> +
+>> +static inline void ingenic_config_pin_function(struct 
+>> ingenic_pinctrl *jzpc,
+>> +        unsigned int pin, u8 reg_upper, u8 reg_lower, u8 value)
+>> +{
+>> +    /* JZ4730 function and IRQ registers support two-bits-per-pin
+>> +     * definitions, split into two groups of 16.
+>> +     */
+>
+> Same two remarks as above (about the function name and multi-lines 
+> comment).
+>
+
+Okay.
+
+
+>> +
+>> +    unsigned int idx = pin % JZ4730_PINS_PER_PAIRED_REG;
+>> +    unsigned int offt = pin / PINS_PER_GPIO_CHIP;
+>> +    u8 reg = (pin % PINS_PER_GPIO_CHIP) < JZ4730_PINS_PER_PAIRED_REG 
+>> ? reg_lower : reg_upper;
+>> +
+>> +    regmap_update_bits(jzpc->map, offt * jzpc->info->reg_offset + reg,
+>> +                3 << (idx * 2), value << (idx * 2));
+>
+> Same as above with GENMASK and FIELD_PREP.
+>
+
+Sure.
+
+
+>>  }
+>>
+>>  static inline void ingenic_shadow_config_pin(struct ingenic_pinctrl 
+>> *jzpc,
+>> @@ -1962,6 +2128,10 @@ static int ingenic_gpio_get_direction(struct 
+>> gpio_chip *gc, unsigned int offset)
+>>              ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PAT1))
+>>              return GPIO_LINE_DIRECTION_IN;
+>>          return GPIO_LINE_DIRECTION_OUT;
+>> +    } else if (jzpc->info->version == ID_JZ4730) {
+>> +        if (!ingenic_get_pin_config(jzpc, pin, JZ4730_GPIO_GPDIR))
+>> +            return GPIO_LINE_DIRECTION_IN;
+>> +        return GPIO_LINE_DIRECTION_OUT;
+>>      }
+>>
+>>      if (ingenic_get_pin_config(jzpc, pin, JZ4740_GPIO_SELECT))
+>> @@ -2020,10 +2190,14 @@ static int ingenic_pinmux_set_pin_fn(struct 
+>> ingenic_pinctrl *jzpc,
+>>          ingenic_config_pin(jzpc, pin, GPIO_MSK, false);
+>>          ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT1, func & 0x2);
+>>          ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT0, func & 0x1);
+>> -    } else {
+>> +    } else if (jzpc->info->version >= ID_JZ4740) {
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_FUNC, true);
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_TRIG, func & 0x2);
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, func & 0x1);
+>> +    } else {
+>> +        ingenic_config_pin(jzpc, pin, JZ4730_GPIO_GPIER, false);
+>> +        ingenic_config_pin_function(jzpc, pin, JZ4730_GPIO_GPAUR,
+>> +                        JZ4730_GPIO_GPALR, func & 0x3);
+>
+> 'func' is in the [0..3] range already, so you can drop the & 0x3 mask.
+>
+
+Sure.
+
+
+>>      }
+>>
+>>      return 0;
+>> @@ -2084,10 +2258,15 @@ static int 
+>> ingenic_pinmux_gpio_set_direction(struct pinctrl_dev *pctldev,
+>>          ingenic_config_pin(jzpc, pin, JZ4770_GPIO_INT, false);
+>>          ingenic_config_pin(jzpc, pin, GPIO_MSK, true);
+>>          ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT1, input);
+>> -    } else {
+>> +    } else if (jzpc->info->version >= ID_JZ4740) {
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_SELECT, false);
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_DIR, !input);
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_FUNC, false);
+>> +    } else {
+>> +        ingenic_config_pin(jzpc, pin, JZ4730_GPIO_GPIER, false);
+>> +        ingenic_config_pin(jzpc, pin, JZ4730_GPIO_GPDIR, !input);
+>> +        ingenic_config_pin_function(jzpc, pin, JZ4730_GPIO_GPAUR,
+>> +                        JZ4730_GPIO_GPALR, 0);
+>>      }
+>>
+>>      return 0;
+>> @@ -2130,8 +2309,10 @@ static int ingenic_pinconf_get(struct 
+>> pinctrl_dev *pctldev,
+>>      } else {
+>>          if (jzpc->info->version >= ID_JZ4770)
+>>              pull = !ingenic_get_pin_config(jzpc, pin, JZ4770_GPIO_PEN);
+>> -        else
+>> +        else if (jzpc->info->version >= ID_JZ4740)
+>>              pull = !ingenic_get_pin_config(jzpc, pin, 
+>> JZ4740_GPIO_PULL_DIS);
+>> +        else
+>> +            pull = ingenic_get_pin_config(jzpc, pin, 
+>> JZ4730_GPIO_GPPUR);
+>>
+>>          pullup = pull && (jzpc->info->pull_ups[offt] & BIT(idx));
+>>          pulldown = pull && (jzpc->info->pull_downs[offt] & BIT(idx));
+>> @@ -2184,8 +2365,10 @@ static void ingenic_set_bias(struct 
+>> ingenic_pinctrl *jzpc,
+>>
+>>      } else if (jzpc->info->version >= ID_JZ4770) {
+>>          ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PEN, !bias);
+>> -    } else {
+>> +    } else if (jzpc->info->version >= ID_JZ4740) {
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_PULL_DIS, !bias);
+>> +    } else {
+>> +        ingenic_config_pin(jzpc, pin, JZ4730_GPIO_GPPUR, bias);
+>>      }
+>>  }
+>>
+>> @@ -2194,8 +2377,10 @@ static void ingenic_set_output_level(struct 
+>> ingenic_pinctrl *jzpc,
+>>  {
+>>      if (jzpc->info->version >= ID_JZ4770)
+>>          ingenic_config_pin(jzpc, pin, JZ4770_GPIO_PAT0, high);
+>> -    else
+>> +    else if (jzpc->info->version >= ID_JZ4740)
+>>          ingenic_config_pin(jzpc, pin, JZ4740_GPIO_DATA, high);
+>> +    else
+>> +        ingenic_config_pin(jzpc, pin, JZ4730_GPIO_DATA, high);
+>>  }
+>>
+>>  static int ingenic_pinconf_set(struct pinctrl_dev *pctldev, unsigned 
+>> int pin,
+>> @@ -2324,6 +2509,7 @@ static const struct regmap_config 
+>> ingenic_pinctrl_regmap_config = {
+>>  };
+>>
+>>  static const struct of_device_id ingenic_gpio_of_match[] __initconst 
+>> = {
+>> +    { .compatible = "ingenic,jz4730-gpio", },
+>>      { .compatible = "ingenic,jz4740-gpio", },
+>>      { .compatible = "ingenic,jz4725b-gpio", },
+>>      { .compatible = "ingenic,jz4760-gpio", },
+>> @@ -2518,6 +2704,10 @@ static int __init ingenic_pinctrl_probe(struct 
+>> platform_device *pdev)
+>>
+>>  static const struct of_device_id ingenic_pinctrl_of_match[] = {
+>>      {
+>> +        .compatible = "ingenic,jz4730-pinctrl",
+>> +        .data = IF_ENABLED(CONFIG_MACH_JZ4730, &jz4730_chip_info)
+>> +    },
+>> +    {
+>>          .compatible = "ingenic,jz4740-pinctrl",
+>>          .data = IF_ENABLED(CONFIG_MACH_JZ4740, &jz4740_chip_info)
+>>      },
+>> -- 
+>> 2.7.4
+>
+> Cheers,
+> -Paul
+>
