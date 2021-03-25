@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213B8349CFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A42349CFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:44:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhCYXiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231277AbhCYXim (ORCPT
+        id S231191AbhCYXoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 19:44:12 -0400
+Received: from mail-il1-f177.google.com ([209.85.166.177]:43930 "EHLO
+        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231272AbhCYXns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:38:42 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7357FC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:38:41 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id h3so3615538pfr.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:38:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SsGNl6TxEdcsmrF4tAO/a5SQ7vMBXF6HcqOFeBkJZaA=;
-        b=YBLkudSekC9YH98hJgA55FU7IVE5MZyUpALZY2o1J7Ngkh3ltuqb6Q6nznhniFA6Ao
-         XPcnjxjr7qgTEb6B5BKrm4bKQBczRRcN03o9gKVyoQiDHB2dK2CxZclZSUtr6BefjxYd
-         kN+yz4Nb7d/P1Bdsh9TjfgLHmzOKg+FMCyvXIrMTsRFDl5t/1hbtq8B8RhuG1Tn2KM5V
-         /Olo8HuVLcgcDQ7z7Vu/yivH3aLbfP/Ig0Dk4TIy0Cm34zZKS44XPCT8lLWr3WSOlbcR
-         cxyjrcJz88D9/rK3grLohcxlIP/moznFZRwalZT5q7LXlWrBKJgrhcoGGw6E8mgc2oeo
-         vtYQ==
+        Thu, 25 Mar 2021 19:43:48 -0400
+Received: by mail-il1-f177.google.com with SMTP id d2so3591718ilm.10;
+        Thu, 25 Mar 2021 16:43:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SsGNl6TxEdcsmrF4tAO/a5SQ7vMBXF6HcqOFeBkJZaA=;
-        b=KnkIpZpIgUK4Vmb1t798/3DgzMwiRypI7eWgQ7qxM5SEUu2UwjogTthbmGGjjfBopb
-         cRDhstsJzp5lwZ1UWiim56TQfBI5LAaG8C0cxPyTOakCgpTgQ2jtUwb5bSdx3w+zFc9J
-         vXewk1ewYTeLWm2KAaMqBx3vJ2Z6v+IamKnkIA11VLgQ+xIZlF/lcWEKBSUHHYnfog+I
-         wjlKBxYx4ER4d/7TrM2gmgOs+3AnUC8cigORFelsTYcTUxJEhMXuV76lI55avBnMUVw1
-         Ev8j1g9yeKYsqXXQHczPEviT6JymLk/ItC238FnifZLYda5+dV7bV6v0Y53YsqzBA8AQ
-         ndKw==
-X-Gm-Message-State: AOAM5317JxzijEh3Js2IOL54K5Ti+kN4A7Xcon1yWrb4TlhJmrIrJxiE
-        Jd6Q9zBJfvBrtXyqM2Jy+fzEEw==
-X-Google-Smtp-Source: ABdhPJxyTNoi8awCicMlBT95i1RKLe5xI0PRp4lZMCjKGQIf+tw1BENbvhG4yY4os4qQO6hZgb7uTQ==
-X-Received: by 2002:a62:2a07:0:b029:214:fd95:7f7 with SMTP id q7-20020a622a070000b0290214fd9507f7mr10221639pfq.60.1616715520895;
-        Thu, 25 Mar 2021 16:38:40 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:0:1532:a374:78cc:c35c])
-        by smtp.gmail.com with ESMTPSA id l25sm7030314pgu.72.2021.03.25.16.38.39
+        bh=p59ML68zK60wq9YD60V5pptsxHulU7hq4xvqJD4wijM=;
+        b=RW90zVF7jF9fBKktnDYRj9GsPbCSqm147WHJaDCxYbf4TAh9i5q3Ffm11FhqKVgpB1
+         62lmWx5hZWAMmN/xe8WiLidPbil6pT4aEny9qp811VsbUU3h0/FqUxbd+iR7c+HR0jPR
+         v9RQYBwLPBDp4JPMoBSgthHGYNzJglW25PPkCk8hsz/MlPt/L3SM7SO4bt9Rui4d8p3o
+         p699gSGlKwBU5LbdqoJQi+u/BVHuF0N8M0drZ8s5OO+QTY/gQtEhHb7mYR9BgIpJgnjI
+         BO80roifCtAjGSCApWHarv3CiRZ4DvuH6pbLgBt8w75N22AeuOpo+i3+onlmdkhdXJCr
+         YLZQ==
+X-Gm-Message-State: AOAM533ID90DBcVQXOZOuv5v1WsTpQfcbtCWFMSRm+AnJBUHGCsoUTtQ
+        97sCtry4W8d849+MkohfoA==
+X-Google-Smtp-Source: ABdhPJwfa4q5Qfn77dFh+CE0bpIsOOj53QrW0DhxciTZq+4XZ0reu29n+NslYP5CilZsWawJZ8U8TA==
+X-Received: by 2002:a05:6e02:2182:: with SMTP id j2mr8950348ila.89.1616715827402;
+        Thu, 25 Mar 2021 16:43:47 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id j5sm3442416ile.52.2021.03.25.16.43.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 16:38:40 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 16:38:35 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 3/3] riscv: Select HAVE_DYNAMIC_FTRACE when
- -fpatchable-function-entry is available
-Message-ID: <20210325233835.ytcstqdcwtorzkhw@google.com>
-References: <20210325223807.2423265-1-nathan@kernel.org>
- <20210325223807.2423265-4-nathan@kernel.org>
+        Thu, 25 Mar 2021 16:43:46 -0700 (PDT)
+Received: (nullmailer pid 1960656 invoked by uid 1000);
+        Thu, 25 Mar 2021 23:43:43 -0000
+Date:   Thu, 25 Mar 2021 17:43:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Joe Sandom <joe.g.sandom@gmail.com>
+Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio@vger.kernel.org, jic23@kernel.org,
+        Rob Herring <robh+dt@kernel.org>, andy.shevchenko@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v6 2/2] Added AMS tsl2591 device tree binding
+Message-ID: <20210325234343.GA1959978@robh.at.kernel.org>
+References: <20210325220505.14507-1-joe.g.sandom@gmail.com>
+ <20210325220505.14507-2-joe.g.sandom@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325223807.2423265-4-nathan@kernel.org>
+In-Reply-To: <20210325220505.14507-2-joe.g.sandom@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-25, Nathan Chancellor wrote:
->clang prior to 13.0.0 does not support -fpatchable-function-entry for
->RISC-V.
->
->clang: error: unsupported option '-fpatchable-function-entry=8' for target 'riscv64-unknown-linux-gnu'
->
->To avoid this error, only select HAVE_DYNAMIC_FTRACE when this option is
->not available.
+On Thu, 25 Mar 2021 22:05:04 +0000, Joe Sandom wrote:
+> Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
+> 
+> This driver supports configuration via device tree and sysfs.
+> Supported channels for raw infrared light intensity,
+> raw combined light intensity and illuminance in lux.
+> The driver additionally supports iio events on lower and
+> upper thresholds.
+> 
+> This is a very-high sensitivity light-to-digital converter that
+> transforms light intensity into a digital signal.
+> 
+> Datasheet: https://ams.com/tsl25911#tab/documents
+> 
+> Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
+> ---
+> Changes in v6:
+> - No changes
+> 
+> Notes:
+> - Re-submitted to align the version with part 1 of the patch series
+> 
+>  .../bindings/iio/light/amstaos,tsl2591.yaml   | 50 +++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
+> 
 
-If clang -fpatchable-function-entry=8 does not error "unsupported
-option" for one target, it means the backend feature is supported on
-this target.
 
-Reviewed-by: Fangrui Song <maskray@google.com>
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
->Fixes: afc76b8b8011 ("riscv: Using PATCHABLE_FUNCTION_ENTRY instead of MCOUNT")
->Link: https://github.com/ClangBuiltLinux/linux/issues/1268
->Reported-by: kernel test robot <lkp@intel.com>
->Signed-off-by: Nathan Chancellor <nathan@kernel.org>
->---
-> arch/riscv/Kconfig | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->index 87d7b52f278f..ba1d07640b66 100644
->--- a/arch/riscv/Kconfig
->+++ b/arch/riscv/Kconfig
->@@ -227,7 +227,7 @@ config ARCH_RV64I
-> 	bool "RV64I"
-> 	select 64BIT
-> 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
->-	select HAVE_DYNAMIC_FTRACE if MMU
->+	select HAVE_DYNAMIC_FTRACE if MMU && $(cc-option,-fpatchable-function-entry=8)
-> 	select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
-> 	select HAVE_FTRACE_MCOUNT_RECORD
-> 	select HAVE_FUNCTION_GRAPH_TRACER
->-- 
->2.31.0
->
->-- 
->You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
->To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
->To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20210325223807.2423265-4-nathan%40kernel.org.
+If a tag was not added on purpose, please state why and what changed.
+
