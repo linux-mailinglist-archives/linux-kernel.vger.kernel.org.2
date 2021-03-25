@@ -2,158 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 504A9348907
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A2834890A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhCYGVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:21:38 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:57541 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhCYGVJ (ORCPT
+        id S229744AbhCYGWm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Mar 2021 02:22:42 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:3320 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCYGWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:21:09 -0400
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 12P6Kq8r011624;
-        Thu, 25 Mar 2021 15:20:52 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 12P6Kq8r011624
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1616653252;
-        bh=8zBxAZTZhqLVUdKtdKT+NTy/7cM48Qg0YutzNlS3X6s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fWZd68fmvrHmXIx5oQOXJKQgO435qyVj26+ZbHiTwB3U+JkxI+p1FBaQBM6Y/zLFr
-         7iXMkheE3myrxel7oEuzli4ik+1euTWhveTN+r8xNkTRZjI3QXIYnlbtvklO5CmTfq
-         qEwLTOpk+MEdgW3e+YWRqU3xQui6OT8rxqbZ+xNfDmvX0aIXwpuI3LnoOvH3krpXNj
-         QEJQq08my8RDaYgD5G0rGKG33aOsoLEwCn9zYEpA1ymqc3JPOMZfOcu9+8hvjYNcUB
-         udqNg4rUNJGzDFNX+RHNtVorVN+Uly7fiXhYgDUBL+tzQJf6RYRzzgbQdZ+zegy3Kq
-         ytChctXpYxQbA==
-X-Nifty-SrcIP: [209.85.216.42]
-Received: by mail-pj1-f42.google.com with SMTP id x7-20020a17090a2b07b02900c0ea793940so2278971pjc.2;
-        Wed, 24 Mar 2021 23:20:52 -0700 (PDT)
-X-Gm-Message-State: AOAM533dnBOk0CBqCfhpnST8r3Sr9iVPE1KvCeU4+8g091WlYCFItfMH
-        CBsjqkXalZKPvR7lsszmWdM0ZJYbRuaUPvtTFTI=
-X-Google-Smtp-Source: ABdhPJxvLfC9axA1MpCDg04uRGzNnQxbk0faM3oWk73TIoATXtrSQagtfAXZvlu++rP4dz5+oh09Y9PXIiojsJABBEM=
-X-Received: by 2002:a17:90a:fb54:: with SMTP id iq20mr6910829pjb.153.1616653251472;
- Wed, 24 Mar 2021 23:20:51 -0700 (PDT)
+        Thu, 25 Mar 2021 02:22:17 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4F5ZgR6kkBz148Mk;
+        Thu, 25 Mar 2021 14:18:59 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 25 Mar 2021 14:21:59 +0800
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 25 Mar 2021 14:21:59 +0800
+Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
+ dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2106.013;
+ Thu, 25 Mar 2021 14:21:59 +0800
+From:   "chenjun (AM)" <chenjun102@huawei.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Xiangrui (Euler)" <rui.xiang@huawei.com>,
+        liuyanshi <liuyanshi@huawei.com>,
+        wuzengkun <wuzengkun@hisilicon.com>
+Subject: Re: [question] insert ko failed because count_plts return 0 when
+ CONFIG_RANDOMIZE_BASE is not set
+Thread-Topic: [question] insert ko failed because count_plts return 0 when
+ CONFIG_RANDOMIZE_BASE is not set
+Thread-Index: AQHXIH8WXlqb5UrgakG+rdPSQ9Lizw==
+Date:   Thu, 25 Mar 2021 06:21:59 +0000
+Message-ID: <54e5e0dbefa042b1b6a9c29fe9984897@huawei.com>
+References: <6c819e1944044bfa8f88574beb094ef5@huawei.com>
+ <CAMj1kXH3BPi75h+OfLSr6S24fLD7pN=C=0tNMerXh9tY0whfEQ@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.178.53]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210322213806.089334551@goodmis.org> <20210322214032.293992979@goodmis.org>
- <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com> <20210324095417.49c6377b@gandalf.local.home>
-In-Reply-To: <20210324095417.49c6377b@gandalf.local.home>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 25 Mar 2021 15:20:13 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ4uRB+9M4h0KVwEQUnX1XZrsE30KP_pqJqYjF2FcsHZA@mail.gmail.com>
-Message-ID: <CAK7LNAQ4uRB+9M4h0KVwEQUnX1XZrsE30KP_pqJqYjF2FcsHZA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] streamline_config.pl: Add softtabstop=4 for vim users
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "John (Warthog9) Hawley" <warthog9@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 10:54 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+在 2021/3/24 16:29, Ard Biesheuvel 写道:
+> On Wed, 24 Mar 2021 at 08:27, chenjun (AM) <chenjun102@huawei.com> wrote:
+>>
+>> Hi
+>>
+>> I make a Image for arm64 (without CONFIG_RANDOMIZE_BASE). And a ko (13M)
+>> can not be inserted.
+>>
+> 
+> How many large modules have you loaded already? The module region is
+> only 128 MB, so if your modules are huge, you may run out of space.
+> 
+> Please check the kernel VA address and the load address of the module,
+> and check whether they are more than 128 MB apart.
 >
-> On Wed, 24 Mar 2021 15:01:13 +0900
-> Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> > On Tue, Mar 23, 2021 at 6:40 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >
-> > > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > >
-> > > The tab stop for Perl files is by default (at least in emacs) to be 4
-> > > spaces, where a tab is used for all 8 spaces. Add a local variable comment
-> > > to make vim do the same by default, and this will help keep the file
-> > > consistent in the future when others edit it via vim and not emacs.
-> > >
-> > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> >
-> >
-> > Documentation/process/coding-style.rst says "do not do this".
->
-> I take that file more as for C code, never took it for Perl ;-)
->
-> >
-> > Rather, I want to remove this ugly stuff entirely.
-> > https://lore.kernel.org/patchwork/patch/1401439/
->
-> And I totally agree it does not belong in C code.
->
-> >
-> > Adding .editorconfig seems OK to me, but
-> > Doing this in individual files in an editor-specific
-> > manner is a horror.
->
-> Is there a way to add this for the directory?
->
-> The reason I added this was because of the different ways that vim and
-> emacs handle Perl files. I just added this to ktest.pl because I want it to
-> be consistent.
->
-> The emacs way to edit Perl is to have 4 space indentation, but use tabs for
-> every 8 spaces. That is, you have:
->
->     (4 spaces)
->         (1 tab)
->             (1 tab and 4 spaces)
->                 (2 tabs)
->                     (2 tabs and 4 spaces)
->
-> etc.
 
+Thanks Ard
 
-The root cause of inconsistency is that
-you mix up space-indentation and tab-indentation.
-I do not know if it is a standard way either.
+I will check it.
 
-For example, scripts/checkpatch.pl uses only tabs,
-which I think is more robust.
+One more question, why is CONFIG_ARM64_MODULE_PLTS depended on 
+CONFIG_RANDOMIZE_BASE?
 
-Unfortunately, we do not have standardized indentation style
-for scripts yet, and people can go in any direction.
-
-The editorconfig patch [1] proposed to always use 4-space
-indentation for *.pl files.
-(that is, do not replace 8 spaces with a tab).
-
-I do not know whether the kernel will adopt .editorconfig or not,
-but if that patch is applied, your 1/2 will be a step backward.
-
-My got-feeling is, you will never reach the goal as long as
-you adopt a strange indentation style, which is obscure
-to other contributors.
-
-Not all people use vim.
-I am not interested in 1/2 either.
-
-If you insist on this patch set, apply it to your tree
-and send a pull request by yourself.
-
-
-[1]: https://lore.kernel.org/lkml/20200703073143.423557-1-danny@kdrag0n.dev/
-
-
-
->
-> What I found from people who edit Perl code is that they will either just
-> indent 8 (with tabs), or just use all spaces. Then you have:
->
->             (1 tab and 4 spaces)
->             (followed by 12 spaces!)
->
-> The way to make vim work the same is to add the softtabspace=4 command.
->
-> We can not add this, but then have to either police the patches coming in,
-> or constantly clean up the code after the fact.
->
-> This code doesn't change much, so I'm fine with that. But for ktest.pl, I'm
-> adding it.
->
-> -- Steve
-
+> 
+>> WARNING: CPU: 2 PID: 1998 at arch/arm64/kernel/module-plts.c:39
+>> module_emit_plt_entry+0x100/0x118
+>> ...
+>> Call trace:
+>> module_emit_plt_entry+0x100/0x118
+>> apply_relocate_add+0x34c/0x570
+>> ...
+>>
+>> I think the problem is that:
+>> in apply_relocate_add:
+>>                    case R_AARCH64_CALL26:
+>>                        ovf = reloc_insn_imm(RELOC_OP_PREL, loc, val, 2, 26,
+>>                                                 AARCH64_INSN_IMM_26);
+>>
+>>                        if (IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
+>>                            ovf == -ERANGE) {
+>>                                val = module_emit_plt_entry(me, sechdrs,
+>> loc, &rel[i], sym); realoc_insn_imm return -ERANGE (because the ko is
+>> too big?)
+>>
+>> in module_emit_plt_entry:
+>> WARN_ON(pltsec->plt_num_entries > pltsec->plt_max_entries)
+>> pltsec->plt_max_entries is 0 if CONFIG_RANDOMIZE_BASE is not be set.
+>>
+>> a257e02 arm64/kernel: don't ban ADRP to work around Cortex-A53 erratum
+>> #843419
+>>     static unsigned int count_plts(Elf64_Sym *syms, Elf64_Rela *rela, int
+>> num,
+>> -                              Elf64_Word dstidx)
+>> +                              Elf64_Word dstidx, Elf_Shdr *dstsec)
+>>     {
+>> ...
+>>                    switch (ELF64_R_TYPE(rela[i].r_info)) {
+>>                    case R_AARCH64_JUMP26:
+>>                    case R_AARCH64_CALL26:
+>> +                       if (!IS_ENABLED(CONFIG_RANDOMIZE_BASE))
+>> +                               break;
+>> +
+>>
+>> Why we need break if !IS_ENABLED(CONFIG_RANDOMIZE_BASE)? or any
+>> restrictions on ko?
+>>
+>> I comment out this part of the code. the ko could be inserted, and seems
+>> to work well. So is it a accepted way? or any solution for my case?
+>>
+>> --
+>> Regards
+>> Chen Jun
+>>
+> 
 
 
 -- 
-Best Regards
-Masahiro Yamada
+Regards
+Chen Jun
