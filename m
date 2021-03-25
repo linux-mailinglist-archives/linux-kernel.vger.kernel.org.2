@@ -2,327 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6DF349B30
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 135D2349B36
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhCYUp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhCYUpW (ORCPT
+        id S230260AbhCYUsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:48:42 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:56641 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229581AbhCYUsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:45:22 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62834C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:45:22 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id s2so2720828qtx.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 13:45:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mFybgM3J0xN8eb0mL6JyWmrKNINwf1FLQ2Vv0es9yBU=;
-        b=pRO9gasJG2U01hTstX0TisBC1HrBJ1djFbDTUgKqHdmKGX+3+0EhuRbtLhakkHrUDG
-         5VUqaSY9OGQzO/Ggd8EkY4IsTu+Ue9NttT8frJ92xT/vdF/VMRU56HtD2tUjPxrSYtCL
-         jAwVuvMNYbaMibuM3FNkOrIn+EFHyzNwU3Lka8I69pdb2pJ0xFH86WKkFhxHkgajovTa
-         mCjMcc2HZvV0+w4AQgbU1GUsUA+Ly8A8AqcS6wA1x49qYWCpNNm4SruicXWa/SzkaUDv
-         OOqEbYWFqsN52Twba8AzjcdwaQe+dMSw0m2PuVaYrKM0t2urP7iY/ta+D75vERE6kZ02
-         oiZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mFybgM3J0xN8eb0mL6JyWmrKNINwf1FLQ2Vv0es9yBU=;
-        b=AXiJpZs63j0o1LN8uB/YZuLXqsfVMmkTrNIXw0gfs8PUkI6JfKFCf7vBQCKrI6KKd1
-         aMDa1GlsUdMVoxTOenhTh+cWW0y/VtQB2VmkxXdFYGOJDKuA27sLQ6ZN+0Gh0EWHiRjw
-         /VN57Iyl5++APljHwbnfOtmxINXJ8VEJaQfO2hKD+LuMOOw7vzCbSH7wejcy6xLY2EC9
-         DNeGIwrfQ2eCt4IkSJEpPdEfu4ApYlTNMi856bFs/kXk9Bn0USKF0rU6sPMg8wR7uF7K
-         UbLKMWPBGtiLVVs3PNNJaHN4AMZMskjYMO82FLFt3vqhRGUP/Z3se/VG/q568TwbFODm
-         RrZg==
-X-Gm-Message-State: AOAM532lgZTcCrKB4yz3q5C4tSO0lBiWdDEjfD3NrcTGLPHCJwLumu8Z
-        yQaAq1PdsjNaqW8vgIBaomgnyQ+vA+A/lwOpEDXCeg==
-X-Google-Smtp-Source: ABdhPJy2CUZSBuohpaeqblMV61XQmQx4Dbpvd/wN7nECjwxT+KwpVyQWAjoXCDtAu+sri9HI+etbcZY5s2UTUSCTxYM=
-X-Received: by 2002:ac8:777a:: with SMTP id h26mr9428385qtu.318.1616705121343;
- Thu, 25 Mar 2021 13:45:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210105045735.1709825-1-jeremy.linton@arm.com>
- <20210107181416.GA3536@willie-the-truck> <56375cd8-8e11-aba6-9e11-1e0ec546e423@jonmasters.org>
- <20210108103216.GA17931@e121166-lin.cambridge.arm.com> <20210122194829.GE25471@willie-the-truck>
- <b37bbff9-d4f8-ece6-3a89-fa21093e15e1@nvidia.com> <20210126225351.GA30941@willie-the-truck>
- <20210325131231.GA18590@e121166-lin.cambridge.arm.com>
-In-Reply-To: <20210325131231.GA18590@e121166-lin.cambridge.arm.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 25 Mar 2021 21:45:08 +0100
-Message-ID: <CAPv3WKcgZ9aEx7s6keWMssGefYH=rtdxSp5eiBVibtjY=sctpg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Vikram Sethi <vsethi@nvidia.com>,
-        vidyas@nvidia.com, Thierry Reding <treding@nvidia.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, linux-pci@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-kernel@lists.infradead.org, ebrower@nvidia.com,
-        jcm@redhat.com, Grzegorz Jaszczyk <jaz@semihalf.com>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Samer El-Haj-Mahmoud <Samer.El-Haj-Mahmoud@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 25 Mar 2021 16:48:16 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7E04C5807E8;
+        Thu, 25 Mar 2021 16:48:15 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute4.internal (MEProxy); Thu, 25 Mar 2021 16:48:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=BopbUwo+71LF70JJ+LzTjR0pX9XT
+        ynwjRdypsYc+V7k=; b=KcPhafu0alFiQH3XvUxwxKxQ75ROuqT/rOq/4zHo8T6o
+        SihJqEE5Hb+sicyWodLFzCskUDN1+Ok0q/V0OHm+ph/ls07KEodaFwHUfmMdiCBf
+        nhvrZm/CpSiOq1I1Dws3LUGSvDQGG7r96wgiSFyPtXHgtcvuZPESr7r/tFH5jvWu
+        m7nv8dD+lTO8tTZvZkpQOmo76hTlnTT1b1mjPwrQdDNn1bCV2J1BMlVX8TqW/QL4
+        fdSYDZgLW+GFstjVsLFnuYd0YaJfUMO5R+be5a6E2CpRj2lOlqHnXfNciIYIX+jk
+        wW8QlrT6kxrVa1WUzi4Ga0Zl/D12YwPeLou992YwHw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=BopbUw
+        o+71LF70JJ+LzTjR0pX9XTynwjRdypsYc+V7k=; b=GtYZhRpsMI6RKLnf6NgsNW
+        XrRlmjGAdjKGJzbnOHoH8ZtKxtLtGVWY5iEhOqx9W678Zj8hKgUUSQ4JS/zGqMNk
+        g6I8PHVaeBsPUgQLPlu+TdCwoShXDF/UE0Wp9DK0qTF7G7ewWiURQaoMNO0vxkXw
+        9rx8xjfpYXE4oiE+62emOr1DxxvpDMOdrkqEb9QD6gNbNgxEuysH93zH71urPy8f
+        CtEoKofkH8oVedQiR6uqrH47nZyndxH+saG+607h/eg06tdmQ2VQKW27GeAoIcGW
+        VdSqkchwEnve+R/E1r9d/ETYWDAIPvRqsjD5GjKBX0Ay9NRbKkYTjC6W8Ql5Oyaw
+        ==
+X-ME-Sender: <xms:DfdcYCEJYg9FwIFbnhAvd8u56Em0zHFWcXMCOTowJef8QCMXg1iEFg>
+    <xme:DfdcYJUo8YETnJuQTpfAcq6mw5XbzF-_hJ_FSl-uiDkUPCMxOY1bIUiWIsg2TY_se
+    G0lQJi44C_LfYS_Wic>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehtddgudeggecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
+    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:DfdcYJwbydEVM8v8UAnQlzvlk8x7Utj_P7QSbw-E26ivPXnehtmQZA>
+    <xmx:DfdcYHMyGeVmI-mI8BaiCIujk4xhkoLje3xUFzbeMLOnrn7DA7AzHg>
+    <xmx:DfdcYK5K2FRkE9VUOyPNm3vyq8kViZ5ElSHE0igfk0xLBiCGymOz6w>
+    <xmx:D_dcYOK5sjk2Uo7RmNTDqxLfz3y3lgAT0v4DrVuk_Z6Q2bAaSB3luG7Ssyk>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 1EA3851C005F; Thu, 25 Mar 2021 16:48:12 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <0391ede7-42d0-4169-ae4f-dfba5e6486b7@www.fastmail.com>
+In-Reply-To: <2e7e4002-4f37-9348-40e6-aaa523207472@arm.com>
+References: <20210320151903.60759-1-sven@svenpeter.dev>
+ <20210320151903.60759-2-sven@svenpeter.dev>
+ <2e7e4002-4f37-9348-40e6-aaa523207472@arm.com>
+Date:   Thu, 25 Mar 2021 21:47:52 +0100
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Robin Murphy" <robin.murphy@arm.com>,
+        iommu@lists.linux-foundation.org
+Cc:     "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/3] iommu: io-pgtable: add DART pagetable format
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Robin,
+
+Thanks for the review!
+
+On Wed, Mar 24, 2021, at 17:37, Robin Murphy wrote:
+> On 2021-03-20 15:19, Sven Peter wrote:
+> > Apple's DART iommu uses a pagetable format that's very similar to the ones
+> > already implemented by io-pgtable.c.
+> > Add a new format variant to support the required differences.
+> 
+> TBH there look to be more differences than similarities, but I guess we 
+> already opened that door with the Mali format, and nobody likes writing 
+> pagetable code :)
+
+Fair enough. There are some similarities but especially the actual
+PTE format is completely different. And yes, I very much prefer to use
+well-tested and written pagetable code rather than coming up with
+my own if possible :-)
 
 
-czw., 25 mar 2021 o 14:19 Lorenzo Pieralisi
-<lorenzo.pieralisi@arm.com> napisa=C5=82(a):
->
-> On Tue, Jan 26, 2021 at 10:53:51PM +0000, Will Deacon wrote:
-> > On Tue, Jan 26, 2021 at 11:08:31AM -0600, Vikram Sethi wrote:
-> > > On 1/22/2021 1:48 PM, Will Deacon wrote:
-> > > > On Fri, Jan 08, 2021 at 10:32:16AM +0000, Lorenzo Pieralisi wrote:
-> > > >> On Thu, Jan 07, 2021 at 04:05:48PM -0500, Jon Masters wrote:
-> > > >>> On 1/7/21 1:14 PM, Will Deacon wrote:
-> > > >>>> On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
-> > > >>>>> Given that most arm64 platform's PCI implementations needs quir=
-ks
-> > > >>>>> to deal with problematic config accesses, this is a good place =
-to
-> > > >>>>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
-> > > >>>>> standard SMC conduit designed to provide a simple PCI config
-> > > >>>>> accessor. This specification enhances the existing ACPI/PCI
-> > > >>>>> abstraction and expects power, config, etc functionality is han=
-dled
-> > > >>>>> by the platform. It also is very explicit that the resulting co=
-nfig
-> > > >>>>> space registers must behave as is specified by the pci specific=
-ation.
-> > > >>>>>
-> > > >>>>> Lets hook the normal ACPI/PCI config path, and when we detect
-> > > >>>>> missing MADT data, attempt to probe the SMC conduit. If the con=
-duit
-> > > >>>>> exists and responds for the requested segment number (provided =
-by the
-> > > >>>>> ACPI namespace) attach a custom pci_ecam_ops which redirects
-> > > >>>>> all config read/write requests to the firmware.
-> > > >>>>>
-> > > >>>>> This patch is based on the Arm PCI Config space access document=
- @
-> > > >>>>> https://developer.arm.com/documentation/den0115/latest
-> > > >>>> Why does firmware need to be involved with this at all? Can't we=
- just
-> > > >>>> quirk Linux when these broken designs show up in production? We'=
-ll need
-> > > >>>> to modify Linux _anyway_ when the firmware interface isn't imple=
-mented
-> > > >>>> correctly...
-> > > >>> I agree with Will on this. I think we want to find a way to addre=
-ss some
-> > > >>> of the non-compliance concerns through quirks in Linux. However..=
-.
-> > > >> I understand the concern and if you are asking me if this can be f=
-ixed
-> > > >> in Linux it obviously can. The point is, at what cost for SW and
-> > > >> maintenance - in Linux and other OSes, I think Jeremy summed it up
-> > > >> pretty well:
-> > > >>
-> > > >> https://lore.kernel.org/linux-pci/61558f73-9ac8-69fe-34c1-2074dec5=
-f18a@arm.com
-> > > >>
-> > > >> The issue here is that what we are asked to support on ARM64 ACPI =
-is a
-> > > >> moving target and the target carries PCI with it.
-> > > >>
-> > > >> This potentially means that all drivers in:
-> > > >>
-> > > >> drivers/pci/controller
-> > > >>
-> > > >> may require an MCFG quirk and to implement it we may have to:
-> > > >>
-> > > >> - Define new ACPI bindings (that may need AML and that's already a
-> > > >>   showstopper for some OSes)
-> > > >> - Require to manage clocks in the kernel (see link-up checks)
-> > > >> - Handle PCI config space faults in the kernel
-> > > >>
-> > > >> Do we really want to do that ? I don't think so. Therefore we need
-> > > >> to have a policy to define what constitutes a "reasonable" quirk a=
-nd
-> > > >> that's not objective I am afraid, however we slice it (there is no
-> > > >> such a thing as eg 90% ECAM).
-> > > > Without a doubt, I would much prefer to see these quirks and workar=
-ounds
-> > > > in Linux than hidden behind a firmware interface. Every single time=
-.
-> > >
-> > > In that case, can you please comment on/apply Tegra194 ECAM quirk tha=
-t was rejected
-> > >
-> > > a year ago, and was the reason we worked with Samer/ARM to define thi=
-s common
-> > >
-> > > mechanism?
-> > >
-> > > https://lkml.org/lkml/2020/1/3/395
-> > >
-> > > The T194 ECAM is from widely used Root Port IP from a IP vendor. That=
- is one reason so many
-> > >
-> > > *existing* SOCs have ECAM quirks. ARM is only now working with the Ro=
-ot port IP vendors
-> > >
-> > > to test ECAM, MSI etc, but the reality is there were deficiencies in =
-industry IP that is widely
-> > >
-> > > used. If this common quirk is not the way to go, then please apply th=
-e T194 specific quirk which was
-> > >
-> > > NAK'd a year ago, or suggest how to improve that quirk.
-> > >
-> > > The ECAM issue has been fixed on future Tegra chips and is validated =
-preSilicon with BSA
-> > >
-> > > tests, so it is not going to be a recurrent issue for us.
-> >
-> > (aside: please fix your mail client not to add all these blank lines)
-> >
-> > Personally, if a hundred lines of self-contained quirk code is all
-> > that is needed to get your legacy IP running, then I would say we
-> > should merge it.  But I don't maintain the PCI subsystem, and I trust
-> > Bjorn and Lorenzo's judgement as to what is the right thing to do when
-> > it concerns that code.  After all, they're the ones who end up having
-> > to look after this stuff long after the hardware companies have
-> > stopped caring.
->
-> A discussion was held between me, Will Deacon, Bjorn Helgaas and Jon
-> Masters to agree on a proposed solution for this matter, a summary of the
-> outcome below:
->
-> - The PCI SMC conduit and related specifications are seen as firmware
->   kludge to a long-standing HW compliance issue. The SMC interface does
->   not encourage Arm partners to fix their IPs and its only purpose
->   consists in papering over HW issues that should have been fixed by
->   now; were the PCI SMC conduit introduced at arm64 ACPI inception as
->   part of the standardization effort the matter would have been different
->   but introducing it now brings about more shortcomings than benefits on
->   balance, especially if MCFG quirks can be controlled and monitored (and
->   they will).
->
->   The end-goal is that hardware must be ECAM compliant. An SMC-based
->   solution runs counter to that desire by removing the incentive for ECAM
->   compliance.
->
->   In sum, the SMC conduit solution was deemed to be deficient in these
->   respects:
->
->         * Removes incentive to build hardware with compliant ECAM
->         * Moves quirk code into firmware where it can't sensibly
->           be maintained or updated
->         * Future of the SMC conduit is unclear and has no enforceable
->           phase-out plan
->
->   It was decided that the PCI SMC conduit enablement patches will not be
->   merged for these specific reasons.
->
-> - It is not clear why ACPI enablement is requested for platforms that are
->   clearly not compliant with Arm SBSA/SBBR guidelines; there is no
->   interest from distros in enabling ACPI bootstrap on non-SBSA compliant
->   HW, devicetree firmware can be used to bootstrap non-compliant platform=
-s.
-> - We agreed that Linux will rely on MCFG quirks to enable PCI on ACPI
->   arm64 systems if the relevant HW is not ECAM compliant (and ACPI
->   enablement is requested); non-ECAM compliance must be classified as a H=
-W
->   defect and filed in the Linux kernel as an erratum in (or equivalent
->   mechanism TBD):
->
->   Documentation/arm64/acpi-ecam-quirks.rst
->
->   Entries will contain an expected lifetime for the SoC in question and
->   a contact point. When an entry expires, a patch to remove the related
->   MCFG quirk will be proposed and action taken accordingly (either the
->   quirk is removed since support is no longer required or the entry is
->   updated). Details behind the specific mechanism to follow on public
->   mailing lists.
->
-> - MCFG quirks will be reviewed by PCI maintainers and acceptance will be
->   granted or refused on a case by case basis; the aim is supporting HW
->   where quirks are self-contained and don't require FW or specifications
->   updates.
->
->   In order to request a MCFG quirk acceptance a relevant errata entry
->   should be filed in the related Linux kernel documentation errata file.
->   This will help detect whether non-ECAM HW bugs that were granted an
->   MCFG quirk are actually fixed in subsequent SoCs.
->
-> - As a rule of thumb (that will be drafted in non-ECAM errata guidelines)=
-,
->   to be considered for upstream MCFG quirks must not rely on additional
->   ACPI firmware bindings and AML code other than MCFG table and
->   PNP0A08/PNP0A03 ACPI *existing* bindings.
->
->   MCFG quirks suitability for upstream merge will be determined by
->   PCI maintainers only.
->
+> 
+> > Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> > ---
+> >   drivers/iommu/Kconfig          | 13 +++++++
+> >   drivers/iommu/io-pgtable-arm.c | 70 ++++++++++++++++++++++++++++++++++
+> >   drivers/iommu/io-pgtable.c     |  3 ++
+> >   include/linux/io-pgtable.h     |  6 +++
+> >   4 files changed, 92 insertions(+)
+> > 
+> > diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+> > index 192ef8f61310..3c95c8524abe 100644
+> > --- a/drivers/iommu/Kconfig
+> > +++ b/drivers/iommu/Kconfig
+> > @@ -39,6 +39,19 @@ config IOMMU_IO_PGTABLE_LPAE
+> >   	  sizes at both stage-1 and stage-2, as well as address spaces
+> >   	  up to 48-bits in size.
+> > 
+> > +config IOMMU_IO_PGTABLE_APPLE_DART
+> 
+> Does this really need to be configurable? I don't think there's an 
+> appreciable code saving to be had, and it's not like we do it for any of 
+> the other sub-formats.
+> 
 
-Thank you for the efforts of keeping arm64 PCI+ACPI world clean. The
-discussion and finally the last statement under this patch revived
-some old memories and triggered thoughts I'd like to share.
+Probably not, I'll just make it unconditional for v2.
 
-We are close to the 4th anniversary of setting the MCFG quirk embargo.
-The merged ones are mostly really nasty, but were lucky to jump on
-that train back in the day. MacchiatoBin platform (and the entire
-Marvell Armada 7k8k SoC family) was created before that time, but
-missed it by only a couple of months with its firmware development. It
-has a DWC IP with 3 lines of the required quirk (see DT variant for
-the reference: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/lin=
-ux.git/tree/drivers/pci/controller/pci-host-generic.c?h=3Dv5.12-rc4#n26)
-but we had to politely accept "these are the rules, we will never
-convince the vendors to properly adopt to the specs"-NACK.
+> > +	bool "Apple DART Descriptor Format"
+> > +	select IOMMU_IO_PGTABLE
+> > +	select IOMMU_IO_PGTABLE_LPAE
+> > +	depends on ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64)
+> > +	help
+> > +	  Enable support for the Apple DART iommu pagetable format.
+> > +	  This format is a variant of the ARMv7/v8 Long Descriptor
+> > +	  Format specific to Apple's iommu found in their SoCs.
+> > +
+> > +	  Say Y here if you have a Apple SoC like the M1 which
+> > +	  contains DART iommus.
+> > +
+> >   config IOMMU_IO_PGTABLE_LPAE_SELFTEST
+> >   	bool "LPAE selftests"
+> >   	depends on IOMMU_IO_PGTABLE_LPAE
+> > diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> > index 87def58e79b5..18674469313d 100644
+> > --- a/drivers/iommu/io-pgtable-arm.c
+> > +++ b/drivers/iommu/io-pgtable-arm.c
+> > @@ -127,6 +127,10 @@
+> >   #define ARM_MALI_LPAE_MEMATTR_IMP_DEF	0x88ULL
+> >   #define ARM_MALI_LPAE_MEMATTR_WRITE_ALLOC 0x8DULL
+> > 
+> > +/* APPLE_DART_PTE_PROT_NO_WRITE actually maps to ARM_LPAE_PTE_AP_RDONLY  */
+> > +#define APPLE_DART_PTE_PROT_NO_WRITE (1<<7)
+> Given that there's apparently zero similarity with any of the other 
+> attributes/permissions, this seems more like a coincidence that probably 
+> doesn't need to be called out.
 
-This hurt badly the first candidate for arm64-PC-like platform, as
-effectively blocked the GPU usage with ACPI. Same story with a real
-candidate for such device (SolidRun Honeycomb) - similar DWC
-controller and the same problems. We want people to use arm64
-workstations outside of the passionate-developer-bubble, we want to
-standardize (great SystemReady program!), but due to arbitrary
-decisions we don't push it forward, least to say. Don't get me wrong,
-I would love all HW to use proper IP and "just work" without hacks,
-but this takes time and apparently is not that easy, so maybe an
-option to mitigate the limitations with SW (to some extent and even
-temporary) should be considered. This patch was a chance for that IMO,
-without adding a burden of maintaining quirks.
+Agreed, removed for v2.
 
-Also I am not in a position to reach out to vendors and convince to
-anything, but I read about this need 4 years ago and now I see that
-there is a *plan* to do it. DWC is as broken as it was, with a lot new
-platforms in the tree, but fully functional in ECAM mode only with
-DT...
+> 
+> > +#define APPLE_DART_PTE_PROT_NO_READ (1<<8)
+> > +
+> 
+> Do you have XN permission? How about memory type attributes?
 
-But I left the best to the end - below are 2 quirks merged despite the emba=
-rgo:
-Ampere: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-commit/drivers/acpi/pci_mcfg.c?h=3Dv5.12-rc4&id=3D877c1a5f79c6984bbe3f29242=
-34c08e2f4f1acd5
-Amazon (Annapurna):
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/d=
-rivers/acpi/pci_mcfg.c?h=3Dv5.12-rc4&id=3D4166bfe53093b687a0b1b22e5d943e143=
-b8089b2
-I must admit the second one rose my blood pressure and triggered this
-email - it's a quirk for DWC, 1:1 to what was NACKed for Marvell
-almost 2 years earlier.
+I haven't been able to find either of them yet.
 
-So what we have after 4 years:
-* Direct convincing of IP vendors still being a plan.
-* Reverting the original approach towards MCFG quirks.
-* Double-standards in action as displayed by 2 cases above.
-I'm sorry for my bitter tone, but I think this time could and should
-have been spent better - I doubt it managed to push us in any
-significant way towards wide fully-standard compliant PCIE IP
-adoption.
+There is no (public) documentation for this hardware and this was all
+figured out by essentially looking at the pagetables the (unknown)
+first-level bootloader left around for us by the time we get to run code
+and by flipping bits in HW registers or pagetables and observing what happens.
 
-Best regards,
-Marcin
+I only have the framebuffer and USB running right now and neither of
+them are able to run code so I can't really find the NX bit if it exists.
+I'm not sure if there are any peripherals that can even execute code
+from pages mapped through a DART. *Maybe* the GPU but it'll still take
+a while until we can tackle that one.
+
+I'll see if I can find something that controls memory attributes though.
+
+The only other way would be to actually reverse engineer Apple code but
+that's something I've been deliberately avoiding and I'd really like to
+keep it that way.
+
+
+> 
+> >   /* IOPTE accessors */
+> >   #define iopte_deref(pte,d) __va(iopte_to_paddr(pte, d))
+> > 
+> > @@ -381,6 +385,17 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+> >   {
+> >   	arm_lpae_iopte pte;
+> > 
+> > +#ifdef CONFIG_IOMMU_IO_PGTABLE_APPLE_DART
+> 
+> As a general tip, prefer IS_ENABLED() to inline #ifdefs.
+
+Thanks, will keep that in mind for the future! This #ifdef here will disappear
+in v2 once I remove this from Kconfig.
+
+> 
+> > +	if (data->iop.fmt == ARM_APPLE_DART) { > +		pte = 0;
+> > +		if (!(prot & IOMMU_WRITE))
+> > +			pte |= APPLE_DART_PTE_PROT_NO_WRITE;
+> > +		if (!(prot & IOMMU_READ))
+> > +			pte |= APPLE_DART_PTE_PROT_NO_READ;
+> > +		return pte;
+> > +	}
+> > +#endif
+> > +
+> >   	if (data->iop.fmt == ARM_64_LPAE_S1 ||
+> >   	    data->iop.fmt == ARM_32_LPAE_S1) {
+> >   		pte = ARM_LPAE_PTE_nG;
+> > @@ -1043,6 +1058,54 @@ arm_mali_lpae_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
+> >   	return NULL;
+> >   }
+> > 
+> > +#ifdef CONFIG_IOMMU_IO_PGTABLE_APPLE_DART
+> 
+> Similarly, prefer __maybe_unused rather than #ifdefing functions if they 
+> don't contain any config-dependent references.
+
+Will also keep that mind for the future since I probably won't need that for v2.
+
+> 
+> > +static struct io_pgtable *
+> > +apple_dart_alloc_pgtable(struct io_pgtable_cfg *cfg, void *cookie)
+> > +{
+> > +	struct arm_lpae_io_pgtable *data;
+> > +
+> > +	if (cfg->ias > 38)
+> > +		return NULL;
+> > +	if (cfg->oas > 36)
+> > +		return NULL;
+> > +
+> > +	if (!cfg->coherent_walk)
+> > +		return NULL;
+> 
+> For completeness you should probably also reject any quirks, since none 
+> of them are applicable either.
+
+Good point, added for v2.
+
+> 
+> > +
+> > +	cfg->pgsize_bitmap &= SZ_16K;
+> 
+> No block mappings?
+
+Don't think so. I've tried this early on and couldn't get it to work.
+The HW just ignored my block mappings and reported faults for any iova
+in there. I'll check again this weekend though to be sure.
+
+> 
+> > +	if (!cfg->pgsize_bitmap)
+> > +		return NULL;
+> > +
+> > +	data = arm_lpae_alloc_pgtable(cfg);
+> > +	if (!data)
+> > +		return NULL;
+> > +
+> > +	/*
+> > +	 * the hardware only supports this specific three level pagetable layout with
+> > +	 * the first level being encoded into four hardware registers
+> > +	 */
+> > +	data->start_level = ARM_LPAE_MAX_LEVELS - 2;
+> 
+> The comment implies that walks should start at level 1 (for a 3-level 
+> table), but the code here says (in an unnecessarily roundabout manner) 
+> level 2 :/
+> 
+> Which is it?
+
+Now that I'm reading it again it does sound very confusing. This is essentially
+a small workaround to be able to reuse this code.
+
+I'll fix the strange way to encode that we start at level 2 and I'll replace the
+comment with a better explanation for v2:
+
+	/*
+	 * This is how the hardware actually works:
+	 *   First level: four registers pointing to the second level tables.
+	 *   Second level: 2048 entries pointing to the third level tables.
+	 *   Third level: 2048 entries pointing to pages.
+	 *
+	 *  And this is how we pretend the hardware works:
+	 *    First fake level: Merges first and second level, i.e.
+	 *       4x2048 entries pointing to the second fake / third real
+	 *      level tables
+	 *    Second fake level: Equivalent to the third real level.
+	 *       2048 entries pointing to pages.
+	 *
+	 * We then set up the four hardware registers to point to the first
+         * 'fake' pagetable with different offsets (0x0, 0x4000, 0x8000, 0xc000).
+	 */
+
+I hope that makes it more clear what happens there.
+
+> 
+> > +	data->pgd_bits = 13;
+> 
+> What if ias < 38? Couldn't we get away with only allocating as much as 
+> we actually need?
+
+Good idea, will fix that for v2.
+
+> 
+> > +	data->bits_per_level = 11;
+> > +
+> > +	data->pgd = __arm_lpae_alloc_pages(ARM_LPAE_PGD_SIZE(data), GFP_KERNEL,
+> > +					   cfg);
+> > +	if (!data->pgd)
+> > +		goto out_free_data;
+> > +
+> > +	cfg->apple_dart_cfg.pgd[0] = virt_to_phys(data->pgd);
+> > +	cfg->apple_dart_cfg.pgd[1] = virt_to_phys(data->pgd + 0x4000);
+> > +	cfg->apple_dart_cfg.pgd[2] = virt_to_phys(data->pgd + 0x8000);
+> > +	cfg->apple_dart_cfg.pgd[3] = virt_to_phys(data->pgd + 0xc000);
+> > +
+> > +	return &data->iop;
+> > +
+> > +out_free_data:
+> > +	kfree(data);
+> > +	return NULL;
+> > +}
+> > +#endif
+> > +
+> >   struct io_pgtable_init_fns io_pgtable_arm_64_lpae_s1_init_fns = {
+> >   	.alloc	= arm_64_lpae_alloc_pgtable_s1,
+> >   	.free	= arm_lpae_free_pgtable,
+> > @@ -1068,6 +1131,13 @@ struct io_pgtable_init_fns io_pgtable_arm_mali_lpae_init_fns = {
+> >   	.free	= arm_lpae_free_pgtable,
+> >   };
+> > 
+> > +#ifdef CONFIG_IOMMU_IO_PGTABLE_APPLE_DART
+> > +struct io_pgtable_init_fns io_pgtable_apple_dart_init_fns = {
+> > +	.alloc	= apple_dart_alloc_pgtable,
+> > +	.free	= arm_lpae_free_pgtable,
+> > +};
+> > +#endif
+> > +
+> >   #ifdef CONFIG_IOMMU_IO_PGTABLE_LPAE_SELFTEST
+> > 
+> >   static struct io_pgtable_cfg *cfg_cookie __initdata;
+> > diff --git a/drivers/iommu/io-pgtable.c b/drivers/iommu/io-pgtable.c
+> > index 6e9917ce980f..d86590b0673a 100644
+> > --- a/drivers/iommu/io-pgtable.c
+> > +++ b/drivers/iommu/io-pgtable.c
+> > @@ -27,6 +27,9 @@ io_pgtable_init_table[IO_PGTABLE_NUM_FMTS] = {
+> >   #ifdef CONFIG_AMD_IOMMU
+> >   	[AMD_IOMMU_V1] = &io_pgtable_amd_iommu_v1_init_fns,
+> >   #endif
+> > +#ifdef CONFIG_IOMMU_IO_PGTABLE_APPLE_DART
+> > +	[ARM_APPLE_DART] = &io_pgtable_apple_dart_init_fns,
+> > +#endif
+> >   };
+> > 
+> >   struct io_pgtable_ops *alloc_io_pgtable_ops(enum io_pgtable_fmt fmt,
+> > diff --git a/include/linux/io-pgtable.h b/include/linux/io-pgtable.h
+> > index a4c9ca2c31f1..19d9b631d319 100644
+> > --- a/include/linux/io-pgtable.h
+> > +++ b/include/linux/io-pgtable.h
+> > @@ -16,6 +16,7 @@ enum io_pgtable_fmt {
+> >   	ARM_V7S,
+> >   	ARM_MALI_LPAE,
+> >   	AMD_IOMMU_V1,
+> > +	ARM_APPLE_DART,
+> >   	IO_PGTABLE_NUM_FMTS,
+> >   };
+> > 
+> > @@ -136,6 +137,10 @@ struct io_pgtable_cfg {
+> >   			u64	transtab;
+> >   			u64	memattr;
+> >   		} arm_mali_lpae_cfg;
+> > +
+> > +		struct {
+> > +			u64 pgd[4];
+> 
+> Nit: in the driver you call the registers "TTBR" rather than "PGD". The 
+> config here tries to represent hardware/architecture definitions rather 
+> than internal abstractions.
+> 
+
+Renamed for v2.
+
+
+Thanks!
+
+
+Sven
