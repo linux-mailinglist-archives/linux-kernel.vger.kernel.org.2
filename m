@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09782349847
+	by mail.lfdr.de (Postfix) with ESMTP id 57F48349848
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhCYRhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45370 "EHLO mail.kernel.org"
+        id S230198AbhCYRho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:37:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230047AbhCYRhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:37:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A60B61A2C;
-        Thu, 25 Mar 2021 17:37:19 +0000 (UTC)
+        id S230225AbhCYRh1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:37:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B2E461A2C;
+        Thu, 25 Mar 2021 17:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616693840;
-        bh=6Ql/KyxL3rY0llO18x1iokuLqwO5tMJP51y5g3IBDy8=;
+        s=k20201202; t=1616693847;
+        bh=vhqgbXFhmrKfVpYNbmWIy+MRLeOTkYKmncyMmmdH2rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F/aOPBwT+kBVq267e3QGpELZs8u/VIB1L5qrzRwIfrF0Ujv/cmQMVJHmXgzNCM9Ha
-         jQUgZAQLo7+rT7VenlbHseSzABzScsNPVG9m1GhyWvrAGlekpaWViHQ0vE6BXPZ8q0
-         kNj3WiMK7QJTDoXRL6v+9YpFQ9PkJk2V7Az2tZUx8FbEn+r1P/boqQv8H7X4+1zsc3
-         q1Ny7KKv0RU0bHftYx0ObZAJgh/uaCokU/h+ikN8mzU0+UyQzuXpo9668NoI9DuHRc
-         uBE37mvotgnjxQq5Dh92R+lGj5/Z+FmyvVdFOworYwIBEmicGuEjp4iEKcWfHQqdgT
-         6ntd/ea92jE4Q==
+        b=M/TRij5Jd0h8R+vSJAunZT2jaPanu4ijRSgqrH6fCJHnLlKsdzTskNfi/a3LcQZZT
+         nkvIoeTl5DVjddGsjY/oWvSMLdc45EKQdHcqaBjPmKRxaJqctAVXyKESjDC6oNbl0s
+         ISfvtcUoPskRBGfkc4r+KuBfkAU+gJ10dEHUsMtq38o0/8lUFSTMESPYEiRhr+pRSx
+         vY1tK1RW8u6CWGwYvoimRVWHC8quGXCg8nRv9YaahQlvi0cOY6QmkttQfG3ERqvsmM
+         N5lJWAxPSzFei81xhlr5antnI4APUqEEMHWohFpkSjUyVvK7+Fi9PrHaJplSnyn+Sm
+         VQzNdYmQuGmkQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org, Heiko Schocher <hs@denx.de>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        Ashish Kumar <ashish.kumar@nxp.com>,
-        Yogesh Gaur <yogeshgaur.83@gmail.com>,
-        devicetree@vger.kernel.org, Kuldeep Singh <kuldeep.singh@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 0/2] enable flexspi support on imx8mp
-Date:   Thu, 25 Mar 2021 17:37:01 +0000
-Message-Id: <161669381898.42255.12902469942541515996.b4-ty@kernel.org>
+To:     ckeepax@opensource.cirrus.com, gustavoars@kernel.org,
+        tiwai@suse.com, perex@perex.cz,
+        pierre-louis.bossart@linux.intel.com, peter.ujfalusi@ti.com,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com,
+        patches@opensource.cirrus.com, daniel.baluta@nxp.com
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: wm8960: Remove bitclk relax condition in wm8960_configure_sysclk
+Date:   Thu, 25 Mar 2021 17:37:03 +0000
+Message-Id: <161669370550.41585.9109635585401644966.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210316075928.1763460-1-hs@denx.de>
-References: <20210316075928.1763460-1-hs@denx.de>
+In-Reply-To: <1614740862-30196-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1614740862-30196-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,26 +45,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Mar 2021 08:59:26 +0100, Heiko Schocher wrote:
-> add compatible entry in nxp_fspi driver for imx8mp
+On Wed, 3 Mar 2021 11:07:42 +0800, Shengjiu Wang wrote:
+> The call sequence in wm8960_configure_clocking is
 > 
-> @Shawn: If this series is accepted, can you apply the DTS patches from
-> series v2?
-> http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643292.html
-> http://lists.infradead.org/pipermail/linux-arm-kernel/2021-March/643293.html
+>    ret = wm8960_configure_sysclk();
+>    if (ret >= 0)
+>         goto configure_clock;
+> 
+>    ....
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/2] spi: fspi: enable fspi driver for on imx8mp
-      commit: 0467a97367d4767d284ad46ba0e6413b621256a0
-[2/2] dt-bindings: spi: add compatible entry for imx8mp in FlexSPI controller
-      commit: 2801a62dfad46ff228d00126ce8592594c1d0613
+[1/1] ASoC: wm8960: Remove bitclk relax condition in wm8960_configure_sysclk
+      commit: 99067c07e8d877035f6249d194a317c78b7d052d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
