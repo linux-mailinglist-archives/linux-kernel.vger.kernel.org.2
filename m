@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D02348CA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BEE348CAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbhCYJU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:20:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhCYJUd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:20:33 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49042C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:20:32 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id r20so2225217ljk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:20:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cbPaGAG5CAB0O4WGdpPnr+Sds1cjZTPECOXQC9BbXNk=;
-        b=pYLbaOfTMQbkVSB6G6vGj9z8hc/1FIha2+mYDWVgN1lUtBBPkh3B91pPPnBZxGsM3V
-         a3G3UL/93yayuuxVsqJZ6VbMzCAY6QeV+5AtYzQh0EQAsdWl5WKLe2FNfpewa3lp/pFH
-         Z4YKHNPSZqmo86VhSNxkt41SJAzldNXoTqzfsLQ6r/t+8WBQZ5E/oTeEAOxfo4bSYMPN
-         /mw/+lDIpn0YyWcQdBKO+XfWyGyN3dcpWnK8LiC63JitC79Rtds6d/ZzbSM84vbd7RKS
-         rFysDCHPZhVydoK6HadZt2Dr/5PvtKsSks3mSFAwxv3xtsaaBDZCkCZThp3vvieW7l0+
-         4jTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cbPaGAG5CAB0O4WGdpPnr+Sds1cjZTPECOXQC9BbXNk=;
-        b=tzR/r2t9zTsr/DErbFr87WZzk/AAzmVRt8PNki9T+YDnBeK63zLIw/doNF5aQeBNKo
-         D06fj9vHE1+89KeQboQFspsTmSBa4ESy3J147eHE4/lwjKHEXXCqR7hrF9S+y6o9xEZz
-         CEwWVFIYzcwxz2KY1mdqZ8yFM5QIFpMRdp17sBM4oq3a7Kq0frOiQyfsGqi5SxD9eKnE
-         VYWuPrj2iLHZVg8Of4HaXsUBFpxVjyciWlQOwaTyO775V5LTv17i58UVecbFTqzdKbQl
-         KEKJei8OY48ojvRusI5EAziNnu5NkBluuyYBqArpmgpRx7OjY+W/fve1fzwkn0lKtSLs
-         lH/w==
-X-Gm-Message-State: AOAM532lO3uycUvtHADl1znF4DsNcKkOnHTf86R6rkoox1QgqcZskYxm
-        Fmgaa/0FmM0S1gCKlTzhvM53YtFYTb6ERq7HOjHZnX8daRHVFtqJ
-X-Google-Smtp-Source: ABdhPJybjsVb89v9uAJdjlwZfTJw+gqm3MOeXLPzPvLtf9sa/2OdqT/k6EbskWPpzRq2RgOkMBrUlwRqgv9PGwua6f0=
-X-Received: by 2002:a2e:9cb:: with SMTP id 194mr4923513ljj.438.1616664030854;
- Thu, 25 Mar 2021 02:20:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323153626.54908-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210323153626.54908-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 25 Mar 2021 10:20:19 +0100
-Message-ID: <CACRpkdb4BoOdVPao3_GbDdpD0b6p_P1_8_L6bUeSMt_Ez296zA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] usb: gadget: pch_udc: Replace cpu_to_le32() by lower_32_bits()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-usb <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
+        id S229868AbhCYJWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:22:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229676AbhCYJVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 05:21:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8917761963;
+        Thu, 25 Mar 2021 09:21:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616664101;
+        bh=Rz8fTf5SS7Afrji/D1ge/Pcn/DZHsx/mGSgWSL0eIeo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k7Z3S5aHmtMIf/ypSXatXlK9qjoGh4FUA+9at88wyMI5SuLJvhH7SqahG+88bhdr0
+         QiI8gZr4ws/g7K+D3DLniz5L1eNMBfYMyKTaZVaPTEtvcCa2Z97v8/YPprcFdH3kWA
+         Sga3tOSZimUawawrYnvDvK4xSrWvCxVrDIMeVpbk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Linux 5.11.10
+Date:   Thu, 25 Mar 2021 10:21:37 +0100
+Message-Id: <16166640322331@kroah.com>
+X-Mailer: git-send-email 2.31.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 4:36 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+I'm announcing the release of the 5.11.10 kernel.
 
-> Either way ~0 will be in the correct byte order, hence
-> replace cpu_to_le32() by lower_32_bits(). Moreover,
-> it makes sparse happy, otherwise it complains:
->
-> .../pch_udc.c:1813:27: warning: incorrect type in assignment (different base types)
-> .../pch_udc.c:1813:27:    expected unsigned int [usertype] dataptr
-> .../pch_udc.c:1813:27:    got restricted __le32 [usertype]
->
-> Fixes: f646cf94520e ("USB device driver of Topcliff PCH")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This is a "quick revert" of some 5.11.9 commits that caused noisy warnings to
+show up in the kernel log of some systems.  If you do not have this issue, or
+are not bothered by these messages, no need to upgrade.
 
-Nice fix! Also easier to understand.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+The updated 5.11.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.11.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Yours,
-Linus Walleij
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                     |    2 +-
+ drivers/gpu/drm/ttm/ttm_bo.c |    2 +-
+ include/drm/ttm/ttm_bo_api.h |    8 ++------
+ 3 files changed, 4 insertions(+), 8 deletions(-)
+
+Greg Kroah-Hartman (3):
+      Revert "drm/ttm: make ttm_bo_unpin more defensive"
+      Revert "drm/ttm: Warn on pinning without holding a reference"
+      Linux 5.11.10
+
