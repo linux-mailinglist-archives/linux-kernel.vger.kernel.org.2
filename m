@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53640348E14
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5428D348E1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhCYKeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbhCYKeF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:34:05 -0400
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD0FC06174A;
-        Thu, 25 Mar 2021 03:34:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:Subject:From:References:Cc:To:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zX4w/YCkqpoXy6bZV/Ut/Ci2wQiJmAv2JfLAPxQJFqE=; b=Ia8EkU18A2xNwsyK3OpzgjLKLN
-        5CoFQt5FqnnsFZdgK9ZQAHhiC//FyW9i1ap51uUVLdvmTahmQPtEpeO1O0QXweTu1njJ1rf/oomaz
-        bhhfmOoH9d118Fg1dbfcniJgUstgdh4CnwLGfZzXH6BAtG8O4ej9hHECFYAPeiA8J+Fg=;
-Received: from p4ff13c8d.dip0.t-ipconnect.de ([79.241.60.141] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1lPNJL-0003xC-IU; Thu, 25 Mar 2021 11:33:55 +0100
-To:     Rakesh Pillai <pillair@codeaurora.org>,
-        'Ben Greear' <greearb@candelatech.com>,
-        'Brian Norris' <briannorris@chromium.org>
-Cc:     'Johannes Berg' <johannes@sipsolutions.net>,
-        'Rajkumar Manoharan' <rmanohar@codeaurora.org>,
-        'ath10k' <ath10k@lists.infradead.org>,
-        'linux-wireless' <linux-wireless@vger.kernel.org>,
-        'Linux Kernel' <linux-kernel@vger.kernel.org>,
-        'Kalle Valo' <kvalo@codeaurora.org>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        'Jakub Kicinski' <kuba@kernel.org>, netdev@vger.kernel.org,
-        'Doug Anderson' <dianders@chromium.org>,
-        'Evan Green' <evgreen@chromium.org>
-References: <1595351666-28193-1-git-send-email-pillair@codeaurora.org>
- <1595351666-28193-3-git-send-email-pillair@codeaurora.org>
- <13573549c277b34d4c87c471ff1a7060@codeaurora.org>
- <d79ae05e-e75a-de2f-f2e3-bc73637e1501@nbd.name>
- <04d7301d5ad7555a0377c7df530ad8522fc00f77.camel@sipsolutions.net>
- <1f2726ff-8ba9-5278-0ec6-b80be475ea98@nbd.name>
- <06a4f84b-a0d4-3f90-40bb-f02f365460ec@candelatech.com>
- <CA+ASDXOotYHmtqOvSwBES6_95bnbAbEu6F7gQ5TjacJWUKdaPw@mail.gmail.com>
- <47d8be60-14ce-0223-bdf3-c34dc2451945@candelatech.com>
- <633feaed-7f34-15d3-1899-81eb1d6ae14f@nbd.name>
- <003701d7215b$a44ae030$ece0a090$@codeaurora.org>
-From:   Felix Fietkau <nbd@nbd.name>
-Subject: Re: [RFC 2/7] ath10k: Add support to process rx packet in thread
-Message-ID: <e7dc6d97-bab2-3bd4-685a-a8b5e25c18d9@nbd.name>
-Date:   Thu, 25 Mar 2021 11:33:53 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        id S230062AbhCYKiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:38:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:46110 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229631AbhCYKiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:38:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 077AA1424;
+        Thu, 25 Mar 2021 03:38:05 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 023E23F718;
+        Thu, 25 Mar 2021 03:38:00 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 10:37:57 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 12/17] arm64: implement __va_function
+Message-ID: <20210325103757.GD36570@C02TD0UTHF1T.local>
+References: <20210323203946.2159693-1-samitolvanen@google.com>
+ <20210323203946.2159693-13-samitolvanen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <003701d7215b$a44ae030$ece0a090$@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323203946.2159693-13-samitolvanen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021-03-25 10:45, Rakesh Pillai wrote:
-> Hi Felix / Ben,
+On Tue, Mar 23, 2021 at 01:39:41PM -0700, Sami Tolvanen wrote:
+> With CONFIG_CFI_CLANG, the compiler replaces function addresses in
+> instrumented C code with jump table addresses. This change implements
+> the __va_function() macro, which returns the actual function address
+> instead.
 > 
-> In case of ath10k (snoc based targets), we have a lot of processing in the NAPI context.
-> Even moving this to threaded NAPI is not helping much due to the load.
-> 
-> Breaking the tasks into multiple context (with the patch series I posted) is helping in improving the throughput.
-> With the current rx_thread based approach, the rx processing is broken into two parallel contexts
-> 1) reaping the packets from the HW
-> 2) processing these packets list and handing it over to mac80211 (and later to the network stack)
-> 
-> This is the primary reason for choosing the rx thread approach.
-Have you considered the possibility that maybe the problem is that the
-driver doing too much work?
-One example is that you could take advantage of the new 802.3 decap
-offload to simplify rx processing. Worked for me on mt76 where a
-dual-core 1.3 GHz A64 can easily handle >1.8 Gbps local TCP rx on a
-single card, without the rx NAPI thread being the biggest consumer of
-CPU cycles.
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-And if you can't do that and still consider all of the metric tons of
-processing work necessary, you could still do this:
-On interrupts, spawn a processing thread that traverses the ring and
-does the preparation work (instead of NAPI).
-From that thread you schedule the threaded NAPI handler that processes
-these packets further and hands them to mac80211.
-To keep the load somewhat balanced, you can limit the number of
-pre-processed packets in the ring.
+Is there really no attribute or builtin that can be used to do this
+without assembly?
 
-- Felix
+IIUC from other patches the symbol tables will contain the "real"
+non-cfi entry points (unless we explciitly asked to make the jump table
+address canonical), so AFAICT here the compiler should have all the
+necessary information to generate either the CFI or non-CFI entry point
+addresses, even if it doesn't expose an interface for that today.
+
+It'd be a lot nicer if we could get the compiler to do this for us.
+
+Thanks,
+Mark.
+
+> ---
+>  arch/arm64/include/asm/memory.h | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index 0aabc3be9a75..9a4887808681 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -321,6 +321,21 @@ static inline void *phys_to_virt(phys_addr_t x)
+>  #define virt_to_pfn(x)		__phys_to_pfn(__virt_to_phys((unsigned long)(x)))
+>  #define sym_to_pfn(x)		__phys_to_pfn(__pa_symbol(x))
+>  
+> +#ifdef CONFIG_CFI_CLANG
+> +/*
+> + * With CONFIG_CFI_CLANG, the compiler replaces function address
+> + * references with the address of the function's CFI jump table
+> + * entry. The __va_function macro always returns the address of the
+> + * actual function instead.
+> + */
+> +#define __va_function(x) ({						\
+> +	void *addr;							\
+> +	asm("adrp %0, " __stringify(x) "\n\t"				\
+> +	    "add  %0, %0, :lo12:" __stringify(x) : "=r" (addr));	\
+> +	addr;								\
+> +})
+> +#endif
+> +
+>  /*
+>   *  virt_to_page(x)	convert a _valid_ virtual address to struct page *
+>   *  virt_addr_valid(x)	indicates whether a virtual address is valid
+> -- 
+> 2.31.0.291.g576ba9dcdaf-goog
+> 
