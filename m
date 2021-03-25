@@ -2,134 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA073492B8
+	by mail.lfdr.de (Postfix) with ESMTP id 41F433492B7
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhCYNGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:06:36 -0400
-Received: from mail-dm6nam11on2060.outbound.protection.outlook.com ([40.107.223.60]:58401
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230167AbhCYNGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:06:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AiP7uXGk6SpdnjHfEBLXR+nDSfTb8HG3Q10ejdhDZ9ww5Ju03pNQ8iRt4cgzOi5pQYzD61TqfidYixxnnX6UrVmtkUXZ+LehB/FHO8/EXfWip98v/ATfWqi3wymjtVAmTjxHXICXv2pb+pWUXy0/o/cTMLzbc0ETGsJ2TOoaY+iIG04Sq5UN/5/1CneTrdnjesYFV9RdbWHTXe7v/KfGT7bAvcLhB+2N+A9ZWI5h8eYkYbtU1tbPYFSk/+/N8Ld1WmqI0MV+RKmVvHkKFVxYHwJCYV9S+rLykVKw4aBWXMXRCZoAi31ESOTAgWIA5ter6r34F6wvMIBb/KLhM6OGow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CEDDo/jfzaynQccNMxeOsb8m7Ja4rOTcp/yQZuIX2QY=;
- b=mTJJTT8vI8Rl04rYR5QfbY83XCrkXT1Z/yySbUHB9pr1H0JRFw8meG6RGxt8UVhXCsG2aeBHgPB3r/xOx3kFWyOtQE2cW1c9eXwWCZWHd3idFckRKiHlQ0PpfAVlg7YwtueZ7rErrq+CQtzbS9zG0QYCMnBxZsRyYg5n4R6h16zn1V2wJvwOOEyUBQdSWGoarS9xFvOs4WkqgH0zjFGn8Rw+CppZb48YHaAG67uXxw1rfptsZeP+VBV+++Ux6xp7+z6iCxV6iZpwDfrVC9sbwrCUDNvXWOJWUzzjB+B+a8xXl8OqXNduiY2El68lza8EAxqCy7bcqikbQRkow/5eFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CEDDo/jfzaynQccNMxeOsb8m7Ja4rOTcp/yQZuIX2QY=;
- b=aKk9u7NsL4n3MAu3Oc2a41cRsGlH92VhRx0mrj/Ylmvd0aJDnFQ2VwOnsDFDJ3GzBO41WZJnqz5nGInlb8DyAyyXTEdljv5ANqP7PSzvGQoqSYUUYtK82ebRqYvAFr2EoPs7744kyQmvAkPjst17v2MrnvV9IWgxwggEYcrZuOo=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
- by BYAPR12MB2597.namprd12.prod.outlook.com (2603:10b6:a03:6e::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Thu, 25 Mar
- 2021 13:06:15 +0000
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::cc86:d78a:bb1d:5109]) by BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::cc86:d78a:bb1d:5109%5]) with mapi id 15.20.3955.027; Thu, 25 Mar 2021
- 13:06:15 +0000
-Subject: Re: [RFC PATCH 5/7] iommu/amd: Add support for Guest IO protection
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Jon.Grimm@amd.com, Wei.Huang2@amd.com
-References: <20210312090411.6030-1-suravee.suthikulpanit@amd.com>
- <20210312090411.6030-6-suravee.suthikulpanit@amd.com>
- <YFNyUZg0JAgBLWwX@8bytes.org>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <ac209589-f351-d8a9-e47c-0ae622fd0b13@amd.com>
-Date:   Thu, 25 Mar 2021 20:06:05 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.0
-In-Reply-To: <YFNyUZg0JAgBLWwX@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [124.122.77.106]
-X-ClientProxiedBy: KL1PR06CA0063.apcprd06.prod.outlook.com
- (2603:1096:802:14::31) To BYAPR12MB4597.namprd12.prod.outlook.com
- (2603:10b6:a03:10b::14)
+        id S229651AbhCYNGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:06:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50444 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230163AbhCYNGN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:06:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18B26619E4;
+        Thu, 25 Mar 2021 13:06:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616677573;
+        bh=d9VDzuX7t090oj90bd1Ejc5Z05/QWX5T3xUF0Jflowg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YX5naR5RlhYYuu8g30O2QQaRc6Do+Q540UhBZ49tE+cCkcojRzIZ22+CRz8vgsWa/
+         On62D1VCMJ4zs9mZTMxEk4zVbvGBx80g6gDFjRnfFl/gIQtUEbFWKfTavrBfKfbD7D
+         68/TsG9rNHd8lzrLiwyDdPBkscm8YQey0/wjR15zn+JWEGyp1WxLhQIIWhylfY+Tnd
+         cFvnmtRtWadxcxSOUALgVpUxxk9F93Wi85Ff5a2NV1TzKi75w0I+iFJPce/YZ7ar+g
+         hZIuIcbv7Cy3+gRgbvUgsBSy8UCrkRk8nsY0G4xq8GrA0TFJ69oTCb3jMnycmf/64G
+         4rx8LXUepUyCg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 144D040647; Thu, 25 Mar 2021 10:06:11 -0300 (-03)
+Date:   Thu, 25 Mar 2021 10:06:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, mpe@ellerman.id.au,
+        jolsa@kernel.org, ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, peterz@infradead.org
+Subject: Re: [PATCH V2 1/5] powerpc/perf: Expose processor pipeline stage
+ cycles using PERF_SAMPLE_WEIGHT_STRUCT
+Message-ID: <YFyKw1ezDio0z9yM@kernel.org>
+References: <1616425047-1666-1-git-send-email-atrajeev@linux.vnet.ibm.com>
+ <1616425047-1666-2-git-send-email-atrajeev@linux.vnet.ibm.com>
+ <d7dd633b-e28a-155a-a8e2-0e5a83b4eead@linux.ibm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (124.122.77.106) by KL1PR06CA0063.apcprd06.prod.outlook.com (2603:1096:802:14::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.28 via Frontend Transport; Thu, 25 Mar 2021 13:06:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6b690cc3-7f25-4ac8-9f13-08d8ef8ec5aa
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2597:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB2597ECE954E86F272E208B64F3629@BYAPR12MB2597.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9dQdiUeTB8Hmsm9kivX/GuTi8r6VFyyLEYyi6rHrRJvMFNPbMMEbCU+Zcdrs+EHQ6P+hWGa5zCuyRT2RLYglt5AxxPd3LN32KAoM4dwUbISYQIwegIXVxg2L9AUSLUaRrGoqbdZRuJkYcE2wSqjhEnK753MZvf7yfTbdx6Z5EndoEV6t3gU46wdpjj7ofmHWCP6YCo+AJlBPxaTG/S/oL6boNK0GoXNVy2Dw6BWxR1WuP1EI3iULqox8x1YdmbfSiIlKPtJ4jjjmvO1dD6lCklf5W8LL52G/JHGr0+68lN/GEQiIxasnlGGBV4Z51PrNeQ4cr5qxepOKpYLywJxqCGYEVJpJp61CZ36wvp2CyQ2jti8VMGqXi1h1pbtJsMCZ4cxgxrU+gy9q2am+9Ms87N8js+2FNveOz37QvgjYgT5dxcxB1j1k27TkJFlT7FJxz/wqOD5yjQKfY8XoEBOISDEh/+vpcsAAW0hvP2r4u9x2f6MYiL6W1vtaklZL+CF+GKcRaxHrnLNfzam4b2iJVvNVC7wsConzuV/BRInSECZsygd+k5nOrwiugdqvhGHd897bgNiyk3ro8AEqz8qbghDnSlWDebOg8sAxkwn19hBwhxKhMllb/hUejIX8rFl9XkznLYpq/LS49Zu3LydJ2Nj4XVZ+GdijmUaIbmwMHEPz6KGUEfTiXHJv683PBGY3OmGoUpz7mumoBpP0ZDN0GDu4/5hKf8LNH4HXjZmVEuE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(366004)(346002)(136003)(186003)(16526019)(6916009)(6512007)(31696002)(26005)(38100700001)(66946007)(316002)(66556008)(66476007)(52116002)(6506007)(36756003)(4326008)(6486002)(83380400001)(53546011)(5660300002)(8676002)(8936002)(478600001)(956004)(2616005)(44832011)(86362001)(2906002)(6666004)(4744005)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MDFvRHlIdFZiaGJhaDBhU1puc1FYdVhhUHhQNHlMdWdIKzZjVHBHUFo5elEw?=
- =?utf-8?B?bXdsZDQ3TUcxZzdTNXV2RmkrSjg4ZlZXR1F1MWFNTzdweC91QlU0Tkl6aXRL?=
- =?utf-8?B?WkJNbzlSaktrOHhsMzByeUtzS01kdE91ZVA2aHQzeEM2RlZudmhoL0RkZkc5?=
- =?utf-8?B?TmRhSi82ZWdSTE9iNmVPR2o0WEREY1ZkSTRYY3hyTGNXL0s1YjBpRXdZNkpT?=
- =?utf-8?B?dU5HMTNwSWtKM1NnVXpvQWs0ajBXNlFNYnY0WFNyVVhXQVp3Ky8vR2kzazBC?=
- =?utf-8?B?MHpBMk5CdVJISE1LVHJwQi81ZmEzWEczaVprZTNCYTlqU2swSzJNaXhXQ0NU?=
- =?utf-8?B?bmg3YUl4bTJCZU15ODl2czZtaHg3bmtwQmQyL1BNQW5xNmYyL1JvQWg2N2Vp?=
- =?utf-8?B?QzlYdW9KS0lYT2hxS1Ntd0x4aXpJM2ExakNtU1I3ZlF6ckhyVG1MVkw3emxs?=
- =?utf-8?B?cVhmWkQxV3Q3RE16MWloTVFLT2hweUNJQUk4RW1NTHpoMjJ1MU10SERVVTJO?=
- =?utf-8?B?VDRqVGFWaTdRZ2RtZW9TQWRqMll5eW5tcFVDMEIrbXlmQm5KWUJOREtwUVdT?=
- =?utf-8?B?TTd0NklTTUhZZjlHK0ZNMFpPQmVFRU9FOUlmVDN0QlRIOUJiR2FIUFlGQzBP?=
- =?utf-8?B?bmduZnFjQ3pEUlFobEZkVjkvVnRPeVRHaU5KRVcvTWFmVVJSd01mbkVXUDVE?=
- =?utf-8?B?NUVqY0g0OEo1MmlORG1Ndlh6Y3NJK1JweHY5enJNdTNRcTNtYVk0VkYvSFd3?=
- =?utf-8?B?MHRBWWZCZlg5M3BMNXpSMmM5bC9waGUyaEFsR2ZyYk1yakszVWdXMVRBT3I1?=
- =?utf-8?B?OXQzMVFCS1dRUmlKZms1dUJwMlJJVi9rbFAwdk5TTlZGbDhPMmFZSGdHdDc3?=
- =?utf-8?B?M24xaVFCSjQ1S1lXUlh2Rkg3UEIrNjBNSEdEM1ErQkUvUnRmWDFpY0N5d2hU?=
- =?utf-8?B?TXR1aEZEaS9sdnliZWp2ckVFNjV2K1NuMXdPbDBJS2VjZ1hRSXB4RU9ud1hj?=
- =?utf-8?B?MGVXa0hmaGNyYm9rYkNqb2lHbTZXeEthVnhxMjNieENhZ2oxa1RhaldBTm9h?=
- =?utf-8?B?WGhRUFNJK1N3UVJnOWcyRDZ3MUZjUzZZbnBSNlBJSTFISGRkYzVmMC83dGdp?=
- =?utf-8?B?bWhaREZQcEZKQTRFMU9HTGFDMUI2c2VxZmFwYThvVE5jQTJHdWY3Q0FTbXM0?=
- =?utf-8?B?VmUzNXcvZStCbEtmcHdZbkdVNzdhTjJQeUpmOC9ZZnpPaEphQmtPcUVJREo3?=
- =?utf-8?B?Uk83S2U5YUI2cmZmZVBtWVFaWHpYaktaWUZlUEZHVThlQ2xFSWhYWDg1Q1l2?=
- =?utf-8?B?L1VYRDhrSU5WL1d1aHV4bmJQT0RoTE1nT1QrNjc3ZllDMVlVMFMwMXRZZmFL?=
- =?utf-8?B?VnNxdDdNMHVpUWQvYkdmeVYxMG1wMFRPcDlDaXZRVFUzV3lZN2J5dXBUSEIx?=
- =?utf-8?B?WWFjaW1wQmJjWGhoZFdYWDlUUVRzNUxBT2NOWnZOVTE2U2VJYmZsTE5Na25L?=
- =?utf-8?B?c0pjSDdLcEZDS29lQmYvOW1ldksxNy84OWd0aDBCRWJlRGUzNjkvcXJvUEEr?=
- =?utf-8?B?WjJhcUZmb3g5aDlBVGt5TjFtMnd0cHdueDlhMi9WbW51dzhsQ21wWUcrdTMr?=
- =?utf-8?B?elVlVERoQW9nNmtjUmRJaGNlcy9vUmF5bUxsdko1VEhEdW4rYU02OUF1cDZI?=
- =?utf-8?B?YUl1cVNBUDYvZGlialdQMm9DMlBSZEhrTjdqZndTLys0QzNuT3VPYW5qcVhz?=
- =?utf-8?Q?5jPinNjz52CY2qH2edbWdpiGqEzxNQnbCMPMQpJ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b690cc3-7f25-4ac8-9f13-08d8ef8ec5aa
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 13:06:15.5781
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wx83H/Zyk78X8yZZ0Ty3UG0JhlXRByVku5ihjWHh+U/pKYfXvzcQESpdJL/FcQ9NpCb7MtL3wPh2sFUhyAzz4g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2597
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d7dd633b-e28a-155a-a8e2-0e5a83b4eead@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joerg,
-
-On 3/18/21 10:31 PM, Joerg Roedel wrote:
-> On Fri, Mar 12, 2021 at 03:04:09AM -0600, Suravee Suthikulpanit wrote:
->> @@ -519,6 +521,7 @@ struct protection_domain {
->>   	spinlock_t lock;	/* mostly used to lock the page table*/
->>   	u16 id;			/* the domain id written to the device table */
->>   	int glx;		/* Number of levels for GCR3 table */
->> +	bool giov;		/* guest IO protection domain */
+Em Wed, Mar 24, 2021 at 10:05:23AM +0530, Madhavan Srinivasan escreveu:
 > 
-> Could this be turned into a flag?
+> On 3/22/21 8:27 PM, Athira Rajeev wrote:
+> > Performance Monitoring Unit (PMU) registers in powerpc provides
+> > information on cycles elapsed between different stages in the
+> > pipeline. This can be used for application tuning. On ISA v3.1
+> > platform, this information is exposed by sampling registers.
+> > Patch adds kernel support to capture two of the cycle counters
+> > as part of perf sample using the sample type:
+> > PERF_SAMPLE_WEIGHT_STRUCT.
+> > 
+> > The power PMU function 'get_mem_weight' currently uses 64 bit weight
+> > field of perf_sample_data to capture memory latency. But following the
+> > introduction of PERF_SAMPLE_WEIGHT_TYPE, weight field could contain
+> > 64-bit or 32-bit value depending on the architexture support for
+> > PERF_SAMPLE_WEIGHT_STRUCT. Patches uses WEIGHT_STRUCT to expose the
+> > pipeline stage cycles info. Hence update the ppmu functions to work for
+> > 64-bit and 32-bit weight values.
+> > 
+> > If the sample type is PERF_SAMPLE_WEIGHT, use the 64-bit weight field.
+> > if the sample type is PERF_SAMPLE_WEIGHT_STRUCT, memory subsystem
+> > latency is stored in the low 32bits of perf_sample_weight structure.
+> > Also for CPU_FTR_ARCH_31, capture the two cycle counter information in
+> > two 16 bit fields of perf_sample_weight structure.
 > 
+> Changes looks fine to me.
 
-Good point. I'll convert to use the protection_domain.flags.
+You mean just the kernel part or can I add your Reviewed-by to all the
+patchset?
+ 
+> Reviewed-by: Madhavan Srinivasan <maddy@linux.ibm.com>
+> 
+> 
+> > Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+> > ---
+> >   arch/powerpc/include/asm/perf_event_server.h |  2 +-
+> >   arch/powerpc/perf/core-book3s.c              |  4 ++--
+> >   arch/powerpc/perf/isa207-common.c            | 29 +++++++++++++++++++++++++---
+> >   arch/powerpc/perf/isa207-common.h            |  6 +++++-
+> >   4 files changed, 34 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/arch/powerpc/include/asm/perf_event_server.h b/arch/powerpc/include/asm/perf_event_server.h
+> > index 00e7e671bb4b..112cf092d7b3 100644
+> > --- a/arch/powerpc/include/asm/perf_event_server.h
+> > +++ b/arch/powerpc/include/asm/perf_event_server.h
+> > @@ -43,7 +43,7 @@ struct power_pmu {
+> >   				u64 alt[]);
+> >   	void		(*get_mem_data_src)(union perf_mem_data_src *dsrc,
+> >   				u32 flags, struct pt_regs *regs);
+> > -	void		(*get_mem_weight)(u64 *weight);
+> > +	void		(*get_mem_weight)(u64 *weight, u64 type);
+> >   	unsigned long	group_constraint_mask;
+> >   	unsigned long	group_constraint_val;
+> >   	u64             (*bhrb_filter_map)(u64 branch_sample_type);
+> > diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+> > index 766f064f00fb..6936763246bd 100644
+> > --- a/arch/powerpc/perf/core-book3s.c
+> > +++ b/arch/powerpc/perf/core-book3s.c
+> > @@ -2206,9 +2206,9 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+> >   						ppmu->get_mem_data_src)
+> >   			ppmu->get_mem_data_src(&data.data_src, ppmu->flags, regs);
+> > -		if (event->attr.sample_type & PERF_SAMPLE_WEIGHT &&
+> > +		if (event->attr.sample_type & PERF_SAMPLE_WEIGHT_TYPE &&
+> >   						ppmu->get_mem_weight)
+> > -			ppmu->get_mem_weight(&data.weight.full);
+> > +			ppmu->get_mem_weight(&data.weight.full, event->attr.sample_type);
+> >   		if (perf_event_overflow(event, &data, regs))
+> >   			power_pmu_stop(event, 0);
+> > diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
+> > index e4f577da33d8..5dcbdbd54598 100644
+> > --- a/arch/powerpc/perf/isa207-common.c
+> > +++ b/arch/powerpc/perf/isa207-common.c
+> > @@ -284,8 +284,10 @@ void isa207_get_mem_data_src(union perf_mem_data_src *dsrc, u32 flags,
+> >   	}
+> >   }
+> > -void isa207_get_mem_weight(u64 *weight)
+> > +void isa207_get_mem_weight(u64 *weight, u64 type)
+> >   {
+> > +	union perf_sample_weight *weight_fields;
+> > +	u64 weight_lat;
+> >   	u64 mmcra = mfspr(SPRN_MMCRA);
+> >   	u64 exp = MMCRA_THR_CTR_EXP(mmcra);
+> >   	u64 mantissa = MMCRA_THR_CTR_MANT(mmcra);
+> > @@ -296,9 +298,30 @@ void isa207_get_mem_weight(u64 *weight)
+> >   		mantissa = P10_MMCRA_THR_CTR_MANT(mmcra);
+> >   	if (val == 0 || val == 7)
+> > -		*weight = 0;
+> > +		weight_lat = 0;
+> >   	else
+> > -		*weight = mantissa << (2 * exp);
+> > +		weight_lat = mantissa << (2 * exp);
+> > +
+> > +	/*
+> > +	 * Use 64 bit weight field (full) if sample type is
+> > +	 * WEIGHT.
+> > +	 *
+> > +	 * if sample type is WEIGHT_STRUCT:
+> > +	 * - store memory latency in the lower 32 bits.
+> > +	 * - For ISA v3.1, use remaining two 16 bit fields of
+> > +	 *   perf_sample_weight to store cycle counter values
+> > +	 *   from sier2.
+> > +	 */
+> > +	weight_fields = (union perf_sample_weight *)weight;
+> > +	if (type & PERF_SAMPLE_WEIGHT)
+> > +		weight_fields->full = weight_lat;
+> > +	else {
+> > +		weight_fields->var1_dw = (u32)weight_lat;
+> > +		if (cpu_has_feature(CPU_FTR_ARCH_31)) {
+> > +			weight_fields->var2_w = P10_SIER2_FINISH_CYC(mfspr(SPRN_SIER2));
+> > +			weight_fields->var3_w = P10_SIER2_DISPATCH_CYC(mfspr(SPRN_SIER2));
+> > +		}
+> > +	}
+> >   }
+> >   int isa207_get_constraint(u64 event, unsigned long *maskp, unsigned long *valp, u64 event_config1)
+> > diff --git a/arch/powerpc/perf/isa207-common.h b/arch/powerpc/perf/isa207-common.h
+> > index 1af0e8c97ac7..fc30d43c4d0c 100644
+> > --- a/arch/powerpc/perf/isa207-common.h
+> > +++ b/arch/powerpc/perf/isa207-common.h
+> > @@ -265,6 +265,10 @@
+> >   #define ISA207_SIER_DATA_SRC_SHIFT	53
+> >   #define ISA207_SIER_DATA_SRC_MASK	(0x7ull << ISA207_SIER_DATA_SRC_SHIFT)
+> > +/* Bits in SIER2/SIER3 for Power10 */
+> > +#define P10_SIER2_FINISH_CYC(sier2)	(((sier2) >> (63 - 37)) & 0x7fful)
+> > +#define P10_SIER2_DISPATCH_CYC(sier2)	(((sier2) >> (63 - 13)) & 0x7fful)
+> > +
+> >   #define P(a, b)				PERF_MEM_S(a, b)
+> >   #define PH(a, b)			(P(LVL, HIT) | P(a, b))
+> >   #define PM(a, b)			(P(LVL, MISS) | P(a, b))
+> > @@ -278,6 +282,6 @@ int isa207_get_alternatives(u64 event, u64 alt[], int size, unsigned int flags,
+> >   					const unsigned int ev_alt[][MAX_ALT]);
+> >   void isa207_get_mem_data_src(union perf_mem_data_src *dsrc, u32 flags,
+> >   							struct pt_regs *regs);
+> > -void isa207_get_mem_weight(u64 *weight);
+> > +void isa207_get_mem_weight(u64 *weight, u64 type);
+> >   #endif
 
-Thanks,
-Suravee
+-- 
+
+- Arnaldo
