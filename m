@@ -2,115 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D83A3492BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F1A3492F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhCYNIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:08:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230241AbhCYNIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:08:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4ACA61A26;
-        Thu, 25 Mar 2021 13:07:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616677680;
-        bh=ay7jHy+IN5DJK2Ax+Lw0U4zg5VZ6z8995EDoxgwUap8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aAoN7G0XPC2i3xWqxeozi2xY6sA83W+izDswsLNWoRZfjY4ZabKMWBtyMm9b2L+3j
-         B7PFDYPOCKXTj6M5lSwXdXNvNx6jbaqH1Fzsx3cCpFIpafCVZcs8jqogPqFyBXGBNm
-         l4TNQ5IfRrN/zs5cCaNYJ++K0/u9R5rIU0W3Fk1uU1jXjfWjL+C2j1wxE6iI76+g3Z
-         RHt8vtT3GXaXeMLAaTXbaX+DrMR4NjbKYUPERO/q9vvPrExQ3LQOZwXAqnMB5aXtix
-         Yj5pcmfB6OM7ekwaFFPF/8Q4nyvY3LcM7Jth2bgXFFsk+cOHmYn5NKGmD1Rfhnh0uB
-         OD/nqMKoLlPcw==
-Date:   Thu, 25 Mar 2021 14:07:57 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ti Zhou <x2019cwm@stfx.ca>, Yunfeng Ye <yeyunfeng@huawei.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH 06/10] timer: Report ignored local enqueue in nohz mode
-Message-ID: <20210325130757.GA938196@lothringen>
-References: <20210311123708.23501-1-frederic@kernel.org>
- <20210311123708.23501-7-frederic@kernel.org>
- <YFDOfEsr07LN++YD@hirez.programming.kicks-ass.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFDOfEsr07LN++YD@hirez.programming.kicks-ass.net>
+        id S230484AbhCYNRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230416AbhCYNRN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:17:13 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBDEC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:17:07 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id l1so1755472pgb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
+        b=CHCSKCxbgD75vPy7GBmaC+lu5Gdm/xpjvojVhcyniq7PoE4xTJuXHj2xevxFtHTCNW
+         UEKT37DVZ7WcRdjA7C1CAlZc5MhFKkYPAY1t60r0FyfzWNcDitAryEFs0J1qxZBleUx3
+         o7xee5TlGpwgr2/KMW7p1oPBv2YfiP5kUetJDKR9O7EcMm2jtBEfFG0bZJp9LmEdFWxW
+         OVT6M0hJqlK48SYggDqs5gGauRHSCjKdeUCOTySP2cLjnl2FnGX0UAC9QQ5plAjdgKXZ
+         I29UkSYU7Rljj6gUTZZ6zBo80qRfX+XkNlSXIaBosQFVJaJjsp6mOLj+/lqcKRi8yng/
+         TLgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=E8R/uv85zPM3yGP2/tFWyzAhiP++yYtTCdREeByl7KI=;
+        b=scPnewVXLg7Lgeak7DKIf/EF3WV6liliVraAK9WAW74TXnbhL8NOHDPB7bBaBF/LDj
+         SwpCgI0/WX4Bsyi3lhtYYcLCs7yRvul68VvSCDT6MjF52ncA8iLr0Q5zp5m37jn3K1/S
+         v8XI1z9e0pqCUCPg4rwg+Hdb9whOJR/RGerTnefPKCg0dwPApq8r/zc13+0wbHtmXGNP
+         GE4tUx56XFJuJRnIPGDON+Wp45xz6IrGWNmHu5ILx2QmZG8sUrSWM0UQnz77b4Zzf4z5
+         LUtxpcra1GAfxpL/IBxlZUtQnsFAMvPm+8V8y1qX+iyKLk3dlCNpVQbjLsUbucxHbUTQ
+         TOVQ==
+X-Gm-Message-State: AOAM532QkE+B8eVkjcf/XJYJ6qEwFJSwVyTO1QCurA0Conn6zfSL164a
+        XzaXDMpRfeRECe7slazeOUk=
+X-Google-Smtp-Source: ABdhPJw3Ic8tUJ2aS7Jsk1SSYArmiRvtfKvVoWJgvx1GdeMSm6uK4kR76zy6g+sCheTo9uJOsvFVbA==
+X-Received: by 2002:a63:d848:: with SMTP id k8mr7347767pgj.72.1616678226501;
+        Thu, 25 Mar 2021 06:17:06 -0700 (PDT)
+Received: from localhost.localdomain ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id i22sm5566963pjz.56.2021.03.25.06.17.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Mar 2021 06:17:05 -0700 (PDT)
+From:   Qianli Zhao <zhaoqianligood@gmail.com>
+To:     christian@brauner.io, axboe@kernel.dk, ebiederm@xmission.com,
+        oleg@redhat.com, tglx@linutronix.de, pcc@google.com
+Cc:     linux-kernel@vger.kernel.org, zhaoqianli@xiaomi.com
+Subject: [PATCH V4] exit: trigger panic when global init has exited
+Date:   Thu, 25 Mar 2021 21:08:01 +0800
+Message-Id: <1616677681-60183-1-git-send-email-zhaoqianligood@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 16, 2021 at 04:27:56PM +0100, Peter Zijlstra wrote:
-> On Thu, Mar 11, 2021 at 01:37:04PM +0100, Frederic Weisbecker wrote:
-> > Enqueuing a local timer after the tick has been stopped will result in
-> > the timer being ignored until the next random interrupt.
-> > 
-> > Perform sanity checks to report these situations.
-> > 
-> > Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  kernel/sched/core.c | 20 +++++++++++++++++++-
-> >  1 file changed, 19 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index ca2bb629595f..24552911f92b 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -674,6 +674,22 @@ int get_nohz_timer_target(void)
-> >  	return cpu;
-> >  }
-> >  
-> > +/* Make sure the timer won't be ignored in dynticks-idle case */
-> > +static void wake_idle_assert_possible(void)
-> > +{
-> > +#ifdef CONFIG_SCHED_DEBUG
-> > +	/*
-> > +	 * Timers are re-evaluated after idle IRQs. In case of softirq,
-> > +	 * we assume IRQ tail. Ksoftirqd shouldn't reach here as the
-> > +	 * timer base wouldn't be idle. And inline softirq processing
-> > +	 * after a call to local_bh_enable() within idle loop sound too
-> > +	 * fun to be considered here.
-> > +	 */
-> > +	WARN_ONCE(in_task(),
-> > +		  "Late timer enqueue may be ignored\n");
-> > +#endif
-> > +}
-> > +
-> >  /*
-> >   * When add_timer_on() enqueues a timer into the timer wheel of an
-> >   * idle CPU then this timer might expire before the next timer event
-> > @@ -688,8 +704,10 @@ static void wake_up_idle_cpu(int cpu)
-> >  {
-> >  	struct rq *rq = cpu_rq(cpu);
-> >  
-> > -	if (cpu == smp_processor_id())
-> > +	if (cpu == smp_processor_id()) {
-> > +		wake_idle_assert_possible();
-> >  		return;
-> > +	}
-> >  
-> >  	if (set_nr_and_not_polling(rq->idle))
-> >  		smp_send_reschedule(cpu);
-> 
-> I'm not entirely sure I understand this one. What's the callchain that
-> leads to this?
+From: Qianli Zhao <zhaoqianli@xiaomi.com>
 
-That's while calling add_timer*() or mod_timer() on an idle target.
+When init sub-threads running on different CPUs exit at the same time,
+zap_pid_ns_processe()->BUG() may be happened(timing is as below),move
+panic() before set PF_EXITING to fix this problem.
 
-Now the issue is only relevant when these timer functions are called
-after cpuidle_select(), which arguably makes a small vulnerable window
-that could be spotted in the future if the timer functions are called
-after instrumentation_end()?
+In addition,if panic() after other sub-threads finish do_exit(),
+some key variables (task->mm,task->nsproxy etc) of sub-thread will be lost,
+which makes it difficult to parse coredump from fulldump,checking SIGNAL_GROUP_EXIT
+to prevent init sub-threads exit.
 
-Thanks.
+[   24.705376] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00007f00
+[   24.705382] CPU: 4 PID: 552 Comm: init Tainted: G S         O    4.14.180-perf-g4483caa8ae80-dirty #1
+[   24.705390] kernel BUG at include/linux/pid_namespace.h:98!
+
+PID: 552   CPU: 4   COMMAND: "init"
+PID: 1     CPU: 7   COMMAND: "init"
+core4                           core7
+...                             sys_exit_group()
+                                do_group_exit()
+                                   - sig->flags = SIGNAL_GROUP_EXIT
+                                   - zap_other_threads()
+                                do_exit() //PF_EXITING is set
+ret_to_user()
+do_notify_resume()
+get_signal()
+    - signal_group_exit
+    - goto fatal;
+do_group_exit()
+do_exit() //PF_EXITING is set
+    - panic("Attempted to kill init! exitcode=0x%08x\n")
+                                exit_notify()
+                                find_alive_thread() //no alive sub-threads
+                                zap_pid_ns_processes()//CONFIG_PID_NS is not set
+                                BUG()
+
+Signed-off-by: Qianli Zhao <zhaoqianli@xiaomi.com>
+---
+V4:
+- Changelog update
+
+V3:
+- Use group_dead instead of thread_group_empty() to test single init exit.
+
+V2:
+- Changelog update
+- Remove wrong useage of SIGNAL_UNKILLABLE. 
+- Add thread_group_empty() test to handle single init thread exit
+
+---
+ kernel/exit.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 04029e3..f95f8dc 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -766,6 +766,17 @@ void __noreturn do_exit(long code)
+ 
+ 	validate_creds_for_do_exit(tsk);
+ 
++	group_dead = atomic_dec_and_test(&tsk->signal->live);
++	/*
++	 * If global init has exited,
++	 * panic immediately to get a useable coredump.
++	 */
++	if (unlikely(is_global_init(tsk) &&
++	    (group_dead || (tsk->signal->flags & SIGNAL_GROUP_EXIT)))) {
++			panic("Attempted to kill init! exitcode=0x%08x\n",
++				tsk->signal->group_exit_code ?: (int)code);
++	}
++
+ 	/*
+ 	 * We're taking recursive faults here in do_exit. Safest is to just
+ 	 * leave this task alone and wait for reboot.
+@@ -784,16 +795,8 @@ void __noreturn do_exit(long code)
+ 	if (tsk->mm)
+ 		sync_mm_rss(tsk->mm);
+ 	acct_update_integrals(tsk);
+-	group_dead = atomic_dec_and_test(&tsk->signal->live);
+-	if (group_dead) {
+-		/*
+-		 * If the last thread of global init has exited, panic
+-		 * immediately to get a useable coredump.
+-		 */
+-		if (unlikely(is_global_init(tsk)))
+-			panic("Attempted to kill init! exitcode=0x%08x\n",
+-				tsk->signal->group_exit_code ?: (int)code);
+ 
++	if (group_dead) {
+ #ifdef CONFIG_POSIX_TIMERS
+ 		hrtimer_cancel(&tsk->signal->real_timer);
+ 		exit_itimers(tsk->signal);
+-- 
+1.9.1
+
