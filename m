@@ -2,181 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A448234997A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA36034997C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbhCYS0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:26:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38430 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229533AbhCYSZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:25:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 50CF6ACFC;
-        Thu, 25 Mar 2021 18:25:27 +0000 (UTC)
-Message-ID: <9b206c4d00dfe8b7f941260f18909914b2b2eecb.camel@suse.de>
-Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>, corbet@lwn.net,
-        gregkh@linuxfoundation.org, rafael@kernel.org, khilman@kernel.org,
-        ulf.hansson@linaro.org, len.brown@intel.com, lenb@kernel.org,
-        pavel@ucw.cz, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, frowand.list@gmail.com, maz@kernel.org,
-        tglx@linutronix.de, saravanak@google.com
-Cc:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
-        geert@linux-m68k.org, kernel-team@android.com,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
-Date:   Thu, 25 Mar 2021 19:25:24 +0100
-In-Reply-To: <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com>
-References: <20210205222644.2357303-9-saravanak@google.com>
-         <20210210114435.122242-1-tudor.ambarus@microchip.com>
-         <20210210114435.122242-2-tudor.ambarus@microchip.com>
-         <CGME20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e@eucas1p2.samsung.com>
-         <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-LP3OfhoAoNoMIlo+oggY"
-User-Agent: Evolution 3.38.4 
+        id S229833AbhCYS2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:28:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27887 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229533AbhCYS1q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 14:27:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616696866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2VMhsAZwrflDKUGyUEkwUGTMaYhk4RiBpO9SY7d/GvA=;
+        b=CJqOGt2OLW24Dcr4fIdYSQiVxUH7WaqilE2ba95Jtzy/5s3HI0cs2kuaHdWAhSMCr90YiE
+        +prRRoPfXw/XDKO72GEFtRxOIKkHVRmZO4IDnW2S5K98ntMKeji/Cjvi+2hlXaYQCKSOpy
+        PSlTnL31+clXvE85jTSla68xnCH+OGM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-161-hZL5rhMhOXOZJtL5r9omZQ-1; Thu, 25 Mar 2021 14:27:42 -0400
+X-MC-Unique: hZL5rhMhOXOZJtL5r9omZQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73AAA87A82A;
+        Thu, 25 Mar 2021 18:27:39 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.41])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 18E4260CCF;
+        Thu, 25 Mar 2021 18:27:36 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 25 Mar 2021 19:27:39 +0100 (CET)
+Date:   Thu, 25 Mar 2021 19:27:35 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-kernel@vger.kernel.org, adobriyan@gmail.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [RFC][PATCH] task_struct::state frobbing
+Message-ID: <20210325182735.GA28349@redhat.com>
+References: <YFzSWR6mAGitxMqA@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFzSWR6mAGitxMqA@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/25, Peter Zijlstra wrote:
+>
+>  static void ptrace_unfreeze_traced(struct task_struct *task)
+>  {
+> -	if (task->state != __TASK_TRACED)
+> +	if (READ_ONCE(task->__state) != __TASK_TRACED)
+>  		return;
 
---=-LP3OfhoAoNoMIlo+oggY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+this change is correct,
 
-On Thu, 2021-03-25 at 14:31 +0100, Marek Szyprowski wrote:
-> Hi
->=20
-> On 10.02.2021 12:44, Tudor Ambarus wrote:
-> > This is a follow-up for:
-> > commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is ad=
-ded/removed")
-> >=20
-> > The above commit updated the deprecated of_clk_add_provider(),
-> > but missed to update the preferred of_clk_add_hw_provider().
-> > Update it now.
-> >=20
-> > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->=20
-> This patch, which landed in linux-next as commit 6579c8d97ad7 ("clk:=20
-> Mark fwnodes when their clock provider is added") causes the following=
-=20
-> NULL pointer dereference on Raspberry Pi 3b+ boards:
->=20
-> --->8---
->=20
-> raspberrypi-firmware soc:firmware: Attached to firmware from=20
-> 2020-01-06T13:05:25
-> Unable to handle kernel NULL pointer dereference at virtual address=20
-> 0000000000000050
-> Mem abort info:
-> =C2=A0=C2=A0 ESR =3D 0x96000004
-> =C2=A0=C2=A0 EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> =C2=A0=C2=A0 SET =3D 0, FnV =3D 0
-> =C2=A0=C2=A0 EA =3D 0, S1PTW =3D 0
-> Data abort info:
-> =C2=A0=C2=A0 ISV =3D 0, ISS =3D 0x00000004
-> =C2=A0=C2=A0 CM =3D 0, WnR =3D 0
-> [0000000000000050] user address but active_mm is swapper
-> Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> Modules linked in:
-> CPU: 0 PID: 10 Comm: kworker/0:1 Not tainted 5.12.0-rc4+ #2764
-> Hardware name: Raspberry Pi 3 Model B (DT)
-> Workqueue: events deferred_probe_work_func
-> pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=3D--)
-> pc : of_clk_add_hw_provider+0xac/0xe8
-> lr : of_clk_add_hw_provider+0x94/0xe8
-> sp : ffff8000130936b0
-> x29: ffff8000130936b0 x28: ffff800012494e04
-> x27: ffff00003b18cb05 x26: ffff00003aa5c010
-> x25: 0000000000000000 x24: 0000000000000000
-> x23: ffff00003aa1e380 x22: ffff8000106830d0
-> x21: ffff80001233f180 x20: 0000000000000018
-> x19: 0000000000000000 x18: ffff8000124d38b0
-> x17: 0000000000000013 x16: 0000000000000014
-> x15: ffff8000125758b0 x14: 00000000000184e0
-> x13: 000000000000292e x12: ffff80001258dd98
-> x11: 0000000000000001 x10: 0101010101010101
-> x9 : ffff80001233f288 x8 : 7f7f7f7f7f7f7f7f
-> x7 : fefefefeff6c626f x6 : 5d636d8080808080
-> x5 : 00000000006d635d x4 : 0000000000000000
-> x3 : 0000000000000000 x2 : 540eb5edae191600
-> x1 : 0000000000000000 x0 : 0000000000000000
-> Call trace:
-> =C2=A0=C2=A0of_clk_add_hw_provider+0xac/0xe8
-> =C2=A0=C2=A0devm_of_clk_add_hw_provider+0x5c/0xb8
-> =C2=A0=C2=A0raspberrypi_clk_probe+0x110/0x210
-> =C2=A0=C2=A0platform_probe+0x90/0xd8
-> =C2=A0=C2=A0really_probe+0x108/0x3c0
-> =C2=A0=C2=A0driver_probe_device+0x60/0xc0
-> =C2=A0=C2=A0__device_attach_driver+0x9c/0xd0
-> =C2=A0=C2=A0bus_for_each_drv+0x70/0xc8
-> =C2=A0=C2=A0__device_attach+0xec/0x150
-> =C2=A0=C2=A0device_initial_probe+0x10/0x18
-> =C2=A0=C2=A0bus_probe_device+0x94/0xa0
-> =C2=A0=C2=A0device_add+0x47c/0x780
-> =C2=A0=C2=A0platform_device_add+0x110/0x248
-> =C2=A0=C2=A0platform_device_register_full+0x120/0x150
-> =C2=A0=C2=A0rpi_firmware_probe+0x158/0x1f8
-> =C2=A0=C2=A0platform_probe+0x90/0xd8
-> =C2=A0=C2=A0really_probe+0x108/0x3c0
-> =C2=A0=C2=A0driver_probe_device+0x60/0xc0
-> =C2=A0=C2=A0__device_attach_driver+0x9c/0xd0
-> =C2=A0=C2=A0bus_for_each_drv+0x70/0xc8
-> =C2=A0=C2=A0__device_attach+0xec/0x150
-> =C2=A0=C2=A0device_initial_probe+0x10/0x18
-> =C2=A0=C2=A0bus_probe_device+0x94/0xa0
-> =C2=A0=C2=A0deferred_probe_work_func+0x70/0xa8
-> =C2=A0=C2=A0process_one_work+0x2a8/0x718
-> =C2=A0=C2=A0worker_thread+0x48/0x460
-> =C2=A0=C2=A0kthread+0x134/0x160
-> =C2=A0=C2=A0ret_from_fork+0x10/0x18
-> Code: b1006294 540000c0 b140069f 54000088 (3940e280)
-> ---[ end trace 7ead5ec2f0c51cfe ]---
->=20
-> This patch mainly revealed that clk/bcm/clk-raspberrypi.c driver calls=
-=20
-> devm_of_clk_add_hw_provider(), with a device pointer, which has a NULL=
-=20
-> dev->of_node. I'm not sure if adding a check for a NULL np in=20
-> of_clk_add_hw_provider() is a right fix, though.
+> @@ -201,11 +201,11 @@ static void ptrace_unfreeze_traced(struct task_struct *task)
+>  	 * Recheck state under the lock to close this race.
+>  	 */
+>  	spin_lock_irq(&task->sighand->siglock);
+> -	if (task->state == __TASK_TRACED) {
+> +	if (READ_ONCE(task->__state) == __TASK_TRACED) {
 
-I believe the right fix is not to call 'devm_of_clk_add_hw_provider()' if
-'pdev->dev.of_node =3D=3D NULL'. In such case, which is RPi3's, only the CP=
-U clock
-is used, and it's defined and queried later through
-devm_clk_hw_register_clkdev().
+this too,
 
-@Marek, I don't mind taking care of it if it's OK with you.
-
-Regards,
-Nicolas
+> @@ -240,7 +240,7 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
+>  	 */
+>  	read_lock(&tasklist_lock);
+>  	if (child->ptrace && child->parent == current) {
+> -		WARN_ON(child->state == __TASK_TRACED);
+> +		WARN_ON(task_is_traced(child));
+>  		/*
+>  		 * child->sighand can't be NULL, release_task()
+>  		 * does ptrace_unlink() before __exit_signal().
+> @@ -257,7 +257,7 @@ static int ptrace_check_attach(struct task_struct *child, bool ignore_state)
+>  			 * ptrace_stop() changes ->state back to TASK_RUNNING,
+>  			 * so we should not worry about leaking __TASK_TRACED.
+>  			 */
+> -			WARN_ON(child->state == __TASK_TRACED);
+> +			WARN_ON(task_is_traced(child));
 
 
+the two above are not.
 
---=-LP3OfhoAoNoMIlo+oggY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+"state == __TASK_TRACED" and task_is_traced() is not the same thing.
 
------BEGIN PGP SIGNATURE-----
+"state == __TASK_TRACED" means that debugger changed the state from TASK_TRACED
+to __TASK_TRACED (iow, removed TASK_WAKEKILL) to ensure the tracee can not run,
+this doesn't affect task_is_traced().
 
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBc1ZQACgkQlfZmHno8
-x/4/cwgApx9UVDHRcpZ+rQEOKxGZTTXSUbWvYW7ZZOKlx/kyViTeiN1O4oP8+r43
-gh0xAJOqyscnNko26PhVXwnnbqSHoybYK+M+fr8dXWmEanEPoCAjaRXCua+IOIS5
-v8I7LCfC0IEz7hvIl9MHh5Z7o9uemr4gKj4p7KiYDnU2ksZD0/1sCaw2fVq4uS5Z
-4yao5SnyTjXcJ3mjmQayPUkh3jGrZkSCC5r7GamGibFq49WLJawONbhscimpFtAn
-xylSgcgnkUDiP5X2WM3lYLOfG2rYifXdkUSqahSfw7lmL3YmNlYvUvTk5CZEKc88
-wQikLex04QNJMnySXNu/djsgI2v1aA==
-=QlQJ
------END PGP SIGNATURE-----
-
---=-LP3OfhoAoNoMIlo+oggY--
+Oleg.
 
