@@ -2,114 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435B9348E0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153CC348E11
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhCYKcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:32:21 -0400
-Received: from mail-lj1-f176.google.com ([209.85.208.176]:34455 "EHLO
-        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbhCYKcN (ORCPT
+        id S230216AbhCYKcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhCYKcj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:32:13 -0400
-Received: by mail-lj1-f176.google.com with SMTP id f16so2481863ljm.1;
-        Thu, 25 Mar 2021 03:32:12 -0700 (PDT)
+        Thu, 25 Mar 2021 06:32:39 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00FCFC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:32:39 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id t5so879739qvs.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=riedSrKtxw3fAlSP6DjMpmEAF9/MIT8ZMEFek292R7I=;
+        b=YcMr+TvI4OCyWLgDrnHkhv9PzsxmuqCIDPmMKU8XdQq0lWz3VVZpEHHpBG4sZcjE9K
+         q/mDJnqzGVAiMGNV5Ch08qUvW7yJLFR7siZWCDmuTKcAajDeJHVmZiJLtpbbzJoqw9JP
+         AfCGOasvb0O/XPFzPrBdlP9sae+99QbV4AagFSDwZqZdK6lOh/J61GZF091PvZ9QY+td
+         4LqEBxzSi5jAI3yWiUw+jxOGaOrAWGVOCzl9GWVCVuNMCw7PgYDkOgOE8YsJDWX7sdOl
+         vN/Rsfwhdblgnd5I2oBFF7VrT3xOW0zzhIYbeIhjR77U7Iqyv+oHdRvpPr1bMu6nmgjr
+         Klew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=faLPl7dFJfBc9wUMKlika3avN8VfJYiGHtpkcOchfg4=;
-        b=EaNSFVkM5bnjFgnu1+AE0QvqIq3rlgy3R05hOiUiKJgyAW4WdTe4vPgOceOG5qSGi/
-         oidAa40y/FZHfzvfqAsED04ynUlx+AWRxs2R0WYzH5k2hBiNo3+GGIWQnqLmReAc/KxD
-         D1V5uDCkKV2luRxIpDUx0p2cHi1QhYYEQY4qsDfB8XKt+YNpLG6UYY0YkXVemk1ixoms
-         XUN2p5iqn1oAaOSm/7rowm73oLdPvS/IEkW+RrfKT7RPEpBXF6FMnbs52rIhLZJ9uzCd
-         1Mp5Xhe7aTbitZQxQAlqwG88qsd8yCzYcPG363sz9G04HUdB6urUdg+rI7ziym0xKh5b
-         acZg==
-X-Gm-Message-State: AOAM531sfnIrN1ZmTHdRu7jZJKYq9YiqByMgx5jk17FkCgMfdwYZly0t
-        utq8+ohqkGnH9pyGyCwZTzQ=
-X-Google-Smtp-Source: ABdhPJzLlwtpNHVd/GL3u2kyRHuWUfHkpqqpTtdCWSkei4+bFaw0r1J/K2urn0pBPteK1WSfjLlNyQ==
-X-Received: by 2002:a2e:8e33:: with SMTP id r19mr5091616ljk.40.1616668331621;
-        Thu, 25 Mar 2021 03:32:11 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id p10sm727834ljg.99.2021.03.25.03.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 03:32:11 -0700 (PDT)
-Message-ID: <c5a4ef7341b5b0b56d1ad950867828463cfdb7fc.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v4 09/16] gpio: support ROHM BD71815 GPOs
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-power@fi.rohmeurope.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
-In-Reply-To: <CACRpkdZnrkiYGaOTZLvCnp72WYiV0+YhCe+TbMjN_3CLyJHvgA@mail.gmail.com>
-References: <cover.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
-         <b2164e5965218f270e17bf29e00ad5c5a0b54bcf.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
-         <CACRpkdZnrkiYGaOTZLvCnp72WYiV0+YhCe+TbMjN_3CLyJHvgA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=riedSrKtxw3fAlSP6DjMpmEAF9/MIT8ZMEFek292R7I=;
+        b=bHiTEiqu9ZvTqu+3dtso7eBMNcEluVUe5ohDIbUAm+sDn5KDRyllFPU1m975/xuO6/
+         8Kk6g5JSzvnDA/tZ1kG5vPqlNpsX5BAwZVIobt/OiQfdGp3xmtYPE1lA9U0kjTbul5or
+         MXFJNc1SDGHp/IXknvU3C39sNS6b11WVTYxHn0BfRWEgJ5G0ak5DO0Csmne9hSghUPUW
+         nRh6j4xWMaruc+aAwTC25MoUfhePLy73y5QoC5BoDiKFwmu4B529oKrWSio9HDtH3C/c
+         eTTIsecUoEGzXfvDa496oXR0u6pP+HxIHkL+Y7g2LWpYKqdpKq3nQ+QJhp3g2/PLWyNA
+         /eqQ==
+X-Gm-Message-State: AOAM5329un6k//STNowDTJVC/K2GJrWWZ7PxZc12uGKtLZNlyfCDUNAd
+        /9O1rhQ1kmSeSAj3vz69t1ZJVvlCH9rk/H56RjC2Ee6vmjgi8A==
+X-Google-Smtp-Source: ABdhPJxGROXp5MxcFZvufqmTL1sh8SUTKf370i2ucKM2mfF4xF/OXdIVhXNeW6UbM6KFxRZjwlxFUBW/tA6q51kVcmY=
+X-Received: by 2002:a05:6214:1870:: with SMTP id eh16mr7366855qvb.23.1616668358041;
+ Thu, 25 Mar 2021 03:32:38 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Thu, 25 Mar 2021 12:32:04 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+References: <20210323064923.2098711-1-dvyukov@google.com> <CANn89iJOignHVg-QOtEB_RVqca=pMczJv-k=CEtPRH0d4fSdgA@mail.gmail.com>
+ <CACT4Y+YjJBkbi-u6VTikhHO4OjXhdKnQTqDiHxB5BEZG2Qn7qg@mail.gmail.com> <CANn89iJBz4NjRzaAyP8gFGzu1y=3YeLOEZ8CLMqv5aUkP7wRvw@mail.gmail.com>
+In-Reply-To: <CANn89iJBz4NjRzaAyP8gFGzu1y=3YeLOEZ8CLMqv5aUkP7wRvw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 25 Mar 2021 11:32:27 +0100
+Message-ID: <CACT4Y+bSaYREQgtDX-wCMObjyMO0=8FbWduRHxk5nHAkZFc6WQ@mail.gmail.com>
+Subject: Re: [PATCH v2] net: make unregister netdev warning timeout configurable
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Thu, Mar 25, 2021 at 9:46 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Thu, Mar 25, 2021 at 8:39 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Wed, Mar 24, 2021 at 10:40 AM Eric Dumazet <edumazet@google.com> wrote:
+> > >
+> > > On Tue, Mar 23, 2021 at 7:49 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > >
+> > > > netdev_wait_allrefs() issues a warning if refcount does not drop to 0
+> > > > after 10 seconds. While 10 second wait generally should not happen
+> > > > under normal workload in normal environment, it seems to fire falsely
+> > > > very often during fuzzing and/or in qemu emulation (~10x slower).
+> > > > At least it's not possible to understand if it's really a false
+> > > > positive or not. Automated testing generally bumps all timeouts
+> > > > to very high values to avoid flake failures.
+> > > > Add net.core.netdev_unregister_timeout_secs sysctl to make
+> > > > the timeout configurable for automated testing systems.
+> > > > Lowering the timeout may also be useful for e.g. manual bisection.
+> > > > The default value matches the current behavior.
+> > > >
+> > > > Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> > > > Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
+> > > > Cc: netdev@vger.kernel.org
+> > > > Cc: linux-kernel@vger.kernel.org
+> > > >
+> > > > ---
+> > > > Changes since v1:
+> > > >  - use sysctl instead of a config
+> > > > ---
+> > >
+> > > >         },
+> > > > +       {
+> > > > +               .procname       = "netdev_unregister_timeout_secs",
+> > > > +               .data           = &netdev_unregister_timeout_secs,
+> > > > +               .maxlen         = sizeof(unsigned int),
+> > > > +               .mode           = 0644,
+> > > > +               .proc_handler   = proc_dointvec_minmax,
+> > > > +               .extra1         = SYSCTL_ZERO,
+> > > > +               .extra2         = &int_3600,
+> > > > +       },
+> > > >         { }
+> > > >  };
+> > > >
+> > >
+> > > If we allow the sysctl to be 0, then we risk a flood of pr_emerg()
+> > > (one per jiffy ?)
+> >
+> > My reasoning was that it's up to the user. Some spammy output on the
+> > console for rare events is probably not the worst way how root can
+> > misconfigure the kernel :)
+> > It allows one to check (more or less) if we are reaching
+> > unregister_netdevice with non-zero refcount, which may be useful for
+> > some debugging maybe.
+> > But I don't mind changing it to 1 (or 5) if you prefer. On syzbot we
+> > only want to increase it.
+> >
+>
+> Yes, please use a lower limit of one to avoid spurious reports.
 
-On Thu, 2021-03-25 at 10:35 +0100, Linus Walleij wrote:
-> On Wed, Mar 24, 2021 at 8:29 AM Matti Vaittinen
-> <matti.vaittinen@fi.rohmeurope.com> wrote:
-> 
-> > Support GPO(s) found from ROHM BD71815 power management IC. The IC
-> > has two
-> > GPO pins but only one is properly documented in data-sheet. The
-> > driver
-> > exposes by default only the documented GPO. The second GPO is
-> > connected to
-> > E5 pin and is marked as GND in data-sheet. Control for this
-> > undocumented
-> > pin can be enabled using a special DT property.
-> > 
-> > This driver is derived from work by Peter Yang <
-> > yanglsh@embest-tech.com>
-> > although not so much of original is left.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > ---
-> > Changes since v3:
-> >   - No changes
-> 
-> This looks OK to me:
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> It could potentially (like the other Rohm GPIO MFD PMIC drivers)
-> make some use of the gpio regmap library, but we have some
-> pending changes for that so look into it after the next merge
-> window.
-> 
-> I.e. for your TODO: look at the GPIO_REGMAP helper.
-
-I just took a quick peek at gpio_regmap and it looks pretty good to me!
-
-Any particular reason why gpio_regmap is not just part of gpio_chip? I
-guess providing the 'gpio_regmap_direction_*()', 'gpio_regmap_get()',
-'gpio_regmap_set()' as exported helpers and leaving calling the
-(devm_)gpiochip_add_data() to IC driver would have allowed more
-flexibility. Drivers could then use the gpio_regamap features which fit
-the IC (by providing pointers to helper functions in gpio_chip) - and
-handle potential oddball-features by using pointers to some customized
-functions in gpio_chip.
-
-Anyways, definitely worth getting familiar with! Thanks for the pointer
-:]
-
-Best Regards,
-	Matti Vaittinen
-
-
+This commit is already in net-next and net-next is not rebased, right?
+I sent a separate fix as "net: change netdev_unregister_timeout_secs
+min value to 1".
