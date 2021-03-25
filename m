@@ -2,130 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0D9349208
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F1C349217
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:34:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhCYMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:30:09 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14592 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhCYM3e (ORCPT
+        id S230389AbhCYMe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:34:29 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14536 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229764AbhCYMeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:29:34 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5krg5PKnz19HC2;
-        Thu, 25 Mar 2021 20:27:31 +0800 (CST)
-Received: from huawei.com (10.69.192.56) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
- 20:29:23 +0800
-From:   Luo Jiaxing <luojiaxing@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <john.garry@huawei.com>, <yanaijie@huawei.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <luojiaxing@huawei.com>, <chenxiang66@hisilicon.com>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH v1 2/2] scsi: libsas: clean up for white spaces
-Date:   Thu, 25 Mar 2021 20:29:56 +0800
-Message-ID: <1616675396-6108-3-git-send-email-luojiaxing@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616675396-6108-1-git-send-email-luojiaxing@huawei.com>
-References: <1616675396-6108-1-git-send-email-luojiaxing@huawei.com>
+        Thu, 25 Mar 2021 08:34:17 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5kxW07yFzPlr5;
+        Thu, 25 Mar 2021 20:31:43 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Mar 2021 20:34:07 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <joro@8bytes.org>, <will@kernel.org>, <dwmw2@infradead.org>,
+        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH v2 0/4] iommu/iova: Add CPU hotplug handler to flush rcaches to core code
+Date:   Thu, 25 Mar 2021 20:29:57 +0800
+Message-ID: <1616675401-151997-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
+X-Originating-IP: [10.69.192.58]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some checkpatch errors are found that some white spaces are missing or
-being used inappropriately. So fix them all.
+The Intel IOMMU driver supports flushing the per-CPU rcaches when a CPU is
+offlined.
 
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
----
- drivers/scsi/libsas/sas_discover.c |  2 +-
- drivers/scsi/libsas/sas_expander.c | 15 ++++++++-------
- 2 files changed, 9 insertions(+), 8 deletions(-)
+Let's move it to core code, so everyone can take advantage.
 
-diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-index 4a39848..3692817 100644
---- a/drivers/scsi/libsas/sas_discover.c
-+++ b/drivers/scsi/libsas/sas_discover.c
-@@ -75,7 +75,7 @@ static int sas_get_port_device(struct asd_sas_port *port)
- 		struct dev_to_host_fis *fis =
- 			(struct dev_to_host_fis *) dev->frame_rcvd;
- 		if (fis->interrupt_reason == 1 && fis->lbal == 1 &&
--		    fis->byte_count_low==0x69 && fis->byte_count_high == 0x96
-+		    fis->byte_count_low == 0x69 && fis->byte_count_high == 0x96
- 		    && (fis->device & ~0x10) == 0)
- 			dev->dev_type = SAS_SATA_PM;
- 		else
-diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-index ebb55e4..fc6b9d8 100644
---- a/drivers/scsi/libsas/sas_expander.c
-+++ b/drivers/scsi/libsas/sas_expander.c
-@@ -553,7 +553,7 @@ static int sas_ex_manuf_info(struct domain_device *dev)
- 
- 	mi_req[1] = SMP_REPORT_MANUF_INFO;
- 
--	res = smp_execute_task(dev, mi_req, MI_REQ_SIZE, mi_resp,MI_RESP_SIZE);
-+	res = smp_execute_task(dev, mi_req, MI_REQ_SIZE, mi_resp, MI_RESP_SIZE);
- 	if (res) {
- 		pr_notice("MI: ex %016llx failed:0x%x\n",
- 			  SAS_ADDR(dev->sas_addr), res);
-@@ -594,13 +594,13 @@ int sas_smp_phy_control(struct domain_device *dev, int phy_id,
- 
- 	pc_req[1] = SMP_PHY_CONTROL;
- 	pc_req[9] = phy_id;
--	pc_req[10]= phy_func;
-+	pc_req[10] = phy_func;
- 	if (rates) {
- 		pc_req[32] = rates->minimum_linkrate << 4;
- 		pc_req[33] = rates->maximum_linkrate << 4;
- 	}
- 
--	res = smp_execute_task(dev, pc_req, PC_REQ_SIZE, pc_resp,PC_RESP_SIZE);
-+	res = smp_execute_task(dev, pc_req, PC_REQ_SIZE, pc_resp, PC_RESP_SIZE);
- 	if (res) {
- 		pr_err("ex %016llx phy%02d PHY control failed: %d\n",
- 		       SAS_ADDR(dev->sas_addr), phy_id, res);
-@@ -678,7 +678,7 @@ int sas_smp_get_phy_events(struct sas_phy *phy)
- 	req[9] = phy->number;
- 
- 	res = smp_execute_task(dev, req, RPEL_REQ_SIZE,
--			            resp, RPEL_RESP_SIZE);
-+			       resp, RPEL_RESP_SIZE);
- 
- 	if (res)
- 		goto out;
-@@ -714,7 +714,7 @@ int sas_get_report_phy_sata(struct domain_device *dev, int phy_id,
- 	rps_req[9] = phy_id;
- 
- 	res = smp_execute_task(dev, rps_req, RPS_REQ_SIZE,
--			            rps_resp, RPS_RESP_SIZE);
-+			       rps_resp, RPS_RESP_SIZE);
- 
- 	/* 0x34 is the FIS type for the D2H fis.  There's a potential
- 	 * standards cockup here.  sas-2 explicitly specifies the FIS
-@@ -1117,7 +1117,7 @@ static int sas_ex_discover_dev(struct domain_device *dev, int phy_id)
- 			 */
- 			if (SAS_ADDR(ex->ex_phy[i].attached_sas_addr) ==
- 			    SAS_ADDR(child->sas_addr)) {
--				ex->ex_phy[i].phy_state= PHY_DEVICE_DISCOVERED;
-+				ex->ex_phy[i].phy_state = PHY_DEVICE_DISCOVERED;
- 				if (sas_ex_join_wide_port(dev, i))
- 					pr_debug("Attaching ex phy%02d to wide port %016llx\n",
- 						 i, SAS_ADDR(ex->ex_phy[i].attached_sas_addr));
-@@ -1533,7 +1533,8 @@ static int sas_configure_phy(struct domain_device *dev, int phy_id,
- 	if (res)
- 		return res;
- 	if (include ^ present)
--		return sas_configure_set(dev, phy_id, sas_addr, index,include);
-+		return sas_configure_set(dev, phy_id, sas_addr, index,
-+					 include);
- 
- 	return res;
- }
+Also throw in a patch to stop exporting free_iova_fast().
+
+Differences to v1:
+- Add RB tags (thanks!)
+- Add patch to stop exporting free_iova_fast()
+- Drop patch to correct comment
+- Add patch to delete iommu_dma_free_cpu_cached_iovas() and associated
+  changes
+
+John Garry (4):
+  iova: Add CPU hotplug handler to flush rcaches
+  iommu/vt-d: Remove IOVA domain rcache flushing for CPU offlining
+  iommu: Delete iommu_dma_free_cpu_cached_iovas()
+  iommu: Stop exporting free_iova_fast()
+
+ drivers/iommu/dma-iommu.c   |  9 ---------
+ drivers/iommu/intel/iommu.c | 31 -------------------------------
+ drivers/iommu/iova.c        | 34 +++++++++++++++++++++++++++++++---
+ include/linux/cpuhotplug.h  |  2 +-
+ include/linux/dma-iommu.h   |  8 --------
+ include/linux/iova.h        |  6 +-----
+ 6 files changed, 33 insertions(+), 57 deletions(-)
+
 -- 
-2.7.4
+2.26.2
 
