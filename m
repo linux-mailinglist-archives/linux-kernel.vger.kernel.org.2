@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A70349223
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B8C349226
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhCYMhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:37:10 -0400
-Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:27548 "EHLO
-        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhCYMgn (ORCPT
+        id S230273AbhCYMhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:37:42 -0400
+Received: from outbound-smtp18.blacknight.com ([46.22.139.245]:39695 "EHLO
+        outbound-smtp18.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230467AbhCYMhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:36:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id F1DC33F6BE;
-        Thu, 25 Mar 2021 13:36:41 +0100 (CET)
-Authentication-Results: ste-pvt-msa1.bahnhof.se;
-        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=gD78SScH;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-X-Spam-Flag: NO
-X-Spam-Score: -2.1
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
-        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
-        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
-        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
-Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3veBufnIduPG; Thu, 25 Mar 2021 13:36:40 +0100 (CET)
-Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 7512A3F2E2;
-        Thu, 25 Mar 2021 13:36:39 +0100 (CET)
-Received: from [10.249.254.165] (unknown [192.198.151.44])
-        by mail1.shipmail.org (Postfix) with ESMTPSA id 1EC303600A8;
-        Thu, 25 Mar 2021 13:36:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
-        t=1616675798; bh=nuPktcMhKejdFp1Z/65E+GhLl3FbivLnSEFyMbRaI34=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gD78SScHSDRZD6sZd6WmUqUYAPn6X5Tt4UXq1JrQzfL49ycTmMGvRTXvfvvPj7mUU
-         F+3wIzfxWZJzfC0zV1G88pkACeP50q6Zj1axpvO/rYFy0U6cOMzSd9hhqsmO3bZpjq
-         B8A4geR/ERcWYbNnKqxN1dPfXAmjDKyct20ex0ao=
-Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <0b984f96-00fb-5410-bb16-02e12b2cc024@shipmail.org>
- <20210324163812.GJ2356281@nvidia.com>
- <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
- <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
- <20210324231419.GR2356281@nvidia.com>
- <607ecbeb-e8a5-66e9-6fe2-9a8d22f12bc2@shipmail.org>
- <fb74efd9-55be-9a8d-95b0-6103e263aab8@amd.com>
- <15da5784-96ca-25e5-1485-3ce387ee6695@shipmail.org>
- <20210325113023.GT2356281@nvidia.com>
- <afad3159-9aa8-e052-3bef-d00dee1ba51e@shipmail.org>
- <20210325120103.GV2356281@nvidia.com>
- <a0d0ffd7-3c34-5002-f4fe-cb9d4ba0279e@amd.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>
-Message-ID: <d8c5b688-ede1-b952-1bc9-f2aae870a7a6@shipmail.org>
-Date:   Thu, 25 Mar 2021 13:36:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 25 Mar 2021 08:37:16 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp18.blacknight.com (Postfix) with ESMTPS id 415EC1C35EC
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:37:15 +0000 (GMT)
+Received: (qmail 32076 invoked from network); 25 Mar 2021 12:37:15 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 25 Mar 2021 12:37:14 -0000
+Date:   Thu, 25 Mar 2021 12:37:13 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/9] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210325123713.GQ3697@techsingularity.net>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+ <20210325114228.27719-3-mgorman@techsingularity.net>
+ <20210325120525.GU1719932@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <a0d0ffd7-3c34-5002-f4fe-cb9d4ba0279e@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210325120525.GU1719932@casper.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 25, 2021 at 12:05:25PM +0000, Matthew Wilcox wrote:
+> On Thu, Mar 25, 2021 at 11:42:21AM +0000, Mel Gorman wrote:
+> > +int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> > +				nodemask_t *nodemask, int nr_pages,
+> > +				struct list_head *list);
+> > +
+> > +/* Bulk allocate order-0 pages */
+> > +static inline unsigned long
+> > +alloc_pages_bulk(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
+> > +{
+> > +	return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, list);
+> 
+> Discrepancy in the two return types here.  Suspect they should both
+> be 'unsigned int' so there's no question about "can it return an errno".
+> 
 
-On 3/25/21 1:09 PM, Christian König wrote:
-> Am 25.03.21 um 13:01 schrieb Jason Gunthorpe:
->> On Thu, Mar 25, 2021 at 12:53:15PM +0100, Thomas Hellström (Intel) 
->> wrote:
->>
->>> Nope. The point here was that in this case, to make sure mmap uses the
->>> correct VA to give us a reasonable chance of alignement, the driver 
->>> might
->>> need to be aware of and do trickery with the huge page-table-entry 
->>> sizes
->>> anyway, although I think in most cases a standard helper for this 
->>> can be
->>> supplied.
->> Of course the driver needs some way to influence the VA mmap uses,
->> gernally it should align to the natural page size of the device
->
-> Well a mmap() needs to be aligned to the page size of the CPU, but not 
-> necessarily to the one of the device.
->
-> So I'm pretty sure the device driver should not be involved in any way 
-> the choosing of the VA for the CPU mapping.
->
-> Christian.
->
-We've had this discussion before and at that time I managed to convince 
-you by pointing to the shmem helper for this, shmem_get_umapped_area().
+I'll make it unsigned long as the nr_pages parameter is unsigned long.
+It's a silly range to have for pages but it matches alloc_contig_range
+even though free_contig_range takes unsigned int *sigh*
 
-Basically there are two ways to do this. Either use a standard helper 
-similar to shmem's, and then the driver needs to align physical (device) 
-huge page boundaries to address space offset huge page boundaries. If 
-you don't do that you can just as well use a custom function that 
-adjusts for you not doing that (drm_get_unmapped_area()). Both require 
-driver knowledge of the size of huge pages.
+> >  
+> > +/*
+> 
+> If you could make that "/**" instead ...
+> 
 
-Without a function to adjust, mmap will use it's default (16 byte?) 
-alignment and chance of alignment becomes very small.
+I decided not to until we're reasonably sure the semantics are not going
+to change.
 
-/Thomas
+---8<---
+mm/page_alloc: Add a bulk page allocator -fix
 
+Matthew Wilcox pointed out that the return type for alloc_pages_bulk()
+and __alloc_pages_bulk() is inconsistent. Fix it.
 
->>
->> Jason
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ include/linux/gfp.h | 2 +-
+ mm/page_alloc.c     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 4a304fd39916..a2be8f4174a9 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -518,7 +518,7 @@ static inline int arch_make_page_accessible(struct page *page)
+ struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
+ 		nodemask_t *nodemask);
+ 
+-int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
++unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 				nodemask_t *nodemask, int nr_pages,
+ 				struct list_head *list);
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index eb547470a7e4..92d55f80c289 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4978,7 +4978,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+  *
+  * Returns the number of pages on the list.
+  */
+-int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
++unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+ 			nodemask_t *nodemask, int nr_pages,
+ 			struct list_head *page_list)
+ {
