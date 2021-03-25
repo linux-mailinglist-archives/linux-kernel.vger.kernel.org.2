@@ -2,112 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAF0348ECD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C04D348ED9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCYLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhCYLQf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:16:35 -0400
-Received: from mo6-p01-ob.smtp.rzone.de (mo6-p01-ob.smtp.rzone.de [IPv6:2a01:238:400:200::b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11892C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:16:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1616670982; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=RVum/hs/TVp2wSc3M6pvMW5hWRHPXd6wNhefDqvI5XlGSPHNAWKfBz8HLP+ypcpPVr
-    MWwj1IDU9475i8uSzU3rmfCF15JfaLsUICYpLBsd9ls135ICZuC64DBY5vuEqnxjjMpB
-    NTWwmZFTjx9X1O334W58C6qNuZ+uvLqaNrAGn60IWFlXxfOUZFUFsElnDzt74I4Glpdb
-    15mWH1iVQIAuK9u8WAzHwXqrsouXMjl0xERWrhPAxhRyvmPELOKdtLT3n4mbk0Z30B1J
-    4Ou3h9xqm8x1jk1ihQhu2LHhrVggJI68LEWmdPxlufpDwhw4GH5lPCzUGppsVI8qPDxq
-    JUvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1616670982;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5Gkv344oVbx0n0ugG/dKLLSrYBZEUe5i9Mt0XagagP0=;
-    b=MnVm1xgw0lGi7IjGv6twn44PssYumREzxVGnWkz5ipZK8WkL2XA/J0jFXSGN4CRItB
-    dBrMVeTt40zb5RHCZYFKSFQnpwFh5HNHf7q8lDjBUcVlOh9SyLZXSGixPFaxZamUOKMo
-    tl9BAEyOp0q3rTid8V7/0wkkpKdi3do1izFqft8spx/tz+uYss7Sx9P0MkQhxn9A39Az
-    aQdvPqORty5LLPAXgOVs3TighF94Vuu/QJ91LYQs7f0fVKXk4xgiSGKZNCvaqUENKBjm
-    3h6YktTbO1VOwQohOB85Y42faP+aZqMED2ZsFVFxBfAC8NwSVmMGRu9TVY/tMRY3m081
-    N+Xg==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1616670982;
-    s=strato-dkim-0002; d=aepfle.de;
-    h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=5Gkv344oVbx0n0ugG/dKLLSrYBZEUe5i9Mt0XagagP0=;
-    b=FzNX2AZmWmL+U/9amCWev6J4375NmAvkuLKJLn9wbGVEQOKDZ/3T92l4/7fdGaHpoE
-    iw2Wd5ZsM9pJe+IZvsaP21oNRvJgMQmjtPwM1ur4VsUJrEkrFwfOI8149sD0Hq6/CmFS
-    KrYLvIfZCP1Nz13tKGU9dc4YRTzpQDxYFsN3KnnuZs2SgEHGLvO67VBfCBdueqASfrgw
-    0WVCJv8R8d0fZZSIivITSKSGyMVBAd6wajJA7StIArcmHWqnOHG53J6df4S+Q4NsfjR+
-    KGn7soHbFLM2C5vZxlbNdC8XwE72vJsXk4krIjHbiVubQb1VRDGymbfVJDTu+37CgZjA
-    OOcA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QLpd5ylWvMDXdoX8l8pYAcz5OTW+n4/A=="
-X-RZG-CLASS-ID: mo00
-Received: from sender
-    by smtp.strato.de (RZmta 47.22.0 SBL|AUTH)
-    with ESMTPSA id 204541x2PBGM51g
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Thu, 25 Mar 2021 12:16:22 +0100 (CET)
-Date:   Thu, 25 Mar 2021 12:16:06 +0100
-From:   Olaf Hering <olaf@aepfle.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kbuild: enforce -Werror=unused-result
-Message-ID: <20210325121606.6a2e4e00.olaf@aepfle.de>
-In-Reply-To: <20210319143231.25500-1-olaf@aepfle.de>
-References: <20210319143231.25500-1-olaf@aepfle.de>
-X-Mailer: Claws Mail 2021.03.05 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        id S230044AbhCYLWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:22:48 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:59992 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230013AbhCYLWT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:22:19 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F5jPF3Rmmz9v07B;
+        Thu, 25 Mar 2021 12:22:09 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 23Jg9s7auSVF; Thu, 25 Mar 2021 12:22:09 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F5jPF2Xh6z9v076;
+        Thu, 25 Mar 2021 12:22:09 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 905718B850;
+        Thu, 25 Mar 2021 12:22:10 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 17HwWPOOzqFZ; Thu, 25 Mar 2021 12:22:10 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95F028B84F;
+        Thu, 25 Mar 2021 12:22:09 +0100 (CET)
+Subject: Re: [PATCH v2 6/7] cmdline: Gives architectures opportunity to use
+ generically defined boot cmdline manipulation
+To:     Will Deacon <will@kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, danielwa@cisco.com,
+        robh@kernel.org, daniel@gimpelevich.san-francisco.ca.us,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org, devicetree@vger.kernel.org
+References: <cover.1614705851.git.christophe.leroy@csgroup.eu>
+ <2eb6fad3470256fff5c9f33cd876f344abb1628b.1614705851.git.christophe.leroy@csgroup.eu>
+ <20210303175747.GD19713@willie-the-truck>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <8db81511-3f28-4ef1-5e66-188cf7cafad1@csgroup.eu>
+Date:   Thu, 25 Mar 2021 12:18:38 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/mI2gCRk_pRE=_/zv9FiMrfa"; protocol="application/pgp-signature"
+In-Reply-To: <20210303175747.GD19713@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/mI2gCRk_pRE=_/zv9FiMrfa
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Am Fri, 19 Mar 2021 15:32:31 +0100
-schrieb Olaf Hering <olaf@aepfle.de>:
 
-> It is a hard error if a return value is ignored.
+Le 03/03/2021 à 18:57, Will Deacon a écrit :
+> On Tue, Mar 02, 2021 at 05:25:22PM +0000, Christophe Leroy wrote:
+>> Most architectures have similar boot command line manipulation
+>> options. This patchs adds the definition in init/Kconfig, gated by
+>> CONFIG_HAVE_CMDLINE that the architectures can select to use them.
+>>
+>> In order to use this, a few architectures will have to change their
+>> CONFIG options:
+>> - riscv has to replace CMDLINE_FALLBACK by CMDLINE_FROM_BOOTLOADER
+>> - architectures using CONFIG_CMDLINE_OVERRIDE or
+>> CONFIG_CMDLINE_OVERWRITE have to replace them by CONFIG_CMDLINE_FORCE.
+>>
+>> Architectures also have to define CONFIG_DEFAULT_CMDLINE.
+>>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   init/Kconfig | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 56 insertions(+)
+>>
+>> diff --git a/init/Kconfig b/init/Kconfig
+>> index 22946fe5ded9..a0f2ad9467df 100644
+>> --- a/init/Kconfig
+>> +++ b/init/Kconfig
+>> @@ -117,6 +117,62 @@ config INIT_ENV_ARG_LIMIT
+>>   	  Maximum of each of the number of arguments and environment
+>>   	  variables passed to init from the kernel command line.
+>>   
+>> +config HAVE_CMDLINE
+>> +	bool
+>> +
+>> +config CMDLINE_BOOL
+>> +	bool "Default bootloader kernel arguments"
+>> +	depends on HAVE_CMDLINE
+>> +	help
+>> +	  On some platforms, there is currently no way for the boot loader to
+>> +	  pass arguments to the kernel. For these platforms, you can supply
+>> +	  some command-line options at build time by entering them here.  In
+>> +	  most cases you will need to specify the root device here.
+> 
+> Why is this needed as well as CMDLINE_FROM_BOOTLOADER? IIUC, the latter
+> will use CONFIG_CMDLINE if it fails to get anything from the bootloader,
+> which sounds like the same scenario.
+> 
+>> +config CMDLINE
+>> +	string "Initial kernel command string"
+> 
+> s/Initial/Default
+> 
+> which is then consistent with the rest of the text here.
+> 
+>> +	depends on CMDLINE_BOOL
+> 
+> Ah, so this is a bit different and I don't think lines-up with the
+> CMDLINE_BOOL help text.
+> 
+>> +	default DEFAULT_CMDLINE
+>> +	help
+>> +	  On some platforms, there is currently no way for the boot loader to
+>> +	  pass arguments to the kernel. For these platforms, you can supply
+>> +	  some command-line options at build time by entering them here.  In
+>> +	  most cases you will need to specify the root device here.
+> 
+> (same stale text)
+> 
+>> +choice
+>> +	prompt "Kernel command line type" if CMDLINE != ""
+>> +	default CMDLINE_FROM_BOOTLOADER
+>> +	help
+>> +	  Selects the way you want to use the default kernel arguments.
+> 
+> How about:
+> 
+> "Determines how the default kernel arguments are combined with any
+>   arguments passed by the bootloader"
+> 
+>> +config CMDLINE_FROM_BOOTLOADER
+>> +	bool "Use bootloader kernel arguments if available"
+>> +	help
+>> +	  Uses the command-line options passed by the boot loader. If
+>> +	  the boot loader doesn't provide any, the default kernel command
+>> +	  string provided in CMDLINE will be used.
+>> +
+>> +config CMDLINE_EXTEND
+> 
+> Can we rename this to CMDLINE_APPEND, please? There is code in the tree
+> which disagrees about what CMDLINE_EXTEND means, so that will need be
+> to be updated to be consistent (e.g. the EFI stub parsing order). Having
+> the generic option with a different name means we won't accidentally end
+> up with the same inconsistent behaviours.
 
-The automated builds found only a single error, in load_em86().
+Argh, yes. Seems like the problem is even larger than that IIUC:
 
-Let me know if there are other reasons why the patch was rejected.
+- For ARM it means to append the bootloader arguments to the CONFIG_CMDLINE
+- For Powerpc it means to append the CONFIG_CMDLINE to the bootloader arguments
+- For SH  it means to append the CONFIG_CMDLINE to the bootloader arguments
+- For EFI it means to append the bootloader arguments to the CONFIG_CMDLINE
+- For OF it means to append the CONFIG_CMDLINE to the bootloader arguments
 
-Olaf
+So what happens on ARM for instance when it selects CONFIG_OF for instance ?
+Or should we consider that EXTEND means APPEND or PREPEND, no matter which ?
+Because EXTEND is for instance used for:
 
---Sig_/mI2gCRk_pRE=_/zv9FiMrfa
-Content-Type: application/pgp-signature
-Content-Description: Digitale Signatur von OpenPGP
+	config INITRAMFS_FORCE
+		bool "Ignore the initramfs passed by the bootloader"
+		depends on CMDLINE_EXTEND || CMDLINE_FORCE
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAmBccPcACgkQ86SN7mm1
-DoDmZg//X7FpRVVZ72GefZUJUZUy8b05UNQNLp+hTAQzI1N+xWa3J6w6Ud3DsO3n
-6olJg+KfEwOX22c8I14dxxR3S7YdKdzVLlsl+65kjpF2BgYgSQhIgrtUjjXOxOig
-3zKY+VRTUE4I5RfoTfNRFqX3IW4POdBqKo2cZP0ixH2dfTtOWZff94zTHRsACmk6
-yLqc+DjPjfg//0euOr5GGfV7o4BfqzaMaXQ5YeQju8q5nenBSywu0mEv45lFA/mf
-fJ3MqujpKddx5g6rVrqMeKYlY/9AYPkiGFZshVu0d+AG8djWzRw/5HlhnW5As9Ah
-z9WDhegiwVBbZTpXdeJ/10zKN8s5QFRfbmIC/AKXGO+UByenvHH8WfWmxuiUSi06
-0aJ19ppBtXd4sfCtkUhDpvZ+VEOtxFRE9VCdTCeaYqyNQEFtmNFLgl9/VWH6iMfP
-ZaTRNaa5Fcja4CifIXimFT99XY/P2iG/C/7csgLyBC0VV6m31G5JiZF0xDIh5MdJ
-c5rsRBalkTcIPoYhDrqaoGjsgTUAeFfqekCMxJfkWx6ZlgZnmmP9rDRu6THzXQWA
-rTueoEJSO/Veja0g6kXIBwUtSS3/uRC8IAEEaCfy6ezFCxjGPL7yOFkW+WqKicIL
-2bUk1VMfH18orCGiDrKZCBzyFmF9f7KDCiZxHXIMzOpN8RIzRYY=
-=Zvt/
------END PGP SIGNATURE-----
-
---Sig_/mI2gCRk_pRE=_/zv9FiMrfa--
+Christophe
