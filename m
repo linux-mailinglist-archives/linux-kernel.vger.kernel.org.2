@@ -2,56 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D05234939B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07FF349399
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbhCYOEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:04:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57754 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230101AbhCYOE1 (ORCPT
+        id S231265AbhCYOEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231331AbhCYOEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:04:27 -0400
-Received: from 111-240-153-89.dynamic-ip.hinet.net ([111.240.153.89] helo=localhost.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <chris.chiu@canonical.com>)
-        id 1lPQb4-00085S-9U; Thu, 25 Mar 2021 14:04:26 +0000
-From:   chris.chiu@canonical.com
-To:     akpm@linux-foundation.org, torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] mailmap: update the email address for Chris Chiu
-Date:   Thu, 25 Mar 2021 22:04:19 +0800
-Message-Id: <20210325140419.27978-1-chris.chiu@canonical.com>
-X-Mailer: git-send-email 2.21.1 (Apple Git-122.3)
+        Thu, 25 Mar 2021 10:04:00 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45606C06174A;
+        Thu, 25 Mar 2021 07:04:00 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id e18so2406084wrt.6;
+        Thu, 25 Mar 2021 07:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uTnBq9sGyIo2cbY0+SLvTj5ZFkFFmCzKEs2LWGjMdZI=;
+        b=GqGnSY+XW2nUrP4ls8HUFNdZmPdMxmY1kab/DVNp5kHlPYTNdml4czVX2ZQqymOk+/
+         PP4Y46gEIxJM83OFPMocpUaOTN5Skgr6jo77ixuovJC0GSwZTkH5yLKN3O3XwvINC5dr
+         9ItxT8cfXkT27Bpdkvkh1dbKldfFTj8iKSiNwipZSLezZNd+TRvbtp27AQ41yNtoJ0M2
+         gMSPJ7JGZXyhfgHyGxMSt7PeiODy8DAfr+WoipUBqvBgFVZrXqHar60sv1Uffp8iRm7E
+         QxqTU7AMaybqMyyzuWpYkfM3+YZstMF0vurO2b/yg09JZSbOsAOx889ejAPVDt8D7jPc
+         BFRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uTnBq9sGyIo2cbY0+SLvTj5ZFkFFmCzKEs2LWGjMdZI=;
+        b=Rd1sExL1bxX20aM6tRYmZ1/Yel8h/HH+Sm4zIpD4EXU3fSz5EmjOzMkBkdI1P1BdcL
+         9GmKXyVY7b2hkTJztIS54tLNCKFcberU/4tJ8i+gTpNAKJ87ykdgo7xqSxEvBa9PQFUU
+         fDAiK0GPJiFuMa3v8oSBLbGB8xRHGLEI1lsiKbxo5rN01txWjbIxbQQeuEmdmyRrzBR7
+         Hqg8E/MKrm3lQ05cjpUbLgbk0uXQbsw+Eof5yarZVD02qKqbYgG4S1PTAtNkMqTmrqCs
+         yW+/AQoVx5aPTpryctTFnn3TuUIZMit95e6ldz35CicTXiqsR41Qeg2vHq4wWIz1cjbK
+         yUsQ==
+X-Gm-Message-State: AOAM530J+Fs/zEbogdAHTOWiNG70rmrufoIIlq/v4vWFvOFgtXjZyfqb
+        5tpHe3A9A6M3XGstMXakfcU=
+X-Google-Smtp-Source: ABdhPJxFOKj4vwmPSkUbBDUnTQQj7wdsD9o0l603YN1f1uK+7k6axyL57tW+Nzv7UzecLKyaaPP71w==
+X-Received: by 2002:adf:83c2:: with SMTP id 60mr9103771wre.386.1616681038902;
+        Thu, 25 Mar 2021 07:03:58 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id f16sm7565456wrt.21.2021.03.25.07.03.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 07:03:57 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:04:19 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] soc/tegra: regulators: Fix locking up when
+ voltage-spread is out of range
+Message-ID: <YFyYY00uNyfrq6UW@orome.fritz.box>
+References: <20210302131800.14408-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ENw44E3fLRfQXp2K"
+Content-Disposition: inline
+In-Reply-To: <20210302131800.14408-1-digetx@gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chris.chiu@canonical.com>
 
-Redirect my older email addresses in the git logs.
+--ENw44E3fLRfQXp2K
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
----
- .mailmap | 2 ++
- 1 file changed, 2 insertions(+)
+On Tue, Mar 02, 2021 at 04:18:00PM +0300, Dmitry Osipenko wrote:
+> Fix voltage coupler lockup which happens when voltage-spread is out
+> of range due to a bug in the code. The max-spread requirement shall be
+> accounted when CPU regulator doesn't have consumers. This problem is
+> observed on Tegra30 Ouya game console once system-wide DVFS is enabled
+> in a device-tree.
+>=20
+> Fixes: 783807436f36 ("soc/tegra: regulators: Add regulators coupler for T=
+egra30")
+> Cc: stable@vger.kernel.org
+> Reported-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/soc/tegra/regulators-tegra30.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/.mailmap b/.mailmap
-index 85b93cdefc87..1f8579db5a3f 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -65,6 +65,8 @@ Changbin Du <changbin.du@intel.com> <changbin.du@gmail.com>
- Changbin Du <changbin.du@intel.com> <changbin.du@intel.com>
- Chao Yu <chao@kernel.org> <chao2.yu@samsung.com>
- Chao Yu <chao@kernel.org> <yuchao0@huawei.com>
-+Chris Chiu <chris.chiu@canonical.com> <chiu@endlessm.com>
-+Chris Chiu <chris.chiu@canonical.com> <chiu@endlessos.org>
- Christophe Ricard <christophe.ricard@gmail.com>
- Christoph Hellwig <hch@lst.de>
- Corey Minyard <minyard@acm.org>
--- 
-2.20.1
+Applied, thanks.
 
+Thierry
+
+--ENw44E3fLRfQXp2K
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcmGMACgkQ3SOs138+
+s6Ew5BAAmWMV5VYSMPEFJoaOlKbt0LZ7CRPKoOsTYBF6+UF8Bc8zUhADfP4QyAdo
+6U64FF1UQz8Lhi/vBtao5SVPf+W8eYna0z0PkpzrgonhzZv5EZaLOYNt3i7aopKv
+B6v+oQonZf7o1DtPXxTK28fkvmzSXze+vFHrPBrx/TzrY3XL0vOYVUoWgSjnhO6J
+yQIauE87eZ+tM5if81Z3oYfnLchAAOLPY/PSrb/tbxo2hYjNR0k+sPHJomJdAtTG
+pTC4LiD7vzpqm7GrOnBHexCInzfE8b6wSnA/lHr37H4JPveCPRo4IRmWY26a5Ydi
+E08+dPGzQD8Z3EPuMF8cyy7peEIleweS0sFYAfOQrLHO0BKYksEKSKTJGb4FRWJb
+LiSchlWrmN8bDwgznrDIcpYRw6t2mVoXc7WRat2RRV0qZDBpRpUyQDGFBxc/yEOq
+1Dx86m2Qbpx7qOEXpnrDp7eVzrvam096/397ZO2QIfYivuzDLvgPa/YY7ltp4TOn
+TBNJr6h99IpTp7evBQyD/fc7Qru4qoU5PGOEBPAYUfodwuFRI9ujezECQ/W22lwC
+vmTA8sIE5225E/jU0BM05FFfATy3Ti5kExOquZt8Jn64xJxQoADDvn4puDbjtR0N
+C9Ta0R5MgrhDl6NgmsbU42xtGpV95lcp2ndGnwKP38GYhdjvSRo=
+=02Xu
+-----END PGP SIGNATURE-----
+
+--ENw44E3fLRfQXp2K--
