@@ -2,75 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D3A3348A4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C403348A50
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbhCYHki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:40:38 -0400
-Received: from mga17.intel.com ([192.55.52.151]:10224 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229448AbhCYHk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:40:28 -0400
-IronPort-SDR: jD/w9dOSIi/ay5XLdyA54C0LGzwIHEKxem+/HcqFVwCdU/4MWQ81alAcEiM35E4yHi1gE0qF5J
- dxlSni8h+HRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="170853601"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="170853601"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 00:40:28 -0700
-IronPort-SDR: GVekWx7kPDY73STpZ3EHRlJnACOfhkvtLCeJcvZRgCxPFFcsFFTC1eVyiBioZgk6SPYrxstpGZ
- JTklhoQRxwww==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="514505130"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 25 Mar 2021 00:40:23 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 25 Mar 2021 09:40:22 +0200
-Date:   Thu, 25 Mar 2021 09:40:22 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        linux@roeck-us.net, abhilash.k.v@intel.com, mrana@codeaurora.org,
-        lee.jones@linaro.org, bberg@redhat.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] usb: typec: Fix a typo
-Message-ID: <YFw+ZmzxT6DBOoMR@kuha.fi.intel.com>
-References: <20210325051023.27914-1-unixbhaskar@gmail.com>
+        id S229629AbhCYHnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:43:20 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:8324 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229798AbhCYHnA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:43:00 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 7021C9804CC;
+        Thu, 25 Mar 2021 15:42:57 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] [v2] drivers: staging: _adapter is declared twice
+Date:   Thu, 25 Mar 2021 15:41:47 +0800
+Message-Id: <20210325074150.860167-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325051023.27914-1-unixbhaskar@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ0hPHh1ISklITEJJVkpNSk1NTkNKTExMT09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OhA6Sgw5PT8cQz4LSQ02LCk1
+        SAtPCgtVSlVKTUpNTU5DSkxDTU1MVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTU5MNwY+
+X-HM-Tid: 0a7868561e6bd992kuws7021c9804cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:40:23AM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/Acknowlege/Acknowledge/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+struct _adapter has been declared at 23rd line. 
+Remove the duplicate.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ drivers/staging/rtl8712/drv_types.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-> ---
->  drivers/usb/typec/ucsi/ucsi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 244270755ae6..282c3c825c13 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -63,7 +63,7 @@ static int ucsi_read_error(struct ucsi *ucsi)
->  	u16 error;
->  	int ret;
-> 
-> -	/* Acknowlege the command that failed */
-> +	/* Acknowledge the command that failed */
->  	ret = ucsi_acknowledge_command(ucsi);
->  	if (ret)
->  		return ret;
-> --
-> 2.30.1
-
+diff --git a/drivers/staging/rtl8712/drv_types.h b/drivers/staging/rtl8712/drv_types.h
+index 0c4325073c63..a44d04effc8b 100644
+--- a/drivers/staging/rtl8712/drv_types.h
++++ b/drivers/staging/rtl8712/drv_types.h
+@@ -36,8 +36,6 @@ enum _NIC_VERSION {
+ 	RTL8716_NIC
+ };
+ 
+-struct _adapter;
+-
+ struct	qos_priv	{
+ 	/* bit mask option: u-apsd, s-apsd, ts, block ack... */
+ 	unsigned int qos_option;
 -- 
-heikki
+2.25.1
+
