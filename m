@@ -2,63 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656413486ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E35DB3486E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236026AbhCYC2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 22:28:07 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:15504 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232495AbhCYC1i (ORCPT
+        id S234787AbhCYCWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 22:22:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14579 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234257AbhCYCVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 22:27:38 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id C5FE69801D3;
-        Thu, 25 Mar 2021 10:27:35 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wan Jiabing <wanjiabing@vivo.com>, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] include: linux: debug_locks: Remove duplicate declaration
-Date:   Thu, 25 Mar 2021 10:26:58 +0800
-Message-Id: <20210325022707.840531-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 24 Mar 2021 22:21:33 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5TM30x5Hz19HM2;
+        Thu, 25 Mar 2021 10:19:27 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
+ 10:21:15 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+Date:   Thu, 25 Mar 2021 10:29:25 +0800
+Message-ID: <20210325022925.1769056-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTkxLHxpDH0tJGE0ZVkpNSk1NSEJJTk1LSkJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NTo6Fww6Iz8WSz8DDTI2EzA1
-        LjlPCU9VSlVKTUpNTUhCSU5NQ0JOVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTEtONwY+
-X-HM-Tid: 0a7867356580d992kuwsc5fe69801d3
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct task_struct is declared at 9th line. Remove the duplicate.
+We got follow bug_on:
+[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+......
+[130747.334329] Call trace:
+[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+[130747.337359]  generic_file_buffered_read+0x410/0xae8
+[130747.337767]  generic_file_read_iter+0x114/0x190
+[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+[130747.338556]  __vfs_read+0x11c/0x188
+[130747.338851]  vfs_read+0x94/0x150
+[130747.339110]  ksys_read+0x74/0xf0
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+If call ext4_ext_insert_extent failed but new extent already inserted, we just
+update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+cause bug on when cache extent.
+If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
+Maybe there will lead to block leak, but it can be fixed by fsck later.
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- include/linux/debug_locks.h | 1 -
- 1 file changed, 1 deletion(-)
+ fs/ext4/extents.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/debug_locks.h b/include/linux/debug_locks.h
-index 2915f56ad421..0b3187a5290d 100644
---- a/include/linux/debug_locks.h
-+++ b/include/linux/debug_locks.h
-@@ -46,7 +46,6 @@ extern int debug_locks_off(void);
- # define locking_selftest()	do { } while (0)
- #endif
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 77c84d6f1af6..970eb2dfcc46 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3246,7 +3246,7 @@ static int ext4_split_extent_at(handle_t *handle,
  
--struct task_struct;
+ 		goto out;
+ 	} else if (err)
+-		goto fix_extent_len;
++		goto err;
  
- #ifdef CONFIG_LOCKDEP
- extern void debug_show_all_locks(void);
+ out:
+ 	ext4_ext_show_leaf(inode, path);
+@@ -3254,6 +3254,7 @@ static int ext4_split_extent_at(handle_t *handle,
+ 
+ fix_extent_len:
+ 	ex->ee_len = orig_ex.ee_len;
++err:
+ 	/*
+ 	 * Ignore ext4_ext_dirty return value since we are already in error path
+ 	 * and err is a non-zero error code.
 -- 
-2.25.1
+2.25.4
 
