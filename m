@@ -2,159 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9DAC349C85
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CE5349C86
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhCYWpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45644 "EHLO
+        id S231289AbhCYWqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbhCYWo7 (ORCPT
+        with ESMTP id S231272AbhCYWqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:44:59 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 197FDC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:44:59 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id v3so3297951pgq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:44:59 -0700 (PDT)
+        Thu, 25 Mar 2021 18:46:07 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24995C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:46:07 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id f19so3565428ion.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 15:46:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=i1A3B1VA5Zv5sBwoUoS9WZiP910FQdZZhnQVANdwB9c=;
-        b=IicXkfu18EISqV5ydhu56kRQMXqHpoRlop4C6BcDh/WNhGYMdJzZ/j9kZAfuPT4BQ/
-         npjBX182kJUDvhCs3A14H6ZmbO6bikVoZBMzyFhHP3JHmK2ypCwwuYKXo48N26dOflJz
-         sF9QIO5+3JINV4A5ZlwLXVEoUJCE0XxMhc7Us=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vr8jx5HqmowOc9mzzRH8nyvNiCy6SLGQQdzTOO7BYQc=;
+        b=J47+cqdvpvEehRJITiM/Qtsv3h7cnBc6W92nj4YaE7DygkqoWd81DOYTqN9bT1sG0a
+         AmdfzNY/pE1IsK0q3MiC0UGwtYUcXloTq0fPoflXHTn0Vp2GX6Y6uRiymYU7hPNaS9OU
+         WcMOe4R/BKiIax1n36Vjtl39sYWAz4ozk90GJCkhU4UrX367AQw4kwKuXN1ZspLyPkCG
+         tqE8W8h8pJChZSovYuFVC9hSbOVekGQ2uKi7mYLlMXK5GJYNQQbRhyf/06UJnxKL9VzT
+         6RXd4BPjKYhSvnDyAd+DpAFfJkkbP9TWF9eMgz/K6a7zkOdltYOvCWS8hzY8ab/8SwuA
+         tl2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=i1A3B1VA5Zv5sBwoUoS9WZiP910FQdZZhnQVANdwB9c=;
-        b=glC0DbWMcYwnKn9WseV6QIgHX1e8Rf3PPTvlgoHp88kab36rVxHHuvlh0RMoyLMKRH
-         g0pZ+Nvb5wJJrh7Y+p6679mvwpfbFJCRep3B187qT97rH6OWEwdMjxJqeWsaqXr0kMH+
-         BX9kmK+7PANVTUT4lZ9kXEElxYG1gmqOa+xJ2cxNiv9ef7WLVadx0VUOpQ7F80yXHvcH
-         AqzRiDrNx9G5qrcjU2vEqLnczcBX8z5M+l/eBTKL/JM/RL7zsrfAOXpDYeWyiBMPck18
-         MEVWsOkad4IdAxwH+4ceka/MIoNix/YzWtfLU2b9xjrgbyOWP6reuA350dLWDYVgKoWc
-         UNRw==
-X-Gm-Message-State: AOAM5339EQ1HUdAxDL0AYyfycjOCVJOWnKve44TGcxlFugwnHgNIynqX
-        ohZV6H0amq4TmkBc+LkTtvuiXA==
-X-Google-Smtp-Source: ABdhPJzl6JZCX5R+lL7U/Se0bnk4N2jLloez48zhqiROs1PEF9zolxztpZkiesZDt5uQTPGMyTaL1w==
-X-Received: by 2002:a17:902:da81:b029:e5:de44:af5b with SMTP id j1-20020a170902da81b02900e5de44af5bmr12069109plx.27.1616712298559;
-        Thu, 25 Mar 2021 15:44:58 -0700 (PDT)
-Received: from localhost (2001-44b8-111e-5c00-5199-f2bf-3cbb-22e6.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:5199:f2bf:3cbb:22e6])
-        by smtp.gmail.com with ESMTPSA id o20sm4304026pjs.2.2021.03.25.15.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 15:44:58 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 07/15] powerpc/uaccess: Call might_fault() inconditionaly
-In-Reply-To: <874kgykgfk.fsf@dja-thinkpad.axtens.net>
-References: <cover.1615398265.git.christophe.leroy@csgroup.eu> <e0a980a4dc7a2551183dd5cb30f46eafdbee390c.1615398265.git.christophe.leroy@csgroup.eu> <874kgykgfk.fsf@dja-thinkpad.axtens.net>
-Date:   Fri, 26 Mar 2021 09:44:54 +1100
-Message-ID: <871rc2kg49.fsf@dja-thinkpad.axtens.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vr8jx5HqmowOc9mzzRH8nyvNiCy6SLGQQdzTOO7BYQc=;
+        b=IePX2ajqe5+0km7Ck65ZH9I9EpadotmOJxA9dLe1xHPfAvhiLP1EUbZ68Cyv6adnJ0
+         yYj5qbYhuB+oIVoDwwU4bMBciEw8oSDNGj3w9Bqxt/FhCXC7JPPVpSmyiOwHpuZTrulg
+         PqBQn4w7MsupbgLcUKQ9NOfQHdpa/KXeRsltrzmBjl+2PbxApyrmEnOqJWiHl78MzB/9
+         aodaOSRtXN8dTVc4pTpdYkxTk2TDZ8uIw5ynuq1F9CtrxM5mytMSiVdI6rR3QFza3CyP
+         DwCHflga8F239uCXQwVH8nK3mnvbZxexJFlllfz2HILwgInCTVxpkKrxvwOBG2Yem4qd
+         LGlg==
+X-Gm-Message-State: AOAM531XxFY7ba5G89nO3IZ2gNHQH4h29YMBCIiL/Lx/6SZD0ACHaj7/
+        DngW0c4CpysumK2VdjpA/6/Y2BJK1DFf4rq3rZ9WNA==
+X-Google-Smtp-Source: ABdhPJxJVBy3q940UtG8JRVlEvPnmQI5YHDSUhNDkkxec39bCTxnOvwhIW1qXTfrVjtC6MCUD8kx1f0JO6Ww72HdUJQ=
+X-Received: by 2002:a6b:ee0b:: with SMTP id i11mr8493762ioh.157.1616712366324;
+ Thu, 25 Mar 2021 15:46:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210325200119.1359384-1-seanjc@google.com> <20210325200119.1359384-4-seanjc@google.com>
+ <CANgfPd8N1+oxPWyO+Ob=hSs4nkdedusde6RQ5TXTX8hi48mvOw@mail.gmail.com> <YF0N5/qsmsNHQeVy@google.com>
+In-Reply-To: <YF0N5/qsmsNHQeVy@google.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Thu, 25 Mar 2021 15:45:56 -0700
+Message-ID: <CANgfPd98XttnW0VTN3nSyd=ZWO8sQR53C2oygC6OH+DecMnioA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] KVM: x86/mmu: Don't allow TDP MMU to yield when
+ recovering NX pages
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Axtens <dja@axtens.net> writes:
-
-> Hi Christophe,
+On Thu, Mar 25, 2021 at 3:25 PM Sean Christopherson <seanjc@google.com> wrote:
 >
->> Commit 6bfd93c32a50 ("powerpc: Fix incorrect might_sleep in
->> __get_user/__put_user on kernel addresses") added a check to not call
->> might_sleep() on kernel addresses. This was to enable the use of
->> __get_user() in the alignment exception handler for any address.
->>
->> Then commit 95156f0051cb ("lockdep, mm: fix might_fault() annotation")
->> added a check of the address space in might_fault(), based on
->> set_fs() logic. But this didn't solve the powerpc alignment exception
->> case as it didn't call set_fs(KERNEL_DS).
->>
->> Nowadays, set_fs() is gone, previous patch fixed the alignment
->> exception handler and __get_user/__put_user are not supposed to be
->> used anymore to read kernel memory.
->>
->> Therefore the is_kernel_addr() check has become useless and can be
->> removed.
+> On Thu, Mar 25, 2021, Ben Gardon wrote:
+> > On Thu, Mar 25, 2021 at 1:01 PM Sean Christopherson <seanjc@google.com> wrote:
+> > > +static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start,
+> > > +                                            gfn_t end)
+> > > +{
+> > > +       return __kvm_tdp_mmu_zap_gfn_range(kvm, start, end, true);
+> > > +}
+> > > +static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+> >
+> > I'm a little leary of adding an interface which takes a non-root
+> > struct kvm_mmu_page as an argument to the TDP MMU.
+> > In the TDP MMU, the struct kvm_mmu_pages are protected rather subtly.
+> > I agree this is safe because we hold the MMU lock in write mode here,
+> > but if we ever wanted to convert to holding it in read mode things
+> > could get complicated fast.
+> > Maybe this is more of a concern if the function started to be used
+> > elsewhere since NX recovery is already so dependent on the write lock.
 >
-> While I agree that __get_user/__put_user should not be used on kernel
-> memory, I'm not sure that we have covered every case where they might be
-> used on kernel memory yet. I did a git grep for __get_user - there are
-> several callers in arch/powerpc and it looks like at least lib/sstep.c
-> might be using __get_user to read kernel memory while single-stepping.
+> Agreed.  Even writing the comment below felt a bit awkward when thinking about
+> additional users holding mmu_lock for read.  Actually, I should remove that
+> specific blurb since zapping currently requires holding mmu_lock for write.
 >
-> I am not sure if might_sleep has got logic to cover the powerpc case -
-> it uses uaccess_kernel, but we don't supply a definition for that on
-> powerpc, so if we do end up calling __get_user on a kernel address, I
-> think we might now throw a warning. (Unless we are saved by
-> pagefault_disabled()?)
+> > Ideally though, NX reclaim could use MMU read lock +
+> > tdp_mmu_pages_lock to protect the list and do reclaim in parallel with
+> > everything else.
+>
+> Yar, processing all legacy MMU pages, and then all TDP MMU pages to avoid some
+> of these dependencies crossed my mind.  But, it's hard to justify effectively
+> walking the list twice.  And maintaining two lists might lead to balancing
+> issues, e.g. the legacy MMU and thus nested VMs get zapped more often than the
+> TDP MMU, or vice versa.
 
-Ah, I just re-read some of my earlier emails and was reminded that yes,
-if we are calling __get/put, we must have disabled page faults.
-
-So yes, this is good.
+I think in an earlier version of the TDP that I sent out, NX reclaim
+was a seperate thread for the two MMUs, sidestepping the balance
+issue.
+I think the TDP MMU also had a seperate NX reclaim list.
+That would also make it easier to do something under the read lock.
 
 >
-> (But I haven't tested this yet, so it's possible I misunderstood
-> something.)
+> > The nice thing about drawing the TDP MMU interface in terms of GFNs
+> > and address space IDs instead of SPs is that it doesn't put
+> > constraints on the implementation of the TDP MMU because those GFNs
+> > are always going to be valid / don't require any shared memory.
+> > This is kind of innocuous because it's immediately converted into that
+> > gfn interface, so I don't know how much it really matters.
+> >
+> > In any case this change looks correct and I don't want to hold up
+> > progress with bikeshedding.
+> > WDYT?
 >
-> Do you expect any consequences if we've missed a case where
-> __(get|put)_user is called on a kernel address because it hasn't been
-> converted to use better helpers yet?
+> I think we're kind of hosed either way.  Either we add a helper in the TDP MMU
+> that takes a SP, or we bleed a lot of information about the details of TDP MMU
+> into the common MMU.  E.g. the function could be open-coded verbatim, but the
+> whole comment below, and the motivation for not feeding in flush is very
+> dependent on the internal details of TDP MMU.
 >
-> Kind regards,
-> Daniel
+> I don't have a super strong preference.  One thought would be to assert that
+> mmu_lock is held for write, and then it largely come future person's problem :-)
+
+Yeah, I agree and I'm happy to kick this proverbial can down the road
+until we actually add an NX reclaim implementation that uses the MMU
+read lock.
+
 >
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>  arch/powerpc/include/asm/uaccess.h | 9 ++++-----
->>  1 file changed, 4 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/uaccess.h b/arch/powerpc/include/asm/uaccess.h
->> index eaa828a6a419..c4bbc64758a0 100644
->> --- a/arch/powerpc/include/asm/uaccess.h
->> +++ b/arch/powerpc/include/asm/uaccess.h
->> @@ -77,8 +77,7 @@ __pu_failed:							\
->>  	__typeof__(*(ptr)) __pu_val = (x);			\
->>  	__typeof__(size) __pu_size = (size);			\
->>  								\
->> -	if (!is_kernel_addr((unsigned long)__pu_addr))		\
->> -		might_fault();					\
->> +	might_fault();						\
->>  	__chk_user_ptr(__pu_addr);				\
->>  	__put_user_size(__pu_val, __pu_addr, __pu_size, __pu_err);	\
->>  								\
->> @@ -238,12 +237,12 @@ do {								\
->>  	__typeof__(size) __gu_size = (size);			\
->>  								\
->>  	__chk_user_ptr(__gu_addr);				\
->> -	if (do_allow && !is_kernel_addr((unsigned long)__gu_addr)) \
->> +	if (do_allow) {								\
->>  		might_fault();					\
->> -	if (do_allow)								\
->>  		__get_user_size(__gu_val, __gu_addr, __gu_size, __gu_err);	\
->> -	else									\
->> +	} else {									\
->>  		__get_user_size_allowed(__gu_val, __gu_addr, __gu_size, __gu_err); \
->> +	}									\
-
-One microscopic nit: these changes throw the '\'s further out of
-alignment.
-
-Reviewed-by: Daniel Axtens <dja@axtens.net>
-
-Kind regards,
-Daniel
-
->>  	(x) = (__typeof__(*(ptr)))__gu_val;			\
->>  								\
->>  	__gu_err;						\
->> -- 
->> 2.25.0
+> > > +{
+> > > +       gfn_t end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
+> > > +
+> > > +       /*
+> > > +        * Don't allow yielding, as the caller may have a flush pending.  Note,
+> > > +        * if mmu_lock is held for write, zapping will never yield in this case,
+> > > +        * but explicitly disallow it for safety.  The TDP MMU does not yield
+> > > +        * until it has made forward progress (steps sideways), and when zapping
+> > > +        * a single shadow page that it's guaranteed to see (thus the mmu_lock
+> > > +        * requirement), its "step sideways" will always step beyond the bounds
+> > > +        * of the shadow page's gfn range and stop iterating before yielding.
+> > > +        */
+> > > +       return __kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, end, false);
+> > > +}
+> > >  void kvm_tdp_mmu_zap_all(struct kvm *kvm);
+> > >
+> > >  int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+> > > --
+> > > 2.31.0.291.g576ba9dcdaf-goog
+> > >
