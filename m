@@ -2,116 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46D6349502
+	by mail.lfdr.de (Postfix) with ESMTP id 018043494FF
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhCYPKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:10:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63178 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230512AbhCYPKJ (ORCPT
+        id S231176AbhCYPKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230394AbhCYPKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:10:09 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PF5NOS076836;
-        Thu, 25 Mar 2021 11:09:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=rravADpvfL0QIpujNbNT4TsZjUwxpTDGUfrXBRxDamg=;
- b=CqxNirFAAmoKb+ExR3AYjFmjJ1aO9lcbYCUlvTdRD/5Ba2upzBGtIAAFrwvWN7mB9/lh
- 1yKnhebjCl78NkELKLmRqp8p6xssl3K85c/W/ZevnxtdZ0pmdDhI77bqe0w2LkksnhkZ
- Ky4TP9on1jSrJECfQpXN14BZR+WlcMOrRiHh1Wvw+hojC65HqDf6sFH858BSdkANaCCi
- 2YtQBH0umOzTlBeOGfD2onttusZ040LMUuZnNawhEgMpZIvlMK8WUsUezuH6sQ8hF6+7
- QVCGRH8nDlz5Ks1mtE6AURhWFe8HHznidnU7/DrJki5aGRaa/V/eQeId9zXpkKdjS20o AA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37gvavhb3y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 11:09:41 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12PF5YeG077253;
-        Thu, 25 Mar 2021 11:09:40 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37gvavhb0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 11:09:39 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12PEvhBg027442;
-        Thu, 25 Mar 2021 15:09:34 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 37d9bptvqs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Mar 2021 15:09:34 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12PF9V3N38142278
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 15:09:31 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BBA6C52050;
-        Thu, 25 Mar 2021 15:09:31 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.163.11.141])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 44CBD5204F;
-        Thu, 25 Mar 2021 15:09:29 +0000 (GMT)
-Message-ID: <39af167527d6478f86431c2ce29f68177700e82d.camel@linux.ibm.com>
-Subject: Re: [PATCH] ima: Fix the error code for restoring the PCR value
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        lihuafei <lihuafei1@huawei.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "dmitry.kasatkin@gmail.com" <dmitry.kasatkin@gmail.com>,
-        "jmorris@namei.org" <jmorris@namei.org>,
-        "serge@hallyn.com" <serge@hallyn.com>,
-        yangjihong <yangjihong1@huawei.com>,
-        Zhangjinhao <zhangjinhao2@huawei.com>
-Date:   Thu, 25 Mar 2021 11:09:27 -0400
-In-Reply-To: <0764ed04a7e84546a8b31fc13b264c47@huawei.com>
-References: <20210303032824.124112-1-lihuafei1@huawei.com>
-         <9df8d712-0e58-f95d-8f95-5feae2150b42@huawei.com>
-         <0764ed04a7e84546a8b31fc13b264c47@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
+        Thu, 25 Mar 2021 11:10:03 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6126FC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:10:03 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id l5so2382530ilv.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cmfGnJhW1ZKpR18NP8XlvFCkJb4ulhMaonqbFk4lIRA=;
+        b=ULidRotO2LfWr6HUVz7F+13oeRHQrR0Te92Q6AhStG07v4sXu65tyzn1Dcv+PUu2N9
+         ON+YiOySujyGPyvB28p4uc2dJggdZk3SHxtJbjgR7pH6TMUWdUcQHWCmk4wpyusl7B23
+         sKOHn2WhHia8E84urDDxTs42Ryg9BckVetuGQZeoYUXibO8EMV5KSaDrxIkknw3GRTNv
+         Xu6QqG25lALREsz637kyfIA1AfOtev0Q9TAgopelkXU3wD0OPb0avMc0cfE2MNRzNd+J
+         76j6WDI9If0rRLPYu09KhvOnP7IaHNi5lFQnR0ZtW/Iczd6WhbRbTKKNsu1B46QOqeB7
+         K8Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cmfGnJhW1ZKpR18NP8XlvFCkJb4ulhMaonqbFk4lIRA=;
+        b=EkSTAM3TjI84TaC9GaW9Hfm4bf/y42fSnrB9WQYl0uiC+pACt5tY1pN/l9aTgr4DsP
+         xJrwHarO8VF0JMwHyOZ+Hk1jlZlz1yiJhNtqutLu10o+v92oWf9O1r1MLNZp6f1ej5O6
+         F3zb0cy98/GueBedW7e7R1R6UtIAn05y+k1w9MTTr0jxZJkej3erVWys1wxeBgTbljuu
+         2OOcnncRX/rK2Xdjm465IwQjKvWdWd2i35MDWycdLMkhbkoX5Lf7MJlUo8wvfpxMXjBB
+         29IuvnbdHo7jHB4hCzKCtwkkN859lQCUDBu91XqaESQwE+GLmlEPDxRS2NO9wmN7/FH+
+         1KgQ==
+X-Gm-Message-State: AOAM533vib8AsgEkBfKnfoLxGuORPFnMYxWaZih6m9P5a6Vb3ynihc4H
+        XJnh9tSFA4dfW+c/Mg+PYrtb2Q==
+X-Google-Smtp-Source: ABdhPJzgM4t4KvMBGf+62u4KTbHXouqVgSpIz4nucxMJ6+4NWvoJtwX0BywbEEdhiSvLJXq+wcJtkg==
+X-Received: by 2002:a05:6e02:1ca7:: with SMTP id x7mr7076094ill.68.1616685002463;
+        Thu, 25 Mar 2021 08:10:02 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id p5sm2848483iod.31.2021.03.25.08.10.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 08:10:02 -0700 (PDT)
+Subject: Re: [PATCH AUTOSEL 5.11 43/44] signal: don't allow STOP on
+ PF_IO_WORKER threads
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Stefan Metzmacher <metze@samba.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, io-uring <io-uring@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20210325112459.1926846-1-sashal@kernel.org>
+ <20210325112459.1926846-43-sashal@kernel.org>
+ <f4c932b4-b787-651e-dd9f-584b386acddb@samba.org>
+ <m1r1k34ey1.fsf@fess.ebiederm.org>
+ <41589c56-9219-3ec2-55b3-3f010752ac7b@samba.org>
+ <2b2a9701-cbe0-4538-ed3b-6917b85bebf8@kernel.dk>
+ <acf9263d-7572-525d-9116-acb119399c13@samba.org>
+ <15712d38-8ea4-e8c7-85ba-9d800b99c976@kernel.dk>
+Message-ID: <f38622bd-cd98-8c3b-8779-9384d0279f5d@kernel.dk>
+Date:   Thu, 25 Mar 2021 09:10:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <15712d38-8ea4-e8c7-85ba-9d800b99c976@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-25_04:2021-03-24,2021-03-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 suspectscore=0 clxscore=1011 malwarescore=0
- phishscore=0 impostorscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103250110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-03-24 at 09:00 +0000, Roberto Sassu wrote:
-> > From: lihuafei
-> > Sent: Tuesday, March 23, 2021 2:41 PM
-> > ping. :-)
-> > 
-> > On 2021/3/3 11:28, Li Huafei wrote:
-> > > In ima_restore_measurement_list(), hdr[HDR_PCR].data is pointing to a
-> > > buffer of type u8, which contains the dumped 32-bit pcr value.
-> > > Currently, only the least significant byte is used to restore the pcr
-> > > value. We should convert hdr[HDR_PCR].data to a pointer of type u32
-> > > before fetching the value to restore the correct pcr value.
-> > >
-> > > Fixes: 47fdee60b47f ("ima: use ima_parse_buf() to parse measurements
-> > headers")
-> > > Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+On 3/25/21 8:02 AM, Jens Axboe wrote:
+> On 3/25/21 7:56 AM, Stefan Metzmacher wrote:
+>> Am 25.03.21 um 14:38 schrieb Jens Axboe:
+>>> On 3/25/21 6:11 AM, Stefan Metzmacher wrote:
+>>>>
+>>>> Am 25.03.21 um 13:04 schrieb Eric W. Biederman:
+>>>>> Stefan Metzmacher <metze@samba.org> writes:
+>>>>>
+>>>>>> Am 25.03.21 um 12:24 schrieb Sasha Levin:
+>>>>>>> From: "Eric W. Biederman" <ebiederm@xmission.com>
+>>>>>>>
+>>>>>>> [ Upstream commit 4db4b1a0d1779dc159f7b87feb97030ec0b12597 ]
+>>>>>>>
+>>>>>>> Just like we don't allow normal signals to IO threads, don't deliver a
+>>>>>>> STOP to a task that has PF_IO_WORKER set. The IO threads don't take
+>>>>>>> signals in general, and have no means of flushing out a stop either.
+>>>>>>>
+>>>>>>> Longer term, we may want to look into allowing stop of these threads,
+>>>>>>> as it relates to eg process freezing. For now, this prevents a spin
+>>>>>>> issue if a SIGSTOP is delivered to the parent task.
+>>>>>>>
+>>>>>>> Reported-by: Stefan Metzmacher <metze@samba.org>
+>>>>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>>>>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>>>>>>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>>>>>>> ---
+>>>>>>>  kernel/signal.c | 3 ++-
+>>>>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/kernel/signal.c b/kernel/signal.c
+>>>>>>> index 55526b941011..00a3840f6037 100644
+>>>>>>> --- a/kernel/signal.c
+>>>>>>> +++ b/kernel/signal.c
+>>>>>>> @@ -288,7 +288,8 @@ bool task_set_jobctl_pending(struct task_struct *task, unsigned long mask)
+>>>>>>>  			JOBCTL_STOP_SIGMASK | JOBCTL_TRAPPING));
+>>>>>>>  	BUG_ON((mask & JOBCTL_TRAPPING) && !(mask & JOBCTL_PENDING_MASK));
+>>>>>>>  
+>>>>>>> -	if (unlikely(fatal_signal_pending(task) || (task->flags & PF_EXITING)))
+>>>>>>> +	if (unlikely(fatal_signal_pending(task) ||
+>>>>>>> +		     (task->flags & (PF_EXITING | PF_IO_WORKER))))
+>>>>>>>  		return false;
+>>>>>>>  
+>>>>>>>  	if (mask & JOBCTL_STOP_SIGMASK)
+>>>>>>>
+>>>>>>
+>>>>>> Again, why is this proposed for 5.11 and 5.10 already?
+>>>>>
+>>>>> Has the bit about the io worker kthreads been backported?
+>>>>> If so this isn't horrible.  If not this is nonsense.
+>>>
+>>> No not yet - my plan is to do that, but not until we're 100% satisfied
+>>> with it.
+>>
+>> Do you understand why the patches where autoselected for 5.11 and 5.10?
 > 
-> Hi Li Huafei
+> As far as I know, selections like these (AUTOSEL) are done by some bot
+> that uses whatever criteria to see if they should be applied for earlier
+> revisions. I'm sure Sasha can expand on that :-)
 > 
-> yes, correct. Thanks for the patch.
+> Hence it's reasonable to expect that sometimes it'll pick patches that
+> should not go into stable, at least not just yet. It's important to
+> understand that this message is just a notice that it's queued up for
+> stable -rc, not that it's _in_ stable just yet. There's time to object.
 > 
-> Reviewed-by: Roberto Sassu <roberto.sassu@huawei.com>
+>>>> I don't know, I hope not...
+>>>>
+>>>> But I just tested v5.12-rc4 and attaching to
+>>>> an application with iothreads with gdb is still not possible,
+>>>> it still loops forever trying to attach to the iothreads.
+>>>
+>>> I do see the looping, gdb apparently doesn't give up when it gets
+>>> -EPERM trying to attach to the threads. Which isn't really a kernel
+>>> thing, but:
+>>
+>> Maybe we need to remove the iothreads from /proc/pid/tasks/
+> 
+> Is that how it finds them? It's arguably a bug in gdb that it just
+> keeps retrying, but it would be nice if we can ensure that it just
+> ignores them. Because if gdb triggers something like that, probably
+> others too...
+> 
+>>>> And I tested 'kill -9 $pidofiothread', and it feezed the whole
+>>>> machine...
+>>>
+>>> that sounds very strange, I haven't seen anything like that running
+>>> the exact same scenario.
+>>>
+>>>> So there's still work to do in order to get 5.12 stable.
+>>>>
+>>>> I'm short on time currently, but I hope to send more details soon.
+>>>
+>>> Thanks! I'll play with it this morning and see if I can provoke
+>>> something odd related to STOP/attach.
+>>
+>> Thanks!
+>>
+>> Somehow I have the impression that your same_thread_group_account patch
+>> may fix a lot of things...
+> 
+> Maybe? I'll look closer.
 
-The patch set is now queued in next-integrity-testing.
+It needs a bit more love than that. If you have threads already in your
+app, then we just want to skip over the PF_IO_WORKER threads. We can't
+just terminate the loop.
 
-thanks,
+Something like the below works for me.
 
-Mimi
+
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 3851bfcdba56..abff2fe10bfa 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -3723,7 +3723,7 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
+ 	 */
+ 	pos = task = task->group_leader;
+ 	do {
+-		if (!nr--)
++		if (same_thread_group(task, pos) && !nr--)
+ 			goto found;
+ 	} while_each_thread(task, pos);
+ fail:
+@@ -3744,16 +3744,22 @@ static struct task_struct *first_tid(struct pid *pid, int tid, loff_t f_pos,
+  */
+ static struct task_struct *next_tid(struct task_struct *start)
+ {
+-	struct task_struct *pos = NULL;
++	struct task_struct *tmp, *pos = NULL;
++
+ 	rcu_read_lock();
+-	if (pid_alive(start)) {
+-		pos = next_thread(start);
+-		if (thread_group_leader(pos))
+-			pos = NULL;
+-		else
+-			get_task_struct(pos);
++	if (!pid_alive(start))
++		goto no_thread;
++	list_for_each_entry_rcu(tmp, &start->thread_group, thread_group) {
++		if (!thread_group_leader(tmp) && same_thread_group(start, tmp)) {
++			get_task_struct(tmp);
++			pos = tmp;
++			break;
++		}
+ 	}
++no_thread:
+ 	rcu_read_unlock();
++	if (!pos)
++		return NULL;
+ 	put_task_struct(start);
+ 	return pos;
+ }
+diff --git a/include/linux/sched/signal.h b/include/linux/sched/signal.h
+index 3f6a0fcaa10c..4f621e386abf 100644
+--- a/include/linux/sched/signal.h
++++ b/include/linux/sched/signal.h
+@@ -668,11 +668,18 @@ static inline bool thread_group_leader(struct task_struct *p)
+ }
+ 
+ static inline
+-bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
++bool same_thread_group_account(struct task_struct *p1, struct task_struct *p2)
+ {
+ 	return p1->signal == p2->signal;
+ }
+ 
++static inline
++bool same_thread_group(struct task_struct *p1, struct task_struct *p2)
++{
++	return same_thread_group_account(p1, p2) &&
++			!((p1->flags | p2->flags) & PF_IO_WORKER);
++}
++
+ static inline struct task_struct *next_thread(const struct task_struct *p)
+ {
+ 	return list_entry_rcu(p->thread_group.next,
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 5f611658eeab..625110cacc2a 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -307,7 +307,7 @@ void thread_group_cputime(struct task_struct *tsk, struct task_cputime *times)
+ 	 * those pending times and rely only on values updated on tick or
+ 	 * other scheduler action.
+ 	 */
+-	if (same_thread_group(current, tsk))
++	if (same_thread_group_account(current, tsk))
+ 		(void) task_sched_runtime(current);
+ 
+ 	rcu_read_lock();
+
+-- 
+Jens Axboe
 
