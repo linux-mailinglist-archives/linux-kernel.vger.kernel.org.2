@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BF23493B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EA33493CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbhCYOJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:09:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58286 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhCYOIb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:08:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616681310; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ESAA6ThVbjxDwvrgI7oZbg7SXTWiqqrNoNLZkKKalh4=;
-        b=tzDk5ICtnXG7UJmZ8DpY6U1BkuC8D1+8dPNDnnlOOpvOAWVIxnmuVjMZzsJBnI4o23vNa3
-        ZfwNLnTDS1jWHUwwFpu2yhiWEI+8YhdGvMEGSKjVyqKi5ykvubchfi/vGyBcQ5scNA72Bp
-        sWuqWpNUXdNN8ormZOk2m/JxOTpwPAw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 08DEEADAA;
-        Thu, 25 Mar 2021 14:08:30 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 15:08:23 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
+        id S231461AbhCYOL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:11:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231363AbhCYOLH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:11:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE444C06174A;
+        Thu, 25 Mar 2021 07:11:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JP8HgLro6AbZLt2MNRw3IANQzsJHTI7f+9qGAMl8N+o=; b=DqxCWL1Jwo4lXLuI8106Mtc5CH
+        xO+DdWDRM0Td8F33WQ76z6ScIV5K9cYesdzhidA/U59KlheKVM9ru2K4rQw+FnZkihJjyMCJWDrOB
+        qoTYDqRIOc8GtvXzO7LrF3nxl7VwtYxe9RD0c91IGwws8nuVnV495Fsx1nuJK1jtbgWJHMI5raAKA
+        vcAi/HluSaIZCxyhhvx9VlaqFcsrhsys7PvvJTLqBH8C4wVDp7quMAkJsNG3heDRjBQ2L8GmrV48a
+        O994D1ERIF8PdGJwzN2cAFG6T8e9DjIxlVUAu62LmDxaGMO+iWxXfEG1g89MlJUqZu5sAmczL519w
+        rZzBKMtg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPQfv-00D2MO-Bh; Thu, 25 Mar 2021 14:09:33 +0000
+Date:   Thu, 25 Mar 2021 14:09:27 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
-References: <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
- <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
- <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
- <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
- <YFxEp0cfcJmcz5bP@localhost.localdomain>
- <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
- <YFxsBRORtgqUF/FZ@localhost.localdomain>
- <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
- <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
- <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
+ in-tree users
+Message-ID: <20210325140927.GX1719932@casper.infradead.org>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+ <20210325125001.GW1719932@casper.infradead.org>
+ <20210325132556.GS3697@techsingularity.net>
+ <20210325140657.GA1908@pc638.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
+In-Reply-To: <20210325140657.GA1908@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-03-21 13:40:45, David Hildenbrand wrote:
-> On 25.03.21 13:35, Michal Hocko wrote:
-> > On Thu 25-03-21 12:08:43, David Hildenbrand wrote:
-> > > On 25.03.21 11:55, Oscar Salvador wrote:
-[...]
-> > > > - When moving the initialization/accounting to hot-add/hot-remove,
-> > > >     the section containing the vmemmap pages will remain offline.
-> > > >     It might get onlined once the pages get online in online_pages(),
-> > > >     or not if vmemmap pages span a whole section.
-> > > >     I remember (but maybe David rmemeber better) that that was a problem
-> > > >     wrt. pfn_to_online_page() and hybernation/kdump.
-> > > >     So, if that is really a problem, we would have to care of ot setting
-> > > >     the section to the right state.
-> > > 
-> > > Good memory. Indeed, hibernation/kdump won't save the state of the vmemmap,
-> > > because the memory is marked as offline and, thus, logically without any
-> > > valuable content.
-> > 
-> > Could you point me to the respective hibernation code please? I always
-> > get lost in that area. Anyway, we do have the same problem even if the
-> > whole accounting is handled during {on,off}lining, no?
+On Thu, Mar 25, 2021 at 03:06:57PM +0100, Uladzislau Rezki wrote:
+> For the vmalloc we should be able to allocating on a specific NUMA node,
+> at least the current interface takes it into account. As far as i see
+> the current interface allocate on a current node:
 > 
-> kernel/power/snapshot.c:saveable_page().
+> static inline unsigned long
+> alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
+> {
+>     return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
+> }
+> 
+> Or am i missing something?
 
-Thanks! So this is as I've suspected. The very same problem is present
-if the memory block is marked offline. So we need a solution here
-anyway. One way to go would be to consider these vmemmap pages always
-online. pfn_to_online_page would have to special case them but we would
-need to identify them first. I used to have PageVmemmap or something
-like that in my early attempt to do this.
-
-That being said this is not an argument for one or the other aproach.
-Both need fixing.
--- 
-Michal Hocko
-SUSE Labs
+You can call __alloc_pages_bulk() directly; there's no need to indirect
+through alloc_pages_bulk_array().
