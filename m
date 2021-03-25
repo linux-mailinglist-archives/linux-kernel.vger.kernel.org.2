@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085D0348AB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A63348AB4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhCYHwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:52:43 -0400
-Received: from st43p00im-zteg10071901.me.com ([17.58.63.169]:52835 "EHLO
-        st43p00im-zteg10071901.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229866AbhCYHv6 (ORCPT
+        id S230121AbhCYHwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:52:49 -0400
+Received: from st43p00im-zteg10072001.me.com ([17.58.63.167]:46141 "EHLO
+        st43p00im-zteg10072001.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230076AbhCYHwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:51:58 -0400
+        Thu, 25 Mar 2021 03:52:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1616658716; bh=Ge/uIA5hLdNP9ltZO4wkWhRW01e4mo9aC5X6GiyNNoM=;
+        t=1616658722; bh=QsCRbaPqnprL4qMqqzd8drlWNJwB7FYj7GgunVMMLSU=;
         h=From:To:Subject:Date:Message-Id;
-        b=xaXQFWh0Y83hNWAp2kzvmQf4L2bNHqzTzo4ElSvJ33fOFt86nOWHv4vwVgMi57vkx
-         I7sHgMluSysgeSv5BN2AOFqn6+DzwNt9yxp6Lu50U2QHtdKE7RtKtzy5wkusQhRBk2
-         Sj7jxwRuqYMUxe4E4DeiJr/s1++/gyBTfuFHcblK419uxrcLBcSLEaUPyDqvB0qj0Y
-         nZvaSjE453E8eNpTLkc5wk8D/yWPb9bE+INWyhP975iGdZG/vxIL5p5xjwzL3KSbzr
-         ekcX65WebUnBKWofAQPT7oLVe0NoF7axkWkqSs4POFH4fV7n/DjydDRLs3gEcfA5iZ
-         /085ZDWETDhJQ==
+        b=aL19XyaWYXbWAjJ86n9PqZMwLUOoeZe9qNsckLuD9gL6r2hyXXFcZu4lc+bCvEZ9W
+         CFplseLd9G3LQRhSl/xykWJOjmTImor1r5Dxt6CjVqra3MMF6Pwo4U6dxKlALw44pD
+         Wcx40MN/2dwPNcLjqqWo3+mPYEmpeeg1iGyFkZ+KM+Gfwq3i8wgZXAL6wvVauZp+dP
+         VHYzBQFbR5l9/aktQ+wvlnvAyrMftgzuJw9NKsDCasWmRK2oqZjH+rMzTRkqrWPLd3
+         UZbqh2K3k5Jmh2GMxK0yE4D42iIm5qfIRfWZZQfDwVzB9GYAQhrPMH48T1UxKwKssO
+         YA1eLScXE4XSw==
 Received: from localhost (101.220.150.77.rev.sfr.net [77.150.220.101])
-        by st43p00im-zteg10071901.me.com (Postfix) with ESMTPSA id 38CB6D80F47;
-        Thu, 25 Mar 2021 07:51:55 +0000 (UTC)
+        by st43p00im-zteg10072001.me.com (Postfix) with ESMTPSA id DBAA0C0436;
+        Thu, 25 Mar 2021 07:52:00 +0000 (UTC)
 From:   Alain Volmat <avolmat@me.com>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -32,20 +32,18 @@ To:     Michael Turquette <mturquette@baylibre.com>,
 Cc:     Lee Jones <lee.jones@linaro.org>, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, Alain Volmat <avolmat@me.com>
-Subject: [PATCH v2 11/16] ARM: dts: sti: update clkgen-pll entries in stih407-clock
-Date:   Thu, 25 Mar 2021 08:50:13 +0100
-Message-Id: <20210325075018.6598-12-avolmat@me.com>
+Subject: [PATCH v2 12/16] ARM: dts: sti: update clkgen-pll entries in stih410-clock
+Date:   Thu, 25 Mar 2021 08:50:14 +0100
+Message-Id: <20210325075018.6598-13-avolmat@me.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210325075018.6598-1-avolmat@me.com>
 References: <20210325075018.6598-1-avolmat@me.com>
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.369,18.0.761,17.0.607.475.0000000_definitions?=
- =?UTF-8?Q?=3D2021-03-25=5F01:2021-03-24=5F01,2021-03-25=5F01,2020-04-07?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 suspectscore=0 adultscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103250059
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-25_01:2021-03-24,2021-03-25 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2103250059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -56,14 +54,14 @@ and update when necessary the compatible.
 
 Signed-off-by: Alain Volmat <avolmat@me.com>
 ---
- arch/arm/boot/dts/stih407-clock.dtsi | 16 +++-------------
+ arch/arm/boot/dts/stih410-clock.dtsi | 16 +++-------------
  1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm/boot/dts/stih407-clock.dtsi b/arch/arm/boot/dts/stih407-clock.dtsi
-index ecd568777e5f..2603226a6ca8 100644
---- a/arch/arm/boot/dts/stih407-clock.dtsi
-+++ b/arch/arm/boot/dts/stih407-clock.dtsi
-@@ -36,8 +36,6 @@
+diff --git a/arch/arm/boot/dts/stih410-clock.dtsi b/arch/arm/boot/dts/stih410-clock.dtsi
+index 04b0d7080353..3aeabdd6e305 100644
+--- a/arch/arm/boot/dts/stih410-clock.dtsi
++++ b/arch/arm/boot/dts/stih410-clock.dtsi
+@@ -39,8 +39,6 @@
  				compatible = "st,stih407-clkgen-plla9";
  
  				clocks = <&clk_sysin>;
