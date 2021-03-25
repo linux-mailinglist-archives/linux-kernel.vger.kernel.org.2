@@ -2,420 +2,1350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAA9349C0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EF6349C15
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhCYWBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:01:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:54937 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhCYWAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:00:51 -0400
-IronPort-SDR: 9VzwnRmR6oW9xRANfI4vpzwDpLfPdbozl/uM+vxLOj+uaJSUqNP9W3+TYkoxYELY6AmkbwpB9W
- aB8o+gzQVzFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="255024682"
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="gz'50?scan'50,208,50";a="255024682"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 15:00:50 -0700
-IronPort-SDR: drqtZ8TdKQ2TSrKFPwTlBikqJ6GNkQoufAsRYHkMsSZgPwwNuZg6qbcygvvoiF6r+vJKMHYuYs
- Ou9Ws+s66zTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="gz'50?scan'50,208,50";a="416210248"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 25 Mar 2021 15:00:48 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lPY23-0002Hb-SZ; Thu, 25 Mar 2021 22:00:47 +0000
-Date:   Fri, 26 Mar 2021 06:00:25 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: s390-linux-ld: ll_temac_main.c:undefined reference to
- `devm_platform_ioremap_resource'
-Message-ID: <202103260620.KbOGJpm5-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="wRRV7LY7NUeQGEoC"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S231184AbhCYWFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230357AbhCYWFT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 18:05:19 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E97C06174A;
+        Thu, 25 Mar 2021 15:05:18 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id w18so4200132edc.0;
+        Thu, 25 Mar 2021 15:05:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ApgMjzSkWzTGf6uV9n0efFarhTNL+aWZsJ2YMPQ+VWI=;
+        b=N+y1aOfZthmXxWWAXg/WazKmMHzHWoUJPKCvkN4vboSWaEKeLfrvFYJAQ/8spB/Hkr
+         CCzgiRus24pLzKbwLTntKkfx1RPdnimXOCdU9MJgQt0nNrtmr7xrDfPhrfh5QCwK213R
+         XxAuSYW2GVfL4jVyGxVBifz1JNu0JhVhwG7JGaTrJxg4iw96YmeSIymitH8uKMBmOxRB
+         qo2AMow4Itstw70Al6NoIQFjAsY8fhmbh4PWhUEqjc26XMR1Ad+WxqIkxzEDM7QxgYaM
+         H+ajv1ytgoAiCp5Lvokxa8X9AbsSw0NUcvzlv2qQLJ7fZ+uY5/Lq7m6RHcIslEr1af6u
+         FuGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ApgMjzSkWzTGf6uV9n0efFarhTNL+aWZsJ2YMPQ+VWI=;
+        b=HfoowdIZgY0NoaUGa27m31VmdzeJbg7vqdkB0ylS4LdiQBdwpJu0VI1ONy1078R61c
+         FoFiRIjXmru37zsy+GoaU3XjcKAEmbdSSjBZaG7ENJ4/HZXnfodKFXQ6mAoibOsr/3Cq
+         6Ivc+pMZ0/SOs5lqeqdpgvUE5UXdBkfuS2PdPkpWNWYnS2WCTGh7Fj/yF7QPMCLiYi9/
+         st9RTGBPGYzBiyVvhX4tii1yZzSOt/VLxkXoRZgooEXKt2mxh+R9/05ILb1dqH8ikmDJ
+         f6KHWEPkUI23F/tp5RY62K+VM8a+BxyyqJRQ0xT7WlstfMAevC2MD3QGpASzPze44euv
+         2bTQ==
+X-Gm-Message-State: AOAM532IF5xUQHRJ31T75P27DDXhhlTE3I9j38dl77m+ldxk5tyC3vsM
+        MYVuFt7UFBuxPNoDcVq41IfC5iaV2AM=
+X-Google-Smtp-Source: ABdhPJxmNpdsbHMFe6BMU2Zb1UzGZOHh07+tkYBe5qsO472Y4rcPVa+6MSG1wMMMU6LTiT0zyopM7Q==
+X-Received: by 2002:a05:6402:4309:: with SMTP id m9mr11911728edc.25.1616709917387;
+        Thu, 25 Mar 2021 15:05:17 -0700 (PDT)
+Received: from pop-os.localdomain (cpc97922-walt21-2-0-cust248.13-2.cable.virginm.net. [82.16.251.249])
+        by smtp.gmail.com with ESMTPSA id i6sm2951726ejz.95.2021.03.25.15.05.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 15:05:16 -0700 (PDT)
+From:   Joe Sandom <joe.g.sandom@gmail.com>
+To:     jic23@kernel.org
+Cc:     andy.shevchenko@gmail.com, Joe Sandom <joe.g.sandom@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/2] Added AMS tsl2591 driver implementation
+Date:   Thu, 25 Mar 2021 22:05:03 +0000
+Message-Id: <20210325220505.14507-1-joe.g.sandom@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Driver implementation for AMS/TAOS tsl2591 ambient light sensor.
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This driver supports configuration via device tree and sysfs.
+Supported channels for raw infrared light intensity,
+raw combined light intensity and illuminance in lux.
+The driver additionally supports iio events on lower and
+upper thresholds.
 
-Hi Zhang,
+This is a very-high sensitivity light-to-digital converter that
+transforms light intensity into a digital signal.
 
-FYI, the error/warning still remains.
+Datasheet: https://ams.com/tsl25911#tab/documents
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   002322402dafd846c424ffa9240a937f49b48c42
-commit: cc6596fc7295e9dcd78156ed42f9f8e1221f7530 net: ll_temac: Fix potential NULL dereference in temac_probe()
-date:   4 months ago
-config: s390-randconfig-r036-20210325 (attached as .config)
-compiler: s390-linux-gcc (GCC) 9.3.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cc6596fc7295e9dcd78156ed42f9f8e1221f7530
-        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-        git fetch --no-tags linus master
-        git checkout cc6596fc7295e9dcd78156ed42f9f8e1221f7530
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   s390-linux-ld: drivers/net/ethernet/altera/altera_tse_main.o: in function `request_and_map':
-   altera_tse_main.c:(.text+0x216): undefined reference to `devm_ioremap'
-   s390-linux-ld: drivers/net/ethernet/xilinx/ll_temac_main.o: in function `temac_probe':
-   ll_temac_main.c:(.text+0x2eec): undefined reference to `devm_platform_ioremap_resource_byname'
-   s390-linux-ld: ll_temac_main.c:(.text+0x2f5c): undefined reference to `devm_platform_ioremap_resource_byname'
->> s390-linux-ld: ll_temac_main.c:(.text+0x3518): undefined reference to `devm_platform_ioremap_resource'
-   s390-linux-ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.o: in function `axienet_probe':
-   xilinx_axienet_main.c:(.text+0x265c): undefined reference to `devm_ioremap_resource'
-
+Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---wRRV7LY7NUeQGEoC
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+Changes in v6;
+- Separated tsl2591_set_als_thresholds into tsl2591_set_als_lower_threshold and
+  tsl2591_set_upper_threshold for cleaner handling of forcing values when thresholds are met
+- Added als persist value as an argument to tsl2591_set_als_persist_cycle to
+  assign to chip from within the function. Cleaner approach.
+- Cleaned up power_state handling in tsl2591_resume function
+- Corrected interrupt handler to return IRQ_NONE in case of spurious interrupt
 
-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
-CQEA
+ drivers/iio/light/Kconfig   |   11 +
+ drivers/iio/light/Makefile  |    1 +
+ drivers/iio/light/tsl2591.c | 1215 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 1227 insertions(+)
+ create mode 100644 drivers/iio/light/tsl2591.c
 
---wRRV7LY7NUeQGEoC--
+diff --git a/drivers/iio/light/Kconfig b/drivers/iio/light/Kconfig
+index 33ad4dd0b5c7..6a69a9a3577a 100644
+--- a/drivers/iio/light/Kconfig
++++ b/drivers/iio/light/Kconfig
+@@ -501,6 +501,17 @@ config TSL2583
+ 	  Provides support for the TAOS tsl2580, tsl2581 and tsl2583 devices.
+ 	  Access ALS data via iio, sysfs.
+ 
++config TSL2591
++        tristate "TAOS TSL2591 ambient light sensor"
++        depends on I2C
++        help
++          Select Y here for support of the AMS/TAOS TSL2591 ambient light sensor,
++          featuring channels for combined visible + IR intensity and lux illuminance.
++          Access data via iio and sysfs. Supports iio_events.
++
++          To compile this driver as a module, select M: the
++          module will be called tsl2591.
++
+ config TSL2772
+ 	tristate "TAOS TSL/TMD2x71 and TSL/TMD2x72 Family of light and proximity sensors"
+ 	depends on I2C
+diff --git a/drivers/iio/light/Makefile b/drivers/iio/light/Makefile
+index ea376deaca54..d10912faf964 100644
+--- a/drivers/iio/light/Makefile
++++ b/drivers/iio/light/Makefile
+@@ -48,6 +48,7 @@ obj-$(CONFIG_ST_UVIS25_SPI)	+= st_uvis25_spi.o
+ obj-$(CONFIG_TCS3414)		+= tcs3414.o
+ obj-$(CONFIG_TCS3472)		+= tcs3472.o
+ obj-$(CONFIG_TSL2583)		+= tsl2583.o
++obj-$(CONFIG_TSL2591)		+= tsl2591.o
+ obj-$(CONFIG_TSL2772)		+= tsl2772.o
+ obj-$(CONFIG_TSL4531)		+= tsl4531.o
+ obj-$(CONFIG_US5182D)		+= us5182d.o
+diff --git a/drivers/iio/light/tsl2591.c b/drivers/iio/light/tsl2591.c
+new file mode 100644
+index 000000000000..d38569ce165e
+--- /dev/null
++++ b/drivers/iio/light/tsl2591.c
+@@ -0,0 +1,1215 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright (C) 2020 Joe Sandom <joe.g.sandom@gmail.com>
++ *
++ * Datasheet: https://ams.com/tsl25911#tab/documents
++ *
++ * Device driver for the TAOS TSL2591. This is a very-high sensitivity
++ * light-to-digital converter that transforms light intensity into a digital
++ * signal.
++ */
++
++#include <asm/unaligned.h>
++#include <linux/bitfield.h>
++#include <linux/debugfs.h>
++#include <linux/delay.h>
++#include <linux/i2c.h>
++#include <linux/interrupt.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/pm_runtime.h>
++
++#include <linux/iio/events.h>
++#include <linux/iio/iio.h>
++#include <linux/iio/sysfs.h>
++
++/* ADC integration time, field value to time in ms*/
++#define TSL2591_FVAL_TO_ATIME(x) (((x) + 1) * 100)
++/* ADC integration time, time in ms to field value */
++#define TSL2591_ATIME_TO_FVAL(x) (((x) / 100) - 1)
++
++/* TSL2591 register set */
++#define TSL2591_ENABLE      0x00
++#define TSL2591_CONTROL     0x01
++#define TSL2591_AILTL       0x04
++#define TSL2591_AILTH       0x05
++#define TSL2591_AIHTL       0x06
++#define TSL2591_AIHTH       0x07
++#define TSL2591_NP_AILTL    0x08
++#define TSL2591_NP_AILTH    0x09
++#define TSL2591_NP_AIHTL    0x0A
++#define TSL2591_NP_AIHTH    0x0B
++#define TSL2591_PERSIST     0x0C
++#define TSL2591_PACKAGE_ID  0x11
++#define TSL2591_DEVICE_ID   0x12
++#define TSL2591_STATUS      0x13
++#define TSL2591_C0_DATAL    0x14
++#define TSL2591_C0_DATAH    0x15
++#define TSL2591_C1_DATAL    0x16
++#define TSL2591_C1_DATAH    0x17
++
++/* TSL2591 command register definitions */
++#define TSL2591_CMD_NOP             (BIT(5) | BIT(7))
++#define TSL2591_CMD_SF              GENMASK(7, 5)
++#define TSL2591_CMD_SF_INTSET       (BIT(2) | TSL2591_CMD_SF)
++#define TSL2591_CMD_SF_CALS_I       (BIT(0) | BIT(2) | TSL2591_CMD_SF)
++#define TSL2591_CMD_SF_CALS_NPI     (GENMASK(2, 0) | TSL2591_CMD_SF)
++#define TSL2591_CMD_SF_CNP_ALSI     (BIT(1) | BIT(3) | TSL2591_CMD_SF)
++
++/* TSL2591 enable register definitions */
++#define TSL2591_PWR_ON              BIT(0)
++#define TSL2591_PWR_OFF             (0 << 0)
++#define TSL2591_ENABLE_ALS          BIT(1)
++#define TSL2591_ENABLE_ALS_INT      BIT(4)
++#define TSL2591_ENABLE_SLEEP_INT    BIT(6)
++#define TSL2591_ENABLE_NP_INT       BIT(7)
++
++/* TSL2591 control register definitions */
++#define TSL2591_CTRL_ALS_INTEGRATION_100MS  (0 << 0)
++#define TSL2591_CTRL_ALS_INTEGRATION_200MS  BIT(0)
++#define TSL2591_CTRL_ALS_INTEGRATION_300MS  BIT(1)
++#define TSL2591_CTRL_ALS_INTEGRATION_400MS  GENMASK(1, 0)
++#define TSL2591_CTRL_ALS_INTEGRATION_500MS  BIT(2)
++#define TSL2591_CTRL_ALS_INTEGRATION_600MS  (BIT(0) | BIT(2))
++#define TSL2591_CTRL_ALS_LOW_GAIN           (0 << 0)
++#define TSL2591_CTRL_ALS_MED_GAIN           BIT(4)
++#define TSL2591_CTRL_ALS_HIGH_GAIN          BIT(5)
++#define TSL2591_CTRL_ALS_MAX_GAIN           GENMASK(5, 4)
++#define TSL2591_CTRL_SYS_RESET              BIT(7)
++
++/* TSL2591 persist register definitions */
++#define TSL2591_PRST_ALS_INT_CYCLE_0        (0 << 0)
++#define TSL2591_PRST_ALS_INT_CYCLE_ANY      BIT(0)
++#define TSL2591_PRST_ALS_INT_CYCLE_2        BIT(1)
++#define TSL2591_PRST_ALS_INT_CYCLE_3        GENMASK(1, 0)
++#define TSL2591_PRST_ALS_INT_CYCLE_5        BIT(2)
++#define TSL2591_PRST_ALS_INT_CYCLE_10       (BIT(0) | BIT(2))
++#define TSL2591_PRST_ALS_INT_CYCLE_15       GENMASK(2, 1)
++#define TSL2591_PRST_ALS_INT_CYCLE_20       GENMASK(2, 0)
++#define TSL2591_PRST_ALS_INT_CYCLE_25       BIT(3)
++#define TSL2591_PRST_ALS_INT_CYCLE_30       (BIT(0) | BIT(3))
++#define TSL2591_PRST_ALS_INT_CYCLE_35       (BIT(1) | BIT(3))
++#define TSL2591_PRST_ALS_INT_CYCLE_40       (GENMASK(1, 0) | BIT(3))
++#define TSL2591_PRST_ALS_INT_CYCLE_45       GENMASK(3, 2)
++#define TSL2591_PRST_ALS_INT_CYCLE_50       (BIT(0) | GENMASK(3, 2))
++#define TSL2591_PRST_ALS_INT_CYCLE_55       GENMASK(3, 1)
++#define TSL2591_PRST_ALS_INT_CYCLE_60       GENMASK(3, 0)
++#define TSL2591_PRST_ALS_INT_CYCLE_MAX      TSL2591_PRST_ALS_INT_CYCLE_60
++
++/* TSL2591 PID register mask */
++#define TSL2591_PACKAGE_ID_MASK    GENMASK(5, 4)
++
++/* TSL2591 ID register mask */
++#define TSL2591_DEVICE_ID_MASK     GENMASK(7, 0)
++
++/* TSL2591 status register masks */
++#define TSL2591_STS_ALS_VALID_MASK   BIT(0)
++#define TSL2591_STS_ALS_INT_MASK     BIT(4)
++#define TSL2591_STS_NPERS_INT_MASK   BIT(5)
++#define TSL2591_STS_VAL_HIGH_MASK    BIT(0)
++
++/* TSL2591 constant values */
++#define TSL2591_PACKAGE_ID_VAL  0x00
++#define TSL2591_DEVICE_ID_VAL   0x50
++
++/* Power off suspend delay time MS */
++#define TSL2591_POWER_OFF_DELAY_MS   2000
++
++/* TSL2591 default values */
++#define TSL2591_DEFAULT_ALS_INT_TIME          TSL2591_CTRL_ALS_INTEGRATION_300MS
++#define TSL2591_DEFAULT_ALS_GAIN              TSL2591_CTRL_ALS_MED_GAIN
++#define TSL2591_DEFAULT_ALS_PERSIST           TSL2591_PRST_ALS_INT_CYCLE_ANY
++#define TSL2591_DEFAULT_ALS_LOWER_THRESH      100
++#define TSL2591_DEFAULT_ALS_UPPER_THRESH      1500
++
++/* TSL2591 number of data registers */
++#define TSL2591_NUM_DATA_REGISTERS     4
++
++/* TSL2591 number of valid status reads on ADC complete */
++#define TSL2591_ALS_STS_VALID_COUNT    10
++
++/* TSL2591 maximum values */
++#define TSL2591_MAX_ALS_INT_TIME_MS    600
++#define TSL2591_ALS_MAX_VALUE	       (BIT(16) - 1)
++
++/*
++ * LUX calculations;
++ * AGAIN values from Adafruits TSL2591 Arduino library
++ * https://github.com/adafruit/Adafruit_TSL2591_Library
++ */
++#define TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER   1
++#define TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER   25
++#define TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER  428
++#define TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER   9876
++#define TSL2591_LUX_COEFFICIENT                408
++
++struct tsl2591_als_settings {
++	u16 als_lower_thresh;
++	u16 als_upper_thresh;
++	u8 als_int_time;
++	u8 als_persist;
++	u8 als_gain;
++};
++
++struct tsl2591_chip {
++	struct tsl2591_als_settings als_settings;
++	struct i2c_client *client;
++	/*
++	 * Keep als_settings in sync with hardware state
++	 * and ensure multiple readers are serialized.
++	 */
++	struct mutex als_mutex;
++	bool events_enabled;
++};
++
++/*
++ * Period table is ALS persist cycle x integration time setting
++ * Integration times: 100ms, 200ms, 300ms, 400ms, 500ms, 600ms
++ * ALS cycles: 1, 2, 3, 5, 10, 20, 25, 30, 35, 40, 45, 50, 55, 60
++ */
++static const char * const tsl2591_als_period_list[] = {
++	"0.1 0.2 0.3 0.5 1.0 2.0 2.5 3.0 3.5 4.0 4.5 5.0 5.5 6.0",
++	"0.2 0.4 0.6 1.0 2.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0 11.0 12.0",
++	"0.3 0.6 0.9 1.5 3.0 6.0 7.5 9.0 10.5 12.0 13.5 15.0 16.5 18.0",
++	"0.4 0.8 1.2 2.0 4.0 8.0 10.0 12.0 14.0 16.0 18.0 20.0 22.0 24.0",
++	"0.5 1.0 1.5 2.5 5.0 10.0 12.5 15.0 17.5 20.0 22.5 25.0 27.5 30.0",
++	"0.6 1.2 1.8 3.0 6.0 12.0 15.0 18.0 21.0 24.0 27.0 30.0 33.0 36.0",
++};
++
++static const int tsl2591_int_time_available[] = {
++	100, 200, 300, 400, 500, 600,
++};
++
++static const int tsl2591_calibscale_available[] = {
++	1, 25, 428, 9876,
++};
++
++static int tsl2591_set_als_lower_threshold(struct tsl2591_chip *chip,
++					   u16 als_lower_threshold);
++static int tsl2591_set_als_upper_threshold(struct tsl2591_chip *chip,
++					   u16 als_upper_threshold);
++
++static int tsl2591_gain_to_multiplier(const u8 als_gain)
++{
++	switch (als_gain) {
++	case TSL2591_CTRL_ALS_LOW_GAIN:
++		return TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER;
++	case TSL2591_CTRL_ALS_MED_GAIN:
++		return TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER;
++	case TSL2591_CTRL_ALS_HIGH_GAIN:
++		return TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER;
++	case TSL2591_CTRL_ALS_MAX_GAIN:
++		return TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER;
++	default:
++		return -EINVAL;
++	}
++}
++
++static u8 tsl2591_multiplier_to_gain(const u32 multiplier)
++{
++	switch (multiplier) {
++	case TSL2591_CTRL_ALS_LOW_GAIN_MULTIPLIER:
++		return TSL2591_CTRL_ALS_LOW_GAIN;
++	case TSL2591_CTRL_ALS_MED_GAIN_MULTIPLIER:
++		return TSL2591_CTRL_ALS_MED_GAIN;
++	case TSL2591_CTRL_ALS_HIGH_GAIN_MULTIPLIER:
++		return TSL2591_CTRL_ALS_HIGH_GAIN;
++	case TSL2591_CTRL_ALS_MAX_GAIN_MULTIPLIER:
++		return TSL2591_CTRL_ALS_MAX_GAIN;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int tsl2591_persist_cycle_to_lit(const u8 als_persist)
++{
++	switch (als_persist) {
++	case TSL2591_PRST_ALS_INT_CYCLE_ANY:
++		return 1;
++	case TSL2591_PRST_ALS_INT_CYCLE_2:
++		return 2;
++	case TSL2591_PRST_ALS_INT_CYCLE_3:
++		return 3;
++	case TSL2591_PRST_ALS_INT_CYCLE_5:
++		return 5;
++	case TSL2591_PRST_ALS_INT_CYCLE_10:
++		return 10;
++	case TSL2591_PRST_ALS_INT_CYCLE_15:
++		return 15;
++	case TSL2591_PRST_ALS_INT_CYCLE_20:
++		return 20;
++	case TSL2591_PRST_ALS_INT_CYCLE_25:
++		return 25;
++	case TSL2591_PRST_ALS_INT_CYCLE_30:
++		return 30;
++	case TSL2591_PRST_ALS_INT_CYCLE_35:
++		return 35;
++	case TSL2591_PRST_ALS_INT_CYCLE_40:
++		return 40;
++	case TSL2591_PRST_ALS_INT_CYCLE_45:
++		return 45;
++	case TSL2591_PRST_ALS_INT_CYCLE_50:
++		return 50;
++	case TSL2591_PRST_ALS_INT_CYCLE_55:
++		return 55;
++	case TSL2591_PRST_ALS_INT_CYCLE_60:
++		return 60;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int tsl2591_persist_lit_to_cycle(const u8 als_persist)
++{
++	switch (als_persist) {
++	case 1:
++		return TSL2591_PRST_ALS_INT_CYCLE_ANY;
++	case 2:
++		return TSL2591_PRST_ALS_INT_CYCLE_2;
++	case 3:
++		return TSL2591_PRST_ALS_INT_CYCLE_3;
++	case 5:
++		return TSL2591_PRST_ALS_INT_CYCLE_5;
++	case 10:
++		return TSL2591_PRST_ALS_INT_CYCLE_10;
++	case 15:
++		return TSL2591_PRST_ALS_INT_CYCLE_15;
++	case 20:
++		return TSL2591_PRST_ALS_INT_CYCLE_20;
++	case 25:
++		return TSL2591_PRST_ALS_INT_CYCLE_25;
++	case 30:
++		return TSL2591_PRST_ALS_INT_CYCLE_30;
++	case 35:
++		return TSL2591_PRST_ALS_INT_CYCLE_35;
++	case 40:
++		return TSL2591_PRST_ALS_INT_CYCLE_40;
++	case 45:
++		return TSL2591_PRST_ALS_INT_CYCLE_45;
++	case 50:
++		return TSL2591_PRST_ALS_INT_CYCLE_50;
++	case 55:
++		return TSL2591_PRST_ALS_INT_CYCLE_55;
++	case 60:
++		return TSL2591_PRST_ALS_INT_CYCLE_60;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int tsl2591_compatible_int_time(struct tsl2591_chip *chip,
++				       const u32 als_integration_time)
++{
++	switch (als_integration_time) {
++	case TSL2591_CTRL_ALS_INTEGRATION_100MS:
++	case TSL2591_CTRL_ALS_INTEGRATION_200MS:
++	case TSL2591_CTRL_ALS_INTEGRATION_300MS:
++	case TSL2591_CTRL_ALS_INTEGRATION_400MS:
++	case TSL2591_CTRL_ALS_INTEGRATION_500MS:
++	case TSL2591_CTRL_ALS_INTEGRATION_600MS:
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int tsl2591_als_time_to_fval(const u32 als_integration_time)
++{
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(tsl2591_int_time_available); ++i) {
++		if (als_integration_time == tsl2591_int_time_available[i])
++			return TSL2591_ATIME_TO_FVAL(als_integration_time);
++	}
++
++	return -EINVAL;
++}
++
++static int tsl2591_compatible_gain(struct tsl2591_chip *chip, const u8 als_gain)
++{
++	switch (als_gain) {
++	case TSL2591_CTRL_ALS_LOW_GAIN:
++	case TSL2591_CTRL_ALS_MED_GAIN:
++	case TSL2591_CTRL_ALS_HIGH_GAIN:
++	case TSL2591_CTRL_ALS_MAX_GAIN:
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int tsl2591_compatible_als_persist_cycle(struct tsl2591_chip *chip,
++						const u32 als_persist)
++{
++	switch (als_persist) {
++	case TSL2591_PRST_ALS_INT_CYCLE_ANY:
++	case TSL2591_PRST_ALS_INT_CYCLE_2:
++	case TSL2591_PRST_ALS_INT_CYCLE_3:
++	case TSL2591_PRST_ALS_INT_CYCLE_5:
++	case TSL2591_PRST_ALS_INT_CYCLE_10:
++	case TSL2591_PRST_ALS_INT_CYCLE_15:
++	case TSL2591_PRST_ALS_INT_CYCLE_20:
++	case TSL2591_PRST_ALS_INT_CYCLE_25:
++	case TSL2591_PRST_ALS_INT_CYCLE_30:
++	case TSL2591_PRST_ALS_INT_CYCLE_35:
++	case TSL2591_PRST_ALS_INT_CYCLE_40:
++	case TSL2591_PRST_ALS_INT_CYCLE_45:
++	case TSL2591_PRST_ALS_INT_CYCLE_50:
++	case TSL2591_PRST_ALS_INT_CYCLE_55:
++	case TSL2591_PRST_ALS_INT_CYCLE_60:
++		return 0;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int tsl2591_wait_adc_complete(struct tsl2591_chip *chip)
++{
++	struct tsl2591_als_settings settings = chip->als_settings;
++	struct i2c_client *client = chip->client;
++	int delay;
++	int ret;
++	int i;
++
++	delay = TSL2591_FVAL_TO_ATIME(settings.als_int_time);
++	if (!delay)
++		return -EINVAL;
++
++	/*
++	 * Sleep for ALS integration time to allow enough time
++	 * for an ADC read cycle to complete. Check status after
++	 * delay for ALS valid.
++	 */
++	msleep(delay);
++
++	/* Check for status ALS valid flag for up to 100ms */
++	for (i = 0; i < TSL2591_ALS_STS_VALID_COUNT; ++i) {
++		ret = i2c_smbus_read_byte_data(client,
++					       TSL2591_CMD_NOP | TSL2591_STATUS);
++		if (ret < 0) {
++			dev_err(&client->dev, "Failed to read register\n");
++			return -EINVAL;
++		}
++		ret = FIELD_GET(TSL2591_STS_ALS_VALID_MASK, ret);
++		if (ret == TSL2591_STS_VAL_HIGH_MASK)
++			break;
++
++		if (i == TSL2591_ALS_STS_VALID_COUNT - 1)
++			return -ENODATA;
++
++		usleep_range(9000, 10000);
++	}
++
++	return 0;
++}
++
++/*
++ * tsl2591_read_channel_data - Reads raw channel data and calculates lux
++ *
++ * Formula for lux calculation;
++ * Derived from Adafruit's TSL2591 library
++ * Link: https://github.com/adafruit/Adafruit_TSL2591_Library
++ * Counts Per Lux (CPL) = (ATIME_ms * AGAIN) / LUX DF
++ * lux = ((C0DATA - C1DATA) * (1 - (C1DATA / C0DATA))) / CPL
++ *
++ * Scale values to get more representative value of lux i.e.
++ * lux = ((C0DATA - C1DATA) * (1000 - ((C1DATA * 1000) / C0DATA))) / CPL
++ *
++ * Channel 0 = IR + Visible
++ * Channel 1 = IR only
++ */
++static int tsl2591_read_channel_data(struct iio_dev *indio_dev,
++				     struct iio_chan_spec const *chan,
++				     int *val, int *val2)
++{
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	struct tsl2591_als_settings *settings = &chip->als_settings;
++	struct i2c_client *client = chip->client;
++
++	u8 als_data[TSL2591_NUM_DATA_REGISTERS];
++	int counts_per_lux, int_time_fval, gain_multi, lux;
++	u16 als_ch0, als_ch1;
++	int ret;
++
++	ret = tsl2591_wait_adc_complete(chip);
++	if (ret < 0) {
++		dev_err(&client->dev, "No data available. Err: %d\n", ret);
++		return ret;
++	}
++
++	ret = i2c_smbus_read_i2c_block_data(client,
++					    TSL2591_CMD_NOP | TSL2591_C0_DATAL,
++					    sizeof(als_data), als_data);
++	if (ret < 0) {
++		dev_err(&client->dev, "Failed to read data bytes");
++			return ret;
++	}
++
++	als_ch0 = get_unaligned_le16(&als_data[0]);
++	als_ch1 = get_unaligned_le16(&als_data[2]);
++
++	switch (chan->type) {
++	case IIO_INTENSITY:
++		if (chan->channel2 == IIO_MOD_LIGHT_BOTH)
++			*val = als_ch0;
++		else if (chan->channel2 == IIO_MOD_LIGHT_IR)
++			*val = als_ch1;
++		else
++			return -EINVAL;
++		break;
++	case IIO_LIGHT:
++		gain_multi = tsl2591_gain_to_multiplier(settings->als_gain);
++		if (gain_multi < 0) {
++			dev_err(&client->dev, "Invalid multiplier");
++			return gain_multi;
++		}
++
++		int_time_fval = TSL2591_FVAL_TO_ATIME(settings->als_int_time);
++		/* Calculate counts per lux value */
++		counts_per_lux = (int_time_fval * gain_multi) / TSL2591_LUX_COEFFICIENT;
++
++		dev_dbg(&client->dev, "Counts Per Lux: %d\n", counts_per_lux);
++
++		/* Calculate lux value */
++		lux = ((als_ch0 - als_ch1) *
++		       (1000 - ((als_ch1 * 1000) / als_ch0))) / counts_per_lux;
++
++		dev_dbg(&client->dev, "Raw lux calculation: %d\n", lux);
++
++		/* Divide by 1000 to get real lux value before scaling */
++		*val = lux / 1000;
++
++		/* Get the decimal part of lux reading */
++		*val2 = ((lux - (*val * 1000)) * 1000);
++
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int tsl2591_set_als_gain_int_time(struct tsl2591_chip *chip)
++{
++	struct tsl2591_als_settings als_settings = chip->als_settings;
++	struct i2c_client *client = chip->client;
++	int ret;
++
++	ret = i2c_smbus_write_byte_data(client,
++					TSL2591_CMD_NOP | TSL2591_CONTROL,
++					als_settings.als_int_time | als_settings.als_gain);
++	if (ret)
++		dev_err(&client->dev, "Failed to set als gain & int time\n");
++
++	return ret;
++}
++
++static int tsl2591_set_als_lower_threshold(struct tsl2591_chip *chip,
++					   u16 als_lower_threshold)
++{
++	struct tsl2591_als_settings als_settings = chip->als_settings;
++	struct i2c_client *client = chip->client;
++
++	u16 als_upper_threshold;
++	u8 als_lower_l;
++	u8 als_lower_h;
++	int ret;
++
++	chip->als_settings.als_lower_thresh = als_lower_threshold;
++
++	/*
++	 * Lower threshold should not be greater or equal to upper.
++	 * If this is the case, then assert upper threshold to new lower
++	 * threshold + 1 to avoid ordering issues when setting
++	 * thresholds.
++	 */
++	if (als_lower_threshold >= als_settings.als_upper_thresh) {
++		als_upper_threshold = als_lower_threshold + 1;
++		tsl2591_set_als_upper_threshold(chip, als_upper_threshold);
++	}
++
++	als_lower_l = (als_lower_threshold & 0xFF);
++	als_lower_h = ((als_lower_threshold >> 8) & 0xFF);
++
++	ret = i2c_smbus_write_byte_data(client,
++					TSL2591_CMD_NOP | TSL2591_AILTL,
++					als_lower_l);
++	if (ret) {
++		dev_err(&client->dev, "Failed to set als lower threshold\n");
++		return ret;
++	}
++
++	ret = i2c_smbus_write_byte_data(client,
++					TSL2591_CMD_NOP | TSL2591_AILTH,
++					als_lower_h);
++	if (ret) {
++		dev_err(&client->dev, "Failed to set als lower threshold\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static int tsl2591_set_als_upper_threshold(struct tsl2591_chip *chip,
++					   u16 als_upper_threshold)
++{
++	struct tsl2591_als_settings als_settings = chip->als_settings;
++	struct i2c_client *client = chip->client;
++
++	u16 als_lower_threshold;
++	u8 als_upper_l;
++	u8 als_upper_h;
++	int ret;
++
++	if (als_upper_threshold > TSL2591_ALS_MAX_VALUE)
++		return -EINVAL;
++
++	chip->als_settings.als_upper_thresh = als_upper_threshold;
++
++	/*
++	 * Upper threshold should not be less than lower. If this
++	 * is the case, then assert lower threshold to new upper
++	 * threshold - 1 to avoid ordering issues when setting
++	 * thresholds.
++	 */
++	if (als_upper_threshold < als_settings.als_lower_thresh) {
++		als_lower_threshold = als_upper_threshold - 1;
++		tsl2591_set_als_lower_threshold(chip, als_lower_threshold);
++	}
++
++	als_upper_l = (als_upper_threshold & 0xFF);
++	als_upper_h = ((als_upper_threshold >> 8) & 0xFF);
++
++	ret = i2c_smbus_write_byte_data(client,
++					TSL2591_CMD_NOP | TSL2591_AIHTL,
++					als_upper_l);
++	if (ret) {
++		dev_err(&client->dev, "Failed to set als upper threshold\n");
++		return ret;
++	}
++
++	ret = i2c_smbus_write_byte_data(client,
++					TSL2591_CMD_NOP | TSL2591_AIHTH,
++					als_upper_h);
++	if (ret) {
++		dev_err(&client->dev, "Failed to set als upper threshold\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static int tsl2591_set_als_persist_cycle(struct tsl2591_chip *chip,
++					 u8 als_persist)
++{
++	struct i2c_client *client = chip->client;
++	int ret;
++
++	ret = i2c_smbus_write_byte_data(client,
++					TSL2591_CMD_NOP | TSL2591_PERSIST,
++					als_persist);
++	if (ret)
++		dev_err(&client->dev, "Failed to set als persist cycle\n");
++
++	chip->als_settings.als_persist = als_persist;
++
++	return ret;
++}
++
++static int tsl2591_set_power_state(struct tsl2591_chip *chip, u8 state)
++{
++	struct i2c_client *client = chip->client;
++	int ret;
++
++	ret = i2c_smbus_write_byte_data(client,
++					TSL2591_CMD_NOP | TSL2591_ENABLE,
++					state);
++	if (ret)
++		dev_err(&client->dev,
++			"Failed to set the power state to %#04x\n", state);
++
++	return ret;
++}
++
++static ssize_t tsl2591_in_illuminance_period_available_show(struct device *dev,
++							    struct device_attribute *attr,
++							    char *buf)
++{
++	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++
++	return snprintf(buf, PAGE_SIZE, "%s\n",
++		       tsl2591_als_period_list[chip->als_settings.als_int_time]);
++}
++
++static IIO_DEVICE_ATTR_RO(tsl2591_in_illuminance_period_available, 0);
++
++static struct attribute *tsl2591_event_attrs_ctrl[] = {
++	&iio_dev_attr_tsl2591_in_illuminance_period_available.dev_attr.attr,
++	NULL
++};
++
++static const struct attribute_group tsl2591_event_attribute_group = {
++	.attrs = tsl2591_event_attrs_ctrl,
++};
++
++static const struct iio_event_spec tsl2591_events[] = {
++	{
++		.type = IIO_EV_TYPE_THRESH,
++		.dir = IIO_EV_DIR_RISING,
++		.mask_separate = BIT(IIO_EV_INFO_VALUE),
++	}, {
++		.type = IIO_EV_TYPE_THRESH,
++		.dir = IIO_EV_DIR_FALLING,
++		.mask_separate = BIT(IIO_EV_INFO_VALUE),
++	}, {
++		.type = IIO_EV_TYPE_THRESH,
++		.dir = IIO_EV_DIR_EITHER,
++		.mask_separate = BIT(IIO_EV_INFO_PERIOD) |
++				BIT(IIO_EV_INFO_ENABLE),
++	},
++};
++
++static const struct iio_chan_spec tsl2591_channels[] = {
++	{
++		.type = IIO_INTENSITY,
++		.modified = 1,
++		.channel2 = IIO_MOD_LIGHT_IR,
++		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
++		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
++						     BIT(IIO_CHAN_INFO_CALIBSCALE),
++		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
++					   BIT(IIO_CHAN_INFO_CALIBSCALE)
++	},
++	{
++		.type = IIO_INTENSITY,
++		.modified = 1,
++		.channel2 = IIO_MOD_LIGHT_BOTH,
++		.event_spec = tsl2591_events,
++		.num_event_specs = ARRAY_SIZE(tsl2591_events),
++		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
++		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
++						     BIT(IIO_CHAN_INFO_CALIBSCALE),
++		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
++					   BIT(IIO_CHAN_INFO_CALIBSCALE)
++	},
++	{
++		.type = IIO_LIGHT,
++		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED),
++		.info_mask_shared_by_all_available = BIT(IIO_CHAN_INFO_INT_TIME) |
++						     BIT(IIO_CHAN_INFO_CALIBSCALE),
++		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_INT_TIME) |
++					   BIT(IIO_CHAN_INFO_CALIBSCALE)
++	},
++};
++
++static int tsl2591_read_raw(struct iio_dev *indio_dev,
++			    struct iio_chan_spec const *chan,
++			    int *val, int *val2, long mask)
++{
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	struct i2c_client *client = chip->client;
++	int ret;
++
++	pm_runtime_get_sync(&client->dev);
++
++	mutex_lock(&chip->als_mutex);
++
++	switch (mask) {
++	case IIO_CHAN_INFO_RAW:
++		if (chan->type != IIO_INTENSITY) {
++			ret = -EINVAL;
++			break;
++		}
++
++		ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
++		if (ret < 0)
++			break;
++
++		ret = IIO_VAL_INT;
++		break;
++	case IIO_CHAN_INFO_PROCESSED:
++		if (chan->type != IIO_LIGHT) {
++			ret = -EINVAL;
++			break;
++		}
++
++		ret = tsl2591_read_channel_data(indio_dev, chan, val, val2);
++		if (ret < 0)
++			break;
++
++		ret = IIO_VAL_INT_PLUS_MICRO;
++		break;
++	case IIO_CHAN_INFO_INT_TIME:
++		if (chan->type != IIO_INTENSITY) {
++			ret = -EINVAL;
++			break;
++		}
++
++		*val = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
++		ret = IIO_VAL_INT;
++		break;
++	case IIO_CHAN_INFO_CALIBSCALE:
++		if (chan->type != IIO_INTENSITY) {
++			ret = -EINVAL;
++			break;
++		}
++
++		*val = tsl2591_gain_to_multiplier(chip->als_settings.als_gain);
++		ret = IIO_VAL_INT;
++		break;
++	default:
++		ret = -EINVAL;
++	}
++
++	mutex_unlock(&chip->als_mutex);
++
++	pm_runtime_mark_last_busy(&client->dev);
++	pm_runtime_put_autosuspend(&client->dev);
++
++	return ret;
++}
++
++static int tsl2591_write_raw(struct iio_dev *indio_dev,
++			     struct iio_chan_spec const *chan,
++			     int val, int val2, long mask)
++{
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++
++	u32 int_time;
++	u8 gain;
++	int ret;
++
++	mutex_lock(&chip->als_mutex);
++
++	switch (mask) {
++	case IIO_CHAN_INFO_INT_TIME:
++		int_time = tsl2591_als_time_to_fval(val);
++		if (int_time < 0) {
++			ret = int_time;
++			goto err;
++		}
++		ret = tsl2591_compatible_int_time(chip, int_time);
++		if (ret < 0)
++			goto err;
++
++		chip->als_settings.als_int_time = int_time;
++		break;
++	case IIO_CHAN_INFO_CALIBSCALE:
++		gain = tsl2591_multiplier_to_gain(val);
++		if (gain < 0) {
++			ret = gain;
++			goto err;
++		}
++		ret = tsl2591_compatible_gain(chip, gain);
++		if (ret < 0)
++			goto err;
++
++		chip->als_settings.als_gain = gain;
++		break;
++	default:
++		ret = -EINVAL;
++		goto err;
++	}
++
++	ret = tsl2591_set_als_gain_int_time(chip);
++	if (ret < 0)
++		goto err;
++
++err:
++	mutex_unlock(&chip->als_mutex);
++	return ret;
++}
++
++static int tsl2591_read_available(struct iio_dev *indio_dev,
++				  struct iio_chan_spec const *chan,
++				  const int **vals, int *type, int *length,
++				  long mask)
++{
++	switch (mask) {
++	case IIO_CHAN_INFO_INT_TIME:
++		*length = ARRAY_SIZE(tsl2591_int_time_available);
++		*vals = tsl2591_int_time_available;
++		*type = IIO_VAL_INT;
++		return IIO_AVAIL_LIST;
++
++	case IIO_CHAN_INFO_CALIBSCALE:
++		*length = ARRAY_SIZE(tsl2591_calibscale_available);
++		*vals = tsl2591_calibscale_available;
++		*type = IIO_VAL_INT;
++		return IIO_AVAIL_LIST;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int tsl2591_read_event_value(struct iio_dev *indio_dev,
++				    const struct iio_chan_spec *chan,
++				    enum iio_event_type type,
++				    enum iio_event_direction dir,
++				    enum iio_event_info info, int *val,
++				    int *val2)
++{
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	struct i2c_client *client = chip->client;
++	int als_persist, int_time, period;
++	int ret;
++
++	mutex_lock(&chip->als_mutex);
++
++	switch (info) {
++	case IIO_EV_INFO_VALUE:
++		switch (dir) {
++		case IIO_EV_DIR_RISING:
++			*val = chip->als_settings.als_upper_thresh;
++			break;
++		case IIO_EV_DIR_FALLING:
++			*val = chip->als_settings.als_lower_thresh;
++			break;
++		default:
++			ret = -EINVAL;
++			goto err;
++		}
++		ret = IIO_VAL_INT;
++		break;
++	case IIO_EV_INFO_PERIOD:
++		ret = i2c_smbus_read_byte_data(client,
++					       TSL2591_CMD_NOP | TSL2591_PERSIST);
++		if (ret <= 0 || ret > TSL2591_PRST_ALS_INT_CYCLE_MAX)
++			goto err;
++
++		als_persist = tsl2591_persist_cycle_to_lit(ret);
++		int_time = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
++		period = als_persist * (int_time * MSEC_PER_SEC);
++
++		*val = period / USEC_PER_SEC;
++		*val2 = period % USEC_PER_SEC;
++
++		ret = IIO_VAL_INT_PLUS_MICRO;
++		break;
++	default:
++		ret = -EINVAL;
++		goto err;
++	}
++
++err:
++	mutex_unlock(&chip->als_mutex);
++	return ret;
++}
++
++static int tsl2591_write_event_value(struct iio_dev *indio_dev,
++				     const struct iio_chan_spec *chan,
++				     enum iio_event_type type,
++				     enum iio_event_direction dir,
++				     enum iio_event_info info, int val,
++				     int val2)
++{
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	int period, int_time, als_persist;
++	int ret;
++
++	if (val < 0 || val2 < 0)
++		return -EINVAL;
++
++	mutex_lock(&chip->als_mutex);
++
++	switch (info) {
++	case IIO_EV_INFO_VALUE:
++		if (val > TSL2591_ALS_MAX_VALUE) {
++			ret = -EINVAL;
++			goto err;
++		}
++
++		switch (dir) {
++		case IIO_EV_DIR_RISING:
++			ret = tsl2591_set_als_upper_threshold(chip, val);
++			if (ret < 0)
++				goto err;
++			break;
++		case IIO_EV_DIR_FALLING:
++			ret = tsl2591_set_als_lower_threshold(chip, val);
++			if (ret < 0)
++				goto err;
++			break;
++		default:
++			ret = -EINVAL;
++			goto err;
++		}
++		break;
++	case IIO_EV_INFO_PERIOD:
++		int_time = TSL2591_FVAL_TO_ATIME(chip->als_settings.als_int_time);
++
++		period = ((val * MSEC_PER_SEC) +
++			 (val2 / MSEC_PER_SEC)) / int_time;
++
++		als_persist = tsl2591_persist_lit_to_cycle(period);
++		if (als_persist < 0) {
++			ret = -EINVAL;
++			goto err;
++		}
++
++		ret = tsl2591_compatible_als_persist_cycle(chip, als_persist);
++		if (ret < 0)
++			goto err;
++
++		ret = tsl2591_set_als_persist_cycle(chip, als_persist);
++		if (ret < 0)
++			goto err;
++		break;
++	default:
++		ret = -EINVAL;
++		goto err;
++	}
++
++err:
++	mutex_unlock(&chip->als_mutex);
++	return ret;
++}
++
++static int tsl2591_read_event_config(struct iio_dev *indio_dev,
++				     const struct iio_chan_spec *chan,
++				     enum iio_event_type type,
++				     enum iio_event_direction dir)
++{
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++
++	return chip->events_enabled;
++}
++
++static int tsl2591_write_event_config(struct iio_dev *indio_dev,
++				      const struct iio_chan_spec *chan,
++				      enum iio_event_type type,
++				      enum iio_event_direction dir,
++				      int state)
++{
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	struct i2c_client *client = chip->client;
++
++	if (state && !chip->events_enabled) {
++		chip->events_enabled = true;
++		pm_runtime_get_sync(&client->dev);
++	} else if (!state && chip->events_enabled) {
++		chip->events_enabled = false;
++		pm_runtime_mark_last_busy(&client->dev);
++		pm_runtime_put_autosuspend(&client->dev);
++	}
++
++	return 0;
++}
++
++static const struct iio_info tsl2591_info = {
++	.event_attrs = &tsl2591_event_attribute_group,
++	.read_raw = tsl2591_read_raw,
++	.write_raw = tsl2591_write_raw,
++	.read_avail = tsl2591_read_available,
++	.read_event_value = tsl2591_read_event_value,
++	.write_event_value = tsl2591_write_event_value,
++	.read_event_config = tsl2591_read_event_config,
++	.write_event_config = tsl2591_write_event_config,
++};
++
++static int __maybe_unused tsl2591_suspend(struct device *dev)
++{
++	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	int ret;
++
++	mutex_lock(&chip->als_mutex);
++	ret = tsl2591_set_power_state(chip, TSL2591_PWR_OFF);
++	mutex_unlock(&chip->als_mutex);
++
++	return ret;
++}
++
++static int __maybe_unused tsl2591_resume(struct device *dev)
++{
++	int power_state = TSL2591_PWR_ON | TSL2591_ENABLE_ALS;
++	struct iio_dev *indio_dev = dev_get_drvdata(dev);
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	int ret;
++
++	if (chip->events_enabled)
++		power_state |= TSL2591_ENABLE_ALS_INT;
++
++	mutex_lock(&chip->als_mutex);
++	ret = tsl2591_set_power_state(chip, power_state);
++	mutex_unlock(&chip->als_mutex);
++
++	return ret;
++}
++
++static const struct dev_pm_ops tsl2591_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
++	SET_RUNTIME_PM_OPS(tsl2591_suspend, tsl2591_resume, NULL)
++};
++
++static irqreturn_t tsl2591_event_handler(int irq, void *private)
++{
++	struct iio_dev *dev_info = private;
++	struct tsl2591_chip *chip = iio_priv(dev_info);
++	struct i2c_client *client = chip->client;
++
++	if (!chip->events_enabled)
++		return IRQ_NONE;
++
++	iio_push_event(dev_info,
++		       IIO_UNMOD_EVENT_CODE(IIO_LIGHT, 0,
++					    IIO_EV_TYPE_THRESH,
++					    IIO_EV_DIR_EITHER),
++					    iio_get_time_ns(dev_info));
++
++	/* Clear ALS irq */
++	i2c_smbus_write_byte(client, TSL2591_CMD_SF_CALS_NPI);
++
++	return IRQ_HANDLED;
++}
++
++static int tsl2591_load_defaults(struct tsl2591_chip *chip)
++{
++	int ret;
++
++	chip->als_settings.als_int_time = TSL2591_DEFAULT_ALS_INT_TIME;
++	chip->als_settings.als_gain = TSL2591_DEFAULT_ALS_GAIN;
++	chip->als_settings.als_lower_thresh = TSL2591_DEFAULT_ALS_LOWER_THRESH;
++	chip->als_settings.als_upper_thresh = TSL2591_DEFAULT_ALS_UPPER_THRESH;
++
++	ret = tsl2591_set_als_gain_int_time(chip);
++	if (ret < 0)
++		return ret;
++
++	ret = tsl2591_set_als_persist_cycle(chip, TSL2591_DEFAULT_ALS_PERSIST);
++	if (ret < 0)
++		return ret;
++
++	ret = tsl2591_set_als_lower_threshold(chip, TSL2591_DEFAULT_ALS_LOWER_THRESH);
++	if (ret < 0)
++		return ret;
++
++	ret = tsl2591_set_als_upper_threshold(chip, TSL2591_DEFAULT_ALS_UPPER_THRESH);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static void tsl2591_chip_off(void *data)
++{
++	struct iio_dev *indio_dev = data;
++	struct tsl2591_chip *chip = iio_priv(indio_dev);
++	struct i2c_client *client = chip->client;
++
++	pm_runtime_disable(&client->dev);
++	pm_runtime_set_suspended(&client->dev);
++	pm_runtime_put_noidle(&client->dev);
++
++	tsl2591_set_power_state(chip, TSL2591_PWR_OFF);
++}
++
++static int tsl2591_probe(struct i2c_client *client)
++{
++	struct tsl2591_chip *chip;
++	struct iio_dev *indio_dev;
++	int ret;
++
++	if (!i2c_check_functionality(client->adapter,
++				     I2C_FUNC_SMBUS_BYTE_DATA)) {
++		dev_err(&client->dev,
++			"I2C smbus byte data functionality is not supported\n");
++		return -EOPNOTSUPP;
++	}
++
++	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
++	if (!indio_dev)
++		return -ENOMEM;
++
++	chip = iio_priv(indio_dev);
++	chip->client = client;
++	i2c_set_clientdata(client, indio_dev);
++
++	if (client->irq) {
++		ret = devm_request_threaded_irq(&client->dev, client->irq,
++						NULL, tsl2591_event_handler,
++						IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++						"tsl2591_irq", indio_dev);
++		if (ret) {
++			dev_err(&client->dev, "IRQ request error %d\n", -ret);
++			return -EINVAL;
++		}
++	}
++
++	mutex_init(&chip->als_mutex);
++
++	ret = i2c_smbus_read_byte_data(client,
++				       TSL2591_CMD_NOP | TSL2591_DEVICE_ID);
++	if (ret < 0) {
++		dev_err(&client->dev,
++			"Failed to read the device ID register\n");
++		return ret;
++	}
++	ret = FIELD_GET(TSL2591_DEVICE_ID_MASK, ret);
++	if (ret != TSL2591_DEVICE_ID_VAL) {
++		dev_err(&client->dev, "Device ID: %#04x unknown\n", ret);
++		return -EINVAL;
++	}
++
++	indio_dev->info = &tsl2591_info;
++	indio_dev->channels = tsl2591_channels;
++	indio_dev->num_channels = ARRAY_SIZE(tsl2591_channels);
++	indio_dev->modes = INDIO_DIRECT_MODE;
++	indio_dev->name = chip->client->name;
++	chip->events_enabled = false;
++
++	pm_runtime_enable(&client->dev);
++	pm_runtime_set_autosuspend_delay(&client->dev,
++					 TSL2591_POWER_OFF_DELAY_MS);
++	pm_runtime_use_autosuspend(&client->dev);
++
++	/*
++	 * Add chip off to automatically managed path and disable runtime
++	 * power management. This ensures that the chip power management
++	 * is handled correctly on driver remove. tsl2591_chip_off must be
++	 * added to the managed path after pm runtime is enabled and before
++	 * any error exit paths are met to ensure we're not left in a state
++	 * of pm runtime not being disabled properly.
++	 */
++	ret = devm_add_action_or_reset(&client->dev, tsl2591_chip_off,
++				       indio_dev);
++	if (ret < 0)
++		return -EINVAL;
++
++	ret = tsl2591_load_defaults(chip);
++	if (ret < 0) {
++		dev_err(&client->dev, "Failed to load sensor defaults\n");
++		return -EINVAL;
++	}
++
++	ret = i2c_smbus_write_byte(client, TSL2591_CMD_SF_CALS_NPI);
++	if (ret < 0) {
++		dev_err(&client->dev, "Failed to clear als irq\n");
++		return -EINVAL;
++	}
++
++	return devm_iio_device_register(&client->dev, indio_dev);
++}
++
++static const struct of_device_id tsl2591_of_match[] = {
++	{ .compatible = "amstaos,tsl2591"},
++	{}
++};
++MODULE_DEVICE_TABLE(of, tsl2591_of_match);
++
++static struct i2c_driver tsl2591_driver = {
++	.driver = {
++		.name = "tsl2591",
++		.pm = &tsl2591_pm_ops,
++		.of_match_table = tsl2591_of_match,
++	},
++	.probe_new = tsl2591_probe
++};
++module_i2c_driver(tsl2591_driver);
++
++MODULE_AUTHOR("Joe Sandom <joe.g.sandom@gmail.com>");
++MODULE_DESCRIPTION("TAOS tsl2591 ambient light sensor driver");
++MODULE_LICENSE("GPL");
+-- 
+2.17.1
+
