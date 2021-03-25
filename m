@@ -2,88 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AD3348DDF
+	by mail.lfdr.de (Postfix) with ESMTP id 76FE9348DDE
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhCYKUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:20:31 -0400
-Received: from m12-16.163.com ([220.181.12.16]:59704 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230093AbhCYKUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:20:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=VG5pv2GH8R52rludct
-        6hPThVPq000PA+eCG5zTVpFZ8=; b=lNCJORMsqfxyz6ufstQVvB8PbIKTVysx/4
-        TL4Oq6wh+B2MXJkA3Z9dJc6sDx7zEjigP4u4rCOOScpo8R24kVWi07E52GReB3Dq
-        n7alQPVK+E3XSMxRvUIXPs6r/iiFhaU7V4g3LjaU11P6EDUvsf2iqabDZoS5mYHg
-        zny8qmpu0=
-Received: from bf-rmnj-02.ccdomain.com (unknown [218.94.48.178])
-        by smtp12 (Coremail) with SMTP id EMCowAD3BFGyY1xgGRBqiQ--.42582S2;
-        Thu, 25 Mar 2021 18:19:36 +0800 (CST)
-From:   Jian Dong <dj0227@163.com>
-To:     vireshk@kernel.org, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     greybus-dev@lists.linaro.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, huyue2@yulong.com,
-        Jian Dong <dongjian@yulong.com>
-Subject: [PATCH]  staging: greybus: fix fw is NULL but dereferenced
-Date:   Thu, 25 Mar 2021 18:19:26 +0800
-Message-Id: <1616667566-58997-1-git-send-email-dj0227@163.com>
-X-Mailer: git-send-email 1.9.1
-X-CM-TRANSID: EMCowAD3BFGyY1xgGRBqiQ--.42582S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZrW8ZFyfWw13uFyfWrW3KFg_yoW8XrW5pF
-        4UA3sFk3WrWa4Yqa45CFWDXFyrKFWxJrWxG348G3s5Jr4rZFnYqr1Utry3WF1fAFZ3Jw15
-        Xanagr4Fq3WIyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j7nYrUUUUU=
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: dgmqjjqx6rljoofrz/1tbiEBhg3V8YFVxYfwAAsc
+        id S230104AbhCYKUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230139AbhCYKUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:20:17 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9457C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:20:14 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id p19so853788wmq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:references:in-reply-to
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=6HdnO52Awha3IyzRgXLtenextHIzKUQswyTRoTsHAfY=;
+        b=vA7pgeA5oaUtMpr5uOwzAJhGKI8jYSF7M48seY75d9EA2CptifVwvMqCWCGZvKtWtO
+         7YlGyk3EerlP/pNPPaK5SLRasVonS5jchx3MenbdmuRs7rCV1eHYlrYxCJDYEC0tng3f
+         CnI9pZof5k70NSGNNhlpmXliV1JaaZOzNlShpkDyC5rrgUguuLUhI/6ZpMe6SIqht2yE
+         l/DPYXfI0kM/6OJuFIkFGafU79lIgmZVWE5aLypa8Jy2skFhdJe2DbsbSoRueQGv88/c
+         NRKuJAc4NC3CCs+mNiNBq7J+l0fofdMjRsBBRNdGxTEUP1T+4H48sWVZVIoqvqJbSW3j
+         V2wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
+         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
+        bh=6HdnO52Awha3IyzRgXLtenextHIzKUQswyTRoTsHAfY=;
+        b=Xp1lhfmJrfzex+VPYoNVE1V9Q3tObkJBdYlWsLk2OP7jkoxisiym64y7kNjXsEU9Gu
+         LBxUJrb42gjDgt72WrsYvdOGKwYafhzaGuVB/s0oNADR90+dmldAfQhngpauj4+dEUAz
+         d5QlhcceODB9cLVbZI4yhHNYT30xsOfyYJVGbiCdtlRV9j5Y5XRIfL1+P9wSK6203j1t
+         YNDiGNdv0kgqdqCWsl1MinggeNXzLf1g6VIvBDWBnLHLotzZUtT5Vkuz9yx9sfu7x4uN
+         402bXSYSFHyHyE5LSt7vWS5E7gsiE+PDNoA1/cRBn/3jPlfTIlMUePQTMar1Zh2mj5vj
+         FZmQ==
+X-Gm-Message-State: AOAM532we+rdn8PfqJsckwLDAIhO2FJZ8t4jixr14eCXI8pTwTbXjw3M
+        +AzfPsCTHhAEAqfaQp7FvkioDA==
+X-Google-Smtp-Source: ABdhPJwgUpTWyyX1ExJG+CsleZ0S1w/S1bfvTk1hOaBxRdpBJOkuq8riQ3zlAFAPbPMmKCKDCJqDSw==
+X-Received: by 2002:a05:600c:2106:: with SMTP id u6mr7277079wml.55.1616667613220;
+        Thu, 25 Mar 2021 03:20:13 -0700 (PDT)
+Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
+        by smtp.gmail.com with ESMTPSA id m10sm5839232wmh.13.2021.03.25.03.20.12
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 25 Mar 2021 03:20:12 -0700 (PDT)
+From:   John Cox <jc@kynesim.co.uk>
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
+        kernel@collabora.com, linux-kernel@vger.kernel.org,
+        laurent.pinchart@ideasonboard.com, dave.stevenson@raspberrypi.org,
+        tfiga@chromium.org, Helen Koike <helen.koike@collabora.com>
+Subject: Re: [PATCH 1/2] media: videobuf2: use dmabuf size for length
+Date:   Thu, 25 Mar 2021 10:20:11 +0000
+Message-ID: <afno5g9a14fmf7tj1uq0e9pciflop2rv3k@4ax.com>
+References: <20210325001712.197837-1-helen.koike@collabora.com>
+In-Reply-To: <20210325001712.197837-1-helen.koike@collabora.com>
+User-Agent: ForteAgent/8.00.32.1272
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jian Dong <dongjian@yulong.com>
+Hi
 
- fixes coccicheck Error:
+>Always use dmabuf size when considering the length of the buffer.
+>Discard userspace provided length.
+>Fix length check error in _verify_length(), which was handling single =
+and
+>multiplanar diferently, and also not catching the case where userspace
+>provides a bigger length and bytesused then the underlying buffer.
+>
+>Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
+>Signed-off-by: Helen Koike <helen.koike@collabora.com>
+>---
+>
+>Hello,
+>
+>As discussed on
+>https://patchwork.linuxtv.org/project/linux-media/patch/gh5kef5bkeel3o6b=
+2dkgc2dfagu9klj4c0@4ax.com/
+>
+>This patch also helps the conversion layer of the Ext API patchset,
+>where we are not exposing the length field.
+>
+>It was discussed that userspace might use a smaller length field to
+>limit the usage of the underlying buffer, but I'm not sure if this is
+>really usefull and just complicates things.
+>
+>If this is usefull, then we should also expose a length field in the Ext
+>API, and document this feature properly.
+>
+>What do you think?
+>---
+> .../media/common/videobuf2/videobuf2-core.c   | 21 ++++++++++++++++---
+> .../media/common/videobuf2/videobuf2-v4l2.c   |  8 +++----
+> include/uapi/linux/videodev2.h                |  7 +++++--
+> 3 files changed, 27 insertions(+), 9 deletions(-)
+>
+>diff --git a/drivers/media/common/videobuf2/videobuf2-core.c =
+b/drivers/media/common/videobuf2/videobuf2-core.c
+>index 02281d13505f..2cbde14af051 100644
+>--- a/drivers/media/common/videobuf2/videobuf2-core.c
+>+++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>@@ -1205,6 +1205,7 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
+>=20
+> 	for (plane =3D 0; plane < vb->num_planes; ++plane) {
+> 		struct dma_buf *dbuf =3D dma_buf_get(planes[plane].m.fd);
+>+		unsigned int bytesused;
+>=20
+> 		if (IS_ERR_OR_NULL(dbuf)) {
+> 			dprintk(q, 1, "invalid dmabuf fd for plane %d\n",
+>@@ -1213,9 +1214,23 @@ static int __prepare_dmabuf(struct vb2_buffer =
+*vb)
+> 			goto err;
+> 		}
+>=20
+>-		/* use DMABUF size if length is not provided */
+>-		if (planes[plane].length =3D=3D 0)
+>-			planes[plane].length =3D dbuf->size;
+>+		planes[plane].length =3D dbuf->size;
+>+		bytesused =3D planes[plane].bytesused ?
+>+			    planes[plane].bytesused : dbuf->size;
+>+
+>+		if (planes[plane].bytesused > planes[plane].length) {
+>+			dprintk(q, 1, "bytesused is bigger then dmabuf length for plane =
+%d\n",
+>+				plane);
+>+			ret =3D -EINVAL;
+>+			goto err;
+>+		}
+>+
+>+		if (planes[plane].data_offset >=3D bytesused) {
+>+			dprintk(q, 1, "data_offset >=3D bytesused for plane %d\n",
+>+				plane);
+>+			ret =3D -EINVAL;
+>+			goto err;
+>+		}
+>=20
+> 		if (planes[plane].length < vb->planes[plane].min_length) {
+> 			dprintk(q, 1, "invalid dmabuf length %u for plane %d, minimum length=
+ %u\n",
+>diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c =
+b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>index 7e96f67c60ba..ffc7ed46f74a 100644
+>--- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>+++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>@@ -98,14 +98,14 @@ static int __verify_length(struct vb2_buffer *vb, =
+const struct v4l2_buffer *b)
+> 	unsigned int bytesused;
+> 	unsigned int plane;
+>=20
+>-	if (V4L2_TYPE_IS_CAPTURE(b->type))
+>+	/* length check for dmabuf is performed in _prepare_dmabuf() */
+>+	if (V4L2_TYPE_IS_CAPTURE(b->type) || b->memory =3D=3D =
+VB2_MEMORY_DMABUF)
+> 		return 0;
+>=20
+> 	if (V4L2_TYPE_IS_MULTIPLANAR(b->type)) {
+> 		for (plane =3D 0; plane < vb->num_planes; ++plane) {
+>-			length =3D (b->memory =3D=3D VB2_MEMORY_USERPTR ||
+>-				  b->memory =3D=3D VB2_MEMORY_DMABUF)
+>-			       ? b->m.planes[plane].length
+>+			length =3D b->memory =3D=3D VB2_MEMORY_USERPTR
+>+				? b->m.planes[plane].length
+> 				: vb->planes[plane].length;
+> 			bytesused =3D b->m.planes[plane].bytesused
+> 				  ? b->m.planes[plane].bytesused : length;
+>diff --git a/include/uapi/linux/videodev2.h =
+b/include/uapi/linux/videodev2.h
+>index 8d15f6ccc4b4..79b3b2893513 100644
+>--- a/include/uapi/linux/videodev2.h
+>+++ b/include/uapi/linux/videodev2.h
+>@@ -968,7 +968,9 @@ struct v4l2_requestbuffers {
+> /**
+>  * struct v4l2_plane - plane info for multi-planar buffers
+>  * @bytesused:		number of bytes occupied by data in the plane (payload)
+>- * @length:		size of this plane (NOT the payload) in bytes
+>+ * @length:		size of this plane (NOT the payload) in bytes. Filled
+>+ *			by userspace for USERPTR and by the driver for DMABUF
+>+ *			and MMAP.
+>  * @mem_offset:		when memory in the associated struct v4l2_buffer is
+>  *			V4L2_MEMORY_MMAP, equals the offset from the start of
+>  *			the device memory for this plane (or is a "cookie" that
+>@@ -1025,7 +1027,8 @@ struct v4l2_plane {
+>  * @m:		union of @offset, @userptr, @planes and @fd
+>  * @length:	size in bytes of the buffer (NOT its payload) for =
+single-plane
+>  *		buffers (when type !=3D *_MPLANE); number of elements in the
+>- *		planes array for multi-plane buffers
+>+ *		planes array for multi-plane buffers. Filled by userspace for
+>+ *		USERPTR and by the driver for DMABUF and MMAP.
+>  * @reserved2:	drivers and applications must zero this field
+>  * @request_fd: fd of the request that this buffer should use
+>  * @reserved:	for backwards compatibility with applications that do not=
+ know
 
- drivers/staging/greybus/bootrom.c:301:41-45: ERROR:
- fw is NULL but dereferenced.
+I think this does what I want. But I'm going to restate my usage desires
+and check that you agree that it covers them.
 
- if procedure goto label directly, ret will be nefative, so the fw is NULL
- and the if(condition) end with dereferenced fw. let's fix it.
+I'm interested in passing compressed bitstreams to a decoder.  The size
+of these buffers can be very variable and the worst case will nearly
+always be much larger than the typical case and that size cannot be
+known in advance of usage.  It can be very wasteful to have to allocate
+buffers that are over an order of magnitude bigger than are likely to
+ever be used.  If you have a fixed pool of fixed size buffers allocated
+at the start of time this wastefulness is unavoidable, but dmabufs can
+be dynamically sized to be as big as required and so there should be no
+limitation on passing in buffers that are smaller than the maximum.  It
+also seems plausible that dmabufs that are larger than the maximum
+should be allowed as long as their bytesused is smaller or equal.
 
-Signed-off-by: Jian Dong <dongjian@yulong.com>
----
- drivers/staging/greybus/bootrom.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+As an aside, even when using dynamically sized dmabufs they are often
+way larger than the data they contain and forcing cache flushes or maps
+of their entire length rather than just the used portion is also
+wasteful.  This might be a use for the incoming size field.
 
-diff --git a/drivers/staging/greybus/bootrom.c b/drivers/staging/greybus/bootrom.c
-index a8efb86..0439efa 100644
---- a/drivers/staging/greybus/bootrom.c
-+++ b/drivers/staging/greybus/bootrom.c
-@@ -246,7 +246,7 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
- 	struct gb_bootrom_get_firmware_response *firmware_response;
- 	struct device *dev = &op->connection->bundle->dev;
- 	unsigned int offset, size;
--	enum next_request_type next_request;
-+	enum next_request_type next_request = NEXT_REQ_GET_FIRMWARE;
- 	int ret = 0;
- 
- 	/* Disable timeouts */
-@@ -298,10 +298,10 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
- 
- queue_work:
- 	/* Refresh timeout */
--	if (!ret && (offset + size == fw->size))
--		next_request = NEXT_REQ_READY_TO_BOOT;
--	else
-+	if (!!ret)
- 		next_request = NEXT_REQ_GET_FIRMWARE;
-+	else if (offset + size == fw->size)
-+		next_request = NEXT_REQ_READY_TO_BOOT;
- 
- 	gb_bootrom_set_timeout(bootrom, next_request, NEXT_REQ_TIMEOUT_MS);
- 
--- 
-1.9.1
+Regards
 
-
+John Cox
