@@ -2,85 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07343492AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F70F3492B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCYNE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:04:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhCYNEQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:04:16 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D8FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:04:16 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id y20so276530uay.6
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 06:04:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=D4BiqGhsaUqFPdaaVR87LRJ/HTmA8SkhIap0oicthvE=;
-        b=VFgPtlyI1nagfMDNUMf5tbdG+kLQf6mvOUnfC/Za4oIPT3d5aeet233GVMEIg0VX83
-         NpfvLdSLMVf357ltZsEEBjL7bR53tfkrH3Nnj5wJaSv7wBb29Jg13EKXEYoIdgg2vtKa
-         e5l6xnHoTQQ7HanrPPNSR0i9j8zGOO8rn/+o2zw5VIyL9Dr/l5q9tYzYy23O3gecczXG
-         meVB/FlZZFMPn+BvCmhT09AbVa4jJ7cxd5vZI6s5SXo2E/6KiK2jZHNZ/lec2TWT4zMu
-         gxic15FUtACoa8B7uqDyiVcH41VCING07vGPrbt8gQSrUrcj5gvQxJonaedIr5LflrwQ
-         yOxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=D4BiqGhsaUqFPdaaVR87LRJ/HTmA8SkhIap0oicthvE=;
-        b=PQMLqWTvGwE8nDvMmX8J1nlumIYqhfFwJ72HKcz3XifNw8gt5nXrqiQ/u6KmDXb8J3
-         Jfya4PNXi8t0mztEEvGqbWMRYJ+v1+4Qv/lG8R9L3bOPdaSMcgCiNMKi16/6cvAgNV6i
-         WHwmLM9f8azpgzeTudgCjjv4ezrcME1yRaJb9z5H3WHocg8qVK6d0M6ATscHN/P4NoJN
-         1H3Pg+JfC87K8gAIgfRzgDpMegTPUxB/0R3VEL9gjHctCzt9Oj3qxcUEhJjSsc6Q9qWj
-         JzLy2AtsT3bUlpYWq+gmP94uto83+9sdxeD4RjYeddyeTKLT6fACaeA2vJZzTlr7NzI/
-         n54Q==
-X-Gm-Message-State: AOAM531/BNuuqxBecTHXdeJ3oKVWQfR9oLHuTOeH6rvWz1lhFtkposFX
-        H3rDG+wGnmDJI80YE1g77RDBo+VRAG8wT7e85aI=
-X-Google-Smtp-Source: ABdhPJwiELH++O+xCegxB8PxbFKbRRdlH+r4RiNZdtgMKtbs4fSp3vCwfw0TYy263s9UloudOSZJHi+xLXxiIVC9uAo=
-X-Received: by 2002:a9f:24c7:: with SMTP id 65mr4304505uar.119.1616677455653;
- Thu, 25 Mar 2021 06:04:15 -0700 (PDT)
+        id S230005AbhCYNFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:05:31 -0400
+Received: from mail-bn7nam10on2063.outbound.protection.outlook.com ([40.107.92.63]:47457
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230182AbhCYNFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:05:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MqmQD7pn+Ny7V8fo0GNO0IgUTIkvooqErc1cAScf1yt5uAB6wwP7vpgDix+c8piK3WvmMHCZSBwUoORbdz9QPF1fFFxaR1ZB994ZbhkK7msKy944+7KkTCZARTmT7PbW+Pi0LaDLDM4D3p3GnRd/wXYU2ooV7kU6syblubVZD/l1kUUPsa4+FhfiScrxSifAItA6CEejjEr3h3ViZvVGWEDklp+iOOO2HysVAohZBIbEGs6vSnF+ki02cTLBipwqkmhR1PTt0nl3fAffrO9KX7P0k+I5wssztLxlnXKPW2+yXkHLax/i0Ax3sasZfVyMDzf/vy5QWSSXVtdR20pXOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7CDzCjf3X+kztfOdIZAZyCHDrHPHNRnFsOTf7I7FjNU=;
+ b=mjOxXchBfqTDEhyKJ3cdi1aydYmh8j67Xp8XL49b9gbcM/Io5bXIeN4Pdg3RmsvtFEqGFpUVwl0Fygrnfoz/Ac5tHrUpR5LHvrF933hWyaCknVclUnqD6Rwxo6hUOuxhWohrkqtSAeh0Cc4TRrPwk/QTvd7a/RoZn10K6v/RtF4DxG5VNexUrZtEb5jEj+zHhmImT0EOI49rabAdrqoEviDSU6S2PwIwL4XNc85hhjSTNwe8oggFWd5Q+yLK0P6yTaSLgKCdleI39M8+g5SQ6+Ksyfvhda4W1HIhxuuWeOdoNnOhtNrNgvckVPSl15XpQ65EDpN7tlO63mUCqyy2HA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7CDzCjf3X+kztfOdIZAZyCHDrHPHNRnFsOTf7I7FjNU=;
+ b=inYUOTb8OFx6isLZJpIYKlKkpWnY9UvpJxJgSYnkFNxSwyTt3v/Tv9r1RQ1N8uDPQWW6hVrHYPkaty/9ZM+UyuQHWiRYGyOqyJpLFdpovUv5oHQINH5U7udPPapyIlfYNRp1cIXh4NuyCdsoLqSPxiA4DrirknuOnCzBau9nWBE=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4550.namprd12.prod.outlook.com (2603:10b6:208:24e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
+ 2021 13:05:19 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::c1ff:dcf1:9536:a1f2%2]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
+ 13:05:19 +0000
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>
+References: <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
+ <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
+ <20210324231419.GR2356281@nvidia.com>
+ <607ecbeb-e8a5-66e9-6fe2-9a8d22f12bc2@shipmail.org>
+ <fb74efd9-55be-9a8d-95b0-6103e263aab8@amd.com>
+ <15da5784-96ca-25e5-1485-3ce387ee6695@shipmail.org>
+ <20210325113023.GT2356281@nvidia.com>
+ <afad3159-9aa8-e052-3bef-d00dee1ba51e@shipmail.org>
+ <20210325120103.GV2356281@nvidia.com>
+ <a0d0ffd7-3c34-5002-f4fe-cb9d4ba0279e@amd.com>
+ <20210325124206.GA599656@nvidia.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <00f79bae-75c4-d694-8dc9-35ac21cd1006@amd.com>
+Date:   Thu, 25 Mar 2021 14:05:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210325124206.GA599656@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [2a02:908:1252:fb60:72d1:2a48:a80e:e149]
+X-ClientProxiedBy: AM0PR05CA0096.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::36) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-Sender: jobs.falconoilfieldservices@gmail.com
-Received: by 2002:a67:1b47:0:0:0:0:0 with HTTP; Thu, 25 Mar 2021 06:04:15
- -0700 (PDT)
-From:   Peter Schulman <schulman.pet@gmail.com>
-Date:   Thu, 25 Mar 2021 14:04:15 +0100
-X-Google-Sender-Auth: WTIy-6Xhhu0dI74fLlfUlAltkhs
-Message-ID: <CAH_4_9Z5eVE_2igWPPWqi5bN6UHbmH7hz4udb374U-_p8pBi+A@mail.gmail.com>
-Subject: Re: Proposal With Jeffery & Schulman
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:908:1252:fb60:72d1:2a48:a80e:e149] (2a02:908:1252:fb60:72d1:2a48:a80e:e149) by AM0PR05CA0096.eurprd05.prod.outlook.com (2603:10a6:208:136::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29 via Frontend Transport; Thu, 25 Mar 2021 13:05:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 80f162b5-6038-4f18-5437-08d8ef8ea3fc
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4550:
+X-Microsoft-Antispam-PRVS: <MN2PR12MB455023095F82B2B48C841CFE83629@MN2PR12MB4550.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U+g78YcwzBrTuju7gHrlAaghQ5cbfNj6SGo7qEWlSXO7T12q7Hom2bum3iqfb4ZEnjRjaFH8dKSArGZWqEym4po4MGjEyJkbDN5XAu7cq6//Q9Pbxde/wBIoy1lGpOcuqf2hTLnjJD5a2b1PEZ3ycjaWihbsKUslIRbu/z4MkwuEy9Yu/3daRWhhdCLd2/yvkH4z+lqwYqXI7glUc48bWHdCgnC0WbIC2qYLLJid6hvxGQIUYJybFuC5xVI8+bXXx5dRHYexjTXF5lAt9UlILMQF4kzFI/0qoLXmZSYOA5EzDz56D6X39QCtwuLeNElGgQ7bpRjIrqUJtGGrnisacBoJezngYKPeftt+YGMxAYx1mrLGo6NwjdSIvY4E7YB3966dU+G+UC8wLSmjVo7xK88KiLxESaEkM0TY6jrY+fq1LUL+Aw5KycAk33gYaRN+4ZLNby/l7ZzrF9uo/s8If++X0QbAXv+7A9z2vox+icgAXP5TQNgdwTSYUwLv1CRhyVy/sZdXjCtw1ZjNjJlKd+NVJfzB55qK/nIFmKed2DabHtvva2jeoeWaZMbEbCy/zsVsvXEu/sUY1ZLcBeLeXrzYrOCGcnmeH6Nq32avehZGoMkLp7aadAh48lLTjk2s9WPdDg9vKRmZt50VtC2YJgQxzEc1LCUzlEFmpkyn9an8I2ga3EIQEl8zN6WA+j6xW7UwJo69mMMV+omJ/PZUAuOJt9IKbu0RmO1r++EBSI0MvUYpdCaTXTBq61dcA9Aj
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(52116002)(478600001)(316002)(36756003)(6916009)(6666004)(2906002)(5660300002)(2616005)(66946007)(86362001)(4326008)(66476007)(66556008)(31686004)(186003)(38100700001)(8936002)(6486002)(31696002)(8676002)(54906003)(16526019)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MEFJQjVWS2trNzBVcGpIN1RCSi9iN3ZCeTQxK0lvQkV0ZVlqQysrMXo2K3BG?=
+ =?utf-8?B?T3M2d1NrOVRUWVg3Mng2am9xNlQyczVJWHo2NExJWlJ5V3ZoRTNSMGpxbWla?=
+ =?utf-8?B?REgrMXk5a1NZQStGWmhjVzVpekNKUzh6S2hlbDQ1cmE1dS9jbnUzdE5ycHVN?=
+ =?utf-8?B?bU1xWUpocDA1ZEtOcGlOSzlOWC95dmNMZ09JRWhNemUzTi82MlBwUys0Q3dL?=
+ =?utf-8?B?YVBZb3FMdDdLbml4QVJuZ3hZK2lXUXBrN0dRYmcxYndMUTlMblRmMmR4aHlX?=
+ =?utf-8?B?ZzIzdmFUQ1pyME5xclBBdmtCOWJiS0krMWlqTUlDK2Uxbjl6eEdjY0F2dE4v?=
+ =?utf-8?B?N2pGR0tuc20zSFB2dWdidEFiT1B0S1g1Z3NKdGYraWZoMmpjeEtxK0ora3VM?=
+ =?utf-8?B?cGt5bWN2MDhtengwUkxYdzFJTU44RHhpWjJXTDc1Y1daZ2krczRYa2ZvZEFC?=
+ =?utf-8?B?d2d6eDNLV2VXZE5PajczWTZhZ3l2NUpXTHdrU3p0alp2K0VVcXl0Ymd1d3Yw?=
+ =?utf-8?B?UFI1U0lMRWpCWWlQL2pXc1VJQ0I1MktvTThEdnRXaDk0dFBkYlVGcmYwRDl0?=
+ =?utf-8?B?K2tnUGhVWlQ2QTRMb1dUR3ZhbUptakNlZS8xUTMwMlZ4TGZMcXloRGd6UGdz?=
+ =?utf-8?B?KzFGZG90UlpweWtxbmg2c1Jkc2kxVTFDY0pDTC9RMVJhNHoxOGhKU2NIUlpy?=
+ =?utf-8?B?c3lIWTlraDdtK1AxcTJmcmE2bGhKc1h3SW5NeVJmMmNvWTU5VTFha0ZiWCt6?=
+ =?utf-8?B?eHVsS0xFSHpVeFB5d0tGeHdiMXM5K0o2L1lIZEVoVGFRWGtIN2ZsNTVJalIy?=
+ =?utf-8?B?TkUrVmQvY0dJb0p2QVpHeEhkN2w3S05kNWZ1em5KaGg4T3ZBMXB5UVArNHd6?=
+ =?utf-8?B?VlY0V3B6SWh0K3ZWcURpZWJmbVRudUFsUnNWRE5RWUhtQWh5NzdwbXRaVllQ?=
+ =?utf-8?B?b2VBODF4RFl5bUlVODl2T2J6MU1RVU9qTXVHME9LUUZXT01sak5EcEl4cjRG?=
+ =?utf-8?B?N1p2QXBwSktEOTNWMGJWY3VZcHdaVUdnQUhkSUw2Y0tvWjRkYUNueFdseWZR?=
+ =?utf-8?B?d2cwazg5L2g3VEFPUWZQNmFPYXZMWm9mc2lqZjdVTkdJc3pDaVNuQ2tXWlh5?=
+ =?utf-8?B?bjBzdmo0ckhFY3k0cVJIMjg0WVRvQU5EY3pnd0lrWG9MWkdSNXU5dmY1VzZw?=
+ =?utf-8?B?NjdkL1BkSzJDMjdMcC9ueVRxSmtzSXkrRjhacUNrWUxrVUZQSHQrRG85ZkhH?=
+ =?utf-8?B?N1l6V2I0U3VZSWJTc3lIbHd0NnpmbGdWR2JHTTdwZVRFTS84UitKb2lJcDFx?=
+ =?utf-8?B?cEJON3F1NW1SUUtsOVRHOEJOTzRmMHZyRUNHRTdTdnEvOUs4V292bTFiS2Yy?=
+ =?utf-8?B?d0FrTndZVXRrakVYenp4N0plOFNRK0tRN2JHUnkxREhuMTJEbm81aTY1aHpw?=
+ =?utf-8?B?eW1wUUJqWTlybFhhZDhhY09vVElweU10dmQvN2VSTm5IREZNMVdVTDdJbkhx?=
+ =?utf-8?B?OWlGSHJtUXExWDcvWnFpaGRrRzJhUXNpN3N5cXdRWDc0RzUrYVdtZVFFdm5U?=
+ =?utf-8?B?c25RS0lBbWdkdGo5U1dudytXbS94a2QyVzFTSG1sQmZNcVk5SVh4NWxSTVZX?=
+ =?utf-8?B?Y29QUElDRjNqOGV3TXZoN2VrNVAyazk2T2Z3SHd6RzlENituZTFuTDBKcjdU?=
+ =?utf-8?B?SzBjdWFRcVZGMndGV0UyTWVYdjBGeXF0bWlOYW90bE0zMDA1UkVTaUQrZkxT?=
+ =?utf-8?B?UEl5eFltTlNRekh0ZVVIcVlXMWpYaEpkZVdUWVZ1Z3VqWGdudXIxakdseFJI?=
+ =?utf-8?B?QUJ1RHJrS1krd0k3SE9JVTlmVFRiWEdTYWhwZWxqN0NjNUlCcy83MEJlYXJF?=
+ =?utf-8?Q?HV6/rvDn+Okfm?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 80f162b5-6038-4f18-5437-08d8ef8ea3fc
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 13:05:19.1450
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uJCHEcEGveOmA7ZoVS5PWckwnqNCsapgLc12T94lwnaxZecAZEGP9ffJLaW8wOfW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4550
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello ,
 
-I sent you an email before about an inheritance without hearing from
-you. Let me reintroduce my email again to you and please reply
-immediately.
 
-My name is Mr. Peter Schulman the principal attorney at Jeffery &
-Schulman Law Office based in Canada. I am contacting you because of my
-deceased client who died leaving some funds with a bank in Europe in
-the sum of 9,850,000 USD. I want to announce you as a heir/beneficiary
-to the fund.
+Am 25.03.21 um 13:42 schrieb Jason Gunthorpe:
+> On Thu, Mar 25, 2021 at 01:09:14PM +0100, Christian König wrote:
+>> Am 25.03.21 um 13:01 schrieb Jason Gunthorpe:
+>>> On Thu, Mar 25, 2021 at 12:53:15PM +0100, Thomas Hellström (Intel) wrote:
+>>>
+>>>> Nope. The point here was that in this case, to make sure mmap uses the
+>>>> correct VA to give us a reasonable chance of alignement, the driver might
+>>>> need to be aware of and do trickery with the huge page-table-entry sizes
+>>>> anyway, although I think in most cases a standard helper for this can be
+>>>> supplied.
+>>> Of course the driver needs some way to influence the VA mmap uses,
+>>> gernally it should align to the natural page size of the device
+>> Well a mmap() needs to be aligned to the page size of the CPU, but not
+>> necessarily to the one of the device.
+>>
+>> So I'm pretty sure the device driver should not be involved in any way the
+>> choosing of the VA for the CPU mapping.
+> No, if the device wants to use huge pages it must influence the mmap
+> VA or it can't form huge pgaes.
 
-You don't have to worry, this transaction will be done legally without
-any problem. If you are interested, I can give you more information
-about my proposal as soon as i get your reply.
+No, that's the job of the core MM and not of the individual driver.
 
-Regards,
-Best Regards,
+In other words current->mm->get_unmapped_area should already return a 
+properly aligned VA.
 
-Mr. Peter Schulman
-Senior Partner | Project Manager | Litigation
+Messing with that inside file->f_op->get_unmapped_area is utterly 
+nonsense as far as I can see.
 
-Jeffery & Schulman Law Office
-1230 Bay Street
-Suite 810 Toronto
-Ontario, M5R 2A7
+It happens to be this way currently, but that is not even remotely good 
+design.
+
+Christian.
+
+>
+> It is the same reason why mmap returns 2M stuff these days to make THP
+> possible
+>
+> Jason
+
