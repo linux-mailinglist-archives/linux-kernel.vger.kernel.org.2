@@ -2,228 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A8F34888E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FA3348893
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhCYF1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 01:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhCYF1d (ORCPT
+        id S229574AbhCYFfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 01:35:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:49174 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229493AbhCYFel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 01:27:33 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F989C06174A;
-        Wed, 24 Mar 2021 22:27:32 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id b14so689439lfv.8;
-        Wed, 24 Mar 2021 22:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZxHGrWsGgW6TprfvvINnFETzyCVg5VNycGG4rTWxoNQ=;
-        b=bVHd3TJE0aQYr1W2z0J8gP18eIX/35mjuD+fGxsdk4GaHOvt9ZOm2WAaftPUlxmGSU
-         Vx0RLY1ljrKuFdl4rp3Fog88g2sCSR6lhDUn8BOx4GFhpmumW334P69LJ4F4XGqT0iut
-         CLaO6TQwTFoKuzb4/r4Qbx8JbJi/VhsfaOO363ZnfwyGZUhXL5p5h5Rc1S3uEwWMxFkS
-         /y5d76oDV6rS2xuoLMTYF/aYD1Bz64ll8KLZ6Wp76Ll6TTixRGhM0bXaGPypFaA8hfZ7
-         FxCjjk8QO4pw0KRMNY7LSBg6OCSGPK6BZy1S0uaAVdGAWipcae4cMwPE243wGxgpgJ+1
-         vzvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZxHGrWsGgW6TprfvvINnFETzyCVg5VNycGG4rTWxoNQ=;
-        b=SaxpYsN6rv8CahGT4kIGIxzi4TBUmBbQG5EN/YNciEOGJA2feuJldYWaaetlqPfjdZ
-         QjCP96XV+4Cn/NLjrWm3McU0C7DXRFJOMqyvkPmESIU5IJk0TIKYFX5porCKr2mPN7/N
-         k0+iKmpcPH/vzEP1xQEIgFugNkAcOGRb2SPvlEagyEDOmSs8kpq6nrTf0bDpWtVM8mZh
-         Gmc2l+deuDkiXoA6GbDqT105u1+psyKV2rOYig5S1xDjqlqo2vtNaKoZb8RMZxa5sUnv
-         mPsyvz3Ys3MivWMsyYJZ22AgBpX68Y7o9NEV6u3tMXDhpwRW4kNGt/QZc5nAOfwXHr3N
-         Mucw==
-X-Gm-Message-State: AOAM533zP1hzhreph6FNMB8sXZgpuCm2Auj5TG+XfCrwKggy/qxDBKDQ
-        zivc9w6BayUh91TkOeznkCI=
-X-Google-Smtp-Source: ABdhPJx9lhFLxGYM+AahSvAkF8cOfJkn8tZwFRFJBxg0JEMHz67z2DGN0eaXzeSnMbQPbyvDCNvu3w==
-X-Received: by 2002:ac2:48ab:: with SMTP id u11mr3913829lfg.79.1616650051160;
-        Wed, 24 Mar 2021 22:27:31 -0700 (PDT)
-Received: from [192.168.1.221] (87-92-162-34.rev.dnainternet.fi. [87.92.162.34])
-        by smtp.googlemail.com with ESMTPSA id l7sm578168lje.30.2021.03.24.22.27.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Mar 2021 22:27:30 -0700 (PDT)
-Subject: Re: [PATCH 2/2] dt-binding: leds: Document leds-multi-gpio bindings
-To:     Hermes Zhang <chenhui.zhang@axis.com>, pavel@ucw.cz,
-        dmurphy@ti.com, robh+dt@kernel.org
-Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chenhuiz@axis.com, lkml@axis.com,
-        kernel@axis.com
-References: <20210324075631.5004-1-chenhui.zhang@axis.com>
- <20210324075631.5004-3-chenhui.zhang@axis.com>
-From:   =?UTF-8?B?VmVzYSBKw6TDpHNrZWzDpGluZW4=?= <dachaac@gmail.com>
-Message-ID: <0648fff2-5b38-66da-7eb0-9969e517421f@gmail.com>
-Date:   Thu, 25 Mar 2021 07:27:33 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
+        Thu, 25 Mar 2021 01:34:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616650481; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=X12qIuxJ2CSbTarauFRf/LvxSGoKlHCGw1X4+sEEydg=;
+ b=UURPQXfI9jvCIMQScF0UJlLp/hgOj+fuZu7DRuuubZqcOlxXQDnEIZqmIwxHjlkzpNFHXin1
+ 9/rN8BuFkxwbWIxrf5J3Qpnkm2qIj/XZSdPPrk8rCbbsj5f6o/Cu/VRJHK5i1Q7TMj4JOB5y
+ bjTtAmtqj9a8ms6cWTrXC+vtNGM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 605c20df1d4d56494187cc78 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 25 Mar 2021 05:34:23
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A637BC43465; Thu, 25 Mar 2021 05:34:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9CA34C433CA;
+        Thu, 25 Mar 2021 05:34:21 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210324075631.5004-3-chenhui.zhang@axis.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 25 Mar 2021 13:34:21 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <avri.altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, stanley.chu@mediatek.com
+Subject: Re: [PATCH v6 04/10] scsi: ufshpb: Make eviction depends on region's
+ reads
+In-Reply-To: <20210322081044.62003-5-avri.altman@wdc.com>
+References: <20210322081044.62003-1-avri.altman@wdc.com>
+ <20210322081044.62003-5-avri.altman@wdc.com>
+Message-ID: <b06c0bcc3ea51ab7d6b8e5fb46ed6bdb@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-See below.
-
-On 24.3.2021 9.56, Hermes Zhang wrote:
-> From: Hermes Zhang <chenhuiz@axis.com>
+On 2021-03-22 16:10, Avri Altman wrote:
+> In host mode, eviction is considered an extreme measure.
+> verify that the entering region has enough reads, and the exiting
+> region has much less reads.
 > 
-> Document the device tree bindings of the multiple GPIOs LED driver
-> Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml.
-> 
-> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+> Signed-off-by: Avri Altman <avri.altman@wdc.com>
 > ---
->   .../bindings/leds/leds-multi-gpio.yaml        | 50 +++++++++++++++++++
->   1 file changed, 50 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+>  drivers/scsi/ufs/ufshpb.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> new file mode 100644
-> index 000000000000..6f2b47487b90
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-multi-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Multiple GPIOs LED driver
-> +
-> +maintainers:
-> +  - Hermes Zhang <chenhuiz@axis.com>
-> +
-> +description:
-> +  This will support some LED made of multiple GPIOs and the brightness of the
-> +  LED could map to different states of the GPIOs.
-> +
-> +properties:
-> +  compatible:
-> +    const: multi-gpio-led
-> +
-> +  led-gpios:
-> +    description: Array of one or more GPIOs pins used to control the LED.
-> +    minItems: 1
-> +    maxItems: 8  # Should be enough
-
-We also have a case with multi color LEDs (which is probably a more 
-common than multi intensity LED. So I am wondering how these both could 
-co-exist.
-
-From: 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/leds/leds-gpio.yaml?h=v5.12-rc4#n58
-
-         led-0 {
-             gpios = <&mcu_pio 0 GPIO_ACTIVE_LOW>;
-             linux,default-trigger = "disk-activity";
-             function = LED_FUNCTION_DISK;
-         };
-
-Now 'gpios' (and in LED context) and 'led-gpios' is very close to each 
-other and could easily be confused.
-
-Perhaps this could be something like:
-
-intensity-gpios = ...
-
-or even simplified then just to gpios = <...>
-
-> +
-> +  led-states:
-> +    description: |
-> +      The array list the supported states here which will map to brightness
-> +      from 0 to maximum. Each item in the array will present all the GPIOs
-> +      value by bit.
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +    minItems: 1
-> +    maxItems: 16 # Should be enough
-> +
-> +required:
-> +  - compatible
-> +  - led-gpios
-> +  - led-states
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gpios-led {
-> +      compatible = "multi-gpio-led";
-> +
-> +      led-gpios = <&gpio0 23 0x1>,
-> +                  <&gpio0 24 0x1>;
-> +      led-states = /bits/ 8 <0x00 0x01 0x02 0x03>;
-> +    };
-> +...
+> diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+> index a1519cbb4ce0..5e757220d66a 100644
+> --- a/drivers/scsi/ufs/ufshpb.c
+> +++ b/drivers/scsi/ufs/ufshpb.c
+> @@ -17,6 +17,7 @@
+>  #include "../sd.h"
 > 
+>  #define ACTIVATION_THRESHOLD 8 /* 8 IOs */
+> +#define EVICTION_THRESHOLD (ACTIVATION_THRESHOLD << 5) /* 256 IOs */
+> 
+>  /* memory management */
+>  static struct kmem_cache *ufshpb_mctx_cache;
+> @@ -1047,6 +1048,13 @@ static struct ufshpb_region
+> *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
+>  		if (ufshpb_check_srgns_issue_state(hpb, rgn))
+>  			continue;
+> 
+> +		/*
+> +		 * in host control mode, verify that the exiting region
+> +		 * has less reads
+> +		 */
+> +		if (hpb->is_hcm && rgn->reads > (EVICTION_THRESHOLD >> 1))
+> +			continue;
+> +
+>  		victim_rgn = rgn;
+>  		break;
+>  	}
+> @@ -1219,7 +1227,7 @@ static int ufshpb_issue_map_req(struct ufshpb_lu 
+> *hpb,
+> 
+>  static int ufshpb_add_region(struct ufshpb_lu *hpb, struct 
+> ufshpb_region *rgn)
+>  {
+> -	struct ufshpb_region *victim_rgn;
+> +	struct ufshpb_region *victim_rgn = NULL;
+>  	struct victim_select_info *lru_info = &hpb->lru_info;
+>  	unsigned long flags;
+>  	int ret = 0;
+> @@ -1246,7 +1254,15 @@ static int ufshpb_add_region(struct ufshpb_lu
+> *hpb, struct ufshpb_region *rgn)
+>  			 * It is okay to evict the least recently used region,
+>  			 * because the device could detect this region
+>  			 * by not issuing HPB_READ
+> +			 *
+> +			 * in host control mode, verify that the entering
+> +			 * region has enough reads
+>  			 */
+> +			if (hpb->is_hcm && rgn->reads < EVICTION_THRESHOLD) {
+> +				ret = -EACCES;
+> +				goto out;
+> +			}
+> +
 
-From: 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/leds/leds-lp55xx.yaml?h=v5.12-rc4#n196
-
-There is example of multi color LED configuration. In example below I 
-used two-color LED with red and green as an example (which what we seem 
-to have most in use).
-
-Then if try to combine these into something like:
-
-# Multi color LED with single GPIO line per color
-multi-led@2 {
-   compatible = "gpio-leds";
-   color = <LED_COLOR_ID_MULTICOLOR>;
-   led@0 {
-     color = <LED_COLOR_ID_GREEN>;
-     gpios = <&mcu_pio 0 GPIO_ACTIVE_LOW>;
-   };
-
-   led@1 {
-     color = <LED_COLOR_ID_RED>;
-     gpios = <&mcu_pio 1 GPIO_ACTIVE_LOW>;
-   };
-};
-
-# And with intensity GPIOs:
-multi-led@2 {
-   compatible = "gpio-leds";
-   color = <LED_COLOR_ID_MULTICOLOR>;
-
-   led@0 {
-     color = <LED_COLOR_ID_GREEN>;
-     gpios = <&gpio0 23 0x1>,
-             <&gpio0 24 0x1>;
-     ... see below
-   };
-
-   led@1 {
-     color = <LED_COLOR_ID_RED>;
-     gpios = <&gpio0 25 0x1>,
-             <&gpio0 26 0x1>;
-     ... see below
-   };
-};
-
-# And then single GPIO with intensity GPIOs:
-led@2 {
-   compatible = "gpio-leds";
-   gpios = <&gpio0 23 0x1>,
-           <&gpio0 24 0x1>;
-   gpios-brightness-levels = <0 1 2 3>
-};
-
-I changed 'led-states' to 'gpios-brightness-levels' as it describe more 
-that this is about brightness and not some other state information.
-
-How would this sound?
+I cannot understand the logic behind this. A rgn which host chooses to 
+activate,
+is in INACTIVE state now, if its rgn->reads < 256, then don't activate 
+it.
+Could you please elaborate?
 
 Thanks,
-Vesa Jääskeläinen
+Can Guo.
+
+>  			victim_rgn = ufshpb_victim_lru_info(hpb);
+>  			if (!victim_rgn) {
+>  				dev_warn(&hpb->sdev_ufs_lu->sdev_dev,
