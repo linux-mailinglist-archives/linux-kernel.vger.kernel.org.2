@@ -2,111 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4CC34927A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0DE349280
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 13:58:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhCYMyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 08:54:35 -0400
-Received: from mga17.intel.com ([192.55.52.151]:32934 "EHLO mga17.intel.com"
+        id S229617AbhCYM5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 08:57:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230377AbhCYMyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 08:54:17 -0400
-IronPort-SDR: Sx7xwz8KGMAlYuDKOd+DCtUxEW6VtALRBJ24th0Absde/zChsQzCRTIEknvtrjK31Qz0uWQ4PO
- teDr40wZrytQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="170899352"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="170899352"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 05:54:17 -0700
-IronPort-SDR: 0UZcZSDDN+4EZ6NdZE6wdeQVxlVSZPThBvSUsY1Z0jpTq41Ef7NW/naabCdg2U6qVoUzWm2rBJ
- jJr85sXM+nUA==
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="375057264"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 05:54:15 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lPPV6-00G2tJ-5t; Thu, 25 Mar 2021 14:54:12 +0200
-Date:   Thu, 25 Mar 2021 14:54:12 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Roger Pau Monne <roger.pau@citrix.com>
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v3] intel/pinctrl: check REVID register value for device
- presence
-Message-ID: <YFyH9Fk5d+289/f/@smile.fi.intel.com>
-References: <20210325090947.73729-1-roger.pau@citrix.com>
+        id S229533AbhCYM5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 08:57:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 382D261974;
+        Thu, 25 Mar 2021 12:57:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616677052;
+        bh=3H0UEl8IFMZnTCiYxMhBs6oV9gfIvgzzMAIaxL0u45U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=O1AERoXCy9779LdVGqi8hJ3RLE6J1qXJcz37mjlqLcR2x5xlZEbgfqSjYhha7N7jz
+         VuSr8Jc73qmNE7025HzhPQv80qz1FhbuiMz2Stf0SBE8+IWvSh+9UTTv2h6EXoMTJF
+         Rmz1t0uXt7cK90w8wTRcDj1jaGb/UCE7Y9zeZQpMJd6hAxM4/BxGKbIGjCWDUy8LCW
+         EAs02cTY0uK+MIgDVzkhSIGeDOnlU4zlFE54NCNXoFDDgNhoNUaUWMHXlWP/O7BDHj
+         E8EeZFCKttEPYC8PToehQymNErQ+wUeRT+7OqJiskDwdn7RoC+eKO101PXWPj1iQzZ
+         9ogbuLyRO/Ugw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0FACE40647; Thu, 25 Mar 2021 09:57:30 -0300 (-03)
+Date:   Thu, 25 Mar 2021 09:57:29 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 1/2] perf/core: Share an event with multiple cgroups
+Message-ID: <YFyIuZWs+GINtoTY@kernel.org>
+References: <20210323162156.1340260-1-namhyung@kernel.org>
+ <20210323162156.1340260-2-namhyung@kernel.org>
+ <C0AF9F1F-F525-4047-AD89-F75E3FEFC215@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210325090947.73729-1-roger.pau@citrix.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <C0AF9F1F-F525-4047-AD89-F75E3FEFC215@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:09:47AM +0100, Roger Pau Monne wrote:
-> Use the value read from the REVID register in order to check for the
-> presence of the device. A read of all ones is treated as if the device
-> is not present, and hence probing is ended.
+Em Thu, Mar 25, 2021 at 12:55:50AM +0000, Song Liu escreveu:
+> > On Mar 23, 2021, at 9:21 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+> > #ifdef CONFIG_SECURITY
+> > @@ -780,6 +792,14 @@ struct perf_event {
+> > #endif /* CONFIG_PERF_EVENTS */
+> > };
+
+> > +struct perf_cgroup_node {
+> > +	struct hlist_node		node;
+> > +	u64				id;
+> > +	u64				count;
+> > +	u64				time_enabled;
+> > +	u64				time_running;
+> > +	u64				padding[2];
 > 
-> This fixes an issue when running as a Xen PVH dom0, where the ACPI
-> DSDT table is provided unmodified to dom0 and hence contains the
-> pinctrl devices, but the MMIO region(s) containing the device
-> registers might not be mapped in the guest physical memory map if such
-> region(s) are not exposed on a PCI device BAR or marked as reserved in
-> the host memory map.
+> Do we really need the padding? For cache line alignment? 
 
-Applied for fixes, thanks!
+I guess so, to get it to 64 bytes, then having it as:
 
-> 91d898e51e60 ('pinctrl: intel: Convert capability list to features')
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-> ---
-> Changes since v2:
->  - Return ENODEV.
->  - Adjust code comment.
-> 
-> Changes since v1:
->  - New in this version.
-> ---
-> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Cc: Andy Shevchenko <andy@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: linux-gpio@vger.kernel.org
-> ---
->  drivers/pinctrl/intel/pinctrl-intel.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/intel/pinctrl-intel.c b/drivers/pinctrl/intel/pinctrl-intel.c
-> index 8085782cd8f9..9fc5bba514ea 100644
-> --- a/drivers/pinctrl/intel/pinctrl-intel.c
-> +++ b/drivers/pinctrl/intel/pinctrl-intel.c
-> @@ -1491,8 +1491,13 @@ static int intel_pinctrl_probe(struct platform_device *pdev,
->  		if (IS_ERR(regs))
->  			return PTR_ERR(regs);
->  
-> -		/* Determine community features based on the revision */
-> +		/*
-> +		 * Determine community features based on the revision.
-> +		 * A value of all ones means the device is not present.
-> +		 */
->  		value = readl(regs + REVID);
-> +		if (value == ~0u)
-> +			return -ENODEV;
->  		if (((value & REVID_MASK) >> REVID_SHIFT) >= 0x94) {
->  			community->features |= PINCTRL_FEATURE_DEBOUNCE;
->  			community->features |= PINCTRL_FEATURE_1K_PD;
-> -- 
-> 2.30.1
-> 
+struct perf_cgroup_node {
+	struct hlist_node		node;
+	u64				id;
+	u64				count;
+	u64				time_enabled;
+	u64				time_running;
+} ____cacheline_aligned;
 
--- 
-With Best Regards,
-Andy Shevchenko
+Seems better :-)
 
+Testing:
 
+[acme@five c]$ cat cacheline_aligned.c
+#ifndef ____cacheline_aligned
+#define ____cacheline_aligned __attribute__((__aligned__(SMP_CACHE_BYTES)))
+#endif
+
+// from ../build/v5.12.0-rc4+/include/generated/autoconf.h
+#define CONFIG_X86_L1_CACHE_SHIFT 6
+
+#define L1_CACHE_SHIFT  (CONFIG_X86_L1_CACHE_SHIFT)
+#define L1_CACHE_BYTES  (1 << L1_CACHE_SHIFT)
+
+#ifndef SMP_CACHE_BYTES
+#define SMP_CACHE_BYTES L1_CACHE_BYTES
+#endif
+
+typedef long long unsigned int u64;
+
+struct hlist_node {
+	struct hlist_node *        next;                 /*     0     8 */
+	struct hlist_node * *      pprev;                /*     8     8 */
+
+	/* size: 16, cachelines: 1, members: 2 */
+	/* last cacheline: 16 bytes */
+};
+
+struct perf_cgroup_node {
+        struct hlist_node               node;
+        u64                             id;
+        u64                             count;
+        u64                             time_enabled;
+        u64                             time_running;
+} ____cacheline_aligned foo;
+
+[acme@five c]$ cc  -g  -c -o cacheline_aligned.o cacheline_aligned.c
+[acme@five c]$ pahole cacheline_aligned.o
+struct hlist_node {
+	struct hlist_node *        next;                 /*     0     8 */
+	struct hlist_node * *      pprev;                /*     8     8 */
+
+	/* size: 16, cachelines: 1, members: 2 */
+	/* last cacheline: 16 bytes */
+};
+struct perf_cgroup_node {
+	struct hlist_node          node;                 /*     0    16 */
+	u64                        id;                   /*    16     8 */
+	u64                        count;                /*    24     8 */
+	u64                        time_enabled;         /*    32     8 */
+	u64                        time_running;         /*    40     8 */
+
+	/* size: 64, cachelines: 1, members: 5 */
+	/* padding: 16 */
+} __attribute__((__aligned__(64)));
+[acme@five c]$
+
+- Arnaldo
