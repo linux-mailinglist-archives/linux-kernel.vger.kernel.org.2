@@ -2,154 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F4003486D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3AF3486D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbhCYCJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 22:09:06 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3499 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbhCYCIv (ORCPT
+        id S234218AbhCYCLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 22:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233752AbhCYCLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 22:08:51 -0400
-Received: from DGGEML403-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F5T4f3KKvzRTnV;
-        Thu, 25 Mar 2021 10:06:58 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML403-HUB.china.huawei.com (10.3.17.33) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 25 Mar 2021 10:08:48 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Thu, 25 Mar
- 2021 10:08:48 +0800
-Subject: Re: [PATCH net v2] net: sched: fix packet stuck problem for lockless
- qdisc
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        "Cong Wang ." <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Jonas Bonn <jonas.bonn@netrounds.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Michael Zhivich <mzhivich@akamai.com>,
-        Josh Hunt <johunt@akamai.com>,
-        "Jike Song" <albcamus@gmail.com>,
-        Kehuan Feng <kehuan.feng@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-References: <1616552677-39016-1-git-send-email-linyunsheng@huawei.com>
- <CAM_iQpXAedg31hPx674u4Q4fj0DweADPSn0n_KghgRBWDoOOfw@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <364d994a-9234-fe52-a8ad-ab17934e6205@huawei.com>
-Date:   Thu, 25 Mar 2021 10:08:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Wed, 24 Mar 2021 22:11:12 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E8EC06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 19:11:01 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id z3so369577ioc.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 19:11:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hKoU5fbuXR6tau309P7NjH2acT/oE9AD++ForKsP118=;
+        b=L6mTCCBB85LiB8VWBpY+r4pzgusBb9O8UZ9QYRk1b6K7QueXG496kakAaG10e1UCY7
+         G4+O+FiVEO7OPZ0UnULXwYpY9cjZytqOXn10UCh3TIKsHMof2pt0/gv+BRYEHYRIZhuL
+         VKC8W6uRHKbey5z7BJAjhhufaHLfdp24kaxORkaB+ORc+u5cZ2NLEh/qk93tigPyW2TW
+         cbDbUugkkBTAa0gkw+0BAgHr08NmAYrrO2ZZtL32Agel39xQtV1KmEJ+WCzuNqR+KgMT
+         zOTQF68izOPF7Lr0QCE4qk7UWuQc4C0P08qHrN0fMSQ7rGRbDkns+IEicn1PzAkDdN1U
+         PUcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hKoU5fbuXR6tau309P7NjH2acT/oE9AD++ForKsP118=;
+        b=QFK6eXgkloXokI3ChcqeR0ZcuuLKZcrAE1mlvEC80g146nwk2Eho+EkvbmKmImZpXT
+         MBz56YMPBu8rPQX1wQBmW64bTLhPtXhCjaAz7oj/o7xV9+xDHpl5TEh2KVss+0MsUJCB
+         Ilbt3KavbkbjwlwQW2eb1Ed3pyrKtODunrz/M0hLAzg0+rHcCTR5DvmI4JtpRHmu1bnt
+         Z1HLLDcVcoCJZCUCaaL0J8cSLTTlxdxdF/4uOkWsdV3YEPlk6PPbm2D9RUCc58pC6X16
+         aKdoYFA21f3NSWyZupTth7I7vgWQvHDFpSMnnHaGq1yLFdZ8xocA+Mm2tZiJD0nZ6FvX
+         VIiA==
+X-Gm-Message-State: AOAM533LBtWYEvYouGo3PRK7YrxTQzR2fDUJOzksnfd0ajGVlK+YmKZR
+        IyiigehacwWUopaGkgowSFEu81DlGczpFDx1Cu9BTw==
+X-Google-Smtp-Source: ABdhPJw9HtJcSWrg+GZkl1jPh232CLRkZRVhbTjpqVDsmNw9HWIy1/84ORisKJGDaiFNa1GUibJG1iyhbj2Vjwhjx78=
+X-Received: by 2002:a5e:8610:: with SMTP id z16mr4488908ioj.57.1616638260820;
+ Wed, 24 Mar 2021 19:11:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpXAedg31hPx674u4Q4fj0DweADPSn0n_KghgRBWDoOOfw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210322204836.1650221-1-axelrasmussen@google.com>
+ <20210324162027.cc723b545ff62b1ad6f5223e@linux-foundation.org> <20210325005234.GG219069@xz-x1>
+In-Reply-To: <20210325005234.GG219069@xz-x1>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 24 Mar 2021 19:10:24 -0700
+Message-ID: <CAJHvVch7kH8JqbakfPgurfEMOGobw5LsEnbfmyT6HB+=cjgHCA@mail.gmail.com>
+Subject: Re: [PATCH] userfaultfd/shmem: fix minor fault page leak
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Wang Qing <wangqing@vivo.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/25 3:20, Cong Wang wrote:
-> On Tue, Mar 23, 2021 at 7:24 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->> @@ -176,8 +207,23 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->>  static inline void qdisc_run_end(struct Qdisc *qdisc)
->>  {
->>         write_seqcount_end(&qdisc->running);
->> -       if (qdisc->flags & TCQ_F_NOLOCK)
->> +       if (qdisc->flags & TCQ_F_NOLOCK) {
->>                 spin_unlock(&qdisc->seqlock);
->> +
->> +               /* qdisc_run_end() is protected by RCU lock, and
->> +                * qdisc reset will do a synchronize_net() after
->> +                * setting __QDISC_STATE_DEACTIVATED, so testing
->> +                * the below two bits separately should be fine.
-> 
-> Hmm, why synchronize_net() after setting this bit is fine? It could
-> still be flipped right after you test RESCHEDULE bit.
+On Wed, Mar 24, 2021 at 5:52 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> Hi, Andrew,
+>
+> On Wed, Mar 24, 2021 at 04:20:27PM -0700, Andrew Morton wrote:
+> > On Mon, 22 Mar 2021 13:48:35 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
+> >
+> > > This fix is analogous to Peter Xu's fix for hugetlb [0]. If we don't
+> > > put_page() after getting the page out of the page cache, we leak the
+> > > reference.
+> > >
+> > > The fix can be verified by checking /proc/meminfo and running the
+> > > userfaultfd selftest in shmem mode. Without the fix, we see MemFree /
+> > > MemAvailable steadily decreasing with each run of the test. With the
+> > > fix, memory is correctly freed after the test program exits.
+> > >
+> > > Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+> >
+> > Confused.  The affected code:
+> >
+> > > --- a/mm/shmem.c
+> > > +++ b/mm/shmem.c
+> > > @@ -1831,6 +1831,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+> > >
+> > >     if (page && vma && userfaultfd_minor(vma)) {
+> > >             unlock_page(page);
+> > > +           put_page(page);
+> > >             *fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
+> > >             return 0;
+> > >     }
+> >
+> > Is added by Peter's "page && vma && userfaultfd_minor".  I assume that
+> > "Fixes:" is incorrect?
+> >
+>
+> It seems to me the commit is correct as pointed to in "Fixes", but I do have a
+> different commit ID here:
+>
+>     commit 63c826b1372c4930f89b8a55092699fa7f0d6f4e
+>     Author: Axel Rasmussen <axelrasmussen@google.com>
+>     Date:   Thu Mar 18 10:20:43 2021 -0400
+>
+>     userfaultfd: support minor fault handling for shmem
+>
+> Axel, did you fetched the commit ID from your local tree, perhaps?  Since I
+> should have fetched from hnaz/linux-mm and I can see Andrew's sign-off too.
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
 
-That depends on when it will be fliped again.
+Ah, this is the SHA I see when I "git log --grep linux-next/akpm"
+(where my repo's linux-next remote is [1]):
 
-As I see:
-1. __QDISC_STATE_DEACTIVATED is set during dev_deactivate() process,
-   which should also wait for all process related to "test_bit(
-   __QDISC_STATE_NEED_RESCHEDULE, &q->state)" to finish by calling
-   synchronize_net() and checking some_qdisc_is_busy().
+commit 00da60b9d0a03818c36a2fe862578309c27006ad
+Author: Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu Mar 18 17:01:51 2021 +1100
 
-2. it is cleared during dev_activate() process.
+    userfaultfd: support minor fault handling for shmem
 
-And dev_deactivate() and dev_activate() is protected by RTNL lock, or
-serialized by linkwatch.
+This is the commit that this new patch fixes. I'll admit I'm a bit
+unsure which tree the "Fixes:" tag is meant to refer to before the
+commits make it into Linus' tree, if I should look up the commit
+another way just let me know. :) And, sorry for the confusion.
 
-> 
-> 
->> +                * For qdisc_run() in net_tx_action() case, we
->> +                * really should provide rcu protection explicitly
->> +                * for document purposes or PREEMPT_RCU.
->> +                */
->> +               if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
->> +                                     &qdisc->state) &&
->> +                            !test_bit(__QDISC_STATE_DEACTIVATED,
->> +                                      &qdisc->state)))
-> 
-> Why do you want to test __QDISC_STATE_DEACTIVATED bit at all?
-> dev_deactivate_many() will wait for those scheduled but being
-> deactivated, so what's the problem of scheduling it even with this bit?
-
-The problem I tried to fix is:
-
-  CPU0(calling dev_deactivate)   CPU1(calling qdisc_run_end)   CPU2(calling tx_atcion)
-             .                       __netif_schedule()                   .
-             .                     set __QDISC_STATE_SCHED                .
-             .                                .                           .
-clear __QDISC_STATE_DEACTIVATED               .                           .
-     synchronize_net()                        .                           .
-             .                                .                           .
-             .                                .              clear __QDISC_STATE_SCHED
-             .                                .                           .
- some_qdisc_is_busy() return false            .                           .
-             .                                .                           .
-             .                                .                      qdisc_run()
-
-some_qdisc_is_busy() checks if the qdisc is busy by checking __QDISC_STATE_SCHED
-and spin_is_locked(&qdisc->seqlock) for lockless qdisc, and some_qdisc_is_busy()
-return false for CPU0 because CPU2 has cleared the __QDISC_STATE_SCHED and has not
-taken the qdisc->seqlock yet, qdisc is clearly still busy when qdisc_run() is run
-by CPU2 later.
-
-So you are right, testing __QDISC_STATE_DEACTIVATED does not completely solve
-the above data race, and there are __netif_schedule() called by dev_requeue_skb()
-and __qdisc_run() too, which need the same fixing.
-
-So will remove the __QDISC_STATE_DEACTIVATED testing for this patch first, and
-deal with it later.
-
-> 
-> Thanks.
-> 
-> .
-> 
-
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
