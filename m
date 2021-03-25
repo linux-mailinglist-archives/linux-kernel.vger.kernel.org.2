@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F88349569
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817B334956E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhCYP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:27:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48364 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhCYP1L (ORCPT
+        id S230433AbhCYP34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:29:56 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37178 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230242AbhCYP3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:27:11 -0400
-Date:   Thu, 25 Mar 2021 15:27:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616686030;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uNyyO5Dvy6H8/hzst5NroS4qKxoUbvoh8rzDQUQ3KfM=;
-        b=MPX6Cx4DKONcKSYSwqpYz386rMTHgx9xrrkhVbzoEs9sWGEMmGEirF5aYo7ESj4iX5Ny/J
-        m/BiyytDnT3l3STMrBK9lFyru2r8MDPJuJxYvgMH8rE3/Ve1uWTu3ZA2eCzJJCVElFkO0O
-        KsYlVFkoF/sMAQADZ80UZDX66Ep1eR4m4nDeEeH0Y/KZyUepXABHUE9ddaEoETdyj6o0EX
-        oeDIziNGiZD7oAx5qp4gOTFQDeobkqpeJ8mjxylz3Q7HY4tHqYKATTi0at/ntuPsgI9loX
-        uuqAHplP7YgMYGfc2pywsx3RpXJA/qxqR/0dEQGi9Mf3jDQHjyANQNM5F8O7kA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616686030;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uNyyO5Dvy6H8/hzst5NroS4qKxoUbvoh8rzDQUQ3KfM=;
-        b=abH59x5vSVhISgKE0eOi2+Q5T2MkrOYM8mE3avmssWiVcxm49QTorAJbssMsSIJBB0zRyc
-        dhKHGgAEsrqASyAg==
-From:   "tip-bot2 for Masahiro Yamada" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/syscalls: Fix -Wmissing-prototypes warnings
- from COND_SYSCALL()
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, mic@linux.microsoft.com,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210301131533.64671-2-masahiroy@kernel.org>
-References: <20210301131533.64671-2-masahiroy@kernel.org>
+        Thu, 25 Mar 2021 11:29:22 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-169-mYGlzNJePAKvQuQAqUb-SA-1; Thu, 25 Mar 2021 15:29:17 +0000
+X-MC-Unique: mYGlzNJePAKvQuQAqUb-SA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 25 Mar 2021 15:29:16 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Thu, 25 Mar 2021 15:29:16 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Gustavo A. R. Silva'" <gustavo@embeddedor.com>,
+        "'Gustavo A. R. Silva'" <gustavoars@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        "Chuck Lever" <chuck.lever@oracle.com>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
+ flexible-array member
+Thread-Topic: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
+ flexible-array member
+Thread-Index: AQHXID829xNnc1F6eUqUVWy7MwUgYKqUt3Ig///6swCAACQV0A==
+Date:   Thu, 25 Mar 2021 15:29:16 +0000
+Message-ID: <1efa90cc6bc24cfb860084e0b888cd4b@AcuMS.aculab.com>
+References: <20210323224858.GA293698@embeddedor>
+ <629154ce566b4c9c9b7f4124b3260fc3@AcuMS.aculab.com>
+ <5331b4e2-eeef-1c27-5efe-bf3986fd6683@embeddedor.com>
+In-Reply-To: <5331b4e2-eeef-1c27-5efe-bf3986fd6683@embeddedor.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Message-ID: <161668602985.398.1651880509532185393.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+RnJvbTogR3VzdGF2byBBLiBSLiBTaWx2YQ0KPiBTZW50OiAyNSBNYXJjaCAyMDIxIDEzOjE4DQo+
+IA0KPiBPbiAzLzI1LzIxIDA4OjQ1LCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4gRnJvbTogR3Vz
+dGF2byBBLiBSLiBTaWx2YQ0KPiA+PiBTZW50OiAyMyBNYXJjaCAyMDIxIDIyOjQ5DQo+ID4+DQo+
+ID4+IFRoZXJlIGlzIGEgcmVndWxhciBuZWVkIGluIHRoZSBrZXJuZWwgdG8gcHJvdmlkZSBhIHdh
+eSB0byBkZWNsYXJlIGhhdmluZw0KPiA+PiBhIGR5bmFtaWNhbGx5IHNpemVkIHNldCBvZiB0cmFp
+bGluZyBlbGVtZW50cyBpbiBhIHN0cnVjdHVyZS4gS2VybmVsIGNvZGUNCj4gPj4gc2hvdWxkIGFs
+d2F5cyB1c2Ug4oCcZmxleGlibGUgYXJyYXkgbWVtYmVyc+KAnVsxXSBmb3IgdGhlc2UgY2FzZXMu
+IFRoZSBvbGRlcg0KPiA+PiBzdHlsZSBvZiBvbmUtZWxlbWVudCBvciB6ZXJvLWxlbmd0aCBhcnJh
+eXMgc2hvdWxkIG5vIGxvbmdlciBiZSB1c2VkWzJdLg0KPiA+Pg0KPiA+PiBVc2UgYW4gYW5vbnlt
+b3VzIHVuaW9uIHdpdGggYSBjb3VwbGUgb2YgYW5vbnltb3VzIHN0cnVjdHMgaW4gb3JkZXIgdG8N
+Cj4gPj4ga2VlcCB1c2Vyc3BhY2UgdW5jaGFuZ2VkOg0KPiA+Pg0KPiA+PiAkIHBhaG9sZSAtQyBu
+ZnNfZmhiYXNlX25ldyBmcy9uZnNkL25mc2ZoLm8NCj4gPj4gc3RydWN0IG5mc19maGJhc2VfbmV3
+IHsNCj4gPj4gICAgICAgICB1bmlvbiB7DQo+ID4+ICAgICAgICAgICAgICAgICBzdHJ1Y3Qgew0K
+PiA+PiAgICAgICAgICAgICAgICAgICAgICAgICBfX3U4ICAgICAgIGZiX3ZlcnNpb25fYXV4OyAg
+ICAgICAvKiAgICAgMCAgICAgMSAqLw0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICBfX3U4
+ICAgICAgIGZiX2F1dGhfdHlwZV9hdXg7ICAgICAvKiAgICAgMSAgICAgMSAqLw0KPiA+PiAgICAg
+ICAgICAgICAgICAgICAgICAgICBfX3U4ICAgICAgIGZiX2ZzaWRfdHlwZV9hdXg7ICAgICAvKiAg
+ICAgMiAgICAgMSAqLw0KPiA+PiAgICAgICAgICAgICAgICAgICAgICAgICBfX3U4ICAgICAgIGZi
+X2ZpbGVpZF90eXBlX2F1eDsgICAvKiAgICAgMyAgICAgMSAqLw0KPiA+PiAgICAgICAgICAgICAg
+ICAgICAgICAgICBfX3UzMiAgICAgIGZiX2F1dGhbMV07ICAgICAgICAgICAvKiAgICAgNCAgICAg
+NCAqLw0KPiA+PiAgICAgICAgICAgICAgICAgfTsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAvKiAgICAgMCAgICAgOCAqLw0KPiA+PiAgICAgICAgICAgICAgICAgc3RydWN0
+IHsNCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgX191OCAgICAgICBmYl92ZXJzaW9uOyAg
+ICAgICAgICAgLyogICAgIDAgICAgIDEgKi8NCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAg
+X191OCAgICAgICBmYl9hdXRoX3R5cGU7ICAgICAgICAgLyogICAgIDEgICAgIDEgKi8NCj4gPj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgX191OCAgICAgICBmYl9mc2lkX3R5cGU7ICAgICAgICAg
+LyogICAgIDIgICAgIDEgKi8NCj4gPj4gICAgICAgICAgICAgICAgICAgICAgICAgX191OCAgICAg
+ICBmYl9maWxlaWRfdHlwZTsgICAgICAgLyogICAgIDMgICAgIDEgKi8NCj4gPj4gICAgICAgICAg
+ICAgICAgICAgICAgICAgX191MzIgICAgICBmYl9hdXRoX2ZsZXhbMF07ICAgICAgLyogICAgIDQg
+ICAgIDAgKi8NCj4gPj4gICAgICAgICAgICAgICAgIH07ICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgLyogICAgIDAgICAgIDQgKi8NCj4gPj4gICAgICAgICB9OyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogICAgIDAgICAgIDggKi8N
+Cj4gPj4NCj4gPj4gICAgICAgICAvKiBzaXplOiA4LCBjYWNoZWxpbmVzOiAxLCBtZW1iZXJzOiAx
+ICovDQo+ID4+ICAgICAgICAgLyogbGFzdCBjYWNoZWxpbmU6IDggYnl0ZXMgKi8NCj4gPj4gfTsN
+Cj4gPg0KPiA+IENvdWxkIHlvdSB1c2UgdGhlIHNpbXBsZXI6DQo+ID4+IHN0cnVjdCBuZnNfZmhi
+YXNlX25ldyB7DQo+ID4+ICAgICAgICAgIF9fdTggICAgICAgZmJfdmVyc2lvbjsNCj4gPj4gICAg
+ICAgICAgX191OCAgICAgICBmYl9hdXRoX3R5cGU7DQo+ID4+ICAgICAgICAgIF9fdTggICAgICAg
+ZmJfZnNpZF90eXBlOw0KPiA+PiAgICAgICAgICBfX3U4ICAgICAgIGZiX2ZpbGVpZF90eXBlOw0K
+PiA+PiAgICAgICAgICB1bmlvbiB7DQo+ID4+ICAgICAgICAgICAgICAgICBfX3UzMiAgICAgIGZi
+X2F1dGhbMV07DQo+ID4+ICAgICAgICAgICAgICAgICBfX3UzMiAgICAgIGZiX2F1dGhfZmxleFsw
+XTsNCj4gPj4gICAgICAgICAgfTsNCj4gPj4gfTsNCj4gPg0KPiA+IEFsdGhvdWdoIEknbSBub3Qg
+Y2VydGFpbiBmbGV4aWJsZSBhcnJheXMgYXJlIHN1cHBvcnRlZA0KPiA+IGFzIHRoZSBsYXN0IGVs
+ZW1lbnQgb2YgYSB1bmlvbi4NCj4gDQo+IE5vcGU7IHRoaXMgaXMgbm90IGFsbG93ZWQ6IGh0dHBz
+Oi8vZ29kYm9sdC5vcmcvei8xNHZkNG84bmENCg0KTm90aGluZyBhbiBleHRyYSAnc3RydWN0IHtf
+X3UzMiBmYl9hdXRoX2ZsZXhbMF07IH0nOyB3b24ndCBzb2x2ZS4NCg0KCURhdmlkDQoNCi0NClJl
+Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
+b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
+Cg==
 
-Commit-ID:     7dfe553affd0d003c7535b7ba60d09193471ea9d
-Gitweb:        https://git.kernel.org/tip/7dfe553affd0d003c7535b7ba60d0919347=
-1ea9d
-Author:        Masahiro Yamada <masahiroy@kernel.org>
-AuthorDate:    Mon, 01 Mar 2021 22:15:26 +09:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 25 Mar 2021 16:20:41 +01:00
-
-x86/syscalls: Fix -Wmissing-prototypes warnings from COND_SYSCALL()
-
-Building kernel/sys_ni.c with W=3D1 emits tons of -Wmissing-prototypes warnin=
-gs:
-
-  $ make W=3D1 kernel/sys_ni.o
-    [ snip ]
-    CC      kernel/sys_ni.o
-     ./arch/x86/include/asm/syscall_wrapper.h:83:14: warning: no previous pro=
-totype for '__ia32_sys_io_setup' [-Wmissing-prototypes]
-     ...
-
-The problem is in __COND_SYSCALL(), the __SYS_STUB0() and __SYS_STUBx() macros
-defined a few lines above already have forward declarations.
-
-Let's do likewise for __COND_SYSCALL() to fix the warnings.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-Link: https://lore.kernel.org/r/20210301131533.64671-2-masahiroy@kernel.org
----
- arch/x86/include/asm/syscall_wrapper.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/sy=
-scall_wrapper.h
-index a84333a..80c08c7 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -80,6 +80,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *reg=
-s);
- 	}
-=20
- #define __COND_SYSCALL(abi, name)					\
-+	__weak long __##abi##_##name(const struct pt_regs *__unused);	\
- 	__weak long __##abi##_##name(const struct pt_regs *__unused)	\
- 	{								\
- 		return sys_ni_syscall();				\
