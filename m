@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA4C348B32
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAEAF348B35
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhCYIIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:08:39 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:37902 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhCYIIV (ORCPT
+        id S229574AbhCYIKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:10:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29192 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhCYIKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:08:21 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12P85YDa076540;
-        Thu, 25 Mar 2021 08:08:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=T562ARBgsvx8K9smQMgZiG3Spgn51OCIZ9kebvNzq+Y=;
- b=UYLJ/TUGdB2lJguTI5eoK7Ij5dpbT+j9Kj2WQLh3gv4JjpvHeXTmOtOzamNK3Pb1UuhB
- px8UA4G5p0Az7FDLL1hg0TbAsDVldfNW9vgELke01Lh/ULpOA1fCM3OMJddnEUToYgHw
- DklIUVTvr1vIMNzNQhW7JU/bBr4Nj0rRoQxI/OISV9+au/v9dtmWwlCrVwajjjEDrK9u
- p7gf2xsT0Tt881Pkoe7AF//dAP2ovmfuRDBbYgaswFb2q26hkI+RIeCq8OYqlJvKajzE
- cf6JAaJzmODIco2IcMFHPAcUVv38wJ7jmv0v0xarwOM5KbwoM06SwdrSDt1FK24orEPt bw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37d90mnavn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 08:08:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12P86T6Z016554;
-        Thu, 25 Mar 2021 08:08:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 37dty1k9qv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 08:08:12 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12P88B0k026550;
-        Thu, 25 Mar 2021 08:08:11 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 25 Mar 2021 08:08:11 +0000
-Date:   Thu, 25 Mar 2021 11:08:03 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kael_w@yeah.net
-Subject: Re: [PATCH] [v3] drivers: staging: _adapter is declared twice
-Message-ID: <20210325080803.GV1717@kadam>
-References: <20210325080050.861273-1-wanjiabing@vivo.com>
+        Thu, 25 Mar 2021 04:10:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616659824;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+UtRoqVjed4aeKlxkJktBDTzmzBfPqmMyTKVge7J/2I=;
+        b=YWGYbQwGkuV8CxBf3XWBb7iCNyK5wGTC8ukluJ7dfiQR7CYC6DYTr3FEkmaI2CMBoNY63D
+        XSIb9SFE+vWo69rUTjS/OMLn/G+v0YgfkcE3YW4StrMDNM/Ch31nwK3EgB2+1vG0DWQxKw
+        S2jdLfqACkxCssBPJD0Z8NQyG13FD38=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-580-dOJiswdfMLa7CAEI8CM45g-1; Thu, 25 Mar 2021 04:10:22 -0400
+X-MC-Unique: dOJiswdfMLa7CAEI8CM45g-1
+Received: by mail-ed1-f72.google.com with SMTP id t27so2293007edi.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:10:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=+UtRoqVjed4aeKlxkJktBDTzmzBfPqmMyTKVge7J/2I=;
+        b=Ww1cwToqeRvBW2v9yH3vlwjykCcqP8W2PC7C4qE6octVYAjTmJ9P+yhKYoRBHSqsjP
+         oYeBNEX1YK137d+6pvi7vmcuPBGEm+tiI4cE+IyefuachG5x7J/7Ridf7cyeKC+h7gOB
+         ZrWmMsP42TasktrJBbPlSfh0zoPiMgZfjN2OFjy6N6La57DMfAIUcnpsIlLAExvIWwEt
+         JwAINPlJxAvTFvsMQHKtX1wFrlV/k9ii4+s4zOIwG64Fdy7ciU4aTsPCe1NbDi5jw9qF
+         4wLTEPGHZE5yIRGBZDusNTaJ2UW4HFaybfEnknNe3NMxPvv7pnDL4vLZ/4ob+J8u6Po+
+         hHFA==
+X-Gm-Message-State: AOAM530PniiQ3f/dzzDSJQf5TZ3djz2UxASjT+QFj27fcnWi3Ugb84Qs
+        cB3gvojNhZz7wuY5zy1hSYhK6nCYOXSKL5ySIoOn+EyyKE9BlEZ2MTfu9NKbO+N8oF9Q2g5G0+i
+        38D/VTaTEzisLhaGuc/cBf1++pOg6lLYXe7kKptU+FoRjwVuXyaluMU14bsDV7WnFLG82K1iB7C
+        iu
+X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr7642739edc.302.1616659821096;
+        Thu, 25 Mar 2021 01:10:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCH7/kZCaLKJLGLs+892JY4VEzBJJej4rycGn0YPjm5aY4RIiCSuOOUBxCB9OIoN9ZZxkMAg==
+X-Received: by 2002:a05:6402:3487:: with SMTP id v7mr7642711edc.302.1616659820812;
+        Thu, 25 Mar 2021 01:10:20 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id v8sm2297629edc.30.2021.03.25.01.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 01:10:20 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Haiwei Li <lihaiwei.kernel@gmail.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Wei Huang <wei.huang2@amd.com>, Joerg Roedel <joro@8bytes.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: x86/vPMU: Forbid writing to MSR_F15H_PERF MSRs
+ when guest doesn't have X86_FEATURE_PERFCTR_CORE
+In-Reply-To: <CAB5KdObQ7t4aXFsYioNdVfNt6B+ChJLB5dKsWxAtoXMYpgSoBA@mail.gmail.com>
+References: <20210323084515.1346540-1-vkuznets@redhat.com>
+ <CAB5KdObQ7t4aXFsYioNdVfNt6B+ChJLB5dKsWxAtoXMYpgSoBA@mail.gmail.com>
+Date:   Thu, 25 Mar 2021 09:10:19 +0100
+Message-ID: <87czvny7pw.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325080050.861273-1-wanjiabing@vivo.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 bulkscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2103250061
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=982 suspectscore=0 clxscore=1015 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2103250061
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 04:00:46PM +0800, Wan Jiabing wrote:
-> struct _adapter has been declared at 23rd line.
-> Remove the duplicate.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
-> Changelog:
-> v3:
-> - Delete trailing whitespace.
-> 
-> v2:
-> - Delete the blank line.
+Haiwei Li <lihaiwei.kernel@gmail.com> writes:
 
-Bingo!  :)  Well done.
+> On Tue, Mar 23, 2021 at 4:48 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+>>
+>> MSR_F15H_PERF_CTL0-5, MSR_F15H_PERF_CTR0-5 MSRs are only available when
+>> X86_FEATURE_PERFCTR_CORE CPUID bit was exposed to the guest. KVM, however,
+>> allows these MSRs unconditionally because kvm_pmu_is_valid_msr() ->
+>> amd_msr_idx_to_pmc() check always passes and because kvm_pmu_set_msr() ->
+>> amd_pmu_set_msr() doesn't fail.
+>>
+>> In case of a counter (CTRn), no big harm is done as we only increase
+>> internal PMC's value but in case of an eventsel (CTLn), we go deep into
+>> perf internals with a non-existing counter.
+>>
+>> Note, kvm_get_msr_common() just returns '0' when these MSRs don't exist
+>> and this also seems to contradict architectural behavior which is #GP
+>> (I did check one old Opteron host) but changing this status quo is a bit
+>> scarier.
+>
+> When msr doesn't exist, kvm_get_msr_common() returns KVM_MSR_RET_INVALID
+> in `default:` and kvm_complete_insn_gp() will inject #GP to guest.
+>
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+I'm looking at the following in kvm_get_msr_common():
 
-regards,
-dan carpenter
+        switch (msr_info->index) {
+        ...
+ 	case MSR_F15H_PERF_CTL0 ... MSR_F15H_PERF_CTR5:
+        ...
+		if (kvm_pmu_is_valid_msr(vcpu, msr_info->index))
+			return kvm_pmu_get_msr(vcpu, msr_info);
+		msr_info->data = 0;
+		break;
+        ...
+	}
+	return 0;
+
+so it's kind of 'always exists' or am I wrong?
+
+> Also i have wrote a kvm-unit-test, tested both on amd EPYC and intel
+> CascadeLake. A #GP error was printed.
+> Just like:
+>
+> Unhandled exception 13 #GP at ip 0000000000400420
+> error_code=0000      rflags=00010006      cs=00000008
+> rax=0000000000000000 rcx=0000000000000620 rdx=00000000006164a0
+> rbx=0000000000009500
+> rbp=0000000000517490 rsi=0000000000616ae0 rdi=0000000000000001
+>  r8=0000000000000001  r9=00000000000003f8 r10=000000000000000d
+> r11=0000000000000000
+> r12=0000000000000000 r13=0000000000000000 r14=0000000000000000
+> r15=0000000000000000
+> cr0=0000000080000011 cr2=0000000000000000 cr3=000000000040b000
+> cr4=0000000000000020
+> cr8=0000000000000000
+> STACK: @400420 400338
+
+Did this happen on read or write? The later is expected, the former is
+not. Could you maybe drop your code here, I'd like to see what's going
+on.
+
+-- 
+Vitaly
 
