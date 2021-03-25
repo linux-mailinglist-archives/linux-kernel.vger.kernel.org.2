@@ -2,156 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F07034989E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:51:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6FC3498A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbhCYRvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:51:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51262 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhCYRuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:50:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616694638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1FeCnC7WnMeWEj1gEjR7GjHOI7D/MTEeLRIo3/QZ87I=;
-        b=bZAJb6mLyiAMxcYv0r40lqxfJfIz0ihLWV4bk7vzIJNh5hPJ+eEuKDstI9YikR9cKGp6Ll
-        TcgCo2d5VBwmadG4q4RyCi0yXJ+VP4ewWHYbqcT0TYOGWe0SgOquLhuLOnytimqlhZVJUk
-        2M+e8raAOYjJaSFiw4KyiNuQ+mb6z9I=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 52C86AC16;
-        Thu, 25 Mar 2021 17:50:38 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 18:50:30 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Arjun Roy <arjunroy@google.com>,
-        Arjun Roy <arjunroy.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Roman Gushchin <guro@fb.com>
-Subject: Re: [mm, net-next v2] mm: net: memcg accounting for TCP rx zerocopy
-Message-ID: <YFzNZjuYjIgy1Sb9@dhcp22.suse.cz>
-References: <YFCH8vzFGmfFRCvV@cmpxchg.org>
- <CAOFY-A23NBpJQ=mVQuvFib+cREAZ_wC5=FOMzv3YCO69E4qRxw@mail.gmail.com>
- <YFJ+5+NBOBiUbGWS@cmpxchg.org>
- <YFn8bLBMt7txj3AZ@dhcp22.suse.cz>
- <CAOFY-A22Pp3Z0apYBWtOJCD8TxfrbZ_HE9Xd6eUds8aEvRL+uw@mail.gmail.com>
- <YFsA78FfzICrnFf7@dhcp22.suse.cz>
- <YFut+cZhsJec7Pud@cmpxchg.org>
- <CAOFY-A0Y0ye74bnpcWsKOPZMJSrFW8mJxVJrpwiy2dcGgUJ5Tw@mail.gmail.com>
- <YFxRpKfwQwobt7IK@dhcp22.suse.cz>
- <YFy+iPiL1YbjjapV@cmpxchg.org>
+        id S230046AbhCYRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:51:37 -0400
+Received: from ste-pvt-msa1.bahnhof.se ([213.80.101.70]:65309 "EHLO
+        ste-pvt-msa1.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229547AbhCYRvf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:51:35 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTP id D83553F6BE;
+        Thu, 25 Mar 2021 18:51:32 +0100 (CET)
+Authentication-Results: ste-pvt-msa1.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=JBnbqbi6;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from ste-pvt-msa1.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa1.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kY9Ut-ckC-Gq; Thu, 25 Mar 2021 18:51:32 +0100 (CET)
+Received: by ste-pvt-msa1.bahnhof.se (Postfix) with ESMTPA id 4EE033F6BD;
+        Thu, 25 Mar 2021 18:51:30 +0100 (CET)
+Received: from [10.249.254.165] (unknown [192.198.151.44])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id 0260136059E;
+        Thu, 25 Mar 2021 18:51:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1616694689; bh=yIsgeu3PLt8B2VGA2PrEalyxmaXCbDHFpjtAUnLL9Yw=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=JBnbqbi6vAuhfNq/HXjPBCfOFBgsOv10wheSeNLjPxUBRzniauAhbotYnLpZKS5of
+         VzDkBxo66te4Sj4rNot5UYM51RfgpdnJ2dg9WoEkck6bv5nBae6UuIPg0WTyScmDLV
+         TQpYoEl+eJeA1RqYhIszPNut6dMI2YjHDODfaDpY=
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+To:     Dave Hansen <dave.hansen@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+References: <20210321184529.59006-1-thomas_os@shipmail.org>
+ <20210321184529.59006-2-thomas_os@shipmail.org>
+ <ec99146c7abc35d16b245816aba3e9d14862e624.camel@intel.com>
+ <c2239da2-c514-2c88-c671-918909cdba6b@shipmail.org>
+ <YFsNRIUYrwVQanVF@phenom.ffwll.local>
+ <a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org>
+ <75423f64-adef-a2c4-8e7d-2cb814127b18@intel.com>
+ <e5199438-9a0d-2801-f9f6-ceb13d7a9c61@shipmail.org>
+ <6b0de827-738d-b3c5-fc79-8ca9047bad35@intel.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <9f789d64-940f-c728-8d5e-aab74d562fb6@shipmail.org>
+Date:   Thu, 25 Mar 2021 18:51:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YFy+iPiL1YbjjapV@cmpxchg.org>
+In-Reply-To: <6b0de827-738d-b3c5-fc79-8ca9047bad35@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-03-21 12:47:04, Johannes Weiner wrote:
-> On Thu, Mar 25, 2021 at 10:02:28AM +0100, Michal Hocko wrote:
-> > On Wed 24-03-21 15:49:15, Arjun Roy wrote:
-> > > On Wed, Mar 24, 2021 at 2:24 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > >
-> > > > On Wed, Mar 24, 2021 at 10:12:46AM +0100, Michal Hocko wrote:
-> > > > > On Tue 23-03-21 11:47:54, Arjun Roy wrote:
-> > > > > > On Tue, Mar 23, 2021 at 7:34 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Wed 17-03-21 18:12:55, Johannes Weiner wrote:
-> > > > > > > [...]
-> > > > > > > > Here is an idea of how it could work:
-> > > > > > > >
-> > > > > > > > struct page already has
-> > > > > > > >
-> > > > > > > >                 struct {        /* page_pool used by netstack */
-> > > > > > > >                         /**
-> > > > > > > >                          * @dma_addr: might require a 64-bit value even on
-> > > > > > > >                          * 32-bit architectures.
-> > > > > > > >                          */
-> > > > > > > >                         dma_addr_t dma_addr;
-> > > > > > > >                 };
-> > > > > > > >
-> > > > > > > > and as you can see from its union neighbors, there is quite a bit more
-> > > > > > > > room to store private data necessary for the page pool.
-> > > > > > > >
-> > > > > > > > When a page's refcount hits zero and it's a networking page, we can
-> > > > > > > > feed it back to the page pool instead of the page allocator.
-> > > > > > > >
-> > > > > > > > From a first look, we should be able to use the PG_owner_priv_1 page
-> > > > > > > > flag for network pages (see how this flag is overloaded, we can add a
-> > > > > > > > PG_network alias). With this, we can identify the page in __put_page()
-> > > > > > > > and __release_page(). These functions are already aware of different
-> > > > > > > > types of pages and do their respective cleanup handling. We can
-> > > > > > > > similarly make network a first-class citizen and hand pages back to
-> > > > > > > > the network allocator from in there.
-> > > > > > >
-> > > > > > > For compound pages we have a concept of destructors. Maybe we can extend
-> > > > > > > that for order-0 pages as well. The struct page is heavily packed and
-> > > > > > > compound_dtor shares the storage without other metadata
-> > > > > > >                                         int    pages;    /*    16     4 */
-> > > > > > >                         unsigned char compound_dtor;     /*    16     1 */
-> > > > > > >                         atomic_t   hpage_pinned_refcount; /*    16     4 */
-> > > > > > >                         pgtable_t  pmd_huge_pte;         /*    16     8 */
-> > > > > > >                         void *     zone_device_data;     /*    16     8 */
-> > > > > > >
-> > > > > > > But none of those should really require to be valid when a page is freed
-> > > > > > > unless I am missing something. It would really require to check their
-> > > > > > > users whether they can leave the state behind. But if we can establish a
-> > > > > > > contract that compound_dtor can be always valid when a page is freed
-> > > > > > > this would be really a nice and useful abstraction because you wouldn't
-> > > > > > > have to care about the specific type of page.
-> > > >
-> > > > Yeah technically nobody should leave these fields behind, but it
-> > > > sounds pretty awkward to manage an overloaded destructor with a
-> > > > refcounted object:
-> > > >
-> > > > Either every put would have to check ref==1 before to see if it will
-> > > > be the one to free the page, and then set up the destructor before
-> > > > putting the final ref. But that means we can't support lockless
-> > > > tryget() schemes like we have in the page cache with a destructor.
-> > 
-> > I do not follow the ref==1 part. I mean to use the hugetlb model where
-> > the destructore is configured for the whole lifetime until the page is
-> > freed back to the allocator (see below).
-> 
-> That only works if the destructor field doesn't overlap with a member
-> the page type itself doesn't want to use. Page types that do want to
-> use it would need to keep that field exclusive.
 
-Right.
+On 3/24/21 9:25 PM, Dave Hansen wrote:
+> On 3/24/21 1:22 PM, Thomas Hellström (Intel) wrote:
+>>> We also have not been careful at *all* about how _PAGE_BIT_SOFTW* are
+>>> used.  It's quite possible we can encode another use even in the
+>>> existing bits.
+>>>
+>>> Personally, I'd just try:
+>>>
+>>> #define _PAGE_BIT_SOFTW5        57      /* available for programmer */
+>>>
+>> OK, I'll follow your advise here. FWIW I grepped for SW1 and it seems
+>> used in a selftest, but only for PTEs AFAICT.
+>>
+>> Oh, and we don't care about 32-bit much anymore?
+> On x86, we have 64-bit PTEs when running 32-bit kernels if PAE is
+> enabled.  IOW, we can handle the majority of 32-bit CPUs out there.
+>
+> But, yeah, we don't care about 32-bit. :)
 
-> We couldn't use it for LRU pages e.g. because it overlaps with the
-> lru.next pointer.
+Hmm,
 
-Dang, I have completely missed this. I was looking at pahole because
-struct page is unreadable in the C code but I tricked myself to only
-look at offset 16. The initial set of candidate looked really
-promissing. But overlapping with list_head is a deal breaker. This makes
-use of dtor for most order-0 pages indeed unfeasible. Maybe dtor can be
-rellocated but that is certain a rabbit hole people (rightfully) avoid
-as much as possible. So you are right and going with networking specific
-way is more reasonable.
+Actually it makes some sense to use SW1, to make it end up in the same 
+dword as the PSE bit, as from what I can tell, reading of a 64-bit pmd_t 
+on 32-bit PAE is not atomic, so in theory a huge pmd could be modified 
+while reading the pmd_t making the dwords inconsistent.... How does that 
+work with fast gup anyway?
 
-[...]
-> So again, yes it would be nice to have generic destructors, but I just
-> don't see how it's practical.
+In any case, what would be the best cause of action here? Use SW1 or 
+disable completely for 32-bit?
 
-just to clarify on this. I didn't really mean to use this mechanism to
-all/most pages I just wanted to have PageHasDestructor rather than
-PageNetwork because both would express a special nead for freeing but
-that would require that the dtor would be outside of lru.
+/Thomas
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+
+
