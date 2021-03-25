@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23D5349438
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A77A34943B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231527AbhCYOem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231548AbhCYOfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230481AbhCYOem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Mar 2021 10:34:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45042 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230433AbhCYOea (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:34:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0434CAD80;
-        Thu, 25 Mar 2021 14:34:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C03DE1E4415; Thu, 25 Mar 2021 15:34:28 +0100 (CET)
-Date:   Thu, 25 Mar 2021 15:34:28 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH] fanotify_user: use upper_32_bits() to verify mask
-Message-ID: <20210325143428.GD13673@quack2.suse.cz>
-References: <20210325083742.2334933-1-brauner@kernel.org>
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A6CC06174A;
+        Thu, 25 Mar 2021 07:34:41 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id g20so1301619wmk.3;
+        Thu, 25 Mar 2021 07:34:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ynjweMD64YwpHQ7jlYvwJr6TBQ1yPhkY0RkphxEaM2M=;
+        b=KBljaEXQHl3gUY+gKjbs4ppg6uRSYLE+xVa+FINEk+1BW8vpsfu0+DQWDVYNqiJQGH
+         +rFmMxTpQsuSORwOrYt9jEIKvFyI7FZV0mNzG+zaAIKpBJdWYhncePlqhKMGL3SZGfnZ
+         z00N+OIv6PUtowHxkYgia8RS+4Upgz9jgktLTYPe/iZHnmk/uG7rYx+iUJ8KLZC77LiR
+         4ch8llxfBmq4RP6GIlmupxAJi81jQoP+6nODVjFI+EKSD5niJQix+SQwhSg8txP0obdF
+         0UFIDh77rKExHi8vBK+14j8zkMghhKUuRHTxtNLPdpIAqrxhTinhl+qsBFujzB4eQNIw
+         6o1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ynjweMD64YwpHQ7jlYvwJr6TBQ1yPhkY0RkphxEaM2M=;
+        b=srrEjxqjWeGQrVuuvd15nYdBLl5Kmo1lFR4uVvcz8lssdUZczcnlH7OUyFpu54NSaZ
+         qdT8l6vBj7t35ZZw2hO7Yq0fdVX+yMmeD3gQVzU7C8FRUxVPhhmfGrfxvsqYSt433XCF
+         Lfy673WuCLKhOvtxxnPgyulHDrW8KHDSA3fWvbqH2D/1fgHEMhb23BNkcfKTjnjDbAnj
+         /GXY0vXea03ClPrTT78DG6Ym0F+EpFmS7zDm96KqdqNCVLVbCfGOzdzg38atj7WE5o7T
+         bOESkpTadM+GRyGGpZydxS9Lvi1OSb7fimXSYav2TEmHGQy7fs4ycPMFELTlI2H2zNoW
+         ivGA==
+X-Gm-Message-State: AOAM530B/TzOBecKMSI+LETiiIAEdNaix2xV2OQVBn3qJj6up9iT3goM
+        dNwOZ0H69Ke0ni5eSgsTQEUpjC22X3Y=
+X-Google-Smtp-Source: ABdhPJxcChO499zctJMW7cGfP4u3vqjzHxMrcrA9zoxp0fevz1/iDgOXcGFGrvKuaA8q4T87zmX9tA==
+X-Received: by 2002:a1c:43c6:: with SMTP id q189mr8360520wma.80.1616682879425;
+        Thu, 25 Mar 2021 07:34:39 -0700 (PDT)
+Received: from [192.168.1.101] ([37.165.105.49])
+        by smtp.gmail.com with ESMTPSA id w6sm7738910wrl.49.2021.03.25.07.34.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 07:34:38 -0700 (PDT)
+Subject: Re: [PATCH] net: change netdev_unregister_timeout_secs min value to 1
+To:     Dmitry Vyukov <dvyukov@google.com>, edumazet@google.com,
+        davem@davemloft.net
+Cc:     leon@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210325103105.3090303-1-dvyukov@google.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <651b7d2d-21b2-8bf4-3dc8-e351c35b5218@gmail.com>
+Date:   Thu, 25 Mar 2021 15:34:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325083742.2334933-1-brauner@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210325103105.3090303-1-dvyukov@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 25-03-21 09:37:43, Christian Brauner wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
+
+
+On 3/25/21 11:31 AM, Dmitry Vyukov wrote:
+> netdev_unregister_timeout_secs=0 can lead to printing the
+> "waiting for dev to become free" message every jiffy.
+> This is too frequent and unnecessary.
+> Set the min value to 1 second.
 > 
-> I don't see an obvious reason why the upper 32 bit check needs to be
-> open-coded this way. Switch to upper_32_bits() which is more idiomatic and
-> should conceptually be the same check.
-> 
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-
-Thanks for the cleanup. I've added it to my tree.
-
-								Honza
-
+> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> Suggested-by: Eric Dumazet <edumazet@google.com>
+> Fixes: 5aa3afe107d9 ("net: make unregister netdev warning timeout configurable")
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
 > ---
->  fs/notify/fanotify/fanotify_user.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index 9e0c1afac8bd..d5683fa9d495 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -1126,7 +1126,7 @@ static int do_fanotify_mark(int fanotify_fd, unsigned int flags, __u64 mask,
->  		 __func__, fanotify_fd, flags, dfd, pathname, mask);
->  
->  	/* we only use the lower 32 bits as of right now. */
-> -	if (mask & ((__u64)0xffffffff << 32))
-> +	if (upper_32_bits(mask))
->  		return -EINVAL;
->  
->  	if (flags & ~FANOTIFY_MARK_FLAGS)
-> 
-> base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
-> -- 
-> 2.27.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+
+Please respin your patch, and fix the merge issue [1]
+
+For networking patches it is customary to tell if its for net or net-next tree.
+
+[1]
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 4bb6dcdbed8b856c03dc4af8b7fafe08984e803f..7bb00b8b86c6494c033cf57460f96ff3adebe081 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10431,7 +10431,7 @@ static void netdev_wait_allrefs(struct net_device *dev)
+ 
+                refcnt = netdev_refcnt_read(dev);
+ 
+-               if (refcnt &&
++               if (refcnt != 1 &&
+                    time_after(jiffies, warning_time +
+                               netdev_unregister_timeout_secs * HZ)) {
+                        pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
