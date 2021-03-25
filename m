@@ -2,174 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBD1348E07
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFF1348E0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbhCYKaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhCYKaE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:30:04 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B19C06174A;
-        Thu, 25 Mar 2021 03:30:03 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d5d00d5a461c7dd3b44f2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5d00:d5a4:61c7:dd3b:44f2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AFE6D1EC0501;
-        Thu, 25 Mar 2021 11:30:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616668200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=CAkDP25OFlShJCPDxQST7B40b5DDqLE/vRJZQKviFIQ=;
-        b=GdX96tqMBdFMRuPKse/S5u+Fn7yuJhdOOt6Xq+BUnlxv1nfU9Ouittcw4nMEYk0s4wgFjl
-        KsRna7lhZb8xuvYmGalsy8QTFdA1sKAVvm+hnk69HcRvajVPAZOIa6v1N4s2mjyV2InLaD
-        HOQj5Arosp7WG6MWL/Xs5JTqzLUsuQg=
-Date:   Thu, 25 Mar 2021 11:29:59 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: [PATCH] x86/tlb: Flush global mappings when KAISER is disabled
-Message-ID: <20210325102959.GD31322@zn.tnic>
-References: <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com>
- <20210311214013.GH5829@zn.tnic>
- <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com>
- <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com>
- <20210311235215.GI5829@zn.tnic>
- <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
- <20210324212139.GN5010@zn.tnic>
- <alpine.LSU.2.11.2103241651280.9593@eggly.anvils>
- <alpine.LSU.2.11.2103241913190.10112@eggly.anvils>
- <20210325095619.GC31322@zn.tnic>
+        id S230164AbhCYKbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:31:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51746 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229979AbhCYKbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:31:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EE6461A25;
+        Thu, 25 Mar 2021 10:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616668267;
+        bh=gihgNnx2OUFDA8cjhLJ9cJkh6zClKQLfuJWEfLdUYMY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rhDtUeKuorG9Z1Aqfk67Anx8LUrD20TGZYX5SrOXXdeMR8anZd3IVoZe/qN9GBmUg
+         2cO5nBUqEntSGpHv62aDFIG/jnQESXgEtkFvEFDo5gLKlS7K2belTEb/rgRv5EgLmJ
+         WG2ED2JcENSmWW9Vn3HyAMpGFjWk9wo/phjXBMA8=
+Date:   Thu, 25 Mar 2021 11:31:04 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Longfang Liu <liulongfang@huawei.com>
+Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
+        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
+        tanxiaofei@huawei.com, liudongdong3@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] USB:XHCI:Adjust the log level of hub
+Message-ID: <YFxmaEtKclXXpBfy@kroah.com>
+References: <1616666652-37920-1-git-send-email-liulongfang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325095619.GC31322@zn.tnic>
+In-Reply-To: <1616666652-37920-1-git-send-email-liulongfang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ok,
+On Thu, Mar 25, 2021 at 06:04:12PM +0800, Longfang Liu wrote:
+> When the number of ports of the hub is not between 1 and Maxports,
+> it will only exit the registration of the hub on the current controller,
+> but it will not affect the function of the controller itself. Its other
+> hubs can operate normally, so the log level here can be changed from
+> error to information.
+> 
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  drivers/usb/core/hub.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+> index b1e14be..70294ad 100644
+> --- a/drivers/usb/core/hub.c
+> +++ b/drivers/usb/core/hub.c
+> @@ -1409,13 +1409,11 @@ static int hub_configure(struct usb_hub *hub,
+>  		maxchild = min_t(unsigned, maxchild, USB_SS_MAXPORTS);
+>  
+>  	if (hub->descriptor->bNbrPorts > maxchild) {
+> -		message = "hub has too many ports!";
+> -		ret = -ENODEV;
+> -		goto fail;
+> +		dev_info(hub_dev, "hub has too many ports!\n");
 
-I tried to be as specific as possible in the commit message so that we
-don't forget. Please lemme know if I've missed something.
+Is this an error?  If so, report it as such, not as "information".
 
-Babu, Jim, I'd appreciate it if you ran this to confirm.
+> +		return -ENODEV;
+>  	} else if (hub->descriptor->bNbrPorts == 0) {
+> -		message = "hub doesn't have any ports!";
+> -		ret = -ENODEV;
+> -		goto fail;
+> +		dev_info(hub_dev, "hub doesn't have any ports!\n");
 
-Thx.
+Same here.
 
----
-From: Borislav Petkov <bp@suse.de>
-Date: Thu, 25 Mar 2021 11:02:31 +0100
+What problem are you trying to solve here?
 
-Jim Mattson reported that Debian 9 guests using a 4.9-stable kernel
-are exploding during alternatives patching:
+What hub do you have that has no ports, or too many, that you think
+should still be able to work properly?
 
-  kernel BUG at /build/linux-dqnRSc/linux-4.9.228/arch/x86/kernel/alternative.c:709!
-  invalid opcode: 0000 [#1] SMP
-  Modules linked in:
-  CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.0-13-amd64 #1 Debian 4.9.228-1
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  Call Trace:
-   swap_entry_free
-   swap_entry_free
-   text_poke_bp
-   swap_entry_free
-   arch_jump_label_transform
-   set_debug_rodata
-   __jump_label_update
-   static_key_slow_inc
-   frontswap_register_ops
-   init_zswap
-   init_frontswap
-   do_one_initcall
-   set_debug_rodata
-   kernel_init_freeable
-   rest_init
-   kernel_init
-   ret_from_fork
+thanks,
 
-triggering the BUG_ON in text_poke() which verifies whether patched
-instruction bytes have actually landed at the destination.
-
-Further debugging showed that the TLB flush before that check is
-insufficient because there could be global mappings left in the TLB,
-leading to a stale mapping getting used.
-
-I say "global mappings" because the hardware configuration is a new one:
-machine is an AMD, which means, KAISER/PTI doesn't need to be enabled
-there, which also means there's no user/kernel pagetables split and
-therefore the TLB can have global mappings.
-
-And the configuration is new one for a second reason: because that AMD
-machine supports PCID and INVPCID, which leads the CPU detection code to
-set the synthetic X86_FEATURE_INVPCID_SINGLE flag.
-
-Now, __native_flush_tlb_single() does invalidate global mappings when
-X86_FEATURE_INVPCID_SINGLE is *not* set and returns.
-
-When X86_FEATURE_INVPCID_SINGLE is set, however, it invalidates the
-requested address from both PCIDs in the KAISER-enabled case. But if
-KAISER is not enabled and the machine has global mappings in the TLB,
-then those global mappings do not get invalidated, which would lead to
-the above mismatch from using a stale TLB entry.
-
-So make sure to flush those global mappings in the KAISER disabled case.
-
-Co-debugged by Babu Moger <babu.moger@amd.com>.
-
-Reported-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/CALMp9eRDSW66%2BXvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com
----
- arch/x86/include/asm/tlbflush.h | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index f5ca15622dc9..2bfa4deb8cae 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -245,12 +245,15 @@ static inline void __native_flush_tlb_single(unsigned long addr)
- 	 * ASID.  But, userspace flushes are probably much more
- 	 * important performance-wise.
- 	 *
--	 * Make sure to do only a single invpcid when KAISER is
--	 * disabled and we have only a single ASID.
-+	 * In the KAISER disabled case, do an INVLPG to make sure
-+	 * the mapping is flushed in case it is a global one.
- 	 */
--	if (kaiser_enabled)
-+	if (kaiser_enabled) {
- 		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
--	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-+		invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-+	} else {
-+		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
-+	}
- }
- 
- static inline void __flush_tlb_all(void)
--- 
-2.29.2
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
