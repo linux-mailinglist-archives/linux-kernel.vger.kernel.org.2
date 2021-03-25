@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6391349849
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0230B349850
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbhCYRhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:37:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
+        id S230208AbhCYRiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:38:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230226AbhCYRha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:37:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6460E61A2A;
-        Thu, 25 Mar 2021 17:37:29 +0000 (UTC)
+        id S230228AbhCYRhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:37:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FB061A2F;
+        Thu, 25 Mar 2021 17:37:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616693849;
-        bh=PJ9dVJr7pQ/MariBpR/ysWqCzzmoHrXzyyOPgE1CF84=;
+        s=k20201202; t=1616693853;
+        bh=FeQb28pNS2AdW2pbIgoRXK1sd/ExR2r66h+k/Zc5vpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O7S/kZB93c1aJU1F+QBupLtIyCZnuk+7MVZT2MbMXeMGvCvzmDk5ML+uVkDy9z4gZ
-         zqkujwYKF0Vba6jrJ6bkJrHnBKCgjlZ4xBNxC25T4Js3pD3MC71EKdhqLA0PGOH+9G
-         wLQmRJsOnTikkZKwNMXT8jGOMluA4s8jfCV/IhdbyPM2H7TN37IODBkQW1t9DLGGFT
-         2DYBe3sv1QE3uedC+F4TN5vc+g0R+OXEYqyyeGQXXH1ExRj6+go+f6MqGYadxvLRy3
-         5afzf3f7oakStOssj1h/jAclKkVdfWKizgz5SrATRX17fW1vLNIzukFy71FKpbVgIf
-         +/bt8IzqQQJXg==
+        b=NXuZCDQ54LwxGOQ65eoPGAjJnEwMR+CEgirer/rQnlUOqG6B8e5zYPaAS76QL/oo6
+         F2X58hkbhzi6pFcUrhCnufhUsOL6kj+uG+NNsI+6cn+j12wjQGH/8P8ABYs+z4k7GV
+         CsDl9RPSBdzi7NY/1IqJmOuBcVo00ei4EdaGVBbADrS9c520/8/XOawBwc7ZLXxiEX
+         MUYZ5S8L8y526cRXV9MN2wmkhW7dJpgVjcy9f9Lb6CpQb7LkW0KaF3k0Q3n7bO8bkm
+         Z1z7gspS3viFRgiD6f5MF+tGhUnEceyyWFSRaOvX4o784r+KfdiZfeuf86QF61owZu
+         M4O2nCBf8c9AQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     guennadi.liakhovetski@linux.intel.com, tiwai@suse.com,
-        perex@perex.cz, rander.wang@linux.intel.com,
-        Ryan Lee <ryans.lee@maximintegrated.com>,
-        pierre-louis.bossart@linux.intel.com, yong.zhi@intel.com,
-        yung-chuan.liao@linux.intel.com, linux-kernel@vger.kernel.org,
-        judyhsiao@google.com, kai.vehmanen@linux.intel.com,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, vkoul@kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, ryan.lee.maxim@gmail.com
-Subject: Re: [PATCH 1/3] ASoC:codec:max98373: Changed amp shutdown register as volatile
-Date:   Thu, 25 Mar 2021 17:37:04 +0000
-Message-Id: <161669370551.41585.8831978780154143601.b4-ty@kernel.org>
+To:     tiwai@suse.com, perex@perex.cz, festevam@gmail.com,
+        Xiubo.Lee@gmail.com, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, nicoleotsuka@gmail.com,
+        linux-kernel@vger.kernel.org, timur@kernel.org,
+        alsa-devel@alsa-project.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        lgirdwood@gmail.com, robh+dt@kernel.org
+Cc:     Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: fsl-asoc-card: Add support for WM8958 codec
+Date:   Thu, 25 Mar 2021 17:37:05 +0000
+Message-Id: <161669370551.41585.15951987176621269157.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210325033555.29377-1-ryans.lee@maximintegrated.com>
-References: <20210325033555.29377-1-ryans.lee@maximintegrated.com>
+In-Reply-To: <1615986303-27959-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1615986303-27959-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,15 +44,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 20:35:53 -0700, Ryan Lee wrote:
-> 0x20FF(amp global enable) register was defined as non-volatile,
-> but it is not. Overheating, overcurrent can cause amp shutdown
-> in hardware.
-> 'regmap_write' compare register readback value before writing
-> to avoid same value writing. 'regmap_read' just read cache
-> not actual hardware value for the non-volatile register.
-> When amp is internally shutdown by some reason, next 'AMP ON'
-> command can be ignored because regmap think amp is already ON.
+On Wed, 17 Mar 2021 21:05:02 +0800, Shengjiu Wang wrote:
+> WM8958 codec is used on some i.MX based platform.
+> So add it support in this generic driver.
 
 Applied to
 
@@ -61,12 +54,10 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC:codec:max98373: Changed amp shutdown register as volatile
-      commit: a23f9099ff1541f15704e96b784d3846d2a4483d
-[2/3] ASoC:codec:max98373: Added 30ms turn on/off time delay
-      commit: 3a27875e91fb9c29de436199d20b33f9413aea77
-[3/3] ASoC:codec:max98373: Added controls for autorestart config
-      commit: 7a0d884986f3693aca8a2dc4e1b31d35c508542e
+[1/2] ASoC: fsl-asoc-card: Add support for WM8958 codec
+      commit: efd0b1660829a987354cea6a446179c7ac7cd0e6
+[2/2] ASoC: bindings: fsl-asoc-card: add compatible string for WM8958 codec
+      commit: df8077c6fe64fe98c1b1c1f9ecf84afc773e726f
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
