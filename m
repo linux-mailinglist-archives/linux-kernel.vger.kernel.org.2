@@ -2,187 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B50E348E62
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEC8348E6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229581AbhCYKxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:53:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60765 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229988AbhCYKxG (ORCPT
+        id S230287AbhCYKya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:54:30 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:49828 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230306AbhCYKyL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:53:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616669586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rA6ScZsKFbklJRAOSK9fbmhff8O1iylGdvkUdoNRPG8=;
-        b=O0W61/RM/2c0we7RVtePUjh+6ZC61mZphZV0XN0XpXnXnOS92SHvz0Sy0ZvkHB0mDDzUvC
-        KrGkjdrQ72mYYGZNXpm37vd51TFAn0AjTxeJV5l0BkINVTtGmDeQLQmCd/i0CTgStlmkEu
-        LJOBzykjAk66txqWQLvxs7uz21JT3fA=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-519-iKSibApuMcWUwdRBJfbbQw-1; Thu, 25 Mar 2021 06:53:04 -0400
-X-MC-Unique: iKSibApuMcWUwdRBJfbbQw-1
-Received: by mail-wm1-f71.google.com with SMTP id n22so1100787wmo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:53:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rA6ScZsKFbklJRAOSK9fbmhff8O1iylGdvkUdoNRPG8=;
-        b=ErgOStrTUKI5Oj0/j1O4z3XRxXMUDElfLpqE26lffey6/vnzRxIFSZZtpgRhN6fJSn
-         gpol/5o3zH2pcPok+6RjqV8lWY+Jnp++FfdyZNvV2TKgEIOBZUZdtTt4k+m+SqgTWV1C
-         R4iUm7Wx8HrxITaDCGyXCGwfREGmMmQaVY4GF1hfFuemv25jD9RLI1YOets+WrG0sJxn
-         CY6f+lG3D6dtHrdT6uAQhp4mROsBZEN830ZXzD3RqMimhUFijw4R4GOsV1w0FHivu8KF
-         KbloYzh/VYacNsnsAS6d9uHVG2MkabWZGJGxQwuXQsoLE04QAmnmXv2i5A9K6s5Uy9JP
-         aj4w==
-X-Gm-Message-State: AOAM530mSEiZ6inauVnT99zDgfgmnlcuX/Yjjq+QiTZQQiaNus826oE6
-        tPopR6lv88RcO15aDXxvoiOb/gTMAknZTzznThs3dTf2IOv+v0Iu79CckBg7rnfd/Zm2VSAwHWX
-        vuCOeavoFLZ7t94KipgPrex4i
-X-Received: by 2002:a05:600c:198f:: with SMTP id t15mr7325684wmq.8.1616669582887;
-        Thu, 25 Mar 2021 03:53:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxPF/o7JivieTbfBmgFLVxa3jW4fWoo6PGZnk/wPYmH1nohRO66HgZd9zJ49OgEoAEvFWs5wA==
-X-Received: by 2002:a05:600c:198f:: with SMTP id t15mr7325659wmq.8.1616669582638;
-        Thu, 25 Mar 2021 03:53:02 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id u63sm6101187wmg.24.2021.03.25.03.53.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 03:53:02 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:52:59 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v7 00/22] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210325105259.dujvq7honiwigfyg@steredhat>
-References: <20210323130716.2459195-1-arseny.krasnov@kaspersky.com>
+        Thu, 25 Mar 2021 06:54:11 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 079AD560;
+        Thu, 25 Mar 2021 11:54:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1616669650;
+        bh=HPNt5V3uTpiZcLoVRtw+cQBhNxQZ/Fy2Isg+f3SCBgo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BcOu/cY5rGuljJtiHmT+6SqJWoOnbYVo39TEYwKksLXmk97hNB50PYB6zmdcWnntl
+         AmJI7IWa/KV/XdQX6NuSvza349J8gxXjmR636EVhQGyOYK7mVeK9awRkTJ6aPDr1/N
+         CUiTmhWRFPIiRDxmUg0UgYERnMcwxCXJEFFJwQxY=
+Date:   Thu, 25 Mar 2021 12:53:27 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
+        kernel@collabora.com, linux-kernel@vger.kernel.org,
+        jc@kynesim.co.uk, dave.stevenson@raspberrypi.org,
+        tfiga@chromium.org
+Subject: Re: [PATCH 1/2] media: videobuf2: use dmabuf size for length
+Message-ID: <YFxrpw5I2Lrbq+AO@pendragon.ideasonboard.com>
+References: <20210325001712.197837-1-helen.koike@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210323130716.2459195-1-arseny.krasnov@kaspersky.com>
+In-Reply-To: <20210325001712.197837-1-helen.koike@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arseny,
+Hi Helen,
 
-On Tue, Mar 23, 2021 at 04:07:13PM +0300, Arseny Krasnov wrote:
->	This patchset implements support of SOCK_SEQPACKET for virtio
->transport.
->	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->do it, two new packet operations were added: first for start of record
-> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
->both operations carries metadata - to maintain boundaries and payload
->integrity. Metadata is introduced by adding special header with two
->fields - message id and message length:
->
->	struct virtio_vsock_seq_hdr {
->		__le32  msg_id;
->		__le32  msg_len;
->	} __attribute__((packed));
->
->	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
->packets(buffer of second virtio descriptor in chain) in the same way as
->data transmitted in RW packets. Payload was chosen as buffer for this
->header to avoid touching first virtio buffer which carries header of
->packet, because someone could check that size of this buffer is equal
->to size of packet header. To send record, packet with start marker is
->sent first(it's header carries length of record and id),then all data
->is sent as usual 'RW' packets and finally SEQ_END is sent(it carries
->id of message, which is equal to id of SEQ_BEGIN), also after sending
->SEQ_END id is incremented. On receiver's side,size of record is known
->from packet with start record marker. To check that no packets were
->dropped by transport, 'msg_id's of two sequential SEQ_BEGIN and SEQ_END
->are checked to be equal and length of data between two markers is
->compared to then length in SEQ_BEGIN header.
->	Now as  packets of one socket are not reordered neither on
->vsock nor on vhost transport layers, such markers allows to restore
->original record on receiver's side. If user's buffer is smaller that
->record length, when all out of size data is dropped.
->	Maximum length of datagram is not limited as in stream socket,
->because same credit logic is used. Difference with stream socket is
->that user is not woken up until whole record is received or error
->occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->	Tests also implemented.
->
->	Thanks to stsp2@yandex.ru for encouragements and initial design
->recommendations.
->
-> Arseny Krasnov (22):
->  af_vsock: update functions for connectible socket
->  af_vsock: separate wait data loop
->  af_vsock: separate receive data loop
->  af_vsock: implement SEQPACKET receive loop
->  af_vsock: separate wait space loop
->  af_vsock: implement send logic for SEQPACKET
->  af_vsock: rest of SEQPACKET support
->  af_vsock: update comments for stream sockets
->  virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
->  virtio/vsock: simplify credit update function API
->  virtio/vsock: dequeue callback for SOCK_SEQPACKET
->  virtio/vsock: fetch length for SEQPACKET record
->  virtio/vsock: add SEQPACKET receive logic
->  virtio/vsock: rest of SOCK_SEQPACKET support
->  virtio/vsock: SEQPACKET support feature bit
->  virtio/vsock: setup SEQPACKET ops for transport
->  vhost/vsock: setup SEQPACKET ops for transport
->  vsock/loopback: setup SEQPACKET ops for transport
->  vhost/vsock: SEQPACKET feature bit support
->  virtio/vsock: SEQPACKET feature bit support
->  vsock_test: add SOCK_SEQPACKET tests
->  virtio/vsock: update trace event for SEQPACKET
->
-> drivers/vhost/vsock.c                        |  21 +-
-> include/linux/virtio_vsock.h                 |  21 +
-> include/net/af_vsock.h                       |   9 +
-> .../events/vsock_virtio_transport_common.h   |  48 +-
-> include/uapi/linux/virtio_vsock.h            |  19 +
-> net/vmw_vsock/af_vsock.c                     | 581 +++++++++++------
-> net/vmw_vsock/virtio_transport.c             |  17 +
-> net/vmw_vsock/virtio_transport_common.c      | 379 +++++++++--
-> net/vmw_vsock/vsock_loopback.c               |  12 +
-> tools/testing/vsock/util.c                   |  32 +-
-> tools/testing/vsock/util.h                   |   3 +
-> tools/testing/vsock/vsock_test.c             | 126 ++++
-> 12 files changed, 1015 insertions(+), 253 deletions(-)
->
-> v6 -> v7:
-> General changelog:
-> - virtio transport callback for message length now removed
->   from transport. Length of record is returned by dequeue
->   callback.
->
-> - function which tries to get message length now returns 0
->   when rx queue is empty. Also length of current message in
->   progress is set to 0, when message processed or error
->   happens.
->
-> - patches for virtio feature bit moved after patches with
->   transport ops.
->
-> Per patch changelog:
->  see every patch after '---' line.
+On Wed, Mar 24, 2021 at 09:17:11PM -0300, Helen Koike wrote:
+> Always use dmabuf size when considering the length of the buffer.
+> Discard userspace provided length.
+> Fix length check error in _verify_length(), which was handling single and
+> multiplanar diferently, and also not catching the case where userspace
+> provides a bigger length and bytesused then the underlying buffer.
+> 
+> Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> ---
+> 
+> Hello,
+> 
+> As discussed on
+> https://patchwork.linuxtv.org/project/linux-media/patch/gh5kef5bkeel3o6b2dkgc2dfagu9klj4c0@4ax.com/
+> 
+> This patch also helps the conversion layer of the Ext API patchset,
+> where we are not exposing the length field.
+> 
+> It was discussed that userspace might use a smaller length field to
+> limit the usage of the underlying buffer, but I'm not sure if this is
+> really usefull and just complicates things.
+> 
+> If this is usefull, then we should also expose a length field in the Ext
+> API, and document this feature properly.
+> 
+> What do you think?
 
-I reviewed the series and I left some comments, I think we are at a good 
-point, but we should have the specification accepted before merging this 
-series to avoid having to change the implementation later.
+I think a limit could be useful, as a single dmabuf object could hold
+multiple planes, which should be addressed by an offset from the
+beginning of the buffer. Giving a length to the kernel could help
+catching errors. As the existing API doesn't support offsets, a length
+limit is likely not very useful at the moment, but should I believe be
+included at least in the new API.
 
-What do you think?
+For the existing implementation, I'd say that we should be pragmatic. If
+using the provided length as a maximum boundary makes the implementation
+more complex for very little gain, let's not do it. But on the other
+hand, considering existing userspace, would there be added value in
+implementing such a mechanism ?
 
-Thanks,
-Stefano
+> ---
+>  .../media/common/videobuf2/videobuf2-core.c   | 21 ++++++++++++++++---
+>  .../media/common/videobuf2/videobuf2-v4l2.c   |  8 +++----
+>  include/uapi/linux/videodev2.h                |  7 +++++--
+>  3 files changed, 27 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index 02281d13505f..2cbde14af051 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -1205,6 +1205,7 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
+>  
+>  	for (plane = 0; plane < vb->num_planes; ++plane) {
+>  		struct dma_buf *dbuf = dma_buf_get(planes[plane].m.fd);
+> +		unsigned int bytesused;
+>  
+>  		if (IS_ERR_OR_NULL(dbuf)) {
+>  			dprintk(q, 1, "invalid dmabuf fd for plane %d\n",
+> @@ -1213,9 +1214,23 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
+>  			goto err;
+>  		}
+>  
+> -		/* use DMABUF size if length is not provided */
+> -		if (planes[plane].length == 0)
+> -			planes[plane].length = dbuf->size;
+> +		planes[plane].length = dbuf->size;
+> +		bytesused = planes[plane].bytesused ?
+> +			    planes[plane].bytesused : dbuf->size;
+> +
+> +		if (planes[plane].bytesused > planes[plane].length) {
+> +			dprintk(q, 1, "bytesused is bigger then dmabuf length for plane %d\n",
+> +				plane);
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+> +
+> +		if (planes[plane].data_offset >= bytesused) {
+> +			dprintk(q, 1, "data_offset >= bytesused for plane %d\n",
+> +				plane);
+> +			ret = -EINVAL;
+> +			goto err;
+> +		}
+>  
+>  		if (planes[plane].length < vb->planes[plane].min_length) {
+>  			dprintk(q, 1, "invalid dmabuf length %u for plane %d, minimum length %u\n",
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 7e96f67c60ba..ffc7ed46f74a 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -98,14 +98,14 @@ static int __verify_length(struct vb2_buffer *vb, const struct v4l2_buffer *b)
+>  	unsigned int bytesused;
+>  	unsigned int plane;
+>  
+> -	if (V4L2_TYPE_IS_CAPTURE(b->type))
+> +	/* length check for dmabuf is performed in _prepare_dmabuf() */
+> +	if (V4L2_TYPE_IS_CAPTURE(b->type) || b->memory == VB2_MEMORY_DMABUF)
+>  		return 0;
+>  
+>  	if (V4L2_TYPE_IS_MULTIPLANAR(b->type)) {
+>  		for (plane = 0; plane < vb->num_planes; ++plane) {
+> -			length = (b->memory == VB2_MEMORY_USERPTR ||
+> -				  b->memory == VB2_MEMORY_DMABUF)
+> -			       ? b->m.planes[plane].length
+> +			length = b->memory == VB2_MEMORY_USERPTR
+> +				? b->m.planes[plane].length
+>  				: vb->planes[plane].length;
+>  			bytesused = b->m.planes[plane].bytesused
+>  				  ? b->m.planes[plane].bytesused : length;
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 8d15f6ccc4b4..79b3b2893513 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -968,7 +968,9 @@ struct v4l2_requestbuffers {
+>  /**
+>   * struct v4l2_plane - plane info for multi-planar buffers
+>   * @bytesused:		number of bytes occupied by data in the plane (payload)
+> - * @length:		size of this plane (NOT the payload) in bytes
+> + * @length:		size of this plane (NOT the payload) in bytes. Filled
+> + *			by userspace for USERPTR and by the driver for DMABUF
+> + *			and MMAP.
+>   * @mem_offset:		when memory in the associated struct v4l2_buffer is
+>   *			V4L2_MEMORY_MMAP, equals the offset from the start of
+>   *			the device memory for this plane (or is a "cookie" that
+> @@ -1025,7 +1027,8 @@ struct v4l2_plane {
+>   * @m:		union of @offset, @userptr, @planes and @fd
+>   * @length:	size in bytes of the buffer (NOT its payload) for single-plane
+>   *		buffers (when type != *_MPLANE); number of elements in the
+> - *		planes array for multi-plane buffers
+> + *		planes array for multi-plane buffers. Filled by userspace for
+> + *		USERPTR and by the driver for DMABUF and MMAP.
+>   * @reserved2:	drivers and applications must zero this field
+>   * @request_fd: fd of the request that this buffer should use
+>   * @reserved:	for backwards compatibility with applications that do not know
 
+-- 
+Regards,
+
+Laurent Pinchart
