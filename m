@@ -2,217 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A883497AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893403497B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhCYRO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:14:58 -0400
-Received: from mail-dm6nam10on2069.outbound.protection.outlook.com ([40.107.93.69]:7168
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229949AbhCYROx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:14:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=abABgAy3H27meAE+tcFBSWPAS+UlGsX/PF7xeMlhufgKRsjrCW383jgdfc9rnA+XC5KB/MURD8lJHbobsvnP2qSKlf6iPmOgGYCrOEiXmVz51yCLiUmA/DCbBHsgUMrnd2K25JMrwYRbUR83DA+AUxT+ToUZ3fwNNijGpRNbnNGEfgBbERwP1KfFXmlpATGquXwn+psE6opEuQj7mtKYrcr87wrk5CFU09EPvtJuO2MVV+esbZVmCtrx+/G7pdV1Y3E5/uev9qp474Abld2rtLAVkLrVWBlHovhXwMJv8e5h9fg6iM83hAt+MTn0wQiKrTEC8+iCilXWHjqf9iNiXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=czgjo+42uv91p306BrrHvyclFN0Wmeys32RwbyX8Ljc=;
- b=c3rPH/QX2QbGsjHv3YT6/bZ/BFW37L5nVPmfKeJauQhlaZaNDWMXvE2EUd6lL3V5fGyGqQntGWDunn6fke/FfE6rr4Od2uaXq8vsWK3fegxUnedsYwcdxS5j7IpiuhTuLeec53i9nf5IBwdydSYF2UK7UJ1zvYlBoB+rsnCOcaOLX0q049wOBsP8gxmcv7aalxRVGIvI72nU7TsP/cZ42otwA6AYF9gVwFjnsM+Qlx9Ymme223/Pgrt49CPb51Nuut27mvpzKTrWfBh0ssROS+7cMPo3SFWmF9ZB7ljNSMKoFLxEjykXd4BgT5cRpnWi8Ax0RSibH3CLnW8OX32yPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=czgjo+42uv91p306BrrHvyclFN0Wmeys32RwbyX8Ljc=;
- b=c4CXcDbbXBeTrA7gt3TWOKIBPXgAb0m7NdgQEb6lmoDsZI1sAD7r9H0obJnQ+aEDB/TS02VyBTsmJqMhiffK5Mhv0eCOSSsF0R44D+eSPYJS7IG0520GtT1tysxfKG/TfaWeax7n59KTn87jhmu9HwmDnSW9VO0560HOeKipTkrJV0PXCBcMQaD78BcraxWpQtL3U5J9i5f2VwY1aATqIps6QrDjm/4k/A3N9czM3V0R9CMfvtXo5HqqyJ7odPzh4qwOtwowL7dCBIcRyFGuBPuy8ojChtgtrLLQRRxptvBGhnR4PGrzogwJFkNoyn17asqyBsKO4fQ4u2xHMGKKgw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB2489.namprd12.prod.outlook.com (2603:10b6:3:e2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Thu, 25 Mar
- 2021 17:14:47 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Thu, 25 Mar 2021
- 17:14:47 +0000
-Date:   Thu, 25 Mar 2021 14:14:45 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-cxl@vger.kernel.org, ira.weiny@intel.com,
-        vishal.l.verma@intel.com, alison.schofield@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/4] cxl/mem: Do not rely on device_add() side effects
- for dev_set_name() failures
-Message-ID: <20210325171445.GE2356281@nvidia.com>
-References: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161661972173.1721612.9458160848430375459.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161661972173.1721612.9458160848430375459.stgit@dwillia2-desk3.amr.corp.intel.com>
-X-Originating-IP: [206.223.160.26]
-X-ClientProxiedBy: CH2PR08CA0023.namprd08.prod.outlook.com
- (2603:10b6:610:5a::33) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S229616AbhCYRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:16:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48729 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229629AbhCYRQR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:16:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616692577;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CvfaC95aieRSVkuhdfvCS5wS1U7ACP9oYPxW5/dC0DU=;
+        b=hzXW6Mv9sTMVjpUp890/2k45uZ26DvOQR6zoImwgnWJz7rFDpIvLHZaxUNIuEUl2DPwUhC
+        8Prmyv4JeD8hsW54ESDPRmV6RtSidLaOhJIWNeyy2rI5tSfxC93Ksp6ZzDRlGlhhWnzyYg
+        eN+94RqD0S7kEz+PFhw/IqysCyshdpY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-150-ksrTlQFjMsaDLsgrOHWiLg-1; Thu, 25 Mar 2021 13:16:12 -0400
+X-MC-Unique: ksrTlQFjMsaDLsgrOHWiLg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DD1D10A5A2F;
+        Thu, 25 Mar 2021 17:15:18 +0000 (UTC)
+Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E76CB88F0C;
+        Thu, 25 Mar 2021 17:15:12 +0000 (UTC)
+Subject: Re: [PATCH 1/8] mm: cma: introduce cma_release_nowait()
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+References: <20210325002835.216118-1-mike.kravetz@oracle.com>
+ <20210325002835.216118-2-mike.kravetz@oracle.com>
+ <aba43427-0f51-7eb9-fa73-6e55237c8ddb@redhat.com>
+ <YFxkXEXMpcMM/KWd@dhcp22.suse.cz>
+ <76aaf359-9496-04df-a585-3662d0375749@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <4bc3c5d8-f1a7-6439-8fee-582364a7c021@redhat.com>
+Date:   Thu, 25 Mar 2021 18:15:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR08CA0023.namprd08.prod.outlook.com (2603:10b6:610:5a::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Thu, 25 Mar 2021 17:14:46 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPTZF-002kCw-G6; Thu, 25 Mar 2021 14:14:45 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a88c05c3-e77a-4b96-cad5-08d8efb17d82
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB2489:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB248943E414136773E5473A02C2629@DM5PR1201MB2489.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zIKqBHaMot0LqYEiP7zZgOM9aTn1cvWel/1tKpUIPBI1t/50Hb7TKsfKuut8rvGB5RZNCMJA+5u/9yf6sf6Yz3PLhFfNEwgnkNUWhmnCyrHNsVUoR0I8M5T6KOwZMxLEUC492pkuws/73Og0vV1NnJWCO4TxfBUGCAeTyqKZOJzaSXvlpU+2f51K8HuFE38yLvWVvB3yxoPlAagRN4TNERdKKD4DmO5mSZlwSF3k2EhnLS9K20Z+rROgysXDJczQ1kWl+ECtePC7tirrY3m2Deluadze+EvOsz8uUVcxdUwczG+RTRtKbicAC6nI7gZQR3fe6YMm5QCskpykaKkQBUSnyTwoE6AfFE9FkniehRrcHFQV8RHVghBBvz/NgCzz3rDa+qolzt805qWVsyBCZXP850SzdeDvPM3y2nESNySPVsZgPNy+qAafH+BJ8SwqQOJzOEhS80NB13jy78Nl8T4w7F7gFiSXvh0l8QpeyBXvqRqaKBC/iF5qAE/no4Bo3JSKF2tfec62QPvWK6EJ4IWu2pYsWRBGi1gxXbaTBynx48PBPpuaYPD9nNYj8UBOEfalHxAxGP4Sg/qlQKwoZItcrYQd9GUGhXNPoQmyMIAdAyDTcUxHY51+Gmr56AEXVZ8fIv3QYnwAAWmFRxquq+rS4evOE+KUZzLDZjHFK7N5bEezLDhklmN1gRS4zI/I
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(396003)(346002)(376002)(5660300002)(426003)(6916009)(478600001)(8936002)(38100700001)(4326008)(36756003)(8676002)(83380400001)(2616005)(1076003)(9786002)(66556008)(2906002)(9746002)(26005)(186003)(66946007)(33656002)(316002)(66476007)(86362001)(56340200001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?VTLphteE+iJ0iCTw2j3+htf+tptdO4SUyewT0VVeaTvxezhK49v3nD8+NgQ6?=
- =?us-ascii?Q?tU4Xcf5JIkjRBRfRhl60+4xgYjMt3EmcQUMDyxCPTG0hnFp3yFVXQsDcoB6/?=
- =?us-ascii?Q?VAF/f/tj8jG0jmxIPoqQrF0ZcLuexjfXdGABz3RlW1r2epxyuz0YHQKW/ZJZ?=
- =?us-ascii?Q?uoRQjOhYJXpZADtVXe1khTpeLyeHb3bbDtY3gtbm+ngBqf7LppVtpS/bCb0p?=
- =?us-ascii?Q?gTmLzPLV8FQP2fZGQvtATaMhgdZDQ69mtXFOrXnhh8JB00GymOAxLAfzJjc6?=
- =?us-ascii?Q?j9cgQa7mwPgfREqhjTTC/fP9Uv+95v9QSmFB6IGIiGiRijwKaS8bPJe3mJ2y?=
- =?us-ascii?Q?VZh5jBqj7bu19Ns0Id4vONhw+5uF65kSm7dYKxbR3Fq+iR6Z9Exso3Egskpg?=
- =?us-ascii?Q?nPi2L5K+nN0HTxXUjTH+t+zWCme9YVIAAJgdCvXTdAcRzQ0WfCsKrCS32kCr?=
- =?us-ascii?Q?SWZdk5/Yo2POGWUH596cqG0F4DfhCdLZZwhJJbqXHydY43985OZlcxoLb+YS?=
- =?us-ascii?Q?FEGVkVg/SNfHoKSvYobsejVEc5GQh6rxTS2uEqccH9Af9hSL+AyHwnoqhoGf?=
- =?us-ascii?Q?VT56r+AJTqFY/2dH8V7a5YU8EigPDvvSkI3ygdb+Djo7r/QahwozOZUzv26S?=
- =?us-ascii?Q?F1yLIicZJ9ik5s5thiNmPK7PC/S/NhcFM4MVQHorV604aTF7GP7sUHvC1iT0?=
- =?us-ascii?Q?oafkGkx7lldyJsHfqGzkBD35as7EY9qyXmspFSlB2hzcGEFZJOxansuT+cOW?=
- =?us-ascii?Q?xu0Lj9V074hYPMrYnxKMYlIvvg3swbwfF+RG7fL5C+CuiZeYS97Z0MJy99xb?=
- =?us-ascii?Q?RBxNsCu74YRMrEY0nQfRRkQEq8eAmSE7apTI1M1znp5Nv57u6k7z/ZoWiHHO?=
- =?us-ascii?Q?3eUDfnSScM3g8kp4lMhSaBYjVroZ5FGcYsnRMRnEThLljs7+4w4Gp5Fl83W1?=
- =?us-ascii?Q?EstQeTVy11Adoid6A+G0Q/9SHm310y+YsI6hZWg7vThmRtGhshPaT/+r3n/q?=
- =?us-ascii?Q?xx7OHfsXKYrkW+B6sP23R0Il650WyMv0q3UhOUWwHPngN0/odDB50nNLSucA?=
- =?us-ascii?Q?IVLuHitU7s5PadtuA9zE8D0pHiU93oZj9OR0YNQkLhDwc4xd1r4xOk8S5lbJ?=
- =?us-ascii?Q?Rdp+BXc8n1gEeHKdYmXyOIEeznt5dMMjEhkrXDami7rOv+9njyCtr+O9zKQK?=
- =?us-ascii?Q?+KHMIeN9MvV4Nv93kSaS6MpteW4pKKEfIWBt8Ou6TkgeRHbarIDZL+HVnjxK?=
- =?us-ascii?Q?+0oASyrCph+0+2ML1dJLxJ7PRk6+7lZlGOiah9iuS1YFEk7+leu6nxw2rmr7?=
- =?us-ascii?Q?PZilpo8gsiQLAreNRtDFtlcF?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a88c05c3-e77a-4b96-cad5-08d8efb17d82
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 17:14:47.0036
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aNyJONqHi5gDkBfrGWRvJNcuZGvLPXYmoFNjPuvp6rsRQmbrmhvf01yMf0oFZfV9
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB2489
+In-Reply-To: <76aaf359-9496-04df-a585-3662d0375749@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 02:02:01PM -0700, Dan Williams wrote:
-> While device_add() will happen to catch dev_set_name() failures it is a
-> broken pattern to follow given that the core may try to fall back to a
-> different name.
+On 25.03.21 17:56, Mike Kravetz wrote:
+> On 3/25/21 3:22 AM, Michal Hocko wrote:
+>> On Thu 25-03-21 10:56:38, David Hildenbrand wrote:
+>>> On 25.03.21 01:28, Mike Kravetz wrote:
+>>>> From: Roman Gushchin <guro@fb.com>
+>>>>
+>>>> cma_release() has to lock the cma_lock mutex to clear the cma bitmap.
+>>>> It makes it a blocking function, which complicates its usage from
+>>>> non-blocking contexts. For instance, hugetlbfs code is temporarily
+>>>> dropping the hugetlb_lock spinlock to call cma_release().
+>>>>
+>>>> This patch introduces a non-blocking cma_release_nowait(), which
+>>>> postpones the cma bitmap clearance. It's done later from a work
+>>>> context. The first page in the cma allocation is used to store
+>>>> the work struct. Because CMA allocations and de-allocations are
+>>>> usually not that frequent, a single global workqueue is used.
+>>>>
+>>>> To make sure that subsequent cma_alloc() call will pass, cma_alloc()
+>>>> flushes the cma_release_wq workqueue. To avoid a performance
+>>>> regression in the case when only cma_release() is used, gate it
+>>>> by a per-cma area flag, which is set by the first call
+>>>> of cma_release_nowait().
+>>>>
+>>>> Signed-off-by: Roman Gushchin <guro@fb.com>
+>>>> [mike.kravetz@oracle.com: rebased to v5.12-rc3-mmotm-2021-03-17-22-24]
+>>>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>>> ---
+>>>
+>>>
+>>> 1. Is there a real reason this is a mutex and not a spin lock? It seems to
+>>> only protect the bitmap. Are bitmaps that huge that we spend a significant
+>>> amount of time in there?
+>>
+>> Good question. Looking at the code it doesn't seem that there is any
+>> blockable operation or any heavy lifting done under the lock.
+>> 7ee793a62fa8 ("cma: Remove potential deadlock situation") has introduced
+>> the lock and there was a simple bitmat protection back then. I suspect
+>> the patch just followed the cma_mutex lead and used the same type of the
+>> lock. cma_mutex used to protect alloc_contig_range which is sleepable.
+>>
+>> This all suggests that there is no real reason to use a sleepable lock
+>> at all and we do not need all this heavy lifting.
+>>
 > 
-> Add explicit checking for dev_set_name() failures to be cleaned up by
-> put_device(). Skip cdev_device_add() and proceed directly to
-> put_device() if the name set failure.
+> When Roman first proposed these patches, I brought up the same issue:
 > 
-> Fixes: b39cb1052a5c ("cxl/mem: Register CXL memX devices")
-> Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->  drivers/cxl/mem.c |    6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> https://lore.kernel.org/linux-mm/20201022023352.GC300658@carbon.dhcp.thefacebook.com/
 > 
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index e53d573ae4ab..d615f183520c 100644
-> +++ b/drivers/cxl/mem.c
-> @@ -1204,12 +1204,14 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
->  	dev->bus = &cxl_bus_type;
->  	dev->devt = MKDEV(cxl_mem_major, cxlmd->id);
->  	dev->type = &cxl_memdev_type;
-> -	dev_set_name(dev, "mem%d", cxlmd->id);
->  
->  	cdev = &cxlmd->cdev;
->  	cdev_init(cdev, &cxl_memdev_fops);
->  
-> -	rc = cdev_device_add(cdev, dev);
-> +	rc = dev_set_name(dev, "mem%d", cxlmd->id);
-> +	if (rc == 0)
-> +		rc = cdev_device_add(cdev, dev);
+> Previously, Roman proposed replacing the mutex with a spinlock but
+> Joonsoo was opposed.
+> 
+> Adding Joonsoo on Cc:
+> 
 
-Success oriented flow please
+There has to be a good reason not to. And if there is a good reason, 
+lockless clearing might be one feasible alternative.
 
-This is much nicer if you split the allocation, then this flow is
-clean and simple. cxl_alloc_memdev() is undone by cxl_memdev_release()
+-- 
+Thanks,
 
-and I would reorder the code so they are above/below each other, it is
-easy to check and understand when logically paired functions are on
-the same screen.
+David / dhildenb
 
-static struct cxl_memdev *cxl_alloc_memdev(struct cxl_mem *cxlm)
-{
-	struct cxl_memdev *cxlmd;
-	struct device *dev;
-
-	cxlmd = kzalloc(sizeof(*cxlmd), GFP_KERNEL);
-	if (!cxlmd)
-		return PTR_ERR(-ENOMEM);
-
-	init_completion(&cxlmd->ops_dead);
-	cxlmd->cxlm = cxlm;
-
-	rc = ida_alloc_range(&cxl_memdev_ida, 0, CXL_MEM_MAX_DEVS, GFP_KERNEL);
-	if (rc < 0)
-		goto err_free;
-	cxlmd->id = rc;
-
-	/*
-	 * @cxlm is deallocated when the driver unbinds so operations
-	 * that are using it need to hold a live reference.
-	 */
-	rc = percpu_ref_init(&cxlmd->ops_active, cxlmdev_ops_active_release, 0,
-			     GFP_KERNEL);
-	if (rc)
-		goto err_id;
-
-	dev = &cxlmd->dev;
-	dev->parent = &pdev->dev;
-	dev->bus = &cxl_bus_type;
-	dev->devt = MKDEV(cxl_mem_major, cxlmd->id);
-	dev->type = &cxl_memdev_type;
-	device_initialize(dev);
-	return cxlmd;
-
-err_id:
-	ida_free(&cxl_memdev_ida, cxlmd->id);
-err_free:
-	kfree(cxlmd);
-	return PTR_ERR(rc);
-}
-
-static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-{
-	struct pci_dev *pdev = cxlm->pdev;
-	struct cdev *cdev;
-	int rc;
-
-	cxlmd = cxl_alloc_memdev(cxlm);
-	if (IS_ERR(cxlmd))
-		return ERR_PTR(cxlmd)
-
-	rc = dev_set_name(dev, "mem%d", cxlmd->id);
-	if (rc)
-		goto err;
-
-	cdev = &cxlmd->cdev;
-	cdev_init(cdev, &cxl_memdev_fops);
-
-	// Must be last
-	rc = cdev_device_add(cdev, dev);
-	if (rc)
-		goto err;
-
-	return devm_add_action_or_reset(dev->parent, cxlmdev_unregister, cxlmd);
-err:
-	put_device(&cxlmd->dev);
-	return rc;
-}
