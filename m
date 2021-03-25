@@ -2,200 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A7434913D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E00234913E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhCYLxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229617AbhCYLxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230217AbhCYLxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhCYLxK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Mar 2021 07:53:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 88FFB61A24;
-        Thu, 25 Mar 2021 11:53:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616673189;
-        bh=NsPDV+Q0M1j6YnK0APDSgpnNUw2rzo4WQAGweu5O1S4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JIsJubSgNp1vQdOLfLqztFMepHItIrRXCBrjwk+j+ytnFJZWlZCcUW0CupFkIek8W
-         ltKjtQMNwSem9aNt6oY2M6KlllnzYZ4Fouu0wXz/J3i1ckJ4mlPklCMB1+MsKxEyEx
-         cUg2g7ciSim36p37MfZ18N+7MPm0ynVwFo5udnJd0XsaDwJDkgXhUReP3r+buDKQbh
-         ELcpuw1dXd1PDf47AawJnnYQLbOTVU1U/P8sj6K2oT80Hugo1/bcY/9Mi8/704o0NS
-         BkNynteEzm66DWlwMRYAzkmZpRZV7g0D94XYDoVkpYkJkrRmDWFJxAQAWSce2VOqK3
-         wy9G1TU5g5srw==
-Received: by mail-lj1-f176.google.com with SMTP id u9so2682173ljd.11;
-        Thu, 25 Mar 2021 04:53:09 -0700 (PDT)
-X-Gm-Message-State: AOAM533iiXq19jA2/32Aml/3okfiQlojGRCcK06OVT+e0Ns6cM0TT6Df
-        ZJ/292qaw02a8DD4g6nZf4BQLbMHhtGtKke3NkA=
-X-Google-Smtp-Source: ABdhPJxDid/H9g+ccXoiu4wXt6PEyymXG/HEfZErzfWdHRSCnezNgcD4AkGYRPbX9YdGN/eH3bMRH5bdykAWHGEAcCk=
-X-Received: by 2002:a2e:9084:: with SMTP id l4mr5231252ljg.498.1616673187659;
- Thu, 25 Mar 2021 04:53:07 -0700 (PDT)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CB9C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:53:09 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id jy13so2438635ejc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7IX0Yj+2rzcGHUgvCwC2c2cC5OMxI6X15YXcc54logI=;
+        b=zHhcw7nEqVJiTQkwx3rCXmlmMc0/D5PfMnSKmc3D+M0LqhDIscP0PyGHsb5Iaf6lv8
+         9PJKmoDgfn4hLxx0htyUzC7iJRRu4fu9Nb34GVZQGx11O+rzp43ksDLbeTcO9M/PSA2F
+         exfdtja33aEyRO69jWSY3GQpze1R2a/J3PVNWvKcCdav5WCEEV1etJpZmeLv//WIpqa5
+         LsRABSL4QM9arPY2gXL+x4s/C4Td6TlS8wyNVYy84C0IwrprLXG/zmS+cPeGn/DtrDrt
+         it/vKOISKMm1ulA6FOpu7JDj01uvHS9IFA4xgC0boXm5c7NdeYZN6TVKE3LBeHM1c4YI
+         zRTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7IX0Yj+2rzcGHUgvCwC2c2cC5OMxI6X15YXcc54logI=;
+        b=Hcz57QmAVdbYgO55KsJh7ds52P5p//7Nf2DWF9dbq1oK3g+5dd/+7uETMP83bgqRlE
+         2+Oa5hFsn3EE8EPdkG+Xia9TMLLztTcaJnxjIfVJyUj/T2jYiK6sZBvVwaWH7S5s4SFz
+         bDZfngWlAEPJlmwhekyFTYlWtlXY9EMJ7LomDfsPW5f/t8lFNNqdCJLm0cIpg/Y5yrUD
+         oHD/AiAJBburZjsgVXRpwj6wk1jd7Gb/h55kL4Eg823krmI+6fa+USS/U5h4RnN7Mn28
+         a2tk/OubPPheKZ+wjU3U1mxym7ioqMA+vyRP7T+dj4MRskgrs1+o1Exa82AnveClW54t
+         kDPA==
+X-Gm-Message-State: AOAM530pxBwAW3JcTqYBJwYLVbGsqhNG8DeJCgtR45/cw09CmXBpmUY0
+        FSwchR0ZVgFWhvFcMCGH7EfqFg==
+X-Google-Smtp-Source: ABdhPJyspSSPpTxSzJuwpyY/ctL3hpSi6cFfjwWP1EVsbtnOjbctgms5VfyobMFw2T2raqYzgGZlQQ==
+X-Received: by 2002:a17:907:761c:: with SMTP id jx28mr9064503ejc.417.1616673188374;
+        Thu, 25 Mar 2021 04:53:08 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id be27sm2598456edb.47.2021.03.25.04.53.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 04:53:07 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 11:53:06 +0000
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     lee.jones@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>
+Subject: Re: [PATCH v5 5/6] backlight: rt4831: Adds support for Richtek
+ RT4831 backlight
+Message-ID: <20210325115306.a462t6wwf5bm26zw@maple.lan>
+References: <1608217244-314-1-git-send-email-u0084500@gmail.com>
+ <1608217244-314-5-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-References: <1616658937-82063-5-git-send-email-guoren@kernel.org>
- <202103251923.MFrI3wnb-lkp@intel.com> <CAJF2gTQgXzAB0NiTNTY1MvR=4BYx5+379W0PeOuHzayR3dWUng@mail.gmail.com>
-In-Reply-To: <CAJF2gTQgXzAB0NiTNTY1MvR=4BYx5+379W0PeOuHzayR3dWUng@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 25 Mar 2021 19:52:55 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRiG+5f7y5HXe9EhfDWc3Q+pTEW_8sSFc0iGkbuMJO+NA@mail.gmail.com>
-Message-ID: <CAJF2gTRiG+5f7y5HXe9EhfDWc3Q+pTEW_8sSFc0iGkbuMJO+NA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] riscv: Convert custom spinlock/rwlock to generic qspinlock/qrwlock
-To:     kernel test robot <lkp@intel.com>
-Cc:     Anup Patel <Anup.Patel@wdc.com>, kbuild-all@lists.01.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        tech-unixplatformspec@lists.riscv.org,
-        Michael Clark <michaeljclark@mac.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anup Patel <anup@brainfault.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608217244-314-5-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-index 5ca41152cf4b..894e170c503e 100644
---- a/arch/riscv/include/asm/cmpxchg.h
-+++ b/arch/riscv/include/asm/cmpxchg.h
-@@ -17,6 +17,14 @@
- #define __local_release_fence()
-         \
-        __asm__ __volatile__(RISCV_RELEASE_BARRIER "" ::: "memory")
+On Thu, Dec 17, 2020 at 11:00:43PM +0800, cy_huang wrote:
+> From: ChiYuan Huang <cy_huang@richtek.com>
+> 
+> Adds support for Richtek RT4831 backlight.
+> 
+> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 
-+#ifdef CONFIG_32BIT
-+#define __ASM_SLLIW "slli\t"
-+#define __ASM_SRLIW "srli\t"
-+#else
-+#define __ASM_SLLIW "slliw\t"
-+#define __ASM_SRLIW "srliw\t"
-+#endif
-+
- #define __xchg_relaxed(ptr, new, size)                                 \
- ({                                                                     \
-        __typeof__(ptr) __ptr = (ptr);                                  \
-@@ -31,14 +39,14 @@
-                        __asm__ __volatile__ (                          \
-                        "0:     lr.w    %0, (%4)        \n"             \
-                        "       mv      %1, %0          \n"             \
--                       "       slliw   %1, %1, 16      \n"             \
--                       "       srliw   %1, %1, 16      \n"             \
-+                       __ASM_SLLIW    "%1, %1, 16      \n"             \
-+                       __ASM_SRLIW    "%1, %1, 16      \n"             \
-                        "       mv      %2, %3          \n"             \
--                       "       slliw   %2, %2, 16      \n"             \
-+                       __ASM_SLLIW    "%2, %2, 16      \n"             \
-                        "       or      %1, %2, %1      \n"             \
-                        "       sc.w    %2, %1, (%4)    \n"             \
-                        "       bnez    %2, 0b          \n"             \
--                       "       srliw   %0, %0, 16      \n"             \
-+                       __ASM_SRLIW    "%0, %0, 16      \n"             \
-                        : "=&r" (__ret), "=&r" (tmp), "=&r" (__rc)      \
-                        : "r" (__new), "r"(addr)                        \
-                        : "memory");                                    \
-@@ -46,14 +54,14 @@
-                        __asm__ __volatile__ (                          \
-                        "0:     lr.w    %0, (%4)        \n"             \
-                        "       mv      %1, %0          \n"             \
--                       "       srliw   %1, %1, 16      \n"             \
--                       "       slliw   %1, %1, 16      \n"             \
-+                       __ASM_SRLIW    "%1, %1, 16      \n"             \
-+                       __ASM_SLLIW    "%1, %1, 16      \n"             \
-                        "       mv      %2, %3          \n"             \
-                        "       or      %1, %2, %1      \n"             \
-                        "       sc.w    %2, %1, 0(%4)   \n"             \
-                        "       bnez    %2, 0b          \n"             \
--                       "       slliw   %0, %0, 16      \n"             \
--                       "       srliw   %0, %0, 16      \n"             \
-+                       __ASM_SLLIW    "%0, %0, 16      \n"             \
-+                       __ASM_SRLIW    "%0, %0, 16      \n"             \
-                        : "=&r" (__ret), "=&r" (tmp), "=&r" (__rc)      \
-                        : "r" (__new), "r"(addr)                        \
-                        : "memory");                                    \
+Looks ok but there are a few minor niggles.
+> ---
+>  drivers/video/backlight/Kconfig            |   8 ++
+>  drivers/video/backlight/Makefile           |   1 +
+>  drivers/video/backlight/rt4831-backlight.c | 219 +++++++++++++++++++++++++++++
+>  3 files changed, 228 insertions(+)
+>  create mode 100644 drivers/video/backlight/rt4831-backlight.c
+> 
+> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+> index d83c87b..666bdb0 100644
+> --- a/drivers/video/backlight/Kconfig
+> +++ b/drivers/video/backlight/Kconfig
+> @@ -289,6 +289,14 @@ config BACKLIGHT_QCOM_WLED
+>  	  If you have the Qualcomm PMIC, say Y to enable a driver for the
+>  	  WLED block. Currently it supports PM8941 and PMI8998.
+>  
+> +config BACKLIGHT_RT4831
+> +	tristate "Richtek RT4831 Backlight Driver"
+> +	depends on MFD_RT4831
+> +	help
+> +	  This enables support for Richtek RT4831 Backlight driver.
+> +	  It's commont used to drive the display WLED. There're four channels
+                    ^^^
 
-On Thu, Mar 25, 2021 at 7:34 PM Guo Ren <guoren@kernel.org> wrote:
->
-> haha, I forgot RV32, it needs a
->
-> #ifdef RV32
->     srliw
-> #else
->     srli
-> #endif
->
-> On Thu, Mar 25, 2021 at 7:16 PM kernel test robot <lkp@intel.com> wrote:
-> >
-> > Hi,
-> >
-> > Thank you for the patch! Yet something to improve:
-> >
-> > [auto build test ERROR on tip/locking/core]
-> > [also build test ERROR on linux/master linus/master v5.12-rc4 next-20210325]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> >
-> > url:    https://github.com/0day-ci/linux/commits/guoren-kernel-org/riscv-Add-qspinlock-qrwlock/20210325-155933
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git 5965a7adbd72dd9b288c0911cb73719fed1efa08
-> > config: riscv-rv32_defconfig (attached as .config)
-> > compiler: riscv32-linux-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://github.com/0day-ci/linux/commit/2bf2d117ab34b007089e20e1c46eff89b5da097e
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review guoren-kernel-org/riscv-Add-qspinlock-qrwlock/20210325-155933
-> >         git checkout 2bf2d117ab34b007089e20e1c46eff89b5da097e
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=riscv
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    kernel/locking/qspinlock.c: Assembler messages:
-> >    kernel/locking/qspinlock.c:184: Error: unrecognized opcode `srliw t1,t1,16'
-> >    kernel/locking/qspinlock.c:185: Error: unrecognized opcode `slliw t1,t1,16'
-> > >> kernel/locking/qspinlock.c:190: Error: unrecognized opcode `slliw a6,a6,16'
-> > >> kernel/locking/qspinlock.c:191: Error: unrecognized opcode `srliw a6,a6,16'
-> >    kernel/locking/qspinlock.c:184: Error: unrecognized opcode `slliw t1,t1,16'
-> >    kernel/locking/qspinlock.c:185: Error: unrecognized opcode `srliw t1,t1,16'
-> >    kernel/locking/qspinlock.c:187: Error: unrecognized opcode `slliw t3,t3,16'
-> > >> kernel/locking/qspinlock.c:191: Error: unrecognized opcode `srliw a6,a6,16'
-> >
-> >
-> > vim +190 kernel/locking/qspinlock.c
-> >
-> > 69f9cae90907e0 Peter Zijlstra (Intel  2015-04-24  187)
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  188  /**
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  189   * clear_pending - clear the pending bit.
-> > 59fb586b4a07b4 Will Deacon            2018-04-26 @190   * @lock: Pointer to queued spinlock structure
-> > 59fb586b4a07b4 Will Deacon            2018-04-26 @191   *
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  192   * *,1,* -> *,0,*
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  193   */
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  194  static __always_inline void clear_pending(struct qspinlock *lock)
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  195  {
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  196   atomic_andnot(_Q_PENDING_VAL, &lock->val);
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  197  }
-> > 59fb586b4a07b4 Will Deacon            2018-04-26  198
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->
->
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
+> diff --git a/drivers/video/backlight/rt4831-backlight.c b/drivers/video/backlight/rt4831-backlight.c
+> new file mode 100644
+> index 00000000..816c4d6
+> --- /dev/null
+> +++ b/drivers/video/backlight/rt4831-backlight.c
+> @@ -0,0 +1,219 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +#include <dt-bindings/leds/rt4831-backlight.h>
+> +#include <linux/backlight.h>
+> +#include <linux/bitops.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +
+> +#define RT4831_REG_BLCFG	0x02
+> +#define RT4831_REG_BLDIML	0x04
+> +#define RT4831_REG_ENABLE	0x08
+> +
+> +#define BL_MAX_BRIGHTNESS	2048
+
+Would be better with a prefix.
+> +
+> +#define RT4831_BLOVP_MASK	GENMASK(7, 5)
+> +#define RT4831_BLOVP_SHIFT	5
+> +#define RT4831_BLPWMEN_MASK	BIT(0)
+> +#define RT4831_BLEN_MASK	BIT(4)
+> +#define RT4831_BLCH_MASK	GENMASK(3, 0)
+> +#define RT4831_BLDIML_MASK	GENMASK(2, 0)
+> +#define RT4831_BLDIMH_MASK	GENMASK(10, 3)
+> +#define RT4831_BLDIMH_SHIFT	3
+> +
+> +struct rt4831_priv {
+> +	struct regmap *regmap;
+> +	struct mutex lock;
+
+Locks aren't very common in backlight drivers. Why isn't the ops_lock
+sufficient?
 
 
+> +	struct backlight_device *bl;
+> +};
+> +
+> +static int rt4831_bl_update_status(struct backlight_device *bl_dev)
+> +{
+> +	struct rt4831_priv *priv = bl_get_data(bl_dev);
+> +	int brightness = backlight_get_brightness(bl_dev);
+> +	unsigned int enable = brightness ? RT4831_BLEN_MASK : 0;
+> +	u8 v[2];
+> +	int ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +
+> +	if (brightness) {
+> +		v[0] = (brightness - 1) & RT4831_BLDIML_MASK;
+> +		v[1] = ((brightness - 1) & RT4831_BLDIMH_MASK) >> RT4831_BLDIMH_SHIFT;
+> +
+> +		ret = regmap_raw_write(priv->regmap, RT4831_REG_BLDIML, v, sizeof(v));
+> +		if (ret)
+> +			goto unlock;
+> +	}
+> +
+> +	ret = regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831_BLEN_MASK, enable);
+> +
+> +unlock:
+> +	mutex_unlock(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static int rt4831_bl_get_brightness(struct backlight_device *bl_dev)
+> +{
+> +	struct rt4831_priv *priv = bl_get_data(bl_dev);
+> +	unsigned int val;
+> +	u8 v[2];
+> +	int ret;
+> +
+> +	mutex_lock(&priv->lock);
+> +
+> +	ret = regmap_read(priv->regmap, RT4831_REG_ENABLE, &val);
+> +	if (ret)
+> +		return ret;
 
--- 
-Best Regards
- Guo Ren
+Deadlock.
 
-ML: https://lore.kernel.org/linux-csky/
+
+> +
+> +	if (!(val & RT4831_BLEN_MASK)) {
+> +		ret = 0;
+> +		goto unlock;
+> +	}
+> +
+> +	ret = regmap_raw_read(priv->regmap, RT4831_REG_BLDIML, v, sizeof(v));
+> +	if (ret)
+> +		goto unlock;
+> +
+> +	ret = (v[1] << RT4831_BLDIMH_SHIFT) + (v[0] & RT4831_BLDIML_MASK) + 1;
+> +
+> +unlock:
+> +	mutex_unlock(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static const struct backlight_ops rt4831_bl_ops = {
+> +	.options = BL_CORE_SUSPENDRESUME,
+> +	.update_status = rt4831_bl_update_status,
+> +	.get_brightness = rt4831_bl_get_brightness,
+> +};
+> +
+> +static int rt4831_init_device_properties(struct rt4831_priv *priv, struct device *dev,
+
+This is not the idiomatic name usually used for this type of function.
+In fact since this driver purely uses device properties then this code
+could just be merged into the probe function.
+
+
+> +					  struct backlight_properties *bl_props)
+> +{
+> +	u8 propval;
+> +	u32 brightness;
+> +	unsigned int val = 0;
+> +	int ret;
+> +
+> +	/* common properties */
+> +	ret = device_property_read_u32(dev, "max-brightness", &brightness);
+> +	if (ret) {
+> +		dev_warn(dev, "max-brightness DT property missing, use HW max as default\n");
+
+Does there need to be a warning on this?
+
+It's code pattern is common but the DT docs have formalized a lot
+recently. The DT docs in patch 1 say these are optional... so
+why does it justify a warning of they are omitted? There is nothing
+wrong! Is it better to specify the defaults in the bindings and
+then the kernel can say nothing when the defaults are adopted.
+
+
+> +		brightness = BL_MAX_BRIGHTNESS;
+> +	}
+> +
+> +	bl_props->max_brightness = min_t(u32, brightness, BL_MAX_BRIGHTNESS);
+> +
+> +	ret = device_property_read_u32(dev, "default-brightness", &brightness);
+> +	if (ret) {
+> +		dev_warn(dev, "default-brightness DT property missing, use max limit as default\n");
+
+Ditto.
+
+
+> +		brightness = bl_props->max_brightness;
+> +	}
+> +
+> +	bl_props->brightness = min_t(u32, brightness, bl_props->max_brightness);
+> +
+> +	/* vendor properties */
+> +	if (device_property_read_bool(dev, "richtek,pwm-enable"))
+> +		val = RT4831_BLPWMEN_MASK;
+> +
+> +	ret = regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831_BLPWMEN_MASK, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = device_property_read_u8(dev, "richtek,bled-ovp-sel", &propval);
+> +	if (ret) {
+> +		dev_warn(dev, "richtek,bled-ovp-sel DT property missing,
+> use default 21V\n");o
+
+Ditto.
+
+> +		propval = RT4831_BLOVPLVL_21V;
+> +	}
+> +
+> +	propval = min_t(u8, propval, RT4831_BLOVPLVL_29V);
+> +	ret = regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831_BLOVP_MASK,
+> +				 propval << RT4831_BLOVP_SHIFT);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = device_property_read_u8(dev, "richtek,channel-use", &propval);
+> +	if (ret) {
+> +		dev_err(dev, "richtek,channel-use DT property missing\n");
+> +		return ret;
+> +	}
+> +
+> +	if (!(propval & RT4831_BLCH_MASK)) {
+> +		dev_err(dev, "No channel specified\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831_BLCH_MASK, propval);
+> +}
+> +
+> +static int rt4831_bl_probe(struct platform_device *pdev)
+> +{
+> +	struct rt4831_priv *priv;
+> +	struct backlight_properties bl_props = { .type = BACKLIGHT_RAW, };
+
+In new drivers please make sure to correctly set props.scale so that the
+backlight slider can be mapped correctly (see
+Documentation/ABI/testing/sysfs-class-backlight for description of the
+options).
+ 
+ 
+Daniel.
