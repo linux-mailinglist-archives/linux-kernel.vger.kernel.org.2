@@ -2,70 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C3D349543
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59AA349546
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhCYPVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:21:19 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:43832 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbhCYPVN (ORCPT
+        id S230337AbhCYPVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230242AbhCYPV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:21:13 -0400
-Received: from localhost.localdomain (unknown [180.111.236.218])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 26AB9980144;
-        Thu, 25 Mar 2021 23:21:09 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     keal_w@yeah.net
-Subject: [PATCH] [v2] include: linux: debug_locks: Remove duplicate declaration
-Date:   Thu, 25 Mar 2021 23:20:28 +0800
-Message-Id: <20210325152029.4976-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 25 Mar 2021 11:21:28 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 433CAC06174A;
+        Thu, 25 Mar 2021 08:21:28 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id w37so3041191lfu.13;
+        Thu, 25 Mar 2021 08:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DWdXrxswFdWMzj92Kr/qs8gPd/Sy1C2PZmeLqGsaT0g=;
+        b=JD88zvybm4xyFniHi1xZGqHj46f2jKSKyv3nO53GvqYvOJhjmA2Lj9kAXYVrbN2Pv/
+         n8IB5e9GtuizoQu3vYcWhMfdlZ2ssXfi4NbO4/ERozh8EJIsRMq7L0TMDs0URckQAsNZ
+         5+zZxvVSMMMn8JXoc3r6a32aIxQt23zlelsqJh3dD9caCez3mdeMAxirZYZ7E3IfWlC1
+         KUZHhvCrRvlSaqp65U5N+IdXIsP0NdShEwX2ek6t0d7I/PgBhvl6ei989QxI5YfQTG74
+         JaA/QrKYvfdX4ipXKDcLa+6FBqhUrilien0HIOOk6JaHBy8zfq887j100E/f2VFFLoMQ
+         zDxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DWdXrxswFdWMzj92Kr/qs8gPd/Sy1C2PZmeLqGsaT0g=;
+        b=O1r1LkH/7ehA3rIhoT1pzKYy7uHmA/2Kn0KdmZIqVElPcWb5Jtac8EXPAZBP9g+0yA
+         9RTcP1vLOGcANNAtztb1GMOokd/XG2SIgkXUK1KVntip1FuOEORAbA6UA5V3EIuv4N3b
+         K6RJeE7fRHiQzKZTYnRMIZ/N4V7ccERS9ntva5lD+vXbadeEZQJOd51oZ331ijRrMYuX
+         mAGn4pTFKQg8xnv7sik3tetcny8vcI2VqlEq+2B/TYZxC+mCryoM9XHK31ah+Cx7K02+
+         wAqUw5cNvf14D+8/Gujl44PhCzYZcaVLjLqRBkMZbtifhQU9I9rMTnyCnOlkDWDLyYVr
+         qsZQ==
+X-Gm-Message-State: AOAM533iwKzwLysT3NgmMkJQUx/1AaZnJDJPuz89qMTLwM01dRYaKqkE
+        GNFRzwEC6dfQFTFFmNzT+WrBCeQjdgJLvF5Qr/w=
+X-Google-Smtp-Source: ABdhPJz8Jk01Oa9yQeykNwQUixDOSgogUkQOfoY+YTQEVaXTvbSeJRS3xejE5ZUVCAaKKtMrNQGRfvZWiMi1Ru5d3z0=
+X-Received: by 2002:a19:8c0a:: with SMTP id o10mr5538032lfd.175.1616685686587;
+ Thu, 25 Mar 2021 08:21:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZSEodGBkdGB8YQhgaVkpNSk1NQ05NTUJISU5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MRg6Szo*GD8QOD0BOBQIAwIf
-        EkxPCxxVSlVKTUpNTUNOTU1CTU1LVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlK
-        Q0tVSkpKVUlITVVJSkNZV1kIAVlBSkxJSTcG
-X-HM-Tid: 0a7869f99b8fd992kuws26ab9980144
+References: <20210319135711.11802-1-vincent.whitchurch@axis.com> <4ebdf34a-bd01-68ad-6d27-b1c02d21aebe@talpey.com>
+In-Reply-To: <4ebdf34a-bd01-68ad-6d27-b1c02d21aebe@talpey.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 25 Mar 2021 10:21:15 -0500
+Message-ID: <CAH2r5msWO8s9zfYOAnRhMj0uP+_phZu8=M3SKQYYi=j-KT5dxA@mail.gmail.com>
+Subject: Re: [PATCH v3] cifs: Silently ignore unknown oplock break handle
+To:     Tom Talpey <tom@talpey.com>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>, kernel <kernel@axis.com>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct task_struct has been declared.
-Remove the duplicate.
+merged into cifs-2.6.git for-next
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
-Changelog:
-v2:
-- Remove another duplicate declaration for being closer
-  to its user.
----
- include/linux/debug_locks.h | 2 --
- 1 file changed, 2 deletions(-)
+On Fri, Mar 19, 2021 at 9:06 AM Tom Talpey via samba-technical
+<samba-technical@lists.samba.org> wrote:
+>
+> LGTM feel free to add
+>
+> Reviewed-By: Tom Talpey <tom@talpey.com>
+>
+> On 3/19/2021 9:57 AM, Vincent Whitchurch wrote:
+> > Make SMB2 not print out an error when an oplock break is received for an
+> > unknown handle, similar to SMB1.  The debug message which is printed for
+> > these unknown handles may also be misleading, so fix that too.
+> >
+> > The SMB2 lease break path is not affected by this patch.
+> >
+> > Without this, a program which writes to a file from one thread, and
+> > opens, reads, and writes the same file from another thread triggers the
+> > below errors several times a minute when run against a Samba server
+> > configured with "smb2 leases = no".
+> >
+> >   CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
+> >   00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
+> >   00000010: 00000001 00000000 ffffffff ffffffff  ................
+> >   00000020: 00000000 00000000 00000000 00000000  ................
+> >   00000030: 00000000 00000000 00000000 00000000  ................
+> >
+> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+> > ---
+> >
+> > Notes:
+> >      v3:
+> >      - Change debug print to Tom Talpey's suggestion
+> >
+> >      v2:
+> >      - Drop change to lease break
+> >      - Rewrite commit message
+> >
+> >   fs/cifs/smb2misc.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
+> > index 60d4bd1eae2b..76cd05b8d53b 100644
+> > --- a/fs/cifs/smb2misc.c
+> > +++ b/fs/cifs/smb2misc.c
+> > @@ -754,8 +754,8 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
+> >               }
+> >       }
+> >       spin_unlock(&cifs_tcp_ses_lock);
+> > -     cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
+> > -     return false;
+> > +     cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
+> > +     return true;
+> >   }
+> >
+> >   void
+> >
+>
 
-diff --git a/include/linux/debug_locks.h b/include/linux/debug_locks.h
-index 2915f56ad421..32f6a37a3d3f 100644
---- a/include/linux/debug_locks.h
-+++ b/include/linux/debug_locks.h
-@@ -6,8 +6,6 @@
- #include <linux/bug.h>
- #include <linux/printk.h>
- 
--struct task_struct;
--
- extern int debug_locks __read_mostly;
- extern int debug_locks_silent __read_mostly;
- 
+
 -- 
-2.25.1
+Thanks,
 
+Steve
