@@ -2,120 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090B1349CBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:11:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34480349CBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231325AbhCYXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:10:38 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19486 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231262AbhCYXKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:10:08 -0400
-IronPort-SDR: hwRBD3sh3SkbI1M2plZRM+TEFRluYvdkLPHQ8oVkKCiLw3A5Ha13h45XYzak3/QcWkTuYpjJdD
- H5mhsgi9iqrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="171017323"
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="171017323"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 16:10:07 -0700
-IronPort-SDR: W/sn87selvG3PGPq/9XAOyofUmHDVv0QKzriRgag6gQzF47TM/4+xQhI1cI5lvX3QCgWz2eoM/
- Lb82YK8NE3Og==
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="391956358"
-Received: from jeffche1-mobl.amr.corp.intel.com (HELO [10.209.73.71]) ([10.209.73.71])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 16:10:06 -0700
-Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
- control state component support
-To:     Len Brown <lenb@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-23-chang.seok.bae@intel.com>
- <871rc9bl3v.fsf@nanos.tec.linutronix.de>
- <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <b1a8f92d-fd82-6e86-93ff-4ac200080d8c@intel.com>
-Date:   Thu, 25 Mar 2021 16:10:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231359AbhCYXLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 19:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231272AbhCYXKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 19:10:51 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9D3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:10:51 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id z5so4577298qvo.16
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:10:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=T2/d6sZyO3fSLr0PvTyvQEiPcFUt7lX67rgAyw6h6Ns=;
+        b=h1bf0BOjFAAjZ/OJMNbkTZfB+WyBmaMPewReLf9ogiiamNakB307KnJZ1bBBZ6jQx4
+         RhvZ7FB1Zy5NiTFlsZRnFckjMVZE+oPiW/9bSdixYnWeikINQcxUDOLhXqTOAzfOL69g
+         to40oavQvU4+P9dWA6DH+L2rLLSkjH6RFKUkWYMvv4tzPCiXSbasYU7KGMxlNJA2PazK
+         7f5loxZFJ5lt3xvZHobDUz3iiK38332zizKGS9eGxDdIcYSNdDf3dEUFSBrdR9HUw9bj
+         5vAmjPh6Iq8wy5yJFYDZbTtXaDuW8ZOJ32Tj0Mai5IQgkwT0X2ldZKLWZc4zBWLumNG0
+         Ruzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=T2/d6sZyO3fSLr0PvTyvQEiPcFUt7lX67rgAyw6h6Ns=;
+        b=rCTQnO3YBYFPQVr6/TpPejI85A+w9wiH0sz10JZPpJhbkqektAUK2TCryY2avEG2P4
+         vd+xfGealO3ASX2NYYjvh2uHyE5Vr10wpHhplrCK8OKNDaigl6ojB3fd1dG+XKK9I9sm
+         uOISF8L9nfx3WOfOhTBTmuo6viDAl1UzHLgloEJoH34QZb7FZUYxdL/OQzgTgGbQV5W6
+         T5d3fxoIYXONFYGaDHXmiCxYUXomoFuSqiUR04EEuoqs+GsdCpKa2SxMnZ+Te8+ZxVAH
+         YJmUudwy+C3I6J7l+zSBcBz0bMFW2u0GsopFhKv0dBRUeThpQqoriuEkylfJd6RMVxfk
+         TBJQ==
+X-Gm-Message-State: AOAM533Adih0Bb/DfUHkV120EKpSqxRThtgj7TDO1Q4meaYPhhxs7Gmm
+        8a415Lj7yU97R2WyfhM8GZ5X+DkhngrnASQJbXWK
+X-Google-Smtp-Source: ABdhPJw8sxtVyVhdnPIHQmvOxevJeP2dQ9vkgim0lT9MuGC04CoGm+vtIGdtJVY8Vo4Ddkm5VWU/0lUxFwlOWuSixZdF
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:74e9:775f:faff:48d0])
+ (user=axelrasmussen job=sendgmr) by 2002:ad4:4e53:: with SMTP id
+ eb19mr10977331qvb.8.1616713850395; Thu, 25 Mar 2021 16:10:50 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 16:10:27 -0700
+Message-Id: <20210325231027.3402321-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE error handling + accounting
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 3:59 PM, Len Brown wrote:
-> We call AMX a "simple state feature" -- it actually requires NO KERNEL ENABLING
-> above the generic state save/restore to fully support userspace AMX
-> applications.
-> 
-> While not all ISA extensions can be simple state features, we do expect
-> future features to share this trait, and so we want to be sure that it is simple
-> to update the kernel to turn those features on (and when necessary, off).
+Previously, in the error path, we unconditionally removed the page from
+the page cache. But in the continue case, we didn't add it - it was
+already there because the page is used by a second (non-UFFD-registered)
+mapping. So, in that case, it's incorrect to remove it as the other
+mapping may still use it normally.
 
-From some IRC chats with Thomaas and Andy, I think it's safe to say that
-they're not comfortable blindly enabling even our "simple features".  I
-think we're going to need at least some additional architecture to get
-us to a point where everyone will be comfortable.
+For this error handling failure, trivially exercise it in the
+userfaultfd selftest, to detect this kind of bug in the future.
 
-For instance, AMX might be "simple", but there are really only kludgy
-ways to get it back to the init state.  Plus, it's *not* simple in that
-state left in the registers can have permanent (as long as the state
-remains) power and performance impact.
+Also, we previously were unconditionally calling shmem_inode_acct_block.
+In the continue case, however, this is incorrect, because we would have
+already accounted for the RAM usage when the page was originally
+allocated (since at this point it's already in the page cache). So,
+doing it in the continue case causes us to double-count.
 
-Also, we probably need to expand the "simple" architecture documentation
-a bit.  For instance, we need to promise that things like pkeys which
-can cause kernel exceptions will never be enumerated as "simple".
+Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
+Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+---
+ mm/shmem.c                               | 15 ++++++++++-----
+ tools/testing/selftests/vm/userfaultfd.c | 12 ++++++++++++
+ 2 files changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/mm/shmem.c b/mm/shmem.c
+index d2e0e81b7d2e..5ac8ea737004 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2379,9 +2379,11 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 	int ret;
+ 	pgoff_t offset, max_off;
+ 
+-	ret = -ENOMEM;
+-	if (!shmem_inode_acct_block(inode, 1))
+-		goto out;
++	if (!is_continue) {
++		ret = -ENOMEM;
++		if (!shmem_inode_acct_block(inode, 1))
++			goto out;
++	}
+ 
+ 	if (is_continue) {
+ 		ret = -EFAULT;
+@@ -2389,6 +2391,7 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ 		if (!page)
+ 			goto out_unacct_blocks;
+ 	} else if (!*pagep) {
++		ret = -ENOMEM;
+ 		page = shmem_alloc_page(gfp, info, pgoff);
+ 		if (!page)
+ 			goto out_unacct_blocks;
+@@ -2486,12 +2489,14 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+ out_release_unlock:
+ 	pte_unmap_unlock(dst_pte, ptl);
+ 	ClearPageDirty(page);
+-	delete_from_page_cache(page);
++	if (!is_continue)
++		delete_from_page_cache(page);
+ out_release:
+ 	unlock_page(page);
+ 	put_page(page);
+ out_unacct_blocks:
+-	shmem_inode_unacct_blocks(inode, 1);
++	if (!is_continue)
++		shmem_inode_unacct_blocks(inode, 1);
+ 	goto out;
+ }
+ #endif /* CONFIG_USERFAULTFD */
+diff --git a/tools/testing/selftests/vm/userfaultfd.c b/tools/testing/selftests/vm/userfaultfd.c
+index f6c86b036d0f..d8541a59dae5 100644
+--- a/tools/testing/selftests/vm/userfaultfd.c
++++ b/tools/testing/selftests/vm/userfaultfd.c
+@@ -485,6 +485,7 @@ static void wp_range(int ufd, __u64 start, __u64 len, bool wp)
+ static void continue_range(int ufd, __u64 start, __u64 len)
+ {
+ 	struct uffdio_continue req;
++	int ret;
+ 
+ 	req.range.start = start;
+ 	req.range.len = len;
+@@ -493,6 +494,17 @@ static void continue_range(int ufd, __u64 start, __u64 len)
+ 	if (ioctl(ufd, UFFDIO_CONTINUE, &req))
+ 		err("UFFDIO_CONTINUE failed for address 0x%" PRIx64,
+ 		    (uint64_t)start);
++
++	/*
++	 * Error handling within the kernel for continue is subtly different
++	 * from copy or zeropage, so it may be a source of bugs. Trigger an
++	 * error (-EEXIST) on purpose, to verify doing so doesn't cause a BUG.
++	 */
++	req.mapped = 0;
++	ret = ioctl(ufd, UFFDIO_CONTINUE, &req);
++	if (ret >= 0 || req.mapped != -EEXIST)
++		err("failed to exercise UFFDIO_CONTINUE error handling, ret=%d, mapped=%" PRId64,
++		    ret, req.mapped);
+ }
+ 
+ static void *locking_thread(void *arg)
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
