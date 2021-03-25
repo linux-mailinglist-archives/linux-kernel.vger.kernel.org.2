@@ -2,84 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09FE634981C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633F834981A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhCYRdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:33:54 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:36146 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhCYRdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:33:44 -0400
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 12PHXQ5q026115;
-        Fri, 26 Mar 2021 02:33:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 12PHXQ5q026115
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1616693607;
-        bh=68tUh9PJpU/8+TqriEVVDbQ9FSkE/5YIvRFSY62KdKg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=m4gbwUjWbWspFFJ24fIKpw5/kKv5GbZysiyh++QgahV81HyB5/EnNw+UjiVwYTGFO
-         pG27nr5gtyBM1VAPW4n7ZpSGHd4TJzUR7Ikt2tF01+lg/7hTy5nkkxxhjGEX2wA1lm
-         vEfMAfzuQDUaluYaZxNxemRWNUJcboiL8a7lX/Lpkt5c3qsXlPMVlcHuPLwiw7kacD
-         t7FvQinBfiAfe9gGR9PVRniEr6T89wP/fRun7IKojL0WVtA1rPUl0qUaieNDHrfSI6
-         LMS7pPOYxRc1e4/iANmybaEHP0vqUDbsRT6/CheHZ7HSFNuwOetLmUUTrm0Qh5t1D6
-         Rf6/OFplOTHSg==
-X-Nifty-SrcIP: [209.85.215.175]
-Received: by mail-pg1-f175.google.com with SMTP id i22so2517169pgl.4;
-        Thu, 25 Mar 2021 10:33:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531q3oIEQupQrc7frA06SRZAqMdkUR+qk7en1WSR8eOYu81VN7iv
-        balYl7WgN+kue91F6fN+pQgHAh+JPsQB1oIJ9s4=
-X-Google-Smtp-Source: ABdhPJxbZfEX9vIMdcyW23sMrMktsbD0MG81+m5RQ/q0dveDBM5doq0V9JivggmV/psnyAhwuZqMEKpjobeF3F3p8H8=
-X-Received: by 2002:aa7:956d:0:b029:1f1:5ba6:2a58 with SMTP id
- x13-20020aa7956d0000b02901f15ba62a58mr9210950pfq.63.1616693605945; Thu, 25
- Mar 2021 10:33:25 -0700 (PDT)
+        id S229961AbhCYRdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229581AbhCYRdR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:33:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A18261A28;
+        Thu, 25 Mar 2021 17:33:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616693597;
+        bh=qGpX3MaAi6iipXhij0xGuclaojia9d6LXGpZk4lS3FA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OpgdYXmTWs8MRabNzxRiFlKzCDpQS5h96vnrJxN9G4TZvg0WRGitBgXLTk+GnnXil
+         f8b5nAYnfp30PmCcOMovoLPgDhNtradrGc8Y6FhFhQ36jubqzqqO6zBwewg68FYuJf
+         Jv7k7kjnmjdLlFV3ePCk4UFG8Vd9Clf1rwUIugVfKpJsBtO7/w+BaxYqHIGJ7eDHwI
+         mCIthIJWR0FmNz1DYmj+Kqua1EmULEJwj1xk8HRopvlZ1bKjcDSPYNKMZbYPYp8xr5
+         TB9H5N62ZZMc3cBLXsUHr1mLRfZ6+pM2RtMNb99RhaB1IXnJpl6MiGYMIdbKb9KY+r
+         w0OsMID+O3r1w==
+Date:   Thu, 25 Mar 2021 17:33:11 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>, " 
+        <iommu@lists.linux-foundation.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
+ flag
+Message-ID: <20210325173311.GA15504@willie-the-truck>
+References: <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <20210129090516.GB3998@willie-the-truck>
+ <5d23fce629323bcda71594010824aad0@codeaurora.org>
+ <20210201111556.GA7172@willie-the-truck>
+ <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
+ <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
+ <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
+ <20210203214612.GB19847@willie-the-truck>
+ <4988e2ef35f76a0c2f1fe3f66f023a3b@codeaurora.org>
+ <9362873a3bcf37cdd073a6128f29c683@codeaurora.org>
 MIME-Version: 1.0
-References: <20210319143231.25500-1-olaf@aepfle.de> <20210325121606.6a2e4e00.olaf@aepfle.de>
- <CAK7LNARPs97+eQKMop9cYCs=D4Kwsf_5pq-614OUxT2iZptueg@mail.gmail.com> <20210325180735.1f0238f1.olaf@aepfle.de>
-In-Reply-To: <20210325180735.1f0238f1.olaf@aepfle.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 26 Mar 2021 02:32:49 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATaDL0h6wA16jNBCg=zg8XL2zSSPLyvq6mriLDTjO0LMQ@mail.gmail.com>
-Message-ID: <CAK7LNATaDL0h6wA16jNBCg=zg8XL2zSSPLyvq6mriLDTjO0LMQ@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: enforce -Werror=unused-result
-To:     Olaf Hering <olaf@aepfle.de>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9362873a3bcf37cdd073a6128f29c683@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 2:07 AM Olaf Hering <olaf@aepfle.de> wrote:
->
-> Am Fri, 26 Mar 2021 01:55:41 +0900
-> schrieb Masahiro Yamada <masahiroy@kernel.org>:
->
-> > What about  drivers/net/ethernet/lantiq_etop.c  ?
->
-> Nothing complained about it. I guess there is a build-bot for alpha, but none for mips.
->
-> > I got a lot of complaints in the last trial.
->
-> Why did you get complains, instead of me?
->
->
-> What is the "must" in "__must_check" worth if it is not enforced...
->
-> Olaf
+On Tue, Mar 09, 2021 at 12:10:44PM +0530, Sai Prakash Ranjan wrote:
+> On 2021-02-05 17:38, Sai Prakash Ranjan wrote:
+> > On 2021-02-04 03:16, Will Deacon wrote:
+> > > On Tue, Feb 02, 2021 at 11:56:27AM +0530, Sai Prakash Ranjan wrote:
+> > > > On 2021-02-01 23:50, Jordan Crouse wrote:
+> > > > > On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
+> > > > > > On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
+> > > > > > > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
+> > > > > > > > On 2021-01-29 14:35, Will Deacon wrote:
+> > > > > > > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
+> > > > > > > > > > +#define IOMMU_LLC        (1 << 6)
+> > > > > > > > >
+> > > > > > > > > On reflection, I'm a bit worried about exposing this because I think it
+> > > > > > > > > will
+> > > > > > > > > introduce a mismatched virtual alias with the CPU (we don't even have a
+> > > > > > > > > MAIR
+> > > > > > > > > set up for this memory type). Now, we also have that issue for the PTW,
+> > > > > > > > > but
+> > > > > > > > > since we always use cache maintenance (i.e. the streaming API) for
+> > > > > > > > > publishing the page-tables to a non-coheren walker, it works out.
+> > > > > > > > > However,
+> > > > > > > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
+> > > > > > > > > allocation, then they're potentially in for a nasty surprise due to the
+> > > > > > > > > mismatched outer-cacheability attributes.
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > Can't we add the syscached memory type similar to what is done on android?
+> > > > > > >
+> > > > > > > Maybe. How does the GPU driver map these things on the CPU side?
+> > > > > >
+> > > > > > Currently we use writecombine mappings for everything, although there
+> > > > > > are some cases that we'd like to use cached (but have not merged
+> > > > > > patches that would give userspace a way to flush/invalidate)
+> > > > > >
+> > > > >
+> > > > > LLC/system cache doesn't have a relationship with the CPU cache.  Its
+> > > > > just a
+> > > > > little accelerator that sits on the connection from the GPU to DDR and
+> > > > > caches
+> > > > > accesses. The hint that Sai is suggesting is used to mark the buffers as
+> > > > > 'no-write-allocate' to prevent GPU write operations from being cached in
+> > > > > the LLC
+> > > > > which a) isn't interesting and b) takes up cache space for read
+> > > > > operations.
+> > > > >
+> > > > > Its easiest to think of the LLC as a bonus accelerator that has no cost
+> > > > > for
+> > > > > us to use outside of the unfortunate per buffer hint.
+> > > > >
+> > > > > We do have to worry about the CPU cache w.r.t I/O coherency (which is a
+> > > > > different hint) and in that case we have all of concerns that Will
+> > > > > identified.
+> > > > >
+> > > > 
+> > > > For mismatched outer cacheability attributes which Will
+> > > > mentioned, I was
+> > > > referring to [1] in android kernel.
+> > > 
+> > > I've lost track of the conversation here :/
+> > > 
+> > > When the GPU has a buffer mapped with IOMMU_LLC, is the buffer also
+> > > mapped
+> > > into the CPU and with what attributes? Rob said "writecombine for
+> > > everything" -- does that mean ioremap_wc() / MEMREMAP_WC?
+> > > 
+> > 
+> > Rob answered this.
+> > 
+> > > Finally, we need to be careful when we use the word "hint" as
+> > > "allocation
+> > > hint" has a specific meaning in the architecture, and if we only
+> > > mismatch on
+> > > those then we're actually ok. But I think IOMMU_LLC is more than
+> > > just a
+> > > hint, since it actually drives eviction policy (i.e. it enables
+> > > writeback).
+> > > 
+> > > Sorry for the pedantry, but I just want to make sure we're all talking
+> > > about the same things!
+> > > 
+> > 
+> > Sorry for the confusion which probably was caused by my mentioning of
+> > android, NWA(no write allocate) is an allocation hint which we can
+> > ignore
+> > for now as it is not introduced yet in upstream.
+> > 
+> 
+> Any chance of taking this forward? We do not want to miss out on small fps
+> gain when the product gets released.
 
+Do we have a solution to the mismatched virtual alias?
 
-In hindsight, __must_check may not be a perfect name.
-
-Miguel suggested __nodiscard to get along with:
-https://en.cppreference.com/w/c/language/attributes/nodiscard
-
-It is not enforcing. Just a compiler warning.
-
-
--- 
-Best Regards
-Masahiro Yamada
+Will
