@@ -2,160 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB13E348A54
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5A6348A5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhCYHnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:43:52 -0400
-Received: from out28-53.mail.aliyun.com ([115.124.28.53]:55698 "EHLO
-        out28-53.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhCYHn0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:43:26 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07471792|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.153235-0.00715125-0.839614;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Jq-fhNh_1616658201;
-Received: from 192.168.88.129(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Jq-fhNh_1616658201)
-          by smtp.aliyun-inc.com(10.147.43.230);
-          Thu, 25 Mar 2021 15:43:23 +0800
-Subject: Re: [PATCH v3 05/10] dt-bindings: pinctrl: Add bindings for new
- Ingenic SoCs.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1615975084-68203-6-git-send-email-zhouyanjie@wanyeetech.com>
- <S1UDQQ.OKUWFQAJJIVA2@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <89818aa4-c3f8-9aea-1caf-6280e7842b91@wanyeetech.com>
-Date:   Thu, 25 Mar 2021 15:43:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S229592AbhCYHqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:46:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229653AbhCYHqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 03:46:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EB0A61A1E
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:46:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616658368;
+        bh=urWTServCtxCJX98E/tfAkTHjzvy+O9XuEj2LiVFDvw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rgBCa1gaQh/waTUpg6cJOQjfaY25azwtqiNzrmZzev/pr7XSMMDddyTizUNBe+k6B
+         k4NcklOk8msBdTquCaAN9xpTh4NhVnr2DVpEMDEnm5NZKdvkqozwG25RmcUfCxKZwi
+         9dL4tysVARLTphmF/Ban9rntGoch7KME95OE/6hCF0KBevWIKVvfozBU/shAChQANv
+         KHUhtnCdSpaB2zsXTg6SCx0TSwAjvd0hpjW8egWIP3+Im33mO5gxswmTJXR8V5lpIV
+         w+I2B84gQcqgKuanrgFEplh3v3Kr6Uw1aCHAZ9kKnUJVSYCorKsSv7DS17bCT4aCPP
+         U5xMuFN1+X6OQ==
+Received: by mail-oo1-f43.google.com with SMTP id j20-20020a4ad6d40000b02901b66fe8acd6so266295oot.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:46:08 -0700 (PDT)
+X-Gm-Message-State: AOAM532Bjymf1Y2raaVb/6F/hcecW5XI5dTtVYh8zhAXb66g5KPG9Q4y
+        mwHs8bhrFWkC1XkzQdsqgSHxaSx9958U5kI8iaA=
+X-Google-Smtp-Source: ABdhPJzep4Pg2i8KPbq2YHIB8mXn/PTGrG59koY6+IsXfSbRbKnvLvglteo4dzIX2jBhOICJyUL2ak1Y8vvFiLDukig=
+X-Received: by 2002:a4a:395d:: with SMTP id x29mr5968148oog.41.1616658367226;
+ Thu, 25 Mar 2021 00:46:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <S1UDQQ.OKUWFQAJJIVA2@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <YFmdJlESrCh4iC9A@hirez.programming.kicks-ass.net>
+ <0f4679d6-44a4-d045-f249-a9cffb126fd4@rasmusvillemoes.dk> <CABCJKuf1-GWda9_BiBO=nNP_drh3a8471G+LEqPzdVrLBhVqZQ@mail.gmail.com>
+ <b2d77e78-751e-283c-8cff-e9c4f16e27ef@prevas.dk> <YFt382FImjQQ+10f@hirez.programming.kicks-ass.net>
+ <a758cace-99ed-5c60-e59c-9f4f6b3a39c7@rasmusvillemoes.dk> <CABCJKuek8Set48v5wa2sbCN1fN7DYSczJ9MdH4BcQBdky1YNaA@mail.gmail.com>
+ <2b38d13f-9f90-b94b-7de4-c924696e6a9f@rasmusvillemoes.dk> <CABCJKudx9bkvkOsAVi7Wzgr3AVFGwa64Kre1d59v0tTr6GOgcA@mail.gmail.com>
+ <170687fb-13ef-e9b8-ac69-032202b344fe@rasmusvillemoes.dk> <YFw+4Ba5ci/Bmg0k@hirez.programming.kicks-ass.net>
+In-Reply-To: <YFw+4Ba5ci/Bmg0k@hirez.programming.kicks-ass.net>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 25 Mar 2021 08:45:56 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXF9_Z5epEqyohCPWSfyYse+msq+Oyoekr9C_LXg+Pbx5w@mail.gmail.com>
+Message-ID: <CAMj1kXF9_Z5epEqyohCPWSfyYse+msq+Oyoekr9C_LXg+Pbx5w@mail.gmail.com>
+Subject: Re: [PATCH] static_call: fix function type mismatch
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 25 Mar 2021 at 08:43, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Mar 25, 2021 at 01:42:41AM +0100, Rasmus Villemoes wrote:
+> > > Actually, it looks like I can't select PREEMPT_DYNAMIC> and tweaking Kconfig
+> >
+> > Ah, there's no prompt on the "bool" line, so it doesn't show up. That
+> > seems to be a mistake, since there's an elaborate help text which says
+> >
+> >           The runtime overhead is negligible with
+> > HAVE_STATIC_CALL_INLINE enabled
+> >           but if runtime patching is not available for the specific
+> > architecture
+> >           then the potential overhead should be considered.
+> >
+> > So it seems that it was meant to be "you can enable this if you really
+> > want".
+> >
+> > to force enable it on arm64 results in a build error
+>
+> Right, PREEMPT_DYNAMIC really hard relies on HAVE_STATIC_CALL
+>
+> There's an implicit dependency in the select:
+>
+> config PREEMPT
+>         ...
+>         select PREEMPT_DYNAMIC if HAVE_PREEMPT_DYNAMIC
+>
+> > > ("implicit declaration of function 'static_call_mod'").
+> >
+> > Seems to be an omission in the last !HAVE_STATIC_CALL branch in
+> > static_call_types.h, and there's also no
+> > EXPORT_STATIC_CALL_TRAMP{,_GPL} in static_call.h for that case.
+>
+> That interface doesn't make sense for !HAVE_STATIC_CALL. It's impossible
+> to not export the function pointer itself but still call it for
+> !HAVE_STATIC_CALL.
 
-On 2021/3/23 上午2:01, Paul Cercueil wrote:
->
->
-> Le mer. 17 mars 2021 à 17:57, 周琰杰 (Zhou Yanjie) 
-> <zhouyanjie@wanyeetech.com> a écrit :
->> Add the pinctrl bindings for the JZ4730 SoC, the JZ4750 SoC,
->> the JZ4755 SoC, the JZ4775 SoC and the X2000 SoC from Ingenic.
->>
->> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->> ---
->>
->> Notes:
->>     v2:
->>     New patch.
->>
->>     v2->v3:
->>     No change.
->>
->>  .../bindings/pinctrl/ingenic,pinctrl.yaml          | 23 
->> ++++++++++++++++++----
->>  1 file changed, 19 insertions(+), 4 deletions(-)
->>
->> diff --git 
->> a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml 
->> b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
->> index 44c04d1..60604fc 100644
->> --- a/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
->> +++ b/Documentation/devicetree/bindings/pinctrl/ingenic,pinctrl.yaml
->> @@ -17,10 +17,12 @@ description: >
->>    naming scheme "PxN" where x is a character identifying the GPIO 
->> port with
->>    which the pin is associated and N is an integer from 0 to 31 
->> identifying the
->>    pin within that GPIO port. For example PA0 is the first pin in 
->> GPIO port A,
->> -  and PB31 is the last pin in GPIO port B. The JZ4740, the X1000 and 
->> the X1830
->> -  contains 4 GPIO ports, PA to PD, for a total of 128 pins. The 
->> JZ4760, the
->> -  JZ4770 and the JZ4780 contains 6 GPIO ports, PA to PF, for a total 
->> of 192
->> -  pins.
->> +  and PB31 is the last pin in GPIO port B. The JZ4730, the JZ4740, 
->> the X1000
->> +  and the X1830 contains 4 GPIO ports, PA to PD, for a total of 128 
->> pins. The
->> +  X2000 contains 5 GPIO ports, PA to PE, for a total of 160 pins. 
->> The JZ4750,
->> +  the JZ4755 the JZ4760, the JZ4770 and the JZ4780 contains 6 GPIO 
->> ports, PA
->> +  to PF, for a total of 192 pins. The JZ4775 contains 7 GPIO ports, 
->> PA to PG,
->> +  for a total of 224 pins.
->
-> While we're at it, the JZ4725B has also 4 GPIO ports.
->
+I proposed an implementation for the indirect static call variety for
+arm64 here [0] but we haven't yet decided whether it is needed, given
+that indirect calls are mostly fine on arm64 (modulo CFI of course)
 
-OK, I will add it.
+Maybe this helps?
 
 
->>
->>  maintainers:
->>    - Paul Cercueil <paul@crapouillou.net>
->> @@ -32,20 +34,28 @@ properties:
->>    compatible:
->>      oneOf:
->>        - enum:
->> +          - ingenic,jz4730-pinctrl
->>            - ingenic,jz4740-pinctrl
->>            - ingenic,jz4725b-pinctrl
->> +          - ingenic,jz4750-pinctrl
->> +          - ingenic,jz4755-pinctrl
->>            - ingenic,jz4760-pinctrl
->>            - ingenic,jz4770-pinctrl
->> +          - ingenic,jz4775-pinctrl
->>            - ingenic,jz4780-pinctrl
->>            - ingenic,x1000-pinctrl
->>            - ingenic,x1500-pinctrl
->>            - ingenic,x1830-pinctrl
->> +          - ingenic,x2000-pinctrl
->>        - items:
->>            - const: ingenic,jz4760b-pinctrl
->>            - const: ingenic,jz4760-pinctrl
->>        - items:
->>            - const: ingenic,x1000e-pinctrl
->>            - const: ingenic,x1000-pinctrl
->> +      - items:
->> +          - const: ingenic,x2000e-pinctrl
->> +          - const: ingenic,x2000-pinctrl
->>
->>    reg:
->>      maxItems: 1
->> @@ -62,14 +72,19 @@ patternProperties:
->>      properties:
->>        compatible:
->>          enum:
->> +          - ingenic,jz4730-gpio
->>            - ingenic,jz4740-gpio
->>            - ingenic,jz4725b-gpio
->> +          - ingenic,jz4750-gpio
->> +          - ingenic,jz4755-gpio
->>            - ingenic,jz4760-gpio
->>            - ingenic,jz4770-gpio
->> +          - ingenic,jz4775-gpio
->>            - ingenic,jz4780-gpio
->>            - ingenic,x1000-gpio
->>            - ingenic,x1500-gpio
->>            - ingenic,x1830-gpio
->> +          - ingenic,x2000-gpio
->>
->>        reg:
->>          items:
->> -- 
->> 2.7.4
->>
->
+[0] https://lore.kernel.org/linux-arm-kernel/20201120082103.4840-1-ardb@kernel.org/
