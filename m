@@ -2,104 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338CA34996E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9386C34996C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCYSXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhCYSX0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:23:26 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0288C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 11:23:25 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id v15so3924462lfq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 11:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aWd60XOby/g8jwc4Pu4WsrQLPuqRg22p9eHk3Bl4Mhs=;
-        b=AY1BKKtjRLIrYTRxTnPb92tt0ayAa5COOUtIQpdpbJtbinoLC0XYie03CbA10mKWIg
-         /OzQXXhS3OV/jIAwiGfYahxk9EkT5rHgpS02WU328E2PgEeXtfhBjFACOsGo9+b7bzFl
-         NCnZbz2L8G4QuO9+OZwOZKBOMEsaKxO13nniI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aWd60XOby/g8jwc4Pu4WsrQLPuqRg22p9eHk3Bl4Mhs=;
-        b=Qu6FSrYkFJ8U7S1XNJhv3WIjOKw00SMJ23JF3iuXZw0xLJu6kldM8jB41qS2NEIArd
-         mdxcg2zLIGkoKXmLyR99jByMKFGNJHoy57n5fGl2X4ubLaXNfNAaZRqsKn+3gJhONYm1
-         9J60qtluujFwjovxa96zaL7YNVBXIdKRig/uOGrqL1g4N4xdbeVtfYjvkoL//rWvwzsH
-         f1LflSHP6ao5ENpnfwnaVXtpjv8BeXAsUKEE/FAV1cWTXc7PtN7Lg5ODIdmE2wkqff00
-         Uc27OaVv0X3yWt4mNa4nYM7FhpH11+6O+R8qJJmpL399W3NluUaD8FASsnW9s/fcY8mc
-         fK3w==
-X-Gm-Message-State: AOAM532SKFV/phVg52kbQXqM9Q11kQWLXMuhzl8ybsL6x7HBQ2kGmoGw
-        0e9gmcjawlafno6sRJmXf7qXret86f8uSA==
-X-Google-Smtp-Source: ABdhPJzk+130m6vQ6kI8EnjQgJxCWg1F/tecKrTuRIS8cNRCKvSFn4ioIQpqdu0crV+DHvc7EkEyug==
-X-Received: by 2002:a19:6c6:: with SMTP id 189mr5992418lfg.426.1616696604012;
-        Thu, 25 Mar 2021 11:23:24 -0700 (PDT)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
-        by smtp.gmail.com with ESMTPSA id i7sm856901lja.15.2021.03.25.11.23.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 11:23:23 -0700 (PDT)
-Received: by mail-lj1-f171.google.com with SMTP id f26so4367157ljp.8
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 11:23:23 -0700 (PDT)
-X-Received: by 2002:a2e:a306:: with SMTP id l6mr6293084lje.251.1616696602756;
- Thu, 25 Mar 2021 11:23:22 -0700 (PDT)
+        id S230042AbhCYSVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:21:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:31048 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230046AbhCYSVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 14:21:17 -0400
+IronPort-SDR: DZV6YdxdedK4GmDONw5Mcub2ssAJhiST5sSIQePk5F1nDpAFJmFOEMGf8I82LrKvY/ejVYHnGy
+ bCMZuwcwd2+A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="191026142"
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="191026142"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 11:21:00 -0700
+IronPort-SDR: iNmYQYa5hzPyJPYl+zaoyyX+P7oJAxSYwM0PTYjXWfpcbrZ4bWNOck+Me3PtDnGWcTcNThyAQI
+ SQuXXWnaR79w==
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="416135927"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 11:21:00 -0700
+Date:   Thu, 25 Mar 2021 11:23:27 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210325112327.24860e3f@jacob-builder>
+In-Reply-To: <20210325171645.GF2356281@nvidia.com>
+References: <20210319124645.GP2356281@nvidia.com>
+        <YFSqDNJ5yagk4eO+@myrica>
+        <20210319135432.GT2356281@nvidia.com>
+        <20210319112221.5123b984@jacob-builder>
+        <YFhiMLR35WWMW/Hu@myrica>
+        <20210324100246.4e6b8aa1@jacob-builder>
+        <20210324170338.GM2356281@nvidia.com>
+        <20210324151230.466fd47a@jacob-builder>
+        <YFxkNEz3THJKzW0b@myrica>
+        <20210325100236.17241a1c@jacob-builder>
+        <20210325171645.GF2356281@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210325163358.GU2916463@dell>
-In-Reply-To: <20210325163358.GU2916463@dell>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 25 Mar 2021 11:23:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjJxziChniE2zmkbFxEpizYFg=XaKyq_O_Rfh_Lr_idkw@mail.gmail.com>
-Message-ID: <CAHk-=wjJxziChniE2zmkbFxEpizYFg=XaKyq_O_Rfh_Lr_idkw@mail.gmail.com>
-Subject: Re: [GIT PULL] MFD fixes for v5.12
-To:     Lee Jones <lee.jones@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 9:34 AM Lee Jones <lee.jones@linaro.org> wrote:
->
->    - Unconstify editable placeholder structures
+Hi Jason,
 
-Hmm. This does show a real issue with that gpio driver.
+On Thu, 25 Mar 2021 14:16:45 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-It does garbage things:
+> On Thu, Mar 25, 2021 at 10:02:36AM -0700, Jacob Pan wrote:
+> > Hi Jean-Philippe,
+> > 
+> > On Thu, 25 Mar 2021 11:21:40 +0100, Jean-Philippe Brucker
+> > <jean-philippe@linaro.org> wrote:
+> >   
+> > > On Wed, Mar 24, 2021 at 03:12:30PM -0700, Jacob Pan wrote:  
+> > > > Hi Jason,
+> > > > 
+> > > > On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com>
+> > > > wrote:   
+> > > > > On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:    
+> > > > > > > Also wondering about device driver allocating auxiliary
+> > > > > > > domains for their private use, to do iommu_map/unmap on
+> > > > > > > private PASIDs (a clean replacement to super SVA, for
+> > > > > > > example). Would that go through the same path as /dev/ioasid
+> > > > > > > and use the cgroup of current task?      
+> > > > > >
+> > > > > > For the in-kernel private use, I don't think we should restrict
+> > > > > > based on cgroup, since there is no affinity to user processes. I
+> > > > > > also think the PASID allocation should just use kernel API
+> > > > > > instead of /dev/ioasid. Why would user space need to know the
+> > > > > > actual PASID # for device private domains? Maybe I missed your
+> > > > > > idea?      
+> > > > > 
+> > > > > There is not much in the kernel that isn't triggered by a
+> > > > > process, I would be careful about the idea that there is a class
+> > > > > of users that can consume a cgroup controlled resource without
+> > > > > being inside the cgroup.
+> > > > > 
+> > > > > We've got into trouble before overlooking this and with something
+> > > > > greenfield like PASID it would be best built in to the API to
+> > > > > prevent a mistake. eg accepting a cgroup or process input to the
+> > > > > allocator. 
+> > > > Make sense. But I think we only allow charging the current cgroup,
+> > > > how about I add the following to ioasid_alloc():
+> > > > 
+> > > > 	misc_cg = get_current_misc_cg();
+> > > > 	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
+> > > > 	if (ret) {
+> > > > 		put_misc_cg(misc_cg);
+> > > > 		return ret;
+> > > > 	}    
+> > > 
+> > > Does that allow PASID allocation during driver probe, in kernel_init
+> > > or modprobe context?
+> > >   
+> > Good point. Yes, you can get cgroup subsystem state in kernel_init for
+> > charging/uncharging. I would think module_init should work also since
+> > it is after kernel_init. I have tried the following:
+> > static int __ref kernel_init(void *unused)
+> >  {
+> >         int ret;
+> > +       struct cgroup_subsys_state *css;
+> > +       css = task_get_css(current, pids_cgrp_id);
+> > 
+> > But that would imply:
+> > 1. IOASID has to be built-in, not as module
+> > 2. IOASIDs charged on PID1/init would not subject to cgroup limit since
+> > it will be in the root cgroup and we don't support migration nor will
+> > migrate.
+> > 
+> > Then it comes back to the question of why do we try to limit in-kernel
+> > users per cgroup if we can't enforce these cases.  
+> 
+> Are these real use cases? Why would a driver binding to a device
+> create a single kernel pasid at bind time? Why wouldn't it use
+> untagged DMA?
+> 
+For VT-d, I don't see such use cases. All PASID allocations by the kernel
+drivers has proper process context.
 
-  static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
-  {
-        struct dwapb_platform_data *pdata;
-        struct resource *res = (struct resource *)cell->resources;
+> When someone needs it they can rework it and explain why they are
+> doing something sane.
+> 
+Agreed.
 
-where that cast is exactly because "cell->resources" _is_ const, and
-the driver violates that.
+> Jason
 
-This horrible mis-use of a const pointer is why the original patch
-that got reverted didn't cause build-time warnings.
 
-Honestly, I think the right thing to do is to get rid of that cast, and do
+Thanks,
 
-        struct resource *res = intel_quark_mfd_cells;
-
-instead, so that you clearly edit somethign that isn't const, and so
-that the compiler would have warned about the whole constification in
-the first place.
-
-This broken pattern shows up for both intel_quark_i2c_setup() and
-intel_quark_gpio_setup().
-
-I've pulled this, but I really want this kind of "take a const pointer
-and violate it" crap removed. It is *only* correct if you know exactly
-which pointer it is, and then you should just have used that original
-pointer in the first place (ie use that intel_quark_mfd_cells[]
-directly like suggested above).
-
-           Linus
+Jacob
