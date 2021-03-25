@@ -2,193 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27E73496E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77BC3496E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCYQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50368 "EHLO
+        id S229676AbhCYQeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229760AbhCYQdh (ORCPT
+        with ESMTP id S229812AbhCYQeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:33:37 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1654C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:33:36 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id n12-20020a4ad12c0000b02901b63e7bc1b4so630481oor.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:33:36 -0700 (PDT)
+        Thu, 25 Mar 2021 12:34:02 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A51AC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:34:01 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id y6so3157143eds.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 09:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=icx8/ROiUGbXEvPXqjuw1B6ZehL0QY6lhCYqvdH4CJ8=;
-        b=eUCzvhUoDqhYbjAH/SCI1XADZLyN9X7jUMHfbTvpOy+csA1Cd9M43F9i7MlUaxXEz5
-         yjZ9APiih/xX2QvOayE8n2i48Pm03qMcm/gKdnnrSPrxls0mSoFpGG7OhwS9/mxLYnZw
-         BHer52FF/fh/x1nUmykh3jFZQWB1CRBhXMAefu1mGtIWjD7OVai7eoZLk8lNe9MmofEh
-         UqzW2fDxQU0jHq4ksI/9OZGcJ6DGWY4axXrtkMbrvBIgfhnctemnFSOIFa/BNTL049Dm
-         +kyxe8PMkzbTxJlue49Lr2ed3MnhWbVbvpz+QaY9l7MhFUoG+4bw5YJcw+j548AvwYuY
-         xtug==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=IHZjGjcwG93Iiom25k9jNG9Fywlor+CHx0u3IjlOi3U=;
+        b=vlvmJnQ46DIUjbAYm/ooeFWWmhIECTvZf05lFfizVU67lHn7Q/ZnPTCbcv+7zhOaR9
+         r1tVgnvlLbsnIw/Ig1DZO+qcE/xHf70701wra9f13nR6VToGTTE41VlSqfubG3T0ultW
+         qz0wFt8IRLHEKmCKo1n2T81vag4p8eftJ9FsNZSm+kAID+Hp/jPQK9JBAzjKHSc9QxUZ
+         shOw0evwGGSpqWz99fcpoSmCFeHNLgBDSWPjpH9kHwHX7rufJ2BE47Ve6QG7WeKCqIcr
+         lMnjTjFLS2081Q/6CH81AAWOA7hfX5NP8GWSqwoAd1UucmWTW4ZRTHsgWFepF7H+EPO+
+         WS/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=icx8/ROiUGbXEvPXqjuw1B6ZehL0QY6lhCYqvdH4CJ8=;
-        b=oLhuKMUDZTPhbmUdIjUli4O15laex9oUPvw8q+RBo8tHs/QqoX3Xp7eNKrcOdwoRgj
-         CTSvnKBdPRV5AzyHa9Ph+J2pJXUMBVYyWyWqEgalf14yt0bRjXTM/7pAHfpw7Q+uIbiL
-         33QNNUqIspsaNpMS9WEJXAvmnNNr5qy30K5+v8uS8VZWt5K5Ob8jmkKLu0+xkYFQP5ce
-         tL6ql8S4bXGRGysFVkHCQYmcksSkVsAEwI88cCrc1LM0hZM8U1mkD8i7xjMSFo5k7F0C
-         zoieMk4kdr0z1whQR20AlbVd71+D3CprQ3O4LCAmYSTXbYgGgWvtpdZBBrMtPGrNA+O9
-         1qYg==
-X-Gm-Message-State: AOAM5333Fd9EW6TtMdywJwvhkciWYblB2VkGv3pHasIxIGLxs4YkSNgb
-        mjSp0dhgJ+CphgGojfNLpiyN3w==
-X-Google-Smtp-Source: ABdhPJytwirDMt+cb8gz0ZuTetwO20FIEReA2W/wsPOb73esowNet2q0uFtGoqomeSGLfCo344U6aQ==
-X-Received: by 2002:a4a:c316:: with SMTP id c22mr7878829ooq.65.1616690015522;
-        Thu, 25 Mar 2021 09:33:35 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id h24sm1442657otg.20.2021.03.25.09.33.34
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 25 Mar 2021 09:33:35 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 09:33:18 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Borislav Petkov <bp@alien8.de>
-cc:     Hugh Dickins <hughd@google.com>, Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        kvm list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH] x86/tlb: Flush global mappings when KAISER is disabled
-In-Reply-To: <20210325102959.GD31322@zn.tnic>
-Message-ID: <alpine.LSU.2.11.2103250929110.10977@eggly.anvils>
-References: <2ca37e61-08db-3e47-f2b9-8a7de60757e6@amd.com> <20210311214013.GH5829@zn.tnic> <d3e9e091-0fc8-1e11-ab99-9c8be086f1dc@amd.com> <4a72f780-3797-229e-a938-6dc5b14bec8d@amd.com> <20210311235215.GI5829@zn.tnic> <ed590709-65c8-ca2f-013f-d2c63d5ee0b7@amd.com>
- <20210324212139.GN5010@zn.tnic> <alpine.LSU.2.11.2103241651280.9593@eggly.anvils> <alpine.LSU.2.11.2103241913190.10112@eggly.anvils> <20210325095619.GC31322@zn.tnic> <20210325102959.GD31322@zn.tnic>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=IHZjGjcwG93Iiom25k9jNG9Fywlor+CHx0u3IjlOi3U=;
+        b=JlM6OKder6Fc9DClq8L9qf3OBlvauaNxIzzzqf9IYyE12/z5iNgCPPoMAbA34ryxyZ
+         Rm4+JS7XTS1SzZdYf56EdQH4HTechBa1OC3X0SZYfp25cK69dv0qIwQbLK6HSsyO+wdt
+         FuEyQxpMEXIbygyjlwFrXAFdGTj4c2RLtKxtYqLt5hW3XlXtgQv+RZlI2X4WdXT9X2rJ
+         6S8qUYLA+J9p5eSX1dMYh3hTcGIwYez4FRiH4TLieVKrq/RXmgQ8QMoHgQkGLMYvbZMH
+         aheR9FKywcCaN51NDE9EL3RtRZpv0wsQLEUsNEnEHi1hqIgAYDVVKWAhuaX7zt+v0zWa
+         ZXTw==
+X-Gm-Message-State: AOAM532O6QQK/H52cuLQLw9Ja2F+ufZAe2QH9Yx5m2SFBWwXcJlZIWLI
+        dZEOyd251Zp8gKUNbrJHC5AJYy6LLPESvw==
+X-Google-Smtp-Source: ABdhPJzTUhYBhwDaIrlGTm+42WMXaSrSrafPKglxDZuPz2tEzbDBRMWAEL+oyqTd1XABMmTFpt5pjA==
+X-Received: by 2002:aa7:d445:: with SMTP id q5mr9836851edr.382.1616690040248;
+        Thu, 25 Mar 2021 09:34:00 -0700 (PDT)
+Received: from dell ([91.110.221.180])
+        by smtp.gmail.com with ESMTPSA id q20sm2615889ejs.41.2021.03.25.09.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 09:33:59 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 16:33:58 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] MFD fixes for v5.12
+Message-ID: <20210325163358.GU2916463@dell>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021, Borislav Petkov wrote:
+Good afternoon Linus,
 
-> Ok,
-> 
-> I tried to be as specific as possible in the commit message so that we
-> don't forget. Please lemme know if I've missed something.
-> 
-> Babu, Jim, I'd appreciate it if you ran this to confirm.
-> 
-> Thx.
-> 
-> ---
-> From: Borislav Petkov <bp@suse.de>
-> Date: Thu, 25 Mar 2021 11:02:31 +0100
-> 
-> Jim Mattson reported that Debian 9 guests using a 4.9-stable kernel
-> are exploding during alternatives patching:
-> 
->   kernel BUG at /build/linux-dqnRSc/linux-4.9.228/arch/x86/kernel/alternative.c:709!
->   invalid opcode: 0000 [#1] SMP
->   Modules linked in:
->   CPU: 1 PID: 1 Comm: swapper/0 Not tainted 4.9.0-13-amd64 #1 Debian 4.9.228-1
->   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->   Call Trace:
->    swap_entry_free
->    swap_entry_free
->    text_poke_bp
->    swap_entry_free
->    arch_jump_label_transform
->    set_debug_rodata
->    __jump_label_update
->    static_key_slow_inc
->    frontswap_register_ops
->    init_zswap
->    init_frontswap
->    do_one_initcall
->    set_debug_rodata
->    kernel_init_freeable
->    rest_init
->    kernel_init
->    ret_from_fork
-> 
-> triggering the BUG_ON in text_poke() which verifies whether patched
-> instruction bytes have actually landed at the destination.
-> 
-> Further debugging showed that the TLB flush before that check is
-> insufficient because there could be global mappings left in the TLB,
-> leading to a stale mapping getting used.
-> 
-> I say "global mappings" because the hardware configuration is a new one:
-> machine is an AMD, which means, KAISER/PTI doesn't need to be enabled
-> there, which also means there's no user/kernel pagetables split and
-> therefore the TLB can have global mappings.
-> 
-> And the configuration is new one for a second reason: because that AMD
-> machine supports PCID and INVPCID, which leads the CPU detection code to
-> set the synthetic X86_FEATURE_INVPCID_SINGLE flag.
-> 
-> Now, __native_flush_tlb_single() does invalidate global mappings when
-> X86_FEATURE_INVPCID_SINGLE is *not* set and returns.
-> 
-> When X86_FEATURE_INVPCID_SINGLE is set, however, it invalidates the
-> requested address from both PCIDs in the KAISER-enabled case. But if
-> KAISER is not enabled and the machine has global mappings in the TLB,
-> then those global mappings do not get invalidated, which would lead to
-> the above mismatch from using a stale TLB entry.
-> 
-> So make sure to flush those global mappings in the KAISER disabled case.
-> 
-> Co-debugged by Babu Moger <babu.moger@amd.com>.
-> 
-> Reported-by: Jim Mattson <jmattson@google.com>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Link: https://lkml.kernel.org/r/CALMp9eRDSW66%2BXvbHVF4ohL7XhThoPoT0BrB0TcS0cgk=dkcBg@mail.gmail.com
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-Acked-by: Hugh Dickins <hughd@google.com>
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-Great write-up too: many thanks.
+are available in the Git repository at:
 
-> ---
->  arch/x86/include/asm/tlbflush.h | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-> index f5ca15622dc9..2bfa4deb8cae 100644
-> --- a/arch/x86/include/asm/tlbflush.h
-> +++ b/arch/x86/include/asm/tlbflush.h
-> @@ -245,12 +245,15 @@ static inline void __native_flush_tlb_single(unsigned long addr)
->  	 * ASID.  But, userspace flushes are probably much more
->  	 * important performance-wise.
->  	 *
-> -	 * Make sure to do only a single invpcid when KAISER is
-> -	 * disabled and we have only a single ASID.
-> +	 * In the KAISER disabled case, do an INVLPG to make sure
-> +	 * the mapping is flushed in case it is a global one.
->  	 */
-> -	if (kaiser_enabled)
-> +	if (kaiser_enabled) {
->  		invpcid_flush_one(X86_CR3_PCID_ASID_USER, addr);
-> -	invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-> +		invpcid_flush_one(X86_CR3_PCID_ASID_KERN, addr);
-> +	} else {
-> +		asm volatile("invlpg (%0)" ::"r" (addr) : "memory");
-> +	}
->  }
->  
->  static inline void __flush_tlb_all(void)
-> -- 
-> 2.29.2
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git tags/mfd-fixes-5.12
+
+for you to fetch changes up to a61f4661fba404418a7c77e86586dc52a58a93c6:
+
+  mfd: intel_quark_i2c_gpio: Revert "Constify static struct resources" (2021-03-23 09:14:12 +0000)
+
+----------------------------------------------------------------
+ - Bug Fixes
+   - Unconstify editable placeholder structures
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      mfd: intel_quark_i2c_gpio: Revert "Constify static struct resources"
+
+ drivers/mfd/intel_quark_i2c_gpio.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
