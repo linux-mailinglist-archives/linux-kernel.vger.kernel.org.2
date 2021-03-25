@@ -2,153 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFBF349477
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:46:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B6334947A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhCYOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231539AbhCYOqQ (ORCPT
+        id S229963AbhCYOqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:46:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22006 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230516AbhCYOqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:46:16 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B342CC06174A;
-        Thu, 25 Mar 2021 07:46:15 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id z25so3479640lja.3;
-        Thu, 25 Mar 2021 07:46:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KQn8joM4dx8C2nV3wXqG+iYWawmBEWT7hNod0GQKY08=;
-        b=jTvDWbsLqfxR/OxWUFs6i9J4uo7Axz4h12Jn36EVK5uw1MACgQIYRBiFeuOuH5hKtB
-         LbkXfWCPR8UsQcyTDzUS32+eNk5FxpxnvZkMgr9HmQBugfKWGgCZ9ovPb4VeMMfe1SyV
-         x7uMxsNMYuQigOQYd7Jkjz95Yztplal3wcVKgUMjveikm5PODzQrRNnlmY7u3L+Z9SFr
-         cDsa8919WDFH5VweGKAJsbz8LWpf7u5PIFpGYSo0x2a/bAN8h1gPmWsWfPWUuNYJEoJD
-         51Vr21sq6AtT1IvUVpgnuDq2dZPNHw8v0jCirnReGVKZrx/CFERfyJ26XNJPD2KNSzuM
-         Lh9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KQn8joM4dx8C2nV3wXqG+iYWawmBEWT7hNod0GQKY08=;
-        b=EgWbq6zWbyiR+yGhpmV8nnMl7EKC27AD5bM9c4AqpDmEZuTWfbujR7uYyezkR8FGzW
-         KGYO5JFVhlbMLaVSA8TksVBo88jjW1F96c1fZqFvBtijZ/0PgRWOQF+Y93ZXGu3azF7v
-         /ThPvi/ZogFpkz3UgbT5nVYRT201Gz4VeAyek3HQcqSH5y4OWisLhSXiH+AFkIGR/Zzg
-         E0ELe3U0ltYt2wPwyr8p+40ymS+GBxFKehZ5t+i/GtEHFExeG6yk4Tizjyj9YlmrQ9vm
-         1QfUDcIyytXd4DYYzOKPNHbOHQaEJR++eVqT24Pm13+ldprBodhrPPspWW15o5GFEH55
-         ISSA==
-X-Gm-Message-State: AOAM533ZBu4AgBPOOD4h84aPoNNAsivpAvCuYgxUJr8bQRu633dNd9r3
-        rcR1qte1FNTDtmOeIR3G9lM=
-X-Google-Smtp-Source: ABdhPJxdAQwj7mnJs84MaeDX4KjrKYL/jnVtsFig4m1jqFTktNje2bHBAz4lthjvLJso7xCo7LbPRw==
-X-Received: by 2002:a05:651c:2108:: with SMTP id a8mr5866974ljq.329.1616683574122;
-        Thu, 25 Mar 2021 07:46:14 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 197sm779868ljf.70.2021.03.25.07.46.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:46:13 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 25 Mar 2021 15:46:11 +0100
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
+        Thu, 25 Mar 2021 10:46:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616683591;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dchsKoS2hatPZ8CWZWHmKwa7mr1Z7EkRjZQTq43V0Rg=;
+        b=H/VcpvQfsUQo2XVCp0OeyfVIKD6cREYmnC4iGRl34ruwhgaCM/M3kRT4035y5rF1YKhdht
+        HQFfbTO37QZ8rLaOlPQwg6v0CFREaYpzOUFfD3La5oTfrR0G2A9HiwXzo6OEMfTi6xttEW
+        QGIuaAWAiAFSW2jEshdu0NcS9hFzzqc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-100-G6YmT2LVNjKee9LulUPAsQ-1; Thu, 25 Mar 2021 10:46:27 -0400
+X-MC-Unique: G6YmT2LVNjKee9LulUPAsQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E028580006E;
+        Thu, 25 Mar 2021 14:46:25 +0000 (UTC)
+Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CE92260C2E;
+        Thu, 25 Mar 2021 14:46:23 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Vlastimil Babka <vbabka@suse.cz>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 0/9 v6] Introduce a bulk order-0 page allocator with two
- in-tree users
-Message-ID: <20210325144611.GA2582@pc638.lan>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325125001.GW1719932@casper.infradead.org>
- <20210325132556.GS3697@techsingularity.net>
- <20210325140657.GA1908@pc638.lan>
- <20210325142624.GT3697@techsingularity.net>
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+ <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
+ <YFxEp0cfcJmcz5bP@localhost.localdomain> <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
+ <YFxsBRORtgqUF/FZ@localhost.localdomain>
+ <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
+ <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
+ <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
+ <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+ <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
+ <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
+Date:   Thu, 25 Mar 2021 15:46:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325142624.GT3697@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 02:26:24PM +0000, Mel Gorman wrote:
-> On Thu, Mar 25, 2021 at 03:06:57PM +0100, Uladzislau Rezki wrote:
-> > > On Thu, Mar 25, 2021 at 12:50:01PM +0000, Matthew Wilcox wrote:
-> > > > On Thu, Mar 25, 2021 at 11:42:19AM +0000, Mel Gorman wrote:
-> > > > > This series introduces a bulk order-0 page allocator with sunrpc and
-> > > > > the network page pool being the first users. The implementation is not
-> > > > > efficient as semantics needed to be ironed out first. If no other semantic
-> > > > > changes are needed, it can be made more efficient.  Despite that, this
-> > > > > is a performance-related for users that require multiple pages for an
-> > > > > operation without multiple round-trips to the page allocator. Quoting
-> > > > > the last patch for the high-speed networking use-case
-> > > > > 
-> > > > >             Kernel          XDP stats       CPU     pps           Delta
-> > > > >             Baseline        XDP-RX CPU      total   3,771,046       n/a
-> > > > >             List            XDP-RX CPU      total   3,940,242    +4.49%
-> > > > >             Array           XDP-RX CPU      total   4,249,224   +12.68%
-> > > > > 
-> > > > > >From the SUNRPC traces of svc_alloc_arg()
-> > > > > 
-> > > > > 	Single page: 25.007 us per call over 532,571 calls
-> > > > > 	Bulk list:    6.258 us per call over 517,034 calls
-> > > > > 	Bulk array:   4.590 us per call over 517,442 calls
-> > > > > 
-> > > > > Both potential users in this series are corner cases (NFS and high-speed
-> > > > > networks) so it is unlikely that most users will see any benefit in the
-> > > > > short term. Other potential other users are batch allocations for page
-> > > > > cache readahead, fault around and SLUB allocations when high-order pages
-> > > > > are unavailable. It's unknown how much benefit would be seen by converting
-> > > > > multiple page allocation calls to a single batch or what difference it may
-> > > > > make to headline performance.
-> > > > 
-> > > > We have a third user, vmalloc(), with a 16% perf improvement.  I know the
-> > > > email says 21% but that includes the 5% improvement from switching to
-> > > > kvmalloc() to allocate area->pages.
-> > > > 
-> > > > https://lore.kernel.org/linux-mm/20210323133948.GA10046@pc638.lan/
-> > > > 
-> > > 
-> > > That's fairly promising. Assuming the bulk allocator gets merged, it would
-> > > make sense to add vmalloc on top. That's for bringing it to my attention
-> > > because it's far more relevant than my imaginary potential use cases.
-> > > 
-> > For the vmalloc we should be able to allocating on a specific NUMA node,
-> > at least the current interface takes it into account. As far as i see
-> > the current interface allocate on a current node:
-> > 
-> > static inline unsigned long
-> > alloc_pages_bulk_array(gfp_t gfp, unsigned long nr_pages, struct page **page_array)
-> > {
-> >     return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, NULL, page_array);
-> > }
-> > 
-> > Or am i missing something?
-> > 
+On 25.03.21 15:34, Michal Hocko wrote:
+> On Thu 25-03-21 15:09:35, David Hildenbrand wrote:
+>> On 25.03.21 15:08, Michal Hocko wrote:
+>>> On Thu 25-03-21 13:40:45, David Hildenbrand wrote:
+>>>> On 25.03.21 13:35, Michal Hocko wrote:
+>>>>> On Thu 25-03-21 12:08:43, David Hildenbrand wrote:
+>>>>>> On 25.03.21 11:55, Oscar Salvador wrote:
+>>> [...]
+>>>>>>> - When moving the initialization/accounting to hot-add/hot-remove,
+>>>>>>>       the section containing the vmemmap pages will remain offline.
+>>>>>>>       It might get onlined once the pages get online in online_pages(),
+>>>>>>>       or not if vmemmap pages span a whole section.
+>>>>>>>       I remember (but maybe David rmemeber better) that that was a problem
+>>>>>>>       wrt. pfn_to_online_page() and hybernation/kdump.
+>>>>>>>       So, if that is really a problem, we would have to care of ot setting
+>>>>>>>       the section to the right state.
+>>>>>>
+>>>>>> Good memory. Indeed, hibernation/kdump won't save the state of the vmemmap,
+>>>>>> because the memory is marked as offline and, thus, logically without any
+>>>>>> valuable content.
 > 
-> No, you're not missing anything. Options would be to add a helper similar
-> alloc_pages_node or to directly call __alloc_pages_bulk specifying a node
-> and using GFP_THISNODE. prepare_alloc_pages() should pick the correct
-> zonelist containing only the required node.
+> ^^^^ THIS
 > 
-IMHO, a helper something like *_node() would be reasonable. I see that many
-functions in "mm" have its own variants which explicitly add "_node()" prefix
-to signal to users that it is a NUMA aware calls.
+>>>>>
+>>>>> Could you point me to the respective hibernation code please? I always
+>>>>> get lost in that area. Anyway, we do have the same problem even if the
+>>>>> whole accounting is handled during {on,off}lining, no?
+>>>>
+>>>> kernel/power/snapshot.c:saveable_page().
+>>>
+>>> Thanks! So this is as I've suspected. The very same problem is present
+>>> if the memory block is marked offline. So we need a solution here
+>>> anyway. One way to go would be to consider these vmemmap pages always
+>>> online. pfn_to_online_page would have to special case them but we would
+>>> need to identify them first. I used to have PageVmemmap or something
+>>> like that in my early attempt to do this.
+>>>
+>>> That being said this is not an argument for one or the other aproach.
+>>> Both need fixing.
+>>
+>> Can you elaborate? What is the issue there? What needs fixing?
+> 
+> offline section containing vmemmap will be lost during hibernation cycle
+> IIU the above correctly.
+> 
 
-As for __alloc_pages_bulk(), i got it.
+Can tell me how that is a problem with Oscars current patch? I only see 
+this being a problem with what you propose - most probably I am missing 
+something important here.
 
-Thanks!
+Offline memory sections don't have a valid memmap (assumption: garbage). 
+On hibernation, the whole offline memory block won't be saved, including 
+the vmemmap content that resides on the block. This includes the vmemmap 
+of the vmemmap pages, which is itself.
 
---
-Vlad Rezki
+When restoring, the whole memory block will contain garbage, including 
+the whole vmemmap - which is marked to be offline and to contain garbage.
+
+Oscars patch: Works as expected. Onlining the memory block will properly 
+intiialize the vmemmap (including the vmemmap of the vmemmap), then mark 
+the vmemmap to be valid (by marking the sections to be online).
+
+Your porposal: Does not work as expected. Once we online the memory 
+block we don't initialize the vmemmap of the vmemmap pages. There is 
+garbage, which gets exposed to the system as soon as we mark the vmemmap 
+to be valid (by marking the sections to be online).
+
+-- 
+Thanks,
+
+David / dhildenb
+
