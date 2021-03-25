@@ -2,74 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BE2349A5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:38:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F26349A5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhCYTiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCYThd (ORCPT
+        id S230316AbhCYTiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:38:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46514 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230153AbhCYTiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:37:33 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3929C06174A;
-        Thu, 25 Mar 2021 12:37:32 -0700 (PDT)
-Received: from ip4d142c50.dynamic.kabel-deutschland.de ([77.20.44.80] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1lPVnN-0004kc-Vg; Thu, 25 Mar 2021 20:37:30 +0100
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        Thu, 25 Mar 2021 15:38:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616701080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=R0YdgWghM/7oFfDojn7dnaGdxOcNGzucqNhWxq5GgOE=;
+        b=cwZXcnm+7PgpBpI2hnCNxaqdJZPErOb49Rzm2K5iy4nq3YGDLIYsGdkKddogqJkm7f5+4N
+        LFy85qzWJIEV7EI7EujivfK+evWfL1+EK1PKRJX1BZGTwsb0sR2zhX6doqVocvznOTGeW2
+        /fqcVCMNiftJSzmGZ/tS5zTwMaT88kw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-_FVVKDU-OgSTchOk5GUr8A-1; Thu, 25 Mar 2021 15:37:58 -0400
+X-MC-Unique: _FVVKDU-OgSTchOk5GUr8A-1
+Received: by mail-ed1-f69.google.com with SMTP id f9so3197928edd.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:37:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R0YdgWghM/7oFfDojn7dnaGdxOcNGzucqNhWxq5GgOE=;
+        b=i5DJaHIKX/EYHStCwmAOtht5KzU3Py3wtMTUiV8fW81/+cI5oT2brL8Apl/uWNsTSA
+         UJzsVOZwobKjyc0dgHxnIi6OgxPShFnysZVGtTwtMPzOj0euBRd7H9QWkqMFW9IcCKtS
+         qvBgyi9sNfd+l8Jo6vRJkI21xum8wE/67G8335aMIs850QkIquKw/cMJ5unjpIH+BgGM
+         ZQpA7kSUFCGkuX7PSxGRtShVEY3NO3aM93CMzyUuAOFCvVydAdhwzE+w1QwNTHeiC10p
+         cB6LiOTjTf3rPe9WgBWeNpLDnl83sAi1vce8R/CzaUoY7IZYfnOiNQDuSAgAtF4x1e/y
+         i7BQ==
+X-Gm-Message-State: AOAM531Ja+aKDTv37RXw99rOIhoudsXnZJqgOc6fFylDHQ1M2Z0Yaq2b
+        CvdcsobQRuM+m1awyYt+l18XcGUCmJrbkTB05iK6aJugLH0wGw7orDVu0s/3fNFmr6AsK6qDRDt
+        2/jsunnsNG442QzyRWcnY85vf
+X-Received: by 2002:aa7:db4f:: with SMTP id n15mr10825786edt.12.1616701077442;
+        Thu, 25 Mar 2021 12:37:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfiBqIJxW4tk2YqrIabrdJZE2h+2ySrI+NqxkrkdTqleJ0RErUoBPoi3Kw+v5HW+44elJXVw==
+X-Received: by 2002:aa7:db4f:: with SMTP id n15mr10825766edt.12.1616701077285;
+        Thu, 25 Mar 2021 12:37:57 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
+        by smtp.gmail.com with ESMTPSA id si7sm2881996ejb.84.2021.03.25.12.37.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 12:37:56 -0700 (PDT)
+From:   Miklos Szeredi <mszeredi@redhat.com>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        David Sterba <dsterba@suse.cz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Eric Biggers <ebiggers@kernel.org>,
         linux-kernel@vger.kernel.org
-References: <cover.1616181657.git.linux@leemhuis.info>
- <c8770353-3d0d-17af-115a-efa4a31fd97b@leemhuis.info>
- <87y2ebysy8.fsf@meer.lwn.net>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [PATCH v3 0/5] docs: reporting-issues: streamline process and
- solve a FIXME
-Message-ID: <4bc573bf-3dc1-fb6b-e6d7-d51993725c29@leemhuis.info>
-Date:   Thu, 25 Mar 2021 20:37:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+Subject: [PATCH v3 00/18] new kAPI for FS_IOC_[GS]ETFLAGS/FS_IOC_FS[GS]ETXATTR
+Date:   Thu, 25 Mar 2021 20:37:37 +0100
+Message-Id: <20210325193755.294925-1-mszeredi@redhat.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <87y2ebysy8.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1616701053;a929d664;
-X-HE-SMSGID: 1lPVnN-0004kc-Vg
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.03.21 19:43, Jonathan Corbet wrote:
-> Thorsten Leemhuis <linux@leemhuis.info> writes:
-> 
->> That's why I'd like to speed things up a little. But for that it would
->> be good to have something from you: a kind of "I like the direction
->> where this patch set is heading and I'm optimistic that we get it merged
->> for 5.13-rc1" message from you. With something like that I could move
->> ahead as outlined above already. Do you maybe have a minute for that?
-> Honestly, I don't see any reason to delay this work any further, so I've
-> just applied the set.
+Thanks for the feedback, I think all comments are addressed.  Seems
+"fileattr" has won a small majority of bikesheders' preference, so
+switching over to that.
 
-Ahh, great, many thx.
+Changes since v2:
 
-> Sorry for the slowness,
+ - renaming, most notably miscattr -> fileattr
+ - use memset instead of structure initialization
+ - drop gratuitous use of file_dentry()
+ - kerneldoc, comments, spelling improvements
+ - xfs: enable getting/setting FS_PROJINHERIT_FL and other tweaks
+ - btrfs: patch logistics
 
-No worries, it's improvements to a docs text, not a crucial security
-issue in core code. :-D
+Changes since v1:
 
-> it has been a rather harsh week.
+ - rebased on 5.12-rc1 (mnt_userns churn)
+ - fixed LSM hook on overlayfs
 
-I hope things will get better soon!
+Git tree is available here:
 
-BTW, I wondered it it would make sense to add a entry to the MAINTAINERS
-file for the text so I can keep and eye on things and help with fine
-tuning. Let me known if you think that idea is overblown, otherwise I'll
-likely add one with the patch that I'll send sooner or later to remove
-the WIP box near the top.
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git#fileattr_v3
 
-Ciao (and make sure to take care of yourself!), Thorsten
 
+Miklos Szeredi (18):
+  vfs: add fileattr ops
+  ecryptfs: stack fileattr ops
+  ovl: stack fileattr ops
+  btrfs: convert to fileattr
+  ext2: convert to fileattr
+  ext4: convert to fileattr
+  f2fs: convert to fileattr
+  gfs2: convert to fileattr
+  orangefs: convert to fileattr
+  xfs: convert to fileattr
+  efivars: convert to fileattr
+  hfsplus: convert to fileattr
+  jfs: convert to fileattr
+  nilfs2: convert to fileattr
+  ocfs2: convert to fileattr
+  reiserfs: convert to fileattr
+  ubifs: convert to fileattr
+  vfs: remove unused ioctl helpers
+
+ Documentation/filesystems/locking.rst |   5 +
+ Documentation/filesystems/vfs.rst     |  15 ++
+ fs/btrfs/ctree.h                      |   3 +
+ fs/btrfs/inode.c                      |   4 +
+ fs/btrfs/ioctl.c                      | 226 +++---------------
+ fs/ecryptfs/inode.c                   |  22 ++
+ fs/efivarfs/file.c                    |  77 ------
+ fs/efivarfs/inode.c                   |  44 ++++
+ fs/ext2/ext2.h                        |   7 +-
+ fs/ext2/file.c                        |   2 +
+ fs/ext2/ioctl.c                       |  88 +++----
+ fs/ext2/namei.c                       |   2 +
+ fs/ext4/ext4.h                        |  12 +-
+ fs/ext4/file.c                        |   2 +
+ fs/ext4/ioctl.c                       | 208 ++++------------
+ fs/ext4/namei.c                       |   2 +
+ fs/f2fs/f2fs.h                        |   3 +
+ fs/f2fs/file.c                        | 216 +++--------------
+ fs/f2fs/namei.c                       |   2 +
+ fs/gfs2/file.c                        |  57 ++---
+ fs/gfs2/inode.c                       |   4 +
+ fs/gfs2/inode.h                       |   3 +
+ fs/hfsplus/dir.c                      |   2 +
+ fs/hfsplus/hfsplus_fs.h               |  14 +-
+ fs/hfsplus/inode.c                    |  54 +++++
+ fs/hfsplus/ioctl.c                    |  84 -------
+ fs/inode.c                            |  87 -------
+ fs/ioctl.c                            | 331 ++++++++++++++++++++++++++
+ fs/jfs/file.c                         |   6 +-
+ fs/jfs/ioctl.c                        | 105 +++-----
+ fs/jfs/jfs_dinode.h                   |   7 -
+ fs/jfs/jfs_inode.h                    |   4 +-
+ fs/jfs/namei.c                        |   6 +-
+ fs/nilfs2/file.c                      |   2 +
+ fs/nilfs2/ioctl.c                     |  61 ++---
+ fs/nilfs2/namei.c                     |   2 +
+ fs/nilfs2/nilfs.h                     |   3 +
+ fs/ocfs2/file.c                       |   2 +
+ fs/ocfs2/ioctl.c                      |  59 ++---
+ fs/ocfs2/ioctl.h                      |   3 +
+ fs/ocfs2/namei.c                      |   3 +
+ fs/ocfs2/ocfs2_ioctl.h                |   8 -
+ fs/orangefs/file.c                    |  79 ------
+ fs/orangefs/inode.c                   |  50 ++++
+ fs/overlayfs/dir.c                    |   2 +
+ fs/overlayfs/inode.c                  |  77 ++++++
+ fs/overlayfs/overlayfs.h              |   3 +
+ fs/reiserfs/file.c                    |   2 +
+ fs/reiserfs/ioctl.c                   | 121 +++++-----
+ fs/reiserfs/namei.c                   |   2 +
+ fs/reiserfs/reiserfs.h                |   7 +-
+ fs/reiserfs/super.c                   |   2 +-
+ fs/ubifs/dir.c                        |   2 +
+ fs/ubifs/file.c                       |   2 +
+ fs/ubifs/ioctl.c                      |  74 +++---
+ fs/ubifs/ubifs.h                      |   3 +
+ fs/xfs/libxfs/xfs_fs.h                |   4 -
+ fs/xfs/xfs_ioctl.c                    | 252 +++++---------------
+ fs/xfs/xfs_ioctl.h                    |  11 +
+ fs/xfs/xfs_ioctl32.c                  |   2 -
+ fs/xfs/xfs_ioctl32.h                  |   2 -
+ fs/xfs/xfs_iops.c                     |   7 +
+ include/linux/fileattr.h              |  59 +++++
+ include/linux/fs.h                    |  16 +-
+ 64 files changed, 1136 insertions(+), 1490 deletions(-)
+ create mode 100644 include/linux/fileattr.h
+
+-- 
+2.30.2
 
