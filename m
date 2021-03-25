@@ -2,1553 +2,594 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B2F348608
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A21034860A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239387AbhCYArv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 20:47:51 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:38248 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239376AbhCYArl (ORCPT
+        id S239402AbhCYAsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 20:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239376AbhCYArw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 20:47:41 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210325004739epoutp03d60071efb93ba9da5e8be1f2e0461759~vb2Jg7FsN2356723567epoutp03B
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:47:39 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210325004739epoutp03d60071efb93ba9da5e8be1f2e0461759~vb2Jg7FsN2356723567epoutp03B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616633259;
-        bh=+NJw+uE+49O6BpWFmC+MiA/tv8KB7QuQ3JkN2a+nUwI=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=Ec2CwNvIJIA1asyBDaIoN/KCQLojAQW29S+toYU+Zrd9eutcAVln+l7Foeqcmgbep
-         w40lOo2y5+YNREkZXquhZEjgeELMLqop7+M4QMJH1I5Qu53Ql2WiGQCHTAXgJpF6V1
-         7r7PTyHJ/VVA/aAax25LRG0Az4d1sJyI8dsiTVTY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210325004738epcas2p18af861266ccd9ec996819ee7f2406c4f~vb2Ilzxin1868718687epcas2p1A;
-        Thu, 25 Mar 2021 00:47:38 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.186]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4F5RK41c9sz4x9Q1; Thu, 25 Mar
-        2021 00:47:36 +0000 (GMT)
-X-AuditID: b6c32a45-337ff7000001297d-06-605bdda4b17a
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        7A.52.10621.4ADDB506; Thu, 25 Mar 2021 09:47:33 +0900 (KST)
+        Wed, 24 Mar 2021 20:47:52 -0400
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80009C06174A;
+        Wed, 24 Mar 2021 17:47:52 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 4EADA4D248D98;
+        Wed, 24 Mar 2021 17:47:49 -0700 (PDT)
+Date:   Wed, 24 Mar 2021 17:47:44 -0700 (PDT)
+Message-Id: <20210324.174744.896576515419596772.davem@davemloft.net>
+To:     torvalds@linux-foundation.org
+CC:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT] Networking
+From:   David Miller <davem@davemloft.net>
+X-Mailer: Mew version 6.8 on Emacs 27.1
 Mime-Version: 1.0
-Subject: RE: Re: [PATCH v31 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Can Guo <cang@codeaurora.org>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <d7f98f965e724e708e85535bdcc53075@codeaurora.org>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210325004732epcms2p2f8990a22df33f9cfdb303e8da62e8fa7@epcms2p2>
-Date:   Thu, 25 Mar 2021 09:47:32 +0900
-X-CMS-MailID: 20210325004732epcms2p2f8990a22df33f9cfdb303e8da62e8fa7
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJJsWRmVeSWpSXmKPExsWy7bCmme7Su9EJBj+2MVk8mLeNzWJv2wl2
-        i5c/r7JZTPvwk9ni0/plrBYvD2la7Dp4kM1i1YNwi+bF69ks5pxtYLLo7d/KZrH54AZmi8d3
-        PrNbLLoBNKP/XzuLxbbPghbHT75jtLi8aw6bRff1HWwWy4//Y7JYuvUmo0Xn9DUsDmIel694
-        e1zu62Xy2DnrLrvHhEUHGD32z13D7tFycj+Lx8ent1g8+rasYvT4vEnOo/1AN1MAV1SOTUZq
-        YkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5ibqqtkotPgK5bZg7Qm0oKZYk5pUCh
-        gMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAkPDAr3ixNzi0rx0veT8XCtDAwMjU6DKhJyMB3+7
-        WAsOHmSuuLthC3MD4/RlTF2MHBwSAiYSv25wdTFycQgJ7GCUWN96lhkkzisgKPF3h3AXIyeH
-        sIC9xJan99hBbCEBJYn1F2exQ8T1JG49XMMIYrMJ6EhMP3EfLC4i4CnxdfJqVpCZzAJ/2SQe
-        b3zFBJKQEOCVmNH+lAXClpbYvnwrWDOngJ3E/GXPWSHiGhI/lvUyQ9iiEjdXv2WHsd8fm88I
-        YYtItN47C1UjKPHg526ouKTEsd0foHbVS2y984sR5AgJgR5GicM7b0Et0Je41rER7AheAV+J
-        lkOPwRawCKhKPHz4Duo4F4nuzldgC5gF5CW2v50DDhRmAU2J9bv0IeGmLHHkFgvMWw0bf7Oj
-        s5kF+CQ6Dv+Fi++Y9wTqNDWJdT/XM01gVJ6FCOlZSHbNQti1gJF5FaNYakFxbnpqsVGBIXLs
-        bmIEp3kt1x2Mk99+0DvEyMTBeIhRgoNZSYS3JTwiQYg3JbGyKrUoP76oNCe1+BCjKdCXE5ml
-        RJPzgZkmryTe0NTIzMzA0tTC1MzIQkmct9jgQbyQQHpiSWp2ampBahFMHxMHp1QDk+BdKZcf
-        OXMPHpxXICtX8orrJkf+tOTXjG9lXkw8zbd/WUVIiPQGFtaHYgpyYcl6BV+OnM8sveVpvkIy
-        V+neV5uzetrfQy2X6QRunnvsW3F81I5qvQ1/yv5f2cQ8/UfjfoU3v+5LvlP9E8T/QPwLy6V9
-        bedXRtg4L1+Z8PbHFHdt1exLqULurkU9C6fZbXf7qRjL0XLzz9qtm8v/sKhvK7zV/Oy1Ve6d
-        KwbzY6zMz/Ys0o4wq3GdL10Teeyip8b8z1ceK1e/i1r/UrNGs0zjnL/To4aVDX7XphT9+clv
-        dHSqz+/5Ti/bb6S17BX9vXKaduacw0F3k/I2WyrVMWz0DdNYO83ec7+U8MaJLV4y4kosxRmJ
-        hlrMRcWJACyhOc18BAAA
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860
-References: <d7f98f965e724e708e85535bdcc53075@codeaurora.org>
-        <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
-        <20210322065504epcms2p698791fed570484f8de2688d238dff4c6@epcms2p6>
-        <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p2>
+Content-Type: Text/Plain; charset=utf-8
+Content-Transfer-Encoding: base64
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Wed, 24 Mar 2021 17:47:49 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 2021-03-22 14:55, Daejun Park wrote:
-> > This patch supports the HPB 2.0.
-> > 
-> > The HPB 2.0 supports read of varying sizes from 4KB to 512KB.
-> > In the case of Read (<= 32KB) is supported as single HPB read.
-> > In the case of Read (36KB ~ 512KB) is supported by as a combination of
-> > write buffer command and HPB read command to deliver more PPN.
-> > The write buffer commands may not be issued immediately due to busy 
-> > tags.
-> > To use HPB read more aggressively, the driver can requeue the write 
-> > buffer
-> > command. The requeue threshold is implemented as timeout and can be
-> > modified with requeue_timeout_ms entry in sysfs.
-> > 
-> > Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> > ---
-> >  Documentation/ABI/testing/sysfs-driver-ufs |  47 +-
-> >  drivers/scsi/ufs/ufs-sysfs.c               |   4 +
-> >  drivers/scsi/ufs/ufs.h                     |   3 +-
-> >  drivers/scsi/ufs/ufshcd.c                  |  25 +-
-> >  drivers/scsi/ufs/ufshcd.h                  |   7 +
-> >  drivers/scsi/ufs/ufshpb.c                  | 626 +++++++++++++++++++--
-> >  drivers/scsi/ufs/ufshpb.h                  |  67 ++-
-> >  7 files changed, 698 insertions(+), 81 deletions(-)
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-driver-ufs
-> > b/Documentation/ABI/testing/sysfs-driver-ufs
-> > index 528bf89fc98b..419adf450b89 100644
-> > --- a/Documentation/ABI/testing/sysfs-driver-ufs
-> > +++ b/Documentation/ABI/testing/sysfs-driver-ufs
-> > @@ -1253,14 +1253,14 @@ Description:        This entry shows the number of
-> > HPB pinned regions assigned to
-> > 
-> >                  The file is read only.
-> > 
-> > -What:                /sys/class/scsi_device/*/device/hpb_sysfs/hit_cnt
-> > +What:                /sys/class/scsi_device/*/device/hpb_stat_sysfs/hit_cnt
-> >  Date:                March 2021
-> >  Contact:        Daejun Park <daejun7.park@samsung.com>
-> >  Description:        This entry shows the number of reads that changed to HPB 
-> > read.
-> > 
-> >                  The file is read only.
-> > 
-> > -What:                /sys/class/scsi_device/*/device/hpb_sysfs/miss_cnt
-> > +What:                /sys/class/scsi_device/*/device/hpb_stat_sysfs/miss_cnt
-> >  Date:                March 2021
-> >  Contact:        Daejun Park <daejun7.park@samsung.com>
-> >  Description:        This entry shows the number of reads that cannot be 
-> > changed to
-> > @@ -1268,7 +1268,7 @@ Description:        This entry shows the number of
-> > reads that cannot be changed to
-> > 
-> >                  The file is read only.
-> > 
-> > -What:                /sys/class/scsi_device/*/device/hpb_sysfs/rb_noti_cnt
-> > +What:                /sys/class/scsi_device/*/device/hpb_stat_sysfs/rb_noti_cnt
-> >  Date:                March 2021
-> >  Contact:        Daejun Park <daejun7.park@samsung.com>
-> >  Description:        This entry shows the number of response UPIUs that has
-> > @@ -1276,7 +1276,7 @@ Description:        This entry shows the number of
-> > response UPIUs that has
-> > 
-> >                  The file is read only.
-> > 
-> > -What:                /sys/class/scsi_device/*/device/hpb_sysfs/rb_active_cnt
-> > +What:                /sys/class/scsi_device/*/device/hpb_stat_sysfs/rb_active_cnt
-> >  Date:                March 2021
-> >  Contact:        Daejun Park <daejun7.park@samsung.com>
-> >  Description:        This entry shows the number of active sub-regions 
-> > recommended by
-> > @@ -1284,7 +1284,7 @@ Description:        This entry shows the number of
-> > active sub-regions recommended by
-> > 
-> >                  The file is read only.
-> > 
-> > -What:                /sys/class/scsi_device/*/device/hpb_sysfs/rb_inactive_cnt
-> > +What:                /sys/class/scsi_device/*/device/hpb_stat_sysfs/rb_inactive_cnt
-> >  Date:                March 2021
-> >  Contact:        Daejun Park <daejun7.park@samsung.com>
-> >  Description:        This entry shows the number of inactive regions 
-> > recommended by
-> > @@ -1292,10 +1292,45 @@ Description:        This entry shows the number of
-> > inactive regions recommended by
-> > 
-> >                  The file is read only.
-> > 
-> > -What:                /sys/class/scsi_device/*/device/hpb_sysfs/map_req_cnt
-> > +What:                /sys/class/scsi_device/*/device/hpb_stat_sysfs/map_req_cnt
-> >  Date:                March 2021
-> >  Contact:        Daejun Park <daejun7.park@samsung.com>
-> >  Description:        This entry shows the number of read buffer commands for
-> >                  activating sub-regions recommended by response UPIUs.
-> > 
-> >                  The file is read only.
-> > +
-> > +What:                /sys/class/scsi_device/*/device/hpb_param_sysfs/requeue_timeout_ms
-> > +Date:                March 2021
-> > +Contact:        Daejun Park <daejun7.park@samsung.com>
-> > +Description:        This entry shows the requeue timeout threshold for write 
-> > buffer
-> > +                command in ms. This value can be changed by writing proper integer 
-> > to
-> > +                this entry.
-> > +
-> > +What:                /sys/bus/platform/drivers/ufshcd/*/attributes/max_data_size_hpb_single_cmd
-> > +Date:                March 2021
-> > +Contact:        Daejun Park <daejun7.park@samsung.com>
-> > +Description:        This entry shows the maximum HPB data size for using 
-> > single HPB
-> > +                command.
-> > +
-> > +                ===  ========
-> > +                00h  4KB
-> > +                01h  8KB
-> > +                02h  12KB
-> > +                ...
-> > +                FFh  1024KB
-> > +                ===  ========
-> > +
-> > +                The file is read only.
-> > +
-> > +What:                /sys/bus/platform/drivers/ufshcd/*/flags/wb_enable
-> > +Date:                March 2021
-> > +Contact:        Daejun Park <daejun7.park@samsung.com>
-> > +Description:        This entry shows the status of HPB.
-> > +
-> > +                == ============================
-> > +                0  HPB is not enabled.
-> > +                1  HPB is enabled
-> > +                == ============================
-> > +
-> > +                The file is read only.
-> > diff --git a/drivers/scsi/ufs/ufs-sysfs.c 
-> > b/drivers/scsi/ufs/ufs-sysfs.c
-> > index 2546e7a1ac4f..92a883866e12 100644
-> > --- a/drivers/scsi/ufs/ufs-sysfs.c
-> > +++ b/drivers/scsi/ufs/ufs-sysfs.c
-> > @@ -782,6 +782,7 @@ UFS_FLAG(disable_fw_update, 
-> > _PERMANENTLY_DISABLE_FW_UPDATE);
-> >  UFS_FLAG(wb_enable, _WB_EN);
-> >  UFS_FLAG(wb_flush_en, _WB_BUFF_FLUSH_EN);
-> >  UFS_FLAG(wb_flush_during_h8, _WB_BUFF_FLUSH_DURING_HIBERN8);
-> > +UFS_FLAG(hpb_enable, _HPB_EN);
-> > 
-> >  static struct attribute *ufs_sysfs_device_flags[] = {
-> >          &dev_attr_device_init.attr,
-> > @@ -795,6 +796,7 @@ static struct attribute *ufs_sysfs_device_flags[] = 
-> > {
-> >          &dev_attr_wb_enable.attr,
-> >          &dev_attr_wb_flush_en.attr,
-> >          &dev_attr_wb_flush_during_h8.attr,
-> > +        &dev_attr_hpb_enable.attr,
-> >          NULL,
-> >  };
-> > 
-> > @@ -841,6 +843,7 @@ out:                                                                        \
-> >  static DEVICE_ATTR_RO(_name)
-> > 
-> >  UFS_ATTRIBUTE(boot_lun_enabled, _BOOT_LU_EN);
-> > +UFS_ATTRIBUTE(max_data_size_hpb_single_cmd, _MAX_HPB_SINGLE_CMD);
-> >  UFS_ATTRIBUTE(current_power_mode, _POWER_MODE);
-> >  UFS_ATTRIBUTE(active_icc_level, _ACTIVE_ICC_LVL);
-> >  UFS_ATTRIBUTE(ooo_data_enabled, _OOO_DATA_EN);
-> > @@ -864,6 +867,7 @@ UFS_ATTRIBUTE(wb_cur_buf, _CURR_WB_BUFF_SIZE);
-> > 
-> >  static struct attribute *ufs_sysfs_attributes[] = {
-> >          &dev_attr_boot_lun_enabled.attr,
-> > +        &dev_attr_max_data_size_hpb_single_cmd.attr,
-> >          &dev_attr_current_power_mode.attr,
-> >          &dev_attr_active_icc_level.attr,
-> >          &dev_attr_ooo_data_enabled.attr,
-> > diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-> > index bfb84d2ba990..8c6b38b1b142 100644
-> > --- a/drivers/scsi/ufs/ufs.h
-> > +++ b/drivers/scsi/ufs/ufs.h
-> > @@ -123,12 +123,13 @@ enum flag_idn {
-> >          QUERY_FLAG_IDN_WB_BUFF_FLUSH_EN                 = 0x0F,
-> >          QUERY_FLAG_IDN_WB_BUFF_FLUSH_DURING_HIBERN8     = 0x10,
-> >          QUERY_FLAG_IDN_HPB_RESET                        = 0x11,
-> > +        QUERY_FLAG_IDN_HPB_EN                                = 0x12,
-> >  };
-> > 
-> >  /* Attribute idn for Query requests */
-> >  enum attr_idn {
-> >          QUERY_ATTR_IDN_BOOT_LU_EN                = 0x00,
-> > -        QUERY_ATTR_IDN_RESERVED                        = 0x01,
-> > +        QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD        = 0x01,
-> >          QUERY_ATTR_IDN_POWER_MODE                = 0x02,
-> >          QUERY_ATTR_IDN_ACTIVE_ICC_LVL                = 0x03,
-> >          QUERY_ATTR_IDN_OOO_DATA_EN                = 0x04,
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index a7cf9278965c..1653c7a7b066 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -2653,7 +2653,12 @@ static int ufshcd_queuecommand(struct Scsi_Host
-> > *host, struct scsi_cmnd *cmd)
-> > 
-> >          lrbp->req_abort_skip = false;
-> > 
-> > -        ufshpb_prep(hba, lrbp);
-> > +        err = ufshpb_prep(hba, lrbp);
-> > +        if (err == -EAGAIN) {
-> > +                lrbp->cmd = NULL;
-> > +                ufshcd_release(hba);
-> > +                goto out;
-> > +        }
-> > 
-> >          ufshcd_comp_scsi_upiu(hba, lrbp);
-> > 
-> > @@ -3107,7 +3112,7 @@ int ufshcd_query_attr(struct ufs_hba *hba, enum
-> > query_opcode opcode,
-> >   *
-> >   * Returns 0 for success, non-zero in case of failure
-> >  */
-> > -static int ufshcd_query_attr_retry(struct ufs_hba *hba,
-> > +int ufshcd_query_attr_retry(struct ufs_hba *hba,
-> >          enum query_opcode opcode, enum attr_idn idn, u8 index, u8 selector,
-> >          u32 *attr_val)
-> >  {
-> > @@ -4862,7 +4867,8 @@ static int ufshcd_change_queue_depth(struct
-> > scsi_device *sdev, int depth)
-> >  static void ufshcd_hpb_destroy(struct ufs_hba *hba, struct scsi_device 
-> > *sdev)
-> >  {
-> >          /* skip well-known LU */
-> > -        if ((sdev->lun >= UFS_UPIU_MAX_UNIT_NUM_ID) || 
-> > !ufshpb_is_allowed(hba))
-> > +        if ((sdev->lun >= UFS_UPIU_MAX_UNIT_NUM_ID) ||
-> > +            !(hba->dev_info.hpb_enabled) || !ufshpb_is_allowed(hba))
-> >                  return;
-> > 
-> >          ufshpb_destroy_lu(hba, sdev);
-> > @@ -7454,8 +7460,18 @@ static int ufs_get_device_desc(struct ufs_hba 
-> > *hba)
-> > 
-> >          if (dev_info->wspecversion >= UFS_DEV_HPB_SUPPORT_VERSION &&
-> >              (b_ufs_feature_sup & UFS_DEV_HPB_SUPPORT)) {
-> > -                dev_info->hpb_enabled = true;
-> > +                bool hpb_en = false;
-> > +
-> >                  ufshpb_get_dev_info(hba, desc_buf);
-> > +
-> > +                if (!ufshpb_is_legacy(hba))
-> > +                        err = ufshcd_query_flag_retry(hba,
-> > +                                                      UPIU_QUERY_OPCODE_READ_FLAG,
-> > +                                                      QUERY_FLAG_IDN_HPB_EN, 0,
-> > +                                                      &hpb_en);
-> > +
-> > +                if (ufshpb_is_legacy(hba) || (!err && hpb_en))
-> > +                        dev_info->hpb_enabled = true;
-> >          }
-> > 
-> >          err = ufshcd_read_string_desc(hba, model_index,
-> > @@ -8028,6 +8044,7 @@ static const struct attribute_group
-> > *ufshcd_driver_groups[] = {
-> >          &ufs_sysfs_lun_attributes_group,
-> >  #ifdef CONFIG_SCSI_UFS_HPB
-> >          &ufs_sysfs_hpb_stat_group,
-> > +        &ufs_sysfs_hpb_param_group,
-> >  #endif
-> >          NULL,
-> >  };
-> > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> > index 008a5f7146c0..8aca8f327981 100644
-> > --- a/drivers/scsi/ufs/ufshcd.h
-> > +++ b/drivers/scsi/ufs/ufshcd.h
-> > @@ -654,6 +654,8 @@ struct ufs_hba_variant_params {
-> >   * @srgn_size: device reported HPB sub-region size
-> >   * @slave_conf_cnt: counter to check all lu finished initialization
-> >   * @hpb_disabled: flag to check if HPB is disabled
-> > + * @max_hpb_single_cmd: maximum size of single HPB command
-> > + * @is_legacy: flag to check HPB 1.0
-> >   */
-> >  struct ufshpb_dev_info {
-> >          int num_lu;
-> > @@ -661,6 +663,8 @@ struct ufshpb_dev_info {
-> >          int srgn_size;
-> >          atomic_t slave_conf_cnt;
-> >          bool hpb_disabled;
-> > +        int max_hpb_single_cmd;
-> > +        bool is_legacy;
-> >  };
-> >  #endif
-> > 
-> > @@ -1096,6 +1100,9 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
-> >                             u8 param_offset,
-> >                             u8 *param_read_buf,
-> >                             u8 param_size);
-> > +int ufshcd_query_attr_retry(struct ufs_hba *hba, enum query_opcode 
-> > opcode,
-> > +                            enum attr_idn idn, u8 index, u8 selector,
-> > +                            u32 *attr_val);
-> >  int ufshcd_query_attr(struct ufs_hba *hba, enum query_opcode opcode,
-> >                        enum attr_idn idn, u8 index, u8 selector, u32 *attr_val);
-> >  int ufshcd_query_flag(struct ufs_hba *hba, enum query_opcode opcode,
-> > diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-> > index f789339f68d9..3ac8b0a9e8d3 100644
-> > --- a/drivers/scsi/ufs/ufshpb.c
-> > +++ b/drivers/scsi/ufs/ufshpb.c
-> > @@ -31,6 +31,11 @@ bool ufshpb_is_allowed(struct ufs_hba *hba)
-> >          return !(hba->ufshpb_dev.hpb_disabled);
-> >  }
-> > 
-> > +bool ufshpb_is_legacy(struct ufs_hba *hba)
-> > +{
-> > +        return hba->ufshpb_dev.is_legacy;
-> > +}
-> > +
-> >  static struct ufshpb_lu *ufshpb_get_hpb_data(struct scsi_device *sdev)
-> >  {
-> >          return sdev->hostdata;
-> > @@ -64,9 +69,19 @@ static bool ufshpb_is_write_or_discard_cmd(struct
-> > scsi_cmnd *cmd)
-> >                 op_is_discard(req_op(cmd->request));
-> >  }
-> > 
-> > -static bool ufshpb_is_support_chunk(int transfer_len)
-> > +static bool ufshpb_is_support_chunk(struct ufshpb_lu *hpb, int 
-> > transfer_len)
-> >  {
-> > -        return transfer_len <= HPB_MULTI_CHUNK_HIGH;
-> > +        return transfer_len <= hpb->pre_req_max_tr_len;
-> > +}
-> > +
-> > +/*
-> > + * In this driver, WRITE_BUFFER CMD support 36KB (len=9) ~ 512KB 
-> > (len=128) as
-> > + * default. It is possible to change range of transfer_len through 
-> > sysfs.
-> > + */
-> > +static inline bool ufshpb_is_required_wb(struct ufshpb_lu *hpb, int 
-> > len)
-> > +{
-> > +        return (len > hpb->pre_req_min_tr_len &&
-> > +                len <= hpb->pre_req_max_tr_len);
-> >  }
-> > 
-> >  static bool ufshpb_is_general_lun(int lun)
-> > @@ -74,8 +89,7 @@ static bool ufshpb_is_general_lun(int lun)
-> >          return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
-> >  }
-> > 
-> > -static bool
-> > -ufshpb_is_pinned_region(struct ufshpb_lu *hpb, int rgn_idx)
-> > +static bool ufshpb_is_pinned_region(struct ufshpb_lu *hpb, int 
-> > rgn_idx)
-> >  {
-> >          if (hpb->lu_pinned_end != PINNED_NOT_SET &&
-> >              rgn_idx >= hpb->lu_pinned_start &&
-> > @@ -264,7 +278,8 @@ ufshpb_get_pos_from_lpn(struct ufshpb_lu *hpb,
-> > unsigned long lpn, int *rgn_idx,
-> > 
-> >  static void
-> >  ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu *hpb, struct ufshcd_lrb 
-> > *lrbp,
-> > -                            u32 lpn, u64 ppn, unsigned int transfer_len)
-> > +                            u32 lpn, u64 ppn, unsigned int transfer_len,
-> > +                            int read_id)
-> >  {
-> >          unsigned char *cdb = lrbp->cmd->cmnd;
-> > 
-> > @@ -273,15 +288,261 @@ ufshpb_set_hpb_read_to_upiu(struct ufshpb_lu
-> > *hpb, struct ufshcd_lrb *lrbp,
-> >          /* ppn value is stored as big-endian in the host memory */
-> >          memcpy(&cdb[6], &ppn, sizeof(u64));
-> >          cdb[14] = transfer_len;
-> > +        cdb[15] = read_id;
-> > 
-> >          lrbp->cmd->cmd_len = UFS_CDB_SIZE;
-> >  }
-> > 
-> > +static inline void ufshpb_set_write_buf_cmd(unsigned char *cdb,
-> > +                                            unsigned long lpn, unsigned int len,
-> > +                                            int read_id)
-> > +{
-> > +        cdb[0] = UFSHPB_WRITE_BUFFER;
-> > +        cdb[1] = UFSHPB_WRITE_BUFFER_PREFETCH_ID;
-> > +
-> > +        put_unaligned_be32(lpn, &cdb[2]);
-> > +        cdb[6] = read_id;
-> > +        put_unaligned_be16(len * HPB_ENTRY_SIZE, &cdb[7]);
-> > +
-> > +        cdb[9] = 0x00;        /* Control = 0x00 */
-> > +}
-> > +
-> > +static struct ufshpb_req *ufshpb_get_pre_req(struct ufshpb_lu *hpb)
-> > +{
-> > +        struct ufshpb_req *pre_req;
-> > +
-> > +        if (hpb->num_inflight_pre_req >= hpb->throttle_pre_req) {
-> > +                dev_info(&hpb->sdev_ufs_lu->sdev_dev,
-> > +                         "pre_req throttle. inflight %d throttle %d",
-> > +                         hpb->num_inflight_pre_req, hpb->throttle_pre_req);
-> > +                return NULL;
-> > +        }
-> > +
-> > +        pre_req = list_first_entry_or_null(&hpb->lh_pre_req_free,
-> > +                                           struct ufshpb_req, list_req);
-> > +        if (!pre_req) {
-> > +                dev_info(&hpb->sdev_ufs_lu->sdev_dev, "There is no pre_req");
-> > +                return NULL;
-> > +        }
-> > +
-> > +        list_del_init(&pre_req->list_req);
-> > +        hpb->num_inflight_pre_req++;
-> > +
-> > +        return pre_req;
-> > +}
-> > +
-> > +static inline void ufshpb_put_pre_req(struct ufshpb_lu *hpb,
-> > +                                      struct ufshpb_req *pre_req)
-> > +{
-> > +        pre_req->req = NULL;
-> > +        bio_reset(pre_req->bio);
-> > +        list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
-> > +        hpb->num_inflight_pre_req--;
-> > +}
-> > +
-> > +static void ufshpb_pre_req_compl_fn(struct request *req, blk_status_t 
-> > error)
-> > +{
-> > +        struct ufshpb_req *pre_req = (struct ufshpb_req *)req->end_io_data;
-> > +        struct ufshpb_lu *hpb = pre_req->hpb;
-> > +        unsigned long flags;
-> > +
-> > +        if (error) {
-> > +                struct scsi_request *rq = scsi_req(req);
-> > +                struct scsi_sense_hdr sshdr;
-> > +
-> > +                dev_err(&hpb->sdev_ufs_lu->sdev_dev, "block status %d", error);
-> > +                scsi_normalize_sense(rq->sense, SCSI_SENSE_BUFFERSIZE,
-> > +                                     &sshdr);
-> > +                dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> > +                        "code %x sense_key %x asc %x ascq %x",
-> > +                        sshdr.response_code,
-> > +                        sshdr.sense_key, sshdr.asc, sshdr.ascq);
-> > +                dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> > +                        "byte4 %x byte5 %x byte6 %x additional_len %x",
-> > +                        sshdr.byte4, sshdr.byte5,
-> > +                        sshdr.byte6, sshdr.additional_length);
-> > +        }
-> > +
-> > +        blk_mq_free_request(req);
-> > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> > +        ufshpb_put_pre_req(pre_req->hpb, pre_req);
-> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> > +}
-> > +
-> > +static int ufshpb_prep_entry(struct ufshpb_req *pre_req, struct page 
-> > *page)
-> > +{
-> > +        struct ufshpb_lu *hpb = pre_req->hpb;
-> > +        struct ufshpb_region *rgn;
-> > +        struct ufshpb_subregion *srgn;
-> > +        u64 *addr;
-> > +        int offset = 0;
-> > +        int copied;
-> > +        unsigned long lpn = pre_req->wb.lpn;
-> > +        int rgn_idx, srgn_idx, srgn_offset;
-> > +        unsigned long flags;
-> > +
-> > +        addr = page_address(page);
-> > +        ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-> > +
-> > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> > +
-> > +next_offset:
-> > +        rgn = hpb->rgn_tbl + rgn_idx;
-> > +        srgn = rgn->srgn_tbl + srgn_idx;
-> > +
-> > +        if (!ufshpb_is_valid_srgn(rgn, srgn))
-> > +                goto mctx_error;
-> > +
-> > +        if (!srgn->mctx)
-> > +                goto mctx_error;
-> > +
-> > +        copied = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset,
-> > +                                           pre_req->wb.len - offset,
-> > +                                           &addr[offset]);
-> > +
-> > +        if (copied < 0)
-> > +                goto mctx_error;
-> > +
-> > +        offset += copied;
-> > +        srgn_offset += copied;
-> > +
-> > +        if (srgn_offset == hpb->entries_per_srgn) {
-> > +                srgn_offset = 0;
-> > +
-> > +                if (++srgn_idx == hpb->srgns_per_rgn) {
-> > +                        srgn_idx = 0;
-> > +                        rgn_idx++;
-> > +                }
-> > +        }
-> > +
-> > +        if (offset < pre_req->wb.len)
-> > +                goto next_offset;
-> > +
-> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> > +        return 0;
-> > +mctx_error:
-> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> > +        return -ENOMEM;
-> > +}
-> > +
-> > +static int ufshpb_pre_req_add_bio_page(struct ufshpb_lu *hpb,
-> > +                                       struct request_queue *q,
-> > +                                       struct ufshpb_req *pre_req)
-> > +{
-> > +        struct page *page = pre_req->wb.m_page;
-> > +        struct bio *bio = pre_req->bio;
-> > +        int entries_bytes, ret;
-> > +
-> > +        if (!page)
-> > +                return -ENOMEM;
-> > +
-> > +        if (ufshpb_prep_entry(pre_req, page))
-> > +                return -ENOMEM;
-> > +
-> > +        entries_bytes = pre_req->wb.len * sizeof(u64);
-> > +
-> > +        ret = bio_add_pc_page(q, bio, page, entries_bytes, 0);
-> > +        if (ret != entries_bytes) {
-> > +                dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> > +                        "bio_add_pc_page fail: %d", ret);
-> > +                return -ENOMEM;
-> > +        }
-> > +        return 0;
-> > +}
-> > +
-> > +static inline int ufshpb_get_read_id(struct ufshpb_lu *hpb)
-> > +{
-> > +        if (++hpb->cur_read_id >= MAX_HPB_READ_ID)
-> > +                hpb->cur_read_id = 1;
-> > +        return hpb->cur_read_id;
-> > +}
-> > +
-> > +static int ufshpb_execute_pre_req(struct ufshpb_lu *hpb, struct 
-> > scsi_cmnd *cmd,
-> > +                                  struct ufshpb_req *pre_req, int read_id)
-> > +{
-> > +        struct scsi_device *sdev = cmd->device;
-> > +        struct request_queue *q = sdev->request_queue;
-> > +        struct request *req;
-> > +        struct scsi_request *rq;
-> > +        struct bio *bio = pre_req->bio;
-> > +
-> > +        pre_req->hpb = hpb;
-> > +        pre_req->wb.lpn = sectors_to_logical(cmd->device,
-> > +                                             blk_rq_pos(cmd->request));
-> > +        pre_req->wb.len = sectors_to_logical(cmd->device,
-> > +                                             blk_rq_sectors(cmd->request));
-> > +        if (ufshpb_pre_req_add_bio_page(hpb, q, pre_req))
-> > +                return -ENOMEM;
-> > +
-> > +        req = pre_req->req;
-> > +
-> > +        /* 1. request setup */
-> > +        blk_rq_append_bio(req, &bio);
-> > +        req->rq_disk = NULL;
-> > +        req->end_io_data = (void *)pre_req;
-> > +        req->end_io = ufshpb_pre_req_compl_fn;
-> > +
-> > +        /* 2. scsi_request setup */
-> > +        rq = scsi_req(req);
-> > +        rq->retries = 1;
-> > +
-> > +        ufshpb_set_write_buf_cmd(rq->cmd, pre_req->wb.lpn, pre_req->wb.len,
-> > +                                 read_id);
-> > +        rq->cmd_len = scsi_command_size(rq->cmd);
-> > +
-> > +        if (blk_insert_cloned_request(q, req) != BLK_STS_OK)
-> > +                return -EAGAIN;
-> > +
-> > +        hpb->stats.pre_req_cnt++;
-> > +
-> > +        return 0;
-> > +}
-> > +
-> > +static int ufshpb_issue_pre_req(struct ufshpb_lu *hpb, struct 
-> > scsi_cmnd *cmd,
-> > +                                int *read_id)
-> > +{
-> > +        struct ufshpb_req *pre_req;
-> > +        struct request *req = NULL;
-> > +        unsigned long flags;
-> > +        int _read_id;
-> > +        int ret = 0;
-> > +
-> > +        req = blk_get_request(cmd->device->request_queue,
-> > +                              REQ_OP_SCSI_OUT | REQ_SYNC, BLK_MQ_REQ_NOWAIT);
-> > +        if (IS_ERR(req))
-> > +                return -EAGAIN;
-> > +
-> > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> > +        pre_req = ufshpb_get_pre_req(hpb);
-> > +        if (!pre_req) {
-> > +                ret = -EAGAIN;
-> > +                goto unlock_out;
-> > +        }
-> > +        _read_id = ufshpb_get_read_id(hpb);
-> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> > +
-> > +        pre_req->req = req;
-> > +
-> > +        ret = ufshpb_execute_pre_req(hpb, cmd, pre_req, _read_id);
-> > +        if (ret)
-> > +                goto free_pre_req;
-> > +
-> > +        *read_id = _read_id;
-> > +
-> > +        return ret;
-> > +free_pre_req:
-> > +        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> > +        ufshpb_put_pre_req(hpb, pre_req);
-> > +unlock_out:
-> > +        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> > +        blk_put_request(req);
-> > +        return ret;
-> > +}
-> > +
-> >  /*
-> >   * This function will set up HPB read command using host-side L2P map 
-> > data.
-> > - * In HPB v1.0, maximum size of HPB read command is 4KB.
-> >   */
-> > -void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> > +int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> >  {
-> >          struct ufshpb_lu *hpb;
-> >          struct ufshpb_region *rgn;
-> > @@ -291,19 +552,20 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> > ufshcd_lrb *lrbp)
-> >          u64 ppn;
-> >          unsigned long flags;
-> >          int transfer_len, rgn_idx, srgn_idx, srgn_offset;
-> > +        int read_id = 0;
-> >          int err = 0;
-> > 
-> >          hpb = ufshpb_get_hpb_data(cmd->device);
-> >          if (!hpb)
-> > -                return;
-> > +                return -ENODEV;
-> > 
-> >          if (ufshpb_get_state(hpb) == HPB_INIT)
-> > -                return;
-> > +                return -ENODEV;
-> > 
-> >          if (ufshpb_get_state(hpb) != HPB_PRESENT) {
-> >                  dev_notice(&hpb->sdev_ufs_lu->sdev_dev,
-> >                             "%s: ufshpb state is not PRESENT", __func__);
-> > -                return;
-> > +                return -ENODEV;
-> >          }
-> > 
-> >          if (blk_rq_is_scsi(cmd->request) ||
-> > @@ -314,7 +576,7 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> > ufshcd_lrb *lrbp)
-> >          transfer_len = sectors_to_logical(cmd->device,
-> >                                            blk_rq_sectors(cmd->request));
-> >          if (unlikely(!transfer_len))
-> > -                return;
-> > +                return 0;
-> > 
-> >          lpn = sectors_to_logical(cmd->device, blk_rq_pos(cmd->request));
-> >          ufshpb_get_pos_from_lpn(hpb, lpn, &rgn_idx, &srgn_idx, &srgn_offset);
-> > @@ -327,18 +589,18 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> > ufshcd_lrb *lrbp)
-> >                  ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-> >                                   transfer_len);
-> >                  spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> > -                return;
-> > +                return 0;
-> >          }
-> > 
-> > -        if (!ufshpb_is_support_chunk(transfer_len))
-> > -                return;
-> > +        if (!ufshpb_is_support_chunk(hpb, transfer_len))
-> > +                return 0;
-> > 
-> >          spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> >          if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
-> >                                     transfer_len)) {
-> >                  hpb->stats.miss_cnt++;
-> >                  spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
-> > -                return;
-> > +                return 0;
-> >          }
-> > 
-> >          err = ufshpb_fill_ppn_from_page(hpb, srgn->mctx, srgn_offset, 1, 
-> > &ppn);
-> > @@ -351,64 +613,101 @@ void ufshpb_prep(struct ufs_hba *hba, struct
-> > ufshcd_lrb *lrbp)
-> >                   * active state.
-> >                   */
-> >                  dev_err(hba->dev, "get ppn failed. err %d\n", err);
-> > -                return;
-> > +                return err;
-> > +        }
-> > +        if (!ufshpb_is_legacy(hba) &&
-> > +            ufshpb_is_required_wb(hpb, transfer_len)) {
-> > +                err = ufshpb_issue_pre_req(hpb, cmd, &read_id);
-> > +                if (err) {
-> > +                        unsigned long timeout;
-> > +
-> > +                        timeout = cmd->jiffies_at_alloc + msecs_to_jiffies(
-> > +                                  hpb->params.requeue_timeout_ms);
-> > +
-> > +                        if (time_before(jiffies, timeout))
-> > +                                return -EAGAIN;
-> > +
-> > +                        hpb->stats.miss_cnt++;
-> > +                        return 0;
-> > +                }
-> >          }
-> > 
-> > -        ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len);
-> > +        ufshpb_set_hpb_read_to_upiu(hpb, lrbp, lpn, ppn, transfer_len, 
-> > read_id);
-> > 
-> >          hpb->stats.hit_cnt++;
-> > +        return 0;
-> >  }
-> > -static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
-> > -                                             struct ufshpb_subregion *srgn)
-> > +
-> > +static struct ufshpb_req *ufshpb_get_req(struct ufshpb_lu *hpb,
-> > +                                         int rgn_idx, enum req_opf dir,
-> > +                                         bool atomic)
->  
-> You didn't mention this change in cover letter. And I don't see anyone
-> is passing "atomic" as true, neither in your patches nor Avri's V6 
-> series
-> (from ufshpb_issue_umap_single_req()). If no one is using the flag, then
-> this is dead code. If Avri needs this flag, he can add it in host 
-> control
-> mode patches. Do I miss anything?
-
-I thought Avri will use this flag under atomic section. There is no
-spin_lock on ufshpb_issue_umap_single_req in the Avri's V6 series, so I
-will delete it.
-
-Thanks,
-Daejun
-
->  
-> Thanks,
-> Can Guo.
->  
-> >  {
-> > -        struct ufshpb_req *map_req;
-> > +        struct ufshpb_req *rq;
-> >          struct request *req;
-> > -        struct bio *bio;
-> >          int retries = HPB_MAP_REQ_RETRIES;
-> > 
-> > -        map_req = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
-> > -        if (!map_req)
-> > +        rq = kmem_cache_alloc(hpb->map_req_cache, GFP_ATOMIC);
-> > +        if (!rq)
-> >                  return NULL;
-> > 
-> >  retry:
-> > -        req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
-> > -                              REQ_OP_SCSI_IN, BLK_MQ_REQ_NOWAIT);
-> > +        req = blk_get_request(hpb->sdev_ufs_lu->request_queue, dir,
-> > +                              BLK_MQ_REQ_NOWAIT);
-> > 
-> > -        if ((PTR_ERR(req) == -EWOULDBLOCK) && (--retries > 0)) {
-> > +        if (!atomic && (PTR_ERR(req) == -EWOULDBLOCK) && (--retries > 0)) {
-> >                  usleep_range(3000, 3100);
-> >                  goto retry;
-> >          }
-> > 
-> >          if (IS_ERR(req))
-> > -                goto free_map_req;
-> > +                goto free_rq;
-> > +
-> > +        rq->hpb = hpb;
-> > +        rq->req = req;
-> > +        rq->rb.rgn_idx = rgn_idx;
-> > +
-> > +        return rq;
-> > +
-> > +free_rq:
-> > +        kmem_cache_free(hpb->map_req_cache, rq);
-> > +        return NULL;
-> > +}
-> > +
-> > +static void ufshpb_put_req(struct ufshpb_lu *hpb, struct ufshpb_req 
-> > *rq)
-> > +{
-> > +        blk_put_request(rq->req);
-> > +        kmem_cache_free(hpb->map_req_cache, rq);
-> > +}
-> > +
-> > +static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
-> > +                                             struct ufshpb_subregion *srgn)
-> > +{
-> > +        struct ufshpb_req *map_req;
-> > +        struct bio *bio;
-> > +
-> > +        map_req = ufshpb_get_req(hpb, srgn->rgn_idx, REQ_OP_SCSI_IN, false);
-> > +        if (!map_req)
-> > +                return NULL;
-> > 
-> >          bio = bio_alloc(GFP_KERNEL, hpb->pages_per_srgn);
-> >          if (!bio) {
-> > -                blk_put_request(req);
-> > -                goto free_map_req;
-> > +                ufshpb_put_req(hpb, map_req);
-> > +                return NULL;
-> >          }
-> > 
-> > -        map_req->hpb = hpb;
-> > -        map_req->req = req;
-> >          map_req->bio = bio;
-> > 
-> > -        map_req->rgn_idx = srgn->rgn_idx;
-> > -        map_req->srgn_idx = srgn->srgn_idx;
-> > -        map_req->mctx = srgn->mctx;
-> > +        map_req->rb.srgn_idx = srgn->srgn_idx;
-> > +        map_req->rb.mctx = srgn->mctx;
-> > 
-> >          return map_req;
-> > -
-> > -free_map_req:
-> > -        kmem_cache_free(hpb->map_req_cache, map_req);
-> > -        return NULL;
-> >  }
-> > 
-> >  static void ufshpb_put_map_req(struct ufshpb_lu *hpb,
-> >                                 struct ufshpb_req *map_req)
-> >  {
-> >          bio_put(map_req->bio);
-> > -        blk_put_request(map_req->req);
-> > -        kmem_cache_free(hpb->map_req_cache, map_req);
-> > +        ufshpb_put_req(hpb, map_req);
-> >  }
-> > 
-> >  static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
-> > @@ -491,6 +790,13 @@ static void ufshpb_activate_subregion(struct
-> > ufshpb_lu *hpb,
-> >          srgn->srgn_state = HPB_SRGN_VALID;
-> >  }
-> > 
-> > +static void ufshpb_umap_req_compl_fn(struct request *req, blk_status_t 
-> > error)
-> > +{
-> > +        struct ufshpb_req *umap_req = (struct ufshpb_req *)req->end_io_data;
-> > +
-> > +        ufshpb_put_req(umap_req->hpb, umap_req);
-> > +}
-> > +
-> >  static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t 
-> > error)
-> >  {
-> >          struct ufshpb_req *map_req = (struct ufshpb_req *) req->end_io_data;
-> > @@ -498,8 +804,8 @@ static void ufshpb_map_req_compl_fn(struct request
-> > *req, blk_status_t error)
-> >          struct ufshpb_subregion *srgn;
-> >          unsigned long flags;
-> > 
-> > -        srgn = hpb->rgn_tbl[map_req->rgn_idx].srgn_tbl +
-> > -                map_req->srgn_idx;
-> > +        srgn = hpb->rgn_tbl[map_req->rb.rgn_idx].srgn_tbl +
-> > +                map_req->rb.srgn_idx;
-> > 
-> >          ufshpb_clear_dirty_bitmap(hpb, srgn);
-> >          spin_lock_irqsave(&hpb->rgn_state_lock, flags);
-> > @@ -509,6 +815,16 @@ static void ufshpb_map_req_compl_fn(struct
-> > request *req, blk_status_t error)
-> >          ufshpb_put_map_req(map_req->hpb, map_req);
-> >  }
-> > 
-> > +static void ufshpb_set_unmap_cmd(unsigned char *cdb, struct 
-> > ufshpb_region *rgn)
-> > +{
-> > +        cdb[0] = UFSHPB_WRITE_BUFFER;
-> > +        cdb[1] = rgn ? UFSHPB_WRITE_BUFFER_INACT_SINGLE_ID :
-> > +                          UFSHPB_WRITE_BUFFER_INACT_ALL_ID;
-> > +        if (rgn)
-> > +                put_unaligned_be16(rgn->rgn_idx, &cdb[2]);
-> > +        cdb[9] = 0x00;
-> > +}
-> > +
-> >  static void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
-> >                                      int srgn_idx, int srgn_mem_size)
-> >  {
-> > @@ -522,6 +838,25 @@ static void ufshpb_set_read_buf_cmd(unsigned char
-> > *cdb, int rgn_idx,
-> >          cdb[9] = 0x00;
-> >  }
-> > 
-> > +static int ufshpb_execute_umap_req(struct ufshpb_lu *hpb,
-> > +                                   struct ufshpb_req *umap_req,
-> > +                                   struct ufshpb_region *rgn)
-> > +{
-> > +        struct request *req;
-> > +        struct scsi_request *rq;
-> > +
-> > +        req = umap_req->req;
-> > +        req->timeout = 0;
-> > +        req->end_io_data = (void *)umap_req;
-> > +        rq = scsi_req(req);
-> > +        ufshpb_set_unmap_cmd(rq->cmd, rgn);
-> > +        rq->cmd_len = HPB_WRITE_BUFFER_CMD_LENGTH;
-> > +
-> > +        blk_execute_rq_nowait(NULL, req, 1, ufshpb_umap_req_compl_fn);
-> > +
-> > +        return 0;
-> > +}
-> > +
-> >  static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
-> >                                    struct ufshpb_req *map_req, bool last)
-> >  {
-> > @@ -534,12 +869,12 @@ static int ufshpb_execute_map_req(struct 
-> > ufshpb_lu *hpb,
-> > 
-> >          q = hpb->sdev_ufs_lu->request_queue;
-> >          for (i = 0; i < hpb->pages_per_srgn; i++) {
-> > -                ret = bio_add_pc_page(q, map_req->bio, map_req->mctx->m_page[i],
-> > +                ret = bio_add_pc_page(q, map_req->bio, map_req->rb.mctx->m_page[i],
-> >                                        PAGE_SIZE, 0);
-> >                  if (ret != PAGE_SIZE) {
-> >                          dev_err(&hpb->sdev_ufs_lu->sdev_dev,
-> >                                     "bio_add_pc_page fail %d - %d\n",
-> > -                                   map_req->rgn_idx, map_req->srgn_idx);
-> > +                                   map_req->rb.rgn_idx, map_req->rb.srgn_idx);
-> >                          return ret;
-> >                  }
-> >          }
-> > @@ -555,8 +890,8 @@ static int ufshpb_execute_map_req(struct ufshpb_lu 
-> > *hpb,
-> >          if (unlikely(last))
-> >                  mem_size = hpb->last_srgn_entries * HPB_ENTRY_SIZE;
-> > 
-> > -        ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
-> > -                                map_req->srgn_idx, mem_size);
-> > +        ufshpb_set_read_buf_cmd(rq->cmd, map_req->rb.rgn_idx,
-> > +                                map_req->rb.srgn_idx, mem_size);
-> >          rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
-> > 
-> >          blk_execute_rq_nowait(NULL, req, 1, ufshpb_map_req_compl_fn);
-> > @@ -688,6 +1023,31 @@ static void ufshpb_purge_active_subregion(struct
-> > ufshpb_lu *hpb,
-> >          }
-> >  }
-> > 
-> > +static int ufshpb_issue_umap_req(struct ufshpb_lu *hpb,
-> > +                                 struct ufshpb_region *rgn, bool atomic)
-> > +{
-> > +        struct ufshpb_req *umap_req;
-> > +        int rgn_idx = rgn ? rgn->rgn_idx : 0;
-> > +
-> > +        umap_req = ufshpb_get_req(hpb, rgn_idx, REQ_OP_SCSI_OUT, atomic);
-> > +        if (!umap_req)
-> > +                return -ENOMEM;
-> > +
-> > +        if (ufshpb_execute_umap_req(hpb, umap_req, rgn))
-> > +                goto free_umap_req;
-> > +
-> > +        return 0;
-> > +
-> > +free_umap_req:
-> > +        ufshpb_put_req(hpb, umap_req);
-> > +        return -EAGAIN;
-> > +}
-> > +
-> > +static int ufshpb_issue_umap_all_req(struct ufshpb_lu *hpb)
-> > +{
-> > +        return ufshpb_issue_umap_req(hpb, NULL, false);
-> > +}
-> > +
-> >  static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
-> >                                    struct ufshpb_region *rgn)
-> >  {
-> > @@ -1210,6 +1570,17 @@ static void ufshpb_lu_parameter_init(struct 
-> > ufs_hba *hba,
-> >          u32 entries_per_rgn;
-> >          u64 rgn_mem_size, tmp;
-> > 
-> > +        /* for pre_req */
-> > +        hpb->pre_req_min_tr_len = hpb_dev_info->max_hpb_single_cmd + 1;
-> > +
-> > +        if (ufshpb_is_legacy(hba))
-> > +                hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
-> > +        else
-> > +                hpb->pre_req_max_tr_len = max(HPB_MULTI_CHUNK_HIGH,
-> > +                                              hpb->pre_req_min_tr_len);
-> > +
-> > +        hpb->cur_read_id = 0;
-> > +
-> >          hpb->lu_pinned_start = hpb_lu_info->pinned_start;
-> >          hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
-> >                  (hpb_lu_info->pinned_start + hpb_lu_info->num_pinned - 1)
-> > @@ -1357,7 +1728,7 @@ ufshpb_sysfs_attr_show_func(rb_active_cnt);
-> >  ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
-> >  ufshpb_sysfs_attr_show_func(map_req_cnt);
-> > 
-> > -static struct attribute *hpb_dev_attrs[] = {
-> > +static struct attribute *hpb_dev_stat_attrs[] = {
-> >          &dev_attr_hit_cnt.attr,
-> >          &dev_attr_miss_cnt.attr,
-> >          &dev_attr_rb_noti_cnt.attr,
-> > @@ -1368,10 +1739,118 @@ static struct attribute *hpb_dev_attrs[] = {
-> >  };
-> > 
-> >  struct attribute_group ufs_sysfs_hpb_stat_group = {
-> > -        .name = "hpb_sysfs",
-> > -        .attrs = hpb_dev_attrs,
-> > +        .name = "hpb_stat_sysfs",
-> > +        .attrs = hpb_dev_stat_attrs,
-> >  };
-> > 
-> > +/* SYSFS functions */
-> > +#define ufshpb_sysfs_param_show_func(__name)                                \
-> > +static ssize_t __name##_show(struct device *dev,                        \
-> > +        struct device_attribute *attr, char *buf)                        \
-> > +{                                                                        \
-> > +        struct scsi_device *sdev = to_scsi_device(dev);                        \
-> > +        struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);                \
-> > +        if (!hpb)                                                        \
-> > +                return -ENODEV;                                                \
-> > +                                                                        \
-> > +        return sysfs_emit(buf, "%d\n", hpb->params.__name);                \
-> > +}
-> > +
-> > +ufshpb_sysfs_param_show_func(requeue_timeout_ms);
-> > +static ssize_t
-> > +requeue_timeout_ms_store(struct device *dev, struct device_attribute 
-> > *attr,
-> > +                         const char *buf, size_t count)
-> > +{
-> > +        struct scsi_device *sdev = to_scsi_device(dev);
-> > +        struct ufshpb_lu *hpb = ufshpb_get_hpb_data(sdev);
-> > +        int val;
-> > +
-> > +        if (!hpb)
-> > +                return -ENODEV;
-> > +
-> > +        if (kstrtouint(buf, 0, &val))
-> > +                return -EINVAL;
-> > +
-> > +        if (val < 0)
-> > +                return -EINVAL;
-> > +
-> > +        hpb->params.requeue_timeout_ms = val;
-> > +
-> > +        return count;
-> > +}
-> > +static DEVICE_ATTR_RW(requeue_timeout_ms);
-> > +
-> > +static struct attribute *hpb_dev_param_attrs[] = {
-> > +        &dev_attr_requeue_timeout_ms.attr,
-> > +        NULL,
-> > +};
-> > +
-> > +struct attribute_group ufs_sysfs_hpb_param_group = {
-> > +        .name = "hpb_param_sysfs",
-> > +        .attrs = hpb_dev_param_attrs,
-> > +};
-> > +
-> > +static int ufshpb_pre_req_mempool_init(struct ufshpb_lu *hpb)
-> > +{
-> > +        struct ufshpb_req *pre_req = NULL, *t;
-> > +        int qd = hpb->sdev_ufs_lu->queue_depth / 2;
-> > +        int i;
-> > +
-> > +        INIT_LIST_HEAD(&hpb->lh_pre_req_free);
-> > +
-> > +        hpb->pre_req = kcalloc(qd, sizeof(struct ufshpb_req), GFP_KERNEL);
-> > +        hpb->throttle_pre_req = qd;
-> > +        hpb->num_inflight_pre_req = 0;
-> > +
-> > +        if (!hpb->pre_req)
-> > +                goto release_mem;
-> > +
-> > +        for (i = 0; i < qd; i++) {
-> > +                pre_req = hpb->pre_req + i;
-> > +                INIT_LIST_HEAD(&pre_req->list_req);
-> > +                pre_req->req = NULL;
-> > +
-> > +                pre_req->bio = bio_alloc(GFP_KERNEL, 1);
-> > +                if (!pre_req->bio)
-> > +                        goto release_mem;
-> > +
-> > +                pre_req->wb.m_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-> > +                if (!pre_req->wb.m_page) {
-> > +                        bio_put(pre_req->bio);
-> > +                        goto release_mem;
-> > +                }
-> > +
-> > +                list_add_tail(&pre_req->list_req, &hpb->lh_pre_req_free);
-> > +        }
-> > +
-> > +        return 0;
-> > +release_mem:
-> > +        list_for_each_entry_safe(pre_req, t, &hpb->lh_pre_req_free, list_req) 
-> > {
-> > +                list_del_init(&pre_req->list_req);
-> > +                bio_put(pre_req->bio);
-> > +                __free_page(pre_req->wb.m_page);
-> > +        }
-> > +
-> > +        kfree(hpb->pre_req);
-> > +        return -ENOMEM;
-> > +}
-> > +
-> > +static void ufshpb_pre_req_mempool_destroy(struct ufshpb_lu *hpb)
-> > +{
-> > +        struct ufshpb_req *pre_req = NULL;
-> > +        int i;
-> > +
-> > +        for (i = 0; i < hpb->throttle_pre_req; i++) {
-> > +                pre_req = hpb->pre_req + i;
-> > +                bio_put(hpb->pre_req[i].bio);
-> > +                if (!pre_req->wb.m_page)
-> > +                        __free_page(hpb->pre_req[i].wb.m_page);
-> > +                list_del_init(&pre_req->list_req);
-> > +        }
-> > +
-> > +        kfree(hpb->pre_req);
-> > +}
-> > +
-> >  static void ufshpb_stat_init(struct ufshpb_lu *hpb)
-> >  {
-> >          hpb->stats.hit_cnt = 0;
-> > @@ -1382,6 +1861,11 @@ static void ufshpb_stat_init(struct ufshpb_lu 
-> > *hpb)
-> >          hpb->stats.map_req_cnt = 0;
-> >  }
-> > 
-> > +static void ufshpb_param_init(struct ufshpb_lu *hpb)
-> > +{
-> > +        hpb->params.requeue_timeout_ms = HPB_REQUEUE_TIME_MS;
-> > +}
-> > +
-> >  static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu 
-> > *hpb)
-> >  {
-> >          int ret;
-> > @@ -1414,14 +1898,24 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
-> > *hba, struct ufshpb_lu *hpb)
-> >                  goto release_req_cache;
-> >          }
-> > 
-> > +        ret = ufshpb_pre_req_mempool_init(hpb);
-> > +        if (ret) {
-> > +                dev_err(hba->dev, "ufshpb(%d) pre_req_mempool init fail",
-> > +                        hpb->lun);
-> > +                goto release_m_page_cache;
-> > +        }
-> > +
-> >          ret = ufshpb_alloc_region_tbl(hba, hpb);
-> >          if (ret)
-> > -                goto release_m_page_cache;
-> > +                goto release_pre_req_mempool;
-> > 
-> >          ufshpb_stat_init(hpb);
-> > +        ufshpb_param_init(hpb);
-> > 
-> >          return 0;
-> > 
-> > +release_pre_req_mempool:
-> > +        ufshpb_pre_req_mempool_destroy(hpb);
-> >  release_m_page_cache:
-> >          kmem_cache_destroy(hpb->m_page_cache);
-> >  release_req_cache:
-> > @@ -1430,7 +1924,7 @@ static int ufshpb_lu_hpb_init(struct ufs_hba
-> > *hba, struct ufshpb_lu *hpb)
-> >  }
-> > 
-> >  static struct ufshpb_lu *
-> > -ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
-> > +ufshpb_alloc_hpb_lu(struct ufs_hba *hba, struct scsi_device *sdev,
-> >                      struct ufshpb_dev_info *hpb_dev_info,
-> >                      struct ufshpb_lu_info *hpb_lu_info)
-> >  {
-> > @@ -1441,7 +1935,8 @@ ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
-> >          if (!hpb)
-> >                  return NULL;
-> > 
-> > -        hpb->lun = lun;
-> > +        hpb->lun = sdev->lun;
-> > +        hpb->sdev_ufs_lu = sdev;
-> > 
-> >          ufshpb_lu_parameter_init(hba, hpb, hpb_dev_info, hpb_lu_info);
-> > 
-> > @@ -1451,6 +1946,7 @@ ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
-> >                  goto release_hpb;
-> >          }
-> > 
-> > +        sdev->hostdata = hpb;
-> >          return hpb;
-> > 
-> >  release_hpb:
-> > @@ -1653,6 +2149,7 @@ void ufshpb_destroy_lu(struct ufs_hba *hba,
-> > struct scsi_device *sdev)
-> > 
-> >          ufshpb_cancel_jobs(hpb);
-> > 
-> > +        ufshpb_pre_req_mempool_destroy(hpb);
-> >          ufshpb_destroy_region_tbl(hpb);
-> > 
-> >          kmem_cache_destroy(hpb->map_req_cache);
-> > @@ -1692,6 +2189,7 @@ static void ufshpb_hpb_lu_prepared(struct ufs_hba 
-> > *hba)
-> >                          ufshpb_set_state(hpb, HPB_PRESENT);
-> >                          if ((hpb->lu_pinned_end - hpb->lu_pinned_start) > 0)
-> >                                  queue_work(ufshpb_wq, &hpb->map_work);
-> > +                        ufshpb_issue_umap_all_req(hpb);
-> >                  } else {
-> >                          dev_err(hba->dev, "destroy HPB lu %d\n", hpb->lun);
-> >                          ufshpb_destroy_lu(hba, sdev);
-> > @@ -1716,7 +2214,7 @@ void ufshpb_init_hpb_lu(struct ufs_hba *hba,
-> > struct scsi_device *sdev)
-> >          if (ret)
-> >                  goto out;
-> > 
-> > -        hpb = ufshpb_alloc_hpb_lu(hba, lun, &hba->ufshpb_dev,
-> > +        hpb = ufshpb_alloc_hpb_lu(hba, sdev, &hba->ufshpb_dev,
-> >                                    &hpb_lu_info);
-> >          if (!hpb)
-> >                  goto out;
-> > @@ -1724,9 +2222,6 @@ void ufshpb_init_hpb_lu(struct ufs_hba *hba,
-> > struct scsi_device *sdev)
-> >          tot_active_srgn_pages += hpb_lu_info.max_active_rgns *
-> >                          hpb->srgns_per_rgn * hpb->pages_per_srgn;
-> > 
-> > -        hpb->sdev_ufs_lu = sdev;
-> > -        sdev->hostdata = hpb;
-> > -
-> >  out:
-> >          /* All LUs are initialized */
-> >          if (atomic_dec_and_test(&hba->ufshpb_dev.slave_conf_cnt))
-> > @@ -1813,8 +2308,9 @@ void ufshpb_get_geo_info(struct ufs_hba *hba, u8 
-> > *geo_buf)
-> >  void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf)
-> >  {
-> >          struct ufshpb_dev_info *hpb_dev_info = &hba->ufshpb_dev;
-> > -        int version;
-> > +        int version, ret;
-> >          u8 hpb_mode;
-> > +        u32 max_hpb_single_cmd = HPB_MULTI_CHUNK_LOW;
-> > 
-> >          hpb_mode = desc_buf[DEVICE_DESC_PARAM_HPB_CONTROL];
-> >          if (hpb_mode == HPB_HOST_CONTROL) {
-> > @@ -1825,13 +2321,27 @@ void ufshpb_get_dev_info(struct ufs_hba *hba,
-> > u8 *desc_buf)
-> >          }
-> > 
-> >          version = get_unaligned_be16(desc_buf + DEVICE_DESC_PARAM_HPB_VER);
-> > -        if (version != HPB_SUPPORT_VERSION) {
-> > +        if ((version != HPB_SUPPORT_VERSION) &&
-> > +            (version != HPB_SUPPORT_LEGACY_VERSION)) {
-> >                  dev_err(hba->dev, "%s: HPB %x version is not supported.\n",
-> >                          __func__, version);
-> >                  hpb_dev_info->hpb_disabled = true;
-> >                  return;
-> >          }
-> > 
-> > +        if (version == HPB_SUPPORT_LEGACY_VERSION)
-> > +                hpb_dev_info->is_legacy = true;
-> > +
-> > +        pm_runtime_get_sync(hba->dev);
-> > +        ret = ufshcd_query_attr_retry(hba, UPIU_QUERY_OPCODE_READ_ATTR,
-> > +                QUERY_ATTR_IDN_MAX_HPB_SINGLE_CMD, 0, 0, &max_hpb_single_cmd);
-> > +        pm_runtime_put_sync(hba->dev);
-> > +
-> > +        if (ret)
-> > +                dev_err(hba->dev, "%s: idn: read max size of single hpb cmd query
-> > request failed",
-> > +                        __func__);
-> > +        hpb_dev_info->max_hpb_single_cmd = max_hpb_single_cmd;
-> > +
-> >          /*
-> >           * Get the number of user logical unit to check whether all
-> >           * scsi_device finish initialization
-> > diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-> > index 6e6a0252dc15..b1128b0ce486 100644
-> > --- a/drivers/scsi/ufs/ufshpb.h
-> > +++ b/drivers/scsi/ufs/ufshpb.h
-> > @@ -30,19 +30,29 @@
-> >  #define PINNED_NOT_SET                                U32_MAX
-> > 
-> >  /* hpb support chunk size */
-> > -#define HPB_MULTI_CHUNK_HIGH                        1
-> > +#define HPB_LEGACY_CHUNK_HIGH                        1
-> > +#define HPB_MULTI_CHUNK_LOW                        7
-> > +#define HPB_MULTI_CHUNK_HIGH                        128
-> > 
-> >  /* hpb vender defined opcode */
-> >  #define UFSHPB_READ                                0xF8
-> >  #define UFSHPB_READ_BUFFER                        0xF9
-> >  #define UFSHPB_READ_BUFFER_ID                        0x01
-> > +#define UFSHPB_WRITE_BUFFER                        0xFA
-> > +#define UFSHPB_WRITE_BUFFER_INACT_SINGLE_ID        0x01
-> > +#define UFSHPB_WRITE_BUFFER_PREFETCH_ID                0x02
-> > +#define UFSHPB_WRITE_BUFFER_INACT_ALL_ID        0x03
-> > +#define HPB_WRITE_BUFFER_CMD_LENGTH                10
-> > +#define MAX_HPB_READ_ID                                0x7F
-> >  #define HPB_READ_BUFFER_CMD_LENGTH                10
-> >  #define LU_ENABLED_HPB_FUNC                        0x02
-> > 
-> >  #define HPB_RESET_REQ_RETRIES                        10
-> >  #define HPB_MAP_REQ_RETRIES                        5
-> > +#define HPB_REQUEUE_TIME_MS                        0
-> > 
-> > -#define HPB_SUPPORT_VERSION                        0x100
-> > +#define HPB_SUPPORT_VERSION                        0x200
-> > +#define HPB_SUPPORT_LEGACY_VERSION                0x100
-> > 
-> >  enum UFSHPB_MODE {
-> >          HPB_HOST_CONTROL,
-> > @@ -119,23 +129,38 @@ struct ufshpb_region {
-> >               (i)++)
-> > 
-> >  /**
-> > - * struct ufshpb_req - UFSHPB READ BUFFER (for caching map) request 
-> > structure
-> > - * @req: block layer request for READ BUFFER
-> > - * @bio: bio for holding map page
-> > - * @hpb: ufshpb_lu structure that related to the L2P map
-> > + * struct ufshpb_req - HPB related request structure (write/read 
-> > buffer)
-> > + * @req: block layer request structure
-> > + * @bio: bio for this request
-> > + * @hpb: ufshpb_lu structure that related to
-> > + * @list_req: ufshpb_req mempool list
-> > + * @sense: store its sense data
-> >   * @mctx: L2P map information
-> >   * @rgn_idx: target region index
-> >   * @srgn_idx: target sub-region index
-> >   * @lun: target logical unit number
-> > + * @m_page: L2P map information data for pre-request
-> > + * @len: length of host-side cached L2P map in m_page
-> > + * @lpn: start LPN of L2P map in m_page
-> >   */
-> >  struct ufshpb_req {
-> >          struct request *req;
-> >          struct bio *bio;
-> >          struct ufshpb_lu *hpb;
-> > -        struct ufshpb_map_ctx *mctx;
-> > -
-> > -        unsigned int rgn_idx;
-> > -        unsigned int srgn_idx;
-> > +        struct list_head list_req;
-> > +        union {
-> > +                struct {
-> > +                        struct ufshpb_map_ctx *mctx;
-> > +                        unsigned int rgn_idx;
-> > +                        unsigned int srgn_idx;
-> > +                        unsigned int lun;
-> > +                } rb;
-> > +                struct {
-> > +                        struct page *m_page;
-> > +                        unsigned int len;
-> > +                        unsigned long lpn;
-> > +                } wb;
-> > +        };
-> >  };
-> > 
-> >  struct victim_select_info {
-> > @@ -144,6 +169,10 @@ struct victim_select_info {
-> >          atomic_t active_cnt;
-> >  };
-> > 
-> > +struct ufshpb_params {
-> > +        unsigned int requeue_timeout_ms;
-> > +};
-> > +
-> >  struct ufshpb_stats {
-> >          u64 hit_cnt;
-> >          u64 miss_cnt;
-> > @@ -151,6 +180,7 @@ struct ufshpb_stats {
-> >          u64 rb_active_cnt;
-> >          u64 rb_inactive_cnt;
-> >          u64 map_req_cnt;
-> > +        u64 pre_req_cnt;
-> >  };
-> > 
-> >  struct ufshpb_lu {
-> > @@ -166,6 +196,15 @@ struct ufshpb_lu {
-> >          struct list_head lh_act_srgn; /* hold rsp_list_lock */
-> >          struct list_head lh_inact_rgn; /* hold rsp_list_lock */
-> > 
-> > +        /* pre request information */
-> > +        struct ufshpb_req *pre_req;
-> > +        int num_inflight_pre_req;
-> > +        int throttle_pre_req;
-> > +        struct list_head lh_pre_req_free;
-> > +        int cur_read_id;
-> > +        int pre_req_min_tr_len;
-> > +        int pre_req_max_tr_len;
-> > +
-> >          /* cached L2P map management worker */
-> >          struct work_struct map_work;
-> > 
-> > @@ -190,6 +229,7 @@ struct ufshpb_lu {
-> >          u32 pages_per_srgn;
-> > 
-> >          struct ufshpb_stats stats;
-> > +        struct ufshpb_params params;
-> > 
-> >          struct kmem_cache *map_req_cache;
-> >          struct kmem_cache *m_page_cache;
-> > @@ -201,7 +241,7 @@ struct ufs_hba;
-> >  struct ufshcd_lrb;
-> > 
-> >  #ifndef CONFIG_SCSI_UFS_HPB
-> > -static void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp) 
-> > {}
-> > +static int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
-> > { return 0; }
-> >  static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb 
-> > *lrbp) {}
-> >  static void ufshpb_resume(struct ufs_hba *hba) {}
-> >  static void ufshpb_suspend(struct ufs_hba *hba) {}
-> > @@ -214,8 +254,9 @@ static void ufshpb_remove(struct ufs_hba *hba) {}
-> >  static bool ufshpb_is_allowed(struct ufs_hba *hba) { return false; }
-> >  static void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf) {}
-> >  static void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf) {}
-> > +static bool ufshpb_is_legacy(struct ufs_hba *hba) { return false; }
-> >  #else
-> > -void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-> > +int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-> >  void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp);
-> >  void ufshpb_resume(struct ufs_hba *hba);
-> >  void ufshpb_suspend(struct ufs_hba *hba);
-> > @@ -228,7 +269,9 @@ void ufshpb_remove(struct ufs_hba *hba);
-> >  bool ufshpb_is_allowed(struct ufs_hba *hba);
-> >  void ufshpb_get_geo_info(struct ufs_hba *hba, u8 *geo_buf);
-> >  void ufshpb_get_dev_info(struct ufs_hba *hba, u8 *desc_buf);
-> > +bool ufshpb_is_legacy(struct ufs_hba *hba);
-> >  extern struct attribute_group ufs_sysfs_hpb_stat_group;
-> > +extern struct attribute_group ufs_sysfs_hpb_param_group;
-> >  #endif
-> > 
-> >  #endif /* End of Header */
->  
->  
->   
+DQpWYXJpb3VzIGZpeGVzLCBhbGwgb3ZlcjoNCg0KMSkgRml4IG92ZXJmbG93IGluIHB0cF9xb3Jp
+cV9hZGpmaW5lKCksIGZyb20gWWFuZ2JvIEx1Lg0KDQoyKSBBbHdheXMgc3RvcmUgdGhlIHJ4IHF1
+ZXVlIG1hcHBpbmcgaW4gdmV0aCwgZnJvbSBNYWNpZWogRmlqYWxrb3dza2kuDQoNCjMpIERvbid0
+IGFsbG93IHZtbGludXggYnRmIGluIG1hcF9jcmVhdGUsIGZyb20gQWxleGVpIFN0YXJvdm9pdG92
+Lg0KDQo0KSBGaXggbWVtb3J5IGxlYWsgaW4gb2N0ZW9udHgyLWFmIGZyb20gQ29saW4gSWFuIEtp
+bmcuDQoNCjUpIFVzZSBrdmFsbG9jIGluIGJwZiB4ODYgSklUIGZvciBzdG9yaW5nIGppdCdkIGFk
+ZHJlc3NlcywNCiAgIGZyb20gWW9uZ2hvbmcgU29uZy4NCg0KNikgRml4IHR4IHB0cCBzdGF0cyBp
+biBtbHg1LCBmcm9tIEF5YSBMZXZpbi4NCg0KNykgQ2hlY2sgY29ycmVjdCBpcCB2ZXJzaW9uIGlu
+IHR1biBkZWNhcCwgZnJvcG0gUm9pIERheWFuLg0KDQo4KSBGaXggcmF0ZSBjYWxjdWxhdGlvbiBp
+biBtbHg1IEUtU3dpdGNoIGNvZGUsIGZyb20gYXJhdiBQYW5kaXQuDQoNCjkpIFdvcmsgaXRlbSBt
+ZW1vcmsgbGVhayBpbiBtbHg1LCBmcm9tIFNoYXkgRHJvcnkuDQoNCjEwKSBGaXggaXA2aXA2IHR1
+bm5lbCBjcmFzaCB3aXRoIGJwZiwgZnJvbSBEYW5pZWwgQm9ya21hbm4uDQoNCjExKSBMYWNrIG9m
+IHByZWVtcHRyaW9uIGF3YXJlbmVzcyBpbiBtYWN2bGFuLCBmcm9tIEVyaWMgRHVtYXpldC4NCg0K
+MTIpIEZpeCBkYXRhIHJhY2UgaW4gcHhhMTY4X2V0aCwgZnJvbSBQYXZlbCBBbmRyaWFub3YuDQoN
+CjEzKSBSYW5nZSB2YWxpZGF0ZSBzdGFiIGluIHJlZF9jaGVja19wYXJhbXMoKSwgZnJvbSBFcmlj
+IER1bWF6ZXQuDQoNCjE0KSBJbmhlcml0IHZsYW4gZmlsdGVyaW5nIHNldHRpbmcgcHJvcGVybHkg
+aW4gYjUzIGRyaXZlciwgZnJvbSBGbG9yaWFuIEZhaW5lbGxpLg0KDQoxNSkgRml4IHJ0bmwgbG9j
+a2luZyBpbiBpZ2MgZHJpdmVyLCBmcm9tIFNhc2hhIE5lZnRpbi4NCg0KMTYpIFBhdXNlIGhhbmRs
+aW5nIGZpeGVzIGluIGlnYyBkcml2ZXIsIGZyb20gTXVoYW1tYWQgSHVzYWluaSBadWxraWZsaS4N
+Cg0KMTcpIE1pc3NpbmcgcnRubCBsb2NraW5nIGluIGUxMDAwX3Jlc2V0X3Rhc2ssIGZyb20gVml0
+YWx5IExpZnNoaXRzLg0KDQoxOCkgVXNlIGFmdGVyIGZyZWUgaW4gcWxjbmljLCBmcm9tIEx2IFl1
+bmxvbmcuDQoNCjE5KSBmaXggY3Jhc2ggaW4gZnJpdHpwY2kgbUlTRE4sIGZyb20gVG9uZyBaaGFu
+Zy4NCg0KMjApIFByZW1hdHVyZSByeCBidWZmZXIgcmV1c2UgaW4gaWdiLCBmcm9tIExpIFJvbmdR
+aW5nLg0KDQoyMSkgTWlzc2luZyB0ZXJtaW5hdGlvbiBvZiBpcFthIGRyaXZlciBtZXNzYWdlIGhh
+bmRsZXIgYXJyYXlzLA0KICAgIGZyb20gQWxleCBFbGRlci4NCg0KMjIpIEZpeCByYWNlIGJldHdl
+ZW4gIngyNV9jbG9zZSIgYW5kICAieDI1X3htaXQiLyJ4MjVfcngiIGluIGhkbGNfeDI1IGRyaXZl
+ciwNCiAgICBmcm9tIFhpZSBIZS4NCg0KMjMpIFVzZSBhZnRlciBmcmVlIGluIGNfY2FuX3BjaV9y
+ZW1vdmUoKSwgZnJvbSBUb25nIFpoYW5nLg0KDQoyNCkgVW5pbml0aWFsaXplZCB2YXJpYWJsZSB1
+c2UgaW4gbmw4MDIxMSwgZnJvbSBKYXJvZCBXaWxzb24uDQoNCjI1KSBPZmYgYnkgb25lIHNpemUg
+Y2FsYyBpbiBicGYgdmVyaWZpZXIsIGZyb20gUGlvdHIgS3J5c2l1ay4NCg0KMjYpIFVzZSBkZWxh
+eWVkIHdvcmsgaW5zdGVhZCBvZiBkZWZlcnJhYmxlIGZvciBmbG93dGFibGUgR0MsIGZyb20gWWlu
+anVuIFpoYW5nLg0KDQoyNykgRml4IGluZmluaXRlIGxvb3AgaW4gTlBDIHVubWFwIG9mIG9jdGVv
+bnR4MiBkcml2ZXIsIGZyb20gSGFyaXByYXNhZCBLZWxhbS4NCg0KMjgpIEZpeCBiZWluZyB1bmFi
+bGUgdG8gY2hhbmdlIE1UVSBvZiBkd21hYy1zdW44aSBkZXZpY2VzIGR1ZSB0byBsYWNrIG9mIGZp
+Zm8gc2l6ZXMsDQogICAgZnJvbSBDb3JlbnRpbiBMYWJiZS4NCg0KMjkpIERNQSB1c2UgYWZ0ZXIg
+ZnJlZSBpbiByODE2OSB3aXRoIFdvTCwgZm9tIEhlaW5lciBLYWxsd2VpdC4NCg0KMzApIE1pc21h
+dGNoZWQgcHJvdG90eXBlcyBpbiBpc2RuLWNhcGksIGZyb20gQXJuZCBCZXJnbWFubi4NCg0KMzEp
+IEZpeCBwc2FtcGxlIFVBUEkgYnJlYWthZ2UsIGZyb20gSWRvIFNjaGltbWVsLg0KDQpQbGVhc2Ug
+cHVsbCwgdGhhbmtzIGEgbG90IQ0KDQpUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2luY2UgY29tbWl0
+IDA1YTU5ZDc5NzkzZDQ4MmY2MjhhMzE3NTNjNjcxZjJlOTIxNzhhMjE6DQoNCiAgTWVyZ2UgZ2l0
+Oi8vZ2l0Lmtlcm5lbC5vcmc6L3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9uZXRkZXYvbmV0ICgy
+MDIxLTAzLTA5IDE3OjE1OjU2IC0wODAwKQ0KDQphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVw
+b3NpdG9yeSBhdDoNCg0KICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5l
+bC9naXQvbmV0ZGV2L25ldC5naXQgDQoNCmZvciB5b3UgdG8gZmV0Y2ggY2hhbmdlcyB1cCB0byBl
+NDNhY2NiYTliMDcxZGNkMTA2YjVlNzY0M2IxYjEwNmExNThjYmIxOg0KDQogIHBzYW1wbGU6IEZp
+eCB1c2VyIEFQSSBicmVha2FnZSAoMjAyMS0wMy0yNCAxNjo0NDozMSAtMDcwMCkNCg0KLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQ0KQWxhYSBIbGVpaGVsICgxKToNCiAgICAgIG5ldC9tbHg1ZTogQWxsb3cgdG8gbWF0Y2ggb24g
+TVBMUyBwYXJhbWV0ZXJzIG9ubHkgZm9yIE1QTFMgb3ZlciBVRFANCg0KQWxleCBFbGRlciAoMik6
+DQogICAgICBuZXQ6IGlwYTogdGVybWluYXRlIG1lc3NhZ2UgaGFuZGxlciBhcnJheXMNCiAgICAg
+IG5ldDogaXBhOiBmaXggaW5pdCBoZWFkZXIgY29tbWFuZCB2YWxpZGF0aW9uDQoNCkFsZXhhbmRl
+ciBMb2Jha2luICgxKToNCiAgICAgIGZsb3dfZGlzc2VjdG9yOiBmaXggYnl0ZW9yZGVyIG9mIGRp
+c3NlY3RlZCBJQ01QIElEDQoNCkFsZXhhbmRlciBPdmVjaGtpbiAoMSk6DQogICAgICB0Y3A6IHJl
+bG9va3VwIHNvY2sgZm9yIFJTVCtBQ0sgcGFja2V0cyBoYW5kbGVkIGJ5IG9ic29sZXRlIHJlcSBz
+b2NrDQoNCkFsZXhlaSBTdGFyb3ZvaXRvdiAoNCk6DQogICAgICBicGY6IERvbnQgYWxsb3cgdm1s
+aW51eCBCVEYgdG8gYmUgdXNlZCBpbiBtYXBfY3JlYXRlIGFuZCBwcm9nX2xvYWQuDQogICAgICBm
+dHJhY2U6IEZpeCBtb2RpZnlfZnRyYWNlX2RpcmVjdC4NCiAgICAgIGJwZjogRml4IGZleGl0IHRy
+YW1wb2xpbmUuDQogICAgICBzZWxmdGVzdC9icGY6IEFkZCBhIHRlc3QgdG8gY2hlY2sgdHJhbXBv
+bGluZSBmcmVlaW5nIGxvZ2ljLg0KDQpBbmRyZSBHdWVkZXMgKDEpOg0KICAgICAgaWdjOiBGaXgg
+aWdjX3B0cF9yeF9wa3RzdGFtcCgpDQoNCkFuZHJpaSBOYWtyeWlrbyAoMSk6DQogICAgICBNZXJn
+ZSBicmFuY2ggJ2xpYmJwZjogRml4IEJURiBkdW1wIG9mIHBvaW50ZXItdG8tYXJyYXktb2Ytc3Ry
+dWN0Jw0KDQpBbmdlbG8gRHVyZWdoZWxsbyAoMSk6DQogICAgICBjYW46IGZsZXhjYW46IGZsZXhj
+YW5fY2hpcF9mcmVlemUoKTogZml4IGNoaXAgZnJlZXplIGZvciBtaXNzaW5nIGJpdHJhdGUNCg0K
+QXJuZCBCZXJnbWFubiAoMik6DQogICAgICBpc2RuOiBjYXBpOiBmaXggbWlzbWF0Y2hlZCBwcm90
+b3R5cGVzDQogICAgICBjaF9rdGxzOiBmaXggZW51bS1jb252ZXJzaW9uIHdhcm5pbmcNCg0KQXlh
+IExldmluICg0KToNCiAgICAgIG5ldC9tbHg1ZTogQWNjdW11bGF0ZSBwb3J0IFBUUCBUWCBzdGF0
+cyB3aXRoIG90aGVyIGNoYW5uZWxzIHN0YXRzDQogICAgICBuZXQvbWx4NWU6IFNldCBQVFAgY2hh
+bm5lbCBwb2ludGVyIGV4cGxpY2l0bHkgdG8gTlVMTA0KICAgICAgbmV0L21seDU6IEZpeCB0dXJu
+LW9mZiBQUFMgY29tbWFuZA0KICAgICAgbmV0L21seDVlOiBGaXggZXJyb3IgcGF0aCBmb3IgZXRo
+dG9vbCBzZXQtcHJpdi1mbGFnDQoNCkJoYXNrYXIgQ2hvd2RodXJ5ICgyKToNCiAgICAgIHNjaF9y
+ZWQ6IEZpeCBhIHR5cG8NCiAgICAgIGRvY3M6IG5ldHdvcmtpbmc6IEZpeCBhIHR5cG8NCg0KQnJp
+YW4gTm9ycmlzICgxKToNCiAgICAgIG1hYzgwMjExOiBBbGxvdyBIRSBvcGVyYXRpb24gdG8gYmUg
+bG9uZ2VyIHRoYW4gZXhwZWN0ZWQuDQoNCkNhcmxvcyBMbGFtYXMgKDEpOg0KICAgICAgc2VsZnRl
+c3RzL25ldDogZml4IHdhcm5pbmdzIG9uIHJldXNlYWRkcl9wb3J0c19leGhhdXN0ZWQNCg0KQ2hy
+aXN0b3BoZSBMZXJveSAoMSk6DQogICAgICBuZXQ6IG1hcnZlbGw6IFJlbW92ZSByZWZlcmVuY2Ug
+dG8gQ09ORklHX01WNjRYNjANCg0KQ29saW4gSWFuIEtpbmcgKDEpOg0KICAgICAgb2N0ZW9udHgy
+LWFmOiBGaXggbWVtb3J5IGxlYWsgb2Ygb2JqZWN0IGJ1Zg0KDQpDb3JlbnRpbiBMYWJiZSAoMSk6
+DQogICAgICBuZXQ6IHN0bW1hYzogZHdtYWMtc3VuOGk6IFByb3ZpZGUgVFggYW5kIFJYIGZpZm8g
+c2l6ZXMNCg0KRGFuIENhcnBlbnRlciAoMSk6DQogICAgICBtcHRjcDogZml4IGJpdCBNUFRDUF9Q
+VVNIX1BFTkRJTkcgdGVzdHMNCg0KRGFuaWVsIEJvcmttYW5uICgyKToNCiAgICAgIG5ldDogQ29u
+c29saWRhdGUgY29tbW9uIGJsYWNraG9sZSBkc3Qgb3BzDQogICAgICBuZXQsIGJwZjogRml4IGlw
+NmlwNiBjcmFzaCB3aXRoIGNvbGxlY3RfbWQgcG9wdWxhdGVkIHNrYnMNCg0KRGFuaWVsIFBoYW4g
+KDEpOg0KICAgICAgbWFjODAyMTE6IENoZWNrIGNyeXB0b19hZWFkX2VuY3J5cHQgZm9yIGVycm9y
+cw0KDQpEYXZpZCBCcmF6ZGlsICgxKToNCiAgICAgIHNlbGludXg6IHZzb2NrOiBTZXQgU0lEIGZv
+ciBzb2NrZXQgcmV0dXJuZWQgYnkgYWNjZXB0KCkNCg0KRGF2aWQgUy4gTWlsbGVyICgxOSk6DQog
+ICAgICBNZXJnZSBicmFuY2ggJ2lwNmlwNi1jcmFzaCcNCiAgICAgIE1lcmdlIGdpdDovL2dpdC5r
+ZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9icGYvYnBmDQogICAgICBNZXJnZSB0
+YWcgJ21seDUtZml4ZXMtMjAyMS0wMy0xMCcgb2YgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3Nj
+bS9saW51eC9rZXJuZWwvZ2l0L3NhZWVkL2xpbnV4DQogICAgICBNZXJnZSBicmFuY2ggJzFHYkUn
+IG9mIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90bmd1eS9u
+ZXQtcXVldWUNCiAgICAgIE1lcmdlIGJyYW5jaCAnaHRiLWZpeGVzJw0KICAgICAgUmV2ZXJ0ICJu
+ZXQ6IGJvbmRpbmc6IGZpeCBlcnJvciByZXR1cm4gY29kZSBvZiBib25kX25laWdoX2luaXQoKSIN
+CiAgICAgIE1lcmdlIGJyYW5jaCAnMTAwR2JFJyBvZiBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIv
+c2NtL2xpbnV4L2tlcm5lbC9naXQgL3RuZ3V5L25ldC1xdWV1ZQ0KICAgICAgTWVyZ2UgdGFnICds
+aW51eC1jYW4tZml4ZXMtZm9yLTUuMTItMjAyMTAzMTYnIG9mIGdpdDovL2dpdC5rZXJuZWwub3Jn
+L3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9ta2wvbGludXgtY2FuDQogICAgICBNZXJnZSBicmFu
+Y2ggJ25mcC1maXhlcycNCiAgICAgIE1lcmdlIHRhZyAnbWFjODAyMTEtZm9yLW5ldC0yMDIxLTAz
+LTE3JyBvZiBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvamJl
+cmcvbWFjODAyMTENCiAgICAgIE1lcmdlIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGlu
+dXgva2VybmVsL2dpdC9icGYvYnBmDQogICAgICBNZXJnZSBicmFuY2ggJ29jdGVvbnR4Mi1maXhl
+cycNCiAgICAgIE1lcmdlIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVs
+L2dpdC9wYWJsby9uZg0KICAgICAgTWVyZ2UgYnJhbmNoICcxR2JFJyBvZiBnaXQ6Ly9naXQua2Vy
+bmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG5ndXkvbmV0LXF1ZXVlDQogICAgICBN
+ZXJnZSBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnBmL2Jw
+Zg0KICAgICAgTWVyZ2UgYnJhbmNoICdwYS1mb3gtdmFsaWRhdGlvbicNCiAgICAgIE1lcmdlIHRh
+ZyAnbGludXgtY2FuLWZpeGVzLWZvci01LjEyLTIwMjEwMzIwJyBvZiBnaXQ6Ly9naXQua2VybmVs
+Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvbWtsL2xpbnV4LWNhbg0KICAgICAgTWVyZ2Ug
+dGFnICdtbHg1LWZpeGVzLTIwMjEtMDMtMjInIG9mIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9z
+Y20vbGludXgva2VybmVsL2dpdC9zYWVlZC9saW51eA0KICAgICAgbWF0aDogRXhwb3J0IG11bF91
+NjRfdTY0X2Rpdl91NjQNCg0KRGF2aWRlIENhcmF0dGkgKDEpOg0KICAgICAgbXB0Y3A6IGZpeCBB
+RERfQUREUiBITUFDIGluIGNhc2UgcG9ydCBpcyBzcGVjaWZpZWQNCg0KRGltYSBDaHVtYWsgKDEp
+Og0KICAgICAgbmV0L21seDVlOiBPZmZsb2FkIHR1cGxlIHJld3JpdGUgZm9yIG5vbi1DVCBmbG93
+cw0KDQpEaW5naGFvIExpdSAoMSk6DQogICAgICBlMTAwMGU6IEZpeCBlcnJvciBoYW5kbGluZyBp
+biBlMTAwMF9zZXRfZDBfbHBsdV9zdGF0ZV84MjU3MQ0KDQpEeWxhbiBIdW5nICgxKToNCiAgICAg
+IGZ0Z21hYzEwMDogUmVzdGFydCBNQUMgSFcgb25jZQ0KDQpFcmljIER1bWF6ZXQgKDQpOg0KICAg
+ICAgbWFjdmxhbjogbWFjdmxhbl9jb3VudF9yeCgpIG5lZWRzIHRvIGJlIGF3YXJlIG9mIHByZWVt
+cHRpb24NCiAgICAgIG5ldDogc2NoZWQ6IHZhbGlkYXRlIHN0YWIgdmFsdWVzDQogICAgICBuZXQ6
+IHFydHI6IGZpeCBhIGtlcm5lbC1pbmZvbGVhayBpbiBxcnRyX3JlY3Ztc2coKQ0KICAgICAgdGlw
+YzogYmV0dGVyIHZhbGlkYXRlIHVzZXIgaW5wdXQgaW4gdGlwY19ubF9yZXRyaWV2ZV9rZXkoKQ0K
+DQpFdmEgRGVuZ2xlciAoMSk6DQogICAgICBkZXZsaW5rOiBmaXggdHlwbyBpbiBkb2N1bWVudGF0
+aW9uDQoNCkZsb3JpYW4gRmFpbmVsbGkgKDQpOg0KICAgICAgbmV0OiBkc2E6IGI1MzogVkxBTiBm
+aWx0ZXJpbmcgaXMgZ2xvYmFsIHRvIGFsbCB1c2Vycw0KICAgICAgbmV0OiBkc2E6IGJjbV9zZjI6
+IFF1YWxpZnkgcGh5ZGV2LT5kZXZfZmxhZ3MgYmFzZWQgb24gcG9ydA0KICAgICAgbmV0OiBwaHk6
+IGJyb2FkY29tOiBBZGQgcG93ZXIgZG93biBleGl0IHJlc2V0IHN0YXRlIGRlbGF5DQogICAgICBu
+ZXQ6IHBoeTogYnJvYWRjb206IEZpeCBSR01JSSBkZWxheXMgZm9yIEJDTTUwMTYwIGFuZCBCQ001
+MDYxME0NCg0KRmxvcmlhbiBXZXN0cGhhbCAoMSk6DQogICAgICBuZXRmaWx0ZXI6IGN0bmV0bGlu
+azogZml4IGR1bXAgb2YgdGhlIGV4cGVjdCBtYXNrIGF0dHJpYnV0ZQ0KDQpHZWVydCBVeXR0ZXJo
+b2V2ZW4gKDEpOg0KICAgICAgbmV0OiBicm9hZGNvbTogQkNNNDkwOF9FTkVUIHNob3VsZCBub3Qg
+ZGVmYXVsdCB0byB5LCB1bmNvbmRpdGlvbmFsbHkNCg0KR2VldGhhIHNvd2phbnlhICgyKToNCiAg
+ICAgIG9jdGVvbnR4Mi1hZjogRml4IGlycSBmcmVlIGluIHJ2dSB0ZWFyZG93bg0KICAgICAgb2N0
+ZW9udHgyLXBmOiBDbGVhciBSU1MgZW5hYmxlIGZsYWcgb24gaW50ZXJhY2UgZG93bg0KDQpHZW9m
+ZiBMZXZhbmQgKDEpOg0KICAgICAgTUFJTlRBSU5FUlM6IFVwZGF0ZSBTcGlkZXJuZXQgbmV0d29y
+ayBkcml2ZXINCg0KR2VvcmdlIE1jQ29sbGlzdGVyICgxKToNCiAgICAgIG5ldDogZHNhOiBkb24n
+dCBhc3NpZ24gYW4gZXJyb3IgdmFsdWUgdG8gdGFnX29wcw0KDQpHZW9yZ2kgVmFsa292ICgxKToN
+CiAgICAgIGxpYmJwZjogRml4IElOU1RBTEwgZmxhZyBvcmRlcg0KDQpIYW5nYmluIExpdSAoMik6
+DQogICAgICBzZWxmdGVzdHMvYnBmOiBTZXQgZ29wdCBvcHRfY2xhc3MgdG8gMCBpZiBnZXQgdHVu
+bmVsIG9wdCBmYWlsZWQNCiAgICAgIHNlbGZ0ZXN0czogZm9yd2FyZGluZzogdnhsYW5fYnJpZGdl
+XzFkOiBGaXggdnhsYW4gZWNuIGRlY2Fwc3VsYXRlIHZhbHVlDQoNCkhhcmlwcmFzYWQgS2VsYW0g
+KDEpOg0KICAgICAgb2N0ZW9udHgyLWFmOiBmaXggaW5maW5pdGUgbG9vcCBpbiB1bm1hcHBpbmcg
+TlBDIGNvdW50ZXINCg0KSGF5ZXMgV2FuZyAoMSk6DQogICAgICByODE1MjogbGltaXQgdGhlIFJY
+IGJ1ZmZlciBzaXplIG9mIFJUTDgxNTNBIGZvciBVU0IgMi4wDQoNCkhlaW5lciBLYWxsd2VpdCAo
+MSk6DQogICAgICByODE2OTogZml4IERNQSBiZWluZyB1c2VkIGFmdGVyIGJ1ZmZlciBmcmVlIGlm
+IFdvTCBpcyBlbmFibGVkDQoNCkh1eSBOZ3V5ZW4gKDEpOg0KICAgICAgbmV0L21seDU6IEFkZCBi
+YWNrIG11bHRpY2FzdCBzdGF0cyBmb3IgdXBsaW5rIHJlcHJlc2VudG9yDQoNCklkbyBTY2hpbW1l
+bCAoMik6DQogICAgICBkcm9wX21vbml0b3I6IFBlcmZvcm0gY2xlYW51cCB1cG9uIHByb2JlIHJl
+Z2lzdHJhdGlvbiBmYWlsdXJlDQogICAgICBwc2FtcGxlOiBGaXggdXNlciBBUEkgYnJlYWthZ2UN
+Cg0KSWx5YSBMaXBuaXRza2l5ICgxKToNCiAgICAgIG5ldDogZHNhOiBtdDc1MzA6IHNldHVwIGNv
+cmUgY2xvY2sgZXZlbiBpbiBUUkdNSUkgbW9kZQ0KDQpKYWt1YiBLaWNpbnNraSAoMSk6DQogICAg
+ICBpcHY2OiB3ZWFrZW4gdGhlIHY0bWFwcGVkIHNvdXJjZSBjaGVjaw0KDQpKYXJvZCBXaWxzb24g
+KDEpOg0KICAgICAgd2lyZWxlc3Mvbmw4MDIxMTogZml4IHdkZXZfaWQgbWF5IGJlIHVzZWQgdW5p
+bml0aWFsaXplZA0KDQpKZWFuLVBoaWxpcHBlIEJydWNrZXIgKDIpOg0KICAgICAgbGliYnBmOiBG
+aXggQlRGIGR1bXAgb2YgcG9pbnRlci10by1hcnJheS1vZi1zdHJ1Y3QNCiAgICAgIHNlbGZ0ZXN0
+cy9icGY6IEFkZCBzZWxmdGVzdCBmb3IgcG9pbnRlci10by1hcnJheS1vZi1zdHJ1Y3QgQlRGIGR1
+bXANCg0KSmVzcGVyIERhbmdhYXJkIEJyb3VlciAoMik6DQogICAgICBicGY6IEJQRi1oZWxwZXIg
+Zm9yIE1UVSBjaGVja2luZyBhZGQgbGVuZ3RoIGlucHV0DQogICAgICBzZWxmdGVzdHMvYnBmOiBU
+ZXN0cyB1c2luZyBicGZfY2hlY2tfbXR1IEJQRi1oZWxwZXIgaW5wdXQgbXR1X2xlbiBwYXJhbQ0K
+DQpKZXNzZSBCcmFuZGVidXJnICgxKToNCiAgICAgIGlnYjogY2hlY2sgdGltZXN0YW1wIHZhbGlk
+aXR5DQoNCkppbW15IEFzc2Fyc3NvbiAoMik6DQogICAgICBjYW46IGt2YXNlcl9wY2llZmQ6IEFs
+d2F5cyBkaXNhYmxlIGJ1cyBsb2FkIHJlcG9ydGluZw0KICAgICAgY2FuOiBrdmFzZXJfdXNiOiBB
+ZGQgc3VwcG9ydCBmb3IgVVNCY2FuIFBybyA0eEhTDQoNCkppcmkgQm9oYWMgKDEpOg0KICAgICAg
+bmV0OiBjaGVjayBhbGwgbmFtZSBub2RlcyBpbiBfX2Rldl9hbGxvY19uYW1lDQoNCkpvaGFuIEhv
+dm9sZCAoMSk6DQogICAgICBuZXQ6IGNkYy1waG9uZXQ6IGZpeCBkYXRhLWludGVyZmFjZSByZWxl
+YXNlIG9uIHByb2JlIGZhaWx1cmUNCg0KSm9oYW5uZXMgQmVyZyAoMyk6DQogICAgICBtYWM4MDIx
+MTogZml4IHJhdGUgbWFzayByZXNldA0KICAgICAgbWFjODAyMTE6IG1pbnN0cmVsX2h0OiByZW1v
+dmUgdW51c2VkIHZhcmlhYmxlICdtZycNCiAgICAgIG5sODAyMTE6IGZpeCBsb2NraW5nIGZvciB3
+aXJlbGVzcyBkZXZpY2UgbmV0bnMgY2hhbmdlDQoNCkpvbmF0aGFuIE5ldXNjaMOkZmVyICgxKToN
+CiAgICAgIE1BSU5UQUlORVJTOiBDb21iaW5lICJRTE9HSUMgUUxHRSAxMEdiIEVUSEVSTkVUIERS
+SVZFUiIgc2VjdGlvbnMgaW50byBvbmUNCg0KS2FydGhpa2V5YW4gS2F0aGlydmVsICgxKToNCiAg
+ICAgIG1hYzgwMjExOiBjaG9vc2UgZmlyc3QgZW5hYmxlZCBjaGFubmVsIGZvciBtb25pdG9yDQoN
+Ckt1bWFyIEthcnRpa2V5YSBEd2l2ZWRpICgxKToNCiAgICAgIGxpYmJwZjogVXNlIFNPQ0tfQ0xP
+RVhFQyB3aGVuIG9wZW5pbmcgdGhlIG5ldGxpbmsgc29ja2V0DQoNCkxpIFJvbmdRaW5nICgxKToN
+CiAgICAgIGlnYjogYXZvaWQgcHJlbWF0dXJlIFJ4IGJ1ZmZlciByZXVzZQ0KDQpMaWp1biBQYW4g
+KDEpOg0KICAgICAgaWJtdm5pYzogdXBkYXRlIE1BSU5UQUlORVJTDQoNCkxvdWlzIFBlZW5zICgz
+KToNCiAgICAgIG5mcDogZmxvd2VyOiBmaXggdW5zdXBwb3J0ZWQgcHJlX3R1bm5lbCBmbG93cw0K
+ICAgICAgbmZwOiBmbG93ZXI6IGFkZCBpcHY2IGJpdCB0byBwcmVfdHVubmVsIGNvbnRyb2wgbWVz
+c2FnZQ0KICAgICAgbmZwOiBmbG93ZXI6IGZpeCBwcmVfdHVuIG1hc2sgaWQgYWxsb2NhdGlvbg0K
+DQpMdWRvdmljIFNlbmVjYXV4ICgxKToNCiAgICAgIG5ldGZpbHRlcjogY29ubnRyYWNrOiBGaXgg
+Z3JlIHR1bm5lbGluZyBvdmVyIGlwdjYNCg0KTHYgWXVubG9uZyAoMSk6DQogICAgICBuZXQvcWxj
+bmljOiBGaXggYSB1c2UgYWZ0ZXIgZnJlZSBpbiBxbGNuaWNfODN4eF9nZXRfbWluaWR1bXBfdGVt
+cGxhdGUNCg0KTWFjaWVqIEZpamFsa293c2tpICg0KToNCiAgICAgIHZldGg6IFN0b3JlIHF1ZXVl
+X21hcHBpbmcgaW5kZXBlbmRlbnRseSBvZiBYRFAgcHJvZyBwcmVzZW5jZQ0KICAgICAgaTQwZTog
+bW92ZSBoZWFkcm9vbSBpbml0aWFsaXphdGlvbiB0byBpNDBlX2NvbmZpZ3VyZV9yeF9yaW5nDQog
+ICAgICBpY2U6IG1vdmUgaGVhZHJvb20gaW5pdGlhbGl6YXRpb24gdG8gaWNlX3NldHVwX3J4X2N0
+eA0KICAgICAgaXhnYmU6IG1vdmUgaGVhZHJvb20gaW5pdGlhbGl6YXRpb24gdG8gaXhnYmVfY29u
+ZmlndXJlX3J4X3JpbmcNCg0KTWFnbnVzIEthcmxzc29uICgxKToNCiAgICAgIGljZTogZml4IG5h
+cGkgd29yayBkb25lIHJlcG9ydGluZyBpbiB4c2sgcGF0aA0KDQpNYW9yIERpY2ttYW4gKDIpOg0K
+ICAgICAgbmV0L21seDVlOiBEb24ndCBtYXRjaCBvbiBHZW5ldmUgb3B0aW9ucyBpbiBjYXNlIG9w
+dGlvbiBtYXNrcyBhcmUgYWxsIHplcm8NCiAgICAgIG5ldC9tbHg1OiBEaXNhYmxlIFZGIHR1bm5l
+bCBUWCBvZmZsb2FkIGlmIGlnbm9yZV9mbG93X2xldmVsIGlzbid0IHN1cHBvcnRlZA0KDQpNYW9y
+IEdvdHRsaWViICgyKToNCiAgICAgIG5ldC9tbHg1OiBTZXQgUVAgdGltZXN0YW1wIG1vZGUgdG8g
+ZGVmYXVsdA0KICAgICAgUkRNQS9tbHg1OiBGaXggdGltZXN0YW1wIGRlZmF1bHQgbW9kZQ0KDQpN
+YXJjIEtsZWluZS1CdWRkZSAoMyk6DQogICAgICBjYW46IGlzb3RwOiBpc290cF9zZXRzb2Nrb3B0
+KCk6IG9ubHkgYWxsb3cgdG8gc2V0IGxvdyBsZXZlbCBUWCBmbGFncyBmb3IgQ0FOLUZEDQogICAg
+ICBjYW46IGlzb3RwOiBUWC1wYXRoOiBlbnN1cmUgdGhhdCBDQU4gZnJhbWUgZmxhZ3MgYXJlIGlu
+aXRpYWxpemVkDQogICAgICBjYW46IHBlYWtfdXNiOiBSZXZlcnQgImNhbjogcGVha191c2I6IGFk
+ZCBmb3Jnb3R0ZW4gc3VwcG9ydGVkIGRldmljZXMiDQoNCk1hcmNlbG8gUmljYXJkbyBMZWl0bmVy
+ICgxKToNCiAgICAgIG5ldC9zY2hlZDogYWN0X2N0OiBjbGVhciBwb3N0X2N0IGlmIGRvaW5nIGN0
+X2NsZWFyDQoNCk1hcmsgVG9tbGluc29uICgzKToNCiAgICAgIFJldmVydCAibmV0ZmlsdGVyOiB4
+X3RhYmxlczogVXBkYXRlIHJlbWFpbmluZyBkZXJlZmVyZW5jZSB0byBSQ1UiDQogICAgICBSZXZl
+cnQgIm5ldGZpbHRlcjogeF90YWJsZXM6IFN3aXRjaCBzeW5jaHJvbml6YXRpb24gdG8gUkNVIg0K
+ICAgICAgbmV0ZmlsdGVyOiB4X3RhYmxlczogVXNlIGNvcnJlY3QgbWVtb3J5IGJhcnJpZXJzLg0K
+DQpNYXJrdXMgVGhlaWwgKDEpOg0KICAgICAgbWFjODAyMTE6IGZpeCBkb3VibGUgZnJlZSBpbiBp
+YnNzX2xlYXZlDQoNCk1hcnRpbiBXaWxsaSAoMSk6DQogICAgICBjYW46IGRldjogTW92ZSBkZXZp
+Y2UgYmFjayB0byBpbml0IG5ldG5zIG9uIG93bmluZyBuZXRucyBkZWxldGUNCg0KTWF0IE1hcnRp
+bmVhdSAoMik6DQogICAgICBzZWxmdGVzdHM6IG1wdGNwOiBSZXN0b3JlIHBhY2tldCBjYXB0dXJl
+IG9wdGlvbiBpbiBqb2luIHRlc3RzDQogICAgICBtcHRjcDogQ2hhbmdlIG1haWxpbmcgbGlzdCBh
+ZGRyZXNzDQoNCk1heGltIE1pa2l0eWFuc2tpeSAoNSk6DQogICAgICBuZXQvbWx4NWU6IFdoZW4g
+Y2hhbmdpbmcgWERQIHByb2dyYW0gd2l0aG91dCByZXNldCwgdGFrZSByZWZzIGZvciBYU0sgUlFz
+DQogICAgICBuZXQvbWx4NWU6IFJldmVydCBwYXJhbWV0ZXJzIG9uIGVycm9ycyB3aGVuIGNoYW5n
+aW5nIFBUUCBzdGF0ZSB3aXRob3V0IHJlc2V0DQogICAgICBzY2hfaHRiOiBGaXggc2VsZWN0X3F1
+ZXVlIGZvciBub24tb2ZmbG9hZCBtb2RlDQogICAgICBzY2hfaHRiOiBGaXggb2ZmbG9hZCBjbGVh
+bnVwIGluIGh0Yl9kZXN0cm95IG9uIGh0Yl9pbml0IGZhaWx1cmUNCiAgICAgIG5ldC9tbHg1ZTog
+Rml4IGRpdmlzaW9uIGJ5IDAgaW4gbWx4NWVfc2VsZWN0X3F1ZXVlDQoNCk1pYW4gWW91c2FmIEth
+dWthYiAoMSk6DQogICAgICBuZXRzZWM6IHJlc3RvcmUgcGh5IHBvd2VyIHN0YXRlIGFmdGVyIGNv
+bnRyb2xsZXIgcmVzZXQNCg0KTXVoYW1tYWQgSHVzYWluaSBadWxraWZsaSAoMik6DQogICAgICBp
+Z2M6IEZpeCBQYXVzZSBGcmFtZSBBZHZlcnRpc2luZw0KICAgICAgaWdjOiBGaXggU3VwcG9ydGVk
+IFBhdXNlIEZyYW1lIExpbmsgU2V0dGluZw0KDQpOYW1oeXVuZyBLaW0gKDEpOg0KICAgICAgbGli
+YnBmOiBGaXggZXJyb3IgcGF0aCBpbiBicGZfb2JqZWN0X19lbGZfaW5pdCgpDQoNCk9saXZlciBI
+YXJ0a29wcCAoMSk6DQogICAgICBjYW46IGlzb3RwOiB0eC1wYXRoOiB6ZXJvIGluaXRpYWxpemUg
+b3V0Z29pbmcgQ0FOIGZyYW1lcw0KDQpPbmcgQm9vbiBMZW9uZyAoMSk6DQogICAgICBuZXQ6IHBo
+eWxpbms6IEZpeCBwaHlsaW5rX2VycigpIGZ1bmN0aW9uIG5hbWUgZXJyb3IgaW4gcGh5bGlua19t
+YWpvcl9jb25maWcNCg0KUGFibG8gTmVpcmEgQXl1c28gKDMpOg0KICAgICAgbmV0ZmlsdGVyOiBu
+ZnRhYmxlczogcmVwb3J0IEVPUE5PVFNVUFAgb24gdW5zdXBwb3J0ZWQgZmxvd3RhYmxlIGZsYWdz
+DQogICAgICBuZXRmaWx0ZXI6IG5mdGFibGVzOiBhbGxvdyB0byB1cGRhdGUgZmxvd3RhYmxlIGZs
+YWdzDQogICAgICBuZXRmaWx0ZXI6IG5mdGFibGVzOiBza2lwIGhvb2sgb3ZlcmxhcCBsb2dpYyBp
+ZiBmbG93dGFibGUgaXMgc3RhbGUNCg0KUGFyYXYgUGFuZGl0ICgzKToNCiAgICAgIG5ldC9tbHg1
+ZTogRS1zd2l0Y2gsIEZpeCByYXRlIGNhbGN1bGF0aW9uIGRpdmlzaW9uDQogICAgICBuZXQvbWx4
+NTogU0YsIENvcnJlY3QgdmhjYSBjb250ZXh0IHNpemUNCiAgICAgIG5ldC9tbHg1OiBTRiwgZG8g
+bm90IHVzZSBlY3B1IGJpdCBmb3IgdmhjYSBzdGF0ZSBwcm9jZXNzaW5nDQoNClBhdmVsIEFuZHJp
+YW5vdiAoMSk6DQogICAgICBuZXQ6IHB4YTE2OF9ldGg6IEZpeCBhIHBvdGVudGlhbCBkYXRhIHJh
+Y2UgaW4gcHhhMTY4X2V0aF9yZW1vdmUNCg0KUGlvdHIgS3J5c2l1ayAoNSk6DQogICAgICBicGY6
+IFByb2hpYml0IGFsdSBvcHMgZm9yIHBvaW50ZXIgdHlwZXMgbm90IGRlZmluaW5nIHB0cl9saW1p
+dA0KICAgICAgYnBmOiBGaXggb2ZmLWJ5LW9uZSBmb3IgYXJlYSBzaXplIGluIGNyZWF0aW5nIG1h
+c2sgdG8gbGVmdA0KICAgICAgYnBmOiBTaW1wbGlmeSBhbHVfbGltaXQgbWFza2luZyBmb3IgcG9p
+bnRlciBhcml0aG1ldGljDQogICAgICBicGY6IEFkZCBzYW5pdHkgY2hlY2sgZm9yIHVwcGVyIHB0
+cl9saW1pdA0KICAgICAgYnBmLCBzZWxmdGVzdHM6IEZpeCB1cCBzb21lIHRlc3RfdmVyaWZpZXIg
+Y2FzZXMgZm9yIHVucHJpdmlsZWdlZA0KDQpSYWZhxYIgTWnFgmVja2kgKDEpOg0KICAgICAgbmV0
+OiBkc2E6IGJjbV9zZjI6IHVzZSAyIEdicHMgSU1QIHBvcnQgbGluayBvbiBCQ000OTA4DQoNClJh
+a2VzaCBCYWJ1ICgxKToNCiAgICAgIG9jdGVvbnR4Mi1hZjogRm9ybWF0dGluZyBkZWJ1Z2ZzIGVu
+dHJ5IHJzcmNfYWxsb2MuDQoNClJvYmVydCBIYW5jb2NrICgxKToNCiAgICAgIG5ldDogYXhpZW5l
+dDogRml4IHByb2JlIGVycm9yIGNsZWFudXANCg0KUm9pIERheWFuICgyKToNCiAgICAgIG5ldC9t
+bHg1ZTogQ2hlY2sgY29ycmVjdCBpcF92ZXJzaW9uIGluIGRlY2Fwc3VsYXRpb24gcm91dGUgcmVz
+b2x1dGlvbg0KICAgICAgbmV0L21seDVlOiBGaXggZXJyb3IgZmxvdyBpbiBjaGFuZ2UgcHJvZmls
+ZQ0KDQpTYXNoYSBOZWZ0aW4gKDEpOg0KICAgICAgaWdjOiByZWluaXRfbG9ja2VkKCkgc2hvdWxk
+IGJlIGNhbGxlZCB3aXRoIHJ0bmxfbG9jaw0KDQpTaGFubm9uIE5lbHNvbiAoMSk6DQogICAgICBp
+b25pYzogbGluZWFyaXplIHRzbyBza2Igd2l0aCB0b28gbWFueSBmcmFncw0KDQpTaGF5IERyb3J5
+ICgyKToNCiAgICAgIG5ldC9tbHg1OiBTRjogRml4IG1lbW9yeSBsZWFrIG9mIHdvcmsgaXRlbQ0K
+ICAgICAgbmV0L21seDU6IFNGOiBGaXggZXJyb3IgZmxvdyBvZiBTRnMgYWxsb2NhdGlvbiBmbG93
+DQoNClN0YW5pc2xhdiBGb21pY2hldiAoMSk6DQogICAgICBicGY6IFVzZSBOT1BfQVRPTUlDNSBp
+bnN0ZWFkIG9mIGVtaXRfbm9wcygmcHJvZywgNSkgZm9yIEJQRl9UUkFNUF9GX0NBTExfT1JJRw0K
+DQpTdGVwaGFuZSBHcm9zamVhbiAoMSk6DQogICAgICBjYW46IHBlYWtfdXNiOiBhZGQgZm9yZ290
+dGVuIHN1cHBvcnRlZCBkZXZpY2VzDQoNClN1YmJhcmF5YSBTdW5kZWVwICg0KToNCiAgICAgIG9j
+dGVvbnR4Mi1wZjogRG8gbm90IG1vZGlmeSBudW1iZXIgb2YgcnVsZXMNCiAgICAgIG9jdGVvbnR4
+Mi1hZjogUmVtb3ZlIFRPUyBmaWVsZCBmcm9tIE1LRVggVFgNCiAgICAgIG9jdGVvbnR4Mi1hZjog
+UmV0dXJuIGNvcnJlY3QgQ0dYIFJYIGZpZm8gc2l6ZQ0KICAgICAgb2N0ZW9udHgyLWFmOiBGaXgg
+dW5pbml0aWFsaXplZCB2YXJpYWJsZSB3YXJuaW5nDQoNClRhbCBMb3Nzb3MgKDEpOg0KICAgICAg
+YnBmOiBDaGFuZ2UgaW5vZGVfc3RvcmFnZSdzIGxvb2t1cF9lbGVtIHJldHVybiB2YWx1ZSBmcm9t
+IE5VTEwgdG8gLUVCQURGDQoNClRhcmlxIFRvdWthbiAoMik6DQogICAgICBuZXQvbWx4NWU6IEVu
+Zm9yY2UgbWluaW11bSB2YWx1ZSBjaGVjayBmb3IgSUNPU1Egc2l6ZQ0KICAgICAgbmV0L21seDVl
+OiBSWCwgTWluZCB0aGUgTVBXUUUgZ2FwcyB3aGVuIGNhbGN1bGF0aW5nIG9mZnNldHMNCg0KVG9t
+IFNlZXdhbGQgKDIpOg0KICAgICAgZTEwMDBlOiBGaXggZHVwbGljYXRlIGluY2x1ZGUgZ3VhcmQN
+CiAgICAgIGlnYjogRml4IGR1cGxpY2F0ZSBpbmNsdWRlIGd1YXJkDQoNClRvbmcgWmhhbmcgKDQp
+Og0KICAgICAgbUlTRE46IGZpeCBjcmFzaCBpbiBmcml0enBjaQ0KICAgICAgbmV0OiBhcmNuZXQ6
+IGNvbTIwMDIwIGZpeCBlcnJvciBoYW5kbGluZw0KICAgICAgY2FuOiBjX2Nhbl9wY2k6IGNfY2Fu
+X3BjaV9yZW1vdmUoKTogZml4IHVzZS1hZnRlci1mcmVlDQogICAgICBjYW46IGNfY2FuOiBtb3Zl
+IHJ1bnRpbWUgUE0gZW5hYmxlL2Rpc2FibGUgdG8gY19jYW5fcGxhdGZvcm0NCg0KVG9uZ2hhbyBa
+aGFuZyAoMSk6DQogICAgICBuZXQ6IHNvY2s6IHNpbXBsaWZ5IHR3IHByb3RvIHJlZ2lzdHJhdGlv
+bg0KDQpUb3JpbiBDb29wZXItQmVubnVuICgyKToNCiAgICAgIGNhbjogbV9jYW46IG1fY2FuX2Rv
+X3J4X3BvbGwoKTogZml4IGV4dHJhbmVvdXMgbXNnIGxvc3Mgd2FybmluZw0KICAgICAgY2FuOiBt
+X2NhbjogbV9jYW5fcnhfcGVyaXBoZXJhbCgpOiBmaXggUlggYmVpbmcgYmxvY2tlZCBieSBlcnJv
+cnMNCg0KVml0YWx5IExpZnNoaXRzICgxKToNCiAgICAgIGUxMDAwZTogYWRkIHJ0bmxfbG9jaygp
+IHRvIGUxMDAwX3Jlc2V0X3Rhc2sNCg0KVmxhZGltaXIgT2x0ZWFuICgyKToNCiAgICAgIG5ldDog
+aXBjb25maWc6IGljX2RldiBjYW4gYmUgTlVMTCBpbiBpY19jbG9zZV9kZXZzDQogICAgICBuZXQ6
+IGJyaWRnZTogZG9uJ3Qgbm90aWZ5IHN3aXRjaGRldiBmb3IgbG9jYWwgRkRCIGFkZHJlc3Nlcw0K
+DQpXZWkgV2FuZyAoMik6DQogICAgICBpcHY2OiBmaXggc3VzcGVjaW91cyBSQ1UgdXNhZ2Ugd2Fy
+bmluZw0KICAgICAgbmV0OiBmaXggcmFjZSBiZXR3ZWVuIG5hcGkga3RocmVhZCBtb2RlIGFuZCBi
+dXN5IHBvbGwNCg0KWGllIEhlICgxKToNCiAgICAgIG5ldDogaGRsY194MjU6IFByZXZlbnQgcmFj
+aW5nIGJldHdlZW4gIngyNV9jbG9zZSIgYW5kICJ4MjVfeG1pdCIvIngyNV9yeCINCg0KWGluIExv
+bmcgKDEpOg0KICAgICAgc2N0cDogbW92ZSBza19yb3V0ZV9jYXBzIGNoZWNrIGFuZCBzZXQgaW50
+byBzY3RwX291dHFfZmx1c2hfdHJhbnNwb3J0cw0KDQpZYW5nYm8gTHUgKDEpOg0KICAgICAgcHRw
+X3FvcmlxOiBmaXggb3ZlcmZsb3cgaW4gcHRwX3FvcmlxX2FkamZpbmUoKSB1NjQgY2FsY2FsYXRp
+b24NCg0KWWV2Z2VueSBLbGl0ZXluaWsgKDEpOg0KICAgICAgbmV0L21seDU6IERSLCBGaXggcG90
+ZW50aWFsIHNoaWZ0IHdyYXBwaW5nIG9mIDMyLWJpdCB2YWx1ZSBpbiBTVEV2MSBnZXR0ZXINCg0K
+WWluanVuIFpoYW5nICgxKToNCiAgICAgIG5ldGZpbHRlcjogZmxvd3RhYmxlOiBNYWtlIHN1cmUg
+R0Mgd29ya3MgcGVyaW9kaWNhbGx5IGluIGlkbGUgc3lzdGVtDQoNCllvbmdob25nIFNvbmcgKDIp
+Og0KICAgICAgYnBmOiBEb24ndCBkbyBicGZfY2dyb3VwX3N0b3JhZ2Vfc2V0KCkgZm9yIGt1cHJv
+YmUvdHAgcHJvZ3JhbXMNCiAgICAgIGJwZiwgeDg2OiBVc2Uga3ZtYWxsb2NfYXJyYXkgaW5zdGVh
+ZCBrbWFsbG9jX2FycmF5IGluIGJwZl9qaXRfY29tcA0KDQpaZW5naHVpIFl1ICgxKToNCiAgICAg
+IGRvY3M6IG5ldDogZW5hOiBGaXggZW5hX3N0YXJ0X3htaXQoKSBmdW5jdGlvbiBuYW1lIHR5cG8N
+Cg0KWnFpYW5nICgxKToNCiAgICAgIGJwZjogRml4IHVtZCBtZW1vcnkgbGVhayBpbiBjb3B5X3By
+b2Nlc3MoKQ0KDQpsaXV5YWNhbiAoMSk6DQogICAgICBuZXQ6IGNvcnJlY3Qgc2tfYWNjZXB0cV9p
+c19mdWxsKCkNCg0Kd2VueHUgKDIpOg0KICAgICAgbmV0L3NjaGVkOiBhY3RfYXBpOiBmaXggbWlz
+cyBzZXQgcG9zdF9jdCBmb3Igb3ZzIGFmdGVyIGRvIGNvbm50cmFjayBpbiBhY3RfY3QNCiAgICAg
+IG5ldC9zY2hlZDogY2xzX2Zsb3dlcjogZml4IG9ubHkgbWFzayBiaXQgY2hlY2sgaW4gdGhlIHZh
+bGlkYXRlX2N0X3N0YXRlDQoNCiBEb2N1bWVudGF0aW9uL25ldHdvcmtpbmcvZGV2aWNlX2RyaXZl
+cnMvZXRoZXJuZXQvYW1hem9uL2VuYS5yc3QgIHwgICAyICstDQogRG9jdW1lbnRhdGlvbi9uZXR3
+b3JraW5nL2RldmxpbmsvZGV2bGluay1kcGlwZS5yc3QgICAgICAgICAgICAgICB8ICAgMiArLQ0K
+IERvY3VtZW50YXRpb24vbmV0d29ya2luZy9kZXZsaW5rL2RldmxpbmstcG9ydC5yc3QgICAgICAg
+ICAgICAgICAgfCAgIDQgKy0NCiBEb2N1bWVudGF0aW9uL25ldHdvcmtpbmcveGZybV9kZXZpY2Uu
+cnN0ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICstDQogTUFJTlRBSU5FUlMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxNSArKy0t
+DQogYXJjaC94ODYvbmV0L2JwZl9qaXRfY29tcC5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8ICAzMSArKysrKystLQ0KIGRyaXZlcnMvaW5maW5pYmFuZC9ody9tbHg1L3Fw
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTggKysrKy0NCiBkcml2ZXJz
+L2lzZG4vY2FwaS9rY2FwaS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICA0ICstDQogZHJpdmVycy9pc2RuL2hhcmR3YXJlL21JU0ROL21JU0ROaXBhYy5jICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQ0KIGRyaXZlcnMvbmV0L2FyY25ldC9jb20yMDAy
+MC1wY2kuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMzQgKysrKystLS0tDQog
+ZHJpdmVycy9uZXQvYm9uZGluZy9ib25kX21haW4uYyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAgOCArLQ0KIGRyaXZlcnMvbmV0L2Nhbi9jX2Nhbi9jX2Nhbi5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjQgKy0tLS0tDQogZHJpdmVycy9uZXQvY2Fu
+L2NfY2FuL2NfY2FuX3BjaS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMyAr
+LQ0KIGRyaXZlcnMvbmV0L2Nhbi9jX2Nhbi9jX2Nhbl9wbGF0Zm9ybS5jICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgIDYgKy0NCiBkcml2ZXJzL25ldC9jYW4vZGV2L25ldGxpbmsuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAxICsNCiBkcml2ZXJzL25ldC9jYW4v
+ZmxleGNhbi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA4ICst
+DQogZHJpdmVycy9uZXQvY2FuL2t2YXNlcl9wY2llZmQuYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB8ICAgNCArDQogZHJpdmVycy9uZXQvY2FuL21fY2FuL21fY2FuLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNSArLQ0KIGRyaXZlcnMvbmV0L2Nhbi91
+c2IvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKw0K
+IGRyaXZlcnMvbmV0L2Nhbi91c2Iva3Zhc2VyX3VzYi9rdmFzZXJfdXNiX2NvcmUuYyAgICAgICAg
+ICAgICAgICAgfCAgIDQgKy0NCiBkcml2ZXJzL25ldC9kc2EvYjUzL2I1M19jb21tb24uYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE0ICsrLS0NCiBkcml2ZXJzL25ldC9kc2Ev
+YmNtX3NmMi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDExICsr
+LQ0KIGRyaXZlcnMvbmV0L2RzYS9tdDc1MzAuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgNTIgKysrKysrLS0tLS0tLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2Jy
+b2FkY29tL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0NCiBkcml2
+ZXJzL25ldC9ldGhlcm5ldC9jaGVsc2lvL2lubGluZV9jcnlwdG8vY2hfa3Rscy9jaGNyX2t0bHMu
+YyAgIHwgICAyICstDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvZmFyYWRheS9mdGdtYWMxMDAuYyAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50
+ZWwvZTEwMDBlLzgyNTcxLmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArDQogZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvaW50ZWwvZTEwMDBlL2h3LmggICAgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgNiArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2UxMDAwZS9uZXRkZXYuYyAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgIDYgKy0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRl
+bC9pNDBlL2k0MGVfbWFpbi5jICAgICAgICAgICAgICAgICAgICAgIHwgIDEzICsrKysNCiBkcml2
+ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pNDBlL2k0MGVfdHhyeC5jICAgICAgICAgICAgICAgICAg
+ICAgIHwgIDEyIC0tLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ljZS9pY2VfYmFzZS5j
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjQgKysrKystDQogZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvaW50ZWwvaWNlL2ljZV90eHJ4LmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAxNyAtLS0t
+LQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2ljZS9pY2VfeHNrLmMgICAgICAgICAgICAg
+ICAgICAgICAgICAgfCAgMTAgKy0tDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdiL2Ux
+MDAwX2h3LmggICAgICAgICAgICAgICAgICAgICAgICB8ICAgNiArLQ0KIGRyaXZlcnMvbmV0L2V0
+aGVybmV0L2ludGVsL2lnYi9pZ2IuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDQg
+Ky0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2IvaWdiX21haW4uYyAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgIDMzICsrKysrLS0tDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwv
+aWdiL2lnYl9wdHAuYyAgICAgICAgICAgICAgICAgICAgICAgICB8ICAzMSArKysrKystLQ0KIGRy
+aXZlcnMvbmV0L2V0aGVybmV0L2ludGVsL2lnYy9pZ2MuaCAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgfCAgIDIgKy0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX2V0aHRv
+b2wuYyAgICAgICAgICAgICAgICAgICAgIHwgICA3ICstDQogZHJpdmVycy9uZXQvZXRoZXJuZXQv
+aW50ZWwvaWdjL2lnY19tYWluLmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAgOSArKysNCiBk
+cml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX3B0cC5jICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgIDcyICsrKysrKysrKystLS0tLS0tLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2lu
+dGVsL2l4Z2JlL2l4Z2JlX21haW4uYyAgICAgICAgICAgICAgICAgICAgfCAgIDMgKy0NCiBkcml2
+ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICA0ICstDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvbWFydmVsbC9tdjY0M3h4X2V0aC5j
+ICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21h
+cnZlbGwvb2N0ZW9udHgyL2FmL25wY19wcm9maWxlLmggICAgICAgICAgfCAgIDIgLQ0KIGRyaXZl
+cnMvbmV0L2V0aGVybmV0L21hcnZlbGwvb2N0ZW9udHgyL2FmL3J2dS5jICAgICAgICAgICAgICAg
+ICAgfCAgIDYgKy0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9y
+dnUuaCAgICAgICAgICAgICAgICAgIHwgICAxICsNCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2
+ZWxsL29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMgICAgICAgICAgICAgIHwgIDE4ICsrKystDQogZHJp
+dmVycy9uZXQvZXRoZXJuZXQvbWFydmVsbC9vY3Rlb250eDIvYWYvcnZ1X2RlYnVnZnMuYyAgICAg
+ICAgICB8ICA1NyArKysrKysrKy0tLS0tLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21hcnZlbGwv
+b2N0ZW9udHgyL2FmL3J2dV9uaXguYyAgICAgICAgICAgICAgfCAgIDIgKy0NCiBkcml2ZXJzL25l
+dC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9hZi9ydnVfbnBjLmMgICAgICAgICAgICAgIHwg
+ICAyICstDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvbWFydmVsbC9vY3Rlb250eDIvbmljL290eDJf
+Zmxvd3MuYyAgICAgICAgICB8ICAgNCArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21hcnZlbGwv
+b2N0ZW9udHgyL25pYy9vdHgyX3BmLmMgICAgICAgICAgICAgfCAgIDUgKysNCiBkcml2ZXJzL25l
+dC9ldGhlcm5ldC9tYXJ2ZWxsL3B4YTE2OF9ldGguYyAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAyICstDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuLmggICAg
+ICAgICAgICAgICAgICAgICB8ICAgNyArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94
+L21seDUvY29yZS9lbi90Y19jdC5jICAgICAgICAgICAgICAgfCAgIDMgKy0NCiBkcml2ZXJzL25l
+dC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW4vdGNfdHVuLmMgICAgICAgICAgICAgIHwg
+ICA4ICstDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuL3RjX3R1
+bl9lbmNhcC5jICAgICAgICB8ICAgMyArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94
+L21seDUvY29yZS9lbi90Y190dW5fZ2VuZXZlLmMgICAgICAgfCAgIDQgKw0KIGRyaXZlcnMvbmV0
+L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl9ldGh0b29sLmMgICAgICAgICAgICAgfCAg
+MTEgKystDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX21haW4u
+YyAgICAgICAgICAgICAgICB8ICA4MSArKysrKysrKysrKysrKy0tLS0tLQ0KIGRyaXZlcnMvbmV0
+L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9lbl9yeC5jICAgICAgICAgICAgICAgICAgfCAg
+IDQgKy0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvZW5fdGMuYyAg
+ICAgICAgICAgICAgICAgIHwgIDU3ICsrKysrKysrKysrLS0tDQogZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvbWVsbGFub3gvbWx4NS9jb3JlL2VuX3RjLmggICAgICAgICAgICAgICAgICB8ICAgMSArDQog
+ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL2Vzd2l0Y2hfb2ZmbG9hZHMu
+YyAgICAgICB8ICAgMyArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29y
+ZS9mcGdhL2Nvbm4uYyAgICAgICAgICAgICAgfCAgIDEgKw0KIGRyaXZlcnMvbmV0L2V0aGVybmV0
+L21lbGxhbm94L21seDUvY29yZS9pcG9pYi9pcG9pYi5jICAgICAgICAgICAgfCAgIDQgKy0NCiBk
+cml2ZXJzL25ldC9ldGhlcm5ldC9tZWxsYW5veC9tbHg1L2NvcmUvbGliL2Nsb2NrLmMgICAgICAg
+ICAgICAgIHwgICA4ICstDQogZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3Jl
+L3NmL2Rldi9kZXYuYyAgICAgICAgICAgICB8ICAgNCArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0
+L21lbGxhbm94L21seDUvY29yZS9zZi9od190YWJsZS5jICAgICAgICAgICAgfCAgMTAgKy0tDQog
+ZHJpdmVycy9uZXQvZXRoZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL3NmL21seDVfaWZjX3ZoY2Ff
+ZXZlbnQuaCB8ICAgMiArLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29y
+ZS9zZi92aGNhX2V2ZW50LmMgICAgICAgICAgfCAgMjMgKysrLS0tDQogZHJpdmVycy9uZXQvZXRo
+ZXJuZXQvbWVsbGFub3gvbWx4NS9jb3JlL3NmL3ZoY2FfZXZlbnQuaCAgICAgICAgICB8ICAgNyAr
+LQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUvY29yZS9zdGVlcmluZy9kcl9z
+ZW5kLmMgICAgICAgfCAgIDEgKw0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L21lbGxhbm94L21seDUv
+Y29yZS9zdGVlcmluZy9kcl9zdGVfdjEuYyAgICAgfCAgIDQgKy0NCiBkcml2ZXJzL25ldC9ldGhl
+cm5ldC9uZXRyb25vbWUvbmZwL2Zsb3dlci9tZXRhZGF0YS5jICAgICAgICAgICAgIHwgIDI0ICsr
+KystLQ0KIGRyaXZlcnMvbmV0L2V0aGVybmV0L25ldHJvbm9tZS9uZnAvZmxvd2VyL29mZmxvYWQu
+YyAgICAgICAgICAgICAgfCAgMTggKysrKysNCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9uZXRyb25v
+bWUvbmZwL2Zsb3dlci90dW5uZWxfY29uZi5jICAgICAgICAgIHwgIDE1ICsrKy0NCiBkcml2ZXJz
+L25ldC9ldGhlcm5ldC9wZW5zYW5kby9pb25pYy9pb25pY190eHJ4LmMgICAgICAgICAgICAgICAg
+IHwgIDEzICsrLS0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9xbG9naWMvcWxjbmljL3FsY25pY19t
+aW5pZHVtcC5jICAgICAgICAgICAgIHwgICAzICsNCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9yZWFs
+dGVrL3I4MTY5X21haW4uYyAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2ICstDQogZHJpdmVy
+cy9uZXQvZXRoZXJuZXQvc29jaW9uZXh0L25ldHNlYy5jICAgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICAgOSArKy0NCiBkcml2ZXJzL25ldC9ldGhlcm5ldC9zdG1pY3JvL3N0bW1hYy9kd21hYy1z
+dW44aS5jICAgICAgICAgICAgICAgIHwgICAyICsNCiBkcml2ZXJzL25ldC9ldGhlcm5ldC94aWxp
+bngveGlsaW54X2F4aWVuZXRfbWFpbi5jICAgICAgICAgICAgICAgIHwgIDM3ICsrKysrKy0tLQ0K
+IGRyaXZlcnMvbmV0L2lwYS9pcGFfY21kLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgNTAgKysrKysrKy0tLS0tDQogZHJpdmVycy9uZXQvaXBhL2lwYV9xbWkuYyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArDQogZHJpdmVycy9u
+ZXQvcGh5L2Jyb2FkY29tLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgOSArKysNCiBkcml2ZXJzL25ldC9waHkvcGh5bGluay5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgICAyICstDQogZHJpdmVycy9uZXQvdXNiL2NkYy1waG9uZXQu
+YyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArDQogZHJpdmVycy9u
+ZXQvdXNiL3I4MTUyLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgNSArLQ0KIGRyaXZlcnMvbmV0L3ZldGguYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgIDMgKy0NCiBkcml2ZXJzL25ldC93YW4vaGRsY194MjUuYyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDQyICsrKysrKysrKystDQog
+ZHJpdmVycy9wdHAvcHRwX3FvcmlxLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICB8ICAxMyArKy0tDQogaW5jbHVkZS9saW51eC9icGYuaCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAzMyArKysrKystLQ0KIGluY2x1ZGUvbGlu
+dXgvaWZfbWFjdmxhbi5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+IDMgKy0NCiBpbmNsdWRlL2xpbnV4L21seDUvcXAuaCAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgICA3ICsrDQogaW5jbHVkZS9saW51eC9uZXRkZXZpY2UuaCAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArDQogaW5jbHVkZS9saW51
+eC9uZXRmaWx0ZXIveF90YWJsZXMuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAg
+NyArLQ0KIGluY2x1ZGUvbGludXgvc2tidWZmLmggICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgfCAgIDEgKw0KIGluY2x1ZGUvbGludXgvdXNlcm1vZGVfZHJpdmVyLmgg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKw0KIGluY2x1ZGUvbmV0L2Rz
+dC5oICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTEg
+KysrDQogaW5jbHVkZS9uZXQvaW5ldF9jb25uZWN0aW9uX3NvY2suaCAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICB8ICAgMiArLQ0KIGluY2x1ZGUvbmV0L25ldGZpbHRlci9uZl90YWJsZXMu
+aCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDMgKw0KIGluY2x1ZGUvbmV0L25l
+eHRob3AuaCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjQg
+KysrKysrDQogaW5jbHVkZS9uZXQvcmVkLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAxMiArKy0NCiBpbmNsdWRlL25ldC9ydG5ldGxpbmsuaCAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyICsNCiBpbmNsdWRlL25l
+dC9zb2NrLmggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAyICstDQogaW5jbHVkZS91YXBpL2xpbnV4L2JwZi5oICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAxNiArKy0tDQogaW5jbHVkZS91YXBpL2xpbnV4L3BzYW1wbGUu
+aCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNSArLQ0KIGtlcm5lbC9i
+cGYvYnBmX2lub2RlX3N0b3JhZ2UuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgIDIgKy0NCiBrZXJuZWwvYnBmL2JwZl9zdHJ1Y3Rfb3BzLmMgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgICAyICstDQoga2VybmVsL2JwZi9jb3JlLmMgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNCArLQ0KIGtlcm5lbC9i
+cGYvcHJlbG9hZC9icGZfcHJlbG9hZF9rZXJuLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgMTkgKysrKy0NCiBrZXJuZWwvYnBmL3N5c2NhbGwuYyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgICA1ICsrDQoga2VybmVsL2JwZi90cmFtcG9saW5lLmMg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDIxOCArKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLQ0KIGtlcm5lbC9icGYv
+dmVyaWZpZXIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+MzcgKysrKysrLS0tDQoga2VybmVsL3RyYWNlL2Z0cmFjZS5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICA0MyArKysrKysrKystLQ0KIGtlcm5lbC91c2VybW9k
+ZV9kcml2ZXIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMjEg
+KysrKy0tDQogbGliL21hdGgvZGl2NjQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgMSArDQogbmV0L2JyaWRnZS9icl9zd2l0Y2hkZXYuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMiArDQogbmV0L2Nhbi9pc290
+cC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAx
+OCArKy0tLQ0KIG5ldC9jb3JlL2Rldi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgfCAgMzMgKysrKysrKy0NCiBuZXQvY29yZS9kcm9wX21vbml0b3Iu
+YyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIzICsrKysrKw0K
+IG5ldC9jb3JlL2RzdC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgfCAgNTkgKysrKysrKysrKy0tLS0tDQogbmV0L2NvcmUvZmlsdGVyLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMiArKy0NCiBuZXQv
+Y29yZS9mbG93X2Rpc3NlY3Rvci5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAyICstDQogbmV0L2NvcmUvc29jay5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB8ICA0NCArKysrKysrLS0tLQ0KIG5ldC9kY2NwL2lwdjYu
+YyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUg
+KysNCiBuZXQvZHNhL2RzYTIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHwgIDExICsrLQ0KIG5ldC9pcHY0L2luZXRfY29ubmVjdGlvbl9zb2NrLmMg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDcgKy0NCiBuZXQvaXB2NC9pcGNv
+bmZpZy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE0
+ICsrLS0NCiBuZXQvaXB2NC9uZXRmaWx0ZXIvYXJwX3RhYmxlcy5jICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgIDE2ICsrLS0NCiBuZXQvaXB2NC9uZXRmaWx0ZXIvaXBfdGFibGVz
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDE2ICsrLS0NCiBuZXQvaXB2
+NC9yb3V0ZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgIDQ1ICsrLS0tLS0tLS0tDQogbmV0L2lwdjQvdGNwX21pbmlzb2Nrcy5jICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyArLQ0KIG5ldC9pcHY2L2lwNl9maWIu
+YyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0N
+CiBuZXQvaXB2Ni9pcDZfaW5wdXQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIHwgIDEwIC0tLQ0KIG5ldC9pcHY2L25ldGZpbHRlci9pcDZfdGFibGVzLmMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMTYgKystLQ0KIG5ldC9pcHY2L3JvdXRl
+LmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMzYg
+KysrLS0tLS0tDQogbmV0L2lwdjYvdGNwX2lwdjYuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgNSArKw0KIG5ldC9tYWM4MDIxMS9hZWFkX2FwaS5jICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUgKy0NCiBuZXQvbWFj
+ODAyMTEvYWVzX2dtYWMuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICA1ICstDQogbmV0L21hYzgwMjExL2NmZy5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgNCArLQ0KIG5ldC9tYWM4MDIxMS9pYnNzLmMgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKw0KIG5ldC9tYWM4
+MDIxMS9tYWluLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgMTMgKysrLQ0KIG5ldC9tYWM4MDIxMS9tbG1lLmMgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgfCAgIDIgKy0NCiBuZXQvbWFjODAyMTEvcmM4MDIxMV9taW5z
+dHJlbF9odC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAyIC0NCiBuZXQvbWFj
+ODAyMTEvdXRpbC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICAyICstDQogbmV0L21wdGNwL29wdGlvbnMuYyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAyNCArKystLS0NCiBuZXQvbXB0Y3AvcHJvdG9jb2wuYyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA0ICstDQogbmV0
+L21wdGNwL3N1YmZsb3cuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICB8ICAgNSArKw0KIG5ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNrX25ldGxpbmsuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDEgKw0KIG5ldC9uZXRmaWx0ZXIvbmZfY29ubnRy
+YWNrX3Byb3RvX2dyZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDMgLQ0KIG5ldC9u
+ZXRmaWx0ZXIvbmZfZmxvd190YWJsZV9jb3JlLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgfCAgIDIgKy0NCiBuZXQvbmV0ZmlsdGVyL25mX3RhYmxlc19hcGkuYyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHwgIDIyICsrKysrLQ0KIG5ldC9uZXRmaWx0ZXIveF90YWJs
+ZXMuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNDkgKysrKysr
+KystLS0tDQogbmV0L29wZW52c3dpdGNoL2Nvbm50cmFjay5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgOCArLQ0KIG5ldC9vcGVudnN3aXRjaC9jb25udHJhY2suaCAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDYgKy0NCiBuZXQvb3BlbnZz
+d2l0Y2gvZmxvdy5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICA0ICstDQogbmV0L3FydHIvcXJ0ci5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICB8ICAgNSArKw0KIG5ldC9zY2hlZC9hY3RfY3QuYyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDYgKy0NCiBuZXQvc2NoZWQv
+Y2xzX2FwaS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwg
+ICAxICsNCiBuZXQvc2NoZWQvY2xzX2Zsb3dlci5jICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgICAyICstDQogbmV0L3NjaGVkL3NjaF9jaG9rZS5jICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyArLQ0KIG5ldC9zY2hlZC9z
+Y2hfZ3JlZC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+IDIgKy0NCiBuZXQvc2NoZWQvc2NoX2h0Yi5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHwgIDE5ICsrKy0tDQogbmV0L3NjaGVkL3NjaF9yZWQuYyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyArLQ0KIG5ldC9zY2hl
+ZC9zY2hfc2ZxLmMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgIDIgKy0NCiBuZXQvc2N0cC9vdXRwdXQuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIHwgICA3IC0tDQogbmV0L3NjdHAvb3V0cXVldWUuYyAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgNyArKw0KIG5ldC90aXBj
+L25vZGUuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+fCAgMTEgKystDQogbmV0L3Ztd192c29jay9hZl92c29jay5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMSArDQogbmV0L3dpcmVsZXNzL25sODAyMTEuYyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAxMiArKy0NCiB0b29scy9s
+aWIvYnBmL01ha2VmaWxlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICAyICstDQogdG9vbHMvbGliL2JwZi9idGZfZHVtcC5jICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICB8ICAgMiArLQ0KIHRvb2xzL2xpYi9icGYvbGliYnBmLmMgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDMgKy0NCiB0b29scy9s
+aWIvYnBmL25ldGxpbmsuYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgICAyICstDQogdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvY2hlY2tf
+bXR1LmMgICAgICAgICAgICAgICB8ICAgNCArDQogdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBm
+L3Byb2dfdGVzdHMvZmV4aXRfc2xlZXAuYyAgICAgICAgICAgICB8ICA4MiArKysrKysrKysrKysr
+KysrKysrKw0KIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9idGZfZHVtcF90ZXN0
+X2Nhc2Vfc3ludGF4LmMgICAgfCAgIDggKysNCiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYv
+cHJvZ3MvZmV4aXRfc2xlZXAuYyAgICAgICAgICAgICAgICAgIHwgIDMxICsrKysrKysrDQogdG9v
+bHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3RfY2hlY2tfbXR1LmMgICAgICAgICAg
+ICAgICB8ICA5MiArKysrKysrKysrKysrKysrKysrKysrDQogdG9vbHMvdGVzdGluZy9zZWxmdGVz
+dHMvYnBmL3Byb2dzL3Rlc3RfdHVubmVsX2tlcm4uYyAgICAgICAgICAgICB8ICAgNiArLQ0KIHRv
+b2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi92ZXJpZmllci9ib3VuZHNfZGVkdWN0aW9uLmMgICAg
+ICAgICAgfCAgMjcgKysrKystLQ0KIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi92ZXJpZmll
+ci9tYXBfcHRyLmMgICAgICAgICAgICAgICAgICAgfCAgIDQgKw0KIHRvb2xzL3Rlc3Rpbmcvc2Vs
+ZnRlc3RzL2JwZi92ZXJpZmllci91bnByaXYuYyAgICAgICAgICAgICAgICAgICAgfCAgMTUgKysr
+LQ0KIHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi92ZXJpZmllci92YWx1ZV9wdHJfYXJpdGgu
+YyAgICAgICAgICAgfCAgMjMgKysrKystDQogdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvbmV0L2Zv
+cndhcmRpbmcvdnhsYW5fYnJpZGdlXzFkLnNoICAgICAgICB8ICAgMiArLQ0KIHRvb2xzL3Rlc3Rp
+bmcvc2VsZnRlc3RzL25ldC9tcHRjcC9tcHRjcF9qb2luLnNoICAgICAgICAgICAgICAgICAgfCAg
+MzAgKysrKystLS0NCiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9uZXQvcmV1c2VhZGRyX3BvcnRz
+X2V4aGF1c3RlZC5jICAgICAgICAgIHwgIDMyICsrKystLS0tDQogMTkxIGZpbGVzIGNoYW5nZWQs
+IDE4MTkgaW5zZXJ0aW9ucygrKSwgNzg3IGRlbGV0aW9ucygtKQ0KIGNyZWF0ZSBtb2RlIDEwMDY0
+NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9mZXhpdF9zbGVlcC5jDQog
+Y3JlYXRlIG1vZGUgMTAwNjQ0IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy9mZXhp
+dF9zbGVlcC5jDQo=
