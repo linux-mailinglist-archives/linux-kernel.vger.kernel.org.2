@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9B0334953F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541F4349532
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:18:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbhCYPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:20:21 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:58720 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhCYPUD (ORCPT
+        id S231332AbhCYPSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230182AbhCYPRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:20:03 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPRjt-009CM7-Rc; Thu, 25 Mar 2021 15:17:38 +0000
-Date:   Thu, 25 Mar 2021 15:17:37 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Dilger <adilger@dilger.ca>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Dave Kleikamp <shaggy@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
-        Joel Becker <jlbec@evilplan.org>,
-        Matthew Garrett <matthew.garrett@nebula.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Richard Weinberger <richard@nod.at>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
-Subject: Re: [PATCH 01/18] vfs: add miscattr ops
-Message-ID: <YFypkbAy+BQ3yjME@zeniv-ca.linux.org.uk>
-References: <20210203124112.1182614-1-mszeredi@redhat.com>
- <20210203124112.1182614-2-mszeredi@redhat.com>
- <YFk08XPc2oNWoUWT@gmail.com>
- <CAJfpeguhAfLiTi0DdYzU-y98TCJZn2GuHBJhkXGLWRCBU2GfSg@mail.gmail.com>
+        Thu, 25 Mar 2021 11:17:53 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20A5C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:17:52 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso2266289otq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 08:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EPhq8X0xhYyGxzLncqihu1TYBV4JibjwwPfDPM36hqE=;
+        b=us6aw6OlE2KUAf0pq5BNsKs9E6wrt4m3eXA2HFHqv/r8VcNJ6/mx4SdkGM9uuW4L6a
+         +I2iVx2sCO/gqvw5jOi6vpBWS8dwLBXOm4Z5RvXhmh80RKrAKyddL19nPGerUC1QPXJE
+         e+Er+Q5cjde6I3pqM1+9UYXq8g180VxArqzpFP6yD4SqRFZU8zhWXm/K2aKOSanl8LLh
+         H+pid5FLXkTBWbxX2zyS1dfTe+DtUjQ8XF1vtyJF4LaS2UHcyX/d904OtShVOOFTakoO
+         JNtpuTW9wkPdFnhUu4wJrpYgkorzxjiqE7r91RJnPtgRZxXdy5b0XuLjA4YuoEWVk/xJ
+         fOFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EPhq8X0xhYyGxzLncqihu1TYBV4JibjwwPfDPM36hqE=;
+        b=JjecQC6IvVCdINGFzN6i4oWufAt54OrrTgDXobjyy1fEkdigHAKQTjMRgJjuwxHIwc
+         VjlN4yst1DNr5qBKrHAmu25QPxO0DWxos7myPzm7BZw70GAqcoJpe4v3jftyI8xCKlC6
+         c0I4jm2i9UyMGCMol4Q0N+G+4B6eHqsdrXm+QCEDNzFKadBIvVwS/Kwt7c3iLjS/yiMj
+         RwPbXIiAqEwKfsclhu8ueP7ftXUFIChKHUWwv2mRfXskwj3Ks9ZKiY7v+Dl8IQvuuOIA
+         mT093lD4QmtpdNhA8zvobb+SaoU2mwaCgyhaMgZMP3csZdz1/ioQgvZzswf1oX7rkVw6
+         DQhw==
+X-Gm-Message-State: AOAM530J/0yIoOqW0uXbbcN+AgyN5NVDh0cxV+1pX8B17179xbVWl0QP
+        rIuh778+NMfqjg5XXy4GOBVXp+ntOacQsWeMBv31bw==
+X-Google-Smtp-Source: ABdhPJyH16XdSLbGz0m89PmIPDxVI59W+R0R5Ha0Wyqx7UpY85UnbxEqwt+1W3MSp8ENn3IFVJG82NOesTsIbm8PLb0=
+X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr8235464otq.251.1616685471859;
+ Thu, 25 Mar 2021 08:17:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpeguhAfLiTi0DdYzU-y98TCJZn2GuHBJhkXGLWRCBU2GfSg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20210324112503.623833-1-elver@google.com> <20210324112503.623833-8-elver@google.com>
+ <YFs2XHqepwtlLinx@hirez.programming.kicks-ass.net> <YFs4RDKfbjw89tf3@hirez.programming.kicks-ass.net>
+ <YFs84dx8KcAtSt5/@hirez.programming.kicks-ass.net> <YFtB+Ta9pkMg4C2h@hirez.programming.kicks-ass.net>
+ <YFtF8tEPHrXnw7cX@hirez.programming.kicks-ass.net> <CANpmjNPkBQwmNFO_hnUcjYGM=1SXJy+zgwb2dJeuOTAXphfDsw@mail.gmail.com>
+ <CACT4Y+aKmdsXhRZi2f3LsX3m=krdY4kPsEUcieSugO2wY=xA-Q@mail.gmail.com> <20210325141820.GA1456211@gmail.com>
+In-Reply-To: <20210325141820.GA1456211@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 25 Mar 2021 16:17:40 +0100
+Message-ID: <CANpmjNNcYSGCC7587YzMzX1UpDvTA8ewAJRsKFdzQRdmWEO7Yw@mail.gmail.com>
+Subject: Re: [PATCH v3 07/11] perf: Add breakpoint information to siginfo on SIGTRAP
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexander Potapenko <glider@google.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Matt Morehouse <mascasa@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Ian Rogers <irogers@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:52:28PM +0100, Miklos Szeredi wrote:
-> On Tue, Mar 23, 2021 at 1:24 AM Eric Biggers <ebiggers@kernel.org> wrote:
-> 
-> > > +int vfs_miscattr_set(struct dentry *dentry, struct miscattr *ma)
-> > > +{
-> > > +     struct inode *inode = d_inode(dentry);
-> > > +     struct miscattr old_ma = {};
-> > > +     int err;
-> > > +
-> > > +     if (d_is_special(dentry))
-> > > +             return -ENOTTY;
-> > > +
-> > > +     if (!inode->i_op->miscattr_set)
-> > > +             return -ENOIOCTLCMD;
-> > > +
-> > > +     if (!inode_owner_or_capable(inode))
-> > > +             return -EPERM;
+On Thu, 25 Mar 2021 at 15:18, Ingo Molnar <mingo@kernel.org> wrote:
+>
+> * Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> > On Wed, Mar 24, 2021 at 3:05 PM Marco Elver <elver@google.com> wrote:
+> > >
+> > > On Wed, 24 Mar 2021 at 15:01, Peter Zijlstra <peterz@infradead.org> wrote:
+> > > >
+> > > > One last try, I'll leave it alone now, I promise :-)
+> > >
+> > > This looks like it does what you suggested, thanks! :-)
+> > >
+> > > I'll still need to think about it, because of the potential problem
+> > > with modify-signal-races and what the user's synchronization story
+> > > would look like then.
 > >
-> > Shouldn't this be EACCES, not EPERM?
-> 
-> $ git diff master.. | grep -C1 inode_owner_or_capable | grep
-> "^-.*\(EPERM\|EACCES\)" | cut -d- -f3 | sort | uniq -c
->      12 EACCES;
->       4 EPERM;
-> 
-> So EACCES would win if this was a democracy.  However:
-> 
-> "[EACCES]
-> Permission denied. An attempt was made to access a file in a way
-> forbidden by its file access permissions."
-> 
-> "[EPERM]
-> Operation not permitted. An attempt was made to perform an operation
-> limited to processes with appropriate privileges or to the owner of a
-> file or other resource."
-> 
-> The EPERM description matches the semantics of
-> inode_owner_or_capable() exactly.  It's a pretty clear choice.
+> > I agree that this looks inherently racy. The attr can't be allocated
+> > on stack, user synchronization may be tricky and expensive. The API
+> > may provoke bugs and some users may not even realize the race problem.
+>
+> Yeah, so why cannot we allocate enough space from the signal handler
+> user-space stack and put the attr there, and point to it from
+> sig_info?
+>
+> The idea would be to create a stable, per-signal snapshot of whatever
+> the perf_attr state is at the moment the event happens and the signal
+> is generated - which is roughly what user-space wants, right?
 
-Except that existing implementation (e.g. for ext2) gives -EACCES here...
-OTOH, EPERM matches the behaviour of chown(2), as well as that of
-*BSD chflags(2), which is the best match to functionality (setting and
-clearing immutable/append-only/etc.)
+I certainly couldn't say how feasible this is. Is there infrastructure
+in place to do this? Or do we have to introduce support for stashing
+things on the signal stack?
 
-So I'd probably go with EPERM, and watched for userland breakage;
-if something *does* rely upon the historical EACCES here, we might
-have to restore that.
+From what we can tell, the most flexible option though appears to be
+just some user settable opaque data in perf_event_attr, that is copied
+to siginfo. It'd allow user space to store a pointer or a hash/key, or
+just encode the relevant information it wants; but could also go
+further, and add information beyond perf_event_attr, such as things
+like a signal receiver filter (e.g. task ID or set of threads which
+should process the signal etc.).
+
+So if there's no strong objection to the additional field in
+perf_event_attr, I think it'll give us the simplest and most flexible
+option.
+
+Thanks,
+-- Marco
+
+> Thanks,
+>
+>         Ingo
