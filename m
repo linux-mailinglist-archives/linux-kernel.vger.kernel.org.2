@@ -2,148 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4C234953E
+	by mail.lfdr.de (Postfix) with ESMTP id 210E134953D
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231442AbhCYPUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:20:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47079 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231420AbhCYPTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:19:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616685592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zNM38P4llzp6ono8knMMf4l95meVg1P7je5WpXvzenI=;
-        b=J5UwpWo7jOLOrQ7FGXWiH9sMyrCuKe7kledXvVWXcSGtmdijvg1r7GMz+hKbz3wCEW/Rl4
-        7tvJ3zoxCKIUhfcujK9LP5j48ea5OoYhHbmQ5i6OcIP8D7385HFVxK3pSa56mQIZWpdXA7
-        yXc5PLtJ++g8mE1PTS+H+6GggPV5NoE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-i3XBKAS7Ma-Ycwq7hufBWg-1; Thu, 25 Mar 2021 11:19:50 -0400
-X-MC-Unique: i3XBKAS7Ma-Ycwq7hufBWg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 755A48BEF5D;
-        Thu, 25 Mar 2021 15:19:39 +0000 (UTC)
-Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2CDD25C3DF;
-        Thu, 25 Mar 2021 15:19:36 +0000 (UTC)
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <YFxEp0cfcJmcz5bP@localhost.localdomain>
- <YFxVLWcQcKaMycEY@dhcp22.suse.cz> <YFxsBRORtgqUF/FZ@localhost.localdomain>
- <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
- <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
- <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
- <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
- <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
- <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
- <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
- <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
-Date:   Thu, 25 Mar 2021 16:19:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231404AbhCYPUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:20:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231349AbhCYPTp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:19:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7290161A16;
+        Thu, 25 Mar 2021 15:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616685585;
+        bh=C89LYBVzHXj0ropGKfj0qYFMFjm9LdWvKvOD6cMztAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PKc5586jOuNATzAX/9ftFJB06Wmo5bJO0mE+i6SfIf8g99Pf+shEs/DOs8Xselyto
+         Wzmo3APVwIq+YBG6oT9bI7N58xT30r8JppKhQjXA5S5gh6DCv9/HBD7tdQpBix9Sns
+         EFEkNeiHvKurvB87qf9U5kYDt5UcZysIkqeFMjr7AS5TmULk+wN51dGPOn3Qh/tu1p
+         IWqjX5cAFK1H2hRHGXSMD6mvHLlSY3VSsKWgLt/sLrJqhS9mPPLmNrkuU53cKmHfQw
+         FlNXXLCfBNb76soJAqCaK7cTpotTatPwTXFyP/WTtU7gsR+P5EfwF5XCjl9S2Anbwz
+         ngYA34C050dIQ==
+Date:   Fri, 26 Mar 2021 00:19:42 +0900
+From:   Keith Busch <kbusch@kernel.org>
+To:     Niklas Cassel <Niklas.Cassel@wdc.com>
+Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "minwoo.im.dev@gmail.com" <minwoo.im.dev@gmail.com>,
+        "javier@javigon.com" <javier@javigon.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] nvme: disallow passthru cmd from targeting a nsid !=
+ nsid of the block dev
+Message-ID: <20210325151942.GB31394@redsun51.ssa.fujisawa.hgst.com>
+References: <20210325094807.328126-1-Niklas.Cassel@wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325094807.328126-1-Niklas.Cassel@wdc.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.03.21 16:12, Michal Hocko wrote:
-> On Thu 25-03-21 15:46:22, David Hildenbrand wrote:
->> On 25.03.21 15:34, Michal Hocko wrote:
->>> On Thu 25-03-21 15:09:35, David Hildenbrand wrote:
->>>> On 25.03.21 15:08, Michal Hocko wrote:
->>>>> On Thu 25-03-21 13:40:45, David Hildenbrand wrote:
->>>>>> On 25.03.21 13:35, Michal Hocko wrote:
->>>>>>> On Thu 25-03-21 12:08:43, David Hildenbrand wrote:
->>>>>>>> On 25.03.21 11:55, Oscar Salvador wrote:
->>>>> [...]
->>>>>>>>> - When moving the initialization/accounting to hot-add/hot-remove,
->>>>>>>>>        the section containing the vmemmap pages will remain offline.
->>>>>>>>>        It might get onlined once the pages get online in online_pages(),
->>>>>>>>>        or not if vmemmap pages span a whole section.
->>>>>>>>>        I remember (but maybe David rmemeber better) that that was a problem
->>>>>>>>>        wrt. pfn_to_online_page() and hybernation/kdump.
->>>>>>>>>        So, if that is really a problem, we would have to care of ot setting
->>>>>>>>>        the section to the right state.
->>>>>>>>
->>>>>>>> Good memory. Indeed, hibernation/kdump won't save the state of the vmemmap,
->>>>>>>> because the memory is marked as offline and, thus, logically without any
->>>>>>>> valuable content.
->>>
->>> ^^^^ THIS
->>>
->>>>>>>
->>>>>>> Could you point me to the respective hibernation code please? I always
->>>>>>> get lost in that area. Anyway, we do have the same problem even if the
->>>>>>> whole accounting is handled during {on,off}lining, no?
->>>>>>
->>>>>> kernel/power/snapshot.c:saveable_page().
->>>>>
->>>>> Thanks! So this is as I've suspected. The very same problem is present
->>>>> if the memory block is marked offline. So we need a solution here
->>>>> anyway. One way to go would be to consider these vmemmap pages always
->>>>> online. pfn_to_online_page would have to special case them but we would
->>>>> need to identify them first. I used to have PageVmemmap or something
->>>>> like that in my early attempt to do this.
->>>>>
->>>>> That being said this is not an argument for one or the other aproach.
->>>>> Both need fixing.
->>>>
->>>> Can you elaborate? What is the issue there? What needs fixing?
->>>
->>> offline section containing vmemmap will be lost during hibernation cycle
->>> IIU the above correctly.
->>>
->>
->> Can tell me how that is a problem with Oscars current patch? I only see this
->> being a problem with what you propose - most probably I am missing something
->> important here.
->>
->> Offline memory sections don't have a valid memmap (assumption: garbage). On
->> hibernation, the whole offline memory block won't be saved, including the
->> vmemmap content that resides on the block. This includes the vmemmap of the
->> vmemmap pages, which is itself.
->>
->> When restoring, the whole memory block will contain garbage, including the
->> whole vmemmap - which is marked to be offline and to contain garbage.
+On Thu, Mar 25, 2021 at 09:48:37AM +0000, Niklas Cassel wrote:
+> From: Niklas Cassel <niklas.cassel@wdc.com>
 > 
-> Hmm, so I might be misunderstanding the restoring part. But doesn't that
-> mean that the whole section/memory block won't get restored because it
-> is offline and therefore the vmemmap would be pointing to nowhere?
+> When a passthru command targets a specific namespace, the ns parameter to
+> nvme_user_cmd()/nvme_user_cmd64() is set. However, there is currently no
+> validation that the nsid specified in the passthru command targets the
+> namespace/nsid represented by the block device that the ioctl was
+> performed on.
+> 
+> Add a check that validates that the nsid in the passthru command matches
+> that of the supplied namespace.
+> 
+> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+> ---
+> Currently, if doing NVME_IOCTL_IO_CMD on the controller char device,
+> if and only if there is a single namespace in the ctrl->namespaces list,
+> nvme_dev_user_cmd() will call nvme_user_cmd() with ns parameter set.
+> While it might be good that we validate the nsid even in this case,
+> perhaps we want to allow a nsid value in the passthru command to be
+> 0x0 and/or the NSID broadcast value? (Only when NVME_IOCTL_IO_CMD was
+> done on the controller char device though.)
 
-AFAIU, only the content of the memory block won't be restored - whatever 
-memory content existed before the restore operation is kept.
+There are no IO commands accepting a 0 NSID, so rejecting those from the
+driver should be okay.
 
-The structures that define how the vmemmap should look like - the memory 
-sections and the page tables used for describing the vmemmap should 
-properly get saved+restored, as these are located on online memory.
+FLUSH is the only IO command that takes a broadcast NSID. I suspect at
+least some entities were unfortunately sending broadcast flush through
+this interface, so it's possible we'll hear of breakage, but I'd agree
+your patch is still the right thing to do.
 
-So the vmemmap layout should look after restoring just like before saving.
-
--- 
-Thanks,
-
-David / dhildenb
-
+>  drivers/nvme/host/core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> index 40215a0246e4..e4591a4c68a8 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -1632,6 +1632,8 @@ static int nvme_user_cmd(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+>  		return -EFAULT;
+>  	if (cmd.flags)
+>  		return -EINVAL;
+> +	if (ns && cmd.nsid != ns->head->ns_id)
+> +		return -EINVAL;
+>  
+>  	memset(&c, 0, sizeof(c));
+>  	c.common.opcode = cmd.opcode;
+> @@ -1676,6 +1678,8 @@ static int nvme_user_cmd64(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+>  		return -EFAULT;
+>  	if (cmd.flags)
+>  		return -EINVAL;
+> +	if (ns && cmd.nsid != ns->head->ns_id)
+> +		return -EINVAL;
+>  
+>  	memset(&c, 0, sizeof(c));
+>  	c.common.opcode = cmd.opcode;
+> -- 
+> 2.30.2
