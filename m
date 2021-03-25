@@ -2,74 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B362C34868E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18371348692
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235824AbhCYBsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:48:52 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14887 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235750AbhCYBsp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:48:45 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F5Sdh3lYzzkfHH;
-        Thu, 25 Mar 2021 09:47:04 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.43) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 25 Mar 2021 09:48:40 +0800
-From:   Dong Kai <dongkai11@huawei.com>
-To:     <jpoimboe@redhat.com>, <jikos@kernel.org>, <mbenes@suse.cz>,
-        <pmladek@suse.com>, <joe.lawrence@redhat.com>
-CC:     <axboe@kernel.dk>, <live-patching@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] livepatch: klp_send_signal should treat PF_IO_WORKER like PF_KTHREAD
-Date:   Thu, 25 Mar 2021 09:48:36 +0800
-Message-ID: <20210325014836.40649-1-dongkai11@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S235885AbhCYBvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:51:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233471AbhCYBvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Mar 2021 21:51:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F9461983;
+        Thu, 25 Mar 2021 01:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616637069;
+        bh=avCX1lsj+Uyz9V6Mox+HrvdX/OqtY44z1L8hEcD4utI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mP6r5m4kEewb5zpF1t609YmKhGOqB33HTrGGYuNB9bvk6uYUc/pFWnnQzAWbOTekM
+         aX6dOHavtAqzzikSeOtBZLJEw9qJ/6hhOYj6LVAaQuY1EIVwu5O+dUD/GCr+QqYA2F
+         pONN08Cs+svQfDWE0IB365mzmTFksH0ORuhmMkPs3k5BNsfHNyF42k7KeCOXD9sQ/X
+         91MMx+D7zqOI3TVuloICpVTZAvvCdOuegQJcxJBWnd2m8cG1HCu8EZNolo0m7Dbvnq
+         0Pq/y7nwpO1d2WdpySHzOt34N45F6j1/oIFqyqaQL4wRarlm/2v4EwUHG/vYnpGrED
+         L8T+NHcDC1OCg==
+Date:   Wed, 24 Mar 2021 18:51:07 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH v2] f2fs: fix to avoid touching checkpointed data in
+ get_victim()
+Message-ID: <YFvsi3r3DPSVARWz@google.com>
+References: <20210324031828.67133-1-yuchao0@huawei.com>
+ <YFvQGxLbpmDjxEzR@google.com>
+ <8fd71953-05a9-61e4-2fb0-e1dcd65bbaa0@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.43]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8fd71953-05a9-61e4-2fb0-e1dcd65bbaa0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 15b2219facad ("kernel: freezer should treat PF_IO_WORKER like
-PF_KTHREAD for freezing") is to fix the freezeing issue of IO threads
-by making the freezer not send them fake signals.
+On 03/25, Chao Yu wrote:
+> On 2021/3/25 7:49, Jaegeuk Kim wrote:
+> > On 03/24, Chao Yu wrote:
+> > > In CP disabling mode, there are two issues when using LFS or SSR | AT_SSR
+> > > mode to select victim:
+> > > 
+> > > 1. LFS is set to find source section during GC, the victim should have
+> > > no checkpointed data, since after GC, section could not be set free for
+> > > reuse.
+> > > 
+> > > Previously, we only check valid chpt blocks in current segment rather
+> > > than section, fix it.
+> > > 
+> > > 2. SSR | AT_SSR are set to find target segment for writes which can be
+> > > fully filled by checkpointed and newly written blocks, we should never
+> > > select such segment, otherwise it can cause panic or data corruption
+> > > during allocation, potential case is described as below:
+> > > 
+> > >   a) target segment has 128 ckpt valid blocks
+> > >   b) GC migrates 'n' (n < 512) valid blocks to other segment (segment is
+> > >      still in dirty list)
+> > >   c) GC migrates '512 - n' blocks to target segment (segment has 'n'
+> > >      cp_vblocks and '512 - n' vblocks)
+> > >   d) If GC selects target segment via {AT,}SSR allocator, however there
+> > >      is no free space in targe segment.
+> > > 
+> > > Fixes: 4354994f097d ("f2fs: checkpoint disabling")
+> > > Fixes: 093749e296e2 ("f2fs: support age threshold based garbage collection")
+> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > ---
+> > > v2:
+> > > - fix to check checkpointed data in section rather than segment for
+> > > LFS mode.
+> > > - update commit title and message.
+> > >   fs/f2fs/f2fs.h    |  1 +
+> > >   fs/f2fs/gc.c      | 28 ++++++++++++++++++++--------
+> > >   fs/f2fs/segment.c | 39 ++++++++++++++++++++++++---------------
+> > >   fs/f2fs/segment.h | 14 +++++++++++++-
+> > >   4 files changed, 58 insertions(+), 24 deletions(-)
+> > > 
+> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > index eb154d9cb063..29e634d08a27 100644
+> > > --- a/fs/f2fs/f2fs.h
+> > > +++ b/fs/f2fs/f2fs.h
+> > > @@ -3387,6 +3387,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi);
+> > >   int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
+> > >   void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
+> > >   int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
+> > > +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
+> > >   void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
+> > >   void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
+> > >   void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
+> > > diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> > > index d96acc6531f2..4d9616373a4a 100644
+> > > --- a/fs/f2fs/gc.c
+> > > +++ b/fs/f2fs/gc.c
+> > > @@ -392,10 +392,6 @@ static void add_victim_entry(struct f2fs_sb_info *sbi,
+> > >   		if (p->gc_mode == GC_AT &&
+> > >   			get_valid_blocks(sbi, segno, true) == 0)
+> > >   			return;
+> > > -
+> > > -		if (p->alloc_mode == AT_SSR &&
+> > > -			get_seg_entry(sbi, segno)->ckpt_valid_blocks == 0)
+> > > -			return;
+> > >   	}
+> > >   	for (i = 0; i < sbi->segs_per_sec; i++)
+> > > @@ -728,11 +724,27 @@ static int get_victim_by_default(struct f2fs_sb_info *sbi,
+> > >   		if (sec_usage_check(sbi, secno))
+> > >   			goto next;
+> > > +
+> > >   		/* Don't touch checkpointed data */
+> > > -		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED) &&
+> > > -					get_ckpt_valid_blocks(sbi, segno) &&
+> > > -					p.alloc_mode == LFS))
+> > > -			goto next;
+> > > +		if (unlikely(is_sbi_flag_set(sbi, SBI_CP_DISABLED))) {
+> > > +			if (p.alloc_mode == LFS) {
+> > > +				/*
+> > > +				 * LFS is set to find source section during GC.
+> > > +				 * The victim should have no checkpointed data.
+> > > +				 */
+> > > +				if (get_ckpt_valid_blocks(sbi, segno, true))
+> > > +					goto next;
+> > > +			} else {
+> > > +				/*
+> > > +				 * SSR | AT_SSR are set to find target segment
+> > > +				 * for writes which can be full by checkpointed
+> > > +				 * and newly written blocks.
+> > > +				 */
+> > > +				if (!segment_has_free_slot(sbi, segno))
+> > > +					goto next;
+> > > +			}
+> > > +		}
+> > > +
+> > >   		if (gc_type == BG_GC && test_bit(secno, dirty_i->victim_secmap))
+> > >   			goto next;
+> > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > index 6e1a5f5657bf..f6a30856ceda 100644
+> > > --- a/fs/f2fs/segment.c
+> > > +++ b/fs/f2fs/segment.c
+> > > @@ -865,7 +865,7 @@ static void locate_dirty_segment(struct f2fs_sb_info *sbi, unsigned int segno)
+> > >   	mutex_lock(&dirty_i->seglist_lock);
+> > >   	valid_blocks = get_valid_blocks(sbi, segno, false);
+> > > -	ckpt_valid_blocks = get_ckpt_valid_blocks(sbi, segno);
+> > > +	ckpt_valid_blocks = get_ckpt_valid_blocks(sbi, segno, false);
+> > >   	if (valid_blocks == 0 && (!is_sbi_flag_set(sbi, SBI_CP_DISABLED) ||
+> > >   		ckpt_valid_blocks == usable_blocks)) {
+> > > @@ -950,7 +950,7 @@ static unsigned int get_free_segment(struct f2fs_sb_info *sbi)
+> > >   	for_each_set_bit(segno, dirty_i->dirty_segmap[DIRTY], MAIN_SEGS(sbi)) {
+> > >   		if (get_valid_blocks(sbi, segno, false))
+> > >   			continue;
+> > > -		if (get_ckpt_valid_blocks(sbi, segno))
+> > > +		if (get_ckpt_valid_blocks(sbi, segno, false))
+> > >   			continue;
+> > >   		mutex_unlock(&dirty_i->seglist_lock);
+> > >   		return segno;
+> > > @@ -2643,6 +2643,26 @@ static void __refresh_next_blkoff(struct f2fs_sb_info *sbi,
+> > >   		seg->next_blkoff++;
+> > >   }
+> > > +bool segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
+> > > +{
+> > > +	struct sit_info *sit = SIT_I(sbi);
+> > > +	struct seg_entry *se = get_seg_entry(sbi, segno);
+> > > +	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
+> > > +	unsigned long *target_map = SIT_I(sbi)->tmp_map;
+> > > +	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
+> > > +	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
+> > > +	int i, pos;
+> > > +
+> > > +	down_write(&sit->sentry_lock);
+> > 
+> > Should remove this lock.
+> > https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev
+> 
+> Oh, correct.
+> 
+> BTW, could you please add 'f2fs_' prefix for segment_has_free_slot()
+> like we did for other non-static symbols?
 
-Here live patching consistency model call klp_send_signals to wake up
-all tasks by send fake signal to all non-kthread which only check the
-PF_KTHREAD flag, so it still send signal to io threads which may lead to
-freezeing issue of io threads.
+Added.
 
-Here we take the same fix action by treating PF_IO_WORKERS as PF_KTHREAD
-within klp_send_signal function.
-
-Signed-off-by: Dong Kai <dongkai11@huawei.com>
----
-note:
-the io threads freeze issue links:
-[1] https://lore.kernel.org/io-uring/YEgnIp43%2F6kFn8GL@kevinlocke.name/
-[2] https://lore.kernel.org/io-uring/d7350ce7-17dc-75d7-611b-27ebf2cb539b@kernel.dk/
-
- kernel/livepatch/transition.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-index f6310f848f34..0e1c35c8f4b4 100644
---- a/kernel/livepatch/transition.c
-+++ b/kernel/livepatch/transition.c
-@@ -358,7 +358,7 @@ static void klp_send_signals(void)
- 		 * Meanwhile the task could migrate itself and the action
- 		 * would be meaningless. It is not serious though.
- 		 */
--		if (task->flags & PF_KTHREAD) {
-+		if (task->flags & (PF_KTHREAD | PF_IO_WORKER)) {
- 			/*
- 			 * Wake up a kthread which sleeps interruptedly and
- 			 * still has not been migrated.
--- 
-2.17.1
-
+> 
+> Thanks,
+> 
+> > 
+> > > +	for (i = 0; i < entries; i++)
+> > > +		target_map[i] = ckpt_map[i] | cur_map[i];
+> > > +
+> > > +	pos = __find_rev_next_zero_bit(target_map, sbi->blocks_per_seg, 0);
+> > > +	up_write(&sit->sentry_lock);
+> > > +
+> > > +	return pos < sbi->blocks_per_seg;
+> > > +}
+> > > +
+> > >   /*
+> > >    * This function always allocates a used segment(from dirty seglist) by SSR
+> > >    * manner, so it should recover the existing segment information of valid blocks
+> > > @@ -2913,19 +2933,8 @@ static void __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+> > >   		get_valid_blocks(sbi, curseg->segno, new_sec))
+> > >   		goto alloc;
+> > > -	if (new_sec) {
+> > > -		unsigned int segno = START_SEGNO(curseg->segno);
+> > > -		int i;
+> > > -
+> > > -		for (i = 0; i < sbi->segs_per_sec; i++, segno++) {
+> > > -			if (get_ckpt_valid_blocks(sbi, segno))
+> > > -				goto alloc;
+> > > -		}
+> > > -	} else {
+> > > -		if (!get_ckpt_valid_blocks(sbi, curseg->segno))
+> > > -			return;
+> > > -	}
+> > > -
+> > > +	if (!get_ckpt_valid_blocks(sbi, curseg->segno, new_sec))
+> > > +		return;
+> > >   alloc:
+> > >   	old_segno = curseg->segno;
+> > >   	SIT_I(sbi)->s_ops->allocate_segment(sbi, type, true);
+> > > diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+> > > index 144980b62f9e..dab87ecba2b5 100644
+> > > --- a/fs/f2fs/segment.h
+> > > +++ b/fs/f2fs/segment.h
+> > > @@ -359,8 +359,20 @@ static inline unsigned int get_valid_blocks(struct f2fs_sb_info *sbi,
+> > >   }
+> > >   static inline unsigned int get_ckpt_valid_blocks(struct f2fs_sb_info *sbi,
+> > > -				unsigned int segno)
+> > > +				unsigned int segno, bool use_section)
+> > >   {
+> > > +	if (use_section && __is_large_section(sbi)) {
+> > > +		unsigned int start_segno = START_SEGNO(segno);
+> > > +		unsigned int blocks = 0;
+> > > +		int i;
+> > > +
+> > > +		for (i = 0; i < sbi->segs_per_sec; i++, start_segno++) {
+> > > +			struct seg_entry *se = get_seg_entry(sbi, start_segno);
+> > > +
+> > > +			blocks += se->ckpt_valid_blocks;
+> > > +		}
+> > > +		return blocks;
+> > > +	}
+> > >   	return get_seg_entry(sbi, segno)->ckpt_valid_blocks;
+> > >   }
+> > > -- 
+> > > 2.29.2
+> > .
+> > 
