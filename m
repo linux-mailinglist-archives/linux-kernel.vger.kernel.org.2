@@ -2,177 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8D83485D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 239AD3485E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:30:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239237AbhCYA1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 20:27:35 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:51528 "EHLO
+        id S239275AbhCYA3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 20:29:51 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52480 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239254AbhCYA1J (ORCPT
+        with ESMTP id S239241AbhCYA3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 20:27:09 -0400
+        Wed, 24 Mar 2021 20:29:33 -0400
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12P0O6Kr143456;
-        Thu, 25 Mar 2021 00:27:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=lrLkTnNnl3P0syRqJXnR7FaZ32fUWcf26XmQ5WPi8KU=;
- b=IPYoAsAxezUytn+rUVtAW0/WMSnF9Y5snHuwgmtMtZ4iy66pIUNBY7ZF2KdMX4H7fRhS
- +emdK6o8NSmZ2GrDK8axUlA20mZM45IJu/IBsiPgv4VKcfNxxPiBEsFg1X8Py2nbP8Hg
- pp5wiPuVSpB0ENSM0WaEWt0FiwbrwZqhD70mvsQBFYvtGy2nz+bHraxmdGR8Al7vBArO
- tnZDgJzaYm61fuFA1y2pGlTi7ek5ZUDa+m8JbuqVq1NFYQjrFW0qXoGoxvUdYPR2QW56
- zHqlJ9MFphBMNSjsusiluyERklJaM66qFFNk9KvauuASKbwldrLIDqH3JLy3G27udcfF rw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 37d9pn4k56-1
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12P0RZiP145404;
+        Thu, 25 Mar 2021 00:28:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=Cro/Wf0SYv8QvJk0OV0GcM/CxRDsAKj9w/NfO8ZjB78=;
+ b=RWHp9dNtBkrzygU/aHZLUv1tMvYs7ZZMZOiRxzsqTh4KV0A9t1IO4mw2HCBDov0T6BZU
+ NuTUr2aQBTecjXc8DRIv1R7OXWTRxU+B8JTee8Vr9dVyaxIjZABMqaxZJ67+HMqGal/7
+ vnWA41bjCfvf4V11Uup6KY3DPjlVuhTeMHZwi+R0BGWB1QF4cz7Obq+e+T3hCahYINYD
+ N8d4U6Gxo6Aj7478xiNNM+p7K2tq0BFr/0yDknpPtAX+yFm3Af77EmM1TvEw611MbmwG
+ P3ydQ93k4vUXRKtpq7lTF4Miqurmw9DKtTGL5Hqp4KsCEumhQgRCpOrsQ0o/bmCU1iAd /g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 37d9pn4k6q-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 00:27:03 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12P0PEh2162573;
-        Thu, 25 Mar 2021 00:27:02 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-        by aserp3030.oracle.com with ESMTP id 37dtmrgnu4-1
+        Thu, 25 Mar 2021 00:28:52 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12P0QEKL076481;
+        Thu, 25 Mar 2021 00:28:52 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2106.outbound.protection.outlook.com [104.47.58.106])
+        by userp3020.oracle.com with ESMTP id 37dttu15ed-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Mar 2021 00:27:02 +0000
+        Thu, 25 Mar 2021 00:28:51 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dfThCZ12DwBjGaoIaLy1FDgKSw+JbkcEUMi0IJiz/KgBqNRJ9v0rfJcDXsvlo+/uNDYSuLaVVBhc7om6GeRPf2tlpOoZVUfF/Q1OSR3a1oYrEcKjVi7puGZm5ItQBuBVkDX9x5SuTELvOdTL/b88JeaUsXE8lDwdl549fBzFh0Orhu14WJriHEtjX3EnpU+1Y1HEFSgglbZVjqLeS4sMPDvGosCST6AQZRtFnt6zwH3hvoz1UvYmALh3GYvNTSW76h2DK1be1xEaAJqj7Ag2B1VoJnNMw6tryfzNFVVvvicfu43d8ebiNYec5WhdJvE2fb7W05KS5lPV11p/9UIsWg==
+ b=Y7jL4RrlhnfbQbaqS0H2Om4KZR6XyzNW6E94gL8O2wGNDDhZrXyrZ8VyvsBa7NUSy4GFX0oZZ/g58OYztBnsY6ikVbRoSmSpBVCMgfOmrI4/bycLZikeNnMQja4UpPPz2ubLRz9pNv7fYoCP+8Z9hldT3zK3BYNm1VhQJ6ElWXlLbEESp/kWQ+UUW0oDNPDWCriGEgDhW2vYxH3Y+eiMYsmQK1pq/OUIaASGnE95n5OE80XUa42AJ4WU09sYknx08lVRANc7Gn9c4Df1uZIP5fJQT3jxXAdL7zOEYbLvojHgGucX6ZlRbJDFS3aL4TTvtmctEKq0TGNSbM4jKn1mYw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lrLkTnNnl3P0syRqJXnR7FaZ32fUWcf26XmQ5WPi8KU=;
- b=LE/D6RLjUljUDmSUXugT9t2wEEjpmnHgnJQlUNFSn5qpuFKr5zPjREjOda5e5TBgzuGoIuKRMQsoOV4E73YFiknn9g/Up7wgJ1Vh9sxTWw4GZxFSu8ypLJfnw4F0BzNnBQtuLysqlnHlVpvP4nFUfBMwXcYjsRT9gr7nIAK0AwygSWKNBo+Ji5xXt3EzdJBcOV8SSv2J5dMAKTmQkEkPudCtVp3ckAwv/Uo8fPoRmJPpoPZlwkY111f4nbwoYZQPPhPe/dN7J6daAqyVFtsfXVFNz+O4LUDHj3VvUr+irMXga65nPEVJw9QsUg28hq3azU0J7SXSnrDK0vsJj+byzA==
+ bh=Cro/Wf0SYv8QvJk0OV0GcM/CxRDsAKj9w/NfO8ZjB78=;
+ b=QUvHfyj0H8NklaG/U4JSBQtuyrasRWhpWadv/5nlLo2uBcTyIXZ02wZBZp5VdgL4X3OxKLDph7upkVIS7DIuBjAw4+qvNPL7WGmJdpcfyyyhnhqNRAYNrfCgZdztmrfHwAcaIK7pa1HJ7KYdJ4+1C0dCumj/518SOUJtmPeeoY2g/t4d1t1r1qQPN4c6Oj2Kvxz1QzGmZnJCRdGKQ/Pe1M2/CkYKKjUnJ/H+kdUGyhs2s+RNy/D0RWtpKxxAbFJANDaY4r93DRknVA61N5qdCEWmo5NVi8GTHpU1XDohfPVCZx4DHUyzPi+bVx6ub+sM5bS9mHO7GG9ZVAmnHam2/w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lrLkTnNnl3P0syRqJXnR7FaZ32fUWcf26XmQ5WPi8KU=;
- b=sMERrCXT526KJ2CyBkVy9Y0ThGBDrPUIoy8rd8+rc+R7N3bEHCCzII2DnnBuylufU2oh0vEK9uFoBoho8Y0A1kLqmFcX7kg1u4xEJ24+CM8C37W5FYM/636Y3mJg9oOfdw2g9Ppfyf2Gw9ua3pisbAly5+g5pTxYEL7c5l+UdDg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+ bh=Cro/Wf0SYv8QvJk0OV0GcM/CxRDsAKj9w/NfO8ZjB78=;
+ b=bq7X8eXIuZ8Z1X1+ar97iuxNKDEDhUyHkjEUbMQj0x4LJ5TrH25xic7T+BJ2BpdbShUKY77hlgsgjFZfPrnlwYx8W40xj/6OVhhWcQjf3XJLrSKQrmYYTFkJJaiNT/ovx6+dDoI7Xd1TqGeburoKYNl53DmmJhtkZ91Yq0L+UWA=
+Authentication-Results: kvack.org; dkim=none (message not signed)
+ header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by SJ0PR10MB4462.namprd10.prod.outlook.com (2603:10b6:a03:2d7::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Thu, 25 Mar
- 2021 00:27:00 +0000
+ 2021 00:28:49 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee%6]) with mapi id 15.20.3955.027; Thu, 25 Mar 2021
- 00:27:00 +0000
-Subject: Re: [RFC PATCH 7/8] hugetlb: add update_and_free_page_no_sleep for
- irq context
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210319224209.150047-1-mike.kravetz@oracle.com>
- <20210320011857.2004-1-hdanton@sina.com>
+ 00:28:49 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <196eb572-df9f-aa30-40b0-9a15b5522470@oracle.com>
-Date:   Wed, 24 Mar 2021 17:26:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210320011857.2004-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH 0/8] make hugetlb put_page safe for all calling contexts
+Date:   Wed, 24 Mar 2021 17:28:27 -0700
+Message-Id: <20210325002835.216118-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MWHPR07CA0019.namprd07.prod.outlook.com
- (2603:10b6:300:116::29) To BY5PR10MB4196.namprd10.prod.outlook.com
+X-ClientProxiedBy: MWHPR15CA0042.namprd15.prod.outlook.com
+ (2603:10b6:300:ad::28) To BY5PR10MB4196.namprd10.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MWHPR07CA0019.namprd07.prod.outlook.com (2603:10b6:300:116::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Thu, 25 Mar 2021 00:26:59 +0000
+Received: from monkey.oracle.com (50.38.35.18) by MWHPR15CA0042.namprd15.prod.outlook.com (2603:10b6:300:ad::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Thu, 25 Mar 2021 00:28:48 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8019acbd-c4d0-41b7-f42b-08d8ef24b486
+X-MS-Office365-Filtering-Correlation-Id: 06a5e629-3656-452c-7129-08d8ef24f5c0
 X-MS-TrafficTypeDiagnostic: SJ0PR10MB4462:
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB44624A2081BB67A8F421F87AE2629@SJ0PR10MB4462.namprd10.prod.outlook.com>
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB44626365C418B266B0EE6C7CE2629@SJ0PR10MB4462.namprd10.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Lnhof/iJjc2vZuMujhiIvX1+0/TgvkQbiPpmDiLOYv20QU+H5kM8rlLod5Y/9aBUcdt6pNsT3No6mUqDiMAK0Wn1bN0w/WvZq6Pc+SLfeOTyKC+vfW829Zi35V5okgUOAMgLyyeMot47ofADmqILYCLsbCgQo5nNN/IPEU4wZfzdmjUH2Qe7MAYvFmCwXAnaDjJWn45Z5iwG4xiGs4gQOK6zKgI1X3sXDkwgIdewTlw+YfB1x0NmJ9PdI5b0VDc1cKC5FKOcr//AlrmvHowE/0cZ+pbOCUobLrwuQ1jIwb3Q5DgLN5EWQWUha5u7QpxPGdDXQw19q0TRBcgEYA89MudFBBaDneyw+hg3zPAVoEvlJdxtYSn4zoBN81D1tioPn3UauZ0yl4ITexIOJT082/1ffQdy9DXEgr2l/bo8lo3ApJ3y9a51ykqqGc85xJ8e/nEJATRCBi9OwCQlVIqsCWKw8+W/o4GHAq+Hc8gXjARDZpHSodR9XoSoKLRsQnvuQMuZ27cK7g/aBnFvFweGp0Vskvm9b8bNRgBbuC/4WgaYE2u26Q5bpOvi+xmc7kvH/WBTRz3s/Do0ON+wiyyw9oDrJoSLegj/qKncCqgnoByvKvArBU54uMkE7tD8Tg5Ds/lGvwiy9twmD8uVWN5tqVzCOsfdZr73oZnaGiV98y6H9DpmvnULHXXnDbbnlcYw4eIDK3Lp8ANg3napi496KA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(396003)(376002)(39860400002)(8676002)(66476007)(66556008)(86362001)(4326008)(66946007)(6916009)(956004)(8936002)(31696002)(36756003)(44832011)(5660300002)(4744005)(2616005)(316002)(16576012)(38100700001)(26005)(478600001)(186003)(83380400001)(2906002)(53546011)(6486002)(52116002)(16526019)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SkxIVVByUUhtRW1tNll6K2NWcWZ6SS9LR0ZjMTVpbGdFSzQzMWNCVWxFWmtD?=
- =?utf-8?B?LytnTmZ4eXpSR0tPTWF0T3JDV1pzdHdYaUt2N3ZrbmtIN3lGRDU3THlSeEtI?=
- =?utf-8?B?Z21sT2JiT2MxdGc1blpIOEdWTGFaT3FqaS93NXRTcWFYVXUzVFVVajNFVFM4?=
- =?utf-8?B?QWJSa3dPZFpmTVpHdHZwQzhwblFNdm8rTlFWVFovSGtXZExhSzhKS2lyS0wv?=
- =?utf-8?B?aFI2Nkl3c1FIQ2tEYUJIaUZrYVZlbnRHcllnMEs5VGtxejlEbTVueUNsM1hy?=
- =?utf-8?B?YmVPNTh6bEpnQ0pHYU90Smg5MWpYS2JkQnUvM29CZDlNRHJZQ081WDFQblJj?=
- =?utf-8?B?ZC80d0xzUDQ5RFdId1pnK1h2eTNQNlVXS2pEZDlGMXhPV0xqaEYzaHdCV1No?=
- =?utf-8?B?TCtWNDlZOWVQVFNVdVhzZERTVjl5dmtJR2hsKytnSFk4TkFoYkVXWHBHeWFE?=
- =?utf-8?B?SXV6Qms5dUdickRvM1lwcjY3UFAzZTVxNkNJanJERFhvU0RHeFRpL0tCY0NJ?=
- =?utf-8?B?WElKMUxDU0lvOHV6ZmZhU3M5SUtRWTVvZHU4L2xmOEVlYSs0eEhZdXViUlVu?=
- =?utf-8?B?VWo4V1BZT0pNeHY1TzIyN1E3YTAvOHZDTUU0TjB1WVlYR2JJaXhRZndJWStH?=
- =?utf-8?B?VkNhamZjZHRVYUdCU0YwTEs3Mk4xMGg0TTh4Y3Z5RXNDdVQ0UEN4dkc5MlVl?=
- =?utf-8?B?YUtqVWlSbjdGTFdhZWNwZHpSNlc4UnJ2SGlaRGk0QTh5TG05d3UzcmFKWUF6?=
- =?utf-8?B?T2pFNWNWRXBCT0pldy8rMU1NWk1aSmduUkl5b29FMXhVVTJoV05YS21qbmox?=
- =?utf-8?B?RzZLaENiMFR6SVBPbTlVYXFSTXlRTUc2UUtWUUROeEFkOFdSbWoyd0dsVkJ5?=
- =?utf-8?B?WXBmTnU2RXNCN1Q2Q0J5c05iYlRNbU5QcHpraWozZ2JGSkJsZVZKYXpKTmEx?=
- =?utf-8?B?ckVRbGgxQ1hFc0k3UVZuaExPejNTdTBSZThiaXM3cVJBeFhIT29iVmxIdHoz?=
- =?utf-8?B?Vmp3RXJpT3RoV0NTMEVrQys0Rmo3NXQ1bUwvNGxueDlKVGkvdTdJcDQ1VGND?=
- =?utf-8?B?bC9vaWF2NXhXT0lGN0RLNHRDemNPb3dscUNadUFYamdHTHVKNmJxLy9MbFhI?=
- =?utf-8?B?dXhBU0ExWlFCYllZZFNIQ0dJVlVWWG9ITUQ5ZGtDclBHRnRGOGRubWVlR2x0?=
- =?utf-8?B?ZkkxUitOYWhyK3d4dWh1QVpndllmVG8yMXEwcDZUMW03dEgrUXAzYWxaR0ZV?=
- =?utf-8?B?eitDL0x6RlhKdUEwNWt6alhkRCtqNmVwVGxDMFhSMEQ2c3ZjL2hVM0tEOEpy?=
- =?utf-8?B?amZDcDVERlNlZWdDQWZuZm9uUFdUL3dtd2wzM1A0QmZvY2YxQXN1QWdBYTZF?=
- =?utf-8?B?aG5JaEprbDJvekZpL3RETHdFVElsNFlZWE1ONnJiTElYM1p6Vi9kSGQ2MWNo?=
- =?utf-8?B?ZHp3Ukt6ZzRwNUMvaDJRRFhXK2ZGVmhaNThaMW5wWGQrWFF4NlZyT1VxQzJM?=
- =?utf-8?B?MjlVcVYrcGhkWEZmajM3V0k4d1FGZFIzUHpKUzlqck1iS2JJdDZLRiswVmZ0?=
- =?utf-8?B?M0pEWXdMSC8zb2xNQ0Zia0dLOVlpN2lDa0JmaTU5d2tOckRKbHJDenUrS1Ey?=
- =?utf-8?B?c1hObThFYTdoanNGMkxXT01GSzJxNGZmSStkSmt4eERRZEFBc0VEMm9nMlI3?=
- =?utf-8?B?S1NoMExxd2IxSmNKbFBpckJOZThxeU5ZOUlqdHpHYTZiODFLMG9FcWZXNWho?=
- =?utf-8?Q?BiPbT3qXELBHAqpVENNas6rppZ4+knn//2hOpr4?=
+X-Microsoft-Antispam-Message-Info: +jlC6QidcpXe2IpDsVwb9fdcTgcM5+ap/9Go/UFhee+ehwY6FdmHTbgLDysY8gnnrp41K5RZc+i0QCHDSVpL6q25edr0b/O9dTvP8xjuSKs4o+9zjdduWcWLYWWnztzOlnsHuBrayzoLLH4la09RBO8Zpe9MqNSER+NJMutWPkmq8jjj2cRCbKNzDnCK9axnmIYzFxZkEStIYurzJZV4XJWOMgl9E6F+KS1g1C9uUBafmMXKeinC8yAfyYzokw8dzsIypS64Gbkl1p94hBzgH2RE8J+zQ6UzMZxpLULvvc9F9gqKJHQLFV0c9JwZWLJmHo/0n3aNdm9ejQ+RpBRE32BJzF7b+7YRKRwf/EdXMkD2855D6cd+/+KJMkf0L1BuqQl3ym/4qC6U411K5X4euliagUghSKIMngMCVFNZn+onCwqVYzlM8OVy2yIKxsudt275KoIvJIgHLM1YxFQ0pq3OcBKOxbJ2yaaGmHUkCKuY54EOYnst5T/KyDMJVHNJ3wwFRSkKBQ4Kftqg3HVBcQ+NxQ8n5hUBODb8GVGkOzyCwvS45Ote5/JDlSx5f3nsrAMQMzGGSCWFgyTNJexixCbyTiX5BhcNPsGPTz1zvFH8LVOzmYkPaDuKudbTKALsxi5efvJXgBGFmo6cGBWeGW0g5Rf2MHxkWpoMGjmY1/RD3kOO7gRdhxqQexGpuGCOB7isM5iu6VLmsGmCNC1ru1BZhZ/1FH5WgrKPkKeL79QmHtMmN/9bMKwMPkfB1YKR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(396003)(376002)(39860400002)(8676002)(66476007)(66556008)(86362001)(6666004)(4326008)(66946007)(956004)(8936002)(107886003)(36756003)(44832011)(5660300002)(1076003)(2616005)(316002)(54906003)(38100700001)(7696005)(26005)(478600001)(186003)(83380400001)(2906002)(6486002)(52116002)(7416002)(966005)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PGy2CHrymRRN55wXfMQT1KtR2FQWFBLYYbF3vx0B+IvzZA4xYjXNL6MB608u?=
+ =?us-ascii?Q?zeJnXipvX87LWTW5utfJL1yk/hPufRL49xejdc+UwXt01KASUwYOiBpWQtVH?=
+ =?us-ascii?Q?dUJ2THDUvDS+jWjB8muRbn5cA1dn/TvXakL0KLsxVnSa+lK8MqC7x/uSbo1Y?=
+ =?us-ascii?Q?s697dslBGFzjpslDsPT8DLRmTYtOqc+JAsHMEhXHomXJKUnZRzssYKd6bKZ6?=
+ =?us-ascii?Q?04Su9it4Rs5lCy+7Z6t9hzwgdwzm3SH0Sqj7kNEe9Fa431cspciGxms7uz+r?=
+ =?us-ascii?Q?kXPa5RouYObkcALLmsB+eoIcJFeqAuVIWvvq291My03q7OeN6P0YbjQYqF8g?=
+ =?us-ascii?Q?1eoUK5jboF165HxGtWCPrwOi55R57RRbZilSxejmJaRcWe3jOfcxONR7nxUb?=
+ =?us-ascii?Q?s6nXS6jImnZWdS60SSrVBj1ofa94oh2eySRChLv4HzfdoM9yaK+q1oD0plN3?=
+ =?us-ascii?Q?eoWu4Gx2z0l828A5KySy8eFpC9z1DSJrG+MVXPWAyGfP3rOegYgz49/HdoWY?=
+ =?us-ascii?Q?c51+xLqcs7CwjRB8OCt/myvq0eDOL/8etilkxrwxx1bNyGQyRZnDC3M1sEm9?=
+ =?us-ascii?Q?Tz+HUlgZWylzGaBMI1lYClPqkPaFzrbtcIITAPnvmuYcIJK6YCgxy8LWnIbj?=
+ =?us-ascii?Q?9Sy1mvdi1cK/WoI3TmWMEtPh6B/Wh9ETJ1KjDr1NSx/y1SWMoT/F4E7cyHwC?=
+ =?us-ascii?Q?saydHHw0BJ2zSLd3/6fPP+0hTzySVAzRzxjeyenziHL17o5pvQR1LCrt+sPq?=
+ =?us-ascii?Q?r4UwKMYm3tzWAt29Bf7bBKVa4VVH6Sqocr3RIAI4QDGMBTgVpSagjf+JL1G+?=
+ =?us-ascii?Q?X5JQELBwa1VVhzTEymXyOnEUdfcTb3tsF8gVTpd9+nBifGyRo9x1reJnpcII?=
+ =?us-ascii?Q?ij99clb2fG6CQrBA581q68kCyzwpTaam6dHUQG+wBLZtikImRieljLuxdhVy?=
+ =?us-ascii?Q?vAMRCdvSFMlSnK5pRPaG6FXkTM6htDGLZWt4PgREBE6t3NgIc5p8XrRKMuOP?=
+ =?us-ascii?Q?JdDbdIweKBVGlgFKOn0WxyDIqDS9Xj2fUmDOW+ngt7MqEMCfLYifiOr5yFgr?=
+ =?us-ascii?Q?jQImJN73/9KTY7jPCPwfwS2l7gXLXorLtJxL5A0onbTVRpl94e5U74Y2kqu7?=
+ =?us-ascii?Q?jo6DMXPWew0qK/ZlPIqFeiVgp+7gvN9dF61QKNtkyXcZqcP59dHY/sRFbeyZ?=
+ =?us-ascii?Q?sVWPlVff+utYsrDkXz6hn2I06QKPUMF/V4JGDwq80vNDqQbMAizSfF7HcNS0?=
+ =?us-ascii?Q?+K8NSR9WAC1OL3fhqXtsjVQuWuGW4I8MtWLaRV7ZBFoATyiNtKFTqsJ3gSaY?=
+ =?us-ascii?Q?yPR7XgNX2D38bh26kb5Q+Qto?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8019acbd-c4d0-41b7-f42b-08d8ef24b486
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06a5e629-3656-452c-7129-08d8ef24f5c0
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 00:27:00.3711
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 00:28:49.5080
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7dBbOPkkRkW4uyeQlHuXC6gfEPoQv3GlayWxOnRkcrKpfMUidhGWzd0eMYGrpmoeFxSIEO4x/RuOiWWoi9BihA==
+X-MS-Exchange-CrossTenant-UserPrincipalName: xq2LtyihO4nbDnPqjBx8AstGApOgBqS7/vbmZmAoA0IAygXpbiJqIXTqha3w+itAwmEfoDHnjgctOfgUzwyJZQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4462
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
+ mlxscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103250000
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9933 signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 phishscore=0
  mlxlogscore=999 priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0
- adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0 suspectscore=0
+ adultscore=0 clxscore=1015 malwarescore=0 mlxscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2103250000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/19/21 6:18 PM, Hillf Danton wrote:
-> On Fri, 19 Mar 2021 15:42:08 -0700  Mike Kravetz wrote:
->> +
->> +	if (!can_sleep && free_page_may_sleep(h, page)) {
->> +		/*
->> +		 * Send page freeing to workqueue
->> +		 *
->> +		 * Only call schedule_work() if hpage_freelist is previously
->> +		 * empty. Otherwise, schedule_work() had been called but the
->> +		 * workfn hasn't retrieved the list yet.
->> +		 */
->> +		if (llist_add((struct llist_node *)&page->mapping,
->> +					&hpage_freelist))
->> +			schedule_work(&free_hpage_work);
->> +		return;
->> +	}
-> 
-> Queue work on system_unbound_wq instead of system_wq because of blocking work.
-> 
+This effort is the result a recent bug report [1].  In subsequent
+discussions [2], it was deemed necessary to properly fix the hugetlb
+put_page path (free_huge_page).  This RFC provides a possible way to
+address the issue.  Comments are welcome/encouraged as several attempts
+at this have been made in the past.
 
-Thanks Hillf,
+This series is based on v5.12-rc3-mmotm-2021-03-17-22-24.  At a high
+level, the series provides:
+- Patches 1 & 2 from Roman Gushchin provide cma_release_nowait()
+- Patches 4, 5 & 6 are aimed at reducing lock hold times.  To be clear
+  the goal is to eliminate single lock hold times of a long duration.
+  Overall lock hold time is not addressed.
+- Patch 7 makes hugetlb_lock and subpool lock IRQ safe.  It also reverts
+  the code which defers calls to a workqueue if !in_task.
+- Patch 8 adds some lockdep_assert_held() calls
 
-I am dropping this patch and going with Roman's patches to create an
-version of cma_release that will not sleep.  A workqueue handoff like
-this may be needed in the vmemmap reduction series, so will keep this in
-mind.
+[1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
+[2] http://lkml.kernel.org/r/20210311021321.127500-1-mike.kravetz@oracle.com
+
+RFC -> v1
+- Add Roman's cma_release_nowait() patches.  This eliminated the need
+  to do a workqueue handoff in hugetlb code.
+- Use Michal's suggestion to batch pages for freeing.  This eliminated
+  the need to recalculate loop control variables when dropping the lock.
+- Added lockdep_assert_held() calls
+- Rebased to v5.12-rc3-mmotm-2021-03-17-22-24
+
+Mike Kravetz (6):
+  hugetlb: add per-hstate mutex to synchronize user adjustments
+  hugetlb: create remove_hugetlb_page() to separate functionality
+  hugetlb: call update_and_free_page without hugetlb_lock
+  hugetlb: change free_pool_huge_page to remove_pool_huge_page
+  hugetlb: make free_huge_page irq safe
+  hugetlb: add lockdep_assert_held() calls for hugetlb_lock
+
+Roman Gushchin (2):
+  mm: cma: introduce cma_release_nowait()
+  mm: hugetlb: don't drop hugetlb_lock around cma_release() call
+
+ include/linux/cma.h     |   2 +
+ include/linux/hugetlb.h |   1 +
+ mm/cma.c                |  93 +++++++++++
+ mm/cma.h                |   5 +
+ mm/hugetlb.c            | 354 +++++++++++++++++++++-------------------
+ mm/hugetlb_cgroup.c     |   8 +-
+ 6 files changed, 294 insertions(+), 169 deletions(-)
+
 -- 
-Mike Kravetz
+2.30.2
+
