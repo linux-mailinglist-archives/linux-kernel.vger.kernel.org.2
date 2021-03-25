@@ -2,101 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31093348DEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F5E348DED
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhCYKYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:24:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:45976 "EHLO foss.arm.com"
+        id S230197AbhCYKYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:24:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49700 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229979AbhCYKXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:23:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB4BD13D5;
-        Thu, 25 Mar 2021 03:23:50 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF2603F718;
-        Thu, 25 Mar 2021 03:23:46 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 10:23:43 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 11/17] psci: use __pa_function for cpu_resume
-Message-ID: <20210325102343.GC36570@C02TD0UTHF1T.local>
-References: <20210323203946.2159693-1-samitolvanen@google.com>
- <20210323203946.2159693-12-samitolvanen@google.com>
+        id S230189AbhCYKYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:24:32 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616667871; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MY7sSmU90y5JQm0YzMx7OMqCkCu0pemuSB7/AZ6UPuk=;
+        b=etQd2/pC+ndUlJPJsiLN9+jhei3Tq6e+9OLuoPH5S/zeB/Krh0/FCLmJ8xpx7l875ZD8/G
+        KdQuppFRhlzu3GSrcqtII78AHv4OgGZsVDjqsV5CL+S96lcLHMvWCqLtJadaDZzslL1tk4
+        nXjeSV5yrEh3uTANJAv0YPRVmJn8wfY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DF7E6AA55;
+        Thu, 25 Mar 2021 10:24:30 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 11:24:29 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/8] mm: cma: introduce cma_release_nowait()
+Message-ID: <YFxk3UPLHI8/6XOh@dhcp22.suse.cz>
+References: <20210325002835.216118-1-mike.kravetz@oracle.com>
+ <20210325002835.216118-2-mike.kravetz@oracle.com>
+ <YFxbrn7pHN4TIHkR@dhcp22.suse.cz>
+ <YFxh5SgXnKsbiFgj@dhcp22.suse.cz>
+ <YFxjPDRFfaUMPjmr@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323203946.2159693-12-samitolvanen@google.com>
+In-Reply-To: <YFxjPDRFfaUMPjmr@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:39:40PM -0700, Sami Tolvanen wrote:
-> With CONFIG_CFI_CLANG, the compiler replaces function pointers with
-> jump table addresses, which results in __pa_symbol returning the
-> physical address of the jump table entry. As the jump table contains
-> an immediate jump to an EL1 virtual address, this typically won't
-> work as intended. Use __pa_function instead to get the address to
-> cpu_resume.
+On Thu 25-03-21 11:17:32, Oscar Salvador wrote:
+> On Thu, Mar 25, 2021 at 11:11:49AM +0100, Michal Hocko wrote:
+> > I have overlooked that
+> > +static void cma_clear_bitmap_fn(struct work_struct *work)
+> > +{
+> > +       struct cma_clear_bitmap_work *w;
+> > +
+> > +       w = container_of(work, struct cma_clear_bitmap_work, work);
+> > +
+> > +       cma_clear_bitmap(w->cma, w->pfn, w->count);
+> > +
+> > +       __free_page(pfn_to_page(w->pfn));
+> > +}
+> > 
+> > should be doing free_contig_range with w->count target.
 > 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/firmware/psci/psci.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index f5fc429cae3f..facd3cce3244 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -326,7 +326,7 @@ static int psci_suspend_finisher(unsigned long state)
->  {
->  	u32 power_state = state;
->  
-> -	return psci_ops.cpu_suspend(power_state, __pa_symbol(cpu_resume));
-> +	return psci_ops.cpu_suspend(power_state, __pa_function(cpu_resume));
+> That is currently done in cma_release_nowait().
+> You meant we should move that work there in the wq?
 
-As mentioned on the patch adding __pa_function(), I'd prefer to keep the
-whatever->phys conversion separate from the CFI removal, since we have a
-number of distinct virtual address ranges with differing conversions to
-phys, and I don't think it's clear that __pa_function() only works for
-kernel symbols (rather than module addresses, linear map addresses,
-etc).
+I have missed that part. My bad. But it seems this whole thing is moot
+because we can make the lock a spinlock as pointed out by David.
 
-Other than that, I'm happy in principle with wrapping this. I suspect
-that for clarity we should add an intermediate variable, e.g.
-
-| phys_addr_t pa_cpu_resume = pa_symbol(function_nocfi(cpu_resume));
-| return psci_ops.cpu_suspend(power_state, pa_cpu_resume)
-
-Thanks,
-Mark.
-
->  }
->  
->  int psci_cpu_suspend_enter(u32 state)
-> @@ -345,7 +345,7 @@ int psci_cpu_suspend_enter(u32 state)
->  static int psci_system_suspend(unsigned long unused)
->  {
->  	return invoke_psci_fn(PSCI_FN_NATIVE(1_0, SYSTEM_SUSPEND),
-> -			      __pa_symbol(cpu_resume), 0, 0);
-> +			      __pa_function(cpu_resume), 0, 0);
->  }
->  
->  static int psci_system_suspend_enter(suspend_state_t state)
-> -- 
-> 2.31.0.291.g576ba9dcdaf-goog
-> 
+-- 
+Michal Hocko
+SUSE Labs
