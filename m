@@ -2,59 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1A55348BD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6078348BDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 09:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbhCYIpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 04:45:50 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:59857 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhCYIpX (ORCPT
+        id S229904AbhCYIq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 04:46:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhCYIqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 04:45:23 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 821681BF20C;
-        Thu, 25 Mar 2021 08:45:19 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 09:45:17 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     "heying (H)" <heying24@huawei.com>
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        a.zummo@towertech.it, christophe.leroy@csgroup.eu,
-        npiggin@gmail.com, msuchanek@suse.de, tglx@linutronix.de,
-        peterz@infradead.org, geert@linux-m68k.org,
-        geert+renesas@glider.be, kernelfans@gmail.com, frederic@kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH V3 -next] powerpc: kernel/time.c - cleanup warnings
-Message-ID: <YFxNneWEFO4m5Glt@piout.net>
-References: <20210324090939.143477-1-heying24@huawei.com>
- <YFsGYgdNH5HrlqDJ@piout.net>
- <18a8d444-f1a5-61e0-b9f2-f85c03d71686@huawei.com>
+        Thu, 25 Mar 2021 04:46:46 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBFBC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:46:45 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id x189so1481372ybg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 01:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CMOh6CKHoE8wEnJ297RcB818JvAx3+jqS3T9TGFSU7I=;
+        b=I3wXOxah3lKZ58tMNKleHDdBs11K3lacX78B0jYEHyEtTgDW8a+yM04oJuXAyvvcVg
+         92piIEvEHKPQSPf857NAkYgw7n6sdbUWjrVuFNnW4Ytj8WcBv+viuZjFCw8Jrv7h7srM
+         WuKDSWcy4linmzz0di+4iKtLJf4LCdC5A8+JXkFbGrHjpcAt3VRDf7oSYZTb8veSpZHK
+         BxGvG/0Ut3PGB1KlJyl5bu8v1GWJFsZy77iwUrgj9M67TwcpHOIUMoC2PoBZ8zBDWPpH
+         5mNrm7GH4xfCeXlMh5QcLnhCnIogA8kL8t2ZNW7ILDlhBhu37f/j/COKQR9kChXY9OHf
+         g6/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CMOh6CKHoE8wEnJ297RcB818JvAx3+jqS3T9TGFSU7I=;
+        b=OWWZsx13g8cwaCXP/kMBNcBm6ifLAhyZcEwnSz3lr58QOMZrIA+iuVCIU55nDL6qRP
+         p8AEEwaN1/DiUB9C+RIjYhxeG/ElRQN5I6XQMPBBcb68eVGe+VbdinLPl8BG1Er7nERa
+         HZ/dgXmePGZfNzSqXmXL780IaAZG/eS/JPqUIwlalEYKrDj5Ekhr6FiVllMRqDQxfo73
+         F2wDU5UA2qG4FYcAsODiSSf/I3oXdOPYwT+dzO3QMqP4WeWEwpkKrE7pzCOfq+jMdVnM
+         GAunz9WM3NoPNAZ6b4KnBuJKWZLOYIUO0M6ct9SLodr8/ga2wvym6TjTggIGaGc+aN50
+         uOCg==
+X-Gm-Message-State: AOAM532ielUXWCLOVi6ujnbQpWKssCdGshS6riSJwmHRRfLX2D6kogMi
+        yDTdu/rCByYX0/zgrGv81LnU6KjIpwaaVyPdx2fj0w==
+X-Google-Smtp-Source: ABdhPJxG6ULHALZ+HY+gpF1iomtyE+f+DWpvdkmtTrXZ4T1bh+aWSyhv9EWry78dRCresMAFkoEMFDBRSH5sxnpVSR8=
+X-Received: by 2002:a25:1f83:: with SMTP id f125mr11005435ybf.132.1616662004225;
+ Thu, 25 Mar 2021 01:46:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18a8d444-f1a5-61e0-b9f2-f85c03d71686@huawei.com>
+References: <20210323064923.2098711-1-dvyukov@google.com> <CANn89iJOignHVg-QOtEB_RVqca=pMczJv-k=CEtPRH0d4fSdgA@mail.gmail.com>
+ <CACT4Y+YjJBkbi-u6VTikhHO4OjXhdKnQTqDiHxB5BEZG2Qn7qg@mail.gmail.com>
+In-Reply-To: <CACT4Y+YjJBkbi-u6VTikhHO4OjXhdKnQTqDiHxB5BEZG2Qn7qg@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 25 Mar 2021 09:46:32 +0100
+Message-ID: <CANn89iJBz4NjRzaAyP8gFGzu1y=3YeLOEZ8CLMqv5aUkP7wRvw@mail.gmail.com>
+Subject: Re: [PATCH v2] net: make unregister netdev warning timeout configurable
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Leon Romanovsky <leon@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/03/2021 17:46:19+0800, heying (H) wrote:
-> Many thanks for your suggestion. As you suggest, rtc_lock should be local to
-> platforms.
-> 
-> Does it mean not only powerpc but also all other platforms should adapt this
-> change?
+On Thu, Mar 25, 2021 at 8:39 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Wed, Mar 24, 2021 at 10:40 AM Eric Dumazet <edumazet@google.com> wrote:
+> >
+> > On Tue, Mar 23, 2021 at 7:49 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > >
+> > > netdev_wait_allrefs() issues a warning if refcount does not drop to 0
+> > > after 10 seconds. While 10 second wait generally should not happen
+> > > under normal workload in normal environment, it seems to fire falsely
+> > > very often during fuzzing and/or in qemu emulation (~10x slower).
+> > > At least it's not possible to understand if it's really a false
+> > > positive or not. Automated testing generally bumps all timeouts
+> > > to very high values to avoid flake failures.
+> > > Add net.core.netdev_unregister_timeout_secs sysctl to make
+> > > the timeout configurable for automated testing systems.
+> > > Lowering the timeout may also be useful for e.g. manual bisection.
+> > > The default value matches the current behavior.
+> > >
+> > > Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
+> > > Fixes: https://bugzilla.kernel.org/show_bug.cgi?id=211877
+> > > Cc: netdev@vger.kernel.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > >
+> > > ---
+> > > Changes since v1:
+> > >  - use sysctl instead of a config
+> > > ---
+> >
+> > >         },
+> > > +       {
+> > > +               .procname       = "netdev_unregister_timeout_secs",
+> > > +               .data           = &netdev_unregister_timeout_secs,
+> > > +               .maxlen         = sizeof(unsigned int),
+> > > +               .mode           = 0644,
+> > > +               .proc_handler   = proc_dointvec_minmax,
+> > > +               .extra1         = SYSCTL_ZERO,
+> > > +               .extra2         = &int_3600,
+> > > +       },
+> > >         { }
+> > >  };
+> > >
+> >
+> > If we allow the sysctl to be 0, then we risk a flood of pr_emerg()
+> > (one per jiffy ?)
+>
+> My reasoning was that it's up to the user. Some spammy output on the
+> console for rare events is probably not the worst way how root can
+> misconfigure the kernel :)
+> It allows one to check (more or less) if we are reaching
+> unregister_netdevice with non-zero refcount, which may be useful for
+> some debugging maybe.
+> But I don't mind changing it to 1 (or 5) if you prefer. On syzbot we
+> only want to increase it.
+>
 
-Not all the other ones, in the current state, x86 still needs it. I'll
-work on that. Again, the patch is fine as is.
-
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
-
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Yes, please use a lower limit of one to avoid spurious reports.
