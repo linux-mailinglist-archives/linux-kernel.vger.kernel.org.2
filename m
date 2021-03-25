@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59A5349A9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289D6349AA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhCYTn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229833AbhCYTnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:43:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD9D0619C9;
-        Thu, 25 Mar 2021 19:43:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616701404;
-        bh=1r+GeFGCMbDDIXeRYKJ4Hm8F51/bPaP4XF8mxybzx2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JGP1DZMB24r/DF69LXH/qos9xWt+IB2JQD2/pxxusRzuFj7yp8XP9X6ZX11xq7UI3
-         SqgDqD5EeTOq9jkARGuGO2Y0JjS2eKLD1lvQ4i83zw0FkGZLqPEa3b/DEr7vJrFQWM
-         rHRuNJnaf0MP6CSUnAClzOox/qpLeEiVup7Sm+LLExLdFtmcCn/BLnD9OtQ7Oo6VBs
-         d7Fde1+FRBsdZGBPah8hBCy9p2ot8rPBJtccyc2DJhao2COhMdQJ//x2+YRTz5xxdN
-         EXnfAdx8UBx9lXiF0DKxfcGOPjRXFd0HRnsj3Zr8bwt/TO151jqIYDrDv/W5Pcm7br
-         j61kk91T6iVTA==
-Date:   Thu, 25 Mar 2021 12:43:22 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Shreeya Patel <shreeya.patel@collabora.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, jaegeuk@kernel.org, chao@kernel.org,
-        drosen@google.com, yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v4 2/5] fs: Check if utf8 encoding is loaded before
- calling utf8_unload()
-Message-ID: <YFzn2rbN6P0LvdA+@sol.localdomain>
-References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
- <20210325000811.1379641-3-shreeya.patel@collabora.com>
- <YFziza/VMyzEs4s1@sol.localdomain>
- <878s6bt4gx.fsf@collabora.com>
+        id S230085AbhCYTrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhCYTqt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:46:49 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E00C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:46:48 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id e8so3091516iok.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w4tXV4bjH2c8KynLJsKEa06SrUbk+HhPBB7dNQjtcMM=;
+        b=MvF9EcaP6yLfYa/7v62PIim8XiIiqUXRH21gM7E8BzGMxecJ1lI9X5AkqtYLGoRXC1
+         b3F5PmHC8nFlkkyvXRurbk2VPXVypEOIiWXIq3Bn/C6VAdcVGKICrEnVS+dg3TzesfwZ
+         1G55KUHnMzZEBlbaZ/SKFI5W982T6HHc84VIIsm3g+Uc3H2eNQkexrc/NTAGCtTeYg6E
+         AoR9mPzQkZJP+N3gT8iLxal++mlD8FCIchmiQ9MOUyERs81JY/azInm8CvLPG6duzmys
+         gJHRRQytR/RQXTgRE2NAfkRorpbsTgeCMGsX5FQ0l65p49P2q3vHvBE9q740jtKa7U1H
+         Pspg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w4tXV4bjH2c8KynLJsKEa06SrUbk+HhPBB7dNQjtcMM=;
+        b=YvttpOPDGsrcJIdUeQ9s+zMp/fblgjs40gLHgYHQvnDKrpBDPWUczhQZpDb7loLrHF
+         HuEDY8uVng/WqzjX69K36N4+Df+mdCFkhyiWmlINyRDMDebYs2BTavbhqvpD8C0g4W1x
+         V7OWMHQzz83yMACVQrQMI8JURqcrYyU/A0p1o2ND8IqrwxsuMXPune3hQmytjQQ5i5rw
+         XR/rYyqhHRfhcpNmj/FER1NtMNxAX/UwlHRSiQ9NyH7vcurOthYjGtXaQaBrWZGZGYvr
+         hs/8x1f5PKBsyso5JIZYr6RO+Mnru95XlHgT7yKTTZamf802bBFlmFGKM09mDsC9LpVl
+         /80Q==
+X-Gm-Message-State: AOAM531pQAg+bWCokrk7dPOnta0DZoCjnWCziiPCxtBgH2o6KCHxbUh5
+        M+30m7+UR8TIQ8CVjtIDCDP+RQ==
+X-Google-Smtp-Source: ABdhPJyrehP8WY34/73Y0Umb05rmNkbp2CdjyZaTXlHtPfJyxt0WDhvyoLTe92Tv9PvClh6KA7vlPg==
+X-Received: by 2002:a5d:9610:: with SMTP id w16mr7886714iol.167.1616701607804;
+        Thu, 25 Mar 2021 12:46:47 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id g6sm3142446ilj.28.2021.03.25.12.46.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 12:46:47 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Stefan Metzmacher <metze@samba.org>
+References: <20210325164343.807498-1-axboe@kernel.dk>
+ <m1ft0j3u5k.fsf@fess.ebiederm.org>
+ <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+ <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3a1c02a5-db6d-e3e1-6ff5-69dd7cd61258@kernel.dk>
+Date:   Thu, 25 Mar 2021 13:46:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878s6bt4gx.fsf@collabora.com>
+In-Reply-To: <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 03:31:42PM -0400, Gabriel Krisman Bertazi wrote:
-> Eric Biggers <ebiggers@kernel.org> writes:
+On 3/25/21 1:42 PM, Linus Torvalds wrote:
+> On Thu, Mar 25, 2021 at 12:38 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> I don't know what the gdb logic is, but maybe there's some other
+>> option that makes gdb not react to them?
 > 
-> > On Thu, Mar 25, 2021 at 05:38:08AM +0530, Shreeya Patel wrote:
-> >> utf8_unload is being called if CONFIG_UNICODE is enabled.
-> >> The ifdef block doesn't check if utf8 encoding has been loaded
-> >> or not before calling the utf8_unload() function.
-> >> This is not the expected behavior since it would sometimes lead
-> >> to unloading utf8 even before loading it.
-> >> Hence, add a condition which will check if sb->encoding is NOT NULL
-> >> before calling the utf8_unload().
-> >> 
-> >> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> >> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> >> ---
-> >>  fs/ext4/super.c | 6 ++++--
-> >>  fs/f2fs/super.c | 9 ++++++---
-> >>  2 files changed, 10 insertions(+), 5 deletions(-)
-> >> 
-> >> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> >> index ad34a37278cd..e438d14f9a87 100644
-> >> --- a/fs/ext4/super.c
-> >> +++ b/fs/ext4/super.c
-> >> @@ -1259,7 +1259,8 @@ static void ext4_put_super(struct super_block *sb)
-> >>  	fs_put_dax(sbi->s_daxdev);
-> >>  	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
-> >>  #ifdef CONFIG_UNICODE
-> >> -	utf8_unload(sb->s_encoding);
-> >> +	if (sb->s_encoding)
-> >> +		utf8_unload(sb->s_encoding);
-> >>  #endif
-> >>  	kfree(sbi);
-> >>  }
-> >
-> >
-> > What's the benefit of this change?  utf8_unload is a no-op when passed a NULL
-> > pointer; why not keep it that way?
-> 
-> For the record, it no longer is a no-op after patch 5 of this series.
-> Honestly, I prefer making it explicitly at the caller that we are not
-> entering the function, like the patch does, instead of returning from it
-> immediately.  Makes it more readable, IMO.
-> 
+> .. maybe we could have a different name for them under the task/
+> subdirectory, for example (not  just the pid)? Although that probably
+> messes up 'ps' too..
 
-I don't think making all the callers do the NULL check is more readable.  It's
-conventional for free-like functions to accept NULL pointers.  See for example
-every other function in the code snippet above -- fs_put_dax(),
-fscrypt_free_dummy_policy(), and kfree().
+Heh, I can try, but my guess is that it would mess up _something_, if
+not ps/top.
 
-This seems more like an issue with patch 5; it shouldn't be dropping the NULL
-check from unicode_unload().
+-- 
+Jens Axboe
 
-- Eric
