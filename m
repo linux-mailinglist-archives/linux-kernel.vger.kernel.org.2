@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C7E3490F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B32953490E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232002AbhCYLlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:41:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:60381 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231636AbhCYLit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:38:49 -0400
-IronPort-SDR: X0q+9dqjm5A5FdU4eM9tqoYXuxOyTeRDXfM5Ydzm2vxFx+mYSNs2NzSCEBO+AhoF5M8R5Jvoun
- 4YQCf8D9qNBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9933"; a="190936665"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="190936665"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 04:33:09 -0700
-IronPort-SDR: eLMdjmGZ172nWUnoqly9ZhCsQoTv+M6+yM9bp3kzkPfHuTW890qD5wcu0X14ZptIkYxHlF98O4
- yIb3JfV2M07w==
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="409332136"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 04:33:07 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lPOEa-00G1lh-TT; Thu, 25 Mar 2021 13:33:04 +0200
-Date:   Thu, 25 Mar 2021 13:33:04 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-Subject: Re: [PATCH v5 1/2] gpio: sch: Add edge event support
-Message-ID: <YFx08OhkBbyXBdZo@smile.fi.intel.com>
-References: <20210317151928.41544-1-andriy.shevchenko@linux.intel.com>
- <20210317151928.41544-2-andriy.shevchenko@linux.intel.com>
- <CACRpkdaZwAg4X9QT4QMR2GSH6Cekc7Xuk+-pqhCyON-Y3cnCrA@mail.gmail.com>
+        id S231761AbhCYLko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:40:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31040 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231180AbhCYLd2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:33:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616672008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=WzowP+sLkDfedW5lZC+DZjAa2iepM0HqhQ8ixqDL3Ws=;
+        b=NHpsNXcXwwkkDMC88GAr7Rb1LmpCS2dwscpNkqiCPix4kuRaCLFk+bFRWzom5NH83d+4U3
+        Kr3OHUWKjfGaWFYZqfwVpwfMLwSRwWMur/DTLH+ToFa7hE4MEL/itEzL0ddWpfhcI7wNhU
+        01MfI/nBqEmyGQ3EBw4OAY86TB9ZSEM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-5XYFYg32Nsm0ar7qpmX5pw-1; Thu, 25 Mar 2021 07:33:26 -0400
+X-MC-Unique: 5XYFYg32Nsm0ar7qpmX5pw-1
+Received: by mail-wm1-f72.google.com with SMTP id j8so1137864wmq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:33:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=WzowP+sLkDfedW5lZC+DZjAa2iepM0HqhQ8ixqDL3Ws=;
+        b=QcRwLxlQ0kHaaEozVnmV8OoiROtSK+SOSW+N9sHYoaQ1dW6hnDisMrBmVthJe0uB5l
+         0uEr0z9au+70CoxJzons3dBod4GjswU8tkWu9QxdgcsmOwgpbPBZNT97Kn4bh7s4v49i
+         XFOn00ZJYMELYHLsTAmZzZ510R+IpvT3ZGenoVjFYobvLKSgPRwzn2xYIKUQgadmh4pP
+         hkEjY4MIgERGVJ1tyW/E8ZMWPA3fsHMyPfTsImnUFyP6QJxjHPq839Gl5F03KnPvBzU3
+         jgSuSR7xh3YGjiZhj8VSxaz8clRwGRYx4lKAqcK/clLfHaI2GWsHFeYS2lYt3lMyy+Yh
+         irnA==
+X-Gm-Message-State: AOAM532cCI4+MmZPE5aSzf9c+qBoIx2SG56az9DFKoM8qEhqhhb+OMm1
+        ayJs799zBFHcWdZxz97p7x/JlYBndVDwVflPY1vcOjdiXn+NMiEXTSHcWPmGwtKz+icLR9HTBio
+        WLWte92S8/sTU8Ms48k/Agbk6
+X-Received: by 2002:a05:600c:4f89:: with SMTP id n9mr7614717wmq.133.1616672005209;
+        Thu, 25 Mar 2021 04:33:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxeb+RXeOXpc4pbgT9ly41sA9xcWuuvPd6YRWfU5Ap/hhUSDfGV3R125XtSc3HB9Ye+rOnpVQ==
+X-Received: by 2002:a05:600c:4f89:: with SMTP id n9mr7614700wmq.133.1616672005034;
+        Thu, 25 Mar 2021 04:33:25 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id 1sm11022599wmj.0.2021.03.25.04.33.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 04:33:24 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 12:33:22 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Are CAP_SYS_ADMIN and CAP_SYS_NICE still needed for SQPOLL?
+Message-ID: <20210325113322.ecnji3xejozqdpwt@steredhat>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <CACRpkdaZwAg4X9QT4QMR2GSH6Cekc7Xuk+-pqhCyON-Y3cnCrA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:13:51AM +0100, Linus Walleij wrote:
-> On Wed, Mar 17, 2021 at 4:19 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> 
-> > From: Jan Kiszka <jan.kiszka@siemens.com>
-> >
-> > Add the required infrastructure to enable and report edge events
-> > of the pins to the GPIO core. The actual hook-up of the event interrupt
-> > will happen separately.
-> >
-> > Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> > Co-developed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> I can't believe it that nobody added irq support to this driver for 10
-> years given how widely deployed it is! (Good work.)
-> 
-> Don't you need to add
-> 
-> select GPIOLIB_IRQCHIP
-> 
-> to Kconfig? So the gpio_chip contains the .irq member you're using.
+Hi Jens, Hi Pavel,
+I was taking a look at the new SQPOLL handling with io_thread instead of 
+kthread. Great job! Really nice feature that maybe can be reused also in 
+other scenarios (e.g. vhost).
 
-Seems legit, thanks!
+Regarding SQPOLL, IIUC these new threads are much closer to user 
+threads, so is there still a need to require CAP_SYS_ADMIN and 
+CAP_SYS_NICE to enable SQPOLL?
 
-> > +       sch->irqchip.name = "sch_gpio";
-> > +       sch->irqchip.irq_ack = sch_irq_ack;
-> > +       sch->irqchip.irq_mask = sch_irq_mask;
-> > +       sch->irqchip.irq_unmask = sch_irq_unmask;
-> > +       sch->irqchip.irq_set_type = sch_irq_type;
-> > +
-> > +       sch->chip.irq.chip = &sch->irqchip;
-> > +       sch->chip.irq.num_parents = 0;
-> > +       sch->chip.irq.parents = NULL;
-> > +       sch->chip.irq.parent_handler = NULL;
-> > +       sch->chip.irq.default_type = IRQ_TYPE_NONE;
-> > +       sch->chip.irq.handler = handle_bad_irq;
-> 
-> I always add a local variable like:
-> 
-> struct gpio_irq_chip *girq;
-> 
-> And assign with the arrow, so as to make it easier to read:
-> 
-> girq->parent_handler = NULL
-> 
-> etc.
-
-OK!
-
-> +/- the above:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Thanks!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Thanks,
+Stefano
 
