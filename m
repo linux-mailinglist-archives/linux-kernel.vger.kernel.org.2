@@ -2,164 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEBE3493C6
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCAA3493C5
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhCYOKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:10:55 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:26095 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbhCYOKj (ORCPT
+        id S231395AbhCYOKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbhCYOKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Mar 2021 10:10:39 -0400
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 12PEAGql015579;
-        Thu, 25 Mar 2021 23:10:17 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 12PEAGql015579
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1616681417;
-        bh=iQMYfP4L+HyiOQ8RE1EhrH58Te4u5LVK5xmT6nTI+0E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fKd8Mx+67bZ13cC+zu4OPRzyNU5LtNK9v1m62Tv39QS6u29KMkDsELWF9LLDpNgcH
-         zKbsaEWyPLxgBnOIzpOWT+9j1Q7l2+zi1DVBw11w/Vc1hjR/3FF+EmZCqSqIZuj2Ow
-         zfTLRsSUChvqYjTZklJ6bHwy/W1bb1Sy29y4D3odrlN6lPBzhWB2o7qjuafjVFaeoy
-         hQtQVyIexGEUMleabmS/lGdX06rjZAVFvbJlT/s6qUJ4lm/A5VWnrsi+ykEOgkm5Kc
-         0VATPha12xUlsuQX4rMZrw93VEMu3WN0EVvbbkGPIvB3n92UQwH629m1XyiJUoGa8I
-         Tojpqo4uY4eAQ==
-X-Nifty-SrcIP: [209.85.210.177]
-Received: by mail-pf1-f177.google.com with SMTP id q5so2181079pfh.10;
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6012AC06174A;
+        Thu, 25 Mar 2021 07:10:38 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id r10-20020a05600c35cab029010c946c95easo1253533wmq.4;
+        Thu, 25 Mar 2021 07:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0mydIUmMhYaLpC0TGBq89wR0dneeiZBlHKPe/4EHYHQ=;
+        b=a3ElJQirlWF+dI7K4n4nvo1sQoIkDsrGHGpI4TzD8Q5dkBmsANAOjtijDLR8aeCdWR
+         8tCnfIctyLhIYTyi3nRP9xBG++vnW4KpmYe2cgU6/VrlpGHn5kxHvkc1nbEHx9+IkLTu
+         JX9Y+Y5VZzMWpX7/slK0YHqJa3j3akJd/6q2EPGBfY/7cZ7cgtAluRg/XaAEKd0NoI6W
+         vcQqcDUErX9vXyhoqOIN57vWwpAiRFPR1Ow9C8kpGsTD5pnMZ/Ti5FEyDF3bsu2/CFEw
+         uGUDIfA+7kVWW73Trqoqcs51olgm+RdQndp1ISFmn5oQyOaWauPmg3Gj+uP1LiMloreC
+         md8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0mydIUmMhYaLpC0TGBq89wR0dneeiZBlHKPe/4EHYHQ=;
+        b=e9pF3P3xjno5Q22mUYEuydk4vbUDmOl3EzxH3dAx/bT0/2LI8H7mC8UZ2G2GIbYvxr
+         jfWDhVySvFkD86MGc1oKJ+2WRAR4ghIPemODrtRHusetV3oLFNPkA5sC5hYcb/AyB0Ia
+         bPqylkTbKWMlXN4RR/fSLdtr0rEn7vbJhfa4LO+xzpK7j0doTEiQlcF+0TI4kvFuuJOL
+         jSuDu9V/z4zVhiO4bF3BvDMzEFaFchhUKk8oRM0J/GgBWtm7lEuitERt5j3WBTSuDUJw
+         nfZWSFWfLEOZmjnD4WgreDss8VOFNzoXEw3IQefnq399iUzylzNU+QH52fox9NWs0doV
+         asaA==
+X-Gm-Message-State: AOAM532f3/LLmUpm3jW61oIQq5uehWXklqpKek2f+tI2RkfBnngU6HLB
+        vVgMZ9wev1D07ZsY+kPlyPc=
+X-Google-Smtp-Source: ABdhPJwbRUVbk/fkcAVvW+Lw1raZb6rUBMJ2PSvmm+rVzBFiu8qDlP16L2ma9KZzOWdSnZHxzfPaBg==
+X-Received: by 2002:a1c:22c2:: with SMTP id i185mr8179035wmi.99.1616681437080;
+        Thu, 25 Mar 2021 07:10:37 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id v14sm7684745wrd.48.2021.03.25.07.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 25 Mar 2021 07:10:17 -0700 (PDT)
-X-Gm-Message-State: AOAM530e/Qc9bEDKFsIJx5jZIH95EczpWExewDqc8c6d0XHBNleS9Bsj
-        64yCMfr1/eFMaUj2THTOOEKUry3FYBpwJOkEaGA=
-X-Google-Smtp-Source: ABdhPJx4impjrhvCdqsgvM/RHxeMTc3ZP1ExJXCq3+pMeD6Oj7tFoa7CV0PRhkKaRVj5zxW5bvleuanai/tC1PXZZN0=
-X-Received: by 2002:aa7:8814:0:b029:21d:d2ce:7be with SMTP id
- c20-20020aa788140000b029021dd2ce07bemr8084370pfo.80.1616681416400; Thu, 25
- Mar 2021 07:10:16 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:10:25 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>, Nick Dyer <nick@shmanahar.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/3] ARM: tegra: acer-a500: Add atmel,wakeup-method
+ property
+Message-ID: <YFyZ0ejrSxWc3JZT@orome.fritz.box>
+References: <20210302102158.10533-1-digetx@gmail.com>
+ <20210302102158.10533-4-digetx@gmail.com>
+ <YFfLXLDIuRdj2bWs@google.com>
 MIME-Version: 1.0
-References: <20210322213806.089334551@goodmis.org> <20210322214032.293992979@goodmis.org>
- <CAK7LNAQh=zKVTwup5Kh39oTnVEUNotX-Ce7_+2uRO1GNVOaDbw@mail.gmail.com>
- <20210324095417.49c6377b@gandalf.local.home> <CAK7LNAQ4uRB+9M4h0KVwEQUnX1XZrsE30KP_pqJqYjF2FcsHZA@mail.gmail.com>
- <20210325095039.7202d675@gandalf.local.home>
-In-Reply-To: <20210325095039.7202d675@gandalf.local.home>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 25 Mar 2021 23:09:38 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASS70K6vWz6pxkvgPKmRGYvpt+OwAa2ZZT5OMGW4ZJW_Q@mail.gmail.com>
-Message-ID: <CAK7LNASS70K6vWz6pxkvgPKmRGYvpt+OwAa2ZZT5OMGW4ZJW_Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] streamline_config.pl: Add softtabstop=4 for vim users
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "John (Warthog9) Hawley" <warthog9@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JZH7iAiIxO3WXnjv"
+Content-Disposition: inline
+In-Reply-To: <YFfLXLDIuRdj2bWs@google.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:50 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 25 Mar 2021 15:20:13 +0900
-> Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> >
-> > The root cause of inconsistency is that
-> > you mix up space-indentation and tab-indentation.
-> > I do not know if it is a standard way either.
->
-> This is the default way emacs has edited perl files for as long as I can
-> remember (back to 1996). It became my standard of editing perl files just
-> because of that. For everything else, I use tabs.
->
-> >
-> > For example, scripts/checkpatch.pl uses only tabs,
-> > which I think is more robust.
->
-> Probably because Joe probably uses vim ;-)
->
-> >
-> > Unfortunately, we do not have standardized indentation style
-> > for scripts yet, and people can go in any direction.
-> >
-> > The editorconfig patch [1] proposed to always use 4-space
-> > indentation for *.pl files.
-> > (that is, do not replace 8 spaces with a tab).
->
-> I rather have all tabs, or the tab and spaces. I find 8 spaces to be a
-> waste of memory and disk space.
->
-> >
-> > I do not know whether the kernel will adopt .editorconfig or not,
-> > but if that patch is applied, your 1/2 will be a step backward.
->
-> My 1/2 only made it consistent, as the original code had the tab/spaces mix
-> and just a few lines that were modified by others broke it by adding all
-> spaces.
->
-> >
-> > My got-feeling is, you will never reach the goal as long as
-> > you adopt a strange indentation style, which is obscure
-> > to other contributors.
->
-> I'm guessing this is not strange to other perl developers who uses emacs.
->
-> >
-> > Not all people use vim.
->
-> I don't use it either. I was trying to make vim match emacs. Of course for
-> those that use something else, it wont help. I'm curious, what's your main
-> editor that you use?
 
+--JZH7iAiIxO3WXnjv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I use emacs.
+On Sun, Mar 21, 2021 at 03:40:28PM -0700, Dmitry Torokhov wrote:
+> On Tue, Mar 02, 2021 at 01:21:58PM +0300, Dmitry Osipenko wrote:
+> > Acer A500 uses Atmel Maxtouch 1386 touchscreen controller. This control=
+ler
+> > has WAKE line which could be connected to I2C clock lane, dedicated GPIO
+> > or fixed to HIGH level. Controller wakes up from a deep sleep when WAKE
+> > line is asserted low. Acer A500 has WAKE line connected to I2C clock and
+> > Linux device driver doesn't work property without knowing what wakeup
+> > method is used by h/w.
+> >=20
+> > Add atmel,wakeup-method property to the touchscreen node.
+> >=20
+> > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>=20
+> Applied, thank you.
 
-I have some setups in my ~/.emacs
-although I am not an expert of emacs lisp.
+I noticed that you had applied this as I was applying a different patch
+that touches the same area and it causes a conflict. In general I prefer
+to pick up all device tree changes into the Tegra tree, specifically to
+avoid such conflicts.
 
+That said, I didn't see an email from Stephen about this causing a
+conflict in linux-next, so perhaps it's fine. If this pops up again it
+might be worth considering to drop this from your tree so that I can
+resolve the conflict in the Tegra tree.
 
-(defalias 'perl-mode 'cperl-mode)
+Thierry
 
-(add-hook 'cperl-mode-hook
-          (lambda()
-                (setq cperl-indent-level 8)
-(setq cperl-tab-always-indent t)
-            (setq tab-width 8)
-            (setq indent-tabs-mode t)
-            ))
+--JZH7iAiIxO3WXnjv
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcmdEACgkQ3SOs138+
+s6HM1hAAv6/5w7f5FRWHIHF5G+bDGgIf2T9Bf6XOXEaLGpXdXYQjypKwmY9bZ2tg
+ksZQ5Bo4Yf0lFKOfFRVJq8yrxYXGzrA2lj28RHOAgs8H6+KKw04/WIAv+/ySLeUl
+w2fYrmlTlu6SEdMC0mpEhtB1nZcJFIZNOs2Yb1wBeh3bfUDcSt14vDcYxryUn57r
+KV3jt5+djsRYkpp+uf6vQe1/YGoSnqSbWjKb4zpaF0YTK/FkHZfq3/p91F2YbiEi
+3Ru+tB2W1AGoP+z5t/HL0qW2bnCssosm6vfZkO78L/zjagSVSIYshIYMLjVyczKv
+4axWH0LRIcEKben0NczDyXjU+oN2gbDAeay7RYmpLM11HzjSpVWVmhHT27z1lIw1
+tMKMCceERaqWJclInwv/62mv8rLs3QsyefzZEUQe039MgMzFTZBT4WYt+42qG6Fs
+ZseZ/2ujdvXsTnwiMbjqxD1jBQCUchStvKLcXH8rHWE82QrwjulTxElAyAJ6LGJw
+u3dN85bhfYQdry7TR9V5+zDHPabkJddVzb8BaHrJbjbbH2mLsk8RZOeJ6LjhKfDK
+z6TnRacuY1E7li6BDaHbgCayUqRiDbhxfi90l88+Y7qIT2fPvlpwe4+gpp8llIsM
+7jd6hNl19c6C66EsO9vAD5xBUz7ub283rbp1umk3vol8LbToUOc=
+=RvcD
+-----END PGP SIGNATURE-----
 
-
-Then, emacs can understand that
-my preference is tab-indentation
-with 8 character width.
-
-
-
-
-
-
-
->
-> > I am not interested in 1/2 either.
->
-> OK.
->
-> >
-> > If you insist on this patch set, apply it to your tree
-> > and send a pull request by yourself.
->
-> I'm fine with that.
->
-> >
-> >
-> > [1]: https://lore.kernel.org/lkml/20200703073143.423557-1-danny@kdrag0n.dev/
->
-> Thanks for the link.
->
-> -- Steve
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+--JZH7iAiIxO3WXnjv--
