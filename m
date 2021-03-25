@@ -2,169 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B0534977D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E83F349784
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhCYRAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:00:22 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35540 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbhCYRAP (ORCPT
+        id S229933AbhCYRBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229929AbhCYRBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:00:15 -0400
-Received: from 1-171-92-165.dynamic-ip.hinet.net ([1.171.92.165] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lPTKZ-0003Ut-Ua; Thu, 25 Mar 2021 16:59:36 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     tiwai@suse.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Joe Perches <joe@perches.com>, Mark Brown <broonie@kernel.org>,
-        Chris Chiu <chiu@endlessm.com>, Tom Yan <tom.ty89@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Ebeling <penguins@bollie.de>,
-        =?UTF-8?q?Franti=C5=A1ek=20Ku=C4=8Dera?= <franta-linux@frantovo.cz>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Olivia Mackintosh <livvy@base.nu>,
-        alsa-devel@alsa-project.org (moderated list:SOUND),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 2/2] ALSA: usb-audio: Check connector value on resume
-Date:   Fri, 26 Mar 2021 00:59:13 +0800
-Message-Id: <20210325165918.22593-2-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210325165918.22593-1-kai.heng.feng@canonical.com>
-References: <20210325165918.22593-1-kai.heng.feng@canonical.com>
+        Thu, 25 Mar 2021 13:01:40 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DE7C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 10:01:40 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so2596290otb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 10:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wJ8zHlM8qfvcT77mCcQxpLWUbrfiiGwRTV3uVZ1+Q5c=;
+        b=Z7ULpDZtsbxI2ysuOWL2BF/qgIuGGJ+WWpS77Yfmszj+y7UWsA5mzt6wkwVjuRyiwx
+         lPNGLipNXE1/IdWMLjPAZ22YRwdK2vI6qIS8gkg7O1WP+JOTAtAjv0qhHIaCRuXVndnq
+         a9mTfNi9zCMTDD19JiFhe98YcHPqN/DdaVI/ViUr5dbtar8mI4ZCkxMiTMIPTY38lcDV
+         9evC0uMLO8R4K1Yil7GtxCtS1gP5+rnSd1Diwl6ouDgIaESOCN6Z08Py3z4sDIpEJNaH
+         WaSHIzn8Upm5EhBBO8HLTQl4necgCbD/oHbrkXivtUWzQsMEdWM1BcgT3sAl1RlvtZHc
+         H4Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wJ8zHlM8qfvcT77mCcQxpLWUbrfiiGwRTV3uVZ1+Q5c=;
+        b=uGe/zEpKfaRfCtl4qF0qbstZsApaDnTOcAEfgIPQDocCoOFmi/2G2XU4eZ7pYMKvnp
+         6x0kiguSMBAdvyQYRsr+heh1KBpIwNiZVFFyi8xiGemdDQBRMrWILcand2xrZx6/dQH0
+         Wea/ldqRZw5IE3qXjxI5QP9LQzmhzBsiokC4rJmZIa2cCgWpJcGGL4hDca+4lXDA7ESa
+         tjLzU8IdXG4nYBVPR0aD7hsL/T7b89JylMqEPI5cYSR+ceSqiVRCwTyIhDx6gOTWHlOU
+         sZynxK0Qs3Fct5MOjC59I6qq9RCOotgMqnbHdkQJD+a3j2+NbFruvRhWwtTDtfRocxPW
+         cKuw==
+X-Gm-Message-State: AOAM532OX9y7bI6JtoibDsCqUzLFm61mUKDS47UywOlNGVIY3vFhxcmN
+        jVayxRu1aw2zuuraeYwGTG/Wu7F3ZdtLsV/KCO8=
+X-Google-Smtp-Source: ABdhPJzaNvM9VQW41z7AkU7Mo0seISiGbYGwZorNkvm1iNHJHID2QGt+wE7Y+5+rr4rmF7L6MmZS8L8aWH9xC8klIEU=
+X-Received: by 2002:a05:6830:408f:: with SMTP id x15mr8697018ott.132.1616691699957;
+ Thu, 25 Mar 2021 10:01:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210324133705.2664873-1-arnd@kernel.org>
+In-Reply-To: <20210324133705.2664873-1-arnd@kernel.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 25 Mar 2021 13:01:29 -0400
+Message-ID: <CADnq5_Mtr4EaR_pXETdWiwNtutXweDMeB_2V=2mgqimt=OJt+w@mail.gmail.com>
+Subject: Re: [PATCH] amdgpu: securedisplay: simplify i2c hexdump output
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jinzhou Su <Jinzhou.Su@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Huang Rui <ray.huang@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rear Mic on Lenovo P620 cannot record after S3, despite that there's no
-error and the other two functions of the USB audio, Line In and Line
-Out, work just fine.
+Applied.  Thanks!
 
-The mic starts to work again after running userspace app like "alsactl
-store". Following the lead, the evidence shows that as soon as connector
-status is queried, the mic can work again.
+Alex
 
-So also check connector value on resume to "wake up" the USB audio to
-make it functional.
-
-This can be device specific, however I think this generic approach may
-benefit more than one device.
-
-Now the resume callback checks connector, and a new callback,
-reset_resume, to also restore switches and volumes.
-
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v3:
- - New callback to handle resume and reset-resume separately.
-
-v2:
- - Remove reset-resume.
- - Fold the connector checking to the mixer resume callback.
-
- sound/usb/mixer.c        | 44 +++++++++++++++++++++++++++++++---------
- sound/usb/mixer.h        |  1 +
- sound/usb/mixer_quirks.c |  2 +-
- 3 files changed, 36 insertions(+), 11 deletions(-)
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 5a2d9a768f70..2faf5767c7f8 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -3631,20 +3631,43 @@ static int restore_mixer_value(struct usb_mixer_elem_list *list)
- 	return 0;
- }
- 
-+static int default_mixer_resume(struct usb_mixer_elem_list *list)
-+{
-+	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
-+
-+	/* get connector value to "wake up" the USB audio */
-+	if (cval->val_type == USB_MIXER_BOOLEAN && cval->channels == 1)
-+		get_connector_value(cval, NULL, NULL);
-+
-+	return 0;
-+}
-+
-+static int default_mixer_reset_resume(struct usb_mixer_elem_list *list)
-+{
-+	int err = default_mixer_resume(list);
-+
-+	if (err < 0)
-+		return err;
-+	return restore_mixer_value(list);
-+}
-+
- int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
- {
- 	struct usb_mixer_elem_list *list;
-+	usb_mixer_elem_resume_func_t f;
- 	int id, err;
- 
--	if (reset_resume) {
--		/* restore cached mixer values */
--		for (id = 0; id < MAX_ID_ELEMS; id++) {
--			for_each_mixer_elem(list, mixer, id) {
--				if (list->resume) {
--					err = list->resume(list);
--					if (err < 0)
--						return err;
--				}
-+	/* restore cached mixer values */
-+	for (id = 0; id < MAX_ID_ELEMS; id++) {
-+		for_each_mixer_elem(list, mixer, id) {
-+			if (reset_resume)
-+				f = list->reset_resume;
-+			else
-+				f = list->resume;
-+			if (f) {
-+				err = f(list);
-+				if (err < 0)
-+					return err;
- 			}
- 		}
- 	}
-@@ -3663,6 +3686,7 @@ void snd_usb_mixer_elem_init_std(struct usb_mixer_elem_list *list,
- 	list->id = unitid;
- 	list->dump = snd_usb_mixer_dump_cval;
- #ifdef CONFIG_PM
--	list->resume = restore_mixer_value;
-+	list->resume = default_mixer_resume;
-+	list->reset_resume = default_mixer_reset_resume;
- #endif
- }
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index c29e27ac43a7..e5a01f17bf3c 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -69,6 +69,7 @@ struct usb_mixer_elem_list {
- 	bool is_std_info;
- 	usb_mixer_elem_dump_func_t dump;
- 	usb_mixer_elem_resume_func_t resume;
-+	usb_mixer_elem_resume_func_t reset_resume;
- };
- 
- /* iterate over mixer element list of the given unit id */
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index ffd922327ae4..b7f9c2fded05 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -151,7 +151,7 @@ static int add_single_ctl_with_resume(struct usb_mixer_interface *mixer,
- 		*listp = list;
- 	list->mixer = mixer;
- 	list->id = id;
--	list->resume = resume;
-+	list->reset_resume = resume;
- 	kctl = snd_ctl_new1(knew, list);
- 	if (!kctl) {
- 		kfree(list);
--- 
-2.30.2
-
+On Wed, Mar 24, 2021 at 9:37 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> A previous fix I did left a rather complicated loop in
+> amdgpu_securedisplay_debugfs_write() for what could be expressed in a
+> simple sprintf, as Rasmus pointed out.
+>
+> This drops the leading 0x for each byte, but is otherwise
+> much nicer.
+>
+> Suggested-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c | 11 +++--------
+>  1 file changed, 3 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> index 69d7f6bff5d4..fc3ddd7aa6f0 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_securedisplay.c
+> @@ -92,9 +92,7 @@ static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __u
+>         struct drm_device *dev = adev_to_drm(adev);
+>         uint32_t phy_id;
+>         uint32_t op;
+> -       int i;
+>         char str[64];
+> -       char i2c_output[256];
+>         int ret;
+>
+>         if (*pos || size > sizeof(str) - 1)
+> @@ -136,12 +134,9 @@ static ssize_t amdgpu_securedisplay_debugfs_write(struct file *f, const char __u
+>                 ret = psp_securedisplay_invoke(psp, TA_SECUREDISPLAY_COMMAND__SEND_ROI_CRC);
+>                 if (!ret) {
+>                         if (securedisplay_cmd->status == TA_SECUREDISPLAY_STATUS__SUCCESS) {
+> -                               int pos = 0;
+> -                               memset(i2c_output,  0, sizeof(i2c_output));
+> -                               for (i = 0; i < TA_SECUREDISPLAY_I2C_BUFFER_SIZE; i++)
+> -                                       pos += sprintf(i2c_output + pos, " 0x%X",
+> -                                               securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf[i]);
+> -                               dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is :%s\n", i2c_output);
+> +                               dev_info(adev->dev, "SECUREDISPLAY: I2C buffer out put is: %*ph\n",
+> +                                        TA_SECUREDISPLAY_I2C_BUFFER_SIZE,
+> +                                        securedisplay_cmd->securedisplay_out_message.send_roi_crc.i2c_buf);
+>                         } else {
+>                                 psp_securedisplay_parse_resp_status(psp, securedisplay_cmd->status);
+>                         }
+> --
+> 2.29.2
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
