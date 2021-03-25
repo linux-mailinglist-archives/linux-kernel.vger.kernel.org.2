@@ -2,111 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF643494B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F8B3494B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhCYOy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbhCYOyD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:54:03 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF49C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:54:03 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id c3so2009886qkc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WcUAfakiaRflXJsbFLsUfCZemSovJNHWXiRp28Iky/s=;
-        b=Dmt9ROX72lZBYf7Mz+uAwKzOzzentjY7qaEzLmonFU4p6Azby+5hx1JfR54diifhZN
-         7jWv9nyFfUSIav577e0aj/TpyaFG+OsmkUAc5BCy4jUtva24pRv0awSv16FF+ToV0IHu
-         gTP8UtqOO9kwpn9uTLT/iCe8z2cv+S8cP/C1yNfhFpi98RCX3ivUsqsvl4PmX/7S7nK5
-         6KlKeM46LvuLy6R04B6+lfqDIHpOtS49Xl8vqa+IiR79CMZl9hKUrTjG19iXjwIQWmch
-         PJyHMjeq5AnipQmDbxuV4Ivedfz3eaBNsAFHO9rOVbWExPQODOtQUe4ct9MfVmZGQ03w
-         TlDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WcUAfakiaRflXJsbFLsUfCZemSovJNHWXiRp28Iky/s=;
-        b=thTkU39a92s0WRY28NxuWOdfkGpb2j8qQPWT8h3cU6IiChwk3YqDFmHmLmhQZz6rYe
-         IcV9svlhM/932VveBNJLbixTNAdhc48wH3snYES5txDEfkZ1t2iwfeR5xkRupp4Xi32j
-         714TvFDpju80hNZAjez41hYC5MVaIbc3xtwSqH6tP+PxkiVdcvws0FxwqAbaPQsNMAVM
-         c+n7kUGIanbUDNA4PijYLtrokulPazbTXXNgnyYW8QzlCV5MHf45BX47c3bY0WU+EWim
-         943kFjf92r3vpbTbX3iJvnirTSxRqrIowjcpXtsVGGhbXlHdBp40MC9fX50QUXGhev0I
-         KYZw==
-X-Gm-Message-State: AOAM533u95fH99v9z912i5U2W1w3r4Rf1OzjdAnI3u3WMg6r9LoZqKwv
-        ICjIlNd8IihCE9aeUxg/stJHJKbfkCoMufGSEbWxmFGT5Y3h/Q==
-X-Google-Smtp-Source: ABdhPJySEzdLTk7YsG7O3I3ubTJVxsPdVO8ILzkXXeBfiykqa8dLEyAFFCePMfOYEQeo2m2g6DxfFSw4Uk9/L02NOfg=
-X-Received: by 2002:a05:620a:2095:: with SMTP id e21mr8353814qka.265.1616684042120;
- Thu, 25 Mar 2021 07:54:02 -0700 (PDT)
+        id S231299AbhCYOyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:54:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhCYOys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:54:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D426161A01;
+        Thu, 25 Mar 2021 14:54:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616684087;
+        bh=OIYERMOG/XPylWSnUTkbmBN81RCSXvziYG/US6eKvQE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bv4CR7tnXhP5m5Io8X+PCvZ3zTkUqAW+QxIwrP5YtzTqO8B6yHH24/IATa76UP7f2
+         9WTeVPDUtvAVyjR1d4EKZnVAuOFsqTSriMygVLiHPBDEENU8STTo4JCTJ3/aivNKcu
+         j9Ng9uFaAXdgTgIksxQbAAavt6t6UlUZZScWGp/dWiIwCqN7ZYV1Dh8NeZpE2oa/pP
+         UXZnbJotynvYShZ7k7neJlmP+onSFJoO+2oJ7CPClpF2geOo8J7ahnoIg5cveoob0K
+         mhX6gDcFGiPLF9qTdjiWW0K2mDHqdwHbUTC+Qel+1ZoJM0ejsvjzrvb52OrsD78wql
+         u0U4GJaoxwkUQ==
+Date:   Thu, 25 Mar 2021 14:54:43 +0000
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel Mailing List 
+        <linux-arm-kernel@lists.infradead.org>, kernel-team@android.com
+Subject: [GIT PULL] arm64: Fixes for -rc5
+Message-ID: <20210325145443.GA15172@willie-the-truck>
 MIME-Version: 1.0
-References: <20210325103105.3090303-1-dvyukov@google.com> <651b7d2d-21b2-8bf4-3dc8-e351c35b5218@gmail.com>
- <CACT4Y+ad6bwMbQ6OwrdypCsNRvYTMtMf0KR2EpVOhPOZvnxeNA@mail.gmail.com> <c6e79b82-50dd-633c-8d63-77c059538338@gmail.com>
-In-Reply-To: <c6e79b82-50dd-633c-8d63-77c059538338@gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 25 Mar 2021 15:53:50 +0100
-Message-ID: <CACT4Y+ZVPrZMs3Uq0O1iSCtmwnNHKzbYV2W2Mu43cerrWZt6rA@mail.gmail.com>
-Subject: Re: [PATCH] net: change netdev_unregister_timeout_secs min value to 1
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        David Miller <davem@davemloft.net>,
-        Leon Romanovsky <leon@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 3:43 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> On 3/25/21 3:38 PM, Dmitry Vyukov wrote:
-> > On Thu, Mar 25, 2021 at 3:34 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> >> On 3/25/21 11:31 AM, Dmitry Vyukov wrote:
-> >>> netdev_unregister_timeout_secs=0 can lead to printing the
-> >>> "waiting for dev to become free" message every jiffy.
-> >>> This is too frequent and unnecessary.
-> >>> Set the min value to 1 second.
-> >>>
-> >>> Signed-off-by: Dmitry Vyukov <dvyukov@google.com>
-> >>> Suggested-by: Eric Dumazet <edumazet@google.com>
-> >>> Fixes: 5aa3afe107d9 ("net: make unregister netdev warning timeout configurable")
-> >>> Cc: netdev@vger.kernel.org
-> >>> Cc: linux-kernel@vger.kernel.org
-> >>> ---
-> >>
-> >> Please respin your patch, and fix the merge issue [1]
-> >
-> > Is net-next rebuilt and rebased? Do I send v4 of the whole change?
-> > I cannot base it on net-next now, because net-next already includes
-> > most of it... so what should I use as base then?
-> >
-> >> For networking patches it is customary to tell if its for net or net-next tree.
-> >>
-> >> [1]
-> >> diff --git a/net/core/dev.c b/net/core/dev.c
-> >> index 4bb6dcdbed8b856c03dc4af8b7fafe08984e803f..7bb00b8b86c6494c033cf57460f96ff3adebe081 100644
-> >> --- a/net/core/dev.c
-> >> +++ b/net/core/dev.c
-> >> @@ -10431,7 +10431,7 @@ static void netdev_wait_allrefs(struct net_device *dev)
-> >>
-> >>                 refcnt = netdev_refcnt_read(dev);
-> >>
-> >> -               if (refcnt &&
-> >> +               if (refcnt != 1 &&
-> >>                     time_after(jiffies, warning_time +
-> >>                                netdev_unregister_timeout_secs * HZ)) {
-> >>                         pr_emerg("unregister_netdevice: waiting for %s to become free. Usage count = %d\n",
->
-> Please include my fix into your patch.
->
-> Send a V2, based on current net-next.
->
-> net-next is never rebased, we have to fix the bug by adding a fix on top of it.
+Hi Linus,
 
-Ah, got it. Mailed:
-[PATCH net-next v2] net: change netdev_unregister_timeout_secs min value to 1
+Please pull these arm64 fixes for -rc5. Minor fixes all over, ranging
+from typos to tests to errata workarounds. Summary in the tag.
+
+Cheers,
+
+Will
+
+--->8
+
+The following changes since commit c8e3866836528a4ba3b0535834f03768d74f7d8e:
+
+  perf/arm_dmc620_pmu: Fix error return code in dmc620_pmu_device_probe() (2021-03-12 11:30:31 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-fixes
+
+for you to fetch changes up to 20109a859a9b514eb10c22b8a14b5704ffe93897:
+
+  arm64: kernel: disable CNP on Carmel (2021-03-25 10:00:23 +0000)
+
+----------------------------------------------------------------
+arm64 fixes for -rc5
+
+- Fix possible memory hotplug failure with KASLR
+
+- Fix FFR value in SVE kselftest
+
+- Fix backtraces reported in /proc/$pid/stack
+
+- Disable broken CnP implementation on NVIDIA Carmel
+
+- Typo fixes and ACPI documentation clarification
+
+- Fix some W=1 warnings
+
+----------------------------------------------------------------
+Alex Elder (1):
+      arm64: csum: cast to the proper type
+
+Andre Przywara (1):
+      kselftest/arm64: sve: Do not use non-canonical FFR register value
+
+Bhaskar Chowdhury (1):
+      arm64: cpuinfo: Fix a typo
+
+Maninder Singh (1):
+      arm64/process.c: fix Wmissing-prototypes build warnings
+
+Mark Rutland (1):
+      arm64: stacktrace: don't trace arch_stack_walk()
+
+Pavel Tatashin (2):
+      arm64: kdump: update ppos when reading elfcorehdr
+      arm64: mm: correct the inside linear map range during hotplug check
+
+Rich Wiley (1):
+      arm64: kernel: disable CNP on Carmel
+
+Tom Saeger (1):
+      Documentation: arm64/acpi : clarify arm64 support of IBFT
+
+ Documentation/arm64/acpi_object_usage.rst   | 10 +++++-----
+ Documentation/arm64/silicon-errata.rst      |  3 +++
+ arch/arm64/Kconfig                          | 10 ++++++++++
+ arch/arm64/include/asm/checksum.h           |  2 +-
+ arch/arm64/include/asm/cpucaps.h            |  3 ++-
+ arch/arm64/include/asm/processor.h          |  2 ++
+ arch/arm64/include/asm/thread_info.h        |  2 ++
+ arch/arm64/kernel/cpu_errata.c              |  8 ++++++++
+ arch/arm64/kernel/cpufeature.c              |  5 ++++-
+ arch/arm64/kernel/cpuinfo.c                 |  2 +-
+ arch/arm64/kernel/crash_dump.c              |  2 ++
+ arch/arm64/kernel/process.c                 |  2 ++
+ arch/arm64/kernel/stacktrace.c              |  9 +++++----
+ arch/arm64/mm/mmu.c                         | 21 +++++++++++++++++++--
+ tools/testing/selftests/arm64/fp/sve-test.S | 22 +++++++++++++++++-----
+ 15 files changed, 83 insertions(+), 20 deletions(-)
