@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79A3349886
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD53A349889
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhCYRpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbhCYRo7 (ORCPT
+        id S230106AbhCYRpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:45:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36932 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230097AbhCYRpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:44:59 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C912C06174A;
-        Thu, 25 Mar 2021 10:44:59 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 03542381;
-        Thu, 25 Mar 2021 17:44:58 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 03542381
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1616694299; bh=UmX4fxnLTsCNtAx7oSZYP5/ZUbxnYjDlfu+ot5Zo33I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Aei4qbS/b8S5NTMhvOi7FMO4OVVsbbV+43glmO77UyXHQjPM9vTIITkt7J4+oLm1M
-         qNPjvfhPHApU66Bj7W5Cbwt8NF3bbY86TkCsuPS1I8g0Y/yMtPPGStJ2Qp0C1GjvF6
-         S2AJB8MtsYN+1+FaO3Zqy3RaYDVyWxKzn3xOtFxiR620PN7wVNtNrxOpneYAeNWJmZ
-         8cQpt2ZteYzHvid11zzyPb1MKiVxKeVETSj/QY+QRjle49kCY9GOqpR6ClnSPhfKua
-         O/Yl/tQgkmPv0wtkfBth3vuljGZLbPyhjiFODdix7l8TqVtom8DOifyT9H78Dxnh3D
-         FTnp5dUF49jQw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH] docs/kokr: make sections on bug reporting match practice
-In-Reply-To: <20210308075701.23411-1-sj38.park@gmail.com>
-References: <20210308075701.23411-1-sj38.park@gmail.com>
-Date:   Thu, 25 Mar 2021 11:44:58 -0600
-Message-ID: <871rc32kmd.fsf@meer.lwn.net>
+        Thu, 25 Mar 2021 13:45:23 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lPU2k-0006bw-Oi; Thu, 25 Mar 2021 17:45:14 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: cfi: remove redundant assignment to variable timeo
+Date:   Thu, 25 Mar 2021 17:45:14 +0000
+Message-Id: <20210325174514.486272-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SeongJae Park <sj38.park@gmail.com> writes:
+From: Colin Ian King <colin.king@canonical.com>
 
-> From: SeongJae Park <sjpark@amazon.de>
->
-> Translate this commit to Korean:
->
->     cf6d6fc27936 ("docs: process/howto.rst: make sections on bug reporting match practice")
->
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->  Documentation/translations/ko_KR/howto.rst | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+The variable timeo is being initialized with a value that is never read
+and it is being updated later with a new value.  The initialization is
+redundant and can be removed.
 
-Applied, thanks, sorry for the delay.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-jon
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 6f6b0265c22d..54926b72c331 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1650,7 +1650,7 @@ static int __xipram do_write_oneword_once(struct map_info *map,
+ 					  unsigned long adr, map_word datum,
+ 					  int mode, struct cfi_private *cfi)
+ {
+-	unsigned long timeo = jiffies + HZ;
++	unsigned long timeo;
+ 	/*
+ 	 * We use a 1ms + 1 jiffies generic timeout for writes (most devices
+ 	 * have a max write time of a few hundreds usec). However, we should
+-- 
+2.30.2
+
