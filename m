@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8308349AF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:23:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3295A349AF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhCYUXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 16:23:03 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:49264 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhCYUWf (ORCPT
+        id S230263AbhCYU0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhCYU0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 16:22:35 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lPWUx-00GDix-Cj; Thu, 25 Mar 2021 14:22:31 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lPWUw-00086p-Jg; Thu, 25 Mar 2021 14:22:31 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Stefan Metzmacher <metze@samba.org>
-References: <20210325164343.807498-1-axboe@kernel.dk>
-        <m1ft0j3u5k.fsf@fess.ebiederm.org>
-        <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
-        <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
-        <3a1c02a5-db6d-e3e1-6ff5-69dd7cd61258@kernel.dk>
-Date:   Thu, 25 Mar 2021 15:21:30 -0500
-In-Reply-To: <3a1c02a5-db6d-e3e1-6ff5-69dd7cd61258@kernel.dk> (Jens Axboe's
-        message of "Thu, 25 Mar 2021 13:46:46 -0600")
-Message-ID: <m1zgyr2ddh.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 25 Mar 2021 16:26:13 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0B5C06174A;
+        Thu, 25 Mar 2021 13:26:12 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id 407901F4684B
+Subject: Re: [PATCH v4 5/5] fs: unicode: Add utf8 module and a unicode layer
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, drosen@google.com,
+        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
+ <20210325000811.1379641-6-shreeya.patel@collabora.com>
+ <YFznIVf/F68oEuC6@sol.localdomain>
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+Message-ID: <2db48ab8-1297-e044-dcec-6c8b8875fdb0@collabora.com>
+Date:   Fri, 26 Mar 2021 01:56:00 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lPWUw-00086p-Jg;;;mid=<m1zgyr2ddh.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19McYpu4UMpmJM1/6UzapWqyVIobH1ipzY=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,T_TooManySym_04,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4362]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_04 7+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Jens Axboe <axboe@kernel.dk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 533 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 12 (2.3%), b_tie_ro: 11 (2.0%), parse: 1.24
-        (0.2%), extract_message_metadata: 17 (3.2%), get_uri_detail_list: 1.15
-        (0.2%), tests_pri_-1000: 26 (4.9%), tests_pri_-950: 1.27 (0.2%),
-        tests_pri_-900: 1.06 (0.2%), tests_pri_-90: 286 (53.6%), check_bayes:
-        284 (53.3%), b_tokenize: 5.0 (0.9%), b_tok_get_all: 153 (28.7%),
-        b_comp_prob: 2.4 (0.4%), b_tok_touch_all: 120 (22.5%), b_finish: 0.99
-        (0.2%), tests_pri_0: 173 (32.5%), check_dkim_signature: 0.56 (0.1%),
-        check_dkim_adsp: 2.1 (0.4%), poll_dns_idle: 0.56 (0.1%), tests_pri_10:
-        2.3 (0.4%), tests_pri_500: 9 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+In-Reply-To: <YFznIVf/F68oEuC6@sol.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
 
-> On 3/25/21 1:42 PM, Linus Torvalds wrote:
->> On Thu, Mar 25, 2021 at 12:38 PM Linus Torvalds
->> <torvalds@linux-foundation.org> wrote:
->>>
->>> I don't know what the gdb logic is, but maybe there's some other
->>> option that makes gdb not react to them?
->> 
->> .. maybe we could have a different name for them under the task/
->> subdirectory, for example (not  just the pid)? Although that probably
->> messes up 'ps' too..
+On 26/03/21 1:10 am, Eric Biggers wrote:
+> On Thu, Mar 25, 2021 at 05:38:11AM +0530, Shreeya Patel wrote:
+>> Also, indirect calls using function pointers are easily exploitable by
+>> speculative execution attacks, hence use static_call() in unicode.h and
+>> unicode-core.c files inorder to prevent these attacks by making direct
+>> calls and also to improve the performance of function pointers.
+> I don't think you need to worry about avoiding indirect calls to prevent
+> speculative execution attacks.  That's what the mitigations like Retpoline are
+> for.  Instead my concern was just that indirect calls are *slow*, especially
+> when those mitigations are enabled.  Some of the casefolding operations are
+> called a lot (e.g., repeatedly during path resolution), and it would be
+> desirable to avoid adding more overhead there.
 >
-> Heh, I can try, but my guess is that it would mess up _something_, if
-> not ps/top.
+>> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+>> index 2c27b9a5cd6c..2961b0206b4d 100644
+>> --- a/fs/unicode/Kconfig
+>> +++ b/fs/unicode/Kconfig
+>> @@ -8,7 +8,16 @@ config UNICODE
+>>   	  Say Y here to enable UTF-8 NFD normalization and NFD+CF casefolding
+>>   	  support.
+>>   
+>> +# UTF-8 encoding can be compiled as a module using UNICODE_UTF8 option.
+>> +# Having UTF-8 encoding as a module will avoid carrying large
+>> +# database table present in utf8data.h_shipped into the kernel
+>> +# by being able to load it only when it is required by the filesystem.
+>> +config UNICODE_UTF8
+>> +	tristate "UTF-8 module"
+>> +	depends on UNICODE
+>> +	default m
+>> +
+> The help for UNICODE still says that it enables UTF-8 support.  But now there is
+> a separate option that people will need to remember to enable.
+>
+> Please document each of these options properly.
+>
+> Perhaps EXT4_FS and F2FS_FS just should select UNICODE_UTF8 if UNICODE, so that
+> UNICODE_UTF8 doesn't have to be a user-selectable symbol?
 
-Hmm.
 
-So looking quickly the flip side of the coin is gdb (and other
-debuggers) needs a way to know these threads are special, so it can know
-not to attach.
+It is not a user-selectable symbol. It depends on UNICODE and if someone 
+enables it,
+by default UNICODE_UTF8 will be enabled as a module.
 
-I suspect getting -EPERM (or possibly a different error code) when
-attempting attach is the right was to know that a thread is not
-available to be debugged.
 
-Eric
+>> +DEFINE_STATIC_CALL(validate, unicode_validate_static_call);
+>> +EXPORT_STATIC_CALL(validate);
+> Global symbols can't have generic names like "validate".  Please add an
+> appropriate prefix like "unicode_".
+>
+> Also, the thing called "unicode_validate_static_call" isn't actually a static
+> call as the name suggests, but rather the default function used by the static
+> call.  It should be called something like unicode_validate_default.
+>
+> Likewise for all the others.
 
+
+Thanks for your reviews, I'll make the change suggested by you in v5.
+
+
+>
+> - Eric
+>
