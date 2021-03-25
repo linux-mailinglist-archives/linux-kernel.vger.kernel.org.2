@@ -2,98 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638653496B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C973496B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhCYQUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:20:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36603 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229812AbhCYQUc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:20:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616689232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UUaI0jPAJHBsBAO60IzxWqFDvl762DqvoYKPg8yydHk=;
-        b=GuXJOw46kZdaEjeUhusiSRnRVjoQTs3AFLbCAC2esPVQCCYtCjZHgU8flDNJ6NUD19lJzW
-        4+ilIVLpWs8n0o9K57CSNTYQmCWcEodKrI53EiZZN1SRBO+eh3WqppcQFLIL1EvLrZdxaD
-        ouSLeXruO2jWUedRcp8DakGPGDcjrik=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-62-Pj8XVcylP5aLUVpJlF9LtQ-1; Thu, 25 Mar 2021 12:20:28 -0400
-X-MC-Unique: Pj8XVcylP5aLUVpJlF9LtQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF61E108BD0B;
-        Thu, 25 Mar 2021 16:20:26 +0000 (UTC)
-Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 18E2B5D736;
-        Thu, 25 Mar 2021 16:20:24 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
- <YFyDhKPqS15HdO0Y@dhcp22.suse.cz>
- <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
- <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
- <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
- <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
- <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
- <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
- <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
- <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz> <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
-Date:   Thu, 25 Mar 2021 17:20:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S229919AbhCYQV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:21:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33798 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229812AbhCYQUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 12:20:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 72A48AA55;
+        Thu, 25 Mar 2021 16:20:53 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 17:20:47 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "Dave.Martin@arm.com" <Dave.Martin@arm.com>,
+        "jannh@google.com" <jannh@google.com>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "carlos@redhat.com" <carlos@redhat.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate
+ signal stack overflow
+Message-ID: <20210325162047.GA32296@zn.tnic>
+References: <20210316065215.23768-1-chang.seok.bae@intel.com>
+ <20210316065215.23768-6-chang.seok.bae@intel.com>
+ <20210316115248.GB18822@zn.tnic>
+ <16A53D65-2460-49B3-892B-81EF8D7B12B9@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <16A53D65-2460-49B3-892B-81EF8D7B12B9@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.03.21 17:07, Michal Hocko wrote:
-> On Thu 25-03-21 16:35:58, Michal Hocko wrote:
-> [...]
->> So there is indeed a difference. One way around that would be to mark
->> vmemmap pages (e.g. PageReserved && magic value stored somewhere in the
->> struct page - resembling bootmem vmemmaps) or mark section fully backing
->> vmemmaps as online (ugly).
-> 
-> I am not yet ready to give up on this. Here is a quick stab at the
-> pfn_to_online_page approach. It is not great but it is not really
-> terrible either. I think we can do better and skip
+On Tue, Mar 16, 2021 at 06:26:46PM +0000, Bae, Chang Seok wrote:
+> I suspect the AVX-512 states not enabled there.
 
-We both seem to have a different taste, to phrase it in a nice way :) ; 
-but well, you seem to have set your mind (just like I seem to have set 
-mine when trying to find a nice and somewhat-clean way to handle this 
-when discussing it in the past).
+Ok, I found a machine which has AVX-512:
 
-I expressed my opinion, shared my findings and expressed my concerns; 
-the series has my RB and the discussion here is around something I 
-consider in no way better than what we have right now. I'll let Oscar 
-handle discussing this topic further (sorry Oscar! :) ), but I'll 
-happily review what the outcome of that will be.
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x001: 'x87 floating point registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x002: 'SSE registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x004: 'AVX registers'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x020: 'AVX-512 opmask'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x040: 'AVX-512 Hi256'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x080: 'AVX-512 ZMM_Hi256'
+[    0.000000] x86/fpu: Supporting XSAVE feature 0x200: 'Protection Keys User registers'
+[    0.000000] x86/fpu: xstate_offset[2]:  576, xstate_sizes[2]:  256
+[    0.000000] x86/fpu: xstate_offset[5]:  832, xstate_sizes[5]:   64
+[    0.000000] x86/fpu: xstate_offset[6]:  896, xstate_sizes[6]:  512
+[    0.000000] x86/fpu: xstate_offset[7]: 1408, xstate_sizes[7]: 1024
+[    0.000000] x86/fpu: xstate_offset[9]: 2432, xstate_sizes[9]:    8
+[    0.000000] x86/fpu: Enabled xstate features 0x2e7, context size is 2440 bytes, using 'compacted' format.
+
+and applied your patch and added a debug printk, see end of mail.
+
+Then, I ran the test case:
+
+$ gcc tst-minsigstksz-2.c -DMY_MINSIGSTKSZ=3453 -o tst-minsigstksz-2
+$ ./tst-minsigstksz-2
+tst-minsigstksz-2: changed byte 50 bytes below configured stack
+
+Whoops.
+
+And the debug print said:
+
+[ 5395.252884] signal: get_sigframe: sp: 0x7f54ec39e7b8, sas_ss_sp: 0x7f54ec39e6ce, sas_ss_size 0xd7d
+
+which tells me that, AFAICT, your check whether we have enough alt stack
+doesn't seem to work in this case.
+
+Thx.
+
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index a06cb107c0e8..a7396f7c3832 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -237,7 +237,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 	unsigned long math_size = 0;
+ 	unsigned long sp = regs->sp;
+ 	unsigned long buf_fx = 0;
+-	int onsigstack = on_sig_stack(sp);
++	bool onsigstack = on_sig_stack(sp);
+ 	int ret;
+ 
+ 	/* redzone */
+@@ -246,8 +246,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 
+ 	/* This is the X/Open sanctioned signal stack switching.  */
+ 	if (ka->sa.sa_flags & SA_ONSTACK) {
+-		if (sas_ss_flags(sp) == 0)
++		if (sas_ss_flags(sp) == 0) {
+ 			sp = current->sas_ss_sp + current->sas_ss_size;
++			/* On the alternate signal stack */
++			onsigstack = true;
++		}
+ 	} else if (IS_ENABLED(CONFIG_X86_32) &&
+ 		   !onsigstack &&
+ 		   regs->ss != __USER_DS &&
+@@ -263,11 +266,16 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+ 
+ 	sp = align_sigframe(sp - frame_size);
+ 
++	if (onsigstack)
++		pr_info("%s: sp: 0x%lx, sas_ss_sp: 0x%lx, sas_ss_size 0x%lx\n",
++			__func__, sp, current->sas_ss_sp, current->sas_ss_size);
++
+ 	/*
+ 	 * If we are on the alternate signal stack and would overflow it, don't.
+ 	 * Return an always-bogus address instead so we will die with SIGSEGV.
+ 	 */
+-	if (onsigstack && !likely(on_sig_stack(sp)))
++	if (onsigstack && unlikely(sp <= current->sas_ss_sp ||
++				   sp - current->sas_ss_sp > current->sas_ss_size))
+ 		return (void __user *)-1L;
+ 
+ 	/* save i387 and extended state */
 
 -- 
-Thanks,
+Regards/Gruss,
+    Boris.
 
-David / dhildenb
-
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
