@@ -2,166 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB53349342
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B159B349346
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhCYNq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
+        id S230415AbhCYNsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230250AbhCYNp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:45:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C67A061A26;
-        Thu, 25 Mar 2021 13:45:56 +0000 (UTC)
+        id S230078AbhCYNrv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:47:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7088161A0F;
+        Thu, 25 Mar 2021 13:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616679957;
-        bh=Wa6/rM9ja442iXJV64DujnU8oEP6I6Jf3CVDtM9/i+g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R92Bx0fqbzYkm8Er3iQNKVrTeQmKU6F6bj3hicyw3raObpYhvb1Q36/30NF+6Jls1
-         r2qRxcrX5cZWBw41nb5fpAEdOsRCRz7lwltRpAxL5hDLahItz+E7A5oZSUsStWWjSO
-         mUbAUu5h7IycV2aQau/SEyRKXAJWNEFHCDaDt2d/E6F9b2jPTxSwwi620R/eXr28xK
-         ofxuAmNzm1wcohZoxMiPKZXvTahzlWDYLFVraXZzUnmUiEerLpmtUz/brzNbaB9Muk
-         Jl41LObyMgGMcUR25NAEnSFk46QOmcoBLUKsR0CmoLYqNHF3wbsmd2pm7NrIxshYNz
-         GDtyTXqXof6hg==
-Received: by mail-ej1-f41.google.com with SMTP id u21so2951119ejo.13;
-        Thu, 25 Mar 2021 06:45:56 -0700 (PDT)
-X-Gm-Message-State: AOAM531sLb03pKPZD4kmQRX/M+cMXcQ02ndBlzz1psCjUcwwTVd/sWgl
-        xyVZyIdMLT6aiOl/IEAbBmGVWrwaKh/ZiXXQGw==
-X-Google-Smtp-Source: ABdhPJzrbmmUIm7f4YUAYsUZkVYauIE7ktUpFHMRo4/PQoiQ4okxsC+M9Sv9SxDungP1jD6RUs8DIYlDznCvrylYJ5Q=
-X-Received: by 2002:a17:906:7f84:: with SMTP id f4mr9338699ejr.525.1616679955249;
- Thu, 25 Mar 2021 06:45:55 -0700 (PDT)
+        s=k20201202; t=1616680070;
+        bh=rbWgT8Nk/uYvrxfv2Q3Zxu0QvvEsgpltMM38kZY5nns=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Is+XHdO3sb4UPUtdEOQelQf7JpDhKMGXlHz/+nMBUDGKMwzJxakfmypUKmWBwdELr
+         T8Uq990sjxW1hH+jU0jdKZacd8O6y5GqXd3aV88ddiNZCA7h9KTdcfYXKntMSIF8ej
+         FRBlOhM96UbHf+Hixl05+0W3kg+UTEQ+fodZquDanUac9xPXv+QoIwusCS6+5HszGy
+         9afklPQ6RhWF9fDktc6UwD4SU8TUI1WjKwY027QShsN2zqLWUru6idkVOG0hBL0jFD
+         SuwsI6hjhy3+XzIvyki3xHbXYym5jcxClyCRQOCblq763YB/7SwR4BcFRKQKM1eUlJ
+         U0Z9/e17lkaFA==
+Date:   Thu, 25 Mar 2021 14:47:43 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mayulong <mayulong1@huawei.com>, Stephen Boyd <sboyd@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>, devel@driverdev.osuosl.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 17/21] spmi: hisi-spmi-controller: move driver from
+ staging
+Message-ID: <20210325144743.2d740a06@coco.lan>
+In-Reply-To: <20210205221947.GA3848249@robh.at.kernel.org>
+References: <cover.1611072387.git.mchehab+huawei@kernel.org>
+        <b74098493891d0e7386c3cdb4e466aed9450b1d9.1611072387.git.mchehab+huawei@kernel.org>
+        <20210205221947.GA3848249@robh.at.kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210309000247.2989531-4-danielwa@cisco.com> <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
- <20210309212944.GR109100@zorba> <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
- <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com> <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
-In-Reply-To: <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 25 Mar 2021 07:45:41 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKmUF_obwojLF1ia9+w7ba3yva2Vax=nth-BqKnirt99A@mail.gmail.com>
-Message-ID: <CAL_JsqKmUF_obwojLF1ia9+w7ba3yva2Vax=nth-BqKnirt99A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 6:06 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 24/03/2021 =C3=A0 18:32, Rob Herring a =C3=A9crit :
-> > On Wed, Mar 24, 2021 at 11:01 AM Christophe Leroy
-> > <christophe.leroy@csgroup.eu> wrote:
-> >>
-> >>
-> >>
-> >> Le 09/03/2021 =C3=A0 22:29, Daniel Walker a =C3=A9crit :
-> >>> On Tue, Mar 09, 2021 at 08:47:09AM +0100, Christophe Leroy wrote:
-> >>>>
-> >>>>
-> >>>> Le 09/03/2021 =C3=A0 01:02, Daniel Walker a =C3=A9crit :
-> >>>>> This is a scripted mass convert of the config files to use
-> >>>>> the new generic cmdline. There is a bit of a trim effect here.
-> >>>>> It would seems that some of the config haven't been trimmed in
-> >>>>> a while.
-> >>>>
-> >>>> If you do that in a separate patch, you loose bisectability.
-> >>>>
-> >>>> I think it would have been better to do things in a different way, m=
-ore or less like I did in my series:
-> >>>> 1/ Provide GENERIC cmdline at the same functionnality level as what =
-is
-> >>>> spread in the different architectures
-> >>>> 2/ Convert architectures to the generic with least churn.
-> >>>> 3/ Add new features to the generic
-> >>>
-> >>> You have to have the churn eventually, no matter how you do it. The o=
-nly way you
-> >>> don't have churn is if you never upgrade the feature set.
-> >>>
-> >>>
-> >>>>>
-> >>>>> The bash script used to convert is as follows,
-> >>>>>
-> >>>>> if [[ -z "$1" || -z "$2" ]]; then
-> >>>>>            echo "Two arguments are needed."
-> >>>>>            exit 1
-> >>>>> fi
-> >>>>> mkdir $1
-> >>>>> cp $2 $1/.config
-> >>>>> sed -i 's/CONFIG_CMDLINE=3D/CONFIG_CMDLINE_BOOL=3Dy\nCONFIG_CMDLINE=
-_PREPEND=3D/g' $1/.config
-> >>>>
-> >>>> This is not correct.
-> >>>>
-> >>>> By default, on powerpc the provided command line is used only if the=
- bootloader doesn't provide one.
-> >>>>
-> >>>> Otherwise:
-> >>>> - the builtin command line is appended to the one provided by the bo=
-otloader
-> >>>> if CONFIG_CMDLINE_EXTEND is selected
-> >>>> - the builtin command line replaces to the one provided by the bootl=
-oader if
-> >>>> CONFIG_CMDLINE_FORCE is selected
-> >>>
-> >>> I think my changes maintain most of this due to the override of
-> >>> CONFIG_CMDLINE_PREPEND. This is an upgrade and the inflexibility in p=
-owerpc is
-> >>> an example of why these changes were created in the first place.
-> >>
-> >> "inflexibility in powerpc" : Can you elaborate ?
-> >>
-> >>>
-> >>> For example , say the default command line is "root=3D/dev/issblk0" f=
-rom iss476
-> >>> platform. And the bootloader adds "root=3D/dev/sda1"
-> >>>
-> >>> The result is <prepend><bootloader><append>.
-> >>
-> >>
-> >> I'm still having hard time understanding the benefit of having both <p=
-repend> and <append>.
-> >> Could you please provide a complete exemple from real life, ie what ex=
-actly the problem is and what
-> >> it solves ?
-> >
-> > It doesn't matter. We already have both cases and 'extend' has meant ei=
-ther one.
-> >
-> > What someone wants is policy and the kernel shouldn't be defining the p=
-olicy.
-> >
->
-> Ok, so you agree we don't need to provide two CMDLINE, one to be appended=
- and one to be prepended.
+Em Fri, 5 Feb 2021 16:19:47 -0600
+Rob Herring <robh@kernel.org> escreveu:
 
-Well, I wasn't thinking about that part of it, but yes as long as no
-arch currently needs that.
+> On Tue, Jan 19, 2021 at 05:10:43PM +0100, Mauro Carvalho Chehab wrote:
+> > The Hisilicon 6421v600 SPMI driver is ready for mainstream.
+> > 
+> > So, move it from staging.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  75 ++++
+> >  MAINTAINERS                                   |   7 +
+> >  drivers/spmi/Kconfig                          |   9 +
+> >  drivers/spmi/Makefile                         |   1 +
+> >  drivers/spmi/hisi-spmi-controller.c           | 358 ++++++++++++++++++
+> >  drivers/staging/hikey9xx/Kconfig              |  11 -
+> >  drivers/staging/hikey9xx/Makefile             |   1 -
+> >  .../staging/hikey9xx/hisi-spmi-controller.c   | 358 ------------------
+> >  .../hisilicon,hisi-spmi-controller.yaml       |  75 ----
+> >  9 files changed, 450 insertions(+), 445 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+> >  create mode 100644 drivers/spmi/hisi-spmi-controller.c
+> >  delete mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
+> >  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+> > new file mode 100644
+> > index 000000000000..21f68a9c2df1
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+> > @@ -0,0 +1,75 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/spmi/hisilicon,hisi-spmi-controller.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: HiSilicon SPMI controller
+> > +
+> > +maintainers:
+> > +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > +
+> > +description: |
+> > +  The HiSilicon SPMI BUS controller is found on some Kirin-based designs.
+> > +  It is a MIPI System Power Management (SPMI) controller.
+> > +
+> > +  The PMIC part is provided by
+> > +  drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
+> > +
+> > +properties:
+> > +  $nodename:
+> > +    pattern: "spmi@[0-9a-f]"
+> > +
+> > +  compatible:
+> > +    const: hisilicon,kirin970-spmi-controller  
+> 
+> '-controller' is kind of redundant.
 
-> Let's only provide once CMDLINE as of today, and ask the user to select w=
-hether he wants it appended
-> or prepended or replacee. Then no need to change all existing config to r=
-ename CONFIG_CMDLINE into
-> either of the new ones.
->
-> That's the main difference between my series and Daniel's series. So I'll=
- finish taking Will's
-> comment into account and we'll send out a v3 soon.
+Ok. Will drop it.
 
-Great.
+> 
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +  
+> 
+> > +  "#address-cells":
+> > +    const: 2
+> > +
+> > +  "#size-cells":
+> > +    const: 0  
+> 
+> These 2 are covered by spmi.yaml
 
-Rob
+Ok.
+
+> 
+> > +
+> > +  spmi-channel:
+> > +    description: |
+> > +      number of the Kirin 970 SPMI channel where the SPMI devices are connected.  
+> 
+> Common to SPMI? If not, needs a vendor prefix.
+
+That's an interesting question. My understanding is that this is not
+vendor-specific, but maybe Stephen can give us more details.
+
+The spmi.h header calls it "nr", and documents it at include/linux/spmi.h
+as:
+
+	/**
+	 * struct spmi_controller - interface to the SPMI master controller
+	 * @dev:	Driver model representation of the device.
+	 * @nr:		board-specific number identifier for this controller/bus
+	 * @cmd:	sends a non-data command sequence on the SPMI bus.
+	 * @read_cmd:	sends a register read command sequence on the SPMI bus.
+	 * @write_cmd:	sends a register write command sequence on the SPMI bus.
+	 */
+
+There, it says that this is "board-specific number identifier".
+
+Yet, as the SPMI is a serial bus with up to 4 masters (controller), I 
+suspect that the idea is to associate it with the master ID.
+
+This is used on boards with multiple SoCs. See, for instance, slide 5 of:
+
+	https://www.mipi.org/sites/default/files/Bangalore-Qualcomm-SPMI-1.0-Multi-master-Verification.pdf
+
+However, it is hard to know for sure, as no drivers use it, except by
+Hikey 970 controller:
+
+	$ grep "\b\->nr\b" $(git grep -l spmi.h)
+	drivers/spmi/spmi.c:	ida_simple_remove(&ctrl_ida, ctrl->nr);
+	drivers/spmi/spmi.c:	dev_set_name(&sdev->dev, "%d-%02x", ctrl->nr, sdev->usid);
+	drivers/spmi/spmi.c:	ctrl->nr = id;
+	drivers/spmi/spmi.c:		ctrl->nr, &ctrl->dev);
+	drivers/staging/hikey9xx/hisi-spmi-controller.c:	ctrl->nr = spmi_controller->channel;
+
+> 
+> Type? Range of values?
+
+The SPMI core defines it as "unsigned int". So, I would use:
+
+	    $ref: /schemas/types.yaml#/definitions/uint32
+
+as a type. 
+
+At the driver, this is used to calculate the channel offset with:
+
+	static int spmi_write_cmd(...) {
+		u32 chnl_ofst = SPMI_CHANNEL_OFFSET * spmi_controller->channel;
+...
+		writel((u32 __force)cpu_to_be32(data),
+		       spmi_controller->base + chnl_ofst +
+		       SPMI_APB_SPMI_WDATA0_BASE_ADDR +
+		       SPMI_PER_DATAREG_BYTE * i);
+...
+	}
+
+As on both spmi.h and the Hikey 970 SPMI controller defines it as uint32, 
+it doesn't seem to be a good idea to put a range of values, specially 
+since we don't have the datasheets for this SoC.
+
+> 
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - spmi-channel  
+> 
+> > +  - "#address-cells"
+> > +  - "#size-cells"  
+> 
+> Covered by spmi.yaml.
+> 
+> > +
+> > +patternProperties:
+> > +  "^pmic@[0-9a-f]$":  
+> 
+> Presumably you could have something besides a PMIC.
+
+Hmm... SPMI means MIPI System Power Management Interface.
+The MIPI says that [1]:
+
+	"The MIPI System Power Management Interface is a two-wire serial
+	 interface that uses CMOS I/Os for the physical layer. The interface
+	 connects the integrated power controller of a system-on-chip (SoC)
+	 processor system with one or more power management IC voltage
+	 regulation systems."
+
+[1] https://www.mipi.org/specifications/system-power-management-interface
+
+OK, as this is a serial bus, I guess one could abuse the interface
+and add non-PMIC devices on it. Also, some future version of SPMI
+might extend it to non-PMIC devices, but, IMO, if we ever add a 
+non-PMIC device, another patternProperties would be needed in order
+to describe the other device types that could be connected to the PM bus.
+
+> 
+> > +    description: |
+> > +      PMIC properties, which are specific to the used SPMI PMIC device(s).
+> > +      When used in combination with HiSilicon 6421v600, the properties
+> > +      are documented at
+> > +      drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    bus {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <2>;
+> > +
+> > +      spmi: spmi@fff24000 {
+> > +        compatible = "hisilicon,kirin970-spmi-controller";
+> > +        #address-cells = <2>;
+> > +        #size-cells = <0>;
+> > +        status = "ok";  
+> 
+> Drop status.
+
+Ok.
+
+> 
+> > +        reg = <0x0 0xfff24000 0x0 0x1000>;
+> > +        spmi-channel = <2>;
+> > +
+> > +        pmic@0 {
+> > +          reg = <0 0>;
+> > +          /* pmic properties */
+> > +        };
+> > +      };
+> > +    };
+
+
+Thanks,
+Mauro
