@@ -2,306 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E00234913E
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9C334913F
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhCYLxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhCYLxK (ORCPT
+        id S230233AbhCYLxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:53:39 -0400
+Received: from pio-pvt-msa2.bahnhof.se ([79.136.2.41]:53434 "EHLO
+        pio-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229788AbhCYLx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:53:10 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4CB9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:53:09 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id jy13so2438635ejc.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 04:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7IX0Yj+2rzcGHUgvCwC2c2cC5OMxI6X15YXcc54logI=;
-        b=zHhcw7nEqVJiTQkwx3rCXmlmMc0/D5PfMnSKmc3D+M0LqhDIscP0PyGHsb5Iaf6lv8
-         9PJKmoDgfn4hLxx0htyUzC7iJRRu4fu9Nb34GVZQGx11O+rzp43ksDLbeTcO9M/PSA2F
-         exfdtja33aEyRO69jWSY3GQpze1R2a/J3PVNWvKcCdav5WCEEV1etJpZmeLv//WIpqa5
-         LsRABSL4QM9arPY2gXL+x4s/C4Td6TlS8wyNVYy84C0IwrprLXG/zmS+cPeGn/DtrDrt
-         it/vKOISKMm1ulA6FOpu7JDj01uvHS9IFA4xgC0boXm5c7NdeYZN6TVKE3LBeHM1c4YI
-         zRTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7IX0Yj+2rzcGHUgvCwC2c2cC5OMxI6X15YXcc54logI=;
-        b=Hcz57QmAVdbYgO55KsJh7ds52P5p//7Nf2DWF9dbq1oK3g+5dd/+7uETMP83bgqRlE
-         2+Oa5hFsn3EE8EPdkG+Xia9TMLLztTcaJnxjIfVJyUj/T2jYiK6sZBvVwaWH7S5s4SFz
-         bDZfngWlAEPJlmwhekyFTYlWtlXY9EMJ7LomDfsPW5f/t8lFNNqdCJLm0cIpg/Y5yrUD
-         oHD/AiAJBburZjsgVXRpwj6wk1jd7Gb/h55kL4Eg823krmI+6fa+USS/U5h4RnN7Mn28
-         a2tk/OubPPheKZ+wjU3U1mxym7ioqMA+vyRP7T+dj4MRskgrs1+o1Exa82AnveClW54t
-         kDPA==
-X-Gm-Message-State: AOAM530pxBwAW3JcTqYBJwYLVbGsqhNG8DeJCgtR45/cw09CmXBpmUY0
-        FSwchR0ZVgFWhvFcMCGH7EfqFg==
-X-Google-Smtp-Source: ABdhPJyspSSPpTxSzJuwpyY/ctL3hpSi6cFfjwWP1EVsbtnOjbctgms5VfyobMFw2T2raqYzgGZlQQ==
-X-Received: by 2002:a17:907:761c:: with SMTP id jx28mr9064503ejc.417.1616673188374;
-        Thu, 25 Mar 2021 04:53:08 -0700 (PDT)
-Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
-        by smtp.gmail.com with ESMTPSA id be27sm2598456edb.47.2021.03.25.04.53.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 04:53:07 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 11:53:06 +0000
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     lee.jones@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
-        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>
-Subject: Re: [PATCH v5 5/6] backlight: rt4831: Adds support for Richtek
- RT4831 backlight
-Message-ID: <20210325115306.a462t6wwf5bm26zw@maple.lan>
-References: <1608217244-314-1-git-send-email-u0084500@gmail.com>
- <1608217244-314-5-git-send-email-u0084500@gmail.com>
+        Thu, 25 Mar 2021 07:53:26 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTP id CBAB23F496;
+        Thu, 25 Mar 2021 12:53:13 +0100 (CET)
+Authentication-Results: pio-pvt-msa2.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=Jcr/8gpy;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.1
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, NICE_REPLY_A=-0.001,
+        URIBL_BLOCKED=0.001] autolearn=ham autolearn_force=no
+Received: from pio-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (pio-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id kXkEWKiv6GtY; Thu, 25 Mar 2021 12:53:08 +0100 (CET)
+Received: by pio-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 8DE093F449;
+        Thu, 25 Mar 2021 12:53:07 +0100 (CET)
+Received: from [10.249.254.165] (unknown [192.198.151.44])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id 223A33600A8;
+        Thu, 25 Mar 2021 12:53:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1616673198; bh=pupAMitWznuoPQ8iF8iLtIylmNo+WPnV6Cb+xjHhIIo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Jcr/8gpyXj0u86Gzp+qlCA5cbWu6753/rNa1t/ZkoJ7miw09xCznZ+N1NKGpMxI3M
+         TG7URHg57VZESD4MKWvhYIB27SRltWGjrSd6DSqcXV+wv7VRd3ubYudSl/+ROMKf+4
+         mSfSqOcOFKgCS4638DmDU0fRlp8Y8eXw5QJLnsls=
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <6c9acb90-8e91-d8af-7abd-e762d9a901aa@shipmail.org>
+ <20210324134833.GE2356281@nvidia.com>
+ <0b984f96-00fb-5410-bb16-02e12b2cc024@shipmail.org>
+ <20210324163812.GJ2356281@nvidia.com>
+ <08f19e80-d6cb-8858-0c5d-67d2e2723f72@amd.com>
+ <730eb2ff-ba98-2393-6d42-61735e3c6b83@shipmail.org>
+ <20210324231419.GR2356281@nvidia.com>
+ <607ecbeb-e8a5-66e9-6fe2-9a8d22f12bc2@shipmail.org>
+ <fb74efd9-55be-9a8d-95b0-6103e263aab8@amd.com>
+ <15da5784-96ca-25e5-1485-3ce387ee6695@shipmail.org>
+ <20210325113023.GT2356281@nvidia.com>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>
+Message-ID: <afad3159-9aa8-e052-3bef-d00dee1ba51e@shipmail.org>
+Date:   Thu, 25 Mar 2021 12:53:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1608217244-314-5-git-send-email-u0084500@gmail.com>
+In-Reply-To: <20210325113023.GT2356281@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 11:00:43PM +0800, cy_huang wrote:
-> From: ChiYuan Huang <cy_huang@richtek.com>
-> 
-> Adds support for Richtek RT4831 backlight.
-> 
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
 
-Looks ok but there are a few minor niggles.
-> ---
->  drivers/video/backlight/Kconfig            |   8 ++
->  drivers/video/backlight/Makefile           |   1 +
->  drivers/video/backlight/rt4831-backlight.c | 219 +++++++++++++++++++++++++++++
->  3 files changed, 228 insertions(+)
->  create mode 100644 drivers/video/backlight/rt4831-backlight.c
-> 
-> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-> index d83c87b..666bdb0 100644
-> --- a/drivers/video/backlight/Kconfig
-> +++ b/drivers/video/backlight/Kconfig
-> @@ -289,6 +289,14 @@ config BACKLIGHT_QCOM_WLED
->  	  If you have the Qualcomm PMIC, say Y to enable a driver for the
->  	  WLED block. Currently it supports PM8941 and PMI8998.
->  
-> +config BACKLIGHT_RT4831
-> +	tristate "Richtek RT4831 Backlight Driver"
-> +	depends on MFD_RT4831
-> +	help
-> +	  This enables support for Richtek RT4831 Backlight driver.
-> +	  It's commont used to drive the display WLED. There're four channels
-                    ^^^
+On 3/25/21 12:30 PM, Jason Gunthorpe wrote:
+> On Thu, Mar 25, 2021 at 10:51:35AM +0100, Thomas Hellström (Intel) wrote:
+>
+>>> Please explain that further. Why do we need the mmap lock to insert PMDs
+>>> but not when insert PTEs?
+>> We don't. But once you've inserted a PMD directory you can't remove it
+>> unless you have the mmap lock (and probably also the i_mmap_lock in write
+>> mode). That for example means that if you have a VRAM region mapped with
+>> huge PMDs, and then it gets evicted, and you happen to read a byte from it
+>> when it's evicted and therefore populate the full region with PTEs pointing
+>> to system pages, you can't go back to huge PMDs again without a munmap() in
+>> between.
+> This is all basically magic to me still, but THP does this
+> transformation and I think what it does could work here too. We
+> probably wouldn't be able to upgrade while handling fault, but at the
+> same time, this should be quite rare as it would require the driver to
+> have supplied a small page for this VMA at some point.
 
-> diff --git a/drivers/video/backlight/rt4831-backlight.c b/drivers/video/backlight/rt4831-backlight.c
-> new file mode 100644
-> index 00000000..816c4d6
-> --- /dev/null
-> +++ b/drivers/video/backlight/rt4831-backlight.c
-> @@ -0,0 +1,219 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +#include <dt-bindings/leds/rt4831-backlight.h>
-> +#include <linux/backlight.h>
-> +#include <linux/bitops.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
-> +#include <linux/regmap.h>
-> +
-> +#define RT4831_REG_BLCFG	0x02
-> +#define RT4831_REG_BLDIML	0x04
-> +#define RT4831_REG_ENABLE	0x08
-> +
-> +#define BL_MAX_BRIGHTNESS	2048
+IIRC THP handles this using khugepaged, grabbing the lock in write mode 
+when coalescing, and yeah, I don't think anything prevents anyone from 
+extending khugepaged doing that also for special huge page table entries.
 
-Would be better with a prefix.
-> +
-> +#define RT4831_BLOVP_MASK	GENMASK(7, 5)
-> +#define RT4831_BLOVP_SHIFT	5
-> +#define RT4831_BLPWMEN_MASK	BIT(0)
-> +#define RT4831_BLEN_MASK	BIT(4)
-> +#define RT4831_BLCH_MASK	GENMASK(3, 0)
-> +#define RT4831_BLDIML_MASK	GENMASK(2, 0)
-> +#define RT4831_BLDIMH_MASK	GENMASK(10, 3)
-> +#define RT4831_BLDIMH_SHIFT	3
-> +
-> +struct rt4831_priv {
-> +	struct regmap *regmap;
-> +	struct mutex lock;
+>
+>>> Apart from that I still don't fully get why we need this in the first
+>>> place.
+>> Because virtual huge page address boundaries need to be aligned with
+>> physical huge page address boundaries, and mmap can happen before bos are
+>> populated so you have no way of knowing how physical huge page
+>> address
+> But this is a mmap-time problem, fault can't fix mmap using the wrong VA.
 
-Locks aren't very common in backlight drivers. Why isn't the ops_lock
-sufficient?
+Nope. The point here was that in this case, to make sure mmap uses the 
+correct VA to give us a reasonable chance of alignement, the driver 
+might need to be aware of and do trickery with the huge page-table-entry 
+sizes anyway, although I think in most cases a standard helper for this 
+can be supplied.
+
+/Thomas
 
 
-> +	struct backlight_device *bl;
-> +};
-> +
-> +static int rt4831_bl_update_status(struct backlight_device *bl_dev)
-> +{
-> +	struct rt4831_priv *priv = bl_get_data(bl_dev);
-> +	int brightness = backlight_get_brightness(bl_dev);
-> +	unsigned int enable = brightness ? RT4831_BLEN_MASK : 0;
-> +	u8 v[2];
-> +	int ret;
-> +
-> +	mutex_lock(&priv->lock);
-> +
-> +	if (brightness) {
-> +		v[0] = (brightness - 1) & RT4831_BLDIML_MASK;
-> +		v[1] = ((brightness - 1) & RT4831_BLDIMH_MASK) >> RT4831_BLDIMH_SHIFT;
-> +
-> +		ret = regmap_raw_write(priv->regmap, RT4831_REG_BLDIML, v, sizeof(v));
-> +		if (ret)
-> +			goto unlock;
-> +	}
-> +
-> +	ret = regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831_BLEN_MASK, enable);
-> +
-> +unlock:
-> +	mutex_unlock(&priv->lock);
-> +	return ret;
-> +}
-> +
-> +static int rt4831_bl_get_brightness(struct backlight_device *bl_dev)
-> +{
-> +	struct rt4831_priv *priv = bl_get_data(bl_dev);
-> +	unsigned int val;
-> +	u8 v[2];
-> +	int ret;
-> +
-> +	mutex_lock(&priv->lock);
-> +
-> +	ret = regmap_read(priv->regmap, RT4831_REG_ENABLE, &val);
-> +	if (ret)
-> +		return ret;
-
-Deadlock.
-
-
-> +
-> +	if (!(val & RT4831_BLEN_MASK)) {
-> +		ret = 0;
-> +		goto unlock;
-> +	}
-> +
-> +	ret = regmap_raw_read(priv->regmap, RT4831_REG_BLDIML, v, sizeof(v));
-> +	if (ret)
-> +		goto unlock;
-> +
-> +	ret = (v[1] << RT4831_BLDIMH_SHIFT) + (v[0] & RT4831_BLDIML_MASK) + 1;
-> +
-> +unlock:
-> +	mutex_unlock(&priv->lock);
-> +	return ret;
-> +}
-> +
-> +static const struct backlight_ops rt4831_bl_ops = {
-> +	.options = BL_CORE_SUSPENDRESUME,
-> +	.update_status = rt4831_bl_update_status,
-> +	.get_brightness = rt4831_bl_get_brightness,
-> +};
-> +
-> +static int rt4831_init_device_properties(struct rt4831_priv *priv, struct device *dev,
-
-This is not the idiomatic name usually used for this type of function.
-In fact since this driver purely uses device properties then this code
-could just be merged into the probe function.
-
-
-> +					  struct backlight_properties *bl_props)
-> +{
-> +	u8 propval;
-> +	u32 brightness;
-> +	unsigned int val = 0;
-> +	int ret;
-> +
-> +	/* common properties */
-> +	ret = device_property_read_u32(dev, "max-brightness", &brightness);
-> +	if (ret) {
-> +		dev_warn(dev, "max-brightness DT property missing, use HW max as default\n");
-
-Does there need to be a warning on this?
-
-It's code pattern is common but the DT docs have formalized a lot
-recently. The DT docs in patch 1 say these are optional... so
-why does it justify a warning of they are omitted? There is nothing
-wrong! Is it better to specify the defaults in the bindings and
-then the kernel can say nothing when the defaults are adopted.
-
-
-> +		brightness = BL_MAX_BRIGHTNESS;
-> +	}
-> +
-> +	bl_props->max_brightness = min_t(u32, brightness, BL_MAX_BRIGHTNESS);
-> +
-> +	ret = device_property_read_u32(dev, "default-brightness", &brightness);
-> +	if (ret) {
-> +		dev_warn(dev, "default-brightness DT property missing, use max limit as default\n");
-
-Ditto.
-
-
-> +		brightness = bl_props->max_brightness;
-> +	}
-> +
-> +	bl_props->brightness = min_t(u32, brightness, bl_props->max_brightness);
-> +
-> +	/* vendor properties */
-> +	if (device_property_read_bool(dev, "richtek,pwm-enable"))
-> +		val = RT4831_BLPWMEN_MASK;
-> +
-> +	ret = regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831_BLPWMEN_MASK, val);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = device_property_read_u8(dev, "richtek,bled-ovp-sel", &propval);
-> +	if (ret) {
-> +		dev_warn(dev, "richtek,bled-ovp-sel DT property missing,
-> use default 21V\n");o
-
-Ditto.
-
-> +		propval = RT4831_BLOVPLVL_21V;
-> +	}
-> +
-> +	propval = min_t(u8, propval, RT4831_BLOVPLVL_29V);
-> +	ret = regmap_update_bits(priv->regmap, RT4831_REG_BLCFG, RT4831_BLOVP_MASK,
-> +				 propval << RT4831_BLOVP_SHIFT);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = device_property_read_u8(dev, "richtek,channel-use", &propval);
-> +	if (ret) {
-> +		dev_err(dev, "richtek,channel-use DT property missing\n");
-> +		return ret;
-> +	}
-> +
-> +	if (!(propval & RT4831_BLCH_MASK)) {
-> +		dev_err(dev, "No channel specified\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return regmap_update_bits(priv->regmap, RT4831_REG_ENABLE, RT4831_BLCH_MASK, propval);
-> +}
-> +
-> +static int rt4831_bl_probe(struct platform_device *pdev)
-> +{
-> +	struct rt4831_priv *priv;
-> +	struct backlight_properties bl_props = { .type = BACKLIGHT_RAW, };
-
-In new drivers please make sure to correctly set props.scale so that the
-backlight slider can be mapped correctly (see
-Documentation/ABI/testing/sysfs-class-backlight for description of the
-options).
- 
- 
-Daniel.
+>
+>>> I really don't see that either. When a buffer is accessed by the CPU it
+>>> is in > 90% of all cases completely accessed. Not faulting in full
+>>> ranges is just optimizing for a really unlikely case here.
+>> It might be that you're right, but are all drivers wanting to use this like
+>> drm in this respect? Using the interface to fault in a 1G range in the hope
+>> it could map it to a huge pud may unexpectedly consume and populate some 16+
+>> MB of page tables.
+> If the underlying device block size is so big then sure, why not? The
+> "unexpectedly" should be quite rare/non existant anyhow.
+>
+> Jason
+>   
