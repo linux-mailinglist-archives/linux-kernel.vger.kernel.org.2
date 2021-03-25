@@ -2,87 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D7D349A8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:40:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCC4349A91
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhCYTjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbhCYTjQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:39:16 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9A0C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:39:13 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id g8so4195953lfv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gzmi+VlURgVOiIckHYDGx4tksnLtuqPhZg704eyPPzc=;
-        b=axAO0RrZyNnOLPeJBC+lqlIBSFCA0+T5m0c+QTvjiesvzRhrSrhNAJGNBpPYO2w5yg
-         C8XEXbVJk+oVcSmsslcoGILcX1bst/8WI3rxAEQOD5N5m35uB129JOQ4p6zl6gjYV0hr
-         N9zXUzK0n6LOTT7Lnko6AXU/5hsgnyUwAG1QQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gzmi+VlURgVOiIckHYDGx4tksnLtuqPhZg704eyPPzc=;
-        b=b90wNJcmv4RqADur0sWI8oAF63vBuJwCOjP2Y/JH0Gn6yRnAOPzsNtNzVOl5lMi0rF
-         TA8r+jCNJzBiT5jc5JAbUHq82F5iYPBPd0B/z1dIMOx9VtwJ1z147pN/eKE55ozlx69r
-         tXZgYYklrk7qLL5FsQqOekUfnJ17iTvJqrOz7Yct5ZUkbyCXelKrKM2JZfe3tKM2fc2a
-         PqN3h4bRxRIc3Os6TcxOrtBHF7/Om+5zdduo1d8wGMXGI9iglNNv8SBj+pkMhc3ur3fN
-         OREqzG0pcdMu2V46LYH8T2VzUlaVOFdiO2tx6yD9yaCPAkLIpYWT5w9QkxqsH0DwKbfl
-         SLCQ==
-X-Gm-Message-State: AOAM530V+IqOL18VozcGeW2n5cM1Dnjq+OJ+uoUKUG+83WNq3Bvkdt5I
-        MMmv8M9AHpWcsg0OJ8BK4ZWpvv/jqOYzfg==
-X-Google-Smtp-Source: ABdhPJzpkJ0rjjugCQmhykMg3oWBuNt8cNBI3WGX7401Vc7e9UJIweqW0O5UJE5LR2iqFIAcnv875A==
-X-Received: by 2002:ac2:5ca7:: with SMTP id e7mr5911375lfq.646.1616701152168;
-        Thu, 25 Mar 2021 12:39:12 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id p13sm871027ljg.116.2021.03.25.12.39.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 12:39:11 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id n138so4246997lfa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:39:10 -0700 (PDT)
-X-Received: by 2002:a05:6512:308b:: with SMTP id z11mr5719715lfd.487.1616701150641;
- Thu, 25 Mar 2021 12:39:10 -0700 (PDT)
+        id S230306AbhCYTkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:40:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60708 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231260AbhCYTjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:39:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616701191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=b0888TBfmWBnV5AafdCEkU4aD3WyTEXqOjET2rCeeBw=;
+        b=dJBsZf98L8e5tQDlne/q8amQKIljJOO0PDtoSw5NGJTWWsriMwKS8K22jbpvHwGShmECGz
+        4lspJ2Ww9sVjz26i9DeaSZQ+sEZ62QltIRJoDiORdmyH14hHtZXY1fihlhx8q9H/MZehx9
+        jyeXn5W3Zmsa+OjyN+zF04jdCwkKVX0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1A671AF57;
+        Thu, 25 Mar 2021 19:39:51 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 20:39:48 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 5/8] hugetlb: call update_and_free_page without
+ hugetlb_lock
+Message-ID: <YFznBKyLx2JYPkO1@dhcp22.suse.cz>
+References: <20210325002835.216118-1-mike.kravetz@oracle.com>
+ <20210325002835.216118-6-mike.kravetz@oracle.com>
+ <YFxsB4YLXCobtGGv@dhcp22.suse.cz>
+ <d60a13c9-24c0-1d24-85bc-08a0090d282e@oracle.com>
 MIME-Version: 1.0
-References: <20210325164343.807498-1-axboe@kernel.dk> <m1ft0j3u5k.fsf@fess.ebiederm.org>
-In-Reply-To: <m1ft0j3u5k.fsf@fess.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 25 Mar 2021 12:38:54 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
-Message-ID: <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, io-uring <io-uring@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Stefan Metzmacher <metze@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d60a13c9-24c0-1d24-85bc-08a0090d282e@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 12:34 PM Eric W. Biederman
-<ebiederm@xmission.com> wrote:
->
-> A quick skim shows that these threads are not showing up anywhere in
-> proc which appears to be a problem, as it hides them from top.
->
-> Sysadmins need the ability to dig into a system and find out where all
-> their cpu usage or io's have gone when there is a problem.  I general I
-> think this argues that these threads should show up as threads of the
-> process so I am not even certain this is the right fix to deal with gdb.
+On Thu 25-03-21 10:12:05, Mike Kravetz wrote:
+> On 3/25/21 3:55 AM, Michal Hocko wrote:
+> > On Wed 24-03-21 17:28:32, Mike Kravetz wrote:
+> >> With the introduction of remove_hugetlb_page(), there is no need for
+> >> update_and_free_page to hold the hugetlb lock.  Change all callers to
+> >> drop the lock before calling.
+> >>
+> >> With additional code modifications, this will allow loops which decrease
+> >> the huge page pool to drop the hugetlb_lock with each page to reduce
+> >> long hold times.
+> >>
+> >> The ugly unlock/lock cycle in free_pool_huge_page will be removed in
+> >> a subsequent patch which restructures free_pool_huge_page.
+> >>
+> >> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> > 
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+> > 
+> > One minor thing below
+> > 
+> > [...]
+> >> @@ -2563,22 +2572,37 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+> >>  						nodemask_t *nodes_allowed)
+> >>  {
+> >>  	int i;
+> >> +	struct list_head page_list;
+> >> +	struct page *page, *next;
+> >>  
+> >>  	if (hstate_is_gigantic(h))
+> >>  		return;
+> >>  
+> >> +	/*
+> >> +	 * Collect pages to be freed on a list, and free after dropping lock
+> >> +	 */
+> >> +	INIT_LIST_HEAD(&page_list);
+> >>  	for_each_node_mask(i, *nodes_allowed) {
+> >> -		struct page *page, *next;
+> >>  		struct list_head *freel = &h->hugepage_freelists[i];
+> >>  		list_for_each_entry_safe(page, next, freel, lru) {
+> >>  			if (count >= h->nr_huge_pages)
+> >> -				return;
+> >> +				goto out;
+> >>  			if (PageHighMem(page))
+> >>  				continue;
+> >>  			remove_hugetlb_page(h, page, false);
+> >> -			update_and_free_page(h, page);
+> >> +			INIT_LIST_HEAD(&page->lru);
+> > 
+> > What is the point of rhis INIT_LIST_HEAD? Page has been removed from the
+> > list by remove_hugetlb_page so it can be added to a new one without any
+> > reinitialization.
+> 
+> remove_hugetlb_page just does a list_del.  list_del will poison the
+> pointers in page->lru.  The following list_add will then complain about
+> list corruption.
 
-Yeah, I do think that hiding them is the wrong model, because it also
-hides them from "ps" etc, which is very wrong.
+Are you sure? list_del followed by list_add is a normal API usage
+pattern AFAIK. INIT_LIST_HEAD is to do the first initialization before
+first use.
 
-I don't know what the gdb logic is, but maybe there's some other
-option that makes gdb not react to them?
-
-          Linus
+-- 
+Michal Hocko
+SUSE Labs
