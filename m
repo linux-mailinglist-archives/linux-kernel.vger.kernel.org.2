@@ -2,83 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D7B349A1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6052349A1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhCYTWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:22:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47978 "EHLO mail.kernel.org"
+        id S230100AbhCYTYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:24:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:45790 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229614AbhCYTVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:21:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9489761A2D;
-        Thu, 25 Mar 2021 19:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616700110;
-        bh=ziH8ogtlFgf/xOHmwTBESqJ99TGlQQhBRPL/aLU87cA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JAY+5fXqPKWwLnTbdHOAB5nICVjmbMd7AjyjWXvTU4tNS/swPQ6ClAN8NLqu8kd9p
-         tj9bu2iwzf1ywkBkoD927nDvdNKKkPrmNWZj0C6C1xwxHmL7D+mwYB0ZaPunZoQ4Hr
-         yOY4L40EcGNjhEsI7IyEMsRff/IMO5Y3hyu1OIut1c+z+eVARbNiSlpkzoH9zcQlPu
-         8VgxPP2Edk36MNkXi9Jc2OkrJE9a88C7Gi10v5/34VRIKGAyHBTvhMWIP5aseHvs/R
-         IaGa0JdlI8sfo4keKEIDwa0wy9XaBlraoNckKUN3lDQKZLiB9AKTjtlyAileb0DbIC
-         RkQZRhcn0It/g==
-Date:   Thu, 25 Mar 2021 12:21:49 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, krisman@collabora.com, drosen@google.com,
-        yuchao0@huawei.com, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v4 2/5] fs: Check if utf8 encoding is loaded before
- calling utf8_unload()
-Message-ID: <YFziza/VMyzEs4s1@sol.localdomain>
-References: <20210325000811.1379641-1-shreeya.patel@collabora.com>
- <20210325000811.1379641-3-shreeya.patel@collabora.com>
+        id S229614AbhCYTXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 15:23:39 -0400
+IronPort-SDR: T52ZengW2qrDRGDlmqemAyRMsdolFte6AWZsAd12pym+dpoeFDKiqiAW6wact7zPsaQW2CJ9pa
+ Zw2Cw6BCw5Iw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="252361417"
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="252361417"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 12:23:39 -0700
+IronPort-SDR: 8XoTRiTBoInAQeThsSpFVNuSrmA/UDezC793YWALlqhC6Ku6HojnjqxMlHSbqOdnilpmz0aOPv
+ s2ZD2/j/nD9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="416155750"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 25 Mar 2021 12:23:37 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id A5D93236; Thu, 25 Mar 2021 21:23:51 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH v1 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick with const
+Date:   Thu, 25 Mar 2021 21:23:47 +0200
+Message-Id: <20210325192347.67326-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325000811.1379641-3-shreeya.patel@collabora.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 05:38:08AM +0530, Shreeya Patel wrote:
-> utf8_unload is being called if CONFIG_UNICODE is enabled.
-> The ifdef block doesn't check if utf8 encoding has been loaded
-> or not before calling the utf8_unload() function.
-> This is not the expected behavior since it would sometimes lead
-> to unloading utf8 even before loading it.
-> Hence, add a condition which will check if sb->encoding is NOT NULL
-> before calling the utf8_unload().
-> 
-> Reviewed-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> ---
->  fs/ext4/super.c | 6 ++++--
->  fs/f2fs/super.c | 9 ++++++---
->  2 files changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index ad34a37278cd..e438d14f9a87 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -1259,7 +1259,8 @@ static void ext4_put_super(struct super_block *sb)
->  	fs_put_dax(sbi->s_daxdev);
->  	fscrypt_free_dummy_policy(&sbi->s_dummy_enc_policy);
->  #ifdef CONFIG_UNICODE
-> -	utf8_unload(sb->s_encoding);
-> +	if (sb->s_encoding)
-> +		utf8_unload(sb->s_encoding);
->  #endif
->  	kfree(sbi);
->  }
+As Linus rightfully noticed, the driver plays dirty trick with const,
+i.e. it assigns a place holder data structure to the const field
+in the MFD cell and then drops the const by explicit casting. This
+is not how it should be.
 
+Replace cell parameter by bar and assign local pointer res to the
+respective non-const place holder in the intel_quark_i2c_setup()
+and intel_quark_gpio_setup().
 
-What's the benefit of this change?  utf8_unload is a no-op when passed a NULL
-pointer; why not keep it that way?
+Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-- Eric
+diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
+index 7f90e6f022ba..f2bce2ade510 100644
+--- a/drivers/mfd/intel_quark_i2c_gpio.c
++++ b/drivers/mfd/intel_quark_i2c_gpio.c
+@@ -157,17 +157,16 @@ static void intel_quark_unregister_i2c_clk(struct device *dev)
+ 	clk_unregister(quark_mfd->i2c_clk);
+ }
+ 
+-static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
++static int intel_quark_i2c_setup(struct pci_dev *pdev, int bar)
+ {
++	struct mfd_cell *cell = &intel_quark_mfd_cells[bar];
++	struct resource *res = intel_quark_i2c_res;
+ 	const struct dmi_system_id *dmi_id;
+ 	struct dw_i2c_platform_data *pdata;
+-	struct resource *res = (struct resource *)cell->resources;
+ 	struct device *dev = &pdev->dev;
+ 
+-	res[INTEL_QUARK_IORES_MEM].start =
+-		pci_resource_start(pdev, MFD_I2C_BAR);
+-	res[INTEL_QUARK_IORES_MEM].end =
+-		pci_resource_end(pdev, MFD_I2C_BAR);
++	res[INTEL_QUARK_IORES_MEM].start = pci_resource_start(pdev, bar);
++	res[INTEL_QUARK_IORES_MEM].end = pci_resource_end(pdev, bar);
+ 
+ 	res[INTEL_QUARK_IORES_IRQ].start = pci_irq_vector(pdev, 0);
+ 	res[INTEL_QUARK_IORES_IRQ].end = pci_irq_vector(pdev, 0);
+@@ -189,16 +188,15 @@ static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
+ 	return 0;
+ }
+ 
+-static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
++static int intel_quark_gpio_setup(struct pci_dev *pdev, int bar)
+ {
++	struct mfd_cell *cell = &intel_quark_mfd_cells[bar];
++	struct resource *res = intel_quark_gpio_res;
+ 	struct dwapb_platform_data *pdata;
+-	struct resource *res = (struct resource *)cell->resources;
+ 	struct device *dev = &pdev->dev;
+ 
+-	res[INTEL_QUARK_IORES_MEM].start =
+-		pci_resource_start(pdev, MFD_GPIO_BAR);
+-	res[INTEL_QUARK_IORES_MEM].end =
+-		pci_resource_end(pdev, MFD_GPIO_BAR);
++	res[INTEL_QUARK_IORES_MEM].start = pci_resource_start(pdev, bar);
++	res[INTEL_QUARK_IORES_MEM].end = pci_resource_end(pdev, bar);
+ 
+ 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+ 	if (!pdata)
+@@ -252,11 +250,11 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
+ 	if (ret < 0)
+ 		goto err_unregister_i2c_clk;
+ 
+-	ret = intel_quark_i2c_setup(pdev, &intel_quark_mfd_cells[MFD_I2C_BAR]);
++	ret = intel_quark_i2c_setup(pdev, MFD_I2C_BAR);
+ 	if (ret)
+ 		goto err_free_irq_vectors;
+ 
+-	ret = intel_quark_gpio_setup(pdev, &intel_quark_mfd_cells[MFD_GPIO_BAR]);
++	ret = intel_quark_gpio_setup(pdev, MFD_GPIO_BAR);
+ 	if (ret)
+ 		goto err_free_irq_vectors;
+ 
+-- 
+2.30.2
+
