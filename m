@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9F1349148
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4742F349149
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhCYLyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:54:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27636 "EHLO
+        id S230338AbhCYLyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:54:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46534 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230264AbhCYLyF (ORCPT
+        by vger.kernel.org with ESMTP id S230314AbhCYLyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:54:05 -0400
+        Thu, 25 Mar 2021 07:54:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616673241;
+        s=mimecast20190719; t=1616673249;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vG2tNubJ4LBVzigQaPtDtitjQ+ijQ3/FaEaFoM7UXkM=;
-        b=K8+4V6GhT8LXZPp4zhfCYMTEIuhzS0nSerEhn+0iZ0QV6kkyJfnkZmADtpgvLs1Dvp3WW7
-        oHK8VFPpWjuWdgi+uEIMrwpqKRh5csbYfPC97RjMl915HLzgnjpEURBLu9RiGx3G5gbL0v
-        aEawkSzJRBnAhVG5zlMEqFrbVsrRzhc=
+        bh=BUg3LOIHqlA0uZkNm8pmFDkZJ78hOTVD78c+I46/47o=;
+        b=Yn4B2AbYpdrsMHt8YvRHRP185vJcfgxyF40PGKxLTgh9Jy4Jdsaxm6aLc6IXTBobuCL2/8
+        lu4d+ciybAZ+uzcBeZtQeWrnqegUTXQmLgIHVmWr18VNQThZC+ICfhK+nuyPBU3cFKQWQo
+        zILEP9KfNDcMJWf5MVlhO4AOjqrGniM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-424-BgxMaWMSMDKtR9KMsJP5Kw-1; Thu, 25 Mar 2021 07:53:57 -0400
-X-MC-Unique: BgxMaWMSMDKtR9KMsJP5Kw-1
+ us-mta-333-lR1Getd6NJi92oihRu_TgQ-1; Thu, 25 Mar 2021 07:54:07 -0400
+X-MC-Unique: lR1Getd6NJi92oihRu_TgQ-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 06DDA1005D57;
-        Thu, 25 Mar 2021 11:53:50 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E4C91084D6D;
+        Thu, 25 Mar 2021 11:54:04 +0000 (UTC)
 Received: from t480s.redhat.com (ovpn-115-72.ams2.redhat.com [10.36.115.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7BE0F60855;
-        Thu, 25 Mar 2021 11:53:42 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4FE4F60938;
+        Thu, 25 Mar 2021 11:53:50 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        Baoquan He <bhe@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Dave Young <dyoung@redhat.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
         Vivek Goyal <vgoyal@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Keith Busch <keith.busch@intel.com>,
@@ -57,9 +56,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Tom Lendacky <thomas.lendacky@amd.com>,
         Brijesh Singh <brijesh.singh@amd.com>, x86@kernel.org,
         kexec@lists.infradead.org
-Subject: [PATCH v2 1/3] kernel/resource: make walk_system_ram_res() find all busy IORESOURCE_SYSTEM_RAM resources
-Date:   Thu, 25 Mar 2021 12:53:24 +0100
-Message-Id: <20210325115326.7826-2-david@redhat.com>
+Subject: [PATCH v2 2/3] kernel/resource: make walk_mem_res() find all busy IORESOURCE_MEM resources
+Date:   Thu, 25 Mar 2021 12:53:25 +0100
+Message-Id: <20210325115326.7826-3-david@redhat.com>
 In-Reply-To: <20210325115326.7826-1-david@redhat.com>
 References: <20210325115326.7826-1-david@redhat.com>
 MIME-Version: 1.0
@@ -75,29 +74,21 @@ this is no longer holds for driver-managed system RAM (i.e., added via
 dax/kmem and virtio-mem), which gets added on lower levels, for example,
 inside device containers.
 
-We have two users of walk_system_ram_res(), which currently only
-consideres the first level:
-a) kernel/kexec_file.c:kexec_walk_resources() -- We properly skip
-   IORESOURCE_SYSRAM_DRIVER_MANAGED resources via
-   locate_mem_hole_callback(), so even after this change, we won't be
-   placing kexec images onto dax/kmem and virtio-mem added memory. No
-   change.
-b) arch/x86/kernel/crash.c:fill_up_crash_elf_data() -- we're currently
-   not adding relevant ranges to the crash elf header, resulting in them
-   not getting dumped via kdump.
+IORESOURCE_SYSTEM_RAM is defined as IORESOURCE_MEM | IORESOURCE_SYSRAM
+and just a special type of IORESOURCE_MEM.
 
-This change fixes loading a crashkernel via kexec_file_load() and including
-dax/kmem and virtio-mem added System RAM in the crashdump on x86-64. Note
-that e.g,, arm64 relies on memblock data and, therefore, always considers
-all added System RAM already.
+The function walk_mem_res() only consideres the first level and is
+used in arch/x86/mm/ioremap.c:__ioremap_check_mem() only. We currently
+fail to identify System RAM added by dax/kmem and virtio-mem as
+"IORES_MAP_SYSTEM_RAM", for example, allowing for remapping of such
+"normal RAM" in __ioremap_caller().
 
-Let's find all IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY resources, making
-the function behave like walk_system_ram_range().
+Let's find all IORESOURCE_MEM | IORESOURCE_BUSY resources, making the
+function behave similar to walk_system_ram_res().
 
 Fixes: ebf71552bb0e ("virtio-mem: Add parent resource for all added "System RAM"")
 Fixes: c221c0b0308f ("device-dax: "Hotplug" persistent memory for use like normal RAM")
 Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Acked-by: Baoquan He <bhe@redhat.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Dan Williams <dan.j.williams@intel.com>
@@ -127,12 +118,12 @@ Signed-off-by: David Hildenbrand <david@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/resource.c b/kernel/resource.c
-index 627e61b0c124..4efd6e912279 100644
+index 4efd6e912279..16e0c7e8ed24 100644
 --- a/kernel/resource.c
 +++ b/kernel/resource.c
-@@ -457,7 +457,7 @@ int walk_system_ram_res(u64 start, u64 end, void *arg,
+@@ -470,7 +470,7 @@ int walk_mem_res(u64 start, u64 end, void *arg,
  {
- 	unsigned long flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+ 	unsigned long flags = IORESOURCE_MEM | IORESOURCE_BUSY;
  
 -	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, true,
 +	return __walk_iomem_res_desc(start, end, flags, IORES_DESC_NONE, false,
