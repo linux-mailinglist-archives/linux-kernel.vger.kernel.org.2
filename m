@@ -2,82 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3EA349B76
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 22:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AF7349B1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 21:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230407AbhCYVMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 17:12:08 -0400
-Received: from bosmailout10.eigbox.net ([66.96.186.10]:49879 "EHLO
-        bosmailout10.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbhCYVLx (ORCPT
+        id S230355AbhCYUkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 16:40:35 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37542 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230284AbhCYUkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 17:11:53 -0400
-X-Greylist: delayed 1881 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Mar 2021 17:11:52 EDT
-Received: from bosmailscan05.eigbox.net ([10.20.15.5])
-        by bosmailout10.eigbox.net with esmtp (Exim)
-        id 1lPWmM-0007uf-UI; Thu, 25 Mar 2021 16:40:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=gomangoenterprises.com; s=dkim; h=Sender:Content-Transfer-Encoding:
-        Content-Type:Message-ID:Reply-To:Subject:To:From:Date:MIME-Version:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=+811ws69aqxMKZdfZMN9xAgrM7MfKI4rmAxX7Fw/9uI=; b=LU/xV6OQpzHAMRHFAuotIRiLP
-        H17Olhhk1G6BxHVZQxoZhoTNrAx92zCK2NaMZLMnwmWZK1yLmTAOK2OlRBD2KcviklimeQKhwNwqZ
-        umbPz2VTVS6OOlQvnFIf7m0fApIEBDvUoeC0R2mIdtoKGeXagbISUXdCVwTsU4UWSYyUh90QgJauK
-        gUB2Hcg6uRNulmMFsPI7/rEexWHu/HHTn8FJd0x6LY/UE1nC9yx5HJ0damnv+DnlA9W4B/33+FOKX
-        G/Wf4apv8XKsNPOx6wDZiYyROVzU2BWazCcvY3eun42QMmNhP4aUMdQNLLar2mG0+8VR1upgNcKae
-        35ql4lCJA==;
-Received: from [10.115.3.34] (helo=bosimpout04)
-        by bosmailscan05.eigbox.net with esmtp (Exim)
-        id 1lPWmM-0005wH-M5; Thu, 25 Mar 2021 16:40:30 -0400
-Received: from boswebmail16.eigbox.net ([10.20.16.16])
-        by bosimpout04 with 
-        id kkg12400d0Lne6201kgBUr; Thu, 25 Mar 2021 16:40:30 -0400
-X-Authority-Analysis: v=2.1 cv=L4uTQoj8 c=1 sm=1 tr=0
- a=uPHUT7CEn0Da+Qm5h3+6qg==:117 a=F8+SgopUnJVgYiudNCQzmA==:17
- a=L9H7d07YOLsA:10 a=9cW_t1CCXrUA:10 a=s5jvgZ67dGcA:10 a=g309wd-ud2AA:10
- a=kj9zAlcOel0A:10 a=dESyimp9J3IA:10 a=pGLkceISAAAA:8 a=tqBNipVaOzl6ClpzBJcA:9
- a=CjuIK1q_8ugA:10 a=ab1YoC7h1lEA:10 a=nwXFCYNmHisA:10
- a=wRqZfuwGAhNT45ZFaxBL:22 a=Mjp_1draXBgUBBnUB6xt:22
-Received: from [127.0.0.1] (helo=ipage)
-        by boswebmail16.eigbox.net with esmtp (Exim)
-        id 1lPWkz-0000Ab-2m; Thu, 25 Mar 2021 16:39:05 -0400
-Received: from hosted-by.zenex5.com ([92.38.148.53])
- by emailmg.ipage.com
- with HTTP (HTTP/1.1 POST); Thu, 25 Mar 2021 16:39:05 -0400
+        Thu, 25 Mar 2021 16:40:22 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12PKYmvP180694;
+        Thu, 25 Mar 2021 16:39:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ message-id : references : content-type : in-reply-to : mime-version :
+ subject; s=pp1; bh=E83qJwL994tWNvZoPHAqPVwTyBeNoD1TzqnUPAxaQi8=;
+ b=TtbtDhGsaVgN6T5Me7RI043XlPc9psFADWN94RUl91jwvI5PUDpEWSebjgG3Jx2XJaZW
+ UB2+bDoaOqg66OiJmivYSYJxqWC0INU4L64kFbbkhixDYvTBIsP8iMZH+uTgB/kRNKN5
+ DaBJzAVnp+iGs0k028A64r6t0Z2QIfVJI8X2EqaMxKJ/Zz0ktyit2SQ5aF84H9LHnNcm
+ 2CrDK2IMzv1ATdjenC1vzAbCM7yhvvvXDUlN4acCoUmt69BdqlhqgK0NrRRQIiP7+Lci
+ z0W6VAUWcMFjCft4vZkxBGqPQ/SkwQpaYHvrSW+3yTJ5GnShDZEh2Dmqg53xKfpTanls 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37h17jrvs6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 16:39:51 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12PKZ029182096;
+        Thu, 25 Mar 2021 16:39:51 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37h17jrvrm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 16:39:51 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12PKaeAb021668;
+        Thu, 25 Mar 2021 20:39:49 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma02wdc.us.ibm.com with ESMTP id 37h158073b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Mar 2021 20:39:49 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12PKdmR827918840
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Mar 2021 20:39:48 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ACF9E7805F;
+        Thu, 25 Mar 2021 20:39:48 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A21E478063;
+        Thu, 25 Mar 2021 20:39:46 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.228.20])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Thu, 25 Mar 2021 20:39:46 +0000 (GMT)
+Date:   Thu, 25 Mar 2021 15:39:44 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, irogers@google.com,
+        linuxarm@huawei.com, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, zhangshaokun@hisilicon.com
+Message-ID: <20210325203944.GD8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: yu9QP0jAGjDtuV-JEzmB9W5Rh6qNAlIt
+X-Proofpoint-GUID: OOybH2SzF2Q0pP8gIM3wn6_U6x3VLvlp
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Date:   Thu, 25 Mar 2021 15:39:05 -0500
-From:   OZKAN SAHIN <michael@gomangoenterprises.com>
-To:     undisclosed-recipients:;
-Subject: Greetings to you
-Reply-To: ozkansahin.gbbva@gmail.com
-Mail-Reply-To: ozkansahin.gbbva@gmail.com
-Message-ID: <716501cb5be7cfa4bb33bae1709c8354@gomangoenterprises.com>
-X-Sender: michael@gomangoenterprises.com
-User-Agent: Roundcube Webmail/1.3.14
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-EN-AuthUser: michael@gomangoenterprises.com
-Sender:  OZKAN SAHIN <michael@gomangoenterprises.com>
+Subject: Re:  [PATCH v2 0/6] perf arm64 metricgroup support
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-25_08:2021-03-25,2021-03-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ suspectscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 priorityscore=1501 clxscore=1011 adultscore=0
+ impostorscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103250143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-I'm Ozkan Sahin, a Senior Manager in the Private Banking department with 
-a REPUTABLE BANK. I'm excited to get in touch with you and to let you 
-know about this LUCRATIVE BUSINESS PROPOSAL I have for you. Please reply 
-as soon as possible if interested in the full details reply here 
-(ozkansahin.gbbva@gmail.com)
+On Thu, Mar 25, 2021 at 06:33:12PM +0800, John Garry wrote:
+> Metric reuse support is added for pmu-events parse metric testcase.
+> This had been broken on power9 recentlty:
+> https://lore.kernel.org/lkml/20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com/
 
-Since I cannot determine your willingness and because you may have 
-received my message in your Inbox, Junk/Spam folder, I have kept this 
-proposal brief. Your expedient response will be appreciated. Please keep 
-it confidential
+Much better.  Before:
+--
+$ perf test -v 10 2>&1 | grep -i error | wc -l
+112
+--
+After:
+--
+$ perf test -v 10 2>&1 | grep -i error | wc -l
+17
+--
 
-Thanks for your kind understanding!
-Awaiting your response,
-Mr.Ozkan Sahin
-Personal Banking
+And these seem like different types of issues:
+--
+$ perf test -v 10 2>&1 | grep -i error
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_powerbus0_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+--
+
+(Added Kajol Jain to CC)
+
+PC
