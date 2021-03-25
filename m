@@ -2,232 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA4B348761
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 04:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A14934876C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 04:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhCYDNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 23:13:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13689 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhCYDMp (ORCPT
+        id S232045AbhCYDQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 23:16:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55129 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231678AbhCYDPu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 23:12:45 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5VTY6f4jznVHq;
-        Thu, 25 Mar 2021 11:10:09 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 25 Mar 2021 11:12:37 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>
-Subject: [PATCH net v3] net: sched: fix packet stuck problem for lockless qdisc
-Date:   Thu, 25 Mar 2021 11:13:11 +0800
-Message-ID: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 24 Mar 2021 23:15:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616642149;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HUMRt/wsR7njAnroDYg1kIdMlW4yIA+1xmu98fOBeas=;
+        b=edfol4EbptetE1JJs/+TlOGhONGd6tqkDkNy7LigZ7cYmKmPk0owhe2PAX9PJ7fAEyV81A
+        uOb8zla6TSFF7vXFv/VrqqkCsNgMY5Rk4vMs6Dque9OuM04NzlB+ojbZWk+Xw/lIzdCu4c
+        n8Ea12y2SSteXIC97lZ22Od/1Uyd0ag=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-yaGMiU1jP-65lELx1Rzgeg-1; Wed, 24 Mar 2021 23:15:46 -0400
+X-MC-Unique: yaGMiU1jP-65lELx1Rzgeg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18C048189CD;
+        Thu, 25 Mar 2021 03:15:44 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 172DA19C93;
+        Thu, 25 Mar 2021 03:15:34 +0000 (UTC)
+Date:   Wed, 24 Mar 2021 23:15:32 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org,
+        Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
+        twoerner@redhat.com, tgraf@infradead.org, dan.carpenter@oracle.com,
+        Jones Desougi <jones.desougi+netfilter@gmail.com>
+Subject: Re: [PATCH v3] audit: log nftables configuration change events once
+ per table
+Message-ID: <20210325031532.GU3141668@madcap2.tricolour.ca>
+References: <3d15fa1f0c54335f9258d90ea0d11050e780ba70.1616529248.git.rgb@redhat.com>
+ <CAHC9VhTtkar8zt9JP2o0EX5R5bpHaX45=tNtCLuaDNcwtV8baQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhTtkar8zt9JP2o0EX5R5bpHaX45=tNtCLuaDNcwtV8baQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lockless qdisc has below concurrent problem:
-    cpu0                 cpu1
-     .                     .
-q->enqueue                 .
-     .                     .
-qdisc_run_begin()          .
-     .                     .
-dequeue_skb()              .
-     .                     .
-sch_direct_xmit()          .
-     .                     .
-     .                q->enqueue
-     .             qdisc_run_begin()
-     .            return and do nothing
-     .                     .
-qdisc_run_end()            .
+On 2021-03-24 12:32, Paul Moore wrote:
+> On Tue, Mar 23, 2021 at 4:05 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> >
+> > Reduce logging of nftables events to a level similar to iptables.
+> > Restore the table field to list the table, adding the generation.
+> >
+> > Indicate the op as the most significant operation in the event.
+> >
+> > A couple of sample events:
+> >
+> > type=PROCTITLE msg=audit(2021-03-18 09:30:49.801:143) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+> > type=SYSCALL msg=audit(2021-03-18 09:30:49.801:143) : arch=x86_64 syscall=sendmsg success=yes exit=172 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=roo
+> > t sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+> > type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv6 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> > type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=ipv4 entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> > type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.801:143) : table=firewalld:2 family=inet entries=1 op=nft_register_table pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> >
+> > type=PROCTITLE msg=audit(2021-03-18 09:30:49.839:144) : proctitle=/usr/bin/python3 -s /usr/sbin/firewalld --nofork --nopid
+> > type=SYSCALL msg=audit(2021-03-18 09:30:49.839:144) : arch=x86_64 syscall=sendmsg success=yes exit=22792 a0=0x6 a1=0x7ffdcfcbe650 a2=0x0 a3=0x7ffdcfcbd52c items=0 ppid=1 pid=367 auid=unset uid=root gid=root euid=root suid=root fsuid=root egid=r
+> > oot sgid=root fsgid=root tty=(none) ses=unset comm=firewalld exe=/usr/bin/python3.9 subj=system_u:system_r:firewalld_t:s0 key=(null)
+> > type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv6 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> > type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=ipv4 entries=30 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> > type=NETFILTER_CFG msg=audit(2021-03-18 09:30:49.839:144) : table=firewalld:3 family=inet entries=165 op=nft_register_chain pid=367 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
+> >
+> > The issue was originally documented in
+> > https://github.com/linux-audit/audit-kernel/issues/124
+> >
+> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > ---
+> > Changelog:
+> > v3:
+> > - fix function braces, reduce parameter scope
+> > - pre-allocate nft_audit_data per table in step 1, bail on ENOMEM
+> >
+> > v2:
+> > - convert NFT ops to array indicies in nft2audit_op[]
+> > - use linux lists
+> > - use functions for each of collection and logging of audit data
+> > ---
+> >  include/linux/audit.h         |  28 ++++++
+> >  net/netfilter/nf_tables_api.c | 160 ++++++++++++++++------------------
+> >  2 files changed, 105 insertions(+), 83 deletions(-)
+> 
+> ...
+> 
+> > diff --git a/include/linux/audit.h b/include/linux/audit.h
+> > index 82b7c1116a85..5fafcf4c13de 100644
+> > --- a/include/linux/audit.h
+> > +++ b/include/linux/audit.h
+> > @@ -118,6 +118,34 @@ enum audit_nfcfgop {
+> >         AUDIT_NFT_OP_INVALID,
+> >  };
+> >
+> > +static const u8 nft2audit_op[NFT_MSG_MAX] = { // enum nf_tables_msg_types
+> > +       [NFT_MSG_NEWTABLE]      = AUDIT_NFT_OP_TABLE_REGISTER,
+> > +       [NFT_MSG_GETTABLE]      = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_DELTABLE]      = AUDIT_NFT_OP_TABLE_UNREGISTER,
+> > +       [NFT_MSG_NEWCHAIN]      = AUDIT_NFT_OP_CHAIN_REGISTER,
+> > +       [NFT_MSG_GETCHAIN]      = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_DELCHAIN]      = AUDIT_NFT_OP_CHAIN_UNREGISTER,
+> > +       [NFT_MSG_NEWRULE]       = AUDIT_NFT_OP_RULE_REGISTER,
+> > +       [NFT_MSG_GETRULE]       = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_DELRULE]       = AUDIT_NFT_OP_RULE_UNREGISTER,
+> > +       [NFT_MSG_NEWSET]        = AUDIT_NFT_OP_SET_REGISTER,
+> > +       [NFT_MSG_GETSET]        = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_DELSET]        = AUDIT_NFT_OP_SET_UNREGISTER,
+> > +       [NFT_MSG_NEWSETELEM]    = AUDIT_NFT_OP_SETELEM_REGISTER,
+> > +       [NFT_MSG_GETSETELEM]    = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_DELSETELEM]    = AUDIT_NFT_OP_SETELEM_UNREGISTER,
+> > +       [NFT_MSG_NEWGEN]        = AUDIT_NFT_OP_GEN_REGISTER,
+> > +       [NFT_MSG_GETGEN]        = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_TRACE]         = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_NEWOBJ]        = AUDIT_NFT_OP_OBJ_REGISTER,
+> > +       [NFT_MSG_GETOBJ]        = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_DELOBJ]        = AUDIT_NFT_OP_OBJ_UNREGISTER,
+> > +       [NFT_MSG_GETOBJ_RESET]  = AUDIT_NFT_OP_OBJ_RESET,
+> > +       [NFT_MSG_NEWFLOWTABLE]  = AUDIT_NFT_OP_FLOWTABLE_REGISTER,
+> > +       [NFT_MSG_GETFLOWTABLE]  = AUDIT_NFT_OP_INVALID,
+> > +       [NFT_MSG_DELFLOWTABLE]  = AUDIT_NFT_OP_FLOWTABLE_UNREGISTER,
+> > +};
+> 
+> The previously reported problem with this as a static still exists,
+> correct?  It does seem like this should live in nf_tables_api.c
+> doesn't it?
 
-cpu1 enqueue a skb without calling __qdisc_run() because cpu0
-has not released the lock yet and spin_trylock() return false
-for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
-enqueued by cpu1 when calling dequeue_skb() because cpu1 may
-enqueue the skb after cpu0 calling dequeue_skb() and before
-cpu0 calling qdisc_run_end().
+Yes.  Thank you.
 
-Lockless qdisc has below another concurrent problem when
-tx_action is involved:
+> paul moore
 
-cpu0(serving tx_action)     cpu1             cpu2
-          .                   .                .
-          .              q->enqueue            .
-          .            qdisc_run_begin()       .
-          .              dequeue_skb()         .
-          .                   .            q->enqueue
-          .                   .                .
-          .             sch_direct_xmit()      .
-          .                   .         qdisc_run_begin()
-          .                   .       return and do nothing
-          .                   .                .
- clear __QDISC_STATE_SCHED    .                .
- qdisc_run_begin()            .                .
- return and do nothing        .                .
-          .                   .                .
-          .            qdisc_run_end()         .
+- RGB
 
-This patch fixes the above data race by:
-1. Get the flag before doing spin_trylock().
-2. If the first spin_trylock() return false and the flag is not
-   set before the first spin_trylock(), Set the flag and retry
-   another spin_trylock() in case other CPU may not see the new
-   flag after it releases the lock.
-3. reschedule if the flags is set after the lock is released
-   at the end of qdisc_run_end().
-
-For tx_action case, the flags is also set when cpu1 is at the
-end if qdisc_run_end(), so tx_action will be rescheduled
-again to dequeue the skb enqueued by cpu2.
-
-Only clear the flag before retrying a dequeuing when dequeuing
-returns NULL in order to reduce the overhead of the above double
-spin_trylock() and __netif_schedule() calling.
-
-The performance impact of this patch, tested using pktgen and
-dummy netdev with pfifo_fast qdisc attached:
-
- threads  without+this_patch   with+this_patch      delta
-    1        2.61Mpps            2.60Mpps           -0.3%
-    2        3.97Mpps            3.82Mpps           -3.7%
-    4        5.62Mpps            5.59Mpps           -0.5%
-    8        2.78Mpps            2.77Mpps           -0.3%
-   16        2.22Mpps            2.22Mpps           -0.0%
-
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
-V3: fix a compile error and a few comment typo, remove the
-    __QDISC_STATE_DEACTIVATED checking, and update the
-    performance data.
-V2: Avoid the overhead of fixing the data race as much as
-    possible.
----
- include/net/sch_generic.h | 38 +++++++++++++++++++++++++++++++++++++-
- net/sched/sch_generic.c   | 12 ++++++++++++
- 2 files changed, 49 insertions(+), 1 deletion(-)
-
-diff --git a/include/net/sch_generic.h b/include/net/sch_generic.h
-index f7a6e14..e3f46eb 100644
---- a/include/net/sch_generic.h
-+++ b/include/net/sch_generic.h
-@@ -36,6 +36,7 @@ struct qdisc_rate_table {
- enum qdisc_state_t {
- 	__QDISC_STATE_SCHED,
- 	__QDISC_STATE_DEACTIVATED,
-+	__QDISC_STATE_NEED_RESCHEDULE,
- };
- 
- struct qdisc_size_table {
-@@ -159,8 +160,38 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
- static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- {
- 	if (qdisc->flags & TCQ_F_NOLOCK) {
-+		bool dont_retry = test_bit(__QDISC_STATE_NEED_RESCHEDULE,
-+					   &qdisc->state);
-+
-+		if (spin_trylock(&qdisc->seqlock))
-+			goto nolock_empty;
-+
-+		/* If the flag is set before doing the spin_trylock() and
-+		 * the above spin_trylock() return false, it means other cpu
-+		 * holding the lock will do dequeuing for us, or it wil see
-+		 * the flag set after releasing lock and reschedule the
-+		 * net_tx_action() to do the dequeuing.
-+		 */
-+		if (dont_retry)
-+			return false;
-+
-+		/* We could do set_bit() before the first spin_trylock(),
-+		 * and avoid doing second spin_trylock() completely, then
-+		 * we could have multi cpus doing the set_bit(). Here use
-+		 * dont_retry to avoid doing the set_bit() and the second
-+		 * spin_trylock(), which has 5% performance improvement than
-+		 * doing the set_bit() before the first spin_trylock().
-+		 */
-+		set_bit(__QDISC_STATE_NEED_RESCHEDULE,
-+			&qdisc->state);
-+
-+		/* Retry again in case other CPU may not see the new flag
-+		 * after it releases the lock at the end of qdisc_run_end().
-+		 */
- 		if (!spin_trylock(&qdisc->seqlock))
- 			return false;
-+
-+nolock_empty:
- 		WRITE_ONCE(qdisc->empty, false);
- 	} else if (qdisc_is_running(qdisc)) {
- 		return false;
-@@ -176,8 +207,13 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
- static inline void qdisc_run_end(struct Qdisc *qdisc)
- {
- 	write_seqcount_end(&qdisc->running);
--	if (qdisc->flags & TCQ_F_NOLOCK)
-+	if (qdisc->flags & TCQ_F_NOLOCK) {
- 		spin_unlock(&qdisc->seqlock);
-+
-+		if (unlikely(test_bit(__QDISC_STATE_NEED_RESCHEDULE,
-+				      &qdisc->state)))
-+			__netif_schedule(qdisc);
-+	}
- }
- 
- static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
-diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-index 44991ea..4953430 100644
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
- {
- 	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
- 	struct sk_buff *skb = NULL;
-+	bool need_retry = true;
- 	int band;
- 
-+retry:
- 	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
- 		struct skb_array *q = band2list(priv, band);
- 
-@@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
- 	}
- 	if (likely(skb)) {
- 		qdisc_update_stats_at_dequeue(qdisc, skb);
-+	} else if (need_retry &&
-+		   test_and_clear_bit(__QDISC_STATE_NEED_RESCHEDULE,
-+				      &qdisc->state)) {
-+		/* do another enqueuing after clearing the flag to
-+		 * avoid calling __netif_schedule().
-+		 */
-+		smp_mb__after_atomic();
-+		need_retry = false;
-+
-+		goto retry;
- 	} else {
- 		WRITE_ONCE(qdisc->empty, true);
- 	}
--- 
-2.7.4
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
