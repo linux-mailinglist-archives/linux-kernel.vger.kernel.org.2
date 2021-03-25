@@ -2,328 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23437349757
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7328349768
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229670AbhCYQxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhCYQxG (ORCPT
+        id S229915AbhCYQ4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:56:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28577 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229616AbhCYQ4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:53:06 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B97BC06174A;
-        Thu, 25 Mar 2021 09:53:06 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d5d002e2bf1176a5b9def.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5d00:2e2b:f117:6a5b:9def])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CD8461EC023E;
-        Thu, 25 Mar 2021 17:53:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616691181;
+        Thu, 25 Mar 2021 12:56:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616691373;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=N1X+pgD1dE2aLd1a2TXi1lJ27UKMJutw/04Ra/A7l9o=;
-        b=J3gfoLPSGjXsdW2+rBc8ZKhTg7vXmFYj/HsviN8NIyL+dw5OztzYaChe7Jgs7KupeSpGoE
-        YqG4vIYHlSUZyZLO8ers9x6O6DCce6w8f+F79PcNGgq2QldYdWRMdLLqoiP2OJ6IPb+7FG
-        W+AC8USz3xJ7slQHOzWqZ7k9dwh74fU=
-Date:   Thu, 25 Mar 2021 17:52:59 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
-        haitao.huang@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 03/25] x86/sgx: Wipe out EREMOVE from
- sgx_free_epc_page()
-Message-ID: <20210325165259.GG31322@zn.tnic>
-References: <20210323160604.GB4729@zn.tnic>
- <YFoVmxIFjGpqM6Bk@google.com>
- <20210323163258.GC4729@zn.tnic>
- <b35f66a10ecc07a1eecb829912d5664886ca169b.camel@intel.com>
- <236c0aa9-92f2-97c8-ab11-d55b9a98c931@redhat.com>
- <20210325122343.008120ef70c1a1b16b5657ca@intel.com>
- <8e833f7c-ea24-1044-4c69-780a84b47ce1@redhat.com>
- <20210325124611.a9dce500b0bcbb1836580719@intel.com>
- <20210325084241.GA31322@zn.tnic>
- <20210325223813.2397c0f3f035fbc2b809d558@intel.com>
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=neGbMl2kB4czwu8peBWskWjqlwN2vGnWSvoSCfmqyAw=;
+        b=OQxc8qLCZKpQ0l9wbPUlbgpsxOVOIVAvTDneiIJfWLKheMFTaShJS5yqXFf5yOWL57MikJ
+        7uI/fEqwVIGML/Wz1VIV/4MNp05SBMcl5gSkEPQdFR3PPdlTVwDkiloNovvPNd1aiZ4h9r
+        FBnJgYOdxAn31reQj8NKPPkZJ6YcfJA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-i3VhdmjGPR2Kwv6GiGL6Rg-1; Thu, 25 Mar 2021 12:56:11 -0400
+X-MC-Unique: i3VhdmjGPR2Kwv6GiGL6Rg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9822F881278;
+        Thu, 25 Mar 2021 16:55:40 +0000 (UTC)
+Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 862AA5D736;
+        Thu, 25 Mar 2021 16:55:38 +0000 (UTC)
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+ <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
+ <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
+ <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
+ <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
+ <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
+ <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz> <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
+ <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
+ <YFy8ARml4R7/snVs@dhcp22.suse.cz> <YFy+olsdS4iwrovN@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <17e666ec-93ae-c0f3-47cf-67e8a6df6afc@redhat.com>
+Date:   Thu, 25 Mar 2021 17:55:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210325223813.2397c0f3f035fbc2b809d558@intel.com>
+In-Reply-To: <YFy+olsdS4iwrovN@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:38:13PM +1300, Kai Huang wrote:
-> I have sent it by replying to this patch.
->
-> [PATCH v4 03/25] x86/sgx: Wipe out EREMOVE from sgx_free_epc_page()
+On 25.03.21 17:47, Michal Hocko wrote:
+> On Thu 25-03-21 17:36:22, Michal Hocko wrote:
+>> If all it takes is to make pfn_to_online_page work (and my
+>> previous attempt is incorrect because it should consult block rather
+>> than section pfn range)
+> 
+> This should work.
+> 
+> diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+> index 9697acfe96eb..e50d685be8ab 100644
+> --- a/drivers/base/memory.c
+> +++ b/drivers/base/memory.c
+> @@ -510,6 +510,23 @@ static struct memory_block *find_memory_block_by_id(unsigned long block_id)
+>   	return mem;
+>   }
+>   
+> +struct page *is_vmemmap_page(unsigned long pfn)
+> +{
+> +	unsigned long nr = pfn_to_section_nr(pfn);
+> +	struct memory_block *mem;
+> +	unsigned long block_pfn;
+> +
+> +	mem = find_memory_block_by_id(memory_block_id(nr));
+> +	if (!mem || !mem->nr_vmemmap_pages)
+> +		return NULL;
+> +
+> +	block_pfn = section_nr_to_pfn(mem->start_section_nr);
+> +	if (pfn - block_pfn > mem->nr_vmemmap_pages)
+> +		return NULL;
+> +
+> +	return pfn_to_page(pfn);
+> +}
+> +
+>   /*
+>    * Called under device_hotplug_lock.
+>    */
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 754026a9164d..760bf3ad48d5 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -304,8 +304,16 @@ struct page *pfn_to_online_page(unsigned long pfn)
+>   		return NULL;
+>   
+>   	ms = __nr_to_section(nr);
+> -	if (!online_section(ms))
+> +	if (!online_section(ms)) {
+> +		/*
+> +		 * vmemmap reserved space can eat up a whole section which then
+> +		 * never gets onlined because it doesn't contain any memory to
+> +		 * online.
+> +		 */
+> +		if (memmap_on_memory)
+> +			return is_vmemmap_page(pfn);
+>   		return NULL;
+> +	}
+>   
+>   	/*
+>   	 * Save some code text when online_section() +
+> 
 
-Thanks, I've committed the below.
-
-> Btw, with this patch being changed, I think there's a place in patch 5 should
-> also be changed. I have replied patch 5. Please take a look.
-
-Ok, thx.
-
----
-From: Kai Huang <kai.huang@intel.com>
-Date: Thu, 25 Mar 2021 22:30:57 +1300
-Subject: [PATCH] x86/sgx: Wipe out EREMOVE from sgx_free_epc_page()
-
-EREMOVE takes a page and removes any association between that page and
-an enclave. It must be run on a page before it can be added into another
-enclave. Currently, EREMOVE is run as part of pages being freed into the
-SGX page allocator. It is not expected to fail, as it would indicate a
-use-after-free of EPC pages. Rather than add the page back to the pool
-of available EPC pages, the kernel intentionally leaks the page to avoid
-additional errors in the future.
-
-However, KVM does not track how guest pages are used, which means that
-SGX virtualization use of EREMOVE might fail. Specifically, it is
-legitimate that EREMOVE returns SGX_CHILD_PRESENT for EPC assigned to
-KVM guest, because KVM/kernel doesn't track SECS pages.
-
-To allow SGX/KVM to introduce a more permissive EREMOVE helper and
-to let the SGX virtualization code use the allocator directly, break
-out the EREMOVE call from the SGX page allocator. Rename the original
-sgx_free_epc_page() to sgx_encl_free_epc_page(), indicating that
-it is used to free an EPC page assigned to a host enclave. Replace
-sgx_free_epc_page() with sgx_encl_free_epc_page() in all call sites so
-there's no functional change.
-
-At the same time, improve the error message when EREMOVE fails, and
-add documentation to explain to the user what that failure means and
-to suggest to the user what to do when this bug happens in the case it
-happens.
-
- [ bp: Massage commit message, fix typos and sanitize text, simplify. ]
-
-Signed-off-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210325093057.122834-1-kai.huang@intel.com
----
- Documentation/x86/sgx.rst       | 25 +++++++++++++++++++++++++
- arch/x86/kernel/cpu/sgx/encl.c  | 31 ++++++++++++++++++++++++++-----
- arch/x86/kernel/cpu/sgx/encl.h  |  1 +
- arch/x86/kernel/cpu/sgx/ioctl.c |  6 +++---
- arch/x86/kernel/cpu/sgx/main.c  | 14 +++++---------
- arch/x86/kernel/cpu/sgx/sgx.h   |  4 ++++
- 6 files changed, 64 insertions(+), 17 deletions(-)
-
-diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
-index eaee1368b4fd..f90076e67cde 100644
---- a/Documentation/x86/sgx.rst
-+++ b/Documentation/x86/sgx.rst
-@@ -209,3 +209,28 @@ An application may be loaded into a container enclave which is specially
- configured with a library OS and run-time which permits the application to run.
- The enclave run-time and library OS work together to execute the application
- when a thread enters the enclave.
-+
-+Impact of Potential Kernel SGX Bugs
-+===================================
-+
-+EPC leaks
-+---------
-+
-+When EPC page leaks happen, a WARNING like this is shown in dmesg:
-+
-+"EREMOVE returned ... and an EPC page was leaked.  SGX may become unusable..."
-+
-+This is effectively a kernel use-after-free of an EPC page, and due
-+to the way SGX works, the bug is detected at freeing. Rather than
-+adding the page back to the pool of available EPC pages, the kernel
-+intentionally leaks the page to avoid additional errors in the future.
-+
-+When this happens, the kernel will likely soon leak more EPC pages, and
-+SGX will likely become unusable because the memory available to SGX is
-+limited. However, while this may be fatal to SGX, the rest of the kernel
-+is unlikely to be impacted and should continue to work.
-+
-+As a result, when this happpens, user should stop running any new
-+SGX workloads, (or just any new workloads), and migrate all valuable
-+workloads. Although a machine reboot can recover all EPC memory, the bug
-+should be reported to Linux developers.
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 7449ef33f081..d25f2a245e1d 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -78,7 +78,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 
- 	ret = __sgx_encl_eldu(encl_page, epc_page, secs_page);
- 	if (ret) {
--		sgx_free_epc_page(epc_page);
-+		sgx_encl_free_epc_page(epc_page);
- 		return ERR_PTR(ret);
- 	}
- 
-@@ -404,7 +404,7 @@ void sgx_encl_release(struct kref *ref)
- 			if (sgx_unmark_page_reclaimable(entry->epc_page))
- 				continue;
- 
--			sgx_free_epc_page(entry->epc_page);
-+			sgx_encl_free_epc_page(entry->epc_page);
- 			encl->secs_child_cnt--;
- 			entry->epc_page = NULL;
- 		}
-@@ -415,7 +415,7 @@ void sgx_encl_release(struct kref *ref)
- 	xa_destroy(&encl->page_array);
- 
- 	if (!encl->secs_child_cnt && encl->secs.epc_page) {
--		sgx_free_epc_page(encl->secs.epc_page);
-+		sgx_encl_free_epc_page(encl->secs.epc_page);
- 		encl->secs.epc_page = NULL;
- 	}
- 
-@@ -423,7 +423,7 @@ void sgx_encl_release(struct kref *ref)
- 		va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
- 					   list);
- 		list_del(&va_page->list);
--		sgx_free_epc_page(va_page->epc_page);
-+		sgx_encl_free_epc_page(va_page->epc_page);
- 		kfree(va_page);
- 	}
- 
-@@ -686,7 +686,7 @@ struct sgx_epc_page *sgx_alloc_va_page(void)
- 	ret = __epa(sgx_get_epc_virt_addr(epc_page));
- 	if (ret) {
- 		WARN_ONCE(1, "EPA returned %d (0x%x)", ret, ret);
--		sgx_free_epc_page(epc_page);
-+		sgx_encl_free_epc_page(epc_page);
- 		return ERR_PTR(-EFAULT);
- 	}
- 
-@@ -735,3 +735,24 @@ bool sgx_va_page_full(struct sgx_va_page *va_page)
- 
- 	return slot == SGX_VA_SLOT_COUNT;
- }
-+
-+/**
-+ * sgx_encl_free_epc_page - free an EPC page assigned to an enclave
-+ * @page:	EPC page to be freed
-+ *
-+ * Free an EPC page assigned to an enclave. It does EREMOVE for the page, and
-+ * only upon success, it puts the page back to free page list.  Otherwise, it
-+ * gives a WARNING to indicate page is leaked.
-+ */
-+void sgx_encl_free_epc_page(struct sgx_epc_page *page)
-+{
-+	int ret;
-+
-+	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
-+
-+	ret = __eremove(sgx_get_epc_virt_addr(page));
-+	if (WARN_ONCE(ret, EREMOVE_ERROR_MESSAGE, ret, ret))
-+		return;
-+
-+	sgx_free_epc_page(page);
-+}
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index d8d30ccbef4c..6e74f85b6264 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -115,5 +115,6 @@ struct sgx_epc_page *sgx_alloc_va_page(void);
- unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
- void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
- bool sgx_va_page_full(struct sgx_va_page *va_page);
-+void sgx_encl_free_epc_page(struct sgx_epc_page *page);
- 
- #endif /* _X86_ENCL_H */
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 2e10367ea66c..354e309fcdb7 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -47,7 +47,7 @@ static void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page)
- 	encl->page_cnt--;
- 
- 	if (va_page) {
--		sgx_free_epc_page(va_page->epc_page);
-+		sgx_encl_free_epc_page(va_page->epc_page);
- 		list_del(&va_page->list);
- 		kfree(va_page);
- 	}
-@@ -117,7 +117,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	return 0;
- 
- err_out:
--	sgx_free_epc_page(encl->secs.epc_page);
-+	sgx_encl_free_epc_page(encl->secs.epc_page);
- 	encl->secs.epc_page = NULL;
- 
- err_out_backing:
-@@ -365,7 +365,7 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
- 	mmap_read_unlock(current->mm);
- 
- err_out_free:
--	sgx_free_epc_page(epc_page);
-+	sgx_encl_free_epc_page(epc_page);
- 	kfree(encl_page);
- 
- 	return ret;
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 13a7599ce7d4..b227629b1e9c 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -294,7 +294,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
- 
- 		sgx_encl_ewb(encl->secs.epc_page, &secs_backing);
- 
--		sgx_free_epc_page(encl->secs.epc_page);
-+		sgx_encl_free_epc_page(encl->secs.epc_page);
- 		encl->secs.epc_page = NULL;
- 
- 		sgx_encl_put_backing(&secs_backing, true);
-@@ -609,19 +609,15 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-  * sgx_free_epc_page() - Free an EPC page
-  * @page:	an EPC page
-  *
-- * Call EREMOVE for an EPC page and insert it back to the list of free pages.
-+ * Put the EPC page back to the list of free pages. It's the caller's
-+ * responsibility to make sure that the page is in uninitialized state. In other
-+ * words, do EREMOVE, EWB or whatever operation is necessary before calling
-+ * this function.
-  */
- void sgx_free_epc_page(struct sgx_epc_page *page)
- {
- 	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
- 	struct sgx_numa_node *node = section->node;
--	int ret;
--
--	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
--
--	ret = __eremove(sgx_get_epc_virt_addr(page));
--	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
--		return;
- 
- 	spin_lock(&node->lock);
- 
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 653af8ca1a25..4aa40c627819 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -13,6 +13,10 @@
- #undef pr_fmt
- #define pr_fmt(fmt) "sgx: " fmt
- 
-+#define EREMOVE_ERROR_MESSAGE \
-+	"EREMOVE returned %d (0x%x) and an EPC page was leaked. SGX may become unusable. " \
-+	"Refer to Documentation/x86/sgx.rst for more information."
-+
- #define SGX_MAX_EPC_SECTIONS		8
- #define SGX_EEXTEND_BLOCK_SIZE		256
- #define SGX_NR_TO_SCAN			16
--- 
-2.29.2
-
+It should take care of discussed zone shrinking as well, at least as 
+long as the granularity is not smaller than sub-sections.
 
 -- 
-Regards/Gruss,
-    Boris.
+Thanks,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+David / dhildenb
+
