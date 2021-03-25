@@ -2,134 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20AD34861B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B61B34861C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 01:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239426AbhCYAxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 20:53:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23658 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235324AbhCYAwk (ORCPT
+        id S239433AbhCYAxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 20:53:19 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14523 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239410AbhCYAwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 20:52:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616633559;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a/I8HMRSY8uGPzIO7tttoD3dS3yWYP/iDM4q6Ir57s4=;
-        b=LAkSIrUlWk3kaq9Ijt7Spe/2d/OVsJK/Q8NxoNpe8T2MoYL+E3W9pNnYXm/bQaZRKdzIb3
-        NvDe6a12JELpCiEO4DUfhoqGt2fcxDIdcWAjmmfCmVJ1tUAFuiIz/UlEWg2ECjeu8rAdCX
-        XBYKkY8phRKTS6J1WSkJniSwBKoscNA=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-UgE7NglPMPq75U0-UFq1Ow-1; Wed, 24 Mar 2021 20:52:37 -0400
-X-MC-Unique: UgE7NglPMPq75U0-UFq1Ow-1
-Received: by mail-qk1-f199.google.com with SMTP id y22so2828573qkb.23
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 17:52:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a/I8HMRSY8uGPzIO7tttoD3dS3yWYP/iDM4q6Ir57s4=;
-        b=KSdJor/gG8lVw1sFsS2cUOdkLPVx7IBeIn2IWrkhzMtLrlRjJ4d3WwhpScC0vdWGXN
-         nowftQcel6hoEd4aJEsG3mrClQQK0CcfilrSwaJKDIqdMhd2h4tZ0GSD/pqz4hk2LENQ
-         /glXtcUaA4OPpe3BJWuXksrYof/tP4R5x1N4a5ls81AqQSSJY3NKrd8tto1eqNP9Y0MH
-         Ix4EU/M7KAyMp6UbceCngxve4+xXciggtxOlX5r1ZreXZgpxnbvbx6PesS3HLjHc9HGV
-         kroHJsaMGXkIHeQUw19uVsMYIsKHCvcvstER30JdnbN96RBr7dOD8quNoqvEkx9+F1kl
-         cunA==
-X-Gm-Message-State: AOAM531RfG2L0ho4ECYqT4MfrA3rfMjdf9oSVOvVa/hgp7ILY1kKbCqs
-        1J6OmLKsYZiI0+klxwNhXUuwHiU1uwpVJ5mSkz6PMx2XVaq2rfEqh6nwp3Z8SbZvCI1+vnqIAJ+
-        cbBzJmtEdccNfUizcg2b6+fNe
-X-Received: by 2002:ac8:6a04:: with SMTP id t4mr5714173qtr.258.1616633557073;
-        Wed, 24 Mar 2021 17:52:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwf9lYUsnxZG/nhvJyxohZp2hC5gok7X1yMvcKfPeM5sVJS83vfqZvs4qyqdec2U35Zf3Et5A==
-X-Received: by 2002:ac8:6a04:: with SMTP id t4mr5714138qtr.258.1616633556783;
-        Wed, 24 Mar 2021 17:52:36 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id k4sm3078112qke.13.2021.03.24.17.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Mar 2021 17:52:36 -0700 (PDT)
-Date:   Wed, 24 Mar 2021 20:52:34 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH] userfaultfd/shmem: fix minor fault page leak
-Message-ID: <20210325005234.GG219069@xz-x1>
-References: <20210322204836.1650221-1-axelrasmussen@google.com>
- <20210324162027.cc723b545ff62b1ad6f5223e@linux-foundation.org>
+        Wed, 24 Mar 2021 20:52:49 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5RN70KM8zNqRl;
+        Thu, 25 Mar 2021 08:50:15 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.117) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
+ 08:52:39 +0800
+Subject: Re: [PATCH] pci: fix memory leak when virtio pci hotplug
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <rjw@rjwysocki.net>, <lenb@kernel.org>, <bhelgaas@google.com>,
+        <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, linfeilong <linfeilong@huawei.com>,
+        "wubo (T)" <wubo40@huawei.com>
+References: <20210323182428.GA584698@bjorn-Precision-5520>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Message-ID: <e2e405d3-a9a6-807d-dc7a-d6596214fbe9@huawei.com>
+Date:   Thu, 25 Mar 2021 08:52:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210324162027.cc723b545ff62b1ad6f5223e@linux-foundation.org>
+In-Reply-To: <20210323182428.GA584698@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Andrew,
+Thanks for your suggestion.
 
-On Wed, Mar 24, 2021 at 04:20:27PM -0700, Andrew Morton wrote:
-> On Mon, 22 Mar 2021 13:48:35 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
-> 
-> > This fix is analogous to Peter Xu's fix for hugetlb [0]. If we don't
-> > put_page() after getting the page out of the page cache, we leak the
-> > reference.
-> > 
-> > The fix can be verified by checking /proc/meminfo and running the
-> > userfaultfd selftest in shmem mode. Without the fix, we see MemFree /
-> > MemAvailable steadily decreasing with each run of the test. With the
-> > fix, memory is correctly freed after the test program exits.
-> > 
-> > Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
-> 
-> Confused.  The affected code:
-> 
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -1831,6 +1831,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
-> >  
-> >  	if (page && vma && userfaultfd_minor(vma)) {
-> >  		unlock_page(page);
-> > +		put_page(page);
-> >  		*fault_type = handle_userfault(vmf, VM_UFFD_MINOR);
-> >  		return 0;
-> >  	}
-> 
-> Is added by Peter's "page && vma && userfaultfd_minor".  I assume that
-> "Fixes:" is incorrect?
-> 
+I will rewrite the commit log and send the v2 patch.
 
-It seems to me the commit is correct as pointed to in "Fixes", but I do have a
-different commit ID here:
 
-    commit 63c826b1372c4930f89b8a55092699fa7f0d6f4e
-    Author: Axel Rasmussen <axelrasmussen@google.com>
-    Date:   Thu Mar 18 10:20:43 2021 -0400
-
-    userfaultfd: support minor fault handling for shmem
-
-Axel, did you fetched the commit ID from your local tree, perhaps?  Since I
-should have fetched from hnaz/linux-mm and I can see Andrew's sign-off too.
-
-Thanks,
-
--- 
-Peter Xu
+On 2021/3/24 2:24, Bjorn Helgaas wrote:
+> On Sun, Mar 21, 2021 at 11:29:30PM +0800, Zhiqiang Liu wrote:
+>> From: Feilong Lin <linfeilong@huawei.com>
+>>
+>> Repeated hot-plugging of pci devices for a virtual
+>> machine driven by virtio, we found that there is a
+>> leak in kmalloc-4k, which was confirmed as the memory
+>> of the pci_device structure. Then we found out that
+>> it was missing pci_dev_put() after pci_get_slot() in
+>> enable_slot() of acpiphp_glue.c.
+>>
+>> Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+>> Reviewed-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+> Since this came from you, Zhiqiang, it needs a signed-off-by (not just
+> a reviewed-by) from you.  See
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=v5.11#n361
+>
+> Also see
+> https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
+> and
+>
+>   - Wrap commit log to fill 80 columns
+>   - s/pci/PCI/ (subject and commit log)
+>   - Run "git log --oneline drivers/pci/hotplug/acpiphp_glue.c".  It's
+>     not completely consistent, but at least match the style of one of
+>     them.
+>
+> There is no "pci_device" structure.  I think you mean the "struct
+> pci_dev".
+>
+> The commit log doesn't actually say what the patch does.  It's obvious
+> from the patch, but it should say in the commit log.  Look at previous
+> commit logs to see how they do it.
+>
+>> ---
+>>  drivers/pci/hotplug/acpiphp_glue.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+>> index 3365c93abf0e..f031302ad401 100644
+>> --- a/drivers/pci/hotplug/acpiphp_glue.c
+>> +++ b/drivers/pci/hotplug/acpiphp_glue.c
+>> @@ -533,6 +533,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+>>  			slot->flags &= ~SLOT_ENABLED;
+>>  			continue;
+>>  		}
+>> +		pci_dev_put(dev);
+>>  	}
+>>  }
+>>
+>> -- 
+>> 2.19.1
+>>
+>>
+> .
 
