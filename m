@@ -2,69 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C5E348EDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780E0348EED
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhCYLXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:23:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58792 "EHLO mx2.suse.de"
+        id S230179AbhCYLZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:25:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhCYLXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:23:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 73BA3AC16;
-        Thu, 25 Mar 2021 11:23:13 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 12:23:10 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <YFxyntJb2yRUfU7b@localhost.localdomain>
-References: <20210324101259.GB16560@linux>
- <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
- <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
- <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
- <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
- <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
- <YFxEp0cfcJmcz5bP@localhost.localdomain>
- <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
- <YFxsBRORtgqUF/FZ@localhost.localdomain>
- <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
+        id S229592AbhCYLZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:25:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0790861A23;
+        Thu, 25 Mar 2021 11:25:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616671501;
+        bh=Fzdx5aZ7zCEqKQPLAHn/8eKtaEqL4xhrG7HXdzrDLGw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=finq/th1Qi3LP0Dg0D2ILCjo8cf9NS7hHpXq6EQXxT/FjDtU6mXiTTX5WACx3finu
+         zxz0kOUCYkjhHEA3HGcboc+b14BQ+pNVjtJbyA8m5M53XFVfkADRD5I5HsalBMw6n0
+         ufUCXq1JQCPGWr2jxjChGbojA7AlFEHe1cgOlZlp002Fmh8sWmG7UHO4+CyCdAlJfJ
+         UgxfYgtTh2SXAQIfU5U92yRlDQHl3eYJ3uk2KMp6wqDKaff1l5sf3z1JzGgIrGbGlm
+         6vK3hWkwuDHpwsCbEkWGGttvDdv/6UdvSHN7ArOR8tSkl0W2aEgv0KSujdOboZOTyJ
+         CGgGMoGw4+htw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Vivek Goyal <vgoyal@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Sasha Levin <sashal@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 01/44] virtiofs: Fail dax mount if device does not support it
+Date:   Thu, 25 Mar 2021 07:24:16 -0400
+Message-Id: <20210325112459.1926846-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <db0c9218-bdc3-9cc6-42da-ec36786b7b60@redhat.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 12:08:43PM +0100, David Hildenbrand wrote:
-> As I said, having soemthing like
-> memory_block_online()/memory_block_offline() could be one way to tackle it.
-> We only support onlining/offlining of memory blocks and I ripped out all
-> code that was abusing online_pages/offline_pages ...
-> 
-> So have memory_block_online() call online_pages() and do the accounting of
-> the vmemmap, with a big fat comment that sections are actually set
-> online/offline in online_pages/offline_pages(). Could be a simple cleanup on
-> top of this series ...
+From: Vivek Goyal <vgoyal@redhat.com>
 
-I overlooked this in your previous reply.
-Yes, this looks like a middle-ground compromise and something I would
-definitely pick over the other options.
+[ Upstream commit 3f9b9efd82a84f27e95d0414f852caf1fa839e83 ]
 
-If there is a consensus that that is the most straightforward way to go, I
-could try to code that up to see how it looks so we all have an idea.
+Right now "mount -t virtiofs -o dax myfs /mnt/virtiofs" succeeds even
+if filesystem deivce does not have a cache window and hence DAX can't
+be supported.
 
-Thanks!
+This gives a false sense to user that they are using DAX with virtiofs
+but fact of the matter is that they are not.
 
+Fix this by returning error if dax can't be supported and user has asked
+for it.
+
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/fuse/virtio_fs.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index 8868ac31a3c0..4ee6f734ba83 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -1324,8 +1324,15 @@ static int virtio_fs_fill_super(struct super_block *sb, struct fs_context *fsc)
+ 
+ 	/* virtiofs allocates and installs its own fuse devices */
+ 	ctx->fudptr = NULL;
+-	if (ctx->dax)
++	if (ctx->dax) {
++		if (!fs->dax_dev) {
++			err = -EINVAL;
++			pr_err("virtio-fs: dax can't be enabled as filesystem"
++			       " device does not support it.\n");
++			goto err_free_fuse_devs;
++		}
+ 		ctx->dax_dev = fs->dax_dev;
++	}
+ 	err = fuse_fill_super_common(sb, ctx);
+ 	if (err < 0)
+ 		goto err_free_fuse_devs;
 -- 
-Oscar Salvador
-SUSE L3
+2.30.1
+
