@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7D2348A4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7261C348A55
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 08:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbhCYHmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 03:42:17 -0400
-Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:60757 "EHLO
-        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229619AbhCYHl4 (ORCPT
+        id S229836AbhCYHnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 03:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhCYHnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 03:41:56 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id PKcnlaRbjFRvvPKcrlS5xH; Thu, 25 Mar 2021 08:41:55 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1616658115; bh=SSxxAoODb4Tt1I6hP1/2k6vBdMjdOxsyPPlphYnbrOk=;
-        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=SkHIInCICFvEiHiKdZRzJ6sQyl7U3jv4hoHUqSfvQDf9wmk9Gt4vSRMG/azw9dkV7
-         3BUqCH8tta1BGpp9t4f3x0nRwCoOVPx7Dgg6l1lmGrfhTkx6Wgxloze1qHIz1XO3L1
-         7P48rbzqFPN9ZlRM4T1CEbV8S5ERtzXiMeUARTlmsn2a/upvNt7ni/hwLAUoNdV73T
-         NcGp6P0NGBrVEsyF7+5sD4Fl7bxqK8YqgHK22jdL2XYLgmtWBU4o0A24CDkbftSYvE
-         jjD0XKU/dtIGoCFMKV7rNgRy+kgn3v3AlbtQGQ7yiWL8+I6djFq26cF2OfI5blq5tL
-         Gd4mMgQljBW9w==
-Subject: Re: [PATCH 1/2] media: v4l2-core: ignore native time32 ioctls on
- 64-bit
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+142888ffec98ab194028@syzkaller.appspotmail.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210318134334.2933141-1-arnd@kernel.org>
- <72a923ff-dc5c-a505-3f45-6fd935b4c6bf@xs4all.nl>
-Message-ID: <a3d67c73-a1f5-9964-a3b8-59e398c99983@xs4all.nl>
-Date:   Thu, 25 Mar 2021 08:41:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Thu, 25 Mar 2021 03:43:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0B2C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 00:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xjBNfcp6p4BIctZomY46PzWOaEWIxfJHX1EGfm570g8=; b=T3GrczZhiQuFC0e3oq+Tcc90+K
+        QQHpl5LbAAiCPkJjBI1ilV2UIK8whc/ioMMfaCjgr/kMKpRNlIPZrtwCo41fwMBCd/yOqY1blrAQF
+        esGgP0bu3CjFgrfgm0WaNVVHhXLSXNlUhZSu3kF+NqIK566CSErxzlJu4tRurChgPgVATOtI5aP6a
+        m3hzqhx0kL1CyjD88xtFrnmqVmCo3Q42jPTEM45+x6YCEWxiWDs/ahfVGf3/N3lFvfsNy06ozcGMs
+        nlzUwcYaKoinyExMSVj6LdBsHlcpDjv8FsUbm25BLfnFr1hQ8Ssk2/JDJFySRKetTDj4DFkPFTx/h
+        6f7cdHBg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPKdN-00CTwE-St; Thu, 25 Mar 2021 07:42:28 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 814CC301A7A;
+        Thu, 25 Mar 2021 08:42:24 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 69D2D29D50698; Thu, 25 Mar 2021 08:42:24 +0100 (CET)
+Date:   Thu, 25 Mar 2021 08:42:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] static_call: fix function type mismatch
+Message-ID: <YFw+4Ba5ci/Bmg0k@hirez.programming.kicks-ass.net>
+References: <YFmdJlESrCh4iC9A@hirez.programming.kicks-ass.net>
+ <0f4679d6-44a4-d045-f249-a9cffb126fd4@rasmusvillemoes.dk>
+ <CABCJKuf1-GWda9_BiBO=nNP_drh3a8471G+LEqPzdVrLBhVqZQ@mail.gmail.com>
+ <b2d77e78-751e-283c-8cff-e9c4f16e27ef@prevas.dk>
+ <YFt382FImjQQ+10f@hirez.programming.kicks-ass.net>
+ <a758cace-99ed-5c60-e59c-9f4f6b3a39c7@rasmusvillemoes.dk>
+ <CABCJKuek8Set48v5wa2sbCN1fN7DYSczJ9MdH4BcQBdky1YNaA@mail.gmail.com>
+ <2b38d13f-9f90-b94b-7de4-c924696e6a9f@rasmusvillemoes.dk>
+ <CABCJKudx9bkvkOsAVi7Wzgr3AVFGwa64Kre1d59v0tTr6GOgcA@mail.gmail.com>
+ <170687fb-13ef-e9b8-ac69-032202b344fe@rasmusvillemoes.dk>
 MIME-Version: 1.0
-In-Reply-To: <72a923ff-dc5c-a505-3f45-6fd935b4c6bf@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfPI692OvcOt7VVdyn3B5LWenFbj5Iss8zcqKHzUFMBptxlut/1rQ3VbXJrZm5/1cVhP+7oUDArVTy4lYJrswwlNUe6/Io5arAnRktQ7DjhSjL6QTqOKl
- MZd2ffj+Msw+xw4RKfDmtLSWhRCA1U+7oGgwRqW8v+WeWRe+TjLEnJW/TP+pg869dnIPudJmFXmaL49t+f35aUU9Y6af1vNz4FHq1SJFEqAj4HI33GhoxyQy
- qPteu5nU5ubU1vqZ2gZsCB/hYgdFbVAPsyeNjpcQCCoDZFjUSPXMBuZ7aZ+NoDl7I3f7G2/uGDmHE5EF/n44I672a3Ff6+ix5JYJqSBOilxmHZccdC4diNDf
- lELaTRcN/oFt4rcSxxcY3caeKjTLVAA8y47NjtfjjWCHjVwJERatFoVDz/unQvu+LVczAyQucThBn8MREWUq383Ued4EmdLwZU2kkiJq/jMKzfm7GkCf13zV
- ZIEqi1w5YUqfuZ3JO/fAdrb8m3bdaaYn0hfIv5UOeUtGAyJ+MGv1HtTqgXc=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170687fb-13ef-e9b8-ac69-032202b344fe@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/03/2021 09:50, Hans Verkuil wrote:
-> Hi Arnd,
-
-<snip>
-
->> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
->> index 336133dbc759..9f5573d3b857 100644
->> --- a/drivers/media/v4l2-core/v4l2-subdev.c
->> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
->> @@ -428,7 +428,7 @@ static long subdev_do_ioctl(struct file *file, unsigned int cmd, void *arg)
->>  
->>  		return v4l2_event_dequeue(vfh, arg, file->f_flags & O_NONBLOCK);
->>  
->> -#ifdef CONFIG_COMPAT_32BIT_TIME
->> +#if !defined(CONFIG_64BIT) && defined(CONFIG_COMPAT_32BIT_TIME)
->>  	case VIDIOC_DQEVENT_TIME32: {
->>  		struct v4l2_event_time32 *ev32 = arg;
->>  		struct v4l2_event ev = { };
->>
+On Thu, Mar 25, 2021 at 01:42:41AM +0100, Rasmus Villemoes wrote:
+> > Actually, it looks like I can't select PREEMPT_DYNAMIC> and tweaking Kconfig
 > 
-> This chunk doesn't apply since there is no '#ifdef CONFIG_COMPAT_32BIT_TIME' in
-> either the mainline kernel or the media_tree master branch.
+> Ah, there's no prompt on the "bool" line, so it doesn't show up. That
+> seems to be a mistake, since there's an elaborate help text which says
 > 
-> Are we missing a patch for v4l2-subdev.c?
-
-Ping!
-
-	Hans
-
+>           The runtime overhead is negligible with
+> HAVE_STATIC_CALL_INLINE enabled
+>           but if runtime patching is not available for the specific
+> architecture
+>           then the potential overhead should be considered.
 > 
-> Regards,
+> So it seems that it was meant to be "you can enable this if you really
+> want".
 > 
-> 	Hans
-> 
+> to force enable it on arm64 results in a build error
 
+Right, PREEMPT_DYNAMIC really hard relies on HAVE_STATIC_CALL
+
+There's an implicit dependency in the select:
+
+config PREEMPT
+	...
+	select PREEMPT_DYNAMIC if HAVE_PREEMPT_DYNAMIC
+
+> > ("implicit declaration of function 'static_call_mod'").
+> 
+> Seems to be an omission in the last !HAVE_STATIC_CALL branch in
+> static_call_types.h, and there's also no
+> EXPORT_STATIC_CALL_TRAMP{,_GPL} in static_call.h for that case.
+
+That interface doesn't make sense for !HAVE_STATIC_CALL. It's impossible
+to not export the function pointer itself but still call it for
+!HAVE_STATIC_CALL.
