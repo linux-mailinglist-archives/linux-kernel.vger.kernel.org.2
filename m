@@ -2,126 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9EB348DB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F127348DBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhCYKJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:09:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229900AbhCYKIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:08:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E28F619FF;
-        Thu, 25 Mar 2021 10:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616666928;
-        bh=dWbTqapzKLdCj+x1fPAhWWABKy8LLjVWxDCqrUn7AuI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=reajFy1eCWRgukEgszUgRIMGHEPpcD5SKtdAhYfg7nB9k3CbuU06DcRIEFQ6L0OVr
-         rD5EX7hvBgiy+WL47on/QeDsXVf/QjYvnaapEvLbIZYjsIdUYFGe7XA73rxklEQT+x
-         QDPKq2yBDTYUT+gxHtrSWpcXJGQo0BlGb67M8riPuU5qVi5tntj4Eo50e07nkPKJZR
-         pM4/YOIaOP79tdd3V3AZDChJDqoKbwQqaOOVH/tbZC6vN48YN1yV1he6nHrsGqszS2
-         sxvvU8IkldCvy/lTMwgeVtNQ4o/4cp/akMkAYKgJGSF9GCIgaEBGhZCaww6k/gqsWG
-         VR8F+eJtDD/Tg==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        id S230145AbhCYKJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:09:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46540 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230156AbhCYKJU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:09:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616666959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kHwyM01WyqgWKCfJirzSlimPQ/XDp3q0BkoluHcHB6k=;
+        b=OZlZqvDSASd+2XrkeMQs1YXRFqryjJKYedeQkbAhTi6YZh/wdRetle2swy5EuhIQ0VV0KF
+        kdyPh7wYeDnGUzo+Taessuj/U30o27HE8ZSQqbGWxypqeSnfmyKsYb/0LS9ztK8tKjA5/A
+        e0rPUU/vATfuTCPnEgEe8NAn+dZREuk=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-152-UjG4O7mNM724Pok55EDmrA-1; Thu, 25 Mar 2021 06:09:17 -0400
+X-MC-Unique: UjG4O7mNM724Pok55EDmrA-1
+Received: by mail-wm1-f71.google.com with SMTP id r18so1477340wmq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 03:09:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kHwyM01WyqgWKCfJirzSlimPQ/XDp3q0BkoluHcHB6k=;
+        b=LwinVrijHDMbiigUtzhA1A/taj1ajpj4y4NXCpRmOE8q0ZiLRwcZNZuT91WjvbpYKo
+         SXFr+T6pZ7wygBzlEflOtyJm8JChKs6efmEcmkB0wiTnKVlXbUBcRY0T4kP5sgEpUktq
+         wKe1ZqGA2M5a4YuocG0KVx8gzQ/vSPOA0SDkryePPIhwV+tTzfMCQ3bTAuxiOXSyCBOa
+         z6Bh1NEzl8gL2/ui7PbQHvnFNWPfzuGGIU/i0KwZbPZamR6CsBz80+0ckQYUt46AtCnC
+         SQDq4DeC7e1pQ7bxj2Wx2Yc2pNyznWHgTP8ZgZFhz9cb0/K4wL4HDy5McvpNQS7aNDZp
+         +Eiw==
+X-Gm-Message-State: AOAM5302m+4o9uL7t0hw5YPHOR2cAtsV7bjOMYiH78/9evK+G98BCroa
+        r0k/6XdKQk18gxi4DR9d4/HJRbnuoU4SY+Z3X7IvxhK8ePwG17IZnKLMtkh+p48X1N8gMX5UYgv
+        vlUEcrgjIPxH93AvNUNd5M34s
+X-Received: by 2002:adf:a18a:: with SMTP id u10mr8019016wru.197.1616666956448;
+        Thu, 25 Mar 2021 03:09:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzyIyWOSmU8uyQs1/B6aVWJTTtn53k7n4EHV1c4wLdktCa9Xv2dMFQu8Wdv5ezJuNgAsU+aw==
+X-Received: by 2002:adf:a18a:: with SMTP id u10mr8018978wru.197.1616666956222;
+        Thu, 25 Mar 2021 03:09:16 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id s83sm6216998wms.16.2021.03.25.03.09.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 03:09:15 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 11:09:13 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
         Colin Ian King <colin.king@canonical.com>,
-        dan.carpenter@oracle.com,
-        Muhammad Usama Anjum <musamaanjum@gmail.com>
-Subject: [PATCH -tip 2/2] x86/kprobes: Fix to identify indirect jmp and others using range case
-Date:   Thu, 25 Mar 2021 19:08:43 +0900
-Message-Id: <161666692308.1120877.4675552834049546493.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <161666690060.1120877.4569379871114610764.stgit@devnote2>
-References: <161666690060.1120877.4569379871114610764.stgit@devnote2>
-User-Agent: StGit/0.19
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v7 13/22] virtio/vsock: add SEQPACKET receive logic
+Message-ID: <20210325100913.7rewuc4wn7zwtrqf@steredhat>
+References: <20210323130716.2459195-1-arseny.krasnov@kaspersky.com>
+ <20210323131316.2461284-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210323131316.2461284-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix can_boost() to identify indirect jmp and others using range case
-correctly.
+On Tue, Mar 23, 2021 at 04:13:13PM +0300, Arseny Krasnov wrote:
+>This modifies current receive logic for SEQPACKET support:
+>1) Inserts 'SEQ_BEGIN' packet to socket's rx queue.
+>2) Inserts 'RW' packet to socket's rx queue, but without merging with
+>   buffer of last packet in queue.
+>3) Performs check for packet and socket types on receive(if mismatch,
+>   then reset connection).
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> v6 -> v7:
+> In 'virtio_transport_recv_pkt()', 'sock_put()' is added, when type of
+> received packet does not match to the type of socket.
+>
+> net/vmw_vsock/virtio_transport_common.c | 64 +++++++++++++++++--------
+> 1 file changed, 45 insertions(+), 19 deletions(-)
 
-Since the condition in switch statement is opcode & 0xf0, it can not
-evaluate to 0xff case. This should be under the 0xf0 case. However,
-there is no reason to use the conbinations of the bit-masked condition
-and lower bit checking.
 
-Use range case to clean up the switch statement too.
-
-Fixes: 6256e668b7 ("x86/kprobes: Use int3 instead of debug trap for single-step")
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/x86/kernel/kprobes/core.c |   44 ++++++++++++++++++----------------------
- 1 file changed, 20 insertions(+), 24 deletions(-)
-
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 503958f15cf9..c1c763840d6e 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -164,32 +164,28 @@ int can_boost(struct insn *insn, void *addr)
- 
- 	opcode = insn->opcode.bytes[0];
- 
--	switch (opcode & 0xf0) {
--	case 0x60:
--		/* can't boost "bound" */
--		return (opcode != 0x62);
--	case 0x70:
--		return 0; /* can't boost conditional jump */
--	case 0x90:
--		return opcode != 0x9a;	/* can't boost call far */
--	case 0xc0:
--		/* can't boost software-interruptions */
--		return (0xc1 < opcode && opcode < 0xcc) || opcode == 0xcf;
--	case 0xd0:
--		/* can boost AA* and XLAT */
--		return (opcode == 0xd4 || opcode == 0xd5 || opcode == 0xd7);
--	case 0xe0:
--		/* can boost in/out and absolute jmps */
--		return ((opcode & 0x04) || opcode == 0xea);
--	case 0xf0:
--		/* clear and set flags are boostable */
--		return (opcode == 0xf5 || (0xf7 < opcode && opcode < 0xfe));
--	case 0xff:
--		/* indirect jmp is boostable */
-+	switch (opcode) {
-+	case 0x62:		/* bound */
-+	case 0x70 ... 0x7f:	/* Conditional jumps */
-+	case 0x9a:		/* Call far */
-+	case 0xc0 ... 0xc1:	/* Grp2 */
-+	case 0xcc ... 0xce:	/* software exceptions */
-+	case 0xd0 ... 0xd3:	/* Grp2 */
-+	case 0xd6:		/* (UD) */
-+	case 0xd8 ... 0xdf:	/* ESC */
-+	case 0xe0 ... 0xe3:	/* LOOP*, JCXZ */
-+	case 0xe8 ... 0xe9:	/* near Call, JMP */
-+	case 0xeb:		/* Short JMP */
-+	case 0xf0 ... 0xf4:	/* LOCK/REP, HLT */
-+	case 0xf6 ... 0xf7:	/* Grp3 */
-+	case 0xfe:		/* Grp4 */
-+		/* ... are not boostable */
-+		return 0;
-+	case 0xff:		/* Grp5 */
-+		/* Only indirect jmp is boostable */
- 		return X86_MODRM_REG(insn->modrm.bytes[0]) == 4;
- 	default:
--		/* call is not boostable */
--		return opcode != 0x9a;
-+		return 1;
- 	}
- }
- 
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
