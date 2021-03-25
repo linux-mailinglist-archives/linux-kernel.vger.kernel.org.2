@@ -2,138 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B5F34944E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99301349458
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhCYOj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231211AbhCYOjM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:39:12 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E6D7C06174A;
-        Thu, 25 Mar 2021 07:39:11 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id e18so2529277wrt.6;
-        Thu, 25 Mar 2021 07:39:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eVMg9U8Kdz9xJ+s917StRu9WI7qS3OmAkOKawdzzeY4=;
-        b=Sv0VCIJljaIN3OM4TNc131cDMS3qydGQPSbjknsIPQCiIolufWD9r65z1ZtsWtFjj7
-         gvwXYvyUTBdwl/KZWLkLcOZ+agkT6Z4LU9xCo7O/c31Nb1xL9GyhFVF9+XVwguKN7z05
-         et9m6FTMLBb5LG+aBmawx/JQ60/8/917as9wQ3wP30Kod13WwziNbVH3GrRtpwzuvfwu
-         DmP/IcHoYeQeEVTC7c50ivewRk3F1vFGOLEeC263WZPFqosQOkRy8DvKtnFFgLYLh6Ou
-         yAoz4x2MIsWUcZmF5fxbHibNh839BvPxSc8F5xrfwvyeGVcRL/SmSebINU9p2jyR2EHn
-         BYXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eVMg9U8Kdz9xJ+s917StRu9WI7qS3OmAkOKawdzzeY4=;
-        b=jZpnm8zFJ2w1bwGazAN2OIcMyPko3Q7IfOLblWdRWuomANPJeASf2WNzo0obefZExQ
-         c1hf3sUmyyIwHunCbzZJAwaadbV7SXMLx0RJhvZ9I6orFZRuhOJwOSMiqNwTqzqWtNAy
-         Tj8lkcK1o9L6ljORJX7vKzCnPjL23ndpAwUyFQr5y9MWAtvMiMiTLkjkfvgVg+9glQHu
-         ADMTlwIAYL63H4fUXctO7GUG/MoLFuM5wcAE/lWVVwIQwOjHO7V0GrUTm7S3E77qadXt
-         2II+Li2uprhRwa7IvidBHK7GhV/E8gFQjHlfZlJiUEajKpUtB+jK0gXTBaElujLccAaq
-         z3nQ==
-X-Gm-Message-State: AOAM532/b9ys4D6AT+05Vqhh8Bx/hHxoOwCiL2dAyqoEIJ8WUWweVs3G
-        b6rVfbiQPmVAWXQ38myfExw=
-X-Google-Smtp-Source: ABdhPJy8EOX1pW7R72AiKQ4GwnutLnz5MMzh8zqbBLSCvfdKFtjg/AAh6mLClf/2txlZt6HexfxLag==
-X-Received: by 2002:a5d:570c:: with SMTP id a12mr9441809wrv.209.1616683149870;
-        Thu, 25 Mar 2021 07:39:09 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id l9sm6232289wmq.2.2021.03.25.07.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:39:08 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 15:39:30 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] soc/tegra: pmc: Ensure that clock rates aren't
- too high
-Message-ID: <YFygotHKjgPQ/R4G@orome.fritz.box>
-References: <20210302122502.20874-1-digetx@gmail.com>
- <20210302122502.20874-4-digetx@gmail.com>
+        id S231409AbhCYOkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:40:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47874 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230239AbhCYOkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:40:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616683205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kysqydu6n/BcioxbRVAh8G87sWEE9K41NwnN+9Mu1XY=;
+        b=Syb5a3qJ58DcnqHkieD37jiATjK2+yHARp5LvfjoZ5j7NkEU8FWPFxER5cKlLesmsQvEWD
+        EkUwqX5Q569ZT6p5ING+ueNrqmYU6qN7p+g04n+/oBVLEuXpVIvA4SVOTGQTVqvMKsUOJ/
+        rdjKyxIncpqpSQ5gKTsrk7UvuUZOEyU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 65FFFADAA;
+        Thu, 25 Mar 2021 14:40:05 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 15:40:04 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YFygxF5Rx0ESCfKB@dhcp22.suse.cz>
+References: <YFsqkY2Pd+UZ7vzD@dhcp22.suse.cz>
+ <YFtPxH0CT5QZsnR1@dhcp22.suse.cz>
+ <3bc4168c-fd31-0c9a-44ac-88e25d524eef@redhat.com>
+ <YFtjCMwYjx1BwEg0@dhcp22.suse.cz>
+ <9591a0b8-c000-2f61-67a6-4402678fe50b@redhat.com>
+ <YFxEp0cfcJmcz5bP@localhost.localdomain>
+ <YFxVLWcQcKaMycEY@dhcp22.suse.cz>
+ <YFxsBRORtgqUF/FZ@localhost.localdomain>
+ <YFyBeulR04Oc7eu2@dhcp22.suse.cz>
+ <YFyX8jRWqfqCoGo/@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Tcr+9zq/JqP5m3Qd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210302122502.20874-4-digetx@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+In-Reply-To: <YFyX8jRWqfqCoGo/@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 25-03-21 15:02:26, Oscar Salvador wrote:
+> On Thu, Mar 25, 2021 at 01:26:34PM +0100, Michal Hocko wrote:
+> > Yeah, David has raised the contiguous flag for zone already. And to be
+> > completely honest I fail to see why we should shape a design based on an
+> > optimization. If anything we can teach set_zone_contiguous to simply
+> > ignore zone affiliation of vmemmap pages. I would be really curious if
+> > that would pose any harm to the compaction code as they are reserved and
+> > compaction should simply skip them.
+> 
+> No, compaction code is clever enough to skip over those pages as it
+> already does for any Reserved page.
+> My comment was more towards having the zone contiguous.
+> 
+> I know it is an optimization, but
+> 
+>  commit 7cf91a98e607c2f935dbcc177d70011e95b8faff
+>  Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+>  Date:   Tue Mar 15 14:57:51 2016 -0700
+>  
+>  mm/compaction: speed up pageblock_pfn_to_page() when zone is contiguous
+> 
+> talks about 30% of improvment. I am not sure if those numbers would
+> still hold nowawadys, but it feels wrong to drop it to the ground when
+> we can do better there, and IMHO, it does not overly complicate things.
 
---Tcr+9zq/JqP5m3Qd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Again, do not shape design around an optimization. If this turns out a
+real problem then it can be handled on top.
 
-On Tue, Mar 02, 2021 at 03:25:00PM +0300, Dmitry Osipenko wrote:
-> Switch all clocks of a power domain to a safe rate which is suitable
-> for all possible voltages in order to ensure that hardware constraints
-> aren't violated when power domain state toggles.
->=20
-> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/soc/tegra/pmc.c | 92 ++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 90 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/soc/tegra/pmc.c b/drivers/soc/tegra/pmc.c
-> index f970b615ee27..a87645fac735 100644
-> --- a/drivers/soc/tegra/pmc.c
-> +++ b/drivers/soc/tegra/pmc.c
-> @@ -237,6 +237,7 @@ struct tegra_powergate {
->  	unsigned int id;
->  	struct clk **clks;
->  	unsigned int num_clks;
-> +	unsigned long *clk_rates;
->  	struct reset_control *reset;
->  };
-> =20
-> @@ -641,6 +642,57 @@ static int __tegra_powergate_remove_clamping(struct =
-tegra_pmc *pmc,
->  	return 0;
->  }
-> =20
-> +static int tegra_powergate_prepare_clocks(struct tegra_powergate *pg)
-> +{
-> +	unsigned long safe_rate =3D 100 * 1000 * 1000;
+> > THere is nothing like a proper zone.
+> 
+> I guess not, but for me it makes sense that vmemmap pages stay within
+> the same zone as the pages they describe.
 
-This seems a bit arbitrary. Where did you come up with that value?
+This is not the case for normal hotplug so why this should be any
+different.
 
-I'm going to apply this to see how it fares in our testing.
+> Of course, this is a matter of opinions/taste.
+> 
+> > Not sure what you are referring to but if you have prior to f1dd2cd13c4b
+> > ("mm, memory_hotplug: do not associate hotadded memory to zones until
+> > online") then this was entirely a different story. Users do care where
+> > they memory goes because that depends on the usecase but do they care
+> > about vmemmap?
+> 
+> As I said, that is not what I am worried about.
+> Users do not really care where those pages end up, that is transparent
+> to them (wrt. vmemmap pages), but we (internally) kind of do.
+> 
+> So, as I said, I see advantatges of using your way, but I see downsides
+> as:
+> 
+> - I would like to consider zone, and for that we would have to pull
+>   some of the functions that check for the zone at an aearly stage, and
+>   the mere thought sounds ugly.
 
-Thierry
+This is impossible and whatever kind of heuristic you come up with might
+be wrong.
 
---Tcr+9zq/JqP5m3Qd
-Content-Type: application/pgp-signature; name="signature.asc"
+> - Section containing vmemmap can remain offline and would have to come
+>   up to sort that out
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcoKIACgkQ3SOs138+
-s6EX/g/+J6USwbUaTKlXIziLfJz1hm2pPY/lsfoXVaA24s+d6nfV8Lq3hFtJ/A3K
-Wfs/MtOEE8CUX5zMIhSlxVKNkl+ZVlypEG6/cMxpARlFNxaOuq/3+y3l7GdoM26m
-o/PYrZV624lgbusvtmQQwMEbrnSggDJgO3irSRPJHy4y83guoj8vg+XVSdxIT9dP
-2XOotLgyMd3SfbU480wE8MZw+q0mhsBKFMZxoeRjibUCER4RKJP8iT9CNBKQBMS1
-96cHdEip/avubYiCY1H+vMntYdfkukNF3cw9baNfEKvSpsMixPMcYibuEJ14/qjS
-15yr88EucjWfsr4P4PX7aqgGfJOUWFcOFpBinHQk+0O8IVTMXYXe/eyhbX//jr8X
-jYFj8Bum6FD3zaWiEKSuo2efMdVTAr54Bm5D51KzlAsJnJ9H4AshMiJFl/0JQnDc
-1XNtsrDsGpr3oBcUsSbn/gcNbRy3pEHweD1izUG3WCg8khrBbUnhWNSJgwk314ua
-Z8soVf9kXOiuW1KLPYKHNst8OwqufhNUDU8tRs5rdNOHJQAykWKBLxPtLI88nP1F
-4UFqpQMMJ2bSw7/N9iE4pMeJiM3QVpOQQ6HdGamdqjCJL2SPGP9/++EV1cB7v/8d
-F4kxvFc88IPS7zNxejMfxcLFVK9MYC6tezjvEkZLNSOZj5MBzkM=
-=OQxL
------END PGP SIGNATURE-----
-
---Tcr+9zq/JqP5m3Qd--
+Yes, this is a problem indeed and as I've said in other email this would
+be a problem for your initial implementation as well if the memory block
+is still offline. I suspect we need to treat these Vmemmap pages as
+online (via pfn_to_online_page).
+-- 
+Michal Hocko
+SUSE Labs
