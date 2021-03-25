@@ -2,94 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD8434887E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5613C348887
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 06:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhCYFZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 01:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
+        id S229847AbhCYF0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 01:26:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbhCYFZQ (ORCPT
+        with ESMTP id S229865AbhCYF0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 01:25:16 -0400
-Received: from mail.as201155.net (mail.as201155.net [IPv6:2a05:a1c0:f001::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0005C06174A
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:25:15 -0700 (PDT)
-Received: from smtps.newmedia-net.de ([2a05:a1c0:0:de::167]:36760 helo=webmail.newmedia-net.de)
-        by mail.as201155.net with esmtps (TLSv1:DHE-RSA-AES256-SHA:256)
-        (Exim 4.82_1-5b7a7c0-XX)
-        (envelope-from <s.gottschall@dd-wrt.com>)
-        id 1lPIUU-00020F-2a; Thu, 25 Mar 2021 06:25:06 +0100
-X-CTCH-RefID: str=0001.0A782F21.605C1EB2.0066,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=dd-wrt.com; s=mikd;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID; bh=FWiIUfzfzmg/UyJPfZ5eKC2jY996A0w7LSl0n7TyuhI=;
-        b=t0Mo6LM+gA02x5GYCB73fbR3J5es6lKfyIiKIUMD5LEMGp5Uh5NDX2IaNdsg53SWku/80LUQOR0JGY81G8iwtD+y9xiHkMogglqmDnPA9Em8dRuTe5WcWdId/sojkGnZ7p8OybJLEDz+XkNIK6FXeGWPrKn804H4WRwMonpXjUo=;
-Message-ID: <e95a8960-199b-e114-e5f9-e5879a9466c3@dd-wrt.com>
-Date:   Thu, 25 Mar 2021 06:25:03 +0100
+        Thu, 25 Mar 2021 01:26:22 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E885AC0613DE
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:26:20 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id y1so1520068ljm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Mar 2021 22:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gFsXQtNcZc/jzBbc3KmHaNr8LuwlVaIo4tkNpXAhMCs=;
+        b=szUldggyNmVjxsrrTtlWnMRQPOMVT8cZCe5n98DB5e4AYjxCy/yawxRJYDhyjY6/HE
+         1zdQ2jBG3uJUxf4XjRDqgsZIjI/Zywasn9xRPTjryeG8OKkMdPujkQO4GFwQN4oyDFi6
+         o57TGNrEaoTRteOJ6W5ldogRM9nWPaTOxIpCyMiGsYB8nmVZ958quD6y0y3tWN2xtN0c
+         Ge2a1/y1yT3tD/qpV4vaIPTb089AVGdNEmBZ+xYZbA6zlapEXrvicmkhwUq7rM2dV1Vk
+         WnJ0YkTAlZVUzS3v5UkNOVRB6pTUtTAfpkqRIU76j8laN1/2CsRpNb8bW/Wr7tYlHzBj
+         l/xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gFsXQtNcZc/jzBbc3KmHaNr8LuwlVaIo4tkNpXAhMCs=;
+        b=jbudsSiPJEdrJGn0Wlk94NhPtB3euvWU9HkmYNm6HcIBrcQQEJ6AZxOaLOfxYhPFnE
+         7aM83P2CtfLVi54JW7G51A03lNxG/qUtWgI6MjH4i6LboX1EWgW7kLExDWHQXYAPQVGo
+         Q1yoVbJfM27rEGUY+ZhEqMREi8kyotnBj3sFFjMHCpgBYsNOzxeRGPJYg3moeHKLWpGG
+         KOGnZSk1ECf7dIJuOHQxPcxnACs3oiTs0HpioYl/1KcCfYgTVMBYx8AeIwcGy9KcGBpq
+         niqFnrUUSaV9egheAzaruoCxdXFsu7vrECNHn+NaDle+A8JHO5OC659P1E5Nkza7CeLa
+         FKNQ==
+X-Gm-Message-State: AOAM530JxnRP7XD7DXR8KACjqXbgB7Y7TfhcUjmPDuLtNEJzcxhcCCG1
+        EuamPuep/eisDoWh4YNnWaZi0xCfi++tB0UZwE4qlw==
+X-Google-Smtp-Source: ABdhPJw0lZa1dN3iWsOiL7ok+NZMNVuTQq5qAq6ImnOTO2jdiouw6uWhb1mTAuET6Lx9AmotH317Ob91LGw7g0Kt1wE=
+X-Received: by 2002:a05:651c:481:: with SMTP id s1mr4183162ljc.152.1616649979216;
+ Wed, 24 Mar 2021 22:26:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101
- Thunderbird/87.0
-Subject: Re: [PATCH 2/5] cifsd: add server-side procedures for SMB3
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Namjae Jeon <namjae.jeon@samsung.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org,
-        linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
-        senozhatsky@chromium.org, hyc.lee@gmail.com,
-        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
-        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
-        aaptel@suse.com, sandeen@sandeen.net, colin.king@canonical.com,
-        rdunlap@infradead.org,
-        'Sergey Senozhatsky' <sergey.senozhatsky@gmail.com>,
-        'Steve French' <stfrench@microsoft.com>
-References: <20210322051344.1706-1-namjae.jeon@samsung.com>
- <CGME20210322052206epcas1p438f15851216f07540537c5547a0a2c02@epcas1p4.samsung.com>
- <20210322051344.1706-3-namjae.jeon@samsung.com> <20210322064712.GD1667@kadam>
- <009b01d71f71$9224f4e0$b66edea0$@samsung.com> <20210323071945.GJ1667@kadam>
-From:   Sebastian Gottschall <s.gottschall@dd-wrt.com>
-In-Reply-To: <20210323071945.GJ1667@kadam>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Received:  from [2003:c9:3f4c:a900:4051:3fe6:eb8a:97]
-        by webmail.newmedia-net.de with esmtpsa (TLSv1:AES128-SHA:128)
-        (Exim 4.72)
-        (envelope-from <s.gottschall@dd-wrt.com>)
-        id 1lPIUT-000IIE-CO; Thu, 25 Mar 2021 06:25:05 +0100
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+ <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com> <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+ <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+ <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de> <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
+ <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
+In-Reply-To: <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 25 Mar 2021 10:56:07 +0530
+Message-ID: <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        David Gstir <david@sigma-star.at>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 24 Mar 2021 at 19:37, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>
+> Hello Sumit,
+>
+> On 24.03.21 11:47, Sumit Garg wrote:
+> > On Wed, 24 Mar 2021 at 14:56, Ahmad Fatoum <a.fatoum@pengutronix.de> wr=
+ote:
+> >>
+> >> Hello Mimi,
+> >>
+> >> On 23.03.21 19:07, Mimi Zohar wrote:
+> >>> On Tue, 2021-03-23 at 17:35 +0100, Ahmad Fatoum wrote:
+> >>>> On 21.03.21 21:48, Horia Geant=C4=83 wrote:
+> >>>>> caam has random number generation capabilities, so it's worth using=
+ that
+> >>>>> by implementing .get_random.
+> >>>>
+> >>>> If the CAAM HWRNG is already seeding the kernel RNG, why not use the=
+ kernel's?
+> >>>>
+> >>>> Makes for less code duplication IMO.
+> >>>
+> >>> Using kernel RNG, in general, for trusted keys has been discussed
+> >>> before.   Please refer to Dave Safford's detailed explanation for not
+> >>> using it [1].
+> >>
+> >> The argument seems to boil down to:
+> >>
+> >>  - TPM RNG are known to be of good quality
+> >>  - Trusted keys always used it so far
+> >>
+> >> Both are fine by me for TPMs, but the CAAM backend is new code and nei=
+ther point
+> >> really applies.
+> >>
+> >> get_random_bytes_wait is already used for generating key material else=
+where.
+> >> Why shouldn't new trusted key backends be able to do the same thing?
+> >>
+> >
+> > Please refer to documented trusted keys behaviour here [1]. New
+> > trusted key backends should align to this behaviour and in your case
+> > CAAM offers HWRNG so we should be better using that.
+>
+> Why is it better?
+>
+> Can you explain what benefit a CAAM user would have if the trusted key
+> randomness comes directly out of the CAAM instead of indirectly from
+> the kernel entropy pool that is seeded by it?
 
-Am 23.03.2021 um 08:19 schrieb Dan Carpenter:
-> On Tue, Mar 23, 2021 at 08:17:47AM +0900, Namjae Jeon wrote:
->>>> +
->>>> +static int
->>>> +compare_oid(unsigned long *oid1, unsigned int oid1len,
->>>> +	    unsigned long *oid2, unsigned int oid2len) {
->>>> +	unsigned int i;
->>>> +
->>>> +	if (oid1len != oid2len)
->>>> +		return 0;
->>>> +
->>>> +	for (i = 0; i < oid1len; i++) {
->>>> +		if (oid1[i] != oid2[i])
->>>> +			return 0;
->>>> +	}
->>>> +	return 1;
->>>> +}
->>> Call this oid_eq()?
->> Why not compare_oid()? This code is come from cifs.
->> I need clear reason to change both cifs/cifsd...
->>
-> Boolean functions should tell you what they are testing in the name.
-> Without any context you can't know what if (compare_oid(one, two)) {
-> means, but if (oid_equal(one, two)) { is readable.
+IMO, user trust in case of trusted keys comes from trusted keys
+backend which is CAAM here. If a user doesn't trust that CAAM would
+act as a reliable source for RNG then CAAM shouldn't be used as a
+trust source in the first place.
+
+And I think building user's trust for kernel RNG implementation with
+multiple entropy contributions is pretty difficult when compared with
+CAAM HWRNG implementation.
+
+-Sumit
+
 >
-> regards,
-> dan carpenter
-ahm just a pointless comment. but
-return !memcmp(oid1,oid2, sizeof(long*)*oid1len);
-looks much more efficient than this "for" loop
+> > Also, do update documentation corresponding to CAAM as a trusted keys b=
+ackend.
 >
+> Yes. The documentation should be updated for CAAM and it should describe
+> how the key material is derived. Will do so for v2.
 >
+> Cheers,
+> Ahmad
 >
+> >
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.=
+git/tree/Documentation/security/keys/trusted-encrypted.rst#n87
+> >
+> > -Sumit
+> >
+> >> Cheers,
+> >> Ahmad
+> >>
+> >>>
+> >>> thanks,
+> >>>
+> >>> Mimi
+> >>>
+> >>> [1]
+> >>> https://lore.kernel.org/linux-integrity/BCA04D5D9A3B764C9B7405BBA4D4A=
+3C035F2A38B@ALPMBAPA12.e2k.ad.ge.com/
+> >>>
+> >>>
+> >>>
+> >>
+> >> --
+> >> Pengutronix e.K.                           |                          =
+   |
+> >> Steuerwalder Str. 21                       | http://www.pengutronix.de=
+/  |
+> >> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0 =
+   |
+> >> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-55=
+55 |
+> >
+>
+> --
+> Pengutronix e.K.                           |                             =
+|
+> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
+|
+> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
+|
+> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
+|
