@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0727F349719
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AF134971C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 17:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhCYQnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 12:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbhCYQmw (ORCPT
+        id S229764AbhCYQng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 12:43:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54171 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229666AbhCYQnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 12:42:52 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE173C06174A;
-        Thu, 25 Mar 2021 09:42:52 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id g15so2410463qkl.4;
-        Thu, 25 Mar 2021 09:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=nQz2FFQOVbXdb1nbA7usuQscVjdcM+pKQXNSzOfg+hY=;
-        b=ALPbykLRvkeSQXAwHyRm4zfDOnJh4b6/wRGs+aUYsGZSIjDlbhhMFjIDFemRMdYPMq
-         V0mugNl66OVvvLY4jcKxG7wlEQuZ2tLNJdsfpx92KDNEcH49zxOL/VVSD7apxqvXSUIa
-         cZzdX2nJ79iU7+K/cs9CqIYV/Q01Y35WOKKOyv0S/g79GK0wo8hDMCU68nlXyohluUUN
-         pDP/R++uPfjtJVXnpDEYJK8/A0SerROMRL4of8IsPM/gk69UYSZhANaIOS3vPEK2L7IQ
-         eVUj5BnMsLefSjObFHH8VfsrWGXoAl1+QTErTvGryQrBIXXp+I5IxNEgU3CnnKc34rVj
-         Sszw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=nQz2FFQOVbXdb1nbA7usuQscVjdcM+pKQXNSzOfg+hY=;
-        b=ESEJ4V4L31W7Tm0BDekVLFEzgsKMy1rJ4nBtxDIdLX/1Cta5FrbdO5CshY0iSK3Eb2
-         hvl42/ge2fyHRNIMZbrHJrdGhGjr5z+BVcTe3lynE9IVJGttKYDkuSJecenB76KnD7LH
-         XifV+NUEsqAkAtnxxF79wgkowJsW0DnUH0bxkkNcas2x9WllWO64U/85aV2Rr4Og6Clr
-         EyH5gudXS90ltFspR64MfsFzOIjON2R6l0SCZ4bg89a6cc0td4vT7hwD0f2U5yXM13hU
-         ufaopkCEm/UMlof9e3E8y6TKsaK0iaqtmY7fQYr2UHuCRANrCbcMBJLUZXLhH6q+djfo
-         2e6A==
-X-Gm-Message-State: AOAM533iULsqqB3DwQZUlvXLa5x62jzLPRgl/cAD4hT9iL3bE3ushJrq
-        O5f71aUrP0juF0obSF3KupWW/TmVdRh1GQ==
-X-Google-Smtp-Source: ABdhPJwFootViaDnm/L5OAhIV4/loi9y5igxc62Na47b2/oBl1G7aIZhhS0rvK90N5qsxuI7E3p/ZA==
-X-Received: by 2002:a37:9e4e:: with SMTP id h75mr8931214qke.180.1616690571930;
-        Thu, 25 Mar 2021 09:42:51 -0700 (PDT)
-Received: from [172.16.141.208] ([187.68.194.76])
-        by smtp.gmail.com with ESMTPSA id a187sm4512112qkd.69.2021.03.25.09.42.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 09:42:51 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 13:42:23 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <YFygSdFOT5B0DwRU@hirez.programming.kicks-ass.net>
-References: <1616425047-1666-1-git-send-email-atrajeev@linux.vnet.ibm.com> <1616425047-1666-2-git-send-email-atrajeev@linux.vnet.ibm.com> <d7dd633b-e28a-155a-a8e2-0e5a83b4eead@linux.ibm.com> <YFyJr+R24TlrMNrC@kernel.org> <YFygSdFOT5B0DwRU@hirez.programming.kicks-ass.net>
+        Thu, 25 Mar 2021 12:43:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616690592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VXkz74om/p18FTc/ggtD/waEhXQyGXNW+IbQIQcMvEg=;
+        b=OtSebmLD83lw6cdbxXlMxaq7e0ry1nXeBLHXaoFz0XRleHG0tAUJG4aQ7IxJ7UCbxaN6Fv
+        aMnlg5KNhxcrqn8WWW2b6wLauRZ8EXUDHepab66HblHZc1N/6VVLH/8SKZEgpsG+7gy2pZ
+        iDCal1J4hHh9RnNA4KBs+VOpIzKd9vM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-4tvlbfi4MNGohs7vQUxjag-1; Thu, 25 Mar 2021 12:43:10 -0400
+X-MC-Unique: 4tvlbfi4MNGohs7vQUxjag-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5193C18C89DF;
+        Thu, 25 Mar 2021 16:43:08 +0000 (UTC)
+Received: from [10.10.112.16] (ovpn-112-16.rdu2.redhat.com [10.10.112.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3159660D07;
+        Thu, 25 Mar 2021 16:43:07 +0000 (UTC)
+Subject: Re: [PATCH] livepatch: klp_send_signal should treat PF_IO_WORKER like
+ PF_KTHREAD
+To:     Miroslav Benes <mbenes@suse.cz>, Dong Kai <dongkai11@huawei.com>
+Cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
+        axboe@kernel.dk, live-patching@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210325014836.40649-1-dongkai11@huawei.com>
+ <alpine.LSU.2.21.2103251023320.30447@pobox.suse.cz>
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+Message-ID: <01cbab2f-da8b-f289-2241-d258406a4b6c@redhat.com>
+Date:   Thu, 25 Mar 2021 12:43:06 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH V2 1/5] powerpc/perf: Expose processor pipeline stage cycles using PERF_SAMPLE_WEIGHT_STRUCT
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mpe@ellerman.id.au,
-        jolsa@kernel.org, ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com
-From:   Arnaldo <arnaldo.melo@gmail.com>
-Message-ID: <2BAC42AE-6BD3-45EF-8867-1A15F25FE80B@gmail.com>
+In-Reply-To: <alpine.LSU.2.21.2103251023320.30447@pobox.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 3/25/21 5:26 AM, Miroslav Benes wrote:
+> On Thu, 25 Mar 2021, Dong Kai wrote:
+> 
+>> commit 15b2219facad ("kernel: freezer should treat PF_IO_WORKER like
+>> PF_KTHREAD for freezing") is to fix the freezeing issue of IO threads
+>> by making the freezer not send them fake signals.
+>>
+>> Here live patching consistency model call klp_send_signals to wake up
+>> all tasks by send fake signal to all non-kthread which only check the
+>> PF_KTHREAD flag, so it still send signal to io threads which may lead to
+>> freezeing issue of io threads.
+> 
+> I suppose this could happen, but it will also affect the live patching
+> transition if the io threads do not react to signals.
+> 
+> Are you able to reproduce it easily? I mean, is there a testcase I could
+> use to take a closer look?
+>   
 
+If repro is only hypothetical at this point, perhaps we can artificially 
+create it in selftests?  And useful to verify the future change you 
+mentioned in your other reply?
 
-On March 25, 2021 11:38:01 AM GMT-03:00, Peter Zijlstra <peterz@infradead=
-=2Eorg> wrote:
->On Thu, Mar 25, 2021 at 10:01:35AM -0300, Arnaldo Carvalho de Melo
->wrote:=2E
->> > > Also for CPU_FTR_ARCH_31, capture the two cycle counter
->information in
->> > > two 16 bit fields of perf_sample_weight structure=2E
->> >=20
->> > Changes looks fine to me=2E
->> >=20
->> > Reviewed-by: Madhavan Srinivasan <maddy@linux=2Eibm=2Ecom>
->>=20
->> So who will process the kernel bits? I'm merging the tooling parts,
->
->I was sorta expecting these to go through the powerpc tree=2E Let me know
->if you want them in tip/perf/core instead=2E
+-- Joe
 
-Shouldn't matter by which tree it gets upstream, as long as it gets picked=
- :-)
-
-- Arnaldo
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
