@@ -2,131 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F77A34941D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE65349428
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhCYOce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:32:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
+        id S231492AbhCYOdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhCYOcB (ORCPT
+        with ESMTP id S231404AbhCYOcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:32:01 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5372FC06174A;
-        Thu, 25 Mar 2021 07:32:01 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so1310850wmj.1;
-        Thu, 25 Mar 2021 07:32:01 -0700 (PDT)
+        Thu, 25 Mar 2021 10:32:55 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3220C06175F;
+        Thu, 25 Mar 2021 07:32:54 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id bt4so1112347pjb.5;
+        Thu, 25 Mar 2021 07:32:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8X/ErCd/PUHyh7uEayt0AfWxZBWOxuGE5goHChuzl9M=;
-        b=oe5h4IjS1khlBr3H69CXdHoY3Sp2GPifGMVuufqgDA5wCqFRWdvs332qj+2YH+DEY4
-         /HVasUQEmhQTgFvsx5ibJ4PfnBZ9Ha+kGDeMOhu1KNWsWj8z1MOZrmoAKb/lX8AdLVZK
-         Wz2mdPdPWXL/yE9FOBA8t1wUesXMJrg/RhhgHE1XFCAAcgneyuesFhXIrpJlk/fFF16S
-         hStHlzjEwLGFseytjWQKrqwCk7t6Ncx1cYVCBFLGVAhfiHzQ8ww2JS9WnA1exqWjLhAG
-         sOevmWxzU5qZ8xUYpqcPg37fYq/10LPioJFnUA7ytetztSJ0IMmid5IVUsm2jbtfRLd9
-         efyg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iu6akMggrk3ZrAZb1WHGakoQg8dYDOL7KwYgoXD8LKo=;
+        b=Eq3eckxCzX63Xj8wsmhtYZPgshqe6ldPE7VXJSPCbIzd/86jZL77W6Y7Wym2MHBhks
+         MvCzM/eROhGsEKpUYZIV0thiUkqnaBEy/AWgzdQHbqf9swW2QDjrzkMWLlJoFKMsMrgo
+         ScNl3B5wP94Al5oCgb0bGNe+e+i5uk4cXbtXq3FmVGWYOGg5U9s2nrROl6ZS/QVOOs81
+         8smHnFvodbzoqLNqa5ptdAGzaIKEAZ4FP+RFdI81jyPKJL/t5kuuqlg+47HxDXP3E3nM
+         cZ1EGQFdpB4C0ldYgyLoPdc+G66XTeolaW7FLoFudxttyoG9k1XzSEI1YtoEOKj9L9aA
+         0KkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8X/ErCd/PUHyh7uEayt0AfWxZBWOxuGE5goHChuzl9M=;
-        b=ciqssViPVa5cB2HHMC+XDWNYZUs8e2ohXgXLk5CHZgnQx4D0Hm0TGps3hY4Q8t8maG
-         XU7RI3SWHNCxlNzq5R/iORajdUGuWilfm6rzPhL5O7cL4gvrv18KpZYKdB7y9lLudkqd
-         eZ1XEc5XFFtIloqVRLdjclmc7aIv2QW39FcmqVFqP7C+O4gN87NYPsipfSdZDcmaBdJa
-         O/mehXwnE6oosEgkisFzWsl77yEXLrnA4wY8RQ9FPufCh6viv76wWOFXJur1IvZ/smN4
-         sjOS/dvGNTiiQDpUKniGpevLGQGH9ljEcIOCahWhWxJfC8RG8YheE/Z5+mhAJSnTkc5K
-         myKA==
-X-Gm-Message-State: AOAM530o2dNrjca3EwG34SS6zf6AVoLAUkPkRpEQk9d+kzvA5l8vp6eR
-        eehuqhekOoThAOHDckO6ihSLqnddT8o=
-X-Google-Smtp-Source: ABdhPJwCP8SyVnHbVU/Xq0ABavcKyhlBcdUKDjFNpnHjTjex3u9ZXgml/hz3Y+XZ5w4ETpW2CyUtmw==
-X-Received: by 2002:a1c:6305:: with SMTP id x5mr8097290wmb.156.1616682720074;
-        Thu, 25 Mar 2021 07:32:00 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id c8sm8927942wrd.55.2021.03.25.07.31.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 07:31:59 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 15:32:21 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/5] soc/tegra: pmc: Fix completion of power-gate
- toggling
-Message-ID: <YFye9WEL489M1KOk@orome.fritz.box>
-References: <20210302122502.20874-1-digetx@gmail.com>
- <20210302122502.20874-3-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iu6akMggrk3ZrAZb1WHGakoQg8dYDOL7KwYgoXD8LKo=;
+        b=K2bXI8ZIf47JXvXHUy+Rz0kn8nvOwoPIi+igc6IRueoz1CiJzyJKvTF81U8oNCpav2
+         ay2Kbv30opybAbSmVq4j5+UuOMVfJRLRmH032l0rKsOSOodsR1v0kkGgthfjlSnl30Fa
+         ADye5hCuHlPLmdrd5TDdAPdmh9bpuLjlDE1plezLrM8jwMQ8t6FDOwkfzEr5RCVjzEHQ
+         78+x5KD5FzUPz+qyusJGpnK1j7lF4h17ZEq23EGPJZb4A2fIdD4Yc1FEeZOGU4ChjmHZ
+         CLRq2ru2sC4l26RpJV9w1zfmbQWyxR07y8ZJtzdOeceugtQcNnhBwLV5DTZqxSxLQxbs
+         IC1g==
+X-Gm-Message-State: AOAM5319pHHqzyFNdQdXRlC84HffXCsYotRKIvdpLlKLGey8F1yaTqYC
+        r+z2Kz8gNt0kbA+DmW1g9iEHEH4nr8DpRFPhPoAqUQS0
+X-Google-Smtp-Source: ABdhPJwvBTtoH2he9ApBpc1P2liiGLxNtdlbUqSJXqpU+JgyXAlzDZhIsECbsSFS0L+w60TTuxLAK+ci3HZNO7DVFvc=
+X-Received: by 2002:a17:90a:bd09:: with SMTP id y9mr8969707pjr.179.1616682774540;
+ Thu, 25 Mar 2021 07:32:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6sCD7rN+0LZ2PNul"
-Content-Disposition: inline
-In-Reply-To: <20210302122502.20874-3-digetx@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+References: <20210312051203.3555751-1-vkoul@kernel.org> <YEukrpG06PBdgGAF@builder.lan>
+ <YFwo2FrCMYJ4AhCs@vkoul-mobl.Dlink>
+In-Reply-To: <YFwo2FrCMYJ4AhCs@vkoul-mobl.Dlink>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Thu, 25 Mar 2021 09:32:43 -0500
+Message-ID: <CABb+yY39yq9=JCYJR8EnMqzYX5wpAWX5nd2Yu0uoCXDcA8jDbg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mailbox: Add compatible for SM8350 IPCC
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 25, 2021 at 1:08 AM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> On 12-03-21, 11:28, Bjorn Andersson wrote:
+> > On Thu 11 Mar 23:12 CST 2021, Vinod Koul wrote:
+> >
+> > Adding Jassi as recipient. Please let Vinod know if you want him to
+> > resend this patch to you. (I send a patch for MAINTAINERS yesterday)
+>
+> Jassi, should I resend or you can pick from lore?
+>
+I will pick.
 
---6sCD7rN+0LZ2PNul
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Mar 02, 2021 at 03:24:59PM +0300, Dmitry Osipenko wrote:
-> The SW-initiated power gate toggling is dropped by PMC if there is
-> contention with a HW-initiated toggling, i.e. when one of CPU cores is
-> gated by cpuidle driver. Software should retry the toggling after 10
-> microseconds on Tegra20/30 SoCs, hence add the retrying. On Tegra114+ the
-> toggling method was changed in hardware, the TOGGLE_START bit indicates
-> whether PMC is busy or could accept the command to toggle, hence handle
-> that bit properly.
->=20
-> The problem pops up after enabling dynamic power gating of 3d hardware,
-> where 3d power domain fails to turn on/off "randomly".
->=20
-> The programming sequence and quirks are documented in TRMs, but PMC
-> driver obliviously re-used the Tegra20 logic for Tegra30+, which strikes
-> back now. The 10 microseconds and other timeouts aren't documented in TRM,
-> they are taken from downstream kernel.
->=20
-> Link: https://nv-tegra.nvidia.com/gitweb/?p=3Dlinux-2.6.git;a=3Dcommit;h=
-=3D311dd1c318b70e93bcefec15456a10ff2b9eb0ff
-> Link: https://nv-tegra.nvidia.com/gitweb/?p=3Dlinux-3.10.git;a=3Dcommit;h=
-=3D7f36693c47cb23730a6b2822e0975be65fb0c51d
-> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/soc/tegra/pmc.c | 70 ++++++++++++++++++++++++++++++++++++++---
->  1 file changed, 65 insertions(+), 5 deletions(-)
-
-Applied, thanks.
-
-Thierry
-
---6sCD7rN+0LZ2PNul
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBcnvQACgkQ3SOs138+
-s6G5/Q/9FRt5aws4mzuM8015M9rGNntDN6xh2eUTzYsN2fQQopSFWmwCFr/3554P
-S5PyV7vuNtFmI8V7VH7RAZlNC3uA1XBeav4CUTfy/UqaZwZzrnwakKQMD+93djDd
-X0zZ07qzWdObTCYmQ/iZbv3kbl3F5DFg87Apv99vJMtc5SsA6n+lXhDhOHN4uqkt
-+p/pcYQV2RFwXQ91mo6F8BKtqjxyuY+eL0dh1h0L888Vk0Z5vy8xd9t8gdudHZz4
-eT9s4pP9sencxWq48kpR+9KzEue5oNi6c8oVazEwlz/wUeV+mjVeleuIiDE2RFoH
-favsVTCFiJstqPBfxoZz/b6orcpgbukrsuALj0l6qjzJm5xparFy6Bxz/g5taRge
-oGs87AKTk+4Z+AkzRRgyBKSfNzBIHPY7iVSRfJpH9iFJatQFEvk9k3KuMC6A2s+H
-AR+NdEgS9Hw2I04caQo0LvzvfdkkxB2yApDssk3Sh2E4qwbVi/KQ3S4/94XIRAql
-PnnUk4OLbNgkPW1QUZN9qNFNiLqyOo0ymjqbC1VHEfIfHHuc/ub/iN8hJgYLPcy3
-WHD1ZrLflLl1vSx32rMpF7TxtUIiVAqgE+NpdL0tSL265xpnKHWZ0PVZTzADXw1m
-mv31taCkqVXQvsLuoJyX6PKIu+W56sptWcZ7uEp64ryITgOt3p8=
-=APmv
------END PGP SIGNATURE-----
-
---6sCD7rN+0LZ2PNul--
+thanks
