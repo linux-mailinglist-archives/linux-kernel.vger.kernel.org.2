@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509963493E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021E03493E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhCYOTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48438 "EHLO
+        id S230101AbhCYOUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbhCYOSf (ORCPT
+        with ESMTP id S230166AbhCYOUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:18:35 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05156C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:18:34 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 184so3307550ljf.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:18:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PpLGFAuP0zRhD8ECDASmtUCCqZyWadUjjPsdXLkzDqI=;
-        b=GcElBKS7rrZsXIzL8iL2fQTZM8mDFRhoxCQqgNhE2t3ljVlmcmNMBY7kAMMAzBbihx
-         gqzHnHfFAj9ZXx3DZXOZqh0LtqVKx1J5v7fsuJaDFCCVAai5EN4IqNAOW/tjGW/brPQD
-         0EV1aJmpGsFksorq1eaSc1o5KkTawtb3FbnNqHkkDIuWR8DUBbawVg80hW4ePgfKvnmi
-         GMvcRzBY7svPva0XAfjZ6XkJbWtFKxMNM0+PtvG0J1knJnlLYGtWgYpqBwwnkZCF4EXA
-         YA92oWT5fMP+946UT/jpXl2+uJn8y7TgZIZj/DEgEhjK2lcS6DsSBTyyB6N0+9HCKrgD
-         j8PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PpLGFAuP0zRhD8ECDASmtUCCqZyWadUjjPsdXLkzDqI=;
-        b=rxl4Fs1YDk7isaBzCNXG6ibq9DQZ6WnNXQTR7N5T5TJrmtwGKmNIVM7e4k29whIs00
-         +Gt/EtpSeV0hgQk5siUi9N/i5PRtfy0NCmxXgfvWPOewv5SpR564R7EKkTFYuaGY1IrO
-         gb1j0IUbYGj77bkV9UgaveevMA/ycFV9rOEUriPs2CKHMilOIWQEXlrSbrJ1iGilj91f
-         XDO7yCeuekHOUuvooKDynkZTrVTngnvzcdWMtIHV1JVqtxa7lPGEl3rLCx7WcCDessl6
-         Niu825xn2Ovc3SUNo6Clms7J8SpcDl+7JdvsmnbzDBuU1Pswg71Ev0oe14x3/ckQzHGL
-         uP0g==
-X-Gm-Message-State: AOAM531rOH45YrZSQVFAWR+AZ6d7qs3ev4gnY0f4+M6dlE+M3UVwhJnR
-        RblzUnEwQu4HlmCa85XLP0ZmHbLCV7x1Aw6/XE31fNQv5fF0A3Gl
-X-Google-Smtp-Source: ABdhPJzqBnu7s32WbSm2YB1vrx+f2AwqOgTvQHwo6CsZ23JU6Gjcrr6cxc4ueNfjn2fOB4L827PYnnDupurtTvx0o8c=
-X-Received: by 2002:a2e:868a:: with SMTP id l10mr5626263lji.343.1616681912438;
- Thu, 25 Mar 2021 07:18:32 -0700 (PDT)
+        Thu, 25 Mar 2021 10:20:24 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A5CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Bwkza07CK3I496mJr/hRCcP/6zzNBPLmmcQvRMvQpIk=; b=bNiYsVmUPdL0JtJJdhnG+Pjgt
+        nNOQ2c0vi3MKCbNbXiAQ9lkCp1aSp7x6yBuZfpJE7/LYeFhyi9rfZB4XRS6L++c0eWn6aks6doT+m
+        WOdDyXJfpbLlN//9cHJb22+tenfVjS20UEuDRRpoVy9t4yzjH1cK8eyN+Qs55vl1EnbqMzDBPnx6p
+        J389/4oPWk8pUYgQvP3qq5V+J2mCoYxCb+85SwAu1onF0zvs+TjgijaCqV4iI+TH7FDgRxkVGq6gI
+        TpPDa0TYEnyYDtaBXhWLs2XfQlt1dGQOE8NtsXDA9TRiUf6Sktze9xjLNdgjIEF1BGYhZfzL9XVOw
+        0uZiBLjNw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51724)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lPQqO-0001pW-Ar; Thu, 25 Mar 2021 14:20:16 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lPQqJ-000658-TU; Thu, 25 Mar 2021 14:20:11 +0000
+Date:   Thu, 25 Mar 2021 14:20:11 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Liu Xiang <liuxiang1999@gmail.com>
+Cc:     Liu Xiang <liu.xiang@zlingsmart.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        liuxiang_1999@126.com
+Subject: Re: [PATCH] ARM: fix smp_processor_id() in preemptible warning in
+ harden_branch_predictor()
+Message-ID: <20210325142011.GN1463@shell.armlinux.org.uk>
+References: <20210325095049.6948-1-liu.xiang@zlingsmart.com>
+ <20210325100605.GL1463@shell.armlinux.org.uk>
+ <CAPPcxxSzNvGu3y+3Fpc5FtV-6mOBPWMihmGhHnbq_qAHe3oYTA@mail.gmail.com>
 MIME-Version: 1.0
-References: <cover.1616409291.git.jerome@forissier.org> <010001785986e9be-63aa88ce-3cf8-425f-87da-b2e3f84f6ef5-000000@email.amazonses.com>
-In-Reply-To: <010001785986e9be-63aa88ce-3cf8-425f-87da-b2e3f84f6ef5-000000@email.amazonses.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Thu, 25 Mar 2021 19:48:21 +0530
-Message-ID: <CAFA6WYPryB+9W6EGXvea07=JH8_cfHKF8a4BDEyPeqPVkzvutw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] tee: optee: do not check memref size on return from
- Secure World
-To:     Jerome Forissier <jerome@forissier.org>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPPcxxSzNvGu3y+3Fpc5FtV-6mOBPWMihmGhHnbq_qAHe3oYTA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 at 16:11, Jerome Forissier via OP-TEE
-<op-tee@lists.trustedfirmware.org> wrote:
->
-> When Secure World returns, it may have changed the size attribute of the
-> memory references passed as [in/out] parameters. The GlobalPlatform TEE
-> Internal Core API specification does not restrict the values that this
-> size can take. In particular, Secure World may increase the value to be
-> larger than the size of the input buffer to indicate that it needs more.
->
-> Therefore, the size check in optee_from_msg_param() is incorrect and
-> needs to be removed. This fixes a number of failed test cases in the
-> GlobalPlatform TEE Initial Configuratiom Test Suite v2_0_0_0-2017_06_09
-> when OP-TEE is compiled without dynamic shared memory support
-> (CFG_CORE_DYN_SHM=n).
->
-> Suggested-by: Jens Wiklander <jens.wiklander@linaro.org>
-> Signed-off-by: Jerome Forissier <jerome@forissier.org>
-> ---
->  drivers/tee/optee/core.c | 10 ----------
->  1 file changed, 10 deletions(-)
->
+On Thu, Mar 25, 2021 at 09:32:35PM +0800, Liu Xiang wrote:
+> Russell King - ARM Linux admin <linux@armlinux.org.uk> 于2021年3月25日周四 下午6:06写道：
+> >
+> > On Thu, Mar 25, 2021 at 05:50:49PM +0800, Liu Xiang wrote:
+> > > When CONFIG_HARDEN_BRANCH_PREDICTOR is selected and user aborts occur,
+> > > there is a warning:
+> > >
+> > > BUG: using smp_processor_id() in preemptible [00000000] code: errnotest/577
+> > > caller is __do_user_fault.constprop.4+0x24/0x88
+> > > CPU: 1 PID: 577 Comm: errnotest Not tainted 4.14.188-rt87-fmsh-00004-g58055877a #1
+> > > Hardware name: FMSH PSOC Platform
+> > > [<8010d6d4>] (unwind_backtrace) from [<8010a228>] (show_stack+0x10/0x14)
+> > > [<8010a228>] (show_stack) from [<80698f44>] (dump_stack+0x7c/0x98)
+> > > [<80698f44>] (dump_stack) from [<803d17d0>] (check_preemption_disabled+0xc4/0xfc)
+> > > [<803d17d0>] (check_preemption_disabled) from [<80110eb8>] (__do_user_fault.constprop.4+0x24/0x88)
+> > > [<80110eb8>] (__do_user_fault.constprop.4) from [<801112e4>] (do_page_fault+0x2dc/0x310)
+> > > [<801112e4>] (do_page_fault) from [<801012a8>] (do_DataAbort+0x38/0xb8)
+> > > [<801012a8>] (do_DataAbort) from [<8010b03c>] (__dabt_usr+0x3c/0x40)
+> > > Exception stack(0xb21d1fb0 to 0xb21d1ff8)
+> > > 1fa0:                                     fffffff4 00000000 00000054 fffffff4
+> > > 1fc0: 00000000 00000000 7ed81cc8 7ed81ca0 0007a440 00000000 00000000 00000000
+> > > 1fe0: 00000000 7ed81ca0 00010493 0001f330 20030010 ffffffff
+> >
+> > This is not the right fix - preemption is supposed to be disabled before
+> > this function is called. I'm not sure at the present time what the right
+> > fix is supposed to be because I've forgotten most of the background
+> > behind why this was placed where it is.
+> >
+> > --
+> > RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> > FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> 
+> I have tested with the current mainline kernel, the warning still exists.
 
-Looks good to me.
+Yes, it still exists, because it's never been fixed, but the way you are
+fixing it is not correct. We do not paper over warnings with incorrect
+fixes.
 
-Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
-
--Sumit
-
-> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> index 319a1e701163..ddb8f9ecf307 100644
-> --- a/drivers/tee/optee/core.c
-> +++ b/drivers/tee/optee/core.c
-> @@ -79,16 +79,6 @@ int optee_from_msg_param(struct tee_param *params, size_t num_params,
->                                 return rc;
->                         p->u.memref.shm_offs = mp->u.tmem.buf_ptr - pa;
->                         p->u.memref.shm = shm;
-> -
-> -                       /* Check that the memref is covered by the shm object */
-> -                       if (p->u.memref.size) {
-> -                               size_t o = p->u.memref.shm_offs +
-> -                                          p->u.memref.size - 1;
-> -
-> -                               rc = tee_shm_get_pa(shm, o, NULL);
-> -                               if (rc)
-> -                                       return rc;
-> -                       }
->                         break;
->                 case OPTEE_MSG_ATTR_TYPE_RMEM_INPUT:
->                 case OPTEE_MSG_ATTR_TYPE_RMEM_OUTPUT:
-> --
-> 2.25.1
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
