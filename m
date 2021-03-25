@@ -2,163 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 812A234938A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F1C349388
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 15:02:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhCYOCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 10:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbhCYOBd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 10:01:33 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAFAC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:01:32 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id g8so2647702lfv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 07:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MmF8zMMhSJr2UbOoYiZqtv8YBPrRUBEDP7fTi81KAEk=;
-        b=ySCJ54ICDE6200wEeFqVJv/p1kR197zEWndwv2ypByqKlhCXXhWFp8/SLHr5XEWYN8
-         97L3YlomdDH9+yIicnZJt0XCSWZ6LfsEGo/Uc10dXf8YhTttlLJfGwIJqy3mVtxTlp7B
-         1/Ct2gYKCrxR/T7G4+DrDJLfyfIGAgXqUpTEb3DE1U7OdVSRn2JS46gpwUF3/VektYED
-         cviJesFIXSxfUFqjNV5JtVZZGXZPZZpUt4UAND002egeiXa+uOEXrcLommLqWcVX8vxx
-         UzN20W0zHk8DABO2nVpledwJz2npmWit2ZxuobV51siQhqslP3p/LYZae6ZeZx3BUUf8
-         f5ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MmF8zMMhSJr2UbOoYiZqtv8YBPrRUBEDP7fTi81KAEk=;
-        b=W4STq0Y4nFWrwt+rETN5UZOuZ9sT3Pd0IbQycxdC0Im/qVA9XofgSXXRLH/O4/owXP
-         iWDqHQ7t6yRBxy2uxPHOaz14t23l+HTN6BlocCFxqnEh3iC9gp18DIeRWkda+bawYTBG
-         g17gomVL9b7uAsva3Ge9iboLgV9PwA2pCaQo2eaUM3mdN9UxsFDaXv1AXwA/m6vaLfhh
-         pUdIzntW+Q33RRI3nXg4gdWhU6JV05G9XkGF3UTb+CqTqRA3vYbMNBjVsolU5qUyMQn7
-         Wy2AZR9rkv/e+5qPKMWR+Xc5Vx2fvUNp9w6XGyar16DnVH03m115b4DePR6s073Yr85q
-         40ew==
-X-Gm-Message-State: AOAM532veTAvfJ3XY5+4iCh+Ui0XkKDdlpQP6yIv38EKI0KCt0l/Mbdm
-        dzMC1iIOgH3ircfHU0L2LPiZrK1nX4r8k0U+9aUlwQ==
-X-Google-Smtp-Source: ABdhPJwN9qo9jK5N4Qbvi4l62f5Ye52sRZLOgrlXWLb5uvDKoV3liGbEnF0y5GhyhtVdQ0++fd/nRNIdObtNPuZNGvU=
-X-Received: by 2002:a19:4c08:: with SMTP id z8mr4917148lfa.157.1616680886895;
- Thu, 25 Mar 2021 07:01:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com>
- <20210212195255.1321544-1-jiancai@google.com> <20210217094859.GA3706@willie-the-truck>
-In-Reply-To: <20210217094859.GA3706@willie-the-truck>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 25 Mar 2021 15:01:15 +0100
-Message-ID: <CACRpkdYHXrMPtkG09x9tscBzp2O=Ps-8m_03J6DcBnYcQuvWGg@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: Implement Clang's SLS mitigation
-To:     Will Deacon <will@kernel.org>
-Cc:     Jian Cai <jiancai@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Manoj Gupta <manojgupta@google.com>,
-        Luis Lozano <llozano@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        id S231160AbhCYOCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 10:02:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230281AbhCYOBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 10:01:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB71F61A28;
+        Thu, 25 Mar 2021 14:01:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616680891;
+        bh=7gpGwW7zWwBlxxPi/YrFGrbB+rkLfxEn9Nm7IEI6HwQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TMFTfngtyRCeteMDU9ujJJ5fPk8B9BFtkSXKm7e6tBWveqiycT5OuwudcrmosaqHn
+         9KPH3B/d3giL+V0WhfSlOEoRXr1SCVo4lbEo4g4+3xmpqq28bWrSEXQjeeyYltsizG
+         OVXJhKTlgkesmmfiNIqScm5JWNAPAraBQshY0MN0=
+Date:   Thu, 25 Mar 2021 15:01:28 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "cw00.choi@samsung.com" <cw00.choi@samsung.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
+        "sre@kernel.org" <sre@kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org,
-        Kristof Beyls <kristof.beyls@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        "wens@csie.org" <wens@csie.org>
+Subject: Re: [PATCH 1/2] extcon: extcon-gpio: Log error if work-queue init
+ fails
+Message-ID: <YFyXuELPizzOjcVg@kroah.com>
+References: <cover.1616574973.git.matti.vaittinen@fi.rohmeurope.com>
+ <bfd893701ac3d239fef856d2f589063983422100.1616574973.git.matti.vaittinen@fi.rohmeurope.com>
+ <1860d4e8-2e3a-fe05-cab9-782f3e35b9ab@redhat.com>
+ <CGME20210324095118epcas1p1ea1cb42f8341bbb972f591d9f5a63695@epcas1p1.samsung.com>
+ <58298d5bdd026a492e4fa2ad6de25720c66710ff.camel@fi.rohmeurope.com>
+ <b465d250-3933-91ce-a686-f158ca3d0a53@samsung.com>
+ <86d41fc6a9d2640d3f7fb749cc0fbfa2cd2736fb.camel@fi.rohmeurope.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86d41fc6a9d2640d3f7fb749cc0fbfa2cd2736fb.camel@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+On Thu, Mar 25, 2021 at 04:52:12AM +0000, Vaittinen, Matti wrote:
+> 
+> On Thu, 2021-03-25 at 09:49 +0900, Chanwoo Choi wrote:
+> > On 3/24/21 6:51 PM, Vaittinen, Matti wrote:
+> > > Hello Hans, Chanwoo, Greg,
+> > > 
+> > > On Wed, 2021-03-24 at 10:25 +0100, Hans de Goede wrote:
+> > > > Hi,
+> > > > 
+> > > > On 3/24/21 10:21 AM, Matti Vaittinen wrote:
+> > > > > Add error print for probe failure when resource managed work-
+> > > > > queue
+> > > > > initialization fails.
+> > > > > 
+> > > > > Signed-off-by: Matti Vaittinen <
+> > > > > matti.vaittinen@fi.rohmeurope.com>
+> > > > > Suggested-by: Chanwoo Choi <cw00.choi@samsung.com>
+> > > > > ---
+> > > > >  drivers/extcon/extcon-gpio.c | 4 +++-
+> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/drivers/extcon/extcon-gpio.c
+> > > > > b/drivers/extcon/extcon-
+> > > > > gpio.c
+> > > > > index 4105df74f2b0..8ea2cda8f7f3 100644
+> > > > > --- a/drivers/extcon/extcon-gpio.c
+> > > > > +++ b/drivers/extcon/extcon-gpio.c
+> > > > > @@ -114,8 +114,10 @@ static int gpio_extcon_probe(struct
+> > > > > platform_device *pdev)
+> > > > >  		return ret;
+> > > > >  
+> > > > >  	ret = devm_delayed_work_autocancel(dev, &data->work,
+> > > > > gpio_extcon_work);
+> > > > > -	if (ret)
+> > > > > +	if (ret) {
+> > > > > +		dev_err(dev, "Failed to initialize
+> > > > > delayed_work");
+> > > > >  		return ret;
+> > > > > +	}
+> > > > 
+> > > > The only ret which we can have here is -ENOMEM and as a rule we
+> > > > don't
+> > > > log
+> > > > errors for those, because the kernel memory-management code
+> > > > already
+> > > > complains
+> > > > loudly when this happens.
+> > > 
+> > > I know. This is why I originally omitted the print. Besides, if the
+> > > memory is so low that devres adding fails - then we probably have
+> > > plenty of other complaints as well... But as Chanwoo maintains the
+> > > driver and wanted to have the print - I do not have objections to
+> > > that
+> > > either. Maybe someone some-day adds another error path to wq
+> > > initialization in which case seeing it failed could make sense.
+> > > 
+> > > > So IMHO this patch should be dropped.
+> > > Fine for me - as well as keeping it. I have no strong opinion on
+> > > this.
+> > 
+> > If it is the same handling way for -ENOMEM, don't need to add log ss
+> > Hans said. 
+> > Thanks for Hans.
+> 
+> So be it :)
+> Greg, can you just apply the patch 2/2 and drop this one? (There should
+> be no dependency between these) or do you want me to resend 2/2 alone?
 
-I went back and found this feedback which is kind of the heart of the
-issues regarding SLS.
+I'll just take the 2/2 patch, thanks.
 
-On Wed, Feb 17, 2021 at 10:51 AM Will Deacon <will@kernel.org> wrote:
-
-> The big problem I have with this is that it's a compile-time decision.
-> For the other spectre crap we have a combination of the "mitigations=off"
-> command-line and CPU detection to avoid the cost of the mitigation where
-> it is not deemed necessary.
-
-For newcomers, the way this works today can be found in e.g.:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/proton-pack.c
-mitigations=off turns off Spectre v2 and v4 mitigations.
-
-AFAICT this is achived with misc parameterization to firmware
-and hypervisors and no runtime-patching of any code
-at all?
-
-(On ARM32 it has no effect whatsoever, we just turn on all
-spectre v2 mitigations by default. No runtime choice.)
-
-The way I understand it is that for SLS the compiler must at least
-put in some kind of placeholders, but that it *might* be possible to do
-runtime mitigations on top of that.
-
-We need feedback from the compiler people as to what is
-possible here.
-
-If it is *not* possible to mitigate at run-time, then I don't know
-what is the right thing to do. Certainly not to turn it on by default
-as is done today?
-
-> So I think that either we enable this unconditionally, or we don't enable it
-> at all (and people can hack their CFLAGS themselves if they want to). It
-> would be helpful for one of the Arm folks to chime in, as I'm yet to see any
-> evidence that this is actually exploitable.
-(...)
-> Is it any worse that Spectre-v1,
-> where we _don't_ have a compiler mitigation?
-
-There is such a compiler mitigation for Spectre v1, under
-the name "Speculative load hardening" the kernel
-is not (yet) enabling it.
-
-https://llvm.org/docs/SpeculativeLoadHardening.html
-it comes with the intuitive command line switch
--mspeculative-load-hardening
-
-Certainly a separate patch can add speculative load
-hardening support on top of this, or before this patch,
-if there is desire and/or feels like a more coherent
-approach.
-
-As the article says "The performance overhead of this style of
-comprehensive mitigation is very high (...) most large applications
-seeing a 30% overhead or less."
-
-I suppose it can be enabled while compiling the kernel just
-like this patch enables -mharden-sls=all
-
-I don't know if your comment means that if we enable one
-of them we should just as well enable both or none as
-otherwise there is no real protection, as attackers can
-just use the other similar attack vector?
-
-> Finally, do we have to worry about our assembly code?
-
-AFAICT yes, and you seem to have hardened
-Aarch64's ERET:s which seemed especially vulnerable
-in commit
-679db70801da9fda91d26caf13bf5b5ccc74e8e8
-"arm64: entry: Place an SB sequence following an ERET instruction"
-Link for people without kernel source:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=679db70801da9fda91d26caf13bf5b5ccc74e8e8
-
-So it seems the most vulnerable spot was already
-fixed by you, thanks! But I bet there are some more
-spots.
-
-Yours,
-Linus Walleij
+greg k-h
