@@ -2,112 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E88C3497A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63193497A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhCYRIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhCYRIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:08:25 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869E8C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 10:08:21 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id x2so2861909oiv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 10:08:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1PkoObgjDP1C1nJf3TQFBvDH6KCzgdXB9bud0P2XCd0=;
-        b=ssVNbWY7QaP0IX3/njd3dS76K+/y6hzcso4UF4Fq0mrzK8WUfF5Ddw2Wfx8q2nIimR
-         01Ra6V0tUQhLWZlIYjNCoW7qVtfNQaEFazZY6ghESyOGIgIp2JjWATAgMXKMvRV0FgwB
-         2d2td2CN9LIpmdKYRUoRcbeRKFlxwhSJt90QoCUm00jpEoIAvV82Xznqz7rFbGgX/kgJ
-         tPkFjVSvKPCGxAIk1Uchsresky+7M/9UYHu/GrSJ/k1OHBWdgprhW93GzLQIOT4zwEBy
-         giTdviKYTvl5UX8NxuYws3Hnjktd1PiJpOOb5TiOx2iD3Ky3GV4k7jajhidS6OFCuNsx
-         1Nnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1PkoObgjDP1C1nJf3TQFBvDH6KCzgdXB9bud0P2XCd0=;
-        b=bxzx7lmQtBqId+EtpLnKr+d1kW0zGLfvvx5upUFt0wJ1m30ffne4BPFhHqgPTONcv1
-         cK2oek99zhA8oiIvG4jqRhmoyZ1fW/kBqGbmK3Yj+pEJJrshZpamZYZZ10rYuL0LTrh2
-         C4qItz+SiGlZ0EaryUQSYqJuOYmPfQoa3CYPE4X7P4oDc9yKsV6l2TpW5geszEyopXHc
-         0dYay/U2xsWieFJuQTkaHaDhtCVjfF0OatD3QbXNgEWB7aKJBEEg1go36ScMon66iBD2
-         6BaO/KCHAszcbmnsWgXgsWG9vlXBqWynPHqyPAU9gy2I9+O5SLbEMVSJfcyXCrjcvMZa
-         Esfw==
-X-Gm-Message-State: AOAM530uHM73GiNPmkDxomw6205VqW7TVU8kqlSvD3LwWtym1KCcp5ib
-        OzuHBkZ2ZI1FMN+mS7cEcbOAe79e4FdK0wjwTtg=
-X-Google-Smtp-Source: ABdhPJwN6SLyKxUYQXpoYiFP9yp1Ip5mQhoWAwFyE4e7a/0zLr1UczMSFR/yhlDae8rWuqlA2R2yl8Ee+E8EL6ooSt4=
-X-Received: by 2002:a05:6808:68a:: with SMTP id k10mr4720367oig.120.1616692100977;
- Thu, 25 Mar 2021 10:08:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210322210612.1786322-1-unixbhaskar@gmail.com> <9696cd2a-bac2-15ba-c8e4-434df7b5cee0@infradead.org>
-In-Reply-To: <9696cd2a-bac2-15ba-c8e4-434df7b5cee0@infradead.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 25 Mar 2021 13:08:09 -0400
-Message-ID: <CADnq5_OP6rhH48wCWQVFrAC4iH0-v4ihREPMx8qOa=DkHKAehw@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd: Fix a typo in two different sentences
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Quan, Evan" <evan.quan@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229967AbhCYRIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:08:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229940AbhCYRIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:08:17 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E1791619C2;
+        Thu, 25 Mar 2021 17:08:16 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lPTSw-003n47-M2; Thu, 25 Mar 2021 17:08:14 +0000
+Date:   Thu, 25 Mar 2021 17:08:13 +0000
+Message-ID: <8735wjrwjm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Megha Dey <megha.dey@intel.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        dave.jiang@intel.com, ashok.raj@intel.com, kevin.tian@intel.com,
+        dwmw@amazon.co.uk, x86@kernel.org, tony.luck@intel.com,
+        dan.j.williams@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+Subject: Re: [Patch V2 07/13] irqdomain/msi: Provide msi_alloc/free_store() callbacks
+In-Reply-To: <1614370277-23235-8-git-send-email-megha.dey@intel.com>
+References: <1614370277-23235-1-git-send-email-megha.dey@intel.com>
+        <1614370277-23235-8-git-send-email-megha.dey@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: megha.dey@intel.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, dave.jiang@intel.com, ashok.raj@intel.com, kevin.tian@intel.com, dwmw@amazon.co.uk, x86@kernel.org, tony.luck@intel.com, dan.j.williams@intel.com, jgg@mellanox.com, kvm@vger.kernel.org, iommu@lists.linux-foundation.org, alex.williamson@redhat.com, bhelgaas@google.com, linux-pci@vger.kernel.org, baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Fri, 26 Feb 2021 20:11:11 +0000,
+Megha Dey <megha.dey@intel.com> wrote:
+> 
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> For devices which don't have a standard storage for MSI messages like the
+> upcoming IMS (Interrupt Message Store) it's required to allocate storage
+> space before allocating interrupts and after freeing them.
+> 
+> This could be achieved with the existing callbacks, but that would be
+> awkward because they operate on msi_alloc_info_t which is not uniform
+> across architectures. Also these callbacks are invoked per interrupt but
+> the allocation might have bulk requirements depending on the device.
+> 
+> As such devices can operate on different architectures it is simpler to
+> have separate callbacks which operate on struct device. The resulting
+> storage information has to be stored in struct msi_desc so the underlying
+> irq chip implementation can retrieve it for the relevant operations.
+> 
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Megha Dey <megha.dey@intel.com>
+> ---
+>  include/linux/msi.h |  8 ++++++++
+>  kernel/irq/msi.c    | 11 +++++++++++
+>  2 files changed, 19 insertions(+)
+> 
+> diff --git a/include/linux/msi.h b/include/linux/msi.h
+> index 46e879c..e915932 100644
+> --- a/include/linux/msi.h
+> +++ b/include/linux/msi.h
+> @@ -323,6 +323,10 @@ struct msi_domain_info;
+>   *			function.
+>   * @domain_free_irqs:	Optional function to override the default free
+>   *			function.
+> + * @msi_alloc_store:	Optional callback to allocate storage in a device
+> + *			specific non-standard MSI store
+> + * @msi_alloc_free:	Optional callback to free storage in a device
+> + *			specific non-standard MSI store
+>   *
+>   * @get_hwirq, @msi_init and @msi_free are callbacks used by
+>   * msi_create_irq_domain() and related interfaces
+> @@ -372,6 +376,10 @@ struct msi_domain_ops {
+>  					     struct device *dev, int nvec);
+>  	void		(*domain_free_irqs)(struct irq_domain *domain,
+>  					    struct device *dev);
+> +	int		(*msi_alloc_store)(struct irq_domain *domain,
+> +					   struct device *dev, int nvec);
+> +	void		(*msi_free_store)(struct irq_domain *domain,
+> +					  struct device *dev);
+>  };
+>  
+>  /**
+> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+> index c54316d..047b59d 100644
+> --- a/kernel/irq/msi.c
+> +++ b/kernel/irq/msi.c
+> @@ -434,6 +434,12 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (ops->msi_alloc_store) {
+> +		ret = ops->msi_alloc_store(domain, dev, nvec);
 
-Alex
+What is supposed to happen if we get aliasing devices (similar to what
+we have with devices behind a PCI bridge)?
 
-On Mon, Mar 22, 2021 at 6:45 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 3/22/21 2:06 PM, Bhaskar Chowdhury wrote:
-> >
-> > s/defintion/definition/ .....two different places.
-> >
-> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
->
-> > ---
-> >  drivers/gpu/drm/amd/include/atombios.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/include/atombios.h b/drivers/gpu/drm/amd/include/atombios.h
-> > index c1d7b1d0b952..47eb84598b96 100644
-> > --- a/drivers/gpu/drm/amd/include/atombios.h
-> > +++ b/drivers/gpu/drm/amd/include/atombios.h
-> > @@ -1987,9 +1987,9 @@ typedef struct _PIXEL_CLOCK_PARAMETERS_V6
-> >  #define PIXEL_CLOCK_V6_MISC_HDMI_BPP_MASK           0x0c
-> >  #define PIXEL_CLOCK_V6_MISC_HDMI_24BPP              0x00
-> >  #define PIXEL_CLOCK_V6_MISC_HDMI_36BPP              0x04
-> > -#define PIXEL_CLOCK_V6_MISC_HDMI_36BPP_V6           0x08    //for V6, the correct defintion for 36bpp should be 2 for 36bpp(2:1)
-> > +#define PIXEL_CLOCK_V6_MISC_HDMI_36BPP_V6           0x08    //for V6, the correct definition for 36bpp should be 2 for 36bpp(2:1)
-> >  #define PIXEL_CLOCK_V6_MISC_HDMI_30BPP              0x08
-> > -#define PIXEL_CLOCK_V6_MISC_HDMI_30BPP_V6           0x04    //for V6, the correct defintion for 30bpp should be 1 for 36bpp(5:4)
-> > +#define PIXEL_CLOCK_V6_MISC_HDMI_30BPP_V6           0x04    //for V6, the correct definition for 30bpp should be 1 for 36bpp(5:4)
-> >  #define PIXEL_CLOCK_V6_MISC_HDMI_48BPP              0x0c
-> >  #define PIXEL_CLOCK_V6_MISC_REF_DIV_SRC             0x10
-> >  #define PIXEL_CLOCK_V6_MISC_GEN_DPREFCLK            0x40
-> > --
->
->
-> --
-> ~Randy
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+The ITS code goes through all kind of hoops to try and detect this
+case when sizing the translation tables (in the .prepare callback),
+and I have the feeling that sizing the message store is analogous.
+
+Or do we all have the warm fuzzy feeling that aliasing is a thing of
+the past and that we can ignore this potential problem?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
