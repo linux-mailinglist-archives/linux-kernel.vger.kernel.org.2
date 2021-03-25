@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915DD348D44
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 570D6348D47
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhCYJng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:43:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34001 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229904AbhCYJm4 (ORCPT
+        id S229781AbhCYJpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:45:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhCYJor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:42:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616665374;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iazG2kvbVV7z7jI0Hl0WMxl3hq3T9QCm0mrnWD6S1vM=;
-        b=HZTTwqpzI5d25dA+u+5V1+FbZO0bikzsheye5w95tALiqhsMxz7v6633IuXdbfPj5LanJl
-        SEOvIrzH0fPCep8L3dTPaDgwJ63xtOpmmDqozhrEbV9rcBZq0oNVNBl8g8PhGU76hbYYzj
-        ntTA+Qs8qgwjyxUjcy0I/fEvZO0dqI0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22-_K8jqom3MZ6-HwWsFIEVIQ-1; Thu, 25 Mar 2021 05:42:53 -0400
-X-MC-Unique: _K8jqom3MZ6-HwWsFIEVIQ-1
-Received: by mail-wr1-f72.google.com with SMTP id a15so675841wrf.19
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:42:51 -0700 (PDT)
+        Thu, 25 Mar 2021 05:44:47 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7260FC06174A;
+        Thu, 25 Mar 2021 02:44:47 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id j2so1607334ybj.8;
+        Thu, 25 Mar 2021 02:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+PfQDO+5GIAWlGMTApmz7JCWjFl0RbrHV3jbq4RYJno=;
+        b=vBkyt7PulbbHh2XQeZOuV2kZe1ViU1f0eEsNskuhK8f8UaWLJA7HoR13/g+hXNP+GQ
+         D9vTpRdNBldW1hIc03DS25fmz6ZF4l9cfpbPPn5C2dgI1djw10iS6OSwzYdWyH8vzvzW
+         5juu6YQnf9BAZIIPnPNLB1lGZUDgO4cQ7pO4npTofT2mIFV9XnQRvUnK6nciRskdsQRt
+         nQm3CB2IHiXoz3HtIEjoEZT5HtRyMjZD+p+gYSnY7FpwHmGI0bIFquQgCU42tRkQ7+zg
+         Peq+NN6uihm4srs6FrP2RU8Zs1dCk5ub01ZbhZJ0Fjg2InqkvFOfzNS+TCM4yhdA0mmc
+         K9Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iazG2kvbVV7z7jI0Hl0WMxl3hq3T9QCm0mrnWD6S1vM=;
-        b=TcYLdQsl51IfhFCa5cncE/rJB7B3WtVZd69feEY3zsZan4taLwJeR/nY5mi2Ep13Za
-         53NB53q2O5u1Pp4gjnucL+BtffRSUGMisWqk8Cjp2ylQqC4IJy9m1PHYI5x7x+lIY0uJ
-         dD8uK6T+QOk0aSnxBHankn0tn9kAwdAiGj2YI2f/bWdebsWSgdNEHjlTyBjjHiDIhq/i
-         M7zT/UH7JYnZuWE3P2Mgc7vgR4e85z10CbQ3sQu9Xkykxo9eeyDl6p+hyrODaMY2/ZIx
-         h58nys+mCjtzri2KM2wDU+3/G8DBzrVmOUy2EcjaqA6S1R4CQO4JuGJa1VvEjn6Zky08
-         uToQ==
-X-Gm-Message-State: AOAM532/RawRaPY+yHdgF6KiWkA0uUjY/wUf/4QwCmfTsmJ87jXZpUFB
-        eVToMsjmqKDjBnPCxPa3FVdJZigeqYetK6tR93qefZhDpmaHeTwbEyUjereGtpiMYnKhx4nQKrK
-        8FPKQqRNdEG66HuJXBPiUexNp
-X-Received: by 2002:a5d:4e0e:: with SMTP id p14mr7877653wrt.64.1616665370845;
-        Thu, 25 Mar 2021 02:42:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxmI0XTmVVlZKGjXd72cRR6QIqVv7OMV2LK555R2VZPMAHPAdbuj1iy4hwRCKLYd5iX47irTg==
-X-Received: by 2002:a5d:4e0e:: with SMTP id p14mr7877623wrt.64.1616665370676;
-        Thu, 25 Mar 2021 02:42:50 -0700 (PDT)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id j13sm7019686wrt.29.2021.03.25.02.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 02:42:50 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 10:42:47 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [RFC PATCH v7 06/22] af_vsock: implement send logic for SEQPACKET
-Message-ID: <20210325094247.np2hdgwzgcjpgsia@steredhat>
-References: <20210323130716.2459195-1-arseny.krasnov@kaspersky.com>
- <20210323131045.2460319-1-arseny.krasnov@kaspersky.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+PfQDO+5GIAWlGMTApmz7JCWjFl0RbrHV3jbq4RYJno=;
+        b=X7plR6In46CVD6mxCNZIvSNaICG/U+b36+zew4YVp2dP8i2ykay1DqJFvRJLQBHoQc
+         xdsDk3z3rsIdCG5MtFL6u6CV7BKTR5R6Fv9/ZPXzA8CBepPV8RJEvI2F8FcW1LYGF4AU
+         2TM2wUxP01s6VqyIKgDTpvNc9MZsXStSXVp+u0U2jsceVkP2NMuJP7zTcz4OWmRQUkCS
+         9lAuJm8Wbndq3IF+SkJixgx226Gr7FM4syeXekivGdG8hsThzS23BM1OqGILDiIYq+G2
+         oeaYMc8bxtWFy0n/VKDJ0C5/sC0twzXH+Hvbn0L7fjouf5fSvVBGmbflrHcD+d2Mu5kd
+         UWnw==
+X-Gm-Message-State: AOAM532XpsQVCvsUVm/LEJ6dRH95U4wTNw59nVOwaHiFHC/5mOb5q2+1
+        QWqu240KEgEKXh9xUEUu81eQTI3HbHwsIOUVIID1yDYbRzjL6w==
+X-Google-Smtp-Source: ABdhPJx8jatvMzExd1kWt4jYqHsKfmdYWME1ump36KR919Lb+Iu8nflUbMlf5w1yMNhSI3KypAO6JVTtDBrHI1YkwWU=
+X-Received: by 2002:a25:3b55:: with SMTP id i82mr11517623yba.422.1616665486863;
+ Thu, 25 Mar 2021 02:44:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210323131045.2460319-1-arseny.krasnov@kaspersky.com>
+References: <16043769.gqpzGLO8mG@pinwheel> <20200703073143.423557-1-danny@kdrag0n.dev>
+ <20200703062950.5e8c1785@lwn.net> <9486d1ab-580a-0819-10c9-a62354a255e1@rasmusvillemoes.dk>
+ <CAK7LNAQ+M5Cn84tkEAiLDoyaKmrG-cFOyUjPgFC2+ksDGHn3vQ@mail.gmail.com>
+In-Reply-To: <CAK7LNAQ+M5Cn84tkEAiLDoyaKmrG-cFOyUjPgFC2+ksDGHn3vQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 25 Mar 2021 10:44:35 +0100
+Message-ID: <CANiq72nq-EyN5G9Atv5TMD+ZVsbYOPf7af18bermXs9b3-w6xg@mail.gmail.com>
+Subject: Re: [PATCH v2] editorconfig: Add automatic editor configuration file
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Danny Lin <danny@kdrag0n.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 04:10:42PM +0300, Arseny Krasnov wrote:
->This adds some logic to current stream enqueue function for SEQPACKET
->support:
->1) Use transport's seqpacket enqueue callback.
->2) Return value from enqueue function is whole record length or error
->   for SOCK_SEQPACKET.
+On Thu, Mar 25, 2021 at 8:02 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
 >
->Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->---
-> v6 -> v7:
-> 'seqpacket_enqueue' callback interface changed, 'flags' argument was
-> removed, because it was 'msg_flags' field of 'msg' argument which is
-> already exists.
->
-> include/net/af_vsock.h   |  2 ++
-> net/vmw_vsock/af_vsock.c | 21 +++++++++++++++------
-> 2 files changed, 17 insertions(+), 6 deletions(-)
+> This is sensible for tools that interface to users.
+> Users have no interest in which language is used
+> internally.
 
+Agreed in the general case (e.g. everyday tools). In the kernel's
+case, however, I think it is not as important.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+And I guess most of us tab-autocomplete anyway... :-)
 
+> Rather, I very much like this patch, but I just
+> wondered how this case could be handled.
+
+Symlinks might be a good way when there is an installer of some kind.
+But in the kernel's case, I would prefer to avoid having symlinks for
+every script (in particular if they are in the same folder).
+
+Cheers,
+Miguel
