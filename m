@@ -2,295 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0401348947
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA60B34894D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhCYGmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:42:06 -0400
-Received: from regular1.263xmail.com ([211.150.70.196]:50606 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhCYGlz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:41:55 -0400
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id 4BED41E83;
-        Thu, 25 Mar 2021 14:41:13 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-Received: from [172.16.12.236] (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P1826T139670310491904S1616654470337483_;
-        Thu, 25 Mar 2021 14:41:11 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <14a48bc4bc562a7d38fc8615f5c964a6>
-X-RL-SENDER: zhangqing@rock-chips.com
-X-SENDER: zhangqing@rock-chips.com
-X-LOGIN-NAME: zhangqing@rock-chips.com
-X-FST-TO: finley.xiao@rock-chips.com
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Subject: Re: [PATCH v4 2/4] dt-bindings: power: rockchip: Convert to
- json-schema
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        robh+dt@kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cl@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
-        finley.xiao@rock-chips.com
-References: <20210324071609.7531-1-zhangqing@rock-chips.com>
- <40a7fad3-17bb-9275-ed4a-2e3d526d05a1@collabora.com>
- <f1323618-7990-9bb7-a8c2-a7321a4034f8@collabora.com>
- <2066097.irdbgypaU6@diego>
-From:   "elaine.zhang" <zhangqing@rock-chips.com>
-Organization: rockchip
-Message-ID: <6da85755-276d-1f4d-cfa8-2d0e4d836c6b@rock-chips.com>
-Date:   Thu, 25 Mar 2021 14:41:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <2066097.irdbgypaU6@diego>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S229898AbhCYGnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:43:42 -0400
+Received: from mail-bn7nam10on2078.outbound.protection.outlook.com ([40.107.92.78]:20288
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230034AbhCYGnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 02:43:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZiyUsmx7caBlRNsgdJGHEDEA+dcBvtQ5EnsQKEV33fEeflQzNow6nzVWavJnuBHjsFlpw82rGWUnOzqDHFBVqMOfWhsBtDhzxuYDq3iQoeg6KkrLE/Q+RuglyWcIXN/yQoeyJLsWoR4m25jUFSkBB7BgrCAElQ0mRTBP21slecmJspL3BodLTK92vATV0GjNtLuyG+sjnGpekAvi0jBcZ6oskVYA4AaiI/rL8GBBjFo3amZVD/yTh+Cu4IL6n2vwiktz3DG50M1KP6qkMIlv8v+cpbPcNnEDddAYs5KphkYou+xQCmbfXs47JmtXs097TgyPEfSAZIYTaEWwMf28qg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=txfTOB7/j+I/ATo0RI7aqFzoEQ4aiqk6NEVyW5a00IQ=;
+ b=D66W/ZXArF4NwoPTxslxdI0TYkcmbiqUMHphC69kzRb++HVa9NaFK3psF7Rj2xcPaIDsyi4Wil7bL/GdBklU5Mh1irYmrZaUq474o8e6ljy6QqTWMBafkHtFvPg9ZXv+uiWRASObWjNgVAS0L4QjwCAc7InnUVop2oPOLgVGCDIlyJHUn7e5ZbHdgxD6SNdbWpt1fxjolISepVOZo4LFmsKJbuwB3MaXuv4tS7+1yEYOqjqfB3ZOhTSyXPD8Odu2iNaz41UtvvMzsg4sKQjESxr4yJi909Jc7jj7v5dePwqkEFD/E7DGEcSTIBME9XXqs+67zMwgcSDwl5/WzvyZ7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=txfTOB7/j+I/ATo0RI7aqFzoEQ4aiqk6NEVyW5a00IQ=;
+ b=lXpGrP4O0gXVCahXrtbfI9AjXoRac6beXhBdwftrVmMTqmZ8xYEtZyKJ0gMu8qzsKzFXtjp8m9tbd35+7Yl1CcWy3iKvBYZfqbXOxydPxFImpgRhynSmMuGhZWYjn+mgFToTsHj51sp7v6RMa/ydO7PWsvyzcXnge6k3JZl7CMQ=
+Authentication-Results: rjwysocki.net; dkim=none (message not signed)
+ header.d=none;rjwysocki.net; dmarc=none action=none
+ header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR11MB1943.namprd11.prod.outlook.com (2603:10b6:903:123::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Thu, 25 Mar
+ 2021 06:43:09 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::d4fe:8135:d8fa:81c0]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::d4fe:8135:d8fa:81c0%5]) with mapi id 15.20.3955.025; Thu, 25 Mar 2021
+ 06:43:09 +0000
+From:   quanyang.wang@windriver.com
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Quanyang Wang <quanyang.wang@windriver.com>
+Subject: [V2][PATCH] cpufreq: dt: check the -EPROBE_DEFER error returned by dev_pm_opp_of_cpumask_add_table
+Date:   Thu, 25 Mar 2021 14:41:38 +0800
+Message-Id: <20210325064138.2291316-1-quanyang.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: SJ0PR03CA0089.namprd03.prod.outlook.com
+ (2603:10b6:a03:331::34) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by SJ0PR03CA0089.namprd03.prod.outlook.com (2603:10b6:a03:331::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Thu, 25 Mar 2021 06:42:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5116560b-3b1d-40ea-98bd-08d8ef592f34
+X-MS-TrafficTypeDiagnostic: CY4PR11MB1943:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR11MB1943C74AD802AFC8ABE462CDF0629@CY4PR11MB1943.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ICF5gvuLOXb7at4C5YlZvo7MrioI/EGPscyWK3rbOtp3sJyGIGH26+XFdiDKYoZhUite5edxxM/aPkzRoc5NYQLlJZZYyoLRqvZ4S6uKb7jYUSdxrF9N/vOMmzXxOoRHwP53yVDnMC24iIEcfMwAFWCecTWBoscuz1iEsf7KDqNebeLWVCi5EYvV9WuaDatZhfKsYc57M5WXCHdpXhwkgWGUYLXBoH2L9MH5+lj4apLlkyLgJ2/Eh3sApKD1YqWlVyx8zi8pPFQrQ47TAm/MnYxNwKiiCSRYa2Ztr1xWxowy6Jzj+qrGeJHLJVGSID3Si8Yvnp/mnhDp1vpQoF2PayZLIQrdh0lQlEvwjp8oZJI7N7cwzY5WvYBRbMBHQD44WvXZjrIEkKxkCGWG047HYjU+wLed/XXYRieyVBJlL6T8MeuyaOCbfNSg+I8eGXUmJSyCDuEHqwII1/KSdGejEoWroM8q+MlzceNWK57ttGpScjNgziKBTQrg6k//Hl9hAlO0DTN0Am07qud975XqPdqBnWewgKLahYRDYqa5FIYyMwqGNWe87HmhPcLHmpYdK1ZFPgmunvfhN8zjzuu/Tuqu2uiAEJRs6+UplEzp1MGpcBytW7vjJRKOkfG4TrlCPIHA0kL2/MPIp7DTzUKrj3bGk4HuWBnqHYXA0dD2HG0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(39850400004)(396003)(136003)(16526019)(9686003)(956004)(2906002)(1076003)(2616005)(6506007)(107886003)(6512007)(6486002)(478600001)(86362001)(83380400001)(38100700001)(66946007)(8936002)(4326008)(52116002)(186003)(26005)(36756003)(66556008)(316002)(66476007)(8676002)(5660300002)(110136005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?GiQf2mv9DBCyc/npkcJIZwrs1ThhY396vEK0ArLLC7gEcJBLWmiaGBUg9QnK?=
+ =?us-ascii?Q?kpsE4pR6WPWhQmGpHXjldAUf2v2rVha+1aMl5M+MN3CWKVO9j5BtMWnnigdp?=
+ =?us-ascii?Q?/jBJ/HWS3kPGhOdKGB7BDUonxz2nPAfbWimiyKVGdg2WfwsRqKwU5l7YhQ3m?=
+ =?us-ascii?Q?+ys2sg/A7kupMsL3N/YKrhwk7XykEKx8iHhuvdABRf2TWglJEMIhAt1Qmr8D?=
+ =?us-ascii?Q?ERlWv3mjg4lIVZXOOwlmH1AorQbGBFdvTrpBf3C00dUH9YaKh2RX+wSLD0dL?=
+ =?us-ascii?Q?4R/ChBGbCrOYRZvo/GBa1bceLSfjCTBnB4+8hfpLmeILm4Fx2iUn0kyAKzi2?=
+ =?us-ascii?Q?8aXd04RsMVsuTmo1/JgIVrDRMhLQ4jLRhdhXiYbs0QS9AYRlHIcdITK9xFXI?=
+ =?us-ascii?Q?GcHc3Wol61m93nTUE5auPcdSGbs6zFnHLdcIRwm9gGYMp1gHF9zlGv5Tty5E?=
+ =?us-ascii?Q?zzn5My4ZIcREkyCtbtR/2Fi1nwa3laJDytYIduGpNBcAuzaQoY3B5tQqEbZf?=
+ =?us-ascii?Q?kWBzOuLagKnGdkYtlfMOwXB6CMgQ1WVUFlpsedU5e6jHlMoQ/7ISSfu32bs0?=
+ =?us-ascii?Q?VgY8h+PrdRlRqXYG1zN8YLg7BFnQJaBxLT+rYkb2uy10Pq+qU2BAebpLHyP3?=
+ =?us-ascii?Q?Xk4I5TyD9871VDs34QywJgHEXDUNBZMjqCPCr2HVdfi8mYOi+NPj8vClCldh?=
+ =?us-ascii?Q?bgfNQoilB1v53WQg/9/Gn4tPqlqUlaSI3p2POBXw0y9ra3FTI8nUAT/R+H4c?=
+ =?us-ascii?Q?5rv0VElKMaDCRG8UqQXoxa07DIHc4as3tLpS3/cAjfxStYT6brtyHGHPG3J/?=
+ =?us-ascii?Q?30zCKRy9/qLRe9aHfWd8KoiBzxlLbfvFc5APb3fELj7Du+jYo2yCfvUXzM7K?=
+ =?us-ascii?Q?CwLvFD2kkNADK6nHc3nC5L2kt2UjIbrS2C0LGim7hPx7BJ2WefyCwtvbBjsu?=
+ =?us-ascii?Q?t2PMYopgf4gU7LRFUeR435fWE7xppxARaE1qA+BA5mYyUbckcbbT+Ov1xWjB?=
+ =?us-ascii?Q?xyTVvcly6TZlDBe6qgjOppoX7fj7/rke6zNvhWb33xzWjzBqm2G13WNVmf+U?=
+ =?us-ascii?Q?gE47Up9x/Lps+WAugTbS3DTzX05Ykiuf23QUBN6s5x7dcxkKMmmxHKCgf5vE?=
+ =?us-ascii?Q?VHAfEUxjRkYmr7G/5eho8fvplzwP28ciQlsCeY6cpE4qcHGaE22nwX0xfHs8?=
+ =?us-ascii?Q?3Z571tUTi9D01HlqxXCQMOHAZTYcaSVa8s8A1NUXfMgxN4iUHvhi7k+INyZE?=
+ =?us-ascii?Q?YoeGvPR8mwctcWYAQ7WPOcyJf+KPvoPgVXYkQ+XWNGZocHOPKqTyrNFkLeRW?=
+ =?us-ascii?Q?4KjLqjeaD/mtpkrPa08OOvh5?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5116560b-3b1d-40ea-98bd-08d8ef592f34
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Mar 2021 06:43:09.2917
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /7OlqjkfLCKvuCx+frO5Nca9u0vg2LSr4aFxsXN2+hXio22RLOYtHd2qiGATBOyiVM6S3A1VqWdqSn18Rjy3bHKo1aB9jDUAngM72eUVQSE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1943
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,Heiko:
+From: Quanyang Wang <quanyang.wang@windriver.com>
 
-在 2021/3/24 下午9:31, Heiko Stübner 写道:
-> Am Mittwoch, 24. März 2021, 11:32:42 CET schrieb Enric Balletbo i Serra:
->> On 24/3/21 11:25, Enric Balletbo i Serra wrote:
->>> Hi Elaine,
->>>
->>> On 24/3/21 11:18, elaine.zhang wrote:
->>>> Hi,  Enric
->>>>
->>>> 在 2021/3/24 下午5:56, Enric Balletbo i Serra 写道:
->>>>> Hi Elaine,
->>>>>
->>>>> This is not the exact version I sent, and you reintroduced a "problem" that were
->>>>> already solved/discussed on previous versions. See below:
->>>>>
->>>>> On 24/3/21 8:16, Elaine Zhang wrote:
->>>>>> Convert the soc/rockchip/power_domain.txt binding document to
->>>>>> json-schema and move to the power bindings directory.
->>>>>>
->>>>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>>>> If you do significant is a good practice shortly describe them within [] here.
->>>>>
->>>>>> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
->>>>> Note that my last version already had the
->>>>>
->>>>> Reviewed-by: Rob Herring <robh@kernel.org>
->>>>>
->>>>> Which should be fine for merging (with probably only minor changes) and you
->>>>> could maintain if you don't do significant changes, but that's not the case, as
->>>>> I said, you are reintroducing one problem. Please review the comments already
->>>>> received on this patchset or similar patchsets to avoid this.
->>>>>
->>>>>> ---
->>>>>>    .../power/rockchip,power-controller.yaml      | 284 ++++++++++++++++++
->>>>>>    .../bindings/soc/rockchip/power_domain.txt    | 136 ---------
->>>>>>    2 files changed, 284 insertions(+), 136 deletions(-)
->>>>>>    create mode 100644
->>>>>> Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>>>>    delete mode 100644
->>>>>> Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
->>>>>>
->>>>>> diff --git
->>>>>> a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>>>> b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>>>> new file mode 100644
->>>>>> index 000000000000..a220322c5139
->>>>>> --- /dev/null
->>>>>> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->>>>>> @@ -0,0 +1,284 @@
->>>>>> +# SPDX-License-Identifier: GPL-2.0-only
->>>>>> +%YAML 1.2
->>>>>> +---
->>>>>> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
->>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>>> +
->>>>>> +title: Rockchip Power Domains
->>>>>> +
->>>>>> +maintainers:
->>>>>> +  - Elaine Zhang <zhangqing@rock-chips.com>
->>>>>> +  - Rob Herring <robh+dt@kernel.org>
->>>>> Up to Rob, but I don't think Rob would like to be the maintainer. I think you
->>>>> can only include yourself and Heiko.
->>>>>
->>>>>
->>>>>> +  - Heiko Stuebner <heiko@sntech.de>
->>>>>> +
->>>>>> +description: |
->>>>>> +  Rockchip processors include support for multiple power domains which can be
->>>>>> +  powered up/down by software based on different application scenarios to
->>>>>> save power.
->>>>>> +
->>>>>> +  Power domains contained within power-controller node are generic power domain
->>>>>> +  providers documented in
->>>>>> Documentation/devicetree/bindings/power/power-domain.yaml.
->>>>>> +
->>>>>> +  IP cores belonging to a power domain should contain a "power-domains"
->>>>>> +  property that is a phandle for the power domain node representing the domain.
->>>>>> +
->>>>>> +properties:
->>>>>> +  $nodename:
->>>>>> +    const: power-controller
->>>>>> +
->>>>>> +  compatible:
->>>>>> +    enum:
->>>>>> +      - rockchip,px30-power-controller
->>>>>> +      - rockchip,rk3036-power-controller
->>>>>> +      - rockchip,rk3066-power-controller
->>>>>> +      - rockchip,rk3128-power-controller
->>>>>> +      - rockchip,rk3188-power-controller
->>>>>> +      - rockchip,rk3228-power-controller
->>>>>> +      - rockchip,rk3288-power-controller
->>>>>> +      - rockchip,rk3328-power-controller
->>>>>> +      - rockchip,rk3366-power-controller
->>>>>> +      - rockchip,rk3368-power-controller
->>>>>> +      - rockchip,rk3399-power-controller
->>>>>> +
->>>>>> +  "#power-domain-cells":
->>>>>> +    const: 1
->>>>>> +
->>>>>> +  "#address-cells":
->>>>>> +    const: 1
->>>>>> +
->>>>>> +  "#size-cells":
->>>>>> +    const: 0
->>>>>> +
->>>>>> +patternProperties:
->>>>>> +  "^pd_[0-9a-z_]{2,10}@[0-9a-f]+$":
->>>>>> +    type: object
->>>>>> +    description: |
->>>>>> +      Represents the power domains within the power controller node as
->>>>>> documented
->>>>>> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
->>>>>> +
->>>>> The node names must be generic, as this is power-domain must be in the form:
->>>>>
->>>>> +patternProperties:
->>>>> +  "^power-domain@[0-9a-f]+$":
->>>> In this way, dtbs_check cannot be passed, and all the usage methods in dts of
->>>> Rockchip need to be corrected, which I think is a bigger change.
->>> Well, the problem is in the Rockchip dtbs, so needs to be fixed there. The
->>> bindings must describe hardware in a generic way, not describe the actual dtbs
->>> to not report errors.
->>>
->> FWIW I remember I did something regarding this but never sent to upstream, feel
->> free to pick if you find useful.
->>
->> *
->> https://gitlab.collabora.com/eballetbo/linux/-/commit/12499f223e3d33602449b9102404fe573fb804f5
->> *
->> https://gitlab.collabora.com/eballetbo/linux/-/commit/12499f223e3d33602449b9102404fe573fb804f5
->> *
->> https://gitlab.collabora.com/eballetbo/linux/-/commit/492bf2213c341152a1c2423242c5634b9e53ff27
-> looks good that way. I did look at the power-domain driver and
-> we're (of course) not doing anything with the name in front of the @ :-) .
->
-> So I'd be happy to get these.
->
-> Heiko
+The function dev_pm_opp_of_cpumask_add_table may return -EPROBE_DEFER
+which comes from clk_get(dev, NULL) in _update_opp_table_clk. Ignoring
+this error and call the next function  dev_pm_opp_of_cpumask_add_table
+may cause dt_cpufreq_probe return -ENODEV instead of -EPROBE_DEFER.
+And this will result cpufreq-dt driver probe failure.
 
-I still don't want to modify this,  I think the PD summary will become 
-less intuitive.
+Add check condition to fix this issue.
 
-Now:
+Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
+---
+ drivers/cpufreq/cpufreq-dt.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-domain                          status          slaves
-     /device                                             runtime status
-----------------------------------------------------------------------
-pd_pipe                         on
-     /devices/platform/3c0800000.pcie unsupported
-     /devices/platform/fc800000.sata                     active
-     /devices/platform/usbdrd/fcc00000.dwc3              active
-     /devices/platform/usbhost/fd000000.dwc3             active
-pd_rkvenc                       off-0
-     /devices/platform/fdf40f00.iommu                    suspended
-     /devices/platform/fdf40000.rkvenc                   suspended
-pd_rkvdec                       off-0
-     /devices/platform/fdf80800.iommu                    suspended
-     /devices/platform/fdf80200.rkvdec                   suspended
-pd_vpu                          off-0
-     /devices/platform/fdea0800.iommu                    suspended
-     /devices/platform/fdea0400.vdpu                     suspended
-pd_rga                          off-0
-     /devices/platform/fded0480.iommu                    suspended
-     /devices/platform/fdee0800.iommu                    suspended
-     /devices/platform/fdef0800.iommu                    suspended
-     /devices/platform/fdee0000.vepu                     suspended
-     /devices/platform/fdef0000.iep                      suspended
-     /devices/platform/fded0000.jpegd                    suspended
-     /devices/platform/fdeb0000.rk_rga                   suspended
-pd_vo                           on
-     /devices/platform/fe850000.mipi-dphy                suspended
-     /devices/platform/fe040000.vop                      active
-     /devices/platform/fe0c0000.edp                      suspended
-     /devices/platform/fe0a0000.hdmi                     active
-     /devices/platform/fe060000.dsi                      active
-pd_vi                           off-0
-     /devices/platform/fdff1a00.iommu                    suspended
-     /devices/platform/fdff0000.rkisp                    suspended
-pd_gpu                          on
-     /devices/platform/fde60000.gpu                      active
-pd_npu                          off-0
-
-If modify to power-domain@:
-
-domain                          status          slaves
-     /device                                             runtime status
-----------------------------------------------------------------------
-power-domain                    on
-     /devices/platform/3c0800000.pcie unsupported
-     /devices/platform/fc800000.sata                     active
-     /devices/platform/usbdrd/fcc00000.dwc3              active
-     /devices/platform/usbhost/fd000000.dwc3             active
-power-domain                    off-0
-     /devices/platform/fdf40f00.iommu                    suspended
-     /devices/platform/fdf40000.rkvenc                   suspended
-power-domain                    off-0
-     /devices/platform/fdf80800.iommu                    suspended
-     /devices/platform/fdf80200.rkvdec                   suspended
-power-domain                    off-0
-     /devices/platform/fdea0800.iommu                    suspended
-     /devices/platform/fdea0400.vdpu                     suspended
-power-domain                    off-0
-     /devices/platform/fded0480.iommu                    suspended
-     /devices/platform/fdee0800.iommu                    suspended
-     /devices/platform/fdef0800.iommu                    suspended
-     /devices/platform/fdee0000.vepu                     suspended
-     /devices/platform/fdef0000.iep                      suspended
-     /devices/platform/fded0000.jpegd                    suspended
-     /devices/platform/fdeb0000.rk_rga                   suspended
-power-domain                    on
-     /devices/platform/fe850000.mipi-dphy                suspended
-     /devices/platform/fe040000.vop                      active
-     /devices/platform/fe0c0000.edp                      suspended
-     /devices/platform/fe0a0000.hdmi                     active
-     /devices/platform/fe060000.dsi                      active
-power-domain                    off-0
-     /devices/platform/fdff1a00.iommu                    suspended
-     /devices/platform/fdff0000.rkisp                    suspended
-power-domain                    on
-     /devices/platform/fde60000.gpu                      active
-power-domain                    off-0
-console:/ #
-
-I think the now one is more intuitive, so I don't want to fix it.
-
->
->
->
->
-
+diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+index b1e1bdc63b01..25e46df92941 100644
+--- a/drivers/cpufreq/cpufreq-dt.c
++++ b/drivers/cpufreq/cpufreq-dt.c
+@@ -257,7 +257,12 @@ static int dt_cpufreq_early_init(struct device *dev, int cpu)
+ 	 *
+ 	 * OPPs might be populated at runtime, don't check for error here.
+ 	 */
+-	if (!dev_pm_opp_of_cpumask_add_table(priv->cpus))
++	ret = dev_pm_opp_of_cpumask_add_table(priv->cpus);
++	if (ret) {
++		/* Return the -EPROBE_DEFER error to trigger the deferred probe. */
++		if (ret == -EPROBE_DEFER)
++			goto out;
++	} else
+ 		priv->have_static_opps = true;
+ 
+ 	/*
+-- 
+2.25.1
 
