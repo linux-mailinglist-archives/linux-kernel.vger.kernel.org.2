@@ -2,49 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA85F3492FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B96349300
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhCYNVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:21:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55852 "EHLO mx2.suse.de"
+        id S230320AbhCYNVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:21:40 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:47074 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230239AbhCYNVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:21:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B723DAC16;
-        Thu, 25 Mar 2021 13:21:21 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 14:21:19 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Wang Wensheng <wangwensheng4@huawei.com>
-Cc:     akpm@linux-foundation.org, pasha.tatashin@oracle.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        rui.xiang@huawei.com
-Subject: Re: [PATCH] mm/sparse: Add the missing sparse_buffer_fini() in error
- branch
-Message-ID: <YFyOT/1j95uON6/9@localhost.localdomain>
-References: <20210325113155.118574-1-wangwensheng4@huawei.com>
+        id S229764AbhCYNVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 09:21:34 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lPPvX-00CxTf-QS; Thu, 25 Mar 2021 14:21:31 +0100
+Date:   Thu, 25 Mar 2021 14:21:31 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Sunil Kovvuri <sunil.kovvuri@gmail.com>
+Cc:     Hariprasad Kelam <hkelam@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+Subject: Re: [net-next PATCH 0/8] configuration support for switch headers &
+ phy
+Message-ID: <YFyOW5X0Nrjz8w/v@lunn.ch>
+References: <MWHPR18MB14217B983EFC521DAA2EEAD2DE649@MWHPR18MB1421.namprd18.prod.outlook.com>
+ <YFpO7n9uDt167ANk@lunn.ch>
+ <CA+sq2CeT2m2QcrzSn6g5rxUfmJDVQqjYFayW+bcuopCCoYuQ6Q@mail.gmail.com>
+ <YFyHKqUpG9th+F62@lunn.ch>
+ <CA+sq2CfvscPPNTq4PR-6hjYhQuj=u2nmLa0Jq2cKRNCA-PypGQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210325113155.118574-1-wangwensheng4@huawei.com>
+In-Reply-To: <CA+sq2CfvscPPNTq4PR-6hjYhQuj=u2nmLa0Jq2cKRNCA-PypGQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 11:31:55AM +0000, Wang Wensheng wrote:
-> sparse_buffer_init() and sparse_buffer_fini() should appear in pair, or
-> a WARN issue would be through the next time sparse_buffer_init() runs.
+On Thu, Mar 25, 2021 at 06:32:12PM +0530, Sunil Kovvuri wrote:
+> On Thu, Mar 25, 2021 at 6:20 PM Andrew Lunn <andrew@lunn.ch> wrote:
+> >
+> > > > So you completely skipped how this works with mv88e6xxx or
+> > > > prestera. If you need this private flag for some out of mainline
+> > > > Marvell SDK, it is very unlikely to be accepted.
+> > > >
+> > > >         Andrew
+> > >
+> > > What we are trying to do here has no dependency on DSA drivers and
+> > > neither impacts that functionality.
+> >
+> > So this is an indirect way of saying: Yes, this is for some out of
+> > mainline Marvell SDK.
+> >
+> > > Here we are just notifying the HW to parse the packets properly.
+> >
+> > But the correct way for this to happen is probably some kernel
+> > internal API between the MAC and the DSA driver. Mainline probably has
+> > no need for this private flag.
+> >
+> >    Andrew
 > 
-> Add the missing sparse_buffer_fini() in error branch.
-> 
-> Fixes: 85c77f791390 ("mm/sparse: add new sparse_init_nid() and sparse_init()")
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> Didn't get why you say so.
+> HW expects some info from SW to do the packet parsing properly and
+> this is specific to this hardware.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Anything which needs out of mainline code is going to be rejected,
+unless you can show there is an in mainline use case as well. Which is
+why i keep pointing you to mv88e6xxx and prestira. That provides the
+necessary {E}DSA tags. You have an mv88e6xxx and prestira switch being
+controlled by Linux with DSA tagged frames flowing out of it into your
+MAC driver. What is the big picture use case that requires this
+private flag to enable DSA parsing? Why don't the MAC driver and the
+DSA driver just talk to each other, and setup the parsing?
 
-
--- 
-Oscar Salvador
-SUSE L3
+	Andrew
