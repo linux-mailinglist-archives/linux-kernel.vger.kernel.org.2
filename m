@@ -2,142 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FE3348664
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:22:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC489348660
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 02:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239588AbhCYBWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 21:22:23 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14525 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239566AbhCYBWC (ORCPT
+        id S239613AbhCYBV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 21:21:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235531AbhCYBVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 21:22:02 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F5S1r5WxszNmxN;
-        Thu, 25 Mar 2021 09:19:28 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.117) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
- 09:21:51 +0800
-Subject: Re: md/dm-mpath: check whether all pgpaths have same uuid in
- multipath_ctr()
-To:     Mike Snitzer <snitzer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     <agk@redhat.com>, <dm-devel@redhat.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        linfeilong <linfeilong@huawei.com>,
-        lixiaokeng <lixiaokeng@huawei.com>,
-        "wubo (T)" <wubo40@huawei.com>
-References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
- <20210322081155.GE1946905@infradead.org> <20210322142207.GB30698@redhat.com>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Message-ID: <cd71d0fa-31d1-5cd8-74a1-8b124724b3b1@huawei.com>
-Date:   Thu, 25 Mar 2021 09:21:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Wed, 24 Mar 2021 21:21:13 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C761C06174A;
+        Wed, 24 Mar 2021 18:20:40 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id m7so163925pgj.8;
+        Wed, 24 Mar 2021 18:20:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qiLJdMhcciEZgBLfoz2ge4p0MXfhpuLjibL+Tk2uVwM=;
+        b=OGjLQcKreAioM5wf1smvNoJ82BsvMpFZ+ORVLIPjAod0bP8FJpiA8pcj0RXaTxR6RN
+         nXU6jwLTdn1PPpwsdytGy/7piy2pJ+xuCLDlblMyDwhqeRclMLRVoADBUSR+i65FxqpI
+         7nvyG2IO3ErxEI9WYIhnEpTyIgU/Uq+SbkqU4Chn8dNeB94Q4yM4vnKT0E1DFFmglEpF
+         cxAEYBqmA4La+JKLkG/D9O4s5H6Jj0ZhxgL2hQwA2x+yZTUWfBAJZrShwOmRhIVIdMOC
+         ebuFLuC3Ldr2pLXkriYZx14UNAnwWvh+Cpil4nhEEkMJ8Izk0lXRh9Wu16oWlCr/mvwq
+         E/5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qiLJdMhcciEZgBLfoz2ge4p0MXfhpuLjibL+Tk2uVwM=;
+        b=ZFCDkv7SqRibhRlFKj2wS+UW4Cgd/GDQzPiHPVWgEBUyBbzjRiYg560jR3zd55o7Gg
+         /4xjpeNkc/BeXt01Boej0pdViwhodnmUJDA6/csefTRdvxWCu0WCc3f92lRC07S/JNZH
+         yNzt8DvTShhtNh1JbjoFtbA3gt1wtygEvTIfBWQ8JwlzZ3xX/tLIkHPF9+YMJmRMS2Lp
+         8UN3uMG42iEiKvsnQs1Ca8gsSmyPy8cNMGhLZuSREGUYqKIZLfumqNvyONom57A9dFt3
+         qKjKRtLogE4exPkkRxbXusODjpOOMEIIXi9dotdTAe6Na/tfkgFj8kkFi7MP0MMDmDY3
+         CJLA==
+X-Gm-Message-State: AOAM5323qes8GeyWUT/+dsMZYaRyD/8kmrJWeVhewlwyGBRt6E2NDI9P
+        HJAfO/yGGaY/nOGYIHwyU+E=
+X-Google-Smtp-Source: ABdhPJz13qOoTUuf5M3bIR5HvIbImmbvAh5xl7ISbW5k+N9dGYB8MAuXYM/ugR5dLmSdYMeM8Fye2Q==
+X-Received: by 2002:aa7:9246:0:b029:1ed:cfa4:f1a8 with SMTP id 6-20020aa792460000b02901edcfa4f1a8mr5643278pfp.73.1616635240134;
+        Wed, 24 Mar 2021 18:20:40 -0700 (PDT)
+Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
+        by smtp.gmail.com with ESMTPSA id e7sm3606796pfc.88.2021.03.24.18.20.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Mar 2021 18:20:38 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dave Airlie <airlied@redhat.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Eric Anholt <eric@anholt.net>,
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        "Kristian H. Kristensen" <hoegsberg@google.com>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        linux-kernel@vger.kernel.org (open list),
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sharat Masetty <smasetty@codeaurora.org>
+Subject: [PATCH 0/2] drm/msm: Fixes/updates for perfetto profiling
+Date:   Wed, 24 Mar 2021 18:23:51 -0700
+Message-Id: <20210325012358.1759770-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210322142207.GB30698@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.117]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rob Clark <robdclark@chromium.org>
 
+A couple kernel side things I realized I needed in the process of
+implementing performance-counter and render-stage support for perfetto,
+the first patch fixes the MSM_PARAM_TIMESTAMP query which was just
+wrong on a5xx/a6xx (ALWAYS_COUNT vs ALWAYS_ON).  The second adds a
+way for userspace to determine whether the device has suspended since
+the last sampling period (which means counters have lost their state
+and configuration).
 
-On 2021/3/22 22:22, Mike Snitzer wrote:
-> On Mon, Mar 22 2021 at  4:11am -0400,
-> Christoph Hellwig <hch@infradead.org> wrote:
-> 
->> On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
->>> From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
->>>
->>> When we make IO stress test on multipath device, there will
->>> be a metadata err because of wrong path. In the test, we
->>> concurrent execute 'iscsi device login|logout' and
->>> 'multipath -r' command with IO stress on multipath device.
->>> In some case, systemd-udevd may have not time to process
->>> uevents of iscsi device logout|login, and then 'multipath -r'
->>> command triggers multipathd daemon calls ioctl to load table
->>> with incorrect old device info from systemd-udevd.
->>> Then, one iscsi path may be incorrectly attached to another
->>> multipath which has different uuid. Finally, the metadata err
->>> occurs when umounting filesystem to down write metadata on
->>> the iscsi device which is actually not owned by the multipath
->>> device.
->>>
->>> So we need to check whether all pgpaths of one multipath have
->>> the same uuid, if not, we should throw a error.
->>>
->>> Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
->>> Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
->>> Signed-off-by: linfeilong <linfeilong@huawei.com>
->>> Signed-off-by: Wubo <wubo40@huawei.com>
->>> ---
->>>  drivers/md/dm-mpath.c   | 52 +++++++++++++++++++++++++++++++++++++++++
->>>  drivers/scsi/scsi_lib.c |  1 +
->>>  2 files changed, 53 insertions(+)
->>>
->>> diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
->>> index bced42f082b0..f0b995784b53 100644
->>> --- a/drivers/md/dm-mpath.c
->>> +++ b/drivers/md/dm-mpath.c
->>> @@ -24,6 +24,7 @@
->>>  #include <linux/workqueue.h>
->>>  #include <linux/delay.h>
->>>  #include <scsi/scsi_dh.h>
->>> +#include <linux/dm-ioctl.h>
->>>  #include <linux/atomic.h>
->>>  #include <linux/blk-mq.h>
->>>
->>> @@ -1169,6 +1170,45 @@ static int parse_features(struct dm_arg_set *as, struct multipath *m)
->>>  	return r;
->>>  }
->>>
->>> +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
->>> +#define MPATH_UUID_PREFIX_LEN 7
->>> +static int check_pg_uuid(struct priority_group *pg, char *md_uuid)
->>> +{
->>> +	char pgpath_uuid[DM_UUID_LEN] = {0};
->>> +	struct request_queue *q;
->>> +	struct pgpath *pgpath;
->>> +	struct scsi_device *sdev;
->>> +	ssize_t count;
->>> +	int r = 0;
->>> +
->>> +	list_for_each_entry(pgpath, &pg->pgpaths, list) {
->>> +		q = bdev_get_queue(pgpath->path.dev->bdev);
->>> +		sdev = scsi_device_from_queue(q);
->>
->> Common dm-multipath code should never poke into scsi internals.  This
->> is something for the device handler to check.  It probably also won't
->> work for all older devices.
-> 
-> Definitely.
-> 
-> But that aside, userspace (multipathd) _should_ be able to do extra
-> validation, _before_ pushing down a new table to the kernel, rather than
-> forcing the kernel to do it.
+I am a bit tempted to add a way that a CAP_SYS_ADMIN user could ask
+the GPU to not suspend (until the drm_file is closed), but so far
+I've managed to avoid needing this.
 
-As your said, it is better to do extra validation in userspace (multipathd).
-However, in some cases, the userspace cannot see the real-time present devices
-info as Martin (committer of multipath-tools) said.
-In addition, the kernel can see right device info in the table at any time,
-so the uuid check in kernel can ensure one multipath is composed with paths mapped to
-the same device.
+Rob Clark (2):
+  drm/msm: Fix a5xx/a6xx timestamps
+  drm/msm: Add param for userspace to query suspend count
 
-Considering the severity of the wrong path in multipath, I think it worths more
-checking.
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c   | 4 ++--
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 4 ++--
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c | 3 +++
+ drivers/gpu/drm/msm/msm_drv.c           | 1 +
+ drivers/gpu/drm/msm/msm_gpu.c           | 2 ++
+ drivers/gpu/drm/msm/msm_gpu.h           | 2 ++
+ include/uapi/drm/msm_drm.h              | 1 +
+ 7 files changed, 13 insertions(+), 4 deletions(-)
 
-Regards
-Zhiqiang Liu.
-
-
-> 
-> .
-> 
+-- 
+2.29.2
 
