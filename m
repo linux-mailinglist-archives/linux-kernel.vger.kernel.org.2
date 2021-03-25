@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FF6349C47
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A9CA349C49
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 23:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhCYWav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 18:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42564 "EHLO
+        id S231297AbhCYWbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 18:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230486AbhCYWad (ORCPT
+        with ESMTP id S230453AbhCYWbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 18:30:33 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA6CFC06174A;
-        Thu, 25 Mar 2021 15:30:33 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 5B2F36A2;
-        Thu, 25 Mar 2021 22:30:33 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5B2F36A2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1616711433; bh=1qlmKLPTjs0PRb7TDA0clS4F1PUPTP6FjOnMXk0X1ss=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=POxXQ1DgCcjBE8SKpdMzx64zYvmovEJ03iURTYhsEfkqXjRuA1o5QSXtie89fFWLS
-         PUyJPOji/zRQW2OaJLXZ8z7tblR+lx8tIANJSqZxv70Dr1euWs+K7dt89mnCjinrZ8
-         E0UfwCItlQTxHYa7bpS7AJhvrXXDeJ8pyA0WV2o1xfOwZZIm1lnCoLHLEmaUQ8bRgg
-         7EBRWE2o01ZsZKz6rd30fLmCubi1NHjAJe3s6h6e4O8+1ph1XRUhKu657vR/mbrDm1
-         XYW+GidLUvJ2OOJRbdBttghzU8wnDQgutAKyUBtzsSRiPELi/KZCEigGQlEURs/8VS
-         os2v04yzzsPHg==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel-doc: better handle '::' sequences
-In-Reply-To: <20210325221437.GA1719932@casper.infradead.org>
-References: <20210325184615.08526aed@coco.lan>
- <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
- <87tuozyslu.fsf@meer.lwn.net>
- <20210325191435.GZ1719932@casper.infradead.org>
- <87a6qrx7wf.fsf@meer.lwn.net>
- <20210325221437.GA1719932@casper.infradead.org>
-Date:   Thu, 25 Mar 2021 16:30:32 -0600
-Message-ID: <87wntux3w7.fsf@meer.lwn.net>
+        Thu, 25 Mar 2021 18:31:49 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9175CC06174A;
+        Thu, 25 Mar 2021 15:31:49 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id v3so3271011pgq.2;
+        Thu, 25 Mar 2021 15:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EmLcgF1u9OHQdNQJvc1RdIqmppq+TxMi8g7LBfwF3pg=;
+        b=RWpg+/QeRT9vqXNET5uBaFAyAO+jQ0pdYIM1O46KSP7ptGhLDWrxy/nYmBcI5Vgbho
+         0QjtbA4pMNvJQGfPARYzelplKtcZyIfrUOHSoLed7ILyR8LHjGxPodt1fL+Erez4NIYC
+         /y7PQorfEZxx5+7w/dwXEKBgks7rLMk4bgZUDyKt4lp5oYR/bF0Bm70C4It69OxwGi0h
+         Sxn3t7+2nSgpGyVf9DVRIwj4mb9vwh3Tw2DD+e7OQ7Xa68kVD2hAj92KKRj+xcx8WBaK
+         gbhUrd9YqlsGh/GsKnmnWsnCusW+M7c2rYMVz931/wJSYwG3X/vp+9cXQMtmeuOWBZ6q
+         hTJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EmLcgF1u9OHQdNQJvc1RdIqmppq+TxMi8g7LBfwF3pg=;
+        b=lAtvByB7uU2Y1nokGPtct/D/VziOz2VJtzIs0G8ZttGsOjKYIBptXNsasIn9wSfUjN
+         EiKibL3QSBB0PrCSTcGxV29gxlPuH7ipgAVC9oQr6AYhGv6p0RHGarO6cqRJifocEOIq
+         Wt2QgwPuiuTBPOGUF7vBJN4msK7CLp56cIVm7TLfyv9RrfYNJe20tm+PLasgp9HPreS9
+         zpqpmhAWvVIcActqu/M9AnnN1k0zv8SagRK1ajtwpSmrO9FYodeNpq/8oqtmGMvKeRjK
+         5zxFIInUnqt0K5d6KV6GMGgID2KbtTZwEk5IxZ/cAfWb5TEveOrkcXFRkKkP86KI/alj
+         zIsA==
+X-Gm-Message-State: AOAM532ZIQW5Vtu0JW36fdtO2w69lRAhkRVdwmTf3tk2MrgLWygYNWJF
+        SaFzFZJg2fnFCg2lNn5NH+c=
+X-Google-Smtp-Source: ABdhPJw3nOyAaQKaKxiPWhfOQEnalAs2/im63G0D9taqrSV7AUphKUNIECzyDij78+l3RscT9yCFfg==
+X-Received: by 2002:a17:902:d64a:b029:e6:30a6:64e3 with SMTP id y10-20020a170902d64ab02900e630a664e3mr12368679plh.28.1616711508991;
+        Thu, 25 Mar 2021 15:31:48 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:3991:e59d:d2d4:59dd])
+        by smtp.gmail.com with ESMTPSA id w189sm6546399pfw.86.2021.03.25.15.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 15:31:47 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:31:44 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+Cc:     tglx@linutronix.de, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org,
+        gregkh@linuxfoundation.org, linuxarm@openeuler.org,
+        jonathan.cameron@huawei.com
+Subject: Re: [PATCH v5 2/2] Input: move to use request_irq by IRQF_NO_AUTOEN
+ flag
+Message-ID: <YF0PUMvvH996Xj3+@google.com>
+References: <20210302224916.13980-1-song.bao.hua@hisilicon.com>
+ <20210302224916.13980-3-song.bao.hua@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210302224916.13980-3-song.bao.hua@hisilicon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+On Wed, Mar 03, 2021 at 11:49:16AM +1300, Barry Song wrote:
+> disable_irq() after request_irq() still has a time gap in which
+> interrupts can come. request_irq() with IRQF_NO_AUTOEN flag will
+> disable IRQ auto-enable because of requesting.
+> 
+> On the other hand, request_irq() after setting IRQ_NOAUTOEN as
+> below
+> irq_set_status_flags(irq, IRQ_NOAUTOEN);
+> request_irq(dev, irq...);
+> can also be replaced by request_irq() with IRQF_NO_AUTOEN flag.
+> 
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
 
-> The rust code is alredy coming though ...
->
-> rust/kernel/buffer.rs:/// A pre-allocated buffer that implements [`core::fmt::Write`].
->
-> so now we have three formats.  Markdown and RST are _very_ similar, but
-> not identical [1].  Oh, and even better we now have three distinct tools --
-> kerneldoc, rustdoc and sphinx.  Have the rust people reached out to you
-> about integrating the various docs?
+Applied, thank you.
 
-I have talked with them a bit, yes, but without any clear conclusions at
-this point.  The Rust world has its own way of doing things with regard
-to documentation, and I don't want to tell them they can't use it in the
-kernel context.  So I think there's going to be a certain amount of
-groping around for the best solution.
-
-We did come to the mutual agreement that teaching kernel-doc to parse
-Rust code as well was not an ideal solution.  Probably there will be
-some sort of tool to translate between rustdoc and our sphinx setup.
-Beyond that, we'll see how it goes.
-
-jon
+-- 
+Dmitry
