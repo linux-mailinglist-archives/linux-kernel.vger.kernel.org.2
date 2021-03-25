@@ -2,82 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343BA348CC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1AF348CC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbhCYJ00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:26:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53482 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhCYJ0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:26:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 632A0AF65;
-        Thu, 25 Mar 2021 09:26:14 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 10:26:13 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Dong Kai <dongkai11@huawei.com>
-cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
-        joe.lawrence@redhat.com, axboe@kernel.dk,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] livepatch: klp_send_signal should treat PF_IO_WORKER
- like PF_KTHREAD
-In-Reply-To: <20210325014836.40649-1-dongkai11@huawei.com>
-Message-ID: <alpine.LSU.2.21.2103251023320.30447@pobox.suse.cz>
-References: <20210325014836.40649-1-dongkai11@huawei.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S229953AbhCYJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:26:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhCYJ0i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 05:26:38 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A2CC06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:26:36 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id w37so1452153lfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:26:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PsTQ4/W7bLkl30GvO3O8c17IK1eiosbGsbRf97AFsMI=;
+        b=HVKgPNxV8Rf1c20+mCwDuHYNBdKd6GG1aHaY4yc1nl8fXusfU5VF105dDsB/Nsd1Yz
+         9WzWNTIUo47V3G+U+NpNgHDMAgixPFWE3aaRLGw+V9io6is6264ogjRvShX74IzF7JsU
+         rX5Jqd7DFP8rnHdCRtaxUSx8WTEpW4oigKOdHXzfnNe/Gk3cAwj4RrTEpjGx3vZVEiTX
+         3j25f5w3xN53tvZrPXmdQCmCStORxvgsbrD0jJFD1+NojU0bi7iBO/UNos1oB61UjJEY
+         dZbc3NGr2ZXLRmDXJcQFDJHmqv2XY2eO45JnxKDxnDeMLgp7JrAHmiEoHRUj4kxEcsjb
+         R8CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PsTQ4/W7bLkl30GvO3O8c17IK1eiosbGsbRf97AFsMI=;
+        b=bxDVjHAfczVemBAUAp4m1qFva4LifmDJ8kxyWsUsz+pGRqtfxCMuM/YFmAGHUj0aXw
+         6jeY7EN4z2daU0woWRN8gQUOcDUg1bhhVWOPavSgEQFufPlEgOJq8u1WHe0GtQO+OunC
+         TB1Y+hQeRkhOGcqs5kEOwxfbbqYOhpiYnOoIsV6I5drfyHxwLRnr68arRePVjJhP8KzK
+         hfVaOOO0x6zwIdUBxKkDQIlYbFQlg+kinRYR5L0vweV+Y1uUcEIV1UlO3qGd7Tf/FS6G
+         3iNyY702mQcfQ79yFgb9SqK2z91MurJDMXKw0obqd8cJTSLew9+mzieEVXGAg8ugIp0E
+         fkWQ==
+X-Gm-Message-State: AOAM533/5FdthIdbc6u0INX3XHG+r6cnyxeGFFzzQurYIADqKnHRdxGk
+        WoBo72XLn+hCXuTbn0VVLsDf2AK/llRDmZIuwQ9y1g==
+X-Google-Smtp-Source: ABdhPJwbT7utCSaRj2LK/YkNPbnMiN5qv9qhdFVcP/2GV09K0kyIR9PNixqE7xwN++KseSgIUqgtBaeU9SXgTvuLDuc=
+X-Received: by 2002:a05:6512:243:: with SMTP id b3mr4577150lfo.529.1616664395375;
+ Thu, 25 Mar 2021 02:26:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210323131002.2418896-1-arnd@kernel.org>
+In-Reply-To: <20210323131002.2418896-1-arnd@kernel.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 25 Mar 2021 10:26:24 +0100
+Message-ID: <CACRpkdZjh+z66XAxg4-Cj_Mz7iVkgpyY65nNTvUdOXV6yTknEQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: microchip: fix array overflow
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021, Dong Kai wrote:
+On Tue, Mar 23, 2021 at 2:10 PM Arnd Bergmann <arnd@kernel.org> wrote:
 
-> commit 15b2219facad ("kernel: freezer should treat PF_IO_WORKER like
-> PF_KTHREAD for freezing") is to fix the freezeing issue of IO threads
-> by making the freezer not send them fake signals.
-> 
-> Here live patching consistency model call klp_send_signals to wake up
-> all tasks by send fake signal to all non-kthread which only check the
-> PF_KTHREAD flag, so it still send signal to io threads which may lead to
-> freezeing issue of io threads.
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Building with 'make W=1' shows an array overflow:
+>
+> drivers/pinctrl/pinctrl-microchip-sgpio.c: In function 'microchip_sgpio_irq_settype':
+> drivers/pinctrl/pinctrl-microchip-sgpio.c:154:39: error: array subscript 10 is above array bounds of 'const u8[10]' {aka 'const unsigned char[10]'} [-Werror=array-bounds]
+>   154 |  u32 regoff = priv->properties->regoff[rno] + off;
+>       |               ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+> drivers/pinctrl/pinctrl-microchip-sgpio.c:55:5: note: while referencing 'regoff'
+>    55 |  u8 regoff[MAXREG];
+>       |     ^~~~~~
+>
+> It's not clear to me what was meant here, my best guess is that the
+> offset should have been applied to the third argument instead of the
+> second.
+>
+> Fixes: be2dc859abd4 ("pinctrl: pinctrl-microchip-sgpio: Add irq support (for sparx5)")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-I suppose this could happen, but it will also affect the live patching 
-transition if the io threads do not react to signals.
+Patch applied.
 
-Are you able to reproduce it easily? I mean, is there a testcase I could 
-use to take a closer look?
- 
-> Here we take the same fix action by treating PF_IO_WORKERS as PF_KTHREAD
-> within klp_send_signal function.
-
-Yes, this sounds reasonable.
-
-Miroslav
-
-> Signed-off-by: Dong Kai <dongkai11@huawei.com>
-> ---
-> note:
-> the io threads freeze issue links:
-> [1] https://lore.kernel.org/io-uring/YEgnIp43%2F6kFn8GL@kevinlocke.name/
-> [2] https://lore.kernel.org/io-uring/d7350ce7-17dc-75d7-611b-27ebf2cb539b@kernel.dk/
-> 
->  kernel/livepatch/transition.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
-> index f6310f848f34..0e1c35c8f4b4 100644
-> --- a/kernel/livepatch/transition.c
-> +++ b/kernel/livepatch/transition.c
-> @@ -358,7 +358,7 @@ static void klp_send_signals(void)
->  		 * Meanwhile the task could migrate itself and the action
->  		 * would be meaningless. It is not serious though.
->  		 */
-> -		if (task->flags & PF_KTHREAD) {
-> +		if (task->flags & (PF_KTHREAD | PF_IO_WORKER)) {
->  			/*
->  			 * Wake up a kthread which sleeps interruptedly and
->  			 * still has not been migrated.
-
+Yours,
+Linus Walleij
