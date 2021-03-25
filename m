@@ -2,123 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E1D3492F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B31F3492F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 14:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhCYNQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 09:16:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13696 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhCYNQV (ORCPT
+        id S231161AbhCYNSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 09:18:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51028 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231136AbhCYNSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 09:16:21 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5lsx5VStzpVLx;
-        Thu, 25 Mar 2021 21:13:41 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
- 21:16:05 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <jglisse@redhat.com>, <shy828301@gmail.com>, <aquini@redhat.com>,
-        <david@redhat.com>, <apopple@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v3 5/5] Revert "mm: migrate: skip shared exec THP for NUMA balancing"
-Date:   Thu, 25 Mar 2021 09:15:24 -0400
-Message-ID: <20210325131524.48181-6-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20210325131524.48181-1-linmiaohe@huawei.com>
+        Thu, 25 Mar 2021 09:18:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616678302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uSM6XsoCExKe4rLBLCAD8bfv90jOFRgqC0PeCEkln9I=;
+        b=ZzSAdBbgU+owxcKbG7FNQzhbEW7soZXbmTDD0otZc5kNOB+bX/amZSjC2NzzEO5Q6D3u46
+        qn698I3m3brxBUERkijP1wuQygSwhA4feQ2xKdKC036c9TWLG70gl51cMHFnf5Gzjyad01
+        i/ezEI8R0z+bDRjLgzJnEf253ujzqbk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-Djy4CsTBNNiX3Lo24tAg5g-1; Thu, 25 Mar 2021 09:18:18 -0400
+X-MC-Unique: Djy4CsTBNNiX3Lo24tAg5g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2975994F1A;
+        Thu, 25 Mar 2021 13:17:19 +0000 (UTC)
+Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EEC605D9CA;
+        Thu, 25 Mar 2021 13:17:16 +0000 (UTC)
+Subject: Re: [PATCH v3 1/5] mm/migrate.c: make putback_movable_page() static
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     jglisse@redhat.com, shy828301@gmail.com, aquini@redhat.com,
+        apopple@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
 References: <20210325131524.48181-1-linmiaohe@huawei.com>
+ <20210325131524.48181-2-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <f1fbfe7e-74ac-e60c-b984-ab4c03445d07@redhat.com>
+Date:   Thu, 25 Mar 2021 14:17:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210325131524.48181-2-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit c77c5cbafe549eb330e8909861a3e16cbda2c848.
+On 25.03.21 14:15, Miaohe Lin wrote:
+> The putback_movable_page() is just called by putback_movable_pages() and
+> we know the page is locked and both PageMovable() and PageIsolated() is
+> checked right before calling putback_movable_page(). So we make it static
+> and remove all the 3 VM_BUG_ON_PAGE().
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   include/linux/migrate.h | 1 -
+>   mm/migrate.c            | 7 +------
+>   2 files changed, 1 insertion(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> index fdf65f23acec..1d8095069b1c 100644
+> --- a/include/linux/migrate.h
+> +++ b/include/linux/migrate.h
+> @@ -44,7 +44,6 @@ extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
+>   		unsigned long private, enum migrate_mode mode, int reason);
+>   extern struct page *alloc_migration_target(struct page *page, unsigned long private);
+>   extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+> -extern void putback_movable_page(struct page *page);
+>   
+>   extern void migrate_prep(void);
+>   extern void migrate_prep_local(void);
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 47df0df8f21a..61e7f848b554 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -140,15 +140,10 @@ int isolate_movable_page(struct page *page, isolate_mode_t mode)
+>   	return -EBUSY;
+>   }
+>   
+> -/* It should be called on page which is PG_movable */
+> -void putback_movable_page(struct page *page)
+> +static void putback_movable_page(struct page *page)
+>   {
+>   	struct address_space *mapping;
+>   
+> -	VM_BUG_ON_PAGE(!PageLocked(page), page);
+> -	VM_BUG_ON_PAGE(!PageMovable(page), page);
+> -	VM_BUG_ON_PAGE(!PageIsolated(page), page);
+> -
+>   	mapping = page_mapping(page);
+>   	mapping->a_ops->putback_page(page);
+>   	__ClearPageIsolated(page);
+> 
 
-Since commit c77c5cbafe54 ("mm: migrate: skip shared exec THP for NUMA
-balancing"), the NUMA balancing would skip shared exec transhuge page.
-But this enhancement is not suitable for transhuge page. Because it's
-required that page_mapcount() must be 1 due to no migration pte dance
-is done here. On the other hand, the shared exec transhuge page will
-leave the migrate_misplaced_page() with pte entry untouched and page
-locked. Thus pagefault for NUMA will be triggered again and deadlock
-occurs when we start waiting for the page lock held by ourselves.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Yang Shi said:
-
- "Thanks for catching this. By relooking the code I think the other
-  important reason for removing this is
-  migrate_misplaced_transhuge_page() actually can't see shared exec
-  file THP at all since page_lock_anon_vma_read() is called before
-  and if page is not anonymous page it will just restore the PMD
-  without migrating anything.
-  The pages for private mapped file vma may be anonymous pages due to
-  COW but they can't be THP so it won't trigger THP numa fault at all. I
-  think this is why no bug was reported. I overlooked this in the first
-  place."
-
-Reviewed-by: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/migrate.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index c621c8f6fb7d..51190759e6dd 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2105,17 +2105,6 @@ bool pmd_trans_migrating(pmd_t pmd)
- 	return PageLocked(page);
- }
- 
--static inline bool is_shared_exec_page(struct vm_area_struct *vma,
--				       struct page *page)
--{
--	if (page_mapcount(page) != 1 &&
--	    (page_is_file_lru(page) || vma_is_shmem(vma)) &&
--	    (vma->vm_flags & VM_EXEC))
--		return true;
--
--	return false;
--}
--
- /*
-  * Attempt to migrate a misplaced page to the specified destination
-  * node. Caller is expected to have an elevated reference count on
-@@ -2133,7 +2122,8 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
- 	 * Don't migrate file pages that are mapped in multiple processes
- 	 * with execute permissions as they are probably shared libraries.
- 	 */
--	if (is_shared_exec_page(vma, page))
-+	if (page_mapcount(page) != 1 && page_is_file_lru(page) &&
-+	    (vma->vm_flags & VM_EXEC))
- 		goto out;
- 
- 	/*
-@@ -2188,9 +2178,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
- 	int page_lru = page_is_file_lru(page);
- 	unsigned long start = address & HPAGE_PMD_MASK;
- 
--	if (is_shared_exec_page(vma, page))
--		goto out;
--
- 	new_page = alloc_pages_node(node,
- 		(GFP_TRANSHUGE_LIGHT | __GFP_THISNODE),
- 		HPAGE_PMD_ORDER);
-@@ -2302,7 +2289,6 @@ int migrate_misplaced_transhuge_page(struct mm_struct *mm,
- 
- out_unlock:
- 	unlock_page(page);
--out:
- 	put_page(page);
- 	return 0;
- }
 -- 
-2.19.1
+Thanks,
+
+David / dhildenb
 
