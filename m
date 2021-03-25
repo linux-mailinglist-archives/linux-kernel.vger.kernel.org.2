@@ -2,76 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2270348E02
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8EA348DD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 11:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbhCYK3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 06:29:06 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58945 "EHLO elvis.franken.de"
+        id S230137AbhCYKRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 06:17:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47372 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229716AbhCYK2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 06:28:48 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lPNEM-0007Ug-00; Thu, 25 Mar 2021 11:28:46 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CCBECC1C81; Thu, 25 Mar 2021 11:17:12 +0100 (CET)
-Date:   Thu, 25 Mar 2021 11:17:12 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-Message-ID: <20210325101712.GA6893@alpha.franken.de>
-References: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn>
- <alpine.DEB.2.21.2103220540591.21463@angie.orcam.me.uk>
- <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
+        id S229695AbhCYKRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 06:17:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1EC11AC16;
+        Thu, 25 Mar 2021 10:17:37 +0000 (UTC)
+Date:   Thu, 25 Mar 2021 11:17:32 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 1/8] mm: cma: introduce cma_release_nowait()
+Message-ID: <YFxjPDRFfaUMPjmr@localhost.localdomain>
+References: <20210325002835.216118-1-mike.kravetz@oracle.com>
+ <20210325002835.216118-2-mike.kravetz@oracle.com>
+ <YFxbrn7pHN4TIHkR@dhcp22.suse.cz>
+ <YFxh5SgXnKsbiFgj@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFxh5SgXnKsbiFgj@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 03:12:59PM +0800, Tiezhu Yang wrote:
-> On 03/22/2021 12:46 PM, Maciej W. Rozycki wrote:
-> > On Thu, 18 Mar 2021, Tiezhu Yang wrote:
-> > 
-> > > diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> > > index 160b3a8..4b94ec7 100644
-> > > --- a/arch/mips/Kconfig
-> > > +++ b/arch/mips/Kconfig
-> > > @@ -6,6 +6,7 @@ config MIPS
-> > >   	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
-> > >   	select ARCH_HAS_FORTIFY_SOURCE
-> > >   	select ARCH_HAS_KCOV
-> > > +	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-> >   Hmm, documentation on ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE seems rather
-> > scarce, but based on my guess shouldn't this be "if !EVA"?
-> > 
-> >    Maciej
+On Thu, Mar 25, 2021 at 11:11:49AM +0100, Michal Hocko wrote:
+> I have overlooked that
+> +static void cma_clear_bitmap_fn(struct work_struct *work)
+> +{
+> +       struct cma_clear_bitmap_work *w;
+> +
+> +       w = container_of(work, struct cma_clear_bitmap_work, work);
+> +
+> +       cma_clear_bitmap(w->cma, w->pfn, w->count);
+> +
+> +       __free_page(pfn_to_page(w->pfn));
+> +}
 > 
-> I do not quite know what the effect if MIPS EVA (Enhanced Virtual
-> Addressing)
-> is set, I saw that ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be
-> restricted
-> to archs with non-overlapping address ranges.
-> 
-> I wonder whether MIPS EVA will generate overlapping address ranges?
+> should be doing free_contig_range with w->count target.
 
-they can overlap in EVA mode.
+That is currently done in cma_release_nowait().
+You meant we should move that work there in the wq?
 
-> If yes, it is better to make ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE depend
-> on !EVA on MIPS.
+I thought the reason for creating a WQ in the first place was to have a
+non-blocking cma_release() variant, as we might block down the chain
+when clearing the bitmat, I do not think this was about freeing up
+memory, or at least the changelog did not mention it.
 
-Could please add the change ?
-
-Thomas.
+Also, IIUC, we use the first page to store the workqueue information (we use it
+as a storage for it, in cma_release_nowait()), that is why once we are done with
+the workqueue work in cma_clear_bitmap_fn(), we can free that page.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Oscar Salvador
+SUSE L3
