@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36603490F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B34A3490E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 12:41:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbhCYLlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 07:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhCYLcy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 07:32:54 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29454C061760;
-        Thu, 25 Mar 2021 04:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:Cc:To;
-        bh=YGID0xECimIMLryZR+HuzR7e4RnLnX9dphMfMmTGiJk=; b=azC0nK9NpKbp3grfr43aYCxHKv
-        aI92k3eUQe0wzp+ds+Wnc8FIeJqoGp4OhfcyjjaZniaxbKjCi93dJoOlAAcMvgB/+GgmfUko91SUm
-        V4MFz6oQ4OEaLFdql2IdCc0pJyDjz6YSNJePEiiOKG3zMuZP641SrnA/DNqBISoAvtVTcYLuxl1Bg
-        ETr6Zq24hVJqnuAIEvVj0DOUV5tHQzHNOKtcLMvjuanaeUeidqIsrN2lOC+h3BikfhXy7Kj2wa1Hs
-        17TSFgjFmRt3IWshunlpEqDR75mY++nrxMWlDUt0cjNdlSaBxGNNW9TPQxzL8eHrgCxZ5d48OLRzc
-        yw01SxKb26HLscvEwCnzAUyJPAVVN+GdnrtTURB1bSsZmtBEtOrrOEF/oaK3ebCf0C6MbB7qKERIr
-        3IyHJqWju11ZAV8um5K4gFXWV2JfW9KaUvZKoFzyc9NjWaHqt7Sr/avis1zRLUZIP/ys01r7gPhl0
-        7YFoH6KDG7dxHTQzqIu43MO3;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lPOEH-0007MD-2v; Thu, 25 Mar 2021 11:32:45 +0000
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Jens Axboe <axboe@kernel.dk>
-References: <20210325112459.1926846-1-sashal@kernel.org>
- <20210325112459.1926846-42-sashal@kernel.org>
-From:   Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH AUTOSEL 5.11 42/44] signal: don't allow sending any
- signals to PF_IO_WORKER threads
-Message-ID: <ca2fdf0b-d140-524f-1533-b3390a54c5de@samba.org>
-Date:   Thu, 25 Mar 2021 12:32:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231187AbhCYLlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 07:41:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231818AbhCYLeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 07:34:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5803D6023F;
+        Thu, 25 Mar 2021 11:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616671968;
+        bh=g/bIFiK6seJ/7aRx12ycC3tXqepUm+lye/PgSndjMaE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jGv297QYJtp8ILIlaDyka1Bt1HTQl8fQTOfXpwTP/yFOT1gGYYc5w6MTNBzAjEikv
+         BbiXkftm7xclrYROiK5zBBpfaKPSX8N9hYP9neO1ML9+2JMp7sbEyfPCkNJG6nIXsa
+         yLLqymmAF7NrfLx2MFOfrWwFuv/DXLquaJap3MNs=
+Date:   Thu, 25 Mar 2021 12:32:46 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jian Dong <dj0227@163.com>
+Cc:     devel@driverdev.osuosl.org, elder@kernel.org, vireshk@kernel.org,
+        johan@kernel.org, linux-kernel@vger.kernel.org,
+        greybus-dev@lists.linaro.org, Jian Dong <dongjian@yulong.com>
+Subject: Re: [PATCH]  staging: greybus: fix fw is NULL but dereferenced
+Message-ID: <YFx03qbeGbgBShkQ@kroah.com>
+References: <1616667566-58997-1-git-send-email-dj0227@163.com>
+ <YFxl8hyx7murtlzW@kroah.com>
+ <20210325190339.00007921@163.com>
 MIME-Version: 1.0
-In-Reply-To: <20210325112459.1926846-42-sashal@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325190339.00007921@163.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 25.03.21 um 12:24 schrieb Sasha Levin:
-> From: Jens Axboe <axboe@kernel.dk>
+On Thu, Mar 25, 2021 at 07:03:39PM +0800, Jian Dong wrote:
+> On Thu, 25 Mar 2021 11:29:06 +0100
+> Greg KH <gregkh@linuxfoundation.org> wrote:
 > 
-> [ Upstream commit 5be28c8f85ce99ed2d329d2ad8bdd18ea19473a5 ]
+> > On Thu, Mar 25, 2021 at 06:19:26PM +0800, Jian Dong wrote:
+> > > From: Jian Dong <dongjian@yulong.com>
+> > > 
+> > >  fixes coccicheck Error:
+> > > 
+> > >  drivers/staging/greybus/bootrom.c:301:41-45: ERROR:
+> > >  fw is NULL but dereferenced.
+> > > 
+> > >  if procedure goto label directly, ret will be nefative, so the fw
+> > > is NULL and the if(condition) end with dereferenced fw. let's fix
+> > > it.  
+> > 
+> > Why is this all indented a space?
+> this maybe caused by my terminal, I will take notice next time.
+> > 
+> > > 
+> > > Signed-off-by: Jian Dong <dongjian@yulong.com>
+> > > ---
+> > >  drivers/staging/greybus/bootrom.c | 8 ++++----
+> > >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/greybus/bootrom.c
+> > > b/drivers/staging/greybus/bootrom.c index a8efb86..0439efa 100644
+> > > --- a/drivers/staging/greybus/bootrom.c
+> > > +++ b/drivers/staging/greybus/bootrom.c
+> > > @@ -246,7 +246,7 @@ static int gb_bootrom_get_firmware(struct
+> > > gb_operation *op) struct gb_bootrom_get_firmware_response
+> > > *firmware_response; struct device *dev =
+> > > &op->connection->bundle->dev; unsigned int offset, size;
+> > > -	enum next_request_type next_request;
+> > > +	enum next_request_type next_request =
+> > > NEXT_REQ_GET_FIRMWARE; int ret = 0;
+> > >  
+> > >  	/* Disable timeouts */
+> > > @@ -298,10 +298,10 @@ static int gb_bootrom_get_firmware(struct
+> > > gb_operation *op) 
+> > >  queue_work:
+> > >  	/* Refresh timeout */
+> > > -	if (!ret && (offset + size == fw->size))
+> > > -		next_request = NEXT_REQ_READY_TO_BOOT;
+> > > -	else
+> > > +	if (!!ret)  
+> > 
+> > That is hard to understand, please make this more obvious.
+> > 
+> if (A && B) else (!A || !B)
 > 
-> They don't take signals individually, and even if they share signals with
-> the parent task, don't allow them to be delivered through the worker
-> thread. Linux does allow this kind of behavior for regular threads, but
-> it's really a compatability thing that we need not care about for the IO
-> threads.
-> 
-> Reported-by: Stefan Metzmacher <metze@samba.org>
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  kernel/signal.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/kernel/signal.c b/kernel/signal.c
-> index 5ad8566534e7..55526b941011 100644
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -833,6 +833,9 @@ static int check_kill_permission(int sig, struct kernel_siginfo *info,
->  
->  	if (!valid_signal(sig))
->  		return -EINVAL;
-> +	/* PF_IO_WORKER threads don't take any signals */
-> +	if (t->flags & PF_IO_WORKER)
-> +		return -ESRCH;
+> So, when ret is NON-ZERO, set next_request as GET_FIRMWARE, else set
+> READ_TO_BOOT. but if second express is flase, next_request still
+> need be set as GET_FIRMWARE, So, I initialze it as GET_FIRMWARE.
 
-Why is that proposed for 5.11 and 5.10 now?
+My point is:
+	if (!!ret)
+is odd, and is the same thing as:
+	if (ret)
+correct?
 
-Are the create_io_thread() patches already backported?
+And the latter is the common kernel style, no need to be complex when
+you do not need to.
 
-I think we should hold on with the backports until
-everything is stable in v5.12 final.
+Anyway, others have pointed out why this is incorrect, no need for
+further discussion.
 
-I'm still about to test on top of v5.12-rc4
-and have a pending mail why I think this particular change is
-wrong even in 5.12.
+thanks,
 
-Jens, did you send these to stable?
-
-metze
-
+greg k-h
