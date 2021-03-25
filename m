@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A34834892B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CF234890F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 07:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229616AbhCYGge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 02:36:34 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:43826 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhCYGgX (ORCPT
+        id S229758AbhCYGYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 02:24:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:13691 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhCYGYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 02:36:23 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id B8E4D98047A;
-        Thu, 25 Mar 2021 14:36:04 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Simon Horman <simon.horman@netronome.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Wan Jiabing <wanjiabing@vivo.com>, oss-drivers@netronome.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] drivers: net: ethernet: struct sk_buff is declared duplicately
-Date:   Thu, 25 Mar 2021 14:35:55 +0800
-Message-Id: <20210325063559.853282-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 25 Mar 2021 02:24:05 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5ZkJ6njnznWBW;
+        Thu, 25 Mar 2021 14:21:28 +0800 (CST)
+Received: from ubuntu.huawei.com (10.67.174.117) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Mar 2021 14:23:51 +0800
+From:   Ruiqi Gong <gongruiqi1@huawei.com>
+To:     <jaegeuk@kernel.org>, <chao@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <gongruiqi1@huawei.com>
+Subject: [PATCH -next] f2fs: fix a typo in inode.c
+Date:   Thu, 25 Mar 2021 02:38:11 -0400
+Message-ID: <20210325063811.6486-1-gongruiqi1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTRlJTB5PQ09JT01LVkpNSk1NTk9KTU5LTU9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pgw6Ggw6ED8WQz5KLCs#UTkp
-        SDQwChdVSlVKTUpNTU5PSk1OSElMVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTUxLNwY+
-X-HM-Tid: 0a786818e3ebd992kuwsb8e4d98047a
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.117]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct sk_buff has been declared. Remove the duplicate.
+Do a trivial typo fix.
+s/runing/running
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
 ---
- drivers/net/ethernet/netronome/nfp/nfp_app.h | 1 -
- 1 file changed, 1 deletion(-)
+ fs/f2fs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/nfp_app.h b/drivers/net/ethernet/netronome/nfp/nfp_app.h
-index 76d13af46a7a..3e9baff07100 100644
---- a/drivers/net/ethernet/netronome/nfp/nfp_app.h
-+++ b/drivers/net/ethernet/netronome/nfp/nfp_app.h
-@@ -18,7 +18,6 @@ struct netdev_bpf;
- struct netlink_ext_ack;
- struct pci_dev;
- struct sk_buff;
--struct sk_buff;
- struct nfp_app;
- struct nfp_cpp;
- struct nfp_pf;
+diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+index 349d9cb933ee..5d2253d53f17 100644
+--- a/fs/f2fs/inode.c
++++ b/fs/f2fs/inode.c
+@@ -698,7 +698,7 @@ int f2fs_write_inode(struct inode *inode, struct writeback_control *wbc)
+ 
+ 	/*
+ 	 * We need to balance fs here to prevent from producing dirty node pages
+-	 * during the urgent cleaning time when runing out of free sections.
++	 * during the urgent cleaning time when running out of free sections.
+ 	 */
+ 	f2fs_update_inode_page(inode);
+ 	if (wbc && wbc->nr_to_write)
 -- 
-2.25.1
+2.17.1
 
