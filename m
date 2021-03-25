@@ -2,143 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A145B34988E
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DDD349896
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 18:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCYRqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 13:46:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229782AbhCYRqU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 13:46:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61159619DC;
-        Thu, 25 Mar 2021 17:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616694379;
-        bh=NqcaxGQNN3y04oxah4IgioEU5ngdI0w2S2E0zJ8cgNA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oFk3i/J39hQr5+zrlxG9dlrr3edZxLzG4glenAyeBHcdshcLcmHYy8ujy8E52lCyX
-         24X0K1OTwHZknX/dqlSoPMkXazFXEH81A/SPbOttp2xw95tP6HexYV9HWpxhKqdRr+
-         +WvVrRIvuUUA7zFHBFNEsmxS8dtTWvQJISYpDc9NCAgxeoyRiod5f8XmcT/wVFerko
-         tYaMgd/4bZJvUrhA57tjLrL1W/uuvdD+ARzfZClEkVFehuz2M3P6i8FayoXo6Vo7+Z
-         OwZJCy0tIQNz0ffSgllOCHg+fXsYf/FGpWjDVstVtHczM/WPWEitmAkDs9GlIvzxAN
-         XAHexXDLJ8dQA==
-Date:   Thu, 25 Mar 2021 18:46:15 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH 6/8] of: Fix kerneldoc output formatting
-Message-ID: <20210325184615.08526aed@coco.lan>
-In-Reply-To: <20210325164713.1296407-7-robh@kernel.org>
-References: <20210325164713.1296407-1-robh@kernel.org>
-        <20210325164713.1296407-7-robh@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229961AbhCYRsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 13:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhCYRrt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 13:47:49 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A576C06174A;
+        Thu, 25 Mar 2021 10:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=u/bexe4Djp4doWgJwtQivZm3RyzQYaYzdeQh59a8McU=; b=PllTquKaOuR/IHe2MwmUbZMvd2
+        ymlM5JPIfHRVFwmeG5MNRKciFMnbbvoYdLU0JngJefz8LDPsiE98kBNd4uCtAZSbbo8Q0HF/Ba5BQ
+        3jnQTq0Vys8Mxk9RXbxM9KeBsCdmlNVCrECjZVWPGvJFoIe4SswKMSdi/eeRTpu36AD2fG5ErFeAA
+        wf4AG9Kd0x4W+U0wk083iBXrfM2K77TU+x8dqqTxUru+BhdfvShtl6DcUm9Oa5thzXbcJ2RAIuffJ
+        spNOS/FnK6g/UdjzvyHJcXbKVfPli3qbIKU1l6B2njDYn0rf8VIMQtPXlqT+TGR1FqCPgUyysx1gk
+        i/wP8Zfg==;
+Received: from [2601:1c0:6280:3f0::3ba4] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPU4v-00DS2h-LQ; Thu, 25 Mar 2021 17:47:35 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-usb@vger.kernel.org
+Subject: [PATCH v2] tools: usbip: list.h: fix kernel-doc for list_del()
+Date:   Thu, 25 Mar 2021 10:47:24 -0700
+Message-Id: <20210325174724.14447-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 25 Mar 2021 10:47:11 -0600
-Rob Herring <robh@kernel.org> escreveu:
+In list.h, the kernel-doc for list_del() should be immediately
+preceding the implementation and not separated from it by
+another function implementation.
 
-> The indentation of the kerneldoc comments affects the output formatting.
-> Leading tabs in particular don't work, and sections need to be indented
-> under the section header.
-> 
-> The example snippets for DT source in the comments still have some
-> formatting issues, but there doesn't seem to be any way to do multi-line
-> literal blocks in kerneldoc.
-> 
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> 
-> Note the dts examples still cause warnings. I couldn't find any way to 
-> do a literal block and fix them. Minimally, there needs to be a way to 
-> escape ':' and not create sections:
-> 
-> Documentation/devicetree/kernel-api:11: ../drivers/of/base.c:1466: WARNING: Definition list ends without a blank line; unexpected unindent.
+Eliminates this kernel-doc error:
+list.h:1: warning: 'list_del' not found
 
-You can do something like this:
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Valentina Manea <valentina.manea.m@gmail.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+---
+v2: add Acked-by Shuah; send to Greg for merging.
 
-/**
- * of_parse_phandle_with_args() - Find a node pointed by phandle in a list
- * @np:		pointer to a device tree node containing a list
- * @list_name:	property name that contains a list
- * @cells_name:	property name that specifies phandles' arguments count
- * @index:	index of a phandle to parse out
- * @out_args:	optional pointer to output arguments structure (will be filled)
- *
- * This function is useful to parse lists of phandles and their arguments.
- * Returns 0 on success and fills out_args, on error returns appropriate
- * errno value.
- *
- * Caller is responsible to call of_node_put() on the returned out_args->np
- * pointer.
- *
- * For example::
- *
- *	phandle1: node1 {
- *		#list-cells = <2>;
- *	};
- *
- *	phandle2: node2 {
- *		#list-cells = <1>;
- *	};
- *
- *	node3 {
- *		list = <&phandle1 1 2 &phandle2 3>;
- *	};
- *
- * To get a device_node of the ``node2`` node you may call this:
- * of_parse_phandle_with_args(node3, "list", "#list-cells", 1, &args);
- */
+ tools/usb/usbip/libsrc/list.h |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-
-The problem is that using just:
-
-/**
- ...
- * Example::
- ...
-
-Would make confusion with an existing regex at kernel-doc script that
-parses a regex similar to this:
-
-	\*\s+(\w+):
-
-Into:
-	**$1**
-
-So, using two words fix the issue.
-
-Granted, this is something that could be improved at kernel-doc with
-something like (untested):
-
-<snip>
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index cb92d0e1e932..cea82e004fce 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -392,7 +392,7 @@ my $doc_com_body = '\s*\* ?';
- my $doc_decl = $doc_com . '(\w+)';
- # @params and a strictly limited set of supported section names
- my $doc_sect = $doc_com .
--    '\s*(\@[.\w]+|\@\.\.\.|description|context|returns?|notes?|examples?)\s*:(.*)';
-+    '\s*(\@[.\w]+|\@\.\.\.|description|context|returns?|notes?|examples?)\s*:([^:]*)$';
- my $doc_content = $doc_com_body . '(.*)';
- my $doc_block = $doc_com . 'DOC:\s*(.*)?';
- my $doc_inline_start = '^\s*/\*\*\s*$';
-</snip>
-
-I'll run some tests if the above works and submit a separate patch
-addressing it, likely tomorrow.
-
-Thanks,
-Mauro
+--- linux-next-20210323.orig/tools/usb/usbip/libsrc/list.h
++++ linux-next-20210323/tools/usb/usbip/libsrc/list.h
+@@ -77,17 +77,17 @@ static inline void __list_del(struct lis
+ #define LIST_POISON1  ((void *) 0x00100100 + POISON_POINTER_DELTA)
+ #define LIST_POISON2  ((void *) 0x00200200 + POISON_POINTER_DELTA)
+ 
++static inline void __list_del_entry(struct list_head *entry)
++{
++	__list_del(entry->prev, entry->next);
++}
++
+ /**
+  * list_del - deletes entry from list.
+  * @entry: the element to delete from the list.
+  * Note: list_empty() on entry does not return true after this, the entry is
+  * in an undefined state.
+  */
+-static inline void __list_del_entry(struct list_head *entry)
+-{
+-	__list_del(entry->prev, entry->next);
+-}
+-
+ static inline void list_del(struct list_head *entry)
+ {
+ 	__list_del(entry->prev, entry->next);
