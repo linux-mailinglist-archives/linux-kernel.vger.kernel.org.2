@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DCB349531
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B0334953F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 16:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhCYPSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 11:18:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:39055 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230113AbhCYPRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 11:17:39 -0400
-IronPort-SDR: PIogS7633jq9gojUFhAhUcrc671kWqGxebmaDFcmftHU5EWtDxealf+B7c7rYIeaj8t054ooce
- frK8bpzpJZcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211085087"
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="211085087"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 08:17:38 -0700
-IronPort-SDR: KxOv+9GIvQccakzc6rdWZGCrdCbd7hzZK/0rru50hCNDXbo/HIaoJoq50NQG00AOLyo2Et9ntx
- NvUJHaLehoQw==
-X-IronPort-AV: E=Sophos;i="5.81,277,1610438400"; 
-   d="scan'208";a="391771424"
-Received: from jeffche1-mobl.amr.corp.intel.com (HELO [10.209.73.71]) ([10.209.73.71])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 08:17:37 -0700
-Subject: Re: [RFC Part2 PATCH 04/30] x86/mm: split the physmap when adding the
- page in RMP table
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Cc:     ak@linux.intel.com, herbert@gondor.apana.org.au,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-References: <20210324170436.31843-1-brijesh.singh@amd.com>
- <20210324170436.31843-5-brijesh.singh@amd.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <f6e84aa4-422b-4ab5-5fa4-f3a4a4bb2471@intel.com>
-Date:   Thu, 25 Mar 2021 08:17:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231464AbhCYPUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 11:20:21 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:58720 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230095AbhCYPUD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 11:20:03 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPRjt-009CM7-Rc; Thu, 25 Mar 2021 15:17:38 +0000
+Date:   Thu, 25 Mar 2021 15:17:37 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas Dilger <adilger@dilger.ca>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Dave Kleikamp <shaggy@kernel.org>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Jan Kara <jack@suse.cz>,
+        Joel Becker <jlbec@evilplan.org>,
+        Matthew Garrett <matthew.garrett@nebula.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>, Tyler Hicks <code@tyhicks.com>
+Subject: Re: [PATCH 01/18] vfs: add miscattr ops
+Message-ID: <YFypkbAy+BQ3yjME@zeniv-ca.linux.org.uk>
+References: <20210203124112.1182614-1-mszeredi@redhat.com>
+ <20210203124112.1182614-2-mszeredi@redhat.com>
+ <YFk08XPc2oNWoUWT@gmail.com>
+ <CAJfpeguhAfLiTi0DdYzU-y98TCJZn2GuHBJhkXGLWRCBU2GfSg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210324170436.31843-5-brijesh.singh@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpeguhAfLiTi0DdYzU-y98TCJZn2GuHBJhkXGLWRCBU2GfSg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/24/21 10:04 AM, Brijesh Singh wrote:
-> The spliting of the physmap is a temporary solution until we work to
-> improve the kernel page fault handler to split the pages on demand.
-> One of the disadvtange of splitting is that eventually, we will end up
-> breaking down the entire physmap unless we combine the split pages back to
-> a large page. I am open to the suggestation on various approaches we could
-> take to address this problem.
+On Thu, Mar 25, 2021 at 03:52:28PM +0100, Miklos Szeredi wrote:
+> On Tue, Mar 23, 2021 at 1:24 AM Eric Biggers <ebiggers@kernel.org> wrote:
+> 
+> > > +int vfs_miscattr_set(struct dentry *dentry, struct miscattr *ma)
+> > > +{
+> > > +     struct inode *inode = d_inode(dentry);
+> > > +     struct miscattr old_ma = {};
+> > > +     int err;
+> > > +
+> > > +     if (d_is_special(dentry))
+> > > +             return -ENOTTY;
+> > > +
+> > > +     if (!inode->i_op->miscattr_set)
+> > > +             return -ENOIOCTLCMD;
+> > > +
+> > > +     if (!inode_owner_or_capable(inode))
+> > > +             return -EPERM;
+> >
+> > Shouldn't this be EACCES, not EPERM?
+> 
+> $ git diff master.. | grep -C1 inode_owner_or_capable | grep
+> "^-.*\(EPERM\|EACCES\)" | cut -d- -f3 | sort | uniq -c
+>      12 EACCES;
+>       4 EPERM;
+> 
+> So EACCES would win if this was a democracy.  However:
+> 
+> "[EACCES]
+> Permission denied. An attempt was made to access a file in a way
+> forbidden by its file access permissions."
+> 
+> "[EPERM]
+> Operation not permitted. An attempt was made to perform an operation
+> limited to processes with appropriate privileges or to the owner of a
+> file or other resource."
+> 
+> The EPERM description matches the semantics of
+> inode_owner_or_capable() exactly.  It's a pretty clear choice.
 
-Other than suggesting that the hardware be fixed to do the fracturing
-itself?  :)
+Except that existing implementation (e.g. for ext2) gives -EACCES here...
+OTOH, EPERM matches the behaviour of chown(2), as well as that of
+*BSD chflags(2), which is the best match to functionality (setting and
+clearing immutable/append-only/etc.)
 
-I suspect that this code is trying to be *too* generic.  I would expect
-that very little of guest memory is actually shared with the host.  It's
-also not going to be random guest pages.  The guest and the host have to
-agree on these things, and I *think* the host is free to move the
-physical backing around once it's shared.
-
-So, let's say that there a guest->host paravirt interface where the
-guest says in advance, "I want to share this page."  The host can split
-at *that* point and *only* split that one page's mapping.  Any page
-faults would occur only if the host screws up, and would result in an oops.
-
-That also gives a point where the host can say, "nope, that hugetlbfs, I
-can't split it".
-
+So I'd probably go with EPERM, and watched for userland breakage;
+if something *does* rely upon the historical EACCES here, we might
+have to restore that.
