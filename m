@@ -2,118 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39653348D85
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0AB348D8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhCYJ5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:57:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46064 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230006AbhCYJ46 (ORCPT
+        id S229913AbhCYJ5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229979AbhCYJ5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:56:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616666217;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8iDzS2rQihbEPN5F5Fal5LzoNiVnY/VTGnse7ANYFHg=;
-        b=RskVjdRwfDQgPuma3ADt6P4Se4TNYWg4Vpby7i4eWrvB4KJe2sVmhtBZWmIRzIjUHRYfKo
-        7cZ4rvWuP3ciK3XfIjFHhwLPJQw3I209SleDHTy6BiCiLFjcaRJg+V+IcmgG6DyXTKZBQT
-        W3oRoYEeMQed9GmVcIPzEzg1PscVHRw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-170-y8ji1gcZPz-bTiDFyxfDjw-1; Thu, 25 Mar 2021 05:56:54 -0400
-X-MC-Unique: y8ji1gcZPz-bTiDFyxfDjw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA4571013722;
-        Thu, 25 Mar 2021 09:56:51 +0000 (UTC)
-Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 949D66787C;
-        Thu, 25 Mar 2021 09:56:39 +0000 (UTC)
-To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
- <20210325002835.216118-2-mike.kravetz@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH 1/8] mm: cma: introduce cma_release_nowait()
-Message-ID: <aba43427-0f51-7eb9-fa73-6e55237c8ddb@redhat.com>
-Date:   Thu, 25 Mar 2021 10:56:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 25 Mar 2021 05:57:23 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAC3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:57:23 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id i19so1183787qtv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gdI6DcPZqtntEW0jhnI8vupfZnjL8/OD+UtlEEYlAz8=;
+        b=HwDSmJt1uzWTJwLwEZ4Et40GsmLIvuZcksX9+nrnLTvA79xnsyfn+7wVNMfbWEPcD8
+         28rqEVaXgDpzpg0RUQD5XI4QZxYsKtdb+FYSuEXMUz5TNfHQ3l+NS+6eJQu8+33loxvj
+         zhnbte74g8HkU2gyztVzUOYSubNamX4dYP9Q4c0zvPEVl+shicg8JgFcPEi5MYxXUG6+
+         k5vJ1J5qcCE+nu4sImsMIWaLzDatM66mks9D/VJsFr1rrnAgNWm9DwJ6Em3uvC62PV6t
+         GnbV1py5WLGy6sko05KivMwZAhfbiSE/TkoMw7Gx3tOhy+23Wy3xBTrNanci/WyojxnH
+         KEYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=gdI6DcPZqtntEW0jhnI8vupfZnjL8/OD+UtlEEYlAz8=;
+        b=diwg+7A/h6yCrWfx7E+61GttTlx0cuzeie2VTo0EQNx8BwREjxU/ox/S0Q3xF5o1OP
+         9uj0zcl9A+qPkktdaCUL9IhYei0TiGf5po6Ap2wiXG4QUgHvFLIEWwV0AKDWb0PRuH1y
+         W/RvgI1cZ2orAPDlMQZLwBBEdDKp0reJt368ypLtH51EzUtyqtIa7n9kCeXKbsM1JINl
+         u1fA0+f6AlAdMpsmehNLq4aMk38LLx5wo0UrxQzkFLU2zICwZFlGf9z+wiAZjqqIMUZQ
+         Bxx0TuL4T/2552vq1QhGzUbH0mRtnVWnpMps+27aRMIBWthac6pZ/zZvaZe9v1cXycLb
+         nZlg==
+X-Gm-Message-State: AOAM533j8N30mb8qw9ctTDraT9jRPxYXrp8r7oodVesbl769nUdi2Qda
+        SUXTkJb4Z5Chg4nA6W+g6QQ=
+X-Google-Smtp-Source: ABdhPJzaev2WqpummeuaYWxBVbs21kqNmQGuIWH2GatgGmkdn+ZVQTditz4XmOpdizmnTOdZC0X1DA==
+X-Received: by 2002:ac8:7f16:: with SMTP id f22mr6974724qtk.2.1616666242738;
+        Thu, 25 Mar 2021 02:57:22 -0700 (PDT)
+Received: from debian ([37.19.198.56])
+        by smtp.gmail.com with ESMTPSA id g6sm3784009qkd.62.2021.03.25.02.57.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 02:57:22 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 15:26:39 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     perex@perex.cz, tiwai@suse.com, broonie@kernel.org,
+        mirq-linux@rere.qmqm.pl, lars@metafoo.de, gustavoars@kernel.org,
+        huawei@kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH V3]  ALSA: pcm: Fix couple of typos
+Message-ID: <20210325095617.GB32566@debian>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, perex@perex.cz, tiwai@suse.com,
+        broonie@kernel.org, mirq-linux@rere.qmqm.pl, lars@metafoo.de,
+        gustavoars@kernel.org, huawei@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210325090609.10372-1-unixbhaskar@gmail.com>
+ <s5ho8f7mv5k.wl-tiwai@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20210325002835.216118-2-mike.kravetz@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LpQ9ahxlCli8rRTG"
+Content-Disposition: inline
+In-Reply-To: <s5ho8f7mv5k.wl-tiwai@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.03.21 01:28, Mike Kravetz wrote:
-> From: Roman Gushchin <guro@fb.com>
-> 
-> cma_release() has to lock the cma_lock mutex to clear the cma bitmap.
-> It makes it a blocking function, which complicates its usage from
-> non-blocking contexts. For instance, hugetlbfs code is temporarily
-> dropping the hugetlb_lock spinlock to call cma_release().
-> 
-> This patch introduces a non-blocking cma_release_nowait(), which
-> postpones the cma bitmap clearance. It's done later from a work
-> context. The first page in the cma allocation is used to store
-> the work struct. Because CMA allocations and de-allocations are
-> usually not that frequent, a single global workqueue is used.
-> 
-> To make sure that subsequent cma_alloc() call will pass, cma_alloc()
-> flushes the cma_release_wq workqueue. To avoid a performance
-> regression in the case when only cma_release() is used, gate it
-> by a per-cma area flag, which is set by the first call
-> of cma_release_nowait().
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> [mike.kravetz@oracle.com: rebased to v5.12-rc3-mmotm-2021-03-17-22-24]
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
+
+--LpQ9ahxlCli8rRTG
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 10:37 Thu 25 Mar 2021, Takashi Iwai wrote:
+>On Thu, 25 Mar 2021 10:06:09 +0100,
+>Bhaskar Chowdhury wrote:
+>>
+>> s/unconditonally/unconditionally/
+>> s/succesful/successful/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  Changes from V2:
+>>  Takashi pointed out that the patch was not applicable due to some unwan=
+ted
+>>  stuff get into it. Resending it with the new patch creation.
+>
+>Hrm, still not applicable.  Can you apply the patch from your own post
+>via git-am in your side?
+>
+Here is what I do for this specific case :
+
+=E2=9C=94 ~/git-linux/linux-next [patch L|=E2=9C=94]
+15:18 $ sed -i 's/unconditonally/unconditionally/' sound/core/pcm_native.c
+=E2=9C=94 ~/git-linux/linux-next [patch L|=E2=9C=9A 1]
+15:19 $ sed -i 's/succesful/successful/' sound/core/pcm_native.c
+=E2=9C=94 ~/git-linux/linux-next [patch L|=E2=9C=9A 1]
+15:19 $ git add .
+=E2=9C=94 ~/git-linux/linux-next [patch L|=E2=97=8F1]
+15:19 $ git ci "Fix some patch error"
+[patch 88d5af187dbb] Fix some patch error
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+15:21 $ git_fetch_single_file.sh sound/core/pcm_native.c
+Looks alright!=E2=9C=94 ~/git-linux/linux-next [patch L|=E2=97=8F1]
+15:21 $ git add .
+=E2=9C=94 ~/git-linux/linux-next [patch L|=E2=97=8F1]
+15:21 $ git ci "Bring for patch"
+[patch 352e1ce8dacf] Bring for patch
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+=E2=9C=94 ~/git-linux/linux-next [patch L|=E2=9C=94]
+15:22 $ git apply --verbose 0001-Made-patche-for-this.patch
+Checking patch sound/core/pcm_native.c...
+Applied patch sound/core/pcm_native.c cleanly.
 
 
-1. Is there a real reason this is a mutex and not a spin lock? It seems 
-to only protect the bitmap. Are bitmaps that huge that we spend a 
-significant amount of time in there?
 
-Because I also read "Because CMA allocations and de-allocations are
-usually not that frequent".
+>
+>Takashi
 
-With a spinlock, you would no longer be sleeping, but obviously you 
-might end up waiting for the lock ;) Not sure if that would help.
+--LpQ9ahxlCli8rRTG
+Content-Type: application/pgp-signature; name="signature.asc"
 
-2. IIUC, if we would do the clearing completely lockless and use atomic 
-bitmap ops instead, only cma_debug_show_areas() would see slight 
-inconsistencies. As long as the setting code (-> allocation code) holds 
-the lock, I think this should be fine (-> no double allocations).
+-----BEGIN PGP SIGNATURE-----
 
-(sorry if that has already been discussed)
+iQEzBAABCgAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBcXkAACgkQsjqdtxFL
+KRURgwf/T3lfMkAI59EaBVQhjHhqTSYHhrkLt47MgwZgs1G7DdWbqAhSObm0iWiM
+1Xz6PLJ3HussXX+SnZHvcLwGaAwJc0aN7a9ytLNhkQBTJ0MLgiAqcaD5Up6Bjlvs
+s4+WzSCPU/sWFM8j/HNePTxQiG3/S/UGXddwjkosbaQYQXVyQkKM9hMtouzWF28G
+PTteRB14akdKAYuF748L9j6dw7UCmAiHYQAPTGojWUdWgAG3ttOQOM7YClak0p9j
+Y+OWd27UKI9b+ZD/bMzo8wfPme4BCjRnD8snCwnJwH2sPQlrk1Cj2/zGUUe0uRy3
+nqTW8Ik4WUfTG6OpnU7I0T4K24W9FQ==
+=j7Eq
+-----END PGP SIGNATURE-----
 
--- 
-Thanks,
-
-David / dhildenb
-
+--LpQ9ahxlCli8rRTG--
