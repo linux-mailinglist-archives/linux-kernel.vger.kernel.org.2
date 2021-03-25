@@ -2,110 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD76349A53
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4C9349A58
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 20:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhCYTev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 15:34:51 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:52784 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhCYTep (ORCPT
+        id S230042AbhCYThf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 15:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230064AbhCYThA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 15:34:45 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lPVki-008Fxh-5l; Thu, 25 Mar 2021 13:34:44 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lPVkh-0000za-GY; Thu, 25 Mar 2021 13:34:43 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        linux-kernel@vger.kernel.org, oleg@redhat.com, metze@samba.org
-References: <20210325164343.807498-1-axboe@kernel.dk>
-Date:   Thu, 25 Mar 2021 14:33:43 -0500
-In-Reply-To: <20210325164343.807498-1-axboe@kernel.dk> (Jens Axboe's message
-        of "Thu, 25 Mar 2021 10:43:41 -0600")
-Message-ID: <m1ft0j3u5k.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lPVkh-0000za-GY;;;mid=<m1ft0j3u5k.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18mfvkY8hIovTxtqn4/JaJ6qC3aJXoeS3A=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_TooManySym_02,T_TooManySym_03,T_TooManySym_04,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4945]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_02 5+ unique symbols in subject
-        *  0.0 T_TooManySym_04 7+ unique symbols in subject
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.0 T_TooManySym_03 6+ unique symbols in subject
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Jens Axboe <axboe@kernel.dk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 316 ms - load_scoreonly_sql: 0.08 (0.0%),
-        signal_user_changed: 16 (5.1%), b_tie_ro: 13 (4.2%), parse: 0.92
-        (0.3%), extract_message_metadata: 13 (4.1%), get_uri_detail_list: 1.45
-        (0.5%), tests_pri_-1000: 16 (4.9%), tests_pri_-950: 1.32 (0.4%),
-        tests_pri_-900: 1.12 (0.4%), tests_pri_-90: 77 (24.3%), check_bayes:
-        75 (23.7%), b_tokenize: 5 (1.7%), b_tok_get_all: 8 (2.5%),
-        b_comp_prob: 2.6 (0.8%), b_tok_touch_all: 53 (16.9%), b_finish: 1.24
-        (0.4%), tests_pri_0: 172 (54.5%), check_dkim_signature: 0.52 (0.2%),
-        check_dkim_adsp: 3.0 (0.9%), poll_dns_idle: 1.33 (0.4%), tests_pri_10:
-        2.9 (0.9%), tests_pri_500: 12 (3.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+        Thu, 25 Mar 2021 15:37:00 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120A9C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:36:59 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id b2-20020a7bc2420000b029010be1081172so1828994wmj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 12:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=c28V1qEol1I4QrexdXU8KtR/UuqWaDR44oRtym8omog=;
+        b=rqHrJiGtdaFIDWFvz2/YQL40pxirOdoQHfB+PAgJ0oYhv9k4vd3ALvRKEewsisgmtD
+         POIKgErjUeibWdmqe+uCwplydDvG1qzxc/1w1rB7cQqjpahs7gG5Ih2T/TqCplsPrInz
+         qUodO7S70wOSVekTbKaK+Hi11An+CrW4w73zPBAOen6GkfHjaJhXxY1M+Unl27tPHswB
+         /5P9kS+jkE5w/niDGNqWJBP3Mog7C2cklB7fGL9C2RRGRzyKsVEBPFOuHObqvKekM6WF
+         6sIuXkeeYNdqqRqzha5169RgSAQqEHdZ6jP/HJlOOEyMEaBktXCrlQImF040GvHlTU9K
+         imEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c28V1qEol1I4QrexdXU8KtR/UuqWaDR44oRtym8omog=;
+        b=byJl2/KASuU4H7P8waZ+mcrNUawJClD+bN1yPYApr6o7KbYrzyBUnif81kiI6jnI/3
+         FlqR2UvN1N8OGhHg2UYZl6KNGPe9mNJb7IIENjziTTfVLxz44qJT4zLltOx86O/1NYl4
+         lE2X8KCKJbCRqxlHmm0GMLyGH5ToDLhfSviD1YcR5NbHu+bxgXUKMGxvAcxFhHNcXcvk
+         htij8zltXXi58Uyf/4jFgBX4p55v1i7mle0XxAfr06BtBx6HVBq2cL95mLm+z5BNb6Da
+         CHNsBFZOY00ueP2/AJV/3+p2oxJpFDicgN48NeE6q9lU8eQKBCjUOGD4F6qZqpMwnWDH
+         1J0g==
+X-Gm-Message-State: AOAM530GA34MLA38CE+8wEMQYp83vR8BOPKTZp6FJP1vkIP2Ei1DN8kv
+        23lif3OZqx3IJF+RIlDhTGfa4A==
+X-Google-Smtp-Source: ABdhPJzAgzLcQ9/+8u4JXx39HNXYUE0hH5J8RR+sFfQa2gG9t4cbr7wwLCsDJPg7ZmwASkeB9WA3aQ==
+X-Received: by 2002:a1c:df46:: with SMTP id w67mr9475403wmg.176.1616701017347;
+        Thu, 25 Mar 2021 12:36:57 -0700 (PDT)
+Received: from localhost.localdomain ([82.142.13.80])
+        by smtp.gmail.com with ESMTPSA id h12sm2240217wrv.58.2021.03.25.12.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 12:36:56 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org
+Cc:     rkumbako@quicinc.com, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        linux-pm@vger.kernel.org (open list:THERMAL),
+        linux-kernel@vger.kernel.org (open list),
+        linux-api@vger.kernel.org (open list:ABI/API)
+Subject: [PATCH] thermal/drivers/netlink: Add the temperature when crossing a trip point
+Date:   Thu, 25 Mar 2021 20:36:32 +0100
+Message-Id: <20210325193633.19592-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
+The slope of the temperature increase or decrease can be high and when
+the temperature crosses the trip point, there could be a significant
+difference between the trip temperature and the measured temperatures.
 
-> Hi,
->
-> Stefan reports that attaching to a task with io_uring will leave gdb
-> very confused and just repeatedly attempting to attach to the IO threads,
-> even though it receives an -EPERM every time. This patchset proposes to
-> skip PF_IO_WORKER threads as same_thread_group(), except for accounting
-> purposes which we still desire.
->
-> We also skip listing the IO threads in /proc/<pid>/task/ so that gdb
-> doesn't think it should stop and attach to them. This makes us consistent
-> with earlier kernels, where these async threads were not related to the
-> ring owning task, and hence gdb (and others) ignored them anyway.
->
-> Seems to me that this is the right approach, but open to comments on if
-> others agree with this. Oleg, I did see your messages as well on SIGSTOP,
-> and as was discussed with Eric as well, this is something we most
-> certainly can revisit. I do think that the visibility of these threads
-> is a separate issue. Even with SIGSTOP implemented (which I did try as
-> well), we're never going to allow ptrace attach and hence gdb would still
-> be broken. Hence I'd rather treat them as separate issues to attack.
+That forces the userspace to read the temperature back right after
+receiving a trip violation notification.
 
-A quick skim shows that these threads are not showing up anywhere in
-proc which appears to be a problem, as it hides them from top.
+In order to be efficient, give the temperature which resulted in the
+trip violation.
 
-Sysadmins need the ability to dig into a system and find out where all
-their cpu usage or io's have gone when there is a problem.  I general I
-think this argues that these threads should show up as threads of the
-process so I am not even certain this is the right fix to deal with gdb.
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/thermal/thermal_core.c    |  6 ++++--
+ drivers/thermal/thermal_netlink.c | 11 ++++++-----
+ drivers/thermal/thermal_netlink.h |  8 ++++----
+ include/uapi/linux/thermal.h      |  2 +-
+ 4 files changed, 15 insertions(+), 12 deletions(-)
 
-Eric
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index 996c038f83a4..948020ef51b1 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -430,10 +430,12 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+ 	if (tz->last_temperature != THERMAL_TEMP_INVALID) {
+ 		if (tz->last_temperature < trip_temp &&
+ 		    tz->temperature >= trip_temp)
+-			thermal_notify_tz_trip_up(tz->id, trip);
++			thermal_notify_tz_trip_up(tz->id, trip,
++						  tz->temperature);
+ 		if (tz->last_temperature >= trip_temp &&
+ 		    tz->temperature < (trip_temp - hyst))
+-			thermal_notify_tz_trip_down(tz->id, trip);
++			thermal_notify_tz_trip_down(tz->id, trip,
++						    tz->temperature);
+ 	}
+ 
+ 	if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
+diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
+index 1234dbe95895..a16dd4d5d710 100644
+--- a/drivers/thermal/thermal_netlink.c
++++ b/drivers/thermal/thermal_netlink.c
+@@ -121,7 +121,8 @@ static int thermal_genl_event_tz(struct param *p)
+ static int thermal_genl_event_tz_trip_up(struct param *p)
+ {
+ 	if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
+-	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id))
++	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id) ||
++	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TEMP, p->temp))
+ 		return -EMSGSIZE;
+ 
+ 	return 0;
+@@ -285,16 +286,16 @@ int thermal_notify_tz_disable(int tz_id)
+ 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
+ }
+ 
+-int thermal_notify_tz_trip_down(int tz_id, int trip_id)
++int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
+ {
+-	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
++	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
+ 
+ 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
+ }
+ 
+-int thermal_notify_tz_trip_up(int tz_id, int trip_id)
++int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
+ {
+-	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
++	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
+ 
+ 	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
+ }
+diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
+index 828d1dddfa98..e554f76291f4 100644
+--- a/drivers/thermal/thermal_netlink.h
++++ b/drivers/thermal/thermal_netlink.h
+@@ -11,8 +11,8 @@ int thermal_notify_tz_create(int tz_id, const char *name);
+ int thermal_notify_tz_delete(int tz_id);
+ int thermal_notify_tz_enable(int tz_id);
+ int thermal_notify_tz_disable(int tz_id);
+-int thermal_notify_tz_trip_down(int tz_id, int id);
+-int thermal_notify_tz_trip_up(int tz_id, int id);
++int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
++int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
+ int thermal_notify_tz_trip_delete(int tz_id, int id);
+ int thermal_notify_tz_trip_add(int tz_id, int id, int type,
+ 			       int temp, int hyst);
+@@ -49,12 +49,12 @@ static inline int thermal_notify_tz_disable(int tz_id)
+ 	return 0;
+ }
+ 
+-static inline int thermal_notify_tz_trip_down(int tz_id, int id)
++static inline int thermal_notify_tz_trip_down(int tz_id, int id, int temp)
+ {
+ 	return 0;
+ }
+ 
+-static inline int thermal_notify_tz_trip_up(int tz_id, int id)
++static inline int thermal_notify_tz_trip_up(int tz_id, int id, int temp)
+ {
+ 	return 0;
+ }
+diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
+index c105054cbb57..bf5d9c8ef16f 100644
+--- a/include/uapi/linux/thermal.h
++++ b/include/uapi/linux/thermal.h
+@@ -18,7 +18,7 @@ enum thermal_trip_type {
+ 
+ /* Adding event notification support elements */
+ #define THERMAL_GENL_FAMILY_NAME		"thermal"
+-#define THERMAL_GENL_VERSION			0x01
++#define THERMAL_GENL_VERSION			0x02
+ #define THERMAL_GENL_SAMPLING_GROUP_NAME	"sampling"
+ #define THERMAL_GENL_EVENT_GROUP_NAME		"event"
+ 
+-- 
+2.17.1
+
