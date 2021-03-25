@@ -2,89 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD733348D84
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39653348D85
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhCYJ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:57:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:45640 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhCYJ4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:56:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 826B631B;
-        Thu, 25 Mar 2021 02:56:38 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 640983F718;
-        Thu, 25 Mar 2021 02:56:35 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 09:56:26 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: Re: [PATCH v9 1/7] smccc: Add HVC call variant with result registers
- other than 0 thru 3
-Message-ID: <20210325095626.GA36570@C02TD0UTHF1T.local>
-References: <1615233439-23346-1-git-send-email-mikelley@microsoft.com>
- <1615233439-23346-2-git-send-email-mikelley@microsoft.com>
- <20210324165519.GA24528@C02TD0UTHF1T.local>
- <MWHPR21MB159351AFC4226A6AA8E33530D7629@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S230106AbhCYJ5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:57:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230006AbhCYJ46 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 05:56:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616666217;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8iDzS2rQihbEPN5F5Fal5LzoNiVnY/VTGnse7ANYFHg=;
+        b=RskVjdRwfDQgPuma3ADt6P4Se4TNYWg4Vpby7i4eWrvB4KJe2sVmhtBZWmIRzIjUHRYfKo
+        7cZ4rvWuP3ciK3XfIjFHhwLPJQw3I209SleDHTy6BiCiLFjcaRJg+V+IcmgG6DyXTKZBQT
+        W3oRoYEeMQed9GmVcIPzEzg1PscVHRw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-170-y8ji1gcZPz-bTiDFyxfDjw-1; Thu, 25 Mar 2021 05:56:54 -0400
+X-MC-Unique: y8ji1gcZPz-bTiDFyxfDjw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DA4571013722;
+        Thu, 25 Mar 2021 09:56:51 +0000 (UTC)
+Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 949D66787C;
+        Thu, 25 Mar 2021 09:56:39 +0000 (UTC)
+To:     Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Muchun Song <songmuchun@bytedance.com>,
+        David Rientjes <rientjes@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210325002835.216118-1-mike.kravetz@oracle.com>
+ <20210325002835.216118-2-mike.kravetz@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH 1/8] mm: cma: introduce cma_release_nowait()
+Message-ID: <aba43427-0f51-7eb9-fa73-6e55237c8ddb@redhat.com>
+Date:   Thu, 25 Mar 2021 10:56:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB159351AFC4226A6AA8E33530D7629@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <20210325002835.216118-2-mike.kravetz@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 04:55:51AM +0000, Michael Kelley wrote:
-> From: Mark Rutland <mark.rutland@arm.com> Sent: Wednesday, March 24, 2021 9:55 AM
-> > For the benefit of others here, SMCCCv1.2 allows:
-> > 
-> > * SMC64/HVC64 to use all of x1-x17 for both parameters and return values
-> > * SMC32/HVC32 to use all of r1-r7 for both parameters and return values
-> > 
-> > The rationale for this was to make it possible to pass a large number of
-> > arguments in one call without the hypervisor/firmware needing to access
-> > the memory of the caller.
-> > 
-> > My preference would be to add arm_smccc_1_2_{hvc,smc}() assembly
-> > functions which read all the permitted argument registers from a struct,
-> > and write all the permitted result registers to a struct, leaving it to
-> > callers to set those up and decompose them.
-> > 
-> > That way we only have to write one implementation that all callers can
-> > use, which'll be far easier to maintain. I suspect that in general the
-> > cost of temporarily bouncing the values through memory will be dominated
-> > by whatever the hypervisor/firmware is going to do, and if it's not we
-> > can optimize that away in future.
+On 25.03.21 01:28, Mike Kravetz wrote:
+> From: Roman Gushchin <guro@fb.com>
 > 
-> Thanks for the feedback, and I'm working on implementing this approach.
-> But I've hit a snag in that gcc limits the "asm" statement to 30 arguments,
-> which gives us 15 registers as parameters and 15 registers as return
-> values, instead of the 18 each allowed by SMCCC v1.2.  I will continue
-> with the 15 register limit for now, unless someone knows a way to exceed
-> that.  The alternative would be to go to pure assembly language.
+> cma_release() has to lock the cma_lock mutex to clear the cma bitmap.
+> It makes it a blocking function, which complicates its usage from
+> non-blocking contexts. For instance, hugetlbfs code is temporarily
+> dropping the hugetlb_lock spinlock to call cma_release().
+> 
+> This patch introduces a non-blocking cma_release_nowait(), which
+> postpones the cma bitmap clearance. It's done later from a work
+> context. The first page in the cma allocation is used to store
+> the work struct. Because CMA allocations and de-allocations are
+> usually not that frequent, a single global workqueue is used.
+> 
+> To make sure that subsequent cma_alloc() call will pass, cma_alloc()
+> flushes the cma_release_wq workqueue. To avoid a performance
+> regression in the case when only cma_release() is used, gate it
+> by a per-cma area flag, which is set by the first call
+> of cma_release_nowait().
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> [mike.kravetz@oracle.com: rebased to v5.12-rc3-mmotm-2021-03-17-22-24]
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
 
-I realise in retrospect this is not clear, but when I said "assembly
-functions" I had meant raw assembly functions rather than inline
-assembly.
 
-We already have __arm_smccc_smc and __arm_smccc_hvc assembly functions
-in arch/{arm,arm64}/kernel/smccc-call.S, and I'd expected we'd add the
-full fat SMCCCv1.2 variants there.
+1. Is there a real reason this is a mutex and not a spin lock? It seems 
+to only protect the bitmap. Are bitmaps that huge that we spend a 
+significant amount of time in there?
 
+Because I also read "Because CMA allocations and de-allocations are
+usually not that frequent".
+
+With a spinlock, you would no longer be sleeping, but obviously you 
+might end up waiting for the lock ;) Not sure if that would help.
+
+2. IIUC, if we would do the clearing completely lockless and use atomic 
+bitmap ops instead, only cma_debug_show_areas() would see slight 
+inconsistencies. As long as the setting code (-> allocation code) holds 
+the lock, I think this should be fine (-> no double allocations).
+
+(sorry if that has already been discussed)
+
+-- 
 Thanks,
-Mark.
+
+David / dhildenb
+
