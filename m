@@ -2,116 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19601348C5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34467348C62
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 10:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhCYJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 05:10:56 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:53122 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhCYJKT (ORCPT
+        id S229967AbhCYJMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 05:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhCYJLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 05:10:19 -0400
-Received: by mail-io1-f69.google.com with SMTP id v5so3229925ioq.19
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 02:10:19 -0700 (PDT)
+        Thu, 25 Mar 2021 05:11:48 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85DE4C06175F;
+        Thu, 25 Mar 2021 02:11:46 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id j7so1132380qtx.5;
+        Thu, 25 Mar 2021 02:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t3z/hxgoWLAQqM1wXkd9iVUgfneeCuSfJf4VH9I2W2k=;
+        b=KGC+VctVIhSIXX+cwcptqh63o3Ku4hn/hHJT1I89wfbFi3SPOIiRdlhq70+LrwPbdc
+         9oZAyq1iVLRwynhsMq2PVkhkyE0BnYIkNdhdhlYKGPFd5sgMO1ahG0KQjzlduR/ET26K
+         T2gczJ6cK7AgwgewNi5m3WpUkvz5M4ZkrNxW9+1THX3Zr/yjUJjWx5+NK9s11diWmpwI
+         TAvEdd8BY29jOrECSx7C+LkRgT/bNGrQGHLJtFWIFgQGcXjSDKYnVFTswelXKJpooEwX
+         84LhLVfwWNuIP1wXNFfnFcufRgu58hqS41ezvVbsEKDVAKgKFBjZYNyMMrnwuppGmhDb
+         QzKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gtEyF9gyo74WALZnume6M2OCrV7EyWoD5V6eC8Sn638=;
-        b=t8JQvQRQdNDJorIxYEL8q9Yodyma26ABrRXWXWCepktyJjVoqX8BzsTXS+GWGk0atZ
-         oWU/ZZsmngDXm3/a+v7DFamCtvdrX+Jja3iy2u1pzcBD/iKSQCf7X6O//X3oo3b0TfN4
-         MYxWeWbcfYpuTRri5H6HxzhhgzdMOeixkRGzIMsYk3/pkqovrLurKAnXvYsWVPVtODGf
-         +xy55A94sTqbZCtNp0g7mq1uzXD+/eF1OhLd0TPwsH2ose602Fc9pv03mMk5e9syZLqq
-         eqvNLcCT8ikrpFtIh6ozMaye1HEIiq+5FMFrF9XUnoYo8tOcrhS3hkikBQrxVpCtGfLD
-         cAbw==
-X-Gm-Message-State: AOAM533uzBVAYfUJJPRVkynsMHIatpqX9URR/1EU5tRGC40zPbZ06Acm
-        dJqEQ4INVvpsC0fatJUGDh0B1dEd95sFoIWlz/cIP+lctgMg
-X-Google-Smtp-Source: ABdhPJyjmY8VWn2i4p2YiY5Skcb6zPy6H54VKwNmTXDVSKBuLtjrJTlGKB9Jy+67op1pOjRGctX1tnMAiLITeA15mjsJqmR/ZyUf
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=t3z/hxgoWLAQqM1wXkd9iVUgfneeCuSfJf4VH9I2W2k=;
+        b=A8Ig1vURBkZRdmQmsDaK6ebVIT9uRobOtPX9AmglGzt5lTi6JdhJ8iycVBcolGp1my
+         n9GGECZn6lS1+WuyjjdaXnc8jr7KvSnkakVDfbfylSNy/Sdox+NyB2H+bOZiaCHvAA01
+         JcCmK9YQ3alUyaDSWrFRNHsvaDeFOVroLPrIRHJx8QJDFLNcBbqOtI7L9/h4DEw4rEcf
+         S1Dgl6+m8y5oD3NdmuOoi9aka6mOdZzkmxWGXk4cccCT8U9RF8hVSR72FVuYlWZPYx+n
+         LUc++K0ETDLHFZLhE7F+6z3aCo7sYCU3EFEEE5kFhJ1Yaju0gP0g8q42BZH6d5U3SGbh
+         NQug==
+X-Gm-Message-State: AOAM530rocbiqZZr87hBoBepRHC01Ulx0vUuM5Ke2B5x+W3gScAd8ev7
+        w0alBoYn8gvcn62a4JvHh9g=
+X-Google-Smtp-Source: ABdhPJz4ZP6APn8BMvsoWvYlVGGrI4yMkHmZhkNcd39wrotMVGuaxdgyd1CdXFC0Ljo3+rrSGmXOXg==
+X-Received: by 2002:ac8:4412:: with SMTP id j18mr6791793qtn.387.1616663505844;
+        Thu, 25 Mar 2021 02:11:45 -0700 (PDT)
+Received: from OpenSuse ([156.146.58.54])
+        by smtp.gmail.com with ESMTPSA id z14sm3118079qti.87.2021.03.25.02.11.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 02:11:45 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 14:41:35 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
+        joe.lawrence@redhat.com, corbet@lwn.net,
+        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] docs: livepatch: Fix a typo
+Message-ID: <YFxTxxOkQDr2rb/J@OpenSuse>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Miroslav Benes <mbenes@suse.cz>, jpoimboe@redhat.com,
+        jikos@kernel.org, pmladek@suse.com, joe.lawrence@redhat.com,
+        corbet@lwn.net, live-patching@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210325065646.7467-1-unixbhaskar@gmail.com>
+ <alpine.LSU.2.21.2103250956530.30447@pobox.suse.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:f00a:: with SMTP id w10mr5773216ioc.2.1616663418824;
- Thu, 25 Mar 2021 02:10:18 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 02:10:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ccf0e005be58c811@google.com>
-Subject: [syzbot] WARNING in get_page_from_freelist
-From:   syzbot <syzbot+ae79dc7907428bdb3fc9@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vJbGBnt7stF50BDq"
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2103250956530.30447@pobox.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--vJbGBnt7stF50BDq
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-HEAD commit:    a5406a7f riscv: Correct SPARSEMEM configuration
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=154738bed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8436efa4b70702e6
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae79dc7907428bdb3fc9
-userspace arch: riscv64
+On 10:05 Thu 25 Mar 2021, Miroslav Benes wrote:
+>Hi,
+>
+>On Thu, 25 Mar 2021, Bhaskar Chowdhury wrote:
+>
+>>
+>> s/varibles/variables/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  Documentation/livepatch/shadow-vars.rst | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/livepatch/shadow-vars.rst b/Documentation/livepatch/shadow-vars.rst
+>> index c05715aeafa4..8464866d18ba 100644
+>> --- a/Documentation/livepatch/shadow-vars.rst
+>> +++ b/Documentation/livepatch/shadow-vars.rst
+>> @@ -165,7 +165,7 @@ In-flight parent objects
+>>
+>>  Sometimes it may not be convenient or possible to allocate shadow
+>>  variables alongside their parent objects.  Or a livepatch fix may
+>> -require shadow varibles to only a subset of parent object instances.  In
+>> +require shadow variables to only a subset of parent object instances.  In
+>>  these cases, the klp_shadow_get_or_alloc() call can be used to attach
+>>  shadow variables to parents already in-flight.
+>
+>you sent the same fix a couple of weeks ago and Jon applied it.
+>
+Ah..difficult to remember....thanks for reminding ..it seems I need to keep
+track ...which I don't do at this moment ...so the patch get duplicated ..
 
-Unfortunately, I don't have any reproducer for this issue yet.
+So.do you have any better policy to keep track???
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae79dc7907428bdb3fc9@syzkaller.appspotmail.com
+>Miroslav
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 3271 at mm/page_alloc.c:3488 rmqueue mm/page_alloc.c:3488 [inline]
-WARNING: CPU: 0 PID: 3271 at mm/page_alloc.c:3488 get_page_from_freelist+0x286/0x1782 mm/page_alloc.c:3943
-Modules linked in:
-CPU: 0 PID: 3271 Comm: syz-executor.1 Not tainted 5.12.0-rc2-syzkaller-00474-ga5406a7ff56e #0
-Hardware name: riscv-virtio,qemu (DT)
-epc : rmqueue mm/page_alloc.c:3488 [inline]
-epc : get_page_from_freelist+0x286/0x1782 mm/page_alloc.c:3943
- ra : get_page_from_freelist+0x11a8/0x1782 mm/page_alloc.c:3943
-epc : ffffffe00036abee ra : ffffffe00036bb10 sp : ffffffe01fd57480
- gp : ffffffe004588910 tp : ffffffe01fa95f00 t0 : ffffffc403acde00
- t1 : 0000000000000001 t2 : 0000003fffad1d06 s0 : ffffffe01fd57670
- s1 : 0000000000000000 a0 : ffffffe01fd57688 a1 : 0000000000000003
- a2 : 1ffffffc03faaed1 a3 : ffffffe00036bb10 a4 : 0000000000000003
- a5 : 0000000000000001 a6 : 0000000000000008 a7 : 781560e8875b1000
- s2 : ffffffe07fdf5d00 s3 : 0000000000000001 s4 : ffffffe07fdf5758
- s5 : 0000000000047df2 s6 : 0000000000000000 s7 : ffffffe07fdf5740
- s8 : ffffffe07fdf5740 s9 : ffffffe01fd57670 s10: 0000000000000001
- s11: ffffffe07fdf5740 t3 : 781560e8875b1000 t4 : ffffffc40133fbf0
- t5 : ffffffc40133fbf1 t6 : ffffffe01fd57af5
-status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
-Call Trace:
-[<ffffffe00036abee>] rmqueue mm/page_alloc.c:3488 [inline]
-[<ffffffe00036abee>] get_page_from_freelist+0x286/0x1782 mm/page_alloc.c:3943
-[<ffffffe00036d996>] __alloc_pages_nodemask+0x19a/0x480 mm/page_alloc.c:4996
-[<ffffffe00039fd8e>] alloc_pages_current+0x114/0x234 mm/mempolicy.c:2277
-[<ffffffe0003b092e>] alloc_pages include/linux/gfp.h:561 [inline]
-[<ffffffe0003b092e>] alloc_slab_page mm/slub.c:1638 [inline]
-[<ffffffe0003b092e>] allocate_slab+0x282/0x406 mm/slub.c:1778
-[<ffffffe0003b4638>] new_slab mm/slub.c:1841 [inline]
-[<ffffffe0003b4638>] new_slab_objects mm/slub.c:2587 [inline]
-[<ffffffe0003b4638>] ___slab_alloc+0x2fc/0x4d8 mm/slub.c:2750
-[<ffffffe0003b4b72>] __slab_alloc.constprop.0+0xa4/0xce mm/slub.c:2790
-[<ffffffe0003b627e>] slab_alloc_node mm/slub.c:2871 [inline]
-[<ffffffe0003b627e>] slab_alloc mm/slub.c:2915 [inline]
-[<ffffffe0003b627e>] kmem_cache_alloc_trace+0x29a/0x2bc mm/slub.c:2932
-[<ffffffe00079bb14>] kmalloc include/linux/slab.h:554 [inline]
-[<ffffffe00079bb14>] tomoyo_print_header security/tomoyo/audit.c:156 [inline]
-[<ffffffe00079bb14>] tomoyo_init_log+0xb4/0x1402 security/tomoyo/audit.c:255
-[<ffffffe0007a4648>] tomoyo_supervisor+0x1b0/0xaaa security/tomoyo/common.c:2097
-[<ffffffe0007ae608>] tomoyo_audit_path_number_log security/tomoyo/file.c:235 [inline]
-[<ffffffe0007ae608>] tomoyo_path_number_perm+0x2ae/0x33c security/tomoyo/file.c:734
-[<ffffffe0007b630a>] tomoyo_file_ioctl+0x28/0x34 security/tomoyo/tomoyo.c:329
-[<ffffffe000790950>] security_file_ioctl+0x48/0x90 security/security.c:1495
-[<ffffffe00041f2a8>] __do_sys_ioctl fs/ioctl.c:747 [inline]
-[<ffffffe00041f2a8>] sys_ioctl+0x76/0xd56 fs/ioctl.c:739
-[<ffffffe000005572>] ret_from_syscall+0x0/0x2
+--vJbGBnt7stF50BDq
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBcU7sACgkQsjqdtxFL
+KRXpIQf/U2X4X8z8kzJAjGibPP2zSgFDF/PyvVHSP4mjmSzDqpUaCv+fgBDKnOg+
+LQ3Gv/ZPUrgz8FctnCFF2Z5rCJQ2pqmNK2EkJUInxifeyp/y8pBJn/q8oz0ZarxH
+IFWe52q3jdMgG8TUYJ2zky9ofX02ukuYWVtGFEgbinWEGocqr/5WU45nlWM3jTBt
+AjiMHprZiuiUmE2VsqaE+z6lfpEvp1iLw+xmTBTcnOe45bowj3MopNZ89FASD7UL
+d+9FSPhIMrlzAgqOwjSVkY6og33lYuhN0tFjHZd0rLl6feaLbRqDTCUXkR32+Dvr
+KP0bsTKRAsy36KgPVLR/A3i6sJdgdA==
+=ODuY
+-----END PGP SIGNATURE-----
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+--vJbGBnt7stF50BDq--
