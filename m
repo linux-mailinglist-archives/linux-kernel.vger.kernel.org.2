@@ -2,90 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35DB3486E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C34F348702
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 03:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbhCYCWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Mar 2021 22:22:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14579 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234257AbhCYCVd (ORCPT
+        id S239816AbhCYCiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Mar 2021 22:38:54 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14888 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239811AbhCYCia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Mar 2021 22:21:33 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F5TM30x5Hz19HM2;
-        Thu, 25 Mar 2021 10:19:27 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 25 Mar 2021
- 10:21:15 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
-Date:   Thu, 25 Mar 2021 10:29:25 +0800
-Message-ID: <20210325022925.1769056-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Wed, 24 Mar 2021 22:38:30 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F5Tl62kmrzkfNh;
+        Thu, 25 Mar 2021 10:36:50 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.202.38) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 25 Mar 2021 10:38:19 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <vincent.guittot@linaro.org>, <mingo@redhat.com>,
+        <peterz@infradead.org>, <juri.lelli@redhat.com>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>
+CC:     <valentin.schneider@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, Barry Song <song.bao.hua@hisilicon.com>,
+        "Valentin Schneider" <Valentin.Schneider@arm.com>
+Subject: [PATCH v2] sched/topology: remove redundant cpumask_and in init_overlap_sched_group
+Date:   Thu, 25 Mar 2021 15:31:40 +1300
+Message-ID: <20210325023140.23456-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
+X-Originating-IP: [10.126.202.38]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We got follow bug_on:
-[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
-[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
-......
-[130747.334329] Call trace:
-[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
-[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
-[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
-[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
-[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
-[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
-[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
-[130747.337359]  generic_file_buffered_read+0x410/0xae8
-[130747.337767]  generic_file_read_iter+0x114/0x190
-[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
-[130747.338556]  __vfs_read+0x11c/0x188
-[130747.338851]  vfs_read+0x94/0x150
-[130747.339110]  ksys_read+0x74/0xf0
+mask is built in build_balance_mask() by for_each_cpu(i, sg_span), so
+it must be a subset of sched_group_span(sg). Though cpumask_first_and
+doesn't lead to a wrong result of balance cpu, it is pointless to do
+cpumask_and again.
 
-If call ext4_ext_insert_extent failed but new extent already inserted, we just
-update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-cause bug on when cache extent.
-If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
-Maybe there will lead to block leak, but it can be fixed by fsck later.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Reviewed-by: Valentin Schneider <Valentin.Schneider@arm.com>
 ---
- fs/ext4/extents.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ -v2: add reviewed-by of Valentin, thanks!
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 77c84d6f1af6..970eb2dfcc46 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3246,7 +3246,7 @@ static int ext4_split_extent_at(handle_t *handle,
+ kernel/sched/topology.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+index f2066d682cd8..d1aec244c027 100644
+--- a/kernel/sched/topology.c
++++ b/kernel/sched/topology.c
+@@ -934,7 +934,7 @@ static void init_overlap_sched_group(struct sched_domain *sd,
+ 	int cpu;
  
- 		goto out;
- 	} else if (err)
--		goto fix_extent_len;
-+		goto err;
+ 	build_balance_mask(sd, sg, mask);
+-	cpu = cpumask_first_and(sched_group_span(sg), mask);
++	cpu = cpumask_first(mask);
  
- out:
- 	ext4_ext_show_leaf(inode, path);
-@@ -3254,6 +3254,7 @@ static int ext4_split_extent_at(handle_t *handle,
- 
- fix_extent_len:
- 	ex->ee_len = orig_ex.ee_len;
-+err:
- 	/*
- 	 * Ignore ext4_ext_dirty return value since we are already in error path
- 	 * and err is a non-zero error code.
+ 	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+ 	if (atomic_inc_return(&sg->sgc->ref) == 1)
 -- 
-2.25.4
+2.25.1
 
