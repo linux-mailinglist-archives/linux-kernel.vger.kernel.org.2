@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637BA349918
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6DE349935
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Mar 2021 19:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbhCYSHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 14:07:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230085AbhCYSHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 14:07:15 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S230195AbhCYSJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 14:09:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56547 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229734AbhCYSJD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 14:09:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616695740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=drU5tvVMYvfs+I6S2meKDKFJotJ/fm7RW4NXE7uUIV0=;
+        b=aeykNZaSajnBxrghl5lAjmjpWxBOwGFQHaG7ewnu6OUU7DssCTKNZbL3NcrkEt3S6RcZ2T
+        IaxA/4jghDJkNUhQSH/K4MDexkEm0TWfPej2Y5CHgrrkqnpIvbLdDVSPsI/l+0OqXAtgND
+        A6HQ8AR4bes2R5rx1V1jSqHbgz7omjk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-oRnjcgSyPHi1ps1zZeKWrg-1; Thu, 25 Mar 2021 14:08:54 -0400
+X-MC-Unique: oRnjcgSyPHi1ps1zZeKWrg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02FB161A24;
-        Thu, 25 Mar 2021 18:07:13 +0000 (UTC)
-Date:   Thu, 25 Mar 2021 18:07:16 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Alexandru Ardelean <aardelean@deviqon.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@deviqon.com
-Subject: Re: [PATCH] iio: adc: Kconfig: make AD9467 depend on ADI_AXI_ADC
- symbol
-Message-ID: <20210325180716.5f966c21@jic23-huawei>
-In-Reply-To: <c0220f77-da29-56a0-d528-90cafc0b391b@infradead.org>
-References: <20210324182746.9337-1-aardelean@deviqon.com>
-        <c0220f77-da29-56a0-d528-90cafc0b391b@infradead.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FBD1835B74;
+        Thu, 25 Mar 2021 18:08:08 +0000 (UTC)
+Received: from [10.36.115.72] (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 924EE1A8F2;
+        Thu, 25 Mar 2021 18:08:06 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <31110e58-c99a-8dee-6f6e-98f456b77759@redhat.com>
+ <YFyZV6QSffsHkP2d@dhcp22.suse.cz>
+ <062bc5d7-a83c-1c1a-7b77-9f043643f4fa@redhat.com>
+ <YFyfdDAoWON6IoPL@dhcp22.suse.cz>
+ <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
+ <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
+ <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
+ <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz> <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
+ <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
+ <YFy8ARml4R7/snVs@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <5a755ff6-4085-da64-08d5-49dd232029eb@redhat.com>
+Date:   Thu, 25 Mar 2021 19:08:05 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YFy8ARml4R7/snVs@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 11:45:14 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> On 3/24/21 11:27 AM, Alexandru Ardelean wrote:
-> > Because a dependency on HAS_IOMEM and OF was added for the ADI AXI ADC
-> > driver, this makes the AD9467 driver have some build/dependency issues
-> > when OF is disabled (typically on ACPI archs like x86).
-> > 
-> > This is because the selection of the AD9467 enforces the ADI_AXI_ADC symbol
-> > which is blocked by the OF (and potentially HAS_IOMEM) being disabled.
-> > 
-> > To fix this, we make the AD9467 driver depend on the ADI_AXI_ADC symbol.
-> > The AD9467 driver cannot operate on it's own. It requires the ADI AXI ADC
-> > driver to stream data (or some similar IIO interface).
-> > 
-> > So, the fix here is to make the AD9467 symbol depend on the ADI_AXI_ADC
-> > symbol. At some point this could become it's own subgroup of high-speed
-> > ADCs.
-> > 
-> > Fixes: be24c65e9fa24 ("iio: adc: adi-axi-adc: add proper Kconfig dependencies")
-> > Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>  
+On 25.03.21 17:36, Michal Hocko wrote:
+> On Thu 25-03-21 17:20:23, David Hildenbrand wrote:
+>> On 25.03.21 17:07, Michal Hocko wrote:
+>>> On Thu 25-03-21 16:35:58, Michal Hocko wrote:
+>>> [...]
+>>>> So there is indeed a difference. One way around that would be to mark
+>>>> vmemmap pages (e.g. PageReserved && magic value stored somewhere in the
+>>>> struct page - resembling bootmem vmemmaps) or mark section fully backing
+>>>> vmemmaps as online (ugly).
+>>>
+>>> I am not yet ready to give up on this. Here is a quick stab at the
+>>> pfn_to_online_page approach. It is not great but it is not really
+>>> terrible either. I think we can do better and skip
+>>
+>> We both seem to have a different taste, to phrase it in a nice way :) ; but
+>> well, you seem to have set your mind (just like I seem to have set mine when
+>> trying to find a nice and somewhat-clean way to handle this when discussing
+>> it in the past).
 > 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Applied to the fixes-togreg branch of iio.git.
-
-I'll do a pull request to Greg sometime in next few days for that
-branch.
-
-
-thanks,
-
-Jonathan
-
+> I definitely do not want to fight for a certain solution just for the
+> sake of it. I really dislike how the lifetime of the reserved space and
+> its accounting are completely detached. But hey, I do understand that
+> a worse solution from the design perspective can be better due to
+> practical reasons or constrains.
 > 
-> Thanks.
+> I haven't seen the hibernation problem before and I do recognize it is
+> a nasty one. If all it takes is to make pfn_to_online_page work (and my
+> previous attempt is incorrect because it should consult block rather
+> than section pfn range) and there are no other downsides then I would
+> still prefer to go with my proposal.  If there are still other things to
+> plug then, well, practicality is going to win.
 > 
-> > ---
-> > 
-> > Apologies for this being too late.
-> > I made the patch but forgot it in a local tree.
-> > 
-> > Related to discussion:
-> >    https://lkml.org/lkml/2021/3/18/1007
-> > 
-> >  drivers/iio/adc/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> > index e0667c4b3c08..dda0f1e37ec1 100644
-> > --- a/drivers/iio/adc/Kconfig
-> > +++ b/drivers/iio/adc/Kconfig
-> > @@ -249,7 +249,7 @@ config AD799X
-> >  config AD9467
-> >  	tristate "Analog Devices AD9467 High Speed ADC driver"
-> >  	depends on SPI
-> > -	select ADI_AXI_ADC
-> > +	depends on ADI_AXI_ADC
-> >  	help
-> >  	  Say yes here to build support for Analog Devices:
-> >  	  * AD9467 16-Bit, 200 MSPS/250 MSPS Analog-to-Digital Converter
-> >   
+> So before I give up on the "proper" design card, are there more
+> subtleties to watch for? You have certainly given this much more thought
+> than I have.
 > 
-> 
+
+"Just one more thing" :)
+
+With the pfn_to_online_page() change, I think what remains is
+
+
+1. The contiguous zone thingy, which we discussed is not a deal breaker, 
+although sub-optimal and most probably not to be optimized in the future.
+
+2. There corner cases issue with /dev/mem use case with offline memory 
+blocks I mentioned. Existing setups (!memmap_on_memory) are not 
+affected, so I guess we're fine.
+
+3. valid_zones_show() has to be taught to only look at the !vmemmap 
+part, otherwise we'll no longer indicate "movable" after onlining to the 
+movable zone. Should be fairly easy.
+
+
+We'll have pfn_to_online_section() succeed without SECTION_IS_ONLINE. I 
+think I/we removed all such code that purely relied on that flag for 
+optimizations like
+
+if (!online_section(s))
+	continue;
+
+
+I can give it some more thought, it could fly. At least zone shrinking 
+and hibernation should continue working as expected, which is a relief.
+
+-- 
+Thanks,
+
+David / dhildenb
 
