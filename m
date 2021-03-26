@@ -2,93 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A16FC34A2EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:06:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631BA34A2F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbhCZIFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        id S229913AbhCZIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:07:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229528AbhCZIFK (ORCPT
+        with ESMTP id S229589AbhCZIGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:05:10 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B8FC0613AA;
-        Fri, 26 Mar 2021 01:05:10 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id m7so4064903pgj.8;
-        Fri, 26 Mar 2021 01:05:10 -0700 (PDT)
+        Fri, 26 Mar 2021 04:06:47 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EB9C0613B0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:06:47 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id j17so2487146qvo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:06:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=NwKF2Id58T0+Q4X2V9aN9037qk0PD32MTro/1e/Ds88=;
-        b=ZLXpn/oZ49bMlmklfTI2k7sZhQ+0C9OeZ7VXB+Hywup9pWjxk5oRbgO8TE1cpoXC8C
-         +PRsUv6OLr73zUTDgV/s/2KA51K0qJ97XZmtkNtZWSyR/HLsii8rLG+YF8Rs1vvwdwSC
-         UgUjQHeCCAwU35QikQCNYIVc05SPPIrrvKCW9CHBVAk1i74czU7Agj8+73b5aRqmP/Kb
-         M9ndBgKXOklbs5T5PYSqansXI8FoIy4FnVb78PHHKz/zUk5FpQQRT/OAktsr8Jxq9at8
-         iWCFAf36ESjbFMIDmHO88JJuySpmwkFHIGCCLpjLjq6CfebDTL9yrBTy8fUmMWpDa/TV
-         WQuw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hzAVT09WfhCKkngDprHIA2c8Cg/0PKy+euDvs2tl2jQ=;
+        b=pc5BFRIsqvU/6A6fZz5e05qOO9zlx/g35iSBr2r88tcHVkvIEQ1iviNyZNw384ULQd
+         jtoxja25rrycgRFjfyvVQT597wBI0T+bIPYSM1G79670s9xT5g9akE5vHf4SpYX08xu1
+         UY8M6H8yqtQUNcKh/9yGutP/r+U0b0M1fM7aengLYK6bZa6bDgT7A2QcbgsPXd/qINGy
+         prv3dWZrvv0P/yFhTZ6SGIH4oMUqSqEET7vrM1GTE1SoFbnPXlLiO8vcMsIcZkwZD27+
+         hvNSqVtNIrG+30ql4sp3V/Rrzjt9i49xcK1wUbDs+0qcJpoTYn7lo40VjP1rxVbtNK7s
+         edrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=NwKF2Id58T0+Q4X2V9aN9037qk0PD32MTro/1e/Ds88=;
-        b=hx3zFK91I6mPSicW0B3uUZdvWJxFqAxFYhfpCYiYBOqmKEAQW+/gcEdVobLOjtqFgx
-         epa662Lfluwg7/KVUyNsFq7s9nc8FS8hJIrJd+I5MDQoLjPYMm/9xXLwNr0RdaL9fsmR
-         IYptzYvwWR8dvoc//kkqmGvvrvwxVoPDD+e0nEWG8snRMRwkbyCs4gNN8mOuX7stzcXN
-         a/NB0blm9vuez1yo4c62IM3oi7uWXCT1q1sKnn0ZCEmZSTWBNv+fSGGe5NzIC2Z/oOBF
-         qG37DP93jiotfKzOLp0odioMywkPlQto6izV6msipcZGUN+ZsTHPaNOPyZxoH6+SVzOV
-         /kAw==
-X-Gm-Message-State: AOAM5306gGqNWprHO9n/BBQWja6e+ByWKrCUpVOUjkS1eMLRmmX9P/oS
-        PDovrnNE91hsD4MAtv6dFE8=
-X-Google-Smtp-Source: ABdhPJzwYrWPBCp71W6OTSt/+NtkvOrHJVunRMdCWyg0J4RMLKpEsesX58sJxFEsq5BjNvX4Ogxlrw==
-X-Received: by 2002:a63:4842:: with SMTP id x2mr708260pgk.229.1616745909929;
-        Fri, 26 Mar 2021 01:05:09 -0700 (PDT)
-Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id d8sm8661064pfq.27.2021.03.26.01.05.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Mar 2021 01:05:09 -0700 (PDT)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     gregkh@linuxfoundation.org, zhangxuezhi1@yulong.com
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: fbtft: fix a typo
-Date:   Fri, 26 Mar 2021 16:05:15 +0800
-Message-Id: <1616745915-194644-1-git-send-email-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hzAVT09WfhCKkngDprHIA2c8Cg/0PKy+euDvs2tl2jQ=;
+        b=hopIpNiizEf/KEp2udcV05BKxjmkEwJp6BqbxgsLb0qJ0iU2sfOd6i3U6EK5aBcxOH
+         9l3UvZxECdGfiRjVsbF0Nwvcld1lLyrhRt0SxuZ/aupH8m1jsmpeFTBybhIp3CPl2ruf
+         gN11ZyF9iKeNtv2dHTdJ9WMv6KjWNkuuSBLRzrJ5axvmf+v1hbFR7aQYJzDpGncDm72y
+         1g4LbyL8fUIa4ha8qGOAULdO1f89KQ85bVtgeOM6k6dsjMBUsrrJ43hQvKnASnhyuEKe
+         HpSeNC+fg2Gqf78x5HQo2kAy06Bz/NLPqO4Eccc+jST7pIQAc9ypYQ3RQXDkUdKTt31Z
+         sVEA==
+X-Gm-Message-State: AOAM532fDAc5P5CshZkPp/GYoD0ZScgJ65Jz18Mi/qbPIsdj8A8RT2U2
+        ZzZ16XTsfS3Jnt6OYY/hgl6RNIeSvEE7v+stn9E2Cw==
+X-Google-Smtp-Source: ABdhPJyQTRLW1/WPUvL7pmbRqYVUjw+4QmSRbkl4MFgcfr2IpuvxZ/HNHKRa+FU/nUmaf5QsmtETrvs79XOnSMT0ShI=
+X-Received: by 2002:ad4:50d0:: with SMTP id e16mr12348421qvq.37.1616746006008;
+ Fri, 26 Mar 2021 01:06:46 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210325212202.142945-1-alaaemadhossney.ae@gmail.com>
+ <YF2JF+UMdt/icEMj@kroah.com> <CACT4Y+Y8f6-c6zYCN=d0557xEryAzBfS9n2m=vBcdjHSi5gYcw@mail.gmail.com>
+ <913828319c9e0b6281ad32361e0246fc95d2c138.camel@gmail.com>
+ <CACT4Y+ZSLKWJK6yrLG6=ej4-1_uxnqGhS05rBiD=eFX3GETFEw@mail.gmail.com> <f635ac6050755703d7ebc079b188e1c9acb04279.camel@gmail.com>
+In-Reply-To: <f635ac6050755703d7ebc079b188e1c9acb04279.camel@gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 26 Mar 2021 09:06:35 +0100
+Message-ID: <CACT4Y+bYTRon-NY7DxbU2sZ1_Fk1SYTYF-hMej5WPdQFg+G_oQ@mail.gmail.com>
+Subject: Re: [PATCH] media: sq905.c: fix uninitialized variable
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Alaa Emad <alaaemadhossney.ae@gmail.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Carlis" <zhangxuezhi1@yulong.com>
+On Fri, Mar 26, 2021 at 8:53 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> Hi!
+>
+> On Fri, 2021-03-26 at 08:40 +0100, Dmitry Vyukov wrote:
+> > On Fri, Mar 26, 2021 at 8:24 AM Pavel Skripkin <paskripkin@gmail.com>
+> > wrote:
+> > >
+> > > Hi!
+> > >
+> > > On Fri, 2021-03-26 at 08:14 +0100, 'Dmitry Vyukov' via syzkaller
+> > > wrote:
+> > > > On Fri, Mar 26, 2021 at 8:11 AM Greg KH
+> > > > <gregkh@linuxfoundation.org>
+> > > > wrote:
+> > > > >
+> > > > > On Thu, Mar 25, 2021 at 11:22:02PM +0200, Alaa Emad wrote:
+> > > > > > Reported-by:
+> > > > > > syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
+> > > > > > Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+> > > > > > ---
+> > > > >
+> > > > > I know I do not take patches with no changelog text, but other
+> > > > > maintainers might be more leniant :(
+> > > >
+> > > > I wonder if it's the right fix or not.
+> > > > Initializing variables will, of course, silence the warning, but
+> > > > it's
+> > > > not necessarily the right fix. I suspect there is something wrong
+> > > > in
+> > > > how ret/act_len are user/checked.
+> > > >
+> > >
+> > > There is a problem in usb_bulk_msg() call. It could return before
+> > > act_len initialization, so i think, act_len should be intialized with
+> > > smth wrong like 0 or -1. BTW, I already send patch for that, but it
+> > > was
+> > > marked as obsoleted.
+> >
+> > If usb_bulk_msg returns before act_len initialization, it should
+> > signify that fact with an error code in return value or something,
+> > right? It does not initialize act_len only in case of errors, right?
+> > If so, sq905_read_data must check ret and don't use act_for any
+> > checks. But it does, and that's I think the bug. Or maybe usb_bulk_msg
+> > does not properly signify that it failed (and did not initialize
+> > act_len). Either way silencing the warning with pre-initializing
+> > act_len looks very fishy.
+> > For example, consider, in some contexts it's OK to transmit 0-length
+> > packets, I don't know if it's the case for usb_bulk_msg or not, but it
+> > does not affect the idea. Now, if we pre-initialize act_len to 0, we
+> > can falsely think that such 0-length transfer has succeeded (act_len
+> > == size), while it actually failed (I assume so since usb_bulk_msg
+> > left act_len unitialized).
+>
+> You are absolutely rigth, and sq905_read_data doesn't use act_len for
+> checks in case of usb_bulk_msg fail. But it uses it for error printing:
+>
+>         if (ret < 0 || act_len != size) {
+>                 pr_err("bulk read fail (%d) len %d/%d\n", ret,
+> act_len, size);
+>                 return -EIO;
+>         }
+>
+> So, value like -1 can be a flag for smth went wrong internally. Or
+> maybe remove this error log and replace it with other, which will rely
+> on error code, idk how it will be better
 
-Change 'tft' to 'TFT'
+Oh, you are right.
+I was thinking it's the "ret < 0 || act_len != size" check where we
+use uninit act_len, which would be much worse.
+We could preinitialize act_len to, say, -1. But future readers may be
+confused as to why we need to init it (as I was confused).
+So another option may be to handle it during printing as:
 
-Signed-off-by: Carlis <zhangxuezhi1@yulong.com>
----
- drivers/staging/fbtft/fbtft-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+pr_err("bulk read fail (%d) len %d/%d\n", ret, ret < 0 ? -1 : act_len, size);
 
-diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
-index 4f362da..44e7acb 100644
---- a/drivers/staging/fbtft/fbtft-core.c
-+++ b/drivers/staging/fbtft/fbtft-core.c
-@@ -775,7 +775,7 @@ void fbtft_framebuffer_release(struct fb_info *info)
- EXPORT_SYMBOL(fbtft_framebuffer_release);
- 
- /**
-- *	fbtft_register_framebuffer - registers a tft frame buffer device
-+ *	fbtft_register_framebuffer - registers a TFT frame buffer device
-  *	@fb_info: frame buffer info structure
-  *
-  *  Sets SPI driverdata if needed
-@@ -873,7 +873,7 @@ int fbtft_register_framebuffer(struct fb_info *fb_info)
- EXPORT_SYMBOL(fbtft_register_framebuffer);
- 
- /**
-- *	fbtft_unregister_framebuffer - releases a tft frame buffer device
-+ *	fbtft_unregister_framebuffer - releases a TFT frame buffer device
-  *	@fb_info: frame buffer info structure
-  *
-  *  Frees SPI driverdata if needed
--- 
-1.9.1
-
+It makes the intentions very explicit for a future reader.
