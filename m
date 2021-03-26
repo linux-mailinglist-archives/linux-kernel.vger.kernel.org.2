@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4215334AC22
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:01:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD71834AC39
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhCZQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:00:47 -0400
-Received: from sonic310-30.consmr.mail.ne1.yahoo.com ([66.163.186.211]:41199
-        "EHLO sonic310-30.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230272AbhCZQAi (ORCPT
+        id S230377AbhCZQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 12:03:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31550 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229945AbhCZQDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:00:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1616774437; bh=IVLVSFDtfiMtrawZ4X0NmMkk52h1rLo5ZKdjIylldUE=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=UejHDHISFTJ+SmorafMHUDG5YbKhLqN0fNOshNGlJXDAjcOo+JRTXXYPyF0WaHqRFX33e8G1v7SD13XLV9Dq2SKcnFTAjPKyea7J/rRGeqnXTHtMWgJK3MwcWFTnOrvyR3uv4Rb0ttqp5Z96Sp2BqfgBbUQvx1m5X6WwTPKDqQcOJLxWqk6x1GTQ/3sOMuni6noZ21n7zRgAmnce8mPzLCtU1/PZflpR84n6Fpn/cwBp+PvINIvbJQi6EZjcGYtLEaSfWuHo8Mw4fLL92UYg6udlVorS7TAqpcR87Z3hAdFbN+g85ghBHXg8FBr9CkZF4eGo47AcDjaCCAdj957b9w==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1616774437; bh=Y6uta27THN7z+s9quY8CEzCFCW6aJqplcl95aZTXZyo=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=KHTWrXmKN/wpXNNfDgsuPDdVCThJ4J1ou0l9V01IlVGsej23/JsT6fZJKZPWWgwHSFmEHOe2D1e5TKgmzeKab6a5+4pX7mTGmi6M4r/Rh7LKgXfkSDXHYSUNKdnQB4/ejcYVQT4kMF+m4y1ZIFTWd+QxI/wP+ATy5JsBLC3cmmncIl+9ol82+iqgrV/io0HtEHMqeNUIJLlp6RMGbKwF+TkTpvM6x0U193/Xsh4YxNB4z6uDTsOHnA4I3/yKHuNwScEWuEadcJKd5397//9TioWno8KmJ+HMPnd3Rzlq6gddrElRjf8BT/LsOONGH3hfduf05L1qGsNyFUAOj19KPQ==
-X-YMail-OSG: EuYAdJAVM1mhLoyXmeOHPzPk5BtkcaO6WFWeguV2sO7_wr3Z0o8yEw9MRkt1.6f
- qVy2V3KO.OcXMsb4sNE0fg7Do8P96HiE5rS61o886pkOtDoVLlfcrmud1ftox.5.2c6OrCW61G3l
- xrm2uAKS.M0jtew009jHjsbpI6vKnQ0uWmo6fF3BBd8McVkqNaUzAxbP3SkFngytHuU6RlF.iaFg
- V.tkLM1m.Xm4rlVnKutkWJKQdqqFWoiKv6qgfnj5EAYzEmKmkW9J_iG7ftlNE87xBDb5PMACs8lJ
- myljgGp1ZrMdW0Tdy4_liEVZHmt5nttQr0myr27Y85CTps2rYKdZvEB6QJ5nVG8Iq3i4_LWU4SpD
- efP6SX2R.FA2uWKFTHgbyx4TFBhAOQfUyMO_4PBD.LkOxlV.EuaQXBdAAdjvA0k.stA1Z8.Jr5BI
- CZOLdsL1mQwx4cAIlUgkGxT1GKRtIp4fC_Gh0_4SmncBVqjZ4aTXmLaG3j7hh1wOYufPKdh82w1r
- iuBIpofWCk_CON9XSCxxscxkRDOesuIWO5FNEqEL.N4.rYiySPs7DdpGZkRrybJT7_n.04AtvRU.
- XFkCoyh2q.cBy.dYOig_80K7Mx4KNiuF0o7EkysKBu5C8No64SCUTThR6Q3pKDv9n3Ej46n0rKfc
- jV36cm97uBzRBS2XIpUV4_zjlt8GXTqlz9PSJG0EdceAwu3rlOcycsCkFMNWw_I4BtPlQieuC2jl
- YeDs3vZldXaJnliG.7lhhuVZi1FyKkLmLYk9XBxXwBF6vdCEY3VDDN.Irrv7hqRkjtmOBQNaTStU
- rlgPyTytUM_YW3radNnxHcJ_EH5Nq8FzAFXJngDWom2FoCG7IX4agURgP7bg7FY93iCw.P8NvUCV
- aBwUezVGLAQxyztjkvtk4iXvaU.BU6tB_oRqsIDgtcO9fwZ9xdVR38i2e5bbS29e4kQVvrJPJ2RE
- tdMIRbLJeBJFiyfVqBxSw_HtS2XGOUYZBgqcPuAjp6mXkDawfj6FEQ4nKtTjk4GiJ_H39mD9ciW5
- 7OytpB7VqHsKOk7MqW2yFoMOhQT4Ty6PdI55QUuokUfl_jqr8a4LgRf.MdBVeeg7P7lms2ere0Ke
- kLq65t_1gMTj_3tSJM3r7L0K4UJyuIJjemMwtk7aCvJ2QQfbzTpVFtD1u4XEh4MFvB6kF1fQ2zwF
- 7eGwP4LzxHvPTLFeJrK6SuODY4IVe94VHu.NedUFcZCNrEnvxSwnPlqheMKLZno0G8rp126yfCIi
- Qbl6.zWX5JToD3XKYc.UJpgcnGJQxpFHADMS2SgDv2yDGv_K69XV1.BrVVhycCuxlObYJEoHMJRa
- D25MgW_ffSVUULClcRLe3kHYNehlvBNvBnqsTeWPQTC4TDfp58kxdBF8KJX56igk14p2AnrO7972
- 8wTn_ZW04oqJkv4O9RAk8jzUXkM5dvVQfU7L8_FA2UvtFkL4I1XHZcnIwXlsPakrfpSgCiCFr7Ux
- i3bKqVVf4MFYeTp_ZXjkH0V8C3S6yaphSVGJJA9rnyvhNMSuxfkGIXJ_7ZDZJ0q1B8tVInac2F5Z
- d0pnoRNCWzDnSDd0Y3FzXLCxxjsiPv3X4aYB8rJ_v1a3bU9ClpmmHuNjggk0JOqSJOk00ND.vnMS
- tdbWgS7gGN8fwa8VK.1DP5fiBFJQWNlopUN52Gj1PT77saAs1V0YR0x0UbJhLYxm.gUzGqkz7JUy
- L6zCkucMh4sy9QE_0Bn6lCsPJHF38C3kcMaj.je_vi0iWVo7bjrbomfPy0RGeWT2idQED7pR_m0V
- iOD3jVfQeOHt9HxID9e.b_Hr2Ikux8yrPPmFLpTrxXBIjhTIhBC6yl5QL6nL6ckhgqn0iu38KFTl
- 62s_EFGWN8mW.vXD_6NmhRecYvGl.kOFB7YcSkLlg.8IbmiCdC69sWzfaBAV_mUvFryVBcK3tgUy
- 0vN9bRXMOc.2XZc46kBEm.778aadbSu_qdrPOGMkUARFP.Xu0RutrRaHn_6.riIn6.xeMTFAQjZs
- i0B8xhC33C1w3OPqLlqBmY.Pz46_B_3KqG.ljrA7inXquFyJ1lCx6cZKWHJY6vezUp4bW2qiIgzD
- rfxDbLXmhzzRalGrCL68NysJeh1B_vr6_0H9lKmnTJtNaokSYpQGH2zb.btha5bHX1.8vPqy5AuA
- Ohzh3f0BZe6tTyqnWKwQ2nA9nyFYAcZ5H0Yqm.ZwUW18h78eAnDqdX.TBlM0Q_YHtkdQUi4q8L3v
- Q80YTuoGMIKewlESfVP6AzcaQMCt6oxT4LseO3Fp1t.ppEY3YnVSYyQyLbeptlvv2Bhu.ro9DgDH
- Pt2mTA3h2ZeQGsTKNv_IzBiMLlfa8mrWrnH1OHwQpd6yIUTD6s6vx5DFwU_Zxzl0uXmD1rJ0.tcK
- ma7PcDSsERklj_1NdndBgg5Xvf03ooIL_le4NBS_uy6IvCL.OjxxXK1svzoWLyFz5ugFwUOT1DOn
- qEeA5IYdhIBgJ2dCj.dyWp2mFMq8LTm4Q0ti.u7Ch3_wkYIL7Fl8pFqRDCxbO0T4V2Dovd6dhD6F
- 35Lfaty_S89WiKwM6R0AS2189ctM7qcX0mcDVca7whU8ZKOA0PnK3MItnjjYTjNyIwIfxLKVe6Dl
- 61YMI3XfAJstnscbO2YiybsCtUdhpwEfGXDvoud2YGFOHMSEl8aV9B8KZur3g_QwLhFtq1TySDIa
- DQskw0OE5vXH7vJwUK9DMruX4uayxG0AbkA--
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ne1.yahoo.com with HTTP; Fri, 26 Mar 2021 16:00:37 +0000
-Received: by smtp409.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID abb0a87953873cb6fb8655002d3fb093;
-          Fri, 26 Mar 2021 16:00:35 +0000 (UTC)
-Subject: Re: [PATCH] Revert "Smack: Handle io_uring kernel thread privileges"
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-security-module@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <04c7c410-08e8-626a-795e-b77db6666804@kernel.dk>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <cc7dc28e-f812-a719-ce0c-a288d8facf72@schaufler-ca.com>
-Date:   Fri, 26 Mar 2021 09:00:34 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 26 Mar 2021 12:03:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616774601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LZnm8HdGFNCRnMNSn+oQG/RYs2IjqgWrYp8rf77mRGU=;
+        b=KvMnHQIbj5ASRNXIo3INItTAYpK0fbMQ8FdJ1D+HboHNKJ3Qu1/SDy1nkQWXcPt6a0qU4Y
+        Vcscpljo0AXYTM47VbvS2qYDSYlGrnVGg+nHnCbyWBQrzUXnfxW1d/bme0iVWdvYejYM7G
+        5ME+d5qQNPzo/XrmC0OLHB1aG9BI4RQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-JiLdBBZXPm60hUQHLoHDfg-1; Fri, 26 Mar 2021 12:03:16 -0400
+X-MC-Unique: JiLdBBZXPm60hUQHLoHDfg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76DC9EC1A0;
+        Fri, 26 Mar 2021 16:03:15 +0000 (UTC)
+Received: from [10.36.112.81] (ovpn-112-81.ams2.redhat.com [10.36.112.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 49FFD19CB2;
+        Fri, 26 Mar 2021 16:03:13 +0000 (UTC)
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz>
+ <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
+ <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
+ <YFy8ARml4R7/snVs@dhcp22.suse.cz> <YFy+olsdS4iwrovN@dhcp22.suse.cz>
+ <YF0JerCFXzcmMKzp@localhost.localdomain> <YF2ct/UZUBG1GcM3@dhcp22.suse.cz>
+ <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
+ <YF3x8BW1+2o50mds@dhcp22.suse.cz>
+ <0e735ea7-b3d9-615e-6bba-fa3a16883226@redhat.com>
+ <YF3+OWstWA9LIX95@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <3739470f-3b96-fa39-34dc-1ce46a68f1da@redhat.com>
+Date:   Fri, 26 Mar 2021 17:03:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <04c7c410-08e8-626a-795e-b77db6666804@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YF3+OWstWA9LIX95@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Mailer: WebService/1.1.17936 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.9.1)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/2021 5:42 PM, Jens Axboe wrote:
-> This reverts commit 942cb357ae7d9249088e3687ee6a00ed2745a0c7.
->
-> The io_uring PF_IO_WORKER threads no longer have PF_KTHREAD set, so no
-> need to special case them for credential checks.
+On 26.03.21 16:31, Michal Hocko wrote:
+> On Fri 26-03-21 15:53:41, David Hildenbrand wrote:
+>> On 26.03.21 15:38, Michal Hocko wrote:
+>>> On Fri 26-03-21 09:52:58, David Hildenbrand wrote:
+> [...]
+>>>> 2. We won't allocate kasan shadow memory. We most probably have to do it
+>>>> explicitly via kasan_add_zero_shadow()/kasan_remove_zero_shadow(), see
+>>>> mm/memremap.c:pagemap_range()
+>>>
+>>> I think this is similar to the above. Does kasan has to know about
+>>> memory which will never be used for anything?
+>>
+>> IIRC, kasan will track read/writes to the vmemmap as well. So it could
+>> theoretically detect if we read from the vmemmap before writing
+>> (initializing) it IIUC.
+>> This is also why mm/memremap.c does a kasan_add_zero_shadow() before the
+>> move_pfn_range_to_zone()->memmap_init_range() for the whole region,
+>> including altmap space.
+>>
+>> Now, I am no expert on KASAN, what would happen in case we have access to
+>> non-tracked memory.
+>>
+>> commit 0207df4fa1a869281ddbf72db6203dbf036b3e1a
+>> Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+>> Date:   Fri Aug 17 15:47:04 2018 -0700
+>>
+>>      kernel/memremap, kasan: make ZONE_DEVICE with work with KASAN
+>>
+>> indicates that kasan will crash the system on "non-existent shadow memory"
+> 
+> Interesting. Thanks for the pointer.
+> 
+>>>> Further a locking rework might be necessary. We hold the device hotplug
+>>>> lock, but not the memory hotplug lock. E.g., for get_online_mems(). Might
+>>>> have to move that out online_pages.
+>>>
+>>> Could you be more explicit why this locking is needed? What it would
+>>> protect from for vmemmap pages?
+>>>
+>>
+>> One example is in mm/kmemleak.c:kmemleak_scan(), where we scan the vmemmap
+>> for pointers. We don't want the vmemmap to get unmapped while we are working
+>> on it (-> fault).
+>   
+> Hmm, but they are not going away during offline. They just have a less
+> defined state. Or what exactly do you mean by unmapped?
 
-Could you cite the commit making that change?
-I wouldn't want to see this change back-ported to a kernel
-that doesn't have that change as well.
+Hmm, also true. We should double check if we're touching other code that 
+should better be synchronized with the memory hotplug lock.
 
->
-> Cc: Casey Schaufler <casey@schaufler-ca.com>
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> ---
->  security/smack/smack_access.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
-> index 7eabb448acab..efe2406a3960 100644
-> --- a/security/smack/smack_access.c
-> +++ b/security/smack/smack_access.c
-> @@ -688,10 +688,9 @@ bool smack_privileged_cred(int cap, const struct cred *cred)
->  bool smack_privileged(int cap)
->  {
->  	/*
-> -	 * Kernel threads may not have credentials we can use.
-> -	 * The io_uring kernel threads do have reliable credentials.
-> +	 * All kernel tasks are privileged
->  	 */
-> -	if ((current->flags & (PF_KTHREAD | PF_IO_WORKER)) == PF_KTHREAD)
-> +	if (unlikely(current->flags & PF_KTHREAD))
->  		return true;
->  
->  	return smack_privileged_cred(cap, current_cred());
+-- 
+Thanks,
+
+David / dhildenb
+
