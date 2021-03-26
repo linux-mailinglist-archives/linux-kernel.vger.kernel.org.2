@@ -2,161 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9789F34B22D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF5834B231
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:34:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhCZWav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:30:51 -0400
-Received: from p3plsmtpa06-04.prod.phx3.secureserver.net ([173.201.192.105]:42103
-        "EHLO p3plsmtpa06-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230347AbhCZWae (ORCPT
+        id S230319AbhCZWeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230043AbhCZWdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:30:34 -0400
-Received: from chrisHP110 ([76.103.216.188])
-        by :SMTPAUTH: with ESMTPA
-        id PuyPlPYLbe8QFPuyPlZ0t6; Fri, 26 Mar 2021 15:30:33 -0700
-X-CMAE-Analysis: v=2.4 cv=JLz+D+Gb c=1 sm=1 tr=0 ts=605e608a
- a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
- a=kj9zAlcOel0A:10 a=eUCHAjWJAAAA:8 a=VwQbUJbxAAAA:8 a=ag1SF4gXAAAA:8
- a=B9N1SL4tAAAA:8 a=ZZ8IlgSgAAAA:8 a=yMhMjlubAAAA:8 a=Ikd4Dj_1AAAA:8
- a=5dq06bJRMOhGB6Ww62IA:9 a=CjuIK1q_8ugA:10 a=e1s5y4BJLze_2YVawdyF:22
- a=AjGcO6oz07-iQ99wixmX:22 a=Yupwre4RP9_Eg_Bd0iYG:22 a=2pORUOBALVJw3eK4Rqq-:22
- a=bnemC1k7u3fE13R9927P:22 a=fCgQI5UlmZDRPDxm0A3o:22
-X-SECURESERVER-ACCT: don@thebollingers.org
-From:   "Don Bollinger" <don@thebollingers.org>
-To:     "'Andrew Lunn'" <andrew@lunn.ch>
-Cc:     "'Jakub Kicinski'" <kuba@kernel.org>, <arndb@arndb.de>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
-        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
-        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
-        "'netdev'" <netdev@vger.kernel.org>,
-        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
-References: <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <001201d719c6$6ac826c0$40587440$@thebollingers.org> <YFJHN+raumcJ5/7M@lunn.ch> <009601d72023$b73dbde0$25b939a0$@thebollingers.org> <YFpr2RyiwX10SNbD@lunn.ch> <011301d7226f$dc2426f0$946c74d0$@thebollingers.org> <YF46FI4epRGwlyP8@lunn.ch> <011901d7227c$e00015b0$a0004110$@thebollingers.org> <YF5GA1RbaM1Ht3nl@lunn.ch> <011c01d72284$544c8f50$fce5adf0$@thebollingers.org> <YF5YAQvQXCn4QapJ@lunn.ch>
-In-Reply-To: <YF5YAQvQXCn4QapJ@lunn.ch>
-Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
-Date:   Fri, 26 Mar 2021 15:30:32 -0700
-Message-ID: <012b01d7228f$a2547270$e6fd5750$@thebollingers.org>
+        Fri, 26 Mar 2021 18:33:40 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A308C0613AA;
+        Fri, 26 Mar 2021 15:33:40 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so4928551pjh.1;
+        Fri, 26 Mar 2021 15:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mfe8aSppDXkPqJOlKfc1dOMa01ZR+nc0EiEZ+WQq/Yc=;
+        b=dKj20F7iQ1lChMAlm86D4iiriOmrbwdDLLU0pOfqcFWJFOGhlt1s6C6T0E0S5WgOQo
+         5U9xrtoflreP9RxnyYPAUAy2LmBms13qaeiPCcXqDb+MlOIJC6f5SAS4jE3g1hZ+uz6e
+         cdiTWWkUuydA9dg5e3SGSVGTfIX0XdPeCHeYJRhDuIBWMBSkTPHmeqVTp9FjgQ5oEa7b
+         MQ+7jICsE/GqTKWfn60u+EJTqu2O9tf1k7Pqox+PTtQqM9yQ3yxw8kFzU98nuMQ0+ix7
+         qOAocJUuo8F3DSRl2/hHiS9v/cdFtBnqLgHmbwWn/57WM9PsFwmWMclRPUFCIpFY1kBx
+         zwVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mfe8aSppDXkPqJOlKfc1dOMa01ZR+nc0EiEZ+WQq/Yc=;
+        b=TVtXDNJtNCPM7SjMavytvjCUGPudN+yEuoHwlA59WUz9hRiNsfc8Kdl70UKBG8BwAG
+         lzspviPMFi/uZgvnVWfGJ9pLpkLteJoj5L3R54PDv4klWiGMQHTvbGY8IgmY4ZNPdeGW
+         d4acG264VCfyjJo2SUFXz5G5xdqAMHejkQViATaeyFRvOCr/aYyHDA44yiNUyQNLd/Yg
+         5BQpwENtJsFAIZ38BuWekm/Zw0MuIZPa9VvXGFqtDAKYEhI01urrfnQ92twWhkTRcXoJ
+         28jYOcHimnxoDSBsOgPUGPqL9idl0MTWF5reOHfPXwBKhakurkUu82vtTIDfXl4wxmvL
+         XOxQ==
+X-Gm-Message-State: AOAM530FozHh0sOspJSheMU0aUJHLvo03MZnGufdkvzy36TDDObuy6KH
+        fI7kJkTeQHIRlPB9GCxuIy8=
+X-Google-Smtp-Source: ABdhPJx0OCPdF/JxlFKv+YnYYcyYd4zjjbCeoufHZl8wyzHvZjmehaY9GCTf0uZeJY8+kV9PG2/x6A==
+X-Received: by 2002:a17:902:b94c:b029:e6:98b9:c15b with SMTP id h12-20020a170902b94cb02900e698b9c15bmr17766210pls.60.1616798019651;
+        Fri, 26 Mar 2021 15:33:39 -0700 (PDT)
+Received: from localhost.localdomain ([49.207.194.205])
+        by smtp.gmail.com with ESMTPSA id c193sm10136262pfc.180.2021.03.26.15.33.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 15:33:39 -0700 (PDT)
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Johan Hovold <johan@kernel.org>,
+        Minas Harutyunyan <hminas@synopsys.com>,
+        Peter Chen <peter.chen@nxp.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/3] drivers: usb: misc: update to use usb_control_msg_{send|recv}() API
+Date:   Sat, 27 Mar 2021 04:02:48 +0530
+Message-Id: <20210326223251.753952-1-anant.thazhemadam@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQH9aXkeZ4lqQ1ZQrb2WfCNr9Tv/fAIIpANoAg1VxGkCGooDGQJYqoE6ATy+2IsBwjMDTAEnFzL5Avx/AEACEz9dWwHZN+Nlqa2GGDA=
-Content-Language: en-us
-X-CMAE-Envelope: MS4xfKG1f3sajmw/3TQ4HBTVzN+gt6W8vBhwPPpNhTdMFowlxM9GrdbeIy34XVm9sMerlgjDVOPhyUjTwROoQ/fguT3zv/RLq6KdcTG2zsZzVCDx7lb+BZ2Z
- rPdJQAmZZ+JjBMDAgIrX1nThBS6WKCbL0BbuIQ+9Hi23lccnH8Y2yiIqxdMpM3TeT94vSqfW+ffh9cK5b9waTaYWGB3N5Djz9f2jPYr8zIHLlTMiqBFbSnka
- MmX3SPNJDkAADFuUm1lAxOS79m3jLroX85aS2ViuvoCj3IFFjlVXnPNB9l+fqxzr47kyVfRl5mLEpiuCZ8oNLdngZoutRoWswW3bhOe2Dmp5uLcPFWJ+MSGy
- rqvJNvUdo3cC2qcf0z9KMnLuqaCSYcc3rInpmDjC4UwSTQz9jf8tjFUiUfCmWoD2zwkHWEW8HA5DMYCss/F2/L/00YG6IhFwq/wJxbMHHnOYcvVceqWraXJd
- cPm6f9N9Sy7ox9CpFBEzL8AqXzT+sKvXfoiL+vStU2e9WzN2nXbnkNy8kdF52YA054pY99V0rV8OWiApBMlldy2+O4F4//Suh4BwaAjc8u58rGNvFbCwY8+S
- 6LaZ8OkvsUzi3cKAxCq/bjXK
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The new usb_control_msg_{send|recv}() API provides a more convenient way
+of using usb_control_msg() in some usecases. Using this, short reads are
+considered as errors, data can be used off the stack, and the need for
+the calling function to create a raw usb pipe is eliminated.
+This patch series aims to update existing instances of usb_control_msg() 
+in drivers/usb/misc/* to usb_control_msg_{send|recv}() appropriately
+wherever it would be a good fit, and also update the return value
+checking mechanisms in place (if any), as necessary so nothing breaks.
+
+Changes in v4:
+
+  * Drop all proposed changes to drivers (from v3) where the new API
+    doesn't fit appropriately.
+  * Update commit messages.
+  * Link to v3:
+      https://lore.kernel.org/linux-usb/YBF9exziI12OCSuA@hovoldconsulting.com/T/#m269ab33b52331c134bbbc77d13cb65c2194a6093
+
+Changes in v3:
+
+  * idmouse, emi26 and emi62 are left unchanged, and are not updated.
+    -> since control transfers in idmouse are without a data stage, there's no
+       real advantage in using the new helper here.
+    -> in emi26, and emi62, FW_LOAD_SIZE = 1048 (> 1024). Thus, if we try to use the
+       new helpers, it will result in either build warnings, or memory being allocated.
+
+  * Link to v2:
+      https://lore.kernel.org/linux-usb/20201130013103.2580467-1-anant.thazhemadam@gmail.com/T/
 
 
-> -----Original Message-----
-> From: Andrew Lunn [mailto:andrew@lunn.ch]
-> Sent: Friday, March 26, 2021 2:54 PM
-> To: Don Bollinger <don@thebollingers.org>
-> Cc: 'Jakub Kicinski' <kuba@kernel.org>; arndb@arndb.de;
-> gregkh@linuxfoundation.org; linux-kernel@vger.kernel.org;
-> brandon_chuang@edge-core.com; wally_wang@accton.com;
-> aken_liu@edge-core.com; gulv@microsoft.com; jolevequ@microsoft.com;
-> xinxliu@microsoft.com; 'netdev' <netdev@vger.kernel.org>; 'Moshe
-> Shemesh' <moshe@nvidia.com>
-> Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
-> EEPROMS
-> 
-> > The only thing wrong I can see is that it doesn't use the kernel
-> > network stack.  Here's where "you keep missing the point".  The kernel
-> > network stack is not being used in these systems.  Implementing EEPROM
-> > access through ethtool is of course possible, but it is a lot of work
-> > with no benefit on these systems.  The simple approach works.  Let me
-use
-> it.
-> >
-> > >
-> > > The optoe KAPI needs to handle these 'interesting' SFP modules. The
-> > > KAPI design needs to be flexible enough that the driver underneath
-> > > it can be extended to support these SFPs. The code does not need to
-> > > be there, but the KAPI design needs to allow it. And i personally
-> > > cannot see how the
-> > optoe
-> > > KAPI can efficiently support these SFPs.
-> >
-> > Help me understand.  Your KAPI specifies ethtool as the KAPI, and the
-> > ethtool/netlink stack as the interface through which the data flows.
-> 
-> Nearly. It specifies netlink and the netlink messages definitions.
-> They happen to be in the ethtool group, but there is no requirement to use
-> ethtool(1).
-> 
-> But there is a bit more to it.
-> 
-> Either the MAC driver implements the needed code, or it defers to the
-> generic sfp.c code. In both cases, you have access to the GPIO lines.
-> 
-> If you are using the generic sfp.c, the Device Tree definitions of the
-GPIOs
-> become part of the KAPI. DT is consider ABI.
-> 
-> So the low level code knows when there was been a hotplug. It then can
-> determine what quirks to apply for all future reads until the module is
-> unplugged.
+Changes in v2:
 
-Got it.  All good.  I agree, I would like optoe to have access to the GPIO
-lines, but it is a "nice to have", not a requirement...
+  * Buffer variables that were previously dynamically allocated are no
+    longer dynamically allocated unless they have a variable length
+    (since that threw a warning).
 
-> 
-> Your KAPI is missing how optoe gets access to the GPIOs. Without knowing
-if
+  * Link to v1:
+        https://lore.kernel.org/linux-usb/20201129160612.1908074-1-anant.thazhemadam@gmail.com/ 
 
-Right.  It doesn't get access to the GPIOs.  So, that is not part of its
-KAPI.
 
-> the module has been hotplugged, in a robust manor, you have problems
-> with quirks. For every userspace read, you need to assume the module has
-> been changed, read the ID information from the EEPROM a byte at a time,
-> figure out what quirks to apply, and then do the user requested read. I
-doubt
 
-Again, optoe does not deal with quirks.  Your code filters them out before
-calling optoe or sfp_i2c_read.  My stack does not deal with them.  In my
-community, quirky devices are not tolerated.  In the 4 years this code has
-been in use, nobody has ever asked me to accommodate a weird module.
+Anant Thazhemadam (3):
+  usb: misc: ehset: update to use the usb_control_msg_{send|recv}() API
+  usb: misc: ezusb: update to use usb_control_msg_send()
+  usb: misc: usbsevseg: update to use usb_control_msg_send()
 
-I inherited a limitation of writing one byte at a time from the ancestor of
-optoe, which I have kept.  I don't know if it is needed, but someone once
-thought it was required.  I apply it universally, all devices of all types.
+ drivers/usb/misc/ehset.c     | 76 +++++++++++++++---------------------
+ drivers/usb/misc/ezusb.c     | 16 +-------
+ drivers/usb/misc/usbsevseg.c | 60 ++++++++--------------------
+ 3 files changed, 51 insertions(+), 101 deletions(-)
 
-I do need one item of state from the EEPROM, the register that tells me
-whether pages are supported by the device.  Due to the hotplug risk, I
-actually do read that register once for each access to non-zero pages.
-(Once per read or write call.)  Access to GPIOs would eliminate that.  It
-turns out the vast majority of calls are to page 0 or lower memory, and the
-performance penalty is at most 25% since there is also a page write, data
-access and page write in the same call.  The penalty goes down as the number
-of bytes read increases.  Overall, it has never come up as an issue.  People
-don't expect these things to be fast.
-
-> that is good for performance. The design which has been chosen is that
-> userspace is monitoring the GPIO lines. So to make it efficient, your KAPI
-> need some way to pass down that the module has/has not been hot-
-> plugged since the last read.
-
-Nope.  optoe does not need to know, it assumes a new device every time it is
-accessed.
-
-> 
-> Or do you see some other way to implement these quirks?
-
-What I have works.  Your consumers get quirk handling, mine don't need it.
-No compromise.
-
-> 
->        Andrew
-
-Don
+-- 
+2.25.1
 
