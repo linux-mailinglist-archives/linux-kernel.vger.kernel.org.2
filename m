@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B65334ABE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BBF34ABE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhCZPwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:52:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
+        id S230502AbhCZPwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:52:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhCZPwD (ORCPT
+        with ESMTP id S230107AbhCZPwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:52:03 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C82CC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:52:03 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id u10so5472234ilb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:52:03 -0700 (PDT)
+        Fri, 26 Mar 2021 11:52:04 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1E3C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:52:04 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id f19so5865047ion.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:52:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6KRW9ZJsq6c47vOf7tfyaofFPNrEfYDeTWDF4l0gi8=;
-        b=vt05UeQjQ9LIsj4o4Ij/ce7suEu9EgJkPuxbBa8fOlejCAGJs4Nx6E3/nCYOxTgG5I
-         Q+Ash89MMhYzZt2scu+lMsZjRhcZb00DuECcvZYFi4kc41U23pvdiK6B5AwaEtqsttFu
-         RYx2zhd81zGIMRK+8NncSlc/xxGqGNI0h5Q8zKLhJ9IPmdJhNY1b4Ri3xZKX4YFQeRaP
-         Qf6cXt58FjNaY4DiZIi6vh3Mjt2mnyQ5cq19Lk4m1tl6hPUhVrBHbHCeknQjR4UQufF+
-         Cz5XxYk4Ekns+B3HVpi1w3dzEs8VyhG3BEikaB8ZEYbkbq+kNPIeLJ95lbuyhANbINT2
-         leqg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tu//vQTWqe6GhAydkA03IO5cKyO6oKZVeS39H0viNAg=;
+        b=XVN0uxSbtpMpl2g8NEeisWsLfJjd92MdW12sMUcW37Ov/i/jsfCdTbTo7SColjADxZ
+         Yr49n9ChOVPRdt3R4fq2+OFVrJDBEoXx0wSS5sDvL2aA2AUGC9AMwPbdyKfWIDYwytMJ
+         /DtSlZHB10RZvsDMS6tSroMPzzfjnm83oGiaaXVVNUcMqdDGkcxT4U9Bo3X8vqlBahtG
+         Ethydbm87Ptp8gewGrFCDTG5iNfEUdRo1d80FM76KtK7cUYbaBl3ut1WeU32KsL46U+H
+         OMiTAZ63L4l2yZveCq6PHqqkP4+el2YlNzcGgFDJPeRHSbbH+5fWZbb9DumJjdbcod+S
+         dphw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F6KRW9ZJsq6c47vOf7tfyaofFPNrEfYDeTWDF4l0gi8=;
-        b=OS0vjJSSGgEZOE6s8iaWmKSGK1JpE3sEAhjEPja17i77BRysB2Hd9gkykZE2V6tD9W
-         2CbNA/5qy52c0vi0lSw2KoQy4ze8MH+22xOFIea8eRbdJYWlpUcZtPD5UFTh3jCDaHjW
-         PCYUA7IPp/yhtzuVxh4hbHOTLCwRd4WTHj6cODy0gSFsutHvF3UrbZ9ht3ZilViKaUcX
-         +Ob28znhJjnTU/y0xjtuavahga8uw2rCX9Sm68O4r8QJ9fIIkaffGJA+As5KciaGOIjY
-         VFTclIZEFLjEwK1nFiWy5PXbJrT32b1ZjvC5IAQ2n+DUYsuJ/qtFoDOcQbrPefzcR7E0
-         XaxQ==
-X-Gm-Message-State: AOAM5318Td6D2MDcxdOr+jwxIyxUEamXMck0sV6jV117h6XmB8/o4jsf
-        3mPE0eYSHDSoUeCPP9JFfmRoEP6gFnCAZA==
-X-Google-Smtp-Source: ABdhPJxn13EXHCCphWuJEDL0ghhEZUZvikA03Zp89sXlg/MG5i9E2uHwTVIdnfDfC4kmkYS4StiGxg==
-X-Received: by 2002:a92:c5a7:: with SMTP id r7mr1080255ilt.142.1616773922625;
-        Fri, 26 Mar 2021 08:52:02 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tu//vQTWqe6GhAydkA03IO5cKyO6oKZVeS39H0viNAg=;
+        b=nwAQ4mM1xZ/yFE+KBAUG2h+42/sB6duNzxsFT2kazxEtLYmEQU2cBCGwW+64kFQZKQ
+         f6xpvGsKYysXs1fdDac/vgyuMx8B7OPhJvumi8BG22Gb+QX1f81WDmURqXooC2R+0+Ah
+         bPrjDsfaa4pjKo+lCxCjwBhFLWsOmCGHjuGt1K4hAnzIV3e1QuAvFGIE+OEZTJv4J9AE
+         DJ6tuOSHXJ/2gmpeh0JY0fK2ioNpk++WWdJPItjobb9x22auKNUh51SP1npTaWMxAK87
+         jCZTcUno45MhldiYaw6b283HnFGhMG6283deOs16ah1e4PyxOMv6zOeEN0re/HVxzdz1
+         0SAQ==
+X-Gm-Message-State: AOAM533z2wYwi3LVirI1DUAQfcN2j2Ds9rBQH0MKSEnBdp41aX7fAjuT
+        Zpt8c00lzWyi1LWqdRNkjdVYMjkATFwlpg==
+X-Google-Smtp-Source: ABdhPJwOHRAboY3aZPLSe74/zo6jzJv2YF9mvJBSzNxt/9YFjCaqTmY//dYrc0/hHJTY8fr6r3UASg==
+X-Received: by 2002:a5e:841a:: with SMTP id h26mr10865781ioj.179.1616773923628;
+        Fri, 26 Mar 2021 08:52:03 -0700 (PDT)
 Received: from p1.localdomain ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id a7sm4456337ilj.64.2021.03.26.08.52.01
+        by smtp.gmail.com with ESMTPSA id a7sm4456337ilj.64.2021.03.26.08.52.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 08:52:02 -0700 (PDT)
+        Fri, 26 Mar 2021 08:52:03 -0700 (PDT)
 From:   Jens Axboe <axboe@kernel.dk>
 To:     io-uring@vger.kernel.org
 Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
-        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCHSET v2 0/7] Allow signals for IO threads
-Date:   Fri, 26 Mar 2021 09:51:13 -0600
-Message-Id: <20210326155128.1057078-1-axboe@kernel.dk>
+        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 1/7] kernel: don't call do_exit() for PF_IO_WORKER threads
+Date:   Fri, 26 Mar 2021 09:51:14 -0600
+Message-Id: <20210326155128.1057078-2-axboe@kernel.dk>
 X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210326155128.1057078-1-axboe@kernel.dk>
+References: <20210326155128.1057078-1-axboe@kernel.dk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Right now we're never calling get_signal() from PF_IO_WORKER threads, but
+in preparation for doing so, don't handle a fatal signal for them. The
+workers have state they need to cleanup when exiting, and they don't do
+coredumps, so just return instead of performing either a dump or calling
+do_exit() on their behalf. The threads themselves will detect a fatal
+signal and do proper shutdown.
 
-For the v1 posting, see here:
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ kernel/signal.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-https://lore.kernel.org/io-uring/20210326003928.978750-1-axboe@kernel.dk/
-
-I've run this through the usual testing, and it's running long term right
-now. I've tested the cases that Stefan reported, and we seem fine now.
-
-Changes since v1:
-
-- Catch fatal signals in get_signal() for PF_IO_WORKER. This is only a
-  problem for nested signals, like SIGSTOP followed by SIGKILL. We
-  can't have get_signal() calling do_exit() on behalf of the IO threads,
-  they have cleanups to do. Thanks Stefan.
-
-- Move signal masking to when the PF_IO_WORKER thread is created, and since
-  we now handle SIGSTOP, unmask that as well. Thanks Oleg.
-
-- Remove try_to_freeze() parts in IO threads, we don't need those anymore
-  with the calling of get_signal().
-
-- Minor cleanups.
-
- fs/io-wq.c       | 24 +++++++++++++++++-------
- fs/io_uring.c    | 12 ++++++++----
- kernel/fork.c    | 16 ++++++++--------
- kernel/freezer.c |  2 +-
- kernel/ptrace.c  |  2 +-
- kernel/signal.c  | 19 ++++++++++++-------
- 6 files changed, 47 insertions(+), 28 deletions(-)
-
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f2a1b898da29..e3e1b8fbfe8a 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2756,6 +2756,15 @@ bool get_signal(struct ksignal *ksig)
+ 		 */
+ 		current->flags |= PF_SIGNALED;
+ 
++		/*
++		 * PF_IO_WORKER threads will catch and exit on fatal signals
++		 * themselves. They have cleanup that must be performed, so
++		 * we cannot call do_exit() on their behalf. coredumps also
++		 * do not apply to them.
++		 */
++		if (current->flags & PF_IO_WORKER)
++			return false;
++
+ 		if (sig_kernel_coredump(signr)) {
+ 			if (print_fatal_signals)
+ 				print_fatal_signal(ksig->info.si_signo);
 -- 
-Jens Axboe
-
+2.31.0
 
