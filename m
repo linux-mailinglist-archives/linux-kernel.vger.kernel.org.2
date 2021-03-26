@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA6334AE2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA33334AE2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbhCZR6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
+        id S230180AbhCZSAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:00:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhCZR6S (ORCPT
+        with ESMTP id S230027AbhCZSAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:58:18 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 575C8C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:58:18 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id g8so8879181lfv.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:58:18 -0700 (PDT)
+        Fri, 26 Mar 2021 14:00:21 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C56C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:00:20 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id q3so6062106qkq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:00:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Vt2EBjJBXCElMumS8zwBKc0QOehEP6EtoAAqvcQaqEs=;
-        b=L5k5ZD1GMn27mDy/vZZPUgLF4ydicHrGp4908/9nbYRzIHWiNrUUXJaD2Kkm4XI/z8
-         BpwQdY9oErV/AEhTTJbPJ93scCAQy0p+LHE0UjWaWdI2geHuxs7Jn5+IX/nqYyaPJN9h
-         APaQrnxRW8FKuR1plRwLYV3aE9P7FuEtknF/k9ur39MXuIzaRJZdn+QzGJcuHaEDszMc
-         vVmRwOjpt/mS/Pj3HAZ9K+qE6jJB/0S8yYUXOmddgqcfHAeLT6gZb/wDPGVLx1wJ1bTP
-         Jz7yaG5+Jxh2FjgF/2yp4Y6Np4nQDz3OLYL5czYMyMc0er5xt7SnloXh31onwCIqpqFz
-         1LQQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JuCtzQ2o57I1mdRQQKMjDk7R3vh/HcRtMBM2EnWeKIk=;
+        b=aLhEkQ+fcyfwKrpLIj7u1BKGvLZLCR2p3gUyur5X74Tb+Q/fJfssm0y4iG4DzazGqi
+         NCq0MA2Zb27kRKBkItMr2jFIcYuNbza2fKDNBxvqhb8Yswvk/gq6hyO/7TPVFG7N4Ynj
+         s/uMbHjPOs/rAC0vrsz9Y99QO1giQOQQwYy7CCWXDhG8psfn+4BgPJDGPZXFFIlsd6oq
+         oDuNS5ZD0QUlzHpe+pCY30sgnvGrDpqfuBPsqEuGVpvyNhu00S63fAIG5l6Usra/eYrE
+         PKmD4UrgTeahVohvZxIuv3dmZGNPOCYxkpONz9WCjlVVQ2yL2nE3xY4c5fcv48EzpntY
+         15yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Vt2EBjJBXCElMumS8zwBKc0QOehEP6EtoAAqvcQaqEs=;
-        b=tXpa484xnNIkdraRvz/ygFzEPbcGGXHlZ9tcsyzn6G3PyCCmMT23a8naeZxl5MphxX
-         kKJ6yderq40xQUGynkfWB/FJNQY+sjYEjCar/i45tRDwjUo/en2eTkXgJQ3n3Ipw+ziW
-         CNpOHW4PViVKqOxNEjuLJ2kQEOa1qCRVaqeZunp8FHpkiSMut9j9QcT5DDV0RR6qWRQ5
-         pUPymKzBNNwPmvKYU29UxDBFztM6SwzyFMLttbNOwPAWkfMO2A+/VvZkCWBniQceAxCS
-         nfTTMpAlvosN2M/kbYM0AMKsbwVv9SwcNE5ES8dpcbZKBCfKmID20+3EJ9AOL/a5ZfjG
-         BCQw==
-X-Gm-Message-State: AOAM533beXNju8WVJoFoW0TeQOOFootVXIGym2O117uqF+ACZcMqzQIu
-        bsaPI+OtHtsW1mCp48xSc+W8Fw==
-X-Google-Smtp-Source: ABdhPJw95099vAQh3+X0cRfP0saUVV2RiK31WqVwUcTqvDXBZKKTumCdXI28g7hY2fcl2qsS8e3dXw==
-X-Received: by 2002:a19:a409:: with SMTP id q9mr8441701lfc.654.1616781496908;
-        Fri, 26 Mar 2021 10:58:16 -0700 (PDT)
-Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id f3sm1249554ljm.5.2021.03.26.10.58.16
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JuCtzQ2o57I1mdRQQKMjDk7R3vh/HcRtMBM2EnWeKIk=;
+        b=XVbM4MKLfzUc78cIxAIcLb+gPEgEYubdkWEr9hmLsg3qvwX5Go+AmNjSBiNBMrQ6hy
+         g7ma5aSHBgUTIcnZtl8YbklzNE9O074w+5zOTBjavgYW6AWrKsV726I15JCZ7ky7lLVc
+         g6sAFqw60Uj/8UNx3vXNWS2gZdnUsDPPNZ2ICVyGIR/GrnSGnTlsAG52ceN6UQx87aUC
+         dTIAqtLMiowDwNeM7I7YLs6CDFynYIomYtBlwzupn40vzgaj4IgVJ7QJouE7ubyTno0I
+         42O4IgBOQSNxViJ3UM2iBrMlV9hVUUvKwMfo4oVBiJTEku8TwVswZXUzeTm3e786kMlC
+         nm/g==
+X-Gm-Message-State: AOAM531vog6sSYbIqYca/Y/UBJqfeC9cOaNN6Ni4J8fORVqoVf/C+L7d
+        jeO+GKOYkzDuBFveoOav0LF1sw==
+X-Google-Smtp-Source: ABdhPJxHbmtNqJrtjYI5E8IAtaJPDHUYoCz/4JPeqimu7al57dG+8WEar1jaszzpn+MvtXKz+WUQZg==
+X-Received: by 2002:a05:620a:2158:: with SMTP id m24mr14137923qkm.306.1616781620060;
+        Fri, 26 Mar 2021 11:00:20 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 131sm7744301qkl.74.2021.03.26.11.00.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 10:58:16 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Manu Gautam <mgautam@codeaurora.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v4 7/7] arm64: dts: qcom: use dp_phy to provide clocks to dispcc
-Date:   Fri, 26 Mar 2021 20:58:09 +0300
-Message-Id: <20210326175809.2923789-8-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210326175809.2923789-1-dmitry.baryshkov@linaro.org>
-References: <20210326175809.2923789-1-dmitry.baryshkov@linaro.org>
+        Fri, 26 Mar 2021 11:00:19 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 14:00:18 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] sched/psi.c: Rudimentary typo fixes
+Message-ID: <YF4hMn4rCftcdsSm@cmpxchg.org>
+References: <20210326124233.7586-1-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326124233.7586-1-unixbhaskar@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Plug dp_phy-provided clocks to display clock controller.
+On Fri, Mar 26, 2021 at 06:12:33PM +0530, Bhaskar Chowdhury wrote:
+> 
+> s/possible/possible/
+> s/ exceution/execution/
+> s/manupulations/manipulations/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  kernel/sched/psi.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+> index 967732c0766c..316ebc57a115 100644
+> --- a/kernel/sched/psi.c
+> +++ b/kernel/sched/psi.c
+> @@ -59,7 +59,7 @@
+>   * states, we would have to conclude a CPU SOME pressure number of
+>   * 100%, since *somebody* is waiting on a runqueue at all
+>   * times. However, that is clearly not the amount of contention the
+> - * workload is experiencing: only one out of 256 possible exceution
+> + * workload is experiencing: only one out of 256 possible execution
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8250.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I thought this was the french spelling.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 0f79e6885004..a2478bd3590a 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -2600,8 +2600,8 @@ dispcc: clock-controller@af00000 {
- 				 <&dsi0_phy 1>,
- 				 <&dsi1_phy 0>,
- 				 <&dsi1_phy 1>,
--				 <0>,
--				 <0>,
-+				 <&dp_phy 0>,
-+				 <&dp_phy 1>,
- 				 <0>,
- 				 <0>,
- 				 <0>,
-@@ -2614,8 +2614,8 @@ dispcc: clock-controller@af00000 {
- 				      "dsi0_phy_pll_out_dsiclk",
- 				      "dsi1_phy_pll_out_byteclk",
- 				      "dsi1_phy_pll_out_dsiclk",
--				      "dp_link_clk_divsel_ten",
--				      "dp_vco_divided_clk_src_mux",
-+				      "dp_phy_pll_link_clk",
-+				      "dp_phy_pll_vco_div_clk",
- 				      "dptx1_phy_pll_link_clk",
- 				      "dptx1_phy_pll_vco_div_clk",
- 				      "dptx2_phy_pll_link_clk",
--- 
-2.30.2
+Joking aside, the corrections look right, but I also had no trouble
+understanding what those sentences mean. Typos happen, plus we have a
+lot of non-native speakers who won't use perfect spelling or grammar.
+
+So for me, the bar is "this can be easily understood", not "needs to
+be perfect English", and I'd say let's skip patches like these unless
+they fix something truly unintelligble.
 
