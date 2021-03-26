@@ -2,254 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48ED1349DC7
+	by mail.lfdr.de (Postfix) with ESMTP id 94654349DC8
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhCZA3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:29:20 -0400
-Received: from mga17.intel.com ([192.55.52.151]:24737 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229664AbhCZA27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:28:59 -0400
-IronPort-SDR: 1Ti/sN2zV2BxA1VBVX9VszK69r/W0jyws4rQa6GjINOa0OX6lIjdGU/H8Whhex36lwwyMszrqX
- dDXR9vZK87LA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="171027350"
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="171027350"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 17:28:59 -0700
-IronPort-SDR: 4eV6xFPdx/YebYrcst8PWCqK9QSCHjJsyd62tCXxUCnNsjjpLcG7RuhF192NAdlBnWHl6PSx3o
- SC662S0nS7DQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="453293726"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 25 Mar 2021 17:28:57 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lPaLQ-0002ML-Kl; Fri, 26 Mar 2021 00:28:56 +0000
-Date:   Fri, 26 Mar 2021 08:28:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- 2304d14db6595bea5292bece06c4c625b12d8f89
-Message-ID: <605d2ab8.T1FsdMQlfkhwzjQf%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S229639AbhCZA3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:29:24 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:44630 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhCZA3A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:29:00 -0400
+Received: by mail-io1-f51.google.com with SMTP id v26so3725914iox.11;
+        Thu, 25 Mar 2021 17:29:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HqP361nCuW7IrybuNXs/MVht6WlPAUMBMTJUt5NbOBY=;
+        b=I6zXN7xIncv/8CssIGBh4PPLCdw6Oa5rSg00e/hjF12rL4SruR9Hj5oSo+rnrhDPlK
+         m9D5tCZJfEfGIrh8aKRREH3gxutJsa1VbbTDdXupYKp5ogCssJlu7H6oHpBPyMrIwE1u
+         rkxHiHun/2PrbGMNlPjvlXrCEGHKCFZ815n/Kpq0puzcttKP7ZvDo7zxfS1q9CcnV1Xz
+         bVoaxNex1qKb+04IMkbYYReQ5gG/rYo8OQ9rsgRFH1fcoaeE2mg3B++usnuNBl6WxjDT
+         r7m8nmk4TiiEinV3yxMmgWKRVtAu8REJb+VtmchV0t9qf6EVc513pJZ2ExFejqEYSTGI
+         vzjg==
+X-Gm-Message-State: AOAM5325dpoA0uw0j8tSwNg6jmiVeMCdJTHu5sbqSAvbWgolM/bBfwds
+        UhD4C53QKJCfMqhMUEFIA1mD1ZxA+w==
+X-Google-Smtp-Source: ABdhPJw6W3NHdAqO/y5OThYoAM4qmj7MMyJPG3HX8vVwI93D07pwvhmlBcQDFuiXigdabDHe9NnU5Q==
+X-Received: by 2002:a6b:7c4a:: with SMTP id b10mr8401982ioq.170.1616718540205;
+        Thu, 25 Mar 2021 17:29:00 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id k7sm3417611ils.35.2021.03.25.17.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 17:28:59 -0700 (PDT)
+Received: (nullmailer pid 2033074 invoked by uid 1000);
+        Fri, 26 Mar 2021 00:28:51 -0000
+Date:   Thu, 25 Mar 2021 18:28:51 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Amelie Delaunay <amelie.delaunay@foss.st.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 1/2] dt-bindings: phy: add vbus-supply optional property
+ to phy-stm32-usbphyc
+Message-ID: <20210326002851.GA2031564@robh.at.kernel.org>
+References: <20210317160954.15487-1-amelie.delaunay@foss.st.com>
+ <20210317160954.15487-2-amelie.delaunay@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210317160954.15487-2-amelie.delaunay@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: 2304d14db6595bea5292bece06c4c625b12d8f89  x86/kprobes: Move 'inline' to the beginning of the kprobe_is_ss() declaration
+On Wed, Mar 17, 2021 at 05:09:53PM +0100, Amelie Delaunay wrote:
+> This patch adds vbus-supply optional property to phy sub-nodes.
+> A regulator for USB VBUS may be needed for host mode.
+> 
+> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+> ---
+>  Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+> index 018cc1246ee1..ad2378c30334 100644
+> --- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+> +++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+> @@ -71,6 +71,9 @@ patternProperties:
+>        phy-supply:
+>          description: regulator providing 3V3 power supply to the PHY.
+>  
+> +      vbus-supply:
+> +        description: regulator providing 5V Vbus to the USB connector.
 
-elapsed time: 734m
+Unless Vbus is powering the phy, then this only belongs in the USB 
+connector node.
 
-configs tested: 192
-configs skipped: 87
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                           ip28_defconfig
-powerpc                   lite5200b_defconfig
-arm                         s5pv210_defconfig
-powerpc                   currituck_defconfig
-h8300                            alldefconfig
-powerpc                     ksi8560_defconfig
-powerpc                       maple_defconfig
-powerpc                      obs600_defconfig
-sparc64                             defconfig
-arm                         assabet_defconfig
-xtensa                              defconfig
-sh                         ecovec24_defconfig
-m68k                        m5407c3_defconfig
-mips                        qi_lb60_defconfig
-mips                         tb0226_defconfig
-arm                              alldefconfig
-sh                               alldefconfig
-m68k                       m5475evb_defconfig
-sh                   secureedge5410_defconfig
-arm                        cerfcube_defconfig
-powerpc                     mpc5200_defconfig
-arm                          pxa3xx_defconfig
-sh                          rsk7264_defconfig
-csky                                defconfig
-sh                     sh7710voipgw_defconfig
-m68k                        stmark2_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                          rb532_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                           gcw0_defconfig
-arc                         haps_hs_defconfig
-um                             i386_defconfig
-arm                          badge4_defconfig
-sh                           se7780_defconfig
-arm                       aspeed_g5_defconfig
-arm                            pleb_defconfig
-arm                            mmp2_defconfig
-s390                             alldefconfig
-xtensa                  cadence_csp_defconfig
-parisc                           alldefconfig
-arm                        shmobile_defconfig
-sh                   sh7770_generic_defconfig
-mips                     loongson1c_defconfig
-powerpc                     sequoia_defconfig
-powerpc                      katmai_defconfig
-arm                        multi_v7_defconfig
-arm                       imx_v6_v7_defconfig
-sh                ecovec24-romimage_defconfig
-arm                      pxa255-idp_defconfig
-arm                            mps2_defconfig
-powerpc                      makalu_defconfig
-nds32                             allnoconfig
-powerpc                   motionpro_defconfig
-arm                         lpc18xx_defconfig
-mips                     decstation_defconfig
-sh                             espt_defconfig
-mips                        bcm63xx_defconfig
-m68k                                defconfig
-mips                  cavium_octeon_defconfig
-powerpc                       ppc64_defconfig
-m68k                           sun3_defconfig
-sh                          sdk7780_defconfig
-powerpc                      acadia_defconfig
-powerpc                     tqm5200_defconfig
-powerpc                 linkstation_defconfig
-powerpc64                           defconfig
-mips                          malta_defconfig
-csky                             alldefconfig
-nds32                            alldefconfig
-riscv                    nommu_k210_defconfig
-powerpc                      ep88xc_defconfig
-xtensa                    xip_kc705_defconfig
-mips                        omega2p_defconfig
-sh                     magicpanelr2_defconfig
-ia64                             allmodconfig
-mips                       capcella_defconfig
-powerpc                      ppc6xx_defconfig
-arm                       versatile_defconfig
-arm                           tegra_defconfig
-m68k                          amiga_defconfig
-arc                            hsdk_defconfig
-arm                          imote2_defconfig
-sh                           se7712_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                        multi_v5_defconfig
-mips                         cobalt_defconfig
-powerpc                        icon_defconfig
-mips                          rm200_defconfig
-arm                         lpc32xx_defconfig
-mips                      maltaaprp_defconfig
-sh                          lboxre2_defconfig
-arm                         axm55xx_defconfig
-ia64                        generic_defconfig
-m68k                            mac_defconfig
-nios2                               defconfig
-arm                           spitz_defconfig
-powerpc                     tqm8548_defconfig
-arm                           u8500_defconfig
-arm                       netwinder_defconfig
-powerpc                       eiger_defconfig
-arm                          lpd270_defconfig
-arm                          gemini_defconfig
-sh                           se7751_defconfig
-powerpc                    klondike_defconfig
-sh                           se7343_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                      pasemi_defconfig
-arm64                            alldefconfig
-arm                       multi_v4t_defconfig
-arm                          ixp4xx_defconfig
-arc                        nsimosci_defconfig
-sh                          polaris_defconfig
-mips                       lemote2f_defconfig
-powerpc                     powernv_defconfig
-mips                 decstation_r4k_defconfig
-arm                       aspeed_g4_defconfig
-sh                          kfr2r09_defconfig
-mips                             allmodconfig
-mips                           ip32_defconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210325
-x86_64               randconfig-a003-20210325
-x86_64               randconfig-a006-20210325
-x86_64               randconfig-a001-20210325
-x86_64               randconfig-a005-20210325
-x86_64               randconfig-a004-20210325
-i386                 randconfig-a003-20210325
-i386                 randconfig-a004-20210325
-i386                 randconfig-a001-20210325
-i386                 randconfig-a002-20210325
-i386                 randconfig-a006-20210325
-i386                 randconfig-a005-20210325
-i386                 randconfig-a014-20210325
-i386                 randconfig-a011-20210325
-i386                 randconfig-a015-20210325
-i386                 randconfig-a016-20210325
-i386                 randconfig-a013-20210325
-i386                 randconfig-a012-20210325
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a012-20210325
-x86_64               randconfig-a015-20210325
-x86_64               randconfig-a014-20210325
-x86_64               randconfig-a013-20210325
-x86_64               randconfig-a011-20210325
-x86_64               randconfig-a016-20210325
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +
+>        "#phy-cells":
+>          enum: [ 0x0, 0x1 ]
+>  
+> -- 
+> 2.17.1
+> 
