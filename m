@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2684E349EFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EB6349EFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhCZBrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:47:17 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14609 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhCZBqp (ORCPT
+        id S230319AbhCZBqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:46:46 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:39555 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230274AbhCZBqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:46:45 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F64XP3Bbpz19JJt;
-        Fri, 26 Mar 2021 09:44:37 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 09:46:30 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: fix to cover __allocate_new_section() with curseg_lock
-Date:   Fri, 26 Mar 2021 09:46:22 +0800
-Message-ID: <20210326014622.111397-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 25 Mar 2021 21:46:37 -0400
+Received: by mail-io1-f45.google.com with SMTP id k25so3884140iob.6;
+        Thu, 25 Mar 2021 18:46:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nvithE7/FIorOvL9kBoun3Ntwce32avmj2Owugyp6qI=;
+        b=VwpFtPcyX80CT241/rbVTkOUgWseXvhpNzThxS8WhZ9YFjmx7lrTEob0XVHcEpYKtt
+         pcOnJJp7V8bkM+nh/wZW0QrYBR4y3OEITqfb85AUvnbVnkWWCsG2mxoFnKHPV66UKcVh
+         XJV7KCcDmAjDcEEznWC1aCkKn3gNoWd/muNdynd1k60S+/0fpWNHUtPPKZuEKFwQ5VGS
+         gw7wNfi6fMUa6iRVcy+zu0xJWsze4xUcxAQfS+3HFKaumcscYQTgROfr/mSNavIjFhQi
+         SWT2LE0aCw6wrFJWgLQbhBgn16d14dz2oqIDP7eiqzJqYb3J17HlWZpqJ+8geiInebzd
+         nQRg==
+X-Gm-Message-State: AOAM532xMowNi5RenJJ9liIS53BTLHaApK3NzASjKtOVGBQIgWt3HSpy
+        lbzozdpHMD8UZW3uPhnfag==
+X-Google-Smtp-Source: ABdhPJyDWeoqK4Lz3I+ovulrBbiFBNy8x20L52/OCMJ3dD8MkbG7dI1iRyAnnxpnYS3fxan0WplBmg==
+X-Received: by 2002:a6b:5818:: with SMTP id m24mr8253046iob.144.1616723197079;
+        Thu, 25 Mar 2021 18:46:37 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q21sm3395845ioh.41.2021.03.25.18.46.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 18:46:36 -0700 (PDT)
+Received: (nullmailer pid 2154786 invoked by uid 1000);
+        Fri, 26 Mar 2021 01:46:35 -0000
+Date:   Thu, 25 Mar 2021 19:46:35 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        Sean Wang <sean.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, Ben Ho <Ben.Ho@mediatek.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v4 1/4] dt-bindings: arm64: dts: mediatek: Add
+ mt8183-kukui-jacuzzi-damu
+Message-ID: <20210326014635.GA2154730@robh.at.kernel.org>
+References: <20210319035245.2751911-1-hsinyi@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319035245.2751911-1-hsinyi@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid race with f2fs_do_replace_block().
+On Fri, 19 Mar 2021 11:52:42 +0800, Hsin-Yi Wang wrote:
+> mt8183-kukui-jacuzzi-damu board also known as ASUS Chromebook Flip CM3,
+> using mediatek mt8183 SoC.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+> ---
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
 
-Fixes: f5a53edcf01e ("f2fs: support aligned pinned file")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/segment.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index e533192545b2..f1b0e832e7c2 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2957,19 +2957,23 @@ static void __allocate_new_section(struct f2fs_sb_info *sbi, int type)
- 
- void f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type)
- {
-+	down_read(&SM_I(sbi)->curseg_lock);
- 	down_write(&SIT_I(sbi)->sentry_lock);
- 	__allocate_new_section(sbi, type);
- 	up_write(&SIT_I(sbi)->sentry_lock);
-+	up_read(&SM_I(sbi)->curseg_lock);
- }
- 
- void f2fs_allocate_new_segments(struct f2fs_sb_info *sbi)
- {
- 	int i;
- 
-+	down_read(&SM_I(sbi)->curseg_lock);
- 	down_write(&SIT_I(sbi)->sentry_lock);
- 	for (i = CURSEG_HOT_DATA; i <= CURSEG_COLD_DATA; i++)
- 		__allocate_new_segment(sbi, i, false);
- 	up_write(&SIT_I(sbi)->sentry_lock);
-+	up_read(&SM_I(sbi)->curseg_lock);
- }
- 
- static const struct segment_allocation default_salloc_ops = {
--- 
-2.29.2
-
+Acked-by: Rob Herring <robh@kernel.org>
