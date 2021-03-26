@@ -2,172 +2,546 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6E934AF51
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBA234AF54
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:26:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhCZTYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:24:13 -0400
-Received: from mail-dm6nam11on2085.outbound.protection.outlook.com ([40.107.223.85]:13665
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230288AbhCZTXw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:23:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X6batEGqT8BnmH4CNHNEB0shIgfqza8MJjFTuBwFA1H4kugs8ksufPxF/tibPYOu45N4Inx1gXG6bbkCAZ8VxGxhrYGZryyAPZx0QYrAVPSLIeJIFuEX3F/DqIcDUmwpGNOcJfgu3OyRwns868Ye77s0+h8dDZnKP4rcmSU/bNZGv1xkWrRX7mTRu5qEajBotAp6+oRMIc50Ie7wCoLWPqW+JXyTN7CFjIrOoCPL6RnCkp57498CaJYaPS5Dar0iq9FkFkkRC+1l9PajleHZm30jWPiUV6C+ZZC2UhIhiQl7DSZ4j2wPTCiNdrv570mQOF1xmwHinM9t3fQPYGTwkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Z7gTDBxKAA/ysLrJlHHC90il7HcRNqJv9K5j4n1nSA=;
- b=UMEU4Ff979eWXMzJXwDCw+jKGcsgOMST7ero4ktP0yLY+XmbDf7sOJixwqay+9H9lvlETQ1osuC275UoiZ7Lo5GyXV/QTB8xMjHmQO7nCv5Nmt3EDekSMt+GaCCYTzM8x6ljO89tlRCT4tC6fFNlne8cB1GvhqRDYDNdrttBxMBBF2LB7p8Wl1QNslbgUp3kr072u6cUrrqYvDKwMKW8zGSAsJcr7XjZ/q4tNYb8W1h3m7ZPMx8jLOA8ax2c9EcrjVfRpEuMkaG+/xzr4c7cSRGEkhQ/UuIKd7kVgs6lD4iX4PH7GHn/l6UaGG2OkBXFNAcKL/02Nj2H+RfFWPqHtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4Z7gTDBxKAA/ysLrJlHHC90il7HcRNqJv9K5j4n1nSA=;
- b=dpCBMKBxuAncmfBhAkMkEaRdd9N/n0RHoAnNcR2PHdg44OAKOXUch/n4dk4smW08BzEC4aWy/Iy4xn+16im93DSZ5IQgXZaTQ0uHGyreGVE3hoMhrXLnsm5QCp8mtYrJDs7INYg5NzOgwOtTDfVGxwiTOZSPG25P/vvfCJeGmT4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
- by BL0PR12MB4899.namprd12.prod.outlook.com (2603:10b6:208:1cf::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Fri, 26 Mar
- 2021 19:23:50 +0000
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::70f5:99ed:65a1:c033]) by BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::70f5:99ed:65a1:c033%5]) with mapi id 15.20.3933.038; Fri, 26 Mar 2021
- 19:23:50 +0000
-Subject: Re: [PATCH] drm/amdkfd: dqm fence memory corruption
-To:     Qu Huang <jinsdb@126.com>
-Cc:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie, daniel@ffwll.ch, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <1611750806-10730-1-git-send-email-jinsdb@126.com>
- <4de809ac-fdd7-b02a-c55f-3c79321cfb7f@amd.com>
- <14c4be41-28ab-3266-eaf3-b6b0342e18ba@126.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Message-ID: <8db9bd61-141d-6764-b74f-6f64117cfd5e@amd.com>
-Date:   Fri, 26 Mar 2021 15:23:47 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <14c4be41-28ab-3266-eaf3-b6b0342e18ba@126.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [142.116.84.209]
-X-ClientProxiedBy: YTOPR0101CA0024.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:15::37) To BL0PR12MB4948.namprd12.prod.outlook.com
- (2603:10b6:208:1cc::20)
+        id S230195AbhCZT0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:26:21 -0400
+Received: from mail-io1-f45.google.com ([209.85.166.45]:37845 "EHLO
+        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhCZT0L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 15:26:11 -0400
+Received: by mail-io1-f45.google.com with SMTP id b10so6528119iot.4;
+        Fri, 26 Mar 2021 12:26:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gcmLtn0pTb1AfSMtdyh5DjMeOzu6nLGhIV86oDtcsLY=;
+        b=MkAbqayjp2Es0igNMOd9cGJvWveeoxbn2l/8LwMCwih0jkmnoLkMlFb/LTaOxbeKAd
+         8p0HWZi8/04bzJp/O9GYf3LiIJnQsMbC8Pevmj8zmyXNPbj8EXZQuyqtexpa5VGm2abm
+         C0Lo7AeepwxweO/GfL8AZL16ei75WjkZx5HebHu6FPYMMhALGBKTQ4kuafNeQXly1WoD
+         cWI9yXOV2rKkM/PzUFFAWyT0dg0JaeN9yHyZaYURqext2JPpbTJOsNlZV/Q50oeuM3Iv
+         6eCxdXvjofMLlLf8ExIBXPPqJUEzDMwurKACy0fvodwsMC0StCpgFjNbcRw0mue24wT9
+         dVvw==
+X-Gm-Message-State: AOAM533fgiuxEQASnjezbFIsVXZpB1DI0qfj5GJW6JUcqPwEjsZyWtPm
+        ewwHbLVs1180Tb7j+VQvsQo4P3TE5A==
+X-Google-Smtp-Source: ABdhPJzH2wb/4BrRFSzGQyob4wa7ccJ3Xs9q9SphLkcQcf840bEjU7OEQozYc4WAfTgoEjuQ4d/HlA==
+X-Received: by 2002:a05:6638:ec7:: with SMTP id q7mr13440203jas.54.1616786769840;
+        Fri, 26 Mar 2021 12:26:09 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.253])
+        by smtp.googlemail.com with ESMTPSA id x4sm1878658ilm.39.2021.03.26.12.26.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 12:26:09 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: [PATCH v2] of: Fix kerneldoc output formatting
+Date:   Fri, 26 Mar 2021 13:26:06 -0600
+Message-Id: <20210326192606.3702739-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.100] (142.116.84.209) by YTOPR0101CA0024.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Fri, 26 Mar 2021 19:23:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 4ee983a5-6ad8-4f29-345e-08d8f08caf39
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4899:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB48991A7D400B17F31D83A12092619@BL0PR12MB4899.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o7rA+VPmCwjlRgIC/ayZN4QR2HjO0xY+/XiOxH2RdgCMpxzAf90ws1sCWbrwaYDs24U+8W+KD+UpRgk48c1Rd9iPjJz2oSSzj0oOxbqiDmJ9sf+NQaKhPsON2y77HGalZtGduur4fjHzRQbeiEVFFKdeaAH8dCoO0IirtjA1/Vlkygw/o2jt4ZiUBkWYBptiLKjpZ5QosKi0gc+c4vuX6gNL+Yku+G10fWzsJm6hN001PkdZ1MALhKzaZ7EhDAU1ljlQJariaved9+dTBBUhQRQTPaZuYA4Y/pzkSAyiyR2Mj/3JDOkeBZ/7C/bsQTCDhlE0MTQX9amXSYfJfLZhWv8fOCSozw11VMT0ENr19uzg0o4aaefpVH7cz9ayEMjVQ0aD4L/MBVps7Xf3u8pPtmIjblP5HjYYiaQ0y205GgeB8LWA/14T+JzJ2CyQ6o92X5yjVOPuqldJdPPH4uoDaefT+wtR8JHG9u9Q9Bkc6aYzrQTxjB7/XNgGum7ULUuLEPAP3ryyQznYCbmTlekEtZmw9b26RqT7n4AVmGcn56OYPxaPTe6XGziCcmzPLmIHr2B7rnsae3t9FgtzLr6iZ5lOH1B5KPhuc/4ji8AAzqYjI/7HGD1/UZJuEzx8sG8JVUU8/Ivlbq39yTBiatauQL57XfQCl4s9T1bRAcZiry4pr9CI6drb/FM5kWROV4DGhcAe4xzdhejamAD0Fr7Ng7q0KDYuUEJUDAwHVXQZXnMc6OtEUVDjwzN4k44hwCRgqBnvaIAnu3SfpsiESH4FULUYTLbKYGYceOtK03eXMx7bsKBFxYDyVFtjLV85gzDQUnwr3kdd/n7l6DDY2S8oyg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(376002)(136003)(366004)(39860400002)(966005)(38100700001)(31696002)(6486002)(16526019)(26005)(2616005)(44832011)(66946007)(4326008)(478600001)(186003)(66476007)(316002)(5660300002)(2906002)(53546011)(8936002)(16576012)(83380400001)(8676002)(86362001)(6916009)(66556008)(36756003)(31686004)(956004)(525324003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SmQ2dTFWLzA0L3VCZ3V4YUdaSTBmQzZTVHBiKzdORHVJVlliWXh5ekgvL2pI?=
- =?utf-8?B?NDdmN1h4bm8wb21hak4xWi9FSWN0S0xVclorN0VzZjR1dGtwN2s2Zy81bHBS?=
- =?utf-8?B?bFFsQStJc3J1WkZkc3ZYaFA2akxqdHllL1k5S05DN3ZRSTRIM1RjUkpOV0VN?=
- =?utf-8?B?d1N0eFp6NU1INUxRTmEvbjB0WFgyMkdNZDJYdDhPYjM2UEoxS1kyUWxtcjhu?=
- =?utf-8?B?V1IwL09FY2Q0Zi9MV0hST1JNdlNPenh4SnRRWFZzQVJuc0tLQXYwVlRMYkJi?=
- =?utf-8?B?Y05VZ1Nyd3I2NEc3cm03M0xIY2N6YzNMdSswcW1LNERSNkpBVy8veU0vaDNh?=
- =?utf-8?B?T3NaRXRvUnFZR3JFNndwWHZVWHpqTHJaKy9yN2R0NS9KaWRtNEQ4bUc3dVd3?=
- =?utf-8?B?bVVSU3pRaHh6WXV4WVE1NmlmUTAzUXY0eEZxSTJSTFREbGY3b3BkL1doUDR5?=
- =?utf-8?B?ZVN4V1JlKzVBV3Q3emdYOVJNUW1xelUrd1ZqQjZvNWx0cEJrdCtlVGw4TXkz?=
- =?utf-8?B?VTlmUkRMZHBTQWEvbW50dlBjZkZML1hTVzNVUXZIcVVZOXNvU2lOeUFsbWxq?=
- =?utf-8?B?eHZEcE1YamRrcWo3Q05qd1FRQ2k4L0IySUhPc2kwcHh4ODBmb05DUmczaDVa?=
- =?utf-8?B?ZWhtRmFVM0RZZFp1dmxLTXVhRnlOaERkSytyRWFkc0VacUpDZTJyZmV6V2hZ?=
- =?utf-8?B?NlN6SFM5OXE0Y0Uya2YvbmJkTHZOOUpEdWtPR2ZxbmNQUkZ2eDEybkxHYndG?=
- =?utf-8?B?TUJid0o5bFRRS01oVEpPang4QlFWbER5TjdVUnA4WHdQUFFQRy81dEtRQVZG?=
- =?utf-8?B?Z3lPTUgzWWRnNHdNM2dSQk5qM2psL0RZUStHWk02Q0lrTEdVcDhjbEpsMWlp?=
- =?utf-8?B?eEt6ZWtURUoxRy9CalNhemZ0NjUwYkJ6NmsxSy94d3A2dFdQL2VoaSt3QlRh?=
- =?utf-8?B?NVYyY0pBOVUxak9CUEQyNUI3cWQzYWR3eENZVHg3Y0JRQjFiWEJGRDBwMW5a?=
- =?utf-8?B?c0k5TytyaEF1TVhwNmZZNGNNV21UbEx2NTQxSXdBbU1BNjdPUHI4YWRucG5v?=
- =?utf-8?B?SFFRQXBLMXdqVUVFTGEwczc3a2RsaGtvdWJrd202THY3enhEMmpaZ1QwMkV6?=
- =?utf-8?B?QWFMWUVVUVNiQkJwREJPK3dPby9TL1FuRmZqdXBDR3lKeDlUV1hRUFFSLzJE?=
- =?utf-8?B?cUNNRGJRWG8xQW5XUjZpTmR5SmhBWW9PY3czTmkySlJsRUNaOG40Nk5CcWpX?=
- =?utf-8?B?WUliQkFXNFVDajBRa1B4eU83d0pGS251UDdZbU1nYTJyMmJVUU1oemRYZmlk?=
- =?utf-8?B?OElIalg0a2d4eDNVbHhNdUhOMTRPT09ZZFh0MXp4NS9jdm9RMEdibkVlSmZ2?=
- =?utf-8?B?M1R6aWtDU0hQdUhzUjByK0RsSGhOMURzclgvQUJDMDhPdWtpUUx2QTZTUGx4?=
- =?utf-8?B?V1I0UGtjSEd1VkRVT2hmQmlNMThDTFhuK1dwcTVEQnpTWHc5bkJOajAvdXNC?=
- =?utf-8?B?UjRzc3F0RVBOTy9RMGJVMHVnMTJUQllXMkFXVUlkb2J3RWFYNWhWMHlGNjVt?=
- =?utf-8?B?eHJaTENSVE1CT3VlK2g1cEU2TjV3MVg3ekZHcmVwc05hdkpuTklWTU1jWGw3?=
- =?utf-8?B?aXlrSER5dkd5WGpoWkVsdFNKSWpSOFdmeDJQZjBBN0NxamkrYlFNd2ZacGRK?=
- =?utf-8?B?eTJRN1hDdERQLzgwLzhudGRwNlFpR3VYTWpwdEVVK0ZTNEx2YXQvWkJVUmRP?=
- =?utf-8?Q?mkKiBXK+Lh5eXKxj9UMJgeEcg702PMPnox8KU77?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ee983a5-6ad8-4f29-345e-08d8f08caf39
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 19:23:50.0009
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3EbD5LVK5LXK6FkmlpdawW74HJ8yiKLh7dAMXHmqL10E8ealiRFo/i8Xx0ydk39nR4C7a9CQYtz4KrI4d0qYhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4899
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-03-26 um 5:38 a.m. schrieb Qu Huang:
-> On 2021/1/28 5:50, Felix Kuehling wrote:
->> Am 2021-01-27 um 7:33 a.m. schrieb Qu Huang:
->>> Amdgpu driver uses 4-byte data type as DQM fence memory,
->>> and transmits GPU address of fence memory to microcode
->>> through query status PM4 message. However, query status
->>> PM4 message definition and microcode processing are all
->>> processed according to 8 bytes. Fence memory only allocates
->>> 4 bytes of memory, but microcode does write 8 bytes of memory,
->>> so there is a memory corruption.
->>
->> Thank you for pointing out that discrepancy. That's a good catch!
->>
->> I'd prefer to fix this properly by making dqm->fence_addr a u64 pointer.
->> We should probably also fix up the query_status and
->> amdkfd_fence_wait_timeout function interfaces to use a 64 bit fence
->> values everywhere to be consistent.
->>
->> Regards,
->>    Felix
-> Hi Felix, Thanks for your advice, please check v2 at
-> https://lore.kernel.org/patchwork/patch/1372584/
+The indentation of the kerneldoc comments affects the output formatting.
+Leading tabs in particular don't work, sections need to be indented
+under the section header, and several code blocks are reformatted.
 
-Thank you for the reminder. I somehow missed your v2 patch on the
-mailing list. I have reviewed and applied it to amd-staging-drm-next now.
+Cc: Frank Rowand <frowand.list@gmail.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+- Updated the example code blocks to use 'Example::' which depends (for 
+  nice output) on Mauro's fix.
 
-Regards,
-  Felix
+The rest of the series is here[1].
 
+[1] https://lore.kernel.org/r/20210325164713.1296407-1-robh@kernel.org/
 
-> Thanks,
-> Qu.
->>
->>
->>>
->>> Signed-off-by: Qu Huang <jinsdb@126.com>
->>> ---
->>>   drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>> b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>> index e686ce2..8b38d0c 100644
->>> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>> @@ -1161,7 +1161,7 @@ static int start_cpsch(struct
->>> device_queue_manager *dqm)
->>>       pr_debug("Allocating fence memory\n");
->>>         /* allocate fence memory on the gart */
->>> -    retval = kfd_gtt_sa_allocate(dqm->dev, sizeof(*dqm->fence_addr),
->>> +    retval = kfd_gtt_sa_allocate(dqm->dev, sizeof(uint64_t),
->>>                       &dqm->fence_mem);
->>>         if (retval)
->
+ drivers/of/base.c | 275 +++++++++++++++++++++++-----------------------
+ drivers/of/fdt.c  |   9 +-
+ 2 files changed, 141 insertions(+), 143 deletions(-)
+
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 457d1ec27300..a64c093d30ef 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -651,11 +651,11 @@ bool of_device_is_big_endian(const struct device_node *device)
+ EXPORT_SYMBOL(of_device_is_big_endian);
+ 
+ /**
+- *	of_get_parent - Get a node's parent if any
+- *	@node:	Node to get parent
++ * of_get_parent - Get a node's parent if any
++ * @node:	Node to get parent
+  *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_get_parent(const struct device_node *node)
+ {
+@@ -673,15 +673,15 @@ struct device_node *of_get_parent(const struct device_node *node)
+ EXPORT_SYMBOL(of_get_parent);
+ 
+ /**
+- *	of_get_next_parent - Iterate to a node's parent
+- *	@node:	Node to get parent of
++ * of_get_next_parent - Iterate to a node's parent
++ * @node:	Node to get parent of
+  *
+- *	This is like of_get_parent() except that it drops the
+- *	refcount on the passed node, making it suitable for iterating
+- *	through a node's parents.
++ * This is like of_get_parent() except that it drops the
++ * refcount on the passed node, making it suitable for iterating
++ * through a node's parents.
+  *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_get_next_parent(struct device_node *node)
+ {
+@@ -719,13 +719,13 @@ static struct device_node *__of_get_next_child(const struct device_node *node,
+ 	     child = __of_get_next_child(parent, child))
+ 
+ /**
+- *	of_get_next_child - Iterate a node childs
+- *	@node:	parent node
+- *	@prev:	previous child of the parent node, or NULL to get first
++ * of_get_next_child - Iterate a node childs
++ * @node:	parent node
++ * @prev:	previous child of the parent node, or NULL to get first
+  *
+- *	Returns a node pointer with refcount incremented, use of_node_put() on
+- *	it when done. Returns NULL when prev is the last child. Decrements the
+- *	refcount of prev.
++ * Return: A node pointer with refcount incremented, use of_node_put() on
++ * it when done. Returns NULL when prev is the last child. Decrements the
++ * refcount of prev.
+  */
+ struct device_node *of_get_next_child(const struct device_node *node,
+ 	struct device_node *prev)
+@@ -741,12 +741,12 @@ struct device_node *of_get_next_child(const struct device_node *node,
+ EXPORT_SYMBOL(of_get_next_child);
+ 
+ /**
+- *	of_get_next_available_child - Find the next available child node
+- *	@node:	parent node
+- *	@prev:	previous child of the parent node, or NULL to get first
++ * of_get_next_available_child - Find the next available child node
++ * @node:	parent node
++ * @prev:	previous child of the parent node, or NULL to get first
+  *
+- *      This function is like of_get_next_child(), except that it
+- *      automatically skips any disabled nodes (i.e. status = "disabled").
++ * This function is like of_get_next_child(), except that it
++ * automatically skips any disabled nodes (i.e. status = "disabled").
+  */
+ struct device_node *of_get_next_available_child(const struct device_node *node,
+ 	struct device_node *prev)
+@@ -772,12 +772,12 @@ struct device_node *of_get_next_available_child(const struct device_node *node,
+ EXPORT_SYMBOL(of_get_next_available_child);
+ 
+ /**
+- *	of_get_next_cpu_node - Iterate on cpu nodes
+- *	@prev:	previous child of the /cpus node, or NULL to get first
++ * of_get_next_cpu_node - Iterate on cpu nodes
++ * @prev:	previous child of the /cpus node, or NULL to get first
+  *
+- *	Returns a cpu node pointer with refcount incremented, use of_node_put()
+- *	on it when done. Returns NULL when prev is the last child. Decrements
+- *	the refcount of prev.
++ * Return: A cpu node pointer with refcount incremented, use of_node_put()
++ * on it when done. Returns NULL when prev is the last child. Decrements
++ * the refcount of prev.
+  */
+ struct device_node *of_get_next_cpu_node(struct device_node *prev)
+ {
+@@ -834,15 +834,15 @@ struct device_node *of_get_compatible_child(const struct device_node *parent,
+ EXPORT_SYMBOL(of_get_compatible_child);
+ 
+ /**
+- *	of_get_child_by_name - Find the child node by name for a given parent
+- *	@node:	parent node
+- *	@name:	child name to look for.
++ * of_get_child_by_name - Find the child node by name for a given parent
++ * @node:	parent node
++ * @name:	child name to look for.
+  *
+- *      This function looks for child node for given matching name
++ * This function looks for child node for given matching name
+  *
+- *	Returns a node pointer if found, with refcount incremented, use
+- *	of_node_put() on it when done.
+- *	Returns NULL if node is not found.
++ * Return: A node pointer if found, with refcount incremented, use
++ * of_node_put() on it when done.
++ * Returns NULL if node is not found.
+  */
+ struct device_node *of_get_child_by_name(const struct device_node *node,
+ 				const char *name)
+@@ -893,22 +893,22 @@ struct device_node *__of_find_node_by_full_path(struct device_node *node,
+ }
+ 
+ /**
+- *	of_find_node_opts_by_path - Find a node matching a full OF path
+- *	@path: Either the full path to match, or if the path does not
+- *	       start with '/', the name of a property of the /aliases
+- *	       node (an alias).  In the case of an alias, the node
+- *	       matching the alias' value will be returned.
+- *	@opts: Address of a pointer into which to store the start of
+- *	       an options string appended to the end of the path with
+- *	       a ':' separator.
+- *
+- *	Valid paths:
+- *		/foo/bar	Full path
+- *		foo		Valid alias
+- *		foo/bar		Valid alias + relative path
+- *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * of_find_node_opts_by_path - Find a node matching a full OF path
++ * @path: Either the full path to match, or if the path does not
++ *       start with '/', the name of a property of the /aliases
++ *       node (an alias).  In the case of an alias, the node
++ *       matching the alias' value will be returned.
++ * @opts: Address of a pointer into which to store the start of
++ *       an options string appended to the end of the path with
++ *       a ':' separator.
++ *
++ * Valid paths:
++ *  * /foo/bar	Full path
++ *  * foo	Valid alias
++ *  * foo/bar	Valid alias + relative path
++ *
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_find_node_opts_by_path(const char *path, const char **opts)
+ {
+@@ -958,15 +958,15 @@ struct device_node *of_find_node_opts_by_path(const char *path, const char **opt
+ EXPORT_SYMBOL(of_find_node_opts_by_path);
+ 
+ /**
+- *	of_find_node_by_name - Find a node by its "name" property
+- *	@from:	The node to start searching from or NULL; the node
++ * of_find_node_by_name - Find a node by its "name" property
++ * @from:	The node to start searching from or NULL; the node
+  *		you pass will not be searched, only the next one
+  *		will. Typically, you pass what the previous call
+  *		returned. of_node_put() will be called on @from.
+- *	@name:	The name string to match against
++ * @name:	The name string to match against
+  *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_find_node_by_name(struct device_node *from,
+ 	const char *name)
+@@ -985,16 +985,16 @@ struct device_node *of_find_node_by_name(struct device_node *from,
+ EXPORT_SYMBOL(of_find_node_by_name);
+ 
+ /**
+- *	of_find_node_by_type - Find a node by its "device_type" property
+- *	@from:	The node to start searching from, or NULL to start searching
++ * of_find_node_by_type - Find a node by its "device_type" property
++ * @from:	The node to start searching from, or NULL to start searching
+  *		the entire device tree. The node you pass will not be
+  *		searched, only the next one will; typically, you pass
+  *		what the previous call returned. of_node_put() will be
+  *		called on from for you.
+- *	@type:	The type string to match against
++ * @type:	The type string to match against
+  *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_find_node_by_type(struct device_node *from,
+ 	const char *type)
+@@ -1013,18 +1013,18 @@ struct device_node *of_find_node_by_type(struct device_node *from,
+ EXPORT_SYMBOL(of_find_node_by_type);
+ 
+ /**
+- *	of_find_compatible_node - Find a node based on type and one of the
++ * of_find_compatible_node - Find a node based on type and one of the
+  *                                tokens in its "compatible" property
+- *	@from:		The node to start searching from or NULL, the node
+- *			you pass will not be searched, only the next one
+- *			will; typically, you pass what the previous call
+- *			returned. of_node_put() will be called on it
+- *	@type:		The type string to match "device_type" or NULL to ignore
+- *	@compatible:	The string to match to one of the tokens in the device
+- *			"compatible" list.
+- *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * @from:	The node to start searching from or NULL, the node
++ *		you pass will not be searched, only the next one
++ *		will; typically, you pass what the previous call
++ *		returned. of_node_put() will be called on it
++ * @type:	The type string to match "device_type" or NULL to ignore
++ * @compatible:	The string to match to one of the tokens in the device
++ *		"compatible" list.
++ *
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_find_compatible_node(struct device_node *from,
+ 	const char *type, const char *compatible)
+@@ -1044,16 +1044,16 @@ struct device_node *of_find_compatible_node(struct device_node *from,
+ EXPORT_SYMBOL(of_find_compatible_node);
+ 
+ /**
+- *	of_find_node_with_property - Find a node which has a property with
+- *                                   the given name.
+- *	@from:		The node to start searching from or NULL, the node
+- *			you pass will not be searched, only the next one
+- *			will; typically, you pass what the previous call
+- *			returned. of_node_put() will be called on it
+- *	@prop_name:	The name of the property to look for.
+- *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * of_find_node_with_property - Find a node which has a property with
++ *                              the given name.
++ * @from:	The node to start searching from or NULL, the node
++ *		you pass will not be searched, only the next one
++ *		will; typically, you pass what the previous call
++ *		returned. of_node_put() will be called on it
++ * @prop_name:	The name of the property to look for.
++ *
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_find_node_with_property(struct device_node *from,
+ 	const char *prop_name)
+@@ -1102,10 +1102,10 @@ const struct of_device_id *__of_match_node(const struct of_device_id *matches,
+ 
+ /**
+  * of_match_node - Tell if a device_node has a matching of_match structure
+- *	@matches:	array of of device match structures to search in
+- *	@node:		the of device structure to match against
++ * @matches:	array of of device match structures to search in
++ * @node:	the of device structure to match against
+  *
+- *	Low level utility function used by device matching.
++ * Low level utility function used by device matching.
+  */
+ const struct of_device_id *of_match_node(const struct of_device_id *matches,
+ 					 const struct device_node *node)
+@@ -1121,17 +1121,17 @@ const struct of_device_id *of_match_node(const struct of_device_id *matches,
+ EXPORT_SYMBOL(of_match_node);
+ 
+ /**
+- *	of_find_matching_node_and_match - Find a node based on an of_device_id
+- *					  match table.
+- *	@from:		The node to start searching from or NULL, the node
+- *			you pass will not be searched, only the next one
+- *			will; typically, you pass what the previous call
+- *			returned. of_node_put() will be called on it
+- *	@matches:	array of of device match structures to search in
+- *	@match:		Updated to point at the matches entry which matched
+- *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.
++ * of_find_matching_node_and_match - Find a node based on an of_device_id
++ *				     match table.
++ * @from:	The node to start searching from or NULL, the node
++ *		you pass will not be searched, only the next one
++ *		will; typically, you pass what the previous call
++ *		returned. of_node_put() will be called on it
++ * @matches:	array of of device match structures to search in
++ * @match:	Updated to point at the matches entry which matched
++ *
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.
+  */
+ struct device_node *of_find_matching_node_and_match(struct device_node *from,
+ 					const struct of_device_id *matches,
+@@ -1460,21 +1460,21 @@ EXPORT_SYMBOL(of_parse_phandle);
+  * Caller is responsible to call of_node_put() on the returned out_args->np
+  * pointer.
+  *
+- * Example:
++ * Example::
+  *
+- * phandle1: node1 {
++ *  phandle1: node1 {
+  *	#list-cells = <2>;
+- * }
++ *  };
+  *
+- * phandle2: node2 {
++ *  phandle2: node2 {
+  *	#list-cells = <1>;
+- * }
++ *  };
+  *
+- * node3 {
++ *  node3 {
+  *	list = <&phandle1 1 2 &phandle2 3>;
+- * }
++ *  };
+  *
+- * To get a device_node of the `node2' node you may call this:
++ * To get a device_node of the ``node2`` node you may call this:
+  * of_parse_phandle_with_args(node3, "list", "#list-cells", 1, &args);
+  */
+ int of_parse_phandle_with_args(const struct device_node *np, const char *list_name,
+@@ -1512,29 +1512,29 @@ EXPORT_SYMBOL(of_parse_phandle_with_args);
+  * Caller is responsible to call of_node_put() on the returned out_args->np
+  * pointer.
+  *
+- * Example:
++ * Example::
+  *
+- * phandle1: node1 {
+- *	#list-cells = <2>;
+- * }
++ *  phandle1: node1 {
++ *  	#list-cells = <2>;
++ *  };
+  *
+- * phandle2: node2 {
+- *	#list-cells = <1>;
+- * }
++ *  phandle2: node2 {
++ *  	#list-cells = <1>;
++ *  };
+  *
+- * phandle3: node3 {
+- * 	#list-cells = <1>;
+- * 	list-map = <0 &phandle2 3>,
+- * 		   <1 &phandle2 2>,
+- * 		   <2 &phandle1 5 1>;
+- *	list-map-mask = <0x3>;
+- * };
++ *  phandle3: node3 {
++ *  	#list-cells = <1>;
++ *  	list-map = <0 &phandle2 3>,
++ *  		   <1 &phandle2 2>,
++ *  		   <2 &phandle1 5 1>;
++ *  	list-map-mask = <0x3>;
++ *  };
+  *
+- * node4 {
+- *	list = <&phandle1 1 2 &phandle3 0>;
+- * }
++ *  node4 {
++ *  	list = <&phandle1 1 2 &phandle3 0>;
++ *  };
+  *
+- * To get a device_node of the `node2' node you may call this:
++ * To get a device_node of the ``node2`` node you may call this:
+  * of_parse_phandle_with_args(node4, "list", "list", 1, &args);
+  */
+ int of_parse_phandle_with_args_map(const struct device_node *np,
+@@ -1694,19 +1694,19 @@ EXPORT_SYMBOL(of_parse_phandle_with_args_map);
+  * Caller is responsible to call of_node_put() on the returned out_args->np
+  * pointer.
+  *
+- * Example:
++ * Example::
+  *
+- * phandle1: node1 {
+- * }
++ *  phandle1: node1 {
++ *  };
+  *
+- * phandle2: node2 {
+- * }
++ *  phandle2: node2 {
++ *  };
+  *
+- * node3 {
+- *	list = <&phandle1 0 2 &phandle2 2 3>;
+- * }
++ *  node3 {
++ *  	list = <&phandle1 0 2 &phandle2 2 3>;
++ *  };
+  *
+- * To get a device_node of the `node2' node you may call this:
++ * To get a device_node of the ``node2`` node you may call this:
+  * of_parse_phandle_with_fixed_args(node3, "list", 2, 1, &args);
+  */
+ int of_parse_phandle_with_fixed_args(const struct device_node *np,
+@@ -1952,13 +1952,12 @@ static void of_alias_add(struct alias_prop *ap, struct device_node *np,
+ 
+ /**
+  * of_alias_scan - Scan all properties of the 'aliases' node
++ * @dt_alloc:	An allocator that provides a virtual address to memory
++ *		for storing the resulting tree
+  *
+  * The function scans all the properties of the 'aliases' node and populates
+  * the global lookup table with the properties.  It returns the
+  * number of alias properties found, or an error code in case of failure.
+- *
+- * @dt_alloc:	An allocator that provides a virtual address to memory
+- *		for storing the resulting tree
+  */
+ void of_alias_scan(void * (*dt_alloc)(u64 size, u64 align))
+ {
+@@ -2153,12 +2152,12 @@ bool of_console_check(struct device_node *dn, char *name, int index)
+ EXPORT_SYMBOL_GPL(of_console_check);
+ 
+ /**
+- *	of_find_next_cache_node - Find a node's subsidiary cache
+- *	@np:	node of type "cpu" or "cache"
++ * of_find_next_cache_node - Find a node's subsidiary cache
++ * @np:	node of type "cpu" or "cache"
+  *
+- *	Returns a node pointer with refcount incremented, use
+- *	of_node_put() on it when done.  Caller should hold a reference
+- *	to np.
++ * Return: A node pointer with refcount incremented, use
++ * of_node_put() on it when done.  Caller should hold a reference
++ * to np.
+  */
+ struct device_node *of_find_next_cache_node(const struct device_node *np)
+ {
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index 4d6d195e089a..ba53da9c3895 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -349,11 +349,6 @@ static int unflatten_dt_nodes(const void *blob,
+ 
+ /**
+  * __unflatten_device_tree - create tree of device_nodes from flat blob
+- *
+- * unflattens a device-tree, creating the
+- * tree of struct device_node. It also fills the "name" and "type"
+- * pointers of the nodes so the normal device-tree walking functions
+- * can be used.
+  * @blob: The blob to expand
+  * @dad: Parent device node
+  * @mynodes: The device_node tree created by the call
+@@ -361,6 +356,10 @@ static int unflatten_dt_nodes(const void *blob,
+  * for the resulting tree
+  * @detached: if true set OF_DETACHED on @mynodes
+  *
++ * unflattens a device-tree, creating the tree of struct device_node. It also
++ * fills the "name" and "type" pointers of the nodes so the normal device-tree
++ * walking functions can be used.
++ *
+  * Returns NULL on failure or the memory chunk containing the unflattened
+  * device tree on success.
+  */
+-- 
+2.27.0
+
