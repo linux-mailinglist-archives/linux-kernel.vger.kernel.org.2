@@ -2,189 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC1F34AF8A
+	by mail.lfdr.de (Postfix) with ESMTP id C8AC934AF8B
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:49:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhCZTsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:48:30 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:5785 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhCZTsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:48:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1616788083; x=1648324083;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=0+8mRW49WolWGzYl6LhqyTkD9q6Dl+joeunG4E609Ww=;
-  b=ByzlbIKxUddhTarIxk8+9lTBTgJiRtdC6AWD+IZqGRPvKcMztXIZSbap
-   s6/rwST032O8mcDWDmNAg9KpMgWaasxMKE1GzTKHPrt5+WIXMdARtSmAV
-   muQkiECo/hcjDiLSXzCpTIYJk09wV7IOii9AWionawe5bxbk1mFgEZmWg
-   UaL6apsK2qeo8ZGMZORkdleqbgpYJGabbZE/5Zab2yaZWUU9/wxr2SCzG
-   YnrxH/u1lHwEUP6AEhNNr5C/iSJmhDOWrmaeJGNdUShRw9Q+J6dti1ArM
-   tDzh6720PL0EYdkwNdo3RZ//0fRrIOeL74a5jX4xSUjwSbpCeIwmdIqxS
-   g==;
-IronPort-SDR: 8caU/OxqqPOFMogkPK0ibT2Ct+0NsnikYeh+OJEK6MIVHG8N/fRsYsHVBUfNh/ozQBZdDgpcx9
- QQVh22lgmK7hDo480OgWJPrsnjvvjT/Y1x5vSPH1BQWDShot6G3iYoU9wqAsLDbKUWm+G/3IU9
- /TMlHX7fo/Z/m5I6ZRReeYbcJnJ1o737P7RDtCmstlRasYLdH8/nhb3OX3zoAHR/S+/TbD4hIT
- bPYzDu3BBPczRmllyklAoPGDqVokOESW6TvCbHTG8iJEnZKLuUEwI2En1TNhuh3Qg17mRzUB0y
- FNE=
-X-IronPort-AV: E=Sophos;i="5.81,281,1610380800"; 
-   d="scan'208";a="163107518"
-Received: from mail-co1nam11lp2175.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.175])
-  by ob1.hgst.iphmx.com with ESMTP; 27 Mar 2021 03:48:02 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ijsWb1FTo8+8P67O4Is30U2ViBKvi9cAo9Ys/pvDTZAeMCLplzcUPpx4SBAtOC3ChEHc6u1ZsA/ByAf/Y0kmA/0Ta9fu40UPKDV+bnNeeeu1UTwBivxI9+YK+0uuyMZEQxXxv5Q8sDiF7jMXOfBohT3MhTUZkvpnJW6necN2zsxNx/r5LNzjkkDcGbx3oubS7k7NRsVrb7dorvOBUXhPYOfaUjegNtQhjKkJzbetRy/o/bC+4rrl1WuCfZc281WDQKfDZY3VFRZuhyAD13SWK7uu1DbSgjes7jq2lF6ixH0KG/NJbvhnht3jFnEuINJAcrw87ftjKYFfdoFaXPFncQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C3o639Xu96LDto0HpIvHUoNkQLuIGc9iG/MOa5fpRG8=;
- b=YAJfTklAK+dBhgPGNfxyN/B9S6TITTpR2j0noh4KcghGQFjiTZ+pyC1jspWAa/MjX1+3pciX3zOxsftb2wNdZygSfekzsFyKd6V22UNJoMhZac4PzQgU7MtUU0/JL/lg+spVTdexFrfFFHhAQQ7lTP7hHquYBcl2tI+/5Z77lya5C7QpjBXb3/yXaABympuOcHCf++2b1rmykoJQgwk2YGfIgiyNv8KiAy5lBI3g2fYv77jUbZNS+66sf+PShFOKu5lPWSGku5Tv/wu1luuTolItM+B8HRehUnjLH95Iy1PfOiZZCFINsTEN1BYto0ZHPG/HTPQswKaJjnOOxaxoeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C3o639Xu96LDto0HpIvHUoNkQLuIGc9iG/MOa5fpRG8=;
- b=PHQ/UsbeSDk9ibuENSEqCuJqkG1frLLywbSFBtWmAGyLnPGTwTpDyjv7EnO6pk3WGWs5DoDH+w2JYb6vkBjhNsz0DeMUfH7/XhW/XW32w0o1qAthd4KmvnqicYyzOckI/q52rAvtCHDXtf5ixfKzQcw5jvmgmEK40ExyTSB44gs=
-Received: from DM5PR04MB0684.namprd04.prod.outlook.com (2603:10b6:3:f3::20) by
- DM6PR04MB4745.namprd04.prod.outlook.com (2603:10b6:5:24::29) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3977.29; Fri, 26 Mar 2021 19:48:01 +0000
-Received: from DM5PR04MB0684.namprd04.prod.outlook.com
- ([fe80::f0ed:1983:98c8:3046]) by DM5PR04MB0684.namprd04.prod.outlook.com
- ([fe80::f0ed:1983:98c8:3046%12]) with mapi id 15.20.3955.027; Fri, 26 Mar
- 2021 19:48:01 +0000
-From:   Niklas Cassel <Niklas.Cassel@wdc.com>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-CC:     "minwoo.im.dev@gmail.com" <minwoo.im.dev@gmail.com>,
-        "javier@javigon.com" <javier@javigon.com>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] nvme: disallow passthru cmd from targeting a nsid != nsid
- of the block dev
-Thread-Topic: [PATCH v2] nvme: disallow passthru cmd from targeting a nsid !=
- nsid of the block dev
-Thread-Index: AQHXInjtbxc2KiPgZUagFD+bTVpMlQ==
-Date:   Fri, 26 Mar 2021 19:48:00 +0000
-Message-ID: <20210326194749.396599-1-Niklas.Cassel@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.30.2
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [85.226.244.4]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: be99b6bf-c702-4136-51e7-08d8f0901049
-x-ms-traffictypediagnostic: DM6PR04MB4745:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR04MB4745E03A9E2A3084F90DEFC6F2619@DM6PR04MB4745.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:619;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: l2TA/Q7y7xLUecJzw5o5mMSbuV2lQQUVWkdMF8mkJYUnwUNTTezWKbrvzbvpkwRc1Er7bm2bf49rcl6qh/Rp/npdwaXehSVPl4RcVBApw14CPdZ411n5KzOdxO+uDfkLQtvQM1c5l/KEWdbY/wqqlJPI+vyAuaeGhiboMtcCiw36uTCcEjL+AgQw69dRrOxsAa33bqOgaNUU7j9VeVdoGykpxEO06mpU6lMeQUn1dpR1TbvoVnAbN1Kn2KjFpTBsRwjXTiZ6LUnqoGFjU9Fu2LEbRr+vi9sSjxfYZ7C9lTafYefvLvQXwf5Rkxd6Ip+TPXnAKmget+y9l9CBUHvdtEd9GIDAkZn/XM0OwzejWU41PrO1l+CGLvCeCyjXBFMQfmw2ioVeaN31UMKdPGf8kraVW7CQ0X9YuJK2CDlCMWq9OmhL2oNFiQpfBd/P0I8oPOx4dkJuiWajGcWgzYb02oSs2KrsFudxCYBVr1Nq2UZlwgDhpPIYg+G7IdW02zWJvyU5e3O5Md3DVqtzm9BYbkte/q7ZHGnE5rGLJJJuVzsAJDrZycR1j3WImBvRmfW4FN2K+AJE6rrY5EBGIeH9BU4GbHztKWr1wkVIiHrZI+RvO0nEhuFfJ5Y2XEKKFiuKieqpULNOygDwbOoxdIlRJu9Yp9cRJTWSyOefOSHI4Hk=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0684.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(396003)(366004)(346002)(6512007)(66476007)(66446008)(66556008)(64756008)(91956017)(76116006)(66946007)(1076003)(2616005)(54906003)(26005)(83380400001)(478600001)(71200400001)(186003)(8676002)(110136005)(5660300002)(8936002)(36756003)(316002)(6506007)(2906002)(86362001)(6486002)(38100700001)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?6BA5YoyqW9Htvg0i1EKYpkUtMfOsSue+QA/a101POSmiguogHHq5Y3EtTA?=
- =?iso-8859-1?Q?yNR6uQm/kLvG6qpmgZc8LsN6QZkIqcyjDGke49TGSQPaWAnQwhh4theORo?=
- =?iso-8859-1?Q?Xw2vKwSsnvHdpHEjh7uxGu0CFenynMROpsnDbYV6I/L8r2vUz2Vy6clDpf?=
- =?iso-8859-1?Q?ynvtR4TmtvRe+LVR6ia680oPK0jCta2eLHbggfE+DPeyOIl87/rFH8HaL9?=
- =?iso-8859-1?Q?r7LvCXcS7i3KpjDQFKOY6zGTeAqk/4dObBfCAIyVW//EkgtUNYXyjLVNx7?=
- =?iso-8859-1?Q?g0DDNuA5CoOYFY9DSBH+nnSJAmx4oMJteEL9y9UU6tQQ0oe4ASXjGtEGYI?=
- =?iso-8859-1?Q?Q2u39oPbi10i1AxDXs667fB0akQwiAA64VyLusPLIo4+rNDS16/zgZtTnb?=
- =?iso-8859-1?Q?jFd3G26e33hRDSdtlr2hRe2eYh+UZIuQaIFE4dGAt02Dx9ALn/Dh4RqNel?=
- =?iso-8859-1?Q?lrpmO9DQQ/T4yWLLqORZhc2C+Yr5GT3iwKw1Z29wAxDutSDxJRsrO6C5EA?=
- =?iso-8859-1?Q?O3ZhG1fMrMF//jkDCmjLz4pGvv42QeZ9RVM85C0SQ7MCr9Ur3vxbInWlMe?=
- =?iso-8859-1?Q?WvBc5mtqis+crOPTEomGFYcwuKk2ZBGgiUxUN+jNFkC4D8UCL1l/uvB/zP?=
- =?iso-8859-1?Q?KIaHHVP13nFwHsi+bss03jn+R1fIcYik55UBzxZVHXvHbl+Sd7CtAmHdOm?=
- =?iso-8859-1?Q?kes2no9ba49vQ9+SKKOOe/jPvEYtZ23roXlBwyc/hkBYAj/QVSi2ACYCMn?=
- =?iso-8859-1?Q?fEuF29vPqV8ePDF6kXYSUAkvWu2csWD1O5xXRXOGH/br9281uekdZ1ux2C?=
- =?iso-8859-1?Q?FkXC9JL9UiIeg+bXKgT6xp6A1QjGS8+/qp73rfkvuN0mD590Zz1D9uYgMc?=
- =?iso-8859-1?Q?tDWcmjJ7L2h098fFWA9EFSXskGPXxtJumW0Cv79/I+pz2XIhpsJ2aofbpM?=
- =?iso-8859-1?Q?dRLS+XS5FPom5GpMEi6Zp7xvxhJ8MXTEfp2vKvFdv+DW/xTsDTsrvDO3SM?=
- =?iso-8859-1?Q?Qbepg9C27djCRKhGw/O/a5lEeW+YKB+b7T7JsJJUXhswZunVDfM67SdnEl?=
- =?iso-8859-1?Q?36Qdiu9IgSwgomsbnl1M2f6xxo2tDEOpm0XuWpSbDwR2R9ozo7MQy2DZqD?=
- =?iso-8859-1?Q?SbqSBMnOY9/sp63gxv1FEoM7pgzGYm8m/Aoc5H1G7rmhw/6y5LPIHiS4m0?=
- =?iso-8859-1?Q?T2LAskFb+nMrRpgW//3lr7xEMjZrnH1OQiayPlE7PjBwGQ5lSAv/QBxfBz?=
- =?iso-8859-1?Q?JGJsJeVcoOkOf+ghNkdi+hA48qeWn9SHZxS/QAB/o3dpfzoLjBcroHQ22v?=
- =?iso-8859-1?Q?An1gX/3HcRMqaNt2+sOxmXXt4XxtVfbi0Ba7/L2Lw631q+jLs1qdjnsI99?=
- =?iso-8859-1?Q?Md8BNAd0pW?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S230323AbhCZTsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:48:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230213AbhCZTs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 15:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8F306194A;
+        Fri, 26 Mar 2021 19:48:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616788107;
+        bh=wxPwrL8Elyilt/be8avUhCyHnKSPWdv5vjts2YM7GNk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hxUv3wwbObI8kiZEEQZV18IkUZ78uC14N/u7raPhRVQu/Jg5dAuuQVvt7aGdizPMu
+         YANg5luT1vEZH4/bbF5TI1C0At7XY/IM9KlTIGT1b8JCPtihfoX8tJlZL3OPPHkSr6
+         +o96gpV54A3HXckbZ4y2bVhKASm9ZAxP3N6Rg+UUuH3yyydaW+NkUH+mRab2umSM5c
+         tPM8bqGeklPDfYJn0E0IXVuAyrUnQGBD0WqbgS/soDjmC/GNVuR+WLv0AqQ4fxV1wY
+         /kVBpv0i5qcIClgEQpd1cHNtZgJis+mKdIHoxh2MT+AwBiErwk+lh8PFaYuepkSJwu
+         xv91nHcQDfnCg==
+Received: by mail-ed1-f48.google.com with SMTP id w18so7690062edc.0;
+        Fri, 26 Mar 2021 12:48:26 -0700 (PDT)
+X-Gm-Message-State: AOAM5310kl9KQIEvKP/G5vIr0WU/mDQiyJq7+EKlEDQCcz77c7vW2PS9
+        /cCIUbRoIGRhktAsOOMtr0qlC89QVu6ceScefw==
+X-Google-Smtp-Source: ABdhPJy7G4s2ud2zHYauRuSzY80o/0qOtPPIRaErAfbkRf+ylRkj+kKnhZfJ/AZpQBGAvYabfLNPy7gyORsBpyobNw0=
+X-Received: by 2002:a05:6402:2d0:: with SMTP id b16mr17353897edx.194.1616788104975;
+ Fri, 26 Mar 2021 12:48:24 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0684.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: be99b6bf-c702-4136-51e7-08d8f0901049
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2021 19:48:01.0363
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wmx1ZwFyJpcd/zoTI+j/0chFAYJOZXJ/bmZSORnkRI8qbHhNR/AduB3h3073qzreGPauEKbipQtlCZU+ZjzERA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4745
+References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+ <YFKQaXOmOwYyeqvM@google.com> <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
+ <YF3V8d4wB6i81fLN@orome.fritz.box> <CAF6AEGvS6Pnd-m-boqPEZdDY+VCkV5M8Ob9n6UiYWs_DxrPopQ@mail.gmail.com>
+ <CAF6AEGvPN90RGP8hYXtAksJpGc4Sf5tRpNwNnV6=sxKei0Ms6A@mail.gmail.com>
+In-Reply-To: <CAF6AEGvPN90RGP8hYXtAksJpGc4Sf5tRpNwNnV6=sxKei0Ms6A@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 26 Mar 2021 13:48:13 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKk+c83GMRzpc11Naj7QDYSfHdrg-8ZnxRBBM4phemQxg@mail.gmail.com>
+Message-ID: <CAL_JsqKk+c83GMRzpc11Naj7QDYSfHdrg-8ZnxRBBM4phemQxg@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on sc7180-trogdor-pompom
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Niklas Cassel <niklas.cassel@wdc.com>
+On Fri, Mar 26, 2021 at 9:20 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Fri, Mar 26, 2021 at 8:18 AM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Fri, Mar 26, 2021 at 5:38 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+> > >
+> > > On Wed, Mar 17, 2021 at 06:53:04PM -0700, Rob Clark wrote:
+> > > > On Wed, Mar 17, 2021 at 4:27 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+> > > > >
+> > > > > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
+> > > > > > The sc7180-trogdor-pompom board might be attached to any number of a
+> > > > > > pile of eDP panels. At the moment I'm told that the list might include:
+> > > > > > - KD KD116N21-30NV-A010
+> > > > > > - KD KD116N09-30NH-A016
+> > > > > > - Starry 2081116HHD028001-51D
+> > > > > > - Sharp LQ116M1JW10
+> > > > > >
+> > > > > > It should be noted that while the EDID programmed in the first 3
+> > > > > > panels indicates that they should run with exactly the same timing (to
+> > > > > > keep things simple), the 4th panel not only needs different timing but
+> > > > > > has a different resolution.
+> > > > > >
+> > > > > > As is true in general with eDP panels, we can figure out which panel
+> > > > > > we have and all the info needed to drive its pixel clock by reading
+> > > > > > the EDID. However, we can do this only after we've powered the panel
+> > > > > > on. Powering on the panels requires following the timing diagram in
+> > > > > > each panel's datasheet which specifies delays between certain
+> > > > > > actions. This means that, while we can be quite dynamic about handling
+> > > > > > things we can't just totally skip out on describing the panel like we
+> > > > > > could do if it was connected to an external-facing DP port.
+> > > > > >
+> > > > > > While the different panels have slightly different delays, it's
+> > > > > > possible to come up with a set of unified delays that will work on all
+> > > > > > the panels. From reading the datasheets:
+> > > > > > * KD KD116N21-30NV-A010 and KD KD116N09-30NH-A016
+> > > > > >   - HPD absent delay: 200 ms
+> > > > > >   - Unprepare delay: 150 ms (datasheet is confusing, might be 500 ms)
+> > > > > > * Starry 2081116HHD028001-51D
+> > > > > >   - HPD absent delay: 100 ms
+> > > > > >   - Enable delay: (link training done till enable BL): 200 ms
+> > > > > >   - Unprepare delay: 500 ms
+> > > > > > * Sharp LQ116M1JW10
+> > > > > >   - HPD absent delay: 200 ms
+> > > > > >   - Unprepare delay: 500 ms
+> > > > > >   - Prepare to enable delay (power on till backlight): 100 ms
+> > > > > >
+> > > > > > Unified:
+> > > > > > - HPD absent delay: 200 ms
+> > > > > > - Unprepare delay: 500 ms
+> > > > > > - Enable delay: 200 ms
+> > > > > >
+> > > > > > NOTE: in theory the only thing that we _really_ need unity on is the
+> > > > > > "HPD absent delay" since once the panel asserts HPD we can read the
+> > > > > > EDID and could make per-panel decisions if we wanted.
+> > > > > >
+> > > > > > Let's create a definition of "a panel that can be attached to pompom"
+> > > > > > as a panel that provides a valid EDID and can work with the standard
+> > > > > > pompom power sequencing. If more panels are later attached to pompom
+> > > > > > then it's fine as long as they work in a compatible way.
+> > > > > >
+> > > > > > One might ask why we can't just use a generic string here and provide
+> > > > > > the timings directly in the device tree file. As I understand it,
+> > > > > > trying to describe generic power sequencing in the device tree is
+> > > > > > frowned upon and the one instance (SD/MMC) is regarded as a mistake
+> > > > > > that shouldn't be repeated. Specifying a power sequence per board (or
+> > > > > > per board class) feels like a reasonable compromise. We're not trying
+> > > > > > to define fully generic power sequence bindings but we can also take
+> > > > > > advantage of the semi-probable properties of the attached device.
+> > > > > >
+> > > > > > NOTE: I believe that past instances of supporting this type of thing
+> > > > > > have used the "white lie" approach. One representative panel was
+> > > > > > listed in the device tree. The power sequencings of this
+> > > > > > representative panel were OK to use across all panels that might be
+> > > > > > attached and other differences were handled by EDID. This patch
+> > > > > > attempts to set a new precedent and avoid the need for the white lie.
+> > > > > >
+> > > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > > > ---
+> > > > >
+> > > > > Sounds reasonable to me if DT maintainers can live with this abstract
+> > > > > hardware definition. It's clearer than the 'white lie' approach.
+> > > >
+> > > > Yeah, it is a weird grey area between "discoverable" and "not
+> > > > discoverable".. but I favor DT reflecting reality as much as
+> > > > possible/feasible, so I think this is definity cleaner than "white
+> > > > lies"
+> > >
+> > > This is practically no different than the "white lie". I suppose you
+> > > could perhaps call it "more honest", if you want.
+> > >
+> > > The point remains that unless we describe exactly which panel we're
+> > > dealing with, we ultimately have no way of properly quirking anything if
+> > > we ever have to. Also, once we allow this kind of wildcard we can
+> > > suddenly get into a situation where people might want to reuse this on
+> > > something that's not at all a google-pompom board because the same
+> > > particular power sequence happens to work on on some other board.
+> > >
+> > > Similarly I can imagine a situation where we could now have the same
+> > > panel supported by multiple different wildcard compatible strings. How
+> > > is that supposed to be any cleaner than what we have now?
+> > >
+> > > And I still keep wondering why bootloaders can't be taught about these
+> > > kinds of things. We have in the past discussed various solutions where
+> > > the bootloader could detect the type of panel connected and set the
+> > > proper compatible string.
+> >
+> > The bootloader cannot detect the panel without powering up the panel,
+> > which it normally does not do if you are not in dev-mode (it would add
+> > a significant amount of time to bootup, which is why we can't do this)
+>
+> what if we had a sort of multi-choice panel node:
+>
+>    panel: panel {
+>      compatible = "panel,one-of";
+>      compatible-one-of = "vendor1,panel-a", "vendor2,panel-b",
+> "vendor3,panel-c";
+>   };
+>
+> The kernel could construct power sequence timings that are the
+> superset of all the possible panels.  That seems about as explicit as
+> we could get in this sort of case.
 
-When a passthru command targets a specific namespace, the ns parameter to
-nvme_user_cmd()/nvme_user_cmd64() is set. However, there is currently no
-validation that the nsid specified in the passthru command targets the
-namespace/nsid represented by the block device that the ioctl was
-performed on.
+If we were to go this route, I'm inclined to say just shove all the
+possible panel compatibles into 'compatible'. That kind of breaks the
+notion of most specific to least specific. OTOH, it is saying the set
+of panels are somehow 'compatible' with each other.
 
-Add a check that validates that the nsid in the passthru command matches
-that of the supplied namespace.
+If there's not some level of compatibility between the panels, then
+it's still the bootloader's problem.
 
-Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
----
-Changes since v1:
--Added error print.
-
- drivers/nvme/host/core.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index f13eb4ded95f..a50352ea3f7b 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -1599,6 +1599,12 @@ static int nvme_user_cmd(struct nvme_ctrl *ctrl, str=
-uct nvme_ns *ns,
- 		return -EFAULT;
- 	if (cmd.flags)
- 		return -EINVAL;
-+	if (ns && cmd.nsid !=3D ns->head->ns_id) {
-+		dev_err(ctrl->device,
-+			"%s: nsid (%u) in cmd does not match nsid (%u) of namespace\n",
-+			current->comm, cmd.nsid, ns->head->ns_id);
-+		return -EINVAL;
-+	}
-=20
- 	memset(&c, 0, sizeof(c));
- 	c.common.opcode =3D cmd.opcode;
-@@ -1643,6 +1649,12 @@ static int nvme_user_cmd64(struct nvme_ctrl *ctrl, s=
-truct nvme_ns *ns,
- 		return -EFAULT;
- 	if (cmd.flags)
- 		return -EINVAL;
-+	if (ns && cmd.nsid !=3D ns->head->ns_id) {
-+		dev_err(ctrl->device,
-+			"%s: nsid (%u) in cmd does not match nsid (%u) of namespace\n",
-+			current->comm, cmd.nsid, ns->head->ns_id);
-+		return -EINVAL;
-+	}
-=20
- 	memset(&c, 0, sizeof(c));
- 	c.common.opcode =3D cmd.opcode;
---=20
-2.30.2
+Rob
