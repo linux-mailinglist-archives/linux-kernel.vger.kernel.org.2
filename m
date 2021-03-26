@@ -2,71 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D185E34B316
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD1B734B2A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhCZXgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:36:32 -0400
-Received: from fallback23.m.smailru.net ([94.100.187.222]:37338 "EHLO
-        fallback23.mail.ru" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229986AbhCZXgL (ORCPT
+        id S231321AbhCZXRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhCZXQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:36:11 -0400
-X-Greylist: delayed 1393 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Mar 2021 19:36:11 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To:Date:MIME-Version:Subject:To:From; bh=TCgmuDJAYTsjobPwpCKnWi9eh9wfEhXbvIg+omz35DM=;
-        b=dI0bqD4nkxCQ+1/xvs4a7AnXSHFMzncnpaLYq46eSvS+Pd3HvSx2SktQAJXsonFolAYdJqA1h+9IwDfJn03wYZG5Yqg4rsu8DzKdyFNhMz0PPKIQVq18Jd5UkL3FkcGAAvd7nFOh5/RxT3MbAA4nG0gAQdLXM49AaLVoyDz2xxw=;
-Received: from [10.161.124.209] (port=54226 helo=f737.i.mail.ru)
-        by fallback23.m.smailru.net with esmtp (envelope-from <safinaskar@mail.ru>)
-        id 1lPvdP-0000fg-Ph; Sat, 27 Mar 2021 02:12:56 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
-        h=Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To:Date:MIME-Version:Subject:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=TCgmuDJAYTsjobPwpCKnWi9eh9wfEhXbvIg+omz35DM=;
-        b=WzB97DjzJA6KD0rKtEvuFRcUXaH4NOyHg7rw5Ubpm+lhWb9s7s7AlhcXS333BC2lOLbl+Ixk6A/NWpQguI7Ob6kzw79FgLMA9zV4raNKs/yZJmB002IP637r/iGZJp/lNcpSPHtVpmtZcr+tn51fQ4ZS0ZuCtF+yTNpdpQYQGq4=;
-Received: by f737.i.mail.ru with local (envelope-from <safinaskar@mail.ru>)
-        id 1lPvdC-0000t8-LI; Sat, 27 Mar 2021 02:12:43 +0300
-Received: by light.mail.ru with HTTP;
-        Sat, 27 Mar 2021 02:12:42 +0300
-From:   =?UTF-8?B?QXNrYXIgU2FmaW4=?= <safinaskar@mail.ru>
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        kernel-hardening@lists.openwall.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NSAxLzFdIGZzOiBBbGxvdyBub19uZXdfcHJpdnMgdGFz?=
- =?UTF-8?B?a3MgdG8gY2FsbCBjaHJvb3QoMik=?=
+        Fri, 26 Mar 2021 19:16:37 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF12C0613AA;
+        Fri, 26 Mar 2021 16:16:37 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id q3so6936712qkq.12;
+        Fri, 26 Mar 2021 16:16:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=5erpXU3Aq3hneBUldIzDMOS6BrUCvWqA6H+cu2bXQ5c=;
+        b=CH30D8ON/1LI1U+uYv8riNgZmyrXAq7JKZ40U64ba8dwYxp4Vi7Pls44NYcCwEwVOL
+         MgJDByTVS0oZmRRQUxwn+WthIBe7lo1x8Lxn9ZChof6BNefrA9mSAnPbJP25KOOYyuoe
+         hTB/c02eBGzSPPqf1zOHg/tyqg/hXykGDpceyvDodccpL8MuIBHjem+O0oeHc/nM3rpB
+         2nvTpSOuGSUXyqkdX3C65DKvd0BqYE4RyX62QCpMYY9QO0KHGwijsoOBNmaeaENw3znm
+         d1MbB705eMU1wrdvIfkndinTnN8Hve2CG2T96bzcmrqot5tQq6KVfg/OBxrZ1iIFhKvR
+         pPNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=5erpXU3Aq3hneBUldIzDMOS6BrUCvWqA6H+cu2bXQ5c=;
+        b=SqQQJMvLPEf0XJCCYQ/IrZz2nbjzPvK8oSuFjNh5Jc4Qg6f/2DkAnf6An7SN4LuQlF
+         cj7HDvKxVZrYDICrtGGRYV1nyLMBeOV9+TvXR4j/rHSsn1PJ53cJ8BbhZdltEEtiuyXr
+         SGvgmo/0Dnoirr75jv7NPalFc07cWkAeVfi9yRoG9YfPpTUtawukoblyIGrlmatDFknP
+         +oXSoPENE46vSNal0kwdXEVifxUptQeYFzLrWDFx/9OAzx3h1rp6jSzXyx6tyap81iYJ
+         D5M7dkZMEL5G9FL8ZXgP5Y9PPsdfogWf1gJ0hP1PKzbNUBlYH89SIt/Ra/0E7rbv6fmR
+         /zfA==
+X-Gm-Message-State: AOAM5317wa49YJOG/TB1iVhw5zvNPrmo9s2n27oLriHubtWvD0pchhzo
+        iw6aZuNNeZcvhYMJj+lsRaCBCCGqxnH9dcH1
+X-Google-Smtp-Source: ABdhPJwK3aDywgHiHIjsYjovV6/HGstEHm5oubPEW9jiWiwz/rUPrn5QybJj9qXQhi+nb99Ja47UsQ==
+X-Received: by 2002:a05:620a:714:: with SMTP id 20mr15531143qkc.192.1616800596650;
+        Fri, 26 Mar 2021 16:16:36 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.58.30])
+        by smtp.gmail.com with ESMTPSA id w78sm7960414qkb.11.2021.03.26.16.16.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 16:16:36 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rdunlap@infradead.org
+Subject: [PATCH] iucv: af_iucv.c: Couple of typo fixes
+Date:   Sat, 27 Mar 2021 04:42:42 +0530
+Message-Id: <20210326231608.24407-7-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1616797633.git.unixbhaskar@gmail.com>
+References: <cover.1616797633.git.unixbhaskar@gmail.com>
 MIME-Version: 1.0
-X-Mailer: Mail.Ru Mailer 1.0
-Date:   Sat, 27 Mar 2021 02:12:42 +0300
-Reply-To: =?UTF-8?B?QXNrYXIgU2FmaW4=?= <safinaskar@mail.ru>
-X-Priority: 3 (Normal)
-Message-ID: <1616800362.522029786@f737.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-X-7564579A: EEAE043A70213CC8
-X-77F55803: 119C1F4DF6A9251C54E3E0C6C5F9D941601365FF1EFA00A57B72CABF76C0DD1EABF6EAE57C0FACE9D8A01C7BE6A5AE8F10256108459FC4386EF9DF32E4A6FB8805836D1F9953231F
-X-7FA49CB5: 70AAF3C13DB7016878DA827A17800CE75C5A0068DDB44521D82A6BABE6F325AC08BE7437D75B48FABCF491FFA38154B613377AFFFEAFD269176DF2183F8FC7C05C0AD7D016C066E3C2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE74E9055D3307A84CAEA1F7E6F0F101C67CDEEF6D7F21E0D1D174C73DBBBFC7664C364260FAD8F937CCA2C1D19EE196DDBF4001F4B0FE1189D389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C04CF195F1528592878941B15DA834481FCF19DD082D7633A0EF3E4896CB9E6436389733CBF5DBD5E9D5E8D9A59859A8B64AAE2D1698E8717BCC7F00164DA146DA6F5DAA56C3B73B237318B6A418E8EAB86D1867E19FE14079C09775C1D3CA48CFC5EA940A35A165FF2DBA43225CD8A89FD63380FFBEB38773156CCFE7AF13BCA4B5C8C57E37DE458BEDA766A37F9254B7
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2368A440D3B0F6089093C9A16E5BC824AC8B6CDF511875BC4E8F7B195E1C97831F7A2AF59AE45E8C5AB73A7D1547457A7
-X-C1DE0DAB: 0D63561A33F958A5A6AFBEC59E2B787535FC3150985A3DCC196730366FEFC50BBDC6A1CF3F042BAD6DF99611D93F60EF4280523C145DA091699F904B3F4130E343918A1A30D5E7FCCB5012B2E24CD356
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D34C786159FDC4342B0C9E4B168990CD8780BCEBC64311BE505E8F3D0AD8841ECE51ADEA222FBDD9F961D7E09C32AA3244C0B0CF7C92C78415DA03BED48498C790D81560E2432555DBB83B48618A63566E0
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5+wYjsrrSY/u8Y3PrTqANeitKFiSd6Yd7yPpbiiZ/d5BsxIjK0jGQgCHUM3Ry2Lt2G3MDkMauH3h0dBdQGj+BB/iPzQYh7XS329fgu+/vnDhQDnxeTQymRYind6cQHiLPg==
-X-Mailru-Sender: 583F1D7ACE8F49BD48DC4DEF5972559E2B2CCB5D3FBD3778DD0ECC4DFEACCE8F1C238ED0579F4A1304DCC68E0365DB113919A3F0584408A7E277D648EEF17123F32B7A1AD1AAC36A3BEC1D9798BA4B85D186BC2F9B8D6AD3EAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
-X-Spam: undefined
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B4DF7173A40FF1347DA6106AACE9855D49AC59F2BC240176BE049FFFDB7839CE9EFBD1590308EC2BB2A3CE3E131277FC6ECD89962890259BEBE5C51A0269817717
-X-7FA49CB5: 0D63561A33F958A5FD61E137DE0202F7B6B12DFC72310FE8AFE25585DE82FD248941B15DA834481FA18204E546F3947C724336BCC0EE1BA8F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F79006370B730A9793D99025389733CBF5DBD5E9B5C8C57E37DE458BD96E472CDF7238E0725E5C173C3A84C355B626DF3F312CC635872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2AD77751E876CB595E8F7B195E1C97831F7A2AF59AE45E8C57D884B766E578A04
-X-C1DE0DAB: 0D63561A33F958A5FD61E137DE0202F7B6B12DFC72310FE808A87E9E263F8CBA8E8E86DC7131B365E7726E8460B7C23C
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5+wYjsrrSY/u8Y3PrTqANeitKFiSd6Yd7yPpbiiZ/d5BsxIjK0jGQgCHUM3Ry2Lt2G3MDkMauH3h0dBdQGj+BB/iPzQYh7XS329fgu+/vnDhQDnxeTQymRbJZryNFArqbw==
-X-Mailru-MI: 1000000000800
-X-Mras: Ok
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkuIFVucHJpdmlsZWdlZCB1c2VycyBhbHJlYWR5IGNhbiBkbyBjaHJvb3QuIEhlIHNob3VsZCBz
-aW1wbHkgY3JlYXRlIHVzZXJucyBhbmQgdGhlbiBjYWxsICJjaHJvb3QiIGluc2lkZS4gQXMgYW4g
-TFdOIGNvbW1lbnRlciBub3RlZCwgeW91IGNhbiBzaW1wbHkgcnVuIAoidW5zaGFyZSAtciAvdXNy
-L3NiaW4vY2hyb290IHNvbWUtZGlyIi4gKEkgcmVjb21tZW5kIHJlYWRpbmcgYWxsIGNvbW1lbnRz
-OiBodHRwczovL2x3bi5uZXQvQXJ0aWNsZXMvODQ5MTI1LyAuKQoKQWxzbzogaWYgeW91IG5lZWQg
-Y2hyb290IGZvciBwYXRoIHJlc29sdmluZyBvbmx5LCBjb25zaWRlciBvcGVuYXQyIHdpdGggUkVT
-T0xWRV9JTl9ST09UICggaHR0cHM6Ly9sd24ubmV0L0FydGljbGVzLzc5Njg2OC8gKS4KCgo9PQpB
-c2thciBTYWZpbgpodHRwczovL2dpdGh1Yi5jb20vc2FmaW5hc2thcgo=
+
+s/unitialized/uninitialized/
+s/notifcations/notifications/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ net/iucv/af_iucv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/iucv/af_iucv.c b/net/iucv/af_iucv.c
+index 6092d5cb7168..0fdb389c3390 100644
+--- a/net/iucv/af_iucv.c
++++ b/net/iucv/af_iucv.c
+@@ -621,7 +621,7 @@ static int iucv_sock_bind(struct socket *sock, struct sockaddr *addr,
+ 	for_each_netdev_rcu(&init_net, dev) {
+ 		if (!memcmp(dev->perm_addr, uid, 8)) {
+ 			memcpy(iucv->src_user_id, sa->siucv_user_id, 8);
+-			/* Check for unitialized siucv_name */
++			/* Check for uninitialized siucv_name */
+ 			if (strncmp(sa->siucv_name, "        ", 8) == 0)
+ 				__iucv_auto_name(iucv);
+ 			else
+@@ -2134,7 +2134,7 @@ static int afiucv_hs_rcv(struct sk_buff *skb, struct net_device *dev,
+ }
+
+ /**
+- * afiucv_hs_callback_txnotify() - handle send notifcations from HiperSockets
++ * afiucv_hs_callback_txnotify() - handle send notifications from HiperSockets
+  *                                 transport
+  **/
+ static void afiucv_hs_callback_txnotify(struct sock *sk, enum iucv_tx_notify n)
+--
+2.26.2
+
