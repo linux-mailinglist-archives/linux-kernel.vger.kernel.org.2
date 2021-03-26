@@ -2,164 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B957234AE5A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:14:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC9234AE5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbhCZSOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:14:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60202 "EHLO mail.kernel.org"
+        id S230311AbhCZSOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhCZSN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:13:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F096191A;
-        Fri, 26 Mar 2021 18:13:55 +0000 (UTC)
+        id S230026AbhCZSOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:14:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B97B61A32
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 18:14:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616782436;
-        bh=4xWEzinB4T56m3AW6X0p5tMskUl3gpqeuEz4IxAalT0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=QkrmLuc0C0NmKfc2LAnmXlsoHEvKNKPPBQM68KiyxKMbgV5/e/FSqYnxUUtruhN39
-         WW6Awf7qh5Dw4HFWWbW1yOWm5Jv3c6MlWXMx2hDucpY7RWz0n06MJN1K/drNP6qEUs
-         GCGAw6i1P8rL4W3mXwdzpZRzPManvWAjodCzN6i1LZuYPM2+L8yKsb0t5Cv5vDkVnZ
-         NQTOZ6YOklBrnkoOXXPx2zkJeoNff4FSSw2ESanOvcwsBmks8uD5/+ojtrRJFAwT8F
-         J+rqqgjHd7Ag+10DKLQL7dPh0RzTHu83J3V6gLnxwTxmxp+Xzga3JbGJR6NTOpWoxS
-         v2wvPI4IB1r5w==
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1616782474;
+        bh=VKbDlg8i3gjxkH3Bz+k8hWQFbbVPsGGXG3YFhuEbeBs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Y7HCVEnI2IKlsg+zehxZYEgNCWiGs+PUQA5RwNww5dhrlUhNwtEbaz0EBrD6+W2FB
+         H7PfO8eEhgNvr8se/3gAfBoN79EU1gZna0hDWRkSavXkF4z5HjwrJy5qquTJiDHbU8
+         byAv3lJidmUNqbAs4iBVB2QK2rbljiTX+iIoRiLyMlwrvnj42Xd/1776oTMUiQZ92v
+         dWTsDMp5q+GauJnQQEI0D28yCs0NCy+vZ3Fz0DNq9EBgoQMt1uVo8RMi6q6+4Zyy00
+         vDIrwhqzOErN7znpdIu+LXaVQjwyYhPagd/rHenm7w/BG+4KbJ+oFuxV26G6qxryVl
+         G1+5ksK9xP/gg==
+Received: by mail-ej1-f44.google.com with SMTP id jy13so9786453ejc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:14:34 -0700 (PDT)
+X-Gm-Message-State: AOAM530tpcZkGhF8WzpwMPm6ktO5Y43oUNw9kp6B7nX0SU6ptH24uoPu
+        i41mhFWAZpIJHQVt4k/VtHOgGPPRRDTOSZ/SR52Zwg==
+X-Google-Smtp-Source: ABdhPJyJCflIcyJ6CTRBLwKEJtOJbW7mfulADexCa805/UNEh4Uc6PRhW7bd/QOLyLNijSC/sP6ioRk6AfoBrPmvBqg=
+X-Received: by 2002:a17:907:3d01:: with SMTP id gm1mr16976998ejc.214.1616782472997;
+ Fri, 26 Mar 2021 11:14:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <9b206c4d00dfe8b7f941260f18909914b2b2eecb.camel@suse.de>
-References: <20210205222644.2357303-9-saravanak@google.com> <20210210114435.122242-1-tudor.ambarus@microchip.com> <20210210114435.122242-2-tudor.ambarus@microchip.com> <CGME20210325133159eucas1p297b769beb681743fb32d362a86cc6e3e@eucas1p2.samsung.com> <d24bebc5-0f78-021f-293f-e58defa32531@samsung.com> <9b206c4d00dfe8b7f941260f18909914b2b2eecb.camel@suse.de>
-Subject: Re: [PATCH] clk: Mark fwnodes when their clock provider is added
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-acpi@vger.kernel.org,
-        geert@linux-m68k.org, kernel-team@android.com,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>, corbet@lwn.net,
-        frowand.list@gmail.com, gregkh@linuxfoundation.org,
-        khilman@kernel.org, len.brown@intel.com, lenb@kernel.org,
-        maz@kernel.org, mturquette@baylibre.com, pavel@ucw.cz,
-        rafael@kernel.org, robh+dt@kernel.org, saravanak@google.com,
-        tglx@linutronix.de, ulf.hansson@linaro.org
-Date:   Fri, 26 Mar 2021 11:13:54 -0700
-Message-ID: <161678243444.3012082.5031467952132861429@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <CALCETrURmk4ZijJVUtJwouj=_0NPiUvUFr9XMvdniRRFqeU+fg@mail.gmail.com>
+ <87a6qqi064.fsf@mid.deneb.enyo.de>
+In-Reply-To: <87a6qqi064.fsf@mid.deneb.enyo.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 26 Mar 2021 11:14:22 -0700
+X-Gmail-Original-Message-ID: <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
+Message-ID: <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
+Subject: Re: Why does glibc use AVX-512?
+To:     Florian Weimer <fw@deneb.enyo.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "H. J. Lu" <hjl.tools@gmail.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "Carlos O'Donell" <carlos@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        libc-alpha <libc-alpha@sourceware.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Nicolas Saenz Julienne (2021-03-25 11:25:24)
-> On Thu, 2021-03-25 at 14:31 +0100, Marek Szyprowski wrote:
-> > Hi
-> >=20
-> > On 10.02.2021 12:44, Tudor Ambarus wrote:
-> > > This is a follow-up for:
-> > > commit 3c9ea42802a1 ("clk: Mark fwnodes when their clock provider is =
-added/removed")
-> > >=20
-> > > The above commit updated the deprecated of_clk_add_provider(),
-> > > but missed to update the preferred of_clk_add_hw_provider().
-> > > Update it now.
-> > >=20
-> > > Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-> >=20
-> > This patch, which landed in linux-next as commit 6579c8d97ad7 ("clk:=20
-> > Mark fwnodes when their clock provider is added") causes the following =
+On Fri, Mar 26, 2021 at 5:12 AM Florian Weimer <fw@deneb.enyo.de> wrote:
+>
+> * Andy Lutomirski-alpha:
+>
+> > glibc appears to use AVX512F for memcpy by default.  (Unless
+> > Prefer_ERMS is default-on, but I genuinely can't tell if this is the
+> > case.  I did some searching.)  The commit adding it refers to a 2016
+> > email saying that it's 30% on KNL.
+>
+> As far as I know, glibc only does that on KNL, and there it is
+> actually beneficial.  The relevant code is:
+>
+>       /* Since AVX512ER is unique to Xeon Phi, set Prefer_No_VZEROUPPER
+>          if AVX512ER is available.  Don't use AVX512 to avoid lower CPU
+>          frequency if AVX512ER isn't available.  */
+>       if (CPU_FEATURES_CPU_P (cpu_features, AVX512ER))
+>         cpu_features->preferred[index_arch_Prefer_No_VZEROUPPER]
+>           |= bit_arch_Prefer_No_VZEROUPPER;
+>       else
+>         cpu_features->preferred[index_arch_Prefer_No_AVX512]
+>           |= bit_arch_Prefer_No_AVX512;
+>
+> So it's not just about Prefer_ERMS.
 
-> > NULL pointer dereference on Raspberry Pi 3b+ boards:
-> >=20
-> > --->8---
-> >=20
-> > raspberrypi-firmware soc:firmware: Attached to firmware from=20
-> > 2020-01-06T13:05:25
-> > Unable to handle kernel NULL pointer dereference at virtual address=20
-> > 0000000000000050
-> > Mem abort info:
-> > =C2=A0=C2=A0 ESR =3D 0x96000004
-> > =C2=A0=C2=A0 EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> > =C2=A0=C2=A0 SET =3D 0, FnV =3D 0
-> > =C2=A0=C2=A0 EA =3D 0, S1PTW =3D 0
-> > Data abort info:
-> > =C2=A0=C2=A0 ISV =3D 0, ISS =3D 0x00000004
-> > =C2=A0=C2=A0 CM =3D 0, WnR =3D 0
-> > [0000000000000050] user address but active_mm is swapper
-> > Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> > Modules linked in:
-> > CPU: 0 PID: 10 Comm: kworker/0:1 Not tainted 5.12.0-rc4+ #2764
-> > Hardware name: Raspberry Pi 3 Model B (DT)
-> > Workqueue: events deferred_probe_work_func
-> > pstate: 00000005 (nzcv daif -PAN -UAO -TCO BTYPE=3D--)
-> > pc : of_clk_add_hw_provider+0xac/0xe8
-> > lr : of_clk_add_hw_provider+0x94/0xe8
-> > sp : ffff8000130936b0
-> > x29: ffff8000130936b0 x28: ffff800012494e04
-> > x27: ffff00003b18cb05 x26: ffff00003aa5c010
-> > x25: 0000000000000000 x24: 0000000000000000
-> > x23: ffff00003aa1e380 x22: ffff8000106830d0
-> > x21: ffff80001233f180 x20: 0000000000000018
-> > x19: 0000000000000000 x18: ffff8000124d38b0
-> > x17: 0000000000000013 x16: 0000000000000014
-> > x15: ffff8000125758b0 x14: 00000000000184e0
-> > x13: 000000000000292e x12: ffff80001258dd98
-> > x11: 0000000000000001 x10: 0101010101010101
-> > x9 : ffff80001233f288 x8 : 7f7f7f7f7f7f7f7f
-> > x7 : fefefefeff6c626f x6 : 5d636d8080808080
-> > x5 : 00000000006d635d x4 : 0000000000000000
-> > x3 : 0000000000000000 x2 : 540eb5edae191600
-> > x1 : 0000000000000000 x0 : 0000000000000000
-> > Call trace:
-> > =C2=A0=C2=A0of_clk_add_hw_provider+0xac/0xe8
-> > =C2=A0=C2=A0devm_of_clk_add_hw_provider+0x5c/0xb8
-> > =C2=A0=C2=A0raspberrypi_clk_probe+0x110/0x210
-> > =C2=A0=C2=A0platform_probe+0x90/0xd8
-> > =C2=A0=C2=A0really_probe+0x108/0x3c0
-> > =C2=A0=C2=A0driver_probe_device+0x60/0xc0
-> > =C2=A0=C2=A0__device_attach_driver+0x9c/0xd0
-> > =C2=A0=C2=A0bus_for_each_drv+0x70/0xc8
-> > =C2=A0=C2=A0__device_attach+0xec/0x150
-> > =C2=A0=C2=A0device_initial_probe+0x10/0x18
-> > =C2=A0=C2=A0bus_probe_device+0x94/0xa0
-> > =C2=A0=C2=A0device_add+0x47c/0x780
-> > =C2=A0=C2=A0platform_device_add+0x110/0x248
-> > =C2=A0=C2=A0platform_device_register_full+0x120/0x150
-> > =C2=A0=C2=A0rpi_firmware_probe+0x158/0x1f8
-> > =C2=A0=C2=A0platform_probe+0x90/0xd8
-> > =C2=A0=C2=A0really_probe+0x108/0x3c0
-> > =C2=A0=C2=A0driver_probe_device+0x60/0xc0
-> > =C2=A0=C2=A0__device_attach_driver+0x9c/0xd0
-> > =C2=A0=C2=A0bus_for_each_drv+0x70/0xc8
-> > =C2=A0=C2=A0__device_attach+0xec/0x150
-> > =C2=A0=C2=A0device_initial_probe+0x10/0x18
-> > =C2=A0=C2=A0bus_probe_device+0x94/0xa0
-> > =C2=A0=C2=A0deferred_probe_work_func+0x70/0xa8
-> > =C2=A0=C2=A0process_one_work+0x2a8/0x718
-> > =C2=A0=C2=A0worker_thread+0x48/0x460
-> > =C2=A0=C2=A0kthread+0x134/0x160
-> > =C2=A0=C2=A0ret_from_fork+0x10/0x18
-> > Code: b1006294 540000c0 b140069f 54000088 (3940e280)
-> > ---[ end trace 7ead5ec2f0c51cfe ]---
-> >=20
-> > This patch mainly revealed that clk/bcm/clk-raspberrypi.c driver calls =
+Phew.
 
-> > devm_of_clk_add_hw_provider(), with a device pointer, which has a NULL =
+>
+> > AVX-512 cleared, and programs need to explicitly request enablement.
+> > This would allow programs to opt into not saving/restoring across
+> > signals or to save/restore in buffers supplied when the feature is
+> > enabled.
+>
+> Isn't XSAVEOPT already able to handle that?
+>
 
-> > dev->of_node. I'm not sure if adding a check for a NULL np in=20
-> > of_clk_add_hw_provider() is a right fix, though.
->=20
-> I believe the right fix is not to call 'devm_of_clk_add_hw_provider()' if
-> 'pdev->dev.of_node =3D=3D NULL'. In such case, which is RPi3's, only the =
-CPU clock
-> is used, and it's defined and queried later through
-> devm_clk_hw_register_clkdev().
->=20
-> @Marek, I don't mind taking care of it if it's OK with you.
->=20
+Yes, but we need a place to put the data, and we need to acknowledge
+that, with the current save-everything-on-signal model, the amount of
+time and memory used is essentially unbounded.  This isn't great.
 
-Ah I see this is related to the patch I just reviewed. Can you reference
-this in the commit text? And instead of putting the change into the clk
-provider let's check for NULL 'np' in of_clk_add_hw_provider() instead
-and return 0 if there's nothing to do. That way we don't visit this
-problem over and over again.
+>
+> There is a discussion about using the higher (AVX-512-only) %ymm
+> registers, to avoid the %xmm transition penalty without the need for
+> VZEROUPPER.  (VZEROUPPER is incompatible with RTM from a performance
+> point of view.)  That would perhaps negatively impact XSAVEOPT.
+>
+> Assuming you can make XSAVEOPT work for you on the kernel side, my
+> instincts tell me that we should have markup for RTM, not for AVX-512.
+> This way, we could avoid use of the AVX-512 registers and keep using
+> VZEROUPPER, without run-time transaction checks, and deal with other
+> idiosyncrasies needed for transaction support that users might
+> encounter once this feature sees more use.  But the VZEROUPPER vs RTM
+> issues is currently stuck in some internal process issue on my end (or
+> two, come to think of it), which I hope to untangle next month.
+
+Can you elaborate on the issue?
