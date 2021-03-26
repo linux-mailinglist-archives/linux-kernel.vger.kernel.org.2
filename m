@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10B4349E8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 054CB349EA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhCZBSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:18:44 -0400
-Received: from mail-io1-f42.google.com ([209.85.166.42]:42655 "EHLO
-        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbhCZBS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:18:27 -0400
-Received: by mail-io1-f42.google.com with SMTP id r193so3818551ior.9;
-        Thu, 25 Mar 2021 18:18:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uLEv/UUTMOz0YMtABzYyD5q0F3bD9ue+f7LZRR5uqaQ=;
-        b=OY9edyg0TvmQkHuh/2HMI++wxFmANudCYtIaV3ED27tyPLLTpGFwsAbcRvILk7+SxE
-         0x2nLwKtXJDDJDJ+1UhbXccbJmq3KKjsLDG2Z3vciUiBECU/APFzNTSJXkOLCLmb5eJA
-         GrL7eQB3rSLGLrrdfIdBq6K1TTZtks3OadlE1mL6OE5vEEgWA5BgBbzR3kNJlT6mkbNY
-         UvdE+/vLhveomoFbgcepiBGAXGK411OBRkcQ2gbMzPfNfIR5VJdDv7qWcqykAPvDQd37
-         98swN9M73lpo0M31Z3YoV33H/xhm50Z2XYpZl0xm+yVf2/IfSFQjW3ZlR1l4Y/CxTDCn
-         8hog==
-X-Gm-Message-State: AOAM533+yltcGUj15WWxKbmfJfEg3D4p1uC4LFYkiZgv5zTDj1YZNNXW
-        rSsaQWKob6Zpo9/6rRc+aQ==
-X-Google-Smtp-Source: ABdhPJzqjnBsjg5OOMfmunx455Sgg50aTb8Nxfxl10GMGD+dZ9XGG9xe6kn6gqUrOhukuU0sLugHyQ==
-X-Received: by 2002:a05:6638:224e:: with SMTP id m14mr10171656jas.8.1616721506708;
-        Thu, 25 Mar 2021 18:18:26 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id e2sm3452684iov.26.2021.03.25.18.18.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 18:18:26 -0700 (PDT)
-Received: (nullmailer pid 2110362 invoked by uid 1000);
-        Fri, 26 Mar 2021 01:18:23 -0000
-Date:   Thu, 25 Mar 2021 19:18:23 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: ti: dpll: add spread spectrum support
-Message-ID: <20210326011823.GA2102368@robh.at.kernel.org>
-References: <20210318172627.12173-1-dariobin@libero.it>
- <20210318172627.12173-3-dariobin@libero.it>
+        id S230170AbhCZB1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:27:16 -0400
+Received: from mga12.intel.com ([192.55.52.136]:51734 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230237AbhCZB1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 21:27:09 -0400
+IronPort-SDR: fP3JCmSNiphD/t782ONQORG+bi0Ae+J1tWHrf09F+mNkltug58qm1fwEELbmOUWydmr3XgmQFA
+ KDewcFW+zBaw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="170421809"
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="170421809"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 18:27:09 -0700
+IronPort-SDR: Jb70ug3TjJNnxK4Jw0QSrsr/dzP+zU9hJqi7StTpDe1YQNIQQ2xEgqeW+S2z1NvZNx4qnb7VvE
+ MWwkedoX5/vg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
+   d="scan'208";a="443088954"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by fmsmga002.fm.intel.com with ESMTP; 25 Mar 2021 18:27:06 -0700
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     pbonzini@redhat.com, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu@linux.intel.com>
+Subject: [PATCH v5 0/5] perf/x86: Some minor changes to support guest Arch LBR
+Date:   Fri, 26 Mar 2021 09:19:13 +0800
+Message-Id: <20210326011918.183685-1-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318172627.12173-3-dariobin@libero.it>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 06:26:24PM +0100, Dario Binacchi wrote:
-> DT bindings for enabling and adjusting spread spectrum clocking have
-> been added.
-> 
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> ---
-> 
-> (no changes since v1)
-> 
->  .../devicetree/bindings/clock/ti/dpll.txt     | 20 +++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/ti/dpll.txt b/Documentation/devicetree/bindings/clock/ti/dpll.txt
-> index df57009ff8e7..0810ae073294 100644
-> --- a/Documentation/devicetree/bindings/clock/ti/dpll.txt
-> +++ b/Documentation/devicetree/bindings/clock/ti/dpll.txt
-> @@ -42,6 +42,11 @@ Required properties:
->  	"idlest" - contains the idle status register base address
->  	"mult-div1" - contains the multiplier / divider register base address
->  	"autoidle" - contains the autoidle register base address (optional)
-> +	"ssc-deltam" - DPLL supports spread spectrum clocking (SSC), contains
-> +		       the frequency spreading register base address (optional)
-> +	"ssc-modfreq" - DPLL supports spread spectrum clocking (SSC), contains
-> +		        the modulation frequency register base address
-> +			(optional)
->    ti,am3-* dpll types do not have autoidle register
->    ti,omap2-* dpll type does not support idlest / autoidle registers
->  
-> @@ -51,6 +56,14 @@ Optional properties:
->  	- ti,low-power-stop : DPLL supports low power stop mode, gating output
->  	- ti,low-power-bypass : DPLL output matches rate of parent bypass clock
->  	- ti,lock : DPLL locks in programmed rate
-> +	- ti,min-div : the minimum divisor to start from to round the DPLL
-> +		       target rate
-> +	- ti,ssc-deltam : DPLL supports spread spectrum clocking, frequency
-> +			  spreading in permille (10th of a percent)
-> +	- ti,ssc-modfreq : DPLL supports spread spectrum clocking, spread
-> +			   spectrum modulation frequency in kHz
+Hi Peter,
 
-Use a standard unit suffix (-hz or -mhz).
+Please help review these minor perf/x86 changes in this patch set,
+and we need some of them to support Guest Architectural LBR in KVM.
 
-> +	- ti,ssc-downspread : DPLL supports spread spectrum clocking, boolean
-> +			      to enable the downspread feature
->  
->  Examples:
->  	dpll_core_ck: dpll_core_ck@44e00490 {
-> @@ -83,3 +96,10 @@ Examples:
->  		clocks = <&sys_ck>, <&sys_ck>;
->  		reg = <0x0500>, <0x0540>;
->  	};
-> +
-> +	dpll_disp_ck: dpll_disp_ck {
-> +		#clock-cells = <0>;
-> +		compatible = "ti,am3-dpll-no-gate-clock";
-> +		clocks = <&sys_clkin_ck>, <&sys_clkin_ck>;
-> +		reg = <0x0498>, <0x0448>, <0x0454>, <0x044c>, <0x0450>;
-> +	};
-> -- 
-> 2.17.1
-> 
+This version keeps reserve_lbr_buffers() as is because the LBR xsave
+buffer is a per-CPU buffer, not a per-event buffer. We only need to
+allocate the buffer once when initializing the first event. 
+
+If you are interested in the KVM emulation, please check
+https://lore.kernel.org/kvm/20210314155225.206661-1-like.xu@linux.intel.com/
+
+Please check more details in each commit and feel free to comment.
+
+Previous:
+https://lore.kernel.org/lkml/20210322060635.821531-1-like.xu@linux.intel.com/
+
+v4->v5 Changelog:
+- Add "Tested-by: Kan Liang"
+- Make the commit message simpler
+- Make check_msr() to ignore msr==0 
+- Use kmem_cache_alloc_node() [Namhyung]
+
+Like Xu (5):
+  perf/x86/intel: Fix the comment about guest LBR support on KVM
+  perf/x86/lbr: Simplify the exposure check for the LBR_INFO registers
+  perf/x86: Skip checking MSR for MSR 0x000
+  perf/x86/lbr: Move cpuc->lbr_xsave allocation out of sleeping region
+  perf/x86: Move ARCH_LBR_CTL_MASK definition to include/asm/msr-index.h
+
+ arch/x86/events/core.c           |  8 +++++---
+ arch/x86/events/intel/bts.c      |  2 +-
+ arch/x86/events/intel/core.c     |  7 +++----
+ arch/x86/events/intel/lbr.c      | 29 ++++++++++++++++++-----------
+ arch/x86/events/perf_event.h     |  8 +++++++-
+ arch/x86/include/asm/msr-index.h |  1 +
+ 6 files changed, 35 insertions(+), 20 deletions(-)
+
+-- 
+2.29.2
+
