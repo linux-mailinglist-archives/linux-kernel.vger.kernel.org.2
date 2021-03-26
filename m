@@ -2,129 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BEC349F30
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29148349F35
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhCZByu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhCZBy2 (ORCPT
+        id S230272AbhCZBzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:55:54 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:51761 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230324AbhCZBz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:54:28 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79D9C06174A;
-        Thu, 25 Mar 2021 18:54:27 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id e8so3897131iok.5;
-        Thu, 25 Mar 2021 18:54:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vTUCdRdUm0KHkgtUEtfz6t9BK78GKOREEwvml9BKNmw=;
-        b=DLLlfab6j71ACe4egQhHoCKHNSUXFaq2XV3tZr6pnstZXPGnFjwfjBLmQpptWWFUs9
-         S3QFn1EaVLUOvQ2cEwoc0PBa3sjxIEdOpXayMUgCzwSsWIo3i9L6wLn+ZQrZ4eejxhLq
-         hgdEtQ0sN26fB1+dGcbypJ0JdI2qv6+tjhHXJoJAf2+LacRDqmc2PcDH0egOQ6B+UvhB
-         4513U7d4hoaWskrKTSuqyst6rTDKbezD7MMDGvDh1ezncek5xgvqZLnstkolo5DdedHx
-         8Vft4sIGPE5b8ue/4JplTr8vCLCEJ9uAvodo6LdijBTFlEnSd8PK1aZoHmc9cN85QTJp
-         95QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vTUCdRdUm0KHkgtUEtfz6t9BK78GKOREEwvml9BKNmw=;
-        b=bodCslytTKw2Kr62/s/4fyjxEieT3zSvJvPLVM5uQsPGNhDhcjC9PnzA/3LLwXBxPg
-         jyzSk1JTH+uXyiKD2wxQKmn9kDeBc8OGr/e9Uqq2GYWr8BILGXrnE5zAIKv+I+tzHo7E
-         xkWz5Y7z2XdCtfqXPDqjyIqIhQRHChc5QCmbSYUnSLoiPA85i2JsJCuBNGLwP40Jj9y7
-         OElEO4nFjHqkQd+qkV8kBRFCnZuJlsXHhXRYRo7mppO/NoMoabB9nIiqL+QK9587FNbo
-         uYZZpiBMqm5yDWLLqvIrxayEFQwUW4z+G20rEaGHS6iBiZHIhEndZW7TdiNMJNG0UkJS
-         /Vdg==
-X-Gm-Message-State: AOAM53209vzO0SZoVSGAhcFEVhvsW5cQk8o4SABEg6SCSI+SBtJYlYrs
-        /cbgoS5v9c5Wv9wXpB3RRbvRKNQv40zR2gjkmIM=
-X-Google-Smtp-Source: ABdhPJzoHDPPf+f9jNe8NmkUB1RfzN9mrASTzSrBEBN47liOngOdxnFKWcUbuNkSnWm5DIcL9Mgv63QSpQL7pPdMqlY=
-X-Received: by 2002:a05:6638:dc3:: with SMTP id m3mr9892355jaj.130.1616723667467;
- Thu, 25 Mar 2021 18:54:27 -0700 (PDT)
+        Thu, 25 Mar 2021 21:55:26 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id D48F85C0101;
+        Thu, 25 Mar 2021 21:55:25 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 25 Mar 2021 21:55:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=tSssrKGE1xrYAd12+7AP9DGEGy
+        sEBms2IXWgsJtNFns=; b=PJQ/8oyrA8DwbXJTDcCzps2077AAFyv7TnpT0b3GYg
+        ZiTujGuMu4WvOPcU/OwuR3fXWlu017CCOhq0XI2Hj2vW1d2MK6SBKocxYiHTBzRQ
+        HmONguOc77HEpYh8hZIASj9j+QDXwwqT3DBlfzCiqWuWh1is5SQu1gAV/vN+y6ah
+        tEJS2LWr9UvPhZfnF1DGTNapW9k8Rfl36nZV1VBobCjmyTjKA2nuLKxE0exPCs8X
+        J9+SlrMROOs05FKflUrmCJO4z/bYcu8Bg0e+8JPmjic5jLiAaSh+OjEouecC98tn
+        pEqj8cPG3xE2X4QM0aKu3kgS2lT9QJyGG96XRik8V84w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=tSssrKGE1xrYAd12+
+        7AP9DGEGysEBms2IXWgsJtNFns=; b=n8OG2jAUwFYn+wkDkTiM9VDjGJnNRItQk
+        LjLAoFwhuB/NyabIk3QbejvsOfDVGDD8KPuygcHLq44kmIzBb0q6eWmjtonwRouJ
+        idBV+EGGyQzFQN8Esbtd4BrVqo4Rm23JF9TJwvNJJDD6LikXYmDQSMLlxWVPkbI5
+        Ug1Z69GSals3uHjBT4qaLLXcevTjsa0G83L1ErC7RZ/qBdtvcHZIx38n5EBuEs8Y
+        aasmvC935KygR6NwVHa9iAdfSGv9eMdEiy5gmLLC+IjVyHyHQux9bqFbAJ+fkVmM
+        I5ttAqV8KAf4fCYoKyUkH8AfxxGgZPr915FEzTzLFV/AS31TE9k/A==
+X-ME-Sender: <xms:DT9dYO8MtG-SirlDgws7GPE9gNxqgnHaKu5vQmC-qiQRNw1PzH909Q>
+    <xme:DT9dYOtXkskg4bkQ8R2l0HW3BQsPaWNf65SQ4bQBFkcrfToWs7se0eNfRbaAdaPJM
+    PBbAOZIFNTv1r3MSzQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehuddggedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeevieeuudfhveehte
+    elvdfguefhjefgffeijeehtddtffduhfehgeejfeejffelheenucffohhmrghinhepuggv
+    vhhitggvthhrvggvrdhorhhgnecukfhppeduleefrddvjedrudefrddvfeehnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgv
+X-ME-Proxy: <xmx:DT9dYEDpUBxOGrwTY0eNObVC3qc0wO1f751Pjz8pJEPAqftgcg1paw>
+    <xmx:DT9dYGc85ov5yhCaDHBszWb9_AochNVpxHYm8V9NybwquABsGYAj7w>
+    <xmx:DT9dYDMGhKheb_AkzPTZrs2jSIbiWfxswcGUvlsWL3Yb1KaPV1xyXw>
+    <xmx:DT9dYPCLiuy9onn91p6rzPgJOP1et4IEMHu738ETTQTb-0JSnHeRNQ>
+Received: from ThinkpadX1Yoga3.localdomain (unknown [193.27.13.235])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DF5801080054;
+        Thu, 25 Mar 2021 21:55:23 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v4 1/5] dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
+Date:   Thu, 25 Mar 2021 21:55:07 -0400
+Message-Id: <20210326015511.218-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <1616653162-19954-1-git-send-email-dillon.minfei@gmail.com>
- <1616653162-19954-8-git-send-email-dillon.minfei@gmail.com> <068cb7ae-9afc-606d-2579-189e46516cd5@foss.st.com>
-In-Reply-To: <068cb7ae-9afc-606d-2579-189e46516cd5@foss.st.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Fri, 26 Mar 2021 09:53:51 +0800
-Message-ID: <CAL9mu0JO=HyBmH2UR4HoYUWmdSDLhetVDrBSXoMoc6Edy1JCJw@mail.gmail.com>
-Subject: Re: [PATCH v5 9/9] dt-bindings: serial: stm32: Use 'type: object'
- instead of false for 'additionalProperties'
-To:     Valentin CARON - foss <valentin.caron@foss.st.com>
-Cc:     "robh@kernel.org" <robh@kernel.org>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        "rong.a.chen@intel.com" <rong.a.chen@intel.com>,
-        "a.fatoum@pengutronix.de" <a.fatoum@pengutronix.de>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "vladimir.murzin@arm.com" <vladimir.murzin@arm.com>,
-        "afzal.mohd.ma@gmail.com" <afzal.mohd.ma@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Erwan LE-RAY - foss <erwan.leray@foss.st.com>,
-        Erwan LE RAY <erwan.leray@st.com>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "lkp@intel.com" <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valentin
+Initial support for the Silergy SY7636A Power Management chip
+and regulator.
 
-On Thu, Mar 25, 2021 at 7:12 PM Valentin CARON - foss
-<valentin.caron@foss.st.com> wrote:
->
-> Hi Dillon,
->
-> It's okay for me.
->
-> Regards,
->
-> Valentin
-Thanks for your test, and quick reply.
->
-> On 3/25/21 7:19 AM, dillon.minfei@gmail.com wrote:
-> > From: dillon min <dillon.minfei@gmail.com>
-> >
-> > To use additional properties 'bluetooth' on serial, need replace false with
-> > 'type: object' for 'additionalProperties' to make it as a node, else will
-> > run into dtbs_check warnings.
-> >
-> > 'arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
-> > 'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
-> >
-> > Fixes: af1c2d81695b ("dt-bindings: serial: Convert STM32 UART to json-schema")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Tested-by: Valentin Caron <valentin.caron@foss.st.com>
-> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> > ---
-> >
-> > v5: accroding to rob's suggestion, replace false with 'type: object'
-> >      of 'additionalProperties'.
-> >
-> >   Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 3 ++-
-> >   1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > index 8631678283f9..865be05083c3 100644
-> > --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> > @@ -80,7 +80,8 @@ required:
-> >     - interrupts
-> >     - clocks
-> >
-> > -additionalProperties: false
-> > +additionalProperties:
-> > +  type: object
-> >
-> >   examples:
-> >     - |
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
+---
+v3:
+ - No change
+v2:
+ - N/A
+
+ .../bindings/mfd/silergy,sy7636a.yaml         | 63 +++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+
+diff --git a/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+new file mode 100644
+index 000000000000..f260a8eae226
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/silergy,sy7636a.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: silergy sy7636a PMIC
++
++maintainers:
++  - Alistair Francis <alistair@alistair23.me>
++
++properties:
++  compatible:
++    const: silergy,sy7636a
++
++  reg:
++    maxItems: 1
++
++  '#thermal-sensor-cells':
++    const: 0
++
++  regulators:
++    type: object
++    $ref: /schemas/regulator/regulator.yaml#
++
++    properties:
++      compatible:
++        const: silergy,sy7636a-regulator
++
++      regulator-name:
++        pattern: "vcom"
++
++required:
++  - compatible
++  - reg
++  - '#thermal-sensor-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      sy7636a@62 {
++        compatible = "silergy,sy7636a";
++        reg = <0x62>;
++        status = "okay";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_epdpmic>;
++        #thermal-sensor-cells = <0>;
++
++        regulators {
++          compatible = "silergy,sy7636a-regulator";
++          reg_epdpmic: vcom {
++            regulator-name = "vcom";
++            regulator-boot-on;
++          };
++        };
++      };
++    };
++...
+-- 
+2.31.0
+
