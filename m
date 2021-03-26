@@ -2,91 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B877D34B270
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746EE34B276
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhCZXDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
+        id S230180AbhCZXGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhCZXDe (ORCPT
+        with ESMTP id S229986AbhCZXFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:03:34 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC506C0613AA;
-        Fri, 26 Mar 2021 16:03:33 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F6cw24Bzcz9sRR;
-        Sat, 27 Mar 2021 10:03:29 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616799811;
-        bh=oGsI+iyCmO62DOlPCWBz+yEM9Er6qmZ9DIaLppcrLcw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XdjBqPp0L+qKw3aCoGtVMP/6dJV14B6LPT8v+gxBXpOUKBrPAK74PbhXMPreqktSE
-         vh7gTlnUHE/U+BD1WSaVMPr4tO4RERQJYORu48Z6yBK/skPIL14v6oqbYk29aMKwMd
-         nKIlHurqd6I2XRNFYIy8QXnS4OlIRfHEVDLP0I0tueDdnYVjocqkiPwwozIQImmIsj
-         qWCVB+l4eF0ISkPTu+/LlDWxkZfoZw3IJuQcf1rLrKzOB5apwn9BcR0+k1YDFkTVNN
-         e2zHZ8QCToGkGUfTwmhQqmLtEPAZybf8P3/8ojwoW1qW57vbXHNe6GCd7c6cat6yip
-         TZaCywQlszKjA==
-Date:   Sat, 27 Mar 2021 10:03:28 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the net-next tree
-Message-ID: <20210327100328.1f486e9e@canb.auug.org.au>
+        Fri, 26 Mar 2021 19:05:35 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951CCC0613AA;
+        Fri, 26 Mar 2021 16:05:35 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id x189so7435138ybg.5;
+        Fri, 26 Mar 2021 16:05:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OjxxnlWbQ73WMt4RzF0hQ7IUkIuTu6QiZzPUNKIpmKM=;
+        b=aZYp52Hn7x5IhQYlRWTBlte5pL56LuZ1Q44SLuNVegc+TMBnQoh26fryyE+2k9EiXI
+         zPrFZe0Syfs5EmfCf89d31uwYMhv9EQUCibyQsIM/5goiPljSPhv95J42S7QparT9Fo+
+         GyC0+jra/9G3DlQEr4rhY5D02IGXWVgkjnNGlTpEsNoYzcQjw8tBP/IZDxjxjhzjNngI
+         DVCwLhXs6/g8fqACeAJS/bvsoiK3M8IsffbSQd2rtUYZPi3zCFoyW0Td/i+c42MeVB+Y
+         RZAhHaqHbKPOaDZr3r/f4wgkkYj4GLAeOvMz6x9StkShzeU0an6nn2MJoxvauguLZZu3
+         aRFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OjxxnlWbQ73WMt4RzF0hQ7IUkIuTu6QiZzPUNKIpmKM=;
+        b=qDswt6GSAMIp2CYlAel90BAeDHnerbQw5uA+56YFXzRywd/+WmgUxm8Ds2yvkN7vpR
+         qKUcjyz0ATV9S0/C3FW+M4hzF4fLjfics0+EOuKygow3PGJS0x7BGq5rh7UpGrxE/k12
+         MGI9m4UCyR6xn+kTueFR1qjC56EFg1pu6idx+LBUT5CszWgYb1LB4jlXpCmrIb97rBf5
+         NNJh2oacc5cHpq7dQv3RwsL+7Q4F8XxZ9B8iWoegwzwi6R2t25s/+tKlg/7y1dKz8fRs
+         99PMWSeoYNURqXQXAw1dKKj5hlaSh0YB4GtQOcDi9BD7cbjaJB+zLpCUbfWE2Ai3HvYs
+         RKbw==
+X-Gm-Message-State: AOAM533k2nAvAsIrCCOtLHm73qLB+8JWNc8G/wEaKucpYbQTy9xYRa0j
+        mJBnNpJwDYWYymqIpuPxkQ1/3xP7Qktean/53No=
+X-Google-Smtp-Source: ABdhPJx3bYT/be/5+/6ifGqCYDCs21gumyMHgC6U6HghH4PzD4QHdHQkPPNOhVLc0Ycm+j8o8RpOdRha0GUkxlhsSjw=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr22100008ybo.230.1616799934946;
+ Fri, 26 Mar 2021 16:05:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fz1W8CjW9ZKjdjEM9sQ+mFU";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-7-revest@chromium.org>
+In-Reply-To: <20210324022211.1718762-7-revest@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 26 Mar 2021 16:05:24 -0700
+Message-ID: <CAEf4Bzb1z2KOHsMTrSP2t3S0iT3UrYMAWsO1_OqD_EYMECsZ-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fz1W8CjW9ZKjdjEM9sQ+mFU
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
+>
+> This exercises most of the format specifiers when things go well.
+>
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
 
-Hi all,
+Looks good. Please add a no-argument test case as well.
 
-In commit
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-  63c173ff7aa3 ("net: stmmac: Fix kernel panic due to NULL pointer derefere=
-nce of fpe_cfg")
+>  .../selftests/bpf/prog_tests/snprintf.c       | 65 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_snprintf.c       | 59 +++++++++++++++++
+>  2 files changed, 124 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+>
 
-Fixes tag
+[...]
 
-  Fixes: 5a5586112b92 ("net: stmmac: support FPE link partner hand-shaking
+> +
+> +SEC("raw_tp/sys_enter")
+> +int handler(const void *ctx)
+> +{
+> +       /* Convenient values to pretty-print */
+> +       const __u8 ex_ipv4[] = {127, 0, 0, 1};
+> +       const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+> +       const char str1[] = "str1";
+> +       const char longstr[] = "longstr";
+> +       extern const void schedule __ksym;
 
-has these problem(s):
+oh, fancy. I'd move it out of this function into global space, though,
+to make it more apparent. I almost missed that it's a special one.
 
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more than one line.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/fz1W8CjW9ZKjdjEM9sQ+mFU
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBeaEAACgkQAVBC80lX
-0GxhHwgApM2BCTp73PRTSGiKAvGgnGAnOW0697Fm6c09hS8NXSZ5Oww2r73uzciJ
-E62aMrQ5B5RRAkr6bA4M0/Vmr6qUDQtIJhSCz7KGrl1VQTJ6mcu05I03rekabZXK
-LIVtHC/luSVboOaBbO70/vCMWgNBuf8qraDW/HfKZSEmauh66zt737GPO/XQ6+w1
-ylBQDoDEbyn0WTRWHobVS5TjEcu8J4ODw2xmsn0GdQWi1b+q1aksdFHxW1AbU+nH
-I1FnlOAvT4yEC/bQzjQxuDR0ga+XTlHRjTptiXmEETXKBOXxPDK4ayIlkjN3qViv
-gbje6eTd9rtbRMWA62CfefHlGiZwTw==
-=7+rM
------END PGP SIGNATURE-----
-
---Sig_/fz1W8CjW9ZKjdjEM9sQ+mFU--
+> +
+> +       /* Integer types */
+> +       num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
+> +                               "%d %u %x %li %llu %lX",
+> +                               -8, 9, 150, -424242, 1337, 0xDABBAD00);
+> +       /* IP addresses */
+> +       ip_ret   = BPF_SNPRINTF(ip_out, sizeof(ip_out), "%pi4 %pI6",
+> +                               &ex_ipv4, &ex_ipv6);
+> +       /* Symbol lookup formatting */
+> +       sym_ret  = BPF_SNPRINTF(sym_out,  sizeof(sym_out), "%ps %pS %pB",
+> +                               &schedule, &schedule, &schedule);
+> +       /* Kernel pointers */
+> +       addr_ret = BPF_SNPRINTF(addr_out, sizeof(addr_out), "%pK %px %p",
+> +                               0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55);
+> +       /* Strings embedding */
+> +       str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s %+05s",
+> +                               str1, longstr);
+> +       /* Overflow */
+> +       over_ret = BPF_SNPRINTF(over_out, sizeof(over_out), "%%overflow");
+> +
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.31.0.291.g576ba9dcdaf-goog
+>
