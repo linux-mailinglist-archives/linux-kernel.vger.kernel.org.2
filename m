@@ -2,153 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E237634A4AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:39:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3415D34A4B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:41:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbhCZJjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45238 "EHLO
+        id S229951AbhCZJlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbhCZJit (ORCPT
+        with ESMTP id S229866AbhCZJk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:38:49 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218D9C0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:38:49 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id i144so5267997ybg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:38:49 -0700 (PDT)
+        Fri, 26 Mar 2021 05:40:28 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 766F2C0613AA;
+        Fri, 26 Mar 2021 02:40:14 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id m13so5084135oiw.13;
+        Fri, 26 Mar 2021 02:40:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=benyossef-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=PpOJ1wOLMIvyWjoFEm2gN2wKrQqTCqPen/GVvlMH/A4=;
-        b=lcn0qzmbY6xZLOZP1F5KaNogmEW6du15pcDXTKZJue3mlVdfib1f+j4d+F9IhTdGCn
-         ZkO0m2sWfW0FbAKnTV7arESl1Z7PGlfqRjUqfmxLoRDP7koyYhjDbdZ0Uqaq8f35WObS
-         EMBni5WQ7GQtnZ2d2ZK5poAOnLbPK29pgZHD4EIYDyyZVi7Yifg8syQ/u7W8WYAbtrA0
-         x4/5/FBpO6JUWdzFeTH216ISxzpjiJcAaeIXZs/Kfe9uFCwLjnWWfLyt6sS1opULCKiY
-         oB4RYg1eZ0yxK+9wWlrjB3gxMZ+LIQiNHZWlsmzCGO5b/IpSQ3nGXvDZ5Wkr7ki0lVBw
-         ly2A==
+        bh=IfjukbAFWE1p+V33R5APqijfZfzXo6Lv0BemEcQj2cM=;
+        b=cWVDouGokuJ/Zr+T9ljGEEvKkNiIGZQSlhxG5QXXbQFytg2GgjaZXxKJDKmulPug6x
+         6OzhseclyQc20g9S08LXbPKFg9Y84/WypYuW3QQ7keWhcqIMa6XbaqmqtbvWL1eyHxSk
+         MQH4oDdb11FFrq/YcVHVgAM9aCsFCIVc2cpbZS0YvLBsZMuwpg8R2/2juHatsRKbVLGj
+         gKa2X6oMJ2yMq+nO5uApHUNRbnMdj25bGC+JjjH1LYr1ukVdb5mAltgnaDiBphGssuKi
+         fBLLh/eRh7HluGEpq4QH3oQxOh6F2cCIAEZ4Wj3DKNqz+E02c9yDQOPnmU9YgM6lFq2R
+         d5wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PpOJ1wOLMIvyWjoFEm2gN2wKrQqTCqPen/GVvlMH/A4=;
-        b=Xr4AJQTFHfZqnIkqV7l24DZsi3UtkjK4X3B92tjU6J5MtUIce7oJmZxxIjLuj5CcMG
-         YboaCvupZO5Qi7qGI4kMNbi19T+cnPEVp9H8NwwjHHo1F/hUCIWOu+gKyCyBoiCjvO9P
-         bb2+t2I4Uy2/mWQHqSiUACm6isOdmHCB4HYIWPrzlzKaom94xp5Uq0sOCHHebi/rfoIy
-         nXP3pcvHuOhPXr/tHDgsCiW7obN+2xt5XR/CpcH1++KSaeoQfNfTv1P3dtaQmnCbcfTi
-         THRylJhYYrscnRf9FQIG293dgkCuoC3nkrCbYG9bvUgfUoOpDQmedHEbOE0Z3eQ0uLdB
-         er3A==
-X-Gm-Message-State: AOAM531FCrekwICM1fgawg2cYUNr4pAOTIIVPjyZLSAiTU5+b5aeIC+J
-        DxbYWjks0q3D3HRmBV4ULXr1m7+KmxGMbCXFFT931KUSbBE=
-X-Google-Smtp-Source: ABdhPJwHVGRxsbNUDDOeUsdR4tqmqMB/cwoV91gMJB5TVxe2rgRuQpTPhJL3FCF9GeufsbOzkzsT3kMsrpmVq4LeikU=
-X-Received: by 2002:a25:4d84:: with SMTP id a126mr18940697ybb.193.1616751516685;
- Fri, 26 Mar 2021 02:38:36 -0700 (PDT)
+        bh=IfjukbAFWE1p+V33R5APqijfZfzXo6Lv0BemEcQj2cM=;
+        b=mS8YaEaByKnn5v39/ywCNuj1FivoPbSWDVM/XVary1zcFxhNOoL8MkxADvrzuCHtzM
+         hupqnFNoZTZlGbrwyIVEH4W5GdN7B79o22GAg1DOC6q79TtXmCjmJ8BhG/A4Ssv31AF9
+         4aOEWdXZUIAXv/i7sJ6YNGN1gNyihUxSY5WbL9qCux30f1HQHn5mUUEw02/gMBqniolG
+         PdOpVRsHQfHU2we/nJ0ni3/uoGQ3sC8axeHG3zArv6oNRaGInt4Llwv9t0dHAGP4Tq+E
+         Z3sJH4oSKSJ0MXYPO4iCEJLFc/MqKo7aoIA8XgZOhc5MM+RB1QcQnldlsYcfSs31veSd
+         1VIg==
+X-Gm-Message-State: AOAM530ATzaYg81vIPIXCxhpi8q4ei16vgaWycpsG4BcNFTzCaByntFY
+        d3vILNhEx3JesxnvDlOQAnpw0cVZ9/223Q1ikIM=
+X-Google-Smtp-Source: ABdhPJzLkCAiEv8O3PoSMO3z2TH6i5wP/HkVGgZ7n3cKdrzj2qhvnOOLbEazs9E/qPiiK3X9eW41ernr9TzL3NsVaTk=
+X-Received: by 2002:aca:d514:: with SMTP id m20mr9143934oig.47.1616751613911;
+ Fri, 26 Mar 2021 02:40:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210326022128.71727-1-tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <20210326022128.71727-1-tianjia.zhang@linux.alibaba.com>
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-Date:   Fri, 26 Mar 2021 12:38:25 +0300
-Message-ID: <CAOtvUMfSC02o03c=Q-8d7vy8KS3QmNTBc59An=-m4BmNzt8_GA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: sm3 - use the more precise type u32 instead of
- unsigned int
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
+References: <20210326091547.12375-1-zhangqing@rock-chips.com> <20210326091547.12375-2-zhangqing@rock-chips.com>
+In-Reply-To: <20210326091547.12375-2-zhangqing@rock-chips.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Fri, 26 Mar 2021 10:40:01 +0100
+Message-ID: <CAFqH_51gSiBMMKovNmLi5msz9HKaJU0JSvFidg5Q6c0eN_rgEg@mail.gmail.com>
+Subject: Re: [PATCH v5 01/11] arm: dts: rockchip: Fix power-controller node
+ names for rk3066a
+To:     Elaine Zhang <zhangqing@rock-chips.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, cl@rock-chips.com,
+        huangtao@rock-chips.com, kever.yang@rock-chips.com,
+        tony.xie@rock-chips.com, finley.xiao@rock-chips.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+i
 
-Thank you for the patch!
-
-On Fri, Mar 26, 2021 at 5:21 AM Tianjia Zhang
-<tianjia.zhang@linux.alibaba.com> wrote:
+Missatge de Elaine Zhang <zhangqing@rock-chips.com> del dia dv., 26 de
+mar=C3=A7 2021 a les 10:17:
 >
-> In the process of calculating the hash, use the more accurate type
-> 'u32' instead of the original 'unsigned int' to avoid ambiguity.
+> Use more generic names (as recommended in the device tree specification
+> or the binding documentation)
+>
+> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
 
-I don't think there is any ambiguity here, as both forms are always
-the same size.
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-Generally, I tend to use the convention of using 'u32' as denoting
-variables where the size is meaningful - e.g. mathematical operations
-that are defined in the standard on 32 bit buffers,  versus using
-plain 'int' types where it isn't - e.g. loop counters etc.
-
-Having said that, even under my own definition possibly the w and wt
-arrays in sm3_trandform() should be changed to u32.
-I don't object to changing those if it bugs you :-)
-
-Cheers,
-Gilad
-
-
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > ---
->  crypto/sm3_generic.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  arch/arm/boot/dts/rk3066a.dtsi | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/crypto/sm3_generic.c b/crypto/sm3_generic.c
-> index 193c4584bd00..562e96f92f64 100644
-> --- a/crypto/sm3_generic.c
-> +++ b/crypto/sm3_generic.c
-> @@ -36,17 +36,17 @@ static inline u32 p1(u32 x)
->         return x ^ rol32(x, 15) ^ rol32(x, 23);
->  }
+> diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.d=
+tsi
+> index 252750c97f97..bbc3bff50856 100644
+> --- a/arch/arm/boot/dts/rk3066a.dtsi
+> +++ b/arch/arm/boot/dts/rk3066a.dtsi
+> @@ -755,7 +755,7 @@
+>                 #address-cells =3D <1>;
+>                 #size-cells =3D <0>;
 >
-> -static inline u32 ff(unsigned int n, u32 a, u32 b, u32 c)
-> +static inline u32 ff(u32 n, u32 a, u32 b, u32 c)
->  {
->         return (n < 16) ? (a ^ b ^ c) : ((a & b) | (a & c) | (b & c));
->  }
+> -               pd_vio@RK3066_PD_VIO {
+> +               power-domain@RK3066_PD_VIO {
+>                         reg =3D <RK3066_PD_VIO>;
+>                         clocks =3D <&cru ACLK_LCDC0>,
+>                                  <&cru ACLK_LCDC1>,
+> @@ -782,7 +782,7 @@
+>                                  <&qos_rga>;
+>                 };
 >
-> -static inline u32 gg(unsigned int n, u32 e, u32 f, u32 g)
-> +static inline u32 gg(u32 n, u32 e, u32 f, u32 g)
->  {
->         return (n < 16) ? (e ^ f ^ g) : ((e & f) | ((~e) & g));
->  }
+> -               pd_video@RK3066_PD_VIDEO {
+> +               power-domain@RK3066_PD_VIDEO {
+>                         reg =3D <RK3066_PD_VIDEO>;
+>                         clocks =3D <&cru ACLK_VDPU>,
+>                                  <&cru ACLK_VEPU>,
+> @@ -791,7 +791,7 @@
+>                         pm_qos =3D <&qos_vpu>;
+>                 };
 >
-> -static inline u32 t(unsigned int n)
-> +static inline u32 t(u32 n)
->  {
->         return (n < 16) ? SM3_T1 : SM3_T2;
->  }
-> @@ -54,7 +54,7 @@ static inline u32 t(unsigned int n)
->  static void sm3_expand(u32 *t, u32 *w, u32 *wt)
->  {
->         int i;
-> -       unsigned int tmp;
-> +       u32 tmp;
->
->         /* load the input */
->         for (i =3D 0; i <=3D 15; i++)
-> @@ -123,8 +123,8 @@ static void sm3_compress(u32 *w, u32 *wt, u32 *m)
->
->  static void sm3_transform(struct sm3_state *sst, u8 const *src)
->  {
-> -       unsigned int w[68];
-> -       unsigned int wt[64];
-> +       u32 w[68];
-> +       u32 wt[64];
->
->         sm3_expand((u32 *)src, w, wt);
->         sm3_compress(w, wt, sst->state);
+> -               pd_gpu@RK3066_PD_GPU {
+> +               power-domain@RK3066_PD_GPU {
+>                         reg =3D <RK3066_PD_GPU>;
+>                         clocks =3D <&cru ACLK_GPU>;
+>                         pm_qos =3D <&qos_gpu>;
 > --
-> 2.19.1.3.ge56e4f7
+> 2.17.1
 >
-
-
---=20
-Gilad Ben-Yossef
-Chief Coffee Drinker
-
-values of =CE=B2 will give rise to dom!
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
