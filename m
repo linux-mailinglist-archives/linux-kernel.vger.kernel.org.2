@@ -2,117 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59634A103
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C0D34A108
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhCZF20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 01:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbhCZF2E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 01:28:04 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63495C0613B0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 22:28:04 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id f17so358317plr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 22:28:04 -0700 (PDT)
+        id S229898AbhCZF27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 01:28:59 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:6449 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229761AbhCZF2t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 01:28:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Wg6jUsg0M3YkhkdRzAVV3NbGB+vpbZqU99QuVAslRAA=;
-        b=xvkqgsknbTJsMGYLWLXMOMuDyGiIL+HYSOxfmlrzC8pH9prf/c17KrqMLTezyaLY5z
-         UFrUHgePtcdCwNfKI/L5B3dkzOP309lMmgBEaoDoimwnvAUvAVram5bw1b5c4IsOW36L
-         glKK55/C9x9q+UH2sTromVPOCqZJW6gK1S5a/mg9hwfKvXSSDSO+D1rkgNDrtzKAXCCw
-         4Zlnln6+vmLQC0vhK99ogtcJPKADJOaaTYCnJhUcHp97Qgr5m3+J/+bxPBLMgi/a9Tf5
-         njtm414zYbzcDpKn+6GdLoMnWlIxYSvVVnNN6w+DU/bP/6re1n5CAFD4Cg0zDSf7em2Z
-         sJ7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Wg6jUsg0M3YkhkdRzAVV3NbGB+vpbZqU99QuVAslRAA=;
-        b=g8lLllhdj/htm2L9aolNwQ+PmtYRpGhYZw6sQry8wiHoXJu1d2O9e9KV98w1ND3lIj
-         Pghfu33jQe2lafyKVRJo9APQV9O0WV7j5JBbUsn3HaNtK7E2VbqYUARxfA6cVu9OEykZ
-         RU5W2zSJuIzTNwI6wJ6Xmew+3q6bo0RQ1/6NZ6bEiLpA+vPS4KJEuZry8rlTl2s0z8QH
-         +re1y3Wds62dgYDyNzi8IgcwsuQtzFlgH5uNg+qWDiWjzXHyYuu/Xjs7GZzeQtXlPnwa
-         Ym7OhGtWymxi4EM7ivDFGoxx9zjvSwRATs8XEtj6mwTZu97BeeDL26BpT3KX/DF6lx8O
-         MDjw==
-X-Gm-Message-State: AOAM530PsUYj1L4QSeOrIX3CSL1CI/GfZA5mZs8LUTsgcdpnFVqqb18L
-        hrRc9I3lvEfP/fajtLLUhTbDTw==
-X-Google-Smtp-Source: ABdhPJwpBoVDsdAvwPB+8Iw81E4aSQxXUKlwva1pexONAu6KmF6kD8g/LRd8g3u/J3em4uVil+Wm7w==
-X-Received: by 2002:a17:90b:358:: with SMTP id fh24mr12111965pjb.109.1616736483711;
-        Thu, 25 Mar 2021 22:28:03 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id n38sm367408pgb.2.2021.03.25.22.27.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Mar 2021 22:27:58 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 10:57:56 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Seiya Wang <seiya.wang@mediatek.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH 2/2] dt-bindings: cpufreq: update cpu type and clock name
- for MT8173 SoC
-Message-ID: <20210326052756.ozalnigxh7x3hvqr@vireshk-i7>
-References: <20210326031227.2357-1-seiya.wang@mediatek.com>
- <20210326031227.2357-2-seiya.wang@mediatek.com>
+  d=axis.com; q=dns/txt; s=axis-central1; t=1616736529;
+  x=1648272529;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8d3dIdNCbdJWcGJMvMj4HnBGxxDVIsB7BROmN+qX1tk=;
+  b=gbtSW/uw639nWQvx887Kg2gzjsGRbcKNMyfkjxkFaImtD1RnV3Sln2bC
+   nXm9O1SEEbwJiMu1nx6mKnpmumsAdqrXEpG3tj+K9qumHy039CaTvqkl5
+   4i2DHOr8DIqt3eUhKZyJKDvjihuSrIT6df/LyKde0KcuYwUs4IiSCOgG2
+   shI/GeGuc80s0B3J4imHmCLM+01U9bbvPPGgixGept2KGGGLETey0x81F
+   /Zf/BP2KNAdGn2szzvUW5KH6bzyGKo6t5aRYjNPU3YKd7h45yaWzba19o
+   IW1QwberW7BT3qLT+ftJG2fHHe0NIIA+lxibG4fKTJXfMPXL9OOVOv3PE
+   Q==;
+From:   Hermes Zhang <chenhui.zhang@axis.com>
+To:     <pavel@ucw.cz>, <dmurphy@ti.com>, <robh+dt@kernel.org>
+CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <chenhuiz@axis.com>,
+        <lkml@axis.com>, <kernel@axis.com>
+Subject: [PATCH v2 0/2] New multiple GPIOs LED driver
+Date:   Fri, 26 Mar 2021 13:27:59 +0800
+Message-ID: <20210326052801.17666-1-chenhui.zhang@axis.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326031227.2357-2-seiya.wang@mediatek.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-03-21, 11:12, Seiya Wang wrote:
-> Update the cpu type of cpu2 and cpu3 since MT8173 used Cortex-a72.
-> 
-> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt
-> index ea4994b35207..ef68711716fb 100644
-> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt
-> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt
-> @@ -202,11 +202,11 @@ Example 2 (MT8173 SoC):
->  
->  	cpu2: cpu@100 {
->  		device_type = "cpu";
-> -		compatible = "arm,cortex-a57";
-> +		compatible = "arm,cortex-a72";
->  		reg = <0x100>;
->  		enable-method = "psci";
->  		cpu-idle-states = <&CPU_SLEEP_0>;
-> -		clocks = <&infracfg CLK_INFRA_CA57SEL>,
-> +		clocks = <&infracfg CLK_INFRA_CA72SEL>,
->  			 <&apmixedsys CLK_APMIXED_MAINPLL>;
->  		clock-names = "cpu", "intermediate";
->  		operating-points-v2 = <&cpu_opp_table_b>;
-> @@ -214,11 +214,11 @@ Example 2 (MT8173 SoC):
->  
->  	cpu3: cpu@101 {
->  		device_type = "cpu";
-> -		compatible = "arm,cortex-a57";
-> +		compatible = "arm,cortex-a72";
->  		reg = <0x101>;
->  		enable-method = "psci";
->  		cpu-idle-states = <&CPU_SLEEP_0>;
-> -		clocks = <&infracfg CLK_INFRA_CA57SEL>,
-> +		clocks = <&infracfg CLK_INFRA_CA72SEL>,
->  			 <&apmixedsys CLK_APMIXED_MAINPLL>;
->  		clock-names = "cpu", "intermediate";
->  		operating-points-v2 = <&cpu_opp_table_b>;
+From: Hermes Zhang <chenhuiz@axis.com>
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+changes v2:
+- use max_brightness(=2^gpio number) instead of LED_FULL
+- alloc priv at once
+- move driver code to new simple folder
+- update commit message for dt-binding commit
+- move dt-binding commit before driver code
+
+Hermes Zhang (2):
+  dt-binding: leds: Document leds-multi-gpio bindings
+  leds: leds-multi-gpio: Add multiple GPIOs LED driver
+
+ .../bindings/leds/leds-multi-gpio.yaml        |  50 ++++++
+ drivers/leds/Kconfig                          |   3 +
+ drivers/leds/Makefile                         |   3 +
+ drivers/leds/simple/Kconfig                   |  23 +++
+ drivers/leds/simple/Makefile                  |   3 +
+ drivers/leds/simple/leds-multi-gpio.c         | 144 ++++++++++++++++++
+ 6 files changed, 226 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
+ create mode 100644 drivers/leds/simple/Kconfig
+ create mode 100644 drivers/leds/simple/Makefile
+ create mode 100644 drivers/leds/simple/leds-multi-gpio.c
 
 -- 
-viresh
+2.20.1
+
