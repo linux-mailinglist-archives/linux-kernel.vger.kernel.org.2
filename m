@@ -2,246 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F64F34A4C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2B734A4C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhCZJml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhCZJmV (ORCPT
+        id S230174AbhCZJmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:42:43 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:21164 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229761AbhCZJmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:42:21 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F981C0613AA;
-        Fri, 26 Mar 2021 02:42:21 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso4624564ott.13;
-        Fri, 26 Mar 2021 02:42:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ISnIxxZGPH2fmdCzXOS225MJa1eOPQxxHvjF0Ltvtzw=;
-        b=cZ2+8TbfOQVPhZNbRGeM5Bfn0tcmSayXAhROI/+HzPy3MAGQvIcUH9gUB+cQ8iD+X9
-         UStOeoPmq77LIqCxDe2oqdy4CMyZLr/A6cAEHl4xiyy/iNym11DR/rIWrcwTH0NAVYUC
-         0pC0fVxP5KJLIy4Ia0aAFgtm5HQkFJYHnNPJbiqkl8wy7UuOXtfx6RIV+Dbt6+gI3kdR
-         q1UPo6P9oEd4RiqAb52zAAnrwWk0tFf05VlxGWKh5DsKE4TakDp1ViL+Y0i88wq85LVQ
-         DubPOXcBpEh7JCVY9LuD8o6aYQQHQoqTbT+Mh9qxvGxHyhZ1zQowR7VfQmQB8+O22cz6
-         DCrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ISnIxxZGPH2fmdCzXOS225MJa1eOPQxxHvjF0Ltvtzw=;
-        b=nHJlUSC6fG/rV3i/PFiFgbxMAQLzd97i6XtUhcBd8PhOKtBqC9xezxBe+8CQOb3a03
-         aJ0hR7O/dQJdQ9CoeTq6tEtXF0Rx6yLyzledOjurbO/ivvi6bhawyNmPPwsYmhtrijCl
-         0JK96ITCcFpHz6wnchITALlY8hAXMU5MihAIRhjo3qijSB3LnNEDa+J5GHagYYWCcRi0
-         kjzZQRLMPo9zOtYc6/XBwfrojGmdycgXRhFncBi+72qDUxhPEwsCPP4E+PGGWh05aDnV
-         ACJ7d3ZOKODAeBWYolSK5L22uZTWOGFZsMM4Q2x0UvhCyQgEJFRqMkE8lWXNUh/R+69j
-         VWGg==
-X-Gm-Message-State: AOAM533ARgQo+d3jA9l55VzcPZDGyG6LNc6oLf5fIBn4er/fafS0UFux
-        5xZe/Gk0jfRaGtZ7Cpds6bpzZoLtWxEuhTjc3S0=
-X-Google-Smtp-Source: ABdhPJx/Z5l80IEc8JhwiDQ9bZ2JWj1MwThGz8CRMbrg0MVp0Tmm9jpUZxyrS6hPv3OM5jbQ1unZd473TMcDNNQKJcE=
-X-Received: by 2002:a9d:7b4e:: with SMTP id f14mr11299971oto.281.1616751740814;
- Fri, 26 Mar 2021 02:42:20 -0700 (PDT)
+        Fri, 26 Mar 2021 05:42:31 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12Q9RON0028997;
+        Fri, 26 Mar 2021 10:42:29 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=selector1;
+ bh=dZG1xFLM/pSDG+IqSCLf3eiur3BbtYeJz9BtuCio8Fw=;
+ b=vXMsM12PX0zoFz3wG2eJZq2QapPItF4h1Dg4nZ5ykWrv9MxVmk3kwI1g0H8cAQn18RAm
+ xTlF9adnF3DQPH+BNzVDtfJdl9ozlLJnPoIMXkQAFw7Ab83Neh5M6o/M6g/pTwFnjvyX
+ ZE18KJa8Zr3Lexzj9D6z7e11thAItGTW5K2mIpCN9Hv+IeyXK2ez/YmtuS/Uf3BW8YRJ
+ /SgoX33MjMuDmbvhrdFsXOCVHU1md90bQcQwFOK8ygAMxfDajBrZRvGk3J4JFDnu2qXk
+ vPG5jMRg1+VHzAcofmNBt4pW5eON3C6lMFltYnte8hhmUpsAB20SH2q8M5ysuQQmemxm Lw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37h13638hu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Mar 2021 10:42:29 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5BC5110002A;
+        Fri, 26 Mar 2021 10:42:29 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4EC012463D6;
+        Fri, 26 Mar 2021 10:42:29 +0100 (CET)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Mar 2021 10:42:28
+ +0100
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v3 1/2] dt-bindings: remoteproc: stm32-rproc: add new mailbox channel for detach
+Date:   Fri, 26 Mar 2021 10:42:08 +0100
+Message-ID: <20210326094209.29750-2-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210326094209.29750-1-arnaud.pouliquen@foss.st.com>
+References: <20210326094209.29750-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-References: <20210326091547.12375-1-zhangqing@rock-chips.com> <20210326091726.12531-1-zhangqing@rock-chips.com>
-In-Reply-To: <20210326091726.12531-1-zhangqing@rock-chips.com>
-From:   Enric Balletbo Serra <eballetbo@gmail.com>
-Date:   Fri, 26 Mar 2021 10:42:07 +0100
-Message-ID: <CAFqH_51sGjbyVLoPxTRby50uvWinX=2TVX3hK8KB_t71F-RyjA@mail.gmail.com>
-Subject: Re: [PATCH v5 06/11] arm64: dts: rockchip: Fix power-controller node
- names for rk3399
-To:     Elaine Zhang <zhangqing@rock-chips.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, cl@rock-chips.com,
-        huangtao@rock-chips.com, kever.yang@rock-chips.com,
-        tony.xie@rock-chips.com, finley.xiao@rock-chips.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG3NODE2.st.com (10.75.127.8) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-26_03:2021-03-26,2021-03-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Missatge de Elaine Zhang <zhangqing@rock-chips.com> del dia dv., 26 de
-mar=C3=A7 2021 a les 10:18:
->
-> Use more generic names (as recommended in the device tree specification
-> or the binding documentation)
->
-> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+Add the "detach" mailbox item, that allows to define a mailbox to
+send a IPCC signal to the remote processor on remoteproc detach action.
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+No Update from V2.
 
-> ---
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 40 ++++++++++++------------
->  1 file changed, 20 insertions(+), 20 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/d=
-ts/rockchip/rk3399.dtsi
-> index edbbf35fe19e..142f5593d48b 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> @@ -971,26 +971,26 @@
->                         #size-cells =3D <0>;
->
->                         /* These power domains are grouped by VD_CENTER *=
-/
-> -                       pd_iep@RK3399_PD_IEP {
-> +                       power-domain@RK3399_PD_IEP {
->                                 reg =3D <RK3399_PD_IEP>;
->                                 clocks =3D <&cru ACLK_IEP>,
->                                          <&cru HCLK_IEP>;
->                                 pm_qos =3D <&qos_iep>;
->                         };
-> -                       pd_rga@RK3399_PD_RGA {
-> +                       power-domain@RK3399_PD_RGA {
->                                 reg =3D <RK3399_PD_RGA>;
->                                 clocks =3D <&cru ACLK_RGA>,
->                                          <&cru HCLK_RGA>;
->                                 pm_qos =3D <&qos_rga_r>,
->                                          <&qos_rga_w>;
->                         };
-> -                       pd_vcodec@RK3399_PD_VCODEC {
-> +                       power-domain@RK3399_PD_VCODEC {
->                                 reg =3D <RK3399_PD_VCODEC>;
->                                 clocks =3D <&cru ACLK_VCODEC>,
->                                          <&cru HCLK_VCODEC>;
->                                 pm_qos =3D <&qos_video_m0>;
->                         };
-> -                       pd_vdu@RK3399_PD_VDU {
-> +                       power-domain@RK3399_PD_VDU {
->                                 reg =3D <RK3399_PD_VDU>;
->                                 clocks =3D <&cru ACLK_VDU>,
->                                          <&cru HCLK_VDU>;
-> @@ -999,94 +999,94 @@
->                         };
->
->                         /* These power domains are grouped by VD_GPU */
-> -                       pd_gpu@RK3399_PD_GPU {
-> +                       power-domain@RK3399_PD_GPU {
->                                 reg =3D <RK3399_PD_GPU>;
->                                 clocks =3D <&cru ACLK_GPU>;
->                                 pm_qos =3D <&qos_gpu>;
->                         };
->
->                         /* These power domains are grouped by VD_LOGIC */
-> -                       pd_edp@RK3399_PD_EDP {
-> +                       power-domain@RK3399_PD_EDP {
->                                 reg =3D <RK3399_PD_EDP>;
->                                 clocks =3D <&cru PCLK_EDP_CTRL>;
->                         };
-> -                       pd_emmc@RK3399_PD_EMMC {
-> +                       power-domain@RK3399_PD_EMMC {
->                                 reg =3D <RK3399_PD_EMMC>;
->                                 clocks =3D <&cru ACLK_EMMC>;
->                                 pm_qos =3D <&qos_emmc>;
->                         };
-> -                       pd_gmac@RK3399_PD_GMAC {
-> +                       power-domain@RK3399_PD_GMAC {
->                                 reg =3D <RK3399_PD_GMAC>;
->                                 clocks =3D <&cru ACLK_GMAC>,
->                                          <&cru PCLK_GMAC>;
->                                 pm_qos =3D <&qos_gmac>;
->                         };
-> -                       pd_sd@RK3399_PD_SD {
-> +                       power-domain@RK3399_PD_SD {
->                                 reg =3D <RK3399_PD_SD>;
->                                 clocks =3D <&cru HCLK_SDMMC>,
->                                          <&cru SCLK_SDMMC>;
->                                 pm_qos =3D <&qos_sd>;
->                         };
-> -                       pd_sdioaudio@RK3399_PD_SDIOAUDIO {
-> +                       power-domain@RK3399_PD_SDIOAUDIO {
->                                 reg =3D <RK3399_PD_SDIOAUDIO>;
->                                 clocks =3D <&cru HCLK_SDIO>;
->                                 pm_qos =3D <&qos_sdioaudio>;
->                         };
-> -                       pd_tcpc0@RK3399_PD_TCPD0 {
-> +                       power-domain@RK3399_PD_TCPD0 {
->                                 reg =3D <RK3399_PD_TCPD0>;
->                                 clocks =3D <&cru SCLK_UPHY0_TCPDCORE>,
->                                          <&cru SCLK_UPHY0_TCPDPHY_REF>;
->                         };
-> -                       pd_tcpc1@RK3399_PD_TCPD1 {
-> +                       power-domain@RK3399_PD_TCPD1 {
->                                 reg =3D <RK3399_PD_TCPD1>;
->                                 clocks =3D <&cru SCLK_UPHY1_TCPDCORE>,
->                                          <&cru SCLK_UPHY1_TCPDPHY_REF>;
->                         };
-> -                       pd_usb3@RK3399_PD_USB3 {
-> +                       power-domain@RK3399_PD_USB3 {
->                                 reg =3D <RK3399_PD_USB3>;
->                                 clocks =3D <&cru ACLK_USB3>;
->                                 pm_qos =3D <&qos_usb_otg0>,
->                                          <&qos_usb_otg1>;
->                         };
-> -                       pd_vio@RK3399_PD_VIO {
-> +                       power-domain@RK3399_PD_VIO {
->                                 reg =3D <RK3399_PD_VIO>;
->                                 #address-cells =3D <1>;
->                                 #size-cells =3D <0>;
->
-> -                               pd_hdcp@RK3399_PD_HDCP {
-> +                               power-domain@RK3399_PD_HDCP {
->                                         reg =3D <RK3399_PD_HDCP>;
->                                         clocks =3D <&cru ACLK_HDCP>,
->                                                  <&cru HCLK_HDCP>,
->                                                  <&cru PCLK_HDCP>;
->                                         pm_qos =3D <&qos_hdcp>;
->                                 };
-> -                               pd_isp0@RK3399_PD_ISP0 {
-> +                               power-domain@RK3399_PD_ISP0 {
->                                         reg =3D <RK3399_PD_ISP0>;
->                                         clocks =3D <&cru ACLK_ISP0>,
->                                                  <&cru HCLK_ISP0>;
->                                         pm_qos =3D <&qos_isp0_m0>,
->                                                  <&qos_isp0_m1>;
->                                 };
-> -                               pd_isp1@RK3399_PD_ISP1 {
-> +                               power-domain@RK3399_PD_ISP1 {
->                                         reg =3D <RK3399_PD_ISP1>;
->                                         clocks =3D <&cru ACLK_ISP1>,
->                                                  <&cru HCLK_ISP1>;
->                                         pm_qos =3D <&qos_isp1_m0>,
->                                                  <&qos_isp1_m1>;
->                                 };
-> -                               pd_vo@RK3399_PD_VO {
-> +                               power-domain@RK3399_PD_VO {
->                                         reg =3D <RK3399_PD_VO>;
->                                         #address-cells =3D <1>;
->                                         #size-cells =3D <0>;
->
-> -                                       pd_vopb@RK3399_PD_VOPB {
-> +                                       power-domain@RK3399_PD_VOPB {
->                                                 reg =3D <RK3399_PD_VOPB>;
->                                                 clocks =3D <&cru ACLK_VOP=
-0>,
->                                                          <&cru HCLK_VOP0>=
-;
->                                                 pm_qos =3D <&qos_vop_big_=
-r>,
->                                                          <&qos_vop_big_w>=
-;
->                                         };
-> -                                       pd_vopl@RK3399_PD_VOPL {
-> +                                       power-domain@RK3399_PD_VOPL {
->                                                 reg =3D <RK3399_PD_VOPL>;
->                                                 clocks =3D <&cru ACLK_VOP=
-1>,
->                                                          <&cru HCLK_VOP1>=
-;
-> --
-> 2.17.1
->
->
->
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+Update from V1:
+Fix indentation error reported by 'make dt_binding_check'.
+
+---
+ .../bindings/remoteproc/st,stm32-rproc.yaml           | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+index a1171dfba024..64afdcfb613d 100644
+--- a/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
++++ b/Documentation/devicetree/bindings/remoteproc/st,stm32-rproc.yaml
+@@ -65,16 +65,23 @@ properties:
+           Unidirectional channel:
+             - from local to remote, where ACK from the remote means that it is
+               ready for shutdown
++      - description: |
++          A channel (d) used by the local proc to notify the remote proc that it
++          has to stop interprocessor communnication.
++          Unidirectional channel:
++            - from local to remote, where ACK from the remote means that communnication
++              as been stopped on the remote side.
+     minItems: 1
+-    maxItems: 3
++    maxItems: 4
+ 
+   mbox-names:
+     items:
+       - const: vq0
+       - const: vq1
+       - const: shutdown
++      - const: detach
+     minItems: 1
+-    maxItems: 3
++    maxItems: 4
+ 
+   memory-region:
+     description:
+-- 
+2.17.1
+
