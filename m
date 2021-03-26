@@ -2,104 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BD434AA4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE79E34AA21
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhCZOkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:40:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbhCZOjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:39:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACBBC0613AA;
-        Fri, 26 Mar 2021 07:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=/jKV/Gy/+fs6Gymuc4/KOBeEW5L+yZioO5xj7LGmOvk=; b=btDOhdv9dVGM1bGt10zskeqyPc
-        IJAjY5J3M0V2Ssi7NNgeil59DhlO7E6oivZQivAq28Yc/KdK5u93ZUzDZoVMRBaqlxf7Hzy6oPSFM
-        Gc7pPPsejd0I1/ziak6y+NLOOzg/pHXRIHbvit+wD4AvJYsnF0HfOWu5pwz5GIOWq8HdAkje6X7N3
-        TUJFPYXDjR9Q79HD9E3nT09I7Kla49p7nnSeVcJQ8d4upVPhE6fnygZAebM1joGOA27iFFm/o0+/B
-        mCSb1li1OrgAlMOR/k7wZ8wo7QJW5gJo0hZgzjjtivcofkbuzF9JLCQDLtOI6vcJLBXrOv9eI7Fih
-        ZqqU60vg==;
-Received: from [213.208.157.35] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPncI-005U87-0D; Fri, 26 Mar 2021 14:39:14 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] exec: move the call to getname_flags into do_execveat
-Date:   Fri, 26 Mar 2021 15:38:31 +0100
-Message-Id: <20210326143831.1550030-5-hch@lst.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210326143831.1550030-1-hch@lst.de>
-References: <20210326143831.1550030-1-hch@lst.de>
+        id S230204AbhCZOi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:38:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60006 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230044AbhCZOim (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:38:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1616769521; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DurayHOhToArSvSYK8RAMhFhC6jUS8VXy76iO4nFyq8=;
+        b=GUFM+RVHwSoPMYHr7+s2a4JxX35egujR4bvC8Zd+TvehRnX+Y/Zv6e4phB3kRQHnNjRY3E
+        3XHPhkNMLLrJwGsOrwh992u3tpSYTyY8bGSQnELN0jqre0iDkC68nnDzRUu7541mcFggV8
+        wOD2yGbfTp0NUhMti1Ua1lctgs5nEH0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7555DAC6A;
+        Fri, 26 Mar 2021 14:38:41 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 15:38:40 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
+ memory range
+Message-ID: <YF3x8BW1+2o50mds@dhcp22.suse.cz>
+References: <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
+ <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
+ <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz>
+ <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
+ <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
+ <YFy8ARml4R7/snVs@dhcp22.suse.cz>
+ <YFy+olsdS4iwrovN@dhcp22.suse.cz>
+ <YF0JerCFXzcmMKzp@localhost.localdomain>
+ <YF2ct/UZUBG1GcM3@dhcp22.suse.cz>
+ <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the duplicated copying of the pathname into the common helper.
+On Fri 26-03-21 09:52:58, David Hildenbrand wrote:
+[...]
+> Something else to note:
+> 
+> 
+> We'll not call the memory notifier (e.g., MEM_ONLINE) for the vmemmap. The
+> result is that
+> 
+> 1. We won't allocate extended struct pages for the range. Don't think this
+> is really problematic (pages are never allocated/freed, so I guess we don't
+> care - like ZONE_DEVICE code).
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/exec.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+Agreed. I do not think we need them. Future might disagree but let's
+handle it when we have a clear demand.
 
-diff --git a/fs/exec.c b/fs/exec.c
-index b34c1eb9e7ad8e..5c0dd8f85fe7b5 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1843,13 +1843,16 @@ static int bprm_execve(struct linux_binprm *bprm,
- 	return retval;
- }
- 
--static int do_execveat(int fd, struct filename *filename,
-+static int do_execveat(int fd, const char __user *pathname,
- 		const char __user *const __user *argv,
- 		const char __user *const __user *envp, int flags)
- {
-+	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
-+	struct filename *filename;
- 	struct linux_binprm *bprm;
- 	int retval;
- 
-+	filename = getname_flags(pathname, lookup_flags, NULL);
- 	if (IS_ERR(filename))
- 		return PTR_ERR(filename);
- 
-@@ -1993,7 +1996,7 @@ SYSCALL_DEFINE3(execve,
- 		const char __user *const __user *, argv,
- 		const char __user *const __user *, envp)
- {
--	return do_execveat(AT_FDCWD, getname(filename), argv, envp, 0);
-+	return do_execveat(AT_FDCWD, filename, argv, envp, 0);
- }
- 
- SYSCALL_DEFINE5(execveat,
-@@ -2002,9 +2005,5 @@ SYSCALL_DEFINE5(execveat,
- 		const char __user *const __user *, envp,
- 		int, flags)
- {
--	int lookup_flags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
--
--	return do_execveat(fd,
--			   getname_flags(filename, lookup_flags, NULL),
--			   argv, envp, flags);
-+	return do_execveat(fd, filename, argv, envp, flags);
- }
+> 2. We won't allocate kasan shadow memory. We most probably have to do it
+> explicitly via kasan_add_zero_shadow()/kasan_remove_zero_shadow(), see
+> mm/memremap.c:pagemap_range()
+
+I think this is similar to the above. Does kasan has to know about
+memory which will never be used for anything?
+
+> Further a locking rework might be necessary. We hold the device hotplug
+> lock, but not the memory hotplug lock. E.g., for get_online_mems(). Might
+> have to move that out online_pages.
+
+Could you be more explicit why this locking is needed? What it would
+protect from for vmemmap pages?
 -- 
-2.30.1
-
+Michal Hocko
+SUSE Labs
