@@ -2,120 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA5C34A839
+	by mail.lfdr.de (Postfix) with ESMTP id A05AB34A83A
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhCZNhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:37:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26819 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229671AbhCZNgh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:36:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616765796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h3gpFQKgjHtuiCQHwXaw41b8dNjFrCUF0CIAt2id5HA=;
-        b=L1Vc8n6r289QDw2icmLAge3iN52iRCkUJ5sjY9zm/LNWgu9H8PnlR+oygndShJPur3Jo9R
-        5uIde07v63hy6/V7E/ND4l+WXFFw8Q4/jPnl0xmE5qRNYElly9tFcgoVsApM7LMO3ExUXW
-        apqycga87AEDai5iyJOJxtXlr5PjRY0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-CdlsreH5O3S6QpBD8krjHg-1; Fri, 26 Mar 2021 09:36:32 -0400
-X-MC-Unique: CdlsreH5O3S6QpBD8krjHg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D88F180FCA4;
-        Fri, 26 Mar 2021 13:36:30 +0000 (UTC)
-Received: from [10.36.112.81] (ovpn-112-81.ams2.redhat.com [10.36.112.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 40B286BC2D;
-        Fri, 26 Mar 2021 13:36:28 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
- <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz> <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
- <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
- <YFy8ARml4R7/snVs@dhcp22.suse.cz> <YFy+olsdS4iwrovN@dhcp22.suse.cz>
- <YF0JerCFXzcmMKzp@localhost.localdomain> <YF2ct/UZUBG1GcM3@dhcp22.suse.cz>
- <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
- <YF2iBxueewnKIG3V@localhost.localdomain>
- <YF3QcJ2Hd8LNMEgU@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <c11ef594-fe9b-cacf-726f-03f00c62c294@redhat.com>
-Date:   Fri, 26 Mar 2021 14:36:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230139AbhCZNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:37:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229995AbhCZNhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:37:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA12F61879;
+        Fri, 26 Mar 2021 13:37:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616765825;
+        bh=Lki35no18rL9WHDL876lOo6SZAtkdqS9eteHVC5XH04=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YGpdPrA09pgx2+feOOKJZ4j8abd/tYjdjoEGVgzMMCKp79gjJhRefAv/+eqGFKAkZ
+         UrJcv9TNJ8x7YqhS/rFDQx//Da0o+GfHTpTzsGg9ifONWITwwlG2FYfXd9zHU7phux
+         aCuSxCBgQBuaQrX6L/55en8+IaXJNcor+oqujSqw=
+Date:   Fri, 26 Mar 2021 14:37:02 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
+Message-ID: <YF3jfshT3OSolcws@kroah.com>
+References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <YF3QcJ2Hd8LNMEgU@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>
->>> Further a locking rework might be necessary. We hold the device hotplug
->>> lock, but not the memory hotplug lock. E.g., for get_online_mems(). Might
->>> have to move that out online_pages.
+On Wed, Mar 24, 2021 at 12:57:32AM +0530, Sandeep Maheswaram wrote:
+> This patch adds a shutdown callback to USB DWC core driver to ensure that
+> it is properly shutdown in reboot/shutdown path. This is required
+> where SMMU address translation is enabled like on SC7180
+> SoC and few others. If the hardware is still accessing memory after
+> SMMU translation is disabled as part of SMMU shutdown callback in
+> system reboot or shutdown path, then IOVAs(I/O virtual address)
+> which it was using will go on the bus as the physical addresses which
+> might result in unknown crashes (NoC/interconnect errors).
 > 
-> That is a good point.
-> I yet have to think about it further, but what about moving those
-> mem_hotplug_{begin,done} to memory_block_{offline,online}.
-> 
-> Something like:
-> 
->   static int memory_block_online(...)
->   {
->           int ret;
->   
->           mem_hotplug_begin();
->   
->           if (nr_vmemmap_pages)
->                   vmemmap_hotplug_init();
->   
->           ret = online_pages(...);
->           if (ret)
->   	/*
->   	 * Cleanup stuff
->   	 */
->   
->           mem_hotplug_done();
->   }
-> 	
-> As you said, you finished cleaning up those users who were calling
-> {online,offline}_pages() directly, but is this something that we will
-> forbidden in the future too?
+> Previously this was added in dwc3 qcom glue driver.
+> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
+> But observed kernel panic as glue driver shutdown getting called after
+> iommu shutdown. As we are adding iommu nodes in dwc core node
+> in device tree adding shutdown callback in core driver seems correct.
 
-Well, I cannot tell what will happen in the future. But at least as long 
-as we have memory blocks, I doubt that there are valid use cases for 
-online_pages()/offline_pages(). Especially once we have things like 
-memmap_on_memory that need special care.
+So shouldn't you also remove this from the qcom glue driver at the same
+time?  Please submit both as a patch series.
 
-> My question falls within "Are we sure we will not need that locking back
-> in those functions because that is something we will not allow to
-> happen?"
+thanks,
 
-Who has access to online_pages()/offline_pages() also has access to 
-mem_hotplug_begin()/mem_hotplug_done(). It would be nice if we could 
-only use online_pages()/offline_pages() internally -- or at least add a 
-comment that this is for internal purposes only / requires that locking.
-
--- 
-Thanks,
-
-David / dhildenb
-
+greg k-h
