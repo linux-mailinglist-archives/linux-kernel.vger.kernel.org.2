@@ -2,61 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10E734AB5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B07C34AB64
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:23:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhCZPVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:21:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33098 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230227AbhCZPUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:20:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616772041; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=NrmGcC2ZP4daaG+xsdVC0fXaJPEx+1DgPs02v8goGVk=;
-        b=oYHzOIoZx/tDcWlR8XF59Mu1DXAWuKbd3PrNwGqf5RsX+jeA76c6bWgafJsnjYDQdY3ufP
-        +iYWV/UJtcW4rQSGsiQr/EBX5jsXb02cEE5BTcMqSqNa3M580tXot57+nxt8dIqaJREsko
-        jynVEWOae0sYyUgkvTmRfnM9H5WXNGk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D2305AC6A;
-        Fri, 26 Mar 2021 15:20:41 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        boris.ostrovsky@oracle.com
-Subject: [GIT PULL] xen: branch for v5.12-rc5
-Date:   Fri, 26 Mar 2021 16:20:41 +0100
-Message-Id: <20210326152041.25735-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S230179AbhCZPXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhCZPW6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:22:58 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CAFC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:22:58 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id kt15so8954311ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:22:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QF0JHGv3ho6BSohKh3PoMnQZqn5hVwFUbvNhQ/6Recs=;
+        b=dYpkQAe18RGiYJlTmxxSgDsrCg6gvQUV6TdAWeLFgqn0EUXNJMq2RZbvndVWYIhWfL
+         j4f8ZPECSqALeiF03UREb9YDxqJlFAtaZHIll3LyINbqXRaO08A3RUADlY2X9lAKpyNa
+         KZv7bHMkPQaB6kM2Oh+twy4ZbYfK8qbe32HLc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QF0JHGv3ho6BSohKh3PoMnQZqn5hVwFUbvNhQ/6Recs=;
+        b=Vhtp/WREtMIQza4J8lLqYEZKYFp7gNdgf1TBWhvLX/slkCSExam8SlAI1nw8J1mpdS
+         REi/7ceQ85TZ14IOjtX5vQWRTAXg0boLGYMFTnqommbBsgCShe1UfrFVcXVJSpfz1WVs
+         ppHHzjN6wBV0+o9x2u9a82eII/HTPZBP1pdLzsqZ46HZejhbQ7Bl4GfNC4IPXzX1XObM
+         88TAFwfK+iRlBoAnAQTTOPd4CaD9eVqBJ8RHwnPLPllJfZ7irxsmNnoA+m+Nu+bzEa8m
+         cCmpDOWBha3lgBRBkROwB/zvBzQpDi8yD+/uPDvQfgvDRLWVG0qFHWROf31DOjkXcDcD
+         meZg==
+X-Gm-Message-State: AOAM531EWXizt5oyU96bui2FKoO+CPr61DEszXVQjYHCEdP8QptLxcA+
+        63bbhQx3jSW8gcJaCXzDgSEfGg==
+X-Google-Smtp-Source: ABdhPJyAJR3guB/wT0+lzW8xqgVDCKt8iB6TLrjazfM8CCam3EqkyHsK5Kp8aNQYL7a1P50p211AiQ==
+X-Received: by 2002:a17:907:d1b:: with SMTP id gn27mr15852406ejc.227.1616772177256;
+        Fri, 26 Mar 2021 08:22:57 -0700 (PDT)
+Received: from prevas-ravi.prevas.se ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id d19sm4392293edr.45.2021.03.26.08.22.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 08:22:56 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] greybus: remove stray nul byte in apb_log_enable_read output
+Date:   Fri, 26 Mar 2021 16:22:54 +0100
+Message-Id: <20210326152254.733066-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Including a nul byte in the otherwise human-readable ascii output
+from this debugfs file is probably not intended.
 
-Please git pull the following tag:
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ drivers/greybus/es2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.12b-rc5-tag
+diff --git a/drivers/greybus/es2.c b/drivers/greybus/es2.c
+index 48ad154df3a7..86a7fbc7fe13 100644
+--- a/drivers/greybus/es2.c
++++ b/drivers/greybus/es2.c
+@@ -1171,7 +1171,7 @@ static ssize_t apb_log_enable_read(struct file *f, char __user *buf,
+ 	char tmp_buf[3];
+ 
+ 	sprintf(tmp_buf, "%d\n", enable);
+-	return simple_read_from_buffer(buf, count, ppos, tmp_buf, 3);
++	return simple_read_from_buffer(buf, count, ppos, tmp_buf, 2);
+ }
+ 
+ static ssize_t apb_log_enable_write(struct file *f, const char __user *buf,
+-- 
+2.29.2
 
-xen: branch for v5.12-rc5
-
-It contains a small series with a more elegant fix of a problem which
-was originally fixed in rc2.
-
-Thanks.
-
-Juergen
-
- arch/x86/include/asm/xen/page.h | 12 ------------
- arch/x86/xen/p2m.c              |  7 ++-----
- arch/x86/xen/setup.c            | 16 ++++++++++++++--
- drivers/xen/Kconfig             |  4 ++--
- 4 files changed, 18 insertions(+), 21 deletions(-)
-
-Roger Pau Monne (2):
-      xen/x86: make XEN_BALLOON_MEMORY_HOTPLUG_LIMIT depend on MEMORY_HOTPLUG
-      Revert "xen: fix p2m size in dom0 for disabled memory hotplug case"
