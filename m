@@ -2,137 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347A234A7AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B3E34A7AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbhCZM5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:57:55 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:55481 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229758AbhCZM5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:57:49 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 4DC1D5804CA;
-        Fri, 26 Mar 2021 08:57:49 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 26 Mar 2021 08:57:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=tDYuafVYEzotN+2vMul5COe5EcS
-        87TpGB9aummOXYV8=; b=h2oKxvgr9laxdc6WSUEZGupC6smSNtj8vkG+62cTxMC
-        PYP5RwYS+JX62aqsS0Uwl+KDsBZ6N7WpJ3Vjgx1sW5ga7EOruaG9ME0DotQT0kQA
-        6MO+Z9n14QXTibo03Uzb7NH2JyZKizzaVR9zkscRK4vyZlmDuXylsweRJOSxR/qV
-        7LHiJF/K3jV7xHWJEigYXPClD+4Z5jZoDIM25XzmedjRBFOYVqxEPHdIoBxEkaBW
-        ZCIn3Db9G+W0Gx9CimxUpg1R9yn9fCBVU0w2L5qIAlTK/NimSMplh+tB2091fS+0
-        jSGNI+lxBvae0WZjmP9GaA65d/5qzHAIcH8YAk5hg9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=tDYuaf
-        VYEzotN+2vMul5COe5EcS87TpGB9aummOXYV8=; b=bmhi/2oGUO0sBs5evczbrb
-        ZUpXQJ/LS7i63jECJ6HMeJnguaS1flH3wsynEY9KpFvrrh3ZMbs2ANh8EsW9fFFY
-        LTTV4mLRelk8NC/Z36plMScrOPIIiG8SZ5q+HOE5Wn6I46JD+Y3pHoULewIQ8IFp
-        n1P8lqLIIy2F7Ca1yeLBlUg0G7iyNNShoys3lLz5v0tYDdSEKcqw/9Ueot1bhl/y
-        lgor+riovM1V9r9s+i6KiovB+17380DxalSzkjKB+x0j9tmnLEpsP6kjzPYaEeBY
-        0qSk1rHAYBTGHCoc6vWIPEA3Oc64XCSVWa0ouYH7PElsO+lKGUbumbN8N5I1Vd/Q
-        ==
-X-ME-Sender: <xms:S9pdYFoJxj24l_lI-f_nkhFeHEROIkWvi9zpHF5VdjWmz7WzZ6KJAw>
-    <xme:S9pdYPQyi1gvDraMNTiFFU3Alngo80nEVdB8PTkQLgogdgi6iT9tXSNas0kzC7o5i
-    Y8x2XsaeVGqsw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehvddggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:S9pdYP3kZOJqgVU1itULwhkwloqyOVDLyciM5IM0Bgq6Gx6Rrsiw2w>
-    <xmx:S9pdYLCLeR1BherHoFdkFHe-bBOm8OzNFGKnDMcDvgHI6iMw7rx-TA>
-    <xmx:S9pdYLi3aZsuLTErWxPYpjTKy8RNVKm5vPIH1TrhJciwD55H93JoEw>
-    <xmx:TdpdYN9K4VlrubDVQiM8PpB13qWWiq_1gKeK42i_s3Pewzlthl6weA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 5531124005D;
-        Fri, 26 Mar 2021 08:57:47 -0400 (EDT)
-Date:   Fri, 26 Mar 2021 13:57:44 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
-        mgorman@suse.de, juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, joshdon@google.com, valentin.schneider@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
-Message-ID: <YF3aSJ7OYiCpWsl8@kroah.com>
-References: <20210326103352.603456266@infradead.org>
- <20210326103935.183934395@infradead.org>
- <YF2/41K4xs3ZOQdV@kroah.com>
- <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
- <YF3F0JbbEpeSGzW6@kroah.com>
- <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
- <70594935-18e6-0791-52f9-0448adf37155@rasmusvillemoes.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70594935-18e6-0791-52f9-0448adf37155@rasmusvillemoes.dk>
+        id S230083AbhCZM7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230093AbhCZM6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:58:40 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 489C7619BF;
+        Fri, 26 Mar 2021 12:58:40 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lPm2w-003yqm-1z; Fri, 26 Mar 2021 12:58:38 +0000
+Date:   Fri, 26 Mar 2021 12:58:37 +0000
+Message-ID: <87r1k2f4w2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Dey, Megha" <megha.dey@intel.com>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        dave.jiang@intel.com, ashok.raj@intel.com, kevin.tian@intel.com,
+        dwmw@amazon.co.uk, x86@kernel.org, tony.luck@intel.com,
+        dan.j.williams@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+Subject: Re: [Patch V2 13/13] genirq/msi: Provide helpers to return Linux IRQ/dev_msi hw IRQ number
+In-Reply-To: <5bed6fea-32e1-d909-0a5c-439d0f0a7dfe@intel.com>
+References: <1614370277-23235-1-git-send-email-megha.dey@intel.com>
+        <1614370277-23235-14-git-send-email-megha.dey@intel.com>
+        <87y2ebqfw5.wl-maz@kernel.org>
+        <5bed6fea-32e1-d909-0a5c-439d0f0a7dfe@intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: megha.dey@intel.com, tglx@linutronix.de, linux-kernel@vger.kernel.org, dave.jiang@intel.com, ashok.raj@intel.com, kevin.tian@intel.com, dwmw@amazon.co.uk, x86@kernel.org, tony.luck@intel.com, dan.j.williams@intel.com, jgg@mellanox.com, kvm@vger.kernel.org, iommu@lists.linux-foundation.org, alex.williamson@redhat.com, bhelgaas@google.com, linux-pci@vger.kernel.org, baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:53:59PM +0100, Rasmus Villemoes wrote:
-> On 26/03/2021 12.38, Peter Zijlstra wrote:
+On Fri, 26 Mar 2021 01:02:43 +0000,
+"Dey, Megha" <megha.dey@intel.com> wrote:
 > 
-> > Implement debugfs_create_str() to easily display names and such in
-> > debugfs.
+> Hi Marc,
 > 
-> Patches 7-9 don't seem to add any users of this. What's it for precisely?
+> On 3/25/2021 10:53 AM, Marc Zyngier wrote:
+> > On Fri, 26 Feb 2021 20:11:17 +0000,
+> > Megha Dey <megha.dey@intel.com> wrote:
+> >> From: Dave Jiang <dave.jiang@intel.com>
+> >> 
+> >> Add new helpers to get the Linux IRQ number and device specific index
+> >> for given device-relative vector so that the drivers don't need to
+> >> allocate their own arrays to keep track of the vectors and hwirq for
+> >> the multi vector device MSI case.
+> >> 
+> >> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> >> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> >> Signed-off-by: Megha Dey <megha.dey@intel.com>
+> >> ---
+> >>   include/linux/msi.h |  2 ++
+> >>   kernel/irq/msi.c    | 44 ++++++++++++++++++++++++++++++++++++++++++++
+> >>   2 files changed, 46 insertions(+)
+> >> 
+> >> diff --git a/include/linux/msi.h b/include/linux/msi.h
+> >> index 24abec0..d60a6ba 100644
+> >> --- a/include/linux/msi.h
+> >> +++ b/include/linux/msi.h
+> >> @@ -451,6 +451,8 @@ struct irq_domain *platform_msi_create_irq_domain(struct fwnode_handle *fwnode,
+> >>   int platform_msi_domain_alloc_irqs(struct device *dev, unsigned int nvec,
+> >>   				   irq_write_msi_msg_t write_msi_msg);
+> >>   void platform_msi_domain_free_irqs(struct device *dev);
+> >> +int msi_irq_vector(struct device *dev, unsigned int nr);
+> >> +int dev_msi_hwirq(struct device *dev, unsigned int nr);
+> >>     /* When an MSI domain is used as an intermediate domain */
+> >>   int msi_domain_prepare_irqs(struct irq_domain *domain, struct device *dev,
+> >> diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
+> >> index 047b59d..f2a8f55 100644
+> >> --- a/kernel/irq/msi.c
+> >> +++ b/kernel/irq/msi.c
+> >> @@ -581,4 +581,48 @@ struct msi_domain_info *msi_get_domain_info(struct irq_domain *domain)
+> >>   	return (struct msi_domain_info *)domain->host_data;
+> >>   }
+> >>   +/**
+> >> + * msi_irq_vector - Get the Linux IRQ number of a device vector
+> >> + * @dev: device to operate on
+> >> + * @nr: device-relative interrupt vector index (0-based).
+> >> + *
+> >> + * Returns the Linux IRQ number of a device vector.
+> >> + */
+> >> +int msi_irq_vector(struct device *dev, unsigned int nr)
+> >> +{
+> >> +	struct msi_desc *entry;
+> >> +	int i = 0;
+> >> +
+> >> +	for_each_msi_entry(entry, dev) {
+> >> +		if (i == nr)
+> >> +			return entry->irq;
+> >> +		i++;
+> > This obviously doesn't work with Multi-MSI, does it?
+> 
+> This API is only for devices that support device MSI interrupts. They
+> follow MSI-x format and don't support multi MSI (part of MSI).
+> 
+> Not sure if I am missing something here, can you please let me know?
 
-It's used in patch 7, look close :)
+Nothing in the prototype of the function indicates this limitation,
+nor does the documentation. And I'm not sure why you should exclude
+part of the MSI functionality here. It can't be for performance
+reason, so you might as well make sure this works for all the MSI
+variants:
 
+int msi_irq_vector(struct device *dev, unsigned int nr)
+{
+	struct msi_desc *entry;
+	int irq, index = 0;
 
-> 
-> > +
-> > +again:
-> > +	rcu_read_lock();
-> > +	str = rcu_dereference(*(char **)file->private_data);
-> > +	len = strlen(str) + 1;
-> > +
-> > +	if (!copy || copy_len < len) {
-> > +		rcu_read_unlock();
-> > +		kfree(copy);
-> > +		copy = kmalloc(len + 1, GFP_KERNEL);
-> > +		if (!copy) {
-> > +			debugfs_file_put(dentry);
-> > +			return -ENOMEM;
-> > +		}
-> > +		copy_len = len;
-> > +		goto again;
-> > +	}
-> > +
-> > +	strncpy(copy, str, len);
-> > +	copy[len] = '\n';
-> > +	copy[len+1] = '\0';
-> > +	rcu_read_unlock();
-> 
-> As noted (accidentally off-list), this is broken. I think you want this
-> on top
-> 
-> - len = strlen(str) + 1;
-> + len = strlen(str);
-> 
-> - strncpy(copy, str, len);
-> + memcpy(copy, str, len);
->   copy[len] = '\n';
-> - copy[len+1] = '\0';
-> 
-> > +EXPORT_SYMBOL_GPL(debugfs_read_file_str);
-> 
-> Why?
+	for_each_msi_vector(entry, irq, dev) {
+		if (index == nr}
+			return irq;
+		index++;
+	}
 
-Because there is a user of it?  Yes, it's not in a module, but to make
-it easy, might as well export it now.
+	return WARN_ON_ONCE(-EINVAL);
+}
 
-thanks,
+>
+> > 
+> >> +	}
+> >> +	WARN_ON_ONCE(1);
+> >> +	return -EINVAL;
+> >> +}
+> >> +EXPORT_SYMBOL_GPL(msi_irq_vector);
+> >> +
+> >> +/**
+> >> + * dev_msi_hwirq - Get the device MSI hw IRQ number of a device vector
+> >> + * @dev: device to operate on
+> >> + * @nr: device-relative interrupt vector index (0-based).
+> >> + *
+> >> + * Return the dev_msi hw IRQ number of a device vector.
+> >> + */
+> >> +int dev_msi_hwirq(struct device *dev, unsigned int nr)
+> >> +{
+> >> +	struct msi_desc *entry;
+> >> +	int i = 0;
+> >> +
+> >> +	for_each_msi_entry(entry, dev) {
+> >> +		if (i == nr)
+> >> +			return entry->device_msi.hwirq;
+> >> +		i++;
+> >> +	}
+> >> +	WARN_ON_ONCE(1);
+> >> +	return -EINVAL;
+> >> +}
 
-greg k-h
+And this helper would be more generally useful if it returned the n-th
+msi_desc entry rather than some obscure field in a substructure.
+
+struct msi_desc *msi_get_nth_desc(struct device *dev, unsigned int nth)
+{
+	struct msi_desc *entry = NULL;
+	unsigned int i = 0;
+
+	for_each_msi_entry(entry, dev) {
+		if (i == nth)
+			return entry;
+
+		i++;
+	}
+
+	WARN_ON_ONCE(!entry);
+	return entry;
+}
+
+You can always wrap it for your particular use case.
+
+> >> +EXPORT_SYMBOL_GPL(dev_msi_hwirq);
+> >> +
+> >>   #endif /* CONFIG_GENERIC_MSI_IRQ_DOMAIN */
+> > And what uses these helpers?]
+> These helpers are to be used by a driver series(Intel's IDXD driver)
+> which is currently stuck due to VFIO refactoring.
+
+Then I's suggest you keep the helpers together with the actual user,
+unless this can generally be useful to existing users (exported
+symbols without in-tree users is always a bit odd).
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
