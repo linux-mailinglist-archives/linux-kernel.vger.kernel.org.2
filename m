@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2777134AAC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCE834AAC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhCZPAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:00:10 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15326 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230391AbhCZO7w (ORCPT
+        id S230187AbhCZPBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230100AbhCZPAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:59:52 -0400
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12QEljTa083582;
-        Fri, 26 Mar 2021 10:59:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=AS6eW86kgLOTiFOOTSd0EIVSd5PzRbFjIJX/ejOgIV4=;
- b=ZGtRHB3yp38AJR0PDUWxCCjF/SGelvjqx/ANZwKBit8PVXEDdI2mEvD5ADw2bvVg+Xwb
- aovEX138hRSxW4mgvF1oJfH5kktgdqiCX9x+meRU/+wHKl56JCxWfiIdFYO3beManOuJ
- zZTKRFRejeVo8rL5Xg7nZGKLCYGxBF55E0WkPU3TObJ1TCaEIm1ThUXLkRfF5wUKPYD0
- rr0MeX0zNsUqfNNRsLPMzm/q/FaWiXYKvRlOoermNRioxyBRkqsu3GfwApu1ZlI5VMGK
- zkLIpwq/5t5u5nV+kWPCMHgIFUdfedokNLpzVqWDJAxMoTZz52odY7srWiqKuYrETjhO JQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37hhpm0ahp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Mar 2021 10:59:25 -0400
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12QEoHxE104028;
-        Fri, 26 Mar 2021 10:59:24 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37hhpm0afe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Mar 2021 10:59:21 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12QEqMI4023765;
-        Fri, 26 Mar 2021 14:59:18 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 37h15a8rb6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Mar 2021 14:59:18 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12QEwvrr31785324
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 14:58:57 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 46D714204B;
-        Fri, 26 Mar 2021 14:59:16 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E3B1842042;
-        Fri, 26 Mar 2021 14:59:15 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 26 Mar 2021 14:59:15 +0000 (GMT)
-Received: from [9.206.172.36] (unknown [9.206.172.36])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id A8658605FD;
-        Sat, 27 Mar 2021 01:59:11 +1100 (AEDT)
-Subject: Re: [PATCH] powerpc: powernv: Remove unneeded variable: "rc"
-To:     dingsenjie@163.com, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org
-Cc:     dingsenjie <dingsenjie@yulong.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210326115356.12444-1-dingsenjie@163.com>
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-Message-ID: <c9c208e3-dec3-282b-b782-ab8574be16a9@linux.ibm.com>
-Date:   Sat, 27 Mar 2021 01:59:05 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Fri, 26 Mar 2021 11:00:48 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152A6C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:00:48 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id e7so6626446edu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uzYeVMLWtYWQz05xWB069OFUBHR89kN8Qxc22E4Cdhg=;
+        b=uH147oDZLF79lf5uu1CDTjiXo37gA07GguBjQ8vdQcMJ1TR7wKuxecUGFVUW1IKZ/L
+         0B4ZjWOnkBZ/oZChaqnQWG+2l8zX8YgR/oAOdWI+YPbO47/Z8aB2fhE1w1pSZmJP/58B
+         NfwzIH3/6sCUSkdiMZnOzUl0ZO0CAaz/7rXsbAmYx+Q0gCPLgEUgGsbvYfYc9uxWD48w
+         su5AlcAPt1oYYaGldaNn2r8No97Oo7I1ud8cq+zOqlrNvjgkggi34hs7wP6yFnLpTjij
+         42QvY8Njv0v9+ggnGvQpm2a4TuJG8v4GkmkH/bR3lug5qTzQfp97ymzVQxMFoRa2H6ww
+         bLRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uzYeVMLWtYWQz05xWB069OFUBHR89kN8Qxc22E4Cdhg=;
+        b=YsQCaq+AxLZrnzmJBr3VoPISTxnAuCEXsi9Tlm6edMZxlFb088GBeqaZWATo/XTYzf
+         nWH4sseSbKWfmuNVotuyJ3m/fF86WbbXI2eA2eafm7K9OiVaYH+8FbfCMwzwS2pJiLyb
+         L2If4/c1lL5Z2o1G6WQHNC6Jk0FgrArIrO0qMlZKxRnEPUTGvjWNaynJ97cLTjgJ37AH
+         IsmaCP8n7D3uumix90PYQN1EtG8pBTR8IBxALNx76BgydhUT2h2YV1lSTdC8av56IwVo
+         XRQiavRPn5HcidQMsT3ZTJHmwo9ArehNry9eeP5+rxA3HVyB7874VfEq40yudWlN1Hl4
+         cE8A==
+X-Gm-Message-State: AOAM533tZbQJlKaPYnH+ez91mOi3MuXorbVJiE3ikSdHs4D/WuZt+Qln
+        NBc4Wjcq9c85rf7mcqL+mmjLcgWmhqQEnp+/ev0=
+X-Google-Smtp-Source: ABdhPJyfk9YyNSM1GH7XdMq80e/gEUw0RxPC5o+TlFgrqevLZuNygZjNsvE755NqY3NmHmsEbNmubu5zdS1pkqCQCBI=
+X-Received: by 2002:aa7:dbd3:: with SMTP id v19mr15496635edt.314.1616770845023;
+ Fri, 26 Mar 2021 08:00:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210326115356.12444-1-dingsenjie@163.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Yt5C0hhkCVtEn2FV57hY2eum73jgBzmn
-X-Proofpoint-ORIG-GUID: UxMYX0yhNppBQB38iOXNSTjWrUwsqRZh
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-26_06:2021-03-26,2021-03-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- adultscore=0 suspectscore=0 impostorscore=0 mlxlogscore=939 spamscore=0
- phishscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103260112
+References: <20210326112650.307890-1-slyfox@gentoo.org> <4e23d404-5125-6c9c-4aa7-5eff0fa1ba33@redhat.com>
+In-Reply-To: <4e23d404-5125-6c9c-4aa7-5eff0fa1ba33@redhat.com>
+From:   Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Fri, 26 Mar 2021 16:00:34 +0100
+Message-ID: <CA+fCnZeC8AWearU9CQaYrFM-ZCUaQpX1e7vBkRMNtqqf_=ucGA@mail.gmail.com>
+Subject: Re: [PATCH] mm: page_alloc: ignore init_on_free=1 for page alloc
+To:     David Hildenbrand <david@redhat.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/3/21 10:53 pm, dingsenjie@163.com wrote:
-> From: dingsenjie <dingsenjie@yulong.com>
-> 
-> Remove unneeded variable: "rc".
-> 
-> Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+On Fri, Mar 26, 2021 at 2:49 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> > I observed use of poisoned pages as the crash on ia64 booted with
+> > init_on_free=1 init_on_alloc=1 (CONFIG_PAGE_POISONING=y config).
+> > There pmd page contained 0xaaaaaaaa poison pages and led to early crash.
+> >
+> > The change drops the assumption that init_on_free=1 guarantees free
+> > pages to contain zeros.
+> >
+> > Alternative would be to make interaction between runtime poisoning and
+> > sanitizing options and build-time debug flags like CONFIG_PAGE_POISONING
+> > more coherent. I took the simpler path.
+> >
+>
+> I thought latest work be Vlastimil tried to tackle that. To me, it feels
+> like page_poison=on  and init_on_free=1 should bail out and disable one
+> of both things. Having both at the same time doesn't sound helpful.
 
-This looks obviously correct and doesn't raise any checkpatch warnings.
+This is exactly how it works, see init_mem_debugging_and_hardening().
 
-Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
-
--- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+Sergei, could you elaborate more on what kind of crash this patch is
+trying to fix? Where does it happen and why?
