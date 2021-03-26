@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC1734A266
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8503E34A26B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbhCZHPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 03:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbhCZHOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 03:14:44 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE5DC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 00:14:42 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id u8so3583546qtq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 00:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yUOq+i+za9mFTcUR2ItQ5M1T1uiann3mxCOMoYcUQ5Q=;
-        b=lgotakyfSrhsEC1uVtkh1GQkls20zL1aqZXfAnYHISIrU4o3OgldfmxCUGGMDTRu4U
-         14+2fGXQMvlY4l8R1QpJoJvVOVVv8bvXhZ4dPaUtrU74DxB62D0t4+Q+5H2PMF5q302/
-         04UdZRQVOfRSIeT/yEHM0bMiKzJeqArZtMnI3qcK49nBOw40r6XqCl2PVhzmzihwjr6D
-         rL8PymTsMwQFP1s786fNcCfiBHK7nI8v94FxNhvuwWfZMX7cv6dCxxrMQ2p0C7VyhIN0
-         AaA8eX4D/FSbixhfscP/QDjpQTrbyXfCWv1FQlmw4rKghhws+SSnLqD+Qu+AG5l2OKJE
-         egng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yUOq+i+za9mFTcUR2ItQ5M1T1uiann3mxCOMoYcUQ5Q=;
-        b=tQYOgTqapMrwjUNuvBjdcvo9KIe8RJp7MW0zZebisL+UlA1w4a5HLFVc2yAjfw3eGB
-         MVegtOLwOzFl9/5I+J78DfxLQvxBovg+ABqX8t9bf9TlInztfAO++O3huLIfKGJf3r6x
-         osUYDOtvAYVTBmW/uzqw+GEVT0rE6STe9rpEWViwTBm+zORcLXLegyDOhoyyfKif123Z
-         rzZ3EMu2QBdKg93sRG3/YneUGlQOXkQHctrlrlYgJhxehJYK1GRPzeVH5dCRzaXBlgFj
-         70WCgE4hhpiXtnCI/3u7SsT1ZCogWC2MSLOBD4U7ga6CHXLN7KKR/Lx8FL4ZedPr8D7q
-         FmAg==
-X-Gm-Message-State: AOAM532ErIHzMvPhbhGueERT7XZA43a19qlFEQf7qT1ay5rZXPpZI0gD
-        S6Ku1kgbK6QBEdl6pDTQto4WVMIEKJ95mPI5zCNTYQ==
-X-Google-Smtp-Source: ABdhPJwIKh5eNAF8ll48qY6zktjfiidWxE1IDLeOoczNGg4gmlVgaBtUIymLzERUTryf44FJtHdpDLtslxowH0R1GE8=
-X-Received: by 2002:ac8:6696:: with SMTP id d22mr11159167qtp.67.1616742881258;
- Fri, 26 Mar 2021 00:14:41 -0700 (PDT)
+        id S230300AbhCZHRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 03:17:14 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:33668 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229889AbhCZHQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 03:16:42 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lPghR-00012L-1v; Fri, 26 Mar 2021 18:16:06 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 18:16:04 +1100
+Date:   Fri, 26 Mar 2021 18:16:04 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     "Dragos Rosioru (OSS)" <dragos.rosioru@oss.nxp.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Petr Mladek <pmladek@suse.com>, Jiri Kosina <jikos@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Marek Vasut <marex@denx.de>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 1/1] crypto: dcp - add power management support
+Message-ID: <20210326071604.GB14594@gondor.apana.org.au>
+References: <1616113377-24703-1-git-send-email-dragos.rosioru@oss.nxp.com>
+ <1616113377-24703-2-git-send-email-dragos.rosioru@oss.nxp.com>
 MIME-Version: 1.0
-References: <20210325212202.142945-1-alaaemadhossney.ae@gmail.com> <YF2JF+UMdt/icEMj@kroah.com>
-In-Reply-To: <YF2JF+UMdt/icEMj@kroah.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 26 Mar 2021 08:14:30 +0100
-Message-ID: <CACT4Y+Y8f6-c6zYCN=d0557xEryAzBfS9n2m=vBcdjHSi5gYcw@mail.gmail.com>
-Subject: Re: [PATCH] media: sq905.c: fix uninitialized variable
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616113377-24703-2-git-send-email-dragos.rosioru@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 8:11 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Mar 25, 2021 at 11:22:02PM +0200, Alaa Emad wrote:
-> > Reported-by: syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-> > Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-> > ---
->
-> I know I do not take patches with no changelog text, but other
-> maintainers might be more leniant :(
+On Fri, Mar 19, 2021 at 02:22:57AM +0200, Dragos Rosioru (OSS) wrote:
+> From: Dragos Rosioru <dragos.rosioru@nxp.com>
+> 
+> Added suspend/resume operations for PM support in the DCP driver.
+> After a suspend/resume cycle DCP would still be in a low-power mode
+> and have its clocks gated, thus requiring state to be saved beforehand:
+> - Control register value(DCP_CTRL)
+> - Channel control register value(DCP_CHANNELCTRL)
+> 
+> Signed-off-by: Dragos Rosioru <dragos.rosioru@nxp.com>
+> ---
+>  drivers/crypto/mxs-dcp.c | 76 ++++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 74 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
+> index d6a7784..6748a4a 100644
+> --- a/drivers/crypto/mxs-dcp.c
+> +++ b/drivers/crypto/mxs-dcp.c
+> @@ -23,6 +23,10 @@
+>  #include <crypto/internal/skcipher.h>
+>  #include <crypto/scatterwalk.h>
+>  
+> +#ifdef CONFIG_PM_SLEEP
+> +#include <linux/freezer.h>
+> +#endif
 
-I wonder if it's the right fix or not.
-Initializing variables will, of course, silence the warning, but it's
-not necessarily the right fix. I suspect there is something wrong in
-how ret/act_len are user/checked.
+Please find a way to rework this patch so that it's not full of
+these ifdefs.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
