@@ -2,250 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1D434AA62
+	by mail.lfdr.de (Postfix) with ESMTP id 994FB34AA63
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCZOo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:44:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S230195AbhCZOo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229779AbhCZOo0 (ORCPT
+        with ESMTP id S230179AbhCZOou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:44:26 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D529EC0613AA;
-        Fri, 26 Mar 2021 07:44:24 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 32BA51F46FE6
-Subject: Re: [PATCH 1/2] media: videobuf2: use dmabuf size for length
-To:     John Cox <jc@kynesim.co.uk>
-Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
-        kernel@collabora.com, linux-kernel@vger.kernel.org,
-        laurent.pinchart@ideasonboard.com, dave.stevenson@raspberrypi.org,
-        tfiga@chromium.org
-References: <20210325001712.197837-1-helen.koike@collabora.com>
- <afno5g9a14fmf7tj1uq0e9pciflop2rv3k@4ax.com>
- <e67265d4-0641-e6d5-a939-9aa05f2214a6@collabora.com>
- <8omr5gd5r4qm7d9l6l5grhlgj3c2h7di88@4ax.com>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <88f114f0-96d1-7c9d-1c0f-19fc1f2a8220@collabora.com>
-Date:   Fri, 26 Mar 2021 11:44:14 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Mar 2021 10:44:50 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11664C0613B4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:44:50 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id w18so6674142edc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:44:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rIvv+tA1LMtQGGiDuq1c1q8EFA36Pgjy5WH53f7HNx4=;
+        b=iYunu1vYc+nYwytgwT0664RyXaLgIIwSfKZuAagqasIYu9jy9foMpyWg8GYSfAPoSl
+         7gXmommvATo5YilSMCWKppg6LleO/43CCNHA5B/ru6Jk9NMhwzLrSDFzr+PaGarm07W7
+         mBEkYdqmxjgNwwSk3y9oMCN94y3a4cOYuEb01nuzMH/0mqtLNYzzrVRIT/+ZbQBty8W9
+         DoeDDyGU2UhxKa2OOCRbp8rXwfrOEd5I+reszDYXU/CDUOhm55Da+3J7D9UXrfsMjDCR
+         LtmDAYZ2TfiSrOTrb9+jife+nA0bQs7GxtgJWytM/0bTimRuWkn57mcH3yp8a70YHvQP
+         WdBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rIvv+tA1LMtQGGiDuq1c1q8EFA36Pgjy5WH53f7HNx4=;
+        b=FGgSJ6RgumwdDU00QJLzjoxH3YypD+jryU8MfgOx9FkJxRnkAO2CE5kItSYbhasNdC
+         j73RbtqXRPnBDO5Ga2nAohVpIyxfmGgDeKqSH57fOQse5xhrosGqv3iPB4RnMOR4yc4G
+         xMr3iXphRx9AfozNS8aXM3Lwpxm7l3b9XoIqHImPgCVfhikICfyUADart3Bu8rCzCJwy
+         Jff2oV4DXVZUP+YDrv16is4uFF3eF2tN9o/df8PjIh08ZrPFxU2OgkNr7jXTEu7bU0ad
+         QBp+X5hbBbIcciAoy+S+bgHEDPb2e6LHFuUuLlYw/SIV+IHW2Do/NhbISnV0WmMjc4rf
+         YZNw==
+X-Gm-Message-State: AOAM532XmWcc9NYXq8A/0x0xt4G6wzZEB6LHvpzODseQHD4ZWzLcm5pO
+        9+O9MiaO25h9mG+u9oUWkwODMPETjUF8NZjhQjH2nw==
+X-Google-Smtp-Source: ABdhPJyu4ZYMKthWiIfIsLH5cJYN/YmYPXtv3Hl6Hl6YxrLqty3+4cM/fQnPI6E5xbB/otdrwsE35jlQjEFjqhXSpzo=
+X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr15385463edy.232.1616769888652;
+ Fri, 26 Mar 2021 07:44:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <8omr5gd5r4qm7d9l6l5grhlgj3c2h7di88@4ax.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+ <50f72f1f7f28e969a1e0353712fcc530bce9dd06.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAMpxmJVjnAMig16qWkjpaHwQ+4Ld9yEc-gg-CGv28QQYBB6gNg@mail.gmail.com> <afaff71f75cd476c828671779acd1a3f8b66b62c.camel@fi.rohmeurope.com>
+In-Reply-To: <afaff71f75cd476c828671779acd1a3f8b66b62c.camel@fi.rohmeurope.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 26 Mar 2021 15:44:38 +0100
+Message-ID: <CAMpxmJXe9EVaDooPYphRV_500Dd9fU7WQHAFFL_-2-usxZG9kA@mail.gmail.com>
+Subject: Re: [PATCH v2 10/17] gpio: support ROHM BD71815 GPOs
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Mar 23, 2021 at 10:57 AM Vaittinen, Matti
+<Matti.Vaittinen@fi.rohmeurope.com> wrote:
+>
+>
+> On Tue, 2021-01-19 at 12:07 +0100, Bartosz Golaszewski wrote:
+> > On Tue, Jan 19, 2021 at 8:23 AM Matti Vaittinen
+> > <matti.vaittinen@fi.rohmeurope.com> wrote:
+> > > Support GPO(s) found from ROHM BD71815 power management IC. The IC
+> > > has two
+> > > GPO pins but only one is properly documented in data-sheet. The
+> > > driver
+> > > exposes by default only the documented GPO. The second GPO is
+> > > connected to
+> > > E5 pin and is marked as GND in data-sheet. Control for this
+> > > undocumented
+> > > pin can be enabled using a special DT property.
+> > >
+> > > This driver is derived from work by Peter Yang <
+> > > yanglsh@embest-tech.com>
+> > > although not so much of original is left.
+> > >
+> > > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> >
+> > Hi Matti,
+> >
+> > looks great, just a couple nits.
+>
+> Hello Bartosz,
+>
+> I think fixed all the nits to v3. Can I translate this to an ack? (I
+> will respin the series as I guess the regulator part may have fallen
+> through the cracks so I'd like to add the relevant acks :] )
+>
+> Best Regards
+>         Matti Vaittinen
 
+Yes:
 
-On 3/26/21 10:03 AM, John Cox wrote:
-> Hi Helen
-> 
->> Hi John,
->>
->> On 3/25/21 7:20 AM, John Cox wrote:
->>> Hi
->>>
->>>> Always use dmabuf size when considering the length of the buffer.
->>>> Discard userspace provided length.
->>>> Fix length check error in _verify_length(), which was handling single and
->>>> multiplanar diferently, and also not catching the case where userspace
->>>> provides a bigger length and bytesused then the underlying buffer.
->>>>
->>>> Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
->>>> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->>>> ---
->>>>
->>>> Hello,
->>>>
->>>> As discussed on
->>>> https://patchwork.linuxtv.org/project/linux-media/patch/gh5kef5bkeel3o6b2dkgc2dfagu9klj4c0@4ax.com/
->>>>
->>>> This patch also helps the conversion layer of the Ext API patchset,
->>>> where we are not exposing the length field.
->>>>
->>>> It was discussed that userspace might use a smaller length field to
->>>> limit the usage of the underlying buffer, but I'm not sure if this is
->>>> really usefull and just complicates things.
->>>>
->>>> If this is usefull, then we should also expose a length field in the Ext
->>>> API, and document this feature properly.
->>>>
->>>> What do you think?
->>>> ---
->>>> .../media/common/videobuf2/videobuf2-core.c   | 21 ++++++++++++++++---
->>>> .../media/common/videobuf2/videobuf2-v4l2.c   |  8 +++----
->>>> include/uapi/linux/videodev2.h                |  7 +++++--
->>>> 3 files changed, 27 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->>>> index 02281d13505f..2cbde14af051 100644
->>>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->>>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->>>> @@ -1205,6 +1205,7 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
->>>>
->>>> 	for (plane = 0; plane < vb->num_planes; ++plane) {
->>>> 		struct dma_buf *dbuf = dma_buf_get(planes[plane].m.fd);
->>>> +		unsigned int bytesused;
->>>>
->>>> 		if (IS_ERR_OR_NULL(dbuf)) {
->>>> 			dprintk(q, 1, "invalid dmabuf fd for plane %d\n",
->>>> @@ -1213,9 +1214,23 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
->>>> 			goto err;
->>>> 		}
->>>>
->>>> -		/* use DMABUF size if length is not provided */
->>>> -		if (planes[plane].length == 0)
->>>> -			planes[plane].length = dbuf->size;
->>>> +		planes[plane].length = dbuf->size;
->>>> +		bytesused = planes[plane].bytesused ?
->>>> +			    planes[plane].bytesused : dbuf->size;
->>>> +
->>>> +		if (planes[plane].bytesused > planes[plane].length) {
->>>> +			dprintk(q, 1, "bytesused is bigger then dmabuf length for plane %d\n",
->>>> +				plane);
->>>> +			ret = -EINVAL;
->>>> +			goto err;
->>>> +		}
->>>> +
->>>> +		if (planes[plane].data_offset >= bytesused) {
->>>> +			dprintk(q, 1, "data_offset >= bytesused for plane %d\n",
->>>> +				plane);
->>>> +			ret = -EINVAL;
->>>> +			goto err;
->>>> +		}
->>>>
->>>> 		if (planes[plane].length < vb->planes[plane].min_length) {
->>>> 			dprintk(q, 1, "invalid dmabuf length %u for plane %d, minimum length %u\n",
->>>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>>> index 7e96f67c60ba..ffc7ed46f74a 100644
->>>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>>> @@ -98,14 +98,14 @@ static int __verify_length(struct vb2_buffer *vb, const struct v4l2_buffer *b)
->>>> 	unsigned int bytesused;
->>>> 	unsigned int plane;
->>>>
->>>> -	if (V4L2_TYPE_IS_CAPTURE(b->type))
->>>> +	/* length check for dmabuf is performed in _prepare_dmabuf() */
->>>> +	if (V4L2_TYPE_IS_CAPTURE(b->type) || b->memory == VB2_MEMORY_DMABUF)
->>>> 		return 0;
->>>>
->>>> 	if (V4L2_TYPE_IS_MULTIPLANAR(b->type)) {
->>>> 		for (plane = 0; plane < vb->num_planes; ++plane) {
->>>> -			length = (b->memory == VB2_MEMORY_USERPTR ||
->>>> -				  b->memory == VB2_MEMORY_DMABUF)
->>>> -			       ? b->m.planes[plane].length
->>>> +			length = b->memory == VB2_MEMORY_USERPTR
->>>> +				? b->m.planes[plane].length
->>>> 				: vb->planes[plane].length;
->>>> 			bytesused = b->m.planes[plane].bytesused
->>>> 				  ? b->m.planes[plane].bytesused : length;
->>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->>>> index 8d15f6ccc4b4..79b3b2893513 100644
->>>> --- a/include/uapi/linux/videodev2.h
->>>> +++ b/include/uapi/linux/videodev2.h
->>>> @@ -968,7 +968,9 @@ struct v4l2_requestbuffers {
->>>> /**
->>>>    * struct v4l2_plane - plane info for multi-planar buffers
->>>>    * @bytesused:		number of bytes occupied by data in the plane (payload)
->>>> - * @length:		size of this plane (NOT the payload) in bytes
->>>> + * @length:		size of this plane (NOT the payload) in bytes. Filled
->>>> + *			by userspace for USERPTR and by the driver for DMABUF
->>>> + *			and MMAP.
->>>>    * @mem_offset:		when memory in the associated struct v4l2_buffer is
->>>>    *			V4L2_MEMORY_MMAP, equals the offset from the start of
->>>>    *			the device memory for this plane (or is a "cookie" that
->>>> @@ -1025,7 +1027,8 @@ struct v4l2_plane {
->>>>    * @m:		union of @offset, @userptr, @planes and @fd
->>>>    * @length:	size in bytes of the buffer (NOT its payload) for single-plane
->>>>    *		buffers (when type != *_MPLANE); number of elements in the
->>>> - *		planes array for multi-plane buffers
->>>> + *		planes array for multi-plane buffers. Filled by userspace for
->>>> + *		USERPTR and by the driver for DMABUF and MMAP.
->>>>    * @reserved2:	drivers and applications must zero this field
->>>>    * @request_fd: fd of the request that this buffer should use
->>>>    * @reserved:	for backwards compatibility with applications that do not know
->>>
->>> I think this does what I want. But I'm going to restate my usage desires
->>> and check that you agree that it covers them.
->>>
->>> I'm interested in passing compressed bitstreams to a decoder.  The size
->>> of these buffers can be very variable and the worst case will nearly
->>> always be much larger than the typical case and that size cannot be
->>> known in advance of usage.  It can be very wasteful to have to allocate
->>> buffers that are over an order of magnitude bigger than are likely to
->>> ever be used.  If you have a fixed pool of fixed size buffers allocated
->>> at the start of time this wastefulness is unavoidable, but dmabufs can
->>> be dynamically sized to be as big as required and so there should be no
->>> limitation on passing in buffers that are smaller than the maximum.  It
->>
->> Do you mean that the kernel should re-allocate the buffer dynamically
->> without userspace intervention?
->> I'm not entirely sure if this would be possible.
-> 
-> No - I didn't mean that at all.  Any reallocation would be done by the
-> user.  I was just setting out why damabufs are different from (and more
-> useful than) MMAP buffers for bitstream-like purposes.
-
-Right, thanks for the clarification.
-
-> 
-> Regards
-> 
-> John Cox
-> 
->> Regards,
->> Helen
->>
->>
->>> also seems plausible that dmabufs that are larger than the maximum
->>> should be allowed as long as their bytesused is smaller or equal.
-
-If I understand correctly, the requirements would be:
-
-(consider maximum being the length/boundary provided by userspace).
-
-(1) bytesused <= maximum && bytesused <= dmabuf_length, this must always be true.
-(2) maximum <= dmabuf_length is always ok.
-(3) dmabuf_length <= maximum is ok as long (1) is still true.
-if dmabuf_length <= maximum, but bytesused > maximum, then it is not ok.
-
-Make sense?
-
-We could save in vb2:
-bytesused_max = maximum ? min(maximum, dmabuf_length) : dmabuf_length;
-
-Then drivers could check if if bytesused <= bytesused_max,
-and we don't need to check dma_length against the maximum value.
-
-Or maybe there is little value in letting userspace define a maximum.
-
-What do you think we should do? Remove the maximum (as implemented in this patch)?
-Or just comparing against bytesused_max is enough (which would keeping the boundary
-feature) ?
-
-I would prefer to remove the maximum if there is no value for userspace, since
-this would make things easier for the Ext API implementation.
-
->>>
->>> As an aside, even when using dynamically sized dmabufs they are often
->>> way larger than the data they contain and forcing cache flushes or maps
->>> of their entire length rather than just the used portion is also
->>> wasteful.  This might be a use for the incoming size field.
-
-I guess this can be achieved using the bytesused field.
-
-Regards,
-Helen
-
->>>
->>> Regards
->>>
->>> John Cox
->>>
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
