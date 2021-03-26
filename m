@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A6E34AE31
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B49F34AE35
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:02:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCZSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41300 "EHLO
+        id S230223AbhCZSC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:02:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhCZSBo (ORCPT
+        with ESMTP id S230107AbhCZSCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:01:44 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F905C0613AA;
-        Fri, 26 Mar 2021 11:01:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:Cc:To;
-        bh=7GniqRgzCLvZmOx96mv2S+cpvm0g0MahWxmtLxbiybw=; b=pWTDbLuQOaerMBtIIHWy8RQFR2
-        Ng9qZNkYKCtBIalSGGJrzArqkb3Ljz0EwAbiKOScYmgGhX6cewWoP4GQw411Hq10GVjRapGoOIx/H
-        bSH70mlnFG1OYxiHKcva8lgI+ACi8yDCD0DJNIF4ltCRTV9ik7gzh/C7oJfooaR178H24EIGiSux3
-        4WkT7XlthfJ1m6PttTiumD4ecycuasRWjtirApecSrzawSHN0RejYHQVFPgY8ZvlhuBKE0gyJDYVI
-        bTv1dbGH5s7n7lbnUtXDI8FXJ5cUAI3BzndG49NbmH6xk3xq1Tb5aoOtvWdnxvp5DKpTRq5FP4UpY
-        /s5JXGDSN22YaKQVS0HKj6SQOPGQIWzhwlmndi7uO2J54X63CyqsvGvLLSKzaAvtlNJdP3GdVf/FH
-        JC6DbVEYPUfphVyrGRYqGwmL73ch9bQ3m9GMOkAI/grcECyhkAdmgw8H5PnXkxr0O9iJhejnsqAC1
-        T2G53SYN9i87L9NtgoTzopMy;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lPqmA-0004bj-F7; Fri, 26 Mar 2021 18:01:38 +0000
-Subject: Re: [PATCH 2/8] kernel: unmask SIGSTOP for IO threads
-To:     Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        ebiederm@xmission.com, linux-kernel@vger.kernel.org
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <20210326003928.978750-3-axboe@kernel.dk> <20210326134840.GA1290@redhat.com>
- <a179ad33-5656-b644-0d92-e74a6bd26cc8@kernel.dk>
- <8f2a4b48-77c9-393f-5194-100ed63c05fc@samba.org>
- <58f67a8b-166e-f19c-ccac-157153e4f17c@kernel.dk>
-From:   Stefan Metzmacher <metze@samba.org>
-Message-ID: <c61fc5eb-c997-738b-1a60-5e3db2754f49@samba.org>
-Date:   Fri, 26 Mar 2021 19:01:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Mar 2021 14:02:21 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C257EC0613AA;
+        Fri, 26 Mar 2021 11:02:20 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ha17so2938644pjb.2;
+        Fri, 26 Mar 2021 11:02:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sTtckNqfgPJECPo3DysCtidoRhR82TGqjwDr082dzvc=;
+        b=HomMG5tmEE57XL9UIQbKSe3ws0sltJL4iaupR7VFjVqM1YI91NSi7ki8cYXfIdaACT
+         EDp5XeM96/4RSzm/womxj3+9BulgMihM4RzbsjzXc81sUgks1Ktb8MnmcBRrwY1sNVwd
+         NUq/GCJN6brC1caudBGuNt6+WiT2mP1IhHWm75tORLvvX3cy1QjU2AGsrXkLPd4Z/IcG
+         Gv9E6j0kdhneKcVJuxw2tpsTaUenMyhyqmBUatew1rqQtlaVvB5KFTvm87k1qfg78Faj
+         hVRftML1t3fFQ0hNza1R3Q7ytWTx+4aSK3LjYFyt5iQtOoex28P6YKf6ACu15JKfaqtg
+         XeUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sTtckNqfgPJECPo3DysCtidoRhR82TGqjwDr082dzvc=;
+        b=tQqklmT4/m8WqcYftI9ZUQ3SpFLKC3UIIjlX8JAsNX6PkiydsznuXO2xrfgd6jMJZP
+         r99R0WYPwemSyfsmhFCQS+tGbOTrXx6gz1cCBWITZmiMQMi5JOzZrPafqLvd2e7xGFVx
+         URDUEhon/ROOgmGIp4y0sbGajE1s+JUbjZijYLm/J6LSFBEv1HHD8XFPuPPxnTcX1tL2
+         4+ClLnFBGjTcwwQnrVJjVdjduD76nOHMm0n7W8xFlBedGpTUm9nexoJ0msmxvW9DqvBM
+         Qa1JohZdNLvTp4sWF/gt0LAF9FzBh5j4qBiwbLjXLl3FmqTmXO3yg6i1mh/qBEBMllVL
+         PYnw==
+X-Gm-Message-State: AOAM5303uuvyPP1Y5XiDgm/JheMXGQ5cYIAVIRybkTjp5gMP/hx1aX0Q
+        1DDV6RLA3GBYfzakqHp9jJC8hzt0EDNGIQ1afWc=
+X-Google-Smtp-Source: ABdhPJzlqlgSsQUclAQDsiUesqjn/B6oZXOCRD46IejEbRTKqwacQen8AxHw4iQQ6ma+vJLqJTvB288AfGYgWyqANk8=
+X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr15149555pjr.228.1616781740355;
+ Fri, 26 Mar 2021 11:02:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <58f67a8b-166e-f19c-ccac-157153e4f17c@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+In-Reply-To: <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 26 Mar 2021 20:02:04 +0200
+Message-ID: <CAHp75VfJ5bGaPkai_adsBoT6=7nS2K8ze0ka3gzZkQARkM5evA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     Syed Nayyar Waris <syednwaris@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 26.03.21 um 16:29 schrieb Jens Axboe:
-> On 3/26/21 9:23 AM, Stefan Metzmacher wrote:
->> Am 26.03.21 um 16:01 schrieb Jens Axboe:
->>> On 3/26/21 7:48 AM, Oleg Nesterov wrote:
->>>> Jens, sorry, I got lost :/
->>>
->>> Let's bring you back in :-)
->>>
->>>> On 03/25, Jens Axboe wrote:
->>>>>
->>>>> With IO threads accepting signals, including SIGSTOP,
->>>>
->>>> where can I find this change? Looks like I wasn't cc'ed...
->>>
->>> It's this very series.
->>>
->>>>> unmask the
->>>>> SIGSTOP signal from the default blocked mask.
->>>>>
->>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>>> ---
->>>>>  kernel/fork.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/kernel/fork.c b/kernel/fork.c
->>>>> index d3171e8e88e5..d5a40552910f 100644
->>>>> --- a/kernel/fork.c
->>>>> +++ b/kernel/fork.c
->>>>> @@ -2435,7 +2435,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
->>>>>  	tsk = copy_process(NULL, 0, node, &args);
->>>>>  	if (!IS_ERR(tsk)) {
->>>>>  		sigfillset(&tsk->blocked);
->>>>> -		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
->>>>> +		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
->>>>
->>>> siginitsetinv(blocked, sigmask(SIGKILL)|sigmask(SIGSTOP)) but this is minor.
->>>
->>> Ah thanks.
->>>
->>>> To remind, either way this is racy and can't really help.
->>>>
->>>> And if "IO threads accepting signals" then I don't understand why. Sorry,
->>>> I must have missed something.
->>>
->>> I do think the above is a no-op at this point, and we can probably just
->>> kill it. Let me double check, hopefully we can just remove this blocked
->>> part.
->>
->> Is this really correct to drop in your "kernel: stop masking signals in create_io_thread()"
->> commit?
->>
->> I don't assume signals wanted by userspace should potentially handled in an io_thread...
->> e.g. things set with fcntl(fd, F_SETSIG,) used together with F_SETLEASE?
-> 
-> I guess we do actually need it, if we're not fiddling with
-> wants_signal() for them. To quell Oleg's concerns, we can just move it
-> to post dup_task_struct(), that should eliminate any race concerns
-> there.
+On Sat, Mar 6, 2021 at 4:08 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
 
-If that one is racy, don' we better also want this one?
-https://lore.kernel.org/io-uring/438b738c1e4827a7fdfe43087da88bbe17eedc72.1616197787.git.metze@samba.org/T/#u
+> +       bitmap_set_value(old, 64, state[0], 32, 0);
+> +       bitmap_set_value(old, 64, state[1], 32, 32);
 
-And clear tsk->pf_io_worker ?
+Isn't it effectively bitnap_from_arr32() ?
 
-metze
+> +       bitmap_set_value(new, 64, state[0], 32, 0);
+> +       bitmap_set_value(new, 64, state[1], 32, 32);
+
+Ditto.
+
+-- 
+With Best Regards,
+Andy Shevchenko
