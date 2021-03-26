@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A177F349D93
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511C8349DA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:21:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhCZAUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229760AbhCZAUK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:20:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 454BB61A47;
-        Fri, 26 Mar 2021 00:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616718010;
-        bh=K28CxKpBygcwNzxyTTTRsvvZHGqBl3IumiPKXrYfIL4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=h3+B48LsUVi0LuEH/3WI7RjLN5luBS6vir8OXWcJSzgvcFLUqlBj+thiUuqswOAqB
-         mZggFkRMO8W6X+bQh5/5o+Z4aafiRFPKbA+xWnlvxDH8dfdz5tSkh8NtSWma0POrTa
-         vmYzJW53kkybwyACcLS64f2u0bVjXyafj0R6H6gfRtCgq5H9ZEDA8TekmdqpG7+GLc
-         mQC1FD4PzngH+1dx0bzU2WHmxAFSrIClTMw4OsXv/EVJLk8vyS5eO+0YN23PN6B127
-         nuaMcOdGjDdVDiGUtsrio4lQpt+9xpoOnzS6oFm+R5OkP51r008jy54vegluIkt0Kd
-         GFuHl964vBfAg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 39B00625C0;
-        Fri, 26 Mar 2021 00:20:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230097AbhCZAVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:21:12 -0400
+Received: from mail-il1-f169.google.com ([209.85.166.169]:45733 "EHLO
+        mail-il1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhCZAUt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:20:49 -0400
+Received: by mail-il1-f169.google.com with SMTP id w2so3208902ilj.12;
+        Thu, 25 Mar 2021 17:20:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AENgAWH1NANoYRe4oyIttR/P/MAGP1UF/GSmZ4hpSLk=;
+        b=YwopgSk7dbWFAth7JgemiOpycUXlqkfkCVNiTQolZM+SUgWcOqAIkbjuq3ongVAFG8
+         /NO9pSrzldthDgDl88hBH9MFzLDXuG2aj2N3y9J/JePWdXYqIlthbCNhd/CSKS3P8UIk
+         lbk5NJQIpP1N9OO6DnBTEJvmYOZdtR6+VBteSr7ppVkOej0MiSDejOPyK2EiRtfYS9NL
+         +7yGAc2hBhCIAEeqMaSwHGD8owzqXSyajuEqTw06ksKiLc2JMUI55ABrDfji+aAd/H3Q
+         6fj9SmFJ9PqDtOTZiu8t0oeepb4xt58jIUGwvjtjsBBkVCufWmai/5GSkdIXXNztB1af
+         nvrw==
+X-Gm-Message-State: AOAM532m9j37vv0yt9ZoXAbDiWOO/Cl7nc0vtC3yorq22AX0IN7TJHEU
+        BUHtJlsWWaBxySANFGVLWw==
+X-Google-Smtp-Source: ABdhPJw77lvnxPuHdiO6Ji9kmIO5+JODXwQ35Yi75d5AwOqA3dNFEpvLhLz0ifmyBG4LRuQMSVmxUw==
+X-Received: by 2002:a92:5411:: with SMTP id i17mr8497509ilb.22.1616718048673;
+        Thu, 25 Mar 2021 17:20:48 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id y15sm3283345ilv.70.2021.03.25.17.20.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 17:20:47 -0700 (PDT)
+Received: (nullmailer pid 2020031 invoked by uid 1000);
+        Fri, 26 Mar 2021 00:20:46 -0000
+Date:   Thu, 25 Mar 2021 18:20:46 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mturquette@baylibre.com,
+        sboyd@kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] devicetree: bindings: clock: Minor typo fix in the file
+ armada3700-tbg-clock.txt
+Message-ID: <20210326002046.GA2016315@robh.at.kernel.org>
+References: <20210317100840.2449462-1-unixbhaskar@gmail.com>
+ <546989ea-c6b2-42e4-46b2-d7de5d208728@infradead.org>
+ <YFJcl6i95cRM22MI@ArchLinux>
+ <efc138db-d82d-a9f0-ca7b-61ae993e0459@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2] net: gve: make cleanup for gve
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161671801023.29431.4174194340472988944.git-patchwork-notify@kernel.org>
-Date:   Fri, 26 Mar 2021 00:20:10 +0000
-References: <1616658992-135804-1-git-send-email-huangdaode@huawei.com>
-In-Reply-To: <1616658992-135804-1-git-send-email-huangdaode@huawei.com>
-To:     Daode Huang <huangdaode@huawei.com>
-Cc:     csully@google.com, sagis@google.com, jonolson@google.com,
-        davem@davemloft.net, kuba@kernel.org, awogbemila@google.com,
-        yangchun@google.com, kuozhao@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <efc138db-d82d-a9f0-ca7b-61ae993e0459@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Thu, 25 Mar 2021 15:56:30 +0800 you wrote:
-> This patch set replace deprecated strlcpy by strscpy, remove
-> repeat word "allowed" in gve driver.
-> for more details, please refer to each patch.
+On Wed, Mar 17, 2021 at 01:12:28PM -0700, Randy Dunlap wrote:
+> On 3/17/21 12:46 PM, Bhaskar Chowdhury wrote:
+> > On 10:32 Wed 17 Mar 2021, Randy Dunlap wrote:
+> >> On 3/17/21 3:08 AM, Bhaskar Chowdhury wrote:
+> >>>
+> >>> s/provde/provide/
+> >>>
+> >>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> >>
+> >> Bhaskar,
+> >>
+> >> Did you send this one to "robh+dt@kernel.org"?
+> >> AFAICT, it was sent to "dt@kernel.org", which bounces.
+> >>
+> >> If you used "robh+dt@kernel.org", it appears that 'get send-email' has a problem with that.
+> >>
+> > I sent out a mail to David and Rob, including you for the same problem . Hope
+> > David will do something to change that address or Rob might do something . So
+> > that it will not bounce in future.
 > 
-> Daode Huang (2):
->   net: gve: convert strlcpy to strscpy
->   net: gve: remove duplicated allowed
-> 
-> [...]
+> David said that vger isn't modifying the email address.
+> And there is nothing wrong with it (robh+dt@kernel.org),
+> although it appears that either git send-email or just gmail.com
+> does not like it.
 
-Here is the summary with links:
-  - [net-next,1/2] net: gve: convert strlcpy to strscpy
-    https://git.kernel.org/netdev/net-next/c/c32773c96131
-  - [net-next,2/2] net: gve: remove duplicated allowed
-    https://git.kernel.org/netdev/net-next/c/f67435b555df
+I've used that for years and never heard of any problems.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Rob
