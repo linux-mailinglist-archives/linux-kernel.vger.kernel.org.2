@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E3B34AC28
+	by mail.lfdr.de (Postfix) with ESMTP id 37AA734AC27
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhCZQBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:01:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhCZQBb (ORCPT
+        id S230467AbhCZQBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 12:01:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55792 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhCZQBb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Mar 2021 12:01:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A688DC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 09:01:31 -0700 (PDT)
-Message-Id: <20210326152929.709289883@linutronix.de>
+Message-Id: <20210326153943.061103415@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616774489;
+        s=2020; t=1616774490;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gfJr7ScbWnQk4pJF0qiiMeeCn5sS/3LAzZ/jU7MLgCQ=;
-        b=UgQqzWjD92ytXy5CVwjkEoW0jcdKJIgivxIHTK8xRxfHcalYc8GR01EZBdc+dMWiYkWFI/
-        lKZ/NiHjjHsmuTth6A7/sxHBsVyL/ezAZ9xp0sjb0SfYjmWGstPCbiWWdAGcPtxLe3F0zL
-        e520n5RL2jksEcfNSVl6uphsju6UzHkqLIInR0+MasTziYJ6qvRx2d6MrpRVyfRhHxKMAL
-        R43uunjqHC6YhvDoyF1OmWBBWiQpQ0dkyZP+3ZwxMUkzJAEvcflPHJP4UichM/Z7jsmHwe
-        67KoDI+pq2jnmJ2FGGzQNd9KE+PjZBhl0Sy3fTXQNrpc73Pyd6k7212SCXNzwQ==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=ERv4b/SO2o1L4SIyMqm0aGcbAhBK3azDtTSXDmAG/uY=;
+        b=M65nQCvXF9lZt2B4rX6D+6B4p+YGqegGdoYCSMQlepacG9+YoprzAnfi8h4/dpeQTm+giT
+        3V6WQExhYYoU+CAHA9eoFGpjhkdWz7UhH+V9O+y3ZZTQjt6ZqlJd/QBBU5wvnmbMGxJLXW
+        siBToDO6975UdH09LUrxju3I82l1HOBe/1BjJ2bRW4DHfKdSa0RnkQdZm8Y23ygU88vT6u
+        FwlYKk/zVCkTifSTihcmEGfzPfa6Il5J6DgT7lXV/B29MEnfNC5SZHVUGuEy9wqdAoRizB
+        ytxKLe6uue1AZFhk2lUb5b75jVUbNIgTFMpb/fg6K5uy91sjL0IfZn78Sew1MA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616774489;
+        s=2020e; t=1616774490;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gfJr7ScbWnQk4pJF0qiiMeeCn5sS/3LAzZ/jU7MLgCQ=;
-        b=zvzJ8/qHxZQj0NPlrVK1AmjcjrrfPSD7QKEkIkziRzb83k83meyrZiQxDAAIdB75pU9PIk
-        y924zmQeUbBhyuBQ==
-Date:   Fri, 26 Mar 2021 16:29:29 +0100
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=ERv4b/SO2o1L4SIyMqm0aGcbAhBK3azDtTSXDmAG/uY=;
+        b=8h4+uQwD/OIhh5ijQYqvMmN53/v/C2i2Pkrexj4hqOf9tH0Xf5derZaK1oqkPx5cf7vfXh
+        BpJ7alC1/FbQfbAw==
+Date:   Fri, 26 Mar 2021 16:29:30 +0100
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -44,30 +41,101 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch V2 00/15] locking/rtmutex: Spring cleaning
+Subject: [patch V2 01/15] locking/rtmutex: Remove rt_mutex_timed_lock()
+References: <20210326152929.709289883@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBpcyBWMiBvZiB0aGlzIGNsZWFudXAuIFYxIGNhbiBiZSBmb3VuZCBoZXJlOgoKICAgaHR0
-cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci84N2g3a3lka2EwLmZmc0BuYW5vcy50ZWMubGludXRyb25p
-eC5kZQoKV2hpbGUgd29ya2luZyBvbiB0aGUgcnRtdXRleCByZWxhdGVkIFJUIGJpdHMgd2Ugbm90
-aWNlZCBxdWl0ZSBzb21lCmluY29uc2lzdGVuY2llcyBhbmQgYml0cm90IGluIHRoZSBydG11dGV4
-IGNvZGUuCgpUaGUgc2VyaWVzIGlzIGJhc2VkIG9uCgogICBnaXQ6Ly9naXQua2VybmVsLm9yZy9w
-dWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGlwL3RpcC5naXQgbG9ja2luZy9jb3JlCgphbmQgYWxz
-byBhdmFpbGFibGUgZnJvbToKCiAgIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
-a2VybmVsL2dpdC90Z2x4L2RldmVsLmdpdCBydG11dGV4CgphcyBhIGNvbWJvLgoKQ2hhbmdlcyB2
-cy4gVjE6CiAgLSBGaXggdGhlIGZhbGxvdXQgcmVwb3J0ZWQgYnkgMGRheSBhbmQgU2ViYXN0aWFu
-CiAgLSBNYWtlIHRoZSBvcGVuIGNvZGVkIHJlcGxhY2VtZW50cyB3b3JrIGZvciByZWFsCiAgLSBB
-ZGQgdGhlIHNpZ25hbCBjbGVhbnVwIHdoaWNoIEkgbWlzc2VkIGxhc3QgdGltZQoKVGhhbmtzLAoK
-CXRnbHgKLS0tCiBhL2tlcm5lbC9sb2NraW5nL3J0bXV0ZXgtZGVidWcuYyB8ICAxODIgLS0tLS0t
-LS0tLS0tLS0tLS0KIGEva2VybmVsL2xvY2tpbmcvcnRtdXRleC1kZWJ1Zy5oIHwgICAzNyAtLS0K
-IGEva2VybmVsL2xvY2tpbmcvcnRtdXRleC5oICAgICAgIHwgICAzNSAtLS0KIGluY2x1ZGUvbGlu
-dXgvcnRtdXRleC5oICAgICAgICAgIHwgICAzNSAtLS0KIGtlcm5lbC9sb2NraW5nL01ha2VmaWxl
-ICAgICAgICAgIHwgICAgMiAKIGtlcm5lbC9sb2NraW5nL3J0bXV0ZXguYyAgICAgICAgIHwgIDQw
-MiArKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIGtlcm5lbC9sb2NraW5n
-L3J0bXV0ZXhfY29tbW9uLmggIHwgIDEwNCArKysrKy0tLS0tCiA3IGZpbGVzIGNoYW5nZWQsIDIw
-MiBpbnNlcnRpb25zKCspLCA1OTUgZGVsZXRpb25zKC0pCg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+
+rt_mutex_timed_lock() has no callers since commit c051b21f71d1f ("rtmutex:
+Confine deadlock logic to futex")
+
+Remove it.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/rtmutex.h  |    3 ---
+ kernel/locking/rtmutex.c |   46 ----------------------------------------------
+ 2 files changed, 49 deletions(-)
+
+--- a/include/linux/rtmutex.h
++++ b/include/linux/rtmutex.h
+@@ -115,9 +115,6 @@ extern void rt_mutex_lock(struct rt_mute
+ #endif
+ 
+ extern int rt_mutex_lock_interruptible(struct rt_mutex *lock);
+-extern int rt_mutex_timed_lock(struct rt_mutex *lock,
+-			       struct hrtimer_sleeper *timeout);
+-
+ extern int rt_mutex_trylock(struct rt_mutex *lock);
+ 
+ extern void rt_mutex_unlock(struct rt_mutex *lock);
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1395,21 +1395,6 @@ rt_mutex_fastlock(struct rt_mutex *lock,
+ }
+ 
+ static inline int
+-rt_mutex_timed_fastlock(struct rt_mutex *lock, int state,
+-			struct hrtimer_sleeper *timeout,
+-			enum rtmutex_chainwalk chwalk,
+-			int (*slowfn)(struct rt_mutex *lock, int state,
+-				      struct hrtimer_sleeper *timeout,
+-				      enum rtmutex_chainwalk chwalk))
+-{
+-	if (chwalk == RT_MUTEX_MIN_CHAINWALK &&
+-	    likely(rt_mutex_cmpxchg_acquire(lock, NULL, current)))
+-		return 0;
+-
+-	return slowfn(lock, state, timeout, chwalk);
+-}
+-
+-static inline int
+ rt_mutex_fasttrylock(struct rt_mutex *lock,
+ 		     int (*slowfn)(struct rt_mutex *lock))
+ {
+@@ -1517,37 +1502,6 @@ int __sched __rt_mutex_futex_trylock(str
+ }
+ 
+ /**
+- * rt_mutex_timed_lock - lock a rt_mutex interruptible
+- *			the timeout structure is provided
+- *			by the caller
+- *
+- * @lock:		the rt_mutex to be locked
+- * @timeout:		timeout structure or NULL (no timeout)
+- *
+- * Returns:
+- *  0		on success
+- * -EINTR	when interrupted by a signal
+- * -ETIMEDOUT	when the timeout expired
+- */
+-int
+-rt_mutex_timed_lock(struct rt_mutex *lock, struct hrtimer_sleeper *timeout)
+-{
+-	int ret;
+-
+-	might_sleep();
+-
+-	mutex_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+-	ret = rt_mutex_timed_fastlock(lock, TASK_INTERRUPTIBLE, timeout,
+-				       RT_MUTEX_MIN_CHAINWALK,
+-				       rt_mutex_slowlock);
+-	if (ret)
+-		mutex_release(&lock->dep_map, _RET_IP_);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(rt_mutex_timed_lock);
+-
+-/**
+  * rt_mutex_trylock - try to lock a rt_mutex
+  *
+  * @lock:	the rt_mutex to be locked
+
