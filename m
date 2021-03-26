@@ -2,72 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9FE34B20D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FCC34B211
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhCZWP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:15:28 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:41506 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhCZWPR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:15:17 -0400
-Received: by mail-wm1-f52.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso3742396wmi.0;
-        Fri, 26 Mar 2021 15:15:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=quVE0WXN2dW3u57qVidMnV0S6DB+ccRjTK3ulEhufMY=;
-        b=AHnh5zExfyYh53uct4ePYJiX+Wg1eUXhG1ftOhOu0ASa/ibpTkLsAcJYHi3BqNR5Ij
-         1cWzUQ/NDV86jkvPJSdgjRVb4tzZ9dfPeRK8VtWLVqGO4QHUMxl2hpRbXxbueJiIq+2t
-         YOtJ4OnRd75jIoyM/iGdnij7rsIOsKwiJvVWLmCtSdKKMKkHhuZ1AANreGTYkw96oJIG
-         V7cZKXdNeMZf84Kwvo14tg6xzx66XuCP3j8Vsmn9PRa/w5iEzb7OOQqjZvTyK5plgt3d
-         sLMFIjcv+RPCc7q/bdvIhoHbCmWMXPZ+OMB8N6o446oBIpl+9FzSTaPiK8EUcSVQvWpi
-         FtGQ==
-X-Gm-Message-State: AOAM531wv5s5yMWmYywixBxWIWr4reQjH2H8KYhgwIwX3kJHzc0BFNZP
-        G10gnGVmJxVUjaVRL3cH3NI=
-X-Google-Smtp-Source: ABdhPJwJpYYpKJJ7WbVu79dOT5V+3IC/DDkoERx73/BdpL2XjCPIix6QqssL2u068fu7izd+l4conA==
-X-Received: by 2002:a05:600c:224e:: with SMTP id a14mr14685630wmm.57.1616796916105;
-        Fri, 26 Mar 2021 15:15:16 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id o2sm4441658wmr.10.2021.03.26.15.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 15:15:15 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 23:15:14 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: endpoint: remove redundant initialization of
- pointer dev
-Message-ID: <YF5c8gVi6fOnfiv3@rocinante>
-References: <20210326190909.622369-1-colin.king@canonical.com>
+        id S230501AbhCZWRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:17:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:43717 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230202AbhCZWQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 18:16:34 -0400
+IronPort-SDR: vvsGgLycsq5QPQlcjbArUc6b/X0w1EuzpAjaY8dJdLqM8981sEK1U60KXiUOCv28wUyrkszw6X
+ DCvI/wmoDfrA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="252579024"
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="252579024"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 15:16:33 -0700
+IronPort-SDR: VrBQ5RydJYa95h5hXNQ6W2fvs/JPydJ8TBEvDJmHisNAVp9algNDI/Lb8CPvPqVTuN1gEjyb7c
+ IC5nm3Cvdwsg==
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="416713332"
+Received: from schine-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.213.191.61])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 15:16:33 -0700
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH 0/2] ASoC: remove cppchecks warnings on lm49453 and da732x
+Date:   Fri, 26 Mar 2021 17:16:17 -0500
+Message-Id: <20210326221619.949961-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210326190909.622369-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+There are the last two patches in the cleanups, this time I am not
+sure what the code does and what the proper fix might be. Feedback
+welcome.
 
-> The pointer dev is being initialized with a value that is
-> never read and it is being updated later with a new value.  The
-> initialization is redundant and can be removed.
-[...]
-> -	struct device *dev = epf->epc->dev.parent;
-> +	struct device *dev;
->  	struct pci_epf_bar *epf_bar;
->  	struct pci_epc *epc;
+Pierre-Louis Bossart (2):
+  ASoC: lm49453: fix useless assignment before return
+  ASoC: da732x: simplify code
 
-Thank you!
+ sound/soc/codecs/da732x.c  | 17 ++++++-----------
+ sound/soc/codecs/da732x.h  | 12 ++++--------
+ sound/soc/codecs/lm49453.c |  2 --
+ 3 files changed, 10 insertions(+), 21 deletions(-)
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+-- 
+2.25.1
 
-Krzysztof
