@@ -2,178 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7159C34AA1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9840134AA20
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhCZOhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53230 "EHLO
+        id S230114AbhCZOi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:38:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbhCZOhc (ORCPT
+        with ESMTP id S230174AbhCZOi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:37:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41623C0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:37:32 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPnaQ-0001Ln-5z; Fri, 26 Mar 2021 15:37:18 +0100
-Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPnaO-0007mU-JM; Fri, 26 Mar 2021 15:37:16 +0100
-Date:   Fri, 26 Mar 2021 15:37:16 +0100
-From:   Philipp Zabel <pza@pengutronix.de>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v6 02/13] dt-bindings: media: nxp,imx8mq-vpu: Update the
- bindings for G2 support
-Message-ID: <20210326143716.GA27823@pengutronix.de>
-References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
- <20210318082046.51546-3-benjamin.gaignard@collabora.com>
- <20210326141156.GA8441@pengutronix.de>
- <3c23bfb0-eed4-63ad-be70-58aa129b0e35@collabora.com>
+        Fri, 26 Mar 2021 10:38:27 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C307BC0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:38:27 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id n21so5605183ioa.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hKpfpn0Haz5O7Pa2DVMAWbWylPr9Lp1uSORVeezS3tM=;
+        b=O1EvnpWCmYLg+UkahvyhEvg/XCqctRasY7lvP3QhIs9ouZ4dTqW6A8i+c6pZpXK0bJ
+         KmBG6yL8w5NP6Hd+2r37dS2fU34ka9UqLg/JWq+JP8SHBW9I2UE5zOges1YcqkFIuZw/
+         n3+gmKcP5T0gIS5DcC322cm53kjAsdVf+euumRVc53yd5kYmyw/QMAtsmJQvDbI9clxQ
+         D4px8Kx67xdEctzDA09EjtpgjKKCKD+DbWBtZDDy0fGAxT4AM+LJw8ifiMgCFGmGNxeU
+         p/dwiVLja233OHMhMPQaH4Soi4j6p00PEziHqn8+zUisqTnbv/1sl8I0Ct6+NbDLS7ww
+         47Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hKpfpn0Haz5O7Pa2DVMAWbWylPr9Lp1uSORVeezS3tM=;
+        b=jWhNzJbf7WWbRCFI0F7y7v+ISGIsShCePfpYdHRd6xrTiYFlMMxkmXGdbfJK3aA+8W
+         rO7e5Mq+0f6C98dc3hdxrOcdbvHqLHz8yoCGj3K7WU7v+2d9UWGvNWiPEMIC30xVHIZZ
+         IvioVhc+sV6rzewUe17KJWSubeWdUGelg4Ke4ilsB4+R74opYOn5MUd8FpKrOjJvPC9K
+         ZPUY5aCkDcyVx8Oxi5kdQ2pze7CEylGo+iDBLEQP4O/9sLQGkdr3YAyd1Vp8VIBib53f
+         aMzNmOoPDKB8TIVFt+AUrBJTjRvYyAXmNTA7i/CVkPfj8Mr9WTww+x61lk7lu9/JNy8k
+         0aWw==
+X-Gm-Message-State: AOAM530PZHHcOjNcX0PGWyVeNXacUiDpI7zgb3ocpt0twEgHifsOpXqO
+        /hca0XRXzdgI57EyDI6yF6oWLti2/kkOPA==
+X-Google-Smtp-Source: ABdhPJzTLhZvqhENo7RH31/SlCkSzdj7pgCxwaak1gUmh3t9s4Tr4e50bbCgjqEMdInfIerQ8eW92w==
+X-Received: by 2002:a5e:8e41:: with SMTP id r1mr10525118ioo.5.1616769506922;
+        Fri, 26 Mar 2021 07:38:26 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o13sm4365167iob.17.2021.03.26.07.38.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 07:38:26 -0700 (PDT)
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Stefan Metzmacher <metze@samba.org>, io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+ <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+ <0c91d9e7-82cd-bec2-19ae-cc592ec757c6@kernel.dk>
+ <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
+Message-ID: <66fa3cfc-4161-76fe-272e-160097f32a53@kernel.dk>
+Date:   Fri, 26 Mar 2021 08:38:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3c23bfb0-eed4-63ad-be70-58aa129b0e35@collabora.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:29:00 up 36 days, 17:52, 99 users,  load average: 0.78, 0.37,
- 0.20
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: pza@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 03:26:15PM +0100, Benjamin Gaignard wrote:
+On 3/26/21 7:59 AM, Jens Axboe wrote:
+> On 3/26/21 7:54 AM, Jens Axboe wrote:
+>>> The KILL after STOP deadlock still exists.
+>>
+>> In which tree? Sounds like you're still on the old one with that
+>> incremental you sent, which wasn't complete.
+>>
+>>> Does io_wq_manager() exits without cleaning up on SIGKILL?
+>>
+>> No, it should kill up in all cases. I'll try your stop + kill, I just
+>> tested both of them separately and didn't observe anything. I also ran
+>> your io_uring-cp example (and found a bug in the example, fixed and
+>> pushed), fwiw.
 > 
-> Le 26/03/2021 à 15:11, Philipp Zabel a écrit :
-> > On Thu, Mar 18, 2021 at 09:20:35AM +0100, Benjamin Gaignard wrote:
-> > > Introducing G2 hevc video decoder lead to modify the bindings to allow
-> > > to get one node per VPUs.
-> > > VPUs share one hardware control block which is provided as a phandle on
-> > > an syscon.
-> > > Each node got now one reg and one interrupt.
-> > > Add a compatible for G2 hardware block: nxp,imx8mq-vpu-g2.
-> > > 
-> > > To be compatible with older DT the driver is still capable to use 'ctrl'
-> > > reg-name even if it is deprecated now.
-> > > 
-> > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > > ---
-> > > version 5:
-> > > - This version doesn't break the backward compatibilty between kernel
-> > >    and DT.
-> > > 
-> > >   .../bindings/media/nxp,imx8mq-vpu.yaml        | 53 ++++++++++++-------
-> > >   1 file changed, 34 insertions(+), 19 deletions(-)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-> > > index 762be3f96ce9..79502fc8bde5 100644
-> > > --- a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-> > > +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
-> > > @@ -15,22 +15,18 @@ description:
-> > >   properties:
-> > >     compatible:
-> > > -    const: nxp,imx8mq-vpu
-> > > +    oneOf:
-> > > +      - const: nxp,imx8mq-vpu
-> > > +      - const: nxp,imx8mq-vpu-g2
-> > >     reg:
-> > > -    maxItems: 3
-> > > -
-> > > -  reg-names:
-> > > -    items:
-> > > -      - const: g1
-> > > -      - const: g2
-> > > -      - const: ctrl
-> > > +    maxItems: 1
-> > >     interrupts:
-> > > -    maxItems: 2
-> > > +    maxItems: 1
-> > >     interrupt-names:
-> > > -    items:
-> > > +    oneOf:
-> > >         - const: g1
-> > >         - const: g2
-> > > @@ -46,14 +42,18 @@ properties:
-> > >     power-domains:
-> > >       maxItems: 1
-> > > +  nxp,imx8mq-vpu-ctrl:
-> > > +    description: Specifies a phandle to syscon VPU hardware control block
-> > > +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> > > +
-> > Should we drop the 'q' here, i.e. nxp,imx8m-vpu-ctrl so we can use the same
-> > binding for i.MX8MM later?
-> 
-> I don't know if the control block is the same or not on IMX8MM, so I have only
-> put a compatible targeting IMX8MQ.
+> I can reproduce this one! I'll take a closer look.
 
-Oh, the compatible property of the control handle node can be different.
-I'm just suggesting that this phandle property be called the same.
-Otherwise we'd have to add another nxp,imx8mm-vpu-ctrl property and then
-mark either of the two as required, depending on the compatible.
+OK, that one is actually pretty straight forward - we rely on cleaning
+up on exit, but for fatal cases, get_signal() will call do_exit() for us
+and never return. So we might need a special case in there to deal with
+that, or some other way of ensuring that fatal signal gets processed
+correctly for IO threads.
 
-> > 
-> > >   required:
-> > >     - compatible
-> > >     - reg
-> > > -  - reg-names
-> > >     - interrupts
-> > >     - interrupt-names
-> > >     - clocks
-> > >     - clock-names
-> > > +  - nxp,imx8mq-vpu-ctrl
-> > >   additionalProperties: false
-> > > @@ -62,18 +62,33 @@ examples:
-> > >           #include <dt-bindings/clock/imx8mq-clock.h>
-> > >           #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > -        vpu: video-codec@38300000 {
-> > > +        vpu_ctrl: syscon@38320000 {
-> > > +                 compatible = "nxp,imx8mq-vpu-ctrl", "syscon";
-> > > +                 reg = <0x38320000 0x10000>;
-> > > +        };
-> > > +
-> > > +        vpu_g1: video-codec@38300000 {
-> > >                   compatible = "nxp,imx8mq-vpu";
-> > > -                reg = <0x38300000 0x10000>,
-> > > -                      <0x38310000 0x10000>,
-> > > -                      <0x38320000 0x10000>;
-> > > -                reg-names = "g1", "g2", "ctrl";
-> > > -                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
-> > > -                             <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-> > > -                interrupt-names = "g1", "g2";
-> > > +                reg = <0x38300000 0x10000>;
-> > > +                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> > > +                interrupt-names = "g1";
-> > > +                clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
-> > > +                         <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-> > Does the G1 VPU require the G2 clock and vice versa?
-> 
-> Yes either the control hardware block won't work.
+-- 
+Jens Axboe
 
-Ok.
-
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-
-regards
-Philipp
