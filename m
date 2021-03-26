@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBEF34A3F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F8334A3FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhCZJPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:15:55 -0400
-Received: from mga01.intel.com ([192.55.52.88]:23498 "EHLO mga01.intel.com"
+        id S230413AbhCZJP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:15:58 -0400
+Received: from mga01.intel.com ([192.55.52.88]:23494 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230179AbhCZJPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230180AbhCZJPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Mar 2021 05:15:45 -0400
-IronPort-SDR: 5N+559Wxf7UHKDpyVrdNRvHC+I//1lM68VS2fdhxTSP03bGKgc3j/cT1PqmAmGNFbqtLvANzuK
- 2h/p8yOtqwFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211269576"
+IronPort-SDR: BOWeAWR1KBg9HsU86as/XQ7q8667VAdXjKZgr3llRLALDxuz76MYLtZeBoU0uacBa6jPWb4RYa
+ l9DVyObnCrxw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211269585"
 X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="211269576"
+   d="scan'208";a="211269585"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:43 -0700
-IronPort-SDR: a+Ips0hBo8a/YVK4bEK2GPju3/bfUOE/mDrHpqDvrPQp3AgeFwQHQDLf0k2NsYQjGBmds7yvKO
- OjXHLnxErFow==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:45 -0700
+IronPort-SDR: BM7P2qVsTK3k8rjkY3hLNWP257rLEXow3+M+Vzg/KYblPgGvxbwaWxmgVMZUGV55g2Yp192Sv7
+ R3OeeSGs1Dqw==
 X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="416463167"
+   d="scan'208";a="416463192"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:39 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:42 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
@@ -31,9 +31,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
         rander.wang@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         bard.liao@intel.com
-Subject: [RESEND PATCH 05/11] soundwire: bus: uniquify dev_err() for SCP_INT access
-Date:   Fri, 26 Mar 2021 17:15:08 +0800
-Message-Id: <20210326091514.20751-6-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH 06/11] soundwire: bus: remove useless initialization
+Date:   Fri, 26 Mar 2021 17:15:09 +0800
+Message-Id: <20210326091514.20751-7-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
 References: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
@@ -43,50 +43,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-We have multiple cases where we read/write SCP_INT registers, but the
-same error message in all cases. Add a distinct error message for each
-case to help debug.
+Cppcheck complains about a possible null pointer dereference, but it's
+more like there is an unnecessary initialization before walking
+through a list.
 
-Reported-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soundwire/bus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index 8b6d8fe934ae..a38b017f7a54 100644
+index a38b017f7a54..1a9e307e6a4c 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -1636,7 +1636,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		ret = sdw_read_no_pm(slave, SDW_SCP_INT1);
- 		if (ret < 0) {
- 			dev_err(&slave->dev,
--				"SDW_SCP_INT1 read failed:%d\n", ret);
-+				"SDW_SCP_INT1 recheck read failed:%d\n", ret);
- 			goto io_err;
- 		}
- 		_buf = ret;
-@@ -1644,7 +1644,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 		ret = sdw_nread_no_pm(slave, SDW_SCP_INTSTAT2, 2, _buf2);
- 		if (ret < 0) {
- 			dev_err(&slave->dev,
--				"SDW_SCP_INT2/3 read failed:%d\n", ret);
-+				"SDW_SCP_INT2/3 recheck read failed:%d\n", ret);
- 			goto io_err;
- 		}
+@@ -593,7 +593,7 @@ EXPORT_SYMBOL(sdw_write);
+ /* called with bus_lock held */
+ static struct sdw_slave *sdw_get_slave(struct sdw_bus *bus, int i)
+ {
+-	struct sdw_slave *slave = NULL;
++	struct sdw_slave *slave;
  
-@@ -1652,7 +1652,7 @@ static int sdw_handle_slave_alerts(struct sdw_slave *slave)
- 			ret = sdw_read_no_pm(slave, SDW_DP0_INT);
- 			if (ret < 0) {
- 				dev_err(&slave->dev,
--					"SDW_DP0_INT read failed:%d\n", ret);
-+					"SDW_DP0_INT recheck read failed:%d\n", ret);
- 				goto io_err;
- 			}
- 			sdca_cascade = ret & SDW_DP0_SDCA_CASCADE;
+ 	list_for_each_entry(slave, &bus->slaves, node) {
+ 		if (slave->dev_num == i)
 -- 
 2.17.1
 
