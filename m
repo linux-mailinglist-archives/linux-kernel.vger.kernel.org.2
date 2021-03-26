@@ -2,147 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0676434B125
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C5734B12B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhCZVQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 17:16:21 -0400
-Received: from sibelius.xs4all.nl ([83.163.83.176]:62722 "EHLO
-        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhCZVQQ (ORCPT
+        id S229957AbhCZVSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 17:18:01 -0400
+Received: from mail-io1-f44.google.com ([209.85.166.44]:37548 "EHLO
+        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230027AbhCZVR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 17:16:16 -0400
-Received: from localhost (bloch.sibelius.xs4all.nl [local])
-        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 71729a6f;
-        Fri, 26 Mar 2021 22:16:14 +0100 (CET)
-Date:   Fri, 26 Mar 2021 22:16:14 +0100 (CET)
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     sven@svenpeter.dev, robin.murphy@arm.com, robh@kernel.org,
-        iommu@lists.linux-foundation.org, joro@8bytes.org, will@kernel.org,
-        marcan@marcan.st, maz@kernel.org, mohamed.mediouni@caramail.com,
-        stan@corellium.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <CAK8P3a1+BOmT39k=OqFU+LtgfW=SDCp5W69YW58sVGf66mSppw@mail.gmail.com>
-        (message from Arnd Bergmann on Fri, 26 Mar 2021 20:59:58 +0100)
-Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
-References: <20210320151903.60759-1-sven@svenpeter.dev> <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
- <20210323205346.GA1283560@robh.at.kernel.org> <43685c67-6d9c-4e72-b320-0462c2273bf0@www.fastmail.com>
- <CAK8P3a0fvnYLrG=cGiOQ6u8aZnriTeM0R=MW7FX=94mO13Rq0w@mail.gmail.com>
- <c1bcd90d344c2b68@bloch.sibelius.xs4all.nl> <9f06872d-f0ec-43c3-9b53-d144337100b3@www.fastmail.com>
- <CAK8P3a2b7k6JkxecW=yu-NF+fkNCxJ3Ja36nQ7LK8hsuO=4=sw@mail.gmail.com>
- <c1bcd9821a8f8c05@bloch.sibelius.xs4all.nl> <e03833b1-1368-c5c3-424b-59e34bef19f3@arm.com>
- <45faaadd-eda7-464f-96ff-7324f566669e@www.fastmail.com> <CAK8P3a1+BOmT39k=OqFU+LtgfW=SDCp5W69YW58sVGf66mSppw@mail.gmail.com>
-Message-ID: <c1bcda7f8ba573bd@bloch.sibelius.xs4all.nl>
+        Fri, 26 Mar 2021 17:17:26 -0400
+Received: by mail-io1-f44.google.com with SMTP id b10so6811733iot.4;
+        Fri, 26 Mar 2021 14:17:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IV3b7vhYuwtS05r2NRQRDhOfyZGYCKToQH4+CvwJ9dM=;
+        b=XCYFaQUolvfJZGwKNTLZh9DIXMRa3albSqMKhE9TAdq59QU6bZF4Vha+8OLzznujWM
+         AygB7OyiislyA1jarVEERl6HGdG8F/zgcZECrAKy9W7RP4lrBPNvatFUeMxTevFgXKVF
+         O/lp+/aiMnFVFb4zj+PCQwS+CpgCWXtBU4byTKNgGheZh9Rsg2nEpLPLRbiNlk1UnKoH
+         6736G1eZTU431buzk8EyqGOgl3wK8pDPiElinHQknN7lm07bydZl7Nn3liak0yoFFraU
+         S/2/HIHV4YrAOyTXjV8+VXj0CxNEX7ekRgHvX16972GuBznCSQgma43YKSeVPZccLCYC
+         TCwQ==
+X-Gm-Message-State: AOAM531fEYFuXEOh33PXGQVUB2HJKwZNH1e+LH0KHPVctSOxPTNswcO7
+        oaUB9mhMb5/DhT56i4w8JpJ3p4FmHg==
+X-Google-Smtp-Source: ABdhPJw9dLx299YuPw0ZfWiYKtkorUQsV1RINcxeejPobNPJo0B5D1FGs8LOlL/k5NFPG6CJGAegvQ==
+X-Received: by 2002:a6b:5811:: with SMTP id m17mr11428969iob.102.1616793445984;
+        Fri, 26 Mar 2021 14:17:25 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q207sm5117196iod.6.2021.03.26.14.17.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 14:17:25 -0700 (PDT)
+Received: (nullmailer pid 3875509 invoked by uid 1000);
+        Fri, 26 Mar 2021 21:17:23 -0000
+Date:   Fri, 26 Mar 2021 15:17:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v5 (RESEND) 4/7] mfd: hi6421-spmi-pmic: move driver from
+ staging
+Message-ID: <20210326211723.GB3867921@robh.at.kernel.org>
+References: <cover.1616695231.git.mchehab+huawei@kernel.org>
+ <de3603a366c172923771d3f01aa83b70cbba2199.1616695231.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de3603a366c172923771d3f01aa83b70cbba2199.1616695231.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Arnd Bergmann <arnd@kernel.org>
-> Date: Fri, 26 Mar 2021 20:59:58 +0100
+On Thu, Mar 25, 2021 at 07:05:36PM +0100, Mauro Carvalho Chehab wrote:
+> This driver is ready for mainstream. So, move it out of staging.
 > 
-> On Fri, Mar 26, 2021 at 6:51 PM Sven Peter <sven@svenpeter.dev> wrote:
-> > On Fri, Mar 26, 2021, at 18:34, Robin Murphy wrote:
-> > > On 2021-03-26 17:26, Mark Kettenis wrote:
-> > > >
-> > > > Anyway, from my viewpoint having the information about the IOVA
-> > > > address space sit on the devices makes little sense.  This information
-> > > > is needed by the DART driver, and there is no direct cnnection from
-> > > > the DART to the individual devices in the devicetree.  The "iommus"
-> > > > property makes a connection in the opposite direction.
-> > >
-> > > What still seems unclear is whether these addressing limitations are a
-> > > property of the DART input interface, the device output interface, or
-> > > the interconnect between them. Although the observable end result
-> > > appears more or less the same either way, they are conceptually
-> > > different things which we have different abstractions to deal with.
-> >
-> > I'm not really sure if there is any way for us to figure out where these
-> > limitation comes from though.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../mfd/hisilicon,hi6421-spmi-pmic.yaml       | 135 ++++++++
+>  MAINTAINERS                                   |   7 +
+>  drivers/mfd/Kconfig                           |  16 +
+>  drivers/mfd/Makefile                          |   1 +
+>  drivers/mfd/hi6421-spmi-pmic.c                | 297 ++++++++++++++++++
+>  drivers/staging/hikey9xx/Kconfig              |  18 --
+>  drivers/staging/hikey9xx/Makefile             |   1 -
+>  drivers/staging/hikey9xx/hi6421-spmi-pmic.c   | 297 ------------------
+>  .../hikey9xx/hisilicon,hi6421-spmi-pmic.yaml  | 135 --------
+>  9 files changed, 456 insertions(+), 451 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+>  create mode 100644 drivers/mfd/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hi6421-spmi-pmic.c
+>  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml
 > 
-> My first guess was that this is done to partition the available address
-> address space in a way that allows one physical IOTLB to handle
-> multiple devices that each have their own page table for a subset
-> of the address space, as was done on old PowerPC IOMMUs.
-> However, the ranges you list don't really support that model.
-> 
-> > I've done some more experiments and looked at all DART nodes in Apple's Device
-> > Tree though. It seems that most (if not all) masters only connect 32 address
-> > lines even though the iommu can handle a much larger address space. I'll therefore
-> > remove the code to handle the full space for v2 since it's essentially dead
-> > code that can't be tested anyway.
-> >
-> >
-> > There are some exceptions though:
-> >
-> > There are the PCIe DARTs which have a different limitation which could be
-> > encoded as 'dma-ranges' in the pci bus node:
-> >
-> >            name         base      size
-> >          dart-apcie1: 00100000  3fe00000
-> >          dart-apcie2: 00100000  3fe00000
-> >          dart-apcie0: 00100000  3fe00000
-> >         dart-apciec0: 00004000  7fffc000
-> >         dart-apciec1: 80000000  7fffc000
-> 
-> This looks like they are reserving some address space in the beginning
-> and/or the end, and for apciec0, the address space is partitioned into
-> two equal-sized regions.
-> 
-> > Then there are also these display controller DARTs. If we wanted to use dma-ranges
-> > we could just put them in a single sub bus:
-> >
-> >               name     base      size
-> >           dart-disp0: 00000000 fc000000
-> >             dart-dcp: 00000000 fc000000
-> >        dart-dispext0: 00000000 fc000000
-> >          dart-dcpext: 00000000 fc000000
-> >
-> >
-> > And finally we have these strange ones which might eventually each require
-> > another awkward sub-bus if we want to stick to the dma-ranges property.
-> >
-> >     name     base      size
-> >   dart-aop: 00030000 ffffffff ("always-on processor")
-> >   dart-pmp: 00000000 bff00000 (no idea yet)
-> 
-> Here I also see a "pio-vm-size" property:
-> 
->     dart-pmp {
->       pio-vm-base = <0xc0000000>;
->       pio-vm-size = <0x40000000>;
->       vm-size = <0xbff00000>;
->       ...
->    };
-> 
-> Which seems to give 3GB of address space to the normal iotlb,
-> plus the last 1GB to something else. The vm-base property is also
-> missing rather than zero, but that could just be part of their syntax
-> instead of a real difference.
+> diff --git a/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> new file mode 100644
+> index 000000000000..3b23ad56b31a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/hisilicon,hi6421-spmi-pmic.yaml
+> @@ -0,0 +1,135 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/hisilicon,hi6421-spmi-pmic.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiSilicon 6421v600 SPMI PMIC
+> +
+> +maintainers:
+> +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> +
+> +description: |
+> +  HiSilicon 6421v600 should be connected inside a MIPI System Power Management
+> +  (SPMI) bus. It provides interrupts and power supply.
+> +
+> +  The GPIO and interrupt settings are represented as part of the top-level PMIC
+> +  node.
+> +
+> +  The SPMI controller part is provided by
+> +  drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml.
 
-Yes.  It seems like "vm-base" is omitted when it is 0, and "vm-size"
-is omitted when the end of the window is at 0xffffffff.
+Needs updating.
 
-> 
-> Could it be that there are
-> 
-> >   dart-sio: 0021c000 fbde4000 (at least their Secure Enclave/TPM co-processor)
-> 
-> Same here:
->     dart-sio {
->        vm-base = <0x0>;
->        vm-size = <0xfc000000>;
->        pio-vm-base = <0xfd000000>;
->       pio-vm-size = <0x2000000>;
->       pio-granularity = <0x1000000>;
->    }
-> 
-> There are clearly two distinct ranges that split up the 4GB space again,
-> with a small hole of 16MB (==pio-granularity) at the end of each range.
-> 
-> The "pio" name might indicate that this is a range of addresses that
-> can be programmed to point at I/O registers in another device, rather
-> than pointing to RAM.
-> 
->            Arnd
-> 
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "pmic@[0-9a-f]"
+> +
+> +  compatible:
+> +    const: hisilicon,hi6421v600-spmi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#interrupt-cells':
+> +    const: 2
+> +
+> +  interrupt-controller:
+> +    description:
+> +      Identify that the PMIC is capable of behaving as an interrupt controller.
+
+Don't need generic descriptions of common properties. Just:
+
+interrupt-controller: true
+
+> +
+> +  gpios:
+
+A named gpio is preferred (foo-gpios).
+
+What is this gpio for?
+
+> +    maxItems: 1
+> +
+> +  regulators:
+> +    type: object
+> +
+> +    properties:
+> +      '#address-cells':
+> +        const: 1
+> +
+> +      '#size-cells':
+> +        const: 0
+> +
+> +    patternProperties:
+> +      '^ldo[0-9]+@[0-9a-f]$':
+> +        type: object
+> +
+> +        $ref: "/schemas/regulator/regulator.yaml#"
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - regulators
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    /* pmic properties */
+> +
+> +    pmic: pmic@0 {
+> +      compatible = "hisilicon,hi6421-spmi";
+> +      reg = <0 0>;
+> +
+> +      #interrupt-cells = <2>;
+> +      interrupt-controller;
+> +      gpios = <&gpio28 0 0>;
+> +
+> +      regulators {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        ldo3: LDO3 {
+> +          regulator-name = "ldo3";
+> +          regulator-min-microvolt = <1500000>;
+> +          regulator-max-microvolt = <2000000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo4: LDO4 {
+> +          regulator-name = "ldo4";
+> +          regulator-min-microvolt = <1725000>;
+> +          regulator-max-microvolt = <1900000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo9: LDO9 {
+> +          regulator-name = "ldo9";
+> +          regulator-min-microvolt = <1750000>;
+> +          regulator-max-microvolt = <3300000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo15: LDO15 {
+> +          regulator-name = "ldo15";
+> +          regulator-min-microvolt = <1800000>;
+> +          regulator-max-microvolt = <3000000>;
+> +          regulator-always-on;
+> +        };
+> +
+> +        ldo16: LDO16 {
+> +          regulator-name = "ldo16";
+> +          regulator-min-microvolt = <1800000>;
+> +          regulator-max-microvolt = <3000000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo17: LDO17 {
+> +          regulator-name = "ldo17";
+> +          regulator-min-microvolt = <2500000>;
+> +          regulator-max-microvolt = <3300000>;
+> +        };
+> +
+> +        ldo33: LDO33 {
+> +          regulator-name = "ldo33";
+> +          regulator-min-microvolt = <2500000>;
+> +          regulator-max-microvolt = <3300000>;
+> +          regulator-boot-on;
+> +        };
+> +
+> +        ldo34: LDO34 {
+> +          regulator-name = "ldo34";
+> +          regulator-min-microvolt = <2600000>;
+> +          regulator-max-microvolt = <3300000>;
+> +        };
+> +      };
+> +    };
