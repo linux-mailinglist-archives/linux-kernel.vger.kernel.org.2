@@ -2,160 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A81AB349FE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF0B349FE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhCZClz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 22:41:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58102 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230345AbhCZClv (ORCPT
+        id S230423AbhCZCpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 22:45:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhCZCpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 22:41:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616726510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1ehJFMh/kOfU+I9OXEtjP+uM7fVA5wEAWFQ39c7YsNY=;
-        b=RG4IKr50Dvqi73JfuU1vdzcaSmQcf8z3ktUKYGac7C5LlIEKEEMy/ArEE533NESc2PhoZL
-        L9DdmIOy8f9YZcGLMXyVHTtuGagrr2CZLnjbPvprBRNaatxjUL4A7BABs06ku0DO1U8ela
-        iZXRA3/LepaRGx/MWdRFsk3NWZghO4A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-VcP3UqUaPwy-MRVEZIqA8Q-1; Thu, 25 Mar 2021 22:41:48 -0400
-X-MC-Unique: VcP3UqUaPwy-MRVEZIqA8Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5258A107ACCD;
-        Fri, 26 Mar 2021 02:41:46 +0000 (UTC)
-Received: from lszubowi.redhat.com (unknown [10.10.110.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A7FF66EF55;
-        Fri, 26 Mar 2021 02:41:43 +0000 (UTC)
-From:   Lenny Szubowicz <lszubowi@redhat.com>
-To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2] x86/kvmclock: Stop kvmclocks for hibernate restore
-Date:   Thu, 25 Mar 2021 22:41:43 -0400
-Message-Id: <20210326024143.279941-1-lszubowi@redhat.com>
+        Thu, 25 Mar 2021 22:45:35 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C064DC06174A;
+        Thu, 25 Mar 2021 19:45:35 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id d10so3893796ils.5;
+        Thu, 25 Mar 2021 19:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c3TyjwBJft9+viqfPrXWUpurNVXIQ9MInz6FpBne7QA=;
+        b=RIfYo3knm7rJ8Fy8qNuU48hZbeapTu2tF4cGnlZCR9F4ZM5I03eDXqSPCxZswfhI4l
+         MwbKKrTK1YKNYgACEJe9pUUNyG5HMN8ryvKud2Fjqah03zduTN5V/1+v67R6vsnRJNMM
+         nxMvA3yka48mUXKmlr7P4msktvTVkphxiZIah2a8ahljfjtlWJDfLIWo71A1/WnXAYQV
+         lUajAY31CYG3Br2ftZguq4q4SIkHodu3W5vE4URjTyfPVKeI1Pzcgh6EE3CVdIvd3s4v
+         +vsLvxgQnGw2SpR/EGq5vS5BiEw6U9sU3y8f+zMcfT+mNIovxWztZKTwmCpC2AT6iTxU
+         Ma7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c3TyjwBJft9+viqfPrXWUpurNVXIQ9MInz6FpBne7QA=;
+        b=BY03CRWvEv+FsW58/zSQzcMIYZ9EaWmfOyg7JdsG3h3y75bLcjshjIePQhkcKnzZZ8
+         HO1qQ8uMxuxBreRmynKNg6k0pJtAMx9jnIbdlBrX23KLPF7fzgGWxvRPbSqvlwdN7VSp
+         aFSFpvbVt24OCsjLOkeI927GIYwN4StUUwVYCGmGMCnPzgSZFTh4RPQFNqYy1f1c/ngL
+         sT1oBzPl2zIE5qqSmRj4nVPTT/0uZLuyWjxhqSw/zm/1Qbmu+xxIZQYIswrSxY5GRILY
+         lf3Jremq6sSRnrJ0FK708xqSmYfsJTRa7QibK5dM+y6jHZAkz/uBWCgubp7nE9JUBzFy
+         44iQ==
+X-Gm-Message-State: AOAM530/g3If8PpnqWBLfXIcPuOSg3+rNBJxctmocpP89ErT2oFudhw7
+        8XIUnzFRL/jfN1fDKL28hF3/Fc/a5fXq0sFWNBw=
+X-Google-Smtp-Source: ABdhPJw17Oub2hHuFs6ahjRk6K43qQvnSr86/UUcgndqJ+RYESwqNNNP+pspx19ljyZykhlcDwPmFlcnawKA7sCm4Mk=
+X-Received: by 2002:a92:c842:: with SMTP id b2mr8936041ilq.179.1616726735262;
+ Thu, 25 Mar 2021 19:45:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210317055902.506773-1-ilya.lipnitskiy@gmail.com> <20210325095529.GA5775@alpha.franken.de>
+In-Reply-To: <20210325095529.GA5775@alpha.franken.de>
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Date:   Thu, 25 Mar 2021 19:45:23 -0700
+Message-ID: <CALCv0x2ni97mLEar6M9boWCrXzdsqM3JJNMbe=cDitHj+npanw@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: ralink: mt7621: add memory detection support
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Turn off host updates to the registered kvmclock memory
-locations when transitioning to a hibernated kernel in
-resume_target_kernel().
+On Thu, Mar 25, 2021 at 3:01 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Tue, Mar 16, 2021 at 10:59:02PM -0700, Ilya Lipnitskiy wrote:
+> > From: Chuanhong Guo <gch981213@gmail.com>
+> >
+> > mt7621 has the following memory map:
+> > 0x0-0x1c000000: lower 448m memory
+> > 0x1c000000-0x2000000: peripheral registers
+> > 0x20000000-0x2400000: higher 64m memory
+> >
+> > detect_memory_region in arch/mips/kernel/setup.c only adds the first
+> > memory region and isn't suitable for 512m memory detection because
+> > it may accidentally read the memory area for peripheral registers.
+> >
+> > This commit adds memory detection capability for mt7621:
+> >   1. Add the highmem area when 512m is detected.
+> >   2. Guard memcmp from accessing peripheral registers:
+> >      This only happens when a user decided to change kernel load address
+> >      to 256m or higher address. Since this is a quite unusual case, we
+> >      just skip 512m testing and return 256m as memory size.
+> >
+> > [...]
+>
+> I get
+>
+> WARNING: modpost: vmlinux.o(.text+0x132c): Section mismatch in reference from the function prom_soc_init() to the function .init.text:mt7621_memory_detect()
+> The function prom_soc_init() references
+> the function __init mt7621_memory_detect().
+> This is often because prom_soc_init lacks a __init
+> annotation or the annotation of mt7621_memory_detect is wrong.
+>
+> Can you please fix this ?
+Thanks, I will fix it. Having trouble reproducing the error, but I
+clearly see the issue. Are you building on a MIPS target or
+cross-compiling (I'm cross-compiling and no errors).
 
-This is accomplished for secondary vcpus by disabling host
-clock updates for that vcpu when it is put offline. For the
-primary vcpu, it's accomplished by using the existing call back
-from save_processor_state() to kvm_save_sched_clock_state().
-
-The registered kvmclock memory locations may differ between
-the currently running kernel and the hibernated kernel, which
-is being restored and resumed. Kernel memory corruption is thus
-possible if the host clock updates are allowed to run while the
-hibernated kernel is relocated to its original physical memory
-locations.
-
-This is similar to the problem solved for kexec by
-commit 1e977aa12dd4 ("x86: KVM guest: disable clock before rebooting.")
-
-Commit 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a
-PER_CPU variable") innocently increased the exposure for this
-problem by dynamically allocating the physical pages that are
-used for host clock updates when the vcpu count exceeds 64.
-This increases the likelihood that the registered kvmclock
-locations will differ for vcpus above 64.
-
-Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
-Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
-Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
----
- arch/x86/kernel/kvmclock.c | 40 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 36 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index 1fc0962c89c0..0d39906b9df0 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -187,8 +187,17 @@ static void kvm_register_clock(char *txt)
- 	pr_info("kvm-clock: cpu %d, msr %llx, %s", smp_processor_id(), pa, txt);
- }
- 
-+/*
-+ * Turn off host clock updates to the registered memory location when the
-+ * cpu clock context is saved via save_processor_state(). Enables correct
-+ * handling of the primary cpu clock when transitioning to a hibernated
-+ * kernel in resume_target_kernel(), where the old and new registered
-+ * memory locations may differ.
-+ */
- static void kvm_save_sched_clock_state(void)
- {
-+	native_write_msr(msr_kvm_system_time, 0, 0);
-+	kvm_disable_steal_time();
- }
- 
- static void kvm_restore_sched_clock_state(void)
-@@ -310,9 +319,22 @@ static int kvmclock_setup_percpu(unsigned int cpu)
- 	return p ? 0 : -ENOMEM;
- }
- 
-+/*
-+ * Turn off host clock updates to the registered memory location when a
-+ * cpu is placed offline. Enables correct handling of secondary cpu clocks
-+ * when transitioning to a hibernated kernel in resume_target_kernel(),
-+ * where the old and new registered memory locations may differ.
-+ */
-+static int kvmclock_cpu_offline(unsigned int cpu)
-+{
-+	native_write_msr(msr_kvm_system_time, 0, 0);
-+	return 0;
-+}
-+
- void __init kvmclock_init(void)
- {
- 	u8 flags;
-+	int cpuhp_prepare;
- 
- 	if (!kvm_para_available() || !kvmclock)
- 		return;
-@@ -324,10 +346,14 @@ void __init kvmclock_init(void)
- 		return;
- 	}
- 
--	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
--			      kvmclock_setup_percpu, NULL) < 0) {
--		return;
--	}
-+	cpuhp_prepare = cpuhp_setup_state(CPUHP_BP_PREPARE_DYN,
-+					  "kvmclock:setup_percpu",
-+					  kvmclock_setup_percpu, NULL);
-+	if (cpuhp_prepare < 0)
-+		goto cpuhp_setup_err1;
-+	if (cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "kvmclock:cpu_offline",
-+			      NULL, kvmclock_cpu_offline) < 0)
-+		goto cpuhp_setup_err2;
- 
- 	pr_info("kvm-clock: Using msrs %x and %x",
- 		msr_kvm_system_time, msr_kvm_wall_clock);
-@@ -372,4 +398,10 @@ void __init kvmclock_init(void)
- 
- 	clocksource_register_hz(&kvm_clock, NSEC_PER_SEC);
- 	pv_info.name = "KVM";
-+	return;
-+
-+cpuhp_setup_err2:
-+	cpuhp_remove_state(cpuhp_prepare);
-+cpuhp_setup_err1:
-+	pr_err("kvmclock: Init failed; error from cpu state notifier registration\n");
- }
--- 
-2.27.0
-
+Ilya
