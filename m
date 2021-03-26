@@ -2,173 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B087934A2F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4E334A2FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhCZIHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:07:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhCZIHC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:07:02 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6029CC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:07:02 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id z2so4721922wrl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NacPEJvwU26BHEcF1r3DKOPrdoZ0K2lnEiVQ/oV37r4=;
-        b=kus60msoSJlwyU1GomSA58McYHQudRjt8lZoUOVyLCyxExYPuQiC/FgDUjEDEdiFJH
-         OtPkVS983YcgkVOZ3NbX19SKHfGojdxWiV+mZsVTfFS3PH2ZKq07YDEns8DQHizqSqjj
-         kAlYqYai0ZCtnRvwuakJexNRFQxOeUsmhfllUZTGd3aMTne5GjehFbclbRF9zPTDvxfr
-         7mUrcCG9VaWh1DWLhfC1B0KnAzLxhwQqcmOk5cN/v/L72Qlm6lRW3AGNrgKkaY+vlaHX
-         i+2MikP0ctvy5L5KCWHU8Q958BKQKlSB4DTgMhSfZv+A2P690PsjqM55+5z0YJQ2NIsx
-         6Bpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NacPEJvwU26BHEcF1r3DKOPrdoZ0K2lnEiVQ/oV37r4=;
-        b=W3ZooOr3j7200zg+dlIv0rwhJYf/g82a+YvE6AEPvPY/wt32SgL0CMDN3+LH4K90bk
-         dMdaixb5Q6fHz/QOje/EL82++X/QAQWnA+odm9YwLtEzzo5zMpnokqpIYeznw1T1/52b
-         BkXFQZw6KHzqBpKr9sbQ9KnHemdRsv119oNBF5j97qOKxMyeWZcdMNyYejfmr3+Kk0N5
-         4SQq5QZe+PxPbIWJp7KsKGfgOOAntiSvSUIEjNZnMF2vhs3Pdb/XjfPEK9NNa9yQUILh
-         uq0nPFAKKaIyI5xRK9Zu4PvEPw6rXY7YeDh62GsnLLOIP60X8psOFOwhjRvoEcTjwxz1
-         HjQA==
-X-Gm-Message-State: AOAM530loWydpCVlCtMx3iAS0D/yQ6QIxwUTSDdd0zqcWxEVklMdwQxL
-        p1C+33vX5JYgjti4LB0SJQ+5bjKzxGMc+A==
-X-Google-Smtp-Source: ABdhPJzrQoMie+cZs+TTXzwMUWiYsj5CUy6yLxtxOwZG8ozx04KgN++aU+MFHI+ixkkVUGXl1VqrvQ==
-X-Received: by 2002:a5d:591a:: with SMTP id v26mr12982847wrd.172.1616746021071;
-        Fri, 26 Mar 2021 01:07:01 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id 7sm9654955wmk.8.2021.03.26.01.06.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 01:07:00 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 09:06:42 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YF2WEmfXsXKCkCDb@myrica>
-References: <YFSqDNJ5yagk4eO+@myrica>
- <20210319135432.GT2356281@nvidia.com>
- <20210319112221.5123b984@jacob-builder>
- <YFhiMLR35WWMW/Hu@myrica>
- <20210324100246.4e6b8aa1@jacob-builder>
- <20210324170338.GM2356281@nvidia.com>
- <20210324151230.466fd47a@jacob-builder>
- <YFxkNEz3THJKzW0b@myrica>
- <20210325100236.17241a1c@jacob-builder>
- <20210325171645.GF2356281@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325171645.GF2356281@nvidia.com>
+        id S229624AbhCZILg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:11:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44836 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229528AbhCZILL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 04:11:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7CEA8AB8A;
+        Fri, 26 Mar 2021 08:11:10 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 09:11:10 +0100
+Message-ID: <s5hlfaal4gx.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Joe Perches <joe@perches.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mark Brown <broonie@kernel.org>, Tom Yan <tom.ty89@gmail.com>,
+        Chris Chiu <chiu@endlessm.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH v3 1/2] ALSA: usb-audio: Carve out connector value checking into a helper
+In-Reply-To: <20210325165918.22593-1-kai.heng.feng@canonical.com>
+References: <20210325165918.22593-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 02:16:45PM -0300, Jason Gunthorpe wrote:
-> On Thu, Mar 25, 2021 at 10:02:36AM -0700, Jacob Pan wrote:
-> > Hi Jean-Philippe,
-> > 
-> > On Thu, 25 Mar 2021 11:21:40 +0100, Jean-Philippe Brucker
-> > <jean-philippe@linaro.org> wrote:
-> > 
-> > > On Wed, Mar 24, 2021 at 03:12:30PM -0700, Jacob Pan wrote:
-> > > > Hi Jason,
-> > > > 
-> > > > On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com>
-> > > > wrote: 
-> > > > > On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:  
-> > > > > > > Also wondering about device driver allocating auxiliary domains
-> > > > > > > for their private use, to do iommu_map/unmap on private PASIDs (a
-> > > > > > > clean replacement to super SVA, for example). Would that go
-> > > > > > > through the same path as /dev/ioasid and use the cgroup of
-> > > > > > > current task?    
-> > > > > >
-> > > > > > For the in-kernel private use, I don't think we should restrict
-> > > > > > based on cgroup, since there is no affinity to user processes. I
-> > > > > > also think the PASID allocation should just use kernel API instead
-> > > > > > of /dev/ioasid. Why would user space need to know the actual PASID
-> > > > > > # for device private domains? Maybe I missed your idea?    
-> > > > > 
-> > > > > There is not much in the kernel that isn't triggered by a process, I
-> > > > > would be careful about the idea that there is a class of users that
-> > > > > can consume a cgroup controlled resource without being inside the
-> > > > > cgroup.
-> > > > > 
-> > > > > We've got into trouble before overlooking this and with something
-> > > > > greenfield like PASID it would be best built in to the API to prevent
-> > > > > a mistake. eg accepting a cgroup or process input to the allocator.
-> > > > >   
-> > > > Make sense. But I think we only allow charging the current cgroup, how
-> > > > about I add the following to ioasid_alloc():
-> > > > 
-> > > > 	misc_cg = get_current_misc_cg();
-> > > > 	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
-> > > > 	if (ret) {
-> > > > 		put_misc_cg(misc_cg);
-> > > > 		return ret;
-> > > > 	}  
-> > > 
-> > > Does that allow PASID allocation during driver probe, in kernel_init or
-> > > modprobe context?
-> > > 
-> > Good point. Yes, you can get cgroup subsystem state in kernel_init for
-> > charging/uncharging. I would think module_init should work also since it is
-> > after kernel_init. I have tried the following:
-> > static int __ref kernel_init(void *unused)
-> >  {
-> >         int ret;
-> > +       struct cgroup_subsys_state *css;
-> > +       css = task_get_css(current, pids_cgrp_id);
-> > 
-> > But that would imply:
-> > 1. IOASID has to be built-in, not as module
+On Thu, 25 Mar 2021 17:59:12 +0100,
+Kai-Heng Feng wrote:
+> 
+> This is preparation for next patch, no functional change intended.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-If IOASID is a module, the device driver will probe once the IOMMU module
-is available, which I think always happens in probe deferral kworker.
+Applied now.  Thanks.
 
-> > 2. IOASIDs charged on PID1/init would not subject to cgroup limit since it
-> > will be in the root cgroup and we don't support migration nor will migrate.
-> > 
-> > Then it comes back to the question of why do we try to limit in-kernel
-> > users per cgroup if we can't enforce these cases.
 
-It may be better to explicitly pass a cgroup during allocation as Jason
-suggested. That way anyone using the API will have to be aware of this and
-pass the root cgroup if that's what they want.
+Takashi
 
-> Are these real use cases? Why would a driver binding to a device
-> create a single kernel pasid at bind time? Why wouldn't it use
-> untagged DMA?
-
-It's not inconceivable to have a control queue doing DMA tagged with
-PASID. The devices I know either use untagged DMA, or have a choice to use
-a PASID. We're not outright forbidding PASID allocation at boot (I don't
-think we can or should) and we won't be able to check every use of the
-API, so I'm trying to figure out whether it will always default to root
-cgroup, or crash in some corner case.
-
-Thanks,
-Jean
+> ---
+> v3:
+>  - No change.
+> v2:
+>  - Only return early when ret < 0.
+> 
+>  sound/usb/mixer.c | 34 +++++++++++++++++++++++++---------
+>  1 file changed, 25 insertions(+), 9 deletions(-)
+> 
+> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> index b004b2e63a5d..5a2d9a768f70 100644
+> --- a/sound/usb/mixer.c
+> +++ b/sound/usb/mixer.c
+> @@ -1446,13 +1446,11 @@ static int mixer_ctl_master_bool_get(struct snd_kcontrol *kcontrol,
+>  	return 0;
+>  }
+>  
+> -/* get the connectors status and report it as boolean type */
+> -static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+> -				   struct snd_ctl_elem_value *ucontrol)
+> +static int get_connector_value(struct usb_mixer_elem_info *cval,
+> +			       char *name, int *val)
+>  {
+> -	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+>  	struct snd_usb_audio *chip = cval->head.mixer->chip;
+> -	int idx = 0, validx, ret, val;
+> +	int idx = 0, validx, ret;
+>  
+>  	validx = cval->control << 8 | 0;
+>  
+> @@ -1467,21 +1465,24 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+>  		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+>  				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+>  				      validx, idx, &uac2_conn, sizeof(uac2_conn));
+> -		val = !!uac2_conn.bNrChannels;
+> +		if (val)
+> +			*val = !!uac2_conn.bNrChannels;
+>  	} else { /* UAC_VERSION_3 */
+>  		struct uac3_insertion_ctl_blk uac3_conn;
+>  
+>  		ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0), UAC2_CS_CUR,
+>  				      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+>  				      validx, idx, &uac3_conn, sizeof(uac3_conn));
+> -		val = !!uac3_conn.bmConInserted;
+> +		if (val)
+> +			*val = !!uac3_conn.bmConInserted;
+>  	}
+>  
+>  	snd_usb_unlock_shutdown(chip);
+>  
+>  	if (ret < 0) {
+> -		if (strstr(kcontrol->id.name, "Speaker")) {
+> -			ucontrol->value.integer.value[0] = 1;
+> +		if (name && strstr(name, "Speaker")) {
+> +			if (val)
+> +				*val = 1;
+>  			return 0;
+>  		}
+>  error:
+> @@ -1491,6 +1492,21 @@ static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+>  		return filter_error(cval, ret);
+>  	}
+>  
+> +	return ret;
+> +}
+> +
+> +/* get the connectors status and report it as boolean type */
+> +static int mixer_ctl_connector_get(struct snd_kcontrol *kcontrol,
+> +				   struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+> +	int ret, val;
+> +
+> +	ret = get_connector_value(cval, kcontrol->id.name, &val);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	ucontrol->value.integer.value[0] = val;
+>  	return 0;
+>  }
+> -- 
+> 2.30.2
+> 
