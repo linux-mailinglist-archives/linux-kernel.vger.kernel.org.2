@@ -2,140 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E30349FC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE8B349FCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhCZCZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 22:25:04 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14549 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230216AbhCZCYm (ORCPT
+        id S230447AbhCZC1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 22:27:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31788 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231175AbhCZC1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 22:24:42 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F65Mc6QxrzPmQP;
-        Fri, 26 Mar 2021 10:22:04 +0800 (CST)
-Received: from [10.67.102.248] (10.67.102.248) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 10:24:30 +0800
-Subject: Re: [PATCH v7] perf annotate: Fix sample events lost in stdio mode
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
-        <mliska@suse.cz>, <linux-kernel@vger.kernel.org>
-CC:     <zhangjinhao2@huawei.com>
-References: <20210319123527.173883-1-yangjihong1@huawei.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <33ba152e-b8ef-3057-744a-51cb8c478ff2@huawei.com>
-Date:   Fri, 26 Mar 2021 10:24:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Thu, 25 Mar 2021 22:27:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616725621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yIh1QQuYJfzK4sKlNfFUdvGoGXJbMr7BFoUhHpD4vXc=;
+        b=aISJv788rpiQzFH1EeJJAtEoia4/vhe6V9y8HLVpMFgTHkErJjmbLYWz5aGnAPhZOKY/YJ
+        5j4yC+eqLFCJioEziWHpI+PF2aDtLBJQvRnXGaZUP1iUGMypOXMrEqaF4Eel4Uuk+EHB5m
+        WxK//Aj9qZiJOQcjdlXeHmY7Uq5FSUU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-324-mSJ9HGrJNOK-WaNSHHQYYQ-1; Thu, 25 Mar 2021 22:26:57 -0400
+X-MC-Unique: mSJ9HGrJNOK-WaNSHHQYYQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EB2E41084CA0;
+        Fri, 26 Mar 2021 02:26:55 +0000 (UTC)
+Received: from [10.10.110.35] (unknown [10.10.110.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3089B891AD;
+        Fri, 26 Mar 2021 02:26:50 +0000 (UTC)
+Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, pbonzini@redhat.com,
+        seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210311132847.224406-1-lszubowi@redhat.com>
+ <87sg4t7vqy.fsf@vitty.brq.redhat.com>
+From:   Lenny Szubowicz <lszubowi@redhat.com>
+Message-ID: <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
+Date:   Thu, 25 Mar 2021 22:26:49 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210319123527.173883-1-yangjihong1@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <87sg4t7vqy.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.248]
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-ping :)
+On 3/17/21 9:30 AM, Vitaly Kuznetsov wrote:
+> Lenny Szubowicz <lszubowi@redhat.com> writes:
+> 
+>> Turn off host updates to the registered kvmclock memory
+>> locations when transitioning to a hibernated kernel in
+>> resume_target_kernel().
+>>
+>> This is accomplished for secondary vcpus by disabling host
+>> clock updates for that vcpu when it is put offline. For the
+>> primary vcpu, it's accomplished by using the existing call back
+>> from save_processor_state() to kvm_save_sched_clock_state().
+>>
+>> The registered kvmclock memory locations may differ between
+>> the currently running kernel and the hibernated kernel, which
+>> is being restored and resumed. Kernel memory corruption is thus
+>> possible if the host clock updates are allowed to run while the
+>> hibernated kernel is relocated to its original physical memory
+>> locations.
+>>
+>> This is similar to the problem solved for kexec by
+>> commit 1e977aa12dd4 ("x86: KVM guest: disable clock before rebooting.")
+>>
+>> Commit 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a
+>> PER_CPU variable") innocently increased the exposure for this
+>> problem by dynamically allocating the physical pages that are
+>> used for host clock updates when the vcpu count exceeds 64.
+>> This increases the likelihood that the registered kvmclock
+>> locations will differ for vcpus above 64.
+>>
+>> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
+>> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
+>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+>> ---
+>>   arch/x86/kernel/kvmclock.c | 34 ++++++++++++++++++++++++++++++++--
+>>   1 file changed, 32 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+>> index aa593743acf6..291ffca41afb 100644
+>> --- a/arch/x86/kernel/kvmclock.c
+>> +++ b/arch/x86/kernel/kvmclock.c
+>> @@ -187,8 +187,18 @@ static void kvm_register_clock(char *txt)
+>>   	pr_info("kvm-clock: cpu %d, msr %llx, %s", smp_processor_id(), pa, txt);
+>>   }
+>>   
+>> +/*
+>> + * Turn off host clock updates to the registered memory location when the
+>> + * cpu clock context is saved via save_processor_state(). Enables correct
+>> + * handling of the primary cpu clock when transitioning to a hibernated
+>> + * kernel in resume_target_kernel(), where the old and new registered
+>> + * memory locations may differ.
+>> + */
+>>   static void kvm_save_sched_clock_state(void)
+>>   {
+>> +	native_write_msr(msr_kvm_system_time, 0, 0);
+>> +	kvm_disable_steal_time();
+>> +	pr_info("kvm-clock: cpu %d, clock stopped", smp_processor_id());
+>>   }
+> 
+> Nitpick: should we rename kvm_save_sched_clock_state() to something more
+> generic, like kvm_disable_host_clock_updates() to indicate, that what it
+> does is not only sched clock related?
 
-On 2021/3/19 20:35, Yang Jihong wrote:
-> In hist__find_annotations function, since different hist_entry may point to same
-> symbol, we free notes->src to signal already processed this symbol in stdio mode;
-> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
+I see your rationale. But if I rename kvm_save_sched_clock_state()
+then shouldn't I also rename kvm_restore_sched_clock_state().
+The names appear to reflect the callback that invokes them,
+from save_processor_state()/restore_state(), rather than what these
+functions need to do.
+
+         x86_platform.save_sched_clock_state = kvm_save_sched_clock_state;
+         x86_platform.restore_sched_clock_state = kvm_restore_sched_clock_state;
+  
+For V2 of my patch, I kept these names as they were. But if you have a strong
+desire for a different name, then I think both routines should be renamed
+similarly, since they are meant to be a complimentary pair.
+
 > 
-> However, there is a problem, for example, run the following command:
+>>   
+>>   static void kvm_restore_sched_clock_state(void)
+>> @@ -311,9 +321,23 @@ static int kvmclock_setup_percpu(unsigned int cpu)
+>>   	return p ? 0 : -ENOMEM;
+>>   }
+>>   
+>> +/*
+>> + * Turn off host clock updates to the registered memory location when a
+>> + * cpu is placed offline. Enables correct handling of secondary cpu clocks
+>> + * when transitioning to a hibernated kernel in resume_target_kernel(),
+>> + * where the old and new registered memory locations may differ.
+>> + */
+>> +static int kvmclock_cpu_offline(unsigned int cpu)
+>> +{
+>> +	native_write_msr(msr_kvm_system_time, 0, 0);
+>> +	pr_info("kvm-clock: cpu %d, clock stopped", cpu);
 > 
->   # perf record -e branch-misses -e branch-instructions -a sleep 1
+> I'd say this pr_info() is superfluous: on a system with hundereds of
+> vCPUs users will get flooded with 'clock stopped' messages which don't
+> actually mean much: in case native_write_msr() fails the error gets
+> reported in dmesg anyway. I'd suggest we drop this and pr_info() in
+> kvm_save_sched_clock_state().
 > 
-> perf.data file contains different types of sample event.
+
+Agreed. I was essentially using it as a pr_debug(). Gone in V2.
+
+>> +	return 0;
 > 
-> If the same IP sample event exists in branch-misses and branch-instructions,
-> this event uses the same symbol. When annotate branch-misses events, notes->src
-> corresponding to this event is set to null, as a result, when annotate
-> branch-instructions events, this event is skipped and no annotate is output.
+> Why don't we disable steal time accounting here? MSR_KVM_STEAL_TIME is
+> also per-cpu. Can we merge kvm_save_sched_clock_state() with
+> kvmclock_cpu_offline() maybe?
 > 
-> Solution of this patch is to remove zfree in hists__find_annotations and
-> change sort order to "dso,symbol" to avoid duplicate output when different
-> processes correspond to the same symbol.
+
+kvm_cpu_down_prepare() in arch/x86/kernel/kvm.c already calls
+kvm_disable_steal_time() when a vcpu is placed offline.
+So there is no need to do that in kvmclock_cpu_offline().
+
+In the case of the hibernation resume code path, resume_target_kernel()
+in kernel/power/hibernate.c, the secondary cpus are placed offline,
+but the primary is not. Instead, we are going to be switching contexts
+of the primary cpu from the boot kernel to the kernel that was restored
+from the hibernation image.
+
+This is where save_processor_state()/restore_processor_state() and kvm_save_sched_clock_state()/restore_sched_clock_state() come into play
+to stop the kvmclock of the boot kernel's primary cpu and restart
+the kvmclock of restored hibernated kernel's primary cpu.
+
+And in this case, no one is calling kvm_disable_steal_time(),
+so kvm_save_sched_clock_state() is doing it. (This is very similar
+to the reason why kvm_crash_shutdown() in kvmclock.c needs to call
+kvm_disable_steal_time())
+
+However, I'm now wondering if kvm_restore_sched_clock_state()
+needs to add a call to the equivalent of kvm_register_steal_time(),
+because otherwise no one will do that for the primary vcpu
+on resume from hibernation.
+
+>> +}
+>> +
+>>   void __init kvmclock_init(void)
+>>   {
+>>   	u8 flags;
+>> +	int cpuhp_prepare;
+>>   
+>>   	if (!kvm_para_available() || !kvmclock)
+>>   		return;
+>> @@ -325,8 +349,14 @@ void __init kvmclock_init(void)
+>>   		return;
+>>   	}
+>>   
+>> -	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
+>> -			      kvmclock_setup_percpu, NULL) < 0) {
+>> +	cpuhp_prepare = cpuhp_setup_state(CPUHP_BP_PREPARE_DYN,
+>> +					  "kvmclock:setup_percpu",
+>> +					  kvmclock_setup_percpu, NULL);
+>> +	if (cpuhp_prepare < 0)
+>> +		return;
+>> +	if (cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "kvmclock:cpu_offline",
+>> +			      NULL, kvmclock_cpu_offline) < 0) {
+>> +		cpuhp_remove_state(cpuhp_prepare);
 > 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
-> ---
+> In case we fail to set up kvmclock_cpu_offline() callback we get broken
+> hybernation but without kvmclock_setup_percpu() call we get a broken
+> guest (as kvmclock() may be the only reliable clocksource) so I'm not
+> exactly sure we're active in a best way with cpuhp_remove_state()
+> here. I don't feel strong though, I think it can stay but in that case
+> I'd add a pr_warn() at least.
+
+Something is seriously broken if either of these cpuhp_setup_state()
+calls fail. I first considered using the "down" callback of the
+CPUHP_BP_PREPARE_DYN state, as in:
+
+         if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
+			      kvmclock_setup_percpu, kvmclock_cpu_offline) < 0) {
+
+This would have minimized the change, but I wasn't comfortable with how late
+it would be called. Other examples in the kernel, including kvm.c, use
+CPUHP_AP_ONLINE_DYN for cpu online/offline events.
+
+But I do agree that a failure of either cpuhp_setup_state() should not
+be silent. So in V2 I added a pr_err().
+
+Thank you for your review comments.
+
+                         -Lenny.
+
 > 
-> Changes since v6:
->    - Remove separate setup_sorting() for branch mode.
+>>   		return;
+>>   	}
 > 
-> Changes since v5:
->    - Add Signed-off-by tag.
-> 
-> Changes since v4:
->    - Use the same sort key "dso,symbol" in branch stack mode.
-> 
-> Changes since v3:
->    - Modify the first line of comments.
-> 
-> Changes since v2:
->    - Remove zfree in hists__find_annotations.
->    - Change sort order to avoid duplicate output.
-> 
-> Changes since v1:
->    - Change processed flag variable from u8 to bool.
-> 
->   tools/perf/builtin-annotate.c | 29 +++++++++++++++--------------
->   1 file changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-annotate.c b/tools/perf/builtin-annotate.c
-> index a23ba6bb99b6..795c2ac7fcd1 100644
-> --- a/tools/perf/builtin-annotate.c
-> +++ b/tools/perf/builtin-annotate.c
-> @@ -374,13 +374,6 @@ static void hists__find_annotations(struct hists *hists,
->   		} else {
->   			hist_entry__tty_annotate(he, evsel, ann);
->   			nd = rb_next(nd);
-> -			/*
-> -			 * Since we have a hist_entry per IP for the same
-> -			 * symbol, free he->ms.sym->src to signal we already
-> -			 * processed this symbol.
-> -			 */
-> -			zfree(&notes->src->cycles_hist);
-> -			zfree(&notes->src);
->   		}
->   	}
->   }
-> @@ -619,14 +612,22 @@ int cmd_annotate(int argc, const char **argv)
->   
->   	setup_browser(true);
->   
-> -	if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack) {
-> +	/*
-> +	 * Events of different processes may correspond to the same
-> +	 * symbol, we do not care about the processes in annotate,
-> +	 * set sort order to avoid repeated output.
-> +	 */
-> +	sort_order = "dso,symbol";
-> +
-> +	/*
-> +	 * Set SORT_MODE__BRANCH so that annotate display IPC/Cycle
-> +	 * if branch info is in perf data in TUI mode.
-> +	 */
-> +	if ((use_browser == 1 || annotate.use_stdio2) && annotate.has_br_stack)
->   		sort__mode = SORT_MODE__BRANCH;
-> -		if (setup_sorting(annotate.session->evlist) < 0)
-> -			usage_with_options(annotate_usage, options);
-> -	} else {
-> -		if (setup_sorting(NULL) < 0)
-> -			usage_with_options(annotate_usage, options);
-> -	}
-> +
-> +	if (setup_sorting(NULL) < 0)
-> +		usage_with_options(annotate_usage, options);
->   
->   	ret = __cmd_annotate(&annotate);
->   
-> 
+
