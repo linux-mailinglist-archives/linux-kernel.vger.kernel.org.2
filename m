@@ -2,74 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A529D34AFC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBDC34AFC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCZUEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 16:04:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhCZUDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:03:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A60E161A02;
-        Fri, 26 Mar 2021 20:03:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616789028;
-        bh=4LKLYKqudMoB6aEd0Ps7uLTpOx51F1Icssxa7AiFOw0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=prkDcNQpdnFzJnZv4Ul12AA/8zLGY27K6F+rBjzHhJq5NBK64WHUpsTem8eBtcfq8
-         HEU/kcqmBG6bk7WnfZ/IM91KhzhQE2pUDGa/zVEP4ococfpu86/s24LCtrU8wT2GyK
-         m6gUaMsN8IGte6bF3v8K/u3vkltqzOTXU/j30NXMfmjBWUvpR3aJWYqOM0+15uxvEs
-         LyEnaWEoeurwpOM/zxMXBSi9YSAaeaglJTAllj1WTCQJMYJTZ7QrGQhjLmJ3ajNCyS
-         LXCywYD3hnmQcNFxE9Lud5JbQkq41i3G35jD0V1uR7vTEi10VW2BiRXNMLm/7ThHYG
-         Kx2Z0hgshZvtw==
-Received: by mail-ot1-f54.google.com with SMTP id y19-20020a0568301d93b02901b9f88a238eso6311170oti.11;
-        Fri, 26 Mar 2021 13:03:48 -0700 (PDT)
-X-Gm-Message-State: AOAM531uQ3TdQMWAMEyblGZEI/rkSNWF040dmZKC3+tccVON8I7jjC1l
-        w3BixtdxNeuUdPmdWZZBKU8izULwbFZw/NB2M+8=
-X-Google-Smtp-Source: ABdhPJyPEunl4Ngli4e/a9ttTgDySVGUAx1snwV7toHx9J8Evv0fmZt1qQLI1SgPLsSAWwUdD3HAzaFQDSDeIqyJHRs=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr13387334otq.251.1616789027968;
- Fri, 26 Mar 2021 13:03:47 -0700 (PDT)
+        id S230231AbhCZUEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 16:04:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230003AbhCZUEA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 16:04:00 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F15C0613AA;
+        Fri, 26 Mar 2021 13:04:00 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id o5so6546296qkb.0;
+        Fri, 26 Mar 2021 13:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YtjDErUVkDl+bV3TbtSZEkUyABM9izmWrCvJOp/BLCY=;
+        b=B4uI4dgAG4uTFxs8tejlf5xv9EY33Hix90ae5C11SwKMpw7Z8x0L4XIMJYQNvwGgQi
+         jRWD8POuCeWwSp342IBMzMOOMJlFU7NyFFJrOXWxNyPPR+DZqi7nNLUnRIoI14VqQ2qd
+         sw29BLajVRrk7qidLnbM3NNCmnUxXtMS+9mhv+t/1T411ZRxtcB5QYI6hxr6kWaMA4tj
+         jPBv2R23mRiA3740fLLCB6UJZwI0KBt1ODMYreas2kq39L6DXCdadSfW2bRWevQq+3m5
+         bksOKnREAAMwMuxkci963ucpMA2FzT6kYY88OKLaucpbhioDBEmTQ5mikVx97vHR/glQ
+         fdlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mail-followup-to
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=YtjDErUVkDl+bV3TbtSZEkUyABM9izmWrCvJOp/BLCY=;
+        b=cpZ9m3y+KbNiBXzE/kQnYTX8OAbRidLQohEJG3X9Aj4Ehsvw3lQrN7FpC3GquomoRH
+         RytZvZ/QLPFNUY3uZsjNER/JVncOAKXLuhwUyVaQIjO+IeytLNQfOm1qCXvwQa6YqyOI
+         H+Kg2Xjl/TsIdmxj20bgRz33Ly3UWyPhMdbgJ7pDx+OjCDuGmPgHlXZldvjXMY8gbqCV
+         5nL+/sduYZBeel8prMenY83yxeyHdkd63k8x43aBasb3CXeyQYBI7E5Rg62vKypr4XCF
+         jUicGVtEfmrpwst4Q0b2FjYnMl9XZRhEAwxHcgIioFAg3QF9PN0/uwgD0vK3coPpZ37K
+         SgcQ==
+X-Gm-Message-State: AOAM5318Pu/ACRSgdIv6xSYOAe38l5EU9ADY7SgWgySXdABXL3fqbOQO
+        Zuy3hO1ssM8tqEpO/7VkajI=
+X-Google-Smtp-Source: ABdhPJwoL029RnHLd9K5b8v546luBiVUqoZQP8dymvdcPS/2l0spEEefsVjsrU5ehsP54s7MbSWWSA==
+X-Received: by 2002:a37:7b41:: with SMTP id w62mr14618737qkc.256.1616789039541;
+        Fri, 26 Mar 2021 13:03:59 -0700 (PDT)
+Received: from Gentoo ([156.146.58.30])
+        by smtp.gmail.com with ESMTPSA id x7sm567804qtp.10.2021.03.26.13.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 13:03:58 -0700 (PDT)
+Date:   Sat, 27 Mar 2021 01:33:48 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] btrfs: Fix a typo
+Message-ID: <YF4+JMxVIEzR+wZd@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        dsterba@suse.cz, clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210326005932.8238-1-unixbhaskar@gmail.com>
+ <20210326134732.GN7604@twin.jikos.cz>
 MIME-Version: 1.0
-References: <20210320151903.60759-1-sven@svenpeter.dev> <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
- <20210323205346.GA1283560@robh.at.kernel.org> <43685c67-6d9c-4e72-b320-0462c2273bf0@www.fastmail.com>
- <CAK8P3a0fvnYLrG=cGiOQ6u8aZnriTeM0R=MW7FX=94mO13Rq0w@mail.gmail.com>
- <c1bcd90d344c2b68@bloch.sibelius.xs4all.nl> <9f06872d-f0ec-43c3-9b53-d144337100b3@www.fastmail.com>
- <CAK8P3a2b7k6JkxecW=yu-NF+fkNCxJ3Ja36nQ7LK8hsuO=4=sw@mail.gmail.com> <c1bcd9821a8f8c05@bloch.sibelius.xs4all.nl>
-In-Reply-To: <c1bcd9821a8f8c05@bloch.sibelius.xs4all.nl>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 26 Mar 2021 21:03:32 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1CFHgjuzmefKcbC3MPeBD0USeTe7oZsTcQ=6tagG3Cvw@mail.gmail.com>
-Message-ID: <CAK8P3a1CFHgjuzmefKcbC3MPeBD0USeTe7oZsTcQ=6tagG3Cvw@mail.gmail.com>
-Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
-To:     Mark Kettenis <mark.kettenis@xs4all.nl>
-Cc:     sven@svenpeter.dev, Rob Herring <robh@kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xLctaF9xbflfJ32r"
+Content-Disposition: inline
+In-Reply-To: <20210326134732.GN7604@twin.jikos.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 6:28 PM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
 
-> I haven't figured out how the bypass stuff really works.  Corellium
-> added support for it in their codebase when they added support for
-> Thunderbolt, and some of the DARTs that seem to be related to
-> Thunderbolt do indeed have a "bypass" property.  But it is unclear to
-> me how the different puzzle pieces fit together for Thunderbolt.
+--xLctaF9xbflfJ32r
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
-As a general observation, bypass mode for Thunderbolt is what enabled
-the http://thunderclap.io/ attack. This is extremely useful for debugging
-a running kernel from another machine, but it's also something that
-should never be done in a production kernel.
+On 14:47 Fri 26 Mar 2021, David Sterba wrote:
+>On Fri, Mar 26, 2021 at 06:29:32AM +0530, Bhaskar Chowdhury wrote:
+>>
+>> s/reponsible/responsible/
+>
+>So this is exactly what I don't want to see happen - one patch per typo.
+>I tried to explain it in the previous patch, please either fix all typos
+>under fs/btrfs or don't bother.
 
-         Arnd
+As I mentioned in my previous correspondence to , I have my way of doing thing
+. The problem is , you are getting accustomed with some specific method and
+you are thinking that is the "only way" of doing the "right thing" . Please ,
+think others are also think in different way too.
+
+The goal to make it looks good and productive...don't you think so???
+
+..and I said I do bother ,it's just not about this specific segment but about
+the whole kernel.
+
+Or is it some sort of special flow brtfs subsystem are following , which I am
+not aware off??
+
+Please do let me.
+
+--xLctaF9xbflfJ32r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBePiEACgkQsjqdtxFL
+KRVdVAf/ad+EA/8ylvI3jm+Z36L0iJOfuBfl3ODx2DaSqb3hSqwV8jVvbp14jefr
+/VwJ8yl9ggMEJRq/xHqcnz0CMTRzHUeZQK5SpYYA+B5UeWkEV98I/GthJxC4V4vZ
+U8DVlErh6DAqOqoIaL8YysGAOL+AEYq0NrC5MSAuCFXvYJbNWS2Up1wv6e3vgCXo
+BQhV4FtvhxGlaptqoCFZzh1t8EbNkC24w2LXJLif3sDxloOlYfSzv8avhHFgEgCo
+ajE1S0c/jSRWIwamwY6QwcUGnFXCvy2MrjAVSIrOi81zXOTtoudidRslRDSMcwwX
+FXRmhsAE0k1yfNqd/bRg0RmLS6lveA==
+=q5x3
+-----END PGP SIGNATURE-----
+
+--xLctaF9xbflfJ32r--
