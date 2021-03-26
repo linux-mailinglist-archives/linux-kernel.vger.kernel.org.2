@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CCB34A9DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E32634A9FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhCZOfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:35:17 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:53575 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229779AbhCZOew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:34:52 -0400
-Received: from [192.168.0.2] (ip5f5ae918.dynamic.kabel-deutschland.de [95.90.233.24])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 6C805206479D4;
-        Fri, 26 Mar 2021 15:34:43 +0100 (CET)
-Subject: Re: Marvell: hw perfevents: unable to count PMU IRQs
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
-        Robert Marko <robert.marko@sartura.hr>
-References: <dc43adf0-daa3-b939-e0ed-5d0c8d01bd91@molgen.mpg.de>
- <ec735dae-5448-dcf4-9537-898977ebc8f4@arm.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <6ca582cc-56ab-f481-d9e0-4e2b0b0d833e@molgen.mpg.de>
-Date:   Fri, 26 Mar 2021 15:34:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230288AbhCZOf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhCZOfP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:35:15 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D73C0613B9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:13 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id m20-20020a7bcb940000b029010cab7e5a9fso5032245wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gK4GBHDnYjUKGItp7Cpn1OqRPa6zrE034rZiLZ47Q+0=;
+        b=FQgVhM/HPmIVSaTR75VGvplCpT7A/KPgSILda5lhc4gG8cVL8wV363q2YP+MKT6ofS
+         qtp1/el3hpW/j7iCBAJnS61kbgUgdf/9XFnERQE32l8LoSMOY8ri5jNb36Tot+BIOwNQ
+         xlCPwO2nXo6Bi2SF43RlOTlky0nw+kpPePRZYzYf4SaMuO+8wCOIM7DUUTUGCTi4qmAn
+         LIpeeZtt6Bv3HMyZIWAsnwhGUHc7Azqyr0+o3nWqO1YNp4t61K4IgTQCWCOHrlHaYzC+
+         22caIlgT+ccj+M1xjj3O2lfz+JDBIMpb6YzfdPO4TTHt2TTtEM7c97cPEigXlYbQsCoJ
+         Kg9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gK4GBHDnYjUKGItp7Cpn1OqRPa6zrE034rZiLZ47Q+0=;
+        b=dndJ0VNJmYaMQvkNTNi35/b1TIscq4lUmroFojcF40qt8DcUbS2GSdOADjLfjzzE9F
+         gPmu4RbAs/sRNFI/ICIPVnUOLLPOzDffSvf6r3kEltI05gbCv/hq8b6TUsVeLfIhwJdI
+         eiL1Bpn041cj+SaEpjvzyhjUGqPc7O8McxDVMjgHe88N9EZDw0vED0uly6TplnHkGajx
+         yYJ/PMhbPXru6hVxkUAzbskDGjnxKT25XgoVntzf2sbcedVy3Tp9Hlcj5/itg05+0pX3
+         5drUJgWouwGQrNr0NL8iCjjLwMQ7LNd4KZSp5artFD6odhpEck6EjQACOEZunrubWtHD
+         sADg==
+X-Gm-Message-State: AOAM531575KBB9Pv0swDHk4LMD4GM0xaFKbWsMBrDAWRP8/DFId5MYkK
+        1lVQxMjnKqhqRgoFYKxOI3mRvg==
+X-Google-Smtp-Source: ABdhPJw+y6RAQUFh0yOSkeayDQx3lR4W+C9cJD48v/0NkLQc6flNcqartCxarA+D9tpVMmL5IMFB7w==
+X-Received: by 2002:a05:600c:1553:: with SMTP id f19mr13397053wmg.33.1616769312057;
+        Fri, 26 Mar 2021 07:35:12 -0700 (PDT)
+Received: from dell.default ([91.110.221.194])
+        by smtp.gmail.com with ESMTPSA id j26sm12878225wrh.57.2021.03.26.07.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 07:35:11 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org
+Subject: [PATCH 10/25] HID: intel-ish-hid: Fix potential copy/paste error
+Date:   Fri, 26 Mar 2021 14:34:43 +0000
+Message-Id: <20210326143458.508959-12-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210326143458.508959-1-lee.jones@linaro.org>
+References: <20210326143458.508959-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <ec735dae-5448-dcf4-9537-898977ebc8f4@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Robin,
+Fixes the following W=1 kernel build warning(s):
 
+ In file included from drivers/hid/intel-ish-hid/ishtp-hid.c:11:
+ drivers/hid/intel-ish-hid/ishtp-hid.c:263: warning: expecting prototype for ishtp_hid_probe(). Prototype was for ishtp_hid_remove() instead
 
-Thank you for the quick reply.
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Jiri Kosina <jikos@kernel.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: linux-input@vger.kernel.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+---
+ drivers/hid/intel-ish-hid/ishtp-hid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Am 26.03.21 um 13:29 schrieb Robin Murphy:
-> On 2021-03-25 21:39, Paul Menzel wrote:
+diff --git a/drivers/hid/intel-ish-hid/ishtp-hid.c b/drivers/hid/intel-ish-hid/ishtp-hid.c
+index 393bed0abee99..14c271d7d8a94 100644
+--- a/drivers/hid/intel-ish-hid/ishtp-hid.c
++++ b/drivers/hid/intel-ish-hid/ishtp-hid.c
+@@ -254,7 +254,7 @@ int ishtp_hid_probe(unsigned int cur_hid_dev,
+ }
+ 
+ /**
+- * ishtp_hid_probe() - Remove registered hid device
++ * ishtp_hid_remove() - Remove registered hid device
+  * @client_data:	client data pointer
+  *
+  * This function is used to destroy allocatd HID device.
+-- 
+2.27.0
 
->> On the Marvell Prestera switch, Linux 5.10.4 prints the error (with an 
->> additional info level message) below.
->>
->>      [    0.000000] Linux version 5.10.4 (robimarko@onlbuilder9) (aarch64-linux-gnu-gcc (Debian 6.3.0-18) 6.3.0 20170516, GNU ld (GNU Binutils for Debian) 2.28) #1 SMP PREEMPT Thu Mar 11 10:22:09 UTC 2021
->>      […]
->>      [    1.996658] hw perfevents: unable to count PMU IRQs
->>      [    2.001825] hw perfevents: /ap806/config-space@f0000000/pmu: failed to register PMU devices!
-
-[…]
-
->> Please find the output of `dmesg` attached.
->>
->> How can the IRQs be counted?
-> 
-> Well, that message simply means we got an error back from 
-> platform_irq_count(), which in turn implies that 
-> platform_get_irq_optional() failed. Most likely we got -EPROBE_DEFER 
-> back from of_irq_get() because the relevant interrupt controller wasn't 
-> ready by that point - especially since that's the o9nly error code that 
-> platform_irq_cont() will actually pass. It looks like that should end up 
-> getting propagated all the way out appropriately, so the PMU driver 
-> should defer and be able to probe OK once the mvebu-pic driver has 
-> turned up to provide its IRQ. We could of course do a better job of not 
-> shouting error messages for a non-fatal condition....
-
-Yes, that would be great.
-
-> As for why the PMU doesn't eventually show up, my best guess would be 
-> either an issue with the mvebu-pic driver itself probing, and/or perhaps 
-> something in fw_devlink going awry - inspecting sysfs should shed a bit 
-> more light on those.
-
-I just noticed, I missed
-
-     [    3.298670] hw perfevents: enabled with armv8_cortex_a72 PMU 
-driver, 7 counters available
-
-a good second. So the interrupt controller indeed seems to take longer 
-to be ready.
-
-I guess, I’d need to boot with `initcall_debug` to find out the callers 
-of the PMU functions.
-
-
-Kind regards,
-
-Paul
