@@ -2,129 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B6134AAE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B2734AAE9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:05:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhCZPE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230226AbhCZPEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:04:12 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB1DC0613AA;
-        Fri, 26 Mar 2021 08:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:Cc:To;
-        bh=2IzumaravlGk+BRunv2UMivpeelF4L7NzuI2R8lgTAM=; b=CPiXftQsPvgFLchBjgrkJDvUPO
-        RN94TVfwAhSD5bPUcG0y1Zea3epbwHadc/HW9y/Mtrm8kEMLCAkyWKja01gImewN0VOiGtJNXmxvS
-        1f9aB6tZBKVeRW26jAVSOzHYLtbKz2zlrr7wSf/UNScTousKouvi0dciY+MTyfvLS0OJF2DOoIb82
-        ymcrBE8sAT0CDi21qF1Qa252/pClEb2jku3TafwFqhMQrh8QSbKLpCLKnfsllLS50HoxG1Z84AqzN
-        UgqcV9kJQMMddh+vg02rTPRCcYyBOkmaFkXudnuQy/vWc7rGdZhwF18+3G0P0gnLGD+8kLg/kvynM
-        9KvaMey9HuArf+ls7R07NIMC0XHnPDkZABqQc9bUCaqevLmFO8enaCRWWFDbEY+FqgOLnEO5EfKeW
-        R49vArwybC6slpq/rjJZg9jghHrSbcr0jirXK9kyfo+dCnuf92969fxolSnlr+SKwP2W+swispWR5
-        OQM2dGtdvEMIsIP0IxaKmpBs;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lPo0P-0003IQ-Ub; Fri, 26 Mar 2021 15:04:09 +0000
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
-        oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <e6de934a-a794-f173-088d-a140d0645188@samba.org>
- <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
- <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
- <0c91d9e7-82cd-bec2-19ae-cc592ec757c6@kernel.dk>
- <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
- <66fa3cfc-4161-76fe-272e-160097f32a53@kernel.dk>
- <67a83ad5-1a94-39e5-34c7-6b2192eb7edb@samba.org>
- <ac807735-53d0-0c9e-e119-775e5e01d971@samba.org>
- <0396df33-7f91-90c8-6c0d-8a3afd3fff3c@kernel.dk>
-From:   Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH 0/6] Allow signals for IO threads
-Message-ID: <98c22337-b85e-0316-b446-d4422af45d56@samba.org>
-Date:   Fri, 26 Mar 2021 16:04:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230249AbhCZPFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230114AbhCZPEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:04:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C387061A28;
+        Fri, 26 Mar 2021 15:04:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616771080;
+        bh=CcDG1SYT+u5oJCFUbtBoRVBdku5chSBF/j8IcwTSwyA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=FslLeGi3ttBCpMwtegrgb3z3Jo9maYQuWXpVaJsfbMi0cMLce4xQuBXm6iwbDyBJu
+         Wqc+4pQAnP76sDiYBuKQKxkAJshruFOVUM4rted2/fN3Ef93XjjXL5dnmEqUFNAO9e
+         hoyR+oYbvgzxSvB/aqrMzDUIZBLKXvK1JT5W2Kr/DA6ua8jhtsHnjx4e8WJTmGsIa2
+         e4Fnako4g0tZmhYLhifao8/XBPPKaTP5NVGYKGXCSpJx/WFDJdEHtdZzuqbjGKXZHs
+         5Mn2WuBXZZBRUS/K6Tlirn0e261TPnYR+Zqff0+P437/WKaaCfTmbL6HwTudxdrVdJ
+         JCXHPuMsIVGrw==
+Received: by mail-ed1-f47.google.com with SMTP id e7so6642556edu.10;
+        Fri, 26 Mar 2021 08:04:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531560WAvyieJBqROiK+4HtTrlXBHpliTci6VsPh3Jx5h5n2eWnB
+        ANeOj+IFhqEwn+tKyoDSCJcjJ0MZXuwip1w7Iw==
+X-Google-Smtp-Source: ABdhPJysfZUE7pyMmQBkvm0tvpbMLtvvqy297Z/V6TC8r3w35DV43BQKmWP/tZVYr7jDjbifL0QLm4IUfTacC1zCtZ0=
+X-Received: by 2002:a05:6402:2d0:: with SMTP id b16mr15924985edx.194.1616771078263;
+ Fri, 26 Mar 2021 08:04:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0396df33-7f91-90c8-6c0d-8a3afd3fff3c@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 26 Mar 2021 09:04:25 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLQTM0Xw_skFeysJyYAyW3B=0u0xgePgoUYSpKaWw9SjQ@mail.gmail.com>
+Message-ID: <CAL_JsqLQTM0Xw_skFeysJyYAyW3B=0u0xgePgoUYSpKaWw9SjQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/17] Implement GENERIC_CMDLINE
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Will Deacon <will@kernel.org>, Daniel Walker <danielwa@cisco.com>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        microblaze <monstr@monstr.eu>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        nios2 <ley.foon.tan@intel.com>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linux-hexagon@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org,
+        SH-Linux <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 26, 2021 at 7:44 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+> The purpose of this series is to improve and enhance the
+> handling of kernel boot arguments.
+>
+> It is first focussed on powerpc but also extends the capability
+> for other arches.
+>
+> This is based on suggestion from Daniel Walker <danielwa@cisco.com>
+>
+> Main changes in V3:
+> - Also accept destination equal to source in cmdline_build() by setting a tmp buffer in __initdata. Powerpc provides different source and destination and call __cmdline_build() directly.
+> - Taken comments received from Will and Rob
+> - Converted all architectures (Only tested on powerpc)
+>
+> Christophe Leroy (17):
+>   cmdline: Add generic function to build command line.
+>   drivers: of: use cmdline building function
+>   cmdline: Gives architectures opportunity to use generically defined
+>     boot cmdline manipulation
+>   powerpc: Convert to GENERIC_CMDLINE
+>   arm: Convert to GENERIC_CMDLINE
+>   arm64: Convert to GENERIC_CMDLINE
+>   hexagon: Convert to GENERIC_CMDLINE
+>   microblaze: Convert to GENERIC_CMDLINE
+>   nios2: Convert to GENERIC_CMDLINE
+>   openrisc: Convert to GENERIC_CMDLINE
+>   riscv: Convert to GENERIC_CMDLINE
+>   sh: Convert to GENERIC_CMDLINE
+>   sparc: Convert to GENERIC_CMDLINE
+>   xtensa: Convert to GENERIC_CMDLINE
+>   x86: Convert to GENERIC_CMDLINE
+>   mips: Convert to GENERIC_CMDLINE
+>   cmdline: Remove CONFIG_CMDLINE_EXTEND
+>
+>  arch/arm/Kconfig                            | 38 +-------------
+>  arch/arm/kernel/atags_parse.c               | 15 ++----
+>  arch/arm64/Kconfig                          | 33 +-----------
+>  arch/arm64/kernel/idreg-override.c          |  9 ++--
+>  arch/hexagon/Kconfig                        | 11 +---
+>  arch/hexagon/kernel/setup.c                 | 10 +---
+>  arch/microblaze/Kconfig                     | 24 +--------
+>  arch/microblaze/configs/mmu_defconfig       |  2 +-
+>  arch/microblaze/kernel/head.S               |  4 +-
+>  arch/mips/Kconfig                           |  1 +
+>  arch/mips/Kconfig.debug                     | 44 ----------------
+>  arch/mips/configs/ar7_defconfig             |  1 -
+>  arch/mips/configs/bcm47xx_defconfig         |  1 -
+>  arch/mips/configs/bcm63xx_defconfig         |  1 -
+>  arch/mips/configs/bmips_be_defconfig        |  1 -
+>  arch/mips/configs/bmips_stb_defconfig       |  1 -
+>  arch/mips/configs/capcella_defconfig        |  1 -
+>  arch/mips/configs/ci20_defconfig            |  1 -
+>  arch/mips/configs/cu1000-neo_defconfig      |  1 -
+>  arch/mips/configs/cu1830-neo_defconfig      |  1 -
+>  arch/mips/configs/e55_defconfig             |  1 -
+>  arch/mips/configs/generic_defconfig         |  1 -
+>  arch/mips/configs/gpr_defconfig             |  1 -
+>  arch/mips/configs/loongson3_defconfig       |  1 -
+>  arch/mips/configs/mpc30x_defconfig          |  1 -
+>  arch/mips/configs/rt305x_defconfig          |  1 -
+>  arch/mips/configs/tb0219_defconfig          |  1 -
+>  arch/mips/configs/tb0226_defconfig          |  1 -
+>  arch/mips/configs/tb0287_defconfig          |  1 -
+>  arch/mips/configs/workpad_defconfig         |  1 -
+>  arch/mips/configs/xway_defconfig            |  1 -
+>  arch/mips/kernel/relocate.c                 |  4 +-
+>  arch/mips/kernel/setup.c                    | 40 +--------------
+>  arch/mips/pic32/pic32mzda/early_console.c   |  2 +-
+>  arch/mips/pic32/pic32mzda/init.c            |  2 -
+>  arch/nios2/Kconfig                          | 24 +--------
+>  arch/nios2/kernel/setup.c                   | 13 ++---
+>  arch/openrisc/Kconfig                       | 10 +---
+>  arch/powerpc/Kconfig                        | 37 +------------
+>  arch/powerpc/kernel/prom_init.c             | 17 +++---
+>  arch/riscv/Kconfig                          | 44 +---------------
+>  arch/riscv/kernel/setup.c                   |  5 +-
+>  arch/sh/Kconfig                             | 30 +----------
+>  arch/sh/configs/ap325rxa_defconfig          |  2 +-
+>  arch/sh/configs/dreamcast_defconfig         |  2 +-
+>  arch/sh/configs/ecovec24-romimage_defconfig |  2 +-
+>  arch/sh/configs/ecovec24_defconfig          |  2 +-
+>  arch/sh/configs/edosk7760_defconfig         |  2 +-
+>  arch/sh/configs/espt_defconfig              |  2 +-
+>  arch/sh/configs/j2_defconfig                |  2 +-
+>  arch/sh/configs/kfr2r09-romimage_defconfig  |  2 +-
+>  arch/sh/configs/kfr2r09_defconfig           |  2 +-
+>  arch/sh/configs/lboxre2_defconfig           |  2 +-
+>  arch/sh/configs/microdev_defconfig          |  2 +-
+>  arch/sh/configs/migor_defconfig             |  2 +-
+>  arch/sh/configs/polaris_defconfig           |  2 +-
+>  arch/sh/configs/r7780mp_defconfig           |  2 +-
+>  arch/sh/configs/r7785rp_defconfig           |  2 +-
+>  arch/sh/configs/rsk7201_defconfig           |  2 +-
+>  arch/sh/configs/rsk7203_defconfig           |  2 +-
+>  arch/sh/configs/rts7751r2d1_defconfig       |  2 +-
+>  arch/sh/configs/rts7751r2dplus_defconfig    |  2 +-
+>  arch/sh/configs/sdk7780_defconfig           |  2 +-
+>  arch/sh/configs/sdk7786_defconfig           |  2 +-
+>  arch/sh/configs/se7206_defconfig            |  2 +-
+>  arch/sh/configs/se7343_defconfig            |  2 +-
+>  arch/sh/configs/se7712_defconfig            |  2 +-
+>  arch/sh/configs/se7721_defconfig            |  2 +-
+>  arch/sh/configs/se7724_defconfig            |  2 +-
+>  arch/sh/configs/se7751_defconfig            |  2 +-
+>  arch/sh/configs/se7780_defconfig            |  2 +-
+>  arch/sh/configs/sh03_defconfig              |  2 +-
+>  arch/sh/configs/sh2007_defconfig            |  2 +-
+>  arch/sh/configs/sh7757lcr_defconfig         |  2 +-
+>  arch/sh/configs/sh7763rdp_defconfig         |  2 +-
+>  arch/sh/configs/shmin_defconfig             |  2 +-
+>  arch/sh/configs/shx3_defconfig              |  2 +-
+>  arch/sh/configs/titan_defconfig             |  2 +-
+>  arch/sh/configs/ul2_defconfig               |  2 +-
+>  arch/sh/kernel/setup.c                      | 11 +---
+>  arch/sparc/Kconfig                          | 18 +------
+>  arch/sparc/prom/bootstr_64.c                |  2 +-
+>  arch/x86/Kconfig                            | 45 +---------------
+>  arch/x86/kernel/setup.c                     | 17 +-----
+>  arch/xtensa/Kconfig                         | 15 +-----
+>  arch/xtensa/configs/audio_kc705_defconfig   |  1 -
+>  arch/xtensa/configs/common_defconfig        |  1 -
+>  arch/xtensa/configs/generic_kc705_defconfig |  1 -
+>  arch/xtensa/configs/iss_defconfig           |  1 -
+>  arch/xtensa/configs/nommu_kc705_defconfig   |  1 -
+>  arch/xtensa/configs/smp_lx200_defconfig     |  1 -
+>  arch/xtensa/configs/virt_defconfig          |  1 -
+>  arch/xtensa/configs/xip_kc705_defconfig     |  1 -
+>  arch/xtensa/kernel/setup.c                  | 10 +---
+>  drivers/firmware/efi/libstub/x86-stub.c     | 26 +++++-----
 
-Am 26.03.21 um 15:53 schrieb Jens Axboe:
-> On 3/26/21 8:45 AM, Stefan Metzmacher wrote:
->> Am 26.03.21 um 15:43 schrieb Stefan Metzmacher:
->>> Am 26.03.21 um 15:38 schrieb Jens Axboe:
->>>> On 3/26/21 7:59 AM, Jens Axboe wrote:
->>>>> On 3/26/21 7:54 AM, Jens Axboe wrote:
->>>>>>> The KILL after STOP deadlock still exists.
->>>>>>
->>>>>> In which tree? Sounds like you're still on the old one with that
->>>>>> incremental you sent, which wasn't complete.
->>>>>>
->>>>>>> Does io_wq_manager() exits without cleaning up on SIGKILL?
->>>>>>
->>>>>> No, it should kill up in all cases. I'll try your stop + kill, I just
->>>>>> tested both of them separately and didn't observe anything. I also ran
->>>>>> your io_uring-cp example (and found a bug in the example, fixed and
->>>>>> pushed), fwiw.
->>>>>
->>>>> I can reproduce this one! I'll take a closer look.
->>>>
->>>> OK, that one is actually pretty straight forward - we rely on cleaning
->>>> up on exit, but for fatal cases, get_signal() will call do_exit() for us
->>>> and never return. So we might need a special case in there to deal with
->>>> that, or some other way of ensuring that fatal signal gets processed
->>>> correctly for IO threads.
->>>
->>> And if (fatal_signal_pending(current)) doesn't prevent get_signal() from being called?
->>
->> Ah, we're still in the first get_signal() from SIGSTOP, correct?
-> 
-> Yes exactly, we're waiting in there being stopped. So we either need to
-> check to something ala:
-> 
-> relock:
-> +	if (current->flags & PF_IO_WORKER && fatal_signal_pending(current))
-> +		return false;
-> 
-> to catch it upfront and from the relock case, or add:
-> 
-> 	fatal:
-> +		if (current->flags & PF_IO_WORKER)
-> +			return false;
-> 
-> to catch it in the fatal section.
-> 
+You missed efi-stub.c which has CMDLINE_EXTEND.
 
-Or something like io_uring_files_cancel()
-
-Maybe change current->pf_io_worker with a generic current->io_thread
-structure which, has exit hooks, as well as
-io_wq_worker_sleeping() and io_wq_worker_running().
-
-Maybe create_io_thread would take such an structure
-as argument instead of a single function pointer.
-
-struct io_thread_description {
-	const char *name;
-	int (*thread_fn)(struct io_thread_description *);
-	void (*sleeping_fn)((struct io_thread_description *);
-	void (*running_fn)((struct io_thread_description *);
-	void (*exit_fn)((struct io_thread_description *);
-};
-
-And then
-struct io_wq_manager {
-	struct io_thread_description description;
-	... manager specific stuff...
-};
-
-metze
+>  drivers/of/fdt.c                            | 23 ++-------
+>  include/linux/cmdline.h                     | 57 +++++++++++++++++++++
+>  init/Kconfig                                | 46 +++++++++++++++++
+>  98 files changed, 209 insertions(+), 580 deletions(-)
+>  create mode 100644 include/linux/cmdline.h
+>
+> --
+> 2.25.0
+>
