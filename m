@@ -2,79 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4048D34A37B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D304234A384
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCZI6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:58:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38618 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229573AbhCZI5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:57:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 63FDDAB8A;
-        Fri, 26 Mar 2021 08:57:46 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 09:57:43 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <YF2iBxueewnKIG3V@localhost.localdomain>
-References: <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
- <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
- <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz>
- <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
- <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
- <YFy8ARml4R7/snVs@dhcp22.suse.cz>
- <YFy+olsdS4iwrovN@dhcp22.suse.cz>
- <YF0JerCFXzcmMKzp@localhost.localdomain>
- <YF2ct/UZUBG1GcM3@dhcp22.suse.cz>
- <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
+        id S230023AbhCZI6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhCZI6U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 04:58:20 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E2FC0613AA;
+        Fri, 26 Mar 2021 01:58:20 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id w2so3976579ilj.12;
+        Fri, 26 Mar 2021 01:58:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=l9gbWzCZ8sOW1i9QHPhtjOrMNdak/ShYPTyDf3NGDKA=;
+        b=c+ynMnCmKrVQ1yuNyPCQ2R34kJotwByI5mKeVlXe5fmJYu7rf3JgxA6FVNJrODpZHq
+         vb3c8++5tjvoVdWH71RAPsZW7w6TQF3zPCAv8Tqtw4321M3RUNuLHyFoFM3eNjdR9SiM
+         EuYnZLigXKC8l2tq+eqXSbXAjqDD+LlYW33dYM6nY94YxP/QFy86YVtT1EjXBtswlYyk
+         j87Aik23OGx+4/G0OyvMWpnvSchBX7D6+3OuzWOzyfe627A7xqTq8Fj2+PRdGsKGy3iD
+         USFNFyJAwFcnF3tvzZFFcQXLIu2xOQE6Q+IftkGsEoAWDKb9/kmbCERbPYMWPjmN2QzV
+         wGLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=l9gbWzCZ8sOW1i9QHPhtjOrMNdak/ShYPTyDf3NGDKA=;
+        b=mpFqo6b+siV2Iss22qyaT3ouH/i85GGvNo9cE1OJMbs7F4TeUyz/awd8yIttUJEAcb
+         WTU8fyKCLk06DY0BrdfW95ntj2WrU24/nhHnofeSCEfiEV4UQSoq0y5/ilnP4wjMoMRB
+         QQ0HyCo15iuPx5hDaGoI2a00JhACrjKxopS3aIG1X6Fnob6D3CKBvxhUm5uCdavUMZHw
+         iKzuGLGTGhR8Chg8h2cAvKlCHOFT/99/rpqKPw+zMlny7KqZPZuYwGItW/9rXzO+gkSu
+         8eOFsxSJ0r/Eg6DRPynuYEvEqInr1C3/uTAAbXeucvYrC7q0bMVW0gp4QIUGPj2WKrdp
+         98wQ==
+X-Gm-Message-State: AOAM531Fjuzkf9agcHZ79MrVjx/gb6IAjHTNFKhSt0sDzQpSmvzE9WSq
+        3Z3i8/cmeaQ33RnMh/b76PFXQ4qVj6cIrcaZYIw=
+X-Google-Smtp-Source: ABdhPJxRSRmZPkaFJ9lIZ2i2BYVsNFqjiz0yKj1NZKgvoYdQ57SsLPTRUlA6PL29NXfGRbHLKzFKHiVybIsTnfw89uA=
+X-Received: by 2002:a92:d78f:: with SMTP id d15mr8934897iln.112.1616749099521;
+ Fri, 26 Mar 2021 01:58:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
+References: <20210322143714.494603ed@canb.auug.org.au> <20210322090036.GB10031@zn.tnic>
+In-Reply-To: <20210322090036.GB10031@zn.tnic>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 26 Mar 2021 09:57:43 +0100
+Message-ID: <CA+icZUVkE73_31m0UCo-2mHOHY5i1E54_zMb7yp18UQmgN5x+A@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the tip tree
+To:     Borislav Petkov <bp@suse.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 09:52:58AM +0100, David Hildenbrand wrote:
-> Might have to set fully spanned section online. (vmemmap >= SECTION_SIZE)
+On Mon, Mar 22, 2021 at 10:02 AM Borislav Petkov <bp@suse.de> wrote:
+>
+> On Mon, Mar 22, 2021 at 02:37:14PM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > After merging the tip tree, today's linux-next build (x86_64 allmodconfig)
+> > failed like this:
+> >
+> > arch/x86/net/bpf_jit_comp.c: In function 'arch_prepare_bpf_trampoline':
+> > arch/x86/net/bpf_jit_comp.c:2015:16: error: 'ideal_nops' undeclared (first use in this function)
+> >  2015 |   memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
+> >       |                ^~~~~~~~~~
+> > arch/x86/net/bpf_jit_comp.c:2015:16: note: each undeclared identifier is reported only once for each function it appears in
+> > arch/x86/net/bpf_jit_comp.c:2015:27: error: 'NOP_ATOMIC5' undeclared (first use in this function); did you mean 'GFP_ATOMIC'?
+> >  2015 |   memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
+> >       |                           ^~~~~~~~~~~
+> >       |                           GFP_ATOMIC
+> >
+> > Caused by commit
+> >
+> >   a89dfde3dc3c ("x86: Remove dynamic NOP selection")
+> >
+> > interacting with commit
+> >
+> >   b90829704780 ("bpf: Use NOP_ATOMIC5 instead of emit_nops(&prog, 5) for BPF_TRAMP_F_CALL_ORIG")
+> >
+> > from the net tree.
+> >
+> > I have applied the following merge fix patch.
+> >
+> > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > Date: Mon, 22 Mar 2021 14:30:37 +1100
+> > Subject: [PATCH] x86: fix up for "bpf: Use NOP_ATOMIC5 instead of
+> >  emit_nops(&prog, 5) for BPF_TRAMP_F_CALL_ORIG"
+> >
+> > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > ---
+> >  arch/x86/net/bpf_jit_comp.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index db50ab14df67..e2b5da5d441d 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -2012,7 +2012,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
+> >               /* remember return value in a stack for bpf prog to access */
+> >               emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+> >               im->ip_after_call = prog;
+> > -             memcpy(prog, ideal_nops[NOP_ATOMIC5], X86_PATCH_SIZE);
+> > +             memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
+> >               prog += X86_PATCH_SIZE;
+> >       }
+> >
+> > --
+>
+> I guess we can do the same as with the hyperv tree - the folks who send the
+> respective branches to Linus in the next merge window should point to this patch
+> of yours which Linus can apply after merging the second branch in order.
+>
+> Thx.
+>
 
-Hi David,
+The commit b90829704780 "bpf: Use NOP_ATOMIC5 instead of
+emit_nops(&prog, 5) for BPF_TRAMP_F_CALL_ORIG" is now in Linus Git
+(see [1]).
 
-could you elaborate on this a bit?
+Where will Stephen's fixup-patch be carried?
+Linux-next?
+net-next?
+<tip.git#x86/cpu>?
 
-> Something else to note:
-> 
-> 
-> We'll not call the memory notifier (e.g., MEM_ONLINE) for the vmemmap. The
-> result is that
-> 
-> 1. We won't allocate extended struct pages for the range. Don't think this
-> is really problematic (pages are never allocated/freed, so I guess we don't
-> care - like ZONE_DEVICE code).
-> 
-> 2. We won't allocate kasan shadow memory. We most probably have to do it
-> explicitly via kasan_add_zero_shadow()/kasan_remove_zero_shadow(), see
-> mm/memremap.c:pagemap_range()
-> 
-> 
-> Further a locking rework might be necessary. We hold the device hotplug
-> lock, but not the memory hotplug lock. E.g., for get_online_mems(). Might
-> have to move that out online_pages.
+Thanks.
 
-I will have a look and see how it goes.
+- Sedat -
 
- 
-
--- 
-Oscar Salvador
-SUSE L3
+[1] https://git.kernel.org/linus/b9082970478009b778aa9b22d5561eef35b53b63
