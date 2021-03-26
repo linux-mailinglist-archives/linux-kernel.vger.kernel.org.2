@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC0B34B288
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8F534B2CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhCZXNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:13:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51662 "EHLO
+        id S231613AbhCZXTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:19:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhCZXNI (ORCPT
+        with ESMTP id S231617AbhCZXR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:13:08 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240C4C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 16:13:07 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id ha17so3275522pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 16:13:07 -0700 (PDT)
+        Fri, 26 Mar 2021 19:17:56 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EB8C0613BA;
+        Fri, 26 Mar 2021 16:17:56 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id 7so6970400qka.7;
+        Fri, 26 Mar 2021 16:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=RTdHDCHlxXS8HeXSDnDZD3RZIWu2U1jLMoVFhKk9uuM=;
-        b=tqk+vNwsyxyoPrT/4uwLsfPSsJfJLmHKaH2sFf9Sm0hHUaMOyD0iGRPb0pdRxQTDX+
-         jnhfqs7rmr5I0Ne93LEoZRDLlsVEgYIZrGkawQMhANhZVdN6pCpoEglXU8xepaaz8X7g
-         MVT62FH0HE1RG6WK7INy6F8iFN5yeyIN69xGySnE9/aTSYQ6lBcJqhYyqWgCMHGVtePP
-         OIlOWe4srTlGGGaFZvawZAIRQ7+3UsfykJqdrI2X+PqRhny5h6W9vd3wGGi97x2zOVR3
-         AK+ULm6tEVndXhLQOBXx7PBOOvscFNj2wXezcU9dbJ2JnnIz8gEYnygRABk64icizlQI
-         nDzw==
+        bh=+QzTIMQkrFw6m3Cji1kHVk1ThDqLlItcXspdG6j7uyw=;
+        b=psYphKTsQ+/ZRe9S3ENJWuq/qy4DjdT5LqmQ4ZYr9emk+LIcwuzo+eNs1QqWT+UNab
+         n0PGTvRFKApWhF/XqUbpA+VZ7OA2oJ9EmZM56ExrBBTNBKivnfy+cCY0BkeZfI1UNg59
+         VPzgbwZP8/+fksIgBnABlPYzaUTffYlo6/IAx+ROXIU09kIsCtc6Jin4VTAsaRuGUio2
+         O8SJBtBukVdLCvqG/94dbp8Cd7aSBJrZRsY5fWfDr8VPMEdnPwkNHDmJ/8zEMqDinbvP
+         tNj0LMw2vypQiN+C0dPf3u4hs9CeZUYbk/wtxlKEa2DrmJXrusMQpY/d449AtNkJBRsW
+         /h6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RTdHDCHlxXS8HeXSDnDZD3RZIWu2U1jLMoVFhKk9uuM=;
-        b=UKJTjP0BFTu5LeWeOz6NL5I58u/qmWl4c5jVq8QIiMQujj7pliwdNCXuauuUfvin+a
-         NxCKX8lVxlpelB5L3wXV4EE73dGXDZ7W8pEXdw5BGUYrMtykTEzFZ5U4mKOAVA6pVlal
-         g/9MIRxPaKjyfxkOkFTIrGtnZddY5ENWoVqE592tmu6JUq/lOBGVWsAl5utcfqYSxSSa
-         rYpeQd27At6MZbyYAUZufAa4KU+0J0mKwn0o9AkeDN6TACV5sA5RLj+vj/ljqFGcE3TZ
-         EbBfmyvSPvGl5FKBRHQfKkQD4NLLjHXDFhz5m1qOQvG2L/7/k7H2MocmfFiSXgGYujoC
-         kpsw==
-X-Gm-Message-State: AOAM530WdrJgFV4Hz+bL3+dT5fQVzf9mBwZRayod+Fg540n9CtNKulTh
-        R7EtuL/xPPCUzwIokyKv+c1TQw==
-X-Google-Smtp-Source: ABdhPJwrLBWoDVJESET9o3RwESKcoXCf5vFjRT3X//QluFNvOGifh7lmWXe8XeObhYGuwGrnT5VyHA==
-X-Received: by 2002:a17:902:b40e:b029:e6:837f:711 with SMTP id x14-20020a170902b40eb02900e6837f0711mr17334986plr.2.1616800386711;
-        Fri, 26 Mar 2021 16:13:06 -0700 (PDT)
-Received: from wildbow.anholt.net ([97.115.138.77])
-        by smtp.gmail.com with ESMTPSA id a144sm10289325pfd.200.2021.03.26.16.13.05
+        bh=+QzTIMQkrFw6m3Cji1kHVk1ThDqLlItcXspdG6j7uyw=;
+        b=DlHsoqoCLMDS2QxGNuRJXqs41+QWOBAX6S/2VtjqtzgKSD1UgtXZpiia7ZzbYzUWXi
+         +4nAYjsN+oJLVjK7KXATgvREzyHNxZMttzPwSh4SnQELzFfQPFQLzW62WSeXlQoE6qJX
+         h2AS8IBsZ4O48vwcEfM2Z3zw4MOsg+jvOxCivnrUNXA8BF99HlWrIhuVbllZ7rAKYeM7
+         6NXCBDTKDxoQYdF909EvCng7DTxkiz/HIke1SFbDqoJMaGpx5dxRL8BaXkAsEaCpaOqN
+         9HInrOMHR9LAARjdlRv//Lll752XC927CoAVrpHVxaiec9j3hfBQPcI+Kp3QJ42PLBc2
+         BJDA==
+X-Gm-Message-State: AOAM533z6GRKUydzkwk96O57tEJuGGT9jrsckzocOMmXuhacO0Q/+VRV
+        dlIwtyWP9mHHh/JeD2aH1H8=
+X-Google-Smtp-Source: ABdhPJzhNODR49ZW6S15QuTEnCAJC6ISj+poAlLNfKpbilNbQlKaYFAUB3knVSONBjVZVY0BQIyvLg==
+X-Received: by 2002:a37:9fd2:: with SMTP id i201mr14928050qke.435.1616800675355;
+        Fri, 26 Mar 2021 16:17:55 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.58.30])
+        by smtp.gmail.com with ESMTPSA id w78sm7960414qkb.11.2021.03.26.16.17.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 16:13:06 -0700 (PDT)
-From:   Eric Anholt <eric@anholt.net>
-To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>
-Subject: [PATCH 2/2] arm64: dts: msm8996: Mark the GPU's SMMU as an adreno one.
-Date:   Fri, 26 Mar 2021 16:13:03 -0700
-Message-Id: <20210326231303.3071950-2-eric@anholt.net>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210326231303.3071950-1-eric@anholt.net>
-References: <20210326231303.3071950-1-eric@anholt.net>
+        Fri, 26 Mar 2021 16:17:54 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rdunlap@infradead.org
+Subject: [PATCH 10/19] mptcp: subflow.c: Fix a typo
+Date:   Sat, 27 Mar 2021 04:43:03 +0530
+Message-Id: <cb5287a8c1dd4a877db81686ffba95a1d8976d70.1616797633.git.unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1616797633.git.unixbhaskar@gmail.com>
+References: <cover.1616797633.git.unixbhaskar@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This enables the adreno-specific SMMU path that sets HUPCF so
-(user-managed) page faults don't wedge the GPU.
+s/concerened/concerned/
 
-Signed-off-by: Eric Anholt <eric@anholt.net>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
-
-We've been seeing a flaky test per day or so in Mesa CI where the
-kernel gets wedged after an iommu fault turns into CP errors.  With
-this patch, the CI isn't throwing the string of CP errors on the
-faults in any of the ~10 jobs I've run so far.
-
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 2 +-
+ net/mptcp/subflow.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index 6de136e3add9..432b87ec9c5e 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1127,7 +1127,7 @@ cci_i2c1: i2c-bus@1 {
- 		};
- 
- 		adreno_smmu: iommu@b40000 {
--			compatible = "qcom,msm8996-smmu-v2", "qcom,smmu-v2";
-+			compatible = "qcom,msm8996-smmu-v2", "qcom,adreno-smmu", "qcom,smmu-v2";
- 			reg = <0x00b40000 0x10000>;
- 
- 			#global-interrupts = <1>;
--- 
-2.31.0
+diff --git a/net/mptcp/subflow.c b/net/mptcp/subflow.c
+index 3d47d670e665..f1b6e4d0b95f 100644
+--- a/net/mptcp/subflow.c
++++ b/net/mptcp/subflow.c
+@@ -1076,7 +1076,7 @@ bool mptcp_subflow_data_available(struct sock *sk)
+  * In mptcp, rwin is about the mptcp-level connection data.
+  *
+  * Data that is still on the ssk rx queue can thus be ignored,
+- * as far as mptcp peer is concerened that data is still inflight.
++ * as far as mptcp peer is concerned that data is still inflight.
+  * DSS ACK is updated when skb is moved to the mptcp rx queue.
+  */
+ void mptcp_space(const struct sock *ssk, int *space, int *full_space)
+--
+2.26.2
 
