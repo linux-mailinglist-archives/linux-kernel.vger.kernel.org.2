@@ -2,103 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF0B349FE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF773349FEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhCZCpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 22:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhCZCpf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 22:45:35 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C064DC06174A;
-        Thu, 25 Mar 2021 19:45:35 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id d10so3893796ils.5;
-        Thu, 25 Mar 2021 19:45:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c3TyjwBJft9+viqfPrXWUpurNVXIQ9MInz6FpBne7QA=;
-        b=RIfYo3knm7rJ8Fy8qNuU48hZbeapTu2tF4cGnlZCR9F4ZM5I03eDXqSPCxZswfhI4l
-         MwbKKrTK1YKNYgACEJe9pUUNyG5HMN8ryvKud2Fjqah03zduTN5V/1+v67R6vsnRJNMM
-         nxMvA3yka48mUXKmlr7P4msktvTVkphxiZIah2a8ahljfjtlWJDfLIWo71A1/WnXAYQV
-         lUajAY31CYG3Br2ftZguq4q4SIkHodu3W5vE4URjTyfPVKeI1Pzcgh6EE3CVdIvd3s4v
-         +vsLvxgQnGw2SpR/EGq5vS5BiEw6U9sU3y8f+zMcfT+mNIovxWztZKTwmCpC2AT6iTxU
-         Ma7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c3TyjwBJft9+viqfPrXWUpurNVXIQ9MInz6FpBne7QA=;
-        b=BY03CRWvEv+FsW58/zSQzcMIYZ9EaWmfOyg7JdsG3h3y75bLcjshjIePQhkcKnzZZ8
-         HO1qQ8uMxuxBreRmynKNg6k0pJtAMx9jnIbdlBrX23KLPF7fzgGWxvRPbSqvlwdN7VSp
-         aFSFpvbVt24OCsjLOkeI927GIYwN4StUUwVYCGmGMCnPzgSZFTh4RPQFNqYy1f1c/ngL
-         sT1oBzPl2zIE5qqSmRj4nVPTT/0uZLuyWjxhqSw/zm/1Qbmu+xxIZQYIswrSxY5GRILY
-         lf3Jremq6sSRnrJ0FK708xqSmYfsJTRa7QibK5dM+y6jHZAkz/uBWCgubp7nE9JUBzFy
-         44iQ==
-X-Gm-Message-State: AOAM530/g3If8PpnqWBLfXIcPuOSg3+rNBJxctmocpP89ErT2oFudhw7
-        8XIUnzFRL/jfN1fDKL28hF3/Fc/a5fXq0sFWNBw=
-X-Google-Smtp-Source: ABdhPJw17Oub2hHuFs6ahjRk6K43qQvnSr86/UUcgndqJ+RYESwqNNNP+pspx19ljyZykhlcDwPmFlcnawKA7sCm4Mk=
-X-Received: by 2002:a92:c842:: with SMTP id b2mr8936041ilq.179.1616726735262;
- Thu, 25 Mar 2021 19:45:35 -0700 (PDT)
+        id S230452AbhCZCrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 22:47:19 -0400
+Received: from mail-bn8nam12on2051.outbound.protection.outlook.com ([40.107.237.51]:37921
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230216AbhCZCqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 22:46:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U+oMFDiRHKwAmyMhNyfzGn+MTSx4bLc9XaqF/VETmQ9wHXDSYvpp/BjiHK0gaQs5x5Jf8LVlcw8HDrS0FCjCHEeTFY5TW92NFrGiIp+UfUjbfSxgPwDutr4t1fOZJV29F6rdJ4ax26fk8/Kqgyjaz5D3RRmn7gRssagBXKHYkMfW339I70FPwyumbCTHJU/+fp9JGbyM9hw+ZCy1XNvut48aVYqJ41gL8UeZobAZp75HBTFlJzo4GLnZoi7jkRQtnQE0CSULxAjrKLhRXhxoBbzh4fT01QjRUdZ1yPXz+m8gNzmWlUK9QtDDHEnJ1n86wSTIggKzN53H+mBCARc29A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jKTGorqW+40JWgBvXwRXkzl9zrlivHETLX+oJqX69uc=;
+ b=oYBWrsSR43cWXIAljOwl3BhhAa+rrjULHjO3ckGaKRM3N7IVUAIyL3wjJ6nIRdtDyFANI8aV4c+AyiFmMArVtIEJ6pq39f1oWfU5robqxkQEEoyxEwcHeN8/VtwAhcdZNACFiMsAonYh5rH5Z5fwLJ9swNVxfBHNxlqqpujY5FHa69NtfdwL0AfsYTg6/8hFMEOXKg/zK5HbYDdsKEBQiIVYVsW+jcFz/zDanw+InAKhp2Sn79naxmfPcls77DAId/59XIR2ExoWKFmhpWKQJXHSvKDFLLWFDUWDBpHUA/fI1QeQkPdtPb310x9Z0Nu3q2eC9TNLrqhylEftJs+Mlw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jKTGorqW+40JWgBvXwRXkzl9zrlivHETLX+oJqX69uc=;
+ b=dq10R4R0r28tP9duptitbHvckTNjdGF/PSitfAAp+w9GS4TD/TZDN57UIzNnLFiikrkLPecL9aM2HmT4Xo4ugR4zhTN//o4g2qyrqDLSMg720HBm4wAkfUFXtkcUg/oBqWVu74OPIM4Bv3MsT5uPVSDtsxYTUw0a70ODZJT6z60=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from CH2PR12MB4955.namprd12.prod.outlook.com (2603:10b6:610:68::22)
+ by CH2PR12MB3736.namprd12.prod.outlook.com (2603:10b6:610:2b::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Fri, 26 Mar
+ 2021 02:46:42 +0000
+Received: from CH2PR12MB4955.namprd12.prod.outlook.com
+ ([fe80::ecf3:66d6:98be:5d46]) by CH2PR12MB4955.namprd12.prod.outlook.com
+ ([fe80::ecf3:66d6:98be:5d46%9]) with mapi id 15.20.3977.025; Fri, 26 Mar 2021
+ 02:46:41 +0000
+Subject: Re: [PATCH] drm/amdkfd: Fix cat debugfs hang_hws file causes system
+ crash bug
+To:     Alex Deucher <alexdeucher@gmail.com>, Qu Huang <jinsdb@126.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <1616315298-109091-1-git-send-email-jinsdb@126.com>
+ <CADnq5_OLBjUbwxUptPk17XMHarThXj7GDYkgYZOPcd_GOJH1XQ@mail.gmail.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <103dee67-79d8-991d-b9b3-e5ee0f098567@amd.com>
+Date:   Thu, 25 Mar 2021 22:46:39 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <CADnq5_OLBjUbwxUptPk17XMHarThXj7GDYkgYZOPcd_GOJH1XQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [142.116.84.209]
+X-ClientProxiedBy: YT1PR01CA0002.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::15)
+ To CH2PR12MB4955.namprd12.prod.outlook.com (2603:10b6:610:68::22)
 MIME-Version: 1.0
-References: <20210317055902.506773-1-ilya.lipnitskiy@gmail.com> <20210325095529.GA5775@alpha.franken.de>
-In-Reply-To: <20210325095529.GA5775@alpha.franken.de>
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Date:   Thu, 25 Mar 2021 19:45:23 -0700
-Message-ID: <CALCv0x2ni97mLEar6M9boWCrXzdsqM3JJNMbe=cDitHj+npanw@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: ralink: mt7621: add memory detection support
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.116.84.209) by YT1PR01CA0002.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Fri, 26 Mar 2021 02:46:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 71b6a28d-dc00-4de2-cb28-08d8f00162d5
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3736:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH2PR12MB3736DE7C5CA298DD89CDE54C92619@CH2PR12MB3736.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T+L2H8IoewGSPLtcTFrf2sUdTGmDzWcnqJO7/KMmK45JTT7uwRuA61aQ7sS4fGUZfTq0zOItrHCX6s9QcTL89g/WFIYe5pN/q+quo8m7swLK9MbY11FMPL1ClSHTHevy+0hTyJI2SzlWmphyF7Sqx4+xI0ietoFZ6XkajrO+oEz0LrHGbJfhZFehPZFHuBBw6Zm4pslY4hrX6hlSUoA2nZ9Ge40Ag34nwSBquXmsJu3QDCi6fSPpArWeVtTQndv8z2bv4DmNhqTKMAsh5iIVslMRDYHBmn2QOYomVspOh8VPujse8x5iojfmH9xwVlRYj5DIB72NjfwuijtpJ2P6DR4ZHvk4uJx5ufSxi3FUT/9RTpaFKydMsK7jn+TYinijXYGxJivuYJMFS+xX7m8DcsTYcNwAqQ4baAOBueA3BG/hmAjKNkJNosYyNe8nTOoWtf7lxnNg4gzxKGe4kGVFT9DIa2Ag9BLggH7Coxe/Ynmgc/jZ3EWdLA7+lr9tFLKWiBQjw3k0c4t/Ch2k25u2AjZyWXybYTpqgK2T41pUrq5IUkVJZhBIiOilJ7prIiAEQ4KcQcAihk6zhPSn9QVJU+sX+RoBIFOOcfAdRBM2jLI7z92xIWREzYDpUFuOcs4hoFK0GP2+BgztGN/wNy3wcIqyH8obagrQsT7L6n+Cfg6mxz3Nuo8ziv0tNcIuOwIktp66bHN8bzWg+W6qhn/kfgHbAbxupFoAJLaRedooGhcOZllUNGGX7A9xRIcMyzxCteKT+mLGfsXRVqzw0SGGeEXkXThPvOV0NfCc2QfOqR0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB4955.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(39860400002)(346002)(38100700001)(86362001)(16576012)(110136005)(956004)(966005)(53546011)(5660300002)(6486002)(2616005)(31686004)(316002)(2906002)(478600001)(44832011)(8676002)(31696002)(83380400001)(8936002)(26005)(16526019)(66556008)(54906003)(66476007)(36756003)(4326008)(186003)(66946007)(525324003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?LzZpL1pvK21ZWWlmZlY1eEVaZGlKdlk0cWFUREREMnFCNE5lWGNnaFljNXRY?=
+ =?utf-8?B?dmpvdGpCQzVJV01VUG0vaGsxZzUyNmpVMjNGTnExSlZZVkhoYnh6ZTJIMDZq?=
+ =?utf-8?B?Rys0QSsyaUROWGViT1pkWmZxZ0tROTZOYWRMM0wxZ1FMek1ZUVlqM25BVXhB?=
+ =?utf-8?B?bjJpQ25BNzM2TEJHMS9zSU5MYkVuTWhZSlZDaEJkYWE4V0dTRFJRZzRFTkN5?=
+ =?utf-8?B?eG0rZXlQL0FSUUhZZUUxVFJUUHVXUDFNczlyYnFIUkF3UXFqTWV2Myttcnhu?=
+ =?utf-8?B?VmRiMDNFcEE2bE1PbFFSVlFtcUhkOWx5MzVlVE04LyszNkFtckdTclNzblZt?=
+ =?utf-8?B?RlZDMmE5QjVaT2wxb3pNWldZV1JDL01mSnNpTkhxUmVEQVRiOEtUbzZIRFcx?=
+ =?utf-8?B?L0M5RVdUbkt0U3p0d0tQNGxIV1Q2aWEvdmZqMDZHNFJQbVA1ZktaUHNaeHk2?=
+ =?utf-8?B?aHlUVnBEdEFLaUVSa01USDJxRzJpR3VEMUo5dWcrUm5SU3hFRDhNU3VPdSs1?=
+ =?utf-8?B?NDA3akkvNlgzaWNYMDQzQllWdTl2NGtvUW8wT2NxZkpTNVllMjMybjdpVkk1?=
+ =?utf-8?B?V2J5eStJRHllQmFQSnFLYW1waHdzY216bmRCTkJVOFh0V01qeUwvOTd3Q1JS?=
+ =?utf-8?B?MXlORnBnWFBMSVYzbUphbDJDMEhXa3UzNkFBOUNzNGVzdk5WbnVBT21oSnZK?=
+ =?utf-8?B?M2F6aEtCT05lU1BEeWFVRHcvdURaOGMvQU11eURXKytwbXpteFpWUHFpUmMv?=
+ =?utf-8?B?NUhlNERwNmk5a09LQ28vSUZXcVFQU0l2b29BalhpOW9kZ0ZXQzBTM2YvRWxo?=
+ =?utf-8?B?TXlhZitjSFdMdlh3dzlXbDh0T1llZ0xEZlZPV3FFV2MxdHAzUU0xZEk0NHJV?=
+ =?utf-8?B?NDR6U1JISUN5bW1QdkF2ZXVydFZhNWMyYXdmVHV4cUxqcjhncnkzamgrMEhv?=
+ =?utf-8?B?TUgyTmVqRWhEdHpMcU9PZURYNENHMGlrSmd5YjJOanZNWWNDbDFJOTB3bFhk?=
+ =?utf-8?B?VVhjTFU0Wm0xYW1zKzFpRTNZa1l0Z0hsTmNWNVFzVVhWRTBpNmF3bk81d2Vj?=
+ =?utf-8?B?Qk9KdUpobitRWmxQMjdkMEJocXNyQjZGSUd2akVIQ2NCeGZUbGMvY1U5RXBs?=
+ =?utf-8?B?ZkovVDBlR1NRWldITlM3YXY1eWZiMWRGN3pOZXVwR3VGcXVnbFhyYWl3bnJU?=
+ =?utf-8?B?bmdWUEcvWkxPcytTOFdBNW9UWnRYazY5eHRVL0hCQjJreWhRNWlwVWhjOFNC?=
+ =?utf-8?B?MWVDL2dmWlh4VHFucnBiU1d2bnhoZHd6MkJyMTBBdkdwTXdSZURFSks1Ykg3?=
+ =?utf-8?B?cksycXA3UFoxektVQXREOXdWeEJjVW9NRmRCVkJIdnNKOVh5WWZmYkpmTkJC?=
+ =?utf-8?B?YUJPYWtHaFhLZTVaNDVNRGxoQlpJbXp0UCszYUU2QnFFYklna3JFK0R3N05Z?=
+ =?utf-8?B?dGQ5dWJTMFNrVHhVSGdBRmFDdktjZXk1eU52NXZidnVyT29rYVV1Y2dRemVJ?=
+ =?utf-8?B?VjJuWFJLWTBPcjdzUDM3SzRUQUVuNzc3OHpZanlwOS9QTmZZcHRJVFMyeENE?=
+ =?utf-8?B?eUdkM0pVNVBGUkpvZVJiTnVSWjV1TnhxcFZ0M0psYk9iaGRzRnZVNXNtRVpw?=
+ =?utf-8?B?emJUTGw4cXYwNDRhS21aZGFiTzNmeXcyUGtBeFhOd0lmWVFrcW5JSW1Wbldx?=
+ =?utf-8?B?QnZUNDQ1NUVtckdTZTY0NCs1Q1pLMjRNRmc0RmRvU09uRkNKdm5XRmNYZzhm?=
+ =?utf-8?Q?KF7R5DXJEBD5uOCOrzoe0RCjoaS1yId46wKqMQc?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 71b6a28d-dc00-4de2-cb28-08d8f00162d5
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4955.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 02:46:41.8180
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fvWPxp6uJomVH1F5Hvc2bqz7/cKHH9Et+YUYoFX7MNx4trFXHsw3945lVClzGdwhrDpvX55fDHTrmzkNrGUfXw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3736
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 3:01 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Tue, Mar 16, 2021 at 10:59:02PM -0700, Ilya Lipnitskiy wrote:
-> > From: Chuanhong Guo <gch981213@gmail.com>
-> >
-> > mt7621 has the following memory map:
-> > 0x0-0x1c000000: lower 448m memory
-> > 0x1c000000-0x2000000: peripheral registers
-> > 0x20000000-0x2400000: higher 64m memory
-> >
-> > detect_memory_region in arch/mips/kernel/setup.c only adds the first
-> > memory region and isn't suitable for 512m memory detection because
-> > it may accidentally read the memory area for peripheral registers.
-> >
-> > This commit adds memory detection capability for mt7621:
-> >   1. Add the highmem area when 512m is detected.
-> >   2. Guard memcmp from accessing peripheral registers:
-> >      This only happens when a user decided to change kernel load address
-> >      to 256m or higher address. Since this is a quite unusual case, we
-> >      just skip 512m testing and return 256m as memory size.
-> >
-> > [...]
->
-> I get
->
-> WARNING: modpost: vmlinux.o(.text+0x132c): Section mismatch in reference from the function prom_soc_init() to the function .init.text:mt7621_memory_detect()
-> The function prom_soc_init() references
-> the function __init mt7621_memory_detect().
-> This is often because prom_soc_init lacks a __init
-> annotation or the annotation of mt7621_memory_detect is wrong.
->
-> Can you please fix this ?
-Thanks, I will fix it. Having trouble reproducing the error, but I
-clearly see the issue. Are you building on a MIPS target or
-cross-compiling (I'm cross-compiling and no errors).
 
-Ilya
+Am 2021-03-23 um 10:56 a.m. schrieb Alex Deucher:
+> Applied.  Thanks!
+
+Thanks. I thought we fixed this before by making the file write-only.
+But I guess that's not sufficient to stop root from reading it:
+
+commit 2bdac179e217a0c0b548a8c60524977586621b19
+Author: Felix Kuehling <Felix.Kuehling@amd.com>
+Date:   Thu Dec 19 22:36:55 2019 -0500
+
+    drm/amdkfd: Fix permissions of hang_hws
+    
+    Reading from /sys/kernel/debug/kfd/hang_hws would cause a kernel
+    oops because we didn't implement a read callback. Set the permission
+    to write-only to prevent that.
+    
+    Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
+    Reviewed-by: shaoyunl  <shaoyun.liu@amd.com>
+    Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+
+
+Now that we have a sensible message in the file, I guess we should
+officially make it readable again.
+
+Regards,
+  Felix
+
+>
+> Alex
+>
+> On Sun, Mar 21, 2021 at 5:33 AM Qu Huang <jinsdb@126.com> wrote:
+>> Here is the system crash log:
+>> [ 1272.884438] BUG: unable to handle kernel NULL pointer dereference at
+>> (null)
+>> [ 1272.884444] IP: [<          (null)>]           (null)
+>> [ 1272.884447] PGD 825b09067 PUD 8267c8067 PMD 0
+>> [ 1272.884452] Oops: 0010 [#1] SMP
+>> [ 1272.884509] CPU: 13 PID: 3485 Comm: cat Kdump: loaded Tainted: G
+>> [ 1272.884515] task: ffff9a38dbd4d140 ti: ffff9a37cd3b8000 task.ti:
+>> ffff9a37cd3b8000
+>> [ 1272.884517] RIP: 0010:[<0000000000000000>]  [<          (null)>]
+>> (null)
+>> [ 1272.884520] RSP: 0018:ffff9a37cd3bbe68  EFLAGS: 00010203
+>> [ 1272.884522] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
+>> 0000000000014d5f
+>> [ 1272.884524] RDX: fffffffffffffff4 RSI: 0000000000000001 RDI:
+>> ffff9a38aca4d200
+>> [ 1272.884526] RBP: ffff9a37cd3bbed0 R08: ffff9a38dcd5f1a0 R09:
+>> ffff9a31ffc07300
+>> [ 1272.884527] R10: ffff9a31ffc07300 R11: ffffffffaddd5e9d R12:
+>> ffff9a38b4e0fb00
+>> [ 1272.884529] R13: 0000000000000001 R14: ffff9a37cd3bbf18 R15:
+>> ffff9a38aca4d200
+>> [ 1272.884532] FS:  00007feccaa67740(0000) GS:ffff9a38dcd40000(0000)
+>> knlGS:0000000000000000
+>> [ 1272.884534] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [ 1272.884536] CR2: 0000000000000000 CR3: 00000008267c0000 CR4:
+>> 00000000003407e0
+>> [ 1272.884537] Call Trace:
+>> [ 1272.884544]  [<ffffffffade68940>] ? seq_read+0x130/0x440
+>> [ 1272.884548]  [<ffffffffade40f8f>] vfs_read+0x9f/0x170
+>> [ 1272.884552]  [<ffffffffade41e4f>] SyS_read+0x7f/0xf0
+>> [ 1272.884557]  [<ffffffffae374ddb>] system_call_fastpath+0x22/0x27
+>> [ 1272.884558] Code:  Bad RIP value.
+>> [ 1272.884562] RIP  [<          (null)>]           (null)
+>> [ 1272.884564]  RSP <ffff9a37cd3bbe68>
+>> [ 1272.884566] CR2: 0000000000000000
+>>
+>> Signed-off-by: Qu Huang <jinsdb@126.com>
+>> ---
+>>  drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c | 7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
+>> index 511712c..673d5e3 100644
+>> --- a/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
+>> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_debugfs.c
+>> @@ -33,6 +33,11 @@ static int kfd_debugfs_open(struct inode *inode, struct file *file)
+>>
+>>         return single_open(file, show, NULL);
+>>  }
+>> +static int kfd_debugfs_hang_hws_read(struct seq_file *m, void *data)
+>> +{
+>> +       seq_printf(m, "echo gpu_id > hang_hws\n");
+>> +       return 0;
+>> +}
+>>
+>>  static ssize_t kfd_debugfs_hang_hws_write(struct file *file,
+>>         const char __user *user_buf, size_t size, loff_t *ppos)
+>> @@ -94,7 +99,7 @@ void kfd_debugfs_init(void)
+>>         debugfs_create_file("rls", S_IFREG | 0444, debugfs_root,
+>>                             kfd_debugfs_rls_by_device, &kfd_debugfs_fops);
+>>         debugfs_create_file("hang_hws", S_IFREG | 0200, debugfs_root,
+>> -                           NULL, &kfd_debugfs_hang_hws_fops);
+>> +                           kfd_debugfs_hang_hws_read, &kfd_debugfs_hang_hws_fops);
+>>  }
+>>
+>>  void kfd_debugfs_fini(void)
+>> --
+>> 1.8.3.1
+>>
+>> _______________________________________________
+>> dri-devel mailing list
+>> dri-devel@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
