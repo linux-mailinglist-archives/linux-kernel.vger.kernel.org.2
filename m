@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC52E34A83E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:39:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4E234A843
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhCZNin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:38:43 -0400
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:45039 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhCZNih (ORCPT
+        id S230170AbhCZNjw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Mar 2021 09:39:52 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:43790 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230153AbhCZNj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:38:37 -0400
-Received: by mail-pl1-f172.google.com with SMTP id d8so919989plh.11;
-        Fri, 26 Mar 2021 06:38:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sjVdsVi2cOMNdrCvfZtZ3oLI1gCE7hob4inFlEl7ClM=;
-        b=rqQDS7XGoqUtpUeaZIeCD5RSKVBoBdn0QvPJjBIZoKUE/mPtQZq75rODBscPN+pMGZ
-         +EQWjp9/hcyawAsVZPlI0dIQouXei4NzFUpTD2H6hjBoA009b6oPs5Y3Nwco8hfqOWAq
-         l/iptMv4OxivEFK0A38Q+HO2acrjiADwA0Ewr0Cy/5qD9+EDNG+pUYd6aEpRipGqJLn2
-         Xd7yohAphzpBSm+eZ1tNEYpgfbr7sguq8WcTUGYgWHp4w8hrXYYUh92TtS9NAaF3rX/d
-         9Fzv6FYAN+kbOv97AGUTnEh6EBUlHQZUaE4lld3JHfZJ3hhQhdAJd8gQWcErFj3X439T
-         ns/g==
-X-Gm-Message-State: AOAM531Q95b+HwqIZarrthafCN/95RM/b3h0d+5RVLmFyZCOmHLZQY3c
-        bX0QBnt3Fws+tBII0CooUYU=
-X-Google-Smtp-Source: ABdhPJxhLAaakq2et9TW5baLVPKl8QCBjXLxdJ4mK22v4C0BUr+ccWqx6FIqXdPbOarrOZclY3bUWA==
-X-Received: by 2002:a17:90a:8083:: with SMTP id c3mr13295578pjn.134.1616765916672;
-        Fri, 26 Mar 2021 06:38:36 -0700 (PDT)
-Received: from macbook.local (ae142046.dynamic.ppp.asahi-net.or.jp. [14.3.142.46])
-        by smtp.gmail.com with ESMTPSA id q66sm8672644pja.27.2021.03.26.06.38.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 06:38:35 -0700 (PDT)
-Subject: Re: [PATCH 1/3] x86: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Sedat Dilek <sedat.dilek@gmail.com>
-References: <20210326000435.4785-1-nathan@kernel.org>
- <20210326000435.4785-2-nathan@kernel.org>
-From:   John Millikin <john@john-millikin.com>
-Message-ID: <28a887a4-3524-fd54-0953-d4c813fb676b@john-millikin.com>
-Date:   Fri, 26 Mar 2021 22:38:31 +0900
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
+        Fri, 26 Mar 2021 09:39:29 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-142-9bIiFNUNNmm70U8_vh6zgQ-1; Fri, 26 Mar 2021 13:39:25 +0000
+X-MC-Unique: 9bIiFNUNNmm70U8_vh6zgQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 26 Mar 2021 13:39:24 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Fri, 26 Mar 2021 13:39:24 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Fabio Aiuto' <fabioaiuto83@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 14/15] staging: rtl8723bs:  put parentheses on macros with
+ complex values in include/sta_info.h
+Thread-Topic: [PATCH 14/15] staging: rtl8723bs:  put parentheses on macros
+ with complex values in include/sta_info.h
+Thread-Index: AQHXIh/zAuJ0NeHvkECgXPo7PrRwXqqWRkAA
+Date:   Fri, 26 Mar 2021 13:39:24 +0000
+Message-ID: <0466586ada4d4804bca4e84aa5908c01@AcuMS.aculab.com>
+References: <cover.1616748885.git.fabioaiuto83@gmail.com>
+ <24e684c1eff8911dacff1b61957ce25bafc46631.1616748885.git.fabioaiuto83@gmail.com>
+In-Reply-To: <24e684c1eff8911dacff1b61957ce25bafc46631.1616748885.git.fabioaiuto83@gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210326000435.4785-2-nathan@kernel.org>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 09:04, Nathan Chancellor wrote:
-> From: John Millikin <john@john-millikin.com>
+From: Fabio Aiuto 
+> Sent: 26 March 2021 09:09
 > 
-> When cross-compiling with Clang, the `$(CLANG_FLAGS)' variable
-> contains additional flags needed to build C and assembly sources
-> for the target platform. Normally this variable is automatically
-> included in `$(KBUILD_CFLAGS)' by via the top-level Makefile.
+> fix the following checkpatch warnings:
 > 
-> The x86 real-mode makefile builds `$(REALMODE_CFLAGS)' from a
-> plain assignment and therefore drops the Clang flags. This causes
-> Clang to not recognize x86-specific assembler directives:
+> ERROR: Macros with complex values should be enclosed in parentheses
+> 284: FILE: drivers/staging/rtl8723bs/include/sta_info.h:284:
+> +#define STA_RX_PKTS_ARG(sta) \
+> --
+> ERROR: Macros with complex values should be enclosed in parentheses
+> 289: FILE: drivers/staging/rtl8723bs/include/sta_info.h:289:
+> +#define STA_LAST_RX_PKTS_ARG(sta) \
+> --
+> ERROR: Macros with complex values should be enclosed in parentheses
+> 294: FILE: drivers/staging/rtl8723bs/include/sta_info.h:294:
+> +#define STA_RX_PKTS_DIFF_ARG(sta) \
 > 
->   arch/x86/realmode/rm/header.S:36:1: error: unknown directive
->   .type real_mode_header STT_OBJECT ; .size real_mode_header, .-real_mode_header
->   ^
-> 
-> Explicit propagation of `$(CLANG_FLAGS)' to `$(REALMODE_CFLAGS)',
-> which is inherited by real-mode make rules, fixes cross-compilation
-> with Clang for x86 targets.
-> 
-> Relevant flags:
-> 
-> * `--target' sets the target architecture when cross-compiling. This
->   flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
->   to support architecture-specific assembler directives.
-> 
-> * `-no-integrated-as' tells clang to assemble with GNU Assembler
->   instead of its built-in LLVM assembler. This flag is set by default
->   unless `LLVM_IAS=1' is set, because the LLVM assembler can't yet
->   parse certain GNU extensions.
-> 
-> Signed-off-by: John Millikin <john@john-millikin.com>
-> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 > ---
->  arch/x86/Makefile | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/staging/rtl8723bs/include/sta_info.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-> index 2d6d5a28c3bf..9a73e0cea19c 100644
-> --- a/arch/x86/Makefile
-> +++ b/arch/x86/Makefile
-> @@ -33,6 +33,7 @@ REALMODE_CFLAGS += -ffreestanding
->  REALMODE_CFLAGS += -fno-stack-protector
->  REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
->  REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
-> +REALMODE_CFLAGS += $(CLANG_FLAGS)
->  export REALMODE_CFLAGS
->  
->  # BITS is used as extension for files which are available in a 32 bit
+> diff --git a/drivers/staging/rtl8723bs/include/sta_info.h
+> b/drivers/staging/rtl8723bs/include/sta_info.h
+> index abde3e3df988..1cdf93ec3b66 100644
+> --- a/drivers/staging/rtl8723bs/include/sta_info.h
+> +++ b/drivers/staging/rtl8723bs/include/sta_info.h
+> @@ -282,19 +282,19 @@ struct sta_info {
+>  	} while (0)
 > 
+>  #define STA_RX_PKTS_ARG(sta) \
+> -	sta->sta_stats.rx_mgnt_pkts \
+> +	(sta->sta_stats.rx_mgnt_pkts \
+>  	, sta->sta_stats.rx_ctrl_pkts \
+> -	, sta->sta_stats.rx_data_pkts
+> +	, sta->sta_stats.rx_data_pkts)
 
-Just wanted to say "thank you" for picking this up -- I ran into some real-life situations and didn't have time to debug why my patch was failing the Git validity check (presumed to be an email client misconfiguration).
+That doesn't look right at all.
+You've changed what is (probably) a list of arguments to a function
+into a comma operator list.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
