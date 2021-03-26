@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C8D34A59E
+	by mail.lfdr.de (Postfix) with ESMTP id 8E37C34A59F
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhCZKbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:31:22 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:55788 "EHLO
+        id S230236AbhCZKba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 06:31:30 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:44764 "EHLO
         lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhCZKax (ORCPT
+        with ESMTP id S230137AbhCZKbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:30:53 -0400
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 41C2DCCEAE;
-        Fri, 26 Mar 2021 18:30:51 +0800 (CST)
+        Fri, 26 Mar 2021 06:31:06 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 56A30B9F3C;
+        Fri, 26 Mar 2021 18:31:04 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED4: 1
 X-ANTISPAM-LEVEL: 2
 X-ABS-CHECKED: 0
 Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P26788T139903503918848S1616754649776038_;
-        Fri, 26 Mar 2021 18:30:51 +0800 (CST)
+        by smtp.263.net (postfix) whith ESMTP id P22964T140517909624576S1616754663590081_;
+        Fri, 26 Mar 2021 18:31:05 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <3b7ba403f71ff80503f55a95118fc2c8>
+X-UNIQUE-TAG: <66fb285c9501a88f41efd567fc615ec8>
 X-RL-SENDER: zhangqing@rock-chips.com
 X-SENDER: zhangqing@rock-chips.com
 X-LOGIN-NAME: zhangqing@rock-chips.com
@@ -39,9 +39,9 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         cl@rock-chips.com, huangtao@rock-chips.com,
         kever.yang@rock-chips.com, tony.xie@rock-chips.com,
         finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
-Subject: [PATCH v6 10/11] dt-bindings: power: rockchip: Add bindings for RK3568 Soc
-Date:   Fri, 26 Mar 2021 18:30:49 +0800
-Message-Id: <20210326103049.15364-1-zhangqing@rock-chips.com>
+Subject: [PATCH v6 11/11] soc: rockchip: power-domain: add rk3568 powerdomains
+Date:   Fri, 26 Mar 2021 18:31:02 +0800
+Message-Id: <20210326103102.15653-1-zhangqing@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210326102738.14767-1-zhangqing@rock-chips.com>
 References: <20210326102738.14767-1-zhangqing@rock-chips.com>
@@ -49,34 +49,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the compatible string for RK3568 SoC.
+Add power-domains found on rk3568 socs.
 
 Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
- .../devicetree/bindings/power/rockchip,power-controller.yaml    | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/soc/rockchip/pm_domains.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-index 9fec9e227432..a4d223255c3b 100644
---- a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-+++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-@@ -37,6 +37,7 @@ properties:
-       - rockchip,rk3366-power-controller
-       - rockchip,rk3368-power-controller
-       - rockchip,rk3399-power-controller
-+      - rockchip,rk3568-power-controller
+diff --git a/drivers/soc/rockchip/pm_domains.c b/drivers/soc/rockchip/pm_domains.c
+index 1d39ad92470a..940504cfb0f1 100644
+--- a/drivers/soc/rockchip/pm_domains.c
++++ b/drivers/soc/rockchip/pm_domains.c
+@@ -27,6 +27,7 @@
+ #include <dt-bindings/power/rk3366-power.h>
+ #include <dt-bindings/power/rk3368-power.h>
+ #include <dt-bindings/power/rk3399-power.h>
++#include <dt-bindings/power/rk3568-power.h>
  
-   "#power-domain-cells":
-     const: 1
-@@ -90,6 +91,7 @@ patternProperties:
-           "include/dt-bindings/power/rk3366-power.h"
-           "include/dt-bindings/power/rk3368-power.h"
-           "include/dt-bindings/power/rk3399-power.h"
-+          "include/dt-bindings/power/rk3568-power.h"
+ struct rockchip_domain_info {
+ 	const char *name;
+@@ -135,6 +136,9 @@ struct rockchip_pmu {
+ #define DOMAIN_RK3399(name, pwr, status, req, wakeup)		\
+ 	DOMAIN(name, pwr, status, req, req, req, wakeup)
  
-       clocks:
-         description: |
++#define DOMAIN_RK3568(name, pwr, req, wakeup)		\
++	DOMAIN_M(name, pwr, pwr, req, req, req, wakeup)
++
+ static bool rockchip_pmu_domain_is_idle(struct rockchip_pm_domain *pd)
+ {
+ 	struct rockchip_pmu *pmu = pd->pmu;
+@@ -848,6 +852,18 @@ static const struct rockchip_domain_info rk3399_pm_domains[] = {
+ 	[RK3399_PD_SDIOAUDIO]	= DOMAIN_RK3399("sdioaudio", BIT(31), BIT(31), BIT(29), true),
+ };
+ 
++static const struct rockchip_domain_info rk3568_pm_domains[] = {
++	[RK3568_PD_NPU]		= DOMAIN_RK3568("npu", BIT(1), BIT(2), false),
++	[RK3568_PD_GPU]		= DOMAIN_RK3568("gpu", BIT(0), BIT(1), false),
++	[RK3568_PD_VI]		= DOMAIN_RK3568("vi", BIT(6), BIT(3), false),
++	[RK3568_PD_VO]		= DOMAIN_RK3568("vo", BIT(7),  BIT(4), false),
++	[RK3568_PD_RGA]		= DOMAIN_RK3568("rga", BIT(5),  BIT(5), false),
++	[RK3568_PD_VPU]		= DOMAIN_RK3568("vpu", BIT(2), BIT(6), false),
++	[RK3568_PD_RKVDEC]	= DOMAIN_RK3568("vdec", BIT(4), BIT(8), false),
++	[RK3568_PD_RKVENC]	= DOMAIN_RK3568("venc", BIT(3), BIT(7), false),
++	[RK3568_PD_PIPE]	= DOMAIN_RK3568("pipe", BIT(8), BIT(11), false),
++};
++
+ static const struct rockchip_pmu_info px30_pmu = {
+ 	.pwr_offset = 0x18,
+ 	.status_offset = 0x20,
+@@ -983,6 +999,17 @@ static const struct rockchip_pmu_info rk3399_pmu = {
+ 	.domain_info = rk3399_pm_domains,
+ };
+ 
++static const struct rockchip_pmu_info rk3568_pmu = {
++	.pwr_offset = 0xa0,
++	.status_offset = 0x98,
++	.req_offset = 0x50,
++	.idle_offset = 0x68,
++	.ack_offset = 0x60,
++
++	.num_domains = ARRAY_SIZE(rk3568_pm_domains),
++	.domain_info = rk3568_pm_domains,
++};
++
+ static const struct of_device_id rockchip_pm_domain_dt_match[] = {
+ 	{
+ 		.compatible = "rockchip,px30-power-controller",
+@@ -1028,6 +1055,10 @@ static const struct of_device_id rockchip_pm_domain_dt_match[] = {
+ 		.compatible = "rockchip,rk3399-power-controller",
+ 		.data = (void *)&rk3399_pmu,
+ 	},
++	{
++		.compatible = "rockchip,rk3568-power-controller",
++		.data = (void *)&rk3568_pmu,
++	},
+ 	{ /* sentinel */ },
+ };
+ 
 -- 
 2.17.1
 
