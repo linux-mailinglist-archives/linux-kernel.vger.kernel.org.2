@@ -2,81 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598F634A406
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 920C934A40A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhCZJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:16:38 -0400
-Received: from mga03.intel.com ([134.134.136.65]:55686 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230319AbhCZJQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:16:01 -0400
-IronPort-SDR: hmkZerMFZ5K8kxWrYiuKkiBnqqiSQ3Kb2DIfndsPfPOVXXL6TkO7XHB/zm1Ho6qcTKs1pVKl5I
- YH7voB641l7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="191143691"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="191143691"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:16:01 -0700
-IronPort-SDR: M665LzqAs62gKIsLvNEs8YcCr5sZKpj6cYgCE7zVV7hbiTMlS0nPjsNdu2EoGfl36nx3n50csl
- nr3Xk9vBWaxQ==
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="416463248"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:58 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
-        rander.wang@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: [RESEND PATCH 11/11] soundwire: stream: remove useless bus initializations
-Date:   Fri, 26 Mar 2021 17:15:14 +0800
-Message-Id: <20210326091514.20751-12-yung-chuan.liao@linux.intel.com>
+        id S229866AbhCZJQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:16:49 -0400
+Received: from lucky1.263xmail.com ([211.157.147.135]:42930 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230436AbhCZJQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:16:07 -0400
+Received: from localhost (unknown [192.168.167.70])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 0BC5CA8B38;
+        Fri, 26 Mar 2021 17:15:52 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P13407T140450203645696S1616750150047354_;
+        Fri, 26 Mar 2021 17:15:51 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <2f809fe362478ed8f845c1cf2debc24f>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: robh+dt@kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     robh+dt@kernel.org, heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v5 00/11] soc: rockchip: power-domain: add rk3568 powerdomains
+Date:   Fri, 26 Mar 2021 17:15:36 +0800
+Message-Id: <20210326091547.12375-1-zhangqing@rock-chips.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
-References: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fix power-controller node names for dtbs_check.
+Convert power domain documentation to json-schema.
+Add a meaningful power domain name.
+Support power domain function for RK3568 Soc.
 
-There is no need to assign a pointer to NULL if it's only used in a
-loop and assigned within that loop.
+Change in V5:
+[PATCH v5 1/11]: New.
+[PATCH v5 2/11]: New.
+[PATCH v5 3/11]: New.
+[PATCH v5 4/11]: New.
+[PATCH v5 5/11]: New.
+[PATCH v5 6/11]: New.
+[PATCH v5 7/11]: New.
+[PATCH v5 8/11]: No change. Same as [PATCH v4 1/4].
+[PATCH v5 9/11]: [PATCH v4 2/4] Fix up yaml code styles.
+[PATCH v5 10/11]: No change. Same as [PATCH v4 3/4].
+[PATCH v5 11/11]: [PATCH v4 4/4] add a meaningful power domain name for
+RK3568 Soc.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/stream.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Change in V4:
+[PATCH v4 1/4]: No change.
+[PATCH v4 2/4]: Fix up yaml code styles. Remove the new compatible to
+[PATCH v4 3/4]
+[PATCH v4 3/4]: Adding new compatible for RK3568 Soc.
+[PATCH v4 4/4]: No change. Same as [PATCH v3 3/3].
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 6a682179cd05..9c064b672745 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1449,7 +1449,7 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
- static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
- {
- 	struct sdw_master_runtime *m_rt;
--	struct sdw_bus *bus = NULL;
-+	struct sdw_bus *bus;
- 
- 	/* Iterate for all Master(s) in Master list */
- 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-@@ -1471,7 +1471,7 @@ static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
- static void sdw_release_bus_lock(struct sdw_stream_runtime *stream)
- {
- 	struct sdw_master_runtime *m_rt;
--	struct sdw_bus *bus = NULL;
-+	struct sdw_bus *bus;
- 
- 	/* Iterate for all Master(s) in Master list */
- 	list_for_each_entry_reverse(m_rt, &stream->master_list, stream_node) {
+Change in V3:
+[PATCH v3 1/3]: No change.
+[PATCH v3 2/3]: Fix up the code styles and add rk3568 base on:
+https://patchwork.kernel.org/project/linux-rockchip/patch/20210225102643.653095-1-enric.balletbo@collabora.com/
+[PATCH v3 3/3]: No change.
+
+Change in V2:
+[PATCH v2 1/3]: No change.
+[PATCH v2 2/3]: Fix up yaml code styles.
+[PATCH v2 3/3]: No change.
+
+Elaine Zhang (11):
+  arm: dts: rockchip: Fix power-controller node names for rk3066a
+  arm: dts: rockchip: Fix power-controller node names for rk3188
+  arm: dts: rockchip: Fix power-controller node names for rk3288
+  arm64: dts: rockchip: Fix power-controller node names for px30
+  arm64: dts: rockchip: Fix power-controller node names for rk3328
+  arm64: dts: rockchip: Fix power-controller node names for rk3399
+  soc: rockchip: pm-domains: Add a meaningful power domain name
+  dt-bindings: add power-domain header for RK3568 SoCs
+  dt-bindings: power: rockchip: Convert to json-schema
+  dt-bindings: power: rockchip: Add bindings for RK3568 Soc
+  soc: rockchip: power-domain: add rk3568 powerdomains
+
+ .../power/rockchip,power-controller.yaml      | 293 ++++++++++++++++++
+ .../bindings/soc/rockchip/power_domain.txt    | 136 --------
+ arch/arm/boot/dts/rk3066a.dtsi                |   6 +-
+ arch/arm/boot/dts/rk3188.dtsi                 |   6 +-
+ arch/arm/boot/dts/rk3288.dtsi                 |   8 +-
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |  16 +-
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi      |   6 +-
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi      |  40 +--
+ drivers/soc/rockchip/pm_domains.c             | 248 ++++++++-------
+ include/dt-bindings/power/rk3568-power.h      |  32 ++
+ 10 files changed, 509 insertions(+), 282 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
+ delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+ create mode 100644 include/dt-bindings/power/rk3568-power.h
+
 -- 
 2.17.1
+
+
 
