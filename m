@@ -2,108 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC9234AE5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 820FA34AE5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhCZSOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:14:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhCZSOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:14:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B97B61A32
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 18:14:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616782474;
-        bh=VKbDlg8i3gjxkH3Bz+k8hWQFbbVPsGGXG3YFhuEbeBs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Y7HCVEnI2IKlsg+zehxZYEgNCWiGs+PUQA5RwNww5dhrlUhNwtEbaz0EBrD6+W2FB
-         H7PfO8eEhgNvr8se/3gAfBoN79EU1gZna0hDWRkSavXkF4z5HjwrJy5qquTJiDHbU8
-         byAv3lJidmUNqbAs4iBVB2QK2rbljiTX+iIoRiLyMlwrvnj42Xd/1776oTMUiQZ92v
-         dWTsDMp5q+GauJnQQEI0D28yCs0NCy+vZ3Fz0DNq9EBgoQMt1uVo8RMi6q6+4Zyy00
-         vDIrwhqzOErN7znpdIu+LXaVQjwyYhPagd/rHenm7w/BG+4KbJ+oFuxV26G6qxryVl
-         G1+5ksK9xP/gg==
-Received: by mail-ej1-f44.google.com with SMTP id jy13so9786453ejc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:14:34 -0700 (PDT)
-X-Gm-Message-State: AOAM530tpcZkGhF8WzpwMPm6ktO5Y43oUNw9kp6B7nX0SU6ptH24uoPu
-        i41mhFWAZpIJHQVt4k/VtHOgGPPRRDTOSZ/SR52Zwg==
-X-Google-Smtp-Source: ABdhPJyJCflIcyJ6CTRBLwKEJtOJbW7mfulADexCa805/UNEh4Uc6PRhW7bd/QOLyLNijSC/sP6ioRk6AfoBrPmvBqg=
-X-Received: by 2002:a17:907:3d01:: with SMTP id gm1mr16976998ejc.214.1616782472997;
- Fri, 26 Mar 2021 11:14:32 -0700 (PDT)
+        id S230305AbhCZSPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:15:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230304AbhCZSOx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:14:53 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE422C0613B1;
+        Fri, 26 Mar 2021 11:14:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id o19so7353258edc.3;
+        Fri, 26 Mar 2021 11:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=7OwN9sCDoll1kfeOV96JvARjVXcCMVl5pE1420CYpOw=;
+        b=grFMxIfnyiOWnB9RplEKcznwJgBk59Dlw9m/Qd10lgjvSNTNyzIknJNEsP1Iwd8yNr
+         HRPlwIIiJtJjlO56hyU+aj25+jJzjSuEL6e8XvtMnonsZO+DF3p2//gSHa0AgfmAKhSK
+         lUvmNgqIUyOGCWYRIocMdwhD4n8gQlW56XzgqdVjVKtK362IkPsTOi6dKFyDylOD1njO
+         FWZFFFKwXsoV+F6LURvZ9bXSfQhbbFRI3ivclSqPkze8Gu3nrm0G29dikRKZoDblCDNH
+         mmcPUn1iQxeZmfWhELA4i+As9kT/iYgE+Dlk3135pa+uE/d6S+bfjxf9Ej1F62aWDSBg
+         Swlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=7OwN9sCDoll1kfeOV96JvARjVXcCMVl5pE1420CYpOw=;
+        b=eAAlZNX4HUkdBSJ/m34k4UTQoWa4UUBgNsCFqZUsMGGQf/v8tcWx+AgCIWCQH7eT2F
+         f29lkVptJJd9aslON21aqkcDHedYwcSMtIEwd3eXr8zyKmjrOT4HOMintgV95fZNJwlF
+         4ElZLOte88XyTp9lr0G4zxWL0MMmcWLxyJ1UGQpf89n/9oDH2mP3LwxfhS52fBDEk9nf
+         Ii5LSQW4yJRcQlea+LooyQoHq403H9deS2/du6tK9MAuUUbafIwUAEYlf+KWBC41P3Z+
+         YZ18lTjB8nf3a+T0H3+ZUdrQfaU946By171kr3H9M4+wBDZbsz3xnK6sFVcs0iDqC/fW
+         NoFg==
+X-Gm-Message-State: AOAM533wWz21cIOhC43+N8isffYFfN6yr1albm249qLqCjT+TEEClqFx
+        fC8xQ4rGH/FRTD6N7niVA6o=
+X-Google-Smtp-Source: ABdhPJxuA8CArC7vp83Y/bQZyxiB/zWeAqtySapkwLOjb+muwylYkJwlFNtddIpQu548xwd6Df9rEw==
+X-Received: by 2002:a05:6402:1545:: with SMTP id p5mr16503433edx.155.1616782491559;
+        Fri, 26 Mar 2021 11:14:51 -0700 (PDT)
+Received: from LEGION ([111.119.187.49])
+        by smtp.gmail.com with ESMTPSA id gj26sm4087570ejb.67.2021.03.26.11.14.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 11:14:50 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 23:14:42 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "moderated list:XEN HYPERVISOR INTERFACE" 
+        <xen-devel@lists.xenproject.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, colin.king@canonical.com,
+        dan.carpenter@oracle.com
+Cc:     musamaanjum@gmail.com
+Subject: [PATCH] xen/pciback: Fix incorrect type warnings
+Message-ID: <20210326181442.GA1735905@LEGION>
 MIME-Version: 1.0
-References: <CALCETrURmk4ZijJVUtJwouj=_0NPiUvUFr9XMvdniRRFqeU+fg@mail.gmail.com>
- <87a6qqi064.fsf@mid.deneb.enyo.de>
-In-Reply-To: <87a6qqi064.fsf@mid.deneb.enyo.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 26 Mar 2021 11:14:22 -0700
-X-Gmail-Original-Message-ID: <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
-Message-ID: <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
-Subject: Re: Why does glibc use AVX-512?
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "H. J. Lu" <hjl.tools@gmail.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "Carlos O'Donell" <carlos@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        libc-alpha <libc-alpha@sourceware.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 5:12 AM Florian Weimer <fw@deneb.enyo.de> wrote:
->
-> * Andy Lutomirski-alpha:
->
-> > glibc appears to use AVX512F for memcpy by default.  (Unless
-> > Prefer_ERMS is default-on, but I genuinely can't tell if this is the
-> > case.  I did some searching.)  The commit adding it refers to a 2016
-> > email saying that it's 30% on KNL.
->
-> As far as I know, glibc only does that on KNL, and there it is
-> actually beneficial.  The relevant code is:
->
->       /* Since AVX512ER is unique to Xeon Phi, set Prefer_No_VZEROUPPER
->          if AVX512ER is available.  Don't use AVX512 to avoid lower CPU
->          frequency if AVX512ER isn't available.  */
->       if (CPU_FEATURES_CPU_P (cpu_features, AVX512ER))
->         cpu_features->preferred[index_arch_Prefer_No_VZEROUPPER]
->           |= bit_arch_Prefer_No_VZEROUPPER;
->       else
->         cpu_features->preferred[index_arch_Prefer_No_AVX512]
->           |= bit_arch_Prefer_No_AVX512;
->
-> So it's not just about Prefer_ERMS.
+Correct enum pci_channel_io_normal should be used instead of putting
+integer value 1.
 
-Phew.
+Fix following smatch warnings:
+drivers/xen/xen-pciback/pci_stub.c:805:40: warning: incorrect type in argument 2 (different base types)
+drivers/xen/xen-pciback/pci_stub.c:805:40:    expected restricted pci_channel_state_t [usertype] state
+drivers/xen/xen-pciback/pci_stub.c:805:40:    got int
+drivers/xen/xen-pciback/pci_stub.c:862:40: warning: incorrect type in argument 2 (different base types)
+drivers/xen/xen-pciback/pci_stub.c:862:40:    expected restricted pci_channel_state_t [usertype] state
+drivers/xen/xen-pciback/pci_stub.c:862:40:    got int
+drivers/xen/xen-pciback/pci_stub.c:973:31: warning: incorrect type in argument 2 (different base types)
+drivers/xen/xen-pciback/pci_stub.c:973:31:    expected restricted pci_channel_state_t [usertype] state
+drivers/xen/xen-pciback/pci_stub.c:973:31:    got int
 
->
-> > AVX-512 cleared, and programs need to explicitly request enablement.
-> > This would allow programs to opt into not saving/restoring across
-> > signals or to save/restore in buffers supplied when the feature is
-> > enabled.
->
-> Isn't XSAVEOPT already able to handle that?
->
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/xen/xen-pciback/pci_stub.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Yes, but we need a place to put the data, and we need to acknowledge
-that, with the current save-everything-on-signal model, the amount of
-time and memory used is essentially unbounded.  This isn't great.
+diff --git a/drivers/xen/xen-pciback/pci_stub.c b/drivers/xen/xen-pciback/pci_stub.c
+index cb904ac83006..f8e4faa96ad6 100644
+--- a/drivers/xen/xen-pciback/pci_stub.c
++++ b/drivers/xen/xen-pciback/pci_stub.c
+@@ -802,7 +802,7 @@ static pci_ers_result_t xen_pcibk_slot_reset(struct pci_dev *dev)
+ 			"guest with no AER driver should have been killed\n");
+ 		goto end;
+ 	}
+-	result = common_process(psdev, 1, XEN_PCI_OP_aer_slotreset, result);
++	result = common_process(psdev, pci_channel_io_normal, XEN_PCI_OP_aer_slotreset, result);
+ 
+ 	if (result == PCI_ERS_RESULT_NONE ||
+ 		result == PCI_ERS_RESULT_DISCONNECT) {
+@@ -859,7 +859,7 @@ static pci_ers_result_t xen_pcibk_mmio_enabled(struct pci_dev *dev)
+ 			"guest with no AER driver should have been killed\n");
+ 		goto end;
+ 	}
+-	result = common_process(psdev, 1, XEN_PCI_OP_aer_mmio, result);
++	result = common_process(psdev, pci_channel_io_normal, XEN_PCI_OP_aer_mmio, result);
+ 
+ 	if (result == PCI_ERS_RESULT_NONE ||
+ 		result == PCI_ERS_RESULT_DISCONNECT) {
+@@ -970,7 +970,7 @@ static void xen_pcibk_error_resume(struct pci_dev *dev)
+ 		kill_domain_by_device(psdev);
+ 		goto end;
+ 	}
+-	common_process(psdev, 1, XEN_PCI_OP_aer_resume,
++	common_process(psdev, pci_channel_io_normal, XEN_PCI_OP_aer_resume,
+ 		       PCI_ERS_RESULT_RECOVERED);
+ end:
+ 	if (psdev)
+-- 
+2.25.1
 
->
-> There is a discussion about using the higher (AVX-512-only) %ymm
-> registers, to avoid the %xmm transition penalty without the need for
-> VZEROUPPER.  (VZEROUPPER is incompatible with RTM from a performance
-> point of view.)  That would perhaps negatively impact XSAVEOPT.
->
-> Assuming you can make XSAVEOPT work for you on the kernel side, my
-> instincts tell me that we should have markup for RTM, not for AVX-512.
-> This way, we could avoid use of the AVX-512 registers and keep using
-> VZEROUPPER, without run-time transaction checks, and deal with other
-> idiosyncrasies needed for transaction support that users might
-> encounter once this feature sees more use.  But the VZEROUPPER vs RTM
-> issues is currently stuck in some internal process issue on my end (or
-> two, come to think of it), which I hope to untangle next month.
-
-Can you elaborate on the issue?
