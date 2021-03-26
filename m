@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EECB34A7D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB7334A7D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhCZNHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:07:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
+        id S230054AbhCZNKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:10:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhCZNH3 (ORCPT
+        with ESMTP id S229758AbhCZNKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:07:29 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F306AC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:07:28 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id l18so6221370edc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:07:28 -0700 (PDT)
+        Fri, 26 Mar 2021 09:10:45 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F368C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:10:45 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id l4so8293098ejc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:10:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UzC5FBVz05PHuae7oBlniWjIpKp36WiskgIQCfeie3A=;
-        b=V2Ytu6qBPPGkLMv7S6mlhwfXx73xncAijDlfo/GWHDkV2vSaO7UEb+pL2lXTMSyc5T
-         IS8zUw/vml70QF5x1CKd0LeZY3y+6cRbfEMJ1xDLKyJ6P1Wp0E1aRqCoJxutN99HxIIj
-         ApPez/DvySFJy9SEe6wXhAga56XRZj9RLazbYoPnqEHIvlzyG6zLm9eLX0EjsTPTQtS0
-         1Gtv7+5x4BTV5lm9KgOtXvV1GfUeRwO+ZJlYOtIzyaUgKQrdCDD0mJHLE0cQd693TKmR
-         I/76K60wh46tNX2SDm8Oitpz6W/2T+/oA/Mzq4sulFiheOe1a+VhaE5W+dWYFP/97uVa
-         jsXQ==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VOKjl/3v3ErqSbOWpr9g/HwyTdgxANvzHYKscwdWoMM=;
+        b=f8yqDWUkgrxRd03LbhJhxoBWrjrGCi8HpA7psIRlITgiUOxCfeYsb4e4GAILUJeOcE
+         R/9zsTsr9ecu5sPnV9ac424kvTRXY8CLtOhAQaF5PyEcboKYLPzbD1fuafB1HLKJoiXY
+         zsnTpX7HtWDYpK3jaSvNMtt0NR382gx9c3e/E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UzC5FBVz05PHuae7oBlniWjIpKp36WiskgIQCfeie3A=;
-        b=XZ1o+Vh0I7mnY4K75fH1SgCVT6qrRJjXRPaeDYPRBNr7pmbdObZra7PsZi/Ty9u0Ht
-         1rNoOdh3tqV2jBTvKLmWaJp/dTn2HANBafRH4VB1Gcz5B24UQxP2dMHu/8prpmMDKJnA
-         kTec14t3IvbRnSZlgJA//obwuOYtRNf58FRaywwHDxjo7CuaNapxDSg6neZIDzDUgL08
-         zYOQWT6Zl8EbEUVZTv0N9UYBNNZfFC2El2C7mq77PfCq6rTjg7xDO45frOvEUobxW1yL
-         k9pGDtS9iYbafsJV7ktxVVoFm/jfolEQTMRhtB0nNHjmUjsSTUuMsqka2U2ngTsZM/cb
-         VhKg==
-X-Gm-Message-State: AOAM5335Xzf7m9eKjXppQgioSgnySjHHeAXOJB9Y/AtsfUrT0kzIdHjX
-        BepkA9qOEXuZ8DmIGzzXA8Cr/0mIceNxx8HfLb52bQ==
-X-Google-Smtp-Source: ABdhPJwkjDuvTV8Eny6IaII+A63BvbGqHoVciv6m70WrZQH4YTnZlVRI3Qv1mAGKV+kcQQCfrCPZQPEI7Hh3uEB5emg=
-X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr14815062edy.232.1616764047557;
- Fri, 26 Mar 2021 06:07:27 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VOKjl/3v3ErqSbOWpr9g/HwyTdgxANvzHYKscwdWoMM=;
+        b=U61mUPmxCTAf1dEGO4GKuC/dRtnGizT/QpnInsL9fsrjCLKgaSXOm5JwH3L+r0CYb2
+         ckCGlGsqthQW/ylS0hLl2zbmax7wwCmP+n6/GdDQ5jtD/HBv8adTb0RMFUN9/PuUeoPR
+         kM270mOILTobcVkjaugAK3iDOB0fR2P6dPv/NkcV/rPx2+fon++mEPPUUWHxz8Q2Pilo
+         zjMG6V0F8EmR9SmyagObarKMEIDo7p5jFWFrK/cW3Qkp1JlG9OgNiCV/dKGQngOIv8yy
+         zchiJE9eeVq3wXEZiTqoHCDxnDxCZt8OTlSQM3+2+m8BabGsydl+MageFNcVz04vSjDq
+         VfXQ==
+X-Gm-Message-State: AOAM533syEb0myPH9NcswnPipPutKbfyi+1j/tV9QKOkouFRCNjqkKrx
+        mpm7WutcyMZPUIw2/gXEAQOCtrwukS9O776P
+X-Google-Smtp-Source: ABdhPJxNc7mbaMlv/Wlk8wc7UqyiLKaWxRXwJrYBvP3FlLDhra/vUVvjOjMkfnRZzeWFenH+6rBzAQ==
+X-Received: by 2002:a17:906:414e:: with SMTP id l14mr14631976ejk.406.1616764243528;
+        Fri, 26 Mar 2021 06:10:43 -0700 (PDT)
+Received: from [172.16.11.38] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id s20sm4243724edu.93.2021.03.26.06.10.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 06:10:43 -0700 (PDT)
+Subject: Re: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
+To:     Greg KH <greg@kroah.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        mgorman@suse.de, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, joshdon@google.com, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org
+References: <20210326103352.603456266@infradead.org>
+ <20210326103935.183934395@infradead.org> <YF2/41K4xs3ZOQdV@kroah.com>
+ <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
+ <YF3F0JbbEpeSGzW6@kroah.com>
+ <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
+ <70594935-18e6-0791-52f9-0448adf37155@rasmusvillemoes.dk>
+ <YF3aSJ7OYiCpWsl8@kroah.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <1da9e61c-6973-2e0e-d898-7bf92ac5b1c4@rasmusvillemoes.dk>
+Date:   Fri, 26 Mar 2021 14:10:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210324064541.949630-1-jay.xu@rock-chips.com> <202103241450286417142@rock-chips.com>
-In-Reply-To: <202103241450286417142@rock-chips.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 26 Mar 2021 14:07:16 +0100
-Message-ID: <CAMpxmJWmUu962YrcCQmxukV3hM9K8hGVuOzimZ5friX58oSDWw@mail.gmail.com>
-Subject: Re: [PATCH RESEND 0/7] gpio-rockchip driver
-To:     "jay.xu@rock-chips.com" <jay.xu@rock-chips.com>
-Cc:     Tao Huang <huangtao@rock-chips.com>,
-        =?UTF-8?B?5p2o5Yev?= <kever.yang@rock-chips.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YF3aSJ7OYiCpWsl8@kroah.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 7:50 AM jay.xu@rock-chips.com
-<jay.xu@rock-chips.com> wrote:
->
-> I'm forget to send-to include Bartosz, I'll remember in next version
->
-> --------------
-> jay.xu@rock-chips.com
-> >Separate gpio driver from pinctrl driver, and support v2 controller.
-> >
-> >Jianqun Xu (7):
-> >  pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
-> >  pinctrl/pinctrl-rockchip.h: add pinctrl device to gpio bank struct
-> >  gpio: separate gpio driver from pinctrl-rockchip driver
-> >  gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
-> >  gpio/rockchip: support next version gpio controller
-> >  gpio/rockchip: always enable clock for gpio controller
-> >  gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
-> >
-> > drivers/gpio/Kconfig               |   8 +
-> > drivers/gpio/Makefile              |   1 +
-> > drivers/gpio/gpio-rockchip.c       | 758 ++++++++++++++++++++++++
-> > drivers/pinctrl/pinctrl-rockchip.c | 909 +----------------------------
-> > drivers/pinctrl/pinctrl-rockchip.h | 286 +++++++++
-> > 5 files changed, 1072 insertions(+), 890 deletions(-)
-> > create mode 100644 drivers/gpio/gpio-rockchip.c
-> > create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
-> >
-> >--
-> >2.25.1
-> >
-> >
-> >
+On 26/03/2021 13.57, Greg KH wrote:
+> On Fri, Mar 26, 2021 at 01:53:59PM +0100, Rasmus Villemoes wrote:
+>> On 26/03/2021 12.38, Peter Zijlstra wrote:
+>>
+>>> Implement debugfs_create_str() to easily display names and such in
+>>> debugfs.
+>>
+>> Patches 7-9 don't seem to add any users of this. What's it for precisely?
+> 
+> It's used in patch 7, look close :)
 
-I don't even have this in my inbox so I can't review it.
+Ah, macrology. But the write capability doesn't seem used, and I (still)
+fail to see how that could be useful.
 
-Bartosz
+>>> +EXPORT_SYMBOL_GPL(debugfs_read_file_str);
+>>
+>> Why?
+> 
+> Because there is a user of it?  Yes, it's not in a module, but to make
+> it easy, might as well export it now.
+
+No, I was asking why the individual read (and write) methods would need
+to be exported. They have even less reason then debugfs_create_str() -
+which I also think shouldn't be exported until a modular user shows up.
+
+Rasmus
