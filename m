@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE667349EE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 632C6349EEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhCZBm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:42:58 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:14881 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhCZBmp (ORCPT
+        id S230006AbhCZBpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:45:41 -0400
+Received: from mail-il1-f177.google.com ([209.85.166.177]:42593 "EHLO
+        mail-il1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229919AbhCZBpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:42:45 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F64Rq6LNJz9tDK;
-        Fri, 26 Mar 2021 09:40:39 +0800 (CST)
-Received: from [10.174.178.163] (10.174.178.163) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 09:42:37 +0800
-Subject: Re: [PATCH 0/8] make hugetlb put_page safe for all calling contexts
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        "Hillf Danton" <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <7c74ca0d-59fc-9dc2-6e4c-4357ad76649f@huawei.com>
-Date:   Fri, 26 Mar 2021 09:42:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 25 Mar 2021 21:45:06 -0400
+Received: by mail-il1-f177.google.com with SMTP id l5so3781550ilv.9;
+        Thu, 25 Mar 2021 18:45:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PZsXaMzEzAOeuTtz20TFhfalE//5yBaTZxTM2icf+t8=;
+        b=pZNhvGRY8GQ46wD56YRWcEPkPBV0aoNGdNeeeVvD59vNnvGamo7J4duoTZ4cgMmfD0
+         KmOZtxMNsd5FokLRhRP/rJAMPYjwAx+zto5I6BDw8aW8iV59SQrMTbKklsZdPieq5G9d
+         zrn1DqT/zR7JtrNFuO5R4LATu3XETKBg6v5XbHqYtSr9XQvQHZlRetZuaV3j0N8aFqs/
+         uxxLfl0l3vfeW2oi2E5GOgmtaCBM8XtiJCM6hYUvr8EN2iIyKPbWUdOF7LEJcD+AtkD1
+         HfI12p2afrioOdtNFpr457lWqYD6DHBJkjjHPa6nTj/ZyOfpX+5Px70aiPNmiwdODFyI
+         eZOg==
+X-Gm-Message-State: AOAM532y+lf991Q8UghhoohURxd4k5RVok/7261ACSZWcMag+DtQoDDt
+        UB1eH9VSx+QBr/mzr1XA4g==
+X-Google-Smtp-Source: ABdhPJw2gR2TyVZd11y9iO8iab1634RMShjveSM1GjxFM4JuqXPhKrf2/Z0VPxLDBB7qy4BaghmQ0A==
+X-Received: by 2002:a92:ca4b:: with SMTP id q11mr8989243ilo.272.1616723104674;
+        Thu, 25 Mar 2021 18:45:04 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id q8sm3443978ilv.55.2021.03.25.18.45.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 18:45:03 -0700 (PDT)
+Received: (nullmailer pid 2151969 invoked by uid 1000);
+        Fri, 26 Mar 2021 01:44:59 -0000
+Date:   Thu, 25 Mar 2021 19:44:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Seiya Wang <seiya.wang@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-serial@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
+        linux-iio@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-watchdog@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-arm-kernel@lists.infradead.org,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Zhiyong Tao <zhiyong.tao@mediatek.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        linux-kernel@vger.kernel.org, Wenbin Mei <wenbin.mei@mediatek.com>,
+        devicetree@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 5/8] dt-bindings: iio: adc: Add compatible for
+ Mediatek MT8195
+Message-ID: <20210326014459.GA2146095@robh.at.kernel.org>
+References: <20210319023427.16711-1-seiya.wang@mediatek.com>
+ <20210319023427.16711-7-seiya.wang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210325002835.216118-1-mike.kravetz@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.163]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210319023427.16711-7-seiya.wang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/3/25 8:28, Mike Kravetz wrote:
-> This effort is the result a recent bug report [1].  In subsequent
-> discussions [2], it was deemed necessary to properly fix the hugetlb
-
-Many thanks for the effort. I have read the discussions and it is pretty long.
-Maybe it would be helpful if you give a brief summary here?
-
-> put_page path (free_huge_page).  This RFC provides a possible way to
-
-trival: Not RFC here.
-
-> address the issue.  Comments are welcome/encouraged as several attempts
-> at this have been made in the past.
-> > This series is based on v5.12-rc3-mmotm-2021-03-17-22-24.  At a high
-> level, the series provides:
-> - Patches 1 & 2 from Roman Gushchin provide cma_release_nowait()
-
-trival: missing description of the Patches 3 ?
-
-> - Patches 4, 5 & 6 are aimed at reducing lock hold times.  To be clear
->   the goal is to eliminate single lock hold times of a long duration.
->   Overall lock hold time is not addressed.
-> - Patch 7 makes hugetlb_lock and subpool lock IRQ safe.  It also reverts
->   the code which defers calls to a workqueue if !in_task.
-> - Patch 8 adds some lockdep_assert_held() calls
+On Fri, 19 Mar 2021 10:34:24 +0800, Seiya Wang wrote:
+> This commit adds dt-binding documentation of auxadc for Mediatek MT8195 SoC
+> Platform.
 > 
-> [1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
-> [2] http://lkml.kernel.org/r/20210311021321.127500-1-mike.kravetz@oracle.com
-> 
-> RFC -> v1
-> - Add Roman's cma_release_nowait() patches.  This eliminated the need
->   to do a workqueue handoff in hugetlb code.
-> - Use Michal's suggestion to batch pages for freeing.  This eliminated
->   the need to recalculate loop control variables when dropping the lock.
-> - Added lockdep_assert_held() calls
-> - Rebased to v5.12-rc3-mmotm-2021-03-17-22-24
-> 
-> Mike Kravetz (6):
->   hugetlb: add per-hstate mutex to synchronize user adjustments
->   hugetlb: create remove_hugetlb_page() to separate functionality
->   hugetlb: call update_and_free_page without hugetlb_lock
->   hugetlb: change free_pool_huge_page to remove_pool_huge_page
->   hugetlb: make free_huge_page irq safe
->   hugetlb: add lockdep_assert_held() calls for hugetlb_lock
-> 
-> Roman Gushchin (2):
->   mm: cma: introduce cma_release_nowait()
->   mm: hugetlb: don't drop hugetlb_lock around cma_release() call
-> 
->  include/linux/cma.h     |   2 +
->  include/linux/hugetlb.h |   1 +
->  mm/cma.c                |  93 +++++++++++
->  mm/cma.h                |   5 +
->  mm/hugetlb.c            | 354 +++++++++++++++++++++-------------------
->  mm/hugetlb_cgroup.c     |   8 +-
->  6 files changed, 294 insertions(+), 169 deletions(-)
+> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/iio/adc/mediatek,mt2701-auxadc.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
+Acked-by: Rob Herring <robh@kernel.org>
