@@ -2,99 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A1B34AB06
+	by mail.lfdr.de (Postfix) with ESMTP id F296034AB07
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhCZPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:11:31 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:39536 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhCZPK7 (ORCPT
+        id S230343AbhCZPLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbhCZPL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:10:59 -0400
-Received: by mail-il1-f176.google.com with SMTP id y17so5293744ila.6;
-        Fri, 26 Mar 2021 08:10:58 -0700 (PDT)
+        Fri, 26 Mar 2021 11:11:27 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD39C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:11:27 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id d2so5271690ilm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:11:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPbyh2/n0MvOIkXLJmahFB/CN/U6m46NpyC/vQAi3ec=;
+        b=sse2O1nQL88L0N2KQLGe1gWwkY7/c3qUljkhRzNM/IIWE2lGFSjpeAUIHxJo1zWwZ7
+         PmLQ1TzjSu4iR4oZlPTVF8cW19/1VhLvyRWpSzFzfRkPm4Yix1jD5mPvDA/9u37QY64w
+         hDG5W8Ql+qLqrKOwrTthAdTR0tLbGeYfujB9Ic7ZPjGxIhhXZ9THuIYsKBj0XdbdhnSf
+         DWoSccnBvNDQbs5MyUCxc5RH/6zfDJMhwe0Fh7yIs3eZv7cDGO48W9GybNIn6AuBmBTQ
+         7Yru96OOElFze4h4bUynoXcIakTPaKAox5gmgIx1QqrTNkeNTK0DP6JnZ4GjbOMJHDiH
+         Xh/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=V6kxHAMFGHc90myISo6VM6ueaBvRJahf0rAQgZck3Fs=;
-        b=QfqD78Aew0F67Y2f7i3gJmmZPDEn6nIgJlRbPWFlxYEelCD6SD4baLeJ7iGOOntSdn
-         llMgDKOgE1Sk/BqWCpoKo4XDHBEmh3CQaIdjZ0qfXNktVk3sIlqEvJNMEK+24DfcqsK2
-         T2ky/lNxkiEQZng1/9d3Dt/dgoFXbme8LeYjp2qbCrNTfYwxqQVKvyA0CdIuV4wBdkV1
-         PJ1qpgopCx7JB82GdiC+n3hnZ2JTwjZPTOEd0s11Z2iDF3fRledNSvfyhO4rDUd/cYl1
-         HxnENY258HWrAikrkEQXwGEFCNcv47zGcOuDKtxcZiaq47XKp80FTotzfulIm90/cHAX
-         RV8A==
-X-Gm-Message-State: AOAM530llm0AnzUOtAcr7aCO/X/PsjQfydUWK+ySc6Ks1QWDuCZpKTy5
-        JuHfGPUIsXPr9LUDf6uBOQ==
-X-Google-Smtp-Source: ABdhPJyStqL3NEZY7qbA5kS67RsQZxAe37NEbUFsqr6MXsMcQqzUF92vBsQzYpDKLriZ49f0Rmz3wQ==
-X-Received: by 2002:a92:c56f:: with SMTP id b15mr10756598ilj.41.1616771458456;
-        Fri, 26 Mar 2021 08:10:58 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id l14sm2530159ilj.14.2021.03.26.08.10.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pPbyh2/n0MvOIkXLJmahFB/CN/U6m46NpyC/vQAi3ec=;
+        b=hMvR4fVk0qlT30McNrSZRfOnRhpilcO9S85fcn52tq1P78lotQ/mp1QCS4TOiARqi5
+         VRtToRMx4TDNeADWyKdD7m4WKU+Yd0V7dr+UYkknQcKVbH9r1nmX3cmvLeUhdfaOOcV5
+         OfZ5AzlV/wVtpocsnVhQ2Ci54OP5yYeNZLTVeAzJuIbcF1Rgt57E3phi/aWP+NxBeC2o
+         /qtGk01vXP4u7JtrhVteKy4boy/b8SvFBG202qXy+JcXYn0664v8yyH777Hr+uH+hGfa
+         srX1Ib9ZRLouNMTj2HhSaCEsMC0ozFMpoZjEKagwTgixfyuRMRwoC9tJqtuuJYID2tPy
+         IA5A==
+X-Gm-Message-State: AOAM532um3EsDLqiZ3pJovDHXyYG3O0kJD7QWd9wkgUv97umOvLZBLS7
+        AyvAgACJA7yK/Hwt9wsKr7SB4g==
+X-Google-Smtp-Source: ABdhPJxL1LXPdpJ7rzASPAykCISa+3I5DfV2Z1/Y0hkdZZEXpgG187/GjHx8eNwatrGiTFU+MQfPog==
+X-Received: by 2002:a92:db43:: with SMTP id w3mr5702334ilq.150.1616771486507;
+        Fri, 26 Mar 2021 08:11:26 -0700 (PDT)
+Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id j17sm4537706iok.37.2021.03.26.08.11.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 08:10:57 -0700 (PDT)
-Received: (nullmailer pid 3384057 invoked by uid 1000);
-        Fri, 26 Mar 2021 15:10:54 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Nina Wu <nina-cm.wu@mediatek.com>
-Cc:     devicetree@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        srv_heupstream@mediatek.com, linux-mediatek@lists.infradead.org,
-        Neal Liu <neal.liu@mediatek.com>,
-        Nina Wu <Nina-CM.Wu@mediatek.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Jackson-kt.Chang@mediatek.com
-In-Reply-To: <1616743871-8087-1-git-send-email-nina-cm.wu@mediatek.com>
-References: <1616743871-8087-1-git-send-email-nina-cm.wu@mediatek.com>
-Subject: Re: [PATCH 1/2] dt-bindings: devapc: Update bindings
-Date:   Fri, 26 Mar 2021 09:10:54 -0600
-Message-Id: <1616771454.300082.3384056.nullmailer@robh.at.kernel.org>
+        Fri, 26 Mar 2021 08:11:26 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 00/12] net: ipa: rework resource programming
+Date:   Fri, 26 Mar 2021 10:11:10 -0500
+Message-Id: <20210326151122.3121383-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 15:31:10 +0800, Nina Wu wrote:
-> From: Nina Wu <Nina-CM.Wu@mediatek.com>
-> 
-> To support newer hardware architecture of devapc,
-> update device tree bindings.
-> 
-> Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
-> ---
->  .../devicetree/bindings/soc/mediatek/devapc.yaml   | 41 ++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
-> 
+This series reworks the way IPA resources are defined and
+programmed.  It is a little long--and I apologize for that--but
+I think the patches are best taken together as a single unit.
 
-My bot found errors running 'make dt_binding_check' on your patch:
+The IPA hardware operates with a set of distinct "resources."  Each
+hardware instance has a fixed number of each resource type available.  
+Available resources are divided into smaller pools, with each pool
+shared by endpoints in a "resource group."  Each endpoint is thus
+assigned to a resource group that determines which pools supply
+resources the IPA hardware uses to handle the endpoint's processing.
 
-yamllint warnings/errors:
+The exact set of resources used can differ for each version of IPA.
+Except for IPA v3.0 and v3.1, there are 5 source and 2 destination
+resource types, but there's no reason to assume this won't change.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml: properties:version:enum: False schema does not allow [1, 2]
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml: properties:slave_type_num:enum: False schema does not allow [1, 4]
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml: ignoring, error in schema: properties: slave_type_num: enum
-warning: no schema found in file: ./Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
-Documentation/devicetree/bindings/soc/mediatek/devapc.example.dts:51:18: fatal error: dt-bindings/clock/mt8192-clk.h: No such file or directory
-   51 |         #include <dt-bindings/clock/mt8192-clk.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/soc/mediatek/devapc.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1380: dt_binding_check] Error 2
+The number of resource groups used *does* typically change based on
+the hardware version.  For example, some versions target reduced
+functionality and support fewer resource groups.
 
-See https://patchwork.ozlabs.org/patch/1458687
+With that as background...
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+The net result of this series is to improve the flexibility with
+which IPA resources and resource groups are defined, permitting each
+version of IPA to define its own set of resources and groups.  Along
+the way it isolates the resource-related code, and fixes a few bugs
+related to resource handling.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+The first patch moves resource-related code to a new C file (and
+header).  It generates a checkpatch warning about updating
+MAINTAINERS, which can be ignored.  The second patch fixes a bug,
+but the bug does not affect SDM845 or SC7180.
 
-pip3 install dtschema --upgrade
+The third patch defines an enumerated type whose members provide
+symbolic names for resource groups.
 
-Please check and re-submit.
+The fourth defines some resource limits for SDM845 that were not
+previously being programmed.  That platform "works" without this,
+but to be correct, these limits should really be programmed.
+
+The fifth patch uses a single enumerated type to define both source
+and destination resource type IDs, and the sixth uses those IDs to
+index the resource limit arrays.  The seventh moves the definition
+of that enumerated type into the platform data files, allowing each
+platform to define its own set of resource types.
+
+The eighth and ninth are fairly trivial changes.  One replaces two
+"max" symbols having the same value with a single symbol.  And the
+other replaces two distinct but otherwise identical structure types
+with a single common one.
+
+The 10th is a small preparatory patch for the 11th, passing a
+different argument to a function that programs resource values.
+The 11th allows the actual number of source and destination resource
+groups for a platform to be specified in its configuration data.
+That way the number is based on the actual number of groups defined.
+This removes the need for a sort of clunky pair of functions that
+defined that information previously.
+
+Finally, the last patch just increases the number of resource groups
+that can be defined to 8.
+
+					-Alex
+
+Alex Elder (12):
+  net: ipa: introduce ipa_resource.c
+  net: ipa: fix bug in resource group limit programming
+  net: ipa: identify resource groups
+  net: ipa: add some missing resource limits
+  net: ipa: combine resource type definitions
+  net: ipa: index resource limits with type
+  net: ipa: move ipa_resource_type definition
+  net: ipa: combine source and destination group limits
+  net: ipa: combine source and destation resource types
+  net: ipa: pass data for source and dest resource config
+  net: ipa: record number of groups in data
+  net: ipa: support more than 6 resource groups
+
+ drivers/net/ipa/Makefile          |   2 +-
+ drivers/net/ipa/ipa_data-sc7180.c | 102 +++++++++--------
+ drivers/net/ipa/ipa_data-sdm845.c | 169 ++++++++++++++++-----------
+ drivers/net/ipa/ipa_data.h        |  62 ++++------
+ drivers/net/ipa/ipa_main.c        | 148 +-----------------------
+ drivers/net/ipa/ipa_reg.h         |  46 +-------
+ drivers/net/ipa/ipa_resource.c    | 182 ++++++++++++++++++++++++++++++
+ drivers/net/ipa/ipa_resource.h    |  27 +++++
+ 8 files changed, 393 insertions(+), 345 deletions(-)
+ create mode 100644 drivers/net/ipa/ipa_resource.c
+ create mode 100644 drivers/net/ipa/ipa_resource.h
+
+-- 
+2.27.0
 
