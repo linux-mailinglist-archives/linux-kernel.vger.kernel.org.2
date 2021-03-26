@@ -2,65 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F5634A345
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC4A34A338
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhCZIhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:37:45 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14615 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhCZIhI (ORCPT
+        id S229995AbhCZIgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229933AbhCZIfw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:37:08 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6Fdx6Kh0z19JfD;
-        Fri, 26 Mar 2021 16:35:01 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 16:36:55 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 4/4] vfio/platform: Fix spelling mistake "registe" -> "register"
-Date:   Fri, 26 Mar 2021 16:35:28 +0800
-Message-ID: <20210326083528.1329-5-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210326083528.1329-1-thunder.leizhen@huawei.com>
-References: <20210326083528.1329-1-thunder.leizhen@huawei.com>
+        Fri, 26 Mar 2021 04:35:52 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CC3C0613AA;
+        Fri, 26 Mar 2021 01:35:51 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id g38so5039975ybi.12;
+        Fri, 26 Mar 2021 01:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CO4gZbxFyIsBp6fDq1sKand42JKRkUpqVJji7diN+V8=;
+        b=RkfWe8t1cmxtlxZKbEd0kDtJCDkZlVC8UjQHdq4X2ZQjUPiibMVWt62ER1Kb+xPe0V
+         N6/uabHDVsNyWbKrMBdzG1G+8dq8eSHJrE5IyG+7Bc6hksxLh6Uh81DZWkMiUD7uYHuu
+         PyZt/XLN1ebLFCMtrBOLC7tMD3Mg7ZLfv6Hmm9qw3JNwJwkp4qo1iy8XmvduyPpvZcjS
+         rhE22UYjCtNX25Ze9rt8n5sPcj0rzzDY22EjKL9TLMhS1WPNoAMVvpUJub1Ru0ADNJxL
+         0py2kT2w/5sv1XEXrs1aofRuR8o1Ihcfq4aLM2A5vYi16JasjHJD81lRs/WT2cPIAP/r
+         F8QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CO4gZbxFyIsBp6fDq1sKand42JKRkUpqVJji7diN+V8=;
+        b=ifWso9vUvUu6pG2D8PpsukPBqpjCR5VUbngozYG3wNm1Miojxb+nMQJOxuzQ976mrH
+         uso5AmpzUcMWfLhsBaj+t1kXFAPS5bUmMaU0SkBj1newga1UcYZBi0ZBRR6v3RguTszL
+         qMGkrX5hIi3PFWYv32dihWJxwv9SKvGsS4Zb2NA6MYLdVGyfQvYZIlx5aQzuU7yW/+KS
+         8X0/bu9aYSKwXDmv7QnaCAPP8ULdCstkgHKYLeOpFwTkXI7eOGlPxKax3JOiAg1fZcVj
+         9ynf2KPWW6DTFE9u0sZgedUd5Pi3D7PkNMZydEmr1Rlx+nvMbHUP7IwGEzZ/nsuxRJzy
+         Isog==
+X-Gm-Message-State: AOAM530GqyoklKDCtDGS8bXaadS1Ah2CYRVdvSvtvO4CvtqaNfA0fXEM
+        HV/YY7BDh80xW6+4kNVBrt+Dv01j+xfsXA6FW0M=
+X-Google-Smtp-Source: ABdhPJwTM3/lDZesWWLU4v5kz0+QC5oYDKNVR7OHeJEPnIurqnJKIzMCfTbYAkxbIB2i/Ba39xUX8lhECouORuQatrs=
+X-Received: by 2002:a25:25d0:: with SMTP id l199mr18601780ybl.337.1616747751256;
+ Fri, 26 Mar 2021 01:35:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+References: <00000000000053da9405bd7d2644@google.com>
+In-Reply-To: <00000000000053da9405bd7d2644@google.com>
+From:   Ming Lei <tom.leiming@gmail.com>
+Date:   Fri, 26 Mar 2021 16:35:40 +0800
+Message-ID: <CACVXFVMf9n8bHP8ZTx74bBqoKRFHbPPLSBkvmdaV50xXwNKC1A@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
+To:     syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spelling mistake in a comment, fix it.
+On Sun, Mar 14, 2021 at 7:10 PM syzbot
+<syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15ade5aed00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=952047a9dbff6a6a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c b/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c
-index 09a9453b75c5592..63cc7f0b2e4a437 100644
---- a/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c
-+++ b/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c
-@@ -26,7 +26,7 @@
- #define XGMAC_DMA_CONTROL       0x00000f18      /* Ctrl (Operational Mode) */
- #define XGMAC_DMA_INTR_ENA      0x00000f1c      /* Interrupt Enable */
- 
--/* DMA Control registe defines */
-+/* DMA Control register defines */
- #define DMA_CONTROL_ST          0x00002000      /* Start/Stop Transmission */
- #define DMA_CONTROL_SR          0x00000002      /* Start/Stop Receive */
- 
--- 
-1.8.3
-
-
+#syz test: https://github.com/ming1/linux.git v5.12-block-test
