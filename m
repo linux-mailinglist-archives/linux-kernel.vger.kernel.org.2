@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971CB34B030
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C4F34B037
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhCZUbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 16:31:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43692 "EHLO mail.kernel.org"
+        id S230159AbhCZUfn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Mar 2021 16:35:43 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:55738 "EHLO albireo.enyo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhCZUbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:31:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B69E61A0D;
-        Fri, 26 Mar 2021 20:31:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616790666;
-        bh=4sFgh402bJa1V+KKITowOoaqjf68udlldNqx7lLArHw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=IFtqc0uvWV/YIYVDlZkMUetISgaDx0kNW2DHdO77M5yEfR0uKdmwSHI9uc6QaWXF1
-         8s2Dggbm40/8A7Cttp/pK6ZrscFSBQnMwc86o9QxV2m4xEjgd5SOAbVdsf19ER4d+o
-         xtrCRavMZ9YfinYRCdd7lp9hKWh3ICBF91Ot4oz9rNIeYJcKSD90q0ovAYrWOeAS0u
-         gvP+XTxaYzwF+5JBz78xc6hMpE4G0i1guLqSlPfDkQ76wETk6gV5QPf3TUvKEuXK+q
-         skpNbaD7e0PqhjP+VLDDvFlAugH/Tpmqi8YXUoclwmEqDKW7PUyQeb5Fa1pnIWC2+j
-         QCUeOyRPz9byQ==
-Date:   Fri, 26 Mar 2021 15:31:05 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>, '@bjorn-Precision-5520
-Cc:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 6/6] PCI: brcmstb: Check return value of
- clk_prepare_enable()
-Message-ID: <20210326203105.GA906530@bjorn-Precision-5520>
+        id S230003AbhCZUfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 16:35:34 -0400
+Received: from [172.17.203.2] (port=40449 helo=deneb.enyo.de)
+        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1lPtB0-00038H-F0; Fri, 26 Mar 2021 20:35:26 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1lPtB0-0008Aa-CB; Fri, 26 Mar 2021 21:35:26 +0100
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "H. J. Lu" <hjl.tools@gmail.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
+        "Carlos O'Donell" <carlos@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        libc-alpha <libc-alpha@sourceware.org>
+Subject: Re: Why does glibc use AVX-512?
+References: <CALCETrURmk4ZijJVUtJwouj=_0NPiUvUFr9XMvdniRRFqeU+fg@mail.gmail.com>
+        <87a6qqi064.fsf@mid.deneb.enyo.de>
+        <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
+        <87blb5d7zx.fsf@mid.deneb.enyo.de>
+        <CALCETrUXMnutTV=SEs6ot58j32_5=K5Z=G7_57gVZt_GFcuDiw@mail.gmail.com>
+Date:   Fri, 26 Mar 2021 21:35:26 +0100
+In-Reply-To: <CALCETrUXMnutTV=SEs6ot58j32_5=K5Z=G7_57gVZt_GFcuDiw@mail.gmail.com>
+        (Andy Lutomirski's message of "Fri, 26 Mar 2021 12:47:42 -0700")
+Message-ID: <877dltd569.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326191906.43567-7-jim2101024@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 03:19:04PM -0400, Jim Quinlan wrote:
-> The check was missing on PCIe resume.
+* Andy Lutomirski:
 
-"PCIe resume" isn't really a thing, per se.  PCI/PCIe gives us device
-power states (D0, D3hot, etc), and Linux power management builds
-suspend/resume on top of those.  Maybe:
+> On Fri, Mar 26, 2021 at 12:34 PM Florian Weimer <fw@deneb.enyo.de> wrote:
+>>   x86: Sporadic failures in tst-cpu-features-cpuinfo
+>>   <https://sourceware.org/bugzilla/show_bug.cgi?id=27398#c3>
+>
+> It's worth noting that recent microcode updates have make RTM
+> considerably less likely to actually work on many parts.  It's
+> possible you should just disable it. :(
 
-  Check for failure of clk_prepare_enable() on device resume.
+Sorry, I'm not sure who should disable it.
 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> Fixes: 8195b7417018 ("PCI: brcmstb: Add suspend and resume pm_ops")
-> ---
->  drivers/pci/controller/pcie-brcmstb.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-> index 2d9288399014..f6d9d785b301 100644
-> --- a/drivers/pci/controller/pcie-brcmstb.c
-> +++ b/drivers/pci/controller/pcie-brcmstb.c
-> @@ -1396,7 +1396,9 @@ static int brcm_pcie_resume(struct device *dev)
->  	int ret;
->  
->  	base = pcie->base;
-> -	clk_prepare_enable(pcie->clk);
-> +	ret = clk_prepare_enable(pcie->clk);
-> +	if (ret)
-> +		return ret;
+Let me sum up the situation:
 
-This fix doesn't look like it depends on the EP regulator support.
-Maybe it should be a preparatory patch before patch 1/6?  It could
-then easily be backported to kernels that contain 8195b7417018 but not
-EP regulator support.
+We have a request for a performance enhancement in glibc, so that
+applications can use it on server parts where RTM actually works.
 
->  	ret = brcm_set_regulators(pcie, TURN_ON);
->  	if (ret)
-> @@ -1535,7 +1537,9 @@ static int brcm_pcie_probe(struct platform_device *pdev)
->  
->  	ret = brcm_pcie_get_regulators(pcie);
->  	if (ret) {
-> -		dev_err(pcie->dev, "failed to get regulators (err=%d)\n", ret);
-> +		pcie->num_supplies = 0;
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(pcie->dev, "failed to get regulators (err=%d)\n", ret);
+For CPUs that support AVX-512, we may be able to meet that with a
+change that uses the new 256-bit registers, t avoid the %xmm
+transition penalty.  (This is the easy case, hopefully—there shouldn't
+be any frequency issues associated with that, and if the kernel
+doesn't optimize the context switch today, that's a nonissue as well.)
 
-Looks like this hunk might belong somewhere else, e.g., in patch 2/6?
-The "Fixes:" line suggests that this patch could/should be backported to
-every kernel that contains 8195b7417018, but 8195b7417018 doesn't have
-pcie->num_supplies.
+For CPUs that do not support AVX-512 but support RTM (and AVX2), we
+need a dynamic run-time check whether the string function is invoked
+in a transaction.  In that case, we need to use VZEROALL instead of
+VZEROUPPER.  (It's apparently too costly to issue VZEROALL
+unconditionally.)
 
->  		goto fail;
->  	}
->  
-> -- 
-> 2.17.1
-> 
+All this needs to work transparently without user intervention.  We
+cannot require firmware upgrades to fix the incorrect RTM reporting
+issue (the bug I referenced).  I think we can require software updates
+which tell glibc when to use RTM-enabled string functions if the
+dynamic selection does not work (either for performance reasons, or
+because of the RTM reporting bug).
+
+I want to avoid a situation where one in eight processes fail to work
+correctly because the CPUID checks ran on CPU 0, where RTM is reported
+as available, and then we trap when executing XTEST on other CPUs.
