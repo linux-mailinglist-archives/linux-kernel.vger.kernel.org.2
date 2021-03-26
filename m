@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 295BB34AE45
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F9934AE4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhCZSJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:09:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230180AbhCZSJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:09:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 237B261A13;
-        Fri, 26 Mar 2021 18:09:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616782173;
-        bh=oZuNNowA8hJn4kt24Qmg+vwOtPMVCc72tQAlQNlwhek=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=VyVyzQFnmwAJ5JuccpSdd3iFn/WWtOCUUzBwObShmf5bM/uWy5qtzHZ2lhGc+Fh+Z
-         6Y/ts3SvLVn7vxbDA7MUd/XjyVTC9Ea20jAAEk57jaFzRG9eid53h35xUuaKBO8Hzn
-         OJqGaxXEm9Vf9+PjRBLigHtr/bAM+Tshp3zaoHyOpM1LNrA5WAJoVQkUJJCG/bSt3L
-         spat86yD+X+kayPiUVA4sJlF7ofjcTUp0UzFhEBfs/kh+uBntifY0msWDpBT8NhUPw
-         56FsAytTMg+bv1pKwGC+wuNrrFoyNUtvr+SQyrz7MGpPTpQASAizwvFWg1dHCgrkab
-         NKSoi/0UC+Y9g==
-Content-Type: text/plain; charset="utf-8"
+        id S229986AbhCZSMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:12:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230003AbhCZSM3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:12:29 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E28C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:12:29 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id v3so5176548pgq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=zWXNgS7FEpSITr5hRFU2xPK3ae3tNGDxaa3Gnlx8qe4=;
+        b=Rx6XDRsY9fxGawJ81h/PuRN5zzpTQWcKspALGN9lBMSF5zeZLM3pU5zAhhGQlSJjXc
+         rkxSOyEsViD7hdA+qmS9dzt0VbJZdAFcVlJn3haMWeK+Ai5x7hcnPPaOSWTfKqLUkvne
+         rdrlNKEWytqUKhRWKG+fB7WbCtHR2M1J3vlqfW4HJt72ANgdpWaLXdOCMlN1W/Y6/ywi
+         jOBW4vj3f689RBYF0NKqhWVlR/SiheM9Cw2XW70LBdp87wToacF8+Y3U30zMfuWCBQAB
+         wBtJfj8oRqrWJ267O/o3icOFFFplZYBGNIv2pI7HWVfIPP3bLXm9YxKNMFwg+jaVk2+g
+         mX0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=zWXNgS7FEpSITr5hRFU2xPK3ae3tNGDxaa3Gnlx8qe4=;
+        b=XAMpMN3TIc0XtgWDu0Up+bkr0wwaJsr7JyXNd3HSXDfQr5scDcH65k6wYFxwmLsTVu
+         FYf/0ssqCGHoQn9TtL9VdiA/Y5qZaIw8xpB85WV9rWKE3bS4mg68uQNVhBAHiRmDn0Oq
+         secLKGkUy0X1Ixit8tne+cNe+Rn6Xdyy8MV+YAzJldGKY5QiMmekWjJ9cR0Coao10LHN
+         38rCnfVcDbPDRVN3vIqwZqFp1LOYAS+LldioNR5pnOleTxsjR0rDWShRdeH9ioRsj+Kl
+         yrelhQtIWvcv5K+BDGCpZIM1r31E6Gaoy3lqV28D1xciUc5POCbMNVwqJ7KpSJimolQr
+         6FBA==
+X-Gm-Message-State: AOAM5311Sny0tPzzaq++PEmJVoG1ze7R/HQR0d/8b3CdaxGkxb006ViL
+        CTxZfOuy4eJ/AoQ0mqXMoca9B1HL01muBQoIngQ=
+X-Google-Smtp-Source: ABdhPJyVvWkwQdf24ftL2Xmb2BjB8TbozCpvbSf7fmdFTtzCRqbFAO5xodP1wd3KxWugGRRQdnhODNauS/+/s+9AGg0=
+X-Received: by 2002:a65:41c7:: with SMTP id b7mr6971581pgq.237.1616782348397;
+ Fri, 26 Mar 2021 11:12:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210325185749.27984-1-nsaenz@kernel.org>
-References: <20210325185749.27984-1-nsaenz@kernel.org>
-Subject: Re: [PATCH] clk: bcm: rpi: Don't register as OF provider if !dev->np
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-rpi-kernel@lists.infradead.org, geert@linux-m68k.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Date:   Fri, 26 Mar 2021 11:09:31 -0700
-Message-ID: <161678217156.3012082.17482478610662557764@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Received: by 2002:a17:90b:1286:0:0:0:0 with HTTP; Fri, 26 Mar 2021 11:12:27
+ -0700 (PDT)
+Reply-To: yatmirnutha@gmail.com
+From:   Mr Yatmir Nutha <princessayra2015@gmail.com>
+Date:   Fri, 26 Mar 2021 11:12:27 -0700
+Message-ID: <CANdY5tyTZZxCTTE27Gv83DaaUzVhYnsoQfK+KxqX6o8ScgKhBg@mail.gmail.com>
+Subject: i need your urgent help and assistance.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Nicolas Saenz Julienne (2021-03-25 11:57:48)
-> There are two ways clk-raspberrypi might be registered: through
-> device-tree or through an explicit platform device registration. The
-> latter happens after firmware/raspberrypi's probe, and it's limited to
-> RPi3s, which solely use the ARM clock to scale CPU's frequency. That
-> clock is matched with cpu0's device thanks to the ARM clock being
-> registered as a clkdev.
->=20
-> In that scenario, don't register the device as an OF clock provider, as
-> it makes no sense and will cause trouble.
+Dear Friend.
 
-What sort of trouble?
 
->=20
-> Fixes: d4b4f1b6b97e ("clk: bcm: rpi: Add DT provider for the clocks")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> ---
->  drivers/clk/bcm/clk-raspberrypi.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/clk/bcm/clk-raspberrypi.c b/drivers/clk/bcm/clk-rasp=
-berrypi.c
-> index f89b9cfc4309..27e85687326f 100644
-> --- a/drivers/clk/bcm/clk-raspberrypi.c
-> +++ b/drivers/clk/bcm/clk-raspberrypi.c
-> @@ -337,10 +337,12 @@ static int raspberrypi_clk_probe(struct platform_de=
-vice *pdev)
->         if (ret)
->                 return ret;
-> =20
-> -       ret =3D devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
-> -                                         clk_data);
-> -       if (ret)
-> -               return ret;
-> +       if (dev->of_node) {
 
-Can you add a comment to the code indicating the problem this is fixing?
-I fear that we'll look back on this later and simply remove this if
-condition because it's "redundant". Better to have some code comment so
-we don't have to look up git history to figure out that we only call
-this when the of node is populated. I'm not sure I understand what goes
-wrong though. Won't the absence of dev->of_node mean the provider
-doesn't do anything?
+I am Mr Yatmir Nutha. the director of the accounts & auditing
+department at the bank Ouagadougou-Burkina Faso in west Africa. With
+due respect, I have decided to contact you on a business transaction
+that will be beneficial to both of us.
 
-> +               ret =3D devm_of_clk_add_hw_provider(dev, of_clk_hw_onecel=
-l_get,
-> +                                                 clk_data);
-> +               if (ret)
-> +                       return ret;
-> +       }
-> =20
->         rpi->cpufreq =3D platform_device_register_data(dev, "raspberrypi-=
-cpufreq",
->                                                      -1, NULL, 0);
+At the bank's last accounts/auditing evaluations, my staffs came
+across an old account which was being maintained by a foreign client
+who we learn was among the deceased passengers of motor accident on
+November.2003, the deceased was unable to run this account since his
+death. The account has remained dormant without the knowledge of his
+family since it was put in a safe deposit account in the bank for
+future investment by the client.
+
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until I discovered that it cannot be claimed since our client is a
+foreign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department,this
+discovery was brought to my office so as to decide what is to be
+done.I decided to seek ways through which to transfer this money out
+of the bank and out of the country too.
+
+The total amount in the account is ten million five hundred thousand
+dollars (USD 10,500,000.00).with my positions as staffs of the bank, I
+am handicapped because I cannot operate foreign accounts and cannot
+lay bonafide claim over this money. The client was a foreign national
+and you will only be asked to act as his next of kin and I will supply
+you with all the necessary information and bank data to assist you in
+being able to transfer this money to any bank of your choice where
+this money could be transferred into.
+
+The total sum will be shared as follows: 50% for me, 50% for you and
+expenses incidental occur during the transfer will be incur by both of
+us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund transfer to your account.Since I
+work in this bank that is why you should be confident in the success
+of this transaction because you will be updated with information as at
+when desired.
+
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of
+transaction which will be when this  money is safety in your account.
+I will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May God help you to help me to a restive retirement, Amen.
+
+Please for further information and inquires feel free to contact me
+back immediately for more explanation and better understanding I want
+you to assure me your capability of handling this project with trust.
+
+Contact me via Email: yatmirnutha@gmail.com
+Thanks and remain blessed
+Mr Yatmir Nutha.
++22664234630
