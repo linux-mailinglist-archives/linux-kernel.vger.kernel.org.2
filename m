@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222B634AE51
+	by mail.lfdr.de (Postfix) with ESMTP id 6D37D34AE52
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhCZSNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:13:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29846 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230195AbhCZSNV (ORCPT
+        id S230237AbhCZSNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:13:47 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:40596 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhCZSNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:13:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616782400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pap7BptUHGKykCeFu/8MT0qbOtaTjDcy9qwuilzOGIw=;
-        b=hYP80GFJkD8Xd8XoJHcp4owj/TxrEWQigc9wp4paxWMqqU0I5ZDyOWMa91rLrrtR5SK/Cq
-        IpF9tXQC35APk1gt107kmUpsvU0Z8AlCoG2kTprdbad1KRLjqbywNLwioFK/Y5UQM6iLKM
-        bYUQ7tmkfXtBlKB49hZWULz985HzTEg=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-315-MklBk5pzPsWWcHYubKcSow-1; Fri, 26 Mar 2021 14:13:18 -0400
-X-MC-Unique: MklBk5pzPsWWcHYubKcSow-1
-Received: by mail-ej1-f72.google.com with SMTP id rl7so4406827ejb.16
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:13:18 -0700 (PDT)
+        Fri, 26 Mar 2021 14:13:39 -0400
+Received: by mail-vs1-f43.google.com with SMTP id l4so3137874vsc.7;
+        Fri, 26 Mar 2021 11:13:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=pap7BptUHGKykCeFu/8MT0qbOtaTjDcy9qwuilzOGIw=;
-        b=TZQTFOp6Bh+4yAHzkT7qs7hhPGhRCg+I5LXcteZKz2qKniMUtwugHpUvd1aYXPUapV
-         2G9d8cA556FvfmnwDHVoBkALswePVevFdZtRyJGGk2V2Z5livx4BeSuBwpdwqy7qHHDO
-         mYRqx0Vd3GJ2NyyCN5OrXOQsrPTUxQtRJPzJESYganLtzgndCnVI9kzZkLlz/ZdViTSD
-         WgogJKbq/rq+/c/s0FSmyV4IODX83VuF82Qhrmd0tQPHjdAyHCloZc6BmoyGZ4d2WjPx
-         qx8FI3bJ95xNscVTa7UVP+55toKE8yNN7GnNYGdfOqGVtEU+BH7GaAYhuTS+vn+kIsVN
-         6Lwg==
-X-Gm-Message-State: AOAM5318PPdMHUPCTckGj0lyqst7SqiRGuUrEvzj8bEl6EwfmM3d1gor
-        TIkxEcHMT3TIh27cweDoJ2pcAyMWrasba7A++j+oDu0aGc5i4RW/L0lSIAlwDJpHqASM5njOkE5
-        mmTEY6P7TW9eCkBZ78utjnrPa
-X-Received: by 2002:a17:906:1386:: with SMTP id f6mr16596261ejc.45.1616782397372;
-        Fri, 26 Mar 2021 11:13:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyvc3mTnPMkhQBDrVBxW5/RWmuM3jHJDelx7UJ+pb/VP1j+SOnbQqRjHmOXJgwr+aDlkaxn3g==
-X-Received: by 2002:a17:906:1386:: with SMTP id f6mr16596244ejc.45.1616782397225;
-        Fri, 26 Mar 2021 11:13:17 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id f16sm4141390ejb.3.2021.03.26.11.13.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 11:13:16 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D32FA1801A3; Fri, 26 Mar 2021 19:13:15 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>
-Cc:     vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jason Cooper <jason@lakedaemon.net>, linux-pci@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Disallow retraining link for Atheros QCA98xx chips
- on non-Gen1 PCIe bridges
-In-Reply-To: <20210326124326.21163-1-pali@kernel.org>
-References: <20210326124326.21163-1-pali@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 26 Mar 2021 19:13:15 +0100
-Message-ID: <87a6qpbx6s.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FDpqcQgTexarvW+AT636FmF/lPMTzTe04W+T1jW+7WY=;
+        b=LA+y++mQJC182oHN/6nOA2hX6LvJr81afBKOSnUWuAT+VcePtCy91SYEFR1Y1ZatE6
+         yhnubzbkPu4BjmYXPeTzS25sDazqgWB62y9i7w+8OtB2hY89tl+Ct3dv2fOIX1mIYt+v
+         6uouHXFSSQrWuE2d1B3u4GAfY21xInbsJlKjAMm2mTFZlO4c2Aiq31wBhGAP4Emtbp5F
+         IXtGvLNmT/O/LX61ovveusb6kBfuLEmEEEfCpzbxPqsCZRMmgB26/BWikj0+zsSfwbDf
+         54axCkF7j4E6pCZ3g2tbXr4gJfsglmxDzkVWno8NCbTueS1k9dA0be+lDbZfZmWhLHvd
+         PrSQ==
+X-Gm-Message-State: AOAM532E0ADpLWXbYiH7aQiseneQEVgDWCmYedndAiPAWC2EGYTtp+yK
+        k/pTNlw7XTmpc3XW1BJh8a6miEExt9cShnQHC6g=
+X-Google-Smtp-Source: ABdhPJxOzCTasDp54zylzJyaz+KFDObMiEEDXS/K/2M7pd/hbZzjLAFykziFdC6wbj75KFCkmxdJUdWyQChRhj6q8Hw=
+X-Received: by 2002:a67:f7c6:: with SMTP id a6mr9632169vsp.42.1616782418388;
+ Fri, 26 Mar 2021 11:13:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210325185749.27984-1-nsaenz@kernel.org> <161678217156.3012082.17482478610662557764@swboyd.mtv.corp.google.com>
+In-Reply-To: <161678217156.3012082.17482478610662557764@swboyd.mtv.corp.google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 26 Mar 2021 19:13:26 +0100
+Message-ID: <CAMuHMdXLB=g0vCaNVSsO+6qC6UPpbrordsjx+=ZLEAV2MAaE-Q@mail.gmail.com>
+Subject: Re: [PATCH] clk: bcm: rpi: Don't register as OF provider if !dev->np
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pali Roh=C3=A1r <pali@kernel.org> writes:
+On Fri, Mar 26, 2021 at 7:09 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> Quoting Nicolas Saenz Julienne (2021-03-25 11:57:48)
+> > There are two ways clk-raspberrypi might be registered: through
+> > device-tree or through an explicit platform device registration. The
+> > latter happens after firmware/raspberrypi's probe, and it's limited to
+> > RPi3s, which solely use the ARM clock to scale CPU's frequency. That
+> > clock is matched with cpu0's device thanks to the ARM clock being
+> > registered as a clkdev.
+> >
+> > In that scenario, don't register the device as an OF clock provider, as
+> > it makes no sense and will cause trouble.
+>
+> What sort of trouble?
 
-> Atheros QCA9880 and QCA9890 chips do not behave after a bus reset and also
-> after retrain link when PCIe bridge is not in GEN1 mode at 2.5 GT/s speed.
-> The device will throw a Link Down error and config space is not accessible
-> again. Retrain link can be called only when using GEN1 PCIe bridge or when
-> PCIe bridge has forced link speed to 2.5 GT/s via PCI_EXP_LNKCTL2 registe=
-r.
->
-> This issue was reproduced with more Compex WLE900VX cards (QCA9880 based)
-> on Armada 385 with pci-mvebu.c driver and also on Armada 3720 with
-> pci-aardvark.c driver. Also this issue was reproduced with some "noname"
-> card with QCA9890 WiFi chip on Armada 3720. All problematic cards with
-> these QCA chips have PCI device id 0x003c.
->
-> Tests showed that other WiFi cards based on AR93xx (PCI device id 0x0030)
-> and AR9287 (PCI device id 0x002e) chips do not have these problems.
->
-> To workaround this issue, this change introduces a new PCI quirk called
-> PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1 for PCI device id 0x003c.
->
-> When this quirk is set then kernel disallows triggering PCI_EXP_LNKCTL_RL
-> bit in config space of PCIe Bridge in case PCIe Bridge is capable of high=
-er
-> speed than 2.5 GT/s and higher speed is already allowed. When PCIe Bridge
-> has accessible LNKCTL2 register then kernel tries to force target link
-> speed via PCI_EXP_LNKCTL2_TLS* bits to 2.5 GT/s. After this change it is
-> possible to trigger PCI_EXP_LNKCTL_RL bit without causing issues on
-> problematic Atheros QCA98xx cards.
->
-> Currently only PCIe ASPM kernel code triggers this PCI_EXP_LNKCTL_RL bit,
-> so quirk check is added only into pcie/aspm.c file.
->
-> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
-> Reported-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Tested-by: Marek Beh=C3=BAn <kabel@kernel.org>
-> Link: https://lore.kernel.org/linux-pci/87h7l8axqp.fsf@toke.dk/
-> Cc: stable@vger.kernel.org # c80851f6ce63a ("PCI: Add
-> PCI_EXP_LNKCTL2_TLS* macros")
+A crash
+https://lore.kernel.org/linux-acpi/d24bebc5-0f78-021f-293f-e58defa32531@samsung.com/
 
-Thanks!
+> > Fixes: d4b4f1b6b97e ("clk: bcm: rpi: Add DT provider for the clocks")
+> > Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+> > ---
+> >  drivers/clk/bcm/clk-raspberrypi.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/clk/bcm/clk-raspberrypi.c b/drivers/clk/bcm/clk-raspberrypi.c
+> > index f89b9cfc4309..27e85687326f 100644
+> > --- a/drivers/clk/bcm/clk-raspberrypi.c
+> > +++ b/drivers/clk/bcm/clk-raspberrypi.c
+> > @@ -337,10 +337,12 @@ static int raspberrypi_clk_probe(struct platform_device *pdev)
+> >         if (ret)
+> >                 return ret;
+> >
+> > -       ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_onecell_get,
+> > -                                         clk_data);
+> > -       if (ret)
+> > -               return ret;
+> > +       if (dev->of_node) {
+>
+> Can you add a comment to the code indicating the problem this is fixing?
+> I fear that we'll look back on this later and simply remove this if
+> condition because it's "redundant". Better to have some code comment so
+> we don't have to look up git history to figure out that we only call
+> this when the of node is populated. I'm not sure I understand what goes
+> wrong though. Won't the absence of dev->of_node mean the provider
+> doesn't do anything?
 
-Tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
