@@ -2,46 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC58434A25D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB7234A25F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhCZHJN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Mar 2021 03:09:13 -0400
-Received: from [103.51.153.218] ([103.51.153.218]:54383 "EHLO sac.com.tw"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230097AbhCZHIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 03:08:42 -0400
-From:   "Nick" <didio@sac.com.tw>
-To:     linux-kernel@vger.kernel.org
-Subject: High-quality Original IELTS certificate
-Date:   26 Mar 2021 12:38:28 +0530
-Message-ID: <20210326123828.4597C54A4638F12E@sac.com.tw>
+        id S230097AbhCZHLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 03:11:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230006AbhCZHLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 03:11:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C59CB61A1E;
+        Fri, 26 Mar 2021 07:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616742683;
+        bh=I7kuNHjnR8hZ/+AWif4Y6XFeN71YYYkFveVnCl2inWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IOD7i3E8ZGoiNthpVUq7/st5v3JKreQURE4vVgSvLVhUOBgVT9ibX3AsAchD4dN5u
+         FWXFHBtvDVuQfLkv8vf2zc5EUB+4YC8oaVmqWSq0/ElyKyDIWlfUTj7q7sF8JLXj1O
+         4es+8LnIGykxJ/cTAxl2aXtd4A3b9vJmlgnhe5/M=
+Date:   Fri, 26 Mar 2021 08:11:19 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Alaa Emad <alaaemadhossney.ae@gmail.com>
+Cc:     hverkuil@xs4all.nl, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller@googlegroups.com,
+        syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
+Subject: Re: [PATCH] media: sq905.c: fix uninitialized variable
+Message-ID: <YF2JF+UMdt/icEMj@kroah.com>
+References: <20210325212202.142945-1-alaaemadhossney.ae@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325212202.142945-1-alaaemadhossney.ae@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
- 
-We are the leading provider of IELTS CERTIFICATE ONLINE. You
-don’t have to worry if you can’t pass in the IELTS exam, for we
-are here to issue you this certificate without constrain. We make
-it possible for you to get the IELTS certificate even without
-appearing for the exam or even if you have failed to pass in the
-exam with us you can obtain a genuine IELTS certificate. All our
-IELTS certificate for sale are verified. Don’t believe us?
-Contact us and see for yourself. You will receive a test report
-card once we issue your certificate, in which there will be all
-your candidate details.
+On Thu, Mar 25, 2021 at 11:22:02PM +0200, Alaa Emad wrote:
+> Reported-by: syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
+> Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
+> ---
 
-If you want to buy registered IELTS certificate online, we are
-the first name that comes to mind. We let you buy real British
-Council certificates. All our certificates are registered at the
-British Council database system and we make sure that you can
-verify your IELTS certificate online on the official website of
-the British Council or IDP. Isn’t it what you were looking for?
+I know I do not take patches with no changelog text, but other
+maintainers might be more leniant :(
 
-Contact us: ujam1955@gmail.com
+thanks,
+
+greg k-h
