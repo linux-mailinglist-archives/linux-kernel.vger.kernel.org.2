@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28C134A507
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:58:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076F834A50C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhCZJ5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:57:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
+        id S230016AbhCZJ6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhCZJ5S (ORCPT
+        with ESMTP id S229868AbhCZJ6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:57:18 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACEE1C0613AA;
-        Fri, 26 Mar 2021 02:57:17 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id o2so657471plg.1;
-        Fri, 26 Mar 2021 02:57:17 -0700 (PDT)
+        Fri, 26 Mar 2021 05:58:46 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C578C0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:58:45 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id k10so7562368ejg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:58:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IV75pZ2r/lTsGbcVB2HXKVQUuEN280uU9C5RzK68fYU=;
-        b=Q3rWXH4gNK6ohJquLwTkSl66Qdoxp6MTOgiXSDiftgNaBe/5H+stw2V/iZ+pl35nVc
-         B/QZKZFVXGmObWTqMrfutIeevZt2Ht5zWHTPj6WFFw3kQwdVuoEU3e1fsIyiSJYjHHHg
-         HC9nhqFM9YOuRLJZVNqydWrEVjC6spa5H8BcN1P0Rhee5XzSeEFEUn+U7SC9wUpf+Ny7
-         YvRfaMgXAHZ+NluNeUtlO9mlqL/2AKFSkMLRW4v+sz9OfgJkfXjbILveGHRMY/aFSz4f
-         9m0hEJ8tssrD4d2h73/PlM0qWRwIE3Ac4aBKsZw11/ygsZhBGJPgP8L3829shuktto1J
-         f+XQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tjQTtHVhiMLOKDkirjBwOrBbAr7RuF9oo6N4dkwJrD4=;
+        b=DoTEkH3mGM3eg1OgpTZxL88d2VqbLDGm35xDcOrUh9iR/7hIdtgDEJu3oCMOOQIAMr
+         xgDaplhpXpI1b7w7XjdFqomJddjMLyAUHY2LhFtUqZ7di3KhCcMOdcCEH3s9UnYNSLa7
+         Tb+S3h/QScQBpxpWuV8D2KSJQzv290mHAeKgk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IV75pZ2r/lTsGbcVB2HXKVQUuEN280uU9C5RzK68fYU=;
-        b=XdE4LpZKwJDaLhRS5llRF8qwtk0b+anMItUjOPG++gyJvFmXvCQJ6ofr+KyN+9QTts
-         CvIuj4q+oxTKbRAZcZ/KzUwDndETNnH0QbkDc+oRi0f/YAvIoyCV8vlaDrW6Z9z6Yi93
-         AYKpVzEZeiicq4A7z6jba4OJ5Cm/QWoPzxilNBwpi6Py9tV6t7fFHCFyHJGcgRCgoqEQ
-         rymOEFfXGhkzAmNbLrbQDMrOtCENhcSXmVHMGIGg0xgAg3honYtmlkNgDz6aJP7z6Odd
-         y8PiRhhyUmuCN8NPZm/J7UvDuwdGnB1ocBFVupvKXJpQqdKKewDn4opVtSdLJ245I7lg
-         C6Cw==
-X-Gm-Message-State: AOAM532QzdqfZ8ILrZs5GmAcU6PCa4ChGSDbghfnRMR88R3+Iml4w85s
-        fopwXCKTbVyV8jf46/tWOs/ov32y6ZDSNMK9
-X-Google-Smtp-Source: ABdhPJwwEZXFzZ/RNYveH7mefeJwagBObcPX98zYirGFuzA6NDif9CDcB1Ouvm7REbJkongZ1JDlZQ==
-X-Received: by 2002:a17:90a:a414:: with SMTP id y20mr12906128pjp.77.1616752637305;
-        Fri, 26 Mar 2021 02:57:17 -0700 (PDT)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id n5sm8997971pfq.44.2021.03.26.02.57.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tjQTtHVhiMLOKDkirjBwOrBbAr7RuF9oo6N4dkwJrD4=;
+        b=dWqfUzCVT1A5fjYi6JFJ9vMJqRATSMo8PDgsP8vuCLXy109xf3DN0fnE8//8c4frHA
+         cpFROUSxHWOOYi6let8uiilt/J9c/CyIPftRVpW1L2/ZPoItmp3PVhY088py11SYorRF
+         3UH0in14pn5FaGy3r+2WJGy+nItopW6hyXNrG3GbxLrOYtAIRjy0JX8Wm7qVMFFV1Nch
+         7PB5QWqctn9bhAUukOUW4HLOXY+2i9OL6ghr1zLU0y4T6wZuc4kdYLtTjvLDshiRxo3D
+         Oom8M9T10yAQ4WJQw8cN+8ZQeAEGJFSobPK2BdhpWcGTD+SWAVwszKb0tmKIcVzlCsfC
+         gz8Q==
+X-Gm-Message-State: AOAM533eOAqS1nDA8ff+sbfuP6mlR7XoEO+dHeKc8g0kuoNHDdvc1aDX
+        9Qb0ZUailk9Ux7lLgKdiRWmm7g==
+X-Google-Smtp-Source: ABdhPJyaW92TsvrmmUc4oFjWTuBqvsVQF5Y8E0bUgtqrY0WSWE0Z0kRtEsgvufFFzHKb7wi0MmluFA==
+X-Received: by 2002:a17:906:2404:: with SMTP id z4mr14016161eja.14.1616752723903;
+        Fri, 26 Mar 2021 02:58:43 -0700 (PDT)
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id h13sm4036658edz.71.2021.03.26.02.58.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:57:16 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 17:57:11 +0800
-From:   carlis <zhangxuezhi3@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     zhangxuezhi1@yulong.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: fbtft: fix a typo
-Message-ID: <20210326175711.0000684f@gmail.com>
-In-Reply-To: <YF2qhUD1lz3LbEhC@kroah.com>
-References: <1616745915-194644-1-git-send-email-zhangxuezhi3@gmail.com>
-        <YF2dXIxMOUyLzfnQ@kroah.com>
-        <20210326171634.000011f5@gmail.com>
-        <YF2qhUD1lz3LbEhC@kroah.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 26 Mar 2021 02:58:43 -0700 (PDT)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+Cc:     Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH v9 00/22] uvcvideo: Fix v4l2-compliance errors
+Date:   Fri, 26 Mar 2021 10:58:18 +0100
+Message-Id: <20210326095840.364424-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 10:33:57 +0100
-Greg KH <gregkh@linuxfoundation.org> wrote:
+*v4l2-compliance -m /dev/media0 -a -f
+Total for uvcvideo device /dev/media0: 8, Succeeded: 6, Failed: 2, Warnings: 0
+Total for uvcvideo device /dev/video0: 54, Succeeded: 50, Failed: 4, Warnings: 2
+Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 102,
+Failed: 6, Warnings: 2
 
-> On Fri, Mar 26, 2021 at 05:16:34PM +0800, carlis wrote:
-> > On Fri, 26 Mar 2021 09:37:48 +0100
-> > Greg KH <gregkh@linuxfoundation.org> wrote:
-> >   
-> > > On Fri, Mar 26, 2021 at 04:05:15PM +0800, Carlis wrote:  
-> > > > From: "Carlis" <zhangxuezhi1@yulong.com>
-> > > > 
-> > > > Change 'tft' to 'TFT'    
-> > > 
-> > > Why?  What is wrong with "tft"?
-> > >   
-> > I think abbreviations should be capitalized.  
-> 
-> Why?  What requires this?
-Many people use capital letters for abbreviations in comments, which I
-think is a good practice
-> 
-> thanks,
-> 
-> greg k-h
+After fixing all of them we go down to:
 
-thanks,
-Xuezhi Zhang
+Total for uvcvideo device /dev/media0: 8, Succeeded: 8, Failed: 0, Warnings: 0
+Total for uvcvideo device /dev/video0: 54, Succeeded: 54, Failed: 0, Warnings: 0
+Total for uvcvideo device /dev/video1: 46, Succeeded: 46, Failed: 0, Warnings: 0
+Grand Total for uvcvideo device /dev/media0: 108, Succeeded: 108,
+Failed: 0, Warnings: 0
+
+YES, NO MORE WARNINGS :)
+
+Note that we depend on:
+
+https://patchwork.linuxtv.org/project/linux-media/patch/20210317143453.483470-1-ribalda@chromium.org/
+
+With Hans patch we can also pass v4l2-compliance -s.
+
+Changelog from v8 (Thanks to Hans)
+- 3 patches from Hans
+- Add Reviewed-by
+
+Hans Verkuil (4):
+  uvcvideo: uvc_ctrl_is_accessible: check for INACTIVE
+  uvcvideo: improve error handling in uvc_query_ctrl()
+  uvcvideo: don't spam the log in uvc_ctrl_restore_values()
+  uvc: use vb2 ioctl and fop helpers
+
+Ricardo Ribalda (18):
+  media: v4l2-ioctl: Fix check_ext_ctrls
+  media: pvrusb2: Do not check for V4L2_CTRL_WHICH_DEF_VAL
+  media: uvcvideo: Do not check for V4L2_CTRL_WHICH_DEF_VAL
+  media: v4l2-ioctl: S_CTRL output the right value
+  media: uvcvideo: Remove s_ctrl and g_ctrl
+  media: uvcvideo: Set capability in s_param
+  media: uvcvideo: Return -EIO for control errors
+  media: uvcvideo: refactor __uvc_ctrl_add_mapping
+  media: uvcvideo: Add support for V4L2_CTRL_TYPE_CTRL_CLASS
+  media: uvcvideo: Use dev->name for querycap()
+  media: uvcvideo: Set unique vdev name based in type
+  media: uvcvideo: Increase the size of UVC_METADATA_BUF_SIZE
+  media: uvcvideo: Use control names from framework
+  media: uvcvideo: Check controls flags before accessing them
+  media: uvcvideo: Set error_idx during ctrl_commit errors
+  media: uvcvideo: Return -EACCES to inactive controls
+  media: docs: Document the behaviour of uvcdriver
+  media: uvcvideo: Downgrade control error messages
+
+ .../userspace-api/media/v4l/vidioc-g-ctrl.rst |   5 +
+ .../media/v4l/vidioc-g-ext-ctrls.rst          |   5 +
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c      |   4 -
+ drivers/media/usb/uvc/uvc_ctrl.c              | 343 +++++++++++----
+ drivers/media/usb/uvc/uvc_driver.c            |  22 +-
+ drivers/media/usb/uvc/uvc_metadata.c          |  10 +-
+ drivers/media/usb/uvc/uvc_queue.c             | 143 -------
+ drivers/media/usb/uvc/uvc_v4l2.c              | 389 +++---------------
+ drivers/media/usb/uvc/uvc_video.c             |  51 ++-
+ drivers/media/usb/uvc/uvcvideo.h              |  54 +--
+ drivers/media/v4l2-core/v4l2-ioctl.c          |  67 +--
+ 11 files changed, 444 insertions(+), 649 deletions(-)
+
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
