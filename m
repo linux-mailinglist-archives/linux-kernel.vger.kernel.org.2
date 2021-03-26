@@ -2,89 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2051C34AE8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E8734AE98
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:29:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCZS1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhCZS1Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:27:16 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7969EC0613AA;
-        Fri, 26 Mar 2021 11:27:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=8Ae93rKXbABJtGx3FxazTivwVoSUyF1RzcrMzGIW5rU=; b=hcB5eQg1sEj8cqW4B5F0SkSx/s
-        4FcNeIJ5qmCIdR8Eng4rrfZkEqe3WieOm2J8eiJHoBkyzcWQqxv53bnhy+WODXeHywsdHgExYClu3
-        FoXQTCiyCwzgjidzh01BDNm5cZVkEsghV9GQVUZBNAK0pXbRJfCa/khYPISN5LpElcoVF9FUUjT5D
-        pc3Nzb0oFPE48N2JbyC6kfyVxSPDsVo/HmQgwrKIrv2iqmCEf06fpbqgEo/AWHeQO31o336IdJ0sU
-        Gu+qbyvq4ZLcFlmxeszP6eO6SKysLKnXxxPFjicgNiDbQG241O51epr9fEk9HgFv5p7jkStY0V0Zp
-        OkGYssRA==;
-Received: from [2601:1c0:6280:3f0::4557]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPrAP-00FGpt-L2; Fri, 26 Mar 2021 18:26:47 +0000
-Subject: Re: linux-next: Tree for Mar 26 (drivers/mfd/lpc_sch.c)
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Denis Turischev <denis@compulab.co.il>,
-        Lee Jones <lee.jones@linaro.org>
-References: <20210326193457.7887e09e@canb.auug.org.au>
- <39a89498-6b81-4d4c-503f-c87805ca620a@infradead.org>
-Message-ID: <1833e29a-3d16-7041-dd75-784ae4e07faf@infradead.org>
-Date:   Fri, 26 Mar 2021 11:26:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230392AbhCZS3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230134AbhCZS2o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:28:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A8A061A3F;
+        Fri, 26 Mar 2021 18:28:42 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 18:28:40 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Dave Martin <Dave.Martin@arm.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: [PATCH 1/4] arm64: expose orig_x0 in the user_pt_regs structure
+Message-ID: <20210326182839.GE5126@arm.com>
+References: <20210322225053.428615-1-avagin@gmail.com>
+ <20210322225053.428615-2-avagin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <39a89498-6b81-4d4c-503f-c87805ca620a@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322225053.428615-2-avagin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 11:20 AM, Randy Dunlap wrote:
-> On 3/26/21 1:34 AM, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20210325:
->>
-> 
-> on i386 or x86_64:
-> aha:
-> # CONFIG_PCI is not set
-> 
-> 
-> ../drivers/mfd/lpc_sch.c:204:1: warning: data definition has no type or storage class
->  module_pci_driver(lpc_sch_driver);
->  ^~~~~~~~~~~~~~~~~
-> ../drivers/mfd/lpc_sch.c:204:1: error: type defaults to ‘int’ in declaration of ‘module_pci_driver’ [-Werror=implicit-int]
-> ../drivers/mfd/lpc_sch.c:204:1: warning: parameter names (without types) in function declaration
-> ../drivers/mfd/lpc_sch.c:197:26: warning: ‘lpc_sch_driver’ defined but not used [-Wunused-variable]
->  static struct pci_driver lpc_sch_driver = {
->                           ^~~~~~~~~~~~~~
-> 
-> 
-> Full x86_64 randconfig file is attached.
+On Mon, Mar 22, 2021 at 03:50:50PM -0700, Andrei Vagin wrote:
+> diff --git a/arch/arm64/include/uapi/asm/ptrace.h b/arch/arm64/include/uapi/asm/ptrace.h
+> index 758ae984ff97..3c118c5b0893 100644
+> --- a/arch/arm64/include/uapi/asm/ptrace.h
+> +++ b/arch/arm64/include/uapi/asm/ptrace.h
+> @@ -90,6 +90,7 @@ struct user_pt_regs {
+>  	__u64		sp;
+>  	__u64		pc;
+>  	__u64		pstate;
+> +	__u64		orig_x0;
+>  };
 
-This is the root of the problem I think:
+That's a UAPI change, likely to go wrong. For example, a
+ptrace(PTRACE_GETREGSET, pid, REGSET_GPR, data) would write past the end
+of an old struct user_pt_regs in the debugger.
 
-WARNING: unmet direct dependencies detected for LPC_SCH
-  Depends on [n]: HAS_IOMEM [=y] && PCI [=n]
-  Selected by [m]:
-  - GPIO_SCH [=m] && GPIOLIB [=y] && X86 [=y] && (X86 [=y] || COMPILE_TEST [=y]) && ACPI [=y]
-
-
-Denis, that still looks like it's your territory.
-
-thanks.
 -- 
-~Randy
-
+Catalin
