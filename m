@@ -2,92 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5299349E8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:19:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C98349E8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhCZBSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:18:42 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:10839 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhCZBSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:18:11 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616721491; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=dbqyO5xp+Xc0AkR2FMEhZNoheUZwZy/NovyVB8pJPrw=; b=G+LZg/qR5p3NqZrKG5JqpNQZSTmqR2Z8h4H7NBDdE1w21Jij5JoaZAHjKasovaJo+tiyyT1i
- 4mFZwvDZLPEe4x02wgYYD7XCekKAicR38DLeR7kimDUX8G02KXr+HzWkCxUJOi9ln3QYPmGO
- pV7MYprHBrdQNufHxxng7226yNg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 605d364aa2ab6642db9fc505 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Mar 2021 01:18:02
- GMT
-Sender: stummala=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6F5BAC433CA; Fri, 26 Mar 2021 01:18:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S230191AbhCZBSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhCZBSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 21:18:15 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26043C06174A;
+        Thu, 25 Mar 2021 18:18:15 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: stummala)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67323C433CA;
-        Fri, 26 Mar 2021 01:17:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 67323C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=stummala@codeaurora.org
-Date:   Fri, 26 Mar 2021 06:47:56 +0530
-From:   Sahitya Tummala <stummala@codeaurora.org>
-To:     Chao Yu <yuchao0@huawei.com>, jaegeuk@kernel.org
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, stummala@codeaurora.org
-Subject: Re: [PATCH v3] f2fs: allow to change discard policy based on cached
- discard cmds
-Message-ID: <20210326011756.GE8562@codeaurora.org>
-References: <1615886958-717-1-git-send-email-stummala@codeaurora.org>
- <3c453b72-892f-7044-2edd-224b82202608@huawei.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F63xt3nQfz9sVt;
+        Fri, 26 Mar 2021 12:18:10 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616721492;
+        bh=phZFSTiTd0aRNE6wEyesxTgghlCmSudlO8cvlqd38hE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OivewrUlARIeV7Ycjvf2fowC7Kr80wiRcRxSQdY+Q4vfsS5i+GKMU098BNS88hqoC
+         6jwNWN/JSJvpYnGd+cz4DljClaTgJRbAZMFV4hiCagpEB+JvrItaSuMoZ23f/4+Nby
+         wmYJFW428u2kueN+/RRHkMuIijwpXLNi7n8bY0QBsvNN8NIPjxX96rSc1m3NpJSH/b
+         xPjD5q4SlkfkRLat8/hSdgh5VkF+p9k1X26ykwyUnufwBBKR3wtzXMlCuWDmL1LGJY
+         TUQHqqEQEtZNiqaSwKQ8mHYNkqv0Ge+F3gmK2NG6VXwUarsGJLO4EWhKsBdvtcAw9a
+         CKZeda2zDHzzw==
+Date:   Fri, 26 Mar 2021 12:18:08 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+Message-ID: <20210326121808.2da7ac74@canb.auug.org.au>
+In-Reply-To: <20210312120014.62ced6dd@canb.auug.org.au>
+References: <20210311114723.352e12f8@canb.auug.org.au>
+        <bad04c3d-c80e-16c1-0f5a-4d4556555a81@intel.com>
+        <20210312120014.62ced6dd@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3c453b72-892f-7044-2edd-224b82202608@huawei.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: multipart/signed; boundary="Sig_/d8v2PmVjnHhlGf3y3+hGsVt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jaegeuk,
+--Sig_/d8v2PmVjnHhlGf3y3+hGsVt
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This latest v3 patch needs to be updated in f2fs tree.
-The f2fs tree currently points to older version of patch.
+Hi all,
 
-Please make a note of it.
-
-Thanks,
-Sahitya.
-
-On Tue, Mar 16, 2021 at 07:08:58PM +0800, Chao Yu wrote:
-> On 2021/3/16 17:29, Sahitya Tummala wrote:
-> >With the default DPOLICY_BG discard thread is ioaware, which prevents
-> >the discard thread from issuing the discard commands. On low RAM setups,
-> >it is observed that these discard commands in the cache are consuming
-> >high memory. This patch aims to relax the memory pressure on the system
-> >due to f2fs pending discard cmds by changing the policy to DPOLICY_FORCE
-> >based on the nm_i->ram_thresh configured.
+On Fri, 12 Mar 2021 12:00:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> [Cc'ing a few (maybe) interested parties]
+>=20
+> On Thu, 11 Mar 2021 07:47:03 +0100 Bj=C3=B6rn T=C3=B6pel <bjorn.topel@int=
+el.com> wrote:
 > >
-> >Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-> 
-> Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> 
-> Thanks,
+> > On 2021-03-11 01:47, Stephen Rothwell wrote: =20
+> > >=20
+> > > After merging the bpf-next tree, today's linux-next build (perf) fail=
+ed
+> > > like this:
+> > >=20
+> > > make[3]: *** No rule to make target 'libbpf_util.h', needed by '/home=
+/sfr/next/perf/staticobjs/xsk.o'.  Stop. =20
+> >=20
+> > It's an incremental build issue, as pointed out here [1], that is
+> > resolved by cleaning the build. =20
+>=20
+> Does this mean there is a deficiency in the dependencies in our build sys=
+tem?
+>=20
+> > [1] https://lore.kernel.org/bpf/CAEf4BzYPDF87At4=3D_gsndxof84OiqyJxgAHL=
+7_jvpuntovUQ8w@mail.gmail.com/
+> >  =20
+> > > Caused by commit
+> > >=20
+> > >    7e8bbe24cb8b ("libbpf: xsk: Move barriers from libbpf_util.h to xs=
+k.h")
+> > >=20
+> > > I have used the bpf tree from next-20210310 for today. =20
+>=20
+> I have set my system to remove the object directory before building
+> after merging the bpf-next tree for now.
 
--- 
---
-Sent by a consultant of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+I now get this build failure after I merge the net-next tree :-(
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/d8v2PmVjnHhlGf3y3+hGsVt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBdNlEACgkQAVBC80lX
+0Gwx9Af+Pqj2r9q2x6e0mYcrknKbqhUt431nnKOFK5iscYRXk/GgNFBWSJkRNX6n
+KetyaIqcoBFWEyHX+WyaR/G1wu/WKpDPloDr56Tml9Ef9szNepom4mpQsfpCLYIU
+CNnMcfIR+jK1hiK1z6Gkz+/rrMEqynfLBBiCc8R6iBzempLF+eBQKVNvrk1hj32I
+73qSTQa0Fv24lAeSC2BrPj+Rox14RyVsFXn/fCtjarQyT9vj+ih1M9Xk30QVmTnP
+2I0+VXCceqJ1qlItRj+3MjCJuw8Ekcg5/pH7sPbm/9cxNJ6gsXV1AA76b86+Nri1
+wJ5xcQ0CgJcwDK70RIAzHaaw8fPQyA==
+=OP4w
+-----END PGP SIGNATURE-----
+
+--Sig_/d8v2PmVjnHhlGf3y3+hGsVt--
