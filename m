@@ -2,96 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E808D34A738
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB1D34A72D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhCZM3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:29:41 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:37024 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhCZM3C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:29:02 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QCDuq3054633;
-        Fri, 26 Mar 2021 12:28:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=L34Rx1F6HLO9QBVu5OH6foragy9rRs6PFAH5WpxP7ZU=;
- b=INd21cbVmhTYjj5b28Wh2iEIT8Uw7FaWd1vNhJiPTfjcoH/Hsg5R23lSvdpm6/e3fzMV
- Z0orEPlguTAOBpdYqRPnQGtuZwwCKPeSS2I/GPIXFF9EIBj91F2w6WsmCi9bPtlvrOxV
- qU7aBFiwP8XTTJWhDReNpifHo6jHW8dTjmr4HmfBB/nm/GT4mKp7hgZZ7zK62Kz7hlXC
- lKN5OjwFZimUkcfms4tnHoEjJlYW9Gen1A4q8YrloNdsLhicvm6WKTLg0rdQm1WbaK96
- qbZCoyNwWu+SjGN8CcS6ZSjTrcA3Glr8w0ytVjMP6c6zde5a891MvYJPFFu7FRX6wQTy Qg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37h1421w9f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 12:28:58 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QCAYOh189373;
-        Fri, 26 Mar 2021 12:28:56 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 37h14n3dsp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 12:28:56 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12QCSt2v003719;
-        Fri, 26 Mar 2021 12:28:55 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 26 Mar 2021 05:28:55 -0700
-Date:   Fri, 26 Mar 2021 15:28:48 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] platform/surface: clean up a variable in surface_dtx_read()
-Message-ID: <YF3TgCcpcCYl3a//@mwanda>
+        id S230153AbhCZM3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:29:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230098AbhCZM2y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:28:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B108661950;
+        Fri, 26 Mar 2021 12:28:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616761734;
+        bh=+Z4Xtu9sc4FVen4wSmXzglGhC7K6KPlLgByCfKlsjK0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=at3lW6ZKLW/4oc7M1Qt4ud/A/SD4znx3+bg9eIU1Jl3swiIFNkDn+ejhsIccfSaZy
+         +Zc3oVU5Z5F0Fg1D3K6DzuEGoYksgCf8wa3xiwi1O/N2Q3enYdbd0rpLR8EvtQ3ujm
+         6BqyzFC0ymYzIYBXC6pa/2n8u/KaF69wIfT2pxWqvZii+Jp/1vIsBeimyPzaSh6LzW
+         7naQB4yM/d0rboTBu+OkjWlZenWLHER9N3ePkNJMFI5/ArrJhAZ26cxgrPdxOe6SSj
+         D8pHUEHppijol+WnXXOl51+2kFUt3HH9wMuBVi3hwo2cBNTVHWgOd4kvFFV9isVj47
+         khsBZVMNadITg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: [PATCH -tip v5 02/12] kprobes: treewide: Replace arch_deref_entry_point() with dereference_function_descriptor()
+Date:   Fri, 26 Mar 2021 21:28:49 +0900
+Message-Id: <161676172914.330141.2791269526647288818.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <161676170650.330141.6214727134265514123.stgit@devnote2>
+References: <161676170650.330141.6214727134265514123.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 adultscore=0 malwarescore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103260093
-X-Proofpoint-GUID: mD1bNPFzzB62i_GSnsDbqxl32biRC8Zq
-X-Proofpoint-ORIG-GUID: mD1bNPFzzB62i_GSnsDbqxl32biRC8Zq
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- clxscore=1011 impostorscore=0 spamscore=0 malwarescore=0 adultscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103260093
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "&client->ddev->lock" and "&ddev->lock" are the same thing.  Let's
-use "&ddev->lock" consistently.
+Replace arch_deref_entry_point() with dereference_function_descriptor()
+because those are doing same thing.
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- drivers/platform/surface/surface_dtx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/ia64/kernel/kprobes.c    |    5 -----
+ arch/powerpc/kernel/kprobes.c |   11 -----------
+ include/linux/kprobes.h       |    1 -
+ kernel/kprobes.c              |    7 +------
+ lib/error-inject.c            |    3 ++-
+ 5 files changed, 3 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/platform/surface/surface_dtx.c b/drivers/platform/surface/surface_dtx.c
-index 1fedacf74050..63ce587e79e3 100644
---- a/drivers/platform/surface/surface_dtx.c
-+++ b/drivers/platform/surface/surface_dtx.c
-@@ -487,7 +487,7 @@ static ssize_t surface_dtx_read(struct file *file, char __user *buf, size_t coun
- 			if (status < 0)
- 				return status;
+diff --git a/arch/ia64/kernel/kprobes.c b/arch/ia64/kernel/kprobes.c
+index ca4b4fa45aef..eaf3c734719b 100644
+--- a/arch/ia64/kernel/kprobes.c
++++ b/arch/ia64/kernel/kprobes.c
+@@ -907,11 +907,6 @@ int __kprobes kprobe_exceptions_notify(struct notifier_block *self,
+ 	return ret;
+ }
  
--			if (down_read_killable(&client->ddev->lock))
-+			if (down_read_killable(&ddev->lock))
- 				return -ERESTARTSYS;
+-unsigned long arch_deref_entry_point(void *entry)
+-{
+-	return ((struct fnptr *)entry)->ip;
+-}
+-
+ static struct kprobe trampoline_p = {
+ 	.pre_handler = trampoline_probe_handler
+ };
+diff --git a/arch/powerpc/kernel/kprobes.c b/arch/powerpc/kernel/kprobes.c
+index 01ab2163659e..eb0460949e1b 100644
+--- a/arch/powerpc/kernel/kprobes.c
++++ b/arch/powerpc/kernel/kprobes.c
+@@ -539,17 +539,6 @@ int kprobe_fault_handler(struct pt_regs *regs, int trapnr)
+ }
+ NOKPROBE_SYMBOL(kprobe_fault_handler);
  
- 			/* Need to check that we're not shut down again. */
--- 
-2.30.2
+-unsigned long arch_deref_entry_point(void *entry)
+-{
+-#ifdef PPC64_ELF_ABI_v1
+-	if (!kernel_text_address((unsigned long)entry))
+-		return ppc_global_function_entry(entry);
+-	else
+-#endif
+-		return (unsigned long)entry;
+-}
+-NOKPROBE_SYMBOL(arch_deref_entry_point);
+-
+ static struct kprobe trampoline_p = {
+ 	.addr = (kprobe_opcode_t *) &kretprobe_trampoline,
+ 	.pre_handler = trampoline_probe_handler
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 1883a4a9f16a..d65c041b5c22 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -390,7 +390,6 @@ int register_kprobe(struct kprobe *p);
+ void unregister_kprobe(struct kprobe *p);
+ int register_kprobes(struct kprobe **kps, int num);
+ void unregister_kprobes(struct kprobe **kps, int num);
+-unsigned long arch_deref_entry_point(void *);
+ 
+ int register_kretprobe(struct kretprobe *rp);
+ void unregister_kretprobe(struct kretprobe *rp);
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index 745f08fdd7a6..2913de07f4a3 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1856,11 +1856,6 @@ static struct notifier_block kprobe_exceptions_nb = {
+ 	.priority = 0x7fffffff /* we need to be notified first */
+ };
+ 
+-unsigned long __weak arch_deref_entry_point(void *entry)
+-{
+-	return (unsigned long)entry;
+-}
+-
+ #ifdef CONFIG_KRETPROBES
+ 
+ unsigned long __kretprobe_trampoline_handler(struct pt_regs *regs,
+@@ -2324,7 +2319,7 @@ static int __init populate_kprobe_blacklist(unsigned long *start,
+ 	int ret;
+ 
+ 	for (iter = start; iter < end; iter++) {
+-		entry = arch_deref_entry_point((void *)*iter);
++		entry = (unsigned long)dereference_function_descriptor((void *)*iter);
+ 		ret = kprobe_add_ksym_blacklist(entry);
+ 		if (ret == -EINVAL)
+ 			continue;
+diff --git a/lib/error-inject.c b/lib/error-inject.c
+index c73651b15b76..f71875ac5f9f 100644
+--- a/lib/error-inject.c
++++ b/lib/error-inject.c
+@@ -8,6 +8,7 @@
+ #include <linux/mutex.h>
+ #include <linux/list.h>
+ #include <linux/slab.h>
++#include <asm/sections.h>
+ 
+ /* Whitelist of symbols that can be overridden for error injection. */
+ static LIST_HEAD(error_injection_list);
+@@ -64,7 +65,7 @@ static void populate_error_injection_list(struct error_injection_entry *start,
+ 
+ 	mutex_lock(&ei_mutex);
+ 	for (iter = start; iter < end; iter++) {
+-		entry = arch_deref_entry_point((void *)iter->addr);
++		entry = (unsigned long)dereference_function_descriptor((void *)iter->addr);
+ 
+ 		if (!kernel_text_address(entry) ||
+ 		    !kallsyms_lookup_size_offset(entry, &size, &offset)) {
 
