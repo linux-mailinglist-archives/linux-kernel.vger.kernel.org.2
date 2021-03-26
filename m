@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C45B634A7A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5036234A7A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhCZMzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59414 "EHLO
+        id S230131AbhCZMzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbhCZMzW (ORCPT
+        with ESMTP id S229984AbhCZMzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:55:22 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1803C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:55:21 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id e14so8198482ejz.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:55:21 -0700 (PDT)
+        Fri, 26 Mar 2021 08:55:39 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33380C0613AA;
+        Fri, 26 Mar 2021 05:55:39 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so2442934pjb.0;
+        Fri, 26 Mar 2021 05:55:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K9SuKX2NoEYak6u3D158Ip2tiJkKOlip4/1iUV6Bsqk=;
-        b=ggap5Sp3+odxqMJh3RqglKX0EXcNL9fn7d2HwELaiIos+42uMG1miSZc3ROFkoYtgE
-         VQq1uKuHyvzV5IvRpIflFhD+y4R1vLMJdHzi7VZd0d/yBosbQs0tB2BC9LWVR/myUHWv
-         JU4HlRBTLCWvYU/9q2spPXtUtafjglSzBQi/JL4yZx7pNq9g0HuhphmxaHdrRjwLgBJn
-         QP/FtcGv1oLy1a2BLq/+VksZ3JFTDtDIzcV2WKfc+foE7UEZDxX3WrzAozNJpxx1RB0Q
-         DRa6Ad9IPrZk0PcI42ci3dOlOedVYriL6DtpWDszHPCktnLMq2iDv+EKGK8Tw4z7cidj
-         hSuA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=bD7BmJLsMFKPJi26Vt4AcHwe8h+Gi9tyJ2So5fUgWQg=;
+        b=PBEzo7+X1jjaDjoT3sILVgIkuqHSGdjHybEj7ugJj1stn7nVD9ZjNdIzhw27oj9PKj
+         Fl8f1ZyIlCxaAWvLdbnyU2OUClBKnKnSdpWVPrZaDIPsFL+BFXGgBX1e8Aiu7GR1COka
+         gm7zDpYF0Wbv7eAvf65i3fUpKVY0ldy/5N7arDvwH9gZMjw8Oh3nQiI0x8/QbqNSZHrB
+         1TLs+10jsNDzoBkowEJIDeZKosA2d2f0zSnC5FcujIoEX8KVpWz+MBB/J4jr883ziy/0
+         L8nvqiSsgYK/3Cn6DBu5DAhalefbp60+jyL2hBEp8b5a3dKozwPqCgv34JEDFdNMIrNH
+         XG3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K9SuKX2NoEYak6u3D158Ip2tiJkKOlip4/1iUV6Bsqk=;
-        b=c2d3aiSJe7QZt9UjLNXv1Ysf5iW8jkTPT2Xfifpz5D32ObDjigX3HFSxu3w2lll7E3
-         kDFKAr0g1TyxIm37UxXvCoIGAhpoFUqiMp9tGwxiuDSwjVh1ynQJL2cRFY9ns+J1xeYx
-         P7KqokRbg8JM+ixrNK4dtNEyz4iZ1c5oqtgUwF9Q9VnyOHwTdyZ8Sz1626MO445H7n3Y
-         CKyEJUp+f/HhP/KVIHz7waWYs/hvMH+sCxeGfXah+E7mGS/2GNphhOwKriDSAqbDj5qF
-         a3f18R95BziD//Sfu8xHZ90/VxWbMd0l1gA7RlswFzUAkgEchDgxqSyvzrCNHAE3ZCqe
-         I3hQ==
-X-Gm-Message-State: AOAM532UY5pcISlBoYNy8T4MIP4CLxGLcGjTm6WW05P7jsCAFI9d0qKn
-        k6grobvWVj6S6tx3EDjUKU0AwD0IP3p39unjlkL+OrNgago=
-X-Google-Smtp-Source: ABdhPJzb++lSdMN0Um5MXgBROBDwVzJQUX1EAskpAuFjHJf/1X8hm9zb9e8EIhAk9iEY/AoAh5la/fxiA9AS7zKEiW0=
-X-Received: by 2002:a17:907:20b7:: with SMTP id pw23mr15440690ejb.168.1616763320445;
- Fri, 26 Mar 2021 05:55:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210325175536.14695-1-rdunlap@infradead.org>
-In-Reply-To: <20210325175536.14695-1-rdunlap@infradead.org>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 26 Mar 2021 13:55:09 +0100
-Message-ID: <CAMpxmJVxA=1oYhQ72ZgWrWpupSENjWBDeXK4HTcmAL=dAd7JRA@mail.gmail.com>
-Subject: Re: [PATCH] tools: gpio-utils: fix various kernel-doc warnings
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bD7BmJLsMFKPJi26Vt4AcHwe8h+Gi9tyJ2So5fUgWQg=;
+        b=Mm1dRyYXoiPHpaA++fSGjXEYvNUUz0qv8goT9rhYNAHksEl7ZvKCCvp7jn+kHKfNXP
+         XG+24SNLp/5bjbD5GKvlfgJ5Vnhu1KN0UvTA+AAfsqdEYOfk6+RInsTSIkJiKOjfQIji
+         7GbHT+sy9OJ7M4SCD4LGK4DS636X9Brzu6Wi46Lw5jDlpfUJSRyDGr0+xA8S5lIh46Y1
+         jNPNveO4zMndnELsY2eLqW11b4iS/l9Y5YmqolMxN+P8PKDqLaU3FmTQFwS0tL9xmKB5
+         x4SUFTwruKmczdUsIy5QQYvO+GzXJvKd6ivi+YTB+KS0FlFFYVBgxQAex90NuojvlUvj
+         gl3Q==
+X-Gm-Message-State: AOAM533Bs1IZpuqFXsL8Ru1+C2f3Nz80I3lDPlxE7ypWQWqZ3oo/Epg1
+        L50clYnP2oBvYAgv7uOTggg=
+X-Google-Smtp-Source: ABdhPJyBJT+jB/6VmowdbHzWRJITwo+Vt9TueqySl4LbJbSV6+tKmwR9e21rR/tQvLODSxDkupaGow==
+X-Received: by 2002:a17:90a:8a8b:: with SMTP id x11mr13657566pjn.151.1616763338813;
+        Fri, 26 Mar 2021 05:55:38 -0700 (PDT)
+Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id l190sm9164110pfl.73.2021.03.26.05.55.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Mar 2021 05:55:38 -0700 (PDT)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     gregkh@linuxfoundation.org, zhangxuezhi1@yulong.com
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: fbtft: fix a typo
+Date:   Fri, 26 Mar 2021 20:55:51 +0800
+Message-Id: <1616763351-7433-1-git-send-email-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 6:56 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Fix several problems in kernel-doc notation in gpio-utils.c.
->
-> gpio-utils.c:37: warning: Incorrect use of kernel-doc format:  * gpiotools_request_line() - request gpio lines in a gpiochip
-> gpio-utils.c:61: warning: expecting prototype for doc(). Prototype was for gpiotools_request_line() instead
-> gpio-utils.c:265: warning: Excess function parameter 'value' description in 'gpiotools_sets'
-> gpio-utils.c:1: warning: 'gpiotools_request_lines' not found
->
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: linux-gpio@vger.kernel.org
-> ---
+From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
 
-Applied, thanks!
+Change 'tft' to 'TFT'
 
-Bartosz
+Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+---
+v2: use full name.
+ drivers/staging/fbtft/fbtft-core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
+index 4f362da..44e7acb 100644
+--- a/drivers/staging/fbtft/fbtft-core.c
++++ b/drivers/staging/fbtft/fbtft-core.c
+@@ -775,7 +775,7 @@ void fbtft_framebuffer_release(struct fb_info *info)
+ EXPORT_SYMBOL(fbtft_framebuffer_release);
+ 
+ /**
+- *	fbtft_register_framebuffer - registers a tft frame buffer device
++ *	fbtft_register_framebuffer - registers a TFT frame buffer device
+  *	@fb_info: frame buffer info structure
+  *
+  *  Sets SPI driverdata if needed
+@@ -873,7 +873,7 @@ int fbtft_register_framebuffer(struct fb_info *fb_info)
+ EXPORT_SYMBOL(fbtft_register_framebuffer);
+ 
+ /**
+- *	fbtft_unregister_framebuffer - releases a tft frame buffer device
++ *	fbtft_unregister_framebuffer - releases a TFT frame buffer device
+  *	@fb_info: frame buffer info structure
+  *
+  *  Frees SPI driverdata if needed
+-- 
+1.9.1
+
