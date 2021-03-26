@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 102BE34B183
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B5B34B188
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCZVqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 17:46:17 -0400
-Received: from elvis.franken.de ([193.175.24.41]:48974 "EHLO elvis.franken.de"
+        id S230213AbhCZVuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 17:50:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230043AbhCZVp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 17:45:58 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lPuHC-0004rB-00; Fri, 26 Mar 2021 22:45:54 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6FED3C1CF5; Fri, 26 Mar 2021 22:44:45 +0100 (CET)
-Date:   Fri, 26 Mar 2021 22:44:45 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yousong Zhou <yszhou4tech@gmail.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] MIPS: Add support for CONFIG_DEBUG_VIRTUAL
-Message-ID: <20210326214445.GA19129@alpha.franken.de>
-References: <20210323222103.34225-1-f.fainelli@gmail.com>
- <20210325095739.GB5775@alpha.franken.de>
- <439e06b6-d26a-e43d-1e09-c8fd41aea6ed@gmail.com>
+        id S229969AbhCZVuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 17:50:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 26F6C61A10;
+        Fri, 26 Mar 2021 21:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616795411;
+        bh=bcdCzp4pAv3xlxjBrP8WxheeUABuPbFUKDaRjd+VNZk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uU0IYMdgWeX8b8S7aPy22jpI7C7iMJt0e5stC3UK005X2EJ+e4uVcVBlWeRBwnUWH
+         Ajwk42C3qPwI0t0+XoS6FE8lCi2ZioWY2Gn069e8R9KMP+5kGzJJ2MCn2ATmRPZ/Wn
+         9XOhq2H2Slp783zF89uUP/QntHdq8mQTk06QP/0pqWYuSdP08Rjgm7V5Bw46Y8YCRq
+         MC8QY9SQEqEf2dQgLhFjMga5sddCGR3dCPAdNOHMQeVPyOHDsRV7pR9fX3DKaueIX8
+         /ROdY0ijj6LT2D9tPb6of6RBkFcCA31UWs0FQanBfzk+ljAgYtSBzj8emv/uiaj2Cw
+         FRRmSgS4dYwqg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EF07260970;
+        Fri, 26 Mar 2021 21:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <439e06b6-d26a-e43d-1e09-c8fd41aea6ed@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net-next 0/5] net: stmmac: enable multi-vector MSI
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161679541097.17455.17342387440492933878.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Mar 2021 21:50:10 +0000
+References: <20210325173916.13203-1-weifeng.voon@intel.com>
+In-Reply-To: <20210325173916.13203-1-weifeng.voon@intel.com>
+To:     Voon Weifeng <weifeng.voon@intel.com>
+Cc:     davem@davemloft.net, mcoquelin.stm32@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        joabreu@synopsys.com, kuba@kernel.org, peppe.cavallaro@st.com,
+        andrew@lunn.ch, alexandre.torgue@st.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, boon.leong.ong@intel.com,
+        vee.khee.wong@intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 10:45:39AM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 3/25/2021 2:57 AM, Thomas Bogendoerfer wrote:
-> > On Tue, Mar 23, 2021 at 03:20:43PM -0700, Florian Fainelli wrote:
-> >> Provide hooks to intercept bad usages of virt_to_phys() and
-> >> __pa_symbol() throughout the kernel. To make this possible, we need to
-> >> rename the current implement of virt_to_phys() into
-> >> __virt_to_phys_nodebug() and wrap it around depending on
-> >> CONFIG_DEBUG_VIRTUAL.
-> >>
-> >> A similar thing is needed for __pa_symbol() which is now aliased to
-> >> __phys_addr_symbol() whose implementation is either the direct return of
-> >> RELOC_HIDE or goes through the debug version.
-> >>
-> >> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> >> ---
-> >> Changes in v2:
-> >> - fixed sparse warning in arch/mips/kernel/vdso.c
-> > 
-> > checkpatch warns about a missing SPDX license in arch/mips/mm/physaddr.c,
-> > can you please add one ?
-> 
-> Yes.
-> 
-> > 
-> > And as checkpatch is also unhappy about the volatiles, do we really
-> > need them here ?
-> 
-> This is just following the existing prototypes for virt_to_phys()
-> declared in arch/mips/include/asm/io.h. This can be changed to unsigned
-> long if you prefer?
+Hello:
 
-I just checked other archs and they also use volatile, so nothing to
-change here.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Thomas.
+On Fri, 26 Mar 2021 01:39:11 +0800 you wrote:
+> This patchset adds support for multi MSI interrupts in addition to
+> current single common interrupt implementation. Each MSI interrupt is tied
+> to a newly introduce interrupt service routine(ISR). Hence, each interrupt
+> will only go through the corresponding ISR.
+> 
+> In order to increase the efficiency, enabling multi MSI interrupt will
+> automatically select the interrupt mode configuration INTM=1. When INTM=1,
+> the TX/RX transfer complete signal will only asserted on corresponding
+> sbd_perch_tx_intr_o[] or sbd_perch_rx_intr_o[] without asserting signal
+> on the common sbd_intr_o. Hence, for each TX/RX interrupts, only the
+> corresponding ISR will be triggered.
+> 
+> [...]
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Here is the summary with links:
+  - [v2,net-next,1/5] net: stmmac: introduce DMA interrupt status masking per traffic direction
+    https://git.kernel.org/netdev/net-next/c/7e1c520c0d20
+  - [v2,net-next,2/5] net: stmmac: make stmmac_interrupt() function more friendly to MSI
+    https://git.kernel.org/netdev/net-next/c/29e6573c61aa
+  - [v2,net-next,3/5] net: stmmac: introduce MSI Interrupt routines for mac, safety, RX & TX
+    https://git.kernel.org/netdev/net-next/c/8532f613bc78
+  - [v2,net-next,4/5] stmmac: intel: add support for multi-vector msi and msi-x
+    https://git.kernel.org/netdev/net-next/c/b42446b9b37b
+  - [v2,net-next,5/5] net: stmmac: use interrupt mode INTM=1 for multi-MSI
+    https://git.kernel.org/netdev/net-next/c/6ccf12ae111e
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
