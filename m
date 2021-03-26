@@ -2,396 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F7934B317
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5C934B321
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhCZXjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:39:14 -0400
-Received: from mga03.intel.com ([134.134.136.65]:45644 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229969AbhCZXi5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:38:57 -0400
-IronPort-SDR: duMiOiur50Znd9vy3k5w+AH6QNmSw4QHfa8eDP1Jh//lB7HdbqdqaIZ385BJ5URuXlaDMJMLxk
- P29ysib/S4Kg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="191268813"
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="191268813"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 16:38:55 -0700
-IronPort-SDR: LDx3bnVXLfLYD7DGy0aKfhs27HrtbtGeqMvB5B7YfvHAg0SY2ryRkfhOKQCwSoGRf6tStvnAxy
- OvJ+toS3/CWw==
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="609033006"
-Received: from zcmahone-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.255.231.203])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 16:38:47 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [PATCH v2 1/1] x86/tdx: Add __tdcall() and __tdvmcall() helper functions
-Date:   Fri, 26 Mar 2021 16:38:38 -0700
-Message-Id: <c015093fdbc8e6a5aa9fc43f78fec8d9c38295c7.1616801167.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <8723950c-e07c-9a03-503a-ab232701d1e9@linux.intel.com>
-References: <8723950c-e07c-9a03-503a-ab232701d1e9@linux.intel.com>
+        id S230482AbhCZXsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhCZXrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 19:47:47 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16C9C0613AA;
+        Fri, 26 Mar 2021 16:47:47 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id o66so7472143ybg.10;
+        Fri, 26 Mar 2021 16:47:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5iNzMacML/7mp5cjsJfGS0noN/XHdXxDCnUv2zByK9g=;
+        b=kp5A9HUfIWI3yvmUlpaMotw/ACcXQ/KJsJmNKKeFjzjUFlwh9sinu5CRjWD9e4Yo9g
+         PAYWdYlJX7WrUAzSfBIIiunroOpl8aqQ4mklfpLdPXNVUwDxMkz3a22ncT71s7uSgcXD
+         iURCHGiAnFaoqZ6790pYYD5h2wX3oeF5NI3MKII6z3XPtc9bNdw/e+BbRU58yPBxNhbT
+         dqzQpr77oeH997MWfv5uJCcra9KWoAsIGV86oqG2br+GlyBKOtNZnX4EodSWjnb13kAX
+         VYUhhYMghUVP9vzsdt6aJOO4cPaEXEsEKOQaqp/TNzizC7LRRmeT8Bw44GDJfimM+UGd
+         qKdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5iNzMacML/7mp5cjsJfGS0noN/XHdXxDCnUv2zByK9g=;
+        b=mEXpuc6pw9EbTiKhQV3B4cOSu0CW75MdLOtlQ0uB5DLU4R3KYyeTYfWslvH2l5pcCx
+         j79AMQZlVx/7yDPJ6jdnSasl+UsmsCQUW7OOFUGal846WRLs0rnIKr7nmQZZRyqpxOfv
+         BgKC139nRTCGvD+vkx8VeXm4pSnigHY0s1nqPZ7UGZW4sCbfK2lPAFweU59ijSNmwiqP
+         vuPsdUsNL2xMZlzVtw3sLFrSZWOg3FK2A8K/iHAODi8L45DGzwbP8hfBnpCvbjXWluQ6
+         +HuYYFowOhj0e4ygL12+1PxY1eb6hcvGtDlJTxYKVXKB+B2t+5gqTgRk7xi4GT8/3ni7
+         ZGkw==
+X-Gm-Message-State: AOAM533eccLLbSU1OnmL7uF5qhlpFG7h7mSwWAiLQi8YHMZ2GaB/vLY8
+        PBNet0tz0zA59jyEgwW+D/JZxh266ml4XshBXlA=
+X-Google-Smtp-Source: ABdhPJw0XA18SIlSYhK/6RXCP/rqME/PbAv7+DjAz5kdsQFSovvJ8uRL9mUiazdpCsepfjqRnmISe3IuHcFsUYMkSM0=
+X-Received: by 2002:a25:ef42:: with SMTP id w2mr22500231ybm.34.1616802466491;
+ Fri, 26 Mar 2021 16:47:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210326191859.1542272-4-nickrterrell@gmail.com> <202103270534.OKizLwFF-lkp@intel.com>
+In-Reply-To: <202103270534.OKizLwFF-lkp@intel.com>
+From:   Nick Terrell <nickrterrell@gmail.com>
+Date:   Fri, 26 Mar 2021 16:47:35 -0700
+Message-ID: <CANr2DbfJ3Kfuz3XkqTMOO2f91=UnKe_BVqzkYsvY=ndR2Dw0ow@mail.gmail.com>
+Subject: Re: [PATCH v8 3/3] lib: zstd: Upgrade to latest upstream zstd version 1.4.10
+To:     kernel test robot <lkp@intel.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, kbuild-all@lists.01.org,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Chris Mason <chris.mason@fusionio.com>,
+        Petr Malat <oss@malat.biz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement common helper functions to communicate with
-the TDX Module and VMM (using TDCALL instruction).
+On Fri, Mar 26, 2021 at 3:02 PM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Nick,
+>
+> Thank you for the patch! Perhaps something to improve:
+>
+> [auto build test WARNING on cryptodev/master]
+> [also build test WARNING on kdave/for-next f2fs/dev-test linus/master v5.12-rc4 next-20210326]
+> [cannot apply to crypto/master kees/for-next/pstore squashfs/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+>
+> url:    https://github.com/0day-ci/linux/commits/Nick-Terrell/Update-to-zstd-1-4-10/20210327-031827
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
+> config: um-allmodconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/ebbff13fa6a537fb8b3dc6b42c3093f9ce4358f8
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Nick-Terrell/Update-to-zstd-1-4-10/20210327-031827
+>         git checkout ebbff13fa6a537fb8b3dc6b42c3093f9ce4358f8
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=um
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>    lib/zstd/compress/zstd_compress_sequences.c:17: warning: Cannot understand  * -log2(x / 256) lookup table for x in [0, 256).
+>     on line 17 - I thought it was a doc line
+>    lib/zstd/compress/zstd_compress_sequences.c:58: warning: Function parameter or member 'nbSeq' not described in 'ZSTD_useLowProbCount'
+> >> lib/zstd/compress/zstd_compress_sequences.c:58: warning: expecting prototype for 1 else we should(). Prototype was for ZSTD_useLowProbCount() instead
+> >> lib/zstd/compress/zstd_compress_sequences.c:67: warning: wrong kernel-doc identifier on line:
+>     * Returns the cost in bytes of encoding the normalized count header.
+>    lib/zstd/compress/zstd_compress_sequences.c:85: warning: Function parameter or member 'count' not described in 'ZSTD_entropyCost'
+>    lib/zstd/compress/zstd_compress_sequences.c:85: warning: Function parameter or member 'max' not described in 'ZSTD_entropyCost'
+>    lib/zstd/compress/zstd_compress_sequences.c:85: warning: Function parameter or member 'total' not described in 'ZSTD_entropyCost'
+> >> lib/zstd/compress/zstd_compress_sequences.c:85: warning: expecting prototype for Returns the cost in bits of encoding the distribution described by count(). Prototype was for ZSTD_entropyCost() instead
+>    lib/zstd/compress/zstd_compress_sequences.c:99: warning: wrong kernel-doc identifier on line:
+>     * Returns the cost in bits of encoding the distribution in count using ctable.
+>    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'norm' not described in 'ZSTD_crossEntropyCost'
+>    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'accuracyLog' not described in 'ZSTD_crossEntropyCost'
+>    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'count' not described in 'ZSTD_crossEntropyCost'
+>    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'max' not described in 'ZSTD_crossEntropyCost'
+> >> lib/zstd/compress/zstd_compress_sequences.c:139: warning: expecting prototype for Returns the cost in bits of encoding the distribution in count using the(). Prototype was for ZSTD_crossEntropyCost() instead
+> --
+>    lib/zstd/compress/zstd_ldm.c:584: warning: Function parameter or member 'rawSeqStore' not described in 'maybeSplitSequence'
+>    lib/zstd/compress/zstd_ldm.c:584: warning: Function parameter or member 'remaining' not described in 'maybeSplitSequence'
+>    lib/zstd/compress/zstd_ldm.c:584: warning: Function parameter or member 'minMatch' not described in 'maybeSplitSequence'
+> >> lib/zstd/compress/zstd_ldm.c:584: warning: expecting prototype for If the sequence length is longer than remaining then the sequence is split(). Prototype was for maybeSplitSequence() instead
+> --
+> >> lib/zstd/decompress/zstd_decompress.c:992: warning: wrong kernel-doc identifier on line:
+>     * Similar to ZSTD_nextSrcSizeToDecompress(), but when when a block input can be streamed,
+> --
+>    lib/zstd/decompress/huf_decompress.c:122: warning: Function parameter or member 'symbol' not described in 'HUF_DEltX1_set4'
+>    lib/zstd/decompress/huf_decompress.c:122: warning: Function parameter or member 'nbBits' not described in 'HUF_DEltX1_set4'
+> >> lib/zstd/decompress/huf_decompress.c:122: warning: expecting prototype for This is used to lay down 4 entries at(). Prototype was for HUF_DEltX1_set4() instead
+> --
+> >> lib/zstd/compress/zstd_compress.c:128: warning: wrong kernel-doc identifier on line:
+>     * Clears and frees all of the dictionaries in the CCtx.
+>    lib/zstd/compress/zstd_compress.c:265: warning: wrong kernel-doc identifier on line:
+>     * Initializes the cctxParams from params and compressionLevel.
+>    lib/zstd/compress/zstd_compress.c:289: warning: wrong kernel-doc identifier on line:
+>     * Sets cctxParams' cParams and fParams from params, but otherwise leaves them alone.
+>    lib/zstd/compress/zstd_compress.c:910: warning: wrong kernel-doc identifier on line:
+>     * Initializes the local dict using the requested parameters.
+>    lib/zstd/compress/zstd_compress.c:1457: warning: wrong kernel-doc identifier on line:
+>     * Controls, for this matchState reset, whether the tables need to be cleared /
+>    lib/zstd/compress/zstd_compress.c:1473: warning: cannot understand function prototype: 'typedef enum '
+>    lib/zstd/compress/zstd_compress.c:5008: warning: Function parameter or member 'cParams' not described in 'ZSTD_dedicatedDictSearch_revertCParams'
+> >> lib/zstd/compress/zstd_compress.c:5008: warning: expecting prototype for Reverses the adjustment applied to cparams when enabling dedicated dict(). Prototype was for ZSTD_dedicatedDictSearch_revertCParams() instead
+>
+>
+> vim +58 lib/zstd/compress/zstd_compress_sequences.c
+>
+>     52
+>     53  /**
+>     54   * Returns true if we should use ncount=-1 else we should
+>     55   * use ncount=1 for low probability symbols instead.
+>     56   */
+>     57  static unsigned ZSTD_useLowProbCount(size_t const nbSeq)
+>   > 58  {
+>     59      /* Heuristic: This should cover most blocks <= 16K and
+>     60       * start to fade out after 16K to about 32K depending on
+>     61       * comprssibility.
+>     62       */
+>     63      return nbSeq >= 2048;
+>     64  }
+>     65
+>     66  /**
+>   > 67   * Returns the cost in bytes of encoding the normalized count header.
+>     68   * Returns an error if any of the helper functions return an error.
+>     69   */
+>     70  static size_t ZSTD_NCountCost(unsigned const* count, unsigned const max,
+>     71                                size_t const nbSeq, unsigned const FSELog)
+>     72  {
+>     73      BYTE wksp[FSE_NCOUNTBOUND];
+>     74      S16 norm[MaxSeq + 1];
+>     75      const U32 tableLog = FSE_optimalTableLog(FSELog, nbSeq, max);
+>     76      FORWARD_IF_ERROR(FSE_normalizeCount(norm, tableLog, count, nbSeq, max, ZSTD_useLowProbCount(nbSeq)), "");
+>     77      return FSE_writeNCount(wksp, sizeof(wksp), norm, max, tableLog);
+>     78  }
+>     79
+>     80  /**
+>     81   * Returns the cost in bits of encoding the distribution described by count
+>     82   * using the entropy bound.
+>     83   */
+>     84  static size_t ZSTD_entropyCost(unsigned const* count, unsigned const max, size_t const total)
+>   > 85  {
+>     86      unsigned cost = 0;
+>     87      unsigned s;
+>     88      for (s = 0; s <= max; ++s) {
+>     89          unsigned norm = (unsigned)((256 * count[s]) / total);
+>     90          if (count[s] != 0 && norm == 0)
+>     91              norm = 1;
+>     92          assert(count[s] < total);
+>     93          cost += count[s] * kInverseProbabilityLog256[norm];
+>     94      }
+>     95      return cost >> 8;
+>     96  }
+>     97
+>     98  /**
+>     99   * Returns the cost in bits of encoding the distribution in count using ctable.
+>    100   * Returns an error if ctable cannot represent all the symbols in count.
+>    101   */
+>    102  size_t ZSTD_fseBitCost(
+>    103      FSE_CTable const* ctable,
+>    104      unsigned const* count,
+>    105      unsigned const max)
+>    106  {
+>    107      unsigned const kAccuracyLog = 8;
+>    108      size_t cost = 0;
+>    109      unsigned s;
+>    110      FSE_CState_t cstate;
+>    111      FSE_initCState(&cstate, ctable);
+>    112      if (ZSTD_getFSEMaxSymbolValue(ctable) < max) {
+>    113          DEBUGLOG(5, "Repeat FSE_CTable has maxSymbolValue %u < %u",
+>    114                      ZSTD_getFSEMaxSymbolValue(ctable), max);
+>    115          return ERROR(GENERIC);
+>    116      }
+>    117      for (s = 0; s <= max; ++s) {
+>    118          unsigned const tableLog = cstate.stateLog;
+>    119          unsigned const badCost = (tableLog + 1) << kAccuracyLog;
+>    120          unsigned const bitCost = FSE_bitCost(cstate.symbolTT, tableLog, s, kAccuracyLog);
+>    121          if (count[s] == 0)
+>    122              continue;
+>    123          if (bitCost >= badCost) {
+>    124              DEBUGLOG(5, "Repeat FSE_CTable has Prob[%u] == 0", s);
+>    125              return ERROR(GENERIC);
+>    126          }
+>    127          cost += (size_t)count[s] * bitCost;
+>    128      }
+>    129      return cost >> kAccuracyLog;
+>    130  }
+>    131
+>    132  /**
+>    133   * Returns the cost in bits of encoding the distribution in count using the
+>    134   * table described by norm. The max symbol support by norm is assumed >= max.
+>    135   * norm must be valid for every symbol with non-zero probability in count.
+>    136   */
+>    137  size_t ZSTD_crossEntropyCost(short const* norm, unsigned accuracyLog,
+>    138                               unsigned const* count, unsigned const max)
+>  > 139  {
+>    140      unsigned const shift = 8 - accuracyLog;
+>    141      size_t cost = 0;
+>    142      unsigned s;
+>    143      assert(accuracyLog <= 8);
+>    144      for (s = 0; s <= max; ++s) {
+>    145          unsigned const normAcc = (norm[s] != -1) ? (unsigned)norm[s] : 1;
+>    146          unsigned const norm256 = normAcc << shift;
+>    147          assert(norm256 > 0);
+>    148          assert(norm256 < 256);
+>    149          cost += count[s] * kInverseProbabilityLog256[norm256];
+>    150      }
+>    151      return cost >> 8;
+>    152  }
+>    153
+>
 
-__tdvmcall() function can be used to request services
-from VMM.
+These all seem to be comment style warnings. Since this is code
+imported from an upstream project, it doesn't make sense to adhere to
+the kernel comment style. The public header `include/linux/zstd.h`
+should adhere to the kernel style guide, but not `lib/zstd`.
 
-__tdcall() function can be used to communicate with the
-TDX Module.
+-Nick
 
-Using common helper functions makes the code more readable
-and less error prone compared to distributed and use case
-specific inline assembly code. Only downside in using this
-approach is, it adds a few extra instructions for every
-TDCALL use case when compared to distributed checks. Although
-it's a bit less efficient, it's worth it to make the code more
-readable.
-
-Originally-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-
-Hi All,
-
-Please let me know your review comments. If you agree with this patch
-and want to see the use of these APIs in rest of the patches, I will
-re-send the patch series with updated code. Please let me know.
-
-Changes since v1:
- * Implemented tdvmcall and tdcall helper functions as assembly code.
- * Followed suggestion provided by Sean & Dave.
-
- arch/x86/include/asm/tdx.h    |  23 +++++
- arch/x86/kernel/Makefile      |   2 +-
- arch/x86/kernel/asm-offsets.c |  22 +++++
- arch/x86/kernel/tdcall.S      | 163 ++++++++++++++++++++++++++++++++++
- arch/x86/kernel/tdx.c         |  30 +++++++
- 5 files changed, 239 insertions(+), 1 deletion(-)
- create mode 100644 arch/x86/kernel/tdcall.S
-
-diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index 69af72d08d3d..ce6212ce5f45 100644
---- a/arch/x86/include/asm/tdx.h
-+++ b/arch/x86/include/asm/tdx.h
-@@ -8,12 +8,35 @@
- #ifdef CONFIG_INTEL_TDX_GUEST
- 
- #include <asm/cpufeature.h>
-+#include <linux/types.h>
-+
-+struct tdcall_output {
-+	u64 rcx;
-+	u64 rdx;
-+	u64 r8;
-+	u64 r9;
-+	u64 r10;
-+	u64 r11;
-+};
-+
-+struct tdvmcall_output {
-+	u64 r11;
-+	u64 r12;
-+	u64 r13;
-+	u64 r14;
-+	u64 r15;
-+};
- 
- /* Common API to check TDX support in decompression and common kernel code. */
- bool is_tdx_guest(void);
- 
- void __init tdx_early_init(void);
- 
-+u64 __tdcall(u64 fn, u64 rcx, u64 rdx, struct tdcall_output *out);
-+
-+u64 __tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15,
-+	       struct tdvmcall_output *out);
-+
- #else // !CONFIG_INTEL_TDX_GUEST
- 
- static inline bool is_tdx_guest(void)
-diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-index ea111bf50691..7966c10ea8d1 100644
---- a/arch/x86/kernel/Makefile
-+++ b/arch/x86/kernel/Makefile
-@@ -127,7 +127,7 @@ obj-$(CONFIG_PARAVIRT_CLOCK)	+= pvclock.o
- obj-$(CONFIG_X86_PMEM_LEGACY_DEVICE) += pmem.o
- 
- obj-$(CONFIG_JAILHOUSE_GUEST)	+= jailhouse.o
--obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdx.o
-+obj-$(CONFIG_INTEL_TDX_GUEST)	+= tdcall.o tdx.o
- 
- obj-$(CONFIG_EISA)		+= eisa.o
- obj-$(CONFIG_PCSPKR_PLATFORM)	+= pcspeaker.o
-diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
-index 60b9f42ce3c1..72de0b49467e 100644
---- a/arch/x86/kernel/asm-offsets.c
-+++ b/arch/x86/kernel/asm-offsets.c
-@@ -23,6 +23,10 @@
- #include <xen/interface/xen.h>
- #endif
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+#include <asm/tdx.h>
-+#endif
-+
- #ifdef CONFIG_X86_32
- # include "asm-offsets_32.c"
- #else
-@@ -75,6 +79,24 @@ static void __used common(void)
- 	OFFSET(XEN_vcpu_info_arch_cr2, vcpu_info, arch.cr2);
- #endif
- 
-+#ifdef CONFIG_INTEL_TDX_GUEST
-+	BLANK();
-+	/* Offset for fields in tdcall_output */
-+	OFFSET(TDCALL_rcx, tdcall_output, rcx);
-+	OFFSET(TDCALL_rdx, tdcall_output, rdx);
-+	OFFSET(TDCALL_r8, tdcall_output, r8);
-+	OFFSET(TDCALL_r9, tdcall_output, r9);
-+	OFFSET(TDCALL_r10, tdcall_output, r10);
-+	OFFSET(TDCALL_r11, tdcall_output, r11);
-+
-+	/* Offset for fields in tdvmcall_output */
-+	OFFSET(TDVMCALL_r11, tdvmcall_output, r11);
-+	OFFSET(TDVMCALL_r12, tdvmcall_output, r12);
-+	OFFSET(TDVMCALL_r13, tdvmcall_output, r13);
-+	OFFSET(TDVMCALL_r14, tdvmcall_output, r14);
-+	OFFSET(TDVMCALL_r15, tdvmcall_output, r15);
-+#endif
-+
- 	BLANK();
- 	OFFSET(BP_scratch, boot_params, scratch);
- 	OFFSET(BP_secure_boot, boot_params, secure_boot);
-diff --git a/arch/x86/kernel/tdcall.S b/arch/x86/kernel/tdcall.S
-new file mode 100644
-index 000000000000..a73b67c0b407
---- /dev/null
-+++ b/arch/x86/kernel/tdcall.S
-@@ -0,0 +1,163 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <asm/asm-offsets.h>
-+#include <asm/asm.h>
-+#include <asm/frame.h>
-+#include <asm/unwind_hints.h>
-+
-+#include <linux/linkage.h>
-+
-+#define TDVMCALL_EXPOSE_REGS_MASK	0xfc00
-+
-+/*
-+ * TDCALL instruction is newly added in TDX architecture,
-+ * used by TD for requesting the host VMM to provide
-+ * (untrusted) services. Supported in Binutils >= 2.36
-+ */
-+#define tdcall .byte 0x66,0x0f,0x01,0xcc
-+
-+/* Only for non TDVMCALL use cases */
-+SYM_FUNC_START(__tdcall)
-+	FRAME_BEGIN
-+
-+	/* Save/restore non-volatile GPRs that are exposed to the VMM. */
-+	push %r15
-+	push %r14
-+	push %r13
-+	push %r12
-+
-+	/*
-+	 * RDI  => RAX = TDCALL leaf
-+	 * RSI  => RCX = input param 1
-+	 * RDX  => RDX = input param 2
-+	 * RCX  => N/A = output struct
-+	 */
-+
-+	/* Save output pointer to R12 */
-+	mov %rcx, %r12
-+	/* Move TDCALL Leaf ID to RAX */
-+	mov %rdi, %rax
-+	/* Move input param 1 to rcx*/
-+	mov %rsi, %rcx
-+
-+	tdcall
-+
-+	/*
-+	 * On success, propagate TDCALL outputs values to the output struct,
-+	 * if an output struct is provided.
-+	 */
-+	test %rax, %rax
-+	jnz 1f
-+	test %r12, %r12
-+	jz 1f
-+
-+	movq %rcx, TDCALL_rcx(%r12)
-+	movq %rdx, TDCALL_rdx(%r12)
-+	movq %r8, TDCALL_r8(%r12)
-+	movq %r9, TDCALL_r9(%r12)
-+	movq %r10, TDCALL_r10(%r12)
-+	movq %r11, TDCALL_r11(%r12)
-+1:
-+	/*
-+	 * Zero out registers exposed to the VMM to avoid speculative execution
-+	 * with VMM-controlled values.
-+	 */
-+        xor %rcx, %rcx
-+        xor %rdx, %rdx
-+        xor %r8d, %r8d
-+        xor %r9d, %r9d
-+        xor %r10d, %r10d
-+        xor %r11d, %r11d
-+
-+	pop %r12
-+	pop %r13
-+	pop %r14
-+	pop %r15
-+
-+	FRAME_END
-+	ret
-+SYM_FUNC_END(__tdcall)
-+
-+.macro tdvmcall_core
-+	FRAME_BEGIN
-+
-+	/* Save/restore non-volatile GPRs that are exposed to the VMM. */
-+	push %r15
-+	push %r14
-+	push %r13
-+	push %r12
-+
-+	/*
-+	 * 0    => RAX = TDCALL leaf
-+	 * RDI  => R11 = TDVMCALL function, e.g. exit reason
-+	 * RSI  => R12 = input param 0
-+	 * RDX  => R13 = input param 1
-+	 * RCX  => R14 = input param 2
-+	 * R8   => R15 = input param 3
-+	 * MASK => RCX = TDVMCALL register behavior
-+	 * R9   => R9  = output struct
-+	 */
-+
-+	xor %eax, %eax
-+	mov %rdi, %r11
-+	mov %rsi, %r12
-+	mov %rdx, %r13
-+	mov %rcx, %r14
-+	mov %r8,  %r15
-+
-+	/*
-+	 * Expose R10 - R15, i.e. all GPRs that may be used by TDVMCALLs
-+	 * defined in the GHCI.  Note, RAX and RCX are consumed, but only by
-+	 * TDX-Module and so don't need to be listed in the mask.
-+	 */
-+	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
-+
-+	tdcall
-+
-+	/* Panic if TDCALL reports failure. */
-+	test %rax, %rax
-+	jnz 2f
-+
-+	/* Propagate TDVMCALL success/failure to return value. */
-+	mov %r10, %rax
-+
-+	/*
-+	 * On success, propagate TDVMCALL outputs values to the output struct,
-+	 * if an output struct is provided.
-+	 */
-+	test %rax, %rax
-+	jnz 1f
-+	test %r9, %r9
-+	jz 1f
-+
-+	movq %r11, TDVMCALL_r11(%r9)
-+	movq %r12, TDVMCALL_r12(%r9)
-+	movq %r13, TDVMCALL_r13(%r9)
-+	movq %r14, TDVMCALL_r14(%r9)
-+	movq %r15, TDVMCALL_r15(%r9)
-+1:
-+	/*
-+	 * Zero out registers exposed to the VMM to avoid speculative execution
-+	 * with VMM-controlled values.
-+	 */
-+	xor %r10d, %r10d
-+	xor %r11d, %r11d
-+	xor %r12d, %r12d
-+	xor %r13d, %r13d
-+	xor %r14d, %r14d
-+	xor %r15d, %r15d
-+
-+	pop %r12
-+	pop %r13
-+	pop %r14
-+	pop %r15
-+
-+	FRAME_END
-+	ret
-+2:
-+	ud2
-+.endm
-+
-+SYM_FUNC_START(__tdvmcall)
-+	xor %r10, %r10
-+	tdvmcall_core
-+SYM_FUNC_END(__tdvmcall)
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 0d00dd50a6ff..1147e7e765d6 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -3,6 +3,36 @@
- 
- #include <asm/tdx.h>
- 
-+/*
-+ * Wrapper for the common case with standard output value (R10).
-+ */
-+static inline u64 tdvmcall(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
-+{
-+	u64 err;
-+
-+	err = __tdvmcall(fn, r12, r13, r14, r15, NULL);
-+
-+	WARN_ON(err);
-+
-+	return err;
-+}
-+
-+/*
-+ * Wrapper for the semi-common case where we need single output value (R11).
-+ */
-+static inline u64 tdvmcall_out_r11(u64 fn, u64 r12, u64 r13, u64 r14, u64 r15)
-+{
-+
-+	struct tdvmcall_output out = {0};
-+	u64 err;
-+
-+	err = __tdvmcall(fn, r12, r13, r14, r15, &out);
-+
-+	WARN_ON(err);
-+
-+	return out.r11;
-+}
-+
- static inline bool cpuid_has_tdx_guest(void)
- {
- 	u32 eax, signature[3];
--- 
-2.25.1
-
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
