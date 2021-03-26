@@ -2,144 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A09134AE08
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4689534AE10
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhCZRyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:54:25 -0400
-Received: from mail-ej1-f43.google.com ([209.85.218.43]:36383 "EHLO
-        mail-ej1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230221AbhCZRyA (ORCPT
+        id S230180AbhCZR4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:56:31 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:52265 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230131AbhCZR4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:54:00 -0400
-Received: by mail-ej1-f43.google.com with SMTP id a7so9701633ejs.3;
-        Fri, 26 Mar 2021 10:53:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X0TLaqtqsYqy5cUnEclBBX/cBG3TFyNiJCvgVTFjh6s=;
-        b=qSRiaX/8FmwbwAPPAXAGOI0YYWrHDN7mmE9eq1mHiNGbG+aGYNs630H/IQTRwR60pR
-         teDgZLsh/T1Csa94J42WP1hocj2l3v/Mhopz0RLN/lZWBfQSH7wqLpd2bTlq1bIQott5
-         A2sV3wHBx18AF1x/CXbbP8J1WISrPOuZq0o286kgR9087R6Z09BIhtPQU9EYEKqnlPbJ
-         J0zGdixzdVwgJGZERBOnSpwPzd46eAQTHHpaWEzfXMErz//DOo8M74X4m1sTk30fk7Q4
-         1HRwUxnNM4YldutB7H4X1c6lA4MBtlTPWjf0CC4aZwDX8Yiz3qP1E+geAy0+j3bviNJo
-         FnjA==
-X-Gm-Message-State: AOAM531PuV/3fi9Vvsh6587rdzqzm0f1bUFkwv3+pRniSzhx1MvAGQBs
-        nWgHw+Fsgnl1TqtNCutGsYKrzvV1wTH9EpU0rauva5uJ
-X-Google-Smtp-Source: ABdhPJxUSB073e3Gf0OF8x92Y0SOhmfJuYJOa8tcBbfim7jzG7YHJhav1wADmDSx5kBnlCPOq7J8EQNQ7VgiPty9pDQ=
-X-Received: by 2002:a17:907:ea3:: with SMTP id ho35mr16851333ejc.219.1616781238988;
- Fri, 26 Mar 2021 10:53:58 -0700 (PDT)
+        Fri, 26 Mar 2021 13:56:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616781364; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=u/VtdjESDjksBi2yOB2iBmWEjhKxDbDuGwlnPRV1uLA=; b=GHBz2uqSD9Y6E07Q0ejp81ntAR8pZyi5keZZFB2BiCcK04WWgIxtiL195EfblFkZkJHzlvvQ
+ AdSAlllk2vHVQSl6Ju8zMduUfBabF36oi9jX+62YuYdXVRi4aMq/QfsUXsoJEXbSMJ71pjrx
+ n/eAiQ6C/WLKbak0nYn8Y1wbQs0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 605e2029c39407c32726aac3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Mar 2021 17:55:53
+ GMT
+Sender: rkumbako=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 69789C433ED; Fri, 26 Mar 2021 17:55:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.64] (unknown [209.131.238.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: rkumbako)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 65822C433CA;
+        Fri, 26 Mar 2021 17:55:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 65822C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rkumbako@codeaurora.org
+Subject: Re: [PATCH] thermal/drivers/netlink: Add the temperature when
+ crossing a trip point
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rkumbako@quicinc.com, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ABI/API" <linux-api@vger.kernel.org>
+References: <20210325193633.19592-1-daniel.lezcano@linaro.org>
+From:   Ram Chandrasekar <rkumbako@codeaurora.org>
+Message-ID: <626b2fa4-73f7-86b5-8b94-689334316ede@codeaurora.org>
+Date:   Fri, 26 Mar 2021 11:55:49 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
- <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
- <CALCETrWOc7wwW=KY2dGJGy9k5Ag=KhkdGGTDZMvgRHgyQ5fDjQ@mail.gmail.com>
- <CAJvTdK=OGALDso0H+asjgkjD_VaPNZzm+LpV+msM_i5aVUm_qw@mail.gmail.com> <CALCETrXky0RuA5WeQ0Mxjs+e4ywk1A7vmpBxqCo=PTSBzUsz-g@mail.gmail.com>
-In-Reply-To: <CALCETrXky0RuA5WeQ0Mxjs+e4ywk1A7vmpBxqCo=PTSBzUsz-g@mail.gmail.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Fri, 26 Mar 2021 13:53:47 -0400
-Message-ID: <CAJvTdK=_G11phL6=9Ri41fJQvhRNopok_oktgvRjTM0v6ojcbg@mail.gmail.com>
-Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
- control state component support
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        X86 ML <x86@kernel.org>, "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210325193633.19592-1-daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 11:48 AM Andy Lutomirski <luto@kernel.org> wrote:
 
-> > I submit, that after the generic XFD support is in place,
-> > there is exactly 1 bit that needs to be flipped to enable
-> > user applications to benefit from AMX.
->
-> The TILERELEASE opcode itself is rather longer than one bit, and the
-> supporting code to invoke it at the right time, to avoid corrupting
-> user state, and avoid causing performance regressions merely by
-> existing will be orders of magnitude more than 1 bit.  Of course, all
-> of this is zero bits in the current series because the code is
-> missing.entirely.
 
-Please explain why the kernel must know about the TILERELEASE
-instruction in order for an AMX application to run properly.
+On 3/25/2021 1:36 PM, Daniel Lezcano wrote:
+> The slope of the temperature increase or decrease can be high and when
+> the temperature crosses the trip point, there could be a significant
+> difference between the trip temperature and the measured temperatures.
+> 
+> That forces the userspace to read the temperature back right after
+> receiving a trip violation notification.
+> 
+> In order to be efficient, give the temperature which resulted in the
+> trip violation.
+> 
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-> This isn't just about validation.  There's also ABI, performance, and
-> correctness.
+To add to Daniel's point, this patch will save a lot of back and forth 
+between userspace and kernel, when the temperature is hovering around 
+the trip temperature.
 
-Thank you for agreeing that this is not about unvalidated features.
+Certain sensors are capable of supporting temperatures with more 
+granular resolution (like deci C). In those cases after a trip occurs, a 
+0.1 C reduction in temperature when userspace reads will make it wait 
+for some more time before taking an action.
 
-> ABI: The AVX-512 enablement *already* broke user ABI.  Sadly no one
-> told anyone in the kernel community until about 5 years after the
-> fact, and it's a bit late to revert AVX-512.  But we don't want to
-> enable AMX until the ABI has a reasonable chance of being settled.
-> Ditto for future features.  As it stands, if you xstate.enable some
-> 16MB feature, the system may well simply fail to boot as too many user
-> processes explode.
+It is not just a delay in action, but more trip notifications before 
+userspace reads the temperature above trip to take an action.
 
-At Dave's suggestion, we had a 64 *KB* sanity check on this path.
-Boris forced us to remove it, because we could not tell him
-how we chose the number 64.
+I have seen this back and forth in Snapdragon chipsets.
 
-I would be delighted to see a check for 64 KB restored, and that
-it be a rejection, rather than warning.  At this point, as there is no way
-go down that path without manually modifying the kernel, it would
-devolve into a sanity check for a hardware (CPUID) bug.
+This patch helps userspace to see the same temperature as thermal 
+framework and temperature violations can be handled faster and more 
+efficiently.
 
-> Performance:
->
-> We *still* don't know the performance implications of leaving the AMX
-> features in use inappropriately.  Does it completely destroy idle?
-
-No.
-
-> Will it literally operate CPUs out of spec such that Intel's
-> reliability estimates will be invalidated?
-
-No.
-
->  (We had that with NVMe APST.  Let's not repeat this with XSTATE.)
-
-I acknowledge that the possibility of broken hardware always exists.
-However, I don't see how the experience with broken NVMe actually applies here,
-other than general paranoia about new features (which is, arguably, healthy).
-
->  The performance impacts
-> and transitions for AVX-512 are, to put it charitably, forthcoming.
-
-I acknowledge the parallels with AVX-512, in that AMX adds new instructions,
-and it has even bigger registers.  I also acknowledge that the AVX-512 rollout
-(and arguably, its brief existence on client CPUs) was problematic.
-
-My understanding is that Intel continues to learn (a lot) from its mistakes.
-I believe that the AVX-512 credits problem has been largely eliminated
-on newer Xeons.
-
-My understanding is that AMX is implemented only in CPUs that actually
-have the hardware to properly support AMX.  If it were not, then that would
-be a problem for Intel to deal with in hardware, not a problem for Linux
-to deal with in software.
-
-> Correctness: PKRU via the kernel's normal XSAVE path would simply be
-> incorrect.  Do we really trust that this won't get repeated?  Also,
-> frankly, a command line option that may well break lots of userspace
-> but that we fully expect Intel to recommend setting is not a good
-> thing.
-
-There is no analogy between AMX and PKRU, except the fact that they
-are both features, and at one time, both were new.
-
-I am unaware of anybody at Intel recommending that any cmdline
-be set that would break userspace.
-
-thanks,
-Len Brown, Intel Open Source Technology Center
+> ---
+>   drivers/thermal/thermal_core.c    |  6 ++++--
+>   drivers/thermal/thermal_netlink.c | 11 ++++++-----
+>   drivers/thermal/thermal_netlink.h |  8 ++++----
+>   include/uapi/linux/thermal.h      |  2 +-
+>   4 files changed, 15 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+> index 996c038f83a4..948020ef51b1 100644
+> --- a/drivers/thermal/thermal_core.c
+> +++ b/drivers/thermal/thermal_core.c
+> @@ -430,10 +430,12 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+>   	if (tz->last_temperature != THERMAL_TEMP_INVALID) {
+>   		if (tz->last_temperature < trip_temp &&
+>   		    tz->temperature >= trip_temp)
+> -			thermal_notify_tz_trip_up(tz->id, trip);
+> +			thermal_notify_tz_trip_up(tz->id, trip,
+> +						  tz->temperature);
+>   		if (tz->last_temperature >= trip_temp &&
+>   		    tz->temperature < (trip_temp - hyst))
+> -			thermal_notify_tz_trip_down(tz->id, trip);
+> +			thermal_notify_tz_trip_down(tz->id, trip,
+> +						    tz->temperature);
+>   	}
+>   
+>   	if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
+> diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
+> index 1234dbe95895..a16dd4d5d710 100644
+> --- a/drivers/thermal/thermal_netlink.c
+> +++ b/drivers/thermal/thermal_netlink.c
+> @@ -121,7 +121,8 @@ static int thermal_genl_event_tz(struct param *p)
+>   static int thermal_genl_event_tz_trip_up(struct param *p)
+>   {
+>   	if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
+> -	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id))
+> +	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id) ||
+> +	    nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TEMP, p->temp))
+>   		return -EMSGSIZE;
+>   
+>   	return 0;
+> @@ -285,16 +286,16 @@ int thermal_notify_tz_disable(int tz_id)
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
+>   }
+>   
+> -int thermal_notify_tz_trip_down(int tz_id, int trip_id)
+> +int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
+>   {
+> -	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
+> +	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
+>   
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
+>   }
+>   
+> -int thermal_notify_tz_trip_up(int tz_id, int trip_id)
+> +int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
+>   {
+> -	struct param p = { .tz_id = tz_id, .trip_id = trip_id };
+> +	struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
+>   
+>   	return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
+>   }
+> diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
+> index 828d1dddfa98..e554f76291f4 100644
+> --- a/drivers/thermal/thermal_netlink.h
+> +++ b/drivers/thermal/thermal_netlink.h
+> @@ -11,8 +11,8 @@ int thermal_notify_tz_create(int tz_id, const char *name);
+>   int thermal_notify_tz_delete(int tz_id);
+>   int thermal_notify_tz_enable(int tz_id);
+>   int thermal_notify_tz_disable(int tz_id);
+> -int thermal_notify_tz_trip_down(int tz_id, int id);
+> -int thermal_notify_tz_trip_up(int tz_id, int id);
+> +int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
+> +int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
+>   int thermal_notify_tz_trip_delete(int tz_id, int id);
+>   int thermal_notify_tz_trip_add(int tz_id, int id, int type,
+>   			       int temp, int hyst);
+> @@ -49,12 +49,12 @@ static inline int thermal_notify_tz_disable(int tz_id)
+>   	return 0;
+>   }
+>   
+> -static inline int thermal_notify_tz_trip_down(int tz_id, int id)
+> +static inline int thermal_notify_tz_trip_down(int tz_id, int id, int temp)
+>   {
+>   	return 0;
+>   }
+>   
+> -static inline int thermal_notify_tz_trip_up(int tz_id, int id)
+> +static inline int thermal_notify_tz_trip_up(int tz_id, int id, int temp)
+>   {
+>   	return 0;
+>   }
+> diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
+> index c105054cbb57..bf5d9c8ef16f 100644
+> --- a/include/uapi/linux/thermal.h
+> +++ b/include/uapi/linux/thermal.h
+> @@ -18,7 +18,7 @@ enum thermal_trip_type {
+>   
+>   /* Adding event notification support elements */
+>   #define THERMAL_GENL_FAMILY_NAME		"thermal"
+> -#define THERMAL_GENL_VERSION			0x01
+> +#define THERMAL_GENL_VERSION			0x02
+>   #define THERMAL_GENL_SAMPLING_GROUP_NAME	"sampling"
+>   #define THERMAL_GENL_EVENT_GROUP_NAME		"event"
+>   
+> 
