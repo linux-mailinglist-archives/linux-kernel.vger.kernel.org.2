@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE51349D26
+	by mail.lfdr.de (Postfix) with ESMTP id D8062349D27
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:03:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCZAC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:02:57 -0400
+        id S230012AbhCZAC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:02:58 -0400
 Received: from mga11.intel.com ([192.55.52.93]:15382 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhCZACp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:02:45 -0400
-IronPort-SDR: bsHj8nPzRsXIGf0B7VO1XAhtr0rvDfqhVKCtuEVsBUjy1ZIDxg5nqSmXJ2jcWjeNTby1AMjj3r
- YmxFVPYMHHbQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="187748034"
+        id S229664AbhCZACo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:02:44 -0400
+IronPort-SDR: 8mY9Hv6XajzzlejA4L133QHXJ+AgjVXmuEdLq8igUR+7FWhi9jds6n5F3PCBUI0vK7dsodxz3g
+ UEy0iYGrEBSw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="187748035"
 X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="187748034"
+   d="scan'208";a="187748035"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 17:02:43 -0700
-IronPort-SDR: 6M0k84g+CKYIoUlN3FSrybSxkhZDcKiZliPuopz+OPLLsK/nBPB6BnJGO/1bIf3CYOarYuVJEk
- r1lQxPJkzKXA==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 17:02:44 -0700
+IronPort-SDR: 381eQXWHSCu6mbpZPx3KOQD5wTsa+RnwhGNbuhw/jc5ma2bOZKWInhprjdOs1buwQMYVeAObVq
+ ymmK1r5NISPA==
 X-IronPort-AV: E=Sophos;i="5.81,278,1610438400"; 
-   d="scan'208";a="416265843"
+   d="scan'208";a="416265846"
 Received: from agluck-desk2.sc.intel.com ([10.3.52.146])
   by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Mar 2021 17:02:43 -0700
 From:   Tony Luck <tony.luck@intel.com>
@@ -32,9 +32,9 @@ Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
         Aili Yao <yaoaili@kingsoft.com>,
         =?UTF-8?q?HORIGUCHI=20NAOYA=28=20=E5=A0=80=E5=8F=A3=E3=80=80=E7=9B=B4=E4=B9=9F=29?= 
         <naoya.horiguchi@nec.com>
-Subject: [PATCH 3/4] mce/copyin: fix to not SIGBUS when copying from user hits poison
-Date:   Thu, 25 Mar 2021 17:02:34 -0700
-Message-Id: <20210326000235.370514-4-tony.luck@intel.com>
+Subject: [PATCH 4/4] x86/mce: Avoid infinite loop for copy from user recovery
+Date:   Thu, 25 Mar 2021 17:02:35 -0700
+Message-Id: <20210326000235.370514-5-tony.luck@intel.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210326000235.370514-1-tony.luck@intel.com>
 References: <20210326000235.370514-1-tony.luck@intel.com>
@@ -44,121 +44,144 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Lutomirski pointed out that sending SIGBUS to tasks that
-hit poison in the kernel copying syscall parameters from user
-address space is not the right semantic.
+Recovery action when get_user() triggers a machine check uses the fixup
+path to make get_user() return -EFAULT.  Also queue_task_work() sets up
+so that kill_me_maybe() will be called on return to user mode to send a
+SIGBUS to the current process.
 
-So stop doing that. Add a new kill_me_never() call back that
-simply unmaps and offlines the poison page.
+But there are places in the kernel where the code assumes that this
+EFAULT return was simply because of a page fault. The code takes some
+action to fix that, and then retries the access. This results in a second
+machine check.
 
-current-mce_vaddr is no longer used, so drop this field
+While processing this second machine check queue_task_work() is called
+again. But since this uses the same callback_head structure that
+was used in the first call, the net result is an entry on the
+current->task_works list that points to itself. When task_work_run()
+is called it loops forever in this code:
 
+	    do {
+		    next = work->next;
+		    work->func(work);
+		    work = next;
+		    cond_resched();
+	    } while (work);
+
+Add a counter (current->mce_count) to keep track of repeated machine checks
+before task_work() is called. First machine check saves the address information
+and calls task_work_add(). Subsequent machine checks before that task_work
+call back is executed check that the address is in the same page as the first
+machine check (since the callback will offline exactly one page).
+
+Expected worst case is two machine checks before moving on (e.g. one user
+access with page faults disabled, then a repeat to the same addrsss with
+page faults enabled). Just in case there is some code that loops forever
+enforce a limit of 10.
+
+Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
-
-Needs to be combined with other patches for bisectability
----
- arch/x86/kernel/cpu/mce/core.c     | 35 ++++++++++++++++--------------
- arch/x86/kernel/cpu/mce/severity.c |  2 --
- include/linux/sched.h              |  1 -
- 3 files changed, 19 insertions(+), 19 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c | 40 ++++++++++++++++++++++++++--------
+ include/linux/sched.h          |  1 +
+ 2 files changed, 32 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 7962355436da..1570310cadab 100644
+index 1570310cadab..999fd7f0330b 100644
 --- a/arch/x86/kernel/cpu/mce/core.c
 +++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1263,32 +1263,32 @@ static void kill_me_maybe(struct callback_head *cb)
- 	if (!p->mce_ripv)
- 		flags |= MF_MUST_KILL;
+@@ -1250,6 +1250,9 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
  
--	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
--	    !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
-+	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags)) {
- 		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
- 		sync_core();
- 		return;
- 	}
- 
--	if (p->mce_vaddr != (void __user *)-1l) {
--		force_sig_mceerr(BUS_MCEERR_AR, p->mce_vaddr, PAGE_SHIFT);
--	} else {
--		pr_err("Memory error not recovered");
--		kill_me_now(cb);
--	}
-+	pr_err("Memory error not recovered");
-+	kill_me_now(cb);
+ static void kill_me_now(struct callback_head *ch)
+ {
++	struct task_struct *p = container_of(ch, struct task_struct, mce_kill_me);
++
++	p->mce_count = 0;
+ 	force_sig(SIGBUS);
  }
  
--static void queue_task_work(struct mce *m, int kill_current_task)
-+static void kill_me_never(struct callback_head *cb)
-+{
-+	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
-+
-+	pr_err("Kernel accessed poison in user space at %llx\n", p->mce_addr);
-+	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, 0))
-+		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
-+}
-+
-+static void queue_task_work(struct mce *m, void (*func)(struct callback_head *))
+@@ -1258,6 +1261,7 @@ static void kill_me_maybe(struct callback_head *cb)
+ 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
+ 	int flags = MF_ACTION_REQUIRED;
+ 
++	p->mce_count = 0;
+ 	pr_err("Uncorrected hardware memory error in user-access at %llx", p->mce_addr);
+ 
+ 	if (!p->mce_ripv)
+@@ -1277,18 +1281,36 @@ static void kill_me_never(struct callback_head *cb)
  {
- 	current->mce_addr = m->addr;
- 	current->mce_kflags = m->kflags;
- 	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
- 	current->mce_whole_page = whole_page(m);
--
--	if (kill_current_task)
--		current->mce_kill_me.func = kill_me_now;
--	else
--		current->mce_kill_me.func = kill_me_maybe;
-+	current->mce_kill_me.func = func;
+ 	struct task_struct *p = container_of(cb, struct task_struct, mce_kill_me);
+ 
++	p->mce_count = 0;
+ 	pr_err("Kernel accessed poison in user space at %llx\n", p->mce_addr);
+ 	if (!memory_failure(p->mce_addr >> PAGE_SHIFT, 0))
+ 		set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
+ }
+ 
+-static void queue_task_work(struct mce *m, void (*func)(struct callback_head *))
++static void queue_task_work(struct mce *m, char *msg, void (*func)(struct callback_head *))
+ {
+-	current->mce_addr = m->addr;
+-	current->mce_kflags = m->kflags;
+-	current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
+-	current->mce_whole_page = whole_page(m);
+-	current->mce_kill_me.func = func;
++	int count = ++current->mce_count;
++
++	/* First call, save all the details */
++	if (count == 1) {
++		current->mce_addr = m->addr;
++		current->mce_kflags = m->kflags;
++		current->mce_ripv = !!(m->mcgstatus & MCG_STATUS_RIPV);
++		current->mce_whole_page = whole_page(m);
++		current->mce_kill_me.func = func;
++	}
++
++	/* Ten is likley overkill. Don't expect more than two faults before task_work() */
++	if (count > 10)
++		mce_panic("Too many machine checks while accessing user data", m, msg);
++
++	/* Second or later call, make sure page address matches the one from first call */
++	if (count > 1 && (current->mce_addr >> PAGE_SHIFT) != (m->addr >> PAGE_SHIFT))
++		mce_panic("Machine checks to different user pages", m, msg);
++
++	/* Do not call task_work_add() more than once */
++	if (count > 1)
++		return;
  
  	task_work_add(current, &current->mce_kill_me, TWA_RESUME);
  }
-@@ -1426,7 +1426,10 @@ noinstr void do_machine_check(struct pt_regs *regs)
- 		/* If this triggers there is no way to recover. Die hard. */
+@@ -1427,9 +1449,9 @@ noinstr void do_machine_check(struct pt_regs *regs)
  		BUG_ON(!on_thread_stack() || !user_mode(regs));
  
--		queue_task_work(&m, kill_current_task);
-+		if (kill_current_task)
-+			queue_task_work(&m, kill_me_now);
-+		else
-+			queue_task_work(&m, kill_me_maybe);
+ 		if (kill_current_task)
+-			queue_task_work(&m, kill_me_now);
++			queue_task_work(&m, msg, kill_me_now);
+ 		else
+-			queue_task_work(&m, kill_me_maybe);
++			queue_task_work(&m, msg, kill_me_maybe);
  
  	} else {
  		/*
-@@ -1444,7 +1447,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
+@@ -1447,7 +1469,7 @@ noinstr void do_machine_check(struct pt_regs *regs)
  		}
  
  		if (m.kflags & MCE_IN_KERNEL_COPYIN)
--			queue_task_work(&m, kill_current_task);
-+			queue_task_work(&m, kill_me_never);
+-			queue_task_work(&m, kill_me_never);
++			queue_task_work(&m, msg, kill_me_never);
  	}
  out:
  	mce_wrmsrl(MSR_IA32_MCG_STATUS, 0);
-diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-index 83df991314c5..47810d12f040 100644
---- a/arch/x86/kernel/cpu/mce/severity.c
-+++ b/arch/x86/kernel/cpu/mce/severity.c
-@@ -251,8 +251,6 @@ static bool is_copy_from_user(struct pt_regs *regs)
- 	if (fault_in_kernel_space(addr))
- 		return false;
- 
--	current->mce_vaddr = (void __user *)addr;
--
- 	return true;
- }
- 
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ef00bb22164c..2d213b52730c 100644
+index 2d213b52730c..8f9dc91498cf 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -1358,7 +1358,6 @@ struct task_struct {
+@@ -1364,6 +1364,7 @@ struct task_struct {
+ 					mce_whole_page : 1,
+ 					__mce_reserved : 62;
+ 	struct callback_head		mce_kill_me;
++	int				mce_count;
  #endif
  
- #ifdef CONFIG_X86_MCE
--	void __user			*mce_vaddr;
- 	__u64				mce_kflags;
- 	u64				mce_addr;
- 	__u64				mce_ripv : 1,
+ #ifdef CONFIG_KRETPROBES
 -- 
 2.29.2
 
