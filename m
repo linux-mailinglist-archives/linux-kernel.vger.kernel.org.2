@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDE134AF20
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CFE34AF37
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhCZTOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        id S230204AbhCZTTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhCZTOU (ORCPT
+        with ESMTP id S230003AbhCZTTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:14:20 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5DBC0613AA;
-        Fri, 26 Mar 2021 12:14:20 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id v23so1380348ple.9;
-        Fri, 26 Mar 2021 12:14:20 -0700 (PDT)
+        Fri, 26 Mar 2021 15:19:15 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA2DC0613AA;
+        Fri, 26 Mar 2021 12:19:15 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id bx7so7494312edb.12;
+        Fri, 26 Mar 2021 12:19:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3eZ1XyrRmWI9aSyLAK6XW+5gukvn2M+SvfUE70SUpDQ=;
-        b=Jl6NIyEEkokUTYkrd5gDZszVhtnDTLPQZnzzowtNmfnfe/k/eDnmFmtOdCwNtQEfOz
-         ASHjeC7TO3Q6WqVBlLuahcUDTayqS70gvIV1DQOL5ssz59nP3pdzSS2Rq7m8WT4COuAn
-         2n6QEwqMIRdrxW4edFPe6EauqlbjPA5VPxjCGu/fWdHzslSe02Ec1LcwC48GuOQEbzyk
-         /xLbpj93pniQTBqj9RXjL2mZ9l9mgvLQ5yXYbWd53pQn+sPlLBbjxN2mdskdKBj8kd2H
-         PfNwnOSplZ8gAjjwfqFNDhzvHLjypauL9hXKgGKRKoJfhf8JK1JuulpxNJjDV62GH/NA
-         nXfQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=+IPVj252zmGnilvXPoux9mM7JML4v4YjgYWvZk+Qg4U=;
+        b=M65o9wpZ7SLprYx/zb2EPO7FAOIQ/Ty797VhdcmceWkngcB+7pSHLzISYrf3KdX2EJ
+         b1WgI02uIFpufwzhj9kNHii/rU+v5v5Uk5tZjx6JPr9Fiq3pN9PpLn+m4vNnpm5OxxuU
+         xHBzZFYOKyFBldoS+9PRcjknxEhEZNu9Zdzf76CbZJKIqoefGiE7HZTc6QDwG9jDqcyj
+         24o/euWDynZckw56Wg+ay04JD0waBBOpkjVpV/GLf8KgY+e8gS79+D/wt+SJwNNubbTr
+         32lfhaXGL6OEmvQ3d16pis2y3VPDfXhqS7bz5e7Ko1JzcVE9sfVV/0Ru3tHDJggRU2h3
+         aPDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3eZ1XyrRmWI9aSyLAK6XW+5gukvn2M+SvfUE70SUpDQ=;
-        b=b8LBo6USgz9uv3Q0kxxeJrGr5v60fzH5pW37dykm7juU6R9X4C+yAtGz3bBfGnLSVi
-         RLo9T0H/VgvmH57E+rLluzg7b0lh6rRJWwMb7lOHT4LdejjwLKhgWemsTzFwC4+zNBpg
-         hPaoKa0JEQJSTYLWKet/Gv5JrhBnqfqay4eynmwgNf84kNoSdvtui3OQCMLuC2Qu5ZpI
-         hmaR51dPU8BcM8eaF9E0aUuLnZfIl8pVQ+Bi6bCPPPs1aQRA8NL9jZCXp9ULnD7BbRAw
-         +k5atovo2IHYwDuPgnHxkYX3kEiEbFgqHL/PxeKRcSWsCdqxsSei6T4w+/kKF+CmMptZ
-         HPtA==
-X-Gm-Message-State: AOAM530T9nnZOXIPIr+V6NdAO8Y9QgjtxKYvhUJpCCOxs8s3FydhpnyK
-        Atp5j0eRID7Mx44g4zmB/48=
-X-Google-Smtp-Source: ABdhPJwC5GQ5QiIvjxNM+oEQ5vB0p6D7E7m6FIhXTLkEZ1knmX0LiYX6gLmUXgQ0AlQ2xFoFn/C5eA==
-X-Received: by 2002:a17:902:ead2:b029:e5:ba7a:a232 with SMTP id p18-20020a170902ead2b02900e5ba7aa232mr16732246pld.19.1616786059579;
-        Fri, 26 Mar 2021 12:14:19 -0700 (PDT)
-Received: from nickserv.localdomain (c-98-33-101-203.hsd1.ca.comcast.net. [98.33.101.203])
-        by smtp.gmail.com with ESMTPSA id j20sm13113765pji.3.2021.03.26.12.14.18
+         :references;
+        bh=+IPVj252zmGnilvXPoux9mM7JML4v4YjgYWvZk+Qg4U=;
+        b=abhE9fK1blhrdRpYBcYaSfNpeuqcvouXzPI0gRDQiraYvtgO5sE2ajqqRZQBJhiDhi
+         m854HPUS+d1eQ+6kwAnT0bKVWb48HVuoXvMyVbImjxafPBaYLM6iZ5nzgf5DOrulxJYr
+         IQaBwhdEyamPsZDGtKeGSkOwJ/HDUqwatzKg+UYE4+q++6xI+l3GeT6js8NPpT8067vs
+         i22DCYrsghca2o1T9wTeq5A6j4j5RXcD3qJRIOVuIygEkn5XiInCJIZXjqSQc6xQeFsW
+         A2xVceX/XGisfmax91MRSVmSBo35BAkPYqR6lmY92si0PMV7zQBCLmH/0BmI+5J0yc/i
+         nsWg==
+X-Gm-Message-State: AOAM533Hkwmv1spM9O6xGuV3kfDc0iOv0rmjDMPD29R2ofV3OIa5YYHv
+        UwCAIvL0f/QzIS9RszreHmEjJYLttWs=
+X-Google-Smtp-Source: ABdhPJyvLnIpJVd3BHSpVbYfUnsyrfxd4BC0VTfFm56gk4m+fLdCqZ59Z2z/T/FPInS7MN7t71wVkg==
+X-Received: by 2002:aa7:cd54:: with SMTP id v20mr16928005edw.80.1616786353794;
+        Fri, 26 Mar 2021 12:19:13 -0700 (PDT)
+Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
+        by smtp.gmail.com with ESMTPSA id c19sm4739373edu.20.2021.03.26.12.19.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 12:14:19 -0700 (PDT)
-From:   Nick Terrell <nickrterrell@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        Nick Terrell <terrelln@fb.com>, Chris Mason <clm@fb.com>,
-        Petr Malat <oss@malat.biz>, Johannes Weiner <jweiner@fb.com>,
-        Niket Agarwal <niketa@fb.com>, Yann Collet <cyan@fb.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Sterba <dsterba@suse.cz>
-Subject: [PATCH v8 2/3] lib: zstd: Add decompress_sources.h for decompress_unzstd
-Date:   Fri, 26 Mar 2021 12:18:58 -0700
-Message-Id: <20210326191859.1542272-3-nickrterrell@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210326191859.1542272-1-nickrterrell@gmail.com>
-References: <20210326191859.1542272-1-nickrterrell@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 26 Mar 2021 12:19:13 -0700 (PDT)
+From:   Jim Quinlan <jim2101024@gmail.com>
+To:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
+        james.quinlan@broadcom.com
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
+        BCM2711/BCM2835 ARM ARCHITECTURE),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP voltage regulators
+Date:   Fri, 26 Mar 2021 15:18:59 -0400
+Message-Id: <20210326191906.43567-2-jim2101024@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210326191906.43567-1-jim2101024@gmail.com>
+References: <20210326191906.43567-1-jim2101024@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Terrell <terrelln@fb.com>
+Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
+allows optional regulators to be attached and controlled by the PCIe RC
+driver.  That being said, this driver searches in the DT subnode (the EP
+node, eg pci@0,0) for the regulator property.
 
-Adds decompress_sources.h which includes every .c file necessary for
-zstd decompression. This is used in decompress_unzstd.c so the internal
-structure of the library isn't exposed.
+The use of a regulator property in the pcie EP subnode such as
+"vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
+file at
 
-This allows us to upgrade the zstd library version without modifying any
-callers. Instead we just need to update decompress_sources.h.
+https://github.com/devicetree-org/dt-schema/pull/54
 
-Signed-off-by: Nick Terrell <terrelln@fb.com>
+Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
 ---
- lib/decompress_unzstd.c       |  6 +-----
- lib/zstd/decompress_sources.h | 14 ++++++++++++++
- 2 files changed, 15 insertions(+), 5 deletions(-)
- create mode 100644 lib/zstd/decompress_sources.h
+ Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/lib/decompress_unzstd.c b/lib/decompress_unzstd.c
-index dab2d55cf08d..e6897a5063a7 100644
---- a/lib/decompress_unzstd.c
-+++ b/lib/decompress_unzstd.c
-@@ -68,11 +68,7 @@
- #ifdef STATIC
- # define UNZSTD_PREBOOT
- # include "xxhash.c"
--# include "zstd/entropy_common.c"
--# include "zstd/fse_decompress.c"
--# include "zstd/huf_decompress.c"
--# include "zstd/zstd_common.c"
--# include "zstd/decompress.c"
-+# include "zstd/decompress_sources.h"
- #endif
- 
- #include <linux/decompress/mm.h>
-diff --git a/lib/zstd/decompress_sources.h b/lib/zstd/decompress_sources.h
-new file mode 100644
-index 000000000000..d2fe10af0043
---- /dev/null
-+++ b/lib/zstd/decompress_sources.h
-@@ -0,0 +1,14 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
+diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+index f90557f6deb8..ea3e6f55e365 100644
+--- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
+@@ -156,5 +156,11 @@ examples:
+                                  <0x42000000 0x1 0x80000000 0x3 0x00000000 0x0 0x80000000>;
+                     brcm,enable-ssc;
+                     brcm,scb-sizes =  <0x0000000080000000 0x0000000080000000>;
 +
-+/*
-+ * This file includes every .c file needed for decompression.
-+ * It is used by lib/decompress_unzstd.c to include the decompression
-+ * source into the translation-unit, so it can be used for kernel
-+ * decompression.
-+ */
-+
-+#include "entropy_common.c"
-+#include "fse_decompress.c"
-+#include "huf_decompress.c"
-+#include "zstd_common.c"
-+#include "decompress.c"
++                    pcie-ep@0,0 {
++                            reg = <0x0 0x0 0x0 0x0 0x0>;
++                            compatible = "pci14e4,1688";
++                            vpcie12v-supply: <&vreg12>;
++                    };
+             };
+     };
 -- 
-2.31.0
+2.17.1
 
