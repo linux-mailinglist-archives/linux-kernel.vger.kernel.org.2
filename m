@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A35934A3C6
+	by mail.lfdr.de (Postfix) with ESMTP id D266E34A3C7
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhCZJKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:10:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S230226AbhCZJKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229991AbhCZJKA (ORCPT
+        with ESMTP id S230035AbhCZJKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:10:00 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC02C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:09:59 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso2598905wmi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:09:59 -0700 (PDT)
+        Fri, 26 Mar 2021 05:10:01 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EC4C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:01 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 12so2571711wmf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Dvn70d7ZVR8XY9R5o5JpAomHZOvZdMCNh+kZfGyarKQ=;
-        b=PNBvGfdgN33huUF+/83LrlKOWwvHGSImBAKLAH37Ti8wSDUhHrkUUtwSp8MgnA9SEf
-         FZacgtSlII1BklZCpuDEW6/RiW2JdMBMoIGa3qbNAghAdBxFgn8Zb1qFI35WMuXESyhv
-         k87YY4B5zHauLxUE5+VnB/fQSe1MK/+Qy6NPGQSbd8NzH2fj2jZJpHOqr4CO45tWKBWD
-         TJa3vkQlMfo9LKiAYX4oUivZyRSetTqn2CKAmDVVE6lN2Tbj6hAqappuAp+0traEZe+b
-         2wWQubE3jJg6u8+TIRmUrIE0ZDC8m46Ex+nzF9ZFPEbzMqRZRqHAU4UZFzU6xUdx+NBu
-         Pf6w==
+        bh=LuVUGCrDYwzS4XJl5GG9GlS8NguBAubSl2Epx6ZZHf8=;
+        b=pmiAGbRSMQbcmi8fiNSSsEWBLqaXAi+gA7rvW+EboM0H6bbmzfRsFSkgZRo/JWBn7M
+         R2EZFn014knD17A+/+oNrG17BMYKHXRChXE2V9kNYQrCVBqj+gXMLvKkFFtzJdrddfCe
+         vW6UjdRw8rQbHAfdKRHoobpQeRaycKsncYjwIwN0CW2jSqCypfkEqvFFiEP9Bwu4CVvy
+         Wadc8mjHeeAlooFKaohllZfm/NZPRG/08eSd6FLfiKZcmRRo3dy7s1Z5Vi2EpuOs64df
+         URklx61g/flWV+nXOwnqPN55LfNuDFqaPgr2byHyKnBS8gF3IBUOuyTSe8FOEKLfk2Gc
+         H3dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Dvn70d7ZVR8XY9R5o5JpAomHZOvZdMCNh+kZfGyarKQ=;
-        b=dq87nn1c+1S9GB3igJjxqqWw6ulmH/W9YGtd+kN8KDWmxIuoZ/8Dorj1QyUeUzVvyy
-         wFNrn+E4K1FxPU4EviYOQx4bb4vIfU40vvhDhMXyMDty/j7ZofEVT8Okl2BwKZH0MEyT
-         ggL/bcbULP9uOUqBlL7/k/yP8QP9CuwlllAbQsh3FvUR2WhYek5IGCyx/6WHEfTD2Sp1
-         Edz+P3oHgejC2SuQv74OCfVeznUn/0JYwBH1VPi3CkzLoApG1F8ES5pd7KYIUxSg00JO
-         JbaLD+Eo0O7QPrXDwC+Dv4JgitBCPi5Dy3Uk518jRbQjY6cSQw36uAuZmessNI/TIBPP
-         EadA==
-X-Gm-Message-State: AOAM532x2VXtMg6kLQqOLfbKFh4wD5PWlQc/r0yqKohs2Nfz05BG00GD
-        xngaBw3rEfCALkLrNwKbNHk=
-X-Google-Smtp-Source: ABdhPJwql02n0mzlCutgORDc5N4gBV7SJ79caZIcgxCSRZbItA/vgM3x52XK63E+Y2bxyv0iEA4Vxg==
-X-Received: by 2002:a05:600c:2946:: with SMTP id n6mr12002150wmd.52.1616749798339;
-        Fri, 26 Mar 2021 02:09:58 -0700 (PDT)
+        bh=LuVUGCrDYwzS4XJl5GG9GlS8NguBAubSl2Epx6ZZHf8=;
+        b=i0GzWX5vXEE2JXAgcysgSN+4c6t1RBQ/tUQ97EzeOzSypCmICZrsQ3YgOckGYUj4qZ
+         gKspr18kiI/PW14pozRnDRH/smow/RK3M8+qW3LMDp7AaCdFa/BbLn9hGX93uAGuYaIO
+         O2sKENMyOT7hRg+RKotko+wKWyMAKOenA2jAbIiKws6ioUxtztkWDI9KBxo1Aa06CyuM
+         tX7VcubTERO/wVsBKzjGiMFU6p7e4MbdrF0xc9aVnCBNsMMR5g8QXBT6wzA9j3yKPbNv
+         HP7wSH5oj71db1i2tV9hTYxjKuczh5Cw4SEPw4Ul8UeEZ+5pl/cV3zy2IlSdDvdpV/jc
+         OzLg==
+X-Gm-Message-State: AOAM530YlykmOHy6OXQZm9MfixQ4EM7NS6JsRLllUaLZp0oruAqf5CA3
+        L0irqBFYeyb9p9JLqFQaNM8=
+X-Google-Smtp-Source: ABdhPJz2kYNQwUxQxkJPuRENDkny8o4TLotxnKyeItE1GPN9vo9e3uZ1fQwKly8CWxs6R8ewitlP2g==
+X-Received: by 2002:a1c:6309:: with SMTP id x9mr11987480wmb.62.1616749799841;
+        Fri, 26 Mar 2021 02:09:59 -0700 (PDT)
 Received: from agape ([5.171.81.75])
-        by smtp.gmail.com with ESMTPSA id j30sm12255611wrj.62.2021.03.26.02.09.57
+        by smtp.gmail.com with ESMTPSA id p17sm9431395wmd.42.2021.03.26.02.09.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:09:58 -0700 (PDT)
+        Fri, 26 Mar 2021 02:09:59 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 11/15] staging: rtl8723bs: put parentheses on macros with complex values in include/rtw_debug.h
-Date:   Fri, 26 Mar 2021 10:09:18 +0100
-Message-Id: <0634873fdf3b0ff61e61fa8cd9a74c5959a50efa.1616748885.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 12/15] staging: rtl8723bs: put parentheses on macros with complex values in include/rtw_pwrctrl.h
+Date:   Fri, 26 Mar 2021 10:09:19 +0100
+Message-Id: <09367497eed0c43d8e4745c50c2a20c6c23883c2.1616748885.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1616748885.git.fabioaiuto83@gmail.com>
 References: <cover.1616748885.git.fabioaiuto83@gmail.com>
@@ -64,56 +64,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix the following checkpatch warning:
+fix the following checkpatch warnings:
 
-ERROR: Macros starting with if should be enclosed by a
-do - while loop to avoid possible if/else logic defects
-+	#define RT_PRINT_DATA(_Comp, _Level,
-	_TitleString, _HexData, _HexDataLen)			\
+ERROR: Macros with complex values should be enclosed in parentheses
+92: FILE: drivers/staging/rtl8723bs/include/rtw_pwrctrl.h:92:
++#define LPS_DELAY_TIME	1*HZ /*  1 sec */
+--
+ERROR: Macros with complex values should be enclosed in parentheses
+241: FILE: drivers/staging/rtl8723bs/include/rtw_pwrctrl.h:241:
++#define rtw_get_ips_mode_req(pwrctl) \
+--
+ERROR: Macros with complex values should be enclosed in parentheses
+244: FILE: drivers/staging/rtl8723bs/include/rtw_pwrctrl.h:244:
++#define rtw_ips_mode_req(pwrctl, ips_mode) \
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/rtw_debug.h | 28 ++++++++++---------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-index d1c557818305..b00f8a6c4312 100644
---- a/drivers/staging/rtl8723bs/include/rtw_debug.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
-@@ -236,19 +236,21 @@
- #if	defined(_dbgdump)
- 	#undef RT_PRINT_DATA
- 	#define RT_PRINT_DATA(_Comp, _Level, _TitleString, _HexData, _HexDataLen)			\
--		if (((_Comp) & GlobalDebugComponents) && (_Level <= GlobalDebugLevel))	\
--		{									\
--			int __i;								\
--			u8 *ptr = (u8 *)_HexData;				\
--			_dbgdump("%s", DRIVER_PREFIX);						\
--			_dbgdump(_TitleString);						\
--			for (__i = 0; __i < (int)_HexDataLen; __i++)				\
--			{								\
--				_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0)?"  ":" ");	\
--				if (((__i + 1) % 16) == 0)	_dbgdump("\n");			\
--			}								\
--			_dbgdump("\n");							\
--		}
-+		do { \
-+			if (((_Comp) & GlobalDebugComponents) && (_Level <= GlobalDebugLevel))	\
-+			{									\
-+				int __i;								\
-+				u8 *ptr = (u8 *)_HexData;				\
-+				_dbgdump("%s", DRIVER_PREFIX);						\
-+				_dbgdump(_TitleString);						\
-+				for (__i = 0; __i < (int)_HexDataLen; __i++)				\
-+				{								\
-+					_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0)?"  ":" ");	\
-+					if (((__i + 1) % 16) == 0)	_dbgdump("\n");			\
-+				}								\
-+				_dbgdump("\n");							\
-+			} \
-+		} while (0)
- #endif /* defined(_dbgdump) */
- #endif /* DEBUG_RTL871X */
+diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+index cec9fc0cf794..688436cf3610 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
++++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+@@ -89,7 +89,7 @@ struct reportpwrstate_parm {
+ 	unsigned short rsvd;
+ };
+ 
+-#define LPS_DELAY_TIME	1*HZ /*  1 sec */
++#define LPS_DELAY_TIME	(1*HZ) /*  1 sec */
+ 
+ #define EXE_PWR_NONE	0x01
+ #define EXE_PWR_IPS		0x02
+@@ -239,10 +239,10 @@ struct pwrctrl_priv {
+ };
+ 
+ #define rtw_get_ips_mode_req(pwrctl) \
+-	(pwrctl)->ips_mode_req
++	((pwrctl)->ips_mode_req)
+ 
+ #define rtw_ips_mode_req(pwrctl, ips_mode) \
+-	(pwrctl)->ips_mode_req = (ips_mode)
++	((pwrctl)->ips_mode_req = (ips_mode))
+ 
+ #define RTW_PWR_STATE_CHK_INTERVAL 2000
  
 -- 
 2.20.1
