@@ -2,63 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05AB34A83A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC52E34A83E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:39:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbhCZNhQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:37:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229995AbhCZNhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:37:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA12F61879;
-        Fri, 26 Mar 2021 13:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616765825;
-        bh=Lki35no18rL9WHDL876lOo6SZAtkdqS9eteHVC5XH04=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YGpdPrA09pgx2+feOOKJZ4j8abd/tYjdjoEGVgzMMCKp79gjJhRefAv/+eqGFKAkZ
-         UrJcv9TNJ8x7YqhS/rFDQx//Da0o+GfHTpTzsGg9ifONWITwwlG2FYfXd9zHU7phux
-         aCuSxCBgQBuaQrX6L/55en8+IaXJNcor+oqujSqw=
-Date:   Fri, 26 Mar 2021 14:37:02 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Sandeep Maheswaram <sanm@codeaurora.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Manu Gautam <mgautam@codeaurora.org>
-Subject: Re: [PATCH v1] usb: dwc3: core: Add shutdown callback for dwc3
-Message-ID: <YF3jfshT3OSolcws@kroah.com>
-References: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
+        id S230165AbhCZNin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:38:43 -0400
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:45039 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhCZNih (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:38:37 -0400
+Received: by mail-pl1-f172.google.com with SMTP id d8so919989plh.11;
+        Fri, 26 Mar 2021 06:38:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sjVdsVi2cOMNdrCvfZtZ3oLI1gCE7hob4inFlEl7ClM=;
+        b=rqQDS7XGoqUtpUeaZIeCD5RSKVBoBdn0QvPJjBIZoKUE/mPtQZq75rODBscPN+pMGZ
+         +EQWjp9/hcyawAsVZPlI0dIQouXei4NzFUpTD2H6hjBoA009b6oPs5Y3Nwco8hfqOWAq
+         l/iptMv4OxivEFK0A38Q+HO2acrjiADwA0Ewr0Cy/5qD9+EDNG+pUYd6aEpRipGqJLn2
+         Xd7yohAphzpBSm+eZ1tNEYpgfbr7sguq8WcTUGYgWHp4w8hrXYYUh92TtS9NAaF3rX/d
+         9Fzv6FYAN+kbOv97AGUTnEh6EBUlHQZUaE4lld3JHfZJ3hhQhdAJd8gQWcErFj3X439T
+         ns/g==
+X-Gm-Message-State: AOAM531Q95b+HwqIZarrthafCN/95RM/b3h0d+5RVLmFyZCOmHLZQY3c
+        bX0QBnt3Fws+tBII0CooUYU=
+X-Google-Smtp-Source: ABdhPJxhLAaakq2et9TW5baLVPKl8QCBjXLxdJ4mK22v4C0BUr+ccWqx6FIqXdPbOarrOZclY3bUWA==
+X-Received: by 2002:a17:90a:8083:: with SMTP id c3mr13295578pjn.134.1616765916672;
+        Fri, 26 Mar 2021 06:38:36 -0700 (PDT)
+Received: from macbook.local (ae142046.dynamic.ppp.asahi-net.or.jp. [14.3.142.46])
+        by smtp.gmail.com with ESMTPSA id q66sm8672644pja.27.2021.03.26.06.38.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 06:38:35 -0700 (PDT)
+Subject: Re: [PATCH 1/3] x86: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Sedat Dilek <sedat.dilek@gmail.com>
+References: <20210326000435.4785-1-nathan@kernel.org>
+ <20210326000435.4785-2-nathan@kernel.org>
+From:   John Millikin <john@john-millikin.com>
+Message-ID: <28a887a4-3524-fd54-0953-d4c813fb676b@john-millikin.com>
+Date:   Fri, 26 Mar 2021 22:38:31 +0900
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616527652-7937-1-git-send-email-sanm@codeaurora.org>
+In-Reply-To: <20210326000435.4785-2-nathan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:57:32AM +0530, Sandeep Maheswaram wrote:
-> This patch adds a shutdown callback to USB DWC core driver to ensure that
-> it is properly shutdown in reboot/shutdown path. This is required
-> where SMMU address translation is enabled like on SC7180
-> SoC and few others. If the hardware is still accessing memory after
-> SMMU translation is disabled as part of SMMU shutdown callback in
-> system reboot or shutdown path, then IOVAs(I/O virtual address)
-> which it was using will go on the bus as the physical addresses which
-> might result in unknown crashes (NoC/interconnect errors).
+On 3/26/21 09:04, Nathan Chancellor wrote:
+> From: John Millikin <john@john-millikin.com>
 > 
-> Previously this was added in dwc3 qcom glue driver.
-> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=382449
-> But observed kernel panic as glue driver shutdown getting called after
-> iommu shutdown. As we are adding iommu nodes in dwc core node
-> in device tree adding shutdown callback in core driver seems correct.
+> When cross-compiling with Clang, the `$(CLANG_FLAGS)' variable
+> contains additional flags needed to build C and assembly sources
+> for the target platform. Normally this variable is automatically
+> included in `$(KBUILD_CFLAGS)' by via the top-level Makefile.
+> 
+> The x86 real-mode makefile builds `$(REALMODE_CFLAGS)' from a
+> plain assignment and therefore drops the Clang flags. This causes
+> Clang to not recognize x86-specific assembler directives:
+> 
+>   arch/x86/realmode/rm/header.S:36:1: error: unknown directive
+>   .type real_mode_header STT_OBJECT ; .size real_mode_header, .-real_mode_header
+>   ^
+> 
+> Explicit propagation of `$(CLANG_FLAGS)' to `$(REALMODE_CFLAGS)',
+> which is inherited by real-mode make rules, fixes cross-compilation
+> with Clang for x86 targets.
+> 
+> Relevant flags:
+> 
+> * `--target' sets the target architecture when cross-compiling. This
+>   flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
+>   to support architecture-specific assembler directives.
+> 
+> * `-no-integrated-as' tells clang to assemble with GNU Assembler
+>   instead of its built-in LLVM assembler. This flag is set by default
+>   unless `LLVM_IAS=1' is set, because the LLVM assembler can't yet
+>   parse certain GNU extensions.
+> 
+> Signed-off-by: John Millikin <john@john-millikin.com>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> ---
+>  arch/x86/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> index 2d6d5a28c3bf..9a73e0cea19c 100644
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -33,6 +33,7 @@ REALMODE_CFLAGS += -ffreestanding
+>  REALMODE_CFLAGS += -fno-stack-protector
+>  REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
+>  REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
+> +REALMODE_CFLAGS += $(CLANG_FLAGS)
+>  export REALMODE_CFLAGS
+>  
+>  # BITS is used as extension for files which are available in a 32 bit
+> 
 
-So shouldn't you also remove this from the qcom glue driver at the same
-time?  Please submit both as a patch series.
-
-thanks,
-
-greg k-h
+Just wanted to say "thank you" for picking this up -- I ran into some real-life situations and didn't have time to debug why my patch was failing the Git validity check (presumed to be an email client misconfiguration).
