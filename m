@@ -2,307 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013EF34ABBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ADA34ABBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230474AbhCZPnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:43:35 -0400
-Received: from mail-bn7nam10on2060.outbound.protection.outlook.com ([40.107.92.60]:4961
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230391AbhCZPnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:43:02 -0400
+        id S230213AbhCZPpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:45:41 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:50144 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhCZPpg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:45:36 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QFTWXw127512;
+        Fri, 26 Mar 2021 15:45:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=OhSSz3I9betWpGjsBrllxpLu60ITou6YCPIkahKll+w=;
+ b=WfX2RqUGJx3830PYz5Ov08HXh1RDbc9If+upkvp9qkqMPZh9Zdi+eozVp98wT1SCAnef
+ 1OjbBJQ/3og++GWp95FTA1QDvo/KZJgrbQ9Hi01GahPK6frvNgI8OGIMVP6yjL2ORuSZ
+ lM81e66Kr93MdvyB2vGy4UJjT/ZJH9rBPZZ4/3mnt35sfDF2D6VqNKamPqBrNiOhGFMA
+ PR+VWl11GIdAjLP6s8nHiOw/+2HDkrm44mrSn9m58uj2DXEyPndZakZ2TUg+6yCj6QFm
+ huizElxdMHpEURkuyQ2whK2iK3zL0v30jClX0gri4cRrFjeEhh3IVOnjwkbRgxmmAfVy yg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 37h1422hkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 15:45:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QFVBJD066306;
+        Fri, 26 Mar 2021 15:45:24 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2043.outbound.protection.outlook.com [104.47.56.43])
+        by userp3030.oracle.com with ESMTP id 37h13xu3fr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 15:45:24 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wn5P1nqNS6MoBBIYmK+xv0z3Em4qEdePb5J1G7II7MTsOp95DYCBuSi9e7o3uqgQPj+Cn16D/0LdSqz4wcKZXV2STnqqRUrn3xHhst/Fx0TutNYWvq77W00BjvGhjq6quOjijzgF5ijR2pG3943hEj9390iLcL5eMUVKIIxaZbjoCoBO57d4sXLOKwvuVUUXDrr3FcKxCp98J9cLgQYEfqrFG9ZfLmXyO+V3v9saRJG/AtPcRUYJmrTHjBOrO8noJplcYcRN5T/vQCF6XxB2i+7nRGgGGdcDb652DW1tR915ETHhabBmY2OQKTpq1t6MjzoRgLCFYyLSqz5zTh5TMg==
+ b=idVoc7FdD6a7xa7Y7kglat9HeoeAhwot4zCcR+LDlSt6bJ0B4GNsNs1hPZRqv8Gf8xqLpniV0sszVV6OvThvg5GMf+kLUIEEk15WLp67qPGizTuLlcOnpVbmH6mbvS2QQ24ziIC9xEp7zksg1fSYqMnhe3kXrmr2aQB7hlCkTjrIrDdtcNJr5V/XxXndRNtApBvsty4te+xg0AKXm+WtWefGWSELOZefldPyk5YO5+zfnnx0lHvbkRJR//f8eTpZQiJrvemO2WN3hM7FgJCrabAMf5+80MF0IFWkkETLJmtIdFcGFtIzpAHAyeNcDsWkSEnrDLP+xB8xx1PDF7d5wQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nb1wqx2T2hLTnwKDegSqEQ50xdEAQVWPyZT3MTlkF7k=;
- b=g6mDXQrBCJKRxFBxiH1LeQJDuEpfNMSAqXXZ5mfV3YLZrscQ5XE6dKYC5glDsDn/wu2kHmylqpn01nFJG4sWD5tgfJmvj8c2icG3imdAdlehH0hxaeTqAW1f7sWQuQHwa3iQqiLEVL3u9SqXcxiK0OQR6J3xzhLzf7AkXa/seUzF+AEIccRiA6y6u48gNJ9L5CD7lLd2Fqb5VMHwBIK52NrlgPdnB9Kp0TIisV9a9tNXRvwQ9edPnU210MS/xKXXHIXWcw1tj43VLG1XC5ETZONo2wDve5eMACNB8JvE7yh7RbjMuphV5Mmo54mqkbq3WMqdEwlUYFd9Wv1A/1pl6A==
+ bh=OhSSz3I9betWpGjsBrllxpLu60ITou6YCPIkahKll+w=;
+ b=cwg1J7l6h3nDzNLoYUiplBd4w1TKyqI6rFUn9T0MmEFIjSSH9C2vjso8mTPr6TkS9g1JrsgnJNAuI/0CyHYLei5024gJV3PQujgLIqFVQ0iks4HvqkX5pXcU5ok9TGK5TniwSd3j+3BW+mXixX15sYj1+nzKXYjvXbpzlNBdrWKShQwIkpxSEZ9AsXHahXTHTW+MywOc6D9wuE3hguT8SwAPRiUIeTrP1cctOOfEsc7QD2mGZ5w2a8zo5One/ZOhr/HuXc6M2KV3G6jVCwkAH8PVBrix0s0TEMxtMR05xPXI0xSgumzY3ud0NrW2SG3A3XZ2Xa8YhA6PBGIOJsG8eQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nb1wqx2T2hLTnwKDegSqEQ50xdEAQVWPyZT3MTlkF7k=;
- b=sOAY4DH5aWGsbwvNCnhPXogEcNFLsBil5X2qtFmEyUmo7l6jcj+p5pJwNRCtpa60KUje4Y4FJW+BcqEGMTnE/tCb1AN30AXzx/jBypoxmUsvCJamAcUSkUmrFvOnCW/x1Uc6PTUhd0cVf34SmdP4P10jKf9RBZEQxY0oKPyNxmc=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
- by SN1PR12MB2365.namprd12.prod.outlook.com (2603:10b6:802:2e::20) with
+ bh=OhSSz3I9betWpGjsBrllxpLu60ITou6YCPIkahKll+w=;
+ b=tCg+2l2kF5uma1ihqNiyyBTowj7JUnHyPcB7CRVrk4uN7nn4owFmR5xikQOeIawxEfKcidZ7JumgQmVvrV219EYbhh3b+lZVjlxud8UOpWPq/4MagfEjlY8Mbjyd/0Bslvym13aCNT69q1qEs2ogOvwOSsKRXokMOoooJk+s5io=
+Authentication-Results: kernel.dk; dkim=none (message not signed)
+ header.d=none;kernel.dk; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB3794.namprd10.prod.outlook.com (2603:10b6:a03:1b2::30)
+ by SJ0PR10MB4511.namprd10.prod.outlook.com (2603:10b6:a03:2de::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 26 Mar
- 2021 15:42:58 +0000
-Received: from SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::30fb:2d6c:a0bf:2f1d]) by SN6PR12MB2718.namprd12.prod.outlook.com
- ([fe80::30fb:2d6c:a0bf:2f1d%3]) with mapi id 15.20.3955.027; Fri, 26 Mar 2021
- 15:42:58 +0000
-Cc:     brijesh.singh@amd.com, linux-kernel@vger.kernel.org,
-        x86@kernel.org, kvm@vger.kernel.org, ak@linux.intel.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 03/13] x86: add a helper routine for the
- PVALIDATE instruction
-To:     Borislav Petkov <bp@alien8.de>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-4-brijesh.singh@amd.com>
- <20210326143026.GB27507@zn.tnic>
-From:   Brijesh Singh <brijesh.singh@amd.com>
-Message-ID: <9c9773d1-c494-2dfe-cd2a-95e3cfdfa09f@amd.com>
-Date:   Fri, 26 Mar 2021 10:42:56 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.8.1
-In-Reply-To: <20210326143026.GB27507@zn.tnic>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [70.112.153.56]
-X-ClientProxiedBy: SN6PR04CA0096.namprd04.prod.outlook.com
- (2603:10b6:805:f2::37) To SN6PR12MB2718.namprd12.prod.outlook.com
- (2603:10b6:805:6f::22)
+ 2021 15:45:22 +0000
+Received: from BY5PR10MB3794.namprd10.prod.outlook.com
+ ([fe80::21a6:5c60:cd6e:1902]) by BY5PR10MB3794.namprd10.prod.outlook.com
+ ([fe80::21a6:5c60:cd6e:1902%7]) with mapi id 15.20.3955.031; Fri, 26 Mar 2021
+ 15:45:22 +0000
+Date:   Fri, 26 Mar 2021 10:45:19 -0500
+From:   Tom Saeger <tom.saeger@oracle.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH 1/1] block: fix trivial typos in comments
+Message-ID: <20210326154519.y2ztm2fqirxejaht@dhcp-10-154-182-208.vpn.oracle.com>
+References: <31acb3239b7ab8989db0c9951e8740050aef0205.1616727528.git.tom.saeger@oracle.com>
+ <2831e351-0986-28d5-5eef-53edcf8f41c3@kernel.dk>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2831e351-0986-28d5-5eef-53edcf8f41c3@kernel.dk>
+X-Originating-IP: [70.114.130.219]
+X-ClientProxiedBy: SJ0PR03CA0194.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef::19) To BY5PR10MB3794.namprd10.prod.outlook.com
+ (2603:10b6:a03:1b2::30)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN6PR04CA0096.namprd04.prod.outlook.com (2603:10b6:805:f2::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Fri, 26 Mar 2021 15:42:57 +0000
+Received: from dhcp-10-154-182-208.vpn.oracle.com (70.114.130.219) by SJ0PR03CA0194.namprd03.prod.outlook.com (2603:10b6:a03:2ef::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Fri, 26 Mar 2021 15:45:21 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: efd7e5d5-2af3-45b2-598f-08d8f06dd481
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2365:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB2365565CBBF8639F34BD16D6E5619@SN1PR12MB2365.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: b6be0129-cffd-432b-d15b-08d8f06e2a69
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4511:
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4511FEE09DC0F69DE6E89C95FC619@SJ0PR10MB4511.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:513;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o3EJna8TxI2X37u/fCwJfmBXnlshu+Fhu2iyDSXzvx/yuYVglkxaYffnrrLMWjE4SdLYYsl1mJY7pJhin7zr3nqeTmAu+mE5brU2Tx7Hxxo2SREfYgm/qX7uOXYf5WJ1urM/SI+8bU2Jpkwo/fnKelaWn0zt4Queynil7EV3YrXAkIAwp0ckTzgULBr+ir4NSn1CVbe9yrLgjDi0WFdi72aG4tA+Z1luwcdgIocQlZ9XEhnZITM9xCmpC1p6dehDKklOX2Gz2zxvWmh2vIpcTpaBFL2gJkkbMTy/iCbrnIN1R/520wndQTNPYQcW1Y3C0lBRjpwuGNwsq42j+HKLuml/MDgmE092iXMjR4mA5Kz/A2Yxdr5EYlxSk/HR8+VyvLF72UD+nWF84eqJWvvgKJB+VkZ6lrQ3QpGiIVP77h1yYBcGS9gkKpgfthH7p2f/HfGY6w23R8xFTr7vu1LXXuW30HRuvfJ57qFdkJLVEKs4NC3emZ3yPddlBcxQ5iX4nlQVi8KgaxqUCgB2tD+VYNHzDH+kDCZnUTTVOBtIws4Y18fCKD1MwYwnHY781Jf5FVTxjNAzBlp9kGwNOoOGklz8yt+9GfF3f5jydTfQ8mY52y9w2RqEeP5EuVroaZfJwPFQs4u+rfbiI5KdN3pN5fyaILE/THC6trCh7ukFy3mpni6cBs0emAwCDN/M5jjDdTzM+R944jk+6VSn42/rlz5YABnTHiJ8G+HR7K4Vxik=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(346002)(396003)(136003)(44832011)(66476007)(956004)(8676002)(4326008)(66946007)(5660300002)(52116002)(2616005)(66556008)(7416002)(6916009)(54906003)(83380400001)(36756003)(6512007)(16526019)(478600001)(31686004)(53546011)(86362001)(8936002)(316002)(6486002)(186003)(31696002)(38100700001)(6506007)(26005)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?blBBOFZ3ODBUYUNFUXNrbkk1bXY5cThnK0VhRitKdWY1MzAxL0g3aDZIcElU?=
- =?utf-8?B?cllwVVVCQ0JnM0Q1STBBckd6QW4wdzFuV0l1cXU5TktFQThvQVFlMGlUVUFS?=
- =?utf-8?B?Y1R6bTNkSUV6SjZldHdlN2xSYzh1a1Y5VEQvS01zMDBHY0lZVnIxeVlKOE0z?=
- =?utf-8?B?NGlMOWZwYThpQWYydmduNHlDMklCWUk0MEg2NFBwajBwZ1d3OUwzNlZwVjM3?=
- =?utf-8?B?WlZzTmRucEFaN1hSdDZBNDFERXR6UkZ5a3lRdWR6TnVmTkZtTkRIdkdRb2Vx?=
- =?utf-8?B?aUhqZ3BJSmZqZ2xxais2M1ROdzZuOHlKTjBpK3FnTGFwVllZTElUZUtPUFB1?=
- =?utf-8?B?TzlkMmthR2tXdHhFN2ZvZDNjOWlNaVdZMFd1VFB4Z0pzeEFwd3BwWDJRNVYr?=
- =?utf-8?B?NWg0MXRFNktZd24xZ29RaXhxa1ZZR09IZG90eVhIY29INUxyUWNhd0lSVjZZ?=
- =?utf-8?B?NXVOUG1MTkh4ckpmV2FabmZDeThzQzBqMFF3SHJpQUhtenh1THU0U2tXRkVG?=
- =?utf-8?B?Z0x6VTZaZ1hCVGFxVjlNTEw1Mi9PTWEyMFlTeUovTTg1UldjNjBDWnpsWmFS?=
- =?utf-8?B?Q2VQVktUdmtYd29sZloxaEpyYTJWM0RzUmJTa294bHdSWVlIdWlRdGhRRG1a?=
- =?utf-8?B?NUtWMUV6NTYxUnVOeDRuN3R4RW4rc0h6azZ4cmM4ZVNDUDZ2cFV5bzdNMmRj?=
- =?utf-8?B?emE4RllJSFdIS1YxdjdNYlpNalJlNWJldCtiWWQyNlZvc3d2WW5FcWhnazZ3?=
- =?utf-8?B?bFZ2bjVsenZ6V0twaFJ0dTY2VzY1UEhsWDJlZ21iaDFrblAvQ0VGS0pISU9t?=
- =?utf-8?B?anFNckRUR0laVXVOTXpzVVNnTWhka01kaElTSnVTVERRdmVONmc1cEp6ZlM0?=
- =?utf-8?B?elVEZEZ0Zys4enQzbXVQVzZRNFA4RG9waGJZRnFNWWp3dytLRzhFd3hHRWds?=
- =?utf-8?B?c2k0YUlEcjI1ODBBM3lSTmFpZUF3NmZRYUM1SUlKYjR2ajNZbURYYXVCbU84?=
- =?utf-8?B?bFZVbnpya1ZNQytqSUQveFYwYVg3NmZNY1JVT0JwYjBSL3QwVEVYb1BzWGU3?=
- =?utf-8?B?K1Vxbm1TT212Nk0xS1JLVm9pbnVvdXUxdnBvR2VKbnFMWTVWeVp1QkJrQnpw?=
- =?utf-8?B?U3BQUXVsaHQrZXpGZGw1N0d4R2k2SkRTVmVDeTBpanVDUTk4WWZjckZiV0Z4?=
- =?utf-8?B?R2JWc2lSY3orY0E0ZGN6bVJlQWtFVXlSNDRoY2piMnhDbWNBWm43NlNrdTBx?=
- =?utf-8?B?Yk1mcUZOem1VdzZ5L3FaU1Bkd1VNR2sxNkpMeDMzekkyNkp3dFF5WXlocjRo?=
- =?utf-8?B?K3UrQ1gzNzlKdnYvTVVMaThUM2NNYncxK3ZYNXVZcm5uZ2YxKy9Dbjc3dWYv?=
- =?utf-8?B?azZBQk9ZRVZVcjVFUnJlSWMzeTl3eDk0OEZLN1VWSGZQK1owRER4Mmh2RUhZ?=
- =?utf-8?B?WGl4WDEyMFpieVhDY3hHR3J3YndiWUNnNS9lS0xJSEhzTU4xaHM1OTE5cytj?=
- =?utf-8?B?QTd4bkdUUFREb0FrbDBkZXpRUWxqVHp3SEp0clQrL2xYU3ZhUlJkd0pPRUk5?=
- =?utf-8?B?QTdBSHpLS2pOZEZlSktpNHp6L28vdEVrN2hVSW9NMytJQllQbEVJZVh2ZmI5?=
- =?utf-8?B?a2hFdGJBbitHUWZGN21mc0F2TVhadThFVUtUT2xpNlV0dFIyZGNBQ0NDcDFS?=
- =?utf-8?B?UDZ1Yk1hcU5kdHFWWU9wNGNDcTRUS29Xd053NVpwa3JZcUdMVWFXVUVyRmZw?=
- =?utf-8?Q?eIr+ZDIZ0StIh84Tc8dvGxB9bvFvp5FNDanLAzE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: efd7e5d5-2af3-45b2-598f-08d8f06dd481
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: 1SI9Wz1pZOYhVdwYNbE7kEGbGy0gLyPwbDuR6qzJKNQCQGEPWyLYktyZtFfzF7g/tT2WsoG8UWsp/p525Fg/KdfHfaFWcEYdQXJrzJrjC1RoJWQmZkIZX/1G22Y1eaRT4k0ulUtY5Nx7gwDG76iVbFlNXBps7ujeu47q61VwpWsgp5uPo/crZmuCqAh+vW+3ZCxdTS3KUx8XZcLovpiDYiXJj9OiK9cM/81e3mIrFGRc7kKwGsA7EwmIf1/emscBPHaDD3eIAKX1CRegRP2Dum/F2BbdNQkxPYCAW881OBnGYi104ry83wkBzylJD7C1SG6iyHDaQlFapM36jKnVPsCdSX5ohNUAEx0schJhIuiCueBYOv6u03viKIN4Z4SKT3AwzVvc741Fkg+WftjeDjmGXa9F3CjPZ/vfU32pvxKgCLeRGk6DjyJo/kHsU0g/HMkzEHhw9u/MivHADKOw2ciXVShqqquTMyKW1mgarHdcs8MRFtMqJftHhZRSvidhA8OSHImUHF5dMOshlpH0wf1FQtDw2gwWnbYKsFB9AjjYicybawpeeLpmEIaqRNAnrjshADw45ulz4AkYbd5FMce7DZ8ih8cID9BP+WUu3c3x6OiPvKcMUuqDUb35gXWf/9+Kd4scW3OOC6s3VNWy9H+giO7ZWKqRLjw3FPg6I/k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB3794.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(39860400002)(346002)(376002)(55016002)(4326008)(83380400001)(16526019)(186003)(44832011)(4744005)(53546011)(52116002)(7696005)(5660300002)(478600001)(26005)(956004)(316002)(66946007)(6916009)(66556008)(1076003)(86362001)(38100700001)(2906002)(66476007)(8936002)(8676002)(102196002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PTj45toyXpo4OZEe+L4LFpd6cP+5w27S4PtyB0uUHhMKkyJiC7O1ZsuKCX85?=
+ =?us-ascii?Q?LrmB5KOrGuApQ2MUxiRT38G1X8mp4A0itxn+aU7a0rn+6UfVXUNfy5E2c7H0?=
+ =?us-ascii?Q?mrmJybaxP4vmi5LHp9bxJiYUS1GEpi64eN1MPO2yKMzHyzNuRj3blPblNMf7?=
+ =?us-ascii?Q?A9wx2KL6tEv1O3FPddP5it3iXgmQN7e22CLzW36Xqrqz2sviOU5Be2jT1hn6?=
+ =?us-ascii?Q?TXfVCU9b4xMv5hLRZxOHrOO585pjbAdtZ2rBBQ8WQouST51+qPdnhruYZob0?=
+ =?us-ascii?Q?fPzmUcWmlHi3apRg18pwN/xCROx0BlPAyDag8Q4EoUYLy6FpjB+fEk96Fay4?=
+ =?us-ascii?Q?Z06Y5bzEz9nca9/eXtDIp/TESL+/+mUYmrkqeq/rTun6gbb8ekAFOaG2ka2+?=
+ =?us-ascii?Q?GepDWP+0ob0s6vkoIt7rucjBAgFPS5sRjkI/n09ZnHb+AndydQkxQuio8WwU?=
+ =?us-ascii?Q?9OiKW3mg+8TLAuMNqYP4emnSxqP8+fMCyKfR8/pPJQREjwRGAN18fSe+i/Xn?=
+ =?us-ascii?Q?GApQ9/voIGWpUfLvfm76kZTNfL+ZAoNm+sJQfvfgtRgJSf9PrXnfffr7HQN/?=
+ =?us-ascii?Q?ni2mQ19TVFGVJts7ft6AytWN3dW4PdZ+kCLdJANPd4eYORbf2jn2A+OV34jn?=
+ =?us-ascii?Q?3Zz9M3nJyHbRrXgDXXoQwjEk2BbgAPQHJDh0amjsCTkicH5IJleyYwn3e4eF?=
+ =?us-ascii?Q?fAbWnC82cdqk2KEMKb+gPOL0rdt2e+MG5SHPRrKo0XWegv/ZIX+3C/td+3bz?=
+ =?us-ascii?Q?wOn1Lt1phRCASfJbp4sXeLElzX6Fsi8eF7nHJiEVd8BAu1jyglkVj9MAEaMW?=
+ =?us-ascii?Q?9YEv2PpuhYVX8r43yf7Jk0k07t0bqJiAfDlYdnX3RqzJShIVao+D5d7/Mqq+?=
+ =?us-ascii?Q?Zat7ElHxsxvFXitx3C1y+kPQOqNl4twlWm886k4o5oUKzvnXV0vHQhzIdX8H?=
+ =?us-ascii?Q?qGRE+wi7bqDv2IwTtSatjVLk8Cpk60K9eACOsT31T5oSRXpswEsR/3WkWkXK?=
+ =?us-ascii?Q?l0nZyqhee6omkLENi1845FROkR74OT+hFnbMk4lkj9IfIXnkyh0663qsF9Vw?=
+ =?us-ascii?Q?RVvNagd6bj6SBnkX0Go+JYw4TqEXhzJ7cn4RiV6uhzK5aYFJt3b34AMJeLkp?=
+ =?us-ascii?Q?NjSDwJa9itCZIWlnnwzTekUi7vndR95DFoDFh3w1h5IamVkr7qTqb6x/t7vS?=
+ =?us-ascii?Q?/iXVtR378CD+m+wXtZFOe2k7ysuY55bruYcZLzgmDuLRPUMg9EeAL9dsNVRd?=
+ =?us-ascii?Q?y/zt+LoR5/Y3zcLE3VRKHfvGKA4mfeFmPqhLs8l0VBVMYJz8s37pJU/6kJr6?=
+ =?us-ascii?Q?h2y/vG5PqrRCpzndWNei8Fb6?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6be0129-cffd-432b-d15b-08d8f06e2a69
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB3794.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 15:42:58.3161
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 15:45:22.3061
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /28G6c+RcqvkbAh1CTiVJToB2GI+bCwSMz8GB7b8P1JvK2hociWvwE1ZByr3Ho8PR1L68BWuK89aQKx3ZeuK6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2365
+X-MS-Exchange-CrossTenant-UserPrincipalName: rgnseulsfltGjWrG5tG3RsHB5Yk26h5AVAR2xnAh+lUD57gx5lDkx90wuApO79u0qkTUhh38eU6xV0iTG34D0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4511
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9935 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103260117
+X-Proofpoint-GUID: ZTKWpit6Jc1VK_Fw3Q-rBIychaWGdHKD
+X-Proofpoint-ORIG-GUID: ZTKWpit6Jc1VK_Fw3Q-rBIychaWGdHKD
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9935 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 malwarescore=0 adultscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103260117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 26, 2021 at 09:41:49AM -0600, Jens Axboe wrote:
+> On 3/25/21 9:04 PM, Tom Saeger wrote:
+> > 
+> > s/Additonal/Additional/
+> > s/assocaited/associated/
+> > s/assocaited/associated/
+> > s/assocating/associating/
+> > s/becasue/because/
+> > s/configred/configured/
+> > s/deactive/deactivate/
+> > s/followings/following/
+> > s/funtion/function/
+> > s/heirarchy/hierarchy/
+> > s/intiailized/initialized/
+> > s/prefered/preferred/
+> > s/readded/read/
+> > s/Secion/Section/
+> > s/soley/solely/
+> 
+> While I'm generally happy to accept any patch that makes sense, the
+> recent influx of speling fixes have me less than excited. They just
+> add complications to backports and stable patches, for example, and
+> I'd prefer not to take them for that reason alone.
 
-On 3/26/21 9:30 AM, Borislav Petkov wrote:
-> On Wed, Mar 24, 2021 at 11:44:14AM -0500, Brijesh Singh wrote:
->>  arch/x86/include/asm/sev-snp.h | 52 ++++++++++++++++++++++++++++++++++
-> Hmm, a separate header.
->
-> Yeah, I know we did sev-es.h but I think it all should be in a single
-> sev.h which contains all AMD-specific memory encryption declarations.
-> It's not like it is going to be huge or so, by the looks of how big
-> sev-es.h is.
->
-> Or is there a particular need to have a separate snp header?
->
-> If not, please do a pre-patch which renames sev-es.h to sev.h and then
-> add the SNP stuff to it.
+Nod.
 
+In that case - perhaps adding these entries to scripts/spelling.txt
+would at least catch some going forward?
 
-There is no strong reason for a separate sev-snp.h. I will add a
-pre-patch to rename sev-es.h to sev.h and add SNP stuff to it.
+I can send that.
 
-
->
->>  1 file changed, 52 insertions(+)
->>  create mode 100644 arch/x86/include/asm/sev-snp.h
->>
->> diff --git a/arch/x86/include/asm/sev-snp.h b/arch/x86/include/asm/sev-snp.h
->> new file mode 100644
->> index 000000000000..5a6d1367cab7
->> --- /dev/null
->> +++ b/arch/x86/include/asm/sev-snp.h
->> @@ -0,0 +1,52 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * AMD SEV Secure Nested Paging Support
->> + *
->> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
->> + *
->> + * Author: Brijesh Singh <brijesh.singh@amd.com>
->> + */
->> +
->> +#ifndef __ASM_SECURE_NESTED_PAGING_H
->> +#define __ASM_SECURE_NESTED_PAGING_H
->> +
->> +#ifndef __ASSEMBLY__
->> +#include <asm/irqflags.h> /* native_save_fl() */
-> Where is that used? Looks like leftovers.
-
-
-Initially I was thinking to use the native_save_fl() to read the rFlags
-but then realized that what if rFlags get changed between the call to
-pvalidate instruction and native_save_fl(). I will remove this header
-inclusion. Thank you for pointing.
-
->
->> +
->> +/* Return code of __pvalidate */
->> +#define PVALIDATE_SUCCESS		0
->> +#define PVALIDATE_FAIL_INPUT		1
->> +#define PVALIDATE_FAIL_SIZEMISMATCH	6
->> +
->> +/* RMP page size */
->> +#define RMP_PG_SIZE_2M			1
->> +#define RMP_PG_SIZE_4K			0
->> +
->> +#ifdef CONFIG_AMD_MEM_ENCRYPT
->> +static inline int __pvalidate(unsigned long vaddr, int rmp_psize, int validate,
-> Why the "__" prefix?
-
-I was trying to adhere to existing functions which uses a direct
-instruction opcode. Most of those function have "__" prefix (e.g
-__mwait, __tpause, ..).
-
-Should I drop the __prefix ?
-
- 
-
->
->> +			      unsigned long *rflags)
->> +{
->> +	unsigned long flags;
->> +	int rc;
->> +
->> +	asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFF\n\t"
->> +		     "pushf; pop %0\n\t"
-> Ewww, PUSHF is expensive.
->
->> +		     : "=rm"(flags), "=a"(rc)
->> +		     : "a"(vaddr), "c"(rmp_psize), "d"(validate)
->> +		     : "memory", "cc");
->> +
->> +	*rflags = flags;
->> +	return rc;
-> Hmm, rc *and* rflags. Manual says "Upon completion, a return code is
-> stored in EAX. rFLAGS bits OF, ZF, AF, PF and SF are set based on this
-> return code."
->
-> So what exactly does that mean and is the return code duplicated in
-> rFLAGS?
-
-
-It's not duplicate error code. The EAX returns an actual error code. The
-rFlags contains additional information. We want both the codes available
-to the caller so that it can make a proper decision.
-
-e.g.
-
-1. A callers validate an address 0x1000. The instruction validated it
-and return success.
-
-2. Caller asked to validate the same address again. The instruction will
-return success but since the address was validated before hence
-rFlags.CF will be set to indicate that PVALIDATE instruction did not
-made any change in the RMP table.
-
-> If so, can you return a single value which has everything you need to
-> know?
->
-> I see that you're using the retval only for the carry flag to check
-> whether the page has already been validated so I think you could define
-> a set of return value defines from that function which callers can
-> check.
-
-
-You are correct that currently I am using only carry flag. So far we
-don't need other flags. What do you think about something like this:
-
-* Add a new user defined error code
-
- #define PVALIDATE_FAIL_NOUPDATE        255 /* The error is returned if
-rFlags.CF set */
-
-* Remove the rFlags parameters from the __pvalidate()
-
-* Update the __pvalidate to check the rFlags.CF and if set then return
-the new user-defined error code.
-
-
-> And looking above again, you do have PVALIDATE_* defines except that
-> nothing's using them. Use them please.
-
-Actually the later patches does make use of the error codes (e.g
-SIZEMISMATCH). The caller should check the error code value and can take
-an action to resolve them. e.g a sizemismatch is seen then it can use
-the lower page level for the validation etc.
-
-
->
-> Also, for how to do condition code checks properly, see how the
-> CC_SET/CC_OUT macros are used.
-
-
-I will look into it. thanks.
-
-
->> +}
->> +
->> +#else	/* !CONFIG_AMD_MEM_ENCRYPT */
-> This else-ifdeffery can go too if you move the ifdeffery inside the
-> function:
->
-> static inline int __pvalidate(unsigned long vaddr, int rmp_psize, int validate,
-> {
-> 	int rc = 0;
->
-> #fidef CONFIG_AMD_MEM_ENCRYPT
->
-> 	...
->
-> #endif
->
-> 	return rc;
-> }
-
-
-Noted. thanks
-
-
->
-> Thx.
->
+> 
+> -- 
+> Jens Axboe
+> 
