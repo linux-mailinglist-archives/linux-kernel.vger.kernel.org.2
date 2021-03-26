@@ -2,128 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07910349F63
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628F0349FBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhCZCPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 22:15:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhCZCPN (ORCPT
+        id S230022AbhCZCYb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Mar 2021 22:24:31 -0400
+Received: from mail-m2452.qiye.163.com ([220.194.24.52]:55568 "EHLO
+        mail-m2452.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230216AbhCZCYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 22:15:13 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A36EC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 19:15:13 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id y2so3265827qtw.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 19:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D5RD2ALBTArU+Fx318pIUzeJQfn55V/ad6+bFm9zOfg=;
-        b=Msd0AbzU20IaVOz4xOWBmb5wbMCKOAR+q52K6BVYPuRv/2t85I94QkckPKA2nImUg6
-         DwergGRyQTAzb+oxmQQvUhbIK6krWfgXSIMFt8t3nG//SUgYGf4nK6T2yAlJIYGjPsfk
-         02oZg2HYVot6oT79B6+3z3A/H2aldSeO6a7SN5hc1qghGoiiYNpDZK7q1Nt61hBf49yj
-         9LGrbNpvgbec7ZweQmISQw6P/NVVEMdO7kqI3KxY7+QxblvS81mk/i3fHSr/uMQcT1I1
-         kYOo2MMqWwZ0t67KtxNkmW0gjppaWqO3G/Z4CApOjkudTBLGviyB+m+qLdiKXkzcjPkS
-         Wgfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=D5RD2ALBTArU+Fx318pIUzeJQfn55V/ad6+bFm9zOfg=;
-        b=eM70XZUiRbAP0sbR1qA6T0lfMn9cfTAXVTorUSBwsXfm60/Oo9EPBYFC7Sbr6dw7xy
-         8b4HztuJFIGFUO2h+OkN3Qa2xn3AK5D2lxCemMMPMCr4LgHmpkxkvw3GpvPz5fseyQ6M
-         bF1Y/29OQFy5sNNJQ4+0S6DaYXG4sRTYUbzj2ucex2e2xitnKp3ypg6CBYOWh8bG5d9X
-         +JXSNc3m9nm8JQhi0bDm4sMO7tvEguY8L1ZRM6VgzLm+ylAFi7UZq8a5UJUx+0Xr7Ig6
-         Ws5VcWclb9whokqKf1gr8I5yt9pDVUp9gh8ICf9tCoh9xMuvaJTIHlPmE2W2gCSz3FNE
-         KiYw==
-X-Gm-Message-State: AOAM530ks9s6FiQFZ/TGsDgst/4nS1eqiAe9tGOw/UB3GKEUd4jZv095
-        i+S7zpItMuxzJv+oZVs0Qb8=
-X-Google-Smtp-Source: ABdhPJyC4zp+cWUyI79M89I+mF6cQh9/wzjj6e3pAWZhbz4nnO5lfW18gtNgk21fx7Fykhtegwt2RQ==
-X-Received: by 2002:aed:2ee1:: with SMTP id k88mr10286338qtd.104.1616724905979;
-        Thu, 25 Mar 2021 19:15:05 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.107])
-        by smtp.gmail.com with ESMTPSA id n3sm4926623qtd.93.2021.03.25.19.15.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 19:15:05 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     gustavoars@kernel.org, akpm@linux-foundation.org,
-        adobriyan@gmail.com, unixbhaskar@gmail.com,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-Subject: [PATCH] ipc/sec.c: Mundane typo fixes
-Date:   Fri, 26 Mar 2021 07:42:54 +0530
-Message-Id: <20210326021254.29388-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 25 Mar 2021 22:24:23 -0400
+X-Greylist: delayed 585 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Mar 2021 22:24:23 EDT
+Received: from [192.168.203.71] (unknown [117.48.120.186])
+        by mail-m2452.qiye.163.com (Hmail) with ESMTPA id 18FA64CC8FA;
+        Fri, 26 Mar 2021 10:14:35 +0800 (CST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [3/3,v3] tools/power turbostat: Enable accumulate RAPL display
+From:   sibingsong <owen.si@ucloud.cn>
+In-Reply-To: <CAAYoRsX-WJFEJQVve=fmZqh37uYSX5v5EAFsy=hBRc=V4GCG9g@mail.gmail.com>
+Date:   Fri, 26 Mar 2021 10:14:34 +0800
+Cc:     Salvatore Bonaccorso <carnil@debian.org>,
+        Christian Kastner <ckk@debian.org>,
+        Kurt Garloff <kurt@garloff.de>, Chen Yu <yu.c.chen@intel.com>,
+        Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>,
+        erwanaliasr1@gmail.com, Len Brown <lenb@kernel.org>,
+        rjw@rjwysocki.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        youling 257 <youling257@gmail.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <57D29045-C7F6-458C-A397-CC43E4C86729@ucloud.cn>
+References: <1f6d32e14f121a8ccf8807b8343597c3ae88c7d2.1587196252.git.yu.c.chen@intel.com>
+ <20210308134957.23852-1-youling257@gmail.com>
+ <CAAYoRsXec2eq=t-pSn5TOqNt0G6kfZCKkDuEhCnX5SgL0zgkBg@mail.gmail.com>
+ <20210308161548.GA37664@chenyu-desktop>
+ <CAAYoRsVkrHberSgM42dqYjdVwz8vumURJ1_DGeV1R5-=LMdjVA@mail.gmail.com>
+ <20210312134114.GA21436@chenyu-desktop>
+ <CAOzgRdYZM53OC-7DwnmKr3WBOAkKmqstvvs36cMVTOQUZ8qrUg@mail.gmail.com>
+ <CAAYoRsX-WJFEJQVve=fmZqh37uYSX5v5EAFsy=hBRc=V4GCG9g@mail.gmail.com>
+To:     Doug Smythies <dsmythies@telus.net>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSUI3V1ktWUFJV1kPCR
+        oVCBIfWUFZSU1LGBlPShlKSBpNVkpNSk1MSU9DTE5PSUhVGRETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kww6KSo5Lz04KRIzAxhLMygq
+        EjxPCz5VSlVKTUpNTElPQ0xOTU5JVTMWGhIXVRQMHhVVCBI7DhgXFA4fVRgVRVlXWRILWUFZSkpM
+        VU9DVUpJS1VKQ01ZV1kIAVlBTUtMTDcG
+X-HM-Tid: 0a786c4fd8608c11kuqt18fa64cc8fa
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It works for me on Zen2.
 
-s/runtine/runtime/
-s/AQUIRE/ACQUIRE/
-s/seperately/separately/
-s/wont/won\'t/
-s/succesfull/successful/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- ipc/sem.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/ipc/sem.c b/ipc/sem.c
-index f6c30a85dadf..0897dac27f43 100644
---- a/ipc/sem.c
-+++ b/ipc/sem.c
-@@ -36,7 +36,7 @@
-  * - two Linux specific semctl() commands: SEM_STAT, SEM_INFO.
-  * - undo adjustments at process exit are limited to 0..SEMVMX.
-  * - namespace are supported.
-- * - SEMMSL, SEMMNS, SEMOPM and SEMMNI can be configured at runtine by writing
-+ * - SEMMSL, SEMMNS, SEMOPM and SEMMNI can be configured at runtime by writing
-  *   to /proc/sys/kernel/sem.
-  * - statistics about the usage are reported in /proc/sysvipc/sem.
-  *
-@@ -224,7 +224,7 @@ static int sysvipc_sem_proc_show(struct seq_file *s, void *it);
-  * Setting it to a result code is a RELEASE, this is ensured by both a
-  * smp_store_release() (for case a) and while holding sem_lock()
-  * (for case b).
-- * The AQUIRE when reading the result code without holding sem_lock() is
-+ * The ACQUIRE when reading the result code without holding sem_lock() is
-  * achieved by using READ_ONCE() + smp_acquire__after_ctrl_dep().
-  * (case a above).
-  * Reading the result code while holding sem_lock() needs no further barriers,
-@@ -821,7 +821,7 @@ static inline int check_restart(struct sem_array *sma, struct sem_queue *q)
-
- 	/* It is impossible that someone waits for the new value:
- 	 * - complex operations always restart.
--	 * - wait-for-zero are handled seperately.
-+	 * - wait-for-zero are handled separately.
- 	 * - q is a previously sleeping simple operation that
- 	 *   altered the array. It must be a decrement, because
- 	 *   simple increments never sleep.
-@@ -1046,7 +1046,7 @@ static void do_smart_update(struct sem_array *sma, struct sembuf *sops, int nsop
- 			 * - No complex ops, thus all sleeping ops are
- 			 *   decrease.
- 			 * - if we decreased the value, then any sleeping
--			 *   semaphore ops wont be able to run: If the
-+			 *   semaphore ops won't be able to run: If the
- 			 *   previous value was too small, then the new
- 			 *   value will be too small, too.
- 			 */
-@@ -2108,7 +2108,7 @@ static long do_semtimedop(int semid, struct sembuf __user *tsops,
- 	queue.dupsop = dupsop;
-
- 	error = perform_atomic_semop(sma, &queue);
--	if (error == 0) { /* non-blocking succesfull path */
-+	if (error == 0) { /* non-blocking successful path */
- 		DEFINE_WAKE_Q(wake_q);
-
- 		/*
---
-2.26.2
+> 2021年3月24日 下午10:44，Doug Smythies <dsmythies@telus.net> 写道：
+> 
+> Just resending to previously missed people who should also test this.
+> (See other e-mail: Re: turbostat: Fix Pkg Power on Zen)
+> 
+> On Sat, Mar 13, 2021 at 5:49 AM youling 257 <youling257@gmail.com> wrote:
+>> 
+>> test this patch, turbostat can work.
+>> 
+>> 2021-03-12 21:41 GMT+08:00, Chen Yu <yu.c.chen@intel.com>:
+>>> Hi Youling, Bas, and Bingsong,
+>>> On Wed, Mar 10, 2021 at 04:03:31PM -0800, Doug Smythies wrote:
+>>>> Hi Yu,
+>>>> 
+>>>> I am just resending your e-mail, adjusting the "To:" list to
+>>>> include the 3 others that have submitted similar patches.
+>>>> 
+>>>> ... Doug
+>>>> 
+>>> Could you please help check if the following combined patch works?
+>>> 
+>>> Thanks,
+>>> Chenyu
+>>> 
+>>> 
+>>> From 00e0622b1b693a5c7dc343aeb3aa51614a9e125e Mon Sep 17 00:00:00 2001
+>>> From: Bas Nieuwenhuizen <bas@basnieuwenhuizen.nl>
+>>> Date: Fri, 12 Mar 2021 21:27:40 +0800
+>>> Subject: [PATCH] tools/power/turbostat: Fix turbostat for AMD Zen CPUs
+>>> 
+>>> It was reported that on Zen+ system turbostat started exiting,
+>>> which was tracked down to the MSR_PKG_ENERGY_STAT read failing because
+>>> offset_to_idx wasn't returning a non-negative index.
+>>> 
+>>> This patch combined the modification from Bingsong Si and
+>>> Bas Nieuwenhuizen and addd the MSR to the index system as alternative for
+>>> MSR_PKG_ENERGY_STATUS.
+>>> 
+>>> Fixes: 9972d5d84d76 ("tools/power turbostat: Enable accumulate RAPL
+>>> display")
+>>> Reported-by: youling257 <youling257@gmail.com>
+>>> Co-developed-by: Bingsong Si <owen.si@ucloud.cn>
+>>> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+>>> ---
+>>> tools/power/x86/turbostat/turbostat.c | 8 ++++++--
+>>> 1 file changed, 6 insertions(+), 2 deletions(-)
+>>> 
+>>> diff --git a/tools/power/x86/turbostat/turbostat.c
+>>> b/tools/power/x86/turbostat/turbostat.c
+>>> index a7c4f0772e53..a7c965734fdf 100644
+>>> --- a/tools/power/x86/turbostat/turbostat.c
+>>> +++ b/tools/power/x86/turbostat/turbostat.c
+>>> @@ -297,7 +297,10 @@ int idx_to_offset(int idx)
+>>> 
+>>>      switch (idx) {
+>>>      case IDX_PKG_ENERGY:
+>>> -             offset = MSR_PKG_ENERGY_STATUS;
+>>> +             if (do_rapl & RAPL_AMD_F17H)
+>>> +                     offset = MSR_PKG_ENERGY_STAT;
+>>> +             else
+>>> +                     offset = MSR_PKG_ENERGY_STATUS;
+>>>              break;
+>>>      case IDX_DRAM_ENERGY:
+>>>              offset = MSR_DRAM_ENERGY_STATUS;
+>>> @@ -326,6 +329,7 @@ int offset_to_idx(int offset)
+>>> 
+>>>      switch (offset) {
+>>>      case MSR_PKG_ENERGY_STATUS:
+>>> +     case MSR_PKG_ENERGY_STAT:
+>>>              idx = IDX_PKG_ENERGY;
+>>>              break;
+>>>      case MSR_DRAM_ENERGY_STATUS:
+>>> @@ -353,7 +357,7 @@ int idx_valid(int idx)
+>>> {
+>>>      switch (idx) {
+>>>      case IDX_PKG_ENERGY:
+>>> -             return do_rapl & RAPL_PKG;
+>>> +             return do_rapl & (RAPL_PKG | RAPL_AMD_F17H);
+>>>      case IDX_DRAM_ENERGY:
+>>>              return do_rapl & RAPL_DRAM;
+>>>      case IDX_PP0_ENERGY:
+>>> --
+>>> 2.25.1
+>>> 
+>>> 
+> 
 
