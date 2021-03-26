@@ -2,98 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C3F34A272
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA5134A274
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhCZHT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 03:19:26 -0400
-Received: from mail-wm1-f52.google.com ([209.85.128.52]:55250 "EHLO
-        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhCZHTK (ORCPT
+        id S230337AbhCZHTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 03:19:53 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14559 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230223AbhCZHTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 03:19:10 -0400
-Received: by mail-wm1-f52.google.com with SMTP id k128so2415523wmk.4;
-        Fri, 26 Mar 2021 00:19:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=fLNL3raZRrGxUJu9e4f1n/rQLMtqVUBuwaA1ykbylUk=;
-        b=p534m1V6PBzMEjxzs3FRwVpNZwDQ6HuSi8PPZ2zbiIsdwTSRNzU5vc/Yayc8yt1Y6A
-         b5YOSkN6W8bVLJ6wcsu49zg7ZQVbCjnJZgXhQlyPesN7i4lzF/yiEgTWgxuq5WqPMb95
-         tc87t5D8q2F3XDzz1mTUyK+C9OF4VPEZgDgnOCkbNbyhV2hGqDzGHYO6UMpaTBaj0HPX
-         4dF/apbdmaIM5qTQkZy3LdCmAgLCGFkqAtTShzVLoGhEO+K6+6PRshK6U4uUIFsGx464
-         WwPLakDhefzPwOQfzpyhr9GboC9x3K4zoz71uUFoGNOgQhFyai6phCv+NHWww+vjucRx
-         BX+w==
-X-Gm-Message-State: AOAM531LqLoFxZRvm/VfcXCldLmF19t/aD9m0C/n0T0ZojOxofJuzgXe
-        gOG5ROee+rYtalaP8oyPnlk=
-X-Google-Smtp-Source: ABdhPJzw9FCS1e3r6/gNJEX0b3FR2E4bCH9ja95FbJe61CwUS7gnjiuRlB6fVOR7d9+kCyPWWaxi2A==
-X-Received: by 2002:a1c:2308:: with SMTP id j8mr11875666wmj.45.1616743148933;
-        Fri, 26 Mar 2021 00:19:08 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id u23sm9760443wmn.26.2021.03.26.00.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 00:19:08 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 08:19:07 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lokesh Vutla <lokeshvutla@ti.com>
-Subject: Re: [PATCH 6/6] PCI: keystone: Add workaround for Errata #i2037
- (AM65x SR 1.0)
-Message-ID: <YF2K6+R1P3SNUoo5@rocinante>
-References: <20210325090026.8843-1-kishon@ti.com>
- <20210325090026.8843-7-kishon@ti.com>
+        Fri, 26 Mar 2021 03:19:25 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6Cvd0fX8zNqcq;
+        Fri, 26 Mar 2021 15:16:45 +0800 (CST)
+Received: from [10.67.103.10] (10.67.103.10) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 26 Mar 2021
+ 15:19:10 +0800
+Subject: Re: [PATCH -next] drivers: crypto: CRYPTO_DEV_HISI_HPRE select
+ CRYPTO_ECC and CRYPTO_ECDH
+To:     Zhang Jianhua <zhangjianhua18@huawei.com>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <xuzaibo@huawei.com>, <qianweili@huawei.com>,
+        <yuehaibing@huawei.com>, <tanshukun1@huawei.com>,
+        <sfr@canb.auug.org.au>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <johnny.chenyi@huawei.com>
+References: <20210326071648.15480-1-zhangjianhua18@huawei.com>
+From:   yumeng <yumeng18@huawei.com>
+Message-ID: <1f92336a-202a-3a00-8a24-0e3f8c5967db@huawei.com>
+Date:   Fri, 26 Mar 2021 15:19:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210326071648.15480-1-zhangjianhua18@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210325090026.8843-7-kishon@ti.com>
+X-Originating-IP: [10.67.103.10]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+Thanks, there is a similar patch to yours that was sent in advance:
+https://www.spinics.net/lists/linux-crypto/msg54238.html
 
-A few small nitpicks.
-
-> Errata #i2037 in AM65x/DRA80xM Processors Silicon Revision 1.0
-> (SPRZ452Dâ€“July 2018â€“Revised December 2019 [1]) mentions when an
-> inbound PCIe TLP spans more than two internal AXI 128-byte bursts,
-> the bus may corrupt the packet payload and the corrupt data may
-> cause associated applications or the processor to hang.
+ÔÚ 2021/3/26 15:16, Zhang Jianhua Ð´µÀ:
+> If CRYPTO_DEV_HISI_HPRE=y, the following errors will be seen while
+> building hpre_crypto.c
 > 
-> The workaround for Errata #i2037 is to limit the maximum read
-> request size and maximum payload size to 128 Bytes. Add workaround
-> for Errata #i2037 here. The errata and workaround is applicable
-> only to AM65x SR 1.0 and later versions of the silicon will have
-> this fixed.
-
-I think it would be either "128 B" or "128 bytes", there is no need to
-capitalise bytes.
-
-[...]
-> +	/*
-> +	 * Memory transactions fail with PCI controller in AM654 PG1.0
-> +	 * when MRRS is set to more than 128 Bytes. Force the MRRS to
-> +	 * 128 Bytes in all downstream devices.
-> +	 */
-
-Same here, it would be "128 bytes" in the comment above.
-
-[...]
-> +		if (pcie_get_readrq(dev) > 128) {
-> +			dev_info(&dev->dev, "limiting MRRS to 128\n");
-> +			pcie_set_readrq(dev, 128);
-> +		}
-[...]
-
-Might be nice to add unit here, so "128 bytes".
-
-Krzysztof
+> drivers/crypto/hisilicon/hpre/hpre_crypto.o: In function
+> `hpre_curve25519_compute_value':
+> hpre_crypto.c:(.text+0x151b): undefined reference to
+> `ecc_get_curve25519'
+> drivers/crypto/hisilicon/hpre/hpre_crypto.o: In function
+> `hpre_curve25519_set_secret':
+> hpre_crypto.c:(.text+0x2714): undefined reference to
+> `ecc_get_curve25519'
+> drivers/crypto/hisilicon/hpre/hpre_crypto.o: In function
+> `hpre_ecdh_set_secret':
+> hpre_crypto.c:(.text+0x27ed): undefined reference to
+> `crypto_ecdh_decode_key'
+> hpre_crypto.c:(.text+0x2954): undefined reference to `ecc_get_curve'
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
+> ---
+>   drivers/crypto/hisilicon/Kconfig | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/crypto/hisilicon/Kconfig b/drivers/crypto/hisilicon/Kconfig
+> index c45adb15ce8d..d87c89af2a7f 100644
+> --- a/drivers/crypto/hisilicon/Kconfig
+> +++ b/drivers/crypto/hisilicon/Kconfig
+> @@ -69,6 +69,8 @@ config CRYPTO_DEV_HISI_HPRE
+>   	select CRYPTO_DEV_HISI_QM
+>   	select CRYPTO_DH
+>   	select CRYPTO_RSA
+> +	select CRYPTO_ECC
+> +	select CRYPTO_ECDH
+>   	help
+>   	  Support for HiSilicon HPRE(High Performance RSA Engine)
+>   	  accelerator, which can accelerate RSA and DH algorithms.
+> 
