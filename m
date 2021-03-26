@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC9C34A926
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4935F34A92E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhCZN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        id S230115AbhCZOAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhCZN5J (ORCPT
+        with ESMTP id S230003AbhCZN7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:57:09 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8002C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:57:05 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id x13so5721816wrs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:57:05 -0700 (PDT)
+        Fri, 26 Mar 2021 09:59:54 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910A9C0613AA;
+        Fri, 26 Mar 2021 06:59:54 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id i9so5259413qka.2;
+        Fri, 26 Mar 2021 06:59:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=aqH3oaZeAGr404pxyOo2DTDa7+fuxAZlONQ6s8AyNrU=;
-        b=jb8daXRrGteUJsTZAc0qDqWV/6S8DaVROs7HTnHxyTwCdp6O80FpNkY/ULTMQlkrQd
-         ZypW6xT8b0oIw7K9RNfxGUz9YMjjrAeTpQv9xYbTf+Re8VGUK3zVkdDJiSmi8qKlr1/0
-         aV7QXN7N14Jky2+0dmtg/LgrMfABWWSn90FHvNqLrp6teCeZM1Um3UMMh1UupFW3Ntrl
-         S7jBslgLlTO67QY+tF8n29Sfu2NOSDQwz202Y9gusCcgkmwYHoqAYvuIYqnAYpDA+sxn
-         YQD9QPUzfQ37tYOE87vw8llYP2tjwVSE7vYyNw1pad346bDvR0+fK/SevDDOPhrrky6I
-         xiqg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0s7LJER70w2bSiwwTpjAxpJj5S5Wt0DwDx2zogXdYE=;
+        b=n+foT8+06n779+ymsgAN7XHmY9phYxAQcmR3n3IAmvnwuV9WCvK4h382O7+6r8KxWl
+         TMr6pRDl+InbWTMRl/KabrbFXlxnt4we7WbvI0EgROP3EJtHWcB5kiJbRj+cNhxZSIiF
+         PBS6oOS92b1i2xCrsQSGHxriv2UqLAP6jZihwMOacl6bdXRPJGh8/BheL/nl53J4ghr1
+         MJnDJiEDH13PZ4hFu1dypVI4989oyJQKRJUnrzz+PjsMzoVN2NP+na3OMAOlwfjJj9pB
+         xj1LeYuCyRvKX+Y7CqiVMmbiOBGh0NaMfQkPhtKap71LOqEYh4wxB3Rj7j4d93RfORC/
+         lxOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=aqH3oaZeAGr404pxyOo2DTDa7+fuxAZlONQ6s8AyNrU=;
-        b=rpNZ6C5O8NtaBf3J2oN983tC++OerTQklaiXSFsE9xTxmYlu+YfWSwZ60gk2hmu/pS
-         QG7yeq+g5JGMJRRmhU2Yqmj51Kbo97Y64MzKm7N4nWcvy8qC/Ye78yzVHEIqQDEMneVH
-         5xlgCFAsPz0N0X49X9vOtWwEZTzv8xkQzy3EQmOPZ2l0EKpOdgxeagu/e72PXOwhoWkI
-         nFsaLni8/nzrEYeK4I9x6JVcM0SCfR7VXLm7zrfVdjMXpi02qEGxLJl2bfp//MkSfPbe
-         Z4Hc8ZmDRr2SKjcg7Irfi03RKW9C943ChpmvtgHFumsTvypxZVR8Ft0uz1zagMvkDYqg
-         fA9A==
-X-Gm-Message-State: AOAM532KkRgOuxXfo5VP52csLYvuIByt+jB+m9jkxCWunmUt01USwVkK
-        fHzHKZLYabYCa6I22d0Xng8=
-X-Google-Smtp-Source: ABdhPJx8Ij0ksb5Cr/wM3EQMhF+TpPMYT6UJNCGKUdatrLdkzGQ6Nzo/1x1xxq8tjTQRkIkdQz+7wg==
-X-Received: by 2002:a5d:4ac7:: with SMTP id y7mr14838952wrs.395.1616767024460;
-        Fri, 26 Mar 2021 06:57:04 -0700 (PDT)
-Received: from agape.jhs ([5.171.80.141])
-        by smtp.gmail.com with ESMTPSA id q4sm10868910wma.20.2021.03.26.06.57.03
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x0s7LJER70w2bSiwwTpjAxpJj5S5Wt0DwDx2zogXdYE=;
+        b=m2iwreK9I0xJO24SA17uoEVgaC512JJa3gS2Qh7Su6bqIlb/m3zg/vFZo/fxqJOdIa
+         WT1CbCaAf+EnZqzcabN04z0d70fQ4Wjn4BHO7bJxHjVqXFOZBEGmk3824YuzLkbGU8hz
+         lJCFcqxan1o6iGEQsjPZR43jc7dKy4zU+4mVSiNZcCUdKA5dxq7kGwsNxRTVMGaSWFrF
+         obUif0aItfljE3hvNMz7PcuuKdATLCm2tMR6xwzTnkzUOTusI/Qnzh+l7jvXkWUCx7Ib
+         T03ci/SWJ4+di+FACh8ECzUdej5V/fOh8dYqLPNmZllbyoRMeNwxXSZsx/DuJUqNZEjC
+         GIqA==
+X-Gm-Message-State: AOAM531xUrrYg9NKW0R8sT1NXnyMt6XaUhqCBZVzzwmo7oTvbskcQBOQ
+        8vOSQ7sIsubJTIk0N63QqC2Qjf6TFfCyHBWY
+X-Google-Smtp-Source: ABdhPJwxui/7YiRZ9ijL0SMcy1jYD4hzFKZCNA4A413XhqNgHJNr+nKi0NPriqxWfstAt+DZ01jbQQ==
+X-Received: by 2002:ae9:f312:: with SMTP id p18mr11538849qkg.162.1616767193781;
+        Fri, 26 Mar 2021 06:59:53 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.55.149])
+        by smtp.gmail.com with ESMTPSA id q125sm6644710qkf.68.2021.03.26.06.59.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 06:57:04 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 14:57:01 +0100
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/15] staging: rtl8723bs:  put parentheses on macros
- with complex values in include/sta_info.h
-Message-ID: <20210326135700.GA1952@agape.jhs>
-References: <cover.1616748885.git.fabioaiuto83@gmail.com>
- <24e684c1eff8911dacff1b61957ce25bafc46631.1616748885.git.fabioaiuto83@gmail.com>
- <0466586ada4d4804bca4e84aa5908c01@AcuMS.aculab.com>
+        Fri, 26 Mar 2021 06:59:52 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] blk-settings: Fix a typo
+Date:   Fri, 26 Mar 2021 19:27:15 +0530
+Message-Id: <20210326135715.28434-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0466586ada4d4804bca4e84aa5908c01@AcuMS.aculab.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:39:24PM +0000, David Laight wrote:
-> From: Fabio Aiuto 
-> > Sent: 26 March 2021 09:09
-> > 
-> > fix the following checkpatch warnings:
-> > 
-> > ERROR: Macros with complex values should be enclosed in parentheses
-> > 284: FILE: drivers/staging/rtl8723bs/include/sta_info.h:284:
-> > +#define STA_RX_PKTS_ARG(sta) \
-> > --
-> > ERROR: Macros with complex values should be enclosed in parentheses
-> > 289: FILE: drivers/staging/rtl8723bs/include/sta_info.h:289:
-> > +#define STA_LAST_RX_PKTS_ARG(sta) \
-> > --
-> > ERROR: Macros with complex values should be enclosed in parentheses
-> > 294: FILE: drivers/staging/rtl8723bs/include/sta_info.h:294:
-> > +#define STA_RX_PKTS_DIFF_ARG(sta) \
-> > 
-> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > ---
-> >  drivers/staging/rtl8723bs/include/sta_info.h | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/include/sta_info.h
-> > b/drivers/staging/rtl8723bs/include/sta_info.h
-> > index abde3e3df988..1cdf93ec3b66 100644
-> > --- a/drivers/staging/rtl8723bs/include/sta_info.h
-> > +++ b/drivers/staging/rtl8723bs/include/sta_info.h
-> > @@ -282,19 +282,19 @@ struct sta_info {
-> >  	} while (0)
-> > 
-> >  #define STA_RX_PKTS_ARG(sta) \
-> > -	sta->sta_stats.rx_mgnt_pkts \
-> > +	(sta->sta_stats.rx_mgnt_pkts \
-> >  	, sta->sta_stats.rx_ctrl_pkts \
-> > -	, sta->sta_stats.rx_data_pkts
-> > +	, sta->sta_stats.rx_data_pkts)
-> 
-> That doesn't look right at all.
-> You've changed what is (probably) a list of arguments to a function
-> into a comma operator list.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
+s/idential/identical/
 
-ops, you're right David, thank you and sorry to all
-for noise.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ block/blk-settings.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-fabio
+diff --git a/block/blk-settings.c b/block/blk-settings.c
+index b4aa2f37fab6..63168b529360 100644
+--- a/block/blk-settings.c
++++ b/block/blk-settings.c
+@@ -749,7 +749,7 @@ void blk_queue_virt_boundary(struct request_queue *q, unsigned long mask)
+ 	/*
+ 	 * Devices that require a virtual boundary do not support scatter/gather
+ 	 * I/O natively, but instead require a descriptor list entry for each
+-	 * page (which might not be idential to the Linux PAGE_SIZE).  Because
++	 * page (which might not be identical to the Linux PAGE_SIZE).  Because
+ 	 * of that they are not limited by our notion of "segment size".
+ 	 */
+ 	if (mask)
+--
+2.26.2
+
