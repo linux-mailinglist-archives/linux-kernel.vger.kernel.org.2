@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B2D34AF7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F8634AF81
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhCZTpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:45:41 -0400
-Received: from mga01.intel.com ([192.55.52.88]:5896 "EHLO mga01.intel.com"
+        id S230198AbhCZTqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:46:53 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50134 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230043AbhCZTpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:45:33 -0400
-IronPort-SDR: T/02Zudpl04iAdTaYZTZ8nxI+ViKInJ0qsUtw+Hj3A3qoA/RYFtQ3fdYObrxxYASMePRKtgcWh
- Hqu7lFfWncsw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="211377897"
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="211377897"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 12:45:33 -0700
-IronPort-SDR: Pyx8Iq8Afv8THn27V1eav8kq4TRtbY2s3Tj5D/6WnjwsYptWNdy+FTzgArUipQFKvYEG0DSrhn
- AmhqAQnnlfjg==
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="410036391"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 12:45:33 -0700
-Date:   Fri, 26 Mar 2021 19:45:26 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Shuah Khan <shuah@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Ravi V Shankar <ravi.v.shankar@intel.com>
-Cc:     linux-kselftest <linux-kselftest@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 00/21] Miscellaneous fixes for resctrl selftests
-Message-ID: <YF451jic7QNyUCVD@otcwcpicx3.sc.intel.com>
-References: <20210317022255.2536745-1-fenghua.yu@intel.com>
+        id S230127AbhCZTql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 15:46:41 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lPsPc-00DBzp-Im; Fri, 26 Mar 2021 20:46:28 +0100
+Date:   Fri, 26 Mar 2021 20:46:28 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     'Jakub Kicinski' <kuba@kernel.org>, arndb@arndb.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        brandon_chuang@edge-core.com, wally_wang@accton.com,
+        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
+        xinxliu@microsoft.com, 'netdev' <netdev@vger.kernel.org>,
+        'Moshe Shemesh' <moshe@nvidia.com>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YF46FI4epRGwlyP8@lunn.ch>
+References: <YEL3ksdKIW7cVRh5@lunn.ch>
+ <018701d71772$7b0ba3f0$7122ebd0$@thebollingers.org>
+ <YEvILa9FK8qQs5QK@lunn.ch>
+ <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org>
+ <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <001201d719c6$6ac826c0$40587440$@thebollingers.org>
+ <YFJHN+raumcJ5/7M@lunn.ch>
+ <009601d72023$b73dbde0$25b939a0$@thebollingers.org>
+ <YFpr2RyiwX10SNbD@lunn.ch>
+ <011301d7226f$dc2426f0$946c74d0$@thebollingers.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210317022255.2536745-1-fenghua.yu@intel.com>
+In-Reply-To: <011301d7226f$dc2426f0$946c74d0$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Shuah,
+> In my community, the SFP/QSFP/CMIS devices (32 to 128 of them per switch)
+> often cost more than the switch itself.  Consumers (both vendors and
+> customers) extensively test these devices to ensure correct and reliable
+> operation.  Then they buy them literally by the millions.  Quirks lead to
+> quick rejection in favor of reliable parts from reliable vendors.  In this
+> environment, for completely different reasons, optoe does not need to handle
+> quirks.
 
-On Wed, Mar 17, 2021 at 02:22:34AM +0000, Fenghua Yu wrote:
-> This patch set has several miscellaneous fixes to resctrl selftest tool
-> that are easily visible to user. V1 had fixes to CAT test and CMT test
-> but they were dropped in V2 because having them here made the patchset
-> humongous. So, changes to CAT test and CMT test will be posted in another
-> patchset.
-> 
-> Change Log:
-> v6:
-> - Add Tested-by: Babu Moger <babu.moger@amd.com>.
-> - Replace "cat" by CAT_STR etc (Babu).
-> - Capitalize the first letter of printed message (Babu).
+Well, if optoe were to be merged, it would not be just for your
+community. It has to work for everybody who wants to use the Linux
+kernel with an SFP. You cannot decide to add a KAPI which just
+supports a subset of SFPs. It needs to support as many as possible,
+warts and all.
 
-Any comment on this series? Will you push it into linux-kselftest.git?
+So how would you handle these SFPs with the optoe KAPI?
 
-Thanks.
-
--Fenghua
+   Andrew
