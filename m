@@ -2,86 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE97134A965
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E6D34A963
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCZOP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48278 "EHLO
+        id S230076AbhCZOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhCZOPA (ORCPT
+        with ESMTP id S230016AbhCZOOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:15:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03058C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:15:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dZadgslgPfxujL7/Uuk7e9L2wDYLIWlmZi+9ViCtboE=; b=oXicC6TJtHdcMVouzeu1ywLMVw
-        D3xwJJiNpLWef4OGQ/jOFbhAmgSVBVj882VuYtseO/6ngdzoS1oPeNRj6RnNL2Qi0h1asLDG7SXVZ
-        +IF1gSc2kv+j+nhT8s3EQzsMBlRi8Br9HXEFj04vRpDzJJX8HPU71PN7NankzVnI5+DDavtOJl1I/
-        uAQi0DYkhrdAOE3CCRy8i4FDwJkQ+OTfTE1PImRso0eu8vObJ1eqXPJA6vs3eDlNpfy5JwHsqAwvl
-        KuoameLl/YswRRBcKBxjvweBN0kP0V95td8/nybvXbycToD6Y/6+5RhjP1sOanl8vkYb+e/BrDBhY
-        gla6m4JA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPnCV-00Evuq-Pl; Fri, 26 Mar 2021 14:13:19 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A1F5F98103F; Fri, 26 Mar 2021 15:12:35 +0100 (CET)
-Date:   Fri, 26 Mar 2021 15:12:35 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Greg KH <greg@kroah.com>, mingo@kernel.org, mgorman@suse.de,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        bristot@redhat.com, joshdon@google.com, valentin.schneider@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
-Message-ID: <20210326141235.GI4746@worktop.programming.kicks-ass.net>
-References: <20210326103352.603456266@infradead.org>
- <20210326103935.183934395@infradead.org>
- <YF2/41K4xs3ZOQdV@kroah.com>
- <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
- <YF3F0JbbEpeSGzW6@kroah.com>
- <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
- <70594935-18e6-0791-52f9-0448adf37155@rasmusvillemoes.dk>
- <YF3aSJ7OYiCpWsl8@kroah.com>
- <1da9e61c-6973-2e0e-d898-7bf92ac5b1c4@rasmusvillemoes.dk>
+        Fri, 26 Mar 2021 10:14:06 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EFAC0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:14:06 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1lPnDj-0006Hs-Ik; Fri, 26 Mar 2021 15:13:51 +0100
+Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1lPnDj-0006e9-30; Fri, 26 Mar 2021 15:13:51 +0100
+Date:   Fri, 26 Mar 2021 15:13:51 +0100
+From:   Philipp Zabel <pza@pengutronix.de>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 03/13] media: hantro: Use syscon instead of 'ctrl'
+ register
+Message-ID: <20210326141351.GB8441@pengutronix.de>
+References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
+ <20210318082046.51546-4-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1da9e61c-6973-2e0e-d898-7bf92ac5b1c4@rasmusvillemoes.dk>
+In-Reply-To: <20210318082046.51546-4-benjamin.gaignard@collabora.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:12:15 up 36 days, 17:36, 97 users,  load average: 0.14, 0.18,
+ 0.16
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: pza@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 02:10:41PM +0100, Rasmus Villemoes wrote:
-> On 26/03/2021 13.57, Greg KH wrote:
-> > On Fri, Mar 26, 2021 at 01:53:59PM +0100, Rasmus Villemoes wrote:
-> >> On 26/03/2021 12.38, Peter Zijlstra wrote:
-> >>
-> >>> Implement debugfs_create_str() to easily display names and such in
-> >>> debugfs.
-> >>
-> >> Patches 7-9 don't seem to add any users of this. What's it for precisely?
-> > 
-> > It's used in patch 7, look close :)
+On Thu, Mar 18, 2021 at 09:20:36AM +0100, Benjamin Gaignard wrote:
+> In order to be able to share the control hardware block between
+> VPUs use a syscon instead a ioremap it in the driver.
+> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
+> phandle is not found look at 'ctrl' reg-name.
+> With the method it becomes useless to provide a list of register
+> names so remove it.
 > 
-> Ah, macrology. But the write capability doesn't seem used, and I (still)
-> fail to see how that could be useful.
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 5:
+>  - use syscon instead of VPU reset driver.
+>  - if DT doesn't provide syscon keep backward compatibilty by using
+>    'ctrl' reg-name.
+> 
+>  drivers/staging/media/hantro/hantro.h       |  5 +-
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c | 52 ++++++++++++---------
+>  2 files changed, 34 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index 65f9f7ea7dcf..a99a96b84b5e 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -13,6 +13,7 @@
+>  #define HANTRO_H_
+>  
+>  #include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+>  #include <linux/videodev2.h>
+>  #include <linux/wait.h>
+>  #include <linux/clk.h>
+> @@ -167,7 +168,7 @@ hantro_vdev_to_func(struct video_device *vdev)
+>   * @reg_bases:		Mapped addresses of VPU registers.
+>   * @enc_base:		Mapped address of VPU encoder register for convenience.
+>   * @dec_base:		Mapped address of VPU decoder register for convenience.
+> - * @ctrl_base:		Mapped address of VPU control block.
+> + * @ctrl_base:		Regmap of VPU control block.
+>   * @vpu_mutex:		Mutex to synchronize V4L2 calls.
+>   * @irqlock:		Spinlock to synchronize access to data structures
+>   *			shared with interrupt handlers.
+> @@ -186,7 +187,7 @@ struct hantro_dev {
+>  	void __iomem **reg_bases;
+>  	void __iomem *enc_base;
+>  	void __iomem *dec_base;
+> -	void __iomem *ctrl_base;
+> +	struct regmap *ctrl_base;
+>  
+>  	struct mutex vpu_mutex;	/* video_device lock */
+>  	spinlock_t irqlock;
+> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> index c222de075ef4..bd9d135dd440 100644
+> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+> +#include <linux/mfd/syscon.h>
+>  
+>  #include "hantro.h"
+>  #include "hantro_jpeg.h"
+> @@ -24,30 +25,28 @@
+>  #define CTRL_G1_PP_FUSE		0x0c
+>  #define CTRL_G2_DEC_FUSE	0x10
+>  
+> +static const struct regmap_config ctrl_regmap_ctrl = {
+> +	.reg_bits = 32,
+> +	.val_bits = 32,
+> +	.reg_stride = 0x14,
+> +};
+> +
+>  static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
+>  {
+> -	u32 val;
+> -
+>  	/* Assert */
+> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+> -	val &= ~reset_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET, reset_bits, 0);
+>  
+>  	udelay(2);
+>  
+>  	/* Release */
+> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
+> -	val |= reset_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
+> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET,
+> +			   reset_bits, reset_bits);
+>  }
+>  
+>  static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
+>  {
+> -	u32 val;
+> -
+> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+> -	val |= clock_bits;
+> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
+> +	regmap_update_bits(vpu->ctrl_base, CTRL_CLOCK_ENABLE,
+> +			   clock_bits, clock_bits);
+>  }
+>  
+>  static int imx8mq_runtime_resume(struct hantro_dev *vpu)
+> @@ -64,9 +63,9 @@ static int imx8mq_runtime_resume(struct hantro_dev *vpu)
+>  	imx8m_clk_enable(vpu, CLOCK_G1 | CLOCK_G2);
+>  
+>  	/* Set values of the fuse registers */
+> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_DEC_FUSE);
+> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_PP_FUSE);
+> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G2_DEC_FUSE);
+> +	regmap_write(vpu->ctrl_base, CTRL_G1_DEC_FUSE, 0xffffffff);
+> +	regmap_write(vpu->ctrl_base, CTRL_G1_PP_FUSE, 0xffffffff);
+> +	regmap_write(vpu->ctrl_base, CTRL_G2_DEC_FUSE, 0xffffffff);
+>  
+>  	clk_bulk_disable_unprepare(vpu->variant->num_clocks, vpu->clocks);
+>  
+> @@ -150,8 +149,22 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
+>  
+>  static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
+>  {
+> -	vpu->dec_base = vpu->reg_bases[0];
+> -	vpu->ctrl_base = vpu->reg_bases[vpu->variant->num_regs - 1];
+> +	struct device_node *np = vpu->dev->of_node;
+> +
+> +	vpu->ctrl_base = syscon_regmap_lookup_by_phandle(np, "nxp,imx8mq-vpu-ctrl");
 
-Correct, it isn't used. But I didn't think it would be acceptible to
-not implement the write side. OTOH, if Greg would be okay with it, I can
-change it to:
+I think calling this nxp,imx8m-vpu-ctrl would allow to share this with
+i.MX8MM later. Otherwise,
 
-ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
-                               size_t count, loff_t *ppos)
-{
-        /* This is really only for read-only strings */
-        return -EINVAL;
-}
-EXPORT_SYMBOL_GPL(debugfs_write_file_str);
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-That's certianly simpler.
+thanks
+Philipp
