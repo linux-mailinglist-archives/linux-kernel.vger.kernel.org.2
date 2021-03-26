@@ -2,182 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20E5349F3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23B1E349F3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhCZBz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:55:59 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:50863 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230361AbhCZBza (ORCPT
+        id S230499AbhCZB4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230411AbhCZBz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:55:30 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id F41885C007B;
-        Thu, 25 Mar 2021 21:55:29 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 25 Mar 2021 21:55:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=4fWfZpS9KZS+8
-        Nt8/LwQGBOC8swx8HY12NB6LCJixY8=; b=ojNjgozSdRCqqWE/qcbG3fEu2plGB
-        0EL6QcWjmjE334JpyOrDxiLTxcQ1r7sC5dFcHAQEaXEynyTz45twS2R5BIQ0BWt3
-        yoKRcpw69MJzVu0+XbsS6lw4pFcXlYToCjvW3NYIPHhXplUq2zMnUal3tkLbRURT
-        skIANV1XdAdeDk2kn5aR6EDOnUFTeeCAtqjR6VbG8oQJOKz5UWORLYd4lHe5Wfyc
-        PdAvHMXPt3SD+9AkXEhsd+f2Mr8pu8owiJ5Z7VPVsE1BaKyrZSNDJqnDoMEV6zC6
-        50z/UMfghP2INJAMnZ+rBW6AC+UApA+piQ+HRB34S8Txuoj/hEGxbYgXg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=4fWfZpS9KZS+8Nt8/LwQGBOC8swx8HY12NB6LCJixY8=; b=T+xcO1jb
-        A0XU2JsglMZdiTzy6XTMPsVUJ9bYX2KlkAHUFvdtEyms2iCwRYzf/ekVLWRHtz2I
-        UDI0YQc6jhJ5HJo4RPed90a2kW/XEbufcqALBSt+syvRhZrBtyC5xosqVF3/MYd+
-        eM3nxQmap9FpRnImkQO2LDQoqE21+Q23c/SG0iZgP9hBNeWKNJhVN0A9VwRIL5tn
-        gjCS9OQEzt8NvltI3qPKxq20hUFpejqgpHTDKqLw2cwDYBSvJUr7zfzRhG9C9pIR
-        2cxOavA4JG+SlJwecbz/UEC8AxFops7bIqX9PrDfbUSM+8RPeQpKmeRTQTOYAtkO
-        nhVwBLvvcMqp8w==
-X-ME-Sender: <xms:ET9dYG7iWgvVx-f0_pcK4AeoSA4Sc9Tt7tPPDMm38B7HBVqxAeAQJg>
-    <xme:ET9dYLl1LxKFw_MtaeJpcmpZEZJ3P5AZ-5AJQn5AHtzdCYAm7pqSQrlet6NdLUi4m
-    EKTFfHoKpcXgffdmRE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehuddggedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
-    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeeggedtteejke
-    eggeeugfehueevudegvdetjeeviedugedvtdekffekhedtteduhfenucfkphepudelfedr
-    vdejrddufedrvdefheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegrlhhishhtrghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:ET9dYB5X-obEF3FOW9h2PwbPSJk-5q7KbA0n3pgLvi8qapkq1CJ_4w>
-    <xmx:ET9dYMTjoRJ-L-icc2k8C6I_WpmjzhV3AHoVmLzLfLL4twDyzAqIww>
-    <xmx:ET9dYPyJQivKVrN9btWFWIaPPHBOE_EzPqmchaZ9zgDrF0vB_euwbQ>
-    <xmx:ET9dYNWbqcWlZhgixMNfWccxpfXLpPDqWgd5uhTBKa1ZYPHJlIAIvA>
-Received: from ThinkpadX1Yoga3.localdomain (unknown [193.27.13.235])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E0AE91080067;
-        Thu, 25 Mar 2021 21:55:28 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
-        broonie@kernel.org, linux-imx@nxp.com, kernel@pengutronix.de
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v4 5/5] ARM: dts: imx7d: remarkable2: Enable silergy,sy7636a
-Date:   Thu, 25 Mar 2021 21:55:11 -0400
-Message-Id: <20210326015511.218-5-alistair@alistair23.me>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210326015511.218-1-alistair@alistair23.me>
-References: <20210326015511.218-1-alistair@alistair23.me>
+        Thu, 25 Mar 2021 21:55:57 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A7EC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 18:55:56 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id x16so2240877qvk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 18:55:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=ZvZ0RS30oAxTLDWRkfqE/2UEJY6hgUZS7U8cJyx4zLY=;
+        b=gyRHPbPgpyrmyP7q7H1xnW9kekZkeD2scJjWrijqz9tR9VgWop6RmZNIwDMI4yG7cn
+         Q0rK2u3XBKItnj1+UZd+C+qLWkzvPrIeICeY0Ee9WBDWJiMH+iqPVqDaaBy6F5ddAQxb
+         +tw/1SxSYWNkvdSPaLz4M/yqNGhJ4XQS22oJlBcXmIWWEcLg1cPotmBtQNL+aURpfjSe
+         qZOo3xJWH+7TbPr6GvF7OSOEyyLpUTHDES+WHxjRmelNrkyNhI+Thv1D9lestAosK297
+         sLGaOuufx0zQfPXxzCVdzpmM0SKOv6VjOKLYfoK488ehJdEiwEmcJRhuIsN61nNB6WS5
+         8pEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=ZvZ0RS30oAxTLDWRkfqE/2UEJY6hgUZS7U8cJyx4zLY=;
+        b=ke92U0X00eGs+9E6neNvERl3HIBiA+wCGa8To3VAtXKfQkTefuutoGYleneRcCKvnL
+         ngJ/mSVu/nuR2lxd3LzHEPATGhnueeAJBfp+j4TMUKhe63Az3sIHzEbyTSvi7lDy3eVm
+         tALpZo8cuPqefBjSX2NbzXn5x8No/A3v5d9JgrsVZGa0WyhKkFT1QCwTUYuGW1tUwayn
+         ZpiUS9M3jTlLg0RUV9yaJj8Cg3eHBsaMkFW6NFY9n8ereg0+/6x1Foy5yB/8uYgdgWI4
+         GJzYO94+kbuBd88i2ekZ/ja8EXXywup49Khyyf7gPvbpYyRjtCrqLisOIQ5CSuFOho/5
+         J46g==
+X-Gm-Message-State: AOAM532PIXowujsiV2/SJoA/v3aB9YDQXcD/+2lcTJl44Y3AgyCVy2MJ
+        AxeB8SWCeKYHzb4LzJbnnnwTkQ==
+X-Google-Smtp-Source: ABdhPJx7yLX43m7Leb/Cq6Dq+IZjqJSU+96hAKVSUgrnc277qfH2DVpJwvgHr/8/AiG+PWolHhr3oQ==
+X-Received: by 2002:a0c:9ad7:: with SMTP id k23mr11022719qvf.52.1616723755786;
+        Thu, 25 Mar 2021 18:55:55 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id l129sm5579562qkd.76.2021.03.25.18.55.54
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 25 Mar 2021 18:55:55 -0700 (PDT)
+Date:   Thu, 25 Mar 2021 18:55:42 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Johannes Weiner <hannes@cmpxchg.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+In-Reply-To: <alpine.LSU.2.11.2103231310020.5513@eggly.anvils>
+Message-ID: <alpine.LSU.2.11.2103251716160.12404@eggly.anvils>
+References: <20210319071547.60973-1-hannes@cmpxchg.org> <alpine.LSU.2.11.2103191814040.1043@eggly.anvils> <YFo7SOni0s0TbXUm@cmpxchg.org> <alpine.LSU.2.11.2103231310020.5513@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the silergy,sy7636a and silergy,sy7636a-regulator on the
-reMarkable2.
+On Tue, 23 Mar 2021, Hugh Dickins wrote:
+> On Tue, 23 Mar 2021, Johannes Weiner wrote:
+> > From f6f062a3ec46f4fb083dcf6792fde9723f18cfc5 Mon Sep 17 00:00:00 2001
+> > From: Johannes Weiner <hannes@cmpxchg.org>
+> > Date: Fri, 19 Mar 2021 02:17:00 -0400
+> > Subject: [PATCH] mm: page_alloc: fix allocation imbalances from speculative
+> >  cache lookup
+> > 
+> > When the freeing of a higher-order page block (non-compound) races
+> > with a speculative page cache lookup, __free_pages() needs to leave
+> > the first order-0 page in the chunk to the lookup but free the buddy
+> > pages that the lookup doesn't know about separately.
+> > 
+> > There are currently two problems with it:
+> > 
+> > 1. It checks PageHead() to see whether we're dealing with a compound
+> >    page after put_page_testzero(). But the speculative lookup could
+> >    have freed the page after our put and cleared PageHead, in which
+> >    case we would double free the tail pages.
+> > 
+> >    To fix this, test PageHead before the put and cache the result for
+> >    afterwards.
+> > 
+> > 2. If such a higher-order page is charged to a memcg (e.g. !vmap
+> >    kernel stack)), only the first page of the block has page->memcg
+> >    set. That means we'll uncharge only one order-0 page from the
+> >    entire block, and leak the remainder.
+> > 
+> >    To fix this, add a split_page_memcg() before it starts freeing tail
+> >    pages, to ensure they all have page->memcg set up.
+> > 
+> > While at it, also update the comments a bit to clarify what exactly is
+> > happening to the page during that race.
+> > 
+> > Fixes: e320d3012d25 mm/page_alloc.c: fix freeing non-compound pages
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
----
-v3:
- - Change patch title
-v2:
- - N/A
+Whoops, misses ("...") around the title.
 
- arch/arm/boot/dts/imx7d-remarkable2.dts | 61 +++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+> > Reported-by: Hugh Dickins <hughd@google.com>
+> > Reported-by: Matthew Wilcox <willy@infradead.org>
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Cc: <stable@vger.kernel.org> # 5.10+
+> 
+> This is great, thanks Hannes.
+> Acked-by: Hugh Dickins <hughd@google.com>
 
-diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
-index 791ad55281cc..37834bc7fc72 100644
---- a/arch/arm/boot/dts/imx7d-remarkable2.dts
-+++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
-@@ -22,6 +22,27 @@ memory@80000000 {
- 		reg = <0x80000000 0x40000000>;
- 	};
- 
-+	thermal-zones {
-+		epd-thermal {
-+			thermal-sensors = <&epd_pmic>;
-+			polling-delay-passive = <30000>;
-+			polling-delay = <30000>;
-+			trips {
-+				trip0 {
-+					temperature = <49000>;
-+					hysteresis = <2000>;
-+					type = "passive";
-+				};
-+
-+				trip1 {
-+					temperature = <50000>;
-+					hysteresis = <2000>;
-+					type = "critical";
-+				};
-+			};
-+		};
-+	};
-+
- 	reg_brcm: regulator-brcm {
- 		compatible = "regulator-fixed";
- 		regulator-name = "brcm_reg";
-@@ -86,6 +107,32 @@ wacom_digitizer: digitizer@9 {
- 	};
- };
- 
-+&i2c4 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&pinctrl_i2c4>;
-+	pinctrl-1 = <&pinctrl_i2c4>;
-+	status = "okay";
-+
-+	epd_pmic: sy7636a@62 {
-+		compatible = "silergy,sy7636a";
-+		reg = <0x62>;
-+		status = "okay";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_epdpmic>;
-+		#thermal-sensor-cells = <0>;
-+
-+		epd-pwr-good-gpios = <&gpio6 21 GPIO_ACTIVE_HIGH>;
-+		regulators {
-+			compatible = "silergy,sy7636a-regulator";
-+			reg_epdpmic: vcom {
-+				regulator-name = "vcom";
-+				regulator-boot-on;
-+			};
-+		};
-+	};
-+};
-+
- &snvs_pwrkey {
- 	status = "okay";
- };
-@@ -179,6 +226,13 @@ MX7D_PAD_SAI1_TX_BCLK__GPIO6_IO13	0x14
- 		>;
- 	};
- 
-+	pinctrl_epdpmic: epdpmicgrp {
-+		fsl,pins = <
-+			MX7D_PAD_SAI2_RX_DATA__GPIO6_IO21 0x00000074
-+			MX7D_PAD_ENET1_RGMII_TXC__GPIO7_IO11 0x00000014
-+		>;
-+	};
-+
- 	pinctrl_i2c1: i2c1grp {
- 		fsl,pins = <
- 			MX7D_PAD_I2C1_SDA__I2C1_SDA		0x4000007f
-@@ -186,6 +240,13 @@ MX7D_PAD_I2C1_SCL__I2C1_SCL		0x4000007f
- 		>;
- 	};
- 
-+	pinctrl_i2c4: i2c4grp {
-+		fsl,pins = <
-+			MX7D_PAD_I2C4_SDA__I2C4_SDA		0x4000007f
-+			MX7D_PAD_I2C4_SCL__I2C4_SCL		0x4000007f
-+		>;
-+	};
-+
- 	pinctrl_uart1: uart1grp {
- 		fsl,pins = <
- 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
--- 
-2.31.0
+Sorry, I am ashamed to do this, but now I renege and say NAK:
+better now than before Andrew picks it up.
 
+The first reason occurred to me this morning.  I thought I had been
+clever to spot the PageHead race which you fix here.  But now I just feel
+very stupid not to have spotted the very similar memcg_data race.  The
+speculative racer may call mem_cgroup_uncharge() from __put_single_page(),
+and the new call to split_page_memcg() do nothing because page_memcg(head)
+is already NULL.
+
+And is it even safe there, to sprinkle memcg_data through all of those
+order-0 subpages, when free_the_page() is about to be applied to a
+series of descending orders?  I could easily be wrong, but I think
+free_pages_prepare()'s check_free_page() will find that is not
+page_expected_state().
+
+And what gets to do the uncharging when memcg_data is properly set
+on the appropriate order-N subpages?  I believe it's the (second)
+__memcg_kmem_uncharge_page() in free_pages_prepare(), but that's
+only called if PageMemcgKmem().  Ah, good, Roman's changes have put
+that flag into memcg_data, so it will automatically be set: but this
+patch will not port back to 5.10 without some addition.
+
+But, after all that, I'm now thinking that Matthew's original
+e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages")
+is safer reverted.  The put_page_testzero() in __free_pages() was
+not introduced for speculative pagecache: it was there in 2.4.0,
+and atomic_dec_and_test() in 2.2, I don't have older trees to hand.
+
+So, it has "always" been accepted that multiple references to a
+high-order non-compound page can be given out and released: maybe
+they were all released with __free_pages() of the right order, or
+maybe only the last had to get that right; but as __free_pages()
+stands today, all but the last caller frees all but the first
+subpage.  A very rare leak seems much safer.
+
+I don't have the answer (find somewhere in struct page to squirrel
+away the order, even when it's a non-compound page?), and I think
+each of us would much rather be thinking about other things at the
+moment.  But for now it looks to me like NAK to this patch, and
+revert of e320d3012d25.
+
+> 
+> I know that 5.10-stable rejected the two split_page_memcg() patches:
+> we shall need those in, I'll send GregKH the fixups, but not today.
+
+Done, and Sasha has picked them up.  But in writing that "Ah, good,
+Roman's changes ..." paragraph, I've begun to wonder if what I sent
+was complete - does a 5.10 split_page_memcg(), when called from
+split_page(), also need to copy head's PageKmemcg? I rather think
+yes, but by now I'm unsure of everything...
+
+Hugh
+
+> 
+> > ---
+> >  mm/page_alloc.c | 41 +++++++++++++++++++++++++++++++++++------
+> >  1 file changed, 35 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index c53fe4fa10bf..8aab1e87fa3c 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -5112,10 +5112,9 @@ static inline void free_the_page(struct page *page, unsigned int order)
+> >   * the allocation, so it is easy to leak memory.  Freeing more memory
+> >   * than was allocated will probably emit a warning.
+> >   *
+> > - * If the last reference to this page is speculative, it will be released
+> > - * by put_page() which only frees the first page of a non-compound
+> > - * allocation.  To prevent the remaining pages from being leaked, we free
+> > - * the subsequent pages here.  If you want to use the page's reference
+> > + * This function isn't a put_page(). Don't let the put_page_testzero()
+> > + * fool you, it's only to deal with speculative cache references. It
+> > + * WILL free pages directly. If you want to use the page's reference
+> >   * count to decide when to free the allocation, you should allocate a
+> >   * compound page, and use put_page() instead of __free_pages().
+> >   *
+> > @@ -5124,11 +5123,41 @@ static inline void free_the_page(struct page *page, unsigned int order)
+> >   */
+> >  void __free_pages(struct page *page, unsigned int order)
+> >  {
+> > -	if (put_page_testzero(page))
+> > +	bool compound = PageHead(page);
+> > +
+> > +	/*
+> > +	 * Drop the base reference from __alloc_pages and free. In
+> > +	 * case there is an outstanding speculative reference, from
+> > +	 * e.g. the page cache, it will put and free the page later.
+> > +	 */
+> > +	if (likely(put_page_testzero(page))) {
+> >  		free_the_page(page, order);
+> > -	else if (!PageHead(page))
+> > +		return;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Ok, the speculative reference will put and free the page.
+> > +	 *
+> > +	 * - If this was an order-0 page, we're done.
+> > +	 *
+> > +	 * - If the page was compound, the other side will free the
+> > +	 *   entire page and we're done here as well. Just note that
+> > +	 *   freeing clears PG_head, so it can only be read reliably
+> > +	 *   before the put_page_testzero().
+> > +	 *
+> > +	 * - If the page was of higher order but NOT marked compound,
+> > +	 *   the other side will know nothing about our buddy pages
+> > +	 *   and only free the order-0 page at the start of our block.
+> > +	 *   We must split off and free the buddy pages here.
+> > +	 *
+> > +	 *   The buddy pages aren't individually refcounted, so they
+> > +	 *   can't have any pending speculative references themselves.
+> > +	 */
+> > +	if (order > 0 && !compound) {
+> > +		split_page_memcg(page, 1 << order);
+> >  		while (order-- > 0)
+> >  			free_the_page(page + (1 << order), order);
+> > +	}
+> >  }
+> >  EXPORT_SYMBOL(__free_pages);
+> >  
+> > -- 
+> > 2.31.0
