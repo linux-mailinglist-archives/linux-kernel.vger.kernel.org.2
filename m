@@ -2,127 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D24934A7E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DB534A7E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhCZNOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
+        id S230195AbhCZNOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbhCZNNf (ORCPT
+        with ESMTP id S230138AbhCZNOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:13:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBCFFC0613B1;
-        Fri, 26 Mar 2021 06:13:34 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 13:13:30 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616764411;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c17BCtUGHP4Z4iJZ0BvLOnKsdTiJ14hCmrJEoGbyCbk=;
-        b=2C+CARMoctJqtHEswKpz52MLb+PpC4cmMtvq1iyD1DPzSP+mcFgn1NDmAIwOOsBsODhw0V
-        ZCOzfeXkhEDP62gEvcUcM1zGswcx5dGMHgrrR91uCOlS2pLTWBJaHvzElMC3klfuhp3V6w
-        RqeszRTlFX3FCG9C/nE7XnC94MbMkpAyRQj9tN+i4POvFlGnLOPMvnY6vF2aH8nyNcMWq0
-        14DvoU4zDRHNwxptJG9Q1gOVwck3Zy+Enb8kwxRcpDg3KItdwvbiSr5XqacM7kVyc7MUVV
-        vvZWQ3307WHJeEB171jjZ2lCYP5inMvA3gveCDDwHWpb7bC5axtawhZspQWamw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616764411;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c17BCtUGHP4Z4iJZ0BvLOnKsdTiJ14hCmrJEoGbyCbk=;
-        b=DzB998pzJoaiTap5ROj/b865oRu3NXar0zka+/sTYww/ROFDCxvfPqtiDvkmwlP66QyV3S
-        f0ZRMhuxWtn+VjDw==
-From:   "tip-bot2 for John Millikin" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/build] x86/build: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
-Cc:     John Millikin <john@john-millikin.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Borislav Petkov <bp@suse.de>, Ard Biesheuvel <ardb@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210326000435.4785-2-nathan@kernel.org>
-References: <20210326000435.4785-2-nathan@kernel.org>
+        Fri, 26 Mar 2021 09:14:25 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8B6C0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:14:24 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id x21so6267623eds.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KmOPujpceCwNBwq8q46MhKQlq/vNV8oRKdM5lmTSaUY=;
+        b=rvFEbOCl8LSLZytnyKzqWkcEr+KE+lxvzCPOYoASrny6KeCKHT3ZjYS7wCyM+1oAwH
+         0glED00sVC4ECqCSQqjeFS59sQgLuAU+7a8mKVK1N2X6zGPqP/AwoOXTEaSZnOmZu0Gg
+         r2mljKEo66AVk4gQNEv+mgPlXKintjMJBVtIU1F4PkT3EJw6T1bB8RBxpG+/4Rdv4MBh
+         sTIuT5yqeftWODVBHKsaIaRPRDat4kKJsuyyJjNyNpKZ0cKoTQj4vomdWLPkq+kb/FZv
+         wVMD7DcmhHH3M3CoWOdkCgotl5r7d6BtW9QOgRB4pLFvxvG53nhubG8801D4EIisco0P
+         Vtqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KmOPujpceCwNBwq8q46MhKQlq/vNV8oRKdM5lmTSaUY=;
+        b=KHd+D1oHbPeoHP0IQi/TaEy1n6T9A5nkz7PJOg//mq54oYFuJbH3eZh4AC9aAvKPBX
+         JWNGoFiYc9Fr0vzWdw1aEJjawhKEhMXHKfiDoqf+re0Ww+tFEqqbnyFKU2phVoYq4Wps
+         t6lZyxaie4jJRzpzIik0mFJvMfH3UwdLhabxoeLtIdaUxuJQqts2eCfu+t3APEYfxlx7
+         hI2CDo+0jxAslkWdf4wtbCd09WpITH9BVNJiVjqWcPLWc7ygNBtgC/U3BBX5yP9MZluC
+         OtHAyH/5UE4xfpzAICLFbaTUltj7WWJ2HRq6E+2grCQE4LqScEShe1EL6pZWeIDUSdSX
+         XY1Q==
+X-Gm-Message-State: AOAM532bsU86qNjg4PnqGEWVl4fKHgYI08Pof+NgcEbPCPvPBVIhKOBO
+        zPCjoqmwagfcthQSubjy/oZLupDWJZHNu6NkfrY/Eg==
+X-Google-Smtp-Source: ABdhPJzsPw0ybVJ9vSPBV1/CGr4FJVplRv3la+GUn0T+lu9wzMlLtHQYCZ+Q2QoQt4qrsbx1BvUjw/Q44M+P3iS2eTM=
+X-Received: by 2002:aa7:d813:: with SMTP id v19mr15022627edq.213.1616764463432;
+ Fri, 26 Mar 2021 06:14:23 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <161676441085.398.3201409589926303297.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+References: <20210324081923.20379-1-noltari@gmail.com> <20210324081923.20379-2-noltari@gmail.com>
+In-Reply-To: <20210324081923.20379-2-noltari@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 26 Mar 2021 14:14:12 +0100
+Message-ID: <CAMpxmJXVnKHXvvaaObTiHemxfC77u-zikPfEtprQ7qdDn9Z0cg@mail.gmail.com>
+Subject: Re: [PATCH v9 01/22] gpio: guard gpiochip_irqchip_add_domain() with GPIOLIB_IRQCHIP
+To:     =?UTF-8?B?w4FsdmFybyBGZXJuw6FuZGV6IFJvamFz?= <noltari@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Michael Walle <michael@walle.cc>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/build branch of tip:
+On Wed, Mar 24, 2021 at 9:19 AM =C3=81lvaro Fern=C3=A1ndez Rojas
+<noltari@gmail.com> wrote:
+>
+> The current code doesn't check if GPIOLIB_IRQCHIP is enabled, which resul=
+ts in
+> a compilation error when trying to build gpio-regmap if CONFIG_GPIOLIB_IR=
+QCHIP
+> isn't enabled.
+>
+> Fixes: 6a45b0e2589f ("gpiolib: Introduce gpiochip_irqchip_add_domain()")
+> Suggested-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: =C3=81lvaro Fern=C3=A1ndez Rojas <noltari@gmail.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Reviewed-by: Michael Walle <michael@walle.cc>
+> ---
 
-Commit-ID:     8abe7fc26ad8f28bfdf78adbed56acd1fa93f82d
-Gitweb:        https://git.kernel.org/tip/8abe7fc26ad8f28bfdf78adbed56acd1fa9=
-3f82d
-Author:        John Millikin <john@john-millikin.com>
-AuthorDate:    Thu, 25 Mar 2021 17:04:33 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 26 Mar 2021 11:32:47 +01:00
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-x86/build: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
+I suppose this will go through the pinctrl tree.
 
-When cross-compiling with Clang, the `$(CLANG_FLAGS)' variable
-contains additional flags needed to build C and assembly sources
-for the target platform. Normally this variable is automatically
-included in `$(KBUILD_CFLAGS)' via the top-level Makefile.
-
-The x86 real-mode makefile builds `$(REALMODE_CFLAGS)' from a
-plain assignment and therefore drops the Clang flags. This causes
-Clang to not recognize x86-specific assembler directives:
-
-=C2=A0 arch/x86/realmode/rm/header.S:36:1: error: unknown directive
-=C2=A0 .type real_mode_header STT_OBJECT ; .size real_mode_header, .-real_mod=
-e_header
-=C2=A0 ^
-
-Explicit propagation of `$(CLANG_FLAGS)' to `$(REALMODE_CFLAGS)',
-which is inherited by real-mode make rules, fixes cross-compilation
-with Clang for x86 targets.
-
-Relevant flags:
-
-* `--target' sets the target architecture when cross-compiling. This
-=C2=A0 flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
-=C2=A0 to support architecture-specific assembler directives.
-
-* `-no-integrated-as' tells clang to assemble with GNU Assembler
-=C2=A0 instead of its built-in LLVM assembler. This flag is set by default
-=C2=A0 unless `LLVM_IAS=3D1' is set, because the LLVM assembler can't yet
-=C2=A0 parse certain GNU extensions.
-
-Signed-off-by: John Millikin <john@john-millikin.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Link: https://lkml.kernel.org/r/20210326000435.4785-2-nathan@kernel.org
----
- arch/x86/Makefile | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 2d6d5a2..9a73e0c 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -33,6 +33,7 @@ REALMODE_CFLAGS +=3D -ffreestanding
- REALMODE_CFLAGS +=3D -fno-stack-protector
- REALMODE_CFLAGS +=3D $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-add=
-ress-of-packed-member)
- REALMODE_CFLAGS +=3D $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_sta=
-ck_align4))
-+REALMODE_CFLAGS +=3D $(CLANG_FLAGS)
- export REALMODE_CFLAGS
-=20
- # BITS is used as extension for files which are available in a 32 bit
+Bartosz
