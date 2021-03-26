@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8A334AB2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717C934AB2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhCZPNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:13:09 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:52275 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbhCZPMs (ORCPT
+        id S230517AbhCZPNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231316AbhCZPMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:12:48 -0400
-Received: from mail-oo1-f51.google.com ([209.85.161.51]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1M5PyX-1lOR5s46jd-001NmF; Fri, 26 Mar 2021 16:12:46 +0100
-Received: by mail-oo1-f51.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso1368258ooq.6;
-        Fri, 26 Mar 2021 08:12:44 -0700 (PDT)
-X-Gm-Message-State: AOAM532SvFfxIrCEisxWXX+Ozd33FCU4BCIpQs7SePVuPvXBg+gayZpv
-        cjlayYDFxo0bzFA9lhfMH6wOYCi5wa87tUVNLoI=
-X-Google-Smtp-Source: ABdhPJyncRM6kyqeo61SxrePQvXeSUHXpMpeR3setGvzuR1f3RkPXPWDzfhUQ5b18mmh4AOwFayrXC4U1BBAx3fFL7s=
-X-Received: by 2002:a4a:304a:: with SMTP id z10mr11801529ooz.26.1616771563972;
- Fri, 26 Mar 2021 08:12:43 -0700 (PDT)
+        Fri, 26 Mar 2021 11:12:49 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169DFC0613B3
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:12:49 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso3196463wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vJD63yjhBQ/6qYwEetX6fhqse6jdADR22GvZycMU1kg=;
+        b=h0hbKyyF+cz/P5CbiOOmWKzwR06PsSPq55Ngy4fgoALtC8yuEaEK9doN+YeSVlmXW7
+         B5lHRN88SDNUGzyEq5lgbxDHGRdQLgTnbIj1LAt3TbE/CvkUGy+ZvReX8GRwSLk+W3cU
+         gNQ8Is9QE3RKW6y5gW6MURu0sX249kNivRQfFVyyfWgBZrtOIngY/ahyw3zYH23k6Za8
+         pRbAXDn7/nGJAO9/FGgLl0y7M3rF0pWi89oM5lf9hdTWX1qB0tuwK6fPXcVNooucHvlb
+         ziw7h/BTS4zTad0L05dW3NDH3hnAUwCOjTKO17HS0RhIe09iUfYZdQHWLIJAuzdfKfVt
+         O5hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vJD63yjhBQ/6qYwEetX6fhqse6jdADR22GvZycMU1kg=;
+        b=YyD7Kufi18oEdwZFUnp7HmJ4vlWiwZs7hFTciL8Liz0J3IPf8WthP/dYlKxEt48xKm
+         9VTausOC4e9vW49QqADSNUcrJERyi0eSJbOH6iNBso3CsAKkyeO29cK8bjoFmAhunBuV
+         bEoGpkrzGZ47PqhpuKNtS6IU36+8FZ/sMQNVMJf3svHJg1QhcgWD5ruKR45fS/+shA0a
+         RKW9unM4avzjI/OlWlQ3h57QyLVjQ4RfK7rzFS/dkqtLN1OLRB4AGzn4LWwkzTAwIkzG
+         KGEtm4tCCbU2N1tvyG9+klNrRG0rYVGjG06hhhtw3lA0ML7bzclknJmlv6YPBHxxJpQ6
+         fGkw==
+X-Gm-Message-State: AOAM5334XdX7B7yGZjH+0LV3o+SKVZy1t378jhM8INrSB+AD2SVoD11w
+        MXHFNm0kn/h/bBr3pVY1GtQ=
+X-Google-Smtp-Source: ABdhPJw8EeC9Q8VHNqjHEsGlaY++EiB5170/0PwXVd9gGya6NS6wd71RY1bFBzzeTOfZGpRZEWE3sw==
+X-Received: by 2002:a05:600c:3796:: with SMTP id o22mr5872060wmr.139.1616771567854;
+        Fri, 26 Mar 2021 08:12:47 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.141])
+        by smtp.gmail.com with ESMTPSA id a67sm2558576wme.33.2021.03.26.08.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 08:12:47 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 16:12:45 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, david.laight@aculab.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/15] staging: rtl8723bs: put parentheses on macros with
+ complex values in include/drv_types.h
+Message-ID: <20210326151244.GB1952@agape.jhs>
+References: <cover.1616748885.git.fabioaiuto83@gmail.com>
+ <fea98d1b0260494dc5cb0dfb7fc03d6f74d9acdf.1616748885.git.fabioaiuto83@gmail.com>
+ <20210326142257.GF1717@kadam>
 MIME-Version: 1.0
-References: <20210326143831.1550030-1-hch@lst.de> <20210326143831.1550030-5-hch@lst.de>
-In-Reply-To: <20210326143831.1550030-5-hch@lst.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 26 Mar 2021 16:12:28 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3jQHHwxFw4DV5+c0Nu61TsxqL9vRoAga+yjz_U-iXxvw@mail.gmail.com>
-Message-ID: <CAK8P3a3jQHHwxFw4DV5+c0Nu61TsxqL9vRoAga+yjz_U-iXxvw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] exec: move the call to getname_flags into do_execveat
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Brian Gerst <brgerst@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:JFSoIXNDgPVqai0uJIGyEtX++CbK81zP0tl3O99Irgxjs3BNGsH
- qdBXNeBV4k3pVqi9Yl0VtJDsM27pLyJEI3I66GZBKVvIlE6hC9UMZ6LA+xlszD2HJCxqDIG
- WU/bTpwDvYQofMkiH2GZxW64d3rUvEoSBCHGQObRh56+EXsstH5+MqNX83lOQ9gDU0P2DEI
- uXGa/ihCuXCrWwCuFSvfA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wxB7Pwj9fHM=:E0KvirLEND3WNArHZXgAZ0
- bfByIk2nPSQfg8w6G5scsAtcO+sgLA5uea/1WOn9zWhSP+xqHcA49c/7pNDoLjJKZIpNeZYaN
- 15clOZgYBrHuIEYno96boaL4z21SQcjdiw6FDNdwNN+1+Hn+L3KFV78TjvejimoAkXumrYMc9
- +GbxMVICIe6vpd0Dk87fkN3v+8Mykh7LlPZoeDJCNJPoPaZlipHtxqaHeLpGgD3GImm26e6pX
- XyiUpkz+TwkwVJx5pZjTMsQdznn/sX0qLbZZqMIyXkfW2vztXtEGTyPdeWg6Lp/lH0OqjBuJk
- k2g4o808bK7Y1IHK70WpsN/csJDjwAXMdhrweY8rmMRTvtJ+O8rJRVz892QdtKEMAiqw2I98b
- 0ielCd+iEbw7qhiXhyoPSkwPqPzyODDMWQj7uXdlcBTY73XVuqT0K89T4jn8mJi/oz9xSO7ah
- 7hNRweBWwQ2l+9Ocii5qANY7gvXOEKCPUspupsHGueggra6ry3e1JoxGacaX0zE2hYNIfrGWK
- s+Ja0Tl5IZOdSNyAuk36W5SOtuJdfAJ0Rjumn0xI1BJgQ2nPe03wLhhN/kzq5014+OgTI+bqt
- KaXqW51b7pyHGaqVMxvJcFjKTU5aYWLrWh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326142257.GF1717@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 3:38 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> Remove the duplicated copying of the pathname into the common helper.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Fri, Mar 26, 2021 at 05:22:57PM +0300, Dan Carpenter wrote:
+> On Fri, Mar 26, 2021 at 10:09:12AM +0100, Fabio Aiuto wrote:
+> > fix the following checkpatch warning:
+> > 
+> > ERROR: Macros with complex values should be enclosed in parentheses
+> > 279: FILE: drivers/staging/rtl8723bs/include/drv_types.h:279:
+> > +#define KEY_ARG(x) ((u8 *)(x))[0], ((u8 *)(x))[1],
+> > ((u8 *)(x))[2], ((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5], \
+> > 
+> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > ---
+> >  drivers/staging/rtl8723bs/include/drv_types.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
+> > index 1658450b386e..ead4cb9c1e5a 100644
+> > --- a/drivers/staging/rtl8723bs/include/drv_types.h
+> > +++ b/drivers/staging/rtl8723bs/include/drv_types.h
+> > @@ -276,9 +276,9 @@ struct cam_entry_cache {
+> >  };
+> >  
+> >  #define KEY_FMT "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+> > -#define KEY_ARG(x) ((u8 *)(x))[0], ((u8 *)(x))[1], ((u8 *)(x))[2], ((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5], \
+> > +#define KEY_ARG(x) (((u8 *)(x))[0], ((u8 *)(x))[1], ((u8 *)(x))[2], ((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5], \
+> >  	((u8 *)(x))[6], ((u8 *)(x))[7], ((u8 *)(x))[8], ((u8 *)(x))[9], ((u8 *)(x))[10], ((u8 *)(x))[11], \
+> > -	((u8 *)(x))[12], ((u8 *)(x))[13], ((u8 *)(x))[14], ((u8 *)(x))[15]
+> > +	((u8 *)(x))[12], ((u8 *)(x))[13], ((u8 *)(x))[14], ((u8 *)(x))[15])
+> 
+> KEY_ARG() isn't used anywhere that I can see.  Just delete it.
+> 
+> Please take your time when you re-write this series and think about each
+> change clearly and fix the underlying badness instead of just making
+> checkpatch happy.  I would really just throw out the patchset and start
+> over from scratch.
+> 
+> regards,
+> dan carpenter
+> 
 
-Looks correct, but
+Hi Dan,
 
-> -static int do_execveat(int fd, struct filename *filename,
-> +static int do_execveat(int fd, const char __user *pathname,
->                 const char __user *const __user *argv,
->                 const char __user *const __user *envp, int flags)
+KEY_FMT is unused as well. I'm rewriting the whole series, will send
+v2.
 
-Maybe rename this to ksys_execveat() for consistency now? I think that
-is the current trend for functions that are essentially just the syscall.
+thank you,
 
-With or without that change
-
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+fabio
