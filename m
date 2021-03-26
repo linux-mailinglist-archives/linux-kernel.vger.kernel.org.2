@@ -2,63 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDBF34A67D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F99D34A681
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhCZLe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:34:58 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:47966 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbhCZLel (ORCPT
+        id S229848AbhCZLhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:37:12 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:51721 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhCZLgl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:34:41 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id EDF259802E6;
-        Fri, 26 Mar 2021 19:34:38 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Fri, 26 Mar 2021 07:36:41 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 0B617E000B;
+        Fri, 26 Mar 2021 11:36:32 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 12:37:05 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] infiniband: ulp: struct iscsi_iser_task is declared twice
-Date:   Fri, 26 Mar 2021 19:33:46 +0800
-Message-Id: <20210326113347.903976-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+Subject: Re: [PATCH v3 05/19] media: v4l2-subdev: De-deprecate init() subdev
+ op
+Message-ID: <20210326113705.ig3v2m5cwyrf66xb@uno.localdomain>
+References: <20210319164148.199192-1-jacopo+renesas@jmondi.org>
+ <20210319164148.199192-6-jacopo+renesas@jmondi.org>
+ <YFYX1KHi74XPEWLi@pendragon.ideasonboard.com>
+ <20210321205256.GE3@valkosipuli.retiisi.eu>
+ <20210322125144.xd4yky6jmaw56x4a@uno.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZT0lJSx8YSEoZHkgeVkpNSk1MTkNPTEJKTENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NhQ6Mww*Sj8PQzxITBg9Skgc
-        AREaCRdVSlVKTUpNTE5DT0xCTkhNVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTU5ONwY+
-X-HM-Tid: 0a786e5098fcd992kuwsedf259802e6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210322125144.xd4yky6jmaw56x4a@uno.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct iscsi_iser_task has been declared at 201st line.
-Remove the duplicate.
+Hi Sakari,
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/infiniband/ulp/iser/iscsi_iser.h | 1 -
- 1 file changed, 1 deletion(-)
+On Mon, Mar 22, 2021 at 01:51:44PM +0100, Jacopo Mondi wrote:
+> Hi Sakari,
+>
+> On Sun, Mar 21, 2021 at 10:52:56PM +0200, Sakari Ailus wrote:
+> > Hi Laurent and Jacopo,
+> >
+> > Thanks for cc'ing me.
+> >
+> > On Sat, Mar 20, 2021 at 05:42:12PM +0200, Laurent Pinchart wrote:
+> > > Hi Jacopo,
+> > >
+> > > Thank you for the patch.
+> > >
+> > > CC'ing Sakari on v3 to get feedback.
+> > >
+> > > On Fri, Mar 19, 2021 at 05:41:34PM +0100, Jacopo Mondi wrote:
+> > > > The init() subdev core operation is deemed to be deprecated for new
+> > > > subdevice drivers. However it could prove useful for complex
+> > > > architectures to defer operation that require access to the
+> > > > communication bus if said bus is not available (or fully configured)
+> > > > at the time when the subdevice probe() function is run.
+> > > >
+> > > > As an example, the GMSL architecture requires the GMSL configuration
+> > > > link to be configured on the host side after the remote subdevice
+> > > > has completed its probe function. After the configuration on the host
+> > > > side has been performed, the subdevice registers can be accessed through
+> > > > the communication bus.
+> >
+> > What does the remote device's probe do that needs to be done before bus
+> > config on the host side?
+>
+> A few lines here below:
+>
+>  In the GMSL use case the bus configuration requires the enablement of the
+>  noise immunity threshold on the remote side which ensures reliability
+>  of communications in electrically noisy environments. After the subdevice
+>  has enabled the threshold at the end of its probe() sequence the host
+>  side shall compensate it with an higher signal amplitude. Once this
+>  sequence has completed the bus can be accessed with noise protection
+>  enabled and all the operations that require a considerable number of
+>  transactions on the bus (such as the image sensor configuration
+>  sequence) are run in the subdevice init() operation implementation.
+>
+> >
+> > Alternatively, could the remote init() work be done at the time streaming
+> > is started?
+>
+> That would require programing the sensor, the embedded ISP at s_stream
+> time which would take some time.
 
-diff --git a/drivers/infiniband/ulp/iser/iscsi_iser.h b/drivers/infiniband/ulp/iser/iscsi_iser.h
-index 78ee9445f801..9f6ac0a09a78 100644
---- a/drivers/infiniband/ulp/iser/iscsi_iser.h
-+++ b/drivers/infiniband/ulp/iser/iscsi_iser.h
-@@ -297,7 +297,6 @@ struct iser_login_desc {
- 
- struct iser_conn;
- struct ib_conn;
--struct iscsi_iser_task;
- 
- /**
-  * struct iser_device - iSER device handle
--- 
-2.25.1
+I'm afraid but from my testing also the chip identification is more
+reliable if run in init(). As identifying chips is something that has
+to happen at probe/initialization I fear it is not possible to move it
+to s_stream time.
 
+>
+> I'll take this suggestion into account though and run some more tests.
+>
+> Thanks
+>   j
+>
+> >
+> > > >
+> > > > In particular:
+> > > >
+> > > > 	HOST			REMOTE
+> > > >
+> > > > 	probe()
+> > > > 	   |
+> > > > 	   ---------------------> |
+> > > > 				  probe() {
+> > > > 				     bus config()
+> > > > 				  }
+> > > > 	   |<--------------------|
+> > > > 	v4l2 async bound {
+> > > > 	    bus config()
+> > > > 	    call subdev init()
+> > > > 	   |-------------------->|
+> > > > 				 init() {
+> > > > 				     access register on the bus()
+> > > > 				}
+> > > > 	   |<-------------------
+> > > > 	}
+> > > >
+> > > > In the GMSL use case the bus configuration requires the enablement of the
+> > > > noise immunity threshold on the remote side which ensures reliability
+> > > > of communications in electrically noisy environments. After the subdevice
+> > > > has enabled the threshold at the end of its probe() sequence the host
+> > > > side shall compensate it with an higher signal amplitude. Once this
+> > > > sequence has completed the bus can be accessed with noise protection
+> > > > enabled and all the operations that require a considerable number of
+> > > > transactions on the bus (such as the image sensor configuration
+> > > > sequence) are run in the subdevice init() operation implementation.
+> > > >
+> > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > > > ---
+> > > >  include/media/v4l2-subdev.h | 15 ++++++++++++---
+> > > >  1 file changed, 12 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> > > > index d0e9a5bdb08b..3068d9940669 100644
+> > > > --- a/include/media/v4l2-subdev.h
+> > > > +++ b/include/media/v4l2-subdev.h
+> > > > @@ -148,9 +148,18 @@ struct v4l2_subdev_io_pin_config {
+> > > >   *	each pin being configured.  This function could be called at times
+> > > >   *	other than just subdevice initialization.
+> > > >   *
+> > > > - * @init: initialize the sensor registers to some sort of reasonable default
+> > > > - *	values. Do not use for new drivers and should be removed in existing
+> > > > - *	drivers.
+> > > > + * @init: initialize the subdevice registers to some sort of reasonable default
+> > > > + *	values. Do not use for new drivers (and should be removed in existing
+> > > > + *	ones) for regular architectures where the image sensor is connected to
+> > > > + *	the host receiver. For more complex architectures where the subdevice
+> > > > + *	initialization should be deferred to the completion of the probe
+> > > > + *	sequence of some intermediate component, or the communication bus
+> > > > + *	requires configurations on the host side that depend on the completion
+> > > > + *	of the probe sequence of the remote subdevices, the usage of this
+> > > > + *	operation could be considered to allow the devices along the pipeline to
+> > > > + *	probe and register in the media graph and to defer any operation that
+> > > > + *	require actual access to the communication bus to their init() function
+> > > > + *	implementation.
+> > > >   *
+> > > >   * @load_fw: load firmware.
+> > > >   *
+> >
+> > --
+> > Kind regards,
+> >
+> > Sakari Ailus
