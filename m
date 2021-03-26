@@ -2,104 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C40134A5B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AD434A5C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhCZKlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:41:00 -0400
-Received: from mga01.intel.com ([192.55.52.88]:29030 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229474AbhCZKkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:40:36 -0400
-IronPort-SDR: Tt4VwobvgTYhD9Ymx3enL/UpC6mUjzoR+HqjsX84ZSMriq5qYE0+49E0w/lpm1HjTNFScaFfNB
- BJqSqdTSIlXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211281802"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="211281802"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 03:40:27 -0700
-IronPort-SDR: +gh6FxyXjJofht4ywQhFQbgTKWgHznXFTgBwGrfv0yYIYHMsZEzwtKEC0tX4GsRCY/FLIQIGc7
- 53F+P01RC0GQ==
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="375442320"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 03:40:25 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lPjt9-00GMY1-2a; Fri, 26 Mar 2021 12:40:23 +0200
-Date:   Fri, 26 Mar 2021 12:40:23 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Goswami, Sanket" <Sanket.Goswami@amd.com>
-Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Subject: Re: [PATCH] i2c: add i2c bus driver for amd navi gpu
-Message-ID: <YF26F8IFmbo80rMq@smile.fi.intel.com>
-References: <20210309133147.1042775-1-Sanket.Goswami@amd.com>
- <YEeFgZSIY5lb2ubP@smile.fi.intel.com>
- <fa1a59fb-a7fa-44bb-1629-5e726f164b94@amd.com>
- <YFzC19IiGZdmLCOR@smile.fi.intel.com>
- <617d0164-1290-250f-ae34-828c6b4b390a@amd.com>
+        id S229738AbhCZKp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 06:45:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229528AbhCZKpv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 06:45:51 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE2EC0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 03:45:39 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id m12so6962351lfq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 03:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IK4/sJNKpiXcAkZPkWde1UY0aLQTEEelKUznm20o8Vo=;
+        b=CJyacTlwtLXGbCs5AoYG0JIafM42Hz1J1CXyseLv1SRT+wY5/h0dnDuwnUZ06+OO5P
+         UMrVbLtH/LGKm4kylBJfqkDHuzu35nFH7+7oL63TmM6kE2amaSMs8Xm8v+7wl83SSuga
+         5k46KN0hPWEgJH5R0IPffVF+EbdzcfKeGsSex+CMEQiPyxipLyD98BogEF8y0vGOTqy1
+         3bowHgeLnqLHM1s7elKdEEiuG8NjpZSoFy6iXFTY97mlyz1xcIhSKgE+2j8cHECHtZuA
+         7A1tyE2j3XTtMJZIW/747ZEIG9obesEuUIujyB31FLAcuU1kZ4y6tnXFXSuwWbbY/U4C
+         yJBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IK4/sJNKpiXcAkZPkWde1UY0aLQTEEelKUznm20o8Vo=;
+        b=j5+E6ILCxWM8PyMhIkt2hADqxuJwy3qd0G3TxsJoPOV+50YVZ8fkenAzAJO3Af1eZw
+         bmDdTHHWeQj7iGQ0AU5oNagdUjlWu9S1+DOb5QaPIAGUqJB7OsE+z99s46GcymqROV3L
+         YlueSo3lNfg/5+Gs+S678XRctqsLpQM3P8RiyWkfS459z3s93Oy+Lqtmu0btwd8o6FZi
+         rNpgsc45Y1SH7Oc9FyNEBNiWDLF8TJTFicUKkrz3ykS6yItKcl/AqRiKwH9vvK2IxWws
+         L0b4N4SO7//S5AgbpwD6QrrTXo5ylgkMbd1w9tqJndKkaXmeaKdi/knraMy7OWBGVCTL
+         qAgQ==
+X-Gm-Message-State: AOAM533tGjeFyVK5rqB7QJ7qVImg85eOyPCHtS6wxss1Bw8gaCXfOv9I
+        YqLLteuEUqgeFd7Kj1ZqdVAsV8aiZS37NbaAodewkA==
+X-Google-Smtp-Source: ABdhPJxT1rj22fVGJqVzGXNuT9Wc6xVCgWO8b1atXNowepxcEYEwKbab92Vj3dYjxrucjH3qTZ0gJX+42SONzCvB7R0=
+X-Received: by 2002:a19:6b13:: with SMTP id d19mr7522600lfa.291.1616755538184;
+ Fri, 26 Mar 2021 03:45:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <617d0164-1290-250f-ae34-828c6b4b390a@amd.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210324183610.4574-1-maciej.kwapulinski@linux.intel.com>
+In-Reply-To: <20210324183610.4574-1-maciej.kwapulinski@linux.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 26 Mar 2021 11:45:27 +0100
+Message-ID: <CACRpkdaHMKueLr9Q5CAXQXN5A5FwZScfroE-DYfK+NaGXaqN1A@mail.gmail.com>
+Subject: Re: [PATCH v2 00/13] Driver of Intel(R) Gaussian & Neural Accelerator
+To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>,
+        Olof Johansson <olof@lixom.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 03:53:34PM +0530, Goswami, Sanket wrote:
-> On 25-Mar-21 22:35, Andy Shevchenko wrote:
-> > On Mon, Mar 22, 2021 at 10:26:55PM +0530, Goswami, Sanket wrote:
-> >> On 09-Mar-21 19:56, Andy Shevchenko wrote:
-> >>> On Tue, Mar 09, 2021 at 07:01:47PM +0530, Sanket Goswami wrote:
+On Wed, Mar 24, 2021 at 7:39 PM Maciej Kwapulinski
+<maciej.kwapulinski@linux.intel.com> wrote:
 
-...
+> This submission is a kernel driver to support Intel(R) Gaussian & Neural
+> Accelerator (Intel(R) GNA). Intel(R) GNA is a PCI-based neural co-processor
+> available on multiple Intel platforms.
 
-> > And I think I already have told you that I prefer to see rather MODEL_ quirk.
-> 
-> I did not find MODEL_ quirk reference in the PCI device tree, It is actually
-> used in platform device tree which is completely different from our PCI
-> based configuration, can you please provide some reference of MODEL_ quirk
-> which will be part of the PCI device tree?
+I clearly remember Olof Johansson talking about the potential need
+of creating a kernel subsystem for inference engines, so I believe he
+wants to be in on this discussion.
 
-I meant the name of new definition for quirk.
+There is already misc/habanalabs, and I personally feel this is already
+going in the same direction as did pin control before we standardized
+it (somewhat), with vendors claiming they are all necessarily different.
 
-...
+So are they necessarily different? New frontiers in the Wild West
+every vendor shooting from the hip without any attempts at
+standardizing this thing?
 
-> >>> Also why (1) and this can't be instantiated from ACPI / DT?
-> >> It is in line with the existing PCIe-based DesignWare driver,
-> >> A similar approach is used by the various vendors.
-> > 
-> > Here is no answer to the question. What prevents you to fix your ACPI tables or
-> > DT?
-> > 
-> > We already got rid of FIFO hard coded values, timings are harder to achieve,
-> > but we expect that new firmwares will provide values in the ACPI tables.
-> 
-> AMD NAVI GPU card is the PCI initiated driver, not ACPI initiated,
+Habanalabs was first at this and they made it in, has there been
+any attempt to see if the two drivers could actually share code or
+have anything in common? Could they share interfaces to userspace?
+That kind of thing.
 
-Which doesn't prevent to have an ACPI companion (via description in the
-tables).
+In the end what kernel users want is to be able to write a
+userspace making use of any kind of inference/statistics engine
+without having to worry about the underlying hardware, this is
+what abstractions are for.
 
-> and also
-> It does not contain a corresponding ACPI match table.
+> The driver works with Intel(R) libraries in user space. The Intel(R) driver
+> exposes a few IOCTL interfaces for use by libraries in user space. The
+> libraries are open sourced and are available at:
+> https://github.com/intel/gna
 
-Yes, that's what should be done in the firmware.
-At least for the new version of firmware consider to add proper data into the
-tables.
+This is nice.
 
-> Moreover, AMD  NAVI GPU
-> based products are already in the commercial market hence going by this
-> approach will break the functionalities for the same.
+Have you made any attempts to cooperate with anyone else in the
+world on this, or is this Intel's personal playground?
 
-This is quite bad and unfortunate. So, you have to elaborate this in the commit
-message.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yours,
+Linus Walleij
