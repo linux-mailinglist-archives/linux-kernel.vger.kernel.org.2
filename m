@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A120634AB46
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F25FD34AB33
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhCZPQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        id S231310AbhCZPOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbhCZPPO (ORCPT
+        with ESMTP id S231172AbhCZPNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:15:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DC1C0613B7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:15:07 -0700 (PDT)
+        Fri, 26 Mar 2021 11:13:42 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84B1C0613B2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:13:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=mlawxaQEjlVFjkh/0c2ZF+dfrWW3ULJVtwgo4t1sgqU=; b=r/+7vPCL/HFz7EFvFP1yzRKmMA
-        +Qx/AkPi92+A/L2ORIxHZt7wT1DRtHE67rEDSrQiW/MrM94Vyhc6qryq+sTl/6V3YOiIKAyklETgj
-        p8BbVgm9Oe37FnytYjkx7QGL7Eoq/Dgju4So5sfRRPwGmI7MX6SGPvcKDXGMVNthejqmRw3B586ZW
-        7j1tS+lK8QZtXacwWb/bj+X7M+DNfCwuI+om8enm24PlnC38NBPaRydebYe69JDpTV36SchodCufp
-        O0p78qWCnR6LYbreJ8kJzV6Mv/PNsAcMSjSoCvvQpQh00lSLohdzjPUjuVWUFbJnkHoDZqQOBK4wX
-        cC9m43WA==;
+        bh=lenVpfVTRdmlr4QerYGvPmX9xUOMv73u9GEKuv3kF7M=; b=Oq9qqYPImN3uveIwcFx3p4IQtm
+        i2lDXZoFhRL7hJk8FpJsypDHMGtbDPmWHYr7bTnIU7LevP38NDmFmSiCpTr4iYJ+MT372SqApiSTW
+        eWNGxNmS0EjAtOfJpPbn4n0DcMJx5ianRniva86RDgSWnf0Kl4Eu6psY6qnP7FsRkfhwIfvb8ZRni
+        znJCvfnM2T4Po1quMIDDH9405WpWzDTcs+9t5L+g+kNE6jB3PlYITqEpTDCqQrwbtMCMOOa8xmNd0
+        kvaoJcn86Isc6IMMR6+YFgPflO48nk+eJJQoIFNWBNH86ut9H1RbyhFNnU6NAJDkxiz/fReUC0BrV
+        Kv2cTmOQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPo9Y-00F0oY-Eu; Fri, 26 Mar 2021 15:14:01 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPo9X-003s0D-T9; Fri, 26 Mar 2021 15:13:36 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A6592307976;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A6603307985;
         Fri, 26 Mar 2021 16:13:34 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5834C2BD73399; Fri, 26 Mar 2021 16:13:34 +0100 (CET)
-Message-ID: <20210326151259.880174448@infradead.org>
+        id 5C3642BD7339A; Fri, 26 Mar 2021 16:13:34 +0100 (CET)
+Message-ID: <20210326151259.941474004@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 26 Mar 2021 16:12:08 +0100
+Date:   Fri, 26 Mar 2021 16:12:09 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
         mbenes@suse.com
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v3 09/16] objtool: Implicitly create reloc sections
+Subject: [PATCH v3 10/16] objtool: Extract elf_strtab_concat()
 References: <20210326151159.128534163@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,89 +50,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Have elf_add_reloc() create the relocation section implicity.
+Create a common helper to append strings to a strtab.
 
-Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/check.c               |    6 ------
- tools/objtool/elf.c                 |    9 ++++++++-
- tools/objtool/include/objtool/elf.h |    1 -
- tools/objtool/orc_gen.c             |    2 --
- 4 files changed, 8 insertions(+), 10 deletions(-)
+ tools/objtool/elf.c |   60 ++++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 38 insertions(+), 22 deletions(-)
 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -459,9 +459,6 @@ static int create_static_call_sections(s
- 	if (!sec)
- 		return -1;
- 
--	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
--		return -1;
--
- 	idx = 0;
- 	list_for_each_entry(insn, &file->static_call_list, static_call_node) {
- 
-@@ -547,9 +544,6 @@ static int create_mcount_loc_sections(st
- 	if (!sec)
- 		return -1;
- 
--	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
--		return -1;
--
- 	idx = 0;
- 	list_for_each_entry(insn, &file->mcount_loc_list, mcount_loc_node) {
- 
 --- a/tools/objtool/elf.c
 +++ b/tools/objtool/elf.c
-@@ -447,11 +447,18 @@ static int read_symbols(struct elf *elf)
- 	return -1;
+@@ -666,13 +666,48 @@ struct elf *elf_open_read(const char *na
+ 	return NULL;
  }
  
-+static struct section *elf_create_reloc_section(struct elf *elf,
-+						struct section *base,
-+						int reltype);
++static int elf_add_string(struct elf *elf, struct section *strtab, char *str)
++{
++	Elf_Data *data;
++	Elf_Scn *s;
++	int len;
 +
- int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
- 		  unsigned int type, struct symbol *sym, int addend)
- {
- 	struct reloc *reloc;
- 
-+	if (!sec->reloc && !elf_create_reloc_section(elf, sec, SHT_RELA))
++	if (!strtab)
++		strtab = find_section_by_name(elf, ".strtab");
++	if (!strtab) {
++		WARN("can't find .strtab section");
 +		return -1;
++	}
 +
- 	reloc = malloc(sizeof(*reloc));
- 	if (!reloc) {
- 		perror("malloc");
-@@ -829,7 +836,7 @@ static struct section *elf_create_rela_r
- 	return sec;
- }
- 
--struct section *elf_create_reloc_section(struct elf *elf,
-+static struct section *elf_create_reloc_section(struct elf *elf,
- 					 struct section *base,
- 					 int reltype)
++	s = elf_getscn(elf->elf, strtab->idx);
++	if (!s) {
++		WARN_ELF("elf_getscn");
++		return -1;
++	}
++
++	data = elf_newdata(s);
++	if (!data) {
++		WARN_ELF("elf_newdata");
++		return -1;
++	}
++
++	data->d_buf = str;
++	data->d_size = strlen(str) + 1;;
++	data->d_align = 1;
++
++	len = strtab->len;
++	strtab->len += data->d_size;
++	strtab->changed = true;
++
++	return len;
++}
++
+ struct section *elf_create_section(struct elf *elf, const char *name,
+ 				   unsigned int sh_flags, size_t entsize, int nr)
  {
---- a/tools/objtool/include/objtool/elf.h
-+++ b/tools/objtool/include/objtool/elf.h
-@@ -122,7 +122,6 @@ static inline u32 reloc_hash(struct relo
+ 	struct section *sec, *shstrtab;
+ 	size_t size = entsize * nr;
+ 	Elf_Scn *s;
+-	Elf_Data *data;
  
- struct elf *elf_open_read(const char *name, int flags);
- struct section *elf_create_section(struct elf *elf, const char *name, unsigned int sh_flags, size_t entsize, int nr);
--struct section *elf_create_reloc_section(struct elf *elf, struct section *base, int reltype);
+ 	sec = malloc(sizeof(*sec));
+ 	if (!sec) {
+@@ -729,7 +764,6 @@ struct section *elf_create_section(struc
+ 	sec->sh.sh_addralign = 1;
+ 	sec->sh.sh_flags = SHF_ALLOC | sh_flags;
  
- int elf_add_reloc(struct elf *elf, struct section *sec, unsigned long offset,
- 		  unsigned int type, struct symbol *sym, int addend);
---- a/tools/objtool/orc_gen.c
-+++ b/tools/objtool/orc_gen.c
-@@ -225,8 +225,6 @@ int orc_create(struct objtool_file *file
- 	sec = elf_create_section(file->elf, ".orc_unwind_ip", 0, sizeof(int), nr);
- 	if (!sec)
- 		return -1;
--	if (!elf_create_reloc_section(file->elf, sec, SHT_RELA))
--		return -1;
+-
+ 	/* Add section name to .shstrtab (or .strtab for Clang) */
+ 	shstrtab = find_section_by_name(elf, ".shstrtab");
+ 	if (!shstrtab)
+@@ -738,27 +772,9 @@ struct section *elf_create_section(struc
+ 		WARN("can't find .shstrtab or .strtab section");
+ 		return NULL;
+ 	}
+-
+-	s = elf_getscn(elf->elf, shstrtab->idx);
+-	if (!s) {
+-		WARN_ELF("elf_getscn");
+-		return NULL;
+-	}
+-
+-	data = elf_newdata(s);
+-	if (!data) {
+-		WARN_ELF("elf_newdata");
++	sec->sh.sh_name = elf_add_string(elf, shstrtab, sec->name);
++	if (sec->sh.sh_name == -1)
+ 		return NULL;
+-	}
+-
+-	data->d_buf = sec->name;
+-	data->d_size = strlen(name) + 1;
+-	data->d_align = 1;
+-
+-	sec->sh.sh_name = shstrtab->len;
+-
+-	shstrtab->len += strlen(name) + 1;
+-	shstrtab->changed = true;
  
- 	/* Write ORC entries to sections: */
- 	list_for_each_entry(entry, &orc_list, list) {
+ 	list_add_tail(&sec->list, &elf->sections);
+ 	elf_hash_add(elf->section_hash, &sec->hash, sec->idx);
 
 
