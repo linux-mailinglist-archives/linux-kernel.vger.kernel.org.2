@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2162F349E8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5299349E8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhCZBTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbhCZBS6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:18:58 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04DDAC06174A;
-        Thu, 25 Mar 2021 18:18:58 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id c4so3819336qkg.3;
-        Thu, 25 Mar 2021 18:18:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z9ym8r0Gg5NCFPpoqkZ9sBjTJOIm7e+1+WbcErWiDRQ=;
-        b=KFTZQLPUnd/LXVPPtQvDn5lrbcdZwKflolz/gQzBDhnZqVbavaqVaHCF3vorzdUZgJ
-         OOPEwZzGFNH74YqT9Qt0ZlIc0iI438BNoL5HzG/tf3sW1OqyeGlYaDY7sA9656h1ANk+
-         hOPeyAE6QpEeXp5LIQZu+35elcwF91dqtOTNrhtwIhkSf3y8hTpHZqq7T6oZ4+fYAC1n
-         q+6t1k9xUQ3O7WxQHoONgt7/L+xTVnoqAyLbqGJZXCUmcRpDAoeGXlDiD0bbIZHzrAsN
-         e57RslgjdUu6LWWUAwD/Q9uu6kQACvekkBb56ERCskrjYANkoWCfJgSVKPEPi+I638tO
-         ckEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=z9ym8r0Gg5NCFPpoqkZ9sBjTJOIm7e+1+WbcErWiDRQ=;
-        b=iEhIB3GsYOvMZkzreLyb6rq4BAoPzQf8lK+7Oarc+jn/8W6eANc1F0ZAQJt0KhH0Rz
-         W/qKNrD+AoDmE9sFLdOUIdErIrThS+MMGrSPwm+goEzY7FdX/D9jHbOplBknNkYd/GX5
-         GfuxLlDikXVXbGIwTGBteAAGQ2D8baDMixCZw4sVCCxqmnHYgpAmT9llyylbVtsovue/
-         4VtGWDRySLD7Q8Io1yv4VaetMCZGu2tpDXPB618eBQVWXCMoNfBRqPeHlsb4IsyitRMl
-         ID0OGMddRHKL8kn8gHEA0gFpt1b2iPPqQiGC1pLUwlgR9EEyIabT61SqBNEcxlnRcF9M
-         g3aA==
-X-Gm-Message-State: AOAM533O8QijjbwEbPmsPW7E2/6d6Yb+o6Hh5piLH2F6OpVY1iLSLJ5O
-        zBwSOt0LYwUe6vBfmOAp5Z8=
-X-Google-Smtp-Source: ABdhPJxGlTn+aVm0Uo9sLBgLIjvEDlMdh1Zdme1sfuHApG+cbbDf7YgFGNd6ff7hkrjYFPaDUk2UqA==
-X-Received: by 2002:ae9:e113:: with SMTP id g19mr10578866qkm.480.1616721537268;
-        Thu, 25 Mar 2021 18:18:57 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.107])
-        by smtp.gmail.com with ESMTPSA id f8sm4760688qth.6.2021.03.25.18.18.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 18:18:56 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] fuse: Fix a typo
-Date:   Fri, 26 Mar 2021 06:46:42 +0530
-Message-Id: <20210326011642.22681-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S230096AbhCZBSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:18:42 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:10839 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230023AbhCZBSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 21:18:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616721491; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=dbqyO5xp+Xc0AkR2FMEhZNoheUZwZy/NovyVB8pJPrw=; b=G+LZg/qR5p3NqZrKG5JqpNQZSTmqR2Z8h4H7NBDdE1w21Jij5JoaZAHjKasovaJo+tiyyT1i
+ 4mFZwvDZLPEe4x02wgYYD7XCekKAicR38DLeR7kimDUX8G02KXr+HzWkCxUJOi9ln3QYPmGO
+ pV7MYprHBrdQNufHxxng7226yNg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 605d364aa2ab6642db9fc505 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 26 Mar 2021 01:18:02
+ GMT
+Sender: stummala=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6F5BAC433CA; Fri, 26 Mar 2021 01:18:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: stummala)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 67323C433CA;
+        Fri, 26 Mar 2021 01:17:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 67323C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=stummala@codeaurora.org
+Date:   Fri, 26 Mar 2021 06:47:56 +0530
+From:   Sahitya Tummala <stummala@codeaurora.org>
+To:     Chao Yu <yuchao0@huawei.com>, jaegeuk@kernel.org
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, stummala@codeaurora.org
+Subject: Re: [PATCH v3] f2fs: allow to change discard policy based on cached
+ discard cmds
+Message-ID: <20210326011756.GE8562@codeaurora.org>
+References: <1615886958-717-1-git-send-email-stummala@codeaurora.org>
+ <3c453b72-892f-7044-2edd-224b82202608@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3c453b72-892f-7044-2edd-224b82202608@huawei.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jaegeuk,
 
-s/reponsible/responsible/
+This latest v3 patch needs to be updated in f2fs tree.
+The f2fs tree currently points to older version of patch.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- fs/fuse/fuse_i.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please make a note of it.
 
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 63d97a15ffde..0871ed6328a8 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -713,7 +713,7 @@ struct fuse_conn {
- 	/** Use enhanced/automatic page cache invalidation. */
- 	unsigned auto_inval_data:1;
+Thanks,
+Sahitya.
 
--	/** Filesystem is fully reponsible for page cache invalidation. */
-+	/** Filesystem is fully responsible for page cache invalidation. */
- 	unsigned explicit_inval_data:1;
+On Tue, Mar 16, 2021 at 07:08:58PM +0800, Chao Yu wrote:
+> On 2021/3/16 17:29, Sahitya Tummala wrote:
+> >With the default DPOLICY_BG discard thread is ioaware, which prevents
+> >the discard thread from issuing the discard commands. On low RAM setups,
+> >it is observed that these discard commands in the cache are consuming
+> >high memory. This patch aims to relax the memory pressure on the system
+> >due to f2fs pending discard cmds by changing the policy to DPOLICY_FORCE
+> >based on the nm_i->ram_thresh configured.
+> >
+> >Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
+> 
+> Reviewed-by: Chao Yu <yuchao0@huawei.com>
+> 
+> Thanks,
 
- 	/** Does the filesystem support readdirplus? */
+-- 
 --
-2.26.2
-
+Sent by a consultant of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
