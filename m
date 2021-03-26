@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1129349E58
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB8F349E56
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhCZBBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhCZBBq (ORCPT
+        id S230098AbhCZBBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:01:14 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:34699 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230080AbhCZBBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:01:46 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C34C06174A;
-        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id g15so3783705qkl.4;
-        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j3v8k48IeCcus0saI/jVFEZrQSGBnWbV6wgOy5GPt20=;
-        b=CGkkGBUjxhHpwAeWwidcEzKAr05bxggAaj/rd2vXYCx+WpJwH9fXH0cjssEGmFO8PP
-         oxI4oyD6P06v1EHighDaeeLduczaUgH5Zh+/C9QBslMtBOMyx4Tx89kTqV/uCFNGKeFN
-         MrNzQoLLko1QxBWkTEgomRxeqI0vKUwZcAyBa/5kFMVAnhnWsl1zj4nldf0AZKnnsL6b
-         icF/ud86aOLlPwuxF3or0+cbTZdS627/b4mIQSZLM5td5qiUClL0+Mg9uyBE83a3HzYj
-         6E0UuQkWormOfq+Mhf4U70Hp3vPiLzQhnf80BYPyipk/6r6E7ou/88Ek5SwEgiyT8gM1
-         vW+w==
+        Thu, 25 Mar 2021 21:01:10 -0400
+Received: by mail-io1-f54.google.com with SMTP id x16so3814027iob.1;
+        Thu, 25 Mar 2021 18:01:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j3v8k48IeCcus0saI/jVFEZrQSGBnWbV6wgOy5GPt20=;
-        b=aDaFHyGOVuPynRtPC/3yKZmKuAPWpluoqofra1agI4LfIrsDtuKeWcKQnpVXkRckJh
-         glvvP7BoLcift+ingutWl17MpvQBmxc9ivXQXCvyqk3R7IDiUD6zDAwi8nq2K7ANa2QS
-         JpUmGDOIuiqY3xcit2t3boverlm62dJgys5CMu0XOmntU2p1RlaiKys7kJhtJt4GO/GX
-         qILHcylwAFGbFP461xWWEyKrcIy1vr5tR3lMBJGVutfM8VSRNBM53pyYa2UOeMQE4dqR
-         VxpeM4IhjFMU4YPgf0HxgDURR8PSPLwWEwvmDnamIAmTxX+TS14HhxnOCNL7vfdmvIsU
-         xIIw==
-X-Gm-Message-State: AOAM533GsMnunyFRAzpoGnuM6j0IWxlOSOkCMyC/K0GmO29gWJFmXThL
-        ZjvHI6y29MyffODIC/tDyLhT6jK5UfQhInhw
-X-Google-Smtp-Source: ABdhPJwKZFW/K1uf0/IrICUIF0d9wONxtMf2Xbdbdo2mo7MS2AQU17I1P6LMzF24jym0AJdLk4S4jA==
-X-Received: by 2002:a05:620a:714:: with SMTP id 20mr10904457qkc.192.1616720505274;
-        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.107])
-        by smtp.gmail.com with ESMTPSA id o7sm5611975qki.63.2021.03.25.18.01.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wi3cdmfz/h5xhXrcAv5eDkvRcmW484cG6XaUkEX+uj8=;
+        b=SVYxizsKLHLF/Um812LZP78nLf4Ni6mxDJKuVt3VpHJ7uiijzL5J3WpTUzbiG+3GhD
+         7s5n2DFc/IxDUevsbTulwk8hNw6VaUAK/fGtTkMILujsfQIlEEzbB2hn2LMyrTHkx3kD
+         Rw497EWmvmip49GUekIn259LGahXBI0e1yMVlABK+5BZjCu+Wtqv/fmKW2TA3MmQcrRC
+         cihGuNvG3qLWjZO+K39uBOj1TFc4a9l4K1bQcXdUGFz5zhhRivemCnA8nqLuEweTEiap
+         WTwHsU2G/7VimJr58kCudmgRaxIPbt4/F4Vcoe84nvG1obDJNplKkE2ryqAIxLRF6UuR
+         UGYw==
+X-Gm-Message-State: AOAM533Z/xDVVhosU/a4w2gdOnEN5qhu11xiraD45DojzPgUC9DA5A5S
+        3iRstJu6vSg9AhlOaM4xnA==
+X-Google-Smtp-Source: ABdhPJxHGgVfg99uoMDNH3k51OEkmQcJ2G8En7C57Uv6OKPcDb/m3feGvZuvfCcpQ0kIo5ldZTB+hQ==
+X-Received: by 2002:a02:cc1a:: with SMTP id n26mr9850175jap.21.1616720470209;
+        Thu, 25 Mar 2021 18:01:10 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id f13sm3428079ila.51.2021.03.25.18.01.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 18:01:44 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] btrfs: Fix a typo
-Date:   Fri, 26 Mar 2021 06:29:32 +0530
-Message-Id: <20210326005932.8238-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 25 Mar 2021 18:01:09 -0700 (PDT)
+Received: (nullmailer pid 2083325 invoked by uid 1000);
+        Fri, 26 Mar 2021 01:01:06 -0000
+Date:   Thu, 25 Mar 2021 19:01:06 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Odelu Kukatla <okukatla@codeaurora.org>
+Subject: Re: [PATCH v3 1/2] dt-bindings: interconnect: Add Qualcomm SM8350 DT
+ bindings
+Message-ID: <20210326010106.GA2083273@robh.at.kernel.org>
+References: <20210318094617.951212-1-vkoul@kernel.org>
+ <20210318094617.951212-2-vkoul@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318094617.951212-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 18 Mar 2021 15:16:16 +0530, Vinod Koul wrote:
+> The Qualcomm SM8350 platform has several bus fabrics that could be
+> controlled and tuned dynamically according to the bandwidth demand.
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  .../bindings/interconnect/qcom,rpmh.yaml      |  10 +
+>  .../dt-bindings/interconnect/qcom,sm8350.h    | 172 ++++++++++++++++++
+>  2 files changed, 182 insertions(+)
+>  create mode 100644 include/dt-bindings/interconnect/qcom,sm8350.h
+> 
 
-s/reponsible/responsible/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- fs/btrfs/scrub.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 3d9088eab2fc..14de898967bf 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -2426,7 +2426,7 @@ static void drop_csum_range(struct scrub_ctx *sctx, struct btrfs_ordered_sum *su
-  * the csum into @csum.
-  *
-  * The search source is sctx->csum_list, which is a pre-populated list
-- * storing bytenr ordered csum ranges.  We're reponsible to cleanup any range
-+ * storing bytenr ordered csum ranges.  We're responsible to cleanup any range
-  * that is before @logical.
-  *
-  * Return 0 if there is no csum for the range.
---
-2.26.2
-
+Reviewed-by: Rob Herring <robh@kernel.org>
