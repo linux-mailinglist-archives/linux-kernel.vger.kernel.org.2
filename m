@@ -2,64 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C88134AA0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D598434AA0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:37:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhCZOg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        id S230452AbhCZOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230294AbhCZOfU (ORCPT
+        with ESMTP id S230298AbhCZOfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:35:20 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03587C0613B2
+        Fri, 26 Mar 2021 10:35:21 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1020EC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:21 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id j18so5882145wra.2
         for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:20 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id x7so5843030wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QyPG1WEqZFTBuDaWcANV4HkcWu30kB5AaRBOC44dMcU=;
-        b=SnsafZq5e1+1/iZIm3WR65o+iG0/ODTGJk/7ETvhgN7CEu5HRWnJNdVg40nfYqWfbO
-         UrEREZCk+q7udUP3bSU6brrWo0DOtTSI3CB7EiYpN7gXdmEQcOckMpy98SbOeP3fhTgr
-         trT8s1skyIzCkbNsKuVRNWDT7iRn2yQlM1ci7v5Os1fDRxy7vdC+plqlnzyIRaik7+RT
-         4xpRSsPSu0x+pBNYHgzwq9UqGThUsue8SOorkldDqqlMvWOgRYoWeyT6Chmu5UpbBFs0
-         0Zwt3zL3d5AtE3n/fveorFHLgLuj2uawCORzzBqxKqvgx5bom7hWgYbrCOUIg5c8XKih
-         BU5Q==
+        bh=5ncqrjTAWBMAuIT+QNk4MgUhfbKLtj8kt+uo2wlM/dg=;
+        b=weMDUSGRSCQGL4pgXx8iQgbzg5Nye4DqunH91ALPfVpL5kE61ywzM7VTxlg2W7Es4D
+         oNQa61mKg+gtrY4ryXcuLjSNGXUo582RhCNDzKcAWTNYnZqo+iEGaTZB7ODutah3VICz
+         +ev6t1uq/xB+BZt0yxA4rdMu4uEmmHNJS57KeVoZc+ZBZsfg1oYGKCBVStk7iWMD2no/
+         0gFlTPKYmzJ6xHMKfMj+hVG4nuYcjMFnEMqeDwgoqa5NpL46gHUhKu04TXjeijAwJaaR
+         7EMiJjqTZBorv+b5NJvNcnTGRJA4riENhLqjOa0iZosr5fYSrUcJlh13WbZxUGjW+fLz
+         Pbrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QyPG1WEqZFTBuDaWcANV4HkcWu30kB5AaRBOC44dMcU=;
-        b=rKJi2NA9aSsJMwPxlpD931mgPWhEa83/HxnPVaTw2KLPTCZ1OhPe4g+bU2gahrvCB8
-         kDRVrvNa9fSvgdn3GI1MLBI7ajvMbC0CCy4WYKOtr26wYzL+6EYnM/3P77ZTt7D6UwC+
-         GeEJazKN0ZIYNbNJUnzo9VBlqYi6eAo6nZsjPLrVSA+bdZ/fQ/4DBFcx3heVupi8Hsh7
-         KC0F4FuSS9qrUs+tNa7xcM14DqFHIuO7M3vd/sqDnkVvlAQE9NwzNegqVEbugHxbPwBj
-         uR/0kW4COV9fp9zi/j4VzZAMDrBHNgUrNVnTdbON5lXCCs4yWHIfiUoMeLYRYnyr/CzJ
-         rfkg==
-X-Gm-Message-State: AOAM53242eqq0AnKUWXUf0Rve4M8n+0ajaxE2Pmzrp8/LZmfylSv4ZXc
-        1mLg9kPu2V6SZdNQ160BTRFSRw==
-X-Google-Smtp-Source: ABdhPJwOUj3cYauEQvI4kOqQkvYnSogsSqs1r7Xq61RvYSr9UXt0UirtesVDyK9o5Z5ECViF7WsNeg==
-X-Received: by 2002:adf:ef4c:: with SMTP id c12mr15089412wrp.112.1616769318787;
-        Fri, 26 Mar 2021 07:35:18 -0700 (PDT)
+        bh=5ncqrjTAWBMAuIT+QNk4MgUhfbKLtj8kt+uo2wlM/dg=;
+        b=neh5TbWH1Fetyy1GG1i3jCc265F5d72b4qcex7fW2FoDBP9tjEfLvkRRGwPwFhGhDa
+         UJUA2zgxEI4ygUhs7YtJy9tk8E3GufRrq01IK9N2WjmwRdP3Yi27QMxRsS5iLzdCbKWn
+         6gb2YIzWxywA0NmgNQfUzv3P6P3dnXD8P9geHIIFXyM7wR/ezdZroAwgdsn7YwmXP1pl
+         x9AeXj+zPjSBa4NjR9Kk3VO8vEe2gY9wtztPQtIIxi7/cfuep60ac6Tqhzoe5aNNZAnM
+         /E4PgIcRnR9pwUgFzsfpRv0qIF4EpiHGvJnptv6MQTQcEFARW4RLmiedtcUMPuCpAPOi
+         ZXhg==
+X-Gm-Message-State: AOAM530skPJe9uTKUlYnuBUeP5hZ5I/KGCIX87ZylIg0j0eUR13b3Ci6
+        gI9tVWJTMU06jUXXT9FXbvO5R4ZVIdeFaQ==
+X-Google-Smtp-Source: ABdhPJxmQkgaSlZ6BYyWv6tZwjthp9lMrPlua6NXOhA6VZmavOYOxv6tr/znawI4FNqHcL2lE7SBRQ==
+X-Received: by 2002:a5d:6307:: with SMTP id i7mr15081805wru.305.1616769319829;
+        Fri, 26 Mar 2021 07:35:19 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id j26sm12878225wrh.57.2021.03.26.07.35.17
+        by smtp.gmail.com with ESMTPSA id j26sm12878225wrh.57.2021.03.26.07.35.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 07:35:18 -0700 (PDT)
+        Fri, 26 Mar 2021 07:35:19 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Subject: [PATCH 17/25] HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
-Date:   Fri, 26 Mar 2021 14:34:50 +0000
-Message-Id: <20210326143458.508959-19-lee.jones@linaro.org>
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
+        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
+        linux-input@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 18/25] HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
+Date:   Fri, 26 Mar 2021 14:34:51 +0000
+Message-Id: <20210326143458.508959-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210326143458.508959-1-lee.jones@linaro.org>
 References: <20210326143458.508959-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -67,29 +74,140 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/hid/hid-uclogic-rdesc.c:645: warning: wrong kernel-doc identifier on line:
+ drivers/hid/hid-thrustmaster.c:23: warning: Incorrect use of kernel-doc format:  * These interrupts are used to prevent a nasty crash when initializing the
+ drivers/hid/hid-thrustmaster.c:26: warning: cannot understand function prototype: 'const u8 setup_0[] = '
+ drivers/hid/hid-thrustmaster.c:49: warning: cannot understand function prototype: 'struct tm_wheel_info '
+ drivers/hid/hid-thrustmaster.c:62: warning: wrong kernel-doc identifier on line:
+ drivers/hid/hid-thrustmaster.c:84: warning: cannot understand function prototype: 'struct __packed tm_wheel_response '
+ drivers/hid/hid-thrustmaster.c:143: warning: wrong kernel-doc identifier on line:
+ drivers/hid/hid-thrustmaster.c:202: warning: Function parameter or member 'urb' not described in 'thrustmaster_model_handler'
+ drivers/hid/hid-thrustmaster.c:202: warning: expecting prototype for Called by the USB subsystem when the wheel responses to our request(). Prototype was for thrustmaster_model_handler() instead
+ drivers/hid/hid-thrustmaster.c:265: warning: wrong kernel-doc identifier on line:
 
 Cc: Jiri Kosina <jikos@kernel.org>
 Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Dario Pagani <dario.pagani.146+linuxk@gmail.com>
+Cc: Kim Kuparinen <kimi.h.kuparinen@gmail.com>
 Cc: linux-input@vger.kernel.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/hid/hid-uclogic-rdesc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/hid/hid-thrustmaster.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/hid/hid-uclogic-rdesc.c b/drivers/hid/hid-uclogic-rdesc.c
-index bf5da6de7bba9..6dd6dcd09c8bc 100644
---- a/drivers/hid/hid-uclogic-rdesc.c
-+++ b/drivers/hid/hid-uclogic-rdesc.c
-@@ -641,7 +641,7 @@ const __u8 uclogic_rdesc_pen_v2_template_arr[] = {
- const size_t uclogic_rdesc_pen_v2_template_size =
- 			sizeof(uclogic_rdesc_pen_v2_template_arr);
+diff --git a/drivers/hid/hid-thrustmaster.c b/drivers/hid/hid-thrustmaster.c
+index bfcd08759ba09..4f9c0642e816b 100644
+--- a/drivers/hid/hid-thrustmaster.c
++++ b/drivers/hid/hid-thrustmaster.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/**
++/*
+  * When connected to the machine, the Thrustmaster wheels appear as
+  * a «generic» hid gamepad called "Thrustmaster FFB Wheel".
+  *
+@@ -19,7 +19,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
  
 -/**
 +/*
-  * Expand to the contents of a generic buttonpad report descriptor.
+  * These interrupts are used to prevent a nasty crash when initializing the
+  * T300RS. Used in thrustmaster_interrupts().
+  */
+@@ -36,7 +36,7 @@ static const unsigned int setup_arr_sizes[] = {
+ 	ARRAY_SIZE(setup_3),
+ 	ARRAY_SIZE(setup_4)
+ };
+-/**
++/*
+  * This struct contains for each type of
+  * Thrustmaster wheel
   *
-  * @_padding:	Padding from the end of button bits at bit 44, until
+@@ -49,7 +49,7 @@ static const unsigned int setup_arr_sizes[] = {
+ struct tm_wheel_info {
+ 	uint16_t wheel_type;
+ 
+-	/**
++	/*
+ 	 * See when the USB control out packet is prepared...
+ 	 * @TODO The TMX seems to require multiple control codes to switch.
+ 	 */
+@@ -58,7 +58,7 @@ struct tm_wheel_info {
+ 	char const *const wheel_name;
+ };
+ 
+-/**
++/*
+  * Known wheels.
+  * Note: TMX does not work as it requires 2 control packets
+  */
+@@ -72,7 +72,7 @@ static const struct tm_wheel_info tm_wheels_infos[] = {
+ 
+ static const uint8_t tm_wheels_infos_length = 4;
+ 
+-/**
++/*
+  * This structs contains (in little endian) the response data
+  * of the wheel to the request 73
+  *
+@@ -82,7 +82,7 @@ static const uint8_t tm_wheels_infos_length = 4;
+  */
+ struct __packed tm_wheel_response
+ {
+-	/**
++	/*
+ 	 * Seems to be the type of packet
+ 	 * - 0x0049 if is data.a (15 bytes)
+ 	 * - 0x0047 if is data.b (7 bytes)
+@@ -93,7 +93,7 @@ struct __packed tm_wheel_response
+ 		struct __packed {
+ 			uint16_t field0;
+ 			uint16_t field1;
+-			/**
++			/*
+ 			 * Seems to be the model code of the wheel
+ 			 * Read table thrustmaster_wheels to values
+ 			 */
+@@ -122,7 +122,7 @@ struct tm_wheel {
+ 	struct usb_ctrlrequest *change_request;
+ };
+ 
+-/** The control packet to send to wheel */
++/* The control packet to send to wheel */
+ static const struct usb_ctrlrequest model_request = {
+ 	.bRequestType = 0xc1,
+ 	.bRequest = 73,
+@@ -139,7 +139,7 @@ static const struct usb_ctrlrequest change_request = {
+ 	.wLength = 0
+ };
+ 
+-/**
++/*
+  * On some setups initializing the T300RS crashes the kernel,
+  * these interrupts fix that particular issue. So far they haven't caused any
+  * adverse effects in other wheels.
+@@ -191,7 +191,7 @@ static void thrustmaster_change_handler(struct urb *urb)
+ 		hid_warn(hdev, "URB to change wheel mode seems to have failed with error %d\n", urb->status);
+ }
+ 
+-/**
++/*
+  * Called by the USB subsystem when the wheel responses to our request
+  * to get [what it seems to be] the wheel's model.
+  *
+@@ -261,7 +261,7 @@ static void thrustmaster_remove(struct hid_device *hdev)
+ 	hid_hw_stop(hdev);
+ }
+ 
+-/**
++/*
+  * Function called by HID when a hid Thrustmaster FFB wheel is connected to the host.
+  * This function starts the hid dev, tries to allocate the tm_wheel data structure and
+  * finally send an USB CONTROL REQUEST to the wheel to get [what it seems to be] its
 -- 
 2.27.0
 
