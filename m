@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC5334A9A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1903C34A9A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhCZOZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:25:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50394 "EHLO
+        id S230272AbhCZOZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhCZOYr (ORCPT
+        with ESMTP id S230236AbhCZOY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:24:47 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416E4C0613AA;
-        Fri, 26 Mar 2021 07:24:47 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id b14so7934241lfv.8;
-        Fri, 26 Mar 2021 07:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nQ6cDueETr7R6JsMSrZJLtQswKIsE5Z44q0mYxtA07E=;
-        b=c0KQ+/G7knKwgFFKEJGZkHPCPChjWm5irh8qKkb+fqsbU2Uy7ubwscqo6K8f02RMmO
-         Tq00A+6w6l97RswUB5r1hOstDxzUnkl6Ru6CypQ1RmiRuIo/eNgWyJ7FXULiZ94x5Vab
-         vjGSFPrerHA8yOi9ZwvTeivz3Q+UWvGw16cDoRLdZAb/6dOZ5+PiAII2AmsGoCsga6aK
-         0pJyzxMrV9G/DEzAzknlrRhiC7kzHwg8tsEAzl2LCFdDhqm1TJxYEhi4ryURrknN+jRp
-         cLxWYfzcWOA23TlI/cMPYxHYJV7E0zgs851HNuuhZO5UQjtkIess3sbVWbEVys8gdf1Z
-         cNOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nQ6cDueETr7R6JsMSrZJLtQswKIsE5Z44q0mYxtA07E=;
-        b=lRxFavbr2uBgmbn8uvPEnAj7ROhjnWb2RyQ8X/vehhe6x/P1mnHha3aqWdI8ebrCcj
-         3eQiy3hjPQhoqknmZUohHwuCmx3r9Umt5Tam92U5s38SKGslyWCUj7XAih/nLO+ToYLL
-         K7E6lE7Re8ocDjZQ7lBLaliDqsLXtVURbICOUSpLwo31XuGPFm68yDdJpqUcAFHTTRI4
-         0PKG9a4f0Wi48Bmm8G8tRwMTJk1P7nw+2gupUrxbVjT0yoAwjRmhh6j99y5wZRvxLNxN
-         U4TrAOFRdpZMakD3zR+Ej4ZEfNlrDHwXq0gccegbnTrAehp58ZC01yrJxJ2ZHCcHyIDR
-         EZ7Q==
-X-Gm-Message-State: AOAM5313px9e5YKRa3upoYs5HMAacwiGpSTQohSRswtIqZccQpOTvjw8
-        otIdOHKwQ9NcxCrRv/5G9/kUqrFr4M6ZCRmfHNE=
-X-Google-Smtp-Source: ABdhPJwcgpqv/t3Un/FbFhFtnv9tetg9zdfhUs6xUd/qg+/tj9XMUh5G134bNYItwQGzjO8dwP1O1b3UZ7+KNVnt+98=
-X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr8621766lfq.214.1616768685772;
- Fri, 26 Mar 2021 07:24:45 -0700 (PDT)
+        Fri, 26 Mar 2021 10:24:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3066EC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:24:57 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1lPnOE-0007g5-8r; Fri, 26 Mar 2021 15:24:42 +0100
+Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1lPnOC-0006zY-EG; Fri, 26 Mar 2021 15:24:40 +0100
+Date:   Fri, 26 Mar 2021 15:24:40 +0100
+From:   Philipp Zabel <pza@pengutronix.de>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 13/13] arm64: dts: imx8mq: Add node to G2 hardware
+Message-ID: <20210326142440.GD8441@pengutronix.de>
+References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
+ <20210318082046.51546-14-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-References: <20210326124030.1138964-1-Jianlin.Lv@arm.com>
-In-Reply-To: <20210326124030.1138964-1-Jianlin.Lv@arm.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 26 Mar 2021 07:24:33 -0700
-Message-ID: <CAADnVQ+W79=L=jb0hcOa4E067_PnWbnWHdxqyw-9+Nz9wKkOCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: trace jit code when enable BPF_JIT_ALWAYS_ON
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrey Ignatov <rdna@fb.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mahesh Bandewar <maheshb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        iecedge@gmail.com, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318082046.51546-14-benjamin.gaignard@collabora.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:21:32 up 36 days, 17:45, 97 users,  load average: 0.13, 0.09,
+ 0.09
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: pza@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 5:40 AM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
->
-> When CONFIG_BPF_JIT_ALWAYS_ON is enabled, the value of bpf_jit_enable in
-> /proc/sys is limited to SYSCTL_ONE. This is not convenient for debugging.
-> This patch modifies the value of extra2 (max) to 2 that support developers
-> to emit traces on kernel log.
->
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+On Thu, Mar 18, 2021 at 09:20:46AM +0100, Benjamin Gaignard wrote:
+> Split VPU node in two: one for G1 and one for G2 since they are
+> different hardware blocks.
+> Add syscon for hardware control block.
+> Remove reg-names property that is useless.
+> Each VPU node only need one interrupt.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
->  net/core/sysctl_net_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> index d84c8a1b280e..aa16883ac445 100644
-> --- a/net/core/sysctl_net_core.c
-> +++ b/net/core/sysctl_net_core.c
-> @@ -386,7 +386,7 @@ static struct ctl_table net_core_table[] = {
->                 .proc_handler   = proc_dointvec_minmax_bpf_enable,
->  # ifdef CONFIG_BPF_JIT_ALWAYS_ON
->                 .extra1         = SYSCTL_ONE,
-> -               .extra2         = SYSCTL_ONE,
-> +               .extra2         = &two,
+> version 5:
+>  - use syscon instead of VPU reset
+> 
+>  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 43 ++++++++++++++++++-----
+>  1 file changed, 34 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> index 17c449e12c2e..b537d153ebbd 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> @@ -1329,15 +1329,16 @@ usb3_phy1: usb-phy@382f0040 {
+>  			status = "disabled";
+>  		};
+>  
+> -		vpu: video-codec@38300000 {
+> +		vpu_ctrl: syscon@38320000 {
+> +			compatible = "nxp,imx8mq-vpu-ctrl", "syscon";
+> +			reg = <0x38320000 0x10000>;
+> +		};
+> +
+> +		vpu_g1: video-codec@38300000 {
+>  			compatible = "nxp,imx8mq-vpu";
+> -			reg = <0x38300000 0x10000>,
+> -			      <0x38310000 0x10000>,
+> -			      <0x38320000 0x10000>;
+> -			reg-names = "g1", "g2", "ctrl";
+> -			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+> -				     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> -			interrupt-names = "g1", "g2";
+> +			reg = <0x38300000 0x10000>;
+> +			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "g1";
+>  			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+>  				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+>  				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+> @@ -1350,9 +1351,33 @@ vpu: video-codec@38300000 {
+>  						 <&clk IMX8MQ_VPU_PLL_OUT>,
+>  						 <&clk IMX8MQ_SYS1_PLL_800M>,
+>  						 <&clk IMX8MQ_VPU_PLL>;
+> -			assigned-clock-rates = <600000000>, <600000000>,
+> +			assigned-clock-rates = <600000000>, <300000000>,
 
-"bpftool prog dump jited" is much better way to examine JITed dumps.
-I'd rather remove bpf_jit_enable=2 altogether.
+I'd like to see this mentioned in the commit message.
+
+> +					       <800000000>, <0>;
+> +			power-domains = <&pgc_vpu>;
+> +			nxp,imx8mq-vpu-ctrl = <&vpu_ctrl>;
+> +		};
+> +
+> +		vpu_g2: video-codec@38310000 {
+> +			compatible = "nxp,imx8mq-vpu-g2";
+> +			reg = <0x38310000 0x10000>;
+> +			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "g2";
+> +			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+> +				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+> +				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+> +			clock-names = "g1", "g2",  "bus";
+> +			assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
+
+Can the G1 clock configuration be dropped from the G2 device node and
+the G2 clock configuration from the G1 device node? It looks weird that
+these devices configure each other's clocks.
+
+regards
+Philipp
