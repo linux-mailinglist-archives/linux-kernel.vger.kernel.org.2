@@ -2,71 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF02E34A677
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7D834A675
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCZL2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:28:55 -0400
-Received: from m12-14.163.com ([220.181.12.14]:37540 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229738AbhCZL2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:28:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=VqcQ3
-        QwxKEEaQnL4ibnWt3XJl6W8pH63gUjHJUgNVrA=; b=Kq6ECmXkpn9wM1Iy7VpGJ
-        zzSFR4RDnUBZrQvPXR4jAOEQ1Cx78rJoz9dptuOwy2J/e5zsA+lrR9tEqPnGItMd
-        rW2p2C77FpgM/6WJw0DU1ayhR4v+vVF2k29cKrmXTDQH+sq/pMhcHNspBR6MLa2m
-        38C5cnwRalQ5JQgy3zPcMo=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowADHaXwexV1gLKxVAQ--.32339S2;
-        Fri, 26 Mar 2021 19:27:31 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] x86: Simplify the return expression
-Date:   Fri, 26 Mar 2021 19:27:24 +0800
-Message-Id: <20210326112724.1563-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S229963AbhCZL2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:28:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhCZL15 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 07:27:57 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45EAC0613AA;
+        Fri, 26 Mar 2021 04:27:57 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id h20so758826plr.4;
+        Fri, 26 Mar 2021 04:27:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QO3NLPPJwyOqpOimxVpVmrZArbAwjmokGvw4OSoT19w=;
+        b=bBvND3I/A8EzQPVZH7o0EfaI2nfjgdtBCSlD/1S/zMc56dA4tAkUbfwiEIDtjenZrV
+         IxknWdPswzJKc1MYKflpsQy9WNmhLz0RfGf3X5gdUrHLNIVSuWh6Uu2pSuChhK3/6rVg
+         EyfihvEtoK0OhgjoluUaXHBJsfR3BmOQzIWphw3p0JH5AY70v5oPAYV6lTCbztth6NiR
+         qvC0kToYlnDxz1knIlcfiGL0RG/jgAlybbUK/YUQZfn3nGFQtvWTFgpW0PICJryt8t9y
+         fEdaJK4vKUd+WGPtXjAUJy8KT+04ZaSjaCVFpKJKVBpTbpb1/Bd/PwOUNTa/OXEScbny
+         2zdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QO3NLPPJwyOqpOimxVpVmrZArbAwjmokGvw4OSoT19w=;
+        b=ox7sWf/8wn3c9aUjGjYR/tuDdndq7a82KVJzV7Qxk+qR5PVosKtnf/ctY9Q8HqWSV+
+         Q+cnaXVGAP1M92JXBoXfGjS3W707qoaXbSz17fYubsPOOeefvcXjOoRJoGa4nY4Shnnp
+         7tAijYITqpOuerZGSTkCPQNuLcqGyxFKU0a91psm11GzL1eUg2ZEvUGGd8SVD3ptIFp1
+         AZ1wOaN0k+naEBY/vtY+FLRYBwahrqGxHFcCP7d7i0riASLYrZobnAJUF2gDJspb3O4c
+         mpo40V0sQQso7IAmKenAGNphm2dP7gMb1qAwiuaLiPFLnAiuwNxYqmp0Z72pXup5ghzQ
+         t3rg==
+X-Gm-Message-State: AOAM532V3KEz0yn0gueWoRIZvXYQcOB5ThyoRxTMJWwv1axnO5RE8szb
+        D3f5qmvI9i/IkPUXQrQ+HjaQxx3XAkzVbaB/wqY=
+X-Google-Smtp-Source: ABdhPJzFCCHR/5hD2t+5lnAN5w6WbfW2UzKfFRx6yhSELTcI7rsccE1WGTHiU0OUSYTfaspCW7NNITUrLlbGGJN3CJk=
+X-Received: by 2002:a17:90a:e454:: with SMTP id jp20mr13868397pjb.129.1616758077348;
+ Fri, 26 Mar 2021 04:27:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowADHaXwexV1gLKxVAQ--.32339S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JF1fXw4xCryUXw15XFyrJFb_yoW3Xrg_Ja
-        13Ww45KFZa93y7Aw17Aws5KF1S9w4kXry5Xa18Kay5trn0ya98Za1kKF4fXrW2grW3KFWf
-        X3yDGry7Cr4UWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnhSdPUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQNhiV8ZNb3ALAAAss
+References: <cover.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
+ <b2164e5965218f270e17bf29e00ad5c5a0b54bcf.1616566395.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VdxRkX15Ts+L1UJdXbpoaTu3Ue6o9o=Yh2cRCXCEi1jwA@mail.gmail.com>
+In-Reply-To: <CAHp75VdxRkX15Ts+L1UJdXbpoaTu3Ue6o9o=Yh2cRCXCEi1jwA@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 26 Mar 2021 13:27:41 +0200
+Message-ID: <CAHp75VfazasTLAotZ+T_xCoFiq-D0vcKqQAosopNMeJXP93nng@mail.gmail.com>
+Subject: Re: [PATCH v4 09/16] gpio: support ROHM BD71815 GPOs
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+On Fri, Mar 26, 2021 at 1:26 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Wed, Mar 24, 2021 at 12:20 PM Matti Vaittinen
+> <matti.vaittinen@fi.rohmeurope.com> wrote:
 
-Simplify the return expression of kvm_compute_tsc_offset().
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- arch/x86/kvm/x86.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+> > +#include <linux/of.h>
+>
+> You may do better than be OF-centric. See below.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index fe806e8..3906c1b 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -2209,11 +2209,7 @@ u64 kvm_scale_tsc(struct kvm_vcpu *vcpu, u64 tsc)
- 
- static u64 kvm_compute_tsc_offset(struct kvm_vcpu *vcpu, u64 target_tsc)
- {
--	u64 tsc;
--
--	tsc = kvm_scale_tsc(vcpu, rdtsc());
--
--	return target_tsc - tsc;
-+	return target_tsc - kvm_scale_tsc(vcpu, rdtsc());
- }
- 
- u64 kvm_read_l1_tsc(struct kvm_vcpu *vcpu, u64 host_tsc)
+Ah, yep, when you switch to unified device property API, you would
+need property.h and mod_devicetable.h instead of this.
+
 -- 
-1.9.1
-
+With Best Regards,
+Andy Shevchenko
