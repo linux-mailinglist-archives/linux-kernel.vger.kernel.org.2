@@ -2,265 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD0034A3CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3BC34A3CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:11:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhCZJKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38994 "EHLO
+        id S230163AbhCZJLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbhCZJKG (ORCPT
+        with ESMTP id S230192AbhCZJKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:10:06 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF7BC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:05 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x13so4873787wrs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:05 -0700 (PDT)
+        Fri, 26 Mar 2021 05:10:37 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CDAC0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:37 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id n8so5039921oie.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CpJVIH89KnTHlqwjWvcVRjRrnGlAUbLyDfZyG3OaRoA=;
-        b=oklwFFm4lgGgWqEn0vkWl3/DvHJo3njYX84Ip1pOF7qz6tEK1Vs/n4jBXBaoG1o/oG
-         Vhbv7GQ/oTlRcKvuvUs1sjBs+133BnsCcKfYVYX0i8Sk/3/lU5RX+adVuDrTAVscO+WG
-         NRgWm92TUUtAfGX41QQkrpdMcjT0ixSP/5XrGTG7fWuPLP+GHKtEbMsBeXrdfJywdv4C
-         IQTQU6j+iZ4mTfdZY/bqRedV6FpmZsGVMN+jfMb6uS3G4EsAzEgebDy1D6xYhFolPc62
-         LXlWikYbcB7acs4sd4fvoPA6TUv+UeexyKjQYR7tRQ3rJcdftRJuSPcLUujAS4oeRG3d
-         fgAQ==
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4p7L0r2YVzvHUiWBzaSDayxmY/547g3xQbzU3O52T2E=;
+        b=K//qQBOSq6LUJ/Ks7l0mrUPHs53l2Y1cWYTAx32Gr87z72QyvxSgd8n/3wdyZwBa9Y
+         VJJFuBtSJQ2V34IWaPS9wqqDQJJKuwfWRH91wAzYmwMZOPX8SGtMk6qwguBjJ61lwP2b
+         iLaoblkPZMm8b2E2yJvXXGHFj71px91XW31LHTtueSJ1lX4gcK/8Zr7Y+DYlXDtg9Eml
+         igyHDBGqetdlCtKl9jiSRUCIomfnb1f9aMiqseOUPPlUE5mAtBD53/D8A++mRhTkyRdt
+         WPYwhuFyxorKD3YQ5b+q4dVGIaFbHZ4sjTo5ELKGsWEO3mSmAWfPVZ+2ZNK09l9LovFX
+         ZEog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CpJVIH89KnTHlqwjWvcVRjRrnGlAUbLyDfZyG3OaRoA=;
-        b=SmBOyuHVSRt7dkUvvoLEx6AnIsWLmZy4nQ/GfU/07Zcbnmy/JZeZ3k+hcNYSLvSLr9
-         8ejUa/0tWdqDxQ8eHAVrF2VobKqW63Yg9gNPKcv7ew6aMrEz9Jy1b7MUmmAcods8Tw/d
-         Srr7CVp3CJnzSFmTuqJyWN4unXTCBeY9kVC0hJHR0ct2N21xf/j0kkC0ab5Grt0r5igO
-         yvciqlk/VIORcSEafMdAz7LDGIxib1EbnIi6gFhoHwXvSDNVyzImeASBoGlQHIyklLsU
-         iIYsk8rR/vhoxAGspSRccJz1vJUi1zfBrOZUG+V5B/aA6h0p3WNF1pN8Sp6DF/fi+Mzg
-         8jzA==
-X-Gm-Message-State: AOAM531rcJcZJUZaGAaciNb7apdhVy2KacF1gcdThiEmCnd1dpiP/uRl
-        jSeMYYqLjzfSMmK97FAqesA=
-X-Google-Smtp-Source: ABdhPJy6SZC3IZgKY4wxYbqpk5YltwyD84Ip/a+2Ohs+J1WFJ5/W8Fixh06wqxvAOc2FEMSdxX+LKw==
-X-Received: by 2002:a5d:4fcb:: with SMTP id h11mr12273689wrw.53.1616749804416;
-        Fri, 26 Mar 2021 02:10:04 -0700 (PDT)
-Received: from agape ([5.171.81.75])
-        by smtp.gmail.com with ESMTPSA id j14sm11051641wrw.69.2021.03.26.02.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:10:04 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 15/15] staging: rtl8723bs:  put parentheses on macros with complex values in include/wifi.h
-Date:   Fri, 26 Mar 2021 10:09:22 +0100
-Message-Id: <369571b50a5e51e4727fe7541b968cad891943b5.1616748885.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1616748885.git.fabioaiuto83@gmail.com>
-References: <cover.1616748885.git.fabioaiuto83@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4p7L0r2YVzvHUiWBzaSDayxmY/547g3xQbzU3O52T2E=;
+        b=TesOOZ4VdOKfXrrvIc703/pkbt3+NAYc8yBaETlLNRCKYrMIhpXUZKN1z/6h7de/Gp
+         iPVczxfCA04HvA2dHyjLtIzksx+UmBQeZc/ASU0bItMy04OWV3hyJbpnxaOxR4NUIr5B
+         g6UH/DfsancI+7agzVr6PzIhMVhAeM2QuW2oPbk5Upv5Xj/vQ0KAiHeqnlb8LvJjVBYj
+         eN21N09S4uJuPZ3W6eqISuJ9w3r3YDee2bLekFRHSB3LL+zfwJ4/y93ubLoFovJrqS6H
+         e9qf2OBYhJGnR3HXUtbw9sqrixz/Yh29HKkbi8/9B5gUl+mCMYutLApdpCyUEsL52frv
+         pNRg==
+X-Gm-Message-State: AOAM531xjmag14OyJYDPz0h6iMUFczDSdn5eDMIAvSepTfDybdU3dhRB
+        xFgI/zRBqpAVhehcDmAxYMYjXYBc6+vNkmm+1hYY0MNeRkhbTg==
+X-Google-Smtp-Source: ABdhPJzWYUEN40+bsyYL88YYVQP5NXJtFRzbznOQwcflZtD04abopFLejxa8uvUREgVwa5kx1YHlguTbvtlVwiiZfJM=
+X-Received: by 2002:aca:1c02:: with SMTP id c2mr8944699oic.31.1616749836344;
+ Fri, 26 Mar 2021 02:10:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
+ <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
+ <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
+ <87lfaj7cki.fsf@igel.home> <871rc4on36.fsf@igel.home> <CANXhq0pDge0BPgAjoLrX7Y2qtofb3dhV1_CPHBaCg0o4cEMrbQ@mail.gmail.com>
+ <87a6qrk2pw.fsf@igel.home>
+In-Reply-To: <87a6qrk2pw.fsf@igel.home>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Fri, 26 Mar 2021 17:10:24 +0800
+Message-ID: <CANXhq0rOeAWnRYHAYKJfDeY4kYz6+5mU_dJSqU67+2p9u0STHQ@mail.gmail.com>
+Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Pragnesh Patel <pragnesh.patel@openfive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix the following checkpatch warnings:
+On Thu, Mar 25, 2021 at 5:22 PM Andreas Schwab <schwab@linux-m68k.org> wrot=
+e:
+>
+> On M=C3=A4r 25 2021, Zong Li wrote:
+>
+> > take a look at this again. Could you also let me know which bootloader
+> > you used (FSBL or U-boot-SPL)? Thanks.
+>
+> U-Boot SPL
+>
+> Please try this image:
+>
+> http://download.opensuse.org/ports/riscv/tumbleweed/images/openSUSE-Tumbl=
+eweed-RISC-V-JeOS-hifiveunleashed.riscv64.raw.xz
+>
 
-ERROR: Macros with complex values should be enclosed in parentheses
-114: FILE: drivers/staging/rtl8723bs/include/wifi.h:114:
-+#define SetToDs(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-119: FILE: drivers/staging/rtl8723bs/include/wifi.h:119:
-+#define ClearToDs(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-122: FILE: drivers/staging/rtl8723bs/include/wifi.h:122:
-+#define SetFrDs(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-127: FILE: drivers/staging/rtl8723bs/include/wifi.h:127:
-+#define ClearFrDs(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-132: FILE: drivers/staging/rtl8723bs/include/wifi.h:132:
-+#define SetMFrag(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-137: FILE: drivers/staging/rtl8723bs/include/wifi.h:137:
-+#define ClearMFrag(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-140: FILE: drivers/staging/rtl8723bs/include/wifi.h:140:
-+#define SetRetry(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-145: FILE: drivers/staging/rtl8723bs/include/wifi.h:145:
-+#define ClearRetry(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-148: FILE: drivers/staging/rtl8723bs/include/wifi.h:148:
-+#define SetPwrMgt(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-153: FILE: drivers/staging/rtl8723bs/include/wifi.h:153:
-+#define ClearPwrMgt(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-156: FILE: drivers/staging/rtl8723bs/include/wifi.h:156:
-+#define SetMData(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-161: FILE: drivers/staging/rtl8723bs/include/wifi.h:161:
-+#define ClearMData(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-164: FILE: drivers/staging/rtl8723bs/include/wifi.h:164:
-+#define SetPrivacy(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-170: FILE: drivers/staging/rtl8723bs/include/wifi.h:170:
-+#define ClearPrivacy(pbuf)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-220: FILE: drivers/staging/rtl8723bs/include/wifi.h:220:
-+#define SetDuration(pbuf, dur) \
---
-ERROR: Macros with complex values should be enclosed in parentheses
-224: FILE: drivers/staging/rtl8723bs/include/wifi.h:224:
-+#define SetPriority(pbuf, tid)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-229: FILE: drivers/staging/rtl8723bs/include/wifi.h:229:
-+#define SetEOSP(pbuf, eosp)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-232: FILE: drivers/staging/rtl8723bs/include/wifi.h:232:
-+#define SetAckpolicy(pbuf, ack)	\
---
-ERROR: Macros with complex values should be enclosed in parentheses
-239: FILE: drivers/staging/rtl8723bs/include/wifi.h:239:
-+#define SetAMsdu(pbuf, amsdu)	\
+Hi Andreas,
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/include/wifi.h | 38 ++++++++++++------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+The following is the result of the test so far. I would continue to
+see what happened there.
 
-diff --git a/drivers/staging/rtl8723bs/include/wifi.h b/drivers/staging/rtl8723bs/include/wifi.h
-index efef549bf811..a9f24fc2bf2f 100644
---- a/drivers/staging/rtl8723bs/include/wifi.h
-+++ b/drivers/staging/rtl8723bs/include/wifi.h
-@@ -112,63 +112,63 @@ enum wifi_reg_domain {
- #define _ORDER_			BIT(15)
- 
- #define SetToDs(pbuf)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(_TO_DS_)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(_TO_DS_))
- 
- #define GetToDs(pbuf)	(((*(__le16 *)(pbuf)) & cpu_to_le16(_TO_DS_)) != 0)
- 
- #define ClearToDs(pbuf)	\
--	*(__le16 *)(pbuf) &= (~cpu_to_le16(_TO_DS_))
-+	(*(__le16 *)(pbuf) &= (~cpu_to_le16(_TO_DS_)))
- 
- #define SetFrDs(pbuf)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(_FROM_DS_)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(_FROM_DS_))
- 
- #define GetFrDs(pbuf)	(((*(__le16 *)(pbuf)) & cpu_to_le16(_FROM_DS_)) != 0)
- 
- #define ClearFrDs(pbuf)	\
--	*(__le16 *)(pbuf) &= (~cpu_to_le16(_FROM_DS_))
-+	(*(__le16 *)(pbuf) &= (~cpu_to_le16(_FROM_DS_)))
- 
- #define get_tofr_ds(pframe)	((GetToDs(pframe) << 1) | GetFrDs(pframe))
- 
- #define SetMFrag(pbuf)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(_MORE_FRAG_)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(_MORE_FRAG_))
- 
- #define GetMFrag(pbuf)	(((*(__le16 *)(pbuf)) & cpu_to_le16(_MORE_FRAG_)) != 0)
- 
- #define ClearMFrag(pbuf)	\
--	*(__le16 *)(pbuf) &= (~cpu_to_le16(_MORE_FRAG_))
-+	(*(__le16 *)(pbuf) &= (~cpu_to_le16(_MORE_FRAG_)))
- 
- #define SetRetry(pbuf)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(_RETRY_)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(_RETRY_))
- 
- #define GetRetry(pbuf)	(((*(__le16 *)(pbuf)) & cpu_to_le16(_RETRY_)) != 0)
- 
- #define ClearRetry(pbuf)	\
--	*(__le16 *)(pbuf) &= (~cpu_to_le16(_RETRY_))
-+	(*(__le16 *)(pbuf) &= (~cpu_to_le16(_RETRY_)))
- 
- #define SetPwrMgt(pbuf)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(_PWRMGT_)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(_PWRMGT_))
- 
- #define GetPwrMgt(pbuf)	(((*(__le16 *)(pbuf)) & cpu_to_le16(_PWRMGT_)) != 0)
- 
- #define ClearPwrMgt(pbuf)	\
--	*(__le16 *)(pbuf) &= (~cpu_to_le16(_PWRMGT_))
-+	(*(__le16 *)(pbuf) &= (~cpu_to_le16(_PWRMGT_)))
- 
- #define SetMData(pbuf)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(_MORE_DATA_)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(_MORE_DATA_))
- 
- #define GetMData(pbuf)	(((*(__le16 *)(pbuf)) & cpu_to_le16(_MORE_DATA_)) != 0)
- 
- #define ClearMData(pbuf)	\
--	*(__le16 *)(pbuf) &= (~cpu_to_le16(_MORE_DATA_))
-+	(*(__le16 *)(pbuf) &= (~cpu_to_le16(_MORE_DATA_)))
- 
- #define SetPrivacy(pbuf)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(_PRIVACY_)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(_PRIVACY_))
- 
- #define GetPrivacy(pbuf)					\
- 	(((*(__le16 *)(pbuf)) & cpu_to_le16(_PRIVACY_)) != 0)
- 
- #define ClearPrivacy(pbuf)	\
--	*(__le16 *)(pbuf) &= (~cpu_to_le16(_PRIVACY_))
-+	(*(__le16 *)(pbuf) &= (~cpu_to_le16(_PRIVACY_)))
- 
- 
- #define GetOrder(pbuf)					\
-@@ -218,26 +218,26 @@ enum wifi_reg_domain {
- 	} while (0)
- 
- #define SetDuration(pbuf, dur) \
--	*(__le16 *)((size_t)(pbuf) + 2) = cpu_to_le16(0xffff & (dur))
-+	(*(__le16 *)((size_t)(pbuf) + 2) = cpu_to_le16(0xffff & (dur)))
- 
- 
- #define SetPriority(pbuf, tid)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16(tid & 0xf)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16(tid & 0xf))
- 
- #define GetPriority(pbuf)	((le16_to_cpu(*(__le16 *)(pbuf))) & 0xf)
- 
- #define SetEOSP(pbuf, eosp)	\
--		*(__le16 *)(pbuf) |= cpu_to_le16((eosp & 1) << 4)
-+		(*(__le16 *)(pbuf) |= cpu_to_le16((eosp & 1) << 4))
- 
- #define SetAckpolicy(pbuf, ack)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16((ack & 3) << 5)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16((ack & 3) << 5))
- 
- #define GetAckpolicy(pbuf) (((le16_to_cpu(*(__le16 *)pbuf)) >> 5) & 0x3)
- 
- #define GetAMsdu(pbuf) (((le16_to_cpu(*(__le16 *)pbuf)) >> 7) & 0x1)
- 
- #define SetAMsdu(pbuf, amsdu)	\
--	*(__le16 *)(pbuf) |= cpu_to_le16((amsdu & 1) << 7)
-+	(*(__le16 *)(pbuf) |= cpu_to_le16((amsdu & 1) << 7))
- 
- #define GetAid(pbuf)	(le16_to_cpu(*(__le16 *)((size_t)(pbuf) + 2)) & 0x3fff)
- 
--- 
-2.20.1
+1. Boot on openSUSE-Tumbleweed-RISC-V-JeOS-hifiveunleashed.riscv64.raw.xz
+w/ plugging ethernet cable
+  - It seems that I encountered a different situation with you, my
+system hung up and I didn't see the boot message you mentioned yet.
 
+[  OK  ] Finished Generate issue file for login session.
+[  OK  ] Finished Apply settings from /etc/sysconfig/keyboard.
+[  OK  ] Started User Login Management.
+[  *** ] (3 of 3) A start job is running for=E2=80=A6upplicant service (58s=
+ / 1min 51s)
+[**    ] (3 of 3) A start job is running for=E2=80=A6cant service (1min 28s=
+ / 1min 51s)
+[   ***] (2 of 3) A start job is running for=E2=80=A6cant service (1min 58s=
+ / 3min 21s)
+[   ***] (1 of 3) A start job is running for=E2=80=A6cant service (2min 28s=
+ / 3min 21s)
+[**    ] (3 of 3) A start job is running for=E2=80=A6cant service (2min 58s=
+ / 3min 21s)
+[ ***  ] (2 of 3) A start job is running for=E2=80=A6cant service (3min 28s=
+ / 4min 51s)
+[     *] (1 of 3) A start job is running for=E2=80=A6cant service (3min 58s=
+ / 4min 51s)
+[ ***  ] (3 of 3) A start job is running for=E2=80=A6cant service (4min 28s=
+ / 4min 51s)
+[***   ] (2 of 3) A start job is running for=E2=80=A6cant service (4min 59s=
+ / 6min 22s)
+[    **] (1 of 3) A start job is running for=E2=80=A6cant service (5min 29s=
+ / 6min 22s)
+[  *** ] (3 of 3) A start job is running for=E2=80=A6cant service (5min 59s=
+ / 6min 22s)
+[*     ] (2 of 3) A start job is running for=E2=80=A6cant service (6min 29s=
+ / 7min 52s)
+[  *** ] (1 of 3) A start job is running for=E2=80=A6cant service (6min 59s=
+ / 7min 52s)
+[    **] (3 of 3) A start job is running for=E2=80=A6cant service (7min 29s=
+ / 7min 52s)
+[FAILED] Failed to start wicked AutoIPv4 supplicant service.
+See 'systemctl status wickedd-auto4.service' for details.
+[FAILED] Failed to start wicked DHCPv4 supplicant service.
+See 'systemctl status wickedd-dhcp4.service' for details.
+[FAILED] Failed to start wicked DHCPv6 supplicant service.
+See 'systemctl status wickedd-dhcp6.service' for details.
+         Starting wicked network management service daemon...
+[    **] A start job is running for wicked n=E2=80=A6rvice daemon (7min 59s=
+ / 9min 22s)
+[***   ] A start job is running for wicked n=E2=80=A6rvice daemon (8min 29s=
+ / 9min 22s)
+[  603.364988] BUG: workqueue lockup - pool cpus=3D1 node=3D0 flags=3D0x0
+nice=3D0 stuck for 36s!
+[***   ] A start job is running for wicked n=E2=80=A6rvice daemon (8min 59s=
+ / 9min 22s)
+[  633.444986] BUG: workqueue lockup - pool cpus=3D1 node=3D0 flags=3D0x0
+nice=3D0 stuck for 66s!
+         Stopping Flush Journal to Persistent Storage...
+[  OK  ] Stopped Flush Journal to Persistent Storage.
+[  OK  ] Stopped Journal Service.
+
+
+2. Boot on kernel image which built by opensuse defconfig with
+changing CONFIG_MACB to y instead of m
+ - Although I got some problem for mounting the root filesystem on
+this image now, but I didn't hang up at the message you mentioned, I
+could go through after macb driver initialization
+
+[    2.350309] libphy: Fixed MDIO Bus: probed
+[    2.354476] macb 10090000.ethernet: Registered clk switch
+'sifive-gemgxl-mgmt'
+[    2.358752] macb 10090000.ethernet: GEM doesn't support hardware ptp.
+[    2.361464] libphy: MACB_mii_bus: probed
+[    2.366289] macb 10090000.ethernet eth0: Cadence GEM rev 0x10070109
+at 0x10090000 irq 16 (70:b3:d5:92:f2:6c)
+[    2.375570] e1000e: Intel(R) PRO/1000 Network Driver
+[    2.380323] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[    2.386338] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+...
+[    2.687447] Waiting for root device /dev/mmcblk0p4...
+
+3. I check the patch set of supporting fu740, it shouldn't impact
+fu540, I'm going to dump and comparing the prci content and give more
+testing.
+
+
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint =3D 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC=
+1
+> "And now for something completely different."
