@@ -2,214 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9752134AA7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 545AA34AA6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhCZOve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56158 "EHLO
+        id S230139AbhCZOuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhCZOvB (ORCPT
+        with ESMTP id S230163AbhCZOuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:51:01 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB016C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:51:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=innx/Y3CxbQH9XIr+JR3e5Yn1P/CEXqL5hVTPv63044=; b=Rk6v5wp2rCMb2nM/wHSLmObSGs
-        av2c/qVhEOn5nZZougvs0gSdpF869v1DY11/I5afuPgs1Wjr/QXsB1ZCCqrBhw96V5qXVmaquPv5G
-        +hga9R3w2bn1ERKhvAG/1do5/W09pCj2IZyruNYE6BS+3d9DfYFiFTTb/3fFmJBAtLnCstAd80O3w
-        17JUSWXZXpdzOH2KDxFN1Vjr4E4U5a5Sg/550Y07BBI2ghJyOWCytmvE3ZU5FjDoiR4U2oguyI/O6
-        6iktesekrolu89JXVEDSXDpwbePe8Ig3t9BLS6bNjiGonpGdZG10Hjh/L+7Bc+35HXAxFvx5LxMPa
-        sjna3g6Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPnmi-00EymO-R1; Fri, 26 Mar 2021 14:50:03 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2D3F8980FEF; Fri, 26 Mar 2021 15:50:00 +0100 (CET)
-Date:   Fri, 26 Mar 2021 15:50:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        joshdon@google.com, valentin.schneider@arm.com,
-        linux@rasmusvillemoes.dk
-Cc:     linux-kernel@vger.kernel.org, greg@kroah.com
-Subject: [PATCH v3 6/9] debugfs: Implement debugfs_create_str()
-Message-ID: <20210326145000.GK4746@worktop.programming.kicks-ass.net>
-References: <20210326103352.603456266@infradead.org>
- <20210326103935.183934395@infradead.org>
+        Fri, 26 Mar 2021 10:50:06 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E183C0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:50:06 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id x16so5649297iob.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:50:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NCrS9iSkYyQTH7Kgs8zwkcq/baRWu0lLKcFuH4cqgFg=;
+        b=iGK/gRZfeC3cbbqAjOASxYWKK53wUvLo9OenDtjIhCKQlvUE1avGlEYpUsj6gV4ydp
+         JQeU50n/4XtXc+5HtNCg139qbO58VXQjcBPvcgQLH9fCnxO/feZnCurbksMS2hEM+vdU
+         fMwzgs2BCfQVKDCPqppp6c9hGyuwMwoP4wstuVVZ+UEO2gIjG5JQgIFcTbOy5E7y6vAW
+         +xtKKVseu+9UBTxumxF8gKiXJzdqHh7lzn4Fe7UfPaTwHXaD+FkVM+yf8vsevGDoofAU
+         jkuQV96v/kw2VzDMBNAJJdJwiSJDQ0kTJkMhxyvvzHllwFhv95N/MZE6NZRTXpiD6dqV
+         NCxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NCrS9iSkYyQTH7Kgs8zwkcq/baRWu0lLKcFuH4cqgFg=;
+        b=MSvmGoe3vhCF5pvqXig5WZ80RzxqGnZrRFOKpFNTxrW8aTz4JVmAzkgGO6PJxm4Kz8
+         liT53OCLQgYdEffIEY3fjdw3pCAbr+kwcv+7LZ5yo0hCoQpWzfvNrk+xFm99K1nAh4ol
+         s7Ajt7jmcTsOtX7p3ZaZLC15arduKd+mR936MkzYx0OE/bhcNkFLp1gp4BaSotsA8/B4
+         I7OZd/6DmM7Czpa+4M5zVmrcQAkoSC/Gqvoh8NKdM4U2CQIEksvX8WlHyzpPOmWvwQYx
+         RITqD8JM7Ydov06GJv6J9ZuHyk0RRhefvbQdLVqOBzflCafPPQqAexbgazJ/i+7utuS7
+         zFjg==
+X-Gm-Message-State: AOAM533nC0mWBu44NEPnesS0Zt4VCQSpiyMrQ74Mg/qeeR3uGtlqyyAV
+        RCLe5YmZT4nCzT26J2cVnlLAIs00Kf0YYQ==
+X-Google-Smtp-Source: ABdhPJxQJtEQI5UCABz+W+UvbPcm+d2yBOgPoJQMIVxMaqQBXBW4iwT+7Y5WPc1z92XE8UEbGdOMAA==
+X-Received: by 2002:a02:7f8c:: with SMTP id r134mr12274121jac.95.1616770205481;
+        Fri, 26 Mar 2021 07:50:05 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t9sm4339079ioi.27.2021.03.26.07.50.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 07:50:04 -0700 (PDT)
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+To:     Stefan Metzmacher <metze@samba.org>, io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+ <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+ <0c91d9e7-82cd-bec2-19ae-cc592ec757c6@kernel.dk>
+ <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
+ <66fa3cfc-4161-76fe-272e-160097f32a53@kernel.dk>
+ <67a83ad5-1a94-39e5-34c7-6b2192eb7edb@samba.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a6f5f10b-b4f7-6674-79f0-31b14cfe3533@kernel.dk>
+Date:   Fri, 26 Mar 2021 08:50:03 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326103935.183934395@infradead.org>
+In-Reply-To: <67a83ad5-1a94-39e5-34c7-6b2192eb7edb@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Subject: debugfs: Implement debugfs_create_str()
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Thu Mar 25 10:53:55 CET 2021
+On 3/26/21 8:43 AM, Stefan Metzmacher wrote:
+> Am 26.03.21 um 15:38 schrieb Jens Axboe:
+>> On 3/26/21 7:59 AM, Jens Axboe wrote:
+>>> On 3/26/21 7:54 AM, Jens Axboe wrote:
+>>>>> The KILL after STOP deadlock still exists.
+>>>>
+>>>> In which tree? Sounds like you're still on the old one with that
+>>>> incremental you sent, which wasn't complete.
+>>>>
+>>>>> Does io_wq_manager() exits without cleaning up on SIGKILL?
+>>>>
+>>>> No, it should kill up in all cases. I'll try your stop + kill, I just
+>>>> tested both of them separately and didn't observe anything. I also ran
+>>>> your io_uring-cp example (and found a bug in the example, fixed and
+>>>> pushed), fwiw.
+>>>
+>>> I can reproduce this one! I'll take a closer look.
+>>
+>> OK, that one is actually pretty straight forward - we rely on cleaning
+>> up on exit, but for fatal cases, get_signal() will call do_exit() for us
+>> and never return. So we might need a special case in there to deal with
+>> that, or some other way of ensuring that fatal signal gets processed
+>> correctly for IO threads.
+> 
+> And if (fatal_signal_pending(current)) doesn't prevent get_signal()
+> from being called?
 
-Implement debugfs_create_str() to easily display names and such in
-debugfs.
+Usually yes, but this case is first doing SIGSTOP, so we're waiting in
+get_signal() -> do_signal_stop() when the SIGKILL arrives. Hence there's
+no way to catch it in the worker themselves.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- fs/debugfs/file.c       |   94 ++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/debugfs.h |   17 ++++++++
- 2 files changed, 111 insertions(+)
+-- 
+Jens Axboe
 
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -865,6 +865,100 @@ struct dentry *debugfs_create_bool(const
- }
- EXPORT_SYMBOL_GPL(debugfs_create_bool);
- 
-+ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
-+			      size_t count, loff_t *ppos)
-+{
-+	struct dentry *dentry = F_DENTRY(file);
-+	char *str, *copy = NULL;
-+	int copy_len, len;
-+	ssize_t ret;
-+
-+	ret = debugfs_file_get(dentry);
-+	if (unlikely(ret))
-+		return ret;
-+
-+	str = *(char **)file->private_data;
-+	len = strlen(str) + 1;
-+	copy = kmalloc(len + 1, GFP_KERNEL);
-+	if (!copy) {
-+		debugfs_file_put(dentry);
-+		return -ENOMEM;
-+	}
-+
-+	copy_len = strscpy(copy, str, len);
-+	debugfs_file_put(dentry);
-+	if (copy_len < 0) {
-+		kfree(copy);
-+		return copy_len;
-+	}
-+
-+	copy[copy_len]     = '\n';
-+	copy[copy_len + 1] = '\0';
-+
-+	ret = simple_read_from_buffer(user_buf, count, ppos, copy, copy_len + 1);
-+	kfree(copy);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(debugfs_read_file_str);
-+
-+static ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	/* This is really only for read-only strings */
-+	return -EINVAL;
-+}
-+
-+static const struct file_operations fops_str = {
-+	.read =		debugfs_read_file_str,
-+	.write =	debugfs_write_file_str,
-+	.open =		simple_open,
-+	.llseek =	default_llseek,
-+};
-+
-+static const struct file_operations fops_str_ro = {
-+	.read =		debugfs_read_file_str,
-+	.open =		simple_open,
-+	.llseek =	default_llseek,
-+};
-+
-+static const struct file_operations fops_str_wo = {
-+	.write =	debugfs_write_file_str,
-+	.open =		simple_open,
-+	.llseek =	default_llseek,
-+};
-+
-+/**
-+ * debugfs_create_str - create a debugfs file that is used to read and write a string value
-+ * @name: a pointer to a string containing the name of the file to create.
-+ * @mode: the permission that the file should have
-+ * @parent: a pointer to the parent dentry for this file.  This should be a
-+ *          directory dentry if set.  If this parameter is %NULL, then the
-+ *          file will be created in the root of the debugfs filesystem.
-+ * @value: a pointer to the variable that the file should read to and write
-+ *         from.
-+ *
-+ * This function creates a file in debugfs with the given name that
-+ * contains the value of the variable @value.  If the @mode variable is so
-+ * set, it can be read from, and written to.
-+ *
-+ * This function will return a pointer to a dentry if it succeeds.  This
-+ * pointer must be passed to the debugfs_remove() function when the file is
-+ * to be removed (no automatic cleanup happens if your module is unloaded,
-+ * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-+ * returned.
-+ *
-+ * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
-+ * be returned.
-+ */
-+void debugfs_create_str(const char *name, umode_t mode,
-+			struct dentry *parent, char **value)
-+{
-+	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_str,
-+				   &fops_str_ro, &fops_str_wo);
-+}
-+EXPORT_SYMBOL_GPL(debugfs_create_str);
-+
- static ssize_t read_file_blob(struct file *file, char __user *user_buf,
- 			      size_t count, loff_t *ppos)
- {
---- a/include/linux/debugfs.h
-+++ b/include/linux/debugfs.h
-@@ -128,6 +128,8 @@ void debugfs_create_atomic_t(const char
- 			     struct dentry *parent, atomic_t *value);
- struct dentry *debugfs_create_bool(const char *name, umode_t mode,
- 				  struct dentry *parent, bool *value);
-+void debugfs_create_str(const char *name, umode_t mode,
-+			struct dentry *parent, char **value);
- 
- struct dentry *debugfs_create_blob(const char *name, umode_t mode,
- 				  struct dentry *parent,
-@@ -156,6 +158,9 @@ ssize_t debugfs_read_file_bool(struct fi
- ssize_t debugfs_write_file_bool(struct file *file, const char __user *user_buf,
- 				size_t count, loff_t *ppos);
- 
-+ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
-+			      size_t count, loff_t *ppos);
-+
- #else
- 
- #include <linux/err.h>
-@@ -297,6 +302,11 @@ static inline struct dentry *debugfs_cre
- 	return ERR_PTR(-ENODEV);
- }
- 
-+static inline void debugfs_create_str(const char *name, umode_t mode,
-+				      struct dentry *parent,
-+				      char **value)
-+{ }
-+
- static inline struct dentry *debugfs_create_blob(const char *name, umode_t mode,
- 				  struct dentry *parent,
- 				  struct debugfs_blob_wrapper *blob)
-@@ -347,6 +357,13 @@ static inline ssize_t debugfs_write_file
- {
- 	return -ENODEV;
- }
-+
-+static inline ssize_t debugfs_read_file_str(struct file *file,
-+					    char __user *user_buf,
-+					    size_t count, loff_t *ppos)
-+{
-+	return -ENODEV;
-+}
- 
- #endif
- 
