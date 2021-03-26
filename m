@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AA834AE82
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2051C34AE8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhCZSYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229957AbhCZSYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:24:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E81D619B6;
-        Fri, 26 Mar 2021 18:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616783039;
-        bh=W8+TXVmo3TkbP6PiUlApcKVziKCU56ZFoOlT9n6Zkxw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Kios6cSeCsttAHy1KDawrB2JejkY8LwM6e5i7D9zKvCaJIDQYSh924HMf6D9v6ff6
-         R4zAZenWZQAhT42XoXYJUsj5uuuaIEN2RfqwXMaEIrhBMzlv1j4F8Ra32hehJXyyJS
-         m4rS3huyPf7W5Lp+ZA3PLXElDG8p19ojrXsnr8b5743qBfGqUG6VqZ80UfrGtb1yId
-         dMsj4qmJmFPUEzsz81TeKBbrooApWwAt/YTv0guFqDsU04SOFY8igyEW4K+CZ5kVVP
-         mJcsPksAQFTfvNWKfGvD0IzBKji33+c5eA94W1al1tqb48SXC8VSsQ7/C2T2NrmQR2
-         QRxVKXkQer9tQ==
-Content-Type: text/plain; charset="utf-8"
+        id S230131AbhCZS1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhCZS1Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:27:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7969EC0613AA;
+        Fri, 26 Mar 2021 11:27:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=8Ae93rKXbABJtGx3FxazTivwVoSUyF1RzcrMzGIW5rU=; b=hcB5eQg1sEj8cqW4B5F0SkSx/s
+        4FcNeIJ5qmCIdR8Eng4rrfZkEqe3WieOm2J8eiJHoBkyzcWQqxv53bnhy+WODXeHywsdHgExYClu3
+        FoXQTCiyCwzgjidzh01BDNm5cZVkEsghV9GQVUZBNAK0pXbRJfCa/khYPISN5LpElcoVF9FUUjT5D
+        pc3Nzb0oFPE48N2JbyC6kfyVxSPDsVo/HmQgwrKIrv2iqmCEf06fpbqgEo/AWHeQO31o336IdJ0sU
+        Gu+qbyvq4ZLcFlmxeszP6eO6SKysLKnXxxPFjicgNiDbQG241O51epr9fEk9HgFv5p7jkStY0V0Zp
+        OkGYssRA==;
+Received: from [2601:1c0:6280:3f0::4557]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPrAP-00FGpt-L2; Fri, 26 Mar 2021 18:26:47 +0000
+Subject: Re: linux-next: Tree for Mar 26 (drivers/mfd/lpc_sch.c)
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Denis Turischev <denis@compulab.co.il>,
+        Lee Jones <lee.jones@linaro.org>
+References: <20210326193457.7887e09e@canb.auug.org.au>
+ <39a89498-6b81-4d4c-503f-c87805ca620a@infradead.org>
+Message-ID: <1833e29a-3d16-7041-dd75-784ae4e07faf@infradead.org>
+Date:   Fri, 26 Mar 2021 11:26:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210326145816.9758-3-bartosz.dudziak@snejp.pl>
-References: <20210326145816.9758-1-bartosz.dudziak@snejp.pl> <20210326145816.9758-3-bartosz.dudziak@snejp.pl>
-Subject: Re: [PATCH 2/5] clk: qcom: gcc: Add support for Global Clock controller found on MSM8226
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bartosz Dudziak <bartosz.dudziak@snejp.pl>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 26 Mar 2021 11:23:58 -0700
-Message-ID: <161678303809.3012082.14127191260312393003@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <39a89498-6b81-4d4c-503f-c87805ca620a@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Bartosz Dudziak (2021-03-26 07:58:13)
-> Modify existing MSM8974 driver to support MSM8226 SoC. Override frequenci=
-es
-> which are different in this older chip. Register all the clocks to the
-> framework for the clients to be able to request for them.
+On 3/26/21 11:20 AM, Randy Dunlap wrote:
+> On 3/26/21 1:34 AM, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Changes since 20210325:
+>>
+> 
+> on i386 or x86_64:
+> aha:
+> # CONFIG_PCI is not set
+> 
+> 
+> ../drivers/mfd/lpc_sch.c:204:1: warning: data definition has no type or storage class
+>  module_pci_driver(lpc_sch_driver);
+>  ^~~~~~~~~~~~~~~~~
+> ../drivers/mfd/lpc_sch.c:204:1: error: type defaults to ‘int’ in declaration of ‘module_pci_driver’ [-Werror=implicit-int]
+> ../drivers/mfd/lpc_sch.c:204:1: warning: parameter names (without types) in function declaration
+> ../drivers/mfd/lpc_sch.c:197:26: warning: ‘lpc_sch_driver’ defined but not used [-Wunused-variable]
+>  static struct pci_driver lpc_sch_driver = {
+>                           ^~~~~~~~~~~~~~
+> 
+> 
+> Full x86_64 randconfig file is attached.
 
-Alphabet sort includes? Preferably do that in a different patch.
+This is the root of the problem I think:
 
->=20
-> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-> ---
->  drivers/clk/qcom/gcc-msm8974.c | 185 ++++++++++++++++++++++++++++++---
->  1 file changed, 171 insertions(+), 14 deletions(-)
->=20
-> diff --git a/drivers/clk/qcom/gcc-msm8974.c b/drivers/clk/qcom/gcc-msm897=
-4.c
-> index 740d3c44c0..06cd669e10 100644
-> --- a/drivers/clk/qcom/gcc-msm8974.c
-> +++ b/drivers/clk/qcom/gcc-msm8974.c
-> @@ -3,16 +3,13 @@
->   * Copyright (c) 2013, The Linux Foundation. All rights reserved.
->   */
-> =20
-> -#include <linux/kernel.h>
-> -#include <linux/bitops.h>
-> +#include <linux/clk-provider.h>
->  #include <linux/err.h>
-> -#include <linux/platform_device.h>
-> +#include <linux/kernel.h>
->  #include <linux/module.h>
-> -#include <linux/of.h>
->  #include <linux/of_device.h>
-> -#include <linux/clk-provider.h>
-> +#include <linux/of.h>
->  #include <linux/regmap.h>
-> -#include <linux/reset-controller.h>
-> =20
->  #include <dt-bindings/clock/qcom,gcc-msm8974.h>
->  #include <dt-bindings/reset/qcom,gcc-msm8974.h>
-> @@ -2727,7 +2880,11 @@ static int gcc_msm8974_probe(struct platform_devic=
-e *pdev)
->         if (ret)
->                 return ret;
-> =20
-> -       return qcom_cc_probe(pdev, &gcc_msm8974_desc);
-> +       regmap =3D qcom_cc_map(pdev, id->data);
-> +       if (IS_ERR(regmap))
-> +               return PTR_ERR(regmap);
-> +
-> +       return qcom_cc_really_probe(pdev, id->data, regmap);
+WARNING: unmet direct dependencies detected for LPC_SCH
+  Depends on [n]: HAS_IOMEM [=y] && PCI [=n]
+  Selected by [m]:
+  - GPIO_SCH [=m] && GPIOLIB [=y] && X86 [=y] && (X86 [=y] || COMPILE_TEST [=y]) && ACPI [=y]
 
-Is this doing anything? I think qcom_cc_probe(pdev, id->data) should
-work?
+
+Denis, that still looks like it's your territory.
+
+thanks.
+-- 
+~Randy
+
