@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6F6349E1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:41:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5CB349E33
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhCZAks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
+        id S229900AbhCZAnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhCZAkd (ORCPT
+        with ESMTP id S229664AbhCZAmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:40:33 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCA2C06174A;
-        Thu, 25 Mar 2021 17:40:30 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id 1so2534046qtb.0;
-        Thu, 25 Mar 2021 17:40:30 -0700 (PDT)
+        Thu, 25 Mar 2021 20:42:53 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8D3C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 17:42:53 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso1645477pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 17:42:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WudPpAp2zodSuwqYyO3R50R/8DSntKfLN/wH7uYSYrM=;
-        b=Vn0/vMYaXMe4R2XpupDYgbUI/t7lV9nXGuYlJoSC+dKymcCPiqM9rgCQOKQ9RTxykZ
-         jlHhgZdCnCYFfa7lkUGZKHhQeeLn0D5tPJUvM7RsykxlwbhizYawUTci8sAmPalZmKJR
-         fTQqFPWmEbqkQUcgjcGclbf4y3S943k7/o1/mojMBgPHGBRW9eCRKUEN+8NPXGjbJV8G
-         +CzWvTBSst/kjYaWzvZGy4UVC4huLEGjeFoEBLNxfY3a0gvbYO/mHMvEsOy0ElCTj64A
-         lfYtc/9BFTHCwJ//X0KMU535ukgBGASMOY+0xsvg3kWdu87FSjbA9tO+ljQjfQ9d2BFF
-         p9zA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=FRkAThF8DGg12CB1k3JLmbzczGDouY6nWnB+O1TTVWw=;
+        b=OuN40zvIOYNUHtPvP0rNV8V/laC6xAF009VuLibLSfOWtP9dE4YLlsLsd9YCCXAFJL
+         w1ySYDedI51vQER9vp2h1T2PRFPd1gWDB9I0xQce2YJ4/vl4vCFOM7Y7yFuaoeg2nyxu
+         UaTOFgxBwMllXpSDp+EE5fSmYKO6dyTLfVDIoB2SnAG+30r+55nsumjGCX5+FnTSNwOp
+         QE865krTn3qQ46NRzMWtvlWjHGhKnkhDwaQVeLLzei4FbhSB+Q+MOUfqokBCE1vm0IdX
+         MTEg8zYzdz2fXeg+yedRYQR9mn+le+jlPad7Re2nGCdhJ5KpJl7KK6Ae8Lv/gHFyIy61
+         NJ4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WudPpAp2zodSuwqYyO3R50R/8DSntKfLN/wH7uYSYrM=;
-        b=ij0ivtTy/AgEsgrb61nDpQRgV/g5tFQaMSVL8/YYI51OvyHQyXNSn5OTi/xHla+7u5
-         +b5z+T6h2SEUcJcT/5yYJTrJ+W6j7/mYGqFsN7boLL0ffJAlE4lY+Fsp7vfZRG77o+J+
-         GfnZ8+iqDLz9QftToyje3TM4nHyUikbFM2HVv1okaWiziK/7PVxN+DFKlTl8aFM79t2L
-         gzgnbTVEa+nQA5MJE6r3oo2UB30qRoa9KA9Ya0jhVqmw0I7wiQPr820Ug/tjIFONvhdO
-         xUOfZCHnFUhGhZ5Iqbg05NzY2tgzGubV6v/SRn/FqAPW6vx9trZp0DcFLZLn5Yqc+NMv
-         TS2Q==
-X-Gm-Message-State: AOAM533KP4o7ExnGkqwLyEijtnTSoXN4PoZWcLzosQpIc4B95vmfzZ9x
-        8Lj0+v2Yk68RN8HA7ussoxjre5sCjXzQ+X+L4g==
-X-Google-Smtp-Source: ABdhPJxRCD7nd51OEfyYS8niDY3sOe6LstmYPCFWeARW1SukhlDnBXKn6l7EiJnsSp+ZNR0r4+9HHBrg8XfmWJzupI8=
-X-Received: by 2002:aed:2ee7:: with SMTP id k94mr10029267qtd.135.1616719229894;
- Thu, 25 Mar 2021 17:40:29 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=FRkAThF8DGg12CB1k3JLmbzczGDouY6nWnB+O1TTVWw=;
+        b=Np2yY/FR/QqJyZLcG7rKRFjyGVdJPYKHmmHIKPvhBaqQa855n2aB5E6BC/orD8IYki
+         EfVsRrcqgjuNt1BcZgTMVd1JHc/LD7yJ5tQlFDtDnkC4GXrUyNNXd+E8Zs/F2mwyLZ2E
+         izAbIYxJkml8QPemK/04JGE/NNHUVe8Hf6o8SN/nsVZD4TbW7XVgoy8L74eM/0EtLt+j
+         op9hGv0IWiOyNu6miTvWuv/qcPZ+qoM7m3NRu8fy54WYO/wCasxW1l4hVYVRDSi3tIs1
+         FFjXW9oszwUqd8ULd0jZAn40y0iza3dGok7PtREPb4n23p+/3mCsYPHLXhEo7XC5n1xb
+         wpMg==
+X-Gm-Message-State: AOAM531MCDmIzQkITT3Zj0D2KQkMl8jFTbjX/0W+DxieDcy1z625whj3
+        GDwWTcmOJVCMpooXOBf85zFQKzoaLTN+nw==
+X-Google-Smtp-Source: ABdhPJx30s73JxY+7M8GjfzG7uo9gAtbadrYS04canCbpnVJJUAiHeHKwjUG21vHCZU6RZniFSTMsQ==
+X-Received: by 2002:a17:90a:c207:: with SMTP id e7mr11029490pjt.188.1616719372416;
+        Thu, 25 Mar 2021 17:42:52 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id a21sm7031178pfk.83.2021.03.25.17.42.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 17:42:51 -0700 (PDT)
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     linux-security-module@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH] Revert "Smack: Handle io_uring kernel thread privileges"
+Message-ID: <04c7c410-08e8-626a-795e-b77db6666804@kernel.dk>
+Date:   Thu, 25 Mar 2021 18:42:50 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210323023726.28343-1-lihaiwei.kernel@gmail.com>
- <CAB5KdOZq+2ETburoMv6Vnnj3MFAuvwnSBsSmiBO=nH1Ajdp5_g@mail.gmail.com> <YFyw/VRhRCZlqc1X@google.com>
-In-Reply-To: <YFyw/VRhRCZlqc1X@google.com>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Date:   Fri, 26 Mar 2021 08:39:50 +0800
-Message-ID: <CAB5KdOZHdQeTiYWKebLZG0XgPsybHs1EMqM7=zQ+JoNK1QpkNQ@mail.gmail.com>
-Subject: Re: [PATCH] KVM: VMX: Check the corresponding bits according to the
- intel sdm
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 11:49 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Thu, Mar 25, 2021, Haiwei Li wrote:
-> > On Tue, Mar 23, 2021 at 10:37 AM <lihaiwei.kernel@gmail.com> wrote:
-> > >
-> > > From: Haiwei Li <lihaiwei@tencent.com>
-> > >
-> > > According to IA-32 SDM Vol.3D "A.1 BASIC VMX INFORMATION", two inspections
-> > > are missing.
-> > > * Bit 31 is always 0. Earlier versions of this manual specified that the
-> > > VMCS revision identifier was a 32-bit field in bits 31:0 of this MSR. For
-> > > all processors produced prior to this change, bit 31 of this MSR was read
-> > > as 0.
-> > > * The values of bits 47:45 and bits 63:57 are reserved and are read as 0.
-> > >
-> > > Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
-> > > ---
-> > >  arch/x86/kvm/vmx/vmx.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > > index 32cf828..0d6d13c 100644
-> > > --- a/arch/x86/kvm/vmx/vmx.c
-> > > +++ b/arch/x86/kvm/vmx/vmx.c
-> > > @@ -2577,6 +2577,20 @@ static __init int setup_vmcs_config(struct vmcs_config *vmcs_conf,
-> > >
-> > >         rdmsr(MSR_IA32_VMX_BASIC, vmx_msr_low, vmx_msr_high);
-> > >
-> > > +       /*
-> > > +        * IA-32 SDM Vol 3D: Bit 31 is always 0.
-> > > +        * For all earlier processors, bit 31 of this MSR was read as 0.
-> > > +        */
-> > > +       if (vmx_msr_low & (1u<<31))
-> > > +               return -EIO;
-> >
-> > Drop this code as Jim said.
-> >
-> > > +
-> > > +       /*
-> > > +        * IA-32 SDM Vol 3D: bits 47:45 and bits 63:57 are reserved and are read
-> > > +        * as 0.
-> > > +        */
-> > > +       if (vmx_msr_high & 0xfe00e000)
-> > > +               return -EIO;
-> >
-> > Is this ok? Can we pick up the part? :)
->
-> No.  "Reserved and are read as 0" does not guarantee the bits will always be
-> reserved.  There are very few bits used for feature enumeration in x86 that are
-> guaranteed to be '0' for all eternity.
->
-> The whole point of reserving bits in registers is so that the CPU vendor, Intel
-> in this case, can introduce new features and enumerate them to software without
-> colliding with existing features or breaking software.  E.g. if Intel adds a new
-> feature and uses any of these bits to enumerate the feature, this check would
-> prevent KVM from loading on CPUs that support the feature.
+This reverts commit 942cb357ae7d9249088e3687ee6a00ed2745a0c7.
 
-Got it, only explicit restrictions should be checked. Thanks.
+The io_uring PF_IO_WORKER threads no longer have PF_KTHREAD set, so no
+need to special case them for credential checks.
 
---
-Haiwei Li
+Cc: Casey Schaufler <casey@schaufler-ca.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ security/smack/smack_access.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/security/smack/smack_access.c b/security/smack/smack_access.c
+index 7eabb448acab..efe2406a3960 100644
+--- a/security/smack/smack_access.c
++++ b/security/smack/smack_access.c
+@@ -688,10 +688,9 @@ bool smack_privileged_cred(int cap, const struct cred *cred)
+ bool smack_privileged(int cap)
+ {
+ 	/*
+-	 * Kernel threads may not have credentials we can use.
+-	 * The io_uring kernel threads do have reliable credentials.
++	 * All kernel tasks are privileged
+ 	 */
+-	if ((current->flags & (PF_KTHREAD | PF_IO_WORKER)) == PF_KTHREAD)
++	if (unlikely(current->flags & PF_KTHREAD))
+ 		return true;
+ 
+ 	return smack_privileged_cred(cap, current_cred());
+-- 
+2.31.0
+
+-- 
+Jens Axboe
+
