@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2224734A6B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDFE34A6C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCZL7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCZL7Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:59:24 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8F4C0613AA;
-        Fri, 26 Mar 2021 04:59:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:From:Cc:To;
-        bh=ODyi+x2q4gI/U6RBuQU+2I+ka8es7su5UqCF06laDvM=; b=p0OGW44s7Cb6zYKrF3zXXy8/z/
-        upv45NZUhnq/eYaJA7WVEoUHTYp3CIe8HLiwg2JsOtrFguh0+jGF+A5ICjLuJE0AfDC2ef8ebW6aK
-        4gurKUzXPAugL49LVmzKj6AugL+WimiP8S1CfqIIwzmFJhM3y9wwXaRshqXDTkUahy20y/9Fq6hFK
-        TQeYGIyJbxffqbD0Vy0TZ9tJYYP44fzKPAwgSz2iOBJkOLJ/8YDOpvnxujCMJzMG0Oi1CUtb7SRlw
-        147He/KObswPRRhzlreUfcX9cdanSrd/SQGHGbd8aT1TxP/YebxlxIFuK/DGIo2KoyRA0s/tSHRnD
-        YUFUSx6L9i9hdjxtZdNIRW7wgSV1RqTF13xG70nm1iheDrgEoKqLE/FVXgi5n2U/SGyjDnJHGpiNi
-        9M5o1VO+Ovez2XUJNoSKV7wTviQK+/fysBvcen2IVCUOX7jsJOgAOzqV5L+6PS1YmxEYg82AWezIr
-        YKoWitn2+4tffYEDDv6rtC3l;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lPl7Y-0001uW-5S; Fri, 26 Mar 2021 11:59:20 +0000
-To:     Jens Axboe <axboe@kernel.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <20210325164343.807498-1-axboe@kernel.dk>
- <m1ft0j3u5k.fsf@fess.ebiederm.org>
- <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
- <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
- <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
- <ad21da2b-01ea-e77c-70b2-0401059e322b@kernel.dk>
- <f9bc0bac-2ad9-827e-7360-099e1e310df5@kernel.dk>
- <5563d244-52c0-dafb-5839-e84990340765@samba.org>
- <6a2c4fe3-a019-2744-2e17-34b6325967d7@kernel.dk>
-From:   Stefan Metzmacher <metze@samba.org>
-Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
-Message-ID: <04b006fd-f3fa-bd92-9ab6-4e2341315cc2@samba.org>
-Date:   Fri, 26 Mar 2021 12:59:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229957AbhCZMDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:03:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:57970 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229904AbhCZMDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:03:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7444A143D;
+        Fri, 26 Mar 2021 05:03:14 -0700 (PDT)
+Received: from [10.57.27.121] (unknown [10.57.27.121])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0E5C3F7D7;
+        Fri, 26 Mar 2021 05:03:11 -0700 (PDT)
+Subject: Re: [PATCH] usb: gadget: aspeed: set port_dev dma mask
+To:     rentao.bupt@gmail.com, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        kernel test robot <lkp@intel.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Thomas Tai <thomas.tai@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>
+References: <20210326070214.6719-1-rentao.bupt@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <10920f34-289c-feac-79b6-71bff2aea67d@arm.com>
+Date:   Fri, 26 Mar 2021 12:03:03 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <6a2c4fe3-a019-2744-2e17-34b6325967d7@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210326070214.6719-1-rentao.bupt@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Jens,
-
->> And /proc/$iothread/ should be read only and owned by root with
->> "cmdline" and "exe" being empty.
+On 2021-03-26 07:02, rentao.bupt@gmail.com wrote:
+> From: Tao Ren <rentao.bupt@gmail.com>
 > 
-> I know you brought this one up as part of your series, not sure I get
-> why you want it owned by root and read-only? cmdline and exe, yeah those
-> could be hidden, but is there really any point?
+> Set aspeed-usb vhub port_dev's dma mask to pass the dma_mask test in
+> "dma_map_page_attrs" function, and the dma_mask test was added in
+> 'commit f959dcd6ddfd ("dma-direct: Fix potential NULL pointer
+> dereference")'.
 > 
-> Maybe I'm missing something here, if so, do clue me in!
+> Below is the backtrace without the patch:
+> [<80106550>] show_stack+0x20/0x24
+> [<80106868>] dump_stack+0x28/0x30
+> [<80823540>] __warn+0xfc/0x110
+> [<8011ac30>] warn_slowpath_fmt+0xb0/0xc0
+> [<8011ad44>] dma_map_page_attrs+0x24c/0x314
+> [<8016a27c>] usb_gadget_map_request_by_dev+0x100/0x1e4
+> [<805cedd8>] usb_gadget_map_request+0x1c/0x20
+> [<805cefbc>] ast_vhub_epn_queue+0xa0/0x1d8
+> [<7f02f710>] usb_ep_queue+0x48/0xc4
+> [<805cd3e8>] ecm_do_notify+0xf8/0x248
+> [<7f145920>] ecm_set_alt+0xc8/0x1d0
+> [<7f145c34>] composite_setup+0x680/0x1d30
+> [<7f00deb8>] ast_vhub_ep0_handle_setup+0xa4/0x1bc
+> [<7f02ee94>] ast_vhub_dev_irq+0x58/0x84
+> [<7f0309e0>] ast_vhub_irq+0xb0/0x1c8
+> [<7f02e118>] __handle_irq_event_percpu+0x50/0x19c
+> [<8015e5bc>] handle_irq_event_percpu+0x38/0x8c
+> [<8015e758>] handle_irq_event+0x38/0x4c
+> 
+> Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+> ---
+>   drivers/usb/gadget/udc/aspeed-vhub/dev.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/usb/gadget/udc/aspeed-vhub/dev.c b/drivers/usb/gadget/udc/aspeed-vhub/dev.c
+> index d268306a7bfe..9eb3904a6ff9 100644
+> --- a/drivers/usb/gadget/udc/aspeed-vhub/dev.c
+> +++ b/drivers/usb/gadget/udc/aspeed-vhub/dev.c
+> @@ -569,6 +569,7 @@ int ast_vhub_init_dev(struct ast_vhub *vhub, unsigned int idx)
+>   	device_initialize(d->port_dev);
+>   	d->port_dev->release = ast_vhub_dev_release;
+>   	d->port_dev->parent = parent;
+> +	d->port_dev->dma_mask = parent->dma_mask;
 
-I looked through /proc and I think it's mostly similar to
-the unshare() case, if userspace wants to do stupid things
-like changing "comm" of iothreads, it gets what was asked for.
+This might happen to work out, but is far from correct. Just wait until 
+you try it on a platform where the USB controller is behind an IOMMU...
 
-But the "cmdline" hiding would be very useful.
+It looks like something is more fundamentally wrong here - the device 
+passed to DMA API calls must be the actual hardware device performing 
+the DMA, which in USB-land I believe means the controller's sysdev.
 
-While most tools use "comm", by default.
+Robin.
 
-ps -eLf or 'iotop' use "cmdline".
-
-Some processes use setproctitle to change "cmdline" in order
-to identify the process better, without the 15 chars comm restriction,
-that's why I very often press 'c' in 'top' to see the cmdline,
-in that case it would be very helpful to see '[iou-wrk-1234]'
-instead of the seeing the cmdline.
-
-So I'd very much prefer if this could be applied:
-https://lore.kernel.org/io-uring/d4487f959c778d0b1d4c5738b75bcff17d21df5b.1616197787.git.metze@samba.org/T/#u
-
-If you want I can add a comment and a more verbose commit message...
-
-metze
+>   	dev_set_name(d->port_dev, "%s:p%d", dev_name(parent), idx + 1);
+>   	rc = device_add(d->port_dev);
+>   	if (rc)
+> 
