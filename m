@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD74634A489
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0476334A48A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhCZJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:34:37 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:35514 "EHLO fornost.hmeau.com"
+        id S230378AbhCZJej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:34:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229991AbhCZJeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230012AbhCZJeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Mar 2021 05:34:00 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lPiqr-0003aw-Hz; Fri, 26 Mar 2021 20:33:58 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 20:33:57 +1100
-Date:   Fri, 26 Mar 2021 20:33:57 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Weili Qian <qianweili@huawei.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
-        wangzhou1@hisilicon.com
-Subject: Re: [PATCH 0/4] crypto: hisilicon/qm - support doorbell isolation
- and queue number configuration
-Message-ID: <20210326093357.GO12658@gondor.apana.org.au>
-References: <1616239666-43572-1-git-send-email-qianweili@huawei.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B7460190;
+        Fri, 26 Mar 2021 09:33:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616751240;
+        bh=ozywuCe/NeMTTH6FqmHhUeqC8Fwy1YXXVeK7rORIDy8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WIlycJAf81tbDszupCyGPvoi3Ds3VV+CJbENSkdZVExP9PqjQnzVsd4KUbRTZ5HKq
+         gfVqhdCst39/COBH2bcdsjYez9EJ/6eOOdB9fqWjnvrrbf1di+BnGG1CchhWYfsyOd
+         QQvo7NuesBq/UP82PmTyEy8SF2EMYtvxPayHiua8=
+Date:   Fri, 26 Mar 2021 10:33:57 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     carlis <zhangxuezhi3@gmail.com>
+Cc:     zhangxuezhi1@yulong.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: fbtft: fix a typo
+Message-ID: <YF2qhUD1lz3LbEhC@kroah.com>
+References: <1616745915-194644-1-git-send-email-zhangxuezhi3@gmail.com>
+ <YF2dXIxMOUyLzfnQ@kroah.com>
+ <20210326171634.000011f5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616239666-43572-1-git-send-email-qianweili@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210326171634.000011f5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 07:27:42PM +0800, Weili Qian wrote:
-> Kunpeng930 supports getting the number of queues from hardware registers
-> and queue doorbell isolation.
+On Fri, Mar 26, 2021 at 05:16:34PM +0800, carlis wrote:
+> On Fri, 26 Mar 2021 09:37:48 +0100
+> Greg KH <gregkh@linuxfoundation.org> wrote:
 > 
-> This patchset configures the total number of hardware queues and the
-> maximum number of function queues, and supports queue doorbell isolation.
-> 
-> Weili Qian (4):
->   crypto: hisilicon/qm - set the total number of queues
->   crypto: hisilicon/qm - move 'CURRENT_QM' code to qm.c
->   crypto: hisilicon/qm - set the number of queues for function
->   crypto: hisilicon/qm - add queue isolation support for Kunpeng 930
-> 
->  drivers/crypto/hisilicon/hpre/hpre.h      |   1 -
->  drivers/crypto/hisilicon/hpre/hpre_main.c |  64 ------
->  drivers/crypto/hisilicon/qm.c             | 332 +++++++++++++++++++++++-------
->  drivers/crypto/hisilicon/qm.h             |  17 +-
->  drivers/crypto/hisilicon/sec2/sec.h       |   1 -
->  drivers/crypto/hisilicon/sec2/sec_main.c  |  65 +-----
->  drivers/crypto/hisilicon/zip/zip_main.c   |  65 +-----
->  include/uapi/misc/uacce/hisi_qm.h         |   1 +
->  8 files changed, 272 insertions(+), 274 deletions(-)
+> > On Fri, Mar 26, 2021 at 04:05:15PM +0800, Carlis wrote:
+> > > From: "Carlis" <zhangxuezhi1@yulong.com>
+> > > 
+> > > Change 'tft' to 'TFT'  
+> > 
+> > Why?  What is wrong with "tft"?
+> > 
+> I think abbreviations should be capitalized.
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Why?  What requires this?
+
+thanks,
+
+greg k-h
