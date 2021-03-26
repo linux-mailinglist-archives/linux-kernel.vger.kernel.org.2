@@ -2,146 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757BA34A34F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0CA34A355
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhCZIkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:40:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230059AbhCZIjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:39:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CAB619BB;
-        Fri, 26 Mar 2021 08:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616747982;
-        bh=+wb5b5oRQGDTigmzHdt1l9UCuT1gNoKZ2eYfjxeiYVY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TwttunlxS5iT1c/6hyWCK6C2IzcgMJpD/kh0yM65NraB3A+4l5rcH1P2acgcxgBrC
-         LgNpMFNQJFVjlFLrMgEw5pXvcsAp8jbufj549ZL7g7/wRPy3t26FCMrAgUwSaJsc30
-         /vwUHGdmyfFEgmjas3wDiqmBq9txm305xyU8SnK5o87XFo6JA+M2dY2+Il//UqFgTK
-         fpx9a9ZWAtUg5IXCP6IbV+LTUZpaZ049Fxp2nw9A6velZ6PhwANBXghOGbrKQEbHPq
-         oB+l1WtGLFHRLiRUDKe2tT/LbaQkAilbTNOa7HmihrcY4PclgF3ZQAgCg5AkzODcvR
-         Hf9SIGhQRzdhg==
-Date:   Fri, 26 Mar 2021 09:39:36 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2 04/11] PCI: dwc: pcie-kirin: add support for Kirin
- 970 PCIe controller
-Message-ID: <20210326093936.02ba3a03@coco.lan>
-In-Reply-To: <CAL_JsqK7_hAw4aacHyiqJWE6zSWiMez5695+deaCSHfeWuX-XA@mail.gmail.com>
-References: <cover.1612335031.git.mchehab+huawei@kernel.org>
-        <4c9d6581478aa966698758c0420933f5defab4dd.1612335031.git.mchehab+huawei@kernel.org>
-        <CAL_JsqK7_hAw4aacHyiqJWE6zSWiMez5695+deaCSHfeWuX-XA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S229730AbhCZImo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhCZImh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 04:42:37 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807F5C0613AA;
+        Fri, 26 Mar 2021 01:42:37 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id w2so3947891ilj.12;
+        Fri, 26 Mar 2021 01:42:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=CkY4A20RVJeXci+R5FXU3k0PYcW30JfQNZigwa1FYbw=;
+        b=R60U+wzx3jnsVA26KTij3dZvj6RFdb3iNSWfSRKj3lAb/a41KP9l44trthMGoKTwAM
+         C5kxLHKLoNmGBnhCPtbPwr7zWaiTUUft5PR4K2Vx3Mj+Ibtmg8yflreD4whGYRvrmGQc
+         YPQGT3D7jCpDnT40iIKuFA95vtDzK0gg/r5Et9BJPSzwrRr6q3Y42a8CyjIaCHmnbZo0
+         gBDuDjv6KCGzHMr6UP5VD8bdNsIIF4VJ1H6SCm/7trNKMalMwfSuVLTx+tLuSP5VUvBi
+         EQvdYM/ak4FNBaVfIlxfMJ/V0euWudFRmLfCloJ1cLk6oBo1oFFPwcyohXTS5AhE2Qwp
+         Ho2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=CkY4A20RVJeXci+R5FXU3k0PYcW30JfQNZigwa1FYbw=;
+        b=QW8PIb3lzwsn5FXES9WFidhkS1mcdxDM6szvjLQEChaXcV2XZtThz9wsP6oUHm6+eP
+         3qjzK+qX0Aw7FcRusEJ3zLDoAKULbBqKg1Sooq7E35/nEM7fkAa6vlACa1/ce+ZqBY5J
+         SpPJLqBqwJF3glX2n6HqJd+d3Sbw58bNLP0WGngToYnsDV8DEvn9S2lNEXQnQ9XJwDB+
+         D73lIe35y0N315pYvJUoavj3aXQVqYzwtsr3FVZMqAZTRKO+VGp8okKtn94Qm9/OgwcC
+         qwEHkGqNVouwj6R+uFrjtP7pzlbP2r+NVbTDKcG5ToP8YiAEmOTFqpRzYUbNCdalKIi7
+         aYPw==
+X-Gm-Message-State: AOAM531JWn8kxl2DHSOsSNmSxp10dofGpfWiPd9EKGfeJK7lzKjCDZ/f
+        54M1TEzcxvfOgNBkIf4KUE+sM3qzv+LQVSQ11uI=
+X-Google-Smtp-Source: ABdhPJy7lA9QVsB35vSlO6zb1NcLlhJMXp7tNACv7/U3JBE7/g8c4G+FDuZK8eeH9L9hnlhR7Sx7w7PVlX0pBd+8p2k=
+X-Received: by 2002:a92:c5c6:: with SMTP id s6mr120887ilt.186.1616748157005;
+ Fri, 26 Mar 2021 01:42:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210326000435.4785-1-nathan@kernel.org> <20210326000435.4785-2-nathan@kernel.org>
+In-Reply-To: <20210326000435.4785-2-nathan@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 26 Mar 2021 09:42:01 +0100
+Message-ID: <CA+icZUV2ieaw-YGRzpFM033aDcPFYa4ZNcBNdh2XWbVwqUp2Lg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] x86: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        John Millikin <john@john-millikin.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 3 Feb 2021 08:34:21 -0600
-Rob Herring <robh@kernel.org> escreveu:
+On Fri, Mar 26, 2021 at 1:04 AM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> From: John Millikin <john@john-millikin.com>
+>
+> When cross-compiling with Clang, the `$(CLANG_FLAGS)' variable
+> contains additional flags needed to build C and assembly sources
+> for the target platform. Normally this variable is automatically
+> included in `$(KBUILD_CFLAGS)' by via the top-level Makefile.
+>
+> The x86 real-mode makefile builds `$(REALMODE_CFLAGS)' from a
+> plain assignment and therefore drops the Clang flags. This causes
+> Clang to not recognize x86-specific assembler directives:
+>
+>   arch/x86/realmode/rm/header.S:36:1: error: unknown directive
+>   .type real_mode_header STT_OBJECT ; .size real_mode_header, .-real_mode_header
+>   ^
+>
+> Explicit propagation of `$(CLANG_FLAGS)' to `$(REALMODE_CFLAGS)',
+> which is inherited by real-mode make rules, fixes cross-compilation
+> with Clang for x86 targets.
+>
+> Relevant flags:
+>
+> * `--target' sets the target architecture when cross-compiling. This
+>   flag must be set for both compilation and assembly (`KBUILD_AFLAGS')
+>   to support architecture-specific assembler directives.
+>
+> * `-no-integrated-as' tells clang to assemble with GNU Assembler
+>   instead of its built-in LLVM assembler. This flag is set by default
+>   unless `LLVM_IAS=1' is set, because the LLVM assembler can't yet
+>   parse certain GNU extensions.
+>
+> Signed-off-by: John Millikin <john@john-millikin.com>
+> Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-> On Wed, Feb 3, 2021 at 1:02 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> >
-> > From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> >
-> > Add support for HiSilicon Kirin 970 (hi3670) SoC PCIe controller, based
-> > on Synopsys DesignWare PCIe controller IP.
-> >
-> > [mchehab+huawei@kernel.org: fix merge conflicts]
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-kirin.c | 723 +++++++++++++++++++++++-
-> >  1 file changed, 707 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
-> > index 026fd1e42a55..5925d2b345a8 100644
-> > --- a/drivers/pci/controller/dwc/pcie-kirin.c
-> > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
-> > @@ -29,6 +29,7 @@
-> >  #define to_kirin_pcie(x) dev_get_drvdata((x)->dev)
-> >
-> >  #define REF_CLK_FREQ                   100000000
-> > +#define AXI_CLK_FREQ                   207500000
-> >
-> >  /* PCIe ELBI registers */
-> >  #define SOC_PCIECTRL_CTRL0_ADDR                0x000
-> > @@ -60,6 +61,65 @@
-> >  #define PCIE_DEBOUNCE_PARAM    0xF0F400
-> >  #define PCIE_OE_BYPASS         (0x3 << 28)
-> >
-> > +/* PCIe CTRL registers */
-> > +#define SOC_PCIECTRL_CTRL0_ADDR   0x000
-> > +#define SOC_PCIECTRL_CTRL1_ADDR   0x004
-> > +#define SOC_PCIECTRL_CTRL7_ADDR   0x01c
-> > +#define SOC_PCIECTRL_CTRL12_ADDR  0x030
-> > +#define SOC_PCIECTRL_CTRL20_ADDR  0x050
-> > +#define SOC_PCIECTRL_CTRL21_ADDR  0x054
-> > +#define SOC_PCIECTRL_STATE0_ADDR  0x400
-> > +
-> > +/* PCIe PHY registers */
-> > +#define SOC_PCIEPHY_CTRL0_ADDR    0x000
-> > +#define SOC_PCIEPHY_CTRL1_ADDR    0x004
-> > +#define SOC_PCIEPHY_CTRL2_ADDR    0x008
-> > +#define SOC_PCIEPHY_CTRL3_ADDR    0x00c
-> > +#define SOC_PCIEPHY_CTRL38_ADDR   0x0098
-> > +#define SOC_PCIEPHY_STATE0_ADDR   0x400
-> > +
-> > +#define PCIE_LINKUP_ENABLE            (0x8020)
-> > +#define PCIE_ELBI_SLV_DBI_ENABLE      (0x1 << 21)
-> > +#define PCIE_LTSSM_ENABLE_BIT         (0x1 << 11)
-> > +#define PCIEPHY_RESET_BIT             (0x1 << 17)
-> > +#define PCIEPHY_PIPE_LINE0_RESET_BIT  (0x1 << 19)
-> > +
-> > +#define PORT_MSI_CTRL_ADDR            0x820
-> > +#define PORT_MSI_CTRL_UPPER_ADDR      0x824
-> > +#define PORT_MSI_CTRL_INT0_ENABLE     0x828  
-> 
-> These are common DWC 'port logic' registers. I think the core DWC
-> should handle them if not already.
-> 
-> > +
-> > +#define EYEPARAM_NOCFG 0xFFFFFFFF
-> > +#define RAWLANEN_DIG_PCS_XF_TX_OVRD_IN_1 0x3001
-> > +#define SUP_DIG_LVL_OVRD_IN 0xf
-> > +#define LANEN_DIG_ASIC_TX_OVRD_IN_1 0x1002
-> > +#define LANEN_DIG_ASIC_TX_OVRD_IN_2 0x1003
-> > +
-> > +/* kirin970 pciephy register */
-> > +#define SOC_PCIEPHY_MMC1PLL_CTRL1  0xc04
-> > +#define SOC_PCIEPHY_MMC1PLL_CTRL16 0xC40
-> > +#define SOC_PCIEPHY_MMC1PLL_CTRL17 0xC44
-> > +#define SOC_PCIEPHY_MMC1PLL_CTRL20 0xC50
-> > +#define SOC_PCIEPHY_MMC1PLL_CTRL21 0xC54
-> > +#define SOC_PCIEPHY_MMC1PLL_STAT0  0xE00  
-> 
-> This looks like it is almost all phy related. I think it should all be
-> moved to a separate phy driver. Yes, we have some other PCI drivers
-> controlling their phys directly where the phy registers are
-> intermingled with the PCI host registers, but I think those either
-> predate the phy subsystem or are really simple. I also have a dream to
-> move all the phy control to the DWC core code.
+I had John's v2 of this patch in my custom 5.11 patchset.
+Thanks for bringing this up again, Nathan.
 
-Please notice that this patch was not written by me, but, instead,
-by Mannivannan. So, I can't change it. What I can certainly do is to
-write a separate patch at the end of this series moving the Kirin 970
-phy to a separate driver. Would this be accepted?
+Later, I will test the triple patchset series.
 
-Btw, what should be done with the Kirin 960 PHY code that it is
-already embedded on this driver, and whose some of the DT properties
-are for its phy layer? 
+Feel free to add for this one:
 
-Thanks,
-Mauro
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+
+- Sedat -
+
+> ---
+>  arch/x86/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+> index 2d6d5a28c3bf..9a73e0cea19c 100644
+> --- a/arch/x86/Makefile
+> +++ b/arch/x86/Makefile
+> @@ -33,6 +33,7 @@ REALMODE_CFLAGS += -ffreestanding
+>  REALMODE_CFLAGS += -fno-stack-protector
+>  REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -Wno-address-of-packed-member)
+>  REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), $(cc_stack_align4))
+> +REALMODE_CFLAGS += $(CLANG_FLAGS)
+>  export REALMODE_CFLAGS
+>
+>  # BITS is used as extension for files which are available in a 32 bit
+> --
+> 2.31.0
+>
