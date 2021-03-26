@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6504034A31D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CAB534A31F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhCZISy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:18:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15317 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhCZISt (ORCPT
+        id S230187AbhCZIT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:19:27 -0400
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:37351 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhCZIS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:18:49 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6FDq6hbkz9tm1;
-        Fri, 26 Mar 2021 16:16:43 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 16:18:38 +0800
-Subject: Re: [PATCH -next] mm/page_alloc: remove duplicated include from
- page_alloc.c
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-References: <20210326025542.3565329-1-miaoqinglang@huawei.com>
- <20210326034208.GC1719932@casper.infradead.org>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <d3a42312-397d-e7e7-0aa8-819a7b3731db@huawei.com>
-Date:   Fri, 26 Mar 2021 16:18:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 26 Mar 2021 04:18:59 -0400
+Received: from [192.168.111.103] (p4fd97b97.dip0.t-ipconnect.de [79.217.123.151])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 12Q8IknN008587
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Fri, 26 Mar 2021 09:18:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tu-dortmund.de;
+        s=unimail; t=1616746726;
+        bh=ben2mc9PqCco6wmBW93BX/pWuiCf7vcnCghf41yvMuE=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To;
+        b=cVOdF1SxmarPMH195YKtL8CsuGpvsEG+imVHH9HlrEDGP6YRyfebyZYUvGVNIPgfE
+         6TEEbrE4wv27+TXz4qChBpB6gFsjOfjN4TDMGUpfTKNw3zy72ngHYfgCHkNCEkgFZI
+         24TkH3eE0P7pxvnCJUnGwPdm9GMOfuhKEgFKkggg=
+To:     Jan Kara <jack@suse.cz>
+Cc:     Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
+ <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
+ <20210211093027.GI19070@quack2.suse.cz>
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
+Message-ID: <ec682a4c-f4f7-35fe-dc35-6c0b53d6ecda@tu-dortmund.de>
+Date:   Fri, 26 Mar 2021 09:18:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210326034208.GC1719932@casper.infradead.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
+In-Reply-To: <20210211093027.GI19070@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey, Matthew
-
-Thanks for your advice towards hulk robot. We'd like to improve the 
-capbility of hulk robot whole the time.
-
-This patch is just a small cleanup reported by hulk robot, But the robot 
-can do more than this. For example, it finds crucial and useful bugs as 
-well.
-
-As for 'Untangle the mass of header includes' you mentioned, could you 
-please offer more details? Because I didn't find pagemap.h in 
-net/ipv4/tcp.c in -next like what you said.
-
-
-‘⁄ 2021/3/26 11:42, Matthew Wilcox –¥µ¿:
-> On Fri, Mar 26, 2021 at 10:55:42AM +0800, Qinglang Miao wrote:
->> Remove duplicated include.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+On 11.02.21 10:30, Jan Kara wrote:
+>> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+>> index 99d3cd051ac3..18f77d9b1745 100644
+>> --- a/include/linux/jbd2.h
+>> +++ b/include/linux/jbd2.h
+>> @@ -594,18 +594,18 @@ struct transaction_s
+>>  	 */
+>>  	unsigned long		t_log_start;
+>>  
+>> -	/* Number of buffers on the t_buffers list [j_list_lock] */
+>> +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
+>>  	int			t_nr_buffers;
 > 
-> can't you make hulk robot do something useful, like untangle the
-> mass of header includes?  For example, in -next, net/ipv4/tcp.c
-> has a dependency on pagemap.h.  Why?
-> .
-> 
+> So this case is actually somewhat different now that I audited the uses.
+> There are two types of users - commit code (fs/jbd2/commit.c) and others.
+> Other users properly use j_list_lock to access t_nr_buffers. Commit code
+> does not use any locks because committing transaction is fully in
+> ownership of the jbd2 thread and all other users need to check & wait for
+> commit to be finished before doing anything with the transaction's buffers.
+
+I'm still trying understand how thinks work:
+Accesses to transaction_t might occur from different contexts. Thus,
+locks are necessary. If it comes to the commit phase, every other
+context has to wait until jbd2 thread has done its work. Therefore, jbd2
+thread does not need any locks to access a transaction_t (or just parts
+of it?) during commit phase.
+Is that correct?
+
+If so: I was thinking whether it make sense to ignore all memory
+accesses to a transaction_t (or parts of it) that happen in the commit
+phase. They deliberately ignore the locking policy, and would confuse
+our approach.
+
+Is the commit phase performed by jbd2_journal_commit_transaction()?
+We would add this function to our blacklist for transaction_t.
+
+- Alex
+-- 
+Technische Universit√§t Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
