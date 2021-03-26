@@ -2,129 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2FB34AAB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DC034AAAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhCZO7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
+        id S230107AbhCZO7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhCZO6z (ORCPT
+        with ESMTP id S229839AbhCZO6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:58:55 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D86C0613B3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:58:55 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id f26so7701281ljp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:58:55 -0700 (PDT)
+        Fri, 26 Mar 2021 10:58:41 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7C3C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:58:40 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id ce10so8864387ejb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:58:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=snejp.pl; s=gmail;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=74ExyrGQ2FrMHb3FbC5tSKScDQ67EMx6FU4HJ+L5E00=;
-        b=LdF6rehR3g42XXaOynyISZkO5iu/QV+iuJsSk0LMVFhbea28iAIqqHJXpYRNk63Czr
-         ozIguXy0tiyGh9TDJ/ViqQSY4T5f2sI8bacGqunWnfdD65jV2UQKEwwziDdsEEGcFqRl
-         G3SaScmhs15eNsPog0sOEdTK2cMzqSMPO8ViLs2j6UmKkjNQOoaj291FTKMo1KmDTF9a
-         T93enEWsnsswJqiB39y48cqkRPyYCAeRtODh0v41EGRoO4Eap0Ag/vSgyafiNVkAlwUZ
-         mBrUtxRVSWKJlsdIvBv3Ei5HP3TFc+PxUUe+CKiOMiYI0GjchIFq0USLvF5ClrgK4ctW
-         +RpQ==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CfALI4Jjk9ExTBAv2QTg2oMERYIeKnf63ev+al3XN+o=;
+        b=Kac1k/Osslvkk1RN01fULSfgmf2XB5KK3ha5BO1hap3ZCuVFcqj9wW5aBBtmtgUGr3
+         uEE3tHyQtJiax7A1ahlBd0ZMf8sU5dp4lw6BqnJKYzgwo6VvJVno8YJ0MgzjEOQTNPhw
+         5szOHfFB32XpbYT4uk0Mm8XPAfOEwnHcp/swI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=74ExyrGQ2FrMHb3FbC5tSKScDQ67EMx6FU4HJ+L5E00=;
-        b=h+4IXR0fTdl5zFbpDQIVqaYf2Z0ybfMRtPpnXog1qIDEj+lzSA/4TcF7N6ob1E9kwT
-         9K7VM3uTbpzV2XWmpvns/9DGOVY5nqBRX9dppgXnlDguGHBIiZFZeE+dVyWGCIj8mHZA
-         6AhhotKrEhZw0vX7c+l7L1+zHM79qseljcFSy9PXPm0IqNNM+48F/SXh/rP0aQPB5phQ
-         GTE6yj/GmXlRwVwEn0oONA8oT9j0PjVFl83PxUJDIArEI2gKBqx3xx3F2uOK/0MnXIeJ
-         f4P5Ra3Io5fQIudtpqY9sYOSVfHc7gc9tV8CsOXUxPj8JWoj8Q3ww0IS63zguniHCqkE
-         pOUg==
-X-Gm-Message-State: AOAM531+itwnanGnYZp32oUx+B2UtdxHgcZTlgl5uOgIjqKclx7HHv5O
-        ZDIIgdsHAk8wA+9CvLuGRvbStQ==
-X-Google-Smtp-Source: ABdhPJz6rK13/EGBp6dWa2QzseHC+W24RMCZO5kUB+Vxzz/D5a8m4pmlqZ21/8Sy5DRyTtOsJ4ds1w==
-X-Received: by 2002:a2e:8591:: with SMTP id b17mr9093307lji.230.1616770733943;
-        Fri, 26 Mar 2021 07:58:53 -0700 (PDT)
-Received: from PackardBell ([82.160.139.10])
-        by smtp.googlemail.com with ESMTPSA id k2sm893382lfm.174.2021.03.26.07.58.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 07:58:53 -0700 (PDT)
-Received: from localhost (PackardBell [local])
-        by PackardBell (OpenSMTPD) with ESMTPA id b605a23b;
-        Fri, 26 Mar 2021 14:58:48 +0000 (UTC)
-From:   Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-Subject: [PATCH 5/5] arm: dts: qcom: Add initial DTS file for Samsung Galaxy S III Neo phone
-Date:   Fri, 26 Mar 2021 15:58:16 +0100
-Message-Id: <20210326145816.9758-6-bartosz.dudziak@snejp.pl>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210326145816.9758-1-bartosz.dudziak@snejp.pl>
-References: <20210326145816.9758-1-bartosz.dudziak@snejp.pl>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CfALI4Jjk9ExTBAv2QTg2oMERYIeKnf63ev+al3XN+o=;
+        b=Qoxi7+bCO+VSZJG9A8qt0fIbXvdJEA598/jcydMigd5cuj2RdU6SHWltL7NkJAXMIZ
+         JyZHekSce0a7rIv0q+o20wL05knOaVJfYYrMiklqiyvbMZUNT0AKh1WGI0qwIexpwrQj
+         CJj3Ut5V6LU+vD/E2AQv/7hn4fe7LBF0DJ/WQVq/P6zbCkZcg5VGFR1of0Vb2c7AyhYj
+         zumdfYFcSNlHbXODWTegADZiRJPe+PKg4Vxdjo84wauZ0su4N5GtAxqxH4x/L/U2xHND
+         fS1v94FJvAdwf9rlqrxX3Mzkiju3nLwSKn6hZ9Z2Ap/iILGcOin91HApYBaXuT9CpmuZ
+         N62w==
+X-Gm-Message-State: AOAM530YftD+j2lq7fokwI2Gs9EALQZKfO6Gkf8Mwk0OpDWwdT0Q70AV
+        SYZ/Q39Qwsm3A67Xddsy2DrQGiISQzn7EZFK
+X-Google-Smtp-Source: ABdhPJx1oimfvqUpbBIo2oWjqp8cQ20I/tqqM35MCT9tgfRXIk1FJCQXol9RFyR9qPSXsXfwuOFI0w==
+X-Received: by 2002:a17:907:211b:: with SMTP id qn27mr15721468ejb.203.1616770719224;
+        Fri, 26 Mar 2021 07:58:39 -0700 (PDT)
+Received: from [192.168.1.149] ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id d5sm3931066ejc.98.2021.03.26.07.58.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 07:58:38 -0700 (PDT)
+Subject: Re: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Greg KH <greg@kroah.com>, mingo@kernel.org, mgorman@suse.de,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, joshdon@google.com, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org
+References: <20210326103352.603456266@infradead.org>
+ <20210326103935.183934395@infradead.org> <YF2/41K4xs3ZOQdV@kroah.com>
+ <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
+ <YF3F0JbbEpeSGzW6@kroah.com>
+ <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
+ <70594935-18e6-0791-52f9-0448adf37155@rasmusvillemoes.dk>
+ <20210326142230.GJ4746@worktop.programming.kicks-ass.net>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <c1be3728-40e7-f200-ece0-cd3f11349f65@rasmusvillemoes.dk>
+Date:   Fri, 26 Mar 2021 15:58:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210326142230.GJ4746@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This DTS has support for the Samsung Galaxy S III Neo (codenamed s3ve3g)
-phone. Initial version have just a working serial console.
+On 26/03/2021 15.22, Peter Zijlstra wrote:
+> On Fri, Mar 26, 2021 at 01:53:59PM +0100, Rasmus Villemoes wrote:
+>> On 26/03/2021 12.38, Peter Zijlstra wrote:
+> 
+>>> +
+>>> +again:
+>>> +	rcu_read_lock();
+>>> +	str = rcu_dereference(*(char **)file->private_data);
+>>> +	len = strlen(str) + 1;
+>>> +
+>>> +	if (!copy || copy_len < len) {
+>>> +		rcu_read_unlock();
+>>> +		kfree(copy);
+>>> +		copy = kmalloc(len + 1, GFP_KERNEL);
+>>> +		if (!copy) {
+>>> +			debugfs_file_put(dentry);
+>>> +			return -ENOMEM;
+>>> +		}
+>>> +		copy_len = len;
+>>> +		goto again;
+>>> +	}
+>>> +
+>>> +	strncpy(copy, str, len);
+>>> +	copy[len] = '\n';
+>>> +	copy[len+1] = '\0';
+>>> +	rcu_read_unlock();
+>>
+>> As noted (accidentally off-list), this is broken. I think you want this
+>> on top
+>>
+>> - len = strlen(str) + 1;
+>> + len = strlen(str);
+> 
+>   kmalloc(len + 2, ...);
 
-Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
----
- arch/arm/boot/dts/Makefile                    |  1 +
- .../boot/dts/qcom-msm8226-samsung-s3ve3g.dts  | 25 +++++++++++++++++++
- 2 files changed, 26 insertions(+)
- create mode 100644 arch/arm/boot/dts/qcom-msm8226-samsung-s3ve3g.dts
+No, because nul-terminating the stuff you pass to
+simple_read_from_buffer is pointless cargo-culting. Yeah, read_file_bool
+does it, but that's just bogus.
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 8e5d4ab4e7..080ff37fdb 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -920,6 +920,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
- 	qcom-ipq4019-ap.dk07.1-c2.dtb \
- 	qcom-ipq8064-ap148.dtb \
- 	qcom-ipq8064-rb3011.dtb \
-+	qcom-msm8226-samsung-s3ve3g.dtb \
- 	qcom-msm8660-surf.dtb \
- 	qcom-msm8960-cdp.dtb \
- 	qcom-msm8974-fairphone-fp2.dtb \
-diff --git a/arch/arm/boot/dts/qcom-msm8226-samsung-s3ve3g.dts b/arch/arm/boot/dts/qcom-msm8226-samsung-s3ve3g.dts
-new file mode 100644
-index 0000000000..4790077962
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom-msm8226-samsung-s3ve3g.dts
-@@ -0,0 +1,25 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include "qcom-msm8226.dtsi"
-+
-+/ {
-+	model = "Samsung Galaxy S III Neo";
-+	compatible = "samsung,s3ve3g", "qcom,msm8226";
-+
-+	aliases {
-+		serial0 = &blsp1_uart3;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&soc {
-+	serial@f991f000 {
-+		status = "ok";
-+	};
-+};
--- 
-2.25.1
+>> - strncpy(copy, str, len);
+>> + memcpy(copy, str, len);
+>>   copy[len] = '\n';
+>> - copy[len+1] = '\0';
+> 
+> I'll go with strscpy() I tihnk, something like:
+> 
+> 	len = strscpy(copy, str, len);
+> 	if (len < 0)
+> 		return len;
 
+To what end? The only way that could possibly return -EFOO is if the
+nul-terminator in str vanished between the strlen() and here, and in
+that case you have bigger problems.
+
+> 	copy[len] = '\n';
+> 	copy[len + 1] = '\0';
+> 
+>>> +EXPORT_SYMBOL_GPL(debugfs_read_file_str);
+>>
+>> Why?
+> 
+> Copy-pasta from debugfs_*_bool(). This thing seems to export everything
+> and I figured I'd go along with that.
+
+I thought the convention was not to export anything until the kernel
+itself had a (modular) user. But I can't find that stated under
+Documentation/ anywhere - but it does say "Every function that is
+exported to loadable modules using
+``EXPORT_SYMBOL`` or ``EXPORT_SYMBOL_GPL`` should have a kernel-doc
+comment.". Anyway, the *_bool stuff doesn't seem to be something to be
+copy-pasted.
+
+Rasmus
