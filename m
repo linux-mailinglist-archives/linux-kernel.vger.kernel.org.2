@@ -2,64 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4090E34A7D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:11:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0459D34A7DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhCZNLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:11:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44066 "EHLO mx2.suse.de"
+        id S229995AbhCZNMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:12:31 -0400
+Received: from foss.arm.com ([217.140.110.172]:59118 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229882AbhCZNLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:11:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 74BBFADD7;
-        Fri, 26 Mar 2021 13:11:06 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 14:11:01 +0100
-From:   Borislav Petkov <bp@suse.de>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <20210326131101.GA27507@zn.tnic>
-References: <20210322143714.494603ed@canb.auug.org.au>
- <20210322090036.GB10031@zn.tnic>
- <CA+icZUVkE73_31m0UCo-2mHOHY5i1E54_zMb7yp18UQmgN5x+A@mail.gmail.com>
+        id S229882AbhCZNL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:11:58 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B66CD143D;
+        Fri, 26 Mar 2021 06:11:56 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 736913F7D7;
+        Fri, 26 Mar 2021 06:11:54 -0700 (PDT)
+Subject: Re: [PATCH 7/9] sched,debug: Convert sysctl sched_domains to debugfs
+To:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        mgorman@suse.de, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        joshdon@google.com, valentin.schneider@arm.com
+Cc:     linux-kernel@vger.kernel.org, greg@kroah.com
+References: <20210326103352.603456266@infradead.org>
+ <20210326103935.264012208@infradead.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <edd14b50-41d5-8c04-6bb6-9a821e33695f@arm.com>
+Date:   Fri, 26 Mar 2021 14:11:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <20210326103935.264012208@infradead.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+icZUVkE73_31m0UCo-2mHOHY5i1E54_zMb7yp18UQmgN5x+A@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 09:57:43AM +0100, Sedat Dilek wrote:
-> The commit b90829704780 "bpf: Use NOP_ATOMIC5 instead of
-> emit_nops(&prog, 5) for BPF_TRAMP_F_CALL_ORIG" is now in Linus Git
-> (see [1]).
+On 26/03/2021 11:33, Peter Zijlstra wrote:
+> Stop polluting sysctl, move to debugfs for SCHED_DEBUG stuff.
 > 
-> Where will Stephen's fixup-patch be carried?
-> Linux-next?
-> net-next?
-> <tip.git#x86/cpu>?
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  kernel/sched/debug.c    |  255 ++++++++++--------------------------------------
+>  kernel/sched/sched.h    |    2 
+>  kernel/sched/topology.c |    1 
+>  3 files changed, 59 insertions(+), 199 deletions(-)
 
-I guess we'll resolve it on our end and pick up sfr's patch, most
-likely.
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
-Thanks for letting me know.
+[...]
 
--- 
-Regards/Gruss,
-    Boris.
+> +#define SDM(type, mode, member)	\
+> +	debugfs_create_##type(#member, mode, parent, &sd->member)
+>  
+> -		WARN_ON(sd_ctl_dir[0].child);
+> -		sd_ctl_dir[0].child = cpu_entries;
+> -	}
+> +	SDM(ulong, 0644, min_interval);
+> +	SDM(ulong, 0644, max_interval);
+> +	SDM(u64,   0644, max_newidle_lb_cost);
+> +	SDM(u32,   0644, busy_factor);
+> +	SDM(u32,   0644, imbalance_pct);
+> +	SDM(u32,   0644, cache_nice_tries);
+> +//	SDM(x32,   0444, flags);
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Can be removed.
+
+> +	SDM(str,   0444, name);
+>  
+> -	if (!cpu_idx) {
+> -		struct ctl_table *e = cpu_entries;
+> +#undef SDM
+>  
+> -		cpu_idx = kcalloc(nr_cpu_ids, sizeof(struct ctl_table*), GFP_KERNEL);
+> -		if (!cpu_idx)
+> -			return;
+> +	debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
+> +}
+
+[...]
