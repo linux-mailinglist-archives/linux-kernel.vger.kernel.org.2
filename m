@@ -2,184 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C6E34AD44
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A0C34AD4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhCZRZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:25:39 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:57884 "EHLO smtp.gentoo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230142AbhCZRZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:25:27 -0400
-Date:   Fri, 26 Mar 2021 17:25:22 +0000
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, David Hildenbrand <david@redhat.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>
-Subject: Re: [PATCH] mm: page_alloc: ignore init_on_free=1 for page alloc
-Message-ID: <20210326172522.70c1cdde@sf>
-In-Reply-To: <6c4a20f3-16ab-3c6c-1d6d-4708db4e9ebf@suse.cz>
-References: <20210326112650.307890-1-slyfox@gentoo.org>
-        <6c4a20f3-16ab-3c6c-1d6d-4708db4e9ebf@suse.cz>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230229AbhCZR0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:26:15 -0400
+Received: from mail-bn8nam11on2070.outbound.protection.outlook.com ([40.107.236.70]:57633
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230142AbhCZRZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 13:25:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bThrbR0pp2veZOeLA/H/h83Q6hao70SIAIjKxalL0nZLIO4npMWus4dl9WvXEaezxU1t1yOOwNZTK0AhqzJvhNAIomNhLe9mVJB31H/JaP8amF7nYOxh3iqr2+Ea27+d4vDnnyepKLHEu6p3yUXI8WjsYsj7BQDL5RedioO3nBdKwvMpcbwOZx4Hc8cYJoBQXezWo/FMoWcAEbeY06lxcIRyQRrMkO4nr0jiEgbHU4T3vnjl9g58dUGHm1tSNlDI3qbn3M09nf/L4n8/6yBgzrxr5BgNXiUi4OgbOCfaFDj1ijM6FIsDGJemx4rH4w+xQEphEl60/zXizwKOb7fMQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RrkmA089Kft3jXb1stJ43nfMVKSDjhh18Y9141VLC54=;
+ b=jppkd/K+h3S1mcQrmJM5BxjwjJthOIj6wwclDVWieB5ErGpmAZdHDcfRNd0K6Q/yryjIjKj2+y5bjQKN6B+OJN7EH8c/pXYJzxHx6ga3AoiRAhBAv0PVqO0OeHQp/NgXSMy/JPA+5UFxpPddGthgzEWlGon4zjMal2cEmINpuo7Z1G03vyT0vc+JakaAVgInYYYQtZiKjzfc9u6AWwQB/dhC1TYK+vabFi4z6ri9bFyR7iAAj9A4J9O5ZuU1R2wvHV4Vp9w3dKbecXTMMnnJWMzNr9SrCXEY5OSJKPRTJpbuFcj8BFUAooSP6H/Lqb2K3fxOX2qZss/QI/b3b1c+eg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RrkmA089Kft3jXb1stJ43nfMVKSDjhh18Y9141VLC54=;
+ b=Bqf9sKgoPVnVqEsB7soyRoLhIySsAOLZIQU+UvqXL+NYCt60KQA2UB+FY2aT6BptNxpTu9z0vHFLOh3AsX2YWCJ3PLVv+7CrN6h3zaKh34HcyUUpSxT0T9TdXVY74BHhfhoOgr3BQWMtJIzPZXd77Zd4r7N1P0Urjknjd+1phpIph3AB8CQEWHKEOZC35LuZeQ7y3zv62Hv9XurQoNMwKf9jfInyLbVFegnzFyj4z05u7+Zez+smbEN7I2v3doMVdmMOAeSJTmDlvy2963gJsMfviJKV3fGeSU7bSRFfsWorsgFJv+VQC/OcYb15tbC4P7YSWAXF7iVzCt35XlakkA==
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB2582.namprd12.prod.outlook.com (2603:10b6:4:b5::37) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.26; Fri, 26 Mar
+ 2021 17:25:47 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Fri, 26 Mar 2021
+ 17:25:47 +0000
+Date:   Fri, 26 Mar 2021 14:25:45 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] RDMA: Fix a typo
+Message-ID: <20210326172545.GA874948@nvidia.com>
+References: <20210322064322.3933985-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322064322.3933985-1-unixbhaskar@gmail.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR20CA0047.namprd20.prod.outlook.com
+ (2603:10b6:208:235::16) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0047.namprd20.prod.outlook.com (2603:10b6:208:235::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Fri, 26 Mar 2021 17:25:46 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPqDR-003fcm-NN; Fri, 26 Mar 2021 14:25:45 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 20b69129-30ba-42fe-cc37-08d8f07c317f
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2582:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB2582D2E00E339930DD13286CC2619@DM5PR12MB2582.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4e+AhluVYXBOSzQMBqo3wuGaWteks33XMPApB60O/pb2TxEHCBh4/TT0npmypBekPzVSES2/3zqT3muh8NjKaV+wBxhKQuBaaG0Odyunwxn3S0nHX0zkIavZEdVDYv6e1Nr57HeejZGg4SpjJuseGxpII7ZuWQ9Wju82ndYVvhXdenZkeKKJX0Clxn3xgHrOPp3bFKYl8dmx49/DlLm5hCiqYQMZPI/8h4Fs065Lh7C9qfeGdM8FlCy9rFleYRhl4ZyjGUm3zgYodqZZpB0b/GaWZNULxIhRLzEDONLRIN31gn9AeM/uJ8NT9x6+/821BtEmiR5g8eoIPHP0JsnX+KE/+NbLN4HF0il/HIo7huy+CsFOjnJcJ9FLLLfkONJsLGiggYCsgdkFjTAfxgvB9pSDzmQvb62/SgivclBlOwcfIcCdmh9vwCaz7PVSGmptNrV/EAiuTLJnzlvE8zTUh+ohJBDIy/e/yP7qMM/0Gts7cGchSnMpdmEwAn6YMg29gdzqW+Pp1ZNbhg2IwSK1G8YlikbwueR+55MyoptNWZzxgTjld0Cry3bm4BaMyus6nXKp/nsSQPsgkjadxl8e5NzvojmR4xDNeBnE7yvsSmFO9na1E5CFIT7JRkBiqPQaWu5BHBhZmlz9wHYdc4ssS7pb7a3Anc9JaZ/xa5D5wAJrCUs40+NPHK9A9+nRjN9e
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39860400002)(376002)(346002)(136003)(83380400001)(4744005)(38100700001)(33656002)(66946007)(66556008)(2906002)(66476007)(186003)(86362001)(9746002)(9786002)(26005)(5660300002)(8676002)(6916009)(1076003)(4326008)(2616005)(36756003)(478600001)(426003)(8936002)(316002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?tsAGOPzVnjlxXDaew2C97SMnzPO7LrkniGZbuIFtSQTyLdAzEjm+WhhizTVl?=
+ =?us-ascii?Q?PGupdpB/C1Nevs6EFkj2ccF8GIel8H78TuqsjDlFmDDqL2UonTRsT2QaFH6B?=
+ =?us-ascii?Q?crKb77LtsLJ0NifirIntGfmrt4QPotdrkzvgOftKcU4F0DE4cTGrCIRouhbG?=
+ =?us-ascii?Q?uWSSbYXLPXcv4ybqgYK+Y/lsgB7ah9vqUbHmBd+tqhG2Zz63ojp/I17mIjKk?=
+ =?us-ascii?Q?VBW9Bvha29RmuYwxxBxjDC0qakmbPwb1d8U2MaJqLK6SwJ7f7gsd0lhsiRZM?=
+ =?us-ascii?Q?p+tHsYmvEQx7VXCoZddZZrzR1s59z0St88zb7PhIdAzeGxltVpjQOaxx2feR?=
+ =?us-ascii?Q?ZFKC5ASYsrzUYPI5rXaRE+2G8SNkZKgla//o6MYlLAqBha/sJ+erdctm5AlU?=
+ =?us-ascii?Q?OfB3mThP2vUJ7Mt+QTETDG+Leon5Z+DmunZY7ZaNPtIrJi1Lm5mLgxyf2gSv?=
+ =?us-ascii?Q?mPsmT3mvT07WpLOatWpllYCKKbfZs+3eEiXHjXr4zBwt9bVNqC/7T1odFNk9?=
+ =?us-ascii?Q?KvYjg2gQBj9Roo2EUzCMrM2l12UHsVJaeiCzG4NT8t7TCNsdCM8OzfIYpQ/V?=
+ =?us-ascii?Q?q+PGgNuj8G7YFVBZcsq4T0DtohvOdZQ45C/Ub/jrDkL0kWjOz8weQSTU41r4?=
+ =?us-ascii?Q?5tpDEdqqOjKbkRhTJ82EmTkaBrVmMF1xJp06GuAzwnkWymu/zX+NE2zM99YL?=
+ =?us-ascii?Q?PITTP9wZwEC8ZTTxujRUfPXcK05SnYpK0lUcwbYLv0xNvi68uVE7MkjPHZlw?=
+ =?us-ascii?Q?YCHLtjV3O6UQSgioqBtwLfy2fTTbixgM0aogsX3sQDIrYaLxomcVtJxINddm?=
+ =?us-ascii?Q?ZiJ25NwXx7HqTbsUisUdMfpKzcw75T4TBWorFM9Zu8k5f3zLuO9/1VJ48Bcs?=
+ =?us-ascii?Q?PsXdjDmXVS7+m4v3GvyRhmW8CF3h/Ga0pClHVAwzk/YT/NFBKSyU3cbQBL4+?=
+ =?us-ascii?Q?tKSbIOpg4oX7S1FIC6lcYcrLoKvuAY1sIDzXmiL/fGuaaxGktEw4fBLmh3iV?=
+ =?us-ascii?Q?JdtNznqMueBxQVHVkg3wtaECv/y0RHO+FltdN/mk9fmw1Zvo6gT7aIKvisXB?=
+ =?us-ascii?Q?bZQuW9e3aDfuJTCvfXvBjPqyD77mR5rxnu6RTaS4NmaUizs3PUg46qOy09uG?=
+ =?us-ascii?Q?8m2Ri47QLl63d2VOmInIYM9CSCCq657JKN48cDh3OmgmYJNoy6dPBad0bW2/?=
+ =?us-ascii?Q?NcDIgulZmdkS38JhdudwexAnCnO+E1eilZGdmFHChC6e3DgGHlloej6n/MFt?=
+ =?us-ascii?Q?0Pc7rxt0C18VGVXKriJSur+CqPz0i/KIjaYjgiZ7YL/TqWyYDfynmWFST9AJ?=
+ =?us-ascii?Q?JoRGk1otB8xGqAWS/d06YtXWjn5gOuDYaEsxcqPouDTi2A=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20b69129-30ba-42fe-cc37-08d8f07c317f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 17:25:47.1754
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G75XcShqsEHzdqHN7rB4+H77jvfWul+tbnzP7W+D8lH7GXWfKm9YsE9ernuGupwl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2582
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 15:17:00 +0100
-Vlastimil Babka <vbabka@suse.cz> wrote:
-
-> On 3/26/21 12:26 PM, Sergei Trofimovich wrote:
-> > init_on_free=1 does not guarantee that free pages contain only zero bytes.
-> > 
-> > Some examples:
-> > 1. page_poison=on takes presedence over init_on_alloc=1 / ini_on_free=1  
+On Mon, Mar 22, 2021 at 12:13:22PM +0530, Bhaskar Chowdhury wrote:
+> s/struture/structure/
 > 
-> Yes, and it spits out a message that you enabled both and poisoning takes
-> precedence. It was that way even before my changes IIRC, but not consistent.
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> ---
+>  include/rdma/rdma_vt.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yeah. I probably should not have included this case as page_poison=on actually
-made my machine boot just fine. My main focus was to understand why I an seeing
-the crash on kernel with init_on_alloc=1 init_on_free=1 and most debugging options
-on.
+Applied to for-next, thanks
 
-My apologies! I'll try to find where this extra poisoning comes from.
-
-Making a step back and explaining my setup:
-
-Initially it's an ia64 box that manages to consistently corrupt memory
-on socket free; https://lkml.org/lkml/2021/2/23/653
-
-To get better understanding where corruption comes from I enabled
-A Lot of VM, pagealloc and slab debugging options. Full config:
-
-    https://dev.gentoo.org/~slyfox/configs/guppy-config-5.12.0-rc4-00016-g427684abc9fd-dirty
-
-I boot machine as:
-
-[    0.000000] Kernel command line: BOOT_IMAGE=/boot/vmlinuz-5.12.0-rc4-00016-g427684abc9fd-dirty root=/dev/sda3 ro slab_nomerge memblock=debug debug_pagealloc=1 hardened_usercopy=1 page_owner=on page_poison=0 init_on_alloc=1 init_on_free=1 debug_guardpage_minorder=0
-
-My boot log:
-
-    https://dev.gentoo.org/~slyfox/bugs/ia64-boot-bug/2021-03-26-init_on_alloc-fail
-
-Caveats in reading boot log:
-    - kernel crashes too early: stack unwinder does not have working kmalloc() yet
-    - kernel crashes in MCE handler: normally it should not. It's an unrelated bug
-      that makes backtrace useless. I'll try to fix it later, but it will not be fast.
-    - I added a bunch of printk()s around the crash.
-
-The important pernel boot failure part is:
-  [    0.000000] put_kernel_page: pmd=e000000100000000
-  [    0.000000] pmd:(____ptrval____): aaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaa aaaaaaaaaaaaaaaa  ................................
-
-Note 1: I do not really enable page_poison at runtime and was misleading you
-in previous emails. (I initially assumed kernel_poison_pages() poisons pages
-unconditionally but you all explained it does not). Something else manages to
-poison my pmd(s?).
-
-Note 2: I have many other debugging options enabled that might trigger
-poisoning. 
-
-> > 2. free_pages_prepare() always poisons pages:
-> > 
-> >        if (want_init_on_free())
-> >            kernel_init_free_pages(page, 1 << order);
-> >        kernel_poison_pages(page, 1 << order  
-> 
-> kernel_poison_pages() includes a test if poisoning is enabled. And in that case
-> want_init_on_free() shouldn't be. see init_mem_debugging_and_hardening()
-
-I completely missed that! Thank you! Will try to trace real cause of poisoning.
-
-> > I observed use of poisoned pages as the crash on ia64 booted with
-> > init_on_free=1 init_on_alloc=1 (CONFIG_PAGE_POISONING=y config).
-> > There pmd page contained 0xaaaaaaaa poison pages and led to early crash.  
-> 
-> Hm but that looks lika a sign that ia64 pmd allocation should use __GFP_ZERO and
-> doesn't. It shouldn't rely on init_on_alloc or init_on_free being enabled.
-
-ia64 does use __GFP_ZERO (I even tried to add it manually to pmd_alloc_one()
-before I realized all _PGTABLEs imply __GFP_ZERO).
-
-I'll provide the call chain I arrived at for completeness:
-    - [ia64 boots]
-    - mem_init() (defined at arch/ia64/mm/init.c)
-     -> setup_gate() (defined at arch/ia64/mm/init.c)
-      -> put_kernel_page() (defined at arch/ia64/mm/init.c)
-       -> [NOTE: from now on it's all generic code, not ia64-speficic]
-        -> pmd_alloc() (defined at include/linux/mm.h)
-         -> __pmd_alloc() (defined at mm/memory.c)
-          -> [under #ifndef __PAGETABLE_PMD_FOLDED] pmd_alloc_one() (defined at include/asm-generic/pgalloc.h)
-           -> pmd_alloc_one() [defined at include/asm-generic/pgalloc.h):
- 
-static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long addr)
-{
-        struct page *page;
-        gfp_t gfp = GFP_PGTABLE_USER;
-
-        if (mm == &init_mm)
-                gfp = GFP_PGTABLE_KERNEL;
-        page = alloc_pages(gfp, 0);
-        if (!page)
-                return NULL;
-        if (!pgtable_pmd_page_ctor(page)) {
-                __free_pages(page, 0);
-                return NULL;
-        }
-        return (pmd_t *)page_address(page);
-}
-
-In our case it is a GFP_PGTABLE_KERNEL with __GFP_ZERO and result is
-poisoned page instead of zeroed page.
-
-If I interpret the above correctly it means that something (probably
-memalloc_free_pages() ?) puts initial free pages as poisoned and later
-alloc_pages() assumes they are memset()-zero. But I don't see why.
-
-> > The change drops the assumption that init_on_free=1 guarantees free
-> > pages to contain zeros.  
-> 
-> The change assumes that page_poison=on also leaves want_init_on_free() enabled,
-> but it doesn't.
->
-> > Alternative would be to make interaction between runtime poisoning and
-> > sanitizing options and build-time debug flags like CONFIG_PAGE_POISONING
-> > more coherent. I took the simpler path.  
-> 
-> So that was done in 5.11 and the decisions can be seen in
-> init_mem_debugging_and_hardening(). There might be of course a bug, or later
-> changes broke something. Which was the version that you observed a bug?
-> 
-> > Tested the fix on rx3600.
-> > 
-> > CC: Andrew Morton <akpm@linux-foundation.org>
-> > CC: linux-mm@kvack.org
-> > Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-> > ---
-> >  mm/page_alloc.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index cfc72873961d..d57d9b4f7089 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -2301,7 +2301,7 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
-> >  	kernel_unpoison_pages(page, 1 << order);
-> >  	set_page_owner(page, order, gfp_flags);
-> >  
-> > -	if (!want_init_on_free() && want_init_on_alloc(gfp_flags))
-> > +	if (want_init_on_alloc(gfp_flags))
-> >  		kernel_init_free_pages(page, 1 << order);
-> >  }
-> >  
-> >   
-> 
-
--- 
-
-  Sergei
+Jason
