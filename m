@@ -2,114 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994FB34AA63
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096A134AA66
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCZOo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54802 "EHLO
+        id S230130AbhCZOqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:46:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhCZOou (ORCPT
+        with ESMTP id S230142AbhCZOpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:44:50 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11664C0613B4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:44:50 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id w18so6674142edc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:44:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rIvv+tA1LMtQGGiDuq1c1q8EFA36Pgjy5WH53f7HNx4=;
-        b=iYunu1vYc+nYwytgwT0664RyXaLgIIwSfKZuAagqasIYu9jy9foMpyWg8GYSfAPoSl
-         7gXmommvATo5YilSMCWKppg6LleO/43CCNHA5B/ru6Jk9NMhwzLrSDFzr+PaGarm07W7
-         mBEkYdqmxjgNwwSk3y9oMCN94y3a4cOYuEb01nuzMH/0mqtLNYzzrVRIT/+ZbQBty8W9
-         DoeDDyGU2UhxKa2OOCRbp8rXwfrOEd5I+reszDYXU/CDUOhm55Da+3J7D9UXrfsMjDCR
-         LtmDAYZ2TfiSrOTrb9+jife+nA0bQs7GxtgJWytM/0bTimRuWkn57mcH3yp8a70YHvQP
-         WdBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rIvv+tA1LMtQGGiDuq1c1q8EFA36Pgjy5WH53f7HNx4=;
-        b=FGgSJ6RgumwdDU00QJLzjoxH3YypD+jryU8MfgOx9FkJxRnkAO2CE5kItSYbhasNdC
-         j73RbtqXRPnBDO5Ga2nAohVpIyxfmGgDeKqSH57fOQse5xhrosGqv3iPB4RnMOR4yc4G
-         xMr3iXphRx9AfozNS8aXM3Lwpxm7l3b9XoIqHImPgCVfhikICfyUADart3Bu8rCzCJwy
-         Jff2oV4DXVZUP+YDrv16is4uFF3eF2tN9o/df8PjIh08ZrPFxU2OgkNr7jXTEu7bU0ad
-         QBp+X5hbBbIcciAoy+S+bgHEDPb2e6LHFuUuLlYw/SIV+IHW2Do/NhbISnV0WmMjc4rf
-         YZNw==
-X-Gm-Message-State: AOAM532XmWcc9NYXq8A/0x0xt4G6wzZEB6LHvpzODseQHD4ZWzLcm5pO
-        9+O9MiaO25h9mG+u9oUWkwODMPETjUF8NZjhQjH2nw==
-X-Google-Smtp-Source: ABdhPJyu4ZYMKthWiIfIsLH5cJYN/YmYPXtv3Hl6Hl6YxrLqty3+4cM/fQnPI6E5xbB/otdrwsE35jlQjEFjqhXSpzo=
-X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr15385463edy.232.1616769888652;
- Fri, 26 Mar 2021 07:44:48 -0700 (PDT)
+        Fri, 26 Mar 2021 10:45:30 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E98C0613AA;
+        Fri, 26 Mar 2021 07:45:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:Cc:To:From;
+        bh=mtNIqPG9Q1dGrTRGe+RN+2nCiKVa40ParN2yl85CZag=; b=xMWEHeL0j0R9MXCbrX2fCj04af
+        +xm+YVzki5Mb5SP/Xj8sJTfu8Ay3RxevoIKsYLEDMMj595h5yFFHX6awnGFK6+LEtBx3dm1ZMwkyq
+        4kGujtP10e1fpcqOxY/OfZdOGgo497qcYYQSSaSz4o0rYOvoC9jUM+BfpLpq7sY9sUjWf6gi17/Fc
+        supOCeU/oVVpTD15UEsd8DlbHKgzmKBaBty3H206WVp8GWDYNyIpbNNA8AL419GHsXcttdVZNmbiY
+        S8sEZ2OqJFc9FWAC2Sn8Ie4UJ+ZP/E5/ryTR78nrVFrmIw1GKEAQyKZ+1SOSFEMFQ1wRr0det6yxw
+        fe9CJH+pFMmGFxU7DLnLhPWngALAihhH9D+RqlrMNhj/so5ySVa84ZOCQ5z/ayN8HjTn1bOcpAqxc
+        O/oeaKXWs2RFj/W7sw6tCh+WvLcX3XOFGrbkJHzw4dCpiiUjByFB0aiXjgPLIym3rFRoKv1GbqGp9
+        +k5cSjJn4p7TB0sEeSp/4cnL;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lPniK-00039z-F3; Fri, 26 Mar 2021 14:45:28 +0000
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+ <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+ <0c91d9e7-82cd-bec2-19ae-cc592ec757c6@kernel.dk>
+ <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
+ <66fa3cfc-4161-76fe-272e-160097f32a53@kernel.dk>
+ <67a83ad5-1a94-39e5-34c7-6b2192eb7edb@samba.org>
+Message-ID: <ac807735-53d0-0c9e-e119-775e5e01d971@samba.org>
+Date:   Fri, 26 Mar 2021 15:45:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <cover.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
- <50f72f1f7f28e969a1e0353712fcc530bce9dd06.1611037866.git.matti.vaittinen@fi.rohmeurope.com>
- <CAMpxmJVjnAMig16qWkjpaHwQ+4Ld9yEc-gg-CGv28QQYBB6gNg@mail.gmail.com> <afaff71f75cd476c828671779acd1a3f8b66b62c.camel@fi.rohmeurope.com>
-In-Reply-To: <afaff71f75cd476c828671779acd1a3f8b66b62c.camel@fi.rohmeurope.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 26 Mar 2021 15:44:38 +0100
-Message-ID: <CAMpxmJXe9EVaDooPYphRV_500Dd9fU7WQHAFFL_-2-usxZG9kA@mail.gmail.com>
-Subject: Re: [PATCH v2 10/17] gpio: support ROHM BD71815 GPOs
-To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <67a83ad5-1a94-39e5-34c7-6b2192eb7edb@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 10:57 AM Vaittinen, Matti
-<Matti.Vaittinen@fi.rohmeurope.com> wrote:
->
->
-> On Tue, 2021-01-19 at 12:07 +0100, Bartosz Golaszewski wrote:
-> > On Tue, Jan 19, 2021 at 8:23 AM Matti Vaittinen
-> > <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > > Support GPO(s) found from ROHM BD71815 power management IC. The IC
-> > > has two
-> > > GPO pins but only one is properly documented in data-sheet. The
-> > > driver
-> > > exposes by default only the documented GPO. The second GPO is
-> > > connected to
-> > > E5 pin and is marked as GND in data-sheet. Control for this
-> > > undocumented
-> > > pin can be enabled using a special DT property.
-> > >
-> > > This driver is derived from work by Peter Yang <
-> > > yanglsh@embest-tech.com>
-> > > although not so much of original is left.
-> > >
-> > > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> >
-> > Hi Matti,
-> >
-> > looks great, just a couple nits.
->
-> Hello Bartosz,
->
-> I think fixed all the nits to v3. Can I translate this to an ack? (I
-> will respin the series as I guess the regulator part may have fallen
-> through the cracks so I'd like to add the relevant acks :] )
->
-> Best Regards
->         Matti Vaittinen
+Am 26.03.21 um 15:43 schrieb Stefan Metzmacher:
+> Am 26.03.21 um 15:38 schrieb Jens Axboe:
+>> On 3/26/21 7:59 AM, Jens Axboe wrote:
+>>> On 3/26/21 7:54 AM, Jens Axboe wrote:
+>>>>> The KILL after STOP deadlock still exists.
+>>>>
+>>>> In which tree? Sounds like you're still on the old one with that
+>>>> incremental you sent, which wasn't complete.
+>>>>
+>>>>> Does io_wq_manager() exits without cleaning up on SIGKILL?
+>>>>
+>>>> No, it should kill up in all cases. I'll try your stop + kill, I just
+>>>> tested both of them separately and didn't observe anything. I also ran
+>>>> your io_uring-cp example (and found a bug in the example, fixed and
+>>>> pushed), fwiw.
+>>>
+>>> I can reproduce this one! I'll take a closer look.
+>>
+>> OK, that one is actually pretty straight forward - we rely on cleaning
+>> up on exit, but for fatal cases, get_signal() will call do_exit() for us
+>> and never return. So we might need a special case in there to deal with
+>> that, or some other way of ensuring that fatal signal gets processed
+>> correctly for IO threads.
+> 
+> And if (fatal_signal_pending(current)) doesn't prevent get_signal() from being called?
 
-Yes:
+Ah, we're still in the first get_signal() from SIGSTOP, correct?
 
-Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+metze
+
