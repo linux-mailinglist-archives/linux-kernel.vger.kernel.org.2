@@ -2,110 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5FF349E4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1129349E58
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhCZA7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:59:07 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14904 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhCZA6i (ORCPT
+        id S230131AbhCZBBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230104AbhCZBBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:58:38 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F63TG0hWkzkfrd;
-        Fri, 26 Mar 2021 08:56:50 +0800 (CST)
-Received: from [10.174.177.160] (10.174.177.160) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 08:58:25 +0800
-Subject: Re: [PATCH 2/4] PCI/AER: Correct function names in the header
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, <ruscur@russell.cc>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210325075144.180030-1-wangxiongfeng2@huawei.com>
- <20210325075144.180030-3-wangxiongfeng2@huawei.com>
- <CAJZ5v0hgsuv8NwuhtK4CrdjPT_VMz1Dp4bDeYtEQs3qeJN_Uhg@mail.gmail.com>
-From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Message-ID: <39a66394-cd74-ebff-7447-cb9fa51d8db4@huawei.com>
-Date:   Fri, 26 Mar 2021 08:58:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 25 Mar 2021 21:01:46 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C34C06174A;
+        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id g15so3783705qkl.4;
+        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j3v8k48IeCcus0saI/jVFEZrQSGBnWbV6wgOy5GPt20=;
+        b=CGkkGBUjxhHpwAeWwidcEzKAr05bxggAaj/rd2vXYCx+WpJwH9fXH0cjssEGmFO8PP
+         oxI4oyD6P06v1EHighDaeeLduczaUgH5Zh+/C9QBslMtBOMyx4Tx89kTqV/uCFNGKeFN
+         MrNzQoLLko1QxBWkTEgomRxeqI0vKUwZcAyBa/5kFMVAnhnWsl1zj4nldf0AZKnnsL6b
+         icF/ud86aOLlPwuxF3or0+cbTZdS627/b4mIQSZLM5td5qiUClL0+Mg9uyBE83a3HzYj
+         6E0UuQkWormOfq+Mhf4U70Hp3vPiLzQhnf80BYPyipk/6r6E7ou/88Ek5SwEgiyT8gM1
+         vW+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j3v8k48IeCcus0saI/jVFEZrQSGBnWbV6wgOy5GPt20=;
+        b=aDaFHyGOVuPynRtPC/3yKZmKuAPWpluoqofra1agI4LfIrsDtuKeWcKQnpVXkRckJh
+         glvvP7BoLcift+ingutWl17MpvQBmxc9ivXQXCvyqk3R7IDiUD6zDAwi8nq2K7ANa2QS
+         JpUmGDOIuiqY3xcit2t3boverlm62dJgys5CMu0XOmntU2p1RlaiKys7kJhtJt4GO/GX
+         qILHcylwAFGbFP461xWWEyKrcIy1vr5tR3lMBJGVutfM8VSRNBM53pyYa2UOeMQE4dqR
+         VxpeM4IhjFMU4YPgf0HxgDURR8PSPLwWEwvmDnamIAmTxX+TS14HhxnOCNL7vfdmvIsU
+         xIIw==
+X-Gm-Message-State: AOAM533GsMnunyFRAzpoGnuM6j0IWxlOSOkCMyC/K0GmO29gWJFmXThL
+        ZjvHI6y29MyffODIC/tDyLhT6jK5UfQhInhw
+X-Google-Smtp-Source: ABdhPJwKZFW/K1uf0/IrICUIF0d9wONxtMf2Xbdbdo2mo7MS2AQU17I1P6LMzF24jym0AJdLk4S4jA==
+X-Received: by 2002:a05:620a:714:: with SMTP id 20mr10904457qkc.192.1616720505274;
+        Thu, 25 Mar 2021 18:01:45 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id o7sm5611975qki.63.2021.03.25.18.01.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 18:01:44 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] btrfs: Fix a typo
+Date:   Fri, 26 Mar 2021 06:29:32 +0530
+Message-Id: <20210326005932.8238-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hgsuv8NwuhtK4CrdjPT_VMz1Dp4bDeYtEQs3qeJN_Uhg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.160]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
 
-On 2021/3/26 1:30, Rafael J. Wysocki wrote:
-> On Thu, Mar 25, 2021 at 8:50 AM Xiongfeng Wang
-> <wangxiongfeng2@huawei.com> wrote:
->>
->> Fixes the following W=1 kernel build warning(s):
->>
->>  drivers/pci/pcie/aer.c:138: warning: expecting prototype for enable_ercr_checking(). Prototype was for enable_ecrc_checking() instead
->>  drivers/pci/pcie/aer.c:162: warning: expecting prototype for disable_ercr_checking(). Prototype was for disable_ecrc_checking() instead
->>  drivers/pci/pcie/aer.c:1450: warning: expecting prototype for aer_service_init(). Prototype was for pcie_aer_init() instead
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-> 
-> The subject is somewhat inaccurate, because you're fixing function
-> names in kerneldoc comments.
-> 
-> If you say "a header", people may think that this is about a header file.
+s/reponsible/responsible/
 
-Thanks a lot ! I will change it in the next version.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ fs/btrfs/scrub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Xiongfeng
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 3d9088eab2fc..14de898967bf 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -2426,7 +2426,7 @@ static void drop_csum_range(struct scrub_ctx *sctx, struct btrfs_ordered_sum *su
+  * the csum into @csum.
+  *
+  * The search source is sctx->csum_list, which is a pre-populated list
+- * storing bytenr ordered csum ranges.  We're reponsible to cleanup any range
++ * storing bytenr ordered csum ranges.  We're responsible to cleanup any range
+  * that is before @logical.
+  *
+  * Return 0 if there is no csum for the range.
+--
+2.26.2
 
-> 
->> ---
->>  drivers/pci/pcie/aer.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
->> index ba22388342d1..ec943cee5ecc 100644
->> --- a/drivers/pci/pcie/aer.c
->> +++ b/drivers/pci/pcie/aer.c
->> @@ -129,7 +129,7 @@ static const char * const ecrc_policy_str[] = {
->>  };
->>
->>  /**
->> - * enable_ercr_checking - enable PCIe ECRC checking for a device
->> + * enable_ecrc_checking - enable PCIe ECRC checking for a device
->>   * @dev: the PCI device
->>   *
->>   * Returns 0 on success, or negative on failure.
->> @@ -153,7 +153,7 @@ static int enable_ecrc_checking(struct pci_dev *dev)
->>  }
->>
->>  /**
->> - * disable_ercr_checking - disables PCIe ECRC checking for a device
->> + * disable_ecrc_checking - disables PCIe ECRC checking for a device
->>   * @dev: the PCI device
->>   *
->>   * Returns 0 on success, or negative on failure.
->> @@ -1442,7 +1442,7 @@ static struct pcie_port_service_driver aerdriver = {
->>  };
->>
->>  /**
->> - * aer_service_init - register AER root service driver
->> + * pcie_aer_init - register AER root service driver
->>   *
->>   * Invoked when AER root service driver is loaded.
->>   */
->> --
->> 2.20.1
->>
-> .
-> 
