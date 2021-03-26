@@ -2,190 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F6034AD29
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:13:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B419D34AD2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:14:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhCZRMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:12:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39002 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230139AbhCZRMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:12:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616778742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S230286AbhCZRNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:13:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26687 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230237AbhCZRN2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 13:13:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616778808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9ZVzcRgPNqukAOdCcm7h3Tg0naSD0/Jbw2asDN5SmnM=;
-        b=g0MhjgYI5r5mACk+BL4KSfRdQ0pKyqnepbPAQudieIt4NGzaf3AeDhJO0pugf2WhXGHr6p
-        3wLIItMU2sivl7wvVCPDivX4aGa9m7cSiIWDB/x/FflWPw+kRb4K0TRshSlYLdGcU+2GnM
-        bJ+RLwg5Oeflf6YuHWqEDa9Zt8u2r2o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF578AD8D;
-        Fri, 26 Mar 2021 17:12:22 +0000 (UTC)
-Message-ID: <3ea650fd67ddea9a4145985e687dcff29134a37c.camel@suse.com>
-Subject: Re: [dm-devel] md/dm-mpath: check whether all pgpaths have same
- uuid in multipath_ctr()
-From:   Martin Wilck <mwilck@suse.com>
-To:     Mike Snitzer <snitzer@redhat.com>,
-        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
-        Benjamin Marzinski <bmarzins@redhat.com>,
-        Hannes Reinecke <hare@suse.com>
-Cc:     lixiaokeng <lixiaokeng@huawei.com>,
-        linfeilong <linfeilong@huawei.com>, linux-scsi@vger.kernel.org,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>, dm-devel@redhat.com,
-        "wubo (T)" <wubo40@huawei.com>, agk@redhat.com
-Date:   Fri, 26 Mar 2021 18:12:21 +0100
-In-Reply-To: <20210325151407.GA17059@redhat.com>
-References: <c8f86351-3036-0945-90d2-2e020d68ccf2@huawei.com>
-         <20210322081155.GE1946905@infradead.org>
-         <20210322142207.GB30698@redhat.com>
-         <cd71d0fa-31d1-5cd8-74a1-8b124724b3b1@huawei.com>
-         <20210325151407.GA17059@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.4 
+        bh=uYX3Pr+wY1U0fuqj3VKN1uau5ruRe+oCNWNth4NlHBE=;
+        b=UoNes85ei6For+SoxPoNwPgdqmh2luxrBpbK0eIhqBuiijmDghwaKJGZyfVet5s0dAooIu
+        /WLVgCGzgEKLOi8ByvoFc94NWA2NieRxlJA+hPryPZVAjvDrLc4OYv+8lwXUIsY/ybv15G
+        ZB5XTKEKO3NQfOX4R86wqdI2fz/Vmz4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-AWVa8_f4O6CJRvF6V8uHAw-1; Fri, 26 Mar 2021 13:13:26 -0400
+X-MC-Unique: AWVa8_f4O6CJRvF6V8uHAw-1
+Received: by mail-ed1-f72.google.com with SMTP id r6so1270368edh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:13:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uYX3Pr+wY1U0fuqj3VKN1uau5ruRe+oCNWNth4NlHBE=;
+        b=FhZWc/DFUtoLwlirdLOqn5Swjqc9s95KWMjdvuNRwsUdqrS/JnMWXz7HPQrbeWRtG+
+         eL1zfoMw/nQvX0KVVt8ZQm4J7+zwMfsFjwyfC53CGa1gRFdgGhTndpB+3WmFegFAYA/V
+         a6/pHXwBlNIYoiGihS5qNUYTCb3uObRn3VKd9DYaLiPCxhpoN603794tYlRPfWQ7gA0k
+         J3sHivqAyYoimgHD8clT3F21HoKMWzIVlkitItufEbqpzA8joj37H35061Hfq3Crvq+C
+         rYW/953FQGVa7iUhW1IPJFp/iQze+zp245Vq7qmUil3ZyRnnn1CDOmrcyahVy8MS5uv8
+         aXjw==
+X-Gm-Message-State: AOAM533eYkwxY4mrP8Mf2gWmgkwhCXqR3zL2162WWv30u3tEaZHb0r+a
+        wXf9uyMxJmyRoJL06iVfkezPXne7t7GS2nqeanZFIqdCfUqHll/A4JKLK1XqeRyi3AHTbT3/m7e
+        svBopa72NQb2cmPrShFK/JGI3
+X-Received: by 2002:a17:906:70d:: with SMTP id y13mr16033508ejb.170.1616778805442;
+        Fri, 26 Mar 2021 10:13:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvHb1xJA6IsY9jNQ4z7xuRprpd/9Dmex3UEJxmIg/KfdFHV+3q3yw2+p68OcaDNorC5iwIDA==
+X-Received: by 2002:a17:906:70d:: with SMTP id y13mr16033490ejb.170.1616778805245;
+        Fri, 26 Mar 2021 10:13:25 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id gn19sm3918920ejc.4.2021.03.26.10.13.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 10:13:24 -0700 (PDT)
+Subject: Re: [PATCH] KVM: clean up the unused argument
+To:     lihaiwei.kernel@gmail.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org,
+        Haiwei Li <lihaiwei@tencent.com>
+References: <20210313051032.4171-1-lihaiwei.kernel@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cc2f81a4-5e71-bdab-5e70-836c813ea91f@redhat.com>
+Date:   Fri, 26 Mar 2021 18:13:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210313051032.4171-1-lihaiwei.kernel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-25 at 11:14 -0400, Mike Snitzer wrote:
-> On Wed, Mar 24 2021 at  9:21pm -0400,
-> Zhiqiang Liu <liuzhiqiang26@huawei.com> wrote:
+On 13/03/21 06:10, lihaiwei.kernel@gmail.com wrote:
+> From: Haiwei Li <lihaiwei@tencent.com>
 > 
-> > 
-> > 
-> > On 2021/3/22 22:22, Mike Snitzer wrote:
-> > > On Mon, Mar 22 2021 at  4:11am -0400,
-> > > Christoph Hellwig <hch@infradead.org> wrote:
-> > > 
-> > > > On Sat, Mar 20, 2021 at 03:19:23PM +0800, Zhiqiang Liu wrote:
-> > > > > From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> > > > > 
-> > > > > When we make IO stress test on multipath device, there will
-> > > > > be a metadata err because of wrong path. In the test, we
-> > > > > concurrent execute 'iscsi device login|logout' and
-> > > > > 'multipath -r' command with IO stress on multipath device.
-> > > > > In some case, systemd-udevd may have not time to process
-> > > > > uevents of iscsi device logout|login, and then 'multipath -r'
-> > > > > command triggers multipathd daemon calls ioctl to load table
-> > > > > with incorrect old device info from systemd-udevd.
-> > > > > Then, one iscsi path may be incorrectly attached to another
-> > > > > multipath which has different uuid. Finally, the metadata err
-> > > > > occurs when umounting filesystem to down write metadata on
-> > > > > the iscsi device which is actually not owned by the multipath
-> > > > > device.
-> > > > > 
-> > > > > So we need to check whether all pgpaths of one multipath have
-> > > > > the same uuid, if not, we should throw a error.
-> > > > > 
-> > > > > Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-> > > > > Signed-off-by: lixiaokeng <lixiaokeng@huawei.com>
-> > > > > Signed-off-by: linfeilong <linfeilong@huawei.com>
-> > > > > Signed-off-by: Wubo <wubo40@huawei.com>
-> > > > > ---
-> > > > >  drivers/md/dm-mpath.c   | 52
-> > > > > +++++++++++++++++++++++++++++++++++++++++
-> > > > >  drivers/scsi/scsi_lib.c |  1 +
-> > > > >  2 files changed, 53 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
-> > > > > index bced42f082b0..f0b995784b53 100644
-> > > > > --- a/drivers/md/dm-mpath.c
-> > > > > +++ b/drivers/md/dm-mpath.c
-> > > > > @@ -24,6 +24,7 @@
-> > > > >  #include <linux/workqueue.h>
-> > > > >  #include <linux/delay.h>
-> > > > >  #include <scsi/scsi_dh.h>
-> > > > > +#include <linux/dm-ioctl.h>
-> > > > >  #include <linux/atomic.h>
-> > > > >  #include <linux/blk-mq.h>
-> > > > > 
-> > > > > @@ -1169,6 +1170,45 @@ static int parse_features(struct
-> > > > > dm_arg_set *as, struct multipath *m)
-> > > > >         return r;
-> > > > >  }
-> > > > > 
-> > > > > +#define SCSI_VPD_LUN_ID_PREFIX_LEN 4
-> > > > > +#define MPATH_UUID_PREFIX_LEN 7
-> > > > > +static int check_pg_uuid(struct priority_group *pg, char
-> > > > > *md_uuid)
-> > > > > +{
-> > > > > +       char pgpath_uuid[DM_UUID_LEN] = {0};
-> > > > > +       struct request_queue *q;
-> > > > > +       struct pgpath *pgpath;
-> > > > > +       struct scsi_device *sdev;
-> > > > > +       ssize_t count;
-> > > > > +       int r = 0;
-> > > > > +
-> > > > > +       list_for_each_entry(pgpath, &pg->pgpaths, list) {
-> > > > > +               q = bdev_get_queue(pgpath->path.dev->bdev);
-> > > > > +               sdev = scsi_device_from_queue(q);
-> > > > 
-> > > > Common dm-multipath code should never poke into scsi
-> > > > internals.  This
-> > > > is something for the device handler to check.  It probably also
-> > > > won't
-> > > > work for all older devices.
-> > > 
-> > > Definitely.
-> > > 
-> > > But that aside, userspace (multipathd) _should_ be able to do
-> > > extra
-> > > validation, _before_ pushing down a new table to the kernel,
-> > > rather than
-> > > forcing the kernel to do it.
-> > 
-> > As your said, it is better to do extra validation in userspace
-> > (multipathd).
-> > However, in some cases, the userspace cannot see the real-time
-> > present devices
-> > info as Martin (committer of multipath-tools) said.
-> > In addition, the kernel can see right device info in the table at
-> > any time,
-> > so the uuid check in kernel can ensure one multipath is composed
-> > with paths mapped to
-> > the same device.
-> > 
-> > Considering the severity of the wrong path in multipath, I think it
-> > worths more
-> > checking.
+> kvm_msr_ignored_check function never uses vcpu argument. Clean up the
+> function and invokers.
 > 
-> As already said: this should be fixable in userspace.  Please work
-> with
-> multipath-tools developers to address this.
+> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+> ---
+>   arch/x86/kvm/x86.c | 9 ++++-----
+>   1 file changed, 4 insertions(+), 5 deletions(-)
 
-I agree this patch won't help, because the kernel doesn't (re)attach
-devices to multipath maps by itself. If multipathd actively adds a
-device to a map, it must check the WWID beforehand, and so it does (and
-has been doing so for years).
+Queued, thanks.
 
-But in general, it's hard to avoid WWID mismatches entirely in user
-space. We have no problem if a device is removed an re-added. But if it
-looks like a device just having been offline or unreachable for some
-time and then reappear, it gets tricky. We might even miss the fact
-that the device was temporarily away. multipathd can't constantly poll
-devices just to detect changes - and what if the sysfs vpd attributes
-stay the same because the kernel didn't even notice?
+Paolo
 
-It would be great if userspace could rely on the kernel to deliver
-events in such cases. I want look into monitoring SCSI UNIT ATTENTION
-events, which multipathd currently doesn't. That might cover many
-situations. But I've been told that in some situations really no event
-arrived in user space, and I'm not sure if that was a fault of the
-storage involved (no UNIT ATTENTION sent) or something else.
-
-Another possibility would be that the kernel used sysfs_notify() for
-the inquiry or vpd_pgXY attributes for SCSI (and similar attirbutes for
-other device types).
-
-Regards
-Martin
-
-
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 012d5df..27e9ee8 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -271,8 +271,7 @@ struct kvm_stats_debugfs_item debugfs_entries[] = {
+>    * When called, it means the previous get/set msr reached an invalid msr.
+>    * Return true if we want to ignore/silent this failed msr access.
+>    */
+> -static bool kvm_msr_ignored_check(struct kvm_vcpu *vcpu, u32 msr,
+> -				  u64 data, bool write)
+> +static bool kvm_msr_ignored_check(u32 msr, u64 data, bool write)
+>   {
+>   	const char *op = write ? "wrmsr" : "rdmsr";
+>   
+> @@ -1447,7 +1446,7 @@ static int do_get_msr_feature(struct kvm_vcpu *vcpu, unsigned index, u64 *data)
+>   	if (r == KVM_MSR_RET_INVALID) {
+>   		/* Unconditionally clear the output for simplicity */
+>   		*data = 0;
+> -		if (kvm_msr_ignored_check(vcpu, index, 0, false))
+> +		if (kvm_msr_ignored_check(index, 0, false))
+>   			r = 0;
+>   	}
+>   
+> @@ -1613,7 +1612,7 @@ static int kvm_set_msr_ignored_check(struct kvm_vcpu *vcpu,
+>   	int ret = __kvm_set_msr(vcpu, index, data, host_initiated);
+>   
+>   	if (ret == KVM_MSR_RET_INVALID)
+> -		if (kvm_msr_ignored_check(vcpu, index, data, true))
+> +		if (kvm_msr_ignored_check(index, data, true))
+>   			ret = 0;
+>   
+>   	return ret;
+> @@ -1651,7 +1650,7 @@ static int kvm_get_msr_ignored_check(struct kvm_vcpu *vcpu,
+>   	if (ret == KVM_MSR_RET_INVALID) {
+>   		/* Unconditionally clear *data for simplicity */
+>   		*data = 0;
+> -		if (kvm_msr_ignored_check(vcpu, index, 0, false))
+> +		if (kvm_msr_ignored_check(index, 0, false))
+>   			ret = 0;
+>   	}
+>   
+> 
 
