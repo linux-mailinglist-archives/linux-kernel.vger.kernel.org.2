@@ -2,125 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746EE34B276
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7A634B279
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:08:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhCZXGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
+        id S230299AbhCZXIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhCZXFf (ORCPT
+        with ESMTP id S230134AbhCZXHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:05:35 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951CCC0613AA;
-        Fri, 26 Mar 2021 16:05:35 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id x189so7435138ybg.5;
-        Fri, 26 Mar 2021 16:05:35 -0700 (PDT)
+        Fri, 26 Mar 2021 19:07:54 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB78C0613B2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 16:07:32 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f10so5580042pgl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 16:07:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OjxxnlWbQ73WMt4RzF0hQ7IUkIuTu6QiZzPUNKIpmKM=;
-        b=aZYp52Hn7x5IhQYlRWTBlte5pL56LuZ1Q44SLuNVegc+TMBnQoh26fryyE+2k9EiXI
-         zPrFZe0Syfs5EmfCf89d31uwYMhv9EQUCibyQsIM/5goiPljSPhv95J42S7QparT9Fo+
-         GyC0+jra/9G3DlQEr4rhY5D02IGXWVgkjnNGlTpEsNoYzcQjw8tBP/IZDxjxjhzjNngI
-         DVCwLhXs6/g8fqACeAJS/bvsoiK3M8IsffbSQd2rtUYZPi3zCFoyW0Td/i+c42MeVB+Y
-         RZAhHaqHbKPOaDZr3r/f4wgkkYj4GLAeOvMz6x9StkShzeU0an6nn2MJoxvauguLZZu3
-         aRFQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=8dMGW3NNPH6KeBSqsN/4K5vPXVK2n7GhMJaRLYoxTdI=;
+        b=pwgm2iRdYyFSmvOtjVPPj2gT1kT1WR47rTSofebDXFr2+VpIUhAOxMDECLSjAzKOe/
+         M/3nVSt2OO+hH6LASlmFnX5p2KsZqEfL7im3rcaVapF3jftZF9VWQolqah+7O1xPwr6N
+         MwxXK+ER5jHsmNLBOydf5wBmWEPleJk9bMyW6LBGrpZuYSqjz+z7LFpKDDtAzLgPGbpq
+         YsxpJtKiF06Mbsu80XIMhCFjs5V6cvdtUQX4tn7TWgdWRe9FVFpAfWiLvSWBzORjqpv6
+         m4uf/UAPZ6Z8N8rf85/eCb/80cb8hK2WzQdL3DFLEeNbq29hV88siFplUORQEF1c09XB
+         t/Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OjxxnlWbQ73WMt4RzF0hQ7IUkIuTu6QiZzPUNKIpmKM=;
-        b=qDswt6GSAMIp2CYlAel90BAeDHnerbQw5uA+56YFXzRywd/+WmgUxm8Ds2yvkN7vpR
-         qKUcjyz0ATV9S0/C3FW+M4hzF4fLjfics0+EOuKygow3PGJS0x7BGq5rh7UpGrxE/k12
-         MGI9m4UCyR6xn+kTueFR1qjC56EFg1pu6idx+LBUT5CszWgYb1LB4jlXpCmrIb97rBf5
-         NNJh2oacc5cHpq7dQv3RwsL+7Q4F8XxZ9B8iWoegwzwi6R2t25s/+tKlg/7y1dKz8fRs
-         99PMWSeoYNURqXQXAw1dKKj5hlaSh0YB4GtQOcDi9BD7cbjaJB+zLpCUbfWE2Ai3HvYs
-         RKbw==
-X-Gm-Message-State: AOAM533k2nAvAsIrCCOtLHm73qLB+8JWNc8G/wEaKucpYbQTy9xYRa0j
-        mJBnNpJwDYWYymqIpuPxkQ1/3xP7Qktean/53No=
-X-Google-Smtp-Source: ABdhPJx3bYT/be/5+/6ifGqCYDCs21gumyMHgC6U6HghH4PzD4QHdHQkPPNOhVLc0Ycm+j8o8RpOdRha0GUkxlhsSjw=
-X-Received: by 2002:a25:9942:: with SMTP id n2mr22100008ybo.230.1616799934946;
- Fri, 26 Mar 2021 16:05:34 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8dMGW3NNPH6KeBSqsN/4K5vPXVK2n7GhMJaRLYoxTdI=;
+        b=NsEbnMMmz9ayNEwwp2nTl3rrUlznhmOqeYCskeDvyBc40jqLl/dxGOhbDJpdKpvKE8
+         2X9K0czJtj9AJuC2wfiCfhbbMsv/dr5jsL063iUAy9INM7l+XOsEgwGoDqnHTwdT9HM7
+         /7m4ZpwWnH8AOtZ+vs5z8zTiIWL4fBGywessxC8nDjrbzF2qu4RKWXFzDgOtDh+3NuBk
+         NaEr4TDguSyyZnRGVxPGsBbgWmULt37sXi/aCcszF4U1nMl/+ScMgPSdxNICmV+lJXVN
+         osznKj/f0YIhZDzoRZYVEgWLbXULq23R2dS0nnSkGJsG7MWTNwNJ7WGCfhGLsQUco2mf
+         nq2Q==
+X-Gm-Message-State: AOAM533ly+CYySO+yRo8me4Lr/Prj0sUKcmzDAWHRlFHYtlRrtaeY9Hu
+        g652lizRi85bWF9Zzgvi05PEzV5oL4qhhg==
+X-Google-Smtp-Source: ABdhPJyMs1TfN0Oz89SmCYz4go0u4i6QTlAdW5Mak2N/gkuqkWc0/joe8Ju/qqG4/my5p7XWfht/aA==
+X-Received: by 2002:a63:485b:: with SMTP id x27mr8478635pgk.0.1616800051305;
+        Fri, 26 Mar 2021 16:07:31 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c085:21cf::141d? ([2620:10d:c090:400::5:4d27])
+        by smtp.gmail.com with ESMTPSA id l25sm10410526pgu.72.2021.03.26.16.07.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 16:07:30 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: remove unsued assignment to pointer io
+To:     Colin King <colin.king@canonical.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210326195251.624139-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <88e590c4-8174-73fe-ebca-de879b21b317@kernel.dk>
+Date:   Fri, 26 Mar 2021 17:07:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-7-revest@chromium.org>
-In-Reply-To: <20210324022211.1718762-7-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Mar 2021 16:05:24 -0700
-Message-ID: <CAEf4Bzb1z2KOHsMTrSP2t3S0iT3UrYMAWsO1_OqD_EYMECsZ-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210326195251.624139-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
->
-> This exercises most of the format specifiers when things go well.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
+On 3/26/21 1:52 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is an assignment to io that is never read after the assignment,
+> the assignment is redundant and can be removed.
 
-Looks good. Please add a no-argument test case as well.
+Thanks, applied.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+-- 
+Jens Axboe
 
->  .../selftests/bpf/prog_tests/snprintf.c       | 65 +++++++++++++++++++
->  .../selftests/bpf/progs/test_snprintf.c       | 59 +++++++++++++++++
->  2 files changed, 124 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
->
-
-[...]
-
-> +
-> +SEC("raw_tp/sys_enter")
-> +int handler(const void *ctx)
-> +{
-> +       /* Convenient values to pretty-print */
-> +       const __u8 ex_ipv4[] = {127, 0, 0, 1};
-> +       const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-> +       const char str1[] = "str1";
-> +       const char longstr[] = "longstr";
-> +       extern const void schedule __ksym;
-
-oh, fancy. I'd move it out of this function into global space, though,
-to make it more apparent. I almost missed that it's a special one.
-
-> +
-> +       /* Integer types */
-> +       num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-> +                               "%d %u %x %li %llu %lX",
-> +                               -8, 9, 150, -424242, 1337, 0xDABBAD00);
-> +       /* IP addresses */
-> +       ip_ret   = BPF_SNPRINTF(ip_out, sizeof(ip_out), "%pi4 %pI6",
-> +                               &ex_ipv4, &ex_ipv6);
-> +       /* Symbol lookup formatting */
-> +       sym_ret  = BPF_SNPRINTF(sym_out,  sizeof(sym_out), "%ps %pS %pB",
-> +                               &schedule, &schedule, &schedule);
-> +       /* Kernel pointers */
-> +       addr_ret = BPF_SNPRINTF(addr_out, sizeof(addr_out), "%pK %px %p",
-> +                               0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55);
-> +       /* Strings embedding */
-> +       str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s %+05s",
-> +                               str1, longstr);
-> +       /* Overflow */
-> +       over_ret = BPF_SNPRINTF(over_out, sizeof(over_out), "%%overflow");
-> +
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.31.0.291.g576ba9dcdaf-goog
->
