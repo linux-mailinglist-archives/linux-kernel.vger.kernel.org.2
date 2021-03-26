@@ -2,131 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1187034AC7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A93F34ACC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230501AbhCZQ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:27:52 -0400
-Received: from mail-bn8nam11on2058.outbound.protection.outlook.com ([40.107.236.58]:64161
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230372AbhCZQ10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:27:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ENGBsCOyg9GaFZENHyGFp276tP4sov0jTcIqp+Bok3YiC4q26/KK/g3MA+lris8++MxV/ahBi6AV/109yFs7i3zY+eqs8u9qtdtTJCSG00c1YYE8a2yfSxrCr50R+OLUSkE1c3QO2DGorlpW9O5ToMX08do3I3/CnYZ4gRiokgQ3Y1/IhiLBm3N6lKuOFN7+T4V6lbfhsxcBx6mRVhCmIBRbKvuDlG3HcElD6IqN5XiT3KY3XhsPfYGBwQSymWdqcRG57rtJjVQYQETRP+BfaOY4lF2mPxCSxrvmFRFy5N3BQH7tZHpBhlt3MoCBpDouV/zChu521nbq7eB/tFxqoA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GUqWEL/gUy0HtRnKLFEWGFRN9dGdj2BLcaFu7dob4H4=;
- b=HjwkHaawmrIL9nqaEOLvbdd0V5pE7YDCEIrGwwAb6m+ZSfbwNcieeqn6B/inI4yJwBL4BqP8qYjS298Qd7khn8lUGd5IMI2ezb8o5v2F12ajlPvGVClzpEzXAbfQzwddsJVBhvb2ihRwtVeLoxq95bxWZph2p7TFwjJtDWmkUqhG8Fdwp62SU+cNUKil+v6LI6MAvH8qk3D6oe7FCFQ6s980ik0BX8rXWKvGCvAt3hbsKrtmTAGFI3ig2r8yz+m0F4//LQLNWxpYqegIEnii2OCFBuUVC2RrZyH0rsffkOU1VTddKXPbep/aLic4fqu8hzQAfThqAw5sanZTT4L2hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=none sp=none pct=100) action=none header.from=amd.com; dkim=none (message
- not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GUqWEL/gUy0HtRnKLFEWGFRN9dGdj2BLcaFu7dob4H4=;
- b=C/C+77GyzFw5Cquy/xw3lSzYrjqCqXTYDg6D6GXffUUHHnU1dFUBTq7tWznPBEoM1qV23dC7+y3q2v/w9gR4xFLc4pef4gDfW27wqzr6hZIqsqdDTagQgXrQg568ehgVDHAjWg3IxzwcmV7kOGn9cl1uGOcB2HOsCI0hWVBihqQ=
-Received: from DS7PR05CA0003.namprd05.prod.outlook.com (2603:10b6:5:3b9::8) by
- CH2PR12MB3989.namprd12.prod.outlook.com (2603:10b6:610:23::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3977.25; Fri, 26 Mar 2021 16:27:24 +0000
-Received: from DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b9:cafe::de) by DS7PR05CA0003.outlook.office365.com
- (2603:10b6:5:3b9::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend
- Transport; Fri, 26 Mar 2021 16:27:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- DM6NAM11FT034.mail.protection.outlook.com (10.13.173.47) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3955.18 via Frontend Transport; Fri, 26 Mar 2021 16:27:23 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 26 Mar
- 2021 11:27:23 -0500
-Received: from LinuxHost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2106.2 via Frontend
- Transport; Fri, 26 Mar 2021 11:27:19 -0500
-From:   Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Alexander.Deucher@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list" <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] ASoC: amd: fix acpi dependency kernel warning
-Date:   Fri, 26 Mar 2021 22:14:31 +0530
-Message-ID: <1616777074-5151-2-git-send-email-Vijendar.Mukunda@amd.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
+        id S230307AbhCZQpQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Mar 2021 12:45:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:58679 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230295AbhCZQox (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 12:44:53 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-213-YTy4IFWENUi9fJgzzqBpKg-2; Fri, 26 Mar 2021 16:44:49 +0000
+X-MC-Unique: YTy4IFWENUi9fJgzzqBpKg-2
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 26 Mar 2021 16:44:48 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Fri, 26 Mar 2021 16:44:48 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>
+CC:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "Luis Chamberlain" <mcgrof@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH 3/4] exec: simplify the compat syscall handling
+Thread-Topic: [PATCH 3/4] exec: simplify the compat syscall handling
+Thread-Index: AQHXIlr1GfPxLRNSxkCVNQRYzf6AcKqWeGLg
+Date:   Fri, 26 Mar 2021 16:44:48 +0000
+Message-ID: <da94e124fad244459fe3431077c7ffa8@AcuMS.aculab.com>
+References: <20210326143831.1550030-1-hch@lst.de>
+ <20210326143831.1550030-4-hch@lst.de>
+ <YF4H58gozyNkoCeO@zeniv-ca.linux.org.uk>
+In-Reply-To: <YF4H58gozyNkoCeO@zeniv-ca.linux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ece15673-90d6-493e-02ac-08d8f074098c
-X-MS-TrafficTypeDiagnostic: CH2PR12MB3989:
-X-Microsoft-Antispam-PRVS: <CH2PR12MB398904346387A64D28500BCF97619@CH2PR12MB3989.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:126;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ieq21zqiS4WaADq6zVwTzEmudHWO1x07Gd2LBp+UF3/WPXe91e5/pyEsNxWe+Q+YQ9ti9imW4zHzlpfLH9g07eMNQFZB8cHlOIT2qBoT1SY0mpieMwk7B5XtcU8MJLdtH9RH9hrVcv6hAgzT4TpGIIsLCM6M5PT7KpzMnC27MUXs0Eiy8q1BDOm1Xw+P9+ew/Q8tPqzEq6wEuBmUF5u5Lc/4G/jFyF2JD+UPHFugpuForGp5p52I2m9GLdPL4wtjYOt60vXkqeOKmOyO4T0Yv52J1X6fui7zNbw9baly21jRbNa5yJBQvIjo/j2eV3ILa8mENDdTEbvD6uLdT29n7Mu4/RYJ4BNrqKyJRgqgu3TJrbd+E45+mdEOPRcO2dr9dj0h9wt1FV8JwISLAtvadpZvtwnEbRUkEcC6g+QETGLS1mVmjEOoT9BCvihNpJqW8FUaqfpQo69q0xkIbZN2ghubhtorIs2eCeJkv2wvQFFVlTuPcJAEiNYlX7tKG4kLqR2f9AadltbNflG7S4A5JDj9xbS9T83FaY5xks5vlIFSi3J5kgbEsLFZkTLbTO54zziJklA/jOVkrZhegH3L8kD4H6fJrVhIcFFX4JQy3JTmUuq9EJtM3VKE1PKWIoTPiB8ZDskyVa/mPeLcxKzGXLRk79wOOft1TUgcJNBPrSWwafk/l9KlPv4ApP5go0Gr
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(346002)(36840700001)(46966006)(47076005)(81166007)(86362001)(336012)(70206006)(36756003)(426003)(2616005)(83380400001)(4744005)(70586007)(8676002)(82310400003)(8936002)(5660300002)(82740400003)(356005)(110136005)(6666004)(7696005)(478600001)(4326008)(316002)(2906002)(54906003)(26005)(36860700001)(186003)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 16:27:23.8949
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ece15673-90d6-493e-02ac-08d8f074098c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT034.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3989
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix ACPI dependency kernel warning produced by powerpc
-allyesconfig.
+From: Al Viro
+> Sent: 26 March 2021 16:12
+> 
+> On Fri, Mar 26, 2021 at 03:38:30PM +0100, Christoph Hellwig wrote:
+> 
+> > +static const char __user *
+> > +get_user_arg_ptr(const char __user *const __user *argv, int nr)
+> >  {
+> > +	if (in_compat_syscall()) {
+> > +		const compat_uptr_t __user *compat_argv =
+> > +			compat_ptr((unsigned long)argv);
+> >  		compat_uptr_t compat;
+> >
+> > +		if (get_user(compat, compat_argv + nr))
+> >  			return ERR_PTR(-EFAULT);
+> >  		return compat_ptr(compat);
+> > +	} else {
+> > +		const char __user *native;
+> >
+> > +		if (get_user(native, argv + nr))
+> > +			return ERR_PTR(-EFAULT);
+> > +		return native;
+> > +	}
+> >  }
+> 
+> Yecchhh....  So you have in_compat_syscall() called again and again, for
+> each argument in the list?  I agree that current version is fucking ugly,
+> but I really hate that approach ;-/
 
-sound/soc/amd/acp-da7219-max98357a.c:684:28: warning:
-'cz_rt5682_card' defined but not used [-Wunused-variable]
+Especially since in_compat_syscall() isn't entirely trivial on x86-64.
+Probably all in the noise for 'exec', but all the bits do add up.
 
-sound/soc/amd/acp-da7219-max98357a.c:671:28: warning: 'cz_card'
-defined but not used [-Wunused-variable]
+You may not want separate get_user() on some architectures either.
+The user_access_begin/end aren't cheap.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
----
- sound/soc/amd/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+OTOH if you call copy_from_user() you get hit by the stupid
+additional costs of 'user copy hardening'.
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 43f5d29..256c192 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -11,7 +11,7 @@ config SND_SOC_AMD_CZ_DA7219MX98357_MACH
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_ADAU7002
- 	select REGULATOR
--	depends on SND_SOC_AMD_ACP && I2C && GPIOLIB
-+	depends on SND_SOC_AMD_ACP && I2C && GPIOLIB && ACPI
- 	help
- 	 This option enables machine driver for DA7219, RT5682 and MAX9835.
- 
--- 
-2.7.4
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
