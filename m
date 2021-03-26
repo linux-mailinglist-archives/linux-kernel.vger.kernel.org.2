@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A4834A94C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD6834AB03
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbhCZOJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230115AbhCZOJS (ORCPT
+        id S230266AbhCZPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:10:27 -0400
+Received: from gateway23.websitewelcome.com ([192.185.49.184]:46916 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230289AbhCZPKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:09:18 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F985C0613AA;
-        Fri, 26 Mar 2021 07:09:18 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so5642812pjb.1;
-        Fri, 26 Mar 2021 07:09:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=h+bhUb5pCuEYh025FUBqhTIp//Tbcm99mGV1EArYpWE=;
-        b=Cd+G377/rdX6Bw06AG5m11TwNuzgPRsnhn0+penE/Q5ZwFX7VD6eQf1frs4G31+CAH
-         aGcCei6VpcaqQrqfoTjQ3sRVJqsQTYubVfYrkgV9fkuLO4tKbAdKQ4mmxZaqy9bUAWFg
-         a0Mita0wtS6ziHMdkrt3EGQd9g1AXg4QKVCxQN7S0DqLqpyNorqUglvSR08D7CuWpVdl
-         E79cEr0A8aTQfxV9NRgseeg288n1PBdz5L3+58dj1LnD1jFQrgdaxCa9+yvS+zFSQNzQ
-         Sx1zQ9iXDw7+Ory+S+3p3KHJ7ixhC5N9r3uN3Nl0Z6E/aNsXjNzeRDdZ9SuOUDHbjk3j
-         N7ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=h+bhUb5pCuEYh025FUBqhTIp//Tbcm99mGV1EArYpWE=;
-        b=EzenEeGXtuAbSKPCODZwX+spOMH2MGhRkmX9eMm4FlkNb1kwQXcWe6rroAp4hSzdwY
-         WnF69ylVvRcHWrANFITXeIxp0MA/HODIT0jvfmU6M6YQ/rBsK4J19cnep7B8yWhPK9Ag
-         5o2QrZnT+RF/TqK8wtMFJZW0DkxvOJu9BZTeXzJbOdquaJRbzCgnms7Nkq5QhOM5mgKN
-         26hrf+jTww2x0XFpCnKll3D0s7YSei8mWyKpys44iLioHGIReO1ZPZrxmtHxZQ4ssZhc
-         3yekTOq9VvmudGZFSb5KUTh1dcLg3ujPwmR50FdfQ6kiXRU7fwmfjdB6++8iMjPTm5or
-         BWtA==
-X-Gm-Message-State: AOAM533s2E10dNQIAC4lu/VjaMzkF8HqUZPlKsnFPknki/YM4syNdKUp
-        +9AZ3PKyjS9IGqljVsoz6b2InfAfSBirAgGl
-X-Google-Smtp-Source: ABdhPJxszqiKf4suKiwiqLf+J7gikvo+wVRhKUs8+Qga0N4et1pAwlcxfGUpK7kIzTFACqwWz1cjeg==
-X-Received: by 2002:a17:902:7792:b029:e6:caba:f836 with SMTP id o18-20020a1709027792b02900e6cabaf836mr15272990pll.41.1616767757973;
-        Fri, 26 Mar 2021 07:09:17 -0700 (PDT)
-Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id mr5sm8923717pjb.53.2021.03.26.07.09.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Mar 2021 07:09:17 -0700 (PDT)
-From:   Carlis <zhangxuezhi3@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     zhangxuezhi1@yulong.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: fbtft: change '16 bit' to '16-bit'
-Date:   Fri, 26 Mar 2021 22:09:30 +0800
-Message-Id: <1616767770-70063-1-git-send-email-zhangxuezhi3@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        Fri, 26 Mar 2021 11:10:20 -0400
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id F27C59635
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:10:17 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Po6LlA1ZFmJLsPo6LlpB1H; Fri, 26 Mar 2021 10:10:17 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=js4fUDxJZ+1hiSlK8YxajbpFu59Q14OV5p4s8fmb3TU=; b=jVuz05LKRIVx3o+AlLL6Z8MH80
+        hLFm9BUeqA2NXF2jjSE8Spj64p6YYMAsEOxVKNEJZhgfWlr2oYAcpra5FdwZBDNVsYQ+r5hCZ0Wgo
+        voCY9zCGp8kxirFh3Yuq7TdyGl4KaUGxZQKsEDOjqQjqoDAfaR78N2MmXKtlJZNEvlgVO763QpJxb
+        gIKY94VV1XYesYeXRlHZbyTQVWUvxYVuNMcAPBRPzJaSWKyce7lUkhtcWAa2qY6WgI8S+Ksg0j+aG
+        rpZcJWL5lM3GYT/+Z244hK2wuXt+m/vrVLFuAErFIBbjKHsIga+kFmqUyN++o8uExWqLy1XLO2++N
+        64vei9BA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33932 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lPo6L-00359B-EE; Fri, 26 Mar 2021 10:10:17 -0500
+Subject: Re: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
+ flexible-array member
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "'Gustavo A. R. Silva'" <gustavoars@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+References: <20210323224858.GA293698@embeddedor>
+ <629154ce566b4c9c9b7f4124b3260fc3@AcuMS.aculab.com>
+ <5331b4e2-eeef-1c27-5efe-bf3986fd6683@embeddedor.com>
+ <1efa90cc6bc24cfb860084e0b888cd4b@AcuMS.aculab.com>
+ <e2e93993-e64b-ce7d-88cf-4c367b747e40@embeddedor.com>
+ <e516146427db45439c02afe57ce06e97@AcuMS.aculab.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <7a93d5da-04da-f283-3882-bc130e38e8eb@embeddedor.com>
+Date:   Fri, 26 Mar 2021 09:10:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <e516146427db45439c02afe57ce06e97@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lPo6L-00359B-EE
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:33932
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 6
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "carlis.zhang_cp" <zhangxuezhi1@yulong.com>
 
-Change '16 bit' to '16-bit' for a same style.
 
-Signed-off-by: carlis.zhang_cp <zhangxuezhi1@yulong.com>
----
- drivers/staging/fbtft/fbtft-bus.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On 3/26/21 03:17, David Laight wrote:
+> From: Gustavo A. R. Silva
+>> Sent: 25 March 2021 21:12
+>>
+>> On 3/25/21 10:29, David Laight wrote:
+>>
+>>>>>
+>>>>> Could you use the simpler:
+>>>>>> struct nfs_fhbase_new {
+>>>>>>          __u8       fb_version;
+>>>>>>          __u8       fb_auth_type;
+>>>>>>          __u8       fb_fsid_type;
+>>>>>>          __u8       fb_fileid_type;
+>>>>>>          union {
+>>>>>>                 __u32      fb_auth[1];
+>>>>>>                 __u32      fb_auth_flex[0];
+>>>>>>          };
+>>>>>> };
+>>>>>
+>>>>> Although I'm not certain flexible arrays are supported
+>>>>> as the last element of a union.
+>>>>
+>>>> Nope; this is not allowed: https://godbolt.org/z/14vd4o8na
+>>>
+>>> Nothing an extra 'struct {__u32 fb_auth_flex[0]; }'; won't solve.
+>>
+>> We don't want to introduce zero-length arrays [1].
+> 
+> I probably meant to write [] not [0] - doesn't affect the idea.
+> 
+> The real problem is that the compiler is likely to start rejecting
+> references to a flex array that go beyond the end of the outer
+> structure.
+> 
+> Thinking back, isn't fb_auth[] at least one entry long?
+> So it could be:
+> 
+> struct nfs_fhbase_new {
+>          __u8       fb_version;
+>          __u8       fb_auth_type;
+>          __u8       fb_fsid_type;
+>          __u8       fb_fileid_type;
+>          __u32      fb_auth[1];
+>          __u32      fb_auth_extra[];
+> };
 
-diff --git a/drivers/staging/fbtft/fbtft-bus.c b/drivers/staging/fbtft/fbtft-bus.c
-index 63c65dd..7040131 100644
---- a/drivers/staging/fbtft/fbtft-bus.c
-+++ b/drivers/staging/fbtft/fbtft-bus.c
-@@ -117,7 +117,7 @@ void fbtft_write_reg8_bus9(struct fbtft_par *par, int len, ...)
-  *
-  *****************************************************************************/
- 
--/* 16 bit pixel over 8-bit databus */
-+/* 16-bit pixel over 8-bit databus */
- int fbtft_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
- {
- 	u16 *vmem16;
-@@ -172,7 +172,7 @@ int fbtft_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
- }
- EXPORT_SYMBOL(fbtft_write_vmem16_bus8);
- 
--/* 16 bit pixel over 9-bit SPI bus: dc + high byte, dc + low byte */
-+/* 16-bit pixel over 9-bit SPI bus: dc + high byte, dc + low byte */
- int fbtft_write_vmem16_bus9(struct fbtft_par *par, size_t offset, size_t len)
- {
- 	u8 *vmem8;
-@@ -228,7 +228,7 @@ int fbtft_write_vmem8_bus8(struct fbtft_par *par, size_t offset, size_t len)
- }
- EXPORT_SYMBOL(fbtft_write_vmem8_bus8);
- 
--/* 16 bit pixel over 16-bit databus */
-+/* 16-bit pixel over 16-bit databus */
- int fbtft_write_vmem16_bus16(struct fbtft_par *par, size_t offset, size_t len)
- {
- 	u16 *vmem16;
--- 
-1.9.1
+I don't think this is a great idea because, contrary to the change I'm
+proposing, in this case memory regions for fb_auth and fb_auth_extra
+don't actually overlap.
 
+--
+Gustavo
