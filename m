@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA69434A674
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E429934A670
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCZL2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:28:23 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:37244 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhCZL1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:27:51 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 07D5F9804A3;
-        Fri, 26 Mar 2021 19:27:47 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] nvdimm/nd-core.h: struct nd_region is declared twice
-Date:   Fri, 26 Mar 2021 19:26:47 +0800
-Message-Id: <20210326112647.903329-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S229904AbhCZL1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:27:17 -0400
+Received: from smtp.gentoo.org ([140.211.166.183]:56738 "EHLO smtp.gentoo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229604AbhCZL04 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 07:26:56 -0400
+Received: by sf.home (Postfix, from userid 1000)
+        id E89FA5A22061; Fri, 26 Mar 2021 11:26:51 +0000 (GMT)
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sergei Trofimovich <slyfox@gentoo.org>
+Subject: [PATCH] mm: page_alloc: ignore init_on_free=1 for page alloc
+Date:   Fri, 26 Mar 2021 11:26:50 +0000
+Message-Id: <20210326112650.307890-1-slyfox@gentoo.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHUtDGUlOQ05KTx1CVkpNSk1MTkNLTUNJTU1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Oio6MCo*CT8RTzwZDx5NViMt
-        GjcaClFVSlVKTUpNTE5DS01DTUtKVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKTE1JNwY+
-X-HM-Tid: 0a786e4a53d4d992kuws07d5f9804a3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct nd_region has been declared at 118th line.
-Remove the duplicate.
+init_on_free=1 does not guarantee that free pages contain only zero bytes.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Some examples:
+1. page_poison=on takes presedence over init_on_alloc=1 / ini_on_free=1
+2. free_pages_prepare() always poisons pages:
+
+       if (want_init_on_free())
+           kernel_init_free_pages(page, 1 << order);
+       kernel_poison_pages(page, 1 << order
+
+I observed use of poisoned pages as the crash on ia64 booted with
+init_on_free=1 init_on_alloc=1 (CONFIG_PAGE_POISONING=y config).
+There pmd page contained 0xaaaaaaaa poison pages and led to early crash.
+
+The change drops the assumption that init_on_free=1 guarantees free
+pages to contain zeros.
+
+Alternative would be to make interaction between runtime poisoning and
+sanitizing options and build-time debug flags like CONFIG_PAGE_POISONING
+more coherent. I took the simpler path.
+
+Tested the fix on rx3600.
+
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: linux-mm@kvack.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 ---
- drivers/nvdimm/nd-core.h | 1 -
- 1 file changed, 1 deletion(-)
+ mm/page_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvdimm/nd-core.h b/drivers/nvdimm/nd-core.h
-index 564faa36a3ca..e54551caf335 100644
---- a/drivers/nvdimm/nd-core.h
-+++ b/drivers/nvdimm/nd-core.h
-@@ -128,7 +128,6 @@ void __nd_device_register(struct device *dev);
- struct nd_label_id;
- char *nd_label_gen_id(struct nd_label_id *label_id, u8 *uuid, u32 flags);
- bool nd_is_uuid_unique(struct device *dev, u8 *uuid);
--struct nd_region;
- struct nvdimm_drvdata;
- struct nd_mapping;
- void nd_mapping_free_labels(struct nd_mapping *nd_mapping);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index cfc72873961d..d57d9b4f7089 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2301,7 +2301,7 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+ 	kernel_unpoison_pages(page, 1 << order);
+ 	set_page_owner(page, order, gfp_flags);
+ 
+-	if (!want_init_on_free() && want_init_on_alloc(gfp_flags))
++	if (want_init_on_alloc(gfp_flags))
+ 		kernel_init_free_pages(page, 1 << order);
+ }
+ 
 -- 
-2.25.1
+2.31.0
 
