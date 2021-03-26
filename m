@@ -2,71 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0F934A42D
+	by mail.lfdr.de (Postfix) with ESMTP id CCB6434A42F
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhCZJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:19:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230298AbhCZJSh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:18:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8575861A1A;
-        Fri, 26 Mar 2021 09:18:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616750317;
-        bh=zJKAr/g2rUrR71fZVEi3E4ZExCWuRXs7g4DYUbFszT4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tbpdaYyBqjvg1TeYt8KSMcxHqarfLy5uC5HZHAl6UGtbLcCi7k4/mbGRRhlsyWy0d
-         milfODmey6IlkxV8qJSC6/QZRtBd8Ixyxqc1iyJyONbwpxuHouBglRFcenmcfpIB1T
-         70pm20XQM0gI9plTHdYHb8jNVStU+lXtxrnqWTIY=
-Date:   Fri, 26 Mar 2021 10:18:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PCI: Allow drivers to claim exclusive access to config
- regions
-Message-ID: <YF2m6pjDNGILB4vu@kroah.com>
-References: <161663543465.1867664.5674061943008380442.stgit@dwillia2-desk3.amr.corp.intel.com>
- <YFwzw3VK0okr+taA@kroah.com>
- <20210325082904.GA2988566@infradead.org>
- <CAPcyv4jfq7pqvdKinYJ2wSLSNEa0fmOgCGWjTCpwhgTTpGyY=Q@mail.gmail.com>
+        id S230474AbhCZJTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:19:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34636 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230370AbhCZJTK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:19:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616750349;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BMoaflg1amNLcZ+wtjMJdk+YpktkqgLDvbrbkoNWY9Y=;
+        b=Esuqooxq+LFOmqPBnQqKBQ9TjVqMB+dTX4I9LtZhSePz3XWdK1BBmvEbVdWZkUb5EBC1fB
+        XONxUX81ZLjQu3MjPbSg9VXyeQfaFXw/XlTKIJ6j8PKFtOPDs7/y+Y2HisHl1k54A+cAl9
+        TuIZFWsbJmGmzMUn4UemC3BZztFh51E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-564-6PS_ZBnrO_i7ptv6pmQGdA-1; Fri, 26 Mar 2021 05:19:06 -0400
+X-MC-Unique: 6PS_ZBnrO_i7ptv6pmQGdA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E76AE84B9A2;
+        Fri, 26 Mar 2021 09:19:05 +0000 (UTC)
+Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 855F51972B;
+        Fri, 26 Mar 2021 09:19:01 +0000 (UTC)
+Subject: Re: [PATCH 3/4] vfio/pci: fix a couple of spelling mistakes
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>, kvm <kvm@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210326083528.1329-1-thunder.leizhen@huawei.com>
+ <20210326083528.1329-4-thunder.leizhen@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <f2d898cb-77ca-5057-1aff-6c20b0861fa3@redhat.com>
+Date:   Fri, 26 Mar 2021 10:18:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4jfq7pqvdKinYJ2wSLSNEa0fmOgCGWjTCpwhgTTpGyY=Q@mail.gmail.com>
+In-Reply-To: <20210326083528.1329-4-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:55:01AM -0700, Dan Williams wrote:
-> On Thu, Mar 25, 2021 at 1:29 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > On Thu, Mar 25, 2021 at 07:54:59AM +0100, Greg Kroah-Hartman wrote:
-> > > On Wed, Mar 24, 2021 at 06:23:54PM -0700, Dan Williams wrote:
-> > > > The PCIE Data Object Exchange (DOE) mailbox is a protocol run over
-> > > > configuration cycles. It assumes one initiator at a time is
-> > > > reading/writing the data registers.
-> > >
-> > > That sounds like a horrible protocol for a multi-processor system.
-> > > Where is it described and who can we go complain to for creating such a
-> > > mess?
-> >
-> > Indeed.  Dan, is there a way to stilk kill this protocol off before it
-> > leaks into the wild?
+
+
+On 3/26/21 9:35 AM, Zhen Lei wrote:
+> There are several spelling mistakes, as follows:
+> permision ==> permission
+> thru ==> through
+> presense ==> presence
 > 
-> Unfortunately I think that opportunity was more than a year ago, and
-> there's been a proliferation of derivative protocols building on it
-> since.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
 
-Doesn't mean it can't be changed, right?
+Eric
+> ---
+>  drivers/vfio/pci/vfio_pci.c         | 2 +-
+>  drivers/vfio/pci/vfio_pci_config.c  | 2 +-
+>  drivers/vfio/pci/vfio_pci_nvlink2.c | 4 ++--
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+> index 65e7e6b44578c29..d2ab8b5bc8a86fe 100644
+> --- a/drivers/vfio/pci/vfio_pci.c
+> +++ b/drivers/vfio/pci/vfio_pci.c
+> @@ -2409,7 +2409,7 @@ static int __init vfio_pci_init(void)
+>  {
+>  	int ret;
+>  
+> -	/* Allocate shared config space permision data used by all devices */
+> +	/* Allocate shared config space permission data used by all devices */
+>  	ret = vfio_pci_init_perm_bits();
+>  	if (ret)
+>  		return ret;
+> diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
+> index a402adee8a21558..d57f037f65b85d4 100644
+> --- a/drivers/vfio/pci/vfio_pci_config.c
+> +++ b/drivers/vfio/pci/vfio_pci_config.c
+> @@ -101,7 +101,7 @@
+>  /*
+>   * Read/Write Permission Bits - one bit for each bit in capability
+>   * Any field can be read if it exists, but what is read depends on
+> - * whether the field is 'virtualized', or just pass thru to the
+> + * whether the field is 'virtualized', or just pass through to the
+>   * hardware.  Any virtualized field is also virtualized for writes.
+>   * Writes are only permitted if they have a 1 bit here.
+>   */
+> diff --git a/drivers/vfio/pci/vfio_pci_nvlink2.c b/drivers/vfio/pci/vfio_pci_nvlink2.c
+> index 9adcf6a8f888575..f276624fec79f68 100644
+> --- a/drivers/vfio/pci/vfio_pci_nvlink2.c
+> +++ b/drivers/vfio/pci/vfio_pci_nvlink2.c
+> @@ -219,7 +219,7 @@ int vfio_pci_nvdia_v100_nvlink2_init(struct vfio_pci_device *vdev)
+>  	unsigned long events = VFIO_GROUP_NOTIFY_SET_KVM;
+>  
+>  	/*
+> -	 * PCI config space does not tell us about NVLink presense but
+> +	 * PCI config space does not tell us about NVLink presence but
+>  	 * platform does, use this.
+>  	 */
+>  	npu_dev = pnv_pci_get_npu_dev(vdev->pdev, 0);
+> @@ -402,7 +402,7 @@ int vfio_pci_ibm_npu2_init(struct vfio_pci_device *vdev)
+>  	u32 link_speed = 0xff;
+>  
+>  	/*
+> -	 * PCI config space does not tell us about NVLink presense but
+> +	 * PCI config space does not tell us about NVLink presence but
+>  	 * platform does, use this.
+>  	 */
+>  	if (!pnv_pci_get_gpu_dev(vdev->pdev))
+> 
 
-Are there any actual devices that require this?
-
-thanks,
-
-greg k-h
