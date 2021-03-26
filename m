@@ -2,111 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F341734AF40
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1C434AF41
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhCZTUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhCZTT2 (ORCPT
+        id S230454AbhCZTUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:20:03 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:60040 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230238AbhCZTTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:19:28 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7A4C0613AA;
-        Fri, 26 Mar 2021 12:19:28 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id dm8so7553466edb.2;
-        Fri, 26 Mar 2021 12:19:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=M/9AAleVmFAMrayfO8gflHwlnHawghg4IbNPiAHidSA=;
-        b=BwBmdNMkYjWREZoEW6Qw+pyNmX+4hg+o4WGSPNdGSW0EzAqFPTHSTsEsjj+uuTuzoZ
-         5GWuW3AMy3aGoyG+U1a+mB0O1ZSyw7GI3HDnng82EBqU73XwuYOqadvIiPZBKwkbjoaA
-         7BLqBrRFOGP4VxorPBbLEy3xdhHIM8wNz+BX8oEumvLEYmgK1MlzLAuwHSGi7wbIlG2i
-         2Od8/TXTQKRJ1Naazh+NjXkNBzog88Y7LyYyBif3ZOfFidCd0YfdSow5cxYaxcfLTkhF
-         Q3K/KarVpbSVzhqtC9aZd/28a/xGLfBjgGvjfLGl768qDvf6gB2/p4oL6VQlvuEdpcKd
-         xfjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=M/9AAleVmFAMrayfO8gflHwlnHawghg4IbNPiAHidSA=;
-        b=Ll3TIIyb3+cTyav5N+duey019cLReQSZgDRfCrRUCxlnXbiWgSstwEvZbC5MqyD+z8
-         tsjNeQ40N5RiIjeU6m1Wvs38hTiHgW7lYS1j7gfSgXzka4otkWe23j5tq3p9ycq8VO+/
-         VE19FqtSUM9LN2m4yHvUYniJLNnkFHN5n/e5ch68VygZNbFtP1N8x6Kq65uzK0wZiiv4
-         2JHmY2D41nscMhBDjMp9vIyOhum8jCmWuMl3ua48BUJ5ZxTBpRPF10PCgm/OzU5qkJ+g
-         Y0duvPmPY2zI0z+qisBzXjguS8iL2WaJJlDpuAHlDnleH2eQDUkU59LgVOnu/N8TaKwb
-         F5jg==
-X-Gm-Message-State: AOAM532GdcVjVFbNmJeYUvpdXKrNwHJ/xJbkjgkj56QjJ+MWB4d0lCC8
-        04KtsG67ghUOutl6hvpT8Q7lWWaxYYk=
-X-Google-Smtp-Source: ABdhPJy4mPNuOgXTUv0iVfS8Og7f8FyOegkBueCSwmhMt50Ur/q5IXlXsgTOR5ipG8s3Cw+/IbYTWg==
-X-Received: by 2002:aa7:da04:: with SMTP id r4mr16990098eds.343.1616786366594;
-        Fri, 26 Mar 2021 12:19:26 -0700 (PDT)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id c19sm4739373edu.20.2021.03.26.12.19.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 12:19:26 -0700 (PDT)
-From:   Jim Quinlan <jim2101024@gmail.com>
-To:     linux-pci@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
-        james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jim Quinlan <jquinlan@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 6/6] PCI: brcmstb: Check return value of clk_prepare_enable()
-Date:   Fri, 26 Mar 2021 15:19:04 -0400
-Message-Id: <20210326191906.43567-7-jim2101024@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210326191906.43567-1-jim2101024@gmail.com>
-References: <20210326191906.43567-1-jim2101024@gmail.com>
+        Fri, 26 Mar 2021 15:19:45 -0400
+Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1lPrzZ-0004nJ-5I; Fri, 26 Mar 2021 15:19:33 -0400
+Date:   Fri, 26 Mar 2021 15:19:32 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: [PATCH v3] sched/fair: bring back select_idle_smt, but differently
+Message-ID: <20210326151932.2c187840@imladris.surriel.com>
+In-Reply-To: <20210322110306.GE3697@techsingularity.net>
+References: <20210321150358.71ef52b1@imladris.surriel.com>
+        <20210322110306.GE3697@techsingularity.net>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The check was missing on PCIe resume.
+On Mon, 22 Mar 2021 11:03:06 +0000
+Mel Gorman <mgorman@techsingularity.net> wrote:
 
-Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Fixes: 8195b7417018 ("PCI: brcmstb: Add suspend and resume pm_ops")
+
+> Second, select_idle_smt() does not use the cpus mask so consider moving
+> the cpus initialisation after select_idle_smt() has been called.
+> Specifically this initialisation
+> 
+> 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> 
+> Alternatively, clear the bits in the SMT sibling scan to avoid checking
+> the siblings twice. It's a tradeoff because initialising and clearing
+> bits is not free and the cost is wasted if a sibling is free.
+
+I tried a number of different variations on moving the CPU mask
+initialization, and clearing CPUs from the mask, and failed to
+get any clear results from those in testing, even in workloads
+with lots of context switches.
+
+Below is a simple version that seems to perform identically to
+more complicated versions :)
+
+---8<---
+sched,fair: bring back select_idle_smt, but differently
+
+Mel Gorman did some nice work in 9fe1f127b913
+("sched/fair: Merge select_idle_core/cpu()"), resulting in the kernel
+being more efficient at finding an idle CPU, and in tasks spending less
+time waiting to be run, both according to the schedstats run_delay
+numbers, and according to measured application latencies. Yay.
+
+The flip side of this is that we see more task migrations (about
+30% more), higher cache misses, higher memory bandwidth utilization,
+and higher CPU use, for the same number of requests/second.
+
+This is most pronounced on a memcache type workload, which saw
+a consistent 1-3% increase in total CPU use on the system, due
+to those increased task migrations leading to higher L2 cache
+miss numbers, and higher memory utilization. The exclusive L3
+cache on Skylake does us no favors there.
+
+On our web serving workload, that effect is usually negligible.
+
+It appears that the increased number of CPU migrations is generally
+a good thing, since it leads to lower cpu_delay numbers, reflecting
+the fact that tasks get to run faster. However, the reduced locality
+and the corresponding increase in L2 cache misses hurts a little.
+
+The patch below appears to fix the regression, while keeping the
+benefit of the lower cpu_delay numbers, by reintroducing select_idle_smt
+with a twist: when a socket has no idle cores, check to see if the
+sibling of "prev" is idle, before searching all the other CPUs.
+
+This fixes both the occasional 9% regression on the web serving
+workload, and the continuous 2% CPU use regression on the memcache
+type workload.
+
+With Mel's patches and this patch together, task migrations are still
+high, but L2 cache misses, memory bandwidth, and CPU time used are back
+down to what they were before. The p95 and p99 response times for the
+memcache type application improve by about 10% over what they were
+before Mel's patches got merged.
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
 ---
- drivers/pci/controller/pcie-brcmstb.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ kernel/sched/fair.c | 68 ++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 52 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 2d9288399014..f6d9d785b301 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -1396,7 +1396,9 @@ static int brcm_pcie_resume(struct device *dev)
- 	int ret;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 794c2cb945f8..69680158963f 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6098,6 +6098,28 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+ 	return -1;
+ }
  
- 	base = pcie->base;
--	clk_prepare_enable(pcie->clk);
-+	ret = clk_prepare_enable(pcie->clk);
-+	if (ret)
-+		return ret;
++/*
++ * Scan the local SMT mask for idle CPUs.
++ */
++static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int
++target)
++{
++	int cpu;
++
++	if (!static_branch_likely(&sched_smt_present))
++		return -1;
++
++	for_each_cpu(cpu, cpu_smt_mask(target)) {
++		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
++		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
++			continue;
++		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
++			return cpu;
++	}
++
++	return -1;
++}
++
+ #else /* CONFIG_SCHED_SMT */
  
- 	ret = brcm_set_regulators(pcie, TURN_ON);
- 	if (ret)
-@@ -1535,7 +1537,9 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+ static inline void set_idle_cores(int cpu, int val)
+@@ -6114,6 +6136,11 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+ 	return __select_idle_cpu(core);
+ }
  
- 	ret = brcm_pcie_get_regulators(pcie);
- 	if (ret) {
--		dev_err(pcie->dev, "failed to get regulators (err=%d)\n", ret);
-+		pcie->num_supplies = 0;
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(pcie->dev, "failed to get regulators (err=%d)\n", ret);
- 		goto fail;
++static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
++{
++	return -1;
++}
++
+ #endif /* CONFIG_SCHED_SMT */
+ 
+ /*
+@@ -6121,7 +6148,7 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
+  * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
+  * average idle time for this rq (as found in rq->avg_idle).
+  */
+-static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
++static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int prev, int target)
+ {
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+ 	int i, cpu, idle_cpu = -1, nr = INT_MAX;
+@@ -6136,23 +6163,32 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 
+ 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+ 
+-	if (sched_feat(SIS_PROP) && !smt) {
+-		u64 avg_cost, avg_idle, span_avg;
++	if (!smt) {
++		if (cpus_share_cache(prev, target)) {
++			/* No idle core. Check if prev has an idle sibling. */
++			i = select_idle_smt(p, sd, prev);
++			if ((unsigned int)i < nr_cpumask_bits)
++				return i;
++		}
+ 
+-		/*
+-		 * Due to large variance we need a large fuzz factor;
+-		 * hackbench in particularly is sensitive here.
+-		 */
+-		avg_idle = this_rq()->avg_idle / 512;
+-		avg_cost = this_sd->avg_scan_cost + 1;
++		if (sched_feat(SIS_PROP)) {
++			u64 avg_cost, avg_idle, span_avg;
+ 
+-		span_avg = sd->span_weight * avg_idle;
+-		if (span_avg > 4*avg_cost)
+-			nr = div_u64(span_avg, avg_cost);
+-		else
+-			nr = 4;
++			/*
++			 * Due to large variance we need a large fuzz factor;
++			 * hackbench in particularly is sensitive here.
++			 */
++			avg_idle = this_rq()->avg_idle / 512;
++			avg_cost = this_sd->avg_scan_cost + 1;
+ 
+-		time = cpu_clock(this);
++			span_avg = sd->span_weight * avg_idle;
++			if (span_avg > 4*avg_cost)
++				nr = div_u64(span_avg, avg_cost);
++			else
++				nr = 4;
++
++			time = cpu_clock(this);
++		}
  	}
  
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+@@ -6307,7 +6343,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if (!sd)
+ 		return target;
+ 
+-	i = select_idle_cpu(p, sd, target);
++	i = select_idle_cpu(p, sd, prev, target);
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
+ 
 -- 
-2.17.1
+2.25.4
+
 
