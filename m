@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B96934A05D
+	by mail.lfdr.de (Postfix) with ESMTP id BE7AD34A05E
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbhCZDve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 23:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S231317AbhCZDvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 23:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhCZDvC (ORCPT
+        with ESMTP id S231201AbhCZDvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 23:51:02 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFC0C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 20:51:02 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id q5so3971790pfh.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 20:51:02 -0700 (PDT)
+        Thu, 25 Mar 2021 23:51:03 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C53C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 20:51:03 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id ay2so265119plb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 20:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TWyZ+Ft6razDfb3Op1Vk7RZO248xZM/96lMO8G6VmsA=;
-        b=AZ7AevXRvToF7DgH4A+vXPV3b8nq/Ia/x96AvsA1DDSDyGo/9x7h6mKFlNWIhv883F
-         zMpSUiR+WhRfATap6ul1qm2JJfE23oNfu2kMEToEB80Zs0R7rjh4AuLwhtt8E3H4iHjP
-         MVZMr8BgQ/SXT1Irb0/nmBkp+npE63PdjqN+s=
+        bh=ArvyZNkA4X6QBbWp3l8eai7BeYdl1nKDCZ6CEoX3V4A=;
+        b=bmRm8dTvuD0l9u/aEwYbtqAJhwHE5Nrp1VFn2hGsl1ZMJh/h9JTF9SVDk3/624tWyV
+         zmQHPUHwGujTAsiG5vvCrSVHeMsAw8ps0GjABEPet4Jd9SYx3S8o5WEboYje9h5FCEd8
+         Brzzf/vfP0NJlGDQlx2omqdDXqiKRKhwaKgMY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TWyZ+Ft6razDfb3Op1Vk7RZO248xZM/96lMO8G6VmsA=;
-        b=fXwwdq/rTarFasM2l8yf17rczieeViRlOu3GqLsNNoNSZsXuE7gEwIf28+rvXtle47
-         M9aNhPkAvYHzxVaYeddAU5HUDqn5y9fLudpQmmFz2ma7zprPERZRNB1aDLRC4LWaUk10
-         x+bXdqWEbwo1IgMClhPs4QOz9ybpkPo0F3OSK87Q6vvxVu+JXTVl5GXsIploYpbtTx3/
-         owibpXcbcDdT2SbibgC8O7NrjLZRnpkufyZFMyP+o4zzrh/dRPF+ZLbKM0EEo76uQnOx
-         5IKpK03wDfkYtlzgR0YUDYvYNJShWqmA3ZYFYRusQYbmck98pr8Uz0opzn9mgPcry0fu
-         oL4w==
-X-Gm-Message-State: AOAM531FlX84m+YVZebLnrw/VfxqF/DVjj8xtuTlXeWrpG/KJdsbrSyx
-        HPAgNu+IVkujwKfjeJa+5mYGTw==
-X-Google-Smtp-Source: ABdhPJy8Hq/NX1Ri+Gq9lfbiCMaFVOQzWx6oB1IYW5v+fcvCtKGWsn/iZrqI/tSR8dkjmYXF0RKhkw==
-X-Received: by 2002:aa7:9797:0:b029:1f8:1a14:b055 with SMTP id o23-20020aa797970000b02901f81a14b055mr10984265pfp.57.1616730661796;
-        Thu, 25 Mar 2021 20:51:01 -0700 (PDT)
+        bh=ArvyZNkA4X6QBbWp3l8eai7BeYdl1nKDCZ6CEoX3V4A=;
+        b=f/KANz6yq3WmYO/hTflX1Jy4zB/uspXCf4Vcr40i0dPKR2QW4QH4hRg6Ld+ceEqN9g
+         N2E4XKm9eb2l5yxqhbXkpBu30+bL1LWdUJy8vRANSQtlPDM3g4y8WWkZ41uek/cPt26c
+         1P+Xfz8E7Gl7PpkbcZxIfTi9FzDqFK/KQxzZQZsTgfqxMNxIjL60/CRSC4anltn0QIZ7
+         P6sY3fryq+lIp8vqv/7kWH+1rDR4JQ7LyY0S4bzNPUTNqfjJOaPRXXS5CO0/Yl9cChMq
+         CgDbjoH+BVXnx6WqSthL16XRbmcBq8CICQo2lyOCQHzD90P/w0IMLQHvjci4Bk7BtvXp
+         Fdxw==
+X-Gm-Message-State: AOAM530mrgpWm2KaOj552zenVO2tkfKBwoQjgm0Y+oMxeaZ5XcszoE2q
+        TSzIsUSnrSXo50yhBxN7EvFGpTtu4lYCkg==
+X-Google-Smtp-Source: ABdhPJwdzbmSmxPfI43S/eXyTXHe760CuisElnd02YTUP+H3yscb90sNK9xT5dPTJAErCxTNSSC3eA==
+X-Received: by 2002:a17:90a:9103:: with SMTP id k3mr12204593pjo.157.1616730662681;
+        Thu, 25 Mar 2021 20:51:02 -0700 (PDT)
 Received: from jwerner-p920.mtv.corp.google.com ([2620:15c:202:201:d0b:23e:bf14:3ec9])
         by smtp.gmail.com with ESMTPSA id v11sm7196345pgg.68.2021.03.25.20.51.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 20:51:01 -0700 (PDT)
+        Thu, 25 Mar 2021 20:51:02 -0700 (PDT)
 From:   Julius Werner <jwerner@chromium.org>
 To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Cc:     Ivo Sieben <meltedpianoman@gmail.com>,
-        linux-kernel@vger.kernel.org, Julius Werner <jwerner@chromium.org>
-Subject: [PATCH 1/3] checkpatch: ctx_statement_block: Fix preprocessor guard tracking
-Date:   Thu, 25 Mar 2021 20:50:33 -0700
-Message-Id: <20210326035035.3057800-2-jwerner@chromium.org>
+Cc:     Ivo Sieben <meltedpianoman@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] Suspicious indentation detection after conditional statement
+Date:   Thu, 25 Mar 2021 20:50:34 -0700
+Message-Id: <20210326035035.3057800-3-jwerner@chromium.org>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 In-Reply-To: <20210326035035.3057800-1-jwerner@chromium.org>
 References: <20210326035035.3057800-1-jwerner@chromium.org>
@@ -61,52 +60,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The preprocessor guard tracking in ctx_statement_block() is (and seems
-to have always been) subtly broken whenever tracking over an #else: the
-code is supposed to restore state from the current top of the stack
-(like and #endif just without removing it). However, it indexes the
-stack at [$#stack - 1]. In Perl, $# does not give you the length of an
-array, it gives you the highest valid index. Therefore, the correct
-index should just be [$#stack].
+From: Ivo Sieben <meltedpianoman@gmail.com>
 
-The preprocessor guard tracking also gets confused when
-ctx_statement_block() was called on a line that is already inside a
-preprocessor guard, and steps out of it within the same statement. This
-happens commonly with constructs like this:
+Raise a SUSPICIOUS_CODE_INDENT warning when unexpected indentation is found
+after a conditional statement. This can be used to find missing braces or
+wrong indentation in/after a conditional statement.
 
- #if CONFIG_XXX
-   for (a = first_a(); !a_finished(); a = next_a()) {
- #else
-   for (b = first_b(); !b_finished(); b = next_b()) {
- #endif
-     ... loop body ...
+For example the following error is caught;
 
-The best course of action in this case is to not try to restore any
-previous state (which we don't have) at all, so we should just keep our
-current state if $#stack is already 0.
+	if (foo)
+		bar();
+		return;
 
-Signed-off-by: Julius Werner <jwerner@chromium.org>
+Which can be either intended by the programmer as:
+
+	if (foo)
+		bar();
+	return;
+
+or
+	if (foo) {
+		bar();
+		return;
+	}
+
+Signed-off-by: Ivo Sieben <meltedpianoman@gmail.com>
 ---
- scripts/checkpatch.pl | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ scripts/checkpatch.pl | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
 diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index df8b23dc1eb0af..ffccbd2033e579 100755
+index ffccbd2033e579..c1dfc0107be41d 100755
 --- a/scripts/checkpatch.pl
 +++ b/scripts/checkpatch.pl
-@@ -1572,9 +1572,9 @@ sub ctx_statement_block {
- 		# Handle nested #if/#else.
- 		if ($remainder =~ /^#\s*(?:ifndef|ifdef|if)\s/) {
- 			push(@stack, [ $type, $level ]);
--		} elsif ($remainder =~ /^#\s*(?:else|elif)\b/) {
--			($type, $level) = @{$stack[$#stack - 1]};
--		} elsif ($remainder =~ /^#\s*endif\b/) {
-+		} elsif ($remainder =~ /^#\s*(?:else|elif)\b/ && $#stack > 0) {
-+			($type, $level) = @{$stack[$#stack]};
-+		} elsif ($remainder =~ /^#\s*endif\b/ && $#stack > 0) {
- 			($type, $level) = @{pop(@stack)};
+@@ -4185,6 +4185,47 @@ sub process {
+ 				WARN("SUSPECT_CODE_INDENT",
+ 				     "suspect code indent for conditional statements ($indent, $sindent)\n" . $herecurr . "$stat_real\n");
+ 			}
++
++# Also check if the next statement after the previous condition has the same indent
++			my ($stat_next, undef, $line_nr_next_next) =
++				ctx_statement_block($line_nr_next, $remain_next, $off_next);
++			my $s_next = $stat_next;
++
++			# Remove line prefixes
++			$s_next =~ s/\n./\n/gs;
++
++			# Remove any comments
++			$s_next =~ s/$;//g;
++
++			# Skip this check for in case next statement starts with 'else'
++			if ($s_next !~ /\s*\belse\b/) {
++
++				# Remove while that belongs to a do {} while
++				if ($stat =~ /\bdo\b/) {
++					$s_next =~ s/^.*\bwhile\b\s*($balanced_parens)\s*?//;
++				}
++
++				# Remove blank lines
++				$s_next =~ s/\s*\\?\n//g;
++
++				# Get the real next lines
++				my $next_nof_lines = $line_nr_next_next - $line_nr_next;
++				my $stat_next_real = raw_line($line_nr_next, $next_nof_lines);
++				if (!defined($stat_next_real)) {
++					$stat_next_real = "";
++				} elsif ($next_nof_lines > 1) {
++					$stat_next_real = "[...]\n$stat_next_real";
++				}
++				my (undef, $nindent) = line_stats('+' . $s_next);
++
++				#print "stat_next<$stat_next> stat<$stat> indent<$indent> nindent<$nindent> s_next<$s_next> stat_next_real<$stat_next_real>\n";
++
++				if ($nindent > $indent) {
++					WARN("SUSPICIOUS_CODE_INDENT",
++					     "suspicious code indentation after conditional statements\n" .
++					     $herecurr . "$stat_real\n$stat_next_real\n");
++				}
++			}
  		}
  
+ 		# Track the 'values' across context and added lines.
 -- 
 2.29.2
 
