@@ -2,127 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7534834A542
+	by mail.lfdr.de (Postfix) with ESMTP id C2FCF34A543
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhCZKE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:04:57 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:35864 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhCZKEa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:04:30 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QA4H1q193995;
-        Fri, 26 Mar 2021 10:04:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=AbVS8030l4bUMoP527cWYL6ykbMlzByqBuzDvNNH9ek=;
- b=SXtPGgnfrOHzfZR1XaYRfbnijFJzc1HtN/Qp1nc9B1Q6x7kHyh0nbLNcR/lQKYYH1Y2b
- dDE/1oFs83N+r2Bgfu9C18DkjHVO01eQjxF1sbH7+k/o+MaO/HsPkurlXofewPHUU4lB
- s0eSbOTCkcjZZjol41dWW87MXgyqi/CB2mSOQYNRJG+3x/lE+xKWfOMk0P+BR0/wOuQ8
- aU2I4gYiQ3yhuMbzKnR4IqpS9201KZPEmcATp83Mq+x6P/CKPgN2LXe6c4wy/saFVs0b
- 0xSJkgPA9Gm0EBJKTAk7lcvznUZm3W71n0l+5msKr1wu93nj0Xj8LyFNM2jn8CDOlYVq eQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 37h13e9hru-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 10:04:18 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QA0OOV029387;
-        Fri, 26 Mar 2021 10:04:16 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 37h14h041c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 10:04:16 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12QA4FZV012657;
-        Fri, 26 Mar 2021 10:04:15 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 26 Mar 2021 10:04:15 +0000
-Date:   Fri, 26 Mar 2021 13:04:08 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/15] staging: rtl8723bs: put parentheses on macros with
- complex values in include/basic_types.h
-Message-ID: <20210326100408.GE1717@kadam>
-References: <cover.1616748885.git.fabioaiuto83@gmail.com>
- <2c7c198ccef194b06921bc476eda7d5102ab70dc.1616748885.git.fabioaiuto83@gmail.com>
+        id S229993AbhCZKE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 06:04:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229961AbhCZKEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 06:04:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 948A061A42;
+        Fri, 26 Mar 2021 10:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616753073;
+        bh=TVjO1AgSnLF3zZLd3P64jcFvlXrVSK+z3MXa7jHaaAc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YU+Y18IR4hpvzDGRoGZC78qc8DlcNDZaFKKaqPjUrX47Y7e5ie4Udn4g1hfz9HJpj
+         gh722YJGt1fpF7VUCp275WTLTP2U91km927sH72u2vcErNTvGXR0IHtCCuPwyY/1MD
+         v8wo0SbdNRqXq9rJSdHc9l+VuKsaEeKpz64ecApTXkJxSPN7q32pb60QwyQsb4Wn7O
+         4zBUckFBQz5lDLIsstusVjt60FdxLRfdzE6qZT1Nj75QKkt9yM4XBkwLYxkQ/j/xm+
+         At2b20h/CAtRIG0R7tLeJnohILB/OzllacIod4qxrSCiujDKuL3MZ30+JwnsRp2gIw
+         xAYNtEdUeSrng==
+Date:   Fri, 26 Mar 2021 11:04:28 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v2 04/11] PCI: dwc: pcie-kirin: add support for Kirin
+ 970 PCIe controller
+Message-ID: <20210326110428.51a0abc9@coco.lan>
+In-Reply-To: <20210326085102.GA25371@work>
+References: <cover.1612335031.git.mchehab+huawei@kernel.org>
+        <4c9d6581478aa966698758c0420933f5defab4dd.1612335031.git.mchehab+huawei@kernel.org>
+        <CAL_JsqK7_hAw4aacHyiqJWE6zSWiMez5695+deaCSHfeWuX-XA@mail.gmail.com>
+        <20210326093936.02ba3a03@coco.lan>
+        <20210326085102.GA25371@work>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c7c198ccef194b06921bc476eda7d5102ab70dc.1616748885.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103260072
-X-Proofpoint-ORIG-GUID: sOqb6D46lR5mAG9HgYk3x5sQVDD7SQFg
-X-Proofpoint-GUID: sOqb6D46lR5mAG9HgYk3x5sQVDD7SQFg
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 lowpriorityscore=0
- bulkscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
- impostorscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103260073
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 10:09:11AM +0100, Fabio Aiuto wrote:
-> fix the following checkpatch warnings:
-> 
-> ERROR: Macros with complex values should be enclosed in parentheses
-> 154: FILE: drivers/staging/rtl8723bs/include/basic_types.h:154:
-> +#define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> --
-> ERROR: Macros with multiple statements should be enclosed in
-> a do - while loop
-> 161: FILE: drivers/staging/rtl8723bs/include/basic_types.h:161:
-> +#define SET_BITS_TO_LE_2BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> --
-> ERROR: Macros with complex values should be enclosed in parentheses
-> 168: FILE: drivers/staging/rtl8723bs/include/basic_types.h:168:
-> +#define SET_BITS_TO_LE_1BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> 
-> parentheses solution preferred for all fixes and made macros more
-> readables
-> 
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> ---
->  .../staging/rtl8723bs/include/basic_types.h   | 30 +++++++++++--------
->  1 file changed, 18 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/include/basic_types.h b/drivers/staging/rtl8723bs/include/basic_types.h
-> index 76304086107a..5054c2e3384c 100644
-> --- a/drivers/staging/rtl8723bs/include/basic_types.h
-> +++ b/drivers/staging/rtl8723bs/include/basic_types.h
-> @@ -152,24 +152,30 @@
->  /* 		Set subfield of little-endian 4-byte value to specified value. */
->  /*  */
->  #define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> -		*((u32 *)(__pstart)) =				\
-> -		(						\
-> -		LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
-> -		((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
-> +		(\
-> +			*((u32 *)(__pstart)) =				\
-> +			(						\
-> +				LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
-> +				((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
-> +			)\
->  		)
->  
+Em Fri, 26 Mar 2021 14:21:02 +0530
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> escreveu:
 
-These macros are terrible and this makes it uglier.  Better to just
-ignore checkpatch until we can figure out a way to re-write this
-properly.
+> On Fri, Mar 26, 2021 at 09:39:36AM +0100, Mauro Carvalho Chehab wrote:
+> > Em Wed, 3 Feb 2021 08:34:21 -0600
+> > Rob Herring <robh@kernel.org> escreveu:
+> >   
+> > > On Wed, Feb 3, 2021 at 1:02 AM Mauro Carvalho Chehab
+> > > <mchehab+huawei@kernel.org> wrote:  
+> > > >
+> > > > From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > >
+> > > > Add support for HiSilicon Kirin 970 (hi3670) SoC PCIe controller, based
+> > > > on Synopsys DesignWare PCIe controller IP.
+> > > >
+> > > > [mchehab+huawei@kernel.org: fix merge conflicts]
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pcie-kirin.c | 723 +++++++++++++++++++++++-
+> > > >  1 file changed, 707 insertions(+), 16 deletions(-)
+> > > >
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-kirin.c b/drivers/pci/controller/dwc/pcie-kirin.c
+> > > > index 026fd1e42a55..5925d2b345a8 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-kirin.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-kirin.c
+> > > > @@ -29,6 +29,7 @@  
+> > >   
+> 
+> [...]
+> 
+> > > This looks like it is almost all phy related. I think it should all be
+> > > moved to a separate phy driver. Yes, we have some other PCI drivers
+> > > controlling their phys directly where the phy registers are
+> > > intermingled with the PCI host registers, but I think those either
+> > > predate the phy subsystem or are really simple. I also have a dream to
+> > > move all the phy control to the DWC core code.  
+> > 
+> > Please notice that this patch was not written by me, but, instead,
+> > by Mannivannan. So, I can't change it.  
+> 
+> Feel free to move the PHY pieces to a separate PHY driver as suggested.
+> My driver code was merely WIP one and I don't have any objection to
+> change the patch.
+> 
+> I'd be happy if you add my Co-developed tag to the PCIe driver patch with
+> the SoB ofc.
 
-regards,
-dan carpenter
+Ok.
 
+> > What I can certainly do is to
+> > write a separate patch at the end of this series moving the Kirin 970
+> > phy to a separate driver. Would this be accepted?
+> >   
+> 
+> Ah, please don't do that. I know that you've already followed the same
+> process for other HiSi drivers but that looks messy IMO.
+
+The problem is related to licensing issues and US export regulations. 
+
+By preserving the patches from the original authors, I played safe.
+
+> 
+> > Btw, what should be done with the Kirin 960 PHY code that it is
+> > already embedded on this driver, and whose some of the DT properties
+> > are for its phy layer? 
+> >   
+> 
+> You might need to create a PHY driver for both 960 and 970. I don't see
+> any harm there. But please make sure you test the patches on both boards.
+
+Testing on Kirin 960 will be harder. Well, I can get my hands on one
+such board, but right now I don't have any M.2 device I can spare with,
+in order to test.
+
+This will also break DT backward compatibility, as, for instance, the
+PERST# gpio seems to be part of the Kirin 960 PHY, as Kirin 970 has
+different PERST# logic: on Kirin 970, there's one PERST# GPIO per PCIe
+device.
+
+So, before starting such change, I need to know if DT maintainers
+are OK with that.
+
+Thanks,
+Mauro
