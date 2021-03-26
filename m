@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C98349E8C
+	by mail.lfdr.de (Postfix) with ESMTP id C10B4349E8D
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbhCZBSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhCZBSP (ORCPT
+        id S230204AbhCZBSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:18:44 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:42655 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230013AbhCZBS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:18:15 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26043C06174A;
-        Thu, 25 Mar 2021 18:18:15 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F63xt3nQfz9sVt;
-        Fri, 26 Mar 2021 12:18:10 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616721492;
-        bh=phZFSTiTd0aRNE6wEyesxTgghlCmSudlO8cvlqd38hE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OivewrUlARIeV7Ycjvf2fowC7Kr80wiRcRxSQdY+Q4vfsS5i+GKMU098BNS88hqoC
-         6jwNWN/JSJvpYnGd+cz4DljClaTgJRbAZMFV4hiCagpEB+JvrItaSuMoZ23f/4+Nby
-         wmYJFW428u2kueN+/RRHkMuIijwpXLNi7n8bY0QBsvNN8NIPjxX96rSc1m3NpJSH/b
-         xPjD5q4SlkfkRLat8/hSdgh5VkF+p9k1X26ykwyUnufwBBKR3wtzXMlCuWDmL1LGJY
-         TUQHqqEQEtZNiqaSwKQ8mHYNkqv0Ge+F3gmK2NG6VXwUarsGJLO4EWhKsBdvtcAw9a
-         CKZeda2zDHzzw==
-Date:   Fri, 26 Mar 2021 12:18:08 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <20210326121808.2da7ac74@canb.auug.org.au>
-In-Reply-To: <20210312120014.62ced6dd@canb.auug.org.au>
-References: <20210311114723.352e12f8@canb.auug.org.au>
-        <bad04c3d-c80e-16c1-0f5a-4d4556555a81@intel.com>
-        <20210312120014.62ced6dd@canb.auug.org.au>
+        Thu, 25 Mar 2021 21:18:27 -0400
+Received: by mail-io1-f42.google.com with SMTP id r193so3818551ior.9;
+        Thu, 25 Mar 2021 18:18:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uLEv/UUTMOz0YMtABzYyD5q0F3bD9ue+f7LZRR5uqaQ=;
+        b=OY9edyg0TvmQkHuh/2HMI++wxFmANudCYtIaV3ED27tyPLLTpGFwsAbcRvILk7+SxE
+         0x2nLwKtXJDDJDJ+1UhbXccbJmq3KKjsLDG2Z3vciUiBECU/APFzNTSJXkOLCLmb5eJA
+         GrL7eQB3rSLGLrrdfIdBq6K1TTZtks3OadlE1mL6OE5vEEgWA5BgBbzR3kNJlT6mkbNY
+         UvdE+/vLhveomoFbgcepiBGAXGK411OBRkcQ2gbMzPfNfIR5VJdDv7qWcqykAPvDQd37
+         98swN9M73lpo0M31Z3YoV33H/xhm50Z2XYpZl0xm+yVf2/IfSFQjW3ZlR1l4Y/CxTDCn
+         8hog==
+X-Gm-Message-State: AOAM533+yltcGUj15WWxKbmfJfEg3D4p1uC4LFYkiZgv5zTDj1YZNNXW
+        rSsaQWKob6Zpo9/6rRc+aQ==
+X-Google-Smtp-Source: ABdhPJzqjnBsjg5OOMfmunx455Sgg50aTb8Nxfxl10GMGD+dZ9XGG9xe6kn6gqUrOhukuU0sLugHyQ==
+X-Received: by 2002:a05:6638:224e:: with SMTP id m14mr10171656jas.8.1616721506708;
+        Thu, 25 Mar 2021 18:18:26 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id e2sm3452684iov.26.2021.03.25.18.18.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 18:18:26 -0700 (PDT)
+Received: (nullmailer pid 2110362 invoked by uid 1000);
+        Fri, 26 Mar 2021 01:18:23 -0000
+Date:   Thu, 25 Mar 2021 19:18:23 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Dario Binacchi <dariobin@libero.it>
+Cc:     linux-kernel@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: ti: dpll: add spread spectrum support
+Message-ID: <20210326011823.GA2102368@robh.at.kernel.org>
+References: <20210318172627.12173-1-dariobin@libero.it>
+ <20210318172627.12173-3-dariobin@libero.it>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/d8v2PmVjnHhlGf3y3+hGsVt";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318172627.12173-3-dariobin@libero.it>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/d8v2PmVjnHhlGf3y3+hGsVt
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Thu, Mar 18, 2021 at 06:26:24PM +0100, Dario Binacchi wrote:
+> DT bindings for enabling and adjusting spread spectrum clocking have
+> been added.
+> 
+> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> ---
+> 
+> (no changes since v1)
+> 
+>  .../devicetree/bindings/clock/ti/dpll.txt     | 20 +++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/ti/dpll.txt b/Documentation/devicetree/bindings/clock/ti/dpll.txt
+> index df57009ff8e7..0810ae073294 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/dpll.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/dpll.txt
+> @@ -42,6 +42,11 @@ Required properties:
+>  	"idlest" - contains the idle status register base address
+>  	"mult-div1" - contains the multiplier / divider register base address
+>  	"autoidle" - contains the autoidle register base address (optional)
+> +	"ssc-deltam" - DPLL supports spread spectrum clocking (SSC), contains
+> +		       the frequency spreading register base address (optional)
+> +	"ssc-modfreq" - DPLL supports spread spectrum clocking (SSC), contains
+> +		        the modulation frequency register base address
+> +			(optional)
+>    ti,am3-* dpll types do not have autoidle register
+>    ti,omap2-* dpll type does not support idlest / autoidle registers
+>  
+> @@ -51,6 +56,14 @@ Optional properties:
+>  	- ti,low-power-stop : DPLL supports low power stop mode, gating output
+>  	- ti,low-power-bypass : DPLL output matches rate of parent bypass clock
+>  	- ti,lock : DPLL locks in programmed rate
+> +	- ti,min-div : the minimum divisor to start from to round the DPLL
+> +		       target rate
+> +	- ti,ssc-deltam : DPLL supports spread spectrum clocking, frequency
+> +			  spreading in permille (10th of a percent)
+> +	- ti,ssc-modfreq : DPLL supports spread spectrum clocking, spread
+> +			   spectrum modulation frequency in kHz
 
-Hi all,
+Use a standard unit suffix (-hz or -mhz).
 
-On Fri, 12 Mar 2021 12:00:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> [Cc'ing a few (maybe) interested parties]
->=20
-> On Thu, 11 Mar 2021 07:47:03 +0100 Bj=C3=B6rn T=C3=B6pel <bjorn.topel@int=
-el.com> wrote:
-> >
-> > On 2021-03-11 01:47, Stephen Rothwell wrote: =20
-> > >=20
-> > > After merging the bpf-next tree, today's linux-next build (perf) fail=
-ed
-> > > like this:
-> > >=20
-> > > make[3]: *** No rule to make target 'libbpf_util.h', needed by '/home=
-/sfr/next/perf/staticobjs/xsk.o'.  Stop. =20
-> >=20
-> > It's an incremental build issue, as pointed out here [1], that is
-> > resolved by cleaning the build. =20
->=20
-> Does this mean there is a deficiency in the dependencies in our build sys=
-tem?
->=20
-> > [1] https://lore.kernel.org/bpf/CAEf4BzYPDF87At4=3D_gsndxof84OiqyJxgAHL=
-7_jvpuntovUQ8w@mail.gmail.com/
-> >  =20
-> > > Caused by commit
-> > >=20
-> > >    7e8bbe24cb8b ("libbpf: xsk: Move barriers from libbpf_util.h to xs=
-k.h")
-> > >=20
-> > > I have used the bpf tree from next-20210310 for today. =20
->=20
-> I have set my system to remove the object directory before building
-> after merging the bpf-next tree for now.
-
-I now get this build failure after I merge the net-next tree :-(
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/d8v2PmVjnHhlGf3y3+hGsVt
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBdNlEACgkQAVBC80lX
-0Gwx9Af+Pqj2r9q2x6e0mYcrknKbqhUt431nnKOFK5iscYRXk/GgNFBWSJkRNX6n
-KetyaIqcoBFWEyHX+WyaR/G1wu/WKpDPloDr56Tml9Ef9szNepom4mpQsfpCLYIU
-CNnMcfIR+jK1hiK1z6Gkz+/rrMEqynfLBBiCc8R6iBzempLF+eBQKVNvrk1hj32I
-73qSTQa0Fv24lAeSC2BrPj+Rox14RyVsFXn/fCtjarQyT9vj+ih1M9Xk30QVmTnP
-2I0+VXCceqJ1qlItRj+3MjCJuw8Ekcg5/pH7sPbm/9cxNJ6gsXV1AA76b86+Nri1
-wJ5xcQ0CgJcwDK70RIAzHaaw8fPQyA==
-=OP4w
------END PGP SIGNATURE-----
-
---Sig_/d8v2PmVjnHhlGf3y3+hGsVt--
+> +	- ti,ssc-downspread : DPLL supports spread spectrum clocking, boolean
+> +			      to enable the downspread feature
+>  
+>  Examples:
+>  	dpll_core_ck: dpll_core_ck@44e00490 {
+> @@ -83,3 +96,10 @@ Examples:
+>  		clocks = <&sys_ck>, <&sys_ck>;
+>  		reg = <0x0500>, <0x0540>;
+>  	};
+> +
+> +	dpll_disp_ck: dpll_disp_ck {
+> +		#clock-cells = <0>;
+> +		compatible = "ti,am3-dpll-no-gate-clock";
+> +		clocks = <&sys_clkin_ck>, <&sys_clkin_ck>;
+> +		reg = <0x0498>, <0x0448>, <0x0454>, <0x044c>, <0x0450>;
+> +	};
+> -- 
+> 2.17.1
+> 
