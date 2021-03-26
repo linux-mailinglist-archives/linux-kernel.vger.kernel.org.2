@@ -2,90 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C003534AB9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8865634AB9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:38:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhCZPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:36:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42942 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230311AbhCZPgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:36:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1616772962; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F5KU6VylMRMyZvTyqPo/BHGYNwWheIqROBxQ4/DH4+8=;
-        b=Y3ouveCx9Q+ASuaEpDN67hcpfdPanfqzzoghiKgdifFuk0NGyc7ynIPTnhYmNm5H2ouZyF
-        QqaTv6fuxtmBOkrziGCtakHrFA2Z405U45W9qp38NhOVs3CL+s2ts7G/DvU9OldkwxnYGm
-        j9OVL85tEnC4zxCm5yEtQbPGMyOzy0I=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 20121AC6A;
-        Fri, 26 Mar 2021 15:36:02 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 16:36:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/page_alloc: try oom if reclaim is unable to make
- forward progress
-Message-ID: <YF3/YZPd+iz/xGu6@dhcp22.suse.cz>
-References: <20210315165837.789593-1-atomlin@redhat.com>
- <YFN8wXwJA59w9twA@dhcp22.suse.cz>
- <20210319172901.cror2u53b7caws3a@ava.usersys.com>
- <YFh10eSTKY5lbE9u@dhcp22.suse.cz>
- <20210325210159.r565fvfitoqeuykp@ava.usersys.com>
- <YF2YTNnyzWNHfrEg@dhcp22.suse.cz>
- <20210326112254.jy5jkiwtgj3pqkt2@ava.usersys.com>
+        id S230250AbhCZPh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:37:29 -0400
+Received: from mail-ed1-f48.google.com ([209.85.208.48]:42723 "EHLO
+        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhCZPg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:36:59 -0400
+Received: by mail-ed1-f48.google.com with SMTP id l18so6787332edc.9;
+        Fri, 26 Mar 2021 08:36:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M7bAOaHuOoPUP0hL0a5lD9zPxMZDsFezwNwO9c9aMSo=;
+        b=BhvKfLaarTzv4NarbNrgU+8Pi2szeGwwoSLZvGyR853YQBSZ9wa2Igxogltj9MMb1V
+         RQ3DhMHZ3fnlq3J9dP1FJOE9Jl6HqU7kDPXbHFykiiFOaifBLUT+EuR/UbhpynX8qnZ8
+         50pdWeLMJVMAEfNOXA4W4Syh1CdI17qZzrysatiVACLEsCQQ2tzHbV2Yk1zXeiz0KSyC
+         bjAID0+vDoCwdKF5ztSe8XW3PeYGBO9zvgh88fvBjh2ZVK312+xzw3R1Xh5bUIG9gAWG
+         5wqBbGJ1jnVQZIP+biUok/PkBlDxekFjjhNIn0iIVhUB3Tzuflg/GY+h82tgrPRYwtmE
+         7WdA==
+X-Gm-Message-State: AOAM530VEk4ixVxe6Lo77S/kq8qsFQzd9VN/DqStDVIFFuWvQ6ckN+pJ
+        DceXtQ8rnffxTS9JAOL0MP9UgECn9i+q8bC7/nc=
+X-Google-Smtp-Source: ABdhPJwVkwNZmu5i9ayfG2g3qmXDWDs2Q5qPfdGT7KjmW2rz52eZ9agkXMzAeOwwkQGBFPGoGYCgjL3nfG+IWovE+Mw=
+X-Received: by 2002:aa7:d917:: with SMTP id a23mr15858529edr.122.1616773017835;
+ Fri, 26 Mar 2021 08:36:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326112254.jy5jkiwtgj3pqkt2@ava.usersys.com>
+References: <20210221185637.19281-1-chang.seok.bae@intel.com>
+ <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
+ <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com> <87v99evg2j.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87v99evg2j.fsf@nanos.tec.linutronix.de>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 26 Mar 2021 11:36:46 -0400
+Message-ID: <CAJvTdK=zZ7OYr9uO0GpoCG5iufe=NKhoWhkkHX0wTbajQNhYSw@mail.gmail.com>
+Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
+ control state component support
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-03-21 11:22:54, Aaron Tomlin wrote:
-[...]
-> > Both reclaim and compaction maintain their own retries counters as they
-> > are targeting a different operation. Although the compaction really
-> > depends on the reclaim to do some progress.
-> 
-> Yes. Looking at should_compact_retry() if the last known compaction result
-> was skipped i.e. suggesting there was not enough order-0 pages to support
-> compaction, so assistance is needed from reclaim
-> (see __compaction_suitable()).
-> 
-> I noticed that the value of compaction_retries, compact_result and
-> compact_priority was 0, COMPACT_SKIPPED and 1 i.e. COMPACT_PRIO_SYNC_LIGHT,
-> respectively.
-> 
-> > OK, this sound unexpected as it indicates that the reclaim is able to
-> > make a forward progress but compaction doesn't want to give up and keeps
-> > retrying. Are you able to reproduce this or could you find out which
-> > specific condition keeps compaction retrying? I would expect that it is
-> > one of the 3 conditions before the max_retries is checked.
-> 
-> Unfortunately, I have been told it is not entirely reproducible.
-> I suspect it is the following in should_compact_retry() - as I indicated
-> above the last known value stored in compaction_retries was 0:
-> 
-> 
->         if (order > PAGE_ALLOC_COSTLY_ORDER)
->                 max_retries /= 4;
->         if (*compaction_retries <= max_retries) {
->                 ret = true;
->                 goto out;
->         }
+On Thu, Mar 25, 2021 at 9:50 PM Thomas Gleixner <tglx@linutronix.de> wrote:
 
-OK, I kinda expected this would be not easily reproducible. The reason I
-dislike your patch is that it addes yet another criterion for oom while
-we already do have 2 which doesn't make the resulting code easier to
-reason about. We should be focusing on the compaction retry logic and
-see whether we can have some "run away" scenarios there. Seeing so many
-retries without compaction bailing out sounds like a bug in that retry
-logic. Vlastimil is much more familiar with that.
--- 
-Michal Hocko
-SUSE Labs
+> Please provide the architectural document which guarantees that and does
+> so in a way that it can be evaluated by the kernel. Have not seen that,
+> so it does not exist at all.
+>
+>   Future CPUID attributes are as useful as the tweet of today.
+
+I will do so the moment I am permitted.
+I'm fine with dropping patch 22 until it can rely on the assurance of
+that architectural feature.
+
+thanks,
+Len Brown, Intel Open Source Technology Center
