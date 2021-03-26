@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C4F34B037
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A00134B03E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCZUfn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Mar 2021 16:35:43 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:55738 "EHLO albireo.enyo.de"
+        id S230226AbhCZUhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 16:37:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50250 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230003AbhCZUfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:35:34 -0400
-Received: from [172.17.203.2] (port=40449 helo=deneb.enyo.de)
-        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1lPtB0-00038H-F0; Fri, 26 Mar 2021 20:35:26 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1lPtB0-0008Aa-CB; Fri, 26 Mar 2021 21:35:26 +0100
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "H. J. Lu" <hjl.tools@gmail.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
-        "Carlos O'Donell" <carlos@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        libc-alpha <libc-alpha@sourceware.org>
-Subject: Re: Why does glibc use AVX-512?
-References: <CALCETrURmk4ZijJVUtJwouj=_0NPiUvUFr9XMvdniRRFqeU+fg@mail.gmail.com>
-        <87a6qqi064.fsf@mid.deneb.enyo.de>
-        <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
-        <87blb5d7zx.fsf@mid.deneb.enyo.de>
-        <CALCETrUXMnutTV=SEs6ot58j32_5=K5Z=G7_57gVZt_GFcuDiw@mail.gmail.com>
-Date:   Fri, 26 Mar 2021 21:35:26 +0100
-In-Reply-To: <CALCETrUXMnutTV=SEs6ot58j32_5=K5Z=G7_57gVZt_GFcuDiw@mail.gmail.com>
-        (Andy Lutomirski's message of "Fri, 26 Mar 2021 12:47:42 -0700")
-Message-ID: <877dltd569.fsf@mid.deneb.enyo.de>
+        id S230026AbhCZUhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 16:37:32 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lPtCt-00DCeR-2R; Fri, 26 Mar 2021 21:37:23 +0100
+Date:   Fri, 26 Mar 2021 21:37:23 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     'Jakub Kicinski' <kuba@kernel.org>, arndb@arndb.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        brandon_chuang@edge-core.com, wally_wang@accton.com,
+        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
+        xinxliu@microsoft.com, 'netdev' <netdev@vger.kernel.org>,
+        'Moshe Shemesh' <moshe@nvidia.com>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YF5GA1RbaM1Ht3nl@lunn.ch>
+References: <YEvILa9FK8qQs5QK@lunn.ch>
+ <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org>
+ <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <001201d719c6$6ac826c0$40587440$@thebollingers.org>
+ <YFJHN+raumcJ5/7M@lunn.ch>
+ <009601d72023$b73dbde0$25b939a0$@thebollingers.org>
+ <YFpr2RyiwX10SNbD@lunn.ch>
+ <011301d7226f$dc2426f0$946c74d0$@thebollingers.org>
+ <YF46FI4epRGwlyP8@lunn.ch>
+ <011901d7227c$e00015b0$a0004110$@thebollingers.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <011901d7227c$e00015b0$a0004110$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Lutomirski:
+On Fri, Mar 26, 2021 at 01:16:14PM -0700, Don Bollinger wrote:
+> > > In my community, the SFP/QSFP/CMIS devices (32 to 128 of them per
+> > > switch) often cost more than the switch itself.  Consumers (both
+> > > vendors and
+> > > customers) extensively test these devices to ensure correct and
+> > > reliable operation.  Then they buy them literally by the millions.
+> > > Quirks lead to quick rejection in favor of reliable parts from
+> > > reliable vendors.  In this environment, for completely different
+> > > reasons, optoe does not need to handle quirks.
+> > 
+> > Well, if optoe were to be merged, it would not be just for your community.
+> It
+> > has to work for everybody who wants to use the Linux kernel with an SFP.
+> > You cannot decide to add a KAPI which just supports a subset of SFPs. It
+> > needs to support as many as possible, warts and all.
+> > 
+> > So how would you handle these SFPs with the optoe KAPI?
+> 
+> Just like they are handled now.  Folks who use your stack would filter
+> through sfp.c, with all the quirk handling, and eventually call optoe for
+> the actual device access.  Folks who don't use kernel networking would call
+> optoe directly and limit themselves to well behaved SFPs, or would handle
+> quirks in user space.  You think that's dumb, but there is clearly a market
+> for that approach.  It is working, at scale, today.
+> 
+> BTW, why can't we have a driver
 
-> On Fri, Mar 26, 2021 at 12:34 PM Florian Weimer <fw@deneb.enyo.de> wrote:
->>   x86: Sporadic failures in tst-cpu-features-cpuinfo
->>   <https://sourceware.org/bugzilla/show_bug.cgi?id=27398#c3>
->
-> It's worth noting that recent microcode updates have make RTM
-> considerably less likely to actually work on many parts.  It's
-> possible you should just disable it. :(
+You keep missing the point. I always refer to the KAPI. The driver we
+can rework and rework, throw away and reimplement, as much as we want.
+The KAPI cannot be changed, it is ABI. It is pretty much frozen the
+day the code is first committed.
 
-Sorry, I'm not sure who should disable it.
+The optoe KAPI needs to handle these 'interesting' SFP modules. The
+KAPI design needs to be flexible enough that the driver underneath it
+can be extended to support these SFPs. The code does not need to be
+there, but the KAPI design needs to allow it. And i personally cannot
+see how the optoe KAPI can efficiently support these SFPs.
 
-Let me sum up the situation:
-
-We have a request for a performance enhancement in glibc, so that
-applications can use it on server parts where RTM actually works.
-
-For CPUs that support AVX-512, we may be able to meet that with a
-change that uses the new 256-bit registers, t avoid the %xmm
-transition penalty.  (This is the easy case, hopefully—there shouldn't
-be any frequency issues associated with that, and if the kernel
-doesn't optimize the context switch today, that's a nonissue as well.)
-
-For CPUs that do not support AVX-512 but support RTM (and AVX2), we
-need a dynamic run-time check whether the string function is invoked
-in a transaction.  In that case, we need to use VZEROALL instead of
-VZEROUPPER.  (It's apparently too costly to issue VZEROALL
-unconditionally.)
-
-All this needs to work transparently without user intervention.  We
-cannot require firmware upgrades to fix the incorrect RTM reporting
-issue (the bug I referenced).  I think we can require software updates
-which tell glibc when to use RTM-enabled string functions if the
-dynamic selection does not work (either for performance reasons, or
-because of the RTM reporting bug).
-
-I want to avoid a situation where one in eight processes fail to work
-correctly because the CPUID checks ran on CPU 0, where RTM is reported
-as available, and then we trap when executing XTEST on other CPUs.
+    Andrew
