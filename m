@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5075134A3C9
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD0834A3CA
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbhCZJKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38978 "EHLO
+        id S230261AbhCZJKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhCZJKD (ORCPT
+        with ESMTP id S229761AbhCZJKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:10:03 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3EDC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:02 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id o16so4941724wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:02 -0700 (PDT)
+        Fri, 26 Mar 2021 05:10:04 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3602EC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:04 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so5551792wmq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BWAw6/ltIWDh7kRKJmEogYzueRT49PB3eW+AcRp/xKk=;
-        b=Mv9ipFmw1YBuNfEmWuEGYPTuA+N1r/CKGCbJ+LfsVTzJ9NIeBWJ/ExANrB/ucRFMN2
-         NFGWbcGDqyf9i6ziuUwkXzpBz3ryqxho8b3ijQYkrgA+FwSnSsysmJ//2nVy+rH8/CG2
-         r1LtIsQ2ko5TDqbTT5mNnpnOsVU2myXgZbFWASjqLZpiYp2y1WGccw1Npt62tSLbjI/o
-         TVVXFxj1LhnlLLp2gplJGMxv17iwf6/g5jc/rLtWjohnpsArH47FF3eS1ScWLnhGpMfB
-         c3GtD3y+GeXncM5LR5x+EIVkbIop6bANysymq/4lTZQBwHQGGGhiG5FNV+dFE7Ha32Pq
-         jVww==
+        bh=NTRDjOB0Z/XWkk3yB0atpiz7nFAoEAEsKk8b97HqiF4=;
+        b=bAVfC9smoc/GoiPdohSLl1LGwUjJWSKELqk5eIpnhC/OaNb8662/YKOZUujOWa8h7Y
+         bPd3lXPh73b/E7DYess+eeUQ59THsw+fBJqLXGCBFy2fd8TwaTtGvihCFm4sJ/61wSdp
+         xdj6pOwspCqUEb3rRSBc3vmHED/3B6HdFhpz98KVCdCqid1mMD1OZC5lqvbl9uEqwhH/
+         giDib/QOJzvo+x4E6D2agtIRzjflQqrDA2UTQ3xNavS9kUDs803JVXzut4FFsAfCvdiC
+         fIKfQ5+yf31knWE9k56avQKmTOchgWaqE4ENmCgGH0wsTfp7D8NXxYrP9GmtnfWyN43l
+         IM0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BWAw6/ltIWDh7kRKJmEogYzueRT49PB3eW+AcRp/xKk=;
-        b=lGvIUtrBWilnX3Z8ceS4MHbAgIkPEVY4/xde5Wqre8rRu6uLIWXEDFW8gDIYbmWIBX
-         DlLGXXVHMpgMQ/KiHE7PpFTJJ06svn4yoOsRgUPH862cDkwCTU61qs5ERKl6It5NJyXt
-         n0bVYv0xgTzX3eR8pPOdIcCJghi1abyB4TLk6sY0nEzR1JAGQGVFKbVj8nWdBaUtUNhH
-         58hU65JtMVyq/gRHb3KC/PP76004vYIihOKmCvkkicsG48d26P9ekiBAnAgvvFBa1YJh
-         82ITFft7l51ZGhjX9rHsLtfpxq7WlFAmvkxT6AbnAYoA3P4fjE/JyzD2IbKEt5Fm21F6
-         Ja0g==
-X-Gm-Message-State: AOAM532dLhPQ5k5pn2ojDV7FdYojEkfbyqDnQRhiatwt2p370ZHx3JdT
-        apkM9JkTf071uY5+ZL8jVFm3I8pC4zeQ3Q==
-X-Google-Smtp-Source: ABdhPJzxI5PTyiGDq7c5WyKOTQrxI9KeTkiu4NBBEtfqMOy+SiUAJ7riuklJTlxVTKZz77onAqLJ7Q==
-X-Received: by 2002:adf:ea82:: with SMTP id s2mr13528121wrm.1.1616749801280;
-        Fri, 26 Mar 2021 02:10:01 -0700 (PDT)
+        bh=NTRDjOB0Z/XWkk3yB0atpiz7nFAoEAEsKk8b97HqiF4=;
+        b=pocZhIckDX73OVF6kyvQuI4qox/8Ib8ymF7ghyOgy3JwB2nrC6eGl0zWlH9l3qp1ui
+         ijyxhOOGahkss4tCIowQk4Qk5K+Sgo7UgSdfJCRw+u8FrWH+e3mORUQkKY5UjrBw7CS8
+         XaCMs5qIykKnLV631V4cPkOlFgQN9WWO74VVWNXvfDgTIttc44YFMVlu64az940sYY4Y
+         64G91b806k7jDRtuOju6INmUa8/eBUZhv3FIyY4eJP2dMU/gTu22Zxey6NZKAxq26HXD
+         ZE204HutLgWoqT8kM3ImeJVlov6vrUJae9BmHUVA25RfKccTUwxPxGv++4wWgToHZuYN
+         cgzw==
+X-Gm-Message-State: AOAM5303NnuhIy/dS0V/PPIE4/tK5PoKlaDaf2OikssMYfEvZR8yiSqT
+        UWqmDnKZpFo+yQ4E5hBx8yI=
+X-Google-Smtp-Source: ABdhPJzvYoM3bWgJwFrjKJrXuCIwb2scEh8foTUS9y5Y5EHK/j1fjR7+rvUxcFbtnZHjYGGwSryJpA==
+X-Received: by 2002:a7b:c3cd:: with SMTP id t13mr11862633wmj.109.1616749802846;
+        Fri, 26 Mar 2021 02:10:02 -0700 (PDT)
 Received: from agape ([5.171.81.75])
-        by smtp.gmail.com with ESMTPSA id c2sm1714270wrt.47.2021.03.26.02.10.00
+        by smtp.gmail.com with ESMTPSA id v3sm10014726wmj.25.2021.03.26.02.10.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:10:01 -0700 (PDT)
+        Fri, 26 Mar 2021 02:10:02 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 13/15] staging: rtl8723bs: add spaces around operator in include/rtw_pwrctrl.h
-Date:   Fri, 26 Mar 2021 10:09:20 +0100
-Message-Id: <b32111b9ca57f21296c1a33dd7136951800ec401.1616748885.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 14/15] staging: rtl8723bs:  put parentheses on macros with complex values in include/sta_info.h
+Date:   Fri, 26 Mar 2021 10:09:21 +0100
+Message-Id: <24e684c1eff8911dacff1b61957ce25bafc46631.1616748885.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1616748885.git.fabioaiuto83@gmail.com>
 References: <cover.1616748885.git.fabioaiuto83@gmail.com>
@@ -64,28 +64,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix post-commit hook checkpatch warning:
+fix the following checkpatch warnings:
 
-add a space around that '*'
+ERROR: Macros with complex values should be enclosed in parentheses
+284: FILE: drivers/staging/rtl8723bs/include/sta_info.h:284:
++#define STA_RX_PKTS_ARG(sta) \
+--
+ERROR: Macros with complex values should be enclosed in parentheses
+289: FILE: drivers/staging/rtl8723bs/include/sta_info.h:289:
++#define STA_LAST_RX_PKTS_ARG(sta) \
+--
+ERROR: Macros with complex values should be enclosed in parentheses
+294: FILE: drivers/staging/rtl8723bs/include/sta_info.h:294:
++#define STA_RX_PKTS_DIFF_ARG(sta) \
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/rtl8723bs/include/sta_info.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-index 688436cf3610..88e66211e0e3 100644
---- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-@@ -89,7 +89,7 @@ struct reportpwrstate_parm {
- 	unsigned short rsvd;
- };
+diff --git a/drivers/staging/rtl8723bs/include/sta_info.h b/drivers/staging/rtl8723bs/include/sta_info.h
+index abde3e3df988..1cdf93ec3b66 100644
+--- a/drivers/staging/rtl8723bs/include/sta_info.h
++++ b/drivers/staging/rtl8723bs/include/sta_info.h
+@@ -282,19 +282,19 @@ struct sta_info {
+ 	} while (0)
  
--#define LPS_DELAY_TIME	(1*HZ) /*  1 sec */
-+#define LPS_DELAY_TIME	(1 * HZ) /*  1 sec */
+ #define STA_RX_PKTS_ARG(sta) \
+-	sta->sta_stats.rx_mgnt_pkts \
++	(sta->sta_stats.rx_mgnt_pkts \
+ 	, sta->sta_stats.rx_ctrl_pkts \
+-	, sta->sta_stats.rx_data_pkts
++	, sta->sta_stats.rx_data_pkts)
  
- #define EXE_PWR_NONE	0x01
- #define EXE_PWR_IPS		0x02
+ #define STA_LAST_RX_PKTS_ARG(sta) \
+-	sta->sta_stats.last_rx_mgnt_pkts \
++	(sta->sta_stats.last_rx_mgnt_pkts \
+ 	, sta->sta_stats.last_rx_ctrl_pkts \
+-	, sta->sta_stats.last_rx_data_pkts
++	, sta->sta_stats.last_rx_data_pkts)
+ 
+ #define STA_RX_PKTS_DIFF_ARG(sta) \
+-	sta->sta_stats.rx_mgnt_pkts - sta->sta_stats.last_rx_mgnt_pkts \
++	(sta->sta_stats.rx_mgnt_pkts - sta->sta_stats.last_rx_mgnt_pkts \
+ 	, sta->sta_stats.rx_ctrl_pkts - sta->sta_stats.last_rx_ctrl_pkts \
+-	, sta->sta_stats.rx_data_pkts - sta->sta_stats.last_rx_data_pkts
++	, sta->sta_stats.rx_data_pkts - sta->sta_stats.last_rx_data_pkts)
+ 
+ #define STA_PKTS_FMT "(m:%llu, c:%llu, d:%llu)"
+ 
 -- 
 2.20.1
 
