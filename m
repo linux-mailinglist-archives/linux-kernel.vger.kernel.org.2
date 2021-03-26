@@ -2,338 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A153134AC2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAC834AB88
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhCZQB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
+        id S230305AbhCZP3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhCZQBe (ORCPT
+        with ESMTP id S230343AbhCZP3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:01:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7C2C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 09:01:34 -0700 (PDT)
-Message-Id: <20210326153943.320398604@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616774493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=4rKCd7KXHzmGgu2ygyaX0d8MaeubBAsTzRFWw9DszXg=;
-        b=fbnr8S8IdxWJOAY7yHfGZQ618E8Id0Rb3SWxL+BQdk6Ysh9voz312qYYU4VQ539TCXvzFP
-        2Ho98BaLb1Q76W/BkSyhYwUcVC4vfHxpV/ToB836wKep6/RwXjnmO7zqmUlUHlTQ7rmybu
-        lSjJYC+yeJduXj55VmPnCtd8KtE9CvbpvYs/pNwEy4/1BbLuWomu1EsNRD0FKU7nWnG1as
-        oJkJrIVR38/X4ONBiPfvX/9D0R4rVn2oo3eIuXEQe1OtOIcqLlqzf3+Ghzvc2I2TAoxHkX
-        6SmR0scMYiNT11Wk84s6b77d5Th/HKyH63RWwnQ0kgiBC1RxjguUXeGuB0E63g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616774493;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=4rKCd7KXHzmGgu2ygyaX0d8MaeubBAsTzRFWw9DszXg=;
-        b=jYBM/R/RigNp+nzSLlWbOjkrJ0uKfw2qHCYj65zPEynGMUYpwM1+f8Wobbws9JXOzTlvqc
-        Mr648To/xMGfj6AA==
-Date:   Fri, 26 Mar 2021 16:29:32 +0100
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch V2 03/15] locking/rtmutex: Remove output from deadlock detector.
-References: <20210326152929.709289883@linutronix.de>
+        Fri, 26 Mar 2021 11:29:36 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84EEC0613B2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:29:33 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id x16so5787909iob.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=77VWnbkqjOeQ+Q68SYbTBjzvDSMphM8I7bFnWwC9w+g=;
+        b=OEQnzqpF0Hexv8ugCa0UYyj6CoA9HrLplF0qh0DVNVcPM1CLKZpgYQwYxjII8kiorP
+         m6SRbo5w7csLtzUz6VxZF/d9uHGHt3V3QvVhoy5CD5koMjHS+sfdjSpLA7ESpJiay9pA
+         miqBAvjtXBnmPuwh6qSgIMC7EFkwaU3sUEynuKy69KGbPunEoFuB6rZN4frOYwXn+Jxm
+         iO1ATd8ilesgG2esVCvB9Ii/kVZs+P3Wru+AYjfseTQKQvCB8B2UD+OGYaX4Fe/UTLmp
+         KU7pO4etJFvZYD8snZT11YY6I2kZOrvMqbGDt6vJIn8PWY8kPeVHZc63Wm+e+GAI5jb/
+         XOog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=77VWnbkqjOeQ+Q68SYbTBjzvDSMphM8I7bFnWwC9w+g=;
+        b=IqRKhMY0A9DvDa+aGoqU1HkUKH8De1xp87CcIxsCoBapzx5aqVSYm7e9NUv6CeVzD3
+         MLqdrblSwo6CE6fuIDw9dJzJzyRpuxALJK6GF+UO1L4NFMQE8DdrxOqc4jDAwSDVTyXN
+         89axdF0HcyONaNMF4t6TjsWrf8U2q/of+NUVhA2DH+QGMlx3q+pT1fVgYxTQDVNdZQGg
+         vlw9zIUTN+bIzv/FpDO6ZCuSI03GNw4BOKIbpqtj5tb/UsELKwfcVw0g1lA+nKpdHEov
+         hA8tmH8f6udtbJSBX7pNVw7Hc10jJb6+RaZ1NcvKMAj5zAr1CYQItnoCZ0Kd2L3/0Jfz
+         sNDQ==
+X-Gm-Message-State: AOAM5320Wd+nYm2sasTc76dIvegEbMhpaZvaxj+FHJmWPp147QQqf3JR
+        xMBlG7upSJkNA88BdPkLGy3phY+GZC2kKQ==
+X-Google-Smtp-Source: ABdhPJy2wFPdh9LY+OZYJpFDla9njzVmShvYhV4Hb81y4LCsEbhdp1nrNiL5Zd3QB6tlocO5q7v1Pw==
+X-Received: by 2002:a05:6602:1207:: with SMTP id y7mr10758082iot.23.1616772572869;
+        Fri, 26 Mar 2021 08:29:32 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id x20sm4537794ilc.88.2021.03.26.08.29.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 08:29:32 -0700 (PDT)
+Subject: Re: [PATCH 2/8] kernel: unmask SIGSTOP for IO threads
+To:     Stefan Metzmacher <metze@samba.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <20210326003928.978750-3-axboe@kernel.dk> <20210326134840.GA1290@redhat.com>
+ <a179ad33-5656-b644-0d92-e74a6bd26cc8@kernel.dk>
+ <8f2a4b48-77c9-393f-5194-100ed63c05fc@samba.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <58f67a8b-166e-f19c-ccac-157153e4f17c@kernel.dk>
+Date:   Fri, 26 Mar 2021 09:29:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+In-Reply-To: <8f2a4b48-77c9-393f-5194-100ed63c05fc@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On 3/26/21 9:23 AM, Stefan Metzmacher wrote:
+> Am 26.03.21 um 16:01 schrieb Jens Axboe:
+>> On 3/26/21 7:48 AM, Oleg Nesterov wrote:
+>>> Jens, sorry, I got lost :/
+>>
+>> Let's bring you back in :-)
+>>
+>>> On 03/25, Jens Axboe wrote:
+>>>>
+>>>> With IO threads accepting signals, including SIGSTOP,
+>>>
+>>> where can I find this change? Looks like I wasn't cc'ed...
+>>
+>> It's this very series.
+>>
+>>>> unmask the
+>>>> SIGSTOP signal from the default blocked mask.
+>>>>
+>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>> ---
+>>>>  kernel/fork.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/kernel/fork.c b/kernel/fork.c
+>>>> index d3171e8e88e5..d5a40552910f 100644
+>>>> --- a/kernel/fork.c
+>>>> +++ b/kernel/fork.c
+>>>> @@ -2435,7 +2435,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+>>>>  	tsk = copy_process(NULL, 0, node, &args);
+>>>>  	if (!IS_ERR(tsk)) {
+>>>>  		sigfillset(&tsk->blocked);
+>>>> -		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
+>>>> +		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
+>>>
+>>> siginitsetinv(blocked, sigmask(SIGKILL)|sigmask(SIGSTOP)) but this is minor.
+>>
+>> Ah thanks.
+>>
+>>> To remind, either way this is racy and can't really help.
+>>>
+>>> And if "IO threads accepting signals" then I don't understand why. Sorry,
+>>> I must have missed something.
+>>
+>> I do think the above is a no-op at this point, and we can probably just
+>> kill it. Let me double check, hopefully we can just remove this blocked
+>> part.
+> 
+> Is this really correct to drop in your "kernel: stop masking signals in create_io_thread()"
+> commit?
+> 
+> I don't assume signals wanted by userspace should potentially handled in an io_thread...
+> e.g. things set with fcntl(fd, F_SETSIG,) used together with F_SETLEASE?
 
-The rtmutex specific deadlock detector predates lockdep coverage of rtmutex
-and since commit f5694788ad8da ("rt_mutex: Add lockdep annotations") it
-contains a lot of redundant functionality.
+I guess we do actually need it, if we're not fiddling with
+wants_signal() for them. To quell Oleg's concerns, we can just move it
+to post dup_task_struct(), that should eliminate any race concerns
+there.
 
- - lockdep will detect an potential deadlock before rtmutex-debug
-   has a chance to do so
-
- - the dead lock debugging is restricted to rtmutexes which are not
-   associated to futexes and have an active waiter, which is covered by
-   lockdep already
-
-Remove the redundant functionality and move actual deadlock WARN() into the
-deadlock code path. The latter needs a seperate cleanup.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- include/linux/rtmutex.h         |    7 --
- kernel/locking/rtmutex-debug.c  |   97 ----------------------------------------
- kernel/locking/rtmutex-debug.h  |    9 ---
- kernel/locking/rtmutex.c        |    7 --
- kernel/locking/rtmutex.h        |    7 --
- kernel/locking/rtmutex_common.h |    4 -
- 6 files changed, 1 insertion(+), 130 deletions(-)
-
---- a/include/linux/rtmutex.h
-+++ b/include/linux/rtmutex.h
-@@ -31,9 +31,6 @@ struct rt_mutex {
- 	raw_spinlock_t		wait_lock;
- 	struct rb_root_cached   waiters;
- 	struct task_struct	*owner;
--#ifdef CONFIG_DEBUG_RT_MUTEXES
--	const char		*name;
--#endif
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	struct lockdep_map	dep_map;
- #endif
-@@ -56,8 +53,6 @@ struct hrtimer_sleeper;
- #endif
- 
- #ifdef CONFIG_DEBUG_RT_MUTEXES
--# define __DEBUG_RT_MUTEX_INITIALIZER(mutexname) \
--	, .name = #mutexname
- 
- # define rt_mutex_init(mutex) \
- do { \
-@@ -67,7 +62,6 @@ do { \
- 
-  extern void rt_mutex_debug_task_free(struct task_struct *tsk);
- #else
--# define __DEBUG_RT_MUTEX_INITIALIZER(mutexname)
- # define rt_mutex_init(mutex)			__rt_mutex_init(mutex, NULL, NULL)
- # define rt_mutex_debug_task_free(t)			do { } while (0)
- #endif
-@@ -83,7 +77,6 @@ do { \
- 	{ .wait_lock = __RAW_SPIN_LOCK_UNLOCKED(mutexname.wait_lock) \
- 	, .waiters = RB_ROOT_CACHED \
- 	, .owner = NULL \
--	__DEBUG_RT_MUTEX_INITIALIZER(mutexname) \
- 	__DEP_MAP_RT_MUTEX_INITIALIZER(mutexname)}
- 
- #define DEFINE_RT_MUTEX(mutexname) \
---- a/kernel/locking/rtmutex-debug.c
-+++ b/kernel/locking/rtmutex-debug.c
-@@ -32,105 +32,12 @@
- 
- #include "rtmutex_common.h"
- 
--static void printk_task(struct task_struct *p)
--{
--	if (p)
--		printk("%16s:%5d [%p, %3d]", p->comm, task_pid_nr(p), p, p->prio);
--	else
--		printk("<none>");
--}
--
--static void printk_lock(struct rt_mutex *lock, int print_owner)
--{
--	printk(" [%p] {%s}\n", lock, lock->name);
--
--	if (print_owner && rt_mutex_owner(lock)) {
--		printk(".. ->owner: %p\n", lock->owner);
--		printk(".. held by:  ");
--		printk_task(rt_mutex_owner(lock));
--		printk("\n");
--	}
--}
--
- void rt_mutex_debug_task_free(struct task_struct *task)
- {
- 	DEBUG_LOCKS_WARN_ON(!RB_EMPTY_ROOT(&task->pi_waiters.rb_root));
- 	DEBUG_LOCKS_WARN_ON(task->pi_blocked_on);
- }
- 
--/*
-- * We fill out the fields in the waiter to store the information about
-- * the deadlock. We print when we return. act_waiter can be NULL in
-- * case of a remove waiter operation.
-- */
--void debug_rt_mutex_deadlock(enum rtmutex_chainwalk chwalk,
--			     struct rt_mutex_waiter *act_waiter,
--			     struct rt_mutex *lock)
--{
--	struct task_struct *task;
--
--	if (!debug_locks || chwalk == RT_MUTEX_FULL_CHAINWALK || !act_waiter)
--		return;
--
--	task = rt_mutex_owner(act_waiter->lock);
--	if (task && task != current) {
--		act_waiter->deadlock_task_pid = get_pid(task_pid(task));
--		act_waiter->deadlock_lock = lock;
--	}
--}
--
--void debug_rt_mutex_print_deadlock(struct rt_mutex_waiter *waiter)
--{
--	struct task_struct *task;
--
--	if (!waiter->deadlock_lock || !debug_locks)
--		return;
--
--	rcu_read_lock();
--	task = pid_task(waiter->deadlock_task_pid, PIDTYPE_PID);
--	if (!task) {
--		rcu_read_unlock();
--		return;
--	}
--
--	if (!debug_locks_off()) {
--		rcu_read_unlock();
--		return;
--	}
--
--	pr_warn("\n");
--	pr_warn("============================================\n");
--	pr_warn("WARNING: circular locking deadlock detected!\n");
--	pr_warn("%s\n", print_tainted());
--	pr_warn("--------------------------------------------\n");
--	printk("%s/%d is deadlocking current task %s/%d\n\n",
--	       task->comm, task_pid_nr(task),
--	       current->comm, task_pid_nr(current));
--
--	printk("\n1) %s/%d is trying to acquire this lock:\n",
--	       current->comm, task_pid_nr(current));
--	printk_lock(waiter->lock, 1);
--
--	printk("\n2) %s/%d is blocked on this lock:\n",
--		task->comm, task_pid_nr(task));
--	printk_lock(waiter->deadlock_lock, 1);
--
--	debug_show_held_locks(current);
--	debug_show_held_locks(task);
--
--	printk("\n%s/%d's [blocked] stackdump:\n\n",
--		task->comm, task_pid_nr(task));
--	show_stack(task, NULL, KERN_DEFAULT);
--	printk("\n%s/%d's [current] stackdump:\n\n",
--		current->comm, task_pid_nr(current));
--	dump_stack();
--	debug_show_all_locks();
--	rcu_read_unlock();
--
--	printk("[ turning off deadlock detection."
--	       "Please report this trace. ]\n\n");
--}
--
- void debug_rt_mutex_lock(struct rt_mutex *lock)
- {
- }
-@@ -153,12 +60,10 @@ void debug_rt_mutex_proxy_unlock(struct
- void debug_rt_mutex_init_waiter(struct rt_mutex_waiter *waiter)
- {
- 	memset(waiter, 0x11, sizeof(*waiter));
--	waiter->deadlock_task_pid = NULL;
- }
- 
- void debug_rt_mutex_free_waiter(struct rt_mutex_waiter *waiter)
- {
--	put_pid(waiter->deadlock_task_pid);
- 	memset(waiter, 0x22, sizeof(*waiter));
- }
- 
-@@ -168,10 +73,8 @@ void debug_rt_mutex_init(struct rt_mutex
- 	 * Make sure we are not reinitializing a held lock:
- 	 */
- 	debug_check_no_locks_freed((void *)lock, sizeof(*lock));
--	lock->name = name;
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	lockdep_init_map(&lock->dep_map, name, key, 0);
- #endif
- }
--
---- a/kernel/locking/rtmutex-debug.h
-+++ b/kernel/locking/rtmutex-debug.h
-@@ -18,18 +18,9 @@ extern void debug_rt_mutex_unlock(struct
- extern void debug_rt_mutex_proxy_lock(struct rt_mutex *lock,
- 				      struct task_struct *powner);
- extern void debug_rt_mutex_proxy_unlock(struct rt_mutex *lock);
--extern void debug_rt_mutex_deadlock(enum rtmutex_chainwalk chwalk,
--				    struct rt_mutex_waiter *waiter,
--				    struct rt_mutex *lock);
--extern void debug_rt_mutex_print_deadlock(struct rt_mutex_waiter *waiter);
- 
- static inline bool debug_rt_mutex_detect_deadlock(struct rt_mutex_waiter *waiter,
- 						  enum rtmutex_chainwalk walk)
- {
- 	return (waiter != NULL);
- }
--
--static inline void rt_mutex_print_deadlock(struct rt_mutex_waiter *w)
--{
--	debug_rt_mutex_print_deadlock(w);
--}
---- a/kernel/locking/rtmutex.c
-+++ b/kernel/locking/rtmutex.c
-@@ -579,7 +579,6 @@ static int rt_mutex_adjust_prio_chain(st
- 	 * walk, we detected a deadlock.
- 	 */
- 	if (lock == orig_lock || rt_mutex_owner(lock) == top_task) {
--		debug_rt_mutex_deadlock(chwalk, orig_waiter, lock);
- 		raw_spin_unlock(&lock->wait_lock);
- 		ret = -EDEADLK;
- 		goto out_unlock_pi;
-@@ -1171,8 +1170,6 @@ static int __sched
- 
- 		raw_spin_unlock_irq(&lock->wait_lock);
- 
--		debug_rt_mutex_print_deadlock(waiter);
--
- 		schedule();
- 
- 		raw_spin_lock_irq(&lock->wait_lock);
-@@ -1196,7 +1193,7 @@ static void rt_mutex_handle_deadlock(int
- 	/*
- 	 * Yell loudly and stop the task right here.
- 	 */
--	rt_mutex_print_deadlock(w);
-+	WARN(1, "rtmutex deadlock detected\n");
- 	while (1) {
- 		set_current_state(TASK_INTERRUPTIBLE);
- 		schedule();
-@@ -1704,8 +1701,6 @@ int __rt_mutex_start_proxy_lock(struct r
- 		ret = 0;
- 	}
- 
--	debug_rt_mutex_print_deadlock(waiter);
--
- 	return ret;
- }
- 
---- a/kernel/locking/rtmutex.h
-+++ b/kernel/locking/rtmutex.h
-@@ -18,13 +18,6 @@
- #define debug_rt_mutex_proxy_unlock(l)			do { } while (0)
- #define debug_rt_mutex_unlock(l)			do { } while (0)
- #define debug_rt_mutex_init(m, n, k)			do { } while (0)
--#define debug_rt_mutex_deadlock(d, a ,l)		do { } while (0)
--#define debug_rt_mutex_print_deadlock(w)		do { } while (0)
--
--static inline void rt_mutex_print_deadlock(struct rt_mutex_waiter *w)
--{
--	WARN(1, "rtmutex deadlock detected\n");
--}
- 
- static inline bool debug_rt_mutex_detect_deadlock(struct rt_mutex_waiter *w,
- 						  enum rtmutex_chainwalk walk)
---- a/kernel/locking/rtmutex_common.h
-+++ b/kernel/locking/rtmutex_common.h
-@@ -29,10 +29,6 @@ struct rt_mutex_waiter {
- 	struct rb_node          pi_tree_entry;
- 	struct task_struct	*task;
- 	struct rt_mutex		*lock;
--#ifdef CONFIG_DEBUG_RT_MUTEXES
--	struct pid		*deadlock_task_pid;
--	struct rt_mutex		*deadlock_lock;
--#endif
- 	int prio;
- 	u64 deadline;
- };
+-- 
+Jens Axboe
 
