@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E87B349E36
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9D6349E39
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCZAo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:44:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbhCZAoS (ORCPT
+        id S229949AbhCZAsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:48:16 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14476 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229631AbhCZArr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:44:18 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C45C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 17:44:17 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id c204so3745472pfc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 17:44:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=kQfJe3SM3uKBO4y80++UrhVTvqfOoULiPheOgQ6rl2A=;
-        b=xUMWuzOHV/hpq2Qlwq23GvUh51ikLyBfqnYYKJ3Mwxr5uOc2lQOhS9I/DDUci0VUEg
-         QHiYcO72fadNjDnruS9Lk3RnqkW7VBqeMY9lNa05yu0uxwVpJVkc8U0vxbRXfZnOmJam
-         Xd4HzrnO7xEgph1p+ljyVPdiqIYR2SCYkI0RpP4qCi+qvEfMoVJjO7I22tyaAITUW5ZV
-         YekTvsXxwECnat/wKVc2eQrEiLVNKrcd0AZ1gyw5zLUjeIYBTtsW8FzGcH1GgwNZA5T4
-         DriLYMj/u0262xaw8pVi1MS1shiZEpFLmi1qRIRLZ0nfKIh4PlTwRqat3dUQonJJ7cBI
-         swIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=kQfJe3SM3uKBO4y80++UrhVTvqfOoULiPheOgQ6rl2A=;
-        b=X8ewYX/K68nk7yXNpLwOgLwgYJgysx+zEa6dgKEqG/w7ZWf0bLGLrJLxtAADzgj9rR
-         7gOwsi4bru83ykjBi9tCmDJMONr5Z0cjrndHK7ix+sVqzI8CgM/6C3WrAiEaIDjrF/aI
-         u7+sRZEvxuTIpbPwODtqwFiooocuBhm/kYhJHSfTMb/GXpsSvPsuOc6LhEanLsCNsXf9
-         a5ZFBZwNN6kR0fC1X0qU3e+N9qSIFsUsfr9Bi2t60YeGQOH0u0nIVdhvjrsKoxH75Gif
-         Qb+Hg84oiCZxxZWEYIsO6k+SvHG/UwIHfB8oFxq9oSb2WDO/rN+sTrONFIRIyTlOJdrY
-         4SwA==
-X-Gm-Message-State: AOAM533vbOFSKmPn6l9Urbk3NJsY0d7FshZLSLvUe6L2p3NoQSxbMqbl
-        5/qUENIFW3S/CX+rkk6JKBE3sbLKiJb0Bg==
-X-Google-Smtp-Source: ABdhPJwRGCNtpyjZeBVrH8RV0bCyTDTG5DkJDgD8GvOoPZBsBtaU5or6a3QoNLb6Ijr4dfwipLpckQ==
-X-Received: by 2002:aa7:940a:0:b029:1f1:5b58:24e5 with SMTP id x10-20020aa7940a0000b02901f15b5824e5mr10431788pfo.54.1616719455378;
-        Thu, 25 Mar 2021 17:44:15 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id js16sm6636137pjb.21.2021.03.25.17.44.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 17:44:14 -0700 (PDT)
-To:     Kentaro Takeda <takedakn@nttdata.co.jp>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc:     linux-security-module@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] tomoyo: don't special case PF_IO_WORKER for PF_KTHREAD
-Message-ID: <46f6e3cb-cc96-d214-e183-71dd238da075@kernel.dk>
-Date:   Thu, 25 Mar 2021 18:44:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 25 Mar 2021 20:47:47 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F63DT0mRYzyN8w;
+        Fri, 26 Mar 2021 08:45:45 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 26 Mar 2021 08:47:38 +0800
+Subject: Re: Linux 5.4.108
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
+        <torvalds@linux-foundation.org>, <stable@vger.kernel.org>
+CC:     <lwn@lwn.net>, <jslaby@suse.cz>
+References: <161658257123367@kroah.com>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <f3bd81fd-1c94-ebc6-1f2c-b0519decb310@huawei.com>
+Date:   Fri, 26 Mar 2021 08:47:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <161658257123367@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.100]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The io_uring PF_IO_WORKER threads no longer have PF_KTHREAD set, so no
-need to special case them for credential checks.
 
-Cc: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- security/tomoyo/network.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/security/tomoyo/network.c b/security/tomoyo/network.c
-index 478f757ff843..8dc61335f65e 100644
---- a/security/tomoyo/network.c
-+++ b/security/tomoyo/network.c
-@@ -613,7 +613,7 @@ static int tomoyo_check_unix_address(struct sockaddr *addr,
- static bool tomoyo_kernel_service(void)
- {
- 	/* Nothing to do if I am a kernel service. */
--	return (current->flags & (PF_KTHREAD | PF_IO_WORKER)) == PF_KTHREAD;
-+	return current->flags & PF_KTHREAD;
- }
- 
- /**
--- 
-2.31.0
+On 2021/3/24 18:42, Greg Kroah-Hartman wrote:
+> I'm announcing the release of the 5.4.108 kernel.
+> 
+> All users of the 5.4 kernel series must upgrade.
+> 
+> The updated 5.4.y git tree can be found at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+> and can be browsed at the normal kernel.org git web browser:
+> 	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
--- 
-Jens Axboe
+Tested on arm64 and x86 for 5.4.108,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.108
+Commit: b90344f7d6000deba0709d75225f30cbf79ec2f0
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4720
+passed: 4720
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 4720
+passed: 4720
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
+
 
