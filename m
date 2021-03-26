@@ -2,211 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED20834A999
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C51334A9AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCZOXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        id S230293AbhCZOZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:25:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhCZOWv (ORCPT
+        with ESMTP id S229986AbhCZOZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:22:51 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CABAC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:22:51 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id c3so5338623qkc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:22:51 -0700 (PDT)
+        Fri, 26 Mar 2021 10:25:00 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9145C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:24:59 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id a11so4347109qto.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vVTm5TJ1nk7HkS3puWyXBBm2NlZ0XsJiAAIDaevzvYk=;
-        b=W6ZLH0U18oGO+yKD+Bvtjh12EmNxzUdJh7nrcT8rgJ2vKW6cX1Y97H0GVOJ6VPmzIT
-         9OdZg29K/6XoFdAPIcDFx8AZ26GNiSJ9cR/p+EwwHjUQ1UZPmDuD7F1Sly03N3XE8+Td
-         YIInw8q+XvH7RcvsOpbGBoszIfIJeGcw/uTeCGK5JOhDT8ZNC4hTmIlviCZqkRvjee5Y
-         28DMvf7C/kPKALfSg2rlXlixnP6NyqGO/OIhjUXzYnFOWMbbKxpI9gSu1ZmH+HKbpI9Q
-         /AGcNRbRPpzvDJkP9fbHgVXOc+PQu/K5c4GPH1Tn073UOBmDvEHkW9WsCnORFdSR/Ixi
-         6d6A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ydwh/8tj9xjty9zBEBJ/Re07/emPoucIwHUjEe3A74A=;
+        b=LJ3XkZB6rzqIf7eYYS/XKHa1JsKrB9VQ1+uAH62sr0AsHP5i0owoavBYpA0RU5/bBM
+         JP/jsJ5tcvHgEymkHcQQ5T4oFD37yjyh1v1GZi4kxA8PQZRVd9oSTCuVn+9T99TeJGKH
+         8GDktaI3ImgJRaqqj0wy9DuT2Y1oRFO4zXVE5tDYyUV3D/65QViNGRoUitXUw5VWmsrj
+         QVyQpxiZjSBbbnGrqXsE6blDC/7v5rSItXg/F+Qtob+OoUb8O9KcZHk9ZDhdpmvYWINw
+         ymoUvgSm6eZunFK0HGJxm7rm8WbRP5zTxhZncPauW+L8JH2uP2vzAUzyeD8YKqsmA1KN
+         IUmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vVTm5TJ1nk7HkS3puWyXBBm2NlZ0XsJiAAIDaevzvYk=;
-        b=Y6RWYQ1gGgQxjxtkhpb9vA/61p3MABsUC+SSCKp8ljWUDrAJd1NKAPYK4F+yK2Nz2p
-         4MzUeBH2AVSzpnHQNUHZtVT3Q06v6EatRJ9jr5RHo7LGJsSSZf6HfrocdFhvwk4QGeYw
-         6VZRFEoXvCx3/d4eAU3Y/9moHtw9hp6r+L+1k7117P0y4ZCkWEqcot+bZX0S0r+w5/qJ
-         vHFgew0c1bjWaxOarcsy8JDoCUbrmp5CMX074ZKKi8nKVmSxCP1+BArGY9jVs9XoRBuP
-         mPkCTaPnyQkLOFeqXTvIYO4wyqBT2VZTQFxqaNjxFbn7EUtvMIC66thsSEgy+7ih3Mj9
-         koGg==
-X-Gm-Message-State: AOAM532W48iRnTjIyHkrJNTCEPSVj6rYcthGeSb/ewDt91PhjngZORqC
-        vXlcWNnZIcscPyoNsG6vdW9ApZOJOtmwTgy35S2qQA==
-X-Google-Smtp-Source: ABdhPJzsXgFANtbPOr9dMtL/Myw2Wp5Dr7q2aRxAu7MS8gMgnkhYefXSD06Ad5BIAPAipFBXOuiqESj1kJDkMQMKAFY=
-X-Received: by 2002:a37:6658:: with SMTP id a85mr2020532qkc.424.1616768570474;
- Fri, 26 Mar 2021 07:22:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ydwh/8tj9xjty9zBEBJ/Re07/emPoucIwHUjEe3A74A=;
+        b=hpn3NF3LSrRT5sCZVbygQcy9b9a04E71WCTZlrPfRsxTwNjEqPay45fJZCxcKwSr3Z
+         XmMbdwiuJfrIuzFoelUHWVqsOLWryTeSmc8SBtoW1kLyvwd1LOQznQUqF5l2EVUnr5j/
+         bJBB46WkRh1wFzVQ7plGmWJskovQxFGWchTuxbk/OP5o7ihsIfGDm9Ks0HLk2s+4PNGh
+         q3SN+V3NBvupyntKSXwUwvJd/KkFMCjjAaK/xeouV02teqfEpTSwclAP/SY83IKH7+iJ
+         x8Xy/cQxfDQhpGhKnBumACZEcJDUBZn89EAHXj18s9uSEP2IOxU7NEl5HjXERsKH188U
+         GXsg==
+X-Gm-Message-State: AOAM531tZTVJKJ6e1wQnacF7YoYfoxNBGz+136ut92t47+9JVxmkb2qG
+        e4j5Qspu7+65cqFULtZt9KA=
+X-Google-Smtp-Source: ABdhPJwYVphBtqkllW+00k/srJBFGtTqM2NqfBjy/EVA46dNgrckmUgHMG7ZyEoWpYTeNtotVaOf5A==
+X-Received: by 2002:ac8:1241:: with SMTP id g1mr12424762qtj.177.1616768699165;
+        Fri, 26 Mar 2021 07:24:59 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.55.149])
+        by smtp.gmail.com with ESMTPSA id b27sm6546112qkl.102.2021.03.26.07.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 07:24:58 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     suzuki.poulose@arm.com, leo.yan@linaro.org,
+        gregkh@linuxfoundation.org, mathieu.poirier@linaro.org,
+        unixbhaskar@gmail.com, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] coresight-pmu.h: Fix a typo
+Date:   Fri, 26 Mar 2021 19:52:44 +0530
+Message-Id: <20210326142244.17504-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <00000000000069c40405be6bdad4@google.com> <CACT4Y+baP24jKmj-trhF8bG_d_zkz8jN7L1kYBnUR=EAY6hOaA@mail.gmail.com>
- <20210326091207.5si6knxs7tn6rmod@wittgenstein> <CACT4Y+atQdf_fe3BPFRGVCzT1Ba3V_XjAo6XsRciL8nwt4wasw@mail.gmail.com>
- <CAHrFyr7iUpMh4sicxrMWwaUHKteU=qHt-1O-3hojAAX3d5879Q@mail.gmail.com> <20210326135011.wscs4pxal7vvsmmw@wittgenstein>
-In-Reply-To: <20210326135011.wscs4pxal7vvsmmw@wittgenstein>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 26 Mar 2021 15:22:39 +0100
-Message-ID: <CACT4Y+bHe2BG_DiVE9Bg3Vq60xqivpE=qRda+Ti20FJnWUqCDQ@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: null-ptr-deref Read in filp_close (2)
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     syzbot <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 2:50 PM Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Fri, Mar 26, 2021 at 10:34:28AM +0100, Christian Brauner wrote:
-> > On Fri, Mar 26, 2021, 10:21 Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > > On Fri, Mar 26, 2021 at 10:12 AM Christian Brauner
-> > > <christian.brauner@ubuntu.com> wrote:
-> > > >
-> > > > On Fri, Mar 26, 2021 at 09:02:08AM +0100, Dmitry Vyukov wrote:
-> > > > > On Fri, Mar 26, 2021 at 8:55 AM syzbot
-> > > > > <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com> wrote:
-> > > > > >
-> > > > > > Hello,
-> > > > > >
-> > > > > > syzbot found the following issue on:
-> > > > > >
-> > > > > > HEAD commit:    5ee96fa9 Merge tag 'irq-urgent-2021-03-21' of git://
-> > > git.ke..
-> > > > > > git tree:       upstream
-> > > > > > console output:
-> > > https://syzkaller.appspot.com/x/log.txt?x=17fb84bed00000
-> > > > > > kernel config:
-> > > https://syzkaller.appspot.com/x/.config?x=6abda3336c698a07
-> > > > > > dashboard link:
-> > > https://syzkaller.appspot.com/bug?extid=283ce5a46486d6acdbaf
-> > > > > >
-> > > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > > >
-> > > > > > IMPORTANT: if you fix the issue, please add the following tag to the
-> > > commit:
-> > > > > > Reported-by: syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com
-> > > > >
-> > > > > I was able to reproduce this with the following C program:
-> > > > >
-> > > https://gist.githubusercontent.com/dvyukov/00fb7aae489f22c60b4e64b45ef14d60/raw/cb368ca523d01986c2917f4414add0893b8f4243/gistfile1.txt
-> > > > >
-> > > > > +Christian
-> > > > > The repro also contains close_range as the previous similar crash:
-> > > > >
-> > > https://syzkaller.appspot.com/bug?id=1bef50bdd9622a1969608d1090b2b4a588d0c6ac
-> > > > > I don't know if it's related or not in this case, but looks suspicious.
-> > > >
-> > > > Hm, I fail to reproduce this with your repro. Do you need to have it run
-> > > > for a long time?
-> > > > One thing that strucky my eye is that binfmt_misc gets setup which made
-> > > > me go huh and I see commit
-> > > >
-> > > > commit e7850f4d844e0acfac7e570af611d89deade3146
-> > > > Author: Lior Ribak <liorribak@gmail.com>
-> > > > Date:   Fri Mar 12 21:07:41 2021 -0800
-> > > >
-> > > >     binfmt_misc: fix possible deadlock in bm_register_write
-> > > >
-> > > > which uses filp_close() after having called open_exec() on the
-> > > > interpreter which makes me wonder why this doesn't have to use fput()
-> > > > like in all other codepaths for binfmnt_*.
-> > > >
-> > > > Can you revert this commit and see if you can reproduce this issue.
-> > > > Maybe this is a complete red herring but worth a try.
-> > >
-> > >
-> > > This program reproduces the crash for me almost immediately. Are you
-> > > sure you used the right commit/config?
-> > >
-> >
-> > I was trying to reproduce on v5.12-rc3 with all KASAN, KCSAN, KFENCE etc.
-> > turned on.
-> > I have an appointment I need to go to but will try to reproduce with commit
-> > and config you provided when I get home.
-> > I really hope it's not reproducible with v5.12-rc3 and only later commits
-> > since that would allow easier bisection.
->
-> Ok, I think I know what's going on. This fixes it for me. Can you test
-> too, please? I tried the #syz test way but syzbot doesn't have the
-> reproducer you gave me:
 
+s/orignally/originally/
 
-The crash does not happen with this patch.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/linux/coresight-pmu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
+diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
+index 4ac5c081af93..2d5c29e3cb8a 100644
+--- a/include/linux/coresight-pmu.h
++++ b/include/linux/coresight-pmu.h
+@@ -14,7 +14,7 @@
+  * Below are the definition of bit offsets for perf option, and works as
+  * arbitrary values for all ETM versions.
+  *
+- * Most of them are orignally from ETMv3.5/PTM's ETMCR config, therefore,
++ * Most of them are originally from ETMv3.5/PTM's ETMCR config, therefore,
+  * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
+  * directly use below macros as config bits.
+  */
+--
+2.26.2
 
-Thanks for the quick fix!
-
-
-
-> Thank you!
-> Christian
->
-> From eeb120d02f40b15a925f54ebcf2b4c747c741ad0 Mon Sep 17 00:00:00 2001
-> From: Christian Brauner <christian.brauner@ubuntu.com>
-> Date: Fri, 26 Mar 2021 13:33:03 +0100
-> Subject: [PATCH] file: fix close_range() for unshare+cloexec
->
-> syzbot reported a bug when putting the last reference to a tasks file
-> descriptor table. Debugging this showed we didn't recalculate the
-> current maximum fd number for CLOSE_RANGE_UNSHARE | CLOSE_RANGE_CLOEXEC
-> after we unshared the file descriptors table. So max_fd could exceed the
-> current fdtable maximum causing us to set excessive bits. As a concrete
-> example, let's say the user requested everything from fd 4 to ~0UL to be
-> closed and their current fdtable size is 256 with their highest open fd
-> being 4.  With CLOSE_RANGE_UNSHARE the caller will end up with a new
-> fdtable which has room for 64 file descriptors since that is the lowest
-> fdtable size we accept. But now max_fd will still point to 255 and needs
-> to be adjusted. Fix this by retrieving the correct maximum fd value in
-> __range_cloexec().
->
-> Reported-by: syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
->  fs/file.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/file.c b/fs/file.c
-> index f3a4bac2cbe9..5ef62377d924 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -632,6 +632,7 @@ EXPORT_SYMBOL(close_fd); /* for ksys_close() */
->  static inline void __range_cloexec(struct files_struct *cur_fds,
->                                    unsigned int fd, unsigned int max_fd)
->  {
-> +       unsigned int cur_max;
->         struct fdtable *fdt;
->
->         if (fd > max_fd)
-> @@ -639,7 +640,12 @@ static inline void __range_cloexec(struct files_struct *cur_fds,
->
->         spin_lock(&cur_fds->file_lock);
->         fdt = files_fdtable(cur_fds);
-> -       bitmap_set(fdt->close_on_exec, fd, max_fd - fd + 1);
-> +       /* make very sure we're using the correct maximum value */
-> +       cur_max = fdt->max_fds;
-> +       cur_max--;
-> +       cur_max = min(max_fd, cur_max);
-> +       if (fd <= cur_max)
-> +               bitmap_set(fdt->close_on_exec, fd, cur_max - fd + 1);
->         spin_unlock(&cur_fds->file_lock);
->  }
->
-> --
-> 2.27.0
->
