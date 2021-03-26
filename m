@@ -2,106 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4862349F6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00295349F70
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhCZCSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 22:18:07 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43782 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhCZCRq (ORCPT
+        id S230411AbhCZCUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 22:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230222AbhCZCUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 22:17:46 -0400
-Received: by mail-ot1-f43.google.com with SMTP id m21-20020a9d7ad50000b02901b83efc84a0so3900432otn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 19:17:46 -0700 (PDT)
+        Thu, 25 Mar 2021 22:20:11 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6CAC061763
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 19:20:11 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id x10so8360887ybr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 19:20:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=H54os4ygqofHn1WGMEZDcGVdM5o6qUhwH/wT9+rGWSk=;
+        b=ecGB21RKe7x71J+6hRcQeYU5JJ7wFAYU9S5q0hjnh5cFdjsPshHHo+BbrBLobCCFKv
+         NZKCDM+RhzB7lqPfAOQS3wauBG9Wt6dz84hgF6QN0gdxezNEhe2IHZ9vnbrRjrQZmatX
+         aA6unphmRZB9N8MgD7gtQcsLImor+8acXPyEPXdyuDiz+MgeWawbq8OlTcav3Ozoecet
+         jA89TWp1kJjZ1yiJ5iklCOGzc1mwEVvY5U1Bo/RoRvmKHnulFKlRQcuSDWeTploTW+Ib
+         p9YcLsgB2yhWz6jRMLj6HbocX9JL7d0WI1vXfS58F6E5owlm0a29FNCvV5oX9+xsL/Wl
+         SB1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pN6nWQzQZ6AQx0kJQTtGWLMXZDRLpSHjIhqC/t+YFhY=;
-        b=e291Q4y7IVdaWADI4uiq+C6gctV/yNiZSbxaG2MbSeAa1L4umtmuJ5qq50b68xdL/5
-         qlS0HRjUBtP3uEzHPKUd0Qny1NKCyWVz+/WjZ8udZ95eNC6NI6bRpjM/I8TgXceB+Dco
-         IgvTsMTzhH5S4slKgUINXAg+eGO7aVftav04keJKUb78S7UTc5f+n9b5OT8NiAL2J4Km
-         AV90rEz7JAMB3kn883vc3ExlbppgIcVv9BnRSSFsrSlACMsOZz9wsKQjrbfKGOapsRC5
-         0i0K2tIQj5DzFARYvV8IzW9/xrLAkCSnNw3VLQoGHhK8QEgVFlcIB8YE5LVzKBME/9wG
-         xxDw==
-X-Gm-Message-State: AOAM530vq3GZ1BikTN4FpAxVBrEP3hJasLfotsN8z03cIt/JHiLbY+eg
-        Ah8oZDnvZqoBTH+m20t16IQC76lMjk0=
-X-Google-Smtp-Source: ABdhPJzxxtd8AY/HlDoi1lELNCM5Z5bF0pZVTtJxN8+AG2D86WzyPJlLuEfi30WvIY/HyT5grkXuKQ==
-X-Received: by 2002:a05:6830:11a:: with SMTP id i26mr10046940otp.91.1616725065662;
-        Thu, 25 Mar 2021 19:17:45 -0700 (PDT)
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com. [209.85.210.53])
-        by smtp.gmail.com with ESMTPSA id g2sm1757002otn.32.2021.03.25.19.17.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Mar 2021 19:17:44 -0700 (PDT)
-Received: by mail-ot1-f53.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so3917421ota.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 19:17:44 -0700 (PDT)
-X-Received: by 2002:a05:6830:20da:: with SMTP id z26mr10108692otq.74.1616725064425;
- Thu, 25 Mar 2021 19:17:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210323131530.2619900-1-arnd@kernel.org>
-In-Reply-To: <20210323131530.2619900-1-arnd@kernel.org>
-From:   Li Yang <leoyang.li@nxp.com>
-Date:   Thu, 25 Mar 2021 21:17:33 -0500
-X-Gmail-Original-Message-ID: <CADRPPNQJfJ=KmRGkX5Uo6VfWDsihrMUKV7OkQ7jtb3+Byb0RLQ@mail.gmail.com>
-Message-ID: <CADRPPNQJfJ=KmRGkX5Uo6VfWDsihrMUKV7OkQ7jtb3+Byb0RLQ@mail.gmail.com>
-Subject: Re: [PATCH] soc/fsl: qbman: fix conflicting alignment attributes
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Roy Pledge <roy.pledge@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Scott Wood <oss@buserror.net>, Arnd Bergmann <arnd@arndb.de>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        YueHaibing <yuehaibing@huawei.com>,
-        lkml <linux-kernel@vger.kernel.org>, soc@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Madalin-cristian Bucur <madalin.bucur@nxp.com>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=H54os4ygqofHn1WGMEZDcGVdM5o6qUhwH/wT9+rGWSk=;
+        b=gExMCP5ryD5W39LNQ2+otYH9jFPpPKCIsnfKUo0vUKdU1byE03lAu7FpPWNs680mrA
+         KrRDpKPrLUxYTZ//Garb05hcHLad9QFZOO7FZihSR5Z2wDQJS76W3w1K8bz5lZmij9Ay
+         MFlQ+kCrAcY+uiZP8DYS79dEktsLUmSsU+U0ZNgMKDxtr5CaTEMqdto0/iaHytZ6zlgK
+         CvSjysyiP6RBPWi2FkX1+4vEMH/j5J578WX03PTO84/xQZCaQ2TcPOK5WVXiN+d0QDtN
+         gyqtUwj8gJNkii2U0OlhBb+8OoahPepttHw2AWHuFVGRlW7QbShezqDzLKaf/yC5ulOa
+         zpRw==
+X-Gm-Message-State: AOAM53040qZSIT1P6XyuiCA9oHky1L9jH5byqRNw0RDlh43FS+AKD8Zk
+        0dz/NWYHOO724wlfutW6Q52YCk2Xq4A=
+X-Google-Smtp-Source: ABdhPJyiUWYORNUHyA8HYU5z2Afa3KK2uvzs30OB8QjgL1a1U3zQY52m5lnijJTDVWnHZyILMRS2XSl6DRU=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
+ (user=seanjc job=sendgmr) by 2002:a5b:18d:: with SMTP id r13mr17361673ybl.184.1616725210248;
+ Thu, 25 Mar 2021 19:20:10 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu, 25 Mar 2021 19:19:39 -0700
+Message-Id: <20210326021957.1424875-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
+Subject: [PATCH 00/18] KVM: Consolidate and optimize MMU notifiers
+From:   Sean Christopherson <seanjc@google.com>
+To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 8:17 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> When building with W=1, gcc points out that the __packed attribute
-> on struct qm_eqcr_entry conflicts with the 8-byte alignment
-> attribute on struct qm_fd inside it:
->
-> drivers/soc/fsl/qbman/qman.c:189:1: error: alignment 1 of 'struct qm_eqcr_entry' is less than 8 [-Werror=packed-not-aligned]
->
-> I assume that the alignment attribute is the correct one, and
-> that qm_eqcr_entry cannot actually be unaligned in memory,
-> so add the same alignment on the outer struct.
->
-> Fixes: c535e923bb97 ("soc/fsl: Introduce DPAA 1.x QMan device driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/soc/fsl/qbman/qman.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/soc/fsl/qbman/qman.c b/drivers/soc/fsl/qbman/qman.c
-> index a1b9be1d105a..fde4edd83c14 100644
-> --- a/drivers/soc/fsl/qbman/qman.c
-> +++ b/drivers/soc/fsl/qbman/qman.c
-> @@ -186,7 +186,7 @@ struct qm_eqcr_entry {
->         __be32 tag;
->         struct qm_fd fd;
->         u8 __reserved3[32];
-> -} __packed;
-> +} __packed __aligned(8);
+The end goal of this series is to optimize the MMU notifiers to take
+mmu_lock if and only if the notification is relevant to KVM, i.e. the hva
+range overlaps a memslot.   Large VMs (hundreds of vCPUs) are very
+sensitive to mmu_lock being taken for write at inopportune times, and
+such VMs also tend to be "static", e.g. backed by HugeTLB with minimal
+page shenanigans.  The vast majority of notifications for these VMs will
+be spurious (for KVM), and eliding mmu_lock for spurious notifications
+avoids an otherwise unacceptable disruption to the guest.
 
-The EQCR structure is actually aligned on 64-byte from the manual.
-But probably 8 is enough to let the compiler not complain.
+To get there without potentially degrading performance, e.g. due to
+multiple memslot lookups, especially on non-x86 where the use cases are
+largely unknown (from my perspective), first consolidate the MMU notifier
+logic by moving the hva->gfn lookups into common KVM.
 
->  #define QM_EQCR_VERB_VBIT              0x80
->  #define QM_EQCR_VERB_CMD_MASK          0x61    /* but only one value; */
->  #define QM_EQCR_VERB_CMD_ENQUEUE       0x01
-> --
-> 2.29.2
->
+Applies on my TDP MMU TLB flushing bug fixes[*], which conflict horribly
+with the TDP MMU changes in this series.  That code applies on kvm/queue
+(commit 4a98623d5d90, "KVM: x86/mmu: Mark the PAE roots as decrypted for
+shadow paging").
+
+Speaking of conflicts, Ben will soon be posting a series to convert a
+bunch of TDP MMU flows to take mmu_lock only for read.  Presumably there
+will be an absurd number of conflicts; Ben and I will sort out the
+conflicts in whichever series loses the race.
+
+Well tested on Intel and AMD.  Compile tested for arm64, MIPS, PPC,
+PPC e500, and s390.  Absolutely needs to be tested for real on non-x86,
+I give it even odds that I introduced an off-by-one bug somewhere.
+
+[*] https://lkml.kernel.org/r/20210325200119.1359384-1-seanjc@google.com
+
+
+Patches 1-7 are x86 specific prep patches to play nice with moving
+the hva->gfn memslot lookups into common code.  There ended up being waaay
+more of these than I expected/wanted, but I had a hell of a time getting
+the flushing logic right when shuffling the memslot and address space
+loops.  In the end, I was more confident I got things correct by batching
+the flushes.
+
+Patch 8 moves the existing API prototypes into common code.  It could
+technically be dropped since the old APIs are gone in the end, but I
+thought the switch to the new APIs would suck a bit less this way.
+
+Patch 9 moves arm64's MMU notifier tracepoints into common code so that
+they are not lost when arm64 is converted to the new APIs, and so that all
+architectures can benefit.
+
+Patch 10 moves x86's memslot walkers into common KVM.  I chose x86 purely
+because I could actually test it.  All architectures use nearly identical
+code, so I don't think it actually matters in the end.
+
+Patches 11-13 move arm64, MIPS, and PPC to the new APIs.
+
+Patch 14 yanks out the old APIs.
+
+Patch 15 adds the mmu_lock elision, but only for unpaired notifications.
+
+Patch 16 adds mmu_lock elision for paired .invalidate_range_{start,end}().
+This is quite nasty and no small part of me thinks the patch should be
+burned with fire (I won't spoil it any further), but it's also the most
+problematic scenario for our particular use case.  :-/
+
+Patches 17-18 are additional x86 cleanups.
+
+Sean Christopherson (18):
+  KVM: x86/mmu: Coalesce TDP MMU TLB flushes when zapping collapsible
+    SPTEs
+  KVM: x86/mmu: Move flushing for "slot" handlers to caller for legacy
+    MMU
+  KVM: x86/mmu: Coalesce TLB flushes when zapping collapsible SPTEs
+  KVM: x86/mmu: Coalesce TLB flushes across address spaces for gfn range
+    zap
+  KVM: x86/mmu: Pass address space ID to __kvm_tdp_mmu_zap_gfn_range()
+  KVM: x86/mmu: Pass address space ID to TDP MMU root walkers
+  KVM: x86/mmu: Use leaf-only loop for walking TDP SPTEs when changing
+    SPTE
+  KVM: Move prototypes for MMU notifier callbacks to generic code
+  KVM: Move arm64's MMU notifier trace events to generic code
+  KVM: Move x86's MMU notifier memslot walkers to generic code
+  KVM: arm64: Convert to the gfn-based MMU notifier callbacks
+  KVM: MIPS/MMU: Convert to the gfn-based MMU notifier callbacks
+  KVM: PPC: Convert to the gfn-based MMU notifier callbacks
+  KVM: Kill off the old hva-based MMU notifier callbacks
+  KVM: Take mmu_lock when handling MMU notifier iff the hva hits a
+    memslot
+  KVM: Don't take mmu_lock for range invalidation unless necessary
+  KVM: x86/mmu: Allow yielding during MMU notifier unmap/zap, if
+    possible
+  KVM: x86/mmu: Drop trace_kvm_age_page() tracepoint
+
+ arch/arm64/include/asm/kvm_host.h             |   5 -
+ arch/arm64/kvm/mmu.c                          | 118 ++----
+ arch/arm64/kvm/trace_arm.h                    |  66 ----
+ arch/mips/include/asm/kvm_host.h              |   5 -
+ arch/mips/kvm/mmu.c                           |  97 +----
+ arch/powerpc/include/asm/kvm_book3s.h         |  12 +-
+ arch/powerpc/include/asm/kvm_host.h           |   7 -
+ arch/powerpc/include/asm/kvm_ppc.h            |   9 +-
+ arch/powerpc/kvm/book3s.c                     |  18 +-
+ arch/powerpc/kvm/book3s.h                     |  10 +-
+ arch/powerpc/kvm/book3s_64_mmu_hv.c           |  98 ++---
+ arch/powerpc/kvm/book3s_64_mmu_radix.c        |  25 +-
+ arch/powerpc/kvm/book3s_hv.c                  |  12 +-
+ arch/powerpc/kvm/book3s_pr.c                  |  56 +--
+ arch/powerpc/kvm/e500_mmu_host.c              |  29 +-
+ arch/powerpc/kvm/trace_booke.h                |  15 -
+ arch/x86/include/asm/kvm_host.h               |   6 +-
+ arch/x86/kvm/mmu/mmu.c                        | 180 ++++-----
+ arch/x86/kvm/mmu/mmu_internal.h               |  10 +
+ arch/x86/kvm/mmu/tdp_mmu.c                    | 344 +++++++-----------
+ arch/x86/kvm/mmu/tdp_mmu.h                    |  31 +-
+ include/linux/kvm_host.h                      |  22 +-
+ include/trace/events/kvm.h                    |  90 +++--
+ tools/testing/selftests/kvm/lib/kvm_util.c    |   4 -
+ .../selftests/kvm/lib/x86_64/processor.c      |   2 +
+ virt/kvm/kvm_main.c                           | 312 ++++++++++++----
+ 26 files changed, 697 insertions(+), 886 deletions(-)
+
+-- 
+2.31.0.291.g576ba9dcdaf-goog
+
