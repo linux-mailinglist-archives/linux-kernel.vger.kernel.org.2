@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C84934A0B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 05:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C361D34A0BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229474AbhCZE5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 00:57:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56134 "EHLO mail.kernel.org"
+        id S229753AbhCZE7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 00:59:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229486AbhCZE5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 00:57:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 627F961A45
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:57:17 +0000 (UTC)
+        id S229551AbhCZE7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 00:59:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFA8861A44
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:59:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616734637;
-        bh=Jo0P5Muvb8+8gfjPQRi5hsZaxh6GN7AU308texcxIAA=;
+        s=k20201202; t=1616734758;
+        bh=dEk8ZXGgMpgPdB95Q+GWWYAMhYOliJnVarqq5EcDWEE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DA+GzhnNXjZ1nnTteLALR+Catssi3ud00zohi3LtxDDuSeJ7bDzDJH4jGbLnuhy2r
-         HtnPCr0263Z1wj08m2IJzhN3ThSUASTu9VQxrLpxCWLr4WARYUJTACwCiliFbf6cVu
-         2vkD/oCO6FwyQXPMd6h4tXi69t8m9owoEGMQuiWAdBHHNIxuZYMjMgThfVSMbsy7q+
-         Ut818JRaMB8LFFuHnIE8HEcTXUhsi6eJs1J3+exrbBMTyAxOwcS0V5xnIKZ4COBk0H
-         FO5Ij6lwmtTMu2FgM6GnsfHxGL4QQRlpj5ABDdd4aqTZFPh+GjqPfRfCpNcOYDThwf
-         rUYFoIFJbdJVA==
-Received: by mail-lj1-f176.google.com with SMTP id 184so5912363ljf.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:57:17 -0700 (PDT)
-X-Gm-Message-State: AOAM531e5kzqbeO8udsO+nr/+aKVe7iP55RpVedwQyufbjpov4nDcDkn
-        LdJ147b47y4YnfjTCCrVnT3CqX4n3vWPOnFeM57vMA==
-X-Google-Smtp-Source: ABdhPJzQUC5kz4KsMNdtYz20rohKj/gTGnfe27XhqBn77MDhO+QCO6+ZjKJL54krol5eOLqpgHby8Vz1sy8kLqXHsAs=
-X-Received: by 2002:a17:907:2809:: with SMTP id eb9mr12915334ejc.204.1616734624746;
- Thu, 25 Mar 2021 21:57:04 -0700 (PDT)
+        b=ZQeWguAlR+bYr20n5WpPU3pQNOamMrLc2dnV7B4ai1NtLQ8wfs5VCmnzJ9CZVw72d
+         20Ng3IunT5xnNB5qrXp+V/pL/RXduKSLnEmIJAIbCWGmz5KWXWB4EvCeFOU35AH3VF
+         YRxfWv2a7Me2xlAY1Fb0KUcXcj8jNrZB3Ei7/0S4s8bP434dFm2Kf+4IZiIRP6xBN0
+         fHXzjrThMDu86//C6770IBNoSBT5Ote2QNlp98A8eUGUUin8GDp6GPe1tW9BuYg4RW
+         6Kf/x+ed2dc0txNyJe7mnyMjUFXzdUhL4qKryJsh9YWSUrBquEZjAJzkkNYgb7IpmF
+         McVHRrUdZ/Ydg==
+Received: by mail-lf1-f50.google.com with SMTP id n138so5839322lfa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:59:17 -0700 (PDT)
+X-Gm-Message-State: AOAM532vCI8mCndRaXJd8OcvCd5m6K7x/3/HBy/+70NXoWgeKvkitvzs
+        4YpABGS2YHSxbwlG04l3iOEsSmVXMT6AJpW6e1hhlA==
+X-Google-Smtp-Source: ABdhPJxCxNQfg/K4yaCHgGuHl7WepFi+j5GnPwB/0t0ZibWzhF4vOLkV71zCZw4RX4om+spYA/cLAkttnsbBPJK4pho=
+X-Received: by 2002:a17:906:7e12:: with SMTP id e18mr13774986ejr.316.1616734745657;
+ Thu, 25 Mar 2021 21:59:05 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210316065215.23768-1-chang.seok.bae@intel.com>
  <20210316065215.23768-6-chang.seok.bae@intel.com> <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
- <20210325185435.GB32296@zn.tnic>
-In-Reply-To: <20210325185435.GB32296@zn.tnic>
+In-Reply-To: <CALCETrU_n+dP4GaUJRQoKcDSwaWL9Vc99Yy+N=QGVZ_tx_j3Zg@mail.gmail.com>
 From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 25 Mar 2021 21:56:53 -0700
-X-Gmail-Original-Message-ID: <CALCETrXQZuvJQrHDMst6PPgtJxaS_sPk2JhwMiMDNPunq45YFg@mail.gmail.com>
-Message-ID: <CALCETrXQZuvJQrHDMst6PPgtJxaS_sPk2JhwMiMDNPunq45YFg@mail.gmail.com>
+Date:   Thu, 25 Mar 2021 21:58:54 -0700
+X-Gmail-Original-Message-ID: <CALCETrVRz8kvqxk2Xg5=c_0YWcgofXnqPb3uZRcca9pphE0sHg@mail.gmail.com>
+Message-ID: <CALCETrVRz8kvqxk2Xg5=c_0YWcgofXnqPb3uZRcca9pphE0sHg@mail.gmail.com>
 Subject: Re: [PATCH v7 5/6] x86/signal: Detect and prevent an alternate signal
  stack overflow
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Juergen Gross <jgross@suse.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
+        Borislav Petkov <bp@suse.de>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
         Len Brown <len.brown@intel.com>,
@@ -62,93 +60,23 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         libc-alpha <libc-alpha@sourceware.org>,
         linux-arch <linux-arch@vger.kernel.org>,
         Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 11:54 AM Borislav Petkov <bp@suse.de> wrote:
->
-> On Thu, Mar 25, 2021 at 11:13:12AM -0700, Andy Lutomirski wrote:
-> > diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> > index ea794a083c44..53781324a2d3 100644
-> > --- a/arch/x86/kernel/signal.c
-> > +++ b/arch/x86/kernel/signal.c
-> > @@ -237,7 +237,8 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
-> >       unsigned long math_size = 0;
-> >       unsigned long sp = regs->sp;
-> >       unsigned long buf_fx = 0;
-> > -     int onsigstack = on_sig_stack(sp);
-> > +     bool already_onsigstack = on_sig_stack(sp);
-> > +     bool entering_altstack = false;
-> >       int ret;
-> >
-> >       /* redzone */
-> > @@ -246,15 +247,25 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
-> >
-> >       /* This is the X/Open sanctioned signal stack switching.  */
-> >       if (ka->sa.sa_flags & SA_ONSTACK) {
-> > -             if (sas_ss_flags(sp) == 0)
-> > +             /*
-> > +              * This checks already_onsigstack via sas_ss_flags().
-> > +              * Sensible programs use SS_AUTODISARM, which disables
-> > +              * that check, and programs that don't use
-> > +              * SS_AUTODISARM get compatible but potentially
-> > +              * bizarre behavior.
-> > +              */
-> > +             if (sas_ss_flags(sp) == 0) {
-> >                       sp = current->sas_ss_sp + current->sas_ss_size;
-> > +                     entering_altstack = true;
-> > +             }
-> >       } else if (IS_ENABLED(CONFIG_X86_32) &&
-> > -                !onsigstack &&
-> > +                !already_onsigstack &&
-> >                  regs->ss != __USER_DS &&
-> >                  !(ka->sa.sa_flags & SA_RESTORER) &&
-> >                  ka->sa.sa_restorer) {
-> >               /* This is the legacy signal stack switching. */
-> >               sp = (unsigned long) ka->sa.sa_restorer;
-> > +             entering_altstack = true;
-> >       }
->
-> What a mess this whole signal handling is. I need a course in signal
-> handling to understand what's going on here...
->
-> >
-> >       sp = fpu__alloc_mathframe(sp, IS_ENABLED(CONFIG_X86_32),
-> > @@ -267,8 +278,16 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
-> >        * If we are on the alternate signal stack and would overflow it, don't.
-> >        * Return an always-bogus address instead so we will die with SIGSEGV.
-> >        */
-> > -     if (onsigstack && !likely(on_sig_stack(sp)))
-> > +     if (unlikely(entering_altstack &&
-> > +                  (sp <= current->sas_ss_sp ||
-> > +                   sp - current->sas_ss_sp > current->sas_ss_size))) {
->
-> You could've simply done
->
->         if (unlikely(entering_altstack && !on_sig_stack(sp)))
->
-> here.
+I forgot to mention why I cc'd all you fine Xen folk:
 
-Nope.  on_sig_stack() is a horrible kludge and won't work here.  We
-could have something like __on_sig_stack() or sp_is_on_sig_stack() or
-something, though.
+On Thu, Mar 25, 2021 at 11:13 AM Andy Lutomirski <luto@kernel.org> wrote:
 
 >
->
-> > +             if (show_unhandled_signals && printk_ratelimit()) {
-> > +                     pr_info("%s[%d] overflowed sigaltstack",
-> > +                             tsk->comm, task_pid_nr(tsk));
-> > +             }
->
-> Why do you even wanna issue that? It looks like callers will propagate
-> an error value up and people don't look at dmesg all the time.
+> >         } else if (IS_ENABLED(CONFIG_X86_32) &&
+> >                    !onsigstack &&
+> >                    regs->ss != __USER_DS &&
 
-I figure that the people whose programs spontaneously crash should get
-a hint why if they look at dmesg.  Maybe the message should say
-"overflowed sigaltstack -- try noavx512"?
+This bit here seems really dubious on Xen PV.  Honestly it seems
+dubious everywhere, but especially on Xen PV.
 
-We really ought to have a SIGSIGFAIL signal that's sent, double-fault
-style, when we fail to send a signal.
+--Andy
