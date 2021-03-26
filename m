@@ -2,100 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2060934AD56
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D6134AD5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhCZR24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhCZR2c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:28:32 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3B8C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:28:32 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id k10so9638634ejg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K+JfJ+IVghbbF73AG5/h/ydSFAqFzFdokpF/W0pgnvU=;
-        b=DEyQzkgjA8rbI3yPSNDKqVvKOp6l+aPvzG3TsEIH3Y7HtRIeABFnYJke+ss/1be+r7
-         39GAI8s6L1jFDJ07yzUc9g5Bs42j7D3zvq9v0+wpVNmUetnwBqonscXjaXB9wvj9+vO7
-         ssEy1XQ7JngdvrpeSLC4mkdJRWy88qydn9LhM8Nj93sSYTx6fUbdj5JNJAti2jZ7kzqc
-         A13G4iISheGpeitlrqXbeai6Pe74T3x0Il4V+ywGrKT089fiB45UZn3MSJmtel9+RmGP
-         +YcPh0R0HDxIInafjZ+P+mTN/B9maasp+gKWn0c88RO3NABG36iXIPiBp1J+Y44unDyO
-         RHCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K+JfJ+IVghbbF73AG5/h/ydSFAqFzFdokpF/W0pgnvU=;
-        b=nAuGf4P3QY3pe7aSBBz/mIZastaJj1Po0BRrXbszcb1CkAO/WmvD2H9wyHXehxhAnY
-         q7FGsHV6OsK4o3taYro8los+R1P6xA6mkwsV4oy+SxyiIy5QfbTVZfw32wvWYOcTXO+L
-         MtgVEIs9ykBnrCrvcuD+HkkMnMPdiIKCQ6+AHgdJnX5aNocZowiqu01UY5svEOvMrhln
-         F862hlFEXVKc+gWSUIErknQOVmzZUAESRRJ2Tbcjt6N7qYleLQ7XTE7+MExkaFr+OTIc
-         75mEnAUQO0iXUvlgr4WH42TTVXVHikxs8gqErQc4K3bQQLbRGPZ55NB8NzjuvLfFgpiD
-         TLwQ==
-X-Gm-Message-State: AOAM5338jSfscOqxWwH5Wx7itRzo4R9OeKbIJFJDdoT1qmsvussH0RfM
-        xH0VzAgS75KOk8w1w8n0erNVyfma/QoQqpnWzFyibA==
-X-Google-Smtp-Source: ABdhPJyfQ//N1TPVO+n/uFqNMXuuRBQcF3/RrleipCOlrsqGKEcAq4Xt8+nrPl4lcK5h3Mbrmse2kFJI3pAxcIftlf8=
-X-Received: by 2002:a17:906:3159:: with SMTP id e25mr16617617eje.303.1616779710741;
- Fri, 26 Mar 2021 10:28:30 -0700 (PDT)
+        id S230138AbhCZRac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:30:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48098 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230080AbhCZRaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 13:30:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6551461999;
+        Fri, 26 Mar 2021 17:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616779815;
+        bh=eWlM2lnbwbQVyDrsp6UryCIrw7BBYtzLoxP7VjitbaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DJ/xTQqV8YZzHorUDvsuXD3Gvj1kluOXzg6A2CDunucl99TY4WtLt2aCG9+CMCCRb
+         6MKU5EGNNuJ34X19rjxlEnzcpeO9UzPYezPHSpVCZiJI2XeZd3ohi5eqc0l1sUzZn9
+         3Fgzmw9wnFfhn62/GZFoO1Ch4DgXBfDLpPYhhdurL3fDUMCCjM4V386OXb75w7P+o2
+         aQBVLku+2LRZvMRK+ideJaJ3vIoDrvNmPm+HYDUWbzlkBnQIXAnKdpz8FMPOumywFN
+         mw9+Xd9BEd2GioGVyKqFHOh8H6bVgm2FHNYdxIpLhmlBJPQ7PmYuVOa7MsLJyIb7Tn
+         Y00SMt4HUqKbg==
+Date:   Fri, 26 Mar 2021 10:30:13 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH] Revert "f2fs: give a warning only for
+ readonly partition"
+Message-ID: <YF4aJYVwOVtWsAbH@google.com>
+References: <20210323064155.12582-1-yuchao0@huawei.com>
+ <YFo16ADpWJ7OUAvK@google.com>
+ <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
+ <YFq+aQW7eihFuSst@google.com>
+ <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
+ <YFvA6uzDLeD7dRdY@google.com>
+ <8b0b0782-a667-9edc-5ee9-98ac9f67b7b7@huawei.com>
+ <c1e48546-f61b-5db9-13b6-6430ce368661@huawei.com>
+ <YF02sFKa778eomr9@google.com>
+ <84688aac-75da-1226-df4d-47ac97087c51@huawei.com>
 MIME-Version: 1.0
-References: <20210324230759.2213957-1-minchan@kernel.org>
-In-Reply-To: <20210324230759.2213957-1-minchan@kernel.org>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Fri, 26 Mar 2021 18:28:19 +0100
-Message-ID: <CADYN=9LZF4zWuV8VA1y3tcoKWzwK3zCJPFL6yDNuvMzGvEVarQ@mail.gmail.com>
-Subject: Re: [PATCH v8] mm: cma: support sysfs
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        John Dias <joaodias@google.com>, jhubbard@nvidia.com,
-        Matthew Wilcox <willy@infradead.org>, digetx@gmail.com,
-        Colin Ian King <colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84688aac-75da-1226-df4d-47ac97087c51@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 at 00:09, Minchan Kim <minchan@kernel.org> wrote:
->
-> Since CMA is getting used more widely, it's more important to
-> keep monitoring CMA statistics for system health since it's
-> directly related to user experience.
->
-> This patch introduces sysfs statistics for CMA, in order to provide
-> some basic monitoring of the CMA allocator.
->
->  * the number of CMA page successful allocations
->  * the number of CMA page allocation failures
->
-> These two values allow the user to calcuate the allocation
-> failure rate for each CMA area.
->
-> e.g.)
->   /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
->   /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
->   /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
->
-> The cma_stat was intentionally allocated by dynamic allocation
-> to harmonize with kobject lifetime management.
-> https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
->
-> Tested-by: Dmitry Osipenko <digetx@gmail.com>
-> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-> Link: https://lore.kernel.org/linux-mm/20210316100433.17665-1-colin.king@canonical.com/
-> Addresses-Coverity: ("Dereference after null check")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
+On 03/26, Chao Yu wrote:
+> On 2021/3/26 9:19, Jaegeuk Kim wrote:
+> > On 03/26, Chao Yu wrote:
+> > > On 2021/3/25 9:59, Chao Yu wrote:
+> > > > On 2021/3/25 6:44, Jaegeuk Kim wrote:
+> > > > > On 03/24, Chao Yu wrote:
+> > > > > > On 2021/3/24 12:22, Jaegeuk Kim wrote:
+> > > > > > > On 03/24, Chao Yu wrote:
+> > > > > > > > On 2021/3/24 2:39, Jaegeuk Kim wrote:
+> > > > > > > > > On 03/23, Chao Yu wrote:
+> > > > > > > > > > This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+> > > > > > > > > > 
+> > > > > > > > > > Because that commit fails generic/050 testcase which expect failure
+> > > > > > > > > > during mount a recoverable readonly partition.
+> > > > > > > > > 
+> > > > > > > > > I think we need to change generic/050, since f2fs can recover this partition,
+> > > > > > > > 
+> > > > > > > > Well, not sure we can change that testcase, since it restricts all generic
+> > > > > > > > filesystems behavior. At least, ext4's behavior makes sense to me:
+> > > > > > > > 
+> > > > > > > > 	journal_dev_ro = bdev_read_only(journal->j_dev);
+> > > > > > > > 	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
+> > > > > > > > 
+> > > > > > > > 	if (journal_dev_ro && !sb_rdonly(sb)) {
+> > > > > > > > 		ext4_msg(sb, KERN_ERR,
+> > > > > > > > 			 "journal device read-only, try mounting with '-o ro'");
+> > > > > > > > 		err = -EROFS;
+> > > > > > > > 		goto err_out;
+> > > > > > > > 	}
+> > > > > > > > 
+> > > > > > > > 	if (ext4_has_feature_journal_needs_recovery(sb)) {
+> > > > > > > > 		if (sb_rdonly(sb)) {
+> > > > > > > > 			ext4_msg(sb, KERN_INFO, "INFO: recovery "
+> > > > > > > > 					"required on readonly filesystem");
+> > > > > > > > 			if (really_read_only) {
+> > > > > > > > 				ext4_msg(sb, KERN_ERR, "write access "
+> > > > > > > > 					"unavailable, cannot proceed "
+> > > > > > > > 					"(try mounting with noload)");
+> > > > > > > > 				err = -EROFS;
+> > > > > > > > 				goto err_out;
+> > > > > > > > 			}
+> > > > > > > > 			ext4_msg(sb, KERN_INFO, "write access will "
+> > > > > > > > 			       "be enabled during recovery");
+> > > > > > > > 		}
+> > > > > > > > 	}
+> > > > > > > > 
+> > > > > > > > > even though using it as readonly. And, valid checkpoint can allow for user to
+> > > > > > > > > read all the data without problem.
+> > > > > > > > 
+> > > > > > > > > >       		if (f2fs_hw_is_readonly(sbi)) {
+> > > > > > > > 
+> > > > > > > > Since device is readonly now, all write to the device will fail, checkpoint can
+> > > > > > > > not persist recovered data, after page cache is expired, user can see stale data.
+> > > > > > > 
+> > > > > > > My point is, after mount with ro, there'll be no data write which preserves the
+> > > > > > > current status. So, in the next time, we can recover fsync'ed data later, if
+> > > > > > > user succeeds to mount as rw. Another point is, with the current checkpoint, we
+> > > > > > > should not have any corrupted metadata. So, why not giving a chance to show what
+> > > > > > > data remained to user? I think this can be doable only with CoW filesystems.
+> > > > > > 
+> > > > > > I guess we're talking about the different things...
+> > > > > > 
+> > > > > > Let me declare two different readonly status:
+> > > > > > 
+> > > > > > 1. filesystem readonly: file system is mount with ro mount option, and
+> > > > > > app from userspace can not modify any thing of filesystem, but filesystem
+> > > > > > itself can modify data on device since device may be writable.
+> > > > > > 
+> > > > > > 2. device readonly: device is set to readonly status via 'blockdev --setro'
+> > > > > > command, and then filesystem should never issue any write IO to the device.
+> > > > > > 
+> > > > > > So, what I mean is, *when device is readonly*, rather than f2fs mountpoint
+> > > > > > is readonly (f2fs_hw_is_readonly() returns true as below code, instead of
+> > > > > > f2fs_readonly() returns true), in this condition, we should not issue any
+> > > > > > write IO to device anyway, because, AFAIK, write IO will fail due to
+> > > > > > bio_check_ro() check.
+> > > > > 
+> > > > > In that case, mount(2) will try readonly, no?
+> > > > 
+> > > > Yes, if device is readonly, mount (2) can not mount/remount device to rw
+> > > > mountpoint.
+> > > 
+> > > Any other concern about this patch?
+> > 
+> > Indeed we're talking about different things. :)
+> > 
+> > This case is mount(ro) with device(ro) having some data to recover.
+> > My point is why not giving a chance to mount(ro) to show the current data
+> > covered by a valid checkpoint. This doesn't change anything in the disk,
+> Got your idea.
+> 
+> IMO, it has potential issue in above condition:
+> 
+> >>>>>>> Since device is readonly now, all write to the device will fail, checkpoint can
+> >>>>>>> not persist recovered data, after page cache is expired, user can see stale data.
+> 
+> e.g.
+> 
+> Recovery writes one inode and then triggers a checkpoint, all writes fail
 
-Tested-by: Anders Roxell <anders.roxell@linaro.org>
+I'm confused. Currently we don't trigger the roll-forward recovery.
+
+> due to device is readonly, once inode cache is reclaimed by vm, user will see
+> old inode when reloading it, or even see corrupted fs if partial meta inode's
+> cache is expired.
+> 
+> Thoughts?
+> 
+> Thanks,
+> 
+> > and in the next time, it allows mount(rw|ro) with device(rw) to recover
+> > the data seamlessly.
+> > 
+> > > 
+> > > Thanks,
+> > > 
+> > > > 
+> > > > Thanks,
+> > > > 
+> > > > > 
+> > > > > # blockdev --setro /dev/vdb
+> > > > > # mount -t f2fs /dev/vdb /mnt/test/
+> > > > > mount: /mnt/test: WARNING: source write-protected, mounted read-only.
+> > > > > 
+> > > > > > 
+> > > > > >     		if (f2fs_hw_is_readonly(sbi)) {
+> > > > > > -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+> > > > > > -				err = -EROFS;
+> > > > > > +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+> > > > > >     				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+> > > > > > -				goto free_meta;
+> > > > > > -			}
+> > > > > > -			f2fs_info(sbi, "write access unavailable, skipping recovery");
+> > > > > > +			else
+> > > > > > +				f2fs_info(sbi, "write access unavailable, skipping recovery");
+> > > > > >     			goto reset_checkpoint;
+> > > > > >     		}
+> > > > > > 
+> > > > > > For the case of filesystem is readonly and device is writable, it's fine
+> > > > > > to do recovery in order to let user to see fsynced data.
+> > > > > > 
+> > > > > > Thanks,
+> > > > > > 
+> > > > > > > 
+> > > > > > > > 
+> > > > > > > > Am I missing something?
+> > > > > > > > 
+> > > > > > > > Thanks,
+> > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > > > 
+> > > > > > > > > > Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
+> > > > > > > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > > > > > > > ---
+> > > > > > > > > >       fs/f2fs/super.c | 8 +++++---
+> > > > > > > > > >       1 file changed, 5 insertions(+), 3 deletions(-)
+> > > > > > > > > > 
+> > > > > > > > > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > > > > > > > > > index b48281642e98..2b78ee11f093 100644
+> > > > > > > > > > --- a/fs/f2fs/super.c
+> > > > > > > > > > +++ b/fs/f2fs/super.c
+> > > > > > > > > > @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+> > > > > > > > > >       		 * previous checkpoint was not done by clean system shutdown.
+> > > > > > > > > >       		 */
+> > > > > > > > > >       		if (f2fs_hw_is_readonly(sbi)) {
+> > > > > > > > > > -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+> > > > > > > > > > +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+> > > > > > > > > > +				err = -EROFS;
+> > > > > > > > > >       				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+> > > > > > > > > > -			else
+> > > > > > > > > > -				f2fs_info(sbi, "write access unavailable, skipping recovery");
+> > > > > > > > > > +				goto free_meta;
+> > > > > > > > > > +			}
+> > > > > > > > > > +			f2fs_info(sbi, "write access unavailable, skipping recovery");
+> > > > > > > > > >       			goto reset_checkpoint;
+> > > > > > > > > >       		}
+> > > > > > > > > > -- 
+> > > > > > > > > > 2.29.2
+> > > > > > > > > .
+> > > > > > > > > 
+> > > > > > > .
+> > > > > > > 
+> > > > > .
+> > > > > 
+> > > > 
+> > > > 
+> > > > _______________________________________________
+> > > > Linux-f2fs-devel mailing list
+> > > > Linux-f2fs-devel@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > > > .
+> > > > 
+> > .
+> > 
