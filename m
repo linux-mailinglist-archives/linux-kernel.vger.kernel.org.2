@@ -2,108 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA2334A399
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D50834A3A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:06:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhCZJC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:02:27 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52898 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhCZJBz (ORCPT
+        id S229695AbhCZJGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:06:13 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:8286 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229589AbhCZJFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:01:55 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 14D201C0BB9; Fri, 26 Mar 2021 10:01:53 +0100 (CET)
-Date:   Fri, 26 Mar 2021 10:01:52 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@osdl.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH] remove Dan Murphy from TI from MAINTAINERS
-Message-ID: <20210326090152.GA21828@amd>
+        Fri, 26 Mar 2021 05:05:49 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12Q91f9o008067;
+        Fri, 26 Mar 2021 10:05:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=SfGDczMFdVs4NsLs7fVrUK95O9Wm/idmWV1zG/3B7ks=;
+ b=jL43Rz2N0zLtHTkJh3ufuzEUV8+Z3TbBptIr1IKRqDN8NAiocMg+wO/0XU2hGOyNDTwW
+ ji0JrhS0pLXUYBZWbzfUe4zCkA4B5smB/bpIbu1BRy37/gKzIgYmcHW+3MjOekBfu7St
+ +q7Odmf1I+Vxhl+x5/cxHpAi37/K5p9/CPuFZLWZVAunbLZSc00vGWhtHFFLfDsMBufx
+ 5tAJqD6zymWVKRgUiyp7ZUFhcOST0nnyDAAtKv8fEvUiVNXv7PPjlQUvEJ/6C99kbPBv
+ iKsINgVvkqEB7VtkWTM2NLgG8bxpW2PuFoTM6SF0eP5EuQXhC4FCK806xy2XFqWfvED8 rg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37h136320v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 26 Mar 2021 10:05:35 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4A44A100034;
+        Fri, 26 Mar 2021 10:05:34 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 323C924187A;
+        Fri, 26 Mar 2021 10:05:34 +0100 (CET)
+Received: from lmecxl0995.lme.st.com (10.75.127.50) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Mar
+ 2021 10:05:33 +0100
+Subject: Re: [PATCH 1/2] dt-bindings: phy: add vbus-supply optional property
+ to phy-stm32-usbphyc
+To:     Rob Herring <robh@kernel.org>
+CC:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210317160954.15487-1-amelie.delaunay@foss.st.com>
+ <20210317160954.15487-2-amelie.delaunay@foss.st.com>
+ <20210326002851.GA2031564@robh.at.kernel.org>
+From:   Amelie DELAUNAY <amelie.delaunay@foss.st.com>
+Message-ID: <5c0d0bc5-1243-fcda-4578-da6cad80c53c@foss.st.com>
+Date:   Fri, 26 Mar 2021 10:05:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="7JfCtLOvnd9MIVvH"
-Content-Disposition: inline
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210326002851.GA2031564@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-26_02:2021-03-26,2021-03-26 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
---7JfCtLOvnd9MIVvH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 3/26/21 1:28 AM, Rob Herring wrote:
+> On Wed, Mar 17, 2021 at 05:09:53PM +0100, Amelie Delaunay wrote:
+>> This patch adds vbus-supply optional property to phy sub-nodes.
+>> A regulator for USB VBUS may be needed for host mode.
+>>
+>> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+>> ---
+>>   Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+>> index 018cc1246ee1..ad2378c30334 100644
+>> --- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+>> +++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
+>> @@ -71,6 +71,9 @@ patternProperties:
+>>         phy-supply:
+>>           description: regulator providing 3V3 power supply to the PHY.
+>>   
+>> +      vbus-supply:
+>> +        description: regulator providing 5V Vbus to the USB connector.
+> 
+> Unless Vbus is powering the phy, then this only belongs in the USB
+> connector node.
+> 
 
+Do you mean I should declare a connector node as a child of the phy node 
+and get the vbus-supply property from this connector node ?
 
-Dan's address bounces, and has been bouncing for some time as he moved
-to other projects.
+In case of a on-board autonomous hub between the phy and the connectors, 
+so no driver to drive it nor to get the vbus-supply property to provide 
+VBUS to the hub, then the connectors, how to use connector ?
 
-I believe TI should be more careful with this, and should assign
-alternate contacts for their drivers.
+[USB controller]===[USB PHY]===[(USB HUB)]===|> USB A connector
+                               /              |> USB A connector
+                             VBUS             |> USB A connector
+                                              |> USB A connector
 
-Anyway what we can do now is to remove the obsolete address.
+Please advise.
 
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
+Regards,
+Amelie
 
----
-
-(I'm sending this directly; you can also have it as a pull request for
-late -rc or with the LEDs in next -rc1... but I believe applying it
-directly is easiest).
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..11d83c30b737 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10030,7 +10030,6 @@ F:	scripts/leaking_addresses.pl
-=20
- LED SUBSYSTEM
- M:	Pavel Machek <pavel@ucw.cz>
--R:	Dan Murphy <dmurphy@ti.com>
- L:	linux-leds@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git
-@@ -10905,7 +10904,6 @@ T:	git git://linuxtv.org/media_tree.git
- F:	drivers/media/radio/radio-maxiradio*
-=20
- MCAN MMIO DEVICE DRIVER
--M:	Dan Murphy <dmurphy@ti.com>
- M:	Pankaj Sharma <pankj.sharma@samsung.com>
- L:	linux-can@vger.kernel.org
- S:	Maintained
-@@ -17846,7 +17844,6 @@ S:	Maintained
- F:	drivers/thermal/ti-soc-thermal/
-=20
- TI BQ27XXX POWER SUPPLY DRIVER
--R:	Dan Murphy <dmurphy@ti.com>
- F:	drivers/power/supply/bq27xxx_battery.c
- F:	drivers/power/supply/bq27xxx_battery_i2c.c
- F:	include/linux/power/bq27xxx_battery.h
-@@ -17981,7 +17978,6 @@ S:	Odd Fixes
- F:	sound/soc/codecs/tas571x*
-=20
- TI TCAN4X5X DEVICE DRIVER
--M:	Dan Murphy <dmurphy@ti.com>
- L:	linux-can@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/net/can/tcan4x5x.txt
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---7JfCtLOvnd9MIVvH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBdowAACgkQMOfwapXb+vLV9ACfQprMciq0UhJYUBVhJHrSC3sQ
-1u4An2M8c5y9raqhIyxA7vfMnG5SslG4
-=Uwfh
------END PGP SIGNATURE-----
-
---7JfCtLOvnd9MIVvH--
+>> +
+>>         "#phy-cells":
+>>           enum: [ 0x0, 0x1 ]
+>>   
+>> -- 
+>> 2.17.1
+>>
