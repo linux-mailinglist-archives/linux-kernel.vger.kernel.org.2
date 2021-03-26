@@ -2,265 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F5934A764
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA9634A76A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:40:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhCZMiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:38:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27075 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229779AbhCZMhz (ORCPT
+        id S230134AbhCZMj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230093AbhCZMiz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:37:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616762274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WOE7NrOe/lUFcec/VQExNlNZgIrXD9vAFV4hGyOnZ04=;
-        b=f9/lSWSoFY6P833Yo6fNgKpDhq5eJCdEzRMB1i5px8PLPYb2Dg3eM9u94+HRMMWqJi2+4k
-        N8aDaN+bf3fPDvrGpUlYvGdoFdly9+YjU8vxbmX1LnqWz6Vipp8/L9omNmXkLGfHAKKXmo
-        7btV1QltsNSLRqcaW1Na2NNrMLHlrJI=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-7_8kTyDnPxyfpfysrGGe0w-1; Fri, 26 Mar 2021 08:37:53 -0400
-X-MC-Unique: 7_8kTyDnPxyfpfysrGGe0w-1
-Received: by mail-ed1-f72.google.com with SMTP id w18so4336318edu.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:37:52 -0700 (PDT)
+        Fri, 26 Mar 2021 08:38:55 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AC1C0613AA;
+        Fri, 26 Mar 2021 05:38:55 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id y6so6164069eds.1;
+        Fri, 26 Mar 2021 05:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TI7Nmt/BHimUD5hSkZsAh6B21oeeTIQziXEdC5IeIKw=;
+        b=cWftyIE+qy80m+oB4+ZXkYXBcUdhAfpKZOyvn2ELMtyCNzXD0QaJ1gQlssBAfRd/rV
+         VoS2y4cWa+Y0VRAfKw4MK39jXw2+tPk55rUcdpZaxczbxUO0ri9FlZwQ3UcfOVPdk3za
+         cT+T9KjWmH6aGmWYZzfyAO7AwK40pidndGjmibEzqDlQPTvBPj0h2LC1lZ3QRcbpts/P
+         bEE1LoFchBaBeGdJq6+csKwzH/gZ7+wgb/yG8oxgz8xkHtfJ7gT9iUF+R1sTaGP1HAZS
+         7S3SUcmpIy6Hwc/y4+eQ/F2FqsHqB7y6HKlD+49H+tw0O6o9ulEdwaKWCpFORiDfAqcS
+         9oNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=WOE7NrOe/lUFcec/VQExNlNZgIrXD9vAFV4hGyOnZ04=;
-        b=g9ezJP7MMgfzMNAJRXlGG1dV9YBGG8he+aeJvp1J8pkgivrUk5OpOQyAaEPKLyz/E8
-         tk41iOllRnHxth9krLyQuhh1a/0hTlEAm3ssWMe6MHMswxAC0D19xlQRKSULLtWl7xRP
-         qFe6yCp6knecbc14N+xZ+oZHWnAXEVpofK27+4rDLMT8pBt8jQuf8DUYGhJFz78ieZBE
-         9FzK1hDACC8EAJNYvxnc5saSdkbx//8pBuOGq+jhilf8mxGI19qiEwjjhka+ZDsSiXcN
-         hFsQvn/IPDRaCk1V27unxGp85dH9SDreZnCHXXeeAjus1Z5DMjZWXlPJY4TZEHw6980c
-         DwxA==
-X-Gm-Message-State: AOAM531+hmaK6FP10y3mno1hC72B3GjkY+rp94+0+i4KgCO1nQ1YnEH3
-        PYIOQPzUxUdB+akPHelCVkTm4aFgXyXBCgDhc+zRxdL57ZLsiPQJo+UMjWeoVAZLH4jHCioRxVe
-        Vvgkaaw7axOu6ni3WNGLcp7BvGKS26GwMIJMRmyosPiTUGZmAixgEt54nAyYwZp4F1iDhNoM3K6
-        TX
-X-Received: by 2002:a17:906:4ada:: with SMTP id u26mr15073620ejt.129.1616762271793;
-        Fri, 26 Mar 2021 05:37:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypsOeknHcD+xj3rdwv3OhzijkyYJHBHKiF5pdspfP2ypCyr60QMepV3hOPO7R6h8PIEleZ+Q==
-X-Received: by 2002:a17:906:4ada:: with SMTP id u26mr15073579ejt.129.1616762271517;
-        Fri, 26 Mar 2021 05:37:51 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g1sm827471edv.6.2021.03.26.05.37.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TI7Nmt/BHimUD5hSkZsAh6B21oeeTIQziXEdC5IeIKw=;
+        b=XGYLWChqMxD9Z7XFbDr4n4xSEF6JWU/9nVfkubVsCGbiEvkJWv1c56+bvIrU5Nqpbq
+         9GV8cARYcovO316Hk2WC61b2Akt7qkEBThFRnk81XcS1X9/yFX8CUUJdNVdhnbKIEfqC
+         +AHQm6qQWyWS/drrSKqGMGMqvcmoGEIedbEqN1JV6D3TzmO+7draIF519RKiAUTCsJAY
+         UlE86ss3rrzGGX1NlWeAeXNkbMF7nEXB3L8lM5QaG8pNQT97nkT1pwG+GrNTaqYYk6We
+         RaDhYb8Egyeg9/P0Epyo9COeJOVA4qxlmJVu3gUBFnAPoXbR49il7Eq9ZrlStxt3rNYm
+         /q/Q==
+X-Gm-Message-State: AOAM530WSkSidba7TjQTA0aEIPI6mmlrtcDWXpcNQ7KZ9ZbccqdMRMsj
+        G7Gu34FDgwH8M8i3j+Lc4cU=
+X-Google-Smtp-Source: ABdhPJxeqmYSrMin/RSAk0NnPtJ1lQuB0PBn2vNIcsRwd5KGd9lXzb8BDhzdWpcz5JRyNkGigOYjrA==
+X-Received: by 2002:aa7:cf90:: with SMTP id z16mr14728857edx.273.1616762333907;
+        Fri, 26 Mar 2021 05:38:53 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id r5sm3753816ejx.96.2021.03.26.05.38.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 05:37:50 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
-In-Reply-To: <87mtuqchdu.fsf@vitty.brq.redhat.com>
-References: <20210311132847.224406-1-lszubowi@redhat.com>
- <87sg4t7vqy.fsf@vitty.brq.redhat.com>
- <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
- <87mtuqchdu.fsf@vitty.brq.redhat.com>
-Date:   Fri, 26 Mar 2021 13:37:49 +0100
-Message-ID: <87h7kyccpu.fsf@vitty.brq.redhat.com>
+        Fri, 26 Mar 2021 05:38:51 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 13:39:13 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on
+ sc7180-trogdor-pompom
+Message-ID: <YF3V8d4wB6i81fLN@orome.fritz.box>
+References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+ <YFKQaXOmOwYyeqvM@google.com>
+ <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="OE3T5u9A95HKCh6N"
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
-> Lenny Szubowicz <lszubowi@redhat.com> writes:
->
->> On 3/17/21 9:30 AM, Vitaly Kuznetsov wrote:
->>> Lenny Szubowicz <lszubowi@redhat.com> writes:
->>> 
->>>> Turn off host updates to the registered kvmclock memory
->>>> locations when transitioning to a hibernated kernel in
->>>> resume_target_kernel().
->>>>
->>>> This is accomplished for secondary vcpus by disabling host
->>>> clock updates for that vcpu when it is put offline. For the
->>>> primary vcpu, it's accomplished by using the existing call back
->>>> from save_processor_state() to kvm_save_sched_clock_state().
->>>>
->>>> The registered kvmclock memory locations may differ between
->>>> the currently running kernel and the hibernated kernel, which
->>>> is being restored and resumed. Kernel memory corruption is thus
->>>> possible if the host clock updates are allowed to run while the
->>>> hibernated kernel is relocated to its original physical memory
->>>> locations.
->>>>
->>>> This is similar to the problem solved for kexec by
->>>> commit 1e977aa12dd4 ("x86: KVM guest: disable clock before rebooting.")
->>>>
->>>> Commit 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a
->>>> PER_CPU variable") innocently increased the exposure for this
->>>> problem by dynamically allocating the physical pages that are
->>>> used for host clock updates when the vcpu count exceeds 64.
->>>> This increases the likelihood that the registered kvmclock
->>>> locations will differ for vcpus above 64.
->>>>
->>>> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
->>>> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
->>>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
->>>> ---
->>>>   arch/x86/kernel/kvmclock.c | 34 ++++++++++++++++++++++++++++++++--
->>>>   1 file changed, 32 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
->>>> index aa593743acf6..291ffca41afb 100644
->>>> --- a/arch/x86/kernel/kvmclock.c
->>>> +++ b/arch/x86/kernel/kvmclock.c
->>>> @@ -187,8 +187,18 @@ static void kvm_register_clock(char *txt)
->>>>   	pr_info("kvm-clock: cpu %d, msr %llx, %s", smp_processor_id(), pa, txt);
->>>>   }
->>>>   
->>>> +/*
->>>> + * Turn off host clock updates to the registered memory location when the
->>>> + * cpu clock context is saved via save_processor_state(). Enables correct
->>>> + * handling of the primary cpu clock when transitioning to a hibernated
->>>> + * kernel in resume_target_kernel(), where the old and new registered
->>>> + * memory locations may differ.
->>>> + */
->>>>   static void kvm_save_sched_clock_state(void)
->>>>   {
->>>> +	native_write_msr(msr_kvm_system_time, 0, 0);
->>>> +	kvm_disable_steal_time();
->>>> +	pr_info("kvm-clock: cpu %d, clock stopped", smp_processor_id());
->>>>   }
->>> 
->>> Nitpick: should we rename kvm_save_sched_clock_state() to something more
->>> generic, like kvm_disable_host_clock_updates() to indicate, that what it
->>> does is not only sched clock related?
->>
->> I see your rationale. But if I rename kvm_save_sched_clock_state()
->> then shouldn't I also rename kvm_restore_sched_clock_state().
->> The names appear to reflect the callback that invokes them,
->> from save_processor_state()/restore_state(), rather than what these
->> functions need to do.
->>
->>          x86_platform.save_sched_clock_state = kvm_save_sched_clock_state;
->>          x86_platform.restore_sched_clock_state = kvm_restore_sched_clock_state;
->>   
->> For V2 of my patch, I kept these names as they were. But if you have a strong
->> desire for a different name, then I think both routines should be renamed
->> similarly, since they are meant to be a complimentary pair.
->>
->>> 
->>>>   
->>>>   static void kvm_restore_sched_clock_state(void)
->>>> @@ -311,9 +321,23 @@ static int kvmclock_setup_percpu(unsigned int cpu)
->>>>   	return p ? 0 : -ENOMEM;
->>>>   }
->>>>   
->>>> +/*
->>>> + * Turn off host clock updates to the registered memory location when a
->>>> + * cpu is placed offline. Enables correct handling of secondary cpu clocks
->>>> + * when transitioning to a hibernated kernel in resume_target_kernel(),
->>>> + * where the old and new registered memory locations may differ.
->>>> + */
->>>> +static int kvmclock_cpu_offline(unsigned int cpu)
->>>> +{
->>>> +	native_write_msr(msr_kvm_system_time, 0, 0);
->>>> +	pr_info("kvm-clock: cpu %d, clock stopped", cpu);
->>> 
->>> I'd say this pr_info() is superfluous: on a system with hundereds of
->>> vCPUs users will get flooded with 'clock stopped' messages which don't
->>> actually mean much: in case native_write_msr() fails the error gets
->>> reported in dmesg anyway. I'd suggest we drop this and pr_info() in
->>> kvm_save_sched_clock_state().
->>> 
->>
->> Agreed. I was essentially using it as a pr_debug(). Gone in V2.
->>
->>>> +	return 0;
->>> 
->>> Why don't we disable steal time accounting here? MSR_KVM_STEAL_TIME is
->>> also per-cpu. Can we merge kvm_save_sched_clock_state() with
->>> kvmclock_cpu_offline() maybe?
->>> 
->>
->> kvm_cpu_down_prepare() in arch/x86/kernel/kvm.c already calls
->> kvm_disable_steal_time() when a vcpu is placed offline.
->> So there is no need to do that in kvmclock_cpu_offline().
->>
->> In the case of the hibernation resume code path, resume_target_kernel()
->> in kernel/power/hibernate.c, the secondary cpus are placed offline,
->> but the primary is not. Instead, we are going to be switching contexts
->> of the primary cpu from the boot kernel to the kernel that was restored
->> from the hibernation image.
->>
->> This is where save_processor_state()/restore_processor_state() and kvm_save_sched_clock_state()/restore_sched_clock_state() come into play
->> to stop the kvmclock of the boot kernel's primary cpu and restart
->> the kvmclock of restored hibernated kernel's primary cpu.
->>
->> And in this case, no one is calling kvm_disable_steal_time(),
->> so kvm_save_sched_clock_state() is doing it. (This is very similar
->> to the reason why kvm_crash_shutdown() in kvmclock.c needs to call
->> kvm_disable_steal_time())
->>
->> However, I'm now wondering if kvm_restore_sched_clock_state()
->> needs to add a call to the equivalent of kvm_register_steal_time(),
->> because otherwise no one will do that for the primary vcpu
->> on resume from hibernation.
->
-> In case this is true, steal time accounting is not our only
-> problem. kvm_guest_cpu_init(), which is called from
-> smp_prepare_boot_cpu() hook also sets up Async PF an PV EOI and both
-> these features establish a shared guest-host memory region, in this
-> doesn't happen upon resume from hibernation we're in trouble.
->
-> smp_prepare_boot_cpu() hook is called very early from start_kernel() but
-> what happens when we switch to the context of the hibernated kernel?
->
-> I'm going to set up an environement and check what's going on.
+--OE3T5u9A95HKCh6N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-According to the log we have a problem indeed:
+On Wed, Mar 17, 2021 at 06:53:04PM -0700, Rob Clark wrote:
+> On Wed, Mar 17, 2021 at 4:27 PM Matthias Kaehlcke <mka@chromium.org> wrot=
+e:
+> >
+> > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
+> > > The sc7180-trogdor-pompom board might be attached to any number of a
+> > > pile of eDP panels. At the moment I'm told that the list might includ=
+e:
+> > > - KD KD116N21-30NV-A010
+> > > - KD KD116N09-30NH-A016
+> > > - Starry 2081116HHD028001-51D
+> > > - Sharp LQ116M1JW10
+> > >
+> > > It should be noted that while the EDID programmed in the first 3
+> > > panels indicates that they should run with exactly the same timing (to
+> > > keep things simple), the 4th panel not only needs different timing but
+> > > has a different resolution.
+> > >
+> > > As is true in general with eDP panels, we can figure out which panel
+> > > we have and all the info needed to drive its pixel clock by reading
+> > > the EDID. However, we can do this only after we've powered the panel
+> > > on. Powering on the panels requires following the timing diagram in
+> > > each panel's datasheet which specifies delays between certain
+> > > actions. This means that, while we can be quite dynamic about handling
+> > > things we can't just totally skip out on describing the panel like we
+> > > could do if it was connected to an external-facing DP port.
+> > >
+> > > While the different panels have slightly different delays, it's
+> > > possible to come up with a set of unified delays that will work on all
+> > > the panels. From reading the datasheets:
+> > > * KD KD116N21-30NV-A010 and KD KD116N09-30NH-A016
+> > >   - HPD absent delay: 200 ms
+> > >   - Unprepare delay: 150 ms (datasheet is confusing, might be 500 ms)
+> > > * Starry 2081116HHD028001-51D
+> > >   - HPD absent delay: 100 ms
+> > >   - Enable delay: (link training done till enable BL): 200 ms
+> > >   - Unprepare delay: 500 ms
+> > > * Sharp LQ116M1JW10
+> > >   - HPD absent delay: 200 ms
+> > >   - Unprepare delay: 500 ms
+> > >   - Prepare to enable delay (power on till backlight): 100 ms
+> > >
+> > > Unified:
+> > > - HPD absent delay: 200 ms
+> > > - Unprepare delay: 500 ms
+> > > - Enable delay: 200 ms
+> > >
+> > > NOTE: in theory the only thing that we _really_ need unity on is the
+> > > "HPD absent delay" since once the panel asserts HPD we can read the
+> > > EDID and could make per-panel decisions if we wanted.
+> > >
+> > > Let's create a definition of "a panel that can be attached to pompom"
+> > > as a panel that provides a valid EDID and can work with the standard
+> > > pompom power sequencing. If more panels are later attached to pompom
+> > > then it's fine as long as they work in a compatible way.
+> > >
+> > > One might ask why we can't just use a generic string here and provide
+> > > the timings directly in the device tree file. As I understand it,
+> > > trying to describe generic power sequencing in the device tree is
+> > > frowned upon and the one instance (SD/MMC) is regarded as a mistake
+> > > that shouldn't be repeated. Specifying a power sequence per board (or
+> > > per board class) feels like a reasonable compromise. We're not trying
+> > > to define fully generic power sequence bindings but we can also take
+> > > advantage of the semi-probable properties of the attached device.
+> > >
+> > > NOTE: I believe that past instances of supporting this type of thing
+> > > have used the "white lie" approach. One representative panel was
+> > > listed in the device tree. The power sequencings of this
+> > > representative panel were OK to use across all panels that might be
+> > > attached and other differences were handled by EDID. This patch
+> > > attempts to set a new precedent and avoid the need for the white lie.
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> >
+> > Sounds reasonable to me if DT maintainers can live with this abstract
+> > hardware definition. It's clearer than the 'white lie' approach.
+>=20
+> Yeah, it is a weird grey area between "discoverable" and "not
+> discoverable".. but I favor DT reflecting reality as much as
+> possible/feasible, so I think this is definity cleaner than "white
+> lies"
 
-[   15.844263] ACPI: Preparing to enter system sleep state S4
-[   15.844309] PM: Saving platform NVS memory
-[   15.844311] Disabling non-boot CPUs ...
-[   15.844625] kvm-guest: Unregister pv shared memory for cpu 1
-[   15.846272] smpboot: CPU 1 is now offline
-[   15.847124] kvm-guest: Unregister pv shared memory for cpu 2
-[   15.848720] smpboot: CPU 2 is now offline
-[   15.849637] kvm-guest: Unregister pv shared memory for cpu 3
-[   15.851452] smpboot: CPU 3 is now offline
-[   15.853295] PM: hibernation: Creating image:
-[   15.865126] PM: hibernation: Need to copy 82214 pages
-[18446743485.711482] kvm-clock: cpu 0, msr 8201001, primary cpu clock, resume
-[18446743485.711610] PM: Restoring platform NVS memory
-[18446743485.713922] Enabling non-boot CPUs ...
-[18446743485.713997] x86: Booting SMP configuration:
-[18446743485.713998] smpboot: Booting Node 0 Processor 1 APIC 0x1
-[18446743485.714127] kvm-clock: cpu 1, msr 8201041, secondary cpu clock
-[18446743485.714484] kvm-guest: KVM setup async PF for cpu 1
-[18446743485.714489] kvm-guest: stealtime: cpu 1, msr 3ecac080
-[18446743485.714816] CPU1 is up
-[18446743485.714846] smpboot: Booting Node 0 Processor 2 APIC 0x2
-[18446743485.714954] kvm-clock: cpu 2, msr 8201081, secondary cpu clock
-[18446743485.715359] kvm-guest: KVM setup async PF for cpu 2
-[18446743485.715364] kvm-guest: stealtime: cpu 2, msr 3ed2c080
-[18446743485.715640] CPU2 is up
-[18446743485.715672] smpboot: Booting Node 0 Processor 3 APIC 0x3
-[18446743485.715867] kvm-clock: cpu 3, msr 82010c1, secondary cpu clock
-[18446743485.716288] kvm-guest: KVM setup async PF for cpu 3
-[18446743485.716293] kvm-guest: stealtime: cpu 3, msr 3edac080
-[18446743485.716564] CPU3 is up
-[18446743485.716732] ACPI: Waking up from system sleep state S4
-[18446743485.728139] sd 0:0:0:0: [sda] Starting disk
-[18446743485.750373] OOM killer enabled.
-[18446743485.750909] Restarting tasks ... done.
-[18446743485.754465] PM: hibernation: hibernation exit
+This is practically no different than the "white lie". I suppose you
+could perhaps call it "more honest", if you want.
 
-(this is with your v2 included). There's nothing about CPU0 for
-e.g. async PF + timestamps are really interesting. Seems we have issues
-to fix) I'm playing with it right now.
+The point remains that unless we describe exactly which panel we're
+dealing with, we ultimately have no way of properly quirking anything if
+we ever have to. Also, once we allow this kind of wildcard we can
+suddenly get into a situation where people might want to reuse this on
+something that's not at all a google-pompom board because the same
+particular power sequence happens to work on on some other board.
 
--- 
-Vitaly
+Similarly I can imagine a situation where we could now have the same
+panel supported by multiple different wildcard compatible strings. How
+is that supposed to be any cleaner than what we have now?
 
+And I still keep wondering why bootloaders can't be taught about these
+kinds of things. We have in the past discussed various solutions where
+the bootloader could detect the type of panel connected and set the
+proper compatible string.
+
+If that's too complicated and these really are standardized interfaces
+that work across a wide range of devices with perhaps a couple of
+standard parameter, then introducing a standard connector type like
+Rob Herring is suggesting makes more sense because that more properly
+describes where exactly the standardization is going on (i.e. at the
+interface level rather than the panel level).
+
+Thierry
+
+--OE3T5u9A95HKCh6N
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBd1e4ACgkQ3SOs138+
+s6Hq7g//TaNj9J3a5C/NdYZTbxNWGC36DPa/ytgQEm/C1Sy0hP7BrfNc22jRZfMy
+Uzf+2/hYPadL0+c+/TBbxWCbn4DtdUWlJe0fLEUqK0hUTDww8yK9BMt3gc1DSZI7
+5QfGGfy7CN67ajMN+KIfTcr3r7oyLbWY+afp0BPwSFuEpioCrq2b/qfkqDfK+xQB
+oW7/yahlOLvQJSD9o8To7l/oGOl4a+n09MhMcIUZwCgQU5H3Dl/z8fYyYYFeBQ9/
+deJrgc4wCgRb8uQhPHoQIMeZaLefHQHqTsoQRO8EmasCHb9VOrfc/deYLLZg9n3R
+oEhjtGsYusd0C0ncuVX2OVgkyP1Q78wFBVcWLJw1oxzwAsjBYt14O0UR2KQ5fq2I
+CnjeIWBrZOLt/JPwl3ThcQSfOmWQChqjWL8SgVRtQUf855pwtAwUu2CcfvY2uKZq
+6XFK68/C5qAOR598hSb8P86r9ZtR6AjGGpeef4/fEmrycrLjO99o7Am4b0WcrNyu
+Ix/oMLCIiJGG8+EBWDf7+Rur6/fPRp5/950uATD/YznfKstQHGMkLrk4HH7Ghdib
+VAGslm9zM3V63r7SLhpv+BO8IckG1VVpq5nxjh3pRwmVHotXyXOu6FfUm3+ab+Wk
+gy+7t0W7lJuiQKee7HoKZN6XoTbNIxSKNVZPXH+75cdkYY4VcHU=
+=Taa6
+-----END PGP SIGNATURE-----
+
+--OE3T5u9A95HKCh6N--
