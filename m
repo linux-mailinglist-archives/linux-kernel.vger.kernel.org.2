@@ -2,90 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6A034AFE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB87434AFEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhCZUKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 16:10:37 -0400
-Received: from mail-io1-f45.google.com ([209.85.166.45]:33651 "EHLO
-        mail-io1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230378AbhCZUKK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:10:10 -0400
-Received: by mail-io1-f45.google.com with SMTP id n198so6691563iod.0;
-        Fri, 26 Mar 2021 13:10:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Em4YLfmzgLloI84lVgW6g4blSx2dakwel/TmZyQCjEc=;
-        b=eWvR4bqmjrp6QZQrGsOJNorFiGLDskiCLy0QXggHKAkRKRWQUJrm8FyYoeFhga3TA3
-         XIbM2xJ7cBpl2aX9hpLn47ci3uPO9cCS4Dk9LwTVGS9bzf0tuZJNedTax5IKQr23bujI
-         z7nKF3ZNmwvmpL/KvIHxpNS2Aia82R1dPAkUL7zPq7JOYi0XtGHUDT1fOuNtPLRgaP9L
-         YD5/OXjY8DgDj1D0OAjreN7UVV7Rmm80BJov3zC5om5Acct297CalBnNn6myNFRo60zR
-         69TAxsvArsPfxuIrCq9AUveHPpNiQS01Fle1TV1t6Kx9/Gx8smu23NVEEK4iVPjWX7zN
-         Gnxg==
-X-Gm-Message-State: AOAM531nvJddj6mTseywY65QGXxBuOtRdxHgIycq8zDd7Hol9OZ+CH/a
-        zN9x8Q4LOLi4DZsQMlwpZw==
-X-Google-Smtp-Source: ABdhPJy25LEJPGQSbjs/aCmJyukTShepPCXx5eP++pzM1VxwTzQ84qLquboEXxOdU6SbdAd0WIGJ0w==
-X-Received: by 2002:a5d:9599:: with SMTP id a25mr11605074ioo.25.1616789409498;
-        Fri, 26 Mar 2021 13:10:09 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 7sm2774300ilx.81.2021.03.26.13.10.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 13:10:08 -0700 (PDT)
-Received: (nullmailer pid 3787641 invoked by uid 1000);
-        Fri, 26 Mar 2021 20:10:06 -0000
-Date:   Fri, 26 Mar 2021 14:10:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Michael Walle <michael@walle.cc>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com
-Subject: Re: [PATCH v9 20/22] dt-bindings: add BCM6318 pincontroller binding
- documentation
-Message-ID: <20210326201006.GA3787596@robh.at.kernel.org>
-References: <20210324081923.20379-1-noltari@gmail.com>
- <20210324081923.20379-21-noltari@gmail.com>
+        id S230159AbhCZUMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 16:12:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230043AbhCZULp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 16:11:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EED77619AB;
+        Fri, 26 Mar 2021 20:11:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616789505;
+        bh=Ru9PAn9AhDlLPLT3H01toIEKOAnuuXkC7hSMGZTcr8s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KqlxHp4gKO68e39TXLb0k4RPISO7MBOYcghFQmprxwSSM/ZLwL9uKU9SNQYPfY6S9
+         660QDp06LfyWwJ2bylCPR1RpP07+pv/5RS0frrFvpafLvY3E75DREW2BrRu2tftx2e
+         mWYoqbITk8Qu1/98HJ2UGVlXrc5L3w5R3bPNVH/JKljNAmQknZGxPHyMBwFCwQJLWh
+         iUUA/9eaQU/uT7uCrvaIoLGs3MwBFco+rVspb87WLoNJ3BQu/LH7AHJFzcawJzTU2k
+         8at/2xJ43Adaidp4JCTBTdkxGOOqASqcj+XDObE7P1mwlKEyeu9CbhzpNhF2e2BiTt
+         sQz66aC2ILYQw==
+Date:   Fri, 26 Mar 2021 15:11:43 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/6] PCI: brcmstb: Add control of EP voltage regulators
+Message-ID: <20210326201143.GA903800@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210324081923.20379-21-noltari@gmail.com>
+In-Reply-To: <20210326191906.43567-3-jim2101024@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 09:19:21 +0100, Álvaro Fernández Rojas wrote:
-> Add binding documentation for the pincontrol core found in BCM6318 SoCs.
-> 
-> Co-developed-by: Jonas Gorski <jonas.gorski@gmail.com>
-> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
-> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
-> ---
->  v9: drop function and pins references
->  v8: add changes suggested by Rob Herring
->  v7: add changes suggested by Rob Herring
->  v6: add changes suggested by Rob Herring
->  v5: change Documentation to dt-bindings in commit title
->  v4: no changes
->  v3: add new gpio node
->  v2: remove interrupts
-> 
->  .../pinctrl/brcm,bcm6318-pinctrl.yaml         | 143 ++++++++++++++++++
->  1 file changed, 143 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/brcm,bcm6318-pinctrl.yaml
-> 
+On Fri, Mar 26, 2021 at 03:19:00PM -0400, Jim Quinlan wrote:
+> Control of EP regulators by the RC is needed because of the chicken-and-egg
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Can you expand "EP"?  Not sure if this refers to "endpoint" or
+something else.
+
+If this refers to a device in a slot, I guess it isn't necessarily a
+PCIe *endpoint*; it could also be a switch upstream port.
+
+> situation: although the regulator is "owned" by the EP and would be best
+> handled on its driver, the EP cannot be discovered and probed unless its
+> regulator is already turned on.
+> 
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 90 ++++++++++++++++++++++++++-
+>  1 file changed, 87 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index e330e6811f0b..b76ec7d9af32 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/pci.h>
+>  #include <linux/pci-ecam.h>
+>  #include <linux/printk.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/reset.h>
+>  #include <linux/sizes.h>
+>  #include <linux/slab.h>
+> @@ -169,6 +170,7 @@
+>  #define SSC_STATUS_SSC_MASK		0x400
+>  #define SSC_STATUS_PLL_LOCK_MASK	0x800
+>  #define PCIE_BRCM_MAX_MEMC		3
+> +#define PCIE_BRCM_MAX_EP_REGULATORS	4
+>  
+>  #define IDX_ADDR(pcie)			(pcie->reg_offsets[EXT_CFG_INDEX])
+>  #define DATA_ADDR(pcie)			(pcie->reg_offsets[EXT_CFG_DATA])
+> @@ -295,8 +297,27 @@ struct brcm_pcie {
+>  	u32			hw_rev;
+>  	void			(*perst_set)(struct brcm_pcie *pcie, u32 val);
+>  	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
+> +	struct regulator_bulk_data supplies[PCIE_BRCM_MAX_EP_REGULATORS];
+> +	unsigned int		num_supplies;
+>  };
+>  
+> +static int brcm_set_regulators(struct brcm_pcie *pcie, bool on)
+> +{
+> +	struct device *dev = pcie->dev;
+> +	int ret;
+> +
+> +	if (!pcie->num_supplies)
+> +		return 0;
+> +	if (on)
+> +		ret = regulator_bulk_enable(pcie->num_supplies, pcie->supplies);
+> +	else
+> +		ret = regulator_bulk_disable(pcie->num_supplies, pcie->supplies);
+> +	if (ret)
+> +		dev_err(dev, "failed to %s EP regulators\n",
+> +			on ? "enable" : "disable");
+> +	return ret;
+> +}
+> +
+>  /*
+>   * This is to convert the size of the inbound "BAR" region to the
+>   * non-linear values of PCIE_X_MISC_RC_BAR[123]_CONFIG_LO.SIZE
+> @@ -1141,16 +1162,63 @@ static void brcm_pcie_turn_off(struct brcm_pcie *pcie)
+>  	pcie->bridge_sw_init_set(pcie, 1);
+>  }
+>  
+> +static int brcm_pcie_get_regulators(struct brcm_pcie *pcie)
+> +{
+> +	struct device_node *child, *parent = pcie->np;
+> +	const unsigned int max_name_len = 64 + 4;
+> +	struct property *pp;
+> +
+> +	/* Look for regulator supply property in the EP device subnodes */
+> +	for_each_available_child_of_node(parent, child) {
+> +		/*
+> +		 * Do a santiy test to ensure that this is an EP node
+
+s/santiy/sanity/
+
+> +		 * (e.g. node name: "pci-ep@0,0").  The slot number
+> +		 * should always be 0 as our controller only has a single
+> +		 * port.
+> +		 */
+> +		const char *p = strstr(child->full_name, "@0");
+> +
+> +		if (!p || (p[2] && p[2] != ','))
+> +			continue;
+> +
+> +		/* Now look for regulator supply properties */
+> +		for_each_property_of_node(child, pp) {
+> +			int i, n = strnlen(pp->name, max_name_len);
+> +
+> +			if (n <= 7 || strncmp("-supply", &pp->name[n - 7], 7))
+> +				continue;
+> +
+> +			/* Make sure this is not a duplicate */
+> +			for (i = 0; i < pcie->num_supplies; i++)
+> +				if (strncmp(pcie->supplies[i].supply,
+> +					    pp->name, max_name_len) == 0)
+> +					continue;
+> +
+> +			if (pcie->num_supplies < PCIE_BRCM_MAX_EP_REGULATORS)
+> +				pcie->supplies[pcie->num_supplies++].supply = pp->name;
+> +			else
+> +				dev_warn(pcie->dev, "No room for EP supply %s\n",
+> +					 pp->name);
+> +		}
+> +	}
+> +	/*
+> +	 * Get the regulators that the EP devices require.  We cannot use
+> +	 * pcie->dev as the device argument in regulator_bulk_get() since
+> +	 * it will not find the regulators.  Instead, use NULL and the
+> +	 * regulators are looked up by their name.
+
+The comment doesn't explain the interesting part of why you need NULL
+instead of "pcie->dev".  I assume it has something to do with the
+platform topology and its DT description.
+
+This appears to be the only instance in the whole kernel of a use of
+regulator_bulk_get() or devm_regulator_bulk_get() with NULL.  That
+definitely warrants a comment, so I'm glad you've got something here.
+
+The regulator_bulk_get() function comment doesn't mention the
+possibility of "dev == NULL", although regulator_dev_lookup(),
+create_regulator(), device_link_add() do check for it being NULL, so I
+guess it's not a surprise.  We may call dev_err(NULL), which I think
+will *work* without crashing even though it will look like a mistake
+on the output.
+
+> +	 */
+> +	return regulator_bulk_get(NULL, pcie->num_supplies, pcie->supplies);
+
+devm_regulator_bulk_get()?
+
+> +}
+> +
+>  static int brcm_pcie_suspend(struct device *dev)
+>  {
+>  	struct brcm_pcie *pcie = dev_get_drvdata(dev);
+> -	int ret;
+>  
+>  	brcm_pcie_turn_off(pcie);
+> -	ret = brcm_phy_stop(pcie);
+> +	brcm_phy_stop(pcie);
+
+If we no longer care whether brcm_phy_stop() returns an error, nobody
+looks at the return value and it could be void.
+
+>  	clk_disable_unprepare(pcie->clk);
+>  
+> -	return ret;
+> +	return brcm_set_regulators(pcie, false);
+>  }
+>  
+>  static int brcm_pcie_resume(struct device *dev)
+> @@ -1163,6 +1231,10 @@ static int brcm_pcie_resume(struct device *dev)
+>  	base = pcie->base;
+>  	clk_prepare_enable(pcie->clk);
+>  
+> +	ret = brcm_set_regulators(pcie, true);
+> +	if (ret)
+> +		return ret;
+> +
+>  	ret = brcm_phy_start(pcie);
+>  	if (ret)
+>  		goto err;
+> @@ -1199,6 +1271,8 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie)
+>  	brcm_phy_stop(pcie);
+>  	reset_control_assert(pcie->rescal);
+>  	clk_disable_unprepare(pcie->clk);
+> +	brcm_set_regulators(pcie, false);
+> +	regulator_bulk_free(pcie->num_supplies, pcie->supplies);
+>  }
+>  
+>  static int brcm_pcie_remove(struct platform_device *pdev)
+> @@ -1289,6 +1363,16 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	ret = brcm_pcie_get_regulators(pcie);
+> +	if (ret) {
+> +		dev_err(pcie->dev, "failed to get regulators (err=%d)\n", ret);
+> +		goto fail;
+> +	}
+> +
+> +	ret = brcm_set_regulators(pcie, true);
+> +	if (ret)
+> +		goto fail;
+> +
+>  	ret = brcm_pcie_setup(pcie);
+>  	if (ret)
+>  		goto fail;
+> -- 
+> 2.17.1
+> 
