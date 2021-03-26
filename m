@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6750734A612
+	by mail.lfdr.de (Postfix) with ESMTP id E37B234A613
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhCZLCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:02:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhCZLCP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:02:15 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D523BC0613AA;
-        Fri, 26 Mar 2021 04:02:14 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so4057802pjq.5;
-        Fri, 26 Mar 2021 04:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b/eKkuDjHsXzeQAjqtTP1yNfq8k1nDjlJIzue3/QVco=;
-        b=ux1z2lyMai9nMRh6moP2Syhfig0iEUrZEDiHV0/5Absb6b1Vt5+r5YNrwkBXAdpY3y
-         ICCopS6VPz87I2CJ9BXEy/O++ZVIUtR9NAuZDAwsVnP35xeSJPm3BhCawcVRocgab0ys
-         1tIDmjaJwI6KhiPCh2QoLDGcMABhWMKcZs2pz3y9HVr8m4Ky9KEnZqnxQQ2fDJqBMklz
-         tTjYxYlnvCgWIjyhKzof3QxSjoj7VlKiskN1ovYFWzwsbfxPic9WAdel+D9uuZ5Dcj9s
-         goJQ8u2wr9loOU+3zLDw80QbCL7xFx0Qzm6zwG9x4rw8rXN6rCxm2ZJT6iA3fnQB8gC0
-         BnNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b/eKkuDjHsXzeQAjqtTP1yNfq8k1nDjlJIzue3/QVco=;
-        b=WXd8LotIY9vom+9Wmb+k80w4J8JaumHASJSXJEERT9hVf7T9AswW2biP56w0IITa2H
-         61cVYgawJmVQtY+PlxjrrTmgobHrVVKG8/ssO1VaOa8UD7FXABbwO9EpuubrJX+C0ixk
-         Qdk2JmMl11ZUmKiOAPdBYqct3tos7T00HXxOTr+hlqTMQxVFUclMZlWcXw0DveL107gg
-         HiLIXMjyyhGjohuMDifU4XzAvvud8nqh3leTko72AQgYyzpjZf2DxAleoBF9p5LAegDs
-         ioHfhDp5xYJLcuXxaz0AjC1Z92Kvf6g/0X/eE+55thItOW5GTv6FvZJjM/YlYLw8WTdB
-         0IPQ==
-X-Gm-Message-State: AOAM532aXvLyUe+VWyTIaa6JGVk8SQRSy3wBmg47MA6jGaWPXdbugLTi
-        ZhuFITgSP5erUw33xZkK5YE/1t41CzURtqzYAao=
-X-Google-Smtp-Source: ABdhPJwT1uUgIGJVmDXKZG6sZGVN3au3R3Ta/RoftvKTErSnZRExoFSMZoFJRVcGPPKOycms+VHR36mJy1HauFptasY=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr13506221pjr.228.1616756533742;
- Fri, 26 Mar 2021 04:02:13 -0700 (PDT)
+        id S229981AbhCZLCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:02:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:55026 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229826AbhCZLCi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 07:02:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF7EE143D;
+        Fri, 26 Mar 2021 04:02:37 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A49523F7D7;
+        Fri, 26 Mar 2021 04:02:35 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 11:02:29 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, sudeep.holla@arm.com,
+        lukasz.luba@arm.com, james.quinlan@broadcom.com,
+        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
+        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com,
+        Michael Turquette <mturquette@baylibre.com>
+Subject: Re: [PATCH v7 18/38] clk: scmi: port driver to the new
+ scmi_clk_proto_ops interface
+Message-ID: <20210326110229.GB43717@e120937-lin>
+References: <20210316124903.35011-1-cristian.marussi@arm.com>
+ <20210316124903.35011-19-cristian.marussi@arm.com>
+ <161671733901.3012082.11186673559577220910@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-References: <20210325220505.14507-1-joe.g.sandom@gmail.com>
-In-Reply-To: <20210325220505.14507-1-joe.g.sandom@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 26 Mar 2021 13:01:57 +0200
-Message-ID: <CAHp75VcfE0VUrtAqCM0KC9RFvy8XMv++tjYCP2dKZCMosPQ2tw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] Added AMS tsl2591 driver implementation
-To:     Joe Sandom <joe.g.sandom@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <161671733901.3012082.11186673559577220910@swboyd.mtv.corp.google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 12:05 AM Joe Sandom <joe.g.sandom@gmail.com> wrote:
->
-> Driver implementation for AMS/TAOS tsl2591 ambient light sensor.
->
-> This driver supports configuration via device tree and sysfs.
-> Supported channels for raw infrared light intensity,
-> raw combined light intensity and illuminance in lux.
-> The driver additionally supports iio events on lower and
-> upper thresholds.
->
-> This is a very-high sensitivity light-to-digital converter that
-> transforms light intensity into a digital signal.
+On Thu, Mar 25, 2021 at 05:08:59PM -0700, Stephen Boyd wrote:
+> Sorry didn't notice because linux-clk@vger.kernel.org wasn't Cced
+> 
+Ah, sorry my bad.
 
-I'm under the impression that you ignored at least half of my comments
-[1]. Have you seen them?
+> Quoting Cristian Marussi (2021-03-16 05:48:43)
+> > Port driver to the new SCMI Clock interface based on protocol handles
+> > and common devm_get_ops().
+> > 
+> > Cc: Michael Turquette <mturquette@baylibre.com>
+> > Cc: Stephen Boyd <sboyd@kernel.org>
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> > v6 -> v7
+> > - fixed Copyright
+> > - renamed non-static function to fit scmi_<OBJ>_<ACTION> naming pattern
+> > v4 --> v5
+> > - using renamed devm_get/put_protocol
+> > ---
+> >  drivers/clk/clk-scmi.c | 27 +++++++++++++++++----------
+> >  1 file changed, 17 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
+> > index c754dfbb73fd..be4c13d63385 100644
+> > --- a/drivers/clk/clk-scmi.c
+> > +++ b/drivers/clk/clk-scmi.c
+> > @@ -2,7 +2,7 @@
+> >  /*
+> >   * System Control and Power Interface (SCMI) Protocol based clock driver
+> >   *
+> > - * Copyright (C) 2018 ARM Ltd.
+> > + * Copyright (C) 2018-2021 ARM Ltd.
+> >   */
+> >  
+> >  #include <linux/clk-provider.h>
+> > @@ -13,11 +13,13 @@
+> >  #include <linux/scmi_protocol.h>
+> >  #include <asm/div64.h>
+> >  
+> > +static const struct scmi_clk_proto_ops *clk_ops;
+> 
+> Can you call it scmi_proto_clk_ops instead of clk_ops? We already have
+> 'struct clk_ops' and this pollutes the global namespace with another
+> 'clk_ops'.
+> 
 
-[1]: https://lore.kernel.org/linux-iio/CAHp75VcSW2xXdH--rXaN7xt0Ju+qfw9c_va0gGRGPgpBua0H-Q@mail.gmail.com/
+Sure I'll do and reply on this thread and CCing linux-clk with the fix.
 
-Please. address and come again.
-NAK for this version, sorry.
+Thanks
 
--- 
-With Best Regards,
-Andy Shevchenko
+Cristian
+> > +
+> >  struct scmi_clk {
+> >         u32 id;
+> >         struct clk_hw hw;
+> >         const struct scmi_clock_info *info;
+> > -       const struct scmi_handle *handle;
+> > +       const struct scmi_protocol_handle *ph;
+> >  };
+> >  
+> >  #define to_scmi_clk(clk) container_of(clk, struct scmi_clk, hw)
