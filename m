@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C16134A374
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4048D34A37B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:58:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhCZIzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:55:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36120 "EHLO mx2.suse.de"
+        id S229868AbhCZI6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:58:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38618 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhCZIzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:55:07 -0400
+        id S229573AbhCZI5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 04:57:47 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4B797AB8A;
-        Fri, 26 Mar 2021 08:55:06 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 09:55:03 +0100
+        by mx2.suse.de (Postfix) with ESMTP id 63FDDAB8A;
+        Fri, 26 Mar 2021 08:57:46 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 09:57:43 +0100
 From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Anshuman Khandual <anshuman.khandual@arm.com>,
         Vlastimil Babka <vbabka@suse.cz>,
@@ -26,9 +26,8 @@ Cc:     David Hildenbrand <david@redhat.com>,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
  memory range
-Message-ID: <YF2hZ5Q27yb6jC7w@localhost.localdomain>
-References: <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
- <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
+Message-ID: <YF2iBxueewnKIG3V@localhost.localdomain>
+References: <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
  <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
  <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz>
  <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
@@ -37,57 +36,44 @@ References: <31c3e6f7-f631-7b00-2c33-518b0f24a75f@redhat.com>
  <YFy+olsdS4iwrovN@dhcp22.suse.cz>
  <YF0JerCFXzcmMKzp@localhost.localdomain>
  <YF2ct/UZUBG1GcM3@dhcp22.suse.cz>
+ <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YF2ct/UZUBG1GcM3@dhcp22.suse.cz>
+In-Reply-To: <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 09:35:03AM +0100, Michal Hocko wrote:
-> No problem there. I will not insist on my approach unless I can convince
-> you that it is a better solution. It seems I have failed and I can live
-> with that.
+On Fri, Mar 26, 2021 at 09:52:58AM +0100, David Hildenbrand wrote:
+> Might have to set fully spanned section online. (vmemmap >= SECTION_SIZE)
 
-Well, I am glad we got to discuss it at least.
+Hi David,
 
-> > +static int memory_block_online(unsigned long start_pfn, unsigned long nr_pages,
-> > +			       unsigned long nr_vmemmap_pages, int online_type,
-> > +			       int nid)
-> > +{
-> > +	int ret;
-> > +	/*
-> > +	 * Despite vmemmap pages having a different lifecycle than the pages
-> > +	 * they describe, initialiating and accounting vmemmap pages at the
-> > +	 * online/offline stage eases things a lot.
+could you elaborate on this a bit?
+
+> Something else to note:
 > 
-> This requires quite some explaining.
+> 
+> We'll not call the memory notifier (e.g., MEM_ONLINE) for the vmemmap. The
+> result is that
+> 
+> 1. We won't allocate extended struct pages for the range. Don't think this
+> is really problematic (pages are never allocated/freed, so I guess we don't
+> care - like ZONE_DEVICE code).
+> 
+> 2. We won't allocate kasan shadow memory. We most probably have to do it
+> explicitly via kasan_add_zero_shadow()/kasan_remove_zero_shadow(), see
+> mm/memremap.c:pagemap_range()
+> 
+> 
+> Further a locking rework might be necessary. We hold the device hotplug
+> lock, but not the memory hotplug lock. E.g., for get_online_mems(). Might
+> have to move that out online_pages.
 
-Definitely, I will expand on that and provide some context.
+I will have a look and see how it goes.
 
  
-> Yes this is much better! Just a minor suggestion would be to push
-> memory_block all the way to memory_block_online (it oline a memory
-> block). I would also slightly prefer to provide 2 helpers that would make
-> it clear that this is to reserve/cleanup the vmemamp space (defined in
-> the memory_hotplug proper).
-
-Glad to hear that!
-By pushing memory_block all the way to memory_block_{online,offline}, you
-mean passing the memblock struct together with nr_vmemmap_pages,
-only_type and nid to memory_block_{offline,online}, and derive in there
-the start_pfn and nr_pages?
-
-Wrt. to the two helpers, I agree with you.
-Actually, I would find quite disturbing to deal with zones in that code
-domain.
-I will add two proper helpers in memory_hotplug to deal with vmemmap.
-
-If it comes out the way I envision, it could end up quite clean, and much
-less disturbing.
-
-Thanks Michal
 
 -- 
 Oscar Salvador
