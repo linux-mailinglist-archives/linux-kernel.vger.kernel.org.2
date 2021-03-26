@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A58B34AE4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222B634AE51
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhCZSNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:13:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230138AbhCZSNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:13:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8658B61A26
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 18:13:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616782383;
-        bh=Uq/AgFY34xJVilYudroh0xuth7d+ideY25PIsoXjK74=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ky/NRaXiifZ4GURlxfNx7B+2+3J707RR1iMlnS9CFTtq2uNsh91UPllyXalmn7/uH
-         UiyR4gcedUbnavf6e36BvylMAQbPekEOITMUMgWz3P6sZ75pE1wdv2R1kpv0KuEAlC
-         Mw465bNrTpgMduJsposcNdk1C55KvRYhY8rYglBexDw0Hwkku9hUbGwCXboROn+qZd
-         fx+goQbXpYFYaMFgNx83grbxJuiaSiigRbKa8qisogIfpbjdfwMuXpDLVg/e2cRFki
-         LARcvNIzayiyh56fqvYxIoZbLKGYOuNODgGLJbxBxhoj1szho0WV47MCIJCW7icvGo
-         vwwgPTtAfqSsw==
-Received: by mail-ej1-f48.google.com with SMTP id jy13so9780289ejc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:13:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531xT8xQlpNHd3TZORvHuxhtt+VD/j9d06qrFFq1me8C/qXqC9pm
-        Sc9TYaKcCgx/H649ahPZUXrf3dn4vqzNdWcTlX86mw==
-X-Google-Smtp-Source: ABdhPJzWXISLN56kzZVOeyUhydNGRddfNFVOIu67Tzib/Q7Q7ad9QHtoSsg7TUfp5nvtCJ5SDiOLfj3XS6W1HVHYRPg=
-X-Received: by 2002:a17:907:e88:: with SMTP id ho8mr17355824ejc.199.1616782381875;
- Fri, 26 Mar 2021 11:13:01 -0700 (PDT)
+        id S230213AbhCZSNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:13:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29846 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230195AbhCZSNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:13:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616782400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pap7BptUHGKykCeFu/8MT0qbOtaTjDcy9qwuilzOGIw=;
+        b=hYP80GFJkD8Xd8XoJHcp4owj/TxrEWQigc9wp4paxWMqqU0I5ZDyOWMa91rLrrtR5SK/Cq
+        IpF9tXQC35APk1gt107kmUpsvU0Z8AlCoG2kTprdbad1KRLjqbywNLwioFK/Y5UQM6iLKM
+        bYUQ7tmkfXtBlKB49hZWULz985HzTEg=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-MklBk5pzPsWWcHYubKcSow-1; Fri, 26 Mar 2021 14:13:18 -0400
+X-MC-Unique: MklBk5pzPsWWcHYubKcSow-1
+Received: by mail-ej1-f72.google.com with SMTP id rl7so4406827ejb.16
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:13:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=pap7BptUHGKykCeFu/8MT0qbOtaTjDcy9qwuilzOGIw=;
+        b=TZQTFOp6Bh+4yAHzkT7qs7hhPGhRCg+I5LXcteZKz2qKniMUtwugHpUvd1aYXPUapV
+         2G9d8cA556FvfmnwDHVoBkALswePVevFdZtRyJGGk2V2Z5livx4BeSuBwpdwqy7qHHDO
+         mYRqx0Vd3GJ2NyyCN5OrXOQsrPTUxQtRJPzJESYganLtzgndCnVI9kzZkLlz/ZdViTSD
+         WgogJKbq/rq+/c/s0FSmyV4IODX83VuF82Qhrmd0tQPHjdAyHCloZc6BmoyGZ4d2WjPx
+         qx8FI3bJ95xNscVTa7UVP+55toKE8yNN7GnNYGdfOqGVtEU+BH7GaAYhuTS+vn+kIsVN
+         6Lwg==
+X-Gm-Message-State: AOAM5318PPdMHUPCTckGj0lyqst7SqiRGuUrEvzj8bEl6EwfmM3d1gor
+        TIkxEcHMT3TIh27cweDoJ2pcAyMWrasba7A++j+oDu0aGc5i4RW/L0lSIAlwDJpHqASM5njOkE5
+        mmTEY6P7TW9eCkBZ78utjnrPa
+X-Received: by 2002:a17:906:1386:: with SMTP id f6mr16596261ejc.45.1616782397372;
+        Fri, 26 Mar 2021 11:13:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyvc3mTnPMkhQBDrVBxW5/RWmuM3jHJDelx7UJ+pb/VP1j+SOnbQqRjHmOXJgwr+aDlkaxn3g==
+X-Received: by 2002:a17:906:1386:: with SMTP id f6mr16596244ejc.45.1616782397225;
+        Fri, 26 Mar 2021 11:13:17 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id f16sm4141390ejb.3.2021.03.26.11.13.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 11:13:16 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D32FA1801A3; Fri, 26 Mar 2021 19:13:15 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Marek =?utf-8?Q?Beh=C3=BAn?= <kabel@kernel.org>
+Cc:     vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jason Cooper <jason@lakedaemon.net>, linux-pci@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Disallow retraining link for Atheros QCA98xx chips
+ on non-Gen1 PCIe bridges
+In-Reply-To: <20210326124326.21163-1-pali@kernel.org>
+References: <20210326124326.21163-1-pali@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 26 Mar 2021 19:13:15 +0100
+Message-ID: <87a6qpbx6s.fsf@toke.dk>
 MIME-Version: 1.0
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
- <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
- <CALCETrWOc7wwW=KY2dGJGy9k5Ag=KhkdGGTDZMvgRHgyQ5fDjQ@mail.gmail.com>
- <CAJvTdK=OGALDso0H+asjgkjD_VaPNZzm+LpV+msM_i5aVUm_qw@mail.gmail.com>
- <CALCETrXky0RuA5WeQ0Mxjs+e4ywk1A7vmpBxqCo=PTSBzUsz-g@mail.gmail.com> <CAJvTdK=_G11phL6=9Ri41fJQvhRNopok_oktgvRjTM0v6ojcbg@mail.gmail.com>
-In-Reply-To: <CAJvTdK=_G11phL6=9Ri41fJQvhRNopok_oktgvRjTM0v6ojcbg@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 26 Mar 2021 11:12:50 -0700
-X-Gmail-Original-Message-ID: <CALCETrX-34QqeVLjX39ZAD+4Y6XkZ3=bPEtEPxTi0YHvLgBKig@mail.gmail.com>
-Message-ID: <CALCETrX-34QqeVLjX39ZAD+4Y6XkZ3=bPEtEPxTi0YHvLgBKig@mail.gmail.com>
-Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
- control state component support
-To:     Len Brown <lenb@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        X86 ML <x86@kernel.org>, "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 10:54 AM Len Brown <lenb@kernel.org> wrote:
->
-> On Fri, Mar 26, 2021 at 11:48 AM Andy Lutomirski <luto@kernel.org> wrote:
->
-> > > I submit, that after the generic XFD support is in place,
-> > > there is exactly 1 bit that needs to be flipped to enable
-> > > user applications to benefit from AMX.
-> >
-> > The TILERELEASE opcode itself is rather longer than one bit, and the
-> > supporting code to invoke it at the right time, to avoid corrupting
-> > user state, and avoid causing performance regressions merely by
-> > existing will be orders of magnitude more than 1 bit.  Of course, all
-> > of this is zero bits in the current series because the code is
-> > missing.entirely.
->
-> Please explain why the kernel must know about the TILERELEASE
-> instruction in order for an AMX application to run properly.
+Pali Roh=C3=A1r <pali@kernel.org> writes:
 
-I'm just repeating things already said, and this is getting
-ridiculous.  TILERELEASE isn't needed for an AMX application to run
-properly -- it's needed for the rest of the system to run properly, at
-least according to Intel's published docs.  Quoting the current ISE
-document:
-
-3.3 RECOMMENDATIONS FOR SYSTEM SOFTWARE
-
-System software may disable use of Intel AMX by clearing XCR0[18:17],
-by clearing CR4.OSXSAVE, or by setting
-IA32_XFD[18]. It is recommended that system software initialize AMX
-state (e.g., by executing TILERELEASE)
-before doing so. This is because maintaining AMX state in a
-non-initialized state may have negative power and
-performance implications.
-
-Since you reviewed the patch set, I assume you are familiar with how
-Linux manages XSTATE.  Linux does *not* eagerly load XSTATE on context
-switch.  Instead, Linux loads XSTATE when the kernel needs it loaded
-or before executing user code.  This means that the kernel can (and
-does, and it's a performance win) execute kernel thread code and/or go
-idle, *including long-term deep idle*, with user XSTATE loaded.
-
-
+> Atheros QCA9880 and QCA9890 chips do not behave after a bus reset and also
+> after retrain link when PCIe bridge is not in GEN1 mode at 2.5 GT/s speed.
+> The device will throw a Link Down error and config space is not accessible
+> again. Retrain link can be called only when using GEN1 PCIe bridge or when
+> PCIe bridge has forced link speed to 2.5 GT/s via PCI_EXP_LNKCTL2 registe=
+r.
 >
-> > This isn't just about validation.  There's also ABI, performance, and
-> > correctness.
+> This issue was reproduced with more Compex WLE900VX cards (QCA9880 based)
+> on Armada 385 with pci-mvebu.c driver and also on Armada 3720 with
+> pci-aardvark.c driver. Also this issue was reproduced with some "noname"
+> card with QCA9890 WiFi chip on Armada 3720. All problematic cards with
+> these QCA chips have PCI device id 0x003c.
 >
-> Thank you for agreeing that this is not about unvalidated features.
+> Tests showed that other WiFi cards based on AR93xx (PCI device id 0x0030)
+> and AR9287 (PCI device id 0x002e) chips do not have these problems.
 >
-> > ABI: The AVX-512 enablement *already* broke user ABI.  Sadly no one
-> > told anyone in the kernel community until about 5 years after the
-> > fact, and it's a bit late to revert AVX-512.  But we don't want to
-> > enable AMX until the ABI has a reasonable chance of being settled.
-> > Ditto for future features.  As it stands, if you xstate.enable some
-> > 16MB feature, the system may well simply fail to boot as too many user
-> > processes explode.
+> To workaround this issue, this change introduces a new PCI quirk called
+> PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1 for PCI device id 0x003c.
 >
-> At Dave's suggestion, we had a 64 *KB* sanity check on this path.
-> Boris forced us to remove it, because we could not tell him
-> how we chose the number 64.
+> When this quirk is set then kernel disallows triggering PCI_EXP_LNKCTL_RL
+> bit in config space of PCIe Bridge in case PCIe Bridge is capable of high=
+er
+> speed than 2.5 GT/s and higher speed is already allowed. When PCIe Bridge
+> has accessible LNKCTL2 register then kernel tries to force target link
+> speed via PCI_EXP_LNKCTL2_TLS* bits to 2.5 GT/s. After this change it is
+> possible to trigger PCI_EXP_LNKCTL_RL bit without causing issues on
+> problematic Atheros QCA98xx cards.
 >
-> I would be delighted to see a check for 64 KB restored, and that
-> it be a rejection, rather than warning.  At this point, as there is no way
-> go down that path without manually modifying the kernel, it would
-> devolve into a sanity check for a hardware (CPUID) bug.
+> Currently only PCIe ASPM kernel code triggers this PCI_EXP_LNKCTL_RL bit,
+> so quirk check is added only into pcie/aspm.c file.
+>
+> Signed-off-by: Pali Roh=C3=A1r <pali@kernel.org>
+> Reported-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Tested-by: Marek Beh=C3=BAn <kabel@kernel.org>
+> Link: https://lore.kernel.org/linux-pci/87h7l8axqp.fsf@toke.dk/
+> Cc: stable@vger.kernel.org # c80851f6ce63a ("PCI: Add
+> PCI_EXP_LNKCTL2_TLS* macros")
 
-This is nuts.  The ABI is ALREADY BROKEN.  How does picking a random
-number quantifying additional breakage help?  We do not have a good
-design for AVX-512 in Linux, we don't have a good design for AMX in
-Linux, and we absolutely don't have a good design for the secret
-feature we don't know about yet in Linux.
+Thanks!
+
+Tested-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
