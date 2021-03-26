@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C420834B2C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237E734B284
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhCZXTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S230445AbhCZXNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231602AbhCZXRz (ORCPT
+        with ESMTP id S230226AbhCZXNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:17:55 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37881C0613B9;
-        Fri, 26 Mar 2021 16:17:52 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id x14so6949963qki.10;
-        Fri, 26 Mar 2021 16:17:52 -0700 (PDT)
+        Fri, 26 Mar 2021 19:13:06 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B0DC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 16:13:06 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id r17so5636374pgi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 16:13:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TnZft1bM0JMPpkTaiyM02YRpy0hlthAHrUT+3UG4R1Y=;
-        b=bRXiu/pg16mBlD/2xrgDo1V/V2ZOok6C2ceC195uT+IU5UKI0gjBhxGx+foNj3Q29u
-         EQ7vXeJIPi3LR1bPrNpBjKcGRoC62NwJvJLqlZZ8YH0PbKqbSOQv8e581FjcSe4zUMzK
-         YitEpSEk/0l7Mgfu4NesVAofJ5ol3VAbUcHN/lo3AhabqM9JfWLyXc4RM+upius8wxUp
-         4E+iWwvd4w8c0Q4Iw7erdA5YFn8218JuU9G/fdljHzil86d9z6jBySvSlDdlzilaHFsf
-         CKxDA9iCenGyXMFRN974Nj/Xa5UDk8CYkH/DqApCu1kWhPK9q3vo5kqbsC9MV53iRMdk
-         Mnsw==
+        d=anholt-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Br5dnsn6qntOpU2U5zqHAGfW5LmzUx9sZjoQtT0uBvA=;
+        b=IEdGgwaqDywiGX1dYZabuHGeCPVqPOmtJ9gWumaiYE8LhpP7TPrmgh9Am25ZaK541g
+         Sd6wCiWEHPLssN/QZZQCUeV+b1jFHBa9vQqdVSP3T3NKxBgV1FzobrzJQk+NKL1vpuLV
+         nEBB9ozh/jSnm0UXI/GzbP33fvZOn8O0AIvyW/rAMtsz/ObcK8gFgtMXwYpCI7Cdziuy
+         hK/y6rYLo5xaOrwm+VBc/5k6KIR1KnM5+EV+9VYRQNJJmPdIwyGNck0fJFpkoeQjmTPC
+         AxTNhc1eE8HVAOr6kzUsbL0Uf0SoOCvwLRALNWIDRuXgHEd9O9L4wwkNJpd+hDPMKjIY
+         3mKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TnZft1bM0JMPpkTaiyM02YRpy0hlthAHrUT+3UG4R1Y=;
-        b=KODs2oST+wEZEJQgXDXWFbeuWbQw0gjTT+k4g/Zo5sE11/U92dOY25+SumBWO4iYCh
-         oZym9Lcga0+mXg5899tsnsAb0ChNIVHicnC0RVSpYdikGwohOAy9zKIJnEdK1JQ87mgC
-         1Cwe+DuA/g0Wax7h4KONgFmVE4EltMmAJ0b77iolhDzRafnVuAPJCb8viIBkzxqIgGCV
-         nGXEXhJaLDx2WW3wo5BuAHOeImniFysiFuGN9gaUq+1k1CWTIOA0LGCUUQwoe4bwDldU
-         hF7bbmVAFtg0E897F7pBr7UfImc6q/j6pWQgS2WaHNU1L75CO+6T+J0d9TvVLpo05SJH
-         cYuA==
-X-Gm-Message-State: AOAM530H2OUgQML4pDY4XdrqNxLmzde6oG0YmCLd8LM4C6dfeteNfE5e
-        DvUTY8gXQnEp0UB+MXTUrFo=
-X-Google-Smtp-Source: ABdhPJx5iOiy7ktC6EgzIyl8QJvBXa/U08naxVfPRUr+ahtitLgEsda0Zu5ADXP2I/5fCwdyjPXL4Q==
-X-Received: by 2002:a05:620a:14ae:: with SMTP id x14mr15457909qkj.237.1616800671571;
-        Fri, 26 Mar 2021 16:17:51 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.58.30])
-        by smtp.gmail.com with ESMTPSA id w78sm7960414qkb.11.2021.03.26.16.17.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Br5dnsn6qntOpU2U5zqHAGfW5LmzUx9sZjoQtT0uBvA=;
+        b=ChLixvUsDdyouArg0dR37idWeGWo6Cywsr4Nv71xw53iA9rZYYiHC/cb73FPmbhQ2H
+         KcvUgl7Us8ULJMmEOIZNpCALSQDq8Niy6nLcBtSIAd92emWdnaiAjtPHt6oMUsXLEvsn
+         A35wcSuHPQUBc6QbZy9QWlmsdBUqkJx6jbGsMGz49+GqzIkjX4b3xak4JQ+d3kxz4tb9
+         zY2gLPmMZJmQLHzl/iXZtjQj71v9qIaXoLu5x1WrFvksz4myzTxhF/FktEpRwjrBR1E4
+         AhzAiDkYTsca5LYutfvIDMUBH1b891RUrwo5ZD26cphw4QPXaFc1d6KZ1XTB0o+iZl1l
+         n9tw==
+X-Gm-Message-State: AOAM531XmYDeldHSB6FyIty8vNpd9xxUdsvSdR0HEwaJl88igJQTO6eT
+        bIfWNJpJY8CFPg42UcGCkHWM6A==
+X-Google-Smtp-Source: ABdhPJyNsiHsr3ai4ailFi6BHrwZ2FIzfLry8wAsmSYAHRtFtpb20MzTEwoKOTxny41h4vqVptXooQ==
+X-Received: by 2002:a65:458f:: with SMTP id o15mr13853926pgq.111.1616800385764;
+        Fri, 26 Mar 2021 16:13:05 -0700 (PDT)
+Received: from wildbow.anholt.net ([97.115.138.77])
+        by smtp.gmail.com with ESMTPSA id a144sm10289325pfd.200.2021.03.26.16.13.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 16:17:51 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rdunlap@infradead.org
-Subject: [PATCH 09/19] netfilter: nf_conntrack_acct.c: A typo fix
-Date:   Sat, 27 Mar 2021 04:43:02 +0530
-Message-Id: <0f547b474aa39eba3a21f67ea9d5632d5e25b919.1616797633.git.unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1616797633.git.unixbhaskar@gmail.com>
-References: <cover.1616797633.git.unixbhaskar@gmail.com>
+        Fri, 26 Mar 2021 16:13:05 -0700 (PDT)
+From:   Eric Anholt <eric@anholt.net>
+To:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>
+Subject: [PATCH 1/2] iommu/arm-smmu-qcom: Skip the TTBR1 quirk for db820c.
+Date:   Fri, 26 Mar 2021 16:13:02 -0700
+Message-Id: <20210326231303.3071950-1-eric@anholt.net>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/Accouting/Accounting/
+db820c wants to use the qcom smmu path to get HUPCF set (which keeps
+the GPU from wedging and then sometimes wedging the kernel after a
+page fault), but it doesn't have separate pagetables support yet in
+drm/msm so we can't go all the way to the TTBR1 path.
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Signed-off-by: Eric Anholt <eric@anholt.net>
 ---
- net/netfilter/nf_conntrack_acct.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nf_conntrack_acct.c b/net/netfilter/nf_conntrack_acct.c
-index 2ccda8ace796..91bc8df3e4b0 100644
---- a/net/netfilter/nf_conntrack_acct.c
-+++ b/net/netfilter/nf_conntrack_acct.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/* Accouting handling for netfilter. */
-+/* Accounting handling for netfilter. */
+We've been seeing a flaky test per day or so in Mesa CI where the
+kernel gets wedged after an iommu fault turns into CP errors.  With
+this patch, the CI isn't throwing the string of CP errors on the
+faults in any of the ~10 jobs I've run so far.
 
- /*
-  * (C) 2008 Krzysztof Piotr Oledzki <ole@ans.pl>
---
-2.26.2
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index bcda17012aee..51f22193e456 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -130,6 +130,16 @@ static int qcom_adreno_smmu_alloc_context_bank(struct arm_smmu_domain *smmu_doma
+ 	return __arm_smmu_alloc_bitmap(smmu->context_map, start, count);
+ }
+ 
++static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
++{
++	const struct device_node *np = smmu->dev->of_node;
++
++	if (of_device_is_compatible(np, "qcom,msm8996-smmu-v2"))
++		return false;
++
++	return true;
++}
++
+ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+ {
+@@ -144,7 +154,8 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+ 	 * be AARCH64 stage 1 but double check because the arm-smmu code assumes
+ 	 * that is the case when the TTBR1 quirk is enabled
+ 	 */
+-	if ((smmu_domain->stage == ARM_SMMU_DOMAIN_S1) &&
++	if (qcom_adreno_can_do_ttbr1(smmu_domain->smmu) &&
++	    (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) &&
+ 	    (smmu_domain->cfg.fmt == ARM_SMMU_CTX_FMT_AARCH64))
+ 		pgtbl_cfg->quirks |= IO_PGTABLE_QUIRK_ARM_TTBR1;
+ 
+-- 
+2.31.0
 
