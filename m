@@ -2,90 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB07034AF64
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F09DF34AF6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCZTeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:34:36 -0400
-Received: from albireo.enyo.de ([37.24.231.21]:54790 "EHLO albireo.enyo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230003AbhCZTec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:34:32 -0400
-Received: from [172.17.203.2] (port=41575 helo=deneb.enyo.de)
-        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1lPsDy-00017a-I1; Fri, 26 Mar 2021 19:34:26 +0000
-Received: from fw by deneb.enyo.de with local (Exim 4.92)
-        (envelope-from <fw@deneb.enyo.de>)
-        id 1lPsDy-0007IK-Bb; Fri, 26 Mar 2021 20:34:26 +0100
-From:   Florian Weimer <fw@deneb.enyo.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "H. J. Lu" <hjl.tools@gmail.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
-        "Carlos O'Donell" <carlos@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        libc-alpha <libc-alpha@sourceware.org>
-Subject: Re: Why does glibc use AVX-512?
-References: <CALCETrURmk4ZijJVUtJwouj=_0NPiUvUFr9XMvdniRRFqeU+fg@mail.gmail.com>
-        <87a6qqi064.fsf@mid.deneb.enyo.de>
-        <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
-Date:   Fri, 26 Mar 2021 20:34:26 +0100
-In-Reply-To: <CALCETrUM1=Db3vmQAhPkt=SktL7+dtUrt5Ef6BP3T1Q6HY3Bmw@mail.gmail.com>
-        (Andy Lutomirski's message of "Fri, 26 Mar 2021 11:14:22 -0700")
-Message-ID: <87blb5d7zx.fsf@mid.deneb.enyo.de>
+        id S230134AbhCZTkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhCZTkL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 15:40:11 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F1EC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 12:40:11 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id y18so6387942qky.11
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 12:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lKfOyLCVjbHs1Ab/RB7KSnKCc/W4r3mLxRkus0LCKtY=;
+        b=dVP9BnaDUsFWcr+Srf69Cbr1D3k1uS4mqMNecyArvF8Zj4Z78L6ARHZaeqmhMPzK6K
+         7CCuvOgYR9ufk/kQ4V3cykaA6a0Ha6nL0LwuvbHGHA9MENbPPz7oELSJCdEq87VnxG2e
+         bgSJzEwXS5Ljn8ytkpuvBgAZs9diDuGPpFpWYRiMpnq7ctdpf3GPkq+5fP13odWtYUEo
+         RtfoLIbeQAsmtdK8hXtnS1UC37KM2g0tFTUuBgczVcqk5Db0vkZG/xioTFVKE38HFsfl
+         snu/BBoAXlwIDVX4E1QxwLcXxMsf2V1Xd4kYs8/5jhspj0Uhl6te1WdxYr72avt7Qgr2
+         E2oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=lKfOyLCVjbHs1Ab/RB7KSnKCc/W4r3mLxRkus0LCKtY=;
+        b=TNGEDH9rYXVEWWwlvS5iV2h72OH9t/cYsa7JwCi7UIFzYqgSw7gZAn/4/eFl5+R9PD
+         F2v8FU1hv8P2w9V2u4Bg/uPXZ5iiPYX71ocmdZUki6WT/Pd/mrqQt3GBplVMMqpqf9xC
+         leVoHpM9JSYFHHZHVuINQjSdh5m+mALqRC5N3L+0ji1wKxah6xclsHzkUxHxNjYrV/OK
+         LAe87Jx3hFUfs0CclAc4H0a3FudBYD8jCZDa5GO0YdmSVKZJohK5UuJ8Vj3Ct3J2KlVA
+         vfbPo9FWOy7o3dFDuggxUiaaoK3nVPtlVSCEqoMJuhD5ien4AW2WSQ0SA9W1qmlzArI3
+         RxVg==
+X-Gm-Message-State: AOAM530T6W5llT7OM3a72YBBhyIjUYctP5OwQwrBrwxeKwuRr0C4m1L5
+        SP+qPGyHrwELyndeeouCIvI=
+X-Google-Smtp-Source: ABdhPJx7MhcetMeYD379FQcIKoLTpar5GGQep3CgZ3yDC/j67fuwShMt/kNNupPDPVbkWxk7ZuNabQ==
+X-Received: by 2002:a37:638f:: with SMTP id x137mr14356910qkb.199.1616787610561;
+        Fri, 26 Mar 2021 12:40:10 -0700 (PDT)
+Received: from Gentoo ([156.146.58.30])
+        by smtp.gmail.com with ESMTPSA id n24sm5896935qtr.21.2021.03.26.12.40.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 12:40:09 -0700 (PDT)
+Date:   Sat, 27 Mar 2021 01:09:58 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] sched/psi.c: Rudimentary typo fixes
+Message-ID: <YF44jiYiAVkuwE0P@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210326124233.7586-1-unixbhaskar@gmail.com>
+ <YF4hMn4rCftcdsSm@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cDW3VKXgXHD/EH0o"
+Content-Disposition: inline
+In-Reply-To: <YF4hMn4rCftcdsSm@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andy Lutomirski:
 
->> > AVX-512 cleared, and programs need to explicitly request enablement.
->> > This would allow programs to opt into not saving/restoring across
->> > signals or to save/restore in buffers supplied when the feature is
->> > enabled.
+--cDW3VKXgXHD/EH0o
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+
+On 14:00 Fri 26 Mar 2021, Johannes Weiner wrote:
+>On Fri, Mar 26, 2021 at 06:12:33PM +0530, Bhaskar Chowdhury wrote:
 >>
->> Isn't XSAVEOPT already able to handle that?
+>> s/possible/possible/
+>> s/ exceution/execution/
+>> s/manupulations/manipulations/
 >>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>> ---
+>>  kernel/sched/psi.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+>> index 967732c0766c..316ebc57a115 100644
+>> --- a/kernel/sched/psi.c
+>> +++ b/kernel/sched/psi.c
+>> @@ -59,7 +59,7 @@
+>>   * states, we would have to conclude a CPU SOME pressure number of
+>>   * 100%, since *somebody* is waiting on a runqueue at all
+>>   * times. However, that is clearly not the amount of contention the
+>> - * workload is experiencing: only one out of 256 possible exceution
+>> + * workload is experiencing: only one out of 256 possible execution
 >
-> Yes, but we need a place to put the data, and we need to acknowledge
-> that, with the current save-everything-on-signal model, the amount of
-> time and memory used is essentially unbounded.  This isn't great.
-
-The size has to have a known upper bound, but the save amount can be
-dynamic, right?
-
-How was the old lazy FPU initialization support for i386 implemented?
-
->> Assuming you can make XSAVEOPT work for you on the kernel side, my
->> instincts tell me that we should have markup for RTM, not for AVX-512.
->> This way, we could avoid use of the AVX-512 registers and keep using
->> VZEROUPPER, without run-time transaction checks, and deal with other
->> idiosyncrasies needed for transaction support that users might
->> encounter once this feature sees more use.  But the VZEROUPPER vs RTM
->> issues is currently stuck in some internal process issue on my end (or
->> two, come to think of it), which I hope to untangle next month.
+>I thought this was the french spelling.
 >
-> Can you elaborate on the issue?
+>Joking aside, the corrections look right, but I also had no trouble
+>understanding what those sentences mean. Typos happen, plus we have a
+>lot of non-native speakers who won't use perfect spelling or grammar.
+>
+>So for me, the bar is "this can be easily understood", not "needs to
+>be perfect English", and I'd say let's skip patches like these unless
+>they fix something truly unintelligble.
+>
 
-This is the bug:
+OH gosh! For fuck's sake please don't misinterpret. I have had no intension to
+pick on others hard work. I was just merely trying to make other work good and
+beautiful.
 
-  vzeroupper use in AVX2 multiarch string functions cause HTM aborts 
-  <https://sourceware.org/bugzilla/show_bug.cgi?id=27457>
 
-Unfortunately we have a bug (outside of glibc) that makes me wonder if
-we can actually roll out RTM transaction checks (or any RTM
-instruction) on a large scale:
 
-  x86: Sporadic failures in tst-cpu-features-cpuinfo 
-  <https://sourceware.org/bugzilla/show_bug.cgi?id=27398#c3>
+--cDW3VKXgXHD/EH0o
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The dynamic RTM check might trap due to this bug.  (We have a bit more
-information about the nature of the bug, currently missing from
-Bugzilla.)
+-----BEGIN PGP SIGNATURE-----
 
-I'm also worried that the new dynamic RTM check in the string
-functions has a performance impact.  Due to its nature, it will be
-enabled for every program once running on RTM-capable hardware, not
-just those that actually use RTM.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBeOIsACgkQsjqdtxFL
+KRXipAgArCDPpFXWIPeqPZAyfcqbwR4/E/UKss3k3/3rLA1XrRwMMY46JMhmCTBD
+qsbZhhr5cDqvPiT1ucfGFZtzgbpb0drKpUp8GsKGrMFwkfaYelOe4ipb4FHw8f34
+JYF1LGxbKzJpmYmGCXYQ7evILoodulvR9dY9iC23WLNn8ewZUU+0WlnDhQDX8o8i
+wOPEndy/sqOdi0yKdi1jNgxZw6bi1uFhAnn3w5+CMrxpwNtdebIOcOcx7RdA8Gra
+GrX97/Raj5R2hRv6yElOTcjbLm6r2Z7TH+Ti+Yr1IOxAiA52Or4mIkQyLwtFNMUp
+GV90YswuX3s1NmbsNgZOw1CGDUfYDQ==
+=TGa0
+-----END PGP SIGNATURE-----
+
+--cDW3VKXgXHD/EH0o--
