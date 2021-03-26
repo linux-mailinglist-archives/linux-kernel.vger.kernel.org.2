@@ -2,137 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D5434A54E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9494434A55F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhCZKKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:10:24 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:60470 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhCZKKR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:10:17 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QA4v28020165;
-        Fri, 26 Mar 2021 10:10:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=wzso/oBswSxYmp6YJJHUoZ0w/o+wqquI1UqRyE6d7IU=;
- b=lS24XRrnz6MuZVnj6GTPaRtd4OaSJvkZEHbATC4i7D2vShkFODBr1xI9YH6b8ymMydn6
- XNazSomc/5oHCgJpP0GTAt+cQY6BzaUXh1/Ky2Pu1jerxRFny5+t9z7rr4RFKEjvusEU
- 1ZhM2fC7HhGR2Z7c8NeDsldjKEMgb4hiCEb3gdG7itrOzrUZa0JA9fAfoqRvvunit5Kn
- IvTpLKJPBkBQQj9y8u84cQUaedzCm7hlbCrcwrAC395/n9U5WVfgRHQxar7jFh3xRpQA
- FDPsOmuubvo+ZaLXiEOzEoXIY28m9uaSBU0L+YZGGyzNYdHZ++vGMdWZFYGzKzmG5hnI 3g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 37h13hsjgv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 10:10:07 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QA59xx093711;
-        Fri, 26 Mar 2021 10:10:06 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 37h13xggxa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 10:10:06 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12QAA33t004893;
-        Fri, 26 Mar 2021 10:10:03 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 26 Mar 2021 03:10:02 -0700
-Date:   Fri, 26 Mar 2021 13:09:55 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [kbuild] fs/btrfs/sysfs.c:1034:4: warning: %u in format string (no.
- 2) requires 'unsigned int' but the argument type is 'signed int'.
-Message-ID: <20210326100955.GZ1667@kadam>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Message-ID-Hash: S3P2DBGXJWCUKZEQNTO5XITQ5HOBYE3Y
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103260073
-X-Proofpoint-GUID: qxWs8HNAISr6CFa6WanF5irxJI0zd9tQ
-X-Proofpoint-ORIG-GUID: qxWs8HNAISr6CFa6WanF5irxJI0zd9tQ
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- spamscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
- suspectscore=0 clxscore=1011 adultscore=0 phishscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103260073
+        id S229794AbhCZKOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 06:14:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49630 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhCZKOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 06:14:32 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 17F4161942;
+        Fri, 26 Mar 2021 10:14:32 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lPjU5-003xNw-Rc; Fri, 26 Mar 2021 10:14:29 +0000
+Date:   Fri, 26 Mar 2021 10:14:30 +0000
+Message-ID: <87wntufchl.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Megha Dey <megha.dey@intel.com>, linux-kernel@vger.kernel.org,
+        dave.jiang@intel.com, ashok.raj@intel.com, kevin.tian@intel.com,
+        dwmw@amazon.co.uk, x86@kernel.org, tony.luck@intel.com,
+        dan.j.williams@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+Subject: Re: [Patch V2 07/13] irqdomain/msi: Provide msi_alloc/free_store() callbacks
+In-Reply-To: <87lfabvzrz.fsf@nanos.tec.linutronix.de>
+References: <1614370277-23235-1-git-send-email-megha.dey@intel.com>
+        <1614370277-23235-8-git-send-email-megha.dey@intel.com>
+        <8735wjrwjm.wl-maz@kernel.org>
+        <87lfabvzrz.fsf@nanos.tec.linutronix.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: tglx@linutronix.de, megha.dey@intel.com, linux-kernel@vger.kernel.org, dave.jiang@intel.com, ashok.raj@intel.com, kevin.tian@intel.com, dwmw@amazon.co.uk, x86@kernel.org, tony.luck@intel.com, dan.j.williams@intel.com, jgg@mellanox.com, kvm@vger.kernel.org, iommu@lists.linux-foundation.org, alex.williamson@redhat.com, bhelgaas@google.com, linux-pci@vger.kernel.org, baolu.lu@linux.intel.com, ravi.v.shankar@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kefeng,
+On Thu, 25 Mar 2021 18:44:48 +0000,
+Thomas Gleixner <tglx@linutronix.de> wrote:
+> 
+> On Thu, Mar 25 2021 at 17:08, Marc Zyngier wrote:
+> > Megha Dey <megha.dey@intel.com> wrote:
+> >> @@ -434,6 +434,12 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
+> >>  	if (ret)
+> >>  		return ret;
+> >>  
+> >> +	if (ops->msi_alloc_store) {
+> >> +		ret = ops->msi_alloc_store(domain, dev, nvec);
+> >
+> > What is supposed to happen if we get aliasing devices (similar to what
+> > we have with devices behind a PCI bridge)?
+> >
+> > The ITS code goes through all kind of hoops to try and detect this
+> > case when sizing the translation tables (in the .prepare callback),
+> > and I have the feeling that sizing the message store is analogous.
+> 
+> No. The message store itself is sized upfront by the underlying 'master'
+> device. Each 'master' device has it's own irqdomain.
+> 
+> This is the allocation for the subdevice and this is not part of PCI and
+> therefore not subject to PCI aliasing.
 
-First bad commit (maybe != root cause):
+Fair enough. If we are guaranteed that there is no aliasing, then this
+point is moot.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-head:   002322402dafd846c424ffa9240a937f49b48c42
-commit: ed1ed4c0da5447c5e322481ce2ef9f03336c6ffb riscv: mmiowb: Fix implicit declaration of function 'smp_processor_id'
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+	M.
 
-vim +1034 fs/btrfs/sysfs.c
-
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1001  static void init_feature_attrs(void)
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1002  {
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1003  	struct btrfs_feature_attr *fa;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1004  	int set, i;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1005  
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1006  	BUILD_BUG_ON(ARRAY_SIZE(btrfs_unknown_feature_names) !=
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1007  		     ARRAY_SIZE(btrfs_feature_attrs));
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1008  	BUILD_BUG_ON(ARRAY_SIZE(btrfs_unknown_feature_names[0]) !=
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1009  		     ARRAY_SIZE(btrfs_feature_attrs[0]));
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1010  
-3b02a68a636400 Jeff Mahoney    2013-11-01  1011  	memset(btrfs_feature_attrs, 0, sizeof(btrfs_feature_attrs));
-3b02a68a636400 Jeff Mahoney    2013-11-01  1012  	memset(btrfs_unknown_feature_names, 0,
-3b02a68a636400 Jeff Mahoney    2013-11-01  1013  	       sizeof(btrfs_unknown_feature_names));
-3b02a68a636400 Jeff Mahoney    2013-11-01  1014  
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1015  	for (i = 0; btrfs_supported_feature_attrs[i]; i++) {
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1016  		struct btrfs_feature_attr *sfa;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1017  		struct attribute *a = btrfs_supported_feature_attrs[i];
-3b02a68a636400 Jeff Mahoney    2013-11-01  1018  		int bit;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1019  		sfa = attr_to_btrfs_feature_attr(a);
-3b02a68a636400 Jeff Mahoney    2013-11-01  1020  		bit = ilog2(sfa->feature_bit);
-3b02a68a636400 Jeff Mahoney    2013-11-01  1021  		fa = &btrfs_feature_attrs[sfa->feature_set][bit];
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1022  
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1023  		fa->kobj_attr.attr.name = sfa->kobj_attr.attr.name;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1024  	}
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1025  
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1026  	for (set = 0; set < FEAT_MAX; set++) {
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1027  		for (i = 0; i < ARRAY_SIZE(btrfs_feature_attrs[set]); i++) {
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1028  			char *name = btrfs_unknown_feature_names[set][i];
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1029  			fa = &btrfs_feature_attrs[set][i];
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1030  
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1031  			if (fa->kobj_attr.attr.name)
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1032  				continue;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1033  
-6c52157fa9378e Tomohiro Misono 2018-05-16 @1034  			snprintf(name, BTRFS_FEATURE_NAME_MAX, "%s:%u",
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1035  				 btrfs_feature_set_names[set], i);
-
-It looks like these two arguments are reversed?
-
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1036  
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1037  			fa->kobj_attr.attr.name = name;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1038  			fa->kobj_attr.attr.mode = S_IRUGO;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1039  			fa->feature_set = set;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1040  			fa->feature_bit = 1ULL << i;
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1041  		}
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1042  	}
-79da4fa4d9dcf8 Jeff Mahoney    2013-11-01  1043  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
-_______________________________________________
-kbuild mailing list -- kbuild@lists.01.org
-To unsubscribe send an email to kbuild-leave@lists.01.org
+-- 
+Without deviation from the norm, progress is not possible.
