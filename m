@@ -2,70 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE9E34A370
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFED634A372
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhCZIwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:52:45 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:50618 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhCZIwT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:52:19 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9D4921C0BB9; Fri, 26 Mar 2021 09:52:14 +0100 (CET)
-Date:   Fri, 26 Mar 2021 09:52:14 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, cy_huang@richtek.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] leds: rt4505: Add support for Richtek RT4505
- flash LED controller
-Message-ID: <20210326085213.GA21542@amd>
-References: <1616739188-17719-1-git-send-email-u0084500@gmail.com>
- <1616739188-17719-2-git-send-email-u0084500@gmail.com>
+        id S229906AbhCZIxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:53:19 -0400
+Received: from ozlabs.org ([203.11.71.1]:47957 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhCZIwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 04:52:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F6G2J5vQYz9sS8;
+        Fri, 26 Mar 2021 19:52:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616748762;
+        bh=g09iU8hR/lAv9pnKVSRRWFYJQmCD/sDHaaa1nfzr3Kg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NUwuxVmTnprNkytMDu7We7whdOv9p8mqSXN76vvT9DspgqCQDD0/iIo9WXXwzUOmT
+         tEp8F7vIRkrVyfuFfEy28Xfsprno80Ji/ZuGr8lpAgDubmL4zHAGkFOO0kEmAdjykG
+         ZN8v4TBn921FQFCnWp/bsmzj9Hi8aH0tUCfvCMTBmCihFZcwAidZ3a1iYu+HVdPZHv
+         8AIq5kzXMOMnq747wu9sZqD8VKVGrxGtr6YCf2JfvPiryJMRUqf+0OKaI7IqnI49x5
+         4PAS0Xj7bwH4CjOLbyeqj/n3VOO0yfoVs4KKY0ioAR9alkAB83Z37Q78Pms+Io7ZsE
+         wNN7Z6BbaYvHg==
+Date:   Fri, 26 Mar 2021 19:52:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Will Deacon <will@kernel.org>
+Cc:     Qi Liu <liuqi115@huawei.com>,
+        Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the arm-perf tree
+Message-ID: <20210326195240.7b937560@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="KsGdsel6WgEHnImy"
-Content-Disposition: inline
-In-Reply-To: <1616739188-17719-2-git-send-email-u0084500@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: multipart/signed; boundary="Sig_/5fJIKHBOWq+C8_hbA/zUxi0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---KsGdsel6WgEHnImy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/5fJIKHBOWq+C8_hbA/zUxi0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi all,
 
-> Add support for RT4505 flash LED controller. It can support up to 1.5A
-> flash current with hardware timeout and low input voltage protection.
->=20
-> Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+After merging the arm-perf tree, today's linux-next build (htmldocs)
+produced these warnings:
 
-Thank you, applied and pushed out.
+Documentation/admin-guide/perf/hisi-pmu.rst:61: WARNING: Unexpected indenta=
+tion.
+Documentation/admin-guide/perf/hisi-pmu.rst:62: WARNING: Block quote ends w=
+ithout a blank line; unexpected unindent.
+Documentation/admin-guide/perf/hisi-pmu.rst:69: WARNING: Unexpected indenta=
+tion.
+Documentation/admin-guide/perf/hisi-pmu.rst:70: WARNING: Block quote ends w=
+ithout a blank line; unexpected unindent.
+Documentation/admin-guide/perf/hisi-pmu.rst:83: WARNING: Unexpected indenta=
+tion.
 
-Best regards,
-								Pavel
+Introduced by commit
+
+  9b86b1b41e0f ("docs: perf: Add new description on HiSilicon uncore PMU v2=
+")
+
 --=20
-http://www.livejournal.com/~pavelmachek
+Cheers,
+Stephen Rothwell
 
---KsGdsel6WgEHnImy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--Sig_/5fJIKHBOWq+C8_hbA/zUxi0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iEYEARECAAYFAmBdoL0ACgkQMOfwapXb+vLXHACfRN523TLaFcXlIeOs3uZU6EV1
-P5cAni0ABu/P4GEWCmT2oc0XcKQcXlow
-=ZtIY
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBdoNgACgkQAVBC80lX
+0GyFyAf/bGlTBxPfl3UbcX+uBELL6v+S9/rnnLcXk4hmlvVXc2oZmLb2rZd4vbTO
+zeQa/r8TVqeaj78LdrPtqIWOmkQj+gV8aETATdDjOus35U/BD/F7uLocbDSn+UzF
+BzReiJhWUfvwzTbCMTGY5yjX9cXVDjuLB6weiIPugE8U7oqM9TcVMkLD/EWAsFVy
+gTphNCqCMiFAIcrrLRZpfzlEAr4FqHt3rKJf7dAbAD+yGvR/aECkiusiDiE9u0fv
+fVY4NRNRnyJ9UnqWnA0adVlW24CmElOSb7Xh/DXhfSktwUCgoZfjhoU4XAPEJJfo
+ZihpidhNCqvHH8EoFjse03DSyXXxbA==
+=IKy+
 -----END PGP SIGNATURE-----
 
---KsGdsel6WgEHnImy--
+--Sig_/5fJIKHBOWq+C8_hbA/zUxi0--
