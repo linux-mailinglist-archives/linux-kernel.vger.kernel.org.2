@@ -2,82 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A36CB34AEA7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251B034ADAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCZSf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:35:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229933AbhCZSfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:35:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3673861974;
-        Fri, 26 Mar 2021 18:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616783714;
-        bh=jjSlvlfTYmDgqztkBlh2xh49URpXSxlyKygsNdwn/sM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qMcmVYRvChY5q3/+UXJcxZw16T82WgRE0H90UgLwmrU6TY0680BZZJruVft6ISsAg
-         GmmRridcvTl6apEM2tipTFBvcGUVaetEZxL5fHFm0MvAKojq0AWo65vm0TsWiEU/to
-         4vF+wcH0qlO/wEnn8yB6a95w/HlRvz74JN7ZSq0LLSuKDnFrtXgYDHgqo1I6HnUO6g
-         vQJ2+lBm/4zzGyRD9BG4+Zun4FjMrXB4aJjK1HPIAkmutNJ2DSbwHaojkMrhWicx13
-         dB0X/7r298VQtGG11JYaifQYwSuRoQWmpx+W/rOkGX6zF2HmRVskEyzcSxFUMHl90N
-         PxC1vd05sR90Q==
-Date:   Fri, 26 Mar 2021 12:35:10 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] hpfs: Replace one-element array with flexible-array
- member
-Message-ID: <20210326173510.GA81212@embeddedor>
+        id S230026AbhCZRg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:36:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50283 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230254AbhCZRgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 13:36:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616780183;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SiWoaGpTsKxnpfH36CVPc9yu7W5RPrt7W/LPaBOJkxE=;
+        b=XnYYdSG5RGUBxJE7TuUKFfEgTrwyKvdzwR5mEiPGakBRepAwZOHcL+gWWm1yqoMiGowwUQ
+        xD3DuFkbkNJkJ73MesPk9XUjVuMylYcyBRPifCt9C4gCcopgwTftY5uZV8syCC9d66Cj4v
+        gMfUC9zno86Cf/ppIwIdwMppoLraTIY=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-eobImU2sMquKLMyIqXz_kg-1; Fri, 26 Mar 2021 13:36:21 -0400
+X-MC-Unique: eobImU2sMquKLMyIqXz_kg-1
+Received: by mail-ej1-f72.google.com with SMTP id gv58so4382561ejc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:36:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SiWoaGpTsKxnpfH36CVPc9yu7W5RPrt7W/LPaBOJkxE=;
+        b=f9/zO4XNT/9eUWgT9K0bY8Bysy9LZ8eaxNxhXUgy9CKe6aHCoZpkNizDh9E2T3l7+s
+         SgCN3V9QL6c3SaZYdXPHrENtu6IMyvf/EoJOnA7vur+HiEzRVIKg/V8rb+0wNZR/bZUf
+         89WWvA/XVhnzwpP/i0dhkAHBKPXOyFUq5vJ95aWCAcWY7OgEI8852RdxJF8M5qvEB/zx
+         T9nrHumO2ycumwatnyMMc3lgEJaToYN0jGGMjqNGaNIwzlnCUwByU07U+0o9bj+3HGQD
+         xsJKrR6ErEIdsrMlYPkbGHd3oqVKEuAdrDXBTRy2yO7r4ldRXuYOGtdA5riazM49n0Jk
+         TtPw==
+X-Gm-Message-State: AOAM532Jiultfx8s+uK8QS1HjFR0LXHYdUCr0Gbmlv6DlanYvz5EGd1L
+        aR1v5mJ0m78CTAIQ+tIGW0f4N1HIB1Iydb8BgYZVQKxkZVYlBeyi/Ah2qPO/V16LNj335HKQQPA
+        M3L/4aHXdqPU8BuhKomNSERf7zf/mqqi+fUtOoGAmZZZgV5aK71xdmmeMLz8qr7BuMqUhS3YKpI
+        /C
+X-Received: by 2002:a17:906:fc1c:: with SMTP id ov28mr16619562ejb.342.1616780179391;
+        Fri, 26 Mar 2021 10:36:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywy9F+bHrM6Wo1A9BQMrDcnwQV/JRcPdm9zC2239ivfsh4NlsKnAFvT9M3QNEYIiq1nD6MxQ==
+X-Received: by 2002:a17:906:fc1c:: with SMTP id ov28mr16619538ejb.342.1616780179162;
+        Fri, 26 Mar 2021 10:36:19 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d1sm4130294eje.26.2021.03.26.10.36.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 10:36:18 -0700 (PDT)
+Subject: Re: [PATCH] KVM: make: Fix out-of-source module builds
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210324124347.18336-1-sidcha@amazon.de>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <0391f264-ff1a-5ab6-c989-96a9f28a9457@redhat.com>
+Date:   Fri, 26 Mar 2021 18:36:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210324124347.18336-1-sidcha@amazon.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use “flexible array members”[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+On 24/03/21 13:43, Siddharth Chandrasekaran wrote:
+> Building kvm module out-of-source with,
+> 
+>      make -C $SRC O=$BIN M=arch/x86/kvm
+> 
+> fails to find "irq.h" as the include dir passed to cflags-y does not
+> prefix the source dir. Fix this by prefixing $(srctree) to the include
+> dir path.
+> 
+> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+> ---
+>   arch/x86/kvm/Makefile | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+> index 1b4766fe1de2..eafc4d601f25 100644
+> --- a/arch/x86/kvm/Makefile
+> +++ b/arch/x86/kvm/Makefile
+> @@ -1,6 +1,6 @@
+>   # SPDX-License-Identifier: GPL-2.0
+>   
+> -ccflags-y += -Iarch/x86/kvm
+> +ccflags-y += -I $(srctree)/arch/x86/kvm
+>   ccflags-$(CONFIG_KVM_WERROR) += -Werror
+>   
+>   ifeq ($(CONFIG_FRAME_POINTER),y)
+> 
 
-Also, this helps with the ongoing efforts to enable -Warray-bounds by
-fixing the following warning:
+Queued, thanks.
 
-  CC [M]  fs/hpfs/dir.o
-fs/hpfs/dir.c: In function ‘hpfs_readdir’:
-fs/hpfs/dir.c:163:41: warning: array subscript 1 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
-  163 |         || de ->name[0] != 1 || de->name[1] != 1))
-      |                                 ~~~~~~~~^~~
-
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
-
-Link: https://github.com/KSPP/linux/issues/79
-Link: https://github.com/KSPP/linux/issues/109
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/hpfs/hpfs.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/hpfs/hpfs.h b/fs/hpfs/hpfs.h
-index 302f45101a96..d92c4af3e1b4 100644
---- a/fs/hpfs/hpfs.h
-+++ b/fs/hpfs/hpfs.h
-@@ -356,7 +356,8 @@ struct hpfs_dirent {
-   u8 no_of_acls;			/* number of ACL's (low 3 bits) */
-   u8 ix;				/* code page index (of filename), see
- 					   struct code_page_data */
--  u8 namelen, name[1];			/* file name */
-+  u8 namelen;				/* file name length */
-+  u8 name[];				/* file name */
-   /* dnode_secno down;	  btree down pointer, if present,
-      			  follows name on next word boundary, or maybe it
- 			  precedes next dirent, which is on a word boundary. */
--- 
-2.27.0
+Paolo
 
