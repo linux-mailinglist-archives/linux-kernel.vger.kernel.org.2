@@ -2,132 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5759E34B1FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B2434B203
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhCZWLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        id S230413AbhCZWNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhCZWLV (ORCPT
+        with ESMTP id S230076AbhCZWMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:11:21 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEE4C0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:11:21 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id m13so7106693oiw.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:11:21 -0700 (PDT)
+        Fri, 26 Mar 2021 18:12:50 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBB6C0613B1;
+        Fri, 26 Mar 2021 15:12:49 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id 19so6299970ilj.2;
+        Fri, 26 Mar 2021 15:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FElZ2VXGIlmQ0NTD4L5D6TBJnr5Rk+0sYfGma5bvPWY=;
-        b=p6Mt1ZfdiegWNcxkCRJVOy2iZ68VFga3d5Sj5nuSneCEzCgG1eTinUYaQxnQFap4KG
-         DvVYaBJPwIs3kIx1FIWiRSFLHWcprIT+Y3Gw+07Kep/ND5AIc6ofy15ywCFHn1j8bSOd
-         BJpXEQFAg3N/FxvqmUegjEvxovkuM864SFBrSjWhBkQsRG+tu/6yFG84DAsbkvqt2/bG
-         OrJU5kzgjHCyEFWJbiFO9XkAtKyLR6ypbPdd6+diyrXPP5FS7Jug1P4TQNx5ISV41QCb
-         ygjuB7jPJ98qv6GEQXxlxq2YSqc2ZwJW7fsP6XtF2l9tzgIbni9fQNm3Kt1/IrsvUc1O
-         Gueg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VKRu/20dm1kx8lx57omGSjuR80s186bmUyk42/yIwsA=;
+        b=C5tZkbk+9pDwahw0uqoqYov69orWGgkoeSD9AVzTJg+UwqQ2froXblxyfprXV8V1aL
+         6AgWDxcDS6XWgsV9bq+CHyeNTd4wefqpaQeFniwBTGRW1zY7takF0+/KlBukVR0A439M
+         x0tXjlcOSZ6UTqpob3Ln+ftFg4tXBBM99KwhNFVJ3MabD3DapQVXDrUMxJruF1/iKv66
+         yaecCNuaDUCXOXNDfFMp61GLhTWdYT8y40NzuBp5JmabyPwZ+15ECuUdZzDhsPsW53MG
+         pTEerwWnx6ahhp43RqYvy29IDKQHbCwp0+Ok43tr6SVXTO6JOJqljpB6IqPtW4Z0HWp0
+         8KZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FElZ2VXGIlmQ0NTD4L5D6TBJnr5Rk+0sYfGma5bvPWY=;
-        b=PNyVydkdL1wIsUb26VdrRnSCuL01XEeukP770+LoAI/ooQr6znGaplQ+Kl/yaKrQD5
-         mhg3IjN/MZCZNKRsBCVSyfQN4czeq0t3EI+R6vh1vEF/uqvxAyQAs9EYdfyo/DdghkJn
-         I0Ov0Tcm3vylt3eX+5UbCAAoArWIlLEHvLseNwZpo9XIsoLNZNvgnKGtPl6woIotLgZN
-         HNtz5B1Z42NzhUGau/iOIndRTNX9oDBjJISz48dBOmI0Yo3GYm4nL+UzP7Sb+JXUyY6C
-         DlfxEYl3b76TXD5RLu1D5xKNEJ2dmUokgvogxpHstqyFrWcbVjaGUcwQq7Zia4vNRnSA
-         3xUw==
-X-Gm-Message-State: AOAM531q5lbfU1Ag9sb0g3j0DK0bGBU6yHh7enNSKtKJqmLyHA89TWGZ
-        fE8OOZaKCq1sNlYBVzX/497RAiheBp1lnw==
-X-Google-Smtp-Source: ABdhPJz34nyTVLufa0fa93v446YAV/mFi84VcKGJUJ4L5NscXVI2szHQLGmrIIbqYBwvRgfwuxYYRw==
-X-Received: by 2002:aca:4d4e:: with SMTP id a75mr11142631oib.107.1616796680712;
-        Fri, 26 Mar 2021 15:11:20 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id a6sm2338894otb.41.2021.03.26.15.11.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 15:11:19 -0700 (PDT)
-Subject: Re: [PATCH 1/7] kernel: don't call do_exit() for PF_IO_WORKER threads
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326155128.1057078-1-axboe@kernel.dk>
- <20210326155128.1057078-2-axboe@kernel.dk> <m14kgxy7b4.fsf@fess.ebiederm.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <80915fd5-7cb1-167a-2c8a-01a0f8f21bd2@kernel.dk>
-Date:   Fri, 26 Mar 2021 16:11:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VKRu/20dm1kx8lx57omGSjuR80s186bmUyk42/yIwsA=;
+        b=FWnlHmFgcRJZV2GghYDpHdVatzM0Y4pzIrRya53BWq83nkBXcvvFSigGG8xGF/RKEq
+         j59wbbBAU2WnCeVM1e/PPClHwXLqLzWh/MEUbRja5U7UqqOAzadINSzvAcBFnTh4xBRP
+         FiH4gG9xcbYaaynMAf7TWCKRbK/Nm4T2BIB+xsmp64ihmiPMjQg06CrrR999K4/Oi9ro
+         jpBJ9z+Zf51iarX9bGvyT5Mvc7oGZhcbljZD63iGffrdq31w48QWUuFjFxew5bL+VwDh
+         wl+haQIEwild0lrcXyhkP5wZH/7hnEFhoBk3RlvXxkPBE8ZbxGxYrORSw3fDPmHlMjmN
+         yVEA==
+X-Gm-Message-State: AOAM5338q4srXLKqel1gTCGU4YqjHTgUpxgsy5WiEQYHbCZKPikwWicA
+        sBDAXKXpEpnOtzTwYw0dSHvF+iiNKn+VcTgm6f8=
+X-Google-Smtp-Source: ABdhPJwdl4VGs/tkLkbpXsDNTVJ/2e4MIdPgFV7jnZyb31LofH3vnWHNyCk9SeYav7qDJrki2HQ3NJKEWw3vPqxiPcM=
+X-Received: by 2002:a05:6e02:20c3:: with SMTP id 3mr11909241ilq.164.1616796769368;
+ Fri, 26 Mar 2021 15:12:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <m14kgxy7b4.fsf@fess.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+ <CAHp75VfJ5bGaPkai_adsBoT6=7nS2K8ze0ka3gzZkQARkM5evA@mail.gmail.com>
+In-Reply-To: <CAHp75VfJ5bGaPkai_adsBoT6=7nS2K8ze0ka3gzZkQARkM5evA@mail.gmail.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Sat, 27 Mar 2021 03:42:37 +0530
+Message-ID: <CACG_h5pb0pA+cTNPGircAM3UrV5BGmqgk45LF_9phU_J4FaRyw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 2:43 PM, Eric W. Biederman wrote:
-> Jens Axboe <axboe@kernel.dk> writes:
-> 
->> Right now we're never calling get_signal() from PF_IO_WORKER threads, but
->> in preparation for doing so, don't handle a fatal signal for them. The
->> workers have state they need to cleanup when exiting, and they don't do
->> coredumps, so just return instead of performing either a dump or calling
->> do_exit() on their behalf. The threads themselves will detect a fatal
->> signal and do proper shutdown.
->>
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->> ---
->>  kernel/signal.c | 9 +++++++++
->>  1 file changed, 9 insertions(+)
->>
->> diff --git a/kernel/signal.c b/kernel/signal.c
->> index f2a1b898da29..e3e1b8fbfe8a 100644
->> --- a/kernel/signal.c
->> +++ b/kernel/signal.c
->> @@ -2756,6 +2756,15 @@ bool get_signal(struct ksignal *ksig)
->>  		 */
->>  		current->flags |= PF_SIGNALED;
->>  
->> +		/*
->> +		 * PF_IO_WORKER threads will catch and exit on fatal signals
->> +		 * themselves. They have cleanup that must be performed, so
->> +		 * we cannot call do_exit() on their behalf. coredumps also
->> +		 * do not apply to them.
->> +		 */
->> +		if (current->flags & PF_IO_WORKER)
->> +			return false;
->> +
-> 
-> Returning false when get_signal needs the caller to handle a signal
-> adds a very weird and awkward special case to how get_signal returns
-> arguments.
-> 
-> Instead you should simply break and let get_signal return SIGKILL like
-> any other signal that has a handler that the caller of get_signal needs
-> to handle.
-> 
-> Something like:
->> +		/*
->> +		 * PF_IO_WORKER have cleanup that must be performed,
->> +		 * before calling do_exit().
->> +		 */
->> +		if (current->flags & PF_IO_WORKER)
->> +			break;
-> 
-> 
-> As do_coredump does not call do_exit there is no reason to skip calling into
-> the coredump handling either.   And allowing it will remove yet another
-> special case from the io worker code.
+On Fri, Mar 26, 2021 at 11:32 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Sat, Mar 6, 2021 at 4:08 PM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+>
+> > +       bitmap_set_value(old, 64, state[0], 32, 0);
+> > +       bitmap_set_value(old, 64, state[1], 32, 32);
+>
+> Isn't it effectively bitnap_from_arr32() ?
+>
+> > +       bitmap_set_value(new, 64, state[0], 32, 0);
+> > +       bitmap_set_value(new, 64, state[1], 32, 32);
+>
+> Ditto.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
 
-Thanks, I'll turn it into a break, that does seem like a better idea in
-general. Actually it wants to be a goto or similar, as a break will
-assume that we have the sighand lock held. With the coredump being
-irrelevant, I'll just it before the do_exit() call.
+Hi Andy,
 
--- 
-Jens Axboe
+With bitmap_set_value() we are also specifying the offset (or start)
+position too. so that the remainder of the array remains unaffected. I
+think it would not be feasible to use bitmap_from/to_arr32()  here.
 
+Regards
+Syed Nayyar Waris
