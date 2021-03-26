@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD4E234A843
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07E534A84A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhCZNjw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Mar 2021 09:39:52 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:43790 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230153AbhCZNj3 (ORCPT
+        id S230115AbhCZNkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:40:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhCZNko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:39:29 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-142-9bIiFNUNNmm70U8_vh6zgQ-1; Fri, 26 Mar 2021 13:39:25 +0000
-X-MC-Unique: 9bIiFNUNNmm70U8_vh6zgQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 26 Mar 2021 13:39:24 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Fri, 26 Mar 2021 13:39:24 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Fabio Aiuto' <fabioaiuto83@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 14/15] staging: rtl8723bs:  put parentheses on macros with
- complex values in include/sta_info.h
-Thread-Topic: [PATCH 14/15] staging: rtl8723bs:  put parentheses on macros
- with complex values in include/sta_info.h
-Thread-Index: AQHXIh/zAuJ0NeHvkECgXPo7PrRwXqqWRkAA
-Date:   Fri, 26 Mar 2021 13:39:24 +0000
-Message-ID: <0466586ada4d4804bca4e84aa5908c01@AcuMS.aculab.com>
-References: <cover.1616748885.git.fabioaiuto83@gmail.com>
- <24e684c1eff8911dacff1b61957ce25bafc46631.1616748885.git.fabioaiuto83@gmail.com>
-In-Reply-To: <24e684c1eff8911dacff1b61957ce25bafc46631.1616748885.git.fabioaiuto83@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 26 Mar 2021 09:40:44 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB44DC0613AA;
+        Fri, 26 Mar 2021 06:40:37 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 481D83FA15;
+        Fri, 26 Mar 2021 13:40:29 +0000 (UTC)
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210304213902.83903-1-marcan@marcan.st>
+ <20210304213902.83903-17-marcan@marcan.st>
+ <CAHp75Vco_rcjHJ4THLZ8CJP=yX2fesfAo_tOY8zohfSmTLEVgw@mail.gmail.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [RFT PATCH v3 16/27] irqchip/apple-aic: Add support for the Apple
+ Interrupt Controller
+Message-ID: <8d7aced9-4aac-0821-a4b7-d27cb73be301@marcan.st>
+Date:   Fri, 26 Mar 2021 22:40:26 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAHp75Vco_rcjHJ4THLZ8CJP=yX2fesfAo_tOY8zohfSmTLEVgw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Aiuto 
-> Sent: 26 March 2021 09:09
+On 06/03/2021 00.05, Andy Shevchenko wrote:
+>> +#define pr_fmt(fmt) "%s: " fmt, __func__
 > 
-> fix the following checkpatch warnings:
-> 
-> ERROR: Macros with complex values should be enclosed in parentheses
-> 284: FILE: drivers/staging/rtl8723bs/include/sta_info.h:284:
-> +#define STA_RX_PKTS_ARG(sta) \
-> --
-> ERROR: Macros with complex values should be enclosed in parentheses
-> 289: FILE: drivers/staging/rtl8723bs/include/sta_info.h:289:
-> +#define STA_LAST_RX_PKTS_ARG(sta) \
-> --
-> ERROR: Macros with complex values should be enclosed in parentheses
-> 294: FILE: drivers/staging/rtl8723bs/include/sta_info.h:294:
-> +#define STA_RX_PKTS_DIFF_ARG(sta) \
-> 
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> ---
->  drivers/staging/rtl8723bs/include/sta_info.h | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/include/sta_info.h
-> b/drivers/staging/rtl8723bs/include/sta_info.h
-> index abde3e3df988..1cdf93ec3b66 100644
-> --- a/drivers/staging/rtl8723bs/include/sta_info.h
-> +++ b/drivers/staging/rtl8723bs/include/sta_info.h
-> @@ -282,19 +282,19 @@ struct sta_info {
->  	} while (0)
-> 
->  #define STA_RX_PKTS_ARG(sta) \
-> -	sta->sta_stats.rx_mgnt_pkts \
-> +	(sta->sta_stats.rx_mgnt_pkts \
->  	, sta->sta_stats.rx_ctrl_pkts \
-> -	, sta->sta_stats.rx_data_pkts
-> +	, sta->sta_stats.rx_data_pkts)
+> This is not needed, really, if you have unique / distinguishable
+> messages in the first place.
+> Rather people include module names, which may be useful.
 
-That doesn't look right at all.
-You've changed what is (probably) a list of arguments to a function
-into a comma operator list.
+Makes sense, I'll switch to KBUILD_MODNAME.
 
-	David
+>> +#define MASK_BIT(x)            BIT((x) & 0x1f)
+> 
+> GENMASK(4,0)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+It's not really a register bitmask, but rather extracting the low bits 
+of an index... but sure, GENMASK also expresses that. Changed.
 
+>> +static atomic_t aic_vipi_flag[AIC_MAX_CPUS];
+>> +static atomic_t aic_vipi_enable[AIC_MAX_CPUS];
+> 
+> Isn't it easier to handle these when they are full width, i.e. 32
+> items per the array?
+
+I don't think so, it doesn't really buy us anything. It's just a maximum 
+beyond which the driver doesn't work in its current state anyway (if the 
+number were much larger it'd make sense to dynamically allocate these, 
+but not at this point).
+
+>> +static int aic_irq_set_affinity(struct irq_data *d,
+>> +                               const struct cpumask *mask_val, bool force)
+>> +{
+>> +       irq_hw_number_t hwirq = irqd_to_hwirq(d);
+>> +       struct aic_irq_chip *ic = irq_data_get_irq_chip_data(d);
+>> +       int cpu;
+>> +
+>> +       if (hwirq > ic->nr_hw)
+> 
+> >= ?
+
+Good catch, but this is actually obsolete. Higher IRQs go into the FIQ 
+irqchip, so this should never happen (it's a leftover from when they 
+were a single one). I'll remove it.
+
+Ack on the other comments, thanks!
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
