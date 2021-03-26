@@ -2,62 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F6634A3F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F3834A3F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhCZJPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:15:37 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:35276 "EHLO fornost.hmeau.com"
+        id S230146AbhCZJPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:15:51 -0400
+Received: from mga01.intel.com ([192.55.52.88]:23494 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229463AbhCZJPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:15:15 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lPiYT-00034K-Bz; Fri, 26 Mar 2021 20:14:58 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 20:14:57 +1100
-Date:   Fri, 26 Mar 2021 20:14:57 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Yang Shen <shenyang39@huawei.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, wangzhou1@hisilicon.com
-Subject: Re: [PATCH 4/4] crypto: hisilicon/zip - support new 'sqe' type in
- Kunpeng930
-Message-ID: <20210326091457.GA1153@gondor.apana.org.au>
-References: <1616139187-63425-1-git-send-email-shenyang39@huawei.com>
- <1616139187-63425-5-git-send-email-shenyang39@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616139187-63425-5-git-send-email-shenyang39@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S229528AbhCZJPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:15:36 -0400
+IronPort-SDR: JFO/Qh8pSlwamznYkqhx7/nj6WgghTthPE1f9V65b4tVJk2EXHs5ovJNOj7e7K7ZFE6rh3jhsd
+ 3loBg3wAVvAQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211269553"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="211269553"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:27 -0700
+IronPort-SDR: bIPOm3R/3K2MdsaNAp5lh76tGzPU1ypOgvwIw0Wu+MnXshM9vEAY6scQGy2URBZIMLBAVT7U5W
+ NR34V3WZVJnA==
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="416463072"
+Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:23 -0700
+From:   Bard Liao <yung-chuan.liao@linux.intel.com>
+To:     alsa-devel@alsa-project.org, vkoul@kernel.org
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, srinivas.kandagatla@linaro.org,
+        rander.wang@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: [RESEND PATCH 00/11] soundwire: some cleanup patches
+Date:   Fri, 26 Mar 2021 17:15:03 +0800
+Message-Id: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 03:33:07PM +0800, Yang Shen wrote:
->
-> +const struct hisi_zip_sqe_ops hisi_zip_ops_v2 = {
-> +	.sqe_type		= 0x3,
-> +	.fill_addr		= hisi_zip_fill_addr,
-> +	.fill_buf_size		= hisi_zip_fill_buf_size,
-> +	.fill_buf_type		= hisi_zip_fill_buf_type,
-> +	.fill_req_type		= hisi_zip_fill_req_type,
-> +	.fill_tag		= hisi_zip_fill_tag_v2,
-> +	.fill_sqe_type		= hisi_zip_fill_sqe_type,
-> +	.get_tag		= hisi_zip_get_tag_v2,
-> +	.get_status		= hisi_zip_get_status,
-> +	.get_dstlen		= hisi_zip_get_dstlen,
-> +};
-> +
+To make soundwire driver more decent and less Cppcheck complaint.
 
-This triggers a new warning:
+Pierre-Louis Bossart (11):
+  soundwire: bus: use correct driver name in error messages
+  soundwire: bus: test read status
+  soundwire: bus: use consistent tests for return values
+  soundwire: bus: demote clock stop prepare log to dev_dbg()
+  soundwire: bus: uniquify dev_err() for SCP_INT access
+  soundwire: bus: remove useless initialization
+  soundwire: generic_bandwidth_allocation: remove useless init
+  soundwire: intel: remove useless readl
+  soundwire: qcom: check of_property_read status
+  soundwire: stream: remove useless initialization
+  soundwire: stream: remove useless bus initializations
 
-  CHECK   ../drivers/crypto/hisilicon/zip/zip_crypto.c
-  ../drivers/crypto/hisilicon/zip/zip_crypto.c:527:31: warning: symbol 'hisi_zip_ops_v1' was not declared. Should it be static?
-  ../drivers/crypto/hisilicon/zip/zip_crypto.c:540:31: warning: symbol 'hisi_zip_ops_v2' was not declared. Should it be static?
+ drivers/soundwire/bus.c                       | 54 +++++++++++--------
+ drivers/soundwire/bus_type.c                  | 15 ++++--
+ .../soundwire/generic_bandwidth_allocation.c  |  4 +-
+ drivers/soundwire/intel.c                     |  2 -
+ drivers/soundwire/qcom.c                      |  3 ++
+ drivers/soundwire/stream.c                    |  8 +--
+ 6 files changed, 52 insertions(+), 34 deletions(-)
 
-Please fix.  Thanks.
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.17.1
+
