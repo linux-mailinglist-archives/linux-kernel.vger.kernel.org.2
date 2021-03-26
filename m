@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F1034A3D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7746834A3D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhCZJMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39400 "EHLO
+        id S230248AbhCZJMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:12:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbhCZJL5 (ORCPT
+        with ESMTP id S230107AbhCZJL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:11:57 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D42C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:11:57 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a7so7327759ejs.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:11:56 -0700 (PDT)
+        Fri, 26 Mar 2021 05:11:58 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D816C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:11:58 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id u21so7251089ejo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:11:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AgH3DJxocfXj8CzPXRPGR+bvGOz2TXMRbIxLhnqfhyo=;
-        b=TFjjMwIxTKAeNU+fw3Fd80rzKtHEsbDrblnlU8s7/ri/wWFFjND6VO+yM03QqnfdzC
-         Cy0WwUPCbcTR7Ct55e1EGgb/UuQcXrbRF7LOvOex7H5h60bPyQBlqbOfgL2VCyyl9XKf
-         mNYFrvSUjhCarxY835kU1NGfWuD+zXroGM2IPo690eROPTpwbDjzZb/lyAS1gilm8Fg4
-         fMl5Knl88x/pgLK3fsI92EjPZwh7aVUShBqyai8y3OCpoukNOU6kbbbQEBoQUl4XfFXq
-         ouXEcJjcLKFXOfkLT2pB6p6bEjgRbPCrXMXfDf3SLumxOYTZTVffcfN2VKaixsCTmzKZ
-         J9ag==
+        bh=hX4c3dvNt7mKQZ9EtHrANR7zKvje+/DsUArCAOpPAxo=;
+        b=QA/F/O4mY3JFggs7g6PyX4QLf5ATVI4SuyjFEudNTz/qNNwKhEZ3p8UMZgzGFthKY8
+         ufYDZcVZ20zSYIZ0Oi3sn4/nUdXb5tQcFATPNUPxswhRLwZMIdZRVskkov9guzeA0/lz
+         tOmuvk13ZMy/Nyn5cdk5IX+48+brTgASB24aUUi3IAwpBxvpcxnnMyIQOhqAOA5s9dxu
+         IASKKXGokYFrIwgwNxrVUsPre1ThqtXST6PUJ0pkO2/ZT3bPmxd5Vzif9My/tK7cdPAB
+         xwU/n/fkidwAWiFmJe5KaQ8YFNrv2BWIeIQFg/sv94PWSTqRiQthCobLpOsWQ9kJuzUA
+         M72w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AgH3DJxocfXj8CzPXRPGR+bvGOz2TXMRbIxLhnqfhyo=;
-        b=DKgrEYAuz4FRz2ys3uHGjlqc3SiCzbLn8Q7ot4lyfjpGy/8Fu9S75Y0g9gofJXPsJN
-         pY/rYckif6X/iIVaMFa3xQQ/wS4WdniCgHas5UgKhjqmcVIU4Fz5OUMM0/gKlmmTGrnz
-         1pBopDk5he1I2aa3atdV0+YAe1qXCUXZSv9VyaIhkw66OS9nkdeEZpyWoalp7N8mcW7z
-         B+TLfSlnpmhh2WzN46dK6pXNMaPBOtD9RLzn4MY0TZ9znWR1lgH86mKN8zxJLRVol1bz
-         dKmMclq5RCYYt8iTW8bcB+wzMMZ03Gi/2LWQ5MS/VDLNZ6WPYVeu4bUgNOwK+iPaULhx
-         2j1A==
-X-Gm-Message-State: AOAM531p98lLN9BaTp9b2O7uyibpwXCPtOlgd4Eh1+zC+2cBxbzCO+bO
-        mepn5IhLI9W5Zd5eA3+sI6xy0g==
-X-Google-Smtp-Source: ABdhPJwpUh8wQHMagmRBhTdr1+38AIh6y15c0J3qnhYPq81xTQXWrvygESbWRGQmtUT9IaWouggylg==
-X-Received: by 2002:a17:906:73d5:: with SMTP id n21mr14323052ejl.8.1616749915742;
-        Fri, 26 Mar 2021 02:11:55 -0700 (PDT)
+        bh=hX4c3dvNt7mKQZ9EtHrANR7zKvje+/DsUArCAOpPAxo=;
+        b=BickColIYOh5unO23UlwiUFKUe8XrxRo74EFtyXanlmk1RxcsuKszQwpDrsGsIQJRa
+         nzbrWbe2pwolve3dmrHaq/Cmh2hJ3TCe1tn960T3CBUUYeGrAJbsZo0SwPkc8Co6scMY
+         9oEZE3sbA9I15V/+OyZluyWmEAULHMlt3/usPSBRpXa42hfUR+wjO1dvj6hlnAsOO2Vr
+         Vyojx4MwHpoaPmhRaqoqsf2vYaHzuTq+l+eF28Wl/ql+l3jkM//Ip+XKnmjFNEnoJtuw
+         GwxPA00SlcKi3jLY1RaTNdpjrs2BEOMf3JfjAOpR5r2lIllSZSXONysCZbTtnqKmgEvF
+         Tu+Q==
+X-Gm-Message-State: AOAM5318Rn2IZikK2ReOtZrHZanyiDgg/DozcHcF1Fp2iKOxhG+2+Ix0
+        QtzvWbLWAlpaB4PMSfBh2CoI7Q==
+X-Google-Smtp-Source: ABdhPJxR+lIy6DkgxMy/iXCj7OI3hGdfxIgmfkEnZ2iQ5TSwMq7S8/xoP7s0FL+OiVeUaH0ktza/hw==
+X-Received: by 2002:a17:906:684b:: with SMTP id a11mr13620938ejs.329.1616749916879;
+        Fri, 26 Mar 2021 02:11:56 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id r13sm3895645edy.3.2021.03.26.02.11.54
+        by smtp.gmail.com with ESMTPSA id r13sm3895645edy.3.2021.03.26.02.11.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:11:55 -0700 (PDT)
+        Fri, 26 Mar 2021 02:11:56 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Andreas Gruenbacher <agruenba@redhat.com>,
         cluster-devel@redhat.com
-Subject: [PATCH 01/18] fs: gfs2: dir: Finish off mostly complete headers demote others
-Date:   Fri, 26 Mar 2021 09:11:34 +0000
-Message-Id: <20210326091151.311647-2-lee.jones@linaro.org>
+Subject: [PATCH 02/18] fs: gfs2: xattr: Help out some kernel-doc header demote non-conformant ones
+Date:   Fri, 26 Mar 2021 09:11:35 +0000
+Message-Id: <20210326091151.311647-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210326091151.311647-1-lee.jones@linaro.org>
 References: <20210326091151.311647-1-lee.jones@linaro.org>
@@ -67,183 +67,110 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- fs/gfs2/dir.c:781: warning: Function parameter or member 'index' not described in 'get_leaf_nr'
- fs/gfs2/dir.c:907: warning: Function parameter or member 'inode' not described in 'dir_make_exhash'
- fs/gfs2/dir.c:907: warning: Excess function parameter 'dip' description in 'dir_make_exhash'
- fs/gfs2/dir.c:1002: warning: Function parameter or member 'inode' not described in 'dir_split_leaf'
- fs/gfs2/dir.c:1002: warning: Function parameter or member 'name' not described in 'dir_split_leaf'
- fs/gfs2/dir.c:1002: warning: Excess function parameter 'dip' description in 'dir_split_leaf'
- fs/gfs2/dir.c:1002: warning: Excess function parameter 'leaf_no' description in 'dir_split_leaf'
- fs/gfs2/dir.c:1268: warning: Function parameter or member 'sort_start' not described in 'do_filldir_main'
- fs/gfs2/dir.c:1479: warning: Function parameter or member 'inode' not described in 'gfs2_dir_readahead'
- fs/gfs2/dir.c:1479: warning: Function parameter or member 'hsize' not described in 'gfs2_dir_readahead'
- fs/gfs2/dir.c:1479: warning: Function parameter or member 'index' not described in 'gfs2_dir_readahead'
- fs/gfs2/dir.c:1479: warning: Function parameter or member 'f_ra' not described in 'gfs2_dir_readahead'
- fs/gfs2/dir.c:1528: warning: Function parameter or member 'inode' not described in 'dir_e_read'
- fs/gfs2/dir.c:1528: warning: Function parameter or member 'f_ra' not described in 'dir_e_read'
- fs/gfs2/dir.c:1528: warning: Excess function parameter 'dip' description in 'dir_e_read'
- fs/gfs2/dir.c:1642: warning: Function parameter or member 'dir' not described in 'gfs2_dir_search'
- fs/gfs2/dir.c:1642: warning: Excess function parameter 'dip' description in 'gfs2_dir_search'
- fs/gfs2/dir.c:1873: warning: Function parameter or member 'dentry' not described in 'gfs2_dir_del'
- fs/gfs2/dir.c:1873: warning: Excess function parameter 'filename' description in 'gfs2_dir_del'
- fs/gfs2/dir.c:1934: warning: Function parameter or member 'filename' not described in 'gfs2_dir_mvino'
- fs/gfs2/dir.c:1934: warning: Function parameter or member 'nip' not described in 'gfs2_dir_mvino'
- fs/gfs2/dir.c:1934: warning: Function parameter or member 'new_type' not described in 'gfs2_dir_mvino'
- fs/gfs2/dir.c:1934: warning: Excess function parameter 'new_inode' description in 'gfs2_dir_mvino'
- fs/gfs2/dir.c:1971: warning: Function parameter or member 'last_dealloc' not described in 'leaf_dealloc'
- fs/gfs2/dir.c:2154: warning: Function parameter or member 'inode' not described in 'gfs2_diradd_alloc_required'
- fs/gfs2/dir.c:2154: warning: Function parameter or member 'name' not described in 'gfs2_diradd_alloc_required'
- fs/gfs2/dir.c:2154: warning: Excess function parameter 'ip' description in 'gfs2_diradd_alloc_required'
- fs/gfs2/dir.c:2154: warning: Excess function parameter 'filname' description in 'gfs2_diradd_alloc_required'
+ fs/gfs2/xattr.c:41: warning: Function parameter or member 'sdp' not described in 'ea_calc_size'
+ fs/gfs2/xattr.c:41: warning: Function parameter or member 'nsize' not described in 'ea_calc_size'
+ fs/gfs2/xattr.c:41: warning: Function parameter or member 'dsize' not described in 'ea_calc_size'
+ fs/gfs2/xattr.c:240: warning: Function parameter or member 'ip' not described in 'ea_dealloc_unstuffed'
+ fs/gfs2/xattr.c:240: warning: Function parameter or member 'bh' not described in 'ea_dealloc_unstuffed'
+ fs/gfs2/xattr.c:240: warning: Function parameter or member 'ea' not described in 'ea_dealloc_unstuffed'
+ fs/gfs2/xattr.c:240: warning: Function parameter or member 'prev' not described in 'ea_dealloc_unstuffed'
+ fs/gfs2/xattr.c:463: warning: expecting prototype for ea_iter_unstuffed(). Prototype was for gfs2_iter_unstuffed() instead
+ fs/gfs2/xattr.c:587: warning: expecting prototype for gfs2_xattr_get(). Prototype was for __gfs2_xattr_get() instead
+ fs/gfs2/xattr.c:814: warning: Function parameter or member 'ip' not described in 'ea_init'
+ fs/gfs2/xattr.c:814: warning: Function parameter or member 'type' not described in 'ea_init'
+ fs/gfs2/xattr.c:814: warning: Function parameter or member 'name' not described in 'ea_init'
+ fs/gfs2/xattr.c:814: warning: Function parameter or member 'data' not described in 'ea_init'
+ fs/gfs2/xattr.c:814: warning: Function parameter or member 'size' not described in 'ea_init'
+ fs/gfs2/xattr.c:814: warning: Excess function parameter 'er' description in 'ea_init'
+ fs/gfs2/xattr.c:1181: warning: Function parameter or member 'inode' not described in '__gfs2_xattr_set'
+ fs/gfs2/xattr.c:1181: warning: Excess function parameter 'ip' description in '__gfs2_xattr_set'
 
 Cc: Bob Peterson <rpeterso@redhat.com>
 Cc: Andreas Gruenbacher <agruenba@redhat.com>
 Cc: cluster-devel@redhat.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- fs/gfs2/dir.c | 35 +++++++++++++----------------------
- 1 file changed, 13 insertions(+), 22 deletions(-)
+ fs/gfs2/xattr.c | 25 +++++++------------------
+ 1 file changed, 7 insertions(+), 18 deletions(-)
 
-diff --git a/fs/gfs2/dir.c b/fs/gfs2/dir.c
-index c0f2875c946c9..9c1caaef3f0cd 100644
---- a/fs/gfs2/dir.c
-+++ b/fs/gfs2/dir.c
-@@ -767,7 +767,7 @@ static int get_leaf(struct gfs2_inode *dip, u64 leaf_no,
+diff --git a/fs/gfs2/xattr.c b/fs/gfs2/xattr.c
+index 124b3d5a72665..fe2109789f75b 100644
+--- a/fs/gfs2/xattr.c
++++ b/fs/gfs2/xattr.c
+@@ -26,12 +26,9 @@
+ #include "trans.h"
+ #include "util.h"
+ 
+-/**
++/*
+  * ea_calc_size - returns the acutal number of bytes the request will take up
+  *                (not counting any unstuffed data blocks)
+- * @sdp:
+- * @er:
+- * @size:
+  *
+  * Returns: 1 if the EA should be stuffed
+  */
+@@ -219,13 +216,8 @@ static int gfs2_ea_find(struct gfs2_inode *ip, int type, const char *name,
  	return error;
  }
  
 -/**
 +/*
-  * get_leaf_nr - Get a leaf number associated with the index
-  * @dip: The GFS2 inode
-  * @index:
-@@ -775,7 +775,6 @@ static int get_leaf(struct gfs2_inode *dip, u64 leaf_no,
+  * ea_dealloc_unstuffed -
+- * @ip:
+- * @bh:
+- * @ea:
+- * @prev:
+- * @private:
   *
-  * Returns: 0 on success, error code otherwise
-  */
--
- static int get_leaf_nr(struct gfs2_inode *dip, u32 index,
- 		       u64 *leaf_out)
- {
-@@ -898,7 +897,7 @@ static struct gfs2_leaf *new_leaf(struct inode *inode, struct buffer_head **pbh,
- 
- /**
-  * dir_make_exhash - Convert a stuffed directory into an ExHash directory
-- * @dip: The GFS2 inode
-+ * @inode: The GFS2 inode
-  *
-  * Returns: 0 on success, error code otherwise
-  */
-@@ -989,11 +988,9 @@ static int dir_make_exhash(struct inode *inode)
- 	return 0;
+  * Take advantage of the fact that all unstuffed blocks are
+  * allocated from the same RG.  But watch, this may not always
+@@ -448,8 +440,8 @@ ssize_t gfs2_listxattr(struct dentry *dentry, char *buffer, size_t size)
  }
  
--/**
-+/*
-  * dir_split_leaf - Split a leaf block into two
-- * @dip: The GFS2 inode
-- * @index:
-- * @leaf_no:
-+ * @inode: The GFS2 inode
-  *
-  * Returns: 0 on success, error code on failure
-  */
-@@ -1252,6 +1249,7 @@ static int compare_dents(const void *a, const void *b)
-  * @ctx: what to feed the entries to
-  * @darr: an array of struct gfs2_dirent pointers to read
-  * @entries: the number of entries in darr
-+ * @sort_start: the index into @darr to start the sort from
-  * @copied: pointer to int that's non-zero if a entry has been copied out
-  *
-  * Jump through some hoops to make sure that if there are hash collsions,
-@@ -1466,7 +1464,7 @@ static int gfs2_dir_read_leaf(struct inode *inode, struct dir_context *ctx,
+ /**
+- * ea_iter_unstuffed - copies the unstuffed xattr data to/from the
+- *                     request buffer
++ * gfs2_iter_unstuffed - copies the unstuffed xattr data to/from the
++ *                       request buffer
+  * @ip: The GFS2 inode
+  * @ea: The extended attribute header structure
+  * @din: The data to be copied in
+@@ -573,7 +565,7 @@ int gfs2_xattr_acl_get(struct gfs2_inode *ip, const char *name, char **ppdata)
+ }
+ 
+ /**
+- * gfs2_xattr_get - Get a GFS2 extended attribute
++ * __gfs2_xattr_get - Get a GFS2 extended attribute
+  * @inode: The inode
+  * @name: The name of the extended attribute
+  * @buffer: The buffer to write the result into
+@@ -801,14 +793,11 @@ static int ea_init_i(struct gfs2_inode *ip, struct gfs2_ea_request *er,
  	return error;
  }
  
 -/**
 +/*
-  * gfs2_dir_readahead - Issue read-ahead requests for leaf blocks.
-  *
-  * Note: we can't calculate each index like dir_e_read can because we don't
-@@ -1515,14 +1513,11 @@ static void gfs2_dir_readahead(struct inode *inode, unsigned hsize, u32 index,
- 	}
- }
- 
--/**
-+/*
-  * dir_e_read - Reads the entries from a directory into a filldir buffer
-- * @dip: dinode pointer
-- * @ctx: actor to feed the entries to
+  * ea_init - initializes a new eattr block
+- * @ip:
+- * @er:
   *
   * Returns: errno
   */
 -
- static int dir_e_read(struct inode *inode, struct dir_context *ctx,
- 		      struct file_ra_state *f_ra)
+ static int ea_init(struct gfs2_inode *ip, int type, const char *name,
+ 		   const void *data, size_t size)
  {
-@@ -1627,7 +1622,7 @@ int gfs2_dir_read(struct inode *inode, struct dir_context *ctx,
+@@ -1164,7 +1153,7 @@ static int gfs2_xattr_remove(struct gfs2_inode *ip, int type, const char *name)
  
  /**
-  * gfs2_dir_search - Search a directory
-- * @dip: The GFS2 dir inode
-+ * @dir: The GFS2 dir inode
-  * @name: The name we are looking up
-  * @fail_on_exist: Fail if the name exists rather than looking it up
-  *
-@@ -1636,7 +1631,6 @@ int gfs2_dir_read(struct inode *inode, struct dir_context *ctx,
-  *
-  * Returns: errno
-  */
--
- struct inode *gfs2_dir_search(struct inode *dir, const struct qstr *name,
- 			      bool fail_on_exist)
- {
-@@ -1864,11 +1858,10 @@ int gfs2_dir_add(struct inode *inode, const struct qstr *name,
- /**
-  * gfs2_dir_del - Delete a directory entry
-  * @dip: The GFS2 inode
-- * @filename: The filename
-+ * @dentry: The directory entry to delete
-  *
-  * Returns: 0 on success, error code on failure
-  */
--
- int gfs2_dir_del(struct gfs2_inode *dip, const struct dentry *dentry)
- {
- 	const struct qstr *name = &dentry->d_name;
-@@ -1916,11 +1909,9 @@ int gfs2_dir_del(struct gfs2_inode *dip, const struct dentry *dentry)
- 	return 0;
- }
- 
--/**
-+/*
-  * gfs2_dir_mvino - Change inode number of directory entry
-  * @dip: The GFS2 inode
-- * @filename:
-- * @new_inode:
-  *
-  * This routine changes the inode number of a directory entry.  It's used
-  * by rename to change ".." when a directory is moved.
-@@ -1960,7 +1951,7 @@ int gfs2_dir_mvino(struct gfs2_inode *dip, const struct qstr *filename,
-  * @len: the number of pointers to this leaf
-  * @leaf_no: the leaf number
-  * @leaf_bh: buffer_head for the starting leaf
-- * last_dealloc: 1 if this is the final dealloc for the leaf, else 0
-+ * @last_dealloc: 1 if this is the final dealloc for the leaf, else 0
-  *
-  * Returns: errno
-  */
-@@ -2142,8 +2133,8 @@ int gfs2_dir_exhash_dealloc(struct gfs2_inode *dip)
- 
- /**
-  * gfs2_diradd_alloc_required - find if adding entry will require an allocation
-- * @ip: the file being written to
-- * @filname: the filename that's going to be added
-+ * @inode: The directory inode
-+ * @name: the filename that's going to be added
-  * @da: The structure to return dir alloc info
-  *
-  * Returns: 0 if ok, -ve on error
+  * __gfs2_xattr_set - Set (or remove) a GFS2 extended attribute
+- * @ip: The inode
++ * @inode: The inode
+  * @name: The name of the extended attribute
+  * @value: The value of the extended attribute (NULL for remove)
+  * @size: The size of the @value argument
 -- 
 2.27.0
 
