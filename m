@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4873234ABCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD8634ABCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhCZPr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56248 "EHLO mail.kernel.org"
+        id S230070AbhCZPsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:48:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230236AbhCZPrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:47:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFEF461A27;
-        Fri, 26 Mar 2021 15:47:18 +0000 (UTC)
+        id S230173AbhCZPsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:48:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C8C161A32
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:48:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616773639;
-        bh=FOq/AGTP4gWQcAqm6gE3CbPMoPZd/s7+r0gDFMG3q6U=;
+        s=k20201202; t=1616773694;
+        bh=hUxNL6ybc7YIFNd/pslVTNcuJabix3+/29+fjCafdC4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AcCDpzU7tp9iwdGG8gDfzEHT/oRIXsIga7wXxu53WqUJhT2ul2T9YDS65RNqPU2n3
-         Xvn+RFssUybeWEZgEY2lh1i4UxjZPbwmKsgliPvp0IToMiB2a/WA5KR9z10HdDinOv
-         UYM5sw/0IvqfBsKxROncwVaSX/vsAHxPYgALR1dSYHioveObkwXiHIvFx1Yj/tNdZJ
-         KMRbv1ObJxkt+zXV5bOiWGyn/1VwvDn/9VCA4p517RmAt9EEHqYSMNig8Oj+y1Zu4e
-         B4aIe1rurjyjKfoN2EcYkT1/pA82eHFw94cAgT8CIulbihfa0tOaUKwaviLlzc9Bb9
-         p9VnLj0VX7D0A==
-Received: by mail-ed1-f50.google.com with SMTP id y6so6863670eds.1;
-        Fri, 26 Mar 2021 08:47:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533y3Mbzdq/w0OJ5kPTx9/7Cq9mAA6LjG4KaQ05ghWDBJC3D1ESE
-        yrNKJFeSjM4MbkrT/jc59B04xoMkSziUJkuolw==
-X-Google-Smtp-Source: ABdhPJyGMjMWznP/BbCajkt9nas+eMG/Qmwgar26pPUJYE7aEhO5sSz0Y/IOGFJNx4RiD0k/WjxUTeg0KAhhn6cQx0c=
-X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr15784199edb.62.1616773637523;
- Fri, 26 Mar 2021 08:47:17 -0700 (PDT)
+        b=jBiEuHavH0KHYl53Ar5g3FFA/uoOHVzn08kWTvQhL9UP4KAZOA1PisQGOEtE3eyVW
+         26Md+rcRz7UBLkY9UFOlaR3fD2XsDOezmXMmRM3Vkn3TUj7h6P8P5Ju6orZe/IZzre
+         dCWl4vaKWk/22dXBg8Z2fUBHNd0WD/3Ppbfus420qW1GICUvdYoYyxOy7wtGFFqtcs
+         CqTbtLZefUuDO16pOTZpVUe0FNSffaRPh4uGg+MJsv9ljZ2Ejb87R5GrK+vshJRRoy
+         8yrHfFrMslyROwRttMd1hq5KYpIKHPbcIliwLL0ssIShsOgAXbrBxzwAn1EzmO4N32
+         uSFVWtSqPhycw==
+Received: by mail-ed1-f46.google.com with SMTP id dm8so6862602edb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:48:14 -0700 (PDT)
+X-Gm-Message-State: AOAM533APwqF5p1NDImWlPRZJDtsN1RvBPvObj7A7jIX6HcI8bfhPnn9
+        x1iITQ0v/307on+j/TS+83FMJ21hsE4BhOUGtC+z6Q==
+X-Google-Smtp-Source: ABdhPJyHWV9B78rY1DpJMMXtlILAn3PmXLaIaZiOMXeA2eUmpRV8xruMrDO9RVF6Yg0xIg3zjhAywS0m8Rgw3DCwz3w=
+X-Received: by 2002:aa7:da98:: with SMTP id q24mr16350107eds.84.1616773692708;
+ Fri, 26 Mar 2021 08:48:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1616765869.git.christophe.leroy@csgroup.eu> <7362e4f6a5f5b79e6ad3fd3cec3183a4a283f7fc.1616765870.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <7362e4f6a5f5b79e6ad3fd3cec3183a4a283f7fc.1616765870.git.christophe.leroy@csgroup.eu>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 26 Mar 2021 09:47:04 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+LF-s5K4Jwd5jCHrU8271L5WCiGb0tR7aTUa8ddHF1YQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+LF-s5K4Jwd5jCHrU8271L5WCiGb0tR7aTUa8ddHF1YQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/17] arm: Convert to GENERIC_CMDLINE
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Will Deacon <will@kernel.org>, Daniel Walker <danielwa@cisco.com>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        microblaze <monstr@monstr.eu>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        nios2 <ley.foon.tan@intel.com>,
-        Openrisc <openrisc@lists.librecores.org>,
-        linux-hexagon@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org,
-        SH-Linux <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
+References: <20210221185637.19281-1-chang.seok.bae@intel.com>
+ <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
+ <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
+ <CALCETrWOc7wwW=KY2dGJGy9k5Ag=KhkdGGTDZMvgRHgyQ5fDjQ@mail.gmail.com> <CAJvTdK=OGALDso0H+asjgkjD_VaPNZzm+LpV+msM_i5aVUm_qw@mail.gmail.com>
+In-Reply-To: <CAJvTdK=OGALDso0H+asjgkjD_VaPNZzm+LpV+msM_i5aVUm_qw@mail.gmail.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 26 Mar 2021 08:48:01 -0700
+X-Gmail-Original-Message-ID: <CALCETrXky0RuA5WeQ0Mxjs+e4ywk1A7vmpBxqCo=PTSBzUsz-g@mail.gmail.com>
+Message-ID: <CALCETrXky0RuA5WeQ0Mxjs+e4ywk1A7vmpBxqCo=PTSBzUsz-g@mail.gmail.com>
+Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
+ control state component support
+To:     Len Brown <lenb@kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        X86 ML <x86@kernel.org>, "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 7:44 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Fri, Mar 26, 2021 at 8:34 AM Len Brown <lenb@kernel.org> wrote:
 >
-> This converts the architecture to GENERIC_CMDLINE.
+> On Thu, Mar 25, 2021 at 9:42 PM Andy Lutomirski <luto@kernel.org> wrote:
 >
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  arch/arm/Kconfig              | 38 +----------------------------------
->  arch/arm/kernel/atags_parse.c | 15 +++++---------
->  2 files changed, 6 insertions(+), 47 deletions(-)
+> > Regardless of what you call AMX, AMX requires kernel enabling.
 >
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index 5da96f5df48f..67bc75f2da81 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -50,6 +50,7 @@ config ARM
->         select GENERIC_ARCH_TOPOLOGY if ARM_CPU_TOPOLOGY
->         select GENERIC_ATOMIC64 if CPU_V7M || CPU_V6 || !CPU_32v6K || !AEABI
->         select GENERIC_CLOCKEVENTS_BROADCAST if SMP
-> +       select GENERIC_CMDLINE if ATAGS
+> I submit, that after the generic XFD support is in place,
+> there is exactly 1 bit that needs to be flipped to enable
+> user applications to benefit from AMX.
 
-Don't we need this enabled for !ATAGS (i.e. DT boot)?
+The TILERELEASE opcode itself is rather longer than one bit, and the
+supporting code to invoke it at the right time, to avoid corrupting
+user state, and avoid causing performance regressions merely by
+existing will be orders of magnitude more than 1 bit.  Of course, all
+of this is zero bits in the current series because the code is
+missing.entirely.
 
-Can we always enable GENERIC_CMDLINE for OF_EARLY_FLATTREE?
+To avoid email thread blowup:
 
-Rob
+> If there is a new requirement that the kernel cmdline not allow anything
+> that a distro didn't explicitly validate, then about 99.9% of the kernel cmdline
+> options that exist today would need to be removed.
+>
+> Does such a requirement exist, or does it not?
+
+This isn't just about validation.  There's also ABI, performance, and
+correctness:
+
+ABI: The AVX-512 enablement *already* broke user ABI.  Sadly no one
+told anyone in the kernel community until about 5 years after the
+fact, and it's a bit late to revert AVX-512.  But we don't want to
+enable AMX until the ABI has a reasonable chance of being settled.
+Ditto for future features.  As it stands, if you xstate.enable some
+16MB feature, the system may well simply fail to boot as too many user
+processes explode.
+
+Performance:
+
+We *still* don't know the performance implications of leaving the AMX
+features in use inappropriately.  Does it completely destroy idle?
+Will it literally operate CPUs out of spec such that Intel's
+reliability estimates will be invalidated?  (We had that with NVMe
+APST.  Let's not repeat this with XSTATE.)  The performance impacts
+and transitions for AVX-512 are, to put it charitably, forthcoming.
+
+Correctness: PKRU via the kernel's normal XSAVE path would simply be
+incorrect.  Do we really trust that this won't get repeated?  Also,
+frankly, a command line option that may well break lots of userspace
+but that we fully expect Intel to recommend setting is not a good
+thing.
+
+--Andy
