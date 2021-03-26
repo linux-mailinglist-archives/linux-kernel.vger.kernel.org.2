@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9840134AA20
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CC734AA36
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhCZOi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:38:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
+        id S230402AbhCZOjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhCZOi1 (ORCPT
+        with ESMTP id S230213AbhCZOjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:38:27 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C307BC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:38:27 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id n21so5605183ioa.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hKpfpn0Haz5O7Pa2DVMAWbWylPr9Lp1uSORVeezS3tM=;
-        b=O1EvnpWCmYLg+UkahvyhEvg/XCqctRasY7lvP3QhIs9ouZ4dTqW6A8i+c6pZpXK0bJ
-         KmBG6yL8w5NP6Hd+2r37dS2fU34ka9UqLg/JWq+JP8SHBW9I2UE5zOges1YcqkFIuZw/
-         n3+gmKcP5T0gIS5DcC322cm53kjAsdVf+euumRVc53yd5kYmyw/QMAtsmJQvDbI9clxQ
-         D4px8Kx67xdEctzDA09EjtpgjKKCKD+DbWBtZDDy0fGAxT4AM+LJw8ifiMgCFGmGNxeU
-         p/dwiVLja233OHMhMPQaH4Soi4j6p00PEziHqn8+zUisqTnbv/1sl8I0Ct6+NbDLS7ww
-         47Ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hKpfpn0Haz5O7Pa2DVMAWbWylPr9Lp1uSORVeezS3tM=;
-        b=jWhNzJbf7WWbRCFI0F7y7v+ISGIsShCePfpYdHRd6xrTiYFlMMxkmXGdbfJK3aA+8W
-         rO7e5Mq+0f6C98dc3hdxrOcdbvHqLHz8yoCGj3K7WU7v+2d9UWGvNWiPEMIC30xVHIZZ
-         IvioVhc+sV6rzewUe17KJWSubeWdUGelg4Ke4ilsB4+R74opYOn5MUd8FpKrOjJvPC9K
-         ZPUY5aCkDcyVx8Oxi5kdQ2pze7CEylGo+iDBLEQP4O/9sLQGkdr3YAyd1Vp8VIBib53f
-         aMzNmOoPDKB8TIVFt+AUrBJTjRvYyAXmNTA7i/CVkPfj8Mr9WTww+x61lk7lu9/JNy8k
-         0aWw==
-X-Gm-Message-State: AOAM530PZHHcOjNcX0PGWyVeNXacUiDpI7zgb3ocpt0twEgHifsOpXqO
-        /hca0XRXzdgI57EyDI6yF6oWLti2/kkOPA==
-X-Google-Smtp-Source: ABdhPJzTLhZvqhENo7RH31/SlCkSzdj7pgCxwaak1gUmh3t9s4Tr4e50bbCgjqEMdInfIerQ8eW92w==
-X-Received: by 2002:a5e:8e41:: with SMTP id r1mr10525118ioo.5.1616769506922;
-        Fri, 26 Mar 2021 07:38:26 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id o13sm4365167iob.17.2021.03.26.07.38.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 07:38:26 -0700 (PDT)
-Subject: Re: [PATCH 0/6] Allow signals for IO threads
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Stefan Metzmacher <metze@samba.org>, io-uring@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
-        oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <e6de934a-a794-f173-088d-a140d0645188@samba.org>
- <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
- <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
- <0c91d9e7-82cd-bec2-19ae-cc592ec757c6@kernel.dk>
- <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
-Message-ID: <66fa3cfc-4161-76fe-272e-160097f32a53@kernel.dk>
-Date:   Fri, 26 Mar 2021 08:38:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Mar 2021 10:39:13 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC83C0613AA;
+        Fri, 26 Mar 2021 07:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Utv9ctzA6JbUf5fzkr2Iqea2KSx8G5/onxIdDRpz+iI=; b=pwunMNpwbNGiq4DpTHowZL0XLj
+        +1BJOa0IXN/N1cqIhAKK24rogTUJN4Rom9Y7fL03P15FKPKmMTLNwdymKEwXlwSaHo4ketVtJRvd5
+        tCVyxeVRY1gFoNUZE/5QwShA2CdnByXadWqRIZxT2LXS8zWNtqGEs3szh0d4U0T2QdxAG8oLXqSSE
+        8+kLFntalg5rJONA3g5uJz9NRj3Uew0be6UCnm+87stjWJfMcvn7wJj8RY4rcOVhVnpeICXXNdDGV
+        0iXJa3VCf6BeqQ7F+EQ7hQZTMCR93e2LJzQCYYWI/PgNLr1cp8AycFH488ulR7uj14QtoNWgKJzj1
+        ZDLib1Pg==;
+Received: from [213.208.157.35] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPnbj-005U6L-JU; Fri, 26 Mar 2021 14:38:40 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Brian Gerst <brgerst@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: cleanup compat exec handling
+Date:   Fri, 26 Mar 2021 15:38:27 +0100
+Message-Id: <20210326143831.1550030-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 7:59 AM, Jens Axboe wrote:
-> On 3/26/21 7:54 AM, Jens Axboe wrote:
->>> The KILL after STOP deadlock still exists.
->>
->> In which tree? Sounds like you're still on the old one with that
->> incremental you sent, which wasn't complete.
->>
->>> Does io_wq_manager() exits without cleaning up on SIGKILL?
->>
->> No, it should kill up in all cases. I'll try your stop + kill, I just
->> tested both of them separately and didn't observe anything. I also ran
->> your io_uring-cp example (and found a bug in the example, fixed and
->> pushed), fwiw.
-> 
-> I can reproduce this one! I'll take a closer look.
+Hi all,
 
-OK, that one is actually pretty straight forward - we rely on cleaning
-up on exit, but for fatal cases, get_signal() will call do_exit() for us
-and never return. So we might need a special case in there to deal with
-that, or some other way of ensuring that fatal signal gets processed
-correctly for IO threads.
+this series cleans up the exec code by sharing the native vs compat
+versions less awkwardly.
 
--- 
-Jens Axboe
-
+Diffstat:
+ arch/arm64/include/asm/unistd32.h                  |    4 
+ arch/mips/kernel/syscalls/syscall_n32.tbl          |    4 
+ arch/mips/kernel/syscalls/syscall_o32.tbl          |    4 
+ arch/parisc/kernel/syscalls/syscall.tbl            |    4 
+ arch/powerpc/kernel/syscalls/syscall.tbl           |    4 
+ arch/s390/kernel/syscalls/syscall.tbl              |    4 
+ arch/sparc/kernel/syscalls.S                       |    4 
+ arch/x86/entry/syscall_x32.c                       |    2 
+ arch/x86/entry/syscalls/syscall_32.tbl             |    4 
+ arch/x86/entry/syscalls/syscall_64.tbl             |    4 
+ fs/exec.c                                          |  136 +++------------------
+ include/linux/compat.h                             |    7 -
+ include/uapi/asm-generic/unistd.h                  |    4 
+ tools/include/uapi/asm-generic/unistd.h            |    4 
+ tools/perf/arch/powerpc/entry/syscalls/syscall.tbl |    4 
+ tools/perf/arch/s390/entry/syscalls/syscall.tbl    |    4 
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl  |    4 
+ 17 files changed, 53 insertions(+), 148 deletions(-)
