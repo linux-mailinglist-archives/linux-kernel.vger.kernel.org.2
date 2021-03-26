@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8379134A031
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:18:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B170234A035
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhCZDSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 23:18:17 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14479 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbhCZDRk (ORCPT
+        id S230338AbhCZDYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 23:24:13 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:48733 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230222AbhCZDXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 23:17:40 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F66YP5pkqzyNyM;
-        Fri, 26 Mar 2021 11:15:37 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 26 Mar 2021 11:17:28 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Alexandru Elisei" <alexandru.elisei@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <zhukeqian1@huawei.com>,
-        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [RFC PATCH v3 2/2] KVM: arm64: Distinguish cases of memcache allocations completely
-Date:   Fri, 26 Mar 2021 11:16:54 +0800
-Message-ID: <20210326031654.3716-3-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210326031654.3716-1-wangyanan55@huawei.com>
-References: <20210326031654.3716-1-wangyanan55@huawei.com>
+        Thu, 25 Mar 2021 23:23:49 -0400
+X-UUID: e8e2e366388342db8bebe07cf6d2f5b0-20210326
+X-UUID: e8e2e366388342db8bebe07cf6d2f5b0-20210326
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1594774408; Fri, 26 Mar 2021 11:23:46 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 26 Mar 2021 11:23:45 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 26 Mar 2021 11:23:44 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>
+CC:     Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
+Subject: [PATCH v2 1/2] iommu/mediatek-v1: Allow building as module
+Date:   Fri, 26 Mar 2021 11:23:36 +0800
+Message-ID: <20210326032337.24578-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With a guest translation fault, the memcache pages are not needed if KVM
-is only about to install a new leaf entry into the existing page table.
-And with a guest permission fault, the memcache pages are also not needed
-for a write_fault in dirty-logging time if KVM is only about to update
-the existing leaf entry instead of collapsing a block entry into a table.
+This patch only adds support for building the IOMMU-v1 driver as module.
+Correspondingly switch the config to tristate and update the iommu_ops's
+owner to THIS_MODULE.
 
-By comparing fault_granule and vma_pagesize, cases that require allocations
-from memcache and cases that don't can be distinguished completely.
-
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+v2: change note:
+    a) Update iommu_ops's owner to THIS_MODULE
+    b) Fix typo in the title from "Alloc" to "Allow"
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 1eec9f63bc6f..05af40dc60c1 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -810,19 +810,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	gfn = fault_ipa >> PAGE_SHIFT;
- 	mmap_read_unlock(current->mm);
+v1: rebase on v5.12-rc2
+---
+ drivers/iommu/Kconfig        |  2 +-
+ drivers/iommu/mtk_iommu_v1.c | 10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index 192ef8f61310..bc93da48bed0 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -364,7 +364,7 @@ config MTK_IOMMU
+ 	  If unsure, say N here.
  
--	/*
--	 * Permission faults just need to update the existing leaf entry,
--	 * and so normally don't require allocations from the memcache. The
--	 * only exception to this is when dirty logging is enabled at runtime
--	 * and a write fault needs to collapse a block entry into a table.
--	 */
--	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
--		ret = kvm_mmu_topup_memory_cache(memcache,
--						 kvm_mmu_cache_min_pages(kvm));
--		if (ret)
--			return ret;
--	}
--
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	/*
- 	 * Ensure the read of mmu_notifier_seq happens before we call
-@@ -880,6 +867,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
- 		prot |= KVM_PGTABLE_PROT_X;
+ config MTK_IOMMU_V1
+-	bool "MTK IOMMU Version 1 (M4U gen1) Support"
++	tristate "MediaTek IOMMU Version 1 (M4U gen1) Support"
+ 	depends on ARM
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+ 	select ARM_DMA_USE_IOMMU
+diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
+index 82ddfe9170d4..be1b20e3f20e 100644
+--- a/drivers/iommu/mtk_iommu_v1.c
++++ b/drivers/iommu/mtk_iommu_v1.c
+@@ -20,6 +20,7 @@
+ #include <linux/iommu.h>
+ #include <linux/iopoll.h>
+ #include <linux/list.h>
++#include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <linux/of_iommu.h>
+ #include <linux/of_irq.h>
+@@ -529,6 +530,7 @@ static const struct iommu_ops mtk_iommu_ops = {
+ 	.def_domain_type = mtk_iommu_def_domain_type,
+ 	.device_group	= generic_device_group,
+ 	.pgsize_bitmap	= ~0UL << MT2701_IOMMU_PAGE_SHIFT,
++	.owner          = THIS_MODULE,
+ };
  
-+	/*
-+	 * Allocations from the memcache are required only when granule of the
-+	 * lookup level where the guest fault happened exceeds vma_pagesize,
-+	 * which means new page tables will be created in the fault handlers.
-+	 */
-+	if (fault_granule > vma_pagesize) {
-+		ret = kvm_mmu_topup_memory_cache(memcache,
-+						 kvm_mmu_cache_min_pages(kvm));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * Under the premise of getting a FSC_PERM fault, we just need to relax
- 	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
+ static const struct of_device_id mtk_iommu_of_ids[] = {
+@@ -691,9 +693,7 @@ static struct platform_driver mtk_iommu_driver = {
+ 		.pm = &mtk_iommu_pm_ops,
+ 	}
+ };
++module_platform_driver(mtk_iommu_driver);
+ 
+-static int __init m4u_init(void)
+-{
+-	return platform_driver_register(&mtk_iommu_driver);
+-}
+-subsys_initcall(m4u_init);
++MODULE_DESCRIPTION("IOMMU API for MediaTek M4U v1 implementations");
++MODULE_LICENSE("GPL v2");
 -- 
-2.19.1
+2.18.0
 
