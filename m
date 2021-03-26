@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4935F34A92E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2A534A928
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhCZOAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhCZN7y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:59:54 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910A9C0613AA;
-        Fri, 26 Mar 2021 06:59:54 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id i9so5259413qka.2;
-        Fri, 26 Mar 2021 06:59:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x0s7LJER70w2bSiwwTpjAxpJj5S5Wt0DwDx2zogXdYE=;
-        b=n+foT8+06n779+ymsgAN7XHmY9phYxAQcmR3n3IAmvnwuV9WCvK4h382O7+6r8KxWl
-         TMr6pRDl+InbWTMRl/KabrbFXlxnt4we7WbvI0EgROP3EJtHWcB5kiJbRj+cNhxZSIiF
-         PBS6oOS92b1i2xCrsQSGHxriv2UqLAP6jZihwMOacl6bdXRPJGh8/BheL/nl53J4ghr1
-         MJnDJiEDH13PZ4hFu1dypVI4989oyJQKRJUnrzz+PjsMzoVN2NP+na3OMAOlwfjJj9pB
-         xj1LeYuCyRvKX+Y7CqiVMmbiOBGh0NaMfQkPhtKap71LOqEYh4wxB3Rj7j4d93RfORC/
-         lxOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x0s7LJER70w2bSiwwTpjAxpJj5S5Wt0DwDx2zogXdYE=;
-        b=m2iwreK9I0xJO24SA17uoEVgaC512JJa3gS2Qh7Su6bqIlb/m3zg/vFZo/fxqJOdIa
-         WT1CbCaAf+EnZqzcabN04z0d70fQ4Wjn4BHO7bJxHjVqXFOZBEGmk3824YuzLkbGU8hz
-         lJCFcqxan1o6iGEQsjPZR43jc7dKy4zU+4mVSiNZcCUdKA5dxq7kGwsNxRTVMGaSWFrF
-         obUif0aItfljE3hvNMz7PcuuKdATLCm2tMR6xwzTnkzUOTusI/Qnzh+l7jvXkWUCx7Ib
-         T03ci/SWJ4+di+FACh8ECzUdej5V/fOh8dYqLPNmZllbyoRMeNwxXSZsx/DuJUqNZEjC
-         GIqA==
-X-Gm-Message-State: AOAM531xUrrYg9NKW0R8sT1NXnyMt6XaUhqCBZVzzwmo7oTvbskcQBOQ
-        8vOSQ7sIsubJTIk0N63QqC2Qjf6TFfCyHBWY
-X-Google-Smtp-Source: ABdhPJwxui/7YiRZ9ijL0SMcy1jYD4hzFKZCNA4A413XhqNgHJNr+nKi0NPriqxWfstAt+DZ01jbQQ==
-X-Received: by 2002:ae9:f312:: with SMTP id p18mr11538849qkg.162.1616767193781;
-        Fri, 26 Mar 2021 06:59:53 -0700 (PDT)
-Received: from localhost.localdomain ([156.146.55.149])
-        by smtp.gmail.com with ESMTPSA id q125sm6644710qkf.68.2021.03.26.06.59.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 06:59:52 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] blk-settings: Fix a typo
-Date:   Fri, 26 Mar 2021 19:27:15 +0530
-Message-Id: <20210326135715.28434-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S230094AbhCZN6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:58:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229848AbhCZN5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:57:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EAB061A1E;
+        Fri, 26 Mar 2021 13:57:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616767068;
+        bh=CtPkKxNXAFOwDCyjqkdra5XFgYEFZjQ87hGk/XR8cfo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LQbYXY0c66QiMRrNvdZD63b1ht8Cg7a1Z6oSZ2sYH8mvYJMNwz/d+6SIcm5MI77Fi
+         px+MXJVa4Tvdh9XQkhQsQ6PcK68ng/llZ9i9KvJjDCWW8XI0T2sPzW9NKKhy4Ljto/
+         nEXy3+302+i5kWYGI2TtU077PtOvW+4r1HQwewYA3SwFzJ/7Oa5PiIkAvIs3X/iig5
+         ZheDHM4an6hL3auItM+6TtxDEHAqU1JeJSeG0uRLELiinG4EfsfQczXFCG9WxkyTyp
+         OFZNhap9iqoRQ4N+snOi0s+/qjXaIdCURf8xdVCEGmeHyB92YyIl9O3hK8T04ZeIRo
+         kV5eNr29RGJ7A==
+Received: by mail-ot1-f41.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so5271016ote.6;
+        Fri, 26 Mar 2021 06:57:48 -0700 (PDT)
+X-Gm-Message-State: AOAM533RH0UmBLCjfgDiwzzVVtKjtYTR/pbL3H4jzF2Jo8V4svkbIS1t
+        CmJAeS89MN7/mwOVzQlBTmpgObAINVER66YzilQ=
+X-Google-Smtp-Source: ABdhPJw2W8ndU6vqWokiypCezNCBVaB+LIzgUdu9+pe2C79c/8Ebz3uTRhswUlzp6ZAR2fRYkvk0P6o+nTuGa+542AI=
+X-Received: by 2002:a9d:600a:: with SMTP id h10mr11317876otj.90.1616767067400;
+ Fri, 26 Mar 2021 06:57:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210324145435.19753-1-changbin.du@gmail.com>
+In-Reply-To: <20210324145435.19753-1-changbin.du@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 26 Mar 2021 14:57:36 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHxHDEVbUz9L5d6pSMRB6wLFL_GiqA18X6XN4XbnifsXQ@mail.gmail.com>
+Message-ID: <CAMj1kXHxHDEVbUz9L5d6pSMRB6wLFL_GiqA18X6XN4XbnifsXQ@mail.gmail.com>
+Subject: Re: [PATCH] efi/fdt: fix panic when no valid fdt found
+To:     Changbin Du <changbin.du@gmail.com>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/idential/identical/
+On Wed, 24 Mar 2021 at 15:54, Changbin Du <changbin.du@gmail.com> wrote:
+>
+> setup_arch() would invoke efi_init()->efi_get_fdt_params(). If no
+> valid fdt found then initial_boot_params will be null. So we
+> should stop further fdt processing here. I encountered this
+> issue on risc-v.
+>
+> Signed-off-by: Changbin Du <changbin.du@gmail.com>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- block/blk-settings.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'll queue this up, thanks.
 
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index b4aa2f37fab6..63168b529360 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -749,7 +749,7 @@ void blk_queue_virt_boundary(struct request_queue *q, unsigned long mask)
- 	/*
- 	 * Devices that require a virtual boundary do not support scatter/gather
- 	 * I/O natively, but instead require a descriptor list entry for each
--	 * page (which might not be idential to the Linux PAGE_SIZE).  Because
-+	 * page (which might not be identical to the Linux PAGE_SIZE).  Because
- 	 * of that they are not limited by our notion of "segment size".
- 	 */
- 	if (mask)
---
-2.26.2
-
+> ---
+>  drivers/firmware/efi/fdtparams.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/firmware/efi/fdtparams.c b/drivers/firmware/efi/fdtparams.c
+> index bb042ab7c2be..e901f8564ca0 100644
+> --- a/drivers/firmware/efi/fdtparams.c
+> +++ b/drivers/firmware/efi/fdtparams.c
+> @@ -98,6 +98,9 @@ u64 __init efi_get_fdt_params(struct efi_memory_map_data *mm)
+>         BUILD_BUG_ON(ARRAY_SIZE(target) != ARRAY_SIZE(name));
+>         BUILD_BUG_ON(ARRAY_SIZE(target) != ARRAY_SIZE(dt_params[0].params));
+>
+> +       if (!fdt)
+> +               return 0;
+> +
+>         for (i = 0; i < ARRAY_SIZE(dt_params); i++) {
+>                 node = fdt_path_offset(fdt, dt_params[i].path);
+>                 if (node < 0)
+> --
+> 2.30.2
+>
