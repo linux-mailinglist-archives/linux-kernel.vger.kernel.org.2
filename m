@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64ED34A941
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF67D34A94A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCZOIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhCZOIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:08:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D24861A24;
-        Fri, 26 Mar 2021 14:08:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616767687;
-        bh=sfKejFZdHc5ocWb1u29Ga9LhysZMd+NqlM93fFQXeLc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wN2ED4td46fy0E+xRVuWJcEoR+TURtgYYeFTQnmwfzznS/s96egLlT+pOxYTfz4yG
-         NO2+OrzveTor9cJTr/O0m2UeQ4Z3LREi8JGMsnB3Uy5iLeXR/uFlQYn/7mhUPFHjoa
-         6dr27IR72nYvDggowmZslO8agE8NROpjOk4fD66c=
-Date:   Fri, 26 Mar 2021 15:08:05 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Jia <xujia39@huawei.com>
-Cc:     ross.schm.dev@gmail.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev, hulkcommits@huawei.com
-Subject: Re: [PATCH -next] staging: rtl8723bs: core: fix error return
-Message-ID: <YF3qxema68+hLEZq@kroah.com>
-References: <20210325083041.1881347-1-xujia39@huawei.com>
+        id S230179AbhCZOJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:09:03 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:36066 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229984AbhCZOIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:08:34 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F6P2d6PvWz1ryY1;
+        Fri, 26 Mar 2021 15:08:25 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F6P2d4qBqz1qqwS;
+        Fri, 26 Mar 2021 15:08:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id onoyYkV_BZHU; Fri, 26 Mar 2021 15:08:24 +0100 (CET)
+X-Auth-Info: OEvAU2bUcvvTBFMfvWGLhYIW4WQnHRDFk1cZLlSNZz300DmBDLQfVXreztynDrlR
+Received: from igel.home (ppp-46-244-160-134.dynamic.mnet-online.de [46.244.160.134])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Fri, 26 Mar 2021 15:08:24 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id 998042C35E3; Fri, 26 Mar 2021 15:08:22 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
+        daniel@gimpelevich.san-francisco.ca.us, linux-arch@vger.kernel.org,
+        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
+        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
+        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH v3 11/17] riscv: Convert to GENERIC_CMDLINE
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+        <46745e07b04139a22b5bd01dc37df97e6981e643.1616765870.git.christophe.leroy@csgroup.eu>
+X-Yow:  I'd like some JUNK FOOD...  and then I want to be ALONE --
+Date:   Fri, 26 Mar 2021 15:08:22 +0100
+In-Reply-To: <46745e07b04139a22b5bd01dc37df97e6981e643.1616765870.git.christophe.leroy@csgroup.eu>
+        (Christophe Leroy's message of "Fri, 26 Mar 2021 13:44:58 +0000
+        (UTC)")
+Message-ID: <87zgyqdn3d.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325083041.1881347-1-xujia39@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 04:30:41PM +0800, Xu Jia wrote:
-> Function rtw_init_bcmc_stainfo() is always return success.
-> Variable 'ret' set but not used.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Xu Jia <xujia39@huawei.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_sta_mgt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-> index f96dd0b40e04..7b578192adf5 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_sta_mgt.c
-> @@ -551,7 +551,7 @@ u32 rtw_init_bcmc_stainfo(struct adapter *padapter)
->  	psta->mac_id = 1;
+On Mär 26 2021, Christophe Leroy wrote:
+
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index f8f15332caa2..e7c91ee478d1 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/swiotlb.h>
+>  #include <linux/smp.h>
+>  #include <linux/efi.h>
+> +#include <linux/cmdline.h>
 >  
->  exit:
-> -	return _SUCCESS;
-> +	return res;
->  }
+>  #include <asm/cpu_ops.h>
+>  #include <asm/early_ioremap.h>
+> @@ -228,10 +229,8 @@ static void __init parse_dtb(void)
+>  	}
+>  
+>  	pr_err("No DTB passed to the kernel\n");
+> -#ifdef CONFIG_CMDLINE_FORCE
+> -	strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+> +	cmdline_build(boot_command_line, NULL, COMMAND_LINE_SIZE);
+>  	pr_info("Forcing kernel command line to: %s\n", boot_command_line);
 
-You just changed the logic of this function, now it can return a
-failure.  Is that ok?  have you tested it when this fails?
+Shouldn't that message become conditional in some way?
 
-Given that I do not think anyone actually tests this value, should this
-function just return void instead?
+Andreas.
 
-thanks,
-
-greg k-h
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
