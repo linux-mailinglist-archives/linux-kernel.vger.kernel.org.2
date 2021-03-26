@@ -2,151 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D36734A62E
+	by mail.lfdr.de (Postfix) with ESMTP id C9F8C34A62F
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhCZLNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37374 "EHLO
+        id S230041AbhCZLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbhCZLMq (ORCPT
+        with ESMTP id S230035AbhCZLMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:12:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085E4C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:12:45 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616757158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7RxLJNwSY/A5SoVhWSfv2pmplPu4MvBBsF6rRlDKAJ0=;
-        b=IM/b29laeEiAoFSv+02zMVKnUvwBIVAYGQtqO0mk287ab7q370BFBxTgBvdwauorRqW8ka
-        3OJTWc6XhWgKfbDrAHBDen1simtfKPKuZ0bI0IzpM/JJ8IQZGEj0CkfkWYeM95aI6XN7kJ
-        rpbuADUHsCTRy9HYjgv/l5qjydPZM3lVD4xoSAEqVO4cZ9Gs3Z3RQwwTgpAXom9fvnVW6N
-        e8JW42vfPbqQtgX88zR5Q+fSxvePgbmIl8WXh0TodTDQQhjjTPElXgbUXKhbR1mq4NdYkS
-        rZL0cj2H+Q0xPWIg0papxzdKddU2Zi25SnLz6tG9E3HhWvd0Crn9JV9qVbUC5A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616757158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7RxLJNwSY/A5SoVhWSfv2pmplPu4MvBBsF6rRlDKAJ0=;
-        b=4oEUatYSA7YP5RGM/INPugkii8zZ4EjltzCG2fwMvg7n0iLo1Rqh0Z4Do/UMMnpfULteXb
-        re5uVkGdenKtW2Bg==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Rafael Aquini <aquini@redhat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
-Subject: Re: [PATCH next v1 2/3] printk: remove safe buffers
-In-Reply-To: <YFnHKlCvIA2nI41c@alley>
-References: <20210316233326.10778-1-john.ogness@linutronix.de> <20210316233326.10778-3-john.ogness@linutronix.de> <YFnHKlCvIA2nI41c@alley>
-Date:   Fri, 26 Mar 2021 12:12:37 +0100
-Message-ID: <87pmzmi2xm.fsf@jogness.linutronix.de>
+        Fri, 26 Mar 2021 07:12:47 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC71AC0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:12:46 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id x13so5230621wrs.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ayZF+r0b23wrtO9csco3tVZwSgnXFBof0wM4XBNzSeY=;
+        b=Q6P3d9Nssxdq0W6ZzQ+wBSG6cCt3phfWqjg+a1wnooDpDBk9V2Y6vtzhc7Mswq7Oa4
+         86LN7+vvcaccPuLTYyhtOykF671k9jme2L7xtAdJMWtuLqO3YSTMAIQRRXpZtBSA1fZM
+         YwGtR4vUOGJYIAcfJZF/+PL9hQwHZsRuAXOszcRe7mzYNL9yR9C/KhcahivYftl1biC6
+         dx/tCHZ2jDe4M4RbYe76/kSY9sYRakFXpwcR6gMZuBqc4FWRn0Gmu6Usbl9y5Ks5hyaO
+         eXc+XqjUm0O24RFK8ihLmL1SmrFYmItCps6dttIh/lOO3qL+Hot939nGXUK+7zYJ3T0l
+         ebTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ayZF+r0b23wrtO9csco3tVZwSgnXFBof0wM4XBNzSeY=;
+        b=sXkaow6idyqXqyAkEhKTzOXVXxETX4hLcDQv+zZViJZSho6aPjZbRsf0pSb0BAmBtg
+         46nm563j5nNE/9dHw9Oew7JLqg/zRsiBWgbr57BC6Bj04OI4tNmdyDvK22raEX8hWl9k
+         ktpS1c/Nsdw5lS1ft7VkP8oD7asuo1BuW4H9NUXEZtrjhifmRODSLlw8/kOvN13TSkhv
+         kB7YvVo9vlRbp6vdR8X8CkHTapIktum92b94+z0aF8uhYdpdFwSCQ4s6LsPxHsbvdeXU
+         3HN6uE5I5TQh4sP0BGrg1JChLfcchbR6iy6jRWw3smm78C79QhUh0man1nK+OljKfyjK
+         JVwA==
+X-Gm-Message-State: AOAM533FptJdD4PLqCMNDS+xI3ISTP4KWfbQ2j1jZgfLyCMc/X+cIAp4
+        SxAr8Hzg/1LldbAYs9xkMoBWd4ZOafbSVQ==
+X-Google-Smtp-Source: ABdhPJwznLZx5Bx6+2GrBnlYTkUGcLrsIXno08NsxbhiZdxiU5vV/Bn/9P+rxdwK4XWTyDupt0/+Dw==
+X-Received: by 2002:a05:6000:1868:: with SMTP id d8mr14061223wri.301.1616757165461;
+        Fri, 26 Mar 2021 04:12:45 -0700 (PDT)
+Received: from agape.jhs ([5.171.81.75])
+        by smtp.gmail.com with ESMTPSA id i26sm11065917wmb.18.2021.03.26.04.12.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 04:12:45 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 12:12:42 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/15] staging: rtl8723bs: put parentheses on macros with
+ complex values in include/basic_types.h
+Message-ID: <20210326111241.GD1452@agape.jhs>
+References: <cover.1616748885.git.fabioaiuto83@gmail.com>
+ <2c7c198ccef194b06921bc476eda7d5102ab70dc.1616748885.git.fabioaiuto83@gmail.com>
+ <20210326100408.GE1717@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326100408.GE1717@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-23, Petr Mladek <pmladek@suse.com> wrote:
->> --- a/kernel/printk/printk.c
->> +++ b/kernel/printk/printk.c
->> @@ -1142,8 +1126,6 @@ void __init setup_log_buf(int early)
->>  		 new_descs, ilog2(new_descs_count),
->>  		 new_infos);
->>  
->> -	printk_safe_enter_irqsave(flags);
->> -
->>  	log_buf_len = new_log_buf_len;
->>  	log_buf = new_log_buf;
->>  	new_log_buf_len = 0;
->> @@ -1159,8 +1141,6 @@ void __init setup_log_buf(int early)
->>  	 */
->>  	prb = &printk_rb_dynamic;
->>  
->> -	printk_safe_exit_irqrestore(flags);
->
-> This will allow to add new messages from the IRQ context when we
-> are copying them to the new buffer. They might get lost in
-> the small race window.
->
-> Also the messages from NMI might get lost because they are not
-> longer stored in the per-CPU buffer.
->
-> A possible solution might be to do something like this:
->
-> 	prb_for_each_record(0, &printk_rb_static, seq, &r)
-> 		free -= add_to_rb(&printk_rb_dynamic, &r);
->
-> 	prb = &printk_rb_dynamic;
->
-> 	/*
-> 	 * Copy the remaining messages that might have appeared
-> 	 * from IRQ or NMI context after we ended copying and
-> 	 * before we switched the buffers. They must be finalized
-> 	 * because only one CPU is up at this stage.
-> 	 */
-> 	prb_for_each_record(seq, &printk_rb_static, seq, &r)
-> 		free -= add_to_rb(&printk_rb_dynamic, &r);
+On Fri, Mar 26, 2021 at 01:04:08PM +0300, Dan Carpenter wrote:
+> On Fri, Mar 26, 2021 at 10:09:11AM +0100, Fabio Aiuto wrote:
+> > fix the following checkpatch warnings:
+> > 
+> > ERROR: Macros with complex values should be enclosed in parentheses
+> > 154: FILE: drivers/staging/rtl8723bs/include/basic_types.h:154:
+> > +#define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
+> > --
+> > ERROR: Macros with multiple statements should be enclosed in
+> > a do - while loop
+> > 161: FILE: drivers/staging/rtl8723bs/include/basic_types.h:161:
+> > +#define SET_BITS_TO_LE_2BYTE(__pstart, __bitoffset, __bitlen, __val) \
+> > --
+> > ERROR: Macros with complex values should be enclosed in parentheses
+> > 168: FILE: drivers/staging/rtl8723bs/include/basic_types.h:168:
+> > +#define SET_BITS_TO_LE_1BYTE(__pstart, __bitoffset, __bitlen, __val) \
+> > 
+> > parentheses solution preferred for all fixes and made macros more
+> > readables
+> > 
+> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > ---
+> >  .../staging/rtl8723bs/include/basic_types.h   | 30 +++++++++++--------
+> >  1 file changed, 18 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/include/basic_types.h b/drivers/staging/rtl8723bs/include/basic_types.h
+> > index 76304086107a..5054c2e3384c 100644
+> > --- a/drivers/staging/rtl8723bs/include/basic_types.h
+> > +++ b/drivers/staging/rtl8723bs/include/basic_types.h
+> > @@ -152,24 +152,30 @@
+> >  /* 		Set subfield of little-endian 4-byte value to specified value. */
+> >  /*  */
+> >  #define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
+> > -		*((u32 *)(__pstart)) =				\
+> > -		(						\
+> > -		LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
+> > -		((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
+> > +		(\
+> > +			*((u32 *)(__pstart)) =				\
+> > +			(						\
+> > +				LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
+> > +				((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
+> > +			)\
+> >  		)
+> >  
+> 
+> These macros are terrible and this makes it uglier.  Better to just
+> ignore checkpatch until we can figure out a way to re-write this
+> properly.
+> 
+> regards,
+> dan carpenter
+> 
 
-OK. I'll probably rework it some and combine it with the "dropped" test
-so that we can identify if messages were dropped during the transition
-(because of static ringbuffer overrun).
+I see, will drop the patch for now.
 
->> -
->>  	if (seq != prb_next_seq(&printk_rb_static)) {
->>  		pr_err("dropped %llu messages\n",
->>  		       prb_next_seq(&printk_rb_static) - seq);
->> @@ -2666,7 +2631,6 @@ void console_unlock(void)
->>  		size_t ext_len = 0;
->>  		size_t len;
->>  
->> -		printk_safe_enter_irqsave(flags);
->>  skip:
->>  		if (!prb_read_valid(prb, console_seq, &r))
->>  			break;
->> @@ -2711,6 +2675,8 @@ void console_unlock(void)
->>  				printk_time);
->>  		console_seq++;
->>  
->> +		printk_safe_enter_irqsave(flags);
->
-> What is the purpose of the printk_safe context here, please?
+thanks,
 
-console_lock_spinning_enable() needs to be called with interrupts
-disabled. I should have just used local_irq_save().
-
-I could add local_irq_save() to console_lock_spinning_enable() and
-restore them at the end of console_lock_spinning_disable_and_check(),
-but then I would need to add a @flags argument to both functions. I
-think it is simpler to just do the disable/enable from the caller,
-console_unlock().
-
-BTW, I could not find any sane way of disabling interrupts via a
-raw_spin_lock_irqsave() of @console_owner_lock because of the how it is
-used with lockdep. In particular for
-console_lock_spinning_disable_and_check().
-
-John Ogness
+fabio
