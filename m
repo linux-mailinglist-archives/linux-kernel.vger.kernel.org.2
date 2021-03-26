@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAEB34B135
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F5134B141
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhCZVVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 17:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhCZVVH (ORCPT
+        id S230221AbhCZVX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 17:23:56 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:35548 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhCZVXj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 17:21:07 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC36DC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 14:21:07 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id t20so1534830plr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 14:21:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=m2miwIO/u/sYwYpBdb5shG1C8hzzjvjQQh0IO27dehU=;
-        b=AIvUJFpRVWe1n4j/fb8FJ2I9EdzdGmlDPQh7pK4XVOy4ddGl6yz0ZLqFE8/Pjb20kA
-         Dq8hP472PqEDlb7kNx6YHi6Vt6ldPV/NVyQgNrfqOTogf2iFTY+U39peo9/sYzWGrXYi
-         uBSNuxdJD1nkTtaHVylnyh7N2Dd2du+O1O9m3i9Ee4HLIp/RoJtR0PcytdfUGHY23yP6
-         zS7Hu5MaQOWVH2onH73m9gqRoJrZme6uWiGkfTcobgMzuVmUFW3dF+fUA20oDp2rERpI
-         jfBuMNnPh/V7SgxG50YXA2DWmsZj7r3qIJ10bRfYDBGWRudoU53plSEXvqWKk/QfhtZk
-         GUPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=m2miwIO/u/sYwYpBdb5shG1C8hzzjvjQQh0IO27dehU=;
-        b=I4YUFgsCPcZAM9XJ8YQwqcJ9md4JLwXmTajxz0axB7Vf+X6MKdSxBgrymw2j5QA61w
-         0HdAOiogAPlqWcmns02AMFq/IxXXPbV9lQFvmzNsEJBy0cMj9GT6mgYtD8B0JlBmY9CC
-         MyMgatAn6uvuU0ZTrtoPQ3OOcRyflVzFGXtreURviVFxkHYvOz20jKHSQJVvbVzutxpL
-         LwHovF09J0XC0FfuR/dckHdlI/yZwRk1N6R0jVkTpJv2mpdKuo9Pa8GMrGMi18ZEU0Ta
-         dEWruyu835sAlltL92ezO4PTR8JTBZe5gdb3EFDe+6+bEguk9hi+slH4B3Jd2nc+RSkE
-         3kAw==
-X-Gm-Message-State: AOAM532yHHwLEfmK8u6o9N/qygEGcJHdiSI3BdydBIWU5XRklUTp3oZY
-        lr4IVDT0lloPWq4yff1Qyh9kZg==
-X-Google-Smtp-Source: ABdhPJzu3YvDiQ+YFH46fm+031Ix2HT2UX27Wa9xogrIJhAGl5B1yLVcTz9TgNOfljmjPaB0ajujgQ==
-X-Received: by 2002:a17:90b:e87:: with SMTP id fv7mr7563556pjb.27.1616793667148;
-        Fri, 26 Mar 2021 14:21:07 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:c0b1:cb30:1baf:4666? ([2601:646:c200:1ef2:c0b1:cb30:1baf:4666])
-        by smtp.gmail.com with ESMTPSA id v11sm9988434pgg.68.2021.03.26.14.21.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 14:21:06 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Why does glibc use AVX-512?
-Date:   Fri, 26 Mar 2021 14:21:05 -0700
-Message-Id: <C624A1B5-45EE-491C-B43B-5605D48273E9@amacapital.net>
-References: <87pmzlboxj.fsf@mid.deneb.enyo.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "H. J. Lu" <hjl.tools@gmail.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Carlos O'Donell <carlos@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        libc-alpha <libc-alpha@sourceware.org>
-In-Reply-To: <87pmzlboxj.fsf@mid.deneb.enyo.de>
-To:     Florian Weimer <fw@deneb.enyo.de>
-X-Mailer: iPhone Mail (18D61)
+        Fri, 26 Mar 2021 17:23:39 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lPtvb-000SOd-No; Fri, 26 Mar 2021 15:23:35 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1lPtva-00074S-1a; Fri, 26 Mar 2021 15:23:35 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210326143831.1550030-1-hch@lst.de>
+        <20210326143831.1550030-4-hch@lst.de>
+Date:   Fri, 26 Mar 2021 16:22:33 -0500
+In-Reply-To: <20210326143831.1550030-4-hch@lst.de> (Christoph Hellwig's
+        message of "Fri, 26 Mar 2021 15:38:30 +0100")
+Message-ID: <m1y2e9vcdi.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-XM-SPF: eid=1lPtva-00074S-1a;;;mid=<m1y2e9vcdi.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18JI1x3OTuGSmP1SAxwgJUKnILVVDmHpGw=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMNoVowels autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3879]
+        *  1.5 XMNoVowels Alpha-numberic number with no vowels
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Christoph Hellwig <hch@lst.de>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1205 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 12 (1.0%), b_tie_ro: 10 (0.8%), parse: 1.10
+        (0.1%), extract_message_metadata: 13 (1.1%), get_uri_detail_list: 1.37
+        (0.1%), tests_pri_-1000: 7 (0.6%), tests_pri_-950: 1.65 (0.1%),
+        tests_pri_-900: 1.23 (0.1%), tests_pri_-90: 84 (7.0%), check_bayes: 83
+        (6.9%), b_tokenize: 10 (0.9%), b_tok_get_all: 7 (0.6%), b_comp_prob:
+        2.3 (0.2%), b_tok_touch_all: 59 (4.9%), b_finish: 1.20 (0.1%),
+        tests_pri_0: 252 (20.9%), check_dkim_signature: 0.55 (0.0%),
+        check_dkim_adsp: 2.8 (0.2%), poll_dns_idle: 803 (66.7%), tests_pri_10:
+        2.3 (0.2%), tests_pri_500: 826 (68.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 3/4] exec: simplify the compat syscall handling
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Christoph Hellwig <hch@lst.de> writes:
 
 
-> On Mar 26, 2021, at 2:11 PM, Florian Weimer <fw@deneb.enyo.de> wrote:
->=20
-> =EF=BB=BF* Andy Lutomirski:
->=20
->>> On Fri, Mar 26, 2021 at 1:35 PM Florian Weimer <fw@deneb.enyo.de> wrote:=
+> diff --git a/fs/exec.c b/fs/exec.c
+> index 06e07278b456fa..b34c1eb9e7ad8e 100644
+> --- a/fs/exec.c
+> +++ b/fs/exec.c
+> @@ -391,47 +391,34 @@ static int bprm_mm_init(struct linux_binprm *bprm)
+>  	return err;
+>  }
+>  
+> -struct user_arg_ptr {
+> -#ifdef CONFIG_COMPAT
+> -	bool is_compat;
+> -#endif
+> -	union {
+> -		const char __user *const __user *native;
+> -#ifdef CONFIG_COMPAT
+> -		const compat_uptr_t __user *compat;
+> -#endif
+> -	} ptr;
+> -};
+> -
+> -static const char __user *get_user_arg_ptr(struct user_arg_ptr argv, int nr)
+> +static const char __user *
+> +get_user_arg_ptr(const char __user *const __user *argv, int nr)
+>  {
+> -	const char __user *native;
+> -
+> -#ifdef CONFIG_COMPAT
+> -	if (unlikely(argv.is_compat)) {
+> +	if (in_compat_syscall()) {
+> +		const compat_uptr_t __user *compat_argv =
+> +			compat_ptr((unsigned long)argv);
 
->>>=20
->>> I mean the immense slowdown you get if you use %xmm registers after
-> their %ymm counterparts (doesn't have to be %zmm, that issue is
-> present starting with AVX) and you have not issued VZEROALL or
-> VZEROUPPER between the two uses.
+Ouch!  Passing a pointer around as the wrong type through the kernel!
 
-It turns out that it=E2=80=99s not necessary to access the registers in ques=
-tion to trigger this behavior. You just need to make the CPU think it should=
- penalize you. For example, LDMXCSR appears to be a legacy SSE insn for this=
- purpose, and VLDMXCSR is an AVX insn for this purpose. I wouldn=E2=80=99t t=
-rust that using ymm9 would avoid the penalty just because common sense says i=
-t should.
+Perhaps we should reduce everything to do_execveat and
+do_execveat_compat.  Then there would be no need for anything
+to do anything odd with the pointer types.
 
->> What kind of system has that problem?
->=20
-> It's a standard laptop after a suspend/resume cycle.  It's either a
-> kernel or firmware bug.
+I think the big change would be to factor out a copy_string out
+of copy_strings, that performs all of the work once we know the proper
+pointer value.
 
-What kernel version?  I think fixing the kernel makes more sense than fixing=
- glibc.
+Casting pointers from one type to another scares me as one mistake means
+we are doing something wrong and probably exploitable.
 
+
+Eric
+
+
+
+
+>  		compat_uptr_t compat;
+>  
+> -		if (get_user(compat, argv.ptr.compat + nr))
+> +		if (get_user(compat, compat_argv + nr))
+>  			return ERR_PTR(-EFAULT);
+> -
+>  		return compat_ptr(compat);
+> -	}
+> -#endif
+> -
+> -	if (get_user(native, argv.ptr.native + nr))
+> -		return ERR_PTR(-EFAULT);
+> +	} else {
+> +		const char __user *native;
+>  
+> -	return native;
+> +		if (get_user(native, argv + nr))
+> +			return ERR_PTR(-EFAULT);
+> +		return native;
+> +	}
+>  }
+>  
