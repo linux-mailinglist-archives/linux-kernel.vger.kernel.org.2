@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9291A34ADAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A36CB34AEA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhCZReu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:34:50 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:47643 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhCZRee (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:34:34 -0400
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 5D213200004;
-        Fri, 26 Mar 2021 17:34:32 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 18:34:31 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND 1/1] arch: arm: mach-at91: pm: Move prototypes to
- mutually included header
-Message-ID: <YF4bJ30lMGwCYMX8@piout.net>
-References: <20210303124149.3149511-1-lee.jones@linaro.org>
- <161677907718.203839.17372873158505015568.b4-ty@bootlin.com>
+        id S230107AbhCZSf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:35:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229933AbhCZSfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:35:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3673861974;
+        Fri, 26 Mar 2021 18:35:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616783714;
+        bh=jjSlvlfTYmDgqztkBlh2xh49URpXSxlyKygsNdwn/sM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qMcmVYRvChY5q3/+UXJcxZw16T82WgRE0H90UgLwmrU6TY0680BZZJruVft6ISsAg
+         GmmRridcvTl6apEM2tipTFBvcGUVaetEZxL5fHFm0MvAKojq0AWo65vm0TsWiEU/to
+         4vF+wcH0qlO/wEnn8yB6a95w/HlRvz74JN7ZSq0LLSuKDnFrtXgYDHgqo1I6HnUO6g
+         vQJ2+lBm/4zzGyRD9BG4+Zun4FjMrXB4aJjK1HPIAkmutNJ2DSbwHaojkMrhWicx13
+         dB0X/7r298VQtGG11JYaifQYwSuRoQWmpx+W/rOkGX6zF2HmRVskEyzcSxFUMHl90N
+         PxC1vd05sR90Q==
+Date:   Fri, 26 Mar 2021 12:35:10 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] hpfs: Replace one-element array with flexible-array
+ member
+Message-ID: <20210326173510.GA81212@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <161677907718.203839.17372873158505015568.b4-ty@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/03/2021 18:18:04+0100, Alexandre Belloni wrote:
-> On Wed, 3 Mar 2021 12:41:49 +0000, Lee Jones wrote:
-> > Both the caller and the supplier's source file should have access to
-> > the include file containing the prototypes.
-> > 
-> > Fixes the following W=1 kernel build warning(s):
-> > 
-> >  drivers/pinctrl/pinctrl-at91.c:1637:6: warning: no previous prototype for ‘at91_pinctrl_gpio_suspend’ [-Wmissing-prototypes]
-> >  1637 | void at91_pinctrl_gpio_suspend(void)
-> >  | ^~~~~~~~~~~~~~~~~~~~~~~~~
-> >  drivers/pinctrl/pinctrl-at91.c:1661:6: warning: no previous prototype for ‘at91_pinctrl_gpio_resume’ [-Wmissing-prototypes]
-> >  1661 | void at91_pinctrl_gpio_resume(void)
-> >  | ^~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Applied, thanks!
-> 
-> [1/1] arch: arm: mach-at91: pm: Move prototypes to mutually included header
->       commit: 10e9119e865047f4e22cbd69de991d6bc26c4faf
-> 
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Actually:
-[1/1] ARM: at91: pm: Move prototypes to mutually included header
-      commit: 41dbf4a146a06443d1cbf39e238f02fa1ca9d626
+Also, this helps with the ongoing efforts to enable -Warray-bounds by
+fixing the following warning:
 
+  CC [M]  fs/hpfs/dir.o
+fs/hpfs/dir.c: In function ‘hpfs_readdir’:
+fs/hpfs/dir.c:163:41: warning: array subscript 1 is above array bounds of ‘u8[1]’ {aka ‘unsigned char[1]’} [-Warray-bounds]
+  163 |         || de ->name[0] != 1 || de->name[1] != 1))
+      |                                 ~~~~~~~~^~~
 
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ fs/hpfs/hpfs.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/hpfs/hpfs.h b/fs/hpfs/hpfs.h
+index 302f45101a96..d92c4af3e1b4 100644
+--- a/fs/hpfs/hpfs.h
++++ b/fs/hpfs/hpfs.h
+@@ -356,7 +356,8 @@ struct hpfs_dirent {
+   u8 no_of_acls;			/* number of ACL's (low 3 bits) */
+   u8 ix;				/* code page index (of filename), see
+ 					   struct code_page_data */
+-  u8 namelen, name[1];			/* file name */
++  u8 namelen;				/* file name length */
++  u8 name[];				/* file name */
+   /* dnode_secno down;	  btree down pointer, if present,
+      			  follows name on next word boundary, or maybe it
+ 			  precedes next dirent, which is on a word boundary. */
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.27.0
+
