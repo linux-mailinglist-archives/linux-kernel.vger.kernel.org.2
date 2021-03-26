@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 525C134A424
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C80A34A41B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:18:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhCZJSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:18:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230487AbhCZJSB (ORCPT
+        id S231284AbhCZJSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:18:05 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:57264 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230164AbhCZJR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:18:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616750280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=t8H47LgEUN9z28TfEZJHV3uN23snCmuICmig34OVLYk=;
-        b=CRDsawD/eHoh8x82ACDIs9B+mlml4Nrsd+AWPkOY6mgQWdQRxUn0dseLQap4ULX3G8ibZZ
-        VmpsP4YyWIqK6WNhV2d4IH3/0yj1QpIHT/4gsJ3hL78RXM6488HUOOQCjKvJ2fWic9QzYL
-        7ZhYlL1s+FKNkRzR0erTc4efhN1mCrI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-93-Oiqz7IC8OZGSpTO0PVGvUQ-1; Fri, 26 Mar 2021 05:17:58 -0400
-X-MC-Unique: Oiqz7IC8OZGSpTO0PVGvUQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E28C6414D;
-        Fri, 26 Mar 2021 09:17:57 +0000 (UTC)
-Received: from [10.36.112.13] (ovpn-112-13.ams2.redhat.com [10.36.112.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7DBAE77E21;
-        Fri, 26 Mar 2021 09:17:52 +0000 (UTC)
-Subject: Re: [PATCH 4/4] vfio/platform: Fix spelling mistake "registe" ->
- "register"
-To:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm <kvm@vger.kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210326083528.1329-1-thunder.leizhen@huawei.com>
- <20210326083528.1329-5-thunder.leizhen@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <ca929ef5-0dbc-c711-0af4-03fb9edf0945@redhat.com>
-Date:   Fri, 26 Mar 2021 10:17:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210326083528.1329-5-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Fri, 26 Mar 2021 05:17:56 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 26F57D1375;
+        Fri, 26 Mar 2021 17:17:54 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P26788T139903524898560S1616750272487004_;
+        Fri, 26 Mar 2021 17:17:54 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <8849281ae0fd699b9742b6b6341e7335>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: robh+dt@kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     robh+dt@kernel.org, heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v5 08/11] dt-bindings: add power-domain header for RK3568 SoCs
+Date:   Fri, 26 Mar 2021 17:17:51 +0800
+Message-Id: <20210326091751.12637-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210326091547.12375-1-zhangqing@rock-chips.com>
+References: <20210326091547.12375-1-zhangqing@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+According to a description from TRM, add all the power domains
 
-On 3/26/21 9:35 AM, Zhen Lei wrote:
-> There is a spelling mistake in a comment, fix it.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Acked-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+---
+ include/dt-bindings/power/rk3568-power.h | 32 ++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 include/dt-bindings/power/rk3568-power.h
 
-Thanks
+diff --git a/include/dt-bindings/power/rk3568-power.h b/include/dt-bindings/power/rk3568-power.h
+new file mode 100644
+index 000000000000..6cc1af1a9d26
+--- /dev/null
++++ b/include/dt-bindings/power/rk3568-power.h
+@@ -0,0 +1,32 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_BINDINGS_POWER_RK3568_POWER_H__
++#define __DT_BINDINGS_POWER_RK3568_POWER_H__
++
++/* VD_CORE */
++#define RK3568_PD_CPU_0		0
++#define RK3568_PD_CPU_1		1
++#define RK3568_PD_CPU_2		2
++#define RK3568_PD_CPU_3		3
++#define RK3568_PD_CORE_ALIVE	4
++
++/* VD_PMU */
++#define RK3568_PD_PMU		5
++
++/* VD_NPU */
++#define RK3568_PD_NPU		6
++
++/* VD_GPU */
++#define RK3568_PD_GPU		7
++
++/* VD_LOGIC */
++#define RK3568_PD_VI		8
++#define RK3568_PD_VO		9
++#define RK3568_PD_RGA		10
++#define RK3568_PD_VPU		11
++#define RK3568_PD_CENTER	12
++#define RK3568_PD_RKVDEC	13
++#define RK3568_PD_RKVENC	14
++#define RK3568_PD_PIPE		15
++#define RK3568_PD_LOGIC_ALIVE	16
++
++#endif
+-- 
+2.17.1
 
-Eric
 
-> ---
->  drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c b/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c
-> index 09a9453b75c5592..63cc7f0b2e4a437 100644
-> --- a/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c
-> +++ b/drivers/vfio/platform/reset/vfio_platform_calxedaxgmac.c
-> @@ -26,7 +26,7 @@
->  #define XGMAC_DMA_CONTROL       0x00000f18      /* Ctrl (Operational Mode) */
->  #define XGMAC_DMA_INTR_ENA      0x00000f1c      /* Interrupt Enable */
->  
-> -/* DMA Control registe defines */
-> +/* DMA Control register defines */
->  #define DMA_CONTROL_ST          0x00002000      /* Start/Stop Transmission */
->  #define DMA_CONTROL_SR          0x00000002      /* Start/Stop Receive */
->  
-> 
 
