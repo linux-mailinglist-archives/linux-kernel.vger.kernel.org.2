@@ -2,183 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB10134B23F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C98334B23C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhCZWhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:37:20 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:51452 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhCZWg4 (ORCPT
+        id S230423AbhCZWgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhCZWgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:36:56 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lPv4W-00AEEr-Ur; Fri, 26 Mar 2021 16:36:53 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lPv4V-00BMGC-SI; Fri, 26 Mar 2021 16:36:52 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326155128.1057078-1-axboe@kernel.dk>
-        <20210326155128.1057078-3-axboe@kernel.dk>
-        <m1wntty7yn.fsf@fess.ebiederm.org>
-        <106a38d3-5a5f-17fd-41f7-890f5e9a3602@kernel.dk>
-        <m1k0ptv9kj.fsf@fess.ebiederm.org>
-        <01058178-dd66-1bff-4d74-5ff610817ed6@kernel.dk>
-Date:   Fri, 26 Mar 2021 17:35:52 -0500
-In-Reply-To: <01058178-dd66-1bff-4d74-5ff610817ed6@kernel.dk> (Jens Axboe's
-        message of "Fri, 26 Mar 2021 16:30:28 -0600")
-Message-ID: <m18s69v8zb.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 26 Mar 2021 18:36:03 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D05C0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:36:03 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id i81so7200175oif.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:36:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V+YQq+lRYtyspAeWFz7dCbPjCkePPwLJ57VTy7Kuxtk=;
+        b=qIMHDzuDTubNXuhrU6xHCxCvbxqu7ATigMzp+lc9TyY7I0EGNSfZDUpHqqp9RgY6e8
+         735RwKrNGOPyOXrnrsoGIslfXzRnNNq2AHARMNTqgpjR+olaRQ4UGnW3KZ2Smd8IkKhj
+         RNr2ytVsAN+kY+CfrD1gBBop35HMXwHkUyI7gmE/n1kgMLE0a6ORUkyDvD368gnUMtGt
+         gczb0q8lD+VUCfXa7oLX2gQalrnCbkuKAqq3CNfUYxTcf/Z/AwDQIVGm92EDYW55XDqu
+         pR4iTLkp51tqLrOLsc9eEVk8zjMOLF3lkX9LhKLxShXKK6qndKNdTdNBsX7jZHbqN/Ru
+         fkcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V+YQq+lRYtyspAeWFz7dCbPjCkePPwLJ57VTy7Kuxtk=;
+        b=mJF1qKdz8uYzYSuRE5sgIg5h4Jr0QYIgUA+WEnwbjhemayPFNoaN16uGHxLrWG+Vvg
+         8ig5OSPVHM32VU8wfktmRLo1b1wbObT85jJq4XmDqkNZEv/rWy2heTcMQvJtzBx2ASge
+         45P5s0UZfCCUYs8sq/O3c/HyMufiw+Nq6CDgpDDGPtgrhkfaB8J7Gu6Fn7cg/l8gJS2Q
+         1g1tLgcnjwoYANqIu/mwLzZWUqEqcbIWZ6r6mb6RWJh+gm8u7us1JM0LNvr6GX+tEO+v
+         ac5iLCvFTn/Z6lvteKG4VcKYEptfZifkwFsdDUL6Cl3FAKASnJSKVEgO4AU7hQsDcJoO
+         sXKQ==
+X-Gm-Message-State: AOAM530+JRXTqh5rjd5DFyEvHyHOWRBcgfwZ1g/ZBJWDY6/lVybCNGsn
+        B+quLKs34gKmYmzhbdWcUpwZqg5CbDOb/A==
+X-Google-Smtp-Source: ABdhPJxjMopEYEtM2GykXR356j28wVlSU9lYVJnDRhziFyqBi3YBvwLBWMdsh4kQd4UUre9/I3kZ2g==
+X-Received: by 2002:a05:6808:8da:: with SMTP id k26mr11285042oij.115.1616798162333;
+        Fri, 26 Mar 2021 15:36:02 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.233.147])
+        by smtp.gmail.com with ESMTPSA id f197sm2394307oob.38.2021.03.26.15.36.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 15:36:02 -0700 (PDT)
+Subject: Re: [PATCH 1/1] scripts/spelling.txt: add entries for recent
+ discoveries
+To:     Tom Saeger <tom.saeger@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Ian King <colin.king@canonical.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joe Perches <joe@perches.com>
+References: <14c54ee47bf0e9aebfe71e97cefd11b2b8f0332f.1616784384.git.tom.saeger@oracle.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <49bafdef-b300-bd4a-c3b2-c672470e8922@kernel.dk>
+Date:   Fri, 26 Mar 2021 16:36:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lPv4V-00BMGC-SI;;;mid=<m18s69v8zb.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19ZogSeAxj83soMb/PNC5ocjw1KhthjNdM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong,XM_B_SpammyWords autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.7 XMSubLong Long Subject
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Jens Axboe <axboe@kernel.dk>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 507 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (2.3%), b_tie_ro: 10 (2.0%), parse: 1.19
-        (0.2%), extract_message_metadata: 14 (2.7%), get_uri_detail_list: 2.8
-        (0.6%), tests_pri_-1000: 4.5 (0.9%), tests_pri_-950: 1.24 (0.2%),
-        tests_pri_-900: 0.99 (0.2%), tests_pri_-90: 154 (30.4%), check_bayes:
-        152 (30.1%), b_tokenize: 9 (1.7%), b_tok_get_all: 9 (1.7%),
-        b_comp_prob: 2.4 (0.5%), b_tok_touch_all: 130 (25.6%), b_finish: 0.90
-        (0.2%), tests_pri_0: 293 (57.8%), check_dkim_signature: 0.52 (0.1%),
-        check_dkim_adsp: 2.4 (0.5%), poll_dns_idle: 0.83 (0.2%), tests_pri_10:
-        3.0 (0.6%), tests_pri_500: 20 (3.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/7] io_uring: handle signals for IO threads like a normal thread
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <14c54ee47bf0e9aebfe71e97cefd11b2b8f0332f.1616784384.git.tom.saeger@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens Axboe <axboe@kernel.dk> writes:
+On 3/26/21 1:22 PM, Tom Saeger wrote:
+> @@ -1153,6 +1170,7 @@ quering||querying
+>  queus||queues
+>  randomally||randomly
+>  raoming||roaming
+> +readded||read
+>  reasearcher||researcher
+>  reasearchers||researchers
+>  reasearch||research
 
-> On 3/26/21 4:23 PM, Eric W. Biederman wrote:
->> Jens Axboe <axboe@kernel.dk> writes:
->> 
->>> On 3/26/21 2:29 PM, Eric W. Biederman wrote:
->>>> Jens Axboe <axboe@kernel.dk> writes:
->>>>
->>>>> We go through various hoops to disallow signals for the IO threads, but
->>>>> there's really no reason why we cannot just allow them. The IO threads
->>>>> never return to userspace like a normal thread, and hence don't go through
->>>>> normal signal processing. Instead, just check for a pending signal as part
->>>>> of the work loop, and call get_signal() to handle it for us if anything
->>>>> is pending.
->>>>>
->>>>> With that, we can support receiving signals, including special ones like
->>>>> SIGSTOP.
->>>>>
->>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>>> ---
->>>>>  fs/io-wq.c    | 24 +++++++++++++++++-------
->>>>>  fs/io_uring.c | 12 ++++++++----
->>>>>  2 files changed, 25 insertions(+), 11 deletions(-)
->>>>>
->>>>> diff --git a/fs/io-wq.c b/fs/io-wq.c
->>>>> index b7c1fa932cb3..3e2f059a1737 100644
->>>>> --- a/fs/io-wq.c
->>>>> +++ b/fs/io-wq.c
->>>>> @@ -16,7 +16,6 @@
->>>>>  #include <linux/rculist_nulls.h>
->>>>>  #include <linux/cpu.h>
->>>>>  #include <linux/tracehook.h>
->>>>> -#include <linux/freezer.h>
->>>>>  
->>>>>  #include "../kernel/sched/sched.h"
->>>>>  #include "io-wq.h"
->>>>> @@ -503,10 +502,16 @@ static int io_wqe_worker(void *data)
->>>>>  		if (io_flush_signals())
->>>>>  			continue;
->>>>>  		ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
->>>>> -		if (try_to_freeze() || ret)
->>>>> +		if (signal_pending(current)) {
->>>>> +			struct ksignal ksig;
->>>>> +
->>>>> +			if (fatal_signal_pending(current))
->>>>> +				break;
->>>>> +			if (get_signal(&ksig))
->>>>> +				continue;
->>>>                         ^^^^^^^^^^^^^^^^^^^^^^
->>>>
->>>> That is wrong.  You are promising to deliver a signal to signal
->>>> handler and them simply discarding it.  Perhaps:
->>>>
->>>> 			if (!get_signal(&ksig))
->>>>                         	continue;
->>>> 			WARN_ON(!sig_kernel_stop(ksig->sig));
->>>>                         break;
->>>
->>> Thanks, updated.
->> 
->> Gah.  Kill the WARN_ON.
->> 
->> I was thinking "WARN_ON(!sig_kernel_fatal(ksig->sig));"
->> The function sig_kernel_fatal does not exist.
->> 
->> Fatal is the state that is left when a signal is neither
->> ignored nor a stop signal, and does not have a handler.
->> 
->> The rest of the logic still works.
->
-> I've just come to the same conclusion myself after testing it.
-> Of the 3 cases, most of them can do the continue, but doesn't
-> really matter with the way the loop is structured. Anyway, looks
-> like this now:
+davej brought up a good point that this one was actually re-added, which
+does make sense. So don't think that one should be added to the list.
 
-This idiom in the code:
-> +		if (signal_pending(current)) {
-> +			struct ksignal ksig;
-> +
-> +			if (fatal_signal_pending(current))
-> +				break;
-> +			if (!get_signal(&ksig))
-> +				continue;
->  }
+-- 
+Jens Axboe
 
-Needs to be:
-> +		if (signal_pending(current)) {
-> +			struct ksignal ksig;
-> +
-> +			if (!get_signal(&ksig))
-> +				continue;
-> +			break;
->  }
-
-Because any signal returned from get_signal is fatal in this case.
-It might make sense to "WARN_ON(ksig->ka.sa.sa_handler != SIG_DFL)".
-As the io workers don't handle that case.
-
-It won't happen because you have everything blocked.
-
-The extra fatal_signal_pending(current) logic is just confusing in this
-case.
-
-Eric
