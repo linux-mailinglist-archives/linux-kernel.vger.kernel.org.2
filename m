@@ -2,256 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5C934B321
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:48:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CDC34B324
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhCZXsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhCZXrr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:47:47 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16C9C0613AA;
-        Fri, 26 Mar 2021 16:47:47 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id o66so7472143ybg.10;
-        Fri, 26 Mar 2021 16:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5iNzMacML/7mp5cjsJfGS0noN/XHdXxDCnUv2zByK9g=;
-        b=kp5A9HUfIWI3yvmUlpaMotw/ACcXQ/KJsJmNKKeFjzjUFlwh9sinu5CRjWD9e4Yo9g
-         PAYWdYlJX7WrUAzSfBIIiunroOpl8aqQ4mklfpLdPXNVUwDxMkz3a22ncT71s7uSgcXD
-         iURCHGiAnFaoqZ6790pYYD5h2wX3oeF5NI3MKII6z3XPtc9bNdw/e+BbRU58yPBxNhbT
-         dqzQpr77oeH997MWfv5uJCcra9KWoAsIGV86oqG2br+GlyBKOtNZnX4EodSWjnb13kAX
-         VYUhhYMghUVP9vzsdt6aJOO4cPaEXEsEKOQaqp/TNzizC7LRRmeT8Bw44GDJfimM+UGd
-         qKdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5iNzMacML/7mp5cjsJfGS0noN/XHdXxDCnUv2zByK9g=;
-        b=mEXpuc6pw9EbTiKhQV3B4cOSu0CW75MdLOtlQ0uB5DLU4R3KYyeTYfWslvH2l5pcCx
-         j79AMQZlVx/7yDPJ6jdnSasl+UsmsCQUW7OOFUGal846WRLs0rnIKr7nmQZZRyqpxOfv
-         BgKC139nRTCGvD+vkx8VeXm4pSnigHY0s1nqPZ7UGZW4sCbfK2lPAFweU59ijSNmwiqP
-         vuPsdUsNL2xMZlzVtw3sLFrSZWOg3FK2A8K/iHAODi8L45DGzwbP8hfBnpCvbjXWluQ6
-         +HuYYFowOhj0e4ygL12+1PxY1eb6hcvGtDlJTxYKVXKB+B2t+5gqTgRk7xi4GT8/3ni7
-         ZGkw==
-X-Gm-Message-State: AOAM533eccLLbSU1OnmL7uF5qhlpFG7h7mSwWAiLQi8YHMZ2GaB/vLY8
-        PBNet0tz0zA59jyEgwW+D/JZxh266ml4XshBXlA=
-X-Google-Smtp-Source: ABdhPJw0XA18SIlSYhK/6RXCP/rqME/PbAv7+DjAz5kdsQFSovvJ8uRL9mUiazdpCsepfjqRnmISe3IuHcFsUYMkSM0=
-X-Received: by 2002:a25:ef42:: with SMTP id w2mr22500231ybm.34.1616802466491;
- Fri, 26 Mar 2021 16:47:46 -0700 (PDT)
+        id S230523AbhCZXse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:48:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229969AbhCZXsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 19:48:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 468AD619E5;
+        Fri, 26 Mar 2021 23:48:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616802504;
+        bh=HL4n+BnM9gvNqp6e7ow2lvqRI0UoGPH0Nc8z3H9uRKc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=onFYtCyVx5sjJRmYNlhDjmuAWyrV+iGtpQi0yAkmlhfdFPSGH3gbHLp698ay2lRAx
+         UX0m3n5oyaKtQjLBZxC8S2Cp6y8AEKs57DuWkyiBCRLcfp+dZrwYMP4DdJU5Ur6ziK
+         JqAizNpNIAFhsogRH20cMDrKwziiL70TMc3x1mcgZ9txXIjQO6pQLq+mmdHvyhdynu
+         qsRH7a3uLanOAeVFHHc5HaWXcgkhUB/hMaQyzBj6tWmySJiwHKFxjx6z7m5kKNPo3B
+         dwEHRmd3MgwJ8W7L/azUXk6GEaFV4E4CeS/vuZDCYQ+bUUNQDJznwalzpVyWO8qnde
+         bN3+ueoqk1j8Q==
+Received: by mail-qv1-f46.google.com with SMTP id t16so3792183qvr.12;
+        Fri, 26 Mar 2021 16:48:24 -0700 (PDT)
+X-Gm-Message-State: AOAM532bipkb8sG2UhGzv2YGwjtOERqoRC2ieYY3LMGg7Cq/OE+9ILcd
+        Lh/gkwtH6a3WzcmeG5zLF3wR2GpDkDNj3yA4ZA==
+X-Google-Smtp-Source: ABdhPJwPA91Wgu9ZppNHRVxLIydVSrnnQLMemG+MYtkt3Dog7P3BRksjYKdC3c5anvIWgV+BUx0fhKZVzquKDg4BJXg=
+X-Received: by 2002:a0c:a5a5:: with SMTP id z34mr16052242qvz.4.1616802503249;
+ Fri, 26 Mar 2021 16:48:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210326191859.1542272-4-nickrterrell@gmail.com> <202103270534.OKizLwFF-lkp@intel.com>
-In-Reply-To: <202103270534.OKizLwFF-lkp@intel.com>
-From:   Nick Terrell <nickrterrell@gmail.com>
-Date:   Fri, 26 Mar 2021 16:47:35 -0700
-Message-ID: <CANr2DbfJ3Kfuz3XkqTMOO2f91=UnKe_BVqzkYsvY=ndR2Dw0ow@mail.gmail.com>
-Subject: Re: [PATCH v8 3/3] lib: zstd: Upgrade to latest upstream zstd version 1.4.10
-To:     kernel test robot <lkp@intel.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>, kbuild-all@lists.01.org,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Petr Malat <oss@malat.biz>
+References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+ <YFKQaXOmOwYyeqvM@google.com> <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
+ <YF3V8d4wB6i81fLN@orome.fritz.box> <CAF6AEGvS6Pnd-m-boqPEZdDY+VCkV5M8Ob9n6UiYWs_DxrPopQ@mail.gmail.com>
+ <CAF6AEGvPN90RGP8hYXtAksJpGc4Sf5tRpNwNnV6=sxKei0Ms6A@mail.gmail.com>
+ <CAL_JsqKk+c83GMRzpc11Naj7QDYSfHdrg-8ZnxRBBM4phemQxg@mail.gmail.com> <CAF6AEGt3MuQPROfOn6-M1ysD_QKwShb_t3mjUJ4QDBBT_3cwRg@mail.gmail.com>
+In-Reply-To: <CAF6AEGt3MuQPROfOn6-M1ysD_QKwShb_t3mjUJ4QDBBT_3cwRg@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 26 Mar 2021 17:48:11 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+0rDkzRjedKwgBg7W-gvC3s2eWZozrvtHkou-8+X=+fA@mail.gmail.com>
+Message-ID: <CAL_Jsq+0rDkzRjedKwgBg7W-gvC3s2eWZozrvtHkou-8+X=+fA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on sc7180-trogdor-pompom
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 3:02 PM kernel test robot <lkp@intel.com> wrote:
+On Fri, Mar 26, 2021 at 4:13 PM Rob Clark <robdclark@gmail.com> wrote:
 >
-> Hi Nick,
+> On Fri, Mar 26, 2021 at 12:48 PM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Fri, Mar 26, 2021 at 9:20 AM Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Fri, Mar 26, 2021 at 8:18 AM Rob Clark <robdclark@gmail.com> wrote:
+> > > >
+> > > > On Fri, Mar 26, 2021 at 5:38 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+> > > > >
+> > > > > On Wed, Mar 17, 2021 at 06:53:04PM -0700, Rob Clark wrote:
+> > > > > > On Wed, Mar 17, 2021 at 4:27 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+> > > > > > >
+> > > > > > > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
+> > > > > > > > The sc7180-trogdor-pompom board might be attached to any number of a
+> > > > > > > > pile of eDP panels. At the moment I'm told that the list might include:
+> > > > > > > > - KD KD116N21-30NV-A010
+> > > > > > > > - KD KD116N09-30NH-A016
+> > > > > > > > - Starry 2081116HHD028001-51D
+> > > > > > > > - Sharp LQ116M1JW10
+> > > > > > > >
+> > > > > > > > It should be noted that while the EDID programmed in the first 3
+> > > > > > > > panels indicates that they should run with exactly the same timing (to
+> > > > > > > > keep things simple), the 4th panel not only needs different timing but
+> > > > > > > > has a different resolution.
+> > > > > > > >
+> > > > > > > > As is true in general with eDP panels, we can figure out which panel
+> > > > > > > > we have and all the info needed to drive its pixel clock by reading
+> > > > > > > > the EDID. However, we can do this only after we've powered the panel
+> > > > > > > > on. Powering on the panels requires following the timing diagram in
+> > > > > > > > each panel's datasheet which specifies delays between certain
+> > > > > > > > actions. This means that, while we can be quite dynamic about handling
+> > > > > > > > things we can't just totally skip out on describing the panel like we
+> > > > > > > > could do if it was connected to an external-facing DP port.
+> > > > > > > >
+> > > > > > > > While the different panels have slightly different delays, it's
+> > > > > > > > possible to come up with a set of unified delays that will work on all
+> > > > > > > > the panels. From reading the datasheets:
+> > > > > > > > * KD KD116N21-30NV-A010 and KD KD116N09-30NH-A016
+> > > > > > > >   - HPD absent delay: 200 ms
+> > > > > > > >   - Unprepare delay: 150 ms (datasheet is confusing, might be 500 ms)
+> > > > > > > > * Starry 2081116HHD028001-51D
+> > > > > > > >   - HPD absent delay: 100 ms
+> > > > > > > >   - Enable delay: (link training done till enable BL): 200 ms
+> > > > > > > >   - Unprepare delay: 500 ms
+> > > > > > > > * Sharp LQ116M1JW10
+> > > > > > > >   - HPD absent delay: 200 ms
+> > > > > > > >   - Unprepare delay: 500 ms
+> > > > > > > >   - Prepare to enable delay (power on till backlight): 100 ms
+> > > > > > > >
+> > > > > > > > Unified:
+> > > > > > > > - HPD absent delay: 200 ms
+> > > > > > > > - Unprepare delay: 500 ms
+> > > > > > > > - Enable delay: 200 ms
+> > > > > > > >
+> > > > > > > > NOTE: in theory the only thing that we _really_ need unity on is the
+> > > > > > > > "HPD absent delay" since once the panel asserts HPD we can read the
+> > > > > > > > EDID and could make per-panel decisions if we wanted.
+> > > > > > > >
+> > > > > > > > Let's create a definition of "a panel that can be attached to pompom"
+> > > > > > > > as a panel that provides a valid EDID and can work with the standard
+> > > > > > > > pompom power sequencing. If more panels are later attached to pompom
+> > > > > > > > then it's fine as long as they work in a compatible way.
+> > > > > > > >
+> > > > > > > > One might ask why we can't just use a generic string here and provide
+> > > > > > > > the timings directly in the device tree file. As I understand it,
+> > > > > > > > trying to describe generic power sequencing in the device tree is
+> > > > > > > > frowned upon and the one instance (SD/MMC) is regarded as a mistake
+> > > > > > > > that shouldn't be repeated. Specifying a power sequence per board (or
+> > > > > > > > per board class) feels like a reasonable compromise. We're not trying
+> > > > > > > > to define fully generic power sequence bindings but we can also take
+> > > > > > > > advantage of the semi-probable properties of the attached device.
+> > > > > > > >
+> > > > > > > > NOTE: I believe that past instances of supporting this type of thing
+> > > > > > > > have used the "white lie" approach. One representative panel was
+> > > > > > > > listed in the device tree. The power sequencings of this
+> > > > > > > > representative panel were OK to use across all panels that might be
+> > > > > > > > attached and other differences were handled by EDID. This patch
+> > > > > > > > attempts to set a new precedent and avoid the need for the white lie.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > > > > > ---
+> > > > > > >
+> > > > > > > Sounds reasonable to me if DT maintainers can live with this abstract
+> > > > > > > hardware definition. It's clearer than the 'white lie' approach.
+> > > > > >
+> > > > > > Yeah, it is a weird grey area between "discoverable" and "not
+> > > > > > discoverable".. but I favor DT reflecting reality as much as
+> > > > > > possible/feasible, so I think this is definity cleaner than "white
+> > > > > > lies"
+> > > > >
+> > > > > This is practically no different than the "white lie". I suppose you
+> > > > > could perhaps call it "more honest", if you want.
+> > > > >
+> > > > > The point remains that unless we describe exactly which panel we're
+> > > > > dealing with, we ultimately have no way of properly quirking anything if
+> > > > > we ever have to. Also, once we allow this kind of wildcard we can
+> > > > > suddenly get into a situation where people might want to reuse this on
+> > > > > something that's not at all a google-pompom board because the same
+> > > > > particular power sequence happens to work on on some other board.
+> > > > >
+> > > > > Similarly I can imagine a situation where we could now have the same
+> > > > > panel supported by multiple different wildcard compatible strings. How
+> > > > > is that supposed to be any cleaner than what we have now?
+> > > > >
+> > > > > And I still keep wondering why bootloaders can't be taught about these
+> > > > > kinds of things. We have in the past discussed various solutions where
+> > > > > the bootloader could detect the type of panel connected and set the
+> > > > > proper compatible string.
+> > > >
+> > > > The bootloader cannot detect the panel without powering up the panel,
+> > > > which it normally does not do if you are not in dev-mode (it would add
+> > > > a significant amount of time to bootup, which is why we can't do this)
+> > >
+> > > what if we had a sort of multi-choice panel node:
+> > >
+> > >    panel: panel {
+> > >      compatible = "panel,one-of";
+> > >      compatible-one-of = "vendor1,panel-a", "vendor2,panel-b",
+> > > "vendor3,panel-c";
+> > >   };
+> > >
+> > > The kernel could construct power sequence timings that are the
+> > > superset of all the possible panels.  That seems about as explicit as
+> > > we could get in this sort of case.
+> >
+> > If we were to go this route, I'm inclined to say just shove all the
+> > possible panel compatibles into 'compatible'. That kind of breaks the
+> > notion of most specific to least specific. OTOH, it is saying the set
+> > of panels are somehow 'compatible' with each other.
+> >
+> > If there's not some level of compatibility between the panels, then
+> > it's still the bootloader's problem.
+> >
 >
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on cryptodev/master]
-> [also build test WARNING on kdave/for-next f2fs/dev-test linus/master v5.12-rc4 next-20210326]
-> [cannot apply to crypto/master kees/for-next/pstore squashfs/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Nick-Terrell/Update-to-zstd-1-4-10/20210327-031827
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git master
-> config: um-allmodconfig (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://github.com/0day-ci/linux/commit/ebbff13fa6a537fb8b3dc6b42c3093f9ce4358f8
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Nick-Terrell/Update-to-zstd-1-4-10/20210327-031827
->         git checkout ebbff13fa6a537fb8b3dc6b42c3093f9ce4358f8
->         # save the attached .config to linux build tree
->         make W=1 ARCH=um
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
->    lib/zstd/compress/zstd_compress_sequences.c:17: warning: Cannot understand  * -log2(x / 256) lookup table for x in [0, 256).
->     on line 17 - I thought it was a doc line
->    lib/zstd/compress/zstd_compress_sequences.c:58: warning: Function parameter or member 'nbSeq' not described in 'ZSTD_useLowProbCount'
-> >> lib/zstd/compress/zstd_compress_sequences.c:58: warning: expecting prototype for 1 else we should(). Prototype was for ZSTD_useLowProbCount() instead
-> >> lib/zstd/compress/zstd_compress_sequences.c:67: warning: wrong kernel-doc identifier on line:
->     * Returns the cost in bytes of encoding the normalized count header.
->    lib/zstd/compress/zstd_compress_sequences.c:85: warning: Function parameter or member 'count' not described in 'ZSTD_entropyCost'
->    lib/zstd/compress/zstd_compress_sequences.c:85: warning: Function parameter or member 'max' not described in 'ZSTD_entropyCost'
->    lib/zstd/compress/zstd_compress_sequences.c:85: warning: Function parameter or member 'total' not described in 'ZSTD_entropyCost'
-> >> lib/zstd/compress/zstd_compress_sequences.c:85: warning: expecting prototype for Returns the cost in bits of encoding the distribution described by count(). Prototype was for ZSTD_entropyCost() instead
->    lib/zstd/compress/zstd_compress_sequences.c:99: warning: wrong kernel-doc identifier on line:
->     * Returns the cost in bits of encoding the distribution in count using ctable.
->    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'norm' not described in 'ZSTD_crossEntropyCost'
->    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'accuracyLog' not described in 'ZSTD_crossEntropyCost'
->    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'count' not described in 'ZSTD_crossEntropyCost'
->    lib/zstd/compress/zstd_compress_sequences.c:139: warning: Function parameter or member 'max' not described in 'ZSTD_crossEntropyCost'
-> >> lib/zstd/compress/zstd_compress_sequences.c:139: warning: expecting prototype for Returns the cost in bits of encoding the distribution in count using the(). Prototype was for ZSTD_crossEntropyCost() instead
-> --
->    lib/zstd/compress/zstd_ldm.c:584: warning: Function parameter or member 'rawSeqStore' not described in 'maybeSplitSequence'
->    lib/zstd/compress/zstd_ldm.c:584: warning: Function parameter or member 'remaining' not described in 'maybeSplitSequence'
->    lib/zstd/compress/zstd_ldm.c:584: warning: Function parameter or member 'minMatch' not described in 'maybeSplitSequence'
-> >> lib/zstd/compress/zstd_ldm.c:584: warning: expecting prototype for If the sequence length is longer than remaining then the sequence is split(). Prototype was for maybeSplitSequence() instead
-> --
-> >> lib/zstd/decompress/zstd_decompress.c:992: warning: wrong kernel-doc identifier on line:
->     * Similar to ZSTD_nextSrcSizeToDecompress(), but when when a block input can be streamed,
-> --
->    lib/zstd/decompress/huf_decompress.c:122: warning: Function parameter or member 'symbol' not described in 'HUF_DEltX1_set4'
->    lib/zstd/decompress/huf_decompress.c:122: warning: Function parameter or member 'nbBits' not described in 'HUF_DEltX1_set4'
-> >> lib/zstd/decompress/huf_decompress.c:122: warning: expecting prototype for This is used to lay down 4 entries at(). Prototype was for HUF_DEltX1_set4() instead
-> --
-> >> lib/zstd/compress/zstd_compress.c:128: warning: wrong kernel-doc identifier on line:
->     * Clears and frees all of the dictionaries in the CCtx.
->    lib/zstd/compress/zstd_compress.c:265: warning: wrong kernel-doc identifier on line:
->     * Initializes the cctxParams from params and compressionLevel.
->    lib/zstd/compress/zstd_compress.c:289: warning: wrong kernel-doc identifier on line:
->     * Sets cctxParams' cParams and fParams from params, but otherwise leaves them alone.
->    lib/zstd/compress/zstd_compress.c:910: warning: wrong kernel-doc identifier on line:
->     * Initializes the local dict using the requested parameters.
->    lib/zstd/compress/zstd_compress.c:1457: warning: wrong kernel-doc identifier on line:
->     * Controls, for this matchState reset, whether the tables need to be cleared /
->    lib/zstd/compress/zstd_compress.c:1473: warning: cannot understand function prototype: 'typedef enum '
->    lib/zstd/compress/zstd_compress.c:5008: warning: Function parameter or member 'cParams' not described in 'ZSTD_dedicatedDictSearch_revertCParams'
-> >> lib/zstd/compress/zstd_compress.c:5008: warning: expecting prototype for Reverses the adjustment applied to cparams when enabling dedicated dict(). Prototype was for ZSTD_dedicatedDictSearch_revertCParams() instead
->
->
-> vim +58 lib/zstd/compress/zstd_compress_sequences.c
->
->     52
->     53  /**
->     54   * Returns true if we should use ncount=-1 else we should
->     55   * use ncount=1 for low probability symbols instead.
->     56   */
->     57  static unsigned ZSTD_useLowProbCount(size_t const nbSeq)
->   > 58  {
->     59      /* Heuristic: This should cover most blocks <= 16K and
->     60       * start to fade out after 16K to about 32K depending on
->     61       * comprssibility.
->     62       */
->     63      return nbSeq >= 2048;
->     64  }
->     65
->     66  /**
->   > 67   * Returns the cost in bytes of encoding the normalized count header.
->     68   * Returns an error if any of the helper functions return an error.
->     69   */
->     70  static size_t ZSTD_NCountCost(unsigned const* count, unsigned const max,
->     71                                size_t const nbSeq, unsigned const FSELog)
->     72  {
->     73      BYTE wksp[FSE_NCOUNTBOUND];
->     74      S16 norm[MaxSeq + 1];
->     75      const U32 tableLog = FSE_optimalTableLog(FSELog, nbSeq, max);
->     76      FORWARD_IF_ERROR(FSE_normalizeCount(norm, tableLog, count, nbSeq, max, ZSTD_useLowProbCount(nbSeq)), "");
->     77      return FSE_writeNCount(wksp, sizeof(wksp), norm, max, tableLog);
->     78  }
->     79
->     80  /**
->     81   * Returns the cost in bits of encoding the distribution described by count
->     82   * using the entropy bound.
->     83   */
->     84  static size_t ZSTD_entropyCost(unsigned const* count, unsigned const max, size_t const total)
->   > 85  {
->     86      unsigned cost = 0;
->     87      unsigned s;
->     88      for (s = 0; s <= max; ++s) {
->     89          unsigned norm = (unsigned)((256 * count[s]) / total);
->     90          if (count[s] != 0 && norm == 0)
->     91              norm = 1;
->     92          assert(count[s] < total);
->     93          cost += count[s] * kInverseProbabilityLog256[norm];
->     94      }
->     95      return cost >> 8;
->     96  }
->     97
->     98  /**
->     99   * Returns the cost in bits of encoding the distribution in count using ctable.
->    100   * Returns an error if ctable cannot represent all the symbols in count.
->    101   */
->    102  size_t ZSTD_fseBitCost(
->    103      FSE_CTable const* ctable,
->    104      unsigned const* count,
->    105      unsigned const max)
->    106  {
->    107      unsigned const kAccuracyLog = 8;
->    108      size_t cost = 0;
->    109      unsigned s;
->    110      FSE_CState_t cstate;
->    111      FSE_initCState(&cstate, ctable);
->    112      if (ZSTD_getFSEMaxSymbolValue(ctable) < max) {
->    113          DEBUGLOG(5, "Repeat FSE_CTable has maxSymbolValue %u < %u",
->    114                      ZSTD_getFSEMaxSymbolValue(ctable), max);
->    115          return ERROR(GENERIC);
->    116      }
->    117      for (s = 0; s <= max; ++s) {
->    118          unsigned const tableLog = cstate.stateLog;
->    119          unsigned const badCost = (tableLog + 1) << kAccuracyLog;
->    120          unsigned const bitCost = FSE_bitCost(cstate.symbolTT, tableLog, s, kAccuracyLog);
->    121          if (count[s] == 0)
->    122              continue;
->    123          if (bitCost >= badCost) {
->    124              DEBUGLOG(5, "Repeat FSE_CTable has Prob[%u] == 0", s);
->    125              return ERROR(GENERIC);
->    126          }
->    127          cost += (size_t)count[s] * bitCost;
->    128      }
->    129      return cost >> kAccuracyLog;
->    130  }
->    131
->    132  /**
->    133   * Returns the cost in bits of encoding the distribution in count using the
->    134   * table described by norm. The max symbol support by norm is assumed >= max.
->    135   * norm must be valid for every symbol with non-zero probability in count.
->    136   */
->    137  size_t ZSTD_crossEntropyCost(short const* norm, unsigned accuracyLog,
->    138                               unsigned const* count, unsigned const max)
->  > 139  {
->    140      unsigned const shift = 8 - accuracyLog;
->    141      size_t cost = 0;
->    142      unsigned s;
->    143      assert(accuracyLog <= 8);
->    144      for (s = 0; s <= max; ++s) {
->    145          unsigned const normAcc = (norm[s] != -1) ? (unsigned)norm[s] : 1;
->    146          unsigned const norm256 = normAcc << shift;
->    147          assert(norm256 > 0);
->    148          assert(norm256 < 256);
->    149          cost += count[s] * kInverseProbabilityLog256[norm256];
->    150      }
->    151      return cost >> 8;
->    152  }
->    153
->
+> I'm not sure about this.. since there could be slight differences in
+> various delay params between the possible panels.  I'd prefer that in
+> panel-simple.c, we listed exact delay params "vendorFoo,panelBar", but
+> it could mean that for a device that had three possible panels the
+> worst case (max of all possible delays) could be higher than any
+> individual choice.. and I don't think we should encourage the "white
+> lie" approach (which will be the obvious outcome of not handling this
+> directly in dt IME, based on prior art).  OTOH pushing it to the
+> bootloader, when the bootloader actually has to power up the panel
+> (and abide by the necessary delays) to figure out what choice we have
+> isn't a viable option either.
 
-These all seem to be comment style warnings. Since this is code
-imported from an upstream project, it doesn't make sense to adhere to
-the kernel comment style. The public header `include/linux/zstd.h`
-should adhere to the kernel style guide, but not `lib/zstd`.
+I was only saying if the panels are different enough and there's not a
+worse case setting, then it's back to a bootloader problem. If we have
+multiple distinct compatibles, then it means the kernel should be able
+to figure out settings that work on all the possible panels listed.
 
--Nick
+> It is better to be explicit about what we know and at the same time
+> about what we don't know.
 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Can you be explicit about what we know and don't know here? With what
+you proposed and my alternative, at the end of the day we just have a
+list of compatibles. The only implicit part is the expectation that
+the set is somehow compatible with each other.
+
+Rob
