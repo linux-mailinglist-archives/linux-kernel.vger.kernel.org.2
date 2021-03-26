@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EF034AF8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A4D34AF95
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhCZTtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbhCZTs6 (ORCPT
+        id S230289AbhCZTuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:50:39 -0400
+Received: from mail-io1-f51.google.com ([209.85.166.51]:33317 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230106AbhCZTuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:48:58 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB3BC0613AA;
-        Fri, 26 Mar 2021 12:48:57 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id g15so6448410qkl.4;
-        Fri, 26 Mar 2021 12:48:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NCmMhjaLh59mi9V5qdM1QgyKr6eET2x+9GpY7eBdWq4=;
-        b=YE04xwQMn4fijA+he7HK05MhLDIvf7no7jRjVoe+5qyt/98MFhGbeFyaR26SHfD9y6
-         tu5dktDguJM6mCAy1shkPSj0XXWkAx5+e/MtXsiNWdFYI3icgWtByO+npeKYLDYzHw0b
-         0LyxVQpsakoGrz+bKJDkNpsMmIhbanAx4Hv/WW4O7j15wwfHauVzha5F7TgJeeFRNBLV
-         uStkX625QkiiWuVdZavIsTzkUHra470bihn4ZSjctMqX/llN73xHQ9xeQQnlkDfUdNrQ
-         unonxSb36X73kMeor/Flgzvawl/Rfyms1BGIIapXTv7ot1jFffL4QhdsHUK6qbPDPCsH
-         PLaA==
+        Fri, 26 Mar 2021 15:50:06 -0400
+Received: by mail-io1-f51.google.com with SMTP id n198so6635965iod.0;
+        Fri, 26 Mar 2021 12:50:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=NCmMhjaLh59mi9V5qdM1QgyKr6eET2x+9GpY7eBdWq4=;
-        b=AgooAPsG2xjR0bBlUQWufUAgq6Q7jhWKVJ9BdqlWpsQ6yNgAgh9aR74S5YUeD/Tg77
-         LxuGlI2xzPTxCcF/VcABgXJDtDnTLN/wujeLlmLw/MPKBolUd/tGEzpjWjLeCJwfvi+r
-         2Oq7Z4Bd110086HO24W9Lrp824pKk7sEchBtvU2jPYtyf628qbbGKWn2NnZ2HoLOQvJY
-         QclOetG2jYldYsjIurb/ELAn3Tt/dGFJcuai8IDG0IuoBkQG50H3cgfbMhX1v/7kGQ/9
-         Xxi+hvbjSMexhy2DbxoVbKIPa+Gh5sTuHTKnbT4diZ3jBEGdweyqv9KTkKp+4l1JCnaA
-         rc7w==
-X-Gm-Message-State: AOAM531f3g8wcqAMUx1JmP7nmDTkgdNmAwJMX9AYbQB2SlQ1DDLoSU7M
-        KruUqCdigj369ATALg3C9Kk=
-X-Google-Smtp-Source: ABdhPJyndUebQ8+zESMN+cDg6ihAJCmKC5eXdnFBVeoWoNy/jZfGHIgIMrInKdn9r5m1XEnfaXHs6Q==
-X-Received: by 2002:ae9:f444:: with SMTP id z4mr14850230qkl.226.1616788137009;
-        Fri, 26 Mar 2021 12:48:57 -0700 (PDT)
-Received: from Gentoo ([156.146.58.30])
-        by smtp.gmail.com with ESMTPSA id h13sm6314999qtn.26.2021.03.26.12.48.52
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QMADa3hLSWQ6fsdPZyxglXagkduiht0CfsajenFjEE8=;
+        b=IhQY693YZqnTE1PDJBeskfLwXVvZVmAsx9jZmKO0NYZoWlsEbDsdfxIdpAK7Oq5MmW
+         8fWy/7y9sJEzndMauJwNRWMUFOlKNWj0wz4GsThq/vckNqbo6cPdVPLsURrrVXJ7BhbM
+         RZCQJoU+7uell97DqummmXz/GRXzz3fMVzkIP6/wO0OnGyD5yQfYbhqV1noCAieIR7yE
+         fTrHA6lHbO6ugFMTdzet62EBp35I5nPCt7T3grCspggR40Bq5aSTvdhZw8los0thptiY
+         Cht/Z0YcKQav9V2Lb63MNInDgbawrM+ELT75sSq1TNMxP75CJtzQCkmm10c3N4A5DjTR
+         sNRg==
+X-Gm-Message-State: AOAM533loejv2Oj9QrGaeoZbpFnJ9oKmGz2qj6xO/AMsm5ZSq7OWuCfd
+        GVzR7Rk/yUxop4YYji5Row==
+X-Google-Smtp-Source: ABdhPJx+B5BxlFABLodj85dQF/ZfrrYTvXbR1H6ArMkSNfY0AO+aQiPUFwiyecNqyYOc/2oHUxRoVw==
+X-Received: by 2002:a05:6638:2603:: with SMTP id m3mr13456452jat.64.1616788205884;
+        Fri, 26 Mar 2021 12:50:05 -0700 (PDT)
+Received: from xps15.herring.priv ([64.188.179.253])
+        by smtp.googlemail.com with ESMTPSA id h2sm4645441ioj.30.2021.03.26.12.50.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 12:48:56 -0700 (PDT)
-Date:   Sat, 27 Mar 2021 01:18:46 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     "Moore, Robert" <robert.moore@intel.com>
-Cc:     "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>
-Subject: Re: [PATCH] ACPICA: Fix a typo
-Message-ID: <YF46nvV3yhZ/D1M6@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        "Moore, Robert" <robert.moore@intel.com>,
-        "Kaneda, Erik" <erik.kaneda@intel.com>,
-        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>
-References: <20210326001922.4767-1-unixbhaskar@gmail.com>
- <BYAPR11MB325648858A1C06D2E80DF7AE87619@BYAPR11MB3256.namprd11.prod.outlook.com>
+        Fri, 26 Mar 2021 12:50:05 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v2] ASoC: dt-bindings: nvidia,tegra210-ahub: Add missing child nodes
+Date:   Fri, 26 Mar 2021 13:50:03 -0600
+Message-Id: <20210326195003.3756394-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="AiiDn/YTYdXoeQja"
-Content-Disposition: inline
-In-Reply-To: <BYAPR11MB325648858A1C06D2E80DF7AE87619@BYAPR11MB3256.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The nvidia,tegra210-ahub binding is missing schema for child nodes. This
+results in warnings if 'additionalProperties: false' is set (or when the
+tools implement 'unevaluatedProperties' support). Add the child nodes
+and reference their schema if one exists.
 
---AiiDn/YTYdXoeQja
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Sameer Pujar <spujar@nvidia.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-tegra@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+ - Also add 'dspk' child node
 
-On 14:56 Fri 26 Mar 2021, Moore, Robert wrote:
->Please make a pull request for this on our github.
->Thanks,
->Bob
->
+This patch ideally should be applied before this series[1].
 
-A pull request for this trivial spelling fix? Kindly be reasonable , it is
-just a single spelling fix, had it been many ,the suggestion could stand.
+[1] https://lore.kernel.org/r/20210323163634.877511-1-robh@kernel.org/
+---
+ .../bindings/sound/nvidia,tegra210-ahub.yaml     | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-Kindly, also , let me know aren't we  applying patches from the ML , or is
-there some specific rule for this project. I might be missing the basic stuff.
+diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+index e568d6c7dddd..1118a9488345 100644
+--- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
++++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
+@@ -69,6 +69,22 @@ properties:
+         $ref: audio-graph-port.yaml#
+         unevaluatedProperties: false
+ 
++patternProperties:
++  '^i2s@[0-9a-f]+$':
++    type: object
++
++  '^dmic@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra210-dmic.yaml#
++
++  '^admaif@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra210-admaif.yaml#
++
++  '^dspk@[0-9a-f]+$':
++    type: object
++    $ref: nvidia,tegra186-dspk.yaml#
++
+ required:
+   - compatible
+   - reg
+-- 
+2.27.0
 
-Thanks,
-Bhaskar
->
->-----Original Message-----
->From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->Sent: Thursday, March 25, 2021 5:19 PM
->To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik <erik.kaneda@intel.com>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>; lenb@kernel.org; linux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org
->Cc: rdunlap@infradead.org; Bhaskar Chowdhury <unixbhaskar@gmail.com>
->Subject: [PATCH] ACPICA: Fix a typo
->
->
->s/optimzation/optimization/
->
->Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->---
-> include/acpi/acoutput.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h index 1538a6853822..1b4c45815695 100644
->--- a/include/acpi/acoutput.h
->+++ b/include/acpi/acoutput.h
->@@ -362,7 +362,7 @@
->  *
->  * A less-safe version of the macros is provided for optional use if the
->  * compiler uses excessive CPU stack (for example, this may happen in the
->- * debug case if code optimzation is disabled.)
->+ * debug case if code optimization is disabled.)
->  */
->
-> /* Exit trace helper macro */
->--
->2.26.2
->
-
---AiiDn/YTYdXoeQja
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmBeOpoACgkQsjqdtxFL
-KRXL7gf+MfqbOjPijQzMXYkFlkKCk/tShTeR3XG1JkAdeHac9T+dw+5jfkrpiihj
-AqyO2JV++rtfcA3/fdltt5uqd3QX3wmk03Cvi5UajzBIRb4XYLUb6e6U9/mFXzU2
-bWbczuVyzZlxyz6SaAaZFXTeAIIjIe+J+EfzQqgjdacc7tAhZ0yIOnZcf2uiuLh0
-22lsfF6/Np9SAcDKIqzrwhBRwu+7i4MdsPLxrRGMzNO8IIdkpTdpM31lUJWjg25B
-mdOoK9cQz6LA8sNxT7A7zRjY9fFxzo/s5a4NU1cnsq76xsMWNscmrykACaqXdeer
-0OlB4i+ajSDg/ZmWeXgb4dGDLbypNg==
-=gZPH
------END PGP SIGNATURE-----
-
---AiiDn/YTYdXoeQja--
