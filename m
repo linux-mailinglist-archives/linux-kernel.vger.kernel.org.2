@@ -2,98 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E33334AFB7
+	by mail.lfdr.de (Postfix) with ESMTP id AF18534AFB8
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhCZUAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 16:00:23 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20868 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230152AbhCZUAG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:00:06 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12QJXtKw149893;
-        Fri, 26 Mar 2021 16:00:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=MuCNBq+R4/NJunBn3EoE0FszXlecnAyueAsRVmou+yc=;
- b=MylWEIe1V8CiioiMhqovwYB0LXrBMInhbS/+2+lqifNTMbyUFFspi9aA4Lo1QK7ccoQw
- zasCv7dGwf0GQcT4Ph4hF1BxRT11cke4DNIUlUeZuli5dK2rBgtsVw3WGHe9FFQ/vtyM
- hFrA15cbHOgZPipi1vggh0DeWy+ZIfxzpbhIAQRQWOn2u3AGH6PFcgzqXmo5eLRG65Gn
- d7Av385nHj0TRa31WNQyngwjYbhhFHqAy9l23MC8SnOYKeB/Wv5HX5yjw8UCya6QY/7C
- zxDQLVJ9u0L0+ZD3NdNDUDYsmmvLF1HcrWFUqfIvPdQzux2qcJhTaARB8tt4KfhPKqMA +w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37hhrn7vu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Mar 2021 15:59:59 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12QJY8Fs150975;
-        Fri, 26 Mar 2021 15:59:59 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37hhrn7vtt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Mar 2021 15:59:59 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12QJwDIi018975;
-        Fri, 26 Mar 2021 19:59:57 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 37h14tggg3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 26 Mar 2021 19:59:56 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12QJxsWh28508472
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 19:59:54 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0ABB34C044;
-        Fri, 26 Mar 2021 19:59:54 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A243E4C050;
-        Fri, 26 Mar 2021 19:59:53 +0000 (GMT)
-Received: from linux-2.fritz.box (unknown [9.145.50.237])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 26 Mar 2021 19:59:53 +0000 (GMT)
-Subject: Re: [PATCH] s390: dasd: Mundane spelling fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, hoeppner@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org
-References: <20210322023930.376358-1-unixbhaskar@gmail.com>
-From:   Stefan Haberland <sth@linux.ibm.com>
-Message-ID: <7b18bc98-d177-78d3-ca6e-2e77f352a9ee@linux.ibm.com>
-Date:   Fri, 26 Mar 2021 20:59:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S230292AbhCZUAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 16:00:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230236AbhCZUAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 16:00:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36426619C7;
+        Fri, 26 Mar 2021 20:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616788815;
+        bh=CP+yMWcELcV+SXQBy4H5t4xbunPhafsH9XMSu0Zo7Vw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JHKnA+SlRnJ15rfHbUhsZmhvjZc6yPFkrSutdal+PjP8fMhmZnYJ4C89Ti1fEE0Fm
+         b2IfU3ehqnI6ds9I1h/sAQZUkJntRDSLjZY8D1pMQ/VjERbfPbMjkjONKa5Ol8rt2E
+         Kyz43649mZ+1pi2k9P6gPA1Su0H8Ee3tWExOTGAs2f4QnCnXxwrpbzfSSIb4ExGd6U
+         LAIxSkmmibn2hdpyC8kzeIChNTW3Vz1AvZYLYeZt8/1NqnkWMgRHs15QDXqxtOuAJU
+         LSNIbV4Im/bwpCM+cqxyIdragOqedEFeE3sZ/jAzUODdsvZ8FQBXYmAFTx+oJyo8Hb
+         8sbENjkKyxzcA==
+Received: by mail-ot1-f47.google.com with SMTP id 31-20020a9d00220000b02901b64b9b50b1so6306613ota.9;
+        Fri, 26 Mar 2021 13:00:15 -0700 (PDT)
+X-Gm-Message-State: AOAM533v8LtHR/6H6LBln+vHu5gd/b4V4kWfF9qqK5dtbNzCEzmgOMYp
+        vv+Q+8UqOkwVr5NcLTW6bft4NF7VpGwlVWAT/Fc=
+X-Google-Smtp-Source: ABdhPJyGIunRwuUh73+7gPt9LaZIVRJx1BLFCrKVQYBhGgW7xQM0rNvtR42DW78q1NJrXlmTHiNOoFeFDagAQoJu6tE=
+X-Received: by 2002:a9d:316:: with SMTP id 22mr13066299otv.210.1616788814290;
+ Fri, 26 Mar 2021 13:00:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210322023930.376358-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: F8_LzFS4QpwK4MYs565K83rFLaSRcWco
-X-Proofpoint-GUID: Q7LMqPMdXHq4nI3cTDsBxj0phZwgLphJ
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-26_11:2021-03-26,2021-03-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- mlxlogscore=999 lowpriorityscore=0 priorityscore=1501 clxscore=1011
- malwarescore=0 suspectscore=0 mlxscore=0 impostorscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103260145
+References: <20210320151903.60759-1-sven@svenpeter.dev> <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
+ <20210323205346.GA1283560@robh.at.kernel.org> <43685c67-6d9c-4e72-b320-0462c2273bf0@www.fastmail.com>
+ <CAK8P3a0fvnYLrG=cGiOQ6u8aZnriTeM0R=MW7FX=94mO13Rq0w@mail.gmail.com>
+ <c1bcd90d344c2b68@bloch.sibelius.xs4all.nl> <9f06872d-f0ec-43c3-9b53-d144337100b3@www.fastmail.com>
+ <CAK8P3a2b7k6JkxecW=yu-NF+fkNCxJ3Ja36nQ7LK8hsuO=4=sw@mail.gmail.com>
+ <c1bcd9821a8f8c05@bloch.sibelius.xs4all.nl> <e03833b1-1368-c5c3-424b-59e34bef19f3@arm.com>
+ <45faaadd-eda7-464f-96ff-7324f566669e@www.fastmail.com>
+In-Reply-To: <45faaadd-eda7-464f-96ff-7324f566669e@www.fastmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 26 Mar 2021 20:59:58 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1+BOmT39k=OqFU+LtgfW=SDCp5W69YW58sVGf66mSppw@mail.gmail.com>
+Message-ID: <CAK8P3a1+BOmT39k=OqFU+LtgfW=SDCp5W69YW58sVGf66mSppw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Rob Herring <robh@kernel.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 22.03.21 um 03:39 schrieb Bhaskar Chowdhury:
-> s/Subssystem/Subsystem/ ......two different places
-> s/reportet/reported/
-> s/managemnet/management/
+On Fri, Mar 26, 2021 at 6:51 PM Sven Peter <sven@svenpeter.dev> wrote:
+> On Fri, Mar 26, 2021, at 18:34, Robin Murphy wrote:
+> > On 2021-03-26 17:26, Mark Kettenis wrote:
+> > >
+> > > Anyway, from my viewpoint having the information about the IOVA
+> > > address space sit on the devices makes little sense.  This information
+> > > is needed by the DART driver, and there is no direct cnnection from
+> > > the DART to the individual devices in the devicetree.  The "iommus"
+> > > property makes a connection in the opposite direction.
+> >
+> > What still seems unclear is whether these addressing limitations are a
+> > property of the DART input interface, the device output interface, or
+> > the interconnect between them. Although the observable end result
+> > appears more or less the same either way, they are conceptually
+> > different things which we have different abstractions to deal with.
 >
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  drivers/s390/block/dasd_eckd.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> I'm not really sure if there is any way for us to figure out where these
+> limitation comes from though.
 
-applied, thanks
+My first guess was that this is done to partition the available address
+address space in a way that allows one physical IOTLB to handle
+multiple devices that each have their own page table for a subset
+of the address space, as was done on old PowerPC IOMMUs.
+However, the ranges you list don't really support that model.
 
+> I've done some more experiments and looked at all DART nodes in Apple's Device
+> Tree though. It seems that most (if not all) masters only connect 32 address
+> lines even though the iommu can handle a much larger address space. I'll therefore
+> remove the code to handle the full space for v2 since it's essentially dead
+> code that can't be tested anyway.
+>
+>
+> There are some exceptions though:
+>
+> There are the PCIe DARTs which have a different limitation which could be
+> encoded as 'dma-ranges' in the pci bus node:
+>
+>            name         base      size
+>          dart-apcie1: 00100000  3fe00000
+>          dart-apcie2: 00100000  3fe00000
+>          dart-apcie0: 00100000  3fe00000
+>         dart-apciec0: 00004000  7fffc000
+>         dart-apciec1: 80000000  7fffc000
+
+This looks like they are reserving some address space in the beginning
+and/or the end, and for apciec0, the address space is partitioned into
+two equal-sized regions.
+
+> Then there are also these display controller DARTs. If we wanted to use dma-ranges
+> we could just put them in a single sub bus:
+>
+>               name     base      size
+>           dart-disp0: 00000000 fc000000
+>             dart-dcp: 00000000 fc000000
+>        dart-dispext0: 00000000 fc000000
+>          dart-dcpext: 00000000 fc000000
+>
+>
+> And finally we have these strange ones which might eventually each require
+> another awkward sub-bus if we want to stick to the dma-ranges property.
+>
+>     name     base      size
+>   dart-aop: 00030000 ffffffff ("always-on processor")
+>   dart-pmp: 00000000 bff00000 (no idea yet)
+
+Here I also see a "pio-vm-size" property:
+
+    dart-pmp {
+      pio-vm-base = <0xc0000000>;
+      pio-vm-size = <0x40000000>;
+      vm-size = <0xbff00000>;
+      ...
+   };
+
+Which seems to give 3GB of address space to the normal iotlb,
+plus the last 1GB to something else. The vm-base property is also
+missing rather than zero, but that could just be part of their syntax
+instead of a real difference.
+
+Could it be that there are
+
+>   dart-sio: 0021c000 fbde4000 (at least their Secure Enclave/TPM co-processor)
+
+Same here:
+    dart-sio {
+       vm-base = <0x0>;
+       vm-size = <0xfc000000>;
+       pio-vm-base = <0xfd000000>;
+      pio-vm-size = <0x2000000>;
+      pio-granularity = <0x1000000>;
+   }
+
+There are clearly two distinct ranges that split up the 4GB space again,
+with a small hole of 16MB (==pio-granularity) at the end of each range.
+
+The "pio" name might indicate that this is a range of addresses that
+can be programmed to point at I/O registers in another device, rather
+than pointing to RAM.
+
+           Arnd
