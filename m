@@ -2,276 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50C34A5F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D4034A60D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhCZK5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:57:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31830 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230023AbhCZK5G (ORCPT
+        id S229848AbhCZLAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:00:33 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2743 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhCZLAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:57:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616756225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ybgJAU+E9X4MewO2iZMuUGolW/fCwKow8qeXjGXj+WQ=;
-        b=Ai3rLUe3VgFrpFZgsKWZpibF7B/Uw6cbjJJdMOKCTxr80Z/t/tFTqee8OeZAiHWKAW/DTm
-        Rs2Ya6AXEjW1pYXd6q8R1Q76de0RRkjuU3xcZ8BfT4i4Mcr45lkhaCewphnjWeSeahG1kg
-        KhrStz/s5RqJ+P3h4rABLmv47EZwIag=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-fbC_rmQwNlWq88maydaCcA-1; Fri, 26 Mar 2021 06:57:04 -0400
-X-MC-Unique: fbC_rmQwNlWq88maydaCcA-1
-Received: by mail-ed1-f71.google.com with SMTP id bi17so4192488edb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 03:57:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ybgJAU+E9X4MewO2iZMuUGolW/fCwKow8qeXjGXj+WQ=;
-        b=e884BAqzVSb/c90lX2MupouQ3XmBpKmeD9v6TxB5J2gQzk420iHtcEVoMwcbVnbpoG
-         8opa8ZBHG3EPGrD2Ea7Jd7AeKQXW1gMtHCXDs6frmwh+ctPE87AuSobSDc07Hg4ctrjC
-         yswASna9y9U8GO1heRgWp7soZBl8UR/4DvPcgUQagR1SvdS9hx1kbRnuup9Rw9JoTKiC
-         B6y1ST3yAIHd/n67Dv4x/pitMPAjFjXpJwkViuSlHGbSm7Mz2SWABXWgjjlDLhFeXmoh
-         v/qK0A4lk2g8y5E6ib5pbKWB9TtbkYpB0GkAwZirfjRSJpN7vDH5YMGqVR7VpEJjVIEJ
-         bLxQ==
-X-Gm-Message-State: AOAM530bNHgdXAlk103ZC4Gu+yMUOq/8IenL30Aoav3RAICQP46iMyQN
-        oSM4A5pDuOa2rRBcIM3ukS6PdlQ7Sshr90hJzkH7lGTs78wzYVpN8yYcSZUU2fRynF7tLnkkDy1
-        OS85qETv7pEtqwIb1hMRoFJGUFudMAgQY5eqVVKrRxhIiPgKz1YFZKKZUXFgN9EudgQHP7FuHGF
-        wd
-X-Received: by 2002:a17:906:2314:: with SMTP id l20mr14775320eja.178.1616756222863;
-        Fri, 26 Mar 2021 03:57:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCY/ftGgArG8rMqGeFgWHC7rzPfRxqnn1LJxvMr65neZ1dzHdTRf0m0kz4VcZoFCZlIWcKdQ==
-X-Received: by 2002:a17:906:2314:: with SMTP id l20mr14775291eja.178.1616756222518;
-        Fri, 26 Mar 2021 03:57:02 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id q26sm3699419eja.45.2021.03.26.03.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 03:57:02 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Lenny Szubowicz <lszubowi@redhat.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
-In-Reply-To: <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
-References: <20210311132847.224406-1-lszubowi@redhat.com>
- <87sg4t7vqy.fsf@vitty.brq.redhat.com>
- <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
-Date:   Fri, 26 Mar 2021 11:57:01 +0100
-Message-ID: <87mtuqchdu.fsf@vitty.brq.redhat.com>
+        Fri, 26 Mar 2021 07:00:00 -0400
+Received: from fraeml743-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4F6Jfy0T8rz680jb;
+        Fri, 26 Mar 2021 18:51:06 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml743-chm.china.huawei.com (10.206.15.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 26 Mar 2021 11:59:58 +0100
+Received: from [10.210.170.125] (10.210.170.125) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 26 Mar 2021 10:59:57 +0000
+Subject: Re: [PATCH v2 0/6] perf arm64 metricgroup support
+To:     "Paul A. Clarke" <pc@us.ibm.com>
+CC:     <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <irogers@google.com>, <linuxarm@huawei.com>,
+        <kjain@linux.ibm.com>, <kan.liang@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <zhangshaokun@hisilicon.com>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+ <20210325203944.GD8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <dc17013d-2dcb-8ddf-a15a-e98cad3e2ae3@huawei.com>
+Date:   Fri, 26 Mar 2021 10:57:40 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210325203944.GD8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.170.125]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lenny Szubowicz <lszubowi@redhat.com> writes:
+On 25/03/2021 20:39, Paul A. Clarke wrote:
+> On Thu, Mar 25, 2021 at 06:33:12PM +0800, John Garry wrote:
+>> Metric reuse support is added for pmu-events parse metric testcase.
+>> This had been broken on power9 recentlty:
+>> https://lore.kernel.org/lkml/20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com/
+> 
+> Much better.  Before:
+> --
+> $ perf test -v 10 2>&1 | grep -i error | wc -l
+> 112
+> --
+> After:
+> --
+> $ perf test -v 10 2>&1 | grep -i error | wc -l
+> 17
+> --
+> 
+> And these seem like different types of issues:
+> --
+> $ perf test -v 10 2>&1 | grep -i error
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_powerbus0_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> --
+> 
 
-> On 3/17/21 9:30 AM, Vitaly Kuznetsov wrote:
->> Lenny Szubowicz <lszubowi@redhat.com> writes:
->> 
->>> Turn off host updates to the registered kvmclock memory
->>> locations when transitioning to a hibernated kernel in
->>> resume_target_kernel().
->>>
->>> This is accomplished for secondary vcpus by disabling host
->>> clock updates for that vcpu when it is put offline. For the
->>> primary vcpu, it's accomplished by using the existing call back
->>> from save_processor_state() to kvm_save_sched_clock_state().
->>>
->>> The registered kvmclock memory locations may differ between
->>> the currently running kernel and the hibernated kernel, which
->>> is being restored and resumed. Kernel memory corruption is thus
->>> possible if the host clock updates are allowed to run while the
->>> hibernated kernel is relocated to its original physical memory
->>> locations.
->>>
->>> This is similar to the problem solved for kexec by
->>> commit 1e977aa12dd4 ("x86: KVM guest: disable clock before rebooting.")
->>>
->>> Commit 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a
->>> PER_CPU variable") innocently increased the exposure for this
->>> problem by dynamically allocating the physical pages that are
->>> used for host clock updates when the vcpu count exceeds 64.
->>> This increases the likelihood that the registered kvmclock
->>> locations will differ for vcpus above 64.
->>>
->>> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
->>> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
->>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
->>> ---
->>>   arch/x86/kernel/kvmclock.c | 34 ++++++++++++++++++++++++++++++++--
->>>   1 file changed, 32 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
->>> index aa593743acf6..291ffca41afb 100644
->>> --- a/arch/x86/kernel/kvmclock.c
->>> +++ b/arch/x86/kernel/kvmclock.c
->>> @@ -187,8 +187,18 @@ static void kvm_register_clock(char *txt)
->>>   	pr_info("kvm-clock: cpu %d, msr %llx, %s", smp_processor_id(), pa, txt);
->>>   }
->>>   
->>> +/*
->>> + * Turn off host clock updates to the registered memory location when the
->>> + * cpu clock context is saved via save_processor_state(). Enables correct
->>> + * handling of the primary cpu clock when transitioning to a hibernated
->>> + * kernel in resume_target_kernel(), where the old and new registered
->>> + * memory locations may differ.
->>> + */
->>>   static void kvm_save_sched_clock_state(void)
->>>   {
->>> +	native_write_msr(msr_kvm_system_time, 0, 0);
->>> +	kvm_disable_steal_time();
->>> +	pr_info("kvm-clock: cpu %d, clock stopped", smp_processor_id());
->>>   }
->> 
->> Nitpick: should we rename kvm_save_sched_clock_state() to something more
->> generic, like kvm_disable_host_clock_updates() to indicate, that what it
->> does is not only sched clock related?
->
-> I see your rationale. But if I rename kvm_save_sched_clock_state()
-> then shouldn't I also rename kvm_restore_sched_clock_state().
-> The names appear to reflect the callback that invokes them,
-> from save_processor_state()/restore_state(), rather than what these
-> functions need to do.
->
->          x86_platform.save_sched_clock_state = kvm_save_sched_clock_state;
->          x86_platform.restore_sched_clock_state = kvm_restore_sched_clock_state;
->   
-> For V2 of my patch, I kept these names as they were. But if you have a strong
-> desire for a different name, then I think both routines should be renamed
-> similarly, since they are meant to be a complimentary pair.
->
->> 
->>>   
->>>   static void kvm_restore_sched_clock_state(void)
->>> @@ -311,9 +321,23 @@ static int kvmclock_setup_percpu(unsigned int cpu)
->>>   	return p ? 0 : -ENOMEM;
->>>   }
->>>   
->>> +/*
->>> + * Turn off host clock updates to the registered memory location when a
->>> + * cpu is placed offline. Enables correct handling of secondary cpu clocks
->>> + * when transitioning to a hibernated kernel in resume_target_kernel(),
->>> + * where the old and new registered memory locations may differ.
->>> + */
->>> +static int kvmclock_cpu_offline(unsigned int cpu)
->>> +{
->>> +	native_write_msr(msr_kvm_system_time, 0, 0);
->>> +	pr_info("kvm-clock: cpu %d, clock stopped", cpu);
->> 
->> I'd say this pr_info() is superfluous: on a system with hundereds of
->> vCPUs users will get flooded with 'clock stopped' messages which don't
->> actually mean much: in case native_write_msr() fails the error gets
->> reported in dmesg anyway. I'd suggest we drop this and pr_info() in
->> kvm_save_sched_clock_state().
->> 
->
-> Agreed. I was essentially using it as a pr_debug(). Gone in V2.
->
->>> +	return 0;
->> 
->> Why don't we disable steal time accounting here? MSR_KVM_STEAL_TIME is
->> also per-cpu. Can we merge kvm_save_sched_clock_state() with
->> kvmclock_cpu_offline() maybe?
->> 
->
-> kvm_cpu_down_prepare() in arch/x86/kernel/kvm.c already calls
-> kvm_disable_steal_time() when a vcpu is placed offline.
-> So there is no need to do that in kvmclock_cpu_offline().
->
-> In the case of the hibernation resume code path, resume_target_kernel()
-> in kernel/power/hibernate.c, the secondary cpus are placed offline,
-> but the primary is not. Instead, we are going to be switching contexts
-> of the primary cpu from the boot kernel to the kernel that was restored
-> from the hibernation image.
->
-> This is where save_processor_state()/restore_processor_state() and kvm_save_sched_clock_state()/restore_sched_clock_state() come into play
-> to stop the kvmclock of the boot kernel's primary cpu and restart
-> the kvmclock of restored hibernated kernel's primary cpu.
->
-> And in this case, no one is calling kvm_disable_steal_time(),
-> so kvm_save_sched_clock_state() is doing it. (This is very similar
-> to the reason why kvm_crash_shutdown() in kvmclock.c needs to call
-> kvm_disable_steal_time())
->
-> However, I'm now wondering if kvm_restore_sched_clock_state()
-> needs to add a call to the equivalent of kvm_register_steal_time(),
-> because otherwise no one will do that for the primary vcpu
-> on resume from hibernation.
+This looks suspicious.
 
-In case this is true, steal time accounting is not our only
-problem. kvm_guest_cpu_init(), which is called from
-smp_prepare_boot_cpu() hook also sets up Async PF an PV EOI and both
-these features establish a shared guest-host memory region, in this
-doesn't happen upon resume from hibernation we're in trouble.
+Firstly, does /sys/bus/event_source/devices/nest_mcs01_imc (or others, 
+above) exist on your system? I guess not.
 
-smp_prepare_boot_cpu() hook is called very early from start_kernel() but
-what happens when we switch to the context of the hibernated kernel?
+Secondly, checking Documentation/powerpc/imc.rst, we have examples of:
+nest_mcs01/PM_MCS01_64B_R...
 
-I'm going to set up an environement and check what's going on.
+So is the PMU name correct in the metric file for nest_mcs01_imc? 
+Looking at the kernel driver file, arch/powerpc/perf/imc-pmu.c, it seems 
+to be correct. Not sure.
 
->
->>> +}
->>> +
->>>   void __init kvmclock_init(void)
->>>   {
->>>   	u8 flags;
->>> +	int cpuhp_prepare;
->>>   
->>>   	if (!kvm_para_available() || !kvmclock)
->>>   		return;
->>> @@ -325,8 +349,14 @@ void __init kvmclock_init(void)
->>>   		return;
->>>   	}
->>>   
->>> -	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
->>> -			      kvmclock_setup_percpu, NULL) < 0) {
->>> +	cpuhp_prepare = cpuhp_setup_state(CPUHP_BP_PREPARE_DYN,
->>> +					  "kvmclock:setup_percpu",
->>> +					  kvmclock_setup_percpu, NULL);
->>> +	if (cpuhp_prepare < 0)
->>> +		return;
->>> +	if (cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "kvmclock:cpu_offline",
->>> +			      NULL, kvmclock_cpu_offline) < 0) {
->>> +		cpuhp_remove_state(cpuhp_prepare);
->> 
->> In case we fail to set up kvmclock_cpu_offline() callback we get broken
->> hybernation but without kvmclock_setup_percpu() call we get a broken
->> guest (as kvmclock() may be the only reliable clocksource) so I'm not
->> exactly sure we're active in a best way with cpuhp_remove_state()
->> here. I don't feel strong though, I think it can stay but in that case
->> I'd add a pr_warn() at least.
->
-> Something is seriously broken if either of these cpuhp_setup_state()
-> calls fail. I first considered using the "down" callback of the
-> CPUHP_BP_PREPARE_DYN state, as in:
->
->          if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
-> 			      kvmclock_setup_percpu, kvmclock_cpu_offline) < 0) {
->
-> This would have minimized the change, but I wasn't comfortable with how late
-> it would be called. Other examples in the kernel, including kvm.c, use
-> CPUHP_AP_ONLINE_DYN for cpu online/offline events.
->
-> But I do agree that a failure of either cpuhp_setup_state() should not
-> be silent. So in V2 I added a pr_err().
->
-> Thank you for your review comments.
->
->                          -Lenny.
->
->> 
->>>   		return;
->>>   	}
->> 
->
+Thanks,
+John
 
--- 
-Vitaly
+
+
+> (Added Kajol Jain to CC)
+> 
+
 
