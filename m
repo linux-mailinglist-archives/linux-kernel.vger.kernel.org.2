@@ -2,128 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F8C34A62F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B8834A635
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:14:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbhCZLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhCZLMr (ORCPT
+        id S229826AbhCZLOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:14:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55893 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230080AbhCZLNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:12:47 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC71AC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:12:46 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id x13so5230621wrs.9
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:12:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ayZF+r0b23wrtO9csco3tVZwSgnXFBof0wM4XBNzSeY=;
-        b=Q6P3d9Nssxdq0W6ZzQ+wBSG6cCt3phfWqjg+a1wnooDpDBk9V2Y6vtzhc7Mswq7Oa4
-         86LN7+vvcaccPuLTYyhtOykF671k9jme2L7xtAdJMWtuLqO3YSTMAIQRRXpZtBSA1fZM
-         YwGtR4vUOGJYIAcfJZF/+PL9hQwHZsRuAXOszcRe7mzYNL9yR9C/KhcahivYftl1biC6
-         dx/tCHZ2jDe4M4RbYe76/kSY9sYRakFXpwcR6gMZuBqc4FWRn0Gmu6Usbl9y5Ks5hyaO
-         eXc+XqjUm0O24RFK8ihLmL1SmrFYmItCps6dttIh/lOO3qL+Hot939nGXUK+7zYJ3T0l
-         ebTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ayZF+r0b23wrtO9csco3tVZwSgnXFBof0wM4XBNzSeY=;
-        b=sXkaow6idyqXqyAkEhKTzOXVXxETX4hLcDQv+zZViJZSho6aPjZbRsf0pSb0BAmBtg
-         46nm563j5nNE/9dHw9Oew7JLqg/zRsiBWgbr57BC6Bj04OI4tNmdyDvK22raEX8hWl9k
-         ktpS1c/Nsdw5lS1ft7VkP8oD7asuo1BuW4H9NUXEZtrjhifmRODSLlw8/kOvN13TSkhv
-         kB7YvVo9vlRbp6vdR8X8CkHTapIktum92b94+z0aF8uhYdpdFwSCQ4s6LsPxHsbvdeXU
-         3HN6uE5I5TQh4sP0BGrg1JChLfcchbR6iy6jRWw3smm78C79QhUh0man1nK+OljKfyjK
-         JVwA==
-X-Gm-Message-State: AOAM533FptJdD4PLqCMNDS+xI3ISTP4KWfbQ2j1jZgfLyCMc/X+cIAp4
-        SxAr8Hzg/1LldbAYs9xkMoBWd4ZOafbSVQ==
-X-Google-Smtp-Source: ABdhPJwznLZx5Bx6+2GrBnlYTkUGcLrsIXno08NsxbhiZdxiU5vV/Bn/9P+rxdwK4XWTyDupt0/+Dw==
-X-Received: by 2002:a05:6000:1868:: with SMTP id d8mr14061223wri.301.1616757165461;
-        Fri, 26 Mar 2021 04:12:45 -0700 (PDT)
-Received: from agape.jhs ([5.171.81.75])
-        by smtp.gmail.com with ESMTPSA id i26sm11065917wmb.18.2021.03.26.04.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 04:12:45 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 12:12:42 +0100
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/15] staging: rtl8723bs: put parentheses on macros with
- complex values in include/basic_types.h
-Message-ID: <20210326111241.GD1452@agape.jhs>
-References: <cover.1616748885.git.fabioaiuto83@gmail.com>
- <2c7c198ccef194b06921bc476eda7d5102ab70dc.1616748885.git.fabioaiuto83@gmail.com>
- <20210326100408.GE1717@kadam>
+        Fri, 26 Mar 2021 07:13:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616757223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iPhua1UQWWj1RTWclW1uEi358mEATuQDZb3+gEe5PtY=;
+        b=bGaP9zXFAiDap28TOQhqqMynpj0TMIka36KWZh2zt8R40A9E6W7c9+obi+YCz9JMkj78RG
+        QsLGpRGvZu5z0Q/DDhz2h786mXwrMCeW2pcw9Uw0pocH/OegUNvBcoe5oms0nscooACY64
+        5Y/uQznrmjp4U1XTBGghGCoir+V0QeE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-G8cIrN-fM7yD9_bNw9qghQ-1; Fri, 26 Mar 2021 07:13:38 -0400
+X-MC-Unique: G8cIrN-fM7yD9_bNw9qghQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7546783DD20;
+        Fri, 26 Mar 2021 11:13:37 +0000 (UTC)
+Received: from [10.36.112.81] (ovpn-112-81.ams2.redhat.com [10.36.112.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8264E5C8AB;
+        Fri, 26 Mar 2021 11:13:32 +0000 (UTC)
+Subject: Re: [PATCH] virtio-balloon: move release_pages_balloon() outside of
+ mutex_unlock(&vb->balloon_lock)
+To:     Liu Xiang <liu.xiang@zlingsmart.com>, mst@redhat.com
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, liuxiang_1999@126.com,
+        liuxiang1999@gmail.com
+References: <20210326095326.13221-1-liu.xiang@zlingsmart.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <d8fef7b4-d01c-98ad-c3b1-4c48f482ce76@redhat.com>
+Date:   Fri, 26 Mar 2021 12:13:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326100408.GE1717@kadam>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210326095326.13221-1-liu.xiang@zlingsmart.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:04:08PM +0300, Dan Carpenter wrote:
-> On Fri, Mar 26, 2021 at 10:09:11AM +0100, Fabio Aiuto wrote:
-> > fix the following checkpatch warnings:
-> > 
-> > ERROR: Macros with complex values should be enclosed in parentheses
-> > 154: FILE: drivers/staging/rtl8723bs/include/basic_types.h:154:
-> > +#define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> > --
-> > ERROR: Macros with multiple statements should be enclosed in
-> > a do - while loop
-> > 161: FILE: drivers/staging/rtl8723bs/include/basic_types.h:161:
-> > +#define SET_BITS_TO_LE_2BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> > --
-> > ERROR: Macros with complex values should be enclosed in parentheses
-> > 168: FILE: drivers/staging/rtl8723bs/include/basic_types.h:168:
-> > +#define SET_BITS_TO_LE_1BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> > 
-> > parentheses solution preferred for all fixes and made macros more
-> > readables
-> > 
-> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-> > ---
-> >  .../staging/rtl8723bs/include/basic_types.h   | 30 +++++++++++--------
-> >  1 file changed, 18 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/include/basic_types.h b/drivers/staging/rtl8723bs/include/basic_types.h
-> > index 76304086107a..5054c2e3384c 100644
-> > --- a/drivers/staging/rtl8723bs/include/basic_types.h
-> > +++ b/drivers/staging/rtl8723bs/include/basic_types.h
-> > @@ -152,24 +152,30 @@
-> >  /* 		Set subfield of little-endian 4-byte value to specified value. */
-> >  /*  */
-> >  #define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
-> > -		*((u32 *)(__pstart)) =				\
-> > -		(						\
-> > -		LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
-> > -		((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
-> > +		(\
-> > +			*((u32 *)(__pstart)) =				\
-> > +			(						\
-> > +				LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
-> > +				((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
-> > +			)\
-> >  		)
-> >  
+On 26.03.21 10:53, Liu Xiang wrote:
+> Since pages have been deflated to a local list,
+> there is no race between fill and leak.
 > 
-> These macros are terrible and this makes it uglier.  Better to just
-> ignore checkpatch until we can figure out a way to re-write this
-> properly.
+> Signed-off-by: Liu Xiang <liu.xiang@zlingsmart.com>
+> ---
+>   drivers/virtio/virtio_balloon.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> regards,
-> dan carpenter
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 8985fc2ce..7da25b87f 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -303,8 +303,8 @@ static unsigned leak_balloon(struct virtio_balloon *vb, size_t num)
+>   	 */
+>   	if (vb->num_pfns != 0)
+>   		tell_host(vb, vb->deflate_vq);
+> -	release_pages_balloon(vb, &pages);
+>   	mutex_unlock(&vb->balloon_lock);
+> +	release_pages_balloon(vb, &pages);
+>   	return num_freed_pages;
+>   }
+>   
 > 
 
-I see, will drop the patch for now.
+I think this should be fine
 
-thanks,
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-fabio
+-- 
+Thanks,
+
+David / dhildenb
+
