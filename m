@@ -2,51 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF25349E70
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:09:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5621349F61
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhCZBJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:09:20 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:13703 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhCZBJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:09:08 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F63hT458LznWV1;
-        Fri, 26 Mar 2021 09:06:33 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 26 Mar
- 2021 09:08:59 +0800
-Subject: Re: [f2fs-dev] [PATCH -next] f2fs: fix a typo in inode.c
-To:     Ruiqi Gong <gongruiqi1@huawei.com>, <jaegeuk@kernel.org>,
-        <chao@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210325063811.6486-1-gongruiqi1@huawei.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <c151c786-4649-7d30-e7e0-a30c15cbae9e@huawei.com>
-Date:   Fri, 26 Mar 2021 09:08:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S231136AbhCZCLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 22:11:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230411AbhCZCLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 22:11:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E9B061A2B;
+        Fri, 26 Mar 2021 02:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616724680;
+        bh=L6FNDAlxyI+VHb0dFbN2zoboHKOrSkFgt+OL1GNZULo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CnmC9DqHLIpTf98be4JX/MPM+4bjm017hCZHneBvSFHKlpaGbAezWbaUwXIK+BjAC
+         sHMjN0F9CjQoFCuHEO1bXq+hrzguZIGUi2sG7gvePwxb5gcx2NcEnW1JzZWKirOBym
+         S2Z5Aa5IN6rQaUi7cZtc+ZvT+5b11jXbAunTlg+tjDqQatl2g5LVSM8HYt0p1NB0RG
+         An3VqW1a6fKYiPKj+IAwMV545AETIxqRZ64ljlKReJ6YBjM4sAmau2r9Liqu6n6Gb/
+         E+gmUw5b86zx4PMmXYLdovFbatYcqll0wLV5qiFkFG/PPyHPc3ZOIBWw1o8DCw6DU8
+         PLwdD052wu1SQ==
+Date:   Thu, 25 Mar 2021 20:11:17 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Steve French <sfrench@samba.org>
+Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] cifs: cifspdu.h: Replace one-element array with
+ flexible-array member
+Message-ID: <20210326011117.GA46303@embeddedor>
 MIME-Version: 1.0
-In-Reply-To: <20210325063811.6486-1-gongruiqi1@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/25 14:38, Ruiqi Gong wrote:
-> Do a trivial typo fix.
-> s/runing/running
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Ruiqi Gong <gongruiqi1@huawei.com>
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Also, this helps with the ongoing efforts to enable -Warray-bounds by
+fixing the following warning:
 
-Thanks,
+  CC [M]  fs/cifs/cifssmb.o
+fs/cifs/cifssmb.c: In function ‘CIFSFindNext’:
+fs/cifs/cifssmb.c:4636:23: warning: array subscript 1 is above array bounds of ‘char[1]’ [-Warray-bounds]
+ 4636 |   pSMB->ResumeFileName[name_len+1] = 0;
+      |   ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.10/process/deprecated.html#zero-length-and-one-element-arrays
+
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ fs/cifs/cifspdu.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/cifs/cifspdu.h b/fs/cifs/cifspdu.h
+index 64fe5a47b5e8..475a517360e5 100644
+--- a/fs/cifs/cifspdu.h
++++ b/fs/cifs/cifspdu.h
+@@ -1898,7 +1898,7 @@ typedef struct smb_com_transaction2_fnext_req {
+ 	__le16 InformationLevel;
+ 	__u32 ResumeKey;
+ 	__le16 SearchFlags;
+-	char ResumeFileName[1];
++	char ResumeFileName[];
+ } __attribute__((packed)) TRANSACTION2_FNEXT_REQ;
+ 
+ typedef struct smb_com_transaction2_fnext_rsp {
+-- 
+2.27.0
+
