@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE38B349D8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E558349DA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhCZASa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:18:30 -0400
-Received: from mail-il1-f170.google.com ([209.85.166.170]:37377 "EHLO
-        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhCZASV (ORCPT
+        id S229866AbhCZAVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230223AbhCZAVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:18:21 -0400
-Received: by mail-il1-f170.google.com with SMTP id z9so3677341ilb.4;
-        Thu, 25 Mar 2021 17:18:21 -0700 (PDT)
+        Thu, 25 Mar 2021 20:21:38 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B21C06174A;
+        Thu, 25 Mar 2021 17:21:36 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id c6so3168732qtc.1;
+        Thu, 25 Mar 2021 17:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kZP7LCr6VFQMI1nlD6D3G/vs5KL0ERu/J6Ru13m29K0=;
+        b=ttFi+KWZgUPlYtGrdoYKATIk26OpABOssyChmT8ceJps9SccZkwv/xojr++WSmhIx9
+         XY/mIdo2KMnBy+sATKnfjFDjR/coF0a6cIcmaxzS9N0Tm7ZPUXebJUZrMyimR0pi9kpr
+         Ybxo96gl8L0cT5hUgBKT63j3rXljgPdUGqsPq/P8grOtWxnwjMfMj87UylOb2f9PTDa7
+         8FKtGhT7BbX6XEraIJRuIBWeLIyLjgkI2XulaBT3Hict3d23bd7iWTjr82AFthwOnMpG
+         ntjudQFpavuMAvHVNI9M2MjYlCJU5ztF1bpMFIL1bAtjR9TOvpDpw1OEKJEn+6dKRqPQ
+         CKsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=cQ49/BRSpA+BrnKpvm9V5uM5O4PaTolvQUFp43C9TjE=;
-        b=Lx4zxwTsln31qDgC3f3MULddvhpcLsYldL+ZQbnp6/tgiVRoUPCEqm+YlxATBE6BXs
-         yTzoPrBi6q082NdoESLSB0wyViU1pyg/X3nrDmpZo4rXlhWGTgHj5UAtoQQL8BEErNtB
-         VQrL3oqgbax/BvDY+JD+enPKaLEW3rNj1cNIuz1CXtZEUW0OzOwyYrdKZiAKalbm1T8/
-         a3qrQty5mnt0xaG5GW6K4YWZaNbrksdTCE5tuL1NdtYhfvCJWuYPrD4JbADqSXa3jfK3
-         m2JYRp5t0HPqZXG4dvg/ll4qP+CvjHHpDREc9U3xfrS3Fug6xNT47rPq34Bh4C5+YdcX
-         tHcQ==
-X-Gm-Message-State: AOAM533kuKjGEgdojMkWpmWZeeZKY20X4bX56hEGwI9LkSr7NsfHgxlI
-        3sCpheRaUSw7WXPO/48xhQ==
-X-Google-Smtp-Source: ABdhPJy4NEO7Ki88utGVy0098DnNN27W98R3hyOzTwTO4wxccpgj8OFq6ByDXObkcCOy2yDZaHkd+g==
-X-Received: by 2002:a05:6e02:219e:: with SMTP id j30mr8461778ila.196.1616717900908;
-        Thu, 25 Mar 2021 17:18:20 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id w9sm3489521iox.20.2021.03.25.17.18.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kZP7LCr6VFQMI1nlD6D3G/vs5KL0ERu/J6Ru13m29K0=;
+        b=BBzCYkYlsRws3Cd0G+7MZDfPvSnVcvipMxTYtSg27yk5vzFNVc8TzRBpixpxguPbNl
+         O3PRoLsmmaaQQyi+FKd5lbXu6GVjrSmMEqF4J8zy9QHtyy0IULAbH9eilnEt0oEyEVDD
+         D3F0c7mquac059ZE8vmCoXbvbK6XJN6XPmSb+weiRjfpndALc6Mkkiy05rT6sLqtsps3
+         iN/dHWjQRVSUvgGTUWJBXGonr4Ox+v8jAB9qxk0SFvzjxoummqsZ0KJNsqsnBcN4JYaR
+         W+BSAgmnpF0elMuvKxaoOMcUn/BIvwStCF6XM2dSUcqF9O+QwvN1E3JVVo2j5FnFrJ65
+         ePqg==
+X-Gm-Message-State: AOAM532YP+GOBCLVFhta9pTPa2r6w2E9/4UPNFV7CMESdLsFhOT58zRB
+        M5+nXmD08YwEM86SdK7zfZM=
+X-Google-Smtp-Source: ABdhPJxcbdhKCAphIIz27zZAygifOWwj5YXoJTYJa2MVFlbCvmHuElrAfdYX4+I8VJlXSbHxi1/IeA==
+X-Received: by 2002:ac8:698f:: with SMTP id o15mr10551740qtq.39.1616718095835;
+        Thu, 25 Mar 2021 17:21:35 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id t24sm4777234qto.23.2021.03.25.17.21.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 17:18:20 -0700 (PDT)
-Received: (nullmailer pid 2016095 invoked by uid 1000);
-        Fri, 26 Mar 2021 00:18:17 -0000
-Date:   Thu, 25 Mar 2021 18:18:17 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>
-Cc:     robh+dt@kernel.org, hns@goldelico.com, paul@boddie.org.uk,
-        linux-gpio@vger.kernel.org, paul@crapouillou.net,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        linux-kernel@vger.kernel.org, sernia.zhou@foxmail.com,
-        linux-mips@vger.kernel.org, andy.shevchenko@gmail.com,
-        devicetree@vger.kernel.org, linus.walleij@linaro.org
-Subject: Re: [PATCH v3 05/10] dt-bindings: pinctrl: Add bindings for new
- Ingenic SoCs.
-Message-ID: <20210326001817.GA2016065@robh.at.kernel.org>
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1615975084-68203-6-git-send-email-zhouyanjie@wanyeetech.com>
+        Thu, 25 Mar 2021 17:21:35 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     robert.moore@intel.com, erik.kaneda@intel.com,
+        rafael.j.wysocki@intel.com, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, devel@acpica.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] ACPICA: Fix a typo
+Date:   Fri, 26 Mar 2021 05:49:22 +0530
+Message-Id: <20210326001922.4767-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1615975084-68203-6-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 17:57:59 +0800, 周琰杰 (Zhou Yanjie) wrote:
-> Add the pinctrl bindings for the JZ4730 SoC, the JZ4750 SoC,
-> the JZ4755 SoC, the JZ4775 SoC and the X2000 SoC from Ingenic.
-> 
-> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> ---
-> 
-> Notes:
->     v2:
->     New patch.
-> 
->     v2->v3:
->     No change.
-> 
->  .../bindings/pinctrl/ingenic,pinctrl.yaml          | 23 ++++++++++++++++++----
->  1 file changed, 19 insertions(+), 4 deletions(-)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+s/optimzation/optimization/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/acpi/acoutput.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h
+index 1538a6853822..1b4c45815695 100644
+--- a/include/acpi/acoutput.h
++++ b/include/acpi/acoutput.h
+@@ -362,7 +362,7 @@
+  *
+  * A less-safe version of the macros is provided for optional use if the
+  * compiler uses excessive CPU stack (for example, this may happen in the
+- * debug case if code optimzation is disabled.)
++ * debug case if code optimization is disabled.)
+  */
+
+ /* Exit trace helper macro */
+--
+2.26.2
+
