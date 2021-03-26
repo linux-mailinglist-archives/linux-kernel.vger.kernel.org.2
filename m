@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25FD34AB33
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 586DC34AB36
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhCZPOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32976 "EHLO
+        id S231340AbhCZPO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:14:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbhCZPNm (ORCPT
+        with ESMTP id S230292AbhCZPNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:13:42 -0400
+        Fri, 26 Mar 2021 11:13:43 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84B1C0613B2
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:13:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CD5C0613B5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:13:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=lenVpfVTRdmlr4QerYGvPmX9xUOMv73u9GEKuv3kF7M=; b=Oq9qqYPImN3uveIwcFx3p4IQtm
-        i2lDXZoFhRL7hJk8FpJsypDHMGtbDPmWHYr7bTnIU7LevP38NDmFmSiCpTr4iYJ+MT372SqApiSTW
-        eWNGxNmS0EjAtOfJpPbn4n0DcMJx5ianRniva86RDgSWnf0Kl4Eu6psY6qnP7FsRkfhwIfvb8ZRni
-        znJCvfnM2T4Po1quMIDDH9405WpWzDTcs+9t5L+g+kNE6jB3PlYITqEpTDCqQrwbtMCMOOa8xmNd0
-        kvaoJcn86Isc6IMMR6+YFgPflO48nk+eJJQoIFNWBNH86ut9H1RbyhFNnU6NAJDkxiz/fReUC0BrV
-        Kv2cTmOQ==;
+        bh=cvpRtMp9Dj+4WOV7V5UJ0l1VlXpxuOgTyLUzpXXcnyc=; b=Zg1zC7x+SZJ601VknW/c6cxJuU
+        bSwntd77lkl8WrNumVL3RxdIvgxrOhENHV+0EnITHxuSxFpCNBGYQOHYUvCCt5tygKPkEohra/id7
+        jVAgp41jO84ocfZutXpQmXDtFzbxHe51KvGawCD+l7HE9b4kUhZP/FIJ5bEaeaJs3T3a9Mtj5RAwP
+        nLYOmwI3HtNHC8BFZejqFRmNLpjVXDuV07dxjsoIk9fgLVffRG0AQggT9CpmVzuiXTs1gUkoyY0I6
+        kneACKPCWnreKsbbYJqYpcify+xiYezjfIQGBUohxhP8TuOXNjF2qf7DeENyII6oje4NN1ZOX9ove
+        cCx8UYQA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPo9X-003s0D-T9; Fri, 26 Mar 2021 15:13:36 +0000
+        id 1lPo9Y-003s0R-Fb; Fri, 26 Mar 2021 15:13:36 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A6603307985;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AC6FE30799A;
         Fri, 26 Mar 2021 16:13:34 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5C3642BD7339A; Fri, 26 Mar 2021 16:13:34 +0100 (CET)
-Message-ID: <20210326151259.941474004@infradead.org>
+        id 604AF2BD7339B; Fri, 26 Mar 2021 16:13:34 +0100 (CET)
+Message-ID: <20210326151300.003468981@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 26 Mar 2021 16:12:09 +0100
+Date:   Fri, 26 Mar 2021 16:12:10 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org, jpoimboe@redhat.com, jgross@suse.com,
         mbenes@suse.com
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH v3 10/16] objtool: Extract elf_strtab_concat()
+Subject: [PATCH v3 11/16] objtool: Extract elf_symbol_add()
 References: <20210326151159.128534163@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,102 +50,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a common helper to append strings to a strtab.
+Create a common helper to add symbols.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/elf.c |   60 ++++++++++++++++++++++++++++++++--------------------
- 1 file changed, 38 insertions(+), 22 deletions(-)
+ tools/objtool/elf.c |   56 ++++++++++++++++++++++++++++------------------------
+ 1 file changed, 31 insertions(+), 25 deletions(-)
 
 --- a/tools/objtool/elf.c
 +++ b/tools/objtool/elf.c
-@@ -666,13 +666,48 @@ struct elf *elf_open_read(const char *na
- 	return NULL;
+@@ -290,12 +290,39 @@ static int read_sections(struct elf *elf
+ 	return 0;
  }
  
-+static int elf_add_string(struct elf *elf, struct section *strtab, char *str)
++static void elf_add_symbol(struct elf *elf, struct symbol *sym)
 +{
-+	Elf_Data *data;
-+	Elf_Scn *s;
-+	int len;
++	struct list_head *entry;
++	struct rb_node *pnode;
 +
-+	if (!strtab)
-+		strtab = find_section_by_name(elf, ".strtab");
-+	if (!strtab) {
-+		WARN("can't find .strtab section");
-+		return -1;
-+	}
++	sym->type = GELF_ST_TYPE(sym->sym.st_info);
++	sym->bind = GELF_ST_BIND(sym->sym.st_info);
 +
-+	s = elf_getscn(elf->elf, strtab->idx);
-+	if (!s) {
-+		WARN_ELF("elf_getscn");
-+		return -1;
-+	}
++	sym->offset = sym->sym.st_value;
++	sym->len = sym->sym.st_size;
 +
-+	data = elf_newdata(s);
-+	if (!data) {
-+		WARN_ELF("elf_newdata");
-+		return -1;
-+	}
++	rb_add(&sym->node, &sym->sec->symbol_tree, symbol_to_offset);
++	pnode = rb_prev(&sym->node);
++	if (pnode)
++		entry = &rb_entry(pnode, struct symbol, node)->list;
++	else
++		entry = &sym->sec->symbol_list;
++	list_add(&sym->list, entry);
++	elf_hash_add(elf->symbol_hash, &sym->hash, sym->idx);
++	elf_hash_add(elf->symbol_name_hash, &sym->name_hash, str_hash(sym->name));
 +
-+	data->d_buf = str;
-+	data->d_size = strlen(str) + 1;;
-+	data->d_align = 1;
-+
-+	len = strtab->len;
-+	strtab->len += data->d_size;
-+	strtab->changed = true;
-+
-+	return len;
++	/*
++	 * Don't store empty STT_NOTYPE symbols in the rbtree.  They
++	 * can exist within a function, confusing the sorting.
++	 */
++	if (!sym->len)
++		rb_erase(&sym->node, &sym->sec->symbol_tree);
 +}
 +
- struct section *elf_create_section(struct elf *elf, const char *name,
- 				   unsigned int sh_flags, size_t entsize, int nr)
+ static int read_symbols(struct elf *elf)
  {
- 	struct section *sec, *shstrtab;
- 	size_t size = entsize * nr;
- 	Elf_Scn *s;
--	Elf_Data *data;
+ 	struct section *symtab, *symtab_shndx, *sec;
+ 	struct symbol *sym, *pfunc;
+-	struct list_head *entry;
+-	struct rb_node *pnode;
+ 	int symbols_nr, i;
+ 	char *coldstr;
+ 	Elf_Data *shndx_data = NULL;
+@@ -340,9 +367,6 @@ static int read_symbols(struct elf *elf)
+ 			goto err;
+ 		}
  
- 	sec = malloc(sizeof(*sec));
- 	if (!sec) {
-@@ -729,7 +764,6 @@ struct section *elf_create_section(struc
- 	sec->sh.sh_addralign = 1;
- 	sec->sh.sh_flags = SHF_ALLOC | sh_flags;
- 
+-		sym->type = GELF_ST_TYPE(sym->sym.st_info);
+-		sym->bind = GELF_ST_BIND(sym->sym.st_info);
 -
- 	/* Add section name to .shstrtab (or .strtab for Clang) */
- 	shstrtab = find_section_by_name(elf, ".shstrtab");
- 	if (!shstrtab)
-@@ -738,27 +772,9 @@ struct section *elf_create_section(struc
- 		WARN("can't find .shstrtab or .strtab section");
- 		return NULL;
+ 		if ((sym->sym.st_shndx > SHN_UNDEF &&
+ 		     sym->sym.st_shndx < SHN_LORESERVE) ||
+ 		    (shndx_data && sym->sym.st_shndx == SHN_XINDEX)) {
+@@ -355,32 +379,14 @@ static int read_symbols(struct elf *elf)
+ 				     sym->name);
+ 				goto err;
+ 			}
+-			if (sym->type == STT_SECTION) {
++			if (GELF_ST_TYPE(sym->sym.st_info) == STT_SECTION) {
+ 				sym->name = sym->sec->name;
+ 				sym->sec->sym = sym;
+ 			}
+ 		} else
+ 			sym->sec = find_section_by_index(elf, 0);
+ 
+-		sym->offset = sym->sym.st_value;
+-		sym->len = sym->sym.st_size;
+-
+-		rb_add(&sym->node, &sym->sec->symbol_tree, symbol_to_offset);
+-		pnode = rb_prev(&sym->node);
+-		if (pnode)
+-			entry = &rb_entry(pnode, struct symbol, node)->list;
+-		else
+-			entry = &sym->sec->symbol_list;
+-		list_add(&sym->list, entry);
+-		elf_hash_add(elf->symbol_hash, &sym->hash, sym->idx);
+-		elf_hash_add(elf->symbol_name_hash, &sym->name_hash, str_hash(sym->name));
+-
+-		/*
+-		 * Don't store empty STT_NOTYPE symbols in the rbtree.  They
+-		 * can exist within a function, confusing the sorting.
+-		 */
+-		if (!sym->len)
+-			rb_erase(&sym->node, &sym->sec->symbol_tree);
++		elf_add_symbol(elf, sym);
  	}
--
--	s = elf_getscn(elf->elf, shstrtab->idx);
--	if (!s) {
--		WARN_ELF("elf_getscn");
--		return NULL;
--	}
--
--	data = elf_newdata(s);
--	if (!data) {
--		WARN_ELF("elf_newdata");
-+	sec->sh.sh_name = elf_add_string(elf, shstrtab, sec->name);
-+	if (sec->sh.sh_name == -1)
- 		return NULL;
--	}
--
--	data->d_buf = sec->name;
--	data->d_size = strlen(name) + 1;
--	data->d_align = 1;
--
--	sec->sh.sh_name = shstrtab->len;
--
--	shstrtab->len += strlen(name) + 1;
--	shstrtab->changed = true;
  
- 	list_add_tail(&sec->list, &elf->sections);
- 	elf_hash_add(elf->section_hash, &sec->hash, sec->idx);
+ 	if (stats)
 
 
