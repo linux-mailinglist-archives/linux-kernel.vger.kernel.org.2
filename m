@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F36A34A9F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6390534AA08
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhCZOfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
+        id S231178AbhCZOgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhCZOfP (ORCPT
+        with ESMTP id S230249AbhCZOfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:35:15 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A633EC0613B7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:14 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id a132-20020a1c668a0000b029010f141fe7c2so5061916wmc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:14 -0700 (PDT)
+        Fri, 26 Mar 2021 10:35:16 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77569C0613B6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:15 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id x13so5846021wrs.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dvVvI/0Wq9ZseHcmz0Zvsivscrc/Hml5KLcDLhGdq8Q=;
-        b=smSaR1uiakul9vdqFvb9YgWh4OKhF08d0JzTod+aEWKDwhNZ6k/TlFu7fQQqBT/dNL
-         6v/A7fm6GfMpe1sLSb3EOLBAxdueMEarsWLtFaCtU5JUSVMjEmHFyKdqt1WwyIfLZBFC
-         o/RIgx+ip27kU87XZiVWR7sSNx8PtdFMEXAtBqJwwBvvif8G7FYB9hFXSaxYfZv3wFOY
-         Ak0PH0KPxED+JSpAW5hJVgI41p8fGlU8WLrOXbY/qA8C/WOyo35qSHuKPjRknUvLFRTt
-         O4yNxlLhO4pMB7I0jrLUgLcp+yGCpYZgrK0PvCEzx3eAI4/TKVw/LN9y+cEO0LRdjpWc
-         kefg==
+        bh=ncO0eu8eiprdEfj3NwDMj19+723Jp3QnJo+qgAuvBoM=;
+        b=D3M2AflPHYIVQMrCYBkEBM7J18KaEGT7snF1NuKp19oo6CWsWqMxQru/X11H8JFLJf
+         iKXohymfei2sqRC9xr8JGOW/+ZJnKaZSTQ7Xjz5eArm2BCn6ViNEFpZJqK07fmo2bAgU
+         YKZFlVVbl3rCUQ3gyzOBfY08LbvTmfcmiSxKk1SI88TrivNerJt+P3OHDJ2Q0VLDZv1w
+         pOIn07GzR4TtY/7hZz7Qo9yFe3twde1MGRfah/U+Y+E5QVALf9ToIZNlUTYJb1MKdSM5
+         nKB8rcFDa4LhBrAo53pl7QB1sKnaKJkaQWjTySXoc3sloRYTlNefcQ2ITRKPldgKAFgX
+         ZqVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dvVvI/0Wq9ZseHcmz0Zvsivscrc/Hml5KLcDLhGdq8Q=;
-        b=tX5WICWWM4/DepYnfvWkPMVY2jmzaftfC1aiJEKgQN8/wFFWhKHoEY+1YoguIYIF7m
-         O7upaVKzhU8TRDYDPPmWUUB+47OBr/Ap+uzr4AN93HXkwyjING6kOGkw9H8Kj5Armppk
-         /oQtkReK0MjyiTcaqLF+3C64A2QmpUDXLoXf5U/vkQZASng7uH4Cnk2T9QTxQQo6IknQ
-         ueF/kVbqHMmBJg2fb/02twO+2aHFD7ZNBJMwXRXIGWNxxq/KnSGSVcxZENXFbx9hPKVV
-         3VakAVp9kLsSRmb7D595/pMoVSLqvPEmhC9cWMc3H2vCOL8Mz0b4Cy253NGbeufGTiOU
-         ZIVw==
-X-Gm-Message-State: AOAM5331rekB38yK1Nb0pqzMsecT4q+sJza+We9dEph6rpi8cysEommj
-        1mbyCbj2sqmb0x9W1ENty9y9yg==
-X-Google-Smtp-Source: ABdhPJy4cPgeUtt+hXmAcmdBV050qDTDvNCgcfFSBylDcvsoPURbP7UhNazAD0cKIvwyFp+F1SIuHw==
-X-Received: by 2002:a05:600c:19d1:: with SMTP id u17mr13278235wmq.141.1616769312972;
-        Fri, 26 Mar 2021 07:35:12 -0700 (PDT)
+        bh=ncO0eu8eiprdEfj3NwDMj19+723Jp3QnJo+qgAuvBoM=;
+        b=awzhkIyPHmvApYQeI/G6nmrDgOQYPN71xsJcArQnmJiprSkYQy5vprrEq6KHONM+Xd
+         hUnPEmk35KtRAHuStqZjq4/ZJZfJ+tPybbdbtsT5Q+dmGfU3vWB2be/s19nwk9UF9GNM
+         X7nw2P1r1U+2uU+2mN3rTP7iXhPTfULa9HWQjebytILz2Z6PYB37KSDC/9jf6ifEReNS
+         UIIyrUTcZYKEIY7URDpVCafAXA2iO/lEYzFpp9JIt/CP0+BA7ML7iD0tQrennvHgvCcM
+         AZXzFrax85unv/4X+R9NeMvenYoTSBx4TNCUO/faAIWPlnbKgJZtXwVJGpKY/1cJZjTv
+         enIQ==
+X-Gm-Message-State: AOAM532cQjSLoeSVdQO5lVZCChNniYl2Dht55qCwQvPVTXAz5WY5+fFc
+        xvhujQ+U1oKSxxM/9Q0O2ZhCag==
+X-Google-Smtp-Source: ABdhPJxyz85Q/+mRvHz1FDY3Yxoego7N1UdFt2rgIPb7W9U3d8zDHFD6Hu4HykqzJPVkIWwH5f+XhQ==
+X-Received: by 2002:adf:ea0e:: with SMTP id q14mr15168379wrm.389.1616769314240;
+        Fri, 26 Mar 2021 07:35:14 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id j26sm12878225wrh.57.2021.03.26.07.35.12
+        by smtp.gmail.com with ESMTPSA id j26sm12878225wrh.57.2021.03.26.07.35.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 07:35:12 -0700 (PDT)
+        Fri, 26 Mar 2021 07:35:13 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Vojtech Pavlik <vojtech@suse.cz>,
-        Michael Haboustak <mike-@cinci.rr.com>,
+        Zhang Lixu <lixu.zhang@intel.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
         linux-input@vger.kernel.org
-Subject: [PATCH 11/25] HID: hid-core: Fix incorrect function name in header
-Date:   Fri, 26 Mar 2021 14:34:44 +0000
-Message-Id: <20210326143458.508959-13-lee.jones@linaro.org>
+Subject: [PATCH 12/25] HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in header
+Date:   Fri, 26 Mar 2021 14:34:45 +0000
+Message-Id: <20210326143458.508959-14-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210326143458.508959-1-lee.jones@linaro.org>
 References: <20210326143458.508959-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -69,31 +72,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/hid/hid-core.c:2142: warning: expecting prototype for store_new_id(). Prototype was for new_id_store() instead
+ drivers/hid/intel-ish-hid/ipc/ipc.c:553: warning: expecting prototype for ish_fw_reset_work_fn(). Prototype was for fw_reset_work_fn() instead
 
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 Cc: Jiri Kosina <jikos@kernel.org>
 Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Vojtech Pavlik <vojtech@suse.cz>
-Cc: Michael Haboustak <mike-@cinci.rr.com>
+Cc: Zhang Lixu <lixu.zhang@intel.com>
+Cc: "Krzysztof Wilczyński" <kw@linux.com>
 Cc: linux-input@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 ---
- drivers/hid/hid-core.c | 2 +-
+ drivers/hid/intel-ish-hid/ipc/ipc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 097cb1ee31268..0ae9f6df59d10 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -2129,7 +2129,7 @@ struct hid_dynid {
- };
+diff --git a/drivers/hid/intel-ish-hid/ipc/ipc.c b/drivers/hid/intel-ish-hid/ipc/ipc.c
+index 47bbeb8b492b0..9037816e2bf74 100644
+--- a/drivers/hid/intel-ish-hid/ipc/ipc.c
++++ b/drivers/hid/intel-ish-hid/ipc/ipc.c
+@@ -544,7 +544,7 @@ static int ish_fw_reset_handler(struct ishtp_device *dev)
+ #define TIMEOUT_FOR_HW_RDY_MS			300
  
  /**
-- * store_new_id - add a new HID device ID to this driver and re-probe devices
-+ * new_id_store - add a new HID device ID to this driver and re-probe devices
-  * @drv: target device driver
-  * @buf: buffer for scanning device ID data
-  * @count: input size
+- * ish_fw_reset_work_fn() - FW reset worker function
++ * fw_reset_work_fn() - FW reset worker function
+  * @unused: not used
+  *
+  * Call ish_fw_reset_handler to complete FW reset
 -- 
 2.27.0
 
