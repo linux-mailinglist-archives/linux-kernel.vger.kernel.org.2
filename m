@@ -2,125 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C96334A724
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7327C34A72B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCZM2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:28:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:49167 "EHLO mga05.intel.com"
+        id S230096AbhCZM3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:29:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229794AbhCZM2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:28:08 -0400
-IronPort-SDR: 6n9a/SYibYIIK9vWNu43kNPPIwkh6ZtsD4Yu6qffdh/yPJ4cRjA+WLAlFzhNvjn73wpV87Bd+x
- pzCu0Uxz0K1g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276277920"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="276277920"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 05:28:07 -0700
-IronPort-SDR: gZvRIMX2zE0NlnCe5Q+/ojNZsssjV9b4Ea8lq/R3SeJO3MghC4vYrh3IS5tM6qdLetuRE7c3zv
- rGNfp/yAExoA==
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="453496980"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 05:28:05 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lPlZK-00GONp-Um; Fri, 26 Mar 2021 14:28:02 +0200
-Date:   Fri, 26 Mar 2021 14:28:02 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Gomez <daniel@qtec.com>
-Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] i2c: designware: Add base addr info
-Message-ID: <YF3TUhGEjrQyG5UU@smile.fi.intel.com>
-References: <20210325151248.1066643-1-daniel@qtec.com>
- <YFyvh3sqyVcg8Iqj@smile.fi.intel.com>
- <CAH1Ww+Qs13GBC02PCgW60No2Z+vNsV14yRe7S4rtnnMLqH7BYQ@mail.gmail.com>
+        id S230041AbhCZM2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:28:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53A8C61920;
+        Fri, 26 Mar 2021 12:28:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616761712;
+        bh=wUUC8pEeP4V7UAsOofwKsFGMImJKY7E3/PEs/FpV2h0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ojJfOCUHz7uD80C+j5lfjVGrqYKAuprKLPa/4da6vh0GPZkEx0AdU3WemXIKY1SSL
+         0S/5lvdUuWk14cztcmpkditlGe1FRt7u9JaFzRzYhpupaytOirVjlrApvVmy9bsb0W
+         rx1oIHmAg339A3Noi5KuvlWPO5L20adT3bfA9BBeAzAL3KvPIKj5UfxPP+tRHeGJO/
+         tpQCe5Kyqqw+r2km7O/WsPKihKpW6VB0jr4dSfAjo9+hVjlH/1zO1Iz/l4e0TyV0GZ
+         TVx0goXA7SJ0ioLQIHA7wjdw7vC1u8nEpRKe5P2PPEN+Ngel6NQUuf2Uh/jV9nbQd3
+         +Oj0YakG/AKWg==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>
+Subject: [PATCH -tip v5 00/12] kprobes: Fix stacktrace with kretprobes on x86
+Date:   Fri, 26 Mar 2021 21:28:26 +0900
+Message-Id: <161676170650.330141.6214727134265514123.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH1Ww+Qs13GBC02PCgW60No2Z+vNsV14yRe7S4rtnnMLqH7BYQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 11:35:08AM +0100, Daniel Gomez wrote:
-> On Thu, 25 Mar 2021 at 16:43, Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Thu, Mar 25, 2021 at 04:12:48PM +0100, Daniel Gomez wrote:
+Hello,
 
-...
+Here is the 5th version of the series to fix the stacktrace with kretprobe
+on x86. After merging this, I'll fix other architectures.
 
-> > > Add i2c hw base address in the adapter name and when the device is
-> > > probed.
-> >
-> > Why?
-> > We have /proc/iomem for that.
-> The initial reason was because I wasn't aware of /proc/iomem therefore
-> I didn't have a way to match the physical address to the i2c adapter.
-> So, thanks for pointing that out as now I'm able to match the physical
-> address listed in iomem with the sysfs i2c bus.
+The previous version is;
 
-You are welcome!
+https://lore.kernel.org/bpf/161639518354.895304.15627519393073806809.stgit@devnote2/
 
-...
+This version fixes a build error from a typo in [1/12] and the
+case of interrupt happens on kretprobe_trampoline+0 in [11/12].
 
-> > >       snprintf(adap->name, sizeof(adap->name),
-> > > -              "Synopsys DesignWare I2C adapter");
-> > > +              "Synopsys DesignWare I2C adapter at 0x%llx", dev->base_addr);
-> >
-> > It actually should be resource_size_t and corresponding specifier, i.e. %pa to
-> > print it. Moreover, we have %pR (and %pr) specifiers for struct resource.
-> I understand this but I had some doubts when I declared the variable.
-> I took this as reference:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/i2c/busses/i2c-tegra.c?h=v5.12-rc4#n268
-> Should it be then defined as resource_size_t instead?
+With this series, unwinder can unwind stack correctly from ftrace as below;
 
-It's a good question. On one hand we know that resource_size_t is a simple
-redefinition of phys_addr_t, but it might be changed in the future. OTOH,
-struct resource has types of resource_size_t. In any case it's a type that is
-platform dependent (like long, size_t). Hence, the special specifier is needed.
+  # cd /sys/kernel/debug/tracing
+  # echo > trace
+  # echo r vfs_read >> kprobe_events
+  # echo r full_proxy_read >> kprobe_events
+  # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+  # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+  # echo 1 > events/kprobes/enable
+  # echo 1 > options/sym-offset
+  # cat /sys/kernel/debug/kprobes/list
+ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+  # echo 0 > events/kprobes/enable
+  # cat trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 3/3   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+           <...>-135     [005] ...1     9.422114: r_full_proxy_read_0: (vfs_read+0xab/0x1a0 <- full_proxy_read)
+           <...>-135     [005] ...1     9.422158: <stack trace>
+ => kretprobe_trace_func+0x209/0x2f0
+ => kretprobe_dispatcher+0x4a/0x70
+ => __kretprobe_trampoline_handler+0xca/0x150
+ => trampoline_handler+0x44/0x70
+ => kretprobe_trampoline+0x2a/0x50
+ => vfs_read+0xab/0x1a0
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x33/0x40
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+ => 0
 
-> Out of the i2c subsystem, I also found several examples. For example this:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/adc/at91-sama5d2_adc.c?h=v5.12-rc4#n364
-> But I understand this could be out of the scope.
+This shows the double return probes (vfs_read and full_proxy_read) on the stack
+correctly unwinded. (vfs_read was called from ksys_read+0x5f and full_proxy_read
+was called from vfs_read+0xab)
 
-Not all examples in the kernel are good examples (many of them is a cargo-cult
-and / or outdated). Take them with grain of salt.
+This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+the pt_regs passed to kretprobe user handler is correctly set the real return
+address. So user handlers can get it via instruction_pointer() API.
 
-But common rule is to check the log of the interesting subsystem (`git log --
-drivers/<subsystem>/`) in order to find the most recent drivers or modules
-added. There you very likely will find more or less modern standards and APIs
-you might reuse in your code.
-
-> Some others, even assign the the start to the dma_addr_t which could
-> vary depending on CONFIG_ARCH_DMA_ADDR_T_64BIT
-> but it seems equivalent to the phys_addr_t definition.
-
-There is a document that describes all possible extensions we have for %p. You
-might be curious to read more there.
-
-...
-
-> > > +     dev_info(&pdev->dev, "%s\n", adap->name);
-> >
-> > Unneeded noise.
-> Also this might be out of the scope again but I added because in tty
-> they were printing that information:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tty/serial/serial_core.c?h=v5.12-rc4#n2336
-
-TTY is different. TTY often related to a console and it's very important to
-know some information as soon as possible (don't forget also hardware
-debuggers, e.g. Lauterbach, which able to show kernel message ring buffer).
-As you may know console is the first common target during new platform
-bring-up.
-
--- 
-With Best Regards,
-Andy Shevchenko
+You can also get this series from 
+ git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v5
 
 
+Thank you,
+
+---
+
+Josh Poimboeuf (1):
+      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+
+Masami Hiramatsu (11):
+      ia64: kprobes: Fix to pass correct trampoline address to the handler
+      kprobes: treewide: Replace arch_deref_entry_point() with dereference_function_descriptor()
+      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+      kprobes: Add kretprobe_find_ret_addr() for searching return address
+      ARC: Add instruction_pointer_set() API
+      ia64: Add instruction_pointer_set() API
+      arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
+      kprobes: Setup instruction pointer in __kretprobe_trampoline_handler
+      x86/kprobes: Push a fake return address at kretprobe_trampoline
+      x86/unwind: Recover kretprobe trampoline entry
+      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+
+
+ arch/arc/include/asm/ptrace.h       |    5 ++
+ arch/arc/kernel/kprobes.c           |    2 -
+ arch/arm/probes/kprobes/core.c      |    5 +-
+ arch/arm64/kernel/probes/kprobes.c  |    3 -
+ arch/csky/kernel/probes/kprobes.c   |    2 -
+ arch/ia64/include/asm/ptrace.h      |    5 ++
+ arch/ia64/kernel/kprobes.c          |   15 ++---
+ arch/mips/kernel/kprobes.c          |    3 -
+ arch/parisc/kernel/kprobes.c        |    4 +
+ arch/powerpc/kernel/kprobes.c       |   13 -----
+ arch/riscv/kernel/probes/kprobes.c  |    2 -
+ arch/s390/kernel/kprobes.c          |    2 -
+ arch/sh/kernel/kprobes.c            |    2 -
+ arch/sparc/kernel/kprobes.c         |    2 -
+ arch/x86/include/asm/kprobes.h      |    1 
+ arch/x86/include/asm/unwind.h       |   23 ++++++++
+ arch/x86/include/asm/unwind_hints.h |    5 ++
+ arch/x86/kernel/kprobes/core.c      |   44 ++++++++++++----
+ arch/x86/kernel/unwind_frame.c      |    4 +
+ arch/x86/kernel/unwind_guess.c      |    3 -
+ arch/x86/kernel/unwind_orc.c        |   19 +++++--
+ include/linux/kprobes.h             |   41 ++++++++++++--
+ kernel/kprobes.c                    |   99 ++++++++++++++++++++++++-----------
+ kernel/trace/trace_output.c         |   17 +-----
+ lib/error-inject.c                  |    3 +
+ 25 files changed, 218 insertions(+), 106 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
