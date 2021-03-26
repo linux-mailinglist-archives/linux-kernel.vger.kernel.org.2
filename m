@@ -2,96 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A8634A112
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D8834A116
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbhCZFfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 01:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
+        id S229951AbhCZFiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 01:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCZFfO (ORCPT
+        with ESMTP id S229832AbhCZFhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 01:35:14 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D42C0613AA;
-        Thu, 25 Mar 2021 22:35:14 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id u8so3477219qtq.12;
-        Thu, 25 Mar 2021 22:35:13 -0700 (PDT)
+        Fri, 26 Mar 2021 01:37:47 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785F0C0613AA;
+        Thu, 25 Mar 2021 22:37:47 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id s2so3491506qtx.10;
+        Thu, 25 Mar 2021 22:37:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fio+eNqKIZMGxoTBS2oX9UsnA5xkc2RWawLuG0+HOLI=;
-        b=Db6EG7LpLtDK5ttxJY5gmbz2BnXdPp9k1UPT7O/u58DyyGlBySDBRPoHHe0WbTJdSN
-         z2aTP83Ka6wdx3k2YjUgy/Dg6NqS+lu99Ufdh/fya/LARDehr0QVOWVVyfqOS/6bPZ20
-         VXWaAuej4UbCOyV/sBVqV1bV0YRC7zHYiZ2Hj9J5nXenoLrAAJ8KcR0ovT5szR8LSzFd
-         dz5xIZmEo5/H6i07d3U0ebMTBtYkz6B22vYUNgnly1YTPPziRFYDfYHjIdN2fOwGFzqs
-         zgT4iDQqHqdRPGsPBmRViA4Qzgs7Byz9c/o4nQVvqV7pkKR729MWD9kxLmJDptmTiCRP
-         uJtA==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h4nP/hW2IjsV9gBeIhITMEtfKuipqQCrxcC+20/BgXk=;
+        b=W5JQbo1ZSR8/xcePz/vI7NIkq7xmA3fcS3Ettjk1X7eXteJUqf9d+ettnAQVHMxElG
+         RPZdKwmjgMPZs7H2M5H2M/GWASYLX13rZIz2SZztqc6U81K+MaF/8lq73feQG2TOI6ms
+         dwZp9qS69wV0NJZoHvLXoTbkP85StBzCasj0P2/vhScRxn9xYLprBgI//ZdMnM/5nPGS
+         rRdX4mgcbB4eso5LFRURJg1OqGjkTEzs7Tem/hcol3MmzMxGw4BIfNyIETqvjNZYOyex
+         Urk4jMPCy340RXLG/ad1NL6FYUATogMf4u1aDE9SS93rh2EevSvw2javeIienK9o+JD8
+         wo7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Fio+eNqKIZMGxoTBS2oX9UsnA5xkc2RWawLuG0+HOLI=;
-        b=AJvotqX7e4hYVV5IbcUfKDeE9tvubKNRGMyAg4AJ06OalzH/Hwpdv+NHglg0fWoMo5
-         rbptdOFTAOmiRxe2fy6Ktfj8dOULhTvYjV6yijuXxyLQP3iAaLIAqgnNmpyYcSwcYA1J
-         Q/pWww1XGls0T3UMNh6rjjGo3fe4AzX9EXJh1Bd7khwxE9L+WDYbVU5YU2k8X9+P8T8n
-         XNEaJhBqXMZtZtMCm0v+Z7vCkzxCo37U0bv1Z7pr6XGwfYkeLtqCtGIpDd2YR23N2NHR
-         MA0i3H6e4kvwVmphdPKRhqhCr9YUvPZqCRS7ThzXy0VjRTsUp71nPRuVJav1HPAFkmWN
-         idOw==
-X-Gm-Message-State: AOAM530HVOlhyHWvFspCt4TcIts4f+Boq+Db5hbf/VMUTbKmYtVM8T3s
-        qk5HUuz+lUyXdFvzKZTm6U1MKpRiAFM/Kjre
-X-Google-Smtp-Source: ABdhPJzHtAujBAwUPJjS0E2pAusfcfAtaNANtzYoRJ+uUm3R/HBC7RqPCy+Nz1tHg5nl+VoP2mFbMQ==
-X-Received: by 2002:a05:622a:250:: with SMTP id c16mr10625902qtx.7.1616736913057;
-        Thu, 25 Mar 2021 22:35:13 -0700 (PDT)
-Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
-        by smtp.gmail.com with ESMTPSA id j24sm5945325qka.67.2021.03.25.22.35.12
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=h4nP/hW2IjsV9gBeIhITMEtfKuipqQCrxcC+20/BgXk=;
+        b=dqnwatVsYLtlRjZO8sXZrm//xwH0zcATUjTyKaCnmhUf0WGhzyNGpYaftq2r25d0FW
+         PXKmtiDqd/AG/AKNPjpfJ4mHYicygP2ftZ1qfe7hEzOj1SKw53xV2t65dNr1k6mBT8xC
+         KRy4vfuARmtE/mO5BZajQVLoCPzrJZohCgjOWcP4T29keQhTIknxaRPzdxPEybfgIbv8
+         prYpQXdFXMZ+ZeKXbdWKiarV/gJPz7zywpKZuNv6becdtshKYuxLtHbFoAayjQwRged1
+         Swy3MvlIIJddHAWl03XXpijdfIFOZCO1P3ov/bpkp0bL7ImLLiFJhkpttqqAbWLxWpu/
+         De9Q==
+X-Gm-Message-State: AOAM532hTFV1G2g05yOgXQduW/AowM6nqVtBYIuJSRXLqqVKkAu5AYG1
+        XqRGLQw/mvTGY2qZFQA4IDE=
+X-Google-Smtp-Source: ABdhPJzkwVO2xEYSUZuseymSRMxn3v9UzfR9mLYe9dGOUb9AXSfGocDawr/n4bzITyDlPD3isMilsw==
+X-Received: by 2002:ac8:4602:: with SMTP id p2mr11165199qtn.377.1616737066819;
+        Thu, 25 Mar 2021 22:37:46 -0700 (PDT)
+Received: from Gentoo ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id y9sm5820069qkm.19.2021.03.25.22.37.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 22:35:12 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     tsbogend@alpha.franken.de
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        fazilyildiran@gmail.com
-Subject: [PATCH] arch: mips: fix unmet dependency for MTD_COMPLEX_MAPPINGS
-Date:   Fri, 26 Mar 2021 01:34:56 -0400
-Message-Id: <20210326053456.42020-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 25 Mar 2021 22:37:46 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 11:07:38 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     David Miller <davem@davemloft.net>
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: kinldy see the V2 ..just sent [PATCH] fddi: skfp: Rudimentary
+ spello fixes
+Message-ID: <YF1zImGzPwPsOSu9@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        David Miller <davem@davemloft.net>, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210325070835.32041-1-unixbhaskar@gmail.com>
+ <20210325.170911.1934364756284082401.davem@davemloft.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210325.170911.1934364756284082401.davem@davemloft.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CAVIUM_OCTEON_SOC is enabled, and MTD is disabled,
-Kbuild gives the following warning:
+On 17:09 Thu 25 Mar 2021, David Miller wrote:
+>From: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>Date: Thu, 25 Mar 2021 12:38:35 +0530
+>
+>>
+>> s/autohorized/authorized/
+>> s/recsource/resource/
+>> s/measuered/measured/
+>> sauthoriziation/authorization/
+>>
+>> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+>
+>Does not apply cleanly to net-next please respin.
+>
 
-WARNING: unmet direct dependencies detected for MTD_COMPLEX_MAPPINGS
-  Depends on [n]: MTD [=n] && HAS_IOMEM [=y]
-  Selected by [y]:
-  - CAVIUM_OCTEON_SOC [=y] && <choice>
+Kindly look in ,sending a V2 of this patch, hoping, that works!
 
-This is because CAVIUM_OCTEON_SOC selects MTD_COMPLEX_MAPPINGS,
-without selecting or depending on MTD, despite MTD_COMPLEX_MAPPINGS
-depending on MTD.
-
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..39b1c8030842 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -998,6 +998,7 @@ config CAVIUM_OCTEON_SOC
- 	select NR_CPUS_DEFAULT_64
- 	select MIPS_NR_CPU_NR_MAP_1024
- 	select BUILTIN_DTB
-+	select MTD
- 	select MTD_COMPLEX_MAPPINGS
- 	select SWIOTLB
- 	select SYS_SUPPORTS_RELOCATABLE
--- 
-2.25.1
-
+>Thank you.
