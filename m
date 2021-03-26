@@ -2,55 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9BC34AA54
+	by mail.lfdr.de (Postfix) with ESMTP id 01E4434AA57
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCZOmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:42:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51428 "EHLO mail.kernel.org"
+        id S230194AbhCZOmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:42:17 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:30047 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230080AbhCZOlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:41:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63B3861A05;
-        Fri, 26 Mar 2021 14:41:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616769715;
-        bh=Ub6j1ADUPloP6U9Fcg9w8Y53uDIZ1oVcMBI4XxirdVg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bWtJboigcqM+Lq+lBvRhBiIJ61S9hI5EHboXwrW5tQTiIUBzuYH299yz/i3tn0VhQ
-         H8D5TceAmlJz159qz+f6YnDq9JZUQ7pQSMLIsZUY2e1Hr0W9Q+wPF6hxYzo/Imm3yT
-         wdWHlOB+k/ZXOuvQJ4fAlO0CBCzBkQ/XwtCkwDUMN2GjQ7+pTlrsTvQQmhoeOxTQGd
-         MzMbhcT5Mt6yBblE4/qfpL+FLlp5pohwQLgJA7dmJjUCAXp4C93PGrw704nBCubtSf
-         fBc5aGwY6PmFaGF8pSG/MHLVX0gAZJi9eerkIRGxi7BR774xnxq1sfhADbPHF4/TGe
-         H7sqvWDaKAQTw==
-From:   Chao Yu <chao@kernel.org>
-To:     jaegeuk@kernel.org
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: delete empty compress.h
-Date:   Fri, 26 Mar 2021 22:41:43 +0800
-Message-Id: <20210326144143.2313-1-chao@kernel.org>
-X-Mailer: git-send-email 2.22.1
+        id S230230AbhCZOmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:42:06 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F6PnR4Ky0z9v0Nc;
+        Fri, 26 Mar 2021 15:42:03 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id CVOEt96TWs_n; Fri, 26 Mar 2021 15:42:03 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F6PnR3NyVz9v0NB;
+        Fri, 26 Mar 2021 15:42:03 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3E5CD8B8D9;
+        Fri, 26 Mar 2021 15:42:05 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id PwkSzDQZPpbn; Fri, 26 Mar 2021 15:42:05 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 25D228B8D7;
+        Fri, 26 Mar 2021 15:42:04 +0100 (CET)
+Subject: Re: [PATCH v2 0/8] Implement EBPF on powerpc32
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, open list <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+References: <cover.1616430991.git.christophe.leroy@csgroup.eu>
+ <CAEf4BzZjNK_La1t5FGyie02FCABBieZJod49rW4=WtMs7ELLSw@mail.gmail.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <86028d25-c3fe-3765-f7c3-12448523405a@csgroup.eu>
+Date:   Fri, 26 Mar 2021 15:41:59 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <CAEf4BzZjNK_La1t5FGyie02FCABBieZJod49rW4=WtMs7ELLSw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Yu <yuchao0@huawei.com>
 
-Commit 75e91c888989 ("f2fs: compress: fix compression chksum")
-wrongly introduced empty compress.h, delete it.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/compress.h | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
- delete mode 100644 fs/f2fs/compress.h
+Le 22/03/2021 à 18:53, Andrii Nakryiko a écrit :
+> On Mon, Mar 22, 2021 at 9:37 AM Christophe Leroy
+> <christophe.leroy@csgroup.eu> wrote:
+>>
+>> This series implements extended BPF on powerpc32. For the implementation
+>> details, see the patch before the last.
+>>
+>> The following operations are not implemented:
+>>
+>>                  case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /= src */
+>>                  case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %= src */
+>>                  case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) += src */
+>>
+>> The following operations are only implemented for power of two constants:
+>>
+>>                  case BPF_ALU64 | BPF_MOD | BPF_K: /* dst %= imm */
+>>                  case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
+>>
+>> Below are the results on a powerpc 885:
+>> - with the patch, with and without bpf_jit_enable
+>> - without the patch, with bpf_jit_enable (ie with CBPF)
+>>
+>> With the patch, with bpf_jit_enable = 1 :
+>>
+>> [   60.826529] test_bpf: Summary: 378 PASSED, 0 FAILED, [354/366 JIT'ed]
+>> [   60.832505] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+>>
+>> With the patch, with bpf_jit_enable = 0 :
+>>
+>> [   75.186337] test_bpf: Summary: 378 PASSED, 0 FAILED, [0/366 JIT'ed]
+>> [   75.192325] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+>>
+>> Without the patch, with bpf_jit_enable = 1 :
+>>
+>> [  186.112429] test_bpf: Summary: 371 PASSED, 7 FAILED, [119/366 JIT'ed]
+>>
+>> Couldn't run test_progs because it doesn't build (clang 11 crashes during the build).
+> 
+> Can you please try checking out the latest clang from sources and use
+> that one instead?
 
-diff --git a/fs/f2fs/compress.h b/fs/f2fs/compress.h
-deleted file mode 100644
-index e69de29bb2d1..000000000000
--- 
-2.22.1
+The crash is fixed, it builds one step more, then fails at:
 
+[root@PC-server-ldb bpf]# make CROSS_COMPILE=ppc-linux- ARCH=powerpc V=1
+/root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/host-tools/sbin/bpftool gen skeleton 
+/root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.o > 
+/root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.skel.h
+libbpf: elf: endianness mismatch in atomic_bounds.
+Error: failed to open BPF object file: Endian mismatch
+
+I'm cross-building on x86 for powerpc/32
+
+[root@PC-server-ldb bpf]# file atomic_bounds.o
+atomic_bounds.o: ELF 64-bit MSB relocatable, eBPF, version 1 (SYSV), with debug_info, not stripped
+
+Christophe
