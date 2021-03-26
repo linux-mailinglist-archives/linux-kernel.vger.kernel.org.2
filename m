@@ -2,99 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CBD349D7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:09:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62DF6349D7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhCZAJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:09:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229836AbhCZAJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:09:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 530236198C;
-        Fri, 26 Mar 2021 00:09:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616717340;
-        bh=rfHNeZy3xAA9yAvhD6BBRZD5DW31WjGDzteujbD/pZQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=cun7tR9jtx/N+rwe7kNhy7Lqi7pywG+g44F23esq+Lb5jGF1q5h2zb1dphMqZxA54
-         I7EBfuSflaykovnNs8bQTAb8RYQtx9cavHA9QFMYw3IJuRE5dHlUsLFvlhw0rI7BAH
-         3ufDJwd4FG9RLRK80zHebS+ucTTZ8vaqeFvfEcacnj2VUUIFQC/UHZcJYO9R/Ja09u
-         7K0aMJNIz/8KmEKdWXvkfJHsIEcdXAebaSG0zN77eKClRiXTdsApQk6df5OE4STICL
-         0/kNjVJ/h4l4AwJG0OFFzPArsMM76RayQbVg+t900hwsZK/5lnIMCTBMWTrmK/fmUX
-         fFPvVVgF6UUvg==
-Content-Type: text/plain; charset="utf-8"
+        id S230315AbhCZAJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhCZAJN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:09:13 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5594CC06174A;
+        Thu, 25 Mar 2021 17:09:13 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F62QF5qkjz9sVS;
+        Fri, 26 Mar 2021 11:09:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616717350;
+        bh=ZBeexDAFxKAAoQxf63ZF06+EPY4JetBWBnMNUNqWZXI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ORFCyRBAxir7+Lkr3Otk7mvUTx685mmBSDok/kgKhE5/ZWcPd+jZdCnsSGPXJdsXY
+         m48J0O2fwLaY7GhzFGQ6fX4XgAVLSvfJw0du08omu6AZd8h0ZF00CE/dvJk8AXfJ+j
+         bO1mVorvcZ2ljLugAXvNP50d9hPaSSdDNnquJfWANIJhzg6yj9+ynKtWTBc5ietFmq
+         axGOX4LG8NpxezE3b0OBJWJlviyduR5pGXdoKvG8G1bAm9/kIbp7uNOOHfo0lnypqV
+         aTOpmCiGsh+SCC2IzA5Dl6Em/6tSEF5fGvNMILwr9BzUogAVjHfjWAP2UduQuoEheQ
+         ZBr1HrqvO4zBA==
+Date:   Fri, 26 Mar 2021 11:09:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>,
+        Steve French <smfrench@gmail.com>,
+        CIFS <linux-cifs@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Steve French <stfrench@microsoft.com>
+Subject: linux-next: manual merge of the vfs tree with the cifs tree
+Message-ID: <20210326110906.401d4b9c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210316124903.35011-19-cristian.marussi@arm.com>
-References: <20210316124903.35011-1-cristian.marussi@arm.com> <20210316124903.35011-19-cristian.marussi@arm.com>
-Subject: Re: [PATCH v7 18/38] clk: scmi: port driver to the new scmi_clk_proto_ops interface
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, cristian.marussi@arm.com,
-        Michael Turquette <mturquette@baylibre.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Date:   Thu, 25 Mar 2021 17:08:59 -0700
-Message-ID: <161671733901.3012082.11186673559577220910@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: multipart/signed; boundary="Sig_/2UQcJwWTJp_fSt7vaSdkPCN";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry didn't notice because linux-clk@vger.kernel.org wasn't Cced
+--Sig_/2UQcJwWTJp_fSt7vaSdkPCN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Quoting Cristian Marussi (2021-03-16 05:48:43)
-> Port driver to the new SCMI Clock interface based on protocol handles
-> and common devm_get_ops().
->=20
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-> v6 -> v7
-> - fixed Copyright
-> - renamed non-static function to fit scmi_<OBJ>_<ACTION> naming pattern
-> v4 --> v5
-> - using renamed devm_get/put_protocol
-> ---
->  drivers/clk/clk-scmi.c | 27 +++++++++++++++++----------
->  1 file changed, 17 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> index c754dfbb73fd..be4c13d63385 100644
-> --- a/drivers/clk/clk-scmi.c
-> +++ b/drivers/clk/clk-scmi.c
-> @@ -2,7 +2,7 @@
->  /*
->   * System Control and Power Interface (SCMI) Protocol based clock driver
->   *
-> - * Copyright (C) 2018 ARM Ltd.
-> + * Copyright (C) 2018-2021 ARM Ltd.
->   */
-> =20
->  #include <linux/clk-provider.h>
-> @@ -13,11 +13,13 @@
->  #include <linux/scmi_protocol.h>
->  #include <asm/div64.h>
-> =20
-> +static const struct scmi_clk_proto_ops *clk_ops;
+Hi all,
 
-Can you call it scmi_proto_clk_ops instead of clk_ops? We already have
-'struct clk_ops' and this pollutes the global namespace with another
-'clk_ops'.
+Today's linux-next merge of the vfs tree got a conflict in:
 
-> +
->  struct scmi_clk {
->         u32 id;
->         struct clk_hw hw;
->         const struct scmi_clock_info *info;
-> -       const struct scmi_handle *handle;
-> +       const struct scmi_protocol_handle *ph;
->  };
-> =20
->  #define to_scmi_clk(clk) container_of(clk, struct scmi_clk, hw)
+  fs/cifs/file.c
+
+between commit:
+
+  4c7b707d72f5 ("cifs: revalidate mapping when we open files for SMB1 POSIX=
+")
+
+from the cifs tree and commit:
+
+  4d66952a2032 ("cifs: have cifs_fattr_to_inode() refuse to change type on =
+live inode")
+
+from the vfs tree.
+
+I fixed it up (I thknk - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/cifs/file.c
+index 042e24aad410,78266f0e0595..000000000000
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@@ -165,8 -165,7 +165,8 @@@ int cifs_posix_open(char *full_path, st
+  			goto posix_open_ret;
+  		}
+  	} else {
+ +		cifs_revalidate_mapping(*pinode);
+- 		cifs_fattr_to_inode(*pinode, &fattr);
++ 		rc =3D cifs_fattr_to_inode(*pinode, &fattr);
+  	}
+ =20
+  posix_open_ret:
+
+--Sig_/2UQcJwWTJp_fSt7vaSdkPCN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBdJiIACgkQAVBC80lX
+0GxodwgAhk3Njs6Rod5vmElaNF1bZY6VWo09ax+DWV6oFe9aUdBxSx/U3ZUnzntP
+/+lFOPGyr2DcA5jfNELysDp9XuCNUeVszPhIsHNR6nOaH3jaWzFQmwuHEA6bZvYS
+/QfC3LqxrWOe5R9kzRtlVjFCiDkIqPgse8y0x0AIiYjjoe/tiPBecgWH4Pwwgrv1
+bjqFfAFBvJ1kXB65f6thgFztqQAczdTa2EBjoBFcD0UhAGjJ/jZrcVSCD7NGjGiy
+HaPHtlNrSEJvrL4qtUPZMzCNVh2ZgdPeOH4E7qO8JhGQ5LYJ94anMIrJ5oAGFdiy
+XyHSoINKBbIG09lX8+VOiMTfJtl0cQ==
+=vXpm
+-----END PGP SIGNATURE-----
+
+--Sig_/2UQcJwWTJp_fSt7vaSdkPCN--
