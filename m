@@ -2,195 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E6D34A963
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA6634A968
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCZOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230016AbhCZOOG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:14:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EFAC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:14:06 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPnDj-0006Hs-Ik; Fri, 26 Mar 2021 15:13:51 +0100
-Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPnDj-0006e9-30; Fri, 26 Mar 2021 15:13:51 +0100
-Date:   Fri, 26 Mar 2021 15:13:51 +0100
-From:   Philipp Zabel <pza@pengutronix.de>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v6 03/13] media: hantro: Use syscon instead of 'ctrl'
- register
-Message-ID: <20210326141351.GB8441@pengutronix.de>
-References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
- <20210318082046.51546-4-benjamin.gaignard@collabora.com>
+        id S230108AbhCZORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:17:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43686 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229986AbhCZORB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:17:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D2F6FAC6A;
+        Fri, 26 Mar 2021 14:17:00 +0000 (UTC)
+To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, David Hildenbrand <david@redhat.com>
+References: <20210326112650.307890-1-slyfox@gentoo.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm: page_alloc: ignore init_on_free=1 for page alloc
+Message-ID: <6c4a20f3-16ab-3c6c-1d6d-4708db4e9ebf@suse.cz>
+Date:   Fri, 26 Mar 2021 15:17:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210318082046.51546-4-benjamin.gaignard@collabora.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:12:15 up 36 days, 17:36, 97 users,  load average: 0.14, 0.18,
- 0.16
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: pza@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210326112650.307890-1-slyfox@gentoo.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 09:20:36AM +0100, Benjamin Gaignard wrote:
-> In order to be able to share the control hardware block between
-> VPUs use a syscon instead a ioremap it in the driver.
-> To keep the compatibility with older DT if 'nxp,imx8mq-vpu-ctrl'
-> phandle is not found look at 'ctrl' reg-name.
-> With the method it becomes useless to provide a list of register
-> names so remove it.
+On 3/26/21 12:26 PM, Sergei Trofimovich wrote:
+> init_on_free=1 does not guarantee that free pages contain only zero bytes.
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Some examples:
+> 1. page_poison=on takes presedence over init_on_alloc=1 / ini_on_free=1
+
+Yes, and it spits out a message that you enabled both and poisoning takes
+precedence. It was that way even before my changes IIRC, but not consistent.
+
+> 2. free_pages_prepare() always poisons pages:
+> 
+>        if (want_init_on_free())
+>            kernel_init_free_pages(page, 1 << order);
+>        kernel_poison_pages(page, 1 << order
+
+kernel_poison_pages() includes a test if poisoning is enabled. And in that case
+want_init_on_free() shouldn't be. see init_mem_debugging_and_hardening()
+
+> 
+> I observed use of poisoned pages as the crash on ia64 booted with
+> init_on_free=1 init_on_alloc=1 (CONFIG_PAGE_POISONING=y config).
+> There pmd page contained 0xaaaaaaaa poison pages and led to early crash.
+
+Hm but that looks lika a sign that ia64 pmd allocation should use __GFP_ZERO and
+doesn't. It shouldn't rely on init_on_alloc or init_on_free being enabled.
+
+> The change drops the assumption that init_on_free=1 guarantees free
+> pages to contain zeros.
+
+The change assumes that page_poison=on also leaves want_init_on_free() enabled,
+but it doesn't.
+
+> Alternative would be to make interaction between runtime poisoning and
+> sanitizing options and build-time debug flags like CONFIG_PAGE_POISONING
+> more coherent. I took the simpler path.
+
+So that was done in 5.11 and the decisions can be seen in
+init_mem_debugging_and_hardening(). There might be of course a bug, or later
+changes broke something. Which was the version that you observed a bug?
+
+> Tested the fix on rx3600.
+> 
+> CC: Andrew Morton <akpm@linux-foundation.org>
+> CC: linux-mm@kvack.org
+> Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 > ---
-> version 5:
->  - use syscon instead of VPU reset driver.
->  - if DT doesn't provide syscon keep backward compatibilty by using
->    'ctrl' reg-name.
+>  mm/page_alloc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->  drivers/staging/media/hantro/hantro.h       |  5 +-
->  drivers/staging/media/hantro/imx8m_vpu_hw.c | 52 ++++++++++++---------
->  2 files changed, 34 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
-> index 65f9f7ea7dcf..a99a96b84b5e 100644
-> --- a/drivers/staging/media/hantro/hantro.h
-> +++ b/drivers/staging/media/hantro/hantro.h
-> @@ -13,6 +13,7 @@
->  #define HANTRO_H_
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index cfc72873961d..d57d9b4f7089 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2301,7 +2301,7 @@ inline void post_alloc_hook(struct page *page, unsigned int order,
+>  	kernel_unpoison_pages(page, 1 << order);
+>  	set_page_owner(page, order, gfp_flags);
 >  
->  #include <linux/platform_device.h>
-> +#include <linux/regmap.h>
->  #include <linux/videodev2.h>
->  #include <linux/wait.h>
->  #include <linux/clk.h>
-> @@ -167,7 +168,7 @@ hantro_vdev_to_func(struct video_device *vdev)
->   * @reg_bases:		Mapped addresses of VPU registers.
->   * @enc_base:		Mapped address of VPU encoder register for convenience.
->   * @dec_base:		Mapped address of VPU decoder register for convenience.
-> - * @ctrl_base:		Mapped address of VPU control block.
-> + * @ctrl_base:		Regmap of VPU control block.
->   * @vpu_mutex:		Mutex to synchronize V4L2 calls.
->   * @irqlock:		Spinlock to synchronize access to data structures
->   *			shared with interrupt handlers.
-> @@ -186,7 +187,7 @@ struct hantro_dev {
->  	void __iomem **reg_bases;
->  	void __iomem *enc_base;
->  	void __iomem *dec_base;
-> -	void __iomem *ctrl_base;
-> +	struct regmap *ctrl_base;
->  
->  	struct mutex vpu_mutex;	/* video_device lock */
->  	spinlock_t irqlock;
-> diff --git a/drivers/staging/media/hantro/imx8m_vpu_hw.c b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> index c222de075ef4..bd9d135dd440 100644
-> --- a/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> +++ b/drivers/staging/media/hantro/imx8m_vpu_hw.c
-> @@ -7,6 +7,7 @@
->  
->  #include <linux/clk.h>
->  #include <linux/delay.h>
-> +#include <linux/mfd/syscon.h>
->  
->  #include "hantro.h"
->  #include "hantro_jpeg.h"
-> @@ -24,30 +25,28 @@
->  #define CTRL_G1_PP_FUSE		0x0c
->  #define CTRL_G2_DEC_FUSE	0x10
->  
-> +static const struct regmap_config ctrl_regmap_ctrl = {
-> +	.reg_bits = 32,
-> +	.val_bits = 32,
-> +	.reg_stride = 0x14,
-> +};
-> +
->  static void imx8m_soft_reset(struct hantro_dev *vpu, u32 reset_bits)
->  {
-> -	u32 val;
-> -
->  	/* Assert */
-> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
-> -	val &= ~reset_bits;
-> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
-> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET, reset_bits, 0);
->  
->  	udelay(2);
->  
->  	/* Release */
-> -	val = readl(vpu->ctrl_base + CTRL_SOFT_RESET);
-> -	val |= reset_bits;
-> -	writel(val, vpu->ctrl_base + CTRL_SOFT_RESET);
-> +	regmap_update_bits(vpu->ctrl_base, CTRL_SOFT_RESET,
-> +			   reset_bits, reset_bits);
+> -	if (!want_init_on_free() && want_init_on_alloc(gfp_flags))
+> +	if (want_init_on_alloc(gfp_flags))
+>  		kernel_init_free_pages(page, 1 << order);
 >  }
 >  
->  static void imx8m_clk_enable(struct hantro_dev *vpu, u32 clock_bits)
->  {
-> -	u32 val;
-> -
-> -	val = readl(vpu->ctrl_base + CTRL_CLOCK_ENABLE);
-> -	val |= clock_bits;
-> -	writel(val, vpu->ctrl_base + CTRL_CLOCK_ENABLE);
-> +	regmap_update_bits(vpu->ctrl_base, CTRL_CLOCK_ENABLE,
-> +			   clock_bits, clock_bits);
->  }
->  
->  static int imx8mq_runtime_resume(struct hantro_dev *vpu)
-> @@ -64,9 +63,9 @@ static int imx8mq_runtime_resume(struct hantro_dev *vpu)
->  	imx8m_clk_enable(vpu, CLOCK_G1 | CLOCK_G2);
->  
->  	/* Set values of the fuse registers */
-> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_DEC_FUSE);
-> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G1_PP_FUSE);
-> -	writel(0xffffffff, vpu->ctrl_base + CTRL_G2_DEC_FUSE);
-> +	regmap_write(vpu->ctrl_base, CTRL_G1_DEC_FUSE, 0xffffffff);
-> +	regmap_write(vpu->ctrl_base, CTRL_G1_PP_FUSE, 0xffffffff);
-> +	regmap_write(vpu->ctrl_base, CTRL_G2_DEC_FUSE, 0xffffffff);
->  
->  	clk_bulk_disable_unprepare(vpu->variant->num_clocks, vpu->clocks);
->  
-> @@ -150,8 +149,22 @@ static irqreturn_t imx8m_vpu_g1_irq(int irq, void *dev_id)
->  
->  static int imx8mq_vpu_hw_init(struct hantro_dev *vpu)
->  {
-> -	vpu->dec_base = vpu->reg_bases[0];
-> -	vpu->ctrl_base = vpu->reg_bases[vpu->variant->num_regs - 1];
-> +	struct device_node *np = vpu->dev->of_node;
-> +
-> +	vpu->ctrl_base = syscon_regmap_lookup_by_phandle(np, "nxp,imx8mq-vpu-ctrl");
+> 
 
-I think calling this nxp,imx8m-vpu-ctrl would allow to share this with
-i.MX8MM later. Otherwise,
-
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-
-thanks
-Philipp
