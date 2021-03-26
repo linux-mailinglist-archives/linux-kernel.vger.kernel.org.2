@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1BF34A16B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 07:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADF934A16E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 07:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhCZGHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 02:07:50 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:34164 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229551AbhCZGH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 02:07:27 -0400
+        id S229933AbhCZGJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 02:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhCZGJN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 02:09:13 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9084BC0613AA;
+        Thu, 25 Mar 2021 23:09:12 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso3739532pji.3;
+        Thu, 25 Mar 2021 23:09:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616738848;
-  x=1648274848;
-  h=from:to:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=E6eNUZQ3KpEv15NAH6e1EpXfcFRADmQJHhYR5BoWcx8=;
-  b=G2cNr1+W0QcdHrfbMXYd5SkVZJMSs7b1+dC9vN14e+jMJKUY0ifRu90W
-   5IxHV+xLwMBe/RnPIjqtOSZ8Kx0/6oxRv04FtfGPms80U088FJdxeZvaq
-   xP7iLA0GWcJqIbcHAoVGL1fuyD1TK/hT52OfZf7Av8mNdy06DS0o1XsQW
-   KqP9Qva1Hzx0+0kHCy0cVLAe8JAuibDM5lVVkZBRoOtkW4QVmg0p+dM+B
-   i2i+WAU0i5iKof/48SXVs++kBvjPDDR9WpjokiCMXLXabIVR3PDPU7yLJ
-   lIu9zljLZWgE5qcUtxlxdZ01HJJrpyaxmDuSPIefDaNCm9wom2oP2VlQo
-   Q==;
-From:   Hermes Zhang <Hermes.Zhang@axis.com>
-To:     "pavel@ucw.cz" <pavel@ucw.cz>, "dmurphy@ti.com" <dmurphy@ti.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hermes Zhang <Hermes.Zhang@axis.com>,
-        "lkml@axis.com" <lkml@axis.com>, kernel <kernel@axis.com>
-Subject: Re: [PATCH v2 2/2] leds: leds-multi-gpio: Add multiple GPIOs LED
- driver
-Thread-Topic: [PATCH v2 2/2] leds: leds-multi-gpio: Add multiple GPIOs LED
- driver
-Thread-Index: AQHXIgDn9WkVNzIcREGb9FBG0Jikcw==
-Date:   Fri, 26 Mar 2021 06:07:26 +0000
-Message-ID: <05c93a739a404e3cb181802619258674@XBOX01.axis.com>
-References: <20210326052801.17666-1-chenhui.zhang@axis.com>
- <20210326052801.17666-3-chenhui.zhang@axis.com>
- <20210326055559.izdyzb5gwgwthv4i@falbala.internal.home.lespocky.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.0.5.60]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ak4+6/Le73R2AqNhvkzsYCdlvXiggVWfndGzWqhkeW8=;
+        b=blDsomwLMc6m/Lk0gOR07b4Ck1mkwWtCut3wpIn+zUmU4ukHZAH+512REYOUWSY53O
+         SZDiEDTELmKYqxEgLkJNH97a7KhySqU3xctk9+0J+2PU8BaGslk2nai0uWCAqTURUHco
+         HJu8yRh0D2nA1jCzS5JmVZwqr+Sl5m4ceH0hA7q4Ao2HgVSB/WejDnzem9u2Lsp0fCJp
+         xvPpRC5eYc2IEp6e2PRko9jxk2Fk3pmCqaaTENAekcL4fS/6SWyjTHPx4z5dBoHW/ePl
+         I6V5h5pDclJFsdqVGbfsScW9rbHeJhFK/McGI/q1u1XCp6hAkZcDhtn286YLJgjhR+QG
+         6S+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ak4+6/Le73R2AqNhvkzsYCdlvXiggVWfndGzWqhkeW8=;
+        b=E+BsEXau2PbC6ZWJFpmmgGG+pHjbN/8q9w9JMfTPD5W9TmirVk8JVfyJyoRaHcbV9m
+         GTdN8LK2ZhXlZX4NOcNkLT646FqC9dERBgyat96dMzbZKA3r1mgq6DKWWwtwoLFbYGmd
+         i2F3ygiciOmlbrFtOsTBgExZiNiWvR2MaGYNOx5xnI7umImU05nowq9tpW95tOu/A3GQ
+         BIJhsPZ6KaygyVHOs/Zmkgf5EQyYZ26vURpT4i0nxH3pt0F6GV5e8iNN6bD/SCDs5BOJ
+         NyR5xf0NLxFt0Vmy7LIN4RltxPuVJwP/QRKBY1kAa0g/o4HGPkdlUFizEi8l6mFYEJv6
+         FlEQ==
+X-Gm-Message-State: AOAM533NZeSxbRsXnWiXD0djpdVaZJ4IOL5ij16Rh8H0AKtx7rqiRhtr
+        /FmiePPgy9Np4C3bYccQZeA=
+X-Google-Smtp-Source: ABdhPJxWdx7l/dNt2K7Uoy9pLJaPYBsLvP+aWpiFY7K037YZqN80Lc5d9IkAAP/ZgvrVKr0wH2d4aQ==
+X-Received: by 2002:a17:902:bcc8:b029:e6:f010:aa15 with SMTP id o8-20020a170902bcc8b02900e6f010aa15mr13681229pls.55.1616738952219;
+        Thu, 25 Mar 2021 23:09:12 -0700 (PDT)
+Received: from localhost.localdomain ([202.85.220.39])
+        by smtp.gmail.com with ESMTPSA id m7sm7908634pfd.52.2021.03.25.23.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 23:09:11 -0700 (PDT)
+From:   dudengke <pinganddu90@gmail.com>
+To:     bvanassche@acm.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, dudengke <dengke.du@ucas.com.cn>
+Subject: [PATCH] __scsi_remove_device: fix comments minor error
+Date:   Fri, 26 Mar 2021 14:09:02 +0800
+Message-Id: <20210326060902.1851811-1-pinganddu90@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 1:56 PM, Alexander Dahl wrote:=0A=
->> +=0A=
->> +module_platform_driver(multi_gpio_led_driver);=0A=
->> +=0A=
->> +MODULE_AUTHOR("Hermes Zhang <chenhui.zhang@axis.com>");=0A=
->> +MODULE_DESCRIPTION("Multiple GPIOs LED driver");=0A=
->> +MODULE_LICENSE("GPL v2");=0A=
->> +MODULE_ALIAS("platform:leds-multi-gpio");=0A=
-> I did not review thouroughly, but in my mail the indentation looks=0A=
-> wrong. Did checkpatch complain?=0A=
-=0A=
-Sorry, I forgot to check the style before commit, but seems one problem=0A=
-about extra space:=0A=
-=0A=
-$ chkernel=0A=
-ERROR: space prohibited before that ',' (ctx:WxW)=0A=
-#164: FILE: drivers/leds/simple/leds-multi-gpio.c:76:=0A=
-+            + sizeof(u8) * nr_states , GFP_KERNEL);=0A=
-                                                   ^=0A=
-=0A=
-I will fix it in next commit.=0A=
-=0A=
-=0A=
-Best Regards,=0A=
-=0A=
-Hermes=0A=
-=0A=
-=0A=
+From: dudengke <dengke.du@ucas.com.cn>
+
+Signed-off-by: dudengke <dengke.du@ucas.com.cn>
+---
+ drivers/scsi/scsi_sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
+index b6378c8ca783..86e8d0bf821d 100644
+--- a/drivers/scsi/scsi_sysfs.c
++++ b/drivers/scsi/scsi_sysfs.c
+@@ -1458,7 +1458,7 @@ void __scsi_remove_device(struct scsi_device *sdev)
+ 
+ 	/*
+ 	 * Paired with the kref_get() in scsi_sysfs_initialize().  We have
+-	 * remoed sysfs visibility from the device, so make the target
++	 * removed sysfs visibility from the device, so make the target
+ 	 * invisible if this was the last device underneath it.
+ 	 */
+ 	scsi_target_reap(scsi_target(sdev));
+-- 
+2.25.1
+
