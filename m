@@ -2,87 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5FE034AED9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE6734AEDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhCZS5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:57:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230194AbhCZS5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:57:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F6AA619F7;
-        Fri, 26 Mar 2021 18:56:56 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 18:56:54 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v10 1/6] arm64: mte: Sync tags for pages where PTE is
- untagged
-Message-ID: <20210326185653.GG5126@arm.com>
-References: <20210312151902.17853-1-steven.price@arm.com>
- <20210312151902.17853-2-steven.price@arm.com>
+        id S230188AbhCZS7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230043AbhCZS7E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:59:04 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F385C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:59:04 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id n21so6448996ioa.7
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:59:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IPTFHd/bFsFer84YcSkEwgKpuL9sF8ejRR5pI+umTEo=;
+        b=yc/HSwMASk6Ljayo+ULC4YvEGj3F6N23Ss3jM7K4MF5ctuibs1oJJmt4NQsEVWeSmO
+         2oeM9qhnb36ts+9IzfcFJjJKLf7OZu1xreMgc0bN6eNxUnX45gKpRsCyR7YG8B2e5MBv
+         7wd/RyLlkniwktDDXCtwBjVGaRr89Egh+t2v+MGHF9WtzkdxuMWI8xk4irhBYt0nt1qS
+         lc1EPXq9Zg7x/aBrUl6/i3xf2d/6ALRR+EhFCxWdFUlBeosfNnCVnLJ+5nj5iKbxyaBo
+         puQipbfQ0W+ZmGIyc+zDJDV8dhzwpURqnaAsjnvMjMtMi0C6SdBrrmLmFdsT3rQ2iBpR
+         7Amw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IPTFHd/bFsFer84YcSkEwgKpuL9sF8ejRR5pI+umTEo=;
+        b=E1Nf2oDjEfQMBG4OdHNqsmYsnqAUkJ3ewGgeT5hiGDuyJdg7REGXL3vaN9H3dL03tT
+         yMsmgZ4TmQN0upWELezHc5v7G8xY7Ndqn/QZtqlJ8e48P+eSSxIwaJ+fepfFOSocTYPz
+         U8mhl+1kV3sIY4BfoTPZSnZiNClZ+BWgf5e2DowxhysxbRKLN0S4ozvjvel0t+RcHnev
+         ub5bG0/KKi7wQ/iODMcXickJPeVf8ndrwSSfN6jdjR5bNXttvii3kUtJRFnGoPx1Oc31
+         eCuKEwHX2iH0joo32DqHGOzbe1T65Kjn+sW1zYs2OR9brxwPMVEHC45WQREFNm17zk/W
+         O1tg==
+X-Gm-Message-State: AOAM532PpH2OzTrmfk3v6EpepX+p4w/8geI5LjIxJvSXzaYUw25TZsLN
+        gt+zHwWau8khiOVStFqsjnLlG9LWraK3vw==
+X-Google-Smtp-Source: ABdhPJy67srVFuOjyfRF/VN6JpaOBu3bkbDnVRZ0N9/cQ/2t4+M+T5Ca5PEOOS1s1mSVqPaWPAnMEg==
+X-Received: by 2002:a02:c002:: with SMTP id y2mr13308240jai.107.1616785142841;
+        Fri, 26 Mar 2021 11:59:02 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id o23sm4771061ioo.24.2021.03.26.11.59.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 11:59:02 -0700 (PDT)
+Subject: Re: [PATCH 2/8] kernel: unmask SIGSTOP for IO threads
+To:     Stefan Metzmacher <metze@samba.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        ebiederm@xmission.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <20210326003928.978750-3-axboe@kernel.dk> <20210326134840.GA1290@redhat.com>
+ <a179ad33-5656-b644-0d92-e74a6bd26cc8@kernel.dk>
+ <8f2a4b48-77c9-393f-5194-100ed63c05fc@samba.org>
+ <58f67a8b-166e-f19c-ccac-157153e4f17c@kernel.dk>
+ <c61fc5eb-c997-738b-1a60-5e3db2754f49@samba.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <857d1456-2258-f798-5927-ca4d82f10d50@kernel.dk>
+Date:   Fri, 26 Mar 2021 12:59:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210312151902.17853-2-steven.price@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <c61fc5eb-c997-738b-1a60-5e3db2754f49@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
-
-On Fri, Mar 12, 2021 at 03:18:57PM +0000, Steven Price wrote:
-> A KVM guest could store tags in a page even if the VMM hasn't mapped
-> the page with PROT_MTE. So when restoring pages from swap we will
-> need to check to see if there are any saved tags even if !pte_tagged().
+On 3/26/21 12:01 PM, Stefan Metzmacher wrote:
+> Am 26.03.21 um 16:29 schrieb Jens Axboe:
+>> On 3/26/21 9:23 AM, Stefan Metzmacher wrote:
+>>> Am 26.03.21 um 16:01 schrieb Jens Axboe:
+>>>> On 3/26/21 7:48 AM, Oleg Nesterov wrote:
+>>>>> Jens, sorry, I got lost :/
+>>>>
+>>>> Let's bring you back in :-)
+>>>>
+>>>>> On 03/25, Jens Axboe wrote:
+>>>>>>
+>>>>>> With IO threads accepting signals, including SIGSTOP,
+>>>>>
+>>>>> where can I find this change? Looks like I wasn't cc'ed...
+>>>>
+>>>> It's this very series.
+>>>>
+>>>>>> unmask the
+>>>>>> SIGSTOP signal from the default blocked mask.
+>>>>>>
+>>>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>>>> ---
+>>>>>>  kernel/fork.c | 2 +-
+>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/kernel/fork.c b/kernel/fork.c
+>>>>>> index d3171e8e88e5..d5a40552910f 100644
+>>>>>> --- a/kernel/fork.c
+>>>>>> +++ b/kernel/fork.c
+>>>>>> @@ -2435,7 +2435,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+>>>>>>  	tsk = copy_process(NULL, 0, node, &args);
+>>>>>>  	if (!IS_ERR(tsk)) {
+>>>>>>  		sigfillset(&tsk->blocked);
+>>>>>> -		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
+>>>>>> +		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
+>>>>>
+>>>>> siginitsetinv(blocked, sigmask(SIGKILL)|sigmask(SIGSTOP)) but this is minor.
+>>>>
+>>>> Ah thanks.
+>>>>
+>>>>> To remind, either way this is racy and can't really help.
+>>>>>
+>>>>> And if "IO threads accepting signals" then I don't understand why. Sorry,
+>>>>> I must have missed something.
+>>>>
+>>>> I do think the above is a no-op at this point, and we can probably just
+>>>> kill it. Let me double check, hopefully we can just remove this blocked
+>>>> part.
+>>>
+>>> Is this really correct to drop in your "kernel: stop masking signals in create_io_thread()"
+>>> commit?
+>>>
+>>> I don't assume signals wanted by userspace should potentially handled in an io_thread...
+>>> e.g. things set with fcntl(fd, F_SETSIG,) used together with F_SETLEASE?
+>>
+>> I guess we do actually need it, if we're not fiddling with
+>> wants_signal() for them. To quell Oleg's concerns, we can just move it
+>> to post dup_task_struct(), that should eliminate any race concerns
+>> there.
 > 
-> However don't check pages which are !pte_valid_user() as these will
-> not have been swapped out.
+> If that one is racy, don' we better also want this one?
+> https://lore.kernel.org/io-uring/438b738c1e4827a7fdfe43087da88bbe17eedc72.1616197787.git.metze@samba.org/T/#u
 > 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> ---
->  arch/arm64/include/asm/pgtable.h |  2 +-
->  arch/arm64/kernel/mte.c          | 16 ++++++++++++----
->  2 files changed, 13 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> index e17b96d0e4b5..84166625c989 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
->  		__sync_icache_dcache(pte);
->  
->  	if (system_supports_mte() &&
-> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
-> +	    pte_present(pte) && pte_valid_user(pte) && !pte_special(pte))
->  		mte_sync_tags(ptep, pte);
+> And clear tsk->pf_io_worker ?
 
-With the EPAN patches queued in for-next/epan, pte_valid_user()
-disappeared as its semantics weren't very clear.
-
-So this relies on the set_pte_at() being done on the VMM address space.
-I wonder, if the VMM did an mprotect(PROT_NONE), can the VM still access
-it via stage 2? If yes, the pte_valid_user() test wouldn't work. We need
-something like pte_present() && addr <= user_addr_max().
-
-BTW, ignoring virtualisation, can we ever bring a page in from swap on a
-PROT_NONE mapping (say fault-around)? It's not too bad if we keep the
-metadata around for when the pte becomes accessible but I suspect we
-remove it if the page is removed from swap.
+Definitely prudent. I'll get round 2 queued up shortly.
 
 -- 
-Catalin
+Jens Axboe
+
