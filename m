@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C870234B283
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE4A34B28F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhCZXNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:13:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhCZXMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:12:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E84661A2A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 23:12:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616800358;
-        bh=24pKDfbjgMO5cT0vfldX3nEeWd0DAVSbgu1Cx1/p6+c=;
-        h=From:Date:Subject:To:From;
-        b=nmJCEwg3z7vwEKwXCg+382LcBoOge1tCbAyZOF0O5vqNS9m+ctxDm9mV1CwHhPR6f
-         khUA76Xb9FO+wVPjhsNeMexMy5HKAA6+wenhy/H/VpZTRbJTNCqH2a5UX9FhPg6nrf
-         GwtA28uOGitHOr6EQOri7RIURqrMoOw1m+6pIAPCVd286ItOfNDm39MxyjGevbcqHA
-         aVv1H4aUPdaSYhJBtfYytY6oNnHgAEN1cYXtMZAb0WqieuEtcUr2yih05LE56intAf
-         Ot5piD+MUwuLJoM8Bz5x7BfB70jKim3/KK5AI2IQ8Wj4tyAjI1ORLyv1yiP6NXjPe1
-         MQsG21q4l82xA==
-Received: by mail-ed1-f45.google.com with SMTP id y6so8092698eds.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 16:12:37 -0700 (PDT)
-X-Gm-Message-State: AOAM531aBoep+v94ZS7ZXs029i2RPfpxVDFalxdavYj0W8RinpOhavg/
-        XebdpJ/ikb/fkVfDGu/gytjyhSEfSR4F+aIOl0ETjA==
-X-Google-Smtp-Source: ABdhPJyJHhr3Jeg/rskbL19tHEX1mN80b9QAR/1FBTRRwNpcItd4rIVGCIhhNN6fjGOUHstbVG8DnDdsj9GaEzSpMFY=
-X-Received: by 2002:a50:fa92:: with SMTP id w18mr17525282edr.172.1616800356579;
- Fri, 26 Mar 2021 16:12:36 -0700 (PDT)
+        id S230406AbhCZXQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 19:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230027AbhCZXQM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 19:16:12 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CF3C0613AA;
+        Fri, 26 Mar 2021 16:16:11 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id a11so5458173qto.2;
+        Fri, 26 Mar 2021 16:16:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vgsz7ZN7uKy3wB1ShodSX/+9bSxifBh4BI3uckNFdmg=;
+        b=YkrleWqbwO4BVBJWVA8WzfZD9F3QX7Sti2ANq3sxydQC9u4deOiETG9LXkw9PQo6Zm
+         76xP5MJYL7+mVjLfxqcRXaCpxPXgx0Jz+phBwTYZYWTwmwbbXhoqpNjhXmJT4j4pHjDB
+         mHHIcJi90GftJpe/fuXXjviBJpYhvEmCikOv0PeY1ocUiI/moy1RF7Q5fflej6HbAQ5Z
+         /zmeVIG31oGZJ1cQEfuHUExYWQx+clnmymJb5uMjXYbGyZqcCs2aZguwq4muk0ic+8fx
+         ZfGxY71T7KF7KVnMVyjFyJ5FJ+5FnXBHZdMiIX5ZcDx9q8LTUaSHgHgdWxEComS4pXDT
+         VNPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Vgsz7ZN7uKy3wB1ShodSX/+9bSxifBh4BI3uckNFdmg=;
+        b=PRH+4Bs393eh9xDp5f21s3R1BD0jhlk/uwFy1AzPL6B5+PaBrc0DAnPfO8xc43F+Lg
+         0Bm4L4lzb+UWzVxKFqLZGhvycZns4ZIzBZCr+5M4vN4tVlcTO+9dwfc8XovtoF3dkSIP
+         gTVeXdlWICZHnNBSNWSXhFDZwmn4kkZZOPhwXToSQFM37myMxgaUBpyrB1lE0JrLk7yt
+         9Zi9ry+YBo0DoPERmhD8BNkpxT9p6iAgEMgyBFlv6hnLmCcJlQ/EnYqCM947EWCO/hu5
+         nMBKZ6/BBsk1+2CKmmw2SrF5AyRrGszWW/cIlJOGfjDOJjT4L1Gio3PBtCKpkxVWY06M
+         kLOQ==
+X-Gm-Message-State: AOAM531wHselrXYL4ND1/QlVTY5IQT57WlMAIyNcAg6AurPnOU1IZMGb
+        HbW+n979TjCKhmIFZwDmbTE=
+X-Google-Smtp-Source: ABdhPJxN+05tcyuP3/wuenZyhXMmnVsYg81QksRIFkb0bmqUmK3+63WnsQienQcrQbvqhXLP4FVygQ==
+X-Received: by 2002:ac8:4b58:: with SMTP id e24mr14054323qts.120.1616800570655;
+        Fri, 26 Mar 2021 16:16:10 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.58.30])
+        by smtp.gmail.com with ESMTPSA id w78sm7960414qkb.11.2021.03.26.16.16.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 16:16:09 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rdunlap@infradead.org
+Subject: [PATCH 00/19] net: Trivial spello/typo fixes throughout the tree
+Date:   Sat, 27 Mar 2021 04:42:35 +0530
+Message-Id: <cover.1616797633.git.unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 26 Mar 2021 16:12:25 -0700
-X-Gmail-Original-Message-ID: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
-Message-ID: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
-Subject: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all-
+This is a patch series with all mundane/trivial/rudimentary typo/spello/
+fixes in various files in the net subsystem.
 
-After some discussion on IRC, I have a proposal for a Linux ABI for
-using Intel AMX and other similar features.  It works like this:
+Bhaskar Chowdhury (19):
+  xfrm_policy.c : Mundane typo fix
+  xfrm_user.c: Added a punctuation
+  af_x25.c: Fix a spello
+  reg.c: Fix a spello
+  node.c: A typo fix
+  bearer.h: Spellos fixed
+  sm_statefuns.c: Mundane spello fixes
+  netfilter: ipvs: A spello fix
+  netfilter: nf_conntrack_acct.c: A typo fix
+  mptcp: subflow.c: Fix a typo
+  ncsi: internal.h: Fix a spello
+  mac80211: cfg.c: A typo fix
+  llc: llc_core.c: COuple of typo fixes
+  iucv: af_iucv.c: Couple of typo fixes
+  kcm: kcmsock.c: Couple of typo fixes
+  ipv6: route.c: A spello fix
+  ipv6: addrconf.c: Fix a typo
+  ipv4: ip_output.c: Couple of typo fixes
+  ipv4: tcp_lp.c: Couple of typo fixes
 
-First, we make XCR0 dynamic.  This looks a lot like Keno's patch but
-with a different API, outlined below.  Different tasks can have
-different XCR0 values.  The default XCR0 for new tasks does not
-include big features like AMX.  XMM and YMM are still there.  The AVX2
-states are debatable -- see below.
+ net/ipv4/ip_output.c              |  4 ++--
+ net/ipv4/tcp_lp.c                 |  4 ++--
+ net/ipv6/addrconf.c               |  2 +-
+ net/ipv6/route.c                  |  2 +-
+ net/iucv/af_iucv.c                |  4 ++--
+ net/kcm/kcmsock.c                 |  4 ++--
+ net/llc/llc_core.c                |  4 ++--
+ net/mac80211/cfg.c                |  2 +-
+ net/mptcp/subflow.c               |  2 +-
+ net/ncsi/internal.h               |  2 +-
+ net/netfilter/ipvs/ip_vs_core.c   |  2 +-
+ net/netfilter/nf_conntrack_acct.c |  2 +-
+ net/sctp/sm_statefuns.c           | 10 +++++-----
+ net/tipc/bearer.h                 |  6 +++---
+ net/tipc/node.c                   |  2 +-
+ net/wireless/reg.c                |  2 +-
+ net/x25/af_x25.c                  |  2 +-
+ net/xfrm/xfrm_policy.c            |  2 +-
+ net/xfrm/xfrm_user.c              |  2 +-
+ 19 files changed, 30 insertions(+), 30 deletions(-)
 
-To detect features and control XCR0, we add some new arch_prctls:
+--
+2.26.2
 
-arch_prctl(ARCH_GET_XCR0_SUPPORT, 0, ...);
-
-returns the set of XCR0 bits supported on the current kernel.
-
-arch_prctl(ARCH_GET_XCR0_LAZY_SUPPORT, 0, ...);
-
-returns 0.  See below.
-
-arch_prctl(ARCH_SET_XCR0, xcr0, lazy_states, sigsave_states,
-sigclear_states, 0);
-
-Sets xcr0.  All states are preallocated except that states in
-lazy_states may be unallocated in the kernel until used.  (Not
-supported at all in v1.  lazy_states & ~xcr0 != 0 is illegal.)  States
-in sigsave_states are saved in the signal frame.  States in
-sigclear_states are reset to the init state on signal delivery.
-States in sigsave_states are restored by sigreturn, and states not in
-sigsave_states are left alone by sigreturn.
-
-Optionally we do not support PKRU at all in XCR0 -- it doesn't make
-that much sense as an XSAVE feature, and I'm not convinced that trying
-to correctly context switch XINUSE[PKRU] is worthwhile.  I doubt we
-get it right today.
-
-Optionally we come up with a new format for new features in the signal
-frame, since the current format is showing its age.  Taking 8kB for a
-signal with AMX is one thing.  Taking another 8kB for a nested signal
-if AMX is not in use is worse.
-
-Optionally we make AVX-512 also default off, which fixes what is
-arguably a serious ABI break with AVX-512: lots of programs, following
-POSIX (!), seem to think that they know much much space to allocate
-for sigaltstack().   AVX-512 is too big.
-
-Thoughts?
-
---Andy
