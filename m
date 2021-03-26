@@ -2,177 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC90334A069
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 05:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A39234A06B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 05:11:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbhCZEFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 00:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
+        id S229976AbhCZEKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 00:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbhCZEFF (ORCPT
+        with ESMTP id S229457AbhCZEKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 00:05:05 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0B2C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:05:04 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so4116855otn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:05:04 -0700 (PDT)
+        Fri, 26 Mar 2021 00:10:06 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB85C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:10:02 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso1106392pjh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=xeJRI/bSrn1eC4w9Rqatogj3zx30m75cryPTZk0CO7o=;
-        b=wIoSYann9vLV5TBBngoEF/fhWRXoVEs2/a/Nma/eiT81J6J79Ec1J2FRlo036zBd17
-         6j2v7Nrk+eQlCwdKc/b5X3Cn4GStVjxNug8VVdVnB66+vhUE4q1EvVG8NfXfCQIa4jnm
-         8Lkn0zKQX9xndeM9wR6TU2ecnWyT5QdGfDzcELVCrwlA0f/n9QTzWowTd3AWTFvEUuRX
-         KSp5F435PbNcqtkv3K0aliXXoGKExDfDBAQ7LW24N8EPrdK5b3xeN370kioD4ps9ECS8
-         ibR60tg+18LUMuZ5XOLjeQvWY9Hd5WGylFGu6Sj7m6HPwE8lRARm/JLe0Ih09NibUU38
-         PEWQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RYXNKKSLKbuWAE9mYRQ16nqU5xlOECMHxPCnTaOHxLA=;
+        b=VhVRhXmudo1xSUd+HwCzGEeQ7XnkFREVP09rDN8krT+xdi6sAKoA6kAy0sP/9KDwof
+         zOuOWzhio/jmFWbZGrpG0S7P6v5MrM/fWgSvCmeqssHPmWegQu2OZb3qLSBwLtHVca4B
+         N5UuQ+UIOvdtgQEWR/6nYTOaqA98G/YzGh2HYvZISVbD8hxyZDEtFm85wDyhOBNNJiAX
+         y7Bj+7Kjw7LJdmDSWrXSBbgFQKsUwl+zqHgXGvGkl9lLr2W22Iwz328t8gin+xAa7wNz
+         vtTFfdCtFr6OtN1tkpxl9COJekLYXWkXxEhMBq8lB3SxThJmgjHm58Fe45tcHQpKSLU3
+         dWFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=xeJRI/bSrn1eC4w9Rqatogj3zx30m75cryPTZk0CO7o=;
-        b=AD//XizTM7R/K1uw4BmcK58pik62XpI0myIy2op2FO1ixHBIJead/iNwt2ptWackj2
-         JkTXZIgd5Iwp8liDOvJfwuHJHvWZqQG9BfAIIZttc+29J1/nQ5NI6hXVtGiFu9pPoBVT
-         DcGY+MwvfahKQpYAUQIPAhHih4nUah5Dt43sXuNCHvOpjrssAHhYm5vHnv3+s0XOmjYo
-         BMXaVSKisYJuDf9jKHSQgFtf9erK8fJuXAJrC3nKohsPOORXV8BjbdctGyEbKcPanZK+
-         sWiZf2+K2eTfIz2eILLwD+3/tiklrAS/sdAVQmyxI4Q5TeQBU75Ovt3TMOwSz/pHQnyc
-         3Jrg==
-X-Gm-Message-State: AOAM531S0QZvPCeq6iMLyAvfQPFa6yo/DEJMxy/qqzE6OPkRDbWee+ot
-        9iljsWiKIrHGEOp1sJg9xM+Fdg==
-X-Google-Smtp-Source: ABdhPJz44gh3DvCn74zpPfoS1tLJ52JmVUH8jZdUZkgM1yYxXyHp7Rs6+k+P716C96ZuSMbVe6Ptsg==
-X-Received: by 2002:a9d:d89:: with SMTP id 9mr10342469ots.23.1616731503946;
-        Thu, 25 Mar 2021 21:05:03 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id o197sm1719716ooo.44.2021.03.25.21.05.02
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 25 Mar 2021 21:05:03 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 21:04:40 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Zhou Guanghui <zhouguanghui1@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
- cache lookup
-In-Reply-To: <20210326025143.GB1719932@casper.infradead.org>
-Message-ID: <alpine.LSU.2.11.2103252018170.13067@eggly.anvils>
-References: <20210319071547.60973-1-hannes@cmpxchg.org> <alpine.LSU.2.11.2103191814040.1043@eggly.anvils> <YFo7SOni0s0TbXUm@cmpxchg.org> <alpine.LSU.2.11.2103231310020.5513@eggly.anvils> <alpine.LSU.2.11.2103251716160.12404@eggly.anvils>
- <20210326025143.GB1719932@casper.infradead.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RYXNKKSLKbuWAE9mYRQ16nqU5xlOECMHxPCnTaOHxLA=;
+        b=XD2rQs2r2D/8dah3wRCrqCr3jahTL69typaJ//y2SgRjHbp8s/IqKhLPdocp3l2fqz
+         cekLe0vl4zM6TEr5d49R9Mcqy/CpN7R90jjmFgr1q10aiuWXOUeEQQu/qiQNr48HnVY0
+         C6/u2bYnNiMc8fo5EyOCDXeyl0Ak4Df5kDaRyEyHQE1n2BiP9QVtYOy9kWVNgUbo+RoN
+         GSqtmhx3RTreUaAIwScHen0cVdk4BxdSTZKRdTVYsJKrc1FTlEGREPHrSEOxkDPqwNok
+         MOBRwvC4A/N9bLLaeD2UEzbjsz+KWrmLTQOfnTw95wlUaep2FYruL7wGHqj0qA0F57Pr
+         Kqog==
+X-Gm-Message-State: AOAM532OvUtn2FEkPtTaXMCZD+w8NgCSPrDElQQ4BXFuaQ1VOPOwK1lx
+        9GMYvLS/avHipmIXB8rAQTI=
+X-Google-Smtp-Source: ABdhPJy7ST4lP1rI4edPczlpoN3VdcUwMu5DN0FQV8EsXtdCmSxKf0sehHprvKyf2Zx5cyoN9TCyQg==
+X-Received: by 2002:a17:902:ed0a:b029:e4:3589:e4f9 with SMTP id b10-20020a170902ed0ab02900e43589e4f9mr13598893pld.36.1616731801465;
+        Thu, 25 Mar 2021 21:10:01 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id r9sm6804827pgg.12.2021.03.25.21.09.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 21:10:00 -0700 (PDT)
+Subject: Re: [PATCH v7 00/38] SCMI vendor protocols and modularization
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        etienne.carriere@linaro.org, thara.gopinath@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+References: <20210316124903.35011-1-cristian.marussi@arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <6bf4921a-12ad-a3b5-3dcc-d5463dd36729@gmail.com>
+Date:   Thu, 25 Mar 2021 21:09:52 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20210316124903.35011-1-cristian.marussi@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021, Matthew Wilcox wrote:
-> On Thu, Mar 25, 2021 at 06:55:42PM -0700, Hugh Dickins wrote:
-> > The first reason occurred to me this morning.  I thought I had been
-> > clever to spot the PageHead race which you fix here.  But now I just feel
-> > very stupid not to have spotted the very similar memcg_data race.  The
-> > speculative racer may call mem_cgroup_uncharge() from __put_single_page(),
-> > and the new call to split_page_memcg() do nothing because page_memcg(head)
-> > is already NULL.
-> > 
-> > And is it even safe there, to sprinkle memcg_data through all of those
-> > order-0 subpages, when free_the_page() is about to be applied to a
-> > series of descending orders?  I could easily be wrong, but I think
-> > free_pages_prepare()'s check_free_page() will find that is not
-> > page_expected_state().
-> 
-> So back to something more like my original patch then?
-> 
-> +++ b/mm/page_alloc.c
-> @@ -5081,9 +5081,15 @@ void __free_pages(struct page *page, unsigned int order)
->  {
->         if (put_page_testzero(page))
->                 free_the_page(page, order);
-> -	else if (!PageHead(page))
-> -               while (order-- > 0)
-> -                       free_the_page(page + (1 << order), order);
-> +       else if (!PageHead(page)) {
-> +               while (order-- > 0) {
-> +                       struct page *tail = page + (1 << order);
-> +#ifdef CONFIG_MEMCG
-> +                       tail->memcg_data = page->memcg_data;
-> +#endif
-> +                       free_the_page(tail, order);
-> +               }
-> +       }
->  }
->  EXPORT_SYMBOL(__free_pages);
-> 
-> We can cache page->memcg_data before calling put_page_testzero(),
-> just like we cache the Head flag in Johannes' patch.
 
-If I still believed in e320d3012d25, yes, that would look right
-(but I don't have much faith in my judgement after all this).
 
-I'd fallen in love with split_page_memcg() when you posted that
-one, and was put off by your #ifdef, so got my priorities wrong
-and went for the split_page_memcg().
-
+On 3/16/2021 5:48 AM, Cristian Marussi wrote:
+> Hi all,
 > 
-> > But, after all that, I'm now thinking that Matthew's original
-> > e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages")
-> > is safer reverted.  The put_page_testzero() in __free_pages() was
-> > not introduced for speculative pagecache: it was there in 2.4.0,
-> > and atomic_dec_and_test() in 2.2, I don't have older trees to hand.
+> The current SCMI implementation does not provide an interface to easily
+> develop and include a custom vendor protocol implementation as prescribed
+> by the SCMI standard, also because, there is not currently any custom
+> protocol in the upstream to justify the development of a custom interface
+> and its maintenance.
 > 
-> I think you're confused in that last assertion.  According to
-> linux-fullhistory, the first introduction of __free_pages was 2.3.29pre3
-> (September 1999), where it did indeed use put_page_testzero:
-
-Not confused, just pontificating from a misleading subset of the data.
-I knew there's an even-more-history-than-tglx git tree somewhere, but
-what I usually look back to is 2.4 trees, plus a 2.2.26 tree - but of
-course that's a late 2.2, from 2004, around the same time as 2.6.3.
-That tree shows a __free_pages() using atomic_dec_and_test().
-
-But we digress...
-
+> Moreover the current interface exposes protocol operations to the SCMI
+> driver users attaching per-protocol operations directly to the handle
+> structure, which, in this way, tends to grow indefinitely for each new
+> protocol addition.
 > 
-> +extern inline void __free_pages(struct page *page, unsigned long order)
-> +{
-> +       if (!put_page_testzero(page))
-> +               return;
-> +       __free_pages_ok(page, order);
-> +}
+> Beside this, protocols private data are also exposed via handle *_priv
+> pointers, making such private data accessible also to the SCMI drivers
+> even if neither really needed nor advisable.
 > 
-> Before that, we had only free_pages() and __free_page().
+> This series wants to address this by simplifying the SCMI protocols
+> interface and reducing it, roughly, to these common generic operations:
 > 
-> > So, it has "always" been accepted that multiple references to a
-> > high-order non-compound page can be given out and released: maybe
-> > they were all released with __free_pages() of the right order, or
-> > maybe only the last had to get that right; but as __free_pages()
-> > stands today, all but the last caller frees all but the first
-> > subpage.  A very rare leak seems much safer.
-> > 
-> > I don't have the answer (find somewhere in struct page to squirrel
-> > away the order, even when it's a non-compound page?), and I think
-> > each of us would much rather be thinking about other things at the
-> > moment.  But for now it looks to me like NAK to this patch, and
-> > revert of e320d3012d25.
+> 	- handle->devm_protocol_get()
+> 	- handle->devm_protocol_put()
+> 	- handle->notify_ops->*
 > 
-> We did discuss that possibility prior to the introduction of
-> e320d3012d25.  Here's one such:
-> https://lore.kernel.org/linux-mm/20200922031215.GZ32101@casper.infradead.org/T/#m0b08c0c3430e09e20fa6648877dc42b04b18e6f3
+> All protocols' private data pointers are removed from handle too and made
+> accessible only to the protocols code through dedicated internal helpers.
+> 
+> The concept of protocol handle is also introduced in the SCMI protocol code
+> to represent a protocol instance initialized against a specific SCMI
+> instance (handle), so that all the new protocol code uses such protocol
+> handles wherever previously SCMI handle was used: this enable tighter
+> control of what is exposed to the protocol code vs the SCMI drivers.
+> 
+> Moreover protocol initialization is moved away from device probe and now
+> happens on demand when the first user shows up (first .protocol_get), while
+> de-initialization is performed once the last user of the protocol, even in
+> terms of registered notifications callback, is gone, with the SCMI core
+> taking care to perform all the needed underlying resource accounting.
+> 
+> This way any new future standard or custom protocol implementation will
+> expose a common unified interface which does not need to be extended
+> endlessly: no need to maintain a custom interface only for vendor protos.
+> SCMI drivers written on top of standard or custom protocols will use this
+> same common interface to access any protocol operations.
+> 
+> All existent upstream SCMI drivers are converted to this new interface.
+> 
+> In order to make this migration painless and to avoid the need of a big
+> un-mergeable jumbo patch touching all over the protocols and drivers (like
+> it was in v2), since v3 the migration process has been heavily split with a
+> bit of transient code added along the way (to preserve bisectability) and
+> finally removed towards the ends of the series.
+> Protocols and SCMI drivers migration to the new interface happens along
+> patches 10->30.
+> 
+> Leveraging this new centralized and common initialization flow we took
+> care also to refactor and simplify protocol-events registration and remove
+> *notify_priv from the handle interface making it accessible only to the
+> notification core.
+> 
+> Patch 37 builds on top of this new interface and introduces a mechanism to
+> define an SCMI protocol as a full blown module (possibly loadable) while
+> leaving the core dealing with proper resource accounting.
+> Standard protocols are still kept as builtins in this series, though.
+> 
+> Finally, patch 38 introduces dynamic SCMI devices creation to avoid having
+> to update the static module device table in the core each time a new driver
+> is added.
+> 
+> The whole SCMI stack can still be built alternatively as a module, with all
+> the standard protocols included in scmi-module.ko in such a case.
+> 
+> On top of this series an example SCMI Custom protocol 0x99 and related
+> SCMI Custom Dummy driver has been built and it is available at [1] as a
+> series of DEBUG patches on top this same series.
+> 
+> The series is currently based on sudeep/for-next/scmi [2] on top of:
+> 
+> commit 908a4f778dc7 ("Merge branch 'ib-iio-scmi-5.12-rc2-take3' of
+> 	 git://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into
+> 	 for-next/scmi")
+> 
+> Any feedback welcome.
 
-Thanks for the link. And I'll willingly grant that your experience is
-vast compared to mine. But "Drivers don't do that, in my experience"
-is not a convincing reason to invalidate a way of working that the
-code has gone out of its way to allow for, for over twenty years.
+You copied me on each round and thanks for doing that, I did not have
+time to go look at each change, but sensors, clocks and cpufreq still
+worked on ARCH_BRCMSTB with both 32-bit and 64-bit kernels, so:
 
-But you make a good point on the "Bad page" reports that would now
-be generated: maybe that will change my mind later on.
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Hugh
+Thanks!
+-- 
+Florian
