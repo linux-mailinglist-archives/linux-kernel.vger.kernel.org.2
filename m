@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66160349EB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D85DB349EBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhCZBbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:31:35 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:9855 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230155AbhCZBbL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:31:11 -0400
-X-UUID: e409ad9f6d904a43a0b4bf5033141303-20210326
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VxpyOMauSLivU/LqjpxZ6z4fpqwX1nMTv/ksMPXytSA=;
-        b=ZWdWdwsB/IhhQw3ttqF6V6eQRlOtE+hfPfb8KRes2do13CIAow7ftAZAtDaIMQo1W31mY5zH91nJGaM16Crl3OsK7uMawzYxJ2q8Vft7Houd2pkFge11WIGDD+pjeyJX+6T+XskZ29BnIhAkzzzmNjdLAWYxQkXg9jwDJ3RFSYs=;
-X-UUID: e409ad9f6d904a43a0b4bf5033141303-20210326
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <qii.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 702491464; Fri, 26 Mar 2021 09:31:00 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 26 Mar
- 2021 09:30:53 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 26 Mar 2021 09:30:52 +0800
-Message-ID: <1616722252.22957.3.camel@mhfsdcap03>
-Subject: Re: [PATCH] dt-bindings: i2c: Add device clock-stretch time via dts
-From:   Qii Wang <qii.wang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     <matthias.bgg@gmail.com>, <wsa@the-dreams.de>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>
-Date:   Fri, 26 Mar 2021 09:30:52 +0800
-In-Reply-To: <20210324171217.GA3262580@robh.at.kernel.org>
-References: <1615622829-15167-1-git-send-email-qii.wang@mediatek.com>
-         <20210324171217.GA3262580@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S230107AbhCZBeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229962AbhCZBdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 21:33:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ECB561935;
+        Fri, 26 Mar 2021 01:33:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616722424;
+        bh=wwSBHHa+KMZhIc2xhxHs6zKbrmPV+BlB9WRP2PmnZPQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h0snOM9zAK/fC+z8jH5MVj8ESvRPq5cIHAbJ1ztsfGmhHUtC4g+xrNX7UBV8sIynW
+         B1wry/oan2E2Bx9X0vv77d244xd/AMaRXOhSv24b4qO3/1WFk8mfV0pw0R2GwjDlko
+         EKJ5wpL2R133vBzmtB66DJKgmXLuMVHGWqwQkz6okCBtxi7XiS09FjLjqKO5nSxvxA
+         1ztBNWF90Evvhh3p2gXRFSo2MqRzrUfRmcctNPDOqkjUHbK6wHQgHlDWqYGgFEFTBd
+         L2XFra0kjxGFh8HLW1U3uENWwskbKeijYd3bdjnpqB7E9QTko8RqvzTvo8A2XkpOAu
+         +77hlJ7oMKS6g==
+Date:   Thu, 25 Mar 2021 21:33:43 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>
+Subject: Re: [PATCH] scripts: stable: add script to validate backports
+Message-ID: <YF0594jHAlZAmIms@sashalap>
+References: <20210316213136.1866983-1-ndesaulniers@google.com>
+ <YFnyHaVyvgYl/qWg@kroah.com>
+ <CAKwvOd=9HwLcTD8GaMsbEWiTPfZ+fj=vgFOefqBxDYkFiv_6YQ@mail.gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 9A452831894ABC2ECCDFFDB024427EA9781CA86A0FDAE166AA0BE5DD9588A5432000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=9HwLcTD8GaMsbEWiTPfZ+fj=vgFOefqBxDYkFiv_6YQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAzLTI0IGF0IDExOjEyIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gU2F0LCBNYXIgMTMsIDIwMjEgYXQgMDQ6MDc6MDlQTSArMDgwMCwgcWlpLndhbmdAbWVkaWF0
-ZWsuY29tIHdyb3RlOg0KPiA+IEZyb206IFFpaSBXYW5nIDxxaWkud2FuZ0BtZWRpYXRlay5jb20+
-DQo+ID4gDQo+ID4gdFNVLFNUQS90SEQsU1RBL3RTVSxTVE9QIG1heWJlIG91dCBvZiBzcGVjIGR1
-ZSB0byBkZXZpY2UNCj4gPiBjbG9jay1zdHJldGNoaW5nIG9yIGNpcmN1aXQgbG9zcywgd2UgY291
-bGQgZ2V0IGRldmljZQ0KPiA+IGNsb2NrLXN0cmV0Y2ggdGltZSBmcm9tIGR0cyB0byBhZGp1c3Qg
-dGhlc2UgcGFyYW1ldGVycw0KPiA+IHRvIG1lZXQgdGhlIHNwZWMgdmlhIEVYVF9DT05GIHJlZ2lz
-dGVyLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFFpaSBXYW5nIDxxaWkud2FuZ0BtZWRpYXRl
-ay5jb20+DQo+ID4gLS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9p
-MmMvaTJjLW10NjV4eC50eHQgfCAxICsNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
-KCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9pMmMvaTJjLW10NjV4eC50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
-Z3MvaTJjL2kyYy1tdDY1eHgudHh0DQo+ID4gaW5kZXggN2YwMTk0Zi4uOTdmNjZmMCAxMDA2NDQN
-Cj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1tdDY1
-eHgudHh0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9p
-MmMtbXQ2NXh4LnR4dA0KPiA+IEBAIC0zMiw2ICszMiw3IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6
-DQo+ID4gICAgLSBtZWRpYXRlayxoYXZlLXBtaWM6IHBsYXRmb3JtIGNhbiBjb250cm9sIGkyYyBm
-b3JtIHNwZWNpYWwgcG1pYyBzaWRlLg0KPiA+ICAgICAgT25seSBtdDY1ODkgYW5kIG10ODEzNSBz
-dXBwb3J0IHRoaXMgZmVhdHVyZS4NCj4gPiAgICAtIG1lZGlhdGVrLHVzZS1wdXNoLXB1bGw6IElP
-IGNvbmZpZyB1c2UgcHVzaC1wdWxsIG1vZGUuDQo+ID4gKyAgLSBjbG9jay1zdHJldGNoLW5zOiBT
-bGF2ZSBkZXZpY2UgY2xvY2stc3RyZXRjaCB0aW1lLg0KPiANCj4gU2hvdWxkIGJlIGEgY29tbW9u
-IEkyQyBwcm9wZXJ0eT8NCj4gDQoNCldvbGZyYW0gU2FuZyB3aWxsIGxvb2sgYXQgdGhpcyBuZXh0
-IGFuZCB0aGluayBhYm91dCBpdC4gSSBob3BlIGl0IHdvdWxkDQpiZSBhIGNvbW1vbiBJMkMgcHJv
-cGVydHkuDQoNCj4gPiAgDQo+ID4gIEV4YW1wbGU6DQo+ID4gIA0KPiA+IC0tIA0KPiA+IDEuOS4x
-DQo+ID4gDQoNCg==
+On Tue, Mar 23, 2021 at 11:52:26AM -0700, Nick Desaulniers wrote:
+>On Tue, Mar 23, 2021 at 6:56 AM Greg Kroah-Hartman
+><gregkh@linuxfoundation.org> wrote:
+>>
+>> On Tue, Mar 16, 2021 at 02:31:33PM -0700, Nick Desaulniers wrote:
+>> > A common recurring mistake made when backporting patches to stable is
+>> > forgetting to check for additional commits tagged with `Fixes:`. This
+>> > script validates that local commits have a `commit <sha40> upstream.`
+>> > line in their commit message, and whether any additional `Fixes:` shas
+>> > exist in the `master` branch but were not included. It can not know
+>> > about fixes yet to be discovered, or fixes sent to the mailing list but
+>> > not yet in mainline.
+>> >
+>> > To save time, it avoids checking all of `master`, stopping early once
+>> > we've reached the commit time of the earliest backport. It takes 0.5s to
+>> > validate 2 patches to linux-5.4.y when master is v5.12-rc3 and 5s to
+>> > validate 27 patches to linux-4.19.y. It does not recheck dependencies of
+>> > found fixes; the user is expected to run this script to a fixed point.
+>> > It depnds on pygit2 python library for working with git, which can be
+>> > installed via:
+>> > $ pip3 install pygit2
+>> >
+>> > It's expected to be run from a stable tree with commits applied.  For
+>> > example, consider 3cce9d44321e which is a fix for f77ac2e378be. Let's
+>> > say I cherry picked f77ac2e378be into linux-5.4.y but forgot
+>> > 3cce9d44321e (true story). If I ran:
+>> >
+>> > $ ./scripts/stable/check_backports.py
+>> > Checking 1 local commits for additional Fixes: in master
+>> > Please consider backporting 3cce9d44321e as a fix for f77ac2e378be
+>>
+>> While interesting, I don't use a git tree for the stable queue, so this
+>> doesn't really fit into my workflow, sorry.
+>
+>Well, what is your workflow?
 
+That's a trick question :) I don't think something like this should
+target our workflow, but rather should be for someone who wants to send
+patches over to stable@.
+
+I also think that the formatting patch shouldn't be checking for proper
+formatting, but rather should just be doing it on it's own.
+
+What I don't know is the right place to put it in... It can go into
+stable-queue.git, but there are very few people who are aware of it's
+existance, and even a smaller number who knows how it works.
+
+-- 
+Thanks,
+Sasha
