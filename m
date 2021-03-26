@@ -2,107 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F216F34A658
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E1C834A65A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhCZLQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhCZLPl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:15:41 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1745C0613AA;
-        Fri, 26 Mar 2021 04:15:41 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id x26so4710057pfn.0;
-        Fri, 26 Mar 2021 04:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ioUVrq22UmzpyRrEEDvYTk5HDeFP8YOT2+8IMC1K0uU=;
-        b=gOD0I1pRNyONW/xXRl8dt4+/st8jADont9iazDC7dfBAmcLVSkyP7ZxJRBC/1yQJwv
-         6RuuOnOkW/y3Uwe/+oPyOnNNazrl/J+T8CVzj0aMqY45VNnx57iqcE/PZKCYWSgOOkiK
-         0jXg3c6Cm8/VGgmxv4r/k2teNmy8CcpoJxmrAkdJrgowzr5i9Z/G7xZnqDujszYPqvj5
-         PqvTycRBP0A2nME6Am7yCVvZbgL/tdeU5tWyh78hMNhzhPeVksadfs2QC41U6BTWng38
-         jDmn209/l8FeuIziDqamX8ZG/N+f3gyxECGcAJsHdZqM0Qw6uGRDkdO98g1dTJWg1VrJ
-         2B0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=ioUVrq22UmzpyRrEEDvYTk5HDeFP8YOT2+8IMC1K0uU=;
-        b=QK2ql8EQUDgYazrprqff49pNfx1ezNzLe2KBn1mzck7Eag4XE+OptCq+sF7fI4MbNa
-         qt9jQW0PcDmOkYKPgWIfwtVecdwfhy1OkpRuCIjBLOqhQ8RZp4WOH+GwSY6i6FUUIolM
-         CXiNfP1bmX85v7Hrn0Su1WxkpDAvW29uS0eA1vH7p1MfChobdlDsXf4nJp5xEUzklIU4
-         Et0DhBY7UJQVxZnsa8pWxSXI9E7fJfkPv4pG29nP1Vk4cK+Z1Z/DztluRr7YYE9tFhkC
-         +Xk/N9x4srGGrpvprwUkh0VV0REn3IcWDXPGHKpJsI7P+45bWCN6ertxCyHt+Hqd8u8l
-         gVow==
-X-Gm-Message-State: AOAM531r4YubQ189b3TF4sFoApTGceP2oWbQ/aNr8KniYz9l9VO1xJ8r
-        Uwox6SIO2kKzQTlgSMb4Hdk=
-X-Google-Smtp-Source: ABdhPJygZqLH08IY9AUgbpjaTPpUsohQHVfAon9iSpi97ZOyGUyiIvy5UmRVEtvAdDxc0CVKKiwpKQ==
-X-Received: by 2002:a62:bd03:0:b029:21d:b680:db15 with SMTP id a3-20020a62bd030000b029021db680db15mr11940509pff.25.1616757341247;
-        Fri, 26 Mar 2021 04:15:41 -0700 (PDT)
-Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id l3sm8108414pfc.81.2021.03.26.04.15.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Mar 2021 04:15:40 -0700 (PDT)
-From:   dillon.minfei@gmail.com
-To:     robh@kernel.org, valentin.caron@foss.st.com,
-        Alexandre.torgue@foss.st.com, rong.a.chen@intel.com,
-        a.fatoum@pengutronix.de, mcoquelin.stm32@gmail.com,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, vladimir.murzin@arm.com,
-        afzal.mohd.ma@gmail.com, gregkh@linuxfoundation.org,
-        erwan.leray@foss.st.com, erwan.leray@st.com,
-        linux-serial@vger.kernel.org, lkp@intel.com
-Cc:     dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v6 9/9] dt-bindings: serial: stm32: Use 'type: object' instead of false for 'additionalProperties'
-Date:   Fri, 26 Mar 2021 19:15:02 +0800
-Message-Id: <1616757302-7889-8-git-send-email-dillon.minfei@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616757302-7889-1-git-send-email-dillon.minfei@gmail.com>
-References: <1616757302-7889-1-git-send-email-dillon.minfei@gmail.com>
+        id S230227AbhCZLQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:16:18 -0400
+Received: from ozlabs.org ([203.11.71.1]:54673 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230098AbhCZLPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 07:15:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F6KCP2c3Rz9sRf;
+        Fri, 26 Mar 2021 22:15:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1616757347;
+        bh=aRK3MQjYc8DtzjUuBc8xtlY540Ysa4fJ5l5A1e+TZmE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=GoGD11HhuUw1qdgZmx/Tgdnea2zeS5ZMScO9rFgOkLJo3r7GmMiXyNdzEQRXZV2u4
+         FhsU9AtTulFd0yq/uSEpQ39ucW6ql6RSTMsDnN5f2xF+ulUWm4Z1Lp6AWJGr3mLJ9W
+         fiRGCVkytIoHCXOzWXWFh2W3gULBzh4cJ/xhwFqCx3ls5POyNGqfBI+w67AKR01cOy
+         YK6t6VBG9njhtzqlukRW6HRJ2SuU6ib8uZw2amcVGD3ecREBYCudiWZDXxt3569Kaj
+         R3PQRp/bLooVYEwVxwhwcLFtS0RxzfQJVKzrxjcJcw1KLo2eS7FOP0vUxwcNaXr1lF
+         N6SpcfH8RcKPA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     He Ying <heying24@huawei.com>, benh@kernel.crashing.org,
+        paulus@samba.org, corbet@lwn.net, ruscur@russell.cc,
+        oohall@gmail.com, heying24@huawei.com
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] docs: powerpc: Fix misspellings and grammar errors
+In-Reply-To: <20210326100853.173586-1-heying24@huawei.com>
+References: <20210326100853.173586-1-heying24@huawei.com>
+Date:   Fri, 26 Mar 2021 22:15:43 +1100
+Message-ID: <878s6ago80.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dillon min <dillon.minfei@gmail.com>
+He Ying <heying24@huawei.com> writes:
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: He Ying <heying24@huawei.com>
+> ---
+>  Documentation/powerpc/booting.rst                | 2 +-
+>  Documentation/powerpc/dawr-power9.rst            | 2 +-
+>  Documentation/powerpc/eeh-pci-error-recovery.rst | 2 +-
+>  Documentation/powerpc/elfnote.rst                | 2 +-
+>  Documentation/powerpc/firmware-assisted-dump.rst | 2 +-
+>  Documentation/powerpc/kaslr-booke32.rst          | 2 +-
+>  Documentation/powerpc/mpc52xx.rst                | 2 +-
+>  Documentation/powerpc/papr_hcalls.rst            | 4 ++--
+>  Documentation/powerpc/transactional_memory.rst   | 4 ++--
+>  9 files changed, 11 insertions(+), 11 deletions(-)
 
-To use additional properties 'bluetooth' on serial, need replace false with
-'type: object' for 'additionalProperties' to make it as a node, else will
-run into dtbs_check warnings.
+LGTM.
 
-'arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
-'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
 
-Fixes: af1c2d81695b ("dt-bindings: serial: Convert STM32 UART to json-schema")
-Reported-by: kernel test robot <lkp@intel.com>
-Tested-by: Valentin Caron <valentin.caron@foss.st.com>
-Signed-off-by: dillon min <dillon.minfei@gmail.com>
----
-
-v6: no changes
-
- Documentation/devicetree/bindings/serial/st,stm32-uart.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-index 8631678283f9..865be05083c3 100644
---- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-+++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-@@ -80,7 +80,8 @@ required:
-   - interrupts
-   - clocks
- 
--additionalProperties: false
-+additionalProperties:
-+  type: object
- 
- examples:
-   - |
--- 
-2.7.4
-
+cheers
