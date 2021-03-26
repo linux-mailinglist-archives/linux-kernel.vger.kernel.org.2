@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB82734A651
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2726934A646
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhCZLPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S230079AbhCZLPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbhCZLPO (ORCPT
+        with ESMTP id S229773AbhCZLPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:15:14 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280AFC0613AA;
-        Fri, 26 Mar 2021 04:15:11 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id o2so745072plg.1;
-        Fri, 26 Mar 2021 04:15:11 -0700 (PDT)
+        Fri, 26 Mar 2021 07:15:15 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6271DC0613AA;
+        Fri, 26 Mar 2021 04:15:15 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id ay2so744970plb.3;
+        Fri, 26 Mar 2021 04:15:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qZewbGCBGre6IA2gdv0UNHMD5H0zzQah+h3wfcdLeno=;
-        b=tKL5BNZEjoNFlbXFV/ArdRgMvL4T8BHwa0S+Z8gMGRwVo1Y/dRR/V+fcO04mfQpfOq
-         wXN56SeqyByp+GB+lutZYuHPodRdGxGxAisZwXXcZSJIB3SzjEkwGCvlIUAwYT2Inha3
-         ZcmFDdaoydbOafXA/hKGsLwzrrL0pg9yH5QgeVFouDfnEilt3oJ76mUnq3xpWoHs4aJl
-         ckkmW52s0OxzYfVEcBLPUaaYe/56RfPxqV7Npgl9jnIJ49HXyx3TY+xdgZkESH8fFatY
-         wwzOfmNicX7ehvXEwF0bWrlpty3h9Fv2MdVlVVaTqZza+TvVRf5dRXiin6nDRRKY4WwP
-         Opbw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=8LbC0yRdb6KnBRs4/oHMCPB8Wx+wfbQ7JrB27rdabEo=;
+        b=ODurMsRARbMLi1n2YX5YSv2Re+1Sl/BpZkwEqgNmkSZe0/9NTRivo0xUNzhrSFYGsI
+         Px5M3WxN65FyQHfJ7EW27bHJg76oKnCc/tIX0OoFPhmalG010qPebVHg9blNSXeDM9Xa
+         fGx5NTh34AKMAM8BfnCpDm+T+4vOFS8fLoFE+QHRZr5xhlCgtCBIvZ6TBtAjllqsaAGI
+         x0d+t1Sem/wtf1YUsMYvcuecD3OB339EQ7XfQqQOBmhHlcF9v3966VbZNg+HxfnPpTN9
+         +lsGV/JIUC1js1Q3e9C+pURR3kuTXKZ95EN41n/fwkxcainx5746FZscQBx1sYivXOCM
+         Lm4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qZewbGCBGre6IA2gdv0UNHMD5H0zzQah+h3wfcdLeno=;
-        b=ZtgVVczE11qXXniRsS7G65GuDUL8hKWWgJ+JM69pwwS+2ZZf6Nfp0ZEWmnOKnfrsR6
-         78YU5VBcK8EgISnboNmH9OfsyRy4eE1rm/2loi4/Tk8eHx49DvgXT4l+vNB7/fKcY+Oi
-         58k0SpPOp4r/o9f+0K82HRWfOpUkT+55acJ1TZ34g4MBVurHW0H/Oc1ElB+jnIw3FiuL
-         TKMCZmUfYN9GAOvXNdT7KfqZsmDlCoiqUMOfUVBgABdGfuvv61fr047ypJS1oNhs9dd+
-         p48fWHl7w2Y/pvj/btJJVRdZSk2H8rtBrBqGEZM5Zi8O5X8VJkSFbyxf9sajcsPO7LVg
-         qS3Q==
-X-Gm-Message-State: AOAM533i6fuflmn9KFUrVDZCwmV2h91SGOHzgIVoK8WYEz8BqYj5N3bm
-        NDQ6UzcX6s/OISKpH2HA4W4=
-X-Google-Smtp-Source: ABdhPJz1uyjnspJYTp77tANzqqBj5hZuWWfsI9BlnFhTkzVcn9qymlzZCesOvqehYIkQmit0/JiV6Q==
-X-Received: by 2002:a17:902:bf92:b029:e6:bc0:25ac with SMTP id v18-20020a170902bf92b02900e60bc025acmr14865974pls.49.1616757310569;
-        Fri, 26 Mar 2021 04:15:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=8LbC0yRdb6KnBRs4/oHMCPB8Wx+wfbQ7JrB27rdabEo=;
+        b=D+KL3z7su2pv0MwULz6VVUFpMoNsavVvZLMj7VWPqHXCMIUqcuFB9pvjXURviNgAt5
+         YTdcOGeA2musWeU7POIiFnNezm33vgBwhj7VCsMqseW68gEHF3UR4P6KvhYKUf7tQsVh
+         8LAaGDR3DeY4f2Grd7hROO5q2bquODGBZcw74kL07UoF2bf8oUIxRFYhqwKwk4eoBW5N
+         yLgoZy8nb3HKwbkd93CgHt9aVZlfPxogYUcbnXTv2LwIf/ICp2vT9lseZbENkyXPj9WW
+         uJ23BvDFbA6gDW7XHjRDXlEIBfVNmtN3miFKB+sNafOaKtMgLVloolodqGpEE/e7Ydb5
+         vN2Q==
+X-Gm-Message-State: AOAM530kxb5rw8QTb/9zaJcAVZGb8b9N/j9+lXFxcSnFsR8aXxBC949S
+        mE0akINAjIYdImYxQdT7/ZA=
+X-Google-Smtp-Source: ABdhPJw4f1Ee2Hz0/Mm15LtPxz6VsG6K/k51kVXf8OiJcmT1EppkEPqKWTPnMhHhnWHobI9yDqBs9A==
+X-Received: by 2002:a17:902:d341:b029:e6:9a9f:5614 with SMTP id l1-20020a170902d341b02900e69a9f5614mr14828314plk.48.1616757314991;
+        Fri, 26 Mar 2021 04:15:14 -0700 (PDT)
 Received: from fmin-OptiPlex-7060.nreal.work ([137.59.103.165])
-        by smtp.gmail.com with ESMTPSA id l3sm8108414pfc.81.2021.03.26.04.15.05
+        by smtp.gmail.com with ESMTPSA id l3sm8108414pfc.81.2021.03.26.04.15.10
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Mar 2021 04:15:09 -0700 (PDT)
+        Fri, 26 Mar 2021 04:15:14 -0700 (PDT)
 From:   dillon.minfei@gmail.com
 To:     robh@kernel.org, valentin.caron@foss.st.com,
         Alexandre.torgue@foss.st.com, rong.a.chen@intel.com,
@@ -58,109 +59,91 @@ To:     robh@kernel.org, valentin.caron@foss.st.com,
         erwan.leray@foss.st.com, erwan.leray@st.com,
         linux-serial@vger.kernel.org, lkp@intel.com
 Cc:     dillon min <dillon.minfei@gmail.com>
-Subject: [PATCH v6 0/9] ARM: STM32: add art-pi(stm32h750xbh6) board support
-Date:   Fri, 26 Mar 2021 19:14:55 +0800
-Message-Id: <1616757302-7889-1-git-send-email-dillon.minfei@gmail.com>
+Subject: [PATCH v6 1/9] Documentation: arm: stm32: Add stm32h750 value line doc
+Date:   Fri, 26 Mar 2021 19:14:56 +0800
+Message-Id: <1616757302-7889-2-git-send-email-dillon.minfei@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1616757302-7889-1-git-send-email-dillon.minfei@gmail.com>
+References: <1616757302-7889-1-git-send-email-dillon.minfei@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: dillon min <dillon.minfei@gmail.com>
 
-This patchset intend to add art-pi board support, this board developed
-by rt-thread(https://www.rt-thread.org/).
+This patchset add support for soc stm32h750, stm32h750 has mirror
+different from stm32h743
 
-Board resources:
-8MiB QSPI flash
-16MiB SPI flash
-32MiB SDRAM
-AP6212 wifi,bt,fm comb
+item            stm32h743     stm32h750
+flash size:     2MiB          128KiB
+adc:            none          3
+crypto-hash:    none          aes/hamc/des/tdes/md5/sha
 
-sw context:
-- as stm32h750 just has 128k bytes internal flash, so running a fw on
-  internal flash to download u-boot/kernel to qspi flash, boot
-  u-boot/kernel from qspi flash. this fw is based on rt-thread.
-- kernel can be xip on qspi flash or load to sdram
-- root filesystem is jffs2(created by buildroot), stored on spi flash
+detail information can be found at:
+https://www.st.com/en/microcontrollers-microprocessors/stm32h750-value-line.html
 
-to support the boad, add following changes.
-- fix r0-r3, r12 register restore failed after svc call,
-- add dts binding
-- update yaml doc
-
+Signed-off-by: dillon min <dillon.minfei@gmail.com>
 ---
-changes in v6:
-- add gpiox{gpio-ranges, ngpios} in stm32h7-pinctrl.dtsi
-- add status="disabled" in stm32h743.dtsi 
 
-changes in v5:
-- accroding to rob's suggestion, replace false with 'type: object'
-  of 'additionalProperties'.
-- add Tested-by: Valentin Caron <valentin.caron@foss.st.com>
+v6: no changes
 
-changes in v4:
-- use unevaluatedProperties: false to fix dtbs_check warrnings instead of
-  add 'bluetooth' in st,stm32-uart.yaml
-
-changes in v3:
-- fix dtbs_check warrning: (8002cbd78fd5 and 4bc21d3dd678)
-  >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: pin-controller:
-     {'type': 'object'} is not allowed for {'#address-cells': [[1]], '#size-cells':
-     [[1]], 'ranges': [[0,
-
-  >> arch/arm/boot/dts/stm32h743i-eval.dt.yaml: soc: 'i2c@40005C00',
-     'i2c@58001C00' do not match any of the regexes: '@(0|[1-9a-f][0-9a-f]*)$',
-     '^[^@]+$', 'pinctrl-[0-9]+'
-  >> arch/arm/boot/dts/stm32h750i-art-pi.dt.yaml: serial@40004800:
-     'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
-
-changes in v2:
-- reorganize the pinctrl device tree about
-  stm32h7-pinctrl/stm32h743/750-pinctrl
-  stm32h7-pinctrl.dtsi --> stm32h743-pinctrl.dtsi --> stm32h743i-disco.dts
-                         |                          |-> stm32h743i-eval.dts
-                         |-> stm32h750-pinctrl.dtsi --> stm32h750i-art-pi.dts
-  same to the stm32f7/f4's pinctrl style
-- fix author name/copyright mistake
-- add compatible string st,stm32h750-pinctrl to pinctl-stm32h743.c as they
-  have same pin alternate functions, update Kconfig description
-- make item in stm32h750i-art-pi.dts sort by letter
-
-dillon min (9):
-  Documentation: arm: stm32: Add stm32h750 value line doc
-  dt-bindings: arm: stm32: Add compatible strings for ART-PI board
-  dt-bindings: pinctrl: stm32: Add stm32h750 pinctrl
-  ARM: dts: stm32: introduce stm32h7-pinctrl.dtsi to support stm32h750
-  ARM: dts: stm32: add stm32h750-pinctrl.dtsi
-  ARM: dts: stm32: add support for art-pi board based on stm32h750xbh6
-  ARM: stm32: Add a new SOC - STM32H750
-  pinctrl: stm32: Add STM32H750 MCU pinctrl support
-  dt-bindings: serial: stm32: Use 'type: object' instead of false for
-    'additionalProperties'
-
- Documentation/arm/index.rst                        |   1 +
- Documentation/arm/stm32/stm32h750-overview.rst     |  34 ++
- .../devicetree/bindings/arm/stm32/stm32.yaml       |   4 +
- .../bindings/pinctrl/st,stm32-pinctrl.yaml         |   1 +
- .../devicetree/bindings/serial/st,stm32-uart.yaml  |   3 +-
- arch/arm/boot/dts/Makefile                         |   1 +
- arch/arm/boot/dts/stm32h7-pinctrl.dtsi             | 341 +++++++++++++++++++++
- arch/arm/boot/dts/stm32h743-pinctrl.dtsi           | 307 +------------------
- arch/arm/boot/dts/stm32h743.dtsi                   | 164 +++++++++-
- arch/arm/boot/dts/stm32h750-pinctrl.dtsi           |  12 +
- arch/arm/boot/dts/stm32h750.dtsi                   |   6 +
- arch/arm/boot/dts/stm32h750i-art-pi.dts            | 229 ++++++++++++++
- arch/arm/mach-stm32/board-dt.c                     |   1 +
- drivers/pinctrl/stm32/Kconfig                      |   2 +-
- drivers/pinctrl/stm32/pinctrl-stm32h743.c          |   3 +
- 15 files changed, 804 insertions(+), 305 deletions(-)
+ Documentation/arm/index.rst                    |  1 +
+ Documentation/arm/stm32/stm32h750-overview.rst | 34 ++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
  create mode 100644 Documentation/arm/stm32/stm32h750-overview.rst
- create mode 100644 arch/arm/boot/dts/stm32h7-pinctrl.dtsi
- create mode 100644 arch/arm/boot/dts/stm32h750-pinctrl.dtsi
- create mode 100644 arch/arm/boot/dts/stm32h750.dtsi
- create mode 100644 arch/arm/boot/dts/stm32h750i-art-pi.dts
 
+diff --git a/Documentation/arm/index.rst b/Documentation/arm/index.rst
+index b4bea32472b6..d4f34ae9e6f4 100644
+--- a/Documentation/arm/index.rst
++++ b/Documentation/arm/index.rst
+@@ -52,6 +52,7 @@ SoC-specific documents
+    stm32/stm32f746-overview
+    stm32/overview
+    stm32/stm32h743-overview
++   stm32/stm32h750-overview
+    stm32/stm32f769-overview
+    stm32/stm32f429-overview
+    stm32/stm32mp157-overview
+diff --git a/Documentation/arm/stm32/stm32h750-overview.rst b/Documentation/arm/stm32/stm32h750-overview.rst
+new file mode 100644
+index 000000000000..0e51235c9547
+--- /dev/null
++++ b/Documentation/arm/stm32/stm32h750-overview.rst
+@@ -0,0 +1,34 @@
++==================
++STM32H750 Overview
++==================
++
++Introduction
++------------
++
++The STM32H750 is a Cortex-M7 MCU aimed at various applications.
++It features:
++
++- Cortex-M7 core running up to @480MHz
++- 128K internal flash, 1MBytes internal RAM
++- FMC controller to connect SDRAM, NOR and NAND memories
++- Dual mode QSPI
++- SD/MMC/SDIO support
++- Ethernet controller
++- USB OTFG FS & HS controllers
++- I2C, SPI, CAN busses support
++- Several 16 & 32 bits general purpose timers
++- Serial Audio interface
++- LCD controller
++- HDMI-CEC
++- SPDIFRX
++- DFSDM
++
++Resources
++---------
++
++Datasheet and reference manual are publicly available on ST website (STM32H750_).
++
++.. _STM32H750: https://www.st.com/en/microcontrollers-microprocessors/stm32h750-value-line.html
++
++:Authors: Dillon Min <dillon.minfei@gmail.com>
++
 -- 
 2.7.4
 
