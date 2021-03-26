@@ -2,108 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A37C349D30
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361B0349D35
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhCZAEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhCZAEO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:04:14 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13C1C06174A;
-        Thu, 25 Mar 2021 17:04:13 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id h13so4364298eds.5;
-        Thu, 25 Mar 2021 17:04:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=hOTKNlq4H1/dCwJVlYChXs9MjCEtvc42KBPGymLZ8CI=;
-        b=EJLGzPItvUCPmXWgdjq9eEdhUAe5Zdjr8N/YQnNvLuGFirRQeWuQmwcInrxi1eKgDN
-         mUyRbPvwhkRcTezLXXeZ01jUy4UqDU37wk9ChytfNdO/p9imI8px4JfG8XHa1piucOwK
-         j0PXqy10WyglOCyw9GWZRg3dD6E2KyzcQHowbjeEeARxAiDp0OWiI81U+ramzmUKTGTD
-         A59mfDBJ1pQnRhQ0c0JaLrIOlN09P0m9PtGqt048OLwJLzeqIuN7DvKZ9KaWBDCn6aIJ
-         xZPokVhIeQdCZ77y5pbwO9SbcRdEldHcCPwpciaOdb+15ldhoKJYgghg4atJiciAbXwi
-         4xNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=hOTKNlq4H1/dCwJVlYChXs9MjCEtvc42KBPGymLZ8CI=;
-        b=isgcwFm+Xrcrb/yVIY+pBaBwIVxf8IPtOAhTZss2YJnSIrvr0Cbo64dLai1BicMk7q
-         uWBypxSkkyhPmV5/jaq5TQSxiKX9KQD36gKQZxp2tsBqAt1K10VXgQiQIhVbr6KCIQoN
-         9ivDMAu7p7xRrMjK9bSOmnGofICYbx8G20QZiIRxSyasOMmUVAQg0znnZyYS3vqKn7Mq
-         Fp4kIbT+si3zTLCisLlhT72C59N7qdokMehxLp9WO2ktQwg/IvcK+aZRNP4qgS0zU5JG
-         FNaEnMqTGX3/zTsRDq8kVaerFXeM1aFWALBayoD/tDr2kUMGa7Obwr1OzqFBf/4KFwtV
-         e2BQ==
-X-Gm-Message-State: AOAM531mgzyc+mp4nlcgWr505IXBDJuyBhOJhq7p5Ztr5n/MGkd9ggWk
-        ++rbhBCFEmbDWx1poCjCxoc=
-X-Google-Smtp-Source: ABdhPJylADn3l5x2uEuxgSEapUegFiQ6JvNP6hvUyDICO7GdYLtbzb8UwreBkQkWnxUTaQnJ6HKSPA==
-X-Received: by 2002:a50:ef11:: with SMTP id m17mr11957948eds.151.1616717052434;
-        Thu, 25 Mar 2021 17:04:12 -0700 (PDT)
-Received: from pop-os.localdomain (cpc97922-walt21-2-0-cust248.13-2.cable.virginm.net. [82.16.251.249])
-        by smtp.gmail.com with ESMTPSA id v22sm3097651ejj.103.2021.03.25.17.04.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Mar 2021 17:04:12 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 00:04:10 +0000
-From:   Joe Sandom <joe.g.sandom@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio@vger.kernel.org, jic23@kernel.org,
-        Rob Herring <robh+dt@kernel.org>, andy.shevchenko@gmail.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v6 2/2] Added AMS tsl2591 device tree binding
-Message-ID: <20210326000409.hosr72pmbjo5sadx@pop-os.localdomain>
-References: <20210325220505.14507-1-joe.g.sandom@gmail.com>
- <20210325220505.14507-2-joe.g.sandom@gmail.com>
- <20210325234343.GA1959978@robh.at.kernel.org>
+        id S230051AbhCZAFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229744AbhCZAE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:04:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E536761A0A;
+        Fri, 26 Mar 2021 00:04:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616717095;
+        bh=L9P4ui1NiLkugPcGrxgKRmTRmqu40ZRnD2TBPHJZ8RI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Dd5XrAQB6dAMw1+ivXRD2kI+/6neIfKNKqRE4pffNX2xlMhtmJh1IftjwpM9woy5A
+         P9upW5bU+10i/WyvsXP2l6S3hJ7O1Juf98eJxBBu378FTvgYyqYHn2w68Qd2l+x+l7
+         rwAUv39PQHLaQ1NHnhyKu8BiW6Msz+KYrLUc5KUXMDSGZSmVq5aCyuhsb9c5zBhl6z
+         YDVKGJOhnxw2j/dYaXWiBMDCzEiXN8i3RgqmMSxcRruvlua0SsIYg2+bozLC3U5sst
+         d756wlpIpe4UQvFt/ho0GC2czOfIF0Itl04O+JfOC+PPIZ1CYwX3ILoSifAPnZ1RW4
+         ARTDUyCQmW2hQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Ard Biesheuvel <ardb@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 0/3] Fix cross compiling x86 with clang
+Date:   Thu, 25 Mar 2021 17:04:32 -0700
+Message-Id: <20210326000435.4785-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325234343.GA1959978@robh.at.kernel.org>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=UTF-8
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 05:43:43PM -0600, Rob Herring wrote:
-> On Thu, 25 Mar 2021 22:05:04 +0000, Joe Sandom wrote:
-> > Device tree binding for AMS/TAOS tsl2591 ambient light sensor.
-> > 
-> > This driver supports configuration via device tree and sysfs.
-> > Supported channels for raw infrared light intensity,
-> > raw combined light intensity and illuminance in lux.
-> > The driver additionally supports iio events on lower and
-> > upper thresholds.
-> > 
-> > This is a very-high sensitivity light-to-digital converter that
-> > transforms light intensity into a digital signal.
-> > 
-> > Datasheet: https://ams.com/tsl25911#tab/documents
-> > 
-> > Signed-off-by: Joe Sandom <joe.g.sandom@gmail.com>
-> > ---
-> > Changes in v6:
-> > - No changes
-> > 
-> > Notes:
-> > - Re-submitted to align the version with part 1 of the patch series
-> > 
-> >  .../bindings/iio/light/amstaos,tsl2591.yaml   | 50 +++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/light/amstaos,tsl2591.yaml
-> > 
-> 
-> 
-> Please add Acked-by/Reviewed-by tags when posting new versions. However,
-> there's no need to repost patches *only* to add the tags. The upstream
-> maintainer will do that for acks received on the version they apply.
-> 
-> If a tag was not added on purpose, please state why and what changed.
->
-Thanks for pointing that out Rob, will amend that now and resend for
-this version.
+Hi all,
+
+This series fixes cross compiling x86 with clang, which was initially
+brought up by John here:
+
+https://lore.kernel.org/r/cceb074c-861c-d716-5e19-834a8492f245@gmail.com/
+
+I have picked up that patch and added the same fix in a couple of other
+places where it is needed.
+
+I have tested this on an ARM based server with both defconfig and
+allmodconfig, where the build now passes.
+
+Please let me know if there are any problems.
+
+Cheers,
+Nathan
+
+John Millikin (1):
+  x86: Propagate $(CLANG_FLAGS) to $(REALMODE_FLAGS)
+
+Nathan Chancellor (2):
+  x86/boot: Add $(CLANG_FLAGS) to compressed KBUILD_CFLAGS
+  efi/libstub: Add $(CLANG_FLAGS) to x86 flags
+
+ arch/x86/Makefile                     | 1 +
+ arch/x86/boot/compressed/Makefile     | 1 +
+ drivers/firmware/efi/libstub/Makefile | 3 ++-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
+
+
+base-commit: 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b
+-- 
+2.31.0
+
