@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B09834A2C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ADAB34A2C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhCZHzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 03:55:20 -0400
-Received: from ozlabs.org ([203.11.71.1]:59527 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229892AbhCZHyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 03:54:49 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F6DlR3ds9z9sS8;
-        Fri, 26 Mar 2021 18:54:43 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616745283;
-        bh=klg5vb6b6NpRbw9txYhhP9AO24AiTa6YB6+9hCJTzqM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Luu7R/j5FX76jQcEedW201TkDoX86QS37ryDdEKhkGdhWcB7WKbRCxxozB00tRPnN
-         7CSb0RIacDhBRo1QCcfY3XQgjPGyJwYNSOmyS9tctsz7CkliyUChFzSasm03y6+pmC
-         oXWvqfph41SRIT+y6jf/Lfw2g+rrdOHw/AV2TBJQto+ZOhaaxiVKxc29AS/JJUaYi/
-         dSxzTIDsssrvKHTVLATV4/a6VdfhfXP+1ixkMZIdtIF01dFk5FMEfCj6/3aEYQN4m3
-         8GVfBPGAeAVSwm017Mq3baIBffNwJz/Rm8DEPyFvdsd3/yklgyR16wkTqDEVH259Z+
-         uBu+J9S+TdfmQ==
-Date:   Fri, 26 Mar 2021 18:54:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the jc_docs tree
-Message-ID: <20210326185440.42ea948a@canb.auug.org.au>
+        id S230001AbhCZHzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 03:55:52 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:37390 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229949AbhCZHzT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 03:55:19 -0400
+Received: by mail-io1-f69.google.com with SMTP id a18so5620567ioo.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 00:55:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=2eBBmYU/ALPuMTlQsOGaHV63IlPxJR7X8iVzJ/P2w7Y=;
+        b=URAIPGnvIkhpx8MVdV8jOOK8dEpja+aRGUf3FJcXncF0LFlX7AA6gqH9GyFwD8atnE
+         L5YXaMaRoUduM9+ClZQGCa/nmEcBm3Xr0bRNuWOmR7IuKZGGpJuw6v9FpXvWru4hYKZA
+         v3lhrYJ8UkqYBMmASWi/JeYBiOm5edNGk4NG2sYTB852S6JWau2+IaeDXhP97ekR2zC5
+         ZjQ+v9VGVm92PpzpZzinHzNDaso6mw35Rw29XjueG3T4CZRsUp9gC0mM1SrZTehzERAW
+         hziCi/lq3wo8W87LAZT0+3IKzqmQOu+NK24dpmA1FQRlqDmJtFUANBLApyHzv2E37bLh
+         UUlA==
+X-Gm-Message-State: AOAM531e3nFMpPVrYGjmjc+hvBD+9zhour11+Pe1ml6BRwELiw5RCIo9
+        NV61X7eklRUQ91rhWbf3l1VQjZ5Nvr6VPgBp4jBd39NYcL96
+X-Google-Smtp-Source: ABdhPJxGz+loRgOOjyTPw4XqiczYdsVcs/SUyaLeuGwpOm86KUlyAnTRkF58JgiqGIlWh8/Z/5fjo9lsBOgsWnSCZtu2SnWAUPNJ
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/KyC6t50SD7MyCMMru1ZVt8J";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Received: by 2002:a05:6e02:1a22:: with SMTP id g2mr9893569ile.231.1616745318693;
+ Fri, 26 Mar 2021 00:55:18 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 00:55:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000069c40405be6bdad4@google.com>
+Subject: [syzbot] KASAN: null-ptr-deref Read in filp_close (2)
+From:   syzbot <syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/KyC6t50SD7MyCMMru1ZVt8J
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+syzbot found the following issue on:
 
-After merging the jc_docs tree, today's linux-next build (htmldocs)
-produced these warnings:
+HEAD commit:    5ee96fa9 Merge tag 'irq-urgent-2021-03-21' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17fb84bed00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6abda3336c698a07
+dashboard link: https://syzkaller.appspot.com/bug?extid=283ce5a46486d6acdbaf
 
-include/linux/pstore_zone.h:55: warning: Function parameter or member 'writ=
-e' not described in 'pstore_zone_info'
-include/linux/pstore_blk.h:43: warning: Function parameter or member 'write=
-' not described in 'pstore_device_info'
-include/media/v4l2-mediabus.h:127: warning: Function parameter or member 't=
-ype' not described in 'v4l2_mbus_config'
+Unfortunately, I don't have any reproducer for this issue yet.
 
-and many more similar. These appear to be false positives :-(
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+283ce5a46486d6acdbaf@syzkaller.appspotmail.com
 
-Introduced by commit
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: null-ptr-deref in atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
+BUG: KASAN: null-ptr-deref in atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+BUG: KASAN: null-ptr-deref in filp_close+0x22/0x170 fs/open.c:1289
+Read of size 8 at addr 0000000000000077 by task syz-executor.4/16965
 
-  8d295fbad687 ("kernel-doc: better handle '::' sequences")
+CPU: 0 PID: 16965 Comm: syz-executor.4 Not tainted 5.12.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ __kasan_report mm/kasan/report.c:403 [inline]
+ kasan_report.cold+0x5f/0xd8 mm/kasan/report.c:416
+ check_region_inline mm/kasan/generic.c:180 [inline]
+ kasan_check_range+0x13d/0x180 mm/kasan/generic.c:186
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic64_read include/asm-generic/atomic-instrumented.h:837 [inline]
+ atomic_long_read include/asm-generic/atomic-long.h:29 [inline]
+ filp_close+0x22/0x170 fs/open.c:1289
+ close_files fs/file.c:403 [inline]
+ put_files_struct fs/file.c:418 [inline]
+ put_files_struct+0x1d0/0x350 fs/file.c:415
+ exit_files+0x7e/0xa0 fs/file.c:435
+ do_exit+0xbc2/0x2a60 kernel/exit.c:820
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x42c/0x2100 kernel/signal.c:2773
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:208
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x466459
+Code: Unable to access opcode bytes at RIP 0x46642f.
+RSP: 002b:00007feb5e334218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000056bf68 RCX: 0000000000466459
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056bf68
+RBP: 000000000056bf60 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf6c
+R13: 0000000000a9fb1f R14: 00007feb5e334300 R15: 0000000000022000
+==================================================================
 
-I have reverted that commit for today.
 
---=20
-Cheers,
-Stephen Rothwell
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---Sig_/KyC6t50SD7MyCMMru1ZVt8J
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBdk0AACgkQAVBC80lX
-0Gxftwf+Kga3Dom/LgRUrQ8M5uZX8bBOtRrpDwgqeXUfn2ovjohnJot1CC1cN4VO
-dh5JDigSV5qG8CXphkI+Y/kwu5Suyh2w5RC5JKXsuo/3eaIkDF9SzzKDyvncSlsn
-D4QVdtWS5fhZUAUaLdN4h4oQklMY9JrMoHzIYZ0VIjqnhkthvXrMSMqZBTlmGUHq
-tKWDiIKfka8G9rdCda/x+SldUEjJcPOs92smO7LOTznL6/ZHtMkGDq+BmAz3tBKB
-w5hczIdVfWL/mAIpVpfMhjzRlU4nsy5BhRihAdisdY1999SX3zy8aGEjiKuXW1h4
-dQXxhgz586iWvejOC96JEkYW1AK/cg==
-=w6es
------END PGP SIGNATURE-----
-
---Sig_/KyC6t50SD7MyCMMru1ZVt8J--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
