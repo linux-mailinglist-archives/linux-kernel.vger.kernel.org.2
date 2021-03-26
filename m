@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E5C934AB77
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF89934AB72
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhCZP1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:27:45 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:37596 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhCZP1S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:27:18 -0400
-Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 1EE8820B5680;
-        Fri, 26 Mar 2021 08:27:17 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1EE8820B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1616772437;
-        bh=pjJC8+RuCiRNDhNHwIzgJu6U7+9wO1VcQ0wueos6N2Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Gtq5M7e60kUb3b7t/PCrEEYN56deqD/0jJlgJSgugIK1US8nFGoDlMgdQDvu+GjMn
-         eNoT7bBhYT6fpBZ917mdNtlALapS++F2ZGPgHezhGuSDuNrVoiA1QYCmjzT2YiFBYY
-         mZChQi2j4Uu0DYlQIjcCMEX5msTo4GebuA6UHmS8=
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] libnvdimm/region: Allow setting align attribute on regions without mappings
-Date:   Fri, 26 Mar 2021 10:26:45 -0500
-Message-Id: <20210326152645.85225-1-tyhicks@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
+        id S230107AbhCZP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:27:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230098AbhCZP1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:27:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD59E61A36;
+        Fri, 26 Mar 2021 15:27:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616772421;
+        bh=PgZvub/EEgXyOMtj36/Ui5nnRJqFFaiQoQ/VbltMCjA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Eg+BwZGAwSyILfvPcAOTVne302pKV2q+cmm5Ihp4Me5aUHSjUNGW3+nDtB8R91wcm
+         C2DZ9VNhmbn0jETV9GNehbOwe3JTYKhoqjnh/MiS11ee4oxdvW0wRf2ZrWgUDyfJma
+         hWNpN/TDOWiJIBIfJozhEVq7FS6Mk6XBvB49orLZFW6uYQR5hUuZGCCK5sAk8SD5SC
+         UeP3y50GhNpSvcc4yWyh8y4La1rfFodfJDuofdgE1ai4ujHIVkZF7oQxbAyMF7RCJU
+         u626vT1IL6nOSZEgmRmqhiGrDEBDKZfd4AiSGwBgBRCvns974kHSj2o73ajFlbU9P5
+         x5eyEjjSzm5/A==
+Received: by mail-ed1-f42.google.com with SMTP id bf3so6760125edb.6;
+        Fri, 26 Mar 2021 08:27:01 -0700 (PDT)
+X-Gm-Message-State: AOAM5314zhfTHmpNPiZvla7UF3/Hs8EnVkg1oA4GXjTiAG8dOURW35N+
+        ZUZGDbPp5z87wTpP5TtBFmSnG5H7B8Og419Mtw==
+X-Google-Smtp-Source: ABdhPJwqjia+Et0ifS4Qa3YP7BG89nAuXW50XJw7Bv12OLaUbiQxEkJ38eyAu5ZhN7DqGhRVJR72+O39P4k/LsEHPLw=
+X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr16004050edd.258.1616772420155;
+ Fri, 26 Mar 2021 08:27:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+ <46745e07b04139a22b5bd01dc37df97e6981e643.1616765870.git.christophe.leroy@csgroup.eu>
+ <87zgyqdn3d.fsf@igel.home> <81a7e63f-57d4-5c81-acc5-35278fe5bb04@csgroup.eu>
+In-Reply-To: <81a7e63f-57d4-5c81-acc5-35278fe5bb04@csgroup.eu>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 26 Mar 2021 09:26:47 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
+Message-ID: <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
+Subject: Re: [PATCH v3 11/17] riscv: Convert to GENERIC_CMDLINE
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Andreas Schwab <schwab@linux-m68k.org>,
+        Will Deacon <will@kernel.org>,
+        Daniel Walker <danielwa@cisco.com>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        microblaze <monstr@monstr.eu>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        nios2 <ley.foon.tan@intel.com>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linux-hexagon@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org,
+        SH-Linux <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The alignment constraint for namespace creation in a region was
-increased, from 2M to 16M, for non-PowerPC architectures in v5.7 with
-commit 2522afb86a8c ("libnvdimm/region: Introduce an 'align'
-attribute"). The thought behind the change was that region alignment
-should be uniform across all architectures and, since PowerPC had the
-largest alignment constraint of 16M, all architectures should conform to
-that alignment.
+On Fri, Mar 26, 2021 at 8:20 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 26/03/2021 =C3=A0 15:08, Andreas Schwab a =C3=A9crit :
+> > On M=C3=A4r 26 2021, Christophe Leroy wrote:
+> >
+> >> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> >> index f8f15332caa2..e7c91ee478d1 100644
+> >> --- a/arch/riscv/kernel/setup.c
+> >> +++ b/arch/riscv/kernel/setup.c
+> >> @@ -20,6 +20,7 @@
+> >>   #include <linux/swiotlb.h>
+> >>   #include <linux/smp.h>
+> >>   #include <linux/efi.h>
+> >> +#include <linux/cmdline.h>
+> >>
+> >>   #include <asm/cpu_ops.h>
+> >>   #include <asm/early_ioremap.h>
+> >> @@ -228,10 +229,8 @@ static void __init parse_dtb(void)
+> >>      }
+> >>
+> >>      pr_err("No DTB passed to the kernel\n");
+> >> -#ifdef CONFIG_CMDLINE_FORCE
+> >> -    strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+> >> +    cmdline_build(boot_command_line, NULL, COMMAND_LINE_SIZE);
+> >>      pr_info("Forcing kernel command line to: %s\n", boot_command_line=
+);
+> >
+> > Shouldn't that message become conditional in some way?
+> >
+>
+> You are right, I did something similar on ARM but looks like I missed it =
+on RISCV.
 
-The change regressed namespace creation in pre-defined regions that
-relied on 2M alignment but a workaround was provided in the form of a
-sysfs attribute, named 'align', that could be adjusted to a non-default
-alignment value.
+How is this hunk even useful? Under what conditions can you boot
+without a DTB? Even with a built-in DTB, the DT cmdline handling would
+be called.
 
-However, the sysfs attribute's store function returned an error (-ENXIO)
-when userspace attempted to change the alignment of a region that had no
-mappings. This affected 2M aligned regions of volatile memory that were
-defined in a device tree using "pmem-region" and created by the
-of_pmem_region_driver, since those regions do not contain mappings
-(ndr_mappings is 0).
-
-Allow userspace to set the align attribute on pre-existing regions that
-do not have mappings so that namespaces can still be within those
-regions, despite not being aligned to 16M.
-
-Fixes: 2522afb86a8c ("libnvdimm/region: Introduce an 'align' attribute")
-Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
----
- drivers/nvdimm/region_devs.c | 33 ++++++++++++++++++---------------
- 1 file changed, 18 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
-index ef23119db574..09cff8aa6b40 100644
---- a/drivers/nvdimm/region_devs.c
-+++ b/drivers/nvdimm/region_devs.c
-@@ -545,29 +545,32 @@ static ssize_t align_store(struct device *dev,
- 		struct device_attribute *attr, const char *buf, size_t len)
- {
- 	struct nd_region *nd_region = to_nd_region(dev);
--	unsigned long val, dpa;
--	u32 remainder;
-+	unsigned long val;
- 	int rc;
- 
- 	rc = kstrtoul(buf, 0, &val);
- 	if (rc)
- 		return rc;
- 
--	if (!nd_region->ndr_mappings)
--		return -ENXIO;
--
--	/*
--	 * Ensure space-align is evenly divisible by the region
--	 * interleave-width because the kernel typically has no facility
--	 * to determine which DIMM(s), dimm-physical-addresses, would
--	 * contribute to the tail capacity in system-physical-address
--	 * space for the namespace.
--	 */
--	dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
--	if (!is_power_of_2(dpa) || dpa < PAGE_SIZE
--			|| val > region_size(nd_region) || remainder)
-+	if (val > region_size(nd_region))
- 		return -EINVAL;
- 
-+	if (nd_region->ndr_mappings) {
-+		unsigned long dpa;
-+		u32 remainder;
-+
-+		/*
-+		 * Ensure space-align is evenly divisible by the region
-+		 * interleave-width because the kernel typically has no facility
-+		 * to determine which DIMM(s), dimm-physical-addresses, would
-+		 * contribute to the tail capacity in system-physical-address
-+		 * space for the namespace.
-+		 */
-+		dpa = div_u64_rem(val, nd_region->ndr_mappings, &remainder);
-+		if (!is_power_of_2(dpa) || dpa < PAGE_SIZE || remainder)
-+			return -EINVAL;
-+	}
-+
- 	/*
- 	 * Given that space allocation consults this value multiple
- 	 * times ensure it does not change for the duration of the
--- 
-2.25.1
-
+Rob
