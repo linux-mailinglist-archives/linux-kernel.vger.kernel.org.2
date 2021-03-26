@@ -2,231 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CC434A1F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 07:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3311D34A211
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 07:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbhCZGk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 02:40:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229768AbhCZGke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 02:40:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B96BB61A3F;
-        Fri, 26 Mar 2021 06:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616740834;
-        bh=4Fap/Hn9be34QBNmhKqb8jG4Hqo2PXwYDCNpuaY227w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gmFRb4Zzm7UG5Y0wNpGi5elzVWJX0CX2i6ZKYt1B2GFUdmRLMg9l7VtvrG5nmNfYZ
-         iMw+z0r21MMHzqWkNAazfCGFeWJO4pnnX3cj4QKQnquIBkM7LpDKIdiQ+Cb0PgZa6o
-         5ryesztu4SLIZOmJOUkgkKlu3J8cRMxyjtjLDjgLDGpQb1CcFQMLreBuwtzGVL2WMv
-         R5aIVU+4JJ+OgXwkW5uFBHpsTO+Ih1m5Yh0Flctuc6qj3rOzvkqUh/7zg+nucKxsp8
-         gbuthV86Oe6VAUYIZemZGQifgT5u+S8oGWS4UC+QkiEwrXLy+XBadB31omxrAXdlN5
-         jj5Llx1ht12Cg==
-Date:   Fri, 26 Mar 2021 09:40:30 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YF2B3oZfkYGEha/w@unreal>
-References: <YFcGlzbaSzQ5Qota@unreal>
- <20210322111003.50d64f2c@omen.home.shazbot.org>
- <YFsOVNM1zIqNUN8f@unreal>
- <20210324083743.791d6191@omen.home.shazbot.org>
- <YFtXNF+t/0G26dwS@unreal>
- <20210324111729.702b3942@omen.home.shazbot.org>
- <YFxL4o/QpmhM8KiH@unreal>
- <20210325085504.051e93f2@omen.home.shazbot.org>
- <YFy11u+fm4MEGU5X@unreal>
- <20210325115324.046ddca8@omen.home.shazbot.org>
+        id S230506AbhCZGmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 02:42:12 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:43018 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230261AbhCZGle (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 02:41:34 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12Q6fRZR077190;
+        Fri, 26 Mar 2021 01:41:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616740887;
+        bh=O19EPkZCn6lrkNRAjKVLw4QtOhRf27/e3x5spcRBOKs=;
+        h=From:To:CC:Subject:Date;
+        b=NQPOPEP65BkRF/8ro8LMFzW38+XtCEEYwXulzC2mpjNsLKGSUqayhueRTosVz7MPG
+         jYsG+4A8GJRzi5qRBqKAYUDRe7XiRkq/oJ+Lk9Q5TATjkaFoNL1akFt/dlXZFon1z9
+         fmEDYJamq9ING4OS9UfnOLu08NtOloobr8FvNC7w=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12Q6fRZL118222
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Mar 2021 01:41:27 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 26
+ Mar 2021 01:41:26 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 26 Mar 2021 01:41:26 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12Q6fNO3089943;
+        Fri, 26 Mar 2021 01:41:23 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v9 0/3] J7200: Add support for GPIO and higher speed modes in MMCSD subsystems
+Date:   Fri, 26 Mar 2021 12:11:17 +0530
+Message-ID: <20210326064120.31919-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325115324.046ddca8@omen.home.shazbot.org>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 11:53:24AM -0600, Alex Williamson wrote:
-> On Thu, 25 Mar 2021 18:09:58 +0200
-> Leon Romanovsky <leon@kernel.org> wrote:
-> 
-> > On Thu, Mar 25, 2021 at 08:55:04AM -0600, Alex Williamson wrote:
-> > > On Thu, 25 Mar 2021 10:37:54 +0200
-> > > Leon Romanovsky <leon@kernel.org> wrote:
-> > >   
-> > > > On Wed, Mar 24, 2021 at 11:17:29AM -0600, Alex Williamson wrote:  
-> > > > > On Wed, 24 Mar 2021 17:13:56 +0200
-> > > > > Leon Romanovsky <leon@kernel.org> wrote:    
-> > > > 
-> > > > <...>
-> > > >   
-> > > > > > Yes, and real testing/debugging almost always requires kernel rebuild.
-> > > > > > Everything else is waste of time.    
-> > > > > 
-> > > > > Sorry, this is nonsense.  Allowing users to debug issues without a full
-> > > > > kernel rebuild is a good thing.    
-> > > > 
-> > > > It is far from debug, this interface doesn't give you any answers why
-> > > > the reset didn't work, it just helps you to find the one that works.
-> > > > 
-> > > > Unless you believe that this information will be enough to understand
-> > > > the root cause, you will need to ask from the user to perform extra
-> > > > tests, maybe try some quirk. All of that requires from the users to
-> > > > rebuild their kernel.
-> > > > 
-> > > > So no, it is not debug.  
-> > > 
-> > > It allows a user to experiment to determine (a) my device doesn't work
-> > > in a given scenario with the default configuration, but (b) if I change
-> > > the reset to this other thing it does work.  That is a step in
-> > > debugging.
-> > > 
-> > > It's absurd to think that a sysfs attribute could provide root cause,
-> > > but it might be enough for someone to further help that user.  It would
-> > > be a useful clue for a bug report.  Yes, reaching root cause might
-> > > involve building a kernel, but that doesn't invalidate that having a
-> > > step towards debugging in the base kernel might be a useful tool.  
-> > 
-> > Let's agree to do not agree.
-> > 
-> > >   
-> > > > > > > > > For policy preference, I already described how I've configured QEMU to
-> > > > > > > > > prefer a bus reset rather than a PM reset due to lack of specification
-> > > > > > > > > regarding the scope of a PM "soft reset".  This interface would allow a
-> > > > > > > > > system policy to do that same thing.
-> > > > > > > > > 
-> > > > > > > > > I don't think anyone is suggesting this as a means to avoid quirks that
-> > > > > > > > > would resolve reset issues and create the best default general behavior.
-> > > > > > > > > This provides a mechanism to test various reset methods, and thereby
-> > > > > > > > > identify broken methods, and set a policy.  Sure, that policy might be
-> > > > > > > > > to avoid a broken reset in the interim before it gets quirked and
-> > > > > > > > > there's potential for abuse there, but I think the benefits outweigh
-> > > > > > > > > the risks.        
-> > > > > > > > 
-> > > > > > > > This interface is proposed as first class citizen in the general sysfs
-> > > > > > > > layout. Of course, it will be seen as a way to bypass the kernel.
-> > > > > > > > 
-> > > > > > > > At least, put it under CONFIG_EXPERT option, so no distro will enable it
-> > > > > > > > by default.      
-> > > > > > > 
-> > > > > > > Of course we're proposing it to be accessible, it should also require
-> > > > > > > admin privileges to modify, sysfs has lots of such things.  If it's
-> > > > > > > relegated to non-default accessibility, it won't be used for testing
-> > > > > > > and it won't be available for system policy and it's pointless.      
-> > > > > > 
-> > > > > > We probably have difference in view of what testing is. I expect from
-> > > > > > the users who experience issues with reset to do extra steps and one of
-> > > > > > them is to require from them to compile their kernel.    
-> > > > > 
-> > > > > I would define the ability to generate a CI test that can pick a
-> > > > > device, unbind it from its driver, and iterate reset methods as a
-> > > > > worthwhile improvement in testing.    
-> > > > 
-> > > > Who is going to run this CI? At least all kernel CIs (external and
-> > > > internal to HW vendors) that I'm familiar are building kernel themselves.
-> > > > 
-> > > > Distro kernel is too bloat to be really usable for CI.  
-> > > 
-> > > At this point I'm suspicious you're trolling.  A distro kernel CI
-> > > certainly uses the kernel they intend to ship and support in their
-> > > environment. You're concerned about a bloated kernel, but the proposal
-> > > here adds 2-bytes per device to track reset methods and a trivial array
-> > > in text memory, meanwhile you're proposing multiple per-device memory
-> > > allocations to enhance the feature you think is too bloated for CI.  
-> > 
-> > I don't know why you decided to focus on memory footprint which is not
-> > important at all during CI runs. The bloat is in Kconfig options that
-> > are not needed. Those extra options add significant overhead during
-> > builds and runs itself.
-> > 
-> > And not, I'm not trolling, but representing HW vendor that pushes its CI
-> > and developers environment to the limit, by running full kernel builds with
-> > less than 30 seconds and boot-to-test with less than 6 seconds for full
-> > Fedora VM.
-> 
-> CI is only one aspect where I think this interface could be useful, as
-> below there's also a policy use case.  Therefore my inclination is that
-> this would be included in default kernels and avoiding bloat is a good
-> thing.  A CI environment can be used in different ways, it's not
-> necessarily building a new kernel for every test, nor do typical users
-> have access to those types of environments to report information in a
-> bug.
->    
-> > > > > > The root permissions doesn't protect from anything, SO lovers will use
-> > > > > > root without even thinking twice.    
-> > > > > 
-> > > > > Yes, with great power comes great responsibility.  Many admins ignore
-> > > > > this.  That's far beyond the scope of this series.    
-> > > > 
-> > > > <...>
-> > > >   
-> > > > > > I'm trying to help you with your use case of providing reset policy
-> > > > > > mechanism, which can be without CONFIG_EXPERT. However if you want
-> > > > > > to continue path of having specific reset type only, please ensure
-> > > > > > that this is not taken to the "bypass kernel" direction.    
-> > > > > 
-> > > > > You've lost me, are you saying you'd be in favor of an interface that
-> > > > > allows an admin to specify an arbitrary list of reset methods because
-> > > > > that's somehow more in line with a policy choice than a userspace
-> > > > > workaround?  This seems like unnecessary bloat because (a) it allows
-> > > > > the same bypass mechanism, and (b) a given device is only going to use
-> > > > > a single method anyway, so the functionality is unnecessary.  Please
-> > > > > help me understand how this favors the policy use case.  Thanks,    
-> > > > 
-> > > > The policy decision is global logic that is easier to grasp. At some
-> > > > point of our discussion, you presented the case where PM reset is not
-> > > > defined well and you prefer to do bus reset (something like that).
-> > > > 
-> > > > I expect that QEMU sets same reset policy for all devices at the same
-> > > > time instead of trying per-device to guess which one works.
-> > > > 
-> > > > And yes, you will be able to bypass kernel, but at least this interface
-> > > > will be broader than initial one that serves only SO and workarounds.  
-> > > 
-> > > I still think allocating objects for a list and managing that list is
-> > > too bloated and complicated, but I agree that being able to have more
-> > > fine grained control could be useful.  Is it necessary to be able to
-> > > re-order reset methods or might it still be better aligned to a policy
-> > > use case if we allow plus and minus operators?  For example, a device
-> > > might list:
-> > > 
-> > > [pm] [bus]
-> > > 
-> > > Indicating that PM and bus reset are both available and enabled.  The
-> > > user could do:
-> > > 
-> > > echo -pm > reset_methods
-> > > 
-> > > This would result in:
-> > > 
-> > > pm [bus]
-> > > 
-> > > Indicating that both PM and bus resets are available, but only bus reset
-> > > is enabled (note this is the identical result to "echo bus >" in the
-> > > current proposal).  "echo +pm" or "echo default" could re-enable the PM
-> > > reset.  Would something like that be satisfactory?  
-> > 
-> > Yes, I actually imagined simpler interface:
-> > To set specific type:
-> > echo pm > reset_methods
-> > To set policy:
-> > echo "pm,bus" > reset_methods
-> > 
-> > But your proposal is nicer.
-> 
-> The above doesn't support re-ordering though, we'll need to parse a
-> comma separated list for that.
+The following series of patches
+- Add support for GPIO subsystem in main and wakeup domains.
+- Add voltage regulator device tree nodes and their corresponding pinmux
+  to support power cycle and voltage switch required for UHS-I modes
+- sets respective tags in sdhci0 node to support higher speeds
+- remove no-1-8-v tag from sdhci1 node to support UHS-I modes
+- Update delay values for various speed modes supported.
 
-It supports by writing: echo "bus,pm" > reset_methods.
-Regarding comma, IMHO it is easiest pattern for the parsing.
 
-Anyway, The in-kernel implementation is not important to me.
+test logs
+- eMMC HS400 speed mode
+  https://pastebin.ubuntu.com/p/pRzV2ZvSJZ/
 
-Thanks
+- SD SDR104 speed mode
+  https://pastebin.ubuntu.com/p/n64PNdDy2v/
+
+- GPIO logs
+  https://pastebin.ubuntu.com/p/HDBBMwMcdj/
+
+Changes since v8:
+- Fixed minor changes sugested by kishon in patch 3
+- Picked up kishon's reviewed-by for patch 3
+
+Changes since v7:
+- Added the voltage regulator nodes to indicate the complete
+  power flow for MMCSD1 subsystem
+- Corrected minor errors in DT nodes
+- Reran the tests.
+- Rebased the series
+
+Changes since v6:
+- Corrected the node name from vdd_sd_dv_pins_default to
+  vdd-sd-dv-pins-default
+
+Changes since v5:
+- Corrected the link in patch 3 as it broken.
+- Added the version number for the references used in patch 3.
+- picked up reviewed-by from grygorii for patches 1 and 2.
+
+Changes since v4:
+- Added main_i2c0 pinmux required for doing power cycles to MMCSD1
+  subsystem
+- Updated delay values for various speed modes supported
+- Corrected the ti,ngpio property to indicate highest gpio lines that
+  can be accessed.
+- Reran the performace tests
+
+Changes since v3:
+- Removed patch (1 in v3).
+- Rebased and included patches that add support for GPIO from series [1].
+- Re-ran the performace tests for SD and eMMC.
+
+Changes since v2:
+- Added main_gpio0 DT node
+- Added voltage regulator device tree nodes required to support UHS-I modes
+
+Changes since v1:
+- squashed the two patches into one
+- added performance logs for the above mentioned speed modes
+
+Aswath Govindraju (1):
+  arm64: dts: ti: k3-j7200: Add support for higher speed modes and
+    update delay select values for MMCSD subsystems
+
+Faiz Abbas (2):
+  arm64: dts: ti: k3-j7200: Add gpio nodes
+  arm64: dts: ti: k3-j7200-common-proc-board: Disable unused gpio
+    modules
+
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 94 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 86 ++++++++++++++++-
+ .../boot/dts/ti/k3-j7200-mcu-wakeup.dtsi      | 34 +++++++
+ 3 files changed, 212 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
