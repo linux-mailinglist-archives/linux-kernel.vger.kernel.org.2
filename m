@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB28634A924
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC9C34A926
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:58:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCZN5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42004 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhCZN4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:56:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4380B619A0;
-        Fri, 26 Mar 2021 13:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616766992;
-        bh=O7IRWgd00UHT0VyHJxToyfBcxmszCLnq1Pe7Rl41vIM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nHBx1s7kmQhhBdrxT2Z/StHNZaSpQs15JgcY3TEZa9jr0JBap0+i+ekF9XWvPHU5q
-         nVaQDuxy0f31kCs8QT/kxdhz1LWCJ/hfhZndhBocLqIGCRbEUkj8nMDOZpPx4w54Eq
-         UGwx4xomCwc5VeSGTK8+jgMiPOE7cGiAJ3IadIGM=
-Date:   Fri, 26 Mar 2021 14:56:30 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     shaggy@kernel.org, jfs-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+5d2008bd1f1b722ba94e@syzkaller.appspotmail.com,
-        Hillf Danton <hdanton@sina.com>
-Subject: Re: [PATCH resend] jfs: fix use-after-free in lbmIODone
-Message-ID: <YF3oDrnN3RJBFQ0P@kroah.com>
-References: <20210322161147.5593-1-mail@anirudhrb.com>
+        id S230046AbhCZN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhCZN5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:57:09 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8002C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:57:05 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id x13so5721816wrs.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=aqH3oaZeAGr404pxyOo2DTDa7+fuxAZlONQ6s8AyNrU=;
+        b=jb8daXRrGteUJsTZAc0qDqWV/6S8DaVROs7HTnHxyTwCdp6O80FpNkY/ULTMQlkrQd
+         ZypW6xT8b0oIw7K9RNfxGUz9YMjjrAeTpQv9xYbTf+Re8VGUK3zVkdDJiSmi8qKlr1/0
+         aV7QXN7N14Jky2+0dmtg/LgrMfABWWSn90FHvNqLrp6teCeZM1Um3UMMh1UupFW3Ntrl
+         S7jBslgLlTO67QY+tF8n29Sfu2NOSDQwz202Y9gusCcgkmwYHoqAYvuIYqnAYpDA+sxn
+         YQD9QPUzfQ37tYOE87vw8llYP2tjwVSE7vYyNw1pad346bDvR0+fK/SevDDOPhrrky6I
+         xiqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=aqH3oaZeAGr404pxyOo2DTDa7+fuxAZlONQ6s8AyNrU=;
+        b=rpNZ6C5O8NtaBf3J2oN983tC++OerTQklaiXSFsE9xTxmYlu+YfWSwZ60gk2hmu/pS
+         QG7yeq+g5JGMJRRmhU2Yqmj51Kbo97Y64MzKm7N4nWcvy8qC/Ye78yzVHEIqQDEMneVH
+         5xlgCFAsPz0N0X49X9vOtWwEZTzv8xkQzy3EQmOPZ2l0EKpOdgxeagu/e72PXOwhoWkI
+         nFsaLni8/nzrEYeK4I9x6JVcM0SCfR7VXLm7zrfVdjMXpi02qEGxLJl2bfp//MkSfPbe
+         Z4Hc8ZmDRr2SKjcg7Irfi03RKW9C943ChpmvtgHFumsTvypxZVR8Ft0uz1zagMvkDYqg
+         fA9A==
+X-Gm-Message-State: AOAM532KkRgOuxXfo5VP52csLYvuIByt+jB+m9jkxCWunmUt01USwVkK
+        fHzHKZLYabYCa6I22d0Xng8=
+X-Google-Smtp-Source: ABdhPJx8Ij0ksb5Cr/wM3EQMhF+TpPMYT6UJNCGKUdatrLdkzGQ6Nzo/1x1xxq8tjTQRkIkdQz+7wg==
+X-Received: by 2002:a5d:4ac7:: with SMTP id y7mr14838952wrs.395.1616767024460;
+        Fri, 26 Mar 2021 06:57:04 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.141])
+        by smtp.gmail.com with ESMTPSA id q4sm10868910wma.20.2021.03.26.06.57.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 06:57:04 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 14:57:01 +0100
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     gregkh@linuxfoundation.org, dan.carpenter@oracle.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/15] staging: rtl8723bs:  put parentheses on macros
+ with complex values in include/sta_info.h
+Message-ID: <20210326135700.GA1952@agape.jhs>
+References: <cover.1616748885.git.fabioaiuto83@gmail.com>
+ <24e684c1eff8911dacff1b61957ce25bafc46631.1616748885.git.fabioaiuto83@gmail.com>
+ <0466586ada4d4804bca4e84aa5908c01@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322161147.5593-1-mail@anirudhrb.com>
+In-Reply-To: <0466586ada4d4804bca4e84aa5908c01@AcuMS.aculab.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 09:41:47PM +0530, Anirudh Rayabharam wrote:
-> Fix use-after-free by waiting for ongoing IO to complete before freeing
-> lbufs in lbmLogShutdown. Add a counter in struct jfs_log to keep track
-> of the number of in-flight IO operations and a wait queue to wait on for
-> the IO operations to complete.
+On Fri, Mar 26, 2021 at 01:39:24PM +0000, David Laight wrote:
+> From: Fabio Aiuto 
+> > Sent: 26 March 2021 09:09
+> > 
+> > fix the following checkpatch warnings:
+> > 
+> > ERROR: Macros with complex values should be enclosed in parentheses
+> > 284: FILE: drivers/staging/rtl8723bs/include/sta_info.h:284:
+> > +#define STA_RX_PKTS_ARG(sta) \
+> > --
+> > ERROR: Macros with complex values should be enclosed in parentheses
+> > 289: FILE: drivers/staging/rtl8723bs/include/sta_info.h:289:
+> > +#define STA_LAST_RX_PKTS_ARG(sta) \
+> > --
+> > ERROR: Macros with complex values should be enclosed in parentheses
+> > 294: FILE: drivers/staging/rtl8723bs/include/sta_info.h:294:
+> > +#define STA_RX_PKTS_DIFF_ARG(sta) \
+> > 
+> > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> > ---
+> >  drivers/staging/rtl8723bs/include/sta_info.h | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/include/sta_info.h
+> > b/drivers/staging/rtl8723bs/include/sta_info.h
+> > index abde3e3df988..1cdf93ec3b66 100644
+> > --- a/drivers/staging/rtl8723bs/include/sta_info.h
+> > +++ b/drivers/staging/rtl8723bs/include/sta_info.h
+> > @@ -282,19 +282,19 @@ struct sta_info {
+> >  	} while (0)
+> > 
+> >  #define STA_RX_PKTS_ARG(sta) \
+> > -	sta->sta_stats.rx_mgnt_pkts \
+> > +	(sta->sta_stats.rx_mgnt_pkts \
+> >  	, sta->sta_stats.rx_ctrl_pkts \
+> > -	, sta->sta_stats.rx_data_pkts
+> > +	, sta->sta_stats.rx_data_pkts)
 > 
-> Reported-by: syzbot+5d2008bd1f1b722ba94e@syzkaller.appspotmail.com
-> Suggested-by: Hillf Danton <hdanton@sina.com>
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->  fs/jfs/jfs_logmgr.c | 17 ++++++++++++++---
->  fs/jfs/jfs_logmgr.h |  2 ++
->  2 files changed, 16 insertions(+), 3 deletions(-)
+> That doesn't look right at all.
+> You've changed what is (probably) a list of arguments to a function
+> into a comma operator list.
 > 
-> diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-> index 9330eff210e0..82d20c4687aa 100644
-> --- a/fs/jfs/jfs_logmgr.c
-> +++ b/fs/jfs/jfs_logmgr.c
-> @@ -1815,6 +1815,8 @@ static int lbmLogInit(struct jfs_log * log)
->  	 */
->  	init_waitqueue_head(&log->free_wait);
->  
-> +	init_waitqueue_head(&log->io_waitq);
-> +
->  	log->lbuf_free = NULL;
->  
->  	for (i = 0; i < LOGPAGES;) {
-> @@ -1864,6 +1866,7 @@ static void lbmLogShutdown(struct jfs_log * log)
->  	struct lbuf *lbuf;
->  
->  	jfs_info("lbmLogShutdown: log:0x%p", log);
-> +	wait_event(log->io_waitq, !atomic_read(&log->io_inflight));
->  
->  	lbuf = log->lbuf_free;
->  	while (lbuf) {
-> @@ -1990,6 +1993,8 @@ static int lbmRead(struct jfs_log * log, int pn, struct lbuf ** bpp)
->  	bio->bi_end_io = lbmIODone;
->  	bio->bi_private = bp;
->  	bio->bi_opf = REQ_OP_READ;
-> +
-> +	atomic_inc(&log->io_inflight);
->  	/*check if journaling to disk has been disabled*/
->  	if (log->no_integrity) {
->  		bio->bi_iter.bi_size = 0;
-> @@ -2135,6 +2140,7 @@ static void lbmStartIO(struct lbuf * bp)
->  	bio->bi_private = bp;
->  	bio->bi_opf = REQ_OP_WRITE | REQ_SYNC;
->  
-> +	atomic_inc(&log->io_inflight);
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
 
-Why use an atomic for this?  The value can change after you test for it,
-as there's no lock involved.
+ops, you're right David, thank you and sorry to all
+for noise.
 
-Do you really need to keep track of all of these "inflight"?  That feels
-very "heavy" to me.
-
-jfs developers, any ideas?
-
-thanks,
-
-greg k-h
+fabio
