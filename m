@@ -2,244 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3597634A5E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D50C34A5F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:57:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbhCZKzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:55:39 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:35308 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhCZKzS (ORCPT
+        id S230016AbhCZK5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 06:57:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31830 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230023AbhCZK5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:55:18 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210326105516euoutp024c07e2deda667054ea2ceb7003f41a25~v3x9YwIob2263722637euoutp02F
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:55:16 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210326105516euoutp024c07e2deda667054ea2ceb7003f41a25~v3x9YwIob2263722637euoutp02F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616756117;
-        bh=Xtwf49mqaqF0GQyI7kUgfs9/22bvHQyxUcCKXilKpw8=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=JRKW5fr56Q9eRhTsK3nzwBnlMAWkHHOUr/AWRhm82WJi3vSZhaB7QCBSZrAKTSJAE
-         uLggpG1PQf6b06v4OIhp5aBNiT9MdaYhLXSNEROObK5yRI7u9SD8HmxflWXAeJmRX1
-         AtHnt5NuTYrV2f2A1YO0pli2q6tpeZkNKRxd2/zI=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210326105516eucas1p222e957e784ec9b47d4c38d49ec5664a8~v3x85wt5p1157711577eucas1p2X;
-        Fri, 26 Mar 2021 10:55:16 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id E7.9F.09444.49DBD506; Fri, 26
-        Mar 2021 10:55:16 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210326105515eucas1p1e23f34db376a7b5c05d8b182c3372425~v3x8YcbKF2563525635eucas1p1I;
-        Fri, 26 Mar 2021 10:55:15 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210326105515eusmtrp2b32f54896f16b44e5970d9bf1144d4d2~v3x8XTAPd2103221032eusmtrp2L;
-        Fri, 26 Mar 2021 10:55:15 +0000 (GMT)
-X-AuditID: cbfec7f4-dbdff700000024e4-8b-605dbd94c01e
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 62.E7.08696.39DBD506; Fri, 26
-        Mar 2021 10:55:15 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210326105514eusmtip2335fd8fb6526977a24d2efac57bad1f4~v3x7cLnMp1960419604eusmtip2f;
-        Fri, 26 Mar 2021 10:55:14 +0000 (GMT)
-Subject: Re: [PATCH net-next] net: stmmac: Fix kernel panic due to NULL
- pointer dereference of fpe_cfg
-To:     mohammad.athari.ismail@intel.com,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>, vee.khee.wong@intel.com,
-        Tan Tee Min <tee.min.tan@intel.com>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <31b97d50-d187-c3a8-59bf-140d8c7990e5@samsung.com>
-Date:   Fri, 26 Mar 2021 11:55:14 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.8.1
+        Fri, 26 Mar 2021 06:57:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616756225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ybgJAU+E9X4MewO2iZMuUGolW/fCwKow8qeXjGXj+WQ=;
+        b=Ai3rLUe3VgFrpFZgsKWZpibF7B/Uw6cbjJJdMOKCTxr80Z/t/tFTqee8OeZAiHWKAW/DTm
+        Rs2Ya6AXEjW1pYXd6q8R1Q76de0RRkjuU3xcZ8BfT4i4Mcr45lkhaCewphnjWeSeahG1kg
+        KhrStz/s5RqJ+P3h4rABLmv47EZwIag=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-fbC_rmQwNlWq88maydaCcA-1; Fri, 26 Mar 2021 06:57:04 -0400
+X-MC-Unique: fbC_rmQwNlWq88maydaCcA-1
+Received: by mail-ed1-f71.google.com with SMTP id bi17so4192488edb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 03:57:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ybgJAU+E9X4MewO2iZMuUGolW/fCwKow8qeXjGXj+WQ=;
+        b=e884BAqzVSb/c90lX2MupouQ3XmBpKmeD9v6TxB5J2gQzk420iHtcEVoMwcbVnbpoG
+         8opa8ZBHG3EPGrD2Ea7Jd7AeKQXW1gMtHCXDs6frmwh+ctPE87AuSobSDc07Hg4ctrjC
+         yswASna9y9U8GO1heRgWp7soZBl8UR/4DvPcgUQagR1SvdS9hx1kbRnuup9Rw9JoTKiC
+         B6y1ST3yAIHd/n67Dv4x/pitMPAjFjXpJwkViuSlHGbSm7Mz2SWABXWgjjlDLhFeXmoh
+         v/qK0A4lk2g8y5E6ib5pbKWB9TtbkYpB0GkAwZirfjRSJpN7vDH5YMGqVR7VpEJjVIEJ
+         bLxQ==
+X-Gm-Message-State: AOAM530bNHgdXAlk103ZC4Gu+yMUOq/8IenL30Aoav3RAICQP46iMyQN
+        oSM4A5pDuOa2rRBcIM3ukS6PdlQ7Sshr90hJzkH7lGTs78wzYVpN8yYcSZUU2fRynF7tLnkkDy1
+        OS85qETv7pEtqwIb1hMRoFJGUFudMAgQY5eqVVKrRxhIiPgKz1YFZKKZUXFgN9EudgQHP7FuHGF
+        wd
+X-Received: by 2002:a17:906:2314:: with SMTP id l20mr14775320eja.178.1616756222863;
+        Fri, 26 Mar 2021 03:57:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzCY/ftGgArG8rMqGeFgWHC7rzPfRxqnn1LJxvMr65neZ1dzHdTRf0m0kz4VcZoFCZlIWcKdQ==
+X-Received: by 2002:a17:906:2314:: with SMTP id l20mr14775291eja.178.1616756222518;
+        Fri, 26 Mar 2021 03:57:02 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id q26sm3699419eja.45.2021.03.26.03.57.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 03:57:02 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Lenny Szubowicz <lszubowi@redhat.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
+In-Reply-To: <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
+References: <20210311132847.224406-1-lszubowi@redhat.com>
+ <87sg4t7vqy.fsf@vitty.brq.redhat.com>
+ <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
+Date:   Fri, 26 Mar 2021 11:57:01 +0100
+Message-ID: <87mtuqchdu.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210326091046.26391-1-mohammad.athari.ismail@intel.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Sa0xTZxjOdy49h5Kyj0LXL2VsSRemU0Fq9uMkMtRsbIfsBv7Y5gWh6BEI
-        UFkrw+0PnXVEzxSJsFArOCJDkdkJtRQQilIVYslQYHJp6gpbxwSpSHB42UbH4cjGv+ea932T
-        l8blv5IqOke3n9PrtHlqiZRwdD+9FVvhTMuIrw8omCZ/L2D8F89ImKpbhwjmlzMPSOa2o5Rk
-        bL8Nkczg5SoJww/5Scb1rRMwp/+xLiLXDMZ017zIBO83AyZ4yEgwp8acEqbuupnaDNnBoX6c
-        tZ8fxdg2y12Kre2YxFhbwxEJe+n7YrarU8P+/sS5GLgyB9g528sp0u3ShD1cXs7nnH59YoY0
-        2+1qlhTUrjsw036PMgJrDA9CaATfQN2dQZwHUloO6wF6MlZJiOQRQO7W66RI5gB62uQjlyv+
-        8seYaJwDaNLkfV6ZBahjuAkIqQiYjZyP54FgRMIeDDVP+JYqOKzBEN/wNSakJFCD+AAv4QFN
-        y2AiGi3bLcgEjEEnZisoQVbATNToShNkGQxHN0/6CQGHwHfQpXtzuIBx+ApqCVQ9x0rk8X+3
-        NArB9hD0rKmdENd+G7V0H8ZEHIGmeuyUiF9Cwbblggmg8T4rJZKjAA0eNAMxtRF5+54tLYrD
-        19HFy+tFeQu6Vm8lBRnBMDQSCBeXCEMnHJW4KMvQ4RK5mH4NWXp+/G9s1+0BvAyoLStOs6w4
-        x7LiHMv/c2sA0QCUXKEhP4szbNBxRXEGbb6hUJcVt3tfvg0svmHvQs+jVnBuajbOBTAauACi
-        cXWkLPODnRly2R7tF19y+n3p+sI8zuACUTShVsoy7RfS5TBLu5/L5bgCTr/sYnSIyoilEpO5
-        ORHv4cNvSjXO0rNHjlU79BXKG811UcZNCemqbdUPfrafcpseRm38y+gNTCYv/NFfUuRO/fO4
-        2zbmGcB3dCbZdxUvBFtM/Pl3379T56J80+beG6+mX+gf/Xt6XqvyxU+E7Z0vKNeNX/3B9uHq
-        6Nw70d5QtWNqbWUkm+oZO9j6U9I1RUdRubnVW518/5OicdN2D/nZw/CjUfU7zqbl8yPJH8k0
-        XdZt0zu18b6rby0cmGg5vXai1j+zqm3L/KcJnRu+UWymS8q+mjKWDW8i2l/ISukjvVe2HktS
-        fnzSljxOHaeiQ1UjiTF3PatnB4pNobHhitjGysa2UjOdsiZlpkFNGLK1mjW43qD9F6Sudf71
-        AwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCIsWRmVeSWpSXmKPExsVy+t/xe7qT98YmGCxZaGix8clpRosn6xex
-        Wcw538JicW/RO1aLC9v6WC02Pb7GanF51xw2i65rT1gtDk3dy2gx7+9aIOvQeyaLYwvELP6/
-        3spo8b+lgcVi9oO9bBZLj8xgdxDwuHztIrPHlpU3mTx2zrrL7rF4z0smj02rOtk8Ni+p9zi4
-        z9Dj6Y+9QAX7PzN6fN4kF8AVpWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqk
-        b2eTkpqTWZZapG+XoJdx6tBWtoLFOhXvd79gb2Bcq9rFyMkhIWAi8WTyd6YuRi4OIYGljBIP
-        pqxnhEjISJyc1sAKYQtL/LnWxQZR9J5RYlXnSbAiYYEMib3fvzGCJEQETjJJrJ2xhR0kwSyw
-        gEmit8kFomMmo8SeJVfAEmwChhJdb0FGcXDwCthJ3JyQDBJmEVCVmPRxCliJqECSxOUlE8E2
-        8woISpyc+YQFxOYUcJPY/OIzM8R8M4l5mx9C2fIS29/OgbLFJW49mc80gVFoFpL2WUhaZiFp
-        mYWkZQEjyypGkdTS4tz03GIjveLE3OLSvHS95PzcTYzA6N927OeWHYwrX33UO8TIxMF4iFGC
-        g1lJhDfJNyZBiDclsbIqtSg/vqg0J7X4EKMp0D8TmaVEk/OB6SevJN7QzMDU0MTM0sDU0sxY
-        SZzX5MiaeCGB9MSS1OzU1ILUIpg+Jg5OqQYmzmDXG+KLT5UY2j41CPCtOXpg6oaSxP8qT9Z/
-        3b62rCXu/ppE1tZHORta/5v0RZWwGD5Ytf/Vv9h3T08tiJl8/nn9Fv/sr4xzvTokI5iz0tfm
-        ljv4NP55uOqdDcvZ718VODbd2BbSYsd56vWFpI76u2kZu4861bXNO/St36np6JujHL0eX409
-        VlScl3U1DhJynH7x+p6nS42519mp2tnqWJSuTuF1f5H0W84/6qjmRfuCHrec1bsMdy3e9EZ5
-        guzpUM8P63Yvk/v0T/xg+cbwHbKis/YfdN44083i7TG1l8f7skwcphVazA/sNT3xc6Jb3ZRi
-        vTb/gIC3josPfFzOp8htf/Ngy7mVtkHXPjgaKbEUZyQaajEXFScCAF5we2qHAwAA
-X-CMS-MailID: 20210326105515eucas1p1e23f34db376a7b5c05d8b182c3372425
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210326091110eucas1p1626ecb9b89c282bdbc6fe9b6ed966932
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210326091110eucas1p1626ecb9b89c282bdbc6fe9b6ed966932
-References: <CGME20210326091110eucas1p1626ecb9b89c282bdbc6fe9b6ed966932@eucas1p1.samsung.com>
-        <20210326091046.26391-1-mohammad.athari.ismail@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.03.2021 10:10, mohammad.athari.ismail@intel.com wrote:
-> From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
->
-> In this patch, "net: stmmac: support FPE link partner hand-shaking
-> procedure", priv->plat->fpe_cfg wouldn`t be "devm_kzalloc"ed if
-> dma_cap->frpsel is 0 (Flexible Rx Parser is not supported in SoC) in
-> tc_init(). So, fpe_cfg will be remain as NULL and accessing it will cause
-> kernel panic.
->
-> To fix this, move the "devm_kzalloc"ing of priv->plat->fpe_cfg before
-> dma_cap->frpsel checking in tc_init(). Additionally, checking of
-> priv->dma_cap.fpesel is added before calling stmmac_fpe_link_state_handle()
-> as only FPE supported SoC is allowed to call the function.
->
-> Below is the kernel panic dump reported by Marek Szyprowski
-> <m.szyprowski@samsung.com>:
->
-> meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=35)
-> meson8b-dwmac ff3f0000.ethernet eth0: No Safety Features support found
-> meson8b-dwmac ff3f0000.ethernet eth0: PTP not supported by HW
-> meson8b-dwmac ff3f0000.ethernet eth0: configuring for phy/rgmii link mode
-> Unable to handle kernel NULL pointer dereference at virtual address 0000000000000001
-> Mem abort info:
-> ...
-> user pgtable: 4k pages, 48-bit VAs, pgdp=00000000044eb000
-> [0000000000000001] pgd=0000000000000000, p4d=0000000000000000
-> Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> Modules linked in: dw_hdmi_i2s_audio dw_hdmi_cec meson_gxl realtek meson_gxbb_wdt snd_soc_meson_axg_sound_card dwmac_generic axg_audio meson_dw_hdmi crct10dif_ce snd_soc_meson_card_utils snd_soc_meson_axg_tdmout panfrost rc_odroid gpu_sched reset_meson_audio_arb meson_ir snd_soc_meson_g12a_tohdmitx snd_soc_meson_axg_frddr sclk_div clk_phase snd_soc_meson_codec_glue dwmac_meson8b snd_soc_meson_axg_fifo stmmac_platform meson_rng meson_drm stmmac rtc_meson_vrtc rng_core meson_canvas pwm_meson dw_hdmi mdio_mux_meson_g12a pcs_xpcs snd_soc_meson_axg_tdm_interface snd_soc_meson_axg_tdm_formatter nvmem_meson_efuse display_connector
-> CPU: 1 PID: 7 Comm: kworker/u8:0 Not tainted 5.12.0-rc4-next-20210325+
-> Hardware name: Hardkernel ODROID-C4 (DT)
-> Workqueue: events_power_efficient phylink_resolve
-> pstate: 20400009 (nzCv daif +PAN -UAO -TCO BTYPE=--)
-> pc : stmmac_mac_link_up+0x14c/0x348 [stmmac]
-> lr : stmmac_mac_link_up+0x284/0x348 [stmmac] ...
-> Call trace:
->   stmmac_mac_link_up+0x14c/0x348 [stmmac]
->   phylink_resolve+0x104/0x420
->   process_one_work+0x2a8/0x718
->   worker_thread+0x48/0x460
->   kthread+0x134/0x160
->   ret_from_fork+0x10/0x18
-> Code: b971ba60 350007c0 f958c260 f9402000 (39400401)
-> ---[ end trace 0c9deb6c510228aa ]---
->
-> Fixes: 5a5586112b92 ("net: stmmac: support FPE link partner hand-shaking
-> procedure")
-> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+Lenny Szubowicz <lszubowi@redhat.com> writes:
 
-This fixes my issue. Thanks!
-
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-
-> ---
->   .../net/ethernet/stmicro/stmmac/stmmac_main.c |  6 ++++--
->   .../net/ethernet/stmicro/stmmac/stmmac_tc.c   | 20 +++++++++----------
->   2 files changed, 14 insertions(+), 12 deletions(-)
+> On 3/17/21 9:30 AM, Vitaly Kuznetsov wrote:
+>> Lenny Szubowicz <lszubowi@redhat.com> writes:
+>> 
+>>> Turn off host updates to the registered kvmclock memory
+>>> locations when transitioning to a hibernated kernel in
+>>> resume_target_kernel().
+>>>
+>>> This is accomplished for secondary vcpus by disabling host
+>>> clock updates for that vcpu when it is put offline. For the
+>>> primary vcpu, it's accomplished by using the existing call back
+>>> from save_processor_state() to kvm_save_sched_clock_state().
+>>>
+>>> The registered kvmclock memory locations may differ between
+>>> the currently running kernel and the hibernated kernel, which
+>>> is being restored and resumed. Kernel memory corruption is thus
+>>> possible if the host clock updates are allowed to run while the
+>>> hibernated kernel is relocated to its original physical memory
+>>> locations.
+>>>
+>>> This is similar to the problem solved for kexec by
+>>> commit 1e977aa12dd4 ("x86: KVM guest: disable clock before rebooting.")
+>>>
+>>> Commit 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a
+>>> PER_CPU variable") innocently increased the exposure for this
+>>> problem by dynamically allocating the physical pages that are
+>>> used for host clock updates when the vcpu count exceeds 64.
+>>> This increases the likelihood that the registered kvmclock
+>>> locations will differ for vcpus above 64.
+>>>
+>>> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
+>>> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
+>>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+>>> ---
+>>>   arch/x86/kernel/kvmclock.c | 34 ++++++++++++++++++++++++++++++++--
+>>>   1 file changed, 32 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+>>> index aa593743acf6..291ffca41afb 100644
+>>> --- a/arch/x86/kernel/kvmclock.c
+>>> +++ b/arch/x86/kernel/kvmclock.c
+>>> @@ -187,8 +187,18 @@ static void kvm_register_clock(char *txt)
+>>>   	pr_info("kvm-clock: cpu %d, msr %llx, %s", smp_processor_id(), pa, txt);
+>>>   }
+>>>   
+>>> +/*
+>>> + * Turn off host clock updates to the registered memory location when the
+>>> + * cpu clock context is saved via save_processor_state(). Enables correct
+>>> + * handling of the primary cpu clock when transitioning to a hibernated
+>>> + * kernel in resume_target_kernel(), where the old and new registered
+>>> + * memory locations may differ.
+>>> + */
+>>>   static void kvm_save_sched_clock_state(void)
+>>>   {
+>>> +	native_write_msr(msr_kvm_system_time, 0, 0);
+>>> +	kvm_disable_steal_time();
+>>> +	pr_info("kvm-clock: cpu %d, clock stopped", smp_processor_id());
+>>>   }
+>> 
+>> Nitpick: should we rename kvm_save_sched_clock_state() to something more
+>> generic, like kvm_disable_host_clock_updates() to indicate, that what it
+>> does is not only sched clock related?
 >
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> index 170296820af0..27faf5e49360 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-> @@ -997,7 +997,8 @@ static void stmmac_mac_link_down(struct phylink_config *config,
->   	stmmac_eee_init(priv);
->   	stmmac_set_eee_pls(priv, priv->hw, false);
+> I see your rationale. But if I rename kvm_save_sched_clock_state()
+> then shouldn't I also rename kvm_restore_sched_clock_state().
+> The names appear to reflect the callback that invokes them,
+> from save_processor_state()/restore_state(), rather than what these
+> functions need to do.
+>
+>          x86_platform.save_sched_clock_state = kvm_save_sched_clock_state;
+>          x86_platform.restore_sched_clock_state = kvm_restore_sched_clock_state;
 >   
-> -	stmmac_fpe_link_state_handle(priv, false);
-> +	if (priv->dma_cap.fpesel)
-> +		stmmac_fpe_link_state_handle(priv, false);
->   }
->   
->   static void stmmac_mac_link_up(struct phylink_config *config,
-> @@ -1097,7 +1098,8 @@ static void stmmac_mac_link_up(struct phylink_config *config,
->   		stmmac_set_eee_pls(priv, priv->hw, true);
->   	}
->   
-> -	stmmac_fpe_link_state_handle(priv, true);
-> +	if (priv->dma_cap.fpesel)
-> +		stmmac_fpe_link_state_handle(priv, true);
->   }
->   
->   static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-> index 1d84ee359808..4e70efc45458 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
-> @@ -254,6 +254,16 @@ static int tc_init(struct stmmac_priv *priv)
->   			 priv->flow_entries_max);
->   	}
->   
-> +	if (!priv->plat->fpe_cfg) {
-> +		priv->plat->fpe_cfg = devm_kzalloc(priv->device,
-> +						   sizeof(*priv->plat->fpe_cfg),
-> +						   GFP_KERNEL);
-> +		if (!priv->plat->fpe_cfg)
-> +			return -ENOMEM;
-> +	} else {
-> +		memset(priv->plat->fpe_cfg, 0, sizeof(*priv->plat->fpe_cfg));
-> +	}
-> +
->   	/* Fail silently as we can still use remaining features, e.g. CBS */
->   	if (!dma_cap->frpsel)
->   		return 0;
-> @@ -298,16 +308,6 @@ static int tc_init(struct stmmac_priv *priv)
->   	dev_info(priv->device, "Enabling HW TC (entries=%d, max_off=%d)\n",
->   			priv->tc_entries_max, priv->tc_off_max);
->   
-> -	if (!priv->plat->fpe_cfg) {
-> -		priv->plat->fpe_cfg = devm_kzalloc(priv->device,
-> -						   sizeof(*priv->plat->fpe_cfg),
-> -						   GFP_KERNEL);
-> -		if (!priv->plat->fpe_cfg)
-> -			return -ENOMEM;
-> -	} else {
-> -		memset(priv->plat->fpe_cfg, 0, sizeof(*priv->plat->fpe_cfg));
-> -	}
-> -
->   	return 0;
->   }
->   
+> For V2 of my patch, I kept these names as they were. But if you have a strong
+> desire for a different name, then I think both routines should be renamed
+> similarly, since they are meant to be a complimentary pair.
+>
+>> 
+>>>   
+>>>   static void kvm_restore_sched_clock_state(void)
+>>> @@ -311,9 +321,23 @@ static int kvmclock_setup_percpu(unsigned int cpu)
+>>>   	return p ? 0 : -ENOMEM;
+>>>   }
+>>>   
+>>> +/*
+>>> + * Turn off host clock updates to the registered memory location when a
+>>> + * cpu is placed offline. Enables correct handling of secondary cpu clocks
+>>> + * when transitioning to a hibernated kernel in resume_target_kernel(),
+>>> + * where the old and new registered memory locations may differ.
+>>> + */
+>>> +static int kvmclock_cpu_offline(unsigned int cpu)
+>>> +{
+>>> +	native_write_msr(msr_kvm_system_time, 0, 0);
+>>> +	pr_info("kvm-clock: cpu %d, clock stopped", cpu);
+>> 
+>> I'd say this pr_info() is superfluous: on a system with hundereds of
+>> vCPUs users will get flooded with 'clock stopped' messages which don't
+>> actually mean much: in case native_write_msr() fails the error gets
+>> reported in dmesg anyway. I'd suggest we drop this and pr_info() in
+>> kvm_save_sched_clock_state().
+>> 
+>
+> Agreed. I was essentially using it as a pr_debug(). Gone in V2.
+>
+>>> +	return 0;
+>> 
+>> Why don't we disable steal time accounting here? MSR_KVM_STEAL_TIME is
+>> also per-cpu. Can we merge kvm_save_sched_clock_state() with
+>> kvmclock_cpu_offline() maybe?
+>> 
+>
+> kvm_cpu_down_prepare() in arch/x86/kernel/kvm.c already calls
+> kvm_disable_steal_time() when a vcpu is placed offline.
+> So there is no need to do that in kvmclock_cpu_offline().
+>
+> In the case of the hibernation resume code path, resume_target_kernel()
+> in kernel/power/hibernate.c, the secondary cpus are placed offline,
+> but the primary is not. Instead, we are going to be switching contexts
+> of the primary cpu from the boot kernel to the kernel that was restored
+> from the hibernation image.
+>
+> This is where save_processor_state()/restore_processor_state() and kvm_save_sched_clock_state()/restore_sched_clock_state() come into play
+> to stop the kvmclock of the boot kernel's primary cpu and restart
+> the kvmclock of restored hibernated kernel's primary cpu.
+>
+> And in this case, no one is calling kvm_disable_steal_time(),
+> so kvm_save_sched_clock_state() is doing it. (This is very similar
+> to the reason why kvm_crash_shutdown() in kvmclock.c needs to call
+> kvm_disable_steal_time())
+>
+> However, I'm now wondering if kvm_restore_sched_clock_state()
+> needs to add a call to the equivalent of kvm_register_steal_time(),
+> because otherwise no one will do that for the primary vcpu
+> on resume from hibernation.
 
-Best regards
+In case this is true, steal time accounting is not our only
+problem. kvm_guest_cpu_init(), which is called from
+smp_prepare_boot_cpu() hook also sets up Async PF an PV EOI and both
+these features establish a shared guest-host memory region, in this
+doesn't happen upon resume from hibernation we're in trouble.
+
+smp_prepare_boot_cpu() hook is called very early from start_kernel() but
+what happens when we switch to the context of the hibernated kernel?
+
+I'm going to set up an environement and check what's going on.
+
+>
+>>> +}
+>>> +
+>>>   void __init kvmclock_init(void)
+>>>   {
+>>>   	u8 flags;
+>>> +	int cpuhp_prepare;
+>>>   
+>>>   	if (!kvm_para_available() || !kvmclock)
+>>>   		return;
+>>> @@ -325,8 +349,14 @@ void __init kvmclock_init(void)
+>>>   		return;
+>>>   	}
+>>>   
+>>> -	if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
+>>> -			      kvmclock_setup_percpu, NULL) < 0) {
+>>> +	cpuhp_prepare = cpuhp_setup_state(CPUHP_BP_PREPARE_DYN,
+>>> +					  "kvmclock:setup_percpu",
+>>> +					  kvmclock_setup_percpu, NULL);
+>>> +	if (cpuhp_prepare < 0)
+>>> +		return;
+>>> +	if (cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "kvmclock:cpu_offline",
+>>> +			      NULL, kvmclock_cpu_offline) < 0) {
+>>> +		cpuhp_remove_state(cpuhp_prepare);
+>> 
+>> In case we fail to set up kvmclock_cpu_offline() callback we get broken
+>> hybernation but without kvmclock_setup_percpu() call we get a broken
+>> guest (as kvmclock() may be the only reliable clocksource) so I'm not
+>> exactly sure we're active in a best way with cpuhp_remove_state()
+>> here. I don't feel strong though, I think it can stay but in that case
+>> I'd add a pr_warn() at least.
+>
+> Something is seriously broken if either of these cpuhp_setup_state()
+> calls fail. I first considered using the "down" callback of the
+> CPUHP_BP_PREPARE_DYN state, as in:
+>
+>          if (cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "kvmclock:setup_percpu",
+> 			      kvmclock_setup_percpu, kvmclock_cpu_offline) < 0) {
+>
+> This would have minimized the change, but I wasn't comfortable with how late
+> it would be called. Other examples in the kernel, including kvm.c, use
+> CPUHP_AP_ONLINE_DYN for cpu online/offline events.
+>
+> But I do agree that a failure of either cpuhp_setup_state() should not
+> be silent. So in V2 I added a pr_err().
+>
+> Thank you for your review comments.
+>
+>                          -Lenny.
+>
+>> 
+>>>   		return;
+>>>   	}
+>> 
+>
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+Vitaly
 
