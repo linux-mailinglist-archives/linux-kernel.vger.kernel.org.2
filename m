@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC4A34A338
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D92B34A349
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:38:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCZIgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbhCZIfw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:35:52 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CC3C0613AA;
-        Fri, 26 Mar 2021 01:35:51 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g38so5039975ybi.12;
-        Fri, 26 Mar 2021 01:35:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CO4gZbxFyIsBp6fDq1sKand42JKRkUpqVJji7diN+V8=;
-        b=RkfWe8t1cmxtlxZKbEd0kDtJCDkZlVC8UjQHdq4X2ZQjUPiibMVWt62ER1Kb+xPe0V
-         N6/uabHDVsNyWbKrMBdzG1G+8dq8eSHJrE5IyG+7Bc6hksxLh6Uh81DZWkMiUD7uYHuu
-         PyZt/XLN1ebLFCMtrBOLC7tMD3Mg7ZLfv6Hmm9qw3JNwJwkp4qo1iy8XmvduyPpvZcjS
-         rhE22UYjCtNX25Ze9rt8n5sPcj0rzzDY22EjKL9TLMhS1WPNoAMVvpUJub1Ru0ADNJxL
-         0py2kT2w/5sv1XEXrs1aofRuR8o1Ihcfq4aLM2A5vYi16JasjHJD81lRs/WT2cPIAP/r
-         F8QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CO4gZbxFyIsBp6fDq1sKand42JKRkUpqVJji7diN+V8=;
-        b=ifWso9vUvUu6pG2D8PpsukPBqpjCR5VUbngozYG3wNm1Miojxb+nMQJOxuzQ976mrH
-         uso5AmpzUcMWfLhsBaj+t1kXFAPS5bUmMaU0SkBj1newga1UcYZBi0ZBRR6v3RguTszL
-         qMGkrX5hIi3PFWYv32dihWJxwv9SKvGsS4Zb2NA6MYLdVGyfQvYZIlx5aQzuU7yW/+KS
-         8X0/bu9aYSKwXDmv7QnaCAPP8ULdCstkgHKYLeOpFwTkXI7eOGlPxKax3JOiAg1fZcVj
-         9ynf2KPWW6DTFE9u0sZgedUd5Pi3D7PkNMZydEmr1Rlx+nvMbHUP7IwGEzZ/nsuxRJzy
-         Isog==
-X-Gm-Message-State: AOAM530GqyoklKDCtDGS8bXaadS1Ah2CYRVdvSvtvO4CvtqaNfA0fXEM
-        HV/YY7BDh80xW6+4kNVBrt+Dv01j+xfsXA6FW0M=
-X-Google-Smtp-Source: ABdhPJwTM3/lDZesWWLU4v5kz0+QC5oYDKNVR7OHeJEPnIurqnJKIzMCfTbYAkxbIB2i/Ba39xUX8lhECouORuQatrs=
-X-Received: by 2002:a25:25d0:: with SMTP id l199mr18601780ybl.337.1616747751256;
- Fri, 26 Mar 2021 01:35:51 -0700 (PDT)
+        id S230218AbhCZIiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:38:08 -0400
+Received: from m12-18.163.com ([220.181.12.18]:37635 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230012AbhCZIhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 04:37:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=khWhN
+        Liz8Y0gCiaThaxGXk9TRfGzQp0749K+yDhDHHc=; b=nh14fARKixuP4m/P2RqBf
+        GI4o9SA1elGFBM7E268Yr/YB0UJLa7QGvwdeYHK4SQRJho0fcbnMbaT0S4f3hhtG
+        KW0lGlmqHs9BiVO7Zvstr485aGVYoAZP81eawpeF03WW3ATSr/BRlu7JC8QhGvAE
+        +m48qf4KN8PHhhh1B8F1G0=
+Received: from COOL-20200916KH.ccdomain.com (unknown [218.94.48.178])
+        by smtp14 (Coremail) with SMTP id EsCowABXVvQtnV1gz7cAaw--.4509S2;
+        Fri, 26 Mar 2021 16:37:05 +0800 (CST)
+From:   qiumibaozi_1@163.com
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ganjisheng <ganjisheng@yulong.com>
+Subject: [PATCH 7/7] Remove unnecessary variable
+Date:   Fri, 26 Mar 2021 16:36:59 +0800
+Message-Id: <20210326083659.496-1-qiumibaozi_1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
 MIME-Version: 1.0
-References: <00000000000053da9405bd7d2644@google.com>
-In-Reply-To: <00000000000053da9405bd7d2644@google.com>
-From:   Ming Lei <tom.leiming@gmail.com>
-Date:   Fri, 26 Mar 2021 16:35:40 +0800
-Message-ID: <CACVXFVMf9n8bHP8ZTx74bBqoKRFHbPPLSBkvmdaV50xXwNKC1A@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in disk_part_iter_next (2)
-To:     syzbot <syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EsCowABXVvQtnV1gz7cAaw--.4509S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr48AF13GFWDurWrJw18Zrb_yoW3uFb_Zr
+        1fGa1UGw4kXa1Fvwn2ka15XF13Cwn3WF45Ar1rt39xAF90yr15Cr1vyr95CFZ7WFWfZrWk
+        XrZrX3yfKF4I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYUGYPUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5tlxzxxedr6xjbr6il2tof0z/1tbiLRFh2FSIlawR4AAAsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 7:10 PM syzbot
-<syzbot+8fede7e30c7cee0de139@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    280d542f Merge tag 'drm-fixes-2021-03-05' of git://anongit..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15ade5aed00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=952047a9dbff6a6a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8fede7e30c7cee0de139
+From: ganjisheng <ganjisheng@yulong.com>
 
-#syz test: https://github.com/ming1/linux.git v5.12-block-test
+Signed-off-by: ganjisheng <ganjisheng@yulong.com>
+---
+ arch/x86/kvm/emulate.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index f7970ba..7dfd529 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -1403,8 +1403,6 @@ static int decode_modrm(struct x86_emulate_ctxt *ctxt,
+ static int decode_abs(struct x86_emulate_ctxt *ctxt,
+ 		      struct operand *op)
+ {
+-	int rc = X86EMUL_CONTINUE;
+-
+ 	op->type = OP_MEM;
+ 	switch (ctxt->ad_bytes) {
+ 	case 2:
+@@ -1418,7 +1416,7 @@ static int decode_abs(struct x86_emulate_ctxt *ctxt,
+ 		break;
+ 	}
+ done:
+-	return rc;
++	return X86EMUL_CONTINUE;
+ }
+ 
+ static void fetch_bit_operand(struct x86_emulate_ctxt *ctxt)
+-- 
+1.9.1
+
+
