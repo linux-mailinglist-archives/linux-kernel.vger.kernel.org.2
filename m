@@ -2,288 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 253EA34A048
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A93334A04B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhCZDeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 23:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230345AbhCZDeQ (ORCPT
+        id S231211AbhCZDex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 23:34:53 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55398 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhCZDes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 23:34:16 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFD9C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 20:34:15 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r12so6311170ejr.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 20:34:15 -0700 (PDT)
+        Thu, 25 Mar 2021 23:34:48 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12Q3QJwO135108;
+        Fri, 26 Mar 2021 03:34:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=tfvFp5AG9HnwJAAJxLg65PNIzSHF7VNN+EGr4Ilkjf8=;
+ b=Avu1KYCVH1kRX5PzyN9sZGTnKyw16U2WqmXbxjmERZq9Jb11GTLzVX21TkrWYwsUvmsN
+ KZQgL6iBPjgxWIVDDXVvapDUQiinDH+LwNibT5/bvAv5pcY5riv4W0eyZCNUDpgRVp9K
+ yHRrmQEZf/197HZMDa3cT2YLAWtdx9nGIblOHIsVw2GbsEaVN3BADDvfvQ8qX7GWMVVp
+ 9AQWTpxcv8dQ28Rt0owR/7PW5oi+07mMMmytM6/CsbvhKmCLnZmF5CZUx2Z3o0Q/QTmy
+ iy6ZtA2Z7eq6vcyAiElkBwErD0EXxcw3EhPOeCV6/hGNJaZSXm7l/ILTglGy+riWrevM TA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 37h13e8qqw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 03:34:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12Q3PBdt162385;
+        Fri, 26 Mar 2021 03:34:31 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
+        by userp3030.oracle.com with ESMTP id 37h13x53bf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 03:34:31 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OVeu1v0Ykaa92z6kfGgg67cL/BUJLfUOw2IUBWxGrtdJQZxt0v5yS9E/lGr5YzccvCZW0mLQweL0iIjz8W50sQQ9w4IiAba95IJWeqRK/qLx6Li0BYTW0+qtAe7qsPh5LDyW3zcJ+RcJFqZNqLOpdQI01dNNw2ObV6/9Xn5Yh8dOnWkXg/eUuQcuKhR5KQioSyFGnI3S1liz+7Tc2pDJNPib5ESVkUhkUBAb7s5HEe0fp8W9QDO7UQ3Nm0uygyXY9FlDzbMcu+lXeh+YPrnEQctmSySLCLzLdtF20taMEknq27T0Kat1xw+M+3EkyCgS9T4Eksco71M5wAj/rwQu2Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tfvFp5AG9HnwJAAJxLg65PNIzSHF7VNN+EGr4Ilkjf8=;
+ b=GKQNebsg15w/MPu6U/JmGqkbqyutXlfapGWJmrvhpBXkza1Iy//dQz7H8Q6hMLTibNSiclZq3a/zXxs0RTJbbID1KSmBRYrRkpcY9hBiRW1gqfRWlQGlDWdoKQn/3heNZWwQrmx7RxNOda8LRXLeO96efK5Eo5KYpuyiy8xt0qaE0tEU5JbgUdguzuzq2CwW0xOutXTKnbBWlTeaDy96FRbs1FICScwwRqc3919Ja0EKHHAXURTon8TGY9T8H3N0MPnDOqcfAv5wZnAUH5XKvtJRz/HABHgB36luvcOghm1cOyCpkvzIS7sKBxB+34Ol+EtH46kwHjXmrOdSsDbaKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=Pz3gi7M6tKZ1q1WQC3HX6aCYweNL/qRxtsFxLRv392w=;
-        b=vdadOYi41ZiL4qVVAfKh2ya8cgIaxkWOlD/NCDu28J1n/do6SB7BEQrMHoqe1kArmT
-         qHlbZ+6rS2CZv/wDbeHRq3kU+iq3NEFBS3JosQ9J9mEi9TzYo00bfN+UflRFr9+WGHZN
-         BepuD/nTGP/3D2bDhYWjueqp8Wxa7Kmj5UHroUQhTURS7EAxvOp33ihckvszxPNu7p1F
-         5Z3V/InCUuq5EJXA2da7ccuzDAAR6g9kEDje/cTVyv4htxQ+H3tDAq91vEaj0fGIu3v6
-         Mx367n3mOZWO6kkJbuqc6NhU0LWk+gbkNQZvL3nI4hV/sF7KtMcl84jPGCalBWM8FKN3
-         5V7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=Pz3gi7M6tKZ1q1WQC3HX6aCYweNL/qRxtsFxLRv392w=;
-        b=DS1da0XMZw+2Fr61nuTbtkReXldUs/lr1wFexl0S4COD9EPSukXlOC/3LR/WBbFTlg
-         2BMNJRqmMluQhMN67v1q+WjrQdxN7nXTwg1lBh1y8+Ny+N+3nw/TnN+XJunGwLOyiUM7
-         hFXfxcInt4hp1mAzPZQwe2KRAMHWwx16Rn5OyrWpqEtwUAIwye+MlLHjAxf4hUcaFdtB
-         e1w0GsSznRf+6rdZaKBUCQ19ZSlWQKeFvm9Qbj1He43l3XOQw2J8kNWTKoqyfRVifoLp
-         Lq/+MIzMZB2kYjjtbsjx3b5NlO8LYoSFcFNYQzTeeKm6kmz2ama4lj7Hu8D2QCUKnG0o
-         /YEw==
-X-Gm-Message-State: AOAM532XBNvzggDMTKj+h7kmtLJXGsVx4ctWqLEK94zvz6eEsxsoQyX4
-        akdRzVRveFIzZVTz/tX+viFANTy6lS7K+YyLqJo=
-X-Google-Smtp-Source: ABdhPJzlf3xpQ/SsC+WgpomJbpsn6e+VwqFCZYG2/CJJMFJEldAz/seH56VnWmxgdOprqTHVqYpntZyYXz5y79rBaL4=
-X-Received: by 2002:a17:906:af97:: with SMTP id mj23mr13475622ejb.419.1616729654146;
- Thu, 25 Mar 2021 20:34:14 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tfvFp5AG9HnwJAAJxLg65PNIzSHF7VNN+EGr4Ilkjf8=;
+ b=nqADl1b6v+JO9f+46Ew0UBxK3Pqo+T9k0CGnOLH2KbPYGVzZXf0XuYfXC28+mkS1g5ZOU7vtb6EVYVI1dYoKzuLX9Pei7iXEi6+yKcvI7XdMzOxBCGOIKRS+9DEmr+WpgP2KLPy4xfftHiqPNw1CHpHh7JYMMWp9AlZwZJsY4pE=
+Authentication-Results: embeddedor.com; dkim=none (message not signed)
+ header.d=none;embeddedor.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB5402.namprd10.prod.outlook.com (2603:10b6:510:e2::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Fri, 26 Mar
+ 2021 03:34:29 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::dc39:c9fa:7365:8c8e%5]) with mapi id 15.20.3977.025; Fri, 26 Mar 2021
+ 03:34:29 +0000
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: aacraid: Replace one-element array with
+ flexible-array member
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1a6qqk68h.fsf@ca-mkp.ca.oracle.com>
+References: <20210304203822.GA102218@embeddedor>
+        <yq135wkm410.fsf@ca-mkp.ca.oracle.com>
+        <668e3f30-1ffb-31e3-231b-705489993885@embeddedor.com>
+Date:   Thu, 25 Mar 2021 23:34:27 -0400
+In-Reply-To: <668e3f30-1ffb-31e3-231b-705489993885@embeddedor.com> (Gustavo
+        A. R. Silva's message of "Wed, 24 Mar 2021 19:46:35 -0500")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BY3PR05CA0030.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::35) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 26 Mar 2021 13:34:03 +1000
-Message-ID: <CAPM=9twkAXygrutCExSdhRh69Vvnr0X7HagQw8WQGZgC_UdTGA@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.12-rc5
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BY3PR05CA0030.namprd05.prod.outlook.com (2603:10b6:a03:254::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend Transport; Fri, 26 Mar 2021 03:34:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f9d92572-e27a-4815-113e-08d8f008103f
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5402:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB540266460FA698871633444A8E619@PH0PR10MB5402.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QV71SXBWZt3ExBhnz3LX2jwKMp6ibyDyAN8m3NrswvkPLxZHs2hW5I7kiRjepd7RlQ4d34J3fjyKQkso2zljhEUvi+RwsvfpVC8DGdeigc8TQTt/zL986FxhIo++7cqzJyA4w5Ckhk2gvQodr/fJPh8bxLzlwVqeI8fleALZt4voqjKXOWOlt2rOBydXnITOKkcjN0cdw4X8tpeDSI+rhliSBfz+u9mMeTeH3nlqu7qq+gVf8O8se3R1sSPgTEg2FnxxCj6yhC/ICI1JfPbHBGFsWyke4nK7bZ7XesQXJGY2c1mUteen4Le/q/12VFS2bwxDAjqUJpVYHc2weVCnoOmdilOCdk8X9sL+bMJlUEGl/45bGbzUe4iI3uUEucvvoJcYi79PMDCPeXvuqAt3HxaDJWdq2b2e8sH5DxoAfLQTfmH0zHnl+klJhPdaiI5Em3NbPl2fFazX5e9A3w1y6CaatbqTy06XhEA4peqcb/Jp3WS/dWU6G4uq0bfA/mQAglj8o0Kaa7l+gsfjurYrqK+d1ws8q4sejDtpWmjYz3wXvg9E2jkGZ6MfJu9rkraY9ZglwBjrSaaHAoUU1MIVWJXZy3Bfqpj0n6hqoGsZ2JW+9+76vMo5ksGD1dKAMEnd7wr1JZxtPvAb3wPUrf0b8ao1EiQ7G0EZ1U3vblKMzK4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(396003)(136003)(366004)(26005)(38100700001)(186003)(316002)(36916002)(16526019)(478600001)(7696005)(2906002)(52116002)(54906003)(83380400001)(86362001)(66946007)(956004)(66556008)(8936002)(4326008)(6916009)(5660300002)(55016002)(8676002)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?gXsuPILv1ch+v813vMRquH1nZYLjG43MuFmR90sj0U/KWv+vr2AS3jvNRqBo?=
+ =?us-ascii?Q?z/7VgTikJuj3YFSH8vypXI/2Uzgf7wQ1J3pZq0e68W8Sn98pAV7HHkdgVqcW?=
+ =?us-ascii?Q?UzbloMk0pKLQwmZ6i/rzHj3xQKCEoEOzW14ULjj1GK/xvSd0lAZi88rtdovz?=
+ =?us-ascii?Q?2fT+jRFaozPuIFPNjk3m02i3vDqn9ZJRqkhgR24t0k5fxsJ09VFHXGnPz4qw?=
+ =?us-ascii?Q?sm7MxWSshedz8pZZbwT3kE/atYpM7qrIA/3jSq51AcPJ8WSrIkJh/nvYdhYp?=
+ =?us-ascii?Q?6on58ysWz8xmfZxNq/uouY05yCWg/WEi6Td8m5Wu/Zr4gyXRjMWf9MwgxQtf?=
+ =?us-ascii?Q?CkdFDnScNpVa2jAdqJGPZV55nw+Pft/UUpg9zlW8xp/GGEBIeYAE/t1oIhed?=
+ =?us-ascii?Q?PTVg6FdvH2Ai4p95Y8ongGfZa/LeLT5f3BRYxHuPHJ7trq+6iXVzJfJhrHvA?=
+ =?us-ascii?Q?DZW9k0gZIO6EU99pADmQb1gJIpM8uvgtaWYDw2M3JaVUam2AZ4ninw+1yObf?=
+ =?us-ascii?Q?1WMSZAVQ002Y9HUkNtsXdNSyIF620qsMf8woO66nHOmKuGALtr+xJPDLyoJm?=
+ =?us-ascii?Q?79qnADooFggkIHAHqAPY0fxtPVczP1rGkiMqFbeWnAXCG3aKX74Rw3Wd/amb?=
+ =?us-ascii?Q?wZwGRkGwlQLa/doWdZiqzk+ZMbJIR4UtndXcFqiik0p//WwpAVALv2ZNokja?=
+ =?us-ascii?Q?nL8tLdaxtPMb9dRU6WWRt/jtL5LBsB0R4sJBSHttac/x0a5WWxKt+CHfRzjm?=
+ =?us-ascii?Q?5lpMe6zsvXoIryHGfyju2dglhZJ1tzfuBt7BlMWMiD2Y/ZhSybUFfrXT83On?=
+ =?us-ascii?Q?UP+U8naETFBcwR+j15vt8RuYNOVKKneeaPx1bcwCL56w/lcOBuDs4sgOg4gT?=
+ =?us-ascii?Q?RDsR9X0imAVINuUnbGI69m1aXf6oISohu7Fy4PkPgP5FNslrmdRjbpw9aupS?=
+ =?us-ascii?Q?dRqsBeCP829IxqcbFlWrPDMOaULKL8SxDDEZQyK1aR3/UmY+pOkd9YteGijg?=
+ =?us-ascii?Q?mxOdwCLHQTo3gihBk2aaccSOCiA7xoLMF3nZUK+Hw9tNAIR36BQ7M7Qp0EWT?=
+ =?us-ascii?Q?blp03rqomEhL0j4lWbV1az2/ZWwMQ4Ey6TdzBYDxNH9zM6jodtEFNe39B4kI?=
+ =?us-ascii?Q?XhWBHkayr/PHWjiD9MkbLaB6BLiEHSCv7qKUTfqEPZ1e6xsRbq398hebekP/?=
+ =?us-ascii?Q?rg7LeZwgeyVYTrF7Y94BB/GTsnX1ws4lpMFtdejkFs94ibEfY4lcJSNGJ/kt?=
+ =?us-ascii?Q?5frn1ZaYO3sAYxeuXsk9GpinEf0ZAujf8fuNQ03RZuxS2yPB0qCV4CXpIYhp?=
+ =?us-ascii?Q?yyv2LWrketIC2LGq3yY79d+P?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9d92572-e27a-4815-113e-08d8f008103f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 03:34:29.7003
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5Wq7GkQfYaN8otWdswpv0BDlM+7BfqOxLpKVNSp5J9HtScPx3HsJW4IFfRWkANOJ7Zh+g2CE/SPGkw6bCYcJ/VbKViCTYLdG9iETSp9ddpE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5402
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103260023
+X-Proofpoint-ORIG-GUID: LwhDs8p2mqNm9U-2Y52pkEB5ESFpQfwg
+X-Proofpoint-GUID: LwhDs8p2mqNm9U-2Y52pkEB5ESFpQfwg
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103260023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-As expected last week things were overly quiet so this week things
-seem to have caught up. It still isn't too major.
+Gustavo,
 
-msm and amdgpu lead the size here, the msm fixes are pretty varied
-across the driver, the amdgpu one is mostly the S0ix fixes with some
-other minor ones. Otherwise there are a few i915 fixes and one each
-for nouveau, etnaviv and rcar-du.
+> Precisely this sort of confusion is one of the things we want to avoid
+> by using flexible-array members instead of one-element arrays.
 
-Dave.
+Ah, you're right!
 
-drm-fixes-2021-03-26:
-drm fixes for 5.12-rc5
+Now that I look at it again I also don't think that was the issue that
+originally caused concern.
 
-msm:
-- pll fixes
-- shutdown hook fix
-- runtime resume fix
-- clear_oob fix
-- kms locking fix
-- display aux retry fix
+@@ -4020,7 +4020,8 @@ static int aac_convert_sgraw2(struct aac_raw_io2 *rio2, int pages, int nseg, int
+ 		}
+ 	}
+ 	sge[pos] = rio2->sge[nseg-1];
+-	memcpy(&rio2->sge[1], &sge[1], (nseg_new-1)*sizeof(struct sge_ieee1212));
++	memcpy(&rio2->sge[1], &sge[1],
++	       flex_array_size(rio2, sge, nseg_new - 1));
+ 
+ 	kfree(sge);
+ 	rio2->sgeCnt = cpu_to_le32(nseg_new);
 
-rcar-du:
-- warn_on in encoder init fix
+I find it counter-intuitive to use the type of the destination array to
+size the amount of source data to copy. "Are source and destination same
+type? Does flex_array_size() do the right thing given the ->sge[1]
+destination offset?". It wasn't immediately obvious. To me, "copy this
+many scatterlist entries" in the original is much more readable.
 
-etnaviv:
-- Use FOLL_FORCE and FOLL_LONGTERM
+That said, this whole function makes my head hurt!
 
-i915:
-- DisplayPort LTTPR fixes around link training and limiting it
-  according to supported spec version.
-- Fix enabled_planes bitmask to really represent only logically
-  enabled planes.
-- Fix DSS CTL registers for ICL DSI transcoders
-- Fix the GT fence revocation runtime PM logic.
-
-nouveau:
-- cursor size regression fix
-
-amdgpu:
-- S0ix fixes
-- Add PCI ID
-- Polaris PCIe DPM fix
-- Display fix for high refresh rate monitors
-The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b=
-:
-
-  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-03-26
-
-for you to fetch changes up to 09d78dde88ef95a27b54a6e450ee700ccabdf39d:
-
-  Merge tag 'drm-msm-fixes-2021-02-25' of
-https://gitlab.freedesktop.org/drm/msm into drm-fixes (2021-03-26
-13:04:17 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.12-rc5
-
-msm:
-- pll fixes
-- shutdown hook fix
-- runtime resume fix
-- clear_oob fix
-- kms locking fix
-- display aux retry fix
-
-rcar-du:
-- warn_on in encoder init fix
-
-etnaviv:
-- Use FOLL_FORCE and FOLL_LONGTERM
-
-i915:
-- DisplayPort LTTPR fixes around link training and limiting it
-  according to supported spec version.
-- Fix enabled_planes bitmask to really represent only logically
-  enabled planes.
-- Fix DSS CTL registers for ICL DSI transcoders
-- Fix the GT fence revocation runtime PM logic.
-
-nouveau:
-- cursor size regression fix
-
-amdgpu:
-- S0ix fixes
-- Add PCI ID
-- Polaris PCIe DPM fix
-- Display fix for high refresh rate monitors
-
-----------------------------------------------------------------
-Alex Deucher (11):
-      drm/amdgpu: rework S3/S4/S0ix state handling
-      drm/amdgpu: don't evict vram on APUs for suspend to ram (v4)
-      drm/amdgpu: clean up non-DC suspend/resume handling
-      drm/amdgpu: move s0ix check into amdgpu_device_ip_suspend_phase2 (v3)
-      drm/amdgpu: re-enable suspend phase 2 for S0ix
-      drm/amdgpu/swsmu: skip gfx cgpg on s0ix suspend
-      drm/amdgpu: update comments about s0ix suspend/resume
-      drm/amdgpu: drop S0ix checks around CG/PG in suspend
-      drm/amdgpu: skip kfd suspend/resume for S0ix
-      drm/amdgpu: Add additional Sienna Cichlid PCI ID
-      drm/amdgpu/display: restore AUX_DPHY_TX_CONTROL for DCN2.x
-
-Daniel Vetter (2):
-      drm/etnaviv: Use FOLL_FORCE for userptr
-      drm/etnaviv: User FOLL_LONGTERM in userptr
-
-Dave Airlie (6):
-      Merge tag 'du-fixes-20210316' of
-git://linuxtv.org/pinchartl/media into drm-fixes
-      Merge tag 'drm-misc-fixes-2021-03-25' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2021-03-25-1' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-      Merge branch 'linux-5.12' of git://github.com/skeggsb/linux into drm-=
-fixes
-      Merge tag 'amd-drm-fixes-5.12-2021-03-24' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-      Merge tag 'drm-msm-fixes-2021-02-25' of
-https://gitlab.freedesktop.org/drm/msm into drm-fixes
-
-Dmitry Baryshkov (4):
-      drm/msm/dsi: fix check-before-set in the 7nm dsi_pll code
-      drm/msm/dsi_pll_7nm: Solve TODO for multiplier frac_bits assignment
-      drm/msm/dsi_pll_7nm: Fix variable usage for pll_lockdet_rate
-      drm/msm: fix shutdown hook in case GPU components failed to bind
-
-Douglas Anderson (1):
-      drm/msm: Fix speed-bin support not to access outside valid memory
-
-Fabio Estevam (1):
-      drm/msm: Fix suspend/resume on i.MX5
-
-Imre Deak (4):
-      drm/i915/ilk-glk: Fix link training on links with LTTPRs
-      drm/i915: Disable LTTPR support when the DPCD rev < 1.4
-      drm/i915: Disable LTTPR support when the LTTPR rev < 1.4
-      drm/i915: Fix the GT fence revocation runtime PM logic
-
-Jani Nikula (1):
-      drm/i915/dsc: fix DSS CTL register usage for ICL DSI transcoders
-
-Jonathan Marek (1):
-      drm/msm: fix a6xx_gmu_clear_oob
-
-Jordan Crouse (1):
-      drm/msm: a6xx: Make sure the SQE microcode is safe
-
-Kalyan Thota (1):
-      drm/msm/disp/dpu1: icc path needs to be set before dpu runtime resume
-
-Kenneth Feng (1):
-      drm/amd/pm: workaround for audio noise issue
-
-Kieran Bingham (1):
-      drm: rcar-du: Use drmm_encoder_alloc() to manage encoder
-
-Konrad Dybcio (1):
-      drm/msm/adreno: a5xx_power: Don't apply A540 lm_setup to other GPUs
-
-Lyude Paul (1):
-      drm/nouveau/kms/nve4-nv108: Limit cursors to 128x128
-
-Pratik Vishwakarma (1):
-      drm/amdgpu: skip CG/PG for gfx during S0ix
-
-Prike Liang (1):
-      drm/amdgpu: fix the hibernation suspend with s0ix
-
-Rob Clark (1):
-      drm/msm: Ratelimit invalid-fence message
-
-Stephen Boyd (2):
-      drm/msm/kms: Use nested locking for crtc lock instead of custom class=
-es
-      drm/msm/dp: Restore aux retry tuning logic
-
-Ville Syrj=C3=A4l=C3=A4 (1):
-      drm/i915: Fix enabled_planes bitmask
-
- drivers/gpu/drm/amd/amdgpu/amdgpu.h                |  10 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c         | 132 ++++++-----------=
-----
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.c        |  89 ++++++++++++++
- drivers/gpu/drm/amd/amdgpu/amdgpu_display.h        |   3 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c            |  31 +++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_object.c         |   7 +-
- drivers/gpu/drm/amd/amdgpu/dce_v10_0.c             |   9 +-
- drivers/gpu/drm/amd/amdgpu/dce_v11_0.c             |   9 +-
- drivers/gpu/drm/amd/amdgpu/dce_v6_0.c              |   8 +-
- drivers/gpu/drm/amd/amdgpu/dce_v8_0.c              |   9 +-
- drivers/gpu/drm/amd/amdgpu/dce_virtual.c           |  15 ++-
- .../drm/amd/display/dc/dcn20/dcn20_link_encoder.c  |   3 +-
- .../gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c    |  54 +++++++++
- .../gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c  |  74 ++++++++++--
- .../gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c  |  24 ++++
- .../gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c  |  25 ++++
- drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c          |   5 +-
- drivers/gpu/drm/etnaviv/etnaviv_gem.c              |   3 +-
- drivers/gpu/drm/i915/display/intel_atomic_plane.c  |   5 +-
- drivers/gpu/drm/i915/display/intel_dp.c            |   4 +-
- drivers/gpu/drm/i915/display/intel_dp_aux.c        |   7 ++
- .../gpu/drm/i915/display/intel_dp_link_training.c  |  75 +++++++++---
- .../gpu/drm/i915/display/intel_dp_link_training.h  |   2 +-
- drivers/gpu/drm/i915/display/intel_vdsc.c          |  10 +-
- drivers/gpu/drm/i915/gt/intel_ggtt_fencing.c       |  13 +-
- drivers/gpu/drm/i915/intel_runtime_pm.c            |  29 ++++-
- drivers/gpu/drm/i915/intel_runtime_pm.h            |   5 +
- drivers/gpu/drm/msm/adreno/a5xx_power.c            |   2 +-
- drivers/gpu/drm/msm/adreno/a6xx_gmu.c              |   2 +-
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c              | 108 +++++++++++------
- drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c            |  12 +-
- drivers/gpu/drm/msm/dp/dp_aux.c                    |   7 ++
- drivers/gpu/drm/msm/dsi/pll/dsi_pll.c              |   2 +-
- drivers/gpu/drm/msm/dsi/pll/dsi_pll.h              |   6 +-
- drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c          |  11 +-
- drivers/gpu/drm/msm/msm_atomic.c                   |   7 +-
- drivers/gpu/drm/msm/msm_drv.c                      |  12 ++
- drivers/gpu/drm/msm/msm_fence.c                    |   2 +-
- drivers/gpu/drm/msm/msm_kms.h                      |   8 +-
- drivers/gpu/drm/nouveau/dispnv50/disp.c            |  13 +-
- drivers/gpu/drm/rcar-du/rcar_du_encoder.c          |  31 +----
- 41 files changed, 617 insertions(+), 266 deletions(-)
+-- 
+Martin K. Petersen	Oracle Linux Engineering
