@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5848434A9B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D71A34A9BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhCZO2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:28:08 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39982 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhCZO1j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:27:39 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lPnR0-0000cA-5y; Fri, 26 Mar 2021 14:27:34 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ethtool: fec: Fix bitwise-and with ETHTOOL_FEC_NONE
-Date:   Fri, 26 Mar 2021 14:27:33 +0000
-Message-Id: <20210326142733.557548-1-colin.king@canonical.com>
+        id S230104AbhCZOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:30:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229848AbhCZOaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:30:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4E6F1AC6A;
+        Fri, 26 Mar 2021 14:30:24 +0000 (UTC)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     jpoimboe@redhat.com, jikos@kernel.org, pmladek@suse.com,
+        joe.lawrence@redhat.com
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk, Miroslav Benes <mbenes@suse.cz>
+Subject: [PATCH] livepatch: Replace the fake signal sending with TIF_NOTIFY_SIGNAL infrastructure
+Date:   Fri, 26 Mar 2021 15:30:21 +0100
+Message-Id: <20210326143021.17773-1-mbenes@suse.cz>
 X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Livepatch sends a fake signal to all remaining blocking tasks of a
+running transition after a set period of time. It uses TIF_SIGPENDING
+flag for the purpose. Commit 12db8b690010 ("entry: Add support for
+TIF_NOTIFY_SIGNAL") added a generic infrastructure to achieve the same.
+Replace our bespoke solution with the generic one.
 
-Currently ETHTOOL_FEC_NONE_BIT is being used as a mask, however
-this is zero and the mask should be using ETHTOOL_FEC_NONE instead.
-Fix this.
-
-Addresses-Coverity: ("Bitwise-and with zero")
-Fixes: 42ce127d9864 ("ethtool: fec: sanitize ethtool_fecparam->fec")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Miroslav Benes <mbenes@suse.cz>
 ---
- net/ethtool/ioctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Tested on x86_64, s390x and ppc64le archs.
 
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 8797533ddc4b..26b3e7086075 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -2586,7 +2586,7 @@ static int ethtool_set_fecparam(struct net_device *dev, void __user *useraddr)
- 	if (copy_from_user(&fecparam, useraddr, sizeof(fecparam)))
- 		return -EFAULT;
+ kernel/livepatch/transition.c | 5 ++---
+ kernel/signal.c               | 3 +--
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+index f6310f848f34..3a4beb9395c4 100644
+--- a/kernel/livepatch/transition.c
++++ b/kernel/livepatch/transition.c
+@@ -9,6 +9,7 @@
  
--	if (!fecparam.fec || fecparam.fec & ETHTOOL_FEC_NONE_BIT)
-+	if (!fecparam.fec || fecparam.fec & ETHTOOL_FEC_NONE)
- 		return -EINVAL;
+ #include <linux/cpu.h>
+ #include <linux/stacktrace.h>
++#include <linux/tracehook.h>
+ #include "core.h"
+ #include "patch.h"
+ #include "transition.h"
+@@ -369,9 +370,7 @@ static void klp_send_signals(void)
+ 			 * Send fake signal to all non-kthread tasks which are
+ 			 * still not migrated.
+ 			 */
+-			spin_lock_irq(&task->sighand->siglock);
+-			signal_wake_up(task, 0);
+-			spin_unlock_irq(&task->sighand->siglock);
++			set_notify_signal(task);
+ 		}
+ 	}
+ 	read_unlock(&tasklist_lock);
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f2a1b898da29..e52cb82aaecd 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -181,8 +181,7 @@ void recalc_sigpending_and_wake(struct task_struct *t)
  
- 	fecparam.active_fec = 0;
+ void recalc_sigpending(void)
+ {
+-	if (!recalc_sigpending_tsk(current) && !freezing(current) &&
+-	    !klp_patch_pending(current))
++	if (!recalc_sigpending_tsk(current) && !freezing(current))
+ 		clear_thread_flag(TIF_SIGPENDING);
+ 
+ }
 -- 
 2.30.2
 
