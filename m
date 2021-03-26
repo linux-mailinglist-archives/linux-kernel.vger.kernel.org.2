@@ -2,115 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8059434A720
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C96334A724
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhCZM17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbhCZM1l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:27:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 175C0C0613AA;
-        Fri, 26 Mar 2021 05:27:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=QxJHG67cnzAtp1qB+aYyj2WZtARO+XJmoqLkBw1fYTc=; b=L4C7D/iPJwNEbqcG8xy4WpMw5n
-        BDecPJA0uQZuls/0/G6uBNfjaVsne8JK4g9DymhDULa+eE/btqy5hDts7uILquN4NfBruQ7m6EygX
-        uWFIPixKNNiLamhYLsHw1z2qRKsswDbAFiY8guxFj1j7+XhVZ/+Ne3MKO0lrFlLhviJk0ieIkb5iw
-        nTTZrkFH6Vb3euOOrFUWyGvV9L7lPH4LKeEy/tDHKU7wlaS6J37Ny5jh7srf6YMpq6M2SVKHchBie
-        +F9XhvGqXqFXL+7/CYEpUX4V3YRUzD3SLO2iT79Z0cqJgDLw0j4ODKCeGop1vldaRMNCK4PGzPKGi
-        IpW8DCOQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPlYb-00En34-Ov; Fri, 26 Mar 2021 12:27:25 +0000
-Date:   Fri, 26 Mar 2021 12:27:17 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] mm/page_alloc: remove duplicated include from
- page_alloc.c
-Message-ID: <20210326122717.GE1719932@casper.infradead.org>
-References: <20210326025542.3565329-1-miaoqinglang@huawei.com>
- <20210326034208.GC1719932@casper.infradead.org>
- <d3a42312-397d-e7e7-0aa8-819a7b3731db@huawei.com>
+        id S230051AbhCZM2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:28:36 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49167 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229794AbhCZM2I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:28:08 -0400
+IronPort-SDR: 6n9a/SYibYIIK9vWNu43kNPPIwkh6ZtsD4Yu6qffdh/yPJ4cRjA+WLAlFzhNvjn73wpV87Bd+x
+ pzCu0Uxz0K1g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="276277920"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="276277920"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 05:28:07 -0700
+IronPort-SDR: gZvRIMX2zE0NlnCe5Q+/ojNZsssjV9b4Ea8lq/R3SeJO3MghC4vYrh3IS5tM6qdLetuRE7c3zv
+ rGNfp/yAExoA==
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="453496980"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 05:28:05 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lPlZK-00GONp-Um; Fri, 26 Mar 2021 14:28:02 +0200
+Date:   Fri, 26 Mar 2021 14:28:02 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Gomez <daniel@qtec.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: designware: Add base addr info
+Message-ID: <YF3TUhGEjrQyG5UU@smile.fi.intel.com>
+References: <20210325151248.1066643-1-daniel@qtec.com>
+ <YFyvh3sqyVcg8Iqj@smile.fi.intel.com>
+ <CAH1Ww+Qs13GBC02PCgW60No2Z+vNsV14yRe7S4rtnnMLqH7BYQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d3a42312-397d-e7e7-0aa8-819a7b3731db@huawei.com>
+In-Reply-To: <CAH1Ww+Qs13GBC02PCgW60No2Z+vNsV14yRe7S4rtnnMLqH7BYQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 04:18:38PM +0800, Qinglang Miao wrote:
-> Hey, Matthew
-> 
-> Thanks for your advice towards hulk robot. We'd like to improve the
-> capbility of hulk robot whole the time.
-> 
-> This patch is just a small cleanup reported by hulk robot, But the robot can
-> do more than this. For example, it finds crucial and useful bugs as well.
+On Fri, Mar 26, 2021 at 11:35:08AM +0100, Daniel Gomez wrote:
+> On Thu, 25 Mar 2021 at 16:43, Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Thu, Mar 25, 2021 at 04:12:48PM +0100, Daniel Gomez wrote:
 
-I'll have to take your word for it.  Most of what I see from Hulk Robot
-is trivialities.
+...
 
-> As for 'Untangle the mass of header includes' you mentioned, could you
-> please offer more details? Because I didn't find pagemap.h in net/ipv4/tcp.c
-> in -next like what you said.
+> > > Add i2c hw base address in the adapter name and when the device is
+> > > probed.
+> >
+> > Why?
+> > We have /proc/iomem for that.
+> The initial reason was because I wasn't aware of /proc/iomem therefore
+> I didn't have a way to match the physical address to the i2c adapter.
+> So, thanks for pointing that out as now I'm able to match the physical
+> address listed in iomem with the sysfs i2c bus.
 
-Exactly!  But check net/ipv4/.tcp.o.d -- you'll see include/linux/pagemap.h
-in its dependencies.  So it's being pulled in through another file that is
-included by tcp.c, either directly or indirectly.
+You are welcome!
 
-You can run a file through the preprocessor:
+...
 
-$ make net/ipv4/tcp.i
-  CPP     net/ipv4/tcp.i
+> > >       snprintf(adap->name, sizeof(adap->name),
+> > > -              "Synopsys DesignWare I2C adapter");
+> > > +              "Synopsys DesignWare I2C adapter at 0x%llx", dev->base_addr);
+> >
+> > It actually should be resource_size_t and corresponding specifier, i.e. %pa to
+> > print it. Moreover, we have %pR (and %pr) specifiers for struct resource.
+> I understand this but I had some doubts when I declared the variable.
+> I took this as reference:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/i2c/busses/i2c-tegra.c?h=v5.12-rc4#n268
+> Should it be then defined as resource_size_t instead?
 
-and then look to see what included it:
+It's a good question. On one hand we know that resource_size_t is a simple
+redefinition of phys_addr_t, but it might be changed in the future. OTOH,
+struct resource has types of resource_size_t. In any case it's a type that is
+platform dependent (like long, size_t). Hence, the special specifier is needed.
 
-# 12 "../include/linux/swap.h" 2
+> Out of the i2c subsystem, I also found several examples. For example this:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/adc/at91-sama5d2_adc.c?h=v5.12-rc4#n364
+> But I understand this could be out of the scope.
 
-# 1 "../include/linux/pagemap.h" 1
+Not all examples in the kernel are good examples (many of them is a cargo-cult
+and / or outdated). Take them with grain of salt.
 
-So the question then becomes _either_ "Does swap.h need pagemap.h?",
-_or_ "Does tcp.c need swap.h"
+But common rule is to check the log of the interesting subsystem (`git log --
+drivers/<subsystem>/`) in order to find the most recent drivers or modules
+added. There you very likely will find more or less modern standards and APIs
+you might reuse in your code.
 
-So we can try both things, first deleting the include of pagemap.h from
-swap.h (compilation fails) and then deleting the include of swap.h from
-tcp.c (compilation also fails).  This is a simple example because swap.h
-is included directly from tcp.c; the chain can be quite long.
+> Some others, even assign the the start to the dma_addr_t which could
+> vary depending on CONFIG_ARCH_DMA_ADDR_T_64BIT
+> but it seems equivalent to the phys_addr_t definition.
 
-Some human intervention at this point might be possible.  For example,
-nr_free_buffer_pages could be exposed through mm.h instead of swap.h,
-and then tcp.c wouldn't need swap.h.  Or find_get_incore_page() could be
-moved from swap.h to pagemap.h and then swap.h wouldn't need pagemap.h.
-But then pagemap.h would acquire a dependency on CONFIG_SWAP (if it
-doesn't have that already).  I don't think those are reasonable solutions
-for a bot to find.  Or are they?
+There is a document that describes all possible extensions we have for %p. You
+might be curious to read more there.
 
-Anyway, I'm sure there are a lot of obsolete includes.  I have a patch
-sitting in my tree which removed pagemap.h from mempolicy.h.  That causes
-a build failure in fs/aio.c, so the same patch adds pagemap.h to aio.c.
-It's not a particularly large win; only 5 files lose a dependency on
-pagemap.h, so I haven't decided what to do with it yet.
+...
 
-> 在 2021/3/26 11:42, Matthew Wilcox 写道:
-> > On Fri, Mar 26, 2021 at 10:55:42AM +0800, Qinglang Miao wrote:
-> > > Remove duplicated include.
-> > > 
-> > > Reported-by: Hulk Robot <hulkci@huawei.com>
-> > > Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> > 
-> > can't you make hulk robot do something useful, like untangle the
-> > mass of header includes?  For example, in -next, net/ipv4/tcp.c
-> > has a dependency on pagemap.h.  Why?
-> > .
-> > 
-> 
+> > > +     dev_info(&pdev->dev, "%s\n", adap->name);
+> >
+> > Unneeded noise.
+> Also this might be out of the scope again but I added because in tty
+> they were printing that information:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tty/serial/serial_core.c?h=v5.12-rc4#n2336
+
+TTY is different. TTY often related to a console and it's very important to
+know some information as soon as possible (don't forget also hardware
+debuggers, e.g. Lauterbach, which able to show kernel message ring buffer).
+As you may know console is the first common target during new platform
+bring-up.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
