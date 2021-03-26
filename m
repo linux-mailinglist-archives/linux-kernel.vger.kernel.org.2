@@ -2,95 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DDC34B1F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:12:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5759E34B1FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhCZWKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:10:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229933AbhCZWKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:10:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0FABF61A2A;
-        Fri, 26 Mar 2021 22:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616796617;
-        bh=E69KSmfMKhEtJaP3RSCZEN/QecyIm2u/dGnaoIXMpDA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cMV006TogLLxwXJe17pNxaFSPzhzAoNONBoGExFhfzqgUAhv/vMlGpz0H58IAKexb
-         TN15JjNFnVwfHEwK/nqDEiQxII82ZHlWXHHQ/5WzLjf/D0EgJqXvpf1zWlw2dyOcgt
-         uU8Si8k2VzdgvYpHhsh+hK75y7+HbRY61N/GFSVjpj9kHDWwa15IUI0NPkR9GoiotN
-         mTJrHefwAun/hds2pkdKbJopwLRXXFr6WL5FkAMX4/YiMwEu8AyQ+KFQlX3w9qc9lg
-         h46J0tEOC+XS0SowC03ZXxJP0vixM3i6MpPkBgyxsYM4KL8YP9EGuPxo4C9cbu/OXY
-         RVchQHQW7Vz6g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CA280609E6;
-        Fri, 26 Mar 2021 22:10:16 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230247AbhCZWLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhCZWLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 18:11:21 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEE4C0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:11:21 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id m13so7106693oiw.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FElZ2VXGIlmQ0NTD4L5D6TBJnr5Rk+0sYfGma5bvPWY=;
+        b=p6Mt1ZfdiegWNcxkCRJVOy2iZ68VFga3d5Sj5nuSneCEzCgG1eTinUYaQxnQFap4KG
+         DvVYaBJPwIs3kIx1FIWiRSFLHWcprIT+Y3Gw+07Kep/ND5AIc6ofy15ywCFHn1j8bSOd
+         BJpXEQFAg3N/FxvqmUegjEvxovkuM864SFBrSjWhBkQsRG+tu/6yFG84DAsbkvqt2/bG
+         OrJU5kzgjHCyEFWJbiFO9XkAtKyLR6ypbPdd6+diyrXPP5FS7Jug1P4TQNx5ISV41QCb
+         ygjuB7jPJ98qv6GEQXxlxq2YSqc2ZwJW7fsP6XtF2l9tzgIbni9fQNm3Kt1/IrsvUc1O
+         Gueg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FElZ2VXGIlmQ0NTD4L5D6TBJnr5Rk+0sYfGma5bvPWY=;
+        b=PNyVydkdL1wIsUb26VdrRnSCuL01XEeukP770+LoAI/ooQr6znGaplQ+Kl/yaKrQD5
+         mhg3IjN/MZCZNKRsBCVSyfQN4czeq0t3EI+R6vh1vEF/uqvxAyQAs9EYdfyo/DdghkJn
+         I0Ov0Tcm3vylt3eX+5UbCAAoArWIlLEHvLseNwZpo9XIsoLNZNvgnKGtPl6woIotLgZN
+         HNtz5B1Z42NzhUGau/iOIndRTNX9oDBjJISz48dBOmI0Yo3GYm4nL+UzP7Sb+JXUyY6C
+         DlfxEYl3b76TXD5RLu1D5xKNEJ2dmUokgvogxpHstqyFrWcbVjaGUcwQq7Zia4vNRnSA
+         3xUw==
+X-Gm-Message-State: AOAM531q5lbfU1Ag9sb0g3j0DK0bGBU6yHh7enNSKtKJqmLyHA89TWGZ
+        fE8OOZaKCq1sNlYBVzX/497RAiheBp1lnw==
+X-Google-Smtp-Source: ABdhPJz34nyTVLufa0fa93v446YAV/mFi84VcKGJUJ4L5NscXVI2szHQLGmrIIbqYBwvRgfwuxYYRw==
+X-Received: by 2002:aca:4d4e:: with SMTP id a75mr11142631oib.107.1616796680712;
+        Fri, 26 Mar 2021 15:11:20 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.233.147])
+        by smtp.gmail.com with ESMTPSA id a6sm2338894otb.41.2021.03.26.15.11.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 15:11:19 -0700 (PDT)
+Subject: Re: [PATCH 1/7] kernel: don't call do_exit() for PF_IO_WORKER threads
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326155128.1057078-1-axboe@kernel.dk>
+ <20210326155128.1057078-2-axboe@kernel.dk> <m14kgxy7b4.fsf@fess.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <80915fd5-7cb1-167a-2c8a-01a0f8f21bd2@kernel.dk>
+Date:   Fri, 26 Mar 2021 16:11:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 00/12] net: ipa: rework resource programming
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161679661682.26244.16042690009163360291.git-patchwork-notify@kernel.org>
-Date:   Fri, 26 Mar 2021 22:10:16 +0000
-References: <20210326151122.3121383-1-elder@linaro.org>
-In-Reply-To: <20210326151122.3121383-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <m14kgxy7b4.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Fri, 26 Mar 2021 10:11:10 -0500 you wrote:
-> This series reworks the way IPA resources are defined and
-> programmed.  It is a little long--and I apologize for that--but
-> I think the patches are best taken together as a single unit.
+On 3/26/21 2:43 PM, Eric W. Biederman wrote:
+> Jens Axboe <axboe@kernel.dk> writes:
 > 
-> The IPA hardware operates with a set of distinct "resources."  Each
-> hardware instance has a fixed number of each resource type available.
-> Available resources are divided into smaller pools, with each pool
-> shared by endpoints in a "resource group."  Each endpoint is thus
-> assigned to a resource group that determines which pools supply
-> resources the IPA hardware uses to handle the endpoint's processing.
+>> Right now we're never calling get_signal() from PF_IO_WORKER threads, but
+>> in preparation for doing so, don't handle a fatal signal for them. The
+>> workers have state they need to cleanup when exiting, and they don't do
+>> coredumps, so just return instead of performing either a dump or calling
+>> do_exit() on their behalf. The threads themselves will detect a fatal
+>> signal and do proper shutdown.
+>>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>> ---
+>>  kernel/signal.c | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/kernel/signal.c b/kernel/signal.c
+>> index f2a1b898da29..e3e1b8fbfe8a 100644
+>> --- a/kernel/signal.c
+>> +++ b/kernel/signal.c
+>> @@ -2756,6 +2756,15 @@ bool get_signal(struct ksignal *ksig)
+>>  		 */
+>>  		current->flags |= PF_SIGNALED;
+>>  
+>> +		/*
+>> +		 * PF_IO_WORKER threads will catch and exit on fatal signals
+>> +		 * themselves. They have cleanup that must be performed, so
+>> +		 * we cannot call do_exit() on their behalf. coredumps also
+>> +		 * do not apply to them.
+>> +		 */
+>> +		if (current->flags & PF_IO_WORKER)
+>> +			return false;
+>> +
 > 
-> [...]
+> Returning false when get_signal needs the caller to handle a signal
+> adds a very weird and awkward special case to how get_signal returns
+> arguments.
+> 
+> Instead you should simply break and let get_signal return SIGKILL like
+> any other signal that has a handler that the caller of get_signal needs
+> to handle.
+> 
+> Something like:
+>> +		/*
+>> +		 * PF_IO_WORKER have cleanup that must be performed,
+>> +		 * before calling do_exit().
+>> +		 */
+>> +		if (current->flags & PF_IO_WORKER)
+>> +			break;
+> 
+> 
+> As do_coredump does not call do_exit there is no reason to skip calling into
+> the coredump handling either.   And allowing it will remove yet another
+> special case from the io worker code.
 
-Here is the summary with links:
-  - [net-next,01/12] net: ipa: introduce ipa_resource.c
-    https://git.kernel.org/netdev/net-next/c/ee3e6beaa015
-  - [net-next,02/12] net: ipa: fix bug in resource group limit programming
-    https://git.kernel.org/netdev/net-next/c/a749c6c03762
-  - [net-next,03/12] net: ipa: identify resource groups
-    https://git.kernel.org/netdev/net-next/c/47f71d6e677c
-  - [net-next,04/12] net: ipa: add some missing resource limits
-    https://git.kernel.org/netdev/net-next/c/9ab7e7288266
-  - [net-next,05/12] net: ipa: combine resource type definitions
-    https://git.kernel.org/netdev/net-next/c/fd2b7bc32113
-  - [net-next,06/12] net: ipa: index resource limits with type
-    https://git.kernel.org/netdev/net-next/c/4bcfb35e7af9
-  - [net-next,07/12] net: ipa: move ipa_resource_type definition
-    https://git.kernel.org/netdev/net-next/c/cf9a10bd7c49
-  - [net-next,08/12] net: ipa: combine source and destination group limits
-    https://git.kernel.org/netdev/net-next/c/d9d1cddf8b98
-  - [net-next,09/12] net: ipa: combine source and destation resource types
-    https://git.kernel.org/netdev/net-next/c/7336ce1a7ae7
-  - [net-next,10/12] net: ipa: pass data for source and dest resource config
-    https://git.kernel.org/netdev/net-next/c/93c03729c548
-  - [net-next,11/12] net: ipa: record number of groups in data
-    https://git.kernel.org/netdev/net-next/c/4fd704b3608a
-  - [net-next,12/12] net: ipa: support more than 6 resource groups
-    https://git.kernel.org/netdev/net-next/c/3219953bedc5
+Thanks, I'll turn it into a break, that does seem like a better idea in
+general. Actually it wants to be a goto or similar, as a break will
+assume that we have the sighand lock held. With the coredump being
+irrelevant, I'll just it before the do_exit() call.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+-- 
+Jens Axboe
 
