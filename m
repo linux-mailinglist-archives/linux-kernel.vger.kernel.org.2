@@ -2,74 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F5534A975
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404B934A976
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230173AbhCZOTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:19:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhCZOSz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:18:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165BAC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:18:55 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPnIL-0006oS-Vy; Fri, 26 Mar 2021 15:18:37 +0100
-Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lPnIK-0006oK-Fa; Fri, 26 Mar 2021 15:18:36 +0100
-Date:   Fri, 26 Mar 2021 15:18:36 +0100
-From:   Philipp Zabel <pza@pengutronix.de>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v6 12/13] media: hantro: IMX8M: add variant for G2/HEVC
- codec
-Message-ID: <20210326141836.GC8441@pengutronix.de>
-References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
- <20210318082046.51546-13-benjamin.gaignard@collabora.com>
+        id S230196AbhCZOTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:19:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230135AbhCZOTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:19:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3A5760190;
+        Fri, 26 Mar 2021 14:19:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616768345;
+        bh=tfNIe4//8+r1CwXYQDUxEyprnoIfc5khzzoSiAZ9fbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sV+2c+UoZkzTKM4GtvJVgpoR+tm+DNstT/pLPJaZjy02CvNoUB5WsIk4jPp9G+xIG
+         dTssGtWfCz+5+GVa/JQuc7eydLDXf27e2KrP20Atw1OPv4WUbHAnj9zlQRkoQYdNET
+         /67jNJ9Mvm46YEQ6+dvTibHfMsqnSpsCdAvXuYn8=
+Date:   Fri, 26 Mar 2021 15:18:55 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Al Cooper <alcooperx@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 0/2] 8250: Add driver for Broadcom UART
+Message-ID: <YF3tT7OrDeZEcO69@kroah.com>
+References: <20210325185256.16156-1-alcooperx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210318082046.51546-13-benjamin.gaignard@collabora.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:18:17 up 36 days, 17:42, 97 users,  load average: 0.01, 0.07,
- 0.11
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: pza@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210325185256.16156-1-alcooperx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 18, 2021 at 09:20:45AM +0100, Benjamin Gaignard wrote:
-> Add variant to IMX8M to enable G2/HEVC codec.
-> Define the capabilities for the hardware up to 3840x2160.
-> G2 doesn't have postprocessor, use the same clocks and got it
-> own interruption.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+On Thu, Mar 25, 2021 at 02:52:54PM -0400, Al Cooper wrote:
+> v7 - Change Kconfig for SERIAL_8250_BCM7271 from "bool" to "tristate"
+>      so the driver can be built as a module.
 
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Much better, thanks for sticking with this, now queued up.
 
-regards
-Philipp
+greg k-h
