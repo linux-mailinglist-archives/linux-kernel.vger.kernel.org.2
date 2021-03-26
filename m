@@ -2,163 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB57334A776
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AE534A783
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbhCZMlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
+        id S230046AbhCZMox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbhCZMlD (ORCPT
+        with ESMTP id S229994AbhCZMou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:41:03 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED80C0613AA;
-        Fri, 26 Mar 2021 05:41:02 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id h13so6141790eds.5;
-        Fri, 26 Mar 2021 05:41:02 -0700 (PDT)
+        Fri, 26 Mar 2021 08:44:50 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188AAC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:44:50 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id l13so4066217qtu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:44:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ai/sBaJhqrRCWGFUEsUnLWF/QfwBQ52U7SGdirULJxA=;
-        b=uCjETYGYNoXkWFnAnxrREMGnWCf4CT3WkSUcUIwelIYp/DG4PNHW59MxV0ndLkmKgw
-         L2IWwNo6EyYyTYDtD8OnYmHTc3e6jv9884w6qBn83ztCcGKzBTfT9VZi4FrsY0fAmdgD
-         ur9rC0Au9YibHKnhDtRtnuR6TmiDKHMLiKkdFQBru/Rg3CNOG0AO1xf2t/BfGdTfqqmA
-         XwvFfXkcKbOAT7hy7hseEdn4+/SVJmzCmlcRTdfpBXzf34azVckBOAtF5T9AGODNsmHi
-         JB9fYSTh7FLf8XAc67eXw0GuTEJ4SVHnGJeGbaLRFM/fngNYTBDvYjVjkIiDqEkKOz/Z
-         NJ0g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dCXfAKEyJGgzrxMd1G3IH39eK2Y+HOrmuU+aq2NgQUE=;
+        b=lHsWunFu4O9zhaac9mSnQCAHD/AFOi+B7tXtUGU27izCVQaS6krZTHwzVghp0+clSy
+         7cbHn959Nq/CznF9iRnBGCS4PONrcoK0MEuO47M0F/yHZtJchNApa4n77MjVaCZpmqzc
+         ryYyEYXx4612BuxVdHtY3bje3epVGTbPb3X9bgi5RUo31JPajp58Je2A4K9RFLE+sPGl
+         LmE0XtJgyZGF0pMD6FTgt+ILxO0+O/dQWl4B8F6ImNm426lG1gX6oxD/eigf6cA7QKH8
+         YjlVlGGPgQ7gZwLHnhtQN2h1gpTMSN79lrkNmVxbVZxtZTkJjzohe02UQad/xv8GiGEa
+         Gllg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ai/sBaJhqrRCWGFUEsUnLWF/QfwBQ52U7SGdirULJxA=;
-        b=PskyuHmVOQ7HEj1LDTVXQ1f6BBNHgfkTXhdCl8prHgTNxtonMOGlIHSwp2tZCSeXHB
-         bXdyGgXwkqzKkPvCDXO9FNpEA5M24TEazXVLarTHCnB7sOff0fCcXMO1YPB7rQEE0kcu
-         oi1ObVOy5AoV0S763IeokLDhDQF+SWDjRyQdaGN9YZehJNDADc8ch0fFirS/S8RG4xT9
-         mSHRFt/wSLQaXoQHNKnwD9Szs89YpTchjEd3clrg0Kr+59M2Fuh7f+rrHCTPP7L1scAk
-         dDvYzuNF/VKpc0ohE7+itMixgpjVSko4NtZhGm1kL5ZvgRTiuTo0lLpFrTxs5bQrM+fm
-         BHzA==
-X-Gm-Message-State: AOAM533MrmKCwoOhVpgX7K1zK5BOuc0VyOXlaQkLTpT8UwRc3c1KN2xT
-        KuD8J3nimkYrTTxxhky1UGI=
-X-Google-Smtp-Source: ABdhPJyBfhRplv3kSXtcQVbf9j3CtTsxKbJ2vdFf6xxPS0KZwTr0+U5i0X7OFEFWWah2Xup+2PjS6w==
-X-Received: by 2002:a05:6402:254f:: with SMTP id l15mr14885368edb.189.1616762461102;
-        Fri, 26 Mar 2021 05:41:01 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id x1sm3830371eji.8.2021.03.26.05.40.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dCXfAKEyJGgzrxMd1G3IH39eK2Y+HOrmuU+aq2NgQUE=;
+        b=jl6P1YmRNhh77UnuTch8NI3ggzvOwcuK6SkqFI87+nBdSdHE3OMGkAs5lF2lssAzXq
+         vVOe84Qa+lonQ6OWKEBw2a8viCo6bqZyvtfL2U8tijg+Off42xThrgVnitu8hD8eHpwS
+         icGoRc9NrUlwD5BPcyUgLds4iGh4Tl4KqvXohA6Yx8ujcIK5HSqB6MEfVcQTxsoQ7pl8
+         XjQGadpYOp4Htzx2NSOZNClpBRAZOQNOTNlr6nmfkIGXkyXVkmTBMI0Vt2TWdh/S3qII
+         2gNWsj0i0+WAmxxjKznZWDwZdglMpjqBGA8LisGqNMix5h0frLs+6cWcIHEoqiw77Wy9
+         7qnw==
+X-Gm-Message-State: AOAM5323U1dtjGbf8lOGQR3GO8UCeXyi4NqxzFFvdeMUe7bYq2SksOnw
+        QygVWZiHCP9+zZNs1WIuXe1k1c+vY6cvEY9C
+X-Google-Smtp-Source: ABdhPJxMD5LOnXnj/KW8jNq2psP+YTQIaH7MvckATjoVbmEzsR08HwboF7sClhAtmgqtRV0RN+1HMg==
+X-Received: by 2002:a05:622a:188:: with SMTP id s8mr12011739qtw.42.1616762689372;
+        Fri, 26 Mar 2021 05:44:49 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id h7sm6359180qkk.41.2021.03.26.05.44.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 05:40:59 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 13:41:22 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>, Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-clk@vger.kernel.org, dmaengine@vger.kernel.org,
-        linux-i3c@lists.infradead.org, linux-iio@vger.kernel.org,
-        linux-leds@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Clean-up undocumented compatible strings
-Message-ID: <YF3WctL0BJON130C@orome.fritz.box>
-References: <20210316194918.3528417-1-robh@kernel.org>
+        Fri, 26 Mar 2021 05:44:48 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] sched/psi.c: Rudimentary typo fixes
+Date:   Fri, 26 Mar 2021 18:12:33 +0530
+Message-Id: <20210326124233.7586-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="anrc3HovXG4wMGPC"
-Content-Disposition: inline
-In-Reply-To: <20210316194918.3528417-1-robh@kernel.org>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---anrc3HovXG4wMGPC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+s/possible/possible/
+s/ exceution/execution/
+s/manupulations/manipulations/
 
-On Tue, Mar 16, 2021 at 01:49:18PM -0600, Rob Herring wrote:
-> Adding checks for undocumented compatible strings reveals a bunch of
-> warnings in the DT binding examples. Fix the cases which are typos, just
-> a mismatch between the schema and the example, or aren't documented at al=
-l.
-> In a couple of cases, fixing the compatible revealed some schema errors
-> which are fixed.
->=20
-> There's a bunch of others remaining after this which have bindings, but
-> those aren't converted to schema yet.
->=20
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-clk@vger.kernel.org
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-i3c@lists.infradead.org
-> Cc: linux-iio@vger.kernel.org
-> Cc: linux-leds@vger.kernel.org
-> Cc: linux-pm@vger.kernel.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  .../clock/allwinner,sun4i-a10-pll1-clk.yaml   |  2 +-
->  .../bindings/clock/milbeaut-clock.yaml        | 12 +++++----
->  .../bindings/display/brcm,bcm2835-dsi0.yaml   |  6 -----
->  .../bindings/display/panel/panel-dpi.yaml     |  2 +-
->  .../devicetree/bindings/dma/qcom,gpi.yaml     |  2 +-
->  .../devicetree/bindings/i3c/i3c.yaml          |  7 ++---
->  .../iio/adc/brcm,iproc-static-adc.yaml        |  5 ----
->  .../iio/gyroscope/nxp,fxas21002c.yaml         |  2 +-
->  .../bindings/iio/light/upisemi,us5182.yaml    |  4 +--
->  .../interrupt-controller/loongson,htpic.yaml  |  2 +-
->  .../devicetree/bindings/leds/leds-lgm.yaml    | 26 ++++++++++++++++---
->  .../bindings/phy/ti,phy-j721e-wiz.yaml        |  2 +-
->  .../bindings/power/supply/cw2015_battery.yaml |  2 +-
->  .../bindings/power/supply/power-supply.yaml   | 22 ----------------
->  .../devicetree/bindings/serial/serial.yaml    |  2 +-
->  .../bindings/spi/amlogic,meson-gx-spicc.yaml  |  4 +--
->  .../bindings/spi/spi-controller.yaml          | 21 ++++++++-------
->  .../devicetree/bindings/spi/spi-mux.yaml      |  8 ++----
->  .../devicetree/bindings/spi/st,stm32-spi.yaml |  6 -----
->  19 files changed, 58 insertions(+), 79 deletions(-)
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ kernel/sched/psi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Acked-by: Thierry Reding <thierry.reding@gmail.com>
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 967732c0766c..316ebc57a115 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -59,7 +59,7 @@
+  * states, we would have to conclude a CPU SOME pressure number of
+  * 100%, since *somebody* is waiting on a runqueue at all
+  * times. However, that is clearly not the amount of contention the
+- * workload is experiencing: only one out of 256 possible exceution
++ * workload is experiencing: only one out of 256 possible execution
+  * threads will be contended at any given time, or about 0.4%.
+  *
+  * Conversely, consider a scenario of 4 tasks and 4 CPUs where at any
+@@ -73,7 +73,7 @@
+  * we have to base our calculation on the number of non-idle tasks in
+  * conjunction with the number of available CPUs, which is the number
+  * of potential execution threads. SOME becomes then the proportion of
+- * delayed tasks to possibe threads, and FULL is the share of possible
++ * delayed tasks to possible threads, and FULL is the share of possible
+  * threads that are unproductive due to delays:
+  *
+  *	threads = min(nr_nonidle_tasks, nr_cpus)
+@@ -441,7 +441,7 @@ static void psi_avgs_work(struct work_struct *work)
+ 	mutex_unlock(&group->avgs_lock);
+ }
 
---anrc3HovXG4wMGPC
-Content-Type: application/pgp-signature; name="signature.asc"
+-/* Trigger tracking window manupulations */
++/* Trigger tracking window manipulations */
+ static void window_reset(struct psi_window *win, u64 now, u64 value,
+ 			 u64 prev_growth)
+ {
+--
+2.26.2
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBd1nIACgkQ3SOs138+
-s6EKNw/+PWZ5d3e0xEwvPK7F2Ar6aLwrAZTugsDRjLWV08E7tyOy+G9o7fONJcWa
-rYcXHvrQzc3Vr6/H0Aht9gv8h4N1ouQlIYbKkommVUDHWZlKKKKuf2UW9DeIzbLp
-jRdHkqZsdlRy/1UZGl7oXPsDf+OIYG04QbOA1+uBhqW+BdpfEC59ouN/KDCou9aq
-7JvFVhtOB5SZBDQhNNyY9VINpf7uHivV+onqfwg40fO/QTkYaHINb29gb73NBZWr
-fqP16h7YrpKw+JqePYucWisMfZ8hubG6mNypAlhnRBdaqhoPm+OwmRFfbb9hE0f4
-VtTBHT2HndgpshRyqJZegJUueeRQX5scz0IYfDdpHSvJ/+bvZ3HwmxOG3XHOIsEz
-o36PE9KKIX3b9PZqEtMrNfnC7a9KzlnGJzQ0N+ZKvNZufnlkpbGuKC2PN/gTnADi
-p6Shg4Nz6Jg67p2nWhIoFWMA1sYd1b18urfFn133K3B4R+6ox7NfDl7jDoLO//rO
-qxgp4aySmSZyGC0LnhX/rjThoVGggs/Ph99sxbDaObX1bed7K/3MVfuFHv9dgNxq
-BMerE+S1zd+XdeI1iSdQ459gqtFuWyTNTX4Atm3ddd+7P1Ay7iRMjyAjZ5MgwUvn
-NUVQ+ss5oAt4BguhMPXeKvkkJEDQWl8xSzXm5qd39jSxZ06FAL8=
-=w24T
------END PGP SIGNATURE-----
-
---anrc3HovXG4wMGPC--
