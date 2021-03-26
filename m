@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94654349DC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCD0349DD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhCZA3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:29:24 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:44630 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhCZA3A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:29:00 -0400
-Received: by mail-io1-f51.google.com with SMTP id v26so3725914iox.11;
-        Thu, 25 Mar 2021 17:29:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HqP361nCuW7IrybuNXs/MVht6WlPAUMBMTJUt5NbOBY=;
-        b=I6zXN7xIncv/8CssIGBh4PPLCdw6Oa5rSg00e/hjF12rL4SruR9Hj5oSo+rnrhDPlK
-         m9D5tCZJfEfGIrh8aKRREH3gxutJsa1VbbTDdXupYKp5ogCssJlu7H6oHpBPyMrIwE1u
-         rkxHiHun/2PrbGMNlPjvlXrCEGHKCFZ815n/Kpq0puzcttKP7ZvDo7zxfS1q9CcnV1Xz
-         bVoaxNex1qKb+04IMkbYYReQ5gG/rYo8OQ9rsgRFH1fcoaeE2mg3B++usnuNBl6WxjDT
-         r7m8nmk4TiiEinV3yxMmgWKRVtAu8REJb+VtmchV0t9qf6EVc513pJZ2ExFejqEYSTGI
-         vzjg==
-X-Gm-Message-State: AOAM5325dpoA0uw0j8tSwNg6jmiVeMCdJTHu5sbqSAvbWgolM/bBfwds
-        UhD4C53QKJCfMqhMUEFIA1mD1ZxA+w==
-X-Google-Smtp-Source: ABdhPJw6W3NHdAqO/y5OThYoAM4qmj7MMyJPG3HX8vVwI93D07pwvhmlBcQDFuiXigdabDHe9NnU5Q==
-X-Received: by 2002:a6b:7c4a:: with SMTP id b10mr8401982ioq.170.1616718540205;
-        Thu, 25 Mar 2021 17:29:00 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id k7sm3417611ils.35.2021.03.25.17.28.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 17:28:59 -0700 (PDT)
-Received: (nullmailer pid 2033074 invoked by uid 1000);
-        Fri, 26 Mar 2021 00:28:51 -0000
-Date:   Thu, 25 Mar 2021 18:28:51 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Amelie Delaunay <amelie.delaunay@foss.st.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 1/2] dt-bindings: phy: add vbus-supply optional property
- to phy-stm32-usbphyc
-Message-ID: <20210326002851.GA2031564@robh.at.kernel.org>
-References: <20210317160954.15487-1-amelie.delaunay@foss.st.com>
- <20210317160954.15487-2-amelie.delaunay@foss.st.com>
+        id S229730AbhCZAaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:30:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229972AbhCZAaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:30:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A032761A42;
+        Fri, 26 Mar 2021 00:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616718610;
+        bh=PuOi5jv1ie5YlhMf7yLMEVApxUq8VnjQAMuUq/PifD0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=i/ee8cHailseT9cbQiluiQwyCyDGR4JgRPmBrR1lr0TazEvtdEPv1JkVfnhiFTXa3
+         TsFiCRivqk1L5wdelTEbHfg4wIRRFS/S0xbvVScu1UpfF23WYTxyGXJFu/picDTMOC
+         n9uEkSbx5WaDgvZBvGaEk8sf+WBMKTtXNzfZvuuCu4ynItZnFG+8OXQXJwW/9zQwvv
+         K76cBAJ/qmtXza6uBZ29dSeGt7nx7+KNmQ+rV3PJ6u2xcpovJxoMlXxg4XO+SRxmjV
+         oSNo0J7f2wogIITqhPZF3dgfYqO06ODcVSsM1dzIpxiAMg9RVQlFFozCf6viM83z7Z
+         Fv+2MEaQYn67w==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 93994625C1;
+        Fri, 26 Mar 2021 00:30:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210317160954.15487-2-amelie.delaunay@foss.st.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] dt-bindings: net: micrel-ksz90x1.txt: correct documentation
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161671861060.2256.1453248702632302849.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Mar 2021 00:30:10 +0000
+References: <20210324135219.2951959-1-dinguyen@kernel.org>
+In-Reply-To: <20210324135219.2951959-1-dinguyen@kernel.org>
+To:     Dinh Nguyen <dinguyen@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 05:09:53PM +0100, Amelie Delaunay wrote:
-> This patch adds vbus-supply optional property to phy sub-nodes.
-> A regulator for USB VBUS may be needed for host mode.
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Wed, 24 Mar 2021 08:52:19 -0500 you wrote:
+> Correct the Micrel phy documentation for the ksz9021 and ksz9031 phys
+> for how the phy skews are set.
 > 
-> Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
+> Signed-off-by: Dinh Nguyen <dinguyen@kernel.org>
 > ---
->  Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-> index 018cc1246ee1..ad2378c30334 100644
-> --- a/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-> +++ b/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml
-> @@ -71,6 +71,9 @@ patternProperties:
->        phy-supply:
->          description: regulator providing 3V3 power supply to the PHY.
->  
-> +      vbus-supply:
-> +        description: regulator providing 5V Vbus to the USB connector.
+>  .../bindings/net/micrel-ksz90x1.txt           | 96 ++++++++++++++++++-
+>  1 file changed, 94 insertions(+), 2 deletions(-)
 
-Unless Vbus is powering the phy, then this only belongs in the USB 
-connector node.
+Here is the summary with links:
+  - dt-bindings: net: micrel-ksz90x1.txt: correct documentation
+    https://git.kernel.org/netdev/net/c/3ed14d8d47bf
 
-> +
->        "#phy-cells":
->          enum: [ 0x0, 0x1 ]
->  
-> -- 
-> 2.17.1
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
