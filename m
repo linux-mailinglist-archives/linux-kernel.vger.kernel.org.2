@@ -2,152 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A220F34AE7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB6E34AE84
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhCZSXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhCZSWs (ORCPT
+        id S230318AbhCZSYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:24:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43400 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230316AbhCZSYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:22:48 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16C2AC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:22:48 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id y32so4029986pga.11
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jTn/uUJ+LFQPTBhHrUYL0kAqEpchxiI/QloMXShvaSg=;
-        b=nn1MjHPYaWoHftAWKn+3FFCIcCa1eRT0uZOUpIjI6j9ZE93LqX2Eak3CIXk5YdtBQL
-         GGDir9kdxKg6NiSr0WbgqwjXmOypBn/eXFhQPhmyypBVAheL+hv3GXh/XPngDcVsvDO4
-         LN7dFGVyS5TBS8fVHd+fO0kw6lD+LXfyb8OoVNkor57JZ9e4XjZRNrGJ36+S7eyQ/lMc
-         V0dMhEbO4lBRJZ+KADbhAO0gemOU3lhHZ90YgBOY9ERfHSqH5lsKvge/lQxkKXFP8hza
-         NhQh5NTxoSSNhkyG02fiUEfZErr8lR4DV0kJ8i6ttc35oQBcolKceTZWsS+SWAiGFAIX
-         HCBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jTn/uUJ+LFQPTBhHrUYL0kAqEpchxiI/QloMXShvaSg=;
-        b=aoFN0w39cDC+41U2+bH7EOeAR3TyNzlj0Rf9dH66Z0x26gVW868RUSiN6e9KdRe1sC
-         Puq7iHBpbXTZ1CquVsVAAQeVOTKDeECjdKdvd95wdUL3Pjj+vjrp0o29CpRcOv9xmPAH
-         Y5xRirHFwbknAkNydJNTtTe8HPpj1Q9rDhXOmC6mBdh2rA4y//1193RfS6qIuGHh+jF/
-         z0Qeldf3X2dvhMvAMsXlUyhvMqIAwzpizyaQC1Ldy3+4yw3FYM0eWhLafBRuxA1wP3e4
-         j2UeGk8/woxxfAaPgM1FDrSXXPOA8Tm5VWEvHyyk6WWxiWhh3dzegwBXCM4o7tQ/lGOX
-         gIDw==
-X-Gm-Message-State: AOAM530v5nie+RcekCTut7e3ZMVDxp/M4fQJKyxP6CRA5XFkuByHy5/i
-        h2iKh7q6pDhEqA/CR5om4qKu
-X-Google-Smtp-Source: ABdhPJyrPVoMQlwEHjwBivlbDbaEwnf1pl7RuLCDnlGwsVTz+RGbEjpi5UGFQQlmPZpjo1Bp0pjYtA==
-X-Received: by 2002:a63:fd50:: with SMTP id m16mr13460841pgj.256.1616782967428;
-        Fri, 26 Mar 2021 11:22:47 -0700 (PDT)
-Received: from localhost.localdomain ([103.77.37.139])
-        by smtp.gmail.com with ESMTPSA id p1sm9573592pfn.22.2021.03.26.11.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 11:22:47 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     soc@kernel.org
-Cc:     linux@armlinux.org.uk, will@kernel.org, arnd@arndb.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3] ARM: kernel: Fix interrupted SMC calls
-Date:   Fri, 26 Mar 2021 23:52:37 +0530
-Message-Id: <20210326182237.47048-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 26 Mar 2021 14:24:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616783070;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=sqgoE7oUkWi10dRfiKf4O0yLFX/FHCjCOBZ7f/F44Jg=;
+        b=GnF/CX+duq4rPTvkvMHH2MqB8L5Et/Tu/5f1W5DismnmoN2tViw1NC+TaP3E9nyTwlB6lb
+        c6/FLqJ2/o7H3mDQxy2H6OopYC4r9TWNvvjUq5jgpqLwgPKeXJPLDltCuP7Z/JeLYpEMEa
+        5ybRTYMsxHnCXXb02ATikhe9NPD7lU4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-9o3difxnMi2VTAOjuBaKEA-1; Fri, 26 Mar 2021 14:23:45 -0400
+X-MC-Unique: 9o3difxnMi2VTAOjuBaKEA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AFC58A2A15;
+        Fri, 26 Mar 2021 18:23:40 +0000 (UTC)
+Received: from crecklin.bos.csb (ovpn-112-25.rdu2.redhat.com [10.10.112.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0500819C71;
+        Fri, 26 Mar 2021 18:23:39 +0000 (UTC)
+Reply-To: crecklin@redhat.com
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+Subject: tools/testing/radix-tree/idr-test gets a failed assertion on single
+ cpu systems
+Organization: Red Hat
+Message-ID: <def0fd33-da11-6283-d98f-66eb9a8dd201@redhat.com>
+Date:   Fri, 26 Mar 2021 14:23:39 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Qualcomm ARM32 platforms, the SMC call can return before it has
-completed. If this occurs, the call can be restarted, but it requires
-using the returned session ID value from the interrupted SMC call.
+Hi Matthew,
 
-The ARM32 SMCC code already has the provision to add platform specific
-quirks for things like this. So let's make use of it and add the
-Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
-driver.
+I made the observation that while tools/testing/radix-tree/idr-test runs 
+and passes just fine on a system with more than one cpu, it gets an 
+assertion failure when run on a single cpu system. My test system is 
+Fedora 34 running on an x86_64 system. It can be easily reproduced by 
+offlining all cpus but cpu0.
 
-This change is similar to the below one added for ARM64 a while ago:
-commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
+[root@hpe-ml110g7-01 linux]# tools/testing/radix-tree/idr-test
+vvv Ignore these warnings
+assertion failed at idr.c:250
+assertion failed at idr.c:206
+^^^ Warnings over
+idr-test: idr-test.c:320: idr_find_test_1: Assertion `!(entry != 
+xa_mk_value(id))' failed.
+Aborted (core dumped)
 
-Without this change, the Qualcomm ARM32 platforms like SDX55 will return
--EINVAL for SMC calls used for modem firmware loading and validation.
+I bisected the change to 5c089fd0c734 ("idr: Fix idr_get_next race with 
+idr_remove").
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
+Since idr_get_next can return NULL, I stuck a BUG_ON(!entry) just above 
+the failing assert, and in this case idr_get_next is returning NULL.
 
-Changes in v3:
+Next, I stuck a BUG_ON in the place that idr_get_next_ul returns NULL 
+and commented out the contents of idr_u32_test1 so we're not knowingly 
+passing it bad values, and we seem to fail because the list has been 
+gone through.
 
-* Rebased on top of v5.12-rc2
-* Sent to SoC list since there was no review so far apart from initial one
-  by Russel
+void *idr_get_next_ul(struct idr *idr, unsigned long *nextid)
+{
+     struct radix_tree_iter iter;
+     void __rcu **slot;
+     void *entry = NULL;
+     unsigned long base = idr->idr_base;
+     unsigned long id = *nextid;
 
-Changes in v2:
+     id = (id < base) ? 0 : id - base;
+     radix_tree_for_each_slot(slot, &idr->idr_rt, &iter, id) {
+         entry = rcu_dereference_raw(*slot);
+         if (!entry)
+             continue;
+         if (!xa_is_internal(entry))
+             break;
+         if (slot != &idr->idr_rt.xa_head && !xa_is_retry(entry))
+             break;
+         slot = radix_tree_iter_retry(&iter);
+     }
+     if (!slot)
+         return NULL; <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-* Preserved callee saved registers and used the registers r4, r5 which
-  are getting pushed onto the stack.
+     *nextid = iter.index + base;
+     return entry;
+}
+EXPORT_SYMBOL(idr_get_next_ul);
 
- arch/arm/kernel/asm-offsets.c |  3 +++
- arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+I'm not sure if this is a test issue or possibly an issue with user 
+level RCU when there's only a single cpu in the system, but I figured it 
+was worth bringing it to your attention. If there's anything I can do to 
+help to further analyze this or try out a fix, I'm happy to help.
 
-diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index be8050b0c3df..70993af22d80 100644
---- a/arch/arm/kernel/asm-offsets.c
-+++ b/arch/arm/kernel/asm-offsets.c
-@@ -24,6 +24,7 @@
- #include <asm/vdso_datapage.h>
- #include <asm/hardware/cache-l2x0.h>
- #include <linux/kbuild.h>
-+#include <linux/arm-smccc.h>
- #include "signal.h"
- 
- /*
-@@ -148,6 +149,8 @@ int main(void)
-   DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
-   DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
- #endif
-+  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
-+  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
-   BLANK();
-   DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
-   DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
-diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
-index 00664c78faca..931df62a7831 100644
---- a/arch/arm/kernel/smccc-call.S
-+++ b/arch/arm/kernel/smccc-call.S
-@@ -3,7 +3,9 @@
-  * Copyright (c) 2015, Linaro Limited
-  */
- #include <linux/linkage.h>
-+#include <linux/arm-smccc.h>
- 
-+#include <asm/asm-offsets.h>
- #include <asm/opcodes-sec.h>
- #include <asm/opcodes-virt.h>
- #include <asm/unwind.h>
-@@ -27,7 +29,14 @@ UNWIND(	.fnstart)
- UNWIND(	.save	{r4-r7})
- 	ldm	r12, {r4-r7}
- 	\instr
--	pop	{r4-r7}
-+	ldr	r4, [sp, #36]
-+	cmp	r4, #0
-+	beq	1f			// No quirk structure
-+	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
-+	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
-+	bne	1f			// No quirk present
-+	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
-+1:	pop	{r4-r7}
- 	ldr	r12, [sp, #(4 * 4)]
- 	stm	r12, {r0-r3}
- 	bx	lr
--- 
-2.25.1
+Thanks,
+
+Chris von Recklinghausen
+
+Red Hat
 
