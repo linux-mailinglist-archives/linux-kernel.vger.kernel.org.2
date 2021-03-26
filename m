@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E226534A7D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EECB34A7D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhCZNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:07:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229758AbhCZNHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:07:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D771619FE;
-        Fri, 26 Mar 2021 13:07:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616764025;
-        bh=x/GK+JD94YsfoYZeLWzsM1EmTyqcxHwM2Vqefncnveg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a2/avi/Dh7YzODTB0l8GLVG6HWTEO6Td7nimdFSaE8m2IP4Ww7V1d9XRlcZ+5srHU
-         SSoFTb2WWt6KcygqmfmLm6M0dATs/gg5rTnRWBEcd+FOlegCq4ZcIJ20I3Qt+EUCVz
-         +vrJwVPPFjY3al3MqmtVk5M775jZ3vmOJgeeJgtilzBGNhD6LjAKuTLP5vxhsmH9tS
-         odXnB4EFjgTiKzmU2lM4+lhu7T4J3ggqPCeOJR5716JhyMVWNJY/POQV/Mfhn9zCkU
-         rSBSPj9wTF2uNhp9YmAorCP66xMgPflfBKmp3RGWuxa0zUpXR2OGu544Trl/MghCl9
-         oLUmbJkBNvL0g==
-Date:   Fri, 26 Mar 2021 06:07:02 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH 0/3] Fix CONFIG_FUNCTION_TRACER with clang
-Message-ID: <20210326130702.3yaz2vqwejnfnlq4@MSI.localdomain>
-References: <20210325223807.2423265-1-nathan@kernel.org>
- <CA+icZUWgxmrtM=oj-aJi1KXxZx0YUZDiUPK42MjHvqS96aazYQ@mail.gmail.com>
+        id S230026AbhCZNHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:07:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229930AbhCZNH3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:07:29 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F306AC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:07:28 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id l18so6221370edc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:07:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UzC5FBVz05PHuae7oBlniWjIpKp36WiskgIQCfeie3A=;
+        b=V2Ytu6qBPPGkLMv7S6mlhwfXx73xncAijDlfo/GWHDkV2vSaO7UEb+pL2lXTMSyc5T
+         IS8zUw/vml70QF5x1CKd0LeZY3y+6cRbfEMJ1xDLKyJ6P1Wp0E1aRqCoJxutN99HxIIj
+         ApPez/DvySFJy9SEe6wXhAga56XRZj9RLazbYoPnqEHIvlzyG6zLm9eLX0EjsTPTQtS0
+         1Gtv7+5x4BTV5lm9KgOtXvV1GfUeRwO+ZJlYOtIzyaUgKQrdCDD0mJHLE0cQd693TKmR
+         I/76K60wh46tNX2SDm8Oitpz6W/2T+/oA/Mzq4sulFiheOe1a+VhaE5W+dWYFP/97uVa
+         jsXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UzC5FBVz05PHuae7oBlniWjIpKp36WiskgIQCfeie3A=;
+        b=XZ1o+Vh0I7mnY4K75fH1SgCVT6qrRJjXRPaeDYPRBNr7pmbdObZra7PsZi/Ty9u0Ht
+         1rNoOdh3tqV2jBTvKLmWaJp/dTn2HANBafRH4VB1Gcz5B24UQxP2dMHu/8prpmMDKJnA
+         kTec14t3IvbRnSZlgJA//obwuOYtRNf58FRaywwHDxjo7CuaNapxDSg6neZIDzDUgL08
+         zYOQWT6Zl8EbEUVZTv0N9UYBNNZfFC2El2C7mq77PfCq6rTjg7xDO45frOvEUobxW1yL
+         k9pGDtS9iYbafsJV7ktxVVoFm/jfolEQTMRhtB0nNHjmUjsSTUuMsqka2U2ngTsZM/cb
+         VhKg==
+X-Gm-Message-State: AOAM5335Xzf7m9eKjXppQgioSgnySjHHeAXOJB9Y/AtsfUrT0kzIdHjX
+        BepkA9qOEXuZ8DmIGzzXA8Cr/0mIceNxx8HfLb52bQ==
+X-Google-Smtp-Source: ABdhPJwkjDuvTV8Eny6IaII+A63BvbGqHoVciv6m70WrZQH4YTnZlVRI3Qv1mAGKV+kcQQCfrCPZQPEI7Hh3uEB5emg=
+X-Received: by 2002:a05:6402:17d6:: with SMTP id s22mr14815062edy.232.1616764047557;
+ Fri, 26 Mar 2021 06:07:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUWgxmrtM=oj-aJi1KXxZx0YUZDiUPK42MjHvqS96aazYQ@mail.gmail.com>
+References: <20210324064541.949630-1-jay.xu@rock-chips.com> <202103241450286417142@rock-chips.com>
+In-Reply-To: <202103241450286417142@rock-chips.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 26 Mar 2021 14:07:16 +0100
+Message-ID: <CAMpxmJWmUu962YrcCQmxukV3hM9K8hGVuOzimZ5friX58oSDWw@mail.gmail.com>
+Subject: Re: [PATCH RESEND 0/7] gpio-rockchip driver
+To:     "jay.xu@rock-chips.com" <jay.xu@rock-chips.com>
+Cc:     Tao Huang <huangtao@rock-chips.com>,
+        =?UTF-8?B?5p2o5Yev?= <kever.yang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 09:37:55AM +0100, Sedat Dilek wrote:
-> On Thu, Mar 25, 2021 at 11:38 PM Nathan Chancellor <nathan@kernel.org> wrote:
+On Wed, Mar 24, 2021 at 7:50 AM jay.xu@rock-chips.com
+<jay.xu@rock-chips.com> wrote:
+>
+> I'm forget to send-to include Bartosz, I'll remember in next version
+>
+> --------------
+> jay.xu@rock-chips.com
+> >Separate gpio driver from pinctrl driver, and support v2 controller.
 > >
-> > Hi all,
+> >Jianqun Xu (7):
+> >  pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
+> >  pinctrl/pinctrl-rockchip.h: add pinctrl device to gpio bank struct
+> >  gpio: separate gpio driver from pinctrl-rockchip driver
+> >  gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
+> >  gpio/rockchip: support next version gpio controller
+> >  gpio/rockchip: always enable clock for gpio controller
+> >  gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
 > >
-> > This series fixes function tracing with clang.
+> > drivers/gpio/Kconfig               |   8 +
+> > drivers/gpio/Makefile              |   1 +
+> > drivers/gpio/gpio-rockchip.c       | 758 ++++++++++++++++++++++++
+> > drivers/pinctrl/pinctrl-rockchip.c | 909 +----------------------------
+> > drivers/pinctrl/pinctrl-rockchip.h | 286 +++++++++
+> > 5 files changed, 1072 insertions(+), 890 deletions(-)
+> > create mode 100644 drivers/gpio/gpio-rockchip.c
+> > create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
 > >
-> > Patch 1 adjusts the mcount regex in scripts/recordmcount.pl to handle
-> > the presence of PLT relocations, which happen with clang. Without this,
-> > the mcount_loc section will not be created properly.
+> >--
+> >2.25.1
 > >
-> > Patch 2 adds a workaround for clang less than 13.0.0 in relation to the
-> > mcount symbol name, which was "mcount" rather than "_mcount". This was
-> > written as a separate patch so that it can be reverted when the minimum
-> > clang version is bumped to clang 13.0.0.
 > >
-> > Patch 3 avoids a build error when -fpatchable-function-entry is not
-> > available, which is the case with clang less than 13.0.0. This will make
-> > dynamic ftrace unavailable but all of the other function tracing should
-> > work due to the prescence of the previous patch.
 > >
-> > I am hoping this series can go in as fixes for 5.12, due to patch 3, but
-> > if not, they can always be backported (patches 1 and 2 are already
-> > marked for stable).
-> >
-> > This series has been build tested with gcc-8 through gcc-10 and clang-11
-> > through clang-13 with defconfig and nommu_virt_defconfig plus
-> > CONFIG_FTRACE=y and CONFIG_FUNCTION_TRACER=y then boot tested under
-> > QEMU.
-> >
-> > Cheers,
-> > Nathan
-> >
-> > Nathan Chancellor (3):
-> >   scripts/recordmcount.pl: Fix RISC-V regex for clang
-> >   riscv: Workaround mcount name prior to clang-13
-> >   riscv: Select HAVE_DYNAMIC_FTRACE when -fpatchable-function-entry is
-> >     available
-> >
-> 
-> Does this only fixes stuff for clang + riscv?
 
-Yes.
+I don't even have this in my inbox so I can't review it.
 
-> If so, please put a label "riscv" also in the cover-letter.
-
-Sure, my apologies for not doing that in the first place, I must have
-been in a rush with the cover letter.
-
-In my defense, I think the titles of my commit messages and the diffstat
-below make that obvious without the tag :)
-
-Cheers,
-Nathan
-
-> - Sedat -
-> 
-> >  arch/riscv/Kconfig              |  2 +-
-> >  arch/riscv/include/asm/ftrace.h | 14 ++++++++++++--
-> >  arch/riscv/kernel/mcount.S      | 10 +++++-----
-> >  scripts/recordmcount.pl         |  2 +-
-> >  4 files changed, 19 insertions(+), 9 deletions(-)
-> >
-> > --
-> > 2.31.0
-> >
+Bartosz
