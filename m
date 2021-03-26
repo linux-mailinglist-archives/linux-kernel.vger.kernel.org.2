@@ -2,562 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4670834A68F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D0634A693
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhCZLn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbhCZLnb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:43:31 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D96AC0613AA;
-        Fri, 26 Mar 2021 04:43:31 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id h10so5913715edt.13;
-        Fri, 26 Mar 2021 04:43:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=z+ymJSzw3ln9nUitY5At2Wj8e4yU6qkv/jQhmBCnIRk=;
-        b=Lg5VsvvSMZwrY0AX0IIYoKWiFzGfqNcvuplWclN9n72qraY5rgU8AKSdarVfDUrzhY
-         7kAL/vhh5vARC1DBWCrp7ie6vv4ja3HsUhqbNCUnL8h8swmoUH44H2LoIF5SeLCqNquj
-         JHclq6jCJ6QDf4DPWQoEA46J7gQtcXosCIqgdEyOUaR4GExnmC3AnAHL2IfUQgpZiyCT
-         6o5PZ3CnOt9oHHcgk4w76HLus1bpVpYeWQrRQ2iSYfFLurrgVsKhqjbptkilYrzylvvv
-         gCeIGFGbQQglQPnitZTlmTUzh5slv+mW/MDSHlBDOCIWDqIm6A0uuv40tNqt/GauU/zd
-         y27Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=z+ymJSzw3ln9nUitY5At2Wj8e4yU6qkv/jQhmBCnIRk=;
-        b=dT9rvVm7tNWCQNiPO/vXjnEvt/kCCIhOJMHQnszC00IokedjB2aA58sq8fbaKlc5vX
-         x/yVVqLbWEXq/awRbWRY1E8QAIUE90smEsUPInkrLr7Y+8MGA6JD/5SVr1BHIPS/QeCs
-         m9k0mp3UxZnW7b7+QRcoI6yfrd8u5DfpRUGoTom11uBeZojvykvlPnJRbuNG4SXJVs4h
-         UoHdynIOlG2TXhuOhKL0jgK6d+uruBCOzb5eiaZ82NVVU5ci6AEfW8T4YCIIh2/i4cam
-         OvLG2jmaeVcVUrW2Y595tfzX4fu2ChBln1r/nlKiCnKgeqo4qscQesa2VmguI8hx9KnE
-         SMuA==
-X-Gm-Message-State: AOAM5331AzosQgsZMnkKB5vFSrt+MfOfviJCwC7k9/Lvf6xjfXVHFw88
-        72VyrUZms0OF3aGrypyRWVk=
-X-Google-Smtp-Source: ABdhPJyJH5JklptvC0B+qLb794za8o0EBujSvMDFpocfOL9qtWq5pEobbQbZfPYfgXdFRMJjNZuUyw==
-X-Received: by 2002:aa7:c903:: with SMTP id b3mr14486867edt.156.1616759009626;
-        Fri, 26 Mar 2021 04:43:29 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id q2sm3750836eje.24.2021.03.26.04.43.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 04:43:29 -0700 (PDT)
-Subject: Re: [PATCH v6 09/11] dt-bindings: power: rockchip: Convert to
- json-schema
-To:     Elaine Zhang <zhangqing@rock-chips.com>, robh+dt@kernel.org,
-        heiko@sntech.de
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        cl@rock-chips.com, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
-        finley.xiao@rock-chips.com
-References: <20210326102738.14767-1-zhangqing@rock-chips.com>
- <20210326103036.15173-1-zhangqing@rock-chips.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <a02548cf-aa1e-58eb-8996-6ae9a43931d7@gmail.com>
-Date:   Fri, 26 Mar 2021 12:43:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210326103036.15173-1-zhangqing@rock-chips.com>
+        id S229794AbhCZLrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:47:08 -0400
+Received: from mail-bn7nam10on2070.outbound.protection.outlook.com ([40.107.92.70]:20928
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229604AbhCZLrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 07:47:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZviHwVr2+h3SANgHL5tnBkGxwplpyypJGZ0pppLOsY85W/DUyZAwxLxDJdoIqXcOqPDELPP5bOI+S4ooCGJNyf+vp0F/Epm+uM3Zmo28b3VrYJfM0uUW4Gv4nIavSsycTgJRtGLYbGvySJYXTSUcI2DMtEk0zZD9QmcgzSBg5mprNXhrSqElwWT+Yk5CwEBxx4Oquhp+PJmw13LPofn+bfHnxjWV8djHdA+2DoOuOPPlmw7RFowJytsMK04IRYuh2J6k9WgIDbYVDqc6KZMOFERKk26fYp7uvL+Mw83jvLnigUNI6Pp3vESIHiyMCR5AKMknKoL5P8LyEkR50u97Dw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xIA9n5ndUr4ecicoNpOR1JXY9ze2KTAD5PLBGbY20Q4=;
+ b=NhE4MPjL5CW70SvRjeCYCwA3v8dqFE1pviHbX2UucqrP8KZajYTs1UJRrC98J0kTH61r/SnyV6apig3O4+pWw75yQo9G70ryMDvBRSLCDCm7z54ltwpJErU6OwEe4dM8EYBHcu7IaHMxhm/RjNHoy8Kg+saOu76bxYZR6PcSaJhFU+Cf1zL4evjjv6t+fsqe6AkvGfR9+ggkYElmtdFCmelsGXUigWtYeO3jHMJ7biaO/1+c2JHMQV4rTljkqJPuzATaUV8gVa+l6Tzt0290HgjWQSmTbB5RZxxCXUpLKL+3aM+t+q0odtR056/c0gtAiDR6RcvkVRlYcni7uJYTtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xIA9n5ndUr4ecicoNpOR1JXY9ze2KTAD5PLBGbY20Q4=;
+ b=Oj+Hr9sBOEEFTEWSrhUn67Vp9GaEYxCmu2BESrdX4rSmm316V9u3YwyW0Ufc5nK32BfKWlE5ojfwO5wRmjm00UnwvdP2+Dvnj8drAdWOL4fB0Z3hzITh4BM044kAQ/IHv+Du9sE+LIA5syh2fDI1UEG4jJ0YQFAkojz3NqJARkZ7TTwvvR39YoIkL3P7iHgE72+b5uuBEhLp686X8GuEwr/tpI2HFkJMjhlf3ucAg0JXPsLa3Xgo9uXuHPT3gbUD/vRUXVuA4630RGtnOeHCIidG5lnUtwQuEcEfx/Df8D54vAaeNdEVt0vv3BlWNUmZC9FfrUxsrnPVSW/VRGhBvA==
+Authentication-Results: shipmail.org; dkim=none (message not signed)
+ header.d=none;shipmail.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4617.namprd12.prod.outlook.com (2603:10b6:5:35::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Fri, 26 Mar
+ 2021 11:46:57 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.029; Fri, 26 Mar 2021
+ 11:46:56 +0000
+Date:   Fri, 26 Mar 2021 08:46:54 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 1/2] mm,drm/ttm: Block fast GUP to TTM huge pages
+Message-ID: <20210326114654.GL2356281@nvidia.com>
+References: <YFsNRIUYrwVQanVF@phenom.ffwll.local>
+ <a1fa7fa2-914b-366d-9902-e5b784e8428c@shipmail.org>
+ <75423f64-adef-a2c4-8e7d-2cb814127b18@intel.com>
+ <e5199438-9a0d-2801-f9f6-ceb13d7a9c61@shipmail.org>
+ <6b0de827-738d-b3c5-fc79-8ca9047bad35@intel.com>
+ <9f789d64-940f-c728-8d5e-aab74d562fb6@shipmail.org>
+ <20210325175504.GH2356281@nvidia.com>
+ <1ed48d99-1cd9-d87b-41dd-4169afc77f70@shipmail.org>
+ <20210325182442.GI2356281@nvidia.com>
+ <1eda588b-ae51-9b69-4bd4-da37b2aa1e4b@shipmail.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1eda588b-ae51-9b69-4bd4-da37b2aa1e4b@shipmail.org>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0137.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2f::16) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0137.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.24 via Frontend Transport; Fri, 26 Mar 2021 11:46:55 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lPkvW-003Iyk-CP; Fri, 26 Mar 2021 08:46:54 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 34355dca-f3fa-4b74-5c62-08d8f04cdb34
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4617:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4617F7C43BCDF9C0C1A1CCD0C2619@DM6PR12MB4617.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VLPwPNFF38NeYMV7HwGYtXmJuY97S77o9BngZymEJuX/zASMO/n9FW4noxGQV+cVhzj94X+p9yRNhr78z/5DidKAXzCaL1JO+g6c7EdaSeb1FMkKDclcKYO5riKUCdm2akp7OYjOMCTSMNFuaq2wkFGgr7DSTu6WufGFzQ/Rn7hGQQ8qcULkKryuxB/0aEpLCmP4E7j0D3PWRAmiaxyzc15aPmWJgj6fy2SY6RlCsZpCd9CnO+e9WyFaAoEzQ3bnQT4Vl2heBrOazPorDU9KFNlgCTKJHEsLHk+in8uaFJIMw+xWSmwBT32XmjopaqiJPTSG8sM40zvDp8W9PEDA5KcuQfmedlU4fpe9U9htqtg42F9XufydyxJYzs48yoD0oPJrZUOXepLLks2UMERyqohplwAZ9ym0ka3uqzIGybJ2RwK11xyr9BbHWETdMSzWNWpjen3Gkbuy/Tm+quk9grlifmn+RUylmBdA/cqctJzID/fv5Fxo/vO5eX4ENHPcMypMTmoJU5nY3iMSvUzqNuAtXcUoJnjDDUTMHSLoczwdrGsisf7l0f/cFgJOK3oBeKpYdkaskbk4K7Uj8Yv3qgbTFTrDUNf6QdEr2E5DWNgZuRWl+2m92s6m8kVQtzuOPPQnJUrO1ogjwtaR18xstLq3dFdCr1eXN0qnIuJdc6KJd2ryPwnWCOoFF9g5ctZd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(366004)(136003)(376002)(9746002)(83380400001)(33656002)(53546011)(186003)(66946007)(4326008)(426003)(6916009)(66556008)(2906002)(26005)(9786002)(5660300002)(8936002)(36756003)(66476007)(316002)(2616005)(54906003)(38100700001)(1076003)(86362001)(8676002)(478600001)(66574015)(14583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q25qaVZTYVZ3VnFTeExaeUpYU0R2b0RoUmpxS3FacHRZZStPR1gzN2U5VWNE?=
+ =?utf-8?B?YS9sQi96VG9lMHpFTGdrUGlBSWdNY01HNHczTW4xSElKSXJWNGNoWENMcUhV?=
+ =?utf-8?B?Z0I5U25uWVJnRVViWXFuN0xoL0ltZHZXRTdzZUxmZTFvdTZOQlZubHMxWUpo?=
+ =?utf-8?B?OUNkd21RNmplME5DNVBnWS93bUV5NG9Db3NLc284VkxHR3FtYXhUU29RNW9n?=
+ =?utf-8?B?MkdNR2tGMkFxZ1lHb0ZaNWEyVjI2M0hERHgxWDlsS0FCd2pmSmdWcUdDZmlK?=
+ =?utf-8?B?RG5JQzI3TG8zSVp1MUh6c3Y2WG5wM2c1UDFvMEVjdmxlL1phUmprQnJKSDlr?=
+ =?utf-8?B?UjlObDJpeEN6MG80V3VxTGlRc21QY0dvN1JLYkZkZjErK2NrdHdDQnY5S3R2?=
+ =?utf-8?B?OTZ3SmVORjZHVVdCeVFxQ1dMYkhuRzJCaE5GZEdoKzUyMTZ6SFd3N1JFU3Vq?=
+ =?utf-8?B?Q0lZZUMrRHdWU2FSZzZ3RDNNOExHUXdxMDZ1NGdlYmlBZlJ4M3pLcVdsU3BT?=
+ =?utf-8?B?RVN4TTkwRld2b3loTWlBbzNrTEQ5bXhZYVdhcFZuNXROZUxkRmNFRFV6b2Zx?=
+ =?utf-8?B?SUdMNE1RSTE2YUlHdlJzTi83RGtNQlhzN0lQQ09zbzllN2EzV2k3aG1acHFF?=
+ =?utf-8?B?dmdsMGpOTTkyQU1oM2tzUFluRktwcHkrUjV4ejV0dkgxVWtzSjgyT05waWVm?=
+ =?utf-8?B?NVU3WDNnaFRQTDZsQnl2UFJ5dEZpeDd0VFA1M0xIczJZd1Jpem5uZVl0Rk1K?=
+ =?utf-8?B?c3J0OWFYRGQvZ2lNNFpYdHVydkJMK1JBT0hIeCtBY3dsRjZjS2xkNjVxeFJ3?=
+ =?utf-8?B?TFBSMklqcnNhZStIVUE3cWpYR1p1ZDRwZlV6L0JDTzlOeVJBeWRqN3lQM0hN?=
+ =?utf-8?B?Z3lqRXQyTGhBN1VxVUhjUGVYYVZMRTRGNXVvZ0ZkbFA4L2tjSC8yWExHZW1B?=
+ =?utf-8?B?SWtQeFhvTkkwcUMrMjFJWUVxSXFRM09SQ3VSN2Y0OVpLdGE3OTRFUDIyenFu?=
+ =?utf-8?B?RFhRcDRqTUlqMU9aREtoSUxTNHFtRGp1T2R1VHAzN2pnZHpJYmpGVjd3K0xY?=
+ =?utf-8?B?UENFTnVCbkl5UVhwRDZNZ2ZPeGdISGlpSDNMTW55ckI5cVZTa25rWng4UVBE?=
+ =?utf-8?B?MjFwT1dTL0FxanhnUFFmMm5FSkF4Z2NlZGE5TDRHRlN1Uy9uZzJQNnN4WExr?=
+ =?utf-8?B?dzBOaEJUY2lRTDVxYzRzSWZxYUsvbFZlQkM2S05mUjF3SmloTWhFZVdzZnh5?=
+ =?utf-8?B?cHdqMFkzK3VjQng5YnFuanZMM0pYelBZUXJ5WGlkWDdRa2RFZUFUSktXWGJF?=
+ =?utf-8?B?WlNoN3Y3eFh3YjRUbElxMmZWZUR3djQwNVFhZ1hnVy9aR3F6Q2pqd1JweUR1?=
+ =?utf-8?B?YkViNFBpVEhXMngyS3F2cmFJMHovUHF4RkFXRGhMRFppMmV4YWs4bGtSa3E0?=
+ =?utf-8?B?cVA1YUJtYnZXbHZUcG8ydWV3VWR5OXZZaG9MYmpCdFpyNmpTM0RrUjhTQUNy?=
+ =?utf-8?B?cnd6NGZMaVVXaFFuQkwyQ2UrRk43ekt6SXJYaHQrbW5lYXBBY0JJS0gzZWNl?=
+ =?utf-8?B?cWovdzNaV3BzaUZxQ2phNXdWTXNXeEJCc0tnemxNdFdUSHQzbXJJV0dUY25i?=
+ =?utf-8?B?U04zZW4weGZNR3FrcHYza1FzVUJ2cGZRNVcyeitRQkE1dDdUVlY1bDRzWlQ4?=
+ =?utf-8?B?cmF4ZU0vMDFEa04wR1NKSE8ycjhkekxYaXVpWW5yVzBpNmpYM0ZVTVhmNzZr?=
+ =?utf-8?Q?5LylTFKt49I7gfuepu8mJrbB/47JQ9ChPwoasgq?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34355dca-f3fa-4b74-5c62-08d8f04cdb34
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 11:46:56.4254
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BNCfHu3Hulal1mi9BHWXpnmk2JoM/tW6HoCkQby9gAAE8m1RpON0pey+tDv6UJ7U
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4617
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Elaine,
-
-You've changed the license ones again.
-Could someone advise about GPL2.0 and legal stuff here?
-
-On 3/26/21 11:30 AM, Elaine Zhang wrote:
-> Convert the soc/rockchip/power_domain.txt binding document to
-> json-schema and move to the power bindings directory.
+On Fri, Mar 26, 2021 at 10:08:09AM +0100, Thomas Hellström (Intel) wrote:
 > 
-> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
-
-> From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Is this the correct position for that?
-
-> Link:https://patchwork.kernel.org/project/linux-rockchip/patch/20210225102643.653095-1-enric.balletbo@collabora.com/
-
-Normally the original author of a patch should be honored with help of
-this command below:
-
-git commit --amend --author="Enric Balletbo i Serra
-<enric.balletbo@collabora.com>"
-
-This places a "From: ...." on top of the commit message.
-
-But this is still a conversion/restyle to YAML.
-Meanwhile various other authors in the past have made
-contributions/comments to this document as well that was GPL2.0 only at
-the time.
-
-(I'm just saying: Claiming to be the only author sounds a bit strange here)
-
-Johan
-
-> ---
->  .../power/rockchip,power-controller.yaml      | 291 ++++++++++++++++++
->  .../bindings/soc/rockchip/power_domain.txt    | 136 --------
->  2 files changed, 291 insertions(+), 136 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
->  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
+> On 3/25/21 7:24 PM, Jason Gunthorpe wrote:
+> > On Thu, Mar 25, 2021 at 07:13:33PM +0100, Thomas Hellström (Intel) wrote:
+> > > On 3/25/21 6:55 PM, Jason Gunthorpe wrote:
+> > > > On Thu, Mar 25, 2021 at 06:51:26PM +0100, Thomas Hellström (Intel) wrote:
+> > > > > On 3/24/21 9:25 PM, Dave Hansen wrote:
+> > > > > > On 3/24/21 1:22 PM, Thomas Hellström (Intel) wrote:
+> > > > > > > > We also have not been careful at *all* about how _PAGE_BIT_SOFTW* are
+> > > > > > > > used.  It's quite possible we can encode another use even in the
+> > > > > > > > existing bits.
+> > > > > > > > 
+> > > > > > > > Personally, I'd just try:
+> > > > > > > > 
+> > > > > > > > #define _PAGE_BIT_SOFTW5        57      /* available for programmer */
+> > > > > > > > 
+> > > > > > > OK, I'll follow your advise here. FWIW I grepped for SW1 and it seems
+> > > > > > > used in a selftest, but only for PTEs AFAICT.
+> > > > > > > 
+> > > > > > > Oh, and we don't care about 32-bit much anymore?
+> > > > > > On x86, we have 64-bit PTEs when running 32-bit kernels if PAE is
+> > > > > > enabled.  IOW, we can handle the majority of 32-bit CPUs out there.
+> > > > > > 
+> > > > > > But, yeah, we don't care about 32-bit. :)
+> > > > > Hmm,
+> > > > > 
+> > > > > Actually it makes some sense to use SW1, to make it end up in the same dword
+> > > > > as the PSE bit, as from what I can tell, reading of a 64-bit pmd_t on 32-bit
+> > > > > PAE is not atomic, so in theory a huge pmd could be modified while reading
+> > > > > the pmd_t making the dwords inconsistent.... How does that work with fast
+> > > > > gup anyway?
+> > > > It loops to get an atomic 64 bit value if the arch can't provide an
+> > > > atomic 64 bit load
+> > > Hmm, ok, I see a READ_ONCE() in gup_pmd_range(), and then the resulting pmd
+> > > is dereferenced either in try_grab_compound_head() or __gup_device_huge(),
+> > > before the pmd is compared to the value the pointer is currently pointing
+> > > to. Couldn't those dereferences be on invalid pointers?
+> > Uhhhhh.. That does look questionable, yes. Unless there is some tricky
+> > reason why a 64 bit pmd entry on a 32 bit arch either can't exist or
+> > has a stable upper 32 bits..
+> > 
+> > The pte does it with ptep_get_lockless(), we probably need the same
+> > for the other levels too instead of open coding a READ_ONCE?
+> > 
+> > Jason
 > 
-> diff --git a/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> new file mode 100644
-> index 000000000000..9fec9e227432
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/power/rockchip,power-controller.yaml
-> @@ -0,0 +1,291 @@
-
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-
-This is a conversion of an excising document.
-When distributing derived works, the source code of the work must be
-made available under the same license.
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/power/rockchip,power-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip Power Domains
-> +
-> +maintainers:
-> +  - Elaine Zhang <zhangqing@rock-chips.com>
-> +  - Heiko Stuebner <heiko@sntech.de>
-> +
-> +description: |
-> +  Rockchip processors include support for multiple power domains which can be
-> +  powered up/down by software based on different application scenarios to save power.
-> +
-> +  Power domains contained within power-controller node are generic power domain
-> +  providers documented in Documentation/devicetree/bindings/power/power-domain.yaml.
-> +
-> +  IP cores belonging to a power domain should contain a "power-domains"
-> +  property that is a phandle for the power domain node representing the domain.
-> +
-> +properties:
-> +  $nodename:
-> +    const: power-controller
-> +
-> +  compatible:
-> +    enum:
-> +      - rockchip,px30-power-controller
-> +      - rockchip,rk3036-power-controller
-> +      - rockchip,rk3066-power-controller
-> +      - rockchip,rk3128-power-controller
-> +      - rockchip,rk3188-power-controller
-> +      - rockchip,rk3228-power-controller
-> +      - rockchip,rk3288-power-controller
-> +      - rockchip,rk3328-power-controller
-> +      - rockchip,rk3366-power-controller
-> +      - rockchip,rk3368-power-controller
-> +      - rockchip,rk3399-power-controller
-> +
-> +  "#power-domain-cells":
-> +    const: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  clocks: true
-> +
-> +  assigned-clocks:
-> +    minItems: 1
-> +
-> +  assigned-clock-parents:
-> +    minItems: 1
-> +
-> +patternProperties:
-> +  "^power-domain@[0-9a-f]+$":
-> +    type: object
-> +    description: |
-> +      Represents the power domains within the power controller node as documented
-> +      in Documentation/devicetree/bindings/power/power-domain.yaml.
-> +
-> +    properties:
-> +
-> +      "#power-domain-cells":
-> +        description:
-> +          Must be 0 for nodes representing a single PM domain and 1 for nodes
-> +          providing multiple PM domains.
-> +
-> +      "#address-cells":
-> +        const: 1
-> +
-> +      "#size-cells":
-> +        const: 0
-> +
-> +      reg:
-> +        maxItems: 1
-> +        description: |
-> +          Power domain index. Valid values are defined in
-> +          "include/dt-bindings/power/px30-power.h"
-> +          "include/dt-bindings/power/rk3036-power.h"
-> +          "include/dt-bindings/power/rk3066-power.h"
-> +          "include/dt-bindings/power/rk3128-power.h"
-> +          "include/dt-bindings/power/rk3188-power.h"
-> +          "include/dt-bindings/power/rk3228-power.h"
-> +          "include/dt-bindings/power/rk3288-power.h"
-> +          "include/dt-bindings/power/rk3328-power.h"
-> +          "include/dt-bindings/power/rk3366-power.h"
-> +          "include/dt-bindings/power/rk3368-power.h"
-> +          "include/dt-bindings/power/rk3399-power.h"
-> +
-> +      clocks:
-> +        description: |
-> +          A number of phandles to clocks that need to be enabled while power domain
-> +          switches state.
-> +
-> +      pm_qos:
-> +        description: |
-> +          A number of phandles to qos blocks which need to be saved and restored
-> +          while power domain switches state.
-> +
-> +    patternProperties:
-> +      "^power-domain@[0-9a-f]+$":
-> +        type: object
-> +        description: |
-> +          Represents a power domain child within a power domain parent node.
-> +
-> +        properties:
-> +
-> +          "#power-domain-cells":
-> +            description:
-> +              Must be 0 for nodes representing a single PM domain and 1 for nodes
-> +              providing multiple PM domains.
-> +
-> +          "#address-cells":
-> +            const: 1
-> +
-> +          "#size-cells":
-> +            const: 0
-> +
-> +          reg:
-> +            maxItems: 1
-> +
-> +          clocks:
-> +            description: |
-> +              A number of phandles to clocks that need to be enabled while power domain
-> +              switches state.
-> +
-> +          pm_qos:
-> +            description: |
-> +              A number of phandles to qos blocks which need to be saved and restored
-> +              while power domain switches state.
-> +
-> +        patternProperties:
-> +          "^power-domain@[0-9a-f]+$":
-> +            type: object
-> +            description: |
-> +              Represents a power domain child within a power domain parent node.
-> +
-> +            properties:
-> +
-> +              "#power-domain-cells":
-> +                description:
-> +                  Must be 0 for nodes representing a single PM domain and 1 for nodes
-> +                  providing multiple PM domains.
-> +
-> +              "#address-cells":
-> +                const: 1
-> +
-> +              "#size-cells":
-> +                const: 0
-> +
-> +              reg:
-> +                maxItems: 1
-> +
-> +              clocks:
-> +                description: |
-> +                  A number of phandles to clocks that need to be enabled while power domain
-> +                  switches state.
-> +
-> +              pm_qos:
-> +                description: |
-> +                  A number of phandles to qos blocks which need to be saved and restored
-> +                  while power domain switches state.
-> +
-> +            required:
-> +              - reg
-> +
-> +            additionalProperties: false
-> +
-> +        required:
-> +          - reg
-> +
-> +        additionalProperties: false
-> +
-> +    required:
-> +      - reg
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - "#power-domain-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/rk3399-cru.h>
-> +    #include <dt-bindings/power/rk3399-power.h>
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        qos_hdcp: qos@ffa90000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffa90000 0x0 0x20>;
-> +        };
-> +
-> +        qos_iep: qos@ffa98000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffa98000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_r: qos@ffab0000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffab0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_rga_w: qos@ffab0080 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffab0080 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m0: qos@ffab8000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffab8000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_r: qos@ffac0000 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffac0000 0x0 0x20>;
-> +        };
-> +
-> +        qos_video_m1_w: qos@ffac0080 {
-> +            compatible = "rockchip,rk3399-qos", "syscon";
-> +            reg = <0x0 0xffac0080 0x0 0x20>;
-> +        };
-> +
-> +        power-management@ff310000 {
-> +            compatible = "rockchip,rk3399-pmu", "syscon", "simple-mfd";
-> +            reg = <0x0 0xff310000 0x0 0x1000>;
-> +
-> +            power-controller {
-> +                compatible = "rockchip,rk3399-power-controller";
-> +                #power-domain-cells = <1>;
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +
-> +                /* These power domains are grouped by VD_CENTER */
-> +                 power-domain@RK3399_PD_IEP {
-> +                    reg = <RK3399_PD_IEP>;
-> +                    clocks = <&cru ACLK_IEP>,
-> +                             <&cru HCLK_IEP>;
-> +                    pm_qos = <&qos_iep>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                 power-domain@RK3399_PD_RGA {
-> +                    reg = <RK3399_PD_RGA>;
-> +                    clocks = <&cru ACLK_RGA>,
-> +                             <&cru HCLK_RGA>;
-> +                    pm_qos = <&qos_rga_r>,
-> +                             <&qos_rga_w>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                 power-domain@RK3399_PD_VCODEC {
-> +                    reg = <RK3399_PD_VCODEC>;
-> +                    clocks = <&cru ACLK_VCODEC>,
-> +                             <&cru HCLK_VCODEC>;
-> +                    pm_qos = <&qos_video_m0>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                 power-domain@RK3399_PD_VDU {
-> +                    reg = <RK3399_PD_VDU>;
-> +                    clocks = <&cru ACLK_VDU>,
-> +                             <&cru HCLK_VDU>;
-> +                    pm_qos = <&qos_video_m1_r>,
-> +                             <&qos_video_m1_w>;
-> +                    #power-domain-cells = <0>;
-> +                };
-> +                 power-domain@RK3399_PD_VIO {
-> +                    reg = <RK3399_PD_VIO>;
-> +                    #power-domain-cells = <1>;
-> +                    #address-cells = <1>;
-> +                    #size-cells = <0>;
-> +
-> +                     power-domain@RK3399_PD_HDCP {
-> +                        reg = <RK3399_PD_HDCP>;
-> +                        clocks = <&cru ACLK_HDCP>,
-> +                                 <&cru HCLK_HDCP>,
-> +                                 <&cru PCLK_HDCP>;
-> +                        pm_qos = <&qos_hdcp>;
-> +                        #power-domain-cells = <0>;
-> +                    };
-> +                };
-> +            };
-> +        };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt b/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
-> deleted file mode 100644
-> index 8304eceb62e4..000000000000
-> --- a/Documentation/devicetree/bindings/soc/rockchip/power_domain.txt
-> +++ /dev/null
-> @@ -1,136 +0,0 @@
-> -* Rockchip Power Domains
-> -
-> -Rockchip processors include support for multiple power domains which can be
-> -powered up/down by software based on different application scenes to save power.
-> -
-> -Required properties for power domain controller:
-> -- compatible: Should be one of the following.
-> -	"rockchip,px30-power-controller" - for PX30 SoCs.
-> -	"rockchip,rk3036-power-controller" - for RK3036 SoCs.
-> -	"rockchip,rk3066-power-controller" - for RK3066 SoCs.
-> -	"rockchip,rk3128-power-controller" - for RK3128 SoCs.
-> -	"rockchip,rk3188-power-controller" - for RK3188 SoCs.
-> -	"rockchip,rk3228-power-controller" - for RK3228 SoCs.
-> -	"rockchip,rk3288-power-controller" - for RK3288 SoCs.
-> -	"rockchip,rk3328-power-controller" - for RK3328 SoCs.
-> -	"rockchip,rk3366-power-controller" - for RK3366 SoCs.
-> -	"rockchip,rk3368-power-controller" - for RK3368 SoCs.
-> -	"rockchip,rk3399-power-controller" - for RK3399 SoCs.
-> -- #power-domain-cells: Number of cells in a power-domain specifier.
-> -	Should be 1 for multiple PM domains.
-> -- #address-cells: Should be 1.
-> -- #size-cells: Should be 0.
-> -
-> -Required properties for power domain sub nodes:
-> -- reg: index of the power domain, should use macros in:
-> -	"include/dt-bindings/power/px30-power.h" - for PX30 type power domain.
-> -	"include/dt-bindings/power/rk3036-power.h" - for RK3036 type power domain.
-> -	"include/dt-bindings/power/rk3066-power.h" - for RK3066 type power domain.
-> -	"include/dt-bindings/power/rk3128-power.h" - for RK3128 type power domain.
-> -	"include/dt-bindings/power/rk3188-power.h" - for RK3188 type power domain.
-> -	"include/dt-bindings/power/rk3228-power.h" - for RK3228 type power domain.
-> -	"include/dt-bindings/power/rk3288-power.h" - for RK3288 type power domain.
-> -	"include/dt-bindings/power/rk3328-power.h" - for RK3328 type power domain.
-> -	"include/dt-bindings/power/rk3366-power.h" - for RK3366 type power domain.
-> -	"include/dt-bindings/power/rk3368-power.h" - for RK3368 type power domain.
-> -	"include/dt-bindings/power/rk3399-power.h" - for RK3399 type power domain.
-> -- clocks (optional): phandles to clocks which need to be enabled while power domain
-> -	switches state.
-> -- pm_qos (optional): phandles to qos blocks which need to be saved and restored
-> -	while power domain switches state.
-> -
-> -Qos Example:
-> -
-> -	qos_gpu: qos_gpu@ffaf0000 {
-> -		compatible ="syscon";
-> -		reg = <0x0 0xffaf0000 0x0 0x20>;
-> -	};
-> -
-> -Example:
-> -
-> -	power: power-controller {
-> -		compatible = "rockchip,rk3288-power-controller";
-> -		#power-domain-cells = <1>;
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -
-> -		pd_gpu {
-> -			reg = <RK3288_PD_GPU>;
-> -			clocks = <&cru ACLK_GPU>;
-> -			pm_qos = <&qos_gpu>;
-> -		};
-> -	};
-> -
-> -	 power: power-controller {
-> -                compatible = "rockchip,rk3368-power-controller";
-> -                #power-domain-cells = <1>;
-> -                #address-cells = <1>;
-> -                #size-cells = <0>;
-> -
-> -                pd_gpu_1 {
-> -                        reg = <RK3368_PD_GPU_1>;
-> -                        clocks = <&cru ACLK_GPU_CFG>;
-> -                };
-> -        };
-> -
-> -Example 2:
-> -		power: power-controller {
-> -			compatible = "rockchip,rk3399-power-controller";
-> -			#power-domain-cells = <1>;
-> -			#address-cells = <1>;
-> -			#size-cells = <0>;
-> -
-> -			pd_vio {
-> -				#address-cells = <1>;
-> -				#size-cells = <0>;
-> -				reg = <RK3399_PD_VIO>;
-> -
-> -				pd_vo {
-> -					#address-cells = <1>;
-> -					#size-cells = <0>;
-> -					reg = <RK3399_PD_VO>;
-> -
-> -					pd_vopb {
-> -						reg = <RK3399_PD_VOPB>;
-> -					};
-> -
-> -					pd_vopl {
-> -						reg = <RK3399_PD_VOPL>;
-> -					};
-> -				};
-> -			};
-> -		};
-> -
-> -Node of a device using power domains must have a power-domains property,
-> -containing a phandle to the power device node and an index specifying which
-> -power domain to use.
-> -The index should use macros in:
-> -	"include/dt-bindings/power/px30-power.h" - for px30 type power domain.
-> -	"include/dt-bindings/power/rk3036-power.h" - for rk3036 type power domain.
-> -	"include/dt-bindings/power/rk3128-power.h" - for rk3128 type power domain.
-> -	"include/dt-bindings/power/rk3128-power.h" - for rk3228 type power domain.
-> -	"include/dt-bindings/power/rk3288-power.h" - for rk3288 type power domain.
-> -	"include/dt-bindings/power/rk3328-power.h" - for rk3328 type power domain.
-> -	"include/dt-bindings/power/rk3366-power.h" - for rk3366 type power domain.
-> -	"include/dt-bindings/power/rk3368-power.h" - for rk3368 type power domain.
-> -	"include/dt-bindings/power/rk3399-power.h" - for rk3399 type power domain.
-> -
-> -Example of the node using power domain:
-> -
-> -	node {
-> -		/* ... */
-> -		power-domains = <&power RK3288_PD_GPU>;
-> -		/* ... */
-> -	};
-> -
-> -	node {
-> -                /* ... */
-> -                power-domains = <&power RK3368_PD_GPU_1>;
-> -                /* ... */
-> -        };
-> -
-> -	node {
-> -		/* ... */
-> -		power-domains = <&power RK3399_PD_VOPB>;
-> -		/* ... */
-> -	};
+> TBH, ptep_get_lockless() also looks a bit fishy. it says
+> "it will not switch to a completely different present page without a TLB
+> flush in between".
 > 
+> What if the following happens:
+> 
+> processor 1: Reads lower dword of PTE.
+> processor 2: Zaps PTE. Gets stuck waiting to do TLB flush
+> processor 1: Reads upper dword of PTE, which is now zero.
+> processor 3: Hits a TLB miss, reads an unpopulated PTE and faults in a new
+> PTE value which happens to be the same as the original one before the zap.
+> processor 1: Reads the newly faulted in lower dword, compares to the old
+> one, gives an OK and returns a bogus PTE.
 
+So you are saying that while the zap will wait for the TLB flush to
+globally finish once it gets started any other processor can still
+write to the pte?
+
+I can't think of any serialization that would cause fault to wait for
+the zap/TLB flush, especially if the zap comes from the address_space
+and doesn't hold the mmap lock.
+
+Seems worth bringing up in a bigger thread, maybe someone else knows?
+
+Jason
