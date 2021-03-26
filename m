@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9788B34AEC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F91B34AEC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhCZSsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:48:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41402 "EHLO mail.kernel.org"
+        id S230442AbhCZSsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:48:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230026AbhCZSs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:48:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2AD6461A21;
+        id S230027AbhCZSs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C258961A2D;
         Fri, 26 Mar 2021 18:48:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616784506;
-        bh=aZxBOKUsHqL3lGH0KC2toVv+7HygHF69Rr19gkemfDI=;
+        bh=YbZcSK3OgDNSMdwfFGN225NtIayrvR9UzGj6uxuQQVc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=YDGJCW3zVi/YKFDxxZzA2kDtZIaNUR95exWdx/aQwsvDSkkR0QmqzL0UQr/G9SihI
-         8JaAsId9mF8r3pKDxLKq39GdCS7hwPGQMYlPruFg+8rTb5uhNbsN1HAUISg5C6Jsuy
-         OrufHWP9cAMk/JSvemloKK7dm3pwCxiYz+O85gZJhSTA7TJ2t0TDsBOlVApaE1OJCA
-         Qlh0AfdFRXOXLNW3+iF6NlgDpowHY4uAvFgAO0Rg1X9AlgUHn4b6mfYquu93Ht/JZk
-         TZoQ1AP95+ExMJxxUobQkMCD+nzUin2XdOXW2PZKH3I+v+uSMmXiIrxvjGwSuodZzz
-         sRL59OJQYi0zA==
+        b=UfR6EJhjYk3sPUsGs0U13IBoRYKcZ9XZUNnxBv3BfxzZxUEJAEoSau5xZeunbbjSI
+         R8h6rVpskKpjdUtv7XryIfFDnYaxxq6fWuzPi1D3ExDpDu5kYeG7TF/C5NkaxqYb8N
+         Fq0FU9s7KaSAhnsV70pwc4qKKYOyC/ZbVO4MfL8TfTbDeCb5/cqCoE8lnAmIf+xUEP
+         rXCnuOq7PvmkHMHuuerrp95eqeExRjzljoh1Fq7Ew9QoSnOnE7uX9hJmr/7I0GuJJb
+         eX2URll4TbMnzh6sKqiBlcHgNbYNUu3fiQr+FFa2XapI8TGpX9eMPy5u3Qh4S0r1iL
+         cGo1vF2/WdKrA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 10C0060952;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A800E6096E;
         Fri, 26 Mar 2021 18:48:26 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 5.12-rc5
+Subject: Re: [GIT PULL] ACPI fixes for v5.12-rc5
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9twkAXygrutCExSdhRh69Vvnr0X7HagQw8WQGZgC_UdTGA@mail.gmail.com>
-References: <CAPM=9twkAXygrutCExSdhRh69Vvnr0X7HagQw8WQGZgC_UdTGA@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9twkAXygrutCExSdhRh69Vvnr0X7HagQw8WQGZgC_UdTGA@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-03-26
-X-PR-Tracked-Commit-Id: 09d78dde88ef95a27b54a6e450ee700ccabdf39d
+In-Reply-To: <CAJZ5v0inc+R90Ra2Bz0QUAUS9Ev1awRkfdDvUPBXjF4FNnJ5og@mail.gmail.com>
+References: <CAJZ5v0inc+R90Ra2Bz0QUAUS9Ev1awRkfdDvUPBXjF4FNnJ5og@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0inc+R90Ra2Bz0QUAUS9Ev1awRkfdDvUPBXjF4FNnJ5og@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.12-rc5
+X-PR-Tracked-Commit-Id: e1db18b59729e24f001459b98955019344d5b12b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f944d061f847b0ccf0ebc095b5a6ba9ea9caec4e
-Message-Id: <161678450606.8437.2284982485967975024.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 7931c531fc527da650e1761d35216ff8edf28a94
+Message-Id: <161678450668.8437.16422566882291307071.pr-tracker-bot@kernel.org>
 Date:   Fri, 26 Mar 2021 18:48:26 +0000
-To:     Dave Airlie <airlied@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 26 Mar 2021 13:34:03 +1000:
+The pull request you sent on Fri, 26 Mar 2021 17:31:43 +0100:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-03-26
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-5.12-rc5
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f944d061f847b0ccf0ebc095b5a6ba9ea9caec4e
+https://git.kernel.org/torvalds/c/7931c531fc527da650e1761d35216ff8edf28a94
 
 Thank you!
 
