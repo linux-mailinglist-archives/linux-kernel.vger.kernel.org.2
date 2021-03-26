@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12CA34AD33
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB2F34AD34
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhCZROj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:14:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34372 "EHLO
+        id S230289AbhCZROk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:14:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38996 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230243AbhCZROL (ORCPT
+        by vger.kernel.org with ESMTP id S230298AbhCZROU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:14:11 -0400
+        Fri, 26 Mar 2021 13:14:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616778850;
+        s=mimecast20190719; t=1616778859;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JUgswkTFP3CXKJJVd2lPXOooodWvB5w2ER2TbZnPTCQ=;
-        b=dlZbgFkJeBTxnqrqPcJTD0LmDCfQOLDel6edXXNY5NvM2kSsbBHV/jjOtUrKILQHxWGmG7
-        voJn7yqh1LtychmG/JLdZBMsAiqdkxbzszSbRrp7tHZkES3Hgmkqqwn6QxHTRBQEJBsiYh
-        kHZm5AhkqTD3MtuwFNzfVBellAmL4ks=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-cMSf6nUDPciEvrGQAPpIbg-1; Fri, 26 Mar 2021 13:14:08 -0400
-X-MC-Unique: cMSf6nUDPciEvrGQAPpIbg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7BCB1084D9D;
-        Fri, 26 Mar 2021 17:14:06 +0000 (UTC)
-Received: from [10.10.110.35] (unknown [10.10.110.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF46C19727;
-        Fri, 26 Mar 2021 17:14:03 +0000 (UTC)
-Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
+        bh=QGdNAKTyvuE9HoUHdxIb+GgZN7iru3jfjd1dnZgCMbw=;
+        b=ZkEaxSEc6Y1k55ndRFHoAND9oZ4lmKRV13mkW6IIjmG9TrkU6nVX+m9+ydF+YCEqCqG1YO
+        eoRqre0I1vjfXliOXv/g+45j+tkTT3W/RTNaX77f8atK13fE+M6X0SCBIiKIXayMcjmlzJ
+        53A/PlyTFc0NOWw1ae2U3g3eUKO74yY=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-d4reOwnAMN-xfgIMOcYIiw-1; Fri, 26 Mar 2021 13:14:18 -0400
+X-MC-Unique: d4reOwnAMN-xfgIMOcYIiw-1
+Received: by mail-ej1-f71.google.com with SMTP id r26so4368570eja.22
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:14:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QGdNAKTyvuE9HoUHdxIb+GgZN7iru3jfjd1dnZgCMbw=;
+        b=ErcISSksvp8xTxh5g93KjJw76P9LrExroblKAeU4x9rhtmtr9QSlz/9GqfLSZQ72gm
+         vGhFgCrv+3CZMJDdg32r2ffPdkGL4uitwGn+3e5tualn7KwbUpRIS9MABbXLCZxgJLKm
+         Gh4t8SM03+eEQrhD4MgOVedNAAaJh3QAsfZ1IjBQiRv/WxeT3+Xw2JF51siSFZOWQ8lv
+         prQ5ElSTHd9HKdFbBqu4y5YsYT5c9zlOzXXjlrvGOpcffqeedrPLDMBJbdmZ6NYGsJXk
+         I7LXbKZgdN21D+lZPrwUKcl9HT0rZHuKpH+k6AsQOFG4pR6Xsw9LUL3ejjSp0ss+IS1o
+         TXJw==
+X-Gm-Message-State: AOAM533I3An+BHwK0YHsmIE5z/PN5v/yfbr/1Y+ezzh5vStZfC0tCWof
+        jnxX6+aB5U3zTWFwv1x803+UewbBO1lYhgWEZZKV1lR9JLoAm3NxByeVmd7DQFMo7WdnDgvkgYZ
+        55vOY7p1pStZZyNBTXPS1O1zrkOE/zm3lyxO1ib39O3L4vSxyP+Ivdu0knQwkVYNHg1HlLy5sgy
+        gW
+X-Received: by 2002:a17:906:b80c:: with SMTP id dv12mr16714953ejb.110.1616778856400;
+        Fri, 26 Mar 2021 10:14:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaTiHmaXAM+TKtmD1MrN4M17ohbs85DP6TOlir6bKZN0oNLD+VTMlMenxI4R9ObpvaPki3YA==
+X-Received: by 2002:a17:906:b80c:: with SMTP id dv12mr16714918ejb.110.1616778856155;
+        Fri, 26 Mar 2021 10:14:16 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id a26sm4716004edm.15.2021.03.26.10.14.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 10:14:15 -0700 (PDT)
+Subject: Re: [PATCH 1/1] KVM: x86: remove unused declaration of
+ kvm_write_tsc()
+To:     Dongli Zhang <dongli.zhang@oracle.com>, kvm@vger.kernel.org,
+        x86@kernel.org
+Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
         jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210311132847.224406-1-lszubowi@redhat.com>
- <87sg4t7vqy.fsf@vitty.brq.redhat.com>
- <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
- <87mtuqchdu.fsf@vitty.brq.redhat.com> <87h7kyccpu.fsf@vitty.brq.redhat.com>
- <87eeg2cbm8.fsf@vitty.brq.redhat.com>
-From:   Lenny Szubowicz <lszubowi@redhat.com>
-Message-ID: <6bde62aa-2c57-13bb-0380-93462a51f9cf@redhat.com>
-Date:   Fri, 26 Mar 2021 13:14:03 -0400
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        linux-kernel@vger.kernel.org
+References: <20210326070334.12310-1-dongli.zhang@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <85eeb727-de5f-a42b-0e6a-dd23462a63da@redhat.com>
+Date:   Fri, 26 Mar 2021 18:14:13 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <87eeg2cbm8.fsf@vitty.brq.redhat.com>
+In-Reply-To: <20210326070334.12310-1-dongli.zhang@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 9:01 AM, Vitaly Kuznetsov wrote:
-> Vitaly Kuznetsov <vkuznets@redhat.com> writes:
+On 26/03/21 08:03, Dongli Zhang wrote:
+> The kvm_write_tsc() was not used since commit 0c899c25d754 ("KVM: x86: do
+> not attempt TSC synchronization on guest writes"). Remove its unused
+> declaration.
 > 
-> ..
+> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+>   arch/x86/kvm/x86.h | 1 -
+>   1 file changed, 1 deletion(-)
 > 
->> (this is with your v2 included). There's nothing about CPU0 for
->> e.g. async PF + timestamps are really interesting. Seems we have issues
->> to fix) I'm playing with it right now.
-> 
-> What if we do the following (instead of your patch):
-> 
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index 78bb0fae3982..c32392d6329d 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -26,6 +26,7 @@
->   #include <linux/kprobes.h>
->   #include <linux/nmi.h>
->   #include <linux/swait.h>
-> +#include <linux/syscore_ops.h>
->   #include <asm/timer.h>
->   #include <asm/cpu.h>
->   #include <asm/traps.h>
-> @@ -598,17 +599,21 @@ static void kvm_guest_cpu_offline(void)
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 39eb04887141..9035e34aa156 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -250,7 +250,6 @@ static inline bool kvm_vcpu_latch_init(struct kvm_vcpu *vcpu)
+>   void kvm_write_wall_clock(struct kvm *kvm, gpa_t wall_clock, int sec_hi_ofs);
+>   void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip);
 >   
->   static int kvm_cpu_online(unsigned int cpu)
->   {
-> -	local_irq_disable();
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
->   	kvm_guest_cpu_init();
-> -	local_irq_enable();
-> +	local_irq_restore(flags);
->   	return 0;
->   }
+> -void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr);
+>   u64 get_kvmclock_ns(struct kvm *kvm);
 >   
->   static int kvm_cpu_down_prepare(unsigned int cpu)
->   {
-> -	local_irq_disable();
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
->   	kvm_guest_cpu_offline();
-> -	local_irq_enable();
-> +	local_irq_restore(flags);
->   	return 0;
->   }
->   #endif
-> @@ -639,6 +644,23 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
->   	native_flush_tlb_others(flushmask, info);
->   }
->   
-> +static int kvm_suspend(void)
-> +{
-> +	kvm_guest_cpu_offline();
-> +
-> +	return 0;
-> +}
-> +
-> +static void kvm_resume(void)
-> +{
-> +	kvm_cpu_online(raw_smp_processor_id());
-> +}
-> +
-> +static struct syscore_ops kvm_syscore_ops = {
-> +	.suspend	= kvm_suspend,
-> +	.resume		= kvm_resume,
-> +};
-> +
->   static void __init kvm_guest_init(void)
->   {
->   	int i;
-> @@ -681,6 +703,8 @@ static void __init kvm_guest_init(void)
->   	kvm_guest_cpu_init();
->   #endif
->   
-> +	register_syscore_ops(&kvm_syscore_ops);
-> +
->   	/*
->   	 * Hard lockup detection is enabled by default. Disable it, as guests
->   	 * can get false positives too easily, for example if the host is
+>   int kvm_read_guest_virt(struct kvm_vcpu *vcpu,
 > 
 
-Yes, I do like using register_syscore_ops for this. I will base my V3 on this. -Lenny.
+Queued, thanks (with slight editing of the commit message as Vitaly 
+mentioned).
+
+Paolo
 
