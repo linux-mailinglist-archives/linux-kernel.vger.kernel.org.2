@@ -2,76 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15E9349F10
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1E9349F12
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhCZBuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:50:00 -0400
-Received: from mail-io1-f41.google.com ([209.85.166.41]:40643 "EHLO
-        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230311AbhCZBt4 (ORCPT
+        id S230249AbhCZBvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:51:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51452 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230272AbhCZBua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:49:56 -0400
-Received: by mail-io1-f41.google.com with SMTP id n21so3888346ioa.7;
-        Thu, 25 Mar 2021 18:49:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N9Te2GQTu4UomMNR5C1yrVqQ8Ms/2vbp9BYJ7j0G8SY=;
-        b=Xk2/sUavNcmDqB0E6AhW/FpBZniUmqgfMwBP/tXDVJRImh9eC3YlAvZZBR/XwMi7Vr
-         q7xhqlfKyWVxYvq6UXXIxA6Xfk3NVbwV+oqnhFKdWnFrfBxE+o/v/Jsav1SUG9sswL5k
-         7GTugXdPuztsD5Tuh7ZNhsAbYNM/vKgQqumk/v8u/FnWIu+YYShdhMXzsjYO7QZG4SzU
-         O/2DCznYwIYmS0Mw0hq/fyezP8T/dh+TWjd5Z42nb5SQRjnJKks5VJQstG/v5miF6ml0
-         nD0e3j0kxY2PyyVPBWJhW+1wG2/pdunvBQzzeOASJ9UwGwOPIBtBIAq+0RD8sg6kXrA9
-         2CLA==
-X-Gm-Message-State: AOAM5304DO5lZaKdAseKojS/jpIEtmuqPj8dAh4rVGKctr+XthDdepMF
-        GFEMYwSnbpgvIN0jiKxIfA==
-X-Google-Smtp-Source: ABdhPJzoTwDGhGHQRCjyGQmKg+KE2sK/7QlyDCM2mrD6AWIkiUxBHRzesApHsW7lgBo9JGVADjnmEg==
-X-Received: by 2002:a6b:ea04:: with SMTP id m4mr8486022ioc.160.1616723396206;
-        Thu, 25 Mar 2021 18:49:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id g8sm3140676ile.44.2021.03.25.18.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 18:49:55 -0700 (PDT)
-Received: (nullmailer pid 2160116 invoked by uid 1000);
-        Fri, 26 Mar 2021 01:49:47 -0000
-Date:   Thu, 25 Mar 2021 19:49:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     linux-gpio@vger.kernel.org, joel@jms.id.au,
-        openbmc@lists.ozlabs.org, linus.walleij@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        avifishman70@gmail.com, lee.jones@linaro.org,
-        ryan_chen@aspeedtech.com, devicetree@vger.kernel.org,
-        tali.perry1@gmail.com, robh+dt@kernel.org, venture@google.com,
-        benjaminfair@google.com, linux-aspeed@lists.ozlabs.org,
-        minyard@acm.org, openipmi-developer@lists.sourceforge.net,
-        chiawei_wang@aspeedtech.com, tmaimon77@gmail.com
-Subject: Re: [PATCH v2 18/21] dt-bindings: ipmi: Add optional SerIRQ property
- to ASPEED KCS devices
-Message-ID: <20210326014947.GA2160061@robh.at.kernel.org>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-18-andrew@aj.id.au>
+        Thu, 25 Mar 2021 21:50:30 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616723428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qk7ofeEc58aagvDU4M/2eGpuGBknhHhtWyOKLfXRzAU=;
+        b=UCI8Ff9ugAC7C5wR27Hq3NBnRG2C8pv+SQFgcxPVXYfNqG1wvbRqv3G4Z0BecuDqVIuCPb
+        vYMHwSi1amkIlDiNxDK3HlJ3GOdMSI/HqD0x61sUOH/tbHc4mBZKW8gIeJe6vcN42AtgZr
+        E5yF+oTY6b8yX4c3x/GKWs7Hv+d6ifgPIkwWtiX4JEA3WkJTl0RXdAf1Y10toIj9IsM5nC
+        D8gOS/oHL+UxPBZCtnEXYuyVUs3Ksxry7eR+YLHXhLckw58pvqCrXiHbQ9f2tug5wGdzMQ
+        Su5xWHvaKoZsdjDPSf3otIMIPW2yB5c+V8q1Ys6CTMkXduezZvMRiY3XoOvv7g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616723428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qk7ofeEc58aagvDU4M/2eGpuGBknhHhtWyOKLfXRzAU=;
+        b=xxTEfloyJ93iplom+6w50LbegSao7uXjQGkLRHsscZKBpyPNdsFHytTYc/sdL73xFQXAnj
+        tOAs9K722wZSEeBQ==
+To:     Len Brown <lenb@kernel.org>
+Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown\, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu\, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to control state component support
+In-Reply-To: <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
+References: <20210221185637.19281-1-chang.seok.bae@intel.com> <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de> <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
+Date:   Fri, 26 Mar 2021 02:50:28 +0100
+Message-ID: <87v99evg2j.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319062752.145730-18-andrew@aj.id.au>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 16:57:49 +1030, Andrew Jeffery wrote:
-> Allocating IO and IRQ resources to LPC devices is in-theory an operation
-> for the host, however ASPEED don't appear to expose this capability
-> outside the BMC (e.g. SuperIO). Instead, we are left with BMC-internal
-> registers for managing these resources, so introduce a devicetree
-> property for KCS devices to describe SerIRQ properties.
-> 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->  .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml      | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
+Len,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Thu, Mar 25 2021 at 18:59, Len Brown wrote:
+> On Sat, Mar 20, 2021 at 4:57 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+>> We won't enable features which are unknown ever. Keep that presilicon
+>> test gunk where it belongs: In the Intel poison cabinet along with the
+>> rest of the code which nobody ever want's to see.
+>
+> I agree, it would be irresponsible to enable unvalidated features by default,
+> and pre-silicon "test gunk" should be kept out of the upstream kernel.
+
+Well, that's not my experience from the past and sorry for being
+paranoid about that.
+
+> This patch series is intended solely to enable fully validated
+> hardware features, with product quality kernel support.
+
+The fact, that the function is broken as provided, definitely supports
+that product quality argument.
+
+> The reason that the actual AMX feature isn't mentioned until the 16th
+> patch in this series is because all of the patches before it are
+> generic state save/restore patches, that are not actually specific to
+> AMX.
+
+That's related to 22/22 in which way?
+
+> We call AMX a "simple state feature" -- it actually requires NO KERNEL
+> ENABLING above the generic state save/restore to fully support
+> userspace AMX applications.
+
+Aside of the unanswered questions vs. the impact of letting it in
+initialized state along with the unsolved problem of sigaltstacks...
+
+> While not all ISA extensions can be simple state features, we do
+> expect future features to share this trait, and so we want to be sure
+> that it is simple to update the kernel to turn those features on (and
+> when necessary, off).
+
+History tells me a different story.
+
+> There will be a future CPUID attribute that will help us identify
+> future simple-state features.
+> For AMX, of course, we simply know.
+
+You believe so, but do you know for sure?
+
+I neither know for sure nor do I believe any of this at all.
+
+Please provide the architectural document which guarantees that and does
+so in a way that it can be evaluated by the kernel. Have not seen that,
+so it does not exist at all.
+
+  Future CPUID attributes are as useful as the tweet of today.
+
+> So after the generic state management support, the kernel enabling of AMX
+> is not actually required to run applications.  Just like when a new instruction
+> is added that re-uses existing state -- the application or library can check
+> CPUID and just use it.  It is a formality (perhaps an obsolete one), that
+> we add every feature flag to /proc/cpuid for the "benefit" of
+> userspace.
+
+It's not a formality when the instruction requires kernel support and
+from the history of the various incarnations of this command line option
+it's just a given that this is going belly up.
+
+Even the current incarnation is broken just from looking at it, so what
+the heck are you talking about?
+
+> The reason we propose this cmdline switch is
+> 1. Ability of customers to disable a feature right away if an issue is found.
+> Unlike the CPUid cmdline that works on flags, this is the ability to turn
+> off a feature based on its state number.  Ie.  There could be 20 features
+> that use the same state, and you can turn them all off at once this
+> way.
+
+I'm fine with that, but then the disabling has to handle all the things
+related to it and not just be on a 'pray that it works' base.
+
+> 2. Ability of customers to enable a feature that is disabled by default
+> in their kernel.  Yes, this will taint their kernel (thanks Andy),
+> but we have customers that want to run the new feature on day 0
+> before they have got a distro update to change the default, and this
+> gives them a way to do that.
+
+You might know my opinion from previous discussions about this topic,
+but let me repeat it for completeness sake:
+
+   This is a generic kernel exposed to a gazillion of users and a
+   minority of them want to have the ability to enable insane
+   stuff on the command line because:
+
+     1) Intel is not able to provide them a test kernel package
+
+     2) Their favourite $DISTROVENDOR is not able to provide them a
+        test kernel package
+
+     3) Intel did not manage to get the support for this upstream
+        on time so the $DISTROVENDOR was able to backport it into
+        their Frankenkernel
+
+   So you seriously want us to have a command line option to enable
+   whatever the feature of today is because of #1-#3?
+
+   Sure, from a Intel managerial POV that's all cool. Not so much when
+   you put your community hat on and think about the consequences.
+
+   Aside of that none of the above #1 - #3 is a technical argument.  See
+   Documentation/process/* for further enlightment.
+
+Of course none of your arguments above have shown up in the changelog of
+this command line patch. And none of the potential side effects or down
+sides have been mentioned.
+
+Don't blame Chang Bae for that. That patch carries a:
+
+      Reviewed-by: Len Brown <len.brown@intel.com>
+
+I really have to ask whether you actually looked at the code and the
+changelog or just tagged it because some internal procedure requires it.
+
+Either way ....
+
+> Yeah, the cmdline syntax is not a user-friendly mnemonic, and I don't know
+> that making it so would be an improvement.
+> Like the CPUID cmdline, it is precise, it is future-proof, and it is
+> used only in special situations.
+
+The CPUID commandline option is yet another trainwreck which is neither
+precise nor future proof if you dare to take a deep technical look. It
+should have never been merged and it should be ripped out rather than
+proliferated. If you think otherwise then please provide a proper proof
+that this commandline option is correct under all circumstances before
+abusing it as an argument.
+
+Please try again when you have
+
+  - a reviewable and functional correct implementation
+
+  - including the ability to evalute that via architectural CPUID
+
+  - a changelog which provides an argument which is based on solely
+    technical criteria instead of wishful managerial thinking or being
+    just void of content like the current one.
+
+Sorry for looking at this solely from the technical side and thereby
+ignoring all the managerial powerpoint slide illusions.
+
+Now putting my managerial hat on:
+
+    Given the history of that command line option, I have no idea why
+    this has even be tried to piggy pack on AMX at all. It's an
+    orthogonal problem and absolutely not required to make AMX supported
+    in the first place.
+
+    Hrm, unless you expect that a lot of users will need to disable AMX
+    because ... But that would be a technical reason not to enable it
+    in the first place, which is not desired from a managerial/marketing
+    POV, right?
+
+Thanks,
+
+        tglx
