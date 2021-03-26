@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F8934AEF8
+	by mail.lfdr.de (Postfix) with ESMTP id 4FE5A34AEF9
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:09:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhCZTJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:09:26 -0400
+        id S230437AbhCZTJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:09:27 -0400
 Received: from mga03.intel.com ([134.134.136.65]:27820 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhCZTI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:08:59 -0400
-IronPort-SDR: BhG+CgofK4ha4/UMHCD85dkZco5OdCzeV+41vcrN0cmsG3iVBOB1Z+NCVIFcdZLa4N9plbAg/3
- DCoNK+NIkvkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="191234793"
+        id S230179AbhCZTJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 15:09:00 -0400
+IronPort-SDR: S+5dHjd6aST3d5G7SbudqnbK8lMZRVncVS5w1vERf8bNySZoDjyCRnO6U8mR6vn9yeeFEfru3C
+ W9y+IvG/fzSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="191234796"
 X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="191234793"
+   d="scan'208";a="191234796"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 12:08:59 -0700
-IronPort-SDR: GbZFQUFMqUGHcKA/EHQOPzgsWvPWn8Urrj95RTTnhuGMuooP2+qefU4ZqO4ZlL3k53SObNxr0W
- AA9lWLD4xTiA==
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 12:09:00 -0700
+IronPort-SDR: 5wTX3PIGKDXYsysz6xkZ/rEBlQ315jR3Q1qQCIC6MXAI+iGTidpr81fRD84wwY3elLj5qPDjph
+ lQY9IuE8cs+g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="392321096"
+   d="scan'208";a="392321102"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 26 Mar 2021 12:08:59 -0700
+  by orsmga002.jf.intel.com with ESMTP; 26 Mar 2021 12:09:00 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -32,9 +32,9 @@ Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
         namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
         yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V3 10/25] perf/x86: Hybrid PMU support for extra_regs
-Date:   Fri, 26 Mar 2021 12:01:57 -0700
-Message-Id: <1616785332-165261-11-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V3 11/25] perf/x86/intel: Factor out intel_pmu_check_num_counters
+Date:   Fri, 26 Mar 2021 12:01:58 -0700
+Message-Id: <1616785332-165261-12-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1616785332-165261-1-git-send-email-kan.liang@linux.intel.com>
 References: <1616785332-165261-1-git-send-email-kan.liang@linux.intel.com>
@@ -44,119 +44,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Different hybrid PMU may have different extra registers, e.g. Core PMU
-may have offcore registers, frontend register and ldlat register. Atom
-core may only have offcore registers and ldlat register. Each hybrid PMU
-should use its own extra_regs.
+Each Hybrid PMU has to check its own number of counters and mask fixed
+counters before registration.
 
-An Intel Hybrid system should always have extra registers.
-Unconditionally allocate shared_regs for Intel Hybrid system.
+The intel_pmu_check_num_counters will be reused later to check the
+number of the counters for each hybrid PMU.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/core.c       |  5 +++--
- arch/x86/events/intel/core.c | 15 +++++++++------
- arch/x86/events/perf_event.h |  1 +
- 3 files changed, 13 insertions(+), 8 deletions(-)
+ arch/x86/events/intel/core.c | 38 ++++++++++++++++++++++++--------------
+ 1 file changed, 24 insertions(+), 14 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index b866867..b79a506 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -153,15 +153,16 @@ u64 x86_perf_event_update(struct perf_event *event)
-  */
- static int x86_pmu_extra_regs(u64 config, struct perf_event *event)
- {
-+	struct extra_reg *extra_regs = hybrid(event->pmu, extra_regs);
- 	struct hw_perf_event_extra *reg;
- 	struct extra_reg *er;
- 
- 	reg = &event->hw.extra_reg;
- 
--	if (!x86_pmu.extra_regs)
-+	if (!extra_regs)
- 		return 0;
- 
--	for (er = x86_pmu.extra_regs; er->msr; er++) {
-+	for (er = extra_regs; er->msr; er++) {
- 		if (er->event != (config & er->config_mask))
- 			continue;
- 		if (event->attr.config1 & ~er->valid_mask)
 diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index d304ba3..b5b7694 100644
+index b5b7694..9394646 100644
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -2966,8 +2966,10 @@ intel_vlbr_constraints(struct perf_event *event)
- 	return NULL;
- }
+@@ -5070,6 +5070,26 @@ static const struct attribute_group *attr_update[] = {
  
--static int intel_alt_er(int idx, u64 config)
-+static int intel_alt_er(struct cpu_hw_events *cpuc,
-+			int idx, u64 config)
+ static struct attribute *empty_attrs;
+ 
++static void intel_pmu_check_num_counters(int *num_counters,
++					 int *num_counters_fixed,
++					 u64 *intel_ctrl, u64 fixed_mask)
++{
++	if (*num_counters > INTEL_PMC_MAX_GENERIC) {
++		WARN(1, KERN_ERR "hw perf events %d > max(%d), clipping!",
++		     *num_counters, INTEL_PMC_MAX_GENERIC);
++		*num_counters = INTEL_PMC_MAX_GENERIC;
++	}
++	*intel_ctrl = (1ULL << *num_counters) - 1;
++
++	if (*num_counters_fixed > INTEL_PMC_MAX_FIXED) {
++		WARN(1, KERN_ERR "hw perf events fixed %d > max(%d), clipping!",
++		     *num_counters_fixed, INTEL_PMC_MAX_FIXED);
++		*num_counters_fixed = INTEL_PMC_MAX_FIXED;
++	}
++
++	*intel_ctrl |= fixed_mask << INTEL_PMC_IDX_FIXED;
++}
++
+ __init int intel_pmu_init(void)
  {
-+	struct extra_reg *extra_regs = hybrid(cpuc->pmu, extra_regs);
- 	int alt_idx = idx;
+ 	struct attribute **extra_skl_attr = &empty_attrs;
+@@ -5709,20 +5729,10 @@ __init int intel_pmu_init(void)
  
- 	if (!(x86_pmu.flags & PMU_FL_HAS_RSP_1))
-@@ -2979,7 +2981,7 @@ static int intel_alt_er(int idx, u64 config)
- 	if (idx == EXTRA_REG_RSP_1)
- 		alt_idx = EXTRA_REG_RSP_0;
+ 	x86_pmu.attr_update = attr_update;
  
--	if (config & ~x86_pmu.extra_regs[alt_idx].valid_mask)
-+	if (config & ~extra_regs[alt_idx].valid_mask)
- 		return idx;
+-	if (x86_pmu.num_counters > INTEL_PMC_MAX_GENERIC) {
+-		WARN(1, KERN_ERR "hw perf events %d > max(%d), clipping!",
+-		     x86_pmu.num_counters, INTEL_PMC_MAX_GENERIC);
+-		x86_pmu.num_counters = INTEL_PMC_MAX_GENERIC;
+-	}
+-	x86_pmu.intel_ctrl = (1ULL << x86_pmu.num_counters) - 1;
+-
+-	if (x86_pmu.num_counters_fixed > INTEL_PMC_MAX_FIXED) {
+-		WARN(1, KERN_ERR "hw perf events fixed %d > max(%d), clipping!",
+-		     x86_pmu.num_counters_fixed, INTEL_PMC_MAX_FIXED);
+-		x86_pmu.num_counters_fixed = INTEL_PMC_MAX_FIXED;
+-	}
+-
+-	x86_pmu.intel_ctrl |= (u64)fixed_mask << INTEL_PMC_IDX_FIXED;
++	intel_pmu_check_num_counters(&x86_pmu.num_counters,
++				     &x86_pmu.num_counters_fixed,
++				     &x86_pmu.intel_ctrl,
++				     (u64)fixed_mask);
  
- 	return alt_idx;
-@@ -2987,15 +2989,16 @@ static int intel_alt_er(int idx, u64 config)
- 
- static void intel_fixup_er(struct perf_event *event, int idx)
- {
-+	struct extra_reg *extra_regs = hybrid(event->pmu, extra_regs);
- 	event->hw.extra_reg.idx = idx;
- 
- 	if (idx == EXTRA_REG_RSP_0) {
- 		event->hw.config &= ~INTEL_ARCH_EVENT_MASK;
--		event->hw.config |= x86_pmu.extra_regs[EXTRA_REG_RSP_0].event;
-+		event->hw.config |= extra_regs[EXTRA_REG_RSP_0].event;
- 		event->hw.extra_reg.reg = MSR_OFFCORE_RSP_0;
- 	} else if (idx == EXTRA_REG_RSP_1) {
- 		event->hw.config &= ~INTEL_ARCH_EVENT_MASK;
--		event->hw.config |= x86_pmu.extra_regs[EXTRA_REG_RSP_1].event;
-+		event->hw.config |= extra_regs[EXTRA_REG_RSP_1].event;
- 		event->hw.extra_reg.reg = MSR_OFFCORE_RSP_1;
- 	}
- }
-@@ -3071,7 +3074,7 @@ __intel_shared_reg_get_constraints(struct cpu_hw_events *cpuc,
- 		 */
- 		c = NULL;
- 	} else {
--		idx = intel_alt_er(idx, reg->config);
-+		idx = intel_alt_er(cpuc, idx, reg->config);
- 		if (idx != reg->idx) {
- 			raw_spin_unlock_irqrestore(&era->lock, flags);
- 			goto again;
-@@ -4161,7 +4164,7 @@ int intel_cpuc_prepare(struct cpu_hw_events *cpuc, int cpu)
- {
- 	cpuc->pebs_record_size = x86_pmu.pebs_record_size;
- 
--	if (x86_pmu.extra_regs || x86_pmu.lbr_sel_map) {
-+	if (is_hybrid() || x86_pmu.extra_regs || x86_pmu.lbr_sel_map) {
- 		cpuc->shared_regs = allocate_shared_regs(cpu);
- 		if (!cpuc->shared_regs)
- 			goto err;
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 53e8a0f..bd53390 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -651,6 +651,7 @@ struct x86_hybrid_pmu {
- 					[PERF_COUNT_HW_CACHE_RESULT_MAX];
- 	struct event_constraint		*event_constraints;
- 	struct event_constraint		*pebs_constraints;
-+	struct extra_reg		*extra_regs;
- };
- 
- static __always_inline bool is_hybrid(void)
+ 	/* AnyThread may be deprecated on arch perfmon v5 or later */
+ 	if (x86_pmu.intel_cap.anythread_deprecated)
 -- 
 2.7.4
 
