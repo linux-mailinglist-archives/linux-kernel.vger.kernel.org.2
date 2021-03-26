@@ -2,135 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CC334A7BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E964634A7C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhCZNBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:01:43 -0400
-Received: from mail-co1nam11on2075.outbound.protection.outlook.com ([40.107.220.75]:52736
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229908AbhCZNBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:01:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cHRTVWewyP618ehpfqgTlx4wR34XyHKRrLoqtQa+tcQQZfuEDFDx9t8OMk9O2wuTi9eB9ITqF+vMkgo9LpiiUcSHLDLXDhzjd6FfD1Fuv8Vrk32rEDclhe0OTU+WsRyF+6h8eGsOv4KwxNnjODLeopqGenRFfJlJ2JBhS0o18pxVsKVqGclZmCi9/PRFx5/VUBSqiwKbJ0aP//vu2kj3poV/h5QoMR2ADMAr74Mwem5W73yi6TRxUPQnChNDSSfQyFxsMwWNK6BAERmsO2jHuHxgB9X2E6KDH6wWGznRjhSGt2xZAGPMoz+zENJlPU+VLjOhO3gUJWWhKkh90SkzpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NwEGeKiMZTWwgm6VRn1xyEMJulvC/ZMU2u3U8Pi77LM=;
- b=DBCoqsJtHqjtIwXKS302XLje40KY+rBtIcQTG/zb2k1R1CanxU4/KhZbudhvyL/khK6m4LINIX6TLTVTOHW3rZVMR4d5DnXEUX39AS6jU0O+2OzcccKyUuLW18PHX5j60tDpS5qnohJMqr9WmVMGM1ctmPJ6f/nZVSBlYQrYL5VBxvYRohcr97uyt8MwrqdLTbnIUrbj0Rluc30ZqTv/9x+bcVTFILt2pAKUDhgMaYL0BP+ek0/tQ4PDWJnUo5ENOCF/LsH4RO8Pydxk0BQlteTSrvfjH8bc2uBKoSvOdyL/kuXvV35LDw66Vuvei6P/49gYSirZw/ioOtPFKHbQdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NwEGeKiMZTWwgm6VRn1xyEMJulvC/ZMU2u3U8Pi77LM=;
- b=evOkxau2Oyc6u8szUtn3ABFDligKwZmisFFG7PXgvu4tylrh90ob2Zimqr3mBqPiR3Ywtc+7Ce+CQ/sd6ObJVHOysfnpjiqkDowRMXx5fzC5miYcjL+ypSoqvbl9K7aIHw4WNskQU0husePRuF4W8uuFWTHrF+ei65j6hGJB7uY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3478.namprd11.prod.outlook.com (2603:10b6:a03:7b::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.18; Fri, 26 Mar
- 2021 13:01:19 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::551b:e310:2ae4:3011]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::551b:e310:2ae4:3011%6]) with mapi id 15.20.3977.025; Fri, 26 Mar 2021
- 13:01:19 +0000
-Subject: Re: [PATCH] block: export disk_part_iter_* helpers
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210326121059.597172-1-yanfei.xu@windriver.com>
- <20210326121359.GA14989@lst.de>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <36934d10-bfb2-032e-813b-a514ee524853@windriver.com>
-Date:   Fri, 26 Mar 2021 21:01:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210326121359.GA14989@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK0PR03CA0108.apcprd03.prod.outlook.com
- (2603:1096:203:b0::24) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
+        id S230113AbhCZNCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:02:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49113 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230218AbhCZNBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:01:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616763707;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JRQaAdx++mnEYaHuCYocWMdWO77qGEyQoebROUQWcRY=;
+        b=DNuCtG3xTBMYc4++TWaTCW3rfZxokKot0tFNygtr45vkgkRh2wVyO2YPYcagwEDkWrU0+T
+        w9lTRDHZS6klKr6gX2bTdCvSfRlO1/Q0PwkROiUyFPkxKMCTYn0ipRSeXb9uKTfK8Wm6YJ
+        ww+YJGCH4qTByjfH63qwkz4qYBkIcR4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-3GnLwMKFM_CVt1jNNl4XyQ-1; Fri, 26 Mar 2021 09:01:45 -0400
+X-MC-Unique: 3GnLwMKFM_CVt1jNNl4XyQ-1
+Received: by mail-ed1-f71.google.com with SMTP id i6so4392855edq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 06:01:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=JRQaAdx++mnEYaHuCYocWMdWO77qGEyQoebROUQWcRY=;
+        b=EyO4JYy2wXvz0Oz8aRaEJ8rJk+NeAT5OwLSwXU2gCGoNmxfiGs9OsL4RC/xAwLV/8o
+         3+mwMd+uJvW7h3u4xK99u/LVJurvdcvSwjBnBr8ofzAXiXB0ziLZosyZHY0Xe83uTv71
+         Rz0iid5qX8YGnSc3/qyFZUGzoupzVOfGGgqTt0sfXIGr19r1lkCvWrG3049we8dYM8oP
+         qPkedOXmsRPQetSK2cGcv7Sunpeq5yKuCTGwhw1Aci5kIklG25UzN2ZejYdccTLd9bfE
+         DAn6RJjKfhmtxgcKzXw1f6vOl9pqJy3BWnc3QoW1AT4VfT7zGXb+e5ejgtXGcudp+4GY
+         Y+7w==
+X-Gm-Message-State: AOAM532rSNSqlzKFENIr66lCpvOPtEa8dBTuJsfy1riGJqUQZSaGtgMZ
+        ALIWp0XfwiQJYERgWiYKA8QZG7xfFpaT0ckceE17kQarP7XxGq+jXx3tFk6bLm0MN08Bv5aQOTW
+        +woazFvpHab7oEkE4PzyHcrxq/2ATz28P6ER87V+APW6WsF3VzJdFOldhYlSYSJH9QqSeSXXeQa
+        o9
+X-Received: by 2002:a17:906:b1d4:: with SMTP id bv20mr15320359ejb.46.1616763701809;
+        Fri, 26 Mar 2021 06:01:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEuG33i2lwyoA414gaiALmarFRKkgBZbTIDTcF53mrBWq0VE+HhSSWFtli+8L9nxF3XVhj2g==
+X-Received: by 2002:a17:906:b1d4:: with SMTP id bv20mr15319976ejb.46.1616763696619;
+        Fri, 26 Mar 2021 06:01:36 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id r24sm4150534edw.11.2021.03.26.06.01.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 06:01:36 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Lenny Szubowicz <lszubowi@redhat.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
+In-Reply-To: <87h7kyccpu.fsf@vitty.brq.redhat.com>
+References: <20210311132847.224406-1-lszubowi@redhat.com>
+ <87sg4t7vqy.fsf@vitty.brq.redhat.com>
+ <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
+ <87mtuqchdu.fsf@vitty.brq.redhat.com>
+ <87h7kyccpu.fsf@vitty.brq.redhat.com>
+Date:   Fri, 26 Mar 2021 14:01:35 +0100
+Message-ID: <87eeg2cbm8.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK0PR03CA0108.apcprd03.prod.outlook.com (2603:1096:203:b0::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24 via Frontend Transport; Fri, 26 Mar 2021 13:01:17 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d2a566b-608d-4e8a-c7a2-08d8f0573f7f
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3478:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB34785863DD3F6D8F435DAA49E4619@BYAPR11MB3478.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iOmaR5Lx4/qPaSLEyH6F8FGjdzXJz7FyG660Ok1/gCBfBW5Rfuce9zqb6EsmsKLdhuw2eosWq+cGG3T2rcJSYGLPCbQh2f24/qkT8Q2xb8k5G54VyqSFQT84rjvEPqv12z4g/SSfl6ID+3uZCEhhuDNOsMAgTkhQqqrd0TRnZnzY9v9+GtjfvXBqzsToKWsbfRBBz+UhyPJN21ti3d0VOtgHJL9+AQIU+dLV/TLR7s/YAudqxiEtpRygmyVcIV2z9B82uRcGp4DjmUWRC8GcvbZkYUof1/z7B5DhUhEVpO/67VY5TXa4MDAC69Fa0M2ElnQ4eR7J18JIXXy50zuVzuS/m+jvziBwfwmKpyh9RD2k4dMuXNC/V3AbxIW3GGQhI/2xbCYG90MeoNJ/WcWpbEaIMB7Lw/4KP2rXa5gamz7/7kK5Kj/udXvAXDZrpATEm/8l4lIsNJccu+cAekbRgh6FUZCDmvH8XIFEqDIyJq4NeqTcnIEtJ2fanVgMZbAbiAvpZdhgJzBmJZNWirErMf71zqUJYftaIDC6L3YHM7ORAzEwLNKcIwM3JULTidW407nELSkHy/iVwk0vDtIwx3Js//6le+IQI8mjNPzV3M4mzfIjftWqNIVf3MNJ0RhiWovtg7eZ8J+oEqVfFYZANR9/dOs180Yuza1TIgeE52d7fGpeWsGjq1Wtjinbh5HZICrYhIB2y9prFm29UBHjw/ayorLIAMW/gSH5xFUvTR0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39850400004)(366004)(346002)(136003)(396003)(5660300002)(52116002)(316002)(86362001)(83380400001)(6486002)(4744005)(8936002)(36756003)(8676002)(16576012)(31696002)(38100700001)(6706004)(16526019)(4326008)(31686004)(6916009)(186003)(2616005)(66556008)(478600001)(2906002)(6666004)(66476007)(53546011)(956004)(26005)(66946007)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?elJzNDZ5N2pxMCtsRXdTUjZ1RkhsV3RrQkIwdUQxdThyY1hnRDUrK2V0QnVK?=
- =?utf-8?B?d2FFM2wrU24rQnZTK1BnakhVY1dUcDIxaWIrejlHREFWdnRuMS9QVC9hLzVS?=
- =?utf-8?B?Z2VWNTZVbWNTK1NrNS9XVVNndnMvY1pGeVgycXNmdE1xcko2QytJVHJUVFQ4?=
- =?utf-8?B?UFNGN0lmcCthOFlOcU1CMXlzdHZyWFE5R0N5MmdNZERhQWRvV0RMeVFKbjJy?=
- =?utf-8?B?a3AxMjhkME5ZeENJOG00K3VrWTFxR3ExRGNYZmZsdGlUazVwNzBhWEliek5a?=
- =?utf-8?B?a0NpaWtkQTNiZzYxMTRKRGg4VlJuTVFlTVdycHhpSGFINVQ4VFVySk9hZ0Rs?=
- =?utf-8?B?d2p2NWxkamhabUlHemRZaXd2T2ZIaW8vcFZuYnBJZEFJUUlCaXEycyt1NWpa?=
- =?utf-8?B?US9VaU9neCs5cnIyN3RLZ0lYT3RMMmxGWVpqOEFiYUtPc0w3UHRRcnJEV1lY?=
- =?utf-8?B?WHUwUXBaUWw5VUY4ZTdFeDh0U0RJVTExUVd4OTBOY01CSTlVdzRoT1JtSUZM?=
- =?utf-8?B?QTdoWUlBU0VUK3B0WWR1a09QeW5IYzRQenJ2TzBMUDhLYWJhWVpBUFZCTzJK?=
- =?utf-8?B?L2p4c0NUeFpCUXlRTTN5YVlvTVdWNjZXV3ZGM2lnemJOVEhKZEJCcVlaUytS?=
- =?utf-8?B?R1pWK0ZzenpjaFlac040Z1BVZ2lFd1UvMkdYOGhGRkEvL0EwbC81YjNPcThj?=
- =?utf-8?B?enR4VXNLM3haVHNLV3p1MmhDRlFFblVzL1Q1OHRUdGVwdHJhaXl6L3ZIYnAv?=
- =?utf-8?B?Um15ay9QTkw3blZZRGNTbmxJSU9wOWp4dzdPMUtkSndrT0Z5WEtNOVJKR2Fn?=
- =?utf-8?B?aFlUdk9ZRktaeHQ0WllKKzlCUVNjc1dUMzdXMUpJQjJ0Z2pvMWorb3htdWdI?=
- =?utf-8?B?THNMSlgwcHNmZVNXUTN6dklzQ0ZWTEY5YUFPQzJQTXRsRzJKRXZCN2lXYzIv?=
- =?utf-8?B?MEc0Q0phWXBsVWF4OEZBZWVQelAxM2ZqZVYwemErNjFZdmN4MUtyQ1F1TDF0?=
- =?utf-8?B?dDNvczE5SUpBblBmaGhiLzc4dUNsSC9laG8vSUNMZEJOVXk5YzVlaEcvTS9k?=
- =?utf-8?B?eHRsakNRUTl3Z0xwdHBHaS92M3JUcmY4Z1VqY21DLzlYVWdsQ3VTR0tNRkR1?=
- =?utf-8?B?VlNQblFhMVl3S0ZTR0NqL3YvNlQvdHZSQThZYVJES0N1T0tvQ2J4WjEvcHdt?=
- =?utf-8?B?cDZhRURydWJIZmpxWnBWNzh2ZFFYbHg5ZWFzcUgyY2doRjVKODVzdG5IbG1H?=
- =?utf-8?B?SUpjNG10aTNudExTL253ZFQ4UGFKNFNLYk9IRWJsQzBCTE05N3ZYVnZpc3hM?=
- =?utf-8?B?RWp5Y2xkYlJHRHI2TSsyVzJxUDlkbWgrQm13UDFzUkxEVEpud0gvOFl1UU42?=
- =?utf-8?B?VTNES083ZllXemx2NDllOFM3RCticFU1RE1jZVI4MGxKYkpabjlvNE1CNHBC?=
- =?utf-8?B?dXZaaVRoZjhsME9tVTBGU2NpOWJEZ3dNMnE5QlhBZXl1YmpMSzVpTkdYbjQy?=
- =?utf-8?B?UFNTbktsRFlINWQ1WnkyRWNwVUlTbEQ1L2U5WStSbHZVNU5EMXBZalNFdWt4?=
- =?utf-8?B?VXM4MllZd2UyY2ZMeVFmcHZLOFRid1lxRVFneEUwaFppRitPOEduZ250UmVq?=
- =?utf-8?B?aGR5ZVBXZlgxR1BGQjJKT1RuZExMYU5odGpkcXhLcDRHTC9OVkl0Yjl0UENB?=
- =?utf-8?B?RC9kYlVrTlJSeTRoZlFlTHBrelpMTmlTVmV3VjFjYnkxWnRoV1MxV2JjczZm?=
- =?utf-8?Q?im1PQRgPLm4M2LxQqUBrWXywdTm2An9HCw9AxXq?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d2a566b-608d-4e8a-c7a2-08d8f0573f7f
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Mar 2021 13:01:19.2374
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7IoNHX3Uze+GWqpy6sRjMg7bbaVmuEyd4idyiTJhLJh2lDp7R/r1RthyiWtvZOek9MlsLpxhZ0wXIkyM8dpZ+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3478
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
+..
 
-On 3/26/21 8:13 PM, Christoph Hellwig wrote:
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> 
-> On Fri, Mar 26, 2021 at 08:10:59PM +0800, yanfei.xu@windriver.com wrote:
->> From: Yanfei Xu <yanfei.xu@windriver.com>
->>
->> disk_part_iter_* helpers might be used by other external modules, like
->> lttng-modules. But it was unexport in 'commit bc359d03c7ec ("block: add
->> a disk_uevent helper")'. Here export them again.
-> 
-> Err, no.  We never export things for out of tree modules.  And any kind
-> of driver code has absolutely no business looking at the partition tables
-> to start with, modular or not.
-> I see. Thanks.
+> (this is with your v2 included). There's nothing about CPU0 for
+> e.g. async PF + timestamps are really interesting. Seems we have issues
+> to fix) I'm playing with it right now.
 
-//Yanfei
+What if we do the following (instead of your patch):
+
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 78bb0fae3982..c32392d6329d 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -26,6 +26,7 @@
+ #include <linux/kprobes.h>
+ #include <linux/nmi.h>
+ #include <linux/swait.h>
++#include <linux/syscore_ops.h>
+ #include <asm/timer.h>
+ #include <asm/cpu.h>
+ #include <asm/traps.h>
+@@ -598,17 +599,21 @@ static void kvm_guest_cpu_offline(void)
+ 
+ static int kvm_cpu_online(unsigned int cpu)
+ {
+-	local_irq_disable();
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	kvm_guest_cpu_init();
+-	local_irq_enable();
++	local_irq_restore(flags);
+ 	return 0;
+ }
+ 
+ static int kvm_cpu_down_prepare(unsigned int cpu)
+ {
+-	local_irq_disable();
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	kvm_guest_cpu_offline();
+-	local_irq_enable();
++	local_irq_restore(flags);
+ 	return 0;
+ }
+ #endif
+@@ -639,6 +644,23 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+ 	native_flush_tlb_others(flushmask, info);
+ }
+ 
++static int kvm_suspend(void)
++{
++	kvm_guest_cpu_offline();
++
++	return 0;
++}
++
++static void kvm_resume(void)
++{
++	kvm_cpu_online(raw_smp_processor_id());
++}
++
++static struct syscore_ops kvm_syscore_ops = {
++	.suspend	= kvm_suspend,
++	.resume		= kvm_resume,
++};
++
+ static void __init kvm_guest_init(void)
+ {
+ 	int i;
+@@ -681,6 +703,8 @@ static void __init kvm_guest_init(void)
+ 	kvm_guest_cpu_init();
+ #endif
+ 
++	register_syscore_ops(&kvm_syscore_ops);
++
+ 	/*
+ 	 * Hard lockup detection is enabled by default. Disable it, as guests
+ 	 * can get false positives too easily, for example if the host is
+-- 
+2.30.2
+
+This seems to work fine (according to the log, I haven't checked yet
+that PV features are actually working):
+
+[   20.678081] PM: hibernation: Creating image:
+[   20.689925] PM: hibernation: Need to copy 82048 pages
+[    2.302411] kvm-clock: cpu 0, msr 2c201001, primary cpu clock, resume
+[    2.302487] PM: Restoring platform NVS memory
+[    2.302498] kvm-guest: KVM setup async PF for cpu 0
+[    2.302502] kvm-guest: stealtime: cpu 0, msr 3ec2c080
+[    2.304754] Enabling non-boot CPUs ...
+[    2.304823] x86: Booting SMP configuration:
+[    2.304824] smpboot: Booting Node 0 Processor 1 APIC 0x1
+[    2.304952] kvm-clock: cpu 1, msr 2c201041, secondary cpu clock
+[    2.305400] kvm-guest: KVM setup async PF for cpu 1
+[    2.305405] kvm-guest: stealtime: cpu 1, msr 3ecac080
+[    2.305786] CPU1 is up
+[    2.305818] smpboot: Booting Node 0 Processor 2 APIC 0x2
+[    2.305920] kvm-clock: cpu 2, msr 2c201081, secondary cpu clock
+[    2.306325] kvm-guest: KVM setup async PF for cpu 2
+[    2.306330] kvm-guest: stealtime: cpu 2, msr 3ed2c080
+[    2.306599] CPU2 is up
+[    2.306627] smpboot: Booting Node 0 Processor 3 APIC 0x3
+[    2.306729] kvm-clock: cpu 3, msr 2c2010c1, secondary cpu clock
+[    2.307092] kvm-guest: KVM setup async PF for cpu 3
+[    2.307097] kvm-guest: stealtime: cpu 3, msr 3edac080
+[    2.307383] CPU3 is up
+[    2.307560] ACPI: Waking up from system sleep state S4
+[    2.318778] sd 0:0:0:0: [sda] Starting disk
+[    2.342335] OOM killer enabled.
+[    2.342817] Restarting tasks ... done.
+[    2.346209] PM: hibernation: hibernation exit
+
+-- 
+Vitaly
+
