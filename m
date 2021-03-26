@@ -2,163 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F30734ABDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E730034ABDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230436AbhCZPvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
+        id S230406AbhCZPvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhCZPuo (ORCPT
+        with ESMTP id S230447AbhCZPvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:50:44 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BF4C0613AA;
-        Fri, 26 Mar 2021 08:50:44 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id h7so4550474qtx.3;
-        Fri, 26 Mar 2021 08:50:44 -0700 (PDT)
+        Fri, 26 Mar 2021 11:51:13 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89061C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:51:12 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id s21so2760368pjq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=IE/p6g9B2j41zhqUWurLlnl/wvSKINeBITFu3XthIDw=;
-        b=p5amyNRlPFbdvX8+G8rZZpCWz1eiLsPmRgfnfnuQrsvAuomUOUCem+Us27BVYWoOpJ
-         +WX8mcl2uZSZjfJ7B4UWT6BtwcH/j+ShhXBZqu5mfieu/O16ijwKGhNBhhrQ85YdwCaD
-         0lO9DkSlMZpGqhi3y4p6xaYaOysE3lYrveyH98PidrLDRmJxMQO2mW4pWW54oCI4jhP+
-         CBbDDOuMSa/8NjnnkduMNkJ46pHE0vl/qALswUKogyzqw7mBR1Rk2NAW/WOkpydg8oUP
-         wlIpSKsOHbfhNKRvtZFa1kHhOvhKZinI9jC3mCyNg2/iXhzHOwMYZA8LCV10TwfFA6lx
-         3K3Q==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rbdHVibM4rUG5U819DE4n8VtCDDHBBjpyaqFodO9huE=;
+        b=LoMm1MqNfdd6KURvbEKjNBeoCSXcLcIvYALRuAsc8Zobf/z7QbztOlPOJ8mTAp+q54
+         b0fcGXLKKJN/pHqdJ55PeEjWLgfBsPXinmHUmf5uPj+IG2MyzkVDsWLYEyc3f6rjpPCf
+         gGxzU72WobHclEVA0ZhAr97y4/CywWktirdT02BtobEOrA8iYmeX4F/Ew6Lt3GISr4yb
+         74UstddSh+rBLg2lPjeuNOJFBBD1fdro72gfQzrlIYxlp/mxaK5jkV26HeS0mMq7fM3J
+         azivOI98/qB8rp1TIfsnkKoRBLEjgwv8Y2kWQFNKqCAjmcblYLT3o0CSeNv2olztgwht
+         PvQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=IE/p6g9B2j41zhqUWurLlnl/wvSKINeBITFu3XthIDw=;
-        b=QbWS381ZgZ2tqEiqlUqUjtn9w7djRiaP+mr0eAVD5fmHQi0NUiGhxUuYPL5eGTUuYR
-         oSt3T3Qy3qIjZmSRz4/oy0fcAAZ3lRU3Cix9E0bEwv19eD6V3rPSHAAPef9L9pMK+Bui
-         uh3yU5jPZ1O4aas8a0eMQkJmb9iqZAspaltfGYywWSyRNzqgwrT7a6ZIYsLECgXzYqUk
-         Hax1tRfWboqYFsuFrnuBK3S1dwKp0SygJyDjSLvYV/MfXBgRMXIOKKXM5kmEIf6qmjRu
-         FOkddWRLLyh8p5OFQeBbznCPKAQMaSAwUpvQX7SEp61vT0ix/tBSig14K7CKmFmFZ/zK
-         LAMg==
-X-Gm-Message-State: AOAM531KPKEufwKsA8aF9PRRD3cUvbnte7OEskaWzYLbZaGYf20qUFqn
-        vmaO1R+vndP82amOl39CChA=
-X-Google-Smtp-Source: ABdhPJwK+yJ7RtkvcmD0Kxv252vfc+rSR03GCh3POtfxdO6K/hLy2U8/ed9WOmaS2BxvtUGloaqiag==
-X-Received: by 2002:ac8:4a18:: with SMTP id x24mr12675962qtq.33.1616773843573;
-        Fri, 26 Mar 2021 08:50:43 -0700 (PDT)
-Received: from [192.168.86.185] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id a207sm6968906qkc.135.2021.03.26.08.50.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 08:50:43 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 12:50:15 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <80EE46ED-9007-4CB7-9A52-A7A2ADC616C6@linux.vnet.ibm.com>
-References: <1616425047-1666-1-git-send-email-atrajeev@linux.vnet.ibm.com> <1616425047-1666-4-git-send-email-atrajeev@linux.vnet.ibm.com> <YFuWb3S8p0ZGjmGu@krava> <80EE46ED-9007-4CB7-9A52-A7A2ADC616C6@linux.vnet.ibm.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=rbdHVibM4rUG5U819DE4n8VtCDDHBBjpyaqFodO9huE=;
+        b=a1rTHvrqsz9EDYyLiLHbzDcwnrtRxEsLYUo3v1pNdn44XDqQKJau6XfYKFG4m2JA7E
+         nMEKWedUeeO9L/rgIoqrpp1u0HNHtPAXZSvWaxzT9aqGt3KJvYvIKAV7aSWH9PjABtTz
+         SQpNeK90Jg6tmntFxIw27tNk1rUaWJkRL5Dw0DU9uyfzT81EmCesp6UKfgX9fm9Awjvy
+         bLe8CFgj04mbUimpN3SrSr2u7gMCljQIyqfRK7n+WHb47f1HZODYZzNpgrJYxviv83tT
+         Wh7TUEZKwBj+KUMOj6r9Mhad3N6JVqwY5GuzrrdClXu04jm1pYNwfpMVouHkjRDKIoai
+         PP6w==
+X-Gm-Message-State: AOAM531xoQ5OOKQ08jhi+NxlncZ5fCCZ6cv4IBg6pKJ/MM4CBus0C1xG
+        PxlWDyh7kPngCANI4hy3Ukg=
+X-Google-Smtp-Source: ABdhPJxLLXj5G6TzvJ/JTSAVaEnJARTlhXsqHnVazmnpTuvMxlXNKgylOgZXJfKk95FFGWj3comU6w==
+X-Received: by 2002:a17:90a:7c48:: with SMTP id e8mr14775665pjl.89.1616773871739;
+        Fri, 26 Mar 2021 08:51:11 -0700 (PDT)
+Received: from google.com ([2620:15c:211:201:14e1:3f1e:1043:d7ce])
+        by smtp.gmail.com with ESMTPSA id s17sm8714514pjn.44.2021.03.26.08.51.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 08:51:11 -0700 (PDT)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Fri, 26 Mar 2021 08:51:08 -0700
+From:   Minchan Kim <minchan@kernel.org>
+To:     Anders Roxell <anders.roxell@linaro.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        surenb@google.com, joaodias@google.com, jhubbard@nvidia.com,
+        Matthew Wilcox <willy@infradead.org>, digetx@gmail.com,
+        Colin Ian King <colin.king@canonical.com>
+Subject: Re: [PATCH v8] mm: cma: support sysfs
+Message-ID: <YF4C7AwqxYytU1Sv@google.com>
+References: <20210324230759.2213957-1-minchan@kernel.org>
+ <CADYN=9+0it8b8sWB+sixY02UEPyc+hn=nk99WgVp1sm0YRAgTA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH V2 3/5] tools/perf: Add powerpc support for PERF_SAMPLE_WEIGHT_STRUCT
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Jiri Olsa <jolsa@redhat.com>
-CC:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        mpe@ellerman.id.au, acme@kernel.org, jolsa@kernel.org,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        ravi.bangoria@linux.ibm.com, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com, peterz@infradead.org
-From:   Arnaldo <arnaldo.melo@gmail.com>
-Message-ID: <F5813758-37E5-404D-BBC2-49F5BE6101C7@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CADYN=9+0it8b8sWB+sixY02UEPyc+hn=nk99WgVp1sm0YRAgTA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 26, 2021 at 02:59:30PM +0100, Anders Roxell wrote:
+> On Thu, 25 Mar 2021 at 00:09, Minchan Kim <minchan@kernel.org> wrote:
+> >
+> > Since CMA is getting used more widely, it's more important to
+> > keep monitoring CMA statistics for system health since it's
+> > directly related to user experience.
+> >
+> > This patch introduces sysfs statistics for CMA, in order to provide
+> > some basic monitoring of the CMA allocator.
+> >
+> >  * the number of CMA page successful allocations
+> >  * the number of CMA page allocation failures
+> >
+> > These two values allow the user to calcuate the allocation
+> > failure rate for each CMA area.
+> >
+> > e.g.)
+> >   /sys/kernel/mm/cma/WIFI/alloc_pages_[success|fail]
+> >   /sys/kernel/mm/cma/SENSOR/alloc_pages_[success|fail]
+> >   /sys/kernel/mm/cma/BLUETOOTH/alloc_pages_[success|fail]
+> >
+> > The cma_stat was intentionally allocated by dynamic allocation
+> > to harmonize with kobject lifetime management.
+> > https://lore.kernel.org/linux-mm/YCOAmXqt6dZkCQYs@kroah.com/
+> >
+> > Tested-by: Dmitry Osipenko <digetx@gmail.com>
+> > Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+> > Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> > Link: https://lore.kernel.org/linux-mm/20210316100433.17665-1-colin.king@canonical.com/
+> > Addresses-Coverity: ("Dereference after null check")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> 
+> When I build an arm64 kernel (allmodconfig - boot selftest) on today's
+> next tag: next-20210326, I see this issue when I'm booting in qemu.
+> 
+> [    0.985891][    T9] Callback from call_rcu_tasks() invoked.
+> [    1.008860][    T1] smp: Bringing up secondary CPUs ...
+> [    1.012655][    T1] smp: Brought up 1 node, 1 CPU
+> [    1.015194][    T1] SMP: Total of 1 processors activated.
+> [    1.018987][    T1] CPU features: detected: 32-bit EL0 Support
+> [    1.021995][    T1] CPU features: detected: CRC32 instructions
+> [    1.026047][    T1] CPU features: detected: 32-bit EL1 Support
+> [    1.033728][    T1] CPU features: emulated: Privileged Access Never
+> (PAN) using TTBR0_EL1 switching
+> [    2.140828][    T1] CPU: All CPU(s) started at EL1
+> [    2.144773][   T17] alternatives: patching kernel code
+> [  132.866390][    C0] watchdog: BUG: soft lockup - CPU#0 stuck for
+> 25s! [pgdatinit0:20]
+> [  132.870865][    C0] Modules linked in:
+> [  132.873037][    C0] irq event stamp: 739758
+> [  132.875308][    C0] hardirqs last  enabled at (739757):
+> [<ffff8000126fb3d0>] _raw_spin_unlock_irqrestore+0x90/0x100
+> [  132.880740][    C0] hardirqs last disabled at (739758):
+> [<ffff8000126e30a4>] enter_el1_irq_or_nmi+0xa4/0xc0
+> [  132.885801][    C0] softirqs last  enabled at (739056):
+> [<ffff800010010f98>] __do_softirq+0x8b8/0x9ac
+> [  132.890571][    C0] softirqs last disabled at (739051):
+> [<ffff80001013742c>] __irq_exit_rcu+0x1ac/0x240
+> [  132.895560][    C0] CPU: 0 PID: 20 Comm: pgdatinit0 Not tainted
+> 5.12.0-rc4-next-20210326-00008-g23921ff47279 #1
+> [  132.900759][    C0] Hardware name: linux,dummy-virt (DT)
+> [  132.903637][    C0] pstate: 40400005 (nZcv daif +PAN -UAO -TCO BTYPE=--)
+> [  132.907212][    C0] pc : _raw_spin_unlock_irqrestore+0xa4/0x100
+> [  132.910432][    C0] lr : _raw_spin_unlock_irqrestore+0x90/0x100
+> [  132.913647][    C0] sp : ffff000007b9f640
+> [  132.915832][    C0] x29: ffff000007b9f640 x28: ffff800016954518
+> [  132.919237][    C0] x27: 000000000000000e x26: dead000000000100
+> [  132.922689][    C0] x25: dead000000000122 x24: 00000000000559b0
+> [  132.926098][    C0] x23: ffff80001550e000 x22: ffff800016954530
+> [  132.929479][    C0] x21: ffff800016954518 x20: 0000000000000000
+> [  132.932901][    C0] x19: ffff800010f662f4 x18: 0000000000001530
+> [  132.936312][    C0] x17: 0000000000001470 x16: 0000000000005518
+> [  132.939723][    C0] x15: 0000000000001578 x14: ffff800010189520
+> [  132.943107][    C0] x13: ffff8000107592e0 x12: ffff600000f73eb1
+> [  132.946520][    C0] x11: 1fffe00000f73eb0 x10: ffff600000f73eb0
+> [  132.949914][    C0] x9 : dfff800000000000 x8 : ffff000007b9f587
+> [  132.953312][    C0] x7 : 0000000000000001 x6 : 00009fffff08c150
+> [  132.956713][    C0] x5 : 0000000000000000 x4 : 0000000000000000
+> [  132.960117][    C0] x3 : ffff000007b90040 x2 : 000000000005e6fd
+> [  132.963521][    C0] x1 : 00000000000000c0 x0 : 0000000000000080
+> [  132.966889][    C0] Call trace:
+> [  132.968667][    C0]  _raw_spin_unlock_irqrestore+0xa4/0x100
+> [  132.971754][    C0]  __debug_check_no_obj_freed+0x1d4/0x2a0
+> [  132.974890][    C0]  debug_check_no_obj_freed+0x20/0x80
+> [  132.977813][    C0]  __free_pages_ok+0x5a0/0x740
+> [  132.980384][    C0]  __free_pages_core+0x24c/0x280
+> [  132.983091][    C0]  deferred_free_range+0x6c/0xbc
+> [  132.985826][    C0]  deferred_init_maxorder+0x2d0/0x350
+> [  132.988735][    C0]  deferred_init_memmap_chunk+0xc8/0x124
+> [  132.991784][    C0]  padata_do_multithreaded+0x15c/0x578
+> [  132.994723][    C0]  deferred_init_memmap+0x26c/0x364
+> [  132.997560][    C0]  kthread+0x23c/0x260
+> [  132.999851][    C0]  ret_from_fork+0x10/0x18
+> [  133.002324][    C0] Kernel panic - not syncing: softlockup: hung tasks
+> [  133.005767][    C0] CPU: 0 PID: 20 Comm: pgdatinit0 Tainted: G
+>        L    5.12.0-rc4-next-20210326-00008-g23921ff47279 #1
+> [  133.011613][    C0] Hardware name: linux,dummy-virt (DT)
+> [  133.014435][    C0] Call trace:
+> [  133.016143][    C0]  dump_backtrace+0x0/0x420
+> [  133.018617][    C0]  show_stack+0x38/0x60
+> [  133.020882][    C0]  dump_stack+0x1fc/0x2c8
+> [  133.023343][    C0]  panic+0x304/0x5d8
+> [  133.025567][    C0]  watchdog_timer_fn+0x4ac/0x500
+> [  133.028209][    C0]  __run_hrtimer+0x770/0xba0
+> [  133.030734][    C0]  __hrtimer_run_queues+0x1a0/0x220
+> [  133.033537][    C0]  hrtimer_run_queues+0x20c/0x240
+> [  133.036202][    C0]  update_process_times+0xbc/0x1a0
+> [  133.038997][    C0]  tick_periodic+0x27c/0x2c0
+> [  133.041510][    C0]  tick_handle_periodic+0x44/0x120
+> [  133.044267][    C0]  arch_timer_handler_virt+0x68/0xa0
+> [  133.047226][    C0]  handle_percpu_devid_irq+0x118/0x2a0
+> [  133.050229][    C0]  __handle_domain_irq+0x150/0x1c0
+> [  133.052959][    C0]  gic_handle_irq+0x130/0x180
+> [  133.055505][    C0]  el1_irq+0xc0/0x15c
+> [  133.057723][    C0]  _raw_spin_unlock_irqrestore+0xa4/0x100
+> [  133.060792][    C0]  __debug_check_no_obj_freed+0x1d4/0x2a0
+> [  133.063869][    C0]  debug_check_no_obj_freed+0x20/0x80
+> [  133.066813][    C0]  __free_pages_ok+0x5a0/0x740
+> [  133.069409][    C0]  __free_pages_core+0x24c/0x280
+> [  133.072127][    C0]  deferred_free_range+0x6c/0xbc
+> [  133.074847][    C0]  deferred_init_maxorder+0x2d0/0x350
+> [  133.077803][    C0]  deferred_init_memmap_chunk+0xc8/0x124
+> [  133.080834][    C0]  padata_do_multithreaded+0x15c/0x578
+> [  133.083791][    C0]  deferred_init_memmap+0x26c/0x364
+> [  133.086614][    C0]  kthread+0x23c/0x260
+> [  133.088879][    C0]  ret_from_fork+0x10/0x18
+> [  133.092092][    C0] ---[ end Kernel panic - not syncing:
+> softlockup: hung tasks ]---
+> 
+> Full log [1], and my .config [2].
+> 
+> I bisected down to patch 799815f497e2 ("mm: cma: support sysfs").
+> 
+> When I revert
+> 799815f497e2 ("mm: cma: support sysfs")
+> 7af97692f30d ("mm: cma: fix potential null dereference on pointer cma")
+> 
+> The kernel boots fine.
+> 
+> Any idea whats happening?
+
+Hi Anders,
+
+Dmitry reported the crash(However, your callstack is not the same
+and didn't show any CMA stuffs so I am not sure it's same crash)
+and posted the fix.
+
+https://lore.kernel.org/linux-mm/20210324192044.1505747-1-minchan@kernel.org/
+
+However, in the end, it was folded into original patchset to replace it.
+That is an this v8 patch. So, could you try it?
+
+1. revert 7af97692f30d ("mm: cma: fix potential null dereference on pointer cma")
+2. revert 799815f497e2 ("mm: cma: support sysfs")
+3. apply this v8 patch.
+
+Thank you.
 
 
-On March 26, 2021 12:23:04 PM GMT-03:00, Athira Rajeev <atrajeev@linux=2Ev=
-net=2Eibm=2Ecom> wrote:
->
->
->On 25-Mar-2021, at 1:13 AM, Jiri Olsa <jolsa@redhat=2Ecom> wrote:
->
->On Mon, Mar 22, 2021 at 10:57:25AM -0400, Athira Rajeev wrote:
->
->Add arch specific arch_evsel__set_sample_weight() to set the new
->sample type for powerpc=2E
->
->Add arch specific arch_perf_parse_sample_weight() to store the
->sample->weight values depending on the sample type applied=2E
->if the new sample type (PERF_SAMPLE_WEIGHT_STRUCT) is applied,
->store only the lower 32 bits to sample->weight=2E If sample type
->is 'PERF_SAMPLE_WEIGHT', store the full 64-bit to sample->weight=2E
->
->Signed-off-by: Athira Rajeev <atrajeev@linux=2Evnet=2Eibm=2Ecom>
->---
->tools/perf/arch/powerpc/util/Build   |  2 ++
->tools/perf/arch/powerpc/util/event=2Ec | 32
->++++++++++++++++++++++++++++++++
->tools/perf/arch/powerpc/util/evsel=2Ec |  8 ++++++++
->3 files changed, 42 insertions(+)
->create mode 100644 tools/perf/arch/powerpc/util/event=2Ec
->create mode 100644 tools/perf/arch/powerpc/util/evsel=2Ec
->
->diff --git a/tools/perf/arch/powerpc/util/Build
->b/tools/perf/arch/powerpc/util/Build
->index b7945e5a543b=2E=2E8a79c4126e5b 100644
->--- a/tools/perf/arch/powerpc/util/Build
->+++ b/tools/perf/arch/powerpc/util/Build
->@@ -4,6 +4,8 @@ perf-y +=3D kvm-stat=2Eo
->perf-y +=3D perf_regs=2Eo
->perf-y +=3D mem-events=2Eo
->perf-y +=3D sym-handling=2Eo
->+perf-y +=3D evsel=2Eo
->+perf-y +=3D event=2Eo
->
->perf-$(CONFIG_DWARF) +=3D dwarf-regs=2Eo
->perf-$(CONFIG_DWARF) +=3D skip-callchain-idx=2Eo
->diff --git a/tools/perf/arch/powerpc/util/event=2Ec
->b/tools/perf/arch/powerpc/util/event=2Ec
->new file mode 100644
->index 000000000000=2E=2Ef49d32c2c8ae
->--- /dev/null
->+++ b/tools/perf/arch/powerpc/util/event=2Ec
->@@ -0,0 +1,32 @@
->+// SPDX-License-Identifier: GPL-2=2E0
->+#include <linux/types=2Eh>
->+#include <linux/string=2Eh>
->+#include <linux/zalloc=2Eh>
->+
->+#include "=2E=2E/=2E=2E/=2E=2E/util/event=2Eh"
->+#include "=2E=2E/=2E=2E/=2E=2E/util/synthetic-events=2Eh"
->+#include "=2E=2E/=2E=2E/=2E=2E/util/machine=2Eh"
->+#include "=2E=2E/=2E=2E/=2E=2E/util/tool=2Eh"
->+#include "=2E=2E/=2E=2E/=2E=2E/util/map=2Eh"
->+#include "=2E=2E/=2E=2E/=2E=2E/util/debug=2Eh"
->
->
->nit, just #include "utils/=2E=2E=2Eh" should work no?
->
->other than that, the patchset looks ok to me
->
->Acked-by: Jiri Olsa <jolsa@redhat=2Ecom>
->
->
->
->Hi Jiri, Arnaldo
->
->Thanks for reviewing the patch set=2E
->I checked that, just using "utils/=2E=2E=2Eh" also works=2E
->Below is the change which I verified=2E Since the patches are presently
->merged in=20
->https://git=2Ekernel=2Eorg/pub/scm/linux/kernel/git/acme/linux=2Egit/log/=
-?h=3Dtmp=2Eperf/core,
->
->can you please suggest how can we go about this change ?
 
-I'll fix it up here,
 
-Thanks for the patch=2E
-
-- Arnaldo
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+> 
+> Cheers,
+> Anders
+> [1] http://ix.io/2U9S
+> [2] http://ix.io/2Ua3
