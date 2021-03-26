@@ -2,106 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206C334AD14
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BD434AD17
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhCZRGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230159AbhCZRFu (ORCPT
+        id S230226AbhCZRGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:06:55 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:39363 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229871AbhCZRGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:05:50 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12554C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:05:50 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u5so9470460ejn.8
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:05:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TZpUocbZkJ2maV4+ZrCzVZctv3jGZXxi51+s/78q/tc=;
-        b=ePZ6WU52Q2uUd1dLXBsT9YpSnh5fEW4yFErve3aYmxADNweSt5RPQuCMCLjcEJO8Kl
-         KHhdmVzIhKXclp8LkHx4xNihuhqxl5+QbM6jxdayu2XvECiJiO/ulJG/+3IlmFPxklSU
-         EwtLDp9N5D2VQDjpot//NnkXIxFaoklPaBhC4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TZpUocbZkJ2maV4+ZrCzVZctv3jGZXxi51+s/78q/tc=;
-        b=qt5tANL32cldnN7WKdgrPlnEPe5JHbDd8FNtEthzuHys+M7NOMCAFL2iTZWCC3sNbI
-         hBq0Gb/sEJ3Ai/XFKscJ9KBCMXsy9SDzbW9Krox+lp0v4EPXlI+a6WOw5GaRksP8u34r
-         l+kJuhD3pUZSLhv7br5QIU1QDlB8w53TNAXu4sZguleyqaXrn+pTV1Z+5hUdBL3hSpXY
-         clX/u183n+oj4/DqaV5GMlCm20wob07L89AKLOUyGWS9EpgNtAbQNc019lyxYuNMZUJK
-         TGcm8uVygwO0tbxsC8Zg3tLYf/C2QfWp9Ts79hBMLwo51DVaIQG0GUS1Fwa2LSSjrtZm
-         ttog==
-X-Gm-Message-State: AOAM532SMA4gSAQUwQ/3/4ywxkUixEnMmvUHYi8wB+39Yn5cyVXct20U
-        YediBu3KmU34xc8FRGEE1rz17ox2bVovzg/6
-X-Google-Smtp-Source: ABdhPJybappXfN7dWpVL5+yt5MX2ruCnnHlsUmQ5duDm/DTZ9e0TkroNuFHKlW7Wcvht4/IDPhL09w==
-X-Received: by 2002:a17:906:5d05:: with SMTP id g5mr16374503ejt.489.1616778348539;
-        Fri, 26 Mar 2021 10:05:48 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id n3sm4046213ejj.113.2021.03.26.10.05.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 10:05:48 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH] greybus: remove stray nul byte in
- apb_log_enable_read output
-To:     Alex Elder <elder@linaro.org>, Johan Hovold <johan@kernel.org>,
-        Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     greybus-dev@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <20210326152254.733066-1-linux@rasmusvillemoes.dk>
- <3a04ad94-f8c3-4d2e-c6a2-d498ac3cbeb0@linaro.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <bca9a507-0cfb-936c-5fce-a5fa3f05b0cd@rasmusvillemoes.dk>
-Date:   Fri, 26 Mar 2021 18:05:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <3a04ad94-f8c3-4d2e-c6a2-d498ac3cbeb0@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Fri, 26 Mar 2021 13:06:47 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 208075807EA;
+        Fri, 26 Mar 2021 13:06:47 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute3.internal (MEProxy); Fri, 26 Mar 2021 13:06:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=Cto+EyA1XyjcLE2PX+93/pQcMeag
+        m1IAD58rKTDVk4M=; b=bvq3t6Ypz3kHuIIjz44HfJzMpasxPpDj2mZeWxVz90Vi
+        7yUFJby512eLEBQKPm58HSjeT/kZQExI86nRBhZp8FBKsSoLzwaLkIhi0Mv2aPes
+        Pwbcc1DxqyxbMHiI9NPYT1sCqzuCSGexpjW6NP2jeM6S16btQ9O+U3fuBVj/Nlmu
+        m4OqpXNdCGWKUAHf5quASINGzi52Q0CT6ohcQwtMpf+ZK2NtxRMAHCCYQHDP9sa3
+        4rMBPzAuXf0VPt+dlDsXEhHEKpibH0o0spCAKgM3fo6idVpXEd/TV8EjXF7s00zQ
+        LIwYsx+N9dLX78aEwrfrGxCZetSMYleU4ehsghawsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Cto+Ey
+        A1XyjcLE2PX+93/pQcMeagm1IAD58rKTDVk4M=; b=t9Uuqvot2Mg61iccRpYVgS
+        hRijFfGbvs5ElZ0yP60DTOdjleZDCqvxlueEsPWjdbOH+pa4nsYXLNK5J33e7g7d
+        XiHg457+wQWfR1o0t9XFVqXXMbTHt9dAUdvqZbFBBjS1SBm71xySxK65gQ8Q6x4s
+        JzSDuXS6wJ/aQqgkZ8gjhB0HBzjcUZbk28b3dH4vJ3QBQZ56GUb0NCERH0qJ/Vd+
+        9J1H6OYvULhGRcBXz7dzNL2EicGcxM+O0xX2/uvBaZFhteuVOZJSRDIDuzbZ2Awk
+        dc94FfgWZLIst1x+8X6sexb/ZvFx+xp6sjTn1DO1AWJl8Ny0LGVlTg5sfF/eCxsA
+        ==
+X-ME-Sender: <xms:pBReYObo6zn-am-chkHUkDXtGNOZJcGnzxRACWzJKK6Pv-YUjC-tTA>
+    <xme:pBReYBbqrgz8L0bDpHThXGpRygzQa93Or9UsdMiJIQlIU7MSNmHh-08X3S3-xsTEs
+    byV2-Lw73TawQH1LCU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehvddgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
+    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:pBReYI_HcWQBkUqaYLRjQl10c9Q86o1cTpDITKyX6UeWnJ0ra-fOCw>
+    <xmx:pBReYAreczweL8wq4fZ_qelo28s1-XS2rh_h6gqqHK-YfqnXB20FFg>
+    <xmx:pBReYJpKTnDItHpCS3p9Jp9dYP-TFWaJaHVUFBHZ1-f-vHHdlUcMSw>
+    <xmx:phReYKSPRyHNf48Z_o1QYw7YAmk7XjVfEBAbCG925V5oT5G8Fly-q1EHj-M>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4981F51C005E; Fri, 26 Mar 2021 13:06:44 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <5907bd2e-858e-4f54-a3d1-3c3905e22422@www.fastmail.com>
+In-Reply-To: <CAK8P3a2b7k6JkxecW=yu-NF+fkNCxJ3Ja36nQ7LK8hsuO=4=sw@mail.gmail.com>
+References: <20210320151903.60759-1-sven@svenpeter.dev>
+ <c1bcc0609e920bc6@bloch.sibelius.xs4all.nl>
+ <20210323205346.GA1283560@robh.at.kernel.org>
+ <43685c67-6d9c-4e72-b320-0462c2273bf0@www.fastmail.com>
+ <CAK8P3a0fvnYLrG=cGiOQ6u8aZnriTeM0R=MW7FX=94mO13Rq0w@mail.gmail.com>
+ <c1bcd90d344c2b68@bloch.sibelius.xs4all.nl>
+ <9f06872d-f0ec-43c3-9b53-d144337100b3@www.fastmail.com>
+ <CAK8P3a2b7k6JkxecW=yu-NF+fkNCxJ3Ja36nQ7LK8hsuO=4=sw@mail.gmail.com>
+Date:   Fri, 26 Mar 2021 18:06:23 +0100
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Rob Herring" <robh@kernel.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 0/3] Apple M1 DART IOMMU driver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/03/2021 17.31, Alex Elder wrote:
-> On 3/26/21 10:22 AM, Rasmus Villemoes wrote:
->> Including a nul byte in the otherwise human-readable ascii output
->> from this debugfs file is probably not intended.
+
+
+On Fri, Mar 26, 2021, at 17:38, Arnd Bergmann wrote:
+> On Fri, Mar 26, 2021 at 5:10 PM Sven Peter <sven@svenpeter.dev> wrote:
+> > On Fri, Mar 26, 2021, at 16:59, Mark Kettenis wrote:
+> > > Some of the DARTs provide a bypass facility.  That code make using the
+> > > standard "dma-ranges" property tricky.  That property would need to
+> > > contain the bypass address range.  But that would mean that if the
+> > > DART driver needs to look at that property to figure out the address
+> > > range that supports translation it will need to be able to distinguish
+> > > between the translatable address range and the bypass address range.
+> >
+> > Do we understand if and why we even need to bypass certain streams?
 > 
-> Looking only at the comments above simple_read_from_buffer(),
-> the last argument is the size of the buffer (tmp_buf in this
-> case).  So "3" is proper.
+> My guess is that this is a performance optimization.
 
-The size of the buffer is 3 because that's what sprintf() is gonna need
-to print one digit, '\n' and a nul byte. That doesn't necessarily imply
-that the entire buffer is meant to be sent to userspace.
+Makes sense.
 
-> But looking at callers, it seems that the trailing NUL is
-> often excluded this way.
 > 
-> I don't really have a problem with your patch, but could
-> you explain why having the NUL byte included is an actual
-> problem?  A short statement about that would provide better
-> context than just "probably not intended."
+> There are generally three reasons to want an iommu in the first place:
+>  - Pass a device down to a guest or user process without giving
+>    access to all of memory
+>  - Avoid problems with limitations in the device, typically when it
+> only supports
+>    32-bit bus addressing, but the installed memory is larger than 4GB
+>  - Protect kernel memory from broken drivers
+> 
+> If you care about none of the above, but you do care about data transfer
+> speed, you are better off just leaving the IOMMU in bypass mode.
+> I don't think we have to support it if the IOMMU works reliably, but it's
+> something that users might want.
 
-debugfs files are AFAIK intended to be used with simple "cat foo", "echo
-1 > foo" in shell (scripts and interactive). Having non-printable
-characters returned from that "cat foo" is odd (and can sometimes break
-scripts that e.g. "grep 1 foo/*/*/bar" when grep stops because it thinks
-one of the files is binary, or when the output of that is further piped
-somewhere).
+Right now the IOMMU works very reliably while bypass mode seems to be tricky
+at best. I think I partly know how to enable it but it looks like either not
+every DART or DART/master combination even supports it or that there is
+some additional configuration required to make it work reliably.
 
-At the very least, it's inconsistent for this one, those in
-greybus/svc.c do just return the ascii digits and the newline (and if
-one followed your argument above and let those pass 16 instead of desc
-one would leak a few bytes of uninitialized kernel stack to userspace).
+I had it working with the USB DART at one point but I needed to enable it in
+all 16 streams of the IOMMU even though the pagetables only need to be setup
+in one stream as indicated by the ADT.
+I couldn't get it to work at all for the framebuffer IOMMU.
 
-I said "probably not intended" because for all I know, it might be
-intentional. I just doubt it.
+I think it's fine to skip it for now until it's either actually required due
+to some hardware quirk or once we have users requesting support. Apple uses
+almost all IOMMUs without bypass mode if that ADT is to be believed though.
 
-Rasmus
+
+Best,
+
+Sven
