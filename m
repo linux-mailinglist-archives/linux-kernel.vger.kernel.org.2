@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF48234B0AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAFD34B0AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhCZUkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 16:40:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41732 "EHLO
+        id S230174AbhCZUkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 16:40:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22409 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230525AbhCZUjw (ORCPT
+        by vger.kernel.org with ESMTP id S231131AbhCZUj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:39:52 -0400
+        Fri, 26 Mar 2021 16:39:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616791191;
+        s=mimecast20190719; t=1616791196;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VP0V0L/BTTYQxWaLh1/aw3FlVG9OlwvQO5d3r9G4bEA=;
-        b=QbLD1XSPcQLSmAcJbT3Hk9t4BrQndSESXyH74jpK4fIZatNfPIPfcQBg3IfBqnu6/5QRAf
-        f3zinsPNnB63pNjsjfbG0EvzXoYZhdVN9anHqXKcpZAonHSqKu0tmSAwxW/H/5vDYT96Q7
-        p+KXSrgTc5fq9XIwkz5VJM+Z+ebtUyM=
+        bh=777DBmFJ+rY1vS5I0vU/Gj0FBu2QfpmiUblV8exoJZI=;
+        b=gI02w1GonoK44svLuUoCoN2wftR0K2DGIbD/4W9Fz3s8k9cebuWuk2wJSmT05sGPtPnEVe
+        n4pQRlu8PldFOAgHDRR1+ysYe1PKossH0H761nNKopXJT2i70H/+MdOQyaENuxDV0jtmfG
+        XruGdqD6A1EWcFMPzxDL1ziLGeCePtA=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503--sRfaVPYMCu6i2Dz4myx3g-1; Fri, 26 Mar 2021 16:39:49 -0400
-X-MC-Unique: -sRfaVPYMCu6i2Dz4myx3g-1
+ us-mta-567-XWVVkDhwPoO7rQ9ZUkmSqQ-1; Fri, 26 Mar 2021 16:39:52 -0400
+X-MC-Unique: XWVVkDhwPoO7rQ9ZUkmSqQ-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4C42501E0;
-        Fri, 26 Mar 2021 20:39:46 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C8CD1009E2D;
+        Fri, 26 Mar 2021 20:39:50 +0000 (UTC)
 Received: from Whitewolf.lyude.net (ovpn-114-133.rdu2.redhat.com [10.10.114.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 776435DAA5;
-        Fri, 26 Mar 2021 20:39:44 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D6865DDAD;
+        Fri, 26 Mar 2021 20:39:47 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     nouveau@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, intel-gfx@lists.freedesktop.org
@@ -42,23 +42,10 @@ Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Ramalingam C <ramalingam.c@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Oliver Barta <oliver.barta@aptiv.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 13/20] drm/dp_dual_mode: Pass drm_device to drm_dp_dual_mode_max_tmds_clock()
-Date:   Fri, 26 Mar 2021 16:38:00 -0400
-Message-Id: <20210326203807.105754-14-lyude@redhat.com>
+Subject: [PATCH v2 14/20] drm/dp_dual_mode: Pass drm_device to drm_dp_dual_mode_get_tmds_output()
+Date:   Fri, 26 Mar 2021 16:38:01 -0400
+Message-Id: <20210326203807.105754-15-lyude@redhat.com>
 In-Reply-To: <20210326203807.105754-1-lyude@redhat.com>
 References: <20210326203807.105754-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -68,63 +55,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another function we need to pass drm_device down to in order to start using
-drm_dbg_*().
+Another function to pass drm_device * down to so we can start using the
+drm_dbg_*() in the DRM DP helpers.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- drivers/gpu/drm/drm_dp_dual_mode_helper.c | 3 ++-
- drivers/gpu/drm/i915/display/intel_hdmi.c | 2 +-
+ drivers/gpu/drm/drm_dp_dual_mode_helper.c | 5 +++--
  include/drm/drm_dp_dual_mode_helper.h     | 2 +-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/drm_dp_dual_mode_helper.c b/drivers/gpu/drm/drm_dp_dual_mode_helper.c
-index a63d7de85309..4a26b3e1f78f 100644
+index 4a26b3e1f78f..c9c2952bcad2 100644
 --- a/drivers/gpu/drm/drm_dp_dual_mode_helper.c
 +++ b/drivers/gpu/drm/drm_dp_dual_mode_helper.c
-@@ -252,6 +252,7 @@ EXPORT_SYMBOL(drm_dp_dual_mode_detect);
+@@ -296,6 +296,7 @@ EXPORT_SYMBOL(drm_dp_dual_mode_max_tmds_clock);
  
  /**
-  * drm_dp_dual_mode_max_tmds_clock - Max TMDS clock for DP dual mode adaptor
+  * drm_dp_dual_mode_get_tmds_output - Get the state of the TMDS output buffers in the DP dual mode adaptor
 + * @dev: &drm_device to use
   * @type: DP dual mode adaptor type
   * @adapter: I2C adapter for the DDC bus
-  *
-@@ -265,7 +266,7 @@ EXPORT_SYMBOL(drm_dp_dual_mode_detect);
+  * @enabled: current state of the TMDS output buffers
+@@ -310,8 +311,8 @@ EXPORT_SYMBOL(drm_dp_dual_mode_max_tmds_clock);
   * Returns:
-  * Maximum supported TMDS clock rate for the DP dual mode adaptor in kHz.
+  * 0 on success, negative error code on failure
   */
--int drm_dp_dual_mode_max_tmds_clock(enum drm_dp_dual_mode_type type,
-+int drm_dp_dual_mode_max_tmds_clock(const struct drm_device *dev, enum drm_dp_dual_mode_type type,
- 				    struct i2c_adapter *adapter)
+-int drm_dp_dual_mode_get_tmds_output(enum drm_dp_dual_mode_type type,
+-				     struct i2c_adapter *adapter,
++int drm_dp_dual_mode_get_tmds_output(const struct drm_device *dev,
++				     enum drm_dp_dual_mode_type type, struct i2c_adapter *adapter,
+ 				     bool *enabled)
  {
- 	uint8_t max_tmds_clock;
-diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index fdc43f545cad..9c172dd6fb5b 100644
---- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -2255,7 +2255,7 @@ intel_hdmi_dp_dual_mode_detect(struct drm_connector *connector, bool has_edid)
- 
- 	hdmi->dp_dual_mode.type = type;
- 	hdmi->dp_dual_mode.max_tmds_clock =
--		drm_dp_dual_mode_max_tmds_clock(type, adapter);
-+		drm_dp_dual_mode_max_tmds_clock(&dev_priv->drm, type, adapter);
- 
- 	drm_dbg_kms(&dev_priv->drm,
- 		    "DP dual mode adaptor (%s) detected (max TMDS clock: %d kHz)\n",
+ 	uint8_t tmds_oen;
 diff --git a/include/drm/drm_dp_dual_mode_helper.h b/include/drm/drm_dp_dual_mode_helper.h
-index 8cb0dcd98a99..aabf9c951380 100644
+index aabf9c951380..01eec9ff5962 100644
 --- a/include/drm/drm_dp_dual_mode_helper.h
 +++ b/include/drm/drm_dp_dual_mode_helper.h
-@@ -106,7 +106,7 @@ enum drm_dp_dual_mode_type {
- 
- enum drm_dp_dual_mode_type
+@@ -108,7 +108,7 @@ enum drm_dp_dual_mode_type
  drm_dp_dual_mode_detect(const struct drm_device *dev, struct i2c_adapter *adapter);
--int drm_dp_dual_mode_max_tmds_clock(enum drm_dp_dual_mode_type type,
-+int drm_dp_dual_mode_max_tmds_clock(const struct drm_device *dev, enum drm_dp_dual_mode_type type,
+ int drm_dp_dual_mode_max_tmds_clock(const struct drm_device *dev, enum drm_dp_dual_mode_type type,
  				    struct i2c_adapter *adapter);
- int drm_dp_dual_mode_get_tmds_output(enum drm_dp_dual_mode_type type,
+-int drm_dp_dual_mode_get_tmds_output(enum drm_dp_dual_mode_type type,
++int drm_dp_dual_mode_get_tmds_output(const struct drm_device *dev, enum drm_dp_dual_mode_type type,
  				     struct i2c_adapter *adapter, bool *enabled);
+ int drm_dp_dual_mode_set_tmds_output(const struct drm_device *dev, enum drm_dp_dual_mode_type type,
+ 				     struct i2c_adapter *adapter, bool enable);
 -- 
 2.30.2
 
