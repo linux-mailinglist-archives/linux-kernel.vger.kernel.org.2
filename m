@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C47D34B16F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C23B34B17C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhCZVl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 17:41:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29297 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230243AbhCZVlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 17:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616794869;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2KYq2FimxUUOirhAHH7Y6K62w8Nvf75VdOPqqjNoVNY=;
-        b=P568CWIASQHyVW765vVDWKQJdZRpEbzxzylzNY8K7gejdzKWiUWAm9bMHRo1/zIObfzsoI
-        6ZKKgSeeZQAw+44y0SpcN9usokON9TFKb38WtC9MoB3xLGLTKEHT2W+v0IR22f6S4iEimo
-        6cxEiL60B+iKaY+zp+7a6x12mMAZFfA=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-lTENdUMjNESBc0CIb7npVQ-1; Fri, 26 Mar 2021 17:41:07 -0400
-X-MC-Unique: lTENdUMjNESBc0CIb7npVQ-1
-Received: by mail-qk1-f200.google.com with SMTP id y9so7139206qki.14
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 14:41:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=2KYq2FimxUUOirhAHH7Y6K62w8Nvf75VdOPqqjNoVNY=;
-        b=HmuJZOFzE624Frm0K0rDZ9cknYVRVUsxOD33T5lRqWnSFQqfEER6BLN3smxnw6GC+q
-         4rc8YOQDaoJb0pS+ywIswgS7/D8cs1aSVFxtSgKj5DvQ2Dmn7wDReRpbA5nmjLzTdGSl
-         gGTv83Sq1Hilzwxp8jDWEIWpyF+JZ6h6Ospq1E6OBNLogo4BSFYaO8xqQ6BD8S+g2/qB
-         FOw/giZ9Ziuc77fGp7M9wEXocCFmB3w44kjUGeXGFFc9ekevM4bnHXH7+WxSsS6ke67k
-         f109+IXPvT7nVON7gd4U1yrkVWccVE9OMPg3/Ikjj0iVYxpoK9Krju2h/GWi5OlRO10/
-         Ki4Q==
-X-Gm-Message-State: AOAM530Zx2YY5AZC/x35wdU4KFKaNlkpBbL+dZbNaNyI0DGrXUOY2o2E
-        2T2RDWhEWKcn7tKTmuMnd0HRgTMS0GaTY0ukT2zKNlPrb8EoTpGDdUmNEiVTM0Ft2vDbN9QNfe+
-        saiYgPNbcy4szfOZLr01v7lwN
-X-Received: by 2002:ac8:6789:: with SMTP id b9mr13776310qtp.103.1616794866613;
-        Fri, 26 Mar 2021 14:41:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxc8vW+QMW0U4nq1pb7zDYcwAwcJWPPX3yqc5y79GrncUcdi02PbcBkqm4COvoGtyLpXgXAgg==
-X-Received: by 2002:ac8:6789:: with SMTP id b9mr13776303qtp.103.1616794866456;
-        Fri, 26 Mar 2021 14:41:06 -0700 (PDT)
-Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id l9sm6725962qtv.65.2021.03.26.14.41.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 14:41:05 -0700 (PDT)
-Message-ID: <7f51dbe3dac85f692e01bb5cecdf4454a40b1893.camel@redhat.com>
-Subject: Re: [PATCH] drm/nouveau: avoid a use-after-free when BO init fails
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Jeremy Cline <jcline@redhat.com>, Ben Skeggs <bskeggs@redhat.com>
-Cc:     David Airlie <airlied@linux.ie>, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Thierry Reding <treding@nvidia.com>
-Date:   Fri, 26 Mar 2021 17:41:05 -0400
-In-Reply-To: <20201203000220.18238-1-jcline@redhat.com>
-References: <20201203000220.18238-1-jcline@redhat.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S230286AbhCZVnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 17:43:37 -0400
+Received: from mga02.intel.com ([134.134.136.20]:19095 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229969AbhCZVnF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 17:43:05 -0400
+IronPort-SDR: 6I8C7xiNI4hl0x0sMjkEfMFjh97pt4AAMix1MxNV6AED9P5D3Go6CaHRquU6ylhjDAXZuPIfqh
+ gEtOkl7UnX2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="178352800"
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="178352800"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 14:42:59 -0700
+IronPort-SDR: cNojrf+tiikCPGWgRb3ibY3Q/jovmS8uKWnJmBvLnZfc+CV7+xWZZ05N7eGLEjHmDUBPP/m7Xc
+ U7ViBKcq2BbQ==
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="437024048"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 14:42:51 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lPuEA-00GV4K-I1; Fri, 26 Mar 2021 23:42:46 +0200
+Date:   Fri, 26 Mar 2021 23:42:46 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Ion Badulescu <ionut@badula.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        James Smart <james.smart@broadcom.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Peter Chen <Peter.Chen@nxp.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-parisc@vger.kernel.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        SCSI development list <linux-scsi@vger.kernel.org>,
+        linux-serial@vger.kernel.org,
+        Linux USB Mailing List <linux-usb@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] PCI: Remove pci_try_set_mwi
+Message-ID: <YF5VVjQ7q/JBSR1Z@smile.fi.intel.com>
+References: <4d535d35-6c8c-2bd8-812b-2b53194ce0ec@gmail.com>
+ <20210326212655.GA912670@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326212655.GA912670@bjorn-Precision-5520>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Lyude Paul <lyude@redhat.com>
+On Fri, Mar 26, 2021 at 04:26:55PM -0500, Bjorn Helgaas wrote:
+> [+cc Randy, Andrew (though I'm sure you have zero interest in this
+> ancient question :))]
+> 
+> On Wed, Dec 09, 2020 at 09:31:21AM +0100, Heiner Kallweit wrote:
+> > pci_set_mwi() and pci_try_set_mwi() do exactly the same, just that the
+> > former one is declared as __must_check. However also some callers of
+> > pci_set_mwi() have a comment that it's an optional feature. I don't
+> > think there's much sense in this separation and the use of
+> > __must_check. Therefore remove pci_try_set_mwi() and remove the
+> > __must_check attribute from pci_set_mwi().
+> > I don't expect either function to be used in new code anyway.
+> 
+> There's not much I like better than removing things.  But some
+> significant thought went into adding pci_try_set_mwi() in the first
+> place, so I need a little more convincing about why it's safe to
+> remove it.
+> 
+> The argument should cite the discussion about adding it.  I think one
+> of the earliest conversations is here:
+> https://lore.kernel.org/linux-ide/20070404213704.224128ec.randy.dunlap@oracle.com/
 
-On Wed, 2020-12-02 at 19:02 -0500, Jeremy Cline wrote:
-> nouveau_bo_init() is backed by ttm_bo_init() and ferries its return code
-> back to the caller. On failures, ttm_bo_init() invokes the provided
-> destructor which should de-initialize and free the memory.
-> 
-> Thus, when nouveau_bo_init() returns an error the gem object has already
-> been released and the memory freed by nouveau_bo_del_ttm().
-> 
-> Fixes: 019cbd4a4feb ("drm/nouveau: Initialize GEM object before TTM object")
-> Cc: Thierry Reding <treding@nvidia.com>
-> Signed-off-by: Jeremy Cline <jcline@redhat.com>
-> ---
->  drivers/gpu/drm/nouveau/nouveau_gem.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c
-> b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> index 787d05eefd9c..d30157cc7169 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-> @@ -211,10 +211,8 @@ nouveau_gem_new(struct nouveau_cli *cli, u64 size, int
-> align, uint32_t domain,
->         }
->  
->         ret = nouveau_bo_init(nvbo, size, align, domain, NULL, NULL);
-> -       if (ret) {
-> -               nouveau_bo_ref(NULL, &nvbo);
-> +       if (ret)
->                 return ret;
-> -       }
->  
->         /* we restrict allowed domains on nv50+ to only the types
->          * that were requested at creation time.  not possibly on
+It's solely PCI feature which is absent on PCIe.
+
+So, if there is a guarantee that the driver never services a device connected
+to old PCI bus, it's okay to remove the call (it's no-op on PCIe anyway).
+
+OTOH, PCI core may try MWI itself for every device (but this is an opposite,
+what should we do on broken devices that do change their state based on that
+bit while violating specification).
+
+In any case
+
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+for DesignWare DMA case. I have added that and I never saw that IP connected
+to the old PCI.
 
 -- 
-Sincerely,
-   Lyude Paul (she/her)
-   Software Engineer at Red Hat
-   
-Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
-asked me a question, are waiting for a review/merge on a patch, etc. and I
-haven't responded in a while, please feel free to send me another email to check
-on my status. I don't bite!
+With Best Regards,
+Andy Shevchenko
+
 
