@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E3F34A8F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA0B634A8F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbhCZNta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:49:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43348 "EHLO
+        id S230230AbhCZNuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:50:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43047 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230210AbhCZNtT (ORCPT
+        by vger.kernel.org with ESMTP id S229976AbhCZNto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:49:19 -0400
+        Fri, 26 Mar 2021 09:49:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616766559;
+        s=mimecast20190719; t=1616766583;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wftucUMFQaOllmombeSNT//n1WKcSqJM+IZ/swXQYUo=;
-        b=U4gzFzC/mE+1+4mLSENkKhRKBrX8APgnFgzi16p1EVTV3zrR3xJZTqXkxUEw50q/HMzZTD
-        Xac+8pKAk8KSNieb5pm3U+WUQBv6wttRLYwUIC1R5qqnc12h2Jy2vss9rR+4d8bD0v288m
-        aOMBXZ6mfXEFV9ZYEuOSAxCxXFDvZaU=
+        bh=OEnn8bd6lr+qtup9/k0dDhgruQ7f47v/nXPyuUZSu18=;
+        b=IKjx64FMI/V2jGNjj7Hz99yv3PuKa/P3gxmO1v/JT7r/TpygipRUFvAq9orFRJemHrulE1
+        1GxyiMaRFgsk0KuCNScnLCAq2JmKK6Xnx9aPu2aWp9RPC47DHUVn+nTkoIIsJMapsjeVSr
+        iVBtNODT0/t3fBQ4Ozb+KsMM07J764I=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-lziEHDBGP-CIEoy5rswQLQ-1; Fri, 26 Mar 2021 09:49:16 -0400
-X-MC-Unique: lziEHDBGP-CIEoy5rswQLQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-339-I31qHe6AMs6npWBWj5dXkQ-1; Fri, 26 Mar 2021 09:49:39 -0400
+X-MC-Unique: I31qHe6AMs6npWBWj5dXkQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 270B796DD14;
-        Fri, 26 Mar 2021 13:48:45 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.37])
-        by smtp.corp.redhat.com (Postfix) with SMTP id BB21A6062F;
-        Fri, 26 Mar 2021 13:48:42 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 26 Mar 2021 14:48:44 +0100 (CET)
-Date:   Fri, 26 Mar 2021 14:48:41 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        ebiederm@xmission.com, metze@samba.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] kernel: unmask SIGSTOP for IO threads
-Message-ID: <20210326134840.GA1290@redhat.com>
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <20210326003928.978750-3-axboe@kernel.dk>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1216110925AB;
+        Fri, 26 Mar 2021 13:48:53 +0000 (UTC)
+Received: from [10.36.112.81] (ovpn-112-81.ams2.redhat.com [10.36.112.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ABCC479445;
+        Fri, 26 Mar 2021 13:48:51 +0000 (UTC)
+To:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+References: <20210326112650.307890-1-slyfox@gentoo.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH] mm: page_alloc: ignore init_on_free=1 for page alloc
+Message-ID: <4e23d404-5125-6c9c-4aa7-5eff0fa1ba33@redhat.com>
+Date:   Fri, 26 Mar 2021 14:48:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326003928.978750-3-axboe@kernel.dk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210326112650.307890-1-slyfox@gentoo.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jens, sorry, I got lost :/
-
-On 03/25, Jens Axboe wrote:
->
-> With IO threads accepting signals, including SIGSTOP,
-
-where can I find this change? Looks like I wasn't cc'ed...
-
-> unmask the
-> SIGSTOP signal from the default blocked mask.
+On 26.03.21 12:26, Sergei Trofimovich wrote:
+> init_on_free=1 does not guarantee that free pages contain only zero bytes.
 > 
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> ---
->  kernel/fork.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Some examples:
+> 1. page_poison=on takes presedence over init_on_alloc=1 / ini_on_free=1
+
+s/ini_on_free/init_on_free/
+
+> 2. free_pages_prepare() always poisons pages:
 > 
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d3171e8e88e5..d5a40552910f 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2435,7 +2435,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
->  	tsk = copy_process(NULL, 0, node, &args);
->  	if (!IS_ERR(tsk)) {
->  		sigfillset(&tsk->blocked);
-> -		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
-> +		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
+>         if (want_init_on_free())
+>             kernel_init_free_pages(page, 1 << order);
+>         kernel_poison_pages(page, 1 << order
 
-siginitsetinv(blocked, sigmask(SIGKILL)|sigmask(SIGSTOP)) but this is minor.
+In next/master, it's the other way around already.
 
-To remind, either way this is racy and can't really help.
+commit 855a9c4018f3219db8be7e4b9a65ab22aebfde82
+Author: Andrey Konovalov <andreyknvl@gmail.com>
+Date:   Thu Mar 18 17:01:40 2021 +1100
 
-And if "IO threads accepting signals" then I don't understand why. Sorry,
-I must have missed something.
+     kasan, mm: integrate page_alloc init with HW_TAGS
 
-Oleg.
+
+> 
+> I observed use of poisoned pages as the crash on ia64 booted with
+> init_on_free=1 init_on_alloc=1 (CONFIG_PAGE_POISONING=y config).
+> There pmd page contained 0xaaaaaaaa poison pages and led to early crash.
+> 
+> The change drops the assumption that init_on_free=1 guarantees free
+> pages to contain zeros.
+> 
+> Alternative would be to make interaction between runtime poisoning and
+> sanitizing options and build-time debug flags like CONFIG_PAGE_POISONING
+> more coherent. I took the simpler path.
+> 
+
+I thought latest work be Vlastimil tried to tackle that. To me, it feels 
+like page_poison=on  and init_on_free=1 should bail out and disable one 
+of both things. Having both at the same time doesn't sound helpful.
+
+> Tested the fix on rx3600.
+
+Fixes: ?
+
+
+-- 
+Thanks,
+
+David / dhildenb
 
