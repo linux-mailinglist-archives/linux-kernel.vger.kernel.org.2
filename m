@@ -2,159 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C26D34B250
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 466E134B251
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhCZWv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhCZWvV (ORCPT
+        id S230390AbhCZWwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:52:34 -0400
+Received: from pb-smtp21.pobox.com ([173.228.157.53]:53826 "EHLO
+        pb-smtp21.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230343AbhCZWw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:51:21 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2179EC0613AA;
-        Fri, 26 Mar 2021 15:51:21 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id o66so7372182ybg.10;
-        Fri, 26 Mar 2021 15:51:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wo1xdtPvSfPYNdGvfB/dj7upKQGrr8JQkBYTGwXZk30=;
-        b=c3A2uDO9nuopsC7Bfv6aw/O7cwWYnuEcJlO+eq9xmeGZ6Uubf3GJUMC5LxMHBIKmCD
-         MA3wDQVubMGNWXrFQdDdW89GL5ovBKr3nMZOLe6LlflBPAJQBMj3eRIr0bThl9RM1OYF
-         y091L3UArKWtRl5qM2vvoiMjQJNhafUK9TgDZ8MoE9dCRZ1z7QXP6P6l1gdPAmnDjSmh
-         Gfu80Ul8gHBVK1qQXUu+aoFLUibR/TN120C2BMqFCysff5adwfMPDnCuKkHv+09mcsdE
-         thlUSzg2aglt6Wo5a3oQUegb1ATIxoN1FG6Ry6nhyhF0NjjCZhgHXa8+o9p+EmZMz7Qs
-         SqHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wo1xdtPvSfPYNdGvfB/dj7upKQGrr8JQkBYTGwXZk30=;
-        b=lnCjRQcWw2+1f8kYNIaYLrQ1iNdJO4P3VWcPOKf8AYe0RlDo4Wz0MtnmusBUEJQ6bp
-         xbq74QwZhfPzlBR9BC+F7tzeZgT4NMHzYjNI9x6fsJZM5j6sn3LSd2xiHZ2jtJR6w2ny
-         MbPcWVeEQPYX6BBwHLqkn3aTREmuT9OP292L62SKtZyGaQa8icbBjl3+cI6AOZLJIzvl
-         xXulOlIwE2XICQaVFgFe6guwSib68Io0vktQG6YQ6WmV3ATApapCgVX5vajTeEKYxFoN
-         +p+q96KEpXsPDR+J+UoLWrlLX8c6nyGBwXuIvYJ7NX2HQc4GaDzbjQhIAmxVhTfNddbH
-         S/Qg==
-X-Gm-Message-State: AOAM532J+DK/f2qqmBEMhofuJnvdqpxNDHkJ12UUGrWHSu1Ve3XSn4aQ
-        YGO204NWifGUGvRIK0yDJozouDXCFEkEAqXehYF7nETQAHM=
-X-Google-Smtp-Source: ABdhPJyJsQ+U80oti2ENieabuzvAaL+3BQRGcknnMPzFKhEJzggh6LTo2Q2/wAN0dGAbe0BjQ6wBT/erIraUDLDa5Js=
-X-Received: by 2002:a25:874c:: with SMTP id e12mr21619164ybn.403.1616799079001;
- Fri, 26 Mar 2021 15:51:19 -0700 (PDT)
+        Fri, 26 Mar 2021 18:52:26 -0400
+Received: from pb-smtp21.pobox.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id 8B862119652;
+        Fri, 26 Mar 2021 18:52:26 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to
+        :subject:date:message-id:mime-version:content-type
+        :content-transfer-encoding; s=sasl; bh=ijbmGX0OT+CFO4jNqk7SDDvtL
+        Kw=; b=rNqxQYmsVEK7BGgtxxkHBgelhMyg7M1y0e6BzIiWW1kIFe5usmjas/lx/
+        zoEC+aVqDB6OQVC2rU+8LPp8Ty1VdZDY0ZWzb3IBkgz1VZTEkgGtw83+/khbMKbr
+        B9JFYwInbhzhQaiIbPI78TdGnEcn/MNOm2MWfRkpopxRuS11Wk=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:subject
+        :date:message-id:mime-version:content-type
+        :content-transfer-encoding; q=dns; s=sasl; b=lgtsGCdqIcz0n/uD3Og
+        O4X8cXJGquxmIs8rz8AeDzEHTVrUcJYPzn0uEeah4R3Rv6eC8ARwMqgW1IsFgicQ
+        NYC4jCQiktpY77tG5chkqFkoKlC7nrcsAp6TkklhPSuB/pI19x2o3v14FDnMnCpn
+        kZHXHeNka6AaB57kv0IUSwss=
+Received: from pb-smtp21.sea.icgroup.com (unknown [127.0.0.1])
+        by pb-smtp21.pobox.com (Postfix) with ESMTP id 85E82119651;
+        Fri, 26 Mar 2021 18:52:26 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+Received: from pobox.com (unknown [34.74.119.39])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by pb-smtp21.pobox.com (Postfix) with ESMTPSA id A669C11964F;
+        Fri, 26 Mar 2021 18:52:22 -0400 (EDT)
+        (envelope-from junio@pobox.com)
+From:   Junio C Hamano <gitster@pobox.com>
+To:     git@vger.kernel.org
+Subject: [ANNOUNCE] Git v2.31.1
+Date:   Fri, 26 Mar 2021 15:52:20 -0700
+Message-ID: <xmqq1rc1sf2z.fsf@gitster.g>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
 MIME-Version: 1.0
-References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-2-revest@chromium.org>
- <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
-In-Reply-To: <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 26 Mar 2021 15:51:08 -0700
-Message-ID: <CAEf4BzYVTHm5Zrr7RPoRB7EL9nsE5kUzciHEv5fPipbMoEtQxA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+X-Pobox-Relay-ID: ED3D9174-8E85-11EB-B92F-D609E328BF65-77302942!pb-smtp21.pobox.com
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 2:53 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
-> >
-> > Two helpers (trace_printk and seq_printf) have very similar
-> > implementations of format string parsing and a third one is coming
-> > (snprintf). To avoid code duplication and make the code easier to
-> > maintain, this moves the operations associated with format string
-> > parsing (validation and argument sanitization) into one generic
-> > function.
-> >
-> > Unfortunately, the implementation of the two existing helpers already
-> > drifted quite a bit and unifying them entailed a lot of changes:
->
-> "Unfortunately" as in a lot of extra work for you? I think overall
-> though it was very fortunate that you ended up doing it, all
-> implementations are more feature-complete and saner now, no? Thanks a
-> lot for your hard work!
->
-> >
-> > - bpf_trace_printk always expected fmt[fmt_size] to be the terminating
-> >   NULL character, this is no longer true, the first 0 is terminating.
->
-> You mean if you had bpf_trace_printk("bla bla\0some more bla\0", 24)
-> it would emit that zero character? If yes, I don't think it was a sane
-> behavior anyways.
->
-> > - bpf_trace_printk now supports %% (which produces the percentage char).
-> > - bpf_trace_printk now skips width formating fields.
-> > - bpf_trace_printk now supports the X modifier (capital hexadecimal).
-> > - bpf_trace_printk now supports %pK, %px, %pB, %pi4, %pI4, %pi6 and %pI6
-> > - argument casting on 32 bit has been simplified into one macro and
-> >   using an enum instead of obscure int increments.
-> >
-> > - bpf_seq_printf now uses bpf_trace_copy_string instead of
-> >   strncpy_from_kernel_nofault and handles the %pks %pus specifiers.
-> > - bpf_seq_printf now prints longs correctly on 32 bit architectures.
-> >
-> > - both were changed to use a global per-cpu tmp buffer instead of one
-> >   stack buffer for trace_printk and 6 small buffers for seq_printf.
-> > - to avoid per-cpu buffer usage conflict, these helpers disable
-> >   preemption while the per-cpu buffer is in use.
-> > - both helpers now support the %ps and %pS specifiers to print symbols.
-> >
-> > Signed-off-by: Florent Revest <revest@chromium.org>
-> > ---
->
-> This is great, you already saved some lines of code! I suspect I'll
-> have some complaints about mods (it feels like this preample should
-> provide extra information about which arguments have to be read from
-> kernel/user memory, but I'll see next patches first.
+The latest maintenance release Git v2.31.1 is now available at
+the usual places.
 
-Disregard the last part (at least for now). I had a mental model that
-it should be possible to parse a format string once and then remember
-"instructions" (i.e., arg1 is long, arg2 is string, and so on). But
-that's too complicated, so I think re-parsing the format string is
-much simpler.
+Nothing extraordinary.  Just to fix known issues in v2.31 and
+backport some clean-ups already made for the next feature release.
 
->
-> See my comments below (I deliberately didn't trim most of the code for
-> easier jumping around), but it's great overall, thanks!
->
-> >  kernel/trace/bpf_trace.c | 529 ++++++++++++++++++---------------------
-> >  1 file changed, 244 insertions(+), 285 deletions(-)
-> >
+The tarballs are found at:
 
-[...]
+    https://www.kernel.org/pub/software/scm/git/
 
-> > +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
-> > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
-> > +                       u32 num_args)
-> > +{
-> > +       struct bpf_printf_buf *bufs = this_cpu_ptr(&bpf_printf_buf);
-> > +       int err, i, fmt_cnt = 0, copy_size, used;
-> > +       char *unsafe_ptr = NULL, *tmp_buf = NULL;
-> > +       bool prepare_args = final_args && mod;
->
-> probably better to enforce that both or none are specified, otherwise
-> return error
+The following public repositories all have a copy of the 'v2.31.1'
+tag and the 'maint' branch that the tag points at:
 
-it's actually three of them: raw_args, mod, and num_args, right? All
-three are either NULL or non-NULL.
+  url =3D https://git.kernel.org/pub/scm/git/git
+  url =3D https://kernel.googlesource.com/pub/scm/git/git
+  url =3D git://repo.or.cz/alt-git.git
+  url =3D https://github.com/gitster/git
 
->
-> > +       enum bpf_printf_mod_type current_mod;
-> > +       size_t tmp_buf_len;
-> > +       u64 current_arg;
-> > +       char fmt_ptype;
-> > +
-> > +       for (i = 0; i < fmt_size && fmt[i] != '\0'; i++) {
->
+----------------------------------------------------------------
 
-[...]
+Git 2.31.1 Release Notes
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Fixes since v2.31
+-----------------
+
+ * The fsmonitor interface read from its input without making sure
+   there is something to read from.  This bug is new in 2.31
+   timeframe.
+
+ * The data structure used by fsmonitor interface was not properly
+   duplicated during an in-core merge, leading to use-after-free etc.
+
+ * "git bisect" reimplemented more in C during 2.30 timeframe did not
+   take an annotated tag as a good/bad endpoint well.  This regression
+   has been corrected.
+
+ * Fix macros that can silently inject unintended null-statements.
+
+ * CALLOC_ARRAY() macro replaces many uses of xcalloc().
+
+ * Update insn in Makefile comments to run fuzz-all target.
+
+ * Fix a corner case bug in "git mv" on case insensitive systems,
+   which was introduced in 2.29 timeframe.
+
+Also contains various documentation updates and code clean-ups.
+
+----------------------------------------------------------------
+
+Changes since v2.31.0 are as follows:
+
+Andrzej Hunt (2):
+      Makefile: update 'make fuzz-all' docs to reflect modern clang
+      fsmonitor: avoid global-buffer-overflow READ when checking trivial =
+response
+
+Jeff King (1):
+      bisect: peel annotated tags to commits
+
+Johannes Schindelin (2):
+      fsmonitor: fix memory corruption in some corner cases
+      fsmonitor: do not forget to release the token in `discard_index()`
+
+Jonathan Tan (1):
+      t5606: run clone branch name test with protocol v2
+
+Junio C Hamano (3):
+      xcalloc: use CALLOC_ARRAY() when applicable
+      cocci: allow xcalloc(1, size)
+      Git 2.31.1
+
+Kyle Meyer (1):
+      config.txt: add missing period
+
+Ren=C3=A9 Scharfe (6):
+      fix xcalloc() argument order
+      git-compat-util.h: drop trailing semicolon from macro definition
+      use CALLOC_ARRAY
+      vcs-svn: remove header files as well
+      block-sha1: drop trailing semicolon from macro definition
+      mem-pool: drop trailing semicolon from macro definition
+
+Torsten B=C3=B6gershausen (1):
+      git mv foo FOO ; git mv foo bar gave an assert
+
