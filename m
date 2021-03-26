@@ -2,199 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7011934A713
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:23:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD0834A714
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhCZMWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhCZMW3 (ORCPT
+        id S229957AbhCZMXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:23:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52570 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229882AbhCZMXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:22:29 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEE7C0613AA;
-        Fri, 26 Mar 2021 05:22:28 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id 63B521F46DAA
-Subject: Re: [PATCH 1/2] media: videobuf2: use dmabuf size for length
-To:     John Cox <jc@kynesim.co.uk>
-Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
-        kernel@collabora.com, linux-kernel@vger.kernel.org,
-        laurent.pinchart@ideasonboard.com, dave.stevenson@raspberrypi.org,
-        tfiga@chromium.org
-References: <20210325001712.197837-1-helen.koike@collabora.com>
- <afno5g9a14fmf7tj1uq0e9pciflop2rv3k@4ax.com>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <e67265d4-0641-e6d5-a939-9aa05f2214a6@collabora.com>
-Date:   Fri, 26 Mar 2021 09:22:17 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Mar 2021 08:23:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616761384;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zcmlc1TwDglAeseCrsYdzjvuQS8rznwGU5p85yQrWSU=;
+        b=SpjnBdHNvoT5XpTXypL3wmFNoJE3g5zFZn95snoIPxxfv9wK4mo+4a00HzfvicNBLgmkqU
+        7nPAbkvTwDOqaWmFiGb/t5VKUPc8W02VFLkiU7AhgZX1DgrlX/8kkI/+J1xI43d5tOCMSf
+        kwzZ05NVjpu/Cyr+ajTmY48JlaK5JM4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-FSOZkozrMaecb2EHl_-a1g-1; Fri, 26 Mar 2021 08:23:00 -0400
+X-MC-Unique: FSOZkozrMaecb2EHl_-a1g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02FB080006E;
+        Fri, 26 Mar 2021 12:22:59 +0000 (UTC)
+Received: from ovpn-115-44.ams2.redhat.com (ovpn-115-44.ams2.redhat.com [10.36.115.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 91B2B1962F;
+        Fri, 26 Mar 2021 12:22:57 +0000 (UTC)
+Message-ID: <2e667826f183fbef101a62f0ad8ccb4ed253cb75.camel@redhat.com>
+Subject: Re: [PATCH] udp: Add support for getsockopt(..., ..., UDP_GRO, ...,
+ ...)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Norman Maurer <norman_maurer@apple.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, dsahern@kernel.org
+Date:   Fri, 26 Mar 2021 13:22:56 +0100
+In-Reply-To: <CF78DCAD-6F2C-46C4-9FF1-61DF66183C76@apple.com>
+References: <20210325195614.800687-1-norman_maurer@apple.com>
+         <8eadc07055ac1c99bbc55ea10c7b98acc36dde55.camel@redhat.com>
+         <CF78DCAD-6F2C-46C4-9FF1-61DF66183C76@apple.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <afno5g9a14fmf7tj1uq0e9pciflop2rv3k@4ax.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On Fri, 2021-03-26 at 11:22 +0100, Norman Maurer wrote:
+> On 26. Mar 2021, at 10:36, Paolo Abeni <pabeni@redhat.com> wrote:
+> > One thing you can do to simplifies the maintainer's life, would be post
+> > a v2 with the correct tag (and ev. obsolete this patch in patchwork).
+> 
+> I am quite new to contribute patches to the kernel so I am not sure
+> how I would “obsolete” this patch and make a v2. If you can give me
+> some pointers I am happy to do so.
 
-On 3/25/21 7:20 AM, John Cox wrote:
-> Hi
-> 
->> Always use dmabuf size when considering the length of the buffer.
->> Discard userspace provided length.
->> Fix length check error in _verify_length(), which was handling single and
->> multiplanar diferently, and also not catching the case where userspace
->> provides a bigger length and bytesused then the underlying buffer.
->>
->> Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
->> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->> ---
->>
->> Hello,
->>
->> As discussed on
->> https://patchwork.linuxtv.org/project/linux-media/patch/gh5kef5bkeel3o6b2dkgc2dfagu9klj4c0@4ax.com/
->>
->> This patch also helps the conversion layer of the Ext API patchset,
->> where we are not exposing the length field.
->>
->> It was discussed that userspace might use a smaller length field to
->> limit the usage of the underlying buffer, but I'm not sure if this is
->> really usefull and just complicates things.
->>
->> If this is usefull, then we should also expose a length field in the Ext
->> API, and document this feature properly.
->>
->> What do you think?
->> ---
->> .../media/common/videobuf2/videobuf2-core.c   | 21 ++++++++++++++++---
->> .../media/common/videobuf2/videobuf2-v4l2.c   |  8 +++----
->> include/uapi/linux/videodev2.h                |  7 +++++--
->> 3 files changed, 27 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->> index 02281d13505f..2cbde14af051 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->> @@ -1205,6 +1205,7 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
->>
->> 	for (plane = 0; plane < vb->num_planes; ++plane) {
->> 		struct dma_buf *dbuf = dma_buf_get(planes[plane].m.fd);
->> +		unsigned int bytesused;
->>
->> 		if (IS_ERR_OR_NULL(dbuf)) {
->> 			dprintk(q, 1, "invalid dmabuf fd for plane %d\n",
->> @@ -1213,9 +1214,23 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
->> 			goto err;
->> 		}
->>
->> -		/* use DMABUF size if length is not provided */
->> -		if (planes[plane].length == 0)
->> -			planes[plane].length = dbuf->size;
->> +		planes[plane].length = dbuf->size;
->> +		bytesused = planes[plane].bytesused ?
->> +			    planes[plane].bytesused : dbuf->size;
->> +
->> +		if (planes[plane].bytesused > planes[plane].length) {
->> +			dprintk(q, 1, "bytesused is bigger then dmabuf length for plane %d\n",
->> +				plane);
->> +			ret = -EINVAL;
->> +			goto err;
->> +		}
->> +
->> +		if (planes[plane].data_offset >= bytesused) {
->> +			dprintk(q, 1, "data_offset >= bytesused for plane %d\n",
->> +				plane);
->> +			ret = -EINVAL;
->> +			goto err;
->> +		}
->>
->> 		if (planes[plane].length < vb->planes[plane].min_length) {
->> 			dprintk(q, 1, "invalid dmabuf length %u for plane %d, minimum length %u\n",
->> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> index 7e96f67c60ba..ffc7ed46f74a 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> @@ -98,14 +98,14 @@ static int __verify_length(struct vb2_buffer *vb, const struct v4l2_buffer *b)
->> 	unsigned int bytesused;
->> 	unsigned int plane;
->>
->> -	if (V4L2_TYPE_IS_CAPTURE(b->type))
->> +	/* length check for dmabuf is performed in _prepare_dmabuf() */
->> +	if (V4L2_TYPE_IS_CAPTURE(b->type) || b->memory == VB2_MEMORY_DMABUF)
->> 		return 0;
->>
->> 	if (V4L2_TYPE_IS_MULTIPLANAR(b->type)) {
->> 		for (plane = 0; plane < vb->num_planes; ++plane) {
->> -			length = (b->memory == VB2_MEMORY_USERPTR ||
->> -				  b->memory == VB2_MEMORY_DMABUF)
->> -			       ? b->m.planes[plane].length
->> +			length = b->memory == VB2_MEMORY_USERPTR
->> +				? b->m.planes[plane].length
->> 				: vb->planes[plane].length;
->> 			bytesused = b->m.planes[plane].bytesused
->> 				  ? b->m.planes[plane].bytesused : length;
->> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->> index 8d15f6ccc4b4..79b3b2893513 100644
->> --- a/include/uapi/linux/videodev2.h
->> +++ b/include/uapi/linux/videodev2.h
->> @@ -968,7 +968,9 @@ struct v4l2_requestbuffers {
->> /**
->>   * struct v4l2_plane - plane info for multi-planar buffers
->>   * @bytesused:		number of bytes occupied by data in the plane (payload)
->> - * @length:		size of this plane (NOT the payload) in bytes
->> + * @length:		size of this plane (NOT the payload) in bytes. Filled
->> + *			by userspace for USERPTR and by the driver for DMABUF
->> + *			and MMAP.
->>   * @mem_offset:		when memory in the associated struct v4l2_buffer is
->>   *			V4L2_MEMORY_MMAP, equals the offset from the start of
->>   *			the device memory for this plane (or is a "cookie" that
->> @@ -1025,7 +1027,8 @@ struct v4l2_plane {
->>   * @m:		union of @offset, @userptr, @planes and @fd
->>   * @length:	size in bytes of the buffer (NOT its payload) for single-plane
->>   *		buffers (when type != *_MPLANE); number of elements in the
->> - *		planes array for multi-plane buffers
->> + *		planes array for multi-plane buffers. Filled by userspace for
->> + *		USERPTR and by the driver for DMABUF and MMAP.
->>   * @reserved2:	drivers and applications must zero this field
->>   * @request_fd: fd of the request that this buffer should use
->>   * @reserved:	for backwards compatibility with applications that do not know
-> 
-> I think this does what I want. But I'm going to restate my usage desires
-> and check that you agree that it covers them.
-> 
-> I'm interested in passing compressed bitstreams to a decoder.  The size
-> of these buffers can be very variable and the worst case will nearly
-> always be much larger than the typical case and that size cannot be
-> known in advance of usage.  It can be very wasteful to have to allocate
-> buffers that are over an order of magnitude bigger than are likely to
-> ever be used.  If you have a fixed pool of fixed size buffers allocated
-> at the start of time this wastefulness is unavoidable, but dmabufs can
-> be dynamically sized to be as big as required and so there should be no
-> limitation on passing in buffers that are smaller than the maximum.  It
+Well, I actually gave you a bad advice about fiddling with patchwork.
 
-Do you mean that the kernel should re-allocate the buffer dynamically
-without userspace intervention?
-I'm not entirely sure if this would be possible.
+The autoritative documentation:
 
-Regards,
-Helen
+Documentation/networking/netdev-FAQ.rst
 
+(inside the kernel tree) suggests to avoid it.
 
-> also seems plausible that dmabufs that are larger than the maximum
-> should be allowed as long as their bytesused is smaller or equal.
-> 
-> As an aside, even when using dynamically sized dmabufs they are often
-> way larger than the data they contain and forcing cache flushes or maps
-> of their entire length rather than just the used portion is also
-> wasteful.  This might be a use for the incoming size field.
-> 
-> Regards
-> 
-> John Cox
-> 
+Just posting a v2 will suffice.
+
+Thanks!
+
+Paolo
+
