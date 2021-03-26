@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1519034A3BE
+	by mail.lfdr.de (Postfix) with ESMTP id A335A34A3BF
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhCZJKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38906 "EHLO
+        id S230070AbhCZJKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbhCZJJr (ORCPT
+        with ESMTP id S229758AbhCZJJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:09:47 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8A9C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:09:46 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id j7so4916806wrd.1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:09:46 -0700 (PDT)
+        Fri, 26 Mar 2021 05:09:49 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11E5C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:09:48 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id d8-20020a1c1d080000b029010f15546281so4496611wmd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=w0yMVqW3xU8ivRsQX9coWO8CDIq3UwDkxu+DQbFWhy4=;
-        b=ssv9pVDqic1QfLIJEOGqjuWrhEDbMIbe//neuILBFdYD8dUkXxLNK3QBm+6x1LsiPs
-         IrEzqIx4G7LPjNtVXfJQ6KKBgYRIMTrqt1yo+qyHUpLtzUbej2X0Xr/jPTAHHkLfnnpc
-         YeSXlSKovcYeGn3iVAPA22E2rvWWQkpq/JUoSwHERaYdYZ1C0QKqAYMXAssxf4RfpoZB
-         EWz5I3++CLSmNR3Se1jA31d8CSbcpmHNiR+wuDG62geOwXVYy60Q9GNAE6a9xfShAJQz
-         QbWyTHsB//olwqxMKandZtRv39ranI2bMqXsiaCWDYDWUvHrvKCKMJhySokApTzISUoa
-         v30w==
+        bh=T70nnYT1S74ukfHVQnDEfFZYXw40llpY2tBON0+87cQ=;
+        b=ThIaQdTN0n4UBBJHBnv/3yTyrAUrvOuxJ0TPzN1GreVZtclPIesu1jbKm7RVp9/ASm
+         yKWRTcyQkUybH0tLmjzL/T0y17NN+YZB4blVV3/Gh6HgMI/4beYdE2O6P3sxM9R9eAd5
+         9w/8A2KnTy1V4goMi62EYdmfT7Gkh0JQng1EBi9dYiLVek8s3R7oC+lnVhzSD7N4S490
+         P9Xw33Pcf+wYmMnQkeO8xoAHHk6PFPjdggCKv8tQKgz/aHK6jH5SWcL/weLfEJupJNd7
+         JoHs7oOqPwzkffWwx4qyaUztbiwsjOuEx/9rbXLjOcojBYivN5aLt7K7YNpLtocfGT+v
+         pbzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=w0yMVqW3xU8ivRsQX9coWO8CDIq3UwDkxu+DQbFWhy4=;
-        b=KVJ7rvawKjRtmhGWNY1ZtRoZT2O28k3YSz4wBa6OmmtVnNhX2w1xsGrdW7qi8V8oni
-         9ED25QtTtFqFqZdg7sgJN5oi+eaewihK9ZjKOP2sAZcbg+WDumzG3SGZlVZ3RYA1XapR
-         a9UXgy/bScziQ1r3IsCtoxW7pcSb2MHdV9caNBuyphdU6ux/piAx3K/PHn8sUrSs4uPC
-         KzeFGwWc4mqvZyeA9mXlNNqnMnYcqDScJxuqw/srpMtMP80d79p1cMENsaOnZPsOUAZQ
-         ulyab5R0mvEkdc+V3UpPquXPj84SbCa9gU8DYSKxGf668vKRQtepd8Tewt4MULkv5ELB
-         wKbQ==
-X-Gm-Message-State: AOAM531wwb3Wkwy11jOc9K9iEPdT6B6AeiP7y65pGeeFBJ4AXOKePqpd
-        KLx/RJABBksRqtcIozf83mU=
-X-Google-Smtp-Source: ABdhPJwCmVxgl70iKvbHrURJuv/d7rGKRo6JnFdGfWmtBUxxo9hxjL7Sco8AsznpDx3wZTvJxKmbWw==
-X-Received: by 2002:a5d:6c62:: with SMTP id r2mr13955449wrz.62.1616749785563;
-        Fri, 26 Mar 2021 02:09:45 -0700 (PDT)
+        bh=T70nnYT1S74ukfHVQnDEfFZYXw40llpY2tBON0+87cQ=;
+        b=gDE3DwWeb/M2Og3kxPvuDhl2Fwm/CBRKPZWyNI8DAQ/PvoKVP0rLfErZgmchRd3EFQ
+         HxcTWI6guES60TWbHmbG0qsSUqhKNx/AQqGgWDujHYahp+UnJI54/wLBxMCxm7BPM/W/
+         07vU7c2UpNfsiV21TVzsD1GxlHYcqDxmlygKdesDGfI7fdGvSTW7uCzYEx3o7cQ3PFHD
+         9GbYd5p3wLVQN6WMvSZXSKMQO6Av5p8YxQymCpa/o30OyMtqmzD9ISFmY7dlMIE5FTHz
+         4HZVcBEnGnfJsBPXQs5907+Us04TxlJd0XDNZiF/36tqI2psPfTFsYgsXFYabYJMSIq6
+         joCQ==
+X-Gm-Message-State: AOAM533ffqTstV4dJHVAIO3mo99So3NrBRqnevbEdI2XWy2r2rEgiB9B
+        ezIjKipVea3H3Hb6I7zVo20=
+X-Google-Smtp-Source: ABdhPJzq1Ods0QzbRAKBqZHoB/pb5hjMdTQH+r4TAIQfSaP03IeyX2nhSNl1k0nNCuzAYkiFVIwqLw==
+X-Received: by 2002:a1c:ddc6:: with SMTP id u189mr12297032wmg.171.1616749787435;
+        Fri, 26 Mar 2021 02:09:47 -0700 (PDT)
 Received: from agape ([5.171.81.75])
-        by smtp.gmail.com with ESMTPSA id j20sm9648773wmp.30.2021.03.26.02.09.45
+        by smtp.gmail.com with ESMTPSA id i8sm11309269wrx.43.2021.03.26.02.09.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:09:45 -0700 (PDT)
+        Fri, 26 Mar 2021 02:09:47 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 03/15] staging: rtl8723bs: put parentheses on macros with complex values in hal/odm_debug.h
-Date:   Fri, 26 Mar 2021 10:09:10 +0100
-Message-Id: <29c07f6a5b8fbb2d99321bc9f373631456a51613.1616748885.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 04/15] staging: rtl8723bs: put parentheses on macros with complex values in include/basic_types.h
+Date:   Fri, 26 Mar 2021 10:09:11 +0100
+Message-Id: <2c7c198ccef194b06921bc476eda7d5102ab70dc.1616748885.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1616748885.git.fabioaiuto83@gmail.com>
 References: <cover.1616748885.git.fabioaiuto83@gmail.com>
@@ -67,42 +67,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 fix the following checkpatch warnings:
 
 ERROR: Macros with complex values should be enclosed in parentheses
-153: FILE: drivers/staging/rtl8723bs/hal/odm_debug.h:153:
-+#define ODM_RT_TRACE(pDM_Odm, comp, level, fmt) \
-no_printk fmt
+154: FILE: drivers/staging/rtl8723bs/include/basic_types.h:154:
++#define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
+--
+ERROR: Macros with multiple statements should be enclosed in
+a do - while loop
+161: FILE: drivers/staging/rtl8723bs/include/basic_types.h:161:
++#define SET_BITS_TO_LE_2BYTE(__pstart, __bitoffset, __bitlen, __val) \
 --
 ERROR: Macros with complex values should be enclosed in parentheses
-154: FILE: drivers/staging/rtl8723bs/hal/odm_debug.h:154:
-+#define ODM_RT_TRACE_F(pDM_Odm, comp, level, fmt) \
-no_printk fmt
---
-ERROR: Macros with complex values should be enclosed in parentheses
-155: FILE: drivers/staging/rtl8723bs/hal/odm_debug.h:155:
-+#define ODM_RT_ASSERT(pDM_Odm, expr, fmt) \
-no_printk fmt
+168: FILE: drivers/staging/rtl8723bs/include/basic_types.h:168:
++#define SET_BITS_TO_LE_1BYTE(__pstart, __bitoffset, __bitlen, __val) \
+
+parentheses solution preferred for all fixes and made macros more
+readables
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/odm_debug.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../staging/rtl8723bs/include/basic_types.h   | 30 +++++++++++--------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/odm_debug.h b/drivers/staging/rtl8723bs/hal/odm_debug.h
-index be0d4c49a747..e6eb517c8685 100644
---- a/drivers/staging/rtl8723bs/hal/odm_debug.h
-+++ b/drivers/staging/rtl8723bs/hal/odm_debug.h
-@@ -150,9 +150,9 @@
- 		} \
- 	} while (0)
- #else
--#define ODM_RT_TRACE(pDM_Odm, comp, level, fmt)		no_printk fmt
--#define ODM_RT_TRACE_F(pDM_Odm, comp, level, fmt)	no_printk fmt
--#define ODM_RT_ASSERT(pDM_Odm, expr, fmt)		no_printk fmt
-+#define ODM_RT_TRACE(pDM_Odm, comp, level, fmt)		(no_printk fmt)
-+#define ODM_RT_TRACE_F(pDM_Odm, comp, level, fmt)	(no_printk fmt)
-+#define ODM_RT_ASSERT(pDM_Odm, expr, fmt)		(no_printk fmt)
- #define ODM_dbg_enter()					do {} while (0)
- #define ODM_dbg_exit()					do {} while (0)
- #define ODM_dbg_trace(str)				no_printk("%s", str)
+diff --git a/drivers/staging/rtl8723bs/include/basic_types.h b/drivers/staging/rtl8723bs/include/basic_types.h
+index 76304086107a..5054c2e3384c 100644
+--- a/drivers/staging/rtl8723bs/include/basic_types.h
++++ b/drivers/staging/rtl8723bs/include/basic_types.h
+@@ -152,24 +152,30 @@
+ /* 		Set subfield of little-endian 4-byte value to specified value. */
+ /*  */
+ #define SET_BITS_TO_LE_4BYTE(__pstart, __bitoffset, __bitlen, __val) \
+-		*((u32 *)(__pstart)) =				\
+-		(						\
+-		LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
+-		((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
++		(\
++			*((u32 *)(__pstart)) =				\
++			(						\
++				LE_BITS_CLEARED_TO_4BYTE(__pstart, __bitoffset, __bitlen) | \
++				((((u32)__val) & BIT_LEN_MASK_32(__bitlen)) << (__bitoffset)) \
++			)\
+ 		)
+ 
+ #define SET_BITS_TO_LE_2BYTE(__pstart, __bitoffset, __bitlen, __val) \
+-		*((u16 *)(__pstart)) =				\
+-		(					\
+-		LE_BITS_CLEARED_TO_2BYTE(__pstart, __bitoffset, __bitlen) | \
+-		((((u16)__val) & BIT_LEN_MASK_16(__bitlen)) << (__bitoffset)) \
++		(\
++			*((u16 *)(__pstart)) =				\
++			(					\
++				LE_BITS_CLEARED_TO_2BYTE(__pstart, __bitoffset, __bitlen) | \
++				((((u16)__val) & BIT_LEN_MASK_16(__bitlen)) << (__bitoffset)) \
++			)\
+ 		);
+ 
+ #define SET_BITS_TO_LE_1BYTE(__pstart, __bitoffset, __bitlen, __val) \
+-		*((u8 *)(__pstart)) = EF1BYTE			\
+-		(					\
+-		LE_BITS_CLEARED_TO_1BYTE(__pstart, __bitoffset, __bitlen) | \
+-		((((u8)__val) & BIT_LEN_MASK_8(__bitlen)) << (__bitoffset)) \
++		(\
++			*((u8 *)(__pstart)) = EF1BYTE			\
++			(					\
++				LE_BITS_CLEARED_TO_1BYTE(__pstart, __bitoffset, __bitlen) | \
++				((((u8)__val) & BIT_LEN_MASK_8(__bitlen)) << (__bitoffset)) \
++			)\
+ 		)
+ 
+ #define LE_BITS_CLEARED_TO_1BYTE_8BIT(__pStart, __BitOffset, __BitLen) \
 -- 
 2.20.1
 
