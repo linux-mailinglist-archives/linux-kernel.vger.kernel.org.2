@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE7534AB78
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C9234AB7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhCZP1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:27:47 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:33342 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhCZP1d (ORCPT
+        id S230196AbhCZP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:28:48 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:51895 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230252AbhCZP2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:27:33 -0400
-Received: by mail-ej1-f42.google.com with SMTP id k10so9070682ejg.0;
-        Fri, 26 Mar 2021 08:27:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CsvTmaNAD+JZrfh5r3rTSTh1rpmcrxqU66s7Dv3Gkbc=;
-        b=n6rfuhxBOr6U36vv91n2Iwiz0iL+xDyXds6Z+NczzAdx96UlVIoVf7viSuXZGW+Z6d
-         D7am5fTfCqRJinkAlegfRDwTw5uoxuKBgQkVrXd2IuQQXW6Spa7Tlk7PLRAvx0e2dfYW
-         Zw7IpT4o7N54RmIP93C6be4oQxV539ihK8J2AqQOoE5ZAJ6ywAPgBKExakfMJWCEd3o7
-         oQyRI2BWAXIesbPW+3Ap/Nz7Po5Ite/gj2d8G/5tkrI3Nnti76fRDT6CNXbtL0BA0uyJ
-         6BG8sJrpW/qcSpzGj53iTOW5SN/t4TtF3+IiE06cdh+nvbhdbD+Fi6p/DUI6YPwVW0y7
-         1jow==
-X-Gm-Message-State: AOAM532syNrsBvijHVPSMwXKRQLKJf30cAer7PZdWV9XUi8uc3YE1xsv
-        TINlM7sQZw30bhTv6MpYHe5kqLjMHDb1GN9EMiujA1wt
-X-Google-Smtp-Source: ABdhPJyFlw7rGrbUJFQ4KQwktBppReA8rH3lAxc1L6Lop8M+D8rVfU1AuaGVizQy1Tm1K2rwqAwvBOS8Mf3XBUZqRss=
-X-Received: by 2002:a17:906:340f:: with SMTP id c15mr2779781ejb.317.1616772452060;
- Fri, 26 Mar 2021 08:27:32 -0700 (PDT)
+        Fri, 26 Mar 2021 11:28:23 -0400
+Received: (qmail 833569 invoked by uid 1000); 26 Mar 2021 11:28:21 -0400
+Date:   Fri, 26 Mar 2021 11:28:21 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Longfang Liu <liulongfang@huawei.com>
+Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
+        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
+        tanxiaofei@huawei.com, liudongdong3@huawei.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] USB:ohci:fix ohci interruption problem
+Message-ID: <20210326152821.GA832251@rowland.harvard.edu>
+References: <1616748896-9415-1-git-send-email-liulongfang@huawei.com>
 MIME-Version: 1.0
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
- <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com> <b1a8f92d-fd82-6e86-93ff-4ac200080d8c@intel.com>
-In-Reply-To: <b1a8f92d-fd82-6e86-93ff-4ac200080d8c@intel.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Fri, 26 Mar 2021 11:27:20 -0400
-Message-ID: <CAJvTdKk-d2rpsAYiPg7iJNZ=sEyhjBnGrT3Hy8Mt5G1TkEJRDw@mail.gmail.com>
-Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
- control state component support
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616748896-9415-1-git-send-email-liulongfang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 7:10 PM Dave Hansen <dave.hansen@intel.com> wrote:
->
-> On 3/25/21 3:59 PM, Len Brown wrote:
-> > We call AMX a "simple state feature" -- it actually requires NO KERNEL ENABLING
-> > above the generic state save/restore to fully support userspace AMX
-> > applications.
-> >
-> > While not all ISA extensions can be simple state features, we do expect
-> > future features to share this trait, and so we want to be sure that it is simple
-> > to update the kernel to turn those features on (and when necessary, off).
->
-> From some IRC chats with Thomaas and Andy, I think it's safe to say that
-> they're not comfortable blindly enabling even our "simple features".  I
-> think we're going to need at least some additional architecture to get
-> us to a point where everyone will be comfortable.
+On Fri, Mar 26, 2021 at 04:54:56PM +0800, Longfang Liu wrote:
+> When OHCI enters the S4 sleep state, the USB sleep process will call
+> check_root_hub_suspend() and ohci_bus_suspend() instead of
+> ohci_suspend() and ohci_bus_suspend(), this causes the OHCI interrupt
+> to not be closed.
 
-Hi Dave,
+What on earth are you talking about?  This isn't true at all.
 
-There is no code in this patch series, including patch 22, that enables
-an unvalidated feature by default.
+Can you provide more information about your system?  Are you using a 
+PCI-based OHCI controller or a platform device (and if so, which one)?  
+Can you post system logs to back up your statements?
 
-Yes, I fully accept that patch 22 allows a user to enable something
-that a distro didn't validate.
+The proper order of calls is ohci_bus_suspend, then 
+check_root_hub_suspended, then ohci_suspend.  Often the first one is 
+called some time before the other two.
 
-If there is a new requirement that the kernel cmdline not allow anything
-that a distro didn't explicitly validate, then about 99.9% of the kernel cmdline
-options that exist today would need to be removed.
+> At this time, if just one device interrupt is reported. Since rh_state
+> has been changed to OHCI_RH_SUSPENDED after ohci_bus_suspend(), the
+> driver will not process and close this device interrupt. It will cause
+> the entire system to be stuck during sleep, causing the device to
+> fail to respond.
+> 
+> When the abnormal interruption reaches 100,000 times, the system will
+> forcibly close the interruption and make the device unusable.
+> 
+> Since the problem is that the interrupt is not closed, we copied the
+> interrupt shutdown operation of ohci_suspend() into ohci_bus_suspend()
+> during the S4 sleep period. We found that this method can solve this
+> problem.
+> 
+> At present, we hope to be able to call ohci_suspend() directly during
+> the sleep process of S4. Do you have any suggestions for this
+> modification?
+> 
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  drivers/usb/host/ohci-hub.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/host/ohci-hub.c b/drivers/usb/host/ohci-hub.c
+> index 634f3c7..d468cef 100644
+> --- a/drivers/usb/host/ohci-hub.c
+> +++ b/drivers/usb/host/ohci-hub.c
+> @@ -315,6 +315,14 @@ static int ohci_bus_suspend (struct usb_hcd *hcd)
+>  		del_timer_sync(&ohci->io_watchdog);
+>  		ohci->prev_frame_no = IO_WATCHDOG_OFF;
+>  	}
+> +
+> +	spin_lock_irqsave(&ohci->lock, flags);
+> +	ohci_writel(ohci, OHCI_INTR_MIE, &ohci->regs->intrdisable);
+> +	(void)ohci_readl(ohci, &ohci->regs->intrdisable);
+> +
+> +	clear_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
+> +	spin_unlock_irqrestore(&ohci->lock, flags);
 
-Does such a requirement exist, or does it not?
+This is completely wrong.  The hardware certainly remains accessible 
+when the root hub stops running.  The HW_ACCESSIBLE flag should not be 
+cleared here.
 
-thanks,
--Len
+And if the Master Interrupt Enable bit is cleared, how will the driver 
+ever learn if a remote wakeup request (such as a plug or unplug event) 
+occurs?
+
+Alan Stern
+
+> +
+>  	return rc;
+>  }
+>  
+> @@ -326,7 +334,10 @@ static int ohci_bus_resume (struct usb_hcd *hcd)
+>  	if (time_before (jiffies, ohci->next_statechange))
+>  		msleep(5);
+>  
+> -	spin_lock_irq (&ohci->lock);
+> +	spin_lock_irq(&ohci->lock);
+> +	set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
+> +	ohci_writel(ohci, OHCI_INTR_MIE, &ohci->regs->intrenable);
+> +	ohci_readl(ohci, &ohci->regs->intrenable);
+>  
+>  	if (unlikely(!HCD_HW_ACCESSIBLE(hcd)))
+>  		rc = -ESHUTDOWN;
+> -- 
+> 2.8.1
+> 
