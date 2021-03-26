@@ -2,146 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631BA34A2F5
+	by mail.lfdr.de (Postfix) with ESMTP id B087934A2F6
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhCZIHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S229957AbhCZIHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhCZIGr (ORCPT
+        with ESMTP id S229812AbhCZIHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:06:47 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EB9C0613B0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:06:47 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id j17so2487146qvo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:06:47 -0700 (PDT)
+        Fri, 26 Mar 2021 04:07:02 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6029CC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:07:02 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id z2so4721922wrl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:07:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hzAVT09WfhCKkngDprHIA2c8Cg/0PKy+euDvs2tl2jQ=;
-        b=pc5BFRIsqvU/6A6fZz5e05qOO9zlx/g35iSBr2r88tcHVkvIEQ1iviNyZNw384ULQd
-         jtoxja25rrycgRFjfyvVQT597wBI0T+bIPYSM1G79670s9xT5g9akE5vHf4SpYX08xu1
-         UY8M6H8yqtQUNcKh/9yGutP/r+U0b0M1fM7aengLYK6bZa6bDgT7A2QcbgsPXd/qINGy
-         prv3dWZrvv0P/yFhTZ6SGIH4oMUqSqEET7vrM1GTE1SoFbnPXlLiO8vcMsIcZkwZD27+
-         hvNSqVtNIrG+30ql4sp3V/Rrzjt9i49xcK1wUbDs+0qcJpoTYn7lo40VjP1rxVbtNK7s
-         edrg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NacPEJvwU26BHEcF1r3DKOPrdoZ0K2lnEiVQ/oV37r4=;
+        b=kus60msoSJlwyU1GomSA58McYHQudRjt8lZoUOVyLCyxExYPuQiC/FgDUjEDEdiFJH
+         OtPkVS983YcgkVOZ3NbX19SKHfGojdxWiV+mZsVTfFS3PH2ZKq07YDEns8DQHizqSqjj
+         kAlYqYai0ZCtnRvwuakJexNRFQxOeUsmhfllUZTGd3aMTne5GjehFbclbRF9zPTDvxfr
+         7mUrcCG9VaWh1DWLhfC1B0KnAzLxhwQqcmOk5cN/v/L72Qlm6lRW3AGNrgKkaY+vlaHX
+         i+2MikP0ctvy5L5KCWHU8Q958BKQKlSB4DTgMhSfZv+A2P690PsjqM55+5z0YJQ2NIsx
+         6Bpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hzAVT09WfhCKkngDprHIA2c8Cg/0PKy+euDvs2tl2jQ=;
-        b=hopIpNiizEf/KEp2udcV05BKxjmkEwJp6BqbxgsLb0qJ0iU2sfOd6i3U6EK5aBcxOH
-         9l3UvZxECdGfiRjVsbF0Nwvcld1lLyrhRt0SxuZ/aupH8m1jsmpeFTBybhIp3CPl2ruf
-         gN11ZyF9iKeNtv2dHTdJ9WMv6KjWNkuuSBLRzrJ5axvmf+v1hbFR7aQYJzDpGncDm72y
-         1g4LbyL8fUIa4ha8qGOAULdO1f89KQ85bVtgeOM6k6dsjMBUsrrJ43hQvKnASnhyuEKe
-         HpSeNC+fg2Gqf78x5HQo2kAy06Bz/NLPqO4Eccc+jST7pIQAc9ypYQ3RQXDkUdKTt31Z
-         sVEA==
-X-Gm-Message-State: AOAM532fDAc5P5CshZkPp/GYoD0ZScgJ65Jz18Mi/qbPIsdj8A8RT2U2
-        ZzZ16XTsfS3Jnt6OYY/hgl6RNIeSvEE7v+stn9E2Cw==
-X-Google-Smtp-Source: ABdhPJyQTRLW1/WPUvL7pmbRqYVUjw+4QmSRbkl4MFgcfr2IpuvxZ/HNHKRa+FU/nUmaf5QsmtETrvs79XOnSMT0ShI=
-X-Received: by 2002:ad4:50d0:: with SMTP id e16mr12348421qvq.37.1616746006008;
- Fri, 26 Mar 2021 01:06:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210325212202.142945-1-alaaemadhossney.ae@gmail.com>
- <YF2JF+UMdt/icEMj@kroah.com> <CACT4Y+Y8f6-c6zYCN=d0557xEryAzBfS9n2m=vBcdjHSi5gYcw@mail.gmail.com>
- <913828319c9e0b6281ad32361e0246fc95d2c138.camel@gmail.com>
- <CACT4Y+ZSLKWJK6yrLG6=ej4-1_uxnqGhS05rBiD=eFX3GETFEw@mail.gmail.com> <f635ac6050755703d7ebc079b188e1c9acb04279.camel@gmail.com>
-In-Reply-To: <f635ac6050755703d7ebc079b188e1c9acb04279.camel@gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 26 Mar 2021 09:06:35 +0100
-Message-ID: <CACT4Y+bYTRon-NY7DxbU2sZ1_Fk1SYTYF-hMej5WPdQFg+G_oQ@mail.gmail.com>
-Subject: Re: [PATCH] media: sq905.c: fix uninitialized variable
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NacPEJvwU26BHEcF1r3DKOPrdoZ0K2lnEiVQ/oV37r4=;
+        b=W3ZooOr3j7200zg+dlIv0rwhJYf/g82a+YvE6AEPvPY/wt32SgL0CMDN3+LH4K90bk
+         dMdaixb5Q6fHz/QOje/EL82++X/QAQWnA+odm9YwLtEzzo5zMpnokqpIYeznw1T1/52b
+         BkXFQZw6KHzqBpKr9sbQ9KnHemdRsv119oNBF5j97qOKxMyeWZcdMNyYejfmr3+Kk0N5
+         4SQq5QZe+PxPbIWJp7KsKGfgOOAntiSvSUIEjNZnMF2vhs3Pdb/XjfPEK9NNa9yQUILh
+         uq0nPFAKKaIyI5xRK9Zu4PvEPw6rXY7YeDh62GsnLLOIP60X8psOFOwhjRvoEcTjwxz1
+         HjQA==
+X-Gm-Message-State: AOAM530loWydpCVlCtMx3iAS0D/yQ6QIxwUTSDdd0zqcWxEVklMdwQxL
+        p1C+33vX5JYgjti4LB0SJQ+5bjKzxGMc+A==
+X-Google-Smtp-Source: ABdhPJzrQoMie+cZs+TTXzwMUWiYsj5CUy6yLxtxOwZG8ozx04KgN++aU+MFHI+ixkkVUGXl1VqrvQ==
+X-Received: by 2002:a5d:591a:: with SMTP id v26mr12982847wrd.172.1616746021071;
+        Fri, 26 Mar 2021 01:07:01 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id 7sm9654955wmk.8.2021.03.26.01.06.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 01:07:00 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 09:06:42 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <YF2WEmfXsXKCkCDb@myrica>
+References: <YFSqDNJ5yagk4eO+@myrica>
+ <20210319135432.GT2356281@nvidia.com>
+ <20210319112221.5123b984@jacob-builder>
+ <YFhiMLR35WWMW/Hu@myrica>
+ <20210324100246.4e6b8aa1@jacob-builder>
+ <20210324170338.GM2356281@nvidia.com>
+ <20210324151230.466fd47a@jacob-builder>
+ <YFxkNEz3THJKzW0b@myrica>
+ <20210325100236.17241a1c@jacob-builder>
+ <20210325171645.GF2356281@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325171645.GF2356281@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 8:53 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> Hi!
->
-> On Fri, 2021-03-26 at 08:40 +0100, Dmitry Vyukov wrote:
-> > On Fri, Mar 26, 2021 at 8:24 AM Pavel Skripkin <paskripkin@gmail.com>
-> > wrote:
-> > >
-> > > Hi!
-> > >
-> > > On Fri, 2021-03-26 at 08:14 +0100, 'Dmitry Vyukov' via syzkaller
-> > > wrote:
-> > > > On Fri, Mar 26, 2021 at 8:11 AM Greg KH
-> > > > <gregkh@linuxfoundation.org>
-> > > > wrote:
-> > > > >
-> > > > > On Thu, Mar 25, 2021 at 11:22:02PM +0200, Alaa Emad wrote:
-> > > > > > Reported-by:
-> > > > > > syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-> > > > > > Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-> > > > > > ---
-> > > > >
-> > > > > I know I do not take patches with no changelog text, but other
-> > > > > maintainers might be more leniant :(
-> > > >
-> > > > I wonder if it's the right fix or not.
-> > > > Initializing variables will, of course, silence the warning, but
-> > > > it's
-> > > > not necessarily the right fix. I suspect there is something wrong
-> > > > in
-> > > > how ret/act_len are user/checked.
-> > > >
-> > >
-> > > There is a problem in usb_bulk_msg() call. It could return before
-> > > act_len initialization, so i think, act_len should be intialized with
-> > > smth wrong like 0 or -1. BTW, I already send patch for that, but it
-> > > was
-> > > marked as obsoleted.
-> >
-> > If usb_bulk_msg returns before act_len initialization, it should
-> > signify that fact with an error code in return value or something,
-> > right? It does not initialize act_len only in case of errors, right?
-> > If so, sq905_read_data must check ret and don't use act_for any
-> > checks. But it does, and that's I think the bug. Or maybe usb_bulk_msg
-> > does not properly signify that it failed (and did not initialize
-> > act_len). Either way silencing the warning with pre-initializing
-> > act_len looks very fishy.
-> > For example, consider, in some contexts it's OK to transmit 0-length
-> > packets, I don't know if it's the case for usb_bulk_msg or not, but it
-> > does not affect the idea. Now, if we pre-initialize act_len to 0, we
-> > can falsely think that such 0-length transfer has succeeded (act_len
-> > == size), while it actually failed (I assume so since usb_bulk_msg
-> > left act_len unitialized).
->
-> You are absolutely rigth, and sq905_read_data doesn't use act_len for
-> checks in case of usb_bulk_msg fail. But it uses it for error printing:
->
->         if (ret < 0 || act_len != size) {
->                 pr_err("bulk read fail (%d) len %d/%d\n", ret,
-> act_len, size);
->                 return -EIO;
->         }
->
-> So, value like -1 can be a flag for smth went wrong internally. Or
-> maybe remove this error log and replace it with other, which will rely
-> on error code, idk how it will be better
+On Thu, Mar 25, 2021 at 02:16:45PM -0300, Jason Gunthorpe wrote:
+> On Thu, Mar 25, 2021 at 10:02:36AM -0700, Jacob Pan wrote:
+> > Hi Jean-Philippe,
+> > 
+> > On Thu, 25 Mar 2021 11:21:40 +0100, Jean-Philippe Brucker
+> > <jean-philippe@linaro.org> wrote:
+> > 
+> > > On Wed, Mar 24, 2021 at 03:12:30PM -0700, Jacob Pan wrote:
+> > > > Hi Jason,
+> > > > 
+> > > > On Wed, 24 Mar 2021 14:03:38 -0300, Jason Gunthorpe <jgg@nvidia.com>
+> > > > wrote: 
+> > > > > On Wed, Mar 24, 2021 at 10:02:46AM -0700, Jacob Pan wrote:  
+> > > > > > > Also wondering about device driver allocating auxiliary domains
+> > > > > > > for their private use, to do iommu_map/unmap on private PASIDs (a
+> > > > > > > clean replacement to super SVA, for example). Would that go
+> > > > > > > through the same path as /dev/ioasid and use the cgroup of
+> > > > > > > current task?    
+> > > > > >
+> > > > > > For the in-kernel private use, I don't think we should restrict
+> > > > > > based on cgroup, since there is no affinity to user processes. I
+> > > > > > also think the PASID allocation should just use kernel API instead
+> > > > > > of /dev/ioasid. Why would user space need to know the actual PASID
+> > > > > > # for device private domains? Maybe I missed your idea?    
+> > > > > 
+> > > > > There is not much in the kernel that isn't triggered by a process, I
+> > > > > would be careful about the idea that there is a class of users that
+> > > > > can consume a cgroup controlled resource without being inside the
+> > > > > cgroup.
+> > > > > 
+> > > > > We've got into trouble before overlooking this and with something
+> > > > > greenfield like PASID it would be best built in to the API to prevent
+> > > > > a mistake. eg accepting a cgroup or process input to the allocator.
+> > > > >   
+> > > > Make sense. But I think we only allow charging the current cgroup, how
+> > > > about I add the following to ioasid_alloc():
+> > > > 
+> > > > 	misc_cg = get_current_misc_cg();
+> > > > 	ret = misc_cg_try_charge(MISC_CG_RES_IOASID, misc_cg, 1);
+> > > > 	if (ret) {
+> > > > 		put_misc_cg(misc_cg);
+> > > > 		return ret;
+> > > > 	}  
+> > > 
+> > > Does that allow PASID allocation during driver probe, in kernel_init or
+> > > modprobe context?
+> > > 
+> > Good point. Yes, you can get cgroup subsystem state in kernel_init for
+> > charging/uncharging. I would think module_init should work also since it is
+> > after kernel_init. I have tried the following:
+> > static int __ref kernel_init(void *unused)
+> >  {
+> >         int ret;
+> > +       struct cgroup_subsys_state *css;
+> > +       css = task_get_css(current, pids_cgrp_id);
+> > 
+> > But that would imply:
+> > 1. IOASID has to be built-in, not as module
 
-Oh, you are right.
-I was thinking it's the "ret < 0 || act_len != size" check where we
-use uninit act_len, which would be much worse.
-We could preinitialize act_len to, say, -1. But future readers may be
-confused as to why we need to init it (as I was confused).
-So another option may be to handle it during printing as:
+If IOASID is a module, the device driver will probe once the IOMMU module
+is available, which I think always happens in probe deferral kworker.
 
-pr_err("bulk read fail (%d) len %d/%d\n", ret, ret < 0 ? -1 : act_len, size);
+> > 2. IOASIDs charged on PID1/init would not subject to cgroup limit since it
+> > will be in the root cgroup and we don't support migration nor will migrate.
+> > 
+> > Then it comes back to the question of why do we try to limit in-kernel
+> > users per cgroup if we can't enforce these cases.
 
-It makes the intentions very explicit for a future reader.
+It may be better to explicitly pass a cgroup during allocation as Jason
+suggested. That way anyone using the API will have to be aware of this and
+pass the root cgroup if that's what they want.
+
+> Are these real use cases? Why would a driver binding to a device
+> create a single kernel pasid at bind time? Why wouldn't it use
+> untagged DMA?
+
+It's not inconceivable to have a control queue doing DMA tagged with
+PASID. The devices I know either use untagged DMA, or have a choice to use
+a PASID. We're not outright forbidding PASID allocation at boot (I don't
+think we can or should) and we won't be able to check every use of the
+API, so I'm trying to figure out whether it will always default to root
+cgroup, or crash in some corner case.
+
+Thanks,
+Jean
