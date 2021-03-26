@@ -2,196 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE4034A73B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 266DB34A742
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhCZM3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhCZM3W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:29:22 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3197C0613AA;
-        Fri, 26 Mar 2021 05:29:20 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: koike)
-        with ESMTPSA id D76C31F46CDB
-Subject: Re: [PATCH 1/2] media: videobuf2: use dmabuf size for length
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, hverkuil@xs4all.nl,
-        kernel@collabora.com, linux-kernel@vger.kernel.org,
-        jc@kynesim.co.uk, dave.stevenson@raspberrypi.org,
-        tfiga@chromium.org
-References: <20210325001712.197837-1-helen.koike@collabora.com>
- <YFxrpw5I2Lrbq+AO@pendragon.ideasonboard.com>
-From:   Helen Koike <helen.koike@collabora.com>
-Message-ID: <2d626f62-1a11-9d83-08a8-3f78bbd2dec0@collabora.com>
-Date:   Fri, 26 Mar 2021 09:29:11 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230159AbhCZMaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:30:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:58536 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230170AbhCZM3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:29:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7AA4F143D;
+        Fri, 26 Mar 2021 05:29:31 -0700 (PDT)
+Received: from [10.57.27.121] (unknown [10.57.27.121])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 382BB3F7D7;
+        Fri, 26 Mar 2021 05:29:30 -0700 (PDT)
+Subject: Re: Marvell: hw perfevents: unable to count PMU IRQs
+To:     Paul Menzel <pmenzel@molgen.mpg.de>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vadym Kochan <vadym.kochan@plvision.eu>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Robert Marko <robert.marko@sartura.hr>
+References: <dc43adf0-daa3-b939-e0ed-5d0c8d01bd91@molgen.mpg.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <ec735dae-5448-dcf4-9537-898977ebc8f4@arm.com>
+Date:   Fri, 26 Mar 2021 12:29:16 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YFxrpw5I2Lrbq+AO@pendragon.ideasonboard.com>
+In-Reply-To: <dc43adf0-daa3-b939-e0ed-5d0c8d01bd91@molgen.mpg.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On 3/25/21 7:53 AM, Laurent Pinchart wrote:
-> Hi Helen,
+On 2021-03-25 21:39, Paul Menzel wrote:
+> Dear Linux folks,
 > 
-> On Wed, Mar 24, 2021 at 09:17:11PM -0300, Helen Koike wrote:
->> Always use dmabuf size when considering the length of the buffer.
->> Discard userspace provided length.
->> Fix length check error in _verify_length(), which was handling single and
->> multiplanar diferently, and also not catching the case where userspace
->> provides a bigger length and bytesused then the underlying buffer.
->>
->> Suggested-by: Hans Verkuil <hverkuil@xs4all.nl>
->> Signed-off-by: Helen Koike <helen.koike@collabora.com>
->> ---
->>
->> Hello,
->>
->> As discussed on
->> https://patchwork.linuxtv.org/project/linux-media/patch/gh5kef5bkeel3o6b2dkgc2dfagu9klj4c0@4ax.com/
->>
->> This patch also helps the conversion layer of the Ext API patchset,
->> where we are not exposing the length field.
->>
->> It was discussed that userspace might use a smaller length field to
->> limit the usage of the underlying buffer, but I'm not sure if this is
->> really usefull and just complicates things.
->>
->> If this is usefull, then we should also expose a length field in the Ext
->> API, and document this feature properly.
->>
->> What do you think?
 > 
-> I think a limit could be useful, as a single dmabuf object could hold
-> multiple planes, which should be addressed by an offset from the
-> beginning of the buffer. Giving a length to the kernel could help
-> catching errors. As the existing API doesn't support offsets, a length
-> limit is likely not very useful at the moment, but should I believe be
-> included at least in the new API.
-
-For the new API, If there are no users, we can leave space to add it later
-if such a feature becomes interesting for userspace in the future.
-
+> On the Marvell Prestera switch, Linux 5.10.4 prints the error (with an 
+> additional info level message) below.
 > 
-> For the existing implementation, I'd say that we should be pragmatic. If
-> using the provided length as a maximum boundary makes the implementation
-> more complex for very little gain, let's not do it. But on the other
-> hand, considering existing userspace, would there be added value in
-> implementing such a mechanism ?
-
-I'm guessing that userspace doesn't use this field as a boundary, since this
-usage is not documented. So I'm guessing it makes things more complex for
-little gain, so it doesn't seem we are adding much value to userspace.
-
-And with this patch, it will be much easier to implement Ext API with a
-conversion layer to/from the existing API.
-
-Regards,
-Helen
-
+>      [    0.000000] Linux version 5.10.4 (robimarko@onlbuilder9) 
+> (aarch64-linux-gnu-gcc (Debian 6.3.0-18) 6.3.0 20170516, GNU ld (GNU 
+> Binutils for Debian) 2.28) #1 SMP PREEMPT Thu Mar 11 10:22:09 UTC 2021
+>      […]
+>      [    1.996658] hw perfevents: unable to count PMU IRQs
+>      [    2.001825] hw perfevents: /ap806/config-space@f0000000/pmu: 
+> failed to register PMU devices!
 > 
->> ---
->>   .../media/common/videobuf2/videobuf2-core.c   | 21 ++++++++++++++++---
->>   .../media/common/videobuf2/videobuf2-v4l2.c   |  8 +++----
->>   include/uapi/linux/videodev2.h                |  7 +++++--
->>   3 files changed, 27 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
->> index 02281d13505f..2cbde14af051 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-core.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
->> @@ -1205,6 +1205,7 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
->>   
->>   	for (plane = 0; plane < vb->num_planes; ++plane) {
->>   		struct dma_buf *dbuf = dma_buf_get(planes[plane].m.fd);
->> +		unsigned int bytesused;
->>   
->>   		if (IS_ERR_OR_NULL(dbuf)) {
->>   			dprintk(q, 1, "invalid dmabuf fd for plane %d\n",
->> @@ -1213,9 +1214,23 @@ static int __prepare_dmabuf(struct vb2_buffer *vb)
->>   			goto err;
->>   		}
->>   
->> -		/* use DMABUF size if length is not provided */
->> -		if (planes[plane].length == 0)
->> -			planes[plane].length = dbuf->size;
->> +		planes[plane].length = dbuf->size;
->> +		bytesused = planes[plane].bytesused ?
->> +			    planes[plane].bytesused : dbuf->size;
->> +
->> +		if (planes[plane].bytesused > planes[plane].length) {
->> +			dprintk(q, 1, "bytesused is bigger then dmabuf length for plane %d\n",
->> +				plane);
->> +			ret = -EINVAL;
->> +			goto err;
->> +		}
->> +
->> +		if (planes[plane].data_offset >= bytesused) {
->> +			dprintk(q, 1, "data_offset >= bytesused for plane %d\n",
->> +				plane);
->> +			ret = -EINVAL;
->> +			goto err;
->> +		}
->>   
->>   		if (planes[plane].length < vb->planes[plane].min_length) {
->>   			dprintk(q, 1, "invalid dmabuf length %u for plane %d, minimum length %u\n",
->> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> index 7e96f67c60ba..ffc7ed46f74a 100644
->> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->> @@ -98,14 +98,14 @@ static int __verify_length(struct vb2_buffer *vb, const struct v4l2_buffer *b)
->>   	unsigned int bytesused;
->>   	unsigned int plane;
->>   
->> -	if (V4L2_TYPE_IS_CAPTURE(b->type))
->> +	/* length check for dmabuf is performed in _prepare_dmabuf() */
->> +	if (V4L2_TYPE_IS_CAPTURE(b->type) || b->memory == VB2_MEMORY_DMABUF)
->>   		return 0;
->>   
->>   	if (V4L2_TYPE_IS_MULTIPLANAR(b->type)) {
->>   		for (plane = 0; plane < vb->num_planes; ++plane) {
->> -			length = (b->memory == VB2_MEMORY_USERPTR ||
->> -				  b->memory == VB2_MEMORY_DMABUF)
->> -			       ? b->m.planes[plane].length
->> +			length = b->memory == VB2_MEMORY_USERPTR
->> +				? b->m.planes[plane].length
->>   				: vb->planes[plane].length;
->>   			bytesused = b->m.planes[plane].bytesused
->>   				  ? b->m.planes[plane].bytesused : length;
->> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->> index 8d15f6ccc4b4..79b3b2893513 100644
->> --- a/include/uapi/linux/videodev2.h
->> +++ b/include/uapi/linux/videodev2.h
->> @@ -968,7 +968,9 @@ struct v4l2_requestbuffers {
->>   /**
->>    * struct v4l2_plane - plane info for multi-planar buffers
->>    * @bytesused:		number of bytes occupied by data in the plane (payload)
->> - * @length:		size of this plane (NOT the payload) in bytes
->> + * @length:		size of this plane (NOT the payload) in bytes. Filled
->> + *			by userspace for USERPTR and by the driver for DMABUF
->> + *			and MMAP.
->>    * @mem_offset:		when memory in the associated struct v4l2_buffer is
->>    *			V4L2_MEMORY_MMAP, equals the offset from the start of
->>    *			the device memory for this plane (or is a "cookie" that
->> @@ -1025,7 +1027,8 @@ struct v4l2_plane {
->>    * @m:		union of @offset, @userptr, @planes and @fd
->>    * @length:	size in bytes of the buffer (NOT its payload) for single-plane
->>    *		buffers (when type != *_MPLANE); number of elements in the
->> - *		planes array for multi-plane buffers
->> + *		planes array for multi-plane buffers. Filled by userspace for
->> + *		USERPTR and by the driver for DMABUF and MMAP.
->>    * @reserved2:	drivers and applications must zero this field
->>    * @request_fd: fd of the request that this buffer should use
->>    * @reserved:	for backwards compatibility with applications that do not know
+> ```
+> # lscpu
+> Architecture:          aarch64
+> Byte Order:            Little Endian
+> CPU(s):                4
+> On-line CPU(s) list:   0-3
+> Thread(s) per core:    1
+> Core(s) per socket:    4
+> Socket(s):             1
+> NUMA node(s):          1
+> Model:                 1
+> BogoMIPS:              50.00
+> L1d cache:             32K
+> L1i cache:             48K
+> L2 cache:              512K
+> NUMA node0 CPU(s):     0-3
+> Flags:                 fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+> # cat /proc/cpuinfo
+> processor       : 0
+> BogoMIPS        : 50.00
+> Features        : fp asimd evtstrm aes pmull sha1 sha2 crc32 cpuid
+> CPU implementer : 0x41
+> CPU architecture: 8
+> CPU variant     : 0x0
+> CPU part        : 0xd08
+> CPU revision    : 1
+> […]
+> ```
 > 
+> Please find the output of `dmesg` attached.
+> 
+> How can the IRQs be counted?
+
+Well, that message simply means we got an error back from 
+platform_irq_count(), which in turn implies that 
+platform_get_irq_optional() failed. Most likely we got -EPROBE_DEFER 
+back from of_irq_get() because the relevant interrupt controller wasn't 
+ready by that point - especially since that's the o9nly error code that 
+platform_irq_cont() will actually pass. It looks like that should end up 
+getting propagated all the way out appropriately, so the PMU driver 
+should defer and be able to probe OK once the mvebu-pic driver has 
+turned up to provide its IRQ. We could of course do a better job of not 
+shouting error messages for a non-fatal condition....
+
+As for why the PMU doesn't eventually show up, my best guess would be 
+either an issue with the mvebu-pic driver itself probing, and/or perhaps 
+something in fw_devlink going awry - inspecting sysfs should shed a bit 
+more light on those.
+
+Robin.
