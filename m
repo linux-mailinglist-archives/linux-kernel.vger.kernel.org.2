@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21ED34A756
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DEC34A75F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhCZMbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:31:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53726 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230300AbhCZMas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:30:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C468561949;
-        Fri, 26 Mar 2021 12:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616761848;
-        bh=CQnx3jNZ9PtYKmb+4+Wr6KaZMg1oCyI1sHneUUD/zYw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OVAw5ApnAfP15lcOutRZM+MlmxjZ/tOdlSR2Yfq2xxG9Q2Iy6zdCXTHiaMZ+/hcfF
-         gFRIS/eAOQOBleCkvfbnWv/uKMvBWOrZPOabmrOhEYusC41JYIkjl8CytXALGg+rdN
-         lk052/ELO7LWIx41f5Jc6k6cgz0KxSPG1GM0oi/Rv6vfy+36AZ9jdbiUq+vnknTzO3
-         kNpKdG3T/tvFrvtdSipI8+rO09Gyza5aGDydNIA1S6qxRGMbcKwmq4ar3LYi4HOYEP
-         sILTtjy8P0pZwdoc0mMWONOTUKPHvUQHbDN/8x+sz5/JmYSCEtsTLg5YH/7l9WuCbd
-         WjmuNTpP6IMpQ==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: [PATCH -tip v5 12/12] tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
-Date:   Fri, 26 Mar 2021 21:30:42 +0900
-Message-Id: <161676184261.330141.6575911414561853358.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <161676170650.330141.6214727134265514123.stgit@devnote2>
-References: <161676170650.330141.6214727134265514123.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S230054AbhCZMd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229758AbhCZMdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:33:43 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1093EC0613AA;
+        Fri, 26 Mar 2021 05:33:43 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id g20so4997778qkk.1;
+        Fri, 26 Mar 2021 05:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y1HoQOlFK45LqbwKA8xSwNvct1ROnntMbS0R2nBbCrg=;
+        b=r6YNSVFZ+slcBEEFimAknB2fFFEaK2on9WC/6sgUBUYNj5AlB1rPIn6WzKOfN5NWU0
+         tMXYI9cx5Qq8iq6atwCVpw1vixIlEVWMpR4385j2O2qtpsNBgaKeKNULQVQIULxeRRaB
+         UsG4iKBLn5Ut/dVNeE/0NByToS+QZosFLFE65z8fHjOxdPF64xTjxdj3xHtLTOW3KSBg
+         UsVHuwbwiXhFK3l2ax+vXpGc4spbWHy9DxBRB7ZZgHL6ILc8Yy/Y9XJUX6oq4exclIY6
+         5MZDh2A/qQTn/JPYUowi+zMNI2m9/+tbkuHkqUB/EmD7CyI/wrFDE2UK3gNpiR11HriT
+         gBXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y1HoQOlFK45LqbwKA8xSwNvct1ROnntMbS0R2nBbCrg=;
+        b=eaFZvy1R6EiKfIAQtkHPLCURWDLUXYVbcQxT7Oog7rS+CkJLZOWBu3SMNAfaxNjt51
+         zcc80bxyMxa/DsYwKJGLDdFuSVC/zW9D5tAwX1/9JhmLQNpPIcn5ROYUoMDeWjtvfgpC
+         FCa3GMsBKZmFvs75SpUE4qZjDl7eH0Bwl2+MhwZb9fiSCVWrvqFN8KmJyA5wZ2JAuIkB
+         6UsNvDmjdnpR+Cm7KrJSzsEc3R8HtCKRl89B1wsZI0mVwy0XjYyVkmMGBtdkOHxd5OnQ
+         rsZHIkNXMEMGcNotesg9ZY7cX6uZvJFo8OST9qF77TzTvYcf1QoC3rKNA0eXWisFFHOY
+         ybmg==
+X-Gm-Message-State: AOAM532v1KImjW3EWu1KV3exk+w2keBaMkISIRmg3kIqXyKNtpSDm6C9
+        ogb4LKkcXEMFp+YAhUB0KukWO9I9BUnPtK0B
+X-Google-Smtp-Source: ABdhPJxbf9sZfuhxrD4KBekAIQNRIUoq80wrpk08MW76UBLX9CBZ8xGKEc3ZPKSoDmtWYfRtSQ+BWw==
+X-Received: by 2002:a37:7b41:: with SMTP id w62mr12619818qkc.256.1616762022344;
+        Fri, 26 Mar 2021 05:33:42 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id h11sm5543681qtp.24.2021.03.26.05.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 05:33:41 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] ext4/migrate.c: Mundane typo fixes
+Date:   Fri, 26 Mar 2021 18:01:29 +0530
+Message-Id: <20210326123129.30089-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ftrace shows "[unknown/kretprobe'd]" indicator all addresses in the
-kretprobe_trampoline, but the modified address by kretprobe should
-be only kretprobe_trampoline+0.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+s/convinience/convenience/
+s/accumalate/accumulate/  .......two different places.
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- kernel/trace/trace_output.c |   17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+ fs/ext4/migrate.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 61255bad7e01..e12437388686 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/mutex.h>
- #include <linux/ftrace.h>
-+#include <linux/kprobes.h>
- #include <linux/sched/clock.h>
- #include <linux/sched/mm.h>
- 
-@@ -346,22 +347,12 @@ int trace_output_call(struct trace_iterator *iter, char *name, char *fmt, ...)
- }
- EXPORT_SYMBOL_GPL(trace_output_call);
- 
--#ifdef CONFIG_KRETPROBES
--static inline const char *kretprobed(const char *name)
-+static inline const char *kretprobed(const char *name, unsigned long addr)
- {
--	static const char tramp_name[] = "kretprobe_trampoline";
--	int size = sizeof(tramp_name);
--
--	if (strncmp(tramp_name, name, size) == 0)
-+	if (is_kretprobe_trampoline(addr))
- 		return "[unknown/kretprobe'd]";
- 	return name;
- }
--#else
--static inline const char *kretprobed(const char *name)
--{
--	return name;
--}
--#endif /* CONFIG_KRETPROBES */
- 
- void
- trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
-@@ -374,7 +365,7 @@ trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
- 		sprint_symbol(str, address);
- 	else
- 		kallsyms_lookup(address, NULL, NULL, NULL, str);
--	name = kretprobed(str);
-+	name = kretprobed(str, address);
- 
- 	if (name && strlen(name)) {
- 		trace_seq_puts(s, name);
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index c5e3fc998211..7e0b4f81c6c0 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -32,7 +32,7 @@ static int finish_range(handle_t *handle, struct inode *inode,
+ 	newext.ee_block = cpu_to_le32(lb->first_block);
+ 	newext.ee_len   = cpu_to_le16(lb->last_block - lb->first_block + 1);
+ 	ext4_ext_store_pblock(&newext, lb->first_pblock);
+-	/* Locking only for convinience since we are operating on temp inode */
++	/* Locking only for convenience since we are operating on temp inode */
+ 	down_write(&EXT4_I(inode)->i_data_sem);
+ 	path = ext4_find_extent(inode, lb->first_block, NULL, 0);
+ 	if (IS_ERR(path)) {
+@@ -43,8 +43,8 @@ static int finish_range(handle_t *handle, struct inode *inode,
+
+ 	/*
+ 	 * Calculate the credit needed to inserting this extent
+-	 * Since we are doing this in loop we may accumalate extra
+-	 * credit. But below we try to not accumalate too much
++	 * Since we are doing this in loop we may accumulate extra
++	 * credit. But below we try to not accumulate too much
+ 	 * of them by restarting the journal.
+ 	 */
+ 	needed = ext4_ext_calc_credits_for_single_extent(inode,
+--
+2.26.2
 
