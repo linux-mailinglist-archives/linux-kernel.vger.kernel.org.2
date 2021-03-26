@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A4D34AF95
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D922334AF9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhCZTuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:50:39 -0400
-Received: from mail-io1-f51.google.com ([209.85.166.51]:33317 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhCZTuG (ORCPT
+        id S230134AbhCZTvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:51:42 -0400
+Received: from mail-io1-f42.google.com ([209.85.166.42]:34413 "EHLO
+        mail-io1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230376AbhCZTv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:50:06 -0400
-Received: by mail-io1-f51.google.com with SMTP id n198so6635965iod.0;
-        Fri, 26 Mar 2021 12:50:06 -0700 (PDT)
+        Fri, 26 Mar 2021 15:51:26 -0400
+Received: by mail-io1-f42.google.com with SMTP id x16so6595596iob.1;
+        Fri, 26 Mar 2021 12:51:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QMADa3hLSWQ6fsdPZyxglXagkduiht0CfsajenFjEE8=;
-        b=IhQY693YZqnTE1PDJBeskfLwXVvZVmAsx9jZmKO0NYZoWlsEbDsdfxIdpAK7Oq5MmW
-         8fWy/7y9sJEzndMauJwNRWMUFOlKNWj0wz4GsThq/vckNqbo6cPdVPLsURrrVXJ7BhbM
-         RZCQJoU+7uell97DqummmXz/GRXzz3fMVzkIP6/wO0OnGyD5yQfYbhqV1noCAieIR7yE
-         fTrHA6lHbO6ugFMTdzet62EBp35I5nPCt7T3grCspggR40Bq5aSTvdhZw8los0thptiY
-         Cht/Z0YcKQav9V2Lb63MNInDgbawrM+ELT75sSq1TNMxP75CJtzQCkmm10c3N4A5DjTR
-         sNRg==
-X-Gm-Message-State: AOAM533loejv2Oj9QrGaeoZbpFnJ9oKmGz2qj6xO/AMsm5ZSq7OWuCfd
-        GVzR7Rk/yUxop4YYji5Row==
-X-Google-Smtp-Source: ABdhPJx+B5BxlFABLodj85dQF/ZfrrYTvXbR1H6ArMkSNfY0AO+aQiPUFwiyecNqyYOc/2oHUxRoVw==
-X-Received: by 2002:a05:6638:2603:: with SMTP id m3mr13456452jat.64.1616788205884;
-        Fri, 26 Mar 2021 12:50:05 -0700 (PDT)
-Received: from xps15.herring.priv ([64.188.179.253])
-        by smtp.googlemail.com with ESMTPSA id h2sm4645441ioj.30.2021.03.26.12.50.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DtFwYHBHWj9m6rEVipWhUpwvWVC2DTKwUNCl/ss4Kq4=;
+        b=ANvz8SnPsl/4d33y1Ma6cs1EGc4tqsHWtvYvv4O0FOi0Ydsi0niROYIECOk+yPxPXx
+         QlwBgP0LAJ6KStBlEv5DckShwnkTEf6H5kS5NHVNQrxTflkFcqV1pXzQEgXhy630zSlk
+         PzPqL6s9XB3EaP/vgpaUHF8D9npAOzyQ96XCJCt1+CNKiU/dQ4CwhnhyYrwtK/L+8yK2
+         I/8pqYh8oL+NYOoEd8OxduT8lH3gpjQYMQe7QX7HGfq/dabecJsIImBvI8Q8wcc/J6bu
+         6GVzStxMcS16EU8X6qMJvtK2G3LheugNY6asgKlV4ue/cpaMmmTG8V0+jociPb+biT6p
+         fYQQ==
+X-Gm-Message-State: AOAM530yZdXq+ZWVVRjWmZ5DXNhr7Hvw6uhZMDCbG/VaiWOYQyJdpBQD
+        E/2Ez5lXOziZtOHXyxghjQ==
+X-Google-Smtp-Source: ABdhPJwmLZLvQHr1GWhzWdWadhO29XtJuY0BNXa2dZAGRf9FjQk9xZP8Iru6WcEK8XG8URIEZ1MfUg==
+X-Received: by 2002:a5d:9599:: with SMTP id a25mr11547998ioo.25.1616788285847;
+        Fri, 26 Mar 2021 12:51:25 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id s5sm4696815ild.13.2021.03.26.12.51.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 12:50:05 -0700 (PDT)
+        Fri, 26 Mar 2021 12:51:24 -0700 (PDT)
+Received: (nullmailer pid 3758799 invoked by uid 1000);
+        Fri, 26 Mar 2021 19:51:23 -0000
+Date:   Fri, 26 Mar 2021 13:51:23 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sameer Pujar <spujar@nvidia.com>, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v2] ASoC: dt-bindings: nvidia,tegra210-ahub: Add missing child nodes
-Date:   Fri, 26 Mar 2021 13:50:03 -0600
-Message-Id: <20210326195003.3756394-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v2] dt-bindings: media: video-interfaces: Drop the example
+Message-ID: <20210326195123.GA3758701@robh.at.kernel.org>
+References: <20210324202253.3576798-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324202253.3576798-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The nvidia,tegra210-ahub binding is missing schema for child nodes. This
-results in warnings if 'additionalProperties: false' is set (or when the
-tools implement 'unevaluatedProperties' support). Add the child nodes
-and reference their schema if one exists.
+On Wed, 24 Mar 2021 14:22:53 -0600, Rob Herring wrote:
+> The example in video-interfaces.yaml uses a bunch of undocumented
+> bindings which will cause warnings when undocumented compatible checks
+> are enabled. The example could be fixed to use documented bindings, but
+> doing so would just duplicate other examples. So let's just remove the
+> example.
+> 
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v2: Drop instead of fixing the example
+> 
+>  .../bindings/media/video-interfaces.yaml      | 127 ------------------
+>  1 file changed, 127 deletions(-)
+> 
 
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Sameer Pujar <spujar@nvidia.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-tegra@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
- - Also add 'dspk' child node
-
-This patch ideally should be applied before this series[1].
-
-[1] https://lore.kernel.org/r/20210323163634.877511-1-robh@kernel.org/
----
- .../bindings/sound/nvidia,tegra210-ahub.yaml     | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-index e568d6c7dddd..1118a9488345 100644
---- a/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-+++ b/Documentation/devicetree/bindings/sound/nvidia,tegra210-ahub.yaml
-@@ -69,6 +69,22 @@ properties:
-         $ref: audio-graph-port.yaml#
-         unevaluatedProperties: false
- 
-+patternProperties:
-+  '^i2s@[0-9a-f]+$':
-+    type: object
-+
-+  '^dmic@[0-9a-f]+$':
-+    type: object
-+    $ref: nvidia,tegra210-dmic.yaml#
-+
-+  '^admaif@[0-9a-f]+$':
-+    type: object
-+    $ref: nvidia,tegra210-admaif.yaml#
-+
-+  '^dspk@[0-9a-f]+$':
-+    type: object
-+    $ref: nvidia,tegra186-dspk.yaml#
-+
- required:
-   - compatible
-   - reg
--- 
-2.27.0
-
+Applied, thanks!
