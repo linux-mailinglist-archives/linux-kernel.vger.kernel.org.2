@@ -2,86 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADF934A16E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 07:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C9034A17D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 07:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhCZGJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 02:09:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
+        id S229914AbhCZGNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 02:13:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhCZGJN (ORCPT
+        with ESMTP id S229871AbhCZGMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 02:09:13 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9084BC0613AA;
-        Thu, 25 Mar 2021 23:09:12 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso3739532pji.3;
-        Thu, 25 Mar 2021 23:09:12 -0700 (PDT)
+        Fri, 26 Mar 2021 02:12:49 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E43C0613AA
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 23:12:49 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id w11so405028ply.6
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 23:12:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ak4+6/Le73R2AqNhvkzsYCdlvXiggVWfndGzWqhkeW8=;
-        b=blDsomwLMc6m/Lk0gOR07b4Ck1mkwWtCut3wpIn+zUmU4ukHZAH+512REYOUWSY53O
-         SZDiEDTELmKYqxEgLkJNH97a7KhySqU3xctk9+0J+2PU8BaGslk2nai0uWCAqTURUHco
-         HJu8yRh0D2nA1jCzS5JmVZwqr+Sl5m4ceH0hA7q4Ao2HgVSB/WejDnzem9u2Lsp0fCJp
-         xvPpRC5eYc2IEp6e2PRko9jxk2Fk3pmCqaaTENAekcL4fS/6SWyjTHPx4z5dBoHW/ePl
-         I6V5h5pDclJFsdqVGbfsScW9rbHeJhFK/McGI/q1u1XCp6hAkZcDhtn286YLJgjhR+QG
-         6S+A==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=HVffRheGZvUm096i8rL3qZdYAPWZa2jcLg62qh4EMbg=;
+        b=BN177VN4tIki5x7mq197cJpgGWmB/tDhiLj5PpVbW40dTDlstqyj7/uB0+ZhaiN21g
+         I7v0gN6JcwN1MgwK2tedFC1HTPpxiphCtz8xY9bk2hM54Z6Ju8Z+Xe0Aty8lqcrtdrxK
+         SgKSnZxr2DfpvYwnjTLteEdgC4wSmExC0ATxU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ak4+6/Le73R2AqNhvkzsYCdlvXiggVWfndGzWqhkeW8=;
-        b=E+BsEXau2PbC6ZWJFpmmgGG+pHjbN/8q9w9JMfTPD5W9TmirVk8JVfyJyoRaHcbV9m
-         GTdN8LK2ZhXlZX4NOcNkLT646FqC9dERBgyat96dMzbZKA3r1mgq6DKWWwtwoLFbYGmd
-         i2F3ygiciOmlbrFtOsTBgExZiNiWvR2MaGYNOx5xnI7umImU05nowq9tpW95tOu/A3GQ
-         BIJhsPZ6KaygyVHOs/Zmkgf5EQyYZ26vURpT4i0nxH3pt0F6GV5e8iNN6bD/SCDs5BOJ
-         NyR5xf0NLxFt0Vmy7LIN4RltxPuVJwP/QRKBY1kAa0g/o4HGPkdlUFizEi8l6mFYEJv6
-         FlEQ==
-X-Gm-Message-State: AOAM533NZeSxbRsXnWiXD0djpdVaZJ4IOL5ij16Rh8H0AKtx7rqiRhtr
-        /FmiePPgy9Np4C3bYccQZeA=
-X-Google-Smtp-Source: ABdhPJxWdx7l/dNt2K7Uoy9pLJaPYBsLvP+aWpiFY7K037YZqN80Lc5d9IkAAP/ZgvrVKr0wH2d4aQ==
-X-Received: by 2002:a17:902:bcc8:b029:e6:f010:aa15 with SMTP id o8-20020a170902bcc8b02900e6f010aa15mr13681229pls.55.1616738952219;
-        Thu, 25 Mar 2021 23:09:12 -0700 (PDT)
-Received: from localhost.localdomain ([202.85.220.39])
-        by smtp.gmail.com with ESMTPSA id m7sm7908634pfd.52.2021.03.25.23.09.08
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=HVffRheGZvUm096i8rL3qZdYAPWZa2jcLg62qh4EMbg=;
+        b=YdwTrW9yA6cFoef223vm5nBLmF7UiaVVVk1vZfxr/euUDTt7hZqTBAmX96fpUV2LHq
+         G010vMGHzh+4GxIEFLbuERLIiQiEHuS4yk2lN6qnC2yvJwi4L82TG520prk7Z9rqm/Hz
+         YfnYiII4U0F1Z1uDbV6LGXZMSUQrnXhFHR1LRxFvA7eLk7sEfN5+zEyvg0HVA0IJV/f4
+         EeDkJMjQknxh4b3duZcWtjG/lVewoC7OIY3TzT5tApcxrBHUrsgxHW1tszBkig/dx6xy
+         GN2R8RBMUUpTM6p8en2HvJ8Hsdu8XRtmSAnxjxOE6yMsjHlQYLDU1hLfATmcAmYtEiAX
+         AOmQ==
+X-Gm-Message-State: AOAM531YCyDd/kFGwho/Qlc6Ovagez13hlYdEs64TjBw3OhY/Z2j+9po
+        1iokT7/4JbpoMIOPgdipxCfTGt8XGqVAAg==
+X-Google-Smtp-Source: ABdhPJznKFGDHVIciDMw0fp2LT9xK3z4ixOcU51t08f2cxF1LZ/qGOqz6Ubsp1k9rldJ9Yal+YCtBQ==
+X-Received: by 2002:a17:90b:307:: with SMTP id ay7mr12146056pjb.110.1616739168822;
+        Thu, 25 Mar 2021 23:12:48 -0700 (PDT)
+Received: from localhost (2001-44b8-111e-5c00-39c5-e677-fdb8-5d64.static.ipv6.internode.on.net. [2001:44b8:111e:5c00:39c5:e677:fdb8:5d64])
+        by smtp.gmail.com with ESMTPSA id m5sm8157716pfd.96.2021.03.25.23.12.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 23:09:11 -0700 (PDT)
-From:   dudengke <pinganddu90@gmail.com>
-To:     bvanassche@acm.org, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, dudengke <dengke.du@ucas.com.cn>
-Subject: [PATCH] __scsi_remove_device: fix comments minor error
-Date:   Fri, 26 Mar 2021 14:09:02 +0800
-Message-Id: <20210326060902.1851811-1-pinganddu90@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 25 Mar 2021 23:12:48 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, mpe@ellerman.id.au
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/iommu/debug: Remove redundant NULL check
+In-Reply-To: <87r1k2795x.fsf@linkitivity.dja.id.au>
+References: <1616406217-94635-1-git-send-email-jiapeng.chong@linux.alibaba.com> <87r1k2795x.fsf@linkitivity.dja.id.au>
+Date:   Fri, 26 Mar 2021 17:12:45 +1100
+Message-ID: <87lfaa789u.fsf@linkitivity.dja.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dudengke <dengke.du@ucas.com.cn>
+Daniel Axtens <dja@axtens.net> writes:
 
-Signed-off-by: dudengke <dengke.du@ucas.com.cn>
----
- drivers/scsi/scsi_sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It looks like the kernel test robot also reported this:
+"[PATCH] powerpc/iommu/debug: fix ifnullfree.cocci warnings"
+Weirdly I don't see it in patchwork.
 
-diff --git a/drivers/scsi/scsi_sysfs.c b/drivers/scsi/scsi_sysfs.c
-index b6378c8ca783..86e8d0bf821d 100644
---- a/drivers/scsi/scsi_sysfs.c
-+++ b/drivers/scsi/scsi_sysfs.c
-@@ -1458,7 +1458,7 @@ void __scsi_remove_device(struct scsi_device *sdev)
- 
- 	/*
- 	 * Paired with the kref_get() in scsi_sysfs_initialize().  We have
--	 * remoed sysfs visibility from the device, so make the target
-+	 * removed sysfs visibility from the device, so make the target
- 	 * invisible if this was the last device underneath it.
- 	 */
- 	scsi_target_reap(scsi_target(sdev));
--- 
-2.25.1
+I'm not sure which one mpe will want to take but either would do.
 
+>> Fix the following coccicheck warnings:
+>>
+>> ./fs/io_uring.c:5989:4-9: WARNING: NULL check before some freeing
+>> functions is not needed.
+
+(Also, while unimportant, that's technically not the error you fix here
+as it's for a different file!)
+
+>
+> This looks correct to me, and matches the description of debugfs_remove
+> in Documentation/filesystems/debugfs.rst.
+>
+> If you have a number of similar fixes it might be helpful to do them in
+> a single bigger patch, but I'm not sure if coccicheck reports much else
+> as I don't have coccinelle installed at the moment.
+>
+> Reviewed-by: Daniel Axtens <dja@axtens.net>
+>
+> Kind regards,
+> Daniel
