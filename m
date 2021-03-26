@@ -2,289 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE6534B24E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C26D34B250
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhCZWuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
+        id S230295AbhCZWv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhCZWt4 (ORCPT
+        with ESMTP id S230299AbhCZWvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:49:56 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA25C0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:49:55 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id i81so7228162oif.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:49:55 -0700 (PDT)
+        Fri, 26 Mar 2021 18:51:21 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2179EC0613AA;
+        Fri, 26 Mar 2021 15:51:21 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id o66so7372182ybg.10;
+        Fri, 26 Mar 2021 15:51:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WF2hlz+Ai/cjDbzWcWmpYPi5es4Hx8NEZ//VoJpE6zY=;
-        b=v1sDuCpoqSChDI5/ibiue/oBxil3nTCJIB/+sanO8Pk7QbJ0OIHIiTxRkgUaJRLHTO
-         P+mO9AzrDt/7oPGmKDygV755z2q66rAotsy21bsKVFlCwjdkdNB27Myww96DMgnYgwXK
-         D1mR0Xl2hwaUHH/jySc8+nS4WjUn7FeLVrR1iLL44oAK1Hr9JOe2SZ0XbthbHbBWtUkV
-         hsieo2beoFI4oAhfDWlGrgzSCfolzKpzorJeqyVKz9P8u+cT+Z0N3mCknJwFq7H3JSMe
-         LCQABvWoFX1f13g8iG71WKP9IzDFCLmLz1nFUw15DpiMv73MZdaxZoaHG+ue37uBK9Yq
-         pjsw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wo1xdtPvSfPYNdGvfB/dj7upKQGrr8JQkBYTGwXZk30=;
+        b=c3A2uDO9nuopsC7Bfv6aw/O7cwWYnuEcJlO+eq9xmeGZ6Uubf3GJUMC5LxMHBIKmCD
+         MA3wDQVubMGNWXrFQdDdW89GL5ovBKr3nMZOLe6LlflBPAJQBMj3eRIr0bThl9RM1OYF
+         y091L3UArKWtRl5qM2vvoiMjQJNhafUK9TgDZ8MoE9dCRZ1z7QXP6P6l1gdPAmnDjSmh
+         Gfu80Ul8gHBVK1qQXUu+aoFLUibR/TN120C2BMqFCysff5adwfMPDnCuKkHv+09mcsdE
+         thlUSzg2aglt6Wo5a3oQUegb1ATIxoN1FG6Ry6nhyhF0NjjCZhgHXa8+o9p+EmZMz7Qs
+         SqHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WF2hlz+Ai/cjDbzWcWmpYPi5es4Hx8NEZ//VoJpE6zY=;
-        b=d1R5rVOFlVyVooePTDGk5vkgcoezcTrrWr2Rb6R2IsmWEhfpPrTH8rsjl4MhmCdk4t
-         vnYpPKKjCZRIamCmMyBTl37dxWkRY8+Qx0r9ZjCLiRx1ELGzGJhamstkyegNBPlt9LOP
-         kCCxzAAppIpH2R8BLaE0fRcShH37Dbs4Mzrq3Bln70n7/6tskBvpmuJukt88aAELVIen
-         9xC4F4ffPuvhZCzBLUO1oB24HiuAgIW0RiyfZEff1Io9gEjHPzRWtolkkYh+OWu4WruO
-         d5fcbVFlyHAG9zV589j2OcXQdk2vX9F+yKD3K6lSPd2KohuhFHuwUdHjjSrUEw9dQDgQ
-         TuuA==
-X-Gm-Message-State: AOAM532ZBvyoDIYf6QLbm4ayzWozuBP2krzt5rs5BTBCPna65nlfFOlA
-        Tzn/NuLGXihtPaWqsYT63BW7CbNVTq9rLQ==
-X-Google-Smtp-Source: ABdhPJye2MDWxsj9FI6ETOl+AehWy4xg0wQLOrH3tnDM2tvun1bBpRfzD1P8t5QeDCBjfwE8aHhN1w==
-X-Received: by 2002:a54:409a:: with SMTP id i26mr11386693oii.41.1616798994654;
-        Fri, 26 Mar 2021 15:49:54 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id r22sm2389052otg.4.2021.03.26.15.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 15:49:54 -0700 (PDT)
-Subject: Re: [PATCH 2/7] io_uring: handle signals for IO threads like a normal
- thread
-From:   Jens Axboe <axboe@kernel.dk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326155128.1057078-1-axboe@kernel.dk>
- <20210326155128.1057078-3-axboe@kernel.dk> <m1wntty7yn.fsf@fess.ebiederm.org>
- <106a38d3-5a5f-17fd-41f7-890f5e9a3602@kernel.dk>
- <m1k0ptv9kj.fsf@fess.ebiederm.org>
- <01058178-dd66-1bff-4d74-5ff610817ed6@kernel.dk>
- <m18s69v8zb.fsf@fess.ebiederm.org>
- <7a71da2f-ca39-6bbf-28c1-bcc2eec43943@kernel.dk>
-Message-ID: <387feabb-e758-220a-fc34-9e9325eab3a6@kernel.dk>
-Date:   Fri, 26 Mar 2021 16:49:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wo1xdtPvSfPYNdGvfB/dj7upKQGrr8JQkBYTGwXZk30=;
+        b=lnCjRQcWw2+1f8kYNIaYLrQ1iNdJO4P3VWcPOKf8AYe0RlDo4Wz0MtnmusBUEJQ6bp
+         xbq74QwZhfPzlBR9BC+F7tzeZgT4NMHzYjNI9x6fsJZM5j6sn3LSd2xiHZ2jtJR6w2ny
+         MbPcWVeEQPYX6BBwHLqkn3aTREmuT9OP292L62SKtZyGaQa8icbBjl3+cI6AOZLJIzvl
+         xXulOlIwE2XICQaVFgFe6guwSib68Io0vktQG6YQ6WmV3ATApapCgVX5vajTeEKYxFoN
+         +p+q96KEpXsPDR+J+UoLWrlLX8c6nyGBwXuIvYJ7NX2HQc4GaDzbjQhIAmxVhTfNddbH
+         S/Qg==
+X-Gm-Message-State: AOAM532J+DK/f2qqmBEMhofuJnvdqpxNDHkJ12UUGrWHSu1Ve3XSn4aQ
+        YGO204NWifGUGvRIK0yDJozouDXCFEkEAqXehYF7nETQAHM=
+X-Google-Smtp-Source: ABdhPJyJsQ+U80oti2ENieabuzvAaL+3BQRGcknnMPzFKhEJzggh6LTo2Q2/wAN0dGAbe0BjQ6wBT/erIraUDLDa5Js=
+X-Received: by 2002:a25:874c:: with SMTP id e12mr21619164ybn.403.1616799079001;
+ Fri, 26 Mar 2021 15:51:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7a71da2f-ca39-6bbf-28c1-bcc2eec43943@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-2-revest@chromium.org>
+ <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
+In-Reply-To: <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 26 Mar 2021 15:51:08 -0700
+Message-ID: <CAEf4BzYVTHm5Zrr7RPoRB7EL9nsE5kUzciHEv5fPipbMoEtQxA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 4:38 PM, Jens Axboe wrote:
-> On 3/26/21 4:35 PM, Eric W. Biederman wrote:
->> Jens Axboe <axboe@kernel.dk> writes:
->>
->>> On 3/26/21 4:23 PM, Eric W. Biederman wrote:
->>>> Jens Axboe <axboe@kernel.dk> writes:
->>>>
->>>>> On 3/26/21 2:29 PM, Eric W. Biederman wrote:
->>>>>> Jens Axboe <axboe@kernel.dk> writes:
->>>>>>
->>>>>>> We go through various hoops to disallow signals for the IO threads, but
->>>>>>> there's really no reason why we cannot just allow them. The IO threads
->>>>>>> never return to userspace like a normal thread, and hence don't go through
->>>>>>> normal signal processing. Instead, just check for a pending signal as part
->>>>>>> of the work loop, and call get_signal() to handle it for us if anything
->>>>>>> is pending.
->>>>>>>
->>>>>>> With that, we can support receiving signals, including special ones like
->>>>>>> SIGSTOP.
->>>>>>>
->>>>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>>>>> ---
->>>>>>>  fs/io-wq.c    | 24 +++++++++++++++++-------
->>>>>>>  fs/io_uring.c | 12 ++++++++----
->>>>>>>  2 files changed, 25 insertions(+), 11 deletions(-)
->>>>>>>
->>>>>>> diff --git a/fs/io-wq.c b/fs/io-wq.c
->>>>>>> index b7c1fa932cb3..3e2f059a1737 100644
->>>>>>> --- a/fs/io-wq.c
->>>>>>> +++ b/fs/io-wq.c
->>>>>>> @@ -16,7 +16,6 @@
->>>>>>>  #include <linux/rculist_nulls.h>
->>>>>>>  #include <linux/cpu.h>
->>>>>>>  #include <linux/tracehook.h>
->>>>>>> -#include <linux/freezer.h>
->>>>>>>  
->>>>>>>  #include "../kernel/sched/sched.h"
->>>>>>>  #include "io-wq.h"
->>>>>>> @@ -503,10 +502,16 @@ static int io_wqe_worker(void *data)
->>>>>>>  		if (io_flush_signals())
->>>>>>>  			continue;
->>>>>>>  		ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
->>>>>>> -		if (try_to_freeze() || ret)
->>>>>>> +		if (signal_pending(current)) {
->>>>>>> +			struct ksignal ksig;
->>>>>>> +
->>>>>>> +			if (fatal_signal_pending(current))
->>>>>>> +				break;
->>>>>>> +			if (get_signal(&ksig))
->>>>>>> +				continue;
->>>>>>                         ^^^^^^^^^^^^^^^^^^^^^^
->>>>>>
->>>>>> That is wrong.  You are promising to deliver a signal to signal
->>>>>> handler and them simply discarding it.  Perhaps:
->>>>>>
->>>>>> 			if (!get_signal(&ksig))
->>>>>>                         	continue;
->>>>>> 			WARN_ON(!sig_kernel_stop(ksig->sig));
->>>>>>                         break;
->>>>>
->>>>> Thanks, updated.
->>>>
->>>> Gah.  Kill the WARN_ON.
->>>>
->>>> I was thinking "WARN_ON(!sig_kernel_fatal(ksig->sig));"
->>>> The function sig_kernel_fatal does not exist.
->>>>
->>>> Fatal is the state that is left when a signal is neither
->>>> ignored nor a stop signal, and does not have a handler.
->>>>
->>>> The rest of the logic still works.
->>>
->>> I've just come to the same conclusion myself after testing it.
->>> Of the 3 cases, most of them can do the continue, but doesn't
->>> really matter with the way the loop is structured. Anyway, looks
->>> like this now:
->>
->> This idiom in the code:
->>> +		if (signal_pending(current)) {
->>> +			struct ksignal ksig;
->>> +
->>> +			if (fatal_signal_pending(current))
->>> +				break;
->>> +			if (!get_signal(&ksig))
->>> +				continue;
->>>  }
->>
->> Needs to be:
->>> +		if (signal_pending(current)) {
->>> +			struct ksignal ksig;
->>> +
->>> +			if (!get_signal(&ksig))
->>> +				continue;
->>> +			break;
->>>  }
->>
->> Because any signal returned from get_signal is fatal in this case.
->> It might make sense to "WARN_ON(ksig->ka.sa.sa_handler != SIG_DFL)".
->> As the io workers don't handle that case.
->>
->> It won't happen because you have everything blocked.
->>
->> The extra fatal_signal_pending(current) logic is just confusing in this
->> case.
-> 
-> OK good point, and follows the same logic even if it won't make a
-> difference in my case. I'll make the change.
+On Fri, Mar 26, 2021 at 2:53 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
+> >
+> > Two helpers (trace_printk and seq_printf) have very similar
+> > implementations of format string parsing and a third one is coming
+> > (snprintf). To avoid code duplication and make the code easier to
+> > maintain, this moves the operations associated with format string
+> > parsing (validation and argument sanitization) into one generic
+> > function.
+> >
+> > Unfortunately, the implementation of the two existing helpers already
+> > drifted quite a bit and unifying them entailed a lot of changes:
+>
+> "Unfortunately" as in a lot of extra work for you? I think overall
+> though it was very fortunate that you ended up doing it, all
+> implementations are more feature-complete and saner now, no? Thanks a
+> lot for your hard work!
+>
+> >
+> > - bpf_trace_printk always expected fmt[fmt_size] to be the terminating
+> >   NULL character, this is no longer true, the first 0 is terminating.
+>
+> You mean if you had bpf_trace_printk("bla bla\0some more bla\0", 24)
+> it would emit that zero character? If yes, I don't think it was a sane
+> behavior anyways.
+>
+> > - bpf_trace_printk now supports %% (which produces the percentage char).
+> > - bpf_trace_printk now skips width formating fields.
+> > - bpf_trace_printk now supports the X modifier (capital hexadecimal).
+> > - bpf_trace_printk now supports %pK, %px, %pB, %pi4, %pI4, %pi6 and %pI6
+> > - argument casting on 32 bit has been simplified into one macro and
+> >   using an enum instead of obscure int increments.
+> >
+> > - bpf_seq_printf now uses bpf_trace_copy_string instead of
+> >   strncpy_from_kernel_nofault and handles the %pks %pus specifiers.
+> > - bpf_seq_printf now prints longs correctly on 32 bit architectures.
+> >
+> > - both were changed to use a global per-cpu tmp buffer instead of one
+> >   stack buffer for trace_printk and 6 small buffers for seq_printf.
+> > - to avoid per-cpu buffer usage conflict, these helpers disable
+> >   preemption while the per-cpu buffer is in use.
+> > - both helpers now support the %ps and %pS specifiers to print symbols.
+> >
+> > Signed-off-by: Florent Revest <revest@chromium.org>
+> > ---
+>
+> This is great, you already saved some lines of code! I suspect I'll
+> have some complaints about mods (it feels like this preample should
+> provide extra information about which arguments have to be read from
+> kernel/user memory, but I'll see next patches first.
 
-Made the suggested edits and ran the quick tests and the KILL/STOP
-testing, and no ill effects observed. Kicked off the longer runs now.
+Disregard the last part (at least for now). I had a mental model that
+it should be possible to parse a format string once and then remember
+"instructions" (i.e., arg1 is long, arg2 is string, and so on). But
+that's too complicated, so I think re-parsing the format string is
+much simpler.
 
-Not a huge amount of changes from the posted series, but please peruse
-here if you want to double check:
+>
+> See my comments below (I deliberately didn't trim most of the code for
+> easier jumping around), but it's great overall, thanks!
+>
+> >  kernel/trace/bpf_trace.c | 529 ++++++++++++++++++---------------------
+> >  1 file changed, 244 insertions(+), 285 deletions(-)
+> >
 
-https://git.kernel.dk/cgit/linux-block/log/?h=io_uring-5.12
+[...]
 
-And diff against v2 posted is below. Thanks!
+> > +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
+> > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
+> > +                       u32 num_args)
+> > +{
+> > +       struct bpf_printf_buf *bufs = this_cpu_ptr(&bpf_printf_buf);
+> > +       int err, i, fmt_cnt = 0, copy_size, used;
+> > +       char *unsafe_ptr = NULL, *tmp_buf = NULL;
+> > +       bool prepare_args = final_args && mod;
+>
+> probably better to enforce that both or none are specified, otherwise
+> return error
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 3e2f059a1737..7434eb40ca8c 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -505,10 +505,9 @@ static int io_wqe_worker(void *data)
- 		if (signal_pending(current)) {
- 			struct ksignal ksig;
- 
--			if (fatal_signal_pending(current))
--				break;
--			if (get_signal(&ksig))
-+			if (!get_signal(&ksig))
- 				continue;
-+			break;
- 		}
- 		if (ret)
- 			continue;
-@@ -722,10 +721,9 @@ static int io_wq_manager(void *data)
- 		if (signal_pending(current)) {
- 			struct ksignal ksig;
- 
--			if (fatal_signal_pending(current))
--				set_bit(IO_WQ_BIT_EXIT, &wq->state);
--			else if (get_signal(&ksig))
-+			if (!get_signal(&ksig))
- 				continue;
-+			set_bit(IO_WQ_BIT_EXIT, &wq->state);
- 		}
- 	} while (!test_bit(IO_WQ_BIT_EXIT, &wq->state));
- 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 66ae46874d85..880abd8b6d31 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -6746,10 +6746,9 @@ static int io_sq_thread(void *data)
- 		if (signal_pending(current)) {
- 			struct ksignal ksig;
- 
--			if (fatal_signal_pending(current))
--				break;
--			if (get_signal(&ksig))
-+			if (!get_signal(&ksig))
- 				continue;
-+			break;
- 		}
- 		sqt_spin = false;
- 		cap_entries = !list_is_singular(&sqd->ctx_list);
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 5b75fbe3d2d6..f2718350bf4b 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2752,15 +2752,6 @@ bool get_signal(struct ksignal *ksig)
- 		 */
- 		current->flags |= PF_SIGNALED;
- 
--		/*
--		 * PF_IO_WORKER threads will catch and exit on fatal signals
--		 * themselves. They have cleanup that must be performed, so
--		 * we cannot call do_exit() on their behalf. coredumps also
--		 * do not apply to them.
--		 */
--		if (current->flags & PF_IO_WORKER)
--			return false;
--
- 		if (sig_kernel_coredump(signr)) {
- 			if (print_fatal_signals)
- 				print_fatal_signal(ksig->info.si_signo);
-@@ -2776,6 +2767,14 @@ bool get_signal(struct ksignal *ksig)
- 			do_coredump(&ksig->info);
- 		}
- 
-+		/*
-+		 * PF_IO_WORKER threads will catch and exit on fatal signals
-+		 * themselves. They have cleanup that must be performed, so
-+		 * we cannot call do_exit() on their behalf.
-+		 */
-+		if (current->flags & PF_IO_WORKER)
-+			goto out;
-+
- 		/*
- 		 * Death signals, no core dump.
- 		 */
-@@ -2783,7 +2782,7 @@ bool get_signal(struct ksignal *ksig)
- 		/* NOTREACHED */
- 	}
- 	spin_unlock_irq(&sighand->siglock);
--
-+out:
- 	ksig->sig = signr;
- 
- 	if (!(ksig->ka.sa.sa_flags & SA_EXPOSE_TAGBITS))
+it's actually three of them: raw_args, mod, and num_args, right? All
+three are either NULL or non-NULL.
 
--- 
-Jens Axboe
+>
+> > +       enum bpf_printf_mod_type current_mod;
+> > +       size_t tmp_buf_len;
+> > +       u64 current_arg;
+> > +       char fmt_ptype;
+> > +
+> > +       for (i = 0; i < fmt_size && fmt[i] != '\0'; i++) {
+>
 
+[...]
