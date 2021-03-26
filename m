@@ -2,148 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE7834A4F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7025934A4FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:54:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhCZJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:52:57 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58794 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhCZJwm (ORCPT
+        id S230104AbhCZJxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhCZJxB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:52:42 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12Q9hd8e195611;
-        Fri, 26 Mar 2021 09:52:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=avCY6q93eNNoRefnAtNulcrPTgJVBJ/EjJwMJ+IPy+Q=;
- b=xdNvNM+O8Oh/SGVflMx97UTlfLPpfL6QuSrxbTpmUuaZDED/l1tBdO4F1IAutEYHttZ4
- hAxC2uXUysQDUl2IegSL1Ls1BBuL+D9rf40U6/jFwU5+AjoeIK5af4SlxqXKhUbSIA5G
- mw0UGNdweTQrVuzzOTPjfmYO/T7Bry9sAM2hC7KX1GP/52keHm/d3em+PDv9kQUuVN2K
- S34VaEJ819M00KqPn27yuM+DiFXTADmDWHRomd1Rp8hrw1964jXjnZA16AaSE3Q1xV0G
- Y1qqba53zOX+IgKcch8kEq6ACYfWbocO35w+Q92loQtLY7ug368QrkAxXw/VYgBL5cLr wA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 37h1421h13-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 09:52:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12Q9pKtq166100;
-        Fri, 26 Mar 2021 09:52:30 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 37h1416wye-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 09:52:30 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12Q9qTa9023675;
-        Fri, 26 Mar 2021 09:52:29 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 26 Mar 2021 02:52:29 -0700
-Date:   Fri, 26 Mar 2021 12:52:20 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/15] staging: rtl8723bs: inlcude macros in a do..while
- loop in core/rtw_security.c
-Message-ID: <20210326095220.GC1717@kadam>
-References: <cover.1616748885.git.fabioaiuto83@gmail.com>
- <2e02f646ab3f8058b159d6d790e202a0e4744af8.1616748885.git.fabioaiuto83@gmail.com>
+        Fri, 26 Mar 2021 05:53:01 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B631C0613AA;
+        Fri, 26 Mar 2021 02:53:01 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id c16so5176460oib.3;
+        Fri, 26 Mar 2021 02:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OQNUcud1zkYdzkIjaa5FtppgaPtwU3jTgTAIM5VSySU=;
+        b=pm3MyKP3SbvYm32JdhQ6HJDzD10Clg4f0qoDUA8sBQ1aQX4BQz7YmfLKQdIYARfKXg
+         JmftkdKPLaa8VxOv/0j2sE43VvZP0fgnwa5mhPJ3TisRdQf9XTPkZjb0ENtVppXIGlD0
+         qgup1Ov1sAGaEwUUuaBYpsf3b3q30s17ZcpPV2nGmQGgu50GhRs8GT4D+yPHQ0SxTSNZ
+         cXJvyoXfnNaNZ/yfgXjB9qQtBUxH0eam2kV0+wb8yOXF0sPGB4M4pHP9A2AI3TLZuCVP
+         /1GJd2s+sgGdU+A/cDab/7UKtU+8OUTDm2mXy9OjQbPNcV7rbt0/5crs76FH7qVaPuH9
+         Asfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OQNUcud1zkYdzkIjaa5FtppgaPtwU3jTgTAIM5VSySU=;
+        b=HA/rd5TQT3eerN1o3EqdHLnCnzFa+BvTIFx0At/5x0Bny1bsbApJx+ET0xgxTi1Pk3
+         TSH5pK8mxMTNVuQP44kFgVpwehq9/eI7uI1L4ZI9wkqNNNJxlxOi5pK7JJ/IBuCe21IC
+         WWihsDYOa1VafjQLpLd9M+Syji53ri0YYPOnWyylB2uuYng1J7jRvWBS1J+e6z/d6JJi
+         toT7LSJ5Cd6aaWRTCzGc4/Zn4WmJDQlIKmHQtql0McvXQq0QcC6KPRe67rtgvAmCBNIb
+         LUTV17wdttUwH9MfSnPK4wgp3jrXgO+LMPZVdCQo3M+7gRpPchvaqD9OmqfuQ4K/Yqaa
+         QO2w==
+X-Gm-Message-State: AOAM531ByMIkXSks+XXf/eoowrg2TXJkOL6SWEvlb1i1LS1kiCwJgN3f
+        aIlUOTjnk7l4mdW9OFmCL6uQNowvctMlYlFIHKVWDdEMGMe4JA==
+X-Google-Smtp-Source: ABdhPJzdEVG0jo5Gcp8tmM5tdCotj+i2e2qmLokrLAy/Utb7KG07+qLNMUoYlzSNG3+kzUP5N4EGFupD+rN9R5RQ7CU=
+X-Received: by 2002:a05:6808:bd6:: with SMTP id o22mr9251981oik.129.1616752380497;
+ Fri, 26 Mar 2021 02:53:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e02f646ab3f8058b159d6d790e202a0e4744af8.1616748885.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103260071
-X-Proofpoint-GUID: 3BL4vuliYYY3jwEahB32VThO8e6vN13Y
-X-Proofpoint-ORIG-GUID: 3BL4vuliYYY3jwEahB32VThO8e6vN13Y
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- clxscore=1015 impostorscore=0 spamscore=0 malwarescore=0 adultscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103260070
+References: <20210326091547.12375-1-zhangqing@rock-chips.com> <20210326091751.12637-1-zhangqing@rock-chips.com>
+In-Reply-To: <20210326091751.12637-1-zhangqing@rock-chips.com>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Fri, 26 Mar 2021 10:52:48 +0100
+Message-ID: <CAFqH_53qnWdRQ01kRxVAKRWZnimW+gyNO=pv+ET4xFQB5QGOtA@mail.gmail.com>
+Subject: Re: [PATCH v5 08/11] dt-bindings: add power-domain header for RK3568 SoCs
+To:     Elaine Zhang <zhangqing@rock-chips.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, cl@rock-chips.com,
+        huangtao@rock-chips.com, kever.yang@rock-chips.com,
+        tony.xie@rock-chips.com, finley.xiao@rock-chips.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 10:09:08AM +0100, Fabio Aiuto wrote:
-> fix the following checkpatch warning:
-> 
-> ERROR: Macros starting with if should be enclosed by a do - while
-> loop to avoid possible if/else logic defects
-> 33: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:33:
-> +#define WEP_SW_ENC_CNT_INC(sec, ra) \
-> --
-> ERROR: Macros starting with if should be enclosed by a do - while
-> loop to avoid possible if/else logic defects
-> 41: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:41:
-> +#define WEP_SW_DEC_CNT_INC(sec, ra) \
-> --
-> ERROR: Macros starting with if should be enclosed by a do - while
-> loop to avoid possible if/else logic defects
-> 49: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:49:
-> +#define TKIP_SW_ENC_CNT_INC(sec, ra) \
-> --
-> ERROR: Macros starting with if should be enclosed by a do - while
-> loop to avoid possible if/else logic defects
-> 57: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:57:
-> +#define TKIP_SW_DEC_CNT_INC(sec, ra) \
-> --
-> ERROR: Macros starting with if should be enclosed by a do - while
-> loop to avoid possible if/else logic defects
-> 65: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:65:
-> +#define AES_SW_ENC_CNT_INC(sec, ra) \
-> --
-> ERROR: Macros starting with if should be enclosed by a do - while
-> loop to avoid possible if/else logic defects
-> 73: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:73:
-> +#define AES_SW_DEC_CNT_INC(sec, ra) \
-> --
-> ERROR: Macros with multiple statements should be enclosed in a
-> do - while loop
-> 2082: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:2082:
-> +#define ROUND(i, d, s) \
-> 
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Missatge de Elaine Zhang <zhangqing@rock-chips.com> del dia dv., 26 de
+mar=C3=A7 2021 a les 10:18:
+>
+> According to a description from TRM, add all the power domains
+>
+> Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
 > ---
->  drivers/staging/rtl8723bs/core/rtw_security.c | 94 +++++++++++--------
->  1 file changed, 54 insertions(+), 40 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-> index 44e2b362c867..c92984fcf42d 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-> @@ -31,52 +31,64 @@ const char *security_type_str(u8 value)
->  
->  #ifdef DBG_SW_SEC_CNT
->  #define WEP_SW_ENC_CNT_INC(sec, ra) \
-> -	if (is_broadcast_mac_addr(ra)) \
-> -		sec->wep_sw_enc_cnt_bc++; \
-> -	else if (is_multicast_mac_addr(ra)) \
-> -		sec->wep_sw_enc_cnt_mc++; \
-> -	else \
-> -		sec->wep_sw_enc_cnt_uc++;
-> +	do { \
-> +		if (is_broadcast_mac_addr(ra)) \
-> +			sec->wep_sw_enc_cnt_bc++; \
-> +		else if (is_multicast_mac_addr(ra)) \
-> +			sec->wep_sw_enc_cnt_mc++; \
-> +		else \
-> +			sec->wep_sw_enc_cnt_uc++; \
-> +	} while (0)
-
-What are these statistics used for?  So far as I can see there not
-used at all.  It's probably better to just delete all the
-DBG_SW_SEC_CNT code.
-
-regards,
-dan carpenter
-
+>  include/dt-bindings/power/rk3568-power.h | 32 ++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>  create mode 100644 include/dt-bindings/power/rk3568-power.h
+>
+> diff --git a/include/dt-bindings/power/rk3568-power.h b/include/dt-bindin=
+gs/power/rk3568-power.h
+> new file mode 100644
+> index 000000000000..6cc1af1a9d26
+> --- /dev/null
+> +++ b/include/dt-bindings/power/rk3568-power.h
+> @@ -0,0 +1,32 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __DT_BINDINGS_POWER_RK3568_POWER_H__
+> +#define __DT_BINDINGS_POWER_RK3568_POWER_H__
+> +
+> +/* VD_CORE */
+> +#define RK3568_PD_CPU_0                0
+> +#define RK3568_PD_CPU_1                1
+> +#define RK3568_PD_CPU_2                2
+> +#define RK3568_PD_CPU_3                3
+> +#define RK3568_PD_CORE_ALIVE   4
+> +
+> +/* VD_PMU */
+> +#define RK3568_PD_PMU          5
+> +
+> +/* VD_NPU */
+> +#define RK3568_PD_NPU          6
+> +
+> +/* VD_GPU */
+> +#define RK3568_PD_GPU          7
+> +
+> +/* VD_LOGIC */
+> +#define RK3568_PD_VI           8
+> +#define RK3568_PD_VO           9
+> +#define RK3568_PD_RGA          10
+> +#define RK3568_PD_VPU          11
+> +#define RK3568_PD_CENTER       12
+> +#define RK3568_PD_RKVDEC       13
+> +#define RK3568_PD_RKVENC       14
+> +#define RK3568_PD_PIPE         15
+> +#define RK3568_PD_LOGIC_ALIVE  16
+> +
+> +#endif
+> --
+> 2.17.1
+>
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
