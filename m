@@ -2,67 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6552B34AD0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:03:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9AE34AD10
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 18:04:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhCZRCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 13:02:34 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36396 "EHLO mail.skyhub.de"
+        id S230187AbhCZREF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 13:04:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:65176 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230198AbhCZRC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 13:02:27 -0400
-Received: from zn.tnic (p200300ec2f075f00aa13db561e4cebd5.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:5f00:aa13:db56:1e4c:ebd5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 654371EC0535;
-        Fri, 26 Mar 2021 18:02:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616778145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sHOGguuzDH6sV8Z2HSE7+eZGYEGC0SLY0CFm8dGQwks=;
-        b=j13EEC6IU5Z7bV6rdxof2YU+QNTvItS+gCGT4HsJ0ePPAo2I3SEXRZgyflHMFSFRsY2/ra
-        o+zabsZWlRpEIirMjY8sxtLsjHZBWmr1MNQ67/RZCB4MlLhonYZWDNJgqmBy8DuWjZN1X5
-        4clLSOp+IzGinwRsvBxXOm3rGQ/AboU=
-Date:   Fri, 26 Mar 2021 18:02:23 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     seanjc@google.com, Kai Huang <kai.huang@intel.com>,
-        kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
-        rick.p.edgecombe@intel.com, haitao.huang@intel.com,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com
-Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
- guests
-Message-ID: <20210326170223.GH25229@zn.tnic>
-References: <cover.1616136307.git.kai.huang@intel.com>
- <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
- <20210326150320.GF25229@zn.tnic>
- <db27d34f-60f9-a8e8-270e-7152bce81a12@intel.com>
- <20210326152931.GG25229@zn.tnic>
- <dc7ac02e-857a-b1ce-f444-0d244405a099@intel.com>
+        id S229986AbhCZRDl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 13:03:41 -0400
+IronPort-SDR: 2m3SjYmeQCAg7zgda/G38PO/xeDJHkhHuXNcKB6rJbE/WQ6u6XoySHeS5nAeHHYmBYfU8h1oYN
+ oqEjTYKc10EA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="187900659"
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="187900659"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 10:03:40 -0700
+IronPort-SDR: wLL5MTp09blVL1D5KSYTjDaIvoRD56Hi42LhKXW/8iL93SWcutJacI7t8mSUszbt4gd7N2e6B4
+ e1Oj4dfRXamA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="382706203"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 26 Mar 2021 10:03:38 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id A5DE611F; Fri, 26 Mar 2021 19:03:52 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yury Norov <yury.norov@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: [PATCH v1 1/1] kernel.h: Drop inclusion in bitmap.h
+Date:   Fri, 26 Mar 2021 19:03:47 +0200
+Message-Id: <20210326170347.37441-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <dc7ac02e-857a-b1ce-f444-0d244405a099@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 08:35:34AM -0700, Dave Hansen wrote:
-> We could do it in the SGX core, but I think what we end up with will end
-> up looking a lot like a cgroup controller.  It seems like overkill, but
-> I think there's enough infrastructure to leverage that it's simpler to
-> do it with cgroups versus anything else.
+The bitmap.h header is used in a lot of code around the kernel.
+Besides that it includes kernel.h which sometimes makes a loop.
 
-Right.
+Break the loop by introducing align.h, including it in kernel.h
+and bitmap.h followed by replacing kernel.h with limits.h.
 
-Thx.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/align.h  | 15 +++++++++++++++
+ include/linux/bitmap.h |  3 ++-
+ include/linux/kernel.h |  9 +--------
+ 3 files changed, 18 insertions(+), 9 deletions(-)
+ create mode 100644 include/linux/align.h
 
+diff --git a/include/linux/align.h b/include/linux/align.h
+new file mode 100644
+index 000000000000..2b4acec7b95a
+--- /dev/null
++++ b/include/linux/align.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_ALIGN_H
++#define _LINUX_ALIGN_H
++
++#include <linux/const.h>
++
++/* @a is a power of 2 value */
++#define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
++#define ALIGN_DOWN(x, a)	__ALIGN_KERNEL((x) - ((a) - 1), (a))
++#define __ALIGN_MASK(x, mask)	__ALIGN_KERNEL_MASK((x), (mask))
++#define PTR_ALIGN(p, a)		((typeof(p))ALIGN((unsigned long)(p), (a)))
++#define PTR_ALIGN_DOWN(p, a)	((typeof(p))ALIGN_DOWN((unsigned long)(p), (a)))
++#define IS_ALIGNED(x, a)		(((x) & ((typeof(x))(a) - 1)) == 0)
++
++#endif	/* _LINUX_ALIGN_H */
+diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+index 70a932470b2d..6cbcd9d9edd2 100644
+--- a/include/linux/bitmap.h
++++ b/include/linux/bitmap.h
+@@ -4,10 +4,11 @@
+ 
+ #ifndef __ASSEMBLY__
+ 
++#include <linux/align.h>
+ #include <linux/types.h>
+ #include <linux/bitops.h>
++#include <linux/limits.h>
+ #include <linux/string.h>
+-#include <linux/kernel.h>
+ 
+ /*
+  * bitmaps provide bit arrays that consume one or more unsigned
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index 5b7ed6dc99ac..09035ac67d4b 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -3,6 +3,7 @@
+ #define _LINUX_KERNEL_H
+ 
+ #include <stdarg.h>
++#include <linux/align.h>
+ #include <linux/limits.h>
+ #include <linux/linkage.h>
+ #include <linux/stddef.h>
+@@ -30,14 +31,6 @@
+  */
+ #define REPEAT_BYTE(x)	((~0ul / 0xff) * (x))
+ 
+-/* @a is a power of 2 value */
+-#define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
+-#define ALIGN_DOWN(x, a)	__ALIGN_KERNEL((x) - ((a) - 1), (a))
+-#define __ALIGN_MASK(x, mask)	__ALIGN_KERNEL_MASK((x), (mask))
+-#define PTR_ALIGN(p, a)		((typeof(p))ALIGN((unsigned long)(p), (a)))
+-#define PTR_ALIGN_DOWN(p, a)	((typeof(p))ALIGN_DOWN((unsigned long)(p), (a)))
+-#define IS_ALIGNED(x, a)		(((x) & ((typeof(x))(a) - 1)) == 0)
+-
+ /* generic data direction definitions */
+ #define READ			0
+ #define WRITE			1
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
