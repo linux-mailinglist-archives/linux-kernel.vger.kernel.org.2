@@ -2,85 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E29BE34A8EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052B734A8F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:50:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhCZNsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:48:15 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:28081 "EHLO pegase1.c-s.fr"
+        id S230107AbhCZNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:50:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33426 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230227AbhCZNpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:45:39 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F6NWh6NNJz9v03N;
-        Fri, 26 Mar 2021 14:45:04 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id xndv0v1GJYSd; Fri, 26 Mar 2021 14:45:04 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F6NWh50m3z9v03M;
-        Fri, 26 Mar 2021 14:45:04 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7ED9F8B8CB;
-        Fri, 26 Mar 2021 14:45:05 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id fcwQHTDmL2ra; Fri, 26 Mar 2021 14:45:05 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id BF2308B8CD;
-        Fri, 26 Mar 2021 14:45:04 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 48ABF67611; Fri, 26 Mar 2021 13:45:05 +0000 (UTC)
-Message-Id: <63c9c340da826c14ed0c4f0121e723b16f626bc7.1616765870.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cover.1616765869.git.christophe.leroy@csgroup.eu>
-References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 17/17] cmdline: Remove CONFIG_CMDLINE_EXTEND
-To:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
-        daniel@gimpelevich.san-francisco.ca.us
-Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
-        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
-        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Date:   Fri, 26 Mar 2021 13:45:05 +0000 (UTC)
+        id S229779AbhCZNtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:49:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9F6D6AB8A;
+        Fri, 26 Mar 2021 13:49:39 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 16AC6DA734; Fri, 26 Mar 2021 14:47:33 +0100 (CET)
+Date:   Fri, 26 Mar 2021 14:47:32 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+Subject: Re: [PATCH] btrfs: Fix a typo
+Message-ID: <20210326134732.GN7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+References: <20210326005932.8238-1-unixbhaskar@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326005932.8238-1-unixbhaskar@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All architectures providing CONFIG_CMDLINE_EXTEND
-are now converted to GENERIC_CMDLINE.
+On Fri, Mar 26, 2021 at 06:29:32AM +0530, Bhaskar Chowdhury wrote:
+> 
+> s/reponsible/responsible/
 
-This configuration item is not used anymore, drop it.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- init/Kconfig | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/init/Kconfig b/init/Kconfig
-index af0d84662cc2..fa002e3765ab 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -163,12 +163,6 @@ config CMDLINE_FORCE
- 	  arguments provided by the bootloader.
- endchoice
- 
--config CMDLINE_EXTEND
--	bool
--	default CMDLINE_APPEND
--	help
--	  To be removed once all architectures are converted to generic CMDLINE
--
- config COMPILE_TEST
- 	bool "Compile also drivers which will not load"
- 	depends on HAS_IOMEM
--- 
-2.25.0
-
+So this is exactly what I don't want to see happen - one patch per typo.
+I tried to explain it in the previous patch, please either fix all typos
+under fs/btrfs or don't bother.
