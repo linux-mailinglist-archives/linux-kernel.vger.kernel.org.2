@@ -2,195 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AC934AF8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7484034AF90
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 20:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhCZTsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 15:48:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55068 "EHLO mail.kernel.org"
+        id S230352AbhCZTtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 15:49:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230213AbhCZTs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 15:48:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8F306194A;
-        Fri, 26 Mar 2021 19:48:26 +0000 (UTC)
+        id S230150AbhCZTtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 15:49:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF2EF6196C;
+        Fri, 26 Mar 2021 19:49:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616788107;
-        bh=wxPwrL8Elyilt/be8avUhCyHnKSPWdv5vjts2YM7GNk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hxUv3wwbObI8kiZEEQZV18IkUZ78uC14N/u7raPhRVQu/Jg5dAuuQVvt7aGdizPMu
-         YANg5luT1vEZH4/bbF5TI1C0At7XY/IM9KlTIGT1b8JCPtihfoX8tJlZL3OPPHkSr6
-         +o96gpV54A3HXckbZ4y2bVhKASm9ZAxP3N6Rg+UUuH3yyydaW+NkUH+mRab2umSM5c
-         tPM8bqGeklPDfYJn0E0IXVuAyrUnQGBD0WqbgS/soDjmC/GNVuR+WLv0AqQ4fxV1wY
-         /kVBpv0i5qcIClgEQpd1cHNtZgJis+mKdIHoxh2MT+AwBiErwk+lh8PFaYuepkSJwu
-         xv91nHcQDfnCg==
-Received: by mail-ed1-f48.google.com with SMTP id w18so7690062edc.0;
-        Fri, 26 Mar 2021 12:48:26 -0700 (PDT)
-X-Gm-Message-State: AOAM5310kl9KQIEvKP/G5vIr0WU/mDQiyJq7+EKlEDQCcz77c7vW2PS9
-        /cCIUbRoIGRhktAsOOMtr0qlC89QVu6ceScefw==
-X-Google-Smtp-Source: ABdhPJy7G4s2ud2zHYauRuSzY80o/0qOtPPIRaErAfbkRf+ylRkj+kKnhZfJ/AZpQBGAvYabfLNPy7gyORsBpyobNw0=
-X-Received: by 2002:a05:6402:2d0:: with SMTP id b16mr17353897edx.194.1616788104975;
- Fri, 26 Mar 2021 12:48:24 -0700 (PDT)
+        s=k20201202; t=1616788155;
+        bh=lAxCHO3mwbr8j2AnnBzP3nXUOrdvyMEE2z/EuSlIbfE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GsdDHx35gVb6OrOsB9zBnJHrV4Q/7lE6Tau01U9EJ1T3ftL6Vg5W4VB3j+kYSHQ2U
+         lFcqLQeHKxDCIBzUByhB6fIx2egkA5NL3LC2Q4OdNdu8+PbmA3xoiWJIvrcU+9Fs0w
+         G4Xi/rDnB7r+jAhGxTu0VPMoLqlrWsjApD4UE1xpJs8qHYuPOL0AsXv7DhAns0N9a8
+         ksvfWqztoxNOk7L54CBrW8dX+6h8vwCNc01+aI+hS3ej6m0GJvWaj5aPP8TBweNfdS
+         1VAaGmyVMK6Jxd0F3ivqYB1l5Dkhb+ruWnPqu3HmCBA4lbbcHl6okva5iAm455lakP
+         jpaF7mgMPRXcw==
+Date:   Fri, 26 Mar 2021 21:48:45 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v4 03/25] x86/sgx: Wipe out EREMOVE from
+ sgx_free_epc_page()
+Message-ID: <YF46ndD3rdotgOpl@kernel.org>
+References: <062acb801926b2ade2f9fe1672afb7113453a741.1616136308.git.kai.huang@intel.com>
+ <20210325093057.122834-1-kai.huang@intel.com>
 MIME-Version: 1.0
-References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
- <YFKQaXOmOwYyeqvM@google.com> <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
- <YF3V8d4wB6i81fLN@orome.fritz.box> <CAF6AEGvS6Pnd-m-boqPEZdDY+VCkV5M8Ob9n6UiYWs_DxrPopQ@mail.gmail.com>
- <CAF6AEGvPN90RGP8hYXtAksJpGc4Sf5tRpNwNnV6=sxKei0Ms6A@mail.gmail.com>
-In-Reply-To: <CAF6AEGvPN90RGP8hYXtAksJpGc4Sf5tRpNwNnV6=sxKei0Ms6A@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 26 Mar 2021 13:48:13 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKk+c83GMRzpc11Naj7QDYSfHdrg-8ZnxRBBM4phemQxg@mail.gmail.com>
-Message-ID: <CAL_JsqKk+c83GMRzpc11Naj7QDYSfHdrg-8ZnxRBBM4phemQxg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on sc7180-trogdor-pompom
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325093057.122834-1-kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 9:20 AM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Fri, Mar 26, 2021 at 8:18 AM Rob Clark <robdclark@gmail.com> wrote:
-> >
-> > On Fri, Mar 26, 2021 at 5:38 AM Thierry Reding <thierry.reding@gmail.com> wrote:
-> > >
-> > > On Wed, Mar 17, 2021 at 06:53:04PM -0700, Rob Clark wrote:
-> > > > On Wed, Mar 17, 2021 at 4:27 PM Matthias Kaehlcke <mka@chromium.org> wrote:
-> > > > >
-> > > > > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
-> > > > > > The sc7180-trogdor-pompom board might be attached to any number of a
-> > > > > > pile of eDP panels. At the moment I'm told that the list might include:
-> > > > > > - KD KD116N21-30NV-A010
-> > > > > > - KD KD116N09-30NH-A016
-> > > > > > - Starry 2081116HHD028001-51D
-> > > > > > - Sharp LQ116M1JW10
-> > > > > >
-> > > > > > It should be noted that while the EDID programmed in the first 3
-> > > > > > panels indicates that they should run with exactly the same timing (to
-> > > > > > keep things simple), the 4th panel not only needs different timing but
-> > > > > > has a different resolution.
-> > > > > >
-> > > > > > As is true in general with eDP panels, we can figure out which panel
-> > > > > > we have and all the info needed to drive its pixel clock by reading
-> > > > > > the EDID. However, we can do this only after we've powered the panel
-> > > > > > on. Powering on the panels requires following the timing diagram in
-> > > > > > each panel's datasheet which specifies delays between certain
-> > > > > > actions. This means that, while we can be quite dynamic about handling
-> > > > > > things we can't just totally skip out on describing the panel like we
-> > > > > > could do if it was connected to an external-facing DP port.
-> > > > > >
-> > > > > > While the different panels have slightly different delays, it's
-> > > > > > possible to come up with a set of unified delays that will work on all
-> > > > > > the panels. From reading the datasheets:
-> > > > > > * KD KD116N21-30NV-A010 and KD KD116N09-30NH-A016
-> > > > > >   - HPD absent delay: 200 ms
-> > > > > >   - Unprepare delay: 150 ms (datasheet is confusing, might be 500 ms)
-> > > > > > * Starry 2081116HHD028001-51D
-> > > > > >   - HPD absent delay: 100 ms
-> > > > > >   - Enable delay: (link training done till enable BL): 200 ms
-> > > > > >   - Unprepare delay: 500 ms
-> > > > > > * Sharp LQ116M1JW10
-> > > > > >   - HPD absent delay: 200 ms
-> > > > > >   - Unprepare delay: 500 ms
-> > > > > >   - Prepare to enable delay (power on till backlight): 100 ms
-> > > > > >
-> > > > > > Unified:
-> > > > > > - HPD absent delay: 200 ms
-> > > > > > - Unprepare delay: 500 ms
-> > > > > > - Enable delay: 200 ms
-> > > > > >
-> > > > > > NOTE: in theory the only thing that we _really_ need unity on is the
-> > > > > > "HPD absent delay" since once the panel asserts HPD we can read the
-> > > > > > EDID and could make per-panel decisions if we wanted.
-> > > > > >
-> > > > > > Let's create a definition of "a panel that can be attached to pompom"
-> > > > > > as a panel that provides a valid EDID and can work with the standard
-> > > > > > pompom power sequencing. If more panels are later attached to pompom
-> > > > > > then it's fine as long as they work in a compatible way.
-> > > > > >
-> > > > > > One might ask why we can't just use a generic string here and provide
-> > > > > > the timings directly in the device tree file. As I understand it,
-> > > > > > trying to describe generic power sequencing in the device tree is
-> > > > > > frowned upon and the one instance (SD/MMC) is regarded as a mistake
-> > > > > > that shouldn't be repeated. Specifying a power sequence per board (or
-> > > > > > per board class) feels like a reasonable compromise. We're not trying
-> > > > > > to define fully generic power sequence bindings but we can also take
-> > > > > > advantage of the semi-probable properties of the attached device.
-> > > > > >
-> > > > > > NOTE: I believe that past instances of supporting this type of thing
-> > > > > > have used the "white lie" approach. One representative panel was
-> > > > > > listed in the device tree. The power sequencings of this
-> > > > > > representative panel were OK to use across all panels that might be
-> > > > > > attached and other differences were handled by EDID. This patch
-> > > > > > attempts to set a new precedent and avoid the need for the white lie.
-> > > > > >
-> > > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > > > > ---
-> > > > >
-> > > > > Sounds reasonable to me if DT maintainers can live with this abstract
-> > > > > hardware definition. It's clearer than the 'white lie' approach.
-> > > >
-> > > > Yeah, it is a weird grey area between "discoverable" and "not
-> > > > discoverable".. but I favor DT reflecting reality as much as
-> > > > possible/feasible, so I think this is definity cleaner than "white
-> > > > lies"
-> > >
-> > > This is practically no different than the "white lie". I suppose you
-> > > could perhaps call it "more honest", if you want.
-> > >
-> > > The point remains that unless we describe exactly which panel we're
-> > > dealing with, we ultimately have no way of properly quirking anything if
-> > > we ever have to. Also, once we allow this kind of wildcard we can
-> > > suddenly get into a situation where people might want to reuse this on
-> > > something that's not at all a google-pompom board because the same
-> > > particular power sequence happens to work on on some other board.
-> > >
-> > > Similarly I can imagine a situation where we could now have the same
-> > > panel supported by multiple different wildcard compatible strings. How
-> > > is that supposed to be any cleaner than what we have now?
-> > >
-> > > And I still keep wondering why bootloaders can't be taught about these
-> > > kinds of things. We have in the past discussed various solutions where
-> > > the bootloader could detect the type of panel connected and set the
-> > > proper compatible string.
-> >
-> > The bootloader cannot detect the panel without powering up the panel,
-> > which it normally does not do if you are not in dev-mode (it would add
-> > a significant amount of time to bootup, which is why we can't do this)
->
-> what if we had a sort of multi-choice panel node:
->
->    panel: panel {
->      compatible = "panel,one-of";
->      compatible-one-of = "vendor1,panel-a", "vendor2,panel-b",
-> "vendor3,panel-c";
->   };
->
-> The kernel could construct power sequence timings that are the
-> superset of all the possible panels.  That seems about as explicit as
-> we could get in this sort of case.
+On Thu, Mar 25, 2021 at 10:30:57PM +1300, Kai Huang wrote:
+> EREMOVE takes a page and removes any association between that page and
+> an enclave.  It must be run on a page before it can be added into
+> another enclave.  Currently, EREMOVE is run as part of pages being freed
+> into the SGX page allocator.  It is not expected to fail, as it would
+> indicate a use-after-free of EPC.  Rather than add the page back to the
+> pool of available EPC, the kernel intentionally leaks the page to avoid
+> additional errors in the future.
+> 
+> However, KVM does not track how guest pages are used, which means that
+> SGX virtualization use of EREMOVE might fail.  Specifically, it is
+> legitimate that EREMOVE returns SGX_CHILD_PRESENT for EPC assigned to
+> KVM guest, because KVM/kernel doesn't track SECS pages.
+> 
+> To allow SGX/KVM to introduce a more permissive EREMOVE helper and to
+> let the SGX virtualization code use the allocator directly, break out
+> the EREMOVE call from the SGX page allocator.  Rename the original
+> sgx_free_epc_page() to sgx_encl_free_epc_page(), indicating that it is
+> used to free EPC page assigned host enclave. Replace sgx_free_epc_page()
+> with sgx_encl_free_epc_page() in all call sites so there's no functional
+> change.
+> 
+> At the same time improve error message when EREMOVE fails, and add
+> documentation to explain to user what is the bug and suggest user what
+> to do when this bug happens, although extremely unlikely.
+> 
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> ---
+>  Documentation/x86/sgx.rst       | 27 +++++++++++++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/encl.c  | 32 +++++++++++++++++++++++++++-----
+>  arch/x86/kernel/cpu/sgx/encl.h  |  1 +
+>  arch/x86/kernel/cpu/sgx/ioctl.c |  6 +++---
+>  arch/x86/kernel/cpu/sgx/main.c  | 14 +++++---------
+>  arch/x86/kernel/cpu/sgx/sgx.h   |  5 +++++
+>  6 files changed, 68 insertions(+), 17 deletions(-)
+> 
+> diff --git a/Documentation/x86/sgx.rst b/Documentation/x86/sgx.rst
+> index eaee1368b4fd..5ec7d17e65e0 100644
+> --- a/Documentation/x86/sgx.rst
+> +++ b/Documentation/x86/sgx.rst
+> @@ -209,3 +209,30 @@ An application may be loaded into a container enclave which is specially
+>  configured with a library OS and run-time which permits the application to run.
+>  The enclave run-time and library OS work together to execute the application
+>  when a thread enters the enclave.
+> +
+> +Impact of Potential Kernel SGX Bugs
+> +===================================
+> +
+> +EPC leaks
+> +---------
+> +
+> +EPC leaks can happen if kernel SGX bug happens, when a WARNING with below
+> +message is shown in dmesg:
+> +
+> +"...EREMOVE returned ... and an EPC page was leaked.  SGX may become unusuable.
+> +This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more
+> +information."
+> +
+> +This is effectively a kernel use-after-free of EPC, and due to the way SGX
+> +works, the bug is detected at freeing. Rather than add the page back to the pool
+> +of available EPC, the kernel intentionally leaks the page to avoid additional
+> +errors in the future.
+> +
+> +When this happens, kernel will likely soon leak majority of EPC pages, and SGX
+> +will likely become unusable. However while this may be fatal to SGX, other
+> +kernel functionalities are unlikely to be impacted, and should continue to work.
+> +
+> +As a result, when this happpens, user should stop running any new SGX workloads,
+> +(or just any new workloads), and migrate all valuable workloads. Although a
+> +machine reboot can recover all EPC, the bug should be reported to Linux
+> +developers.
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+> index 7449ef33f081..26c0987153de 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.c
+> +++ b/arch/x86/kernel/cpu/sgx/encl.c
+> @@ -78,7 +78,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
+>  
+>  	ret = __sgx_encl_eldu(encl_page, epc_page, secs_page);
+>  	if (ret) {
+> -		sgx_free_epc_page(epc_page);
+> +		sgx_encl_free_epc_page(epc_page);
+>  		return ERR_PTR(ret);
+>  	}
+>  
+> @@ -404,7 +404,7 @@ void sgx_encl_release(struct kref *ref)
+>  			if (sgx_unmark_page_reclaimable(entry->epc_page))
+>  				continue;
+>  
+> -			sgx_free_epc_page(entry->epc_page);
+> +			sgx_encl_free_epc_page(entry->epc_page);
+>  			encl->secs_child_cnt--;
+>  			entry->epc_page = NULL;
+>  		}
+> @@ -415,7 +415,7 @@ void sgx_encl_release(struct kref *ref)
+>  	xa_destroy(&encl->page_array);
+>  
+>  	if (!encl->secs_child_cnt && encl->secs.epc_page) {
+> -		sgx_free_epc_page(encl->secs.epc_page);
+> +		sgx_encl_free_epc_page(encl->secs.epc_page);
+>  		encl->secs.epc_page = NULL;
+>  	}
+>  
+> @@ -423,7 +423,7 @@ void sgx_encl_release(struct kref *ref)
+>  		va_page = list_first_entry(&encl->va_pages, struct sgx_va_page,
+>  					   list);
+>  		list_del(&va_page->list);
+> -		sgx_free_epc_page(va_page->epc_page);
+> +		sgx_encl_free_epc_page(va_page->epc_page);
+>  		kfree(va_page);
+>  	}
+>  
+> @@ -686,7 +686,7 @@ struct sgx_epc_page *sgx_alloc_va_page(void)
+>  	ret = __epa(sgx_get_epc_virt_addr(epc_page));
+>  	if (ret) {
+>  		WARN_ONCE(1, "EPA returned %d (0x%x)", ret, ret);
+> -		sgx_free_epc_page(epc_page);
+> +		sgx_encl_free_epc_page(epc_page);
+>  		return ERR_PTR(-EFAULT);
+>  	}
+>  
+> @@ -735,3 +735,25 @@ bool sgx_va_page_full(struct sgx_va_page *va_page)
+>  
+>  	return slot == SGX_VA_SLOT_COUNT;
+>  }
+> +
+> +/**
+> + * sgx_encl_free_epc_page - free EPC page assigned to an enclave
+> + * @page:	EPC page to be freed
+> + *
+> + * Free EPC page assigned to an enclave.  It does EREMOVE for the page, and
+> + * only upon success, it puts the page back to free page list.  Otherwise, it
+> + * gives a WARNING to indicate page is leaked, and require reboot to retrieve
+> + * leaked pages.
+> + */
+> +void sgx_encl_free_epc_page(struct sgx_epc_page *page)
+> +{
+> +	int ret;
+> +
+> +	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
+> +
+> +	ret = __eremove(sgx_get_epc_virt_addr(page));
+> +	if (WARN_ONCE(ret, EREMOVE_ERROR_MESSAGE, ret, ret))
+> +		return;
+> +
+> +	sgx_free_epc_page(page);
+> +}
+> diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
+> index d8d30ccbef4c..6e74f85b6264 100644
+> --- a/arch/x86/kernel/cpu/sgx/encl.h
+> +++ b/arch/x86/kernel/cpu/sgx/encl.h
+> @@ -115,5 +115,6 @@ struct sgx_epc_page *sgx_alloc_va_page(void);
+>  unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
+>  void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
+>  bool sgx_va_page_full(struct sgx_va_page *va_page);
+> +void sgx_encl_free_epc_page(struct sgx_epc_page *page);
+>  
+>  #endif /* _X86_ENCL_H */
+> diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+> index 90a5caf76939..772b9c648cf1 100644
+> --- a/arch/x86/kernel/cpu/sgx/ioctl.c
+> +++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+> @@ -47,7 +47,7 @@ static void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page)
+>  	encl->page_cnt--;
+>  
+>  	if (va_page) {
+> -		sgx_free_epc_page(va_page->epc_page);
+> +		sgx_encl_free_epc_page(va_page->epc_page);
+>  		list_del(&va_page->list);
+>  		kfree(va_page);
+>  	}
+> @@ -117,7 +117,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+>  	return 0;
+>  
+>  err_out:
+> -	sgx_free_epc_page(encl->secs.epc_page);
+> +	sgx_encl_free_epc_page(encl->secs.epc_page);
+>  	encl->secs.epc_page = NULL;
+>  
+>  err_out_backing:
+> @@ -365,7 +365,7 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
+>  	mmap_read_unlock(current->mm);
+>  
+>  err_out_free:
+> -	sgx_free_epc_page(epc_page);
+> +	sgx_encl_free_epc_page(epc_page);
+>  	kfree(encl_page);
+>  
+>  	return ret;
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+> index 13a7599ce7d4..b227629b1e9c 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -294,7 +294,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
+>  
+>  		sgx_encl_ewb(encl->secs.epc_page, &secs_backing);
+>  
+> -		sgx_free_epc_page(encl->secs.epc_page);
+> +		sgx_encl_free_epc_page(encl->secs.epc_page);
+>  		encl->secs.epc_page = NULL;
+>  
+>  		sgx_encl_put_backing(&secs_backing, true);
+> @@ -609,19 +609,15 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+>   * sgx_free_epc_page() - Free an EPC page
+>   * @page:	an EPC page
+>   *
+> - * Call EREMOVE for an EPC page and insert it back to the list of free pages.
+> + * Put the EPC page back to the list of free pages. It's the caller's
+> + * responsibility to make sure that the page is in uninitialized state. In other
+> + * words, do EREMOVE, EWB or whatever operation is necessary before calling
+> + * this function.
+>   */
+>  void sgx_free_epc_page(struct sgx_epc_page *page)
+>  {
+>  	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
+>  	struct sgx_numa_node *node = section->node;
+> -	int ret;
+> -
+> -	WARN_ON_ONCE(page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED);
+> -
+> -	ret = __eremove(sgx_get_epc_virt_addr(page));
+> -	if (WARN_ONCE(ret, "EREMOVE returned %d (0x%x)", ret, ret))
+> -		return;
+>  
+>  	spin_lock(&node->lock);
+>  
+> diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+> index 653af8ca1a25..6b21a165500e 100644
+> --- a/arch/x86/kernel/cpu/sgx/sgx.h
+> +++ b/arch/x86/kernel/cpu/sgx/sgx.h
+> @@ -13,6 +13,11 @@
+>  #undef pr_fmt
+>  #define pr_fmt(fmt) "sgx: " fmt
+>  
+> +/* Error message for EREMOVE failure, when kernel is about to leak EPC page */
+> +#define EREMOVE_ERROR_MESSAGE \
+> +	"EREMOVE returned %d (0x%x) and an EPC page was leaked.  SGX may become unusuable.  " \
+> +	"This is likely a kernel bug.  Refer to Documentation/x86/sgx.rst for more information."
 
-If we were to go this route, I'm inclined to say just shove all the
-possible panel compatibles into 'compatible'. That kind of breaks the
-notion of most specific to least specific. OTOH, it is saying the set
-of panels are somehow 'compatible' with each other.
 
-If there's not some level of compatibility between the panels, then
-it's still the bootloader's problem.
+Why this needs to be here and not open coded where it is used?
 
-Rob
+> +
+>  #define SGX_MAX_EPC_SECTIONS		8
+>  #define SGX_EEXTEND_BLOCK_SIZE		256
+>  #define SGX_NR_TO_SCAN			16
+> -- 
+> 2.30.2
+> 
+> 
+
+/Jarkko
