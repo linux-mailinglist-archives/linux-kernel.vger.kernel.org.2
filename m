@@ -2,182 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3BC34A3CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DDC34A3CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbhCZJLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230191AbhCZJLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:11:34 -0400
+Received: from mga03.intel.com ([134.134.136.65]:55374 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230155AbhCZJLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Mar 2021 05:11:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbhCZJKh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:10:37 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CDAC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:37 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id n8so5039921oie.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:10:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4p7L0r2YVzvHUiWBzaSDayxmY/547g3xQbzU3O52T2E=;
-        b=K//qQBOSq6LUJ/Ks7l0mrUPHs53l2Y1cWYTAx32Gr87z72QyvxSgd8n/3wdyZwBa9Y
-         VJJFuBtSJQ2V34IWaPS9wqqDQJJKuwfWRH91wAzYmwMZOPX8SGtMk6qwguBjJ61lwP2b
-         iLaoblkPZMm8b2E2yJvXXGHFj71px91XW31LHTtueSJ1lX4gcK/8Zr7Y+DYlXDtg9Eml
-         igyHDBGqetdlCtKl9jiSRUCIomfnb1f9aMiqseOUPPlUE5mAtBD53/D8A++mRhTkyRdt
-         WPYwhuFyxorKD3YQ5b+q4dVGIaFbHZ4sjTo5ELKGsWEO3mSmAWfPVZ+2ZNK09l9LovFX
-         ZEog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4p7L0r2YVzvHUiWBzaSDayxmY/547g3xQbzU3O52T2E=;
-        b=TesOOZ4VdOKfXrrvIc703/pkbt3+NAYc8yBaETlLNRCKYrMIhpXUZKN1z/6h7de/Gp
-         iPVczxfCA04HvA2dHyjLtIzksx+UmBQeZc/ASU0bItMy04OWV3hyJbpnxaOxR4NUIr5B
-         g6UH/DfsancI+7agzVr6PzIhMVhAeM2QuW2oPbk5Upv5Xj/vQ0KAiHeqnlb8LvJjVBYj
-         eN21N09S4uJuPZ3W6eqISuJ9w3r3YDee2bLekFRHSB3LL+zfwJ4/y93ubLoFovJrqS6H
-         e9qf2OBYhJGnR3HXUtbw9sqrixz/Yh29HKkbi8/9B5gUl+mCMYutLApdpCyUEsL52frv
-         pNRg==
-X-Gm-Message-State: AOAM531xjmag14OyJYDPz0h6iMUFczDSdn5eDMIAvSepTfDybdU3dhRB
-        xFgI/zRBqpAVhehcDmAxYMYjXYBc6+vNkmm+1hYY0MNeRkhbTg==
-X-Google-Smtp-Source: ABdhPJzWYUEN40+bsyYL88YYVQP5NXJtFRzbznOQwcflZtD04abopFLejxa8uvUREgVwa5kx1YHlguTbvtlVwiiZfJM=
-X-Received: by 2002:aca:1c02:: with SMTP id c2mr8944699oic.31.1616749836344;
- Fri, 26 Mar 2021 02:10:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
- <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
- <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
- <87lfaj7cki.fsf@igel.home> <871rc4on36.fsf@igel.home> <CANXhq0pDge0BPgAjoLrX7Y2qtofb3dhV1_CPHBaCg0o4cEMrbQ@mail.gmail.com>
- <87a6qrk2pw.fsf@igel.home>
-In-Reply-To: <87a6qrk2pw.fsf@igel.home>
-From:   Zong Li <zong.li@sifive.com>
-Date:   Fri, 26 Mar 2021 17:10:24 +0800
-Message-ID: <CANXhq0rOeAWnRYHAYKJfDeY4kYz6+5mU_dJSqU67+2p9u0STHQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Pragnesh Patel <pragnesh.patel@openfive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+IronPort-SDR: sSuvITzQfxujkQP75KxeaFR+cRJ2XU+m4Ace8qodvulht/fioprPbzjzb22XgZXd73KKVV+DAa
+ zDKyPyDY2l6g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="191142628"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="191142628"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:11:05 -0700
+IronPort-SDR: TSNpPYngjz1bCdJYwcrM5FrvgT970Uy9njyWKJv1snBYWQKILjtzkcJJTfKHnTNHnPflxV6olg
+ KIYvnOQdJP1Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="594113441"
+Received: from mismail5-ilbpg0.png.intel.com ([10.88.229.82])
+  by orsmga005.jf.intel.com with ESMTP; 26 Mar 2021 02:10:57 -0700
+From:   mohammad.athari.ismail@intel.com
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>, vee.khee.wong@intel.com,
+        Tan Tee Min <tee.min.tan@intel.com>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mohammad.athari.ismail@intel.com
+Subject: [PATCH net-next] net: stmmac: Fix kernel panic due to NULL pointer dereference of fpe_cfg
+Date:   Fri, 26 Mar 2021 17:10:46 +0800
+Message-Id: <20210326091046.26391-1-mohammad.athari.ismail@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 5:22 PM Andreas Schwab <schwab@linux-m68k.org> wrot=
-e:
->
-> On M=C3=A4r 25 2021, Zong Li wrote:
->
-> > take a look at this again. Could you also let me know which bootloader
-> > you used (FSBL or U-boot-SPL)? Thanks.
->
-> U-Boot SPL
->
-> Please try this image:
->
-> http://download.opensuse.org/ports/riscv/tumbleweed/images/openSUSE-Tumbl=
-eweed-RISC-V-JeOS-hifiveunleashed.riscv64.raw.xz
->
+From: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
 
-Hi Andreas,
+In this patch, "net: stmmac: support FPE link partner hand-shaking
+procedure", priv->plat->fpe_cfg wouldn`t be "devm_kzalloc"ed if
+dma_cap->frpsel is 0 (Flexible Rx Parser is not supported in SoC) in
+tc_init(). So, fpe_cfg will be remain as NULL and accessing it will cause
+kernel panic.
 
-The following is the result of the test so far. I would continue to
-see what happened there.
+To fix this, move the "devm_kzalloc"ing of priv->plat->fpe_cfg before
+dma_cap->frpsel checking in tc_init(). Additionally, checking of
+priv->dma_cap.fpesel is added before calling stmmac_fpe_link_state_handle()
+as only FPE supported SoC is allowed to call the function.
 
-1. Boot on openSUSE-Tumbleweed-RISC-V-JeOS-hifiveunleashed.riscv64.raw.xz
-w/ plugging ethernet cable
-  - It seems that I encountered a different situation with you, my
-system hung up and I didn't see the boot message you mentioned yet.
+Below is the kernel panic dump reported by Marek Szyprowski
+<m.szyprowski@samsung.com>:
 
-[  OK  ] Finished Generate issue file for login session.
-[  OK  ] Finished Apply settings from /etc/sysconfig/keyboard.
-[  OK  ] Started User Login Management.
-[  *** ] (3 of 3) A start job is running for=E2=80=A6upplicant service (58s=
- / 1min 51s)
-[**    ] (3 of 3) A start job is running for=E2=80=A6cant service (1min 28s=
- / 1min 51s)
-[   ***] (2 of 3) A start job is running for=E2=80=A6cant service (1min 58s=
- / 3min 21s)
-[   ***] (1 of 3) A start job is running for=E2=80=A6cant service (2min 28s=
- / 3min 21s)
-[**    ] (3 of 3) A start job is running for=E2=80=A6cant service (2min 58s=
- / 3min 21s)
-[ ***  ] (2 of 3) A start job is running for=E2=80=A6cant service (3min 28s=
- / 4min 51s)
-[     *] (1 of 3) A start job is running for=E2=80=A6cant service (3min 58s=
- / 4min 51s)
-[ ***  ] (3 of 3) A start job is running for=E2=80=A6cant service (4min 28s=
- / 4min 51s)
-[***   ] (2 of 3) A start job is running for=E2=80=A6cant service (4min 59s=
- / 6min 22s)
-[    **] (1 of 3) A start job is running for=E2=80=A6cant service (5min 29s=
- / 6min 22s)
-[  *** ] (3 of 3) A start job is running for=E2=80=A6cant service (5min 59s=
- / 6min 22s)
-[*     ] (2 of 3) A start job is running for=E2=80=A6cant service (6min 29s=
- / 7min 52s)
-[  *** ] (1 of 3) A start job is running for=E2=80=A6cant service (6min 59s=
- / 7min 52s)
-[    **] (3 of 3) A start job is running for=E2=80=A6cant service (7min 29s=
- / 7min 52s)
-[FAILED] Failed to start wicked AutoIPv4 supplicant service.
-See 'systemctl status wickedd-auto4.service' for details.
-[FAILED] Failed to start wicked DHCPv4 supplicant service.
-See 'systemctl status wickedd-dhcp4.service' for details.
-[FAILED] Failed to start wicked DHCPv6 supplicant service.
-See 'systemctl status wickedd-dhcp6.service' for details.
-         Starting wicked network management service daemon...
-[    **] A start job is running for wicked n=E2=80=A6rvice daemon (7min 59s=
- / 9min 22s)
-[***   ] A start job is running for wicked n=E2=80=A6rvice daemon (8min 29s=
- / 9min 22s)
-[  603.364988] BUG: workqueue lockup - pool cpus=3D1 node=3D0 flags=3D0x0
-nice=3D0 stuck for 36s!
-[***   ] A start job is running for wicked n=E2=80=A6rvice daemon (8min 59s=
- / 9min 22s)
-[  633.444986] BUG: workqueue lockup - pool cpus=3D1 node=3D0 flags=3D0x0
-nice=3D0 stuck for 66s!
-         Stopping Flush Journal to Persistent Storage...
-[  OK  ] Stopped Flush Journal to Persistent Storage.
-[  OK  ] Stopped Journal Service.
-
-
-2. Boot on kernel image which built by opensuse defconfig with
-changing CONFIG_MACB to y instead of m
- - Although I got some problem for mounting the root filesystem on
-this image now, but I didn't hang up at the message you mentioned, I
-could go through after macb driver initialization
-
-[    2.350309] libphy: Fixed MDIO Bus: probed
-[    2.354476] macb 10090000.ethernet: Registered clk switch
-'sifive-gemgxl-mgmt'
-[    2.358752] macb 10090000.ethernet: GEM doesn't support hardware ptp.
-[    2.361464] libphy: MACB_mii_bus: probed
-[    2.366289] macb 10090000.ethernet eth0: Cadence GEM rev 0x10070109
-at 0x10090000 irq 16 (70:b3:d5:92:f2:6c)
-[    2.375570] e1000e: Intel(R) PRO/1000 Network Driver
-[    2.380323] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-[    2.386338] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+meson8b-dwmac ff3f0000.ethernet eth0: PHY [0.0:00] driver [RTL8211F Gigabit Ethernet] (irq=35)
+meson8b-dwmac ff3f0000.ethernet eth0: No Safety Features support found
+meson8b-dwmac ff3f0000.ethernet eth0: PTP not supported by HW
+meson8b-dwmac ff3f0000.ethernet eth0: configuring for phy/rgmii link mode
+Unable to handle kernel NULL pointer dereference at virtual address 0000000000000001
+Mem abort info:
 ...
-[    2.687447] Waiting for root device /dev/mmcblk0p4...
+user pgtable: 4k pages, 48-bit VAs, pgdp=00000000044eb000
+[0000000000000001] pgd=0000000000000000, p4d=0000000000000000
+Internal error: Oops: 96000004 [#1] PREEMPT SMP
+Modules linked in: dw_hdmi_i2s_audio dw_hdmi_cec meson_gxl realtek meson_gxbb_wdt snd_soc_meson_axg_sound_card dwmac_generic axg_audio meson_dw_hdmi crct10dif_ce snd_soc_meson_card_utils snd_soc_meson_axg_tdmout panfrost rc_odroid gpu_sched reset_meson_audio_arb meson_ir snd_soc_meson_g12a_tohdmitx snd_soc_meson_axg_frddr sclk_div clk_phase snd_soc_meson_codec_glue dwmac_meson8b snd_soc_meson_axg_fifo stmmac_platform meson_rng meson_drm stmmac rtc_meson_vrtc rng_core meson_canvas pwm_meson dw_hdmi mdio_mux_meson_g12a pcs_xpcs snd_soc_meson_axg_tdm_interface snd_soc_meson_axg_tdm_formatter nvmem_meson_efuse display_connector
+CPU: 1 PID: 7 Comm: kworker/u8:0 Not tainted 5.12.0-rc4-next-20210325+
+Hardware name: Hardkernel ODROID-C4 (DT)
+Workqueue: events_power_efficient phylink_resolve
+pstate: 20400009 (nzCv daif +PAN -UAO -TCO BTYPE=--)
+pc : stmmac_mac_link_up+0x14c/0x348 [stmmac]
+lr : stmmac_mac_link_up+0x284/0x348 [stmmac] ...
+Call trace:
+ stmmac_mac_link_up+0x14c/0x348 [stmmac]
+ phylink_resolve+0x104/0x420
+ process_one_work+0x2a8/0x718
+ worker_thread+0x48/0x460
+ kthread+0x134/0x160
+ ret_from_fork+0x10/0x18
+Code: b971ba60 350007c0 f958c260 f9402000 (39400401)
+---[ end trace 0c9deb6c510228aa ]---
 
-3. I check the patch set of supporting fu740, it shouldn't impact
-fu540, I'm going to dump and comparing the prci content and give more
-testing.
+Fixes: 5a5586112b92 ("net: stmmac: support FPE link partner hand-shaking
+procedure")
+Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
+---
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  6 ++++--
+ .../net/ethernet/stmicro/stmmac/stmmac_tc.c   | 20 +++++++++----------
+ 2 files changed, 14 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 170296820af0..27faf5e49360 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -997,7 +997,8 @@ static void stmmac_mac_link_down(struct phylink_config *config,
+ 	stmmac_eee_init(priv);
+ 	stmmac_set_eee_pls(priv, priv->hw, false);
+ 
+-	stmmac_fpe_link_state_handle(priv, false);
++	if (priv->dma_cap.fpesel)
++		stmmac_fpe_link_state_handle(priv, false);
+ }
+ 
+ static void stmmac_mac_link_up(struct phylink_config *config,
+@@ -1097,7 +1098,8 @@ static void stmmac_mac_link_up(struct phylink_config *config,
+ 		stmmac_set_eee_pls(priv, priv->hw, true);
+ 	}
+ 
+-	stmmac_fpe_link_state_handle(priv, true);
++	if (priv->dma_cap.fpesel)
++		stmmac_fpe_link_state_handle(priv, true);
+ }
+ 
+ static const struct phylink_mac_ops stmmac_phylink_mac_ops = {
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 1d84ee359808..4e70efc45458 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -254,6 +254,16 @@ static int tc_init(struct stmmac_priv *priv)
+ 			 priv->flow_entries_max);
+ 	}
+ 
++	if (!priv->plat->fpe_cfg) {
++		priv->plat->fpe_cfg = devm_kzalloc(priv->device,
++						   sizeof(*priv->plat->fpe_cfg),
++						   GFP_KERNEL);
++		if (!priv->plat->fpe_cfg)
++			return -ENOMEM;
++	} else {
++		memset(priv->plat->fpe_cfg, 0, sizeof(*priv->plat->fpe_cfg));
++	}
++
+ 	/* Fail silently as we can still use remaining features, e.g. CBS */
+ 	if (!dma_cap->frpsel)
+ 		return 0;
+@@ -298,16 +308,6 @@ static int tc_init(struct stmmac_priv *priv)
+ 	dev_info(priv->device, "Enabling HW TC (entries=%d, max_off=%d)\n",
+ 			priv->tc_entries_max, priv->tc_off_max);
+ 
+-	if (!priv->plat->fpe_cfg) {
+-		priv->plat->fpe_cfg = devm_kzalloc(priv->device,
+-						   sizeof(*priv->plat->fpe_cfg),
+-						   GFP_KERNEL);
+-		if (!priv->plat->fpe_cfg)
+-			return -ENOMEM;
+-	} else {
+-		memset(priv->plat->fpe_cfg, 0, sizeof(*priv->plat->fpe_cfg));
+-	}
+-
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
 
-> Andreas.
->
-> --
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint =3D 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC=
-1
-> "And now for something completely different."
