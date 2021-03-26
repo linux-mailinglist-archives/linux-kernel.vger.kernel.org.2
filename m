@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C9234AB7D
+	by mail.lfdr.de (Postfix) with ESMTP id D898434AB7F
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhCZP2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:28:48 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:51895 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S230252AbhCZP2X (ORCPT
+        id S230221AbhCZP2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:28:50 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38088 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230115AbhCZP2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:28:23 -0400
-Received: (qmail 833569 invoked by uid 1000); 26 Mar 2021 11:28:21 -0400
-Date:   Fri, 26 Mar 2021 11:28:21 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Longfang Liu <liulongfang@huawei.com>
-Cc:     gregkh@linuxfoundation.org, mathias.nyman@intel.com,
-        linux-usb@vger.kernel.org, yisen.zhuang@huawei.com,
-        tanxiaofei@huawei.com, liudongdong3@huawei.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] USB:ohci:fix ohci interruption problem
-Message-ID: <20210326152821.GA832251@rowland.harvard.edu>
-References: <1616748896-9415-1-git-send-email-liulongfang@huawei.com>
+        Fri, 26 Mar 2021 11:28:38 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 80C151F470A1
+Message-ID: <986ee841d0c512a6f0ffe9dfa2e0803980b02aa0.camel@collabora.com>
+Subject: Re: [PATCH v6 13/13] arm64: dts: imx8mq: Add node to G2 hardware
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Philipp Zabel <pza@pengutronix.de>
+Cc:     mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, festevam@gmail.com, lee.jones@linaro.org,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Fri, 26 Mar 2021 12:28:25 -0300
+In-Reply-To: <4df3c9e4-0983-6007-f3b3-323882f903cf@collabora.com>
+References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
+         <20210318082046.51546-14-benjamin.gaignard@collabora.com>
+         <20210326142440.GD8441@pengutronix.de>
+         <4df3c9e4-0983-6007-f3b3-323882f903cf@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1616748896-9415-1-git-send-email-liulongfang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 04:54:56PM +0800, Longfang Liu wrote:
-> When OHCI enters the S4 sleep state, the USB sleep process will call
-> check_root_hub_suspend() and ohci_bus_suspend() instead of
-> ohci_suspend() and ohci_bus_suspend(), this causes the OHCI interrupt
-> to not be closed.
-
-What on earth are you talking about?  This isn't true at all.
-
-Can you provide more information about your system?  Are you using a 
-PCI-based OHCI controller or a platform device (and if so, which one)?  
-Can you post system logs to back up your statements?
-
-The proper order of calls is ohci_bus_suspend, then 
-check_root_hub_suspended, then ohci_suspend.  Often the first one is 
-called some time before the other two.
-
-> At this time, if just one device interrupt is reported. Since rh_state
-> has been changed to OHCI_RH_SUSPENDED after ohci_bus_suspend(), the
-> driver will not process and close this device interrupt. It will cause
-> the entire system to be stuck during sleep, causing the device to
-> fail to respond.
+On Fri, 2021-03-26 at 15:33 +0100, Benjamin Gaignard wrote:
 > 
-> When the abnormal interruption reaches 100,000 times, the system will
-> forcibly close the interruption and make the device unusable.
+> Le 26/03/2021 à 15:24, Philipp Zabel a écrit :
+> > On Thu, Mar 18, 2021 at 09:20:46AM +0100, Benjamin Gaignard wrote:
+> > > Split VPU node in two: one for G1 and one for G2 since they are
+> > > different hardware blocks.
+> > > Add syscon for hardware control block.
+> > > Remove reg-names property that is useless.
+> > > Each VPU node only need one interrupt.
+> > > 
+> > > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > > ---
+> > > version 5:
+> > >   - use syscon instead of VPU reset
+> > > 
+> > >   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 43 ++++++++++++++++++-----
+> > >   1 file changed, 34 insertions(+), 9 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > > index 17c449e12c2e..b537d153ebbd 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > > @@ -1329,15 +1329,16 @@ usb3_phy1: usb-phy@382f0040 {
+> > >                         status = "disabled";
+> > >                 };
+> > >   
+> > > -               vpu: video-codec@38300000 {
+> > > +               vpu_ctrl: syscon@38320000 {
+> > > +                       compatible = "nxp,imx8mq-vpu-ctrl", "syscon";
+> > > +                       reg = <0x38320000 0x10000>;
+> > > +               };
+> > > +
+> > > +               vpu_g1: video-codec@38300000 {
+> > >                         compatible = "nxp,imx8mq-vpu";
+> > > -                       reg = <0x38300000 0x10000>,
+> > > -                             <0x38310000 0x10000>,
+> > > -                             <0x38320000 0x10000>;
+> > > -                       reg-names = "g1", "g2", "ctrl";
+> > > -                       interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+> > > -                                    <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> > > -                       interrupt-names = "g1", "g2";
+> > > +                       reg = <0x38300000 0x10000>;
+> > > +                       interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> > > +                       interrupt-names = "g1";
+> > >                         clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+> > >                                  <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+> > >                                  <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+> > > @@ -1350,9 +1351,33 @@ vpu: video-codec@38300000 {
+> > >                                                  <&clk IMX8MQ_VPU_PLL_OUT>,
+> > >                                                  <&clk IMX8MQ_SYS1_PLL_800M>,
+> > >                                                  <&clk IMX8MQ_VPU_PLL>;
+> > > -                       assigned-clock-rates = <600000000>, <600000000>,
+> > > +                       assigned-clock-rates = <600000000>, <300000000>,
+> > I'd like to see this mentioned in the commit message.
 > 
-> Since the problem is that the interrupt is not closed, we copied the
-> interrupt shutdown operation of ohci_suspend() into ohci_bus_suspend()
-> during the S4 sleep period. We found that this method can solve this
-> problem.
+> Yes I would do that.
+> The value comes from the datasheet.
 > 
-> At present, we hope to be able to call ohci_suspend() directly during
-> the sleep process of S4. Do you have any suggestions for this
-> modification?
+> > 
+> > > +                                              <800000000>, <0>;
+> > > +                       power-domains = <&pgc_vpu>;
+> > > +                       nxp,imx8mq-vpu-ctrl = <&vpu_ctrl>;
+> > > +               };
+> > > +
+> > > +               vpu_g2: video-codec@38310000 {
+> > > +                       compatible = "nxp,imx8mq-vpu-g2";
+> > > +                       reg = <0x38310000 0x10000>;
+> > > +                       interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> > > +                       interrupt-names = "g2";
+> > > +                       clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+> > > +                                <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+> > > +                                <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+> > > +                       clock-names = "g1", "g2",  "bus";
+> > > +                       assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
+> > Can the G1 clock configuration be dropped from the G2 device node and
+> > the G2 clock configuration from the G1 device node? It looks weird that
+> > these devices configure each other's clocks.
 > 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> ---
->  drivers/usb/host/ohci-hub.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
+> No because if only one device node is enabled we need to configure the both
+> clocks anyway.
 > 
-> diff --git a/drivers/usb/host/ohci-hub.c b/drivers/usb/host/ohci-hub.c
-> index 634f3c7..d468cef 100644
-> --- a/drivers/usb/host/ohci-hub.c
-> +++ b/drivers/usb/host/ohci-hub.c
-> @@ -315,6 +315,14 @@ static int ohci_bus_suspend (struct usb_hcd *hcd)
->  		del_timer_sync(&ohci->io_watchdog);
->  		ohci->prev_frame_no = IO_WATCHDOG_OFF;
->  	}
-> +
-> +	spin_lock_irqsave(&ohci->lock, flags);
-> +	ohci_writel(ohci, OHCI_INTR_MIE, &ohci->regs->intrdisable);
-> +	(void)ohci_readl(ohci, &ohci->regs->intrdisable);
-> +
-> +	clear_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
-> +	spin_unlock_irqrestore(&ohci->lock, flags);
 
-This is completely wrong.  The hardware certainly remains accessible 
-when the root hub stops running.  The HW_ACCESSIBLE flag should not be 
-cleared here.
+Since this is akward, how about adding a comment here in the dtsi to clarify it?
 
-And if the Master Interrupt Enable bit is cleared, how will the driver 
-ever learn if a remote wakeup request (such as a plug or unplug event) 
-occurs?
+Thanks,
+Ezequiel
 
-Alan Stern
-
-> +
->  	return rc;
->  }
->  
-> @@ -326,7 +334,10 @@ static int ohci_bus_resume (struct usb_hcd *hcd)
->  	if (time_before (jiffies, ohci->next_statechange))
->  		msleep(5);
->  
-> -	spin_lock_irq (&ohci->lock);
-> +	spin_lock_irq(&ohci->lock);
-> +	set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags);
-> +	ohci_writel(ohci, OHCI_INTR_MIE, &ohci->regs->intrenable);
-> +	ohci_readl(ohci, &ohci->regs->intrenable);
->  
->  	if (unlikely(!HCD_HW_ACCESSIBLE(hcd)))
->  		rc = -ESHUTDOWN;
-> -- 
-> 2.8.1
-> 
