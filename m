@@ -2,123 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7200C34A762
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F5934A764
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhCZMgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:36:36 -0400
-Received: from cock.li ([37.120.193.123]:52812 "EHLO mail.cock.li"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229589AbhCZMgb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:36:31 -0400
+        id S230078AbhCZMiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:38:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27075 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229779AbhCZMhz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:37:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616762274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WOE7NrOe/lUFcec/VQExNlNZgIrXD9vAFV4hGyOnZ04=;
+        b=f9/lSWSoFY6P833Yo6fNgKpDhq5eJCdEzRMB1i5px8PLPYb2Dg3eM9u94+HRMMWqJi2+4k
+        N8aDaN+bf3fPDvrGpUlYvGdoFdly9+YjU8vxbmX1LnqWz6Vipp8/L9omNmXkLGfHAKKXmo
+        7btV1QltsNSLRqcaW1Na2NNrMLHlrJI=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-7_8kTyDnPxyfpfysrGGe0w-1; Fri, 26 Mar 2021 08:37:53 -0400
+X-MC-Unique: 7_8kTyDnPxyfpfysrGGe0w-1
+Received: by mail-ed1-f72.google.com with SMTP id w18so4336318edu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:37:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=WOE7NrOe/lUFcec/VQExNlNZgIrXD9vAFV4hGyOnZ04=;
+        b=g9ezJP7MMgfzMNAJRXlGG1dV9YBGG8he+aeJvp1J8pkgivrUk5OpOQyAaEPKLyz/E8
+         tk41iOllRnHxth9krLyQuhh1a/0hTlEAm3ssWMe6MHMswxAC0D19xlQRKSULLtWl7xRP
+         qFe6yCp6knecbc14N+xZ+oZHWnAXEVpofK27+4rDLMT8pBt8jQuf8DUYGhJFz78ieZBE
+         9FzK1hDACC8EAJNYvxnc5saSdkbx//8pBuOGq+jhilf8mxGI19qiEwjjhka+ZDsSiXcN
+         hFsQvn/IPDRaCk1V27unxGp85dH9SDreZnCHXXeeAjus1Z5DMjZWXlPJY4TZEHw6980c
+         DwxA==
+X-Gm-Message-State: AOAM531+hmaK6FP10y3mno1hC72B3GjkY+rp94+0+i4KgCO1nQ1YnEH3
+        PYIOQPzUxUdB+akPHelCVkTm4aFgXyXBCgDhc+zRxdL57ZLsiPQJo+UMjWeoVAZLH4jHCioRxVe
+        Vvgkaaw7axOu6ni3WNGLcp7BvGKS26GwMIJMRmyosPiTUGZmAixgEt54nAyYwZp4F1iDhNoM3K6
+        TX
+X-Received: by 2002:a17:906:4ada:: with SMTP id u26mr15073620ejt.129.1616762271793;
+        Fri, 26 Mar 2021 05:37:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypsOeknHcD+xj3rdwv3OhzijkyYJHBHKiF5pdspfP2ypCyr60QMepV3hOPO7R6h8PIEleZ+Q==
+X-Received: by 2002:a17:906:4ada:: with SMTP id u26mr15073579ejt.129.1616762271517;
+        Fri, 26 Mar 2021 05:37:51 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id g1sm827471edv.6.2021.03.26.05.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 05:37:50 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Lenny Szubowicz <lszubowi@redhat.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/kvmclock: Stop kvmclocks for hibernate restore
+In-Reply-To: <87mtuqchdu.fsf@vitty.brq.redhat.com>
+References: <20210311132847.224406-1-lszubowi@redhat.com>
+ <87sg4t7vqy.fsf@vitty.brq.redhat.com>
+ <5048babd-a40b-5a95-9dee-ab13367de6cb@redhat.com>
+ <87mtuqchdu.fsf@vitty.brq.redhat.com>
+Date:   Fri, 26 Mar 2021 13:37:49 +0100
+Message-ID: <87h7kyccpu.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firemail.cc; s=mail;
-        t=1616762167; bh=88Wl+7RXyz29z74b+13F2DZ+HymrtXpbmFvaXNxKawE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RDHS2R6n0XFmPk8vloFAbVXTLsH2w2+7smKXDJswTt4aI1QLTCxY8WhK6RuOIDJIJ
-         tshpfnpfU8AtGPsNH3xYAfRyzxfE8Gytz6TcQioIUbIm8ywblocy07rGiRMarlHlt7
-         qoTB6MisQoXKY7Eb4WCynDEhA4OM466LdiwzqnI15crHaSa5Dc49uzvyfXhXMPBjTl
-         H4TkPRz/GtabZ0YNdzkQvQfpS3tg5AGz7quXWJLcNSr66Voy6WHdbTJxYxwKPE+G3c
-         ngptI2293T4erdRYaYztG4DZRED9GLcFjgHvJcVuqnqbGlH71jwjM8VAAuDAzw+haY
-         iDXu+f+pmxyZg==
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 26 Mar 2021 12:36:06 +0000
-From:   mikeeusa2@firemail.cc
-To:     rms@gnu.org
-Cc:     linux-kernel@vger.kernel.org, bruce@perens.com,
-        moglen@columbia.edu, blukashev@sempervictus.com,
-        tcallawa@redhat.com, editor@lwn.net, skraw.ml@ithnet.com,
-        torvalds@osdl.org, torvalds@linuxfoundation.org, esr@thyrsus.com
-Subject: RMS: If FSF is giving you trouble, recover the (C) using the 30 year
- statutory method and make a new entity.
-Message-ID: <46f184b2548f1c234752b2422650cafb@firemail.cc>
-X-Sender: mikeeusa2@firemail.cc
-User-Agent: Roundcube Webmail/1.3.15
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RMS: This if the FSF is giving you trouble, you could recover your 
-copyrights using the 2nd method (the Statutory method), make a new 
-foundation, or just a new corp entity, and transfer the copyright again 
-to that new entity. A new corp entity costs 200 dollars. You can swing 
-that, right? (The legal action vis a vis the copyright recovery takes 
-considerably more)
+Vitaly Kuznetsov <vkuznets@redhat.com> writes:
 
----------------------------------------------------------------
-(1st method, for those who have not transferred their copyrights)
-(Linux, most OSS projects, those who ignored how RMS set things up and 
-thought it was for no reason)
----------------------------------------------------------------
-> However, nonexclusive licenses are revocable (meaning the copyright 
-> owner can revoke the license at any time) in the absence of 
-> consideration.
-> https://www.dmlp.org/legal-guide/creating-written-contract-transfer-or-license-rights-under-copyright
+> Lenny Szubowicz <lszubowi@redhat.com> writes:
+>
+>> On 3/17/21 9:30 AM, Vitaly Kuznetsov wrote:
+>>> Lenny Szubowicz <lszubowi@redhat.com> writes:
+>>> 
+>>>> Turn off host updates to the registered kvmclock memory
+>>>> locations when transitioning to a hibernated kernel in
+>>>> resume_target_kernel().
+>>>>
+>>>> This is accomplished for secondary vcpus by disabling host
+>>>> clock updates for that vcpu when it is put offline. For the
+>>>> primary vcpu, it's accomplished by using the existing call back
+>>>> from save_processor_state() to kvm_save_sched_clock_state().
+>>>>
+>>>> The registered kvmclock memory locations may differ between
+>>>> the currently running kernel and the hibernated kernel, which
+>>>> is being restored and resumed. Kernel memory corruption is thus
+>>>> possible if the host clock updates are allowed to run while the
+>>>> hibernated kernel is relocated to its original physical memory
+>>>> locations.
+>>>>
+>>>> This is similar to the problem solved for kexec by
+>>>> commit 1e977aa12dd4 ("x86: KVM guest: disable clock before rebooting.")
+>>>>
+>>>> Commit 95a3d4454bb1 ("x86/kvmclock: Switch kvmclock data to a
+>>>> PER_CPU variable") innocently increased the exposure for this
+>>>> problem by dynamically allocating the physical pages that are
+>>>> used for host clock updates when the vcpu count exceeds 64.
+>>>> This increases the likelihood that the registered kvmclock
+>>>> locations will differ for vcpus above 64.
+>>>>
+>>>> Reported-by: Xiaoyi Chen <cxiaoyi@amazon.com>
+>>>> Tested-by: Mohamed Aboubakr <mabouba@amazon.com>
+>>>> Signed-off-by: Lenny Szubowicz <lszubowi@redhat.com>
+>>>> ---
+>>>>   arch/x86/kernel/kvmclock.c | 34 ++++++++++++++++++++++++++++++++--
+>>>>   1 file changed, 32 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
+>>>> index aa593743acf6..291ffca41afb 100644
+>>>> --- a/arch/x86/kernel/kvmclock.c
+>>>> +++ b/arch/x86/kernel/kvmclock.c
+>>>> @@ -187,8 +187,18 @@ static void kvm_register_clock(char *txt)
+>>>>   	pr_info("kvm-clock: cpu %d, msr %llx, %s", smp_processor_id(), pa, txt);
+>>>>   }
+>>>>   
+>>>> +/*
+>>>> + * Turn off host clock updates to the registered memory location when the
+>>>> + * cpu clock context is saved via save_processor_state(). Enables correct
+>>>> + * handling of the primary cpu clock when transitioning to a hibernated
+>>>> + * kernel in resume_target_kernel(), where the old and new registered
+>>>> + * memory locations may differ.
+>>>> + */
+>>>>   static void kvm_save_sched_clock_state(void)
+>>>>   {
+>>>> +	native_write_msr(msr_kvm_system_time, 0, 0);
+>>>> +	kvm_disable_steal_time();
+>>>> +	pr_info("kvm-clock: cpu %d, clock stopped", smp_processor_id());
+>>>>   }
+>>> 
+>>> Nitpick: should we rename kvm_save_sched_clock_state() to something more
+>>> generic, like kvm_disable_host_clock_updates() to indicate, that what it
+>>> does is not only sched clock related?
+>>
+>> I see your rationale. But if I rename kvm_save_sched_clock_state()
+>> then shouldn't I also rename kvm_restore_sched_clock_state().
+>> The names appear to reflect the callback that invokes them,
+>> from save_processor_state()/restore_state(), rather than what these
+>> functions need to do.
+>>
+>>          x86_platform.save_sched_clock_state = kvm_save_sched_clock_state;
+>>          x86_platform.restore_sched_clock_state = kvm_restore_sched_clock_state;
+>>   
+>> For V2 of my patch, I kept these names as they were. But if you have a strong
+>> desire for a different name, then I think both routines should be renamed
+>> similarly, since they are meant to be a complimentary pair.
+>>
+>>> 
+>>>>   
+>>>>   static void kvm_restore_sched_clock_state(void)
+>>>> @@ -311,9 +321,23 @@ static int kvmclock_setup_percpu(unsigned int cpu)
+>>>>   	return p ? 0 : -ENOMEM;
+>>>>   }
+>>>>   
+>>>> +/*
+>>>> + * Turn off host clock updates to the registered memory location when a
+>>>> + * cpu is placed offline. Enables correct handling of secondary cpu clocks
+>>>> + * when transitioning to a hibernated kernel in resume_target_kernel(),
+>>>> + * where the old and new registered memory locations may differ.
+>>>> + */
+>>>> +static int kvmclock_cpu_offline(unsigned int cpu)
+>>>> +{
+>>>> +	native_write_msr(msr_kvm_system_time, 0, 0);
+>>>> +	pr_info("kvm-clock: cpu %d, clock stopped", cpu);
+>>> 
+>>> I'd say this pr_info() is superfluous: on a system with hundereds of
+>>> vCPUs users will get flooded with 'clock stopped' messages which don't
+>>> actually mean much: in case native_write_msr() fails the error gets
+>>> reported in dmesg anyway. I'd suggest we drop this and pr_info() in
+>>> kvm_save_sched_clock_state().
+>>> 
+>>
+>> Agreed. I was essentially using it as a pr_debug(). Gone in V2.
+>>
+>>>> +	return 0;
+>>> 
+>>> Why don't we disable steal time accounting here? MSR_KVM_STEAL_TIME is
+>>> also per-cpu. Can we merge kvm_save_sched_clock_state() with
+>>> kvmclock_cpu_offline() maybe?
+>>> 
+>>
+>> kvm_cpu_down_prepare() in arch/x86/kernel/kvm.c already calls
+>> kvm_disable_steal_time() when a vcpu is placed offline.
+>> So there is no need to do that in kvmclock_cpu_offline().
+>>
+>> In the case of the hibernation resume code path, resume_target_kernel()
+>> in kernel/power/hibernate.c, the secondary cpus are placed offline,
+>> but the primary is not. Instead, we are going to be switching contexts
+>> of the primary cpu from the boot kernel to the kernel that was restored
+>> from the hibernation image.
+>>
+>> This is where save_processor_state()/restore_processor_state() and kvm_save_sched_clock_state()/restore_sched_clock_state() come into play
+>> to stop the kvmclock of the boot kernel's primary cpu and restart
+>> the kvmclock of restored hibernated kernel's primary cpu.
+>>
+>> And in this case, no one is calling kvm_disable_steal_time(),
+>> so kvm_save_sched_clock_state() is doing it. (This is very similar
+>> to the reason why kvm_crash_shutdown() in kvmclock.c needs to call
+>> kvm_disable_steal_time())
+>>
+>> However, I'm now wondering if kvm_restore_sched_clock_state()
+>> needs to add a call to the equivalent of kvm_register_steal_time(),
+>> because otherwise no one will do that for the primary vcpu
+>> on resume from hibernation.
+>
+> In case this is true, steal time accounting is not our only
+> problem. kvm_guest_cpu_init(), which is called from
+> smp_prepare_boot_cpu() hook also sets up Async PF an PV EOI and both
+> these features establish a shared guest-host memory region, in this
+> doesn't happen upon resume from hibernation we're in trouble.
+>
+> smp_prepare_boot_cpu() hook is called very early from start_kernel() but
+> what happens when we switch to the context of the hibernated kernel?
+>
+> I'm going to set up an environement and check what's going on.
 
-> [...] The most plausible assumption is that a developer who releases
-> code under the GPL may terminate GPL rights, probably at will.
-> --David McGowan, Professor of Law, University of Minnesota Law School:
+According to the log we have a problem indeed:
 
-> p278 "Notice that in a copyright dispute over a bare license, the
-> plaintiff will almost certainly be the copyright owner. If a licensee
-> were foolish enough to sue to enforce the terms and conditions of the
-> license, the licensor can simply revoke the bare license, thus ending
-> the dispute. Remeber that a bare license in the absence of an interest
-> is revocable."
-> --Lawrence Rosen
-> https://www.amazon.com/Open-Source-Licensing-Software-Intellectual/dp/013148787
+[   15.844263] ACPI: Preparing to enter system sleep state S4
+[   15.844309] PM: Saving platform NVS memory
+[   15.844311] Disabling non-boot CPUs ...
+[   15.844625] kvm-guest: Unregister pv shared memory for cpu 1
+[   15.846272] smpboot: CPU 1 is now offline
+[   15.847124] kvm-guest: Unregister pv shared memory for cpu 2
+[   15.848720] smpboot: CPU 2 is now offline
+[   15.849637] kvm-guest: Unregister pv shared memory for cpu 3
+[   15.851452] smpboot: CPU 3 is now offline
+[   15.853295] PM: hibernation: Creating image:
+[   15.865126] PM: hibernation: Need to copy 82214 pages
+[18446743485.711482] kvm-clock: cpu 0, msr 8201001, primary cpu clock, resume
+[18446743485.711610] PM: Restoring platform NVS memory
+[18446743485.713922] Enabling non-boot CPUs ...
+[18446743485.713997] x86: Booting SMP configuration:
+[18446743485.713998] smpboot: Booting Node 0 Processor 1 APIC 0x1
+[18446743485.714127] kvm-clock: cpu 1, msr 8201041, secondary cpu clock
+[18446743485.714484] kvm-guest: KVM setup async PF for cpu 1
+[18446743485.714489] kvm-guest: stealtime: cpu 1, msr 3ecac080
+[18446743485.714816] CPU1 is up
+[18446743485.714846] smpboot: Booting Node 0 Processor 2 APIC 0x2
+[18446743485.714954] kvm-clock: cpu 2, msr 8201081, secondary cpu clock
+[18446743485.715359] kvm-guest: KVM setup async PF for cpu 2
+[18446743485.715364] kvm-guest: stealtime: cpu 2, msr 3ed2c080
+[18446743485.715640] CPU2 is up
+[18446743485.715672] smpboot: Booting Node 0 Processor 3 APIC 0x3
+[18446743485.715867] kvm-clock: cpu 3, msr 82010c1, secondary cpu clock
+[18446743485.716288] kvm-guest: KVM setup async PF for cpu 3
+[18446743485.716293] kvm-guest: stealtime: cpu 3, msr 3edac080
+[18446743485.716564] CPU3 is up
+[18446743485.716732] ACPI: Waking up from system sleep state S4
+[18446743485.728139] sd 0:0:0:0: [sda] Starting disk
+[18446743485.750373] OOM killer enabled.
+[18446743485.750909] Restarting tasks ... done.
+[18446743485.754465] PM: hibernation: hibernation exit
 
+(this is with your v2 included). There's nothing about CPU0 for
+e.g. async PF + timestamps are really interesting. Seems we have issues
+to fix) I'm playing with it right now.
 
-> ("[N]onexclusive     licenses     are     revocable     absent     
-> consideration.").  Where  consideration  is  present,  however,  the  
-> license  is  irrevocable,  and  "[t]his  is  so  because  a  
-> nonexclusive  license  supported  by  consideration  is  a  contract.  
-> Lulirama  Ltd.  v.  Axcess  Broad.  Servs.,  Inc.,  128  F.3d  872,  
-> 882  (5th  Cir.  1997);  see  also Carson v. Dynegy, Inc., 344 F.3d 
-> 446, 451 (5th Cir. 2003).
+-- 
+Vitaly
 
-
-> https://ir.lawnet.fordham.edu/cgi/viewcontent.cgi?article=1592&context=faculty_scholarship
-> For the same reason, a licensee's commitment to use offered software in 
-> a particular way cannot constitute consideration. Because the licensee 
-> has no right prior to the license to use the software in any way, a 
-> grant of only limited uses of it is merely a gift. The fact that the 
-> giver could have been even more generous by granting use of the 
-> software with no restrictions does not alter this conclusion. It is 
-> still the case that the licensee has not given up anything. Only if the 
-> licensee gives up some right, says contract law, will there be valid 
-> consideration.
-
----------------------------------------------------------------
-(2nd method, Statutory)
-(For those who transferred their copyrights, and are now contending with 
-a hostile takeover*)
-(*this happens all the time with corps and foundations, you didn't 
-expect it to happen to you?)
----------------------------------------------------------------
-Additionally if you dislike that method and prefer a different method 
-explicitly stated by Congress:
-By statutory law, an author can recover any copyrights signed away after 
-(+-)30 years (US Copyright act). _
-
-The design of a program etc is a copyrightable aspect. RMS fixed this in 
-form 30 years ago.
-
-> https://www.copyright.gov/docs/203.html
-> Termination of Transfers and Licenses Under 17 U.S.C. §203
-> 
-> Section 203 of the Copyright Act permits authors (or, if the authors 
-> are not alive, their surviving spouses, children or grandchildren, or 
-> executors, administrators, personal representatives or trustees) to 
-> terminate grants of copyright assignments and licenses that were made 
-> on or after January 1, 1978 when certain conditions have been met. 
-> Notices of termination may be served no earlier than 25 years after the 
-> execution of the grant or, if the grant covers the right of 
-> publication, no earlier than 30 years after the execution of the grant 
-> or 25 years after publication under the grant (whichever comes first). 
-> However, termination of a grant cannot be effective until 35 years 
-> after the execution of the grant or, if the grant covers the right of 
-> publication, no earlier than 40 years after the execution of the grant 
-> or 35 years after publication under the grant (whichever comes first).
