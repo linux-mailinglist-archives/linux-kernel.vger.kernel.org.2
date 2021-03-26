@@ -2,182 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A75349D82
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9D6349D86
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:12:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhCZAL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:11:28 -0400
-Received: from mail-il1-f172.google.com ([209.85.166.172]:45615 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhCZALY (ORCPT
+        id S230003AbhCZAMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhCZALh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:11:24 -0400
-Received: by mail-il1-f172.google.com with SMTP id w2so3194296ilj.12;
-        Thu, 25 Mar 2021 17:11:23 -0700 (PDT)
+        Thu, 25 Mar 2021 20:11:37 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21522C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 17:11:37 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id k23-20020a17090a5917b02901043e35ad4aso3394953pji.3
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 17:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=q9S3+fI2D+2mI26/8bWMBz4t+NgZcdhnEUCCGVDX3aM=;
+        b=SB5lUVPY9Bbxm+ta78VVnlcXkTJ1IfQQ5vAx5lk+EnCtO3Cvs7s8v9s5R2kS8IO2X3
+         KHQ+OAo9bhSAQygsOVUxKn8GOxYZ5CZ+jYxSMZZ9L8fkH6qLVZsqozrVDfGckp3kmFqj
+         nYts3fBEuKqQbn7bOT2RIE2f+A+I8mgFtN9kM9xaGbId2vGp/jlhikwRO6wiByDC2J1B
+         BaYb14zKzzl+xVkJYIog4vbhndRQ0L73ZZ7q02Z3WyUx2rbVWxVO0+w3hYk6ULko2vox
+         PI8OLHlgKOt367GzKSsqk2STrRV96XcINxhKOBThXu8/Hps4O3iYBeBDZzC3MzMVjiII
+         KSCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P/I+wMdHICPtFWlW8kLfAQ7JiR1EZW/dP2yVRmWYJGU=;
-        b=bh/eufw9UDiJDF6CtK/sZ8HlZK7k2aEO1Ked96aDz/J/Atx6wIVSJ9t3w7IzsYVaS/
-         2pmdl9KGBzMwHqNBKSe5oxSleuQ6PJQLay1K6kNE67knT7c8XCz0Y3tkpTyqRTdlG2sM
-         mLNIRzLENVCWJvkw6jDfiRfr0lacw+L3NpMbs6kZ17BmvsgXXV8utjCs9/LyGiaYpiNG
-         ziOYs5uaez+Qk99hfut8RDBiKu0pOxgN+sQ2/Sm0Zv8JEddarElgzOTKvIsQ42dX3KMP
-         WuWAnnN4ujLfHuhuWBEUA2DO2Kmrp7zCb18VmltRGrvDACGxvzP8yX+acGs5zCmOmNtZ
-         oD+Q==
-X-Gm-Message-State: AOAM530VW9FxsEOReicoC1vfQH7NpYh/7WlZn+NHo91QrB9ERwpK6/27
-        GL3PwHI4PVRDifwFL1aBgg==
-X-Google-Smtp-Source: ABdhPJzWTUM7ViOUd0d1O5WVuFw0EBmZZAJwzZ9S1RfUkdCRF37cp6Wp77JMxNHIeBXaOjKMrxKidg==
-X-Received: by 2002:a05:6e02:1a89:: with SMTP id k9mr8673060ilv.29.1616717483503;
-        Thu, 25 Mar 2021 17:11:23 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id 14sm3554588ilt.54.2021.03.25.17.11.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 17:11:22 -0700 (PDT)
-Received: (nullmailer pid 2004913 invoked by uid 1000);
-        Fri, 26 Mar 2021 00:11:20 -0000
-Date:   Thu, 25 Mar 2021 18:11:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Taniya Das <tdas@codeaurora.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette =?iso-8859-1?Q?=A0?= 
-        <mturquette@baylibre.com>, Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v1 1/6] dt-bindings: clock: Add SC7280 DISPCC clock
- binding
-Message-ID: <20210326001120.GA2001669@robh.at.kernel.org>
-References: <1615944142-12171-1-git-send-email-tdas@codeaurora.org>
- <1615944142-12171-2-git-send-email-tdas@codeaurora.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=q9S3+fI2D+2mI26/8bWMBz4t+NgZcdhnEUCCGVDX3aM=;
+        b=UnYCMzSRttZqGicBRd5gszXfrbHO/i+/vjkrQAs/S1vS32QGcYdw8pceIFusnmqP2y
+         vSBGA3BCSTSaQcY14Hl8MctJw/MKWnAcN9zJbJdLtlVFgA7KG+La/GHtwmMzM8H2v7gY
+         ycRbw2MDT7NThqmZ3JrOm76c8DeHNb0OZjRH+EllhFFUKL98s8qN1rTCK6WiMjN6OiJe
+         FiDUEMk6KFtnmj4rrP1ljOUNyoC4TvIWglZPwpRuMzoZu4GWZntwiJA80Dyt7NoaH5KT
+         YgryRRYNGoYi5Txeu7tSvV6BNuE24GldBv1nPCbU7eDtuCb1AJaa76bIsBucREbKORmd
+         8yHQ==
+X-Gm-Message-State: AOAM532/H4/2V7i/85B4U+W0+MRp8whlUdaXtmEjO7xiXu4TZFNVNduF
+        Pr3t43167oJ2eiJ39i+yas+vJv3ouKSvnA==
+X-Google-Smtp-Source: ABdhPJya0Kwkqr5Wt3+Q/EXDZ7yyn0sEDLVLnYX2MOK/IVmQTi1zmXp/rUZNotJv1r+3jKwDuevcSA==
+X-Received: by 2002:a17:90a:2d88:: with SMTP id p8mr11301109pjd.159.1616717496476;
+        Thu, 25 Mar 2021 17:11:36 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id q10sm6668760pfc.190.2021.03.25.17.11.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 17:11:36 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Don't show PF_IO_WORKER in /proc/<pid>/task/
+To:     Stefan Metzmacher <metze@samba.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <20210325164343.807498-1-axboe@kernel.dk>
+ <m1ft0j3u5k.fsf@fess.ebiederm.org>
+ <CAHk-=wjOXiEAjGLbn2mWRsxqpAYUPcwCj2x5WgEAh=gj+o0t4Q@mail.gmail.com>
+ <CAHk-=wg1XpX=iAv=1HCUReMbEgeN5UogZ4_tbi+ehaHZG6d==g@mail.gmail.com>
+ <CAHk-=wgUcVeaKhtBgJO3TfE69miJq-krtL8r_Wf_=LBTJw6WSg@mail.gmail.com>
+ <ad21da2b-01ea-e77c-70b2-0401059e322b@kernel.dk>
+ <f9bc0bac-2ad9-827e-7360-099e1e310df5@kernel.dk>
+ <5563d244-52c0-dafb-5839-e84990340765@samba.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6a2c4fe3-a019-2744-2e17-34b6325967d7@kernel.dk>
+Date:   Thu, 25 Mar 2021 18:11:34 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1615944142-12171-2-git-send-email-tdas@codeaurora.org>
+In-Reply-To: <5563d244-52c0-dafb-5839-e84990340765@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 06:52:17AM +0530, Taniya Das wrote:
-> Add device tree bindings for display clock controller subsystem for
-> Qualcomm Technology Inc's SC7280 SoCs.
+On 3/25/21 3:57 PM, Stefan Metzmacher wrote:
 > 
-> Signed-off-by: Taniya Das <tdas@codeaurora.org>
-> ---
->  .../bindings/clock/qcom,sc7280-dispcc.yaml         | 94 ++++++++++++++++++++++
->  include/dt-bindings/clock/qcom,dispcc-sc7280.h     | 55 +++++++++++++
->  2 files changed, 149 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,dispcc-sc7280.h
+> Am 25.03.21 um 22:44 schrieb Jens Axboe:
+>> On 3/25/21 2:40 PM, Jens Axboe wrote:
+>>> On 3/25/21 2:12 PM, Linus Torvalds wrote:
+>>>> On Thu, Mar 25, 2021 at 12:42 PM Linus Torvalds
+>>>> <torvalds@linux-foundation.org> wrote:
+>>>>>
+>>>>> On Thu, Mar 25, 2021 at 12:38 PM Linus Torvalds
+>>>>> <torvalds@linux-foundation.org> wrote:
+>>>>>>
+>>>>>> I don't know what the gdb logic is, but maybe there's some other
+>>>>>> option that makes gdb not react to them?
+>>>>>
+>>>>> .. maybe we could have a different name for them under the task/
+>>>>> subdirectory, for example (not  just the pid)? Although that probably
+>>>>> messes up 'ps' too..
+>>>>
+>>>> Actually, maybe the right model is to simply make all the io threads
+>>>> take signals, and get rid of all the special cases.
+>>>>
+>>>> Sure, the signals will never be delivered to user space, but if we
+>>>>
+>>>>  - just made the thread loop do "get_signal()" when there are pending signals
+>>>>
+>>>>  - allowed ptrace_attach on them
+>>>>
+>>>> they'd look pretty much like regular threads that just never do the
+>>>> user-space part of signal handling.
+>>>>
+>>>> The whole "signals are very special for IO threads" thing has caused
+>>>> so many problems, that maybe the solution is simply to _not_ make them
+>>>> special?
+>>>
+>>> Just to wrap up the previous one, yes it broke all sorts of things to
+>>> make the 'tid' directory different. They just end up being hidden anyway
+>>> through that, for both ps and top.
+>>>
+>>> Yes, I do think that maybe it's better to just embrace maybe just
+>>> embrace the signals, and have everything just work by default. It's
+>>> better than continually trying to make the threads special. I'll see
+>>> if there are some demons lurking down that path.
+>>
+>> In the spirit of "let's just try it", I ran with the below patch. With
+>> that, I can gdb attach just fine to a test case that creates an io_uring
+>> and a regular thread with pthread_create(). The regular thread uses
+>> the ring, so you end up with two iou-mgr threads. Attach:
+>>
+>> [root@archlinux ~]# gdb -p 360
+>> [snip gdb noise]
+>> Attaching to process 360
+>> [New LWP 361]
+>> [New LWP 362]
+>> [New LWP 363]
+>>
+>> warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
+>>
+>> warning: Architecture rejected target-supplied description
+>> Error while reading shared library symbols for /usr/lib/libpthread.so.0:
+>> Cannot find user-level thread for LWP 363: generic error
+>> 0x00007f7aa526e125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
+>> (gdb) info threads
+>>   Id   Target Id             Frame 
+>> * 1    LWP 360 "io_uring"    0x00007f7aa526e125 in clock_nanosleep@GLIBC_2.2.5 ()
+>>    from /usr/lib/libc.so.6
+>>   2    LWP 361 "iou-mgr-360" 0x0000000000000000 in ?? ()
+>>   3    LWP 362 "io_uring"    0x00007f7aa52a0a9d in syscall () from /usr/lib/libc.so.6
+>>   4    LWP 363 "iou-mgr-362" 0x0000000000000000 in ?? ()
+>> (gdb) thread 2
+>> [Switching to thread 2 (LWP 361)]
+>> #0  0x0000000000000000 in ?? ()
+>> (gdb) bt
+>> #0  0x0000000000000000 in ?? ()
+>> Backtrace stopped: Cannot access memory at address 0x0
+>> (gdb) cont
+>> Continuing.
+>> ^C
+>> Thread 1 "io_uring" received signal SIGINT, Interrupt.
+>> [Switching to LWP 360]
+>> 0x00007f7aa526e125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
+>> (gdb) q
+>> A debugging session is active.
+>>
+>> 	Inferior 1 [process 360] will be detached.
+>>
+>> Quit anyway? (y or n) y
+>> Detaching from program: /root/git/fio/t/io_uring, process 360
+>> [Inferior 1 (process 360) detached]
+>>
+>> The iou-mgr-x threads are stopped just fine, gdb obviously can't get any
+>> real info out of them. But it works... Regular test cases work fine too,
+>> just a sanity check. Didn't expect them not to.
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml b/Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
-> new file mode 100644
-> index 0000000..2178666
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/qcom,sc7280-dispcc.yaml
-> @@ -0,0 +1,94 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/qcom,sc7280-dispcc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Display Clock & Reset Controller Binding for SC7280
-> +
-> +maintainers:
-> +  - Taniya Das <tdas@codeaurora.org>
-> +
-> +description: |
-> +  Qualcomm display clock control module which supports the clocks, resets and
-> +  power domains on SC7280.
-> +
-> +  See also dt-bindings/clock/qcom,dispcc-sc7280.h.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,sc7280-dispcc
-> +
-> +  clocks:
-> +    items:
-> +      - description: Board XO source
-> +      - description: GPLL0 source from GCC
-> +      - description: Byte clock from DSI PHY
-> +      - description: Pixel clock from DSI PHY
-> +      - description: Link clock from DP PHY
-> +      - description: VCO DIV clock from DP PHY
-> +      - description: Link clock from EDP PHY
-> +      - description: VCO DIV clock from EDP PHY
-> +
-> +  clock-names:
-> +    items:
-> +      - const: bi_tcxo
-> +      - const: gcc_disp_gpll0_clk
-> +      - const: dsi0_phy_pll_out_byteclk
-> +      - const: dsi0_phy_pll_out_dsiclk
-> +      - const: dp_phy_pll_link_clk
-> +      - const: dp_phy_pll_vco_div_clk
-> +      - const: edp_phy_pll_link_clk
-> +      - const: edp_phy_pll_vco_div_clk
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +  '#reset-cells':
-> +    const: 1
-> +
-> +  '#power-domain-cells':
-> +    const: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - '#clock-cells'
-> +  - '#reset-cells'
-> +  - '#power-domain-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,gcc-sc7280.h>
-> +    #include <dt-bindings/clock/qcom,rpmh.h>
-> +    clock-controller@af00000 {
-> +      compatible = "qcom,sc7280-dispcc";
-> +      reg = <0x0af00000 0x200000>;
-> +      clocks = <&rpmhcc RPMH_CXO_CLK>,
-> +               <&gcc GCC_DISP_GPLL0_CLK_SRC>,
-> +               <&dsi_phy 0>,
-> +               <&dsi_phy 1>,
-> +               <&dp_phy 0>,
-> +               <&dp_phy 1>,
-> +               <&edp_phy 0>,
-> +               <&edp_phy 1>;
-> +      clock-names = "bi_tcxo",
-> +                    "gcc_disp_gpll0_clk",
-> +                    "dsi0_phy_pll_out_byteclk",
-> +                    "dsi0_phy_pll_out_dsiclk",
-> +                    "dp_phy_pll_link_clk",
-> +                    "dp_phy_pll_vco_div_clk",
-> +                    "edp_phy_pll_link_clk",
-> +                    "edp_phy_pll_vco_div_clk";
-> +      #clock-cells = <1>;
-> +      #reset-cells = <1>;
-> +      #power-domain-cells = <1>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/qcom,dispcc-sc7280.h b/include/dt-bindings/clock/qcom,dispcc-sc7280.h
-> new file mode 100644
-> index 0000000..2074b30
-> --- /dev/null
-> +++ b/include/dt-bindings/clock/qcom,dispcc-sc7280.h
-> @@ -0,0 +1,55 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
+> I guess that's basically what I tried to describe when I said they
+> should look like a userspace process that is blocked in a syscall
+> forever.
 
-Dual license?
+Right, that's almost what they look like, in practice that is what they
+look like.
 
-Rob
+>> Only thing that I dislike a bit, but I guess that's just a Linuxism, is
+>> that if can now kill an io_uring owning task by sending a signal to one
+>> of its IO thread workers.
+> 
+> Can't we just only allow SIGSTOP, which will be only delivered to
+> the iothread itself? And also SIGKILL should not be allowed from userspace.
+
+I don't think we can sanely block them, and we to cleanup and teardown
+normally regardless of who gets the signal (owner or one of the
+threads). So I'm not _too_ hung up on the "io thread gets signal goes to
+owner" as that is what happens with normal threads too, though I would
+prefer if that wasn't the case. But overall I feel better just embracing
+the thread model, rather than having something that kinda sorta looks
+like a thread, but differs in odd ways.
+
+> And /proc/$iothread/ should be read only and owned by root with
+> "cmdline" and "exe" being empty.
+
+I know you brought this one up as part of your series, not sure I get
+why you want it owned by root and read-only? cmdline and exe, yeah those
+could be hidden, but is there really any point?
+
+Maybe I'm missing something here, if so, do clue me in!
+
+-- 
+Jens Axboe
+
