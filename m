@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB6034A627
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2264534A630
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhCZLL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
+        id S230070AbhCZLNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 07:13:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229773AbhCZLLV (ORCPT
+        with ESMTP id S230027AbhCZLMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:11:21 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9489BC0613AA;
-        Fri, 26 Mar 2021 04:11:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=k/i4ctG7/UL9TNhWeb1YBQ080+z7yIIzFVZT
-        VJY7CQQ=; b=IUssIl4koH//Rt2+U4FPdcFlhOcsy+6a3titim7Qj13gLa3+iiLK
-        HI/7MdLJU1gCAMvTTA8Dn9wMHGPmszX4if663Iv7eqJoZZDtNYgbTpfK9tZYFnCq
-        NWmJ5D+XLae+qflR/OVjUnTIh4Gt6+x0Q2mJSUYgfR1igPJ0Pn9Hkqo=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Fri, 26 Mar
- 2021 19:11:08 +0800 (GMT+08:00)
-X-Originating-IP: [202.38.69.14]
-Date:   Fri, 26 Mar 2021 19:11:08 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Mike Christie" <michael.christie@oracle.com>
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Nilesh Javali" <njavali@marvell.com>
-Subject: Re: Re: [PATCH] target: Fix a double put in transport_free_session
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <845eb103-34b2-9e6a-a3ce-0755d487dd8a@oracle.com>
-References: <20210323025851.11782-1-lyl2019@mail.ustc.edu.cn>
- <9d02b016-c924-79e3-9593-c073da0c769d@oracle.com>
- <7378433a.12fee.178685ae745.Coremail.lyl2019@mail.ustc.edu.cn>
- <845eb103-34b2-9e6a-a3ce-0755d487dd8a@oracle.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 26 Mar 2021 07:12:47 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1877C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:12:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=NPZOeK7lpdUkuK8Gb8OEEbUBOL4qNIww27yfcO5L4Q4=; b=VcAFM3K9NdlK4Rwrep45+G2eKr
+        tkhCoM/E+GxXP/LvWreTu8+Z2udy6pHGgy6XMucTRllLDufGXaV1XkhQuPBR5ox8r4SsoXJyFLQGw
+        6HYWkom5MVkqBMIq/J+66MoDFDGbxWU6IbBgcFxILFsIzNEccDBaFan2tubxavfZ8e2Irj5kWLZ52
+        LolIAJn71pCUsmctihkkTAXnNXx5yBW/9WtP7GGr2mai+tInhM3NRt+C/dUq252Lx99bfpZYTCUbP
+        5c6atIeRF3Yhdnr9EOlB+X5h846FkY/jqXyuFeMzUiGkWDK2hceL4OkZXTEc2Ixlr7wuzZRxzVYTH
+        pUo5Txbg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPkOK-003PEj-Dc; Fri, 26 Mar 2021 11:12:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AE422304D58;
+        Fri, 26 Mar 2021 12:12:35 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 89FF220424904; Fri, 26 Mar 2021 12:12:35 +0100 (CET)
+Date:   Fri, 26 Mar 2021 12:12:35 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matthieu Baerts <matthieu.baerts@tessares.net>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mptcp-next] static_call: fix unused variable warn w/o
+ MODULE
+Message-ID: <YF3Bo8xfVt5UvGAg@hirez.programming.kicks-ass.net>
+References: <20210326105023.2058860-1-matthieu.baerts@tessares.net>
 MIME-Version: 1.0
-Message-ID: <7803a181.169ac.1786e3b1427.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygB3f0tMwV1g4XhMAA--.2W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsLBlQhn5cD5wAFsb
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210326105023.2058860-1-matthieu.baerts@tessares.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIk1pa2UgQ2hyaXN0
-aWUiIDxtaWNoYWVsLmNocmlzdGllQG9yYWNsZS5jb20+DQo+IOWPkemAgeaXtumXtDogMjAyMS0w
-My0yNiAwMToyNDo1OCAo5pif5pyf5LqUKQ0KPiDmlLbku7bkuro6IGx5bDIwMTlAbWFpbC51c3Rj
-LmVkdS5jbg0KPiDmioTpgIE6IG1hcnRpbi5wZXRlcnNlbkBvcmFjbGUuY29tLCBsaW51eC1zY3Np
-QHZnZXIua2VybmVsLm9yZywgdGFyZ2V0LWRldmVsQHZnZXIua2VybmVsLm9yZywgbGludXgta2Vy
-bmVsQHZnZXIua2VybmVsLm9yZywgIk5pbGVzaCBKYXZhbGkiIDxuamF2YWxpQG1hcnZlbGwuY29t
-Pg0KPiDkuLvpopg6IFJlOiBbUEFUQ0hdIHRhcmdldDogRml4IGEgZG91YmxlIHB1dCBpbiB0cmFu
-c3BvcnRfZnJlZV9zZXNzaW9uDQo+IA0KPiBPbiAzLzI1LzIxIDI6NDggQU0sIGx5bDIwMTlAbWFp
-bC51c3RjLmVkdS5jbiB3cm90ZToNCj4gPiANCj4gPiANCj4gPiANCj4gPj4gLS0tLS3ljp/lp4vp
-gq7ku7YtLS0tLQ0KPiA+PiDlj5Hku7bkuro6IG1pY2hhZWwuY2hyaXN0aWVAb3JhY2xlLmNvbQ0K
-PiA+PiDlj5HpgIHml7bpl7Q6IDIwMjEtMDMtMjQgMDA6Mjg6MzUgKOaYn+acn+S4iSkNCj4gPj4g
-5pS25Lu25Lq6OiAiTHYgWXVubG9uZyIgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbj4sIG1hcnRp
-bi5wZXRlcnNlbkBvcmFjbGUuY29tDQo+ID4+IOaKhOmAgTogbGludXgtc2NzaUB2Z2VyLmtlcm5l
-bC5vcmcsIHRhcmdldC1kZXZlbEB2Z2VyLmtlcm5lbC5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmcNCj4gPj4g5Li76aKYOiBSZTogW1BBVENIXSB0YXJnZXQ6IEZpeCBhIGRvdWJsZSBw
-dXQgaW4gdHJhbnNwb3J0X2ZyZWVfc2Vzc2lvbg0KPiA+Pg0KPiA+PiBPbiAzLzIyLzIxIDk6NTgg
-UE0sIEx2IFl1bmxvbmcgd3JvdGU6DQo+ID4+PiBJbiB0cmFuc3BvcnRfZnJlZV9zZXNzaW9uLCBz
-ZV9uYWNsIGlzIGdvdCBmcm9tIHNlX3Nlc3MNCj4gPj4+IHdpdGggdGhlIGluaXRpYWwgcmVmZXJl
-bmNlLiBJZiBzZV9uYWNsLT5hY2xfc2Vzc19saXN0IGlzDQo+ID4+PiBlbXB0eSwgc2VfbmFjbC0+
-ZHluYW1pY19zdG9wIGlzIHNldCB0byB0cnVlLiBUaGVuIHRoZSBmaXJzdA0KPiA+Pj4gdGFyZ2V0
-X3B1dF9uYWNsKHNlX25hY2wpIHdpbGwgZHJvcCB0aGUgaW5pdGlhbCByZWZlcmVuY2UNCj4gPj4+
-IGFuZCBmcmVlIHNlX25hY2wuIExhdGVyIHRoZXJlIGlzIGEgc2Vjb25kIHRhcmdldF9wdXRfbmFj
-bCgpDQo+ID4+PiB0byBwdXQgc2VfbmFjbC4gSXQgbWF5IGNhdXNlIGVycm9yIGluIHJhY2UuDQo+
-ID4+Pj4gTXkgcGF0Y2ggc2V0cyBzZV9uYWNsLT5keW5hbWljX3N0b3AgdG8gZmFsc2UgdG8gYXZv
-aWQgdGhlDQo+ID4+PiBkb3VibGUgcHV0Lg0KPiA+Pj4NCj4gPj4+IFNpZ25lZC1vZmYtYnk6IEx2
-IFl1bmxvbmcgPGx5bDIwMTlAbWFpbC51c3RjLmVkdS5jbj4NCj4gPj4+IC0tLQ0KPiA+Pj4gIGRy
-aXZlcnMvdGFyZ2V0L3RhcmdldF9jb3JlX3RyYW5zcG9ydC5jIHwgNCArKystDQo+ID4+PiAgMSBm
-aWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+Pj4NCj4gPj4+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3RhcmdldC90YXJnZXRfY29yZV90cmFuc3BvcnQuYyBiL2Ry
-aXZlcnMvdGFyZ2V0L3RhcmdldF9jb3JlX3RyYW5zcG9ydC5jDQo+ID4+PiBpbmRleCA1ZWNiOWYx
-OGE1M2QuLmMyNjZkZWZlNjk0ZiAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvdGFyZ2V0L3Rh
-cmdldF9jb3JlX3RyYW5zcG9ydC5jDQo+ID4+PiArKysgYi9kcml2ZXJzL3RhcmdldC90YXJnZXRf
-Y29yZV90cmFuc3BvcnQuYw0KPiA+Pj4gQEAgLTU4NCw4ICs1ODQsMTAgQEAgdm9pZCB0cmFuc3Bv
-cnRfZnJlZV9zZXNzaW9uKHN0cnVjdCBzZV9zZXNzaW9uICpzZV9zZXNzKQ0KPiA+Pj4gIAkJfQ0K
-PiA+Pj4gIAkJbXV0ZXhfdW5sb2NrKCZzZV90cGctPmFjbF9ub2RlX211dGV4KTsNCj4gPj4+ICAN
-Cj4gPj4+IC0JCWlmIChzZV9uYWNsLT5keW5hbWljX3N0b3ApDQo+ID4+PiArCQlpZiAoc2VfbmFj
-bC0+ZHluYW1pY19zdG9wKSB7DQo+ID4+PiAgCQkJdGFyZ2V0X3B1dF9uYWNsKHNlX25hY2wpOw0K
-PiA+Pj4gKwkJCXNlX25hY2wtPmR5bmFtaWNfc3RvcCA9IGZhbHNlOw0KPiA+Pj4gKwkJfQ0KPiA+
-Pj4gIA0KPiA+Pj4gIAkJdGFyZ2V0X3B1dF9uYWNsKHNlX25hY2wpOw0KPiA+PiBDb3VsZCB5b3Ug
-ZGVzY3JpYmUgdGhlIHJhY2UgYSBsaXR0bGUgbW9yZT8NCj4gPj4NCj4gPj4gSXMgdGhlIHJhY2U6
-DQo+ID4+DQo+ID4+IDEuIHRocmVhZDEgY2FsbGVkIGNvcmVfdHBnX2NoZWNrX2luaXRpYXRvcl9u
-b2RlX2FjbCBhbmQgZm91bmQgdGhlIGFjbC4NCj4gPj4gc2Vzcy0+c2Vfbm9kZV9hY2wgaXMgc2V0
-IHRvIHRoZSBmb3VuZCBhY2wuDQo+ID4+IDIuIHRocmVhZDIgaXMgcnVubmluZyB0cmFuc3BvcnRf
-ZnJlZV9zZXNzaW9uLiBJdCBub3cgZ3JhYnMgdGhlIGFjbF9ub2RlX211dGV4DQo+ID4+IGFuZCBz
-ZWVzIHNlX25hY2wtPmFjbF9zZXNzX2xpc3QgaXMgZW1wdHkuDQo+ID4+IDMuIHRocmVhZDIgZG9l
-cyB0aGUgZHluYW1pY19zdG9wPXRydWUgb3BlcmF0aW9ucyBpbiB0cmFuc3BvcnRfZnJlZV9zZXNz
-aW9uLg0KPiA+PiA0LiB0aHJlYWQxIG5vdyBjYWxscyB0cmFuc3BvcnRfcmVnaXN0ZXJfc2Vzc2lv
-biBub3cgYWRkcyB0aGUgc2VzcyB0byBhY2wncw0KPiA+PiBhY2xfc2Vzc19saXN0Lg0KPiA+Pg0K
-PiA+PiBMYXRlciB3aGVuIHRoZSBzZXNzaW9uIHRoYXQgdGhyZWFkIDEgY3JlYXRlZCBpcyBkZWxl
-dGVkIGR5bmFtaWNfc3RvcCBpcyBzdGlsbA0KPiA+PiBzZXQsIHNvIHdlIGRvIGFuIGV4dHJhIHRh
-cmdldF9wdXRfbmFjbD8NCj4gPj4NCj4gPj4gSSdtIG5vdCBzdXJlIHlvdXIgcGF0Y2ggd2lsbCBo
-YW5kbGUgdGhpcyByYWNlLiBXaGVuIHdlIGRlbGV0ZSB0aGUgc2Vzc2lvbiB0aHJlYWQxDQo+ID4+
-IGNyZWF0ZWQgZHluYW1pY19ub2RlX2FjbCBpcyBzdGlsbCBzZXQsIHNvIHRoaXM6DQo+ID4+DQo+
-ID4+ICAgICAgICAgICAgICAgICBtdXRleF9sb2NrKCZzZV90cGctPmFjbF9ub2RlX211dGV4KTsN
-Cj4gPj4gICAgICAgICAgICAgICAgIGlmIChzZV9uYWNsLT5keW5hbWljX25vZGVfYWNsICYmDQo+
-ID4+ICAgICAgICAgICAgICAgICAgICAgIXNlX3Rmby0+dHBnX2NoZWNrX2RlbW9fbW9kZV9jYWNo
-ZShzZV90cGcpKSB7DQo+ID4+ICAgICAgICAgICAgICAgICAgICAgICAgIHNwaW5fbG9ja19pcnFz
-YXZlKCZzZV9uYWNsLT5uYWNsX3Nlc3NfbG9jaywgZmxhZ3MpOw0KPiA+PiAgICAgICAgICAgICAg
-ICAgICAgICAgICBpZiAobGlzdF9lbXB0eSgmc2VfbmFjbC0+YWNsX3Nlc3NfbGlzdCkpDQo+ID4+
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2VfbmFjbC0+ZHluYW1pY19zdG9wID0g
-dHJ1ZTsNCj4gPj4NCj4gPj4gY2FuIHNldCBkeW5hbWljX3N0b3AgdG8gdHJ1ZSBhZ2FpbiBhbmQg
-d2UgY2FuIGVuZCB1cCBkb2luZyB0aGUgZXh0cmEgcHV0IHN0aWxsLg0KPiA+Pg0KPiA+PiBPbiB0
-b3Agb2YgdGhlIGV4dHJhIHB1dCB3ZSBhbHNvIGRvDQo+ID4+DQo+ID4+IGxpc3RfZGVsKCZzZV9u
-YWNsLT5hY2xfbGlzdCk7DQo+ID4+DQo+ID4+IHR3aWNlIHNvIHdlIGhhdmUgdG8gaGFuZGxlIHRo
-YXQgYXMgd2VsbC4NCj4gPj4NCj4gPj4gSXMgdGhlcmUgYWxzbyBhbm90aGVyIGJ1ZyBpbiB0aGlz
-IGNvZGUuIElmIHNvbWVvbmUgYWRkcyBhbiBhY2wgd2hpbGUgdGhlcmUgaXMgYQ0KPiA+PiBkeW5h
-bWljIGFjbCBpbiBwbGFjZSBjb3JlX3RwZ19hZGRfaW5pdGlhdG9yX25vZGVfYWNsIHdpbGwgY2xl
-YXIgZHluYW1pY19ub2RlX2FjbA0KPiA+PiBidXQgd2UgbGVhdmUgdGhlIGV4dHJhIHJlZmVyZW5j
-ZSwgc28gbGF0ZXIgd2hlbiB0cmFuc3BvcnRfZnJlZV9zZXNzaW9uIGlzIGNhbGxlZA0KPiA+PiB3
-ZSB3aWxsIG5vdCBkbyB0aGUgZXh0cmEgcHV0Lg0KPiA+Pg0KPiA+IA0KPiA+IE9rLCB0aGFua3Mg
-Zm9yIHlvdXIgYW5zd2VyLiBBY2NvcmRpbmcgdGhlIGRlc2NyaXB0aW9uIGFib3ZlLCBpIHRoaW5r
-IGl0IGlzIGEgZmFsc2UNCj4gPiBwb3NpdGl2ZSBub3cuDQo+ID4gDQo+IA0KPiBEaWQgeW91IGhp
-dCB0aGlzIGJ1ZywgYXJlIHlvdSB1c2luZyBhbiBpbnNwZWN0aW9uIHRvb2wsIG9yIGRpZCB5b3Ug
-ZmluZCB0aGlzIGJ5IGNvZGUNCj4gcmV2aWV3Pw0KPiANCj4gSSB0aGluayB0aGVyZSB3YXMgYSBt
-aXN1bmRlcnN0YW5kaW5nLiBJIHdhcyBzYXlpbmcgaXQgbG9va3MgbGlrZSBhIHJhY2UgY291bGQg
-aGFwcGVuLg0KPiBUaGVyZSBpcyBubyBwcm90ZWN0aW9uIGluIGxpbyBjb3JlLg0KPiANCj4gSSB0
-aGluayBpdCdzIGhhcmQgdG8gaGl0IGJlY2F1c2UgbW9zdCBkcml2ZXJzIGRvIG5vdCBhbGxvdyB0
-aGUgY29tYm86DQo+IA0KPiB0cGdfY2hlY2tfZGVtb19tb2RlID09IHRydWUNCj4gdHBnX2NoZWNr
-X2RlbW9fbW9kZV9jYWNoZSA9IGZhbHNlDQo+IA0KPiBJdCBsb29rcyBsaWtlIHRob3NlIHNldHRp
-bmdzIGFyZSBhbGxvd2VkIHdpdGggdGNtX3FsYTJ4eHggYW5kIHVzYiwgYnV0Og0KPiANCj4gdXNi
-IC0gaGFzIGEgbXV0ZXggYXJvdW5kIGNyZWF0aW9uIGFuZCByZW1vdmFsIHNvIHdlIGNhbid0IHJh
-Y2UuDQo+IHRjbSBxbGEgLSBJIGRvbid0IGtub3cgdGhpcyBkcml2ZXIgd2lsbCBlbm91Z2gsIGJ1
-dCBJIGNjJ2QgdGhlIG1haW50YWluZXIuDQoNClRoaXMgYnVnIGlzIGRldGVjdGVkIGJ5IGEgc3Rh
-dGljIGFuYWx5emVyIHRvb2wuDQoNClRoYW5rcy4NCg==
+On Fri, Mar 26, 2021 at 11:50:23AM +0100, Matthieu Baerts wrote:
+> Here is the warning converted as error and reported by GCC:
+> 
+>   kernel/static_call.c: In function ‘__static_call_update’:
+>   kernel/static_call.c:153:18: error: unused variable ‘mod’ [-Werror=unused-variable]
+>     153 |   struct module *mod = site_mod->mod;
+>         |                  ^~~
+>   cc1: all warnings being treated as errors
+>   make[1]: *** [scripts/Makefile.build:271: kernel/static_call.o] Error 1
+> 
+> This is simply because since recently, we no longer use 'mod' variable
+> elsewhere if MODULE is unset.
+> 
+> When using 'make tinyconfig' to generate the default kconfig, MODULE is
+> unset.
+> 
+> There are different ways to fix this warning. Here I tried to minimised
+> the number of modified lines and not add more #ifdef. We could also move
+> the declaration of the 'mod' variable inside the if-statement or
+> directly use site_mod->mod.
+> 
+> Fixes: 698bacefe993 ("static_call: Align static_call_is_init() patching condition")
+> Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> ---
+> 
+> Notes:
+>     Feel free to modify this patch directly if you prefer. I can of course
+>     send a new version if needed.
+
+Ah, I had indeed meant to take a look at this, but hadn't come around to
+it. I think this is as nice a solution as there is, so let me go apply
+this.
+
+>  kernel/static_call.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/static_call.c b/kernel/static_call.c
+> index 2c5950b0b90e..723fcc9d20db 100644
+> --- a/kernel/static_call.c
+> +++ b/kernel/static_call.c
+> @@ -165,13 +165,13 @@ void __static_call_update(struct static_call_key *key, void *tramp, void *func)
+>  
+>  		stop = __stop_static_call_sites;
+>  
+> -#ifdef CONFIG_MODULES
+>  		if (mod) {
+> +#ifdef CONFIG_MODULES
+>  			stop = mod->static_call_sites +
+>  			       mod->num_static_call_sites;
+>  			init = mod->state == MODULE_STATE_COMING;
+> -		}
+>  #endif
+> +		}
+>  
+
