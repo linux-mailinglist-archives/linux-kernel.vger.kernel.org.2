@@ -2,348 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589FB34A138
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA7A34A15A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 07:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhCZF4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 01:56:34 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:35061 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhCZF4S (ORCPT
+        id S230003AbhCZGBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 02:01:24 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42842 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230053AbhCZGBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 01:56:18 -0400
-Received: from methusalix.internal.home.lespocky.de ([92.117.50.81]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MekKJ-1lxcgt0pBF-00apl5; Fri, 26 Mar 2021 06:56:06 +0100
-Received: from falbala.internal.home.lespocky.de ([192.168.243.94])
-        by methusalix.internal.home.lespocky.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <post@lespocky.de>)
-        id 1lPfRx-00082x-Ib; Fri, 26 Mar 2021 06:56:03 +0100
-Date:   Fri, 26 Mar 2021 06:56:00 +0100
-From:   Alexander Dahl <post@lespocky.de>
-To:     Hermes Zhang <chenhui.zhang@axis.com>
-Cc:     pavel@ucw.cz, dmurphy@ti.com, robh+dt@kernel.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chenhuiz@axis.com, lkml@axis.com,
-        kernel@axis.com
-Subject: Re: [PATCH v2 2/2] leds: leds-multi-gpio: Add multiple GPIOs LED
- driver
-Message-ID: <20210326055559.izdyzb5gwgwthv4i@falbala.internal.home.lespocky.de>
-Mail-Followup-To: Hermes Zhang <chenhui.zhang@axis.com>, pavel@ucw.cz,
-        dmurphy@ti.com, robh+dt@kernel.org, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chenhuiz@axis.com, lkml@axis.com, kernel@axis.com
-References: <20210326052801.17666-1-chenhui.zhang@axis.com>
- <20210326052801.17666-3-chenhui.zhang@axis.com>
+        Fri, 26 Mar 2021 02:01:07 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 12Q60upr125895;
+        Fri, 26 Mar 2021 01:00:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1616738456;
+        bh=lxxdhjoqiYJiQ0CML73zLpa+aZyczWRPBxGGDpiarXg=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=XsRS/qDVfK+hOpk/dRzhnEWyd1vwu/F1ctgcYW1Ox218sRf2wQ8bYGwP7Orgvy0/8
+         OYrvA9aZI0MbCBg0vVkpndc150HZUbuuXw1sIU/mBA2mcwRUnoSD6XBdjs39xwFOtB
+         jBvY6in4wsdXQAEOzvIQ7gOQKYF7+VepKNZ0ybvE=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 12Q60uCe081597
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 26 Mar 2021 01:00:56 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 26
+ Mar 2021 01:00:56 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 26 Mar 2021 01:00:55 -0500
+Received: from [172.24.145.148] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 12Q60qQW066274;
+        Fri, 26 Mar 2021 01:00:53 -0500
+Subject: Re: [PATCH v8 3/3] arm64: dts: ti: k3-j7200: Add support for higher
+ speed modes and update delay select values for MMCSD subsystems
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210324063759.5837-1-a-govindraju@ti.com>
+ <20210324063759.5837-4-a-govindraju@ti.com>
+ <b8799a32-2461-988a-4a88-177e672ab64e@ti.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <6b8b71fc-7b0e-6e6a-6d2f-43087032f0b4@ti.com>
+Date:   Fri, 26 Mar 2021 11:30:52 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cs4lbx7vbcpfyflz"
-Content-Disposition: inline
-In-Reply-To: <20210326052801.17666-3-chenhui.zhang@axis.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-Scan-Signature: 6f292c5989afda9b2d085d8bfa787912
-X-Spam-Score: -2.9 (--)
-X-Provags-ID: V03:K1:v7x3cCNJXnqWRl1ZKekmdTYrpBJ49oA5BxbbvuUZge5S8Oz7x6d
- Kj+E5ZH+yYNerivHLA+9f09FBWrC+T+DHPWXPiwdbIxoMpMUPbQbQJMmL55ZnBsbQU9148i
- WiTFwfW49YEKU9Ow2SOCGGwAPkcJHmPWI92diUJkfHxRreTeAg5RvgeMUxfc02mIetROS3M
- wogm+g43ujmiFbOTM6SYw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zvOhXWEHwMQ=:mnro2AWrS3KjOlITVo78Xf
- N6w7HqHk9KWDn8QSVRY2Ix1OMbRcsGGre+/CmsduXBHvK0JNvO4JlC3ODZJL/g0TfbquYN0fg
- ZEaFuL4b6kmx3ZAtutxU9rSY/mSFG/Q2X4zNCwdkeMZbi0KsIZNEw8lWuhiVz+L8x5uBrS/kV
- GO/ntVIK1Ukyn2HHrrT+jO82qyKqseNiZYtmjb+hFbRzUHKY6cCFnzEN4jxfAjZU9fQZIBtiD
- 1L2XHJ2k2MhPGLZMDP8O/JaLo4F6AwH8NlGJUDALiFrUYEu3+zPXseF7+fyiW6I1Y/A2huwgp
- 7T0kAdPNTwffDUNPR+9IMQ+RfJdoa0wm9ZajXwxJp240hVTgzw8xaJgiAHe7CfW10MTptYPU0
- mX+uHvUE1jtUVG4Undn4BseJQMmDl81dphd45zS/Ub/2u1JlzXha7K3tHnauBrAS4XIlni+0Q
- UgojUhXj6P81vTSrq0BIIH+sOxt+MU6gqlBk1iIXVfpM4dU4sZTc
+In-Reply-To: <b8799a32-2461-988a-4a88-177e672ab64e@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kishon,
 
---cs4lbx7vbcpfyflz
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 25/03/21 9:44 pm, Kishon Vijay Abraham I wrote:
+> Hi Aswath,
+> 
+> On 24/03/21 12:07 pm, Aswath Govindraju wrote:
+>> The following speed modes are now supported in J7200 SoC,
+>> - HS200 and HS400 modes at 1.8 V card voltage, in MMCSD0 subsystem [1].
+>> - UHS-I speed modes in MMCSD1 subsystem [1].
+>>
+>> Add support for UHS-I modes by adding voltage regulator device tree nodes
+>> and corresponding pinmux details, to power cycle and voltage switch cards.
+>> Set respective tags in sdhci0 and remove no-1-8-v tag from sdhci1
+>> device tree nodes.
+>>
+>> Also update the delay values for various speed modes supported, based on
+>> the revised january 2021 J7200 datasheet[2].
+>>
+>> [1] - section 12.3.6.1.1 MMCSD Features, in
+>>       https://www.ti.com/lit/ug/spruiu1a/spruiu1a.pdf,
+>>       (SPRUIU1A – JULY 2020 – REVISED JANUARY 2021)
+>>
+>> [2] - https://www.ti.com/lit/ds/symlink/dra821u.pdf,
+>>       (SPRSP57B – APRIL 2020 – REVISED JANUARY 2021)
+> minor comments below.. once you fix them, please add
+> 
+> Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
+>>
 
-Hello Hermes,
+Thank you for your review :).
 
-great to see your improved series. See below for my remarks.
+>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>> ---
+>>  .../dts/ti/k3-j7200-common-proc-board.dts     | 78 +++++++++++++++++++
+>>  arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 14 +++-
+>>  2 files changed, 90 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> index b493f939b09a..a069787e1783 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-j7200-common-proc-board.dts
+>> @@ -16,6 +16,65 @@
+>>  		stdout-path = "serial2:115200n8";
+>>  		bootargs = "console=ttyS2,115200n8 earlycon=ns16550a,mmio32,0x02800000";
+>>  	};
+>> +
+>> +	evm_12v0: fixedregulator-evm12v0 {
+>> +		/* main supply */
+>> +		compatible = "regulator-fixed";
+>> +		regulator-name = "evm_12v0";
+>> +		regulator-min-microvolt = <12000000>;
+>> +		regulator-max-microvolt = <12000000>;
+>> +		regulator-always-on;
+>> +		regulator-boot-on;
+>> +	};
+>> +
+>> +	vsys_3v3: fixedregulator-vsys3v3 {
+>> +		/* Output of LMS140 */
+> 
+> %s/LMS140/LM5140
 
-On Fri, Mar 26, 2021 at 01:28:01PM +0800, Hermes Zhang wrote:
-> From: Hermes Zhang <chenhuiz@axis.com>
->=20
-> Introduce a new multiple GPIOs LED driver. This LED will made of
-> multiple GPIOs (up to 8) and will map different brightness to different
-> GPIOs states which defined in dts file.
->=20
-> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
-> ---
->  drivers/leds/Kconfig                  |   3 +
->  drivers/leds/Makefile                 |   3 +
->  drivers/leds/simple/Kconfig           |  23 ++++
->  drivers/leds/simple/Makefile          |   3 +
->  drivers/leds/simple/leds-multi-gpio.c | 144 ++++++++++++++++++++++++++
->  5 files changed, 176 insertions(+)
->  create mode 100644 drivers/leds/simple/Kconfig
->  create mode 100644 drivers/leds/simple/Makefile
->  create mode 100644 drivers/leds/simple/leds-multi-gpio.c
->=20
-> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> index b6742b4231bf..f95217b2fcf1 100644
-> --- a/drivers/leds/Kconfig
-> +++ b/drivers/leds/Kconfig
-> @@ -937,4 +937,7 @@ source "drivers/leds/trigger/Kconfig"
->  comment "LED Blink"
->  source "drivers/leds/blink/Kconfig"
-> =20
-> +comment "LED Simple"
-> +source "drivers/leds/simple/Kconfig"
-> +
->  endif # NEW_LEDS
-> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> index 2a698df9da57..26917d93fa03 100644
-> --- a/drivers/leds/Makefile
-> +++ b/drivers/leds/Makefile
-> @@ -111,3 +111,6 @@ obj-$(CONFIG_LEDS_TRIGGERS)		+=3D trigger/
-> =20
->  # LED Blink
->  obj-$(CONFIG_LEDS_BLINK)                +=3D blink/
-> +
-> +# LED Blink
-> +obj-$(CONFIG_LEDS_SIMPLE)		+=3D simple/
+Will make this change in respin.
 
-That comment should read "LED Simple", right?
+>> +		compatible = "regulator-fixed";
+>> +		regulator-name = "vsys_3v3";
+>> +		regulator-min-microvolt = <3300000>;
+>> +		regulator-max-microvolt = <3300000>;
+>> +		vin-supply = <&evm_12v0>;
+>> +		regulator-always-on;
+>> +		regulator-boot-on;
+>> +	};
+>> +
+>> +	vsys_5v0: fixedregulator-vsys5v0 {
+>> +		/* Output of LM5140 */
+>> +		compatible = "regulator-fixed";
+>> +		regulator-name = "vsys_5v0";
+>> +		regulator-min-microvolt = <5000000>;
+>> +		regulator-max-microvolt = <5000000>;
+>> +		vin-supply = <&evm_12v0>;
+>> +		regulator-always-on;
+>> +		regulator-boot-on;
+>> +	};
+>> +
+>> +	vdd_mmc1: fixedregulator-sd {
+>> +		/* Output of TPS22918  */
+>> +		compatible = "regulator-fixed";
+>> +		regulator-name = "vdd_mmc1";
+>> +		regulator-min-microvolt = <3300000>;
+>> +		regulator-max-microvolt = <3300000>;
+>> +		regulator-boot-on;
+>> +		enable-active-high;
+>> +		vin-supply = <&vsys_3v3>;
+>> +		gpio = <&exp2 2 GPIO_ACTIVE_HIGH>;
+>> +	};
+>> +
+>> +	vdd_sd_dv: gpio-regulator-vdd-sd-dv {
+>> +		/* Output of TLV71033 */
+> 
+> Would have preferred to keep this similar to j721e.
+> gpio-regulator-TLV71033 is used in j721e
 
-> diff --git a/drivers/leds/simple/Kconfig b/drivers/leds/simple/Kconfig
-> new file mode 100644
-> index 000000000000..7aef82701f86
-> --- /dev/null
-> +++ b/drivers/leds/simple/Kconfig
-> @@ -0,0 +1,23 @@
-> +menuconfig LEDS_SIMPLE
-> +	bool "Simple LED support"
-> +	depends on LEDS_CLASS
-> +	help
-> +	  This option enables simple leds support for the leds class.
-> +	  If unsure, say Y.
-> +
-> +if LEDS_SIMPLE
-> +
-> +config LEDS_MULTI_GPIO
-> +	tristate "LED Support for multiple GPIOs LED"
-> +	depends on LEDS_CLASS
-> +	depends on GPIOLIB
-> +	depends on OF
-> +	help
-> +	  This option enables support for a multiple GPIOs LED. Such LED is made
-> +	  of multiple GPIOs and could change the brightness by setting different
-> +	  states of the GPIOs.
-> +
-> +	  To compile this driver as a module, choose M here: the
-> +	  module will be called leds-multi-gpio.
-> +
-> +endif # LEDS_SIMPLE
+Will make this change in respin
 
-I'm wondering why this is part of this driver? I suppose there's no
-such folder yet, although Pavel suggested. Would it make sense to put
-that Kconfig menu entry and folder creation to a separate commit?
+>> +		compatible = "regulator-gpio";
+>> +		regulator-name = "vdd_sd_dv";
+> 
+> same comment here..
 
-> diff --git a/drivers/leds/simple/Makefile b/drivers/leds/simple/Makefile
-> new file mode 100644
-> index 000000000000..2ba655fdc175
-> --- /dev/null
-> +++ b/drivers/leds/simple/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +obj-$(CONFIG_LEDS_MULTI_GPIO)	+=3D leds-multi-gpio.o
-> diff --git a/drivers/leds/simple/leds-multi-gpio.c b/drivers/leds/simple/=
-leds-multi-gpio.c
-> new file mode 100644
-> index 000000000000..14fdaa5a2aac
-> --- /dev/null
-> +++ b/drivers/leds/simple/leds-multi-gpio.c
-> @@ -0,0 +1,144 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021 Axis Communications AB
-> + */
-> +
-> +#include <linux/leds.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +
-> +
-> +#define MAX_GPIO_NUM  8
-> +
-> +struct multi_gpio_led_priv {
-> +	struct led_classdev cdev;
-> +
-> +	struct gpio_descs *gpios;
-> +
-> +	u16 nr_states;
-> +
-> +	u8 states[0];
-> +};
-> +
-> +
-> +static void multi_gpio_led_set(struct led_classdev *led_cdev,
-> +	enum led_brightness value)
-> +{
-> +	struct multi_gpio_led_priv *priv;
-> +	int idx;
-> +
-> +	DECLARE_BITMAP(values, MAX_GPIO_NUM);
-> +
-> +	priv =3D container_of(led_cdev, struct multi_gpio_led_priv, cdev);
-> +
-> +	idx =3D value > led_cdev->max_brightness ? led_cdev->max_brightness : v=
-alue;
-> +
-> +	values[0] =3D priv->states[idx];
-> +
-> +	gpiod_set_array_value(priv->gpios->ndescs, priv->gpios->desc,
-> +	    priv->gpios->info, values);
-> +}
-> +
-> +static int multi_gpio_led_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev =3D &pdev->dev;
-> +	struct device_node *node =3D dev->of_node;
-> +	struct multi_gpio_led_priv *priv =3D NULL;
-> +	int ret;
-> +	const char *state =3D NULL;
-> +	struct led_init_data init_data =3D {};
-> +	struct gpio_descs *gpios;
-> +	u16 nr_states;
-> +
-> +	gpios =3D devm_gpiod_get_array(dev, "led", GPIOD_OUT_LOW);
-> +	if (IS_ERR(gpios))
-> +		return PTR_ERR(gpios);
-> +
-> +	if (gpios->ndescs >=3D MAX_GPIO_NUM) {
-> +		dev_err(dev, "Too many GPIOs\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret =3D of_property_count_u8_elems(node, "led-states");
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	if (ret !=3D 1 << gpios->ndescs) {
-> +		dev_err(dev, "led-states number should equal to 2^led-gpios\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	nr_states =3D ret;
-> +
-> +	priv =3D devm_kzalloc(dev, sizeof(struct multi_gpio_led_priv)
-> +			+ sizeof(u8) * nr_states , GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	ret =3D of_property_read_u8_array(node, "led-states", priv->states, nr_=
-states);
-> +	if (ret)
-> +		return ret;
-> +
-> +	priv->gpios =3D gpios;
-> +	priv->nr_states =3D nr_states;
-> +
-> +	priv->cdev.max_brightness =3D nr_states;
-> +	priv->cdev.default_trigger =3D of_get_property(node, "linux,default-tri=
-gger", NULL);
-> +	priv->cdev.brightness_set =3D multi_gpio_led_set;
-> +
-> +	init_data.fwnode =3D of_fwnode_handle(node);
-> +
-> +	ret =3D devm_led_classdev_register_ext(dev, &priv->cdev, &init_data);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	of_property_read_string(node, "default-state", &state);
-> +	if (!strcmp(state, "on"))
-> +		multi_gpio_led_set(&priv->cdev, priv->cdev.max_brightness);
-> +	else
-> +		multi_gpio_led_set(&priv->cdev, 0);
-> +
-> +	platform_set_drvdata(pdev, priv);
-> +
-> +	return 0;
-> +}
-> +
-> +static void multi_gpio_led_shutdown(struct platform_device *pdev)
-> +{
-> +	struct multi_gpio_led_priv *priv =3D platform_get_drvdata(pdev);
-> +
-> +	multi_gpio_led_set(&priv->cdev, 0);
-> +}
-> +
-> +static int multi_gpio_led_remove(struct platform_device *pdev)
-> +{
-> +	multi_gpio_led_shutdown(pdev);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id of_multi_gpio_led_match[] =3D {
-> +	{ .compatible =3D "multi-gpio-led", },
-> +	{},
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, of_multi_gpio_led_match);
-> +
-> +static struct platform_driver multi_gpio_led_driver =3D {
-> +	.probe		=3D multi_gpio_led_probe,
-> +	.remove		=3D multi_gpio_led_remove,
-> +	.shutdown	=3D multi_gpio_led_shutdown,
-> +	.driver		=3D {
-> +		.name	=3D "multi-gpio-led",
-> +		.of_match_table =3D of_multi_gpio_led_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(multi_gpio_led_driver);
-> +
-> +MODULE_AUTHOR("Hermes Zhang <chenhui.zhang@axis.com>");
-> +MODULE_DESCRIPTION("Multiple GPIOs LED driver");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_ALIAS("platform:leds-multi-gpio");
+Will make this change in respin
 
-I did not review thouroughly, but in my mail the indentation looks
-wrong. Did checkpatch complain?
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 = <&vdd_sd_dv_pins_default>;
+>> +		regulator-min-microvolt = <1800000>;
+>> +		regulator-max-microvolt = <3300000>;
+>> +		regulator-boot-on;
+>> +		vin-supply = <&vsys_5v0>;
+>> +		gpios = <&main_gpio0 55 GPIO_ACTIVE_HIGH>;
+>> +		states = <1800000 0x0>,
+>> +			 <3300000 0x1>;
+>> +	};
+>>  };
+>>  
+>>  &wkup_pmx0 {
+>> @@ -45,6 +104,13 @@
+>>  };
+>>  
+>>  &main_pmx0 {
+>> +	main_i2c0_pins_default: main-i2c0-pins-default {
+>> +		pinctrl-single,pins = <
+>> +			J721E_IOPAD(0xd4, PIN_INPUT_PULLUP, 0) /* (V3) I2C0_SCL */
+>> +			J721E_IOPAD(0xd8, PIN_INPUT_PULLUP, 0) /* (W2) I2C0_SDA */
+>> +		>;
+>> +	};
+>> +
+>>  	main_i2c1_pins_default: main-i2c1-pins-default {
+>>  		pinctrl-single,pins = <
+>>  			J721E_IOPAD(0xdc, PIN_INPUT_PULLUP, 3) /* (U3) ECAP0_IN_APWM_OUT.I2C1_SCL */
+>> @@ -70,6 +136,12 @@
+>>  			J721E_IOPAD(0x120, PIN_OUTPUT, 0) /* (T4) USB0_DRVVBUS */
+>>  		>;
+>>  	};
+>> +
+>> +	vdd_sd_dv_pins_default: vdd-sd-dv-pins-default {
+>> +		pinctrl-single,pins = <
+>> +			J721E_IOPAD(0xd0, PIN_INPUT, 7) /* (T5) SPI0_D1.GPIO0_55 */
+> 
+> This should ideally be PIN_OUTPUT. Can you check the latest sysconfig?
+> 
 
-Greets
-Alex
+The sysconfig tool by default is giving the mode as
+PIN_INPUT(bidirectional) but yes ideally this should be PIN_OUTPUT. Will
+make this change in respin.
 
---=20
-/"\ ASCII RIBBON | =BBWith the first link, the chain is forged. The first
-\ / CAMPAIGN     | speech censured, the first thought forbidden, the
- X  AGAINST      | first freedom denied, chains us all irrevocably.=AB
-/ \ HTML MAIL    | (Jean-Luc Picard, quoting Judge Aaron Satie)
+Thanks,
+Aswath
 
---cs4lbx7vbcpfyflz
-Content-Type: application/pgp-signature; name="signature.asc"
+> Thanks
+> Kishon
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEwo7muQJjlc+Prwj6NK3NAHIhXMYFAmBdd2oACgkQNK3NAHIh
-XMb12Q//QNtfcn/enw1QMK9Ys4vpXE566etGjqfa85FWCYX0zfqNUoXmbLt7HnEK
-dnotzc9t8jQTGpQFiIuT/lZbNIhrh77HSr2DyfqnA2AxVXMQVFoURhgYWeR3Fif5
-VxxZWBWQNZWgXJZnxRql2mAqjyhN8Gnh/fCZJqOcD/fSvc9bKPCytJTUVajSZizR
-zssjqLALlhfjIPfgq7lqjtBvplmaVAxV8UrpxiXbBut1G5EoJUT37Nmshz5sFp6/
-n6wStxKMcP1IlDjm8VyQIEeh/6XPx0MvCzB3hqqNK7St6MQOy1I7OrKW4pswDKLE
-W6aLx9z4q/L+rqUXg/d4pbAkltIaNpiqqFIKuT7n2m2eOiCF0tXqNz2CFvN/zzZd
-tmeETdBFNTLjQd0fLbzzOriCU5Z2vcxQORkGG4tzqvKgB7vrAyj8sVKe8bIdELEy
-KlxyCHIGRiak2hspABK1h9pFjey14csugFB95o75og9lmMia3cmH4Ob9M/lzaaVi
-pDyoT/jr+Qhj4UJ7+5rSe8DDZVt0Wv06BIvc0bdWAQM0nINFL4RnJVkLKdS1RuCU
-fIC0UDvDpdjPraxaqrFC7fy7CAMwRLgpCSZPD9/IewK+VRo+vFLUCKCXfzyVCjRB
-AF0vuaSX+RwdOAdQ9qv4Um4Gr4n/c2vz6TeTea+3AFN0oZZhD/E=
-=DDH4
------END PGP SIGNATURE-----
-
---cs4lbx7vbcpfyflz--
