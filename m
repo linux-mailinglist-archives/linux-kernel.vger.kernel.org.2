@@ -2,124 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5486734A785
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F5034A79A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhCZMsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:48:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:22778 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229773AbhCZMsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:48:31 -0400
-IronPort-SDR: ZH7muB9MwD8djIAJ6spqo1kdbWRqe40Z7tBmdFEsb4/wzFMDKL/qkr48ZY5eoS+csoVrzvDac3
- 1Ym5xzXcy4lw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="171129942"
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="171129942"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 05:48:30 -0700
-IronPort-SDR: FqGKEAEklaM6rQ4gyf9TbEqXPDRfT60HqKnjrxZuyPuhac7EiBWs1oIkihpcOvGYl0Fup2WHj2
- +IR7yPn8PwCQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="605510313"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga006.fm.intel.com with ESMTP; 26 Mar 2021 05:48:29 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 633AD6F1; Fri, 26 Mar 2021 14:48:43 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH v2 1/1] mfd: intel_quark_i2c_gpio: Don't play dirty trick with const
-Date:   Fri, 26 Mar 2021 14:48:42 +0200
-Message-Id: <20210326124842.2437-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230016AbhCZMym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229773AbhCZMyE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:54:04 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DB7C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:54:03 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id h10so6148818edt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 05:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OIPb4PnfeNb7aO7QS1Gt6gR1nM0DjD7xm0FQGOCf1ow=;
+        b=Rr5AjKGW7xZSLkThKiHkUxSaDEamQZG5tNhGKajCxO+kCCg5i0JjTLZkmB1/J3s5mf
+         di3SAGqFCiYFlcjbhue1VFt3YKhwggVQrkv9pGyi7nL7UGj0r6y3SQHxq7ArU3CYGWxk
+         9ef8Uy0+2edrIBk47lSJI+N2ut1r42kHDDXXM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OIPb4PnfeNb7aO7QS1Gt6gR1nM0DjD7xm0FQGOCf1ow=;
+        b=AUkeis4WqxIkX0gDFAlseCKTtSi81OOlX95WEi3jVOviw9N5Yu+yGCqYvohYqk9Jk/
+         IbVD+XyRYXJ1A9k0O/njZn4uhWkXf7q12B814MhHquDzs4CafFosOr/vYj6hiVrxD6VY
+         LlVzPwa8wuSAvKk19j8aD8O+jBoX8C2+n33L+UAgmGgfrmHcDr725iyHhoof2N7OWOS7
+         YpFjUtGD/6RszC7wlEtuoDVLLAqVZ8eQVp5qX7Qzliy6COov/L896xuKKEmGGsK+NYR+
+         vsOCnEiFeeipfkx/edRSaQwWq8NZ1Ls/UxqsiCcq6x8ZN/8zeow4oDWZEv4BkQHXi7ty
+         M/+w==
+X-Gm-Message-State: AOAM531jJj0UAL1PgzgOU/O+IOKDEj5O8gCsH1aPHn2FWIo2p3idbxpc
+        4YFZS7xYl5iNcdWWbzqZMH3Mcg+ZTnGXKJPC
+X-Google-Smtp-Source: ABdhPJw6JY5OOJZYzgEja0KQDbi/yrh57tWQo42RHXucxPw1HK8ZOUjOLv/4Ky73UbNcpl6bXS/8Mg==
+X-Received: by 2002:aa7:dd97:: with SMTP id g23mr14749156edv.154.1616763241668;
+        Fri, 26 Mar 2021 05:54:01 -0700 (PDT)
+Received: from [172.16.11.38] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id rs24sm3823828ejb.75.2021.03.26.05.54.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 05:54:01 -0700 (PDT)
+Subject: Re: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
+To:     Peter Zijlstra <peterz@infradead.org>, Greg KH <greg@kroah.com>
+Cc:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        joshdon@google.com, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org
+References: <20210326103352.603456266@infradead.org>
+ <20210326103935.183934395@infradead.org> <YF2/41K4xs3ZOQdV@kroah.com>
+ <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
+ <YF3F0JbbEpeSGzW6@kroah.com>
+ <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <70594935-18e6-0791-52f9-0448adf37155@rasmusvillemoes.dk>
+Date:   Fri, 26 Mar 2021 13:53:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Linus rightfully noticed, the driver plays dirty trick with const,
-i.e. it assigns a place holder data structure to the const field
-in the MFD cell and then drops the const by explicit casting. This is
-not how it should be.
+On 26/03/2021 12.38, Peter Zijlstra wrote:
 
-Assign local pointers of the cell and resource to the respective
-non-const place holders in the intel_quark_i2c_setup() and
-intel_quark_gpio_setup().
+> Implement debugfs_create_str() to easily display names and such in
+> debugfs.
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: eliminated bar parameter (Lee)
- drivers/mfd/intel_quark_i2c_gpio.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+Patches 7-9 don't seem to add any users of this. What's it for precisely?
 
-diff --git a/drivers/mfd/intel_quark_i2c_gpio.c b/drivers/mfd/intel_quark_i2c_gpio.c
-index 7f90e6f022ba..9a5f84b93776 100644
---- a/drivers/mfd/intel_quark_i2c_gpio.c
-+++ b/drivers/mfd/intel_quark_i2c_gpio.c
-@@ -157,17 +157,16 @@ static void intel_quark_unregister_i2c_clk(struct device *dev)
- 	clk_unregister(quark_mfd->i2c_clk);
- }
- 
--static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
-+static int intel_quark_i2c_setup(struct pci_dev *pdev)
- {
-+	struct mfd_cell *cell = &intel_quark_mfd_cells[MFD_I2C_BAR];
-+	struct resource *res = intel_quark_i2c_res;
- 	const struct dmi_system_id *dmi_id;
- 	struct dw_i2c_platform_data *pdata;
--	struct resource *res = (struct resource *)cell->resources;
- 	struct device *dev = &pdev->dev;
- 
--	res[INTEL_QUARK_IORES_MEM].start =
--		pci_resource_start(pdev, MFD_I2C_BAR);
--	res[INTEL_QUARK_IORES_MEM].end =
--		pci_resource_end(pdev, MFD_I2C_BAR);
-+	res[INTEL_QUARK_IORES_MEM].start = pci_resource_start(pdev, MFD_I2C_BAR);
-+	res[INTEL_QUARK_IORES_MEM].end = pci_resource_end(pdev, MFD_I2C_BAR);
- 
- 	res[INTEL_QUARK_IORES_IRQ].start = pci_irq_vector(pdev, 0);
- 	res[INTEL_QUARK_IORES_IRQ].end = pci_irq_vector(pdev, 0);
-@@ -189,16 +188,15 @@ static int intel_quark_i2c_setup(struct pci_dev *pdev, struct mfd_cell *cell)
- 	return 0;
- }
- 
--static int intel_quark_gpio_setup(struct pci_dev *pdev, struct mfd_cell *cell)
-+static int intel_quark_gpio_setup(struct pci_dev *pdev)
- {
-+	struct mfd_cell *cell = &intel_quark_mfd_cells[MFD_GPIO_BAR];
-+	struct resource *res = intel_quark_gpio_res;
- 	struct dwapb_platform_data *pdata;
--	struct resource *res = (struct resource *)cell->resources;
- 	struct device *dev = &pdev->dev;
- 
--	res[INTEL_QUARK_IORES_MEM].start =
--		pci_resource_start(pdev, MFD_GPIO_BAR);
--	res[INTEL_QUARK_IORES_MEM].end =
--		pci_resource_end(pdev, MFD_GPIO_BAR);
-+	res[INTEL_QUARK_IORES_MEM].start = pci_resource_start(pdev, MFD_GPIO_BAR);
-+	res[INTEL_QUARK_IORES_MEM].end = pci_resource_end(pdev, MFD_GPIO_BAR);
- 
- 	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
- 	if (!pdata)
-@@ -252,11 +250,11 @@ static int intel_quark_mfd_probe(struct pci_dev *pdev,
- 	if (ret < 0)
- 		goto err_unregister_i2c_clk;
- 
--	ret = intel_quark_i2c_setup(pdev, &intel_quark_mfd_cells[MFD_I2C_BAR]);
-+	ret = intel_quark_i2c_setup(pdev);
- 	if (ret)
- 		goto err_free_irq_vectors;
- 
--	ret = intel_quark_gpio_setup(pdev, &intel_quark_mfd_cells[MFD_GPIO_BAR]);
-+	ret = intel_quark_gpio_setup(pdev);
- 	if (ret)
- 		goto err_free_irq_vectors;
- 
--- 
-2.30.2
+> +
+> +again:
+> +	rcu_read_lock();
+> +	str = rcu_dereference(*(char **)file->private_data);
+> +	len = strlen(str) + 1;
+> +
+> +	if (!copy || copy_len < len) {
+> +		rcu_read_unlock();
+> +		kfree(copy);
+> +		copy = kmalloc(len + 1, GFP_KERNEL);
+> +		if (!copy) {
+> +			debugfs_file_put(dentry);
+> +			return -ENOMEM;
+> +		}
+> +		copy_len = len;
+> +		goto again;
+> +	}
+> +
+> +	strncpy(copy, str, len);
+> +	copy[len] = '\n';
+> +	copy[len+1] = '\0';
+> +	rcu_read_unlock();
 
+As noted (accidentally off-list), this is broken. I think you want this
+on top
+
+- len = strlen(str) + 1;
++ len = strlen(str);
+
+- strncpy(copy, str, len);
++ memcpy(copy, str, len);
+  copy[len] = '\n';
+- copy[len+1] = '\0';
+
+> +EXPORT_SYMBOL_GPL(debugfs_read_file_str);
+
+Why?
+
+> +
+> +ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
+> +			       size_t count, loff_t *ppos)
+> +{
+> +	struct dentry *dentry = F_DENTRY(file);
+> +	char *old, *new = NULL;
+> +	int pos = *ppos;
+> +	int r;
+> +
+> +	r = debugfs_file_get(dentry);
+> +	if (unlikely(r))
+> +		return r;
+> +
+> +	old = *(char **)file->private_data;
+> +
+> +	/* only allow strict concattenation */
+> +	r = -EINVAL;
+> +	if (pos && pos != strlen(old))
+> +		goto error;
+
+Other than the synchronize_rcu() below, I don't see any rcu stuff in
+here. What prevents one task from kfree'ing old while another computes
+its strlen()? Or two tasks from getting the same value of old and both
+kfree'ing the same pointer?
+
+And what part of the kernel periodically looks at some string and
+decides something needs to be done? Shouldn't a write imply some
+notification or callback? I can see the usefulness of the read part to
+expose some otherwise-maintained string, but what good does allowing
+writes do?
+
+Rasmus
