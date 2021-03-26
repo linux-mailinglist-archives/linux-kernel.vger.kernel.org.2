@@ -2,193 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF4034AB49
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D83034AB53
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhCZPQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S230248AbhCZPUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhCZPPp (ORCPT
+        with ESMTP id S230298AbhCZPT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:15:45 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DC2C0613AA;
-        Fri, 26 Mar 2021 08:15:45 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so3180240wmi.3;
-        Fri, 26 Mar 2021 08:15:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KScxmgxFwx2I+/azyTh9C5L+i3XfAXAGJimkh3N2UIA=;
-        b=ky8Y/83S5OtVFwOg13NDgbqFF9wc1DJJzH+e2KwPnNq/2RJXVQKOfUtOhTBo+AOn0J
-         DzqKvyMZDDFoVOO0RX9n28uDPTWBjtVd26Cl+/A6zAhHTnL+TaE/exJnmuMvcIttk3RL
-         hkOsy8AwkX9n/GIqmXrjnSNa0u/ccYYH1MSv71CK4eg/hqjCTO6yb9HWX/xY5EDedyQ8
-         1aTOBjYP9OKMXmZT22rIFSl+IQsFlahyCWrpn7d937nLFdhDeGzA0JPFmFRjvKpOEAFq
-         b2vnpfZd1+g+h+URAvc7abpRoxLVYLFQKrpBDMG4sXwVkebNLo1A21ZCz0+zCtBMy1ik
-         688A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KScxmgxFwx2I+/azyTh9C5L+i3XfAXAGJimkh3N2UIA=;
-        b=FfuPBUxnbY8MAbeW01YkTuSXb3J5cbS+anK5yfOP6XASqzp9AAbYvJYYd5qCqrubaP
-         JeQ/KoautuC2HA7+AciR1Md1uWX5qlRnVdBlv0p64CgEAavCdnGqtTZnaoeC/q4qZLAH
-         nUxJtruWwJeBNSV1xblX7byZGyBuKrElodddTG85GCahCWiaX/N9s7URKlJptw/xBf9l
-         I4l73LcHm2BJMcEo8qfnxrnRklAesMlYTFb84VF/OaEwicF+zj8u4rJ28N097xv1Bob+
-         GxS8ptDzjCMn5Pv//MlZ/na+C8NROSOG+WZRSx+TpeNtQPn5WDxSfEEjSRuaKAHVBpL/
-         rbIw==
-X-Gm-Message-State: AOAM5330H97VxWG7TOMO/2yHhlNNW0Qs+RK9aVUyD2IwZirNYX9lWhf+
-        WgIowACh0+8iOg6tc+FvbSbek/+aLnJADiZAtJo=
-X-Google-Smtp-Source: ABdhPJynseqJpqbn4loBqepQPEihPGeHiofRkPlyhCWqa/PiQjbuPwCX4FC8Kp3N7rMDF5ABR9P0UUTe6ZjseKrMuS8=
-X-Received: by 2002:a05:600c:4fd0:: with SMTP id o16mr13521538wmq.123.1616771743836;
- Fri, 26 Mar 2021 08:15:43 -0700 (PDT)
+        Fri, 26 Mar 2021 11:19:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7F2C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Qmp+F0418AwvQlnC1o8gzr9PkURFAqbNZKpNnU0rE5w=; b=R6Us5JD/hHCwkwlG2iWZqpPSKj
+        T4sPgNZV0BtmPzbZ3YXLquGZtoOC5f08zUguEaqEWWohr04mQvwoPoKC2CHMFI6s2qruo3yNZyM+k
+        TkneEycTgTVvYhO9T5V1LU2pWrQGPVXpjKepQybDWmhO5bB+yhb1q0v7SxXDkZUAGjt+iUdPIXpcv
+        RQ89Fs888/a9LfUZkgC6RFJzcbsr+QDmSbzAOERMy7l8e4V8pl/RB28IyQxGoZyH5lPS6w8Ny3ZxF
+        Wv0oywusG1ik3abtEl3OEPPTtScEwnJDKnhaVjVoOsq0yVlR0ehCzwbVyq7pJbI6kFjDGHzo1WkfJ
+        JeSs3tbw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPoEz-003sRh-34; Fri, 26 Mar 2021 15:19:13 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B0DF3980FEF; Fri, 26 Mar 2021 16:19:12 +0100 (CET)
+Date:   Fri, 26 Mar 2021 16:19:12 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Greg KH <greg@kroah.com>, mingo@kernel.org, mgorman@suse.de,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com, joshdon@google.com, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
+Message-ID: <20210326151912.GL4746@worktop.programming.kicks-ass.net>
+References: <20210326103352.603456266@infradead.org>
+ <20210326103935.183934395@infradead.org>
+ <YF2/41K4xs3ZOQdV@kroah.com>
+ <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
+ <YF3F0JbbEpeSGzW6@kroah.com>
+ <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
+ <70594935-18e6-0791-52f9-0448adf37155@rasmusvillemoes.dk>
+ <20210326142230.GJ4746@worktop.programming.kicks-ass.net>
+ <c1be3728-40e7-f200-ece0-cd3f11349f65@rasmusvillemoes.dk>
 MIME-Version: 1.0
-References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
- <YFKQaXOmOwYyeqvM@google.com> <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
- <YF3V8d4wB6i81fLN@orome.fritz.box>
-In-Reply-To: <YF3V8d4wB6i81fLN@orome.fritz.box>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 26 Mar 2021 08:18:57 -0700
-Message-ID: <CAF6AEGvS6Pnd-m-boqPEZdDY+VCkV5M8Ob9n6UiYWs_DxrPopQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on sc7180-trogdor-pompom
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1be3728-40e7-f200-ece0-cd3f11349f65@rasmusvillemoes.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 5:38 AM Thierry Reding <thierry.reding@gmail.com> wrote:
->
-> On Wed, Mar 17, 2021 at 06:53:04PM -0700, Rob Clark wrote:
-> > On Wed, Mar 17, 2021 at 4:27 PM Matthias Kaehlcke <mka@chromium.org> wrote:
-> > >
-> > > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
-> > > > The sc7180-trogdor-pompom board might be attached to any number of a
-> > > > pile of eDP panels. At the moment I'm told that the list might include:
-> > > > - KD KD116N21-30NV-A010
-> > > > - KD KD116N09-30NH-A016
-> > > > - Starry 2081116HHD028001-51D
-> > > > - Sharp LQ116M1JW10
-> > > >
-> > > > It should be noted that while the EDID programmed in the first 3
-> > > > panels indicates that they should run with exactly the same timing (to
-> > > > keep things simple), the 4th panel not only needs different timing but
-> > > > has a different resolution.
-> > > >
-> > > > As is true in general with eDP panels, we can figure out which panel
-> > > > we have and all the info needed to drive its pixel clock by reading
-> > > > the EDID. However, we can do this only after we've powered the panel
-> > > > on. Powering on the panels requires following the timing diagram in
-> > > > each panel's datasheet which specifies delays between certain
-> > > > actions. This means that, while we can be quite dynamic about handling
-> > > > things we can't just totally skip out on describing the panel like we
-> > > > could do if it was connected to an external-facing DP port.
-> > > >
-> > > > While the different panels have slightly different delays, it's
-> > > > possible to come up with a set of unified delays that will work on all
-> > > > the panels. From reading the datasheets:
-> > > > * KD KD116N21-30NV-A010 and KD KD116N09-30NH-A016
-> > > >   - HPD absent delay: 200 ms
-> > > >   - Unprepare delay: 150 ms (datasheet is confusing, might be 500 ms)
-> > > > * Starry 2081116HHD028001-51D
-> > > >   - HPD absent delay: 100 ms
-> > > >   - Enable delay: (link training done till enable BL): 200 ms
-> > > >   - Unprepare delay: 500 ms
-> > > > * Sharp LQ116M1JW10
-> > > >   - HPD absent delay: 200 ms
-> > > >   - Unprepare delay: 500 ms
-> > > >   - Prepare to enable delay (power on till backlight): 100 ms
-> > > >
-> > > > Unified:
-> > > > - HPD absent delay: 200 ms
-> > > > - Unprepare delay: 500 ms
-> > > > - Enable delay: 200 ms
-> > > >
-> > > > NOTE: in theory the only thing that we _really_ need unity on is the
-> > > > "HPD absent delay" since once the panel asserts HPD we can read the
-> > > > EDID and could make per-panel decisions if we wanted.
-> > > >
-> > > > Let's create a definition of "a panel that can be attached to pompom"
-> > > > as a panel that provides a valid EDID and can work with the standard
-> > > > pompom power sequencing. If more panels are later attached to pompom
-> > > > then it's fine as long as they work in a compatible way.
-> > > >
-> > > > One might ask why we can't just use a generic string here and provide
-> > > > the timings directly in the device tree file. As I understand it,
-> > > > trying to describe generic power sequencing in the device tree is
-> > > > frowned upon and the one instance (SD/MMC) is regarded as a mistake
-> > > > that shouldn't be repeated. Specifying a power sequence per board (or
-> > > > per board class) feels like a reasonable compromise. We're not trying
-> > > > to define fully generic power sequence bindings but we can also take
-> > > > advantage of the semi-probable properties of the attached device.
-> > > >
-> > > > NOTE: I believe that past instances of supporting this type of thing
-> > > > have used the "white lie" approach. One representative panel was
-> > > > listed in the device tree. The power sequencings of this
-> > > > representative panel were OK to use across all panels that might be
-> > > > attached and other differences were handled by EDID. This patch
-> > > > attempts to set a new precedent and avoid the need for the white lie.
-> > > >
-> > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > > ---
-> > >
-> > > Sounds reasonable to me if DT maintainers can live with this abstract
-> > > hardware definition. It's clearer than the 'white lie' approach.
-> >
-> > Yeah, it is a weird grey area between "discoverable" and "not
-> > discoverable".. but I favor DT reflecting reality as much as
-> > possible/feasible, so I think this is definity cleaner than "white
-> > lies"
->
-> This is practically no different than the "white lie". I suppose you
-> could perhaps call it "more honest", if you want.
->
-> The point remains that unless we describe exactly which panel we're
-> dealing with, we ultimately have no way of properly quirking anything if
-> we ever have to. Also, once we allow this kind of wildcard we can
-> suddenly get into a situation where people might want to reuse this on
-> something that's not at all a google-pompom board because the same
-> particular power sequence happens to work on on some other board.
->
-> Similarly I can imagine a situation where we could now have the same
-> panel supported by multiple different wildcard compatible strings. How
-> is that supposed to be any cleaner than what we have now?
->
-> And I still keep wondering why bootloaders can't be taught about these
-> kinds of things. We have in the past discussed various solutions where
-> the bootloader could detect the type of panel connected and set the
-> proper compatible string.
+On Fri, Mar 26, 2021 at 03:58:37PM +0100, Rasmus Villemoes wrote:
+> >   kmalloc(len + 2, ...);
+> 
+> No, because nul-terminating the stuff you pass to
+> simple_read_from_buffer is pointless cargo-culting. Yeah, read_file_bool
+> does it, but that's just bogus.
 
-The bootloader cannot detect the panel without powering up the panel,
-which it normally does not do if you are not in dev-mode (it would add
-a significant amount of time to bootup, which is why we can't do this)
+Urgh, feel yuck to not have it zero terminated, but if you feel strongly
+about it I suppose I can make it go away.
 
-BR,
--R
+> > 	len = strscpy(copy, str, len);
+> > 	if (len < 0)
+> > 		return len;
+> 
+> To what end? The only way that could possibly return -EFOO is if the
+> nul-terminator in str vanished between the strlen() and here, and in
+> that case you have bigger problems.
 
-> If that's too complicated and these really are standardized interfaces
-> that work across a wide range of devices with perhaps a couple of
-> standard parameter, then introducing a standard connector type like
-> Rob Herring is suggesting makes more sense because that more properly
-> describes where exactly the standardization is going on (i.e. at the
-> interface level rather than the panel level).
->
-> Thierry
+There are strings in the kernel which we rewrite in most ugly ways,
+task_struct::comm comes to mind. Best be paranoid.
+
+> > Copy-pasta from debugfs_*_bool(). This thing seems to export everything
+> > and I figured I'd go along with that.
+> 
+> I thought the convention was not to export anything until the kernel
+> itself had a (modular) user.
+
+That's generally how I feel too. But this really isn't my subsystem so I
+more or less try to mimmick what I see done there.
