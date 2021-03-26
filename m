@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D06F34A51D
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F54C34A51B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhCZJ7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S230237AbhCZJ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbhCZJ6v (ORCPT
+        with ESMTP id S229969AbhCZJ6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Mar 2021 05:58:51 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D72CC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:58:50 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id ce10so7500382ejb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:58:50 -0700 (PDT)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BE1C0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:58:51 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id kt15so7467606ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:58:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=eGEbDdnxvr1xLVANMZdtzFwCYrSlkB/OUQV9O+h/O7Y=;
-        b=WoGkUMRB+hZG5srLy5V1gTYT/x61xXlx/NBXfD/s9wOaoxjeD2Pe0PAuAqdL0gM5Rt
-         rNja5S0G0sNG/8laO/dBbneKzk5vMMld6oocd+sT3sc0LVa8w7dQkio3bUL8B50vjewJ
-         7RcEVUg50rTqKnokvW2InkdJ8ze2zpv1lzgT0=
+        bh=PozJDrjBoFoiSACjiJTngE3Hc/EWz/RcQCo80H4qmY4=;
+        b=B281Mtgj/j0RDsuT3O9weLX9L+2dGtyBfinH0McNTQFKKbJmnwab1zsesWdyWnS39O
+         IWY4OXmGDJdA21vr+7JgA8qwj7Pi/Ek5idb4y6nFUuxNqFz/DHhfve+9rFP8jgU+c/Cz
+         iAdCTQawixOdRhk19yy4Jex8oHMXV1Qxw8GG0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=eGEbDdnxvr1xLVANMZdtzFwCYrSlkB/OUQV9O+h/O7Y=;
-        b=QhBZVjXlWNKykbRbzjNZ39vLLmW61psaYgHQC7JhYTom5B54tw7bAgYcW12eFGybIT
-         rURyUaKkSOy7520mMXl5UKCHoMS4DwiNAON/gPX86I5DjT1nvDnm7pvXyOiu0o4yiPBo
-         Hn27umvPIueSecEHZ7drZOgmw7T3dhG2KnDCvsozoZTG6b8ylCK1GVa2rt2tjHsx7aMT
-         z5NQLKz6VOclUZ8eyzZS2OootsUVqGdPfBIjMFsTTs94UZvYbcSQNeLxcpD7TMmhBL59
-         ZCZoiH7901Mi2N7f0e2Tnch4IZLuHAemoOXfzIW00bIagi/iaPNHBaoaSLWpI7kG+wy1
-         jTiw==
-X-Gm-Message-State: AOAM532DkoROLlQQ6RIUYQ1mmVI9tJQ7iaEElg3z1mM5SotkekmxW7tK
-        h790aLMQl+BfxA5cHt233Hxjlg==
-X-Google-Smtp-Source: ABdhPJzrYuEt7Xf+jITuCY5D2PraUBAdDMsrNkQ/v19ECHnYWGoQgGJPu1Fw7t1rzLRatuaoKRQCVQ==
-X-Received: by 2002:a17:906:3751:: with SMTP id e17mr14457691ejc.553.1616752729365;
+        bh=PozJDrjBoFoiSACjiJTngE3Hc/EWz/RcQCo80H4qmY4=;
+        b=RUMhi7RPtKuVd8vuRO469ikbDJ/6GyCs5xiuyudUb9xzVjC8tCVntmy4Z74AzWq8IM
+         yuOQt6TIgfULoUebpRRUWBBxLCQtDeH99UGUmrKO3cZoGNDdri/77M5IgwGIgwncbKQ8
+         YpAmRYJCDRu6y8iFcZ+DrWMeUTzY258RwWe+JVUDo7olS5LKYGkk+wyGmEN6s5r+6avl
+         VRF84jmQYXH5xSsOEQFXpVPu/ln8W3OIqUFa8KHftIzXAGFH4Yt/B98iJzkKhWxgx3Xd
+         xNDH80nFceK9dzaU182VcjSanRq9tfQfGa2qkxT0kfR7cLSA+61xU2gnmqWffotpSr4U
+         yKzg==
+X-Gm-Message-State: AOAM530YqRiFraKIALuLqaFa9PcoBQhVA6eaKFXzwj5w0IVl2vj7O6TS
+        tOnSx3E0h1LKAvkFGute7vLVPA==
+X-Google-Smtp-Source: ABdhPJwT0KN4Lj8UbrvLefcoMXFzG3lleunanrdJSXgtyR35tF/EB94jE+6OOwImrcNnUiLxg0w0mw==
+X-Received: by 2002:a17:906:7c44:: with SMTP id g4mr14179083ejp.269.1616752729888;
         Fri, 26 Mar 2021 02:58:49 -0700 (PDT)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id h13sm4036658edz.71.2021.03.26.02.58.48
+        by smtp.gmail.com with ESMTPSA id h13sm4036658edz.71.2021.03.26.02.58.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 26 Mar 2021 02:58:49 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
@@ -53,9 +53,9 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v9 07/22] media: uvcvideo: Return -EIO for control errors
-Date:   Fri, 26 Mar 2021 10:58:25 +0100
-Message-Id: <20210326095840.364424-8-ribalda@chromium.org>
+Subject: [PATCH v9 08/22] media: uvcvideo: refactor __uvc_ctrl_add_mapping
+Date:   Fri, 26 Mar 2021 10:58:26 +0100
+Message-Id: <20210326095840.364424-9-ribalda@chromium.org>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
 In-Reply-To: <20210326095840.364424-1-ribalda@chromium.org>
 References: <20210326095840.364424-1-ribalda@chromium.org>
@@ -65,40 +65,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device is doing something unspected with the control. Either because
-the protocol is not properly implemented or there has been a HW error.
+Pass the chain instead of the device. We want to keep the reference to
+the chain that controls belong to.
 
-Fixes v4l2-compliance:
+We need to delay the initialization of the controls after the chains
+have been initialized.
 
-Control ioctls (Input 0):
-                fail: v4l2-test-controls.cpp(448): s_ctrl returned an error (22)
-        test VIDIOC_G/S_CTRL: FAIL
-                fail: v4l2-test-controls.cpp(698): s_ext_ctrls returned an error (22)
-        test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
+This is a cleanup needed for the next patches.
 
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_video.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/media/usb/uvc/uvc_ctrl.c   | 41 ++++++++++++++++++++----------
+ drivers/media/usb/uvc/uvc_driver.c |  8 +++---
+ 2 files changed, 32 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index f2f565281e63..25fd8aa23529 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -112,6 +112,11 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
- 	case 5: /* Invalid unit */
- 	case 6: /* Invalid control */
- 	case 7: /* Invalid Request */
-+		/*
-+		 * The firmware has not properly implemented
-+		 * the control or there has been a HW error.
-+		 */
-+		return -EIO;
- 	case 8: /* Invalid value within range */
- 		return -EINVAL;
- 	default: /* reserved or unknown */
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index b3dde98499f4..b75da65115ef 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -2057,7 +2057,7 @@ static int uvc_ctrl_add_info(struct uvc_device *dev, struct uvc_control *ctrl,
+ /*
+  * Add a control mapping to a given control.
+  */
+-static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
++static int __uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+ 	struct uvc_control *ctrl, const struct uvc_control_mapping *mapping)
+ {
+ 	struct uvc_control_mapping *map;
+@@ -2086,7 +2086,7 @@ static int __uvc_ctrl_add_mapping(struct uvc_device *dev,
+ 		map->set = uvc_set_le_value;
+ 
+ 	list_add_tail(&map->list, &ctrl->info.mappings);
+-	uvc_dbg(dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
++	uvc_dbg(chain->dev, CONTROL, "Adding mapping '%s' to control %pUl/%u\n",
+ 		map->name, ctrl->info.entity, ctrl->info.selector);
+ 
+ 	return 0;
+@@ -2168,7 +2168,7 @@ int uvc_ctrl_add_mapping(struct uvc_video_chain *chain,
+ 		goto done;
+ 	}
+ 
+-	ret = __uvc_ctrl_add_mapping(dev, ctrl, mapping);
++	ret = __uvc_ctrl_add_mapping(chain, ctrl, mapping);
+ 	if (ret < 0)
+ 		atomic_dec(&dev->nmappings);
+ 
+@@ -2244,7 +2244,8 @@ static void uvc_ctrl_prune_entity(struct uvc_device *dev,
+  * Add control information and hardcoded stock control mappings to the given
+  * device.
+  */
+-static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
++static void uvc_ctrl_init_ctrl(struct uvc_video_chain *chain,
++			       struct uvc_control *ctrl)
+ {
+ 	const struct uvc_control_info *info = uvc_ctrls;
+ 	const struct uvc_control_info *iend = info + ARRAY_SIZE(uvc_ctrls);
+@@ -2263,14 +2264,14 @@ static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
+ 	for (; info < iend; ++info) {
+ 		if (uvc_entity_match_guid(ctrl->entity, info->entity) &&
+ 		    ctrl->index == info->index) {
+-			uvc_ctrl_add_info(dev, ctrl, info);
++			uvc_ctrl_add_info(chain->dev, ctrl, info);
+ 			/*
+ 			 * Retrieve control flags from the device. Ignore errors
+ 			 * and work with default flag values from the uvc_ctrl
+ 			 * array when the device doesn't properly implement
+ 			 * GET_INFO on standard controls.
+ 			 */
+-			uvc_ctrl_get_flags(dev, ctrl, &ctrl->info);
++			uvc_ctrl_get_flags(chain->dev, ctrl, &ctrl->info);
+ 			break;
+ 		 }
+ 	}
+@@ -2281,22 +2282,20 @@ static void uvc_ctrl_init_ctrl(struct uvc_device *dev, struct uvc_control *ctrl)
+ 	for (; mapping < mend; ++mapping) {
+ 		if (uvc_entity_match_guid(ctrl->entity, mapping->entity) &&
+ 		    ctrl->info.selector == mapping->selector)
+-			__uvc_ctrl_add_mapping(dev, ctrl, mapping);
++			__uvc_ctrl_add_mapping(chain, ctrl, mapping);
+ 	}
+ }
+ 
+ /*
+  * Initialize device controls.
+  */
+-int uvc_ctrl_init_device(struct uvc_device *dev)
++static int uvc_ctrl_init_chain(struct uvc_video_chain *chain)
+ {
+ 	struct uvc_entity *entity;
+ 	unsigned int i;
+ 
+-	INIT_WORK(&dev->async_ctrl.work, uvc_ctrl_status_event_work);
+-
+ 	/* Walk the entities list and instantiate controls */
+-	list_for_each_entry(entity, &dev->entities, list) {
++	list_for_each_entry(entity, &chain->entities, chain) {
+ 		struct uvc_control *ctrl;
+ 		unsigned int bControlSize = 0, ncontrols;
+ 		u8 *bmControls = NULL;
+@@ -2316,7 +2315,7 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+ 		}
+ 
+ 		/* Remove bogus/blacklisted controls */
+-		uvc_ctrl_prune_entity(dev, entity);
++		uvc_ctrl_prune_entity(chain->dev, entity);
+ 
+ 		/* Count supported controls and allocate the controls array */
+ 		ncontrols = memweight(bmControls, bControlSize);
+@@ -2338,7 +2337,7 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+ 			ctrl->entity = entity;
+ 			ctrl->index = i;
+ 
+-			uvc_ctrl_init_ctrl(dev, ctrl);
++			uvc_ctrl_init_ctrl(chain, ctrl);
+ 			ctrl++;
+ 		}
+ 	}
+@@ -2346,6 +2345,22 @@ int uvc_ctrl_init_device(struct uvc_device *dev)
+ 	return 0;
+ }
+ 
++int uvc_ctrl_init_device(struct uvc_device *dev)
++{
++	struct uvc_video_chain *chain;
++	int ret;
++
++	INIT_WORK(&dev->async_ctrl.work, uvc_ctrl_status_event_work);
++
++	list_for_each_entry(chain, &dev->chains, list) {
++		ret = uvc_ctrl_init_chain(chain);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
+ /*
+  * Cleanup device controls.
+  */
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 30ef2a3110f7..35873cf2773d 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2423,14 +2423,14 @@ static int uvc_probe(struct usb_interface *intf,
+ 	if (v4l2_device_register(&intf->dev, &dev->vdev) < 0)
+ 		goto error;
+ 
+-	/* Initialize controls. */
+-	if (uvc_ctrl_init_device(dev) < 0)
+-		goto error;
+-
+ 	/* Scan the device for video chains. */
+ 	if (uvc_scan_device(dev) < 0)
+ 		goto error;
+ 
++	/* Initialize controls. */
++	if (uvc_ctrl_init_device(dev) < 0)
++		goto error;
++
+ 	/* Register video device nodes. */
+ 	if (uvc_register_chains(dev) < 0)
+ 		goto error;
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 
