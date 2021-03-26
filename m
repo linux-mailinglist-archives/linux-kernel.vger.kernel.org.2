@@ -2,122 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610D134A548
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E87034A54C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhCZKHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:07:10 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55873 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229779AbhCZKGo (ORCPT
+        id S229779AbhCZKJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 06:09:18 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14491 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229730AbhCZKJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:06:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UTMkjSm_1616753202;
-Received: from 30.21.164.88(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UTMkjSm_1616753202)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 26 Mar 2021 18:06:42 +0800
-Subject: Re: [PATCH] fuse: Fix possible deadlock when writing back dirty pages
-To:     miklos@szeredi.hu
-Cc:     tao.peng@linux.alibaba.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <646dfa21bf75729f0c81597122cdec60a80b2035.1616742789.git.baolin.wang@linux.alibaba.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <34c124be-fd95-a1c6-4e67-7719081fe854@linux.alibaba.com>
-Date:   Fri, 26 Mar 2021 18:06:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 26 Mar 2021 06:09:13 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6Hh93BMjzyPPH;
+        Fri, 26 Mar 2021 18:07:05 +0800 (CST)
+Received: from huawei.com (10.67.174.47) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Fri, 26 Mar 2021
+ 18:08:58 +0800
+From:   He Ying <heying24@huawei.com>
+To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <corbet@lwn.net>, <ruscur@russell.cc>,
+        <oohall@gmail.com>, <heying24@huawei.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>
+Subject: [PATCH] docs: powerpc: Fix misspellings and grammar errors
+Date:   Fri, 26 Mar 2021 06:08:53 -0400
+Message-ID: <20210326100853.173586-1-heying24@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <646dfa21bf75729f0c81597122cdec60a80b2035.1616742789.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.47]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: He Ying <heying24@huawei.com>
+---
+ Documentation/powerpc/booting.rst                | 2 +-
+ Documentation/powerpc/dawr-power9.rst            | 2 +-
+ Documentation/powerpc/eeh-pci-error-recovery.rst | 2 +-
+ Documentation/powerpc/elfnote.rst                | 2 +-
+ Documentation/powerpc/firmware-assisted-dump.rst | 2 +-
+ Documentation/powerpc/kaslr-booke32.rst          | 2 +-
+ Documentation/powerpc/mpc52xx.rst                | 2 +-
+ Documentation/powerpc/papr_hcalls.rst            | 4 ++--
+ Documentation/powerpc/transactional_memory.rst   | 4 ++--
+ 9 files changed, 11 insertions(+), 11 deletions(-)
 
-> We can meet below deadlock scenario when writing back dirty pages, and
-> writing files at the same time. The deadlock scenario can be reproduced
-> by:
-> 
-> - A writeback worker thread A is trying to write a bunch of dirty pages by
-> fuse_writepages(), and the fuse_writepages() will lock one page (named page 1),
-> add it into rb_tree with setting writeback flag, and unlock this page 1,
-> then try to lock next page (named page 2).
-> 
-> - But at the same time a file writing can be triggered by another process B,
-> to write several pages by fuse_perform_write(), the fuse_perform_write()
-> will lock all required pages firstly, then wait for all writeback pages
-> are completed by fuse_wait_on_page_writeback().
-> 
-> - Now the process B can already lock page 1 and page 2, and wait for page 1
-> waritehack is completed (page 1 is under writeback set by process A). But
-> process A can not complete the writeback of page 1, since it is still
-> waiting for locking page 2, which was locked by process B already.
-> 
-> A deadlock is occurred.
-> 
-> To fix this issue, we should make sure each page writeback is completed after
-> lock the page in fuse_fill_write_pages(), and then write them together when
-> all pages are stable.
-> 
-> [1450578.772896] INFO: task kworker/u259:6:119885 blocked for more than 120 seconds.
-> [1450578.796179] kworker/u259:6  D    0 119885      2 0x00000028
-> [1450578.796185] Workqueue: writeback wb_workfn (flush-0:78)
-> [1450578.796188] Call trace:
-> [1450578.798804]  __switch_to+0xd8/0x148
-> [1450578.802458]  __schedule+0x280/0x6a0
-> [1450578.806112]  schedule+0x34/0xe8
-> [1450578.809413]  io_schedule+0x20/0x40
-> [1450578.812977]  __lock_page+0x164/0x278
-> [1450578.816718]  write_cache_pages+0x2b0/0x4a8
-> [1450578.820986]  fuse_writepages+0x84/0x100 [fuse]
-> [1450578.825592]  do_writepages+0x58/0x108
-> [1450578.829412]  __writeback_single_inode+0x48/0x448
-> [1450578.834217]  writeback_sb_inodes+0x220/0x520
-> [1450578.838647]  __writeback_inodes_wb+0x50/0xe8
-> [1450578.843080]  wb_writeback+0x294/0x3b8
-> [1450578.846906]  wb_do_writeback+0x2ec/0x388
-> [1450578.850992]  wb_workfn+0x80/0x1e0
-> [1450578.854472]  process_one_work+0x1bc/0x3f0
-> [1450578.858645]  worker_thread+0x164/0x468
-> [1450578.862559]  kthread+0x108/0x138
-> [1450578.865960] INFO: task doio:207752 blocked for more than 120 seconds.
-> [1450578.888321] doio            D    0 207752 207740 0x00000000
-> [1450578.888329] Call trace:
-> [1450578.890945]  __switch_to+0xd8/0x148
-> [1450578.894599]  __schedule+0x280/0x6a0
-> [1450578.898255]  schedule+0x34/0xe8
-> [1450578.901568]  fuse_wait_on_page_writeback+0x8c/0xc8 [fuse]
-> [1450578.907128]  fuse_perform_write+0x240/0x4e0 [fuse]
-> [1450578.912082]  fuse_file_write_iter+0x1dc/0x290 [fuse]
-> [1450578.917207]  do_iter_readv_writev+0x110/0x188
-> [1450578.921724]  do_iter_write+0x90/0x1c8
-> [1450578.925598]  vfs_writev+0x84/0xf8
-> [1450578.929071]  do_writev+0x70/0x110
-> [1450578.932552]  __arm64_sys_writev+0x24/0x30
-> [1450578.936727]  el0_svc_common.constprop.0+0x80/0x1f8
-> [1450578.941694]  el0_svc_handler+0x30/0x80
-> [1450578.945606]  el0_svc+0x10/0x14
-> 
-> Suggested-by: Peng Tao <tao.peng@linux.alibaba.com>
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
->   fs/fuse/file.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index 8cccecb..af082b6 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -1166,6 +1166,8 @@ static ssize_t fuse_fill_write_pages(struct fuse_args_pages *ap,
->   		if (!page)
->   			break;
->   
-> +		wait_on_page_writeback(page);
+diff --git a/Documentation/powerpc/booting.rst b/Documentation/powerpc/booting.rst
+index 2d0ec2ff2b57..11aa440f98cc 100644
+--- a/Documentation/powerpc/booting.rst
++++ b/Documentation/powerpc/booting.rst
+@@ -94,7 +94,7 @@ should:
+ 
+         a) add your platform support as a _boolean_ option in
+         arch/powerpc/Kconfig, following the example of PPC_PSERIES,
+-        PPC_PMAC and PPC_MAPLE. The later is probably a good
++        PPC_PMAC and PPC_MAPLE. The latter is probably a good
+         example of a board support to start from.
+ 
+         b) create your main platform file as
+diff --git a/Documentation/powerpc/dawr-power9.rst b/Documentation/powerpc/dawr-power9.rst
+index c96ab6befd9c..e55ac6a24b97 100644
+--- a/Documentation/powerpc/dawr-power9.rst
++++ b/Documentation/powerpc/dawr-power9.rst
+@@ -4,7 +4,7 @@ DAWR issues on POWER9
+ 
+ On POWER9 the Data Address Watchpoint Register (DAWR) can cause a checkstop
+ if it points to cache inhibited (CI) memory. Currently Linux has no way to
+-disinguish CI memory when configuring the DAWR, so (for now) the DAWR is
++distinguish CI memory when configuring the DAWR, so (for now) the DAWR is
+ disabled by this commit::
+ 
+     commit 9654153158d3e0684a1bdb76dbababdb7111d5a0
+diff --git a/Documentation/powerpc/eeh-pci-error-recovery.rst b/Documentation/powerpc/eeh-pci-error-recovery.rst
+index 438a87ebc095..d6643a91bdf8 100644
+--- a/Documentation/powerpc/eeh-pci-error-recovery.rst
++++ b/Documentation/powerpc/eeh-pci-error-recovery.rst
+@@ -73,7 +73,7 @@ return all-ff's (0xff, 0xffff, 0xffffffff for 8/16/32-bit reads).
+ This value was chosen because it is the same value you would
+ get if the device was physically unplugged from the slot.
+ This includes access to PCI memory, I/O space, and PCI config
+-space.  Interrupts; however, will continued to be delivered.
++space.  Interrupts; however, will continue to be delivered.
+ 
+ Detection and recovery are performed with the aid of ppc64
+ firmware.  The programming interfaces in the Linux kernel
+diff --git a/Documentation/powerpc/elfnote.rst b/Documentation/powerpc/elfnote.rst
+index 06602248621c..3ec8d61e9a33 100644
+--- a/Documentation/powerpc/elfnote.rst
++++ b/Documentation/powerpc/elfnote.rst
+@@ -8,7 +8,7 @@ capabilities and information which can be used by a bootloader or userland.
+ Types and Descriptors
+ ---------------------
+ 
+-The types to be used with the "PowerPC" namesapce are defined in [#f1]_.
++The types to be used with the "PowerPC" namespace are defined in [#f1]_.
+ 
+ 	1) PPC_ELFNOTE_CAPABILITIES
+ 
+diff --git a/Documentation/powerpc/firmware-assisted-dump.rst b/Documentation/powerpc/firmware-assisted-dump.rst
+index 6c0ae070ba67..e363fc48529a 100644
+--- a/Documentation/powerpc/firmware-assisted-dump.rst
++++ b/Documentation/powerpc/firmware-assisted-dump.rst
+@@ -207,7 +207,7 @@ Currently the dump will be copied from /proc/vmcore to a new file upon
+ user intervention. The dump data available through /proc/vmcore will be
+ in ELF format. Hence the existing kdump infrastructure (kdump scripts)
+ to save the dump works fine with minor modifications. KDump scripts on
+-major Distro releases have already been modified to work seemlessly (no
++major Distro releases have already been modified to work seamlessly (no
+ user intervention in saving the dump) when FADump is used, instead of
+ KDump, as dump mechanism.
+ 
+diff --git a/Documentation/powerpc/kaslr-booke32.rst b/Documentation/powerpc/kaslr-booke32.rst
+index 8b259fdfdf03..5681c1d1b65b 100644
+--- a/Documentation/powerpc/kaslr-booke32.rst
++++ b/Documentation/powerpc/kaslr-booke32.rst
+@@ -38,5 +38,5 @@ bit of the entropy to decide the index of the 64M zone. Then we chose a
+ 
+                               kernstart_virt_addr
+ 
+-To enable KASLR, set CONFIG_RANDOMIZE_BASE = y. If KASLR is enable and you
++To enable KASLR, set CONFIG_RANDOMIZE_BASE = y. If KASLR is enabled and you
+ want to disable it at runtime, add "nokaslr" to the kernel cmdline.
+diff --git a/Documentation/powerpc/mpc52xx.rst b/Documentation/powerpc/mpc52xx.rst
+index 30260707c3fe..5243b1763fad 100644
+--- a/Documentation/powerpc/mpc52xx.rst
++++ b/Documentation/powerpc/mpc52xx.rst
+@@ -34,7 +34,7 @@ To compile/use :
+ Some remarks:
+ 
+  - The port is named mpc52xxx, and config options are PPC_MPC52xx. The MGT5100
+-   is not supported, and I'm not sure anyone is interesting in working on it
++   is not supported, and I'm not sure anyone is interested in working on it
+    so. I didn't took 5xxx because there's apparently a lot of 5xxx that have
+    nothing to do with the MPC5200. I also included the 'MPC' for the same
+    reason.
+diff --git a/Documentation/powerpc/papr_hcalls.rst b/Documentation/powerpc/papr_hcalls.rst
+index 48fcf1255a33..3d553e8a2937 100644
+--- a/Documentation/powerpc/papr_hcalls.rst
++++ b/Documentation/powerpc/papr_hcalls.rst
+@@ -40,7 +40,7 @@ and any in-arguments for the hcall are provided in registers *r4-r12*. If values
+ have to be passed through a memory buffer, the data stored in that buffer should be
+ in Big-endian byte order.
+ 
+-Once control is returns back to the guest after hypervisor has serviced the
++Once control returns back to the guest after hypervisor has serviced the
+ 'HVCS' instruction the return value of the hcall is available in *r3* and any
+ out values are returned in registers *r4-r12*. Again like in case of in-arguments,
+ any out values stored in a memory buffer will be in Big-endian byte order.
+@@ -147,7 +147,7 @@ corresponding opcode values please look into the arch specific header [4]_:
+ | Out: *numBytesRead*
+ | Return Value: *H_Success, H_Parameter, H_P2, H_P3, H_Hardware*
+ 
+-Given a DRC Index of an NVDIMM, read N-bytes from the the metadata area
++Given a DRC Index of an NVDIMM, read N-bytes from the metadata area
+ associated with it, at a specified offset and copy it to provided buffer.
+ The metadata area stores configuration information such as label information,
+ bad-blocks etc. The metadata area is located out-of-band of NVDIMM storage
+diff --git a/Documentation/powerpc/transactional_memory.rst b/Documentation/powerpc/transactional_memory.rst
+index b5b09bf00966..040a20675fd1 100644
+--- a/Documentation/powerpc/transactional_memory.rst
++++ b/Documentation/powerpc/transactional_memory.rst
+@@ -189,7 +189,7 @@ kernel aborted a transaction:
+  ====================== ================================
+ 
+ These can be checked by the user program's abort handler as TEXASR[0:7].  If
+-bit 7 is set, it indicates that the error is consider persistent.  For example
++bit 7 is set, it indicates that the error is considered persistent.  For example
+ a TM_CAUSE_ALIGNMENT will be persistent while a TM_CAUSE_RESCHED will not.
+ 
+ GDB
+@@ -271,4 +271,4 @@ with these lines:
+ 
+ hrfid and mtmsrd have the same quirk.
+ 
+-The Linux kernel uses this quirk in it's early exception handling.
++The Linux kernel uses this quirk in its early exception handling.
+-- 
+2.17.1
 
-After talked with Tao, I should use fuse_wait_on_page_writeback() 
-instead to wait for each page stable in fuse, and also will remove
-the fuse_wait_on_page_writeback() in fuse_send_write_pages().
-
-I will send a V2, please ignore this patch. Thanks.
