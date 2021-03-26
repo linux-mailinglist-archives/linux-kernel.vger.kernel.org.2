@@ -2,201 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE6934AC67
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB4F34AC6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230298AbhCZQSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:18:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35182 "EHLO mx2.suse.de"
+        id S230347AbhCZQTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 12:19:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230138AbhCZQRj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:17:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1D57AAC6A;
-        Fri, 26 Mar 2021 16:17:38 +0000 (UTC)
-Message-ID: <c7c8e20d3d11c7d6cd203797c5faffa8a4d202a6.camel@suse.de>
-Subject: Re: [PATCH 4/4] ARM: dts: Fix-up EMMC2 controller's frequency
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, f.fainelli@gmail.com,
-        phil@raspberrypi.com, Tim Gover <tim.gover@raspberrypi.com>,
-        sbranden@broadcom.com, alcooperx <alcooperx@gmail.com>
-Cc:     adrian.hunter@intel.com, linux-kernel@vger.kernel.org,
-        ulf.hansson@linaro.org, Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 26 Mar 2021 17:17:36 +0100
-In-Reply-To: <2d2a2638-8213-5d6e-0a3a-927ed5bb2ed7@i2se.com>
-References: <20210322185816.27582-1-nsaenz@kernel.org>
-         <20210322185816.27582-5-nsaenz@kernel.org>
-         <401100ea-90ad-57b1-50da-967118a090da@i2se.com>
-         <78dec30c052e9bb76e52c38f3da5af371e5d65f5.camel@suse.de>
-         <2d2a2638-8213-5d6e-0a3a-927ed5bb2ed7@i2se.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Zt3yxDeLYD9K7yjMoxO4"
-User-Agent: Evolution 3.38.4 
+        id S229945AbhCZQTM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 12:19:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1C7E61960;
+        Fri, 26 Mar 2021 16:19:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616775552;
+        bh=y5D7LKMF6UcIhdpmaKfS0zgbiEVj4Y3JfqsnPyf/1Ak=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bC7tP8fqqvJksjeOZA/bvpau2ORDnVm6T+Ghgnq/d+84oyv9q7UzVbjFzjKDv31Hp
+         nFRoxI4Hs+A1N9qOsRmKFAk2tEZRRNsubvtEEykhlNjjldI4ZN+sbWm1a4JVefBr5S
+         RxsTUtIl37qdealoEl1QpqL8ABEgPqzDODqgFEShgxyzo7ccWdyeTOyU9tJFVRCqJO
+         wEW8gvx1j4Dran84g591ebOpuyz+hVoJ2rO2RMHEyH+sKNr2IkQueFEr7iKnAxJiQt
+         YUD0h5Zl1VOkR2A1BQL2Q5TgYM07DgQEjOYOgWktesZO/v7spNDmISNDmL//k9H7Q5
+         ER3D62ZqWbSfQ==
+Received: by mail-ed1-f46.google.com with SMTP id dm8so6976854edb.2;
+        Fri, 26 Mar 2021 09:19:11 -0700 (PDT)
+X-Gm-Message-State: AOAM531MFvKcTQQEel0TYikH4AX5HPFy/a3NaVfB3Nwk7JIZ75iLuWMg
+        tAW61SOAnp4bWh6gFdRmaGOXV12YX3x/lAD7qQ==
+X-Google-Smtp-Source: ABdhPJyRlcrMf7ezc1JD8+sAHdHx3wKfXOkh3fjCTx6BHGW8HdVAalI+CmlcwqgEDX3fwzOq2Y1wHWP2P1V7HPPThH0=
+X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr16022265eds.166.1616775550443;
+ Fri, 26 Mar 2021 09:19:10 -0700 (PDT)
 MIME-Version: 1.0
+References: <1616743871-8087-1-git-send-email-nina-cm.wu@mediatek.com>
+In-Reply-To: <1616743871-8087-1-git-send-email-nina-cm.wu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 27 Mar 2021 00:18:59 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-8W57Pid9N9kJO0iBNkmRh_sSf_E3hzewxojZ3GAnG2w@mail.gmail.com>
+Message-ID: <CAAOTY_-8W57Pid9N9kJO0iBNkmRh_sSf_E3hzewxojZ3GAnG2w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: devapc: Update bindings
+To:     Nina Wu <nina-cm.wu@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Neal Liu <neal.liu@mediatek.com>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Jackson-kt.Chang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Nina:
 
---=-Zt3yxDeLYD9K7yjMoxO4
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Nina Wu <nina-cm.wu@mediatek.com> =E6=96=BC 2021=E5=B9=B43=E6=9C=8826=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=883:34=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: Nina Wu <Nina-CM.Wu@mediatek.com>
+>
+> To support newer hardware architecture of devapc,
+> update device tree bindings.
+>
+> Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
+> ---
+>  .../devicetree/bindings/soc/mediatek/devapc.yaml   | 41 ++++++++++++++++=
+++++++
+>  1 file changed, 41 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml b=
+/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+> index 31e4d3c..489f6a9 100644
+> --- a/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+> +++ b/Documentation/devicetree/bindings/soc/mediatek/devapc.yaml
+> @@ -20,9 +20,27 @@ properties:
+>    compatible:
+>      enum:
+>        - mediatek,mt6779-devapc
+> +      - mediatek,mt8192-devapc
+> +
+> +  version:
+> +    description: The version of the hardware architecture
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2]
+> +    maxItems: 1
+> +
+> +  slave_type_num:
+> +    description: The number of the devapc set
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 4]
+> +    maxItems: 1
+>
+>    reg:
+>      description: The base address of devapc register bank
+> +    maxItems: 4
+> +
+> +  vio_idx_num:
+> +    description: The number of the devices controlled by devapc
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>      maxItems: 1
+>
+>    interrupts:
+> @@ -39,7 +57,10 @@ properties:
+>
+>  required:
+>    - compatible
+> +  - version
+> +  - slave_type_num
+>    - reg
+> +  - vio_idx_num
+>    - interrupts
+>    - clocks
+>    - clock-names
+> @@ -53,8 +74,28 @@ examples:
+>
+>      devapc: devapc@10207000 {
+>        compatible =3D "mediatek,mt6779-devapc";
+> +      version =3D <1>;
 
-On Thu, 2021-03-25 at 20:11 +0100, Stefan Wahren wrote:
-> Am 24.03.21 um 16:34 schrieb Nicolas Saenz Julienne:
-> > Hi Stefan,
-> >=20
-> > On Wed, 2021-03-24 at 16:16 +0100, Stefan Wahren wrote:
-> > > Hi Nicolas,
-> > >=20
-> > > Am 22.03.21 um 19:58 schrieb Nicolas Saenz Julienne:
-> > > > From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > >=20
-> > > > Force emmc2's frequency to 150MHz as the default 100MHz (set by FW)
-> > > > seems to interfere with the VPU clock when setup at frequencies big=
-ger
-> > > > than 500MHz (a pretty common case). This ends up causing unwarrante=
-d
-> > > > SDHCI CMD hangs  when no SD card is present.
-> > > >=20
-> > > > Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> > > > ---
-> > > > =C2=A0arch/arm/boot/dts/bcm2711-rpi-4-b.dts | 6 ++++++
-> > > > =C2=A01 file changed, 6 insertions(+)
-> > > >=20
-> > > > diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/=
-dts/bcm2711-rpi-4-b.dts
-> > > > index 3b4ab947492a..9aa8408d9960 100644
-> > > > --- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> > > > +++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-> > > > @@ -257,6 +257,12 @@ &emmc2 {
-> > > > =C2=A0	vqmmc-supply =3D <&sd_io_1v8_reg>;
-> > > > =C2=A0	vmmc-supply =3D <&sd_vcc_reg>;
-> > > > =C2=A0	broken-cd;
-> > > > +	/*
-> > > > +	 * Force the frequency to 150MHz as the default 100MHz seems to
-> > > > +	 * interfere with the VPU clock when setup at frequencies bigger =
-than
-> > > > +	 * 500MHz, causing unwarranted CMD hangs.
-> > > > +	 */
-> > > > +	clock-frequency =3D <150000000>;
-> > > i don't want to bike-shed here, but is there any chance to solve this=
- in
-> > > clk-bcm2835 in a less hacky way?
-> > What do you have in mind?
-> Sorry, nothing specific.
-> >=20
-> > All I can think of is adding some kind of heuristic to the clock's prep=
-are()
-> > callback. That said, I don't feel it would be a better solution than th=
-is.
->=20
-> Based on my limited knowledge and an old SD card specification, all
-> possibly connected devices could have different frequencies. So my
-> concern here is, that in case we limit the frequency to a specific value
-> we could break things just to suppress a warning.
+I think version is redundant. For example, if mt0001-devapc is
+identical to mt6779-devapc, its compatible should be
 
-SDHCI should be able to handle up to 233MHz IIRC, and there are divisors
-available, it depends on the implementation but the worst kind provide /2^n=
-.
-Not perfect, but good enough for things to work.
+compatible =3D "mediatek,mt0001-devapc", "mediatek,mt6779-devapc";
 
-Now, I've been having a deeper look into how clocks are handled, and found =
-two
-new clues:
+In driver, only keep compatible for mt6779 and no mt0001 because
+mt0001 is identical to mt6779.
+In probe sequence, try first compatible string
+"mediatek,mt0001-devapc", but it does not exist in driver, so try next
+compatible string "mediatek,mt6779-devapc" and match.
+So mt0001-devapc would work as mt6779-devapc.
 
- - First of all RPi4's sdhci-iproc needs SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-   that is, the controller isn't properly identifying the clock frequency f=
-ed
-   into it, and defaults to saying it's configured at 100MHz. I'm not an SD=
-HCI
-   expert, so it's possible changing frequencies also needs a special opera=
-tion
-   to recalculate this variable. But this was making all internal calculati=
-ons
-   wrong when paired with this series.
+> +      slave_type_num =3D <1>;
+>        reg =3D <0x10207000 0x1000>;
+> +      vio_idx_num =3D <511>;
+>        interrupts =3D <GIC_SPI 168 IRQ_TYPE_LEVEL_LOW>;
+>        clocks =3D <&infracfg_ao CLK_INFRA_DEVICE_APC>;
+>        clock-names =3D "devapc-infra-clock";
+>      };
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/mt8192-clk.h>
+> +
+> +    devapc: devapc@10207000 {
+> +        compatible =3D "mediatek,mt8192-devapc";
+> +        version =3D <2>;
+> +        slave_type_num =3D <4>;
+> +        reg =3D <0 0x10207000 0 0x1000>,
+> +            <0 0x10274000 0 0x1000>,
+> +            <0 0x10275000 0 0x1000>,
+> +            <0 0x11020000 0 0x1000>;
+> +        vio_idx_num =3D <367 292 242 58>;
+> +        interrupts =3D <GIC_SPI 187 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks =3D <&infracfg_ao CLK_INFRA_DEVICE_APC>;
+> +        clock-names =3D "devapc-infra-clock";
+> +    };
 
- - With this flag set SDHCI's core now properly calculates divisor values b=
-ased
-   on whatever clock frequency I set in DT. And guess what, the issue reapp=
-ears
-   even when running on 150MHz. It turns out, as I had some debugging enabl=
-ed,
-   the issue only happens when the controller is configured at 100KHz (that
-   only happens while running the card detect thread).
+It looks like that there are 4 devapc device in mt8192.
+These 4 device work independently, so I would like to decouple them
+rather than couple them.
 
-So, I can now do this (note that for card detection try to communicate with=
- the
-card starting at 400KHz down to 100KHz in 100KHz steps):
+devapc0: devapc@10207000 {
+    compatible =3D "mediatek,mt8192-devapc";
+    reg =3D <0 0x10207000 0 0x1000>;
+    vio_idx_num =3D <367>;
+    ...
+};
 
------>8-----
+devapc1: devapc@10274000 {
+    compatible =3D "mediatek,mt8192-devapc";
+    reg =3D <0 0x10274000 0 0x1000>;
+    vio_idx_num =3D <292>;
+    ...
+};
 
-diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.=
-c
-index 536c382e2486..e5a5de63f347 100644
---- a/drivers/mmc/host/sdhci-iproc.c
-+++ b/drivers/mmc/host/sdhci-iproc.c
-@@ -173,6 +173,11 @@ static unsigned int sdhci_iproc_get_max_clock(struct s=
-dhci_host *host)
-                return pltfm_host->clock;
- }
-=20
-+static unsigned int sdhci_iproc_bcm2711_get_min_clock(struct sdhci_host *h=
-ost)
-+{
-+       return 200000;
-+}
-+
- static const struct sdhci_ops sdhci_iproc_ops =3D {
-        .set_clock =3D sdhci_set_clock,
-        .get_max_clock =3D sdhci_iproc_get_max_clock,
-@@ -271,13 +276,15 @@ static const struct sdhci_ops sdhci_iproc_bcm2711_ops=
- =3D {
-        .set_clock =3D sdhci_set_clock,
-        .set_power =3D sdhci_set_power_and_bus_voltage,
-        .get_max_clock =3D sdhci_iproc_get_max_clock,
-+       .get_min_clock =3D sdhci_iproc_bcm2711_get_min_clock,
-        .set_bus_width =3D sdhci_set_bus_width,
-        .reset =3D sdhci_reset,
-        .set_uhs_signaling =3D sdhci_set_uhs_signaling,
- };
+devapc2: devapc@10275000 {
+    compatible =3D "mediatek,mt8192-devapc";
+    reg =3D <0 0x10275000 0 0x1000>;
+    vio_idx_num =3D <242>;
+    ...
+};
 
------>8-----
+devapc3: devapc@11020000 {
+    compatible =3D "mediatek,mt8192-devapc";
+    reg =3D <0 0x11020000 0 0x1000>;
+    vio_idx_num =3D <58>;
+    ...
+};
 
- Which is rather nicer than what this series introduces. But I can't still
- explain why configuring the controller at 100KHz is causing the hangs (whi=
-le
- having the core clock setup at 500MHz), and I'm not sure if excluding 100K=
-Hz
- from the polling frequency list is going to break support for older SD car=
-ds.
+Regards,
+Chun-Kuang.
 
- Regards,
- Nicolas
-
-
-
---=-Zt3yxDeLYD9K7yjMoxO4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBeCSAACgkQlfZmHno8
-x/5RLwgAleM4SzPVpZZVff99Y7DvLl81vOMya3W5BxzUM+K5zSlWx3ICg79A01KZ
-ruxfEP4X7tmbS6TsjQemKN8lzTXErmkUxH7uHVhVLP13AQg4gIbmgvk0oSTEKKx5
-iglhU0VMURq+BzGEF/Uc6+kenKfQ1zf3U0USNQCRQTUx7d6mY//ToSWLkNNPwJ+T
-GPWLWk/ieEjoUzQ0XqZPRSXNfMYqdsXXSWlOTF1zpvuO4zGlVBuYcpP7tJZXjQ0X
-pIAbwmQdl6ikoNcbhLNT9mT/r6CraPF1Wt6cGRvV1d7EUyYJGb6A9i73EScXVO6o
-9591pHhkseO3d7kdp7MCAsG6ccyZhw==
-=Lzpt
------END PGP SIGNATURE-----
-
---=-Zt3yxDeLYD9K7yjMoxO4--
-
+> --
+> 2.6.4
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
