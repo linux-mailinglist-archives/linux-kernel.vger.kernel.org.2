@@ -2,80 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD0134AAD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BDF34AAE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhCZPDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:03:08 -0400
-Received: from mout.kundenserver.de ([212.227.17.10]:55111 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhCZPCW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:02:22 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MPGNn-1l09HL1BHR-00PevL; Fri, 26 Mar 2021 16:02:18 +0100
-Received: by mail-ot1-f53.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso5476039otq.3;
-        Fri, 26 Mar 2021 08:02:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532CQVmd9TuI59b9vrE4WGnCe48R4sGs9Sp/9sYVSGAjrZ6lLItQ
-        8yn2TjG1Ky3qmbvqOrBGUWSxhYBH86cG60VSJ6s=
-X-Google-Smtp-Source: ABdhPJxqEYgkhmmR9tlr6VhSmLMh2wsAkrBQ0kntrx/MKqJmvuyr6KcW6emNL2sDgGiWuPrMoCfra7yk0h2aPozesEg=
-X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr12169406otq.305.1616770936271;
- Fri, 26 Mar 2021 08:02:16 -0700 (PDT)
+        id S230250AbhCZPE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:04:26 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45820 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhCZPD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:03:59 -0400
+Received: from zn.tnic (p200300ec2f075f0023f9e598b0fb3457.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:5f00:23f9:e598:b0fb:3457])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9A35E1EC0513;
+        Fri, 26 Mar 2021 16:03:57 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1616771037;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CfwXUBztMW0fzBsj6+U0+7zvJQvkrsJoWtLbREPN9mA=;
+        b=eZ010qVh4ojil1n/Ws3cdVhKtkO6a0a3CadBH8JEkzlgW5vL1xfrYeaRe63ZxIXLYri8bX
+        kkKQfUhdaaewsxoY4422rFZDudLyc3cN+tdgdr2raJGsx3K+eHQPgdoMJ4XdCrKqJRnQls
+        uaaQAeGrI5b3D3fn21RuN24YGMF+hQk=
+Date:   Fri, 26 Mar 2021 16:03:55 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     seanjc@google.com
+Cc:     Kai Huang <kai.huang@intel.com>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com
+Subject: Re: [PATCH v3 05/25] x86/sgx: Introduce virtual EPC for use by KVM
+ guests
+Message-ID: <20210326150320.GF25229@zn.tnic>
+References: <cover.1616136307.git.kai.huang@intel.com>
+ <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
 MIME-Version: 1.0
-References: <20210326143831.1550030-1-hch@lst.de> <20210326143831.1550030-4-hch@lst.de>
-In-Reply-To: <20210326143831.1550030-4-hch@lst.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 26 Mar 2021 16:02:01 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3PeMbrC3v4tGPJb+OpZYXHabe4UcF+TiBWF_JCtnwHkw@mail.gmail.com>
-Message-ID: <CAK8P3a3PeMbrC3v4tGPJb+OpZYXHabe4UcF+TiBWF_JCtnwHkw@mail.gmail.com>
-Subject: Re: [PATCH 3/4] exec: simplify the compat syscall handling
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Brian Gerst <brgerst@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:jyQHki7n/wvddX74HI8JS5gCd4LvzSQU1iWYxgWNryfuwl4wTbW
- aHpQT/dE4Zjga7ncOBWENHuT0Cr9Md0yrm/lKs+Qzz5yFwZTu8L1r7RMqi9i3SWjr/0ZsTY
- yzqmkXG44o/GNtdrnYqDW70tAy6SaUNIJ6se7WXrJbyzYXdaGjEjaHXBkVqdld97J5I8jW3
- DJnHMNkfD/1N2Jn/bkbsg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:3TnXTXJmdUc=:CUrZ3P/W6Xh8mAHM0COfIq
- PNwI/hNXrU+cQS401PqUIGDjy8OS8ukJ0M8h50HimfzXnVHB2OsRp+q4AIpSwXkqijDVxqZ36
- deYgFz7srcgTi0wSRvyGqaMBRyl84vl0SXGq1IvDV5CYZ4XoOOiWMoqWqptiiY8v3yCHk4OqS
- izh1mcDZ3mYjkLr6lnJzdejh7askGBQT7PEtm2fiGf7BPNcBIm1o12Vs4vs4f9bWi5AuUcDNA
- o9YX0k4J63N3TdZZch32iWUB/4dfLdInNNIlsNi+4cTvoO/m9zOPBQ7/cL5LPlNBc3oWQuw6N
- sIOGikYVKt9crBUQRJb+tfvq9LPvO3DSeLtDwYIRpSD+lD01IVzpSuuMTSfSWRGoAXDw4cQwh
- dz9FWe0boJImKzR/O9x0z4fKbvuNl2a2Qm1D7VCkCEsC96wWZQsakSGaTkInm7GVzhwEhc8GO
- x445pArNoKVrVdYpQu5gI27tECACPLfPXssk5SVAy0Xj4zN22kjrozqBHE6x5Dlv7/Hb+rsXA
- 4AF8N1AhH68MD0xQdknGZVlSzvmSg5UvyH2h5xvocib50VNPCcc6/XYtGcSOR6QxoZv1qsbBq
- BsX3iLpdyRIBAbA8bHxdprfLZ8IP4n3LEp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0c38ced8c8e5a69872db4d6a1c0dabd01e07cad7.1616136308.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 3:38 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> The only differenence betweeen the compat exec* syscalls and their
-> native versions is the compat_ptr sign extension, and the fact that
-> the pointer arithmetics for the two dimensional arrays needs to use
-> the compat pointer size.  Instead of the compat wrappers and the
-> struct user_arg_ptr machinery just use in_compat_syscall() to do the
-> right thing for the compat case deep inside get_user_arg_ptr().
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Fri, Mar 19, 2021 at 08:22:21PM +1300, Kai Huang wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+> 
+> Add a misc device /dev/sgx_vepc to allow userspace to allocate "raw" EPC
+> without an associated enclave.  The intended and only known use case for
+> raw EPC allocation is to expose EPC to a KVM guest, hence the 'vepc'
+> moniker, virt.{c,h} files and X86_SGX_KVM Kconfig.
+> 
+> SGX driver uses misc device /dev/sgx_enclave to support userspace to
+> create enclave.  Each file descriptor from opening /dev/sgx_enclave
+> represents an enclave.  Unlike SGX driver, KVM doesn't control how guest
+> uses EPC, therefore EPC allocated to KVM guest is not associated to an
+> enclave, and /dev/sgx_enclave is not suitable for allocating EPC for KVM
+> guest.
+> 
+> Having separate device nodes for SGX driver and KVM virtual EPC also
+> allows separate permission control for running host SGX enclaves and
+> KVM SGX guests.
 
-Nice cleanup!
+Hmm, just a question on the big picture here - that might've popped up
+already:
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+So baremetal uses /dev/sgx_enclave and KVM uses /dev/sgx_vepc. Who's
+deciding which of the two has priority?
+
+Let's say all guests start using enclaves and baremetal cannot start any
+new ones anymore due to no more memory. Are we ok with that?
+
+What if baremetal creates a big fat enclave and starves guests all of a
+sudden. Are we ok with that either?
+
+In general, having two disjoint things give out SGX resources separately
+sounds like trouble to me.
+
+IOW, why don't all virt allocations go through /dev/sgx_enclave too, so
+that you can have a single place to control all resource allocations?
+
+> To use /dev/sgx_vepc to allocate a virtual EPC instance with particular
+> size, the userspace hypervisor opens /dev/sgx_vepc, and uses mmap()
+> with the intended size to get an address range of virtual EPC.  Then
+> it may use the address range to create one KVM memory slot as virtual
+> EPC for guest.
+> 
+> Implement the "raw" EPC allocation in the x86 core-SGX subsystem via
+> /dev/sgx_vepc rather than in KVM. Doing so has two major advantages:
+> 
+>   - Does not require changes to KVM's uAPI, e.g. EPC gets handled as
+>     just another memory backend for guests.
+> 
+>   - EPC management is wholly contained in the SGX subsystem, e.g. SGX
+>     does not have to export any symbols, changes to reclaim flows don't
+>     need to be routed through KVM, SGX's dirty laundry doesn't have to
+>     get aired out for the world to see,
+
+Good one. :-)
+
+> and so on and so forth.
+
+> The virtual EPC pages allocated to guests are currently not reclaimable.
+> Reclaiming EPC page used by enclave requires a special reclaim mechanism
+> separate from normal page reclaim, and that mechanism is not supported
+> for virutal EPC pages.  Due to the complications of handling reclaim
+> conflicts between guest and host, reclaiming virtual EPC pages is
+> significantly more complex than basic support for SGX virtualization.
+
+What happens if someone in the future wants to change that? Someone
+needs to write patches or there's a more fundamental stopper issue
+involved?
+
+As always, I might be missing something but that doesn't stop me from
+being devil's advocate. :-)
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
