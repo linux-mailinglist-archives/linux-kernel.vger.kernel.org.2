@@ -2,151 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FA934AA96
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD17534AA9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhCZOzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhCZOzp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:55:45 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D2FC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:55:45 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id u10so5317694ilb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ShOD9ANK+k5zonsBbQI1RoVppoAyPVg9mfaoGxQR9eU=;
-        b=GO1oyAFDNMwSU4xCrtFjN3Y2rI1BLjkYdaQo4XiiNvhy03JIhN2vsLZv32tA9ZPHrC
-         G0Ku6NBbJq0UA1twegAxAomeJmaPu7GUzxuTv53PhIQAU2poxrTa0k8PnHtdmZpItGrf
-         ybUDroiYIZlGg8uLtQ96Jn3DJHybJZIECUxFVronQAs1mnDX8WnGv/h82GXybUXtR+WB
-         kcKC+hG3G7IpOJ+I9gLqN9XRaWNI+D7LQlcEgtZ0qPAH5O5vjfZhgQIqf6XyxFHvJcha
-         mfcxXMUi+MIawEuBSbI5olQ/Q6oVK1/XJYJ2/t+pgd4K16ze5rFE/V4ZmNlM6xf/7kAx
-         9GmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ShOD9ANK+k5zonsBbQI1RoVppoAyPVg9mfaoGxQR9eU=;
-        b=HbfeT7wMceY0f48yh46mLycSjKLpg9DUYH6hR+Uj1Ad55vLeRBNL7DeJ/phdGfLPPv
-         FSCOjIIflOVLgjchWefOfceVlh1Z4yBh/6VvTp7OfVuB1vfSkmAH5eecl+V7HEBWTv45
-         k9QU76EbJd2jZXZPqZF1+ierDWu5UzL3yQ5qkjVLvRj5cJh4QSujq5ceTWIzWyNQ6YZB
-         wQf5N1t6ogh8qnOxA1YEk11cpcTIaG/s6fy4izIz4YJ9QlsbqFeAnh0I0hqpQyfcFhjw
-         IqwKrnk577b2fBv8pjqsHOpFzoSIdhVenB++HJkpQD6u3fxJ+wcCcQtMXx/SiGF9ToG0
-         sfTg==
-X-Gm-Message-State: AOAM5305TqDR0UwibVjAYkPRJtrR6RA9rvi6Rrv99YMlbLtQf1Oyrwnv
-        0w+VeZYsyjbaof6Cx64iPXSWXe8O9J0sTA==
-X-Google-Smtp-Source: ABdhPJx8GoZAb06zYZhZWKCAzh39CvH3mJP+f3t0zhDQw8tiX/iOr4TJhZGR6imLGWgNpkyPj03v2Q==
-X-Received: by 2002:a05:6e02:4a4:: with SMTP id e4mr10298335ils.114.1616770544540;
-        Fri, 26 Mar 2021 07:55:44 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id j6sm4090911ila.31.2021.03.26.07.55.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 07:55:44 -0700 (PDT)
-Subject: Re: [PATCH 0/6] Allow signals for IO threads
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Stefan Metzmacher <metze@samba.org>, io-uring@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
-        oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <e6de934a-a794-f173-088d-a140d0645188@samba.org>
- <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
- <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
- <0c91d9e7-82cd-bec2-19ae-cc592ec757c6@kernel.dk>
- <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
- <66fa3cfc-4161-76fe-272e-160097f32a53@kernel.dk>
- <67a83ad5-1a94-39e5-34c7-6b2192eb7edb@samba.org>
- <ac807735-53d0-0c9e-e119-775e5e01d971@samba.org>
- <0396df33-7f91-90c8-6c0d-8a3afd3fff3c@kernel.dk>
-Message-ID: <1304f480-a8db-44cf-5d89-aa9b99efdcd7@kernel.dk>
-Date:   Fri, 26 Mar 2021 08:55:43 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <0396df33-7f91-90c8-6c0d-8a3afd3fff3c@kernel.dk>
-Content-Type: text/plain; charset=utf-8
+        id S230197AbhCZO52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:57:28 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7128 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230076AbhCZO4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:56:52 -0400
+IronPort-SDR: 5REz2iZ/h0lXwkIRM1fEWfTrlBdNZtjgMmJ9hlOF+fOUXUmJLj3NqHkzAZ3Zbtls5XRmVhOVMr
+ n5T74u8JlaNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="191190251"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="191190251"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 07:56:51 -0700
+IronPort-SDR: S5U1sDc4mzmYiGP69Xeeg44JeAG8I+otPjDlDdCwlcZJQKyVc2gUEXbsrA4UwNe/RuDJmvXxN9
+ i/C2T7ZMF1BQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="443368410"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Mar 2021 07:56:51 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 26 Mar 2021 07:56:51 -0700
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 26 Mar 2021 07:56:50 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Fri, 26 Mar 2021 07:56:50 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Fri, 26 Mar 2021 07:56:50 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K4L8tKev/Y/elnHAXke3wO33MP5lxKgJZaEEcCmu6Houy9wzDzAxUgeUohPuNI2ujixA1d+qsBMxdlKBTx/+tkOAieVwWJbpWRN5rTBq0v/iFjxVSw/8Tm6F0RTgV80wLfbqZXAE1jnVLNdYfWhI/1HvtRc2p9jW0fMn4+UQJNHQ9mfsfSllMu8vFHgrpwdyTh8GwP+DTohhrfhUokehzDKwjzGeuY3FmSUYT3wbjji7yHHsJvQGrr7bOmX4RSAYDFv/KVU/jvYzKpVkXkgX4NYMw3VPIqkM48M61KbY2ZbQBAiwdKRi3na27BSvgCwq7J5r+EfmhhENUNHj9+vWOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B52owGdVTwA3OI1VL3WGYFLxZ2KAyIu5O9I9+UvzAvw=;
+ b=g85venkANngbew8Gc+H+Bk4Dc58GUwxTZ0+7I5xMYmrSDb3A/Kf/U/X6dsz1NFn5DJTMT5R9v6p2JzOi6ds7uczr+2KKboab2WY7VicAMkhh8b9jQU2mATXv3idMOwtdss2CDMcM+NkS26Zf3LrWXdOe3y5Og+ERl58MFqRk8cr62BHUm0etU0r6VsnHWozRtzRtA9fX09WFSauLfExZkA4rQ8zKNa3jc9qVYj+uz2HXcyD3k8eIhJyDB2j2qY2RiPKf6yi6HAqUR3vANPovQAH9sg+mmKwFmgMIg/pnCr5ySO++oh/xNaG2EbpjJh9cll9Y1IqHviwaBjcxDbUZug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B52owGdVTwA3OI1VL3WGYFLxZ2KAyIu5O9I9+UvzAvw=;
+ b=sp9tquqO5Yv5BCS8MxUCy4mZXTTdBSuZ4GwIhMr9kV+3odBJrN9gDeKDKLO7IlqKty0fmrithE7wNKxPueBsTxa0LoiZC2diNvpJskI1b2Ca4IJ3d+0aDxLfauMAKmkH71TovNa264YaFBgOC7V+NjhMNyJqEldwadtGrQTU1aY=
+Received: from BYAPR11MB3256.namprd11.prod.outlook.com (2603:10b6:a03:76::19)
+ by SJ0PR11MB5088.namprd11.prod.outlook.com (2603:10b6:a03:2df::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Fri, 26 Mar
+ 2021 14:56:46 +0000
+Received: from BYAPR11MB3256.namprd11.prod.outlook.com
+ ([fe80::41e6:b61:67ef:2712]) by BYAPR11MB3256.namprd11.prod.outlook.com
+ ([fe80::41e6:b61:67ef:2712%5]) with mapi id 15.20.3977.026; Fri, 26 Mar 2021
+ 14:56:46 +0000
+From:   "Moore, Robert" <robert.moore@intel.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        "Kaneda, Erik" <erik.kaneda@intel.com>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "devel@acpica.org" <devel@acpica.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "rdunlap@infradead.org" <rdunlap@infradead.org>
+Subject: RE: [PATCH] ACPICA: Fix a typo
+Thread-Topic: [PATCH] ACPICA: Fix a typo
+Thread-Index: AQHXIdYAvaU+6E62m0uLz/0U3uuRwKqWXKbQ
+Date:   Fri, 26 Mar 2021 14:56:46 +0000
+Message-ID: <BYAPR11MB325648858A1C06D2E80DF7AE87619@BYAPR11MB3256.namprd11.prod.outlook.com>
+References: <20210326001922.4767-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210326001922.4767-1-unixbhaskar@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [134.134.136.194]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e3267f63-a941-416d-52e5-08d8f0676092
+x-ms-traffictypediagnostic: SJ0PR11MB5088:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB5088F5B92C8AB866871CA3EA87619@SJ0PR11MB5088.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QRpLQTSmf8y9jKdVJp1RfX9xoP9feyJxyRA34j+ZBgy4BthCYAW7DbY9ST7xEqJAdIKBLURU5FekRvX+c6qhgsdxBDwCprkimYmHhZ8F61nT9aU7BKx+6kuN0p8iUtXDdbe07JxHlUCyo0nCWBXjLW1tNjHFU3QxxqSTQ1/Kzsno7wBS0QiZ8Ry7rvkAnaAPzYnZYQKrrsSr1RVlw/+JPWvPSZjBJZOg2IuaBVNWlBpIlkEX3cPgoRdYKVIJMnLLZVkF3nd81chrYWZaWaWmTCNaXkS5rfB01cXgN23MGABogW9nWMlZDOtoHH7g62MazorBl7Y3Uw0sBYQU/fkstpvDnowTkXSvdAIpr2eC70HG5S+xvSfNEI90O2aLdKk8rkarE7rYG+JKSCWjfxJrYLxFvbk0eJZVzm9MyX8Wj8wdNAQycgWKD0WaZ5lcKOjv9J+dpjF5HUvQ686x+DP3upA8aIEb7ck3G33oSiEmgVFlGszVTN2Z6IoZAbQaoDmjvaC2pue0khE7NZpXNCPMjyzZAKB0xgpCwHlEIdpKnsbVVFvsS2z6xer/mvFQboBb0chTRgKutrE756FNEGX0wQL4roKFgwYgwz8NsjxNOJ9dhxdtReljGE7h/by3Ca8jFMS9uLhqHawGUmWHExYUNQbBD9htaz7KeVLFZO7Op9A=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3256.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(346002)(366004)(136003)(38100700001)(66946007)(66476007)(66556008)(64756008)(4744005)(33656002)(66446008)(52536014)(5660300002)(83380400001)(76116006)(316002)(4326008)(110136005)(53546011)(6506007)(7696005)(26005)(71200400001)(86362001)(8936002)(55016002)(2906002)(186003)(9686003)(478600001)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?h84ksmg9csiTiDtK9OdSGwxPIykQNjnvsKZOPnxtCvQ7mGJdwp/clDnwiylq?=
+ =?us-ascii?Q?pdeJLUxqyljcEB3uan8HtXGb3WXbpXfAEGMCUY4guIfgN1wKmX3H4r8/2Q4M?=
+ =?us-ascii?Q?7O8ckbwi3agTIxpJ0Qb+aOKbM+5/qL+t0+8mVDaggTUZO6ZEGg0aRgoOExDh?=
+ =?us-ascii?Q?lyEKP/9MTA1nPdGiLqEhYjl4w72kR4BDio7xgr4ktGrznFzgpmD3kw1Fz8jv?=
+ =?us-ascii?Q?7V2vT/vVTGKZmFQwWx4mut3UBg8wikvZvX9T6189vF94x+Enfkcgb4ZBowhe?=
+ =?us-ascii?Q?DrLfIUvYKRvXSYbKG69zfgOCiwwP3ZsmrvKeyNOBRvBaXgNtxXaaPbGU/tZl?=
+ =?us-ascii?Q?aHJLBFBZHI5mpk94ANLuCVIkhX24QtrPlvey7KPeoYstQ1eUxRIZrGaFOq4H?=
+ =?us-ascii?Q?z/WK+kevSNIQRT534t/bMJSAPlhklNNPIBNMbBL11HS7t6ME0vSzZqwIUCVz?=
+ =?us-ascii?Q?nH/BNrDfYIR+f7txU6OxrYn1ROQoM2dkYdiQUJoa8r0iCO75BsXzcc3a0NsS?=
+ =?us-ascii?Q?1Wa9BQgvqHI8zV0URCoi7lXxkqs+iNPfiKiYKjlrFH+C11qsQc4DGjH3GejA?=
+ =?us-ascii?Q?N694fSHREzspa5SvEB1shJZvQgZQDYtlNaOgg0WGLhYDZf1Y9kBJsO8iDdi6?=
+ =?us-ascii?Q?g/cYrbmoggEYL+OYcvFzeSG0ONUSV9c7n/AeiOt4C6WrYHed2+UKa1SQ68Ea?=
+ =?us-ascii?Q?73riXosf0X/8HoPaIH77zdSuxt7mm0pOwE/wmFASPUSCHR6dvarPePPhJQI6?=
+ =?us-ascii?Q?WLcPkLWWmIQpyPJHamuz/T30lZ6Ban8RA5lXdTx/cHt9xJ96ZgDqql+KxnDA?=
+ =?us-ascii?Q?uf7q4O9RXPxOZxVcDswZPndOQL5MftDv/fpMzOiKapfnuu871Fx6lnlqR9rG?=
+ =?us-ascii?Q?Pv8OOIGPz5kX9xeSGWz0uyMuB4duhVE4xhLD5fS6Irq1GCy/ztlu9w3NZuNw?=
+ =?us-ascii?Q?zI+QvkhpZMB6ogDL/YTxE9Dce3MXLo7eFxK09FpW3BQtXfYyL7/aFyy4zTSV?=
+ =?us-ascii?Q?ZwX0GeJ3/VEiz1telHs6vJWzz6qrnESKvlUcjSl30TNW5fvoHlFsGce9YJMY?=
+ =?us-ascii?Q?Rw2mDYXVSBV9YbKcHLGv4Dnjqj1y6g36TsTuTc5EwOZFnemDZ3ZSNIgIBFjU?=
+ =?us-ascii?Q?rGhbDrgMkG0y6lko61nHu8S2sK1ImXYZ24R/TOvgkiFux6mDpUviwEOQtnxQ?=
+ =?us-ascii?Q?ed7wFKn+yfSrc6TccceFPNEhV+506f0imRUk5kRnZqUGuqyLX98UOWQex4oX?=
+ =?us-ascii?Q?ZNFnFf/AOyjeUF01+oe6pXY2y1X2IJ3TJmCda3nRZJ8jpQ7FK3HLSoIcEAhf?=
+ =?us-ascii?Q?emAG5+TBrDhRKy7eAczoOdx2?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3256.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3267f63-a941-416d-52e5-08d8f0676092
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2021 14:56:46.4275
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Xoq77myK53nUiP0Ub/e2JayMa/RJBThaY1K1ubS8hq3oQjdkT+h6e6isMBVVZYNDby/fNkjN7zDcLalCLSBtdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5088
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 8:53 AM, Jens Axboe wrote:
-> On 3/26/21 8:45 AM, Stefan Metzmacher wrote:
->> Am 26.03.21 um 15:43 schrieb Stefan Metzmacher:
->>> Am 26.03.21 um 15:38 schrieb Jens Axboe:
->>>> On 3/26/21 7:59 AM, Jens Axboe wrote:
->>>>> On 3/26/21 7:54 AM, Jens Axboe wrote:
->>>>>>> The KILL after STOP deadlock still exists.
->>>>>>
->>>>>> In which tree? Sounds like you're still on the old one with that
->>>>>> incremental you sent, which wasn't complete.
->>>>>>
->>>>>>> Does io_wq_manager() exits without cleaning up on SIGKILL?
->>>>>>
->>>>>> No, it should kill up in all cases. I'll try your stop + kill, I just
->>>>>> tested both of them separately and didn't observe anything. I also ran
->>>>>> your io_uring-cp example (and found a bug in the example, fixed and
->>>>>> pushed), fwiw.
->>>>>
->>>>> I can reproduce this one! I'll take a closer look.
->>>>
->>>> OK, that one is actually pretty straight forward - we rely on cleaning
->>>> up on exit, but for fatal cases, get_signal() will call do_exit() for us
->>>> and never return. So we might need a special case in there to deal with
->>>> that, or some other way of ensuring that fatal signal gets processed
->>>> correctly for IO threads.
->>>
->>> And if (fatal_signal_pending(current)) doesn't prevent get_signal() from being called?
->>
->> Ah, we're still in the first get_signal() from SIGSTOP, correct?
-> 
-> Yes exactly, we're waiting in there being stopped. So we either need to
-> check to something ala:
-> 
-> relock:
-> +	if (current->flags & PF_IO_WORKER && fatal_signal_pending(current))
-> +		return false;
-> 
-> to catch it upfront and from the relock case, or add:
-> 
-> 	fatal:
-> +		if (current->flags & PF_IO_WORKER)
-> +			return false;
-> 
-> to catch it in the fatal section.
+Please make a pull request for this on our github.
+Thanks,
+Bob
 
-Can you try this? Not crazy about adding a special case, but I don't
-think there's any way around this one. And should be pretty cheap, as
-we're already pulling in ->flags right above anyway.
 
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 5ad8566534e7..5b75fbe3d2d6 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2752,6 +2752,15 @@ bool get_signal(struct ksignal *ksig)
- 		 */
- 		current->flags |= PF_SIGNALED;
- 
-+		/*
-+		 * PF_IO_WORKER threads will catch and exit on fatal signals
-+		 * themselves. They have cleanup that must be performed, so
-+		 * we cannot call do_exit() on their behalf. coredumps also
-+		 * do not apply to them.
-+		 */
-+		if (current->flags & PF_IO_WORKER)
-+			return false;
-+
- 		if (sig_kernel_coredump(signr)) {
- 			if (print_fatal_signals)
- 				print_fatal_signal(ksig->info.si_signo);
+-----Original Message-----
+From: Bhaskar Chowdhury <unixbhaskar@gmail.com>=20
+Sent: Thursday, March 25, 2021 5:19 PM
+To: Moore, Robert <robert.moore@intel.com>; Kaneda, Erik <erik.kaneda@intel=
+.com>; Wysocki, Rafael J <rafael.j.wysocki@intel.com>; lenb@kernel.org; lin=
+ux-acpi@vger.kernel.org; devel@acpica.org; linux-kernel@vger.kernel.org
+Cc: rdunlap@infradead.org; Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] ACPICA: Fix a typo
 
--- 
-Jens Axboe
+
+s/optimzation/optimization/
+
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ include/acpi/acoutput.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/acpi/acoutput.h b/include/acpi/acoutput.h index 1538a6=
+853822..1b4c45815695 100644
+--- a/include/acpi/acoutput.h
++++ b/include/acpi/acoutput.h
+@@ -362,7 +362,7 @@
+  *
+  * A less-safe version of the macros is provided for optional use if the
+  * compiler uses excessive CPU stack (for example, this may happen in the
+- * debug case if code optimzation is disabled.)
++ * debug case if code optimization is disabled.)
+  */
+
+ /* Exit trace helper macro */
+--
+2.26.2
 
