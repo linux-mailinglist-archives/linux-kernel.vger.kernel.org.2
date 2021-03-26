@@ -2,48 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 052B734A8F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E3F34A8F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCZNuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:50:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33426 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229779AbhCZNtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:49:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9F6D6AB8A;
-        Fri, 26 Mar 2021 13:49:39 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 16AC6DA734; Fri, 26 Mar 2021 14:47:33 +0100 (CET)
-Date:   Fri, 26 Mar 2021 14:47:32 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] btrfs: Fix a typo
-Message-ID: <20210326134732.GN7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-References: <20210326005932.8238-1-unixbhaskar@gmail.com>
+        id S230187AbhCZNta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:49:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43348 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230210AbhCZNtT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:49:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616766559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wftucUMFQaOllmombeSNT//n1WKcSqJM+IZ/swXQYUo=;
+        b=U4gzFzC/mE+1+4mLSENkKhRKBrX8APgnFgzi16p1EVTV3zrR3xJZTqXkxUEw50q/HMzZTD
+        Xac+8pKAk8KSNieb5pm3U+WUQBv6wttRLYwUIC1R5qqnc12h2Jy2vss9rR+4d8bD0v288m
+        aOMBXZ6mfXEFV9ZYEuOSAxCxXFDvZaU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-lziEHDBGP-CIEoy5rswQLQ-1; Fri, 26 Mar 2021 09:49:16 -0400
+X-MC-Unique: lziEHDBGP-CIEoy5rswQLQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 270B796DD14;
+        Fri, 26 Mar 2021 13:48:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.194.37])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BB21A6062F;
+        Fri, 26 Mar 2021 13:48:42 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 26 Mar 2021 14:48:44 +0100 (CET)
+Date:   Fri, 26 Mar 2021 14:48:41 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        ebiederm@xmission.com, metze@samba.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/8] kernel: unmask SIGSTOP for IO threads
+Message-ID: <20210326134840.GA1290@redhat.com>
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <20210326003928.978750-3-axboe@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210326005932.8238-1-unixbhaskar@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20210326003928.978750-3-axboe@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 06:29:32AM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/reponsible/responsible/
+Jens, sorry, I got lost :/
 
-So this is exactly what I don't want to see happen - one patch per typo.
-I tried to explain it in the previous patch, please either fix all typos
-under fs/btrfs or don't bother.
+On 03/25, Jens Axboe wrote:
+>
+> With IO threads accepting signals, including SIGSTOP,
+
+where can I find this change? Looks like I wasn't cc'ed...
+
+> unmask the
+> SIGSTOP signal from the default blocked mask.
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> ---
+>  kernel/fork.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index d3171e8e88e5..d5a40552910f 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2435,7 +2435,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+>  	tsk = copy_process(NULL, 0, node, &args);
+>  	if (!IS_ERR(tsk)) {
+>  		sigfillset(&tsk->blocked);
+> -		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
+> +		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
+
+siginitsetinv(blocked, sigmask(SIGKILL)|sigmask(SIGSTOP)) but this is minor.
+
+To remind, either way this is racy and can't really help.
+
+And if "IO threads accepting signals" then I don't understand why. Sorry,
+I must have missed something.
+
+Oleg.
+
