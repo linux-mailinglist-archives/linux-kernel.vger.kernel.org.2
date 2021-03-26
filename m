@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3132334A3E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD14F34A3E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhCZJNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        id S230323AbhCZJNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhCZJMJ (ORCPT
+        with ESMTP id S230306AbhCZJMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:12:09 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE183C0613B5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:12:08 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id ce10so7315857ejb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:12:08 -0700 (PDT)
+        Fri, 26 Mar 2021 05:12:10 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21FDC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:12:09 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u5so7312325ejn.8
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 02:12:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=u1njdwRhshSVXy0eOES4wxf/WUKXCRRzOwxm8fp7f+E=;
-        b=Zeb3OcnBwe0hiZcP61Lg6BSajkVVqOQuMC93dMClJKsB47R3iMxIJLVzNL7U5ZaBgb
-         Ol7AhMWDUzr1YgH+WnkjCMBuKFNZzN1iVMbGLG1pUpoWZ8ohJaL06P2pxpWlCMvtfA0a
-         PnP2J2D7C2T9KkCUIFTRvvLCz4Ss9pjydeNe5597jAlMQu7mUlNWUnXHtCzNwQK2BGfA
-         PJ7k6l8VD6l49uWwBy0SEe0NeUsXyOuXK8Ejv43Fyuuz3OdHh/RKIHD8ivrIzcjqaF80
-         3zMp61tdqzFCTse6BpEvRSw7NjGq7UB3ZuBd6rZft2iDFnvDlFEd+hsw4v2GDH7GL6lU
-         CASA==
+        bh=FGLqWsMKMFzu8AgI6vn47Mo1M3gcJ+HFYMnTl8CpPNE=;
+        b=GPhgAeFt6ecZCwLSwUVDgEy0s1/aBY+0R5py6uB7xAt1GVXOLt1M/ZJP8E+F9NItQY
+         Ii71CcijoWg6OsuBhpjfo8T1+aJ1x4NEtbTdYFt+PS935I8XwW1LxrIrF97jyutMd/c9
+         1rRGlrPiZD6s8Ziytms9Do51X6ehGy1pSa9D7tJcxyGr0F7iBAoPoKPe3LEVOqfLiBzB
+         NCbtisJJFxT6I+ywUyP7aP1rLvTlGx5acx64gavkvPtR7wO5wyaRA8kHL8WPWM/bk9q/
+         JbrftP88q5n2soQJ93h3sO0Kv8BrJgd0Lslq/4wLOacP+v0OXSnUjPjculGI19urzYw3
+         +5Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=u1njdwRhshSVXy0eOES4wxf/WUKXCRRzOwxm8fp7f+E=;
-        b=Z+QyX4N3juBbrbEA++PDKd9NfZnTyhdciEIW+GD/SJ1XL9K49/kO+Us19Onlg76Mvt
-         PRXFkn/RT5PXDgfkThxQ5hP3z4xXgmzb8Azf4jtZzOd/Iz17kptKe//gKclEGYzhl9he
-         891z8vMDsX2ZU3lMDcqrS4a7ED7iKmH8U3zW5LQV6AjTMIyIj0HA91W1WZ5fW60odGvq
-         aTYxa37fAkKCU+DWi4lvCAYpYvIxkWWZ6/nJSkpXoBJIckmxJjxLmuPbzcXM1B+eUyr3
-         p3qTQ8fLPn9jb8h1Vmzv7je9fhtN9IsP837U9deS0uCEkIHSWH3safBn/EKTpVaeuXke
-         ayfg==
-X-Gm-Message-State: AOAM533+CAHW9qJ7pEhEj5THLeqhiJEXx+MOlysgxWY+FLwKWUDrgR6c
-        W/7vCyJFVyHvj85EixX6RbAjiQ==
-X-Google-Smtp-Source: ABdhPJycW/zb7Hhq5xkauZbWOmpyno9uCrxt/IhwOdBD3FCy6HyY1KXJ2ZBQjQ29J82c6Mj0vKsmIg==
-X-Received: by 2002:a17:906:8807:: with SMTP id zh7mr14083856ejb.196.1616749927732;
-        Fri, 26 Mar 2021 02:12:07 -0700 (PDT)
+        bh=FGLqWsMKMFzu8AgI6vn47Mo1M3gcJ+HFYMnTl8CpPNE=;
+        b=aXlPwu3Cd0vnDIeZB4TdcNYHrNu5xwy8p2vTON4fNo3nngxr6mNRgE/745yz/fvt5k
+         RM0EAOZRLIDg5+uhoSib88fxCpu96Gj+o9XZrY3JlyeWiOGNyzNHxk/ZSbxb8ZTSO8i3
+         OFv1qebOuw4TfstQ54GXrBodhKrVHIF/OPrQl/pw2LUiAqkvC1odU59xo9CvWwW/bnf/
+         1M3fm5U2S9PtHFZ5DgTxv7ekESPZlWBqawMWZVpfP48N9dM0Mwaya0em3oFxQ+ZZ0dah
+         uKhQGesEY+eHPdI5QkqeFqNNDwJYIFCOPUeyMxaMMpLFyEajZvabfHqT8SDw0WuK9exr
+         RQYg==
+X-Gm-Message-State: AOAM533B08228sXMnRN5aH8AuHPSEQ9blPoH+M64eCQfjFiansfIS8tz
+        6m0T2tyt/VYkw4tuNWuDWJPydg==
+X-Google-Smtp-Source: ABdhPJy09Omtyxi7eHHuA/xo7XFKjicayB902xQdiYZUcSn7f/EGtDd2mkJihUZ+hpejdJAXbw0wow==
+X-Received: by 2002:a17:907:20c7:: with SMTP id qq7mr13708003ejb.528.1616749928629;
+        Fri, 26 Mar 2021 02:12:08 -0700 (PDT)
 Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id r13sm3895645edy.3.2021.03.26.02.12.06
+        by smtp.gmail.com with ESMTPSA id r13sm3895645edy.3.2021.03.26.02.12.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:12:07 -0700 (PDT)
+        Fri, 26 Mar 2021 02:12:08 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
         Andreas Gruenbacher <agruenba@redhat.com>,
         cluster-devel@redhat.com
-Subject: [PATCH 14/18] fs: gfs2: rgrp: Fix a few kernel-doc misdemeanours
-Date:   Fri, 26 Mar 2021 09:11:47 +0000
-Message-Id: <20210326091151.311647-15-lee.jones@linaro.org>
+Subject: [PATCH 15/18] fs: gfs2: recovery: Provide missing param descriptions and remove one other
+Date:   Fri, 26 Mar 2021 09:11:48 +0000
+Message-Id: <20210326091151.311647-16-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210326091151.311647-1-lee.jones@linaro.org>
 References: <20210326091151.311647-1-lee.jones@linaro.org>
@@ -67,47 +67,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- fs/gfs2/rgrp.c:755: warning: expecting prototype for gfs2_compute_bitstructs(). Prototype was for compute_bitstructs() instead
- fs/gfs2/rgrp.c:1549: warning: Function parameter or member 'rs' not described in 'rgd_free'
- fs/gfs2/rgrp.c:2027: warning: Function parameter or member 'rgd' not described in 'fast_to_acquire'
+ fs/gfs2/recovery.c:169: warning: Function parameter or member 'head' not described in 'get_log_header'
+ fs/gfs2/recovery.c:169: warning: Excess function parameter 'lh' description in 'get_log_header'
+ fs/gfs2/recovery.c:199: warning: Function parameter or member 'pass' not described in 'foreach_descriptor'
 
 Cc: Bob Peterson <rpeterso@redhat.com>
 Cc: Andreas Gruenbacher <agruenba@redhat.com>
 Cc: cluster-devel@redhat.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- fs/gfs2/rgrp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/gfs2/recovery.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/rgrp.c b/fs/gfs2/rgrp.c
-index 89c37a845e649..88133c4ae8e93 100644
---- a/fs/gfs2/rgrp.c
-+++ b/fs/gfs2/rgrp.c
-@@ -743,7 +743,7 @@ void gfs2_clear_rgrpd(struct gfs2_sbd *sdp)
- }
- 
- /**
-- * gfs2_compute_bitstructs - Compute the bitmap sizes
-+ * compute_bitstructs - Compute the bitmap sizes
-  * @rgd: The resource group descriptor
+diff --git a/fs/gfs2/recovery.c b/fs/gfs2/recovery.c
+index 2821737740055..26004d5431165 100644
+--- a/fs/gfs2/recovery.c
++++ b/fs/gfs2/recovery.c
+@@ -154,7 +154,7 @@ int __get_log_header(struct gfs2_sbd *sdp, const struct gfs2_log_header *lh,
+  * get_log_header - read the log header for a given segment
+  * @jd: the journal
+  * @blk: the block to look at
+- * @lh: the log header to return
++ * @head: the log header to return
   *
-  * Calculates bitmap descriptors, one for each block that contains bitmap data
-@@ -1536,6 +1536,7 @@ static void rs_insert(struct gfs2_inode *ip)
- /**
-  * rgd_free - return the number of free blocks we can allocate.
-  * @rgd: the resource group
-+ * @rs: The reservation to free
+  * Read the log header for a given segement in a given journal.  Do a few
+  * sanity checks on it.
+@@ -187,6 +187,7 @@ static int get_log_header(struct gfs2_jdesc *jd, unsigned int blk,
+  * @jd: the journal
+  * @start: the first log header in the active region
+  * @end: the last log header (don't process the contents of this entry))
++ * @pass: iteration number (foreach_descriptor() is called in a for() loop)
   *
-  * This function returns the number of free blocks for an rgrp.
-  * That's the clone-free blocks (blocks that are free, not including those
-@@ -2019,6 +2020,7 @@ static bool gfs2_select_rgrp(struct gfs2_rgrpd **pos, const struct gfs2_rgrpd *b
- 
- /**
-  * fast_to_acquire - determine if a resource group will be fast to acquire
-+ * @rgd: The rgrp
-  *
-  * If this is one of our preferred rgrps, it should be quicker to acquire,
-  * because we tried to set ourselves up as dlm lock master.
+  * Call a given function once for every log descriptor in the active
+  * portion of the log.
 -- 
 2.27.0
 
