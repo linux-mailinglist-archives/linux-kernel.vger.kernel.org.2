@@ -2,148 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BD9349F3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8576349F41
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhCZB47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbhCZB43 (ORCPT
+        id S231160AbhCZB53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:57:29 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:50068 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230339AbhCZB5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:56:29 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C557C061763
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 18:56:29 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id g38so4272594ybi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 18:56:29 -0700 (PDT)
+        Thu, 25 Mar 2021 21:57:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1616723826; x=1648259826;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=6eYfh+M8ONyK5qzse6ByrZstBdMq0cYDvYzq4d9ei1M=;
+  b=fLifX0Itp3T+JrjwTlFo47MyS0koNzvbu940NqwSxnuHbWD7ewza4o4G
+   030WKBNvS7zbw1Uayi3C/LeXPIfoC8uRZ8wNzFjD+ZtOEsSyh0kjhhudy
+   rRvS/FvZCZ66lB+XJcvR7obUlLZLKxyqpmuuFXSU0iCDnzJmTsvQcOgDv
+   litZHAdHr+TdjF7w/guORJP5R0bCKZUi7bBekw5enNTpKTfeeyx+scHyz
+   2+m9PG3hKX2b33orGUsY9YySqSNF+FbX4jntbbfjCJ4r8ofKIG1ZsPjte
+   0KB+wp78xZYk5FEdjWol6N6psZG/bIVmlk4VxsWlEGXV7zYg1GwB/Ngr3
+   A==;
+IronPort-SDR: CFEmuXnS3NINeb10pzcg2PjKbKQHWyxu4gEEeJFXdQEiB4Obd/q+Q6z/qiKD37aExJTVLzeqdh
+ +IVQRR05+lU/a2+CzQyB42M1hH9VqTyVrjf1LN1KKHw/36Lr8Zufr6puT/5OPxhFfMeD0Usbi9
+ SVsjo47UGL1O7oGy4SXJ0wQGY1K8/Yr3QgJMjmJoNGPxGvnEftoEbzbzyZqw45QRJmKv2qsadV
+ HKPL2JniV9FDpAeBLEfTgv3G0m3SoqHNvAxO58zFvRSz2wevR1pWYHiR1IGWKlcaKFvsj+hqZN
+ aMU=
+X-IronPort-AV: E=Sophos;i="5.81,278,1610380800"; 
+   d="scan'208";a="162987809"
+Received: from mail-bn7nam10lp2104.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.104])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Mar 2021 09:57:05 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e2eejkhRz5y3WCSoT7aK0OD4ixPUT2qB0+bZOAY3crbGgZUEiNGJr760JDYHfzGQ7joWy4gc2If2oFmTQbZ1ZKBHilnwTIl8rs1+Z3QBXv3Vb6nLgfET9oSk/J4FYSJPVgPfUwAckFN0eGTRWjPLovSSjrNKo9BrfMpKeDpapBjU7tN/GtPA9lkaiboEqv6V62+04RJCPrE/pG5Kyjb41bROUOH7nEeZvzo9EaKSKZ6NHh4V0VmjxX8g58J/ng7je4tDpk+r0vXGczjf3XPmhppNXVGr0TuJEZZG8eHqyyynHUIkZxd+ivJlC1FOqgOx4rtj1m78ZC7TNUn0PaDpMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wSADr30jp9G2cPp4HBqsJDU0b6rQoqTCtrVUyO7lQ1U=;
+ b=a4fv1iL1P0OOnGRSm46rGN+xfZcfRlbrmYu3tJN0VZ6lrqssba8te4ZYfa9+DmoZM/ghDWcGgnhFXUdEyrh2h6UeVQZnfogaY0qqvsToLdmFwzpTBpqWKcUPbUXILvuk/jW3J72oknzAIHZEf56BcY84BwxFtd6+paqhmx0XvPb3fRUkxxhJwwIEZAksEP5lm6D/krpDEjqRTw2AMnv3or5xqJkP8a1H9gHOMU6UA1cYlhF+UKOBiurX43mjGORh2s9j2W3xgUJC8UPksAdu/6NKengAUR62Gkc2Lli7teYeTYnJZa2jx7YZD3rdfmwKouRzCTQ5nF11yB26pUUa8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hrB2LTPaVmnjj9DVoKtdE6xPWCuIJ5kDPF5kkoCFRTc=;
-        b=JnpMerTMuvdTNr3jlTTTkhRSY71aQqnFp8O842+Bvp2NmhzWfvYc+uGEpNKJsdwnRM
-         e1yOgfdB+lrlo+kBUD1j/mzMjn53F9cik3CYhSZDCKAZW5nAp5jb4I6AtpDMwctfjLG8
-         5GhsCMKEfKscaztp1K6PellN2Eg/2nUM9QRb4u+2aLaE/ycCXjs6drgAhbkJHZhKuz2L
-         zFbvp4v2Ao83LlrOm/mS/VXOBwPe4K4Ws6dW+1+vPun7VqiyhE4+4heQO25CxGzv/e+X
-         Ia6Gs7vHxIjTM/2YrXaXm+n63tjtC9814owBgPYWw6jLS7kFDSiztEN/HZM/pGe333rJ
-         ufKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hrB2LTPaVmnjj9DVoKtdE6xPWCuIJ5kDPF5kkoCFRTc=;
-        b=pR4xktJemiNegCfwq21mgbgQxvkjW8vj4cyROTN0ZmUBk1xkucgike9dyaP8til1mK
-         Ngh4IUmVceVLDdnSBHuv3FNIzXtlSeuqdGUBxtPutoxM8tnX5VZH3XLOpT9sZSJewLuP
-         UCPNq4nxIBss1YWxvAAskNSTTLMyWk6IrPKoeWLWw+sf9H2fGfSMHeHVGkiao/wOWO2i
-         OV+wx5No7Ycc9TJutxsHCHIAfTOJBJrE716x52DP4vWqN1fPUZ+EMuM1XF3eGpZibBl7
-         mYa8+NlLe3Hc8RzmXiZD613oKl/NO4/mJRnlBOfSD/RCglrgwsieEiF7ybGiQW4w78WU
-         7Kiw==
-X-Gm-Message-State: AOAM533aFTHF4AsB5CQBoP8QoXegvbtmEMVuWAABTxnfNvYe1LBmRaHB
-        Aghy10jst47Hn71S7L4W9pQNcrb3Ow1pypt8xcpVFg==
-X-Google-Smtp-Source: ABdhPJxB7xf3Rq3TkTdpnCGF1jh//fwqvy8Tw1KzgPM4FI1tQ/iWxL5DcuEXT+HJIN5Qz+6iVFT0wDINRX4gmrarveI=
-X-Received: by 2002:a25:d3cf:: with SMTP id e198mr16063062ybf.228.1616723788120;
- Thu, 25 Mar 2021 18:56:28 -0700 (PDT)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wSADr30jp9G2cPp4HBqsJDU0b6rQoqTCtrVUyO7lQ1U=;
+ b=i6BBlO/dejbWxf1yCtDGP8VOuQlszsTXJu/RruTOvf+56FLEo8w6Bl3sQlRAMFaXlJ3dpS/k6Srz0I+VJeJfUVxCLeIMcRRr3tV0OdI5ojFoORA3qy22+3mOpzFFr6U7bReQx94uaKS9o4qFV3A2gz4MmkHnBcGmbKeZNVc5tY8=
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com (2603:10b6:208:1ca::23)
+ by MN2PR04MB6671.namprd04.prod.outlook.com (2603:10b6:208:1f0::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Fri, 26 Mar
+ 2021 01:57:03 +0000
+Received: from BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::e9c5:588:89e:6887]) by BL0PR04MB6514.namprd04.prod.outlook.com
+ ([fe80::e9c5:588:89e:6887%3]) with mapi id 15.20.3955.027; Fri, 26 Mar 2021
+ 01:57:03 +0000
+From:   Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        "clm@fb.com" <clm@fb.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        "dsterba@suse.com" <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "rdunlap@infradead.org" <rdunlap@infradead.org>
+Subject: Re: [PATCH] btrfs: Fix a typo
+Thread-Topic: [PATCH] btrfs: Fix a typo
+Thread-Index: AQHXIdu3cC4ZaCmB50ysG/cZWNsDRw==
+Date:   Fri, 26 Mar 2021 01:57:03 +0000
+Message-ID: <BL0PR04MB6514411579BFB2381548A291E7619@BL0PR04MB6514.namprd04.prod.outlook.com>
+References: <20210326005932.8238-1-unixbhaskar@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2400:2411:43c0:6000:2c1b:956d:a4c2:114c]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 923850e0-1d1d-47d8-0250-08d8effa73e7
+x-ms-traffictypediagnostic: MN2PR04MB6671:
+x-microsoft-antispam-prvs: <MN2PR04MB6671F47736C72628C3FF5553E7619@MN2PR04MB6671.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Wo1I1QLplS/imvxixlkgdrBQtV02/4K04ydkzCOZi5oIwxkoOH4obB/Ra4QWKoxoZ8zK4IEEYuAolHREsbAr9nCCxNTRjJQe0xZlfngKueP1A9RESDUIfrta45JPgCj7ZFVWPyBKQ+8DZ6OvjdM57GK/tBc8GiNgV0rW37gVK5XmYN2NlTqj78CFYcZbFMdyoreEuL6uin3s6PiKO/YuXg7kcIBGG+E9D0qPHwGyoTOfhocgqAA7G2eu1+Nt0kJPtpYmBIf9T8uclW9jFsjeImBpUTCxsOGJ1oqRGMq8t+OQ1d9ONLX0fDKwEw5huk5RwgEgCHolAOyTJH8viNA/IJniz5VvIaIpi4fMRevUhrne0yGLrrOnvXC2XrmXehVwXWYAaqXDcf3t7MzXNZ+5qVT8mdloDLwZdteFcxzTjcIZt9E79J79zL8VALrecpk0ITe/FdMsr7/BVryiZLB5k/R37Q0d+joyZtI2z8wHiCMt7NNLbMkhrMa1XHwaylOad8Y8Ccx0/8YNQC2ABbzQ7TsGxlxCesCgMeDwHDPv9yXJV3SzPOngyg/VMNsRJZuwMlirvmtYpeyY2k78vbSPpc4wasnxL8g+qXWrrksptBfObRfEQljoueQcpU43D5QHLhhBWs34SByOvdpg2jXS4EBtJD5RgoKgJdYD63obvLI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR04MB6514.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(38100700001)(86362001)(52536014)(5660300002)(83380400001)(66446008)(91956017)(76116006)(4744005)(66946007)(33656002)(66476007)(64756008)(66556008)(6506007)(9686003)(110136005)(2906002)(4326008)(8936002)(478600001)(8676002)(71200400001)(55016002)(186003)(53546011)(7696005)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?ccaoYDALnmf4ELKJhzzt8TlvxKEYGE5Ar+8H+V0RQyUioS5QeG63zAiGqzqT?=
+ =?us-ascii?Q?fQbMgJPltrlKacxWewOEI73QocOuIR4nPdP5y/CTS4kNGesa5HXRyllIhiHS?=
+ =?us-ascii?Q?qlLsKpndYoSMaYa+XDzlqspIqjE+8VTfCVhvcFUuRaUz0PErX2YJ3/H3x2Dx?=
+ =?us-ascii?Q?w6Wi35RglSytZaTlE9XH8b7BEdEscxlWf70MfAGYiN8+cl29CVaEZQe7oLza?=
+ =?us-ascii?Q?bHPtt+LHQxCY8hMPI676jlTi0NFR2c1Mhg0scySj+OOCWgXJO7FYxUWkUiHZ?=
+ =?us-ascii?Q?7V5yY+jsitXsTYiFA8VWP2mhnekmFgq3SS7C49htUYNQd5xGzlL8IHkCGZNx?=
+ =?us-ascii?Q?7HJEnEAIqj/QOaFtYvusFsxrjp3WzeuWeXQt/mHOkvQ6K5bxLnD7+u5luF9/?=
+ =?us-ascii?Q?WwIjY9CVM0WUKzRkbvSrS24XCzwJIihgWsdvQSNV3ii19xgyPQcR7UG2aEry?=
+ =?us-ascii?Q?yPqZpEA7Pw/DXXOBPQxnOApwAlm8LNxQkjTGp/bnBKpYmcNBrsFFuYDHZwTq?=
+ =?us-ascii?Q?NDGK1+n4tKLnKYQu9jM8PPSS/xn/ND32nRUMawX9O8R4wGzCQmlTJCMLg9Oe?=
+ =?us-ascii?Q?oL5UeCzFSR0eJiipuICGVBqo3xpRUWFi8VHgM2Bnry1AUxCzKjNOsTQ1r7ft?=
+ =?us-ascii?Q?uO4byGAGH7/766nsQ3znV+WtAQadet7LE+uGWvvc+494n+fqf9uNfoIV0KgT?=
+ =?us-ascii?Q?nyH2cJqdXy+QPCC+/6lFwSfiFkPJpyqMWUYvrcHl/7tx2k36DC2DUil194bt?=
+ =?us-ascii?Q?u5dc+cm3K4drpj+o8Ixn+tLhie5aOQLIrQTDgD/O3yb170koqxW37LbmzbS6?=
+ =?us-ascii?Q?BNkvp813khWAuezukKOPdBh3gbU7A8WQjHhQA0gbr4E4exKzxu9PJraDt5rQ?=
+ =?us-ascii?Q?takVZ5WtcNo+9DxeG2+KTnlhxKu7moqmLv83o1QlPESfCg1VTtrQqNvhohB4?=
+ =?us-ascii?Q?e5+j+1iXI0yMhStbCtOgpU3inW23wJ+nQ4UKp5xdko2as7yzKqN5oIX4Dl3p?=
+ =?us-ascii?Q?1V2xn9oe1FJbVaarP9IuZSWgnI3k5gjQ9kNXfvOljcx+RltNVXH7e6voIq16?=
+ =?us-ascii?Q?2khsw1UZ76qhp2e2dr5bqFpnuO1uz6sTpyajnN2LTlN7VDVh6eCP+quYcXsm?=
+ =?us-ascii?Q?fnt6BMaWYz5X4DjYOgapZGKTDHFaDIZIeTD9zng47TbloEWFSjztOXxBQuzf?=
+ =?us-ascii?Q?sirBXawBWCLzhcm4sUUtygZgKl6bsapKyDe5EOfHdth+yIBzfSHyfpvWEjv0?=
+ =?us-ascii?Q?2d5mPfaLKyHgjnxVlSPmZBhjNdWopU2M4T1Yb+sS/yJIRs9aVLBzOof5AcVW?=
+ =?us-ascii?Q?yduSV9tziEZo059UEDt/yP5cEfLSa2sWm6obyjSjaT0/K18JBggcJNXAQsAO?=
+ =?us-ascii?Q?jNrfJXaCOi8k8uNavgtb7mS1sEpFOyDofe/u4Is+JDcO4sg/vQ=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210316215123.GA3712408@robh.at.kernel.org> <20210318210318.144961-1-sebastian.reichel@collabora.com>
- <20210326012720.GA2113788@robh.at.kernel.org>
-In-Reply-To: <20210326012720.GA2113788@robh.at.kernel.org>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 25 Mar 2021 18:55:52 -0700
-Message-ID: <CAGETcx9JmtbwAq_fpU5KfUzjcTw-uHPqKo3gAGjQwht=wxY8yg@mail.gmail.com>
-Subject: Re: [RFC] clk: add boot clock support
-To:     Rob Herring <robh@kernel.org>
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR04MB6514.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 923850e0-1d1d-47d8-0250-08d8effa73e7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Mar 2021 01:57:03.6385
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 15+iiS6FXbPfZNgWO8qRsxIkRIFm5qCJC23wXXr4HFc8U+axK5EMfiYkudzxw4MH3NwPEqgt+ohWEwjTZyN83Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6671
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 6:27 PM Rob Herring <robh@kernel.org> wrote:
->
-> +Saravana
->
-> On Thu, Mar 18, 2021 at 10:03:18PM +0100, Sebastian Reichel wrote:
-> > On Congatec's QMX6 system on module one of the i.MX6 fixed clocks
-> > is provided by an I2C RTC. Specifying this properly results in a
-> > circular dependency, since the I2C RTC (and thus its clock) cannot
-> > be initialized without the i.MX6 clock controller being initialized.
-> >
-> > With current code the following path is executed when i.MX6 clock
-> > controller is probed (and ckil clock is specified to be the I2C RTC
-> > via DT):
-> >
-> > 1. imx6q_obtain_fixed_clk_hw(ccm_node, "ckil", 0);
-> > 2. of_clk_get_by_name(ccm_node, "ckil");
-> > 3. __of_clk_get(ccm_node, 0, ccm_node->full_name, "ckil");
-> > 4. of_clk_get_hw(ccm_node, 0, "ckil")
-> > 5. spec = of_parse_clkspec(ccm_node, 0, "ckil"); // get phandle
-> > 6. of_clk_get_hw_from_clkspec(&spec); // returns -EPROBE_DEFER
-> > 7. error is propagated back, i.MX6q clock controller is probe deferred
-> > 8. I2C controller is never initialized without clock controller
-> >    I2C RTC is never initialized without I2C controller
-> >    CKIL clock is never initialized without I2C RTC
-> >    clock controller is never initialized without CKIL
-> >
-> > To fix the circular dependency this registers a dummy clock when
-> > the RTC clock is tried to be acquired. The dummy clock will later
-> > be unregistered when the proper clock is registered for the RTC
-> > DT node. IIUIC clk_core_reparent_orphans() will take care of
-> > fixing up the clock tree.
-> >
-> > NOTE: For now the patch is compile tested only. If this approach
-> > is the correct one I will do some testing and properly submit this.
-> > You can find all the details about the hardware in the following
-> > patchset:
-> >
-> > https://lore.kernel.org/linux-devicetree/20210222171247.97609-1-sebastian.reichel@collabora.com/
-> >
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > ---
-> >  .../bindings/clock/clock-bindings.txt         |   7 +
-> >  drivers/clk/clk.c                             | 146 ++++++++++++++++++
-> >  2 files changed, 153 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/clock/clock-bindings.txt b/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > index f2ea53832ac6..66d67ff4aa0f 100644
-> > --- a/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > +++ b/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > @@ -32,6 +32,13 @@ clock-output-names: Recommended to be a list of strings of clock output signal
-> >                   Clock consumer nodes must never directly reference
-> >                   the provider's clock-output-names property.
-> >
-> > +boot-clock-frequencies: This property is used to specify that a clock is enabled
-> > +                     by default with the provided frequency at boot time. This
-> > +                     is required to break circular clock dependencies. For clock
-> > +                     providers with #clock-cells = 0 this is a single u32
-> > +                     with the frequency in Hz. Otherwise it's a list of
-> > +                     clock cell specifier + frequency in Hz.
->
-> Seems alright to me. I hadn't thought about the aspect of needing to
-> know the frequency. Other cases probably don't as you only need the
-> clocks once both components have registered.
->
-> Note this could be lost being threaded in the other series.
-
-I read this thread and tried to understand it. But my head isn't right
-today (lack of sleep) so I couldn't wrap my head around it. I'll look
-at it again after the weekend. In the meantime, Sebastian can you
-please point me to the DT file and the specific device nodes (names or
-line number) where this cycle is present?
-
-Keeping a clock on until all its consumers probe is part of my TODO
-list (next item after fw_devlink=on lands). I already have it working
-in AOSP, but need to clean it up for upstream. fw_devlink can also
-break *some* cycles (not all). So I'm wondering if the kernel will
-solve this automatically soon(ish). If it can solve it automatically,
-I'd rather not add new DT bindings because it'll make it more work for
-fw_devlink.
-
-Thanks,
-Saravana
+On 2021/03/26 10:02, Bhaskar Chowdhury wrote:=0A=
+> =0A=
+> s/reponsible/responsible/=0A=
+> =0A=
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>=0A=
+> ---=0A=
+>  fs/btrfs/scrub.c | 2 +-=0A=
+>  1 file changed, 1 insertion(+), 1 deletion(-)=0A=
+> =0A=
+> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c=0A=
+> index 3d9088eab2fc..14de898967bf 100644=0A=
+> --- a/fs/btrfs/scrub.c=0A=
+> +++ b/fs/btrfs/scrub.c=0A=
+> @@ -2426,7 +2426,7 @@ static void drop_csum_range(struct scrub_ctx *sctx,=
+ struct btrfs_ordered_sum *su=0A=
+>   * the csum into @csum.=0A=
+>   *=0A=
+>   * The search source is sctx->csum_list, which is a pre-populated list=
+=0A=
+> - * storing bytenr ordered csum ranges.  We're reponsible to cleanup any =
+range=0A=
+> + * storing bytenr ordered csum ranges.  We're responsible to cleanup any=
+ range=0A=
+=0A=
+If you are at fixing typos, you may as well fix the grammar at the same tim=
+e :)=0A=
+=0A=
+We're responsible to cleanup... -> We're responsible for cleaning up...=0A=
+=0A=
+>   * that is before @logical.=0A=
+>   *=0A=
+>   * Return 0 if there is no csum for the range.=0A=
+> --=0A=
+> 2.26.2=0A=
+> =0A=
+> =0A=
+=0A=
+=0A=
+-- =0A=
+Damien Le Moal=0A=
+Western Digital Research=0A=
