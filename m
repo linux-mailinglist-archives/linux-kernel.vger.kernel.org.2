@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C4E34B244
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C12434B248
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhCZWnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhCZWnR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:43:17 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D92C0613AA;
-        Fri, 26 Mar 2021 15:43:16 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f075f009ccde034de5c142d.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:5f00:9ccd:e034:de5c:142d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DE2E01EC0513;
-        Fri, 26 Mar 2021 23:43:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616798594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=KDXcvgtG0h83c1r3w5F4A7Z5EVH9x/tB4a4LIq1DDBo=;
-        b=fTwGM6kvZtMJ1IbJUYe6rAFQ2lleiR2MHmBQRUY33SUeJVMPUwOCj/vTkO6kgUghH/DRjl
-        w5IBIBotWb5lYjhixoZED/DDoVXPCbkvGnnAXRc2kWcKiGWLrWDvavPhrflA8biCQMEySB
-        9bwybzp7wb4ogFIAWm+1iDwS6iWErxk=
-Date:   Fri, 26 Mar 2021 23:43:10 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     William Roche <william.roche@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH v1] RAS/CEC: Memory Corrected Errors consistent event
- filtering
-Message-ID: <20210326224310.GL25229@zn.tnic>
-References: <1616783429-6793-1-git-send-email-william.roche@oracle.com>
- <20210326190242.GI25229@zn.tnic>
- <fac89612-e15c-2940-9d6d-70a812dbe99c@oracle.com>
+        id S230134AbhCZWrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:47:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229969AbhCZWqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 18:46:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A214961A21;
+        Fri, 26 Mar 2021 22:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616798803;
+        bh=Wm2cdmh8jurooirWZ/ts+cDzC6mutuJ2k4F8lj5bCxI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QNGcgjv68Z/fo6F78HoYrYy3OBszT5C5uDy2AGEqk2xPQ0t9QdUH0bZhxbDnGVfhP
+         5GJ8NNnuIcLf0TpsSu3Jh6suvITERruDpzYbFZVr3JB58CFG6ZMPhamwGj5vuGBfww
+         V4aS4Gv2EMDsvjV9krs4YLYxXhE0zwDfRLUQIRZ2YAgzzDLAeQ1BPtBENeF+jb/tEX
+         WvIi6Cylg84aFojnQH1znDyF25IJINiEybRTGhkBtS/mYv69xIU97bDYAvKh1WVSip
+         FpAi7WFtd6oPa3uHA1whFH+vYiHjTgaPxWSFw9j6FIZa/fXH4ImFgmKYBv6kWB4apU
+         brNAlXzHU/z5Q==
+Date:   Sat, 27 Mar 2021 00:46:12 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, seanjc@google.com, luto@kernel.org,
+        dave.hansen@intel.com, rick.p.edgecombe@intel.com,
+        haitao.huang@intel.com, pbonzini@redhat.com, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        jethro@fortanix.com, b.thiel@posteo.de, jmattson@google.com,
+        joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        corbet@lwn.net
+Subject: Re: [PATCH v3 00/25] KVM SGX virtualization support
+Message-ID: <YF5kNPP2VyzcTuTY@kernel.org>
+References: <cover.1616136307.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fac89612-e15c-2940-9d6d-70a812dbe99c@oracle.com>
+In-Reply-To: <cover.1616136307.git.kai.huang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 11:24:43PM +0100, William Roche wrote:
-> What we want is to make cec_add_elem() to return !0 value only
-> when the given pfn triggered an action, so that its callers should
-> log the error.
+On Fri, Mar 19, 2021 at 08:29:27PM +1300, Kai Huang wrote:
+> This series adds KVM SGX virtualization support. The first 14 patches starting
+> with x86/sgx or x86/cpu.. are necessary changes to x86 and SGX core/driver to
+> support KVM SGX virtualization, while the rest are patches to KVM subsystem.
+> 
+> This series is based against latest tip/x86/sgx, which has Jarkko's NUMA
+> allocation support.
+> 
+> You can also get the code from upstream branch of kvm-sgx repo on github:
+> 
+>         https://github.com/intel/kvm-sgx.git upstream
+> 
+> It also requires Qemu changes to create VM with SGX support. You can find Qemu
+> repo here:
+> 
+> 	https://github.com/intel/qemu-sgx.git upstream
+> 
+> Please refer to README.md of above qemu-sgx repo for detail on how to create
+> guest with SGX support. At meantime, for your quick reference you can use below
+> command to create SGX guest:
+> 
+> 	#qemu-system-x86_64 -smp 4 -m 2G -drive file=<your_vm_image>,if=virtio \
+> 		-cpu host,+sgx_provisionkey \
+> 		-sgx-epc id=epc1,memdev=mem1 \
+> 		-object memory-backend-epc,id=mem1,size=64M,prealloc
+> 
+> Please note that the SGX relevant part is:
+> 
+> 		-cpu host,+sgx_provisionkey \
+> 		-sgx-epc id=epc1,memdev=mem1 \
+> 		-object memory-backend-epc,id=mem1,size=64M,prealloc
+> 
+> And you can change other parameters of your qemu command based on your needs.
 
-No, this is not what the CEC does - it collects those errors and when it
-reaches the threshold for any pfn, it offlines the corresponding page. I
-know, the comment above talks about:
+Please also put tested-by from me to all patches (including pure KVM
+patches):
 
-  * That error event entry causes cec_add_elem() to return !0 value and thus
-  * signal to its callers to log the error.
+Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-but it doesn't do that. Frankly, I don't see the point of logging the
-error - it already says
+I did the basic test, i.e. run selftest in a VM. I think that is
+sufficient at this point.
 
-	pr_err("Soft-offlining pfn: 0x%llx\n", pfn);
-
-which pfn it has offlined. And that is probably only mildly interesting
-to people - so what, 4K got offlined, servers have so much memory
-nowadays.
-
-The only moment one should start worrying is if one gets those pretty
-often but then you're probably better off simply scheduling maintenance
-and replacing the faulty DIMM - problem solved.
-
-> What I'm expecting from ras_cec is to "hide" CEs until they reach the
-> action threshold where an action is tried against the impacted PFN,
-
-That it does.
-
-> and it's now the time to log the error with the entire notifiers
-> chain.
-
-And I'm not sure why we'd want to do that. It simply offlines the page.
-
-But maybe you could explain what you're trying to achieve...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+/Jarkko
