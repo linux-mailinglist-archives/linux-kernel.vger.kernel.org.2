@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A36134A97E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:20:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884ED34A98F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhCZOUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46260 "EHLO mail.kernel.org"
+        id S230254AbhCZOUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:20:53 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:43073 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhCZOUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:20:13 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58E8860190;
-        Fri, 26 Mar 2021 14:20:11 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 10:20:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
-        ast@kernel.org, tglx@linutronix.de, kernel-team@fb.com, yhs@fb.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v4 10/12] x86/kprobes: Push a fake return address
- at kretprobe_trampoline
-Message-ID: <20210326102009.265f359c@gandalf.local.home>
-In-Reply-To: <20210326210349.22f6d34b229dd3a139a53686@kernel.org>
-References: <161639518354.895304.15627519393073806809.stgit@devnote2>
-        <161639530062.895304.16962383429668412873.stgit@devnote2>
-        <20210323223007.GG4746@worktop.programming.kicks-ass.net>
-        <20210324104058.7c06aaeb0408e24db6ba46f8@kernel.org>
-        <20210326030503.7fa72da34e25ad35cf5ed3de@kernel.org>
-        <20210326210349.22f6d34b229dd3a139a53686@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230100AbhCZOU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:20:27 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F6PJQ0zLJz9v03Q;
+        Fri, 26 Mar 2021 15:20:22 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id s0KOf5I51hUM; Fri, 26 Mar 2021 15:20:22 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F6PJP6Vfbz9v0P3;
+        Fri, 26 Mar 2021 15:20:21 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9B5C58B8CF;
+        Fri, 26 Mar 2021 15:20:23 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id apm4h56oZ3Cq; Fri, 26 Mar 2021 15:20:23 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95C5C8B8C7;
+        Fri, 26 Mar 2021 15:20:22 +0100 (CET)
+Subject: Re: [PATCH v3 11/17] riscv: Convert to GENERIC_CMDLINE
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
+        daniel@gimpelevich.san-francisco.ca.us, linux-arch@vger.kernel.org,
+        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
+        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
+        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+ <46745e07b04139a22b5bd01dc37df97e6981e643.1616765870.git.christophe.leroy@csgroup.eu>
+ <87zgyqdn3d.fsf@igel.home>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <81a7e63f-57d4-5c81-acc5-35278fe5bb04@csgroup.eu>
+Date:   Fri, 26 Mar 2021 15:20:20 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <87zgyqdn3d.fsf@igel.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 21:03:49 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> I confirmed this is not related to this series, but occurs when I build kernels with different
-> configs without cleanup.
+
+Le 26/03/2021 à 15:08, Andreas Schwab a écrit :
+> On Mär 26 2021, Christophe Leroy wrote:
 > 
-> Once I build kernel with CONFIG_UNWIND_GUESS=y (for testing), and after that,
-> I build kernel again with CONFIG_UNWIND_ORC=y (but without make clean), this
-> happened. In this case, I guess ORC data might be corrupted?
-> When I cleanup and rebuild, the stacktrace seems correct.
+>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+>> index f8f15332caa2..e7c91ee478d1 100644
+>> --- a/arch/riscv/kernel/setup.c
+>> +++ b/arch/riscv/kernel/setup.c
+>> @@ -20,6 +20,7 @@
+>>   #include <linux/swiotlb.h>
+>>   #include <linux/smp.h>
+>>   #include <linux/efi.h>
+>> +#include <linux/cmdline.h>
+>>   
+>>   #include <asm/cpu_ops.h>
+>>   #include <asm/early_ioremap.h>
+>> @@ -228,10 +229,8 @@ static void __init parse_dtb(void)
+>>   	}
+>>   
+>>   	pr_err("No DTB passed to the kernel\n");
+>> -#ifdef CONFIG_CMDLINE_FORCE
+>> -	strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+>> +	cmdline_build(boot_command_line, NULL, COMMAND_LINE_SIZE);
+>>   	pr_info("Forcing kernel command line to: %s\n", boot_command_line);
+> 
+> Shouldn't that message become conditional in some way?
+> 
 
-Hmm, that should be fixed. Seems like we are missing a dependency somewhere.
+You are right, I did something similar on ARM but looks like I missed it on RISCV.
 
--- Steve
+Christophe
