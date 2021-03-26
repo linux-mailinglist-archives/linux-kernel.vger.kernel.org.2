@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B1F34B157
+	by mail.lfdr.de (Postfix) with ESMTP id 5E99834B158
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhCZV34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 17:29:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39618 "EHLO mail.kernel.org"
+        id S230202AbhCZV35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 17:29:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230134AbhCZV32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230106AbhCZV32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Mar 2021 17:29:28 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69DBF61A42;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D08D619F7;
         Fri, 26 Mar 2021 21:29:27 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1lPu1G-002DSL-D0; Fri, 26 Mar 2021 17:29:26 -0400
-Message-ID: <20210326212926.281197902@goodmis.org>
+        id 1lPu1G-002DSs-HZ; Fri, 26 Mar 2021 17:29:26 -0400
+Message-ID: <20210326212926.427864267@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 26 Mar 2021 17:28:53 -0400
+Date:   Fri, 26 Mar 2021 17:28:54 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Ingo Molnar <mingo@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Qiujun Huang <hqjagain@gmail.com>
-Subject: [for-next][PATCH 5/6] tracing: A minor cleanup for create_system_filter()
+Subject: [for-next][PATCH 6/6] tracing: Update create_system_filter() kernel-doc comment
 References: <20210326212848.385566448@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -37,56 +37,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Qiujun Huang <hqjagain@gmail.com>
 
-The first two parameters should be reduced to one, as @tr is simply
-@dir->tr.
+commit f306cc82a93d ("tracing: Update event filters for multibuffer")
+added the parameter @tr for create_system_filter().
 
-Link: https://lkml.kernel.org/r/20210324205642.65e03248@oasis.local.home
-Link: https://lkml.kernel.org/r/20210325163752.128407-1-hqjagain@gmail.com
+commit bb9ef1cb7d86 ("tracing: Change apply_subsystem_event_filter()
+paths to check file->system == dir") changed the parameter from @system to @dir.
 
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Link: https://lkml.kernel.org/r/20210325161911.123452-1-hqjagain@gmail.com
+
 Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- kernel/trace/trace_events_filter.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ kernel/trace/trace_events_filter.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index 49de3e21e9bc..c2dd697cc9c0 100644
+index c2dd697cc9c0..c9124038b140 100644
 --- a/kernel/trace/trace_events_filter.c
 +++ b/kernel/trace/trace_events_filter.c
-@@ -1750,7 +1750,6 @@ int create_event_filter(struct trace_array *tr,
-  * and always remembers @filter_str.
-  */
- static int create_system_filter(struct trace_subsystem_dir *dir,
--				struct trace_array *tr,
- 				char *filter_str, struct event_filter **filterp)
- {
- 	struct filter_parse_error *pe = NULL;
-@@ -1758,13 +1757,13 @@ static int create_system_filter(struct trace_subsystem_dir *dir,
+@@ -1693,6 +1693,7 @@ static void create_filter_finish(struct filter_parse_error *pe)
  
- 	err = create_filter_start(filter_str, true, &pe, filterp);
- 	if (!err) {
--		err = process_system_preds(dir, tr, pe, filter_str);
-+		err = process_system_preds(dir, dir->tr, pe, filter_str);
- 		if (!err) {
- 			/* System filters just show a default message */
- 			kfree((*filterp)->filter_string);
- 			(*filterp)->filter_string = NULL;
- 		} else {
--			append_filter_err(tr, pe, *filterp);
-+			append_filter_err(dir->tr, pe, *filterp);
- 		}
- 	}
- 	create_filter_finish(pe);
-@@ -1852,7 +1851,7 @@ int apply_subsystem_event_filter(struct trace_subsystem_dir *dir,
- 		goto out_unlock;
- 	}
+ /**
+  * create_filter - create a filter for a trace_event_call
++ * @tr: the trace array associated with these events
+  * @call: trace_event_call to create a filter for
+  * @filter_str: filter string
+  * @set_str: remember @filter_str and enable detailed error in filter
+@@ -1741,8 +1742,8 @@ int create_event_filter(struct trace_array *tr,
+ }
  
--	err = create_system_filter(dir, tr, filter_string, &filter);
-+	err = create_system_filter(dir, filter_string, &filter);
- 	if (filter) {
- 		/*
- 		 * No event actually uses the system filter
+ /**
+- * create_system_filter - create a filter for an event_subsystem
+- * @system: event_subsystem to create a filter for
++ * create_system_filter - create a filter for an event subsystem
++ * @dir: the descriptor for the subsystem directory
+  * @filter_str: filter string
+  * @filterp: out param for created filter (always updated on return)
+  *
 -- 
 2.30.1
 
