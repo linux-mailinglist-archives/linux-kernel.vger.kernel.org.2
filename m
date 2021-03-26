@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C7234A0A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 05:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0950A34A0A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 05:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhCZEfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 00:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbhCZEf0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 00:35:26 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27ECFC0613DE
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:35:26 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id gb6so2003195pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:35:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vxhJYqYDEMLCG7mk2hvbmEzicWN7eS/ImmMoA4Wpy9s=;
-        b=Y7C2yx9t4jVJNzzq+bJUag8zcjHDw7vTM3dhGvCOhTUSNJ9rVJAGUyw/R1kV1BKF9h
-         UBZcJlu9jC+zABe5EH5uKqrAMx5g2Si4eSS06uLrUMls5fsYouIWM1mvmNY3BhP1kCgI
-         7z3GGiGVF/ZfEa0cIMn6Cl6WedLtccFzIZQLc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vxhJYqYDEMLCG7mk2hvbmEzicWN7eS/ImmMoA4Wpy9s=;
-        b=sXCW1TCwyx1XwOxUmVG++Gz9xOrBlWCW4HIkQnsZ4yvcEwv+s4jc+hMvUCC3y199ci
-         hwXAdV0taWPQc6rdTtU4PKdzUiIPcwOzdSaHvFl4jyTDpmJESEbOPHmaJAE9LGvJbT68
-         RDt9hFVH/ahZDTE/a3dQwDqaxi40An3F/q8JsQWl3rsFG9iBcrKNfib3TIPhxTjp58cj
-         m9sxxOYgs9T8L+kZ8WNSY+9c/KMsqb8OGkTfZz/9r353g1Y5e+fws6Aw0qMpsYWys2Rt
-         DFBE1b5OCgRHl65kxDqzIFqCA4Qn1p2vuwkZGREoSlHpk0bfzz4zvVRkoBTevqjbSxsi
-         76qA==
-X-Gm-Message-State: AOAM531kPJmr1/FIs0yTEvK75wG6IGlzvaKAarHIGYM9ZkZYRmCToMZA
-        xAZbnwPyAM2jhAcMJa5UUOjEMQ==
-X-Google-Smtp-Source: ABdhPJz2QNhFYdHooMpU/mFgIftB2v/X0l9ww3xc4ZF/mkJWRrD/dCONt/yBrv2NakIcxZr0lCtyZQ==
-X-Received: by 2002:a17:902:d4cb:b029:e5:f608:6d5e with SMTP id o11-20020a170902d4cbb02900e5f6086d5emr13342060plg.20.1616733325756;
-        Thu, 25 Mar 2021 21:35:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u84sm7686856pfc.90.2021.03.25.21.35.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 21:35:25 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 21:35:24 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tejun Heo <tj@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 09/17] treewide: Change list_sort to use const pointers
-Message-ID: <202103252135.9B17EFB@keescook>
-References: <20210323203946.2159693-1-samitolvanen@google.com>
- <20210323203946.2159693-10-samitolvanen@google.com>
+        id S229671AbhCZEi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 00:38:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230304AbhCZEih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 00:38:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F37661A42
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:38:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616733516;
+        bh=uakzJgslqMTRUR4ZuQ0ajYK6JKqrawmOg9EDLLj6Hn4=;
+        h=From:Date:Subject:To:From;
+        b=FgWk9p8HZzum1R881d868RdocD6VtcQ4jhJsVLjpTQhyKL9BwhMi1Xu/lmCSlMW+k
+         osY+LqNLEf3PPNoRK8JfAXR+VFGVX8ePUxmoRarCe5utDob0OPHqCMGAKySMvKF75p
+         lk4D1VkWaHqDMejsimqBqJFiUCuXt+Py4U2Yzeoc+QtPT6JIRUa35Wsc+S0sUtUiGy
+         TajU99e9+qukruoaaqiKWyeZN8h2yFsd6NcjPSJbSFRqTwP0CntaxoFpJynGkv0i/s
+         9bE96O74R5E9CHzo/UmP8jlijucHoVCT+M1cMygEGNsUhqAH4lPq7It3aouH2qz6W+
+         USw0F/xCn2Zdg==
+Received: by mail-ej1-f41.google.com with SMTP id u9so6447787ejj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:38:36 -0700 (PDT)
+X-Gm-Message-State: AOAM5325cBFMOi0v+ZNu68JYV0DlReU2+jugf0Q5Nw5Vq7KqJu6KeiOS
+        EGCdwooCRkCgNf3U8rOfNBLuaeyxSGKaPfmP68zvHg==
+X-Google-Smtp-Source: ABdhPJwrq9vL7MDIknae1FtSjIxsX7tXBeWqhfyBOFoJu+dGld0VB31n6SdyJjzLfhRygyYsSreIlEvS3NlBd5+YniM=
+X-Received: by 2002:a17:906:7e12:: with SMTP id e18mr13718403ejr.316.1616733514967;
+ Thu, 25 Mar 2021 21:38:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323203946.2159693-10-samitolvanen@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 25 Mar 2021 21:38:24 -0700
+X-Gmail-Original-Message-ID: <CALCETrURmk4ZijJVUtJwouj=_0NPiUvUFr9XMvdniRRFqeU+fg@mail.gmail.com>
+Message-ID: <CALCETrURmk4ZijJVUtJwouj=_0NPiUvUFr9XMvdniRRFqeU+fg@mail.gmail.com>
+Subject: Why does glibc use AVX-512?
+To:     libc-alpha <libc-alpha@sourceware.org>,
+        "H. J. Lu" <hjl.tools@gmail.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Carlos O'Donell" <carlos@redhat.com>,
+        Rich Felker <dalias@libc.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:39:38PM -0700, Sami Tolvanen wrote:
-> list_sort() internally casts the comparison function passed to it
-> to a different type with constant struct list_head pointers, and
-> uses this pointer to call the functions, which trips indirect call
-> Control-Flow Integrity (CFI) checking.
-> 
-> Instead of removing the consts, this change defines the
-> list_cmp_func_t type and changes the comparison function types of
-> all list_sort() callers to use const pointers, thus avoiding type
-> mismatches.
-> 
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+Hi all-
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+glibc appears to use AVX512F for memcpy by default.  (Unless
+Prefer_ERMS is default-on, but I genuinely can't tell if this is the
+case.  I did some searching.)  The commit adding it refers to a 2016
+email saying that it's 30% on KNL.  Unfortunately, AVX-512 is now
+available in normal hardware, and the overhead from switching between
+normal and AVX-512 code appears to vary from bad to genuinely
+horrible.  And, once anything has used the high parts of YMM and/or
+ZMM, those states tend to get stuck with XINUSE=1.
 
--- 
-Kees Cook
+I'm wondering whether glibc should stop using AVX-512 by default.
+
+Meanwhile, some of you may have noticed a little ABI break we have.
+On AVX-512 hardware, the size of a signal frame is unreasonably large,
+and this is causing problems even for existing software that doesn't
+use AVX-512.  Do any of you have any clever ideas for how to fix it?
+We have some kernel patches around to try to fail more cleanly, but we
+still fail.
+
+I think we should seriously consider solutions in which, for new
+tasks, XCR0 has new giant features (e.g. AMX) and possibly even
+AVX-512 cleared, and programs need to explicitly request enablement.
+This would allow programs to opt into not saving/restoring across
+signals or to save/restore in buffers supplied when the feature is
+enabled.  This has all kinds of pros and cons, and I'm not sure it's a
+great idea.  But, in the absence of some change to the ABI, the
+default outcome is that, on AMX-enabled kernels on AMX-enabled
+hardware, the signal frame will be more than 8kB, and this will affect
+*every* signal regardless of whether AMX is in use.
+
+--Andy
