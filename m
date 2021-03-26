@@ -2,275 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F45E34A10C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AE534A114
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 06:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhCZF3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 01:29:01 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:6449 "EHLO smtp2.axis.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229782AbhCZF2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 01:28:52 -0400
+        id S229787AbhCZFhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 01:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229832AbhCZFhM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 01:37:12 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C66C0613AA;
+        Thu, 25 Mar 2021 22:37:12 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id g8so2414686qvx.1;
+        Thu, 25 Mar 2021 22:37:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1616736532;
-  x=1648272532;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9n9kzlHM/kAGr088hfHnQ3Z5BwNvyfuLLuWpHBUcbZY=;
-  b=D1wVnOn583yY2HPJK1Ern2KDLsdXClcqhrlX69FPg3w6vZL8rqqBSs/U
-   pblmq7zqhSlYxUvFK6asft25r0933A71K0uC+BAz6YW26nWWdyJqzIwuh
-   V802tUN7J7tyox1x7vIHpl+kXpxJdFYxcwm0BULOJpLhDq2n38jE2D4Wu
-   t6jjK/vQn56zUOfGKupeRup37xkQy3yjYn/rF87UGzAOqEpj9gNwS9u0U
-   pQky+2r4fqU3+o/H9tOgKTJpUP3f4CVSram+c9FhtdLyByjyYNPIJpFel
-   gFM4MI3mKO5Lh4WDDGQaBwq5jDE8x4tE+6UK1fBKh+a9vn8p+c+8Mzo+x
-   Q==;
-From:   Hermes Zhang <chenhui.zhang@axis.com>
-To:     <pavel@ucw.cz>, <dmurphy@ti.com>, <robh+dt@kernel.org>
-CC:     <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <chenhuiz@axis.com>,
-        <lkml@axis.com>, <kernel@axis.com>
-Subject: [PATCH v2 2/2] leds: leds-multi-gpio: Add multiple GPIOs LED driver
-Date:   Fri, 26 Mar 2021 13:28:01 +0800
-Message-ID: <20210326052801.17666-3-chenhui.zhang@axis.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210326052801.17666-1-chenhui.zhang@axis.com>
-References: <20210326052801.17666-1-chenhui.zhang@axis.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6kyG/hi4xMzB4ONd2/d1F0KtKO1/sY3sOs1ymP76/Vs=;
+        b=gLcxXXsLYIMNm7eCFHIMBWGXiOUfYZWPxTIH5wdDD1oF5ZiYT6FSUKBcIBJ+UJelZg
+         hzoCxgyIHQ2C9I31cVgZxMcOPiknvX4VPHjeGBdamUbEvfG+zamRnjCozejnmjvx2C69
+         B1NtkIavzq+OOv3iKl3CLSs9IghX/DdlZllzijR0fDgLx3rzdl6sIgGm3ej4y48DDAAu
+         ElmwnS4udqoXdFZqgcIw3UcotzAH5Nuh9OGpovDMaABqFTffzHF7tNihlMpEvlcD6QZy
+         gusGnj+QuGOdAcSrhMlUA/br8o9LamFgsyBxZuhLrc+rRqee22Xwlysz+nY1jFSJ3HXL
+         WWBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6kyG/hi4xMzB4ONd2/d1F0KtKO1/sY3sOs1ymP76/Vs=;
+        b=UapevZm7/fIV6vk4aXLhLR5vxckp3CmlI3X97bxH8hEsqpb94afYd4Ungp8JvjI/tI
+         Vpw8n/nly5cRLTByFShpEUtG3zgg1x01EmjYH4KqddZgis6vJalBWXSm9hhro7DpvhsC
+         1ck1qdIXwy00p/SX3ObfIJ12WK6jGkx7VjX+11bJXZ68/72TjH/TWu03sDisrj8B2sE7
+         aL3taPfaz4chdOxZjIcpjSijgfwWaueG2FtLEJ+lX2zsXq3XIfqlCM5JbGqCd9CnyLI7
+         zH8ysQzwxPD/DLENq08Ca7acnrkrr8Qn8bZlInvpRs3U0Yte9BxPoEK9/rjA+QKVp+pR
+         8w3w==
+X-Gm-Message-State: AOAM5306QVVAFkIj1X/DM0YLKgOSEwDSjtthKpSQ26lhp7IZDJK/apHq
+        mXapl3Ka02GRwRZbKzzpTHc=
+X-Google-Smtp-Source: ABdhPJwv0Fr0elnTJneHFMjLnzkyQ+3oPupNtvCxb82fI67DaeDZsYwC9xy4h2ilgNK/vVmcoxNTrg==
+X-Received: by 2002:a0c:b218:: with SMTP id x24mr11560217qvd.55.1616737031541;
+        Thu, 25 Mar 2021 22:37:11 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id c7sm2363165qtv.48.2021.03.25.22.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 22:37:11 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, unixbhaskar@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH V2] fddi: skfp: Rudimentary spello fixes
+Date:   Fri, 26 Mar 2021 11:04:55 +0530
+Message-Id: <20210326053456.17792-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hermes Zhang <chenhuiz@axis.com>
 
-Introduce a new multiple GPIOs LED driver. This LED will made of
-multiple GPIOs (up to 8) and will map different brightness to different
-GPIOs states which defined in dts file.
+s/autohorized/authorized/
+s/recsource/resource/
+s/measuered/measured/
+s/authoriziation/authorization/
 
-Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- drivers/leds/Kconfig                  |   3 +
- drivers/leds/Makefile                 |   3 +
- drivers/leds/simple/Kconfig           |  23 ++++
- drivers/leds/simple/Makefile          |   3 +
- drivers/leds/simple/leds-multi-gpio.c | 144 ++++++++++++++++++++++++++
- 5 files changed, 176 insertions(+)
- create mode 100644 drivers/leds/simple/Kconfig
- create mode 100644 drivers/leds/simple/Makefile
- create mode 100644 drivers/leds/simple/leds-multi-gpio.c
+ Changes from V1:
+ David said the patch didn't applied cleanly,so recreate it.
+ Randy found out a glitch in changelog text, fixed it.
 
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index b6742b4231bf..f95217b2fcf1 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -937,4 +937,7 @@ source "drivers/leds/trigger/Kconfig"
- comment "LED Blink"
- source "drivers/leds/blink/Kconfig"
- 
-+comment "LED Simple"
-+source "drivers/leds/simple/Kconfig"
-+
- endif # NEW_LEDS
-diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-index 2a698df9da57..26917d93fa03 100644
---- a/drivers/leds/Makefile
-+++ b/drivers/leds/Makefile
-@@ -111,3 +111,6 @@ obj-$(CONFIG_LEDS_TRIGGERS)		+= trigger/
- 
- # LED Blink
- obj-$(CONFIG_LEDS_BLINK)                += blink/
-+
-+# LED Blink
-+obj-$(CONFIG_LEDS_SIMPLE)		+= simple/
-diff --git a/drivers/leds/simple/Kconfig b/drivers/leds/simple/Kconfig
-new file mode 100644
-index 000000000000..7aef82701f86
---- /dev/null
-+++ b/drivers/leds/simple/Kconfig
-@@ -0,0 +1,23 @@
-+menuconfig LEDS_SIMPLE
-+	bool "Simple LED support"
-+	depends on LEDS_CLASS
-+	help
-+	  This option enables simple leds support for the leds class.
-+	  If unsure, say Y.
-+
-+if LEDS_SIMPLE
-+
-+config LEDS_MULTI_GPIO
-+	tristate "LED Support for multiple GPIOs LED"
-+	depends on LEDS_CLASS
-+	depends on GPIOLIB
-+	depends on OF
-+	help
-+	  This option enables support for a multiple GPIOs LED. Such LED is made
-+	  of multiple GPIOs and could change the brightness by setting different
-+	  states of the GPIOs.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called leds-multi-gpio.
-+
-+endif # LEDS_SIMPLE
-diff --git a/drivers/leds/simple/Makefile b/drivers/leds/simple/Makefile
-new file mode 100644
-index 000000000000..2ba655fdc175
---- /dev/null
-+++ b/drivers/leds/simple/Makefile
-@@ -0,0 +1,3 @@
-+# SPDX-License-Identifier: GPL-2.0
-+
-+obj-$(CONFIG_LEDS_MULTI_GPIO)	+= leds-multi-gpio.o
-diff --git a/drivers/leds/simple/leds-multi-gpio.c b/drivers/leds/simple/leds-multi-gpio.c
-new file mode 100644
-index 000000000000..14fdaa5a2aac
---- /dev/null
-+++ b/drivers/leds/simple/leds-multi-gpio.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021 Axis Communications AB
-+ */
-+
-+#include <linux/leds.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+
-+
-+#define MAX_GPIO_NUM  8
-+
-+struct multi_gpio_led_priv {
-+	struct led_classdev cdev;
-+
-+	struct gpio_descs *gpios;
-+
-+	u16 nr_states;
-+
-+	u8 states[0];
-+};
-+
-+
-+static void multi_gpio_led_set(struct led_classdev *led_cdev,
-+	enum led_brightness value)
-+{
-+	struct multi_gpio_led_priv *priv;
-+	int idx;
-+
-+	DECLARE_BITMAP(values, MAX_GPIO_NUM);
-+
-+	priv = container_of(led_cdev, struct multi_gpio_led_priv, cdev);
-+
-+	idx = value > led_cdev->max_brightness ? led_cdev->max_brightness : value;
-+
-+	values[0] = priv->states[idx];
-+
-+	gpiod_set_array_value(priv->gpios->ndescs, priv->gpios->desc,
-+	    priv->gpios->info, values);
-+}
-+
-+static int multi_gpio_led_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *node = dev->of_node;
-+	struct multi_gpio_led_priv *priv = NULL;
-+	int ret;
-+	const char *state = NULL;
-+	struct led_init_data init_data = {};
-+	struct gpio_descs *gpios;
-+	u16 nr_states;
-+
-+	gpios = devm_gpiod_get_array(dev, "led", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpios))
-+		return PTR_ERR(gpios);
-+
-+	if (gpios->ndescs >= MAX_GPIO_NUM) {
-+		dev_err(dev, "Too many GPIOs\n");
-+		return -EINVAL;
-+	}
-+
-+	ret = of_property_count_u8_elems(node, "led-states");
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret != 1 << gpios->ndescs) {
-+		dev_err(dev, "led-states number should equal to 2^led-gpios\n");
-+		return -EINVAL;
-+	}
-+
-+	nr_states = ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(struct multi_gpio_led_priv)
-+			+ sizeof(u8) * nr_states , GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	ret = of_property_read_u8_array(node, "led-states", priv->states, nr_states);
-+	if (ret)
-+		return ret;
-+
-+	priv->gpios = gpios;
-+	priv->nr_states = nr_states;
-+
-+	priv->cdev.max_brightness = nr_states;
-+	priv->cdev.default_trigger = of_get_property(node, "linux,default-trigger", NULL);
-+	priv->cdev.brightness_set = multi_gpio_led_set;
-+
-+	init_data.fwnode = of_fwnode_handle(node);
-+
-+	ret = devm_led_classdev_register_ext(dev, &priv->cdev, &init_data);
-+	if (ret < 0)
-+		return ret;
-+
-+	of_property_read_string(node, "default-state", &state);
-+	if (!strcmp(state, "on"))
-+		multi_gpio_led_set(&priv->cdev, priv->cdev.max_brightness);
-+	else
-+		multi_gpio_led_set(&priv->cdev, 0);
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return 0;
-+}
-+
-+static void multi_gpio_led_shutdown(struct platform_device *pdev)
-+{
-+	struct multi_gpio_led_priv *priv = platform_get_drvdata(pdev);
-+
-+	multi_gpio_led_set(&priv->cdev, 0);
-+}
-+
-+static int multi_gpio_led_remove(struct platform_device *pdev)
-+{
-+	multi_gpio_led_shutdown(pdev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_multi_gpio_led_match[] = {
-+	{ .compatible = "multi-gpio-led", },
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(of, of_multi_gpio_led_match);
-+
-+static struct platform_driver multi_gpio_led_driver = {
-+	.probe		= multi_gpio_led_probe,
-+	.remove		= multi_gpio_led_remove,
-+	.shutdown	= multi_gpio_led_shutdown,
-+	.driver		= {
-+		.name	= "multi-gpio-led",
-+		.of_match_table = of_multi_gpio_led_match,
-+	},
-+};
-+
-+module_platform_driver(multi_gpio_led_driver);
-+
-+MODULE_AUTHOR("Hermes Zhang <chenhui.zhang@axis.com>");
-+MODULE_DESCRIPTION("Multiple GPIOs LED driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:leds-multi-gpio");
--- 
-2.20.1
+ drivers/net/fddi/skfp/h/smt.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/fddi/skfp/h/smt.h b/drivers/net/fddi/skfp/h/smt.h
+index a0dbc0f57a55..8d104f13e2c3 100644
+--- a/drivers/net/fddi/skfp/h/smt.h
++++ b/drivers/net/fddi/skfp/h/smt.h
+@@ -411,7 +411,7 @@ struct smt_p_reason {
+ #define SMT_RDF_ILLEGAL 0x00000005	/* read only (PMF) */
+ #define SMT_RDF_NOPARAM	0x6		/* parameter not supported (PMF) */
+ #define SMT_RDF_RANGE	0x8		/* out of range */
+-#define SMT_RDF_AUTHOR	0x9		/* not autohorized */
++#define SMT_RDF_AUTHOR	0x9		/* not authorized */
+ #define SMT_RDF_LENGTH	0x0a		/* length error */
+ #define SMT_RDF_TOOLONG	0x0b		/* length error */
+ #define SMT_RDF_SBA	0x0d		/* SBA denied */
+@@ -450,7 +450,7 @@ struct smt_p_version {
+
+ struct smt_p_0015 {
+ 	struct smt_para	para ;		/* generic parameter header */
+-	u_int		res_type ;	/* recsource type */
++	u_int		res_type ;	/* resource type */
+ } ;
+
+ #define	SYNC_BW		0x00000001L	/* Synchronous Bandwidth */
+@@ -489,7 +489,7 @@ struct smt_p_0017 {
+ struct smt_p_0018 {
+ 	struct smt_para	para ;		/* generic parameter header */
+ 	int		sba_ov_req ;	/* total sync bandwidth req for overhead*/
+-} ;					/* measuered in bytes per T_Neg */
++} ;					/* measured in bytes per T_Neg */
+
+ /*
+  * P19 : SBA Allocation Address
+@@ -562,7 +562,7 @@ struct smt_p_fsc {
+ #define FSC_TYPE2	2		/* Special A/C indicator forwarding */
+
+ /*
+- * P00 21 : user defined authoriziation (see pmf.c)
++ * P00 21 : user defined authorization (see pmf.c)
+  */
+ #define SMT_P_AUTHOR	0x0021
+
+--
+2.26.2
 
