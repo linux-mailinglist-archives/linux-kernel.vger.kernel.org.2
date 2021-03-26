@@ -2,69 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7638834A6FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7398434A705
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhCZMTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:19:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhCZMSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:18:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF42C61879;
-        Fri, 26 Mar 2021 12:18:54 +0000 (UTC)
-Date:   Fri, 26 Mar 2021 13:18:52 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        joshdon@google.com, valentin.schneider@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
-Message-ID: <YF3RLAYbewYS7vqc@kroah.com>
-References: <20210326103352.603456266@infradead.org>
- <20210326103935.183934395@infradead.org>
- <YF2/41K4xs3ZOQdV@kroah.com>
- <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
- <YF3F0JbbEpeSGzW6@kroah.com>
- <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
+        id S229866AbhCZMUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhCZMUC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:20:02 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA50C0613AA;
+        Fri, 26 Mar 2021 05:20:01 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id z2so5450726wrl.5;
+        Fri, 26 Mar 2021 05:20:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kg1U2pASZJh61Qap78Y/WB4kOKba5GuYu7Xequ9TovM=;
+        b=ApDLceLYrjN3KcZ8KGrUq7h5LqtlXdms3kCHUwf5LKOWChju9s8UbzZdFT00sHBWji
+         fxDtaruRNz7u5jRqT0p9wT15uDg9gQRDTa640vTdCrogo15MYfUNjXfIgkwMys9VuTTc
+         qBJvSQ2PB3HNIZ085nzvowSGsCTH8Lsg6+0CNfYVsaggIuJHUXWdwr6/2DMuS4vFZuHB
+         k9KV7vx31lQD89yiMQFDLRw32tMhe/uiDA1ZU8hnm/+BKv3D8CzX3hW0bRGfl/g9q6Df
+         Exw0MELumNmpzMIfwIuiwO9rArhA54V6WDXNkHdcL5bwP9LN4rAePu7MoTGenANMX7dQ
+         N0GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kg1U2pASZJh61Qap78Y/WB4kOKba5GuYu7Xequ9TovM=;
+        b=PWUs9BDO65Zf30bv6XasxOR0/M+5XV2CgJHTBDBCVEz1basLF7m9sfQca9ABO5wYsW
+         8t6l8CSBxTdZ3fcreaAQYd2TwGFssv0EQL5QgdfiOk2zRjNKRdw0pzbE018B4lCuQwqG
+         Nfdgu5x+MydgBHWI4Akkxz14rqKu5DqcWooJAFE51e8Rj2cB3p0z/ZP7q0gZZcEq0r1/
+         SapA0+zkTe9tmtDcrSjeHYdFWDOUebj89DnxzwN4nb6irNFdkosoVIk6mGHzKdhV7+hJ
+         lO2f3upWtX450tm5RPg77u0v3PYBtELk8botemMe7dVpjAdbZ8WFqYiDFDGcltQgnxdV
+         FjPQ==
+X-Gm-Message-State: AOAM533cJS7jZmI8tf5c+I44Gph9qjYwrL8SF/lG0tg35AIehO+U4R8K
+        O3Ae4fjarMosdrUES3/2luw=
+X-Google-Smtp-Source: ABdhPJyVXeITO6E5oyD1KdyzgwwiHT1pwD6OdpuDL3xMdY9Gk8FkQbcfYiCdNpBHrQP2N4FX8ZhDvQ==
+X-Received: by 2002:a5d:6412:: with SMTP id z18mr14247608wru.214.1616761200589;
+        Fri, 26 Mar 2021 05:20:00 -0700 (PDT)
+Received: from localhost.localdomain (2a01cb0008bd2700f1419764c24345e5.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:f141:9764:c243:45e5])
+        by smtp.gmail.com with ESMTPSA id l6sm11150102wrt.56.2021.03.26.05.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 05:20:00 -0700 (PDT)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     robert.foss@linaro.org, airlied@linux.ie, daniel@ffwll.ch,
+        a.hajda@samsung.com, robh+dt@kernel.org, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v9 0/2] Add support of Lontium lt8912 MIPI to HDMI bridge
+Date:   Fri, 26 Mar 2021 13:19:53 +0100
+Message-Id: <20210326121955.1266230-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 12:38:39PM +0100, Peter Zijlstra wrote:
-> On Fri, Mar 26, 2021 at 12:30:24PM +0100, Greg KH wrote:
-> > Great, change that and limit the size of the string that can be written
-> > and it looks good to me, thanks for adding this.
-> 
-> Here goes..
+Hi,
+this patch set adds the support of the Lontium lt8912 MIPI to HDMI
+bridge in the kernel.
 
-Great, except one tiny thing:
+It's only support the video part, not the audio part yet
+since I don't have the datasheet of this component.
+I get the current i2c configuration from Digi and
+Boundary drivers.
+Developed using the DB_DSIHD board from BoundaryDevices.
 
-> + * This function will return a pointer to a dentry if it succeeds.  This
-> + * pointer must be passed to the debugfs_remove() function when the file is
-> + * to be removed (no automatic cleanup happens if your module is unloaded,
-> + * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-> + * returned.
-> + *
-> + * NOTE: when writing is enabled it will replace the string, string lifetime is
-> + * assumed to be RCU managed.
-> + *
-> + * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
-> + * be returned.
+Update in v2
+  - Use standard data-lanes instead of a custom prop;
+  - Use hdmi-connector node.
 
-Nothing is returned anymore so the top and bottom paragraphs here no
-longer apply.
+Update in v3
+  - Fix indentation;
+  - Implement missing bridge functions;
+  - Add some comments.
 
-Fix that up and feel free to add:
+Update in v4
+  - Fix bridge ops;
+  - Fix i2c error detection.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Update in v5
+  - Fix lt8912 name (lt8912b instead of lt8912);
+  - Implement HPD via a workaround. In fact I don't have the datasheet
+    of this component yet so I can't say if the configuration of the
+registers is correct or if I have an HW issue on my board. So, I choose
+to implement a fake version of HPD using a workqueue and polling the
+status regularly.
 
-thanks,
+Update in v6
+  - Fix a warning found by "kernel test robot"
 
-greg k-h
+Update in v7
+  - Fix HPD logic (via an HW emulation);
+  - HPD from chip is still not working.
+
+Update in v8
+  - Remove HPD logic (will be added later when HW bug qill be fixed).
+
+Update in v9
+  - Fix errors found in scripts/checkpatch.pl --strict
+
+Thanks,
+
+Adrien Grassein (2):
+  dt-bindings: display: bridge: Add documentation for LT8912B
+  drm/bridge: Introduce LT8912B DSI to HDMI bridge
+
+ .../display/bridge/lontium,lt8912b.yaml       | 102 +++
+ MAINTAINERS                                   |   6 +
+ drivers/gpu/drm/bridge/Kconfig                |  14 +
+ drivers/gpu/drm/bridge/Makefile               |   1 +
+ drivers/gpu/drm/bridge/lontium-lt8912b.c      | 765 ++++++++++++++++++
+ 5 files changed, 888 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
+ create mode 100644 drivers/gpu/drm/bridge/lontium-lt8912b.c
+
+-- 
+2.25.1
+
