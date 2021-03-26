@@ -2,139 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD9734AE41
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AC634AE47
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhCZSJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:09:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
+        id S230239AbhCZSKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbhCZSJV (ORCPT
+        with ESMTP id S230197AbhCZSJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:09:21 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F4FC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:09:17 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a7so9767168ejs.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:09:17 -0700 (PDT)
+        Fri, 26 Mar 2021 14:09:42 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731D4C0613AA;
+        Fri, 26 Mar 2021 11:09:42 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id j198so6689008ybj.11;
+        Fri, 26 Mar 2021 11:09:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wJYWZrUOznq0gpgX+7FMB7DloEhRAZMNbdCMtRU9Qgc=;
-        b=o2nny/72vAvvu3xrH7brAGF8mlfk7Odb4OIATJAM4GtkSimXsGri85d7ZnWgnsR+pi
-         RKXwu9zm92uG0OLTPMoDqrarq5wip8a/V9b64KeN09SP1KPWUkcZq81Sr6aXZT/ZO2IB
-         6DCnrzYJTPzb/WuSdNP5cQeeF7P9xYRy2Qob1MZ9B7Z46Rmiabl+iCjAR1b08XG6wG+i
-         EILmXXBUICz4XZJJ+yUoxDYdFDJQcsy7JhyghCTFHx4gO5LB/myplcKn0xyU1oW7YqD+
-         GEeHufTFCBuyAY1LBhzHoyLEDmDW4ul80u8zSRXrgrk7SLeBA3pWoTQwVAgH4Kj9mowu
-         37ZA==
+         :cc:content-transfer-encoding;
+        bh=ZhDceGf5EPwxqOmSXw7vSwKwAN2oE3kPh5APLhrkFoc=;
+        b=rZ5aSSs1FMJf5GOkwaIlzevMhDtIv7GWGcyp/tMZriePwT5YUyIaPyEGKp2gaPLE2l
+         QJNagORWX24s9kDaMB8RWeFqZ5FQpu9tN4mO3Cg3A2kqJfgu7uX822GyYYNo9JvDZjJz
+         6JVN6mF8zW4m8a95krBY959jji1or981S1VIn1uGOnvq1aJ58VLwtr9d2MNIQ/k6gJbs
+         fFNWCW9ZEtoxN+71hkrz07cWEKdhifXdRVS/QYRojYXy7/stfTVT/8CHCRt/L6htJX8g
+         K0as0xRGm/ajFmHbeGvhACS4PRdWsX0Mhr+a6DmJreZzz9nt8AMShYtp6kfrMopsZ1Km
+         WaOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wJYWZrUOznq0gpgX+7FMB7DloEhRAZMNbdCMtRU9Qgc=;
-        b=MFhISsDieIauVDzANozXA86+BWPwuknT7it9eun0N1daqzrtjF2RMxdakqOaCTgxJV
-         4ms1QLk2bQz4vSCOJnjLmIyGGFzFztem7ufk3YcGEagAGPj5p9pWAvcl7u4Vp9GfKddN
-         5dkLwpv6c46p+ipmCLrmLlRrwXXwvsH2zA8ysjLwnd57b6HepPq6m1PgD1oZfjamPevG
-         F9qATAtKXNkKtuTWUWibFscvavc90RRSbjYZcp2iANCADhHdxxHpzXKwfgDTA6Uq4mqk
-         yFHGfN7iJ3aYKjRk+b1f2OizXOCKMS707qjPhz13m6vfd7+sl/SF7ENQmzgKoc6ILb6r
-         sgOg==
-X-Gm-Message-State: AOAM533qA6Va3us1BgIuhn7bIJPT0H26/jHSiypd9ZNbk7zoX0CpK13L
-        NGamXRSDqsTU9O9DCtGn3k7kuBvLOyhzLmEv8bQQ+pv9zM0=
-X-Google-Smtp-Source: ABdhPJyrMPX9Hu9Cddt1IC5mdi2AfAIfufvUOht7vRbfCSAB+9QKFnAtUccbaxh0zGkwtUKrAd8aTymLA4kJ2BkrNec=
-X-Received: by 2002:a17:907:33cd:: with SMTP id zk13mr16676396ejb.224.1616782156485;
- Fri, 26 Mar 2021 11:09:16 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZhDceGf5EPwxqOmSXw7vSwKwAN2oE3kPh5APLhrkFoc=;
+        b=QpJXwinGur9eUC1U2plPm5tb1R5daehCqD4VYazwcVGO5L7L3jUwNAHd52M5OJW9tq
+         4PHOiDlxw+YNzkh2+agOKqAdXvhxYP4zfWD/mzwohyXPxE+VpNY8WKO9jqmITvFTFobv
+         BHNrbm1GCOjNNSvSpgrJk2TluVMvOtmFkhW6x3RMWCZNqcsuSYMhRB4OoHr13Wfq65nJ
+         f6s4iYKIRxPLx0eBPHAGu2NoO0TNZ2OHm9qajZXRU8XnpgwKiesCeqozkkj3bmCcxM/X
+         mJ5b6WSKbeLEkuZcZRY7ih93b/JDyWtpPFN60LZRA0M8503seWIu7huRgrKuvxQYef3z
+         tp/Q==
+X-Gm-Message-State: AOAM530xEf5+P9V1TT59Xqb1/JwZLrb/0CuTXlgyBsJ1E8ChgIfAkus2
+        DHezlv4CBXcZ4ysnC7dJTS2hFGHVY2aFheSeQGA=
+X-Google-Smtp-Source: ABdhPJwZWcSa7JQvBA9hqNB5lZjLdckzgvKVymMhVosuDluUt0M9JwkAjau2sBLidm357xNSn5TXDUV43T3H05sAiIo=
+X-Received: by 2002:a25:ab03:: with SMTP id u3mr15164570ybi.347.1616782181703;
+ Fri, 26 Mar 2021 11:09:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210303175235.3308220-1-bgeffon@google.com> <20210323182520.2712101-1-bgeffon@google.com>
- <20210323182520.2712101-4-bgeffon@google.com> <9c0b4b2a-3678-186a-072a-280628e5da02@gmail.com>
-In-Reply-To: <9c0b4b2a-3678-186a-072a-280628e5da02@gmail.com>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Fri, 26 Mar 2021 11:08:40 -0700
-Message-ID: <CADyq12wc9=dt5V=YEr+U9JLP1VObG_UOsGaQUDH88WAZH-4Txg@mail.gmail.com>
-Subject: Re: [PATCH] mremap.2: MREMAP_DONTUNMAP to reflect to supported mappings
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Dmitry Safonov <dima@arista.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
+References: <cover.1616430991.git.christophe.leroy@csgroup.eu>
+ <CAEf4BzZjNK_La1t5FGyie02FCABBieZJod49rW4=WtMs7ELLSw@mail.gmail.com> <86028d25-c3fe-3765-f7c3-12448523405a@csgroup.eu>
+In-Reply-To: <86028d25-c3fe-3765-f7c3-12448523405a@csgroup.eu>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 26 Mar 2021 11:09:30 -0700
+Message-ID: <CAEf4BzaNh2hDmY+9CZWTDOF2gXtPcs9iGYj6PADgH4RuUOPsKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/8] Implement EBPF on powerpc32
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, open list <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
-It has not landed yet, it's currently in Andrew's mm tree. I can reach
-out again when it makes it into Linus' tree.
-
-Brian
-
-
-On Thu, Mar 25, 2021 at 2:34 PM Alejandro Colomar (man-pages)
-<alx.manpages@gmail.com> wrote:
+On Fri, Mar 26, 2021 at 7:42 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
 >
-> Hello Brian,
 >
-> Is this already merged in Linux?  I guess not, as I've seen a patch of
-> yous for the kernel, right?
 >
-> Thanks,
->
-> Alex
->
-> On 3/23/21 7:25 PM, Brian Geffon wrote:
-> > mremap(2) now supports MREMAP_DONTUNMAP with mapping types other
-> > than private anonymous.
+> Le 22/03/2021 =C3=A0 18:53, Andrii Nakryiko a =C3=A9crit :
+> > On Mon, Mar 22, 2021 at 9:37 AM Christophe Leroy
+> > <christophe.leroy@csgroup.eu> wrote:
+> >>
+> >> This series implements extended BPF on powerpc32. For the implementati=
+on
+> >> details, see the patch before the last.
+> >>
+> >> The following operations are not implemented:
+> >>
+> >>                  case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /=3D src */
+> >>                  case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %=3D src */
+> >>                  case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + o=
+ff) +=3D src */
+> >>
+> >> The following operations are only implemented for power of two constan=
+ts:
+> >>
+> >>                  case BPF_ALU64 | BPF_MOD | BPF_K: /* dst %=3D imm */
+> >>                  case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /=3D imm */
+> >>
+> >> Below are the results on a powerpc 885:
+> >> - with the patch, with and without bpf_jit_enable
+> >> - without the patch, with bpf_jit_enable (ie with CBPF)
+> >>
+> >> With the patch, with bpf_jit_enable =3D 1 :
+> >>
+> >> [   60.826529] test_bpf: Summary: 378 PASSED, 0 FAILED, [354/366 JIT'e=
+d]
+> >> [   60.832505] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+> >>
+> >> With the patch, with bpf_jit_enable =3D 0 :
+> >>
+> >> [   75.186337] test_bpf: Summary: 378 PASSED, 0 FAILED, [0/366 JIT'ed]
+> >> [   75.192325] test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+> >>
+> >> Without the patch, with bpf_jit_enable =3D 1 :
+> >>
+> >> [  186.112429] test_bpf: Summary: 371 PASSED, 7 FAILED, [119/366 JIT'e=
+d]
+> >>
+> >> Couldn't run test_progs because it doesn't build (clang 11 crashes dur=
+ing the build).
 > >
-> > Signed-off-by: Brian Geffon <bgeffon@google.com>
-> > ---
-> >   man2/mremap.2 | 13 ++-----------
-> >   1 file changed, 2 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/man2/mremap.2 b/man2/mremap.2
-> > index 3ed0c0c0a..72acbc111 100644
-> > --- a/man2/mremap.2
-> > +++ b/man2/mremap.2
-> > @@ -118,16 +118,6 @@ This flag, which must be used in conjunction with
-> >   remaps a mapping to a new address but does not unmap the mapping at
-> >   .IR old_address .
-> >   .IP
-> > -The
-> > -.B MREMAP_DONTUNMAP
-> > -flag can be used only with private anonymous mappings
-> > -(see the description of
-> > -.BR MAP_PRIVATE
-> > -and
-> > -.BR MAP_ANONYMOUS
-> > -in
-> > -.BR mmap (2)).
-> > -.IP
-> >   After completion,
-> >   any access to the range specified by
-> >   .IR old_address
-> > @@ -227,7 +217,8 @@ was specified, but one or more pages in the range specified by
-> >   .IR old_address
-> >   and
-> >   .IR old_size
-> > -were not private anonymous;
-> > +were part of a special mapping or the mapping is one that
-> > +does not support merging or expanding;
-> >   .IP *
-> >   .B MREMAP_DONTUNMAP
-> >   was specified and
-> >
+> > Can you please try checking out the latest clang from sources and use
+> > that one instead?
 >
-> --
-> Alejandro Colomar
-> Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-> http://www.alejandro-colomar.es/
+> The crash is fixed, it builds one step more, then fails at:
+>
+> [root@PC-server-ldb bpf]# make CROSS_COMPILE=3Dppc-linux- ARCH=3Dpowerpc =
+V=3D1
+> /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/host-tools/sbin/b=
+pftool gen skeleton
+> /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.o >
+> /root/gen_ldb/linux-powerpc/tools/testing/selftests/bpf/atomic_bounds.ske=
+l.h
+> libbpf: elf: endianness mismatch in atomic_bounds.
+> Error: failed to open BPF object file: Endian mismatch
+>
+> I'm cross-building on x86 for powerpc/32
+
+yeah, I'm not sure selftests/bpf supports cross-compiling. bpftool got
+some patches recently to enable cross-compiling, but probably not
+selftests/bpf.
+
+>
+> [root@PC-server-ldb bpf]# file atomic_bounds.o
+> atomic_bounds.o: ELF 64-bit MSB relocatable, eBPF, version 1 (SYSV), with=
+ debug_info, not stripped
+>
+> Christophe
