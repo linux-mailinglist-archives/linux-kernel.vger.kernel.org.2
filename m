@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F52B34B198
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:56:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B82A34B1A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhCZVzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 17:55:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45170 "EHLO mail.kernel.org"
+        id S230152AbhCZWAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:00:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:42664 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230316AbhCZVzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 17:55:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C511A61A28;
-        Fri, 26 Mar 2021 21:55:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616795718;
-        bh=ThOTtOeCaalPjDMF552REQ8hQV0MTtvPsHurWmKDojI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VHBWue9AqowGvGaqNHQVQjjTSM3sRba/Tp8NCZ1pilQpjtMFuqerC1clg9u0IjTBc
-         xFQvm8dTY4pn2sTLcPnNgpOPSy8vERd/0Uv2qvz9OAbwVr76hoCqeP+4yXpn5Yzs/u
-         rJHD0xUEWxzYBXhkC9B968yauVcSnKVLqBxvnZMo2y0zOTrnSEerzoT980r7DoXImv
-         rGUiDaLG4Jr8HNgN+UrqSHkF1z/uvlXtMVi0DtxjeC/g7PVQ6/C/XN3dVIz3iCp5WR
-         UF+ptOuEmkiwwaciNER6iQ9/G+8ddcrIxKkV1JOA+ZDXGkHlKYObKv3pkLKSdkxTUJ
-         tOteo3S5Tz+gw==
-Date:   Fri, 26 Mar 2021 16:55:16 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Ion Badulescu <ionut@badula.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-parisc@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        SCSI development list <linux-scsi@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] PCI: Remove pci_try_set_mwi
-Message-ID: <20210326215516.GA916324@bjorn-Precision-5520>
+        id S229933AbhCZV7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 17:59:46 -0400
+IronPort-SDR: qkgOAo7/ub2NpfV+I8Au4pEo1qtyrylA77kJVgFmi4/4lGGpf1d6iF2awmgrhCbd7DuOwEJcFW
+ T2Mm2D32x71A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="252577177"
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="252577177"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 14:59:45 -0700
+IronPort-SDR: cvMv4ltXgyHozMqp91iGvXNe2CgxJp9zV41gu6oqhn+hdNgV0W7BgUpFBc2rba+G634N9a7x+n
+ M7eW3ftuOfng==
+X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
+   d="scan'208";a="416706637"
+Received: from zcmahone-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.255.231.203])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 14:59:45 -0700
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, linux-kernel@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/17] ASoC: remove cppcheck warnings for multiple SOCs
+Date:   Fri, 26 Mar 2021 16:59:10 -0500
+Message-Id: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YF5VVjQ7q/JBSR1Z@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 11:42:46PM +0200, Andy Shevchenko wrote:
-> On Fri, Mar 26, 2021 at 04:26:55PM -0500, Bjorn Helgaas wrote:
-> > [+cc Randy, Andrew (though I'm sure you have zero interest in this
-> > ancient question :))]
-> > 
-> > On Wed, Dec 09, 2020 at 09:31:21AM +0100, Heiner Kallweit wrote:
-> > > pci_set_mwi() and pci_try_set_mwi() do exactly the same, just that the
-> > > former one is declared as __must_check. However also some callers of
-> > > pci_set_mwi() have a comment that it's an optional feature. I don't
-> > > think there's much sense in this separation and the use of
-> > > __must_check. Therefore remove pci_try_set_mwi() and remove the
-> > > __must_check attribute from pci_set_mwi().
-> > > I don't expect either function to be used in new code anyway.
-> > 
-> > There's not much I like better than removing things.  But some
-> > significant thought went into adding pci_try_set_mwi() in the first
-> > place, so I need a little more convincing about why it's safe to
-> > remove it.
-> > 
-> > The argument should cite the discussion about adding it.  I think one
-> > of the earliest conversations is here:
-> > https://lore.kernel.org/linux-ide/20070404213704.224128ec.randy.dunlap@oracle.com/
-> 
-> It's solely PCI feature which is absent on PCIe.
->
-> So, if there is a guarantee that the driver never services a device connected
-> to old PCI bus, it's okay to remove the call (it's no-op on PCIe anyway).
+Trivial cleanups to make cppcheck less verbose.
 
-Yes, I'm aware that MWI is a no-op on PCIe.  If we want to argue that
-we don't need to support Conventional PCI devices, that should be
-explicit, and we could remove pci_set_mwi() completely.  But I don't
-think we're ready to drop Conventional PCI support.
+There should be no functionality change, except for the 'sti_uniperif'
+patch where an error check was added.
 
-> OTOH, PCI core may try MWI itself for every device (but this is an opposite,
-> what should we do on broken devices that do change their state based on that
-> bit while violating specification).
-> 
-> In any case
-> 
-> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Pierre-Louis Bossart (17):
+  ASoC: amd: renoir: acp3x-pdm-dma: remove unnecessary assignments
+  ASoC: atmel: fix shadowed variable
+  ASoC: atmel: atmel-i2s: remove useless initialization
+  ASoC: bcm: cygnus_ssp: remove useless initialization
+  ASoC: meson: axg-tdmin: remove useless assignment
+  ASoC: meson: axg-tdmout: remove useless assignment
+  ASoC: pxa: remove useless assignment
+  ASoC: sti: sti_uniperif: add missing error check
+  ASoC: sti: uniperif: align function prototypes
+  ASoC: stm: stm32_adfsdm: fix snprintf format string
+  ASoC: sunxi: sun8i-codec: clarify expression
+  ASoC: tegra: tegra20_das: clarify expression
+  ASoC: tegra: tegra20_das: align function prototypes
+  ASoC: ti: omap-abe-twl6040: remove useless assignment
+  ASoC: ti: omap-mcsp: remove duplicate test
+  ASoC: ux500: mop500: rename shadowing variable
+  ASoC: ux500: mop500: align function prototype
 
-Thanks!
+ sound/soc/amd/renoir/acp3x-pdm-dma.c | 2 --
+ sound/soc/atmel/atmel-classd.c       | 6 +++---
+ sound/soc/atmel/atmel-i2s.c          | 2 +-
+ sound/soc/bcm/cygnus-ssp.c           | 2 +-
+ sound/soc/meson/axg-tdmin.c          | 2 +-
+ sound/soc/meson/axg-tdmout.c         | 2 +-
+ sound/soc/pxa/mmp-pcm.c              | 2 +-
+ sound/soc/sti/sti_uniperif.c         | 2 ++
+ sound/soc/sti/uniperif.h             | 4 ++--
+ sound/soc/stm/stm32_adfsdm.c         | 2 +-
+ sound/soc/sunxi/sun8i-codec.c        | 2 +-
+ sound/soc/tegra/tegra20_das.c        | 8 ++++----
+ sound/soc/tegra/tegra20_das.h        | 6 +++---
+ sound/soc/ti/omap-abe-twl6040.c      | 2 +-
+ sound/soc/ti/omap-mcbsp.c            | 3 +--
+ sound/soc/ux500/mop500.c             | 6 +++---
+ sound/soc/ux500/mop500_ab8500.h      | 2 +-
+ 17 files changed, 27 insertions(+), 28 deletions(-)
 
-Bjorn
+-- 
+2.25.1
+
