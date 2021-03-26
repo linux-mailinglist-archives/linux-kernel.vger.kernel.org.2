@@ -2,296 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9B534A81A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C93D934A823
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 14:32:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhCZNaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 09:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S230093AbhCZNcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 09:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhCZNaF (ORCPT
+        with ESMTP id S229995AbhCZNcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:30:05 -0400
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD7FC0613AA;
-        Fri, 26 Mar 2021 06:30:04 -0700 (PDT)
-Received: by mail-ua1-x931.google.com with SMTP id r8so1605554ual.9;
-        Fri, 26 Mar 2021 06:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=1B9iiuEL14+V+seCuzJcUxzxikKeptLUgQQ92sa7DbM=;
-        b=h4b7CR6RLVfK4urWhj1WMg0gYrVD7YacFffvAUBzpfyCrYKsW4aI5hbWCL27Sdthpl
-         fexeVDvdmQpE8Ha1AbFpvUmaC5pt6nY0RNXZHUG9fcrTUuQJAuWbZG80dFyiSwYzlmT/
-         wKXV4N5iEvIbCW7CteDyvXb2pGEvFsxBFWktZXnxQg1cP/nDrXzKjebmjynT/gJIhpIv
-         Nt1PgQHitDWIrKbXCgiCHiq4QCIwGIhVuakVOTQfAAL+e9JjLmBFvNHtqSPkVT0p64nx
-         /uAaj6cpJN5JLZ93ZeYe40co1oRc7RDp1ze6Svg8/ZiLV2ImBeVqUJx7BCt1qeXbmZ3I
-         xEcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=1B9iiuEL14+V+seCuzJcUxzxikKeptLUgQQ92sa7DbM=;
-        b=QF0Y5+qYcLq0WGY1fMyUkwKsQCDI3p0NC8U+ye4Bx1WZ/p639Kd2gen3h6+uyKu3X/
-         1BvqIki33A3TRMr2pIDT+9ykhsNMyoptho/W6Dlpp2uslnIwGR59yU+ROsRMA9XiA9h0
-         PChXQVWP6z8lywRObiMH78NnrG54NW+4Bojb7wIYWva6DGp0+wpXbg6vB4zk4DuEVtQ0
-         XDNFj+4eIMeARM7SkuoZElHkMr2NjYFbSlzU7IlYGOJn3DH6DjiObfXrVf0n3Fc7DpOx
-         NLRLpW9L48bmWP2CZE0uVrcjKqP0AGU9m59sV0KA9+WRmn72pIfEffljXZKYnpxJ1UxG
-         YSdg==
-X-Gm-Message-State: AOAM533vC3NuF65GMjPkR8NGZQ32n4eH2crjdx/UiB7BsIApNPoTfkmk
-        DMkRYM32uFBMPyATHaJOcsR3E1rNGRRmUMCvALg=
-X-Google-Smtp-Source: ABdhPJypjAwurav85+0zhqHXdftOcrsLOKaL8E/LzxxVLIbph6IB7ph2wdPmeYXRU3VOheeqfofXr8Zj/JmKRtPkYsc=
-X-Received: by 2002:a9f:3b28:: with SMTP id i40mr7974918uah.37.1616765403769;
- Fri, 26 Mar 2021 06:30:03 -0700 (PDT)
+        Fri, 26 Mar 2021 09:32:05 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAB3C0613AA;
+        Fri, 26 Mar 2021 06:32:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:From:Cc:To;
+        bh=+G7xhqZIogjE5B+cBFT2l8M5NjZzGtGfGiHV0te9vOI=; b=d0/ipG4pmFjEnE+dCec0de4FsE
+        9Vc7oBnfn6Cd6LUIXikZN9YSNv5vCLgAfpWbWXQrXPpClYeMhgnma8vwjUzHRRby4Ax7Wrpde0PEV
+        s378eqXYHwC3zj1qFVqC6WI4/x0aot+2z/yUvuh3q1mENtBZjTpP1x3i13u8GTABAOTlxQ5xNcIjk
+        XP+drfrUeqT2w6HBprw089GSM55e45KzPwpvyED+/YAA3m3jx5y4wGswueJbtld9rby65t7G472T/
+        3NkVKfdncPUPPKry3mZJJIuf1njERGbBzfueIQtwc0MmkqYJr0W8YDEo5Ivz2b36ac6m60dAUwIp+
+        0uHw6SON8OtolqrAHvNR+S1KrmqX+IvogMM75kUHRYa8W1gCOHWb1k4vqIbbmnQOl5rQYRsdLkhbH
+        FUXFr3AXiXiBe35e0aaAxDAgWAzFi+NC6GohlG/7DU8VHaLNsqteIxRDIukpw0pGu9E8Wsl1vxt0J
+        ghhWu3/xOhwL7ympFFg3EbG9;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lPmZF-0002dN-FP; Fri, 26 Mar 2021 13:32:01 +0000
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+From:   Stefan Metzmacher <metze@samba.org>
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+Message-ID: <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+Date:   Fri, 26 Mar 2021 14:31:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-From:   Nathan Royce <nroycea+kernel@gmail.com>
-Date:   Fri, 26 Mar 2021 08:29:52 -0500
-Message-ID: <CALaQ_hrZZmAi2AKtmCm2QUXeg9VWuyeWmmk__OFEG1ycHMiX8A@mail.gmail.com>
-Subject: BTRFS Balance Hard System Crash (Blinking LEDs)
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-*****
-...I "think" this is where the "emergency" drop out of boot occurred,
-and I just did a "systemctl reboot" which had the next boot succeed.
-Nope, I'm wrong. For whatever reason, this appears to be the boot that
-ended up working (searching for the first "microcode" reference
-indicating the start of a boot).
-Mar 25 21:44:17 computerName kernel: BTRFS critical (device dm-3):
-unable to add free space :-17
-...v 13 times
-Mar 25 21:42:59 computerName kernel: BTRFS critical (device dm-3):
-unable to add free space :-17
-Mar 25 21:42:59 computerName kernel: BTRFS critical (device dm-3):
-unable to add free space :-17
-...v 36 times
-Mar 25 21:40:45 computerName kernel: BTRFS critical (device dm-3):
-unable to add free space :-17
-Mar 25 21:40:44 computerName kernel: BTRFS critical (device dm-3):
-unable to add free space :-17
-Mar 25 21:40:44 computerName kernel: ---[ end trace 880e498e00cd6fcd ]---
-Mar 25 21:40:44 computerName kernel:  ret_from_fork+0x22/0x30
-Mar 25 21:40:44 computerName kernel:  ? __kthread_bind_mask+0x70/0x70
-Mar 25 21:40:44 computerName kernel:  kthread+0x144/0x170
-Mar 25 21:40:44 computerName kernel:  balance_kthread+0x35/0x50 [btrfs]
-Mar 25 21:40:44 computerName kernel:  ? btrfs_balance+0xee0/0xee0 [btrfs]
-Mar 25 21:40:44 computerName kernel:  btrfs_balance+0x765/0xee0 [btrfs]
-Mar 25 21:40:44 computerName kernel:  btrfs_relocate_chunk+0x2a/0xc0 [btrfs]
-Mar 25 21:40:44 computerName kernel:
-btrfs_relocate_block_group+0x164/0x310 [btrfs]
-Mar 25 21:40:44 computerName kernel:  relocate_block_group+0x2e9/0x5f0 [btrfs]
-Mar 25 21:40:44 computerName kernel:  prepare_to_merge+0x246/0x280 [btrfs]
-Mar 25 21:40:44 computerName kernel:
-btrfs_commit_transaction+0x79b/0xa70 [btrfs]
-Mar 25 21:40:44 computerName kernel:
-btrfs_finish_extent_commit+0xb6/0x2c0 [btrfs]
-Mar 25 21:40:44 computerName kernel:  ? clear_extent_bit+0x43/0x60 [btrfs]
-Mar 25 21:40:44 computerName kernel:  unpin_extent_range+0x299/0x4d0 [btrfs]
-Mar 25 21:40:44 computerName kernel:  ? kmem_cache_free+0xad/0x1e0
-Mar 25 21:40:44 computerName kernel:  __btrfs_add_free_space+0xaf/0x4d0 [btrfs]
-Mar 25 21:40:44 computerName kernel:  link_free_space+0x27/0x60 [btrfs]
-Mar 25 21:40:44 computerName kernel: Call Trace:
-Mar 25 21:40:44 computerName kernel: CR2: 00003e4fc2c21000 CR3:
-000000012f60a003 CR4: 00000000001606f0
-Mar 25 21:40:44 computerName kernel: CS:  0010 DS: 0000 ES: 0000 CR0:
-0000000080050033
-Mar 25 21:40:44 computerName kernel: FS:  0000000000000000(0000)
-GS:ffff95cad8200000(0000) knlGS:0000000000000000
-Mar 25 21:40:44 computerName kernel: R13: ffff95ca79eeac08 R14:
-ffff95ca79eeac00 R15: 000000000000c000
-Mar 25 21:40:44 computerName kernel: R10: ffff95ca181731e0 R11:
-0000000000000000 R12: ffff95c9d6b57c30
-Mar 25 21:40:44 computerName kernel: RBP: 0000000000000000 R08:
-ffffffffffffffff R09: ffff95c9d6b57c30
-Mar 25 21:40:44 computerName kernel: RDX: 0000000000000000 RSI:
-0000026e55e90000 RDI: ffff95ca79eeac08
-Mar 25 21:40:44 computerName kernel: RAX: ffff95ca4f5389b0 RBX:
-0000026e55e90000 RCX: ffff95ca4f538328
-Mar 25 21:40:44 computerName kernel: RSP: 0018:ffffb171c067ba60 EFLAGS: 00010246
-Mar 25 21:40:44 computerName kernel: Code: 89 e7 49 c7 44 24 08 00 00
-00 00 49 c7 44 24 10 00 00 00 00 4c 89 21 e8 16 93 28 fa 31 c0 5b 5d
-41 5c 41 5d c3 48 85 d2 75 c1 <0f> 0b b8 ef ff ff ff eb eb 0f 0b b8 ef
-ff ff ff eb e2 66 0f 1f 44
-Mar 25 21:40:44 computerName kernel: RIP:
-0010:tree_insert_offset+0x88/0xa0 [btrfs]
-Mar 25 21:40:44 computerName kernel: Hardware name: To Be Filled By
-O.E.M. To Be Filled By O.E.M./H97M-ITX/ac, BIOS P1.80 07/27/2015
-Mar 25 21:40:44 computerName kernel: CPU: 0 PID: 998 Comm:
-btrfs-balance Tainted: G           OE     5.8.7-dirty #1
-Mar 25 21:40:44 computerName kernel:  intel_gtt syscopyarea
-sysfillrect sysimgblt snd fb_sys_fops soundcore mei lpc_ich evdev
-mac_hid nct6775 hwmon_vid v4l2loopback_dc(OE) videodev drm mc agpgart
-fuse ip_tables x_tables f2fs dm_crypt cbc enc>
-Mar 25 21:40:44 computerName kernel: Modules linked in: ccm cmac
-algif_hash bnep btrfs blake2b_generic xor raid6_pq libcrc32c
-crc32c_generic nls_iso8859_1 nls_cp437 vfat fat snd_usb_audio
-snd_usbmidi_lib snd_rawmidi snd_seq_device tda18271 a>
-Mar 25 21:40:44 computerName kernel: WARNING: CPU: 0 PID: 998 at
-fs/btrfs/free-space-cache.c:1499 tree_insert_offset+0x88/0xa0 [btrfs]
-...boot crash AFTER balance
-Mar 25 21:40:39 computerName kernel: BTRFS info (device dm-3): found 8
-extents, stage: move data extents
-Mar 25 21:40:37 computerName kernel: BTRFS info (device dm-3):
-relocating block group 3875364929536 flags data
-Mar 25 21:40:37 computerName kernel: BTRFS info (device dm-3):
-balance: resume -dusage=90 -musage=90 -susage=90
-Mar 25 21:40:37 computerName kernel: BTRFS error (device dm-3):
-incorrect extent count for 2672774086656; counted 7070, expected 7073
-Mar 25 21:40:37 computerName systemd[1]: Mounted <btrfsPath>
-Mar 25 21:40:33 computerName kernel: BTRFS info (device dm-3): bdev
-/dev/mapper/<btrfsPath> errs: wr 0, rd 56, flush 0, corrupt 0, gen 0
-Mar 25 21:40:32 computerName kernel: BTRFS info (device dm-3): has
-skinny extents
-Mar 25 21:40:32 computerName kernel: BTRFS info (device dm-3): using
-free space tree
-Mar 25 21:40:32 computerName kernel: BTRFS info (device dm-3):
-enabling auto defrag
-...
-Mar 25 21:39:54 computerName systemd-shutdown[1]: Syncing filesystems
-and block devices.
-...Hmm, based on the timing here, maybe the above wasn't the first
-"emergency" reboot, and it was this one instead. No idea why the crash
-happened on the next reboot.
-Mar 25 21:28:52 computerName kernel: BTRFS error (device dm-3):
-open_ctree failed
-...
-Mar 25 21:28:52 computerName systemd[1]: Failed to mount <btrfsPath>.
-Mar 25 21:28:52 computerName systemd[1]: <btrfsPath>.mount: Failed
-with result 'timeout'.
-Mar 25 21:28:52 computerName systemd[1]: <btrfsPath>.mount: Mount
-process exited, code=killed, status=15/TERM
-Mar 25 21:28:52 computerName kernel: BTRFS warning (device dm-3):
-failed to resume balance: -4
-Mar 25 21:28:35 computerName kernel: BTRFS info (device dm-3): setting
-compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-Mar 25 21:28:35 computerName kernel: BTRFS info (device dm-3): setting
-compat-ro feature flag for FREE_SPACE_TREE (0x1)
-Mar 25 21:28:08 computerName kernel: BTRFS info (device dm-3):
-creating free space tree
-Mar 25 21:27:25 computerName systemd[1]: <btrfsPath>.mount: Killing
-process 983 (mount) with signal SIGKILL.
-Mar 25 21:27:25 computerName systemd[1]: <btrfsPath>.mount: Mount
-process timed out. Killing.
-Mar 25 21:25:55 computerName systemd[1]: <btrfsPath>.mount: Mounting
-timed out. Terminating.
-Mar 25 21:24:35 computerName kernel: BTRFS info (device dm-3): start
-tree-log replay
-Mar 25 21:24:25 computerName kernel: BTRFS info (device dm-3): bdev
-/dev/mapper/<btrfsPath> errs: wr 0, rd 56, flush 0, corrupt 0, gen 0
-Mar 25 21:24:25 computerName kernel: BTRFS info (device dm-3): has
-skinny extents
-Mar 25 21:24:25 computerName kernel: BTRFS info (device dm-3): using
-free space tree
-Mar 25 21:24:25 computerName kernel: BTRFS info (device dm-3):
-enabling auto defrag
-Mar 25 21:24:25 computerName kernel: BTRFS info (device dm-3):
-enabling free space tree
-Mar 25 21:24:25 computerName systemd[1]: Mounting <btrfsPath>...
-...This is where I found my system had crashed hard with the numlock
-and capslock LEDs blinking. Estimating the time, this should be about
-where balancing should have completed. There was 5% left when I last
-checked it ~3 hours earlier (takes ~30 minutes for a 1% change to
-occur). Interesting that the journal didn't catch the cause. I have my
-system/root (containing journal log) on a separate sd-card using F2FS,
-while /home (and old/unused system/root) is on the BTRFS mechanical
-drive.
-Mar 25 21:03:59 computerName kernel: BTRFS info (device dm-3): found
-81683 extents, stage: move data extents
-Mar 25 21:02:46 computerName kernel: BTRFS info (device dm-3):
-relocating block group 3250585600 flags data
-Mar 25 21:02:14 computerName kernel: BTRFS info (device dm-3): found
-71735 extents, stage: update data pointers
-...
-Mar 25 20:52:56 computerName kernel: BTRFS info (device dm-3): found
-71746 extents, stage: move data extents
-...
-Mar 25 20:51:46 computerName kernel: BTRFS info (device dm-3):
-relocating block group 4324327424 flags data
-...
-Mar 25 20:51:00 computerName kernel: BTRFS info (device dm-3): found
-53063 extents, stage: update data pointers
-...
-*****
-Kernel 5.8.7
-Drive: 1.5 TB (mechanical)
-btrfs-progs: 5.10.1
-*****
-$ sudo btrfs filesystem usage /<btrfsPath>
-Overall:
-    Device size:                   1.29TiB
-    Device allocated:              1.14TiB
-    Device unallocated:          147.68GiB
-    Device missing:                  0.00B
-    Used:                          1.14TiB
-    Free (estimated):            150.08GiB      (min: 76.24GiB)
-    Free (statfs, df):           150.08GiB
-    Data ratio:                       1.00
-    Metadata ratio:                   2.00
-    Global reserve:              512.00MiB      (used: 0.00B)
-    Multiple profiles:                  no
+Am 26.03.21 um 13:56 schrieb Jens Axboe:
+> On 3/26/21 5:48 AM, Stefan Metzmacher wrote:
+>>
+>> Am 26.03.21 um 01:39 schrieb Jens Axboe:
+>>> Hi,
+>>>
+>>> As discussed in a previous thread today, the seemingly much saner approach
+>>> is just to allow signals (including SIGSTOP) for the PF_IO_WORKER IO
+>>> threads. If we just have the threads call get_signal() for
+>>> signal_pending(), then everything just falls out naturally with how
+>>> we receive and handle signals.
+>>>
+>>> Patch 1 adds support for checking and calling get_signal() from the
+>>> regular IO workers, the manager, and the SQPOLL thread. Patch 2 unblocks
+>>> SIGSTOP from the default IO thread blocked mask, and the rest just revert
+>>> special cases that were put in place for PF_IO_WORKER threads.
+>>>
+>>> With this done, only two special cases remain for PF_IO_WORKER, and they
+>>> aren't related to signals so not part of this patchset. But both of them
+>>> can go away as well now that we have "real" threads as IO workers, and
+>>> then we'll have zero special cases for PF_IO_WORKER.
+>>>
+>>> This passes the usual regression testing, my other usual 24h run has been
+>>> kicked off. But I wanted to send this out early.
+>>>
+>>> Thanks to Linus for the suggestion. As with most other good ideas, it's
+>>> obvious once you hear it. The fact that we end up with _zero_ special
+>>> cases with this is a clear sign that this is the right way to do it
+>>> indeed. The fact that this series is 2/3rds revert further drives that
+>>> point home. Also thanks to Eric for diligent review on the signal side
+>>> of things for the past changes (and hopefully ditto on this series :-))
+>>
+>> Ok, I'm testing a8ff6a3b20bd16d071ef66824ae4428529d114f9 from
+>> your io_uring-5.12 branch.
+>>
+>> And using this patch:
+>> diff --git a/examples/io_uring-cp.c b/examples/io_uring-cp.c
+>> index cc7a227a5ec7..6e26a4214015 100644
+>> --- a/examples/io_uring-cp.c
+>> +++ b/examples/io_uring-cp.c
+>> @@ -116,13 +116,16 @@ static void queue_write(struct io_uring *ring, struct io_data *data)
+>>         io_uring_submit(ring);
+>>  }
+>>
+>> -static int copy_file(struct io_uring *ring, off_t insize)
+>> +static int copy_file(struct io_uring *ring, off_t _insize)
+>>  {
+>> +       off_t insize = _insize;
+>>         unsigned long reads, writes;
+>>         struct io_uring_cqe *cqe;
+>>         off_t write_left, offset;
+>>         int ret;
+>>
+>> +again:
+>> +       insize = _insize;
+>>         write_left = insize;
+>>         writes = reads = offset = 0;
+>>
+>> @@ -221,6 +224,12 @@ static int copy_file(struct io_uring *ring, off_t insize)
+>>                 }
+>>         }
+>>
+>> +       {
+>> +               struct timespec ts = { .tv_nsec = 999999, };
+>> +               nanosleep(&ts, NULL);
+>> +               goto again;
+>> +       }
+>> +
+>>         return 0;
+>>  }
+>>
+>> Running ./io_uring-cp ~/linux-image-5.12.0-rc2+-dbg_5.12.0-rc2+-5_amd64.deb file
+>> What I see is this:
+>>
+>> kill -SIGSTOP to any thread I used a worker with pid 2061 here, results in
+>>
+>> root@ub1704-166:~# head /proc/2061/status
+>> Name:   iou-wrk-2041
+>> Umask:  0022
+>> State:  R (running)
+>> Tgid:   2041
+>> Ngid:   0
+>> Pid:    2061
+>> PPid:   1857
+>> TracerPid:      0
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>> root@ub1704-166:~# head /proc/2041/status
+>> Name:   io_uring-cp
+>> Umask:  0022
+>> State:  T (stopped)
+>> Tgid:   2041
+>> Ngid:   0
+>> Pid:    2041
+>> PPid:   1857
+>> TracerPid:      0
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>> root@ub1704-166:~# head /proc/2042/status
+>> Name:   iou-mgr-2041
+>> Umask:  0022
+>> State:  T (stopped)
+>> Tgid:   2041
+>> Ngid:   0
+>> Pid:    2042
+>> PPid:   1857
+>> TracerPid:      0
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>>
+>> So userspace and iou-mgr-2041 stop, but the workers don't.
+>> 49 workers burn cpu as much as possible.
+>>
+>> kill -KILL 2061
+>> results in this:
+>> - all workers are gone
+>> - iou-mgr-2041 is gone
+>> - io_uring-cp waits in status D forever
+>>
+>> root@ub1704-166:~# head /proc/2041/status
+>> Name:   io_uring-cp
+>> Umask:  0022
+>> State:  D (disk sleep)
+>> Tgid:   2041
+>> Ngid:   0
+>> Pid:    2041
+>> PPid:   1857
+>> TracerPid:      0
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>> root@ub1704-166:~# cat /proc/2041/stack
+>> [<0>] io_wq_destroy_manager+0x36/0xa0
+>> [<0>] io_wq_put_and_exit+0x2b/0x40
+>> [<0>] io_uring_clean_tctx+0xc5/0x110
+>> [<0>] __io_uring_files_cancel+0x336/0x4e0
+>> [<0>] do_exit+0x16b/0x13b0
+>> [<0>] do_group_exit+0x8b/0x140
+>> [<0>] get_signal+0x219/0xc90
+>> [<0>] arch_do_signal_or_restart+0x1eb/0xeb0
+>> [<0>] exit_to_user_mode_prepare+0x115/0x1a0
+>> [<0>] syscall_exit_to_user_mode+0x27/0x50
+>> [<0>] do_syscall_64+0x45/0x90
+>> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> The 3rd problem is that gdb in a ubuntu 20.04 userspace vm hangs forever:
+>>
+>> root@ub1704-166:~/samba.git# LANG=C strace -o /dev/shm/strace.txt -f -ttT gdb --pid 2417
+>> GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
+>> Copyright (C) 2020 Free Software Foundation, Inc.
+>> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+>> This is free software: you are free to change and redistribute it.
+>> There is NO WARRANTY, to the extent permitted by law.
+>> Type "show copying" and "show warranty" for details.
+>> This GDB was configured as "x86_64-linux-gnu".
+>> Type "show configuration" for configuration details.
+>> For bug reporting instructions, please see:
+>> <http://www.gnu.org/software/gdb/bugs/>.
+>> Find the GDB manual and other documentation resources online at:
+>>     <http://www.gnu.org/software/gdb/documentation/>.
+>>
+>> For help, type "help".
+>> Type "apropos word" to search for commands related to "word".
+>> Attaching to process 2417
+>> [New LWP 2418]
+>> [New LWP 2419]
+>>
+>> <here it hangs forever>
+>>
+>> The related parts of 'pstree -a -t -p':
+>>
+>>       ├─bash,2048
+>>       │   └─io_uring-cp,2417 /root/kernel/sn-devel-184-builds/linux-image-5.12.0-rc2+-dbg_5.12.0-rc2+-5_amd64.deb file
+>>       │       ├─{iou-mgr-2417},2418
+>>       │       └─{iou-wrk-2417},2419
+>>       ├─bash,2167
+>>       │   └─strace,2489 -o /dev/shm/strace.txt -f -ttT gdb --pid 2417
+>>       │       └─gdb,2492 --pid 2417
+>>       │           └─gdb,2494 --pid 2417
+>>
+>> root@ub1704-166:~# cat /proc/sys/kernel/yama/ptrace_scope
+>> 0
+>>
+>> root@ub1704-166:~# head /proc/2417/status
+>> Name:   io_uring-cp
+>> Umask:  0022
+>> State:  t (tracing stop)
+>> Tgid:   2417
+>> Ngid:   0
+>> Pid:    2417
+>> PPid:   2048
+>> TracerPid:      2492
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>> root@ub1704-166:~# head /proc/2418/status
+>> Name:   iou-mgr-2417
+>> Umask:  0022
+>> State:  t (tracing stop)
+>> Tgid:   2417
+>> Ngid:   0
+>> Pid:    2418
+>> PPid:   2048
+>> TracerPid:      2492
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>> root@ub1704-166:~# head /proc/2419/status
+>> Name:   iou-wrk-2417
+>> Umask:  0022
+>> State:  R (running)
+>> Tgid:   2417
+>> Ngid:   0
+>> Pid:    2419
+>> PPid:   2048
+>> TracerPid:      2492
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>> root@ub1704-166:~# head /proc/2492/status
+>> Name:   gdb
+>> Umask:  0022
+>> State:  S (sleeping)
+>> Tgid:   2492
+>> Ngid:   0
+>> Pid:    2492
+>> PPid:   2489
+>> TracerPid:      2489
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>> root@ub1704-166:~# head /proc/2494/status
+>> Name:   gdb
+>> Umask:  0022
+>> State:  t (tracing stop)
+>> Tgid:   2494
+>> Ngid:   0
+>> Pid:    2494
+>> PPid:   2492
+>> TracerPid:      2489
+>> Uid:    0       0       0       0
+>> Gid:    0       0       0       0
+>>
+>>
+>> Maybe these are related and 2494 gets the SIGSTOP that was supposed to
+>> be handled by 2419.
+>>
+>> strace.txt is attached.
+>>
+>> Just a wild guess (I don't have time to test this), but maybe this
+>> will fix it:
+>>
+>> diff --git a/fs/io-wq.c b/fs/io-wq.c
+>> index 07e7d61524c7..ee5a402450db 100644
+>> --- a/fs/io-wq.c
+>> +++ b/fs/io-wq.c
+>> @@ -503,8 +503,7 @@ static int io_wqe_worker(void *data)
+>>                 if (io_flush_signals())
+>>                         continue;
+>>                 ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
+>> -               if (try_to_freeze() || ret)
+>> -                       continue;
+>> +               try_to_freeze();
+>>                 if (signal_pending(current)) {
+>>                         struct ksignal ksig;
+>>
+>> @@ -514,8 +513,7 @@ static int io_wqe_worker(void *data)
+>>                         continue;
+>>                 }
+>>                 /* timed out, exit unless we're the fixed worker */
+>> -               if (test_bit(IO_WQ_BIT_EXIT, &wq->state) ||
+>> -                   !(worker->flags & IO_WORKER_F_FIXED))
+>> +               if (ret == 0 && !(worker->flags & IO_WORKER_F_FIXED))
+>>                         break;
+>>         }
+>>
+>> When the worker got a signal I guess ret is not 0 and we'll
+>> never hit the if (signal_pending()) statement...
+> 
+> Right, the logic was a bit wrong there, and we can also just drop
+> try_to_freeze() from all of them now, we don't have to special
+> case that anymore.
 
-Data,single: Size:1.13TiB, Used:1.13TiB (99.79%)
-   /dev/mapper/<btrfsPath>    1.13TiB
+I tested my version and it fixes the SIGSTOP problem, I guess your
+branch will also fix it.
 
-Metadata,DUP: Size:5.00GiB, Used:3.91GiB (78.14%)
-   /dev/mapper/<btrfsPath>   10.00GiB
+So the looping workers are gone and doesn't hang anymore.
 
-System,DUP: Size:32.00MiB, Used:160.00KiB (0.49%)
-   /dev/mapper/<btrfsPath>   64.00MiB
+But gdb still shows very strange things, with a 5.10 kernel I see this:
 
-Unallocated:
-   /dev/mapper/<btrfsPath>  147.68GiB
-*****
+root@ub1704-166:~# LANG=C gdb --pid 1274
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
 
-The approximate steps I took was:
-1) Run filefrag to find the worst offenders.
-2) Run btrfs defrag on those with the highest extents
-3) Cut out commercials on recorded television programs
-4) Run btrfs defrag on the TV directory
-5) Run filefrag on /var
-6) Pick on "/var/lib/sddm/.cache/mesa_shader_cache/index" as a test
-and run btrfs defrag
-7) Ponder why I can't get a small (1MB) file down to 1 extent instead of 83.
-8) Run btrfs balance (--full-balance) on
-"/var/lib/sddm/.cache/mesa_shader_cache/" (assuming it's actually
-balancing the entire drive rather than only that dir)
-9) Change the mount options in fstab to
-"rw,relatime,space_cache=v2,autodefrag" where
-"space_cache=v2,autodefrag" was added and "subvolid=5,subvol=/" was
-removed. Maybe "v2" explains the temporary "free space" messages, but
-not the gnarly crash.
-10) Freak out when I see my system crashed hard after 1+ day(s) of
-balancing. (Unrelated to the fstab change since I hadn't
-rebooted/remounted the drive yet)
-11) Scrub the drive and be happy it came back with "Error summary:
-no errors found".
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+Attaching to process 1274
+Reading symbols from /root/liburing/examples/io_uring-cp...
+Reading symbols from /lib/x86_64-linux-gnu/libc.so.6...
+Reading symbols from /usr/lib/debug//lib/x86_64-linux-gnu/libc-2.31.so...
+Reading symbols from /lib64/ld-linux-x86-64.so.2...
+Reading symbols from /usr/lib/debug//lib/x86_64-linux-gnu/ld-2.31.so...
+syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+38      ../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory.
+(gdb)
 
-My next step after hearing I should be safe now (or what action you
-want me to take) will be to:
-*****
-$ OLDIFS=$IFS
-$ IFS=$'\n'
-$ find /<btrfsPath> -xdev -type f -print0 | xargs -0 filefrag
-2>/dev/null | sed 's/^\(.*\): \([0-9]\+\) extent.*/\1/' | awk -F ' '
-'$1' | sort -n | for eachFile in $(cat); do btrfs filesystem
-defragment -v $eachFile ; done
-$ IFS=$OLDIFS
-$ btrfs balance -v start /<btrfsPath>
-*****
-... with the intent of defragmenting (aligning) files from
-smallest->largest to hopefully get them all down as close to 1 extent
-as possible. I'm open to hearing why my hope isn't going to happen.
-I'd think with ~150 GB remaining, it should be doable.
-Ideally, what I'd look to do is perform those defragment steps in such
-a way that the oldest files with the oldest modifications would all be
-moved to the slowest access region of the disk, and the opposite would
-be true (newest created/modification -> fastest). I'm sure that level
-of control doesn't exist though.
-I liked that visual representation that Windows gave so many years ago
-when defragmenting, giving me hope that file runs were being
-minimized. Of course that "minimizing" means more (is practical) than
-the visual.
+
+And now:
+
+root@ub1704-166:~# LANG=C gdb --pid 1320
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+Attaching to process 1320
+[New LWP 1321]
+[New LWP 1322]
+
+warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
+
+warning: Architecture rejected target-supplied description
+syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+38      ../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory.
+(gdb)
+
+pstree -a -t -p looks like this:
+
+      │   └─io_uring-cp,1320 /root/kernel/sn-devel-184-builds/linux-image-5.12.0-rc2+-dbg_5.12.0-rc2+-5_amd64.deb file
+      │       ├─{iou-mgr-1320},1321
+      │       └─{iou-wrk-1320},1322
+
+I'm wondering why there's the architecture related stuff...
+
+> Can you try the current branch? I folded in fixes for that.
+> That will definitely fix case 1+3, the #2 with kill -KILL is kind
+> of puzzling. I'll try and reproduce that with the current tree and see
+> what happens. But that feels like it's either not a new thing, or it's
+> the same core issue as 1+3 (though I don't quite see how, unless the
+> failure to catch the signal will elude get_signal() forever in the
+> worker, I guess that's possible).
+
+The KILL after STOP deadlock still exists.
+
+Does io_wq_manager() exits without cleaning up on SIGKILL?
+
+metze
+
