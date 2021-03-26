@@ -2,293 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4ADE34A685
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F69034A68D
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 12:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhCZLj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 07:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhCZLi7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 07:38:59 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9929C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 04:38:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mktisea4Z4cTtpOJLiT4dlCMI4XtzjXEktyvRdN2mvU=; b=pQCprxJu08+ESB6IPGA/KoPJMM
-        cF6D+ya4mE+0MOjpYwr92AvUitw3B+QL1tLa/4rZ/pZac0l367Ycxe1swUqJjtfEjmthlMDCj27F1
-        /WP5nSJ0AvwTNv5bgmNJgAqOSgMyVurG97q7P+iiugLhgqYyRNBi4gS2aToQprlzlFqmwQ+GUWMT/
-        8xUOkfvlfh4FFUNtw+RJFcQyXMdpTHSXwAaH6nm3p5fpDgWmNh5IOr1q+oUX2oJNskSz+csD2SEiP
-        7n8SCdDpKsGY+F4PtdTWqHETNOhG3+7qgFK9Mu7GWXMDc7/QKTcLJeQQqEG5dgvkh+NM2jZU1omMf
-        HXITnxZg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPknY-003Rfb-Dt; Fri, 26 Mar 2021 11:38:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S229904AbhCZLmM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 26 Mar 2021 07:42:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229590AbhCZLmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 07:42:07 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CC492306099;
-        Fri, 26 Mar 2021 12:38:39 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 920CE2BD94356; Fri, 26 Mar 2021 12:38:39 +0100 (CET)
-Date:   Fri, 26 Mar 2021 12:38:39 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Greg KH <greg@kroah.com>
-Cc:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        joshdon@google.com, valentin.schneider@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
-Message-ID: <YF3Hv5zXb/6lauzs@hirez.programming.kicks-ass.net>
-References: <20210326103352.603456266@infradead.org>
- <20210326103935.183934395@infradead.org>
- <YF2/41K4xs3ZOQdV@kroah.com>
- <YF3DF+T8nPRgt7Ao@hirez.programming.kicks-ass.net>
- <YF3F0JbbEpeSGzW6@kroah.com>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25CBE61A26;
+        Fri, 26 Mar 2021 11:41:57 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 11:42:02 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Anssi Hannula <anssi.hannula@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Bruno =?UTF-8?B?UHI=?= =?UTF-8?B?w6ltb250?= 
+        <bonbons@linux-vserver.org>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Daniel Drubin <daniel.drubin@intel.com>,
+        Dario Pagani <dario.pagani.146+linuxk@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Kim Kuparinen <kimi.h.kuparinen@gmail.com>,
+        Krzysztof =?UTF-8?B?V2lsY3p5xYRza2k=?= <kw@linux.com>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-usb@vger.kernel.org, Lopez Casado <nlopezcasad@logitech.com>,
+        "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>,
+        Masaki Ota <masaki.ota@jp.alps.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        message to <vojtech@ucw.cz>,
+        Michael Haboustak <mike-@cinci.rr.com>,
+        Rushikesh S Kadam <rushikesh.s.kadam@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= <uwe@kleine-koenig.org>,
+        Vojtech Pavlik <vojtech@suse.cz>,
+        Zhang Lixu <lixu.zhang@intel.com>
+Subject: Re: [PATCH 00/25] Rid W=1 warnings from HID
+Message-ID: <20210326114202.3862b8c5@jic23-huawei>
+In-Reply-To: <20210324173404.66340-1-lee.jones@linaro.org>
+References: <20210324173404.66340-1-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YF3F0JbbEpeSGzW6@kroah.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 12:30:24PM +0100, Greg KH wrote:
-> Great, change that and limit the size of the string that can be written
-> and it looks good to me, thanks for adding this.
+On Wed, 24 Mar 2021 17:33:39 +0000
+Lee Jones <lee.jones@linaro.org> wrote:
 
-Here goes..
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 
----
-Subject: debugfs: Implement debugfs_create_str()
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Thu Mar 25 10:53:55 CET 2021
+Lee, it's a bit novel to cc linux-iio on the cover letter but
+none of the actual patches..  Or least none of them reached
+me or lore.kernel.org
 
-Implement debugfs_create_str() to easily display names and such in
-debugfs.
+I'm sure they are great :)
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- fs/debugfs/file.c       |  148 ++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/debugfs.h |   27 ++++++++
- 2 files changed, 175 insertions(+)
+Jonathan
 
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -865,6 +865,154 @@ struct dentry *debugfs_create_bool(const
- }
- EXPORT_SYMBOL_GPL(debugfs_create_bool);
- 
-+ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
-+			      size_t count, loff_t *ppos)
-+{
-+	struct dentry *dentry = F_DENTRY(file);
-+	char *str, *copy = NULL;
-+	int copy_len, len;
-+	ssize_t ret;
-+
-+	ret = debugfs_file_get(dentry);
-+	if (unlikely(ret))
-+		return ret;
-+
-+again:
-+	rcu_read_lock();
-+	str = rcu_dereference(*(char **)file->private_data);
-+	len = strlen(str) + 1;
-+
-+	if (!copy || copy_len < len) {
-+		rcu_read_unlock();
-+		kfree(copy);
-+		copy = kmalloc(len + 1, GFP_KERNEL);
-+		if (!copy) {
-+			debugfs_file_put(dentry);
-+			return -ENOMEM;
-+		}
-+		copy_len = len;
-+		goto again;
-+	}
-+
-+	strncpy(copy, str, len);
-+	copy[len] = '\n';
-+	copy[len+1] = '\0';
-+	rcu_read_unlock();
-+
-+	debugfs_file_put(dentry);
-+
-+	ret = simple_read_from_buffer(user_buf, count, ppos, copy, len + 1);
-+	kfree(copy);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(debugfs_read_file_str);
-+
-+ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
-+			       size_t count, loff_t *ppos)
-+{
-+	struct dentry *dentry = F_DENTRY(file);
-+	char *old, *new = NULL;
-+	int pos = *ppos;
-+	int r;
-+
-+	r = debugfs_file_get(dentry);
-+	if (unlikely(r))
-+		return r;
-+
-+	old = *(char **)file->private_data;
-+
-+	/* only allow strict concattenation */
-+	r = -EINVAL;
-+	if (pos && pos != strlen(old))
-+		goto error;
-+
-+	r = -E2BIG;
-+	if (pos + count + 1 > PAGE_SIZE)
-+		goto error;
-+
-+	r = -ENOMEM;
-+	new = kmalloc(pos + count + 1, GFP_KERNEL);
-+	if (!new)
-+		goto error;
-+
-+	if (pos)
-+		memcpy(new, old, pos);
-+
-+	r = -EFAULT;
-+	if (copy_from_user(new + pos, user_buf, count))
-+		goto error;
-+
-+	new[pos + count] = '\0';
-+	strim(new);
-+
-+	rcu_assign_pointer(*(char **)file->private_data, new);
-+	synchronize_rcu();
-+	kfree(old);
-+
-+	debugfs_file_put(dentry);
-+	return count;
-+
-+error:
-+	kfree(new);
-+	debugfs_file_put(dentry);
-+	return r;
-+}
-+EXPORT_SYMBOL_GPL(debugfs_write_file_str);
-+
-+static const struct file_operations fops_str = {
-+	.read =		debugfs_read_file_str,
-+	.write =	debugfs_write_file_str,
-+	.open =		simple_open,
-+	.llseek =	default_llseek,
-+};
-+
-+static const struct file_operations fops_str_ro = {
-+	.read =		debugfs_read_file_str,
-+	.open =		simple_open,
-+	.llseek =	default_llseek,
-+};
-+
-+static const struct file_operations fops_str_wo = {
-+	.write =	debugfs_write_file_str,
-+	.open =		simple_open,
-+	.llseek =	default_llseek,
-+};
-+
-+/**
-+ * debugfs_create_str - create a debugfs file that is used to read and write a string value
-+ * @name: a pointer to a string containing the name of the file to create.
-+ * @mode: the permission that the file should have
-+ * @parent: a pointer to the parent dentry for this file.  This should be a
-+ *          directory dentry if set.  If this parameter is %NULL, then the
-+ *          file will be created in the root of the debugfs filesystem.
-+ * @value: a pointer to the variable that the file should read to and write
-+ *         from.
-+ *
-+ * This function creates a file in debugfs with the given name that
-+ * contains the value of the variable @value.  If the @mode variable is so
-+ * set, it can be read from, and written to.
-+ *
-+ * This function will return a pointer to a dentry if it succeeds.  This
-+ * pointer must be passed to the debugfs_remove() function when the file is
-+ * to be removed (no automatic cleanup happens if your module is unloaded,
-+ * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-+ * returned.
-+ *
-+ * NOTE: when writing is enabled it will replace the string, string lifetime is
-+ * assumed to be RCU managed.
-+ *
-+ * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
-+ * be returned.
-+ */
-+void debugfs_create_str(const char *name, umode_t mode,
-+			struct dentry *parent, char **value)
-+{
-+	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_str,
-+				   &fops_str_ro, &fops_str_wo);
-+}
-+EXPORT_SYMBOL_GPL(debugfs_create_str);
-+
- static ssize_t read_file_blob(struct file *file, char __user *user_buf,
- 			      size_t count, loff_t *ppos)
- {
---- a/include/linux/debugfs.h
-+++ b/include/linux/debugfs.h
-@@ -128,6 +128,8 @@ void debugfs_create_atomic_t(const char
- 			     struct dentry *parent, atomic_t *value);
- struct dentry *debugfs_create_bool(const char *name, umode_t mode,
- 				  struct dentry *parent, bool *value);
-+void debugfs_create_str(const char *name, umode_t mode,
-+			struct dentry *parent, char **value);
- 
- struct dentry *debugfs_create_blob(const char *name, umode_t mode,
- 				  struct dentry *parent,
-@@ -156,6 +158,12 @@ ssize_t debugfs_read_file_bool(struct fi
- ssize_t debugfs_write_file_bool(struct file *file, const char __user *user_buf,
- 				size_t count, loff_t *ppos);
- 
-+ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
-+			      size_t count, loff_t *ppos);
-+
-+ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
-+			       size_t count, loff_t *ppos);
-+
- #else
- 
- #include <linux/err.h>
-@@ -297,6 +305,11 @@ static inline struct dentry *debugfs_cre
- 	return ERR_PTR(-ENODEV);
- }
- 
-+static inline void debugfs_create_str(const char *name, umode_t mode,
-+				      struct dentry *parent,
-+				      char **value)
-+{ }
-+
- static inline struct dentry *debugfs_create_blob(const char *name, umode_t mode,
- 				  struct dentry *parent,
- 				  struct debugfs_blob_wrapper *blob)
-@@ -347,6 +360,20 @@ static inline ssize_t debugfs_write_file
- {
- 	return -ENODEV;
- }
-+
-+static inline ssize_t debugfs_read_file_str(struct file *file,
-+					    char __user *user_buf,
-+					    size_t count, loff_t *ppos)
-+{
-+	return -ENODEV;
-+}
-+
-+static inline ssize_t debugfs_write_file_str(struct file *file,
-+					     const char __user *user_buf,
-+					     size_t count, loff_t *ppos)
-+{
-+	return -ENODEV;
-+}
- 
- #endif
- 
+> 
+> Lee Jones (25):
+>   HID: intel-ish-hid: Remove unused variable 'err'
+>   HID: ishtp-hid-client: Move variable to where it's actually used
+>   HID: intel-ish-hid: pci-ish: Remove unused variable 'ret'
+>   HID: intel-ish: Supply some missing param descriptions
+>   HID: intel-ish: Fix a naming disparity and a formatting error
+>   HID: usbhid: Repair a formatting issue in a struct description
+>   HID: intel-ish-hid: Fix a little doc-rot
+>   HID: usbhid: hid-pidff: Demote a couple kernel-doc abuses
+>   HID: hid-alps: Correct struct misnaming
+>   HID: intel-ish-hid: Fix potential copy/paste error
+>   HID: hid-core: Fix incorrect function name in header
+>   HID: intel-ish-hid: ipc: Correct fw_reset_work_fn() function name in
+>     header
+>   HID: ishtp-hid-client: Fix incorrect function name report_bad_packet()
+>   HID: hid-kye: Fix incorrect function name for kye_tablet_enable()
+>   HID: hid-picolcd_core: Remove unused variable 'ret'
+>   HID: hid-logitech-hidpp: Fix conformant kernel-doc header and demote
+>     abuses
+>   HID: hid-uclogic-rdesc: Kernel-doc is for functions and structs
+>   HID: hid-thrustmaster: Demote a bunch of kernel-doc abuses
+>   HID: hid-uclogic-params: Ensure function names are present and correct
+>     in kernel-doc headers
+>   HID: hid-sensor-custom: Remove unused variable 'ret'
+>   HID: wacom_sys: Demote kernel-doc abuse
+>   HID: hid-sensor-hub: Remove unused struct member 'quirks'
+>   HID: hid-sensor-hub: Move 'hsdev' description to correct struct
+>     definition
+>   HID: intel-ish-hid: ishtp-fw-loader: Fix a bunch of formatting issues
+>   HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
+> 
+>  drivers/hid/hid-alps.c                       |  2 +-
+>  drivers/hid/hid-core.c                       |  2 +-
+>  drivers/hid/hid-kye.c                        |  2 +-
+>  drivers/hid/hid-logitech-hidpp.c             |  7 +--
+>  drivers/hid/hid-picolcd_core.c               |  5 +--
+>  drivers/hid/hid-sensor-custom.c              |  5 +--
+>  drivers/hid/hid-sensor-hub.c                 |  4 +-
+>  drivers/hid/hid-thrustmaster.c               | 24 +++++------
+>  drivers/hid/hid-uclogic-params.c             |  8 ++--
+>  drivers/hid/hid-uclogic-rdesc.c              |  2 +-
+>  drivers/hid/intel-ish-hid/ipc/ipc.c          |  2 +-
+>  drivers/hid/intel-ish-hid/ipc/pci-ish.c      |  3 +-
+>  drivers/hid/intel-ish-hid/ishtp-fw-loader.c  | 45 ++++++++++----------
+>  drivers/hid/intel-ish-hid/ishtp-hid-client.c | 11 +++--
+>  drivers/hid/intel-ish-hid/ishtp-hid.c        |  2 +-
+>  drivers/hid/intel-ish-hid/ishtp-hid.h        |  9 +---
+>  drivers/hid/intel-ish-hid/ishtp/bus.c        |  9 +++-
+>  drivers/hid/intel-ish-hid/ishtp/client.c     |  5 +--
+>  drivers/hid/intel-ish-hid/ishtp/hbm.c        |  4 +-
+>  drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h  |  4 +-
+>  drivers/hid/usbhid/hid-pidff.c               |  4 +-
+>  drivers/hid/usbhid/usbkbd.c                  |  2 +-
+>  drivers/hid/wacom_sys.c                      |  2 +-
+>  include/linux/intel-ish-client-if.h          |  8 +++-
+>  24 files changed, 90 insertions(+), 81 deletions(-)
+> 
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Anssi Hannula <anssi.hannula@gmail.com>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: "Bruno Prémont" <bonbons@linux-vserver.org>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: Daniel Drubin <daniel.drubin@intel.com>
+> Cc: Dario Pagani <dario.pagani.146+linuxk@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: Henrik Rydberg <rydberg@bitmath.org>
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Cc: Kim Kuparinen <kimi.h.kuparinen@gmail.com>
+> Cc: "Krzysztof Wilczyński" <kw@linux.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: linaro-mm-sig@lists.linaro.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-stm32@st-md-mailman.stormreply.com
+> Cc: linux-usb@vger.kernel.org
+> Cc: Lopez Casado <nlopezcasad@logitech.com>
+> Cc: "L. Vinyard, Jr" <rvinyard@cs.nmsu.edu>
+> Cc: Masaki Ota <masaki.ota@jp.alps.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: message to <vojtech@ucw.cz>
+> Cc: Michael Haboustak <mike-@cinci.rr.com>
+> Cc: Rushikesh S Kadam <rushikesh.s.kadam@intel.com>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: "Uwe Kleine-König" <uwe@kleine-koenig.org>
+> Cc: Vojtech Pavlik <vojtech@suse.cz>
+> Cc: Zhang Lixu <lixu.zhang@intel.com>
+
