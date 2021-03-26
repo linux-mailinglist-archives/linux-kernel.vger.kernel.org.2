@@ -2,108 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0111834ABC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4873234ABCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhCZPqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbhCZPqh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:46:37 -0400
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F66C0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:46:37 -0700 (PDT)
-Received: by mail-il1-x135.google.com with SMTP id c17so5392386ilj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:46:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9neBGUkGjeI9Wss3qn32vtUKfxnPNKgHyjXqvLAXo2U=;
-        b=JF80Equ1gB3yG7jN/+29x9IlqK4Ui20FfaAFAYDVBr0IKlN1ib3rKnf5J2Pm9h5g9d
-         DV0tmCOoETubjqAjQsuSM4Q9S0I5KKukBEA/TRN266CKIE/RyqbtOBX8XNv/YkuqryiN
-         yZ4Stevs8aLoKsEUf9JUB6FJswGgu9rAMtmStyu8UrPbW4wG05UepFTwnRJNFhDUCVjW
-         1g00yZVOV7FFZIDkVjHtzMrdCYJpGo1RugDXqeY3sLPHgA2DXdWgGsF0ahl8ZlXJi278
-         m2v/K2KtaZ3ohgiUrxngmEsnsZtsVL/kXWE1bcmTVKDV8WKw8EK67lU8SaXivUVKiOF1
-         /58w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9neBGUkGjeI9Wss3qn32vtUKfxnPNKgHyjXqvLAXo2U=;
-        b=ZQztiImQCElnMBlEWe7zlOwzGeJEopShRAM98LH40SrYZa9SAdtyFyZUL0YQaajkQu
-         AL3uzOZidhHg07OQOi8jw6qJn6R2QiR6uCHayHSXYGq2cqtK4Tt8KrEXB7TnvFPAfMFJ
-         bfFr/w85qZiA5JmmDm/WBvKjuNpwSKUhDE58139dpLxKFP8WcI37C9pdou+kAanXuvlx
-         ussfYeWMKeQBHAks37MO69/k2fiJt9Lt81QlD3ExGC+hNrLOzalfzWKcWFG6mIucxXpZ
-         U/UkjlDHBHRzeJwegxKjNP3D/6B9voylhPxfQJ4TZfk071BJmr+P8UdKMGWfX0n10htr
-         3gtQ==
-X-Gm-Message-State: AOAM531Q9let3WXUxQcmaxtG3BDy02uoHq6RYjzBP5jcRf9Uj/LhGg9i
-        t4Xnb5oLNPnZj/pa9A7I4Q5MISBWK5gwew==
-X-Google-Smtp-Source: ABdhPJwPBJfSOFUbk4FOeyWWAqmyOcvafcn2ucUp8HrIrijfyHm0mad4xPcCOGlR307l1SSHNCJ/gQ==
-X-Received: by 2002:a92:3003:: with SMTP id x3mr10930135ile.124.1616773597176;
-        Fri, 26 Mar 2021 08:46:37 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e195sm4540586iof.51.2021.03.26.08.46.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 08:46:36 -0700 (PDT)
-Subject: Re: [PATCH 1/1] block: fix trivial typos in comments
-To:     Tom Saeger <tom.saeger@oracle.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-References: <31acb3239b7ab8989db0c9951e8740050aef0205.1616727528.git.tom.saeger@oracle.com>
- <2831e351-0986-28d5-5eef-53edcf8f41c3@kernel.dk>
- <20210326154519.y2ztm2fqirxejaht@dhcp-10-154-182-208.vpn.oracle.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <02e3bdd7-896c-2286-d090-1931c5cd807e@kernel.dk>
-Date:   Fri, 26 Mar 2021 09:46:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230320AbhCZPr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:47:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230236AbhCZPrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:47:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFEF461A27;
+        Fri, 26 Mar 2021 15:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616773639;
+        bh=FOq/AGTP4gWQcAqm6gE3CbPMoPZd/s7+r0gDFMG3q6U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AcCDpzU7tp9iwdGG8gDfzEHT/oRIXsIga7wXxu53WqUJhT2ul2T9YDS65RNqPU2n3
+         Xvn+RFssUybeWEZgEY2lh1i4UxjZPbwmKsgliPvp0IToMiB2a/WA5KR9z10HdDinOv
+         UYM5sw/0IvqfBsKxROncwVaSX/vsAHxPYgALR1dSYHioveObkwXiHIvFx1Yj/tNdZJ
+         KMRbv1ObJxkt+zXV5bOiWGyn/1VwvDn/9VCA4p517RmAt9EEHqYSMNig8Oj+y1Zu4e
+         B4aIe1rurjyjKfoN2EcYkT1/pA82eHFw94cAgT8CIulbihfa0tOaUKwaviLlzc9Bb9
+         p9VnLj0VX7D0A==
+Received: by mail-ed1-f50.google.com with SMTP id y6so6863670eds.1;
+        Fri, 26 Mar 2021 08:47:18 -0700 (PDT)
+X-Gm-Message-State: AOAM533y3Mbzdq/w0OJ5kPTx9/7Cq9mAA6LjG4KaQ05ghWDBJC3D1ESE
+        yrNKJFeSjM4MbkrT/jc59B04xoMkSziUJkuolw==
+X-Google-Smtp-Source: ABdhPJyGMjMWznP/BbCajkt9nas+eMG/Qmwgar26pPUJYE7aEhO5sSz0Y/IOGFJNx4RiD0k/WjxUTeg0KAhhn6cQx0c=
+X-Received: by 2002:a05:6402:c88:: with SMTP id cm8mr15784199edb.62.1616773637523;
+ Fri, 26 Mar 2021 08:47:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210326154519.y2ztm2fqirxejaht@dhcp-10-154-182-208.vpn.oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu> <7362e4f6a5f5b79e6ad3fd3cec3183a4a283f7fc.1616765870.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <7362e4f6a5f5b79e6ad3fd3cec3183a4a283f7fc.1616765870.git.christophe.leroy@csgroup.eu>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 26 Mar 2021 09:47:04 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+LF-s5K4Jwd5jCHrU8271L5WCiGb0tR7aTUa8ddHF1YQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+LF-s5K4Jwd5jCHrU8271L5WCiGb0tR7aTUa8ddHF1YQ@mail.gmail.com>
+Subject: Re: [PATCH v3 05/17] arm: Convert to GENERIC_CMDLINE
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Will Deacon <will@kernel.org>, Daniel Walker <danielwa@cisco.com>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        microblaze <monstr@monstr.eu>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        nios2 <ley.foon.tan@intel.com>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linux-hexagon@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org,
+        SH-Linux <linux-sh@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 9:45 AM, Tom Saeger wrote:
-> On Fri, Mar 26, 2021 at 09:41:49AM -0600, Jens Axboe wrote:
->> On 3/25/21 9:04 PM, Tom Saeger wrote:
->>>
->>> s/Additonal/Additional/
->>> s/assocaited/associated/
->>> s/assocaited/associated/
->>> s/assocating/associating/
->>> s/becasue/because/
->>> s/configred/configured/
->>> s/deactive/deactivate/
->>> s/followings/following/
->>> s/funtion/function/
->>> s/heirarchy/hierarchy/
->>> s/intiailized/initialized/
->>> s/prefered/preferred/
->>> s/readded/read/
->>> s/Secion/Section/
->>> s/soley/solely/
->>
->> While I'm generally happy to accept any patch that makes sense, the
->> recent influx of speling fixes have me less than excited. They just
->> add complications to backports and stable patches, for example, and
->> I'd prefer not to take them for that reason alone.
-> 
-> Nod.
-> 
-> In that case - perhaps adding these entries to scripts/spelling.txt
-> would at least catch some going forward?
-> 
-> I can send that.
+On Fri, Mar 26, 2021 at 7:44 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+> This converts the architecture to GENERIC_CMDLINE.
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  arch/arm/Kconfig              | 38 +----------------------------------
+>  arch/arm/kernel/atags_parse.c | 15 +++++---------
+>  2 files changed, 6 insertions(+), 47 deletions(-)
+>
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index 5da96f5df48f..67bc75f2da81 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -50,6 +50,7 @@ config ARM
+>         select GENERIC_ARCH_TOPOLOGY if ARM_CPU_TOPOLOGY
+>         select GENERIC_ATOMIC64 if CPU_V7M || CPU_V6 || !CPU_32v6K || !AEABI
+>         select GENERIC_CLOCKEVENTS_BROADCAST if SMP
+> +       select GENERIC_CMDLINE if ATAGS
 
-That seems like a good idea.
+Don't we need this enabled for !ATAGS (i.e. DT boot)?
 
--- 
-Jens Axboe
+Can we always enable GENERIC_CMDLINE for OF_EARLY_FLATTREE?
 
+Rob
