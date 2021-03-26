@@ -2,157 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0670934A31C
+	by mail.lfdr.de (Postfix) with ESMTP id 6504034A31D
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 09:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCZISx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 04:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhCZISc (ORCPT
+        id S230147AbhCZISy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 04:18:54 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15317 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhCZISt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 04:18:32 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407C9C0613B0
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:18:32 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id o19so5329162edc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 01:18:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vVLQWWeMoRmy2aS3RBI+QxFkLC7vNLSa/8Kp82BB7/4=;
-        b=gUYuFDRcjU9OiTVCehZRUVHb9veVGV44Qt6mPlJufVM07cUE3yvOUc12UGbhkgeN07
-         WUk/1zb97PfNyw9MGEad8MJ9CUP61chVPD07wwN2tI95nEQUOp9MQ2XhHtdPOe9DQoYK
-         4VS3iHs7sMptpkEfwaldIqidr+NpZm1vB+K2y4BV2j2FQrH0ehS22nTy8FNod0scrdIm
-         84RoaJnhI2k5kL6G9d45P2rZwOT8m/0QhLlq1Wit7ie2fMhSK7Ozf3g7G1vtDHWuLtDd
-         qz/ERkzKu8O8KNVEKjv3LlykUoN7ZT8PVwzs6RfiECA4TRx38+q0AMaMS9eyWfpXE8qs
-         wZug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=vVLQWWeMoRmy2aS3RBI+QxFkLC7vNLSa/8Kp82BB7/4=;
-        b=eRcRigvly8peh1+mHUq6Q3VY2uJwq8c5NuTz6RV8cB28ActQCv9926xQeI9QRGfVp2
-         saohHS3s+pWdSX1GBpj3tMgLijmmvmOLkrroz/eJHYrpor6FxOObO4YGDKAg7oiC196a
-         0PUCy/b+Xi0SkntsWUyYc161qM4IMdQCYZFPIs0EoJdO6MDsmpBjlaC7qDuQVz9YC5bR
-         bSat32FyF3ngpx379BL/1zC9bt3iGANtn22rxOIro8ay6D4JTIxy0MI+fOMMUbSH0d4z
-         y12yo7TzvA3p2bQnubVtZO+9rI2p/0RHL8jsfGhhLMYRGLYdeHg53tNGnXDuIXHwfGc7
-         hpkQ==
-X-Gm-Message-State: AOAM530DNKxiNsXKIlTBKP0J0o7g5kd8q3n3PYeSrF3oCN/m4be8lccj
-        5rOWXjSD76KhrUCQPjbtpufPaDtW1T5F1w==
-X-Google-Smtp-Source: ABdhPJyGvc/Q1q6OUIMDE/e3r3sj4QZPNY5A/ebMa3M5iZJ8Q+P0SzWmEAmyp6Q4hUaxIAjyVBMRIg==
-X-Received: by 2002:a05:6402:1855:: with SMTP id v21mr13579580edy.310.1616746711012;
-        Fri, 26 Mar 2021 01:18:31 -0700 (PDT)
-Received: from dell ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id m10sm3495486ejx.10.2021.03.26.01.18.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 01:18:30 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 08:18:28 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [GIT PULL] Immutable branch between MFD and Input due for the
- v5.13 merge window
-Message-ID: <20210326081828.GY2916463@dell>
-References: <cover.1611653995.git.cristian.ciocaltea@gmail.com>
- <20210309135302.GP4931@dell>
- <20210309200417.GZ4931@dell>
- <20210310111250.GM701493@dell>
- <YFzqZJeYd4nkF89C@google.com>
+        Fri, 26 Mar 2021 04:18:49 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6FDq6hbkz9tm1;
+        Fri, 26 Mar 2021 16:16:43 +0800 (CST)
+Received: from [10.174.177.149] (10.174.177.149) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 26 Mar 2021 16:18:38 +0800
+Subject: Re: [PATCH -next] mm/page_alloc: remove duplicated include from
+ page_alloc.c
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+References: <20210326025542.3565329-1-miaoqinglang@huawei.com>
+ <20210326034208.GC1719932@casper.infradead.org>
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+Message-ID: <d3a42312-397d-e7e7-0aa8-819a7b3731db@huawei.com>
+Date:   Fri, 26 Mar 2021 16:18:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210326034208.GC1719932@casper.infradead.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YFzqZJeYd4nkF89C@google.com>
+X-Originating-IP: [10.174.177.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021, Dmitry Torokhov wrote:
+Hey, Matthew
 
-> Hi Lee,
+Thanks for your advice towards hulk robot. We'd like to improve the 
+capbility of hulk robot whole the time.
+
+This patch is just a small cleanup reported by hulk robot, But the robot 
+can do more than this. For example, it finds crucial and useful bugs as 
+well.
+
+As for 'Untangle the mass of header includes' you mentioned, could you 
+please offer more details? Because I didn't find pagemap.h in 
+net/ipv4/tcp.c in -next like what you said.
+
+
+‘⁄ 2021/3/26 11:42, Matthew Wilcox –¥µ¿:
+> On Fri, Mar 26, 2021 at 10:55:42AM +0800, Qinglang Miao wrote:
+>> Remove duplicated include.
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 > 
-> On Wed, Mar 10, 2021 at 11:12:50AM +0000, Lee Jones wrote:
-> > On Tue, 09 Mar 2021, Lee Jones wrote:
-> > 
-> > > On Tue, 09 Mar 2021, Lee Jones wrote:
-> > > 
-> > > > Enjoy!
-> > > > 
-> > > > The following changes since commit fe07bfda2fb9cdef8a4d4008a409bb02f35f1bd8:
-> > > > 
-> > > >   Linux 5.12-rc1 (2021-02-28 16:05:19 -0800)
-> > > > 
-> > > > are available in the Git repository at:
-> > > > 
-> > > >   git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git ib-mfd-input-v5.13
-> > > > 
-> > > > for you to fetch changes up to b58c808ca46c163c1924ec5d3285e67e9217ec74:
-> > > > 
-> > > >   MAINTAINERS: Add entry for ATC260x PMIC (2021-03-09 13:50:39 +0000)
-> > > > 
-> > > > ----------------------------------------------------------------
-> > > > Immutable branch between MFD and Input due for the v5.13 merge window
-> > > > 
-> > > > ----------------------------------------------------------------
-> > > > Cristian Ciocaltea (4):
-> > > >       dt-bindings: input: Add reset-time-sec common property
-> > > >       dt-bindings: mfd: Add Actions Semi ATC260x PMIC binding
-> > > >       mfd: Add MFD driver for ATC260x PMICs
-> > > >       input: atc260x: Add onkey driver for ATC260x PMICs
-> > > > 
-> > > > Manivannan Sadhasivam (1):
-> > > >       MAINTAINERS: Add entry for ATC260x PMIC
-> > > > 
-> > > >  Documentation/devicetree/bindings/input/input.yaml |   7 +
-> > > >  .../devicetree/bindings/mfd/actions,atc260x.yaml   | 183 ++++++++++++
-> > > >  MAINTAINERS                                        |  12 +
-> > > >  drivers/input/misc/Kconfig                         |  11 +
-> > > >  drivers/input/misc/Makefile                        |   2 +-
-> > > >  drivers/input/misc/atc260x-onkey.c                 | 305 ++++++++++++++++++++
-> > > >  drivers/mfd/Kconfig                                |  18 ++
-> > > >  drivers/mfd/Makefile                               |   3 +
-> > > >  drivers/mfd/atc260x-core.c                         | 310 +++++++++++++++++++++
-> > > >  drivers/mfd/atc260x-i2c.c                          |  64 +++++
-> > > >  include/linux/mfd/atc260x/atc2603c.h               | 281 +++++++++++++++++++
-> > > >  include/linux/mfd/atc260x/atc2609a.h               | 308 ++++++++++++++++++++
-> > > >  include/linux/mfd/atc260x/core.h                   |  58 ++++
-> > > >  13 files changed, 1561 insertions(+), 1 deletion(-)
-> > > >  create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
-> > > >  create mode 100644 drivers/input/misc/atc260x-onkey.c
-> > > >  create mode 100644 drivers/mfd/atc260x-core.c
-> > > >  create mode 100644 drivers/mfd/atc260x-i2c.c
-> > > >  create mode 100644 include/linux/mfd/atc260x/atc2603c.h
-> > > >  create mode 100644 include/linux/mfd/atc260x/atc2609a.h
-> > > >  create mode 100644 include/linux/mfd/atc260x/core.h
-> > > 
-> > > FYI, if anyone has pulled this, they should probably rebase it onto
-> > > v5.12-rc2 and delete the v5.12-rc1 tag from their tree:
-> > > 
-> > >  https://lwn.net/Articles/848431/
-> > 
-> > In case you haven't pulled this yet, I created a new tag:
-> > 
-> >   ib-mfd-input-v5.13-1
+> can't you make hulk robot do something useful, like untangle the
+> mass of header includes?  For example, in -next, net/ipv4/tcp.c
+> has a dependency on pagemap.h.  Why?
+> .
 > 
-> Did you push this one out? I can't seem to see it.
-
-Seemingly not.  Thanks for the poke.
-
--- 
-Lee Jones [ÊùéÁêºÊñØ]
-Senior Technical Lead - Developer Services
-Linaro.org ‚îÇ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
