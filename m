@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EF634AC9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB6B34AB39
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhCZQgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:36:35 -0400
-Received: from gateway33.websitewelcome.com ([192.185.145.23]:46118 "EHLO
-        gateway33.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230070AbhCZQgQ (ORCPT
+        id S230323AbhCZPOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230445AbhCZPOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:36:16 -0400
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway33.websitewelcome.com (Postfix) with ESMTP id 62164857A5A
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:13:18 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id Pp5KlSGtmb8LyPp5Kln8iJ; Fri, 26 Mar 2021 11:13:18 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=sXBjgLTu76uTaWX0R7809lCSyGgsc8Sygcl8kzPa31g=; b=E5CtBqHdRp4mzdp86hktOocKt8
-        WY9zbVHvS5zhockEiVBSkSbs4iEkzjA60vDhqa6SML2weLBlfRjnJYaIects8zHLUZit820pDFxGe
-        eKlHU3+92pJ8zn/8Im0NU7WPtSTWFTx5UMIrkmIY/iyUW0nwPBEUyKzv7xc5NwCE4V9V5DuDrcKxz
-        yZ0HMrrYoby8V/wuHopk+wwUg36od/0PpXJ1LV5mOOfQoV6bcc9ucRGMoBJwSOxwmZ1uqAUJ9u0Tw
-        0OePSMB/Ytcpm2FqJzXG2VRv+1l6NShDEiBNDLGvS6VijYEh97T/M0wWRMFAMxDtv8g9zHusHnb41
-        crH73K6w==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35424 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lPp5J-004Js4-TR; Fri, 26 Mar 2021 11:13:17 -0500
-Subject: Re: [PATCH][next] cifs: cifspdu.h: Replace one-element array with
- flexible-array member
-To:     =?UTF-8?Q?Aur=c3=a9lien_Aptel?= <aaptel@suse.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Steve French <sfrench@samba.org>
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210326011117.GA46303@embeddedor> <877dltrjue.fsf@suse.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <4def044f-4529-9e73-6d01-1a9751f6b09a@embeddedor.com>
-Date:   Fri, 26 Mar 2021 10:13:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Mar 2021 11:14:19 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D9BC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:14:18 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id ce10so8946121ejb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:14:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xNBOvxce4K4wBx+3sqJnAcmfi681Xs2rjZl0yu+GJDk=;
+        b=djyYbpuAilDLPjvYIPPbNxtcKD3imP/sqI2p4Bi/GMmciAYyKGLq4Uulj25hzPahlk
+         bScPDwt0ntdlwQmVqsWdwjxr367iZsgPFOq/LABi9qYTlOiMJfk7bb1VgiAbs0CqA4ym
+         jWSaE6aBJT/CwZHxhn7fiBYdfrhYXyXYymEzc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xNBOvxce4K4wBx+3sqJnAcmfi681Xs2rjZl0yu+GJDk=;
+        b=FAztFIWcZx0JdqkBG1GNennznQmAm7JI0NuSn8k3AmPTqebymnfpEo8kD8Zp5KP6gx
+         5HC2sp7VKB1/dBuVPbS85ioQWUQGGiJVYtSWErQeAsaNPqllevS6Kwexxdvk6EIg4J5X
+         1k7RQA95s8uIfnBVEguOwg5zWRVB0c3thg5z7dKo8GOC20rGrwaU1PSdD/E2JbGBfXPf
+         Eozp5HYJa5wMH9q+YyKv0Qh/jy/puBQZ5zGMmEbKawPn3GxyRfzXcd+jGBsEDmTq1rdX
+         Hxa6FWr7388+4ZLGLU69R1C/liww6O/RqmeBFL5Q5P0sXYCBY0qvLcWxIBtpecmPrmVm
+         DAgw==
+X-Gm-Message-State: AOAM532U9dpPkduUeAluZ5+wdl3IkstfeX8KoJl/GnPxbzuSrLsJhEpj
+        yFKc4r8PI0CwJDN3/zc9Rjn7sQ==
+X-Google-Smtp-Source: ABdhPJxJFPSx2SKt4DYzQM5kO4GUOXsis0kqhIQJF43uABZ8E/rPvRLdlx4uQoFccqGKHeEFkiQJqw==
+X-Received: by 2002:a17:906:2b46:: with SMTP id b6mr15752493ejg.521.1616771657468;
+        Fri, 26 Mar 2021 08:14:17 -0700 (PDT)
+Received: from prevas-ravi.prevas.se ([80.208.71.248])
+        by smtp.gmail.com with ESMTPSA id g7sm3967626ejw.51.2021.03.26.08.14.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 08:14:16 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] debugfs: drop pointless nul-termination in debugfs_read_file_bool()
+Date:   Fri, 26 Mar 2021 16:14:11 +0100
+Message-Id: <20210326151411.732220-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <877dltrjue.fsf@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lPp5J-004Js4-TR
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:35424
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+simple_read_from_buffer() doesn't care about any bytes in the buffer
+beyond "available". Making the buffer nul-terminated is therefore
+completely pointless.
 
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ fs/debugfs/file.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On 3/26/21 10:54, Aurélien Aptel wrote:
-> "Gustavo A. R. Silva" <gustavoars@kernel.org> writes:
->> There is a regular need in the kernel to provide a way to declare having
->> a dynamically sized set of trailing elements in a structure. Kernel code
->> should always use “flexible array members”[1] for these cases. The older
->> style of one-element or zero-length arrays should no longer be used[2].
-> 
-> I've checked the usages of the struct, looks OK (we don't allocate it
-> directly, we use memory from the small/big buff pools).
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index 686e0ad28788..9979d981e9be 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -773,7 +773,7 @@ EXPORT_SYMBOL_GPL(debugfs_create_atomic_t);
+ ssize_t debugfs_read_file_bool(struct file *file, char __user *user_buf,
+ 			       size_t count, loff_t *ppos)
+ {
+-	char buf[3];
++	char buf[2];
+ 	bool val;
+ 	int r;
+ 	struct dentry *dentry = F_DENTRY(file);
+@@ -789,7 +789,6 @@ ssize_t debugfs_read_file_bool(struct file *file, char __user *user_buf,
+ 	else
+ 		buf[0] = 'N';
+ 	buf[1] = '\n';
+-	buf[2] = 0x00;
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
+ }
+ EXPORT_SYMBOL_GPL(debugfs_read_file_bool);
+-- 
+2.29.2
 
-Awesome. :)
-
-> Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-
-Thank you, Aurelien.
---
-Gustavo
