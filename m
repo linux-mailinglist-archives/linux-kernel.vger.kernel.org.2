@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB9834AAC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:01:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD0134AAD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbhCZPBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhCZPBC (ORCPT
+        id S230106AbhCZPDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:03:08 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:55111 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhCZPCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:01:02 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5724AC0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:01:02 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id n21so5681117ioa.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:01:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bg/XFgK0j4Bi2nzOGM6CJPuGBSSM2wwPb1IUUNZ4ZrY=;
-        b=w5p4jCPEbegwqL/nLPd0eJhquxW4K7gr74rDlgmo0q9j5vfRhtfBbo3QQa8S56E8fu
-         AGx2JxN0WMKpb2iZSEFWWrZE76sPsjvq7FRce0E2ewdJa2iSVOZcPR8WzLEFnx6w+ZPU
-         YMDPY8WM5jVGiSkwE6QdEoJlpALgByfLgkqQ+vh/vtDanm1fByUbHfAGpasJCLNoTSeH
-         93D7GXS8OzVYnnnPTln82sGuVUWABUnlMZ8tW6W9+qsJ2JdQ5emGr1422YvR+UXYDRdK
-         hWRucUvSjF3XYTluWRew/75UOe0ljhp2ooDHLivMCE97IflSY5mdjTalDMt5NVqrjsv7
-         4h8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bg/XFgK0j4Bi2nzOGM6CJPuGBSSM2wwPb1IUUNZ4ZrY=;
-        b=tqsw3KZntHC++pSpnBg/7csB+sm4aDv+wG0hiUM6m/WomFYiM9hS0EGRahKc/j0KbQ
-         PcMQf3D4/wUnUtuIjDs+GdyBWFJdnNSDl0JdMsZ4mJmQZnPjtXRp2yqEsEAA97PfIZex
-         rrXuBji1mI3dR1mTx8ONHBYBCvUswdyjyZOsYKphguly6j99ogbWdsR0bIYzRgIrJDZG
-         KIaHhM27yGNaQpu7jbEUv+ms0XQRNpBwO1TwYJLpeEHhdqHZVHcsMHCOXlCb3XBy5h5F
-         r3vb6QqP+oNIp8/0WcVvyHjVKbm2fm1RRPgLiG7Xm7qlZcYHJgs5CopT9lm2do1IzGk1
-         UX2g==
-X-Gm-Message-State: AOAM530/W4v3Hxi2KQCGm3oG34nhMy0k/Phuy1acBkoGVE96o1gzcKQY
-        DHz235GGlutcfFFOhY6AwEsWoc3O+DLZaQ==
-X-Google-Smtp-Source: ABdhPJztBUwc5LhorRM9v0qt8CshTMiYbtZYm1iwC/n0UNrWtWPlWKltgXE2SKA9UpeDT9fnUgobjQ==
-X-Received: by 2002:a05:6602:21cd:: with SMTP id c13mr10293909ioc.44.1616770861565;
-        Fri, 26 Mar 2021 08:01:01 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id i67sm4584479ioa.3.2021.03.26.08.01.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 08:01:01 -0700 (PDT)
-Subject: Re: [PATCH 2/8] kernel: unmask SIGSTOP for IO threads
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        ebiederm@xmission.com, metze@samba.org,
-        linux-kernel@vger.kernel.org
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <20210326003928.978750-3-axboe@kernel.dk> <20210326134840.GA1290@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a179ad33-5656-b644-0d92-e74a6bd26cc8@kernel.dk>
-Date:   Fri, 26 Mar 2021 09:01:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Mar 2021 11:02:22 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MPGNn-1l09HL1BHR-00PevL; Fri, 26 Mar 2021 16:02:18 +0100
+Received: by mail-ot1-f53.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso5476039otq.3;
+        Fri, 26 Mar 2021 08:02:17 -0700 (PDT)
+X-Gm-Message-State: AOAM532CQVmd9TuI59b9vrE4WGnCe48R4sGs9Sp/9sYVSGAjrZ6lLItQ
+        8yn2TjG1Ky3qmbvqOrBGUWSxhYBH86cG60VSJ6s=
+X-Google-Smtp-Source: ABdhPJxqEYgkhmmR9tlr6VhSmLMh2wsAkrBQ0kntrx/MKqJmvuyr6KcW6emNL2sDgGiWuPrMoCfra7yk0h2aPozesEg=
+X-Received: by 2002:a05:6830:14c1:: with SMTP id t1mr12169406otq.305.1616770936271;
+ Fri, 26 Mar 2021 08:02:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210326134840.GA1290@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210326143831.1550030-1-hch@lst.de> <20210326143831.1550030-4-hch@lst.de>
+In-Reply-To: <20210326143831.1550030-4-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 26 Mar 2021 16:02:01 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3PeMbrC3v4tGPJb+OpZYXHabe4UcF+TiBWF_JCtnwHkw@mail.gmail.com>
+Message-ID: <CAK8P3a3PeMbrC3v4tGPJb+OpZYXHabe4UcF+TiBWF_JCtnwHkw@mail.gmail.com>
+Subject: Re: [PATCH 3/4] exec: simplify the compat syscall handling
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Brian Gerst <brgerst@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:jyQHki7n/wvddX74HI8JS5gCd4LvzSQU1iWYxgWNryfuwl4wTbW
+ aHpQT/dE4Zjga7ncOBWENHuT0Cr9Md0yrm/lKs+Qzz5yFwZTu8L1r7RMqi9i3SWjr/0ZsTY
+ yzqmkXG44o/GNtdrnYqDW70tAy6SaUNIJ6se7WXrJbyzYXdaGjEjaHXBkVqdld97J5I8jW3
+ DJnHMNkfD/1N2Jn/bkbsg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:3TnXTXJmdUc=:CUrZ3P/W6Xh8mAHM0COfIq
+ PNwI/hNXrU+cQS401PqUIGDjy8OS8ukJ0M8h50HimfzXnVHB2OsRp+q4AIpSwXkqijDVxqZ36
+ deYgFz7srcgTi0wSRvyGqaMBRyl84vl0SXGq1IvDV5CYZ4XoOOiWMoqWqptiiY8v3yCHk4OqS
+ izh1mcDZ3mYjkLr6lnJzdejh7askGBQT7PEtm2fiGf7BPNcBIm1o12Vs4vs4f9bWi5AuUcDNA
+ o9YX0k4J63N3TdZZch32iWUB/4dfLdInNNIlsNi+4cTvoO/m9zOPBQ7/cL5LPlNBc3oWQuw6N
+ sIOGikYVKt9crBUQRJb+tfvq9LPvO3DSeLtDwYIRpSD+lD01IVzpSuuMTSfSWRGoAXDw4cQwh
+ dz9FWe0boJImKzR/O9x0z4fKbvuNl2a2Qm1D7VCkCEsC96wWZQsakSGaTkInm7GVzhwEhc8GO
+ x445pArNoKVrVdYpQu5gI27tECACPLfPXssk5SVAy0Xj4zN22kjrozqBHE6x5Dlv7/Hb+rsXA
+ 4AF8N1AhH68MD0xQdknGZVlSzvmSg5UvyH2h5xvocib50VNPCcc6/XYtGcSOR6QxoZv1qsbBq
+ BsX3iLpdyRIBAbA8bHxdprfLZ8IP4n3LEp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 7:48 AM, Oleg Nesterov wrote:
-> Jens, sorry, I got lost :/
+On Fri, Mar 26, 2021 at 3:38 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> The only differenence betweeen the compat exec* syscalls and their
+> native versions is the compat_ptr sign extension, and the fact that
+> the pointer arithmetics for the two dimensional arrays needs to use
+> the compat pointer size.  Instead of the compat wrappers and the
+> struct user_arg_ptr machinery just use in_compat_syscall() to do the
+> right thing for the compat case deep inside get_user_arg_ptr().
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Let's bring you back in :-)
+Nice cleanup!
 
-> On 03/25, Jens Axboe wrote:
->>
->> With IO threads accepting signals, including SIGSTOP,
-> 
-> where can I find this change? Looks like I wasn't cc'ed...
-
-It's this very series.
-
->> unmask the
->> SIGSTOP signal from the default blocked mask.
->>
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->> ---
->>  kernel/fork.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/fork.c b/kernel/fork.c
->> index d3171e8e88e5..d5a40552910f 100644
->> --- a/kernel/fork.c
->> +++ b/kernel/fork.c
->> @@ -2435,7 +2435,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
->>  	tsk = copy_process(NULL, 0, node, &args);
->>  	if (!IS_ERR(tsk)) {
->>  		sigfillset(&tsk->blocked);
->> -		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL));
->> +		sigdelsetmask(&tsk->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
-> 
-> siginitsetinv(blocked, sigmask(SIGKILL)|sigmask(SIGSTOP)) but this is minor.
-
-Ah thanks.
-
-> To remind, either way this is racy and can't really help.
-> 
-> And if "IO threads accepting signals" then I don't understand why. Sorry,
-> I must have missed something.
-
-I do think the above is a no-op at this point, and we can probably just
-kill it. Let me double check, hopefully we can just remove this blocked
-part.
-
--- 
-Jens Axboe
-
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
