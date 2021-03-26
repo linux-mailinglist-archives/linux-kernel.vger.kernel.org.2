@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8A534A08C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 05:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C592134A08E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 05:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhCZEb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 00:31:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+        id S231420AbhCZEcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 00:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhCZEa5 (ORCPT
+        with ESMTP id S231355AbhCZEbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 00:30:57 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9A3C0613E1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:30:55 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id r17so3810477pgi.0
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 21:30:55 -0700 (PDT)
+        Fri, 26 Mar 2021 00:31:50 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F22AC06174A;
+        Thu, 25 Mar 2021 21:31:50 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id l15so4669574ybm.0;
+        Thu, 25 Mar 2021 21:31:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=35XopTC+7WOzIQnHzWXImRYQHw0CHWkdoXHcf/+9Onk=;
-        b=FuXqSLOY5UJibY4x5cy44xNCqVYXhs/QB8SAK6Ph5plXJluUdlmzkl2vYUhpV/m3iz
-         fBwsgAxyhUwk4l2OzfotcXS7ilTz5vz/4D0pRkceuJfu6MDHX6kEBtNhBX+0z1Q+x9Rq
-         gJAq/6u1b6zvaFaFWLn9VBJN47ayz/H6CG+SQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=77bXvTG175JM/Chg4+Z7haekme4dDDgGkrHlXjwMUaU=;
+        b=rXLd55v46YAtZKnc+qt2xGhvcTJFNUUZwn07PU+iPPXwylGf0N/NTW0MZFIi22N/fu
+         JUrMIa9CEOi2rMvOFxTZ6X7pBX2psCZKSO8VF56sxjdq0MWscVHkQHSeVdIrqCO5caSX
+         yYhnJkCmOWjJYhRGaqOAv/pypGxuLXcgj0/AQANVZiAr9Jl/GVDoBd8u18xKMW90fCiI
+         X2HBZQ6IErBMia4y/LHSPvf2o4z4BxIyJibTeVlhsbks+ZPMMcAIhziFaVjtBRBkg1UP
+         NA1dDyxEo7E31c/Z5ScpUDCOjOoE7Lpd9wQp0fwy/vADjCIf5tFznInQcwimL4sWiXa1
+         0cCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=35XopTC+7WOzIQnHzWXImRYQHw0CHWkdoXHcf/+9Onk=;
-        b=YjwS7ZTUX5sbAhseZ4qUtfL1Ay4W44olyDwk3tJrMEjz2darzX31JZ9jl67q625frl
-         aP2GJAp7p6Eg74n2xP7MQeCr7SHQTtejjY5PQ9Og51idMJSWe9KrmbhsZ7WIbBrPSTVI
-         SDoBzD1OoxXfeFGbcZP4mh2ZmXF+o7KIYWttFHSH02Zj607B/UjOa56t9vCvEys3c8Bb
-         FAUjAtscXgyFt+Db0yUJZ+3ESBeg2otK9UjrWLUA1539oqtcRUvDZRsGDMEvvEqFAwLq
-         o8ul+2zpJbCdQrKTME15BBZy2iefStbY/+IiIkmT+Pdds5Xn6ilfThIImHew+KJHgnWe
-         obnA==
-X-Gm-Message-State: AOAM532z79p65rCrnoujUW9ho5GUvDhqR5U1hWYdRVuDCr30Vpit/JJl
-        fM0LZtNabqfSM3jyg91h2PfvbQ==
-X-Google-Smtp-Source: ABdhPJxJ4Uh8qq7VGivmsaxoe1yrWQkMSLzdjT7KyXHUDkthLjeUOIqUGrr9oa/zfMmenb3JnsesWA==
-X-Received: by 2002:a62:7f86:0:b029:20a:a195:bb36 with SMTP id a128-20020a627f860000b029020aa195bb36mr11204021pfd.4.1616733055463;
-        Thu, 25 Mar 2021 21:30:55 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d1sm7098940pjc.24.2021.03.25.21.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 21:30:54 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 21:30:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v31 10/12] selftests/landlock: Add user space tests
-Message-ID: <202103252130.54C78E4@keescook>
-References: <20210324191520.125779-1-mic@digikod.net>
- <20210324191520.125779-11-mic@digikod.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=77bXvTG175JM/Chg4+Z7haekme4dDDgGkrHlXjwMUaU=;
+        b=nJ4Xbx0sb8aC1IhWtbZpL+FR+b9ydGaiWqFVswwpLwgti0TBGK2kPnw6DQOzWaU2IF
+         Fv8hwpcxPdbhr1IJLwD7U6Lc/LCLltXYI1fekCbh/atIR/7eCLyfmCl4iVmMCswiIqIh
+         w1uPL6u6/9eNGfTMyPfA8Z+8SMXsXGkGepX8Pm8dzWBNQ/LSvLCbkoqLEuCs/L1Xr8EF
+         ZWkR+dgBRmmYjb0yJmEuMO7WOEDLinuTBGgfWRs7+b9qfhll58UZSDUoGhd2IPDJOJrn
+         is8UoVgxowC0Kf7/bMhrqTPNMmL8iJ5rkwPmkJjDPuG9H5cy6zu4YlGkLRf+KkUKPP4z
+         GI1Q==
+X-Gm-Message-State: AOAM531ysiPnFf/5o14RHoEsOP9KUrcLglVodSb/CRrR/yOIAcKPMXkG
+        Xb5LMBc5S5kz9etCTS80A2w4VXq+/Licp4cQXKyj9DSNUrg=
+X-Google-Smtp-Source: ABdhPJx0gpfc3Q4cIbZdzJSLjyFgFwqS2iU7/bNMbKTzi6+pdRxHy9XrVvg/k4h2K3kYHcskJPm3rmFBt+HU75QFIkk=
+X-Received: by 2002:a25:ab03:: with SMTP id u3mr10683103ybi.347.1616733109956;
+ Thu, 25 Mar 2021 21:31:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210324191520.125779-11-mic@digikod.net>
+References: <20210325150115.138750-1-pctammela@mojatatu.com>
+In-Reply-To: <20210325150115.138750-1-pctammela@mojatatu.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 25 Mar 2021 21:31:39 -0700
+Message-ID: <CAEf4Bzby2eo3-s86rgEjOESrQdemBjYsfLCv=WPh0UHTOZQ7Tw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: fix bail out from 'ringbuf_process_ring()'
+ on error
+To:     Pedro Tammela <pctammela@gmail.com>
+Cc:     Pedro Tammela <pctammela@mojatatu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 08:15:18PM +0100, Mickaël Salaün wrote:
-> From: Mickaël Salaün <mic@linux.microsoft.com>
-> 
-> Test all Landlock system calls, ptrace hooks semantic and filesystem
-> access-control with multiple layouts.
-> 
-> Test coverage for security/landlock/ is 93.6% of lines.  The code not
-> covered only deals with internal kernel errors (e.g. memory allocation)
-> and race conditions.
-> 
-> Cc: James Morris <jmorris@namei.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Serge E. Hallyn <serge@hallyn.com>
-> Cc: Shuah Khan <shuah@kernel.org>
-> Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+On Thu, Mar 25, 2021 at 8:02 AM Pedro Tammela <pctammela@gmail.com> wrote:
+>
+> The current code bails out with negative and positive returns.
+> If the callback returns a positive return code, 'ring_buffer__consume()'
+> and 'ring_buffer__poll()' will return a spurious number of records
+> consumed, but mostly important will continue the processing loop.
+>
+> This patch makes positive returns from the callback a no-op.
+>
+> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> ---
+>  tools/lib/bpf/ringbuf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Thanks. Applied to bpf tree and added:
 
--- 
-Kees Cook
+Fixes: bf99c936f947 ("libbpf: Add BPF ring buffer support")
+
+
+> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+> index 8caaafe7e312..e7a8d847161f 100644
+> --- a/tools/lib/bpf/ringbuf.c
+> +++ b/tools/lib/bpf/ringbuf.c
+> @@ -227,7 +227,7 @@ static int ringbuf_process_ring(struct ring* r)
+>                         if ((len & BPF_RINGBUF_DISCARD_BIT) == 0) {
+>                                 sample = (void *)len_ptr + BPF_RINGBUF_HDR_SZ;
+>                                 err = r->sample_cb(r->ctx, sample, len);
+> -                               if (err) {
+> +                               if (err < 0) {
+>                                         /* update consumer pos and bail out */
+>                                         smp_store_release(r->consumer_pos,
+>                                                           cons_pos);
+> --
+> 2.25.1
+>
