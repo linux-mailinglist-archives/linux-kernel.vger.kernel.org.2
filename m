@@ -2,175 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1810B34ACA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7800834ACA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhCZQhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:37:41 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:34503 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhCZQhU (ORCPT
+        id S230239AbhCZQiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 12:38:14 -0400
+Received: from mx1.hrz.uni-dortmund.de ([129.217.128.51]:58375 "EHLO
+        unimail.uni-dortmund.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230070AbhCZQho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:37:20 -0400
-Received: by mail-oi1-f171.google.com with SMTP id x207so6285383oif.1;
-        Fri, 26 Mar 2021 09:37:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HhRekWdV8u9KdLF2RCq0OQxVx6Mo40YWf08R+wW1/BY=;
-        b=dE7yLbxNPe4nISktCoq2QQ1/Z8ov/7JOsSQZSx/foaW7SpcZfOD/GspgjqGHJA/p1v
-         F/eYcqMIqw9G0xq6HJjxNmzkNSz7fqrdjeqA+Z/1Dhd71bRDP85SaKYrxR7jflQDIr+9
-         RYyipMCZiofmxC28J7+ZZ2j3rde8HUw6KDpVjeWyINQ9EUn9U6oxZqz+a89Cl8Xldpnv
-         txdvP1PGJO7jntpUkDDOqsGD2Li4VUbOEzATC6BcPjOAgnDEcvCZ60kMFrqT3ASeCtce
-         YWIMi/8UP/LfyocN8TNxh4IEeBLyq7Gi3Dm8pCX72zSvlsRro1k/y8LFI4FXGHGODHb7
-         PrjQ==
-X-Gm-Message-State: AOAM532tTQjxs86wqrxdN+hmbWuV3jQ5SezIV3VqU6u9sce1itWflqMi
-        EzyxOFGApsxBJ2LCsaiWwxCKHX2jVPrIBaOs3PxAjXzu
-X-Google-Smtp-Source: ABdhPJxgmv1E8JTq6EAx1/UKUC4yZTKrnuAaa7XTBT06zC37rQNdkitdgZaJ4WjVT4JJyWykgvGWXlCNVE+bkYI038A=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr9940383oib.69.1616776639936;
- Fri, 26 Mar 2021 09:37:19 -0700 (PDT)
+        Fri, 26 Mar 2021 12:37:44 -0400
+Received: from [192.168.111.102] (p4fd97b97.dip0.t-ipconnect.de [79.217.123.151])
+        (authenticated bits=0)
+        by unimail.uni-dortmund.de (8.16.1/8.16.1) with ESMTPSA id 12QGbYPE001987
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT);
+        Fri, 26 Mar 2021 17:37:35 +0100 (CET)
+Subject: Re: [RFC] inode.i_opflags - Usage of two different locking schemes
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <f63dd495-defb-adc4-aa91-6aacd7f441c7@tu-dortmund.de>
+ <a4709bc4-ee62-2cdc-0628-32e8fa73e8f9@tu-dortmund.de>
+ <YEJLuP6+Zy8/dq+D@mit.edu>
+ <667b3ec3-a522-05a9-31e8-87d8bfaa7adb@tu-dortmund.de>
+ <YEJWiXaZ+9H+2nBx@mit.edu>
+ <0f387f5b-a516-af45-856d-f38d1adfadf5@tu-dortmund.de>
+ <20210316171429.GA22701@quack2.suse.cz>
+From:   Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
+Message-ID: <0e308673-a350-98af-b0a7-cde63abd4579@tu-dortmund.de>
+Date:   Fri, 26 Mar 2021 17:37:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210325193633.19592-1-daniel.lezcano@linaro.org>
-In-Reply-To: <20210325193633.19592-1-daniel.lezcano@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 26 Mar 2021 17:37:08 +0100
-Message-ID: <CAJZ5v0g58LMVwRWdJaTWVOx09gt6KRGTa974k3cvHYQyxk0EYg@mail.gmail.com>
-Subject: Re: [PATCH] thermal/drivers/netlink: Add the temperature when
- crossing a trip point
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     rkumbako@quicinc.com, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ABI/API" <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210316171429.GA22701@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 8:38 PM Daniel Lezcano
-<daniel.lezcano@linaro.org> wrote:
->
-> The slope of the temperature increase or decrease can be high and when
-> the temperature crosses the trip point, there could be a significant
-> difference between the trip temperature and the measured temperatures.
->
-> That forces the userspace to read the temperature back right after
-> receiving a trip violation notification.
->
-> In order to be efficient, give the temperature which resulted in the
-> trip violation.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-Srinivas, what do you think?
 
-> ---
->  drivers/thermal/thermal_core.c    |  6 ++++--
->  drivers/thermal/thermal_netlink.c | 11 ++++++-----
->  drivers/thermal/thermal_netlink.h |  8 ++++----
->  include/uapi/linux/thermal.h      |  2 +-
->  4 files changed, 15 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
-> index 996c038f83a4..948020ef51b1 100644
-> --- a/drivers/thermal/thermal_core.c
-> +++ b/drivers/thermal/thermal_core.c
-> @@ -430,10 +430,12 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
->         if (tz->last_temperature != THERMAL_TEMP_INVALID) {
->                 if (tz->last_temperature < trip_temp &&
->                     tz->temperature >= trip_temp)
-> -                       thermal_notify_tz_trip_up(tz->id, trip);
-> +                       thermal_notify_tz_trip_up(tz->id, trip,
-> +                                                 tz->temperature);
->                 if (tz->last_temperature >= trip_temp &&
->                     tz->temperature < (trip_temp - hyst))
-> -                       thermal_notify_tz_trip_down(tz->id, trip);
-> +                       thermal_notify_tz_trip_down(tz->id, trip,
-> +                                                   tz->temperature);
->         }
->
->         if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
-> diff --git a/drivers/thermal/thermal_netlink.c b/drivers/thermal/thermal_netlink.c
-> index 1234dbe95895..a16dd4d5d710 100644
-> --- a/drivers/thermal/thermal_netlink.c
-> +++ b/drivers/thermal/thermal_netlink.c
-> @@ -121,7 +121,8 @@ static int thermal_genl_event_tz(struct param *p)
->  static int thermal_genl_event_tz_trip_up(struct param *p)
->  {
->         if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id) ||
-> -           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id))
-> +           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p->trip_id) ||
-> +           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TEMP, p->temp))
->                 return -EMSGSIZE;
->
->         return 0;
-> @@ -285,16 +286,16 @@ int thermal_notify_tz_disable(int tz_id)
->         return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
->  }
->
-> -int thermal_notify_tz_trip_down(int tz_id, int trip_id)
-> +int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
->  {
-> -       struct param p = { .tz_id = tz_id, .trip_id = trip_id };
-> +       struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
->
->         return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
->  }
->
-> -int thermal_notify_tz_trip_up(int tz_id, int trip_id)
-> +int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
->  {
-> -       struct param p = { .tz_id = tz_id, .trip_id = trip_id };
-> +       struct param p = { .tz_id = tz_id, .trip_id = trip_id, .temp = temp };
->
->         return thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
->  }
-> diff --git a/drivers/thermal/thermal_netlink.h b/drivers/thermal/thermal_netlink.h
-> index 828d1dddfa98..e554f76291f4 100644
-> --- a/drivers/thermal/thermal_netlink.h
-> +++ b/drivers/thermal/thermal_netlink.h
-> @@ -11,8 +11,8 @@ int thermal_notify_tz_create(int tz_id, const char *name);
->  int thermal_notify_tz_delete(int tz_id);
->  int thermal_notify_tz_enable(int tz_id);
->  int thermal_notify_tz_disable(int tz_id);
-> -int thermal_notify_tz_trip_down(int tz_id, int id);
-> -int thermal_notify_tz_trip_up(int tz_id, int id);
-> +int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
-> +int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
->  int thermal_notify_tz_trip_delete(int tz_id, int id);
->  int thermal_notify_tz_trip_add(int tz_id, int id, int type,
->                                int temp, int hyst);
-> @@ -49,12 +49,12 @@ static inline int thermal_notify_tz_disable(int tz_id)
->         return 0;
->  }
->
-> -static inline int thermal_notify_tz_trip_down(int tz_id, int id)
-> +static inline int thermal_notify_tz_trip_down(int tz_id, int id, int temp)
->  {
->         return 0;
->  }
->
-> -static inline int thermal_notify_tz_trip_up(int tz_id, int id)
-> +static inline int thermal_notify_tz_trip_up(int tz_id, int id, int temp)
->  {
->         return 0;
->  }
-> diff --git a/include/uapi/linux/thermal.h b/include/uapi/linux/thermal.h
-> index c105054cbb57..bf5d9c8ef16f 100644
-> --- a/include/uapi/linux/thermal.h
-> +++ b/include/uapi/linux/thermal.h
-> @@ -18,7 +18,7 @@ enum thermal_trip_type {
->
->  /* Adding event notification support elements */
->  #define THERMAL_GENL_FAMILY_NAME               "thermal"
-> -#define THERMAL_GENL_VERSION                   0x01
-> +#define THERMAL_GENL_VERSION                   0x02
->  #define THERMAL_GENL_SAMPLING_GROUP_NAME       "sampling"
->  #define THERMAL_GENL_EVENT_GROUP_NAME          "event"
->
-> --
-> 2.17.1
->
+On 16.03.21 18:14, Jan Kara wrote:
+> 
+> So i_lock is supposed to protect i_opflags for writing AFAICT. For reading
+> we don't seem to bother in some cases and I agree that is potentially
+> problematic. It is *mostly* OK because we initialize i_opflags when loading
+> inode into memory / adding it to dcache. But sometimes we also update them
+> while the inode is alive. Now this is fine for the particular flag we
+> update but in theory, if the compiler wants to screw us and stores
+> temporarily some nonsensical value in i_opflags we'd have a problem. This
+> is mostly a theoretical issue but eventually we probably want to fix this.
+> 
+> 								Honza
+> 
+Thx for the detailed explanation. :-)
+
+- Alex
+
+-- 
+Technische Universität Dortmund
+Alexander Lochmann                PGP key: 0xBC3EF6FD
+Otto-Hahn-Str. 16                 phone:  +49.231.7556141
+D-44227 Dortmund                  fax:    +49.231.7556116
+http://ess.cs.tu-dortmund.de/Staff/al
