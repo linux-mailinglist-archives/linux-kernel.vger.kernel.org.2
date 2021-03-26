@@ -2,77 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F269349E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDBE349EA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 02:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230027AbhCZBVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 21:21:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229904AbhCZBVs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 21:21:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3E2761A2D;
-        Fri, 26 Mar 2021 01:21:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616721703;
-        bh=as9lfFgV4XuY3YAN83h5LS2PkkRJHNNBOryPGMahbwc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u3d6uiA4lOaJ3SjD2+BHhJnfl/ISiKpY88UwFM0Q2GVjLumusLC9TlN7iiTuoVZmA
-         ums5J+cRcsFKuQk1jFcNcc8eAIxURe6A3Tvyee5jxrhYybIiHYBJGo/MFgHpaVBAup
-         lSTyK/Gmtp7zHF15Kra2BmOz7Gc6VCtg1SCLA9p2FjKynlnt1O6WLk5K9Je5LChD0u
-         aCRl24UcevvXalfNL/s/FRk/6HVUFgoq0GlVAMrD9d6KeuqvE0tHT6e4e/Zqjr+MIJ
-         HAIIomqQPzpEX68j2PwoDv6f8OrJ5WkmPhJ4eoZ4GR2cvdqULMO2Cf6GYnIc/wN3HP
-         hQw+hcfh0O0dA==
-Date:   Thu, 25 Mar 2021 18:21:42 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Sahitya Tummala <stummala@codeaurora.org>
-Cc:     Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] f2fs: allow to change discard policy based on cached
- discard cmds
-Message-ID: <YF03JuWi9bYL11e6@google.com>
-References: <1615886958-717-1-git-send-email-stummala@codeaurora.org>
- <3c453b72-892f-7044-2edd-224b82202608@huawei.com>
- <20210326011756.GE8562@codeaurora.org>
+        id S230202AbhCZBZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 21:25:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3922 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230013AbhCZBZF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 21:25:05 -0400
+Received: from dggeml406-hub.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4F643T5XHTz5j2k;
+        Fri, 26 Mar 2021 09:23:01 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggeml406-hub.china.huawei.com (10.3.17.50) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 26 Mar 2021 09:24:59 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Fri, 26 Mar 2021 09:24:59 +0800
+Subject: Re: [RFC PATCH 4/4] KVM: arm64: Distinguish cases of memcache
+ allocations completely
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210208112250.163568-1-wangyanan55@huawei.com>
+ <20210208112250.163568-5-wangyanan55@huawei.com>
+ <2c65bff2-be7f-b20c-9265-939bc73185b6@arm.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <24b3f625-4d9c-cabe-5758-cfa9a1a2ce18@huawei.com>
+Date:   Fri, 26 Mar 2021 09:24:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326011756.GE8562@codeaurora.org>
+In-Reply-To: <2c65bff2-be7f-b20c-9265-939bc73185b6@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/26, Sahitya Tummala wrote:
-> Hi Jaegeuk,
-> 
-> This latest v3 patch needs to be updated in f2fs tree.
-> The f2fs tree currently points to older version of patch.
-> 
-> Please make a note of it.
+Hi Alex,
 
-Ha, need more coffee. Thanks for pointing it out. :)
+On 2021/3/26 1:26, Alexandru Elisei wrote:
+> Hi Yanan,
+>
+> On 2/8/21 11:22 AM, Yanan Wang wrote:
+>> With a guest translation fault, the memcache pages are not needed if KVM
+>> is only about to install a new leaf entry into the existing page table.
+>> And with a guest permission fault, the memcache pages are also not needed
+>> for a write_fault in dirty-logging time if KVM is only about to update
+>> the existing leaf entry instead of collapsing a block entry into a table.
+>>
+>> By comparing fault_granule and vma_pagesize, cases that require allocations
+>> from memcache and cases that don't can be distinguished completely.
+>>
+>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>> ---
+>>   arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
+>>   1 file changed, 12 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index d151927a7d62..550498a9104e 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -815,19 +815,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>   	gfn = fault_ipa >> PAGE_SHIFT;
+>>   	mmap_read_unlock(current->mm);
+>>   
+>> -	/*
+>> -	 * Permission faults just need to update the existing leaf entry,
+>> -	 * and so normally don't require allocations from the memcache. The
+>> -	 * only exception to this is when dirty logging is enabled at runtime
+>> -	 * and a write fault needs to collapse a block entry into a table.
+>> -	 */
+>> -	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
+>> -		ret = kvm_mmu_topup_memory_cache(memcache,
+>> -						 kvm_mmu_cache_min_pages(kvm));
+>> -		if (ret)
+>> -			return ret;
+>> -	}
+>> -
+>>   	mmu_seq = vcpu->kvm->mmu_notifier_seq;
+>>   	/*
+>>   	 * Ensure the read of mmu_notifier_seq happens before we call
+>> @@ -887,6 +874,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>   	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
+>>   		prot |= KVM_PGTABLE_PROT_X;
+>>   
+>> +	/*
+>> +	 * Allocations from the memcache are required only when granule of the
+>> +	 * lookup level where the guest fault happened exceeds vma_pagesize,
+>> +	 * which means new page tables will be created in the fault handlers.
+>> +	 */
+>> +	if (fault_granule > vma_pagesize) {
+>> +		ret = kvm_mmu_topup_memory_cache(memcache,
+>> +						 kvm_mmu_cache_min_pages(kvm));
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+> I distinguish three situations:
+>
+> 1. fault_granule == vma_pagesize. If the stage 2 fault occurs at the leaf level,
+> then it means that all the tables that the translation table walker traversed
+> until the leaf are valid. No need to allocate a new page, as stage 2 will only
+> change the leaf to point to a valid PA.
+>
+> 2. fault_granule > vma_pagesize. This means that there's a table missing at some
+> point in the table walk, so we're going to need to allocate at least one table to
+> hold the leaf entry. We need to topup the memory cache.
+>
+> 3. fault_granule < vma_pagesize. From our discussion in patch #3, this can happen
+> only if the userspace translation tables use a block mapping, dirty page logging
+> is enabled, the fault_ipa is mapped as a last level entry, dirty page logging gets
+> disabled and then we get a fault. In this case, the PTE table will be coalesced
+> into a PMD block mapping, and the PMD table entry that pointed to the PTE table
+> will be changed to a block mapping. No table will be allocated.
+>
+> Looks to me like this patch is valid, but getting it wrong can break a VM and I
+> would feel a lot more comfortable if someone who is more familiar with the code
+> would have a look.
+Thanks for your explanation here. Above is also what I thought about 
+this patch.
 
-> 
+Thanks,
+Yanan
+>
 > Thanks,
-> Sahitya.
-> 
-> On Tue, Mar 16, 2021 at 07:08:58PM +0800, Chao Yu wrote:
-> > On 2021/3/16 17:29, Sahitya Tummala wrote:
-> > >With the default DPOLICY_BG discard thread is ioaware, which prevents
-> > >the discard thread from issuing the discard commands. On low RAM setups,
-> > >it is observed that these discard commands in the cache are consuming
-> > >high memory. This patch aims to relax the memory pressure on the system
-> > >due to f2fs pending discard cmds by changing the policy to DPOLICY_FORCE
-> > >based on the nm_i->ram_thresh configured.
-> > >
-> > >Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-> > 
-> > Reviewed-by: Chao Yu <yuchao0@huawei.com>
-> > 
-> > Thanks,
-> 
-> -- 
-> --
-> Sent by a consultant of the Qualcomm Innovation Center, Inc.
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+>
+> Alex
+>
+>> +
+>>   	/*
+>>   	 * Under the premise of getting a FSC_PERM fault, we just need to relax
+>>   	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
+> .
