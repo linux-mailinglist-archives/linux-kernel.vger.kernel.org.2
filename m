@@ -2,87 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769D834B227
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E1834B22E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhCZW3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:29:37 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17154 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229933AbhCZW31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:29:27 -0400
-IronPort-SDR: MQ6T62D61cvBdDNKSSEUTf6EZjd9gKE2GQuS2pRBXGo+cAY3gJq6o2du/dr7PRNBVyyY33J0+i
- x8YjjrjLbebg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9935"; a="255224184"
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="255224184"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 15:29:27 -0700
-IronPort-SDR: 5LgOp+Q/ERlPIkGYWYvXy2yds88VI0rUvw09LKQszrzaIn503FOS5LpwdI4JQzUBdzwb+Pq802
- dq00br/lFYRA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,281,1610438400"; 
-   d="scan'208";a="443965441"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 26 Mar 2021 15:29:24 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lPuxI-00034d-9C; Fri, 26 Mar 2021 22:29:24 +0000
-Date:   Sat, 27 Mar 2021 06:29:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Gregory Greenman <gregory.greenman@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] iwlwifi: mvm: fix memdup.cocci warnings
-Message-ID: <20210326222915.GA61209@88c1b4e57a79>
-References: <202103270644.54GAfxLU-lkp@intel.com>
+        id S230343AbhCZWau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhCZWaa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 18:30:30 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA4FC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:30:30 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so6653618otk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:30:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mNf1Gc57uaZep/ht1DCQvf+zklgVxefomfLeuA1WYCs=;
+        b=iR4UKUX/i73h1mKJ1bYvaJ7WtfusCDdLVE5VqeE9jD4AgRhEjRZ0vWYdq0IIQLG9OH
+         DB8AVYFrZMyMi49EhP3UO6QydGvpCVWszv0hjn6fsDGyTvLgKFgUwTYU8Ol7u89XOEO2
+         LuQQAJcgHvUA8S4wh+3ZK62ftGcwduM2K6GgAOx2ByTaRBwfY7GrTq6wdpTRhrW2ycFQ
+         3PgI9OzA2jk0eu5YVK5PTMQSkN/pcFxMu1EF6wCa3zJWf41GjHszCPpkA+UY29RWyfHl
+         48z+mNSSbCfci61P4LYVDqPA32pIf4wXI2i3Z7igv7nyErf9JjP6zphHMrH8bfzVKYUc
+         NigA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mNf1Gc57uaZep/ht1DCQvf+zklgVxefomfLeuA1WYCs=;
+        b=Itm9nR867PL4iBysHSVE9x95JVBC4APyNj9dTPI09yIWJOKOTy6hdr2fHVG9jg2XqJ
+         snn1zgCGISuRajyHNCED4/Cf6W9n+wrnYNBy3H5djYDpeRIVyEVJoUGzHcMNqKZdSzoz
+         XnSlWJ2Yer8NV+hpxuFjFECfXhqyJwdKrWFx3qaZfFaWcZgMzC4T6nCzmPF0/X7win/A
+         JFGOsv2A+Dz4MCDQXjy2C6sgRhj/Qi1A977R9WskW19CtXC5DRo2A2+4bTOr3cUAE/yV
+         zHdwKQGVq5xuOnQoHp4LpjSZkGFO2hGjzaRuBv2y+bHDuf321Pn41AOzBEEfgO91quhw
+         PSfg==
+X-Gm-Message-State: AOAM533L7Mms+Wl2wFJnfgSFs1fC0eEG6B+rnidYJrq8sSgO6i7q+9GA
+        +DZz1rjzausM/oZY44XkcR2uiXoRCq7DWw==
+X-Google-Smtp-Source: ABdhPJwSLr1aVkVGPdABQhumm352NtlikXZANY0BWSOK5rGg2RsR4/4BjeO2fNJ/hvTHJfXYVxY69w==
+X-Received: by 2002:a05:6830:1290:: with SMTP id z16mr12070106otp.122.1616797829716;
+        Fri, 26 Mar 2021 15:30:29 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.233.147])
+        by smtp.gmail.com with ESMTPSA id h12sm2524872ote.75.2021.03.26.15.30.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 15:30:29 -0700 (PDT)
+Subject: Re: [PATCH 2/7] io_uring: handle signals for IO threads like a normal
+ thread
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326155128.1057078-1-axboe@kernel.dk>
+ <20210326155128.1057078-3-axboe@kernel.dk> <m1wntty7yn.fsf@fess.ebiederm.org>
+ <106a38d3-5a5f-17fd-41f7-890f5e9a3602@kernel.dk>
+ <m1k0ptv9kj.fsf@fess.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <01058178-dd66-1bff-4d74-5ff610817ed6@kernel.dk>
+Date:   Fri, 26 Mar 2021 16:30:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202103270644.54GAfxLU-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <m1k0ptv9kj.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On 3/26/21 4:23 PM, Eric W. Biederman wrote:
+> Jens Axboe <axboe@kernel.dk> writes:
+> 
+>> On 3/26/21 2:29 PM, Eric W. Biederman wrote:
+>>> Jens Axboe <axboe@kernel.dk> writes:
+>>>
+>>>> We go through various hoops to disallow signals for the IO threads, but
+>>>> there's really no reason why we cannot just allow them. The IO threads
+>>>> never return to userspace like a normal thread, and hence don't go through
+>>>> normal signal processing. Instead, just check for a pending signal as part
+>>>> of the work loop, and call get_signal() to handle it for us if anything
+>>>> is pending.
+>>>>
+>>>> With that, we can support receiving signals, including special ones like
+>>>> SIGSTOP.
+>>>>
+>>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>>>> ---
+>>>>  fs/io-wq.c    | 24 +++++++++++++++++-------
+>>>>  fs/io_uring.c | 12 ++++++++----
+>>>>  2 files changed, 25 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/fs/io-wq.c b/fs/io-wq.c
+>>>> index b7c1fa932cb3..3e2f059a1737 100644
+>>>> --- a/fs/io-wq.c
+>>>> +++ b/fs/io-wq.c
+>>>> @@ -16,7 +16,6 @@
+>>>>  #include <linux/rculist_nulls.h>
+>>>>  #include <linux/cpu.h>
+>>>>  #include <linux/tracehook.h>
+>>>> -#include <linux/freezer.h>
+>>>>  
+>>>>  #include "../kernel/sched/sched.h"
+>>>>  #include "io-wq.h"
+>>>> @@ -503,10 +502,16 @@ static int io_wqe_worker(void *data)
+>>>>  		if (io_flush_signals())
+>>>>  			continue;
+>>>>  		ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
+>>>> -		if (try_to_freeze() || ret)
+>>>> +		if (signal_pending(current)) {
+>>>> +			struct ksignal ksig;
+>>>> +
+>>>> +			if (fatal_signal_pending(current))
+>>>> +				break;
+>>>> +			if (get_signal(&ksig))
+>>>> +				continue;
+>>>                         ^^^^^^^^^^^^^^^^^^^^^^
+>>>
+>>> That is wrong.  You are promising to deliver a signal to signal
+>>> handler and them simply discarding it.  Perhaps:
+>>>
+>>> 			if (!get_signal(&ksig))
+>>>                         	continue;
+>>> 			WARN_ON(!sig_kernel_stop(ksig->sig));
+>>>                         break;
+>>
+>> Thanks, updated.
+> 
+> Gah.  Kill the WARN_ON.
+> 
+> I was thinking "WARN_ON(!sig_kernel_fatal(ksig->sig));"
+> The function sig_kernel_fatal does not exist.
+> 
+> Fatal is the state that is left when a signal is neither
+> ignored nor a stop signal, and does not have a handler.
+> 
+> The rest of the logic still works.
 
-drivers/net/wireless/intel/iwlwifi/mvm/rfi.c:110:8-15: WARNING opportunity for kmemdup
+I've just come to the same conclusion myself after testing it.
+Of the 3 cases, most of them can do the continue, but doesn't
+really matter with the way the loop is structured. Anyway, looks
+like this now:
 
- Use kmemdup rather than duplicating its implementation
 
-Generated by: scripts/coccinelle/api/memdup.cocci
+commit 769186e30cd437f5e1a000e7cf00286948779da4
+Author: Jens Axboe <axboe@kernel.dk>
+Date:   Thu Mar 25 18:16:06 2021 -0600
 
-Fixes: 21254908cbe9 ("iwlwifi: mvm: add RFI-M support")
-CC: Gregory Greenman <gregory.greenman@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
+    io_uring: handle signals for IO threads like a normal thread
+    
+    We go through various hoops to disallow signals for the IO threads, but
+    there's really no reason why we cannot just allow them. The IO threads
+    never return to userspace like a normal thread, and hence don't go through
+    normal signal processing. Instead, just check for a pending signal as part
+    of the work loop, and call get_signal() to handle it for us if anything
+    is pending.
+    
+    With that, we can support receiving signals, including special ones like
+    SIGSTOP.
+    
+    Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   0f4498cef9f5cd18d7c6639a2a902ec1edc5be4e
-commit: 21254908cbe995a3982a23da32c30d1b43467043 iwlwifi: mvm: add RFI-M support
-
- rfi.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-@@ -107,12 +107,10 @@ struct iwl_rfi_freq_table_resp_cmd *iwl_
- 	if (WARN_ON_ONCE(iwl_rx_packet_payload_len(cmd.resp_pkt) != resp_size))
- 		return ERR_PTR(-EIO);
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index b7c1fa932cb3..7e5970c8b0be 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -16,7 +16,6 @@
+ #include <linux/rculist_nulls.h>
+ #include <linux/cpu.h>
+ #include <linux/tracehook.h>
+-#include <linux/freezer.h>
  
--	resp = kzalloc(resp_size, GFP_KERNEL);
-+	resp = kmemdup(cmd.resp_pkt->data, resp_size, GFP_KERNEL);
- 	if (!resp)
- 		return ERR_PTR(-ENOMEM);
+ #include "../kernel/sched/sched.h"
+ #include "io-wq.h"
+@@ -503,10 +502,16 @@ static int io_wqe_worker(void *data)
+ 		if (io_flush_signals())
+ 			continue;
+ 		ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
+-		if (try_to_freeze() || ret)
++		if (signal_pending(current)) {
++			struct ksignal ksig;
++
++			if (fatal_signal_pending(current))
++				break;
++			if (!get_signal(&ksig))
++				continue;
++		}
++		if (ret)
+ 			continue;
+-		if (fatal_signal_pending(current))
+-			break;
+ 		/* timed out, exit unless we're the fixed worker */
+ 		if (test_bit(IO_WQ_BIT_EXIT, &wq->state) ||
+ 		    !(worker->flags & IO_WORKER_F_FIXED))
+@@ -714,9 +719,15 @@ static int io_wq_manager(void *data)
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		io_wq_check_workers(wq);
+ 		schedule_timeout(HZ);
+-		try_to_freeze();
+-		if (fatal_signal_pending(current))
+-			set_bit(IO_WQ_BIT_EXIT, &wq->state);
++		if (signal_pending(current)) {
++			struct ksignal ksig;
++
++			if (fatal_signal_pending(current)) {
++				set_bit(IO_WQ_BIT_EXIT, &wq->state);
++				continue;
++			}
++			get_signal(&ksig);
++		}
+ 	} while (!test_bit(IO_WQ_BIT_EXIT, &wq->state));
  
--	memcpy(resp, cmd.resp_pkt->data, resp_size);
--
- 	iwl_free_resp(&cmd);
- 	return resp;
- }
+ 	io_wq_check_workers(wq);
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 54ea561db4a5..1c64e3f9b7a2 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -78,7 +78,6 @@
+ #include <linux/task_work.h>
+ #include <linux/pagemap.h>
+ #include <linux/io_uring.h>
+-#include <linux/freezer.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/io_uring.h>
+@@ -6765,8 +6764,14 @@ static int io_sq_thread(void *data)
+ 			timeout = jiffies + sqd->sq_thread_idle;
+ 			continue;
+ 		}
+-		if (fatal_signal_pending(current))
+-			break;
++		if (signal_pending(current)) {
++			struct ksignal ksig;
++
++			if (fatal_signal_pending(current))
++				break;
++			if (!get_signal(&ksig))
++				continue;
++		}
+ 		sqt_spin = false;
+ 		cap_entries = !list_is_singular(&sqd->ctx_list);
+ 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
+@@ -6809,7 +6814,6 @@ static int io_sq_thread(void *data)
+ 
+ 			mutex_unlock(&sqd->lock);
+ 			schedule();
+-			try_to_freeze();
+ 			mutex_lock(&sqd->lock);
+ 			list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
+ 				io_ring_clear_wakeup_flag(ctx);
+
+-- 
+Jens Axboe
+
