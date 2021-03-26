@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC04D34AED7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FE034AED9
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 19:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhCZS4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 14:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhCZS4I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 14:56:08 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264A0C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:56:08 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id d12so6626633oiw.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 11:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=OWdyboS1c42dWfZLLx4PpC5NvuwH2pvCjrUIV8KIgkE=;
-        b=oi59r0kr8HL57RAuiy9QxrrxKMMSl6heCaZFti3hDzs/+Fw47VoHCFs3Le9xddxXrl
-         T1KZsLFZkqL4CpwboP+OYT+0UQjQGgkbsjrq5VTgdrGJmxaZNvRIy3FGVW61xAFUZib3
-         XLEX9KHSKemOiWNz6jWnqxbAiBDjcEFKrw2P+dQRBYXfcqGaoXyuxwreumfUaJYBb87o
-         EgbGj8fjhkaNMvZLnbZFKqcPTw04taRZUdlDmVZTZjSkflAS/DeTjtkNBfazH3yxcCw3
-         OzIvS1qgHAsaaxkNncHzECP0BZk1Rk1P3yv44EwP7kyGKjMhbHJTPx2Xekg5wnzHp5Ae
-         uqag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=OWdyboS1c42dWfZLLx4PpC5NvuwH2pvCjrUIV8KIgkE=;
-        b=h8hJdhuZaQ/vTx/HP4ymID7DhMvKWmP3x0zwkh3w7vzvJslzt48iumImFn9DG5Nfbn
-         WPNMVDj+cWlP23CyeFBbfvmhAtiOgl9/nQYyuQeT/8k4iE+2qKGnwLFMtVJmAvwz7Js5
-         ibDJgFgChRTZ+xEr0empiVbvHXAszX2sVAbkDIpIfDPVjY/LaoSe8/dyhqo4R9+hSAiG
-         vrGRbgm579+UEO3N8DVe2aYqNlZ0PQ/Y01yU1ivPIho5oXGmgOW0FHXy1HGKMdZLKUub
-         QMKyZRKT4Nrq9b44o3LLWjqvV8gdbKFJLZ0/Gq6M+65Y9rLzr9jFzsuDn+90kA/aiPev
-         gnFQ==
-X-Gm-Message-State: AOAM531+QeaxC94XWXWjhE5Y3E1Hr87sSw+dSQEbbM+bnH6GdHp6iGJ7
-        C4OgHYJMr4wN62Md6GDcfxk=
-X-Google-Smtp-Source: ABdhPJx4dFHvvRZMMzF3HkubZ+Ut9TIrrJyPE5bsD5OvcCSNZEPXxlqopXsKdKOhXYJdnE0Qi86UtA==
-X-Received: by 2002:aca:cf44:: with SMTP id f65mr2520344oig.13.1616784967515;
-        Fri, 26 Mar 2021 11:56:07 -0700 (PDT)
-Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
-        by smtp.gmail.com with ESMTPSA id i3sm2056423oov.2.2021.03.26.11.56.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 11:56:07 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     ley.foon.tan@intel.com
-Cc:     linux-kernel@vger.kernel.org, fazilyildiran@gmail.com
-Subject: [PATCH] arch: nios2: fix unmet dependency for SERIAL_CORE_CONSOLE
-Date:   Fri, 26 Mar 2021 14:55:54 -0400
-Message-Id: <20210326185554.30993-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230195AbhCZS5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 14:57:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230194AbhCZS5A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 14:57:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F6AA619F7;
+        Fri, 26 Mar 2021 18:56:56 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 18:56:54 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v10 1/6] arm64: mte: Sync tags for pages where PTE is
+ untagged
+Message-ID: <20210326185653.GG5126@arm.com>
+References: <20210312151902.17853-1-steven.price@arm.com>
+ <20210312151902.17853-2-steven.price@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312151902.17853-2-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When EARLY_PRINTK is enabled and TTY is disabled,
-Kbuild gives the following warning:
+Hi Steven,
 
-WARNING: unmet direct dependencies detected for SERIAL_CORE_CONSOLE
-  Depends on [n]: TTY [=n] && HAS_IOMEM [=y]
-  Selected by [y]:
-  - EARLY_PRINTK [=y]
+On Fri, Mar 12, 2021 at 03:18:57PM +0000, Steven Price wrote:
+> A KVM guest could store tags in a page even if the VMM hasn't mapped
+> the page with PROT_MTE. So when restoring pages from swap we will
+> need to check to see if there are any saved tags even if !pte_tagged().
+> 
+> However don't check pages which are !pte_valid_user() as these will
+> not have been swapped out.
+> 
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>  arch/arm64/include/asm/pgtable.h |  2 +-
+>  arch/arm64/kernel/mte.c          | 16 ++++++++++++----
+>  2 files changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index e17b96d0e4b5..84166625c989 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+>  		__sync_icache_dcache(pte);
+>  
+>  	if (system_supports_mte() &&
+> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
+> +	    pte_present(pte) && pte_valid_user(pte) && !pte_special(pte))
+>  		mte_sync_tags(ptep, pte);
 
-This is because EARLY_PRINTK selects SERIAL_CORE_CONSOLE
-without selecting or depending on TTY, despite
-SERIAL_CORE_CONSOLE depending on TTY.
+With the EPAN patches queued in for-next/epan, pte_valid_user()
+disappeared as its semantics weren't very clear.
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- arch/nios2/Kconfig.debug | 1 +
- 1 file changed, 1 insertion(+)
+So this relies on the set_pte_at() being done on the VMM address space.
+I wonder, if the VMM did an mprotect(PROT_NONE), can the VM still access
+it via stage 2? If yes, the pte_valid_user() test wouldn't work. We need
+something like pte_present() && addr <= user_addr_max().
 
-diff --git a/arch/nios2/Kconfig.debug b/arch/nios2/Kconfig.debug
-index a8bc06e96ef5..f453d5c1fd38 100644
---- a/arch/nios2/Kconfig.debug
-+++ b/arch/nios2/Kconfig.debug
-@@ -3,6 +3,7 @@
- config EARLY_PRINTK
- 	bool "Activate early kernel debugging"
- 	default y
-+	depends on TTY
- 	select SERIAL_CORE_CONSOLE
- 	help
- 	  Enable early printk on console
+BTW, ignoring virtualisation, can we ever bring a page in from swap on a
+PROT_NONE mapping (say fault-around)? It's not too bad if we keep the
+metadata around for when the pte becomes accessible but I suspect we
+remove it if the page is removed from swap.
+
 -- 
-2.25.1
-
+Catalin
