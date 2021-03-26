@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9A6349FD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D73349FD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 03:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhCZC3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 22:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
+        id S230366AbhCZCge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 22:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhCZC3S (ORCPT
+        with ESMTP id S230128AbhCZCgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 22:29:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A985CC06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 19:29:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=9ioHdOmky52MXJvonHV5wE14/tYK+Ev3m0hmPa4lVDI=; b=WXWpwkE0DoPUXPliNi6YcU92lV
-        WONjgnUZGz0cEvYDPTNt3s45i9xXlwYWF4JoppbpI5IaqN/GbUbrynqA020zEMXCxqKNd0Ga+hqRo
-        URDtOugP7N8m0UjnV6G1laqFKupHl/G3iM2R0iSDR4qykA5q3b2YpaS6OoLaKvQgng0ileETn5uqL
-        ui59HlER7q9LchDbBYa+AaZUWkuy/uxDURfvDt/DROXVURJT+rrJEGSHim/GDHcVYdKNhT+Le/Tzc
-        XONbrxZ5EZurY6jOPqBMpamUFji8D9gAozYLVL6blrQIN3xgvs0CfDuv4+67h440SUfGCLP17yZkS
-        omTYdB3g==;
-Received: from [2601:1c0:6280:3f0::3ba4]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPcDr-002cDV-Sn; Fri, 26 Mar 2021 02:29:16 +0000
-Subject: Re: [PATCH V2] ipc/sem.c: Mundane typo fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        akpm@linux-foundation.org, gustavoars@kernel.org,
-        adobriyan@gmail.com, linux-kernel@vger.kernel.org
-References: <20210326022240.26375-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <11d38287-9b0a-6354-6908-2b9354288f6f@infradead.org>
-Date:   Thu, 25 Mar 2021 19:29:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Thu, 25 Mar 2021 22:36:24 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4888AC06174A;
+        Thu, 25 Mar 2021 19:36:20 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id q9so2263289qvm.6;
+        Thu, 25 Mar 2021 19:36:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9XY21P0oEzBo7moFwrTmpwbutbtWiFMXBtu5YZsX338=;
+        b=InsuXlpySPiUdsjPadjkZNWlF2zHYgiIFSPVL69nS3wDLsSGk483NF9S+CZ7Tc4LRk
+         YZB37YOLYf3vX3Yp/CYXPO2KWpoIl9V86gLIJ2+5Hc4sp95wK1jik83DbPst/gfFOoN0
+         ztDYufhiNAvF9S/9zGZHNttA5I0l5525piXBL7/zDpxcSicwfh70pFSAbV2I4QGaPLl/
+         bID3pzaUoIfrtobO1GNA51Cwghnmfr6RHJXsl76vxkcx+xKXeQUk9dI60HT+BzqxaLL7
+         VPApccogA3/U7jw/C6WjBwKWv0vfnblT9v41sqliNSrug+lGKuv10m7gwY8pLywJqpyL
+         LsJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9XY21P0oEzBo7moFwrTmpwbutbtWiFMXBtu5YZsX338=;
+        b=P5/DhH9+mArCiUn+lWaX3Jym2nRhicmtzFjSPmh/8H+I6cZyzEIcrKsQOxNO8rxFyi
+         Rgk+06eAVIjwVW+lKiK8DjefFCP84yDKkJDtSILXGUz5BRVtgQ2/3NGe/D69qEpk7dDB
+         JpTXx0Y/h8LjuPj96GEdbr4/p+8Il6Wzsn2WiXq4w2z0EFDbna0vr1w3DH67CSJ/MAtM
+         DJE6GzvuXfh7L8kptg7I3gQ747RsyzQcD6CwDCGcRLgsBQZJNvu+bfCIwY20GkGtGXb+
+         IZTtIkORgb21hZvg5g8vu4d+WGniZH+AAXvYtnFcTduMMocCQ0isz7BRGuUKFy6hxQed
+         sRAQ==
+X-Gm-Message-State: AOAM531FL5g1vm1vM+bSJU/xR6xi6/zLT9HuOnbq63hj+FjDWdD+LAn9
+        bnhd/BbG076nUZ37gby+giA=
+X-Google-Smtp-Source: ABdhPJyJeUUYTWDQemPerzsD1NXsJiHVLjCqWFhTrkCBuxyzPWbXgu2CY+kKm7ohBv8OamxV4+hNJg==
+X-Received: by 2002:a0c:8623:: with SMTP id p32mr11243517qva.23.1616726179632;
+        Thu, 25 Mar 2021 19:36:19 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.107])
+        by smtp.gmail.com with ESMTPSA id 18sm5995694qkr.77.2021.03.25.19.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Mar 2021 19:36:18 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     dan.j.williams@intel.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, songliubraving@fb.com, yuyufen@huawei.com,
+        unixbhaskar@gmail.com, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org
+Subject: [PATCH] crypto: async_tx/async_xor.c: Few mundane spello fixes
+Date:   Fri, 26 Mar 2021 08:04:06 +0530
+Message-Id: <20210326023406.11091-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210326022240.26375-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 7:22 PM, Bhaskar Chowdhury wrote:
-> 
-> s/runtine/runtime/
-> s/AQUIRE/ACQUIRE/
-> s/seperately/separately/
-> s/wont/won\'t/
-> s/succesfull/successful/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+s/eninges/engines/  ...two different places.
+s/explicity/explicitly/  ....two different places.
 
-> ---
->  Changes from V1:
->   Wrongly spelt filename in the subject line, corrected.
-> 
->  ipc/sem.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/ipc/sem.c b/ipc/sem.c
-> index f6c30a85dadf..0897dac27f43 100644
-> --- a/ipc/sem.c
-> +++ b/ipc/sem.c
-> @@ -36,7 +36,7 @@
->   * - two Linux specific semctl() commands: SEM_STAT, SEM_INFO.
->   * - undo adjustments at process exit are limited to 0..SEMVMX.
->   * - namespace are supported.
-> - * - SEMMSL, SEMMNS, SEMOPM and SEMMNI can be configured at runtine by writing
-> + * - SEMMSL, SEMMNS, SEMOPM and SEMMNI can be configured at runtime by writing
->   *   to /proc/sys/kernel/sem.
->   * - statistics about the usage are reported in /proc/sysvipc/sem.
->   *
-> @@ -224,7 +224,7 @@ static int sysvipc_sem_proc_show(struct seq_file *s, void *it);
->   * Setting it to a result code is a RELEASE, this is ensured by both a
->   * smp_store_release() (for case a) and while holding sem_lock()
->   * (for case b).
-> - * The AQUIRE when reading the result code without holding sem_lock() is
-> + * The ACQUIRE when reading the result code without holding sem_lock() is
->   * achieved by using READ_ONCE() + smp_acquire__after_ctrl_dep().
->   * (case a above).
->   * Reading the result code while holding sem_lock() needs no further barriers,
-> @@ -821,7 +821,7 @@ static inline int check_restart(struct sem_array *sma, struct sem_queue *q)
-> 
->  	/* It is impossible that someone waits for the new value:
->  	 * - complex operations always restart.
-> -	 * - wait-for-zero are handled seperately.
-> +	 * - wait-for-zero are handled separately.
->  	 * - q is a previously sleeping simple operation that
->  	 *   altered the array. It must be a decrement, because
->  	 *   simple increments never sleep.
-> @@ -1046,7 +1046,7 @@ static void do_smart_update(struct sem_array *sma, struct sembuf *sops, int nsop
->  			 * - No complex ops, thus all sleeping ops are
->  			 *   decrease.
->  			 * - if we decreased the value, then any sleeping
-> -			 *   semaphore ops wont be able to run: If the
-> +			 *   semaphore ops won't be able to run: If the
->  			 *   previous value was too small, then the new
->  			 *   value will be too small, too.
->  			 */
-> @@ -2108,7 +2108,7 @@ static long do_semtimedop(int semid, struct sembuf __user *tsops,
->  	queue.dupsop = dupsop;
-> 
->  	error = perform_atomic_semop(sma, &queue);
-> -	if (error == 0) { /* non-blocking succesfull path */
-> +	if (error == 0) { /* non-blocking successful path */
->  		DEFINE_WAKE_Q(wake_q);
-> 
->  		/*
-> --
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ crypto/async_tx/async_xor.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-
--- 
-~Randy
+diff --git a/crypto/async_tx/async_xor.c b/crypto/async_tx/async_xor.c
+index a057ecb1288d..fee33f76cdd9 100644
+--- a/crypto/async_tx/async_xor.c
++++ b/crypto/async_tx/async_xor.c
+@@ -170,8 +170,8 @@ dma_xor_aligned_offsets(struct dma_device *device, unsigned int offset,
+  *
+  * xor_blocks always uses the dest as a source so the
+  * ASYNC_TX_XOR_ZERO_DST flag must be set to not include dest data in
+- * the calculation.  The assumption with dma eninges is that they only
+- * use the destination buffer as a source when it is explicity specified
++ * the calculation.  The assumption with dma engines is that they only
++ * use the destination buffer as a source when it is explicitly specified
+  * in the source list.
+  *
+  * src_list note: if the dest is also a source it must be at index zero.
+@@ -259,8 +259,8 @@ EXPORT_SYMBOL_GPL(async_xor_offs);
+  *
+  * xor_blocks always uses the dest as a source so the
+  * ASYNC_TX_XOR_ZERO_DST flag must be set to not include dest data in
+- * the calculation.  The assumption with dma eninges is that they only
+- * use the destination buffer as a source when it is explicity specified
++ * the calculation.  The assumption with dma engines is that they only
++ * use the destination buffer as a source when it is explicitly specified
+  * in the source list.
+  *
+  * src_list note: if the dest is also a source it must be at index zero.
+--
+2.26.2
 
