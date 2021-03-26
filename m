@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2BD34A3F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B0134A3F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhCZJPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:15:52 -0400
-Received: from mga01.intel.com ([192.55.52.88]:23498 "EHLO mga01.intel.com"
+        id S230287AbhCZJPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:15:54 -0400
+Received: from mga01.intel.com ([192.55.52.88]:23502 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhCZJPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230182AbhCZJPh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 26 Mar 2021 05:15:37 -0400
-IronPort-SDR: u9CsXPnI/HEAweJSjpLj3XjfZdH8C7M9V3KssNhkLu7L3snDHULLbgchLZ8uTJK8/C4XHqAEo6
- t5IkzbDTvcrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211269557"
+IronPort-SDR: HBmeBkW36qcvnA8mIjrrkRNS+vQDk8lSQnUE5qdaFTQYTRXo91rFfofVykToRCCM8eanNTIK7t
+ RCZ/gC8YDXlg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211269562"
 X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="211269557"
+   d="scan'208";a="211269562"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:29 -0700
-IronPort-SDR: wakWu590u1fj/QX2ZX55eYBrOP/7Rg+7N9gtsePFygXwMEt+JRV6oTLkU/hWAy/T7kGi9Lq8gi
- HXxavQpwMh+g==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:33 -0700
+IronPort-SDR: RF5j6OdW2lolHQ5vDF/92d3zBfcEV2xiffnyqc6SlcHhSoFO9Os8VizvW+SjZ1r9PETWRco5YM
+ aE1fsPvIx7zw==
 X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
-   d="scan'208";a="416463097"
+   d="scan'208";a="416463117"
 Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:27 -0700
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 02:15:30 -0700
 From:   Bard Liao <yung-chuan.liao@linux.intel.com>
 To:     alsa-devel@alsa-project.org, vkoul@kernel.org
 Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
@@ -31,9 +31,9 @@ Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
         rander.wang@linux.intel.com, hui.wang@canonical.com,
         pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
         bard.liao@intel.com
-Subject: [RESEND PATCH 01/11] soundwire: bus: use correct driver name in error messages
-Date:   Fri, 26 Mar 2021 17:15:04 +0800
-Message-Id: <20210326091514.20751-2-yung-chuan.liao@linux.intel.com>
+Subject: [RESEND PATCH 02/11] soundwire: bus: test read status
+Date:   Fri, 26 Mar 2021 17:15:05 +0800
+Message-Id: <20210326091514.20751-3-yung-chuan.liao@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
 References: <20210326091514.20751-1-yung-chuan.liao@linux.intel.com>
@@ -43,66 +43,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-None of the existing codec drivers set the sdw_driver.name, but
-instead set sdw_driver.driver.name.
+In the existing code we may read a negative error value but still mask
+it and write it back.
 
-This leads to error messages such as
-[   23.935355] rt700 sdw:2:25d:700:0: Probe of (null) failed: -19
-
-We could remove this sdw_driver.name if it doesn't have any
-purpose. This patch only suggests using the proper indirection.
+Make sure all reads are tested and errors not propagated further.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@intel.com>
 Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 ---
- drivers/soundwire/bus_type.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ drivers/soundwire/bus.c | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/soundwire/bus_type.c b/drivers/soundwire/bus_type.c
-index 575b9bad99d5..893296f3fe39 100644
---- a/drivers/soundwire/bus_type.c
-+++ b/drivers/soundwire/bus_type.c
-@@ -82,6 +82,7 @@ static int sdw_drv_probe(struct device *dev)
- 	struct sdw_slave *slave = dev_to_sdw_dev(dev);
- 	struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
- 	const struct sdw_device_id *id;
-+	const char *name;
- 	int ret;
- 
- 	/*
-@@ -108,7 +109,10 @@ static int sdw_drv_probe(struct device *dev)
- 
- 	ret = drv->probe(slave, id);
- 	if (ret) {
--		dev_err(dev, "Probe of %s failed: %d\n", drv->name, ret);
-+		name = drv->name;
-+		if (!name)
-+			name = drv->driver.name;
-+		dev_err(dev, "Probe of %s failed: %d\n", name, ret);
- 		dev_pm_domain_detach(dev, false);
- 		return ret;
- 	}
-@@ -174,11 +178,16 @@ static void sdw_drv_shutdown(struct device *dev)
-  */
- int __sdw_register_driver(struct sdw_driver *drv, struct module *owner)
- {
-+	const char *name;
-+
- 	drv->driver.bus = &sdw_bus_type;
- 
- 	if (!drv->probe) {
--		pr_err("driver %s didn't provide SDW probe routine\n",
--		       drv->name);
-+		name = drv->name;
-+		if (!name)
-+			name = drv->driver.name;
-+
-+		pr_err("driver %s didn't provide SDW probe routine\n", name);
- 		return -EINVAL;
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index 04eb879de145..1c01cc192cbd 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -875,8 +875,12 @@ static int sdw_slave_clk_stop_prepare(struct sdw_slave *slave,
+ 		if (wake_en)
+ 			val |= SDW_SCP_SYSTEMCTRL_WAKE_UP_EN;
+ 	} else {
+-		val = sdw_read_no_pm(slave, SDW_SCP_SYSTEMCTRL);
+-
++		ret = sdw_read_no_pm(slave, SDW_SCP_SYSTEMCTRL);
++		if (ret < 0) {
++			dev_err(&slave->dev, "SDW_SCP_SYSTEMCTRL read failed:%d\n", ret);
++			return ret;
++		}
++		val = ret;
+ 		val &= ~(SDW_SCP_SYSTEMCTRL_CLK_STP_PREP);
  	}
  
+@@ -895,8 +899,12 @@ static int sdw_bus_wait_for_clk_prep_deprep(struct sdw_bus *bus, u16 dev_num)
+ 	int val;
+ 
+ 	do {
+-		val = sdw_bread_no_pm(bus, dev_num, SDW_SCP_STAT) &
+-			SDW_SCP_STAT_CLK_STP_NF;
++		val = sdw_bread_no_pm(bus, dev_num, SDW_SCP_STAT);
++		if (val < 0) {
++			dev_err(bus->dev, "SDW_SCP_STAT bread failed:%d\n", val);
++			return val;
++		}
++		val &= SDW_SCP_STAT_CLK_STP_NF;
+ 		if (!val) {
+ 			dev_info(bus->dev, "clock stop prep/de-prep done slave:%d",
+ 				 dev_num);
 -- 
 2.17.1
 
