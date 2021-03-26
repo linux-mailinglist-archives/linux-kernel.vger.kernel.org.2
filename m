@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C9B349DCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE92349DD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhCZAaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 20:30:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36660 "EHLO mail.kernel.org"
+        id S230146AbhCZAa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:30:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229669AbhCZAaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 20:30:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 889A061A01;
-        Fri, 26 Mar 2021 00:30:10 +0000 (UTC)
+        id S229994AbhCZAaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:30:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4470C61A4E;
+        Fri, 26 Mar 2021 00:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616718610;
-        bh=LdGVXMwlNxo18R1ZDCxDv33Ba2P+L597E+9D9J6RFzA=;
+        s=k20201202; t=1616718612;
+        bh=xKaXnl5sYosJefXTbbLLT5VkI4el+tSUGY07s43IMfw=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=FmBycWtAkmEowEfSOzWE324QFGisW8JZu8rtBDmouxqo1hILOrdvQxFbr0kBSJsAJ
-         j23FGr6zZQ9hocnmmQJcz6XSRsIjrsQ5OiwEn8huQkgfzy0ivpkzjlRVq+C62NKDRK
-         PuPZErK50vWQQps6GWKaC4ich+B3NnrHtFGqwsFY1AayUkZz3ujMa3nASvtLCecqEO
-         XYnta2s7EqIJ50R8hOb/Cz7VQODNPzKhz9eG54wKmwzgJt3ncBVjmtLdhyiwG/YtDi
-         XBG2kvXzDD7ob2V+AuQ8WScM+gpxNR3N8TdxunTYWEV8A+DKa4PbslMHuuTO76DJ45
-         dzRwVEAMMKMeQ==
+        b=oZqWyynN4pg7xDRBEGFZbt/LJD+6jY/XEEPwgtvEypDRVwlvMGsZ3d/VkRzqBSUhP
+         VF1LVdwW231Sb33jLgUyX8EKex2YiNvfnblvDxN5hjQ1+Lld78i0wU48lGENXVZnCI
+         /xzI/fuTwTA90GySj/ZG8TqGdehhdxjYNaIHdV5asw5SyJxCNRdsRginDfIPNCG2SO
+         rAnNOKS1x37jAAcWiiK/R9e303U0yAtxvBC+Crw3eHltzOSmPuOHWvbjJ+xUHcngpL
+         Gh07QCttswEvLRC+gJEIW3/4DKKmrliiSV0H06RDq2J83snOiqB3aKzThCsWo2/wxt
+         +KECmEPxWsaQA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 747356096E;
-        Fri, 26 Mar 2021 00:30:10 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 40438625C0;
+        Fri, 26 Mar 2021 00:30:12 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH resend 0/4] nfc: fix Resource leakage and endless loop
+Subject: Re: [PATCH net-next v2] net: change netdev_unregister_timeout_secs min
+ value to 1
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161671861047.2256.9727486806659792945.git-patchwork-notify@kernel.org>
-Date:   Fri, 26 Mar 2021 00:30:10 +0000
-References: <20210325035113.49323-1-nixiaoming@huawei.com>
-In-Reply-To: <20210325035113.49323-1-nixiaoming@huawei.com>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, kiyin@tencent.com,
-        stable@vger.kernel.org, gregkh@linuxfoundation.org,
-        sameo@linux.intel.com, linville@tuxdriver.com, davem@davemloft.net,
-        kuba@kernel.org, mkl@pengutronix.de, stefan@datenfreihafen.org,
-        matthieu.baerts@tessares.net, netdev@vger.kernel.org,
-        wangle6@huawei.com, xiaoqian9@huawei.com
+Message-Id: <161671861225.2256.11001681624595630001.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Mar 2021 00:30:12 +0000
+References: <20210325145245.3160366-1-dvyukov@google.com>
+In-Reply-To: <20210325145245.3160366-1-dvyukov@google.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     edumazet@google.com, davem@davemloft.net, leon@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Thu, 25 Mar 2021 11:51:09 +0800 you wrote:
-> fix Resource leakage and endless loop in net/nfc/llcp_sock.c,
->  reported by "kiyin(尹亮)".
+On Thu, 25 Mar 2021 15:52:45 +0100 you wrote:
+> netdev_unregister_timeout_secs=0 can lead to printing the
+> "waiting for dev to become free" message every jiffy.
+> This is too frequent and unnecessary.
+> Set the min value to 1 second.
 > 
-> Link: https://www.openwall.com/lists/oss-security/2020/11/01/1
-> 
-> Xiaoming Ni (4):
->   nfc: fix refcount leak in llcp_sock_bind()
->   nfc: fix refcount leak in llcp_sock_connect()
->   nfc: fix memory leak in llcp_sock_connect()
->   nfc: Avoid endless loops caused by repeated llcp_sock_connect()
+> Also fix the merge issue introduced by
+> "net: make unregister netdev warning timeout configurable":
+> it changed "refcnt != 1" to "refcnt".
 > 
 > [...]
 
 Here is the summary with links:
-  - [resend,1/4] nfc: fix refcount leak in llcp_sock_bind()
-    https://git.kernel.org/netdev/net/c/c33b1cc62ac0
-  - [resend,2/4] nfc: fix refcount leak in llcp_sock_connect()
-    https://git.kernel.org/netdev/net/c/8a4cd82d62b5
-  - [resend,3/4] nfc: fix memory leak in llcp_sock_connect()
-    https://git.kernel.org/netdev/net/c/7574fcdbdcb3
-  - [resend,4/4] nfc: Avoid endless loops caused by repeated llcp_sock_connect()
-    https://git.kernel.org/netdev/net/c/4b5db93e7f2a
+  - [net-next,v2] net: change netdev_unregister_timeout_secs min value to 1
+    https://git.kernel.org/netdev/net-next/c/6c996e19949b
 
 You are awesome, thank you!
 --
