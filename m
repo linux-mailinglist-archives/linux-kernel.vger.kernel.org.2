@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6203934A26F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C3F34A272
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhCZHSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 03:18:49 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:41493 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230233AbhCZHSa (ORCPT
+        id S230331AbhCZHT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 03:19:26 -0400
+Received: from mail-wm1-f52.google.com ([209.85.128.52]:55250 "EHLO
+        mail-wm1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230130AbhCZHTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 03:18:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UTM9vIo_1616743107;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UTM9vIo_1616743107)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 26 Mar 2021 15:18:28 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     miklos@szeredi.hu
-Cc:     tao.peng@linux.alibaba.com, baolin.wang@linux.alibaba.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fuse: Fix possible deadlock when writing back dirty pages
-Date:   Fri, 26 Mar 2021 15:18:15 +0800
-Message-Id: <646dfa21bf75729f0c81597122cdec60a80b2035.1616742789.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 26 Mar 2021 03:19:10 -0400
+Received: by mail-wm1-f52.google.com with SMTP id k128so2415523wmk.4;
+        Fri, 26 Mar 2021 00:19:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fLNL3raZRrGxUJu9e4f1n/rQLMtqVUBuwaA1ykbylUk=;
+        b=p534m1V6PBzMEjxzs3FRwVpNZwDQ6HuSi8PPZ2zbiIsdwTSRNzU5vc/Yayc8yt1Y6A
+         b5YOSkN6W8bVLJ6wcsu49zg7ZQVbCjnJZgXhQlyPesN7i4lzF/yiEgTWgxuq5WqPMb95
+         tc87t5D8q2F3XDzz1mTUyK+C9OF4VPEZgDgnOCkbNbyhV2hGqDzGHYO6UMpaTBaj0HPX
+         4dF/apbdmaIM5qTQkZy3LdCmAgLCGFkqAtTShzVLoGhEO+K6+6PRshK6U4uUIFsGx464
+         WwPLakDhefzPwOQfzpyhr9GboC9x3K4zoz71uUFoGNOgQhFyai6phCv+NHWww+vjucRx
+         BX+w==
+X-Gm-Message-State: AOAM531LqLoFxZRvm/VfcXCldLmF19t/aD9m0C/n0T0ZojOxofJuzgXe
+        gOG5ROee+rYtalaP8oyPnlk=
+X-Google-Smtp-Source: ABdhPJzw9FCS1e3r6/gNJEX0b3FR2E4bCH9ja95FbJe61CwUS7gnjiuRlB6fVOR7d9+kCyPWWaxi2A==
+X-Received: by 2002:a1c:2308:: with SMTP id j8mr11875666wmj.45.1616743148933;
+        Fri, 26 Mar 2021 00:19:08 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id u23sm9760443wmn.26.2021.03.26.00.19.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 00:19:08 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 08:19:07 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 6/6] PCI: keystone: Add workaround for Errata #i2037
+ (AM65x SR 1.0)
+Message-ID: <YF2K6+R1P3SNUoo5@rocinante>
+References: <20210325090026.8843-1-kishon@ti.com>
+ <20210325090026.8843-7-kishon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210325090026.8843-7-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can meet below deadlock scenario when writing back dirty pages, and
-writing files at the same time. The deadlock scenario can be reproduced
-by:
+Hi Kishon,
 
-- A writeback worker thread A is trying to write a bunch of dirty pages by
-fuse_writepages(), and the fuse_writepages() will lock one page (named page 1),
-add it into rb_tree with setting writeback flag, and unlock this page 1,
-then try to lock next page (named page 2).
+A few small nitpicks.
 
-- But at the same time a file writing can be triggered by another process B,
-to write several pages by fuse_perform_write(), the fuse_perform_write()
-will lock all required pages firstly, then wait for all writeback pages
-are completed by fuse_wait_on_page_writeback().
+> Errata #i2037 in AM65x/DRA80xM Processors Silicon Revision 1.0
+> (SPRZ452D–July 2018–Revised December 2019 [1]) mentions when an
+> inbound PCIe TLP spans more than two internal AXI 128-byte bursts,
+> the bus may corrupt the packet payload and the corrupt data may
+> cause associated applications or the processor to hang.
+> 
+> The workaround for Errata #i2037 is to limit the maximum read
+> request size and maximum payload size to 128 Bytes. Add workaround
+> for Errata #i2037 here. The errata and workaround is applicable
+> only to AM65x SR 1.0 and later versions of the silicon will have
+> this fixed.
 
-- Now the process B can already lock page 1 and page 2, and wait for page 1
-waritehack is completed (page 1 is under writeback set by process A). But
-process A can not complete the writeback of page 1, since it is still
-waiting for locking page 2, which was locked by process B already.
+I think it would be either "128 B" or "128 bytes", there is no need to
+capitalise bytes.
 
-A deadlock is occurred.
+[...]
+> +	/*
+> +	 * Memory transactions fail with PCI controller in AM654 PG1.0
+> +	 * when MRRS is set to more than 128 Bytes. Force the MRRS to
+> +	 * 128 Bytes in all downstream devices.
+> +	 */
 
-To fix this issue, we should make sure each page writeback is completed after
-lock the page in fuse_fill_write_pages(), and then write them together when
-all pages are stable.
+Same here, it would be "128 bytes" in the comment above.
 
-[1450578.772896] INFO: task kworker/u259:6:119885 blocked for more than 120 seconds.
-[1450578.796179] kworker/u259:6  D    0 119885      2 0x00000028
-[1450578.796185] Workqueue: writeback wb_workfn (flush-0:78)
-[1450578.796188] Call trace:
-[1450578.798804]  __switch_to+0xd8/0x148
-[1450578.802458]  __schedule+0x280/0x6a0
-[1450578.806112]  schedule+0x34/0xe8
-[1450578.809413]  io_schedule+0x20/0x40
-[1450578.812977]  __lock_page+0x164/0x278
-[1450578.816718]  write_cache_pages+0x2b0/0x4a8
-[1450578.820986]  fuse_writepages+0x84/0x100 [fuse]
-[1450578.825592]  do_writepages+0x58/0x108
-[1450578.829412]  __writeback_single_inode+0x48/0x448
-[1450578.834217]  writeback_sb_inodes+0x220/0x520
-[1450578.838647]  __writeback_inodes_wb+0x50/0xe8
-[1450578.843080]  wb_writeback+0x294/0x3b8
-[1450578.846906]  wb_do_writeback+0x2ec/0x388
-[1450578.850992]  wb_workfn+0x80/0x1e0
-[1450578.854472]  process_one_work+0x1bc/0x3f0
-[1450578.858645]  worker_thread+0x164/0x468
-[1450578.862559]  kthread+0x108/0x138
-[1450578.865960] INFO: task doio:207752 blocked for more than 120 seconds.
-[1450578.888321] doio            D    0 207752 207740 0x00000000
-[1450578.888329] Call trace:
-[1450578.890945]  __switch_to+0xd8/0x148
-[1450578.894599]  __schedule+0x280/0x6a0
-[1450578.898255]  schedule+0x34/0xe8
-[1450578.901568]  fuse_wait_on_page_writeback+0x8c/0xc8 [fuse]
-[1450578.907128]  fuse_perform_write+0x240/0x4e0 [fuse]
-[1450578.912082]  fuse_file_write_iter+0x1dc/0x290 [fuse]
-[1450578.917207]  do_iter_readv_writev+0x110/0x188
-[1450578.921724]  do_iter_write+0x90/0x1c8
-[1450578.925598]  vfs_writev+0x84/0xf8
-[1450578.929071]  do_writev+0x70/0x110
-[1450578.932552]  __arm64_sys_writev+0x24/0x30
-[1450578.936727]  el0_svc_common.constprop.0+0x80/0x1f8
-[1450578.941694]  el0_svc_handler+0x30/0x80
-[1450578.945606]  el0_svc+0x10/0x14
+[...]
+> +		if (pcie_get_readrq(dev) > 128) {
+> +			dev_info(&dev->dev, "limiting MRRS to 128\n");
+> +			pcie_set_readrq(dev, 128);
+> +		}
+[...]
 
-Suggested-by: Peng Tao <tao.peng@linux.alibaba.com>
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- fs/fuse/file.c | 2 ++
- 1 file changed, 2 insertions(+)
+Might be nice to add unit here, so "128 bytes".
 
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 8cccecb..af082b6 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -1166,6 +1166,8 @@ static ssize_t fuse_fill_write_pages(struct fuse_args_pages *ap,
- 		if (!page)
- 			break;
- 
-+		wait_on_page_writeback(page);
-+
- 		if (mapping_writably_mapped(mapping))
- 			flush_dcache_page(page);
- 
--- 
-1.8.3.1
-
+Krzysztof
