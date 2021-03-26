@@ -2,137 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD6834AB03
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A7034A95B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhCZPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:10:27 -0400
-Received: from gateway23.websitewelcome.com ([192.185.49.184]:46916 "EHLO
-        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230289AbhCZPKU (ORCPT
+        id S230121AbhCZOMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhCZOMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:10:20 -0400
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway23.websitewelcome.com (Postfix) with ESMTP id F27C59635
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 10:10:17 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id Po6LlA1ZFmJLsPo6LlpB1H; Fri, 26 Mar 2021 10:10:17 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=js4fUDxJZ+1hiSlK8YxajbpFu59Q14OV5p4s8fmb3TU=; b=jVuz05LKRIVx3o+AlLL6Z8MH80
-        hLFm9BUeqA2NXF2jjSE8Spj64p6YYMAsEOxVKNEJZhgfWlr2oYAcpra5FdwZBDNVsYQ+r5hCZ0Wgo
-        voCY9zCGp8kxirFh3Yuq7TdyGl4KaUGxZQKsEDOjqQjqoDAfaR78N2MmXKtlJZNEvlgVO763QpJxb
-        gIKY94VV1XYesYeXRlHZbyTQVWUvxYVuNMcAPBRPzJaSWKyce7lUkhtcWAa2qY6WgI8S+Ksg0j+aG
-        rpZcJWL5lM3GYT/+Z244hK2wuXt+m/vrVLFuAErFIBbjKHsIga+kFmqUyN++o8uExWqLy1XLO2++N
-        64vei9BA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:33932 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lPo6L-00359B-EE; Fri, 26 Mar 2021 10:10:17 -0500
-Subject: Re: [PATCH][next] UAPI: nfsfh.h: Replace one-element array with
- flexible-array member
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "'Gustavo A. R. Silva'" <gustavoars@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
-References: <20210323224858.GA293698@embeddedor>
- <629154ce566b4c9c9b7f4124b3260fc3@AcuMS.aculab.com>
- <5331b4e2-eeef-1c27-5efe-bf3986fd6683@embeddedor.com>
- <1efa90cc6bc24cfb860084e0b888cd4b@AcuMS.aculab.com>
- <e2e93993-e64b-ce7d-88cf-4c367b747e40@embeddedor.com>
- <e516146427db45439c02afe57ce06e97@AcuMS.aculab.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <7a93d5da-04da-f283-3882-bc130e38e8eb@embeddedor.com>
-Date:   Fri, 26 Mar 2021 09:10:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Mar 2021 10:12:18 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AF2C0613B2
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:12:17 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1lPnBv-0005tW-3S; Fri, 26 Mar 2021 15:11:59 +0100
+Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <pza@pengutronix.de>)
+        id 1lPnBs-0006cN-1E; Fri, 26 Mar 2021 15:11:56 +0100
+Date:   Fri, 26 Mar 2021 15:11:56 +0100
+From:   Philipp Zabel <pza@pengutronix.de>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 02/13] dt-bindings: media: nxp,imx8mq-vpu: Update the
+ bindings for G2 support
+Message-ID: <20210326141156.GA8441@pengutronix.de>
+References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
+ <20210318082046.51546-3-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <e516146427db45439c02afe57ce06e97@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lPo6L-00359B-EE
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:33932
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210318082046.51546-3-benjamin.gaignard@collabora.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:07:47 up 36 days, 17:31, 96 users,  load average: 0.09, 0.22,
+ 0.17
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: pza@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 3/26/21 03:17, David Laight wrote:
-> From: Gustavo A. R. Silva
->> Sent: 25 March 2021 21:12
->>
->> On 3/25/21 10:29, David Laight wrote:
->>
->>>>>
->>>>> Could you use the simpler:
->>>>>> struct nfs_fhbase_new {
->>>>>>          __u8       fb_version;
->>>>>>          __u8       fb_auth_type;
->>>>>>          __u8       fb_fsid_type;
->>>>>>          __u8       fb_fileid_type;
->>>>>>          union {
->>>>>>                 __u32      fb_auth[1];
->>>>>>                 __u32      fb_auth_flex[0];
->>>>>>          };
->>>>>> };
->>>>>
->>>>> Although I'm not certain flexible arrays are supported
->>>>> as the last element of a union.
->>>>
->>>> Nope; this is not allowed: https://godbolt.org/z/14vd4o8na
->>>
->>> Nothing an extra 'struct {__u32 fb_auth_flex[0]; }'; won't solve.
->>
->> We don't want to introduce zero-length arrays [1].
+On Thu, Mar 18, 2021 at 09:20:35AM +0100, Benjamin Gaignard wrote:
+> Introducing G2 hevc video decoder lead to modify the bindings to allow
+> to get one node per VPUs.
+> VPUs share one hardware control block which is provided as a phandle on
+> an syscon.
+> Each node got now one reg and one interrupt.
+> Add a compatible for G2 hardware block: nxp,imx8mq-vpu-g2.
 > 
-> I probably meant to write [] not [0] - doesn't affect the idea.
+> To be compatible with older DT the driver is still capable to use 'ctrl'
+> reg-name even if it is deprecated now.
 > 
-> The real problem is that the compiler is likely to start rejecting
-> references to a flex array that go beyond the end of the outer
-> structure.
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 5:
+> - This version doesn't break the backward compatibilty between kernel
+>   and DT.
 > 
-> Thinking back, isn't fb_auth[] at least one entry long?
-> So it could be:
+>  .../bindings/media/nxp,imx8mq-vpu.yaml        | 53 ++++++++++++-------
+>  1 file changed, 34 insertions(+), 19 deletions(-)
 > 
-> struct nfs_fhbase_new {
->          __u8       fb_version;
->          __u8       fb_auth_type;
->          __u8       fb_fsid_type;
->          __u8       fb_fileid_type;
->          __u32      fb_auth[1];
->          __u32      fb_auth_extra[];
-> };
+> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+> index 762be3f96ce9..79502fc8bde5 100644
+> --- a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+> +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+> @@ -15,22 +15,18 @@ description:
+>  
+>  properties:
+>    compatible:
+> -    const: nxp,imx8mq-vpu
+> +    oneOf:
+> +      - const: nxp,imx8mq-vpu
+> +      - const: nxp,imx8mq-vpu-g2
+>  
+>    reg:
+> -    maxItems: 3
+> -
+> -  reg-names:
+> -    items:
+> -      - const: g1
+> -      - const: g2
+> -      - const: ctrl
+> +    maxItems: 1
+>  
+>    interrupts:
+> -    maxItems: 2
+> +    maxItems: 1
+>  
+>    interrupt-names:
+> -    items:
+> +    oneOf:
+>        - const: g1
+>        - const: g2
+>  
+> @@ -46,14 +42,18 @@ properties:
+>    power-domains:
+>      maxItems: 1
+>  
+> +  nxp,imx8mq-vpu-ctrl:
+> +    description: Specifies a phandle to syscon VPU hardware control block
+> +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> +
 
-I don't think this is a great idea because, contrary to the change I'm
-proposing, in this case memory regions for fb_auth and fb_auth_extra
-don't actually overlap.
+Should we drop the 'q' here, i.e. nxp,imx8m-vpu-ctrl so we can use the same
+binding for i.MX8MM later?
 
---
-Gustavo
+>  required:
+>    - compatible
+>    - reg
+> -  - reg-names
+>    - interrupts
+>    - interrupt-names
+>    - clocks
+>    - clock-names
+> +  - nxp,imx8mq-vpu-ctrl
+>  
+>  additionalProperties: false
+>  
+> @@ -62,18 +62,33 @@ examples:
+>          #include <dt-bindings/clock/imx8mq-clock.h>
+>          #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  
+> -        vpu: video-codec@38300000 {
+> +        vpu_ctrl: syscon@38320000 {
+> +                 compatible = "nxp,imx8mq-vpu-ctrl", "syscon";
+> +                 reg = <0x38320000 0x10000>;
+> +        };
+> +
+> +        vpu_g1: video-codec@38300000 {
+>                  compatible = "nxp,imx8mq-vpu";
+> -                reg = <0x38300000 0x10000>,
+> -                      <0x38310000 0x10000>,
+> -                      <0x38320000 0x10000>;
+> -                reg-names = "g1", "g2", "ctrl";
+> -                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+> -                             <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+> -                interrupt-names = "g1", "g2";
+> +                reg = <0x38300000 0x10000>;
+> +                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+> +                interrupt-names = "g1";
+> +                clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+> +                         <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+
+Does the G1 VPU require the G2 clock and vice versa?
+
+regards
+Philipp
