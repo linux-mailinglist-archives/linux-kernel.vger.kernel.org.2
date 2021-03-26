@@ -2,203 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0CD934AA17
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:37:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EB234AA18
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhCZOgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbhCZOfa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:35:30 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA083C0613B1
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:29 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id x7so5843552wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ClFGCdlyfHku/4SK1RS5YcXqT4jfIPIFaVtjJpjt8dI=;
-        b=zBUWxDzz0qsrzy2U455hoEcT4SP9C4Lm/4mPsseMd6sftp+9qjrwtdVWRDIlVUR2x+
-         w6h7Q0xiW8Bzp6YynifdA8gq/zqqyRwbcDo66EEm8S1Drim13BvKjZKbpx2IFJ57IggZ
-         8dM0l76bPEoIA5gXy/ZPQH4V/8H9iGTmt4h5xfzYRtTSThHrC2Lr/W5to69igPN6TzzE
-         P/RSQKpbeewsihN0s8oZBQyC2/RNS7miSKfZXusQQFsHdcOJgHbOOpFli/+4kyosRl51
-         KMDV47YmxBnIuVteCrUTadawpoAUFNmitlpM5WQNd+Jn1Vpz/XhyrpeYeAXCaCuf0s+G
-         V1ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ClFGCdlyfHku/4SK1RS5YcXqT4jfIPIFaVtjJpjt8dI=;
-        b=e2BsN71GcOeHQf4W7ty9NvSnzpicW/KfwHcbo7S2dLtg31MykE6P8afxsqWdQkETeM
-         GReh2TzU9ILEklgdTOtOYmSE2kQBOmBqOvOJiKnbbCvM10E/7kI63zlr4j1yfgaLgHMw
-         UQITrRv+hd60N2ChCPTGGXOikO0mbkoGYMLKspU63ywMvUwVfkOb5fZyBJWxfXuaCCia
-         Oqlfw5TN/kYPeG82WSaCmpoKVbBXkLWnSS6ehTvP13TWNP4aieievFDOEXP5guiOJbeY
-         ri2l/h8wVj6rTeiIDlPFHtMdQPCjHFecZdWXeV3IStoEXRRe5XykY2CNHA9QOsdReFuB
-         gftw==
-X-Gm-Message-State: AOAM530dUafdXxUtRdwt0reFz4xAUgZ2vKSP/nSlc/mJ6ekJqjmvaF7q
-        685RIzd+4UsnOS0LUYBJ+U9Raw==
-X-Google-Smtp-Source: ABdhPJxJ43fMfcqtKUbjAcvCSxXzdtMVZTMWkDgD6B8lxdQ7AyQZa2evvtl6rXxcLldcDxglGsetBQ==
-X-Received: by 2002:adf:cf11:: with SMTP id o17mr14923097wrj.391.1616769328584;
-        Fri, 26 Mar 2021 07:35:28 -0700 (PDT)
-Received: from dell.default ([91.110.221.194])
-        by smtp.gmail.com with ESMTPSA id j26sm12878225wrh.57.2021.03.26.07.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 07:35:28 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Daniel Drubin <daniel.drubin@intel.com>,
-        linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 25/25] HID: ishtp-hid-client: Fix 'suggest-attribute=format' compiler warning
-Date:   Fri, 26 Mar 2021 14:34:58 +0000
-Message-Id: <20210326143458.508959-27-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210326143458.508959-1-lee.jones@linaro.org>
-References: <20210326143458.508959-1-lee.jones@linaro.org>
+        id S231394AbhCZOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:36:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230506AbhCZOge (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:36:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B5A4619F2;
+        Fri, 26 Mar 2021 14:36:32 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 14:36:30 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] arm64: move --fix-cortex-a53-843419 linker test to
+ Kconfig
+Message-ID: <20210326143630.GD5126@arm.com>
+References: <20210324071128.1723273-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324071128.1723273-1-masahiroy@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Hi Masahiro,
 
- drivers/hid/intel-ish-hid/ishtp/bus.c: In function ‘ishtp_trace_callback’:
- drivers/hid/intel-ish-hid/ishtp/bus.c:876:29: warning: return type might be a candidate for a format attribute [-Wsuggest-attribute=format]
- 876 | return cl_device->ishtp_dev->print_log;
- | ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+On Wed, Mar 24, 2021 at 04:11:28PM +0900, Masahiro Yamada wrote:
+> $(call ld-option, --fix-cortex-a53-843419) in arch/arm64/Makefile is
+> evaluated every time even for Make targets that do not need the linker,
+> such as "make ARCH=arm64 install".
+> 
+> Recently, the Kbuild tree queued up a patch to avoid needless
+> compiler/linker flag evaluation. I beleive it is a good improvement
+> itself, but causing a false-positive warning for arm64 installation
+> in linux-next. (Thanks to Nathan for the report)
+> 
+> Kconfig can test the linker capability just once, and store it in the
+> .config file. The build and installation steps that follow do not need
+> to test the liniker over again.
+> 
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+> I was not sure what the preferred CONFIG option name is.
+> Please suggest a one if you have a better idea.
+> 
+> 
+>  arch/arm64/Kconfig  | 3 +++
+>  arch/arm64/Makefile | 2 +-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
 
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: Jiri Kosina <jikos@kernel.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Daniel Drubin <daniel.drubin@intel.com>
-Cc: linux-input@vger.kernel.org
-Suggested-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Acked-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- drivers/hid/intel-ish-hid/ishtp-hid-client.c | 4 ++--
- drivers/hid/intel-ish-hid/ishtp-hid.h        | 4 ++--
- drivers/hid/intel-ish-hid/ishtp/bus.c        | 4 ++--
- drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h  | 4 ++--
- include/linux/intel-ish-client-if.h          | 8 +++++++-
- 5 files changed, 15 insertions(+), 9 deletions(-)
+Would you like this patch to go in via the arm64 tree or you will queue
+it via the kbuild tree?
 
-diff --git a/drivers/hid/intel-ish-hid/ishtp-hid-client.c b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
-index 042a7091802dd..6b1fa971b33e2 100644
---- a/drivers/hid/intel-ish-hid/ishtp-hid-client.c
-+++ b/drivers/hid/intel-ish-hid/ishtp-hid-client.c
-@@ -784,7 +784,7 @@ static void hid_ishtp_cl_reset_handler(struct work_struct *work)
- 	}
- }
- 
--void (*hid_print_trace)(void *unused, const char *format, ...);
-+ishtp_print_log ishtp_hid_print_trace;
- 
- /**
-  * hid_ishtp_cl_probe() - ISHTP client driver probe
-@@ -823,7 +823,7 @@ static int hid_ishtp_cl_probe(struct ishtp_cl_device *cl_device)
- 
- 	INIT_WORK(&client_data->work, hid_ishtp_cl_reset_handler);
- 
--	hid_print_trace = ishtp_trace_callback(cl_device);
-+	ishtp_hid_print_trace = ishtp_trace_callback(cl_device);
- 
- 	rv = hid_ishtp_cl_init(hid_ishtp_cl, 0);
- 	if (rv) {
-diff --git a/drivers/hid/intel-ish-hid/ishtp-hid.h b/drivers/hid/intel-ish-hid/ishtp-hid.h
-index e2423f7d2b547..f88443a7d935e 100644
---- a/drivers/hid/intel-ish-hid/ishtp-hid.h
-+++ b/drivers/hid/intel-ish-hid/ishtp-hid.h
-@@ -16,9 +16,9 @@
- #define	IS_RESPONSE	0x80
- 
- /* Used to dump to Linux trace buffer, if enabled */
--extern void (*hid_print_trace)(void *unused, const char *format, ...);
-+extern ishtp_print_log ishtp_hid_print_trace;
- #define hid_ishtp_trace(client, ...) \
--		(hid_print_trace)(NULL, __VA_ARGS__)
-+	(ishtp_hid_print_trace)(NULL, __VA_ARGS__)
- 
- /* ISH HID message structure */
- struct hostif_msg_hdr {
-diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
-index c1c7d5356208d..f0802b047ed8d 100644
---- a/drivers/hid/intel-ish-hid/ishtp/bus.c
-+++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
-@@ -869,9 +869,9 @@ EXPORT_SYMBOL(ishtp_get_pci_device);
-  *
-  * This interface is used to return trace callback function pointer.
-  *
-- * Return: void *.
-+ * Return: *ishtp_print_log()
-  */
--void *ishtp_trace_callback(struct ishtp_cl_device *cl_device)
-+ishtp_print_log ishtp_trace_callback(struct ishtp_cl_device *cl_device)
- {
- 	return cl_device->ishtp_dev->print_log;
- }
-diff --git a/drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h b/drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h
-index 1cc6364aa957f..f579b16e6d7a9 100644
---- a/drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h
-+++ b/drivers/hid/intel-ish-hid/ishtp/ishtp-dev.h
-@@ -10,6 +10,7 @@
- 
- #include <linux/types.h>
- #include <linux/spinlock.h>
-+#include <linux/intel-ish-client-if.h>
- #include "bus.h"
- #include "hbm.h"
- 
-@@ -202,8 +203,7 @@ struct ishtp_device {
- 	uint64_t ishtp_host_dma_rx_buf_phys;
- 
- 	/* Dump to trace buffers if enabled*/
--	__printf(2, 3) void (*print_log)(struct ishtp_device *dev,
--					 const char *format, ...);
-+	ishtp_print_log print_log;
- 
- 	/* Debug stats */
- 	unsigned int	ipc_rx_cnt;
-diff --git a/include/linux/intel-ish-client-if.h b/include/linux/intel-ish-client-if.h
-index 94669e21dc8b3..25e2b4e805023 100644
---- a/include/linux/intel-ish-client-if.h
-+++ b/include/linux/intel-ish-client-if.h
-@@ -8,11 +8,17 @@
- #ifndef _INTEL_ISH_CLIENT_IF_H_
- #define _INTEL_ISH_CLIENT_IF_H_
- 
-+#include <linux/device.h>
-+#include <linux/uuid.h>
-+
- struct ishtp_cl_device;
- struct ishtp_device;
- struct ishtp_cl;
- struct ishtp_fw_client;
- 
-+typedef __printf(2, 3) void (*ishtp_print_log)(struct ishtp_device *dev,
-+					       const char *format, ...);
-+
- /* Client state */
- enum cl_state {
- 	ISHTP_CL_INITIALIZING = 0,
-@@ -76,7 +82,7 @@ int ishtp_register_event_cb(struct ishtp_cl_device *device,
- /* Get the device * from ishtp device instance */
- struct device *ishtp_device(struct ishtp_cl_device *cl_device);
- /* Trace interface for clients */
--void *ishtp_trace_callback(struct ishtp_cl_device *cl_device);
-+ishtp_print_log ishtp_trace_callback(struct ishtp_cl_device *cl_device);
- /* Get device pointer of PCI device for DMA acces */
- struct device *ishtp_get_pci_device(struct ishtp_cl_device *cl_device);
- 
+Thanks.
+
 -- 
-2.27.0
-
+Catalin
