@@ -2,128 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549A634AA90
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FA934AA96
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhCZOyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:54:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44124 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229871AbhCZOxv (ORCPT
+        id S230135AbhCZOzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:55:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229995AbhCZOzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:53:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616770430;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sniOXWpl3SzSr30LS38MLQ1sgZ4a8SSZHY7ekXG97xE=;
-        b=M0fvLAofx4IhbmUBfEihFvah/wMQVbekVERevDtfMhkYIvvXin5MALbvqL08B2CmMheSt6
-        Ipzuyi0w+hHVspjLFbNAoi0Cm5cvqk57K7+gu9zauzRIa9mJvxFKS8zLcAIKyCL1xKCknd
-        92og8BqgxtnvZQ7UsOcxyFI0h1j9u48=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-526-G0sXW3nxNQeM3W9axMD_oA-1; Fri, 26 Mar 2021 10:53:46 -0400
-X-MC-Unique: G0sXW3nxNQeM3W9axMD_oA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33087A40C0;
-        Fri, 26 Mar 2021 14:53:45 +0000 (UTC)
-Received: from [10.36.112.81] (ovpn-112-81.ams2.redhat.com [10.36.112.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ED113772E0;
-        Fri, 26 Mar 2021 14:53:42 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <YFyoU/rkEPK3VPlN@dhcp22.suse.cz>
- <40fac999-2d28-9205-23f0-516fa9342bbe@redhat.com>
- <YFyt3UfoPkt7BbDZ@dhcp22.suse.cz> <YFy1J+mCyGmnwuHJ@dhcp22.suse.cz>
- <92fe19d0-56ac-e929-a9c1-d6a4e0da39d1@redhat.com>
- <YFy8ARml4R7/snVs@dhcp22.suse.cz> <YFy+olsdS4iwrovN@dhcp22.suse.cz>
- <YF0JerCFXzcmMKzp@localhost.localdomain> <YF2ct/UZUBG1GcM3@dhcp22.suse.cz>
- <5be95091-b4ac-8e05-4694-ac5c65f790a4@redhat.com>
- <YF3x8BW1+2o50mds@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v5 1/5] mm,memory_hotplug: Allocate memmap from the added
- memory range
-Message-ID: <0e735ea7-b3d9-615e-6bba-fa3a16883226@redhat.com>
-Date:   Fri, 26 Mar 2021 15:53:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 26 Mar 2021 10:55:45 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D2FC0613B1
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:55:45 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id u10so5317694ilb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ShOD9ANK+k5zonsBbQI1RoVppoAyPVg9mfaoGxQR9eU=;
+        b=GO1oyAFDNMwSU4xCrtFjN3Y2rI1BLjkYdaQo4XiiNvhy03JIhN2vsLZv32tA9ZPHrC
+         G0Ku6NBbJq0UA1twegAxAomeJmaPu7GUzxuTv53PhIQAU2poxrTa0k8PnHtdmZpItGrf
+         ybUDroiYIZlGg8uLtQ96Jn3DJHybJZIECUxFVronQAs1mnDX8WnGv/h82GXybUXtR+WB
+         kcKC+hG3G7IpOJ+I9gLqN9XRaWNI+D7LQlcEgtZ0qPAH5O5vjfZhgQIqf6XyxFHvJcha
+         mfcxXMUi+MIawEuBSbI5olQ/Q6oVK1/XJYJ2/t+pgd4K16ze5rFE/V4ZmNlM6xf/7kAx
+         9GmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ShOD9ANK+k5zonsBbQI1RoVppoAyPVg9mfaoGxQR9eU=;
+        b=HbfeT7wMceY0f48yh46mLycSjKLpg9DUYH6hR+Uj1Ad55vLeRBNL7DeJ/phdGfLPPv
+         FSCOjIIflOVLgjchWefOfceVlh1Z4yBh/6VvTp7OfVuB1vfSkmAH5eecl+V7HEBWTv45
+         k9QU76EbJd2jZXZPqZF1+ierDWu5UzL3yQ5qkjVLvRj5cJh4QSujq5ceTWIzWyNQ6YZB
+         wQf5N1t6ogh8qnOxA1YEk11cpcTIaG/s6fy4izIz4YJ9QlsbqFeAnh0I0hqpQyfcFhjw
+         IqwKrnk577b2fBv8pjqsHOpFzoSIdhVenB++HJkpQD6u3fxJ+wcCcQtMXx/SiGF9ToG0
+         sfTg==
+X-Gm-Message-State: AOAM5305TqDR0UwibVjAYkPRJtrR6RA9rvi6Rrv99YMlbLtQf1Oyrwnv
+        0w+VeZYsyjbaof6Cx64iPXSWXe8O9J0sTA==
+X-Google-Smtp-Source: ABdhPJx8GoZAb06zYZhZWKCAzh39CvH3mJP+f3t0zhDQw8tiX/iOr4TJhZGR6imLGWgNpkyPj03v2Q==
+X-Received: by 2002:a05:6e02:4a4:: with SMTP id e4mr10298335ils.114.1616770544540;
+        Fri, 26 Mar 2021 07:55:44 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id j6sm4090911ila.31.2021.03.26.07.55.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 26 Mar 2021 07:55:44 -0700 (PDT)
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Stefan Metzmacher <metze@samba.org>, io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+ <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+ <0c91d9e7-82cd-bec2-19ae-cc592ec757c6@kernel.dk>
+ <bfaae5fd-5de9-bae4-89b6-2d67bbfb86c6@kernel.dk>
+ <66fa3cfc-4161-76fe-272e-160097f32a53@kernel.dk>
+ <67a83ad5-1a94-39e5-34c7-6b2192eb7edb@samba.org>
+ <ac807735-53d0-0c9e-e119-775e5e01d971@samba.org>
+ <0396df33-7f91-90c8-6c0d-8a3afd3fff3c@kernel.dk>
+Message-ID: <1304f480-a8db-44cf-5d89-aa9b99efdcd7@kernel.dk>
+Date:   Fri, 26 Mar 2021 08:55:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YF3x8BW1+2o50mds@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <0396df33-7f91-90c8-6c0d-8a3afd3fff3c@kernel.dk>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.03.21 15:38, Michal Hocko wrote:
-> On Fri 26-03-21 09:52:58, David Hildenbrand wrote:
-> [...]
->> Something else to note:
+On 3/26/21 8:53 AM, Jens Axboe wrote:
+> On 3/26/21 8:45 AM, Stefan Metzmacher wrote:
+>> Am 26.03.21 um 15:43 schrieb Stefan Metzmacher:
+>>> Am 26.03.21 um 15:38 schrieb Jens Axboe:
+>>>> On 3/26/21 7:59 AM, Jens Axboe wrote:
+>>>>> On 3/26/21 7:54 AM, Jens Axboe wrote:
+>>>>>>> The KILL after STOP deadlock still exists.
+>>>>>>
+>>>>>> In which tree? Sounds like you're still on the old one with that
+>>>>>> incremental you sent, which wasn't complete.
+>>>>>>
+>>>>>>> Does io_wq_manager() exits without cleaning up on SIGKILL?
+>>>>>>
+>>>>>> No, it should kill up in all cases. I'll try your stop + kill, I just
+>>>>>> tested both of them separately and didn't observe anything. I also ran
+>>>>>> your io_uring-cp example (and found a bug in the example, fixed and
+>>>>>> pushed), fwiw.
+>>>>>
+>>>>> I can reproduce this one! I'll take a closer look.
+>>>>
+>>>> OK, that one is actually pretty straight forward - we rely on cleaning
+>>>> up on exit, but for fatal cases, get_signal() will call do_exit() for us
+>>>> and never return. So we might need a special case in there to deal with
+>>>> that, or some other way of ensuring that fatal signal gets processed
+>>>> correctly for IO threads.
+>>>
+>>> And if (fatal_signal_pending(current)) doesn't prevent get_signal() from being called?
 >>
->>
->> We'll not call the memory notifier (e.g., MEM_ONLINE) for the vmemmap. The
->> result is that
->>
->> 1. We won't allocate extended struct pages for the range. Don't think this
->> is really problematic (pages are never allocated/freed, so I guess we don't
->> care - like ZONE_DEVICE code).
+>> Ah, we're still in the first get_signal() from SIGSTOP, correct?
 > 
-> Agreed. I do not think we need them. Future might disagree but let's
-> handle it when we have a clear demand.
+> Yes exactly, we're waiting in there being stopped. So we either need to
+> check to something ala:
 > 
->> 2. We won't allocate kasan shadow memory. We most probably have to do it
->> explicitly via kasan_add_zero_shadow()/kasan_remove_zero_shadow(), see
->> mm/memremap.c:pagemap_range()
+> relock:
+> +	if (current->flags & PF_IO_WORKER && fatal_signal_pending(current))
+> +		return false;
 > 
-> I think this is similar to the above. Does kasan has to know about
-> memory which will never be used for anything?
-
-IIRC, kasan will track read/writes to the vmemmap as well. So it could 
-theoretically detect if we read from the vmemmap before writing 
-(initializing) it IIUC.
-
-This is also why mm/memremap.c does a kasan_add_zero_shadow() before the 
-move_pfn_range_to_zone()->memmap_init_range() for the whole region, 
-including altmap space.
-
-Now, I am no expert on KASAN, what would happen in case we have access 
-to non-tracked memory.
-
-commit 0207df4fa1a869281ddbf72db6203dbf036b3e1a
-Author: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Date:   Fri Aug 17 15:47:04 2018 -0700
-
-     kernel/memremap, kasan: make ZONE_DEVICE with work with KASAN
-
-indicates that kasan will crash the system on "non-existent shadow memory"
-
+> to catch it upfront and from the relock case, or add:
 > 
->> Further a locking rework might be necessary. We hold the device hotplug
->> lock, but not the memory hotplug lock. E.g., for get_online_mems(). Might
->> have to move that out online_pages.
+> 	fatal:
+> +		if (current->flags & PF_IO_WORKER)
+> +			return false;
 > 
-> Could you be more explicit why this locking is needed? What it would
-> protect from for vmemmap pages?
-> 
+> to catch it in the fatal section.
 
-One example is in mm/kmemleak.c:kmemleak_scan(), where we scan the 
-vmemmap for pointers. We don't want the vmemmap to get unmapped while we 
-are working on it (-> fault).
+Can you try this? Not crazy about adding a special case, but I don't
+think there's any way around this one. And should be pretty cheap, as
+we're already pulling in ->flags right above anyway.
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 5ad8566534e7..5b75fbe3d2d6 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2752,6 +2752,15 @@ bool get_signal(struct ksignal *ksig)
+ 		 */
+ 		current->flags |= PF_SIGNALED;
+ 
++		/*
++		 * PF_IO_WORKER threads will catch and exit on fatal signals
++		 * themselves. They have cleanup that must be performed, so
++		 * we cannot call do_exit() on their behalf. coredumps also
++		 * do not apply to them.
++		 */
++		if (current->flags & PF_IO_WORKER)
++			return false;
++
+ 		if (sig_kernel_coredump(signr)) {
+ 			if (print_fatal_signals)
+ 				print_fatal_signal(ksig->info.si_signo);
 
 -- 
-Thanks,
-
-David / dhildenb
+Jens Axboe
 
