@@ -2,173 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A9D34A9C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A8934A9C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhCZOau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:30:50 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:40658 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229908AbhCZOaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:30:35 -0400
-Received: from zn.tnic (p200300ec2f075f0023f9e598b0fb3457.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:5f00:23f9:e598:b0fb:3457])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5B94D1EC052C;
-        Fri, 26 Mar 2021 15:30:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616769034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=oJkolnL9jjg81qljwrUuZ1hFVB/MeYbUdPDzJrA7TaA=;
-        b=RqBGPN32FfzzHmc1/a0E6NVvybDsMbmjnjZRdaKi8+XReCeSIyFqRCMt/iAWqODxuC9NR0
-        rf5959QvQ4wv3lvBFR7NmOHb+Fb+BP9MVdMKWRpMj9/ZqxJOdYiNBojBinue0WCGpJ51bK
-        nyo7OTxp/G2xKb9DsbZSzpPowPFnRqY=
-Date:   Fri, 26 Mar 2021 15:30:26 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 03/13] x86: add a helper routine for the
- PVALIDATE instruction
-Message-ID: <20210326143026.GB27507@zn.tnic>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-4-brijesh.singh@amd.com>
+        id S230142AbhCZOdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:33:37 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:37642 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhCZOd1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 10:33:27 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: benjamin.gaignard)
+        with ESMTPSA id 41A5E1F40DAB
+Subject: Re: [PATCH v6 13/13] arm64: dts: imx8mq: Add node to G2 hardware
+To:     Philipp Zabel <pza@pengutronix.de>
+Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+References: <20210318082046.51546-1-benjamin.gaignard@collabora.com>
+ <20210318082046.51546-14-benjamin.gaignard@collabora.com>
+ <20210326142440.GD8441@pengutronix.de>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <4df3c9e4-0983-6007-f3b3-323882f903cf@collabora.com>
+Date:   Fri, 26 Mar 2021 15:33:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210324164424.28124-4-brijesh.singh@amd.com>
+In-Reply-To: <20210326142440.GD8441@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:44:14AM -0500, Brijesh Singh wrote:
->  arch/x86/include/asm/sev-snp.h | 52 ++++++++++++++++++++++++++++++++++
 
-Hmm, a separate header.
+Le 26/03/2021 à 15:24, Philipp Zabel a écrit :
+> On Thu, Mar 18, 2021 at 09:20:46AM +0100, Benjamin Gaignard wrote:
+>> Split VPU node in two: one for G1 and one for G2 since they are
+>> different hardware blocks.
+>> Add syscon for hardware control block.
+>> Remove reg-names property that is useless.
+>> Each VPU node only need one interrupt.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>> version 5:
+>>   - use syscon instead of VPU reset
+>>
+>>   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 43 ++++++++++++++++++-----
+>>   1 file changed, 34 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+>> index 17c449e12c2e..b537d153ebbd 100644
+>> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+>> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+>> @@ -1329,15 +1329,16 @@ usb3_phy1: usb-phy@382f0040 {
+>>   			status = "disabled";
+>>   		};
+>>   
+>> -		vpu: video-codec@38300000 {
+>> +		vpu_ctrl: syscon@38320000 {
+>> +			compatible = "nxp,imx8mq-vpu-ctrl", "syscon";
+>> +			reg = <0x38320000 0x10000>;
+>> +		};
+>> +
+>> +		vpu_g1: video-codec@38300000 {
+>>   			compatible = "nxp,imx8mq-vpu";
+>> -			reg = <0x38300000 0x10000>,
+>> -			      <0x38310000 0x10000>,
+>> -			      <0x38320000 0x10000>;
+>> -			reg-names = "g1", "g2", "ctrl";
+>> -			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+>> -				     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+>> -			interrupt-names = "g1", "g2";
+>> +			reg = <0x38300000 0x10000>;
+>> +			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+>> +			interrupt-names = "g1";
+>>   			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+>>   				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+>>   				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+>> @@ -1350,9 +1351,33 @@ vpu: video-codec@38300000 {
+>>   						 <&clk IMX8MQ_VPU_PLL_OUT>,
+>>   						 <&clk IMX8MQ_SYS1_PLL_800M>,
+>>   						 <&clk IMX8MQ_VPU_PLL>;
+>> -			assigned-clock-rates = <600000000>, <600000000>,
+>> +			assigned-clock-rates = <600000000>, <300000000>,
+> I'd like to see this mentioned in the commit message.
 
-Yeah, I know we did sev-es.h but I think it all should be in a single
-sev.h which contains all AMD-specific memory encryption declarations.
-It's not like it is going to be huge or so, by the looks of how big
-sev-es.h is.
+Yes I would do that.
+The value comes from the datasheet.
 
-Or is there a particular need to have a separate snp header?
+>
+>> +					       <800000000>, <0>;
+>> +			power-domains = <&pgc_vpu>;
+>> +			nxp,imx8mq-vpu-ctrl = <&vpu_ctrl>;
+>> +		};
+>> +
+>> +		vpu_g2: video-codec@38310000 {
+>> +			compatible = "nxp,imx8mq-vpu-g2";
+>> +			reg = <0x38310000 0x10000>;
+>> +			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+>> +			interrupt-names = "g2";
+>> +			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+>> +				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+>> +				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+>> +			clock-names = "g1", "g2",  "bus";
+>> +			assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
+> Can the G1 clock configuration be dropped from the G2 device node and
+> the G2 clock configuration from the G1 device node? It looks weird that
+> these devices configure each other's clocks.
 
-If not, please do a pre-patch which renames sev-es.h to sev.h and then
-add the SNP stuff to it.
+No because if only one device node is enabled we need to configure the both
+clocks anyway.
 
->  1 file changed, 52 insertions(+)
->  create mode 100644 arch/x86/include/asm/sev-snp.h
-> 
-> diff --git a/arch/x86/include/asm/sev-snp.h b/arch/x86/include/asm/sev-snp.h
-> new file mode 100644
-> index 000000000000..5a6d1367cab7
-> --- /dev/null
-> +++ b/arch/x86/include/asm/sev-snp.h
-> @@ -0,0 +1,52 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * AMD SEV Secure Nested Paging Support
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices, Inc.
-> + *
-> + * Author: Brijesh Singh <brijesh.singh@amd.com>
-> + */
-> +
-> +#ifndef __ASM_SECURE_NESTED_PAGING_H
-> +#define __ASM_SECURE_NESTED_PAGING_H
-> +
-> +#ifndef __ASSEMBLY__
-> +#include <asm/irqflags.h> /* native_save_fl() */
+Benjamin
 
-Where is that used? Looks like leftovers.
-
-> +
-> +/* Return code of __pvalidate */
-> +#define PVALIDATE_SUCCESS		0
-> +#define PVALIDATE_FAIL_INPUT		1
-> +#define PVALIDATE_FAIL_SIZEMISMATCH	6
-> +
-> +/* RMP page size */
-> +#define RMP_PG_SIZE_2M			1
-> +#define RMP_PG_SIZE_4K			0
-> +
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +static inline int __pvalidate(unsigned long vaddr, int rmp_psize, int validate,
-
-Why the "__" prefix?
-
-> +			      unsigned long *rflags)
-> +{
-> +	unsigned long flags;
-> +	int rc;
-> +
-> +	asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFF\n\t"
-> +		     "pushf; pop %0\n\t"
-
-Ewww, PUSHF is expensive.
-
-> +		     : "=rm"(flags), "=a"(rc)
-> +		     : "a"(vaddr), "c"(rmp_psize), "d"(validate)
-> +		     : "memory", "cc");
-> +
-> +	*rflags = flags;
-> +	return rc;
-
-Hmm, rc *and* rflags. Manual says "Upon completion, a return code is
-stored in EAX. rFLAGS bits OF, ZF, AF, PF and SF are set based on this
-return code."
-
-So what exactly does that mean and is the return code duplicated in
-rFLAGS?
-
-If so, can you return a single value which has everything you need to
-know?
-
-I see that you're using the retval only for the carry flag to check
-whether the page has already been validated so I think you could define
-a set of return value defines from that function which callers can
-check.
-
-And looking above again, you do have PVALIDATE_* defines except that
-nothing's using them. Use them please.
-
-Also, for how to do condition code checks properly, see how the
-CC_SET/CC_OUT macros are used.
-
-> +}
-> +
-> +#else	/* !CONFIG_AMD_MEM_ENCRYPT */
-
-This else-ifdeffery can go too if you move the ifdeffery inside the
-function:
-
-static inline int __pvalidate(unsigned long vaddr, int rmp_psize, int validate,
-{
-	int rc = 0;
-
-#fidef CONFIG_AMD_MEM_ENCRYPT
-
-	...
-
-#endif
-
-	return rc;
-}
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+> regards
+> Philipp
+>
