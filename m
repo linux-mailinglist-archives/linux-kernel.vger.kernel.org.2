@@ -2,267 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FED434ACB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A5534AC9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 17:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhCZQoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 12:44:07 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:38521 "EHLO gecko.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhCZQnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 12:43:47 -0400
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12QGhLF7003457
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 26 Mar 2021 17:43:21 +0100
-Received: from md1za8fc.ad001.siemens.net ([139.22.32.17])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12QGXK63001322;
-        Fri, 26 Mar 2021 17:33:20 +0100
-Date:   Fri, 26 Mar 2021 17:33:17 +0100
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v2 2/4] leds: simatic-ipc-leds: add new driver for
- Siemens Industial PCs
-Message-ID: <20210326173317.6e1517e7@md1za8fc.ad001.siemens.net>
-In-Reply-To: <CAHp75VcBdR8xqfWqKe+DwGAUYByVL7SBK0p7tHcKPs7m4Ay1iw@mail.gmail.com>
-References: <20210315095710.7140-1-henning.schild@siemens.com>
-        <20210315095710.7140-3-henning.schild@siemens.com>
-        <CAHp75VcBdR8xqfWqKe+DwGAUYByVL7SBK0p7tHcKPs7m4Ay1iw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230139AbhCZQe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 12:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhCZQen (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 12:34:43 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3AEC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 09:34:43 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id y1so8057301ljm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 09:34:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rr+9Nmmd9Te7QF0knbE1qBYAGxHmadtN1JXjZbkqZxk=;
+        b=TE3vVFc1TEOPacZvHQoUhpJ4RFZnJn0IqpEwL6eK2EYUf4O44EU6XvJ6AbWS08goSx
+         P5xMh/HVT/bm7S033DJcbue+y7VFTW/OrEofqktcL9dcVNyARonQGWf9KVlzGuHB23Cp
+         +C8zocaS/guougrUBHPdafevJ0NI7KIcpMVctP5yC0RBuIkZGSGT6nrWdZc7GhLnbAY+
+         zi3lSBJEEqbb8sEQo8cuqAlEDwwUrgM0hHfGFMXF92oaCXNmFEssywe6ExHY3vwcfidR
+         b6KK3mYvWGLDrSWnTw2ebo4jjVVr3pABFWGe9QYlpU1EJHdcOS9ONUB7AxsM1qhxpOyV
+         niNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rr+9Nmmd9Te7QF0knbE1qBYAGxHmadtN1JXjZbkqZxk=;
+        b=OjRVCCZjwz+B4dj3txjvhMNfDJfEb+G95h3XuxjBluQBoUiXKtSeYg5xxAIJjeA9Md
+         I6O/yi2Z6gvbg1ixfnaL357ohxafEoKa6dX+zlQAu3N3OqL05ZXRiLpa2eqd7pP6YGvA
+         RmNLJ5MCzpSwtELSqS8wJNLulSvMOQn1p5mdlPWtyvodlv9vL7svQOOt/aZkpykffal9
+         w3nslsC/exnzgQHqBuUsKRQBsOJZgC1UrohyFNIwS8EaLawUG1HU8704hDU+VSv4Mmv/
+         RZ82MDd3yY/4V1iEpZatU4gPTuYx24QIUnj3bZyzFYKXgGoxjwnfdfLDTbelLFiNbKrM
+         we9A==
+X-Gm-Message-State: AOAM530Y/10EtZZfETH+EvfGBeFa70/48M7RDzIQbaWmUQmqLdWF4La7
+        hUbzpF1khKV5AFqWSpRJ9nwDr0/m5QkQ/DtB1tYaKg==
+X-Google-Smtp-Source: ABdhPJzcO6wP+okfrvaLtTR5/Yj3Jm6V/h77ahZBaB1e/VtsbrPfOFxXEmyszAbfvl8v3ddXrkNkS+5DSutJJqq7Zuk=
+X-Received: by 2002:a2e:9bcd:: with SMTP id w13mr9378810ljj.43.1616776481296;
+ Fri, 26 Mar 2021 09:34:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210221185637.19281-1-chang.seok.bae@intel.com> <20210221185637.19281-15-chang.seok.bae@intel.com>
+In-Reply-To: <20210221185637.19281-15-chang.seok.bae@intel.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 26 Mar 2021 17:34:14 +0100
+Message-ID: <CAG48ez3hLjwirUoaanDHJ_2h73YruVxfJL88AFVoym7sy02a5w@mail.gmail.com>
+Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
+ first use of dynamic user state
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, jing2.liu@intel.com,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, 15 Mar 2021 12:48:19 +0200
-schrieb Andy Shevchenko <andy.shevchenko@gmail.com>:
+On Sun, Feb 21, 2021 at 7:56 PM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+> Intel's Extended Feature Disable (XFD) feature is an extension of the XSAVE
+> architecture. XFD allows the kernel to enable a feature state in XCR0 and
+> to receive a #NM trap when a task uses instructions accessing that state.
+> In this way, Linux can defer allocating the large XSAVE buffer until tasks
+> need it.
+>
+> XFD introduces two MSRs: IA32_XFD to enable/disable the feature and
+> IA32_XFD_ERR to assist the #NM trap handler. Both use the same
+> state-component bitmap format, used by XCR0.
+>
+> Use this hardware capability to find the right time to expand the xstate
+> buffer. Introduce two sets of helper functions for that:
+>
+> 1. The first set is primarily for interacting with the XFD hardware:
+>         xdisable_setbits()
+>         xdisable_getbits()
+>         xdisable_switch()
+>
+> 2. The second set is for managing the first-use status and handling #NM
+>    trap:
+>         xfirstuse_enabled()
+>         xfirstuse_not_detected()
+>
+> The #NM handler induces the xstate buffer expansion to save the first-used
+> states.
+[...]
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index 7f5aec758f0e..821a7f408ad4 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+[...]
+> +static __always_inline bool handle_xfirstuse_event(struct fpu *fpu)
+> +{
+> +       bool handled = false;
+> +       u64 event_mask;
+[...]
+> +       if (alloc_xstate_buffer(fpu, event_mask))
+> +               return handled;
+[...]
+> +}
+> +
+>  DEFINE_IDTENTRY(exc_device_not_available)
+>  {
+>         unsigned long cr0 = read_cr0();
+>
+> +       if (handle_xfirstuse_event(&current->thread.fpu))
+> +               return;
 
-> On Mon, Mar 15, 2021 at 11:57 AM Henning Schild
-> <henning.schild@siemens.com> wrote:
-> >
-> > This driver adds initial support for several devices from Siemens.
-> > It is based on a platform driver introduced in an earlier commit.  
-> 
-> ...
-> 
-> > +struct simatic_ipc_led {
-> > +       unsigned int value; /* mask for io and offset for mem */  
-> 
-> > +       char name[32];  
-> 
-> Hmm... Dunno if LED framework defines its own constraints for the
-> length of the name.
-> 
-> > +       struct led_classdev cdev;
-> > +};
-> > +
-> > +static struct simatic_ipc_led simatic_ipc_leds_io[] = {
-> > +       {1 << 15, "simatic-ipc:green:" LED_FUNCTION_STATUS "-1" },
-> > +       {1 << 7,  "simatic-ipc:yellow:" LED_FUNCTION_STATUS "-1" },
-> > +       {1 << 14, "simatic-ipc:red:" LED_FUNCTION_STATUS "-2" },
-> > +       {1 << 6,  "simatic-ipc:yellow:" LED_FUNCTION_STATUS "-2" },
-> > +       {1 << 13, "simatic-ipc:red:" LED_FUNCTION_STATUS "-3" },
-> > +       {1 << 5,  "simatic-ipc:yellow:" LED_FUNCTION_STATUS "-3" },
-> >  
-> 
-> Can you use BIT() macro here? And can it be sorted by the bit order?
-> 
-> > +       {0, ""},  
-> 
-> { } is enough (no comma for terminator lines in general, and no need
-> to show structure member assignments separately in particular).
-> 
-> > +};
-> > +
-> > +/* the actual start will be discovered with pci, 0 is a
-> > placeholder */  
-> 
-> PCI
-> 
-> > +struct resource simatic_ipc_led_mem_res =
-> > +       DEFINE_RES_MEM_NAMED(0, SZ_4K, KBUILD_MODNAME);  
-> 
-> One line?
-> 
-> ...
-> 
-> > +static struct simatic_ipc_led simatic_ipc_leds_mem[] = {
-> > +       {0x500 + 0x1A0, "simatic-ipc:red:" LED_FUNCTION_STATUS
-> > "-1"},
-> > +       {0x500 + 0x1A8, "simatic-ipc:green:" LED_FUNCTION_STATUS
-> > "-1"},
-> > +       {0x500 + 0x1C8, "simatic-ipc:red:" LED_FUNCTION_STATUS
-> > "-2"},
-> > +       {0x500 + 0x1D0, "simatic-ipc:green:" LED_FUNCTION_STATUS
-> > "-2"},
-> > +       {0x500 + 0x1E0, "simatic-ipc:red:" LED_FUNCTION_STATUS
-> > "-3"},
-> > +       {0x500 + 0x198, "simatic-ipc:green:" LED_FUNCTION_STATUS
-> > "-3"},
-> > +       {0, ""},  
-> 
-> As per above.
-> 
-> > +};  
-> 
-> ...
-> 
-> > +       struct simatic_ipc_led *led =
-> > +               container_of(led_cd, struct simatic_ipc_led, cdev);
-> >  
-> 
-> One line?
-> 
-> ...
-> 
-> > +       struct simatic_ipc_led *led =
-> > +               container_of(led_cd, struct simatic_ipc_led, cdev);
-> >  
-> 
-> One line?
-> 
-> ...
-> 
-> > +       struct simatic_ipc_led *led =
-> > +               container_of(led_cd, struct simatic_ipc_led, cdev);
-> >  
-> 
-> Ditto.
-> 
-> 
-> Btw, usually for such cases we create an inline helper
-> ... to_simatic_ipc_led(...)
-> {
->   return container_of(...);
-> }
-> 
-> ...
-> 
-> > +static int simatic_ipc_leds_probe(struct platform_device *pdev)
-> > +{
-> > +       struct simatic_ipc_platform *plat;  
-> 
-> const?
-> 
-> > +       struct device *dev = &pdev->dev;
-> > +       struct simatic_ipc_led *ipcled;
-> > +       struct led_classdev *cdev;
-> > +       struct resource *res;
-> > +       int err, type;
-> > +       u32 *p;  
-> 
-> > +       plat = pdev->dev.platform_data;  
-> 
-> Can be done directly in the definition block.
-> 
-> > +       switch (plat->devmode) {
-> > +       case SIMATIC_IPC_DEVICE_227D:
-> > +       case SIMATIC_IPC_DEVICE_427E:
-> > +               res = &simatic_ipc_led_io_res;
-> > +               ipcled = simatic_ipc_leds_io;
-> > +               /* the 227D is high on while 427E is low on, invert
-> > the struct
-> > +                * we have
-> > +                */
-> > +               if (plat->devmode == SIMATIC_IPC_DEVICE_227D) {  
-> 
-> > +                       while (ipcled->value) {
-> > +                               ipcled->value =
-> > swab16(ipcled->value);
-> > +                               ipcled++;
-> > +                       }  
-> 
-> This seems fishy. If you have a BE CPU it won't work the same way.
-> Better:
->  a) to use cpu_to_le16 / be16
->  b) create this as a helper that we may move to the generic header of
-> byteorder.
-> 
-> But looking at the use of it, perhaps you rather need to redefine IO
-> accessors, i.e. ioread16()/iowrite16() vs. ioread16be()/iowrite16be().
+What happens if handle_xfirstuse_event() fails because vmalloc()
+failed in alloc_xstate_buffer()? I think that should probably kill the
+task with something like force_sig() - but as far as I can tell, at
+the moment, it will instead end up at die(), which should only be used
+for kernel bugs.
 
-Got my hands on such a special-case device today. The comment is wrong
-it talks about high and low, will fix that.
-This one machine almost shares LED logic with some others. We have
-those 6 bits spread over 2 consecutive bytes. For this one guy swapping
-the two bytes is the shortest way to share the code.
-
-I tried a few things, extra getters/setters, extra array defining bits
-the other way around. It all ends up with way more code or conditions
-in the getter/setter. So i think i will leave it like it is, clarify
-that comment. And that swap16 is fine because we are on x86 only and are
-basically swapping (1<<7 with 1<<15) ... where "<<" is already
-endianessy. 
-
-Henning
-
-> > +                       ipcled = simatic_ipc_leds_io;
-> > +               }
-> > +               type = IORESOURCE_IO;
-> > +               if (!devm_request_region(dev, res->start,
-> > +                                        resource_size(res),
-> > +                                        KBUILD_MODNAME)) {
-> > +                       dev_err(dev,
-> > +                               "Unable to register IO resource at
-> > %pR\n",
-> > +                               res);
-> > +                       return -EBUSY;
-> > +               }
-> > +               break;
-> > +       case SIMATIC_IPC_DEVICE_127E:
-> > +               res = &simatic_ipc_led_mem_res;
-> > +               ipcled = simatic_ipc_leds_mem;
-> > +               type = IORESOURCE_MEM;
-> > +
-> > +               /* get GPIO base from PCI */
-> > +               res->start = simatic_ipc_get_membase0(PCI_DEVFN(13,
-> > 0));
-> > +               if (res->start == 0)
-> > +                       return -ENODEV;
-> > +
-> > +               /* do the final address calculation */
-> > +               res->start = res->start + (0xC5 << 16);  
-> 
-> Magic. As I told you this is an actual offseet in the P2SB's bar for
-> GPIO registers.
-> I have a question, why we can't provide a GPIO driver which is already
-> in the kernel and, with use of the patch series I sent, to convert
-> this all magic to GPIO LEDs as it's done for all normal cases?
-> 
-> > +               res->end += res->start;
-> > +
-> > +               simatic_ipc_led_memory = devm_ioremap_resource(dev,
-> > res);
-> > +               if (IS_ERR(simatic_ipc_led_memory))
-> > +                       return PTR_ERR(simatic_ipc_led_memory);
-> > +
-> > +               /* initialize power/watchdog LED */
-> > +               p = simatic_ipc_led_memory + 0x500 + 0x1D8; /*
-> > PM_WDT_OUT */
-> > +               *p = (*p & ~1);
-> > +               p = simatic_ipc_led_memory + 0x500 + 0x1C0; /*
-> > PM_BIOS_BOOT_N */
-> > +               *p = (*p | 1);
-> > +
-> > +               break;
-> > +       default:
-> > +               return -ENODEV;
-> > +       }  
-> 
-> > +}  
-> 
-
+> +
+>  #ifdef CONFIG_MATH_EMULATION
+>         if (!boot_cpu_has(X86_FEATURE_FPU) && (cr0 & X86_CR0_EM)) {
+>                 struct math_emu_info info = { };
+> --
+> 2.17.1
+>
+>
