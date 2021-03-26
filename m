@@ -2,256 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5944B34A6DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:07:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CA534A6E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 13:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhCZMHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 08:07:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229671AbhCZMG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 08:06:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED6F4619C2;
-        Fri, 26 Mar 2021 12:06:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616760416;
-        bh=7UC8bFowAEClcuVmD8pmoLMke7GDpMaFrDzgTuRPHjs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LEfmAR518L35KZ26PpXjs08EvGsDI1bRuUY5lc85mGzGB64n0qI94MUh23nbCkKjm
-         kmM2e2nuAxPESftH4KWV9HSI6cpHbBmOFff3K7Od3eZaso8gB7m7e45h2B9XeruF2W
-         mzFLnfCKZe/Noc336KbgiPCPYghXGOHolLSFowLVUGIzyGrIRtm+JTP5/R1AEzeorG
-         e/GEe5widZTOgTA4xQcSK5WFWOa8cMn4+5eGwd8Dlt1HDlmnBsqBYVJRnK8lYD5mlY
-         ziPAQ4oTBvDc3ZSJP/NFJmzLMRocAh81PUfoj3UGoJWT+amR511VTlX5f1aDAbhIVw
-         ZcsK35mA67lSg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8C29F40647; Fri, 26 Mar 2021 09:06:53 -0300 (-03)
-Date:   Fri, 26 Mar 2021 09:06:53 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Yang Jihong <yangjihong1@huawei.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Yao Jin <yao.jin@linux.intel.com>, gustavoars@kernel.org,
-        mliska@suse.cz, linux-kernel <linux-kernel@vger.kernel.org>,
-        zhangjinhao2@huawei.com
-Subject: Re: [PATCH v7] perf annotate: Fix sample events lost in stdio mode
-Message-ID: <YF3OXfzl7FEV50Ir@kernel.org>
-References: <20210319123527.173883-1-yangjihong1@huawei.com>
- <33ba152e-b8ef-3057-744a-51cb8c478ff2@huawei.com>
- <CAM9d7cjT-Q8RBprzG=hwdxrgVpzf3RwECuJ1UvbQYpQ47migbg@mail.gmail.com>
+        id S229931AbhCZMI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 08:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhCZMIj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 08:08:39 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B4EC0613B1;
+        Fri, 26 Mar 2021 05:08:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6CNIiT7q+Ups+0Vc8DJQD9WSyDH1NQMZhuJ6B6CQvG0=; b=AErjpU/dIo4bIDLo86LL6AWQL2
+        HyE8BVIZTayV2FqKgSgtRiLrJF/00Hm954Qx1zGZnzw/zMfyyN4EMfyFqq9MfwZIZNya2ibjjkmQb
+        1dxMOwVOpBScbtr1f4cJaxnSHm3hvyW3qOTGsuXkoQ6zSGilHwK5VhPAfCiRRrdkk/LW3cvrMs+KJ
+        KZOLms9/Wv+Wi22Un8X4Bs+JyeK3GiBEm/99pWtCepRYXol+0gisuuaJ5XzkaNDGgktER4R5wf9j1
+        XrH7alkNmm2/q8hNsInB6CHqj7TbsaaqibnOxe37+AbIWuDgWGwSkKiOSwJaDN9Qa/rwkO9q8NdH9
+        6yRI+fyw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPlFg-00Eljt-Pn; Fri, 26 Mar 2021 12:07:48 +0000
+Date:   Fri, 26 Mar 2021 12:07:44 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Zhou Guanghui <zhouguanghui1@huawei.com>,
+        Zi Yan <ziy@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page_alloc: fix memcg accounting leak in speculative
+ cache lookup
+Message-ID: <20210326120744.GD1719932@casper.infradead.org>
+References: <20210319071547.60973-1-hannes@cmpxchg.org>
+ <alpine.LSU.2.11.2103191814040.1043@eggly.anvils>
+ <YFo7SOni0s0TbXUm@cmpxchg.org>
+ <alpine.LSU.2.11.2103231310020.5513@eggly.anvils>
+ <alpine.LSU.2.11.2103251716160.12404@eggly.anvils>
+ <20210326025143.GB1719932@casper.infradead.org>
+ <alpine.LSU.2.11.2103252018170.13067@eggly.anvils>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cjT-Q8RBprzG=hwdxrgVpzf3RwECuJ1UvbQYpQ47migbg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <alpine.LSU.2.11.2103252018170.13067@eggly.anvils>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Mar 26, 2021 at 12:25:37PM +0900, Namhyung Kim escreveu:
-> On Fri, Mar 26, 2021 at 11:24 AM Yang Jihong <yangjihong1@huawei.com> wrote:
-> > On 2021/3/19 20:35, Yang Jihong wrote:
-> > > In hist__find_annotations function, since different hist_entry may point to same
-> > > symbol, we free notes->src to signal already processed this symbol in stdio mode;
-> > > when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
-> > >
-> > > However, there is a problem, for example, run the following command:
-> > >
-> > >   # perf record -e branch-misses -e branch-instructions -a sleep 1
-> > >
-> > > perf.data file contains different types of sample event.
-> > >
-> > > If the same IP sample event exists in branch-misses and branch-instructions,
-> > > this event uses the same symbol. When annotate branch-misses events, notes->src
-> > > corresponding to this event is set to null, as a result, when annotate
-> > > branch-instructions events, this event is skipped and no annotate is output.
-> > >
-> > > Solution of this patch is to remove zfree in hists__find_annotations and
-> > > change sort order to "dso,symbol" to avoid duplicate output when different
-> > > processes correspond to the same symbol.
+On Thu, Mar 25, 2021 at 09:04:40PM -0700, Hugh Dickins wrote:
+> On Fri, 26 Mar 2021, Matthew Wilcox wrote:
+> > On Thu, Mar 25, 2021 at 06:55:42PM -0700, Hugh Dickins wrote:
+> > > The first reason occurred to me this morning.  I thought I had been
+> > > clever to spot the PageHead race which you fix here.  But now I just feel
+> > > very stupid not to have spotted the very similar memcg_data race.  The
+> > > speculative racer may call mem_cgroup_uncharge() from __put_single_page(),
+> > > and the new call to split_page_memcg() do nothing because page_memcg(head)
+> > > is already NULL.
+> > > 
+> > > And is it even safe there, to sprinkle memcg_data through all of those
+> > > order-0 subpages, when free_the_page() is about to be applied to a
+> > > series of descending orders?  I could easily be wrong, but I think
+> > > free_pages_prepare()'s check_free_page() will find that is not
+> > > page_expected_state().
 
-> > > Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+I forgot to say earlier; I did add a test (lib/test_free_pages.c).
+Doubling it up to check GFP_KERNEL | GFP_ACCOUNT and GFP_KERNEL |
+GFP_COMP | GFP_ACCOUNT should be reasonable.
 
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> > So back to something more like my original patch then?
+> > 
+> > +++ b/mm/page_alloc.c
+> > @@ -5081,9 +5081,15 @@ void __free_pages(struct page *page, unsigned int order)
+> >  {
+> >         if (put_page_testzero(page))
+> >                 free_the_page(page, order);
+> > -	else if (!PageHead(page))
+> > -               while (order-- > 0)
+> > -                       free_the_page(page + (1 << order), order);
+> > +       else if (!PageHead(page)) {
+> > +               while (order-- > 0) {
+> > +                       struct page *tail = page + (1 << order);
+> > +#ifdef CONFIG_MEMCG
+> > +                       tail->memcg_data = page->memcg_data;
+> > +#endif
+> > +                       free_the_page(tail, order);
+> > +               }
+> > +       }
+> >  }
+> >  EXPORT_SYMBOL(__free_pages);
+> > 
+> > We can cache page->memcg_data before calling put_page_testzero(),
+> > just like we cache the Head flag in Johannes' patch.
+> 
+> If I still believed in e320d3012d25, yes, that would look right
+> (but I don't have much faith in my judgement after all this).
+> 
+> I'd fallen in love with split_page_memcg() when you posted that
+> one, and was put off by your #ifdef, so got my priorities wrong
+> and went for the split_page_memcg().
 
-Without looking at the patch, just at its description of the problem, I
-tried to annotate two events in a group, to get the annotate group view
-output with both events, and it seems I'm getting samples accounted for
-both events:
+Oh, the ifdef was just a strawman.  I wouldn't want to see that upstream;
+something like:
 
-[root@five ~]# perf record -e '{branch-misses,branch-instructions}' -a sleep 1
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 2.296 MB perf.data (2507 samples) ]
-[root@five ~]#
-[root@five ~]# perf report | grep -v '^#' | head -5
-    17.49%  19.19%  ThreadPoolForeg  chromium-browser              [.] v8::internal::ConcurrentMarking::Run
-    12.17%  17.04%  ThreadPoolForeg  chromium-browser              [.] v8::internal::Sweeper::RawSweep
-    11.14%  11.63%  ThreadPoolForeg  chromium-browser              [.] v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor, v8::internal::ConcurrentMarkingState>::ProcessStrongHeapObject<v8::internal::CompressedHeapObjectSlot>
-     7.65%   7.84%  ThreadPoolForeg  chromium-browser              [.] v8::internal::ConcurrentMarkingVisitor::ShouldVisit
-     5.66%   6.72%  ThreadPoolForeg  chromium-browser              [.] v8::internal::ConcurrentMarkingVisitor::VisitPointersInSnapshot
+	unsigned long memcg_data = __get_memcg_data(page);
+...
+			__set_memcg_data(tail, memcg_data);
 
-[root@five ~]# perf annotate --stdio2 v8::internal::ConcurrentMarking::Run
-Samples: 444  of events 'anon group { branch-misses, branch-instructions }', 4000 Hz, Event count (approx.): 596221, [percent: local period]
-v8::internal::ConcurrentMarking::Run() /usr/lib64/chromium-browser/chromium-browser
-Percent                      
-                             
-                             
-                     Disassembly of section .text:
-                             
-                     0000000003290b30 <v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool)>:
-                     v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool):
-                       push       %rbp        
-                       mov        %rsp,%rbp   
-                       push       %r15        
-                       push       %r14        
-                       mov        %rdi,%r14   
-                       push       %r13        
-                       mov        %edx,%r13d  
-                       push       %r12        
-                       mov        %ecx,%r12d  
-                       push       %rbx        
-                       sub        $0x1298,%rsp
-                       mov        %rsi,-0x1228(%rbp)
-                       mov        %fs:0x28,%rax
-                       mov        %rax,-0x38(%rbp)
-<SNIP>		       
-                       movzwl     0x2(%rbx),%eax
-                       test       %ax,%ax     
-                     ↓ jne        4a9         
-                       mov        -0x10e8(%rbp),%rdx
-                       cmpw       $0x0,0x2(%rdx)
-  0.41   0.39        ↓ je         4b90        
-                       movq       %rbx,%xmm0  
-                       movq       %rdx,%xmm2  
-                       mov        %rdx,%rbx   
-                       punpcklqdq %xmm2,%xmm0 
-                       movups     %xmm0,-0x10e8(%rbp)
-                       movzwl     0x2(%rdx),%eax
-                4a9:   sub        $0x1,%eax   
-                       mov        %ax,0x2(%rbx)
-  0.36   0.91          movzwl     %ax,%eax    
-  0.60   0.00          mov        0x10(%rbx,%rax,8),%rax
-  3.44   2.46          mov        %rax,-0x11e0(%rbp)
-  0.00   0.34   4bf:   mov        0x8(%r13),%rax
-  0.00   0.36          add        $0x1,%r15d  
-  0.00   0.34          mov        0x110(%rax),%rax
-                       mov        0x128(%rax),%rcx
-  0.88   0.36          mov        0x8(%r13),%rax
-                       mov        0x110(%rax),%rdx
-                       mov        0x130(%rdx),%rdx
-  0.00   0.48          mov        0x140(%rax),%rax
-                       mov        0x110(%rax),%rsi
-  0.61   0.47          mov        -0x11e0(%rbp),%rax
-  2.01   2.32          sub        $0x1,%rax   
-                       cmp        %rcx,%rax   
-  0.00   0.35          setae      %cl         
-  1.31   0.33          cmp        %rdx,%rax   
-                       setb       %dl         
-  0.00   0.24          test       %dl,%cl     
-  0.00   0.12        ↓ jne        4b70        
-                       cmp        %rsi,%rax   
-                     ↓ je         4b70        
-                       mov        (%rax),%eax 
- 29.10  29.90          add        -0x1220(%rbp),%rax
-                       cmpb       $0x0,-0x1218(%rbp)
-                       mov        %rax,-0x1210(%rbp)
-  0.00   0.65        ↓ jne        4fa0        
-                       mov        -0x11e0(%rbp),%r9
-                       lea        0x6(%rax),%rbx
-  0.38   0.00   545:   movzbl     (%rbx),%eax 
-  4.90   5.34          cmp        $0x4c,%al   
-                     ↓ ja         5026        
-  0.58   0.00   550:   lea        v8::internal::FLAGDEFAULT_abort_on_contradictory_flags+0x457,%rdi
-                       movslq     (%rdi,%rax,4),%rax
-  4.97   3.19          add        %rdi,%rax   
-<SNIP>
+with the appropriate ifdefs hidden in memcontrol.h would be my preference.
 
-If I ask for number of samples:
+> > > But, after all that, I'm now thinking that Matthew's original
+> > > e320d3012d25 ("mm/page_alloc.c: fix freeing non-compound pages")
+> > > is safer reverted.  The put_page_testzero() in __free_pages() was
+> > > not introduced for speculative pagecache: it was there in 2.4.0,
+> > > and atomic_dec_and_test() in 2.2, I don't have older trees to hand.
+> > 
+> > I think you're confused in that last assertion.  According to
+> > linux-fullhistory, the first introduction of __free_pages was 2.3.29pre3
+> > (September 1999), where it did indeed use put_page_testzero:
+> 
+> Not confused, just pontificating from a misleading subset of the data.
+> I knew there's an even-more-history-than-tglx git tree somewhere, but
+> what I usually look back to is 2.4 trees, plus a 2.2.26 tree - but of
+> course that's a late 2.2, from 2004, around the same time as 2.6.3.
 
-[root@five ~]# perf config annotate.show_nr_samples=true
-[root@five ~]# perf annotate --stdio2 v8::internal::ConcurrentMarking::Run
+I suspect it got backported ...
+https://github.com/mpe/linux-fullhistory/wiki is what I'm using for my
+archaeology, and it doesn't have the stable branches (1.0, 1.2, 2.0,
+2.2, 2.4), so I don't know for sure.
 
-Samples: 444  of events 'anon group { branch-misses, branch-instructions }', 4000 Hz, Event count (approx.): 596221, [percent: local period]
-v8::internal::ConcurrentMarking::Run() /usr/lib64/chromium-browser/chromium-browser
-Samples                      
-                             
-                             
-                     Disassembly of section .text:
-                             
-                     0000000003290b30 <v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool)>:
-                     v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool):
-                       push       %rbp        
-                       mov        %rsp,%rbp   
-                       push       %r15        
-                       push       %r14        
-                       mov        %rdi,%r14   
-                       push       %r13        
-                       mov        %edx,%r13d  
-                       push       %r12        
-                       mov        %ecx,%r12d  
-                       push       %rbx        
-                       sub        $0x1298,%rsp
-                       mov        %rsi,-0x1228(%rbp)
-                       mov        %fs:0x28,%rax
-                       mov        %rax,-0x38(%rbp)
-<SNIP>
-                       movzwl     0x2(%rbx),%eax
-                       test       %ax,%ax     
-                     ↓ jne        4a9         
-                       mov        -0x10e8(%rbp),%rdx
-                       cmpw       $0x0,0x2(%rdx)
-     1      1        ↓ je         4b90        
-                       movq       %rbx,%xmm0  
-                       movq       %rdx,%xmm2  
-                       mov        %rdx,%rbx   
-                       punpcklqdq %xmm2,%xmm0 
-                       movups     %xmm0,-0x10e8(%rbp)
-                       movzwl     0x2(%rdx),%eax
-                4a9:   sub        $0x1,%eax   
-                       mov        %ax,0x2(%rbx)
-     1      2          movzwl     %ax,%eax    
-     1      0          mov        0x10(%rbx,%rax,8),%rax
-     8      5          mov        %rax,-0x11e0(%rbp)
-     0      1   4bf:   mov        0x8(%r13),%rax
-     0      1          add        $0x1,%r15d  
-     0      1          mov        0x110(%rax),%rax
-                       mov        0x128(%rax),%rcx
-     3      1          mov        0x8(%r13),%rax
-                       mov        0x110(%rax),%rdx
-                       mov        0x130(%rdx),%rdx
-     0      1          mov        0x140(%rax),%rax
-                       mov        0x110(%rax),%rsi
-     2      1          mov        -0x11e0(%rbp),%rax
-     6      6          sub        $0x1,%rax   
-                       cmp        %rcx,%rax   
-     0      1          setae      %cl         
-     2      1          cmp        %rdx,%rax   
-                       setb       %dl         
-     0      1          test       %dl,%cl     
-     0      1        ↓ jne        4b70        
-                       cmp        %rsi,%rax   
-                     ↓ je         4b70        
-                       mov        (%rax),%eax 
-    58     73          add        -0x1220(%rbp),%rax
-                       cmpb       $0x0,-0x1218(%rbp)
-                       mov        %rax,-0x1210(%rbp)
-     0      1        ↓ jne        4fa0        
-                       mov        -0x11e0(%rbp),%r9
-                       lea        0x6(%rax),%rbx
-     1      0   545:   movzbl     (%rbx),%eax 
-    10     13          cmp        $0x4c,%al   
-                     ↓ ja         5026        
-     1      0   550:   lea        v8::internal::FLAGDEFAULT_abort_on_contradictory_flags+0x457,%rdi
-                       movslq     (%rdi,%rax,4),%rax
-     9      8          add        %rdi,%rax   
+Anyway, my point is that the truly ancient drivers *don't* depend on this
+behaviour because the function didn't even exist when they were written.
 
-<SNIP>
-
-So it seems to be working, what am I missing? Is this strictly non
-group related?
-
-- Arnaldo
