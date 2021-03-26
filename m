@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6B334A494
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFD134A49B
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhCZJfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:35:43 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:35630 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230472AbhCZJfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:35:16 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lPiro-0003ea-N5; Fri, 26 Mar 2021 20:34:57 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 26 Mar 2021 20:34:56 +1100
-Date:   Fri, 26 Mar 2021 20:34:56 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        corbet@lwn.net, rdunlap@infradead.org,
-        linux-kernel-mentees@lists.linuxfoundation.org, leitao@debian.org,
-        nayna@linux.ibm.com, pfsmorigo@gmail.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, davem@davemloft.net,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] crypto: nx: fix incorrect kernel-doc comment syntax in
- files
-Message-ID: <20210326093456.GS12658@gondor.apana.org.au>
-References: <20210321123007.15505-1-yashsri421@gmail.com>
+        id S229794AbhCZJgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:36:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230359AbhCZJgO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 05:36:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616751373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w8duIT5e1rk48mI9nnfv53pxppSc02hA2rIN3iywONM=;
+        b=MdXH/i6lG4wo0Bx1bGXW6q5V44stEHyc4aC4CbrIPy1DF8O+6fpAc2ue2sY+dHZu7EuUcW
+        NbVidYD3LiTvuKtwBy1A012UY0YkdJ91PgyDYmzQlK8vDAINT58JzS1VhuFwb25JHRYTri
+        7tiA1pb8mWmwjfrKqPeg2RHUFvzkVbw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-n_pU--P2P12wUI6VC2Svxg-1; Fri, 26 Mar 2021 05:36:10 -0400
+X-MC-Unique: n_pU--P2P12wUI6VC2Svxg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFE7B107BF00;
+        Fri, 26 Mar 2021 09:36:09 +0000 (UTC)
+Received: from ovpn-115-44.ams2.redhat.com (ovpn-115-44.ams2.redhat.com [10.36.115.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 168E518AAB;
+        Fri, 26 Mar 2021 09:36:07 +0000 (UTC)
+Message-ID: <8eadc07055ac1c99bbc55ea10c7b98acc36dde55.camel@redhat.com>
+Subject: Re: [PATCH] udp: Add support for getsockopt(..., ..., UDP_GRO, ...,
+ ...)
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Norman Maurer <norman.maurer@googlemail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net, dsahern@kernel.org
+Cc:     Norman Maurer <norman_maurer@apple.com>
+Date:   Fri, 26 Mar 2021 10:36:06 +0100
+In-Reply-To: <20210325195614.800687-1-norman_maurer@apple.com>
+References: <20210325195614.800687-1-norman_maurer@apple.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210321123007.15505-1-yashsri421@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 21, 2021 at 06:00:07PM +0530, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> There are certain files in drivers/crypto/nx, which follow this syntax,
-> but the content inside does not comply with kernel-doc.
-> Such lines were probably not meant for kernel-doc parsing, but are parsed
-> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-> causes unexpected warnings from kernel-doc.
-> 
-> E.g., presence of kernel-doc like comment in the header lines for
-> drivers/crypto/nx/nx-sha256.c at header causes these warnings:
-> "warning: Function parameter or member 'tfm' not described in 'nx_crypto_ctx_sha256_init'"
-> "warning: expecting prototype for SHA(). Prototype was for nx_crypto_ctx_sha256_init() instead"
-> 
-> Similarly for other files too.
-> 
-> Provide a simple fix by replacing such occurrences with general comment
-> format, i.e. '/*', to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> * Applies perfectly on next-20210319
-> 
->  drivers/crypto/nx/nx-aes-cbc.c  | 2 +-
->  drivers/crypto/nx/nx-aes-ccm.c  | 2 +-
->  drivers/crypto/nx/nx-aes-ctr.c  | 2 +-
->  drivers/crypto/nx/nx-aes-ecb.c  | 2 +-
->  drivers/crypto/nx/nx-aes-gcm.c  | 2 +-
->  drivers/crypto/nx/nx-aes-xcbc.c | 2 +-
->  drivers/crypto/nx/nx-sha256.c   | 2 +-
->  drivers/crypto/nx/nx-sha512.c   | 2 +-
->  drivers/crypto/nx/nx.c          | 2 +-
->  drivers/crypto/nx/nx_debugfs.c  | 2 +-
->  10 files changed, 10 insertions(+), 10 deletions(-)
+Hello,
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+On Thu, 2021-03-25 at 20:56 +0100, Norman Maurer wrote:
+> From: Norman Maurer <norman_maurer@apple.com>
+> 
+> Support for UDP_GRO was added in the past but the implementation for
+> getsockopt was missed which did lead to an error when we tried to
+> retrieve the setting for UDP_GRO. This patch adds the missing switch
+> case for UDP_GRO
+> 
+> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
+> Signed-off-by: Norman Maurer <norman_maurer@apple.com>
+
+The patch LGTM, but please cc the blamed commit author in when you add
+a 'Fixes' tag (me in this case ;)
+
+Also please specify a target tree, either 'net' or 'net-next', in the
+patch subj. Being declared as a fix, this should target 'net'.
+
+One thing you can do to simplifies the maintainer's life, would be post
+a v2 with the correct tag (and ev. obsolete this patch in patchwork).
+
+Side note: I personally think this is more a new feature (is adds
+getsockopt support for UDP_GRO) than a fix, so I would not have added
+the 'Fixes' tag and I would have targeted net-next, but it's just my
+opinion.
+
+Cheers,
+
+Paolo
+
