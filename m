@@ -2,71 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E8F34A00A
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B5B334A00E
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhCZDD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 23:03:59 -0400
-Received: from mail-m17635.qiye.163.com ([59.111.176.35]:31032 "EHLO
-        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhCZDDa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 23:03:30 -0400
-Received: from ubuntu.localdomain (unknown [36.152.145.182])
-        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 66548400120;
-        Fri, 26 Mar 2021 11:03:27 +0800 (CST)
-From:   zhouchuangao <zhouchuangao@vivo.com>
-To:     Minchan Kim <minchan@kernel.org>, Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     zhouchuangao <zhouchuangao@vivo.com>
-Subject: [PATCH] mm/zsmalloc: Use BUG_ON instead of if condition followed by BUG.
-Date:   Thu, 25 Mar 2021 20:03:17 -0700
-Message-Id: <1616727798-9110-1-git-send-email-zhouchuangao@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTkxDGBkYShkeS04YVkpNSk1MSUxDS0xNS09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NSI6USo5Az8QEj0jNDM1GggC
-        PhIaFC9VSlVKTUpNTElMQ0tDT0NMVTMWGhIXVQETFA4YEw4aFRwaFDsNEg0UVRgUFkVZV1kSC1lB
-        WUhNVUpOSVVKT05VSkNJWVdZCAFZQUlLSEs3Bg++
-X-HM-Tid: 0a786c7c9634d991kuws66548400120
+        id S230527AbhCZDFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 23:05:18 -0400
+Received: from m12-12.163.com ([220.181.12.12]:51966 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231142AbhCZDEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 23:04:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=2G9Da
+        PJPfkOI0yPguBZC5/0YHfn9fG2m5T4OVfNjZK4=; b=EvEO5dNPnImqgFJ7PIFhP
+        Ak00NJHykiP35AHFdY3kpgAceHSq+qWd23X0lEIIduWm8qiV396OHck4XYXXJeDZ
+        dgngsFP7775oyMnEwuhnR6l9QZ/GKoKbl4pAVIlHpWjPxoo6xMJH96vp2lktEW4V
+        4uPRhhM50YOZjrPInFMc/4=
+Received: from COOL-20200916KH.ccdomain.com (unknown [218.94.48.178])
+        by smtp8 (Coremail) with SMTP id DMCowABHzJgvT11gCkD1WQ--.16948S2;
+        Fri, 26 Mar 2021 11:04:19 +0800 (CST)
+From:   qiumibaozi_1@163.com
+To:     willy@infradead.org, hare@suse.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ganjisheng <ganjisheng@yulong.com>
+Subject: [PATCH 6/6] Fix spelling typo of is
+Date:   Fri, 26 Mar 2021 11:04:12 +0800
+Message-Id: <20210326030412.1656-1-qiumibaozi_1@163.com>
+X-Mailer: git-send-email 2.28.0.windows.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DMCowABHzJgvT11gCkD1WQ--.16948S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr48AF13GFWDtF4rXr45GFg_yoW3Grb_Ga
+        yv9F92vw48Ga1IkF1rXF40vr9F9r4Uua1kuF1SqrnavryrXw47XFsaqr18Aa1UJw4fZ3s8
+        Xa43X3yayw12gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUYBMKJUUUUU==
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5tlxzxxedr6xjbr6il2tof0z/1tbiLRRh2FSIlaiXegAAsM
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be optimized at compile time.
+From: ganjisheng <ganjisheng@yulong.com>
 
-Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
+Signed-off-by: ganjisheng <ganjisheng@yulong.com>
 ---
- mm/zsmalloc.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/scsi/advansys.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 30c358b..58697f7 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -1987,8 +1987,7 @@ static int zs_page_migrate(struct address_space *mapping, struct page *newpage,
- 		head = obj_to_head(page, addr);
- 		if (head & OBJ_ALLOCATED_TAG) {
- 			handle = head & ~OBJ_ALLOCATED_TAG;
--			if (!testpin_tag(handle))
--				BUG();
-+			BUG_ON(!testpin_tag(handle));
- 
- 			old_obj = handle_to_obj(handle);
- 			obj_to_location(old_obj, &dummy, &obj_idx);
-@@ -2035,8 +2034,7 @@ static int zs_page_migrate(struct address_space *mapping, struct page *newpage,
- 		head = obj_to_head(page, addr);
- 		if (head & OBJ_ALLOCATED_TAG) {
- 			handle = head & ~OBJ_ALLOCATED_TAG;
--			if (!testpin_tag(handle))
--				BUG();
-+			BUG_ON(!testpin_tag(handle));
- 			unpin_tag(handle);
- 		}
- 	}
+diff --git a/drivers/scsi/advansys.c b/drivers/scsi/advansys.c
+index ec56278..e9516de 100644
+--- a/drivers/scsi/advansys.c
++++ b/drivers/scsi/advansys.c
+@@ -1812,7 +1812,7 @@
+  * Field naming convention:
+  *
+  *  *_able indicates both whether a feature should be enabled or disabled
+- *  and whether a device isi capable of the feature. At initialization
++ *  and whether a device is capable of the feature. At initialization
+  *  this field may be set, but later if a device is found to be incapable
+  *  of the feature, the field is cleared.
+  */
 -- 
-2.7.4
+1.9.1
+
 
