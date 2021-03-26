@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B7734A94E
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A4834A94C
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:10:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhCZOKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
+        id S230192AbhCZOJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:09:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhCZOJl (ORCPT
+        with ESMTP id S230115AbhCZOJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:09:41 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611D3C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:09:40 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id 7so5283640qka.7
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 07:09:40 -0700 (PDT)
+        Fri, 26 Mar 2021 10:09:18 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F985C0613AA;
+        Fri, 26 Mar 2021 07:09:18 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so5642812pjb.1;
+        Fri, 26 Mar 2021 07:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZzjZseiEUmTZfFHAmjQMrOVkpZ6x0+tzMj08xpQ6yq0=;
-        b=KVheVgeJgZecx/FFd5VWNdrlusRUfZqjFCSCFNU+yEWLfZDDkzrUQw4D5mfROjl+cJ
-         VAtacQfxoWUP4cQIHd4CH8zpMIlRrg0p/ciswCFtEFfHL3Ftcp5vad+NiXJ/dWBLJU0k
-         9DVjbh+S2Oa/rBKWybpZ2Ec+hCvJ9U2M46q/M=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=h+bhUb5pCuEYh025FUBqhTIp//Tbcm99mGV1EArYpWE=;
+        b=Cd+G377/rdX6Bw06AG5m11TwNuzgPRsnhn0+penE/Q5ZwFX7VD6eQf1frs4G31+CAH
+         aGcCei6VpcaqQrqfoTjQ3sRVJqsQTYubVfYrkgV9fkuLO4tKbAdKQ4mmxZaqy9bUAWFg
+         a0Mita0wtS6ziHMdkrt3EGQd9g1AXg4QKVCxQN7S0DqLqpyNorqUglvSR08D7CuWpVdl
+         E79cEr0A8aTQfxV9NRgseeg288n1PBdz5L3+58dj1LnD1jFQrgdaxCa9+yvS+zFSQNzQ
+         Sx1zQ9iXDw7+Ory+S+3p3KHJ7ixhC5N9r3uN3Nl0Z6E/aNsXjNzeRDdZ9SuOUDHbjk3j
+         N7ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZzjZseiEUmTZfFHAmjQMrOVkpZ6x0+tzMj08xpQ6yq0=;
-        b=Bw+hSCmmx3uTykyRG0PliOCRIxXiySYpxbpBqbZVztISGQarC9IpMKJHiArlMKYGCG
-         UUhR+/8IUUQ0l9vm9xe+7yi7VeK+L+Y5nkqXEWV4xB62uyvBspDS4kYueDxNMTW3Dp13
-         6CqmyPH0lbl2cbObhOirjqh1aTQOKeCuaX1OxNEByYET6RQld5ln+vbn7QBrjoA0z08H
-         A0Zhv0GW4Vzrog6TliYjw2w3wl7k9Gkp7dhObO0QXs7InZifX9meOKyFAJv/ativcE0p
-         LeQzP9AVdffhfv3ZiqMKOR33Enqc0v+eu2Gp8x8GrM4Cmyj7CDiLGRSp6/XembBXcwrw
-         1TFw==
-X-Gm-Message-State: AOAM530xAg753zN9wIVhNaeQ4BM7XDfs9+mKB8ag53H1f5pH2tJLrqdA
-        PSblEUijJefM9Dmp8qAtCOVjLlErgIwi58GE7ZQNAg==
-X-Google-Smtp-Source: ABdhPJwaf4OTlnKY7d9JSvR8Dg8uARN8GSBpSDdvSTiGtYqRE3barT8RBbOhXjke/03Ligvu08fyH3kHIc4T84rqaZI=
-X-Received: by 2002:ae9:f70a:: with SMTP id s10mr13328039qkg.468.1616767779533;
- Fri, 26 Mar 2021 07:09:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210213095724.3411058-1-daniel@0x0f.com> <20210215112409.1a755bf0@xps13>
- <CAFr9PXkh+attaCc6C2UxB=qvXksWriWOaaoEndy4k6SGE0QOHQ@mail.gmail.com>
- <20210215121653.4edd86c4@xps13> <CAFr9PXmVehtcm6FjBqi_hmEAj1rgtxMvarisjPmWhgjruVj++Q@mail.gmail.com>
- <20210322193213.18520b9a@xps13> <CAFr9PX=mL9UWcr-yWbYa5NXS-R=yHeGgM+hd_MKOa2XiBUAJOQ@mail.gmail.com>
- <20210323113233.3523d66b@xps13> <CAFr9PX=KMZuzp61Hq=2WdHyEzE=6J7HEPWZxPs7FEqiH-G8wFw@mail.gmail.com>
- <20210323150603.6b942a60@xps13>
-In-Reply-To: <20210323150603.6b942a60@xps13>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Fri, 26 Mar 2021 23:09:28 +0900
-Message-ID: <CAFr9PXntCmdrmg+i3BB1j-aY4VbE=2iqyLcoSr9cX2090jGiGQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: spinand: add support for Foresee FS35ND01G-S1Y2
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=h+bhUb5pCuEYh025FUBqhTIp//Tbcm99mGV1EArYpWE=;
+        b=EzenEeGXtuAbSKPCODZwX+spOMH2MGhRkmX9eMm4FlkNb1kwQXcWe6rroAp4hSzdwY
+         WnF69ylVvRcHWrANFITXeIxp0MA/HODIT0jvfmU6M6YQ/rBsK4J19cnep7B8yWhPK9Ag
+         5o2QrZnT+RF/TqK8wtMFJZW0DkxvOJu9BZTeXzJbOdquaJRbzCgnms7Nkq5QhOM5mgKN
+         26hrf+jTww2x0XFpCnKll3D0s7YSei8mWyKpys44iLioHGIReO1ZPZrxmtHxZQ4ssZhc
+         3yekTOq9VvmudGZFSb5KUTh1dcLg3ujPwmR50FdfQ6kiXRU7fwmfjdB6++8iMjPTm5or
+         BWtA==
+X-Gm-Message-State: AOAM533s2E10dNQIAC4lu/VjaMzkF8HqUZPlKsnFPknki/YM4syNdKUp
+        +9AZ3PKyjS9IGqljVsoz6b2InfAfSBirAgGl
+X-Google-Smtp-Source: ABdhPJxszqiKf4suKiwiqLf+J7gikvo+wVRhKUs8+Qga0N4et1pAwlcxfGUpK7kIzTFACqwWz1cjeg==
+X-Received: by 2002:a17:902:7792:b029:e6:caba:f836 with SMTP id o18-20020a1709027792b02900e6cabaf836mr15272990pll.41.1616767757973;
+        Fri, 26 Mar 2021 07:09:17 -0700 (PDT)
+Received: from bf-rmsz-10.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id mr5sm8923717pjb.53.2021.03.26.07.09.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Mar 2021 07:09:17 -0700 (PDT)
+From:   Carlis <zhangxuezhi3@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     zhangxuezhi1@yulong.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: fbtft: change '16 bit' to '16-bit'
+Date:   Fri, 26 Mar 2021 22:09:30 +0800
+Message-Id: <1616767770-70063-1-git-send-email-zhangxuezhi3@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+From: "carlis.zhang_cp" <zhangxuezhi1@yulong.com>
 
-Sorry for the constant pestering on this..
+Change '16 bit' to '16-bit' for a same style.
 
-On Tue, 23 Mar 2021 at 23:06, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > # nandbiterrs -i /dev/mtd1
-> > incremental biterrors test
-> > Successfully corrected 0 bit errors per subpage
-> > Inserted biterror @ 0/5
-> > Read reported 4 corrected bit errors
-> > ECC failure, invalid data despite read success
->
-> This is not a valid behavior. There is something wrong with the way ECC
-> status is read/retrieved. The read should indeed report 4 corrected bit
-> errors, but then the data should be valid. Here it means that the
-> introduced error appears corrected but in fact is not.
-> We need to understand what status are available and write the
-> appropriate vendor code.
+Signed-off-by: carlis.zhang_cp <zhangxuezhi1@yulong.com>
+---
+ drivers/staging/fbtft/fbtft-bus.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I looked at the datasheet again and the encoding for ecc status seems
-a bit funky.
-The chip seems to have only two bits for ECC status with this encoding:
-0 - Read success with 0-3 flipped bits.
-1 - Read success with 4 flipped bits.
-2 - Uncorrectable.
-3 - Reserved.
+diff --git a/drivers/staging/fbtft/fbtft-bus.c b/drivers/staging/fbtft/fbtft-bus.c
+index 63c65dd..7040131 100644
+--- a/drivers/staging/fbtft/fbtft-bus.c
++++ b/drivers/staging/fbtft/fbtft-bus.c
+@@ -117,7 +117,7 @@ void fbtft_write_reg8_bus9(struct fbtft_par *par, int len, ...)
+  *
+  *****************************************************************************/
+ 
+-/* 16 bit pixel over 8-bit databus */
++/* 16-bit pixel over 8-bit databus */
+ int fbtft_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
+ {
+ 	u16 *vmem16;
+@@ -172,7 +172,7 @@ int fbtft_write_vmem16_bus8(struct fbtft_par *par, size_t offset, size_t len)
+ }
+ EXPORT_SYMBOL(fbtft_write_vmem16_bus8);
+ 
+-/* 16 bit pixel over 9-bit SPI bus: dc + high byte, dc + low byte */
++/* 16-bit pixel over 9-bit SPI bus: dc + high byte, dc + low byte */
+ int fbtft_write_vmem16_bus9(struct fbtft_par *par, size_t offset, size_t len)
+ {
+ 	u8 *vmem8;
+@@ -228,7 +228,7 @@ int fbtft_write_vmem8_bus8(struct fbtft_par *par, size_t offset, size_t len)
+ }
+ EXPORT_SYMBOL(fbtft_write_vmem8_bus8);
+ 
+-/* 16 bit pixel over 16-bit databus */
++/* 16-bit pixel over 16-bit databus */
+ int fbtft_write_vmem16_bus16(struct fbtft_par *par, size_t offset, size_t len)
+ {
+ 	u16 *vmem16;
+-- 
+1.9.1
 
-This looks almost the same as the Winbond chips with 0 and 1 being successes
-but with no totally error free status.
-
-Anyhow, if 4 bits were corrected is returned for 1 then nandbiterrs
-reports "ECC failure, invalid data despite read success".
-If I return 3 bit errors for 0 and -EBADMSG for anything else
-nandbiterrs doesn't complain anymore but is this right?:
-
-# nandbiterrs -i /dev/mtd1
-incremental biterrors test
-Read reported 3 corrected bit errors
-Successfully corrected 0 bit errors per subpage
-biterror @ 0/5
-Failed to recover 1 bitflips
-Read error after 1 bit errors per page
-
-When running nandbiterrs the status is always 0 before injecting the
-error and then sometimes 1 and sometimes 2 after the error is
-injected.
-
-Thanks,
-
-Daniel
