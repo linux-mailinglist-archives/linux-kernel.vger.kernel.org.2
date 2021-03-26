@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5220D34AB8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:33:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC62534AB93
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhCZPch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbhCZPcQ (ORCPT
+        id S230240AbhCZPeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:34:16 -0400
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:44909 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230106AbhCZPd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:32:16 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A380C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:32:16 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id bt4so2718682pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 08:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=shWDx59AesrkQIBJ0HQxol61//HEQgZeaaeeBvaZnTE=;
-        b=gjCulAkx+OFFY8XziBxbHNaxjP+zhQ/bgUHtot1Zr5EkwMNOvp6Hz1hbOIgofLFPSv
-         PvTBe/lVtA6NWhZ/NkKuzV1RmjCSCn6KcN40BBOCIQDhd7QKUsgC/wec3BivUYjFHngs
-         WAG49BZMiZN5gLWNArhJWh7dAGCPQl7nebuxthTIQm2SVf744jeavxG9R0yW9tywKokM
-         6ZjofnhusqWsDmg1Rtdj+2WJRHTJ0+AZqOpzLwKwBATBToQONUfGVCUP//CF9Bex+FxC
-         0h478E5dqjRJuIfZA3xjhF/CVaIaKcABNZNTcB/adGbIKXhCDxt5j+FtA+QgZtheTUtP
-         zBDA==
+        Fri, 26 Mar 2021 11:33:59 -0400
+Received: by mail-ed1-f43.google.com with SMTP id j3so6747368edp.11;
+        Fri, 26 Mar 2021 08:33:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=shWDx59AesrkQIBJ0HQxol61//HEQgZeaaeeBvaZnTE=;
-        b=HcE0GaYpHHNQGht39O5AQYxa7/0flATknv/HrPy7SfcfggruUiX4lEJ2ykw+vNdyMW
-         zwM4JMRofvXIZ7EiGK99SJKtKmSXhiXhmsUNMZ1VxjlKiMp2ZVZyzbR7fjdk6CI6FW0L
-         r7+id7MOuo9rfphmtBk61BjJ0KJGOwPQA0P/B3STZjQK4V7syHg1ST/VhY1hQzxgkEDV
-         COJkbTeqS8ws4p/jYFjICnN6vHYL2tHZQ25rd1+tp4e5RoRapmDDWHGl9nqw3ZP10e2f
-         itGiEIZmr+G9LdixsKikF9bL2x08P9StOfIzNvAwD4bikFuCB6Cw7G2tB8xUYREFLozM
-         icDg==
-X-Gm-Message-State: AOAM533SYij3sXF/1poys8mjzkxEoL5Rl6Jn5uQKGuGLTENtMtqOikNR
-        LN3PgjMoHRO3MT7ZNWgg2fYI9g==
-X-Google-Smtp-Source: ABdhPJzpajusYAJ3lV53LraA4ksa7e4AnMF5tcbCrqc4k84bZJvb5YlBVgWv3Ecw7tHHP1DBxfbH6g==
-X-Received: by 2002:a17:902:7b84:b029:e6:ec5a:3097 with SMTP id w4-20020a1709027b84b02900e6ec5a3097mr15352269pll.58.1616772735660;
-        Fri, 26 Mar 2021 08:32:15 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id gm10sm9117873pjb.4.2021.03.26.08.32.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 08:32:15 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 09:32:13 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     suzuki.poulose@arm.com, leo.yan@linaro.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] coresight-pmu.h: Fix a typo
-Message-ID: <20210326153213.GA2009902@xps15>
-References: <20210326142244.17504-1-unixbhaskar@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fVuyITToMefSsVdcKHUKULd5V5yD+yduTs+fYSCVCoA=;
+        b=iBvkvUNql4vCso3sQzClsmMP16IhO+tkBsv+mLHfkbJXDn4hrg6GgSGHFdMxF67hGe
+         kDq9CQrZxRW1peVtsipG8L+x4zy8nKlOwl7EokTCmmrULT8vsqNf+8U4L+Hzm734Cneb
+         uvHCMUtzQ4JdeBOgHMs/ioCBhEWtP0ypmd+uiUaMg2V21nIKvATlYtrEooGOipgE1Y2f
+         UCV/1/dM2TBhNn5GI50eCmeHrURMPo7pokITIcAMfs+GZO5kBnns7JhLj5NWaQdEMcCY
+         jyaZJqi8A1a3sTtTrxqT/5tRmoDXPF3Y+WG6M1q66cmjZyk9Zb6l6TLCcgjGQ0hGXRfp
+         Pl+A==
+X-Gm-Message-State: AOAM530XdvKuKKGZE3I82TTBMbQ29a6H0OEVTcivT8cpU5Rx1853p9LG
+        Bh9SwprApVkun9BR80JRHBGSUy87MPvKPGMWRj0O+0pw
+X-Google-Smtp-Source: ABdhPJxSkedp8fuIQnTqBygp92MCs6xp3cWITyw3O2utH0HrpIqiVIMyxLv1UpSZKeKtgdfkbJ7ovzgI1X1OBtDclns=
+X-Received: by 2002:a05:6402:35c9:: with SMTP id z9mr15796150edc.94.1616772838554;
+ Fri, 26 Mar 2021 08:33:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326142244.17504-1-unixbhaskar@gmail.com>
+References: <20210221185637.19281-1-chang.seok.bae@intel.com>
+ <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
+ <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com> <CALCETrWOc7wwW=KY2dGJGy9k5Ag=KhkdGGTDZMvgRHgyQ5fDjQ@mail.gmail.com>
+In-Reply-To: <CALCETrWOc7wwW=KY2dGJGy9k5Ag=KhkdGGTDZMvgRHgyQ5fDjQ@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 26 Mar 2021 11:33:47 -0400
+Message-ID: <CAJvTdK=OGALDso0H+asjgkjD_VaPNZzm+LpV+msM_i5aVUm_qw@mail.gmail.com>
+Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
+ control state component support
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
+        X86 ML <x86@kernel.org>, "Brown, Len" <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaskar,
+On Thu, Mar 25, 2021 at 9:42 PM Andy Lutomirski <luto@kernel.org> wrote:
 
-On Fri, Mar 26, 2021 at 07:52:44PM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/orignally/originally/
+> Regardless of what you call AMX, AMX requires kernel enabling.
 
-Even if the change is trivial this changelog is insufficient.  Moreover, if you
-found the problem with an automated tool, please add the name of the tool to the
-changelog.
+I submit, that after the generic XFD support is in place,
+there is exactly 1 bit that needs to be flipped to enable
+user applications to benefit from AMX.
 
-Thanks,
-Mathieu
+I submit the patch that knows about AMX and double checks the
+state size is superfluous.
 
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  include/linux/coresight-pmu.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
-> index 4ac5c081af93..2d5c29e3cb8a 100644
-> --- a/include/linux/coresight-pmu.h
-> +++ b/include/linux/coresight-pmu.h
-> @@ -14,7 +14,7 @@
->   * Below are the definition of bit offsets for perf option, and works as
->   * arbitrary values for all ETM versions.
->   *
-> - * Most of them are orignally from ETMv3.5/PTM's ETMCR config, therefore,
-> + * Most of them are originally from ETMv3.5/PTM's ETMCR config, therefore,
->   * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
->   * directly use below macros as config bits.
->   */
-> --
-> 2.26.2
-> 
+I submit that updating /proc/cpuinfo is superfluous.
+
+What AMX-specific kernel enabling did I miss?
+
+> Specifically, it appears that leaving AMX in use in the XINUSE sense
+> degrades system performance and/or power.
+
+Please share the specifics about what performance or power issue you anticipate.
+
+thanks,
+-Len
