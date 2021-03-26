@@ -2,257 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E1834B22E
+	by mail.lfdr.de (Postfix) with ESMTP id 9789F34B22D
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 23:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhCZWau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 18:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhCZWaa (ORCPT
+        id S230467AbhCZWav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 18:30:51 -0400
+Received: from p3plsmtpa06-04.prod.phx3.secureserver.net ([173.201.192.105]:42103
+        "EHLO p3plsmtpa06-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230347AbhCZWae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 18:30:30 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA4FC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:30:30 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so6653618otk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 15:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mNf1Gc57uaZep/ht1DCQvf+zklgVxefomfLeuA1WYCs=;
-        b=iR4UKUX/i73h1mKJ1bYvaJ7WtfusCDdLVE5VqeE9jD4AgRhEjRZ0vWYdq0IIQLG9OH
-         DB8AVYFrZMyMi49EhP3UO6QydGvpCVWszv0hjn6fsDGyTvLgKFgUwTYU8Ol7u89XOEO2
-         LuQQAJcgHvUA8S4wh+3ZK62ftGcwduM2K6GgAOx2ByTaRBwfY7GrTq6wdpTRhrW2ycFQ
-         3PgI9OzA2jk0eu5YVK5PTMQSkN/pcFxMu1EF6wCa3zJWf41GjHszCPpkA+UY29RWyfHl
-         48z+mNSSbCfci61P4LYVDqPA32pIf4wXI2i3Z7igv7nyErf9JjP6zphHMrH8bfzVKYUc
-         NigA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mNf1Gc57uaZep/ht1DCQvf+zklgVxefomfLeuA1WYCs=;
-        b=Itm9nR867PL4iBysHSVE9x95JVBC4APyNj9dTPI09yIWJOKOTy6hdr2fHVG9jg2XqJ
-         snn1zgCGISuRajyHNCED4/Cf6W9n+wrnYNBy3H5djYDpeRIVyEVJoUGzHcMNqKZdSzoz
-         XnSlWJ2Yer8NV+hpxuFjFECfXhqyJwdKrWFx3qaZfFaWcZgMzC4T6nCzmPF0/X7win/A
-         JFGOsv2A+Dz4MCDQXjy2C6sgRhj/Qi1A977R9WskW19CtXC5DRo2A2+4bTOr3cUAE/yV
-         zHdwKQGVq5xuOnQoHp4LpjSZkGFO2hGjzaRuBv2y+bHDuf321Pn41AOzBEEfgO91quhw
-         PSfg==
-X-Gm-Message-State: AOAM533L7Mms+Wl2wFJnfgSFs1fC0eEG6B+rnidYJrq8sSgO6i7q+9GA
-        +DZz1rjzausM/oZY44XkcR2uiXoRCq7DWw==
-X-Google-Smtp-Source: ABdhPJwSLr1aVkVGPdABQhumm352NtlikXZANY0BWSOK5rGg2RsR4/4BjeO2fNJ/hvTHJfXYVxY69w==
-X-Received: by 2002:a05:6830:1290:: with SMTP id z16mr12070106otp.122.1616797829716;
-        Fri, 26 Mar 2021 15:30:29 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id h12sm2524872ote.75.2021.03.26.15.30.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Mar 2021 15:30:29 -0700 (PDT)
-Subject: Re: [PATCH 2/7] io_uring: handle signals for IO threads like a normal
- thread
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
-        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326155128.1057078-1-axboe@kernel.dk>
- <20210326155128.1057078-3-axboe@kernel.dk> <m1wntty7yn.fsf@fess.ebiederm.org>
- <106a38d3-5a5f-17fd-41f7-890f5e9a3602@kernel.dk>
- <m1k0ptv9kj.fsf@fess.ebiederm.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <01058178-dd66-1bff-4d74-5ff610817ed6@kernel.dk>
-Date:   Fri, 26 Mar 2021 16:30:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 26 Mar 2021 18:30:34 -0400
+Received: from chrisHP110 ([76.103.216.188])
+        by :SMTPAUTH: with ESMTPA
+        id PuyPlPYLbe8QFPuyPlZ0t6; Fri, 26 Mar 2021 15:30:33 -0700
+X-CMAE-Analysis: v=2.4 cv=JLz+D+Gb c=1 sm=1 tr=0 ts=605e608a
+ a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
+ a=kj9zAlcOel0A:10 a=eUCHAjWJAAAA:8 a=VwQbUJbxAAAA:8 a=ag1SF4gXAAAA:8
+ a=B9N1SL4tAAAA:8 a=ZZ8IlgSgAAAA:8 a=yMhMjlubAAAA:8 a=Ikd4Dj_1AAAA:8
+ a=5dq06bJRMOhGB6Ww62IA:9 a=CjuIK1q_8ugA:10 a=e1s5y4BJLze_2YVawdyF:22
+ a=AjGcO6oz07-iQ99wixmX:22 a=Yupwre4RP9_Eg_Bd0iYG:22 a=2pORUOBALVJw3eK4Rqq-:22
+ a=bnemC1k7u3fE13R9927P:22 a=fCgQI5UlmZDRPDxm0A3o:22
+X-SECURESERVER-ACCT: don@thebollingers.org
+From:   "Don Bollinger" <don@thebollingers.org>
+To:     "'Andrew Lunn'" <andrew@lunn.ch>
+Cc:     "'Jakub Kicinski'" <kuba@kernel.org>, <arndb@arndb.de>,
+        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
+        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
+        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
+        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
+        "'netdev'" <netdev@vger.kernel.org>,
+        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
+References: <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <001201d719c6$6ac826c0$40587440$@thebollingers.org> <YFJHN+raumcJ5/7M@lunn.ch> <009601d72023$b73dbde0$25b939a0$@thebollingers.org> <YFpr2RyiwX10SNbD@lunn.ch> <011301d7226f$dc2426f0$946c74d0$@thebollingers.org> <YF46FI4epRGwlyP8@lunn.ch> <011901d7227c$e00015b0$a0004110$@thebollingers.org> <YF5GA1RbaM1Ht3nl@lunn.ch> <011c01d72284$544c8f50$fce5adf0$@thebollingers.org> <YF5YAQvQXCn4QapJ@lunn.ch>
+In-Reply-To: <YF5YAQvQXCn4QapJ@lunn.ch>
+Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
+Date:   Fri, 26 Mar 2021 15:30:32 -0700
+Message-ID: <012b01d7228f$a2547270$e6fd5750$@thebollingers.org>
 MIME-Version: 1.0
-In-Reply-To: <m1k0ptv9kj.fsf@fess.ebiederm.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQH9aXkeZ4lqQ1ZQrb2WfCNr9Tv/fAIIpANoAg1VxGkCGooDGQJYqoE6ATy+2IsBwjMDTAEnFzL5Avx/AEACEz9dWwHZN+Nlqa2GGDA=
+Content-Language: en-us
+X-CMAE-Envelope: MS4xfKG1f3sajmw/3TQ4HBTVzN+gt6W8vBhwPPpNhTdMFowlxM9GrdbeIy34XVm9sMerlgjDVOPhyUjTwROoQ/fguT3zv/RLq6KdcTG2zsZzVCDx7lb+BZ2Z
+ rPdJQAmZZ+JjBMDAgIrX1nThBS6WKCbL0BbuIQ+9Hi23lccnH8Y2yiIqxdMpM3TeT94vSqfW+ffh9cK5b9waTaYWGB3N5Djz9f2jPYr8zIHLlTMiqBFbSnka
+ MmX3SPNJDkAADFuUm1lAxOS79m3jLroX85aS2ViuvoCj3IFFjlVXnPNB9l+fqxzr47kyVfRl5mLEpiuCZ8oNLdngZoutRoWswW3bhOe2Dmp5uLcPFWJ+MSGy
+ rqvJNvUdo3cC2qcf0z9KMnLuqaCSYcc3rInpmDjC4UwSTQz9jf8tjFUiUfCmWoD2zwkHWEW8HA5DMYCss/F2/L/00YG6IhFwq/wJxbMHHnOYcvVceqWraXJd
+ cPm6f9N9Sy7ox9CpFBEzL8AqXzT+sKvXfoiL+vStU2e9WzN2nXbnkNy8kdF52YA054pY99V0rV8OWiApBMlldy2+O4F4//Suh4BwaAjc8u58rGNvFbCwY8+S
+ 6LaZ8OkvsUzi3cKAxCq/bjXK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 4:23 PM, Eric W. Biederman wrote:
-> Jens Axboe <axboe@kernel.dk> writes:
+
+
+> -----Original Message-----
+> From: Andrew Lunn [mailto:andrew@lunn.ch]
+> Sent: Friday, March 26, 2021 2:54 PM
+> To: Don Bollinger <don@thebollingers.org>
+> Cc: 'Jakub Kicinski' <kuba@kernel.org>; arndb@arndb.de;
+> gregkh@linuxfoundation.org; linux-kernel@vger.kernel.org;
+> brandon_chuang@edge-core.com; wally_wang@accton.com;
+> aken_liu@edge-core.com; gulv@microsoft.com; jolevequ@microsoft.com;
+> xinxliu@microsoft.com; 'netdev' <netdev@vger.kernel.org>; 'Moshe
+> Shemesh' <moshe@nvidia.com>
+> Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+> EEPROMS
 > 
->> On 3/26/21 2:29 PM, Eric W. Biederman wrote:
->>> Jens Axboe <axboe@kernel.dk> writes:
->>>
->>>> We go through various hoops to disallow signals for the IO threads, but
->>>> there's really no reason why we cannot just allow them. The IO threads
->>>> never return to userspace like a normal thread, and hence don't go through
->>>> normal signal processing. Instead, just check for a pending signal as part
->>>> of the work loop, and call get_signal() to handle it for us if anything
->>>> is pending.
->>>>
->>>> With that, we can support receiving signals, including special ones like
->>>> SIGSTOP.
->>>>
->>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>> ---
->>>>  fs/io-wq.c    | 24 +++++++++++++++++-------
->>>>  fs/io_uring.c | 12 ++++++++----
->>>>  2 files changed, 25 insertions(+), 11 deletions(-)
->>>>
->>>> diff --git a/fs/io-wq.c b/fs/io-wq.c
->>>> index b7c1fa932cb3..3e2f059a1737 100644
->>>> --- a/fs/io-wq.c
->>>> +++ b/fs/io-wq.c
->>>> @@ -16,7 +16,6 @@
->>>>  #include <linux/rculist_nulls.h>
->>>>  #include <linux/cpu.h>
->>>>  #include <linux/tracehook.h>
->>>> -#include <linux/freezer.h>
->>>>  
->>>>  #include "../kernel/sched/sched.h"
->>>>  #include "io-wq.h"
->>>> @@ -503,10 +502,16 @@ static int io_wqe_worker(void *data)
->>>>  		if (io_flush_signals())
->>>>  			continue;
->>>>  		ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
->>>> -		if (try_to_freeze() || ret)
->>>> +		if (signal_pending(current)) {
->>>> +			struct ksignal ksig;
->>>> +
->>>> +			if (fatal_signal_pending(current))
->>>> +				break;
->>>> +			if (get_signal(&ksig))
->>>> +				continue;
->>>                         ^^^^^^^^^^^^^^^^^^^^^^
->>>
->>> That is wrong.  You are promising to deliver a signal to signal
->>> handler and them simply discarding it.  Perhaps:
->>>
->>> 			if (!get_signal(&ksig))
->>>                         	continue;
->>> 			WARN_ON(!sig_kernel_stop(ksig->sig));
->>>                         break;
->>
->> Thanks, updated.
+> > The only thing wrong I can see is that it doesn't use the kernel
+> > network stack.  Here's where "you keep missing the point".  The kernel
+> > network stack is not being used in these systems.  Implementing EEPROM
+> > access through ethtool is of course possible, but it is a lot of work
+> > with no benefit on these systems.  The simple approach works.  Let me
+use
+> it.
+> >
+> > >
+> > > The optoe KAPI needs to handle these 'interesting' SFP modules. The
+> > > KAPI design needs to be flexible enough that the driver underneath
+> > > it can be extended to support these SFPs. The code does not need to
+> > > be there, but the KAPI design needs to allow it. And i personally
+> > > cannot see how the
+> > optoe
+> > > KAPI can efficiently support these SFPs.
+> >
+> > Help me understand.  Your KAPI specifies ethtool as the KAPI, and the
+> > ethtool/netlink stack as the interface through which the data flows.
 > 
-> Gah.  Kill the WARN_ON.
+> Nearly. It specifies netlink and the netlink messages definitions.
+> They happen to be in the ethtool group, but there is no requirement to use
+> ethtool(1).
 > 
-> I was thinking "WARN_ON(!sig_kernel_fatal(ksig->sig));"
-> The function sig_kernel_fatal does not exist.
+> But there is a bit more to it.
 > 
-> Fatal is the state that is left when a signal is neither
-> ignored nor a stop signal, and does not have a handler.
+> Either the MAC driver implements the needed code, or it defers to the
+> generic sfp.c code. In both cases, you have access to the GPIO lines.
 > 
-> The rest of the logic still works.
+> If you are using the generic sfp.c, the Device Tree definitions of the
+GPIOs
+> become part of the KAPI. DT is consider ABI.
+> 
+> So the low level code knows when there was been a hotplug. It then can
+> determine what quirks to apply for all future reads until the module is
+> unplugged.
 
-I've just come to the same conclusion myself after testing it.
-Of the 3 cases, most of them can do the continue, but doesn't
-really matter with the way the loop is structured. Anyway, looks
-like this now:
+Got it.  All good.  I agree, I would like optoe to have access to the GPIO
+lines, but it is a "nice to have", not a requirement...
 
+> 
+> Your KAPI is missing how optoe gets access to the GPIOs. Without knowing
+if
 
-commit 769186e30cd437f5e1a000e7cf00286948779da4
-Author: Jens Axboe <axboe@kernel.dk>
-Date:   Thu Mar 25 18:16:06 2021 -0600
+Right.  It doesn't get access to the GPIOs.  So, that is not part of its
+KAPI.
 
-    io_uring: handle signals for IO threads like a normal thread
-    
-    We go through various hoops to disallow signals for the IO threads, but
-    there's really no reason why we cannot just allow them. The IO threads
-    never return to userspace like a normal thread, and hence don't go through
-    normal signal processing. Instead, just check for a pending signal as part
-    of the work loop, and call get_signal() to handle it for us if anything
-    is pending.
-    
-    With that, we can support receiving signals, including special ones like
-    SIGSTOP.
-    
-    Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> the module has been hotplugged, in a robust manor, you have problems
+> with quirks. For every userspace read, you need to assume the module has
+> been changed, read the ID information from the EEPROM a byte at a time,
+> figure out what quirks to apply, and then do the user requested read. I
+doubt
 
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index b7c1fa932cb3..7e5970c8b0be 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -16,7 +16,6 @@
- #include <linux/rculist_nulls.h>
- #include <linux/cpu.h>
- #include <linux/tracehook.h>
--#include <linux/freezer.h>
- 
- #include "../kernel/sched/sched.h"
- #include "io-wq.h"
-@@ -503,10 +502,16 @@ static int io_wqe_worker(void *data)
- 		if (io_flush_signals())
- 			continue;
- 		ret = schedule_timeout(WORKER_IDLE_TIMEOUT);
--		if (try_to_freeze() || ret)
-+		if (signal_pending(current)) {
-+			struct ksignal ksig;
-+
-+			if (fatal_signal_pending(current))
-+				break;
-+			if (!get_signal(&ksig))
-+				continue;
-+		}
-+		if (ret)
- 			continue;
--		if (fatal_signal_pending(current))
--			break;
- 		/* timed out, exit unless we're the fixed worker */
- 		if (test_bit(IO_WQ_BIT_EXIT, &wq->state) ||
- 		    !(worker->flags & IO_WORKER_F_FIXED))
-@@ -714,9 +719,15 @@ static int io_wq_manager(void *data)
- 		set_current_state(TASK_INTERRUPTIBLE);
- 		io_wq_check_workers(wq);
- 		schedule_timeout(HZ);
--		try_to_freeze();
--		if (fatal_signal_pending(current))
--			set_bit(IO_WQ_BIT_EXIT, &wq->state);
-+		if (signal_pending(current)) {
-+			struct ksignal ksig;
-+
-+			if (fatal_signal_pending(current)) {
-+				set_bit(IO_WQ_BIT_EXIT, &wq->state);
-+				continue;
-+			}
-+			get_signal(&ksig);
-+		}
- 	} while (!test_bit(IO_WQ_BIT_EXIT, &wq->state));
- 
- 	io_wq_check_workers(wq);
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 54ea561db4a5..1c64e3f9b7a2 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -78,7 +78,6 @@
- #include <linux/task_work.h>
- #include <linux/pagemap.h>
- #include <linux/io_uring.h>
--#include <linux/freezer.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/io_uring.h>
-@@ -6765,8 +6764,14 @@ static int io_sq_thread(void *data)
- 			timeout = jiffies + sqd->sq_thread_idle;
- 			continue;
- 		}
--		if (fatal_signal_pending(current))
--			break;
-+		if (signal_pending(current)) {
-+			struct ksignal ksig;
-+
-+			if (fatal_signal_pending(current))
-+				break;
-+			if (!get_signal(&ksig))
-+				continue;
-+		}
- 		sqt_spin = false;
- 		cap_entries = !list_is_singular(&sqd->ctx_list);
- 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
-@@ -6809,7 +6814,6 @@ static int io_sq_thread(void *data)
- 
- 			mutex_unlock(&sqd->lock);
- 			schedule();
--			try_to_freeze();
- 			mutex_lock(&sqd->lock);
- 			list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
- 				io_ring_clear_wakeup_flag(ctx);
+Again, optoe does not deal with quirks.  Your code filters them out before
+calling optoe or sfp_i2c_read.  My stack does not deal with them.  In my
+community, quirky devices are not tolerated.  In the 4 years this code has
+been in use, nobody has ever asked me to accommodate a weird module.
 
--- 
-Jens Axboe
+I inherited a limitation of writing one byte at a time from the ancestor of
+optoe, which I have kept.  I don't know if it is needed, but someone once
+thought it was required.  I apply it universally, all devices of all types.
+
+I do need one item of state from the EEPROM, the register that tells me
+whether pages are supported by the device.  Due to the hotplug risk, I
+actually do read that register once for each access to non-zero pages.
+(Once per read or write call.)  Access to GPIOs would eliminate that.  It
+turns out the vast majority of calls are to page 0 or lower memory, and the
+performance penalty is at most 25% since there is also a page write, data
+access and page write in the same call.  The penalty goes down as the number
+of bytes read increases.  Overall, it has never come up as an issue.  People
+don't expect these things to be fast.
+
+> that is good for performance. The design which has been chosen is that
+> userspace is monitoring the GPIO lines. So to make it efficient, your KAPI
+> need some way to pass down that the module has/has not been hot-
+> plugged since the last read.
+
+Nope.  optoe does not need to know, it assumes a new device every time it is
+accessed.
+
+> 
+> Or do you see some other way to implement these quirks?
+
+What I have works.  Your consumers get quirk handling, mine don't need it.
+No compromise.
+
+> 
+>        Andrew
+
+Don
 
