@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51AF634A021
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F033B34A027
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhCZDNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 23:13:18 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41681 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230239AbhCZDNI (ORCPT
+        id S230473AbhCZDP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 23:15:29 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:35807 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230216AbhCZDPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 23:13:08 -0400
-X-UUID: c939cf170a314260a3403d4213499dfd-20210326
-X-UUID: c939cf170a314260a3403d4213499dfd-20210326
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <seiya.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2023297819; Fri, 26 Mar 2021 11:13:04 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 26 Mar 2021 11:13:03 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 26 Mar 2021 11:13:02 +0800
-From:   Seiya Wang <seiya.wang@mediatek.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Seiya Wang <seiya.wang@mediatek.com>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: [PATCH 2/2] dt-bindings: cpufreq: update cpu type and clock name for MT8173 SoC
-Date:   Fri, 26 Mar 2021 11:12:27 +0800
-Message-ID: <20210326031227.2357-2-seiya.wang@mediatek.com>
-X-Mailer: git-send-email 2.14.1
-In-Reply-To: <20210326031227.2357-1-seiya.wang@mediatek.com>
-References: <20210326031227.2357-1-seiya.wang@mediatek.com>
+        Thu, 25 Mar 2021 23:15:12 -0400
+Received: by mail-pj1-f53.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so3597759pjb.0;
+        Thu, 25 Mar 2021 20:15:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k7xKdTqEOKvltFe7bcmwKO2vxx2QM8xUcV2m4JVl8Vw=;
+        b=c/yBz1NQnHyU8ZX6yKuBEbr7qScLTY63ba5D49cZKwHXbanOqN0BSY9xD+KZ45ZA61
+         WZ3uesnSQWZz2+xkT9cR/ZawyDiPs0hxlAmx4zXJNJ4Yi3KGpwwQYSARglscCmxFj/Tb
+         zL1ekifl+lHrnHYESdtYoVym8qL3omaFRq726Tam3FLJxdzeH2/gU7R0dA9AteLybS/3
+         UXwy8OelqpdiFjiJ7Vq1qMHzdvnJzWiP71/Y7VRkGFe0PnhAvOIjUi2zKjBSmfT8RYs5
+         qAKxHOhlb60VTlfIjY5JN7+XpSUxuckmP4hzdbhL12mgV8KP9EIaFCaGms2cS0ZTqGP9
+         DGLA==
+X-Gm-Message-State: AOAM531/YMMXiJ87kcyfMsF7DZJwryAXBES477o/gUwDQJwHPfFdEty7
+        r1UkNVw7LE3hGV8eAzfROsg=
+X-Google-Smtp-Source: ABdhPJyh+FATGWHkKf/6jeyUvgjNV3lk43VAsPZYBV3RWBNreLN5Waj7OBmbvkCvs35mvgZ0rxQ/Dw==
+X-Received: by 2002:a17:90a:e2ca:: with SMTP id fr10mr11511698pjb.154.1616728511945;
+        Thu, 25 Mar 2021 20:15:11 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:c5af:7b7c:edac:ee67? ([2601:647:4000:d7:c5af:7b7c:edac:ee67])
+        by smtp.gmail.com with ESMTPSA id u12sm6997071pfn.123.2021.03.25.20.15.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 20:15:11 -0700 (PDT)
+Subject: Re: [PATCH v31 4/4] scsi: ufs: Add HPB 2.0 support
+To:     daejun7.park@samsung.com, Can Guo <cang@codeaurora.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+References: <b3a524b1c720007b295e3c3b888a42f9@codeaurora.org>
+ <d7f98f965e724e708e85535bdcc53075@codeaurora.org>
+ <20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p5>
+ <20210322065504epcms2p698791fed570484f8de2688d238dff4c6@epcms2p6>
+ <20210325004732epcms2p2f8990a22df33f9cfdb303e8da62e8fa7@epcms2p2>
+ <CGME20210322065127epcms2p5021a61416a6b427c62fcaf5d8b660860@epcms2p8>
+ <20210326025559epcms2p801247571065a1aa568c234d77e635745@epcms2p8>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <f018a0cd-de0c-f7ca-7b88-146c9ebd8430@acm.org>
+Date:   Thu, 25 Mar 2021 20:15:08 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210326025559epcms2p801247571065a1aa568c234d77e635745@epcms2p8>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the cpu type of cpu2 and cpu3 since MT8173 used Cortex-a72.
+On 3/25/21 7:55 PM, Daejun Park wrote:
+>> Please address it in next version. After that, I will give my 
+>> reviewed-by tag.
+> 
+> OK, I will do.
+Hi,
 
-Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
----
- Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Please trim emails when replying. Otherwise it is very hard to follow a
+conversation. It took me plenty of scrolling to find the above reply.
 
-diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt
-index ea4994b35207..ef68711716fb 100644
---- a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt
-+++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt
-@@ -202,11 +202,11 @@ Example 2 (MT8173 SoC):
- 
- 	cpu2: cpu@100 {
- 		device_type = "cpu";
--		compatible = "arm,cortex-a57";
-+		compatible = "arm,cortex-a72";
- 		reg = <0x100>;
- 		enable-method = "psci";
- 		cpu-idle-states = <&CPU_SLEEP_0>;
--		clocks = <&infracfg CLK_INFRA_CA57SEL>,
-+		clocks = <&infracfg CLK_INFRA_CA72SEL>,
- 			 <&apmixedsys CLK_APMIXED_MAINPLL>;
- 		clock-names = "cpu", "intermediate";
- 		operating-points-v2 = <&cpu_opp_table_b>;
-@@ -214,11 +214,11 @@ Example 2 (MT8173 SoC):
- 
- 	cpu3: cpu@101 {
- 		device_type = "cpu";
--		compatible = "arm,cortex-a57";
-+		compatible = "arm,cortex-a72";
- 		reg = <0x101>;
- 		enable-method = "psci";
- 		cpu-idle-states = <&CPU_SLEEP_0>;
--		clocks = <&infracfg CLK_INFRA_CA57SEL>,
-+		clocks = <&infracfg CLK_INFRA_CA72SEL>,
- 			 <&apmixedsys CLK_APMIXED_MAINPLL>;
- 		clock-names = "cpu", "intermediate";
- 		operating-points-v2 = <&cpu_opp_table_b>;
--- 
-2.14.1
+Thanks,
 
+Bart.
