@@ -2,212 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4479B34A4F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE7834A4F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230080AbhCZJw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbhCZJwR (ORCPT
+        id S229994AbhCZJw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:52:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58794 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229957AbhCZJwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:52:17 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548B1C0613AA;
-        Fri, 26 Mar 2021 02:52:16 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 88E681F46C28
-Received: by earth.universe (Postfix, from userid 1000)
-        id 575153C0C96; Fri, 26 Mar 2021 10:52:12 +0100 (CET)
-Date:   Fri, 26 Mar 2021 10:52:12 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-Subject: Re: [RFC] clk: add boot clock support
-Message-ID: <20210326095212.22ty5ueowiq36y6b@earth.universe>
-References: <20210316215123.GA3712408@robh.at.kernel.org>
- <20210318210318.144961-1-sebastian.reichel@collabora.com>
- <20210326012720.GA2113788@robh.at.kernel.org>
- <CAGETcx9JmtbwAq_fpU5KfUzjcTw-uHPqKo3gAGjQwht=wxY8yg@mail.gmail.com>
+        Fri, 26 Mar 2021 05:52:42 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12Q9hd8e195611;
+        Fri, 26 Mar 2021 09:52:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=avCY6q93eNNoRefnAtNulcrPTgJVBJ/EjJwMJ+IPy+Q=;
+ b=xdNvNM+O8Oh/SGVflMx97UTlfLPpfL6QuSrxbTpmUuaZDED/l1tBdO4F1IAutEYHttZ4
+ hAxC2uXUysQDUl2IegSL1Ls1BBuL+D9rf40U6/jFwU5+AjoeIK5af4SlxqXKhUbSIA5G
+ mw0UGNdweTQrVuzzOTPjfmYO/T7Bry9sAM2hC7KX1GP/52keHm/d3em+PDv9kQUuVN2K
+ S34VaEJ819M00KqPn27yuM+DiFXTADmDWHRomd1Rp8hrw1964jXjnZA16AaSE3Q1xV0G
+ Y1qqba53zOX+IgKcch8kEq6ACYfWbocO35w+Q92loQtLY7ug368QrkAxXw/VYgBL5cLr wA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 37h1421h13-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 09:52:32 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12Q9pKtq166100;
+        Fri, 26 Mar 2021 09:52:30 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 37h1416wye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 09:52:30 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12Q9qTa9023675;
+        Fri, 26 Mar 2021 09:52:29 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Mar 2021 02:52:29 -0700
+Date:   Fri, 26 Mar 2021 12:52:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/15] staging: rtl8723bs: inlcude macros in a do..while
+ loop in core/rtw_security.c
+Message-ID: <20210326095220.GC1717@kadam>
+References: <cover.1616748885.git.fabioaiuto83@gmail.com>
+ <2e02f646ab3f8058b159d6d790e202a0e4744af8.1616748885.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yuqc3nyfosvvvnh3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx9JmtbwAq_fpU5KfUzjcTw-uHPqKo3gAGjQwht=wxY8yg@mail.gmail.com>
+In-Reply-To: <2e02f646ab3f8058b159d6d790e202a0e4744af8.1616748885.git.fabioaiuto83@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103260071
+X-Proofpoint-GUID: 3BL4vuliYYY3jwEahB32VThO8e6vN13Y
+X-Proofpoint-ORIG-GUID: 3BL4vuliYYY3jwEahB32VThO8e6vN13Y
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9934 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 malwarescore=0 adultscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103260070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Mar 26, 2021 at 10:09:08AM +0100, Fabio Aiuto wrote:
+> fix the following checkpatch warning:
+> 
+> ERROR: Macros starting with if should be enclosed by a do - while
+> loop to avoid possible if/else logic defects
+> 33: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:33:
+> +#define WEP_SW_ENC_CNT_INC(sec, ra) \
+> --
+> ERROR: Macros starting with if should be enclosed by a do - while
+> loop to avoid possible if/else logic defects
+> 41: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:41:
+> +#define WEP_SW_DEC_CNT_INC(sec, ra) \
+> --
+> ERROR: Macros starting with if should be enclosed by a do - while
+> loop to avoid possible if/else logic defects
+> 49: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:49:
+> +#define TKIP_SW_ENC_CNT_INC(sec, ra) \
+> --
+> ERROR: Macros starting with if should be enclosed by a do - while
+> loop to avoid possible if/else logic defects
+> 57: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:57:
+> +#define TKIP_SW_DEC_CNT_INC(sec, ra) \
+> --
+> ERROR: Macros starting with if should be enclosed by a do - while
+> loop to avoid possible if/else logic defects
+> 65: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:65:
+> +#define AES_SW_ENC_CNT_INC(sec, ra) \
+> --
+> ERROR: Macros starting with if should be enclosed by a do - while
+> loop to avoid possible if/else logic defects
+> 73: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:73:
+> +#define AES_SW_DEC_CNT_INC(sec, ra) \
+> --
+> ERROR: Macros with multiple statements should be enclosed in a
+> do - while loop
+> 2082: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:2082:
+> +#define ROUND(i, d, s) \
+> 
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_security.c | 94 +++++++++++--------
+>  1 file changed, 54 insertions(+), 40 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+> index 44e2b362c867..c92984fcf42d 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+> @@ -31,52 +31,64 @@ const char *security_type_str(u8 value)
+>  
+>  #ifdef DBG_SW_SEC_CNT
+>  #define WEP_SW_ENC_CNT_INC(sec, ra) \
+> -	if (is_broadcast_mac_addr(ra)) \
+> -		sec->wep_sw_enc_cnt_bc++; \
+> -	else if (is_multicast_mac_addr(ra)) \
+> -		sec->wep_sw_enc_cnt_mc++; \
+> -	else \
+> -		sec->wep_sw_enc_cnt_uc++;
+> +	do { \
+> +		if (is_broadcast_mac_addr(ra)) \
+> +			sec->wep_sw_enc_cnt_bc++; \
+> +		else if (is_multicast_mac_addr(ra)) \
+> +			sec->wep_sw_enc_cnt_mc++; \
+> +		else \
+> +			sec->wep_sw_enc_cnt_uc++; \
+> +	} while (0)
 
---yuqc3nyfosvvvnh3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What are these statistics used for?  So far as I can see there not
+used at all.  It's probably better to just delete all the
+DBG_SW_SEC_CNT code.
 
-Hi Saravana,
+regards,
+dan carpenter
 
-On Thu, Mar 25, 2021 at 06:55:52PM -0700, Saravana Kannan wrote:
-> On Thu, Mar 25, 2021 at 6:27 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > +Saravana
-> >
-> > On Thu, Mar 18, 2021 at 10:03:18PM +0100, Sebastian Reichel wrote:
-> > > On Congatec's QMX6 system on module one of the i.MX6 fixed clocks
-> > > is provided by an I2C RTC. Specifying this properly results in a
-> > > circular dependency, since the I2C RTC (and thus its clock) cannot
-> > > be initialized without the i.MX6 clock controller being initialized.
-> > >
-> > > With current code the following path is executed when i.MX6 clock
-> > > controller is probed (and ckil clock is specified to be the I2C RTC
-> > > via DT):
-> > >
-> > > 1. imx6q_obtain_fixed_clk_hw(ccm_node, "ckil", 0);
-> > > 2. of_clk_get_by_name(ccm_node, "ckil");
-> > > 3. __of_clk_get(ccm_node, 0, ccm_node->full_name, "ckil");
-> > > 4. of_clk_get_hw(ccm_node, 0, "ckil")
-> > > 5. spec =3D of_parse_clkspec(ccm_node, 0, "ckil"); // get phandle
-> > > 6. of_clk_get_hw_from_clkspec(&spec); // returns -EPROBE_DEFER
-> > > 7. error is propagated back, i.MX6q clock controller is probe deferred
-> > > 8. I2C controller is never initialized without clock controller
-> > >    I2C RTC is never initialized without I2C controller
-> > >    CKIL clock is never initialized without I2C RTC
-> > >    clock controller is never initialized without CKIL
-> > >
-> > > To fix the circular dependency this registers a dummy clock when
-> > > the RTC clock is tried to be acquired. The dummy clock will later
-> > > be unregistered when the proper clock is registered for the RTC
-> > > DT node. IIUIC clk_core_reparent_orphans() will take care of
-> > > fixing up the clock tree.
-> > >
-> > > NOTE: For now the patch is compile tested only. If this approach
-> > > is the correct one I will do some testing and properly submit this.
-> > > You can find all the details about the hardware in the following
-> > > patchset:
-> > >
-> > > https://lore.kernel.org/linux-devicetree/20210222171247.97609-1-sebas=
-tian.reichel@collabora.com/
-> > >
-> > > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > > ---
-> > >  .../bindings/clock/clock-bindings.txt         |   7 +
-> > >  drivers/clk/clk.c                             | 146 ++++++++++++++++=
-++
-> > >  2 files changed, 153 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/clock/clock-bindings.t=
-xt b/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > > index f2ea53832ac6..66d67ff4aa0f 100644
-> > > --- a/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > > +++ b/Documentation/devicetree/bindings/clock/clock-bindings.txt
-> > > @@ -32,6 +32,13 @@ clock-output-names: Recommended to be a list of st=
-rings of clock output signal
-> > >                   Clock consumer nodes must never directly reference
-> > >                   the provider's clock-output-names property.
-> > >
-> > > +boot-clock-frequencies: This property is used to specify that a cloc=
-k is enabled
-> > > +                     by default with the provided frequency at boot =
-time. This
-> > > +                     is required to break circular clock dependencie=
-s. For clock
-> > > +                     providers with #clock-cells =3D 0 this is a sin=
-gle u32
-> > > +                     with the frequency in Hz. Otherwise it's a list=
- of
-> > > +                     clock cell specifier + frequency in Hz.
-> >
-> > Seems alright to me. I hadn't thought about the aspect of needing to
-> > know the frequency. Other cases probably don't as you only need the
-> > clocks once both components have registered.
-> >
-> > Note this could be lost being threaded in the other series.
->=20
-> I read this thread and tried to understand it. But my head isn't right
-> today (lack of sleep) so I couldn't wrap my head around it. I'll look
-> at it again after the weekend. In the meantime, Sebastian can you
-> please point me to the DT file and the specific device nodes (names or
-> line number) where this cycle is present?
-
-I have not yet sent an updated DT file, but if you look at this
-submission:
-
-https://lore.kernel.org/linux-devicetree/20210222171247.97609-7-sebastian.r=
-eichel@collabora.com/
-
-There is a node
-
-rtc: m41t62@68 { compatible =3D "st,m41t62"; };
-
-That is an I2C RTC, which provides a 32.768 kHz clock by default
-(i.e. after power loss). This clock signal is used to provide the
-i.MX6 CKIL:
-
-------------------------------------
-&clks {
-    clocks =3D <&rtc>;
-    clock-names =3D "ckil";
-};
-------------------------------------
-
-> Keeping a clock on until all its consumers probe is part of my TODO
-> list (next item after fw_devlink=3Don lands). I already have it working
-> in AOSP, but need to clean it up for upstream. fw_devlink can also
-> break *some* cycles (not all). So I'm wondering if the kernel will
-> solve this automatically soon(ish). If it can solve it automatically,
-> I'd rather not add new DT bindings because it'll make it more work for
-> fw_devlink.
-
-As written above on Congatec QMX6 an I2C RTC provides one of the
-SoC's input frequencies. The SoC basically expects that frequency
-to be always enabled and this is what it works like before clock
-support had been added to the RTC driver.
-
-With the link properly being described the Kernel tries to probe=20
-the SoC's clock controller during early boot. Then it tries to get a
-reference to the linked clock, using imx6q_obtain_fixed_clk_hw()
-and that returns -EPROBE_DEFER (because the RTC driver has not
-yet been probed). Without the clock controller basically none of
-the i.MX6 SoC drivers can probe including the I2C driver. Without
-the I2C bus being registered, the RTC driver never probes and the
-boot process is stuck.
-
-I'm not sure how fw_devlink can help here. I see exactly two
-options to solve this:
-
-a) do not describe the link and keep RTC clock enabled somehow.
-   (my initial patchset)
-b) describe the link, but ignore it during boot.
-   (what I'm trying to do here)
-
-Thanks,
-
--- Sebastian
-
---yuqc3nyfosvvvnh3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBdrr0ACgkQ2O7X88g7
-+pprNQ//ausWttZwADiPqm832XLLkBLS6xCGi1ntEuXqYXQAhNdD7ncGATlceYmE
-1UsfVgYstQDQE9aGyM0blkUNeUB4ejW4j5BFUkSG/+ANltZosa17qWMfgn9yS4px
-0bNqggfUKX5EHMtZmxkjnjxxZTYyzDB+sRhld7BePV7c5xdyIY91JEtEaEYTl0NX
-mX2KKroKOPH6heiXOBKg+qSUeK03Eek2ezmGnSfRBnOoQjsbyUTeYQpSRbDZ2CSF
-vp/6/nbKVAmRDfqoThWG+hVZP8Nyg8ukj6icHLUdg4nZyFV6i+Hlm3ebbzF2Li+g
-RpDmudDqm6b74R9ZcieIVvRw1N6oKtHcypLSa0nL/a8JICsZ3ykdh0Q3dwHEOGWm
-tMWbH0TIyVQgPeIOt7XfN+nPSBecD3sz31WU71iYwRMHxlm2plsdzarOwccTDE/z
-pug42JostOKofd7A4gMSJ2NW62Np5HfpGxpyjlIgMzw4Cj1j0I8j7V/tT/QNiA3a
-usLxEdS/g65EwewDC1Q7hXPY6ZczZz9ImFWFe9OifBqUldOn7DEruHkAEw8LEdmt
-vcF0HQXqhDsJ8pVkqt++ZZCkRECr7m2KmVkmD5dLpCTldMSxznO1mfV9CpLi4wwL
-dj24yan7oZ6wkajSdxmJ5QNM1Z7O0JcmEWoxzdI9rg8H4CtWlpw=
-=/IHI
------END PGP SIGNATURE-----
-
---yuqc3nyfosvvvnh3--
