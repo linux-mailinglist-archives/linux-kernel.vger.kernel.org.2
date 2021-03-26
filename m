@@ -2,55 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DEA34A053
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E66834A054
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 04:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhCZDm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 23:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230109AbhCZDm0 (ORCPT
+        id S230378AbhCZDqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 23:46:40 -0400
+Received: from mail-pj1-f49.google.com ([209.85.216.49]:33734 "EHLO
+        mail-pj1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230269AbhCZDqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 23:42:26 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D992C06174A;
-        Thu, 25 Mar 2021 20:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=S3aM59LzwZv2lhTP9C0ITO0CQL7/3mTFFH7WMQjCEiU=; b=N4Z+WQ/0D63wmvnhgzwQTM+nmf
-        yHCwotlJqph2PP5rp2afCDzn0M0r/qd4LphT504V1vClIfCS42aw/ChtGSLtQR25PPTZpEVR7mBfV
-        xetgewEuFA0Z5yR0TWnadlD+i3Ge967HX8RMosXugO2B7130o39Lf5qyClEiLkQ6U1iSUDuQMdCXC
-        mLLRQqrqGboWT3pw409QtubI7+bLlxGCvzhZ/anulvSkLdnMQ6lN2jyqnfRAZQUkSCX8K5yLEaiaA
-        40nYIlasmrInug/FdILDGXfruXcYMGK657AdZcSd+VbxHYjywoAwWfEHTEe2I96ogXoE3/TFkC2O+
-        FyF0F/fg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lPdMO-00EEBG-Rh; Fri, 26 Mar 2021 03:42:10 +0000
-Date:   Fri, 26 Mar 2021 03:42:08 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] mm/page_alloc: remove duplicated include from
- page_alloc.c
-Message-ID: <20210326034208.GC1719932@casper.infradead.org>
-References: <20210326025542.3565329-1-miaoqinglang@huawei.com>
+        Thu, 25 Mar 2021 23:46:23 -0400
+Received: by mail-pj1-f49.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so4967864pjb.0;
+        Thu, 25 Mar 2021 20:46:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1TArOxHPj0bJACvUlOiR8PlgnUcYFgFhDZ1MX0k/594=;
+        b=TDQ6kTU1gfoisXrFt8qin4eh9VNJtolVs5BbeByCV+TFJ58CB2XMNbugiVK4fh7cEn
+         rEvKM22zV9jXK8gSh0y6QJXDDOQPjG7zrzoU+W2Jk/vWGrYzVJATO9qF1A0f+Zk2Dn5x
+         vfI+BfWI2hivDSMC+hDBbtx7uN5OoaFGW9ZbqKdNDSjkYBpe4otir0IAyeOH+uS7o+T2
+         bfafCkKOD2QsjWhhX3K5LHc2PDKlagXfZTUfZct3dRIOpFH5z4/KzrSLYWYFcdKnZRfC
+         jVEzA5XPTd5nMoFqrnoxx3+KiUqlDmoyVdZJtw5QWh5qq3SeBuFenWcVAdx50sC3/328
+         E1kA==
+X-Gm-Message-State: AOAM531fsgC7uW0qAVJVGLyHqOZEQPmh1d3kT2rczKoMhSGjq8WE/rG3
+        t7WIFeefolcak7MRxSrVr2w3mIw9XcI=
+X-Google-Smtp-Source: ABdhPJyRv/Pm3fR3WvYhmdhuNQDv0f6qQhkgiFAl4zjmlV5vIsgRLzjR0eoLO8pYda0H9T5ighzQUQ==
+X-Received: by 2002:a17:902:ce88:b029:e6:3a3c:2f65 with SMTP id f8-20020a170902ce88b02900e63a3c2f65mr13255324plg.66.1616730383199;
+        Thu, 25 Mar 2021 20:46:23 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:c5af:7b7c:edac:ee67? ([2601:647:4000:d7:c5af:7b7c:edac:ee67])
+        by smtp.gmail.com with ESMTPSA id x2sm7002459pgb.89.2021.03.25.20.46.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Mar 2021 20:46:22 -0700 (PDT)
+Subject: Re: [PATCH v2 0/8] ensure bios aren't split in middle of crypto data
+ unit
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Eric Biggers <ebiggers@google.com>
+References: <20210325212609.492188-1-satyat@google.com>
+ <e0248d93-e880-6a6d-92d6-dfcfb6f9d661@acm.org> <YF07bqQ1NvPxPNrh@google.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <4694766c-8d95-1ad3-cb0c-d1ba8b7fe7ad@acm.org>
+Date:   Thu, 25 Mar 2021 20:46:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326025542.3565329-1-miaoqinglang@huawei.com>
+In-Reply-To: <YF07bqQ1NvPxPNrh@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 10:55:42AM +0800, Qinglang Miao wrote:
-> Remove duplicated include.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+On 3/25/21 6:39 PM, Satya Tangirala wrote:
+> On Thu, Mar 25, 2021 at 02:51:31PM -0700, Bart Van Assche wrote:
+>> Are you sure that the block layer core splits bios at logical block
+>> boundaries? Commit 9cc5169cd478 ("block: Improve physical block
+>> alignment of split bios") should have changed the behavior from
+>> splitting at logical block boundaries into splitting at physical block
+>> boundaries.
+>
+> Ah, what I really meant with that sentence was "Currently, if a bio is
+> split, the size of the resulting bio is guaranteed to be aligned to a
+> the lbs. The endpoint of the bio might also be aligned to a physical
+> block boundary (which 9cc5169cd478 tries to achieve if possible), but
+> the bio's size (and hence also its endpoint since the start of the bio
+> is always lbs aligned) is *at least* lbs aligned". Does that sound
+> accurate?
+That sounds better to me :-)
 
-can't you make hulk robot do something useful, like untangle the
-mass of header includes?  For example, in -next, net/ipv4/tcp.c
-has a dependency on pagemap.h.  Why?
+>> Without having looked at this patch series, can the same
+>> effect be achieved by reporting the crypto data unit size as the
+>> physical block size?
+>
+> That would've been awesome, but I don't think we can do that :(
+> 1) There isn't only one crypto data unit size. A device can support,
+>    and upper layers are free to use, many different data unit sizes.
+> 2) IIUC 9cc5169cd478 (or more accurately get_max_io_size() since the
+>    function has been changed slightly since your original patch)
+>    doesn't align the size of the bio to the pbs - it only aligns the
+>    endpoint of the bio to the pbs (and it may actually not even do
+>    that if it turns out to not be possible). Is that right? If so,
+>    that means that if the startpoint of the bio isn't pbs aligned, the
+>    size of the bio won't be pbs aligned either.
+
+Hmm ... if the start of a bio is not aligned to the physical block size
+I don't think that the block layer can do anything about the start of
+the bio. Anyway, I have taken a quick look at this patch series and the
+patch series looks pretty clean to me. I will let Christoph review this
+patch series since he already reviewed the previous version of this series.
+
+Bart.
