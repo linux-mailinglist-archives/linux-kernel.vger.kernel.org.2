@@ -2,109 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E3034A2A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BE634A2AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 08:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhCZHkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 03:40:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230500AbhCZHkZ (ORCPT
+        id S229738AbhCZHqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 03:46:08 -0400
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:44585 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229573AbhCZHpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 03:40:25 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA09C0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 00:40:13 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id c4so4387891qkg.3
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 00:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OWJ6BfIQvkV0v3+UUKsijqYsx8uXSSsTRfmaCZgNo6o=;
-        b=fMtdhtiivHvye2yYz5hTfGycUKB7juCA9V2qZo4wX9KXmiFdqbZrF6fhQZPAVYlOZT
-         jBtnls2MZdgGh/eYNva3VcI889PeBOcLeh+HpHgOtZFfE+knyuD9lt9LGwa+HFRsvbo8
-         xqTADkTUaYUtQw/zpTTAFWnwpGLWiWf7y99EgMsewM2mIt4yjyPZ+SsFWgMtG2oo4bfp
-         LQq+sVmpBgUEnbtZqEOvQB+V1epA7oQttVm04S5s42p0Mt7uvm05qFRikD4xFemYMNax
-         103m9TsZdxUs0E7HGxC7kfrQnvVH64YNLiErwCOQEC2kN76wHw+WUfNbyHua+Dd1fRwr
-         /RWA==
+        Fri, 26 Mar 2021 03:45:45 -0400
+Received: by mail-lj1-f169.google.com with SMTP id u9so6270483ljd.11;
+        Fri, 26 Mar 2021 00:45:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OWJ6BfIQvkV0v3+UUKsijqYsx8uXSSsTRfmaCZgNo6o=;
-        b=jVs6lk+Yu2nAf+3UZs70pq1kOmam+GJHfyabQA3WhAbK1vaS62EAhIUWzwIwMwUZIm
-         1edr23BXCpMgWvA37jO/mvFudWZhp2mML6nQltnVrCP3nbUwXdP0Y3I3fLdqI+2HVOa9
-         Hir9joouHus4td/rC7glfIM8PI991yVssl3mapgvS0CIG+w6Izr9Xc7X5BILAMN1Fd1N
-         DJTMAKmn+Ihs/ahYIuVeGdXvi8I3I3Thm8NpvbsbWSWQ29HPgEIrp/PLELaQP8gTVa6k
-         V5vkAoxdKeYy8t6vf9VaB8r0vaIv8hZgqkVROFJq9Err0qu9QKY1vqgmr75FX/cPS8hI
-         xnIQ==
-X-Gm-Message-State: AOAM531sQrkOd8N82IfNsUnEwwM8NEoleQTcy0MEYzmcErCZ3X72UjUv
-        1F0yHTGkwBET91zbjb/UqgHii4nTRT71IAOD6VX2Tw==
-X-Google-Smtp-Source: ABdhPJwzFj0L8j4HM7g8kCsyzNDZ4q3S1Isl4+Kv2Ipx3Mxgc5XOGpLcrYdwDvHOLDTAhx5ZhKNtA75eAjNwTIZJGoM=
-X-Received: by 2002:a05:620a:2095:: with SMTP id e21mr11610717qka.265.1616744412460;
- Fri, 26 Mar 2021 00:40:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ywvkB00IvDFZV6YQmhIhOKybvJUh+b6uDebafNOLRY4=;
+        b=ZHm+sd8Kbxd3JUe/1xOcABI8A0dq1U0dEgq1g4hyGXJu/TQT7KhAVQ6nBQC7DCqxBe
+         EwPmyqpVnjWeLqw4JIxMarTIucQ7LPmwrEeebfQeiTBPgq0qK+PDU8Hm+W62Ax3Ov0S4
+         20/tUltPwrhTiNR5V995WHLCFpkJdHLzLypYOsQxYT/6wsUeYZNUIREl+i1iN8x06+I+
+         DANoxpIVO1iUxywcKTkDn2YSNZw6NIC4R2ul29iBJ1nr7CEB4p4AA7vpDhrObioPRlIX
+         t9btfqx34/7KCv7o52Tfk3LbW0cWxIcR8RF0ja4zuZjPVahFbcuWFiJts3TrNAmmBcLu
+         tNEg==
+X-Gm-Message-State: AOAM532wpg8loU+g/I6qzgFC3cpWVIpSlOFOsz1jowV7WAW3AA2Uz0Mc
+        UgDU6TwCzNijff4ED1653cQ=
+X-Google-Smtp-Source: ABdhPJwb3jQF3cra0pp3V4N320JYWJhuowVizCovesrIxUIVKTNdHrrBqTXg/XyD25OMivTB6AbI8g==
+X-Received: by 2002:a2e:9bd0:: with SMTP id w16mr8167587ljj.465.1616744743808;
+        Fri, 26 Mar 2021 00:45:43 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id o82sm784730lfa.21.2021.03.26.00.45.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 00:45:43 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 08:45:42 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Richard Zhu <hongxing.zhu@nxp.com>
+Cc:     l.stach@pengutronix.de, andrew.smirnov@gmail.com,
+        shawnguo@kernel.org, bhelgaas@google.com, stefan@agner.ch,
+        lorenzo.pieralisi@arm.com, linux-pci@vger.kernel.org,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH v3 3/3] PCI: imx: clear vreg bypass when pcie vph voltage
+ is 3v3
+Message-ID: <YF2RJib3k8RiYF4S@rocinante>
+References: <1616661882-26487-1-git-send-email-hongxing.zhu@nxp.com>
+ <1616661882-26487-4-git-send-email-hongxing.zhu@nxp.com>
 MIME-Version: 1.0
-References: <20210325212202.142945-1-alaaemadhossney.ae@gmail.com>
- <YF2JF+UMdt/icEMj@kroah.com> <CACT4Y+Y8f6-c6zYCN=d0557xEryAzBfS9n2m=vBcdjHSi5gYcw@mail.gmail.com>
- <913828319c9e0b6281ad32361e0246fc95d2c138.camel@gmail.com>
-In-Reply-To: <913828319c9e0b6281ad32361e0246fc95d2c138.camel@gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 26 Mar 2021 08:40:00 +0100
-Message-ID: <CACT4Y+ZSLKWJK6yrLG6=ej4-1_uxnqGhS05rBiD=eFX3GETFEw@mail.gmail.com>
-Subject: Re: [PATCH] media: sq905.c: fix uninitialized variable
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Alaa Emad <alaaemadhossney.ae@gmail.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller <syzkaller@googlegroups.com>,
-        syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1616661882-26487-4-git-send-email-hongxing.zhu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 8:24 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> Hi!
->
-> On Fri, 2021-03-26 at 08:14 +0100, 'Dmitry Vyukov' via syzkaller wrote:
-> > On Fri, Mar 26, 2021 at 8:11 AM Greg KH <gregkh@linuxfoundation.org>
-> > wrote:
-> > >
-> > > On Thu, Mar 25, 2021 at 11:22:02PM +0200, Alaa Emad wrote:
-> > > > Reported-by: syzbot+a4e309017a5f3a24c7b3@syzkaller.appspotmail.com
-> > > > Signed-off-by: Alaa Emad <alaaemadhossney.ae@gmail.com>
-> > > > ---
-> > >
-> > > I know I do not take patches with no changelog text, but other
-> > > maintainers might be more leniant :(
-> >
-> > I wonder if it's the right fix or not.
-> > Initializing variables will, of course, silence the warning, but it's
-> > not necessarily the right fix. I suspect there is something wrong in
-> > how ret/act_len are user/checked.
-> >
->
-> There is a problem in usb_bulk_msg() call. It could return before
-> act_len initialization, so i think, act_len should be intialized with
-> smth wrong like 0 or -1. BTW, I already send patch for that, but it was
-> marked as obsoleted.
+Hi,
 
-If usb_bulk_msg returns before act_len initialization, it should
-signify that fact with an error code in return value or something,
-right? It does not initialize act_len only in case of errors, right?
-If so, sq905_read_data must check ret and don't use act_for any
-checks. But it does, and that's I think the bug. Or maybe usb_bulk_msg
-does not properly signify that it failed (and did not initialize
-act_len). Either way silencing the warning with pre-initializing
-act_len looks very fishy.
-For example, consider, in some contexts it's OK to transmit 0-length
-packets, I don't know if it's the case for usb_bulk_msg or not, but it
-does not affect the idea. Now, if we pre-initialize act_len to 0, we
-can falsely think that such 0-length transfer has succeeded (act_len
-== size), while it actually failed (I assume so since usb_bulk_msg
-left act_len unitialized).
+> +		/*
+> +		 * Regarding to the datasheet, the PCIE_VPH is suggested
+> +		 * to be 1.8V. If the PCIE_VPH is supplied by 3.3V, the
+> +		 * VREG_BYPASS should be cleared to zero.
+> +		 */
+[...]
+
+A small nitpick here.  What about the following:
+
+	Regarding the data sheet, the PCIE_VPH is suggested to be 1.8V.
+	If the PCIE_VPH is supplied with 3.3V, the VREG_BYPASS should be
+	cleared to zero.
+
+What do you think?
+
+Krzysztof
