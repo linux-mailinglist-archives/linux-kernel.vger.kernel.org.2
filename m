@@ -2,78 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA5134AFD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AD234AFDA
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 21:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230272AbhCZUI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 16:08:28 -0400
-Received: from mail-io1-f53.google.com ([209.85.166.53]:47097 "EHLO
-        mail-io1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhCZUIZ (ORCPT
+        id S230308AbhCZUJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 16:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230289AbhCZUIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 16:08:25 -0400
-Received: by mail-io1-f53.google.com with SMTP id j26so6605669iog.13;
-        Fri, 26 Mar 2021 13:08:25 -0700 (PDT)
+        Fri, 26 Mar 2021 16:08:37 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EE1C0613AA;
+        Fri, 26 Mar 2021 13:08:36 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id u10so8787276lju.7;
+        Fri, 26 Mar 2021 13:08:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=bTSKUkeadgfX9uFyTr/0jnVXknNnSOXxi4Zs42xIHHg=;
+        b=ihng4i0WrKAbWFHENw9r2dTuK2dWiAULRyVWA0o7CDIki4FSnuAXZoZX9cXoB5NrZB
+         JY7KOfZObgEWpwqtm9pMvg27/PTud1g8z1h0eNWm0aIsqqLvSoqYsOXmCuaREMr6prNz
+         zU7Eg2UYk4Us5GBZIAZIMWOS29iY0tIzlQrKsMwNPVvXaihwZUon9tNcycBVe1Vk9R4V
+         dzxN9uMSg8zK/A9exy4LG59ppVOg38xm3hoNZtTvKc4SsoFLRljae60qPxWGl6s5beTU
+         3pnqZZiaqFSHvEhgHgMqb4faJvcJyhAKW+H5MfDBf2DvzcU7AThR0+XyEpAdlanX0iBB
+         Njfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DASKl11Okq61XpyLvc+74DH7y8wg+D061aTOEn3xo/4=;
-        b=R/ptozOT2+ZMDKXd67RrJWISdLufWwOHIX9F5PDrj9wxLch04r+TIWg+mcbW6gCMfD
-         uxYvW2zjZ3IZZOM+5fauxbayLaCFRWmkbibftqf15JQq58Aaih+01WK9VWoY8jzH8VMa
-         fFVBlDK2zTI20NwGLy2XPjC/W8IMj2nl2ipa+YHSQAo8zTz+Zp0WJ2c/nUPBv4Z4FEIb
-         7wD/CqVloqLCp/FZtE7ZtCAG3bGxKeHgEwI0rivPj/JFM4skEelTPshuX25d6zL5HeCP
-         G75Zt+0zald3PUO738ygMJMt0l3Jx1oNjnI3mM1DhNHBb7tNtuq97L0fipOC7ue+b+2I
-         zGjw==
-X-Gm-Message-State: AOAM530s8EaA7Dd3myh3dWTN4+3hI4rN1qTnDtLkaG3TyWzzHsTJuf+t
-        o27qAYS7OTosYTK5koHuxg==
-X-Google-Smtp-Source: ABdhPJzOMr0U8Z8VHTkdGna00jzbpA/m/ZJVl1xMmbaPPdHDWEfwemmVN983hu/qZLjWRyhejOe9Ug==
-X-Received: by 2002:a5e:d908:: with SMTP id n8mr11743371iop.121.1616789304697;
-        Fri, 26 Mar 2021 13:08:24 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id b4sm4677200ilj.11.2021.03.26.13.08.21
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=bTSKUkeadgfX9uFyTr/0jnVXknNnSOXxi4Zs42xIHHg=;
+        b=bpBgPU42buw521Na5pJgYDjAfV6tqjCZhrKURpWBoel44f04mGOJwxIdYfAPKhhdo/
+         k2D+iATS/xO5ROAmQj3fRkYOIBtC6uYbn6IGH1rV1cSaF9AaLxoQIY2zGGj27KkJu2fi
+         NL3Uf7rkoAjZRcuU7AQZf3OI+jL7o42xl+my7ZQqw6HI9NGv74b9utI0kTjQ2ugk/Mxg
+         vAMnLHOK1LTUnPoFAf2lsFDECrDxpYhXBEgdloplkrhkGf0gYmSKt2AUYcBpOIgLRW/Q
+         Bla3qqWaMN8UDN+HkSjiwFInQB51jWEDa0h7mnW4+b/mRqthkFKr5kf2Dss6a+uP7pL5
+         Q0wg==
+X-Gm-Message-State: AOAM533HbV75SIFDhkTR6c7N5b2lTQ8fvoB2vFs/EpauM4T7qT0Qtt21
+        RtoEVJqAO/6Pbf4dmVZHJ7DydiflOVH99cBZ
+X-Google-Smtp-Source: ABdhPJwym6uk4OtELrbqMJwOrYQLce2aqJWpmLQ3HotcGPUdQyGv6jzOzfCWkqzMGgJSYHpM42aGPQ==
+X-Received: by 2002:a05:651c:32e:: with SMTP id b14mr10055761ljp.277.1616789315032;
+        Fri, 26 Mar 2021 13:08:35 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.227.42])
+        by smtp.gmail.com with ESMTPSA id l10sm962994lfk.48.2021.03.26.13.08.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 13:08:24 -0700 (PDT)
-Received: (nullmailer pid 3784988 invoked by uid 1000);
-        Fri, 26 Mar 2021 20:08:20 -0000
-Date:   Fri, 26 Mar 2021 14:08:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Roger Lu <roger.lu@mediatek.com>
-Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, Kevin Hilman <khilman@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org,
-        Nicolas Boichat <drinkcat@google.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        YT Lee <yt.lee@mediatek.com>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-kernel@vger.kernel.org, Fan Chen <fan.chen@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>
-Subject: Re: [PATCH v14 5/7] dt-bindings: soc: mediatek: add mt8192 svs
- dt-bindings
-Message-ID: <20210326200820.GA3784958@robh.at.kernel.org>
-References: <20210325025114.25842-1-roger.lu@mediatek.com>
- <20210325025114.25842-6-roger.lu@mediatek.com>
+        Fri, 26 Mar 2021 13:08:34 -0700 (PDT)
+Message-ID: <988f3fa172458cd1f24366d4a9dbd636d2f8cbff.camel@gmail.com>
+Subject: Re: [PATCH] drivers/media/usb/gspca/stv06xx: fix memory leak
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     hverkuil@xs4all.nl, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
+Date:   Fri, 26 Mar 2021 23:08:33 +0300
+In-Reply-To: <20210323171356.4a613351@coco.lan>
+References: <20210226233731.614553-1-paskripkin@gmail.com>
+         <20210323171356.4a613351@coco.lan>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325025114.25842-6-roger.lu@mediatek.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Mar 2021 10:51:12 +0800, Roger Lu wrote:
-> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
-> ---
->  .../devicetree/bindings/soc/mediatek/mtk-svs.yaml         | 8 ++++++++
->  1 file changed, 8 insertions(+)
+Hi! Thanks for the review.
+
+On Tue, 2021-03-23 at 17:13 +0100, Mauro Carvalho Chehab wrote:
+> Em Sat, 27 Feb 2021 02:37:31 +0300
+> Pavel Skripkin <paskripkin@gmail.com> escreveu:
+> 
+> > Syzbot reported memory leak in hdcs_probe_1x00()[1].
+> > hdcs_probe_1x00() allocates memory for struct hdcs, but if
+> > hdcs_init() fails in gspca_dev_probe2()
+> > this memory becomes leaked.
+> > 
+> > int gspca_dev_probe2(struct usb_interface *intf,
+> >                 const struct usb_device_id *id,
+> >                 const struct sd_desc *sd_desc,
+> >                 int dev_size,
+> >                 struct module *module)
+> > {
+> > ...
+> > 
+> >         ret = sd_desc->config(gspca_dev, id);
+> >         if (ret < 0)
+> >                 goto out;
+> >         ret = sd_desc->init(gspca_dev);
+> >         if (ret < 0)
+> >                 goto out;
+> > ...
+> > out:
+> >         if (gspca_dev->input_dev)
+> >                 input_unregister_device(gspca_dev->input_dev);
+> >         v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
+> >         v4l2_device_unregister(&gspca_dev->v4l2_dev);
+> >         kfree(gspca_dev->usb_buf);
+> >         kfree(gspca_dev);
+> >         return ret;
+> > }
+> > 
+> > Reported-by: syzbot+e7f4c64a4248a0340c37@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> > Change-Id: Ia198671177ee346de61780813025110c7c491d7a
+> > ---
+> >  drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
+> > b/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
+> > index 5a47dcbf1c8e..24df13b33a02 100644
+> > --- a/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
+> > +++ b/drivers/media/usb/gspca/stv06xx/stv06xx_hdcs.c
+> > @@ -485,7 +485,7 @@ static int hdcs_init(struct sd *sd)
+> >                                            stv_bridge_init[i][1]);
+> >         }
+> >         if (err < 0)
+> > -               return err;
+> > +               goto error;
+> >  
+> >         /* sensor soft reset */
+> >         hdcs_reset(sd);
+> > @@ -496,12 +496,12 @@ static int hdcs_init(struct sd *sd)
+> >                                              stv_sensor_init[i][1]);
+> >         }
+> >         if (err < 0)
+> > -               return err;
+> > +               goto error;
+> >  
+> >         /* Enable continuous frame capture, bit 2: stop when frame
+> > complete */
+> >         err = stv06xx_write_sensor(sd, HDCS_REG_CONFIG(sd), BIT(3));
+> >         if (err < 0)
+> > -               return err;
+> > +               goto error;
+> >  
+> >         /* Set PGA sample duration
+> >         (was 0x7E for the STV602, but caused slow framerate with
+> > HDCS-1020) */
+> > @@ -512,9 +512,13 @@ static int hdcs_init(struct sd *sd)
+> >                 err = stv06xx_write_sensor(sd, HDCS_TCTRL,
+> >                                 (HDCS_ADC_START_SIG_DUR << 5) | hdcs-
+> > >psmp);
+> >         if (err < 0)
+> > -               return err;
+> > +               goto error;
+> >  
+> >         return hdcs_set_size(sd, hdcs->array.width, hdcs-
+> > >array.height);
+> > +
+> > +error:
+> > +       kfree(hdcs);
+> > +       return err;
+> >  }
+> 
+> This doesn't seem the right fix here, as it is not the _init function
+> that allocates it. Also, when the device is disconnected, a memory
+> leak
+> will happen.
+
+It won't.
+
+static int hdcs_probe_1x00(struct sd *sd)
+{
+	....
+	sd->sensor_priv = hdcs;
+	....
+}
+
+
+static void sd_disconnect(struct usb_interface *intf)
+{
+	void *priv = sd->sensor_priv;
+	....
+	kfree(priv);
+}
+
+Is it correct?
+
+> 
+> I suspect that the right fix would be to move this:
+> 
+>         hdcs = kmalloc(sizeof(struct hdcs), GFP_KERNEL);
+>         if (!hdcs)
+>                 return -ENOMEM;
+> 
+> To the main driver (stv06xx.c) - probably replacing it by kzalloc(),
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I don't really understand why, because this allocation refers only to
+stv06xx_hdcs, and other stv06xx sensors don't use it.
+
+If hdcs_init() fails, we won't be able to access this pointer, because 
+in gspca_dev_probe2() only this code will be executed on error
+condition:
+
+	v4l2_ctrl_handler_free(gspca_dev->vdev.ctrl_handler);
+	v4l2_device_unregister(&gspca_dev->v4l2_dev);
+	kfree(gspca_dev->usb_buf);
+	kfree(gspca_dev);
+
+Maybe, I don't properly understand it, can You explain, please?
+
+> and then handle the free code both both sd_probe() and sd_disconnect().
+> 
+> 
+> Thanks,
+
+-- 
+With regards,
+Pavel Skripkin
+
+
