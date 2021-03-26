@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A1434A99D
+	by mail.lfdr.de (Postfix) with ESMTP id 89D6134A99E
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 15:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhCZOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 10:23:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22576 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230194AbhCZOXA (ORCPT
+        id S230233AbhCZOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 10:23:36 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53904 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230242AbhCZOXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 10:23:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616768579;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hiYYMuSGtUxuJHxwx4NFJyHebtaUSA1v/Jrod5zbAAY=;
-        b=fSA0bolPwBG63Q/HVGkQTaUWyE2jn71KjTw2vGOFKLmZ6AJfecNzPyZ1pJmsUINTvL/kji
-        t//HTC/jARKdf6jS7DtTEoGRzF1Tof4sEwbbs3d2L04mQDBMK14M0+ANu0X/rfmDHtzQCN
-        kFUqs8k6NfM9ytqPEP2y4Nx+jDglwVE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-BdSci58rPgWwzEHRpWXxVg-1; Fri, 26 Mar 2021 10:22:55 -0400
-X-MC-Unique: BdSci58rPgWwzEHRpWXxVg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 298F287504F;
-        Fri, 26 Mar 2021 14:22:53 +0000 (UTC)
-Received: from [10.36.112.81] (ovpn-112-81.ams2.redhat.com [10.36.112.81])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 881E118035;
-        Fri, 26 Mar 2021 14:22:50 +0000 (UTC)
-Subject: Re: [PATCH v5] mm/gup: check page hwposion status for coredump.
-From:   David Hildenbrand <david@redhat.com>
-To:     Aili Yao <yaoaili@kingsoft.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org, naoya.horiguchi@nec.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        yangfeng1@kingsoft.com, sunhao2@kingsoft.com,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <20210317163714.328a038d@alex-virtual-machine>
- <20a0d078-f49d-54d6-9f04-f6b41dd51e5f@redhat.com>
- <20210318044600.GJ3420@casper.infradead.org>
- <20210318133412.12078eb7@alex-virtual-machine>
- <20210319104437.6f30e80d@alex-virtual-machine>
- <20210320003516.GC3420@casper.infradead.org>
- <20210322193318.377c9ce9@alex-virtual-machine>
- <afeac310-c6aa-f9d8-6c90-e7e7f21ddf9a@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <f316ca3b-6f09-c51d-9661-66171f14ee33@redhat.com>
-Date:   Fri, 26 Mar 2021 15:22:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Fri, 26 Mar 2021 10:23:11 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QEJ2sj121989;
+        Fri, 26 Mar 2021 14:23:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=lMSIXLOLSr0s1sxx9Av48/cjPnSg++Go8pCMx5aItjk=;
+ b=vI8xjbLfSVbl/jzwdrtuS3eAgrd5M7bll3F67fx9XLu9iznLhWBXCvdGuR08J3QIlIG8
+ H/47tcPjajwt+c+lvEkvxuXSzNvoW9KaTUgkM3gKloWO3nZyiy/yviEvVs6bfb1ufEMT
+ U7VVtL7H5ipdwtyMViLe4bWTrNDQ8OgPJ9H5X2JJhCJa0HH+9D0nTA79z1QDU1STNLIy
+ gBuD+deKXTttAqYQJLRr47WwAdh3fcKYarUyFLBFq/c62SBxDgFOc7rFySDKJKc2bQzC
+ QjpN4LudWkJ0Sv+KoSmu+Hy2ivaFtxFfD2jWbs+BVz8QSl6gMq5fV9o+i42oENSflSJV Bw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 37h13rt8n4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 14:23:07 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12QEFAK3163166;
+        Fri, 26 Mar 2021 14:23:06 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 37h13xr793-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 26 Mar 2021 14:23:06 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 12QEN5es010071;
+        Fri, 26 Mar 2021 14:23:05 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 26 Mar 2021 07:23:04 -0700
+Date:   Fri, 26 Mar 2021 17:22:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/15] staging: rtl8723bs: put parentheses on macros with
+ complex values in include/drv_types.h
+Message-ID: <20210326142257.GF1717@kadam>
+References: <cover.1616748885.git.fabioaiuto83@gmail.com>
+ <fea98d1b0260494dc5cb0dfb7fc03d6f74d9acdf.1616748885.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <afeac310-c6aa-f9d8-6c90-e7e7f21ddf9a@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fea98d1b0260494dc5cb0dfb7fc03d6f74d9acdf.1616748885.git.fabioaiuto83@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9935 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103260109
+X-Proofpoint-ORIG-GUID: Qdlnip9PXlLOCiN4Dh3osKehekf_Xfaa
+X-Proofpoint-GUID: Qdlnip9PXlLOCiN4Dh3osKehekf_Xfaa
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9935 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103260109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.03.21 15:09, David Hildenbrand wrote:
-> On 22.03.21 12:33, Aili Yao wrote:
->> When we do coredump for user process signal, this may be one SIGBUS signal
->> with BUS_MCEERR_AR or BUS_MCEERR_AO code, which means this signal is
->> resulted from ECC memory fail like SRAR or SRAO, we expect the memory
->> recovery work is finished correctly, then the get_dump_page() will not
->> return the error page as its process pte is set invalid by
->> memory_failure().
->>
->> But memory_failure() may fail, and the process's related pte may not be
->> correctly set invalid, for current code, we will return the poison page,
->> get it dumped, and then lead to system panic as its in kernel code.
->>
->> So check the hwpoison status in get_dump_page(), and if TRUE, return NULL.
->>
->> There maybe other scenario that is also better to check hwposion status
->> and not to panic, so make a wrapper for this check, Thanks to David's
->> suggestion(<david@redhat.com>).
->>
->> Link: https://lkml.kernel.org/r/20210319104437.6f30e80d@alex-virtual-machine
->> Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Matthew Wilcox <willy@infradead.org>
->> Cc: Naoya Horiguchi <naoya.horiguchi@nec.com>
->> Cc: Oscar Salvador <osalvador@suse.de>
->> Cc: Mike Kravetz <mike.kravetz@oracle.com>
->> Cc: Aili Yao <yaoaili@kingsoft.com>
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->> ---
->>    mm/gup.c      |  4 ++++
->>    mm/internal.h | 20 ++++++++++++++++++++
->>    2 files changed, 24 insertions(+)
->>
->> diff --git a/mm/gup.c b/mm/gup.c
->> index e4c224c..6f7e1aa 100644
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -1536,6 +1536,10 @@ struct page *get_dump_page(unsigned long addr)
->>    				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
->>    	if (locked)
->>    		mmap_read_unlock(mm);
+On Fri, Mar 26, 2021 at 10:09:12AM +0100, Fabio Aiuto wrote:
+> fix the following checkpatch warning:
 > 
-> Thinking again, wouldn't we get -EFAULT from __get_user_pages_locked()
-> when stumbling over a hwpoisoned page?
+> ERROR: Macros with complex values should be enclosed in parentheses
+> 279: FILE: drivers/staging/rtl8723bs/include/drv_types.h:279:
+> +#define KEY_ARG(x) ((u8 *)(x))[0], ((u8 *)(x))[1],
+> ((u8 *)(x))[2], ((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5], \
 > 
-> See __get_user_pages_locked()->__get_user_pages()->faultin_page():
+> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/include/drv_types.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> handle_mm_fault()->vm_fault_to_errno(), which translates
-> VM_FAULT_HWPOISON to -EFAULT, unless FOLL_HWPOISON is set (-> -EHWPOISON)
-> 
-> ?
+> diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
+> index 1658450b386e..ead4cb9c1e5a 100644
+> --- a/drivers/staging/rtl8723bs/include/drv_types.h
+> +++ b/drivers/staging/rtl8723bs/include/drv_types.h
+> @@ -276,9 +276,9 @@ struct cam_entry_cache {
+>  };
+>  
+>  #define KEY_FMT "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+> -#define KEY_ARG(x) ((u8 *)(x))[0], ((u8 *)(x))[1], ((u8 *)(x))[2], ((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5], \
+> +#define KEY_ARG(x) (((u8 *)(x))[0], ((u8 *)(x))[1], ((u8 *)(x))[2], ((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5], \
+>  	((u8 *)(x))[6], ((u8 *)(x))[7], ((u8 *)(x))[8], ((u8 *)(x))[9], ((u8 *)(x))[10], ((u8 *)(x))[11], \
+> -	((u8 *)(x))[12], ((u8 *)(x))[13], ((u8 *)(x))[14], ((u8 *)(x))[15]
+> +	((u8 *)(x))[12], ((u8 *)(x))[13], ((u8 *)(x))[14], ((u8 *)(x))[15])
 
-Or doesn't that happen as you describe "But memory_failure() may fail, 
-and the process's related pte may not be correctly set invalid" -- but 
-why does that happen?
+KEY_ARG() isn't used anywhere that I can see.  Just delete it.
 
-On a similar thought, should get_user_pages() never return a page that 
-has HWPoison set? E.g., check also for existing PTEs if the page is 
-hwpoisoned?
+Please take your time when you re-write this series and think about each
+change clearly and fix the underlying badness instead of just making
+checkpatch happy.  I would really just throw out the patchset and start
+over from scratch.
 
-@Naoya, Oscar
-
--- 
-Thanks,
-
-David / dhildenb
+regards,
+dan carpenter
 
