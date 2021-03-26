@@ -2,78 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1188034A42A
+	by mail.lfdr.de (Postfix) with ESMTP id D1CCD34A42C
 	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 10:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhCZJTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 05:19:02 -0400
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:34454 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230191AbhCZJSb (ORCPT
+        id S230363AbhCZJTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 05:19:04 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:58666 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230416AbhCZJSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 05:18:31 -0400
-Received: by mail-wm1-f45.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so5564547wmq.1;
-        Fri, 26 Mar 2021 02:18:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Mvur1GUmH32VOUskwiW2+EcCiaYg3WjBaEKZm/xa40=;
-        b=GBfg7xzsihRxvEYOa3sX5cdsQv9gZldhG8Zw//WPqB4O1sDsOdOJRDtv2NOybrghil
-         2crljWr3s9lWUO9LtJrKTC1pvEFb26FBJmJlvUOLYz6lS7yanm2pXIjQ3kJ0U7T6cGyL
-         OYCfKbWIcKGBZ/COpDnTOrPH6UjmdZkMKE8Cbkf4pKBxG7TzSwO7Qp7lfIpdc060x7/b
-         WTkkn1EH2ZeEotQmz/dXMPwDtPw1kqlquoRa7TiJhmJ8yGfmPAvUXBg0VsCTCsXseQPz
-         iPW+k/u56cyvdZ9Ek6PGJm7qgtaWVYu4l6sHlzA2nVjah89sdp6md9PwxPJ1sYvZxxJj
-         zGRg==
-X-Gm-Message-State: AOAM530Oe7DIZPxPK6HdLYZaKB27L8NHGov0z1QR80AXenlu4G3ng3HA
-        xZ2AC2EtXQL53QOj8//t04A=
-X-Google-Smtp-Source: ABdhPJzQHRy22NwuSChpb7o0Yk5ORNyrLm9BNNmztYbg5Iaw5u2G4Bcshu7y+mCsBluieKZTKYG1kw==
-X-Received: by 2002:a1c:2683:: with SMTP id m125mr12068344wmm.178.1616750307615;
-        Fri, 26 Mar 2021 02:18:27 -0700 (PDT)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id h12sm5199389wrv.58.2021.03.26.02.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 02:18:26 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 10:18:25 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Amey Narkhede <ameynarkhede03@gmail.com>,
-        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        alay.shah@nutanix.com, suresh.gumpula@nutanix.com,
-        shyam.rajendran@nutanix.com, felipe@nutanix.com
-Subject: Re: [PATCH 4/4] PCI/sysfs: Allow userspace to query and set device
- reset mechanism
-Message-ID: <YF2m4amcwj9BkQ+S@rocinante>
-References: <20210322111003.50d64f2c@omen.home.shazbot.org>
- <YFsOVNM1zIqNUN8f@unreal>
- <20210324083743.791d6191@omen.home.shazbot.org>
- <YFtXNF+t/0G26dwS@unreal>
- <20210324111729.702b3942@omen.home.shazbot.org>
- <YFxL4o/QpmhM8KiH@unreal>
- <20210325085504.051e93f2@omen.home.shazbot.org>
- <YFy11u+fm4MEGU5X@unreal>
- <20210325115324.046ddca8@omen.home.shazbot.org>
- <YF2B3oZfkYGEha/w@unreal>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YF2B3oZfkYGEha/w@unreal>
+        Fri, 26 Mar 2021 05:18:35 -0400
+Received: from localhost (unknown [192.168.167.105])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 94E94D1443;
+        Fri, 26 Mar 2021 17:18:31 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P6280T140699219937024S1616750309307296_;
+        Fri, 26 Mar 2021 17:18:31 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <04a3044a015c120b2db8bb43772f1e66>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: robh+dt@kernel.org
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Elaine Zhang <zhangqing@rock-chips.com>
+To:     robh+dt@kernel.org, heiko@sntech.de
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        cl@rock-chips.com, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, tony.xie@rock-chips.com,
+        finley.xiao@rock-chips.com, Elaine Zhang <zhangqing@rock-chips.com>
+Subject: [PATCH v5 11/11] soc: rockchip: power-domain: add rk3568 powerdomains
+Date:   Fri, 26 Mar 2021 17:18:28 +0800
+Message-Id: <20210326091828.12807-1-zhangqing@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210326091547.12375-1-zhangqing@rock-chips.com>
+References: <20210326091547.12375-1-zhangqing@rock-chips.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add power-domains found on rk3568 socs.
 
-[...]
+Signed-off-by: Elaine Zhang <zhangqing@rock-chips.com>
+---
+ drivers/soc/rockchip/pm_domains.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-Aside of the sysfs interface, would this new functionality also require
-anything to be overridden at boot time via passing some command-line
-arguments?  Not sure how relevant such thing would be to device, but,
-whatnot reset, though.
+diff --git a/drivers/soc/rockchip/pm_domains.c b/drivers/soc/rockchip/pm_domains.c
+index d661d967079f..7b231cbcc17b 100644
+--- a/drivers/soc/rockchip/pm_domains.c
++++ b/drivers/soc/rockchip/pm_domains.c
+@@ -27,6 +27,7 @@
+ #include <dt-bindings/power/rk3366-power.h>
+ #include <dt-bindings/power/rk3368-power.h>
+ #include <dt-bindings/power/rk3399-power.h>
++#include <dt-bindings/power/rk3568-power.h>
+ 
+ struct rockchip_domain_info {
+ 	const char *name;
+@@ -135,6 +136,9 @@ struct rockchip_pmu {
+ #define DOMAIN_RK3399(name, pwr, status, req, wakeup)		\
+ 	DOMAIN(name, pwr, status, req, req, req, wakeup)
+ 
++#define DOMAIN_RK3568(name, pwr, req, wakeup)		\
++	DOMAIN_M(name, pwr, pwr, req, req, req, wakeup)
++
+ static bool rockchip_pmu_domain_is_idle(struct rockchip_pm_domain *pd)
+ {
+ 	struct rockchip_pmu *pmu = pd->pmu;
+@@ -848,6 +852,18 @@ static const struct rockchip_domain_info rk3399_pm_domains[] = {
+ 	[RK3399_PD_SDIOAUDIO]	= DOMAIN_RK3399("sdioaudio", BIT(31), BIT(31), BIT(29), true),
+ };
+ 
++static const struct rockchip_domain_info rk3568_pm_domains[] = {
++	[RK3568_PD_NPU]		= DOMAIN_RK3568("npu", BIT(1), BIT(2), false),
++	[RK3568_PD_GPU]		= DOMAIN_RK3568("gpu", BIT(0), BIT(1), false),
++	[RK3568_PD_VI]		= DOMAIN_RK3568("vi", BIT(6), BIT(3), false),
++	[RK3568_PD_VO]		= DOMAIN_RK3568("vo", BIT(7),  BIT(4), false),
++	[RK3568_PD_RGA]		= DOMAIN_RK3568("rga", BIT(5),  BIT(5), false),
++	[RK3568_PD_VPU]		= DOMAIN_RK3568("vpu", BIT(2), BIT(6), false),
++	[RK3568_PD_RKVDEC]	= DOMAIN_RK3568("vdec", BIT(4), BIT(8), false),
++	[RK3568_PD_RKVENC]	= DOMAIN_RK3568("venc", BIT(3), BIT(7), false),
++	[RK3568_PD_PIPE]	= DOMAIN_RK3568("pipe", BIT(8), BIT(11), false),
++};
++
+ static const struct rockchip_pmu_info px30_pmu = {
+ 	.pwr_offset = 0x18,
+ 	.status_offset = 0x20,
+@@ -983,6 +999,17 @@ static const struct rockchip_pmu_info rk3399_pmu = {
+ 	.domain_info = rk3399_pm_domains,
+ };
+ 
++static const struct rockchip_pmu_info rk3568_pmu = {
++	.pwr_offset = 0xa0,
++	.status_offset = 0x98,
++	.req_offset = 0x50,
++	.idle_offset = 0x68,
++	.ack_offset = 0x60,
++
++	.num_domains = ARRAY_SIZE(rk3568_pm_domains),
++	.domain_info = rk3568_pm_domains,
++};
++
+ static const struct of_device_id rockchip_pm_domain_dt_match[] = {
+ 	{
+ 		.compatible = "rockchip,px30-power-controller",
+@@ -1028,6 +1055,10 @@ static const struct of_device_id rockchip_pm_domain_dt_match[] = {
+ 		.compatible = "rockchip,rk3399-power-controller",
+ 		.data = (void *)&rk3399_pmu,
+ 	},
++	{
++		.compatible = "rockchip,rk3568-power-controller",
++		.data = (void *)&rk3568_pmu,
++	},
+ 	{ /* sentinel */ },
+ };
+ 
+-- 
+2.17.1
 
-I am curious whether there would be a need for anything like that.
 
-Krzysztof
+
