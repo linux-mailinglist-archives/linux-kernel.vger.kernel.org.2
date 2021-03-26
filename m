@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E2C34A5B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C40134A5B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 11:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230029AbhCZKiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 06:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhCZKib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 06:38:31 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252A1C0613AA;
-        Fri, 26 Mar 2021 03:38:31 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id bx7so5714201edb.12;
-        Fri, 26 Mar 2021 03:38:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=8XNBg7+3dkDlHPxMLn0P7+GP5Z2WC1cbwLitIQ3EtqU=;
-        b=Bd5hUEXn53RDRe5d8mh+8zMoGFX7eeVg0QAFW0eFa7jfhfFvUi2q0bv78HAE4FJaIq
-         sSeUZmMFGrn2G5ZGlILQ/KsHtV4coWFkfq7tc5WvGelCXPCqewejNcB2OdKd8B0eO0/K
-         f1tiTgeXiiNaI6WIPxBHeKhdQU7FS24F0YAazmiE0PeoC9F1XgkoNcHnlFt+WLdo7ktu
-         vqzjQqW8Jr5TnT+kZ4fx0+M4Fnwm3Bx00IbAW17Krr1l9f+uixpPDGnVigeSuGBzfyoh
-         1vK0vFBN0lfBbR6FRe7n6RkX51uS9oYvC1/kPds3liJWXUGVjFiI/kWtoAjLXiP/B6vk
-         9pow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=8XNBg7+3dkDlHPxMLn0P7+GP5Z2WC1cbwLitIQ3EtqU=;
-        b=mZNm6tmSFQvseYVM+VH/VETSwXAVyW5aXDqlKtfw90x4nZuhXjHir/gKxW1PEsJqi1
-         cV0sDGZddURYGSP38auSzse9Y+O50N7gsbm0LHM0XW0MA9hd01gSbpe3wNKwhvEkUsPE
-         +c9Awvyg9Ua5hLFen2EQoQm/gInPQ/qtIcnzFVaU2mslaoZpob8rAUUe+eaHnyrLVXlF
-         0558b3IhE4TEfCQfl07zovRFbaNblnt7le1uCI5VekMjqBlxjyE5JPKnplj282RgFJsa
-         icGWBFrZimkQTk0KmxispgqURt+mGZv/a80jq0iOpPe4wk8OYS//y8YXj+Edpup5Bs0a
-         2U9g==
-X-Gm-Message-State: AOAM530JmQX3SPHDxrD1LGJEisTsPpexwwZuC9kld67PB+6V/drF+BoQ
-        EaRGWX9vx1IfcorePsSU2/kMwXCe/iMoYA==
-X-Google-Smtp-Source: ABdhPJzo2gvHtBDFggeZsUxvuZKGfaWpTuWOcKpAb9G3ZZIe7eZlVzYhIcOh0RDFDnGQtX1E7KtF/Q==
-X-Received: by 2002:a50:ec0e:: with SMTP id g14mr14347883edr.264.1616755109855;
-        Fri, 26 Mar 2021 03:38:29 -0700 (PDT)
-Received: from ?IPv6:2a02:908:2612:d580:4458:3fcb:72ab:e73e? ([2a02:908:2612:d580:4458:3fcb:72ab:e73e])
-        by smtp.googlemail.com with ESMTPSA id r4sm3689107ejd.125.2021.03.26.03.38.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 26 Mar 2021 03:38:29 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH] udp: Add support for getsockopt(..., ..., UDP_GRO, ...,
- ...)
-From:   Norman Maurer <norman.maurer@googlemail.com>
-In-Reply-To: <8eadc07055ac1c99bbc55ea10c7b98acc36dde55.camel@redhat.com>
-Date:   Fri, 26 Mar 2021 11:38:28 +0100
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, dsahern@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EC14C055-97AE-4A33-B39C-24944B02932F@googlemail.com>
-References: <20210325195614.800687-1-norman_maurer@apple.com>
- <8eadc07055ac1c99bbc55ea10c7b98acc36dde55.camel@redhat.com>
-To:     Paolo Abeni <pabeni@redhat.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        id S229671AbhCZKlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 06:41:00 -0400
+Received: from mga01.intel.com ([192.55.52.88]:29030 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229474AbhCZKkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 06:40:36 -0400
+IronPort-SDR: Tt4VwobvgTYhD9Ymx3enL/UpC6mUjzoR+HqjsX84ZSMriq5qYE0+49E0w/lpm1HjTNFScaFfNB
+ BJqSqdTSIlXg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9934"; a="211281802"
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="211281802"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 03:40:27 -0700
+IronPort-SDR: +gh6FxyXjJofht4ywQhFQbgTKWgHznXFTgBwGrfv0yYIYHMsZEzwtKEC0tX4GsRCY/FLIQIGc7
+ 53F+P01RC0GQ==
+X-IronPort-AV: E=Sophos;i="5.81,280,1610438400"; 
+   d="scan'208";a="375442320"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2021 03:40:25 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lPjt9-00GMY1-2a; Fri, 26 Mar 2021 12:40:23 +0200
+Date:   Fri, 26 Mar 2021 12:40:23 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Goswami, Sanket" <Sanket.Goswami@amd.com>
+Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+Subject: Re: [PATCH] i2c: add i2c bus driver for amd navi gpu
+Message-ID: <YF26F8IFmbo80rMq@smile.fi.intel.com>
+References: <20210309133147.1042775-1-Sanket.Goswami@amd.com>
+ <YEeFgZSIY5lb2ubP@smile.fi.intel.com>
+ <fa1a59fb-a7fa-44bb-1629-5e726f164b94@amd.com>
+ <YFzC19IiGZdmLCOR@smile.fi.intel.com>
+ <617d0164-1290-250f-ae34-828c6b4b390a@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <617d0164-1290-250f-ae34-828c6b4b390a@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Mar 26, 2021 at 03:53:34PM +0530, Goswami, Sanket wrote:
+> On 25-Mar-21 22:35, Andy Shevchenko wrote:
+> > On Mon, Mar 22, 2021 at 10:26:55PM +0530, Goswami, Sanket wrote:
+> >> On 09-Mar-21 19:56, Andy Shevchenko wrote:
+> >>> On Tue, Mar 09, 2021 at 07:01:47PM +0530, Sanket Goswami wrote:
 
-> On 26. Mar 2021, at 10:36, Paolo Abeni <pabeni@redhat.com> wrote:
->=20
-> Hello,
->=20
-> On Thu, 2021-03-25 at 20:56 +0100, Norman Maurer wrote:
->> From: Norman Maurer <norman_maurer@apple.com>
->>=20
->> Support for UDP_GRO was added in the past but the implementation for
->> getsockopt was missed which did lead to an error when we tried to
->> retrieve the setting for UDP_GRO. This patch adds the missing switch
->> case for UDP_GRO
->>=20
->> Fixes: e20cf8d3f1f7 ("udp: implement GRO for plain UDP sockets.")
->> Signed-off-by: Norman Maurer <norman_maurer@apple.com>
->=20
-> The patch LGTM, but please cc the blamed commit author in when you add
-> a 'Fixes' tag (me in this case ;)
+...
 
-Noted for the next time=E2=80=A6=20
+> > And I think I already have told you that I prefer to see rather MODEL_ quirk.
+> 
+> I did not find MODEL_ quirk reference in the PCI device tree, It is actually
+> used in platform device tree which is completely different from our PCI
+> based configuration, can you please provide some reference of MODEL_ quirk
+> which will be part of the PCI device tree?
 
->=20
-> Also please specify a target tree, either 'net' or 'net-next', in the
-> patch subj. Being declared as a fix, this should target 'net'.
->=20
+I meant the name of new definition for quirk.
 
-Ok noted
+...
 
-> One thing you can do to simplifies the maintainer's life, would be =
-post
-> a v2 with the correct tag (and ev. obsolete this patch in patchwork).
+> >>> Also why (1) and this can't be instantiated from ACPI / DT?
+> >> It is in line with the existing PCIe-based DesignWare driver,
+> >> A similar approach is used by the various vendors.
+> > 
+> > Here is no answer to the question. What prevents you to fix your ACPI tables or
+> > DT?
+> > 
+> > We already got rid of FIFO hard coded values, timings are harder to achieve,
+> > but we expect that new firmwares will provide values in the ACPI tables.
+> 
+> AMD NAVI GPU card is the PCI initiated driver, not ACPI initiated,
 
-I am quite new to contribute patches to the kernel so I am not sure how =
-I would =E2=80=9Cobsolete=E2=80=9D this patch and make a v2. If you can =
-give me some pointers I am happy to do so.
+Which doesn't prevent to have an ACPI companion (via description in the
+tables).
+
+> and also
+> It does not contain a corresponding ACPI match table.
+
+Yes, that's what should be done in the firmware.
+At least for the new version of firmware consider to add proper data into the
+tables.
+
+> Moreover, AMD  NAVI GPU
+> based products are already in the commercial market hence going by this
+> approach will break the functionalities for the same.
+
+This is quite bad and unfortunate. So, you have to elaborate this in the commit
+message.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
->=20
-> Side note: I personally think this is more a new feature (is adds
-> getsockopt support for UDP_GRO) than a fix, so I would not have added
-> the 'Fixes' tag and I would have targeted net-next, but it's just my
-> opinion.
-
-I see=E2=80=A6 For me it seemed more like a bug as I can=E2=80=99t think =
-of a reason why only setsockopt should be supported for an option but =
-not getsockopt. But it may be just my opinion :)
-
->=20
-> Cheers,
->=20
-> Paolo
->=20
-
-Thanks
-Norman=
