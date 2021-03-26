@@ -2,233 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF4D349D12
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 00:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389AF349D19
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 01:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhCYX6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Mar 2021 19:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbhCYX6S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Mar 2021 19:58:18 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E25C06174A
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:58:17 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id y32so2261021pga.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Mar 2021 16:58:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yPBOGRgpcP3sx4Y9zJvXOBoC4vHpVuUg8a0qvfdxxkE=;
-        b=D8ilUHEpcfjX47hC/PluzKURZzUSrmiRopELBYvrVDdSVRsluGgenMjXvUH7SLiUDY
-         ffBBFf4NXLIVSDtHAkgqiy4NaWoNuFxtHdveGnlSGFEDfbwz1y9J7iUmS9gT2fAi4XBs
-         YPvWUDL07GrGD/UfT26NbLS1nwijdgRVLQFovreZsgfZfR/TybX/7NqtMUKd7PeLUgNn
-         xZ9Hcbc6auQ+LYbOJMRbys3F6Ai1Tvez4573ZoONMERgBxnU8smpxr4g0V2y9yPOzfT3
-         /OK/2E2wk/1DauobuIK8VIE/vWWgcySpfy21MAHSpqb/IYnQMjmOOBS6wsH4C5uUxV3x
-         2tOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yPBOGRgpcP3sx4Y9zJvXOBoC4vHpVuUg8a0qvfdxxkE=;
-        b=XGIH/68tyZ2PcH26cCwA3BOygDe8NpmPBN/S9G4ildNiwEkvlPz/zk457ITSZ2QU6j
-         vKrA/Sp0l53IQA+O3D4xkW4AayvzubyFGIP7OzQApKHG8enhPkDqwIt5dg+eiC4ru4q1
-         PN9ZGLL10tkkkiRWuxHotaB997bIAUYwrVhhgGxBbO+rMcW0I1LHL0I7YOWpCSKS3yvt
-         M8wuo7+XRGjbQwvJl/J6ev3ofCgE4Ad02IOzKyKseWkCUXSZNDbUE3AeYrk0bWEUGEUq
-         CeiiLmCbA6eLAcSpoo69GHj993On3DoK3rv1u+6nsN9DmfVPa2v5u6Puk18leDCzVxyE
-         tWsQ==
-X-Gm-Message-State: AOAM533HOAThlg6m4I2tOEfpxIkfouDYavSnw0yYv9vokmY2vmYDW0AK
-        zNipsxVVwRBJ9sx/tE7ZobA3tg==
-X-Google-Smtp-Source: ABdhPJwPEQVEfCE4Gnw3omC7ZwkrlcNuiylQqg3jJvpfO4We8iEJ7YQ7p6p/dP0DzlXtfxhNPmcW+A==
-X-Received: by 2002:a62:1e46:0:b029:1f3:ad4f:9c6b with SMTP id e67-20020a621e460000b02901f3ad4f9c6bmr10309480pfe.64.1616716697246;
-        Thu, 25 Mar 2021 16:58:17 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id p25sm7103714pfe.100.2021.03.25.16.58.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 16:58:16 -0700 (PDT)
-Date:   Thu, 25 Mar 2021 17:58:14 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 2/2] remoteproc: imx_rproc: support remote cores booted
- before Linux Kernel
-Message-ID: <20210325235814.GD1982573@xps15>
-References: <20210319104708.7754-1-peng.fan@oss.nxp.com>
- <20210319104708.7754-2-peng.fan@oss.nxp.com>
+        id S229890AbhCZAAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Mar 2021 20:00:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229631AbhCZAAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Mar 2021 20:00:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4E402619F8;
+        Fri, 26 Mar 2021 00:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616716809;
+        bh=JUkk+C6V7Igg5yYK8r+Z7x6w99EX8HjzpiL3587doXY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LYZeOdNFqCMdYgg0vWBIRC0EgfHrbGAeuSouGiY/2a6IKc5QoKy0pZfX6LhAbaek1
+         sszwH0Yy/6fWNkMv3HkLA9C+y4GRzJwXxw5IBKA7mwMCt0F5vbEZiuzsj6MN3jNTcb
+         JOi7Bn4+qRrGhEkr7fQWjlCAVEmQX+lH0mbk4jBOqIxcYvxnrs1sT5eLvBwifAzIHL
+         aGPwqmuJKyvfSxvE9WFVFVkJmTkrs2UpUm9N9bJPM29qSjaLcVjmdOEvd6YPlC59MP
+         rw/TJJe1Q+3BtcfNxV4nFOabex2Y1X47QodMeChgoavbVrBcoc/e6tf2ddu/jUSCBf
+         GhL77eauq+ZDA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3CC0760A6A;
+        Fri, 26 Mar 2021 00:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319104708.7754-2-peng.fan@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: Fix a misspell in socket.c
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161671680924.21425.14440255983771687484.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Mar 2021 00:00:09 +0000
+References: <20210325030155.221795-1-luwei32@huawei.com>
+In-Reply-To: <20210325030155.221795-1-luwei32@huawei.com>
+To:     Lu Wei <luwei32@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 06:47:08PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Support remote cores booted before Linux Kernel booting.
-> 
-> Add rsc_table to hold the resource table published by remote cores
-> Add attach hook
+Hello:
 
-Missing a period "." and a new line between the paragraphs.
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-> Add imx_rproc_detect_mode to detect remote cores' working mode, and if
-> remote cores are booted before booting Linux Kernel, parse the memory
-> regions and initialize the table_ptr, table_sz, cached_table.
+On Thu, 25 Mar 2021 11:01:55 +0800 you wrote:
+> s/addres/address
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Lu Wei <luwei32@huawei.com>
 > ---
->  drivers/remoteproc/imx_rproc.c | 64 ++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 24275429a7cc..fdaaf7599cc8 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -74,6 +74,16 @@ struct imx_rproc_att {
->  	int flags;
->  };
->  
-> +enum imx_rproc_mode {
-> +	/* Linux load/kick remote core */
-> +	IMX_RPROC_NORMAL,
-> +	/*
-> +	 * remote core booted before kicking Linux, and remote core
-> +	 * could be stopped & restarted by Linux
-> +	 */
-> +	IMX_RPROC_EARLY_BOOT,
-> +};
-> +
->  struct imx_rproc_dcfg {
->  	u32				src_reg;
->  	u32				src_mask;
-> @@ -95,6 +105,8 @@ struct imx_rproc {
->  	struct mbox_chan		*rx_ch;
->  	struct work_struct		rproc_work;
->  	struct workqueue_struct		*workqueue;
-> +	enum imx_rproc_mode		mode;
-> +	void __iomem			*rsc_table;
->  };
->  
->  static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
-> @@ -229,6 +241,9 @@ static int imx_rproc_stop(struct rproc *rproc)
->  	if (ret)
->  		dev_err(dev, "Failed to stop M4!\n");
->  
-> +	if (priv->mode == IMX_RPROC_EARLY_BOOT)
-> +		priv->mode = IMX_RPROC_NORMAL;
-> +
+>  net/socket.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Why is this needed?  What scenario are you trying to address?
+Here is the summary with links:
+  - net: Fix a misspell in socket.c
+    https://git.kernel.org/netdev/net-next/c/f1dcffcc8abe
 
->  	return ret;
->  }
->  
-> @@ -398,9 +413,15 @@ static void imx_rproc_kick(struct rproc *rproc, int vqid)
->  			__func__, vqid, err);
->  }
->  
-> +static int imx_rproc_attach(struct rproc *rproc)
-> +{
-> +	return 0;
-> +}
-> +
->  static const struct rproc_ops imx_rproc_ops = {
->  	.start		= imx_rproc_start,
->  	.stop		= imx_rproc_stop,
-> +	.attach		= imx_rproc_attach,
->  	.kick		= imx_rproc_kick,
->  	.da_to_va       = imx_rproc_da_to_va,
->  	.load		= rproc_elf_load_segments,
-> @@ -470,6 +491,8 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  		}
->  		priv->mem[b].sys_addr = res.start;
->  		priv->mem[b].size = resource_size(&res);
-> +		if (!strcmp(node->name, "rsc_table"))
-> +			priv->rsc_table = priv->mem[b].cpu_addr;
->  		b++;
->  	}
->  
-> @@ -536,6 +559,43 @@ static void imx_rproc_free_mbox(struct rproc *rproc)
->  	mbox_free_channel(priv->rx_ch);
->  }
->  
-> +static int imx_rproc_detect_mode(struct imx_rproc *priv)
-> +{
-> +	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
-> +	struct rproc *rproc = priv->rproc;
-> +	struct device *dev = priv->dev;
-> +	int ret;
-> +	u32 val;
-> +
-> +	ret = regmap_read(priv->regmap, dcfg->src_reg, &val);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to read src\n");
-> +		return ret;
-> +	}
-> +
-> +	if (!(val & dcfg->src_stop))
-> +		priv->mode = IMX_RPROC_EARLY_BOOT;
-> +	else
-> +		priv->mode = IMX_RPROC_NORMAL;
-> +
-> +	if (priv->mode == IMX_RPROC_EARLY_BOOT) {
-> +		priv->rproc->state = RPROC_DETACHED;
-> +
-> +		ret = imx_rproc_parse_memory_regions(priv->rproc);
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-If you do this here it won't be possible to reattach to the remote processor
-once it has been detached.  This kind of memory parsing should go in
-rproc_ops::prepare().  I suggest you look at what has been done for STM32, the
-example there is quite good and simple.
 
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (!priv->rsc_table)
-> +			return 0;
-> +
-> +		rproc->table_ptr = (struct resource_table *)priv->rsc_table;
-
-The core is taking care of that, see rproc_set_rsc_table() for details.  
-
-> +		rproc->table_sz = SZ_1K;
-> +		rproc->cached_table = NULL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int imx_rproc_probe(struct platform_device *pdev)
->  {
->  	struct device *dev = &pdev->dev;
-> @@ -590,6 +650,10 @@ static int imx_rproc_probe(struct platform_device *pdev)
->  		goto err_put_mbox;
->  	}
->  
-> +	ret = imx_rproc_detect_mode(priv);
-> +	if (ret)
-> +		goto err_put_mbox;
-> +
-
-While reviewing this patch I noticed that of_node_put() is never called after
-of_parse_phandle().  Please add a fix for that, in a patch on its own, in your
-next revision.
-
-Thanks,
-Mathieu
-
->  	priv->clk = devm_clk_get(dev, NULL);
->  	if (IS_ERR(priv->clk)) {
->  		dev_err(dev, "Failed to get clock\n");
-> -- 
-> 2.30.0
-> 
