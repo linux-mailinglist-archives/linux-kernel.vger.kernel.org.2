@@ -2,133 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CC534B112
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3470534B115
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 22:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhCZVJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 17:09:52 -0400
-Received: from p3plsmtpa09-03.prod.phx3.secureserver.net ([173.201.193.232]:46956
-        "EHLO p3plsmtpa09-03.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230026AbhCZVJl (ORCPT
+        id S230249AbhCZVL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 17:11:27 -0400
+Received: from mail-il1-f173.google.com ([209.85.166.173]:42721 "EHLO
+        mail-il1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230026AbhCZVLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 17:09:41 -0400
-Received: from chrisHP110 ([76.103.216.188])
-        by :SMTPAUTH: with ESMTPA
-        id Pti5lXABrc40iPti6l1OKO; Fri, 26 Mar 2021 14:09:38 -0700
-X-CMAE-Analysis: v=2.4 cv=Cot6zl0D c=1 sm=1 tr=0 ts=605e4d92
- a=ZkbE6z54K4jjswx6VoHRvg==:117 a=ZkbE6z54K4jjswx6VoHRvg==:17
- a=kj9zAlcOel0A:10 a=MXRq0mXx-RAhC34I2ScA:9 a=CjuIK1q_8ugA:10
- a=fCgQI5UlmZDRPDxm0A3o:22
-X-SECURESERVER-ACCT: don@thebollingers.org
-From:   "Don Bollinger" <don@thebollingers.org>
-To:     "'Andrew Lunn'" <andrew@lunn.ch>
-Cc:     "'Jakub Kicinski'" <kuba@kernel.org>, <arndb@arndb.de>,
-        <gregkh@linuxfoundation.org>, <linux-kernel@vger.kernel.org>,
-        <brandon_chuang@edge-core.com>, <wally_wang@accton.com>,
-        <aken_liu@edge-core.com>, <gulv@microsoft.com>,
-        <jolevequ@microsoft.com>, <xinxliu@microsoft.com>,
-        "'netdev'" <netdev@vger.kernel.org>,
-        "'Moshe Shemesh'" <moshe@nvidia.com>, <don@thebollingers.org>
-References: <YEvILa9FK8qQs5QK@lunn.ch> <01ae01d71850$db4f5a20$91ee0e60$@thebollingers.org> <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <001201d719c6$6ac826c0$40587440$@thebollingers.org> <YFJHN+raumcJ5/7M@lunn.ch> <009601d72023$b73dbde0$25b939a0$@thebollingers.org> <YFpr2RyiwX10SNbD@lunn.ch> <011301d7226f$dc2426f0$946c74d0$@thebollingers.org> <YF46FI4epRGwlyP8@lunn.ch> <011901d7227c$e00015b0$a0004110$@thebollingers.org> <YF5GA1RbaM1Ht3nl@lunn.ch>
-In-Reply-To: <YF5GA1RbaM1Ht3nl@lunn.ch>
-Subject: RE: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS EEPROMS
-Date:   Fri, 26 Mar 2021 14:09:36 -0700
-Message-ID: <011c01d72284$544c8f50$fce5adf0$@thebollingers.org>
+        Fri, 26 Mar 2021 17:11:20 -0400
+Received: by mail-il1-f173.google.com with SMTP id l5so6145327ilv.9;
+        Fri, 26 Mar 2021 14:11:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YkBaBBFDeht7SNCFuW/9Y03CUQmfjoZwU61Yl9kHu38=;
+        b=sVlUJjJUR5xwTVl7gvcL2FaA+q3ONOp6JZw7j4uXuh/i3tqI6+9aO4bgrsRg8QMTjr
+         LBPyMppNpIlWggVwbqcJCaXyQ+BU3AMCrJET4iezMr3lB6syKiZwYZ7XIktwrF91YSgM
+         qexMmwbOK1Be9QE4L+wF3xdOlYSnj57XMr6y0pKCav4Dj95KIvw9lbw+lHYTLkYGY+AV
+         oysUFhg7THay6G1vx1s2/Ipu7VcoQHqsRFXLPmBLlfDKMQv++/K5n8C5Uj9UvclNZ/Vq
+         mlNEsCd8BFiythGUFenDn/X8hunmiwqkBLe0V3qnLaaYNrYZoDvJ3Hqh4ZJsdnFv+YIE
+         4p3Q==
+X-Gm-Message-State: AOAM5314ZtDTKGoq/S12zBiFzJ+zlNicoAwShJcLTu9hOc+zZs+ykOsU
+        eHtGHjJoE2COaZAYDy+BuA==
+X-Google-Smtp-Source: ABdhPJyzxh6B5HL61Cx6KQl31O7AADpeoiH2Q7TPj2sdXOcMG9TavfGkT5IOjMJSftGn1xJE9EDCPQ==
+X-Received: by 2002:a92:730a:: with SMTP id o10mr11910426ilc.160.1616793079008;
+        Fri, 26 Mar 2021 14:11:19 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id y3sm4842556iot.15.2021.03.26.14.11.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 14:11:18 -0700 (PDT)
+Received: (nullmailer pid 3867570 invoked by uid 1000);
+        Fri, 26 Mar 2021 21:11:17 -0000
+Date:   Fri, 26 Mar 2021 15:11:17 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH v5 (RESEND) 3/7] spmi: hisi-spmi-controller: move driver
+ from staging
+Message-ID: <20210326211117.GA3862036@robh.at.kernel.org>
+References: <cover.1616695231.git.mchehab+huawei@kernel.org>
+ <697f26c380dc2c22c07bedc63a0eab8c9325fccc.1616695231.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQIn9Rn138S2ieljdt1P4rieupeZMgI33dQVAf1peR4CCKQDaAINVcRpAhqKAxkCWKqBOgE8vtiLAcIzA0wBJxcy+QL8fwBAqVYSElA=
-Content-Language: en-us
-X-CMAE-Envelope: MS4xfLRug2nTtgck3zuB/MqhLW554hPRoikOzK4oHb9MSlI7Lzok5YXIT23Dmvt7Ad92psmBxLRMFTM0fxF70aXfPerCxbv6cWA7REEIwYryp03n7r3ZIocV
- DdAyhyMO2ZcgxeXXBFu6vVfUS6Cka1g7LMtwidJkcGlW4ERipAlpczUptgddznbdZ6ayOGmP/SXvdZiDIKaCH3qnDzJNzDnXzaLvTS4CHjBQNmLzmSBHq2jq
- k2W++/blyeWZ1FC0dWqFQwHRXg6tj0rsnN4AKqGvYDr5OzyIMskAljW/oc7x4Jc1N2rfBGLjgrSX6eg7WzyzDJK1ym0FkVmqfWwYy4Xg3zfn4apfHSyP6FI6
- JBUJmd4rq3iS8z2pYaEeKlBEx7f8A9xZv02bvVYXKf215cGU4DxfdAI/5NnwRqn8HIhtJUIaA92hA0g95OdlGHwZqoGbMM0eUfdZcIueROXjxlAn4wvTxBTg
- 5WomIELpXiM4vS48VmZiQJSn11/hAw3Csk7qHFYmj1qmzeDOL5o+PB/fBscAXebZNYFK+/UYxTwn3Gscv8N4+ZgTOeOUY1JVJsoAoJl67+qlTFui09RYXPTp
- EYQj50LTyjsj8c0Nls1HaePf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <697f26c380dc2c22c07bedc63a0eab8c9325fccc.1616695231.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:37PM -0700, Andrew Lunn wrote:
-> On Fri, Mar 26, 2021 at 01:16:14PM -0700, Don Bollinger wrote:
-> > > > In my community, the SFP/QSFP/CMIS devices (32 to 128 of them per
-> > > > switch) often cost more than the switch itself.  Consumers (both
-> > > > vendors and
-> > > > customers) extensively test these devices to ensure correct and
-> > > > reliable operation.  Then they buy them literally by the millions.
-> > > > Quirks lead to quick rejection in favor of reliable parts from
-> > > > reliable vendors.  In this environment, for completely different
-> > > > reasons, optoe does not need to handle quirks.
-> > >
-> > > Well, if optoe were to be merged, it would not be just for your
-> community.
-> > It
-> > > has to work for everybody who wants to use the Linux kernel with an
-> SFP.
-> > > You cannot decide to add a KAPI which just supports a subset of
-> > > SFPs. It needs to support as many as possible, warts and all.
-> > >
-> > > So how would you handle these SFPs with the optoe KAPI?
-> >
-> > Just like they are handled now.  Folks who use your stack would filter
-> > through sfp.c, with all the quirk handling, and eventually call optoe
-> > for the actual device access.  Folks who don't use kernel networking
-> > would call optoe directly and limit themselves to well behaved SFPs,
-> > or would handle quirks in user space.  You think that's dumb, but
-> > there is clearly a market for that approach.  It is working, at scale,
-today.
-> >
-> > BTW, why can't we have a driver
+On Thu, Mar 25, 2021 at 07:05:35PM +0100, Mauro Carvalho Chehab wrote:
+> The Hisilicon 6421v600 SPMI driver is ready for mainstream.
 > 
-> You keep missing the point. I always refer to the KAPI. The driver we can
-> rework and rework, throw away and reimplement, as much as we want.
-> The KAPI cannot be changed, it is ABI. It is pretty much frozen the day
-the
-> code is first committed.
-
-Maybe I don't understand what you mean by KAPI.  The KAPI that optoe exposes
-is in two parts.
-
-First, it makes the EEPROM accessible via the nvmem() interface, an existing
-KAPI that I call from optoe.  at24 implemented it, I made use of it.  This
-interface exposes EEPROM data to user space through a defined sysfs() file.
-I didn't invent this, nor am I proposing it, it already exists.
-
-Second, it specifies how the data in the EEPROM is accessed.  It says that
-low memory is in offset 0-127, and paged memory starts at offset (128 +
-(page * 128)).  For SFP devices, memory at i2c address 0x50 is the first 256
-bytes, and everything at 0x51 is pushed up 256 bytes.  This is exactly the
-behavior of ethtool.  Again, I didn't invent this, I adopted the existing
-convention for how to flatten the SFP/QSFP/CMIS address space.
-
-With these two parts, EEPROM data can be accessed by standard open(2),
-seek(2), read(2), write(2) calls.  Nothing special there, the actual syntax
-is as old school and standard as you can possibly get.
-
-So, what is wrong with that KAPI?
-
-The only thing wrong I can see is that it doesn't use the kernel network
-stack.  Here's where "you keep missing the point".  The kernel network stack
-is not being used in these systems.  Implementing EEPROM access through
-ethtool is of course possible, but it is a lot of work with no benefit on
-these systems.  The simple approach works.  Let me use it.
-
+> So, move it from staging.
 > 
-> The optoe KAPI needs to handle these 'interesting' SFP modules. The KAPI
-> design needs to be flexible enough that the driver underneath it can be
-> extended to support these SFPs. The code does not need to be there, but
-> the KAPI design needs to allow it. And i personally cannot see how the
-optoe
-> KAPI can efficiently support these SFPs.
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  .../spmi/hisilicon,hisi-spmi-controller.yaml  |  71 ++++
+>  MAINTAINERS                                   |   7 +
+>  drivers/spmi/Kconfig                          |   9 +
+>  drivers/spmi/Makefile                         |   1 +
+>  drivers/spmi/hisi-spmi-controller.c           | 367 ++++++++++++++++++
+>  drivers/staging/hikey9xx/Kconfig              |  11 -
+>  drivers/staging/hikey9xx/Makefile             |   1 -
+>  .../staging/hikey9xx/hisi-spmi-controller.c   | 367 ------------------
+>  .../hisilicon,hisi-spmi-controller.yaml       |  71 ----
+>  9 files changed, 455 insertions(+), 450 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+>  create mode 100644 drivers/spmi/hisi-spmi-controller.c
+>  delete mode 100644 drivers/staging/hikey9xx/hisi-spmi-controller.c
+>  delete mode 100644 drivers/staging/hikey9xx/hisilicon,hisi-spmi-controller.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+> new file mode 100644
+> index 000000000000..6b755039a74c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spmi/hisilicon,hisi-spmi-controller.yaml
+> @@ -0,0 +1,71 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spmi/hisilicon,hisi-spmi-controller.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HiSilicon SPMI controller
+> +
+> +maintainers:
+> +  - Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> +
+> +description: |
+> +  The HiSilicon SPMI BUS controller is found on some Kirin-based designs.
+> +  It is a MIPI System Power Management (SPMI) controller.
+> +
+> +  The PMIC part is provided by
+> +  drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
+> +
+> +allOf:
+> +  - $ref: spmi.yaml#
+> +
+> +properties:
+> +
+> +  $nodename:
+> +    pattern: "spmi@[0-9a-f]"
+> +
+> +  compatible:
+> +    const: hisilicon,kirin970-spmi-controller
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  spmi-channel:
 
-Help me understand.  Your KAPI specifies ethtool as the KAPI, and the
-ethtool/netlink stack as the interface through which the data flows.  As I
-see it, your KAPI only specifies i2c address, page, bank, offset and length.
-How does your KAPI support interesting SFP modules but mine does not?  optoe
-could be reworked ad infinitum to implement support for quirks, just as
-yours can.  Neither has any hint of quirks in the KAPI.
+Generic to SPMI or HiSilicon specific? Needs to be documented in the 
+appropriate place and named appropriately.
 
-Don
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      number of the Kirin 970 SPMI channel where the SPMI devices are connected.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - spmi-channel
+> +
+> +patternProperties:
+> +  "@[0-9a-f]$":
 
+       type: object
+
+> +    description: |
+> +      PMIC properties, which are specific to the used SPMI PMIC device(s).
+> +      When used in combination with HiSilicon 6421v600, the properties
+> +      are documented at
+> +      drivers/staging/hikey9xx/hisilicon,hi6421-spmi-pmic.yaml.
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    bus {
+> +      #address-cells = <2>;
+> +      #size-cells = <2>;
+> +
+> +      spmi: spmi@fff24000 {
+> +        compatible = "hisilicon,kirin970-spmi-controller";
+> +        #address-cells = <2>;
+> +        #size-cells = <0>;
+> +        reg = <0x0 0xfff24000 0x0 0x1000>;
+> +        spmi-channel = <2>;
+> +
+> +        pmic@0 {
+> +          reg = <0 0>;
+> +          /* pmic properties */
+> +        };
+> +      };
+> +    };
