@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF89934AB72
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE7534AB78
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Mar 2021 16:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbhCZP1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 11:27:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230098AbhCZP1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 11:27:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD59E61A36;
-        Fri, 26 Mar 2021 15:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616772421;
-        bh=PgZvub/EEgXyOMtj36/Ui5nnRJqFFaiQoQ/VbltMCjA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Eg+BwZGAwSyILfvPcAOTVne302pKV2q+cmm5Ihp4Me5aUHSjUNGW3+nDtB8R91wcm
-         C2DZ9VNhmbn0jETV9GNehbOwe3JTYKhoqjnh/MiS11ee4oxdvW0wRf2ZrWgUDyfJma
-         hWNpN/TDOWiJIBIfJozhEVq7FS6Mk6XBvB49orLZFW6uYQR5hUuZGCCK5sAk8SD5SC
-         UeP3y50GhNpSvcc4yWyh8y4La1rfFodfJDuofdgE1ai4ujHIVkZF7oQxbAyMF7RCJU
-         u626vT1IL6nOSZEgmRmqhiGrDEBDKZfd4AiSGwBgBRCvns974kHSj2o73ajFlbU9P5
-         x5eyEjjSzm5/A==
-Received: by mail-ed1-f42.google.com with SMTP id bf3so6760125edb.6;
-        Fri, 26 Mar 2021 08:27:01 -0700 (PDT)
-X-Gm-Message-State: AOAM5314zhfTHmpNPiZvla7UF3/Hs8EnVkg1oA4GXjTiAG8dOURW35N+
-        ZUZGDbPp5z87wTpP5TtBFmSnG5H7B8Og419Mtw==
-X-Google-Smtp-Source: ABdhPJwqjia+Et0ifS4Qa3YP7BG89nAuXW50XJw7Bv12OLaUbiQxEkJ38eyAu5ZhN7DqGhRVJR72+O39P4k/LsEHPLw=
-X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr16004050edd.258.1616772420155;
- Fri, 26 Mar 2021 08:27:00 -0700 (PDT)
+        id S230290AbhCZP1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 11:27:47 -0400
+Received: from mail-ej1-f42.google.com ([209.85.218.42]:33342 "EHLO
+        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230196AbhCZP1d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 11:27:33 -0400
+Received: by mail-ej1-f42.google.com with SMTP id k10so9070682ejg.0;
+        Fri, 26 Mar 2021 08:27:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CsvTmaNAD+JZrfh5r3rTSTh1rpmcrxqU66s7Dv3Gkbc=;
+        b=n6rfuhxBOr6U36vv91n2Iwiz0iL+xDyXds6Z+NczzAdx96UlVIoVf7viSuXZGW+Z6d
+         D7am5fTfCqRJinkAlegfRDwTw5uoxuKBgQkVrXd2IuQQXW6Spa7Tlk7PLRAvx0e2dfYW
+         Zw7IpT4o7N54RmIP93C6be4oQxV539ihK8J2AqQOoE5ZAJ6ywAPgBKExakfMJWCEd3o7
+         oQyRI2BWAXIesbPW+3Ap/Nz7Po5Ite/gj2d8G/5tkrI3Nnti76fRDT6CNXbtL0BA0uyJ
+         6BG8sJrpW/qcSpzGj53iTOW5SN/t4TtF3+IiE06cdh+nvbhdbD+Fi6p/DUI6YPwVW0y7
+         1jow==
+X-Gm-Message-State: AOAM532syNrsBvijHVPSMwXKRQLKJf30cAer7PZdWV9XUi8uc3YE1xsv
+        TINlM7sQZw30bhTv6MpYHe5kqLjMHDb1GN9EMiujA1wt
+X-Google-Smtp-Source: ABdhPJyFlw7rGrbUJFQ4KQwktBppReA8rH3lAxc1L6Lop8M+D8rVfU1AuaGVizQy1Tm1K2rwqAwvBOS8Mf3XBUZqRss=
+X-Received: by 2002:a17:906:340f:: with SMTP id c15mr2779781ejb.317.1616772452060;
+ Fri, 26 Mar 2021 08:27:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
- <46745e07b04139a22b5bd01dc37df97e6981e643.1616765870.git.christophe.leroy@csgroup.eu>
- <87zgyqdn3d.fsf@igel.home> <81a7e63f-57d4-5c81-acc5-35278fe5bb04@csgroup.eu>
-In-Reply-To: <81a7e63f-57d4-5c81-acc5-35278fe5bb04@csgroup.eu>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 26 Mar 2021 09:26:47 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
-Message-ID: <CAL_JsqK2TT=j1QjiRgTYQvwHqivE-3HgYo2JzxTJSWO2wvK69Q@mail.gmail.com>
-Subject: Re: [PATCH v3 11/17] riscv: Convert to GENERIC_CMDLINE
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Andreas Schwab <schwab@linux-m68k.org>,
-        Will Deacon <will@kernel.org>,
-        Daniel Walker <danielwa@cisco.com>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
-        <linux-arch@vger.kernel.org>, devicetree@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        microblaze <monstr@monstr.eu>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        nios2 <ley.foon.tan@intel.com>,
-        Openrisc <openrisc@lists.librecores.org>,
-        linux-hexagon@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org,
-        SH-Linux <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>
+References: <20210221185637.19281-1-chang.seok.bae@intel.com>
+ <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
+ <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com> <b1a8f92d-fd82-6e86-93ff-4ac200080d8c@intel.com>
+In-Reply-To: <b1a8f92d-fd82-6e86-93ff-4ac200080d8c@intel.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 26 Mar 2021 11:27:20 -0400
+Message-ID: <CAJvTdKk-d2rpsAYiPg7iJNZ=sEyhjBnGrT3Hy8Mt5G1TkEJRDw@mail.gmail.com>
+Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
+ control state component support
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 8:20 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Thu, Mar 25, 2021 at 7:10 PM Dave Hansen <dave.hansen@intel.com> wrote:
 >
->
->
-> Le 26/03/2021 =C3=A0 15:08, Andreas Schwab a =C3=A9crit :
-> > On M=C3=A4r 26 2021, Christophe Leroy wrote:
+> On 3/25/21 3:59 PM, Len Brown wrote:
+> > We call AMX a "simple state feature" -- it actually requires NO KERNEL ENABLING
+> > above the generic state save/restore to fully support userspace AMX
+> > applications.
 > >
-> >> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> >> index f8f15332caa2..e7c91ee478d1 100644
-> >> --- a/arch/riscv/kernel/setup.c
-> >> +++ b/arch/riscv/kernel/setup.c
-> >> @@ -20,6 +20,7 @@
-> >>   #include <linux/swiotlb.h>
-> >>   #include <linux/smp.h>
-> >>   #include <linux/efi.h>
-> >> +#include <linux/cmdline.h>
-> >>
-> >>   #include <asm/cpu_ops.h>
-> >>   #include <asm/early_ioremap.h>
-> >> @@ -228,10 +229,8 @@ static void __init parse_dtb(void)
-> >>      }
-> >>
-> >>      pr_err("No DTB passed to the kernel\n");
-> >> -#ifdef CONFIG_CMDLINE_FORCE
-> >> -    strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
-> >> +    cmdline_build(boot_command_line, NULL, COMMAND_LINE_SIZE);
-> >>      pr_info("Forcing kernel command line to: %s\n", boot_command_line=
-);
-> >
-> > Shouldn't that message become conditional in some way?
-> >
+> > While not all ISA extensions can be simple state features, we do expect
+> > future features to share this trait, and so we want to be sure that it is simple
+> > to update the kernel to turn those features on (and when necessary, off).
 >
-> You are right, I did something similar on ARM but looks like I missed it =
-on RISCV.
+> From some IRC chats with Thomaas and Andy, I think it's safe to say that
+> they're not comfortable blindly enabling even our "simple features".  I
+> think we're going to need at least some additional architecture to get
+> us to a point where everyone will be comfortable.
 
-How is this hunk even useful? Under what conditions can you boot
-without a DTB? Even with a built-in DTB, the DT cmdline handling would
-be called.
+Hi Dave,
 
-Rob
+There is no code in this patch series, including patch 22, that enables
+an unvalidated feature by default.
+
+Yes, I fully accept that patch 22 allows a user to enable something
+that a distro didn't validate.
+
+If there is a new requirement that the kernel cmdline not allow anything
+that a distro didn't explicitly validate, then about 99.9% of the kernel cmdline
+options that exist today would need to be removed.
+
+Does such a requirement exist, or does it not?
+
+thanks,
+-Len
