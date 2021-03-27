@@ -2,188 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11FF34B342
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 01:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C0F34B346
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 01:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhC0AKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 20:10:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60807 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230076AbhC0AKk (ORCPT
+        id S231152AbhC0AOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 20:14:33 -0400
+Received: from mail-lf1-f41.google.com ([209.85.167.41]:34704 "EHLO
+        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230134AbhC0AON (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 20:10:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616803839;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p+le+7o7WICus9ZcLLEMXNUCCrtxxyozGQvSzYxP59s=;
-        b=gMHPNPfXIkII0LDjh8xiML8BIX90Rt3IxcKJQz1ADsPZxXJtXG9LVgs4F9VKgN5ckmMzXo
-        nuUMRZOrMlL8kRTOrWmos9lDVVtXwTXBqxBetkZz6i26Nm8ZVAatK9l3yX3SWHO7kuggKC
-        9fh5arOq3pjbZQLQSPbx/ktFvqchKBw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-597-J9RQ6Dm5MIaokVwDed9NIw-1; Fri, 26 Mar 2021 20:10:35 -0400
-X-MC-Unique: J9RQ6Dm5MIaokVwDed9NIw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7B425107ACCD;
-        Sat, 27 Mar 2021 00:10:34 +0000 (UTC)
-Received: from Whitewolf.lyude.net (ovpn-114-133.rdu2.redhat.com [10.10.114.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A8AEA1972B;
-        Sat, 27 Mar 2021 00:10:33 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     nouveau@lists.freedesktop.org
-Cc:     Jeremy Cline <jcline@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR NVIDIA
-        GEFORCE/QUADRO GPUS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 3/3] drm/nouveau: begin documenting core nouveau structures
-Date:   Fri, 26 Mar 2021 20:10:01 -0400
-Message-Id: <20210327001001.229093-4-lyude@redhat.com>
-In-Reply-To: <20210327001001.229093-1-lyude@redhat.com>
-References: <20210327001001.229093-1-lyude@redhat.com>
+        Fri, 26 Mar 2021 20:14:13 -0400
+Received: by mail-lf1-f41.google.com with SMTP id i26so10141651lfl.1;
+        Fri, 26 Mar 2021 17:14:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SEcUk0EunwKzPM97F5uKAKJTsTQwxZ5rqKq25o2rWsk=;
+        b=K3cXqbbbsMAxi/RhBEeziukGrjLj7pExUZgP9tDu9qsQjYZW2c7d6F6mBz7rSxSf45
+         uFDvK19qCrozli+tpvMcM5Zz1MknVaIyPiNibLYZ2abPuxJhcsWSWRvKu3vyLFdSY+gd
+         b7KkTggwtGr5SpFQoclPiFYwQtZuLXHCYuF0S0DnbRF2zA1IYwmjvN4Bf+gfYQ82Dltg
+         QVifIrfo2i5vvs/RLdfgL/hKIflUoyJxVwbvYb7Ptpl0t0jYCmNCMwSGPSarxi0Lv0YN
+         JJhaRG8AIuoMkEuAuvIjWU10j33OgH5XphZIdT41qfvYVtqjGku9VU/+vGkg3dnIwxvh
+         ye5w==
+X-Gm-Message-State: AOAM533QvoC1+6Ohuj331Lbiry7S9AB+FnUo4ZvUB2V/8pixe9+vAKY5
+        Sozl9acLWzXgki1K5d0FiLY=
+X-Google-Smtp-Source: ABdhPJwEVBAE3qKqw210nGGw3dr7TjeUGuqo7YWb7wiIf7rFqesRT4vsCS7XhGpR62hq2S4BArj0Ag==
+X-Received: by 2002:a05:6512:405:: with SMTP id u5mr9253215lfk.574.1616804051808;
+        Fri, 26 Mar 2021 17:14:11 -0700 (PDT)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id n11sm1020676lfe.243.2021.03.26.17.14.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 17:14:11 -0700 (PDT)
+Date:   Sat, 27 Mar 2021 01:14:10 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jason Cooper <jason@lakedaemon.net>, linux-pci@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Disallow retraining link for Atheros QCA98xx chips
+ on non-Gen1 PCIe bridges
+Message-ID: <YF540gjh156QIirA@rocinante>
+References: <20210326124326.21163-1-pali@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210326124326.21163-1-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Cline <jcline@redhat.com>
+Hi Pali,
 
-Start on documentation for the Nouveau device structure and the NVIF
-client structure it uses. This documentation is not complete as the
-structures are non-trivial and I am not familiar with large portions of
-them.
+Thank you for sending the patch over!
 
-Signed-off-by: Jeremy Cline <jcline@redhat.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_drv.h | 67 +++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+[...]
+> +static int pcie_change_tls_to_gen1(struct pci_dev *parent)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_drv.h b/drivers/gpu/drm/nouveau/nouveau_drv.h
-index 8eb133fd6df0..43d751d2445f 100644
---- a/drivers/gpu/drm/nouveau/nouveau_drv.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_drv.h
-@@ -88,8 +88,20 @@ enum nouveau_drm_handle {
- 	NVDRM_NVSW    = 0x55550000,
- };
- 
-+/**
-+ * struct nouveau_cli - A DRM-specific NVIF client.
-+ *
-+ * This encapsulates a NVIF client and is intended to be the sole interface
-+ * between the DRM APIs and NVKM. An instance of this structure is allocated
-+ * for each userspace client when they open the device file. Additionally,
-+ * there are several allocated strictly for the kernel's use.
-+ */
- struct nouveau_cli {
- 	struct nvif_client base;
-+
-+	/**
-+	 * @drm: A reference to the device that the client is associated with.
-+	 */
- 	struct nouveau_drm *drm;
- 	struct mutex mutex;
- 
-@@ -99,6 +111,9 @@ struct nouveau_cli {
- 	struct nouveau_vmm svm;
- 	const struct nvif_mclass *mem;
- 
-+	/**
-+	 * @head: The list entry for this client in the @drm device's list of clients.
-+	 */
- 	struct list_head head;
- 	void *abi16;
- 	struct list_head objects;
-@@ -106,13 +121,36 @@ struct nouveau_cli {
- 	char name[32];
- 
- 	struct work_struct work;
-+
-+	/**
-+	 * @worker: List of pending &struct nouveau_cli_work associated with this client.
-+	 */
- 	struct list_head worker;
-+
-+	/**
-+	 * @lock: Protects the @worker list. Additionally, this lock on the
-+	 * @drm.master instance is used to serialize destruction of the @base
-+	 * member in this structure, as well as the destruction of the &struct
-+	 * nvif_mem embedded in &struct nouveau_mem instances.
-+	 */
- 	struct mutex lock;
- };
- 
-+/**
-+ * struct nouveau_cli_work - A pending work item for an NVIF client.
-+ */
- struct nouveau_cli_work {
- 	void (*func)(struct nouveau_cli_work *);
-+
-+	/**
-+	 * @cli: Reference to the NVIF client this work belongs to.
-+	 */
- 	struct nouveau_cli *cli;
-+
-+	/**
-+	 * @head: The list entry for this work item in the &struct nouveau_cli
-+	 * worker list.
-+	 */
- 	struct list_head head;
- 
- 	struct dma_fence *fence;
-@@ -131,9 +169,32 @@ nouveau_cli(struct drm_file *fpriv)
- #include <nvif/object.h>
- #include <nvif/parent.h>
- 
-+/**
-+ * struct nouveau_drm - The nouveau-specific device structure.
-+ *
-+ * This structure is allocated for a device when it is probed and keeps track
-+ * of all the nouveau-specific device details. The lifetime of this structure
-+ * is the same as the lifetime of a &struct drm_device and is managed by the
-+ * DRM layer.
-+ */
- struct nouveau_drm {
-+	/**
-+	 * @parent: Implementation of the interface required to use the NVIF_DEBUG
-+	 * and NVIF_ERROR macros
-+	 */
- 	struct nvif_parent parent;
-+
-+	/**
-+	 * @master: This NVIF client is used to initialize the NVIF driver and used
-+	 * for TTM memory allocations. It is the root of the NVIF object tree.
-+	 */
- 	struct nouveau_cli master;
-+
-+	/**
-+	 * @client: This NVIF client is used by the DRM layer to interact with
-+	 * the NVKM layer for everything except TTM memory allocations. It, and
-+	 * all other clients, are children of the primary (@master) client.
-+	 */
- 	struct nouveau_cli client;
- 
- 	/**
-@@ -141,6 +202,12 @@ struct nouveau_drm {
- 	 */
- 	struct drm_device drm_dev;
- 
-+	/**
-+	 * @clients: List of all &struct nouveau_cli allocated for userspace
-+	 * associated with this DRM device. Clients are allocated when the DRM
-+	 * file is opened and deallocated when the file is closed. This list is
-+	 * protected by the mutex in @client.
-+	 */
- 	struct list_head clients;
- 
- 	u8 old_pm_cap;
--- 
-2.30.2
+Just a nitpick, so feel free to ignore it.  I would just call the
+variable "dev" as we pass a pointer to a particular device, but it does
+not matter as much, so I am leaving this to you.
 
+[...]
+> +	if (ret == 0) {
+
+You prefer this style over "if (!ret)"?  Just asking in the view of the
+style that seem to be preferred in the code base at the moment.
+
+> +		/* Verify that new value was really set */
+> +		pcie_capability_read_word(parent, PCI_EXP_LNKCTL2, &reg16);
+> +		if ((reg16 & PCI_EXP_LNKCTL2_TLS) != PCI_EXP_LNKCTL2_TLS_2_5GT)
+> +			ret = -EINVAL;
+
+I am wondering about this verification - did you have a case where the
+device would not properly set its capability, or accept the write and do
+nothing?
+
+> +	if (ret != 0)
+
+I think "if (ret)" would be fine to use here, unless you prefer being
+more explicit.  See my question about style above.
+
+>  static bool pcie_retrain_link(struct pcie_link_state *link)
+>  {
+>  	struct pci_dev *parent = link->pdev;
+>  	unsigned long end_jiffies;
+>  	u16 reg16;
+> +	u32 reg32;
+> +
+> +		/* Check if link is capable of higher speed than 2.5 GT/s and needs quirk */
+> +		pcie_capability_read_dword(parent, PCI_EXP_LNKCAP, &reg32);
+> +		if ((reg32 & PCI_EXP_LNKCAP_SLS) > PCI_EXP_LNKCAP_SLS_2_5GB) {
+
+I wonder if moving this check to pcie_change_tls_to_gen1() would make
+more sense?  It would then make this function a little cleaner.  What do
+you think?
+
+[...]
+> +static void quirk_no_bus_reset_and_no_retrain_link(struct pci_dev *dev)
+> +{
+> +	dev->dev_flags |= PCI_DEV_FLAGS_NO_BUS_RESET | PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1;
+> +}
+[...]
+
+I know that the style has been changed to allow 100 characters width and
+that checkpatch.pl now also does not warn about line length, as per
+commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column
+warning"), but I think Bjorn still prefers 80 characters, thus this line
+above might have to be aligned.
+
+Krzysztof
