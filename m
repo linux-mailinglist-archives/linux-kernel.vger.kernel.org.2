@@ -2,101 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2D634B3B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 03:16:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B40334B3B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 03:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhC0CQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 22:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhC0CPi (ORCPT
+        id S230242AbhC0CQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 22:16:33 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14565 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230106AbhC0CQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 22:15:38 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABCCBC0613AA;
-        Fri, 26 Mar 2021 19:15:38 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id s11so2254pfm.1;
-        Fri, 26 Mar 2021 19:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xe/Aq3/7m+CfZN6O/GcCkef3Jq0yzqRxc25xU578GNI=;
-        b=EqozHY7rvp5xNqmvIMWrJ45wKCxAmLguoXBKOw3UqEn2FKPeoVD9JzxcMWHbbaKlZE
-         Am+1L35j3o9kN+wRNn2eB3guHv7mfeD/V5vIGTWxrW4brGEJ1KeojC/TH0rIUflNfuLn
-         jlnNp4LefkmeUIJ7LpX6x36+lKRKlfe00E34H1pxlJ/svyRAfuHSavyWX2p/jAW29XXL
-         IxdaweLEzo/4/HelCcK+ZC+ylz1W84GgLMegoNu905wX7zfS6B2RWmF1ivbbfJoPqE+5
-         /A3dbqdnM9qAEw2COxAwXjAa318pHORoQJaI2QQtYYsUgsgbQGzo/K1ztW5FQfjSa1H4
-         Kc8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xe/Aq3/7m+CfZN6O/GcCkef3Jq0yzqRxc25xU578GNI=;
-        b=H0GlZRfS64VnbYqQek98pADrXOlQV72BeeG1Uhd76vBGy9M64uxgAhrOVwMwyCuyPv
-         X5mIpCxLYx6G4lagc34D5wpyDuOVXCbVxLQ83aYq8augZ9ouqUnd0eCKgWdP8SQEhqab
-         sYthpJj1xiTTOa7gyksKqLAReSXCYOyzvpAyi6rRLc/Zql0LVlL/jB1CMxtHKlRNUWA4
-         b2MQlMHpaFb6ShvmeSacp0rs/HoMZx5Xitcdyug5+lYcAMHI9Y0Vrvr+eex+qYhXU20d
-         pnYDel/hA6EOXn8bCq+dGNljCL7NnPTOkzPx8QkSyjDdjTIni67hQZSf6wCRp2OiooOZ
-         u2cQ==
-X-Gm-Message-State: AOAM531TsyFHHXCd51gYn4J9wzXDw8HvENCz3GGBzOf24+YgalhmPWQ6
-        St9FrcE3a1KTDkmZT8ooagw=
-X-Google-Smtp-Source: ABdhPJx0Tmf2VDplsWX/Z7vCpBMEstXKdzbwusss3E7GY4GlYOzvOkpQYtEPVn6QdiBJHf5oN+ydmQ==
-X-Received: by 2002:aa7:942d:0:b029:1f2:cbc6:8491 with SMTP id y13-20020aa7942d0000b02901f2cbc68491mr15352458pfo.53.1616811338162;
-        Fri, 26 Mar 2021 19:15:38 -0700 (PDT)
-Received: from ast-mbp ([2620:10d:c090:400::5:15b8])
-        by smtp.gmail.com with ESMTPSA id gf20sm9519329pjb.39.2021.03.26.19.15.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 19:15:37 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 19:15:34 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, brouer@redhat.com,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
-Message-ID: <20210327021534.pjfjctcdczj7facs@ast-mbp>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-6-memxor@gmail.com>
+        Fri, 26 Mar 2021 22:16:16 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6j7Q4xP0zPrS6;
+        Sat, 27 Mar 2021 10:13:38 +0800 (CST)
+Received: from [10.67.102.248] (10.67.102.248) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 10:16:03 +0800
+Subject: Re: [PATCH v7] perf annotate: Fix sample events lost in stdio mode
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Yao Jin <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, linux-kernel <linux-kernel@vger.kernel.org>,
+        <zhangjinhao2@huawei.com>
+References: <20210319123527.173883-1-yangjihong1@huawei.com>
+ <33ba152e-b8ef-3057-744a-51cb8c478ff2@huawei.com>
+ <CAM9d7cjT-Q8RBprzG=hwdxrgVpzf3RwECuJ1UvbQYpQ47migbg@mail.gmail.com>
+ <YF3OXfzl7FEV50Ir@kernel.org>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <27703989-e510-c964-2af7-ef0a5611f8cf@huawei.com>
+Date:   Sat, 27 Mar 2021 10:15:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210325120020.236504-6-memxor@gmail.com>
+In-Reply-To: <YF3OXfzl7FEV50Ir@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 05:30:03PM +0530, Kumar Kartikeya Dwivedi wrote:
-> This adds some basic tests for the low level bpf_tc_* API and its
-> bpf_program__attach_tc_* wrapper on top.
+Hello,
 
-*_block() apis from patch 3 and 4 are not covered by this selftest.
-Why were they added ? And how were they tested?
+On 2021/3/26 20:06, Arnaldo Carvalho de Melo wrote:
+> Em Fri, Mar 26, 2021 at 12:25:37PM +0900, Namhyung Kim escreveu:
+>> On Fri, Mar 26, 2021 at 11:24 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>> On 2021/3/19 20:35, Yang Jihong wrote:
+>>>> In hist__find_annotations function, since different hist_entry may point to same
+>>>> symbol, we free notes->src to signal already processed this symbol in stdio mode;
+>>>> when annotate, entry will skipped if notes->src is NULL to avoid repeated output.
+>>>>
+>>>> However, there is a problem, for example, run the following command:
+>>>>
+>>>>    # perf record -e branch-misses -e branch-instructions -a sleep 1
+>>>>
+>>>> perf.data file contains different types of sample event.
+>>>>
+>>>> If the same IP sample event exists in branch-misses and branch-instructions,
+>>>> this event uses the same symbol. When annotate branch-misses events, notes->src
+>>>> corresponding to this event is set to null, as a result, when annotate
+>>>> branch-instructions events, this event is skipped and no annotate is output.
+>>>>
+>>>> Solution of this patch is to remove zfree in hists__find_annotations and
+>>>> change sort order to "dso,symbol" to avoid duplicate output when different
+>>>> processes correspond to the same symbol.
+> 
+>>>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> 
+>> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> 
+> Without looking at the patch, just at its description of the problem, I
+> tried to annotate two events in a group, to get the annotate group view
+> output with both events, and it seems I'm getting samples accounted for
+> both events:
+> 
+> [root@five ~]# perf record -e '{branch-misses,branch-instructions}' -a sleep 1
+> [ perf record: Woken up 1 times to write data ]
+> [ perf record: Captured and wrote 2.296 MB perf.data (2507 samples) ]
+> [root@five ~]#
+> [root@five ~]# perf report | grep -v '^#' | head -5
+>      17.49%  19.19%  ThreadPoolForeg  chromium-browser              [.] v8::internal::ConcurrentMarking::Run
+>      12.17%  17.04%  ThreadPoolForeg  chromium-browser              [.] v8::internal::Sweeper::RawSweep
+>      11.14%  11.63%  ThreadPoolForeg  chromium-browser              [.] v8::internal::MarkingVisitorBase<v8::internal::ConcurrentMarkingVisitor, v8::internal::ConcurrentMarkingState>::ProcessStrongHeapObject<v8::internal::CompressedHeapObjectSlot>
+>       7.65%   7.84%  ThreadPoolForeg  chromium-browser              [.] v8::internal::ConcurrentMarkingVisitor::ShouldVisit
+>       5.66%   6.72%  ThreadPoolForeg  chromium-browser              [.] v8::internal::ConcurrentMarkingVisitor::VisitPointersInSnapshot
+> 
+> [root@five ~]# perf annotate --stdio2 v8::internal::ConcurrentMarking::Run
+> Samples: 444  of events 'anon group { branch-misses, branch-instructions }', 4000 Hz, Event count (approx.): 596221, [percent: local period]
+> v8::internal::ConcurrentMarking::Run() /usr/lib64/chromium-browser/chromium-browser
+> Percent
+>                               
+>                               
+>                       Disassembly of section .text:
+>                               
+>                       0000000003290b30 <v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool)>:
+>                       v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool):
+>                         push       %rbp
+>                         mov        %rsp,%rbp
+>                         push       %r15
+>                         push       %r14
+>                         mov        %rdi,%r14
+>                         push       %r13
+>                         mov        %edx,%r13d
+>                         push       %r12
+>                         mov        %ecx,%r12d
+>                         push       %rbx
+>                         sub        $0x1298,%rsp
+>                         mov        %rsi,-0x1228(%rbp)
+>                         mov        %fs:0x28,%rax
+>                         mov        %rax,-0x38(%rbp)
+> <SNIP>		
+>                         movzwl     0x2(%rbx),%eax
+>                         test       %ax,%ax
+>                       ↓ jne        4a9
+>                         mov        -0x10e8(%rbp),%rdx
+>                         cmpw       $0x0,0x2(%rdx)
+>    0.41   0.39        ↓ je         4b90
+>                         movq       %rbx,%xmm0
+>                         movq       %rdx,%xmm2
+>                         mov        %rdx,%rbx
+>                         punpcklqdq %xmm2,%xmm0
+>                         movups     %xmm0,-0x10e8(%rbp)
+>                         movzwl     0x2(%rdx),%eax
+>                  4a9:   sub        $0x1,%eax
+>                         mov        %ax,0x2(%rbx)
+>    0.36   0.91          movzwl     %ax,%eax
+>    0.60   0.00          mov        0x10(%rbx,%rax,8),%rax
+>    3.44   2.46          mov        %rax,-0x11e0(%rbp)
+>    0.00   0.34   4bf:   mov        0x8(%r13),%rax
+>    0.00   0.36          add        $0x1,%r15d
+>    0.00   0.34          mov        0x110(%rax),%rax
+>                         mov        0x128(%rax),%rcx
+>    0.88   0.36          mov        0x8(%r13),%rax
+>                         mov        0x110(%rax),%rdx
+>                         mov        0x130(%rdx),%rdx
+>    0.00   0.48          mov        0x140(%rax),%rax
+>                         mov        0x110(%rax),%rsi
+>    0.61   0.47          mov        -0x11e0(%rbp),%rax
+>    2.01   2.32          sub        $0x1,%rax
+>                         cmp        %rcx,%rax
+>    0.00   0.35          setae      %cl
+>    1.31   0.33          cmp        %rdx,%rax
+>                         setb       %dl
+>    0.00   0.24          test       %dl,%cl
+>    0.00   0.12        ↓ jne        4b70
+>                         cmp        %rsi,%rax
+>                       ↓ je         4b70
+>                         mov        (%rax),%eax
+>   29.10  29.90          add        -0x1220(%rbp),%rax
+>                         cmpb       $0x0,-0x1218(%rbp)
+>                         mov        %rax,-0x1210(%rbp)
+>    0.00   0.65        ↓ jne        4fa0
+>                         mov        -0x11e0(%rbp),%r9
+>                         lea        0x6(%rax),%rbx
+>    0.38   0.00   545:   movzbl     (%rbx),%eax
+>    4.90   5.34          cmp        $0x4c,%al
+>                       ↓ ja         5026
+>    0.58   0.00   550:   lea        v8::internal::FLAGDEFAULT_abort_on_contradictory_flags+0x457,%rdi
+>                         movslq     (%rdi,%rax,4),%rax
+>    4.97   3.19          add        %rdi,%rax
+> <SNIP>
+> 
+> If I ask for number of samples:
+> 
+> [root@five ~]# perf config annotate.show_nr_samples=true
+> [root@five ~]# perf annotate --stdio2 v8::internal::ConcurrentMarking::Run
+> 
+> Samples: 444  of events 'anon group { branch-misses, branch-instructions }', 4000 Hz, Event count (approx.): 596221, [percent: local period]
+> v8::internal::ConcurrentMarking::Run() /usr/lib64/chromium-browser/chromium-browser
+> Samples
+>                               
+>                               
+>                       Disassembly of section .text:
+>                               
+>                       0000000003290b30 <v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool)>:
+>                       v8::internal::ConcurrentMarking::Run(v8::JobDelegate*, unsigned int, bool):
+>                         push       %rbp
+>                         mov        %rsp,%rbp
+>                         push       %r15
+>                         push       %r14
+>                         mov        %rdi,%r14
+>                         push       %r13
+>                         mov        %edx,%r13d
+>                         push       %r12
+>                         mov        %ecx,%r12d
+>                         push       %rbx
+>                         sub        $0x1298,%rsp
+>                         mov        %rsi,-0x1228(%rbp)
+>                         mov        %fs:0x28,%rax
+>                         mov        %rax,-0x38(%rbp)
+> <SNIP>
+>                         movzwl     0x2(%rbx),%eax
+>                         test       %ax,%ax
+>                       ↓ jne        4a9
+>                         mov        -0x10e8(%rbp),%rdx
+>                         cmpw       $0x0,0x2(%rdx)
+>       1      1        ↓ je         4b90
+>                         movq       %rbx,%xmm0
+>                         movq       %rdx,%xmm2
+>                         mov        %rdx,%rbx
+>                         punpcklqdq %xmm2,%xmm0
+>                         movups     %xmm0,-0x10e8(%rbp)
+>                         movzwl     0x2(%rdx),%eax
+>                  4a9:   sub        $0x1,%eax
+>                         mov        %ax,0x2(%rbx)
+>       1      2          movzwl     %ax,%eax
+>       1      0          mov        0x10(%rbx,%rax,8),%rax
+>       8      5          mov        %rax,-0x11e0(%rbp)
+>       0      1   4bf:   mov        0x8(%r13),%rax
+>       0      1          add        $0x1,%r15d
+>       0      1          mov        0x110(%rax),%rax
+>                         mov        0x128(%rax),%rcx
+>       3      1          mov        0x8(%r13),%rax
+>                         mov        0x110(%rax),%rdx
+>                         mov        0x130(%rdx),%rdx
+>       0      1          mov        0x140(%rax),%rax
+>                         mov        0x110(%rax),%rsi
+>       2      1          mov        -0x11e0(%rbp),%rax
+>       6      6          sub        $0x1,%rax
+>                         cmp        %rcx,%rax
+>       0      1          setae      %cl
+>       2      1          cmp        %rdx,%rax
+>                         setb       %dl
+>       0      1          test       %dl,%cl
+>       0      1        ↓ jne        4b70
+>                         cmp        %rsi,%rax
+>                       ↓ je         4b70
+>                         mov        (%rax),%eax
+>      58     73          add        -0x1220(%rbp),%rax
+>                         cmpb       $0x0,-0x1218(%rbp)
+>                         mov        %rax,-0x1210(%rbp)
+>       0      1        ↓ jne        4fa0
+>                         mov        -0x11e0(%rbp),%r9
+>                         lea        0x6(%rax),%rbx
+>       1      0   545:   movzbl     (%rbx),%eax
+>      10     13          cmp        $0x4c,%al
+>                       ↓ ja         5026
+>       1      0   550:   lea        v8::internal::FLAGDEFAULT_abort_on_contradictory_flags+0x457,%rdi
+>                         movslq     (%rdi,%rax,4),%rax
+>       9      8          add        %rdi,%rax
+> 
+> <SNIP>
+> 
+> So it seems to be working, what am I missing? Is this strictly non
+> group related?
+> 
+Yes, it is non group related.
+This problem occurs only when different events need to be recorded at 
+the same time, i.e.:
+perf record -e branch-misses -e branch-instructions -a sleep 1
 
-Pls trim your cc. bpf@vger and netdev@vger would have been enough.
+The output results of perf script and perf annotate do not match.
+Some events are not output in perf annotate.
 
-My main concern with this set is that it adds netlink apis to libbpf while
-we already agreed to split xdp manipulation pieces out of libbpf.
-It would be odd to add tc apis now only to split them later.
-I think it's better to start with new library for tc/xdp and have
-libbpf as a dependency on that new lib.
-For example we can add it as subdir in tools/lib/bpf/.
-
-Similarly I think integerating static linking into libbpf was a mistake.
-It should be a sub library as well.
-
-If we end up with core libbpf and ten sublibs for tc, xdp, af_xdp, linking,
-whatever else the users would appreciate that we don't shove single libbpf
-to them with a ton of features that they might never use.
+> - Arnaldo
+> .
+> 
