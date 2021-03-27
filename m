@@ -2,46 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B5734B64D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC1734B64F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhC0Kml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 06:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39382 "EHLO mail.kernel.org"
+        id S230506AbhC0Kq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 06:46:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229875AbhC0Kml (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 06:42:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3867361993;
-        Sat, 27 Mar 2021 10:42:40 +0000 (UTC)
-Date:   Sat, 27 Mar 2021 11:42:37 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-        joshdon@google.com, valentin.schneider@arm.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/9] debugfs: Implement debugfs_create_str()
-Message-ID: <YF8MHXcEfSbN1xBd@kroah.com>
-References: <20210326103352.603456266@infradead.org>
- <20210326103935.183934395@infradead.org>
- <20210326145000.GK4746@worktop.programming.kicks-ass.net>
+        id S229875AbhC0Kqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 06:46:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE8D61984;
+        Sat, 27 Mar 2021 10:46:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616842013;
+        bh=Jcgotmr3iERSwz1nNcEMv4ajNTb/7UPlLDvxvPZRwfI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ni1dbeTbERmIaaVmWzBzbeZViIiOD/zLbWQYUhLHfj2rK/YJxqMYdVJk7YUopNp+o
+         Cvmch4GV0wZ5vBLNmvwp4lsGcKhxX3od9qRQH2AVUlwfsjcRbjOSru7SwbIAof/0/z
+         RpTyOrTzC8CkAJgVbUg9lqX9nHYKBVUTrAlFAVKE=
+Date:   Sat, 27 Mar 2021 11:46:49 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>, bhelgaas@google.com,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH] PCI: Allow drivers to claim exclusive access to config
+ regions
+Message-ID: <YF8NGeGv9vYcMfTV@kroah.com>
+References: <161663543465.1867664.5674061943008380442.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210326161247.GA819704@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210326145000.GK4746@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210326161247.GA819704@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 03:50:00PM +0100, Peter Zijlstra wrote:
-> Subject: debugfs: Implement debugfs_create_str()
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Thu Mar 25 10:53:55 CET 2021
+On Fri, Mar 26, 2021 at 11:12:47AM -0500, Bjorn Helgaas wrote:
+> [+cc Christoph]
 > 
-> Implement debugfs_create_str() to easily display names and such in
-> debugfs.
+> On Wed, Mar 24, 2021 at 06:23:54PM -0700, Dan Williams wrote:
+> > The PCIE Data Object Exchange (DOE) mailbox is a protocol run over
+> > configuration cycles. It assumes one initiator at a time is
+> > reading/writing the data registers. If userspace reads from the response
+> > data payload it may steal data that a kernel driver was expecting to
+> > read. If userspace writes to the request payload it may corrupt the
+> > request a driver was trying to send.
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> IIUC the problem we're talking about is that userspace config access,
+> e.g., via "lspci" or "setpci" may interfere with kernel usage of DOE.
+> I attached what I think are the relevant bits from the spec.
+> 
+> It looks to me like config *reads* should not be a problem: A read of
+> Write Data Mailbox always returns 0 and looks innocuous.  A userspace
+> read of Read Data Mailbox may return a DW of the data object, but it
+> doesn't advance the cursor, so it shouldn't interfere with a kernel
+> read.  
+> 
+> A write to Write Data Mailbox could obviously corrupt an object being
+> written to the device.  A config write to Read Data Mailbox *does*
+> advance the cursor, so that would definitely interfere with a kernel
+> user.  
+> 
+> So I think we're really talking about an issue with "setpci" and I
+> don't expect "lspci" to be a problem.  "setpci" is a valuable tool,
+> and the fact that it can hose your system is not really news.  I don't
+> know how hard we should work to protect against that.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Thanks for looking this up and letting us know.
+
+So this should be fine, reads are ok, it's not as crazy of a protocol
+design as Dan alluded to, so the kernel should be ok.  No need to add
+additional "protection" here at all, if you run setpci from userspace,
+you get what you asked for :)
+
+thanks,
+
+greg k-h
