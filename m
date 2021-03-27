@@ -2,122 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE1434B581
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 09:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E85834B584
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 09:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhC0IgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 04:36:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15072 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbhC0Ifj (ORCPT
+        id S231478AbhC0Igk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 04:36:40 -0400
+Received: from kirsty.vergenet.net ([202.4.237.240]:56306 "EHLO
+        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231468AbhC0IgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 04:35:39 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6sYr0TwSz1BHyb;
-        Sat, 27 Mar 2021 16:33:36 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 16:35:30 +0800
-From:   Hui Tang <tanghui20@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
-        <wangzhou1@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] crypto: hisilicon - check if debugfs opened
-Date:   Sat, 27 Mar 2021 16:33:00 +0800
-Message-ID: <1616833980-11006-1-git-send-email-tanghui20@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Sat, 27 Mar 2021 04:36:19 -0400
+Received: from madeliefje.horms.nl (tulip.horms.nl [83.161.246.101])
+        by kirsty.vergenet.net (Postfix) with ESMTPA id E688B25B7A8;
+        Sat, 27 Mar 2021 19:36:17 +1100 (AEDT)
+Received: by madeliefje.horms.nl (Postfix, from userid 7100)
+        id 3477D3C01; Sat, 27 Mar 2021 09:36:15 +0100 (CET)
+Date:   Sat, 27 Mar 2021 09:36:15 +0100
+From:   Simon Horman <horms@verge.net.au>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+        netfilter-devel@vger.kernel.org
+Subject: Re: [PATCH] netfilter: ipvs: A spello fix
+Message-ID: <20210327083615.GA734@vergenet.net>
+References: <cover.1616797633.git.unixbhaskar@gmail.com>
+ <20210326231608.24407-13-unixbhaskar@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326231608.24407-13-unixbhaskar@gmail.com>
+Organisation: Horms Solutions BV
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'xx_debugfs_init' check if debugfs opened.
++ netfilter-devel@vger.kernel.org
 
-Signed-off-by: Hui Tang <tanghui20@huawei.com>
----
- drivers/crypto/hisilicon/hpre/hpre_main.c | 5 ++++-
- drivers/crypto/hisilicon/qm.c             | 3 +++
- drivers/crypto/hisilicon/sec2/sec_main.c  | 5 ++++-
- drivers/crypto/hisilicon/zip/zip_main.c   | 3 +++
- 4 files changed, 14 insertions(+), 2 deletions(-)
+On Sat, Mar 27, 2021 at 04:42:48AM +0530, Bhaskar Chowdhury wrote:
+> s/registerd/registered/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 
-diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-index c7ab06d..f2605c4 100644
---- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-+++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-@@ -779,6 +779,9 @@ static int hpre_debugfs_init(struct hisi_qm *qm)
- 	struct device *dev = &qm->pdev->dev;
- 	int ret;
- 
-+	if (!debugfs_initialized())
-+		return -ENOENT;
-+
- 	qm->debug.debug_root = debugfs_create_dir(dev_name(dev),
- 						  hpre_debugfs_root);
- 
-@@ -949,7 +952,7 @@ static int hpre_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	ret = hpre_debugfs_init(qm);
- 	if (ret)
--		dev_warn(&pdev->dev, "init debugfs fail!\n");
-+		dev_warn(&pdev->dev, "init debugfs fail (%d)!\n", ret);
- 
- 	ret = hisi_qm_alg_register(qm, &hpre_devices);
- 	if (ret < 0) {
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index bc23174..14f2656 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -2926,6 +2926,9 @@ void hisi_qm_debug_init(struct hisi_qm *qm)
- 	void *data;
- 	int i;
- 
-+	if (!debugfs_initialized())
-+		return;
-+
- 	qm_d = debugfs_create_dir("qm", qm->debug.debug_root);
- 	qm->debug.qm_d = qm_d;
- 
-diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-index 78a6043..226475d 100644
---- a/drivers/crypto/hisilicon/sec2/sec_main.c
-+++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-@@ -695,6 +695,9 @@ static int sec_debugfs_init(struct hisi_qm *qm)
- 	struct device *dev = &qm->pdev->dev;
- 	int ret;
- 
-+	if (!debugfs_initialized())
-+		return -ENOENT;
-+
- 	qm->debug.debug_root = debugfs_create_dir(dev_name(dev),
- 						  sec_debugfs_root);
- 	qm->debug.sqe_mask_offset = SEC_SQE_MASK_OFFSET;
-@@ -928,7 +931,7 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	ret = sec_debugfs_init(qm);
- 	if (ret)
--		pci_warn(pdev, "Failed to init debugfs!\n");
-+		pci_warn(pdev, "Failed to init debugfs (%d)!\n", ret);
- 
- 	ret = hisi_qm_alg_register(qm, &sec_devices);
- 	if (ret < 0) {
-diff --git a/drivers/crypto/hisilicon/zip/zip_main.c b/drivers/crypto/hisilicon/zip/zip_main.c
-index 02c44572..4b111c0 100644
---- a/drivers/crypto/hisilicon/zip/zip_main.c
-+++ b/drivers/crypto/hisilicon/zip/zip_main.c
-@@ -600,6 +600,9 @@ static int hisi_zip_debugfs_init(struct hisi_qm *qm)
- 	struct dentry *dev_d;
- 	int ret;
- 
-+	if (!debugfs_initialized())
-+		return -ENOENT;
-+
- 	dev_d = debugfs_create_dir(dev_name(dev), hzip_debugfs_root);
- 
- 	qm->debug.sqe_mask_offset = HZIP_SQE_MASK_OFFSET;
--- 
-2.8.1
+Reviewed-by: Simon Horman <horms@verge.net.au>
 
+> ---
+>  net/netfilter/ipvs/ip_vs_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
+> index 0c132ff9b446..128690c512df 100644
+> --- a/net/netfilter/ipvs/ip_vs_core.c
+> +++ b/net/netfilter/ipvs/ip_vs_core.c
+> @@ -2398,7 +2398,7 @@ static int __net_init __ip_vs_init(struct net *net)
+>  	if (ipvs == NULL)
+>  		return -ENOMEM;
+> 
+> -	/* Hold the beast until a service is registerd */
+> +	/* Hold the beast until a service is registered */
+>  	ipvs->enable = 0;
+>  	ipvs->net = net;
+>  	/* Counters used for creating unique names */
+> --
+> 2.26.2
+> 
