@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F29334B616
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5911634B622
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhC0KYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 06:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhC0KYj (ORCPT
+        id S231298AbhC0Kav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 06:30:51 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15360 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhC0Kat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 06:24:39 -0400
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BB7C0613B1;
-        Sat, 27 Mar 2021 03:24:39 -0700 (PDT)
-Date:   Sat, 27 Mar 2021 10:24:33 +0000
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        storagedev@microchip.com, linux-scsi@vger.kernel.org,
-        Joe Szczypek <jszczype@redhat.com>,
-        Scott Benesh <scott.benesh@microchip.com>,
-        Scott Teel <scott.teel@microchip.com>,
-        Tomas Henzl <thenzl@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Don Brace <don.brace@microchip.com>
-Subject: Re: [PATCH] hpsa: fix boot on ia64 (atomic_t alignment)
-Message-ID: <20210327102433.179ce571@sf>
-In-Reply-To: <23674602-0f14-0b71-3192-aa0184a34d6e@physik.fu-berlin.de>
-References: <5532f9ab-7555-d51b-f4d5-f9b72a61f248@redhat.com>
-        <20210312222718.4117508-1-slyfox@gentoo.org>
-        <23674602-0f14-0b71-3192-aa0184a34d6e@physik.fu-berlin.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sat, 27 Mar 2021 06:30:49 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6w6g1tn9z8yLf;
+        Sat, 27 Mar 2021 18:28:43 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
+ 18:30:37 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH] crypto: hisilicon/sec - Fix a module parameter error
+Date:   Sat, 27 Mar 2021 18:28:10 +0800
+Message-ID: <1616840890-12094-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Mar 2021 18:28:31 +0100
-John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
+ctx_q_num is a module parameter set by the user to specify the
+number of qp queues required to create a ctx.
 
-> Hi Sergei!
-> 
-> On 3/12/21 11:27 PM, Sergei Trofimovich wrote:
-> > The failure initially observed as boot failure on rx3600 ia64 machine
-> > with RAID bus controller: Hewlett-Packard Company Smart Array P600:
-> > 
-> >     kernel unaligned access to 0xe000000105dd8b95, ip=0xa000000100b87551
-> >     kernel unaligned access to 0xe000000105dd8e95, ip=0xa000000100b87551
-> >     hpsa 0000:14:01.0: Controller reports max supported commands of 0 Using 16 instead. Ensure that firmware is up to date.
-> >     swapper/0[1]: error during unaligned kernel access
-> > 
-> > Here unaligned access comes from 'struct CommandList' that happens
-> > to be packed. The change f749d8b7a ("scsi: hpsa: Correct dev cmds
-> > outstanding for retried cmds") introduced unexpected padding and
-> > un-aligned atomic_t from natural alignment to something else.
-> > 
-> > This change does not remove packing annotation from struct but only
-> > restores alignment of atomic variable.
-> > 
-> > The change is tested on the same rx3600 machine.  
-> 
-> I just gave it a try on my RX2660 and for me, the hpsa driver won't load even
-> with your patch.
-> 
-> Can you share your kernel configuration so I can give it a try?
+When the number of qp queues allocated by PF or VF is less than
+the ctx_q_num, an error will be reported when ctx is initialized
+in kernel mode, which leads to the problem that the registered
+algorithms cannot be used.
 
-Sure! Here is a config from a few days ago:
-    https://dev.gentoo.org/~slyfox/configs/guppy-config-5.12.0-rc4-00016-g427684abc9fd-dirty
+Therefore, when PF or VF is initialized, if the number of qp queues
+is not enough to create a ctx, the kernel mode cannot be used,
+and there is no need to register the kernel mode algorithms.
 
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/crypto/hisilicon/sec2/sec_main.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index b1818f7..c7b71b6 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -867,10 +867,15 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (ret)
+ 		pci_warn(pdev, "Failed to init debugfs!\n");
+ 
+-	ret = hisi_qm_alg_register(qm, &sec_devices);
+-	if (ret < 0) {
+-		pr_err("Failed to register driver to crypto.\n");
+-		goto err_qm_stop;
++	if (qm->qp_num >= ctx_q_num) {
++		ret = hisi_qm_alg_register(qm, &sec_devices);
++		if (ret < 0) {
++			pr_err("Failed to register driver to crypto.\n");
++			goto err_qm_stop;
++		}
++	} else {
++		pci_warn(qm->pdev,
++			"Failed to use kernel mode, qp not enough!\n");
+ 	}
+ 
+ 	if (qm->uacce) {
 -- 
+2.8.1
 
-  Sergei
