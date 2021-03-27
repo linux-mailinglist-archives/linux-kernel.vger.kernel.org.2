@@ -2,63 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EA5E34B59E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 10:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC0634B5A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 10:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbhC0JPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 05:15:35 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:40430 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230427AbhC0JPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 05:15:04 -0400
-Received: from zn.tnic (p200300ec2f1ad700ac57d777471ee151.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:d700:ac57:d777:471e:e151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4859D1EC0541;
-        Sat, 27 Mar 2021 10:15:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1616836503;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=GM3bTHM73MWdbKG6Lj6lq55s4Znce5YscbjHgYvc2gQ=;
-        b=iAHPsbLl4rxsPsuKXtFAqkAPls4MMOGdW/MOrshbwicxWZPuW3ushl/owWjA9TdWCOrUzl
-        Xs1vQDjCd8vmstlPZt3qmyg302h53tlcro4y4K4fyNOvVNXzYK7BFDAlSxZ3vCTOtXR5GL
-        MqPkzyUOMT0RHe73SaP0hNm6OhMIMUo=
-Date:   Sat, 27 Mar 2021 10:14:59 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Len Brown <lenb@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-Message-ID: <20210327091459.GA16178@zn.tnic>
-References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
- <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
- <CAJvTdKm8aQPwQMXFQWgVb5dfJ88ds3d0=uHOyWeueUqfya9Nsw@mail.gmail.com>
+        id S231309AbhC0JcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 05:32:03 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15354 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230329AbhC0Jb5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 05:31:57 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6tpn2xzrz8y8j;
+        Sat, 27 Mar 2021 17:29:53 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
+ 17:31:45 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>
+Subject: [PATCH] crypto: hisilicon/sec - Fix a module parameter error
+Date:   Sat, 27 Mar 2021 17:29:17 +0800
+Message-ID: <1616837358-15112-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJvTdKm8aQPwQMXFQWgVb5dfJ88ds3d0=uHOyWeueUqfya9Nsw@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 11:39:18PM -0400, Len Brown wrote:
-> Say a mainline links with a math library that uses AMX without the
-> knowledge of the mainline.
+ctx_q_num is a module parameter set by the user to specify the
+number of qp queues required to create a ctx.
 
-What is a "mainline"?
+When the number of qp queues allocated by PF or VF is less than
+the ctx_q_num, an error will be reported when ctx is initialized
+in kernel mode, which leads to the problem that the registered
+algorithms cannot be used.
 
+Therefore, when PF or VF is initialized, if the number of qp queues
+is not enough to create a ctx, the kernel mode cannot be used,
+and there is no need to register the kernel mode algorithms.
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+ drivers/crypto/hisilicon/sec2/sec_main.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+index b1818f7..c7b71b6 100644
+--- a/drivers/crypto/hisilicon/sec2/sec_main.c
++++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+@@ -867,10 +867,15 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (ret)
+ 		pci_warn(pdev, "Failed to init debugfs!\n");
+ 
+-	ret = hisi_qm_alg_register(qm, &sec_devices);
+-	if (ret < 0) {
+-		pr_err("Failed to register driver to crypto.\n");
+-		goto err_qm_stop;
++	if (qm->qp_num >= ctx_q_num) {
++		ret = hisi_qm_alg_register(qm, &sec_devices);
++		if (ret < 0) {
++			pr_err("Failed to register driver to crypto.\n");
++			goto err_qm_stop;
++		}
++	} else {
++		pci_warn(qm->pdev,
++			"Failed to use kernel mode, qp not enough!\n");
+ 	}
+ 
+ 	if (qm->uacce) {
 -- 
-Regards/Gruss,
-    Boris.
+2.8.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
