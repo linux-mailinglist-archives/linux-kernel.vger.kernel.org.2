@@ -2,129 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA15834B3FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E96A34B40C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhC0DUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 23:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47884 "EHLO
+        id S230195AbhC0D3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 23:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhC0DUK (ORCPT
+        with ESMTP id S229901AbhC0D3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 23:20:10 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BFBC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 20:20:09 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id q3so7312974qkq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 20:20:09 -0700 (PDT)
+        Fri, 26 Mar 2021 23:29:03 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DFCC0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 20:29:03 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id h20so1831654plr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 20:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lLsrfQt0PWiR75Gy7KXrnQsaYDkPpsvvqGBNulGOz3Q=;
-        b=fRwjFQO1P1Wm0RMsCY9rwYkWWlAEywwpOjTSDUzWwL8RT/nEstn0Esqp/ym8OdUuEe
-         kqmsTYRf0cVLcX52i854irPn/v9taI5PZeATW8AgSMoX4a9CkKD+akRYpwuJKqdIzoS5
-         bEp0I4OJoP5wlMOIExqfsg+EmKkNAjo4h2FhBq+Kywvr4oSPuG9nY95POZD4emkJxsOx
-         DpP74Vow2OVYIGYRR/pzET5K5xz3Y/GvZo/1bvxA/+R8q3/KdyrP1OkocGMQjaG0Jm81
-         0NS57UpCieaALAkw2Aa5iOsNklGNRH0s3WoW5GX1hpg9K+4wtpeP9v4Iq2s111uapt4R
-         I0Ug==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XtPWAZA9eTLzUykFCimEArM4fZDHqFEi9LTCa54qAS4=;
+        b=ewCD38hdt+uMPe8ie3aNETXbNM0h992GPd/XUVPqG25npRQuY+3xBaahlCBBeRQvbU
+         Ohf4En5goontX+dGez6YO9SV9Iz2P8VUICw+oZW0hZUEmNzvZV3baoef33uvrqZzbtS0
+         CNc53HRRc/r7i5OtPlrYXEovFeEmcO+OvNBqOcLEKFQVibq8f0UjglRQ9VvVFWESVIex
+         LpsJmTx0/2Jr06l8DEgoyZcV3AJapUWc8WdpvP0CZt/ZaGMIcWj5D2arPwdBDPjM1GLV
+         id9WvyepH/nR5BVHUEeAbkK3bu2Lj2wEiyWMqbzAoA4JSOZCmUqn/7TWyvXDMef3NGdp
+         FCKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lLsrfQt0PWiR75Gy7KXrnQsaYDkPpsvvqGBNulGOz3Q=;
-        b=mzfAcLJ/xJq6LWaNyhUCQ1H9hvaGmhl6HWwq5NpF+izwbbEbklub2BCZe/jlnaMqQ4
-         PWDjDn92XTzoZ0Usexzh/RvcKO317NgT7r9T8/HpCoYf/cH33cDkHef5DS1AFb9VNDXh
-         ZnL0i4slELmhIlXxGIWyW0n2NM8quWCgkDU4XBN2yHkLfzfXOdeWF37whZeVrFVAKlmS
-         2YSrFeFliR83g+L/OJdBrDHIZdko9Yqs/pRbj/nDuk3QcJ940l5L0q39mTXTdajrvCto
-         9Ma6kLdokKD2oySdaBldNvM+g5DEYyojj91jRmDTlggqLukcyS3wrgt2nWpqOUHYFJnn
-         BO7A==
-X-Gm-Message-State: AOAM533sYsEtSjHbtZt5ACl8KzIKLL24IHvsvqGCRZJqTc1AjKVVhZMw
-        n+K5b7PQDxztmAgvQUuPDq6T92BQ6vlv+eKIVp4WIw==
-X-Google-Smtp-Source: ABdhPJyfyATp9CDrIi79MmawF1G20H+EhieEveu/Q690s9ZCO57AWiJvd6NmgwBNFhjF+ghbS6RECElChR3TQ8nlPLE=
-X-Received: by 2002:a37:a643:: with SMTP id p64mr15409808qke.276.1616815208716;
- Fri, 26 Mar 2021 20:20:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XtPWAZA9eTLzUykFCimEArM4fZDHqFEi9LTCa54qAS4=;
+        b=TmJ8/y6la7hu4Zbk3rzS1NzmZAUkMnFhWe/7aC+YhTP5ttTIuvrasx9hvgRrpwLz8i
+         QS8gyWkElb4QpwbzhEujWiIguWct+pUp1ZFTWfjxIhIxexWNjkWo2gzY6n/M2PUBk5H+
+         NhI7RsQmrWQkuS9oso4crvrlqK9AcAcbrBRcay0EBJ2j3U3lbsnEBlQhpgl9pBNysodx
+         Bt1aClHS+868i4Na/IM7N1iF1+GWz0qkF6i9WwC5mZBlTHZ3R8UDmQg5DpW8Ohifzejd
+         tux5V2IQG1GFYcfZj8fJ3bGsMheUEDSf7sbxz+93xcE2/caIWRmPaQaghGZ0AYzVn7iS
+         kTMA==
+X-Gm-Message-State: AOAM533URXop6kiQq5jbobkZlEZ0k9nw6jEmP77Vzk4QyHBJ8zJoylmJ
+        H/gpBDRWZGGAw/dgKhT69M8=
+X-Google-Smtp-Source: ABdhPJx+f0rPIXJh9LcPnDL7dF8Kld3VQl/T/PUrJTlseyVn1uST7VLq57MqWBdKiWS32Ldz1B5Ebw==
+X-Received: by 2002:a17:90b:ed0:: with SMTP id gz16mr16494077pjb.106.1616815742626;
+        Fri, 26 Mar 2021 20:29:02 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:48:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id k127sm10541907pfd.63.2021.03.26.20.29.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Mar 2021 20:29:02 -0700 (PDT)
+Date:   Fri, 26 Mar 2021 20:28:59 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Daphne Preston-Kendall <dpk@nonceword.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: Re: [Bug 212265] New: clock_gettime(CLOCK_TAI, ...) should return an
+ error when TAI has not been configured
+Message-ID: <20210327032859.GA3168@hoboy.vegasvil.org>
+References: <87sg4iupzs.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210324214020.34142-1-joel@joelfernandes.org>
- <20210324214020.34142-3-joel@joelfernandes.org> <20210327000943.GQ4746@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210327000943.GQ4746@worktop.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Fri, 26 Mar 2021 20:19:57 -0700
-Message-ID: <CABk29NthG_W_GyBknf1rZ35xbkppdPwosR+6ka=kCs70teoEqA@mail.gmail.com>
-Subject: Re: [PATCH resend 2/8] sched: core scheduling tagging infrastructure
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, torvalds@linux-foundation.org,
-        fweisbec@gmail.com, Kees Cook <keescook@chromium.org>,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        Steven Rostedt <rostedt@goodmis.org>, benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        "Hyser,Chris" <chris.hyser@oracle.com>,
-        Hao Luo <haoluo@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, dhiatt@digitalocean.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sg4iupzs.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Fri, Mar 26, 2021 at 12:13:43PM +0100, Thomas Gleixner wrote:
+> On Sat, Mar 13 2021 at 17:44, bugzilla-daemon wrote:
+> > Unfortunately, although the majority of distributions ship with a leap
+> > second file from the zoneinfo database, many or most of them (I have
+> > Arch here) do not configure ntpd to know about it, so ntpd does not
+> > set things up properly for CLOCK_TAI to work.
 
-On Fri, Mar 26, 2021 at 5:10 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Mar 24, 2021 at 05:40:14PM -0400, Joel Fernandes (Google) wrote:
-> > From: Josh Don <joshdon@google.com>
-> >
-> > A single unsigned long is insufficient as a cookie value for core
-> > scheduling. We will minimally have cookie values for a per-task and a
-> > per-group interface, which must be combined into an overall cookie.
-> >
-> > This patch adds the infrastructure necessary for setting task and group
-> > cookie. Namely, it reworks the core_cookie into a struct, and provides
-> > interfaces for setting task and group cookie, as well as other
-> > operations (i.e. compare()). Subsequent patches will use these hooks to
-> > provide an API for setting these cookies.
-> >
->
-> *urgh*... so I specifically wanted the task interface first to avoid /
-> get-rid of all this madness. And then you keep it :-(
+I'm not sure about "many or most" distros.  In Debian, the ntp package
+depends on tzdata, and the default /etc/ntp.conf does use the leap
+seconds file.
 
-Sorry, I misunderstood the ask here :/ I had separated out the cgroup
-interface parts of the patch, leaving (mostly) the parts which
-introduced a compound cookie structure. I see now that you just wanted
-the plain task interface to start, with no notion of group cookie.
+> That would be a user visible change and might hit existing user space by
+> surprise, so that's not a necessarily a good option.
 
-> I've spend the past few hours rewriting patches #2 and #3, and adapting
-> #4. The thing was working before I added SHARE_FROM back and introduced
-> GET, but now I'm seeing a few FAILs from the selftest.
->
-> I'm too tired to make sense of anything much, or even focus my eyes
-> consistently, so I'll have to prod at it some more next week, but I've
-> pushed out the lot to my queue.git:
->
->   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=sched/core-sched
+Agreed.
+ 
+> and the kernel on it's own has no way to check for and retrieve an
+> up-to-date version. That's why it is delegated to user space.
 
-Thanks, I'll take a look next week.
+Right, the kernel can't make any assumptions about the TAI-UTC offset.
 
-> Also, we really need a better name than coretag.c.
+> I hope the NTP/TAI wizards have some more insight/opinions on this.
 
-Yea, we don't really otherwise use the phrase "tagging". core_sched.c
-is probably too confusing given we have sched/core.c.
+I agree that ntpd and the current distros don't handle this very well,
+but all the pieces are there to allow user space to handle TAI and
+leap seconds as reasonably as possible.  The fundamental issue is that
+there is no way to determine the TAI-UTC offset without some kind of
+input from the real world.
+
+Even with GPS, after a cold boot you cannot know the offset
+immediately, because the leap second information is broadcast in the
+almanac only every 12.5 minutes, and so you can be left in suspense
+for a long time.
+
+Using ntpd on Debian, the service will set the offset, but only after
+synchronization with the upstream server has been established, and
+this takes about five minutes, IIRC.
+
+If waiting 5 or 12.5 minutes is too long for your requirements, you
+can boot strap the time from RTC [1] and then consult the leap seconds
+table [2] to set the TAI-UTC offset in the kernel via adjtimex().
+
+Unfortunately there is no user space utility for setting TAI-UTC, but
+I hacked one 'adjtimex' program for this purpose:
+
+    https://github.com/richardcochran/ntpclient-2015
+
+Getting back to the original point of the kernel returning an error,
+I don't see a need for this.  Applications that require correct leap
+seconds can simply call adjtimex() and wait until the initial zero
+value is changed by ntpd/etc to the correct offset.  That isn't
+fundamentally harder than calling clock_gettime() and waiting until
+the error would go away.
+
+Thanks,
+Richard
+
+1. Assuming the RTC was set and has a fresh battery, and assuming no
+   leap seconds occurred while your computer was off!
+
+2. Assuming the RTC value is not newer than the expiration date of the
+   leap seconds file.
+
+
+
