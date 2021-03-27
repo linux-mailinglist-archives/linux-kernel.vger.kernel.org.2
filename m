@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDD834B812
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB85734B814
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhC0P67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 11:58:59 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:44668 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhC0P6f (ORCPT
+        id S230242AbhC0P7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 11:59:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230043AbhC0P7O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 11:58:35 -0400
-Received: by mail-oi1-f182.google.com with SMTP id a8so8860152oic.11;
-        Sat, 27 Mar 2021 08:58:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=5SuxDM5eMFIugBHxooQXY5NCqnrI/pfH9JxMhzhQSys=;
-        b=N9kFnbS6gGfP9V0PO1R7dcWCxKlanpS3/k9X+ZXcvWBtg1iEnbsa0s8o6ROndYYPNa
-         CCZ37TmPKSRmi8mck7AzVHOwEAXLLYN6yDv4wubqxNvJsiiH20x8GfZ4gOmGLPyuM0gI
-         Vw8LSQQ+6QqUplIWEoyOiXjLMeBHMzAAcLQOYi7HMtdoJyaaMccxKd+zWl4VUe/2NGea
-         gg062Q6ZnbTt/fEHjUHCVMYSRWR8reHvP3LxQ9JZBPE0bLR39v7mY+u6ryjkOxLZwhdp
-         ZAXamwxgglDTTQK4X9cfSOcYddv/ahxEBQgXfDrQjOCkP6RQf8Zk6X/veKqcmIvZt/N/
-         /rxg==
-X-Gm-Message-State: AOAM5308YiO4MzsVBrRFjnk7gg8TeWLZNRFLrV9V460rYStXFgb94JVC
-        G/9p+3RQZwMn0OMKsahgWA==
-X-Google-Smtp-Source: ABdhPJxLhrLhjniQGWIDx5mRjBUcw0OCSLrNYwJ4ofUnvan/uVGVBDySVtY2LfcLMGrmxSINDeakSA==
-X-Received: by 2002:aca:d514:: with SMTP id m20mr13540852oig.47.1616860715194;
-        Sat, 27 Mar 2021 08:58:35 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.177])
-        by smtp.gmail.com with ESMTPSA id o6sm3059852otj.81.2021.03.27.08.58.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 08:58:34 -0700 (PDT)
-Received: (nullmailer pid 157291 invoked by uid 1000);
-        Sat, 27 Mar 2021 15:58:29 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-pci@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        james.quinlan@broadcom.com, linux-kernel@vger.kernel.org
-In-Reply-To: <20210326191906.43567-2-jim2101024@gmail.com>
-References: <20210326191906.43567-1-jim2101024@gmail.com> <20210326191906.43567-2-jim2101024@gmail.com>
-Subject: Re: [PATCH v3 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP voltage regulators
-Date:   Sat, 27 Mar 2021 09:58:29 -0600
-Message-Id: <1616860709.150621.157290.nullmailer@robh.at.kernel.org>
+        Sat, 27 Mar 2021 11:59:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A9AC0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 08:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=xkC4ArgTk906pKWcdErzH1Fktc/TORlko372c6NRiwc=; b=Milx6OIoEQRQxRPtj+/MvTuevl
+        jWOy5CyRhJvycLzJ+bF0HFRHY1xIoffBez57/Sbxk21Ljrzz0L9KZVSIDAOjaEgqFH/zal/al5Vce
+        FZEwnDspGtND33u37lsbU2z4A51LFsA53KctbhPtN/RO+1J6GmKjQZNhlbfzz7XPStuIiOss40Aiv
+        VoFD4Jnd71ErX9jwStvBU402YFqMAlOoD0HFs7S6FR+OcxNRslJTCvaDzc+4I6WBmuiVKoLR5AWBd
+        zKMXokcy3UESOVTfA2UWvMdNCAo8QTc/ovPKyCSLf3ixVPDrhwMjMe61oD6wx4G4fua1cRfwwrLVs
+        FGZM2mkA==;
+Received: from [2601:1c0:6280:3f0::4557]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQBKw-00GXWx-HY; Sat, 27 Mar 2021 15:58:56 +0000
+Subject: Re: [PATCH] kconfig: nconf: stop endless search-up loops
+To:     Mihai Moldovan <ionic@ionic.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210327120155.500-1-ionic@ionic.de>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1ca3a90f-799e-d917-370e-1475e33cdb14@infradead.org>
+Date:   Sat, 27 Mar 2021 08:58:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
+MIME-Version: 1.0
+In-Reply-To: <20210327120155.500-1-ionic@ionic.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 15:18:59 -0400, Jim Quinlan wrote:
-> Similar to the regulator bindings found in "rockchip-pcie-host.txt", this
-> allows optional regulators to be attached and controlled by the PCIe RC
-> driver.  That being said, this driver searches in the DT subnode (the EP
-> node, eg pci@0,0) for the regulator property.
+On 3/27/21 5:01 AM, Mihai Moldovan wrote:
+> If the user selects the very first entry in a page and performs a
+> search-up operation (e.g., via [/][a][Up Arrow]), nconf will never
+> terminate searching the page.
 > 
-> The use of a regulator property in the pcie EP subnode such as
-> "vpcie12v-supply" depends on a pending pullreq to the pci-bus.yaml
-> file at
+> The reason is that in this case, the starting point will be set to -1,
+> which is then translated into (n - 1) (i.e., the last entry of the
+> page) and finally the search begins. This continues to work fine until
+> the index reaches 0, at which point it will be decremented to -1, but
+> not checked against the starting point right away. Instead, it's
+> wrapped around to the bottom again, after which the starting point
+> check occurs... and naturally fails.
 > 
-> https://github.com/devicetree-org/dt-schema/pull/54
+> We can easily avoid it by checking against the starting point directly
+> if the current index is -1 (which should be safe, since it's the only
+> magic value that can occur) and terminate the matching function.
 > 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> Amazingly, nobody seems to have been hit by this for 11 years - or at
+> the very least nobody bothered to debug and fix this.
+> 
+> Signed-off-by: Mihai Moldovan <ionic@ionic.de>
+
+Nice catch.
+
 > ---
->  Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  scripts/kconfig/nconf.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/scripts/kconfig/nconf.c b/scripts/kconfig/nconf.c
+> index e0f965529166..92a5403d8afa 100644
+> --- a/scripts/kconfig/nconf.c
+> +++ b/scripts/kconfig/nconf.c
+> @@ -515,6 +515,15 @@ static int get_mext_match(const char *match_str, match_f flag)
+>  			--index;
+>  		else
+>  			++index;
+> +		/*
+> +		 * It's fine for index to become negative - think of an
+> +		 * initial value for match_start of 0 with a match direction
+> +		 * of up, eventually making it -1.
+> +		 *
+> +		 * Handle this as a special case.
+> +		 */
+> +		if ((-1 == index) && (index == match_start))
+
+checkpatch doesn't complain about this (and I wonder how it's missed), but
+kernel style is (mostly) "constant goes on right hand side of comparison",
+so
+		if ((index == -1) &&
+
+Otherwise LGTM.
+Thanks.
+
+> +			return -1;
+>  		index = (index + items_num) % items_num;
+>  		if (index == match_start)
+>  			return -1;
 > 
 
-My bot found errors running 'make dt_binding_check' on your patch:
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/pci/brcm,stb-pcie.example.dts:48.48-49 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:349: Documentation/devicetree/bindings/pci/brcm,stb-pcie.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1380: dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1458942
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
+-- 
+~Randy
 
