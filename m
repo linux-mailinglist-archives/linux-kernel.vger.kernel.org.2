@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDC234B399
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC64434B39C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhC0BrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 21:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhC0Bqe (ORCPT
+        id S230487AbhC0BuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 21:50:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14494 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230121AbhC0Bt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 21:46:34 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B688CC0613AA;
-        Fri, 26 Mar 2021 18:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:Cc:To:From;
-        bh=zEstXzMJGafn67YkaxQTkCQBDliNHBByxcWjp2tUFlE=; b=EwRTLaJMCgi8LYaJyfjFWwiilV
-        SZeWZQSCnb+XGPJ+ufISWvwZ99cSCeL+qZJE9zVTqVCSeaAhFMMKy/ecGMkXz6BaUHeRK/2hBVIwK
-        Pe6qZuc8gOH9RjpIZACLZM6JG8vJVAakaEr7uQXRF/suzWtM8quVn3Y9lseL0SSj9adAzHlPidv7t
-        GaULLE5s5gh35XT7Zke1u2boHBnPOsxe4w96W+oaucQO4d4SnaX0SsZJdakJFL6RP4p6qL4WnDn7i
-        iASfVA/Lk2FgWp/ItAN1VTMt2e9clYVbZn6Gt1IsvCqJxOiRni7wQmyIWFe4l7kZNaXkUsofNfBfn
-        f3aXtYsnREWGs6D6lXWtSjb+K2tHmejUZmK+LVaQEdZ4erDVyJRs7k3Hi1bPn4Cxty+5ceTHMhfRA
-        DCa0VSoN80yv29aMjoECzuiZlO+pwF7bcsJVfGnbodnyR+1xedJVv3yejMvQOWulvLR0PE96HwgWx
-        ehb0pKj3AlA/WFUYOIGojBxP;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1lPy20-0006uS-JI; Sat, 27 Mar 2021 01:46:28 +0000
-From:   Stefan Metzmacher <metze@samba.org>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
-        oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <e6de934a-a794-f173-088d-a140d0645188@samba.org>
- <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
- <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
-Subject: Re: [PATCH 0/6] Allow signals for IO threads
-Message-ID: <358c5225-c23f-de08-65cb-ca3349793c0e@samba.org>
-Date:   Sat, 27 Mar 2021 02:46:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 26 Mar 2021 21:49:56 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6hYj4QF1zySV7;
+        Sat, 27 Mar 2021 09:47:53 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.179.202) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 09:49:44 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        "Alex Deucher" <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] drm/amd/display: Remove duplicated header file inclusion
+Date:   Sat, 27 Mar 2021 09:49:19 +0800
+Message-ID: <20210327014919.1815-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The header file <drm/drm_hdcp.h> is included in the following common
+section and can be removed here.
 
-Hi Jens,
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> root@ub1704-166:~# LANG=C gdb --pid 1320
-> GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
-> Copyright (C) 2020 Free Software Foundation, Inc.
-> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-> This is free software: you are free to change and redistribute it.
-> There is NO WARRANTY, to the extent permitted by law.
-> Type "show copying" and "show warranty" for details.
-> This GDB was configured as "x86_64-linux-gnu".
-> Type "show configuration" for configuration details.
-> For bug reporting instructions, please see:
-> <http://www.gnu.org/software/gdb/bugs/>.
-> Find the GDB manual and other documentation resources online at:
->     <http://www.gnu.org/software/gdb/documentation/>.
-> 
-> For help, type "help".
-> Type "apropos word" to search for commands related to "word".
-> Attaching to process 1320
-> [New LWP 1321]
-> [New LWP 1322]
-> 
-> warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
-> 
-> warning: Architecture rejected target-supplied description
-> syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
-> 38      ../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory.
-> (gdb)
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 573cf17262da4e1..74989ed502016ee 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -44,7 +44,6 @@
+ #include "amdgpu_dm.h"
+ #ifdef CONFIG_DRM_AMD_DC_HDCP
+ #include "amdgpu_dm_hdcp.h"
+-#include <drm/drm_hdcp.h>
+ #endif
+ #include "amdgpu_pm.h"
+ 
+-- 
+1.8.3
 
-Ok, the following makes gdb happy again:
 
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -163,6 +163,8 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
-        /* Kernel thread ? */
-        if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
-                memset(childregs, 0, sizeof(struct pt_regs));
-+               if (p->flags & PF_IO_WORKER)
-+                       childregs->cs = current_pt_regs()->cs;
-                kthread_frame_init(frame, sp, arg);
-                return 0;
-        }
-
-I'm wondering if we should decouple the PF_KTHREAD and PF_IO_WORKER cases even more
-and keep as much of a userspace-like copy_thread as possible.
-
-metze
