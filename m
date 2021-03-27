@@ -2,113 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CD834B337
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 00:59:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B58A34B343
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 01:13:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhCZX65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 19:58:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53184 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230027AbhCZX6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 19:58:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C58BC619E4;
-        Fri, 26 Mar 2021 23:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616803124;
-        bh=a3dDdnXrrs57TfBaTl7alXhup2BDKH4a64f3EAdGZ+c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c909TIJ9AdLcTMo/bkPIQREacj+dvK3KSQI6QXYhjlSl5QWnBCWVqptHiAhH6J2tU
-         VvgRzqOAdyRO6Pl6IxAl9TvzFYXdDGYQOvVjJtPeYiFIU2GwXhBWDlTfhlt6/4MWg7
-         I44G03OXSDu8zRn7XTIgdo5qR6WLO3Ya+ceqtxOC0XdPmDmbeADv8qmBKim3GEe5D+
-         /KpSsdmIIoZuQeHA9/bYvLtNVigAT86kNiFyyZE0bSFmKwDq8fSDGYZiaa6VnTPIC+
-         qAdoSouUBBt4QQcAKlH0anFFzuehabZ3g4b+nXNekEnfe9t2G19ciwwQjJ3RMrSb3u
-         fDzOj0pil/xYQ==
-Date:   Fri, 26 Mar 2021 16:58:39 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: Use $(LD) instead of $(CC) to link vDSO
-Message-ID: <20210326235839.zgfvmtfxrb3hy6i4@archlinux-ax161>
-References: <20210325215156.1986901-1-nathan@kernel.org>
- <202103262325.9ejJuOqf-lkp@intel.com>
+        id S230523AbhC0AMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 20:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhC0AMI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 20:12:08 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644A8C0613AA
+        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 17:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=g7CX3ObKEZFPHfE2CrxoZpsvFPZB8ASiYPTz2KR8q0Q=; b=Y18hNRKwse5r4jkAnvBT/wTpGh
+        SL5BfZDIQvlzN3INiqTDT5fT+e9VXnLotEeTX18jJmEMIgw1E1SkUXNkX1KjQ9NJRnrGlKMFoEM71
+        +/ogPpr5G8E31mIgbPOCynvT5b6wGWOzRzbu8fgjgj2EcPIcRXlwlP+A9iDjueYUjvNMy0DcxjMFB
+        cHz7x0VRVPXYR3zbe8u6iBLAMUZ4NSr0AsMElm3zLnSf3jnlUMq16I1IjHhhYZdnyNUiNNoXgsY31
+        pPYqFkwGUgZezkhHGJTl6hnRnteggsjPqBwKDt7MVPmEH8ICVGxTnTdr7Ze4Xs/WLPQKV6t2r2D5e
+        rg+k8yMw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lPwWO-00Fez6-CC; Sat, 27 Mar 2021 00:09:47 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 27F9698108D; Sat, 27 Mar 2021 01:09:43 +0100 (CET)
+Date:   Sat, 27 Mar 2021 01:09:43 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        rostedt@goodmis.org, benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>, chris.hyser@oracle.com,
+        Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>, dhiatt@digitalocean.com
+Subject: Re: [PATCH resend 2/8] sched: core scheduling tagging infrastructure
+Message-ID: <20210327000943.GQ4746@worktop.programming.kicks-ass.net>
+References: <20210324214020.34142-1-joel@joelfernandes.org>
+ <20210324214020.34142-3-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202103262325.9ejJuOqf-lkp@intel.com>
+In-Reply-To: <20210324214020.34142-3-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 12:05:34AM +0800, kernel test robot wrote:
-> Hi Nathan,
+On Wed, Mar 24, 2021 at 05:40:14PM -0400, Joel Fernandes (Google) wrote:
+> From: Josh Don <joshdon@google.com>
 > 
-> I love your patch! Yet something to improve:
+> A single unsigned long is insufficient as a cookie value for core
+> scheduling. We will minimally have cookie values for a per-task and a
+> per-group interface, which must be combined into an overall cookie.
 > 
-> [auto build test ERROR on linus/master]
-> [also build test ERROR on v5.12-rc4 next-20210326]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
+> This patch adds the infrastructure necessary for setting task and group
+> cookie. Namely, it reworks the core_cookie into a struct, and provides
+> interfaces for setting task and group cookie, as well as other
+> operations (i.e. compare()). Subsequent patches will use these hooks to
+> provide an API for setting these cookies.
 > 
-> url:    https://github.com/0day-ci/linux/commits/Nathan-Chancellor/riscv-Use-LD-instead-of-CC-to-link-vDSO/20210326-055421
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 002322402dafd846c424ffa9240a937f49b48c42
-> config: riscv-randconfig-r032-20210326 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project f490a5969bd52c8a48586f134ff8f02ccbb295b3)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install riscv cross compiling tool for clang build
->         # apt-get install binutils-riscv64-linux-gnu
->         # https://github.com/0day-ci/linux/commit/dfdcaf93f40f0d15ffc3f25128442c1688e612d6
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Nathan-Chancellor/riscv-Use-LD-instead-of-CC-to-link-vDSO/20210326-055421
->         git checkout dfdcaf93f40f0d15ffc3f25128442c1688e612d6
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=riscv 
 
-For the record, I tried to use this script to reproduce but it has a
-couple of bugs:
+*urgh*... so I specifically wanted the task interface first to avoid /
+get-rid of all this madness. And then you keep it :-(
 
-1. It does not download the right version of clang. This report says
-that it is clang-13 but the one that the script downloaded is clang-12.
+I've spend the past few hours rewriting patches #2 and #3, and adapting
+#4. The thing was working before I added SHARE_FROM back and introduced
+GET, but now I'm seeing a few FAILs from the selftest.
 
-2. It does not download it to the right location. The script expects
-~/0day/clang-latest but it is downloaded to ~/0day/clang it seems. I
-symlinked it to get around it.
+I'm too tired to make sense of anything much, or even focus my eyes
+consistently, so I'll have to prod at it some more next week, but I've
+pushed out the lot to my queue.git:
 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> riscv64-linux-gnu-objcopy: 'arch/riscv/kernel/vdso/vdso.so.dbg': No such file
+  https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=sched/core-sched
 
-This error only occurs because of errors before it that are not shown
-due to a denylist:
-
-ld.lld: error: arch/riscv/kernel/vdso/rt_sigreturn.o:(.text+0x0): relocation R_RISCV_ALIGN requires unimplemented linker relaxation; recompile with -mno-relax
-ld.lld: error: arch/riscv/kernel/vdso/getcpu.o:(.text+0x0): relocation R_RISCV_ALIGN requires unimplemented linker relaxation; recompile with -mno-relax
-ld.lld: error: arch/riscv/kernel/vdso/flush_icache.o:(.text+0x0): relocation R_RISCV_ALIGN requires unimplemented linker relaxation; recompile with -mno-relax
-
-My patch only adds another occurrence of this error because we move from
-$(CC)'s default linker (in clang's case, ld.bfd) to $(LD), which in the
-case of 0day appears to be ld.lld. ld.lld should not be used with RISC-V
-in its current form due to errors of this nature, which happen without
-my patch as well:
-
-https://github.com/ClangBuiltLinux/linux/issues/1020
-
-Linker relaxation in ld.lld for RISC-V is an ongoing debate/process.
-Please give RISC-V the current treatment as s390 with ld.lld for the
-time being to get meaningful reports. We will reach out once that issue
-has been resolved.
-
-TL;DR: Patch exposes existing issue with LD=ld.lld that would have
-happened without it in different areas, the report can be ignored.
-
-Cheers!
-Nathan
+Also, we really need a better name than coretag.c.
