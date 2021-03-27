@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E0834B87A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FE334B879
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhC0RZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 13:25:22 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:43766 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230347AbhC0RYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 13:24:53 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F75Lq5JlPz9ty5J;
-        Sat, 27 Mar 2021 18:24:51 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id L9WsE6gnoJQe; Sat, 27 Mar 2021 18:24:51 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F75Lq46k3z9ty5H;
-        Sat, 27 Mar 2021 18:24:51 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A58E78B777;
-        Sat, 27 Mar 2021 18:24:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id BhA0t_BILO1F; Sat, 27 Mar 2021 18:24:51 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3595A8B771;
-        Sat, 27 Mar 2021 18:24:51 +0100 (CET)
-Subject: Re: [PATCH v3 37/41] powerpc/32s: Move KUEP locking/unlocking in C
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <cover.1615552866.git.christophe.leroy@csgroup.eu>
- <4eadd873927e9a73c3d1dfe2f9497353465514cf.1615552867.git.christophe.leroy@csgroup.eu>
-Message-ID: <4ff132a6-7552-a46f-5690-e73c37c805f9@csgroup.eu>
-Date:   Sat, 27 Mar 2021 18:24:23 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230344AbhC0RYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 13:24:49 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:35330 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230347AbhC0RYn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 13:24:43 -0400
+Received: by mail-ot1-f41.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so8283176oto.2;
+        Sat, 27 Mar 2021 10:24:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9KcE+QgrUuQXuE2OHRMrLAz8ThBgbzr+7gew1p6Sfs8=;
+        b=nFRA/0tYeOsTg7ikogILh4dsb18RZUUmAREEP+THkN80cjLiXeqDRi3q/YWamJOM7f
+         Mzzx15kizGIob0Iqn69ejIZYYu63YgZxfnRRr6jAeL/njBZfYgGo1Uz9ab+5UH0pgfK5
+         r16y8Rrt2vNoom5JfAUbeFrflEjBhYE5vL1v3csYni9ZCMsmguzfiUMqENW15/RTGhCx
+         95gDGI/u6SRnX5ZzS2FR0ZPqtZIRr6WRropALb0dbCzMG8Vw+ZZ+wRBdzagHPMYUi9M1
+         kVjXHoppcYEoafFURfQ6o8tO39JKJS2A8Ul6MZ7YQurY16O8isltynjPsTIX13bQrVxd
+         T+0A==
+X-Gm-Message-State: AOAM532DQGP5xukxG/GdPd6utm0kNmAJIWpv1j3DhlhwgwKUADPZ989H
+        Xbepr8L5uEW8D4960xTcFA==
+X-Google-Smtp-Source: ABdhPJxmOLqcGKblP3FioISsj/PKoEKfEHBIhelUfWzhfJ4Qr92xjql0UTWYq8up9UX9BBsep6mh5g==
+X-Received: by 2002:a9d:2628:: with SMTP id a37mr16901446otb.366.1616865882565;
+        Sat, 27 Mar 2021 10:24:42 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.107.88])
+        by smtp.gmail.com with ESMTPSA id r10sm2997394ots.33.2021.03.27.10.24.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 10:24:41 -0700 (PDT)
+Received: (nullmailer pid 275943 invoked by uid 1000);
+        Sat, 27 Mar 2021 17:24:38 -0000
+Date:   Sat, 27 Mar 2021 11:24:38 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [PATCH v2 01/13] dt-bindings: usb: mtk-xhci: support property
+ usb2-lpm-disable
+Message-ID: <20210327172438.GA268453@robh.at.kernel.org>
+References: <1616482975-17841-1-git-send-email-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <4eadd873927e9a73c3d1dfe2f9497353465514cf.1615552867.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616482975-17841-1-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 12/03/2021 à 13:50, Christophe Leroy a écrit :
-> This can be done in C, do it.
+On Tue, Mar 23, 2021 at 03:02:43PM +0800, Chunfeng Yun wrote:
+> Add support common property usb2-lpm-disable
 > 
-> Unrolling the loop gains approx. 15% performance.
-> 
->  From now on, prepare_transfer_to_handler() is only for
-> interrupts from kernel.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
->   arch/powerpc/include/asm/book3s/32/kup.h | 31 -------------------
->   arch/powerpc/include/asm/interrupt.h     |  6 +++-
->   arch/powerpc/include/asm/kup.h           |  8 +++++
->   arch/powerpc/kernel/entry_32.S           | 16 ----------
->   arch/powerpc/kernel/head_32.h            |  3 ++
->   arch/powerpc/kernel/head_booke.h         |  3 ++
->   arch/powerpc/kernel/interrupt.c          |  4 +++
->   arch/powerpc/mm/book3s32/Makefile        |  1 +
->   arch/powerpc/mm/book3s32/kuep.c          | 38 ++++++++++++++++++++++++
->   9 files changed, 62 insertions(+), 48 deletions(-)
->   create mode 100644 arch/powerpc/mm/book3s32/kuep.c
+> v2: no changes
+> ---
+>  Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
+> diff --git a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> index 14f40efb3b22..2246d29a5e4e 100644
+> --- a/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> +++ b/Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+> @@ -103,6 +103,10 @@ properties:
+>      description: supports USB3.0 LPM
+>      type: boolean
+>  
+> +  usb2-lpm-disable:
+> +    description: disable USB2 HW LPM
+> +    type: boolean
 
-> diff --git a/arch/powerpc/mm/book3s32/kuep.c b/arch/powerpc/mm/book3s32/kuep.c
-> new file mode 100644
-> index 000000000000..c70532568a28
-> --- /dev/null
-> +++ b/arch/powerpc/mm/book3s32/kuep.c
-> @@ -0,0 +1,38 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +#include <asm/reg.h>
-> +#include <asm/task_size_32.h>
-> +#include <asm/mmu.h>
-
-Need to add <asm/kup.h> to make Robot happy (missing prototypes of kuep_lock() and kuep_unlock())
+Already has a type. Don't redefine here. Just 'usb2-lpm-disable: true' 
+and make sure usb-xhci.yaml is referenced.
 
 > +
-> +#define KUEP_UPDATE_TWO_USER_SEGMENTS(n) do {		\
-> +	if (TASK_SIZE > ((n) << 28))			\
-> +		mtsr(val1, (n) << 28);			\
-> +	if (TASK_SIZE > (((n) + 1) << 28))		\
-> +		mtsr(val2, ((n) + 1) << 28);		\
-> +	val1 = (val1 + 0x222) & 0xf0ffffff;		\
-> +	val2 = (val2 + 0x222) & 0xf0ffffff;		\
-> +} while (0)
-> +
-> +static __always_inline void kuep_update(u32 val)
-> +{
-> +	int val1 = val;
-> +	int val2 = (val + 0x111) & 0xf0ffffff;
-> +
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(0);
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(2);
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(4);
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(6);
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(8);
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(10);
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(12);
-> +	KUEP_UPDATE_TWO_USER_SEGMENTS(14);
-> +}
-> +
-> +void kuep_lock(void)
-> +{
-> +	kuep_update(mfsr(0) | SR_NX);
-> +}
-> +
-> +void kuep_unlock(void)
-> +{
-> +	kuep_update(mfsr(0) & ~SR_NX);
-> +}
+>    imod-interval-ns:
+>      description:
+>        Interrupt moderation interval value, it is 8 times as much as that
+> -- 
+> 2.18.0
 > 
