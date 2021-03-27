@@ -2,120 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1533634B3F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D1734B3F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:09:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231332AbhC0DHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 23:07:49 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:50566 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230315AbhC0DHM (ORCPT
+        id S231359AbhC0DJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 23:09:16 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:21874 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231354AbhC0DJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 23:07:12 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id C556E40396;
-        Sat, 27 Mar 2021 03:07:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1616814431; bh=V5qHWnwSaNxwxOHPPHy+Dl81e9RP31O5dcErxcCRBHs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=L8ISqDqmTAA5T7xzMMD/c25IbwWfPFeOeOXkfqWY7eGdm9f0Z5BwBPHjLO9s30zIi
-         S0lc8e40yL21pXlNkR/rXpnYSVbAYK/R5JLwAKjsS9k2HGOIJ/5KTZi/89CCkkxYCU
-         Kh4LT1oCIN65/HgODxPpG6bSwRygg2Jmyah/F8lPedXcfUyPCCc6a/qlArUHjjoWdm
-         nkOKp5CEqj+g39yFNwGiZ/R0CbWk47BVPr2AgLyPi0HMNIrhMNOHwVmeX/+R3zPw7k
-         GRapaiNCVkwkO2UvLIMwzWk8aA9mHBjKQ9zdi3t7/tOhvuCvlWtLBlgTq50zSDM5Im
-         6Kbg9t+fBSAUw==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 8BABDA022E;
-        Sat, 27 Mar 2021 03:07:10 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Subject: [PATCH v7 5/5] docs: ABI: Add sysfs documentation interface of dw-xdata-pcie driver
-Date:   Sat, 27 Mar 2021 04:06:55 +0100
-Message-Id: <83d6573cf8bd03a0b3c3497ded6dce3f0b2e2ebd.1616814273.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1616814273.git.gustavo.pimentel@synopsys.com>
-References: <cover.1616814273.git.gustavo.pimentel@synopsys.com>
-In-Reply-To: <cover.1616814273.git.gustavo.pimentel@synopsys.com>
-References: <cover.1616814273.git.gustavo.pimentel@synopsys.com>
+        Fri, 26 Mar 2021 23:09:11 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 324EE980117;
+        Sat, 27 Mar 2021 11:09:08 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] scsi: scsi_priv: Remove duplicate declaration
+Date:   Sat, 27 Mar 2021 11:08:50 +0800
+Message-Id: <20210327030850.918018-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQklCTx1DSB8eSRpIVkpNSk1DSk9OT0NITEJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mio6Cxw4SD8cGjMhPUNCDlZD
+        GU8KCzFVSlVKTUpNQ0pPTk9DTUJOVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJSkpLNwY+
+X-HM-Tid: 0a7871a8255ad992kuws324ee980117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch describes the sysfs interface implemented on the dw-xdata-pcie
-driver.
+struct request and struct request_queue have been
+declared at forward struct declaration.
+Remove the duplicate and reorder the forward declaration
+to be in alphabetic order.
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- Documentation/ABI/testing/sysfs-driver-xdata | 46 ++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-driver-xdata
+ drivers/scsi/scsi_priv.h | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-driver-xdata b/Documentation/ABI/testing/sysfs-driver-xdata
-new file mode 100644
-index 00000000..cb3ab7e
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-driver-xdata
-@@ -0,0 +1,46 @@
-+What:		/sys/class/misc/drivers/dw-xdata-pcie/write
-+Date:		April 2021
-+KernelVersion:	5.12
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to enable the PCIe traffic generator which
-+		will create write TLPs frames - from the Root Complex to the
-+		Endpoint direction.
-+		Usage e.g.
-+		 echo 1 > /sys/class/misc/dw-xdata-pcie/write
-+
-+		The user can read the current PCIe link throughput generated
-+		through this generator in MB/s.
-+		Usage e.g.
-+		 cat /sys/class/misc/dw-xdata-pcie/write
-+		 204
-+
-+		The file is read and write.
-+
-+What:		/sys/class/misc/dw-xdata-pcie/read
-+Date:		April 2021
-+KernelVersion:	5.12
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to enable the PCIe traffic generator which
-+		will create read TLPs frames - from the Endpoint to the Root
-+		Complex direction.
-+		Usage e.g.
-+		 echo 1 > /sys/class/misc/dw-xdata-pcie/read
-+
-+		The user can read the current PCIe link throughput generated
-+		through this generator in MB/s.
-+		Usage e.g.
-+		 cat /sys/class/misc/dw-xdata-pcie/read
-+		 199
-+
-+		The file is read and write.
-+
-+What:		/sys/class/misc/dw-xdata-pcie/stop
-+Date:		April 2021
-+KernelVersion:	5.12
-+Contact:	Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+Description:	Allows the user to disable the PCIe traffic generator in all
-+		directions.
-+		Usage e.g.
-+		 echo 1 > /sys/class/misc/dw-xdata-pcie/stop
-+
-+		The file is write only.
+diff --git a/drivers/scsi/scsi_priv.h b/drivers/scsi/scsi_priv.h
+index 180636d54982..811abc86f6d6 100644
+--- a/drivers/scsi/scsi_priv.h
++++ b/drivers/scsi/scsi_priv.h
+@@ -6,14 +6,14 @@
+ #include <linux/async.h>
+ #include <scsi/scsi_device.h>
+ 
+-struct request_queue;
+ struct request;
++struct request_queue;
++struct Scsi_Host;
+ struct scsi_cmnd;
+ struct scsi_device;
+-struct scsi_target;
+ struct scsi_host_template;
+-struct Scsi_Host;
+ struct scsi_nl_hdr;
++struct scsi_target;
+ 
+ #define SCSI_CMD_RETRIES_NO_LIMIT -1
+ 
+@@ -96,8 +96,6 @@ extern int scsi_mq_setup_tags(struct Scsi_Host *shost);
+ extern void scsi_mq_destroy_tags(struct Scsi_Host *shost);
+ extern void scsi_exit_queue(void);
+ extern void scsi_evt_thread(struct work_struct *work);
+-struct request_queue;
+-struct request;
+ 
+ /* scsi_proc.c */
+ #ifdef CONFIG_SCSI_PROC_FS
 -- 
-2.7.4
+2.25.1
 
