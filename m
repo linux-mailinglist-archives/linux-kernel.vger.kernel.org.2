@@ -2,166 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AECC434B49D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 07:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CA734B4A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 07:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbhC0GI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 02:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbhC0GHz (ORCPT
+        id S230445AbhC0Ggm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 02:36:42 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:16710 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230249AbhC0GgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 02:07:55 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557D3C0613AA;
-        Fri, 26 Mar 2021 23:07:55 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id m11so6286264pfc.11;
-        Fri, 26 Mar 2021 23:07:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OWHAq67WtUfBkQ1gKa/GLNLXtx3wsfXb42bm9Q2dUIw=;
-        b=iGuCDDCCSLzOJZLkvL8FKN4srNRaWpeJyzWh7IENO1Xsp+p/LRBaduih39M/eI9w9D
-         jFZMX9TC3yRplCoXiF0SQP9k2SPPViJisj5t8zuald885Ud4leRTx7GB/D40EHN7K8Ya
-         T/ArbEyPE+FwqKOT4/zlmwY4VnJeQLUR7mpW15VM3zShCYKUQVzjVtJTyu7rcuhMYD7n
-         oHbpwW+pPXq8efGfd9lgwx7V0ZrUYW9U1WsJiyLWy9l+AFK48CGACPcsl7StAcv0zMpl
-         7qTxYBeO6R4Tnq4wmDhe/Fj/2Tm2HTrlOTtqnjr3Hmk3mK3HxEK4wpyKfV7ia+sDqL2f
-         SDmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OWHAq67WtUfBkQ1gKa/GLNLXtx3wsfXb42bm9Q2dUIw=;
-        b=AcaeFVnkoIH8JdJGrr/h1k5pQTzGPoZNHjSgckAOEYXYt8cX6TU5WJjYCGBr2XeeEX
-         oRxar9iAMjLGe5rLK9zp7uBPr0osAIizc+RWa900UxE1PE2YHus3RNM3CKWk1XKOTnn+
-         q3xkgoJvb7sNNfGE8fALisM9qG5AZMZMDuaf3xAuPo1jcGOGWoGppeU2YR7XP77RIGpO
-         5QUKr0HuXyO72dSXp4Zc5aCaRPBPDpb1DEqbmAdOKoKjWEVZnQH+KUyErInLK61F+fWJ
-         6vNKA1HVbK/0n0+UTee6Z74sAhq9y10+DvLM94jlO14suzoUwMr0KzMyDp47f8aHWyly
-         xXog==
-X-Gm-Message-State: AOAM531NB4CzpiscUfvXV7ZxxtFbydKFe0lUstjO4xNnUJQAlkGZdeqL
-        lunwkSs8yyioErALqp3KWkY=
-X-Google-Smtp-Source: ABdhPJzS/Xl8JjciKMul/Yyn/G/TvKxIhsFlJU+pjB6636PT98PdIqvft5Tgm9PrUsIMyu69HChUtQ==
-X-Received: by 2002:a63:525c:: with SMTP id s28mr15118967pgl.317.1616825274706;
-        Fri, 26 Mar 2021 23:07:54 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id e131sm11531843pfh.176.2021.03.26.23.07.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 23:07:54 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH net-next,v2] net: dsa: mt7530: clean up core and TRGMII clock setup
-Date:   Fri, 26 Mar 2021 23:07:52 -0700
-Message-Id: <20210327060752.474627-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210327055543.473099-1-ilya.lipnitskiy@gmail.com>
-References: <20210327055543.473099-1-ilya.lipnitskiy@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 27 Mar 2021 02:36:25 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UTRdtN0_1616826972;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UTRdtN0_1616826972)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 27 Mar 2021 14:36:13 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     miklos@szeredi.hu
+Cc:     tao.peng@linux.alibaba.com, baolin.wang@linux.alibaba.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back dirty pages
+Date:   Sat, 27 Mar 2021 14:36:05 +0800
+Message-Id: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three minor changes:
+We can meet below deadlock scenario when writing back dirty pages, and
+writing files at the same time. The deadlock scenario can be reproduced
+by:
 
-- When disabling PLL, there is no need to call core_write_mmd_indirect
-  directly, use the core_write wrapper instead like the rest of the code
-  in the function does. This change helps with consistency and
-  readability. Move the comment to the definition of
-  core_read_mmd_indirect where it belongs.
+- A writeback worker thread A is trying to write a bunch of dirty pages by
+fuse_writepages(), and the fuse_writepages() will lock one page (named page 1),
+add it into rb_tree with setting writeback flag, and unlock this page 1,
+then try to lock next page (named page 2).
 
-- Disable both core and TRGMII Tx clocks prior to reconfiguring.
-  Previously, only the core clock was disabled, but not TRGMII Tx clock.
-  So disable both, then configure them, then re-enable both, for
-  consistency.
+- But at the same time a file writing can be triggered by another process B,
+to write several pages by fuse_perform_write(), the fuse_perform_write()
+will lock all required pages firstly, then wait for all writeback pages
+are completed by fuse_wait_on_page_writeback().
 
-- The core clock enable bit (REG_GSWCK_EN) is written redundantly three
-  times. Simplify the code and only write the register only once at the
-  end of clock reconfiguration to enable both core and TRGMII Tx clocks.
+- Now the process B can already lock page 1 and page 2, and wait for page 1
+waritehack is completed (page 1 is under writeback set by process A). But
+process A can not complete the writeback of page 1, since it is still
+waiting for locking page 2, which was locked by process B already.
 
-Tested on Ubiquiti ER-X running the GMAC0 and MT7530 in TRGMII mode.
+A deadlock is occurred.
 
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To fix this issue, we should make sure each page writeback is completed
+after lock the page in fuse_fill_write_pages() separately, and then write
+them together when all pages are stable.
+
+[1450578.772896] INFO: task kworker/u259:6:119885 blocked for more than 120 seconds.
+[1450578.796179] kworker/u259:6  D    0 119885      2 0x00000028
+[1450578.796185] Workqueue: writeback wb_workfn (flush-0:78)
+[1450578.796188] Call trace:
+[1450578.798804]  __switch_to+0xd8/0x148
+[1450578.802458]  __schedule+0x280/0x6a0
+[1450578.806112]  schedule+0x34/0xe8
+[1450578.809413]  io_schedule+0x20/0x40
+[1450578.812977]  __lock_page+0x164/0x278
+[1450578.816718]  write_cache_pages+0x2b0/0x4a8
+[1450578.820986]  fuse_writepages+0x84/0x100 [fuse]
+[1450578.825592]  do_writepages+0x58/0x108
+[1450578.829412]  __writeback_single_inode+0x48/0x448
+[1450578.834217]  writeback_sb_inodes+0x220/0x520
+[1450578.838647]  __writeback_inodes_wb+0x50/0xe8
+[1450578.843080]  wb_writeback+0x294/0x3b8
+[1450578.846906]  wb_do_writeback+0x2ec/0x388
+[1450578.850992]  wb_workfn+0x80/0x1e0
+[1450578.854472]  process_one_work+0x1bc/0x3f0
+[1450578.858645]  worker_thread+0x164/0x468
+[1450578.862559]  kthread+0x108/0x138
+[1450578.865960] INFO: task doio:207752 blocked for more than 120 seconds.
+[1450578.888321] doio            D    0 207752 207740 0x00000000
+[1450578.888329] Call trace:
+[1450578.890945]  __switch_to+0xd8/0x148
+[1450578.894599]  __schedule+0x280/0x6a0
+[1450578.898255]  schedule+0x34/0xe8
+[1450578.901568]  fuse_wait_on_page_writeback+0x8c/0xc8 [fuse]
+[1450578.907128]  fuse_perform_write+0x240/0x4e0 [fuse]
+[1450578.912082]  fuse_file_write_iter+0x1dc/0x290 [fuse]
+[1450578.917207]  do_iter_readv_writev+0x110/0x188
+[1450578.921724]  do_iter_write+0x90/0x1c8
+[1450578.925598]  vfs_writev+0x84/0xf8
+[1450578.929071]  do_writev+0x70/0x110
+[1450578.932552]  __arm64_sys_writev+0x24/0x30
+[1450578.936727]  el0_svc_common.constprop.0+0x80/0x1f8
+[1450578.941694]  el0_svc_handler+0x30/0x80
+[1450578.945606]  el0_svc+0x10/0x14
+
+Suggested-by: Peng Tao <tao.peng@linux.alibaba.com>
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- drivers/net/dsa/mt7530.c | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+Changes from v1:
+ - Use fuse_wait_on_page_writeback() instead to wait for page stable.
+---
+ fs/fuse/file.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index c442a5885fca..2bd1bab71497 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -67,6 +67,11 @@ static const struct mt7530_mib_desc mt7530_mib[] = {
- 	MIB_DESC(1, 0xb8, "RxArlDrop"),
- };
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 8cccecb..9a30093 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -1101,9 +1101,6 @@ static ssize_t fuse_send_write_pages(struct fuse_io_args *ia,
+ 	unsigned int offset, i;
+ 	int err;
  
-+/* Since phy_device has not yet been created and
-+ * phy_{read,write}_mmd_indirect is not available, we provide our own
-+ * core_{read,write}_mmd_indirect with core_{clear,write,set} wrappers
-+ * to complete this function.
-+ */
- static int
- core_read_mmd_indirect(struct mt7530_priv *priv, int prtad, int devad)
- {
-@@ -435,19 +440,13 @@ mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
- 		mt7530_write(priv, MT7530_TRGMII_TD_ODT(i),
- 			     TD_DM_DRVP(8) | TD_DM_DRVN(8));
- 
--	/* Setup core clock for MT7530 */
--	/* Disable MT7530 core clock */
--	core_clear(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
-+	/* Disable MT7530 core and TRGMII Tx clocks */
-+	core_clear(priv, CORE_TRGMII_GSW_CLK_CG,
-+		   REG_GSWCK_EN | REG_TRGMIICK_EN);
- 
--	/* Disable PLL, since phy_device has not yet been created
--	 * provided for phy_[read,write]_mmd_indirect is called, we
--	 * provide our own core_write_mmd_indirect to complete this
--	 * function.
--	 */
--	core_write_mmd_indirect(priv,
--				CORE_GSWPLL_GRP1,
--				MDIO_MMD_VEND2,
--				0);
-+	/* Setup core clock for MT7530 */
-+	/* Disable PLL */
-+	core_write(priv, CORE_GSWPLL_GRP1, 0);
- 
- 	/* Set core clock into 500Mhz */
- 	core_write(priv, CORE_GSWPLL_GRP2,
-@@ -460,11 +459,7 @@ mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
- 		   RG_GSWPLL_POSDIV_200M(2) |
- 		   RG_GSWPLL_FBKDIV_200M(32));
- 
--	/* Enable MT7530 core clock */
--	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
+-	for (i = 0; i < ap->num_pages; i++)
+-		fuse_wait_on_page_writeback(inode, ap->pages[i]->index);
 -
- 	/* Setup the MT7530 TRGMII Tx Clock */
--	core_set(priv, CORE_TRGMII_GSW_CLK_CG, REG_GSWCK_EN);
- 	core_write(priv, CORE_PLL_GROUP5, RG_LCDDS_PCW_NCPO1(ncpo1));
- 	core_write(priv, CORE_PLL_GROUP6, RG_LCDDS_PCW_NCPO0(0));
- 	core_write(priv, CORE_PLL_GROUP10, RG_LCDDS_SSC_DELTA(ssc_delta));
-@@ -478,6 +473,8 @@ mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
- 	core_write(priv, CORE_PLL_GROUP7,
- 		   RG_LCDDS_PCW_NCPO_CHG | RG_LCCDS_C(3) |
- 		   RG_LCDDS_PWDB | RG_LCDDS_ISO_EN);
+ 	fuse_write_args_fill(ia, ff, pos, count);
+ 	ia->write.in.flags = fuse_write_flags(iocb);
+ 	if (fm->fc->handle_killpriv_v2 && !capable(CAP_FSETID))
+@@ -1140,6 +1137,7 @@ static ssize_t fuse_fill_write_pages(struct fuse_args_pages *ap,
+ 				     unsigned int max_pages)
+ {
+ 	struct fuse_conn *fc = get_fuse_conn(mapping->host);
++	struct inode *inode = mapping->host;
+ 	unsigned offset = pos & (PAGE_SIZE - 1);
+ 	size_t count = 0;
+ 	int err;
+@@ -1166,6 +1164,8 @@ static ssize_t fuse_fill_write_pages(struct fuse_args_pages *ap,
+ 		if (!page)
+ 			break;
+ 
++		fuse_wait_on_page_writeback(inode, page->index);
 +
-+	/* Enable MT7530 core and TRGMII Tx clocks */
- 	core_set(priv, CORE_TRGMII_GSW_CLK_CG,
- 		 REG_GSWCK_EN | REG_TRGMIICK_EN);
+ 		if (mapping_writably_mapped(mapping))
+ 			flush_dcache_page(page);
  
 -- 
-2.31.0
+1.8.3.1
 
