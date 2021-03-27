@@ -2,65 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9295334B61D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD78034B620
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhC0K3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 06:29:07 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15359 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhC0K3F (ORCPT
+        id S231470AbhC0KaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 06:30:04 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15076 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhC0KaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 06:29:05 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6w4h5tlmz90S3;
-        Sat, 27 Mar 2021 18:27:00 +0800 (CST)
-Received: from mdc.localdomain (10.175.104.57) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 18:28:52 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <huangguobin4@huawei.com>, Wingman Kwok <w-kwok2@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next v2] net: netcp: fix PM reference leak in netcp_probe()
-Date:   Sat, 27 Mar 2021 18:28:42 +0800
-Message-ID: <1616840922-8512-1-git-send-email-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Sat, 27 Mar 2021 06:30:02 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6w5p1VlMz1BFM8;
+        Sat, 27 Mar 2021 18:27:58 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 18:29:50 +0800
+Subject: Re: [PATCH] crypto: hisilicon/sec - Fix a module parameter error
+To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1616837358-15112-1-git-send-email-liulongfang@huawei.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <354738e6-1c4b-66c4-ff89-ecac70d47c9e@huawei.com>
+Date:   Sat, 27 Mar 2021 18:29:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+In-Reply-To: <1616837358-15112-1-git-send-email-liulongfang@huawei.com>
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.104.57]
+X-Originating-IP: [10.67.102.118]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guobin Huang <huangguobin4@huawei.com>
-
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
----
- drivers/net/ethernet/ti/netcp_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/ti/netcp_core.c b/drivers/net/ethernet/ti/netcp_core.c
-index d7a144b4a09f..0675f259033e 100644
---- a/drivers/net/ethernet/ti/netcp_core.c
-+++ b/drivers/net/ethernet/ti/netcp_core.c
-@@ -2171,7 +2171,7 @@ static int netcp_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	pm_runtime_enable(&pdev->dev);
--	ret = pm_runtime_get_sync(&pdev->dev);
-+	ret = pm_runtime_resume_and_get(&pdev->dev);
- 	if (ret < 0) {
- 		dev_err(dev, "Failed to enable NETCP power-domain\n");
- 		pm_runtime_disable(&pdev->dev);
-
+On 2021/3/27 17:29, Longfang Liu Wrote:
+> ctx_q_num is a module parameter set by the user to specify the
+> number of qp queues required to create a ctx.
+> 
+> When the number of qp queues allocated by PF or VF is less than
+> the ctx_q_num, an error will be reported when ctx is initialized
+> in kernel mode, which leads to the problem that the registered
+> algorithms cannot be used.
+> 
+> Therefore, when PF or VF is initialized, if the number of qp queues
+> is not enough to create a ctx, the kernel mode cannot be used,
+> and there is no need to register the kernel mode algorithms.
+> 
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  drivers/crypto/hisilicon/sec2/sec_main.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
+> index b1818f7..c7b71b6 100644
+> --- a/drivers/crypto/hisilicon/sec2/sec_main.c
+> +++ b/drivers/crypto/hisilicon/sec2/sec_main.c
+> @@ -867,10 +867,15 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  	if (ret)
+>  		pci_warn(pdev, "Failed to init debugfs!\n");
+>  
+> -	ret = hisi_qm_alg_register(qm, &sec_devices);
+> -	if (ret < 0) {
+> -		pr_err("Failed to register driver to crypto.\n");
+> -		goto err_qm_stop;
+> +	if (qm->qp_num >= ctx_q_num) {
+> +		ret = hisi_qm_alg_register(qm, &sec_devices);
+> +		if (ret < 0) {
+> +			pr_err("Failed to register driver to crypto.\n");
+> +			goto err_qm_stop;
+> +		}
+> +	} else {
+> +		pci_warn(qm->pdev,
+> +			"Failed to use kernel mode, qp not enough!\n");
+>  	}
+>  
+>  	if (qm->uacce) {
+> 
+Sorry, please don't reply to this patch, I will resend it again.
+Thanks,
+Longfang
