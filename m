@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973AB34B50C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:37:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1CC834B50E
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhC0Hgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 03:36:54 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:27986 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230203AbhC0Hga (ORCPT
+        id S231354AbhC0Hh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 03:37:27 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:59038 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230502AbhC0Hg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 03:36:30 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 8F57F9800B1;
-        Sat, 27 Mar 2021 15:36:28 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drm: tegra: hub: struct tegra_dc is declared twice
-Date:   Sat, 27 Mar 2021 15:36:17 +0800
-Message-Id: <20210327073617.1487123-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 27 Mar 2021 03:36:58 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d29 with ME
+        id lKcs2400F3g7mfN03Kcs99; Sat, 27 Mar 2021 08:36:56 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 27 Mar 2021 08:36:56 +0100
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        krzysztof.kozlowski@canonical.com, nathan@kernel.org,
+        arnd@arndb.de, gustavoars@kernel.org, weiyongjun1@huawei.com
+Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH v3 1/2] usb: gadget: s3c: Fix incorrect resources releasing
+Date:   Sat, 27 Mar 2021 08:36:50 +0100
+Message-Id: <b317638464f188159bd8eea44427dd359e480625.1616830026.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGB9IHhkdSU4dQ0sdVkpNSk1DSEtOQ0NDS05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pwg6Nww*Qj8VTzM9FAstCgJD
-        NigwCxFVSlVKTUpNQ0hLTkNCSk5KVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJS0hLNwY+
-X-HM-Tid: 0a78729ce741d992kuws8f57f9800b1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct tegra_dc has been declared at 13rd line.
-Remove the duplicate.
-Move struct tegra_plane declaration forward.
+Since commit 188db4435ac6 ("usb: gadget: s3c: use platform resources"),
+'request_mem_region()' and 'ioremap()' are no more used, so they don't need
+to be undone in the error handling path of the probe and in the remove
+function.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+Remove these calls and the unneeded 'rsrc_start' and 'rsrc_len' global
+variables.
+
+Fixes: 188db4435ac6 ("usb: gadget: s3c: use platform resources")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 ---
- drivers/gpu/drm/tegra/hub.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+the 'err' label is used only to reduce the diff size of this patch. It is
+removed in the following patch.
 
-diff --git a/drivers/gpu/drm/tegra/hub.h b/drivers/gpu/drm/tegra/hub.h
-index 3efa1be07ff8..36593bb36072 100644
---- a/drivers/gpu/drm/tegra/hub.h
-+++ b/drivers/gpu/drm/tegra/hub.h
-@@ -11,6 +11,7 @@
- #include "plane.h"
+v2: Fix a stupid error in the hash in Fixes:
+v3: s/removre/remove/
+    Add Reviewed-by:
+---
+ drivers/usb/gadget/udc/s3c2410_udc.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
+index 1d3ebb07ccd4..b81979b3bdb6 100644
+--- a/drivers/usb/gadget/udc/s3c2410_udc.c
++++ b/drivers/usb/gadget/udc/s3c2410_udc.c
+@@ -54,8 +54,6 @@ static struct clk		*udc_clock;
+ static struct clk		*usb_bus_clock;
+ static void __iomem		*base_addr;
+ static int			irq_usbd;
+-static u64			rsrc_start;
+-static u64			rsrc_len;
+ static struct dentry		*s3c2410_udc_debugfs_root;
  
- struct tegra_dc;
-+struct tegra_plane;
+ static inline u32 udc_read(u32 reg)
+@@ -1775,7 +1773,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
+ 	base_addr = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(base_addr)) {
+ 		retval = PTR_ERR(base_addr);
+-		goto err_mem;
++		goto err;
+ 	}
  
- struct tegra_windowgroup {
- 	unsigned int usecount;
-@@ -72,9 +73,6 @@ to_tegra_display_hub_state(struct drm_private_state *priv)
- 	return container_of(priv, struct tegra_display_hub_state, base);
+ 	the_controller = udc;
+@@ -1793,7 +1791,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
+ 	if (retval != 0) {
+ 		dev_err(dev, "cannot get irq %i, err %d\n", irq_usbd, retval);
+ 		retval = -EBUSY;
+-		goto err_map;
++		goto err;
+ 	}
+ 
+ 	dev_dbg(dev, "got irq %i\n", irq_usbd);
+@@ -1864,10 +1862,7 @@ static int s3c2410_udc_probe(struct platform_device *pdev)
+ 		gpio_free(udc_info->vbus_pin);
+ err_int:
+ 	free_irq(irq_usbd, udc);
+-err_map:
+-	iounmap(base_addr);
+-err_mem:
+-	release_mem_region(rsrc_start, rsrc_len);
++err:
+ 
+ 	return retval;
  }
+@@ -1899,9 +1894,6 @@ static int s3c2410_udc_remove(struct platform_device *pdev)
  
--struct tegra_dc;
--struct tegra_plane;
+ 	free_irq(irq_usbd, udc);
+ 
+-	iounmap(base_addr);
+-	release_mem_region(rsrc_start, rsrc_len);
 -
- int tegra_display_hub_prepare(struct tegra_display_hub *hub);
- void tegra_display_hub_cleanup(struct tegra_display_hub *hub);
- 
+ 	if (!IS_ERR(udc_clock) && udc_clock != NULL) {
+ 		clk_disable_unprepare(udc_clock);
+ 		clk_put(udc_clock);
 -- 
-2.25.1
+2.27.0
 
