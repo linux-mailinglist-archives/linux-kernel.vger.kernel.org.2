@@ -2,133 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC09534B8CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 19:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DD434B8D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 19:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhC0SMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 14:12:48 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:38843 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhC0SMa (ORCPT
+        id S230214AbhC0SQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 14:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhC0SPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 14:12:30 -0400
-Received: by mail-oi1-f179.google.com with SMTP id f9so9110667oiw.5;
-        Sat, 27 Mar 2021 11:12:30 -0700 (PDT)
+        Sat, 27 Mar 2021 14:15:42 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88259C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 11:15:41 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id g8so12451983lfv.12
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 11:15:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qtec.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=evJX19dU5Mx28QHYYEKviXtnrg34Fwplbft8/yObPw8=;
+        b=e8YfHM+0IV1N1893t1dVp4xho68IA8dniYm/VAczIATwLcvj9qWC5J66r+fEpHSjba
+         B/T6BlMWLi8vehfIffIK0ZxAguI97MkYDKXn0hjrgeDgaKfXEVrpCl3HMwunszABxne+
+         RBOOgc3+L3VqB8Tlzx0eYjONRzV1ierftICPAjxNeBdojpYUiYs2Bo3ZksPAub48Qdtz
+         jkOqPuRaaLi5Nl/O3aEeRJS8UWVSMY0qo0l0UubWHP9fZJApBCv7KqinI9wQaliz2UL2
+         iXrvoXzxX/wbvhTYRyChan7U1NGEg5kOAZon0g+ZeHxxyvBjCK9VJ3rDOCVQhkbGNYTu
+         yv4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YP5kPNXH4Z7KNhy2Y+OP7mxy+I7a4xpYnW3jiDBxHPk=;
-        b=QFyvfP3YyV7/PETFjGR5fG/dJtbqOrTcaKci/5MWFJyyctnqRsIOOU43LSB91e2+ar
-         z0jCswkQZd4xksxRFc3TbiesUeDuK4f9RwUH72iF8qsB4qH0aq+fqzCzFL/3DdBddmMX
-         Cjmd5ttknzlJQlIdFTDSRucjpcFDu+xD5CgbOPlbyLbdPd8hQSq5off17xWCpHFFWvsx
-         7sHy523vrju/+4GARu/ifXMJQWjXaatRawq935VXAEKJBKeUu7p9w31nmV8+QEBptjvC
-         CBPqgLcq5LpL2s9jqmVRUU69QaWEoLlxIfu20JYYztW0ZPXkBRPBK2KAd5GykIsdQsXG
-         kUdA==
-X-Gm-Message-State: AOAM5311wRkwtCT7cHmQSBj+2qWm6a6Cl7fGjUZ+YbpKEiMkhQBWhub7
-        L5NTEB25JI7s93naugwKOg==
-X-Google-Smtp-Source: ABdhPJx2CveBohR8AvcUvqsjAl1zx4Sij6ixL+jotWz2+OtxE1bi6KAmEwuIeGTb5bB0JhwDJcT3Og==
-X-Received: by 2002:aca:f0b:: with SMTP id 11mr13947987oip.8.1616868749681;
-        Sat, 27 Mar 2021 11:12:29 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.41])
-        by smtp.gmail.com with ESMTPSA id h24sm2970188otg.20.2021.03.27.11.12.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 11:12:28 -0700 (PDT)
-Received: (nullmailer pid 339486 invoked by uid 1000);
-        Sat, 27 Mar 2021 18:12:22 -0000
-Date:   Sat, 27 Mar 2021 12:12:22 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hermes Zhang <chenhui.zhang@axis.com>
-Cc:     pavel@ucw.cz, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chenhuiz@axis.com, lkml@axis.com, kernel@axis.com
-Subject: Re: [PATCH v2 1/2] dt-binding: leds: Document leds-multi-gpio
- bindings
-Message-ID: <20210327181222.GA327657@robh.at.kernel.org>
-References: <20210326052801.17666-1-chenhui.zhang@axis.com>
- <20210326052801.17666-2-chenhui.zhang@axis.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=evJX19dU5Mx28QHYYEKviXtnrg34Fwplbft8/yObPw8=;
+        b=LnAeM8PVKaYT0a/xlIzDxgjvHKK3dsHCu9lzP21oUmQqt/AzjbeuBuv17ncV2f9lDn
+         q/XIHYQXgavKYnL6RKYcbYZyvWz9b6/PEX7xT+81BTeZOdJTXZ/Xn8ozzG2fKq6uflAl
+         y5ReKTVVJk+mgBAjrXutvqEynS232dT1/M97YJTKqi8D1hlYSdGci76b5VEl7kFcGhE4
+         WBq74h17HV2nmEzjzYK5p4rwnsjan9sgV3BKGP3Gj9ywH11AtadNbDIEc/9zcNLUWgIA
+         jvQnqAFCHJsctCOkhHHNuo+h4QTnYCkrvBP3mZM8kY9VBbhR9WvC8cLEHytUm/xkH6bE
+         pUwA==
+X-Gm-Message-State: AOAM5334co2lzy7uiYcxtBBnbozXbKzxCW4R8CWr/5Gh4o4ryolGAcXj
+        eAAPgGL0NEEQRRFQ2s9IT2yCQmStw7YtylYfkuzg4g==
+X-Google-Smtp-Source: ABdhPJwik9U0fZNB4evJY7XACfuyzIlTF7MQrg3C3jKuCpiz/EttjmGK2aVv+KB4mSRfPEN8e2/XaJ/fNdGHU0k0ino=
+X-Received: by 2002:a05:6512:70c:: with SMTP id b12mr4189548lfs.621.1616868939995;
+ Sat, 27 Mar 2021 11:15:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326052801.17666-2-chenhui.zhang@axis.com>
+References: <20210325151248.1066643-1-daniel@qtec.com> <YFyvh3sqyVcg8Iqj@smile.fi.intel.com>
+ <CAH1Ww+Qs13GBC02PCgW60No2Z+vNsV14yRe7S4rtnnMLqH7BYQ@mail.gmail.com> <YF3TUhGEjrQyG5UU@smile.fi.intel.com>
+In-Reply-To: <YF3TUhGEjrQyG5UU@smile.fi.intel.com>
+From:   Daniel Gomez <daniel@qtec.com>
+Date:   Sat, 27 Mar 2021 19:15:29 +0100
+Message-ID: <CAH1Ww+Q8-YD_jc5Pkk3PG4M5vCiisnbpmd2zx0GQsaa_=si0ig@mail.gmail.com>
+Subject: Re: [PATCH] i2c: designware: Add base addr info
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-i2c@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 01:28:00PM +0800, Hermes Zhang wrote:
-> From: Hermes Zhang <chenhuiz@axis.com>
-> 
-> This binding represents LED devices which are controller with
-> multiple GPIO lines in order to achieve more than two brightness
-> states.
-> 
-> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
-> ---
->  .../bindings/leds/leds-multi-gpio.yaml        | 50 +++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> new file mode 100644
-> index 000000000000..1549f21e8d6e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/leds/leds-multi-gpio.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/leds/leds-multi-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Multiple GPIOs LED driver
-> +
-> +maintainers:
-> +  - Hermes Zhang <chenhuiz@axis.com>
-> +
-> +description:
-> +  This will support some LED made of multiple GPIOs and the brightness of the
-> +  LED could map to different states of the GPIOs.
-> +
-> +properties:
-> +  compatible:
-> +    const: multi-gpio-led
-> +
-> +  led-gpios:
-> +    description: Array of one or more GPIOs pins used to control the LED.
-> +    minItems: 1
-> +    maxItems: 8  # Should be enough
-> +
-> +  led-states:
-> +    description: |
-> +      The array list the supported states here which will map to brightness
-> +      from 0 to maximum. Each item in the array will present all the GPIOs
-> +      value by bit.
-> +    $ref: /schemas/types.yaml#/definitions/uint8-array
-> +    minItems: 1
-> +    maxItems: 256 # Should be enough
+On Fri, 26 Mar 2021 at 13:28, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Mar 26, 2021 at 11:35:08AM +0100, Daniel Gomez wrote:
+> > On Thu, 25 Mar 2021 at 16:43, Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Thu, Mar 25, 2021 at 04:12:48PM +0100, Daniel Gomez wrote:
+>
+> ...
+>
+> > > > Add i2c hw base address in the adapter name and when the device is
+> > > > probed.
+> > >
+> > > Why?
+> > > We have /proc/iomem for that.
+> > The initial reason was because I wasn't aware of /proc/iomem therefore
+> > I didn't have a way to match the physical address to the i2c adapter.
+> > So, thanks for pointing that out as now I'm able to match the physical
+> > address listed in iomem with the sysfs i2c bus.
+>
+> You are welcome!
+>
+> ...
+>
+> > > >       snprintf(adap->name, sizeof(adap->name),
+> > > > -              "Synopsys DesignWare I2C adapter");
+> > > > +              "Synopsys DesignWare I2C adapter at 0x%llx", dev->base_addr);
+> > >
+> > > It actually should be resource_size_t and corresponding specifier, i.e. %pa to
+> > > print it. Moreover, we have %pR (and %pr) specifiers for struct resource.
+> > I understand this but I had some doubts when I declared the variable.
+> > I took this as reference:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/i2c/busses/i2c-tegra.c?h=v5.12-rc4#n268
+> > Should it be then defined as resource_size_t instead?
+>
+> It's a good question. On one hand we know that resource_size_t is a simple
+> redefinition of phys_addr_t, but it might be changed in the future. OTOH,
+> struct resource has types of resource_size_t. In any case it's a type that is
+> platform dependent (like long, size_t). Hence, the special specifier is needed.
 
-Isn't this the same as the standard 'brightness-levels' from backlight 
-binding? The index is the level and the value is the h/w specific 
-setting.
+This 'issue' occurs in other subsystems like iio but I can see the
+patches are quite old in comparison with the i2c-tegra one.
+Also, the same happens when they print the variable (wrong specifier).
 
-> +
-> +required:
-> +  - compatible
-> +  - led-gpios
-> +  - led-states
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    gpios-led {
-> +      compatible = "multi-gpio-led";
-> +
-> +      led-gpios = <&gpio0 23 0x1>,
-> +                  <&gpio0 24 0x1>;
-> +      led-states = /bits/ 8 <0x00 0x01 0x02 0x03>;
-> +    };
-> +...
-> -- 
-> 2.20.1
-> 
+>
+> > Out of the i2c subsystem, I also found several examples. For example this:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/adc/at91-sama5d2_adc.c?h=v5.12-rc4#n364
+> > But I understand this could be out of the scope.
+>
+> Not all examples in the kernel are good examples (many of them is a cargo-cult
+> and / or outdated). Take them with grain of salt.
+>
+Yes, you are right.
+
+> But common rule is to check the log of the interesting subsystem (`git log --
+> drivers/<subsystem>/`) in order to find the most recent drivers or modules
+> added. There you very likely will find more or less modern standards and APIs
+> you might reuse in your code.
+>
+> > Some others, even assign the the start to the dma_addr_t which could
+> > vary depending on CONFIG_ARCH_DMA_ADDR_T_64BIT
+> > but it seems equivalent to the phys_addr_t definition.
+>
+> There is a document that describes all possible extensions we have for %p. You
+> might be curious to read more there.
+
+https://www.kernel.org/doc/html/latest/core-api/printk-formats.html?highlight=physical%20addresses%20types#how-to-get-printk-format-specifiers-right
+>
+> ...
+>
+> > > > +     dev_info(&pdev->dev, "%s\n", adap->name);
+> > >
+> > > Unneeded noise.
+> > Also this might be out of the scope again but I added because in tty
+> > they were printing that information:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/tty/serial/serial_core.c?h=v5.12-rc4#n2336
+>
+> TTY is different. TTY often related to a console and it's very important to
+> know some information as soon as possible (don't forget also hardware
+> debuggers, e.g. Lauterbach, which able to show kernel message ring buffer).
+> As you may know console is the first common target during new platform
+> bring-up.
+
+That's right, completely different topic, I used Lauterbach in the
+past and the kernel initcalls with the tty physical address and I
+understand your point.
+
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+Thank you Andy for all the comments and hints! :)
+
+Regards,
+Daniel Gomez
+>
+>
