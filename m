@@ -2,156 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A68934B7E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F2034B7E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhC0PSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 11:18:09 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:39588 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbhC0PRu (ORCPT
+        id S230237AbhC0PR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 11:17:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230187AbhC0PRZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 11:17:50 -0400
-Received: by mail-oi1-f180.google.com with SMTP id i81so8819744oif.6;
-        Sat, 27 Mar 2021 08:17:50 -0700 (PDT)
+        Sat, 27 Mar 2021 11:17:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616858243;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sWbU2NHEP/nHwdL8rp425gC++yCS11BbCfWAnc1DbmU=;
+        b=GbYVkBAyNfvlkGfqiD4hHkWJTyrmuXLj/ZLmrsvfN9ZGcvT4wDtJH246WC/BVXs0N+eo7Q
+        2drtgw37KZQ0BYVSYCgIS8yGmfEL2cVpLfe1hTxTXhbLYGkpnoYPeGBr9M0++zuCoAwpjj
+        9so5yu+Gh73uRgPrzaRflvViBdoMvwA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-117-bEze_LroOJqWAPFFT4ca4w-1; Sat, 27 Mar 2021 11:17:21 -0400
+X-MC-Unique: bEze_LroOJqWAPFFT4ca4w-1
+Received: by mail-ed1-f71.google.com with SMTP id y10so6115082edr.20
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 08:17:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HR93ICa3yWJ7V2cU1aVAOQYhP6ybWqoIXcHtKx1QIgQ=;
-        b=h9VKXn/mGFvqhdgza2zTIl5+culRmIrm1B87cHRrrXzn8iEAwktaqdGCx9BfAl1ZEA
-         3rfH4QOE6XqdApSKVPJLaw+R152DQMnM2VlQlv79lPGWZCPPmFLZokH8ds32kYynpAVY
-         KMIR2+A4Ix93bnFyK/J3kAF4qMDUFjtIe7WFu1Pp/Dmscsvgc1kvbUBxM/RFIa+rJRWQ
-         Hmd7mwE7nzTZTBCpcr2cY43DYfFPPbtk8ShmuQF0gky1gy7o2RmBPxCVOAp56SvIkdfH
-         se7XbrysWpa43Pr+9RwQwWTNpPW3t7JKt3FtdswKitSJPm4LJUcxBet77/rjLqYVeS0z
-         gHZw==
-X-Gm-Message-State: AOAM531PQnQcLc/nBdqCnSXbHO1TUkek9fFyuNX+/xP0ITxoNGBNWcuK
-        zIdw/k24OmVWlykLQN3BLQ==
-X-Google-Smtp-Source: ABdhPJyhJgJk5T983JkfRGYT5rufgWLi8CcYeyyNcLoqA30snh0E1m4zh9EiHg9k4fMBoQ6nAHQluw==
-X-Received: by 2002:aca:3788:: with SMTP id e130mr13252828oia.45.1616858270409;
-        Sat, 27 Mar 2021 08:17:50 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.102.185])
-        by smtp.gmail.com with ESMTPSA id l191sm2410902oih.16.2021.03.27.08.17.48
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=sWbU2NHEP/nHwdL8rp425gC++yCS11BbCfWAnc1DbmU=;
+        b=h20hqtA9pRMbu4BW50X6ppDV56U1oWX7JCDOzwZTOuuhgmoV29Wge4q2ZQLWvNAHa2
+         FweVDPQGd/04DrqQ4l5WvON7Rp7Os5PrREvu9/LS6JUc0fcTd+KyEvqLP+g+jGd1IXMX
+         T8PLaexqR5fFcePLfvaJoKvn/P1wghTaKl8evIf65q47UAsMf1XDiObm3CehgYPFs8NR
+         i8z56RiQIUnvZnGM1eQei2fKAEjJR1N2WySWFJqlBuGVyAztOIi8gTxRFSZhFykqsngr
+         xLFyLAmZq7ypNr5+QMjZv8f0kc5QRYC4x6Wzu7zyxBM6uj/kKsJxAjbmiBi/TmK8UORO
+         T4qw==
+X-Gm-Message-State: AOAM5328a1BR8Z8/vVB9mUDnbTlxikU8iSb6V3WGqbwD9kyUwM5CPWhQ
+        cfkf4DfOjOD18ADC+aEnnk4egT4uvGcaPRAs+Doj0U8R5GPa8ZvFt+JTKvBSaRCxPVBN5nNQoSC
+        DvKa3F5wlK4I4tb4tzBf0p+/N
+X-Received: by 2002:a17:907:c08:: with SMTP id ga8mr8638256ejc.376.1616858239744;
+        Sat, 27 Mar 2021 08:17:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjelz8rGQfFMkVntcNGTpZVUyjEss2KFI7rT4x0i91pJuKEm7MOTj/nTjCEznGZHmjScXEpA==
+X-Received: by 2002:a17:907:c08:: with SMTP id ga8mr8638215ejc.376.1616858239358;
+        Sat, 27 Mar 2021 08:17:19 -0700 (PDT)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id m14sm5978144edr.13.2021.03.27.08.17.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 08:17:49 -0700 (PDT)
-Received: (nullmailer pid 131094 invoked by uid 1000);
-        Sat, 27 Mar 2021 15:14:33 -0000
-Date:   Sat, 27 Mar 2021 09:14:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     lee.jones@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com
-Subject: Re: [PATCH v4 1/5] dt-bindings: mfd: Initial commit of
- silergy,sy7636a.yaml
-Message-ID: <20210327151433.GA121810@robh.at.kernel.org>
-References: <20210326015511.218-1-alistair@alistair23.me>
+        Sat, 27 Mar 2021 08:17:18 -0700 (PDT)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7FDD31801A3; Sat, 27 Mar 2021 16:17:16 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, brouer@redhat.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
+In-Reply-To: <20210327021534.pjfjctcdczj7facs@ast-mbp>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-6-memxor@gmail.com>
+ <20210327021534.pjfjctcdczj7facs@ast-mbp>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 27 Mar 2021 16:17:16 +0100
+Message-ID: <87h7kwaao3.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326015511.218-1-alistair@alistair23.me>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 09:55:07PM -0400, Alistair Francis wrote:
-> Initial support for the Silergy SY7636A Power Management chip
-> and regulator.
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair23.me>
-> ---
-> v3:
->  - No change
-> v2:
->  - N/A
-> 
->  .../bindings/mfd/silergy,sy7636a.yaml         | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> new file mode 100644
-> index 000000000000..f260a8eae226
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/silergy,sy7636a.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: silergy sy7636a PMIC
-> +
-> +maintainers:
-> +  - Alistair Francis <alistair@alistair23.me>
-> +
-> +properties:
-> +  compatible:
-> +    const: silergy,sy7636a
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#thermal-sensor-cells':
-> +    const: 0
-> +
-> +  regulators:
-> +    type: object
-> +    $ref: /schemas/regulator/regulator.yaml#
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-This isn't right as the actual regulators are child nodes of 
-'regulators'. So you need another level defined here.
+> On Thu, Mar 25, 2021 at 05:30:03PM +0530, Kumar Kartikeya Dwivedi wrote:
+>> This adds some basic tests for the low level bpf_tc_* API and its
+>> bpf_program__attach_tc_* wrapper on top.
+>
+> *_block() apis from patch 3 and 4 are not covered by this selftest.
+> Why were they added ? And how were they tested?
+>
+> Pls trim your cc. bpf@vger and netdev@vger would have been enough.
+>
+> My main concern with this set is that it adds netlink apis to libbpf while
+> we already agreed to split xdp manipulation pieces out of libbpf.
+> It would be odd to add tc apis now only to split them later.
 
-This node should also have 'additionalProperties: false' which will 
-highlight the errors here.
+We're not removing the ability to attach an XDP program via netlink from
+libxdp, though. This is the equivalent for TC: the minimum support to
+attach a program, and if you want to do more, you pull in another
+library or roll your own.
 
-> +
-> +    properties:
-> +      compatible:
-> +        const: silergy,sy7636a-regulator
-> +
-> +      regulator-name:
-> +        pattern: "vcom"
+I'm fine with cutting out more stuff and making this even more minimal
+(e.g., remove the block stuff and only support attach/detach on ifaces),
+but we figured we'd err on the side of including too much and getting
+some feedback from others on which bits are the essential ones to keep,
+and which can be dropped.
 
-Not a pattern. Use 'const'.
+> I think it's better to start with new library for tc/xdp and have
+> libbpf as a dependency on that new lib.
+> For example we can add it as subdir in tools/lib/bpf/.
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#thermal-sensor-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      sy7636a@62 {
+I agree for the higher-level stuff (though I'm not sure what that would
+be for TC), but right now TC programs are the only ones that cannot be
+attached by libbpf, which is annoying; that's what we're trying to fix.
 
-pmic@62
+-Toke
 
-> +        compatible = "silergy,sy7636a";
-> +        reg = <0x62>;
-> +        status = "okay";
-> +        pinctrl-names = "default";
-> +        pinctrl-0 = <&pinctrl_epdpmic>;
-> +        #thermal-sensor-cells = <0>;
-> +
-> +        regulators {
-> +          compatible = "silergy,sy7636a-regulator";
-> +          reg_epdpmic: vcom {
-> +            regulator-name = "vcom";
-> +            regulator-boot-on;
-> +          };
-> +        };
-> +      };
-> +    };
-> +...
-> -- 
-> 2.31.0
-> 
