@@ -2,150 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AA834B6F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B9A34B702
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231570AbhC0MBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 08:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S230127AbhC0MHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 08:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhC0MBS (ORCPT
+        with ESMTP id S229627AbhC0MHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 08:01:18 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EFBC0613B2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 05:01:18 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id z136so8068305iof.10
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 05:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SIMDPHXnJc4poV3DKrIm7RFRUBMc9NywN8NXzt4umxk=;
-        b=YDR1mNp5BrE/gjrSZy1efWfV73zp8U1ihFzHdIcAXNCjB1AdgU4Lwm0GP5/taC6g3y
-         uc31iy/AdZ3D5/n/qmQc6KLwOPNbxo7Oq7APscOsvp8tptMzMjVLc7bVEKgfmzCdg02/
-         wiVmucF4BNJoapFvJH1LqOo1ldLjRJPsgZOtU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SIMDPHXnJc4poV3DKrIm7RFRUBMc9NywN8NXzt4umxk=;
-        b=oRht/I1wcIk/R3A1tS8wWEDX59IADQsLByS1V02ZxJKGGO3BNusHCq43w2+CKtbiq1
-         pbTSEd6HP3FXM1Yy9PRgvt2zk+XDZLf2UclH7ozXNLXfpEFZoq8ho/SSVntna4P37Bxi
-         6r52+Jrjn4zWQxSQ6A+VYYbedSM2oUWHjzQo7ASf4NcqWwZnHk87twiCqvvPgzhTR32n
-         2y+dUMGsUNH5c0uGfaool1XEX9Nwz0mgMNOJWpZNEM4HhuJWCmIPm+zhRNonBv7XMTvX
-         tTrrIpKr7N1YTHIYGsiUH8dnEiAZSvCN0HbhjW3fb1WaCx8GpSTNwqt3W/p2cpmOgiwK
-         +L5w==
-X-Gm-Message-State: AOAM532/BKz72+NM7ol98an7KdSVHQW92I4/VaQRt/RKG0JrW2QFdbAs
-        USZeUkWmfDaXOfvHTfkqv9N2l/RSZG5vTQ==
-X-Google-Smtp-Source: ABdhPJz1jGlut0TpvWf10np80RF1kizsexhXTlifZZga31AdP6EoeJv+sm3OMQFcQeDaQn2u+McEvQ==
-X-Received: by 2002:a5e:980e:: with SMTP id s14mr14322376ioj.63.1616846477286;
-        Sat, 27 Mar 2021 05:01:17 -0700 (PDT)
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com. [209.85.166.176])
-        by smtp.gmail.com with ESMTPSA id i13sm5847101ilm.86.2021.03.27.05.01.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Mar 2021 05:01:16 -0700 (PDT)
-Received: by mail-il1-f176.google.com with SMTP id z9so7301348ilb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 05:01:16 -0700 (PDT)
-X-Received: by 2002:a92:6510:: with SMTP id z16mr13518318ilb.71.1616846476099;
- Sat, 27 Mar 2021 05:01:16 -0700 (PDT)
+        Sat, 27 Mar 2021 08:07:10 -0400
+X-Greylist: delayed 301 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 27 Mar 2021 05:07:10 PDT
+Received: from mail.ionic.de (ionic.de [IPv6:2001:41d0:a:588b:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D266C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 05:07:09 -0700 (PDT)
+Authentication-Results: root24.eu; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=ionic.de 
+   (client-ip=217.92.117.31; helo=home.ionic.de; 
+   envelope-from=ionic@ionic.de; receiver=<UNKNOWN>)
+Received: from apgunner.local.home.ionic.de (home.ionic.de [217.92.117.31])
+        by mail.ionic.de (Postfix) with ESMTPSA id 617A84F0046D;
+        Sat, 27 Mar 2021 12:02:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ionic.de; s=default;
+        t=1616846524; bh=UDJiICivjlIFip4eTmVwvTpv10gRaEyo1mLgK8dTWlg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Mog68HLYQ/eTXZ8VpnxG7iiXRv9Dc/67VuQ3EDcHXVCMezWofCxybt0Y5LkNXX/B6
+         zqIWylPhRwR7PKH8Q2gxmz//P6qoHF5D5JBwQpTYd2B4E77T5suMueUz2I1AxFI4WC
+         cQxyFKUbDCX4/5RALi5ll39WIh8rBLF/5o0OYXSU=
+From:   Mihai Moldovan <ionic@ionic.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] kconfig: nconf: stop endless search-up loops
+Date:   Sat, 27 Mar 2021 13:01:55 +0100
+Message-Id: <20210327120155.500-1-ionic@ionic.de>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210326095840.364424-1-ribalda@chromium.org> <20210326095840.364424-18-ribalda@chromium.org>
- <417be36b-850a-84b2-dc68-c1bec85e2edb@xs4all.nl>
-In-Reply-To: <417be36b-850a-84b2-dc68-c1bec85e2edb@xs4all.nl>
-From:   Ricardo Ribalda <ribalda@chromium.org>
-Date:   Sat, 27 Mar 2021 13:01:05 +0100
-X-Gmail-Original-Message-ID: <CANiDSCsikQaCMFKdrKfqYv=NuhCxy2v--QBUPd00c5jAo6OGnQ@mail.gmail.com>
-Message-ID: <CANiDSCsikQaCMFKdrKfqYv=NuhCxy2v--QBUPd00c5jAo6OGnQ@mail.gmail.com>
-Subject: Re: [PATCH v9 17/22] media: docs: Document the behaviour of uvcdriver
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tomasz Figa <tfiga@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
+If the user selects the very first entry in a page and performs a
+search-up operation (e.g., via [/][a][Up Arrow]), nconf will never
+terminate searching the page.
 
-Thanks for your review!
+The reason is that in this case, the starting point will be set to -1,
+which is then translated into (n - 1) (i.e., the last entry of the
+page) and finally the search begins. This continues to work fine until
+the index reaches 0, at which point it will be decremented to -1, but
+not checked against the starting point right away. Instead, it's
+wrapped around to the bottom again, after which the starting point
+check occurs... and naturally fails.
 
-On Sat, Mar 27, 2021 at 12:19 PM Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 26/03/2021 10:58, Ricardo Ribalda wrote:
-> > The uvc driver relies on the camera firmware to keep the control states
-> > and therefore is not capable of changing an inactive control.
-> >
-> > Allow returning -EACESS in those cases.
->
-> -EACCES
+We can easily avoid it by checking against the starting point directly
+if the current index is -1 (which should be safe, since it's the only
+magic value that can occur) and terminate the matching function.
 
-This british people that like to have a lot of double consonants :)
+Amazingly, nobody seems to have been hit by this for 11 years - or at
+the very least nobody bothered to debug and fix this.
 
-I have updated the series at:
+Signed-off-by: Mihai Moldovan <ionic@ionic.de>
+---
+ scripts/kconfig/nconf.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/ribalda/linux.git/log/?h=uvc-compliance-v10
-
-Will not post until there is more feedback to avoid spamming the list.
-
-Thanks :)
-
->
-> >
-> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > ---
-> >  Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst      | 5 +++++
-> >  Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst | 5 +++++
-> >  2 files changed, 10 insertions(+)
-> >
-> > diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
-> > index 4f1bed53fad5..8c0a203385c2 100644
-> > --- a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
-> > +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
-> > @@ -95,3 +95,8 @@ EBUSY
-> >
-> >  EACCES
-> >      Attempt to set a read-only control or to get a write-only control.
-> > +
-> > +    Or if there is an attempt to set an inactive control and the driver is
-> > +    not capable of keeping the new value until the control is active again.
->
-> keeping: 'caching' or 'storing' are better words, I think.
->
-> > +    This is the case for drivers that do not use the standard control
-> > +    framework and rely purely on the hardware to keep the controls' state.
->
-> I would drop that last sentence. It is not relevant information to the users of
-> the API.
->
-> > diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> > index b9c62affbb5a..bb7de7a25241 100644
-> > --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> > +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> > @@ -438,3 +438,8 @@ EACCES
-> >
-> >      Or the ``which`` field was set to ``V4L2_CTRL_WHICH_REQUEST_VAL`` but the
-> >      device does not support requests.
-> > +
-> > +    Or if there is an attempt to set an inactive control and the driver is
-> > +    not capable of keeping the new value until the control is active again.
-> > +    This is the case for drivers that do not use the standard control
-> > +    framework and rely purely on the hardware to keep the controls' state.
->
-> Same comments as above.
->
-> >
->
-> Regards,
->
->         Hans
-
-
-
+diff --git a/scripts/kconfig/nconf.c b/scripts/kconfig/nconf.c
+index e0f965529166..92a5403d8afa 100644
+--- a/scripts/kconfig/nconf.c
++++ b/scripts/kconfig/nconf.c
+@@ -515,6 +515,15 @@ static int get_mext_match(const char *match_str, match_f flag)
+ 			--index;
+ 		else
+ 			++index;
++		/*
++		 * It's fine for index to become negative - think of an
++		 * initial value for match_start of 0 with a match direction
++		 * of up, eventually making it -1.
++		 *
++		 * Handle this as a special case.
++		 */
++		if ((-1 == index) && (index == match_start))
++			return -1;
+ 		index = (index + items_num) % items_num;
+ 		if (index == match_start)
+ 			return -1;
 -- 
-Ricardo Ribalda
+2.30.1
+
