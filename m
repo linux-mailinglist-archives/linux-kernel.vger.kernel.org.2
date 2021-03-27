@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB23834B7A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 15:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E4234B7A3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 15:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbhC0OZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 10:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
+        id S231209AbhC0O0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 10:26:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhC0OZY (ORCPT
+        with ESMTP id S230416AbhC0OZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 10:25:24 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136ADC0613B2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:25:24 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id j9so6653931wrx.12
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:25:23 -0700 (PDT)
+        Sat, 27 Mar 2021 10:25:27 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08048C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:25:27 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j9so6653995wrx.12
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:25:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CHdWroy7tRGJ6z2hFf3CkopkW65s4qPmFApR2G2IO2Y=;
-        b=LLL3Hbo2zjnWmH49k8/AER8msWRJP98NPintOVkGdJEECJEj4VhI54ZjgZTz9QyV4m
-         kD2054V8zGkFB3sUiywySXOvPCsd1xbKSdaxay8ll9pacgSO0cAMNh6zC2XIDjT43v7p
-         WwBMNm+Cm3hMVsj5o6AGzCiDYoEI1tArBVovGLaY8HVOTicBfczLq6UYTPXcOCB6ZVNC
-         /pOgvPB66s8kalk72yC+R+qtMOba6B0kotX6d7ix14foroLExlUsw/0ZKp52YhSJErau
-         0WnnqvChHJmWoUhf9cim9kXvDQuiIdYDILQtbfxVpRpYS674T/AAHtzihtREb0o4VRTM
-         2FwQ==
+        bh=ByK1DDWOjUpsfElsdflbL+PD9t10A+tmGzJVFXAUHaI=;
+        b=OfHe15yhUIenZybF99TmN/6y3i3G1hTzgRfS7MkqZEm/p8/tZUnCstQ0Bm1SqneQAt
+         baSl9EJoo5OWc0sVl6KJsdwDlrQi4MZ/Fm1wFZU6hLOvcu8yNLov4nkx01w8H0uyJpFt
+         8ddsHGIVrfiwOoXSl5X3K/AQ+jNsp2ya2kC/hehqCU4Wxia7ST8p67wAcOFz2oIiNMdw
+         yftOhKCmp3RtDwBsLHyRc9TCbWrdVJY3CY10ckKvONCm9McEA/jd+5jr4/0t9/ZZ9MUx
+         zIVYhvd1Qtnt0nT0kRZb8hZHxiRz4XNioTHeCfywsNUgEkfaIOX6SokgZU3jskjZ5G04
+         tP0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CHdWroy7tRGJ6z2hFf3CkopkW65s4qPmFApR2G2IO2Y=;
-        b=hK2tsEjmOsRQ6hEP37zUshtneq0v3Az/xNHma963e/+oGgq1FXh55LKNcKNvmwP4Gd
-         ouGVjSgbSYoCZb57N+g+qhcFYmjcD8kolOdvmWczhOB2sbjKu1ONoI62Cx/g9BrUmpo+
-         uGpcFkYy+pz+W8cDhAaEsOWPVT94rwJifGgP3IQRgaECx4KkSxkFHWKlQVzll+sgs/l/
-         8ebkVXY3k27qtb7sT16dNeHpjORD+DBcBH1TFMG0CBzGkDB5sF8XAA8BG4tADeCHj1Se
-         8yuZdEDMSXxYolkO+zpFpC87AemWT5UNy9Fk2bLlCxMm7c2x4j8rB86GICe/HQ5yGCiP
-         B55w==
-X-Gm-Message-State: AOAM532LpeyIyFt/wTAAPv8PRHTx8ImdxLX/nQNdFhvTbvzk3OoR4WvE
-        AhXlBTeDDOR3Hup53R+TWDs=
-X-Google-Smtp-Source: ABdhPJxSKRsekNxzCtBSWPzOCPqDzij5Dc+Z7Y9AG0dk3N/etZRq/vrmmIyq3BEaZJaV1CU4Bg5Llg==
-X-Received: by 2002:a5d:5487:: with SMTP id h7mr20022211wrv.348.1616855122875;
-        Sat, 27 Mar 2021 07:25:22 -0700 (PDT)
+        bh=ByK1DDWOjUpsfElsdflbL+PD9t10A+tmGzJVFXAUHaI=;
+        b=N4tewJUF18wuGGwa7LeoSOLIWBe9g02yQ/7L3pfypsnSwDbo0djkUhtbFquB4dZmt0
+         67Y7qipcuVeYCqJj0MROZpTnYiu+hqNWo8q8QPP8sBX7FnKNc05ZK92dcq0Ye9GcdQxl
+         qy/81P1X13DsiZjkUfcboprHbA3BlAGjtOIg/6+lW4JroiS4YXEtTqsOpYc7fb+eMqPG
+         Wgwvstrnatv8vFdM2RC9hoTBF+by4WJRHCkoY4jJ876LRrtIGs8HdpL7rjwhQ4wl23ZS
+         KCWVlQonh4LTJeuutQFTtyWuRxKYZs+FyYVGU0iFQmj2Po/z+KT2VjJz0GHS6mOuz3E9
+         Hsmw==
+X-Gm-Message-State: AOAM533wHnA1IGpWpesWYhZY2S33EhjwMNo6wriWu0nUOg3Fc2yV1ST6
+        c8jIqXxCCUjj/pXWet5gsYA=
+X-Google-Smtp-Source: ABdhPJy3Tzz84P8Xb+QCT4eMVCZ8eilAi9o/73a57QAl8uBz/A5ZzAU0anra/AM3Gfj+J4rdXixFSQ==
+X-Received: by 2002:a05:6000:10c3:: with SMTP id b3mr19448506wrx.96.1616855125814;
+        Sat, 27 Mar 2021 07:25:25 -0700 (PDT)
 Received: from agape ([151.46.211.242])
-        by smtp.gmail.com with ESMTPSA id c9sm17634028wml.42.2021.03.27.07.25.22
+        by smtp.gmail.com with ESMTPSA id u23sm16707567wmn.26.2021.03.27.07.25.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 07:25:22 -0700 (PDT)
+        Sat, 27 Mar 2021 07:25:25 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     dan.carpenter@oracle.com, david.laight@aculab.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v2 19/20] staging: rtl8723bs: include macro in a do - while loop in core/rtw_security.c
-Date:   Sat, 27 Mar 2021 15:24:18 +0100
-Message-Id: <0f176b08b7a49d6649ff9d5468bd912e58c1db06.1616854134.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 20/20] staging: rtl8723bs: remove unused macros in include/drv_types.c
+Date:   Sat, 27 Mar 2021 15:24:19 +0100
+Message-Id: <b405202e5bace2098dd7c787297f700cc1c030e0.1616854134.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1616854134.git.fabioaiuto83@gmail.com>
 References: <cover.1616854134.git.fabioaiuto83@gmail.com>
@@ -65,39 +65,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix the following checkpatch warning:
-
-ERROR: Macros with multiple statements should be enclosed
-in a do - while loop
-2014: FILE: drivers/staging/rtl8723bs/core/rtw_security.c:2014:
-+#define ROUND(i, d, s) \
+remove declarations of unused macros
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/core/rtw_security.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8723bs/include/drv_types.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index 0ddd7667a986..8a447e149438 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -2012,10 +2012,12 @@ static void rijndaelEncrypt(u32 rk[/*44*/], u8 pt[16], u8 ct[16])
- 	s3 = GETU32(pt + 12) ^ rk[3];
+diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
+index 7eb59a16d00e..a454a6390537 100644
+--- a/drivers/staging/rtl8723bs/include/drv_types.h
++++ b/drivers/staging/rtl8723bs/include/drv_types.h
+@@ -266,11 +266,6 @@ struct cam_entry_cache {
+ 	u8 key[16];
+ };
  
- #define ROUND(i, d, s) \
--d##0 = TE0(s##0) ^ TE1(s##1) ^ TE2(s##2) ^ TE3(s##3) ^ rk[4 * i]; \
--d##1 = TE0(s##1) ^ TE1(s##2) ^ TE2(s##3) ^ TE3(s##0) ^ rk[4 * i + 1]; \
--d##2 = TE0(s##2) ^ TE1(s##3) ^ TE2(s##0) ^ TE3(s##1) ^ rk[4 * i + 2]; \
--d##3 = TE0(s##3) ^ TE1(s##0) ^ TE2(s##1) ^ TE3(s##2) ^ rk[4 * i + 3]
-+	do { \
-+		d##0 = TE0(s##0) ^ TE1(s##1) ^ TE2(s##2) ^ TE3(s##3) ^ rk[4 * i]; \
-+		d##1 = TE0(s##1) ^ TE1(s##2) ^ TE2(s##3) ^ TE3(s##0) ^ rk[4 * i + 1]; \
-+		d##2 = TE0(s##2) ^ TE1(s##3) ^ TE2(s##0) ^ TE3(s##1) ^ rk[4 * i + 2]; \
-+		d##3 = TE0(s##3) ^ TE1(s##0) ^ TE2(s##1) ^ TE3(s##2) ^ rk[4 * i + 3]; \
-+	} while (0)
- 
- 	/* Nr - 1 full rounds: */
- 	r = Nr >> 1;
+-#define KEY_FMT "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+-#define KEY_ARG(x) ((u8 *)(x))[0], ((u8 *)(x))[1], ((u8 *)(x))[2], ((u8 *)(x))[3], ((u8 *)(x))[4], ((u8 *)(x))[5], \
+-	((u8 *)(x))[6], ((u8 *)(x))[7], ((u8 *)(x))[8], ((u8 *)(x))[9], ((u8 *)(x))[10], ((u8 *)(x))[11], \
+-	((u8 *)(x))[12], ((u8 *)(x))[13], ((u8 *)(x))[14], ((u8 *)(x))[15]
+-
+ struct dvobj_priv {
+ 	/*-------- below is common data --------*/
+ 	struct adapter *if1; /* PRIMARY_ADAPTER */
 -- 
 2.20.1
 
