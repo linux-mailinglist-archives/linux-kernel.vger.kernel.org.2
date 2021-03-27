@@ -2,80 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA30934B740
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1AC34B742
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230243AbhC0MlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 08:41:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhC0Mk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 08:40:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E64A619C9;
-        Sat, 27 Mar 2021 12:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616848836;
-        bh=3VV+CnI+qYEN6es0BwNT6G0L+Q81CDeO0DCIN1lsJoY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p8JnJotcN5reSX3u3jwu39BrFYw6UC2hIqpEx0c11GihYdHOV08mPJ/ouMPpYi8zV
-         31KiI4TjfmtaeILHLYgmewx7jvkMkelguau719vwaj6+y/ubZsmEhMgfpZfotoIT44
-         6csfU4qR2FgsJKzG6cp4gisl+S1zjiaIKt666YqI=
-Date:   Sat, 27 Mar 2021 13:40:34 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Don Bollinger <don@thebollingers.org>
-Cc:     'Andrew Lunn' <andrew@lunn.ch>, 'Jakub Kicinski' <kuba@kernel.org>,
-        arndb@arndb.de, linux-kernel@vger.kernel.org,
-        brandon_chuang@edge-core.com, wally_wang@accton.com,
-        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
-        xinxliu@microsoft.com, 'netdev' <netdev@vger.kernel.org>,
-        'Moshe Shemesh' <moshe@nvidia.com>
-Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
- EEPROMS
-Message-ID: <YF8nwvFkqrt34AGQ@kroah.com>
-References: <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <001201d719c6$6ac826c0$40587440$@thebollingers.org>
- <YFJHN+raumcJ5/7M@lunn.ch>
- <009601d72023$b73dbde0$25b939a0$@thebollingers.org>
- <YFpr2RyiwX10SNbD@lunn.ch>
- <011301d7226f$dc2426f0$946c74d0$@thebollingers.org>
- <YF46FI4epRGwlyP8@lunn.ch>
- <011901d7227c$e00015b0$a0004110$@thebollingers.org>
- <YF5GA1RbaM1Ht3nl@lunn.ch>
- <011c01d72284$544c8f50$fce5adf0$@thebollingers.org>
+        id S230289AbhC0MlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 08:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhC0MlV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 08:41:21 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FCA1C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 05:41:21 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id r8so2489007ual.9
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 05:41:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PhhAdU2vyDWR26PJABfghl4j1PHQiIGVcs1RWv+L0aU=;
+        b=QlSGlJscqNG3+XnbGoq58V3wf0SqefEhVk5krkgarOFm+trASoVXSyR+q41GNgyyub
+         S1T+4kfVz/EpnprlKEvg8plSNwBIkQ1PAxqnLLf23s3xhO2nvyTRHfD9AhHN9DX187V2
+         tciKgo1hXbBBvvgPtlYtpb6AAmglNi6cT3g1gb0AQWIp7XkA90ko8bwEKczf68qX3+KO
+         Zxu49s/VYWyZtxlfeUUWBRQJEB3IWjUuUdooGbLF162lGo2JQKhuqKobt+qfFSdK8Xx8
+         zNoBtpz7WELvc2fTBIy7vxWRFGC1kNYvbeQQB7x7jWirpwY/0XZD4A4d5FkJG22fFXNw
+         fKrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PhhAdU2vyDWR26PJABfghl4j1PHQiIGVcs1RWv+L0aU=;
+        b=qVVjAzOjAgTvisi2c4WtbWptAETpC7pdLVuDqSHFmXPXDmPvaSlCKwqisI2l9CMTAG
+         SK737AVDR5xzeuhy/4qiMd6EpKAexNayqabOTjC2KV1WIh3P+TE7PacdfL2Q+bjkKSRW
+         MGDq/cVkm3gveNLL4swC1c3d//QG3LiaSfsQnKkyjYy1Q9zV6D97+IxruPyKYaB1nEk/
+         is/pybZeWCQW3FI2vDdYuzzIIi8ww7bUFEFUX6/Pm9IUQy9P97z6/sfN3pyTtg5nw1/N
+         4UvXAHxbaCy2NCdQv1U2FAM8nA1bBouxTRMUCM+ygO4mIEpVqrnMGb9xLiQboOOm7ASy
+         9S0Q==
+X-Gm-Message-State: AOAM532JYH3iLvD076D9+tAJXYiwMhadYnYQLsYCKQk5+2g4abNgLa1E
+        4aqOvi/r76saADW9QBwRbS2tAM7ATTX/JL04hvg=
+X-Google-Smtp-Source: ABdhPJww1VHQhW4Eu1qqEf6Q/bjaehaCbOn5zArIN5usN8LpB7lovOX/dm1BjPaaI9mwryTbRpz958MzXhCd3axbOes=
+X-Received: by 2002:a9f:24c7:: with SMTP id 65mr9957841uar.119.1616848880860;
+ Sat, 27 Mar 2021 05:41:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <011c01d72284$544c8f50$fce5adf0$@thebollingers.org>
+References: <CALaQ_hosk7627nTx97+xSSsGiN-qt=pTGNW4DZn4TOcAeRSC8g@mail.gmail.com>
+ <20200714000347.GA19314@google.com> <CALaQ_hriyvF8yaSihvGEN1U2jufCQ5sj=aknN+1xB=4EbkBWaQ@mail.gmail.com>
+ <20200714055407.GA94278@google.com> <CALaQ_hoviFQeBXODari+gzbBNkHCJk0u9Hqa3EzHksscrhKj1A@mail.gmail.com>
+In-Reply-To: <CALaQ_hoviFQeBXODari+gzbBNkHCJk0u9Hqa3EzHksscrhKj1A@mail.gmail.com>
+From:   Nathan Royce <nroycea+kernel@gmail.com>
+Date:   Sat, 27 Mar 2021 07:41:09 -0500
+Message-ID: <CALaQ_hq+Cxt7BhcEAMWXFwaOGVtVs6+kOZqoYPvze7ee-USY9A@mail.gmail.com>
+Subject: Re: F2FS Segmentation Fault
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Chao Yu <chao@kernel.org>, linux-f2fs-devel@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 02:09:36PM -0700, Don Bollinger wrote:
-> > You keep missing the point. I always refer to the KAPI. The driver we can
-> > rework and rework, throw away and reimplement, as much as we want.
-> > The KAPI cannot be changed, it is ABI. It is pretty much frozen the day
-> the
-> > code is first committed.
-> 
-> Maybe I don't understand what you mean by KAPI.  The KAPI that optoe exposes
-> is in two parts.
-> 
-> First, it makes the EEPROM accessible via the nvmem() interface, an existing
-> KAPI that I call from optoe.  at24 implemented it, I made use of it.  This
-> interface exposes EEPROM data to user space through a defined sysfs() file.
-> I didn't invent this, nor am I proposing it, it already exists.
+I don't know how much of it was the issue, but when I unmounted the
+sd-card, and closed the cryptsetup for it, and then ran
+non-destructive badblocks on it, I was getting ONLY errors.
+I stopped bb, then pulled out the card, blew on it, wiped down the
+contacts with rubbing alcohol, let it dry, put it back in and now bb
+is running cleanly.
+I then stopped bb, tried to cryptsetup-open it and it said the
+partition is not a valid LUKS device.
+Weird since I was using non-destructive.
+Looks like I'm now forced to rebuild that partition.
 
-Again, a "raw" interface to a device that is just memory-mapping all of
-the device information directly is no sort of a real KABI at all.
+I wish I had troubleshot the aspect of the sd-card being properly
+seated. I know I've experienced something similar to it in the past
+where files suddenly aren't able to be read. Once I reseat the
+sd-card, everything was fine.
+The last time I had to even remove the card was maybe 1-2 weeks ago
+when I had to deal with a noisy power-supply fan.
 
-It is no different from trying to use /dev/mem/ to write a networking
-driver, just because you can mmap in the device's configuration space to
-userspace.
+The whole debacle (including btrfs, keyboard leds blinking) may very
+well have been from the sd-card not being seated well.
 
-That is not a real api, it is only using the kernel as a "pass-through"
-which works fine for one-off devices, and other oddities, but is not a
-unified user/kernel api for a class of device types at all.
-
-thanks,
-
-greg k-h
+On Sat, Mar 27, 2021 at 7:02 AM Nathan Royce <nroycea+kernel@gmail.com> wrote:
+>
+> An update, not quite 1 year later. I encountered another segfault issue.
+>
+> It began with my email report to the linux-btrfs mailing list titled
+> "BTRFS Balance Hard System Crash (Blinking LEDs)" just the other day.
+...
