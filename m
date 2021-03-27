@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924E734B75B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBAE34B75C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhC0NGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 09:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59740 "EHLO
+        id S230319AbhC0NGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 09:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhC0NGT (ORCPT
+        with ESMTP id S230266AbhC0NG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 09:06:19 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82262C0613B1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:19 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id v10so6405578pgs.12
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:19 -0700 (PDT)
+        Sat, 27 Mar 2021 09:06:27 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5086BC0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:27 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id h8so2235029plt.7
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/43es5lmfTvSMg9V9lh/7OQVghMj1iNxFqwqD88gyCk=;
-        b=JA8+yZao+x/DmyoiRUpwr0wP9XgaNgDVez40dXm+yEd6Wlgs1dQvO3DkU8n7trJWcL
-         TCj7NqBp0z4pf3pSHrTxX7rWZX4yRyZJAXo7fqTPqfN2R0PkRIp5gnvcDv+7/BRM4nqx
-         3pI6ubgKZ+rxYph8XNAuO94/oOjxgItIhOqYGbLPHwa2eoI60mUbrF/ukBsw8OwQ+Vli
-         0siGyaoTCPP/h+9uuHJqQJ1yw6CCkCAxMwZXD79abtLytL6WkhuvoFJ6exRYGHawcHMs
-         bel32ifzIlv+7ULbcTI2uVNhxvdrD51tRSNrAZ77n+Tk8RivXMeSqSzPVngWZCs0uk6s
-         JryA==
+        bh=NeWUvZBV3NAy1b0eckELIbBZ7sti/n1sLYnD4r2cjaU=;
+        b=V7uM0AaI1Vy/mmqpuTVu5F6+98YPDzOa3QS6tRkWeJqhrflMONfCXtOxXVR+CeiPil
+         OOfaxOtAMeVEW9wE0EU3U/8aNghtzuUvVN+0Tj57+W+4g0ilQOODiDLDu4ZqAo1Q5eDZ
+         gA+He13KWVwNYaYTNUNParLXG5GYDbblaqABSUDurI1FTjn1US0ZZytlzdZy1GfL9eTj
+         6AiiVM3A4YdUGUWE7qQQE8jI92o4qKYvaNjn1M+d5ypKCue3NJWeRTSPKLu0QD2qL02+
+         QPga2RPtmLpztA8/lPGTRpgVNY3C5jdCBZyWgFtvZg5dNoDfe5bQnAmF2J2ka+A7JBSD
+         VHtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/43es5lmfTvSMg9V9lh/7OQVghMj1iNxFqwqD88gyCk=;
-        b=fAhjI90TZfQpcQBqM4rN69d8uN92OH3j+lhm/dYYlmqdchK6ZZsPD3wt6VW8/ObU+0
-         BpTic3inOmn0aVasSmAkbNxaVAUJ339klb/WnO9RfaemBLXDCBMgGjVr+ofhpIbfKxiZ
-         0aBswW4Dc2uY39zmxm7wtJ2sRHHwj/Ltdt7B+NYes7Kzohvfg98YLvm8I5mloimR02U9
-         HRlPKK2YbMcZ5i2Y8Q3faX8356caUUU7l91utK4EXdrVFCbNftXBEmRej6gXSZudCBga
-         7w6Rgymaox0hfMZzYLWtJJp2fo3BcKA4+TD6bJ1yrxIdPmK59QMGoyMUIKqTIZIjN2c/
-         gvpg==
-X-Gm-Message-State: AOAM531lA6V8bOmQPsuLmZx3iv59gcixbI4HEH5eqWzOJ/N3DRaX/hb9
-        NavPhvckezEkR22O7uWWvZAUxOplQlRwSsX5
-X-Google-Smtp-Source: ABdhPJyaSIYZWu4pp8j7TnxkxYd0BP77HzgDaIZFIDeoL910Tkv+L4VuoQLEw0GNu+5Zxi80enV/YQ==
-X-Received: by 2002:a65:498b:: with SMTP id r11mr16491362pgs.364.1616850378733;
-        Sat, 27 Mar 2021 06:06:18 -0700 (PDT)
+        bh=NeWUvZBV3NAy1b0eckELIbBZ7sti/n1sLYnD4r2cjaU=;
+        b=OQek2lJ5JINezfYdN/FzSPFL1N9Hrs+KstU7K4gEHavdffvSAOBebg2MG5VSzkf93H
+         o1iOiAOoXY7cx7j7Vx5CFZUuJOLilpC6gPTJpZlaP8YtEFfGkPaUPPh5FSTyM463Sir8
+         n6DupTSrFUI1y44GOBZ2bM2pf9hRN1Yj1oiCT6upmfoHw0/PaKEZt5aOEI8se7HRJp94
+         td6+SEZok3uxKEglKEqAG8cnj7Pt4tKVQlg+MI1AQDLQ/ytdYJlMPmrqVyNpnsv44wYa
+         dxBf0TaMvqn9SYDIDcGct3toAVm5DfVUqXm1nkYcYMOdvPrmLoH52NtCyi5cYC+2TR6i
+         jUpA==
+X-Gm-Message-State: AOAM532sXgN0NNpKjilSMBewUXwwXz+MOfd7J5FRI6zAWA5st7gy5LmE
+        Sw/QHj4cm3zT07LU1kWYSO9puwFV+yK0Hquf
+X-Google-Smtp-Source: ABdhPJyDnhcP7BeBHXX2rPqMXwkOQiZdussDPATmYqyQnp7HAsi0OqWSUVIloMNi3QBpMsmjXTtyew==
+X-Received: by 2002:a17:903:2285:b029:e6:faf5:eaff with SMTP id b5-20020a1709032285b02900e6faf5eaffmr19574014plh.70.1616850386727;
+        Sat, 27 Mar 2021 06:06:26 -0700 (PDT)
 Received: from johnchen902-arch-ryzen.. (2001-b011-3815-3a1f-9afa-9bff-fe6e-3ce2.dynamic-ip6.hinet.net. [2001:b011:3815:3a1f:9afa:9bff:fe6e:3ce2])
-        by smtp.gmail.com with ESMTPSA id ot17sm6413787pjb.50.2021.03.27.06.06.17
+        by smtp.gmail.com with ESMTPSA id ot17sm6413787pjb.50.2021.03.27.06.06.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 06:06:18 -0700 (PDT)
+        Sat, 27 Mar 2021 06:06:26 -0700 (PDT)
 From:   John Chen <johnchen902@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Rohit Pidaparthi <rohitpid@gmail.com>,
@@ -55,9 +55,9 @@ Cc:     Rohit Pidaparthi <rohitpid@gmail.com>,
         Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         John Chen <johnchen902@gmail.com>
-Subject: [PATCH 1/4] HID: magicmouse: add Apple Magic Mouse 2 support
-Date:   Sat, 27 Mar 2021 21:05:05 +0800
-Message-Id: <20210327130508.24849-2-johnchen902@gmail.com>
+Subject: [PATCH 2/4] HID: magicmouse: fix 3 button emulation of Mouse 2
+Date:   Sat, 27 Mar 2021 21:05:06 +0800
+Message-Id: <20210327130508.24849-3-johnchen902@gmail.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210327130508.24849-1-johnchen902@gmail.com>
 References: <20210327130508.24849-1-johnchen902@gmail.com>
@@ -67,167 +67,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bluetooth device
-	Vendor 004c (Apple)
-	Device 0269 (Magic Mouse 2)
+It is observed that, with 3 button emulation, when middle button is
+clicked, either the left button or right button is clicked as well. It
+is caused by hidinput "correctly" acting on the event, oblivious to the
+3 button emulation.
 
-Add support for Apple Magic Mouse 2, putting the device in multi-touch
-mode.
+As raw_event has taken care of everything, no further processing is
+needed. However, the only way to stop at raw_event is to return an error
+(negative) value. Therefore, the processing is stopped at event instead.
 
-Co-authored-by: Rohit Pidaparthi <rohitpid@gmail.com>
-Co-authored-by: RicardoEPRodrigues <ricardo.e.p.rodrigues@gmail.com>
 Signed-off-by: John Chen <johnchen902@gmail.com>
 ---
- drivers/hid/hid-ids.h        |  1 +
- drivers/hid/hid-magicmouse.c | 53 ++++++++++++++++++++++++++++++++----
- 2 files changed, 49 insertions(+), 5 deletions(-)
+ drivers/hid/hid-magicmouse.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index e42aaae3138f..fa0edf03570a 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -93,6 +93,7 @@
- #define BT_VENDOR_ID_APPLE		0x004c
- #define USB_DEVICE_ID_APPLE_MIGHTYMOUSE	0x0304
- #define USB_DEVICE_ID_APPLE_MAGICMOUSE	0x030d
-+#define USB_DEVICE_ID_APPLE_MAGICMOUSE2	0x0269
- #define USB_DEVICE_ID_APPLE_MAGICTRACKPAD	0x030e
- #define USB_DEVICE_ID_APPLE_MAGICTRACKPAD2	0x0265
- #define USB_DEVICE_ID_APPLE_FOUNTAIN_ANSI	0x020e
 diff --git a/drivers/hid/hid-magicmouse.c b/drivers/hid/hid-magicmouse.c
-index abd86903875f..7aad6ca56780 100644
+index 7aad6ca56780..c646b4cd3783 100644
 --- a/drivers/hid/hid-magicmouse.c
 +++ b/drivers/hid/hid-magicmouse.c
-@@ -54,6 +54,7 @@ MODULE_PARM_DESC(report_undeciphered, "Report undeciphered multi-touch state fie
- #define TRACKPAD2_USB_REPORT_ID 0x02
- #define TRACKPAD2_BT_REPORT_ID 0x31
- #define MOUSE_REPORT_ID    0x29
-+#define MOUSE2_REPORT_ID   0x12
- #define DOUBLE_REPORT_ID   0xf7
- /* These definitions are not precise, but they're close enough.  (Bits
-  * 0x03 seem to indicate the aspect ratio of the touch, bits 0x70 seem
-@@ -195,7 +196,8 @@ static void magicmouse_emit_touch(struct magicmouse_sc *msc, int raw_id, u8 *tda
- 	int id, x, y, size, orientation, touch_major, touch_minor, state, down;
- 	int pressure = 0;
+@@ -440,6 +440,21 @@ static int magicmouse_raw_event(struct hid_device *hdev,
+ 	return 1;
+ }
  
--	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE) {
-+	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE ||
-+	    input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
- 		id = (tdata[6] << 2 | tdata[5] >> 6) & 0xf;
- 		x = (tdata[1] << 28 | tdata[0] << 20) >> 20;
- 		y = -((tdata[2] << 24 | tdata[1] << 16) >> 20);
-@@ -296,7 +298,8 @@ static void magicmouse_emit_touch(struct magicmouse_sc *msc, int raw_id, u8 *tda
- 			input_report_abs(input, ABS_MT_PRESSURE, pressure);
- 
- 		if (report_undeciphered) {
--			if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE)
-+			if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE ||
-+			    input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2)
- 				input_event(input, EV_MSC, MSC_RAW, tdata[7]);
- 			else if (input->id.product !=
- 					USB_DEVICE_ID_APPLE_MAGICTRACKPAD2)
-@@ -380,6 +383,34 @@ static int magicmouse_raw_event(struct hid_device *hdev,
- 		 * ts = data[3] >> 6 | data[4] << 2 | data[5] << 10;
- 		 */
- 		break;
-+	case MOUSE2_REPORT_ID:
-+		/* Size is either 8 or (14 + 8 * N) */
-+		if (size != 8 && (size < 14 || (size - 14) % 8 != 0))
-+			return 0;
-+		npoints = (size - 14) / 8;
-+		if (npoints > 15) {
-+			hid_warn(hdev, "invalid size value (%d) for MOUSE2_REPORT_ID\n",
-+					size);
-+			return 0;
-+		}
-+		msc->ntouches = 0;
-+		for (ii = 0; ii < npoints; ii++)
-+			magicmouse_emit_touch(msc, ii, data + ii * 8 + 14);
++static int magicmouse_event(struct hid_device *hdev, struct hid_field *field,
++		struct hid_usage *usage, __s32 value)
++{
++	struct magicmouse_sc *msc = hid_get_drvdata(hdev);
++	if (msc->input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2 &&
++	    field->report->id == MOUSE2_REPORT_ID) {
++		// magic_mouse_raw_event has done all the work. Skip hidinput.
++		//
++		// Specifically, hidinput may modify BTN_LEFT and BTN_RIGHT,
++		// breaking emulate_3button.
++		return 1;
++	}
++	return 0;
++}
 +
-+		/* When emulating three-button mode, it is important
-+		 * to have the current touch information before
-+		 * generating a click event.
-+		 */
-+		x = (int)((data[3] << 24) | (data[2] << 16)) >> 16;
-+		y = (int)((data[5] << 24) | (data[4] << 16)) >> 16;
-+		clicks = data[1];
-+
-+		/* The following bits provide a device specific timestamp. They
-+		 * are unused here.
-+		 *
-+		 * ts = data[11] >> 6 | data[12] << 2 | data[13] << 10;
-+		 */
-+		break;
- 	case DOUBLE_REPORT_ID:
- 		/* Sometimes the trackpad sends two touch reports in one
- 		 * packet.
-@@ -392,7 +423,8 @@ static int magicmouse_raw_event(struct hid_device *hdev,
- 		return 0;
- 	}
- 
--	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE) {
-+	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE ||
-+	    input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
- 		magicmouse_emit_buttons(msc, clicks & 3);
- 		input_report_rel(input, REL_X, x);
- 		input_report_rel(input, REL_Y, y);
-@@ -415,7 +447,8 @@ static int magicmouse_setup_input(struct input_dev *input, struct hid_device *hd
- 
- 	__set_bit(EV_KEY, input->evbit);
- 
--	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE) {
-+	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE ||
-+	    input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
- 		__set_bit(BTN_LEFT, input->keybit);
- 		__set_bit(BTN_RIGHT, input->keybit);
- 		if (emulate_3button)
-@@ -480,7 +513,8 @@ static int magicmouse_setup_input(struct input_dev *input, struct hid_device *hd
- 	 * the origin at the same position, and just uses the additive
- 	 * inverse of the reported Y.
- 	 */
--	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE) {
-+	if (input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE ||
-+	    input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
- 		input_set_abs_params(input, ABS_MT_ORIENTATION, -31, 32, 1, 0);
- 		input_set_abs_params(input, ABS_MT_POSITION_X,
- 				     MOUSE_MIN_X, MOUSE_MAX_X, 4, 0);
-@@ -586,6 +620,7 @@ static int magicmouse_probe(struct hid_device *hdev,
+ static int magicmouse_setup_input(struct input_dev *input, struct hid_device *hdev)
  {
- 	const u8 *feature;
- 	const u8 feature_mt[] = { 0xD7, 0x01 };
-+	const u8 feature_mt_mouse2[] = { 0xF1, 0x02, 0x01 };
- 	const u8 feature_mt_trackpad2_usb[] = { 0x02, 0x01 };
- 	const u8 feature_mt_trackpad2_bt[] = { 0xF1, 0x02, 0x01 };
- 	u8 *buf;
-@@ -631,6 +666,9 @@ static int magicmouse_probe(struct hid_device *hdev,
- 	if (id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE)
- 		report = hid_register_report(hdev, HID_INPUT_REPORT,
- 			MOUSE_REPORT_ID, 0);
-+	else if (id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE2)
-+		report = hid_register_report(hdev, HID_INPUT_REPORT,
-+			MOUSE2_REPORT_ID, 0);
- 	else if (id->product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2) {
- 		if (id->vendor == BT_VENDOR_ID_APPLE)
- 			report = hid_register_report(hdev, HID_INPUT_REPORT,
-@@ -660,6 +698,9 @@ static int magicmouse_probe(struct hid_device *hdev,
- 			feature_size = sizeof(feature_mt_trackpad2_usb);
- 			feature = feature_mt_trackpad2_usb;
- 		}
-+	} else if (id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
-+		feature_size = sizeof(feature_mt_mouse2);
-+		feature = feature_mt_mouse2;
- 	} else {
- 		feature_size = sizeof(feature_mt);
- 		feature = feature_mt;
-@@ -696,6 +737,8 @@ static int magicmouse_probe(struct hid_device *hdev,
- static const struct hid_device_id magic_mice[] = {
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE,
- 		USB_DEVICE_ID_APPLE_MAGICMOUSE), .driver_data = 0 },
-+	{ HID_BLUETOOTH_DEVICE(BT_VENDOR_ID_APPLE,
-+		USB_DEVICE_ID_APPLE_MAGICMOUSE2), .driver_data = 0 },
- 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE,
- 		USB_DEVICE_ID_APPLE_MAGICTRACKPAD), .driver_data = 0 },
- 	{ HID_BLUETOOTH_DEVICE(BT_VENDOR_ID_APPLE,
+ 	int error;
+@@ -754,6 +769,7 @@ static struct hid_driver magicmouse_driver = {
+ 	.id_table = magic_mice,
+ 	.probe = magicmouse_probe,
+ 	.raw_event = magicmouse_raw_event,
++	.event = magicmouse_event,
+ 	.input_mapping = magicmouse_input_mapping,
+ 	.input_configured = magicmouse_input_configured,
+ };
 -- 
 2.31.0
 
