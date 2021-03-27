@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A281734B842
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C968534B845
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:41:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhC0Qki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 12:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhC0QkN (ORCPT
+        id S230442AbhC0QlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 12:41:08 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:37483 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230440AbhC0QlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 12:40:13 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA91C0613B1;
-        Sat, 27 Mar 2021 09:40:13 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so3912144pjg.5;
-        Sat, 27 Mar 2021 09:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JL70rgGydsxus+JeTgWi5wl5fpmwQg+GhwZ0mAf8iok=;
-        b=HynBWYBX2IKzobwhkHmWP4fkpfSIcVB+IJYj7uu8/XVRTxQe2sJEYX7uqBKBvJERAl
-         vAdYsyMcKJyBEJQUoVPPwucofi7koI0hfIU56u1dnoXxkv1spnoEET8FWg76udE7Cq92
-         +ignPdPJft2HgToIx34j5ChbtBI5wdlbMkP7OqIBR925U1ZnwHiZHB3g/Glz625YXhnu
-         fJt1vx/GX4PEnhEConuSa0UNCtz717UeDb3SAa4YGFUpfwLOh0MzNmHbco901+Wq4bOY
-         3QbiPCJ0F4lVl/w7fY1Zjyl//esaeYokd/kBB/ZcO5dpb5kc2qdlkNPxz17W0pVCWX+9
-         0HXw==
+        Sat, 27 Mar 2021 12:41:02 -0400
+Received: by mail-ot1-f44.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so8221280otr.4;
+        Sat, 27 Mar 2021 09:41:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JL70rgGydsxus+JeTgWi5wl5fpmwQg+GhwZ0mAf8iok=;
-        b=eSDE5antLHVy62kbT7uVHs3Os9/Rf8DNa8/TvABOkvEcAN8DCL2VRiZZKkNUHmO8mZ
-         5fdKK/OBqf8nJBPK8wpov7icDeKVjUGA6D38hPC8zHcJqPL3ZSPk3k4k6uuYYcXnfHQi
-         OIT6LzAPjqaE+smRMRLiSJmC5AwdsPXKUi90LmEZZLR4/dEzhzZbUV0OAT9PUwPVdoFz
-         aL4u2T3eN3rjMzocoMg4BAjZLA4FLQa/95OMKjZ8NHp1SVhaQM09wl+edrvvF++zVRPZ
-         pFumcLh3GvoyJqsO/COLIyMq2FGPbGe2eu8dIINMyWpiZIla7w2b2rYNenUimsYF4ff3
-         dXUg==
-X-Gm-Message-State: AOAM532RI9V7iy7EAdi1uN00fvVDQ2rurUt7BhUOGusiGwToaYijU2dk
-        XJ9C8lJFxJrw5TYitwqHvbNkwoNCcS1DHPIuME8=
-X-Google-Smtp-Source: ABdhPJzkyo6zxijfjanBnyXsLv3vXhLo28Y8FI2srMcNyQbFZa4Pfz1G4do6IfD8ml1liHwXCz5mMkQanyooX+lE3sc=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr19406689pjr.228.1616863212901;
- Sat, 27 Mar 2021 09:40:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wb4sH2K63Zh3SiFRvUPI8IlBfub9eBg1HUipVUt8VBI=;
+        b=Kx0zRUC6uaTQ/N4Vu10Ltddq+l6cGnPHbCRrEh2EI5V84IcKEZSrrNmKzs/upQrVoF
+         TQmNqegVzgBHiZo23FPkig7jMASYfNgXh3eAXFy34FED9WZw/3aAhEJCLNk/2bxaXovi
+         XSvqx+ziXl8Gvp+AMZuo5sRa0WxEo5tb7uSFN6uQ4VWHD9X3iXvvvmkvleNy+btnEyu8
+         1SyB0gHeCQG+NpwsiGNDnkh4K7LQv4GIf74v44vIdCVgG0Q3N5izubJDA1GfXqdWlYRg
+         6xi+udYL0dyJgKFS5f9xwliOPXcJBx8ihzNMCyz9BVbJv0zjg91upSNWVAPEV8EQ4ZlQ
+         FRdw==
+X-Gm-Message-State: AOAM530is/QRXy/oJros2Do3Q5J6Mjyr29MRcCyBGWhEOWbIMQMlVQ5+
+        /+0EBAPzKlY7OL7PsTexlA==
+X-Google-Smtp-Source: ABdhPJywxocBdq+u+4dCiSNTO48Yh6y1yejg1pEi9Bp58/WqcYpE420zdyRI0SRmfytnYuV5CmQtlA==
+X-Received: by 2002:a9d:5a8d:: with SMTP id w13mr16600598oth.145.1616863261384;
+        Sat, 27 Mar 2021 09:41:01 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.140])
+        by smtp.gmail.com with ESMTPSA id e15sm2842895otk.64.2021.03.27.09.40.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 09:41:00 -0700 (PDT)
+Received: (nullmailer pid 217627 invoked by uid 1000);
+        Sat, 27 Mar 2021 16:40:56 -0000
+Date:   Sat, 27 Mar 2021 10:40:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Caleb Connolly <caleb@connolly.tech>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mukesh Savaliya <msavaliy@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] dt-bindings: qcom: geni-se: document iommus
+Message-ID: <20210327164056.GA216078@robh.at.kernel.org>
+References: <20210321174522.123036-1-caleb@connolly.tech>
+ <20210321174522.123036-4-caleb@connolly.tech>
 MIME-Version: 1.0
-References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
- <1616831193-17920-7-git-send-email-tanxiaofei@huawei.com> <CAHp75Vd0hVqsfsZK=d1dz98Kbchqz-w4RqQQp6FwisxSGG5BzA@mail.gmail.com>
- <50e838ca74c56b9fd5cbbc2d7234829f0e0b4131.camel@perches.com>
-In-Reply-To: <50e838ca74c56b9fd5cbbc2d7234829f0e0b4131.camel@perches.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 27 Mar 2021 18:39:56 +0200
-Message-ID: <CAHp75Vcr5DTiQ=WWSC+Ch-jEw7H+f13A=4=U3QVF5ttvRr1D7w@mail.gmail.com>
-Subject: Re: [PATCH v2 06/15] ACPI: LPSS: fix some coding style issues
-To:     Joe Perches <joe@perches.com>
-Cc:     Xiaofei Tan <tanxiaofei@huawei.com>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210321174522.123036-4-caleb@connolly.tech>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 3:39 PM Joe Perches <joe@perches.com> wrote:
->
-> On Sat, 2021-03-27 at 10:19 +0200, Andy Shevchenko wrote:
-> > On Saturday, March 27, 2021, Xiaofei Tan <tanxiaofei@huawei.com> wrote:
-> >
-> > > Fix some coding style issues reported by checkpatch.pl, including
-> > > following types:
-> > >
-> > > WARNING: simple_strtol is obsolete, use kstrtol instead
-> >
-> >
-> > And one more thing, the above message is bogus. Read what the comments in
-> > the code says about use cases for simple_*() vs. kstrto*() ones.
-> >
-> > Joe?
->
-> This check and message is nearly 10 years old and was appropriate for
-> when it was implemented.
->
-> kernel.h currently has:
->  * Use these functions if and only if you cannot use kstrto<foo>, because
->
-> So the message could be changed to something like:
->
-> WARNING: simple_strtol should be used only when kstrtol can not be used.
+On Sun, Mar 21, 2021 at 05:46:32PM +0000, Caleb Connolly wrote:
+> Document the iommus property for QCOM Geni SE.
+> 
+> Signed-off-by: Caleb Connolly <caleb@connolly.tech>
+> ---
+>  Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml
+> index 84671950ca0d..68c4ee55ae7d 100644
+> --- a/Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml
+> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml
+> @@ -51,6 +51,9 @@ properties:
+>    interconnect-names:
+>      const: qup-core
+>  
+> +  iommus:
 
-Fine with me, thanks!
+Need to define how many entries (maxItems: 1?)
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +    description: the iommu and adress to be used to configure DMA for large transfers.
+
+The property doesn't define the address to be used.
+
+> +
+>  required:
+>    - compatible
+>    - reg
+> -- 
+> 2.30.2
+> 
+> 
