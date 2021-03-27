@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882B034B7F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF8F34B7F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhC0PUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 11:20:13 -0400
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:44669 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhC0PTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 11:19:55 -0400
-Received: by mail-oi1-f179.google.com with SMTP id a8so8795176oic.11;
-        Sat, 27 Mar 2021 08:19:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nfnKdAHB/EP3TU6RFTKDpMwYBzJ5rtNzgJbhutbUIg8=;
-        b=E6WcUymPekSIX5gEMq7wlmhV4bjgKNsWT+eTbI8n5gWvxYb+oKLNRlCABoqvg9lFW8
-         ur43YfIxEieQ13qndypJMVM/vP+FjRsT/Js+laccEtw2oua6vOJBoz1hteiPU0zSZQK1
-         HQPwulxz+OBUJsuY359IEYuvNt9u1p+/Y5Cm2OZMTUAS2upv0uWfIKvoytucBGnw0KKY
-         N3D55spPvzgvLHbVYGbpdiHKYck7naM3mg8zGBtE8jp1/c63ecRODo2lPBnpZtgPmPBb
-         jCN9DNo4KZi3E0yJ/xq/ht2z+TX1L0YvSEcv65hSTmtKgyeYQIX6gRgIXkpGpoDE/kZ8
-         vGKg==
-X-Gm-Message-State: AOAM531Cz8dnaDlMQ/XOO7PsYD6vmToNoldgRSqx+a4yu+h2NmDhwfO0
-        mXG9bzsI0/o6kDm/k1VB9w==
-X-Google-Smtp-Source: ABdhPJyFWMuW/TG7+Dj6H0NNbsspoDX4rQ+wr4XeeEwSHO2tuRHj5bzEAsG0U1r5f8L8fafXCJeLKw==
-X-Received: by 2002:aca:f597:: with SMTP id t145mr13882340oih.121.1616858395171;
-        Sat, 27 Mar 2021 08:19:55 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.102.185])
-        by smtp.gmail.com with ESMTPSA id t2sm2560759ool.18.2021.03.27.08.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 08:19:54 -0700 (PDT)
-Received: (nullmailer pid 139006 invoked by uid 1000);
-        Sat, 27 Mar 2021 15:19:48 -0000
-Date:   Sat, 27 Mar 2021 09:19:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>, amitk@kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        rui.zhang@intel.com, Vinod Koul <vinod.koul@linaro.org>,
-        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
-        agross@kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: thermal: qcom-tsens: Add compatible
- for sm8350
-Message-ID: <20210327151948.GA138949@robh.at.kernel.org>
-References: <20210324124308.1265626-1-robert.foss@linaro.org>
+        id S230223AbhC0PX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 11:23:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52054 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhC0PXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 11:23:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CA1861941;
+        Sat, 27 Mar 2021 15:23:27 +0000 (UTC)
+Date:   Sat, 27 Mar 2021 15:23:24 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
+Message-ID: <20210327152324.GA28167@arm.com>
+References: <20210312151902.17853-1-steven.price@arm.com>
+ <20210312151902.17853-3-steven.price@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324124308.1265626-1-robert.foss@linaro.org>
+In-Reply-To: <20210312151902.17853-3-steven.price@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 13:43:08 +0100, Robert Foss wrote:
-> Add tsens bindings for sm8350.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> Reviewed-by: Vinod Koul <vkoul@kernel.org>
-> ---
-> 
-> Changes since v1:
->  - Vinod: Remove comment
-> 
->  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
+On Fri, Mar 12, 2021 at 03:18:58PM +0000, Steven Price wrote:
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 77cb2d28f2a4..b31b7a821f90 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  	if (vma_pagesize == PAGE_SIZE && !force_pte)
+>  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
+>  							   &pfn, &fault_ipa);
+> +
+> +	if (fault_status != FSC_PERM && kvm_has_mte(kvm) && pfn_valid(pfn)) {
 
-Acked-by: Rob Herring <robh@kernel.org>
+This pfn_valid() check may be problematic. Following commit eeb0753ba27b
+("arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory"), it returns
+true for ZONE_DEVICE memory but such memory is allowed not to support
+MTE.
+
+I now wonder if we can get a MAP_ANONYMOUS mapping of ZONE_DEVICE pfn
+even without virtualisation.
+
+> +		/*
+> +		 * VM will be able to see the page's tags, so we must ensure
+> +		 * they have been initialised. if PG_mte_tagged is set, tags
+> +		 * have already been initialised.
+> +		 */
+> +		struct page *page = pfn_to_page(pfn);
+> +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
+> +
+> +		for (i = 0; i < nr_pages; i++, page++) {
+> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> +				mte_clear_page_tags(page_address(page));
+> +		}
+> +	}
+> +
+>  	if (writable)
+>  		prot |= KVM_PGTABLE_PROT_W;
+>  
+
+-- 
+Catalin
