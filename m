@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5A134B83F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A281734B842
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhC0QkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 12:40:05 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:33386 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhC0Qjo (ORCPT
+        id S230423AbhC0Qki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 12:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhC0QkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 12:39:44 -0400
-Received: by mail-ot1-f54.google.com with SMTP id s11-20020a056830124bb029021bb3524ebeso8251379otp.0;
-        Sat, 27 Mar 2021 09:39:44 -0700 (PDT)
+        Sat, 27 Mar 2021 12:40:13 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA91C0613B1;
+        Sat, 27 Mar 2021 09:40:13 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id q6-20020a17090a4306b02900c42a012202so3912144pjg.5;
+        Sat, 27 Mar 2021 09:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JL70rgGydsxus+JeTgWi5wl5fpmwQg+GhwZ0mAf8iok=;
+        b=HynBWYBX2IKzobwhkHmWP4fkpfSIcVB+IJYj7uu8/XVRTxQe2sJEYX7uqBKBvJERAl
+         vAdYsyMcKJyBEJQUoVPPwucofi7koI0hfIU56u1dnoXxkv1spnoEET8FWg76udE7Cq92
+         +ignPdPJft2HgToIx34j5ChbtBI5wdlbMkP7OqIBR925U1ZnwHiZHB3g/Glz625YXhnu
+         fJt1vx/GX4PEnhEConuSa0UNCtz717UeDb3SAa4YGFUpfwLOh0MzNmHbco901+Wq4bOY
+         3QbiPCJ0F4lVl/w7fY1Zjyl//esaeYokd/kBB/ZcO5dpb5kc2qdlkNPxz17W0pVCWX+9
+         0HXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=slhgr6hw24BbRJVfvz1417ZaHRih1z35mJAzQg49R8Q=;
-        b=ptG160iRrf9Ic5qBVX1KxSd8+H5eg3VrOJgLpbP+vqCO3cYXzQ6eawk/cZCqfJVClW
-         tdAqHyJy87w9U9JBEw/cM+Mf6vYhGMKEq83LqzxZ5gqnQzoatqdQyGYFv3p+iCcNWRzl
-         vEE3/8YQire5DlKK92iNL2oaHo/UDA7OivoBbj1iSuVFm53MRwSEE3jNJ8R1+P/b++1F
-         q4PgWQcn7Tbp2EhhzCp/HWV6Q3yaYM8tQJxCQ3uAmX/iePtF8Y4f5o1JzXaAGh/5cWdS
-         oMk2bMzOwXbLksbDDS7QSUUZkNO52QbiPg+jPYWgxWhHi/L5jbekEgDM2mBMoxnPokXb
-         YMdw==
-X-Gm-Message-State: AOAM530KmSfEyYsULSqAvqWzXBt3aJdU2OOAoF1sMzJZxqg1f9Yg+2o/
-        T/wfish1GBY86sd0cl+qMQ==
-X-Google-Smtp-Source: ABdhPJxQjloklyUslrbUHzJCVse7QmDNkKO884rNpGP+vLsKmHJnuNbHWCAqy30qFKU/CySEHFNduw==
-X-Received: by 2002:a9d:3b0a:: with SMTP id z10mr16282117otb.326.1616863183754;
-        Sat, 27 Mar 2021 09:39:43 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.140])
-        by smtp.gmail.com with ESMTPSA id m126sm2484503oig.31.2021.03.27.09.39.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 09:39:43 -0700 (PDT)
-Received: (nullmailer pid 215898 invoked by uid 1000);
-        Sat, 27 Mar 2021 16:39:37 -0000
-Date:   Sat, 27 Mar 2021 10:39:37 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Patrick Venture <venture@google.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        openbmc@lists.ozlabs.org, Nancy Yuen <yuenn@google.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        Avi Fishman <avifishman70@gmail.com>
-Subject: Re: [PATCH 06/14] dt-bindings: watchdog: npcm: Add
- nuvoton,wpcm450-wdt
-Message-ID: <20210327163937.GA215847@robh.at.kernel.org>
-References: <20210320181610.680870-1-j.neuschaefer@gmx.net>
- <20210320181610.680870-7-j.neuschaefer@gmx.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JL70rgGydsxus+JeTgWi5wl5fpmwQg+GhwZ0mAf8iok=;
+        b=eSDE5antLHVy62kbT7uVHs3Os9/Rf8DNa8/TvABOkvEcAN8DCL2VRiZZKkNUHmO8mZ
+         5fdKK/OBqf8nJBPK8wpov7icDeKVjUGA6D38hPC8zHcJqPL3ZSPk3k4k6uuYYcXnfHQi
+         OIT6LzAPjqaE+smRMRLiSJmC5AwdsPXKUi90LmEZZLR4/dEzhzZbUV0OAT9PUwPVdoFz
+         aL4u2T3eN3rjMzocoMg4BAjZLA4FLQa/95OMKjZ8NHp1SVhaQM09wl+edrvvF++zVRPZ
+         pFumcLh3GvoyJqsO/COLIyMq2FGPbGe2eu8dIINMyWpiZIla7w2b2rYNenUimsYF4ff3
+         dXUg==
+X-Gm-Message-State: AOAM532RI9V7iy7EAdi1uN00fvVDQ2rurUt7BhUOGusiGwToaYijU2dk
+        XJ9C8lJFxJrw5TYitwqHvbNkwoNCcS1DHPIuME8=
+X-Google-Smtp-Source: ABdhPJzkyo6zxijfjanBnyXsLv3vXhLo28Y8FI2srMcNyQbFZa4Pfz1G4do6IfD8ml1liHwXCz5mMkQanyooX+lE3sc=
+X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr19406689pjr.228.1616863212901;
+ Sat, 27 Mar 2021 09:40:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210320181610.680870-7-j.neuschaefer@gmx.net>
+References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+ <1616831193-17920-7-git-send-email-tanxiaofei@huawei.com> <CAHp75Vd0hVqsfsZK=d1dz98Kbchqz-w4RqQQp6FwisxSGG5BzA@mail.gmail.com>
+ <50e838ca74c56b9fd5cbbc2d7234829f0e0b4131.camel@perches.com>
+In-Reply-To: <50e838ca74c56b9fd5cbbc2d7234829f0e0b4131.camel@perches.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 27 Mar 2021 18:39:56 +0200
+Message-ID: <CAHp75Vcr5DTiQ=WWSC+Ch-jEw7H+f13A=4=U3QVF5ttvRr1D7w@mail.gmail.com>
+Subject: Re: [PATCH v2 06/15] ACPI: LPSS: fix some coding style issues
+To:     Joe Perches <joe@perches.com>
+Cc:     Xiaofei Tan <tanxiaofei@huawei.com>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "rui.zhang@intel.com" <rui.zhang@intel.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Mar 2021 19:16:02 +0100, Jonathan Neuschäfer wrote:
-> Add a compatible string for the WPCM450 SoC, which has the same watchdog
-> timer.
-> 
-> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> ---
->  .../devicetree/bindings/watchdog/nuvoton,npcm-wdt.txt          | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
+On Sat, Mar 27, 2021 at 3:39 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Sat, 2021-03-27 at 10:19 +0200, Andy Shevchenko wrote:
+> > On Saturday, March 27, 2021, Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+> >
+> > > Fix some coding style issues reported by checkpatch.pl, including
+> > > following types:
+> > >
+> > > WARNING: simple_strtol is obsolete, use kstrtol instead
+> >
+> >
+> > And one more thing, the above message is bogus. Read what the comments in
+> > the code says about use cases for simple_*() vs. kstrto*() ones.
+> >
+> > Joe?
+>
+> This check and message is nearly 10 years old and was appropriate for
+> when it was implemented.
+>
+> kernel.h currently has:
+>  * Use these functions if and only if you cannot use kstrto<foo>, because
+>
+> So the message could be changed to something like:
+>
+> WARNING: simple_strtol should be used only when kstrtol can not be used.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Fine with me, thanks!
+
+-- 
+With Best Regards,
+Andy Shevchenko
