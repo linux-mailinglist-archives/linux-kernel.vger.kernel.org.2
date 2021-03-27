@@ -2,155 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B8AB34B449
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 05:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEF734B44F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 06:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhC0Exk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 00:53:40 -0400
-Received: from mail-ed1-f41.google.com ([209.85.208.41]:37377 "EHLO
-        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhC0ExS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 00:53:18 -0400
-Received: by mail-ed1-f41.google.com with SMTP id x21so8556223eds.4;
-        Fri, 26 Mar 2021 21:53:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f/bL9HzL8raBAZm+7gFcLtKeJ3h77dE10M5csH8ISDA=;
-        b=qIuhenVqIlF5JwkJmgy34dxI2l9fqSQUMUifPjPFVHd3FMnlQSXPAAh9If0vpTQbMN
-         kg20mypYGj3jAxw9uZY/ELzoEd4MEZUDKqfRU5xlhsc3g4vgM73vfcrKTn+f5U2kvG3X
-         J7HwMJE7V/Eqo5G46br1nPFdtO8aSnYYfMDlp7v2QSXmpEINIQydSw/LClKmQYWb7KkH
-         bLOf5YjOiXL21TIGrcgHea53bFT9W4rgzdARX+xl/HMxKC717/qFd4St2zdV5kSFJe2A
-         gRcjbZ2beia5G3QcVmZJedCOfJhYzq2R3oT9/FJWG7lQFBFNUwkFt40T8OOOgl/HVAve
-         7ffw==
-X-Gm-Message-State: AOAM531LodLvQygwOZY60L96Rx4KZr9X6Fdj6Wg5zN1n6f78qB15MZXJ
-        gYRmTghRPOuWfgdBf8LWMw/hdlMLh1v60IGRMEI=
-X-Google-Smtp-Source: ABdhPJyeyYE5KV72OPgbU3en6i98b1C+XWjf2E6bBMDRMypsgyCeyjUYx9hglIC/LRCEC1uou4EDMtaRxYIu0BuHcNQ=
-X-Received: by 2002:a05:6402:1855:: with SMTP id v21mr18635691edy.310.1616820797709;
- Fri, 26 Mar 2021 21:53:17 -0700 (PDT)
+        id S229880AbhC0FEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 01:04:00 -0400
+Received: from mout.gmx.net ([212.227.17.21]:40711 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229436AbhC0FDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 01:03:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1616821398;
+        bh=WuPw1z8BPrXMfSiGR2z+Ln/ohuTjDXcf3TAn8vQwY4k=;
+        h=X-UI-Sender-Class:Subject:From:To:Date:In-Reply-To:References;
+        b=O2HIxfofTE6b3xu/5CU5qCJ4SaBce3wVoBFPLriKOhSLh4P1H2R6hq4NKftZ1L2xc
+         asKaq2xbXJmm4qcQ+k7qYkCnKLJsy1o74UVC/xQBZaQAAbxI/W6td/UXyzIyGH2k3E
+         X27bagNJKYJFAVMkq2vYhJEUv1HEx8n9Ht9mJlZs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.fritz.box ([185.221.150.1]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MQMyf-1l4LW304Tx-00MJ9b; Sat, 27
+ Mar 2021 06:03:18 +0100
+Message-ID: <ee0fd2b1b9ca08f92446ddb0b5f8c603f55371c0.camel@gmx.de>
+Subject: Re: [RT v5.12-rc3-rt3] __call_rcu with KASAN causes invalid
+ sleeping function call
+From:   Mike Galbraith <efault@gmx.de>
+To:     Andrew Halaney <ahalaney@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Date:   Sat, 27 Mar 2021 06:03:17 +0100
+In-Reply-To: <20210326212009.dvmga3e7axms3atk@halaneylaptop>
+References: <20210326212009.dvmga3e7axms3atk@halaneylaptop>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-23-chang.seok.bae@intel.com> <871rc9bl3v.fsf@nanos.tec.linutronix.de>
- <CAJvTdKkOKOgnmvAiPS6mWVoyAggbOB6hBOqb_tcHYDe8+-X+FQ@mail.gmail.com>
- <CALCETrWOc7wwW=KY2dGJGy9k5Ag=KhkdGGTDZMvgRHgyQ5fDjQ@mail.gmail.com>
- <CAJvTdK=OGALDso0H+asjgkjD_VaPNZzm+LpV+msM_i5aVUm_qw@mail.gmail.com>
- <CALCETrXky0RuA5WeQ0Mxjs+e4ywk1A7vmpBxqCo=PTSBzUsz-g@mail.gmail.com>
- <CAJvTdK=_G11phL6=9Ri41fJQvhRNopok_oktgvRjTM0v6ojcbg@mail.gmail.com> <CALCETrX-34QqeVLjX39ZAD+4Y6XkZ3=bPEtEPxTi0YHvLgBKig@mail.gmail.com>
-In-Reply-To: <CALCETrX-34QqeVLjX39ZAD+4Y6XkZ3=bPEtEPxTi0YHvLgBKig@mail.gmail.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Sat, 27 Mar 2021 00:53:06 -0400
-Message-ID: <CAJvTdKmdMfD4BddMJs4iwvHWRSv4PV7Dh2vxjM57UJ3pw5UJDQ@mail.gmail.com>
-Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
- control state component support
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@kernel.org>,
-        X86 ML <x86@kernel.org>, "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:cT2BtdJBKR8lhae3DJq7uvP6hFlJxjKG9z+GnjfbSqJrazqQ6H9
+ wE0KIVl5rp1Z154GV0gNQBPyDaEBS0mWQ8VDkPrd88ucHagOA7YNnunOJAv+cBbwDCwFSxD
+ 0x912CvNRT4abaH9q7kQSVB6RExljs5ZvwCjskDrqrqkOww6cqFfwQNjpropQvAtabkhLR5
+ cFbsRzN+ToSFOZ2T1J4XQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:o2wwMQmNzOY=:4v7Vl+XMbRArLJ2uc94tQj
+ KNo2AW4aVygO4UBq0oivzt3W/ZQo/IG5I6mAomaZextpV37TOQS6E+JeeEkGgWrUpT/2zlrF+
+ wO+vaTsQQI0RtRD/3tXiASJlzKvD0H+csKmadQe81gTd1IspKDh9t8I+nafpZvb6cPPZOhzn0
+ 7dNFKHkEE59Wmwh5J5RCG03hi8U2ElNuWCgQZMPTVRHkxxFUBJFPERkY0o8ED9DIeaGZSDe9+
+ DPZh4SlFrgTPYYL5pprqphhPfWEtmCiuzX+Mo/AsxxT/sw3S6jK3uPtaSiYSODB+ChMibK0NN
+ t/SmSp11V6x5hZGZXTcepnl3XMWl7wqRdluC9tGbSbsNh7x1OMyn/Xpkqorhqy8tRhC9AlTDz
+ 6x4q8tLhfvQFmOx9dqFpJQlDU4Hvwa7n/BOMIlhIRUWso0wocT52hEr+A5JO8ExnWIWZt1g+h
+ HSBhuB4XpOyCcUl6VG+q69TSlZy29W7sIUCgm1LvCnP8wGva8XdiNfruzwVVC1JJ+NBE/tZJq
+ NotXH/GHQrnfjvaMLj5MQjew6SVQqkjk1FibrKeNf1DQ4HMzCXIkkID70HibOW13E1JBEMjtI
+ ZxQHjkq2sI2llNQss3oCuLme1J4qzKlBtuzqnn3ljjPkqU993c5J6q+/pEM/c1/WrIM1GwaeV
+ TBrXrVbIyzPuZAfVewAGUVZuVsirfZkewO7NtGJMMQf88sCiBeaQyutPznKpogf9TF41sxWb0
+ eyVrzvFeR3iY/bv/Yce6zAKxWvaNvqpWIOOyI1qUtEMn7gZpHAxpwueQcJm5iLv8PlWiTYuF6
+ mkw+44HNxWSBS0zF5+RbyxJPnllN56VpCERb2cC1yVE66lmcc5m+MBWAPJyx6MC1pjY4E8IPh
+ GUcMa2H6/c73D8zsjSgy4h7xazhpMG3R0ijCEK1esfKhf+qXQFdk+PcN2Qae089i1ODv6jatz
+ Q0NKKbt+84Af8IZdxZ/+1o3VQHoH8VmMNEkUX1flvc7ckONhXH0RwlHWIFP3T/XwAr2xl99HE
+ 10Hb9ZGMtL46rbo8esEcFhOormZSRIJkHHJvTHbn4jMPUBqvXtpYuqSaQp0IahCpwqtlwkJR7
+ QSoJyu6+nLw0PEEljyB3o45Z1Ovndi45CLrJnx42C8wIurlc6HJMV437fIE02yqdZ5KxYkayl
+ rnG3Qu3j2mwoRhbfBfgNltBEcMVlcocB6s8U8paO+9lcgh8xUJ3UlWeXg1MR3GJPs4WrY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 3.3 RECOMMENDATIONS FOR SYSTEM SOFTWARE
+On Fri, 2021-03-26 at 16:20 -0500, Andrew Halaney wrote:
+> Hi,
 >
-> System software may disable use of Intel AMX by clearing XCR0[18:17],
-> by clearing CR4.OSXSAVE, or by setting
-> IA32_XFD[18]. It is recommended that system software initialize AMX
-> state (e.g., by executing TILERELEASE)
-> before doing so. This is because maintaining AMX state in a
-> non-initialized state may have negative power and
-> performance implications.
+> I booted the RT kernel (v5.12-rc3-rt3) with KASAN enabled for the first
+> time today and noticed this:
 
-I agree that the wording here about disabling AMX is ominous.
+That should probably be one of the auto-disabled config options.  I
+started down the fix the KASAN gripes path, and quickly determined that
+that was a job for someone with motivation that I fortunately lacked.
 
-The hardware initializes with AMX disabled.
-The kernel probes AMX, enables it in XCR0, and keeps it enabled.
+	-Mike
 
-Initially, XFD is "armed" for all tasks.
-When a task accesses AMX state, #NM fires, we allocate a context
-switch buffer, and we "disarm" XFD for that task.
-As we have that buffer in-hand for the lifetime of the task, we never
-"arm" XFD for that task again.
-
-XFD is context switched, and so the next time it is set, is when we
-are restoring some other task's state.
-
-n.b. I'm describing the Linux flow.  The VMM scenario is a little different.
-
-> Since you reviewed the patch set, I assume you are familiar with how
-> Linux manages XSTATE.  Linux does *not* eagerly load XSTATE on context
-> switch.  Instead, Linux loads XSTATE when the kernel needs it loaded
-> or before executing user code.  This means that the kernel can (and
-> does, and it's a performance win) execute kernel thread code and/or go
-> idle, *including long-term deep idle*, with user XSTATE loaded.
-
-Yes, this scenario is clear.
-
-There are several cases.
-
-1. Since TMM registers are volatile, a routine using TMM that wants
-them to persist across a call must save them,
-    and will TILERELEASE before invoking that call.  That is the
-calling convention,
-    and I expect that if it is not followed, debugging (of tools) will
-occur until it is.
-
-    The only way for a user program's XSTATE to be present during the
-kernel's call to idle
-    is if it sleep via a system call when no other task wants to run
-on that CPU.
-
-    Since system calls are calls, in this case, AMX INIT=1 during idle.
-    All deep C-state are enabled, the idle CPU is able to contribute
-it's maximum turbo buget to its peers.
-
-2. A correct program with live TMM registers takes an interrupt, and
-we enter the kernel AMX INIT=0.
-    Yes, we will enter the syscall at the frequency of the app (like
-we always do).
-    Yes, turbo frequency may be limited by the activity of this
-processor and its peers (like it always is)
-
-   2a. If we return to the same program, then depending on how long
-the syscall runs, we may execute
-         the program and the system call code at a frequency lower
-than we might if AMX INIT=1 at time of interrupt.
-
-   2b. If we context switch to a task that has AMX INIT=1, then any
-AMX-imposed limits on turbo
-         are immediately gone.
-
-    Note for 2b.  4 generations have passed since SKX had significant
-delay releasing AVX-512 credits.
-    The delay in the first hardware that supports AXM should be
-negligible for both AVX-512 and AMX.
-
-3. A buggy or purposely bogus program is fully empowered to violate
-the programming conventions.
-    Say such a program called a long sleep, and nothing else wanted to
-run on that CPU, so the kernel
-    went idle with AMX INIT=0.  Indeed, this could retard the core
-from getting into the deepest available
-    C-state, which could impact the turbo budget of neighboring cores.
-However, if that were some kind
-    of DOS, it would be simpler and more effective to simply hog a CPU
-by running code.  Also, as soon
-    as another thread switches in with INIT=1, there is no concept of
-AMX frequency caps. (see note for 2b)
-
-I do not see a situation where the kernel needs to issue TILERELEASE
-(though a VMM likely would).
-What did I miss?
-
-thanks,
-Len Brown, Intel Open Source Technology Center
-
-ps. I will respond to your ABI thoughts on your new ABI thread.
