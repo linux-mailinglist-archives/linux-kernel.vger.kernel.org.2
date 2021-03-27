@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E5C34B38A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:33:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC8D34B38F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231297AbhC0BdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 21:33:25 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14492 "EHLO
+        id S231145AbhC0BiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 21:38:21 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14493 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhC0BdC (ORCPT
+        with ESMTP id S230114AbhC0BiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 21:33:02 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6hBC2kNdzyQgd;
-        Sat, 27 Mar 2021 09:30:59 +0800 (CST)
+        Fri, 26 Mar 2021 21:38:06 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6hJ30czdzySC3;
+        Sat, 27 Mar 2021 09:36:03 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 09:32:49 +0800
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 09:37:57 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Damien Le Moal <damien.lemoal@wdc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
+To:     Eduardo Valentin <edubezval@gmail.com>, Keerthy <j-keerthy@ti.com>,
+        "Zhang Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Amit Kucheria" <amitk@kernel.org>,
+        linux-pm <linux-pm@vger.kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] pinctrl: Remove duplicated header file inclusion
-Date:   Sat, 27 Mar 2021 09:32:38 +0800
-Message-ID: <20210327013238.1712-1-thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] thermal: ti-soc-thermal: Remove duplicated header file inclusion
+Date:   Sat, 27 Mar 2021 09:37:48 +0800
+Message-ID: <20210327013749.1765-1-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -38,25 +40,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The header file <linux/io.h> is already included above and can be
+The header file <linux/of_device.h> is already included above and can be
 removed here.
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- drivers/pinctrl/pinctrl-k210.c | 1 -
+ drivers/thermal/ti-soc-thermal/ti-bandgap.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-k210.c b/drivers/pinctrl/pinctrl-k210.c
-index 8a733cf77ba0522..f831526d06ff68f 100644
---- a/drivers/pinctrl/pinctrl-k210.c
-+++ b/drivers/pinctrl/pinctrl-k210.c
-@@ -15,7 +15,6 @@
- #include <linux/pinctrl/pinmux.h>
- #include <linux/pinctrl/pinconf.h>
- #include <linux/pinctrl/pinconf-generic.h>
--#include <linux/io.h>
+diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+index 8a3646e26ddd208..d81af89166d2360 100644
+--- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
++++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
+@@ -32,7 +32,6 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/pm.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
  
- #include <dt-bindings/pinctrl/k210-fpioa.h>
+ #include "ti-bandgap.h"
  
 -- 
 1.8.3
