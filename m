@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E6F34B96A
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 22:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C39B34B979
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 22:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhC0VNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 17:13:48 -0400
-Received: from mx-out.tlen.pl ([193.222.135.158]:21542 "EHLO mx-out.tlen.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230015AbhC0VNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 17:13:35 -0400
-Received: (wp-smtpd smtp.tlen.pl 40850 invoked from network); 27 Mar 2021 22:13:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
-          t=1616879612; bh=6XmFuodXSwp/ahPWGzc07JUgMKXhdAiUWCGT3utXIz8=;
-          h=From:To:Cc:Subject;
-          b=VcwuxU4kkulEtKXK9k3zTge4AI8VbDODz8TlZ0g7+2ovjTU3RJ0kax9w7LR2dcbu3
-           Sl+ismmdQSWH+PmN8H2O8Jl6BPgMq0S+6x5eQseOO2GBL0CDFxT8/+f3U0czl8z2gI
-           8w81T/DS0AramsgYkEfYYB9mx3oRebDQxklJ4jgA=
-Received: from aclp172.neoplus.adsl.tpnet.pl (HELO localhost.localdomain) (mat.jonczyk@o2.pl@[83.10.117.172])
-          (envelope-sender <mat.jonczyk@o2.pl>)
-          by smtp.tlen.pl (WP-SMTPD) with SMTP
-          for <linux-kernel@vger.kernel.org>; 27 Mar 2021 22:13:32 +0100
-From:   =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-To:     linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Mateusz=20Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Subject: Re: Testers wanted: Atom netbooks with x86_64 disabled by BIOS
-Date:   Sat, 27 Mar 2021 22:13:22 +0100
-Message-Id: <20210327211322.121708-1-mat.jonczyk@o2.pl>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210327203218.119372-1-mat.jonczyk@o2.pl>
-References: <20210327203218.119372-1-mat.jonczyk@o2.pl>
+        id S230476AbhC0VXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 17:23:48 -0400
+Received: from mxout01.lancloud.ru ([45.84.86.81]:51046 "EHLO
+        mxout01.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230337AbhC0VXo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 17:23:44 -0400
+X-Greylist: delayed 592 seconds by postgrey-1.27 at vger.kernel.org; Sat, 27 Mar 2021 17:23:43 EDT
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout01.lancloud.ru 57C6A20D8777
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+To:     Jens Axboe <axboe@kernel.dk>, <linux-ide@vger.kernel.org>
+From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Subject: [PATCH] sata_mv: add IRQ checks
+Organization: Open Mobile Platform, LLC
+CC:     <linux-kernel@vger.kernel.org>
+Message-ID: <51436f00-27a1-e20b-c21b-0e817e0a7c86@omprussia.ru>
+Date:   Sun, 28 Mar 2021 00:13:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: o2.pl)                                      
-X-WP-MailID: 4154caa4a390fb312713de6c19cca6ab
-X-WP-AV: skaner antywirusowy Poczty o2
-X-WP-SPAM: NO 0000000 [kbOE]                               
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1908.lancloud.ru (fd00:f066::208)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 27.03.2021 o 21:32, Mateusz Jończyk pisze:
-> Hello,
->
-> There are some netbooks with Intel Atom processors that have 64-bit
-> support disabled by BIOS. Theoretically, the processor supports 64-bit
-> operation, but BIOS allows only 32-bit code to run.
->
-> I wonder whether the 64-bit mode is really disabled in the CPU or only
-> hidden in the CPUID flags. If the latter, the computer could be made to
-> run a 64-bit kernel.
->
-> Similarly, there are some Pentium M processors that support PAE
-> (Physical Address Extensions), but do not show this in CPUID. They could
-> be made to run distributions that require PAE with the "forcepae" kernel
-> command line parameter.
->
-> I would like to ask people with such netbooks to try to run a 64-bit kernel
-> with this patch applied.
->
-> When a patched 64-bit kernel is run in `qemu-system-i386`, the virtual
-> machine restarts instantly. Without this patch in such a case a 64-bit
-> kernel hangs indefinitely (inside .Lno_longmode in head_64.S).
+The function mv_platform_probe() neglects to check the results of the
+calls to platform_get_irq() and irq_of_parse_and_map() and blithely
+passes them to ata_host_activate() -- while the latter only checks
+for IRQ0 (treating it as a polling mode indicattion) and passes the
+negative values to devm_request_irq() causing it to fail as it takes
+unsigned values for the IRQ #...
 
-I have made two mistakes:
-- I left commented out code,
-- I have commented out lines with '#'. The code compiled though.
+Add to mv_platform_probe() the proper IRQ checks to pass the positive IRQ
+#s to ata_host_activate(), propagate upstream the negative error codes,
+and override the IRQ0 with -EINVAL (as we don't want the polling mode).
 
-Attaching corrected patch, please excuse me.
-
-Greetings,
-Mateusz
-
-Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+Fixes: f351b2d638c3 ("sata_mv: Support SoC controllers")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
 ---
- arch/x86/boot/compressed/head_64.S | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/ata/sata_mv.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index e94874f4bbc1..a9f0415da7c2 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -111,8 +111,6 @@ SYM_FUNC_START(startup_32)
- 	leal	rva(boot_stack_end)(%ebp), %esp
+Index: linux-block/drivers/ata/sata_mv.c
+===================================================================
+--- linux-block.orig/drivers/ata/sata_mv.c
++++ linux-block/drivers/ata/sata_mv.c
+@@ -4097,6 +4097,10 @@ static int mv_platform_probe(struct plat
+ 		n_ports = mv_platform_data->n_ports;
+ 		irq = platform_get_irq(pdev, 0);
+ 	}
++	if (irq < 0)
++		return irq;
++	if (!irq)
++		return -EINVAL;
  
- 	call	verify_cpu
--	testl	%eax, %eax
--	jnz	.Lno_longmode
- 
- /*
-  * Compute the delta between where we were compiled to run at
--- 
-2.25.1
-
+ 	host = ata_host_alloc_pinfo(&pdev->dev, ppi, n_ports);
+ 	hpriv = devm_kzalloc(&pdev->dev, sizeof(*hpriv), GFP_KERNEL);
