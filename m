@@ -2,284 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC74334B8EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 19:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFB534B8EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 19:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhC0Sat convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 27 Mar 2021 14:30:49 -0400
-Received: from aposti.net ([89.234.176.197]:59736 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230126AbhC0SaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 14:30:24 -0400
-Date:   Sat, 27 Mar 2021 18:30:03 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 08/10] pinctrl: Ingenic: Add pinctrl driver for JZ4755.
-To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-Message-Id: <3Q4NQQ.ZYKGF9R4T0B82@crapouillou.net>
-In-Reply-To: <cb82712a-44e8-f960-2a1d-f66788323ca0@wanyeetech.com>
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1615975084-68203-9-git-send-email-zhouyanjie@wanyeetech.com>
-        <I4VDQQ.76WDCH9W4MSC3@crapouillou.net>
-        <cb82712a-44e8-f960-2a1d-f66788323ca0@wanyeetech.com>
+        id S230224AbhC0ShB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 14:37:01 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:39556 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhC0Sge (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 14:36:34 -0400
+Received: by mail-ot1-f50.google.com with SMTP id h6-20020a0568300346b02901b71a850ab4so8394847ote.6;
+        Sat, 27 Mar 2021 11:36:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=peEyQa+xKPawOZQNLZrgGDdNdpXAZb6tO2t/QAg21zI=;
+        b=ogls4L6RhnFnhuTCCskKfeffzqPuXAXTLzYvhJe4GBH6BczFksPRRS/YHAjfTYyiTf
+         v19H/vmvht8MnKUFzATe4cDO8Q9/z3eYITcms9/Gdebt3WJIP2Df/1TvFwTWsnIkPAcT
+         vVcjoawmgKWdMRng2pzZ7BBhkH07l8yyZTB+yDjDur8bfQE+oKUIvq8GNMMzP0t/5AuS
+         rrJCirgJh2TUuqvkIcS/WBZV037/BurFkVs9sbQk1q0Cdu8b/EBXih5mYskK9H3pG0db
+         TZdxqCHXTN/KcWmx/ZEH4g8GMMN8rmcdmtU+pkKdqEQnAh3rGNYd4Tos314cZjyG1S6e
+         C3vQ==
+X-Gm-Message-State: AOAM531yB1fLMVYnCeaKfT6euXlr7qkDAsRPI4Bwiol27uPZq49EqgFE
+        dttacMKqWH9BTpaqU4rcdHrw8BMnFA==
+X-Google-Smtp-Source: ABdhPJxYiSmOiA5p4cejjeZvZ3sZNoMdVCPqe2KNaOFqrELUAVZxgmdbCuICUibWWJNcdKbbOzQjDQ==
+X-Received: by 2002:a9d:4e05:: with SMTP id p5mr16757469otf.264.1616870193375;
+        Sat, 27 Mar 2021 11:36:33 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.41])
+        by smtp.gmail.com with ESMTPSA id z6sm3160135otq.48.2021.03.27.11.36.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 11:36:32 -0700 (PDT)
+Received: (nullmailer pid 359581 invoked by uid 1000);
+        Sat, 27 Mar 2021 18:36:28 -0000
+Date:   Sat, 27 Mar 2021 12:36:28 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH 4/4] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+Message-ID: <20210327183628.GA345487@robh.at.kernel.org>
+References: <20210326130034.15231-1-p.yadav@ti.com>
+ <20210326130034.15231-5-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326130034.15231-5-p.yadav@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhou,
-
-Le jeu. 25 mars 2021 à 16:38, Zhou Yanjie <zhouyanjie@wanyeetech.com> 
-a écrit :
-> Hi,
+On Fri, Mar 26, 2021 at 06:30:34PM +0530, Pratyush Yadav wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 > 
-> On 2021/3/23 上午2:24, Paul Cercueil wrote:
->> 
->> 
->> Le mer. 17 mars 2021 à 17:58, 周琰杰 (Zhou Yanjie) 
->> <zhouyanjie@wanyeetech.com> a écrit :
->>> Add support for probing the pinctrl-ingenic driver on the
->>> JZ4755 SoC from Ingenic.
->>> 
->>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->>> ---
->>> 
->>> Notes:
->>>     v3:
->>>     New patch.
->>> 
->>>  drivers/pinctrl/pinctrl-ingenic.c | 132 
->>> ++++++++++++++++++++++++++++++++++++++
->>>  1 file changed, 132 insertions(+)
->>> 
->>> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
->>> b/drivers/pinctrl/pinctrl-ingenic.c
->>> index d98767b..d8b37fa 100644
->>> --- a/drivers/pinctrl/pinctrl-ingenic.c
->>> +++ b/drivers/pinctrl/pinctrl-ingenic.c
->>> @@ -86,6 +86,7 @@ enum jz_version {
->>>      ID_JZ4740,
->>>      ID_JZ4725B,
->>>      ID_JZ4750,
->>> +    ID_JZ4755,
->>>      ID_JZ4760,
->>>      ID_JZ4770,
->>>      ID_JZ4780,
->>> @@ -557,6 +558,131 @@ static const struct ingenic_chip_info 
->>> jz4750_chip_info = {
->>>      .pull_downs = jz4750_pull_downs,
->>>  };
->>> 
->>> +static const u32 jz4755_pull_ups[6] = {
->>> +    0xffffffff, 0xffffffff, 0x0fffffff, 0xffffffff, 0x33dc3fff, 
->>> 0x0000fc00,
->>> +};
->>> +
->>> +static const u32 jz4755_pull_downs[6] = {
->>> +    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 
->>> 0x00000000,
->>> +};
->>> +
->>> +static int jz4755_uart0_data_pins[] = { 0x7c, 0x7d, };
->>> +static int jz4755_uart0_hwflow_pins[] = { 0x7e, 0x7f, };
->>> +static int jz4755_uart1_data_pins[] = { 0x97, 0x99, };
->>> +static int jz4755_uart2_data_pins[] = { 0x9f, };
->>> +static int jz4755_mmc0_1bit_pins[] = { 0x2f, 0x50, 0x5c, };
->>> +static int jz4755_mmc0_4bit_pins[] = { 0x5d, 0x5b, 0x51, };
->>> +static int jz4755_mmc1_1bit_pins[] = { 0x3a, 0x3d, 0x3c, };
->>> +static int jz4755_mmc1_4bit_pins[] = { 0x3b, 0x3e, 0x3f, };
->>> +static int jz4755_i2c_pins[] = { 0x8c, 0x8d, };
->>> +static int jz4755_cim_pins[] = {
->>> +    0x89, 0x8b, 0x8a, 0x88,
->>> +    0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
->>> +};
->>> +static int jz4755_lcd_24bit_pins[] = {
->>> +    0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
->>> +    0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f,
->>> +    0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77,
->>> +    0x78, 0x79, 0x7a, 0x7b,
->>> +};
->>> +static int jz4755_nand_cs1_pins[] = { 0x55, };
->>> +static int jz4755_nand_cs2_pins[] = { 0x56, };
->>> +static int jz4755_nand_cs3_pins[] = { 0x57, };
->>> +static int jz4755_nand_cs4_pins[] = { 0x58, };
->>> +static int jz4755_nand_fre_fwe_pins[] = { 0x5c, 0x5d, };
->>> +static int jz4755_pwm_pwm0_pins[] = { 0x94, };
->>> +static int jz4755_pwm_pwm1_pins[] = { 0xab, };
->>> +static int jz4755_pwm_pwm2_pins[] = { 0x96, };
->>> +static int jz4755_pwm_pwm3_pins[] = { 0x97, };
->>> +static int jz4755_pwm_pwm4_pins[] = { 0x98, };
->>> +static int jz4755_pwm_pwm5_pins[] = { 0x99, };
->>> +
->>> +static u8 jz4755_mmc0_1bit_funcs[] = { 2, 2, 1, };
->>> +static u8 jz4755_mmc0_4bit_funcs[] = { 1, 0, 1, };
->>> +static u8 jz4755_lcd_24bit_funcs[] = {
->>> +    0, 0, 0, 0, 0, 0, 0, 0,
->>> +    0, 0, 0, 0, 0, 0, 0, 0,
->>> +    0, 0, 0, 0, 0, 0, 1, 1,
->>> +    1, 1, 0, 0,
->>> +};
->>> +
->>> +static const struct group_desc jz4755_groups[] = {
->>> +    INGENIC_PIN_GROUP("uart0-data", jz4755_uart0_data, 0),
->>> +    INGENIC_PIN_GROUP("uart0-hwflow", jz4755_uart0_hwflow, 0),
->>> +    INGENIC_PIN_GROUP("uart1-data", jz4755_uart1_data, 0),
->>> +    INGENIC_PIN_GROUP("uart2-data", jz4755_uart2_data, 1),
->>> +    INGENIC_PIN_GROUP_FUNCS("mmc0-1bit", jz4755_mmc0_1bit,
->>> +                jz4755_mmc0_1bit_funcs),
->>> +    INGENIC_PIN_GROUP_FUNCS("mmc0-4bit", jz4755_mmc0_4bit,
->>> +                jz4755_mmc0_4bit_funcs),
->>> +    INGENIC_PIN_GROUP("mmc1-1bit", jz4755_mmc1_1bit, 1),
->>> +    INGENIC_PIN_GROUP("mmc1-4bit", jz4755_mmc1_4bit, 1),
->>> +    INGENIC_PIN_GROUP("i2c-data", jz4755_i2c, 0),
->>> +    INGENIC_PIN_GROUP("cim-data", jz4755_cim, 0),
->>> +    INGENIC_PIN_GROUP_FUNCS("lcd-24bit", jz4755_lcd_24bit,
->>> +                jz4755_lcd_24bit_funcs),
->> 
->> Coud you either split this into several groups (lcd-8bit, lcd-16bit, 
->> lcd-18bit, lcd-24bit, lcd-special, lcd-generic) like it is done for 
->> the JZ4725B? Same for the other SoCs.
->> 
+> There is no way as of now to have a parent or bus defining properties
+> for child nodes. For now, avoid it in the example to silence warnings on
+> dt_schema_check. We can figure out how to deal with actual dts files
+> later.
 > 
-> Sure, and do we need to change the JZ4740 (and the previous JZ4750) 
-> to the lcd-special + lcd-generic model? It looks more reasonable than 
-> the original lcd-tft and makes the style more uniform.
-
-Yes, please change it for the JZ4750 too.
-
-For the JZ4740, in theory it is too late - these are ABI and we 
-shouldn't change them.
-
-With that said - the only board that has a JZ4740 and is still 
-supported (although untested, so it's not even sure it still boots) is 
-the Ben Nanonote, which only uses the "lcd-8bit" group. So it's 
-probably fine.
-
-Cheers,
--Paul
-
->> Alternatively just remove the "lcd" function for now.
->> 
->>> +    { "lcd-no-pins", },
->> 
->> And remove this.
->> 
->> Cheers,
->> -Paul
->> 
->>> +    INGENIC_PIN_GROUP("nand-cs1", jz4755_nand_cs1, 0),
->>> +    INGENIC_PIN_GROUP("nand-cs2", jz4755_nand_cs2, 0),
->>> +    INGENIC_PIN_GROUP("nand-cs3", jz4755_nand_cs3, 0),
->>> +    INGENIC_PIN_GROUP("nand-cs4", jz4755_nand_cs4, 0),
->>> +    INGENIC_PIN_GROUP("nand-fre-fwe", jz4755_nand_fre_fwe, 0),
->>> +    INGENIC_PIN_GROUP("pwm0", jz4755_pwm_pwm0, 0),
->>> +    INGENIC_PIN_GROUP("pwm1", jz4755_pwm_pwm1, 1),
->>> +    INGENIC_PIN_GROUP("pwm2", jz4755_pwm_pwm2, 0),
->>> +    INGENIC_PIN_GROUP("pwm3", jz4755_pwm_pwm3, 0),
->>> +    INGENIC_PIN_GROUP("pwm4", jz4755_pwm_pwm4, 0),
->>> +    INGENIC_PIN_GROUP("pwm5", jz4755_pwm_pwm5, 0),
->>> +};
->>> +
->>> +static const char *jz4755_uart0_groups[] = { "uart0-data", 
->>> "uart0-hwflow", };
->>> +static const char *jz4755_uart1_groups[] = { "uart1-data", };
->>> +static const char *jz4755_uart2_groups[] = { "uart2-data", };
->>> +static const char *jz4755_mmc0_groups[] = { "mmc0-1bit", 
->>> "mmc0-4bit", };
->>> +static const char *jz4755_mmc1_groups[] = { "mmc0-1bit", 
->>> "mmc0-4bit", };
->>> +static const char *jz4755_i2c_groups[] = { "i2c-data", };
->>> +static const char *jz4755_cim_groups[] = { "cim-data", };
->>> +static const char *jz4755_lcd_groups[] = { "lcd-24bit", 
->>> "lcd-no-pins", };
->>> +static const char *jz4755_nand_groups[] = {
->>> +    "nand-cs1", "nand-cs2", "nand-cs3", "nand-cs4", "nand-fre-fwe",
->>> +};
->>> +static const char *jz4755_pwm0_groups[] = { "pwm0", };
->>> +static const char *jz4755_pwm1_groups[] = { "pwm1", };
->>> +static const char *jz4755_pwm2_groups[] = { "pwm2", };
->>> +static const char *jz4755_pwm3_groups[] = { "pwm3", };
->>> +static const char *jz4755_pwm4_groups[] = { "pwm4", };
->>> +static const char *jz4755_pwm5_groups[] = { "pwm5", };
->>> +
->>> +static const struct function_desc jz4755_functions[] = {
->>> +    { "uart0", jz4755_uart0_groups, 
->>> ARRAY_SIZE(jz4755_uart0_groups), },
->>> +    { "uart1", jz4755_uart1_groups, 
->>> ARRAY_SIZE(jz4755_uart1_groups), },
->>> +    { "uart2", jz4755_uart2_groups, 
->>> ARRAY_SIZE(jz4755_uart2_groups), },
->>> +    { "mmc0", jz4755_mmc0_groups, ARRAY_SIZE(jz4755_mmc0_groups), 
->>> },
->>> +    { "mmc1", jz4755_mmc1_groups, ARRAY_SIZE(jz4755_mmc1_groups), 
->>> },
->>> +    { "i2c", jz4755_i2c_groups, ARRAY_SIZE(jz4755_i2c_groups), },
->>> +    { "cim", jz4755_cim_groups, ARRAY_SIZE(jz4755_cim_groups), },
->>> +    { "lcd", jz4755_lcd_groups, ARRAY_SIZE(jz4755_lcd_groups), },
->>> +    { "nand", jz4755_nand_groups, ARRAY_SIZE(jz4755_nand_groups), 
->>> },
->>> +    { "pwm0", jz4755_pwm0_groups, ARRAY_SIZE(jz4755_pwm0_groups), 
->>> },
->>> +    { "pwm1", jz4755_pwm1_groups, ARRAY_SIZE(jz4755_pwm1_groups), 
->>> },
->>> +    { "pwm2", jz4755_pwm2_groups, ARRAY_SIZE(jz4755_pwm2_groups), 
->>> },
->>> +    { "pwm3", jz4755_pwm3_groups, ARRAY_SIZE(jz4755_pwm3_groups), 
->>> },
->>> +    { "pwm4", jz4755_pwm4_groups, ARRAY_SIZE(jz4755_pwm4_groups), 
->>> },
->>> +    { "pwm5", jz4755_pwm5_groups, ARRAY_SIZE(jz4755_pwm5_groups), 
->>> },
->>> +};
->>> +
->>> +static const struct ingenic_chip_info jz4755_chip_info = {
->>> +    .num_chips = 6,
->>> +    .reg_offset = 0x100,
->>> +    .version = ID_JZ4755,
->>> +    .groups = jz4755_groups,
->>> +    .num_groups = ARRAY_SIZE(jz4755_groups),
->>> +    .functions = jz4755_functions,
->>> +    .num_functions = ARRAY_SIZE(jz4755_functions),
->>> +    .pull_ups = jz4755_pull_ups,
->>> +    .pull_downs = jz4755_pull_downs,
->>> +};
->>> +
->>>  static const u32 jz4760_pull_ups[6] = {
->>>      0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 
->>> 0xfffff00f,
->>>  };
->>> @@ -2646,6 +2772,7 @@ static const struct of_device_id 
->>> ingenic_gpio_of_match[] __initconst = {
->>>      { .compatible = "ingenic,jz4740-gpio", },
->>>      { .compatible = "ingenic,jz4725b-gpio", },
->>>      { .compatible = "ingenic,jz4750-gpio", },
->>> +    { .compatible = "ingenic,jz4755-gpio", },
->>>      { .compatible = "ingenic,jz4760-gpio", },
->>>      { .compatible = "ingenic,jz4770-gpio", },
->>>      { .compatible = "ingenic,jz4780-gpio", },
->>> @@ -2853,6 +2980,11 @@ static const struct of_device_id 
->>> ingenic_pinctrl_of_match[] = {
->>>          .compatible = "ingenic,jz4750-pinctrl",
->>>          .data = IF_ENABLED(CONFIG_MACH_JZ4750, &jz4750_chip_info)
->>>      },
->>> +    {
->>> +        .compatible = "ingenic,jz4755-pinctrl",
->>> +        .data = IF_ENABLED(CONFIG_MACH_JZ4755, &jz4755_chip_info)
->>> +    },
->>> +    {
->>>          .compatible = "ingenic,jz4760-pinctrl",
->>>          .data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
->>>      },
->>> --
->>> 2.7.4
->>> 
->> 
+> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> [p.yadav@ti.com: Fix how compatible is defined, make reset optional, fix
+> minor typos, remove subnode properties in example, update commit
+> message.]
+> ---
+>  .../bindings/spi/cadence-quadspi.txt          |  68 ---------
+>  .../bindings/spi/cdns,qspi-nor.yaml           | 143 ++++++++++++++++++
+>  2 files changed, 143 insertions(+), 68 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
 
 
+> diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> new file mode 100644
+> index 000000000000..0e7087cc8bf9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+> @@ -0,0 +1,143 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/cdns,qspi-nor.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Cadence Quad SPI controller
+> +
+> +maintainers:
+> +  - Pratyush Yadav <p.yadav@ti.com>
+> +
+> +allOf:
+> +  - $ref: spi-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - ti,k2g-qspi
+> +              - ti,am654-ospi
+> +              - intel,lgm-qspi
+> +          - const: cdns,qspi-nor
+> +      - const: cdns,qspi-nor
+> +
+> +  reg:
+> +    items:
+> +      - description: the controller register set
+> +      - description: the controller data area
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  cdns,fifo-depth:
+> +    description:
+> +      Size of the data FIFO in words.
+> +    $ref: "/schemas/types.yaml#/definitions/uint32"
+> +    enum: [ 128, 256 ]
+> +    default: 128
+> +
+> +  cdns,fifo-width:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Bus width of the data FIFO in bytes.
+> +    default: 4
+
+I assume there's some constraints on this?
+
+With that,
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> +
+> +  cdns,trigger-address:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      32-bit indirect AHB trigger address.
+> +
+> +  cdns,is-decoded-cs:
+> +    type: boolean
+> +    description:
+> +      Flag to indicate whether decoder is used to select different chip select
+> +      for different memory regions.
+> +
+> +  cdns,rclk-en:
+> +    type: boolean
+> +    description:
+> +      Flag to indicate that QSPI return clock is used to latch the read
+> +      data rather than the QSPI clock. Make sure that QSPI return clock
+> +      is populated on the board before using this property.
+> +
+> +  resets:
+> +    maxItems: 2
+> +
+> +  reset-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      enum: [ qspi, qspi-ocp ]
+> +
+> +# subnode's properties
+> +patternProperties:
+> +  "@[0-9a-f]+$":
+> +    type: object
+> +    description:
+> +      Flash device uses the below defined properties in the subnode.
+> +
+> +    properties:
+> +      cdns,read-delay:
+> +        $ref: /schemas/types.yaml#/definitions/uint32
+> +        description:
+> +          Delay for read capture logic, in clock cycles.
+> +
+> +      cdns,tshsl-ns:
+> +        description:
+> +          Delay in nanoseconds for the length that the master mode chip select
+> +          outputs are de-asserted between transactions.
+> +
+> +      cdns,tsd2d-ns:
+> +        description:
+> +          Delay in nanoseconds between one chip select being de-activated
+> +          and the activation of another.
+> +
+> +      cdns,tchsh-ns:
+> +        description:
+> +          Delay in nanoseconds between last bit of current transaction and
+> +          deasserting the device chip select (qspi_n_ss_out).
+> +
+> +      cdns,tslch-ns:
+> +        description:
+> +          Delay in nanoseconds between setting qspi_n_ss_out low and
+> +          first bit transfer.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - cdns,fifo-depth
+> +  - cdns,fifo-width
+> +  - cdns,trigger-address
+> +  - '#address-cells'
+> +  - '#size-cells'
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    qspi: spi@ff705000 {
+> +      compatible = "cdns,qspi-nor";
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      reg = <0xff705000 0x1000>,
+> +            <0xffa00000 0x1000>;
+> +      interrupts = <0 151 4>;
+> +      clocks = <&qspi_clk>;
+> +      cdns,fifo-depth = <128>;
+> +      cdns,fifo-width = <4>;
+> +      cdns,trigger-address = <0x00000000>;
+> +      resets = <&rst 0x1>, <&rst 0x2>;
+> +      reset-names = "qspi", "qspi-ocp";
+> +
+> +      flash@0 {
+> +              compatible = "jedec,spi-nor";
+> +              reg = <0x0>;
+> +      };
+> +    };
+> -- 
+> 2.30.0
+> 
