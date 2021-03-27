@@ -2,97 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5061534B7DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A68934B7E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhC0PLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 11:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhC0PKp (ORCPT
+        id S230271AbhC0PSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 11:18:09 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:39588 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhC0PRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 11:10:45 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE15BC0613B1;
-        Sat, 27 Mar 2021 08:10:44 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id f26so10764417ljp.8;
-        Sat, 27 Mar 2021 08:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3xfofQcDvN4J+tG1djpCVc7GNwqtmS+FRdc3V48y94c=;
-        b=g4xMcu9gaK87RePOaVte17/kJoqmPyPYDU8XeDvo5IrlKk9mVS90Pw3HsKodIfYNeG
-         msRcRaA6pUGv7nKFzQpq6pUOnDQOFU6tN71G25FCnIsfaXQCiTGPb5iU5FhyB+S8hvSa
-         5pxLDIGU13ItEW0tv3aqIDbaOkcAk3j5f53QLnS0RbOx3w1qtwkYCsomRrXXk6XNDjR9
-         dIK2KrzAG1z5YA4cK0GWEsao7ZY0JQkcA+Rm2iujwe0gRdGw6+vXEGNuC9FXDSUwlmG1
-         ArLgLZfBKwfTMAv7mOa4DKcHEgI14+ZVQYdNIAgMIohA25MIxGJNiXV5T0JML2hlz/le
-         a3Tg==
+        Sat, 27 Mar 2021 11:17:50 -0400
+Received: by mail-oi1-f180.google.com with SMTP id i81so8819744oif.6;
+        Sat, 27 Mar 2021 08:17:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3xfofQcDvN4J+tG1djpCVc7GNwqtmS+FRdc3V48y94c=;
-        b=eExvP63xOubT4UxkZXysdgQ17NpWU0IL8oEBWXVS1WQmazaYa84HPu+ImR8jgqkdIl
-         ZdnJbxF9tkUVcU2p3F0M+dkZr5QC+sXSvNYVm3PSmt/Gm8tOXQVlCdOdb9oTMjek5Xm4
-         GEKRXIOoBDeF7Q/sd6AmKbvXbGEWPulKQj7yzU1SlgPkHU26Q7gCnzZ17wn/j1glEkZi
-         hfDZKn2LLWRTX9+5b/cax2o+Zye1JxuAnGxIqvZy5stMZV+3Y13247Ui7WO1a6LAMQiX
-         dvQIMCpg2p8cnA3RQohK7v3hHbXm7r6IM8LlI4PPkqmLzu6Jp+Z34wQGBTTozlzPinUQ
-         nbBQ==
-X-Gm-Message-State: AOAM530sVz6xuzeUfQPDnGoFJdJn6YcKRtoYHlRzG0mcJ0Rw+8gAhB2B
-        le7msd+YceWhW1MnzGHEGp1gMSYmYuiPBEpWpso=
-X-Google-Smtp-Source: ABdhPJwafV4KNkPy1zHGiOqitY4kgFI/fQAcdR1EfGqZGLCO1GBSj03JQziROm1n/De278FX7mZzgg==
-X-Received: by 2002:a2e:9793:: with SMTP id y19mr11876186lji.374.1616857843167;
-        Sat, 27 Mar 2021 08:10:43 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.227.42])
-        by smtp.gmail.com with ESMTPSA id x13sm1590125ljj.4.2021.03.27.08.10.42
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HR93ICa3yWJ7V2cU1aVAOQYhP6ybWqoIXcHtKx1QIgQ=;
+        b=h9VKXn/mGFvqhdgza2zTIl5+culRmIrm1B87cHRrrXzn8iEAwktaqdGCx9BfAl1ZEA
+         3rfH4QOE6XqdApSKVPJLaw+R152DQMnM2VlQlv79lPGWZCPPmFLZokH8ds32kYynpAVY
+         KMIR2+A4Ix93bnFyK/J3kAF4qMDUFjtIe7WFu1Pp/Dmscsvgc1kvbUBxM/RFIa+rJRWQ
+         Hmd7mwE7nzTZTBCpcr2cY43DYfFPPbtk8ShmuQF0gky1gy7o2RmBPxCVOAp56SvIkdfH
+         se7XbrysWpa43Pr+9RwQwWTNpPW3t7JKt3FtdswKitSJPm4LJUcxBet77/rjLqYVeS0z
+         gHZw==
+X-Gm-Message-State: AOAM531PQnQcLc/nBdqCnSXbHO1TUkek9fFyuNX+/xP0ITxoNGBNWcuK
+        zIdw/k24OmVWlykLQN3BLQ==
+X-Google-Smtp-Source: ABdhPJyhJgJk5T983JkfRGYT5rufgWLi8CcYeyyNcLoqA30snh0E1m4zh9EiHg9k4fMBoQ6nAHQluw==
+X-Received: by 2002:aca:3788:: with SMTP id e130mr13252828oia.45.1616858270409;
+        Sat, 27 Mar 2021 08:17:50 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.102.185])
+        by smtp.gmail.com with ESMTPSA id l191sm2410902oih.16.2021.03.27.08.17.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 08:10:42 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     mchehab@kernel.org, andy.shevchenko@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
-Subject: [PATCH v2] media: usb: fix memory leak in em28xx_dvb_init
-Date:   Sat, 27 Mar 2021 18:09:16 +0300
-Message-Id: <20210327150916.31848-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210327082613.4702-1-paskripkin@gmail.com>
-References: <20210327082613.4702-1-paskripkin@gmail.com>
+        Sat, 27 Mar 2021 08:17:49 -0700 (PDT)
+Received: (nullmailer pid 131094 invoked by uid 1000);
+        Sat, 27 Mar 2021 15:14:33 -0000
+Date:   Sat, 27 Mar 2021 09:14:33 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     lee.jones@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+        linux-imx@nxp.com, kernel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v4 1/5] dt-bindings: mfd: Initial commit of
+ silergy,sy7636a.yaml
+Message-ID: <20210327151433.GA121810@robh.at.kernel.org>
+References: <20210326015511.218-1-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326015511.218-1-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported memory leak in em28xx_dvb_init()[1]
-The problem was in wrong error handling after em28xx_alloc_urbs()[2] call.
-In case of error allocated urbs must be freed
+On Thu, Mar 25, 2021 at 09:55:07PM -0400, Alistair Francis wrote:
+> Initial support for the Silergy SY7636A Power Management chip
+> and regulator.
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+> v3:
+>  - No change
+> v2:
+>  - N/A
+> 
+>  .../bindings/mfd/silergy,sy7636a.yaml         | 63 +++++++++++++++++++
+>  1 file changed, 63 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> new file mode 100644
+> index 000000000000..f260a8eae226
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+> @@ -0,0 +1,63 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/silergy,sy7636a.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: silergy sy7636a PMIC
+> +
+> +maintainers:
+> +  - Alistair Francis <alistair@alistair23.me>
+> +
+> +properties:
+> +  compatible:
+> +    const: silergy,sy7636a
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#thermal-sensor-cells':
+> +    const: 0
+> +
+> +  regulators:
+> +    type: object
+> +    $ref: /schemas/regulator/regulator.yaml#
 
-  backtrace:
-    [<ffffffff8304c141>] kmalloc_array.constprop.0+0x41/0x60 include/linux/slab.h:594
-    [<ffffffff8304dba2>] kcalloc include/linux/slab.h:623 [inline]
-    [<ffffffff8304dba2>] em28xx_alloc_urbs+0x102/0x550 drivers/media/usb/em28xx/em28xx-core.c:930 [2]
-    [<ffffffff84279fa7>] em28xx_dvb_init drivers/media/usb/em28xx/em28xx-dvb.c:1517 [inline]	  [1]
+This isn't right as the actual regulators are child nodes of 
+'regulators'. So you need another level defined here.
 
-Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
- 1 file changed, 1 insertion(+)
+This node should also have 'additionalProperties: false' which will 
+highlight the errors here.
 
-diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c b/drivers/media/usb/em28xx/em28xx-dvb.c
-index 526424279637..471bd74667e3 100644
---- a/drivers/media/usb/em28xx/em28xx-dvb.c
-+++ b/drivers/media/usb/em28xx/em28xx-dvb.c
-@@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx *dev)
- 	return result;
- 
- out_free:
-+	em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
- 	kfree(dvb);
- 	dev->dvb = NULL;
- 	goto ret;
--- 
-2.30.2
+> +
+> +    properties:
+> +      compatible:
+> +        const: silergy,sy7636a-regulator
+> +
+> +      regulator-name:
+> +        pattern: "vcom"
 
+Not a pattern. Use 'const'.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#thermal-sensor-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      sy7636a@62 {
+
+pmic@62
+
+> +        compatible = "silergy,sy7636a";
+> +        reg = <0x62>;
+> +        status = "okay";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&pinctrl_epdpmic>;
+> +        #thermal-sensor-cells = <0>;
+> +
+> +        regulators {
+> +          compatible = "silergy,sy7636a-regulator";
+> +          reg_epdpmic: vcom {
+> +            regulator-name = "vcom";
+> +            regulator-boot-on;
+> +          };
+> +        };
+> +      };
+> +    };
+> +...
+> -- 
+> 2.31.0
+> 
