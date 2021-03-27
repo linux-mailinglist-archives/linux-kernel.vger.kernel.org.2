@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690E234B816
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:02:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E6C34B817
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhC0QBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 12:01:43 -0400
-Received: from mail-pj1-f43.google.com ([209.85.216.43]:53107 "EHLO
-        mail-pj1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhC0QBl (ORCPT
+        id S230196AbhC0QD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 12:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhC0QDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 12:01:41 -0400
-Received: by mail-pj1-f43.google.com with SMTP id ha17so3996402pjb.2;
-        Sat, 27 Mar 2021 09:01:41 -0700 (PDT)
+        Sat, 27 Mar 2021 12:03:42 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C453C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 09:03:38 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id v10so6590924pgs.12
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 09:03:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=9yM4zKl8UpHy5WriuWSH2H172IyNgj/kyCvYI8mCqB8=;
+        b=2MPaGtLXoaYHCzoZX6YirTG4vpyBQiY2z8M5W+5iSoyE9nG/UTkJVdA8xOb7+r105K
+         I2B3KKAzwALp8ZKgNutBfUBMsSlzaJhB4rDkbFSRFHdikL+MjVn75FBTFtHYXO5rjLBi
+         RhWBvppEIEuGvMV+4mU0FxCxjyYJY4inUdkfPPeK/qFnpgPI692MGm72+dM+UV6+9H/l
+         OHxj1vL+RvSUozjP3CdBNWa5aql04KwEx9SVAV6cpIpKIvofJdmv9FMxYaPJFBaBs/L/
+         DO9tpLiwXvoV2N8CQq82frf7KDBXatXWGBWbUuWjDC53ag/V2PxRfpTELGFB+5WM5aqf
+         54Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=r8IFasUqsYTP3uxX6n62giQBLbCojhO6vBKD44pvhZk=;
-        b=M9+Wzpg/h/y5pRP444B0k8RqyiMAW/usIkcHXGxCGYziah54SAtB58rfttgVW3Ubw2
-         bTuhQ5AOiibnbmRSP8ViZ/Oese0YddR5UB/QvQGzYUUARKqXMjUo0eTk4CV+YnI2tpTu
-         sOQ3JfDhyZP73WwrH0QqLH32plykNqhOxeHKYLkoGFTkPx4A/Ssyk1a48minVXwxel1U
-         k7q5xj7dSG9RTdwtf+cg+iRXV47sDf9kDre+kpmOYkG+bbVuOJESmKuy9JG5VEP+Ixur
-         FK99lXKjPK8R1gakWejMckSQyGHWGtsB1gWhrWIdOERAJOSEy5kW4swDqctL9AwNDGXw
-         wpVw==
-X-Gm-Message-State: AOAM5325FiAgiZatmGiWv5aTiWFpGllgzObZ00L+wWfAoSxtgGbM2re+
-        pUfYupoXeH23Mi4Dtd7RVagFGQti3yQ=
-X-Google-Smtp-Source: ABdhPJx+0sp0AOs5GPIFSBnOTZvxjDAiX9Y9Ld8kyCG14dSzqsPwXzFOoGn50O4SMaqfpzoanLHrMw==
-X-Received: by 2002:a17:902:8687:b029:e6:5eda:c3a8 with SMTP id g7-20020a1709028687b02900e65edac3a8mr20421722plo.59.1616860900712;
-        Sat, 27 Mar 2021 09:01:40 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:250c:9f5c:fb74:abf7? ([2601:647:4000:d7:250c:9f5c:fb74:abf7])
-        by smtp.gmail.com with ESMTPSA id z1sm12684190pfn.127.2021.03.27.09.01.38
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=9yM4zKl8UpHy5WriuWSH2H172IyNgj/kyCvYI8mCqB8=;
+        b=DsSLg/V4EzNEEZDdpJwpuJ8+6MuSZzKjwaTHZSLNV43ZYSn9w2NzEbszTSg9S4YcxL
+         B29XWwsoeQOoGEa8UF4WtaF1VlMbtpgCWoDaGpLdDdueneneQ02lnHixYb9EIiOhMnLg
+         +R89CjJWUZZfynnPMfUmy0ZFf1hUsG49UBWS8tFD7qNGm3+/k1Bm0z21csgy6orK5EDs
+         vTw6ARzWxtyQtlnGRk3r6iwzEhcdEvOj/G7GPJJZl8Dnw3ZX+69dv2tWD6mimC2QSVb0
+         dNEJKQ2WnxOTWxBHvsaVzQOJxkNFe8RPCpO3vcGrS3buvve77dUf3MwTLPCgmhtZHuDm
+         xHzQ==
+X-Gm-Message-State: AOAM530+Ql5Te1bZeLP8+A+ZmPRwFK6THRwzqksd9GhD/XF8Z84Ljgbt
+        7qJhMdhrj98XP+/5xn8SqLbUBQ==
+X-Google-Smtp-Source: ABdhPJzMjm0QDNq8pesMNN98AmqrtwzMnPcZCK47+gx4UGkupHv8NEtNQQyiG9L+hgkR3rnOc6DTXA==
+X-Received: by 2002:a63:6744:: with SMTP id b65mr16659049pgc.314.1616861017746;
+        Sat, 27 Mar 2021 09:03:37 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:94d3:b09c:16e0:5994? ([2601:646:c200:1ef2:94d3:b09c:16e0:5994])
+        by smtp.gmail.com with ESMTPSA id d20sm11346196pjv.47.2021.03.27.09.03.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Mar 2021 09:01:39 -0700 (PDT)
-Subject: Re: [PATCH v2 0/3] scsi: add runtime PM workaround for SD cardreaders
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stern@rowland.harvard.edu
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210112093329.3639-1-martin.kepplinger@puri.sm>
- <9d0042fbfba9d33315f9eee7448b60aca8949431.camel@puri.sm>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <147104aa-1040-3632-6fed-9e6c584c3561@acm.org>
-Date:   Sat, 27 Mar 2021 09:01:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <9d0042fbfba9d33315f9eee7448b60aca8949431.camel@puri.sm>
+        Sat, 27 Mar 2021 09:03:37 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v1 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+Date:   Sat, 27 Mar 2021 09:03:36 -0700
+Message-Id: <91C0F6F1-B8C3-4130-B903-C63CD4B87F3F@amacapital.net>
+References: <dc970f33-bb1e-7300-3298-6241dec8d445@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <dc970f33-bb1e-7300-3298-6241dec8d445@linux.intel.com>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: iPhone Mail (18D61)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/27/21 3:48 AM, Martin Kepplinger wrote:
-> since this is absolutely needed for runtime pm with the SD device we
-> use I assume there are others that would benefit from this too. Do you
-> have any concerns or thoughts about this (logic and interface)?
 
-Hi Martin,
 
-Since the issue addressed by this patch series concerns a controller
-bug, please use the SCSI core BLIST mechanism instead of introducing a
-new sysfs attribute. A sysfs attribute could be misconfigured. BLIST
-attributes however are set from inside the kernel and hence do not need
-help from userspace. See e.g. c360652006bb ("scsi: devinfo:
-BLIST_RETRY_ASC_C1 for Fujitsu ETERNUS").
 
-Thanks,
+> On Mar 26, 2021, at 8:40 PM, Kuppuswamy, Sathyanarayanan <sathyanarayanan.=
+kuppuswamy@linux.intel.com> wrote:
+>=20
+> =EF=BB=BF
+>=20
+> On 3/26/21 7:40 PM, Andy Lutomirski wrote:
+>>>> On Mar 26, 2021, at 5:18 PM, Kuppuswamy Sathyanarayanan <sathyanarayana=
+n.kuppuswamy@linux.intel.com> wrote:
+>>>=20
+>>> =EF=BB=BFIn non-root TDX guest mode, MWAIT, MONITOR and WBINVD instructi=
+ons
+>>> are not supported. So handle #VE due to these instructions as no ops.
+>> These should at least be WARN.
+> I will change it to WARN.
+>> Does TDX send #UD if these instructions have the wrong CPL? =20
+> No, TDX does not trigger #UD for these instructions.
+> If the #VE came from user mode, we should send an appropriate signal inste=
+ad.
+> It will be mapped into #GP(0) fault. This should be enough notification ri=
+ght?
 
-Bart.
+Yes. And I did mean #GP, not #UD.
+
