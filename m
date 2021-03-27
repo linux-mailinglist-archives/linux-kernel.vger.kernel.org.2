@@ -2,152 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0306D34B7ED
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6E034B7EE
 	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:20:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbhC0PTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 11:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230197AbhC0PTU (ORCPT
+        id S230358AbhC0PTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 11:19:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21680 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230370AbhC0PT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 11:19:20 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7EF0C0613B1;
-        Sat, 27 Mar 2021 08:19:19 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 15so10868027ljj.0;
-        Sat, 27 Mar 2021 08:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3nfaLcfvMwThD5Igi3QFoIdDn7FNudL9M+Vh7hiOmrk=;
-        b=AzFAeYM8A8Dovwg96WQrnrrRON+5Qt+zy2GIt1lNc6QuTt+wecZpEBTGY3NCDiQapq
-         6OD1okrvqen9EdIFeD7tY99IO/aQaT//OR2oL85CDX5SMJdXUvsI1Cfkl5xvXMSj7luu
-         +evytWD6UeMFhj11pHYYCSY8+yPHozKwPgK0ImtWCX9jK4OshCrZmBiw/XLuFnogmoV6
-         TXfSyX0Cgb6diM9upg8ZCaF61Jvqep17rNBFufjbRVXmIL0dAHPVzF/JwzL6mBqsN9Sr
-         QTdD4mE9Ns0HgWbJqCAcRoJlKho9vUn9jgk88Z+Ebq0IklrVLEdaQwNJfpwf/YJpiLqm
-         6Gag==
+        Sat, 27 Mar 2021 11:19:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1616858368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GlZlQk9I1up349GpliLX8QJ0mLSUUut4KG9WICbUZFU=;
+        b=CmrMTHCNwccP+wKU6tZzcbCjLq1D70nI9Oo85L0zgZ+X5dIspRxHyMpootGaC08lbyPLiJ
+        DYWjIVRnGXmvGska7/k8kk4nWQY6ILOD+E7rt4+p8hTn5WoKql8ydWVFm48HF+kD+/Pwp+
+        eywduu29xYmBWa4pTPGQQhQgUE09TaE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-I5lu5fW_OZet0mGiOZfi2w-1; Sat, 27 Mar 2021 11:19:26 -0400
+X-MC-Unique: I5lu5fW_OZet0mGiOZfi2w-1
+Received: by mail-qv1-f70.google.com with SMTP id ev19so7978661qvb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 08:19:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3nfaLcfvMwThD5Igi3QFoIdDn7FNudL9M+Vh7hiOmrk=;
-        b=d4sy42TkANsKdgvgME3QVdrJUsYbvS+lbZ5OsIChkQI875AFJbIqcVpOspeWyA1uh3
-         qZH/V7qdRNPScYhZ1x0hF3OUOuEA/nYq3S5c+ni/5Dru5iyAMu/1mMpIM0RUgbNbY/44
-         LN70ukiBeyB8nDXcRkN4lO14MghDZ0qz0lHuZBx+uSV8RO64mB1pNEte3y6x4A229+rN
-         O0AqhCArhZLkktzXrcsbCcrX2uTA/cbE4pHZDcRXfBeR7AX0yO+FHPM6UF/KvLFPcKO3
-         /6lGjf4Dtf5jvv61kP+Gs1+/SfyF5IDeChYTFmdy8FoRkXS1FqZ/dueMNGq6ZVlhBPdw
-         /jmA==
-X-Gm-Message-State: AOAM530ptqmv8LZ1wEAJOAYByzwDJ5aUd3nkCSjb4zyzBOVBFExsW3O7
-        4+uWiF6hJH5Tr0qvSozaEyVdOUsmu0dkapM++iI=
-X-Google-Smtp-Source: ABdhPJy63BovyFWUJnSqBVb0vWcgYhq5W1RXGYmt0KvG2Hv8I1ZBgzIHzK5m/eq2Pafzgy8+CNWl9uCmpe3aNo4qT54=
-X-Received: by 2002:a2e:3608:: with SMTP id d8mr12475794lja.21.1616858358350;
- Sat, 27 Mar 2021 08:19:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GlZlQk9I1up349GpliLX8QJ0mLSUUut4KG9WICbUZFU=;
+        b=ny7wZS1up/5V6hbFEWFPPkIg/H+scFryXe6Zduz7Hi4OePgMrHC7IGvQi0aIpW/KOd
+         58yycw5HfbB24VV/Eq0zlyeHweQwmcA2fdUKt2ReRRbIkTvdo7+5zOFaqDQ8Bmvjgrar
+         oJJivWCT0AvymBrBSmNGzPLngDOTEOkK57IikgTYPcIfhq9xm4mzz9qhA2Ly+r7opUWC
+         8O1KDQeANWGT9SZ6TBXJetAjfY7HZ+4IWADgfAxoZl7xmtkUcuexj/RD3akQ5ohM0UEP
+         LAQU9fH81yiIRtGvzH2WBuIBRn8Z7UFLOpT9o8r6duoenTm94AgnAOrMyCoJdniFJLKd
+         e/fQ==
+X-Gm-Message-State: AOAM532qcCz8ETu0cFNW2twoY/P3DpsdRiwdlbmV+/oWP8xHOiihIh88
+        Y4sIJBDulExzKbfQAhhHW9Qo9knrIhWnTi3r5zSDNQwB5bJxaCkEeZxJufHoCXbSeGKQxgDv0hC
+        EkhEVZL/IUYOZg92JNHiAguMd
+X-Received: by 2002:a37:396:: with SMTP id 144mr17554482qkd.412.1616858366123;
+        Sat, 27 Mar 2021 08:19:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz4iMFw6qhJGHj+S8N41lQRl3sWh4PqitPW4UkobOGHsY7mD0Zvb1EwUrwqQeKRJW+wbqXJWA==
+X-Received: by 2002:a37:396:: with SMTP id 144mr17554474qkd.412.1616858365923;
+        Sat, 27 Mar 2021 08:19:25 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id h13sm7573936qtn.26.2021.03.27.08.19.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 08:19:25 -0700 (PDT)
+From:   trix@redhat.com
+To:     richard.gong@linux.intel.com
+Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
+Subject: [PATCH] MAINTAINERS: add self as reviewer to INTEL STRATIX10 FIRMWARE DRIVERS
+Date:   Sat, 27 Mar 2021 08:19:19 -0700
+Message-Id: <20210327151919.453669-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210326124030.1138964-1-Jianlin.Lv@arm.com> <CAADnVQ+W79=L=jb0hcOa4E067_PnWbnWHdxqyw-9+Nz9wKkOCA@mail.gmail.com>
- <AM6PR08MB3589CCA99AEF14F9B610A70E98609@AM6PR08MB3589.eurprd08.prod.outlook.com>
-In-Reply-To: <AM6PR08MB3589CCA99AEF14F9B610A70E98609@AM6PR08MB3589.eurprd08.prod.outlook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 27 Mar 2021 08:19:07 -0700
-Message-ID: <CAADnVQJsG-c+AdpwS6xTCwZq4-uVoPH7FZ8CV_XCA-+QaCKA8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: trace jit code when enable BPF_JIT_ALWAYS_ON
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     bpf <bpf@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrey Ignatov <rdna@fb.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mahesh Bandewar <maheshb@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "iecedge@gmail.com" <iecedge@gmail.com>, nd <nd@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 1:19 AM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
->
-> > On Fri, Mar 26, 2021 at 5:40 AM Jianlin Lv <Jianlin.Lv@arm.com> wrote:
-> > >
-> > > When CONFIG_BPF_JIT_ALWAYS_ON is enabled, the value of
-> > bpf_jit_enable
-> > > in /proc/sys is limited to SYSCTL_ONE. This is not convenient for deb=
-ugging.
-> > > This patch modifies the value of extra2 (max) to 2 that support
-> > > developers to emit traces on kernel log.
-> > >
-> > > Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
-> > > ---
-> > >  net/core/sysctl_net_core.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/net/core/sysctl_net_core.c b/net/core/sysctl_net_core.c
-> > > index d84c8a1b280e..aa16883ac445 100644
-> > > --- a/net/core/sysctl_net_core.c
-> > > +++ b/net/core/sysctl_net_core.c
-> > > @@ -386,7 +386,7 @@ static struct ctl_table net_core_table[] =3D {
-> > >                 .proc_handler   =3D proc_dointvec_minmax_bpf_enable,
-> > >  # ifdef CONFIG_BPF_JIT_ALWAYS_ON
-> > >                 .extra1         =3D SYSCTL_ONE,
-> > > -               .extra2         =3D SYSCTL_ONE,
-> > > +               .extra2         =3D &two,
-> >
-> > "bpftool prog dump jited" is much better way to examine JITed dumps.
-> > I'd rather remove bpf_jit_enable=3D2 altogether.
->
-> In my case, I introduced a bug when I made some adjustments to the arm64
-> jit macro A64_MOV(), which caused the SP register to be replaced by the
-> XZR register when building prologue, and the wrong value was stored in fp=
-,
-> which triggered a crash.
->
-> This bug is likely to cause the instruction to access the BPF stack in
-> jited prog to trigger a crash.
-> I tried to use bpftool to debug, but bpftool crashed when I executed the
-> "bpftool prog show" command.
-> The syslog shown that bpftool is loading and running some bpf prog.
-> because of the bug in the JIT compiler, the bpftool execution failed.
+From: Tom Rix <trix@redhat.com>
 
-Right 'bpftool prog show' command is loading a bpf iterator prog,
-but you didn't need to use it to dump JITed code.
-"bpftool prog dump jited name my_prog"
-would have dumped it even when JIT is all buggy.
+The Intel stratix 10 is a fpga.  I review fpga's. So I want to help
+in this related subsystem.
 
-> bpf_jit_disasm saved me, it helped me dump the jited image:
->
-> echo 2> /proc/sys/net/core/bpf_jit_enable
-> modprobe test_bpf test_name=3D"SPILL_FILL"
-> ./bpf_jit_disasm -o
->
-> So keeping bpf_jit_enable=3D2 is still very meaningful for developers who
-> try to modify the JIT compiler.
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-sure and such JIT developers can compile the kernel
-without BPF_JIT_ALWAYS_ON just like you did.
-They can also insert printk, etc.
-bpf_jit_enable=3D2 was done long ago when there was no other way
-to see JITed code. Now we have proper apis.
-That =3D2 mode can and should be removed.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 67b104202602..00828de0a7bc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9266,6 +9266,7 @@ F:	tools/power/x86/intel-speed-select/
+ 
+ INTEL STRATIX10 FIRMWARE DRIVERS
+ M:	Richard Gong <richard.gong@linux.intel.com>
++R:	Tom Rix <trix@redhat.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/ABI/testing/sysfs-devices-platform-stratix10-rsu
+-- 
+2.27.0
 
-> IMPORTANT NOTICE: The contents of this email and any attachments are conf=
-idential and may also be privileged. If you are not the intended recipient,=
- please notify the sender immediately and do not disclose the contents to a=
-ny other person, use it for any purpose, or store or copy the information i=
-n any medium. Thank you.
-
-please fix your email server/client/whatever. No patches will ever be
-accepted with
-such disclaimer.
