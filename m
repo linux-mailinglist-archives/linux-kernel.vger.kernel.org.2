@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C0634B526
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC6134B536
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbhC0Htm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 03:49:42 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14923 "EHLO
+        id S231446AbhC0Htp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 03:49:45 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14924 "EHLO
         szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhC0HtP (ORCPT
+        with ESMTP id S230195AbhC0HtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 03:49:15 -0400
+        Sat, 27 Mar 2021 03:49:16 -0400
 Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F6rXg4V2szkjRn;
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F6rXg5JqhzkjTN;
         Sat, 27 Mar 2021 15:47:31 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.24) by
  DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 15:49:01 +0800
+ 14.3.498.0; Sat, 27 Mar 2021 15:49:02 +0800
 From:   Xiaofei Tan <tanxiaofei@huawei.com>
 To:     <rjw@rjwysocki.net>, <lenb@kernel.org>, <rui.zhang@intel.com>,
         <bhelgaas@google.com>
 CC:     Xiaofei Tan <tanxiaofei@huawei.com>, <linux-acpi@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
         <linuxarm@openeuler.org>
-Subject: [PATCH v2 00/15] acpi: fix some coding style issues
-Date:   Sat, 27 Mar 2021 15:46:18 +0800
-Message-ID: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+Subject: [PATCH v2 01/15] ACPI: APD: fix a block comment align issue
+Date:   Sat, 27 Mar 2021 15:46:19 +0800
+Message-ID: <1616831193-17920-2-git-send-email-tanxiaofei@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
@@ -36,46 +38,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some coding style issues reported by checkpatch.pl.
+Fix the following coding style issue reported by checkpatch.pl.
+WARNING: Block comments should align the * on each line
++/**
++* Create platform device during acpi scan attach handle.
 
-Differences from v1 to v2:
-- Add subsystem and module name in the name of patch 05/15.
-- Change to use more proper module name for some patch names.
+Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+---
+ drivers/acpi/acpi_apd.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Xiaofei Tan (15):
-  ACPI: APD: fix a block comment align issue
-  ACPI: processor: fix some coding style issues
-  ACPI: debug: fix some coding style issues
-  ACPI: table: replace __attribute__((packed)) by __packed
-  ACPI: ipmi: remove useless return statement for void function
-  ACPI: LPSS: fix some coding style issues
-  ACPI: memhotplug: fix a coding style issue
-  ACPI: acpi_pad: fix a coding style issue
-  ACPI: battery: fix some coding style issues
-  ACPI: button: fix some coding style issues
-  ACPI: CPPC: fix some coding style issues
-  ACPI: custom_method: fix a coding style issue
-  ACPI: PM: fix some coding style issues
-  ACPI: sysfs: fix some coding style issues
-  ACPI: dock: fix some coding style issues
-
- drivers/acpi/acpi_apd.c        |  8 ++---
- drivers/acpi/acpi_dbg.c        | 40 +++++++++++-------------
- drivers/acpi/acpi_fpdt.c       |  6 ++--
- drivers/acpi/acpi_ipmi.c       |  1 -
- drivers/acpi/acpi_lpss.c       |  4 ++-
- drivers/acpi/acpi_memhotplug.c |  2 +-
- drivers/acpi/acpi_pad.c        |  4 +++
- drivers/acpi/acpi_processor.c  | 18 +++--------
- drivers/acpi/battery.c         | 64 +++++++++++++++++++++----------------
- drivers/acpi/button.c          | 10 +++---
- drivers/acpi/cppc_acpi.c       | 71 +++++++++++++++++++++---------------------
- drivers/acpi/custom_method.c   |  2 +-
- drivers/acpi/device_pm.c       |  3 ++
- drivers/acpi/device_sysfs.c    | 15 ++++++---
- drivers/acpi/dock.c            |  7 +++--
- 15 files changed, 138 insertions(+), 117 deletions(-)
-
+diff --git a/drivers/acpi/acpi_apd.c b/drivers/acpi/acpi_apd.c
+index 39359ce..0ec5b3f 100644
+--- a/drivers/acpi/acpi_apd.c
++++ b/drivers/acpi/acpi_apd.c
+@@ -176,10 +176,10 @@ static const struct apd_device_desc hip08_spi_desc = {
+ 
+ #endif
+ 
+-/**
+-* Create platform device during acpi scan attach handle.
+-* Return value > 0 on success of creating device.
+-*/
++/*
++ * Create platform device during acpi scan attach handle.
++ * Return value > 0 on success of creating device.
++ */
+ static int acpi_apd_create_device(struct acpi_device *adev,
+ 				   const struct acpi_device_id *id)
+ {
 -- 
 2.8.1
 
