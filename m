@@ -2,115 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984C334B5EC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B865F34B5EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhC0KBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 06:01:14 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15010 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbhC0KAk (ORCPT
+        id S230503AbhC0KEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 06:04:37 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15075 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230427AbhC0KDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 06:00:40 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6vRG6dGczPmdJ;
-        Sat, 27 Mar 2021 17:58:02 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.162) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
- 18:00:34 +0800
-Subject: Re: [PATCH 00/15] acpi: fix some coding style issues
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
- <CAHp75VcwuFYWRYfVPxbqa4TFGgqOhHc_soefmTAZcGGk3bLuhw@mail.gmail.com>
-CC:     "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <f8fa1fd8-e9b1-041d-936b-cd0646860d65@huawei.com>
-Date:   Sat, 27 Mar 2021 18:00:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Sat, 27 Mar 2021 06:03:25 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6vW03P3dz1BHQR;
+        Sat, 27 Mar 2021 18:01:16 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sat, 27 Mar
+ 2021 18:03:16 +0800
+Subject: Re: [f2fs-dev] [PATCH] Revert "f2fs: give a warning only for readonly
+ partition"
+From:   Chao Yu <yuchao0@huawei.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20210323064155.12582-1-yuchao0@huawei.com>
+ <YFo16ADpWJ7OUAvK@google.com>
+ <107e671d-68ea-1a74-521e-ab2b6fe36416@huawei.com>
+ <YFq+aQW7eihFuSst@google.com>
+ <c5850f4b-ebe8-bc34-10c6-ab27d562d621@huawei.com>
+ <YFvA6uzDLeD7dRdY@google.com>
+ <8b0b0782-a667-9edc-5ee9-98ac9f67b7b7@huawei.com>
+ <c1e48546-f61b-5db9-13b6-6430ce368661@huawei.com>
+ <YF02sFKa778eomr9@google.com>
+ <84688aac-75da-1226-df4d-47ac97087c51@huawei.com>
+ <YF4aJYVwOVtWsAbH@google.com>
+ <4b64099b-064d-43a8-461d-b54007f2c16c@huawei.com>
+Message-ID: <dad9c2df-02af-5df5-1dd1-9ee1fe91d229@huawei.com>
+Date:   Sat, 27 Mar 2021 18:03:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcwuFYWRYfVPxbqa4TFGgqOhHc_soefmTAZcGGk3bLuhw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.40.192.162]
+In-Reply-To: <4b64099b-064d-43a8-461d-b54007f2c16c@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OK. thanks for reviewing this patch set.
+On 2021/3/27 9:52, Chao Yu wrote:
+> On 2021/3/27 1:30, Jaegeuk Kim wrote:
+>> On 03/26, Chao Yu wrote:
+>>> On 2021/3/26 9:19, Jaegeuk Kim wrote:
+>>>> On 03/26, Chao Yu wrote:
+>>>>> On 2021/3/25 9:59, Chao Yu wrote:
+>>>>>> On 2021/3/25 6:44, Jaegeuk Kim wrote:
+>>>>>>> On 03/24, Chao Yu wrote:
+>>>>>>>> On 2021/3/24 12:22, Jaegeuk Kim wrote:
+>>>>>>>>> On 03/24, Chao Yu wrote:
+>>>>>>>>>> On 2021/3/24 2:39, Jaegeuk Kim wrote:
+>>>>>>>>>>> On 03/23, Chao Yu wrote:
+>>>>>>>>>>>> This reverts commit 938a184265d75ea474f1c6fe1da96a5196163789.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Because that commit fails generic/050 testcase which expect failure
+>>>>>>>>>>>> during mount a recoverable readonly partition.
+>>>>>>>>>>>
+>>>>>>>>>>> I think we need to change generic/050, since f2fs can recover this partition,
+>>>>>>>>>>
+>>>>>>>>>> Well, not sure we can change that testcase, since it restricts all generic
+>>>>>>>>>> filesystems behavior. At least, ext4's behavior makes sense to me:
+>>>>>>>>>>
+>>>>>>>>>> 	journal_dev_ro = bdev_read_only(journal->j_dev);
+>>>>>>>>>> 	really_read_only = bdev_read_only(sb->s_bdev) | journal_dev_ro;
+>>>>>>>>>>
+>>>>>>>>>> 	if (journal_dev_ro && !sb_rdonly(sb)) {
+>>>>>>>>>> 		ext4_msg(sb, KERN_ERR,
+>>>>>>>>>> 			 "journal device read-only, try mounting with '-o ro'");
+>>>>>>>>>> 		err = -EROFS;
+>>>>>>>>>> 		goto err_out;
+>>>>>>>>>> 	}
+>>>>>>>>>>
+>>>>>>>>>> 	if (ext4_has_feature_journal_needs_recovery(sb)) {
+>>>>>>>>>> 		if (sb_rdonly(sb)) {
+>>>>>>>>>> 			ext4_msg(sb, KERN_INFO, "INFO: recovery "
+>>>>>>>>>> 					"required on readonly filesystem");
+>>>>>>>>>> 			if (really_read_only) {
+>>>>>>>>>> 				ext4_msg(sb, KERN_ERR, "write access "
+>>>>>>>>>> 					"unavailable, cannot proceed "
+>>>>>>>>>> 					"(try mounting with noload)");
+>>>>>>>>>> 				err = -EROFS;
+>>>>>>>>>> 				goto err_out;
+>>>>>>>>>> 			}
+>>>>>>>>>> 			ext4_msg(sb, KERN_INFO, "write access will "
+>>>>>>>>>> 			       "be enabled during recovery");
+>>>>>>>>>> 		}
+>>>>>>>>>> 	}
+>>>>>>>>>>
+>>>>>>>>>>> even though using it as readonly. And, valid checkpoint can allow for user to
+>>>>>>>>>>> read all the data without problem.
+>>>>>>>>>>
+>>>>>>>>>>>>         		if (f2fs_hw_is_readonly(sbi)) {
+>>>>>>>>>>
+>>>>>>>>>> Since device is readonly now, all write to the device will fail, checkpoint can
+>>>>>>>>>> not persist recovered data, after page cache is expired, user can see stale data.
+>>>>>>>>>
+>>>>>>>>> My point is, after mount with ro, there'll be no data write which preserves the
+>>>>>>>>> current status. So, in the next time, we can recover fsync'ed data later, if
+>>>>>>>>> user succeeds to mount as rw. Another point is, with the current checkpoint, we
+>>>>>>>>> should not have any corrupted metadata. So, why not giving a chance to show what
+>>>>>>>>> data remained to user? I think this can be doable only with CoW filesystems.
+>>>>>>>>
+>>>>>>>> I guess we're talking about the different things...
+>>>>>>>>
+>>>>>>>> Let me declare two different readonly status:
+>>>>>>>>
+>>>>>>>> 1. filesystem readonly: file system is mount with ro mount option, and
+>>>>>>>> app from userspace can not modify any thing of filesystem, but filesystem
+>>>>>>>> itself can modify data on device since device may be writable.
+>>>>>>>>
+>>>>>>>> 2. device readonly: device is set to readonly status via 'blockdev --setro'
+>>>>>>>> command, and then filesystem should never issue any write IO to the device.
+>>>>>>>>
+>>>>>>>> So, what I mean is, *when device is readonly*, rather than f2fs mountpoint
+>>>>>>>> is readonly (f2fs_hw_is_readonly() returns true as below code, instead of
+>>>>>>>> f2fs_readonly() returns true), in this condition, we should not issue any
+>>>>>>>> write IO to device anyway, because, AFAIK, write IO will fail due to
+>>>>>>>> bio_check_ro() check.
+>>>>>>>
+>>>>>>> In that case, mount(2) will try readonly, no?
+>>>>>>
+>>>>>> Yes, if device is readonly, mount (2) can not mount/remount device to rw
+>>>>>> mountpoint.
+>>>>>
+>>>>> Any other concern about this patch?
+>>>>
+>>>> Indeed we're talking about different things. :)
+>>>>
+>>>> This case is mount(ro) with device(ro) having some data to recover.
+>>>> My point is why not giving a chance to mount(ro) to show the current data
+>>>> covered by a valid checkpoint. This doesn't change anything in the disk,
+>>> Got your idea.
+>>>
+>>> IMO, it has potential issue in above condition:
+>>>
+>>>>>>>>>> Since device is readonly now, all write to the device will fail, checkpoint can
+>>>>>>>>>> not persist recovered data, after page cache is expired, user can see stale data.
+>>>
+>>> e.g.
+>>>
+>>> Recovery writes one inode and then triggers a checkpoint, all writes fail
+>>
+>> I'm confused. Currently we don't trigger the roll-forward recovery.
+> 
+> Oh, my miss, sorry. :-P
+> 
+> My point is in this condition we can return error and try to notice user to
+> mount with disable_roll_forward or norecovery option, then at least user can
+> know he should not expect last fsynced data in newly mounted image.
+> 
+> Or we can use f2fs_recover_fsync_data() to check whether there is fsynced data,
+> if there is no such data, then let mount() succeed.
 
-On 2021/3/27 16:21, Andy Shevchenko wrote:
->
->
-> On Saturday, March 27, 2021, Xiaofei Tan <tanxiaofei@huawei.com
-> <mailto:tanxiaofei@huawei.com>> wrote:
->
->     Fix some coding style issues reported by checkpatch.pl
->     <http://checkpatch.pl>.
->
->
->
-> NAK until it’s proven that you have tested each change on the real
-> system (virtual more or less okay).
->
->
->
->     Differences from v1 to v2:
->     - Add subsystem and module name in the name of patch 05/15.
->     - Change to use more proper module name for some patch names.
->
->     Xiaofei Tan (15):
->       ACPI: APD: fix a block comment align issue
->       ACPI: processor: fix some coding style issues
->       ACPI: debug: fix some coding style issues
->       ACPI: table: replace __attribute__((packed)) by __packed
->       ACPI: ipmi: remove useless return statement for void function
->       ACPI: LPSS: fix some coding style issues
->       ACPI: memhotplug: fix a coding style issue
->       ACPI: acpi_pad: fix a coding style issue
->       ACPI: battery: fix some coding style issues
->       ACPI: button: fix some coding style issues
->       ACPI: CPPC: fix some coding style issues
->       ACPI: custom_method: fix a coding style issue
->       ACPI: PM: fix some coding style issues
->       ACPI: sysfs: fix some coding style issues
->       ACPI: dock: fix some coding style issues
->
->      drivers/acpi/acpi_apd.c        |  8 ++---
->      drivers/acpi/acpi_dbg.c        | 40 +++++++++++-------------
->      drivers/acpi/acpi_fpdt.c       |  6 ++--
->      drivers/acpi/acpi_ipmi.c       |  1 -
->      drivers/acpi/acpi_lpss.c       |  4 ++-
->      drivers/acpi/acpi_memhotplug.c |  2 +-
->      drivers/acpi/acpi_pad.c        |  4 +++
->      drivers/acpi/acpi_processor.c  | 18 +++--------
->      drivers/acpi/battery.c         | 64
->     +++++++++++++++++++++----------------
->      drivers/acpi/button.c          | 10 +++---
->      drivers/acpi/cppc_acpi.c       | 71
->     +++++++++++++++++++++---------------------
->      drivers/acpi/custom_method.c   |  2 +-
->      drivers/acpi/device_pm.c       |  3 ++
->      drivers/acpi/device_sysfs.c    | 15 ++++++---
->      drivers/acpi/dock.c            |  7 +++--
->      15 files changed, 138 insertions(+), 117 deletions(-)
->
->     --
->     2.8.1
->
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Something like this, maybe:
 
+---
+  fs/f2fs/super.c | 17 +++++++++++++----
+  1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 954b1fe97d67..5e1a1caf412d 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3966,10 +3966,19 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+  		 * previous checkpoint was not done by clean system shutdown.
+  		 */
+  		if (f2fs_hw_is_readonly(sbi)) {
+-			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+-				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+-			else
+-				f2fs_info(sbi, "write access unavailable, skipping recovery");
++			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
++				err = f2fs_recover_fsync_data(sbi, true);
++				if (!err)
++					goto reset_checkpoint;
++				else if (err < 0)
++					goto free_meta;
++				err = -EROFS;
++				f2fs_err(sbi, "Need to recover fsync data, but "
++					"write access unavailable, please try "
++					"mount w/ disable_roll_forward or norecovery");
++				goto free_meta;
++			}
++			f2fs_info(sbi, "write access unavailable, skipping recovery");
+  			goto reset_checkpoint;
+  		}
+
+-- 
+2.29.2
+
+Thanks,
+
+> 
+> Thanks,
+> 
+>>
+>>> due to device is readonly, once inode cache is reclaimed by vm, user will see
+>>> old inode when reloading it, or even see corrupted fs if partial meta inode's
+>>> cache is expired.
+>>>
+>>> Thoughts?
+>>>
+>>> Thanks,
+>>>
+>>>> and in the next time, it allows mount(rw|ro) with device(rw) to recover
+>>>> the data seamlessly.
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>>
+>>>>>>>
+>>>>>>> # blockdev --setro /dev/vdb
+>>>>>>> # mount -t f2fs /dev/vdb /mnt/test/
+>>>>>>> mount: /mnt/test: WARNING: source write-protected, mounted read-only.
+>>>>>>>
+>>>>>>>>
+>>>>>>>>       		if (f2fs_hw_is_readonly(sbi)) {
+>>>>>>>> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+>>>>>>>> -				err = -EROFS;
+>>>>>>>> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+>>>>>>>>       				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+>>>>>>>> -				goto free_meta;
+>>>>>>>> -			}
+>>>>>>>> -			f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>>>>>> +			else
+>>>>>>>> +				f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>>>>>>       			goto reset_checkpoint;
+>>>>>>>>       		}
+>>>>>>>>
+>>>>>>>> For the case of filesystem is readonly and device is writable, it's fine
+>>>>>>>> to do recovery in order to let user to see fsynced data.
+>>>>>>>>
+>>>>>>>> Thanks,
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Am I missing something?
+>>>>>>>>>>
+>>>>>>>>>> Thanks,
+>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> Fixes: 938a184265d7 ("f2fs: give a warning only for readonly partition")
+>>>>>>>>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>>>>>>>>>> ---
+>>>>>>>>>>>>         fs/f2fs/super.c | 8 +++++---
+>>>>>>>>>>>>         1 file changed, 5 insertions(+), 3 deletions(-)
+>>>>>>>>>>>>
+>>>>>>>>>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>>>>>>>>>>> index b48281642e98..2b78ee11f093 100644
+>>>>>>>>>>>> --- a/fs/f2fs/super.c
+>>>>>>>>>>>> +++ b/fs/f2fs/super.c
+>>>>>>>>>>>> @@ -3952,10 +3952,12 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>>>>>>>>>>>>         		 * previous checkpoint was not done by clean system shutdown.
+>>>>>>>>>>>>         		 */
+>>>>>>>>>>>>         		if (f2fs_hw_is_readonly(sbi)) {
+>>>>>>>>>>>> -			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG))
+>>>>>>>>>>>> +			if (!is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+>>>>>>>>>>>> +				err = -EROFS;
+>>>>>>>>>>>>         				f2fs_err(sbi, "Need to recover fsync data, but write access unavailable");
+>>>>>>>>>>>> -			else
+>>>>>>>>>>>> -				f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>>>>>>>>>> +				goto free_meta;
+>>>>>>>>>>>> +			}
+>>>>>>>>>>>> +			f2fs_info(sbi, "write access unavailable, skipping recovery");
+>>>>>>>>>>>>         			goto reset_checkpoint;
+>>>>>>>>>>>>         		}
+>>>>>>>>>>>> -- 
+>>>>>>>>>>>> 2.29.2
+>>>>>>>>>>> .
+>>>>>>>>>>>
+>>>>>>>>> .
+>>>>>>>>>
+>>>>>>> .
+>>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> _______________________________________________
+>>>>>> Linux-f2fs-devel mailing list
+>>>>>> Linux-f2fs-devel@lists.sourceforge.net
+>>>>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>>>>> .
+>>>>>>
+>>>> .
+>>>>
+>> .
+>>
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
+> 
