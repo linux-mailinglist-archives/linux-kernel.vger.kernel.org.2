@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ADF34B6C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 12:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B6534B6CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 12:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbhC0LUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 07:20:03 -0400
-Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:35721 "EHLO
-        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230415AbhC0LUB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 07:20:01 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id Q6yylxGFbMxedQ6z1lW190; Sat, 27 Mar 2021 12:20:00 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1616844000; bh=JbY5sZ0LZblSSzkqPKQiV0RRtlUDdglv9RH4JF6K+cY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=YSA1z52L+8Dn8gicoSbR8K6CUVbJ8h/AvEklDGio8YhDroHyO2NaXCDsTzCZh/k6k
-         QV2sAS02YSBm9inL6G2CHfsCpxMl29sXaSNhwlnn7bF3wj/nOcYvLNmSjEQ9DNQjYV
-         MLhqK6KWBR+VgPO4FKowbllzMbPcovwSxqdMk/WneqLonFYu/umeeKeQXQjjEbNjTS
-         WjUciRol4Y7wdvkNzRlYKP6jHYsMLntypRW9uFX4yoAshb2lHESmhpcnUQ4ibmIOmS
-         /7M7o4psIchUd6UeDIyHK4rrEcP5whdD5AyMJxhvJSFQSF+iLx3VCw85WTXcv+56LN
-         2kssc5uD9vaMw==
-Subject: Re: [PATCH v9 18/22] media: uvcvideo: Downgrade control error
- messages
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-References: <20210326095840.364424-1-ribalda@chromium.org>
- <20210326095840.364424-19-ribalda@chromium.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <07de01a4-76d8-66db-8534-0ae5f62b2034@xs4all.nl>
-Date:   Sat, 27 Mar 2021 12:19:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        id S231298AbhC0LWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 07:22:39 -0400
+Received: from aposti.net ([89.234.176.197]:55408 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230288AbhC0LWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 07:22:38 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Simon Ser <contact@emersion.fr>
+Cc:     od@zcrc.me, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        stable@vger.kernel.org
+Subject: [PATCH] drm: DON'T require each CRTC to have a unique primary plane
+Date:   Sat, 27 Mar 2021 11:22:14 +0000
+Message-Id: <20210327112214.10252-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <20210326095840.364424-19-ribalda@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOiBO5T0dk9PfRpFB3gIC9QbQtAd6Angrprz3RC/Zv9b7YNq5mYMpbPBB+fmUjZVXdhnuKM+HlSK5+vESQORdqHQdlZ1cw9QqcAPhxqPIF1Lpme+k2sB
- g0DOoUYIJGdRphGW9OXEXvdly4UHaxcjUchL7lOfJsBilkg1IwQ2+S9JSQ/ssomMUxIbXETi+sJv6C3nQAT1LblYe/L9led9+2AKg1iWirAACiA3lHAL7rd9
- JyVQYaoGbid33XZ+1BR0JyXSCGag2WPOvRsmKhagUbzi5msPskSBbn3q7ixaDQI17LmqrO3blmS4OYeki8wi11O7NEX59qfqQ6t3sfgJFBTbLs/mfQjrziAV
- 0ARd3dm5UmeTjp3fk9qZs8vdKctqFxHiIbVdsEKcZJnpdIIzzAAIPgd96JmbHflzDQAHYqh/
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/03/2021 10:58, Ricardo Ribalda wrote:
-> Convert the error into a debug message, so they are still valid for
-> debugging but do not fill dmesg.
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+The ingenic-drm driver has two mutually exclusive primary planes
+already; so the fact that a CRTC must have one and only one primary
+plane is an invalid assumption.
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Fixes: 96962e3de725 ("drm: require each CRTC to have a unique primary plane")
+Cc: <stable@vger.kernel.org> # 5.11
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/gpu/drm/drm_mode_config.c | 11 -----------
+ 1 file changed, 11 deletions(-)
 
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index ea2903dc3252..b63c073ec30e 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -76,7 +76,7 @@ int uvc_query_ctrl(struct uvc_device *dev, u8 query, u8 unit,
->  	if (likely(ret == size))
->  		return 0;
->  
-> -	dev_err(&dev->udev->dev,
-> +	dev_dbg(&dev->udev->dev,
->  		"Failed to query (%s) UVC control %u on unit %u: %d (exp. %u).\n",
->  		uvc_query_name(query), cs, unit, ret, size);
->  
-> 
+diff --git a/drivers/gpu/drm/drm_mode_config.c b/drivers/gpu/drm/drm_mode_config.c
+index 37b4b9f0e468..d86621c41047 100644
+--- a/drivers/gpu/drm/drm_mode_config.c
++++ b/drivers/gpu/drm/drm_mode_config.c
+@@ -626,9 +626,7 @@ void drm_mode_config_validate(struct drm_device *dev)
+ {
+ 	struct drm_encoder *encoder;
+ 	struct drm_crtc *crtc;
+-	struct drm_plane *plane;
+ 	u32 primary_with_crtc = 0, cursor_with_crtc = 0;
+-	unsigned int num_primary = 0;
+ 
+ 	if (!drm_core_check_feature(dev, DRIVER_MODESET))
+ 		return;
+@@ -676,13 +674,4 @@ void drm_mode_config_validate(struct drm_device *dev)
+ 			cursor_with_crtc |= drm_plane_mask(crtc->cursor);
+ 		}
+ 	}
+-
+-	drm_for_each_plane(plane, dev) {
+-		if (plane->type == DRM_PLANE_TYPE_PRIMARY)
+-			num_primary++;
+-	}
+-
+-	WARN(num_primary != dev->mode_config.num_crtc,
+-	     "Must have as many primary planes as there are CRTCs, but have %u primary planes and %u CRTCs",
+-	     num_primary, dev->mode_config.num_crtc);
+ }
+-- 
+2.30.2
 
