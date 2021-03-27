@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07F434B3E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10E934B3F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhC0DAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 23:00:30 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14153 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhC0C77 (ORCPT
+        id S231240AbhC0DHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 23:07:43 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:50484 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229880AbhC0DHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 22:59:59 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6k5v4jZkznZQW;
-        Sat, 27 Mar 2021 10:57:23 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.207) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
- 10:59:49 +0800
-Subject: Re: [PATCH 4/4] crypto: hisilicon/zip - support new 'sqe' type in
- Kunpeng930
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-References: <1616139187-63425-1-git-send-email-shenyang39@huawei.com>
- <1616139187-63425-5-git-send-email-shenyang39@huawei.com>
- <20210326091457.GA1153@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <linux-crypto@vger.kernel.org>, <wangzhou1@hisilicon.com>
-From:   "shenyang (M)" <shenyang39@huawei.com>
-Message-ID: <833da1eb-0277-8466-23dc-15533eafbd8f@huawei.com>
-Date:   Sat, 27 Mar 2021 10:59:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Fri, 26 Mar 2021 23:07:08 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id E7ADD40396;
+        Sat, 27 Mar 2021 03:07:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1616814427; bh=YgEWhwoMwnFlsWEuVKVkKKjj6tDqXAabsNLouryl93A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ijKaN0eZbwMOeoXXckSzH6hQPbiwNmFdc/vOTwvdzeStxLch3MOon4/pnF5ZzyiFh
+         sDXJWVnEFesKCbhq513P1+cm4GSfCqKZPb0Sqz/TefmScRrjeeCcIWqoN+PGl9Jn/3
+         BrED7sZwAAekcWIcJn0aZPWo6Riqcy66TWumyoil0keTHUyXtJns4TKTkICZsRsUrw
+         HzHj5kSKJc5NNUu3V4aA+CDV4QhfBwiWwnXEOoaoMzUxJsnvHeaGF/snaYJbT819wy
+         h/8VkYIpCfQtSNhaPPTAo6QjRlNvH67CsFLWVxgJAtBN0POZQw2BLuNgxB8MCMyJtp
+         0m8CaHZ0tBOrw==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 22187A022E;
+        Sat, 27 Mar 2021 03:07:04 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Subject: [PATCH v7 0/5] misc: Add Add Synopsys DesignWare xData IP driver
+Date:   Sat, 27 Mar 2021 04:06:50 +0100
+Message-Id: <cover.1616814273.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <20210326091457.GA1153@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=y
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.69.38.207]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series adds a new driver called xData-pcie for the Synopsys
+DesignWare PCIe prototype.
 
+The driver configures and enables the Synopsys DesignWare PCIe traffic
+generator IP inside of prototype Endpoint which will generate upstream
+and downstream PCIe traffic. This allows to quickly test the PCIe link
+throughput speed and check is the prototype solution has some limitation
+or not.
 
-On 2021/3/26 17:14, Herbert Xu wrote:
-> On Fri, Mar 19, 2021 at 03:33:07PM +0800, Yang Shen wrote:
->>
->> +const struct hisi_zip_sqe_ops hisi_zip_ops_v2 = {
->> +	.sqe_type		= 0x3,
->> +	.fill_addr		= hisi_zip_fill_addr,
->> +	.fill_buf_size		= hisi_zip_fill_buf_size,
->> +	.fill_buf_type		= hisi_zip_fill_buf_type,
->> +	.fill_req_type		= hisi_zip_fill_req_type,
->> +	.fill_tag		= hisi_zip_fill_tag_v2,
->> +	.fill_sqe_type		= hisi_zip_fill_sqe_type,
->> +	.get_tag		= hisi_zip_get_tag_v2,
->> +	.get_status		= hisi_zip_get_status,
->> +	.get_dstlen		= hisi_zip_get_dstlen,
->> +};
->> +
->
-> This triggers a new warning:
->
->   CHECK   ../drivers/crypto/hisilicon/zip/zip_crypto.c
->   ../drivers/crypto/hisilicon/zip/zip_crypto.c:527:31: warning: symbol 'hisi_zip_ops_v1' was not declared. Should it be static?
->   ../drivers/crypto/hisilicon/zip/zip_crypto.c:540:31: warning: symbol 'hisi_zip_ops_v2' was not declared. Should it be static?
->
-> Please fix.  Thanks.
->
+Changes:
+ V2: Rework driver according to Greg Kroah-Hartman' feedback
+ V3: Fixed issues detected while running on 64 bits platforms
+     Rebased patches on top of v5.11-rc1 version
+ V4: Rework driver according to Greg Kroah-Hartman' feedback
+     Add the ABI doc related to the sysfs implemented on this driver
+ V5: Rework driver accordingly to Leon Romanovsky' feedback
+     Rework driver accordingly to Krzysztof Wilczyński' feedback
+ V6: Rework driver according to Greg Kroah-Hartman' feedback
+     Rework driver accordingly to Krzysztof Wilczyński' feedback
+     Rework driver accordingly to Leon Romanovsky' feedback
+ V7: Rework driver according to Greg Kroah-Hartman' feedback
 
-Sorry， I'll fix this in next version.
+Cc: linux-doc@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Krzysztof Wilczyński <kw@linux.com>
 
-Thanks.
+Gustavo Pimentel (5):
+  misc: Add Synopsys DesignWare xData IP driver
+  misc: Add Synopsys DesignWare xData IP driver to Makefile and Kconfig
+  Documentation: misc-devices: Add Documentation for dw-xdata-pcie
+    driver
+  MAINTAINERS: Add Synopsys xData IP driver maintainer
+  docs: ABI: Add sysfs documentation interface of dw-xdata-pcie driver
+
+ Documentation/ABI/testing/sysfs-driver-xdata |  46 +++
+ Documentation/misc-devices/dw-xdata-pcie.rst |  40 +++
+ MAINTAINERS                                  |   7 +
+ drivers/misc/Kconfig                         |  10 +
+ drivers/misc/Makefile                        |   1 +
+ drivers/misc/dw-xdata-pcie.c                 | 401 +++++++++++++++++++++++++++
+ 6 files changed, 505 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-xdata
+ create mode 100644 Documentation/misc-devices/dw-xdata-pcie.rst
+ create mode 100644 drivers/misc/dw-xdata-pcie.c
+
+-- 
+2.7.4
 
