@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E971D34B847
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CF634B84C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbhC0QmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 12:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhC0QmA (ORCPT
+        id S230204AbhC0QpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 12:45:24 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:41889 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhC0QpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 12:42:00 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1CAC0613B2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 09:42:00 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so5688113pjq.5
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 09:42:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b17SAdPX6nFOb6T7BOu2u77iGyZqgb6X+sWCVvCBRdc=;
-        b=Q+gE3B/6OXFXCQX+tZc1x4wvsgXzQa2ctNK6mgR5uqOVImk4Xx2if+48CuJ4ej6tlx
-         1/RCN+0K/loG6qQIplmww0cdU5kXQ5GUEUF6OEtih8TRvJwU2OSBkPd/7JKlnaU7GkiJ
-         tlxoO9zhL5yCBeUmdzxf8pKMahsgTW56Wo9w8xYbkLev3BhlJwmZ3p2NEVbdILLQHxpx
-         XiF1RrxJbri+nMBF5aHzYIMYj+QSj1OHDPsNPHxWmAVahncPqZBp403IjsxvbUslvHHn
-         2EaI5pw2N3jVry15oa7ehnmHD+20i/lSKWDHszUZ02xXOjTEpRib+rLZPlCHSuMSGbsZ
-         A1SQ==
+        Sat, 27 Mar 2021 12:45:00 -0400
+Received: by mail-oi1-f170.google.com with SMTP id z15so8964882oic.8;
+        Sat, 27 Mar 2021 09:45:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b17SAdPX6nFOb6T7BOu2u77iGyZqgb6X+sWCVvCBRdc=;
-        b=V38JAvpswctiFmRHUc6S1iE6ccrPH/A7RQe+o6ggPwzpS7rNxHjfX3AButKEbhASXv
-         d88mxwYpXSWmTUEnUkt4z2FwuJ5voPky4Qp4X+c80Qq6jSmKOjweQ++lF8mrWeYg90Ln
-         J2xFuRcueHSLSCimQqBuF3ozhv4nj24nQW9N7BPxIVwzQ/2ah3rBJaA1fXAsjMYIrHpL
-         TygKufkh2MFyTzk46dI3iGrDUK37LtVeXobt1d1z50Lu1iTKZt67KlBhCNU7aajjs+6q
-         swUTjzlKEz8lXlhSvZfU2Lt4U748Vx9vZ9l82aObPCybOG6RN0VsDXjB6MkxcYDM5N9D
-         F8TQ==
-X-Gm-Message-State: AOAM530JbsIDk1gI3CG9NrMaJOfHgY64DtwkS9ci4DI4fEcGJi2RmT43
-        YjRil4NQP0oG4xvEPhAKyWu26YISpPjoAw==
-X-Google-Smtp-Source: ABdhPJxtUI6V9nWEGUXivlaCxukhiQQHXADM1rRWTRwRuEufVyOFAFdwHTmULi8JUApZhHcCs9ZQxg==
-X-Received: by 2002:a17:902:b908:b029:e6:3e0a:b3cc with SMTP id bf8-20020a170902b908b02900e63e0ab3ccmr20843430plb.68.1616863319379;
-        Sat, 27 Mar 2021 09:41:59 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id g7sm11951769pgb.10.2021.03.27.09.41.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Mar 2021 09:41:58 -0700 (PDT)
-Subject: Re: [PATCH 0/6] Allow signals for IO threads
-To:     Stefan Metzmacher <metze@samba.org>, io-uring@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
-        oleg@redhat.com, linux-kernel@vger.kernel.org
-References: <20210326003928.978750-1-axboe@kernel.dk>
- <e6de934a-a794-f173-088d-a140d0645188@samba.org>
- <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
- <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
- <358c5225-c23f-de08-65cb-ca3349793c0e@samba.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <548d1761-731d-2960-ee84-2e5ede73bdeb@kernel.dk>
-Date:   Sat, 27 Mar 2021 10:41:57 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2F8RzeTleB8udHCv5mRu3tw4FmnypGvkRtmFHpRztvE=;
+        b=XztMy4OYBou5J8IAEkSTkf/1C+MLJNCtpkxkQ6FAoX7ek8SWAR0UNNKQ7Q5KM2gayZ
+         enY4pwVcdZt7lEAEiJ8lWWkMNGW0YoqcDUEWSkTAs/0BJEiNpcXpRDwXQ1IaKtLup3X9
+         J834hbDnsM9TPiJUCwzhpVyp/mr4Gdh8LLAq1+hLuMsLpvM9SGmwSma/DtBh1Gav8xS1
+         x4SchNEW/SNvWmGA/i2HttAKG+mDG3TV2ih/rHGQJjrOaBfwU/F3Ci8wQybSKhzp9orD
+         jMG41GIZLoNOwxr8QLOypGVXT8QDCY3Qv1eRCSXxk4syqqJim0ljkp/D61O0bbbnwW73
+         fmDA==
+X-Gm-Message-State: AOAM531yAOY8WsKt+Hqqfv96zeim3LMb28WIPIkUjj3HYRjALegTv4WU
+        bqjQF1bWir7F2R/qDJsiKA==
+X-Google-Smtp-Source: ABdhPJxxFybdvkzTsqZO6qv3YqeMmmcg3+FTflQKCCnCH6rWeKtKOq6qu4yFD9S8pulpvjtPrO0gFw==
+X-Received: by 2002:aca:1b01:: with SMTP id b1mr13387336oib.177.1616863500303;
+        Sat, 27 Mar 2021 09:45:00 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.140])
+        by smtp.gmail.com with ESMTPSA id z3sm125375oop.41.2021.03.27.09.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 09:44:59 -0700 (PDT)
+Received: (nullmailer pid 223207 invoked by uid 1000);
+        Sat, 27 Mar 2021 16:44:56 -0000
+Date:   Sat, 27 Mar 2021 10:44:56 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] dt-bindings: timer: Simplify conditional
+ expressions
+Message-ID: <20210327164456.GA223158@robh.at.kernel.org>
+References: <20210322044707.19479-1-samuel@sholland.org>
+ <20210322044707.19479-2-samuel@sholland.org>
 MIME-Version: 1.0
-In-Reply-To: <358c5225-c23f-de08-65cb-ca3349793c0e@samba.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210322044707.19479-2-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 7:46 PM, Stefan Metzmacher wrote:
+On Sun, 21 Mar 2021 23:47:03 -0500, Samuel Holland wrote:
+> The sun4i timer IP block has a variable number of interrupts based on
+> the compatible. Use enums to combine the two sections for the existing
+> 3-interrupt variants, and to simplify adding new compatible strings.
 > 
-> Hi Jens,
+> Acked-by: Maxime Ripard <maxime@cerno.tech>
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  .../timer/allwinner,sun4i-a10-timer.yaml      | 25 ++++++-------------
+>  1 file changed, 7 insertions(+), 18 deletions(-)
 > 
->> root@ub1704-166:~# LANG=C gdb --pid 1320
->> GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
->> Copyright (C) 2020 Free Software Foundation, Inc.
->> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
->> This is free software: you are free to change and redistribute it.
->> There is NO WARRANTY, to the extent permitted by law.
->> Type "show copying" and "show warranty" for details.
->> This GDB was configured as "x86_64-linux-gnu".
->> Type "show configuration" for configuration details.
->> For bug reporting instructions, please see:
->> <http://www.gnu.org/software/gdb/bugs/>.
->> Find the GDB manual and other documentation resources online at:
->>     <http://www.gnu.org/software/gdb/documentation/>.
->>
->> For help, type "help".
->> Type "apropos word" to search for commands related to "word".
->> Attaching to process 1320
->> [New LWP 1321]
->> [New LWP 1322]
->>
->> warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
->>
->> warning: Architecture rejected target-supplied description
->> syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
->> 38      ../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory.
->> (gdb)
-> 
-> Ok, the following makes gdb happy again:
-> 
-> --- a/arch/x86/kernel/process.c
-> +++ b/arch/x86/kernel/process.c
-> @@ -163,6 +163,8 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
->         /* Kernel thread ? */
->         if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
->                 memset(childregs, 0, sizeof(struct pt_regs));
-> +               if (p->flags & PF_IO_WORKER)
-> +                       childregs->cs = current_pt_regs()->cs;
->                 kthread_frame_init(frame, sp, arg);
->                 return 0;
->         }
 
-Confirmed, it stops complaining about the arch at that point.
-
-> I'm wondering if we should decouple the PF_KTHREAD and PF_IO_WORKER
-> cases even more and keep as much of a userspace-like copy_thread as
-> possible.
-
-Probably makes sense, the only thing they really share is the func+arg
-setup. Hence PF_IO_WORKER threads likely just use the rest of the init,
-where it doesn't conflict with the frame setup.
-
--- 
-Jens Axboe
-
+Reviewed-by: Rob Herring <robh@kernel.org>
