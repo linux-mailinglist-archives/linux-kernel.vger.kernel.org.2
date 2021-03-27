@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D21F334B9A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 22:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA63534B9AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 22:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhC0VnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 17:43:10 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:56227 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230176AbhC0Vme (ORCPT
+        id S230372AbhC0VpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 17:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231243AbhC0Vo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 17:42:34 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id A901A82239;
-        Sun, 28 Mar 2021 00:42:31 +0300 (MSK)
+        Sat, 27 Mar 2021 17:44:58 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66831C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 14:44:58 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id o10so12835714lfb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 14:44:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1616881351;
-        bh=hMrdjomfNUx81SQGI895Lj99/Ld+2JIcHIQiI5PgAmU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=YQcqs2HdJULD3h6aGVQt+x7y/X2t5AhXV6yoifcXGF/+qJCqGgR7GF0gqKuNLBxsx
-         Mcm+9jNfmEgC+3H/Zce2NBiOzhtC/PhUAYywGR2MkqLboMtZrhO4XQlNTi/PrOcKsZ
-         zDZaR5z4lnHsU2WnFqKfqEDjotyxKh32cZklyKBw=
-Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 28 Mar 2021 00:42:31 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     <linux-fsdevel@vger.kernel.org>
-CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
-        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
-        <mark@harmstone.com>, <nborisov@suse.com>,
-        <linux-ntfs-dev@lists.sourceforge.net>, <anton@tuxera.com>,
-        <dan.carpenter@oracle.com>, <hch@lst.de>, <ebiggers@kernel.org>,
-        <andy.lavr@gmail.com>, <kari.argillander@gmail.com>,
-        <oleksandr@natalenko.name>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [PATCH v25 10/10] fs/ntfs3: Add MAINTAINERS
-Date:   Sun, 28 Mar 2021 00:40:23 +0300
-Message-ID: <20210327214023.3214923-11-almaz.alexandrovich@paragon-software.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <20210327214023.3214923-1-almaz.alexandrovich@paragon-software.com>
-References: <20210327214023.3214923-1-almaz.alexandrovich@paragon-software.com>
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i3wg0RfDT7B12umkmZco55Pf5265Dscr2E2y7rSMHH4=;
+        b=HZvJe+CdUE992BE0QCOrxokIQdt6paoBnnPGBEe0DrTB7tXBPJNPf/GgvJZ5Z5bBCd
+         /RhnjCEYipC0dJlI06wBFMdXQchowkPZQcCcZxRtOGlXNryfqpJygascdEY/gMw07Heq
+         rNTwGTEOZGK2Grptz2/ul0QcIW04y4NmCL8ahcI78drcEvQDyFuBX3/gkICircHctTW0
+         OQnBgjW65GOqpIs6uk/6WUd5CHg7u+pis2u79QnZRokAOTAHyY8/8nFDL8tMs2SkNe/5
+         E4BcT/rriWsYAKHb63LnuOqOWMCwSzcw43WgOfY2FmU7uTDIyzsxhCjyCrQhLxt5J1XW
+         n/Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=i3wg0RfDT7B12umkmZco55Pf5265Dscr2E2y7rSMHH4=;
+        b=piplLEK/KjQOmp/+FuPFxfzouOOKNkV0bTeysw9ZGYX7Jelmtg3YuZeXCAgUDzYQhS
+         m97lzNxC17nEjBbkk/uAUMaGQbelXlqfGItEJ79/IqvRqCCyX0875KXnKC8NdM+DtnFh
+         wrTLCdyoilOPAzLxn8wWIyinYWrCILSCXw59xgf7pDbLc4sZhqXKKunMcd7GHTEOwFPb
+         VQsUbNnF1W6yXeRFiQf8j/XU3O5XUm+7oafJdqBK98LuKQQTFv24kBfUv+zFlTciUcsB
+         yYiLwjNvIZpWn2lYCpf5P2pju5vUJ68ewYVn9jEzASWIJ+DeGqL0h5s5Z661gB9PFg91
+         xgQw==
+X-Gm-Message-State: AOAM533ZSEewadzu07vWK5Wj8ibip8QRQroVL8w1au4c7ZM/57KFMhuo
+        4rfL5IDoxiA1Zz4KpLqZAjo=
+X-Google-Smtp-Source: ABdhPJwct+lVW+QjDdIY0f7p8L5CVWELm18ELwK3pnHu7XC1GiJwcdpR95BAFAXKj6wG3hbg1284Tw==
+X-Received: by 2002:a19:ec1a:: with SMTP id b26mr11614441lfa.610.1616881496726;
+        Sat, 27 Mar 2021 14:44:56 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.227.42])
+        by smtp.gmail.com with ESMTPSA id l29sm1303347lfp.63.2021.03.27.14.44.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 14:44:56 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com
+Subject: [PATCH] tty: fix memory leak in vc_deallocate
+Date:   Sun, 28 Mar 2021 00:44:43 +0300
+Message-Id: <20210327214443.21548-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.30.114.105]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds MAINTAINERS
+syzbot reported memory leak in tty/vt.
+The problem was in VT_DISALLOCATE ioctl cmd.
+After allocating unimap with PIO_UNIMAP it wasn't
+freed via VT_DISALLOCATE, but vc_cons[currcons].d was
+zeroed.
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Reported-by: syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/tty/vt/vt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 67b104202..832f7d4d0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12875,6 +12875,13 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/aia21/ntfs.git
- F:	Documentation/filesystems/ntfs.rst
- F:	fs/ntfs/
- 
-+NTFS3 FILESYSTEM
-+M:	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-+S:	Supported
-+W:	http://www.paragon-software.com/
-+F:	Documentation/filesystems/ntfs3.rst
-+F:	fs/ntfs3/
-+
- NUBUS SUBSYSTEM
- M:	Finn Thain <fthain@telegraphics.com.au>
- L:	linux-m68k@lists.linux-m68k.org
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 284b07224c55..0cc360da5426 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -1381,6 +1381,7 @@ struct vc_data *vc_deallocate(unsigned int currcons)
+ 		atomic_notifier_call_chain(&vt_notifier_list, VT_DEALLOCATE, &param);
+ 		vcs_remove_sysfs(currcons);
+ 		visual_deinit(vc);
++		con_free_unimap(vc);
+ 		put_pid(vc->vt_pid);
+ 		vc_uniscr_set(vc, NULL);
+ 		kfree(vc->vc_screenbuf);
 -- 
-2.25.4
+2.30.2
 
