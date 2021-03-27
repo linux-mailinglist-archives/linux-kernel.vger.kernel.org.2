@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3779E34B744
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4D734B746
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhC0Mon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 08:44:43 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15363 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229582AbhC0Moj (ORCPT
+        id S230274AbhC0Mqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 08:46:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhC0Mqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 08:44:39 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6z571qPPz90JD;
-        Sat, 27 Mar 2021 20:42:35 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 20:44:32 +0800
-From:   Xie XiuQi <xiexiuqi@huawei.com>
-To:     <mingo@redhat.com>, <peterz@infradead.org>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] sched,psi: fix typo in comment
-Date:   Sat, 27 Mar 2021 20:46:10 +0800
-Message-ID: <20210327124610.7276-1-xiexiuqi@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        Sat, 27 Mar 2021 08:46:34 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961EAC0613B1;
+        Sat, 27 Mar 2021 05:46:34 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id n25so2255121vsl.2;
+        Sat, 27 Mar 2021 05:46:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=RrVbuP4yx7aVpvGRK5G+Y2BaGMrWO4PGd0V8ba4pyo0=;
+        b=dbVv3vXFbLAyEu8JR9YoyZqiLOlT0vE+UupckIBPV2hbhKkvCbiRMCJC4CtqtETQbC
+         Cnh0dMEE5OABeJ7eNCbJLLrAIALb9yd+srwA7yW2g+8a50EIQq2RhRmWoEoGYd14Zqt2
+         ivhuKAIbxsNi+jbuZu8GiE6zUGP8MEx/7TfFYvGjaLu4q1yMEAyHdL2/XkgUPWAFkOdD
+         UsQTd1omdV6XI/MAnv84R6KSbM4URZ3cBgkCxZSu2AdzEvvhWX1v701Ms9XpuIytsjcn
+         StGQmsRj63N9Sfg6pnJeTgKGN8r6qI4a1UuPpZHnOAakNa1g4+hl5i3xyH2ib+zdsXlp
+         2lfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=RrVbuP4yx7aVpvGRK5G+Y2BaGMrWO4PGd0V8ba4pyo0=;
+        b=CFbbvCyD9AI9BIoIJec0gOlBzyIdHRC8za3+sCK9hg9ii2fnu/4SrHHCFCJT2YJsrj
+         lpEroCXhRfsS0ATrhUPvt+vKJtrvkdoBVS/DxheTpf5h3XlP2tnaOoR9z892b4CexmqW
+         9q1W9X0JI/yOBAxZX7kehmmQNhG9A09/ouEf611GcUy5KxQOFWqEXtL2gLDVvOv5gS2E
+         taBM27ByMFMpHFHDhRaOL+2JdA+GyWFZuvxqzLzSKRGB7w5kTKjqTfs/apQn9TLhKGg5
+         Zsf4zOM6MCNdt/crCqMwC8QAw3EBVzgX0o06goUIhHTrAM2I7EmhBWOWfDl4JglP0tC3
+         +2rw==
+X-Gm-Message-State: AOAM533G1KCSJ5TiN37VvBdtEbUuMt4V7vaPOPTIldROSZ9beHFtMv19
+        HPVtU1aKyF4UbGKiYGyCl3TZSpy7wvPgIhIcbpfwIeUZ2vk=
+X-Google-Smtp-Source: ABdhPJwlRFfJB4xqm7yl/waKf7pdUKzLTdtxvi7mDHEC1NHB2zqeWQ2wh+ifMfnZBHGk/h3/0QQR9z7Hh2+nfYGAli0=
+X-Received: by 2002:a67:b81:: with SMTP id 123mr10927656vsl.52.1616849193669;
+ Sat, 27 Mar 2021 05:46:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <CALaQ_hrZZmAi2AKtmCm2QUXeg9VWuyeWmmk__OFEG1ycHMiX8A@mail.gmail.com>
+ <CALaQ_hoXDSP7Fe4SWFArHbv2ppmoKKPVEXTkO-Ex0FsjKaYd=w@mail.gmail.com>
+In-Reply-To: <CALaQ_hoXDSP7Fe4SWFArHbv2ppmoKKPVEXTkO-Ex0FsjKaYd=w@mail.gmail.com>
+From:   Nathan Royce <nroycea+kernel@gmail.com>
+Date:   Sat, 27 Mar 2021 07:46:22 -0500
+Message-ID: <CALaQ_hrwsEsD5PU7QtyXOW3OXXRzQ9QV5tyEMpd70GsRLhV+2A@mail.gmail.com>
+Subject: Re: BTRFS Balance Hard System Crash (Blinking LEDs)
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/exceution/execution/
-s/possibe/possible/
-s/manupulations/manipulations/
+An update... I encountered blinking LEDs while I was away from my
+computer again.
+I'm now pretty confident it wasn't an issue with btrfs balance, but
+rather the sd-card not being seated well.
 
-Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
----
- kernel/sched/psi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+I just updated my old "F2FS Segmentation fault" post in linux-f2fs-devel.
+In short, fsck for f2fs was failing, badblocks was coming up with only
+errors, I cleaned the sd-card contacts, put it back in and badblocks
+is running cleanly now.
+It's just too late for me, and I have to rebuild that partition since,
+for whatever reason, cryptsetup no longer recognizes the partition as
+being LUKS even though badblocks was run non-destructive.
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 967732c0766c..7c800be47c6f 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -59,7 +59,7 @@
-  * states, we would have to conclude a CPU SOME pressure number of
-  * 100%, since *somebody* is waiting on a runqueue at all
-  * times. However, that is clearly not the amount of contention the
-- * workload is experiencing: only one out of 256 possible exceution
-+ * workload is experiencing: only one out of 256 possible execution
-  * threads will be contended at any given time, or about 0.4%.
-  *
-  * Conversely, consider a scenario of 4 tasks and 4 CPUs where at any
-@@ -73,7 +73,7 @@
-  * we have to base our calculation on the number of non-idle tasks in
-  * conjunction with the number of available CPUs, which is the number
-  * of potential execution threads. SOME becomes then the proportion of
-- * delayed tasks to possibe threads, and FULL is the share of possible
-+ * delayed tasks to possible threads, and FULL is the share of possible
-  * threads that are unproductive due to delays:
-  *
-  *	threads = min(nr_nonidle_tasks, nr_cpus)
-@@ -441,7 +441,8 @@ static void psi_avgs_work(struct work_struct *work)
- 	mutex_unlock(&group->avgs_lock);
- }
- 
--/* Trigger tracking window manupulations */
-+/* Trigger tracking window manipulations */
-+
- static void window_reset(struct psi_window *win, u64 now, u64 value,
- 			 u64 prev_growth)
- {
--- 
-2.25.1
-
+On Fri, Mar 26, 2021 at 11:51 AM Nathan Royce <nroycea+kernel@gmail.com> wrote:
+>
+> Oh man, I'm hoping things aren't starting to fall apart here.
+> I was doing my normal routine (tv, browsing, ... (no filesystem
+> manipulations)) and out of the blue "kodi" just crashes. It's actually
+> not all that uncommon, and I fired up "iotop" to make sure "coredump"
+> was happening, and it was.
+> I then did something else in the terminal, maybe an "ls", and that came up with:
+> *****
+> error while loading shared libraries: /usr/lib/libutil.so.1: ELF file
+> version does not match current one
+> *****
+...
