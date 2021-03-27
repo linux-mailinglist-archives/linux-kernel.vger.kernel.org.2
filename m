@@ -2,84 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD78034B620
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3397234B62A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhC0KaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 06:30:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15076 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbhC0KaC (ORCPT
+        id S231565AbhC0Kcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 06:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231513AbhC0Kcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 06:30:02 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6w5p1VlMz1BFM8;
-        Sat, 27 Mar 2021 18:27:58 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 18:29:50 +0800
-Subject: Re: [PATCH] crypto: hisilicon/sec - Fix a module parameter error
-To:     <herbert@gondor.apana.org.au>, <wangzhou1@hisilicon.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1616837358-15112-1-git-send-email-liulongfang@huawei.com>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <354738e6-1c4b-66c4-ff89-ecac70d47c9e@huawei.com>
-Date:   Sat, 27 Mar 2021 18:29:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sat, 27 Mar 2021 06:32:46 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA95EC0613B1;
+        Sat, 27 Mar 2021 03:32:41 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id i19so6033404qtv.7;
+        Sat, 27 Mar 2021 03:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z7BBTPMNYUV8rOoYLCTtqBbdjG4BGaxvYP5NaWTpNz8=;
+        b=XPA8bzZwEKGk2TQvx/bDBm9WO9VqXBYOY09xm3p/O1a7iyKItidfasUhHuMMiOxfCz
+         M4mJ8rwuUHVDbHFxsgr4rGI2U/IpjcQ7wz0kTot/ZerejWRp+QYfD29RkXOAMWMLzSFV
+         YggL7tNSJyDwp+bkjlVz3BQi+FrWruxT2NDElWNANuKguD8zbveNUdd4y+VpPxuKM/0B
+         Ng314qtesztzYTmn6QqBiotHe77oE56vzQacxnnFdET1WvNU54lhqSQr9tZyILLdbdcy
+         tdfFAW/Fv+9HF9gLdMfSWVyq5tNcuM7rErjehugd8GYvcCcGS3RK4k1V3yEHtrVkIlSX
+         sC4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z7BBTPMNYUV8rOoYLCTtqBbdjG4BGaxvYP5NaWTpNz8=;
+        b=nHRv5P6IOcq6/dbP1PrJJciBYIUPUPz92K8dwcaZxn1RBpBzrsJjLOeASE/7KagITq
+         73yve97vnRre2PM6YQM6a2MaNnsmuncExW+iXX6jObYe2K/vJ17z5mdTEwXZzUlF3bCU
+         QWJIGzbetlIjZx+Db9UU6sgR8LJwsC8+HZ5ij3paTBZe2/DGno5/WddQQocxRG8s9cpb
+         ufXRMUIHGO0SyrM8okmU0vOMdbRr6uaQ6Z3QwtIfDOIM7X7kPtug8j32fga1TIkTkJw1
+         PzKLxzsq+x909A/CB9vO0gVzaxOcd5OTui1WHgszmKIwmaSXNQN7P74NSA3dkgfDJZ4C
+         WFeg==
+X-Gm-Message-State: AOAM531I/vbcktp1qXXFEiZyG4j7nPoblTRqFhcgjVHexZJXbbB9Avvi
+        awrBAAc2SqXQNvT41nOWcWCwXOJPw91E4VUn
+X-Google-Smtp-Source: ABdhPJycMugdI7OSIPg9fZa89zuZn9qRV1mEfI33lMa/wvbp6c2inqO0pR18NOuBeGmPvGytTSP20Q==
+X-Received: by 2002:ac8:5e0b:: with SMTP id h11mr15547648qtx.194.1616841161219;
+        Sat, 27 Mar 2021 03:32:41 -0700 (PDT)
+Received: from localhost.localdomain ([37.19.198.35])
+        by smtp.gmail.com with ESMTPSA id a14sm7292364qtw.80.2021.03.27.03.32.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 03:32:40 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        linux-ext4@vger.kernel.org, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] EXT4: Trivial typo fixes
+Date:   Sat, 27 Mar 2021 16:00:04 +0530
+Message-Id: <cover.1616840203.git.unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <1616837358-15112-1-git-send-email-liulongfang@huawei.com>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/27 17:29, Longfang Liu Wrote:
-> ctx_q_num is a module parameter set by the user to specify the
-> number of qp queues required to create a ctx.
-> 
-> When the number of qp queues allocated by PF or VF is less than
-> the ctx_q_num, an error will be reported when ctx is initialized
-> in kernel mode, which leads to the problem that the registered
-> algorithms cannot be used.
-> 
-> Therefore, when PF or VF is initialized, if the number of qp queues
-> is not enough to create a ctx, the kernel mode cannot be used,
-> and there is no need to register the kernel mode algorithms.
-> 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> ---
->  drivers/crypto/hisilicon/sec2/sec_main.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/sec2/sec_main.c b/drivers/crypto/hisilicon/sec2/sec_main.c
-> index b1818f7..c7b71b6 100644
-> --- a/drivers/crypto/hisilicon/sec2/sec_main.c
-> +++ b/drivers/crypto/hisilicon/sec2/sec_main.c
-> @@ -867,10 +867,15 @@ static int sec_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	if (ret)
->  		pci_warn(pdev, "Failed to init debugfs!\n");
->  
-> -	ret = hisi_qm_alg_register(qm, &sec_devices);
-> -	if (ret < 0) {
-> -		pr_err("Failed to register driver to crypto.\n");
-> -		goto err_qm_stop;
-> +	if (qm->qp_num >= ctx_q_num) {
-> +		ret = hisi_qm_alg_register(qm, &sec_devices);
-> +		if (ret < 0) {
-> +			pr_err("Failed to register driver to crypto.\n");
-> +			goto err_qm_stop;
-> +		}
-> +	} else {
-> +		pci_warn(qm->pdev,
-> +			"Failed to use kernel mode, qp not enough!\n");
->  	}
->  
->  	if (qm->uacce) {
-> 
-Sorry, please don't reply to this patch, I will resend it again.
-Thanks,
-Longfang
+This patch series fixed few mundane typos in the below specific files.
+
+Bhaskar Chowdhury (8):
+  EXT4: migrate.c: Fixed few typos
+  EXT4: namei.c: Fixed a typo
+  EXT4: inline.c: A typo fixed
+  Fix a typo
+  EXT4: indirect.c: A trivial typo fix
+  EXT4: xattr.c: Mundane typo fix
+  EXT4: fast_commit.c: A mere typo fix
+  EXT4: mballoc.h: Single typo fix
+
+ fs/ext4/fast_commit.c | 2 +-
+ fs/ext4/indirect.c    | 2 +-
+ fs/ext4/inline.c      | 2 +-
+ fs/ext4/inode.c       | 2 +-
+ fs/ext4/mballoc.h     | 2 +-
+ fs/ext4/migrate.c     | 6 +++---
+ fs/ext4/namei.c       | 8 ++++----
+ fs/ext4/xattr.c       | 2 +-
+ 8 files changed, 13 insertions(+), 13 deletions(-)
+
+--
+2.26.2
+
