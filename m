@@ -2,134 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3150334B369
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 01:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7936634B365
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 01:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231173AbhC0AsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 20:48:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhC0Ar7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 20:47:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1D03619F2;
-        Sat, 27 Mar 2021 00:47:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616806079;
-        bh=8ooecOatcSAJ+gzaT/9xOpTGALqDjn2dglYYs0Fm+aY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NMc/1weQ0un9Dec888CHQzkWIDeKSZIWFUyITh+MjnLnrnvUfJ38Vv2ZT1bJ98vyh
-         o+ZkgAPlkRJCdribUQyrF4SR24tmYE615kPvySqbLqj+yjUk/awmKjtqAQdvdWUmlq
-         TI3BOwIDqDmeFkJeggtpvUtHfWcdYLOUtNm+0QInNu0lIyPd662GVVxEW88iciY5t0
-         p/mZmhVUdqozv7w7HLhJwUKb6jU/1fjrhbSzH0cz6mj6hg/hM/u4wrpVXr6kL157h0
-         1fm4mirAb+ViIompSOz22BO0+zztgyqNL/vWvrf9X3hJ6TDpU/GVrvBl6OM7Y/BbPI
-         y00orFODGKn5w==
-Date:   Sat, 27 Mar 2021 08:47:55 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kurahul@cadence.com,
-        sfr@canb.auug.org.au
-Subject: Re: [PATCH v2] usb: cdnsp: Fixes issue with dequeuing requests after
- disabling endpoint
-Message-ID: <20210327004754.GA28870@b29397-desktop>
-References: <20210322054714.47151-1-pawell@gli-login.cadence.com>
+        id S230516AbhC0Aqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 20:46:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230114AbhC0Aqe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 20:46:34 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902F4C0613AA;
+        Fri, 26 Mar 2021 17:46:33 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id e18so7226715wrt.6;
+        Fri, 26 Mar 2021 17:46:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nHJorxPaZOKPqvbrBUd1MTvca30IyxTSkqfGNqy9tlY=;
+        b=OHucB8ZQUp20ujpf/j6nGwWkgkwX+5DR+CToxExScsHASFFddBrQ6+Hq8i0BdImXFA
+         2Klqq/2ellvbiHImRDFcILCo6LgXDWjsb4I33Dfa2hja2WsqZcssZOWrdBtzpprayQE4
+         3rx1WRyLqQVPb7VhnLoYyC6SHFdvjuI7STB3Svb9ZLxmP6Tw5JPKXHJomlU7sR9rMXkY
+         LrROfdmUklBBuHH/SeGgPfPkRdrEmC2/Y8swOG+B35/QiJKAwNDwT2UJbKApU99wvD+s
+         RX4jGqTGzxccpqsP4P83hClOYuQBBYh+2l8Ek6VVFJ6uq5PxhINY0tXw203Iu7cLiZqU
+         YGvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nHJorxPaZOKPqvbrBUd1MTvca30IyxTSkqfGNqy9tlY=;
+        b=Ngb1UbuQTPl0HWOUqTcRTKjbwhsO7+PE9KBCRuI3lrPz01Mofw93ztMC3qjFpiJTDl
+         X3RKbCOXkdjvaiaTocxcjPdyAkzDt9UDZwER/4jt0HKVFHfjlVRbR8bW7RWdmxQeM3dM
+         fYeYZ0v2Tq5LYr5Brqgx39s2vISWz93LWiKYgoIhiMEiECKqri6NXp4US5Vhg6byLi3h
+         nOC9f0mZrM/JNJN3G/r74AvUOOHDteQRp8Ind3AyTNr0awwULo4n9z6P+DC+fgEHiEaM
+         lKRXZHQWPwsFf0gigOXrvLT1U7SQE/IHpKZ7EdU8Wv91td8gR45hIOL8IzmIcPZyEzzC
+         oTIg==
+X-Gm-Message-State: AOAM530uJkWKWkVv0wDxaTNC+E1dgR+1xJHmEHrS67Ch73WRrjUEtQe9
+        UEZHCsSAXxnYSLkZZ09B0P+8DNR5v6AH3OxOEU8=
+X-Google-Smtp-Source: ABdhPJxc5Iv9kjce+mSO9+YriAJUClIF7Ht+NC3aoRpkjw5dIsgGeq0q7sDBn55BeDLvV50ltJ+8AE9gh+MWqkIGpy4=
+X-Received: by 2002:adf:b30f:: with SMTP id j15mr17065038wrd.132.1616805992113;
+ Fri, 26 Mar 2021 17:46:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210322054714.47151-1-pawell@gli-login.cadence.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+ <YFKQaXOmOwYyeqvM@google.com> <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
+ <YF3V8d4wB6i81fLN@orome.fritz.box> <CAF6AEGvS6Pnd-m-boqPEZdDY+VCkV5M8Ob9n6UiYWs_DxrPopQ@mail.gmail.com>
+ <CAF6AEGvPN90RGP8hYXtAksJpGc4Sf5tRpNwNnV6=sxKei0Ms6A@mail.gmail.com>
+ <CAL_JsqKk+c83GMRzpc11Naj7QDYSfHdrg-8ZnxRBBM4phemQxg@mail.gmail.com>
+ <CAF6AEGt3MuQPROfOn6-M1ysD_QKwShb_t3mjUJ4QDBBT_3cwRg@mail.gmail.com>
+ <CAL_Jsq+0rDkzRjedKwgBg7W-gvC3s2eWZozrvtHkou-8+X=+fA@mail.gmail.com> <CAF6AEGu0U2uOCuXFi++bQVBBwmRH+Ds3SiKiXrH7P6j+sa+Bmg@mail.gmail.com>
+In-Reply-To: <CAF6AEGu0U2uOCuXFi++bQVBBwmRH+Ds3SiKiXrH7P6j+sa+Bmg@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 26 Mar 2021 17:49:45 -0700
+Message-ID: <CAF6AEGucQ7CWR_7M7jVTozj-Xgrhwy7ZavFAi-t+X4qrj=NcXw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on sc7180-trogdor-pompom
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-22 06:47:14, Pawel Laszczak wrote:
-> From: Pawel Laszczak <pawell@cadence.com>
-> 
-> Patch fixes the bug:
-> BUG: kernel NULL pointer dereference, address: 0000000000000050
-> PGD 0 P4D 0
-> Oops: 0002 [#1] SMP PTI
-> CPU: 0 PID: 4137 Comm: uvc-gadget Tainted: G           OE     5.10.0-next-20201214+ #3
-> Hardware name: ASUS All Series/Q87T, BIOS 0908 07/22/2014
-> RIP: 0010:cdnsp_remove_request+0xe9/0x530 [cdnsp_udc_pci]
-> Code: 01 00 00 31 f6 48 89 df e8 64 d4 ff ff 48 8b 43 08 48 8b 13 45 31 f6 48 89 42 08 48 89 10 b8 98 ff ff ff 48 89 1b 48 89 5b 08 <41> 83 6d 50 01 41 83 af d0 00 00 00 01 41 f6 84 24 78 20 00 00 08
-> RSP: 0018:ffffb68d00d07b60 EFLAGS: 00010046
-> RAX: 00000000ffffff98 RBX: ffff9d29c57fbf00 RCX: 0000000000001400
-> RDX: ffff9d29c57fbf00 RSI: 0000000000000000 RDI: ffff9d29c57fbf00
-> RBP: ffffb68d00d07bb0 R08: ffff9d2ad9510a00 R09: ffff9d2ac011c000
-> R10: ffff9d2a12b6e760 R11: 0000000000000000 R12: ffff9d29d3fb8000
-> R13: 0000000000000000 R14: 0000000000000000 R15: ffff9d29d3fb88c0
-> FS:  0000000000000000(0000) GS:ffff9d2adba00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000050 CR3: 0000000102164005 CR4: 00000000001706f0
-> Call Trace:
->  cdnsp_ep_dequeue+0x3c/0x90 [cdnsp_udc_pci]
->  cdnsp_gadget_ep_dequeue+0x3f/0x80 [cdnsp_udc_pci]
->  usb_ep_dequeue+0x21/0x70 [udc_core]
->  uvcg_video_enable+0x19d/0x220 [usb_f_uvc]
->  uvc_v4l2_release+0x49/0x90 [usb_f_uvc]
->  v4l2_release+0xa5/0x100 [videodev]
->  __fput+0x99/0x250
->  ____fput+0xe/0x10
->  task_work_run+0x75/0xb0
->  do_exit+0x370/0xb80
->  do_group_exit+0x43/0xa0
->  get_signal+0x12d/0x820
->  arch_do_signal_or_restart+0xb2/0x870
->  ? __switch_to_asm+0x36/0x70
->  ? kern_select+0xc6/0x100
->  exit_to_user_mode_prepare+0xfc/0x170
->  syscall_exit_to_user_mode+0x2a/0x40
->  do_syscall_64+0x43/0x80
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7fe969cf5dd7
-> Code: Unable to access opcode bytes at RIP 0x7fe969cf5dad.
-> 
-> Problem occurs for UVC class. During disconnecting the UVC class disable
-> endpoints and then start dequeuing all requests. This leads to situation
-> where requests are removed twice. The first one in
-> cdnsp_gadget_ep_disable and the second in cdnsp_gadget_ep_dequeue
-> function.
-> Patch adds condition in cdnsp_gadget_ep_dequeue function which allows
-> dequeue requests only from enabled endpoint.
-> 
-> Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-> 
-> ---
-> Changelog:
-> v2:
-> - removed unexpected 'commit' word from fixes tag
+On Fri, Mar 26, 2021 at 5:33 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Fri, Mar 26, 2021 at 4:48 PM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Fri, Mar 26, 2021 at 4:13 PM Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Fri, Mar 26, 2021 at 12:48 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > > >
+> > > > On Fri, Mar 26, 2021 at 9:20 AM Rob Clark <robdclark@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Mar 26, 2021 at 8:18 AM Rob Clark <robdclark@gmail.com> wrote:
+> > > > > >
+> > > > > > On Fri, Mar 26, 2021 at 5:38 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Wed, Mar 17, 2021 at 06:53:04PM -0700, Rob Clark wrote:
+> > > > > > > > On Wed, Mar 17, 2021 at 4:27 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+> > > > > > > > >
+> > > > > > > > > On Tue, Mar 16, 2021 at 02:08:19PM -0700, Douglas Anderson wrote:
+> > > > > > > > > > The sc7180-trogdor-pompom board might be attached to any number of a
+> > > > > > > > > > pile of eDP panels. At the moment I'm told that the list might include:
+> > > > > > > > > > - KD KD116N21-30NV-A010
+> > > > > > > > > > - KD KD116N09-30NH-A016
+> > > > > > > > > > - Starry 2081116HHD028001-51D
+> > > > > > > > > > - Sharp LQ116M1JW10
+> > > > > > > > > >
+> > > > > > > > > > It should be noted that while the EDID programmed in the first 3
+> > > > > > > > > > panels indicates that they should run with exactly the same timing (to
+> > > > > > > > > > keep things simple), the 4th panel not only needs different timing but
+> > > > > > > > > > has a different resolution.
+> > > > > > > > > >
+> > > > > > > > > > As is true in general with eDP panels, we can figure out which panel
+> > > > > > > > > > we have and all the info needed to drive its pixel clock by reading
+> > > > > > > > > > the EDID. However, we can do this only after we've powered the panel
+> > > > > > > > > > on. Powering on the panels requires following the timing diagram in
+> > > > > > > > > > each panel's datasheet which specifies delays between certain
+> > > > > > > > > > actions. This means that, while we can be quite dynamic about handling
+> > > > > > > > > > things we can't just totally skip out on describing the panel like we
+> > > > > > > > > > could do if it was connected to an external-facing DP port.
+> > > > > > > > > >
+> > > > > > > > > > While the different panels have slightly different delays, it's
+> > > > > > > > > > possible to come up with a set of unified delays that will work on all
+> > > > > > > > > > the panels. From reading the datasheets:
+> > > > > > > > > > * KD KD116N21-30NV-A010 and KD KD116N09-30NH-A016
+> > > > > > > > > >   - HPD absent delay: 200 ms
+> > > > > > > > > >   - Unprepare delay: 150 ms (datasheet is confusing, might be 500 ms)
+> > > > > > > > > > * Starry 2081116HHD028001-51D
+> > > > > > > > > >   - HPD absent delay: 100 ms
+> > > > > > > > > >   - Enable delay: (link training done till enable BL): 200 ms
+> > > > > > > > > >   - Unprepare delay: 500 ms
+> > > > > > > > > > * Sharp LQ116M1JW10
+> > > > > > > > > >   - HPD absent delay: 200 ms
+> > > > > > > > > >   - Unprepare delay: 500 ms
+> > > > > > > > > >   - Prepare to enable delay (power on till backlight): 100 ms
+> > > > > > > > > >
+> > > > > > > > > > Unified:
+> > > > > > > > > > - HPD absent delay: 200 ms
+> > > > > > > > > > - Unprepare delay: 500 ms
+> > > > > > > > > > - Enable delay: 200 ms
+> > > > > > > > > >
+> > > > > > > > > > NOTE: in theory the only thing that we _really_ need unity on is the
+> > > > > > > > > > "HPD absent delay" since once the panel asserts HPD we can read the
+> > > > > > > > > > EDID and could make per-panel decisions if we wanted.
+> > > > > > > > > >
+> > > > > > > > > > Let's create a definition of "a panel that can be attached to pompom"
+> > > > > > > > > > as a panel that provides a valid EDID and can work with the standard
+> > > > > > > > > > pompom power sequencing. If more panels are later attached to pompom
+> > > > > > > > > > then it's fine as long as they work in a compatible way.
+> > > > > > > > > >
+> > > > > > > > > > One might ask why we can't just use a generic string here and provide
+> > > > > > > > > > the timings directly in the device tree file. As I understand it,
+> > > > > > > > > > trying to describe generic power sequencing in the device tree is
+> > > > > > > > > > frowned upon and the one instance (SD/MMC) is regarded as a mistake
+> > > > > > > > > > that shouldn't be repeated. Specifying a power sequence per board (or
+> > > > > > > > > > per board class) feels like a reasonable compromise. We're not trying
+> > > > > > > > > > to define fully generic power sequence bindings but we can also take
+> > > > > > > > > > advantage of the semi-probable properties of the attached device.
+> > > > > > > > > >
+> > > > > > > > > > NOTE: I believe that past instances of supporting this type of thing
+> > > > > > > > > > have used the "white lie" approach. One representative panel was
+> > > > > > > > > > listed in the device tree. The power sequencings of this
+> > > > > > > > > > representative panel were OK to use across all panels that might be
+> > > > > > > > > > attached and other differences were handled by EDID. This patch
+> > > > > > > > > > attempts to set a new precedent and avoid the need for the white lie.
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > > > > > > > > ---
+> > > > > > > > >
+> > > > > > > > > Sounds reasonable to me if DT maintainers can live with this abstract
+> > > > > > > > > hardware definition. It's clearer than the 'white lie' approach.
+> > > > > > > >
+> > > > > > > > Yeah, it is a weird grey area between "discoverable" and "not
+> > > > > > > > discoverable".. but I favor DT reflecting reality as much as
+> > > > > > > > possible/feasible, so I think this is definity cleaner than "white
+> > > > > > > > lies"
+> > > > > > >
+> > > > > > > This is practically no different than the "white lie". I suppose you
+> > > > > > > could perhaps call it "more honest", if you want.
+> > > > > > >
+> > > > > > > The point remains that unless we describe exactly which panel we're
+> > > > > > > dealing with, we ultimately have no way of properly quirking anything if
+> > > > > > > we ever have to. Also, once we allow this kind of wildcard we can
+> > > > > > > suddenly get into a situation where people might want to reuse this on
+> > > > > > > something that's not at all a google-pompom board because the same
+> > > > > > > particular power sequence happens to work on on some other board.
+> > > > > > >
+> > > > > > > Similarly I can imagine a situation where we could now have the same
+> > > > > > > panel supported by multiple different wildcard compatible strings. How
+> > > > > > > is that supposed to be any cleaner than what we have now?
+> > > > > > >
+> > > > > > > And I still keep wondering why bootloaders can't be taught about these
+> > > > > > > kinds of things. We have in the past discussed various solutions where
+> > > > > > > the bootloader could detect the type of panel connected and set the
+> > > > > > > proper compatible string.
+> > > > > >
+> > > > > > The bootloader cannot detect the panel without powering up the panel,
+> > > > > > which it normally does not do if you are not in dev-mode (it would add
+> > > > > > a significant amount of time to bootup, which is why we can't do this)
+> > > > >
+> > > > > what if we had a sort of multi-choice panel node:
+> > > > >
+> > > > >    panel: panel {
+> > > > >      compatible = "panel,one-of";
+> > > > >      compatible-one-of = "vendor1,panel-a", "vendor2,panel-b",
+> > > > > "vendor3,panel-c";
+> > > > >   };
+> > > > >
+> > > > > The kernel could construct power sequence timings that are the
+> > > > > superset of all the possible panels.  That seems about as explicit as
+> > > > > we could get in this sort of case.
+> > > >
+> > > > If we were to go this route, I'm inclined to say just shove all the
+> > > > possible panel compatibles into 'compatible'. That kind of breaks the
+> > > > notion of most specific to least specific. OTOH, it is saying the set
+> > > > of panels are somehow 'compatible' with each other.
+> > > >
+> > > > If there's not some level of compatibility between the panels, then
+> > > > it's still the bootloader's problem.
+> > > >
+> > >
+> > > I'm not sure about this.. since there could be slight differences in
+> > > various delay params between the possible panels.  I'd prefer that in
+> > > panel-simple.c, we listed exact delay params "vendorFoo,panelBar", but
+> > > it could mean that for a device that had three possible panels the
+> > > worst case (max of all possible delays) could be higher than any
+> > > individual choice.. and I don't think we should encourage the "white
+> > > lie" approach (which will be the obvious outcome of not handling this
+> > > directly in dt IME, based on prior art).  OTOH pushing it to the
+> > > bootloader, when the bootloader actually has to power up the panel
+> > > (and abide by the necessary delays) to figure out what choice we have
+> > > isn't a viable option either.
+> >
+> > I was only saying if the panels are different enough and there's not a
+> > worse case setting, then it's back to a bootloader problem. If we have
+> > multiple distinct compatibles, then it means the kernel should be able
+> > to figure out settings that work on all the possible panels listed.
+> >
+> > > It is better to be explicit about what we know and at the same time
+> > > about what we don't know.
+> >
+> > Can you be explicit about what we know and don't know here? With what
+> > you proposed and my alternative, at the end of the day we just have a
+> > list of compatibles. The only implicit part is the expectation that
+> > the set is somehow compatible with each other.
+> >
+>
+> Ok, I think I was being incompatible with my definition of "compatible" ;-)
+>
+> To make sure we are on the same page, this is what I have in mind:
+>
+> 1) the panels are compatible enough that if a user breaks their panel
+> and takes device in for repair, they might end up with a different
+> panel
+> 2) the different possible panels may have different power-on delay,
+> etc, but max of all possible power on delays is fine and enough to get
+> the kernel to the point that it can probe EDID and figure out the rest
+>
 
-Acked-by: Peter Chen <peter.chen@kernel.org>
+(by which I mean, I think that is what you are saying.. earlier I was
+considering panel A, B, and C as not being compatible if they had
+different power on delays)
 
-Greg, would you help queue it to your usb-linus branch?
-
-> 
->  drivers/usb/cdns3/cdnsp-gadget.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
-> index f2ebbacd932e..d7d4bdd57f46 100644
-> --- a/drivers/usb/cdns3/cdnsp-gadget.c
-> +++ b/drivers/usb/cdns3/cdnsp-gadget.c
-> @@ -1128,6 +1128,10 @@ static int cdnsp_gadget_ep_dequeue(struct usb_ep *ep,
->  		return -ESHUTDOWN;
->  	}
->  
-> +	/* Requests has been dequeued during disabling endpoint. */
-> +	if (!(pep->ep_state & EP_ENABLED))
-> +		return 0;
-> +
->  	spin_lock_irqsave(&pdev->lock, flags);
->  	ret = cdnsp_ep_dequeue(pep, to_cdnsp_request(request));
->  	spin_unlock_irqrestore(&pdev->lock, flags);
-> -- 
-> 2.25.1
-> 
-
--- 
-
-Thanks,
-Peter Chen
-
+BR,
+-R
