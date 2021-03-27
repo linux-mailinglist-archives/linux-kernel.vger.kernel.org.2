@@ -2,71 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1913C34B8AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C7534B8B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 19:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbhC0R67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 13:58:59 -0400
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:45911 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhC0R6e (ORCPT
+        id S230176AbhC0SDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 14:03:20 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43755 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230043AbhC0SCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 13:58:34 -0400
-Received: by mail-oi1-f169.google.com with SMTP id d12so9051463oiw.12;
-        Sat, 27 Mar 2021 10:58:34 -0700 (PDT)
+        Sat, 27 Mar 2021 14:02:48 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <dann.frazier@canonical.com>)
+        id 1lQDGo-0004y7-Eh
+        for linux-kernel@vger.kernel.org; Sat, 27 Mar 2021 18:02:46 +0000
+Received: by mail-io1-f69.google.com with SMTP id c4so8427999ioq.15
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 11:02:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=X92yyW4gj/Ixj9WOOMpMQLD7ZBl0h5UrxBeJHhj7Hng=;
-        b=sim6VpdR5PqRmh/HzDRJvRSNMzX46wtAk5/JEgTF3EtoujNAm84VFdHOOrIUyNsN4R
-         oEkXmJ4VIOYyLtHQdtJlBDY8ZsYXUSio6XiRJ2GSsemdjs0AsGPJiU/OlnneYN8Ty0BV
-         CtrdeBzJpMmG66C52yHmpgCSVAdrGJsogj0OzIqsuwQN4ZosFz74XeZpBKF3I5NZOD4F
-         zaigctA5LEtvYCAAAvEhbp/Hsi2zwT8bWKLl7xYokL5Rm8HQ0O1xnZRrWjxP5TePNvk/
-         ZMIPlMtdfH32kZr6l7iJyNTCoGPOfTDgvMsveSBizNx2azaLPAwNwXtVpK46yEx1ZJ0K
-         E18Q==
-X-Gm-Message-State: AOAM532+LXg56UibHKT+egJ0P4s5kJft5tZPFKGv+5k7p+s9nrQD2UMP
-        SnH4tT83ndZJELnP47++kQ==
-X-Google-Smtp-Source: ABdhPJxWsTy7jNrkEpQRK11hrj800jQczR6iF/j+pU4/oE6CruCZ74LdF0ABoat3X4QZHn7sFWK7iw==
-X-Received: by 2002:a05:6808:68a:: with SMTP id k10mr11723680oig.120.1616867914087;
-        Sat, 27 Mar 2021 10:58:34 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.107.88])
-        by smtp.gmail.com with ESMTPSA id q67sm2474459oic.55.2021.03.27.10.58.31
+        bh=RrC6Uh7mvsY/QGW5SQ0aCeEyQ9jD8LXRdMjHy+gZDqc=;
+        b=WQVzK2HvNeo6nUbyXJ5SEchfANQr0Py6/kjW7UMJK3OLLxtgyTnzcSiP2BglHvc84Y
+         lR72axYfJXnGVghQDfIVD6ctL9IJNMtQsWOZmZdBHDgIeQaznx8zclZdaNFLvqkS0TQU
+         WsgMPUpd1hX34HrkHD+UwjvSwEceZW9eQYl4RaIDtVUVMvgggkiecTsviHtC9nmUNDCS
+         LpXJTxzsLVi59hsxxzy1UDPiS/G5x7Nm6DuEbmXrAcyoyFgK+Z9wPWYxE/eO+EdRt8VB
+         O/gIXqCFcl+/qDzi+YsUuPCGsdrSJCT5cEGnpS9NQUrRMK3vWPvIVWRHWyHB+hkDhoXc
+         Z2kw==
+X-Gm-Message-State: AOAM530fq1PL0S60v86mhIHyZByjSJwRXxNcGOsmDjVWWtlE8K/r64it
+        7I4zSapIJ7mEkf8P/LAue8EtnzPN2Rh+TDke6LgbQzjpcQbDgxIc2+Q17kamnNi69v51c0IoNvR
+        KuOs8j6Zc4hiRlmkmUcGKg0PMMh6cTRkqLK+kmr8wLg==
+X-Received: by 2002:a5e:8d05:: with SMTP id m5mr14683155ioj.114.1616868165303;
+        Sat, 27 Mar 2021 11:02:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLxovz317Y+w9ac7lus5lXP82uaNaWOHPuuRXtADcNGxYRw1P1YX0oYpk15R0Yo7aS1hiRfg==
+X-Received: by 2002:a5e:8d05:: with SMTP id m5mr14683145ioj.114.1616868165044;
+        Sat, 27 Mar 2021 11:02:45 -0700 (PDT)
+Received: from xps13.dannf (c-71-56-235-36.hsd1.co.comcast.net. [71.56.235.36])
+        by smtp.gmail.com with ESMTPSA id x4sm3528324ilm.39.2021.03.27.11.02.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 10:58:33 -0700 (PDT)
-Received: (nullmailer pid 321671 invoked by uid 1000);
-        Sat, 27 Mar 2021 17:58:30 -0000
-Date:   Sat, 27 Mar 2021 11:58:30 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Seiya Wang <seiya.wang@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        srv_heupstream@mediatek.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-mediatek@lists.infradead.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/2] dt-bindings: cpufreq: update cpu type and clock name
- for MT8173 SoC
-Message-ID: <20210327175830.GA321641@robh.at.kernel.org>
-References: <20210326031227.2357-1-seiya.wang@mediatek.com>
- <20210326031227.2357-2-seiya.wang@mediatek.com>
+        Sat, 27 Mar 2021 11:02:44 -0700 (PDT)
+Date:   Sat, 27 Mar 2021 12:02:42 -0600
+From:   dann frazier <dann.frazier@canonical.com>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     tjoseph@cadence.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
+        bhelgaas@google.com, thierry.reding@gmail.com,
+        toan@os.amperecomputing.com, ley.foon.tan@intel.com,
+        shawn.lin@rock-chips.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] PCI: controller: convert to
+ devm_platform_ioremap_resource_byname()
+Message-ID: <YF9zQscGC7T/ZsN+@xps13.dannf>
+References: <20200602171601.17630-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210326031227.2357-2-seiya.wang@mediatek.com>
+In-Reply-To: <20200602171601.17630-1-zhengdejin5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 11:12:27 +0800, Seiya Wang wrote:
-> Update the cpu type of cpu2 and cpu3 since MT8173 used Cortex-a72.
+On Wed, Jun 03, 2020 at 01:16:01AM +0800, Dejin Zheng wrote:
+> Use devm_platform_ioremap_resource_byname() to simplify codes.
+> it contains platform_get_resource_byname() and devm_ioremap_resource().
 > 
-> Signed-off-by: Seiya Wang <seiya.wang@mediatek.com>
+> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 > ---
->  Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek.txt | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> v1 -> v2:
+> 	- Discard changes to the file drivers/pci/controller/pcie-xilinx-nwl.c
+> 	  Due to my mistakes, my patch will modify pcie-xilinx-nwl.c,
+> 	  but it still need to use the res variable, but
+> 	  devm_platform_ioremap_resource_byname() funtion can't assign a
+> 	  value to the variable res. kbuild test robot report it. Thanks
+> 	  very much for kbuild test robot <lkp@intel.com>.
+> 
+>  drivers/pci/controller/cadence/pcie-cadence-ep.c   | 3 +--
+>  drivers/pci/controller/cadence/pcie-cadence-host.c | 3 +--
+>  drivers/pci/controller/pci-tegra.c                 | 8 +++-----
+>  drivers/pci/controller/pci-xgene.c                 | 3 +--
+>  drivers/pci/controller/pcie-altera-msi.c           | 3 +--
+>  drivers/pci/controller/pcie-altera.c               | 9 +++------
+>  drivers/pci/controller/pcie-mediatek.c             | 4 +---
+>  drivers/pci/controller/pcie-rockchip.c             | 5 ++---
+>  8 files changed, 13 insertions(+), 25 deletions(-)
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+hey,
+  I found that recent kernels fail to initialize PCI devices on our HP
+m400 Moonshot cartridges, which are based on the X-Gene SoC. I
+bisected the issue down to this commit. I found that just reverting
+this hunk in pci-xgene.c is enough to get v5.12 rcs booting again:
+
+> diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
+> index d1efa8ffbae1..1431a18eb02c 100644
+> --- a/drivers/pci/controller/pci-xgene.c
+> +++ b/drivers/pci/controller/pci-xgene.c
+> @@ -355,8 +355,7 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
+>  	if (IS_ERR(port->csr_base))
+>  		return PTR_ERR(port->csr_base);
+>  
+> -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
+> -	port->cfg_base = devm_ioremap_resource(dev, res);
+> +	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
+>  	if (IS_ERR(port->cfg_base))
+>  		return PTR_ERR(port->cfg_base);
+>  	port->cfg_addr = res->start;
+
+
+In case it helps, here's the PCI initialization portion of dmesg when
+it fails:
+
+[    0.756359] xgene-pcie 1f500000.pcie: host bridge /soc/pcie@1f500000 ranges:
+[    0.756372] xgene-pcie 1f500000.pcie:   No bus range found for /soc/pcie@1f500000, using [bus 00-ff]
+[    0.756387] xgene-pcie 1f500000.pcie:      MEM 0xa130000000..0xa1afffffff -> 0x0030000000
+[    0.756404] xgene-pcie 1f500000.pcie:   IB MEM 0x4000000000..0x7fffffffff -> 0x4000000000
+[    0.756459] xgene-pcie 1f500000.pcie: (rc) x8 gen-2 link up
+[    0.756525] xgene-pcie 1f500000.pcie: PCI host bridge to bus 0000:00
+[    0.756532] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    0.756538] pci_bus 0000:00: root bus resource [mem 0xa130000000-0xa1afffffff] (bus address [0x30000000-0xafffffff])
+
+
+and here's what it looks like when it works:
+
+[    0.756793] xgene-pcie 1f500000.pcie: host bridge /soc/pcie@1f500000 ranges:
+[    0.756807] xgene-pcie 1f500000.pcie:   No bus range found for /soc/pcie@1f500000, using [bus 00-ff]
+[    0.756822] xgene-pcie 1f500000.pcie:      MEM 0xa130000000..0xa1afffffff -> 0x0030000000
+[    0.756838] xgene-pcie 1f500000.pcie:   IB MEM 0x4000000000..0x7fffffffff -> 0x4000000000
+[    0.756892] xgene-pcie 1f500000.pcie: (rc) x8 gen-2 link up
+[    0.756962] xgene-pcie 1f500000.pcie: PCI host bridge to bus 0000:00
+[    0.756968] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    0.756974] pci_bus 0000:00: root bus resource [mem 0xa130000000-0xa1afffffff] (bus address [0x30000000-0xafffffff])
+[    0.757006] pci 0000:00:00.0: [10e8:e004] type 01 class 0x060400
+[    0.757014] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757022] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757032] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757039] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757046] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757052] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757059] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757068] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
+[    0.757094] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x3e may corrupt adjacent RW1C bits
+[    0.757143] pci 0000:00:00.0: supports D1 D2
+[    0.757589] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x3e may corrupt adjacent RW1C bits
+[    0.757968] pci 0000:01:00.0: [15b3:1007] type 00 class 0x020000
+[    0.758381] pci 0000:01:00.0: reg 0x10: [mem 0x00100000-0x001fffff 64bit]
+[    0.758642] pci 0000:01:00.0: reg 0x18: [mem 0x00800000-0x00ffffff 64bit pref]
+[    0.761110] pci 0000:01:00.0: reg 0x134: [mem 0x00000000-0x007fffff 64bit pref]
+[    0.761115] pci 0000:01:00.0: VF(n) BAR2 space: [mem 0x00000000-0x03ffffff 64bit pref] (contains BAR2 for 8 VFs)
+[    0.762921] pci 0000:01:00.0: 32.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x8 link at 0000:00:00.0 (capable of 63.008 Gb/s with 8.0 GT/s PCIe x8 link)
+[    0.773939] pci 0000:00:00.0: BAR 15: assigned [mem 0xa130000000-0xa1347fffff 64bit pref]
+[    0.773947] pci 0000:00:00.0: BAR 14: assigned [mem 0xa134800000-0xa1348fffff]
+[    0.773954] pci 0000:01:00.0: BAR 2: assigned [mem 0xa130000000-0xa1307fffff 64bit pref]
+[    0.774136] pci 0000:01:00.0: BAR 9: assigned [mem 0xa130800000-0xa1347fffff 64bit pref]
+[    0.774203] pci 0000:01:00.0: BAR 0: assigned [mem 0xa134800000-0xa1348fffff 64bit]
+[    0.774384] pci 0000:00:00.0: PCI bridge to [bus 01]
+[    0.774391] pci 0000:00:00.0:   bridge window [mem 0xa134800000-0xa1348fffff]
+[    0.774397] pci 0000:00:00.0:   bridge window [mem 0xa130000000-0xa1347fffff 64bit pref]
+[    0.774576] pcieport 0000:00:00.0: PME: Signaling with IRQ 89
+[    0.774734] pcieport 0000:00:00.0: AER: enabled with IRQ 89
+
+
+  -dann
