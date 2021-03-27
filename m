@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0847934B63C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C703634B625
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhC0KdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 06:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231686AbhC0KdO (ORCPT
+        id S231492AbhC0KcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 06:32:25 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15362 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhC0KcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 06:33:14 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F812C0613B1;
-        Sat, 27 Mar 2021 03:33:14 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id q3so7824091qkq.12;
-        Sat, 27 Mar 2021 03:33:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8x3S30nwWm4eBT9fgz39qxkWNuyfoei+JU+2PzvBLRw=;
-        b=GxH+mo8r00QPN0Bet/CqkBvJQrUjRF5+EZEpOHRW0WSKKIFQpgVN6E3VIPL3vVZRy/
-         BjmJlkiOp/a0CBzHTErVbaF9sCkz/MgMdSBQsAUHiCm59QJiLr4iT4P5QneX3n0Zx0rW
-         XBMft+mt2Huu7IGi7TOJvN83U8OchTpffur2k5D92JRbfgJu3VwR+AQQj1xU3R6cFKCJ
-         2GtX822DJhalzd3kT5/phRk4psvsXBZBkBa1zJgOJVfj8goFTBJe13ma40ttGp0M7yYQ
-         VMdMSYs2a5aOqJUrlcJTh6Zl8PtQsZpQYebP82qS5WoMh8ix+/IottfyfdrFR1CopCIU
-         r67w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8x3S30nwWm4eBT9fgz39qxkWNuyfoei+JU+2PzvBLRw=;
-        b=KOvI6Afug1ZEq16Wox3jxNjUS/v84sDUBQ/TON+BHhbg08N0f/osWXdIqBzo57+D1d
-         vBdgxC9Euu6rsTZ1zLSuAaxC9A/hKA03mxRBP2XuLJ4DZAxkAOZJsFb0dX8TOx15EO9N
-         ZlgNOWNUiP+9SxU/22K6zYquX9nvomasbRyKhP9RPClD+e4lUIfUxK9B6EHeKRqsTJ+i
-         sKpagrFk+Y1gqHq80tusFNWGxTDdoGpxL+mmbENFYAeVDiVp+zucHBicZ5uZQi1Z8ChE
-         ArX+fwhRIEP/deEp6cTK1B7FbP5JnhxJ3IYteRe5lddMA51ysKsBKmjqnJ86LOaDO2EO
-         602Q==
-X-Gm-Message-State: AOAM530e/67d5rVg153hLNaq0qBf95yTBeu+LaTKl2gszqpOKd8vWpCN
-        U/QeVu+/NSdtCfXqZE9QwS0=
-X-Google-Smtp-Source: ABdhPJyV/9yH/QOXCpPfkshaEQOSd/zNmRk+9r6z3bknXO+KM5LhlCY0Y1s47zgxrafeeU/9XuC23Q==
-X-Received: by 2002:a05:620a:525:: with SMTP id h5mr17300396qkh.100.1616841193912;
-        Sat, 27 Mar 2021 03:33:13 -0700 (PDT)
-Received: from localhost.localdomain ([37.19.198.35])
-        by smtp.gmail.com with ESMTPSA id a14sm7292364qtw.80.2021.03.27.03.33.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 03:33:13 -0700 (PDT)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        linux-ext4@vger.kernel.org, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] EXT4: mballoc.h: Single typo fix
-Date:   Sat, 27 Mar 2021 16:00:12 +0530
-Message-Id: <7878db9d72c1b66f68f9d3b12a82afd7c8c47577.1616840203.git.unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1616840203.git.unixbhaskar@gmail.com>
-References: <cover.1616840203.git.unixbhaskar@gmail.com>
+        Sat, 27 Mar 2021 06:32:24 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6w8F72xGz8yBB;
+        Sat, 27 Mar 2021 18:30:05 +0800 (CST)
+Received: from mdc.localdomain (10.175.104.57) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 18:32:00 +0800
+From:   Huang Guobin <huangguobin4@huawei.com>
+To:     <huangguobin4@huawei.com>, Hauke Mehrtens <hauke@hauke-m.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next v2] net: lantiq: Remove redundant dev_err call in xrx200_probe()
+Date:   Sat, 27 Mar 2021 18:31:51 +0800
+Message-ID: <1616841111-8722-1-git-send-email-huangguobin4@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.175.104.57]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/parition/partition/
+From: Guobin Huang <huangguobin4@huawei.com>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err call to avoid redundant
+error message.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
 ---
- fs/ext4/mballoc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/lantiq_xrx200.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index e75b4749aa1c..7be6288e48ec 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -59,7 +59,7 @@
-  * by the stream allocator, which purpose is to pack requests
-  * as close each to other as possible to produce smooth I/O traffic
-  * We use locality group prealloc space for stream request.
-- * We can tune the same via /proc/fs/ext4/<parition>/stream_req
-+ * We can tune the same via /proc/fs/ext4/<partition>/stream_req
-  */
- #define MB_DEFAULT_STREAM_THRESHOLD	16	/* 64K */
-
---
-2.26.2
+diff --git a/drivers/net/ethernet/lantiq_xrx200.c b/drivers/net/ethernet/lantiq_xrx200.c
+index 51ed8a54d380..0f8ef8f1232c 100644
+--- a/drivers/net/ethernet/lantiq_xrx200.c
++++ b/drivers/net/ethernet/lantiq_xrx200.c
+@@ -460,10 +460,8 @@ static int xrx200_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	priv->pmac_reg = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(priv->pmac_reg)) {
+-		dev_err(dev, "failed to request and remap io ranges\n");
++	if (IS_ERR(priv->pmac_reg))
+ 		return PTR_ERR(priv->pmac_reg);
+-	}
+ 
+ 	priv->chan_rx.dma.irq = platform_get_irq_byname(pdev, "rx");
+ 	if (priv->chan_rx.dma.irq < 0)
 
