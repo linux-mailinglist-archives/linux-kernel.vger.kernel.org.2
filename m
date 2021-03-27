@@ -2,132 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5672634B825
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:31:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9331334B82D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhC0Qah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 12:30:37 -0400
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:41868 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhC0QaL (ORCPT
+        id S230224AbhC0QgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 12:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhC0Qf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 12:30:11 -0400
-Received: by mail-ot1-f54.google.com with SMTP id l12-20020a9d6a8c0000b0290238e0f9f0d8so8187548otq.8;
-        Sat, 27 Mar 2021 09:30:11 -0700 (PDT)
+        Sat, 27 Mar 2021 12:35:56 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0E0EC0613B2;
+        Sat, 27 Mar 2021 09:35:56 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id x26so7034782pfn.0;
+        Sat, 27 Mar 2021 09:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hpU0cSThGl8ak0x5kospVQerR+Ul788zCbqnp0/6I+c=;
+        b=aAIafX+3F07ro8pDEOUANecTxrCEhvl0vFrE5guVccFbk55Sqb4lRgzPBogBF2G0ND
+         hbXPTCit+hfY9lqtm3+wFAnUlrZ6+CiQLEdyJSZgCkHBq26/xhDbztwUurO9AiUgpTb5
+         13tgXWyWb5WOrr/bNlKhcO6dAC2Juch2vxvkJDAlzjgfS+6ryj2TOymBTfaPwboRSdK5
+         RfJn+xZa/0wGDD5f2/KneytDKQe57xXP+LKVaNWhB58Hmfi6mDCInKcRBEiVXrJbNR8E
+         VKAmG3ZvEW444Q3Rydo5QjfrXwL6BXYawnztdSpKC5mUpFbhuOqWhUTkquso8eAVoieM
+         cf8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8Rp5YRMAuX+nFksmAgBJTg7ZHDI2BYdNvFQYEt8ALSo=;
-        b=tTAYy8PDNKyCgefQiP4UBQV20f78Ffo/LO1RywSLorUjP/jFG4x6yCfg3+p2WMJzql
-         mPGuKx36RVeDssUIAqP+ihp45zA00PuniqF3s6+6NnNqYZoKjAQz5PZLyV4iTfaORo6h
-         8rgRjwOgZkqFHyNaYonsHjuU5Ne9kkgqytSpAv6FejjdnKdtvT4re8+/xaqUc5AeqHg/
-         tObhmn7OFVRVqX5rZl44vZwRuQd5retsb2OKeJ1mTgOjfamI38qyw0IcN39FZOU/16f4
-         cOdHHHKlbDInv+8yKf+9DWs7uFfRB/hvtEANwVfXXjGbPwCCkCBVw88HbomiouWyhQh2
-         ISDA==
-X-Gm-Message-State: AOAM5321UNRrf9qI0V7+icbsuy6lSP+dS8hckPHL5hO2FLRVE8jGa1WB
-        jYJSdTfVBXUTBWPtDPL+RA==
-X-Google-Smtp-Source: ABdhPJxUWXW6EjXIzgfB/hlFp/ntAvacXisLN585V8F7oaTeQISeOrUptrzfqbveJrvCbvFRXL2CKA==
-X-Received: by 2002:a05:6830:1e3b:: with SMTP id t27mr9761664otr.209.1616862611114;
-        Sat, 27 Mar 2021 09:30:11 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.140])
-        by smtp.gmail.com with ESMTPSA id w199sm2474969oif.41.2021.03.27.09.30.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 09:30:10 -0700 (PDT)
-Received: (nullmailer pid 202941 invoked by uid 1000);
-        Sat, 27 Mar 2021 16:30:06 -0000
-Date:   Sat, 27 Mar 2021 10:30:06 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-Cc:     Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: soc: actions: Add Actions Semi Owl
- socinfo binding
-Message-ID: <20210327163006.GA185779@robh.at.kernel.org>
-References: <cover.1616178258.git.cristian.ciocaltea@gmail.com>
- <95105518f61408743d17783099ed9c373a3dfe18.1616178258.git.cristian.ciocaltea@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hpU0cSThGl8ak0x5kospVQerR+Ul788zCbqnp0/6I+c=;
+        b=UBVf7KPN67x55gQt3l/axcUyli/3qad9EYZSYzEJP41lreCVq+9Ofrca2ELRjDzOLU
+         N/hcK0rGHmUe/71qvAO09p9c+iuqtLP5Xj+fafbGnLSicYBa+QE0L8oDtA78+xsVmtuo
+         uDa5NHN8osKte3smiZLC0wKySlccOMCyKKlfdG/NO7yu/lOCVIP4khD2ukWl/eKloTlm
+         89y+VxnAI4ARBuaOkgbcwcMLcWfHL64xDXRrlMRiZ1sNFvio3s1oC0ajP68qTXRUMGr6
+         7qGZQIQvI0ZcgyCQQXPlx86n+dxcAUcxYiazmRBaxGr2/pqlO9u/Ui0LZRJ5S/NwhSb+
+         FsOQ==
+X-Gm-Message-State: AOAM532UQmMbIiP2lMHZEduvBquQ1G2wFEQ0hZpbkC6In8BjY/thQxAu
+        cMpBFnzaa8Q73FGYs+jTdTi2r/vCn+gTfpgkoWzX7ivL3bUJYQ==
+X-Google-Smtp-Source: ABdhPJx7rl3fvAip5z1uvO/cH9QWPwxBzrJg3U25gLEgDHoXbQY552tI/heNJNPcZ+ar5ul3/JFkodmXe68G/b3fwaE=
+X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
+ g136-20020a62528e0000b02901f5c5eea487mr17643531pfb.7.1616862956224; Sat, 27
+ Mar 2021 09:35:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95105518f61408743d17783099ed9c373a3dfe18.1616178258.git.cristian.ciocaltea@gmail.com>
+References: <cover.1615038553.git.syednwaris@gmail.com> <4c259d34b5943bf384fd3cb0d98eccf798a34f0f.1615038553.git.syednwaris@gmail.com>
+ <CAHp75VfJ5bGaPkai_adsBoT6=7nS2K8ze0ka3gzZkQARkM5evA@mail.gmail.com>
+ <CACG_h5pb0pA+cTNPGircAM3UrV5BGmqgk45LF_9phU_J4FaRyw@mail.gmail.com>
+ <CAHp75VfDZbJjCOEGdHc=-D6W8_7m2=CinXj-itwn6hvoVqdWYQ@mail.gmail.com> <YF8evJTkiBYjnDON@shinobu>
+In-Reply-To: <YF8evJTkiBYjnDON@shinobu>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 27 Mar 2021 18:35:40 +0200
+Message-ID: <CAHp75VektkxSH7S3qTkYd1De613HGrBDvXn36FFex_p1n9BDng@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] gpio: xilinx: Utilize generic bitmap_get_value and _set_value
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Syed Nayyar Waris <syednwaris@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 08:27:59PM +0200, Cristian Ciocaltea wrote:
-> Add devicetree binding for the Actions Semi Owl SoCs info module.
-> 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> ---
->  .../bindings/soc/actions/owl-socinfo.yaml     | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> new file mode 100644
-> index 000000000000..3fcb1f584fdf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/actions/owl-socinfo.yaml
-> @@ -0,0 +1,71 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/actions/owl-socinfo.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Actions Semi Owl SoC info module
-> +
-> +maintainers:
-> +  - Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> +
-> +description: |
-> +  Actions Semi Owl SoC info module provides access to various information
-> +  about the S500, S700 and S900 SoC variants, such as serial number or id.
-> +
-> +patternProperties:
-> +  "^soc(@[0-9a-f]+)?$":
+On Sat, Mar 27, 2021 at 2:02 PM William Breathitt Gray
+<vilhelm.gray@gmail.com> wrote:
+> On Sat, Mar 27, 2021 at 09:29:26AM +0200, Andy Shevchenko wrote:
+> > On Saturday, March 27, 2021, Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> > > On Fri, Mar 26, 2021 at 11:32 PM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:
+> > > > On Sat, Mar 6, 2021 at 4:08 PM Syed Nayyar Waris <syednwaris@gmail.com>
+> > > wrote:
+> > > >
+> > > > > +       bitmap_set_value(old, 64, state[0], 32, 0);
+> > > > > +       bitmap_set_value(old, 64, state[1], 32, 32);
+> > > >
+> > > > Isn't it effectively bitnap_from_arr32() ?
+> > > >
+> > > > > +       bitmap_set_value(new, 64, state[0], 32, 0);
+> > > > > +       bitmap_set_value(new, 64, state[1], 32, 32);
+> > > >
+> > > > Ditto.
 
-Make this a $nodename property.
+> > > With bitmap_set_value() we are also specifying the offset (or start)
+> > > position too. so that the remainder of the array remains unaffected. I
+> > > think it would not be feasible to use bitmap_from/to_arr32()  here.
+> >
+> >
+> > You have hard coded start and nbits parameters to 32. How is it not the
+> > same?
+>
+> Would these four lines become something like this:
+>
+>         bitmap_from_arr32(old, state, 64);
+>         ...
+>         bitmap_from_arr32(new, state, 64);
 
-> +    type: object
-> +    properties:
+This is my understanding, but I might miss something. I mean driver
+specifics that make my proposal incorrect.
 
-And move this up to top-level.
-
-You need a custom 'select' entry to exclude 'simple-bus'.
-
-> +      compatible:
-> +        items:
-> +          - enum:
-> +              - actions,s500-soc
-> +              - actions,s700-soc
-> +              - actions,s900-soc
-> +          - const: simple-bus
-> +
-> +      "#address-cells":
-> +        enum: [1, 2]
-> +
-> +      "#size-cells":
-> +        enum: [1, 2]
-> +
-> +      ranges: true
-> +
-> +      actions,serial-number-addrs:
-> +        description: |
-> +          Contains the physical addresses in DDR memory where the two parts
-> +          of the serial number (low & high) can be read from.
-> +          This is currently supported only on the S500 SoC variant.
-> +        $ref: /schemas/types.yaml#/definitions/uint32-array
-> +        minItems: 2
-> +        maxItems: 2
-
-Humm, it doesn't really seem you have an actual device or bus here, but 
-are abusing DT to create your socinfo device.
-
-As the only property is data in main memory, you should do a compatible 
-for that memory region and put it under reserved-memory. You need that 
-anyway to prevent the kernel from using the memory, right?
-
-Rob
+-- 
+With Best Regards,
+Andy Shevchenko
