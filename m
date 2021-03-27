@@ -2,71 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC08C34B855
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8609834B862
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:05:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230180AbhC0Qwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 12:52:31 -0400
-Received: from mail-oo1-f44.google.com ([209.85.161.44]:43742 "EHLO
-        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhC0QwB (ORCPT
+        id S230202AbhC0RCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 13:02:23 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:41475 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhC0RCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 12:52:01 -0400
-Received: by mail-oo1-f44.google.com with SMTP id x187-20020a4a41c40000b02901b664cf3220so2033219ooa.10;
-        Sat, 27 Mar 2021 09:52:01 -0700 (PDT)
+        Sat, 27 Mar 2021 13:02:01 -0400
+Received: by mail-oi1-f170.google.com with SMTP id z15so8993950oic.8;
+        Sat, 27 Mar 2021 10:02:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=9krKeR+BEQ5MSDjU8HSGRf6pxe/0OMXJUwk0PV8o8Kk=;
-        b=mYIJacHfPBeZ5VKSL5mPMKiVh+Q0X4wfwc78miaZumDkEuqh5mJIL5/slj4QYXB5GY
-         sx9LhyT8ksKx5ndy/hZqBrsgF+KrLLz3m7Z85+Y0F4end1g1HQ5+Rrr8VdA0Abj8EpIU
-         27Orqg9GcyHNHlUimfBGRbu2/2ElXQYrmsJlVrAPd2nRRp/FThXcxsp8jEVGc7ypB6SL
-         4LYvMTCK9WPaBrA1nS9jr8rawyOhx/dUDmCiCJ/L6OnbjL5L+bxF+zlCPfmCtIoxsjh5
-         sGBwNh9D5WTfYK9JwWm6Ju8XApZplEEreLO8XR1LG3XaO4mT1U9GVL3i7mhKmD4HrUFW
-         MCmQ==
-X-Gm-Message-State: AOAM530YcOACnpoiGLsBuToDo2aGTeUsPNlEYV6yTfrtgLXxQk8LCuZv
-        8sMN/KIaEL/kiLkUZOhHYQ==
-X-Google-Smtp-Source: ABdhPJzJ+pcyc6OHcEumz88IP/It9Esrkwx/GDMGo+41DHCnUelDfBvK9qjx6QbGiQ/5F/SAcDMebg==
-X-Received: by 2002:a4a:8c4f:: with SMTP id v15mr15869434ooj.25.1616863921227;
-        Sat, 27 Mar 2021 09:52:01 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.99.140])
-        by smtp.gmail.com with ESMTPSA id z17sm2902618ote.77.2021.03.27.09.51.55
+        bh=ldGNUOc4SBVAB+z9wRCXO6PlOlMpMotMJHqEqZkxP0Q=;
+        b=KTidhLynN64ioxemkxCaA2vGwmBb1MyDohHczP/uqpBuA5FIIJ+VCYg4zCSbwi0VSP
+         Xa+PfUSFTr2KdNL99sYxr3wxt7P0EiL8wzV6+my9RHQqgvXxJRo255MxQ0HQxLAZgboN
+         Bd4dd6aP9Tasvt5O5CMTgVUj65mPWkPceSZ0R9ItTCNK+MzEvJ1dMWL+SVKxxgU0brlz
+         S7e9rAn/hPmakKBdhqeHSfEDovJNXQaJ4/G2+CE2C4r+9A/NzoaG5lgd8SbJMwxfj1Pz
+         Fa3s4aodMk1JOxb0RkTlQ+ZP4NOnGMJj2JKfjoB/QcoSOxmcHyPZzLbW9QvHwnCAC5cB
+         kjDw==
+X-Gm-Message-State: AOAM531O4rGD2tgIHe2CZC9tq8MXijR24X6cH6Na3t7IUhkP4f8FLFtN
+        0voWZgSae5WW0KInKizoe9BdbqYfug==
+X-Google-Smtp-Source: ABdhPJxxiEl5w7Dd7XM49OqfgN5wHD0q2gRI43tMxxKgnPf42SyfZhIxlLA6NROR/Hy1Na3KPZa6gA==
+X-Received: by 2002:a54:408a:: with SMTP id i10mr14047231oii.141.1616864520517;
+        Sat, 27 Mar 2021 10:02:00 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.107.88])
+        by smtp.gmail.com with ESMTPSA id z14sm2511644oid.12.2021.03.27.10.01.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 09:52:00 -0700 (PDT)
-Received: (nullmailer pid 232533 invoked by uid 1000);
-        Sat, 27 Mar 2021 16:51:53 -0000
-Date:   Sat, 27 Mar 2021 10:51:53 -0600
+        Sat, 27 Mar 2021 10:01:59 -0700 (PDT)
+Received: (nullmailer pid 245995 invoked by uid 1000);
+        Sat, 27 Mar 2021 17:01:53 -0000
+Date:   Sat, 27 Mar 2021 11:01:53 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     peng.fan@oss.nxp.com
-Cc:     s.hauer@pengutronix.de, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, o.rempel@pengutronix.de,
-        bjorn.andersson@linaro.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        devicetree@vger.kernel.org, festevam@gmail.com, ohad@wizery.com,
-        shawnguo@kernel.org, mathieu.poirier@linaro.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH 3/8] dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
-Message-ID: <20210327165153.GA232466@robh.at.kernel.org>
-References: <1616400763-16632-1-git-send-email-peng.fan@oss.nxp.com>
- <1616400763-16632-4-git-send-email-peng.fan@oss.nxp.com>
+To:     Raviteja Narayanam <raviteja.narayanam@xilinx.com>
+Cc:     jic23@kernel.org, michal.simek@xilinx.com, lars@metafoo.de,
+        pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@xilinx.com
+Subject: Re: [PATCH 1/2] dt-bindings: iio: adc: Add ti,ina260.yaml
+Message-ID: <20210327170153.GA243988@robh.at.kernel.org>
+References: <20210322105056.30571-1-raviteja.narayanam@xilinx.com>
+ <20210322105056.30571-2-raviteja.narayanam@xilinx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616400763-16632-4-git-send-email-peng.fan@oss.nxp.com>
+In-Reply-To: <20210322105056.30571-2-raviteja.narayanam@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Mar 2021 16:12:38 +0800, peng.fan@oss.nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Mon, Mar 22, 2021 at 04:20:55PM +0530, Raviteja Narayanam wrote:
+> Add a binding for Texas Instruments INA260 power monitor device.
 > 
-> Add i.MX8MN/P remote processor(Cortex-M7) compatible string
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Signed-off-by: Raviteja Narayanam <raviteja.narayanam@xilinx.com>
 > ---
->  Documentation/devicetree/bindings/remoteproc/fsl,imx-rproc.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../bindings/iio/adc/ti,ina260.yaml           | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml b/Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml
+> new file mode 100644
+> index 000000000000..97c68188e53d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/ti,ina260.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/ti,ina260.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments INA260 power monitor
+> +
+> +maintainers:
+> +  - Raviteja Narayanam <raviteja.narayanam@xilinx.com>
+> +
+> +description: |
+> +  The INA260 is a digital-output, current, power and voltage monitor
+> +  with an I2C and SMBUS compatible interface with an integrated shunt
+> +  resistor. It features up to 16 programmable addresses on I2C compatible
+> +  interface. Datasheet - https://www.ti.com/lit/ds/symlink/ina260.pdf?ts=1608607288391
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,ina260
+> +
+> +  reg:
+> +    description: |
+> +      The 7-bits long I2c address of the device
 
-Acked-by: Rob Herring <robh@kernel.org>
+Just 'maxItems: 1'
+
+> +
+> +  "#io-channel-cells":
+> +    const: 1
+> +
+> +  interrupts:
+> +    description: |
+> +      IRQ line for the device
+
+That's every 'interrupts' property. Drop.
+
+You need to say how many: maxItems: 1
+
+> +
+> +  label:
+> +    description: |
+> +      A symbolic name for the device
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#io-channel-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      ina260@40 {
+> +        compatible = "ti,ina260";
+> +        reg = <0x40>;
+> +        #io-channel-cells = <1>;
+> +      };
+> +    };
+> +...
+> -- 
+> 2.17.1
+> 
