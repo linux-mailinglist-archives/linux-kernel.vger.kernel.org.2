@@ -2,118 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0470A34B509
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74FD34B4F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhC0HcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 03:32:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14158 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230236AbhC0Hbd (ORCPT
+        id S231240AbhC0HCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 03:02:03 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15340 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230111AbhC0HBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 03:31:33 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6r785BLhzndXB;
-        Sat, 27 Mar 2021 15:28:52 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 15:31:21 +0800
-From:   Yang Shen <shenyang39@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>
-Subject: [PATCH v2 4/4] crypto: hisilicon/zip - support new 'sqe' type in Kunpeng930
-Date:   Sat, 27 Mar 2021 15:28:48 +0800
-Message-ID: <1616830128-46827-5-git-send-email-shenyang39@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1616830128-46827-1-git-send-email-shenyang39@huawei.com>
-References: <1616830128-46827-1-git-send-email-shenyang39@huawei.com>
+        Sat, 27 Mar 2021 03:01:52 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6qTR5lMDz93tg;
+        Sat, 27 Mar 2021 14:59:39 +0800 (CST)
+Received: from huawei.com (10.175.113.32) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
+ 15:01:35 +0800
+From:   Shixin Liu <liushixin2@huawei.com>
+To:     Hannes Reinecke <hare@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Shixin Liu <liushixin2@huawei.com>
+Subject: [PATCH -next 1/2] scsi: myrb: Make symbols DAC960_{LA/PG/PD/P}_privdata static
+Date:   Sat, 27 Mar 2021 15:31:56 +0800
+Message-ID: <20210327073156.1786722-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Kunpeng930 changes some field meanings in 'sqe'. So add a new
-'hisi_zip_sqe_ops' to describe the 'sqe' operations.
+This symbol is not used outside of myrb.c, so we can marks it static.
 
-Signed-off-by: Yang Shen <shenyang39@huawei.com>
+Signed-off-by: Shixin Liu <liushixin2@huawei.com>
 ---
- drivers/crypto/hisilicon/zip/zip.h        |  1 +
- drivers/crypto/hisilicon/zip/zip_crypto.c | 25 +++++++++++++++++++++++++
- 2 files changed, 26 insertions(+)
+ drivers/scsi/myrb.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/crypto/hisilicon/zip/zip.h b/drivers/crypto/hisilicon/zip/zip.h
-index b4d3e03..517fdbd 100644
---- a/drivers/crypto/hisilicon/zip/zip.h
-+++ b/drivers/crypto/hisilicon/zip/zip.h
-@@ -75,6 +75,7 @@ struct hisi_zip_sqe {
- 	u32 dw23;
- 	u32 dw24;
- 	u32 dw25;
-+	/* tag: in sqe type 3 */
- 	u32 dw26;
- 	u32 dw27;
- 	u32 rsvd1[4];
-diff --git a/drivers/crypto/hisilicon/zip/zip_crypto.c b/drivers/crypto/hisilicon/zip/zip_crypto.c
-index 466ebf1..9520a41 100644
---- a/drivers/crypto/hisilicon/zip/zip_crypto.c
-+++ b/drivers/crypto/hisilicon/zip/zip_crypto.c
-@@ -298,6 +298,11 @@ static void hisi_zip_fill_tag_v1(struct hisi_zip_sqe *sqe, struct hisi_zip_req *
- 	sqe->dw13 = req->req_id;
+diff --git a/drivers/scsi/myrb.c b/drivers/scsi/myrb.c
+index d469a4889777..56767f8610d4 100644
+--- a/drivers/scsi/myrb.c
++++ b/drivers/scsi/myrb.c
+@@ -2809,7 +2809,7 @@ static irqreturn_t DAC960_LA_intr_handler(int irq, void *arg)
+ 	return IRQ_HANDLED;
  }
  
-+static void hisi_zip_fill_tag_v2(struct hisi_zip_sqe *sqe, struct hisi_zip_req *req)
-+{
-+	sqe->dw26 = req->req_id;
-+}
-+
- static void hisi_zip_fill_sqe_type(struct hisi_zip_sqe *sqe, u8 sqe_type)
- {
- 	u32 val;
-@@ -380,6 +385,11 @@ static u32 hisi_zip_get_tag_v1(struct hisi_zip_sqe *sqe)
- 	return sqe->dw13;
+-struct myrb_privdata DAC960_LA_privdata = {
++static struct myrb_privdata DAC960_LA_privdata = {
+ 	.hw_init =	DAC960_LA_hw_init,
+ 	.irq_handler =	DAC960_LA_intr_handler,
+ 	.mmio_size =	DAC960_LA_mmio_size,
+@@ -3085,7 +3085,7 @@ static irqreturn_t DAC960_PG_intr_handler(int irq, void *arg)
+ 	return IRQ_HANDLED;
  }
  
-+static u32 hisi_zip_get_tag_v2(struct hisi_zip_sqe *sqe)
-+{
-+	return sqe->dw26;
-+}
-+
- static u32 hisi_zip_get_status(struct hisi_zip_sqe *sqe)
- {
- 	return sqe->dw3 & HZIP_BD_STATUS_M;
-@@ -527,6 +537,19 @@ static const struct hisi_zip_sqe_ops hisi_zip_ops_v1 = {
- 	.get_dstlen		= hisi_zip_get_dstlen,
- };
- 
-+static const struct hisi_zip_sqe_ops hisi_zip_ops_v2 = {
-+	.sqe_type		= 0x3,
-+	.fill_addr		= hisi_zip_fill_addr,
-+	.fill_buf_size		= hisi_zip_fill_buf_size,
-+	.fill_buf_type		= hisi_zip_fill_buf_type,
-+	.fill_req_type		= hisi_zip_fill_req_type,
-+	.fill_tag		= hisi_zip_fill_tag_v2,
-+	.fill_sqe_type		= hisi_zip_fill_sqe_type,
-+	.get_tag		= hisi_zip_get_tag_v2,
-+	.get_status		= hisi_zip_get_status,
-+	.get_dstlen		= hisi_zip_get_dstlen,
-+};
-+
- static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int node)
- {
- 	struct hisi_qp *qps[HZIP_CTX_Q_NUM] = { NULL };
-@@ -560,6 +583,8 @@ static int hisi_zip_ctx_init(struct hisi_zip_ctx *hisi_zip_ctx, u8 req_type, int
- 
- 	if (hisi_zip->qm.ver < QM_HW_V3)
- 		hisi_zip_ctx->ops = &hisi_zip_ops_v1;
-+	else
-+		hisi_zip_ctx->ops = &hisi_zip_ops_v2;
- 
- 	return 0;
+-struct myrb_privdata DAC960_PG_privdata = {
++static struct myrb_privdata DAC960_PG_privdata = {
+ 	.hw_init =	DAC960_PG_hw_init,
+ 	.irq_handler =	DAC960_PG_intr_handler,
+ 	.mmio_size =	DAC960_PG_mmio_size,
+@@ -3288,7 +3288,7 @@ static irqreturn_t DAC960_PD_intr_handler(int irq, void *arg)
+ 	return IRQ_HANDLED;
  }
+ 
+-struct myrb_privdata DAC960_PD_privdata = {
++static struct myrb_privdata DAC960_PD_privdata = {
+ 	.hw_init =	DAC960_PD_hw_init,
+ 	.irq_handler =	DAC960_PD_intr_handler,
+ 	.mmio_size =	DAC960_PD_mmio_size,
+@@ -3486,7 +3486,7 @@ static irqreturn_t DAC960_P_intr_handler(int irq, void *arg)
+ 	return IRQ_HANDLED;
+ }
+ 
+-struct myrb_privdata DAC960_P_privdata = {
++static struct myrb_privdata DAC960_P_privdata = {
+ 	.hw_init =	DAC960_P_hw_init,
+ 	.irq_handler =	DAC960_P_intr_handler,
+ 	.mmio_size =	DAC960_PD_mmio_size,
 -- 
-2.8.1
+2.25.1
 
