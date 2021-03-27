@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4E934B759
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CCC34B75A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhC0NBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 09:01:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229582AbhC0NBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 09:01:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 75A6561971;
-        Sat, 27 Mar 2021 13:01:03 +0000 (UTC)
-Date:   Sat, 27 Mar 2021 13:01:01 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: [PATCH 1/4] arm64: expose orig_x0 in the user_pt_regs structure
-Message-ID: <20210327130100.GA31076@arm.com>
-References: <20210322225053.428615-1-avagin@gmail.com>
- <20210322225053.428615-2-avagin@gmail.com>
- <20210326182839.GE5126@arm.com>
- <CANaxB-xTrMkJ2D19wwjSbCfizdRDnNO52fibpaRXP5g3hOcQwQ@mail.gmail.com>
+        id S230254AbhC0NGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 09:06:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229582AbhC0NFz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 09:05:55 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAA2C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:05:55 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id j25so6773824pfe.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j1vEagJw59z7NUkgTmJto/iZqe4yWAoKFE4cIPL6KSA=;
+        b=W++BsAIwl+3ucDDq6J9gfd2LQIPwdj2biEakUpnxpy/YsK+3iCoF33X3sftQWOxfP7
+         IPnjeO9Rde2kHHrwJMlMu2vkeccABUo1mLD6uTVGrEfxwUsN9YJWo9jUzaSY3cyvbGI2
+         ehpcqqnKgU3Fn5s/X8mIRCamioqbkc4WM23kxCZTaHn+XhPN+SWL6FLKRXDgGS2ivbn1
+         OER7kHG7/pVx6TS91PpzwDFvN3Rnt6x9672uUa2Evpoapzy9P2POwsDV4zxWpGjlEc44
+         x99r44072+JXwATmacsPj8yOAksyAgxYYzYtUqJdpS51qpCmDWMBwE12Glc6HXWJKDrZ
+         V2jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j1vEagJw59z7NUkgTmJto/iZqe4yWAoKFE4cIPL6KSA=;
+        b=kBUfAu8SPEqgcOJWgnRXoXkAISBVy5hrC8mdP43B3bJdOtUy3ckGem52OQlxU4JiZ9
+         fRLzgQhtoaEPJwBegty5xhiBi7a9Z8jtP5y9BGPLtHnPY0vj7Q5WoLeJW8VQSdnTfIea
+         LWI0QFW1FPejnWt1OkpKrg23YuIwnAy4JeS4ppYqwxoJLaA2CK49uIgHZvkO/KUWTZ1u
+         H4FTpR1COt4JDajdNEO9PXbgAIn7Zhc84m4BrHeFhPPMguGgiORNl8CiVYnEidYMOYB4
+         xKZysxTMak3CltRje+eBSpYQa9T1mcAv1kMsc7OY2YJYnK7TadU5FcwBnEGYEGtI6pK9
+         kbyg==
+X-Gm-Message-State: AOAM531ZZkAzAjwe4lLioYqlb3vcaxOF8kBIHnAElR+v7R84d5htjzCI
+        w2CjFLBp7ZYpGnOW93HhwfMMXbvyGk6rb63y
+X-Google-Smtp-Source: ABdhPJwtfu5Tfa4UYXfW8whmzPPLMc8XbemaxfI6PdBR3nuuwqL4rugT9FibIaSdi/j6K0J4cIJCqg==
+X-Received: by 2002:a63:e906:: with SMTP id i6mr16394983pgh.132.1616850352891;
+        Sat, 27 Mar 2021 06:05:52 -0700 (PDT)
+Received: from johnchen902-arch-ryzen.. (2001-b011-3815-3a1f-9afa-9bff-fe6e-3ce2.dynamic-ip6.hinet.net. [2001:b011:3815:3a1f:9afa:9bff:fe6e:3ce2])
+        by smtp.gmail.com with ESMTPSA id ot17sm6413787pjb.50.2021.03.27.06.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 06:05:52 -0700 (PDT)
+From:   John Chen <johnchen902@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Rohit Pidaparthi <rohitpid@gmail.com>,
+        RicardoEPRodrigues <ricardo.e.p.rodrigues@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        John Chen <johnchen902@gmail.com>
+Subject: [PATCH 0/4] HID: add Apple Magic Mouse 2 support
+Date:   Sat, 27 Mar 2021 21:05:04 +0800
+Message-Id: <20210327130508.24849-1-johnchen902@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANaxB-xTrMkJ2D19wwjSbCfizdRDnNO52fibpaRXP5g3hOcQwQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 05:35:19PM -0700, Andrei Vagin wrote:
-> On Fri, Mar 26, 2021 at 11:28 AM Catalin Marinas
-> <catalin.marinas@arm.com> wrote:
-> >
-> > On Mon, Mar 22, 2021 at 03:50:50PM -0700, Andrei Vagin wrote:
-> > > diff --git a/arch/arm64/include/uapi/asm/ptrace.h b/arch/arm64/include/uapi/asm/ptrace.h
-> > > index 758ae984ff97..3c118c5b0893 100644
-> > > --- a/arch/arm64/include/uapi/asm/ptrace.h
-> > > +++ b/arch/arm64/include/uapi/asm/ptrace.h
-> > > @@ -90,6 +90,7 @@ struct user_pt_regs {
-> > >       __u64           sp;
-> > >       __u64           pc;
-> > >       __u64           pstate;
-> > > +     __u64           orig_x0;
-> > >  };
-> >
-> > That's a UAPI change, likely to go wrong. For example, a
-> > ptrace(PTRACE_GETREGSET, pid, REGSET_GPR, data) would write past the end
-> > of an old struct user_pt_regs in the debugger.
-> 
-> ptrace(PTRACE_GETREGSET, ...) receives iovec:
-> ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov)
-> 
-> iov contains a pointer to a buffer and its size and the kernel fills
-> only the part that fits the buffer.
-> I think this interface was invented to allow extending structures
-> without breaking backward compatibility.
+The HID descriptor of Magic Mouse 2 contains BTN_LEFT, BTN_RIGHT, REL_X,
+REL_Y, whether it's charging, whether it's fully charged, and battery
+capacity.
 
-You are right here, it doesn't write past the end of the iov buffer.
-However, it's still an ABI change. An unaware program using a newer
-user_pt_regs but running on an older kernel may be surprised that the
-updated iov.len is smaller than sizeof (struct user_pt_regs).
+$ xxd -p report_descriptor
+05010902a101851205091901290215002501950275018102950175068103
+05010901a1001601f826ff073601fb46ff046513550d0930093175109502
+8106750895028101c00602ff09558555150026ff0075089540b1a2c00600
+ff0914a10185900584750195031500250109610585094409468102950581
+0175089501150026ff0009658102c000
 
-Changing this structure also changes the core dump format, see ELF_NGREG
-and ELF_CORE_COPY_REGS. Maybe this doesn't matter much either since the
-ELF note would have size information but I'd prefer if we didn't modify
-this structure.
+As hidinput can handle the BTNs and RELs, the Magic Mouse 2 already
+functions as a basic mouse. Nevertheless, It should be reasonable to
+extend hid-magicmouse to support Magic Mouse 2 as well. Furthermore,
+hidinput is patched to handle the battery capacity.
+
+This work is based on Recardo's, which is in turned based on Rohitpid's.
+Their GitHub repositories are linked below:
+https://github.com/RicardoEPRodrigues/magicmouse-hid
+https://github.com/rohitpid/Linux-Magic-Trackpad-2-Driver
+
+John Chen (4):
+  HID: magicmouse: add Apple Magic Mouse 2 support
+  HID: magicmouse: fix 3 button emulation of Mouse 2
+  HID: magicmouse: fix reconnection of Magic Mouse 2
+  HID: input: map battery capacity (00850065)
+
+ drivers/hid/hid-debug.c      |   1 +
+ drivers/hid/hid-ids.h        |   1 +
+ drivers/hid/hid-input.c      |  11 +++
+ drivers/hid/hid-magicmouse.c | 156 ++++++++++++++++++++++++++++-------
+ include/linux/hid.h          |   3 +
+ 5 files changed, 140 insertions(+), 32 deletions(-)
 
 -- 
-Catalin
+2.31.0
+
