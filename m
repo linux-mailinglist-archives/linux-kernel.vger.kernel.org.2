@@ -2,77 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAD634B769
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B45734B76D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:44:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhC0NjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 09:39:22 -0400
-Received: from smtprelay0088.hostedemail.com ([216.40.44.88]:54426 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230105AbhC0NjL (ORCPT
+        id S230187AbhC0Nnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 09:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhC0Nne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 09:39:11 -0400
-Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 27C20100E7B40;
-        Sat, 27 Mar 2021 13:39:10 +0000 (UTC)
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA id 6092A18A608;
-        Sat, 27 Mar 2021 13:39:08 +0000 (UTC)
-Message-ID: <50e838ca74c56b9fd5cbbc2d7234829f0e0b4131.camel@perches.com>
-Subject: Re: [PATCH v2 06/15] ACPI: LPSS: fix some coding style issues
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        Sat, 27 Mar 2021 09:43:34 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540F6C0613B1;
+        Sat, 27 Mar 2021 06:43:34 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id u4so10612169ljo.6;
+        Sat, 27 Mar 2021 06:43:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=wKotxx/awUycRD+fkna42rIx+vqO8dW/HIq/KOKL9cI=;
+        b=LKFZ43FLHPWczoqXaWDhXR31hXmXwNOO8dzqy+szxykaZR4W5Sg85B50ytQtEXLtZ8
+         D60bPoEwrk1FUkh00hUQnVKqR8jsIYh6UrOk5S4+xXi8M0A8kZGpJD+kC547l8DuYCii
+         jEaLBYJTEgyGtfwJUPOnrh2r+VRXqF/TD7yn4iisPcJPWbGlSsRRNkDjr1cbVrrsard7
+         fvmrdAr8Rdt4lqQuYiWIYhEspBJJSGA9YYagWLSqJRWHkrwcOibtibyYwn/t+mKINyHf
+         KDRVyII7KF8guQvIm3c4vHQQCd8ylRSySOhbDcblmgi0vdQDLI45daGatUKA5azNKHRD
+         9vPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=wKotxx/awUycRD+fkna42rIx+vqO8dW/HIq/KOKL9cI=;
+        b=R+16aXASUpQDxtWfkkUWsV5Od5hO61G8NghIeNDVYzuCcxh6fO0Hj+fKYtDSp5pG1z
+         tUamE4IJR7oHjJNQxQQYIBYj4DNFTPHLedJ6N/EeqjLqOge0miOXlvufjchAywfKmhli
+         DmiN+VtyzD+wtcARB345/CmQ5C3yVdTnfwMyVYk4/Q59otBeQ8lh7UDuMvlF2PTIDpGA
+         2aDkqVlRPTyEwkVVkNu+FkMr9hyAccHwZDZ6kvVkW2Onjnc5u/iMu9J+1uAnOftMyLoV
+         XQFY8PfBaOhYehlzm67GGinRz/JiSNdsGvo+zU7YGuUrdK7NFWl2kmLFmWZghJczxHBu
+         KG1w==
+X-Gm-Message-State: AOAM5330UdMRm1j4ZxnaZ1qp0FinXMswjGzjXyhEGPObqNPhs/K/MxSz
+        MrkE+NjkmBKLazhFgNmMdS1Hr1t3OcnI32QQWHo=
+X-Google-Smtp-Source: ABdhPJytzhch4r2XjTYINqfLSX+KY8VqAotBqm4lb70p3pWO7/g3LQkZnSx7HJIlSt4llk2cnegt7w==
+X-Received: by 2002:a05:651c:118b:: with SMTP id w11mr11967883ljo.223.1616852612694;
+        Sat, 27 Mar 2021 06:43:32 -0700 (PDT)
+Received: from [192.168.1.11] ([94.103.227.42])
+        by smtp.gmail.com with ESMTPSA id 3sm1204816lfq.1.2021.03.27.06.43.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 06:43:31 -0700 (PDT)
+Message-ID: <c7af9f1a1c76ac56ec2a1e7470ae90a02a76365d.camel@gmail.com>
+Subject: Re: [PATCH] media: usb: fix memory leak in em28xx_dvb_init
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "mchehab@kernel.org" <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Date:   Sat, 27 Mar 2021 06:39:07 -0700
-In-Reply-To: <CAHp75Vd0hVqsfsZK=d1dz98Kbchqz-w4RqQQp6FwisxSGG5BzA@mail.gmail.com>
-References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
-         <1616831193-17920-7-git-send-email-tanxiaofei@huawei.com>
-         <CAHp75Vd0hVqsfsZK=d1dz98Kbchqz-w4RqQQp6FwisxSGG5BzA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        "syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com" 
+        <syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com>
+Date:   Sat, 27 Mar 2021 16:43:30 +0300
+In-Reply-To: <CAHp75VcH9BpvRLcqY_LxyiycQ-pOpZP4QrJXYKe69zUDbYG=SA@mail.gmail.com>
+References: <20210327082613.4702-1-paskripkin@gmail.com>
+         <CAHp75VcH9BpvRLcqY_LxyiycQ-pOpZP4QrJXYKe69zUDbYG=SA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 6092A18A608
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: or65y7ksn6r8hjdwk1z5k5ok7iqhenqo
-X-HE-Tag: 1616852348-647392
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-03-27 at 10:19 +0200, Andy Shevchenko wrote:
-> On Saturday, March 27, 2021, Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+Hi!
+
+On Sat, 2021-03-27 at 11:01 +0200, Andy Shevchenko wrote:
 > 
-> > Fix some coding style issues reported by checkpatch.pl, including
-> > following types:
+> 
+> On Saturday, March 27, 2021, Pavel Skripkin <paskripkin@gmail.com>
+> wrote:
+> > syzbot reported memory leak in em28xx_dvb_init()[1]
+> > The problem was in wrong error handling after
+> > em28xx_alloc_urbs()[2]
+> > call.
+> > In case of error allocated urbs must be freed
 > > 
-> > WARNING: simple_strtol is obsolete, use kstrtol instead
+> > 
+> 
+> I believe you may reduce twice the below backtrace and leave only
+> important line(s).
+
+Ok, I'll send new patch version soon.
+Thank you!
+
+> 
+>  
+> >   backtrace:
+> >     [<ffffffff8304c141>] kmalloc_array.constprop.0+0x41/0x60
+> > include/linux/slab.h:594
+> >     [<ffffffff8304dba2>] kcalloc include/linux/slab.h:623 [inline]
+> >     [<ffffffff8304dba2>] em28xx_alloc_urbs+0x102/0x550
+> > drivers/media/usb/em28xx/em28xx-core.c:930 [2]
+> >     [<ffffffff84279fa7>] em28xx_dvb_init
+> > drivers/media/usb/em28xx/em28xx-dvb.c:1517 [inline]      [1]
+> >     [<ffffffff84279fa7>] em28xx_dvb_init.cold+0xa3/0x2bb1
+> > drivers/media/usb/em28xx/em28xx-dvb.c:1483
+> >     [<ffffffff8304e33b>] em28xx_init_extension+0x9b/0xe0
+> > drivers/media/usb/em28xx/em28xx-core.c:1126
+> >     [<ffffffff83050143>] request_module_async+0x33/0x40
+> > drivers/media/usb/em28xx/em28xx-cards.c:3406
+> >     [<ffffffff81259229>] process_one_work+0x2c9/0x600
+> > kernel/workqueue.c:2275
+> >     [<ffffffff81259dbb>] process_scheduled_works
+> > kernel/workqueue.c:2337 [inline]
+> >     [<ffffffff81259dbb>] worker_thread+0x2fb/0x5d0
+> > kernel/workqueue.c:2426
+> >     [<ffffffff81261228>] kthread+0x178/0x1b0 kernel/kthread.c:292
+> >     [<ffffffff8100227f>] ret_from_fork+0x1f/0x30
+> > arch/x86/entry/entry_64.S:294
+> > 
+> > Reported-by: syzbot+889397c820fa56adf25d@syzkaller.appspotmail.com
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> > ---
+> >  drivers/media/usb/em28xx/em28xx-dvb.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/media/usb/em28xx/em28xx-dvb.c
+> > b/drivers/media/usb/em28xx/em28xx-dvb.c
+> > index 526424279637..471bd74667e3 100644
+> > --- a/drivers/media/usb/em28xx/em28xx-dvb.c
+> > +++ b/drivers/media/usb/em28xx/em28xx-dvb.c
+> > @@ -2010,6 +2010,7 @@ static int em28xx_dvb_init(struct em28xx
+> > *dev)
+> >         return result;
+> > 
+> >  out_free:
+> > +       em28xx_uninit_usb_xfer(dev, EM28XX_DIGITAL_MODE);
+> >         kfree(dvb);
+> >         dev->dvb = NULL;
+> >         goto ret;
+> > -- 
+> > 2.30.2
+> > 
+> > 
 > 
 > 
-> And one more thing, the above message is bogus. Read what the comments in
-> the code says about use cases for simple_*() vs. kstrto*() ones.
-> 
-> Joe?
 
-This check and message is nearly 10 years old and was appropriate for
-when it was implemented.
-
-kernel.h currently has:
- * Use these functions if and only if you cannot use kstrto<foo>, because
-
-So the message could be changed to something like:
-
-WARNING: simple_strtol should be used only when kstrtol can not be used.
-
+-- 
+With regards,
+Pavel Skripkin
 
 
