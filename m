@@ -2,164 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC6634B868
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:11:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD4234B869
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhC0RJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 13:09:55 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:43698 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhC0RJZ (ORCPT
+        id S230286AbhC0ROM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 13:14:12 -0400
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:42863 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhC0ROK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 13:09:25 -0400
-Received: by mail-ot1-f42.google.com with SMTP id m21-20020a9d7ad50000b02901b83efc84a0so8220191otn.10;
-        Sat, 27 Mar 2021 10:09:25 -0700 (PDT)
+        Sat, 27 Mar 2021 13:14:10 -0400
+Received: by mail-oi1-f181.google.com with SMTP id n140so9004850oig.9;
+        Sat, 27 Mar 2021 10:14:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DLsxAGfchYkbO41PzHGYGbdXOVMJdMlwtMG5pFUqb58=;
-        b=qRkGgZJ1cry1CoZ8g0XPNRIOiI4uDfled7IOoIx7jeEe542G6MjZTeM3miv6tJjApb
-         eNp4kWjTcgdgcGdN0AQn96Boy9GPeb/0kBBduPxFCCbpS91PGMbl8lQv6unv51ky43jP
-         aN6+nzt2PmAsOGKUk/hYAMFJmCvPUzYo19sfclTgFQW12Oc7w+cJFBnELhO7jYppXeFK
-         tgNaOooLgJRNMD2jFzKx9Zj2daL2Z79yPtD4WyYTaplFfu+BmiXvr42dEiMnOi66KX4p
-         Q68F+cf9cShG5lUuT5y0ge85DFxWRcN46+QMkAc7GEeJZ3WKeFuxb4SQ+8A3CB0oERvY
-         DWcg==
-X-Gm-Message-State: AOAM533A+Ne08WlEcamHOck9YuujRVSgiQ1lQAoAUFPZ4Kvn58uGeayC
-        5OVKp5XRXf5MJ2+HUXpIlQ==
-X-Google-Smtp-Source: ABdhPJwqScajK5wkMqNipsU3p55DSXqNUIRszZRRYrqAWCKJp0nD78s+3JcREu6E7E1wAohXMJzwYA==
-X-Received: by 2002:a05:6830:348f:: with SMTP id c15mr16847757otu.138.1616864965285;
-        Sat, 27 Mar 2021 10:09:25 -0700 (PDT)
+        bh=hTVQjGeLjaxzwSPabxK/lSxnQipUu7ywlyHTCGDIzb0=;
+        b=YBQeb+mmgtKHsredeS9HMjTDjTuIhzqk1ti3LsCrO0LHMb3+BvB/npM0NzATKa++Wj
+         ldCezCrokc3MxO/s3W6iCzy2O7S+kedAOQV94F9EGdVB1uuUvnYS7sMABaNYFB/2auLN
+         IstHaukYMc0vn0ZU9JLk2wx3dHm75r6gm9wpnUOGrOv57YxV+QGPNOVVzG4bwgCER71b
+         VuGzvdnuPrAdnkfHa2qXh2+O6IYkbh51/P6r7ZlUiDwIBcrbqcrPpSsvR7AitH3jZDTK
+         SvByQlUZq4ZwhlwYR40rZil2IgAvZZ9WA6n6YAY+etkazxwCGhyfU/ZT4xmkpo4bKk0w
+         FI6A==
+X-Gm-Message-State: AOAM532habjVpaUrVMK0OQzCqsDX4cKn5COS6m3F4SUVMI1r1PEkwMg+
+        sqohTxNybN2NZE9PeN7/vg==
+X-Google-Smtp-Source: ABdhPJysnxJuGbIjzhHQGpKpMMLNMlCrnFroN50uzagvg0gQqa0wa4rMWoFHTa1tiUVAuY5SpENrBw==
+X-Received: by 2002:a54:408a:: with SMTP id i10mr14082034oii.141.1616865250282;
+        Sat, 27 Mar 2021 10:14:10 -0700 (PDT)
 Received: from robh.at.kernel.org ([172.58.107.88])
-        by smtp.gmail.com with ESMTPSA id y31sm1141294ota.16.2021.03.27.10.09.21
+        by smtp.gmail.com with ESMTPSA id m19sm2656074oop.6.2021.03.27.10.14.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 10:09:24 -0700 (PDT)
-Received: (nullmailer pid 255828 invoked by uid 1000);
-        Sat, 27 Mar 2021 17:09:20 -0000
-Date:   Sat, 27 Mar 2021 11:09:20 -0600
+        Sat, 27 Mar 2021 10:14:09 -0700 (PDT)
+Received: (nullmailer pid 262112 invoked by uid 1000);
+        Sat, 27 Mar 2021 17:14:04 -0000
+Date:   Sat, 27 Mar 2021 11:14:04 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [RFC PATCH 3/4] dt-bindings: mtd: add OTP bindings
-Message-ID: <20210327170920.GA249312@robh.at.kernel.org>
-References: <20210322181949.2805-1-michael@walle.cc>
- <20210322181949.2805-4-michael@walle.cc>
+To:     Nicolas Saenz Julienne <nsaenz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        adrian.hunter@intel.com, bcm-kernel-feedback-list@broadcom.com,
+        alcooperx@gmail.com, Ulf Hansson <ulf.hansson@linaro.org>,
+        Scott Branden <sbranden@broadcom.com>, phil@raspberrypi.com,
+        linux-mmc@vger.kernel.org, Ray Jui <rjui@broadcom.com>,
+        nsaenzjulienne@suse.de, linux-kernel@vger.kernel.org,
+        f.fainelli@gmail.com, tim.gover@raspberrypi.com,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: mmc: iproc-sdhci: Add clock-frequency
+ support
+Message-ID: <20210327171404.GA262081@robh.at.kernel.org>
+References: <20210322185816.27582-1-nsaenz@kernel.org>
+ <20210322185816.27582-3-nsaenz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210322181949.2805-4-michael@walle.cc>
+In-Reply-To: <20210322185816.27582-3-nsaenz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 07:19:48PM +0100, Michael Walle wrote:
-> Flash devices can have one-time-programmable regions. Add a nvmem
-> binding so they can be used as a nvmem provider.
+On Mon, 22 Mar 2021 19:58:15 +0100, Nicolas Saenz Julienne wrote:
+> Users might want to choose a different clock frequency than whatever the
+> bootloader provided at probe time. Add 'clock-frequency' bindings.
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
 > ---
->  .../devicetree/bindings/mtd/mtd.yaml          | 71 +++++++++++++++++++
->  1 file changed, 71 insertions(+)
+>  Documentation/devicetree/bindings/mmc/brcm,iproc-sdhci.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtd.yaml b/Documentation/devicetree/bindings/mtd/mtd.yaml
-> index 321259aab0f6..2b852f91a6a9 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtd.yaml
-> +++ b/Documentation/devicetree/bindings/mtd/mtd.yaml
-> @@ -21,6 +21,25 @@ properties:
->        based name) in order to ease flash device identification and/or
->        describe what they are used for.
->  
-> +patternProperties:
-> +  "^otp(-[0-9]+)?":
 
-Needs '$' on the end.
-
-> +    type: object
-> +    $ref: ../nvmem/nvmem.yaml#
-> +
-> +    description: |
-> +      An OTP memory region. Some flashes provide a one-time-programmable
-> +      memory whose content can either be programmed by a user or is already
-> +      pre-programmed by the factory. Some flashes might provide both.
-> +
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - mtd-user-otp
-> +          - mtd-factory-otp
-> +
-> +    required:
-> +      - compatible
-> +
->  additionalProperties: true
->  
->  examples:
-> @@ -36,4 +55,56 @@ examples:
->          };
->      };
->  
-> +  - |
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        flash@0 {
-> +            reg = <0>;
-> +            compatible = "some,flash";
-
-Soon (in linux-next, but off by default) this will be a warning for 
-undocumented compatible string. Use a real device.
-
-> +
-> +            otp {
-> +                compatible = "mtd-user-otp";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +
-> +                serial-number@0 {
-> +                    reg = <0 16>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +  - |
-> +    spi {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        flash@0 {
-> +            reg = <0>;
-> +            compatible = "some,flash";
-> +
-> +            otp-1 {
-> +                compatible = "mtd-factory-otp";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +
-> +                electronic-serial-number@0 {
-> +                    reg = <0 8>;
-> +                };
-> +            };
-> +
-> +            otp-2 {
-> +                compatible = "mtd-user-otp";
-> +                #address-cells = <1>;
-> +                #size-cells = <1>;
-> +
-> +                mac-address@0 {
-> +                    reg = <0 6>;
-> +                };
-> +            };
-> +        };
-> +    };
-
-The 2nd example is a superset of the 1st, so drop the first one.
-
-Rob
+Reviewed-by: Rob Herring <robh@kernel.org>
