@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDF834B36F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 01:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CEC834B37D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhC0A4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 20:56:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231202AbhC0Azq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 20:55:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B456619F2;
-        Sat, 27 Mar 2021 00:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616806545;
-        bh=lo6lYnIDJUd1GsaAadMr5D9x6+TV2fWoKmvUvRWPbJY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YSakcLdgmxrQZHQqKWvJPxVUYENmn35UzQeR7TWvz/K0QsZZjYjihRYuqObd1F8ob
-         vLj12q7PKS+blkO2ftwgIu+UKVRBY+36dtZy78vMMHmqvikCQ3j6uww+kKaH5p4j1l
-         syHNppSel7HEKJ7YVr4yd0QAtetkcNNFFUfS/ZQRrGpxfXytnbko/GEc1nwhaBhAbo
-         K38NNLLEAU6daudPx/KvIxVF6FaLtRPCpMX+bZ234eg8ktoqiDt/azigoRQuo5SL+w
-         x94YEPTAKz7YoVwjJ5ieGdRCqrXzcKz5emaQkC+E3aFj6sw0P8EoVnd07bsO3C2LdO
-         ZlQNrLHNdNiVw==
-Date:   Sat, 27 Mar 2021 08:55:39 +0800
-From:   Peter Chen <peter.chen@kernel.org>
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     Wang Qing <wangqing@vivo.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: cdns3: delete repeated clear operations
-Message-ID: <20210327005539.GC28870@b29397-desktop>
-References: <1615603303-14518-1-git-send-email-wangqing@vivo.com>
- <BYAPR07MB5381E439E54E87C91086BA07DD659@BYAPR07MB5381.namprd07.prod.outlook.com>
+        id S230152AbhC0BNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 21:13:39 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:14916 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229969AbhC0BNI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 21:13:08 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F6gld5MDjzlW5L
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 09:11:25 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.179.202) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 09:12:56 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] bus: bt1-apb: Remove duplicated header file inclusion
+Date:   Sat, 27 Mar 2021 09:12:51 +0800
+Message-ID: <20210327011251.1553-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR07MB5381E439E54E87C91086BA07DD659@BYAPR07MB5381.namprd07.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.179.202]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-03-22 07:19:46, Pawel Laszczak wrote:
-> Hi Peter,
-> 
-> Can you add this patch to for-usb-next branch.
-> 
+The header file <linux/clk.h> is already included above and can be
+removed here.
 
-Feel free add your ACK base on this patch.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ drivers/bus/bt1-apb.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Peter
-> Thanks.
-> 
-> >
-> >
-> >dma_alloc_coherent already zeroes out memory, so memset is not needed.
-> >
-> >Signed-off-by: Wang Qing <wangqing@vivo.com>
-> 
-> Reviewed-by: Pawel Laszczak <pawell@cadence.com>
-> 
-> >---
-> > drivers/usb/cdns3/cdnsp-mem.c | 1 -
-> > 1 file changed, 1 deletion(-)
-> >
-> >diff --git a/drivers/usb/cdns3/cdnsp-mem.c b/drivers/usb/cdns3/cdnsp-mem.c
-> >index 7a84e92..1d1b9a4
-> >--- a/drivers/usb/cdns3/cdnsp-mem.c
-> >+++ b/drivers/usb/cdns3/cdnsp-mem.c
-> >@@ -1231,7 +1231,6 @@ int cdnsp_mem_init(struct cdnsp_device *pdev)
-> > 	if (!pdev->dcbaa)
-> > 		return -ENOMEM;
-> >
-> >-	memset(pdev->dcbaa, 0, sizeof(*pdev->dcbaa));
-> > 	pdev->dcbaa->dma = dma;
-> >
-> > 	cdnsp_write_64(dma, &pdev->op_regs->dcbaa_ptr);
-> >--
-> >2.7.4
-> 
-> Regards,
-> Pawel Laszczak
-
+diff --git a/drivers/bus/bt1-apb.c b/drivers/bus/bt1-apb.c
+index b25ff941e7c7f52..74b1b712ef3a804 100644
+--- a/drivers/bus/bt1-apb.c
++++ b/drivers/bus/bt1-apb.c
+@@ -22,7 +22,6 @@
+ #include <linux/clk.h>
+ #include <linux/reset.h>
+ #include <linux/time64.h>
+-#include <linux/clk.h>
+ #include <linux/sysfs.h>
+ 
+ #define APB_EHB_ISR			0x00
 -- 
+1.8.3
 
-Thanks,
-Peter Chen
 
