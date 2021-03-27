@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581E134B796
+	by mail.lfdr.de (Postfix) with ESMTP id A3CEF34B797
 	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 15:26:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhC0OZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 10:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48230 "EHLO
+        id S230478AbhC0OZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 10:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhC0OY7 (ORCPT
+        with ESMTP id S230180AbhC0OZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 10:24:59 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C01EC0613B1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:24:59 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x16so8374328wrn.4
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:24:59 -0700 (PDT)
+        Sat, 27 Mar 2021 10:25:01 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D88FC0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:25:01 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id b9so8356756wrt.8
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 07:25:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=M8DYc5vjzbQ3/FwnNagLMFyG5+xEylbz7fLiJFoVp/8=;
-        b=CvHGsD6u58wUGsz1l7aV67caJfTmD/F9EJptANRN91v9gma21viOSpKWxtY8Q1M5Ix
-         cKxhi35V/toCfU6AqmR7RnLCqyCJQX+5H/49xZqx9veJPV6iNCDgH6XhJfgf19bOkNJR
-         NtTZJ0tSOS9nbr6brW0ucbHA2YR2u0NkOX7upOs32BhxjP9p+4oIKw2SC5Jg9GBnpRC1
-         DImMVxfZuhS4acGPIxzx7svHi0CS5aVbzLKL2eCIH0SSryQZcJBR76vmdQOk832O2FhV
-         NWbAAjVzz7ZApGlSIo2uE/AIawAniBwG/7EFQSrC0ufLWVJ62cf7tHjNUy6j1+CDcM0z
-         4R2g==
+        bh=Dvn70d7ZVR8XY9R5o5JpAomHZOvZdMCNh+kZfGyarKQ=;
+        b=ln3UTy++bXXqTH+TLRHvdv6UJEaCQjlpOU0SitX1IvHqs5oXAU4CxWmRlJxPTZUNPi
+         SQtJW3xlGH1pATI1tfnDKNLZ/WFZxKQ1A0nxG1wstS0PxCYY+2/59UGb43MM9TEjOg81
+         5EE3sCbhqERqW0YIb/KasYeJ8bzN/MzMCrRajhW6TMXfebZkSGfo7RD/+dAr04cjh8K2
+         mjEpi7bdCm6xFlpNpYmLzD2fo9qneWlIyBbJVzozludC3NpqrnKuQco31vQ1E8qipOHe
+         t+op0X3o7NgmJM93yyUpeI0wMVlxrCtYIkA9zbbJfK1PTi744PZ+tkHXcc4BmxnB3+T1
+         IMIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=M8DYc5vjzbQ3/FwnNagLMFyG5+xEylbz7fLiJFoVp/8=;
-        b=OvozFCRPrfUIlkbZ0RJE8OakyKjQNmscyztE7WB0jSPUZ/x4hjH5/H1v711Rpuq7V7
-         Kcy0xfRCARHPciba43O56yLWaHDW6XRqMGtP8XUkDelKk8DR/7JaFOognhvapQu2eZZ9
-         7/OUsIZr6+iEmPSembJC1nlsQsXAv0cFWVqJH1BcrvGyQmfOsez4hv46ITFq2v7jd3X4
-         dXa1OfSKIk8biQl5bOf2/K0VhuRrqPPUCgNxagWNJC366S5nA/Iuh3IBy9kCddQ46bwd
-         bYGQ/YgSRoLvPp21G8ms64kQT/Odd+f5TT1clqYEJxBxYj/+HchtkBURUfY57hiRhRvR
-         oBZA==
-X-Gm-Message-State: AOAM533JWm5jcl/rNsY/iM3j0ghpX7Ba6Cb8qQ7iE64Kx7bylkwGhi6G
-        9BpQpGoRD/zClDqmpx+bvTRvwoGsifZ/uA==
-X-Google-Smtp-Source: ABdhPJxP8sVz3IP9Mv5G2OnrkCSfuYtfZ/Gpp/PNFbPTKswC6aZbeMAEyfc70O/JvyozBvE5TVauYQ==
-X-Received: by 2002:a05:6000:1b0f:: with SMTP id f15mr20050306wrz.171.1616855098084;
-        Sat, 27 Mar 2021 07:24:58 -0700 (PDT)
+        bh=Dvn70d7ZVR8XY9R5o5JpAomHZOvZdMCNh+kZfGyarKQ=;
+        b=CafTcBXNgkXQOnN8GKMQHihyegMfJrWD+qrlBUoHxD5CRH2jp8KerwHYzeZMz1pSOo
+         Ezy8C9QxI2YdNacFSCEoRdIPIksY8kO04kSmQIJuaQCyhEOUu00x3+ZZFsbFjFglAKlZ
+         n9ba7NRvdh3SgfgBsaBnAuSUpgtEujvgMz578tpIUHA/wC1YwLMfwt2mgkYA4XcbjcSN
+         LKYBohgsDjt3n6rjeMmYcj6BV0y1XoaR9jMBgHW8N6iILFHEzZEy7le0ZdeggZCh8W9r
+         xpp+1uSJpWCMZO9swqbclJEF/fKOlidosKvlqPkRw2qmtbBwUgzqAIkEUOcBnFvc1JKq
+         n/EA==
+X-Gm-Message-State: AOAM530URNaYQBhF8AFImwob5825gZbEUZs3MCZ+ptt2nuFhCrD/ymuL
+        dxW6pytq+eUDb3/8wjivDmw=
+X-Google-Smtp-Source: ABdhPJwXjH5PAU13TKG1WP5GsdrMIjCGw4PJwBTktxJhm37VkaRd4v+zZA4HqH9ef3PP/uwvPsE5Yg==
+X-Received: by 2002:adf:e68e:: with SMTP id r14mr19513342wrm.273.1616855100137;
+        Sat, 27 Mar 2021 07:25:00 -0700 (PDT)
 Received: from agape ([151.46.211.242])
-        by smtp.gmail.com with ESMTPSA id i10sm19237353wrs.11.2021.03.27.07.24.57
+        by smtp.gmail.com with ESMTPSA id x25sm18833839wmj.14.2021.03.27.07.24.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 07:24:57 -0700 (PDT)
+        Sat, 27 Mar 2021 07:24:59 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     dan.carpenter@oracle.com, david.laight@aculab.com,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH v2 08/20] staging: rtl8723bs: remove unused macros in include/hal_phy.h
-Date:   Sat, 27 Mar 2021 15:24:07 +0100
-Message-Id: <a001f2b2b8fb0ffa73ffe2e79f45a4a8e92cdf2a.1616854134.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 09/20] staging: rtl8723bs: put parentheses on macros with complex values in include/rtw_debug.h
+Date:   Sat, 27 Mar 2021 15:24:08 +0100
+Message-Id: <f36448ddc1553a018f700983b5d436eacaef9cb3.1616854134.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1616854134.git.fabioaiuto83@gmail.com>
 References: <cover.1616854134.git.fabioaiuto83@gmail.com>
@@ -65,35 +65,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove declarations of unused macros in include/hal_phy.h
+fix the following checkpatch warning:
+
+ERROR: Macros starting with if should be enclosed by a
+do - while loop to avoid possible if/else logic defects
++	#define RT_PRINT_DATA(_Comp, _Level,
+	_TitleString, _HexData, _HexDataLen)			\
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/hal_phy.h | 11 -----------
- 1 file changed, 11 deletions(-)
+ drivers/staging/rtl8723bs/include/rtw_debug.h | 28 ++++++++++---------
+ 1 file changed, 15 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/include/hal_phy.h b/drivers/staging/rtl8723bs/include/hal_phy.h
-index bf17a85b5959..521eb1c2efad 100644
---- a/drivers/staging/rtl8723bs/include/hal_phy.h
-+++ b/drivers/staging/rtl8723bs/include/hal_phy.h
-@@ -20,17 +20,6 @@
- #define	HAL_RF_ENABLE				1
- #endif
+diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
+index d1c557818305..b00f8a6c4312 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_debug.h
++++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
+@@ -236,19 +236,21 @@
+ #if	defined(_dbgdump)
+ 	#undef RT_PRINT_DATA
+ 	#define RT_PRINT_DATA(_Comp, _Level, _TitleString, _HexData, _HexDataLen)			\
+-		if (((_Comp) & GlobalDebugComponents) && (_Level <= GlobalDebugLevel))	\
+-		{									\
+-			int __i;								\
+-			u8 *ptr = (u8 *)_HexData;				\
+-			_dbgdump("%s", DRIVER_PREFIX);						\
+-			_dbgdump(_TitleString);						\
+-			for (__i = 0; __i < (int)_HexDataLen; __i++)				\
+-			{								\
+-				_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0)?"  ":" ");	\
+-				if (((__i + 1) % 16) == 0)	_dbgdump("\n");			\
+-			}								\
+-			_dbgdump("\n");							\
+-		}
++		do { \
++			if (((_Comp) & GlobalDebugComponents) && (_Level <= GlobalDebugLevel))	\
++			{									\
++				int __i;								\
++				u8 *ptr = (u8 *)_HexData;				\
++				_dbgdump("%s", DRIVER_PREFIX);						\
++				_dbgdump(_TitleString);						\
++				for (__i = 0; __i < (int)_HexDataLen; __i++)				\
++				{								\
++					_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0)?"  ":" ");	\
++					if (((__i + 1) % 16) == 0)	_dbgdump("\n");			\
++				}								\
++				_dbgdump("\n");							\
++			} \
++		} while (0)
+ #endif /* defined(_dbgdump) */
+ #endif /* DEBUG_RTL871X */
  
--#define	RF6052_MAX_TX_PWR			0x3F
--#define	RF6052_MAX_REG_88E			0xFF
--#define	RF6052_MAX_REG_92C			0x7F
--
--#define	RF6052_MAX_REG	\
--		(RF6052_MAX_REG_88E > RF6052_MAX_REG_92C) ? RF6052_MAX_REG_88E : RF6052_MAX_REG_92C
--
--#define GET_RF6052_REAL_MAX_REG(_Adapter)	RF6052_MAX_REG_92C
--
--#define	RF6052_MAX_PATH				2
--
- /*  */
- /*  Antenna detection method, i.e., using single tone detection or RSSI reported from each antenna detected. */
- /*  Added by Roger, 2013.05.22. */
 -- 
 2.20.1
 
