@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA38B34B4F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6093A34B4FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:21:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbhC0HQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 03:16:59 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:59816 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhC0HQ4 (ORCPT
+        id S231150AbhC0HVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 03:21:12 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15341 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230174AbhC0HUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 03:16:56 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id AE1D098014B;
-        Sat, 27 Mar 2021 15:16:52 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] scripts: checkdeclares for checking duplicate struct declares
-Date:   Sat, 27 Mar 2021 15:16:36 +0800
-Message-Id: <20210327071641.1485896-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 27 Mar 2021 03:20:45 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6qvN3RRmz93xW;
+        Sat, 27 Mar 2021 15:18:40 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
+ 15:20:40 +0800
+Subject: Re: [PATCH 00/15] acpi: fix some coding style issues
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>, <rui.zhang@intel.com>,
+        <bhelgaas@google.com>
+References: <1616827256-51840-1-git-send-email-tanxiaofei@huawei.com>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <linuxarm@openeuler.org>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <cfb9c696-d916-c23c-28e6-3829b0a19ec9@huawei.com>
+Date:   Sat, 27 Mar 2021 15:20:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGk9IH0NKGk0YTRhNVkpNSk1DSUJPSklDTU1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MC46SAw6FD8IFjNLMgkyFwE1
-        Pw9PFBFVSlVKTUpNQ0lCT0pISUtIVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJTUJINwY+
-X-HM-Tid: 0a78728af5bdd992kuwsae1d098014b
+In-Reply-To: <1616827256-51840-1-git-send-email-tanxiaofei@huawei.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkdeclares: find struct declared more than once.
-Inspired by checkincludes.pl
-This script checks for duplicate struct declares.
-Note that this will not take into consideration macros so
-you should run this only if you know you do have real dups
-and do not have them under #ifdef's.
-You could also just review the results.
+Please ignore this patch set. thanks.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- scripts/checkdeclares.pl | 55 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100755 scripts/checkdeclares.pl
-
-diff --git a/scripts/checkdeclares.pl b/scripts/checkdeclares.pl
-new file mode 100755
-index 000000000000..f28c40ab0f00
---- /dev/null
-+++ b/scripts/checkdeclares.pl
-@@ -0,0 +1,55 @@
-+#!/usr/bin/env perl
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# checkdeclares: find struct declared more than once
-+#
-+# Copyright 2021 Wan Jiabing<wanjiabing@vivo.com>
-+# Inspired by checkincludes.pl
-+#
-+# This script checks for duplicate struct declares.
-+# Note that this will not take into consideration macros so
-+# you should run this only if you know you do have real dups
-+# and do not have them under #ifdef's.
-+# You could also just review the results.
-+
-+use strict;
-+
-+sub usage {
-+	print "Usage: checkdeclares.pl \n";
-+	print "We just warn of struct declaration duplicates\n";
-+	exit 1;
-+}
-+
-+if ($#ARGV < 0) {
-+	usage();
-+}
-+
-+my $dup_counter = 0;
-+
-+foreach my $file (@ARGV) {
-+	open(my $f, '<', $file)
-+	    or die "Cannot open $file: $!.\n";
-+
-+	my %declaredfiles = ();
-+	my @file_lines = ();
-+
-+	while (<$f>) {
-+		if (m/^\s*struct\s*(\w*);$/o) {
-+			++$declaredfiles{$1};
-+		}
-+		push(@file_lines, $_);
-+	}
-+
-+	close($f);
-+
-+	foreach my $filename (keys %declaredfiles) {
-+		if ($declaredfiles{$filename} > 1) {
-+			print "$file: struct $filename is declared more than once.\n";
-+			++$dup_counter;
-+		}
-+	}
-+}
-+
-+if ($dup_counter == 0) {
-+	print "No duplicate struct declares found.\n";
-+}
--- 
-2.25.1
+On 2021/3/27 14:40, Xiaofei Tan wrote:
+> Fix some coding style issues reported by checkpatch.pl.
+>
+> Xiaofei Tan (15):
+>   ACPI: APD: fix a block comment align issue
+>   ACPI: processor: fix some coding style issues
+>   ACPI: acpi_dbg: fix some coding style issues
+>   ACPI: acpi_fpdt: replace __attribute__((packed)) by __packed
+>   remove useless return statement for void function
+>   ACPI: acpi_lpss: fix some coding style issues
+>   ACPI: acpi_memhotplug: fix a coding style issue
+>   ACPI: acpi_pad: fix a coding style issue
+>   ACPI: battery: fix some coding style issues
+>   ACPI: button: fix some coding style issues
+>   ACPI: cppc_acpi: fix some coding style issues
+>   ACPI: custom_method: fix a coding style issue
+>   ACPI: device_pm: fix some coding style issues
+>   ACPI: device_sysfs: fix some coding style issues
+>   ACPI: dock: fix some coding style issues
+>
+>  drivers/acpi/acpi_apd.c        |  8 ++---
+>  drivers/acpi/acpi_dbg.c        | 40 +++++++++++-------------
+>  drivers/acpi/acpi_fpdt.c       |  6 ++--
+>  drivers/acpi/acpi_ipmi.c       |  1 -
+>  drivers/acpi/acpi_lpss.c       |  4 ++-
+>  drivers/acpi/acpi_memhotplug.c |  2 +-
+>  drivers/acpi/acpi_pad.c        |  4 +++
+>  drivers/acpi/acpi_processor.c  | 18 +++--------
+>  drivers/acpi/battery.c         | 64 +++++++++++++++++++++----------------
+>  drivers/acpi/button.c          | 10 +++---
+>  drivers/acpi/cppc_acpi.c       | 71 +++++++++++++++++++++---------------------
+>  drivers/acpi/custom_method.c   |  2 +-
+>  drivers/acpi/device_pm.c       |  3 ++
+>  drivers/acpi/device_sysfs.c    | 15 ++++++---
+>  drivers/acpi/dock.c            |  7 +++--
+>  15 files changed, 138 insertions(+), 117 deletions(-)
+>
 
