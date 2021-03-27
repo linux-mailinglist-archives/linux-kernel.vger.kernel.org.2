@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E88534B5B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 10:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCC934B5C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 10:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhC0JmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 05:42:12 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15073 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhC0Jlu (ORCPT
+        id S231468AbhC0JxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 05:53:09 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15009 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231404AbhC0Jwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 05:41:50 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6v272fyhz1BHf1;
-        Sat, 27 Mar 2021 17:39:43 +0800 (CST)
-Received: from localhost.localdomain (10.175.112.125) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 17:41:34 +0800
-From:   Chen Huang <chenhuang5@huawei.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-CC:     Nicholas Piggin <npiggin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Don Zickus <dzickus@redhat.com>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] powerpc: Fix HAVE_HARDLOCKUP_DETECTOR_ARCH build configuration
-Date:   Sat, 27 Mar 2021 09:49:00 +0000
-Message-ID: <20210327094900.938555-1-chenhuang5@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 27 Mar 2021 05:52:47 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6vG530tnzPvKd;
+        Sat, 27 Mar 2021 17:50:05 +0800 (CST)
+Received: from huawei.com (10.67.174.78) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
+ 17:52:29 +0800
+From:   Chen Lifu <chenlifu@huawei.com>
+To:     <chenlifu@huawei.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Zhang Qilong <zhangqilong3@huawei.com>
+CC:     <heying24@huawei.com>, <yuehaibing@huawei.com>,
+        <weiyongjun1@huawei.com>, <johnny.chenyi@huawei.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] MIPS: Alchemy: Use DEFINE_SPINLOCK() for spinlock
+Date:   Sat, 27 Mar 2021 17:52:25 +0800
+Message-ID: <20210327095225.104997-1-chenlifu@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.112.125]
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.174.78]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When compiling the powerpc with the SMP disabled, it shows the issue:
+From: Lifu Chen <chenlifu@huawei.com>
 
-arch/powerpc/kernel/watchdog.c: In function ‘watchdog_smp_panic’:
-arch/powerpc/kernel/watchdog.c:177:4: error: implicit declaration of function ‘smp_send_nmi_ipi’; did you mean ‘smp_send_stop’? [-Werror=implicit-function-declaration]
-  177 |    smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
-      |    ^~~~~~~~~~~~~~~~
-      |    smp_send_stop
-cc1: all warnings being treated as errors
-make[2]: *** [scripts/Makefile.build:273: arch/powerpc/kernel/watchdog.o] Error 1
-make[1]: *** [scripts/Makefile.build:534: arch/powerpc/kernel] Error 2
-make: *** [Makefile:1980: arch/powerpc] Error 2
-make: *** Waiting for unfinished jobs....
+spinlock can be initialized automatically with DEFINE_SPINLOCK()
+rather than explicitly calling spin_lock_init().
 
-We found that powerpc used ipi to implement hardlockup watchdog, so the
-HAVE_HARDLOCKUP_DETECTOR_ARCH should depend on the SMP.
-
-Fixes: 2104180a5369 ("powerpc/64s: implement arch-specific hardlockup watchdog")
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+Signed-off-by: Lifu Chen <chenlifu@huawei.com>
 ---
- arch/powerpc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/alchemy/common/clock.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 764df010baee..2d4f37b117ce 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -225,7 +225,7 @@ config PPC
- 	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
--	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if (PPC64 && PPC_BOOK3S)
-+	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
- 	select HAVE_OPTPROBES			if PPC64
- 	select HAVE_PERF_EVENTS
- 	select HAVE_PERF_EVENTS_NMI		if PPC64
--- 
-2.17.1
+diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
+index f0c830337104..c01be8c45271 100644
+--- a/arch/mips/alchemy/common/clock.c
++++ b/arch/mips/alchemy/common/clock.c
+@@ -111,7 +111,7 @@ static struct clk_aliastable {
+ /* access locks to SYS_FREQCTRL0/1 and SYS_CLKSRC registers */
+ static spinlock_t alchemy_clk_fg0_lock;
+ static spinlock_t alchemy_clk_fg1_lock;
+-static spinlock_t alchemy_clk_csrc_lock;
++static DEFINE_SPINLOCK(alchemy_clk_csrc_lock);
+ 
+ /* CPU Core clock *****************************************************/
+ 
+@@ -996,7 +996,6 @@ static int __init alchemy_clk_setup_imux(int ctype)
+ 	if (!a)
+ 		return -ENOMEM;
+ 
+-	spin_lock_init(&alchemy_clk_csrc_lock);
+ 	ret = 0;
+ 
+ 	for (i = 0; i < 6; i++) {
 
