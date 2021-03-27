@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972A334B940
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 21:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0078734B945
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 21:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhC0UDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 16:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        id S230292AbhC0UJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 16:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbhC0UC6 (ORCPT
+        with ESMTP id S230114AbhC0UJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 16:02:58 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE61C0613B2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 13:02:58 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id f16so11366115ljm.1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 13:02:58 -0700 (PDT)
+        Sat, 27 Mar 2021 16:09:01 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2D6C0613B2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 13:09:00 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id t18so4153288pjs.3
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 13:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AljBoJA9xVm8rnN8JL9ob4rBdSbgIwseVpUSWxovQ5s=;
-        b=Og7yjEHRu96oePIWfeiKgpoHBhc4DaBFsFyDdJinqzTz6GAK9EtqacAhGC1kUQEi/8
-         nMLKtgevmk2Nlgjfk58PF4tfRRjflNaUXRdiP62VsBHnCzl/kwQxyLt+hRNvuoDo6kLP
-         1rsf/31GDZQ/+WzSvI7IJRVEHjDEb8cjj0p70=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gl6K4yhW13Kr5byLAjtw6msM95S/bPbif0F7bCXuCTo=;
+        b=ZpvGQmlVQNUjvDss7S/A9WVts56Zf4zThRGYI9SAPgvunBjxgkFZpvbhbiOPuf/6Sa
+         UD/fxTC2ivppYJgO/Zw8j2E26D9DyvyagID+wZz9SzfvyE2Vgqnyg2pOzDeVyCarcQO6
+         dq+cMKSjVktyzgf8uW8HIXr+1aRcrV1sxP/7nONAVQDIdH/MA4MCvQChMj/UfHkLBmNJ
+         i3Fqpg1y0W8L6KLDFPP8CiabZ7S0j0rrhL8y5Bg0dYqRfGlcOS2fUZ6bx2CyyfavWtZ1
+         J2BdmG+G3f3Vd50ky0Ku97VBEwMlSHt/6wbPn2+6qIFIVjhAAxWo+2I5gyQo3pJKdgf3
+         spFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AljBoJA9xVm8rnN8JL9ob4rBdSbgIwseVpUSWxovQ5s=;
-        b=MTIIlWwFW0Vv2HQIvKpVhDcDJMfQ7Zalv9bIEwa2Ym8pUbKpXJP9ApowNQWE/THlLt
-         I3w7tVh6wQAN5Vgx/KxG1hMbnb1A5o9kQVpC8hROTp9nYihiJ5Z4TFqyWKExWPmhwDLv
-         k8z5jdAvXKqga7KCWkpTmqqtHHDAy970dHZjDsrkDI/grb84vUAt0jQl2G1jCnudJ0tn
-         7Bo9P1nlBx6IDHm26PQn/WMpqTSIipUYUVhRhEyQoWgfs5Uy3k2shcxiI/duDFNiE5Oc
-         l08sHQA/jcIbr6iDcFTdvDXnQj9TyNNXdFrKx+fEHlcflbfCyjqCsXbWR0E8CALQVSpF
-         NfOQ==
-X-Gm-Message-State: AOAM530xrhIfJOUWLgaohslwS50JeUXn+G08Ggg6is5BPp7k8dYFCjcJ
-        aCvQ5kKez3iFQspJJODwmbIHSSHwzfhPDg==
-X-Google-Smtp-Source: ABdhPJzXRN/aDOwwEU/UfMMEOCKFoOgihWZDwhBMHi3CF8H0C/hf0zHhvAmx4fOGZeLCT2upTFJHiQ==
-X-Received: by 2002:a2e:b544:: with SMTP id a4mr12912206ljn.504.1616875376559;
-        Sat, 27 Mar 2021 13:02:56 -0700 (PDT)
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
-        by smtp.gmail.com with ESMTPSA id v9sm1284058lfd.195.2021.03.27.13.02.55
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gl6K4yhW13Kr5byLAjtw6msM95S/bPbif0F7bCXuCTo=;
+        b=k72lzuuj1wbHgnbjCB5YHcfryPT9HDlo3zyyIqGN/+mSBtQGoBHQyAK2PmjARIYWBh
+         Y0m8Pul+A2yV0FICNUdR5bW3/6+DaDFH2Hdi4HIXOoy74ldx9S0jGGAEwGex2Ady7nVW
+         +EHxtir3elcVvTv/lfaLpe1dqllttzSoXxEYiQ+6TmBGnNsNiTn72PBavmdD0hF/Dmn+
+         aLUnUpC5kHLQRet/roSR5AERFD+6pZVDimo1PDvAGRgcqBsI4jJUbPhBxXulVGsgoRdz
+         2fokacxhmYMXXcQudOY/4CEqsrKDgVNb/plJXPR4xADV8xl7CQWIuVXWOD1Zzk16p2wZ
+         XTCA==
+X-Gm-Message-State: AOAM531tYUzm9jJfkBG1gqd3FWKoZPGjhT81kDFHk3SLU7nCUXbVlLzk
+        KWIhdbcLtVF1caPfh8ZrZAHi7e5D75z8RQ==
+X-Google-Smtp-Source: ABdhPJyVHitKFRyW/+b4BAAeB3N1iyPYrhNX834K0F8siBnRjW6ZeSZra2xjQkXQiLobUcYQaIx13w==
+X-Received: by 2002:a17:902:c48c:b029:e4:c093:593a with SMTP id n12-20020a170902c48cb02900e4c093593amr21093127plx.1.1616875740033;
+        Sat, 27 Mar 2021 13:09:00 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 193sm13445271pfa.148.2021.03.27.13.08.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Mar 2021 13:02:55 -0700 (PDT)
-Received: by mail-lj1-f173.google.com with SMTP id 184so11290261ljf.9
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 13:02:55 -0700 (PDT)
-X-Received: by 2002:a2e:b6c6:: with SMTP id m6mr12646352ljo.411.1616875375067;
- Sat, 27 Mar 2021 13:02:55 -0700 (PDT)
+        Sat, 27 Mar 2021 13:08:59 -0700 (PDT)
+Subject: Re: [PATCH 2/7] io_uring: handle signals for IO threads like a normal
+ thread
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     io-uring@vger.kernel.org, torvalds@linux-foundation.org,
+        metze@samba.org, oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326155128.1057078-1-axboe@kernel.dk>
+ <20210326155128.1057078-3-axboe@kernel.dk> <m1wntty7yn.fsf@fess.ebiederm.org>
+ <106a38d3-5a5f-17fd-41f7-890f5e9a3602@kernel.dk>
+ <m1k0ptv9kj.fsf@fess.ebiederm.org>
+ <01058178-dd66-1bff-4d74-5ff610817ed6@kernel.dk>
+ <m18s69v8zb.fsf@fess.ebiederm.org>
+ <7a71da2f-ca39-6bbf-28c1-bcc2eec43943@kernel.dk>
+ <387feabb-e758-220a-fc34-9e9325eab3a6@kernel.dk>
+ <m1zgyotrz7.fsf@fess.ebiederm.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c0888c0f-4490-227a-645b-f3664aaef642@kernel.dk>
+Date:   Sat, 27 Mar 2021 14:08:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CA+icZUVEkA6+5d3NGy7_G8eiaPvJkO_JCAX=XQwT1qpiGkLMWw@mail.gmail.com>
- <20210313121541.GC16144@zn.tnic> <CA+icZUXrJHHDNOC+DAcr9iw4MXn5cBDj-JrDkxeumk978Gtdcg@mail.gmail.com>
- <20210313124919.GD16144@zn.tnic> <CA+icZUWXuknBMdxTQXjJH2JiOgZbWcbk1U=dk6Zp2FgygU5Nyg@mail.gmail.com>
- <20210313132927.GF16144@zn.tnic> <CA+icZUWTSo2vkQO_tRggDFvvF_Q6AdzhvhQvmAsNxKnpGXHi0Q@mail.gmail.com>
- <CA+icZUXLyFqq0y_GnKca8MS4wO2kcj4K-D1kBHLa8u_pnLZ7eQ@mail.gmail.com>
- <YE+i/VWITCCb37tD@hirez.programming.kicks-ass.net> <CA+icZUWQ1kH6muAQbNuVAPj4Cn=8ssDAJfYLKht8ezAgJKWApA@mail.gmail.com>
- <YE/cMeO+oC/5JEC6@hirez.programming.kicks-ass.net> <CA+icZUXko_Nxh-9_qgjMYyGsh8E1rj2cWmQh0OHjuZECMZxp6Q@mail.gmail.com>
- <CA+icZUXu7ZNdrv6gTFCRri1ReF2e_87mX5D3Sex7tN+0GBpJ1Q@mail.gmail.com>
-In-Reply-To: <CA+icZUXu7ZNdrv6gTFCRri1ReF2e_87mX5D3Sex7tN+0GBpJ1Q@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linuxfoundation.org>
-Date:   Sat, 27 Mar 2021 13:02:39 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whXAvCnjCBj=p4-xvEojQ1iy=dA9VjWtAhMwG4MLK_6jw@mail.gmail.com>
-Message-ID: <CAHk-=whXAvCnjCBj=p4-xvEojQ1iy=dA9VjWtAhMwG4MLK_6jw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] x86: Remove ideal_nops[]
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Anvin <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <m1zgyotrz7.fsf@fess.ebiederm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 5:08 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> debian-5.10.19 as host-kernel:
-> 11655.755564957 seconds time elapsed
->
-> dileks-5.12-rc3 plus x86-nops as host-kernel:
-> 11941.439350080 seconds time elapsed
+On 3/27/21 11:40 AM, Eric W. Biederman wrote:
+> Jens Axboe <axboe@kernel.dk> writes:
+> 
+>> On 3/26/21 4:38 PM, Jens Axboe wrote:
+>>> OK good point, and follows the same logic even if it won't make a
+>>> difference in my case. I'll make the change.
+>>
+>> Made the suggested edits and ran the quick tests and the KILL/STOP
+>> testing, and no ill effects observed. Kicked off the longer runs now.
+>>
+>> Not a huge amount of changes from the posted series, but please peruse
+>> here if you want to double check:
+>>
+>> https://git.kernel.dk/cgit/linux-block/log/?h=io_uring-5.12
+>>
+>> And diff against v2 posted is below. Thanks!
+> 
+> That looks good.  Thanks.
+> 
+> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-That's 2.5% - a huge difference. Particularly since kernel build times
-shouldn't even be that kernel-intensive.
+Thanks Eric, amended to add that.
 
-I think there's something else going on than the nops. Same config?
-There are likely many other differences between 5.10.19 and 5.12-rc3.
+-- 
+Jens Axboe
 
-So can you check just plain 5.12-rc3 and then 5.12-rc3 plus x86-nops,
-with otherwise identical configuration?
-
-               Linus
