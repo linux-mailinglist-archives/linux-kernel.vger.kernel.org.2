@@ -2,303 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D3034B393
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDC234B399
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231184AbhC0Blg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 21:41:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:11231 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230512AbhC0BlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 21:41:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1616809282; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=VwoNch8dVB0Msk37Z3+3dg+CRiyftexNrX3T3kQm/Pg=; b=lq0gobeXkigEA3AqltF7+9fGKAGguap+iQhtssNA53DwE4UBzPuagKC+mbNc/afDJdh8IOMS
- FkEJIws635gchXoKqckp90GXaUoVZXSFq9w0yZ4BmH3h8MkPns3seqtsEcaVIETmeVayrQ0l
- x41JbQqukx5xWCQ2cCkzbBDQUEQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 605e8d41876af85fc4bff811 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 27 Mar 2021 01:41:21
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D5CD2C433C6; Sat, 27 Mar 2021 01:41:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7697C433CA;
-        Sat, 27 Mar 2021 01:41:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7697C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v2] clk: qcom: camcc: Update the clock ops for the SC7180
-Date:   Sat, 27 Mar 2021 07:11:05 +0530
-Message-Id: <1616809265-11912-1-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230506AbhC0BrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 21:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230121AbhC0Bqe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 21:46:34 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B688CC0613AA;
+        Fri, 26 Mar 2021 18:46:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:Cc:To:From;
+        bh=zEstXzMJGafn67YkaxQTkCQBDliNHBByxcWjp2tUFlE=; b=EwRTLaJMCgi8LYaJyfjFWwiilV
+        SZeWZQSCnb+XGPJ+ufISWvwZ99cSCeL+qZJE9zVTqVCSeaAhFMMKy/ecGMkXz6BaUHeRK/2hBVIwK
+        Pe6qZuc8gOH9RjpIZACLZM6JG8vJVAakaEr7uQXRF/suzWtM8quVn3Y9lseL0SSj9adAzHlPidv7t
+        GaULLE5s5gh35XT7Zke1u2boHBnPOsxe4w96W+oaucQO4d4SnaX0SsZJdakJFL6RP4p6qL4WnDn7i
+        iASfVA/Lk2FgWp/ItAN1VTMt2e9clYVbZn6Gt1IsvCqJxOiRni7wQmyIWFe4l7kZNaXkUsofNfBfn
+        f3aXtYsnREWGs6D6lXWtSjb+K2tHmejUZmK+LVaQEdZ4erDVyJRs7k3Hi1bPn4Cxty+5ceTHMhfRA
+        DCa0VSoN80yv29aMjoECzuiZlO+pwF7bcsJVfGnbodnyR+1xedJVv3yejMvQOWulvLR0PE96HwgWx
+        ehb0pKj3AlA/WFUYOIGojBxP;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lPy20-0006uS-JI; Sat, 27 Mar 2021 01:46:28 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, ebiederm@xmission.com,
+        oleg@redhat.com, linux-kernel@vger.kernel.org
+References: <20210326003928.978750-1-axboe@kernel.dk>
+ <e6de934a-a794-f173-088d-a140d0645188@samba.org>
+ <f2c93b75-a18b-fc2c-7941-9208c19869c1@kernel.dk>
+ <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+Subject: Re: [PATCH 0/6] Allow signals for IO threads
+Message-ID: <358c5225-c23f-de08-65cb-ca3349793c0e@samba.org>
+Date:   Sat, 27 Mar 2021 02:46:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <8efd9977-003b-be65-8ae2-4b04d8dd1224@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the RCGs could be always ON from the XO source and could be used
-as the clock on signal for the GDSC to be operational. In the cases where
-the GDSCs are parked at different source with the source clock disabled,
-it could lead to the GDSC to be stuck at ON/OFF during gdsc disable/enable.
-Thus park the RCGs at XO during clock disable and update the rcg_ops to
-use the shared_ops.
 
-Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
- drivers/clk/qcom/camcc-sc7180.c | 50 ++++++++++++++++++++---------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+Hi Jens,
 
-diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7180.c
-index dbac565..9bcf2f8 100644
---- a/drivers/clk/qcom/camcc-sc7180.c
-+++ b/drivers/clk/qcom/camcc-sc7180.c
-@@ -304,7 +304,7 @@ static struct clk_rcg2 cam_cc_bps_clk_src = {
- 		.name = "cam_cc_bps_clk_src",
- 		.parent_data = cam_cc_parent_data_2,
- 		.num_parents = 5,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
+> root@ub1704-166:~# LANG=C gdb --pid 1320
+> GNU gdb (Ubuntu 9.2-0ubuntu1~20.04) 9.2
+> Copyright (C) 2020 Free Software Foundation, Inc.
+> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+> This is free software: you are free to change and redistribute it.
+> There is NO WARRANTY, to the extent permitted by law.
+> Type "show copying" and "show warranty" for details.
+> This GDB was configured as "x86_64-linux-gnu".
+> Type "show configuration" for configuration details.
+> For bug reporting instructions, please see:
+> <http://www.gnu.org/software/gdb/bugs/>.
+> Find the GDB manual and other documentation resources online at:
+>     <http://www.gnu.org/software/gdb/documentation/>.
+> 
+> For help, type "help".
+> Type "apropos word" to search for commands related to "word".
+> Attaching to process 1320
+> [New LWP 1321]
+> [New LWP 1322]
+> 
+> warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
+> 
+> warning: Architecture rejected target-supplied description
+> syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+> 38      ../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory.
+> (gdb)
 
-@@ -325,7 +325,7 @@ static struct clk_rcg2 cam_cc_cci_0_clk_src = {
- 		.name = "cam_cc_cci_0_clk_src",
- 		.parent_data = cam_cc_parent_data_5,
- 		.num_parents = 3,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
+Ok, the following makes gdb happy again:
 
-@@ -339,7 +339,7 @@ static struct clk_rcg2 cam_cc_cci_1_clk_src = {
- 		.name = "cam_cc_cci_1_clk_src",
- 		.parent_data = cam_cc_parent_data_5,
- 		.num_parents = 3,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -163,6 +163,8 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+        /* Kernel thread ? */
+        if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+                memset(childregs, 0, sizeof(struct pt_regs));
++               if (p->flags & PF_IO_WORKER)
++                       childregs->cs = current_pt_regs()->cs;
+                kthread_frame_init(frame, sp, arg);
+                return 0;
+        }
 
-@@ -360,7 +360,7 @@ static struct clk_rcg2 cam_cc_cphy_rx_clk_src = {
- 		.name = "cam_cc_cphy_rx_clk_src",
- 		.parent_data = cam_cc_parent_data_3,
- 		.num_parents = 6,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
+I'm wondering if we should decouple the PF_KTHREAD and PF_IO_WORKER cases even more
+and keep as much of a userspace-like copy_thread as possible.
 
-@@ -379,7 +379,7 @@ static struct clk_rcg2 cam_cc_csi0phytimer_clk_src = {
- 		.name = "cam_cc_csi0phytimer_clk_src",
- 		.parent_data = cam_cc_parent_data_0,
- 		.num_parents = 4,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -393,7 +393,7 @@ static struct clk_rcg2 cam_cc_csi1phytimer_clk_src = {
- 		.name = "cam_cc_csi1phytimer_clk_src",
- 		.parent_data = cam_cc_parent_data_0,
- 		.num_parents = 4,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -407,7 +407,7 @@ static struct clk_rcg2 cam_cc_csi2phytimer_clk_src = {
- 		.name = "cam_cc_csi2phytimer_clk_src",
- 		.parent_data = cam_cc_parent_data_0,
- 		.num_parents = 4,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -421,7 +421,7 @@ static struct clk_rcg2 cam_cc_csi3phytimer_clk_src = {
- 		.name = "cam_cc_csi3phytimer_clk_src",
- 		.parent_data = cam_cc_parent_data_0,
- 		.num_parents = 4,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -443,7 +443,7 @@ static struct clk_rcg2 cam_cc_fast_ahb_clk_src = {
- 		.name = "cam_cc_fast_ahb_clk_src",
- 		.parent_data = cam_cc_parent_data_0,
- 		.num_parents = 4,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -466,7 +466,7 @@ static struct clk_rcg2 cam_cc_icp_clk_src = {
- 		.name = "cam_cc_icp_clk_src",
- 		.parent_data = cam_cc_parent_data_2,
- 		.num_parents = 5,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -488,7 +488,7 @@ static struct clk_rcg2 cam_cc_ife_0_clk_src = {
- 		.name = "cam_cc_ife_0_clk_src",
- 		.parent_data = cam_cc_parent_data_4,
- 		.num_parents = 4,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -510,7 +510,7 @@ static struct clk_rcg2 cam_cc_ife_0_csid_clk_src = {
- 		.name = "cam_cc_ife_0_csid_clk_src",
- 		.parent_data = cam_cc_parent_data_3,
- 		.num_parents = 6,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -524,7 +524,7 @@ static struct clk_rcg2 cam_cc_ife_1_clk_src = {
- 		.name = "cam_cc_ife_1_clk_src",
- 		.parent_data = cam_cc_parent_data_4,
- 		.num_parents = 4,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -538,7 +538,7 @@ static struct clk_rcg2 cam_cc_ife_1_csid_clk_src = {
- 		.name = "cam_cc_ife_1_csid_clk_src",
- 		.parent_data = cam_cc_parent_data_3,
- 		.num_parents = 6,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -553,7 +553,7 @@ static struct clk_rcg2 cam_cc_ife_lite_clk_src = {
- 		.parent_data = cam_cc_parent_data_4,
- 		.num_parents = 4,
- 		.flags = CLK_SET_RATE_PARENT,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -567,7 +567,7 @@ static struct clk_rcg2 cam_cc_ife_lite_csid_clk_src = {
- 		.name = "cam_cc_ife_lite_csid_clk_src",
- 		.parent_data = cam_cc_parent_data_3,
- 		.num_parents = 6,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -590,7 +590,7 @@ static struct clk_rcg2 cam_cc_ipe_0_clk_src = {
- 		.name = "cam_cc_ipe_0_clk_src",
- 		.parent_data = cam_cc_parent_data_2,
- 		.num_parents = 5,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -613,7 +613,7 @@ static struct clk_rcg2 cam_cc_jpeg_clk_src = {
- 		.name = "cam_cc_jpeg_clk_src",
- 		.parent_data = cam_cc_parent_data_2,
- 		.num_parents = 5,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -635,7 +635,7 @@ static struct clk_rcg2 cam_cc_lrme_clk_src = {
- 		.name = "cam_cc_lrme_clk_src",
- 		.parent_data = cam_cc_parent_data_6,
- 		.num_parents = 5,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -656,7 +656,7 @@ static struct clk_rcg2 cam_cc_mclk0_clk_src = {
- 		.name = "cam_cc_mclk0_clk_src",
- 		.parent_data = cam_cc_parent_data_1,
- 		.num_parents = 3,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -670,7 +670,7 @@ static struct clk_rcg2 cam_cc_mclk1_clk_src = {
- 		.name = "cam_cc_mclk1_clk_src",
- 		.parent_data = cam_cc_parent_data_1,
- 		.num_parents = 3,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -684,7 +684,7 @@ static struct clk_rcg2 cam_cc_mclk2_clk_src = {
- 		.name = "cam_cc_mclk2_clk_src",
- 		.parent_data = cam_cc_parent_data_1,
- 		.num_parents = 3,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -698,7 +698,7 @@ static struct clk_rcg2 cam_cc_mclk3_clk_src = {
- 		.name = "cam_cc_mclk3_clk_src",
- 		.parent_data = cam_cc_parent_data_1,
- 		.num_parents = 3,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -712,7 +712,7 @@ static struct clk_rcg2 cam_cc_mclk4_clk_src = {
- 		.name = "cam_cc_mclk4_clk_src",
- 		.parent_data = cam_cc_parent_data_1,
- 		.num_parents = 3,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
-@@ -732,7 +732,7 @@ static struct clk_rcg2 cam_cc_slow_ahb_clk_src = {
- 		.parent_data = cam_cc_parent_data_0,
- 		.num_parents = 4,
- 		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
--		.ops = &clk_rcg2_ops,
-+		.ops = &clk_rcg2_shared_ops,
- 	},
- };
-
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
-
+metze
