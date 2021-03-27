@@ -2,96 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0A634B986
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 22:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B74F734B98A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 22:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbhC0V1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 17:27:07 -0400
-Received: from ozlabs.org ([203.11.71.1]:48485 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230372AbhC0V0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 17:26:49 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F7Bjt4xsNz9sVt;
-        Sun, 28 Mar 2021 08:26:42 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616880407;
-        bh=acqgKxCeO7hqTrXVeIMMyhTANXyE6FspskuhoHoabeI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VTK1Wur+ztX/rjZhjerfEtw5jDfJg1L0kSK7tpi5PoQvX0CakzIYjrlBH+JW+T8oq
-         ax8PWaa+rluZstWR1suGQ1y85Akrt75Jt+a6MpZLuLKz8WKX89JXSSfr30ZP1UT79Y
-         K0xvO0x4qTC9sMnflkqfxVARvXF9dCgJcmG5ywUW5xt3reyYfwrSqCThdphVetFJ/D
-         OLKBdPUg7tkvJdjoLZduZapFFjXtX6KZSjzqE2zvXL5rwe7WOV6y9EWCMbif6Rm8D0
-         PSOzVxniWak9g84aT//smz5o8TrSytJrVSc1/K8TK2hspnJTimAFxLaFV0VXYRzN8x
-         V2RYBuRlvp6fw==
-Date:   Sun, 28 Mar 2021 08:26:41 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the tip tree
-Message-ID: <20210328082641.7afcb938@canb.auug.org.au>
-In-Reply-To: <CA+icZUVGvo7jVxMHoCYdU6Y1x=q3n6hVW4EoU_AsGvzozQLG5w@mail.gmail.com>
-References: <20210322143714.494603ed@canb.auug.org.au>
-        <20210322090036.GB10031@zn.tnic>
-        <CA+icZUVkE73_31m0UCo-2mHOHY5i1E54_zMb7yp18UQmgN5x+A@mail.gmail.com>
-        <20210326131101.GA27507@zn.tnic>
-        <CA+icZUVGvo7jVxMHoCYdU6Y1x=q3n6hVW4EoU_AsGvzozQLG5w@mail.gmail.com>
+        id S230139AbhC0Vch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 17:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhC0VcR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 17:32:17 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C979EC0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 14:32:16 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id a11so6822771qto.2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 14:32:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nPWRwHmfq4Zmt4hFa5K1RVgUhvjMzzjWoxdOmetcAXo=;
+        b=oKPxVtLPVsWlsJDJZLq/AseVaCNlMKAeoltozt96jOfHYQvpQoUpMr4cnfJXhUC0kZ
+         IdhFhLi9oND6KR6IcTMwuAGZ+66yROV+sTf3x0QJLu9aNbkkhJIXn93kTl85LEpWFfgq
+         VloeA8qJ0cE6qFFXH+FNDddPLySb+h9+C0P6A7eA31sjAZnupztzYhunaYh6+UW88pCs
+         4Zn1r7ztKdKMO6ZixmaJ14oGS4QSgiQudAF2Ine9XKl6Gxty6y53nRIx9a1u+Uit32oX
+         pcwUFDtLay0fNtDlXT1RUnDPA7JFCcoS3abjoGoxuzIw8gEPWaTn6S8ZZNzXmO0Bz4Uq
+         ydVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nPWRwHmfq4Zmt4hFa5K1RVgUhvjMzzjWoxdOmetcAXo=;
+        b=QF+XcidnPMosH3XuJTWXldlh8nl6MBKp+U3fWRwQYZOihF7aYi12PnSSAQPvr3hwh2
+         CS2ri0VQy2c6p38WOCxSgDaffFjiYagtteU94KbxLyKC5j8tzKfgdvhH0tjWcxaRwuHN
+         q+uAe44nxv2yOtQ7F0UQbwD14+nFYdHRVhkS8NOn617jaTaYZdNrz7fwWMhoApkvkBh1
+         O1NCAFkdVbVqi4HlLEdi3GZiUKyMGwy3olDhJH4/t6jVrocgnO7RVT1/CaX+whwDRS0p
+         typxfbj3Iqj1C83SMvDy+OhBm8cl4rK3Ji6MJi5Vlkf4qow93YBVTHqINeoA3rrkwNhV
+         42LA==
+X-Gm-Message-State: AOAM532Vn+cs1sokxwUo1b4Eef3hRkSWz7Y2pOnRx0xAgUbH2UpiZM2q
+        fARJx2zghcuFIaPL2evikQOQ+gG+yXo=
+X-Google-Smtp-Source: ABdhPJy4tIaEhN6e4udyP2yKQGq9HQmjFEnbzeijIyNp6y9lvRcFIb/ZFguPlxs8JiBRwwXc/2K9lQ==
+X-Received: by 2002:ac8:6606:: with SMTP id c6mr17950071qtp.76.1616880735831;
+        Sat, 27 Mar 2021 14:32:15 -0700 (PDT)
+Received: from localhost ([76.73.146.210])
+        by smtp.gmail.com with ESMTPSA id u21sm7524687qtq.11.2021.03.27.14.32.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 14:32:15 -0700 (PDT)
+Date:   Sat, 27 Mar 2021 14:32:14 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v1 1/1] kernel.h: Drop inclusion in bitmap.h
+Message-ID: <20210327213214.GA133098@yury-ThinkPad>
+References: <20210326170347.37441-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nk1dXU/2q6Bom9V335gGlVC";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326170347.37441-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nk1dXU/2q6Bom9V335gGlVC
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Mar 26, 2021 at 07:03:47PM +0200, Andy Shevchenko wrote:
+> The bitmap.h header is used in a lot of code around the kernel.
+> Besides that it includes kernel.h which sometimes makes a loop.
+> 
+> Break the loop by introducing align.h, including it in kernel.h
+> and bitmap.h followed by replacing kernel.h with limits.h.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Hi Sedat,
+Can you give an example of such dependency?
 
-On Sat, 27 Mar 2021 12:50:55 +0100 Sedat Dilek <sedat.dilek@gmail.com> wrot=
-e:
->
-> I wonder why Stephen's fixup-patch was not carried in recent
-> Linux-next releases.
+Nevertheless,
 
-It is part of the tip tree merge commit.  So it is not an explicit
-commit on its own, but the needed change is there.
+Acked-by: Yury Norov <yury.norov@gmail.com>
 
-> Wild speculation - no random-config with x86(-64) plus CONFIG_BPF_JIT=3Dy?
-
-I detected it with an X86_64 allmodconfig build (which I do all day).
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/nk1dXU/2q6Bom9V335gGlVC
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBfoxEACgkQAVBC80lX
-0GzmwQf/evaG3lEgE8Y63F70vODeFxpDYZeNvb+TMW8giGd04pBDi3JHjhYb0T1N
-DiaCiO+g4uiUwkahozzptlu2Ms5vDOYj2T88nh+S51TCHiBS9Jt7/JoSI8JVbUUp
-HEp3zJ+8DYEUJcUQFIU+N91pwWrteHrpYM+xznrMiWnjP42bMLxehD9ccOa2tu8b
-6mJLcB1CqAWUP6eZorOfhmk7NBiyyLtSmIgXbMgV/r0F4UQqZh4YaNAwln8Mc+FK
-Qn8+gPpooqVA4wZeW7baqJc6ppg60X7tf2mMgW8huCNUtpbc9Am9Jq1jz69SsMql
-6W5tKtqG8IJtKCTmn8WNwa1rgEvEGw==
-=g84u
------END PGP SIGNATURE-----
-
---Sig_/nk1dXU/2q6Bom9V335gGlVC--
+> ---
+>  include/linux/align.h  | 15 +++++++++++++++
+>  include/linux/bitmap.h |  3 ++-
+>  include/linux/kernel.h |  9 +--------
+>  3 files changed, 18 insertions(+), 9 deletions(-)
+>  create mode 100644 include/linux/align.h
+> 
+> diff --git a/include/linux/align.h b/include/linux/align.h
+> new file mode 100644
+> index 000000000000..2b4acec7b95a
+> --- /dev/null
+> +++ b/include/linux/align.h
+> @@ -0,0 +1,15 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_ALIGN_H
+> +#define _LINUX_ALIGN_H
+> +
+> +#include <linux/const.h>
+> +
+> +/* @a is a power of 2 value */
+> +#define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
+> +#define ALIGN_DOWN(x, a)	__ALIGN_KERNEL((x) - ((a) - 1), (a))
+> +#define __ALIGN_MASK(x, mask)	__ALIGN_KERNEL_MASK((x), (mask))
+> +#define PTR_ALIGN(p, a)		((typeof(p))ALIGN((unsigned long)(p), (a)))
+> +#define PTR_ALIGN_DOWN(p, a)	((typeof(p))ALIGN_DOWN((unsigned long)(p), (a)))
+> +#define IS_ALIGNED(x, a)		(((x) & ((typeof(x))(a) - 1)) == 0)
+> +
+> +#endif	/* _LINUX_ALIGN_H */
+> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
+> index 70a932470b2d..6cbcd9d9edd2 100644
+> --- a/include/linux/bitmap.h
+> +++ b/include/linux/bitmap.h
+> @@ -4,10 +4,11 @@
+>  
+>  #ifndef __ASSEMBLY__
+>  
+> +#include <linux/align.h>
+>  #include <linux/types.h>
+>  #include <linux/bitops.h>
+> +#include <linux/limits.h>
+>  #include <linux/string.h>
+> -#include <linux/kernel.h>
+>  
+>  /*
+>   * bitmaps provide bit arrays that consume one or more unsigned
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index 5b7ed6dc99ac..09035ac67d4b 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -3,6 +3,7 @@
+>  #define _LINUX_KERNEL_H
+>  
+>  #include <stdarg.h>
+> +#include <linux/align.h>
+>  #include <linux/limits.h>
+>  #include <linux/linkage.h>
+>  #include <linux/stddef.h>
+> @@ -30,14 +31,6 @@
+>   */
+>  #define REPEAT_BYTE(x)	((~0ul / 0xff) * (x))
+>  
+> -/* @a is a power of 2 value */
+> -#define ALIGN(x, a)		__ALIGN_KERNEL((x), (a))
+> -#define ALIGN_DOWN(x, a)	__ALIGN_KERNEL((x) - ((a) - 1), (a))
+> -#define __ALIGN_MASK(x, mask)	__ALIGN_KERNEL_MASK((x), (mask))
+> -#define PTR_ALIGN(p, a)		((typeof(p))ALIGN((unsigned long)(p), (a)))
+> -#define PTR_ALIGN_DOWN(p, a)	((typeof(p))ALIGN_DOWN((unsigned long)(p), (a)))
+> -#define IS_ALIGNED(x, a)		(((x) & ((typeof(x))(a) - 1)) == 0)
+> -
+>  /* generic data direction definitions */
+>  #define READ			0
+>  #define WRITE			1
+> -- 
+> 2.30.2
