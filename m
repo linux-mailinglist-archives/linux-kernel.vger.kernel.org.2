@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BA734B4F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973AB34B50C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhC0HCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 03:02:07 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14569 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbhC0HBv (ORCPT
+        id S230427AbhC0Hgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 03:36:54 -0400
+Received: from mail-m17637.qiye.163.com ([59.111.176.37]:27986 "EHLO
+        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhC0Hga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 03:01:51 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6qSt4tfdzPtLr;
-        Sat, 27 Mar 2021 14:59:10 +0800 (CST)
-Received: from huawei.com (10.175.113.32) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
- 15:01:36 +0800
-From:   Shixin Liu <liushixin2@huawei.com>
-To:     Hannes Reinecke <hare@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Shixin Liu <liushixin2@huawei.com>
-Subject: [PATCH -next 2/2] scsi: myrs: Make symbols DAC960_{GEM/BA/LP}_privdata static
-Date:   Sat, 27 Mar 2021 15:31:57 +0800
-Message-ID: <20210327073157.1786772-1-liushixin2@huawei.com>
+        Sat, 27 Mar 2021 03:36:30 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 8F57F9800B1;
+        Sat, 27 Mar 2021 15:36:28 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] drm: tegra: hub: struct tegra_dc is declared twice
+Date:   Sat, 27 Mar 2021 15:36:17 +0800
+Message-Id: <20210327073617.1487123-1-wanjiabing@vivo.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGB9IHhkdSU4dQ0sdVkpNSk1DSEtOQ0NDS05VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Pwg6Nww*Qj8VTzM9FAstCgJD
+        NigwCxFVSlVKTUpNQ0hLTkNCSk5KVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJS0hLNwY+
+X-HM-Tid: 0a78729ce741d992kuws8f57f9800b1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This symbol is not used outside of myrs.c, so we can marks it static.
+struct tegra_dc has been declared at 13rd line.
+Remove the duplicate.
+Move struct tegra_plane declaration forward.
 
-Signed-off-by: Shixin Liu <liushixin2@huawei.com>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- drivers/scsi/myrs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/tegra/hub.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/myrs.c b/drivers/scsi/myrs.c
-index 9ebff2449a54..d5ec1cdea0e1 100644
---- a/drivers/scsi/myrs.c
-+++ b/drivers/scsi/myrs.c
-@@ -2656,7 +2656,7 @@ static irqreturn_t DAC960_GEM_intr_handler(int irq, void *arg)
- 	return IRQ_HANDLED;
+diff --git a/drivers/gpu/drm/tegra/hub.h b/drivers/gpu/drm/tegra/hub.h
+index 3efa1be07ff8..36593bb36072 100644
+--- a/drivers/gpu/drm/tegra/hub.h
++++ b/drivers/gpu/drm/tegra/hub.h
+@@ -11,6 +11,7 @@
+ #include "plane.h"
+ 
+ struct tegra_dc;
++struct tegra_plane;
+ 
+ struct tegra_windowgroup {
+ 	unsigned int usecount;
+@@ -72,9 +73,6 @@ to_tegra_display_hub_state(struct drm_private_state *priv)
+ 	return container_of(priv, struct tegra_display_hub_state, base);
  }
  
--struct myrs_privdata DAC960_GEM_privdata = {
-+static struct myrs_privdata DAC960_GEM_privdata = {
- 	.hw_init =		DAC960_GEM_hw_init,
- 	.irq_handler =		DAC960_GEM_intr_handler,
- 	.mmio_size =		DAC960_GEM_mmio_size,
-@@ -2906,7 +2906,7 @@ static irqreturn_t DAC960_BA_intr_handler(int irq, void *arg)
- 	return IRQ_HANDLED;
- }
+-struct tegra_dc;
+-struct tegra_plane;
+-
+ int tegra_display_hub_prepare(struct tegra_display_hub *hub);
+ void tegra_display_hub_cleanup(struct tegra_display_hub *hub);
  
--struct myrs_privdata DAC960_BA_privdata = {
-+static struct myrs_privdata DAC960_BA_privdata = {
- 	.hw_init =		DAC960_BA_hw_init,
- 	.irq_handler =		DAC960_BA_intr_handler,
- 	.mmio_size =		DAC960_BA_mmio_size,
-@@ -3156,7 +3156,7 @@ static irqreturn_t DAC960_LP_intr_handler(int irq, void *arg)
- 	return IRQ_HANDLED;
- }
- 
--struct myrs_privdata DAC960_LP_privdata = {
-+static struct myrs_privdata DAC960_LP_privdata = {
- 	.hw_init =		DAC960_LP_hw_init,
- 	.irq_handler =		DAC960_LP_intr_handler,
- 	.mmio_size =		DAC960_LP_mmio_size,
 -- 
 2.25.1
 
