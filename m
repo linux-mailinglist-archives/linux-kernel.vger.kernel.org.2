@@ -2,83 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF8F34B7F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AAA34B7FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhC0PX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 11:23:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52054 "EHLO mail.kernel.org"
+        id S230294AbhC0P0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 11:26:45 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:51132 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhC0PXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 11:23:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CA1861941;
-        Sat, 27 Mar 2021 15:23:27 +0000 (UTC)
-Date:   Sat, 27 Mar 2021 15:23:24 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210327152324.GA28167@arm.com>
-References: <20210312151902.17853-1-steven.price@arm.com>
- <20210312151902.17853-3-steven.price@arm.com>
+        id S230086AbhC0P0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 11:26:08 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lQAp3-00DLWU-Jx; Sat, 27 Mar 2021 16:25:57 +0100
+Date:   Sat, 27 Mar 2021 16:25:57 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     'Jakub Kicinski' <kuba@kernel.org>, arndb@arndb.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        brandon_chuang@edge-core.com, wally_wang@accton.com,
+        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
+        xinxliu@microsoft.com, 'netdev' <netdev@vger.kernel.org>,
+        'Moshe Shemesh' <moshe@nvidia.com>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YF9OhSBHnDVqW5JQ@lunn.ch>
+References: <YFJHN+raumcJ5/7M@lunn.ch>
+ <009601d72023$b73dbde0$25b939a0$@thebollingers.org>
+ <YFpr2RyiwX10SNbD@lunn.ch>
+ <011301d7226f$dc2426f0$946c74d0$@thebollingers.org>
+ <YF46FI4epRGwlyP8@lunn.ch>
+ <011901d7227c$e00015b0$a0004110$@thebollingers.org>
+ <YF5GA1RbaM1Ht3nl@lunn.ch>
+ <011c01d72284$544c8f50$fce5adf0$@thebollingers.org>
+ <YF5YAQvQXCn4QapJ@lunn.ch>
+ <012b01d7228f$a2547270$e6fd5750$@thebollingers.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210312151902.17853-3-steven.price@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <012b01d7228f$a2547270$e6fd5750$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 12, 2021 at 03:18:58PM +0000, Steven Price wrote:
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 77cb2d28f2a4..b31b7a821f90 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->  	if (vma_pagesize == PAGE_SIZE && !force_pte)
->  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->  							   &pfn, &fault_ipa);
-> +
-> +	if (fault_status != FSC_PERM && kvm_has_mte(kvm) && pfn_valid(pfn)) {
+> What I have works.  Your consumers get quirk handling, mine don't need it.
+> No compromise.
 
-This pfn_valid() check may be problematic. Following commit eeb0753ba27b
-("arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory"), it returns
-true for ZONE_DEVICE memory but such memory is allowed not to support
-MTE.
+Hi Don
 
-I now wonder if we can get a MAP_ANONYMOUS mapping of ZONE_DEVICE pfn
-even without virtualisation.
+All this discussion is now a mute point. GregKH has spoken.
 
-> +		/*
-> +		 * VM will be able to see the page's tags, so we must ensure
-> +		 * they have been initialised. if PG_mte_tagged is set, tags
-> +		 * have already been initialised.
-> +		 */
-> +		struct page *page = pfn_to_page(pfn);
-> +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
-> +
-> +		for (i = 0; i < nr_pages; i++, page++) {
-> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> +				mte_clear_page_tags(page_address(page));
-> +		}
-> +	}
-> +
->  	if (writable)
->  		prot |= KVM_PGTABLE_PROT_W;
->  
+But i'm sure there are some on the side lines, eating popcorn, maybe
+learning from the discussion.
 
--- 
-Catalin
+Would you think it is O.K. to add a KAPI which works for 3 1/2" SCSI
+disks, but not 2", because you only make machines with 3 1/2" bays?
+
+This is an extreme, absurd example, but hopefully you get the
+point. We don't design KAPIs with the intention to only work for a
+subset of devices. It needs to work with as many devices as possible,
+even if the first implementation below the KAPI is limited to just a
+subset.
+
+Anyway, i'm gratefull you have looked at the new ethtool netlink
+KAPI. It will be better for your contributions. And i hope you can
+make use of it in the future. But i think this discussion about optoe
+in mainline is over.
+
+     Andrew
