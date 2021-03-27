@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA8334B9F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 23:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F7134B9FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 23:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhC0Wis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 18:38:48 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54198 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhC0WiO (ORCPT
+        id S231179AbhC0Wka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 18:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231159AbhC0WkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 18:38:14 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 9C9231C0B78; Sat, 27 Mar 2021 23:38:11 +0100 (CET)
-Date:   Sat, 27 Mar 2021 23:38:11 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Zhang Jianhua <zhangjianhua18@huawei.com>
-Cc:     ath9k-devel@qca.qualcomm.com, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, johnny.chenyi@huawei.com
-Subject: Re: [PATCH -next] drivers: net: CONFIG_ATH9K select LEDS_CLASS
-Message-ID: <20210327223811.GB2875@duo.ucw.cz>
-References: <20210326081351.172048-1-zhangjianhua18@huawei.com>
+        Sat, 27 Mar 2021 18:40:24 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0669CC0613B2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 15:40:23 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id u20so11512297lja.13
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 15:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=pYthmGHgz/H54t4/S9dPH6/t31fHN36ZjSRGlEcBdiQ=;
+        b=lLm1XLWaD+O3nsSGft0h2LednvxK/iVEEBVbhLYAK6uvAJYAON0n1kzN+VHjx+9zd/
+         s/7Rp4yNa2vzArk7mxVPRMeoFjeweDsgEcvDhw1rY2z346k6LRd6+KviAghTY20+OWsQ
+         hWvDfHY2OE1GKyjHFIw5IPEBAESPUXeOZfYng6eOdLrFPnztpOWWrn9Ais+qrl/xUW4l
+         gR574pbKv1qAl+VSJ5Bi2CwYrbXHsIne8ezsuJi/ZGzz8OKIX4MZnBJjQvo67ZlHLx51
+         x6q8qc8kjfdGRihOpZdcWnP3f5qxemxsK3WptEhp/vr44Hda4bxSN8N0F+AGDyMuQ8g4
+         VZ4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=pYthmGHgz/H54t4/S9dPH6/t31fHN36ZjSRGlEcBdiQ=;
+        b=J9cIrcqFVyHETjK8/DOgIrlW17OnXFMfSA29Dh/UHFhs53K6ygNbapNqFZBF4EkDYV
+         iYSUjjabjJU93ays68nok2LiRb5E5WcpVH8XCkOoc1GXF4Q0p1VOMyrWMSYidaskGZwX
+         pZUxLZKSIdE48ycaIq7PrDBZiSTx6oDrkDW0hYc34aSwbDKmLehzOOAXbtyFrQnYBD93
+         n/ta2TpPQ1M+ZsP5IGIA/2AB47ArMLqm9Odb4bX3iOtkEuDw5mcITOhq04dUmbv4mxbF
+         Jq/TMFaKfba+5o/MFOCrDoikFsHTm5LkA3x9VUTyw2VaF29PggaMN8eGb11hlJwRYmmP
+         3P6A==
+X-Gm-Message-State: AOAM530WNctXuPqeWNPmScj4pcLLDw+ieoi4UNPpCQ18l2ToFNVScZDs
+        ecxT+M8t0MX0cL2/I8BV6M1DEXUsPN2frLcUIR0=
+X-Google-Smtp-Source: ABdhPJxXJ3N2n6cpuidOFDDuOVa4NRBvbJXSYKJXVkMBjHGxVVX8/ZC8WOyWcUtxoIdlNXAnb8SifG9oQqgrHt9ZaI8=
+X-Received: by 2002:a2e:8599:: with SMTP id b25mr13078540lji.98.1616884822397;
+ Sat, 27 Mar 2021 15:40:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="/WwmFnJnmDyWGHa4"
-Content-Disposition: inline
-In-Reply-To: <20210326081351.172048-1-zhangjianhua18@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Reply-To: mrsdaniella.kyle@yandex.com
+Sender: prosper5435@gmail.com
+Received: by 2002:a05:6512:3688:0:0:0:0 with HTTP; Sat, 27 Mar 2021 15:40:21
+ -0700 (PDT)
+From:   Mrs Daniella Kyle <mrsdaniellakyle6@gmail.com>
+Date:   Sat, 27 Mar 2021 15:40:21 -0700
+X-Google-Sender-Auth: bQa7YlwC-aiqoCEdcvV9Lg--ihQ
+Message-ID: <CAAd0GhL5TTkjiDm7we=LOXo-guvOGddknCKL_ZUB=V9MP71S3A@mail.gmail.com>
+Subject: Dearly Beloved In Christ
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dear,
 
---/WwmFnJnmDyWGHa4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Sorry to invade your privacy, I am Mrs Daniela Angelo Kyle the wife of
+late Mr Angelo Kyle,my husband worked with Central Bank Of Philippines
+for ten years before he died in the year 2012. When my late husband
+was alive he deposited sum amount of Money with UBA Bank therein
+Burkina Faso Ouagadougou.
 
-On Fri 2021-03-26 16:13:51, Zhang Jianhua wrote:
-> If CONFIG_ATH9K=3Dy, the following errors will be seen while compiling
-> gpio.c
->=20
-> drivers/net/wireless/ath/ath9k/gpio.o: In function `ath_deinit_leds':
-> gpio.c:(.text+0x604): undefined reference to `led_classdev_unregister'
-> gpio.c:(.text+0x604): relocation truncated to fit: R_AARCH64_CALL26
-> against undefined symbol `led_classdev_unregister'
-> drivers/net/wireless/ath/ath9k/gpio.o: In function `ath_init_leds':
-> gpio.c:(.text+0x708): undefined reference to `led_classdev_register_ext'
-> gpio.c:(.text+0x708): relocation truncated to fit: R_AARCH64_CALL26
-> against undefined symbol `led_classdev_register_ext'
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zhang Jianhua <zhangjianhua18@huawei.com>
+Presently this money is still with the UBA Bank Burkina Faso
+Ouagadougou,I am in a hospital in Philippines receiving treatment and
+my doctor has confirmed to me that
+i have just few days to live on earth due to my esophageal cancer.
 
-a) please cc led lists with led issue.
+Please i am choosing you to receive this money on my behalf,and use it
+to help the less privilege. Contact me on my private email address if
+interested.
 
-b) probably does not work as LED_CLASS depends on NEW_LEDS...?
-
-Best regards,
-									Pavel
-								=09
---=20
-http://www.livejournal.com/~pavelmachek
-
---/WwmFnJnmDyWGHa4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYF+z0wAKCRAw5/Bqldv6
-8mMyAJ4vxuzs1YSfqAdo8SAY07PiWm3K2gCgmcpVWI6zlQSuxeI6ZI6ItoWA0Vk=
-=dpql
------END PGP SIGNATURE-----
-
---/WwmFnJnmDyWGHa4--
+Thanks
+Sincerely Mrs Daniela Angelo Kyle
