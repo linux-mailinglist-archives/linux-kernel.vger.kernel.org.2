@@ -2,112 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BD434B391
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05D3034B393
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 02:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230378AbhC0BlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 21:41:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14151 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbhC0Bko (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 21:40:44 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F6hLS1fPYznbNS;
-        Sat, 27 Mar 2021 09:38:08 +0800 (CST)
-Received: from [10.174.178.163] (10.174.178.163) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 09:40:39 +0800
-Subject: Re: [PATCH 4/8] hugetlb: create remove_hugetlb_page() to separate
- functionality
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        "Hillf Danton" <hdanton@sina.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210325002835.216118-1-mike.kravetz@oracle.com>
- <20210325002835.216118-5-mike.kravetz@oracle.com>
- <ee3d6134-068b-8f21-31d6-4d13ef417ae1@huawei.com>
- <def1f500-ae75-5669-5a3d-0472865d2d4c@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <8395881b-5c16-d747-aa6e-fd13b7f7f53e@huawei.com>
-Date:   Sat, 27 Mar 2021 09:40:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <def1f500-ae75-5669-5a3d-0472865d2d4c@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.163]
-X-CFilter-Loop: Reflected
+        id S231184AbhC0Blg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 21:41:36 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:11231 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230512AbhC0BlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 26 Mar 2021 21:41:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1616809282; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=VwoNch8dVB0Msk37Z3+3dg+CRiyftexNrX3T3kQm/Pg=; b=lq0gobeXkigEA3AqltF7+9fGKAGguap+iQhtssNA53DwE4UBzPuagKC+mbNc/afDJdh8IOMS
+ FkEJIws635gchXoKqckp90GXaUoVZXSFq9w0yZ4BmH3h8MkPns3seqtsEcaVIETmeVayrQ0l
+ x41JbQqukx5xWCQ2cCkzbBDQUEQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 605e8d41876af85fc4bff811 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 27 Mar 2021 01:41:21
+ GMT
+Sender: tdas=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D5CD2C433C6; Sat, 27 Mar 2021 01:41:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: tdas)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B7697C433CA;
+        Sat, 27 Mar 2021 01:41:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B7697C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
+From:   Taniya Das <tdas@codeaurora.org>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Taniya Das <tdas@codeaurora.org>
+Subject: [PATCH v2] clk: qcom: camcc: Update the clock ops for the SC7180
+Date:   Sat, 27 Mar 2021 07:11:05 +0530
+Message-Id: <1616809265-11912-1-git-send-email-tdas@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/3/27 3:57, Mike Kravetz wrote:
-> On 3/25/21 7:10 PM, Miaohe Lin wrote:
->> On 2021/3/25 8:28, Mike Kravetz wrote:
->>> The new remove_hugetlb_page() routine is designed to remove a hugetlb
->>> page from hugetlbfs processing.  It will remove the page from the active
->>> or free list, update global counters and set the compound page
->>> destructor to NULL so that PageHuge() will return false for the 'page'.
->>> After this call, the 'page' can be treated as a normal compound page or
->>> a collection of base size pages.
->>>
->>> remove_hugetlb_page is to be called with the hugetlb_lock held.
->>>
->>> Creating this routine and separating functionality is in preparation for
->>> restructuring code to reduce lock hold times.
->>>
->>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>>  mm/hugetlb.c | 70 +++++++++++++++++++++++++++++++++-------------------
->>>  1 file changed, 45 insertions(+), 25 deletions(-)
->>>
->>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>> index 404b0b1c5258..3938ec086b5c 100644
->>> --- a/mm/hugetlb.c
->>> +++ b/mm/hugetlb.c
->>> @@ -1327,6 +1327,46 @@ static inline void destroy_compound_gigantic_page(struct page *page,
->>>  						unsigned int order) { }
->>>  #endif
->>>  
->>> +/*
->>> + * Remove hugetlb page from lists, and update dtor so that page appears
->>> + * as just a compound page.  A reference is held on the page.
->>> + * NOTE: hugetlb specific page flags stored in page->private are not
->>> + *	 automatically cleared.  These flags may be used in routines
->>> + *	 which operate on the resulting compound page.
->>
->> It seems HPageFreed and HPageTemporary is cleared. Which hugetlb specific page flags
->> is reserverd here and why? Could you please give a simple example to clarify
->> this in the comment to help understand this NOTE?
->>
-> 
-> I will remove that NOTE: in the comment to avoid any confusion.
-> 
-> The NOTE was add in the RFC that contained a separate patch to add a flag
-> that tracked huge pages allocated from CMA.  That flag needed to remain
-> for subsequent freeing of such pages.  This is no longer needed.
-> 
+Some of the RCGs could be always ON from the XO source and could be used
+as the clock on signal for the GDSC to be operational. In the cases where
+the GDSCs are parked at different source with the source clock disabled,
+it could lead to the GDSC to be stuck at ON/OFF during gdsc disable/enable.
+Thus park the RCGs at XO during clock disable and update the rcg_ops to
+use the shared_ops.
 
-Many thanks for explaination. I was confused about that NOTE. :)
+Fixes: 15d09e830bbc ("clk: qcom: camcc: Add camera clock controller driver for SC7180")
+Signed-off-by: Taniya Das <tdas@codeaurora.org>
+---
+ drivers/clk/qcom/camcc-sc7180.c | 50 ++++++++++++++++++++---------------------
+ 1 file changed, 25 insertions(+), 25 deletions(-)
 
->> The code looks good to me. Many thanks!
->> Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-> 
-> Thanks,
-> 
+diff --git a/drivers/clk/qcom/camcc-sc7180.c b/drivers/clk/qcom/camcc-sc7180.c
+index dbac565..9bcf2f8 100644
+--- a/drivers/clk/qcom/camcc-sc7180.c
++++ b/drivers/clk/qcom/camcc-sc7180.c
+@@ -304,7 +304,7 @@ static struct clk_rcg2 cam_cc_bps_clk_src = {
+ 		.name = "cam_cc_bps_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -325,7 +325,7 @@ static struct clk_rcg2 cam_cc_cci_0_clk_src = {
+ 		.name = "cam_cc_cci_0_clk_src",
+ 		.parent_data = cam_cc_parent_data_5,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -339,7 +339,7 @@ static struct clk_rcg2 cam_cc_cci_1_clk_src = {
+ 		.name = "cam_cc_cci_1_clk_src",
+ 		.parent_data = cam_cc_parent_data_5,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -360,7 +360,7 @@ static struct clk_rcg2 cam_cc_cphy_rx_clk_src = {
+ 		.name = "cam_cc_cphy_rx_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -379,7 +379,7 @@ static struct clk_rcg2 cam_cc_csi0phytimer_clk_src = {
+ 		.name = "cam_cc_csi0phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -393,7 +393,7 @@ static struct clk_rcg2 cam_cc_csi1phytimer_clk_src = {
+ 		.name = "cam_cc_csi1phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -407,7 +407,7 @@ static struct clk_rcg2 cam_cc_csi2phytimer_clk_src = {
+ 		.name = "cam_cc_csi2phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -421,7 +421,7 @@ static struct clk_rcg2 cam_cc_csi3phytimer_clk_src = {
+ 		.name = "cam_cc_csi3phytimer_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -443,7 +443,7 @@ static struct clk_rcg2 cam_cc_fast_ahb_clk_src = {
+ 		.name = "cam_cc_fast_ahb_clk_src",
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -466,7 +466,7 @@ static struct clk_rcg2 cam_cc_icp_clk_src = {
+ 		.name = "cam_cc_icp_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -488,7 +488,7 @@ static struct clk_rcg2 cam_cc_ife_0_clk_src = {
+ 		.name = "cam_cc_ife_0_clk_src",
+ 		.parent_data = cam_cc_parent_data_4,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -510,7 +510,7 @@ static struct clk_rcg2 cam_cc_ife_0_csid_clk_src = {
+ 		.name = "cam_cc_ife_0_csid_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -524,7 +524,7 @@ static struct clk_rcg2 cam_cc_ife_1_clk_src = {
+ 		.name = "cam_cc_ife_1_clk_src",
+ 		.parent_data = cam_cc_parent_data_4,
+ 		.num_parents = 4,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -538,7 +538,7 @@ static struct clk_rcg2 cam_cc_ife_1_csid_clk_src = {
+ 		.name = "cam_cc_ife_1_csid_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -553,7 +553,7 @@ static struct clk_rcg2 cam_cc_ife_lite_clk_src = {
+ 		.parent_data = cam_cc_parent_data_4,
+ 		.num_parents = 4,
+ 		.flags = CLK_SET_RATE_PARENT,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -567,7 +567,7 @@ static struct clk_rcg2 cam_cc_ife_lite_csid_clk_src = {
+ 		.name = "cam_cc_ife_lite_csid_clk_src",
+ 		.parent_data = cam_cc_parent_data_3,
+ 		.num_parents = 6,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -590,7 +590,7 @@ static struct clk_rcg2 cam_cc_ipe_0_clk_src = {
+ 		.name = "cam_cc_ipe_0_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -613,7 +613,7 @@ static struct clk_rcg2 cam_cc_jpeg_clk_src = {
+ 		.name = "cam_cc_jpeg_clk_src",
+ 		.parent_data = cam_cc_parent_data_2,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -635,7 +635,7 @@ static struct clk_rcg2 cam_cc_lrme_clk_src = {
+ 		.name = "cam_cc_lrme_clk_src",
+ 		.parent_data = cam_cc_parent_data_6,
+ 		.num_parents = 5,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -656,7 +656,7 @@ static struct clk_rcg2 cam_cc_mclk0_clk_src = {
+ 		.name = "cam_cc_mclk0_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -670,7 +670,7 @@ static struct clk_rcg2 cam_cc_mclk1_clk_src = {
+ 		.name = "cam_cc_mclk1_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -684,7 +684,7 @@ static struct clk_rcg2 cam_cc_mclk2_clk_src = {
+ 		.name = "cam_cc_mclk2_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -698,7 +698,7 @@ static struct clk_rcg2 cam_cc_mclk3_clk_src = {
+ 		.name = "cam_cc_mclk3_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -712,7 +712,7 @@ static struct clk_rcg2 cam_cc_mclk4_clk_src = {
+ 		.name = "cam_cc_mclk4_clk_src",
+ 		.parent_data = cam_cc_parent_data_1,
+ 		.num_parents = 3,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+@@ -732,7 +732,7 @@ static struct clk_rcg2 cam_cc_slow_ahb_clk_src = {
+ 		.parent_data = cam_cc_parent_data_0,
+ 		.num_parents = 4,
+ 		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
+-		.ops = &clk_rcg2_ops,
++		.ops = &clk_rcg2_shared_ops,
+ 	},
+ };
+
+--
+Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
+of the Code Aurora Forum, hosted by the  Linux Foundation.
 
