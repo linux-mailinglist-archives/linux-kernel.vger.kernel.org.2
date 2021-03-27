@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79FA34B887
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E67534B88A
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhC0Rfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 13:35:46 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:43906 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhC0Rff (ORCPT
+        id S230292AbhC0Rk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 13:40:57 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:39432 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230092AbhC0Rkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 13:35:35 -0400
-Received: by mail-oi1-f177.google.com with SMTP id n8so9029593oie.10;
-        Sat, 27 Mar 2021 10:35:35 -0700 (PDT)
+        Sat, 27 Mar 2021 13:40:40 -0400
+Received: by mail-oi1-f171.google.com with SMTP id i81so9058847oif.6;
+        Sat, 27 Mar 2021 10:40:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=25P/Vw77APXHM7n2Xqj5ck3FsVjFQywnfAb5jywvj38=;
-        b=Gp2Ay0kK6xFwY+XI2ilpgjmQr+UWymqenoR2oAH1vkFgLzOsXlIq7iL3K/ZZYUVsqa
-         i/UOPSCjfD5CUVKRy261WyZ9dkqrZnAEIugIVXUwvcEaQgumcfIO00dbU+VyDZiMFr5u
-         I4RRQsX72DP01Za9kYx/D0zeu6tVruqwn2TDtIAG6SGljnyfoWmu6ZQ4D8Tf0lbhbYbR
-         lpBFs+2yB1jOwerU4HCUcFvH5xAj+le1sghKsqBQ/3v6ywE2iOTP4ss8ywLKlC+ACjC+
-         nuwdjbuchRqNwEh+aA/ASi+I2FcyEtj6d4/7j0HecB3V+bRyV5tx1Ib2JHnpIZS27ILD
-         G1Pg==
-X-Gm-Message-State: AOAM530ZbVErQnHrr6AadJxR4UXj31ikzaNoePZaXhaemcWDU9cA2Yhz
-        x/spXZzHp1arW1JisO/KDVHD92GEJA==
-X-Google-Smtp-Source: ABdhPJxF3RhDsmB4TqzujEY30IJoh0fHFBGAU1hY0iSjlYrgQU0DILZeB+yHHlN2R5DQh0CxUXSGUw==
-X-Received: by 2002:a54:4419:: with SMTP id k25mr13850625oiw.141.1616866535274;
-        Sat, 27 Mar 2021 10:35:35 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=HN8SP8ubW4h3M5tWUNzO2faltDSpxQo/7ZWviP/phFg=;
+        b=XU/vk2YtirD0Bt8x2q4MxOs2zZmywEsWtCeiNrO/3DbG1wUttWV27/oIFvGqkxOYpH
+         YqhC5rDoGRk2ipMGBadUNhOF1PHEgkGSPdEkNYkdyEdB/ENLUFYtj+1qWNnfQ5JTMY/C
+         bKx8uOmQS2JvEQoKhicIep6n3rLwYv8NV0Q43pb2nb+Hg/hvZSeevOdqOh5E50PNjnzr
+         nxxbumgnktlbIvFxFoLyc0/mp1wQ3EVkGY8hDhF9zDw4lmaEh4FNkye+rxNp7Vkkqtc2
+         +CfL6lGMlYlS9FI7EXVKCNSkuLY0U+RSOpzu4KgmP6QJZqzKl/3CG02o7cTJSmYfcQU6
+         Endg==
+X-Gm-Message-State: AOAM533oVbAS9rWkQUwONIN1GrdXPfNl+XNReG4Z4tEMBHj6QZ7k0s20
+        d22pGGzrMvb3vrrAuvuK8A==
+X-Google-Smtp-Source: ABdhPJweV8zU1h9QeIiuRkjZGJ1zdojaxZDZxnS80Dif/Bh04/parpxGlT7IDf94cWnK4X4pwPuLug==
+X-Received: by 2002:a05:6808:b19:: with SMTP id s25mr13778056oij.103.1616866840079;
+        Sat, 27 Mar 2021 10:40:40 -0700 (PDT)
 Received: from robh.at.kernel.org ([172.58.107.88])
-        by smtp.gmail.com with ESMTPSA id y10sm2437554oih.37.2021.03.27.10.35.31
+        by smtp.gmail.com with ESMTPSA id y194sm2645356ooa.19.2021.03.27.10.40.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 10:35:34 -0700 (PDT)
-Received: (nullmailer pid 290905 invoked by uid 1000);
-        Sat, 27 Mar 2021 17:35:30 -0000
-Date:   Sat, 27 Mar 2021 11:35:30 -0600
+        Sat, 27 Mar 2021 10:40:39 -0700 (PDT)
+Received: (nullmailer pid 297493 invoked by uid 1000);
+        Sat, 27 Mar 2021 17:40:35 -0000
+Date:   Sat, 27 Mar 2021 11:40:35 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Oliver =?iso-8859-1?Q?St=E4bler?= <oliver.staebler@bytesatwork.ch>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        shawnguo@kernel.org, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, festevam@gmail.com
-Subject: Re: [PATCH v2] arm64: dts: imx8mm/q: Fix pad control of SD1_DATA0
-Message-ID: <20210327173530.GA290859@robh.at.kernel.org>
-References: <CAOMZO5B_uHS_Z2LuMwHDmn9erORrsrNBMHMjkW-hW+pnfHZThQ@mail.gmail.com>
- <20210324132841.5841-1-oliver.staebler@bytesatwork.ch>
+To:     frowand.list@gmail.com
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        anmar.oueja@linaro.org, Bill Mills <bill.mills@linaro.org>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] of: unittest: rename overlay source files from .dts
+ to .dtso
+Message-ID: <20210327174035.GA291160@robh.at.kernel.org>
+References: <20210324223713.1334666-1-frowand.list@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210324132841.5841-1-oliver.staebler@bytesatwork.ch>
+In-Reply-To: <20210324223713.1334666-1-frowand.list@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 14:28:41 +0100, Oliver Stäbler wrote:
-> Fix address of the pad control register
-> (IOMUXC_SW_PAD_CTL_PAD_SD1_DATA0) for SD1_DATA0_GPIO2_IO2.  This seems
-> to be a typo but it leads to an exception when pinctrl is applied due to
-> wrong memory address access.
+On Wed, Mar 24, 2021 at 05:37:13PM -0500, frowand.list@gmail.com wrote:
+> From: Frank Rowand <frank.rowand@sony.com>
 > 
-> Signed-off-by: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h | 2 +-
->  arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> Add Makefile rule to build .dtbo.o assembly file from overlay .dtso
+> source file.
 > 
+> Rename unittest .dts overlay source files to use .dtso suffix.
 
-Acked-by: Rob Herring <robh@kernel.org>
+I'm pretty lukewarm on .dtso...
+
+> 
+> Update Makefile to build .dtbo.o objects instead of .dtb.o from
+> unittest overlay source files.
+> 
+> Modify unitest.c to use .dtbo.o based symbols instead of .dtb.o
+> 
+> Modify Makefile.lib %.dtbo rule to depend upon %.dtso instead of %.dts
+> 
+> Documentation/devicetree/of_unittest.rst was already out of date.
+> This commit would make it even more out of date.  Delete the document
+> instead of continuing the maintenance burden of keeping the document
+> in sync with the source.
+
+This should be a separate change. It's also going to collide with my doc 
+improvements.
+
+Improvements here would be better than just deleting.
