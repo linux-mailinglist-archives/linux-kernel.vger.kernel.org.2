@@ -2,185 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23B0234B761
+	by mail.lfdr.de (Postfix) with ESMTP id BC32534B763
 	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230030AbhC0NWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 09:22:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhC0NWJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 09:22:09 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19870C0613B1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:22:09 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id f124so11777657ybc.0
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:22:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=f/DBLe4KTA9RqJn86/pzVqOe/xE6FrGxuCNjYapdtDU=;
-        b=e6lIxx9x/ADMJsqALVlOjB0j26X5QE7RWxalBCt9e+lvBXenQFYFpVDgT/uR5baKRO
-         duzmw5c+UBLud/zELDmpIFLr1UnfodDFCfMqyW5AkrDIxP7KCyoPfXv39iT/lEb0cR7x
-         lDZnBdbLyt3CrPnh8jpocsmNy9t8W5Zbn0JylXB0ol4UndI3+DdmAJNJEmIXSeG8kc7U
-         lR/lTHUhYDlVOUiJvom93SzMYf7hCsUUrqHWRWuSgMaCCXtTLnVlclhJ3TDqzjxFncAa
-         5fagnRWb8SO62EISWIw97O2641AsLh+LsstUYulPOXr6EUFwo30aY1zL0Ln0uR7i4mOq
-         WnFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=f/DBLe4KTA9RqJn86/pzVqOe/xE6FrGxuCNjYapdtDU=;
-        b=LAtPF4522wdwn5bn4bcpVRcc42agNHvpbXEx9j3FnAxJB2ik6BUEFLIRZAg1Tt7XJr
-         jLFrqC5WhkjP/phV5ugSN5dWIjjf0MELk594ojx/w+gAbYgvkH16ceufbd5Tqg6R+jc6
-         3AZNj7XH8Rqy4xYWKLtdBAI2TI+oIF7vQodbQikXmWP2Nmp2k05qxYcHH7KUCxyDqe3V
-         rbgWq2eDjHg9j4G8iCxuh0lleDrEuue0+jkWPUH1v/AXu26LDUVylcETMubcYNq0/oHl
-         mjSQKX5T4GqjuufbCU5ZNslmCm/SGxLvUmB7T3AatcQ79szDAhFz1pb/xaqVM1p+uq7B
-         a6rg==
-X-Gm-Message-State: AOAM531CMA96TuMFNfklaV6ppRg8xdTRbY6bleU+n5J3bUlEi+bZxE1i
-        BTdgFmhJ/4rCcdyuQbcvfCw2QnJJ5jg=
-X-Google-Smtp-Source: ABdhPJwm9ZqrPGU3UfTYgFqcHstQ12M9ZU0ah6gNTAwAmJXJXJ1qqhdJLRTKrgnhjUmu8eg33P4mVMJ3Q58=
-X-Received: from raychi.tao.corp.google.com ([2401:fa00:fc:202:dd96:b17f:940b:5260])
- (user=raychi job=sendgmr) by 2002:a25:ce13:: with SMTP id x19mr24310864ybe.235.1616851328101;
- Sat, 27 Mar 2021 06:22:08 -0700 (PDT)
-Date:   Sat, 27 Mar 2021 21:22:02 +0800
-Message-Id: <20210327132202.1759953-1-raychi@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [Patch v3] usb: dwc3: add cancelled reasons for dwc3 requests
-From:   Ray Chi <raychi@google.com>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        Thinh.Nguyen@synopsys.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        albertccwang@google.com, Ray Chi <raychi@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230180AbhC0Na3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 09:30:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229582AbhC0NaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 09:30:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6783161966;
+        Sat, 27 Mar 2021 13:30:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616851802;
+        bh=n8sXS1//HNddHQmSXJmBqsBbpbXrAQw627EGz2mYdAo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AvCK9mdMat6gE2h7ERaT3A18hXaVBuWX9PrKu3Z3bhya8p/5X0HobTPXrJ2cDwg4P
+         dmHgQ0zbszwZn03zimFCqpa3vyWI/FNWQT/ubvwbDQ7LFiZoa96KmUK+16TIvVrSSh
+         J76pXRXXikhb/gaERMevu4lRjM+5+JGsFwhiyN4pLzoz9aTU4VOikWhxo7cJ7Dpmsn
+         n8nsijEslo/nhb7y5xwBqexo94uQAw+E3VHJ6wIRRZWqHjRNIO0CcH1v0RJrxxHUNb
+         3n3DVINKKj6S5U8X1vkTms56y1AJu7QCJAeJD9ewiLK1cZHrWgMN0Ff+HmXQsAOupu
+         IXfw3GR5mHTvw==
+Received: by pali.im (Postfix)
+        id D3B8F95D; Sat, 27 Mar 2021 14:29:59 +0100 (CET)
+Date:   Sat, 27 Mar 2021 14:29:59 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        vtolkm@gmail.com, Rob Herring <robh@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Jason Cooper <jason@lakedaemon.net>, linux-pci@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Disallow retraining link for Atheros QCA98xx chips
+ on non-Gen1 PCIe bridges
+Message-ID: <20210327132959.fwkphna7gg57aove@pali>
+References: <20210326124326.21163-1-pali@kernel.org>
+ <YF540gjh156QIirA@rocinante>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YF540gjh156QIirA@rocinante>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when dwc3 handles request cancelled, dwc3 just returns
--ECONNRESET for all requests. It will cause USB function drivers
-can't know if the requests are cancelled by other reasons.
+Hello!
 
-This patch will replace DWC3_REQUEST_STATUS_CANCELLED with the
-reasons below.
-  - DWC3_REQUEST_STATUS_DISCONNECTED
-  - DWC3_REQUEST_STATUS_DEQUEUED
-  - DWC3_REQUEST_STATUS_STALLED
+On Saturday 27 March 2021 01:14:10 Krzysztof Wilczyński wrote:
+> Hi Pali,
+> 
+> Thank you for sending the patch over!
+> 
+> [...]
+> > +static int pcie_change_tls_to_gen1(struct pci_dev *parent)
+> 
+> Just a nitpick, so feel free to ignore it.  I would just call the
+> variable "dev" as we pass a pointer to a particular device, but it does
+> not matter as much, so I am leaving this to you.
 
-Signed-off-by: Ray Chi <raychi@google.com>
----
- drivers/usb/dwc3/core.h   | 12 +++++++-----
- drivers/usb/dwc3/gadget.c | 24 ++++++++++++++++++++----
- drivers/usb/dwc3/gadget.h |  6 ++++--
- 3 files changed, 31 insertions(+), 11 deletions(-)
+I called it 'parent' because it is called 'parent' also in caller
+function. Link consists of two devices, so 'dev' could be ambiguous.
 
-diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 4ca4b4be85e4..51a3eec2428a 100644
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -908,11 +908,13 @@ struct dwc3_request {
- 	unsigned int		remaining;
- 
- 	unsigned int		status;
--#define DWC3_REQUEST_STATUS_QUEUED	0
--#define DWC3_REQUEST_STATUS_STARTED	1
--#define DWC3_REQUEST_STATUS_CANCELLED	2
--#define DWC3_REQUEST_STATUS_COMPLETED	3
--#define DWC3_REQUEST_STATUS_UNKNOWN	-1
-+#define DWC3_REQUEST_STATUS_QUEUED		0
-+#define DWC3_REQUEST_STATUS_STARTED		1
-+#define DWC3_REQUEST_STATUS_DISCONNECTED	2
-+#define DWC3_REQUEST_STATUS_DEQUEUED		3
-+#define DWC3_REQUEST_STATUS_STALLED		4
-+#define DWC3_REQUEST_STATUS_COMPLETED		5
-+#define DWC3_REQUEST_STATUS_UNKNOWN		-1
- 
- 	u8			epnum;
- 	struct dwc3_trb		*trb;
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index e1442fc763e1..492086519539 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1402,7 +1402,7 @@ static int __dwc3_gadget_kick_transfer(struct dwc3_ep *dep)
- 		dwc3_stop_active_transfer(dep, true, true);
- 
- 		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
--			dwc3_gadget_move_cancelled_request(req);
-+			dwc3_gadget_move_cancelled_request(req, DWC3_REQUEST_STATUS_DEQUEUED);
- 
- 		/* If ep isn't started, then there's no end transfer pending */
- 		if (!(dep->flags & DWC3_EP_END_TRANSFER_PENDING))
-@@ -1729,10 +1729,25 @@ static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
- {
- 	struct dwc3_request		*req;
- 	struct dwc3_request		*tmp;
-+	struct dwc3			*dwc = dep->dwc;
- 
- 	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
- 		dwc3_gadget_ep_skip_trbs(dep, req);
--		dwc3_gadget_giveback(dep, req, -ECONNRESET);
-+		switch (req->status) {
-+		case DWC3_REQUEST_STATUS_DISCONNECTED:
-+			dwc3_gadget_giveback(dep, req, -ESHUTDOWN);
-+			break;
-+		case DWC3_REQUEST_STATUS_DEQUEUED:
-+			dwc3_gadget_giveback(dep, req, -ECONNRESET);
-+			break;
-+		case DWC3_REQUEST_STATUS_STALLED:
-+			dwc3_gadget_giveback(dep, req, -EPIPE);
-+			break;
-+		default:
-+			dev_err(dwc->dev, "request cancelled with wrong reason:%d\n", req->status);
-+			dwc3_gadget_giveback(dep, req, -ECONNRESET);
-+			break;
-+		}
- 	}
- }
- 
-@@ -1776,7 +1791,8 @@ static int dwc3_gadget_ep_dequeue(struct usb_ep *ep,
- 			 * cancelled.
- 			 */
- 			list_for_each_entry_safe(r, t, &dep->started_list, list)
--				dwc3_gadget_move_cancelled_request(r);
-+				dwc3_gadget_move_cancelled_request(r,
-+						DWC3_REQUEST_STATUS_DEQUEUED);
- 
- 			dep->flags &= ~DWC3_EP_WAIT_TRANSFER_COMPLETE;
- 
-@@ -1848,7 +1864,7 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value, int protocol)
- 		dwc3_stop_active_transfer(dep, true, true);
- 
- 		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
--			dwc3_gadget_move_cancelled_request(req);
-+			dwc3_gadget_move_cancelled_request(req, DWC3_REQUEST_STATUS_STALLED);
- 
- 		if (dep->flags & DWC3_EP_END_TRANSFER_PENDING) {
- 			dep->flags |= DWC3_EP_PENDING_CLEAR_STALL;
-diff --git a/drivers/usb/dwc3/gadget.h b/drivers/usb/dwc3/gadget.h
-index 0cd281949970..77df4b6d6c13 100644
---- a/drivers/usb/dwc3/gadget.h
-+++ b/drivers/usb/dwc3/gadget.h
-@@ -90,15 +90,17 @@ static inline void dwc3_gadget_move_started_request(struct dwc3_request *req)
- /**
-  * dwc3_gadget_move_cancelled_request - move @req to the cancelled_list
-  * @req: the request to be moved
-+ * @reason: cancelled reason for the dwc3 request
-  *
-  * Caller should take care of locking. This function will move @req from its
-  * current list to the endpoint's cancelled_list.
-  */
--static inline void dwc3_gadget_move_cancelled_request(struct dwc3_request *req)
-+static inline void dwc3_gadget_move_cancelled_request(struct dwc3_request *req,
-+		unsigned int reason)
- {
- 	struct dwc3_ep		*dep = req->dep;
- 
--	req->status = DWC3_REQUEST_STATUS_CANCELLED;
-+	req->status = reason;
- 	list_move_tail(&req->list, &dep->cancelled_list);
- }
- 
--- 
-2.31.0.291.g576ba9dcdaf-goog
+> [...]
+> > +	if (ret == 0) {
+> 
+> You prefer this style over "if (!ret)"?  Just asking in the view of the
+> style that seem to be preferred in the code base at the moment.
 
+I can change this to 'if (!ret)' if needed, no problem.
+
+I use 'if (!val)' mostly for boolean and pointer variables. If variable
+can contain more integer values then I lot of times I use '=='.
+
+> > +		/* Verify that new value was really set */
+> > +		pcie_capability_read_word(parent, PCI_EXP_LNKCTL2, &reg16);
+> > +		if ((reg16 & PCI_EXP_LNKCTL2_TLS) != PCI_EXP_LNKCTL2_TLS_2_5GT)
+> > +			ret = -EINVAL;
+> 
+> I am wondering about this verification - did you have a case where the
+> device would not properly set its capability, or accept the write and do
+> nothing?
+
+I do not know any real device which is doing this thing.
+
+But this issue can happen with kernel's PCIe emulated root bridge:
+drivers/pci/pci-bridge-emul.c
+
+Drivers which are using this emulated root bridge (and both pci-mvebu.c
+and pci-aardvark.c are using it!) do not have to implement callback for
+every read and every write operation of every register.
+
+Note that both pci-mvebu.c and pci-aardvark.c currently does not
+implement access to HW register PCI_EXP_LNKCTL2. So currently it is not
+possible to set PCI_EXP_LNKCTL2_TLS_2_5GT. And above code correctly
+fails and disallow ASPM code to retrain link.
+
+I have some WIP patches which implement LNKCAP2, LNKCTL2 and LNKSTA2
+read/write callbacks on emulated bridge for pci-mvebu.c and
+pci-aardvark.c. And I have tested that with those WIP patches ASPM code
+can correctly switch link to 2.5GT/s and enable ASPM.
+
+> > +	if (ret != 0)
+> 
+> I think "if (ret)" would be fine to use here, unless you prefer being
+> more explicit.  See my question about style above.
+> 
+> >  static bool pcie_retrain_link(struct pcie_link_state *link)
+> >  {
+> >  	struct pci_dev *parent = link->pdev;
+> >  	unsigned long end_jiffies;
+> >  	u16 reg16;
+> > +	u32 reg32;
+> > +
+> > +		/* Check if link is capable of higher speed than 2.5 GT/s and needs quirk */
+> > +		pcie_capability_read_dword(parent, PCI_EXP_LNKCAP, &reg32);
+> > +		if ((reg32 & PCI_EXP_LNKCAP_SLS) > PCI_EXP_LNKCAP_SLS_2_5GB) {
+> 
+> I wonder if moving this check to pcie_change_tls_to_gen1() would make
+> more sense?  It would then make this function a little cleaner.  What do
+> you think?
+
+Ok, no problem. But then function needs to be renamed. Any idea how
+should be this function called?
+
+> [...]
+> > +static void quirk_no_bus_reset_and_no_retrain_link(struct pci_dev *dev)
+> > +{
+> > +	dev->dev_flags |= PCI_DEV_FLAGS_NO_BUS_RESET | PCI_DEV_FLAGS_NO_RETRAIN_LINK_WHEN_NOT_GEN1;
+> > +}
+> [...]
+> 
+> I know that the style has been changed to allow 100 characters width and
+> that checkpatch.pl now also does not warn about line length, as per
+> commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column
+> warning"), but I think Bjorn still prefers 80 characters, thus this line
+> above might have to be aligned.
+
+Ok! If needed I can reformat patch to 80 characters per line.
