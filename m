@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBAE34B75C
+	by mail.lfdr.de (Postfix) with ESMTP id 59F0034B75D
 	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 14:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhC0NGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 09:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
+        id S230390AbhC0NHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 09:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230266AbhC0NG1 (ORCPT
+        with ESMTP id S230307AbhC0NGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 09:06:27 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5086BC0613B1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:27 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id h8so2235029plt.7
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:27 -0700 (PDT)
+        Sat, 27 Mar 2021 09:06:38 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDFCC0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:38 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id q5so6741894pfh.10
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 06:06:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=NeWUvZBV3NAy1b0eckELIbBZ7sti/n1sLYnD4r2cjaU=;
-        b=V7uM0AaI1Vy/mmqpuTVu5F6+98YPDzOa3QS6tRkWeJqhrflMONfCXtOxXVR+CeiPil
-         OOfaxOtAMeVEW9wE0EU3U/8aNghtzuUvVN+0Tj57+W+4g0ilQOODiDLDu4ZqAo1Q5eDZ
-         gA+He13KWVwNYaYTNUNParLXG5GYDbblaqABSUDurI1FTjn1US0ZZytlzdZy1GfL9eTj
-         6AiiVM3A4YdUGUWE7qQQE8jI92o4qKYvaNjn1M+d5ypKCue3NJWeRTSPKLu0QD2qL02+
-         QPga2RPtmLpztA8/lPGTRpgVNY3C5jdCBZyWgFtvZg5dNoDfe5bQnAmF2J2ka+A7JBSD
-         VHtw==
+        bh=fWEWnDB7IS15Aoqul4RZDergwEtbUe4NAH8lKjv7p/s=;
+        b=CGLrSHoDnG8b5CL6asLWP1Ym/QFl+wtwIF8PhKlW7RJ5IhavVtdO6Fd7/cY/3GQTDa
+         wvX9Q1wfBsakVlG9/sM9CuozOsra6Ec9c1B+0beWTAKj/tBjwvsVHtMoCiqOPL/Vbig6
+         4zkWMb6dwWSzAgmCqPEaYlyJYqBrDLzzXxqGhchwTfcNgNZQGq0xhh7tZsukEPz4XLIC
+         LNCy6+hPSVdRG1ADbyPpOGFn3fSeFs5KAwl3y1Cn0TvTPxgpckTLcFz5TsTF/w7VLGW1
+         bn9Gakn+MaATqxahU0lDwyzI1sMK2er7/ddjV9VugYN4PzgL9DHGu/iGzXGFftDoLdaJ
+         tBIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=NeWUvZBV3NAy1b0eckELIbBZ7sti/n1sLYnD4r2cjaU=;
-        b=OQek2lJ5JINezfYdN/FzSPFL1N9Hrs+KstU7K4gEHavdffvSAOBebg2MG5VSzkf93H
-         o1iOiAOoXY7cx7j7Vx5CFZUuJOLilpC6gPTJpZlaP8YtEFfGkPaUPPh5FSTyM463Sir8
-         n6DupTSrFUI1y44GOBZ2bM2pf9hRN1Yj1oiCT6upmfoHw0/PaKEZt5aOEI8se7HRJp94
-         td6+SEZok3uxKEglKEqAG8cnj7Pt4tKVQlg+MI1AQDLQ/ytdYJlMPmrqVyNpnsv44wYa
-         dxBf0TaMvqn9SYDIDcGct3toAVm5DfVUqXm1nkYcYMOdvPrmLoH52NtCyi5cYC+2TR6i
-         jUpA==
-X-Gm-Message-State: AOAM532sXgN0NNpKjilSMBewUXwwXz+MOfd7J5FRI6zAWA5st7gy5LmE
-        Sw/QHj4cm3zT07LU1kWYSO9puwFV+yK0Hquf
-X-Google-Smtp-Source: ABdhPJyDnhcP7BeBHXX2rPqMXwkOQiZdussDPATmYqyQnp7HAsi0OqWSUVIloMNi3QBpMsmjXTtyew==
-X-Received: by 2002:a17:903:2285:b029:e6:faf5:eaff with SMTP id b5-20020a1709032285b02900e6faf5eaffmr19574014plh.70.1616850386727;
-        Sat, 27 Mar 2021 06:06:26 -0700 (PDT)
+        bh=fWEWnDB7IS15Aoqul4RZDergwEtbUe4NAH8lKjv7p/s=;
+        b=PQiPlj7RSTzmBU6u/2xzL9qv8jrelC7cJFFiOHjwKfz43PMzm0nEj6PxY5ZFMSjmbs
+         JEfC8iDjJh39FJdthBrvaZX4yuTv4QmOdmRMWrN77sQYbZOaKOhbNrCx2/LdHzAFjLBY
+         qTHW0+siiP/ATBf1M0cSP200UZAjBwU8MRapxAlaIUmlrfr5+oM8ZrL2tMhzDYcn5b51
+         TwXEVVI5Ep0YZxyGYQ04yaMBZxb1hSKev6UhrFpk96Ukg4IY3qBQBRpjWHIWqZY21aUl
+         EeDLmlWZaqDbp6UQQrAd2p1kIVyrxKD2Cf4aPnk2JcvzR9qGfMwV8cpR9rqwrXBEiyLj
+         KZFg==
+X-Gm-Message-State: AOAM532lFsZyg8BiLek2pS5Ftc0rOopeD1Q9b7d5Lc7gC8pPIjHcnizK
+        2/grg+4GExN9zVerojORiZgGkTwU1/c2DswO
+X-Google-Smtp-Source: ABdhPJwECFbuV2SwesS0pF6L0s23ghF61g6whXAjcLZpxYe6b6OsgENBMa3gmTj9FFMF+68uJYhPPw==
+X-Received: by 2002:a63:1d26:: with SMTP id d38mr17032822pgd.385.1616850397389;
+        Sat, 27 Mar 2021 06:06:37 -0700 (PDT)
 Received: from johnchen902-arch-ryzen.. (2001-b011-3815-3a1f-9afa-9bff-fe6e-3ce2.dynamic-ip6.hinet.net. [2001:b011:3815:3a1f:9afa:9bff:fe6e:3ce2])
-        by smtp.gmail.com with ESMTPSA id ot17sm6413787pjb.50.2021.03.27.06.06.25
+        by smtp.gmail.com with ESMTPSA id ot17sm6413787pjb.50.2021.03.27.06.06.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 06:06:26 -0700 (PDT)
+        Sat, 27 Mar 2021 06:06:37 -0700 (PDT)
 From:   John Chen <johnchen902@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Rohit Pidaparthi <rohitpid@gmail.com>,
@@ -55,9 +55,9 @@ Cc:     Rohit Pidaparthi <rohitpid@gmail.com>,
         Jiri Kosina <jikos@kernel.org>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         John Chen <johnchen902@gmail.com>
-Subject: [PATCH 2/4] HID: magicmouse: fix 3 button emulation of Mouse 2
-Date:   Sat, 27 Mar 2021 21:05:06 +0800
-Message-Id: <20210327130508.24849-3-johnchen902@gmail.com>
+Subject: [PATCH 3/4] HID: magicmouse: fix reconnection of Magic Mouse 2
+Date:   Sat, 27 Mar 2021 21:05:07 +0800
+Message-Id: <20210327130508.24849-4-johnchen902@gmail.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210327130508.24849-1-johnchen902@gmail.com>
 References: <20210327130508.24849-1-johnchen902@gmail.com>
@@ -67,54 +67,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is observed that, with 3 button emulation, when middle button is
-clicked, either the left button or right button is clicked as well. It
-is caused by hidinput "correctly" acting on the event, oblivious to the
-3 button emulation.
+It is observed that the Magic Mouse 2 would not enter multi-touch mode
+unless the mouse is connected before loading the module. It seems to be
+a quirk specific to Magic Mouse 2
 
-As raw_event has taken care of everything, no further processing is
-needed. However, the only way to stop at raw_event is to return an error
-(negative) value. Therefore, the processing is stopped at event instead.
+Retrying after 500ms fixes the problem for me. The delay can't be
+reduced much further --- 300ms didn't work for me. Retrying immediately
+after receiving an event didn't work either.
 
 Signed-off-by: John Chen <johnchen902@gmail.com>
 ---
- drivers/hid/hid-magicmouse.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/hid/hid-magicmouse.c | 93 ++++++++++++++++++++++++------------
+ 1 file changed, 63 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/hid/hid-magicmouse.c b/drivers/hid/hid-magicmouse.c
-index 7aad6ca56780..c646b4cd3783 100644
+index c646b4cd3783..69aefef9fe07 100644
 --- a/drivers/hid/hid-magicmouse.c
 +++ b/drivers/hid/hid-magicmouse.c
-@@ -440,6 +440,21 @@ static int magicmouse_raw_event(struct hid_device *hdev,
- 	return 1;
+@@ -16,6 +16,7 @@
+ #include <linux/input/mt.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
++#include <linux/workqueue.h>
+ 
+ #include "hid-ids.h"
+ 
+@@ -128,6 +129,9 @@ struct magicmouse_sc {
+ 		u8 size;
+ 	} touches[16];
+ 	int tracking_ids[16];
++
++	struct hid_device *hdev;
++	struct delayed_work work;
+ };
+ 
+ static int magicmouse_firm_touch(struct magicmouse_sc *msc)
+@@ -629,9 +633,7 @@ static int magicmouse_input_configured(struct hid_device *hdev,
+ 	return 0;
  }
  
-+static int magicmouse_event(struct hid_device *hdev, struct hid_field *field,
-+		struct hid_usage *usage, __s32 value)
-+{
-+	struct magicmouse_sc *msc = hid_get_drvdata(hdev);
-+	if (msc->input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2 &&
-+	    field->report->id == MOUSE2_REPORT_ID) {
-+		// magic_mouse_raw_event has done all the work. Skip hidinput.
-+		//
-+		// Specifically, hidinput may modify BTN_LEFT and BTN_RIGHT,
-+		// breaking emulate_3button.
-+		return 1;
+-
+-static int magicmouse_probe(struct hid_device *hdev,
+-	const struct hid_device_id *id)
++static int magicmouse_enable_multitouch(struct hid_device *hdev)
+ {
+ 	const u8 *feature;
+ 	const u8 feature_mt[] = { 0xD7, 0x01 };
+@@ -639,10 +641,52 @@ static int magicmouse_probe(struct hid_device *hdev,
+ 	const u8 feature_mt_trackpad2_usb[] = { 0x02, 0x01 };
+ 	const u8 feature_mt_trackpad2_bt[] = { 0xF1, 0x02, 0x01 };
+ 	u8 *buf;
++	int ret;
++	int feature_size;
++
++	if (hdev->product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2) {
++		if (hdev->vendor == BT_VENDOR_ID_APPLE) {
++			feature_size = sizeof(feature_mt_trackpad2_bt);
++			feature = feature_mt_trackpad2_bt;
++		} else { /* USB_VENDOR_ID_APPLE */
++			feature_size = sizeof(feature_mt_trackpad2_usb);
++			feature = feature_mt_trackpad2_usb;
++		}
++	} else if (hdev->product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
++		feature_size = sizeof(feature_mt_mouse2);
++		feature = feature_mt_mouse2;
++	} else {
++		feature_size = sizeof(feature_mt);
++		feature = feature_mt;
 +	}
-+	return 0;
++
++	buf = kmemdup(feature, feature_size, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	ret = hid_hw_raw_request(hdev, buf[0], buf, feature_size,
++				HID_FEATURE_REPORT, HID_REQ_SET_REPORT);
++	kfree(buf);
++	return ret;
 +}
 +
- static int magicmouse_setup_input(struct input_dev *input, struct hid_device *hdev)
- {
- 	int error;
-@@ -754,6 +769,7 @@ static struct hid_driver magicmouse_driver = {
++static void magicmouse_enable_mt_work(struct work_struct *work)
++{
++	struct magicmouse_sc *msc =
++		container_of(work, struct magicmouse_sc, work.work);
++	int ret;
++
++	ret = magicmouse_enable_multitouch(msc->hdev);
++	if (ret < 0)
++		hid_err(msc->hdev, "unable to request touch data (%d)\n", ret);
++}
++
++static int magicmouse_probe(struct hid_device *hdev,
++	const struct hid_device_id *id)
++{
+ 	struct magicmouse_sc *msc;
+ 	struct hid_report *report;
+ 	int ret;
+-	int feature_size;
+ 
+ 	if (id->vendor == USB_VENDOR_ID_APPLE &&
+ 	    id->product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2 &&
+@@ -656,6 +700,8 @@ static int magicmouse_probe(struct hid_device *hdev,
+ 	}
+ 
+ 	msc->scroll_accel = SCROLL_ACCEL_DEFAULT;
++	msc->hdev = hdev;
++	INIT_DEFERRABLE_WORK(&msc->work, magicmouse_enable_mt_work);
+ 
+ 	msc->quirks = id->driver_data;
+ 	hid_set_drvdata(hdev, msc);
+@@ -705,28 +751,6 @@ static int magicmouse_probe(struct hid_device *hdev,
+ 	}
+ 	report->size = 6;
+ 
+-	if (id->product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2) {
+-		if (id->vendor == BT_VENDOR_ID_APPLE) {
+-			feature_size = sizeof(feature_mt_trackpad2_bt);
+-			feature = feature_mt_trackpad2_bt;
+-		} else { /* USB_VENDOR_ID_APPLE */
+-			feature_size = sizeof(feature_mt_trackpad2_usb);
+-			feature = feature_mt_trackpad2_usb;
+-		}
+-	} else if (id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
+-		feature_size = sizeof(feature_mt_mouse2);
+-		feature = feature_mt_mouse2;
+-	} else {
+-		feature_size = sizeof(feature_mt);
+-		feature = feature_mt;
+-	}
+-
+-	buf = kmemdup(feature, feature_size, GFP_KERNEL);
+-	if (!buf) {
+-		ret = -ENOMEM;
+-		goto err_stop_hw;
+-	}
+-
+ 	/*
+ 	 * Some devices repond with 'invalid report id' when feature
+ 	 * report switching it into multitouch mode is sent to it.
+@@ -735,13 +759,14 @@ static int magicmouse_probe(struct hid_device *hdev,
+ 	 * but there seems to be no other way of switching the mode.
+ 	 * Thus the super-ugly hacky success check below.
+ 	 */
+-	ret = hid_hw_raw_request(hdev, buf[0], buf, feature_size,
+-				HID_FEATURE_REPORT, HID_REQ_SET_REPORT);
+-	kfree(buf);
+-	if (ret != -EIO && ret != feature_size) {
++	ret = magicmouse_enable_multitouch(hdev);
++	if (ret != -EIO && ret < 0) {
+ 		hid_err(hdev, "unable to request touch data (%d)\n", ret);
+ 		goto err_stop_hw;
+ 	}
++	if (ret == -EIO && id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE2) {
++		schedule_delayed_work(&msc->work, msecs_to_jiffies(500));
++	}
+ 
+ 	return 0;
+ err_stop_hw:
+@@ -749,6 +774,13 @@ static int magicmouse_probe(struct hid_device *hdev,
+ 	return ret;
+ }
+ 
++static void magicmouse_remove(struct hid_device *hdev)
++{
++	struct magicmouse_sc *msc = hid_get_drvdata(hdev);
++	cancel_delayed_work_sync(&msc->work);
++	hid_hw_stop(hdev);
++}
++
+ static const struct hid_device_id magic_mice[] = {
+ 	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_APPLE,
+ 		USB_DEVICE_ID_APPLE_MAGICMOUSE), .driver_data = 0 },
+@@ -768,6 +800,7 @@ static struct hid_driver magicmouse_driver = {
+ 	.name = "magicmouse",
  	.id_table = magic_mice,
  	.probe = magicmouse_probe,
++	.remove = magicmouse_remove,
  	.raw_event = magicmouse_raw_event,
-+	.event = magicmouse_event,
+ 	.event = magicmouse_event,
  	.input_mapping = magicmouse_input_mapping,
- 	.input_configured = magicmouse_input_configured,
- };
 -- 
 2.31.0
 
