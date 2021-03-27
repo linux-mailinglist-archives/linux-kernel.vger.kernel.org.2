@@ -2,95 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF9934B73C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA30934B740
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhC0Mgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 08:36:39 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14502 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhC0Mgf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 08:36:35 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6yvp261Gzrbjn;
-        Sat, 27 Mar 2021 20:34:30 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 20:36:20 +0800
-From:   Xie XiuQi <xiexiuqi@huawei.com>
-To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yangyingliang@huawei.com>
-Subject: [PATCH 2/2] firmware: tegra: Fix build with Tegra234 configuration
-Date:   Sat, 27 Mar 2021 20:37:57 +0800
-Message-ID: <20210327123757.4568-3-xiexiuqi@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210327123757.4568-1-xiexiuqi@huawei.com>
-References: <20210327123757.4568-1-xiexiuqi@huawei.com>
+        id S230243AbhC0MlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 08:41:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57108 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229582AbhC0Mk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 08:40:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E64A619C9;
+        Sat, 27 Mar 2021 12:40:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616848836;
+        bh=3VV+CnI+qYEN6es0BwNT6G0L+Q81CDeO0DCIN1lsJoY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p8JnJotcN5reSX3u3jwu39BrFYw6UC2hIqpEx0c11GihYdHOV08mPJ/ouMPpYi8zV
+         31KiI4TjfmtaeILHLYgmewx7jvkMkelguau719vwaj6+y/ubZsmEhMgfpZfotoIT44
+         6csfU4qR2FgsJKzG6cp4gisl+S1zjiaIKt666YqI=
+Date:   Sat, 27 Mar 2021 13:40:34 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Don Bollinger <don@thebollingers.org>
+Cc:     'Andrew Lunn' <andrew@lunn.ch>, 'Jakub Kicinski' <kuba@kernel.org>,
+        arndb@arndb.de, linux-kernel@vger.kernel.org,
+        brandon_chuang@edge-core.com, wally_wang@accton.com,
+        aken_liu@edge-core.com, gulv@microsoft.com, jolevequ@microsoft.com,
+        xinxliu@microsoft.com, 'netdev' <netdev@vger.kernel.org>,
+        'Moshe Shemesh' <moshe@nvidia.com>
+Subject: Re: [PATCH v2] eeprom/optoe: driver to read/write SFP/QSFP/CMIS
+ EEPROMS
+Message-ID: <YF8nwvFkqrt34AGQ@kroah.com>
+References: <20210315103950.65fedf2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <001201d719c6$6ac826c0$40587440$@thebollingers.org>
+ <YFJHN+raumcJ5/7M@lunn.ch>
+ <009601d72023$b73dbde0$25b939a0$@thebollingers.org>
+ <YFpr2RyiwX10SNbD@lunn.ch>
+ <011301d7226f$dc2426f0$946c74d0$@thebollingers.org>
+ <YF46FI4epRGwlyP8@lunn.ch>
+ <011901d7227c$e00015b0$a0004110$@thebollingers.org>
+ <YF5GA1RbaM1Ht3nl@lunn.ch>
+ <011c01d72284$544c8f50$fce5adf0$@thebollingers.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <011c01d72284$544c8f50$fce5adf0$@thebollingers.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If only Tegra234 support is enabled, the tegra186_bpmp_ops and
-tegra186_soc are not defined and cause a build failure.
+On Fri, Mar 26, 2021 at 02:09:36PM -0700, Don Bollinger wrote:
+> > You keep missing the point. I always refer to the KAPI. The driver we can
+> > rework and rework, throw away and reimplement, as much as we want.
+> > The KAPI cannot be changed, it is ABI. It is pretty much frozen the day
+> the
+> > code is first committed.
+> 
+> Maybe I don't understand what you mean by KAPI.  The KAPI that optoe exposes
+> is in two parts.
+> 
+> First, it makes the EEPROM accessible via the nvmem() interface, an existing
+> KAPI that I call from optoe.  at24 implemented it, I made use of it.  This
+> interface exposes EEPROM data to user space through a defined sysfs() file.
+> I didn't invent this, nor am I proposing it, it already exists.
 
-Add Tegra234 to the preprocessor guard to make sure these functions are
-available for Tegra234-only builds as well.
+Again, a "raw" interface to a device that is just memory-mapping all of
+the device information directly is no sort of a real KABI at all.
 
-Fixes: 0ebdf11699d0 ("firmware: tegra: Enable BPMP support on Tegra234")
-Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
----
- drivers/firmware/tegra/Makefile       | 1 +
- drivers/firmware/tegra/bpmp-private.h | 3 ++-
- drivers/firmware/tegra/bpmp.c         | 3 ++-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+It is no different from trying to use /dev/mem/ to write a networking
+driver, just because you can mmap in the device's configuration space to
+userspace.
 
-diff --git a/drivers/firmware/tegra/Makefile b/drivers/firmware/tegra/Makefile
-index 49c87e00fafb..620cf3fdd607 100644
---- a/drivers/firmware/tegra/Makefile
-+++ b/drivers/firmware/tegra/Makefile
-@@ -3,6 +3,7 @@ tegra-bpmp-y			= bpmp.o
- tegra-bpmp-$(CONFIG_ARCH_TEGRA_210_SOC)	+= bpmp-tegra210.o
- tegra-bpmp-$(CONFIG_ARCH_TEGRA_186_SOC)	+= bpmp-tegra186.o
- tegra-bpmp-$(CONFIG_ARCH_TEGRA_194_SOC)	+= bpmp-tegra186.o
-+tegra-bpmp-$(CONFIG_ARCH_TEGRA_234_SOC)	+= bpmp-tegra186.o
- tegra-bpmp-$(CONFIG_DEBUG_FS)	+= bpmp-debugfs.o
- obj-$(CONFIG_TEGRA_BPMP)	+= tegra-bpmp.o
- obj-$(CONFIG_TEGRA_IVC)		+= ivc.o
-diff --git a/drivers/firmware/tegra/bpmp-private.h b/drivers/firmware/tegra/bpmp-private.h
-index 54d560c48398..182bfe396516 100644
---- a/drivers/firmware/tegra/bpmp-private.h
-+++ b/drivers/firmware/tegra/bpmp-private.h
-@@ -24,7 +24,8 @@ struct tegra_bpmp_ops {
- };
- 
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
--    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC)
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC) || \
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_234_SOC)
- extern const struct tegra_bpmp_ops tegra186_bpmp_ops;
- #endif
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_210_SOC)
-diff --git a/drivers/firmware/tegra/bpmp.c b/drivers/firmware/tegra/bpmp.c
-index 0742a90cb844..5654c5e9862b 100644
---- a/drivers/firmware/tegra/bpmp.c
-+++ b/drivers/firmware/tegra/bpmp.c
-@@ -809,7 +809,8 @@ static const struct dev_pm_ops tegra_bpmp_pm_ops = {
- };
- 
- #if IS_ENABLED(CONFIG_ARCH_TEGRA_186_SOC) || \
--    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC)
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_194_SOC) || \
-+    IS_ENABLED(CONFIG_ARCH_TEGRA_234_SOC)
- static const struct tegra_bpmp_soc tegra186_soc = {
- 	.channels = {
- 		.cpu_tx = {
--- 
-2.25.1
+That is not a real api, it is only using the kernel as a "pass-through"
+which works fine for one-off devices, and other oddities, but is not a
+unified user/kernel api for a class of device types at all.
 
+thanks,
+
+greg k-h
