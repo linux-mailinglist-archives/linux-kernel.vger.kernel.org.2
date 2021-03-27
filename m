@@ -2,66 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C703634B625
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3200634B644
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 11:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhC0KcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 06:32:25 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15362 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhC0KcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 06:32:24 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6w8F72xGz8yBB;
-        Sat, 27 Mar 2021 18:30:05 +0800 (CST)
-Received: from mdc.localdomain (10.175.104.57) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 18:32:00 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <huangguobin4@huawei.com>, Hauke Mehrtens <hauke@hauke-m.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next v2] net: lantiq: Remove redundant dev_err call in xrx200_probe()
-Date:   Sat, 27 Mar 2021 18:31:51 +0800
-Message-ID: <1616841111-8722-1-git-send-email-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S230471AbhC0KhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 06:37:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229875AbhC0KhV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 06:37:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B989C619E8;
+        Sat, 27 Mar 2021 10:37:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616841429;
+        bh=Mt7kcgav9t3UMu8lOOB6Tru6R5Kg48wvZoEAI9VQWC8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DSyPj5WsKtNFR6bG0KEoMU8yTTTOjQ9wGQ6ZjMaPAxEkH4K3DwpCFylYrq47HhSMh
+         E5Gdr3RKwmCd6g+pn7sypeylG/54ZovWQyhGcCoCztui8lr25pXoSy7AmpKpNf8Ziq
+         9DNhHoNhgUorhPhsldmYaypevoKllJisZweqbh2E=
+Date:   Sat, 27 Mar 2021 11:37:06 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Alexander Lochmann <info@alexander-lochmann.de>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Klychkov <andrew.a.klychkov@gmail.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Maciej Grochowski <maciej.grochowski@pm.me>,
+        kasan-dev@googlegroups.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3] Introduced new tracing mode KCOV_MODE_UNIQUE.
+Message-ID: <YF8K0k1bc3e381qS@kroah.com>
+References: <20210326205135.6098-1-info@alexander-lochmann.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.104.57]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326205135.6098-1-info@alexander-lochmann.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guobin Huang <huangguobin4@huawei.com>
+On Fri, Mar 26, 2021 at 09:51:28PM +0100, Alexander Lochmann wrote:
+> It simply stores the executed PCs.
+> The execution order is discarded.
+> Each bit in the shared buffer represents every fourth
+> byte of the text segment.
+> Since a call instruction on every supported
+> architecture is at least four bytes, it is safe
+> to just store every fourth byte of the text segment.
+> In contrast to KCOV_MODE_TRACE_PC, the shared buffer
+> cannot overflow. Thus, all executed PCs are recorded.
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+Odd line-wrapping :(
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
----
- drivers/net/ethernet/lantiq_xrx200.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Anyway, this describes _what_ this does, but I have no idea _why_ we
+want this at all.  What does this do that you can not do today?  Why is
+this needed?  Who will use this?  What tools have been modified to work
+with it to prove it works properly?
 
-diff --git a/drivers/net/ethernet/lantiq_xrx200.c b/drivers/net/ethernet/lantiq_xrx200.c
-index 51ed8a54d380..0f8ef8f1232c 100644
---- a/drivers/net/ethernet/lantiq_xrx200.c
-+++ b/drivers/net/ethernet/lantiq_xrx200.c
-@@ -460,10 +460,8 @@ static int xrx200_probe(struct platform_device *pdev)
- 	}
- 
- 	priv->pmac_reg = devm_ioremap_resource(dev, res);
--	if (IS_ERR(priv->pmac_reg)) {
--		dev_err(dev, "failed to request and remap io ranges\n");
-+	if (IS_ERR(priv->pmac_reg))
- 		return PTR_ERR(priv->pmac_reg);
--	}
- 
- 	priv->chan_rx.dma.irq = platform_get_irq_byname(pdev, "rx");
- 	if (priv->chan_rx.dma.irq < 0)
+thanks,
 
+greg k-h
