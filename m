@@ -2,206 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122E734B484
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 06:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC1934B487
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 06:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhC0FjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 01:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbhC0Fiv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 01:38:51 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908ECC0613AA;
-        Fri, 26 Mar 2021 22:38:51 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id j25so6291451pfe.2;
-        Fri, 26 Mar 2021 22:38:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7eFOafYjPPlgKHm64EqWVR9F6JqxMMQWqfco8Ml51KU=;
-        b=XZsSzFrl+9EzBODupHKVToet7afFuME8+yiHlvROhkK9LE0J9I3RWpj1D02PpTBXmb
-         ywPyDTRt2ExrH0D8MR5CeuBTYDRiWVPstaekmjHEh7TOZKc30rgiMalT/6xkKRZT2dpb
-         Dvy/FKFEbOODNZLoq44Dw+kPkD0DNHaCe1N21h4MPGlfzyQLrA9SmrmADCe1Z84+T0L0
-         3nykS5hA1P4TcgIbb17fD7fuoFvHMSqIOSq5AulvQsPwFUiGei3e3gw64NsrCtgah6Q0
-         4/KYx7KTzRP48w+ekwtZMhPHhxT2phh2WA7qX2DZ+OTjV1GOiSg7bg6GiZQta/n4l+7D
-         3WVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7eFOafYjPPlgKHm64EqWVR9F6JqxMMQWqfco8Ml51KU=;
-        b=eP/mFrYzgiHRzwjjv7btbvd716rIc24+FYXCwIbEb5HjGAXsCv8VP3Mywwi8SLV2ip
-         SjC/EGYzuiDDzayZrPacGVLNML8D2E/AibbEMwalQ8bO17HHhRhDbHPnuU8I6+lCKcd1
-         S1TKmewH11E4Ln4p+bNngL27GUfDWMnEfRjkEGARL7TU3EoilJfWna6BYNJUJTPz1EBt
-         HZFhF9PLOyuOPIfaBRdiWg0MLL9R1Ow2B+Z0JPzQYy0m9LBWnWEPgy7M4rujX/R0hytc
-         XAwFDU2Bp5p0NlVgEDp8RcOiP1QHLMrC4S92xls8ExIaMoj1I+xjy3acZEiKqb7bDCMI
-         WqXA==
-X-Gm-Message-State: AOAM5308eNgp24cnOGJeZNd/jqwiV/czEgn9wMv9EufjSLveWV/m8NYk
-        aV/0aAui4/Sm6e0QNLkAmsQ=
-X-Google-Smtp-Source: ABdhPJx7BH3r7NpJZLrlLv3I2yX/8zTcwfdqEZUbxkarK1Zw2ziY5Y9tvKmqdYi/BLd9oskQ5XB58w==
-X-Received: by 2002:a62:1713:0:b029:1f1:56e2:8ec6 with SMTP id 19-20020a6217130000b02901f156e28ec6mr15527140pfx.56.1616823531150;
-        Fri, 26 Mar 2021 22:38:51 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id k128sm10701933pfd.137.2021.03.26.22.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 22:38:50 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Chuanhong Guo <gch981213@gmail.com>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH 2/2] MIPS: ralink: mt7621: add memory detection support
-Date:   Fri, 26 Mar 2021 22:38:40 -0700
-Message-Id: <20210327053840.471155-2-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210327053840.471155-1-ilya.lipnitskiy@gmail.com>
-References: <20210327053840.471155-1-ilya.lipnitskiy@gmail.com>
+        id S229582AbhC0Fmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 01:42:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229620AbhC0Fmd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 01:42:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 282B161A1E;
+        Sat, 27 Mar 2021 05:42:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616823753;
+        bh=loaJcrol/PTRVMRrsww1gLT50nDJ8omknyueW0Pevuk=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=DzV1szVcasJX5KBkovy9pnJvfQVw3rx/z5xQOT2C8Dei+lW9UITUAVapAFTENymXn
+         Mf7DW9BnhTrjeLrXw1aMATkiBOwblGGD+kp2LDK6Qo/aAfa7Z7MsMD6Pzy9YbtjBCW
+         aEr/VwSg1EeZaiWQ0UOxv7W7kmEqcsyThfIymufeMiNLI2+QagnvfIJRMNz2oCmEmU
+         U2S659OMtVBW6nAG31W3cnDIERaR3MjUeeXkXpRnqDjTM4sX5SivWoyC6kpCk99oIO
+         R6b+ETVQxEk0IgXH4iL96HMXb3/5Hf5lDFDTENIAtca8qV/S0gkBGiyTULpHSYf/Ol
+         UiE4FkKdUhEcA==
+Received: by mail-oi1-f170.google.com with SMTP id n140so7888117oig.9;
+        Fri, 26 Mar 2021 22:42:33 -0700 (PDT)
+X-Gm-Message-State: AOAM530c+ujf9rCio6u2vtJNwYAMRAvl6k+MkSZoEaef/9cBA7SaJ1Mq
+        8q2RSCKLpwNE6EmV/K3b+vWaoVuYaonmLme6+q0=
+X-Google-Smtp-Source: ABdhPJyvRS6aynjHHQh55zHTQ+0rKLujRGaTPDJMYHWtytR3lW7/FhxKm2w9LM3ja1dm8hur3M7RhkKrW1VvJM3fwBY=
+X-Received: by 2002:aca:f4ce:: with SMTP id s197mr12125327oih.94.1616823752543;
+ Fri, 26 Mar 2021 22:42:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ac9:5ed4:0:0:0:0:0 with HTTP; Fri, 26 Mar 2021 22:42:31
+ -0700 (PDT)
+In-Reply-To: <20210325173538.485917-1-colin.king@canonical.com>
+References: <20210325173538.485917-1-colin.king@canonical.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sat, 27 Mar 2021 14:42:31 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd9Zq8FJ6sZZTTSBxuMpSdQ9rzeb_JEnOx+kQnXENHxhtg@mail.gmail.com>
+Message-ID: <CAKYAXd9Zq8FJ6sZZTTSBxuMpSdQ9rzeb_JEnOx+kQnXENHxhtg@mail.gmail.com>
+Subject: Re: [Linux-cifsd-devel] [PATCH][next] cifsd: remove redundant
+ assignment to variable err
+To:     Colin King <colin.king@canonical.com>
+Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-cifsd-devel@lists.sourceforge.net,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuanhong Guo <gch981213@gmail.com>
-
-mt7621 has the following memory map:
-0x0-0x1c000000: lower 448m memory
-0x1c000000-0x2000000: peripheral registers
-0x20000000-0x2400000: higher 64m memory
-
-detect_memory_region in arch/mips/kernel/setup.c only adds the first
-memory region and isn't suitable for 512m memory detection because
-it may accidentally read the memory area for peripheral registers.
-
-This commit adds memory detection capability for mt7621:
-  1. Add the highmem area when 512m is detected.
-  2. Guard memcmp from accessing peripheral registers:
-     This only happens when a user decided to change kernel load address
-     to 256m or higher address. Since this is a quite unusual case, we
-     just skip 512m testing and return 256m as memory size.
-
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
-[Minor commit message reword, make mt7621_memory_detect static]
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
----
- arch/mips/include/asm/mach-ralink/mt7621.h |  7 +++---
- arch/mips/ralink/common.h                  |  1 +
- arch/mips/ralink/mt7621.c                  | 29 +++++++++++++++++++---
- arch/mips/ralink/of.c                      |  2 ++
- 4 files changed, 32 insertions(+), 7 deletions(-)
-
-diff --git a/arch/mips/include/asm/mach-ralink/mt7621.h b/arch/mips/include/asm/mach-ralink/mt7621.h
-index e1af1ba50bd8..6bbf082dd149 100644
---- a/arch/mips/include/asm/mach-ralink/mt7621.h
-+++ b/arch/mips/include/asm/mach-ralink/mt7621.h
-@@ -24,9 +24,10 @@
- #define CHIP_REV_VER_SHIFT		8
- #define CHIP_REV_ECO_MASK		0xf
- 
--#define MT7621_DRAM_BASE                0x0
--#define MT7621_DDR2_SIZE_MIN		32
--#define MT7621_DDR2_SIZE_MAX		256
-+#define MT7621_LOWMEM_BASE		0x0
-+#define MT7621_LOWMEM_MAX_SIZE		0x1C000000
-+#define MT7621_HIGHMEM_BASE		0x20000000
-+#define MT7621_HIGHMEM_SIZE		0x4000000
- 
- #define MT7621_CHIP_NAME0		0x3637544D
- #define MT7621_CHIP_NAME1		0x20203132
-diff --git a/arch/mips/ralink/common.h b/arch/mips/ralink/common.h
-index 49ae370d023d..87fc16751281 100644
---- a/arch/mips/ralink/common.h
-+++ b/arch/mips/ralink/common.h
-@@ -17,6 +17,7 @@ struct ralink_soc_info {
- 	unsigned long mem_size;
- 	unsigned long mem_size_min;
- 	unsigned long mem_size_max;
-+	void (*mem_detect)(void);
- };
- extern struct ralink_soc_info soc_info;
- 
-diff --git a/arch/mips/ralink/mt7621.c b/arch/mips/ralink/mt7621.c
-index ec87ce561049..6b3db98894cb 100644
---- a/arch/mips/ralink/mt7621.c
-+++ b/arch/mips/ralink/mt7621.c
-@@ -9,7 +9,9 @@
- #include <linux/init.h>
- #include <linux/slab.h>
- #include <linux/sys_soc.h>
-+#include <linux/memblock.h>
- 
-+#include <asm/bootinfo.h>
- #include <asm/mipsregs.h>
- #include <asm/smp-ops.h>
- #include <asm/mips-cps.h>
-@@ -49,6 +51,8 @@
- #define MT7621_GPIO_MODE_SDHCI_SHIFT	18
- #define MT7621_GPIO_MODE_SDHCI_GPIO	1
- 
-+static void *detect_magic __initdata = detect_memory_region;
-+
- static struct rt2880_pmx_func uart1_grp[] =  { FUNC("uart1", 0, 1, 2) };
- static struct rt2880_pmx_func i2c_grp[] =  { FUNC("i2c", 0, 3, 2) };
- static struct rt2880_pmx_func uart3_grp[] = {
-@@ -110,6 +114,26 @@ phys_addr_t mips_cpc_default_phys_base(void)
- 	panic("Cannot detect cpc address");
- }
- 
-+static void __init mt7621_memory_detect(void)
-+{
-+	void *dm = &detect_magic;
-+	phys_addr_t size;
-+
-+	for (size = 32 * SZ_1M; size < 256 * SZ_1M; size <<= 1) {
-+		if (!__builtin_memcmp(dm, dm + size, sizeof(detect_magic)))
-+			break;
-+	}
-+
-+	if ((size == 256 * SZ_1M) &&
-+	    (CPHYSADDR(dm + size) < MT7621_LOWMEM_MAX_SIZE) &&
-+	    __builtin_memcmp(dm, dm + size, sizeof(detect_magic))) {
-+		memblock_add(MT7621_LOWMEM_BASE, MT7621_LOWMEM_MAX_SIZE);
-+		memblock_add(MT7621_HIGHMEM_BASE, MT7621_HIGHMEM_SIZE);
-+	} else {
-+		memblock_add(MT7621_LOWMEM_BASE, size);
-+	}
-+}
-+
- void __init ralink_of_remap(void)
- {
- 	rt_sysc_membase = plat_of_remap_node("mtk,mt7621-sysc");
-@@ -194,10 +218,7 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
- 		(rev >> CHIP_REV_VER_SHIFT) & CHIP_REV_VER_MASK,
- 		(rev & CHIP_REV_ECO_MASK));
- 
--	soc_info->mem_size_min = MT7621_DDR2_SIZE_MIN;
--	soc_info->mem_size_max = MT7621_DDR2_SIZE_MAX;
--	soc_info->mem_base = MT7621_DRAM_BASE;
--
-+	soc_info->mem_detect = mt7621_memory_detect;
- 	rt2880_pinmux_data = mt7621_pinmux_data;
- 
- 	soc_dev_init(soc_info, rev);
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 8286c3521476..0c5de07da097 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -78,6 +78,8 @@ void __init plat_mem_setup(void)
- 	of_scan_flat_dt(early_init_dt_find_memory, NULL);
- 	if (memory_dtb)
- 		of_scan_flat_dt(early_init_dt_scan_memory, NULL);
-+	else if (soc_info.mem_detect)
-+		soc_info.mem_detect();
- 	else if (soc_info.mem_size)
- 		memblock_add(soc_info.mem_base, soc_info.mem_size * SZ_1M);
- 	else
--- 
-2.31.0
-
+2021-03-26 2:35 GMT+09:00, Colin King <colin.king@canonical.com>:
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable err is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+I will apply. Thanks for your patch!
