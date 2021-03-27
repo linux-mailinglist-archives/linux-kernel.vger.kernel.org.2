@@ -2,152 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 558B634B86F
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99F2734B872
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 18:20:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhC0RTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 13:19:19 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:44933 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhC0RSq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 13:18:46 -0400
-Received: by mail-oi1-f176.google.com with SMTP id a8so8997236oic.11;
-        Sat, 27 Mar 2021 10:18:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PEy8pCun/NiviG6BA0cBYJQREcIYJ1X5sQiOW0s7OPs=;
-        b=iJxyU3vQin6vNMaAqIPuRWGk4CrPZQ4LcwB0Hu0hd3rK/YIkNRgeNCDlk4UCQvT+I0
-         0coxxlaopE3kw6pvaOnNuPx7Rj1UKK7P6MbB8V2bzyUZ5jpqkIVHFQbMgsGa8nOx6j3W
-         Xq1L2dLN0DNhZIBOqDjX3E2aQDNYLSDMcIhguQElClMIaX2NIbQALP5C8h6QLyD9zdWM
-         iONqWlqXuvhmiRdwLq5Uy/P7N5HYLBK33zbysLFFZ21P3kQotg1nJdCc13Ge5W0aCt2E
-         VKyBjmp0TyKPll3UGqyb1XGlklmCrmVZcoZ5cxUHssc526djKpXRO4e4ojxfZY6rIgNW
-         90DA==
-X-Gm-Message-State: AOAM531+gG7ZvzW1KNH60LKUO3ktF4/fOtXMmu6NqJ1uRnnrOCKzbwNb
-        ryQlhvxI/P3SZgD1gZhL5d7iwBusOA==
-X-Google-Smtp-Source: ABdhPJwBSUpnogc4ZFhpkavGvIHCwVUyyMBFxsJ+gvAAlKxbXwA9Y/WJp3tX1OMdzUn3y74yawqK9Q==
-X-Received: by 2002:aca:b06:: with SMTP id 6mr13818057oil.73.1616865525926;
-        Sat, 27 Mar 2021 10:18:45 -0700 (PDT)
-Received: from robh.at.kernel.org ([172.58.107.88])
-        by smtp.gmail.com with ESMTPSA id e34sm2961340ote.70.2021.03.27.10.18.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 10:18:44 -0700 (PDT)
-Received: (nullmailer pid 268199 invoked by uid 1000);
-        Sat, 27 Mar 2021 17:18:41 -0000
-Date:   Sat, 27 Mar 2021 11:18:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     "linux@roeck-us.net" <linux@roeck-us.net>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/6] dt-bindings: i2c: convert i2c-mpc to json-schema
-Message-ID: <20210327171841.GA263078@robh.at.kernel.org>
-References: <20210323043331.21878-1-chris.packham@alliedtelesis.co.nz>
- <20210323043331.21878-3-chris.packham@alliedtelesis.co.nz>
- <20210323211539.GB1326908@robh.at.kernel.org>
- <7ef36459-e23a-64cd-e9e1-35fb6cb9279f@alliedtelesis.co.nz>
- <00052125-3dc3-aad5-35df-957bc09a0840@alliedtelesis.co.nz>
+        id S230298AbhC0RU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 13:20:26 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:41635 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230296AbhC0RUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 13:20:08 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F75FL0fb4z9ty5P;
+        Sat, 27 Mar 2021 18:20:06 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id X-4yeutIqUOF; Sat, 27 Mar 2021 18:20:06 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F75FK6plhz9ty5N;
+        Sat, 27 Mar 2021 18:20:05 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0E59F8B777;
+        Sat, 27 Mar 2021 18:20:06 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id BhNcRVEsIzab; Sat, 27 Mar 2021 18:20:05 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 484DD8B771;
+        Sat, 27 Mar 2021 18:20:05 +0100 (CET)
+Subject: Re: [PATCH] powerpc/vdso: Separate vvar vma from vdso
+To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, stable@vger.kernel.org,
+        Laurent Dufour <ldufour@linux.ibm.com>
+References: <20210326191720.138155-1-dima@arista.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <52562f46-6767-ba04-7301-04c6209fe4f1@csgroup.eu>
+Date:   Sat, 27 Mar 2021 18:19:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20210326191720.138155-1-dima@arista.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <00052125-3dc3-aad5-35df-957bc09a0840@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 03:36:13AM +0000, Chris Packham wrote:
+
+
+Le 26/03/2021 Ã  20:17, Dmitry Safonov a Ã©critÂ :
+> Since commit 511157ab641e ("powerpc/vdso: Move vdso datapage up front")
+> VVAR page is in front of the VDSO area. In result it breaks CRIU
+> (Checkpoint Restore In Userspace) [1], where CRIU expects that "[vdso]"
+> from /proc/../maps points at ELF/vdso image, rather than at VVAR data page.
+> Laurent made a patch to keep CRIU working (by reading aux vector).
+> But I think it still makes sence to separate two mappings into different
+> VMAs. It will also make ppc64 less "special" for userspace and as
+> a side-bonus will make VVAR page un-writable by debugger (which previously
+> would COW page and can be unexpected).
 > 
-> On 24/03/21 10:59 am, Chris Packham wrote:
-> >
-> > On 24/03/21 10:15 am, Rob Herring wrote:
-> >> On Tue, Mar 23, 2021 at 05:33:27PM +1300, Chris Packham wrote:
-> >>> Convert i2c-mpc to YAML.
-> >>>
-> >>> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> >>> ---
-> <snip>
-> >>> --- /dev/null
-> >>> +++ b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> >>> @@ -0,0 +1,99 @@
-> >>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >>> +%YAML 1.2
-> >>> +---
-> >>> +$id: http://devicetree.org/schemas/i2c/i2c-mpc.yaml#
-> >>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >>> +
-> >>> +title: I2C-Bus adapter for MPC824x/83xx/85xx/86xx/512x/52xx SoCs
-> >>> +
-> >>> +maintainers:
-> >>> +  - Chris Packham <chris.packham@alliedtelesis.co.nz>
-> >>> +
-> >>> +allOf:
-> >>> +  - $ref: /schemas/i2c/i2c-controller.yaml#
-> >>> +
-> >>> +properties:
-> >>> +  compatible:
-> >>> +    anyOf:
-> >>> +      - items:
-> >>> +        - enum:
-> >>> +          - mpc5200-i2c
-> >>> +          - fsl,mpc5200b-i2c
-> >>> +          - fsl,mpc5200-i2c
-> >>> +          - fsl,mpc5121-i2c
-> >>> +          - fsl,mpc8313-i2c
-> >>> +          - fsl,mpc8543-i2c
-> >>> +          - fsl,mpc8544-i2c
-> >>> +
-> >>> +        - const: fsl-i2c
-> >>> +
-> >>> +      - contains:
-> >>> +          const: fsl-i2c
-> >>> +        minItems: 1
-> >>> +        maxItems: 4
-> >> Can't we drop this and list out any other compatibles?
-> >
-> > I'm struggling a little bit with how to get the schema right to allow 
-> > one or more of a set of compatible values.
-> >
-> > Basically I want to allow 'compatible = "fsl-i2c";' or 'compatible = 
-> > "fsl,mpc8544-i2c", "fsl-i2c";' but disallow 'compatible = "foobar", 
-> > "fsl-i2c";'
+> I opportunistically Cc stable on it: I understand that usually such
+> stuff isn't a stable material, but that will allow us in CRIU have
+> one workaround less that is needed just for one release (v5.11) on
+> one platform (ppc64), which we otherwise have to maintain.
+
+Why is that a workaround, and why for one release only ? I think the solution proposed by Laurentto 
+use the aux vector AT_SYSINFO_EHDR should work with any past and future release.
+
+> I wouldn't go as far as to say that the commit 511157ab641e is ABI
+> regression as no other userspace got broken, but I'd really appreciate
+> if it gets backported to v5.11 after v5.12 is released, so as not
+> to complicate already non-simple CRIU-vdso code. Thanks!
 > 
-> This is what I've ended up with
-> 
-> properties:
-> compatible:
-> oneOf:
->        - items:
->            - enum:
->                - mpc5200-i2c
->                - fsl,mpc5200-i2c
->                - fsl,mpc5121-i2c
->                - fsl,mpc8313-i2c
->                - fsl,mpc8543-i2c
->                - fsl,mpc8544-i2c
->                - fsl-i2c
+> Cc: Andrei Vagin <avagin@gmail.com>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Laurent Dufour <ldufour@linux.ibm.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: stable@vger.kernel.org # v5.11
+> [1]: https://github.com/checkpoint-restore/criu/issues/1417
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
+> Tested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-This one should be dropped. '"fsl-i2c", "fsl-i2c"' presumably isn't 
-valid. There's a generic check for unique entries anyways, so it would 
-still fail.
+I tested it with sifreturn_vdso selftest and it worked, because that selftest doesn't involve VDSO data.
 
->            - const: fsl-i2c
->        - items:
->            - const: fsl,mpc5200b-i2c
->            - const: fsl,mpc5200-i2c
->            - const: fsl-i2c
-> 
-> It passes `make dt_binding_check` and rejects things when I add other 
-> non-documented values to the compatible property. I did struggle with it 
-> so I'm not confident it's the best approach but it seems to work.
+But if I do a mremap() on the VDSO text vma without remapping VVAR to keep the same distance between 
+the two vmas, gettimeofday() crashes. The reason is that the code obtains the address of the data by 
+calculating a fix difference from its own address with the below macro, the delta being resolved at 
+link time:
 
-Otherwise, looks right to me.
+.macro get_datapage ptr
+	bcl	20, 31, .+4
+999:
+	mflr	\ptr
+#if CONFIG_PPC_PAGE_SHIFT > 14
+	addis	\ptr, \ptr, (_vdso_datapage - 999b)@ha
+#endif
+	addi	\ptr, \ptr, (_vdso_datapage - 999b)@l
+.endm
 
-Rob
+So the datapage needs to remain at the same distance from the code at all time.
 
+Wondering how the other architectures do to have two independant VMAs and be able to move one 
+independantly of the other.
+
+Christophe
