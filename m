@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF09934B82E
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36B2934B82F
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 17:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbhC0QgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 12:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhC0Qf4 (ORCPT
+        id S230271AbhC0QgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 12:36:22 -0400
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:46620 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230092AbhC0QgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 12:35:56 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35FAFC0613B1;
-        Sat, 27 Mar 2021 09:35:56 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id r193so8536819ior.9;
-        Sat, 27 Mar 2021 09:35:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BBpKHPTfLzeVC8Vlokz6RnjApS7jM+5JGdUbmQj/Yqs=;
-        b=TBVwnQvO+sXGZss5Ndc4fHHY0yZbzLdYOXsyniyWXixCmJScopTZpT04x6TdixzVdy
-         b37Gi288u4M/dn2PXi/bBBhab8tnDrfH6jt8Ign9qBdYZT00ZXIvwoivs8Fp2HAxcHSG
-         cBdLgZeTAGFTrXBdrD0CCHOprl/z0551Bp69KTQ5JUFD/WxDGTsToAP13BDMf51/BgJf
-         Fsfv4817sAYE9HsOiHr4+s517qGu8YNzx7OVp0PkFRU++LGgw+KmaPHDzGskgOBdYpWe
-         gUT8ZRQyc/TvXywEYQDHX4GBiIU1Mph6j+QZmWmlUEypa6vgtezfrkNOkEp5yLBMsYzY
-         bfZQ==
+        Sat, 27 Mar 2021 12:36:13 -0400
+Received: by mail-oo1-f48.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so2017196oof.13;
+        Sat, 27 Mar 2021 09:36:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BBpKHPTfLzeVC8Vlokz6RnjApS7jM+5JGdUbmQj/Yqs=;
-        b=T2cNMhJEnSirxMvBupcEL8sovUnnrrXyDpSDByieSkuAHHxrODDVt+OG65ppyZ8oRM
-         GitH/FoHnk2sBC7qqFwP/iGFwsUVgsIIDboeY35rF5yEsmb/kFvU1zkVfQlPu8LZQZEk
-         Dt4HYeYqgzcA8UQnHg/a/DQW9wjxqX+inTslOJbU4HzqwFWNuRp8AGbwpuaUCYajDO3s
-         ERqwXHl+yE1aRmUdMVUus7sUmjGB2vL93vd2Lc3A4daO0hKP96dX2zdWA8AxeGqk0p9d
-         Bk6/lSVYGPOHDRYsycGen7TN7bDk2agN5AA4IOrbZO9Vc+R7HmXbYlPfldxFbV93W4J/
-         w+6Q==
-X-Gm-Message-State: AOAM532bjImXEhQ3O+dKwDOFnuP4kOGtCjwCmIsgjvviB7/mUSN0qzmW
-        OGIjubNf6NX19HT9jEykkv9ERvZ1Sn+0eiWnzrU=
-X-Google-Smtp-Source: ABdhPJywwV+4zcT3KxAEMj2QBhddeKToPnOV79azTvHsFa15QK7QbVIbGOh6EAEcSM1/EW0rO8RzSMvcCm166Hm+TnQ=
-X-Received: by 2002:a05:6638:11c8:: with SMTP id g8mr17295564jas.38.1616862954754;
- Sat, 27 Mar 2021 09:35:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ezf8ZsxHR7Q2VJAPplq3OYrE78elzd24DdXuyG3/QdU=;
+        b=a3f4pP10grtFrooQ1fq5MLPTpoVHT6P+JLw5JXCT9M1UP0b3/0/fSYxvBgSOwHiViP
+         VIQHAgxIMVxcyeNeYYkbDLJdx8ZAQttWofuLv4FTluehQLfpEF5mAatd2PdZ6rL7ezqL
+         yQLYo4hMMD98kqh8RpwWX+/LTHMIPDbYG5mYLWHUzr/BSic1dIyJy/OxhHVHzv0GSdn8
+         LbaQ4mnP1PQ9hwrKJzN37bsp491pJqMEUZdmlknyZKjLIQStiUCc8kCxNIVJUj+oyKjc
+         xExtohrPJ0KjpB1eei0+2XgPKv5WA3do7iCYUYi+TnUxN0MkTKrSQJ7Z7uZ1Id9LwEP/
+         VLsA==
+X-Gm-Message-State: AOAM5313BHxOQrD6WG3foEF4s/jnUBgXsVSvhFCGDYTt+TR/ujDA0N8L
+        WlN0Dzm1vqBprtaMEpqTsQ==
+X-Google-Smtp-Source: ABdhPJwM2NDuERRYq4E1lpdIQVS9lu3Mp0RN1p4NlSoqMq2IIvvWtukgPmGwLYlQ3CquH1KP9J1iNQ==
+X-Received: by 2002:a4a:aa82:: with SMTP id d2mr15919534oon.52.1616862973377;
+        Sat, 27 Mar 2021 09:36:13 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.99.140])
+        by smtp.gmail.com with ESMTPSA id l26sm2922978otd.21.2021.03.27.09.36.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 09:36:12 -0700 (PDT)
+Received: (nullmailer pid 210814 invoked by uid 1000);
+        Sat, 27 Mar 2021 16:36:08 -0000
+Date:   Sat, 27 Mar 2021 10:36:08 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     openbmc@lists.ozlabs.org, Max Merchel <Max.Merchel@tq-group.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>, devicetree@vger.kernel.org,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 01/14] dt-bindings: vendor-prefixes: Add Supermicro
+Message-ID: <20210327163608.GA203544@robh.at.kernel.org>
+References: <20210320181610.680870-1-j.neuschaefer@gmx.net>
+ <20210320181610.680870-2-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-References: <20210317055902.506773-1-ilya.lipnitskiy@gmail.com>
- <20210325095529.GA5775@alpha.franken.de> <CALCv0x2ni97mLEar6M9boWCrXzdsqM3JJNMbe=cDitHj+npanw@mail.gmail.com>
- <20210327094620.GA4320@alpha.franken.de>
-In-Reply-To: <20210327094620.GA4320@alpha.franken.de>
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Date:   Sat, 27 Mar 2021 09:35:43 -0700
-Message-ID: <CALCv0x23kmm5=PN_aS3L4fpEf8F9g7ay5ouX9AnCvf0uu6HM-g@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: ralink: mt7621: add memory detection support
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210320181610.680870-2-j.neuschaefer@gmx.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 2:46 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Thu, Mar 25, 2021 at 07:45:23PM -0700, Ilya Lipnitskiy wrote:
-> > On Thu, Mar 25, 2021 at 3:01 AM Thomas Bogendoerfer
-> > <tsbogend@alpha.franken.de> wrote:
-> > >
-> > > On Tue, Mar 16, 2021 at 10:59:02PM -0700, Ilya Lipnitskiy wrote:
-> > > > From: Chuanhong Guo <gch981213@gmail.com>
-> > > >
-> > > > mt7621 has the following memory map:
-> > > > 0x0-0x1c000000: lower 448m memory
-> > > > 0x1c000000-0x2000000: peripheral registers
-> > > > 0x20000000-0x2400000: higher 64m memory
-> > > >
-> > > > detect_memory_region in arch/mips/kernel/setup.c only adds the first
-> > > > memory region and isn't suitable for 512m memory detection because
-> > > > it may accidentally read the memory area for peripheral registers.
-> > > >
-> > > > This commit adds memory detection capability for mt7621:
-> > > >   1. Add the highmem area when 512m is detected.
-> > > >   2. Guard memcmp from accessing peripheral registers:
-> > > >      This only happens when a user decided to change kernel load address
-> > > >      to 256m or higher address. Since this is a quite unusual case, we
-> > > >      just skip 512m testing and return 256m as memory size.
-> > > >
-> > > > [...]
-> > >
-> > > I get
-> > >
-> > > WARNING: modpost: vmlinux.o(.text+0x132c): Section mismatch in reference from the function prom_soc_init() to the function .init.text:mt7621_memory_detect()
-> > > The function prom_soc_init() references
-> > > the function __init mt7621_memory_detect().
-> > > This is often because prom_soc_init lacks a __init
-> > > annotation or the annotation of mt7621_memory_detect is wrong.
-> > >
-> > > Can you please fix this ?
-> > Thanks, I will fix it. Having trouble reproducing the error, but I
-> > clearly see the issue. Are you building on a MIPS target or
-> > cross-compiling (I'm cross-compiling and no errors).
->
-> I'm cross compiling, I can provide you the .config, if you want.
-Yeah, that would help. I spent quite a bit of time trying to reproduce
-- tried different options with GCC 8 and GCC 10 to no avail. Maybe you
-are using clang?
+On Sat, 20 Mar 2021 19:15:57 +0100, Jonathan Neuschäfer wrote:
+> Super Micro Computer, Inc. (https://www.supermicro.com/en/), commonly
+> known as Supermicro, is a manufacturer of server hardware.
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-Ilya
+Acked-by: Rob Herring <robh@kernel.org>
