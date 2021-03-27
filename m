@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE16D34B8DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 19:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E91B334B8DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 19:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhC0SWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 14:22:17 -0400
-Received: from smtp.gentoo.org ([140.211.166.183]:35226 "EHLO smtp.gentoo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230105AbhC0SVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 14:21:55 -0400
-Received: by sf.home (Postfix, from userid 1000)
-        id A29665A22061; Sat, 27 Mar 2021 18:21:50 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>, linux-mm@kvack.org
-Subject: [PATCH v2] mm: page_alloc: ignore init_on_free=1 for debug_pagealloc=1
-Date:   Sat, 27 Mar 2021 18:21:44 +0000
-Message-Id: <20210327182144.3213887-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210327180348.137d8fe2@sf>
-References: <20210327180348.137d8fe2@sf>
+        id S230363AbhC0SYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 14:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230127AbhC0SYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 14:24:15 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4ECC0613B2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 11:24:15 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3997530pjv.1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 11:24:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=+HkyJ4r/cUeRZEJEAyr+q64APIM8DDyM52+WtIHA4MI=;
+        b=WbIwqBuYODjCUQgGQAO2Xh1gnLeRIQCrfeZKPcOO0wgFv3UV7eZsidDHy9ar5By5Ss
+         y3dZ58si+/v7dsNKQ5ImkdLDWDympIV8h+vOI1SOs7ATEqiIUDyDArApg8aOywDcPTav
+         Efx+HA117Ppy4J9Aoy4RBDzWHOA80OzTDHBrY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=+HkyJ4r/cUeRZEJEAyr+q64APIM8DDyM52+WtIHA4MI=;
+        b=XvNC/eRtXtHKfP6ekUPIb/Lkr6gr4DUYXVjH1534vGUWaKoPIN7aV5dpbQN6iTpqeU
+         dHRsr2GD7TYO9GaUqMshRKzONzaOZzTyqQ5b61tNX7ZZzC3rLjEafXBwbHdZCJ0143w4
+         p6l1UNEqpmf6kOHHJogrwWGtVJ7vAj2UJi3edbK7C0zKz+ACathHhTfto0tUVFIUwf3q
+         aKlGSGUfLLq03P+juebNbcgx8yuWm0UgfEs9o7CIixg8maJlL9t9/cfQLXCu61hQvST+
+         bgEMACudXniU4XDLDbuJ2qAoPgD36kaeDBFLY85g8twKdZ9mF6lXrzZ2whIg6fn1YZPZ
+         Nyiw==
+X-Gm-Message-State: AOAM532bW+S0tp2ue4agq0V/mJ2vxJMhefYs3wJfdEmQVt9mTNDCVDOl
+        V1g/CcZgvnHYKh1ik7IrsYWvdA==
+X-Google-Smtp-Source: ABdhPJynjwgI5oUqqbImRqE58g/QNNY5vcK4P5zwSWlbMqaRky2qrTiDnElsesEFPy9IeeNOynIoBQ==
+X-Received: by 2002:a17:902:9b8a:b029:e6:17bb:eff0 with SMTP id y10-20020a1709029b8ab02900e617bbeff0mr21494324plp.54.1616869454655;
+        Sat, 27 Mar 2021 11:24:14 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:4836:2ec9:9c88:3812])
+        by smtp.gmail.com with ESMTPSA id cp22sm11382811pjb.15.2021.03.27.11.24.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 11:24:14 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210326175809.2923789-2-dmitry.baryshkov@linaro.org>
+References: <20210326175809.2923789-1-dmitry.baryshkov@linaro.org> <20210326175809.2923789-2-dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v4 1/7] dt-bindings: phy: qcom,qmp-usb3-dp-phy: move usb3 compatibles back to qcom,qmp-phy.yaml
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Manu Gautam <mgautam@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, Vinod Koul <vkoul@kernel.org>
+Date:   Sat, 27 Mar 2021 11:24:12 -0700
+Message-ID: <161686945245.3012082.10570047641858984855@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On !ARCH_SUPPORTS_DEBUG_PAGEALLOC (like ia64) debug_pagealloc=1
-implies page_poison=on:
+Quoting Dmitry Baryshkov (2021-03-26 10:58:03)
+> The commit 724fabf5df13 ("dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy
+> information") has support for DP part of USB3+DP combo PHYs. However
+> this change is not backwards compatible, placing additional requirements
+> onto qcom,sc7180-qmp-usb3-phy and qcom,sdm845-qmp-usb3-phy device nodes
+> (to include separate DP part, etc). However the aforementioned nodes do
+> not inclue DP part, they strictly follow the schema defined in the
+> qcom,qmp-phy.yaml file. Move those compatibles, leaving
+> qcom,qmp-usb3-dp-phy.yaml to describe only real "combo" USB3+DP device no=
+des.
+>=20
+> Fixes: 724fabf5df13 ("dt-bindings: phy: qcom,qmp-usb3-dp: Add DP phy info=
+rmation")
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml         | 2 ++
+>  Documentation/devicetree/bindings/phy/qcom,qmp-usb3-dp-phy.yaml | 2 --
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml b/Do=
+cumentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> index 626447fee092..0f42b36b0ac5 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,qmp-phy.yaml
+> @@ -25,11 +25,13 @@ properties:
+>        - qcom,msm8998-qmp-pcie-phy
+>        - qcom,msm8998-qmp-ufs-phy
+>        - qcom,msm8998-qmp-usb3-phy
+> +      - qcom,sc7180x-qmp-usb3-phy
 
-    if (page_poisoning_enabled() ||
-         (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
-          debug_pagealloc_enabled()))
-            static_branch_enable(&_page_poisoning_enabled);
+Drop the x on sc7180?
 
-page_poison=on needs to init_on_free=1.
+>        - qcom,sc8180x-qmp-ufs-phy
+>        - qcom,sc8180x-qmp-usb3-phy
+>        - qcom,sdm845-qhp-pcie-phy
+>        - qcom,sdm845-qmp-pcie-phy
+>        - qcom,sdm845-qmp-ufs-phy
+> +      - qcom,sdm845-qmp-usb3-phy
+>        - qcom,sdm845-qmp-usb3-uni-phy
+>        - qcom,sm8150-qmp-ufs-phy
+>        - qcom,sm8150-qmp-usb3-phy
 
-Before the change id happened too late for the following case:
-- have PAGE_POISONING=y
-- have page_poison unset
-- have !ARCH_SUPPORTS_DEBUG_PAGEALLOC arch (like ia64)
-- have init_on_free=1
-- have debug_pagealloc=1
+Otherwise
 
-That way we get both keys enabled:
-- static_branch_enable(&init_on_free);
-- static_branch_enable(&_page_poisoning_enabled);
-
-which leads to poisoned pages returned for __GFP_ZERO pages.
-
-After the change we execute only:
-- static_branch_enable(&_page_poisoning_enabled);
-and ignore init_on_free=1.
-
-CC: Vlastimil Babka <vbabka@suse.cz>
-CC: Andrew Morton <akpm@linux-foundation.org>
-CC: linux-mm@kvack.org
-CC: David Hildenbrand <david@redhat.com>
-CC: Andrey Konovalov <andreyknvl@gmail.com>
-Link: https://lkml.org/lkml/2021/3/26/443
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- mm/page_alloc.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d57d9b4f7089..10a8a1d28c11 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -764,32 +764,36 @@ static inline void clear_page_guard(struct zone *zone, struct page *page,
-  */
- void init_mem_debugging_and_hardening(void)
- {
-+	bool page_poison_requested = page_poisoning_enabled();
-+
-+#ifdef CONFIG_PAGE_POISONING
-+	/*
-+	 * Page poisoning is debug page alloc for some arches. If
-+	 * either of those options are enabled, enable poisoning.
-+	 */
-+	if (page_poisoning_enabled() ||
-+	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
-+	      debug_pagealloc_enabled())) {
-+		static_branch_enable(&_page_poisoning_enabled);
-+		page_poison_requested = true;
-+	}
-+#endif
-+
- 	if (_init_on_alloc_enabled_early) {
--		if (page_poisoning_enabled())
-+		if (page_poison_requested)
- 			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
- 				"will take precedence over init_on_alloc\n");
- 		else
- 			static_branch_enable(&init_on_alloc);
- 	}
- 	if (_init_on_free_enabled_early) {
--		if (page_poisoning_enabled())
-+		if (page_poison_requested)
- 			pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
- 				"will take precedence over init_on_free\n");
- 		else
- 			static_branch_enable(&init_on_free);
- 	}
- 
--#ifdef CONFIG_PAGE_POISONING
--	/*
--	 * Page poisoning is debug page alloc for some arches. If
--	 * either of those options are enabled, enable poisoning.
--	 */
--	if (page_poisoning_enabled() ||
--	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
--	      debug_pagealloc_enabled()))
--		static_branch_enable(&_page_poisoning_enabled);
--#endif
--
- #ifdef CONFIG_DEBUG_PAGEALLOC
- 	if (!debug_pagealloc_enabled())
- 		return;
--- 
-2.31.0
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
