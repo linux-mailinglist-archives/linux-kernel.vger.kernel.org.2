@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A4234B6C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 12:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BDF34B6C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 12:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbhC0LRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 07:17:01 -0400
-Received: from mail-m17637.qiye.163.com ([59.111.176.37]:9248 "EHLO
-        mail-m17637.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhC0LQ7 (ORCPT
+        id S231537AbhC0LTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 07:19:06 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:56111 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230288AbhC0LTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 07:16:59 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m17637.qiye.163.com (Hmail) with ESMTPA id 7FBE398010A;
-        Sat, 27 Mar 2021 19:16:56 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] [v2] scripts: checkdeclares for checking duplicate struct declares
-Date:   Sat, 27 Mar 2021 19:16:41 +0800
-Message-Id: <20210327111646.1708836-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 27 Mar 2021 07:19:05 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Q6y4lxFusMxedQ6y7lW0y7; Sat, 27 Mar 2021 12:19:03 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1616843943; bh=aj5LwXOasYXeMz0lB/0FUlLDGJMG5MT2EJF0mTpKlNA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=DIcNgSZrG6vbYVOD0/1JUveo65qZSFLVKaRZv7MUDN8GqfnrQcWoZo7ZEvrH8u4w8
+         JyzVEP600zA9bPmDJ6t8+clPlDmhb1JQvyX/aUuZuhD+Ozk9DrfX8KUvmZ6gHwalC3
+         rkWItieEkNZSPn3t0fsWt2heiwyjqvE1oSKGUJc1bLjYtqScAn53Y+DqX4RKDYBpP6
+         Is4IjPe54n9NF6YIiQjI4wGvWJgOPQKYm2Ggf0mysjNz+0jZITGCIdyrdZ2mko+ohi
+         BSqAB/CAzB5zvlBIAcgqC8QuXV2gI29PL5M3Nua43qN+ankFYtH3Sbj7QR0Mwj93RC
+         jlqvv2iftpeWQ==
+Subject: Re: [PATCH v9 17/22] media: docs: Document the behaviour of uvcdriver
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org
+References: <20210326095840.364424-1-ribalda@chromium.org>
+ <20210326095840.364424-18-ribalda@chromium.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <417be36b-850a-84b2-dc68-c1bec85e2edb@xs4all.nl>
+Date:   Sat, 27 Mar 2021 12:19:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZHR9DQx9KTUMeTk1LVkpNSk1DT0hDSk1NTkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nhg6ECo4Kz8RODM8MAErCDkd
-        AgkKCy9VSlVKTUpNQ09IQ0pMS0tCVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFJTEpINwY+
-X-HM-Tid: 0a787366be83d992kuws7fbe398010a
+In-Reply-To: <20210326095840.364424-18-ribalda@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKEaX5oJEl58FzuFBMh+n45oVn63JNt4XyERqTdxeJvnB6bTPXNkfD5lUGNZdLMOrocl23+YUPptTV6MCwU42tms1gQ+gwllD5Cbf/QGIntXX3j0pLlM
+ euxZ7bDGbyb4DX6Nl8/3gjIzOfR81v4nNuzEAbaUzFND+xAsd7gJiC59F9EqYsfslzEODmk6CzAvginU5yh3bDi3m9WhrOkBuQZ2Uh2Pd3UxE/V7Kbz/mS3a
+ WKjUJZ5VDA4mNs80uDd6J9tNqA5pOV/hzEHuyqiRHK9qygossmuNFjrmoRmMpExXN7f+d7JGBtBWdOKDkOz2vPb6/HmWGODziRRtUuvQSwWcGWrxKCNGnMhG
+ seTXWQTYJMmpWnMw/MCWKPvFd7RgPFCh1bCORdaeAqV2LuFBS11cKyo07YSm36ZGe9GZEjh+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkdeclares: find struct declared more than once.
-Inspired by checkincludes.pl
-This script checks for duplicate struct declares.
-Note that this will not take into consideration macros so
-you should run this only if you know you do have real dups
-and do not have them under #ifdef's.
-You could also just review the results.
+On 26/03/2021 10:58, Ricardo Ribalda wrote:
+> The uvc driver relies on the camera firmware to keep the control states
+> and therefore is not capable of changing an inactive control.
+> 
+> Allow returning -EACESS in those cases.
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
-Changelog:
-v2:
-- Delete unused variable @file_lines.
----
- scripts/checkdeclares.pl | 53 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
- create mode 100755 scripts/checkdeclares.pl
+-EACCES
 
-diff --git a/scripts/checkdeclares.pl b/scripts/checkdeclares.pl
-new file mode 100755
-index 000000000000..ce769572f807
---- /dev/null
-+++ b/scripts/checkdeclares.pl
-@@ -0,0 +1,53 @@
-+#!/usr/bin/env perl
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# checkdeclares: find struct declared more than once
-+#
-+# Copyright 2021 Wan Jiabing<wanjiabing@vivo.com>
-+# Inspired by checkincludes.pl
-+#
-+# This script checks for duplicate struct declares.
-+# Note that this will not take into consideration macros so
-+# you should run this only if you know you do have real dups
-+# and do not have them under #ifdef's.
-+# You could also just review the results.
-+
-+use strict;
-+
-+sub usage {
-+	print "Usage: checkdeclares.pl \n";
-+	print "We just warn of struct declaration duplicates\n";
-+	exit 1;
-+}
-+
-+if ($#ARGV < 0) {
-+	usage();
-+}
-+
-+my $dup_counter = 0;
-+
-+foreach my $file (@ARGV) {
-+	open(my $f, '<', $file)
-+	    or die "Cannot open $file: $!.\n";
-+
-+	my %declaredfiles = ();
-+
-+	while (<$f>) {
-+		if (m/^\s*struct\s*(\w*);$/o) {
-+			++$declaredfiles{$1};
-+		}
-+	}
-+
-+	close($f);
-+
-+	foreach my $filename (keys %declaredfiles) {
-+		if ($declaredfiles{$filename} > 1) {
-+			print "$file: struct $filename is declared more than once.\n";
-+			++$dup_counter;
-+		}
-+	}
-+}
-+
-+if ($dup_counter == 0) {
-+	print "No duplicate struct declares found.\n";
-+}
--- 
-2.25.1
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst      | 5 +++++
+>  Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst | 5 +++++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
+> index 4f1bed53fad5..8c0a203385c2 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
+> @@ -95,3 +95,8 @@ EBUSY
+>  
+>  EACCES
+>      Attempt to set a read-only control or to get a write-only control.
+> +
+> +    Or if there is an attempt to set an inactive control and the driver is
+> +    not capable of keeping the new value until the control is active again.
 
+keeping: 'caching' or 'storing' are better words, I think.
+
+> +    This is the case for drivers that do not use the standard control
+> +    framework and rely purely on the hardware to keep the controls' state.
+
+I would drop that last sentence. It is not relevant information to the users of
+the API.
+
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> index b9c62affbb5a..bb7de7a25241 100644
+> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+> @@ -438,3 +438,8 @@ EACCES
+>  
+>      Or the ``which`` field was set to ``V4L2_CTRL_WHICH_REQUEST_VAL`` but the
+>      device does not support requests.
+> +
+> +    Or if there is an attempt to set an inactive control and the driver is
+> +    not capable of keeping the new value until the control is active again.
+> +    This is the case for drivers that do not use the standard control
+> +    framework and rely purely on the hardware to keep the controls' state.
+
+Same comments as above.
+
+> 
+
+Regards,
+
+	Hans
