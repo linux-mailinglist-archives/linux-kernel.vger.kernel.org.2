@@ -2,272 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFD334B94B
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 21:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75D034B94D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 21:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhC0U0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 16:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhC0UZc (ORCPT
+        id S230411AbhC0U2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 16:28:52 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:46803 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhC0U2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 16:25:32 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CBAC0613B2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 13:25:31 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id j18so8921942wra.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 13:25:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=s8gzVxqzuc1k7in7AHl85pKPO4uHenSLvBWD/D32x1s=;
-        b=HKBOAWkY+TK1W/RRlNJCrPiYtO35hOT0v4na7AtOn577L3fUIrSTK+slP+bZPtFczB
-         rTz2g7ATJVmSVkQKtg35AMBc4/UQEsKHN3O1XDMfvdd3DM+ttF9FCuxjDvArIQ/2Xvma
-         Z8tmj+IUnPQZY0pG8d26oazwN43iL9x0SinLCUvGRsQml6+Wl5YV8ZtcYCfrEoWHslQx
-         +aJWMtGejacJsQjSoy1b8SwJzaHUh/DC/qyd0bq7x0d5pVkERnheHOi+xwaszSSpUtmQ
-         HqfOLVwrZAbJazcTuF/IvjtTSrAlkA/GNaOJqhuqgiZISDENndr0RsRSX3D+mJRC9zIB
-         PQ6g==
+        Sat, 27 Mar 2021 16:28:23 -0400
+Received: by mail-oo1-f46.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so2094935oof.13;
+        Sat, 27 Mar 2021 13:28:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=s8gzVxqzuc1k7in7AHl85pKPO4uHenSLvBWD/D32x1s=;
-        b=OF+84GEeyKu3fMI6Q5zmRulJ+jUGXqjtlGsokKokbBlwzXagNWQ7gSRi27e9znhqAJ
-         inRp0PVwL/ev+PGmylseEysxzo708JJyVdcjFgC9ilRMbXehRdNwM/UwgsIaaLDgYL+b
-         S6FKPRyyAQ/lpjOCsrgK271Ev6t9qHIuwpnAQsFAdvTrbr3/rpYTFS5VmWcatOQoo6Kd
-         ZZhIjdJ+8zOK5KkG30GfwhGI5n4+EYGEYYEYZ25+dILYooaOlWZBJN4SsGtMu3QHb/py
-         9Kcei+0hm6rzoxHiDLEYMWaYkUYPFzDikKDgReBAIW4SOPDm8atBZgIo929m7nQ4Vvyl
-         jvtw==
-X-Gm-Message-State: AOAM532rjAjL1BVw2aWKeAiI3Se0ZPIVRXOOSPVoUBWuc39yVs+Tldjw
-        kTMfGqixNWYudSleIFn3coMpaA==
-X-Google-Smtp-Source: ABdhPJzuMpV1UB85AeDicHaBE3aPiyJvZp+lIVriNnz1Ivuxlawm4QYMNucTm4el2a8GiLjULkdAcA==
-X-Received: by 2002:a5d:65cd:: with SMTP id e13mr21261121wrw.334.1616876730170;
-        Sat, 27 Mar 2021 13:25:30 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:2d8b:2e0e:777b:e562? ([2a01:e34:ed2f:f020:2d8b:2e0e:777b:e562])
-        by smtp.googlemail.com with ESMTPSA id u8sm20285874wrr.42.2021.03.27.13.25.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 27 Mar 2021 13:25:29 -0700 (PDT)
-Subject: Re: [PATCH] thermal/drivers/netlink: Add the temperature when
- crossing a trip point
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     rkumbako@quicinc.com, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:ABI/API" <linux-api@vger.kernel.org>
-References: <20210325193633.19592-1-daniel.lezcano@linaro.org>
- <CAJZ5v0g58LMVwRWdJaTWVOx09gt6KRGTa974k3cvHYQyxk0EYg@mail.gmail.com>
- <444a7fc72e6525575b929760fcad186630577afc.camel@linux.intel.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <ae16d810-e5ec-ad63-7b29-fd1ddab68907@linaro.org>
-Date:   Sat, 27 Mar 2021 21:25:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=XNZ+EBfgEMxRAYAYmvTpo4CEdtKjfZhi1SZZY27qM3s=;
+        b=AKp7L+9zfL9pYjqMX2MmZTVuEQ+Ltl0dai3IB+tstJ9xy5HmlFoaUpSNLWcpwYqyig
+         UdK424ak7c3ft95+ihXzti8GiPVqZ9p0CtlvnHhG6ErdWLQ0ghYkyPb1Lbnhchw+yglU
+         CJt/8i9Y+55Qq9SjFt9Jy4AO8VZr4D7kgeo3sDhFRm+UiWlCq7yLPR89h+/f+YpoX067
+         CBYn6WFhseP1ggbNv4wRhvJlsrL3C6ymyPbqS+YbWyt5C5llQjciPL3+FmVOYeExQCYL
+         Fvz1HktSO1fic1blrjwYrfxaIyVBQhtPXqcc/2TSub3UjEhNm6yEAMWnMLdBGdklL+QE
+         6yqQ==
+X-Gm-Message-State: AOAM530VwpL7iEOonX7osDlvbxJqt8ZUEw+nkZGqQYoQ9tAPU75qFJ9v
+        NUGX0Vbqhq2fpfJbx4rwVYuGuLrnKA==
+X-Google-Smtp-Source: ABdhPJyjnLnM810IvrzTRnhmp/iGLuoOmVrLr0coFaIMeYBRZJYgtkA8ZNolpD8nyGJ7T8AdW6pCKA==
+X-Received: by 2002:a4a:4843:: with SMTP id p64mr16168509ooa.9.1616876902271;
+        Sat, 27 Mar 2021 13:28:22 -0700 (PDT)
+Received: from localhost.localdomain ([172.58.99.41])
+        by smtp.googlemail.com with ESMTPSA id f2sm2788994oos.16.2021.03.27.13.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 13:28:21 -0700 (PDT)
+From:   Rob Herring <robh@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH] dt-bindings: usb: usb-nop-xceiv: Convert to DT schema
+Date:   Sat, 27 Mar 2021 15:28:16 -0500
+Message-Id: <20210327202816.545282-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <444a7fc72e6525575b929760fcad186630577afc.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Convert the usb-nop-xceiv binding to DT schema.
 
-Hi Srinivas,
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../devicetree/bindings/usb/usb-nop-xceiv.txt | 43 -------------
+ .../bindings/usb/usb-nop-xceiv.yaml           | 64 +++++++++++++++++++
+ 2 files changed, 64 insertions(+), 43 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/usb-nop-xceiv.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/usb-nop-xceiv.yaml
 
-On 27/03/2021 18:46, Srinivas Pandruvada wrote:
-> On Fri, 2021-03-26 at 17:37 +0100, Rafael J. Wysocki wrote:
->> On Thu, Mar 25, 2021 at 8:38 PM Daniel Lezcano
->> <daniel.lezcano@linaro.org> wrote:
->>> The slope of the temperature increase or decrease can be high and
->>> when
->>> the temperature crosses the trip point, there could be a
->>> significant
->>> difference between the trip temperature and the measured
->>> temperatures.
->>>
->>> That forces the userspace to read the temperature back right after
->>> receiving a trip violation notification.
->>>
->>> In order to be efficient, give the temperature which resulted in
->>> the
->>> trip violation.
->>>
->>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
->>
->> Srinivas, what do you think?
-> 
-> - IMO netlink message should also be treated as we treat other ABIs. So
-> add only when this is a must. Although here GENL version is incremented
-> , users are not that careful. At least on x86, we know users created
-> their own applications.
-
-I don't see where is the problem. The protocol is still compatible with
-the previous version, so that does not break the existing AFAICT. That
-is done on purpose.
-
-There is a new attribute added, the application using the previous
-version will just not be aware of its presence and parse the message
-without getting the temperature.
-
-> - Here the concern is temperature is changing so fast then netlink +
-> user space processing latency is enough to change further to read
-> temperature again. Atleast we assume that and read temperature again.
-> So not sure that this is the right approach to add another field for
-> the temperature.
-
-I'm not sure to understand your comment. Whatever the mechanism
-(interrupt based or polling), the temperature is read in any case by the
-call to thermal_zone_device_update() which in turns calls
-handle_trip_point and then send the message. So, why not add the
-temperature as the userspace is interested on getting the temperature
-anyway.
-
-For instance, in polling mode, (usually set to 1000ms), the trip point
-crossing is detected with a long delay and during this time the
-temperature could be far beyond the trip temperature.
-
-It is not about netlink latency but about avoiding a back and forth when
-the trip point is crossed and the temperature wavering around.
-
-
->>> ---
->>>  drivers/thermal/thermal_core.c    |  6 ++++--
->>>  drivers/thermal/thermal_netlink.c | 11 ++++++-----
->>>  drivers/thermal/thermal_netlink.h |  8 ++++----
->>>  include/uapi/linux/thermal.h      |  2 +-
->>>  4 files changed, 15 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/drivers/thermal/thermal_core.c
->>> b/drivers/thermal/thermal_core.c
->>> index 996c038f83a4..948020ef51b1 100644
->>> --- a/drivers/thermal/thermal_core.c
->>> +++ b/drivers/thermal/thermal_core.c
->>> @@ -430,10 +430,12 @@ static void handle_thermal_trip(struct
->>> thermal_zone_device *tz, int trip)
->>>         if (tz->last_temperature != THERMAL_TEMP_INVALID) {
->>>                 if (tz->last_temperature < trip_temp &&
->>>                     tz->temperature >= trip_temp)
->>> -                       thermal_notify_tz_trip_up(tz->id, trip);
->>> +                       thermal_notify_tz_trip_up(tz->id, trip,
->>> +                                                 tz->temperature);
->>>                 if (tz->last_temperature >= trip_temp &&
->>>                     tz->temperature < (trip_temp - hyst))
->>> -                       thermal_notify_tz_trip_down(tz->id, trip);
->>> +                       thermal_notify_tz_trip_down(tz->id, trip,
->>> +                                                   tz-
->>>> temperature);
->>>         }
->>>
->>>         if (type == THERMAL_TRIP_CRITICAL || type ==
->>> THERMAL_TRIP_HOT)
->>> diff --git a/drivers/thermal/thermal_netlink.c
->>> b/drivers/thermal/thermal_netlink.c
->>> index 1234dbe95895..a16dd4d5d710 100644
->>> --- a/drivers/thermal/thermal_netlink.c
->>> +++ b/drivers/thermal/thermal_netlink.c
->>> @@ -121,7 +121,8 @@ static int thermal_genl_event_tz(struct param
->>> *p)
->>>  static int thermal_genl_event_tz_trip_up(struct param *p)
->>>  {
->>>         if (nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_ID, p->tz_id)
->>> ||
->>> -           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p-
->>>> trip_id))
->>> +           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TRIP_ID, p-
->>>> trip_id) ||
->>> +           nla_put_u32(p->msg, THERMAL_GENL_ATTR_TZ_TEMP, p-
->>>> temp))
->>>                 return -EMSGSIZE;
->>>
->>>         return 0;
->>> @@ -285,16 +286,16 @@ int thermal_notify_tz_disable(int tz_id)
->>>         return
->>> thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_DISABLE, &p);
->>>  }
->>>
->>> -int thermal_notify_tz_trip_down(int tz_id, int trip_id)
->>> +int thermal_notify_tz_trip_down(int tz_id, int trip_id, int temp)
->>>  {
->>> -       struct param p = { .tz_id = tz_id, .trip_id = trip_id };
->>> +       struct param p = { .tz_id = tz_id, .trip_id = trip_id,
->>> .temp = temp };
->>>
->>>         return
->>> thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_DOWN, &p);
->>>  }
->>>
->>> -int thermal_notify_tz_trip_up(int tz_id, int trip_id)
->>> +int thermal_notify_tz_trip_up(int tz_id, int trip_id, int temp)
->>>  {
->>> -       struct param p = { .tz_id = tz_id, .trip_id = trip_id };
->>> +       struct param p = { .tz_id = tz_id, .trip_id = trip_id,
->>> .temp = temp };
->>>
->>>         return
->>> thermal_genl_send_event(THERMAL_GENL_EVENT_TZ_TRIP_UP, &p);
->>>  }
->>> diff --git a/drivers/thermal/thermal_netlink.h
->>> b/drivers/thermal/thermal_netlink.h
->>> index 828d1dddfa98..e554f76291f4 100644
->>> --- a/drivers/thermal/thermal_netlink.h
->>> +++ b/drivers/thermal/thermal_netlink.h
->>> @@ -11,8 +11,8 @@ int thermal_notify_tz_create(int tz_id, const
->>> char *name);
->>>  int thermal_notify_tz_delete(int tz_id);
->>>  int thermal_notify_tz_enable(int tz_id);
->>>  int thermal_notify_tz_disable(int tz_id);
->>> -int thermal_notify_tz_trip_down(int tz_id, int id);
->>> -int thermal_notify_tz_trip_up(int tz_id, int id);
->>> +int thermal_notify_tz_trip_down(int tz_id, int id, int temp);
->>> +int thermal_notify_tz_trip_up(int tz_id, int id, int temp);
->>>  int thermal_notify_tz_trip_delete(int tz_id, int id);
->>>  int thermal_notify_tz_trip_add(int tz_id, int id, int type,
->>>                                int temp, int hyst);
->>> @@ -49,12 +49,12 @@ static inline int thermal_notify_tz_disable(int
->>> tz_id)
->>>         return 0;
->>>  }
->>>
->>> -static inline int thermal_notify_tz_trip_down(int tz_id, int id)
->>> +static inline int thermal_notify_tz_trip_down(int tz_id, int id,
->>> int temp)
->>>  {
->>>         return 0;
->>>  }
->>>
->>> -static inline int thermal_notify_tz_trip_up(int tz_id, int id)
->>> +static inline int thermal_notify_tz_trip_up(int tz_id, int id, int
->>> temp)
->>>  {
->>>         return 0;
->>>  }
->>> diff --git a/include/uapi/linux/thermal.h
->>> b/include/uapi/linux/thermal.h
->>> index c105054cbb57..bf5d9c8ef16f 100644
->>> --- a/include/uapi/linux/thermal.h
->>> +++ b/include/uapi/linux/thermal.h
->>> @@ -18,7 +18,7 @@ enum thermal_trip_type {
->>>
->>>  /* Adding event notification support elements */
->>>  #define THERMAL_GENL_FAMILY_NAME               "thermal"
->>> -#define THERMAL_GENL_VERSION                   0x01
->>> +#define THERMAL_GENL_VERSION                   0x02
->>>  #define THERMAL_GENL_SAMPLING_GROUP_NAME       "sampling"
->>>  #define THERMAL_GENL_EVENT_GROUP_NAME          "event"
->>>
->>> --
->>> 2.17.1
->>>
-> 
-
-
+diff --git a/Documentation/devicetree/bindings/usb/usb-nop-xceiv.txt b/Documentation/devicetree/bindings/usb/usb-nop-xceiv.txt
+deleted file mode 100644
+index 4dc6a8ee3071..000000000000
+--- a/Documentation/devicetree/bindings/usb/usb-nop-xceiv.txt
++++ /dev/null
+@@ -1,43 +0,0 @@
+-USB NOP PHY
+-
+-Required properties:
+-- compatible: should be usb-nop-xceiv
+-- #phy-cells: Must be 0
+-
+-Optional properties:
+-- clocks: phandle to the PHY clock. Use as per Documentation/devicetree
+-  /bindings/clock/clock-bindings.txt
+-  This property is required if clock-frequency is specified.
+-
+-- clock-names: Should be "main_clk"
+-
+-- clock-frequency: the clock frequency (in Hz) that the PHY clock must
+-  be configured to.
+-
+-- vcc-supply: phandle to the regulator that provides power to the PHY.
+-
+-- reset-gpios: Should specify the GPIO for reset.
+-
+-- vbus-detect-gpio: should specify the GPIO detecting a VBus insertion
+-                    (see Documentation/devicetree/bindings/gpio/gpio.txt)
+-- vbus-regulator : should specifiy the regulator supplying current drawn from
+-  the VBus line (see Documentation/devicetree/bindings/regulator/regulator.txt).
+-
+-Example:
+-
+-	hsusb1_phy {
+-		compatible = "usb-nop-xceiv";
+-		clock-frequency = <19200000>;
+-		clocks = <&osc 0>;
+-		clock-names = "main_clk";
+-		vcc-supply = <&hsusb1_vcc_regulator>;
+-		reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
+-		vbus-detect-gpio = <&gpio2 13 GPIO_ACTIVE_HIGH>;
+-		vbus-regulator = <&vbus_regulator>;
+-		#phy-cells = <0>;
+-	};
+-
+-hsusb1_phy is a NOP USB PHY device that gets its clock from an oscillator
+-and expects that clock to be configured to 19.2MHz by the NOP PHY driver.
+-hsusb1_vcc_regulator provides power to the PHY and GPIO 7 controls RESET.
+-GPIO 13 detects VBus insertion, and accordingly notifies the vbus-regulator.
+diff --git a/Documentation/devicetree/bindings/usb/usb-nop-xceiv.yaml b/Documentation/devicetree/bindings/usb/usb-nop-xceiv.yaml
+new file mode 100644
+index 000000000000..2824c17285ee
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/usb-nop-xceiv.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/usb-nop-xceiv.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: USB NOP PHY
++
++maintainers:
++  - Rob Herring <robh@kernel.org>
++
++properties:
++  compatible:
++    const: usb-nop-xceiv
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: main_clk
++
++  clock-frequency: true
++
++  '#phy-cells':
++    const: 0
++
++  vcc-supply:
++    description: phandle to the regulator that provides power to the PHY.
++
++  reset-gpios:
++    maxItems: 1
++
++  vbus-detect-gpio:
++    description: Should specify the GPIO detecting a VBus insertion
++    maxItems: 1
++
++  vbus-regulator:
++    description: Should specifiy the regulator supplying current drawn from
++      the VBus line.
++    $ref: /schemas/types.yaml#/definitions/phandle
++
++required:
++  - compatible
++  - '#phy-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    hsusb1_phy {
++        compatible = "usb-nop-xceiv";
++        clock-frequency = <19200000>;
++        clocks = <&osc 0>;
++        clock-names = "main_clk";
++        vcc-supply = <&hsusb1_vcc_regulator>;
++        reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
++        vbus-detect-gpio = <&gpio2 13 GPIO_ACTIVE_HIGH>;
++        vbus-regulator = <&vbus_regulator>;
++        #phy-cells = <0>;
++    };
++
++...
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.27.0
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
