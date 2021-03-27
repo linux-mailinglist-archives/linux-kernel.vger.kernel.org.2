@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FCF34B540
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9249B34B54C
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 08:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhC0Htu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 03:49:50 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:15344 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230415AbhC0HtS (ORCPT
+        id S231661AbhC0Hvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 03:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231702AbhC0Hvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 03:49:18 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F6rXK4p77z93yj;
-        Sat, 27 Mar 2021 15:47:13 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 15:49:07 +0800
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-To:     <rjw@rjwysocki.net>, <lenb@kernel.org>, <rui.zhang@intel.com>,
-        <bhelgaas@google.com>
-CC:     Xiaofei Tan <tanxiaofei@huawei.com>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH v2 15/15] ACPI: dock: fix some coding style issues
-Date:   Sat, 27 Mar 2021 15:46:33 +0800
-Message-ID: <1616831193-17920-16-git-send-email-tanxiaofei@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
-References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
+        Sat, 27 Mar 2021 03:51:48 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10345C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 00:51:47 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id hq27so11760511ejc.9
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 00:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Xsip9CSoJsuDo1J1wjfyLqKOAiGEpLyyYQJBNxTGRlE=;
+        b=tGdqc3yWSNHNSmSBytobf1q2yGCF1aPdGvc+tf54sIHWW2+yRXT7nkOLzPmJ4fm8AK
+         JwkC0fJ8OrTc+59xiIaeMmfIhtMSDqmOXKYeD0Mnfx7C/yELSTHUtNXppzQpU7qsSf3/
+         MiPig6fWb/lW6N6SqcBD85K5bGCwuoja9iVvjrNkDbS6xwruTP4Fh+f3QcgAgqjqwNcR
+         JiL4C2WdetgQEuVF8reZffKTSAovIFEZ/Mz+3fJOvvcazS2tWhn8Hy2I3Xn1P5qRfQx8
+         vGiZLqWnas5RRZiOPXLZiClkuiXpqAp8VXbY5S2ViEetb8CFuHuw2Rztvx29hEm4OI52
+         Pkng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Xsip9CSoJsuDo1J1wjfyLqKOAiGEpLyyYQJBNxTGRlE=;
+        b=Enfgn6cBXpLCJymJJEiD9OTnUMWmZ4Tbh78FuXXquXzU1gNV9ODiRtRKnr9JmGpuie
+         t5ldC1YUCSz4ti80PWgum/HMdFgP3cH/F1cecS8zaealhdzxYTjtNQOhnZBrWLj9EWgS
+         W23JemZzsqgEqfJHcTq7qvSs4FqOYpOwHaShsvM+sv/0hSTiNvBE1pXYbCMZQQG018fF
+         Brv3clxwUH6nsU6ykWJTFkbnxHGNtdz6RLqz6tK3dhlGxjVk4I2FKHZNHDHQHVj1lwY8
+         0YYi7dzG28v352XvZKcFPTZUGDYwUF5JvBFL4AjWFLv25AXhjEnzkVUp3ocIv6TNJl7r
+         kDkQ==
+X-Gm-Message-State: AOAM532ItlDY/Zqi4zHkAcS/D6o/HVvpXDUF+boA9fGZb6D/YuiLt/wq
+        B9aF/m6nYdgL/ESBT/VB+m2zLQ==
+X-Google-Smtp-Source: ABdhPJySG+XVg0zU1mtv4oLycVhADK4Th0rCc42g7M1yPT66xibCkx+pwuPMRB2mxRPMSlb5bNaLDg==
+X-Received: by 2002:a17:906:cb18:: with SMTP id lk24mr18512026ejb.70.1616831506265;
+        Sat, 27 Mar 2021 00:51:46 -0700 (PDT)
+Received: from localhost (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id j7sm5335055edv.40.2021.03.27.00.51.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 00:51:45 -0700 (PDT)
+Date:   Sat, 27 Mar 2021 08:51:45 +0100
+From:   "javier@javigon.com" <javier@javigon.com>
+To:     Niklas Cassel <Niklas.Cassel@wdc.com>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "minwoo.im.dev@gmail.com" <minwoo.im.dev@gmail.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: nvme: disallow passthru cmd from targeting a nsid != nsid of the
+ block dev
+Message-ID: <20210327075145.ecbjov5prhq2vjh7@mpHalley.local>
+References: <20210326194749.396599-1-Niklas.Cassel@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210326194749.396599-1-Niklas.Cassel@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix some coding style issues reported by checkpatch.pl, including
-following types:
+On 26.03.2021 19:48, Niklas Cassel wrote:
+>From: Niklas Cassel <niklas.cassel@wdc.com>
+>
+>When a passthru command targets a specific namespace, the ns parameter to
+>nvme_user_cmd()/nvme_user_cmd64() is set. However, there is currently no
+>validation that the nsid specified in the passthru command targets the
+>namespace/nsid represented by the block device that the ioctl was
+>performed on.
+>
+>Add a check that validates that the nsid in the passthru command matches
+>that of the supplied namespace.
+>
+>Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+>---
+>Changes since v1:
+>-Added error print.
+>
+> drivers/nvme/host/core.c | 12 ++++++++++++
+> 1 file changed, 12 insertions(+)
+>
+>diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+>index f13eb4ded95f..a50352ea3f7b 100644
+>--- a/drivers/nvme/host/core.c
+>+++ b/drivers/nvme/host/core.c
+>@@ -1599,6 +1599,12 @@ static int nvme_user_cmd(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+> 		return -EFAULT;
+> 	if (cmd.flags)
+> 		return -EINVAL;
+>+	if (ns && cmd.nsid != ns->head->ns_id) {
+>+		dev_err(ctrl->device,
+>+			"%s: nsid (%u) in cmd does not match nsid (%u) of namespace\n",
+>+			current->comm, cmd.nsid, ns->head->ns_id);
+>+		return -EINVAL;
+>+	}
+>
+> 	memset(&c, 0, sizeof(c));
+> 	c.common.opcode = cmd.opcode;
+>@@ -1643,6 +1649,12 @@ static int nvme_user_cmd64(struct nvme_ctrl *ctrl, struct nvme_ns *ns,
+> 		return -EFAULT;
+> 	if (cmd.flags)
+> 		return -EINVAL;
+>+	if (ns && cmd.nsid != ns->head->ns_id) {
+>+		dev_err(ctrl->device,
+>+			"%s: nsid (%u) in cmd does not match nsid (%u) of namespace\n",
+>+			current->comm, cmd.nsid, ns->head->ns_id);
+>+		return -EINVAL;
+>+	}
+>
+> 	memset(&c, 0, sizeof(c));
+> 	c.common.opcode = cmd.opcode;
+>-- 
+>2.30.2
 
-WARNING: Missing a blank line after declarations
-ERROR: spaces required around that ':'
-WARNING: Statements should start on a tabstop
+Looks good to me
 
-Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
----
- drivers/acpi/dock.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/acpi/dock.c b/drivers/acpi/dock.c
-index 0937cea..7cf9215 100644
---- a/drivers/acpi/dock.c
-+++ b/drivers/acpi/dock.c
-@@ -271,6 +271,7 @@ static void hotplug_dock_devices(struct dock_station *ds, u32 event)
- 
- 		if (!acpi_device_enumerated(adev)) {
- 			int ret = acpi_bus_scan(adev->handle);
-+
- 			if (ret)
- 				dev_dbg(&adev->dev, "scan error %d\n", -ret);
- 		}
-@@ -502,6 +503,7 @@ static ssize_t flags_show(struct device *dev,
- 			  struct device_attribute *attr, char *buf)
- {
- 	struct dock_station *dock_station = dev->platform_data;
-+
- 	return snprintf(buf, PAGE_SIZE, "%d\n", dock_station->flags);
- 
- }
-@@ -523,7 +525,7 @@ static ssize_t undock_store(struct device *dev, struct device_attribute *attr,
- 	begin_undock(dock_station);
- 	ret = handle_eject_request(dock_station, ACPI_NOTIFY_EJECT_REQUEST);
- 	acpi_scan_lock_release();
--	return ret ? ret: count;
-+	return ret ? ret : count;
- }
- static DEVICE_ATTR_WO(undock);
- 
-@@ -535,10 +537,11 @@ static ssize_t uid_show(struct device *dev,
- {
- 	unsigned long long lbuf;
- 	struct dock_station *dock_station = dev->platform_data;
-+
- 	acpi_status status = acpi_evaluate_integer(dock_station->handle,
- 					"_UID", NULL, &lbuf);
- 	if (ACPI_FAILURE(status))
--	    return 0;
-+		return 0;
- 
- 	return snprintf(buf, PAGE_SIZE, "%llx\n", lbuf);
- }
--- 
-2.8.1
-
+Reviewed-by: Javier González <javier@javigon.com>
