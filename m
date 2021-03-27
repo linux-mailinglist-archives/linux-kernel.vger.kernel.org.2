@@ -2,60 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D2934B9CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 23:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DDE534B9CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 23:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhC0WSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 18:18:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbhC0WST (ORCPT
+        id S230490AbhC0WTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 18:19:37 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:52908 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231187AbhC0WT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 18:18:19 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AA8C0613B1
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 15:18:19 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQHFs-000JlC-J3; Sat, 27 Mar 2021 22:18:04 +0000
-Date:   Sat, 27 Mar 2021 22:18:04 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH v1 1/1] kernel.h: Drop inclusion in bitmap.h
-Message-ID: <YF+vHHxYQ1hnnNBm@zeniv-ca.linux.org.uk>
-References: <20210326170347.37441-1-andriy.shevchenko@linux.intel.com>
+        Sat, 27 Mar 2021 18:19:29 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 625DE1C0B78; Sat, 27 Mar 2021 23:19:25 +0100 (CET)
+Date:   Sat, 27 Mar 2021 23:19:25 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH 17/17] auxdisplay: ht16k33: Add segment display LED
+ support
+Message-ID: <20210327221925.GA2875@duo.ucw.cz>
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
+ <20210322144848.1065067-18-geert@linux-m68k.org>
+ <543ec200931af3192541fef51bc8e96a@protonic.nl>
+ <CAMuHMdXMQYoGbyLsbiZSEWKK0+iPZe7WELmtDUTjqK-VKMZURg@mail.gmail.com>
+ <20210323204038.GA10002@duo.ucw.cz>
+ <CAMuHMdVF30BCA-7vCiwmKO6KVFhtNLbL+VEW59oxcAfwJ+jXyg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
 Content-Disposition: inline
-In-Reply-To: <20210326170347.37441-1-andriy.shevchenko@linux.intel.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CAMuHMdVF30BCA-7vCiwmKO6KVFhtNLbL+VEW59oxcAfwJ+jXyg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 07:03:47PM +0200, Andy Shevchenko wrote:
-> The bitmap.h header is used in a lot of code around the kernel.
-> Besides that it includes kernel.h which sometimes makes a loop.
 
-How much of the kernel does *not* end up pulling kernel.h anyway,
-making all subsequent includes fast no-ops?
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Realistically, any C compiler is going to recognize the case when
-included file has contents of form
+Hi!
 
-#ifndef <pp-id>
-#define <pp-id> <possibly empty sequence of preprocessor tokens>
-<lines>
-#endif
+> > > > > -     err =3D ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
+> > > > > +     of_property_read_u32(node, "color", &color);
+> > > > > +     seg->led.name =3D devm_kasprintf(dev, GFP_KERNEL,
+> > > > > +                     DRIVER_NAME ":%s:" LED_FUNCTION_BACKLIGHT,
+> > > > > +                     color < LED_COLOR_ID_MAX ? led_colors[color=
+] : "");
+> >
+> > And would prefer not to see driver_name as part of LED name.
+>=20
+> OK. So what should I use instead? Or just leave the part before the
+> first colon empty?
 
-where <lines> contain no exposed #else, #elif or #endif and
-remember that subsequent includes of that file should be ignored
-unless <pp-id> becomes undefined.
+I'd suggest auxdisplay:...:backlight.
 
-AFAICS, on e.g. allmodconfig amd64 build it's (at most - there
-might've been false positives) 131 files out of ~30000; on
-defconfig it's 55 out of ~2300.  How much does your patch
-change that?
+And we should start documenting this somewhere.
+
+Best regards,
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--J2SCkAp4GZ/dPZZf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYF+vbQAKCRAw5/Bqldv6
+8vIVAJ4qlSRzvhciUBHaas551C0aXPZaagCdHZUf4XdLOddTipE09Am0CLnpWDE=
+=QSsl
+-----END PGP SIGNATURE-----
+
+--J2SCkAp4GZ/dPZZf--
