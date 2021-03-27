@@ -2,208 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CE8534B9B5
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 22:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0797A34B9C1
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 23:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhC0V5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 17:57:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20744 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230423AbhC0V5R (ORCPT
+        id S230516AbhC0WMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 18:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230176AbhC0WMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 17:57:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616882230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bj/1bcBSUwlXPODMgK+7TR54EtYdkqxCKK5SCH5Eb+k=;
-        b=HaD9iRHXo09pLHyQLdwTFyKM40yqsusnhnpAVPFSQsQqPBTAyR583obI2/KXbAP7J59l3h
-        zv6rx7JKgk94J/xEF5DtWW7zu5IkxCCZo3xeohggusTDH3tGn7KlkOE3MzI5+vZzl8qwEH
-        aYjMkvEYYVCMxr7AD8sby498MEwTjUs=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-370-IyNwY2c9OhKMpllgWqIncg-1; Sat, 27 Mar 2021 17:57:08 -0400
-X-MC-Unique: IyNwY2c9OhKMpllgWqIncg-1
-Received: by mail-qk1-f197.google.com with SMTP id h19so9074008qkk.4
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 14:57:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Bj/1bcBSUwlXPODMgK+7TR54EtYdkqxCKK5SCH5Eb+k=;
-        b=aapn7UG8u+mXhcHcVuMOD7q+Y2XgY7N08z0cqt/iyy+YCiGhEnfOW2x+TWqlLQWb6m
-         OCsUPP+8mylkV+SYmc6Jr2w9Ou/77kydXxzzxisqVktGX5kLhlX5iE+xCQ5Ob/C+e6CX
-         PbTVJWYUtD2L6kd04FyUyoQxRGbbEfoHFIj/ibVQQ03fR9U52AuROCYDTFxwarO0ck1T
-         hsEy5KnxcBbRvsocOFSGSP3fZ2KGoBZmpf5NvZV4Bf0rZ18JAw+QpCNMj7Hjvi1tnhS4
-         3SSFzGkvnteW2tTeN4ECqeOB7MRjZqzKM0508H45hO9bzLQPD6HlusC1TVGVLZxWoLJp
-         Yayg==
-X-Gm-Message-State: AOAM5307GF1ssB5rmpUfEPSOMt/dYL+I4wQOHZsOLJy0f9ylO3Iqfm4g
-        CHzpmpANiJo5RnYjRzAO+PxRNJcz+rhI5PGP01gRTuSQaxmQvD8adKuT7TrcyyTJvfbnyyhakpg
-        jGaDBoY0HLFJvn/2UUoiqpHUr
-X-Received: by 2002:a05:620a:31a:: with SMTP id s26mr19301668qkm.355.1616882227417;
-        Sat, 27 Mar 2021 14:57:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzCJKaSGSlzQNoXwiiYL1bXbPYCri/xP97a1UnyExgW9n9/TCZ5ehH0OYORnNJ3nuDDuOgj8A==
-X-Received: by 2002:a05:620a:31a:: with SMTP id s26mr19301653qkm.355.1616882227094;
-        Sat, 27 Mar 2021 14:57:07 -0700 (PDT)
-Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
-        by smtp.gmail.com with ESMTPSA id t24sm8185897qto.23.2021.03.27.14.57.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 14:57:06 -0700 (PDT)
-Date:   Sat, 27 Mar 2021 17:57:03 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTNUE error
- handling + accounting
-Message-ID: <20210327215703.GA429942@xz-x1>
-References: <20210325231027.3402321-1-axelrasmussen@google.com>
+        Sat, 27 Mar 2021 18:12:10 -0400
+Received: from mail.ionic.de (ionic.de [IPv6:2001:41d0:a:588b:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 991F4C0613B1
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 15:12:10 -0700 (PDT)
+Authentication-Results: root24.eu; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=ionic.de 
+   (client-ip=217.92.117.31; helo=home.ionic.de; 
+   envelope-from=ionic@ionic.de; receiver=<UNKNOWN>)
+Received: from [192.168.0.46] (home.ionic.de [217.92.117.31])
+        by mail.ionic.de (Postfix) with ESMTPSA id A1A684F0006D;
+        Sat, 27 Mar 2021 22:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ionic.de; s=default;
+        t=1616883129; bh=hEngPA3DyvZOApLfX4puVBNhb9RfcroMEYD4kgthFd8=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=A35AaA0fJhoNw8h13MnXfuoXsHhYeFO2aVaPFCBSHZhNJmdFJT63xzWSyMyulsMne
+         RlwF22MYigrYMIJKzyMf3vy6Go3eWAwPCjkrVzI4HlM0EBvn4LQhU3Wqx6arZcdpQ0
+         5mOHpi/BtcBLtEn9dM2ji+0w5aoiarpX4w9xhweU=
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+References: <20210327120155.500-1-ionic@ionic.de>
+ <1ca3a90f-799e-d917-370e-1475e33cdb14@infradead.org>
+From:   Mihai Moldovan <ionic@ionic.de>
+Subject: Re: [PATCH] kconfig: nconf: stop endless search-up loops
+Message-ID: <111c5853-e488-0aaa-18e9-36792b648427@ionic.de>
+Date:   Sat, 27 Mar 2021 23:12:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210325231027.3402321-1-axelrasmussen@google.com>
+In-Reply-To: <1ca3a90f-799e-d917-370e-1475e33cdb14@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UaidTUt0VWJaF8OBLQitMz5EXjxajBmYJ"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Axel,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UaidTUt0VWJaF8OBLQitMz5EXjxajBmYJ
+Content-Type: multipart/mixed; boundary="OFhuD4coUr9VTDiKeaEyCcLdMj9SAOWyf";
+ protected-headers="v1"
+From: Mihai Moldovan <ionic@ionic.de>
+To: Randy Dunlap <rdunlap@infradead.org>,
+ Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Message-ID: <111c5853-e488-0aaa-18e9-36792b648427@ionic.de>
+Subject: Re: [PATCH] kconfig: nconf: stop endless search-up loops
+References: <20210327120155.500-1-ionic@ionic.de>
+ <1ca3a90f-799e-d917-370e-1475e33cdb14@infradead.org>
+In-Reply-To: <1ca3a90f-799e-d917-370e-1475e33cdb14@infradead.org>
 
-On Thu, Mar 25, 2021 at 04:10:27PM -0700, Axel Rasmussen wrote:
-> Previously, in the error path, we unconditionally removed the page from
-> the page cache. But in the continue case, we didn't add it - it was
-> already there because the page is used by a second (non-UFFD-registered)
-> mapping. So, in that case, it's incorrect to remove it as the other
-> mapping may still use it normally.
-> 
-> For this error handling failure, trivially exercise it in the
-> userfaultfd selftest, to detect this kind of bug in the future.
-> 
-> Also, we previously were unconditionally calling shmem_inode_acct_block.
-> In the continue case, however, this is incorrect, because we would have
-> already accounted for the RAM usage when the page was originally
-> allocated (since at this point it's already in the page cache). So,
-> doing it in the continue case causes us to double-count.
-> 
-> Fixes: 00da60b9d0a0 ("userfaultfd: support minor fault handling for shmem")
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  mm/shmem.c                               | 15 ++++++++++-----
->  tools/testing/selftests/vm/userfaultfd.c | 12 ++++++++++++
->  2 files changed, 22 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index d2e0e81b7d2e..5ac8ea737004 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -2379,9 +2379,11 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  	int ret;
->  	pgoff_t offset, max_off;
->  
-> -	ret = -ENOMEM;
-> -	if (!shmem_inode_acct_block(inode, 1))
+--OFhuD4coUr9VTDiKeaEyCcLdMj9SAOWyf
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-IMHO a better change here is to only touch this line into:
+* On 3/27/21 4:58 PM, Randy Dunlap wrote:
+> On 3/27/21 5:01 AM, Mihai Moldovan wrote:
+>> +		if ((-1 =3D=3D index) && (index =3D=3D match_start))
+>=20
+> checkpatch doesn't complain about this (and I wonder how it's missed), =
+but
+> kernel style is (mostly) "constant goes on right hand side of compariso=
+n",
+> so
+> 		if ((index =3D=3D -1) &&
 
-        if (!is_continue && !shmem_inode_acct_block(inode, 1))
+I can naturally send a V2 with that swapped.
 
-Then you don't need to touch any other line, also you can drop line [1] below
-too as a side benefit.
+To my rationale: I made sure to use checkpatch, saw that it was accepted =
+and
+even went for a quick git grep -- '-1 =3D=3D', which likewise returned en=
+ough
+results for me to call this consistent with the current code style.
 
-> -		goto out;
-> +	if (!is_continue) {
-> +		ret = -ENOMEM;
-> +		if (!shmem_inode_acct_block(inode, 1))
-> +			goto out;
-> +	}
->  
->  	if (is_continue) {
->  		ret = -EFAULT;
-> @@ -2389,6 +2391,7 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  		if (!page)
->  			goto out_unacct_blocks;
->  	} else if (!*pagep) {
-> +		ret = -ENOMEM;
+Maybe those matches were just frowned-upon, but forgotten-to-be-critized
+examples of this pattern being used.
 
-[1]
 
->  		page = shmem_alloc_page(gfp, info, pgoff);
->  		if (!page)
->  			goto out_unacct_blocks;
-> @@ -2486,12 +2489,14 @@ int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
->  out_release_unlock:
->  	pte_unmap_unlock(dst_pte, ptl);
->  	ClearPageDirty(page);
 
-Should this be conditional too?  IIUC this will clear dirty for the page cache
-even if it was dirty.  I'm not sure whether it'll cause data loss.
+Mihai
 
-> -	delete_from_page_cache(page);
-> +	if (!is_continue)
-> +		delete_from_page_cache(page);
->  out_release:
->  	unlock_page(page);
->  	put_page(page);
->  out_unacct_blocks:
-> -	shmem_inode_unacct_blocks(inode, 1);
-> +	if (!is_continue)
-> +		shmem_inode_unacct_blocks(inode, 1);
->  	goto out;
->  }
 
-Besides the error handling, I looked at the function again and I have another
-two thoughts:
 
-1. IMHO in shmem_mcopy_atomic_pte() we should also conditionally call
-   pte_mkwrite() just like the hugetlb code too, so as to keep W bit clear when
-   !VM_SHARED.
+--OFhuD4coUr9VTDiKeaEyCcLdMj9SAOWyf--
 
-2. I see even more "if (!is_continue)" here.. I'm thinking whether we can
-   simply jump to pte installation "if (is_continue)" instead, because
-   uffdio-continue shoiuld really be a lightweight operation.
+--UaidTUt0VWJaF8OBLQitMz5EXjxajBmYJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-   E.g., most of the things at the middle of the function is not relevant to
-   uffd-continue.  To be explicit:
+-----BEGIN PGP SIGNATURE-----
 
-	ret = -EFAULT;
-	offset = linear_page_index(dst_vma, dst_addr);
-	max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-	if (unlikely(offset >= max_off))
-		goto out_release;
+wsF5BAABCAAjFiEEbhHQj3UzgcdE8cg8H9Yu2W4lOocFAmBfrbgFAwAAAAAACgkQH9Yu2W4lOod3
+eQ//T9OKsxHD9AlP2ZBdfD4c399lfWNqqUPGktmYGqKukEXipejMOhVh95kYSx6zhImL4hESIXTZ
+/L53SvqbmT51bqVWojbxs744Ty0DBKpEq+inC3gDL4y97UFBxZIW7wKT2ioUQU5sSPnGvJA3kOv6
+AppkEsqH979oBZeMcD9F79TvnpnC6FFh80PiScCzR6N1LHdZcHtyJiwqkFu4KNOj8cYtljXYanSr
+u8NK2+NrJL6+o+ujwqB7ZaREAhIPei77V077yhk5uDnCWJzaVUxZzQ7JU/+1OmVqb1P45DsMSTPA
+oWF343qGafRUgMB6F1OlCSlgEPnT6YSPExHJv2xJQfnOsyRKd26Kq+6GemNPHU15gTmzvO1gCElW
+7FPYSaPjGCAd0Hq838Uuno/wotik7jE5Q7WIyaq2uMCLQ0OO6zVQl0gE/JzYlvBOeMF+GL7ZAvnq
+8loqyPLBN4Xd0R0aPvfDFRxiK8/ZWemunCgLJK4jkz0IDXspyXjUhuZkGglIe24Nn+58WOfmBdD/
+PvgbZZW41v5dPEzL+sIa6VHinMBS6CCfjgNfNNFsTFpLlMuyVIDfvffWRkqmTGHepU03M+ipdI/o
+SjwYR8dcJWRmxDRwSmkLL1Ng/42ZeiqGpfv3mV/Zl9xBhPJyWevxprGpeSSpfknCVd/c1QgxJCWi
+vUc=
+=z5W4
+-----END PGP SIGNATURE-----
 
-   These chunk can be put into !is_continue too, then if you see you're
-   bypassing mostly everything.  Then error handling of uffdio-continue would
-   be simple too, since it could only fail if either page cache not exist, or
-   pte changed.  Nothing else could happen.
-
-For above point (1), I even start to doubt whether we should conditionally
-grant the write bit for normal uffdio_copy case only if both WRITE|SHARED set
-for the vma flags. E.g., shmem_mcopy_atomic_pte() of a normal uffdio-copy will
-fill in the page cache into pte, however what if this mapping is privately
-mapped?  IMHO we can't apply write bit otherwise the process will be writting
-to the page cache directly.
-
-However I think that question will be irrelevant to this patch.
-
-Thanks,
-
--- 
-Peter Xu
-
+--UaidTUt0VWJaF8OBLQitMz5EXjxajBmYJ--
