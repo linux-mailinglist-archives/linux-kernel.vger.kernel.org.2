@@ -2,112 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 206D934B40D
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631AA34B410
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhC0Deg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 23:34:36 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14495 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhC0DeQ (ORCPT
+        id S230288AbhC0Djx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 23:39:53 -0400
+Received: from mail-ej1-f51.google.com ([209.85.218.51]:46867 "EHLO
+        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhC0Dja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 23:34:16 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6kt401MkzySBp;
-        Sat, 27 Mar 2021 11:32:12 +0800 (CST)
-Received: from [10.174.177.208] (10.174.177.208) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 27 Mar 2021 11:34:05 +0800
-Subject: Re: [PATCH -next] mm, page_alloc: avoid page_to_pfn() in
- move_freepages()
-To:     Matthew Wilcox <willy@infradead.org>
-References: <20210323131215.934472-1-liushixin2@huawei.com>
- <20210323125400.GE1719932@casper.infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-From:   Liu Shixin <liushixin2@huawei.com>
-Message-ID: <fa98fe49-8b95-fbbf-6161-483519e742ac@huawei.com>
-Date:   Sat, 27 Mar 2021 11:34:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Fri, 26 Mar 2021 23:39:30 -0400
+Received: by mail-ej1-f51.google.com with SMTP id u21so11240764ejo.13;
+        Fri, 26 Mar 2021 20:39:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zzvQOdiTuJn91EksSWxSV9lMXnSkfJJHPv+wvQk24Fc=;
+        b=RcZ5Y0+kvdwYLz9v8PrcrOO/2JutvaIHwDlLmhO7RbsdFP01vgK+5sv6k50O2ZmSE6
+         GLdHGKiAEKHBL+hCyI9zKCg0T27pZYLLfBfY93tblH/PzG0zweItJPCD5Za1wz7J4dyr
+         KXqXhppR2lWPi1RiPEe3gwOEV57x+IYu3aPMK3ptcBiubMPNPH+fmXDhMl1pO1mvzPhP
+         SmVaYufktp1IlIhNUV5tYDcQTgGVIqRAaQ1sVpIndrL23ELnq4lgD5YPSebIdkybhPW9
+         sV28h+COqc44FWER/HbMH4f3vrACnh6WLkKxxycMlxfReZY2A1Uehq5UEh/nDzfkRmrW
+         Z8aw==
+X-Gm-Message-State: AOAM530yx+Jvgwqk8F445+6wXH6aepVfSbo+MoTUzng3k7K5YycJSN6T
+        rF4lnouaTul8b9+Dqdo0aznxgK+JRJjwxZZeRHM=
+X-Google-Smtp-Source: ABdhPJwWxt8BzcJhw62HhnCoY8jvVcNBvycyHZf/oX0G8chnrC+GE5egCZfeXc3pmhojkszhDtlA+FYh67mYZckinYA=
+X-Received: by 2002:a17:906:b4c:: with SMTP id v12mr18535870ejg.330.1616816369239;
+ Fri, 26 Mar 2021 20:39:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323125400.GE1719932@casper.infradead.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.208]
-X-CFilter-Loop: Reflected
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
+In-Reply-To: <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 26 Mar 2021 23:39:18 -0400
+Message-ID: <CAJvTdKm8aQPwQMXFQWgVb5dfJ88ds3d0=uHOyWeueUqfya9Nsw@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    Sorry to reply to you after a so long time and thanks for your advice. It does seem that your proposed change will make the code cleaner and more efficient.
+Hi Andy,
 
-    I repeated move_freepages_block() 2000000 times on the VM and counted jiffies. The average value before and after the change was both about 12,000. I think it's probably because I'm using the Sparse Memory Model, so pfn_to_page() is not time-consuming.
+Say a mainline links with a math library that uses AMX without the
+knowledge of the mainline.
+Say the mainline is also linked with a userspace threading library
+that thinks it has a concept of XSAVE area size.
 
+Wouldn't the change in XCR0, resulting in XSAVE size change, risk
+confusing the threading library?
 
-On 2021/3/23 20:54, Matthew Wilcox wrote:
-> On Tue, Mar 23, 2021 at 09:12:15PM +0800, Liu Shixin wrote:
->> From: Kefeng Wang <wangkefeng.wang@huawei.com>
->>
->> The start_pfn and end_pfn are already available in move_freepages_block(),
->> there is no need to go back and forth between page and pfn in move_freepages
->> and move_freepages_block, and pfn_valid_within() should validate pfn first
->> before touching the page.
-> This looks good to me:
->
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->
->>  static int move_freepages(struct zone *zone,
->> -			  struct page *start_page, struct page *end_page,
->> +			  unsigned long start_pfn, unsigned long end_pfn,
->>  			  int migratetype, int *num_movable)
->>  {
->>  	struct page *page;
->> +	unsigned long pfn;
->>  	unsigned int order;
->>  	int pages_moved = 0;
->>  
->> -	for (page = start_page; page <= end_page;) {
->> -		if (!pfn_valid_within(page_to_pfn(page))) {
->> -			page++;
->> +	for (pfn = start_pfn; pfn <= end_pfn;) {
->> +		if (!pfn_valid_within(pfn)) {
->> +			pfn++;
->>  			continue;
->>  		}
->>  
->> +		page = pfn_to_page(pfn);
-> I wonder if this wouldn't be even better if we did:
->
-> 	struct page *start_page = pfn_to_page(start_pfn);
->
-> 	for (pfn = start_pfn; pfn <= end_pfn; pfn++) {
-> 		struct page *page = start_page + pfn - start_pfn;
->
-> 		if (!pfn_valid_within(pfn))
-> 			continue;
->
->> -
->> -			page++;
->> +			pfn++;
->>  			continue;
-> ... then we can drop the increment of pfn here
->
->>  		}
->>  
->> @@ -2458,7 +2459,7 @@ static int move_freepages(struct zone *zone,
->>  
->>  		order = buddy_order(page);
->>  		move_to_free_list(page, zone, order, migratetype);
->> -		page += 1 << order;
->> +		pfn += 1 << order;
-> ... and change this to pfn += (1 << order) - 1;
->
-> Do you have any numbers to quantify the benefit of this change?
-> .
->
-
+thanks,
+Len Brown, Intel Open Source Technology Center
