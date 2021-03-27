@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6E034B7EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882B034B7F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 16:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhC0PTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 11:19:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21680 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230370AbhC0PT3 (ORCPT
+        id S230415AbhC0PUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 11:20:13 -0400
+Received: from mail-oi1-f179.google.com ([209.85.167.179]:44669 "EHLO
+        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230370AbhC0PTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 11:19:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616858368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GlZlQk9I1up349GpliLX8QJ0mLSUUut4KG9WICbUZFU=;
-        b=CmrMTHCNwccP+wKU6tZzcbCjLq1D70nI9Oo85L0zgZ+X5dIspRxHyMpootGaC08lbyPLiJ
-        DYWjIVRnGXmvGska7/k8kk4nWQY6ILOD+E7rt4+p8hTn5WoKql8ydWVFm48HF+kD+/Pwp+
-        eywduu29xYmBWa4pTPGQQhQgUE09TaE=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-224-I5lu5fW_OZet0mGiOZfi2w-1; Sat, 27 Mar 2021 11:19:26 -0400
-X-MC-Unique: I5lu5fW_OZet0mGiOZfi2w-1
-Received: by mail-qv1-f70.google.com with SMTP id ev19so7978661qvb.7
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 08:19:26 -0700 (PDT)
+        Sat, 27 Mar 2021 11:19:55 -0400
+Received: by mail-oi1-f179.google.com with SMTP id a8so8795176oic.11;
+        Sat, 27 Mar 2021 08:19:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GlZlQk9I1up349GpliLX8QJ0mLSUUut4KG9WICbUZFU=;
-        b=ny7wZS1up/5V6hbFEWFPPkIg/H+scFryXe6Zduz7Hi4OePgMrHC7IGvQi0aIpW/KOd
-         58yycw5HfbB24VV/Eq0zlyeHweQwmcA2fdUKt2ReRRbIkTvdo7+5zOFaqDQ8Bmvjgrar
-         oJJivWCT0AvymBrBSmNGzPLngDOTEOkK57IikgTYPcIfhq9xm4mzz9qhA2Ly+r7opUWC
-         8O1KDQeANWGT9SZ6TBXJetAjfY7HZ+4IWADgfAxoZl7xmtkUcuexj/RD3akQ5ohM0UEP
-         LAQU9fH81yiIRtGvzH2WBuIBRn8Z7UFLOpT9o8r6duoenTm94AgnAOrMyCoJdniFJLKd
-         e/fQ==
-X-Gm-Message-State: AOAM532qcCz8ETu0cFNW2twoY/P3DpsdRiwdlbmV+/oWP8xHOiihIh88
-        Y4sIJBDulExzKbfQAhhHW9Qo9knrIhWnTi3r5zSDNQwB5bJxaCkEeZxJufHoCXbSeGKQxgDv0hC
-        EkhEVZL/IUYOZg92JNHiAguMd
-X-Received: by 2002:a37:396:: with SMTP id 144mr17554482qkd.412.1616858366123;
-        Sat, 27 Mar 2021 08:19:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4iMFw6qhJGHj+S8N41lQRl3sWh4PqitPW4UkobOGHsY7mD0Zvb1EwUrwqQeKRJW+wbqXJWA==
-X-Received: by 2002:a37:396:: with SMTP id 144mr17554474qkd.412.1616858365923;
-        Sat, 27 Mar 2021 08:19:25 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id h13sm7573936qtn.26.2021.03.27.08.19.25
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nfnKdAHB/EP3TU6RFTKDpMwYBzJ5rtNzgJbhutbUIg8=;
+        b=E6WcUymPekSIX5gEMq7wlmhV4bjgKNsWT+eTbI8n5gWvxYb+oKLNRlCABoqvg9lFW8
+         ur43YfIxEieQ13qndypJMVM/vP+FjRsT/Js+laccEtw2oua6vOJBoz1hteiPU0zSZQK1
+         HQPwulxz+OBUJsuY359IEYuvNt9u1p+/Y5Cm2OZMTUAS2upv0uWfIKvoytucBGnw0KKY
+         N3D55spPvzgvLHbVYGbpdiHKYck7naM3mg8zGBtE8jp1/c63ecRODo2lPBnpZtgPmPBb
+         jCN9DNo4KZi3E0yJ/xq/ht2z+TX1L0YvSEcv65hSTmtKgyeYQIX6gRgIXkpGpoDE/kZ8
+         vGKg==
+X-Gm-Message-State: AOAM531Cz8dnaDlMQ/XOO7PsYD6vmToNoldgRSqx+a4yu+h2NmDhwfO0
+        mXG9bzsI0/o6kDm/k1VB9w==
+X-Google-Smtp-Source: ABdhPJyFWMuW/TG7+Dj6H0NNbsspoDX4rQ+wr4XeeEwSHO2tuRHj5bzEAsG0U1r5f8L8fafXCJeLKw==
+X-Received: by 2002:aca:f597:: with SMTP id t145mr13882340oih.121.1616858395171;
+        Sat, 27 Mar 2021 08:19:55 -0700 (PDT)
+Received: from robh.at.kernel.org ([172.58.102.185])
+        by smtp.gmail.com with ESMTPSA id t2sm2560759ool.18.2021.03.27.08.19.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 08:19:25 -0700 (PDT)
-From:   trix@redhat.com
-To:     richard.gong@linux.intel.com
-Cc:     linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] MAINTAINERS: add self as reviewer to INTEL STRATIX10 FIRMWARE DRIVERS
-Date:   Sat, 27 Mar 2021 08:19:19 -0700
-Message-Id: <20210327151919.453669-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+        Sat, 27 Mar 2021 08:19:54 -0700 (PDT)
+Received: (nullmailer pid 139006 invoked by uid 1000);
+        Sat, 27 Mar 2021 15:19:48 -0000
+Date:   Sat, 27 Mar 2021 09:19:48 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, amitk@kernel.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        rui.zhang@intel.com, Vinod Koul <vinod.koul@linaro.org>,
+        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        agross@kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: thermal: qcom-tsens: Add compatible
+ for sm8350
+Message-ID: <20210327151948.GA138949@robh.at.kernel.org>
+References: <20210324124308.1265626-1-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210324124308.1265626-1-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Wed, 24 Mar 2021 13:43:08 +0100, Robert Foss wrote:
+> Add tsens bindings for sm8350.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
+> ---
+> 
+> Changes since v1:
+>  - Vinod: Remove comment
+> 
+>  Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-The Intel stratix 10 is a fpga.  I review fpga's. So I want to help
-in this related subsystem.
-
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 67b104202602..00828de0a7bc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9266,6 +9266,7 @@ F:	tools/power/x86/intel-speed-select/
- 
- INTEL STRATIX10 FIRMWARE DRIVERS
- M:	Richard Gong <richard.gong@linux.intel.com>
-+R:	Tom Rix <trix@redhat.com>
- L:	linux-kernel@vger.kernel.org
- S:	Maintained
- F:	Documentation/ABI/testing/sysfs-devices-platform-stratix10-rsu
--- 
-2.27.0
-
+Acked-by: Rob Herring <robh@kernel.org>
