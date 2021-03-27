@@ -2,103 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2134834B6F3
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 12:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD7D34B6F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 13:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhC0L6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 07:58:22 -0400
-Received: from aposti.net ([89.234.176.197]:58596 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231601AbhC0L6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 07:58:21 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        stable@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v4 3/3] drm/ingenic: Register devm action to cleanup encoders
-Date:   Sat, 27 Mar 2021 11:57:42 +0000
-Message-Id: <20210327115742.18986-4-paul@crapouillou.net>
-In-Reply-To: <20210327115742.18986-1-paul@crapouillou.net>
-References: <20210327115742.18986-1-paul@crapouillou.net>
+        id S231492AbhC0MAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 08:00:35 -0400
+Received: from www381.your-server.de ([78.46.137.84]:56354 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhC0MAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 08:00:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=s1goAPAplOPdUwSEaDXuQq8i9y7Vcci3VV9X+Qrmtdg=; b=G/2Aw1tF1pTgqVIqkTwaLQd5ZA
+        0zf2Busvs+2WJxM072QsXE6fEGWH6KtegT/tmN2VCyh8YniRCAvWdE3lo93ZaYbLmyqN7bKUKusOD
+        Q8k6c+OxsZ6VWtnB+K0VaDEppJJMvbLeM4tNSc+FH7I/9co5AgRXYwBcFYbK7P5b55QRrJdrgD+hS
+        z42fLQeoVVNxAyl04Q/YoFFDEHb04uWYpD+5gGmlLarwOZaa7KDj4KIK3cIWJeVeStYwhNKm2vtGz
+        YB/8ynS8uffXixxq0v9bX8Xu/EQyGVc36j1l0f7LG0L1TGolsVhH7xnFGLni/A06+/9j/A3+QD9Sf
+        DI3Wx8aQ==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lQ7c3-000Bfi-LC; Sat, 27 Mar 2021 13:00:20 +0100
+Received: from [2001:a61:2aba:2d01:224:d7ff:fe9f:8154]
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lQ7c3-0009ot-Es; Sat, 27 Mar 2021 13:00:19 +0100
+Subject: Re: [PATCH v6 20/24] iio: buffer: add ioctl() to support opening
+ extra buffers for IIO device
+To:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Jonathan Cameron <jic23@jic23.retrosnub.co.uk>,
+        "Sa, Nuno" <Nuno.Sa@analog.com>,
+        "zzzzArdelean, zzzzAlexandru" <alexandru.Ardelean@analog.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>
+References: <20210215104043.91251-1-alexandru.ardelean@analog.com>
+ <20210215104043.91251-21-alexandru.ardelean@analog.com>
+ <877ca331-1a56-1bd3-6637-482bbf060ba9@metafoo.de>
+ <20210228143429.00001f01@Huawei.com>
+ <5f9070a5-2c3d-f185-1981-10ec768dbb4a@metafoo.de>
+ <20210228172753.0000568c@Huawei.com>
+ <CA+U=Dsqs_B3=6FSS0dmGsRUKwD826Qy250OXzyp5mBFHt4t6MQ@mail.gmail.com>
+ <CY4PR03MB2631CF5082542DBF3F109E08996C9@CY4PR03MB2631.namprd03.prod.outlook.com>
+ <20210320174100.6808ad36@jic23-huawei> <20210321173713.2691e0bb@jic23-huawei>
+ <CA+U=DsouJuVyUThPO_p9MNt5ziWHdU2RhuGQLWgOBML6wFPWhA@mail.gmail.com>
+ <20210323113426.000037d1@Huawei.com>
+ <CA+U=DspJkK=sqy=va7mds0cOfJrS3nEd3-pymjztuYYNaG8vPA@mail.gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <77db0332-4fd1-fb5f-8c22-10653139f3e7@metafoo.de>
+Date:   Sat, 27 Mar 2021 13:00:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+U=DspJkK=sqy=va7mds0cOfJrS3nEd3-pymjztuYYNaG8vPA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26121/Fri Mar 26 12:11:03 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since the encoders have been devm-allocated, they will be freed way
-before drm_mode_config_cleanup() is called. To avoid use-after-free
-conditions, we then must ensure that drm_encoder_cleanup() is called
-before the encoders are freed.
+On 3/24/21 10:10 AM, Alexandru Ardelean wrote:
+> On Tue, Mar 23, 2021 at 1:35 PM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+>>
+[..]
+>>>
+>>> Continuing a bit with the original IIO buffer ioctl(), I talked to
+>>> Lars a bit over IRC.
+>>> And there was an idea/suggestion to maybe use a struct to pass more
+>>> information to the buffer FD.
+>>>
+>>> So, right now the ioctl() just returns an FD.
+>>> Would it be worth to extend this to a struct?
+>>> What I'm worried about is that it opens the discussion to add more
+>>> stuff to that struct.
+>>>
+>>> so now, it would be:
+>>>
+>>> struct iio_buffer_ioctl_data {
+>>>              __u32 fd;
+>>>              __u32 flags;   // flags for the new FD, which maybe we
+>>> could also pass via fcntl()
+>>> }
+>>>
+>>> anything else that we would need?
+>>
+>> I have a vague recollection that is is almost always worth adding
+>> some padding to such ioctl data coming out of the kernel.  Gives
+>> flexibility to safely add more stuff later without userspace
+>> failing to allocate enough space etc.
+>>
+>> I'm curious though, because this feels backwards. I'd expect the
+>> flags to be more useful passed into the ioctl? i.e. request
+>> a non blocking FD?  Might want to mirror that back again of course.
+> 
 
-v2: Use the new __drmm_simple_encoder_alloc() function
+The struct can be used for both. Passing flags and buffer number in and fd out.
 
-v3: Use the new drmm_plain_simple_encoder_alloc() macro
+> Personally, I don't know.
+> I don't have any experiences on this.
+> 
+> So, then I'll do a change to this ioctl() to use a struct.
+> We can probably add some reserved space?
+> 
+> struct iio_buffer_ioctl_data {
+>              __u32 fd;
+>              __u32 flags;
+>              __u32 reserved1;
+>              __u32 reserved2;
+> }
 
-v4: Use drmm_plain_encoder_alloc() macro
+What to make sure of when using reserved fields is to check that they are 0. 
+And reject the ioctl if they are not. This is the only way to ensure that old 
+applications will continue to work if the struct is updated.
 
-Fixes: c369cb27c267 ("drm/ingenic: Support multiple panels/bridges")
-Cc: <stable@vger.kernel.org> # 5.8+
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index d60e1eefc9d1..29742ec5ab95 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -24,6 +24,7 @@
- #include <drm/drm_crtc.h>
- #include <drm/drm_crtc_helper.h>
- #include <drm/drm_drv.h>
-+#include <drm/drm_encoder.h>
- #include <drm/drm_gem_cma_helper.h>
- #include <drm/drm_fb_cma_helper.h>
- #include <drm/drm_fb_helper.h>
-@@ -37,7 +38,6 @@
- #include <drm/drm_plane.h>
- #include <drm/drm_plane_helper.h>
- #include <drm/drm_probe_helper.h>
--#include <drm/drm_simple_kms_helper.h>
- #include <drm/drm_vblank.h>
- 
- struct ingenic_dma_hwdesc {
-@@ -1024,20 +1024,17 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 			bridge = devm_drm_panel_bridge_add_typed(dev, panel,
- 								 DRM_MODE_CONNECTOR_DPI);
- 
--		encoder = devm_kzalloc(dev, sizeof(*encoder), GFP_KERNEL);
--		if (!encoder)
--			return -ENOMEM;
-+		encoder = drmm_plain_encoder_alloc(drm, NULL, DRM_MODE_ENCODER_DPI, NULL);
-+		if (IS_ERR(encoder)) {
-+			ret = PTR_ERR(encoder);
-+			dev_err(dev, "Failed to init encoder: %d\n", ret);
-+			return ret;
-+		}
- 
- 		encoder->possible_crtcs = 1;
- 
- 		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
- 
--		ret = drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_DPI);
--		if (ret) {
--			dev_err(dev, "Failed to init encoder: %d\n", ret);
--			return ret;
--		}
--
- 		ret = drm_bridge_attach(encoder, bridge, NULL, 0);
- 		if (ret) {
- 			dev_err(dev, "Unable to attach bridge\n");
--- 
-2.30.2
-
+> 
+> Lars was giving me some articles about ioctls.
+> One idea was to maybe consider making them multiples of 64 bits.
+> 
+> But reading through one of the docs here:
+>       https://www.kernel.org/doc/html/latest/driver-api/ioctl.html#interface-versions
+> it discourages to do interface versions.
+> 
+> But I guess if we plan ahead with some reserved space, it might be
+> somewhat fine.
+> 
+> I'm still a little green on this stuff.
+> 
+>>
