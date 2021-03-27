@@ -2,135 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E96A34B40C
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206D934B40D
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 04:35:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbhC0D3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 26 Mar 2021 23:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhC0D3D (ORCPT
+        id S230239AbhC0Deg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 26 Mar 2021 23:34:36 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14495 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhC0DeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 26 Mar 2021 23:29:03 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DFCC0613AA
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 20:29:03 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id h20so1831654plr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 26 Mar 2021 20:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=XtPWAZA9eTLzUykFCimEArM4fZDHqFEi9LTCa54qAS4=;
-        b=ewCD38hdt+uMPe8ie3aNETXbNM0h992GPd/XUVPqG25npRQuY+3xBaahlCBBeRQvbU
-         Ohf4En5goontX+dGez6YO9SV9Iz2P8VUICw+oZW0hZUEmNzvZV3baoef33uvrqZzbtS0
-         CNc53HRRc/r7i5OtPlrYXEovFeEmcO+OvNBqOcLEKFQVibq8f0UjglRQ9VvVFWESVIex
-         LpsJmTx0/2Jr06l8DEgoyZcV3AJapUWc8WdpvP0CZt/ZaGMIcWj5D2arPwdBDPjM1GLV
-         id9WvyepH/nR5BVHUEeAbkK3bu2Lj2wEiyWMqbzAoA4JSOZCmUqn/7TWyvXDMef3NGdp
-         FCKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=XtPWAZA9eTLzUykFCimEArM4fZDHqFEi9LTCa54qAS4=;
-        b=TmJ8/y6la7hu4Zbk3rzS1NzmZAUkMnFhWe/7aC+YhTP5ttTIuvrasx9hvgRrpwLz8i
-         QS8gyWkElb4QpwbzhEujWiIguWct+pUp1ZFTWfjxIhIxexWNjkWo2gzY6n/M2PUBk5H+
-         NhI7RsQmrWQkuS9oso4crvrlqK9AcAcbrBRcay0EBJ2j3U3lbsnEBlQhpgl9pBNysodx
-         Bt1aClHS+868i4Na/IM7N1iF1+GWz0qkF6i9WwC5mZBlTHZ3R8UDmQg5DpW8Ohifzejd
-         tux5V2IQG1GFYcfZj8fJ3bGsMheUEDSf7sbxz+93xcE2/caIWRmPaQaghGZ0AYzVn7iS
-         kTMA==
-X-Gm-Message-State: AOAM533URXop6kiQq5jbobkZlEZ0k9nw6jEmP77Vzk4QyHBJ8zJoylmJ
-        H/gpBDRWZGGAw/dgKhT69M8=
-X-Google-Smtp-Source: ABdhPJx+f0rPIXJh9LcPnDL7dF8Kld3VQl/T/PUrJTlseyVn1uST7VLq57MqWBdKiWS32Ldz1B5Ebw==
-X-Received: by 2002:a17:90b:ed0:: with SMTP id gz16mr16494077pjb.106.1616815742626;
-        Fri, 26 Mar 2021 20:29:02 -0700 (PDT)
-Received: from hoboy.vegasvil.org ([2601:645:c000:48:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id k127sm10541907pfd.63.2021.03.26.20.29.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 20:29:02 -0700 (PDT)
-Date:   Fri, 26 Mar 2021 20:28:59 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Daphne Preston-Kendall <dpk@nonceword.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Subject: Re: [Bug 212265] New: clock_gettime(CLOCK_TAI, ...) should return an
- error when TAI has not been configured
-Message-ID: <20210327032859.GA3168@hoboy.vegasvil.org>
-References: <87sg4iupzs.fsf@nanos.tec.linutronix.de>
+        Fri, 26 Mar 2021 23:34:16 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6kt401MkzySBp;
+        Sat, 27 Mar 2021 11:32:12 +0800 (CST)
+Received: from [10.174.177.208] (10.174.177.208) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 11:34:05 +0800
+Subject: Re: [PATCH -next] mm, page_alloc: avoid page_to_pfn() in
+ move_freepages()
+To:     Matthew Wilcox <willy@infradead.org>
+References: <20210323131215.934472-1-liushixin2@huawei.com>
+ <20210323125400.GE1719932@casper.infradead.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Michal Hocko <mhocko@suse.com>,
+        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+From:   Liu Shixin <liushixin2@huawei.com>
+Message-ID: <fa98fe49-8b95-fbbf-6161-483519e742ac@huawei.com>
+Date:   Sat, 27 Mar 2021 11:34:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sg4iupzs.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210323125400.GE1719932@casper.infradead.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 12:13:43PM +0100, Thomas Gleixner wrote:
-> On Sat, Mar 13 2021 at 17:44, bugzilla-daemon wrote:
-> > Unfortunately, although the majority of distributions ship with a leap
-> > second file from the zoneinfo database, many or most of them (I have
-> > Arch here) do not configure ntpd to know about it, so ntpd does not
-> > set things up properly for CLOCK_TAI to work.
+    Sorry to reply to you after a so long time and thanks for your advice. It does seem that your proposed change will make the code cleaner and more efficient.
 
-I'm not sure about "many or most" distros.  In Debian, the ntp package
-depends on tzdata, and the default /etc/ntp.conf does use the leap
-seconds file.
-
-> That would be a user visible change and might hit existing user space by
-> surprise, so that's not a necessarily a good option.
-
-Agreed.
- 
-> and the kernel on it's own has no way to check for and retrieve an
-> up-to-date version. That's why it is delegated to user space.
-
-Right, the kernel can't make any assumptions about the TAI-UTC offset.
-
-> I hope the NTP/TAI wizards have some more insight/opinions on this.
-
-I agree that ntpd and the current distros don't handle this very well,
-but all the pieces are there to allow user space to handle TAI and
-leap seconds as reasonably as possible.  The fundamental issue is that
-there is no way to determine the TAI-UTC offset without some kind of
-input from the real world.
-
-Even with GPS, after a cold boot you cannot know the offset
-immediately, because the leap second information is broadcast in the
-almanac only every 12.5 minutes, and so you can be left in suspense
-for a long time.
-
-Using ntpd on Debian, the service will set the offset, but only after
-synchronization with the upstream server has been established, and
-this takes about five minutes, IIRC.
-
-If waiting 5 or 12.5 minutes is too long for your requirements, you
-can boot strap the time from RTC [1] and then consult the leap seconds
-table [2] to set the TAI-UTC offset in the kernel via adjtimex().
-
-Unfortunately there is no user space utility for setting TAI-UTC, but
-I hacked one 'adjtimex' program for this purpose:
-
-    https://github.com/richardcochran/ntpclient-2015
-
-Getting back to the original point of the kernel returning an error,
-I don't see a need for this.  Applications that require correct leap
-seconds can simply call adjtimex() and wait until the initial zero
-value is changed by ntpd/etc to the correct offset.  That isn't
-fundamentally harder than calling clock_gettime() and waiting until
-the error would go away.
-
-Thanks,
-Richard
-
-1. Assuming the RTC was set and has a fresh battery, and assuming no
-   leap seconds occurred while your computer was off!
-
-2. Assuming the RTC value is not newer than the expiration date of the
-   leap seconds file.
+    I repeated move_freepages_block() 2000000 times on the VM and counted jiffies. The average value before and after the change was both about 12,000. I think it's probably because I'm using the Sparse Memory Model, so pfn_to_page() is not time-consuming.
 
 
+On 2021/3/23 20:54, Matthew Wilcox wrote:
+> On Tue, Mar 23, 2021 at 09:12:15PM +0800, Liu Shixin wrote:
+>> From: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>
+>> The start_pfn and end_pfn are already available in move_freepages_block(),
+>> there is no need to go back and forth between page and pfn in move_freepages
+>> and move_freepages_block, and pfn_valid_within() should validate pfn first
+>> before touching the page.
+> This looks good to me:
+>
+> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>
+>>  static int move_freepages(struct zone *zone,
+>> -			  struct page *start_page, struct page *end_page,
+>> +			  unsigned long start_pfn, unsigned long end_pfn,
+>>  			  int migratetype, int *num_movable)
+>>  {
+>>  	struct page *page;
+>> +	unsigned long pfn;
+>>  	unsigned int order;
+>>  	int pages_moved = 0;
+>>  
+>> -	for (page = start_page; page <= end_page;) {
+>> -		if (!pfn_valid_within(page_to_pfn(page))) {
+>> -			page++;
+>> +	for (pfn = start_pfn; pfn <= end_pfn;) {
+>> +		if (!pfn_valid_within(pfn)) {
+>> +			pfn++;
+>>  			continue;
+>>  		}
+>>  
+>> +		page = pfn_to_page(pfn);
+> I wonder if this wouldn't be even better if we did:
+>
+> 	struct page *start_page = pfn_to_page(start_pfn);
+>
+> 	for (pfn = start_pfn; pfn <= end_pfn; pfn++) {
+> 		struct page *page = start_page + pfn - start_pfn;
+>
+> 		if (!pfn_valid_within(pfn))
+> 			continue;
+>
+>> -
+>> -			page++;
+>> +			pfn++;
+>>  			continue;
+> ... then we can drop the increment of pfn here
+>
+>>  		}
+>>  
+>> @@ -2458,7 +2459,7 @@ static int move_freepages(struct zone *zone,
+>>  
+>>  		order = buddy_order(page);
+>>  		move_to_free_list(page, zone, order, migratetype);
+>> -		page += 1 << order;
+>> +		pfn += 1 << order;
+> ... and change this to pfn += (1 << order) - 1;
+>
+> Do you have any numbers to quantify the benefit of this change?
+> .
+>
 
