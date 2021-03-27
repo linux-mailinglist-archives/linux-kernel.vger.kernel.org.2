@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D48234B5D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 10:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9548834B5E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 27 Mar 2021 10:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231308AbhC0Jzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 05:55:52 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:14933 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbhC0JzZ (ORCPT
+        id S231553AbhC0J7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 05:59:07 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14500 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231143AbhC0J7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 05:55:25 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F6vLF3gxBzkgHw;
-        Sat, 27 Mar 2021 17:53:41 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.162) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Sat, 27 Mar 2021
- 17:55:20 +0800
-Subject: Re: [PATCH v2 06/15] ACPI: LPSS: fix some coding style issues
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <1616831193-17920-1-git-send-email-tanxiaofei@huawei.com>
- <1616831193-17920-7-git-send-email-tanxiaofei@huawei.com>
- <CAHp75Vc+0hxLS_Ab7_VZfrG2jiQzvia9S=o+Gc+wg+vVk1Z39w@mail.gmail.com>
-CC:     "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <38357624-0886-f8e6-906d-c230c28b386c@huawei.com>
-Date:   Sat, 27 Mar 2021 17:55:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Sat, 27 Mar 2021 05:59:01 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F6vQ16wP7zyV56;
+        Sat, 27 Mar 2021 17:56:57 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 27 Mar 2021 17:58:50 +0800
+From:   Meng Yu <yumeng18@huawei.com>
+To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+CC:     <linux-crypto@vger.kernel.org>, <xuzaibo@huawei.com>,
+        <wangzhou1@hisilicon.com>, <yumeng18@huawei.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] crypto: hisilicon/hpre - Add processing of src_data in 'CURVE25519'
+Date:   Sat, 27 Mar 2021 17:56:16 +0800
+Message-ID: <1616838976-31936-1-git-send-email-yumeng18@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vc+0hxLS_Ab7_VZfrG2jiQzvia9S=o+Gc+wg+vVk1Z39w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.40.192.162]
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+HPRE can only deal with src_data smaller than 'p' in 'CURVE25519'
+algorithm, but 'rfc7748' says:
+'Implementations MUST accept non-canonical values and process them as
+if they had been reduced modulo the field prime'
+So we get its modulus to p, and then deal it with HPRE.
 
-On 2021/3/27 16:17, Andy Shevchenko wrote:
->
->
-> On Saturday, March 27, 2021, Xiaofei Tan <tanxiaofei@huawei.com
-> <mailto:tanxiaofei@huawei.com>> wrote:
->
->     Fix some coding style issues reported by checkpatch.pl
->     <http://checkpatch.pl>, including
->     following types:
->
->     WARNING: simple_strtol is obsolete, use kstrtol instead
->     WARNING: Missing a blank line after declarations
->
->
->
-> First of all, two changes ==> two patches.
->
+Signed-off-by: Meng Yu <yumeng18@huawei.com>
+---
+ drivers/crypto/hisilicon/hpre/hpre_crypto.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
 
-I thought it would be better to include more simple cleanup in one patch.
-
->
->
->     Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com
->     <mailto:tanxiaofei@huawei.com>>
->     ---
->      drivers/acpi/acpi_lpss.c | 4 +++-
->      1 file changed, 3 insertions(+), 1 deletion(-)
->
->     diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
->     index be73974..2df231e 100644
->     --- a/drivers/acpi/acpi_lpss.c
->     +++ b/drivers/acpi/acpi_lpss.c
->     @@ -187,7 +187,7 @@ static void byt_i2c_setup(struct
->     lpss_private_data *pdata)
->
->             /* Expected to always be true, but better safe then sorry */
->             if (uid_str)
->     -               uid = simple_strtol(uid_str, NULL, 10);
->     +               uid = kstrtol(uid_str, NULL, 10);
->
->
-> How did you test this? Is there any guarantee that input is
-> null-terminated number?
->
-> Where is the check of returned value from `kstrtol()`?
->
-> Yes, you haven’t tested that at all. Don’t submit patches you are not
-> able to test and haven’t tested.
->
-
-It's my fault. Sorry for that, i will fix it.
-
-> NAK.
->
->
->             /* Detect I2C bus shared with PUNIT and ignore its d3 status */
->             status = acpi_evaluate_integer(handle, "_SEM", NULL,
->     &shared_host);
->     @@ -377,6 +377,7 @@ static const struct acpi_device_id
->     acpi_lpss_device_ids[] = {
->      static int is_memory(struct acpi_resource *res, void *not_used)
->      {
->             struct resource r;
->     +
->             return !acpi_dev_resource_memory(res, &r);
->      }
->
->     @@ -1200,6 +1201,7 @@ static int acpi_lpss_poweroff_noirq(struct
->     device *dev)
->             if (pdata->dev_desc->resume_from_noirq) {
->                     /* This is analogous to the
->     acpi_lpss_suspend_noirq() case. */
->                     int ret = acpi_lpss_do_poweroff_late(dev);
->     +
->                     if (ret)
->                             return ret;
->             }
->     --
->     2.8.1
->
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+diff --git a/drivers/crypto/hisilicon/hpre/hpre_crypto.c b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+index d743c54..f363653 100644
+--- a/drivers/crypto/hisilicon/hpre/hpre_crypto.c
++++ b/drivers/crypto/hisilicon/hpre/hpre_crypto.c
+@@ -1729,6 +1729,17 @@ static int hpre_curve25519_msg_request_set(struct hpre_ctx *ctx,
+ 	return 0;
+ }
+ 
++static void hpre_curve25519_src_modulo_p(u8 *ptr)
++{
++	int i;
++
++	for (i = 0; i < CURVE25519_KEY_SIZE - 1; i++)
++		ptr[i] = 0;
++
++	/* The modulus is ptr's last byte minus '0xed'(last byte of p) */
++	ptr[i] -= 0xed;
++}
++
+ static int hpre_curve25519_src_init(struct hpre_asym_request *hpre_req,
+ 				    struct scatterlist *data, unsigned int len)
+ {
+@@ -1767,10 +1778,13 @@ static int hpre_curve25519_src_init(struct hpre_asym_request *hpre_req,
+ 	curve = ecc_get_curve25519();
+ 
+ 	fill_curve_param(p, curve->p, CURVE25519_KEY_SIZE, curve->g.ndigits);
+-	if (memcmp(ptr, p, ctx->key_sz) >= 0) {
+-		dev_err(dev, "gx is out of p!\n");
+-		goto err;
+-	}
++
++	/*
++	 * When src_data equals (2^255 - 19) ~  (2^255 - 1), it is out of p,
++	 * we get its modulus to p, and then use it.
++	 */
++	if (memcmp(ptr, p, ctx->key_sz) >= 0)
++		hpre_curve25519_src_modulo_p(ptr);
+ 
+ 	hpre_req->src = ptr;
+ 	msg->in = cpu_to_le64(dma);
+-- 
+2.8.1
 
