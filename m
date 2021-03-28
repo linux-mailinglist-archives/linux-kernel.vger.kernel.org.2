@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5FC34BBF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF9E34BC04
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230266AbhC1KOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 06:14:30 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:44823 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229503AbhC1KOJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 06:14:09 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B9087580633;
-        Sun, 28 Mar 2021 06:14:08 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute3.internal (MEProxy); Sun, 28 Mar 2021 06:14:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm1; bh=+AXJmGwULocjJynqc9rpylLzweNF
-        zSxl8iMjJTiQzGo=; b=QF0dDnpgWEKT7HUW36rrxpKz/qLNTnKrqcK0PpLif2bX
-        b0GbaS8lyKxdH8mcsG+KAEZbDcJv0eeuFPdY2j+cuMQaf0XgH6snrffk+pb81FEs
-        xUj7mGm2oyQsq0cx969KulMepwPL11KIEBZFCdXmSHZf1uAsPiXbNlI4Y32c1J9W
-        bn+mi8jnqP34daddG7Hkj26Q2UYLc5lyRvvX6DHUsAkWSuXZONm9/LhkWrubCPQm
-        l0FHuqsylUPDXr7491dTNonnaLMaxfNPGgy157lNdNKBoD+sZbmy04yUEqsyQ4U4
-        k1vY1GFLoMoFBGiV5CZI+BCNpqamYKImhPF9lK9ylQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+AXJmG
-        wULocjJynqc9rpylLzweNFzSxl8iMjJTiQzGo=; b=Zgn3D060qZb4jHzgkExj7X
-        Z8XcD9zn5ofpyVMx13FhQy+Wn2ezCDQ0avBsQ/YmeJACMg+pGuWPWYBXVmgTQqQv
-        eCeOU5AVrMNz8gNJjbiOMqvpk3U+q0CcyA8fUayT9cFu+A/U3DGJwH/9PhaiDP1a
-        GF4L+Ri8RTwggiPeVzLGAOjkdk1RT9ZHAnllvz6yrTpWbXmf/zIknJXWsgU0PuaN
-        kUu8k6LiD+TizSV8nd7pALlUa40cIgy0KOCSfzgjygMbdIrCr/f9JR1IvJC2U+kU
-        3svs5G35jz27h7GxxYwj7BoevcKwOYdWk9f9oEC2w1rz3R66aORjdfve52LME7Mg
-        ==
-X-ME-Sender: <xms:71ZgYEz8O0xMB9H5jh2WCJiTf3x8fRaVXj5OZ3ilNRcRT7eqazFZWw>
-    <xme:71ZgYITQPCD48qo8td6VJyzFkILoLDQSTCY307E5qcAlPI1OC_JcG_tu9TtXLSdUO
-    T3oKgOXrEbST6rcuc8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehiedgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
-    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
-    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
-    feekffenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:71ZgYGW4SwatHP8q_X3G2WqcuAZVhHlzOX9r0p42VLcYSWWEaPidfg>
-    <xmx:71ZgYCit540_EJulUA5F2qecnUa8hm3rUmqdPK1fkNwpJxTLtwWYcg>
-    <xmx:71ZgYGBuWh5G3cdCYhRc2uJSguV_uJBv6GhH_wvJfgxoQLt3yMpRWw>
-    <xmx:8FZgYC2EHdZpBjk_8RYaGJhA5UQTeMYo-Uh3KScV4apOy0pbSMKsIs_cOdY>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3EFB151C005E; Sun, 28 Mar 2021 06:14:07 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
-Mime-Version: 1.0
-Message-Id: <2ea0e787-6d00-4412-841d-529e1409eb05@www.fastmail.com>
-In-Reply-To: <202103281748.sDyj85s6-lkp@intel.com>
-References: <20210328074009.95932-2-sven@svenpeter.dev>
- <202103281748.sDyj85s6-lkp@intel.com>
-Date:   Sun, 28 Mar 2021 12:13:46 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "kernel test robot" <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, "Will Deacon" <will@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Arnd Bergmann" <arnd@kernel.org>, devicetree@vger.kernel.org,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
-        "Marc Zyngier" <maz@kernel.org>
-Subject: Re: [PATCH v2 1/3] iommu: io-pgtable: add DART pagetable format
-Content-Type: text/plain
+        id S231208AbhC1K0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 06:26:07 -0400
+Received: from comms.puri.sm ([159.203.221.185]:56124 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhC1KZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 06:25:47 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id E8A3DE01BD;
+        Sun, 28 Mar 2021 03:25:46 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id tEz7Z80CCxMY; Sun, 28 Mar 2021 03:25:45 -0700 (PDT)
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     martin.kepplinger@puri.sm
+Cc:     bvanassche@acm.org, jejb@linux.ibm.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-pm@vger.kernel.org, martin.petersen@oracle.com,
+        stern@rowland.harvard.edu
+Subject: [PATCH v3 0/4] scsi: add runtime PM workaround for SD cardreaders
+Date:   Sun, 28 Mar 2021 12:25:27 +0200
+Message-Id: <20210328102531.1114535-1-martin.kepplinger@puri.sm>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+hi,
 
-On Sun, Mar 28, 2021, at 11:42, kernel test robot wrote:
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> nios2-linux-ld: drivers/iommu/io-pgtable.o:(.rodata+0x1c): undefined reference to `io_pgtable_apple_dart_init_fns'
-> 
->
+In short: there are SD cardreaders that send MEDIA_CHANGED on
+(runtime) resume. We cannot use runtime PM with these devices as
+I/O always fails. I'd like to discuss a way to fix this
+or at least allow us to work around this problem:
 
-That one was me not being careful enough when removing the Kconfig flag
-compared to v1.
+For the full background, the discussion started in June 2020 here:
+https://lore.kernel.org/linux-scsi/20200623111018.31954-1-martin.kepplinger@puri.sm/
 
-Fixed by moving
+I'd appreciate any feedback.
 
-	[ARM_APPLE_DART] = &io_pgtable_apple_dart_init_fns,
-
-into the #ifdef CONFIG_IOMMU_IO_PGTABLE_LPAE region in drivers/iommu/io-pgtable.c
-a few lines above.
+Especially: Any naming-preferences for the flags? And is the specific
+device that I need this workaround for (Generic Ultra HS-SD/MMC, connected
+via USB) too "generic" maybe? Not sure about what possibilities I'd have here...
 
 
-Thanks,
+revision history
+----------------
+v3: (thank you Bart)
+ * create a new BLIST entry to mark affected devices instead of the
+   sysfs module parameter for sd only. still, only sd implements handling
+   the flag for now.
+ * cc linux-pm list
 
-Sven
+v2:
+https://lore.kernel.org/linux-scsi/20210112093329.3639-1-martin.kepplinger@puri.sm/
+ * move module parameter to sd
+ * add Documentation
+v1:
+https://lore.kernel.org/linux-scsi/20210111152029.28426-1-martin.kepplinger@puri.sm/T/
+
+
+Martin Kepplinger (4):
+  scsi: add expecting_media_change flag to error path
+  scsi: devinfo: add new flag BLIST_MEDIA_CHANGE
+  scsi: sd: use expecting_media_change for BLIST_MEDIA_CHANGE devices
+  scsi: devinfo: add BLIST_MEDIA_CHANGE for Ultra HS-SD/MMC usb
+    cardreaders
+
+ drivers/scsi/scsi_devinfo.c |  1 +
+ drivers/scsi/scsi_error.c   | 36 +++++++++++++++++++++++++++++++-----
+ drivers/scsi/sd.c           | 23 ++++++++++++++++++++++-
+ include/scsi/scsi_device.h  |  1 +
+ include/scsi/scsi_devinfo.h |  6 +++---
+ 5 files changed, 58 insertions(+), 9 deletions(-)
+
+-- 
+2.30.2
+
