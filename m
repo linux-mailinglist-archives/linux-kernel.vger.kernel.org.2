@@ -2,153 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6DD34BD88
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4DD34BD8B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhC1RU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:20:56 -0400
-Received: from mail-pj1-f54.google.com ([209.85.216.54]:41871 "EHLO
-        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbhC1RU0 (ORCPT
+        id S231465AbhC1RV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:21:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231340AbhC1RVF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:20:26 -0400
-Received: by mail-pj1-f54.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so4827362pjb.0;
-        Sun, 28 Mar 2021 10:20:26 -0700 (PDT)
+        Sun, 28 Mar 2021 13:21:05 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17A8C061756;
+        Sun, 28 Mar 2021 10:21:04 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id m12so14902784lfq.10;
+        Sun, 28 Mar 2021 10:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=m5n0YXOwW9Hi1GIX7USstKgF3p3m11IaefFXa7cKRmM=;
+        b=KG3dCp5GSUH47Hc4LdQZI/2q+2sU74KRV1LkWlb44jlV8t0LNd9rAUJchmXnEREkEq
+         /kYJkVSUl3siYQIm385XNBBQ9C77ekcH/01si1fudYx3Y2b5V6zQwbcbADBSQI/MakQM
+         1V5T9CO7mhb93jWtlxvISFxEbNj7t1sydOSow4uf5u9CcvVjpys3Wes/upgxBps4D3lG
+         SmD6mqXf6605g9NgIsHVWzzHmrivf+XsXl4MNwNLXplZ0JHin6I7QRMgrNAenXcmTXYE
+         6yvMddvTR02ywUBh8bQ/6Fj2AXxiLd+jj8/sFViDJc25fABhQSLRvgVmmpKbDy2NW9A2
+         KWOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0CdNKJndfJrBqi8zf8ffL/DDeiGdWrF+QOsUqJFXedA=;
-        b=EEB44jbWG5niHeJlZLe7muR+t1oksq84ne5Ubicw7KXLGPO03ZYIxp0YaDzmOv+MkU
-         kkeTyINNajsERuOERktlSe3OlUvie0SItffGo6RvGF5tXCgBErNHYHUkbbLI7GbowHnb
-         UHBlnLJskCx3iah+VRCdbG1wBd5Ry7ccdEjJ9NSqHXnaZOdxX8EL+cII/LGLc50yOpQs
-         SE/hz2xQSMPF+wOOffQrulziwVotz9UpgjC1Qlt9uSKjI/PI99pQNSeffgNB9oJewSgS
-         nzRLlje09gJeAg+BIkVtEKTKe+3M/jrBgk3FTC/nzaODxtqlJUzM3QjYvKI9ERWiQXpm
-         QAaA==
-X-Gm-Message-State: AOAM531w2BTkfgxy4Xux5qnPbbbERsm+RwIHmuuJ0uAMv2HdvOve8tA2
-        NyWVpPMP4cZfYRdh8/uOb3k=
-X-Google-Smtp-Source: ABdhPJz0uxxYoHOsbILzzRen7JKz9aIUf5n4aqJIcZF9vt/tHMaVN/KV6+NN8bIhHV/NUHgVVPYWNw==
-X-Received: by 2002:a17:90a:9413:: with SMTP id r19mr13337158pjo.236.1616952026015;
-        Sun, 28 Mar 2021 10:20:26 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id k21sm15471182pfi.28.2021.03.28.10.20.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 10:20:25 -0700 (PDT)
-Date:   Sun, 28 Mar 2021 10:20:23 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "Gong, Richard" <richard.gong@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>,
-        russell.h.weight@intel.com
-Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-Message-ID: <YGC619DmLM0AAQ5p@epycbox.lan>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
- <YF90y3Di4RbuJvr0@epycbox.lan>
- <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=m5n0YXOwW9Hi1GIX7USstKgF3p3m11IaefFXa7cKRmM=;
+        b=s+tRyqFmhpBmaPanx8yEKxE4AIckLdXfdJ/XIdUYEKPdDFpWBKsDKd478aM7Hx84I5
+         CqrKYOYCupMer7oPCADM5+V3iw27pQnZBWlanIG2xPQZ0w6JQYGqXIWY4S0tb3sF5chL
+         7c4ICVbD3TK2BbolcNGSVPjRhTKcGBBghh2rpFT2e+M1QEPLSErpubwGqUrkYVqeuDvy
+         L/tTU3cdHr1BCTLbD2ztJ52BYpP+ikgbORP6gdc7Cd093uecU8wfs734oSPqYGBwYQPj
+         LGEPJgM7BUgbv7idSBSHsuPjvjTrmHi19EC9rvZEsGCtoggeslPizy3a9Eh896wB4kfe
+         sWSw==
+X-Gm-Message-State: AOAM5307zu2+JTaztGDEpWPXwWSlsiBKl7FGMmV4Aksb3iN3ovDDacYr
+        cLXv7qmDlb7SzgZHHIOitlDk2LE6Qow=
+X-Google-Smtp-Source: ABdhPJzOcVq18vABympiFDVg8EaHQrSG8xdwAihOObkL26wxulKBKB82BxgIOg9JVbo/eOe1tKdBFQ==
+X-Received: by 2002:a05:6512:b97:: with SMTP id b23mr14338302lfv.101.1616952063168;
+        Sun, 28 Mar 2021 10:21:03 -0700 (PDT)
+Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id f26sm1534567lfe.118.2021.03.28.10.21.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Mar 2021 10:21:02 -0700 (PDT)
+Subject: Re: [PATCH v1] Input: elants_i2c - fix division by zero if firmware
+ reports zero phys size
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Johnny Chuang <johnny.chuang.emc@gmail.com>,
+        Jasper Korten <jja2000@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        linux-input@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210302100824.3423-1-digetx@gmail.com>
+ <YGAJmGqNitQ9XwVl@google.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <ee24fc68-0e58-df10-8b3f-a1b18f95e4ad@gmail.com>
+Date:   Sun, 28 Mar 2021 20:21:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
+In-Reply-To: <YGAJmGqNitQ9XwVl@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tom,
-
-On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
+28.03.2021 07:44, Dmitry Torokhov пишет:
+> Hi Dmitry,
 > 
-> On 3/27/21 11:09 AM, Moritz Fischer wrote:
-> > Hi Richard, Russ,
-> >
-> > On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
-> >> Hi Moritz,
-> >>
-> >> Sorry for asking.
-> >>
-> >> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
-> >>
-> >> Regards,
-> >> Richard
-> >>
-> >> -----Original Message-----
-> >> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
-> >> Sent: Tuesday, February 9, 2021 4:20 PM
-> >> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
-> >> Cc: Gong, Richard <richard.gong@intel.com>
-> >> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-> >>
-> >> From: Richard Gong <richard.gong@intel.com>
-> >>
-> >> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
-> >>
-> >> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
-> >>
-> >> Bitstream authentication makes sure a signed bitstream has valid signatures.
-> >>
-> >> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
-> >>
-> >> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
-> >>
-> >> Richard Gong (7):
-> >>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
-> >>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
-> >>   firmware: stratix10-svc: extend SVC driver to get the firmware version
-> >>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
-> >>   fpga: of-fpga-region: add authenticate-fpga-config property
-> >>   dt-bindings: fpga: add authenticate-fpga-config property
-> >>   fpga: stratix10-soc: extend driver for bitstream authentication
-> >>
-> >>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
-> >>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
-> >>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
-> >>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
-> >>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
-> >>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
-> >>  include/linux/fpga/fpga-mgr.h                      |  3 ++
-> >>  7 files changed, 125 insertions(+), 18 deletions(-)
-> >>
-> >> --
-> >> 2.7.4
-> >>
-> > Apologies for the epic delay in getting back to this, I took another
-> > look at this patchset and Russ' patchset.
-> >
-> > TL;DR I'm not really a fan of using device-tree overlays for this (and
-> > again, apologies, I should've voiced this earlier ...).
-> >
-> > Anyways, let's find a common API for this and Russ' work, they're trying
-> > to achieve the same / similar thing, they should use the same API.
-> >
-> > I'd like to re-invetigate the possiblity to extend FPGA Manager with
-> > 'secure update' ops that work for both these use-cases (and I susspect
-> > hte XRT patchset will follow with a similar requirement, right after).
+> On Tue, Mar 02, 2021 at 01:08:24PM +0300, Dmitry Osipenko wrote:
+>> Touchscreen firmware of ASUS Transformer TF700T reports zeros for the phys
+>> size. Hence check whether the size is zero and don't set the resolution in
+>> this case.
+>>
+>> Reported-by: Jasper Korten <jja2000@gmail.com>
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>
+>> Please note that ASUS TF700T isn't yet supported by upstream kernel,
+>> hence this is not a critical fix.
+>>
+>>  drivers/input/touchscreen/elants_i2c.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
+>> index 4c2b579f6c8b..a2e1cc4192b0 100644
+>> --- a/drivers/input/touchscreen/elants_i2c.c
+>> +++ b/drivers/input/touchscreen/elants_i2c.c
+>> @@ -1441,14 +1441,16 @@ static int elants_i2c_probe(struct i2c_client *client,
+>>  
+>>  	touchscreen_parse_properties(ts->input, true, &ts->prop);
+>>  
+>> -	if (ts->chip_id == EKTF3624) {
+>> +	if (ts->chip_id == EKTF3624 && ts->phy_x && ts->phy_y) {
+>>  		/* calculate resolution from size */
+>>  		ts->x_res = DIV_ROUND_CLOSEST(ts->prop.max_x, ts->phy_x);
+>>  		ts->y_res = DIV_ROUND_CLOSEST(ts->prop.max_y, ts->phy_y);
+>>  	}
+>>  
+>> -	input_abs_set_res(ts->input, ABS_MT_POSITION_X, ts->x_res);
+>> -	input_abs_set_res(ts->input, ABS_MT_POSITION_Y, ts->y_res);
+>> +	if (ts->x_res > 0)
+>> +		input_abs_set_res(ts->input, ABS_MT_POSITION_X, ts->x_res);
 > 
-> The xrt patchset makes heavy use of device trees.
+> There is absolutely no difference between setting respluton to 0 vs not
+> setting it at all, so I dropped the conditionals and applied.
 > 
-> What is the general guidance for device tree usage ?
+>> +	if (ts->y_res > 0)
+>> +		input_abs_set_res(ts->input, ABS_MT_POSITION_Y, ts->y_res);
+>>  	if (ts->major_res > 0)
+> 
+> We could drop this condition as well.
+> 
+>>  		input_abs_set_res(ts->input, ABS_MT_TOUCH_MAJOR, ts->major_res);
 
-I'm not generally against using device tree, it has its place. To
-describe hardware (and hardware *changes* with overlays) :)
-
-What I don't like about this particular implementation w.r.t device-tree
-usage is that it uses DT overlays as a mechanism to program the flash --
-in place of having an API to do so.
-
-One could add device-nodes during the DT overlay application, while the
-FPGA doesn't actually get programmed with a new runtime image -- meaning
-live DT and actual hardware state diverged -- worst case it'd crash.
-
-So when roughly at the same time (from the same company even) we have two
-patchsets that do similar things with radically different APIs I think
-we should pause, and reflect on whether we can come up with something
-that works for both :)
-
-TL;DR the firmware parts to authenticate the bitstream look fine to me, the
-way we tie it into the FPGA region I'm not a fan of.
-
-- Moritz
+I'll make a follow up patch to clean up this condition, if you haven't
+done it yet. Thanks!
