@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70C734BE78
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 21:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0CB34BE7A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 21:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231588AbhC1TLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 15:11:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49786 "EHLO mail.kernel.org"
+        id S231599AbhC1TLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 15:11:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229655AbhC1TL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 15:11:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 958AB61958;
-        Sun, 28 Mar 2021 19:11:26 +0000 (UTC)
+        id S230294AbhC1TL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 15:11:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C4B746197E;
+        Sun, 28 Mar 2021 19:11:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616958686;
-        bh=PMA4oqqReBmtAX2ZAQmQ/Ij1yc01H45ZOkLzxC2sfBA=;
+        s=k20201202; t=1616958687;
+        bh=y5F8QdL70s1Ws4URk3FtPtmVklf6LfvOctsF4HLWVvc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ekkDR4P1dxkrDgGLnDZ2l+RhaE+WWWaha+FwLK1qJIy1XrBmm2MniuKfJXSHpi12h
-         JDwdME/E+8oAi+TwBYLINg4OzojiI+15srN7NmqXkM6EQEc+6IXuNo5oxFV/tyGmGQ
-         gMm4hF8SiAgmnXjPFrFa2oP1wNx5+rW3SDOFJ4gXxMubn5ZWApMQjJlvFMtoWPDFol
-         IthyQ5M5VoXVMFWUDj2gsErqXi4ZqNDy8vvJ6ZOnZuNvhXsdQnpGTAvkBz4lLBSDln
-         Tu+eBs6W7VMPumoi+lB2lwhwsD0Io7oHuMiAFa/0t0IbBJTPMM9JDfjD/58UuCtiyk
-         aLLMYUZikpZoA==
+        b=npYYy7GXV4M78Ybe0cV50p+SBV3uBoB974L7+5U3xeA1SeEHM4kBREH7CnPpf9reg
+         Vd0ia6klOAqTp4jS8TWxLFq4oBZcipHJAZlfavcp5avCpc2Xp4mCfwVnJKJCb3x2Zp
+         Im26HVCqgqZn8ybQyTGmORYaA163qDmgmZLjFXDFXUEETJai6l6ry9XfuxMI1ned75
+         3dywJBbyqumbH4LCdFR+Ml3prVw9py5MTkkOp8+rQymrCi+hL+7DHaXVJN9xArYn3T
+         o9gCtM2CHQEudc2JhzBwR4wcUgGJVwd8qxfFjnZm1GF6QCNuLUHBWCz7pFgA2FNFJe
+         ZBjw1wekajv6g==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7F5F3609E8;
-        Sun, 28 Mar 2021 19:11:26 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.12-rc4
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BF8AB609E8;
+        Sun, 28 Mar 2021 19:11:27 +0000 (UTC)
+Subject: Re: [GIT PULL] CIFS/SMB3 Fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <466055c2bdf8d6e61b616bc9e1f7393516365bcf.camel@HansenPartnership.com>
-References: <466055c2bdf8d6e61b616bc9e1f7393516365bcf.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <466055c2bdf8d6e61b616bc9e1f7393516365bcf.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 36fa766faa0c822c860e636fe82b1affcd022974
+In-Reply-To: <CAH2r5muJ0vRicetgiFOaMecoqGYZw7p+LAEYSs5OLADyzewFiw@mail.gmail.com>
+References: <CAH2r5muJ0vRicetgiFOaMecoqGYZw7p+LAEYSs5OLADyzewFiw@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAH2r5muJ0vRicetgiFOaMecoqGYZw7p+LAEYSs5OLADyzewFiw@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/sfrench/cifs-2.6.git tags/5.12-rc4-smb3
+X-PR-Tracked-Commit-Id: cfc63fc8126a93cbf95379bc4cad79a7b15b6ece
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e8cfe8fa22b6c3d12595f68fde6ef10121795267
-Message-Id: <161695868646.24587.12820068379331819503.pr-tracker-bot@kernel.org>
-Date:   Sun, 28 Mar 2021 19:11:26 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 81b1d39fd39a0ecfd30606714bcc05da586044f9
+Message-Id: <161695868777.24587.13257578771587511987.pr-tracker-bot@kernel.org>
+Date:   Sun, 28 Mar 2021 19:11:27 +0000
+To:     Steve French <smfrench@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 27 Mar 2021 18:04:06 -0700:
+The pull request you sent on Sat, 27 Mar 2021 19:07:10 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.samba.org/sfrench/cifs-2.6.git tags/5.12-rc4-smb3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e8cfe8fa22b6c3d12595f68fde6ef10121795267
+https://git.kernel.org/torvalds/c/81b1d39fd39a0ecfd30606714bcc05da586044f9
 
 Thank you!
 
