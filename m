@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA5E34BCA1
+	by mail.lfdr.de (Postfix) with ESMTP id 1334D34BCA0
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 16:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhC1Olm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 10:41:42 -0400
-Received: from pv50p00im-zteg10021401.me.com ([17.58.6.47]:40720 "EHLO
-        pv50p00im-zteg10021401.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229950AbhC1Olk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231163AbhC1Olk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 28 Mar 2021 10:41:40 -0400
-X-Greylist: delayed 343 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 10:41:40 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1616942155; bh=Ow0/kmASW8C17u8xlB5YZpkDJsBZ6QXmxxYqzlWdjE0=;
-        h=From:To:Subject:Date:Message-Id;
-        b=uyVCtTQQk6fMjMILnAMKvYGL5WBdz3SaHw7q2bQeA+uTlvI2Z9YIEAttpb7lC+fCL
-         dBdSFCbrRQvmM/od9PF5mJfW8WdOv46Cfqyig0BWakJeLneY3Hvi2Xs9iZgO+kTxMS
-         lTsl4SuyZMcBuAxSGfDE1bgNOdOQMXRopFOp2YPtCfzQJxIhIZKFe0uGcyRl0VVc5o
-         9K+oHSx+MyBRqDpSLaskpeR2KvpmqdL98ou9jqqbpPfHQMczgef0Mz9Zx8OPDlbD58
-         AiHJLAjLMYLbGY5JpwDvOD70727ZL8VK289CJcxOGDjbO514wGQNbITuNITEb3kz/T
-         b0nWSpEbFJzjQ==
-Received: from localhost.localdomain (unknown [120.245.2.89])
-        by pv50p00im-zteg10021401.me.com (Postfix) with ESMTPSA id BD265480408;
-        Sun, 28 Mar 2021 14:35:51 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
-        aneesh.kumar@linux.ibm.com, haren@linux.ibm.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH] powerpc/process: Enhance readability for trap types.
-Date:   Sun, 28 Mar 2021 22:35:45 +0800
-Message-Id: <20210328143545.24324-1-sxwjean@me.com>
-X-Mailer: git-send-email 2.17.1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-28_07:2021-03-26,2021-03-28 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=802 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2103280113
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229762AbhC1Ol0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 10:41:26 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2270C061756;
+        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m7so7773163pgj.8;
+        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yc6QjgSudbKWQkdConiaKqiDBMnbnOx4Gm3AgRAanEM=;
+        b=aLCQk5kLbjZyZx0gEfGu6LdSgR2yv5X1RaQVw9hbl6DwAsEsFg7zpq3i13Tm1Mpucr
+         nwCQk1Hk7xUeynIHTybcXyS6P1LBpIn6+teRJhLTDE2nGPncn2d1RtbPYArVjJK1x9wH
+         2QsSTSs5fMrfyRNdizLqjiPy2t6mOJI84qvtFcXfRDRVG3uFYgsMJIO7qsXqmkxfHVAh
+         XcgNYLuH+YzeS8R6V+E/ukHJIjpBRs+XW7/ztUOSlWOFi/ukSOvzgp3YzRQkCyNE0HGp
+         qrUdmf5pNVs98x/ciIKsgnGU+wKPnRI+6eBFIjT2JswuoAAuIek6GfDjAYM5lLkGeIAr
+         Utdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yc6QjgSudbKWQkdConiaKqiDBMnbnOx4Gm3AgRAanEM=;
+        b=DJrPpa20M7yy5Kl2swXKQzATEj7Be1PWcVgRzogD/G4LtOPrZAkXHkavlu0LXHB16E
+         TcyVXafAHs7cZYwww0veAS7q/1CnuRVHBrtIf9DJ0MS1OyP7yWeeg14NA36WVcg/ZFqS
+         FqC0N6R1WovykYPS9J83VX62th6IZjFCu3jdATY2WGOH7cCJc3icWFpP8v2AdYlkU+3X
+         Wrf7URFIp7GYsgi/EOj8VChgzevBW/Rdv5D7RRmvzetU3H1xqkqBD5U6EXWs0W41OEfg
+         gejT8Zi/2D3+5x6wTK5C1FE5H4k4oMkiJ7KgWmqnOWwECFmR3QScTCkg7I2vUIZ6pCSq
+         OPLQ==
+X-Gm-Message-State: AOAM532eAeC/IjGStkS7dHg8rYoD2bLn6tiv67ZFcWKaJ+k5BPuyOoQk
+        +1AM0QQvewhXgayByuUzOyE=
+X-Google-Smtp-Source: ABdhPJykeiLPTumSaMDTWBbwJymgj36YvDeBXU2mBDpVg49b9grcwUSnZNboFud/O2Ut7iLHs27vRw==
+X-Received: by 2002:a62:5c5:0:b029:217:7019:d9e8 with SMTP id 188-20020a6205c50000b02902177019d9e8mr22158225pff.10.1616942485326;
+        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
+Received: from localhost (185.212.56.149.16clouds.com. [185.212.56.149])
+        by smtp.gmail.com with ESMTPSA id s12sm13923980pgj.70.2021.03.28.07.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     toan@os.amperecomputing.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com,
+        gustavo.pimentel@synopsys.com, linux-pci@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>,
+        dann.frazier@canonical.com
+Subject: [PATCH] PCI: xgene: fix a mistake about cfg address
+Date:   Sun, 28 Mar 2021 22:41:18 +0800
+Message-Id: <20210328144118.305074-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.30.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+It has a wrong modification to the xgene driver by the commit
+e2dcd20b1645a. it use devm_platform_ioremap_resource_byname() to
+simplify codes and remove the res variable, But the following code
+needs to use this res variable, So after this commit, the port->cfg_addr
+will get a wrong address. Now, revert it.
 
-Define macros to enhance the code readability on ppc trap types.
-
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+Fixes: e2dcd20b1645a ("PCI: controller: Convert to devm_platform_ioremap_resource_byname()")
+Reported-by: dann.frazier@canonical.com
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 ---
- arch/powerpc/kernel/process.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/pci/controller/pci-xgene.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 3231c2df9e26..3bbd3cf353a7 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1451,6 +1451,10 @@ static void print_msr_bits(unsigned long val)
- #define LAST_VOLATILE	12
- #endif
+diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
+index 2afdc865253e..7f503dd4ff81 100644
+--- a/drivers/pci/controller/pci-xgene.c
++++ b/drivers/pci/controller/pci-xgene.c
+@@ -354,7 +354,8 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
+ 	if (IS_ERR(port->csr_base))
+ 		return PTR_ERR(port->csr_base);
  
-+#define TRAP_MC  0x200 /* Machine Check */
-+#define TRAP_DSI 0x300 /* DSI exception */
-+#define TRAP_AM  0x600 /* Alignment exception */
-+
- static void __show_regs(struct pt_regs *regs)
- {
- 	int i, trap;
-@@ -1465,7 +1469,7 @@ static void __show_regs(struct pt_regs *regs)
- 	trap = TRAP(regs);
- 	if (!trap_is_syscall(regs) && cpu_has_feature(CPU_FTR_CFAR))
- 		pr_cont("CFAR: "REG" ", regs->orig_gpr3);
--	if (trap == 0x200 || trap == 0x300 || trap == 0x600) {
-+	if (trap == TRAP_MC || trap == TRAP_DSI || trap == TRAP_AM) {
- 		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
- 			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
- 		else
+-	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
++	port->cfg_base = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(port->cfg_base))
+ 		return PTR_ERR(port->cfg_base);
+ 	port->cfg_addr = res->start;
 -- 
-2.17.1
+2.30.1
 
