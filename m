@@ -2,71 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BE134BB9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DAC534BBA2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhC1ICi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 04:02:38 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:40392 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhC1ICX (ORCPT
+        id S231249AbhC1IIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 04:08:46 -0400
+Received: from out05.smtpout.orange.fr ([193.252.22.214]:47707 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhC1II1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 04:02:23 -0400
-Received: by mail-io1-f72.google.com with SMTP id e18so463928iot.7
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 01:02:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/HBUoHmQUI5AAAH7WMcj+AjPOvzRXwvyST35x6gOlPo=;
-        b=cPZJ5Cw1dJKwVzkyVz/MjFtiwIoyTG8rOm9fT43yMhSQVubdFwmHJTpNz9plmnuHw1
-         oLiz9yW1VGw3eqXS3SebTOVr/fqx9e7Ai6XZfBpycP8L4GD0YBVKGovstnt8gHkvIlDz
-         ANVrlal3+AfFEpVZIgFAR8q0S1MjK8qv3VsLE7iJjwsr9G4qK3meZdQYQcrLgr2aHUYw
-         LM0TibbL2Wdf9D3sj/wcHDLIrH8xq3Y8fbPNw5bgXMcBm79XH7oEI6JSSWKU0THCuUYr
-         1v1hxrohq0FK83tG5STuiKIFFakemm7+dZM+nq5o0d87QgXBsPKPttOfUaC6gqMShpgu
-         863Q==
-X-Gm-Message-State: AOAM531DCd/YCYa4hNXd0QjxCv9w42y8dP0eH7V2y0MtHcRsOWFnQo3k
-        dqb8V22gC5ol84NUOXQgm/0r1kTW03oGGcEuc0VcqJ+TgCRC
-X-Google-Smtp-Source: ABdhPJx9R9cWOoG6+mW96HwAjulXmmZYMSJWGGBe7P1YvMerOSDkgcc8lS3BJ6pf2Vt9aFB1vZRCg79QEgmsNZGwN3ojplMC/aj8
+        Sun, 28 Mar 2021 04:08:27 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d19 with ME
+        id lk8M2400E3g7mfN03k8NsB; Sun, 28 Mar 2021 10:08:24 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 28 Mar 2021 10:08:24 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        m.szyprowski@samsung.com, brad@nextdimension.cc,
+        vaibhavgupta40@gmail.com, daniel.lee.kruse@protonmail.com,
+        tglx@linutronix.de
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] media: cx23885: switch from 'pci_' to 'dma_' API
+Date:   Sun, 28 Mar 2021 10:08:19 +0200
+Message-Id: <7870058f8c345153e53a9ceef1c49c1f313c3c3f.1616918733.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3b12:: with SMTP id i18mr339600ioa.131.1616918542992;
- Sun, 28 Mar 2021 01:02:22 -0700 (PDT)
-Date:   Sun, 28 Mar 2021 01:02:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000062ce6d05be942f0f@google.com>
-Subject: [syzbot] bpf-next build error (3)
-From:   syzbot <syzbot+0b74d8ec3bf0cc4e4209@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-syzbot found the following issue on:
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-HEAD commit:    fddbf4b6 Merge branch 'bpf: Support calling kernel function'
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11e7a362d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7eff0f22b8563a5f
-dashboard link: https://syzkaller.appspot.com/bug?extid=0b74d8ec3bf0cc4e4209
+When memory is allocated in 'cx23885_risc_buffer()' GFP_KERNEL can be used
+because this function is only called from a vb2_ops buf_prepare function.
+The call chain is:
+  cx23885_video_qops.buf_prepare        (cx23885-video.c)
+    --> buffer_prepare                  (cx23885-video.c)
+      --> cx23885_risc_buffer
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0b74d8ec3bf0cc4e4209@syzkaller.appspotmail.com
+When memory is allocated in 'cx23885_risc_databuffer()' GFP_KERNEL can be
+used because this function is only called from a function that already uses
+GFP_KERNEL or from a vb2_ops buf_prepare
+function.
+The call chains are:
+  snd_cx23885_hw_params                 (cx23885-alsa.c) --> use GFP_KERNEL
+    --> cx23885_risc_databuffer
 
-net/ipv4/bpf_tcp_ca.c:209:28: error: expected identifier or '(' before ',' token
+  cx23885_qops.buffer_prepare           (cx23885-417.c)
+     or
+  dvb_qops.buffer_prepare               (cx23885-dvb.c)
+    --> cx23885_buf_prepare
+      --> cx23885_risc_databuffer
 
+When memory is allocated in 'cx23885_risc_vbibuffer()' GFP_KERNEL can be
+used because this function is only called from a vb2_ops buf_prepare
+function.
+The call chains are:
+  cx23885_vbi_qops.buffer_prepare       (cx23885-vbi.c)
+    --> cx23885_risc_vbibuffer
+
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/media/pci/cx23885/cx23885-alsa.c |  2 +-
+ drivers/media/pci/cx23885/cx23885-core.c | 13 ++++++++-----
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/media/pci/cx23885/cx23885-alsa.c b/drivers/media/pci/cx23885/cx23885-alsa.c
+index 13689c5dd47f..ab14d35214aa 100644
+--- a/drivers/media/pci/cx23885/cx23885-alsa.c
++++ b/drivers/media/pci/cx23885/cx23885-alsa.c
+@@ -266,7 +266,7 @@ static int dsp_buffer_free(struct cx23885_audio_dev *chip)
+ 	cx23885_alsa_dma_unmap(chip);
+ 	cx23885_alsa_dma_free(chip->buf);
+ 	risc = &chip->buf->risc;
+-	pci_free_consistent(chip->pci, risc->size, risc->cpu, risc->dma);
++	dma_free_coherent(&chip->pci->dev, risc->size, risc->cpu, risc->dma);
+ 	kfree(chip->buf);
+ 
+ 	chip->buf = NULL;
+diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
+index d0ca260ecf70..f8f2ff3b00c3 100644
+--- a/drivers/media/pci/cx23885/cx23885-core.c
++++ b/drivers/media/pci/cx23885/cx23885-core.c
+@@ -1218,7 +1218,8 @@ int cx23885_risc_buffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+ 		/ PAGE_SIZE + lines);
+ 	instructions += 5;
+ 	risc->size = instructions * 12;
+-	risc->cpu = pci_alloc_consistent(pci, risc->size, &risc->dma);
++	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
++				       GFP_KERNEL);
+ 	if (risc->cpu == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1255,7 +1256,8 @@ int cx23885_risc_databuffer(struct pci_dev *pci,
+ 	instructions += 4;
+ 
+ 	risc->size = instructions * 12;
+-	risc->cpu = pci_alloc_consistent(pci, risc->size, &risc->dma);
++	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
++				       GFP_KERNEL);
+ 	if (risc->cpu == NULL)
+ 		return -ENOMEM;
+ 
+@@ -1293,7 +1295,8 @@ int cx23885_risc_vbibuffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+ 		/ PAGE_SIZE + lines);
+ 	instructions += 5;
+ 	risc->size = instructions * 12;
+-	risc->cpu = pci_alloc_consistent(pci, risc->size, &risc->dma);
++	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
++				       GFP_KERNEL);
+ 	if (risc->cpu == NULL)
+ 		return -ENOMEM;
+ 	/* write risc instructions */
+@@ -1322,7 +1325,7 @@ void cx23885_free_buffer(struct cx23885_dev *dev, struct cx23885_buffer *buf)
+ {
+ 	struct cx23885_riscmem *risc = &buf->risc;
+ 
+-	pci_free_consistent(dev->pci, risc->size, risc->cpu, risc->dma);
++	dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu, risc->dma);
+ }
+ 
+ static void cx23885_tsport_reg_dump(struct cx23885_tsport *port)
+@@ -2159,7 +2162,7 @@ static int cx23885_initdev(struct pci_dev *pci_dev,
+ 		(unsigned long long)pci_resource_start(pci_dev, 0));
+ 
+ 	pci_set_master(pci_dev);
+-	err = pci_set_dma_mask(pci_dev, 0xffffffff);
++	err = dma_set_mask(&pci_dev->dev, 0xffffffff);
+ 	if (err) {
+ 		pr_err("%s/0: Oops: no 32bit PCI DMA ???\n", dev->name);
+ 		goto fail_ctrl;
+-- 
+2.27.0
+
