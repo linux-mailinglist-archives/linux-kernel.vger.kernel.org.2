@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FE2334BA9F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 06:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D341134BAA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 06:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhC1EOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 00:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
+        id S229757AbhC1EVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 00:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbhC1EOJ (ORCPT
+        with ESMTP id S229485AbhC1EVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 00:14:09 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD0EC061762
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 21:14:08 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so9076144oto.2
-        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 21:14:08 -0700 (PDT)
+        Sun, 28 Mar 2021 00:21:10 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC26BC061762;
+        Sat, 27 Mar 2021 21:21:09 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id q12so4935051qvc.8;
+        Sat, 27 Mar 2021 21:21:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=kkEqsh8oqC0Vlr5FpbbYclfjdNDL2PkvOPENDTwD1M8=;
-        b=adHv5kLXz/AZpKXmOF2J4msoTqQbyhggAScH3khzezuTe0OHeVwNaLd3yRjkTJ9y1l
-         POVCGO1LPSXyaQAGDaehLLZ6FHRA7APQtlF77SA3MZWtOuq1xrMPaxDqH4pr2dqdCOmA
-         fEETneZil75rhobBH87BnG3xj18Hf7Uzd7CsGlHGCVRxuMMzvZv3KKUlMIr9ewoiBph/
-         EAVDZiFirwapW4DQz0dXKQjrLaKuagky7v5eMYTt5sZUaNvFKsllk5lSTLx7FcIQv1X3
-         XJxIoopyEfIjIGRJtgZHlY+Gok82J6hv+NH8cxN8HjsicxSfI8Guw0aAVOPnBGsNOZBD
-         HAWw==
+        bh=XzA2D6eu/ilzvze7gZb1rkcdrb6w8qBD4NuP2f4sb4Y=;
+        b=b4YQeKe3jnM6mRHLD86gSsvyfonnMtDfeivqjmMHu7Uw0+xoD30C4RzAS09K1XaU2s
+         tAeIcenM/M/1bCk6yGwNdkOkFQ3GbHEQQbBJLL/m+wxVG2K5yumuCT1PZk48r15x2Qc7
+         Txk7Fz7CiZy4JQp13scWHd83NUDGii5x9oC0X+jt4TXG6j2bcb6HxDWh3VRpW4zbKHnx
+         QetreRmS30N73f3sdUawHYCy4gMnOBX9itUdYwedZqel9VTMAHaQo65GxxNBwL3jrHKd
+         DZ5b76apjq6OJzyBEkB0Mk0VHR4NFIZQ0FNttykr8W4LIq6vJffEGJkutRRZQRvO5x+0
+         1+jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=kkEqsh8oqC0Vlr5FpbbYclfjdNDL2PkvOPENDTwD1M8=;
-        b=MaONlC395W0j9VIAm2V7YOmoE14ycfUPPmx1P/q/A87TEnh3nxuZmgAN2ErYFviduc
-         od+4hQONtV4d0ZRUqgy3JRtzIN7aUTBoEMjZrObKfVyAIC0p+y3gME+ay78LUcUC2uaS
-         ookxKMOl2GjSgbeovev/PODOV2a8LUFUnouYj64B5QiU6S85IgcutoxfkAbREtRity6p
-         GHQdZtWa78ZhzNj3dyrCxlBG3oC6L0c+scpNOGJ7JIvbsv41yQZAKps+qGojqcyqiVrZ
-         TSqQ+2RDReufmbbUrOeGqlixFW2uaG+kKVQtkk60TY99MWhqgBG0EZic2SE0Bs2Anc6J
-         vtHA==
-X-Gm-Message-State: AOAM530zirXNY7sJPxRIjcaUJG8iY9PdziFPj2FTenGLgxtYmD74KeQ6
-        evfl2C/N3cg79xpLsRIi5O36DJ9JMvASxi56
-X-Google-Smtp-Source: ABdhPJwc3aD+vF7PYZj4WL9ELcLdZemVUMbuH8OC5DWriHYeUrUqABA9YsgkhjFqnUtobbA6pe1riQ==
-X-Received: by 2002:a05:6830:799:: with SMTP id w25mr17276754ots.15.1616904847814;
-        Sat, 27 Mar 2021 21:14:07 -0700 (PDT)
-Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
-        by smtp.gmail.com with ESMTPSA id c205sm2779037oib.40.2021.03.27.21.14.07
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XzA2D6eu/ilzvze7gZb1rkcdrb6w8qBD4NuP2f4sb4Y=;
+        b=aS9p/rRtaKVXKVfZ/UCM/n9VNzmrPy6qJIYNLW/gE/WGf2q26PzpnC4A859N29U2Jg
+         ZEtmMKoKbUNVmHLDOsBLpDS2aR2Wm1v8Y7uCSpOTD+qvIqLSyzwZe339yr4eyljiAisE
+         okbHWInxh8XdXXeRD+ejX4p3+2woIFJWUSGPQ+8DfpMwPcYEG3eRkMDK9z5BHW6iJFCG
+         n7eIpaWYwBBipi9W8fYpJozKYGj5AljSWF1NEzJ9EGbDucsMY+N9nLC9h6P5KwLadFhE
+         nWyhS640zL0H1KojEunVPIHTQgPYeePWPK/QYCdGxjEjsxaKYBLUH25vK34p01jE4cSt
+         vX9A==
+X-Gm-Message-State: AOAM533lDmuKYnqXo/yCZd4Te4Sc0qGaQFBFzyD00Mywsm4n2nWy9BJr
+        J+U/Qz9naCAg9QXLYuVekz0=
+X-Google-Smtp-Source: ABdhPJxHaAa2aQXxWBx0VCKY4ct48AlCgI+pZAjEUOZovENBULurnaoyhbqDmEUD8QYK5mlNhaQNeA==
+X-Received: by 2002:a05:6214:326:: with SMTP id j6mr20015542qvu.13.1616905268983;
+        Sat, 27 Mar 2021 21:21:08 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.55.118])
+        by smtp.gmail.com with ESMTPSA id i6sm10092237qkf.96.2021.03.27.21.21.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 21:14:07 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     geert@linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
-Date:   Sun, 28 Mar 2021 00:13:59 -0400
-Message-Id: <20210328041359.50149-1-julianbraha@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 27 Mar 2021 21:21:08 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/10] BTRFS: Mundane typo fixes
+Date:   Sun, 28 Mar 2021 09:48:24 +0530
+Message-Id: <cover.1616904353.git.unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When LATENCYTOP is enabled and ARCH_WANT_FRAME_POINTERS
-is disabled, Kbuild gives the following warning:
+This patch series fixes trivial typos as they appear in the files.
 
-WARNING: unmet direct dependencies detected for FRAME_POINTER
-  Depends on [n]: DEBUG_KERNEL [=y] && (M68K || UML || SUPERH) || ARCH_WANT_FRAME_POINTERS [=n] || MCOUNT [=n]
-  Selected by [y]:
-  - LATENCYTOP [=y] && DEBUG_KERNEL [=y] && STACKTRACE_SUPPORT [=y] && PROC_FS [=y] && !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+Bhaskar Chowdhury (10):
+  extent-map-tests.c: A typo fix
+  dev-replace.c: A typo fix
+  ioctl.c: A typo fix
+  zoned.c: A typo fix
+  inode.c: Couple of typo fixes
+  scrub.c: Fix a typo
+  locking.c: Fix same typo in couple of places
+  volumes.c: Fix a typo
+  extent-tree.c: Fix a typo
+  disk-io.c: Fix a typo
 
-Depending on ARCH_WANT_FRAME_POINTERS causes a
-recursive dependency error.
-ARCH_WANT_FRAME_POINTERS is to be selected by the architecture,
-and is not supposed to be overridden by other config options.
+ fs/btrfs/dev-replace.c            | 2 +-
+ fs/btrfs/disk-io.c                | 2 +-
+ fs/btrfs/extent-tree.c            | 2 +-
+ fs/btrfs/inode.c                  | 4 ++--
+ fs/btrfs/ioctl.c                  | 2 +-
+ fs/btrfs/locking.c                | 4 ++--
+ fs/btrfs/scrub.c                  | 2 +-
+ fs/btrfs/tests/extent-map-tests.c | 2 +-
+ fs/btrfs/volumes.c                | 2 +-
+ fs/btrfs/zoned.c                  | 2 +-
+ 10 files changed, 12 insertions(+), 12 deletions(-)
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
----
- lib/Kconfig.debug | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 2779c29d9981..8d53ed423899 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -1665,7 +1665,7 @@ config LATENCYTOP
- 	depends on DEBUG_KERNEL
- 	depends on STACKTRACE_SUPPORT
- 	depends on PROC_FS
--	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
-+	select FRAME_POINTER if MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
- 	select KALLSYMS
- 	select KALLSYMS_ALL
- 	select STACKTRACE
--- 
-2.25.1
+--
+2.26.2
 
