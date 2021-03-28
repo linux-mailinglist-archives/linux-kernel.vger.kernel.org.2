@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1974D34BF43
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:25:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7724134BF46
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhC1VYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 17:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
+        id S231492AbhC1VYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 17:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhC1VYR (ORCPT
+        with ESMTP id S231422AbhC1VYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 17:24:17 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777FEC061756;
-        Sun, 28 Mar 2021 14:24:17 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id ap14so3280895ejc.0;
-        Sun, 28 Mar 2021 14:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h8X3xkCb2iKB1gBnb2OIJ1fkuZbHQANnRKaUSTzssmg=;
-        b=ESp1OIAIKANj6P4M6l2SRGboimfHCB6ez6cMjR5+bnW41ngioW7pLqCe4Nr5o8WPr+
-         nw1AX2EFcyldrHMQslSs7QQP+/XPZQPvNURDiR22UA8jPEfLwta7Icid6eSeWVPss9dH
-         IFBv21gGNGwQZ+Cr129IDO75lofg6HGgLPDy4y0NBhdVe0iW6AkOnjyS6OUFMRmBPA+C
-         Vkt7E20tE4bgZv4MOc5XA52IvweWuGCAkCyKHrgRtYQrs8tXfIaOfR2frcrFZVAUfQuB
-         eq1HBc8KwmgMak16il8V0p82DAjML0EajwgZrYN8+Z5pWzYAdICjxcp4gDNwH47k8T0U
-         3BBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h8X3xkCb2iKB1gBnb2OIJ1fkuZbHQANnRKaUSTzssmg=;
-        b=PHNxsyVaT/W6suAxunbZXhaOLqXsMHF7WNBKR6c36XmGYJnS7qW4kj8HH0XpmoxD/O
-         VICH1eVauiiRoMXpW4krAqHCuNUzDFpkr+O97TVxy8UfedNal07J0/xgX4sQt1JaOQ+t
-         k5ZljEzcnadqFYUPAVycFBpEayfhQq3ctCr+xjVVLof9JPLpuQyD+W8EpWeYR5E5FYCF
-         feTBxWKJcnZ+IRszMUTVIH2+Qw1Kbk3RY4MDVLyeLn/9MuDIy09uzi6ZG4pNbsD3bPmU
-         74XzPoToktXvgzLtOMBdVHNnj75iPfbLuChcgUjDkJ7KQFHMbMhXQNE8jEiFWRBGLKDW
-         vTtw==
-X-Gm-Message-State: AOAM532GIr+BxggRrwlRV9oky41K9SMzVyUJE+t4SecjTK4jiMaNLiAV
-        ODe1aick7CnWzp1aOioJL8x6L9eXQgFfomhAX+zKhQ53+XM=
-X-Google-Smtp-Source: ABdhPJwO88tlg8QBHREqzsFMcEe9Jhi5Z9xZo47eaL0S4suKjsU2w2XhA5xvl8Lf4/MlD1zHmY0pKal0XDGBU0uXrLc=
-X-Received: by 2002:a17:906:52d0:: with SMTP id w16mr25472016ejn.172.1616966655864;
- Sun, 28 Mar 2021 14:24:15 -0700 (PDT)
+        Sun, 28 Mar 2021 17:24:21 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36059C061756;
+        Sun, 28 Mar 2021 14:24:21 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F7pcd4WKrz9sWm;
+        Mon, 29 Mar 2021 08:24:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616966657;
+        bh=IGLnPqS1N2c54wBdV60WDs9h7JPWi2Jfhvczel1jzW8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=h2XPPL0UCofdwxfRqW0Ky5X9K1FjrG36pNaCiMEBqMX7mCG6K7/BDFxBdbXIq1joS
+         /171h87aESmq5v8DNE5bETSWeOGEa8v/dRgQwnvrJuLoUxJ2q0LHOOxEPW1lP+uql9
+         vTHv+mLYkoQ3g8BM1eh2KotjbKIujpEBS3fEI0QdGMiJwDEfYcDnPb5VtgFt1EPW+B
+         1h+gbi+spwbIdmY3lkfMJb2n2XMRbBCWfWWhAHedWsiDQwTRbodf/fzghP9hzDsKBv
+         d26uRAxVjuemb6FU0yeGZZSG4trvSlun637wBxGmFYneR/EDl5sBOKDsX9gd4BFBf9
+         yXkhSL19DVd6Q==
+Date:   Mon, 29 Mar 2021 08:24:16 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Mark Yacoub <markyacoub@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the amdgpu tree
+Message-ID: <20210329082416.40b7f449@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210325152410.1795557-1-narmstrong@baylibre.com> <20210325152410.1795557-3-narmstrong@baylibre.com>
-In-Reply-To: <20210325152410.1795557-3-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sun, 28 Mar 2021 23:24:05 +0200
-Message-ID: <CAFBinCB0_xonzPnZck3Ji6x9x12uLshDYo29nnEjqh8unn_YyA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] tty: serial: meson: retrieve port FIFO size from DT
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kevin Hilman <khilman@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/2P1chjycQd+Ag4CgBhF6Sko";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 4:25 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> Now the DT bindings has a property to get the FIFO size for a particular port,
-> retrieve it and use to setup the FIFO interrupts threshold.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+--Sig_/2P1chjycQd+Ag4CgBhF6Sko
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Commit
+
+  0ea5088407fa ("drm/amdgpu: Ensure that the modifier requested is supporte=
+d by plane.")
+
+is missing a Signed-off-by from its author.
+
+The author is "Mark Yacoub <markyacoub@google.com>", but the SOB is
+"default avatarMark Yacoub <markyacoub@chromium.org>" :-(
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/2P1chjycQd+Ag4CgBhF6Sko
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBg9AAACgkQAVBC80lX
+0GzxEAgAgB3BUAEs1wZoEvJOHndoBddTkgP5EihRSSoZkE2H4tLGH82Y+/236aaO
+dEOI/9ph4i1lwRCUbkEbuVcwLXeUNc8FojUjU8E/q+cClBq2lg9dVak4Z1LVB2Wf
+tbk2fkvR8ydIug2uQ/JCMqKnSzy+kL2qWR+cdqtgUM/oT+nJeBpmPaKVwAuRlWoc
+1WPxc2by512Bly2sCoS5C4YDNbYKmJCi392gxSxSv+jLtMYUtgqmYoRXtRDwUsNF
+V3im4hCiTAFK7EyNzbhUgG0fo6qm+oRePXie0bOLrd6rUrsrSeqmBZu/68WIzSaV
+1eDud0RZyu0xzqd6JaZp/sIHA1GzWw==
+=oR91
+-----END PGP SIGNATURE-----
+
+--Sig_/2P1chjycQd+Ag4CgBhF6Sko--
