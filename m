@@ -2,266 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAC534BBA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BD834BBA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231249AbhC1IIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 04:08:46 -0400
-Received: from out05.smtpout.orange.fr ([193.252.22.214]:47707 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhC1II1 (ORCPT
+        id S231288AbhC1ILi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 04:11:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhC1ILF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 04:08:27 -0400
-Received: from localhost.localdomain ([90.126.11.170])
-        by mwinf5d19 with ME
-        id lk8M2400E3g7mfN03k8NsB; Sun, 28 Mar 2021 10:08:24 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 28 Mar 2021 10:08:24 +0200
-X-ME-IP: 90.126.11.170
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        m.szyprowski@samsung.com, brad@nextdimension.cc,
-        vaibhavgupta40@gmail.com, daniel.lee.kruse@protonmail.com,
-        tglx@linutronix.de
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: cx23885: switch from 'pci_' to 'dma_' API
-Date:   Sun, 28 Mar 2021 10:08:19 +0200
-Message-Id: <7870058f8c345153e53a9ceef1c49c1f313c3c3f.1616918733.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        Sun, 28 Mar 2021 04:11:05 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB83C061762;
+        Sun, 28 Mar 2021 01:11:05 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id c204so7843990pfc.4;
+        Sun, 28 Mar 2021 01:11:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1XdXQKnDghpTP9/KuIBNLvBqdWivOptTKhhbKCDsWIs=;
+        b=BH8FWnR0B3WVQoG8ayN2b+US8Fy2kGqGo/VjmZHcZfM4zwCMsDebfNl6zPlfpDP7aU
+         IXdDaYA3y3cFKVRk9TRy+GkRWHtSMnwYpHgKUkhYemneQJZW0TkjMwRVggxatkAw3rSg
+         3ZILefa4/GcdSdMQ7mQJ4Ae5s5i8f7Xb2HBw8+PAIFQjsYEjF8+O73m/0L389dj4zHtb
+         TfE/1KAFOi+YPMOv2F75Nrgq/h/HWgp7BPTzhvrD7fUmhLE0lcJ8r+zEi6/5jxQEjf4k
+         Cj8dsw+4TlLvNVGw2IdXQvEhwxRLNXVqfLpLDzxgP35Kise2WSTuOLRKspB9chz6VTja
+         eKdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1XdXQKnDghpTP9/KuIBNLvBqdWivOptTKhhbKCDsWIs=;
+        b=cFqEHhjDJsnjQXuF6aLYQSJ2WUa30gPKuw2OImG6BnwTSkycwa44WwtPKB9t2elZt1
+         IlJTiUHn2GpsiAyKty2GXXyu4cjjXHfANcHP1VFiB0vU39ZmVtWynuEhz/2ULdD6fAJl
+         w31Ne0j7dPDFFbsJMojXr3uAsB0qpkl928EhO95iNt9AGfpj6pAIxDhOivl+2t3NnWli
+         yjsTzCXLzEsg6FQPAFVCmHgU5i3b8eP78U+EN8gWnjnar7yYz710tg5k67UPsUM/jGnW
+         53eX7MUifUcsKfU3ONAsSffQ4D9ctq4cEPvSPKQvSYpsokJfaYGXE1utLFcYNzXJNSxm
+         wtIg==
+X-Gm-Message-State: AOAM532MDcjeCoidk/SqOrRe8GAI/lNva/jM1hikccC/YwOsdN7+aGNc
+        TRru37u2TSjgxxQwy0RZnCc=
+X-Google-Smtp-Source: ABdhPJy68PHbCVfGKlMGV3zTiAH7e8wgoAIgOSdv+k4EK0oMeBGyyfP8Kuf7LK1qRBzd5J4gr3IPsQ==
+X-Received: by 2002:a63:3189:: with SMTP id x131mr19282394pgx.430.1616919064473;
+        Sun, 28 Mar 2021 01:11:04 -0700 (PDT)
+Received: from localhost ([112.79.247.28])
+        by smtp.gmail.com with ESMTPSA id f20sm13850191pfa.10.2021.03.28.01.11.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 01:11:03 -0700 (PDT)
+Date:   Sun, 28 Mar 2021 13:41:00 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
+Message-ID: <20210328080648.oorx2no2j6zslejk@apollo>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-4-memxor@gmail.com>
+ <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
+> Is there some succinct but complete enough documentation/tutorial/etc
+> that I can reasonably read to understand kernel APIs provided by TC
+> (w.r.t. BPF, of course). I'm trying to wrap my head around this and
+> whether API makes sense or not. Please share links, if you have some.
+>
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+Hi Andrii,
 
-When memory is allocated in 'cx23885_risc_buffer()' GFP_KERNEL can be used
-because this function is only called from a vb2_ops buf_prepare function.
-The call chain is:
-  cx23885_video_qops.buf_prepare        (cx23885-video.c)
-    --> buffer_prepare                  (cx23885-video.c)
-      --> cx23885_risc_buffer
+Unfortunately for the kernel API part, I couldn't find any when I was working
+on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
+m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
+act_bpf.c) to grok anything I didn't understand. There's also similar code in
+libnl (lib/route/{act,cls}.c).
 
-When memory is allocated in 'cx23885_risc_databuffer()' GFP_KERNEL can be
-used because this function is only called from a function that already uses
-GFP_KERNEL or from a vb2_ops buf_prepare
-function.
-The call chains are:
-  snd_cx23885_hw_params                 (cx23885-alsa.c) --> use GFP_KERNEL
-    --> cx23885_risc_databuffer
+Other than that, these resources were useful (perhaps you already went through
+some/all of them):
 
-  cx23885_qops.buffer_prepare           (cx23885-417.c)
-     or
-  dvb_qops.buffer_prepare               (cx23885-dvb.c)
-    --> cx23885_buf_prepare
-      --> cx23885_risc_databuffer
+https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
+https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
+tc(8), and tc-bpf(8) man pages
 
-When memory is allocated in 'cx23885_risc_vbibuffer()' GFP_KERNEL can be
-used because this function is only called from a vb2_ops buf_prepare
-function.
-The call chains are:
-  cx23885_vbi_qops.buffer_prepare       (cx23885-vbi.c)
-    --> cx23885_risc_vbibuffer
+I hope this is helpful!
 
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/cx23885/cx23885-alsa.c |  2 +-
- drivers/media/pci/cx23885/cx23885-core.c | 13 ++++++++-----
- 2 files changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/media/pci/cx23885/cx23885-alsa.c b/drivers/media/pci/cx23885/cx23885-alsa.c
-index 13689c5dd47f..ab14d35214aa 100644
---- a/drivers/media/pci/cx23885/cx23885-alsa.c
-+++ b/drivers/media/pci/cx23885/cx23885-alsa.c
-@@ -266,7 +266,7 @@ static int dsp_buffer_free(struct cx23885_audio_dev *chip)
- 	cx23885_alsa_dma_unmap(chip);
- 	cx23885_alsa_dma_free(chip->buf);
- 	risc = &chip->buf->risc;
--	pci_free_consistent(chip->pci, risc->size, risc->cpu, risc->dma);
-+	dma_free_coherent(&chip->pci->dev, risc->size, risc->cpu, risc->dma);
- 	kfree(chip->buf);
- 
- 	chip->buf = NULL;
-diff --git a/drivers/media/pci/cx23885/cx23885-core.c b/drivers/media/pci/cx23885/cx23885-core.c
-index d0ca260ecf70..f8f2ff3b00c3 100644
---- a/drivers/media/pci/cx23885/cx23885-core.c
-+++ b/drivers/media/pci/cx23885/cx23885-core.c
-@@ -1218,7 +1218,8 @@ int cx23885_risc_buffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
- 		/ PAGE_SIZE + lines);
- 	instructions += 5;
- 	risc->size = instructions * 12;
--	risc->cpu = pci_alloc_consistent(pci, risc->size, &risc->dma);
-+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
-+				       GFP_KERNEL);
- 	if (risc->cpu == NULL)
- 		return -ENOMEM;
- 
-@@ -1255,7 +1256,8 @@ int cx23885_risc_databuffer(struct pci_dev *pci,
- 	instructions += 4;
- 
- 	risc->size = instructions * 12;
--	risc->cpu = pci_alloc_consistent(pci, risc->size, &risc->dma);
-+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
-+				       GFP_KERNEL);
- 	if (risc->cpu == NULL)
- 		return -ENOMEM;
- 
-@@ -1293,7 +1295,8 @@ int cx23885_risc_vbibuffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
- 		/ PAGE_SIZE + lines);
- 	instructions += 5;
- 	risc->size = instructions * 12;
--	risc->cpu = pci_alloc_consistent(pci, risc->size, &risc->dma);
-+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
-+				       GFP_KERNEL);
- 	if (risc->cpu == NULL)
- 		return -ENOMEM;
- 	/* write risc instructions */
-@@ -1322,7 +1325,7 @@ void cx23885_free_buffer(struct cx23885_dev *dev, struct cx23885_buffer *buf)
- {
- 	struct cx23885_riscmem *risc = &buf->risc;
- 
--	pci_free_consistent(dev->pci, risc->size, risc->cpu, risc->dma);
-+	dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu, risc->dma);
- }
- 
- static void cx23885_tsport_reg_dump(struct cx23885_tsport *port)
-@@ -2159,7 +2162,7 @@ static int cx23885_initdev(struct pci_dev *pci_dev,
- 		(unsigned long long)pci_resource_start(pci_dev, 0));
- 
- 	pci_set_master(pci_dev);
--	err = pci_set_dma_mask(pci_dev, 0xffffffff);
-+	err = dma_set_mask(&pci_dev->dev, 0xffffffff);
- 	if (err) {
- 		pr_err("%s/0: Oops: no 32bit PCI DMA ???\n", dev->name);
- 		goto fail_ctrl;
--- 
-2.27.0
-
+--
+Kartikeya
