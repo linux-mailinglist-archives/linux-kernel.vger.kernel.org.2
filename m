@@ -2,90 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEFC34BF57
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCAA34BF5D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhC1Va6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 17:30:58 -0400
-Received: from ozlabs.org ([203.11.71.1]:34199 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231609AbhC1Vav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 17:30:51 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F7plz1vKsz9sWj;
-        Mon, 29 Mar 2021 08:30:39 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1616967042;
-        bh=u2+9i8EbFTjVFljB7+fmbO2oGTgl8cgjIch7yTbc7a0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lJv0LfkC1g0m25k4f1qFAJtkxgmSlgq6qf/5jx8HC9EjEhHnyIAT5sMDey/+prLWk
-         raezviG6VAkYURjPW4ZReYYeoUptRZZHE3UAPdrFlgVj+6RBeWIMAinDcpttD75VYv
-         RriPNgeom4siudLunB32yifyOS3fAWvwWnuqfO5UZY8nCEUUQIqQPETv5fSqenpjwv
-         jX2M9kFmT1UnXrcrfUkj9prXxUeAoaUpZzLu4Qi7pBNIxmh98K0GSIOn0OhHUyXYRn
-         JNRHQjCYKH30R+pRjfo2+Lk4vZ+8XvJ6cER8ioojx5F0xjaRITJZgdnkZ3D3S4ausA
-         k7s0lNsuPrNYQ==
-Date:   Mon, 29 Mar 2021 08:30:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: linux-next: Fixes tag needs some work in the tip tree
-Message-ID: <20210329083037.1ca35739@canb.auug.org.au>
+        id S231617AbhC1VdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 17:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhC1Vcj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 17:32:39 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E44C061762;
+        Sun, 28 Mar 2021 14:32:38 -0700 (PDT)
+Date:   Sun, 28 Mar 2021 21:32:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616967156;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gK4jGRKi4QpGkW+ijfwsqF4H+hbIAyTPtkDR62NSHaE=;
+        b=0Nx9XJ7z2yyZuOAMcirzSdA3FOGt0XhCO8zlJdArZwOytmM1DlpJNA8G7oFvMYyOPQSbtX
+        FEqiq7npsuQUNHORWxT6x0aXeTPt7fAHXE6s9Za0m/U4R8kbp7zHp8CII9ILmgl2/eEoOg
+        irO7MMYSuO8C7juAq+5jgN4Zo3XuXKdm0n4/e1rlFnFupM/GfgYkNZxljioqOPzsTjyp6W
+        fpAl5Jsb8Zo66BoHW3wM/ai1oxfSwry/8/RbrDGL8HoIEE/3+YEYqTVaUgQpFqXF2IDWq3
+        nUiusLkpKGPj7ZSYoz+JT0i4w0KVE5LfNXbI2QvfWFXNGJi2xRrOyNrH8d4nog==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616967156;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gK4jGRKi4QpGkW+ijfwsqF4H+hbIAyTPtkDR62NSHaE=;
+        b=WiJz72YGdowNOjlNTFSEBLpUXbVyGF8mQHliuCK60vGAKsNmOYSDfYHSH3t2WDXFztwMCP
+        +/MBFu/CMluBvvCA==
+From:   "tip-bot2 for Fenghua Yu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/splitlock] Documentation/admin-guide: Change doc for
+ split_lock_detect parameter
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210322135325.682257-4-fenghua.yu@intel.com>
+References: <20210322135325.682257-4-fenghua.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/tK1EQ5vZX1DtnaqIMYUuhfj";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Message-ID: <161696715561.398.9620783137672566551.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/tK1EQ5vZX1DtnaqIMYUuhfj
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The following commit has been merged into the x86/splitlock branch of tip:
 
-Hi all,
+Commit-ID:     ebca17707e38f2050b188d837bd4646b29a1b0c2
+Gitweb:        https://git.kernel.org/tip/ebca17707e38f2050b188d837bd4646b29a1b0c2
+Author:        Fenghua Yu <fenghua.yu@intel.com>
+AuthorDate:    Mon, 22 Mar 2021 13:53:25 
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sun, 28 Mar 2021 22:52:16 +02:00
 
-In commit
+Documentation/admin-guide: Change doc for split_lock_detect parameter
 
-  2f706e0e5e26 ("x86/kprobes: Fix to identify indirect jmp and others using=
- range case")
+Since #DB for bus lock detect changes the split_lock_detect parameter,
+update the documentation for the changes.
 
-Fixes tag
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20210322135325.682257-4-fenghua.yu@intel.com
 
-  Fixes: 6256e668b7 ("x86/kprobes: Use int3 instead of debug trap for singl=
-e-step")
+---
+ Documentation/admin-guide/kernel-parameters.txt | 22 +++++++++++-----
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-I don't think this is worth rebasing to fix, but it can be avoided in
-the future by setting core.abbrev to 12 (or more) or (for git v2.11 or
-later) just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/tK1EQ5vZX1DtnaqIMYUuhfj
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBg9X0ACgkQAVBC80lX
-0GwqcQf/axO2PFJ2NsNJK5wpZbfE1g3hnxGL5Y7WKNSV3XfnKiYYj/1WTUH8CQBl
-Qto8kSJeN/nsMz3UYrfKReuXFAOSGLwEkaEkEQO/npF759sBYYZEcILGQHuJzwli
-/sCy8cBwP47r0NUM7TK903U2qG5e6uT0GWjwFTLhb0l2mqm4YdMugo8VmmC8YaPG
-m7QAeKnRZVQC0+8jyEUe2LJtAAzBeCoJyLopQvmtMrx/Uv1wioaQmqitZ65S94VF
-aKoOobGwsyQHAbFC853k/Sx3Qi2eblynBBuBAzJROzJ0RFCHUuvE/Y3u+U7G5itU
-pGbHfGoZiKdXgALfA3ErDeiNRjGtDg==
-=Clwo
------END PGP SIGNATURE-----
-
---Sig_/tK1EQ5vZX1DtnaqIMYUuhfj--
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 0454572..aef927c 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5100,27 +5100,37 @@
+ 	spia_peddr=
+ 
+ 	split_lock_detect=
+-			[X86] Enable split lock detection
++			[X86] Enable split lock detection or bus lock detection
+ 
+ 			When enabled (and if hardware support is present), atomic
+ 			instructions that access data across cache line
+-			boundaries will result in an alignment check exception.
++			boundaries will result in an alignment check exception
++			for split lock detection or a debug exception for
++			bus lock detection.
+ 
+ 			off	- not enabled
+ 
+-			warn	- the kernel will emit rate limited warnings
++			warn	- the kernel will emit rate-limited warnings
+ 				  about applications triggering the #AC
+-				  exception. This mode is the default on CPUs
+-				  that supports split lock detection.
++				  exception or the #DB exception. This mode is
++				  the default on CPUs that support split lock
++				  detection or bus lock detection. Default
++				  behavior is by #AC if both features are
++				  enabled in hardware.
+ 
+ 			fatal	- the kernel will send SIGBUS to applications
+-				  that trigger the #AC exception.
++				  that trigger the #AC exception or the #DB
++				  exception. Default behavior is by #AC if
++				  both features are enabled in hardware.
+ 
+ 			If an #AC exception is hit in the kernel or in
+ 			firmware (i.e. not while executing in user mode)
+ 			the kernel will oops in either "warn" or "fatal"
+ 			mode.
+ 
++			#DB exception for bus lock is triggered only when
++			CPL > 0.
++
+ 	srbds=		[X86,INTEL]
+ 			Control the Special Register Buffer Data Sampling
+ 			(SRBDS) mitigation.
