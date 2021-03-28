@@ -2,107 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8311934BD84
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6DD34BD88
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhC1RSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:18:48 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:35543 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbhC1RS3 (ORCPT
+        id S231450AbhC1RU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:20:56 -0400
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:41871 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231340AbhC1RU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:18:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1616951909; x=1648487909;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=c6s3GdekY5sl0ZyRTNIljGAgU0mzTPIY4Jit7VBh0ac=;
-  b=NeRIDyADmkkjns/4JlRViYSZQSM36LvtSsyCnYVGaN5tmuljb88VEQR0
-   boXeCwQOA0CzGFC5PCI6UqA/c6/SjxDmh8gxWO0BR45EzuYJPe6TwZP8c
-   ystIgImJCln2ycLRR6ShXrWPhkYzzeaW1ktDPIHe+eIPMb2fHai41Qgbu
-   XM+znJCkOx/Uplhl4OkDO7e8Jlh/Dg9hD0p3ZMfFi36wWiHWAyuxpgBYW
-   zcSidiLN6htyBRWVcXVkUGWl/+ZzcgTnJyOVj2ys6bAxPVJ33ZjHF5YGu
-   HosK1hd3pPbpAJ7HxIhlVvrFbboe1KY4k0wU8wtIS1iuM0z4R4jNe+RkN
-   A==;
-IronPort-SDR: jvdrK6woNdbWT+lZeNTe8wqJBQxtDAOMTnrMdC8b/Bp37ttsfCqUyH5eD3krrM9gl10QJm3pT8
- YcnxJPinm4UE5Tkd1C6sX8owmZ1nDDJlRyBmTWZ7vPg+fEaTst/uMt9rR2CJv6lJVBf76Z85ar
- ssulyFgxc30ABwIv94sU1G3eEgqewTvsUnry9pB/OEOzgP+FrEX5aq6oUG+/kHahHzE2PFyGw1
- OKcNWQbVNfLa7yX+5R+u9eVdulqQJUXn/TwU/UqfKE+ZWZn9uuoZsSJ0p2HCj5e01qAFwktytL
- dzY=
-X-IronPort-AV: E=Sophos;i="5.81,285,1610434800"; 
-   d="scan'208";a="120796370"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Mar 2021 10:18:28 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 28 Mar 2021 10:18:28 -0700
-Received: from soft-dev10.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
- via Frontend Transport; Sun, 28 Mar 2021 10:18:25 -0700
-References: <20210323131002.2418896-1-arnd@kernel.org> <CACRpkdZjh+z66XAxg4-Cj_Mz7iVkgpyY65nNTvUdOXV6yTknEQ@mail.gmail.com>
-User-agent: mu4e 1.2.0; emacs 26.3
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Arnd Bergmann <arnd@arndb.de>, Zou Wei <zou_wei@huawei.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Sun, 28 Mar 2021 13:20:26 -0400
+Received: by mail-pj1-f54.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so4827362pjb.0;
+        Sun, 28 Mar 2021 10:20:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0CdNKJndfJrBqi8zf8ffL/DDeiGdWrF+QOsUqJFXedA=;
+        b=EEB44jbWG5niHeJlZLe7muR+t1oksq84ne5Ubicw7KXLGPO03ZYIxp0YaDzmOv+MkU
+         kkeTyINNajsERuOERktlSe3OlUvie0SItffGo6RvGF5tXCgBErNHYHUkbbLI7GbowHnb
+         UHBlnLJskCx3iah+VRCdbG1wBd5Ry7ccdEjJ9NSqHXnaZOdxX8EL+cII/LGLc50yOpQs
+         SE/hz2xQSMPF+wOOffQrulziwVotz9UpgjC1Qlt9uSKjI/PI99pQNSeffgNB9oJewSgS
+         nzRLlje09gJeAg+BIkVtEKTKe+3M/jrBgk3FTC/nzaODxtqlJUzM3QjYvKI9ERWiQXpm
+         QAaA==
+X-Gm-Message-State: AOAM531w2BTkfgxy4Xux5qnPbbbERsm+RwIHmuuJ0uAMv2HdvOve8tA2
+        NyWVpPMP4cZfYRdh8/uOb3k=
+X-Google-Smtp-Source: ABdhPJz0uxxYoHOsbILzzRen7JKz9aIUf5n4aqJIcZF9vt/tHMaVN/KV6+NN8bIhHV/NUHgVVPYWNw==
+X-Received: by 2002:a17:90a:9413:: with SMTP id r19mr13337158pjo.236.1616952026015;
+        Sun, 28 Mar 2021 10:20:26 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id k21sm15471182pfi.28.2021.03.28.10.20.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 10:20:25 -0700 (PDT)
+Date:   Sun, 28 Mar 2021 10:20:23 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        "Gong, Richard" <richard.gong@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH] pinctrl: microchip: fix array overflow
-In-Reply-To: <CACRpkdZjh+z66XAxg4-Cj_Mz7iVkgpyY65nNTvUdOXV6yTknEQ@mail.gmail.com>
-Date:   Sun, 28 Mar 2021 19:18:24 +0200
-Message-ID: <87h7kv5h9b.fsf@microchip.com>
+        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>,
+        russell.h.weight@intel.com
+Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+Message-ID: <YGC619DmLM0AAQ5p@epycbox.lan>
+References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
+ <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
+ <YF90y3Di4RbuJvr0@epycbox.lan>
+ <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tom,
 
-Linus Walleij writes:
+On Sun, Mar 28, 2021 at 08:40:24AM -0700, Tom Rix wrote:
+> 
+> On 3/27/21 11:09 AM, Moritz Fischer wrote:
+> > Hi Richard, Russ,
+> >
+> > On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
+> >> Hi Moritz,
+> >>
+> >> Sorry for asking.
+> >>
+> >> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
+> >>
+> >> Regards,
+> >> Richard
+> >>
+> >> -----Original Message-----
+> >> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
+> >> Sent: Tuesday, February 9, 2021 4:20 PM
+> >> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
+> >> Cc: Gong, Richard <richard.gong@intel.com>
+> >> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
+> >>
+> >> From: Richard Gong <richard.gong@intel.com>
+> >>
+> >> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
+> >>
+> >> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
+> >>
+> >> Bitstream authentication makes sure a signed bitstream has valid signatures.
+> >>
+> >> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
+> >>
+> >> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
+> >>
+> >> Richard Gong (7):
+> >>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
+> >>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+> >>   firmware: stratix10-svc: extend SVC driver to get the firmware version
+> >>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+> >>   fpga: of-fpga-region: add authenticate-fpga-config property
+> >>   dt-bindings: fpga: add authenticate-fpga-config property
+> >>   fpga: stratix10-soc: extend driver for bitstream authentication
+> >>
+> >>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
+> >>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
+> >>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+> >>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+> >>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+> >>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
+> >>  include/linux/fpga/fpga-mgr.h                      |  3 ++
+> >>  7 files changed, 125 insertions(+), 18 deletions(-)
+> >>
+> >> --
+> >> 2.7.4
+> >>
+> > Apologies for the epic delay in getting back to this, I took another
+> > look at this patchset and Russ' patchset.
+> >
+> > TL;DR I'm not really a fan of using device-tree overlays for this (and
+> > again, apologies, I should've voiced this earlier ...).
+> >
+> > Anyways, let's find a common API for this and Russ' work, they're trying
+> > to achieve the same / similar thing, they should use the same API.
+> >
+> > I'd like to re-invetigate the possiblity to extend FPGA Manager with
+> > 'secure update' ops that work for both these use-cases (and I susspect
+> > hte XRT patchset will follow with a similar requirement, right after).
+> 
+> The xrt patchset makes heavy use of device trees.
+> 
+> What is the general guidance for device tree usage ?
 
-> On Tue, Mar 23, 2021 at 2:10 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->> Building with 'make W=1' shows an array overflow:
->>
->> drivers/pinctrl/pinctrl-microchip-sgpio.c: In function 'microchip_sgpio_irq_settype':
->> drivers/pinctrl/pinctrl-microchip-sgpio.c:154:39: error: array subscript 10 is above array bounds of 'const u8[10]' {aka 'const unsigned char[10]'} [-Werror=array-bounds]
->>   154 |  u32 regoff = priv->properties->regoff[rno] + off;
->>       |               ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
->> drivers/pinctrl/pinctrl-microchip-sgpio.c:55:5: note: while referencing 'regoff'
->>    55 |  u8 regoff[MAXREG];
->>       |     ^~~~~~
->>
->> It's not clear to me what was meant here, my best guess is that the
->> offset should have been applied to the third argument instead of the
->> second.
->>
->> Fixes: be2dc859abd4 ("pinctrl: pinctrl-microchip-sgpio: Add irq support (for sparx5)")
->> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->
-> Patch applied.
->
-> Yours,
-> Linus Walleij
+I'm not generally against using device tree, it has its place. To
+describe hardware (and hardware *changes* with overlays) :)
 
-I don't understand - I submitted a fix for this already in February
-(reported by Gustavo). It took some time for you to get it ack'ed - but
-you did (Feb 1st).
+What I don't like about this particular implementation w.r.t device-tree
+usage is that it uses DT overlays as a mechanism to program the flash --
+in place of having an API to do so.
 
-Did it end up getting dropped?
+One could add device-nodes during the DT overlay application, while the
+FPGA doesn't actually get programmed with a new runtime image -- meaning
+live DT and actual hardware state diverged -- worst case it'd crash.
 
----Lars
+So when roughly at the same time (from the same company even) we have two
+patchsets that do similar things with radically different APIs I think
+we should pause, and reflect on whether we can come up with something
+that works for both :)
 
+TL;DR the firmware parts to authenticate the bitstream look fine to me, the
+way we tie it into the FPGA region I'm not a fan of.
 
---
-Lars Povlsen,
-Microchip
+- Moritz
