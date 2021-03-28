@@ -2,202 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D1434BBC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 11:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 934C134BBCE
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 11:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhC1JTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 05:19:17 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:40701 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhC1JS5 (ORCPT
+        id S231173AbhC1JXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 05:23:44 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:58383 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229560AbhC1JXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 05:18:57 -0400
-Received: by mail-lf1-f48.google.com with SMTP id a198so13966854lfd.7
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 02:18:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9t1HXwJgW2S2ZfNksRuzYLWjlCorc6U0pokm1Fs3exk=;
-        b=Oh2arEeShUaicPqrcmjwLumjX7HLHpS4qKPd2MDmmKcEW86Av4yQmgAk8qjWDzhH7F
-         KxDnkxPqM1v/Jk3ymrX5GQURpvKtibwxTx2y58OB39daMhZIujQvQUBw1doRAs7QlL0i
-         fTmxBksAS319ABQdDOrV+NcU3Faf2iAkXxXf9GkhrUTNTG8jkOAZJoi/EYBGiHbSNPw+
-         5ulqVq6IPljIYcbWIfx0M8pt1uhrypDEG/t0zlraWpUnkdoXMCMrQ81WfMa7BoP2Awid
-         eOHus7pydlAk3ngX9Em2fezafyw0CnzB1yfXFiCdW/MrafHbgUFrWCnt8UmviZRlidJh
-         CPmA==
-X-Gm-Message-State: AOAM533jYotPPBoOQyz9f24x/8ptkGMxQmykvudTERr5omwycRWFYDDW
-        2do4gnY9OAp7qlYZXFQNv6POBdOixs4=
-X-Google-Smtp-Source: ABdhPJwU9gS8ZAXrB4+souEfCkng6WTG94m8924uBIUhyv2TjnBaYvuS5MU6sXU/MDat2LSuFqF+Mw==
-X-Received: by 2002:a05:6512:3e26:: with SMTP id i38mr13596130lfv.140.1616923136264;
-        Sun, 28 Mar 2021 02:18:56 -0700 (PDT)
-Received: from [10.68.32.147] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id y25sm1943292ljc.73.2021.03.28.02.18.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Mar 2021 02:18:55 -0700 (PDT)
-Subject: Re: [PATCH v3] coccinelle: misc: add swap script
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-References: <20210216080133.455456-1-efremov@linux.com>
- <20210305100956.6222-1-efremov@linux.com>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <afb06bbc-5c28-8a92-f205-c9a1c87c707c@linux.com>
-Date:   Sun, 28 Mar 2021 12:19:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210305100956.6222-1-efremov@linux.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 28 Mar 2021 05:23:16 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id DF7A4580424;
+        Sun, 28 Mar 2021 05:23:10 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute3.internal (MEProxy); Sun, 28 Mar 2021 05:23:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=gbhn5OemD9Ow5QkhhT+PDUUX6xR+
+        vJAarCksiI5FZS0=; b=sUwmqaYL/f34wjHBN6wy+4qaJh+WRKLGS+7m8ml5kW0Q
+        XfnHMvBlKbbaX+Zmo6GTfjIY5uKjNMNkkUyGJF0m/ezrRFFvdqbFGPAYuajNt5Iz
+        zkEb4Ije35L5fe3xA0LdoIA2pHi7UrrnKfYkqxbyE2D9k9uA6XluVpbSh+rcZG6Z
+        77inPTBhM7kbPt3eh6pLUWT8swq4E1xn1QkYFpasU/yeJGX5GpXQnvKxmuhm2Nmy
+        iGrsR59DkxUb/GU/lN7J0IWN+DMoRVR1+VQkAKO93DLFHcqbWtuccW2O/Aq7Nnut
+        w3IbUgr8JOvhDxbq51TeA//SSPfh71nd0KsgxKQC7g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=gbhn5O
+        emD9Ow5QkhhT+PDUUX6xR+vJAarCksiI5FZS0=; b=Pq/t+IBbYYVbgx1nnnWjiJ
+        pKURemFg4wonUQq6ZMZ8+YUZd4HWQhIb/WI/QmE03jQg3tpbRoos/+A8cKixEjNF
+        1qnwZlQwJlaJb9ZAmlvs8HgFDXLBSry30O+GU8Rd3Jaw4YNea8EGqp5ckmZvI30V
+        5ATYhtXiimtdzkL1QsrGMEEpDl8VyzDtLogFIi5mx3S7u9+uFCvdgOXeKGtJK6Pc
+        wZ0SAU7uXlDiVxadSkGAl+0sNOBLsvlk/psEiKz/DU5eZ5s+4Mbb9gFWa8GNYe8a
+        xT5FB+Ct/K4WpVvznhmV+ZCjPfByz15XeE4B9lsuujsSKvHBI4wHuNHumbRyQOnw
+        ==
+X-ME-Sender: <xms:_EpgYII3V3e3Q6ewvEk4pk36bGBZwLtWnt1OekHEe5vhtNWex6r8jw>
+    <xme:_EpgYIKKz1u-ZvrOD4PbPcDFEhQn4hobZ3Sr2uGQJbQ3LEUUGfdN0dAWUkHvgd3p8
+    ZAm02AvluoAu7PFi4s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehiedgudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfuvhgv
+    nhcurfgvthgvrhdfuceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrg
+    htthgvrhhnpefgieegieffuefhtedtjefgteejteefleefgfefgfdvvddtgffhffduhedv
+    feekffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:_EpgYIsdB_Hwc_1z8Kc8FENyihSJfI09dMr8hXbwko87utZsyJ4wGw>
+    <xmx:_EpgYFbimQ_YfF6h2SvvKkFxIpY-rSVwAkLUyC29vz1DtnJiQeVJPw>
+    <xmx:_EpgYPZmal02IKKyLmyqNr-CGN8asUAoSgMiQksx3p4qtsGsGNPXWQ>
+    <xmx:_kpgYNBtn-rzzfoku3w1B3x5wS_7Vp2ztQSlLZJvmjJntarn5gjfNRhCKaM>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5CB0B51C005F; Sun, 28 Mar 2021 05:23:08 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <e05aa388-e1dd-4b94-b427-69cf0d14b7f6@www.fastmail.com>
+In-Reply-To: <CAK8P3a3a1k9SyrRLammX8dGF3GjojUVUEZ4cMfb2+g6CXkBNCA@mail.gmail.com>
+References: <20210328074009.95932-1-sven@svenpeter.dev>
+ <20210328074009.95932-3-sven@svenpeter.dev>
+ <CAK8P3a3a1k9SyrRLammX8dGF3GjojUVUEZ4cMfb2+g6CXkBNCA@mail.gmail.com>
+Date:   Sun, 28 Mar 2021 11:22:47 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Will Deacon" <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: iommu: add DART iommu bindings
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping?
 
-On 3/5/21 1:09 PM, Denis Efremov wrote:
-> Check for opencoded swap() implementation.
+
+On Sun, Mar 28, 2021, at 10:16, Arnd Bergmann wrote:
+> On Sun, Mar 28, 2021 at 9:40 AM Sven Peter <sven@svenpeter.dev> wrote:
 > 
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
-> Changes in v2:
->   - additional patch rule to drop excessive {}
->   - fix indentation in patch mode by anchoring ;
-> Changes in v3:
->   - Rule added for simple (without var init) swap highlighting in !patch mode
->   - "depends on patch && (rpvar || rp)" fixed
+> I noticed only one detail here:
 > 
->   scripts/coccinelle/misc/swap.cocci | 122 +++++++++++++++++++++++++++++
->   1 file changed, 122 insertions(+)
->   create mode 100644 scripts/coccinelle/misc/swap.cocci
+> > +  - |+
+> > +    dart2a: dart2a@82f00000 {
+> > +      compatible = "apple,t8103-dart";
+> > +      reg = <0x82f00000 0x4000>;
+> > +      interrupts = <1 781 4>;
+> > +      #iommu-cells = <1>;
+> > +    };
 > 
-> diff --git a/scripts/coccinelle/misc/swap.cocci b/scripts/coccinelle/misc/swap.cocci
-> new file mode 100644
-> index 000000000000..c5e71b7ef7f5
-> --- /dev/null
-> +++ b/scripts/coccinelle/misc/swap.cocci
-> @@ -0,0 +1,122 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +///
-> +/// Check for opencoded swap() implementation.
-> +///
-> +// Confidence: High
-> +// Copyright: (C) 2021 Denis Efremov ISPRAS
-> +// Options: --no-includes --include-headers
-> +//
-> +// Keywords: swap
-> +//
-> +
-> +virtual patch
-> +virtual org
-> +virtual report
-> +virtual context
-> +
-> +@rvar depends on !patch@
-> +identifier tmp;
-> +expression a, b;
-> +type T;
-> +position p;
-> +@@
-> +
-> +(
-> +* T tmp;
-> +|
-> +* T tmp = 0;
-> +|
-> +* T *tmp = NULL;
-> +)
-> +... when != tmp
-> +* tmp = a;
-> +* a = b;@p
-> +* b = tmp;
-> +... when != tmp
-> +
-> +@r depends on !patch@
-> +identifier tmp;
-> +expression a, b;
-> +position p != rvar.p;
-> +@@
-> +
-> +* tmp = a;
-> +* a = b;@p
-> +* b = tmp;
-> +
-> +@rpvar depends on patch@
-> +identifier tmp;
-> +expression a, b;
-> +type T;
-> +@@
-> +
-> +(
-> +- T tmp;
-> +|
-> +- T tmp = 0;
-> +|
-> +- T *tmp = NULL;
-> +)
-> +... when != tmp
-> +- tmp = a;
-> +- a = b;
-> +- b = tmp
-> ++ swap(a, b)
-> +  ;
-> +... when != tmp
-> +
-> +@rp depends on patch@
-> +identifier tmp;
-> +expression a, b;
-> +@@
-> +
-> +- tmp = a;
-> +- a = b;
-> +- b = tmp
-> ++ swap(a, b)
-> +  ;
-> +
-> +@depends on patch && (rpvar || rp)@
-> +@@
-> +
-> +(
-> +  for (...;...;...)
-> +- {
-> +	swap(...);
-> +- }
-> +|
-> +  while (...)
-> +- {
-> +	swap(...);
-> +- }
-> +|
-> +  if (...)
-> +- {
-> +	swap(...);
-> +- }
-> +)
-> +
-> +
-> +@script:python depends on report@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
-> +
-> +@script:python depends on org@
-> +p << r.p;
-> +@@
-> +
-> +coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
-> +
-> +@script:python depends on report@
-> +p << rvar.p;
-> +@@
-> +
-> +coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
-> +
-> +@script:python depends on org@
-> +p << rvar.p;
-> +@@
-> +
-> +coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
+> The name of the iommu should be iommu@82f00000, not dart2a@82f00000.
 > 
+>        Arnd
+>
+
+Thanks, fixed for v3. I've also just noticed that I forgot to update
+the filename in MAINTAINERS after I renamed it from apple,t8103-dart.yaml
+which I've fixed as well.
+
+
+Sven
+
