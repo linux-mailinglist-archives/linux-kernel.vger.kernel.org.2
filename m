@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1334D34BCA0
+	by mail.lfdr.de (Postfix) with ESMTP id D947B34BCA2
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 16:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhC1Olk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 10:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhC1Ol0 (ORCPT
+        id S231300AbhC1OmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 10:42:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37974 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhC1OmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 10:41:26 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2270C061756;
-        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id m7so7773163pgj.8;
-        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Yc6QjgSudbKWQkdConiaKqiDBMnbnOx4Gm3AgRAanEM=;
-        b=aLCQk5kLbjZyZx0gEfGu6LdSgR2yv5X1RaQVw9hbl6DwAsEsFg7zpq3i13Tm1Mpucr
-         nwCQk1Hk7xUeynIHTybcXyS6P1LBpIn6+teRJhLTDE2nGPncn2d1RtbPYArVjJK1x9wH
-         2QsSTSs5fMrfyRNdizLqjiPy2t6mOJI84qvtFcXfRDRVG3uFYgsMJIO7qsXqmkxfHVAh
-         XcgNYLuH+YzeS8R6V+E/ukHJIjpBRs+XW7/ztUOSlWOFi/ukSOvzgp3YzRQkCyNE0HGp
-         qrUdmf5pNVs98x/ciIKsgnGU+wKPnRI+6eBFIjT2JswuoAAuIek6GfDjAYM5lLkGeIAr
-         Utdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Yc6QjgSudbKWQkdConiaKqiDBMnbnOx4Gm3AgRAanEM=;
-        b=DJrPpa20M7yy5Kl2swXKQzATEj7Be1PWcVgRzogD/G4LtOPrZAkXHkavlu0LXHB16E
-         TcyVXafAHs7cZYwww0veAS7q/1CnuRVHBrtIf9DJ0MS1OyP7yWeeg14NA36WVcg/ZFqS
-         FqC0N6R1WovykYPS9J83VX62th6IZjFCu3jdATY2WGOH7cCJc3icWFpP8v2AdYlkU+3X
-         Wrf7URFIp7GYsgi/EOj8VChgzevBW/Rdv5D7RRmvzetU3H1xqkqBD5U6EXWs0W41OEfg
-         gejT8Zi/2D3+5x6wTK5C1FE5H4k4oMkiJ7KgWmqnOWwECFmR3QScTCkg7I2vUIZ6pCSq
-         OPLQ==
-X-Gm-Message-State: AOAM532eAeC/IjGStkS7dHg8rYoD2bLn6tiv67ZFcWKaJ+k5BPuyOoQk
-        +1AM0QQvewhXgayByuUzOyE=
-X-Google-Smtp-Source: ABdhPJykeiLPTumSaMDTWBbwJymgj36YvDeBXU2mBDpVg49b9grcwUSnZNboFud/O2Ut7iLHs27vRw==
-X-Received: by 2002:a62:5c5:0:b029:217:7019:d9e8 with SMTP id 188-20020a6205c50000b02902177019d9e8mr22158225pff.10.1616942485326;
-        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
-Received: from localhost (185.212.56.149.16clouds.com. [185.212.56.149])
-        by smtp.gmail.com with ESMTPSA id s12sm13923980pgj.70.2021.03.28.07.41.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 07:41:25 -0700 (PDT)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     toan@os.amperecomputing.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com,
-        gustavo.pimentel@synopsys.com, linux-pci@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>,
-        dann.frazier@canonical.com
-Subject: [PATCH] PCI: xgene: fix a mistake about cfg address
-Date:   Sun, 28 Mar 2021 22:41:18 +0800
-Message-Id: <20210328144118.305074-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        Sun, 28 Mar 2021 10:42:04 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1616942523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D54Z2PmLCo200yXOSvaj2hVPC2HaVunYq4YcYHV7CLI=;
+        b=nOSANqfo4EtIMAP5mGifyuzW2Af52m5HsKAtyMqUUKMzc0XR6FoAXid/2jQwT1JZL0bk7z
+        XPx6W8UmnTT3Jx8MOw6POYFwlaSRgC40XHyAM5M5FsbPbyOmckgM3CeZ6439glilf+vtSq
+        sV/a3k181wHYDoGE2YkUj9wK8HnMhNzpeJaVEDbXe5/Xjgk8QNWJBHO+6uqjcNoR+FXFCZ
+        yESHY04k4zxypQtFZ8DrCTzA11YAhm/q9JYc/rH+HEA/Aq5HxI9j53+8VORvF9pvloSBK+
+        YRfZClUyO8fKSqfnrPgq+eK5DxXnt0UkMYLx1a/LsXp/dt707mjcotvIBxFSaA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1616942523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=D54Z2PmLCo200yXOSvaj2hVPC2HaVunYq4YcYHV7CLI=;
+        b=2/R47s1sLunWDFbaoDjixBAOVW6iJ5IR9uZH6pLWwX8sxIDwqn63g4zVRcfcZhQBqAGFeV
+        mga+yqnJjOZqMqCQ==
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>, Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/6] stack: Optionally randomize kernel stack offset each syscall
+In-Reply-To: <20210319212835.3928492-4-keescook@chromium.org>
+References: <20210319212835.3928492-1-keescook@chromium.org> <20210319212835.3928492-4-keescook@chromium.org>
+Date:   Sun, 28 Mar 2021 16:42:03 +0200
+Message-ID: <87eefzcpc4.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has a wrong modification to the xgene driver by the commit
-e2dcd20b1645a. it use devm_platform_ioremap_resource_byname() to
-simplify codes and remove the res variable, But the following code
-needs to use this res variable, So after this commit, the port->cfg_addr
-will get a wrong address. Now, revert it.
+Kees,
 
-Fixes: e2dcd20b1645a ("PCI: controller: Convert to devm_platform_ioremap_resource_byname()")
-Reported-by: dann.frazier@canonical.com
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- drivers/pci/controller/pci-xgene.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Fri, Mar 19 2021 at 14:28, Kees Cook wrote:
+> +/*
+> + * Do not use this anywhere else in the kernel. This is used here because
+> + * it provides an arch-agnostic way to grow the stack with correct
+> + * alignment. Also, since this use is being explicitly masked to a max of
+> + * 10 bits, stack-clash style attacks are unlikely. For more details see
+> + * "VLAs" in Documentation/process/deprecated.rst
 
-diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
-index 2afdc865253e..7f503dd4ff81 100644
---- a/drivers/pci/controller/pci-xgene.c
-+++ b/drivers/pci/controller/pci-xgene.c
-@@ -354,7 +354,8 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
- 	if (IS_ERR(port->csr_base))
- 		return PTR_ERR(port->csr_base);
- 
--	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
-+	port->cfg_base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(port->cfg_base))
- 		return PTR_ERR(port->cfg_base);
- 	port->cfg_addr = res->start;
--- 
-2.30.1
+VLAs are bad, VLAs to the rescue! :)
 
+> + * The asm statement is designed to convince the compiler to keep the
+> + * allocation around even after "ptr" goes out of scope.
+> + */
+> +void *__builtin_alloca(size_t size);
+> +
+> +#define add_random_kstack_offset() do {					\
+> +	if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT,	\
+> +				&randomize_kstack_offset)) {		\
+> +		u32 offset = this_cpu_read(kstack_offset);              \
+
+Not that it matters on x86, but as this has to be called in the
+interrupt disabled region of the syscall entry, shouldn't this be a
+raw_cpu_read(). The asm-generic version has a preempt_disable/enable
+pair around the raw read for native wordsize reads, otherwise a
+irqsave/restore pair.
+
+__this_cpu_read() is fine as well, but that has an sanity check before
+the raw read when CONFIG_DEBUG_PREEMPT is on, which is harmless but
+also pointless in this case.
+
+Probably the same for the counterpart this_cpu_write().
+
+Thanks,
+
+        tglx
