@@ -2,148 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94FF34BEA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 21:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E1DC34BEB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhC1T7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 15:59:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229595AbhC1T6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 15:58:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 459A261477;
-        Sun, 28 Mar 2021 19:58:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616961533;
-        bh=4NUAVBaMypj7d1A+DL+VHh2KO4VM/TobWc73V8gAcSg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=pEjHvaLYV61mFlV5diapBBYlnnZ1YxWskcYw2tYybAhxDeeCATqyeZfCURSvAd+gy
-         UY0gAwrh/ceGYWYOd4NzBVAiHVGkFcfrNaih0xurxpMchH1AkM4QR+vr1tdB8gb/xq
-         6z0r6oLNxL9PjNXRXnJH8TjdrGsNy7bXlmm0N/tzpK2dLxPpz229SBOwfku8oox1kZ
-         C+gMpNFdbb8+XpW6MkeiwNOTisDHaHjARTLiF3+OCugesT/JETxukfUxbM7uXNTFX5
-         wkpSBIb4EqOsjSZ7Km0SCkUg9ZtLuFr4N16AEXxczc7vUY2qazphpTOc9iX1Kl5ndH
-         CDnEfywdSJR0A==
-Date:   Sun, 28 Mar 2021 14:58:52 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Ion Badulescu <ionut@badula.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Adam Radford <aradford@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Peter Chen <Peter.Chen@nxp.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-parisc@vger.kernel.org,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        SCSI development list <linux-scsi@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] PCI: Remove pci_try_set_mwi
-Message-ID: <20210328195852.GA1088869@bjorn-Precision-5520>
+        id S231521AbhC1UDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 16:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231473AbhC1UDg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 16:03:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC0CC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 13:03:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=Gr2M1jMug+JO4h08sIzmzmOzqwA2/BwbcA23gnbi9JY=; b=qThYJYzaZWFCYkoEtuavPASvdA
+        zhnEgw76kUh8FFj5PeWUfYW4yZS6dHpvPFAEgTVanOTdJUWyqTpVN/r5xgSH7oKSOJip5DtYVf7cu
+        2sKowgFFkiGnvejOFZuzluKVt/J6ftQmWwh83SrLJYw6QXPs9d8Vn1P03BweFDFRkEAapWZPKbs2V
+        1Pg4pF9vjGiIqPfeM/zkrpQINBCBuBGmk/OVPCSg/Q8Tgdx49JFexDhXAZWMRcmtkMKW9FxjgS/Is
+        iWPiw1MxSeP4S0RpUXOvbebp2YA8lo5mIL8bPCQgdpNH+60NFHR1c6UV5Mh6gJUreo+7bB+mqK7nZ
+        iNbiP2Jg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQbdE-000VZH-GS; Sun, 28 Mar 2021 20:03:32 +0000
+Date:   Sun, 28 Mar 2021 21:03:32 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Chris von Recklinghausen <crecklin@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: Re: tools/testing/radix-tree/idr-test gets a failed assertion on
+ single cpu systems
+Message-ID: <20210328200332.GB33249@casper.infradead.org>
+References: <def0fd33-da11-6283-d98f-66eb9a8dd201@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5b59c7b3-6e41-b7cf-b77d-274a88f2c5e1@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <def0fd33-da11-6283-d98f-66eb9a8dd201@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 12:04:35AM +0100, Heiner Kallweit wrote:
-> On 26.03.2021 22:26, Bjorn Helgaas wrote:
-> > [+cc Randy, Andrew (though I'm sure you have zero interest in this
-> > ancient question :))]
-> > 
-> > On Wed, Dec 09, 2020 at 09:31:21AM +0100, Heiner Kallweit wrote:
-> >> pci_set_mwi() and pci_try_set_mwi() do exactly the same, just that the
-> >> former one is declared as __must_check. However also some callers of
-> >> pci_set_mwi() have a comment that it's an optional feature. I don't
-> >> think there's much sense in this separation and the use of
-> >> __must_check. Therefore remove pci_try_set_mwi() and remove the
-> >> __must_check attribute from pci_set_mwi().
-> >> I don't expect either function to be used in new code anyway.
-> > 
-> > There's not much I like better than removing things.  But some
-> > significant thought went into adding pci_try_set_mwi() in the first
-> > place, so I need a little more convincing about why it's safe to
-> > remove it.
-> > 
+On Fri, Mar 26, 2021 at 02:23:39PM -0400, Chris von Recklinghausen wrote:
+> Hi Matthew,
 > 
-> Thanks for the link to the 13 yrs old discussion. Unfortunately it
-> doesn't mention any real argument for the __must_check, just:
+> I made the observation that while tools/testing/radix-tree/idr-test runs and
+> passes just fine on a system with more than one cpu, it gets an assertion
+> failure when run on a single cpu system. My test system is Fedora 34 running
+> on an x86_64 system. It can be easily reproduced by offlining all cpus but
+> cpu0.
+
+I'm delighted (a) that you're running idr-test (sometimes I feel like I'm
+the only one) and (b) to receive such a detailed and thoughtful bug report.
+Thank you.
+
+There's an easier way to reproduce this than offlining all the CPUs
+-- use taskset:
+
+$ taskset -c 3 ./idr-test 
+vvv Ignore these warnings
+assertion failed at idr.c:269
+assertion failed at idr.c:206
+^^^ Warnings over
+idr-test: idr-test.c:312: idr_find_test_1: Assertion `!(entry != xa_mk_value(id))' failed.
+Aborted
+
+After fixing the current build (git rm
+tools/testing/radix-tree/linux/compiler_types.h), I suspected this would fix
+the problem:
+
++++ b/tools/testing/radix-tree/idr-test.c
+@@ -577,6 +577,7 @@ void ida_tests(void)
+ 
+ int __weak main(void)
+ {
++       rcu_register_thread();
+        radix_tree_init();
+        idr_checks();
+        ida_tests();
+@@ -584,5 +585,6 @@ int __weak main(void)
+        rcu_barrier();
+        if (nr_allocated)
+                printf("nr_allocated = %d\n", nr_allocated);
++       rcu_unregister_thread();
+        return 0;
+ }
+
+However, that only gets me to the next problem:
+
+==2312666==ERROR: AddressSanitizer: heap-use-after-free on address 0x60c0048fda80 at pc 0x563186e34300 bp 0x7fffa5d4f2b0 sp 0x7fffa5d4f2a8
+READ of size 1 at 0x60c0048fda80 thread T0
+    #0 0x563186e342ff in radix_tree_descend /home/willy/kernel/linux/tools/testing/radix-tree/radix-tree.c:86
+    #1 0x563186e38e98 in radix_tree_next_chunk /home/willy/kernel/linux/tools/testing/radix-tree/radix-tree.c:1193
+    #2 0x563186e3c429 in idr_get_next_ul /home/willy/kernel/linux/tools/testing/radix-tree/idr.c:236
+    #3 0x563186e3c56a in idr_get_next /home/willy/kernel/linux/tools/testing/radix-tree/idr.c:267
+    #4 0x563186dfbf82 in idr_find_test_1 /home/willy/kernel/linux/tools/testing/radix-tree/idr-test.c:311
+    #5 0x563186dfc146 in idr_find_test /home/willy/kernel/linux/tools/testing/radix-tree/idr-test.c:323
+    #6 0x563186dfc957 in idr_checks /home/willy/kernel/linux/tools/testing/radix-tree/idr-test.c:408
+
+so I'll have to dive into that a bit further.
+
+> [root@hpe-ml110g7-01 linux]# tools/testing/radix-tree/idr-test
+> vvv Ignore these warnings
+> assertion failed at idr.c:250
+> assertion failed at idr.c:206
+> ^^^ Warnings over
+> idr-test: idr-test.c:320: idr_find_test_1: Assertion `!(entry !=
+> xa_mk_value(id))' failed.
+> Aborted (core dumped)
 > 
-> "And one of the reasons for adding the __must_check annotation is to
-> weed out design errors."
-> And the very next response in the discussion calls this a "non-argument".
-> Plus not mentioning what the other reasons could be.
-
-I think you're referring to Alan's response [1]:
-
-  akpm> And we *need* to be excessively anal in the PCI setup code.
-  akpm> We have metric shitloads of bugs due to problems in that area,
-  akpm> and the more formality and error handling and error reporting
-  akpm> we can get in there the better off we will be.
-
-  ac> No argument there
-
-So Alan is actually *agreeing* that "we need to be excessively anal in
-the PCI setup code,"  not saying that "weeding out design errors is
-not an argument for __must_check."
-
-> Currently we have three ancient drivers that bail out if the call fails.
-> Most callers of pci_set_mwi() use the return code only to emit an
-> error message, but they proceed normally. Majority of users calls
-> pci_try_set_mwi(). And as stated in the commit message I don't expect
-> any new usage of pci_set_mwi().
-
-I would love to merge this patch.  We just need to clarify the commit
-log.  Right now the only justification is "I don't think there's much
-sense in the __must_check annotation," which may well be true but
-could use some support.
-
-If MWI is purely an optimization and there's never a functional
-problem if pci_set_mwi() fails, we should say that (and maybe
-update any drivers that bail out on failure).
-
-Andrew and Alan both seem to agree that MSI *is* purely advisory:
-
-  akpm> pci_set_mwi() is an advisory thing, and on certain platforms
-  akpm> it might fail to set the cacheline size to the desired number.
-  akpm> This is not a fatal error and the driver can successfully run
-  akpm> at a lesser performance level.
-
-  ac> Correct.
-
-But even after that, Andrew proposed adding pci_try_set_mwi().  So it
-makes sense to really understand what was going on there so we don't
-break something in the name of cleaning it up.
-
-[1] https://lore.kernel.org/linux-ide/20070405211609.5263d627@the-village.bc.nu/
-
-> > The argument should cite the discussion about adding it.  I think one
-> > of the earliest conversations is here:
-> > https://lore.kernel.org/linux-ide/20070404213704.224128ec.randy.dunlap@oracle.com/
+> I bisected the change to 5c089fd0c734 ("idr: Fix idr_get_next race with
+> idr_remove").
+> 
+> Since idr_get_next can return NULL, I stuck a BUG_ON(!entry) just above the
+> failing assert, and in this case idr_get_next is returning NULL.
+> 
+> Next, I stuck a BUG_ON in the place that idr_get_next_ul returns NULL and
+> commented out the contents of idr_u32_test1 so we're not knowingly passing
+> it bad values, and we seem to fail because the list has been gone through.
+> 
+> void *idr_get_next_ul(struct idr *idr, unsigned long *nextid)
+> {
+>     struct radix_tree_iter iter;
+>     void __rcu **slot;
+>     void *entry = NULL;
+>     unsigned long base = idr->idr_base;
+>     unsigned long id = *nextid;
+> 
+>     id = (id < base) ? 0 : id - base;
+>     radix_tree_for_each_slot(slot, &idr->idr_rt, &iter, id) {
+>         entry = rcu_dereference_raw(*slot);
+>         if (!entry)
+>             continue;
+>         if (!xa_is_internal(entry))
+>             break;
+>         if (slot != &idr->idr_rt.xa_head && !xa_is_retry(entry))
+>             break;
+>         slot = radix_tree_iter_retry(&iter);
+>     }
+>     if (!slot)
+>         return NULL; <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+> 
+>     *nextid = iter.index + base;
+>     return entry;
+> }
+> EXPORT_SYMBOL(idr_get_next_ul);
+> 
+> I'm not sure if this is a test issue or possibly an issue with user level
+> RCU when there's only a single cpu in the system, but I figured it was worth
+> bringing it to your attention. If there's anything I can do to help to
+> further analyze this or try out a fix, I'm happy to help.
+> 
+> Thanks,
+> 
+> Chris von Recklinghausen
+> 
+> Red Hat
+> 
