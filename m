@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCFE34BBE2
+	by mail.lfdr.de (Postfix) with ESMTP id C7DEE34BBE4
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhC1JxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 05:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhC1Jwe (ORCPT
+        id S230466AbhC1Jxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 05:53:54 -0400
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:57801 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhC1Jxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 05:52:34 -0400
-Received: from mail.ionic.de (ionic.de [IPv6:2001:41d0:a:588b:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9D5ADC061762
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 02:52:34 -0700 (PDT)
-Authentication-Results: root24.eu; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=ionic.de 
-   (client-ip=217.92.117.31; helo=home.ionic.de; 
-   envelope-from=ionic@ionic.de; receiver=<UNKNOWN>)
-Received: from apgunner.local.home.ionic.de (home.ionic.de [217.92.117.31])
-        by mail.ionic.de (Postfix) with ESMTPSA id B9E204F00335;
-        Sun, 28 Mar 2021 09:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ionic.de; s=default;
-        t=1616925153; bh=o78CITAhPAPy1m+y76QU4WlSLLDcW8lStGSeu/frYO0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gYbjZFTlpocZmi2Nn4RndIDlzq882TCPZQNIPMBZQtzf20S5xaN8I7rmkwhHmi/JE
-         Wh+WrnPvVk0J5Nn3f3SUYOaFiMMXEEXvEdNvMxUd3Zvt+OATFhBCXbgkX1aOFH5e4R
-         +4dy76bC3QCrmvnDdlkhHdtp/MIYJDfZIT7Dn+PM=
-From:   Mihai Moldovan <ionic@ionic.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v2] kconfig: nconf: stop endless search-up loops
-Date:   Sun, 28 Mar 2021 11:52:27 +0200
-Message-Id: <20210328095227.24323-1-ionic@ionic.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210327120155.500-1-ionic@ionic.de>
-References: <20210327120155.500-1-ionic@ionic.de>
+        Sun, 28 Mar 2021 05:53:34 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id E27652800B3E0;
+        Sun, 28 Mar 2021 11:53:32 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id D6C861EEC7; Sun, 28 Mar 2021 11:53:32 +0200 (CEST)
+Date:   Sun, 28 Mar 2021 11:53:32 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Sathyanarayanan Kuppuswamy Natarajan 
+        <sathyanarayanan.nkuppuswamy@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Keith Busch <kbusch@kernel.org>, knsathya@kernel.org,
+        Sinan Kaya <okaya@kernel.org>
+Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
+ triggered
+Message-ID: <20210328095332.GA8657@wunner.de>
+References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210317041342.GA19198@wunner.de>
+ <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
+ <20210317053114.GA32370@wunner.de>
+ <CAPcyv4j8t4Y=kpRSvOjOfVHd107YemiRcW0BNQRwp-d9oCddUw@mail.gmail.com>
+ <CAC41dw8sX4T-FrwBju2H3TbjDhJMLGw_KHqs+20qzvKU1b5QTA@mail.gmail.com>
+ <CAPcyv4gfBTuEj494aeg0opeL=PSbk_Cs16fX7A-cLvSV6EZg-Q@mail.gmail.com>
+ <CAC41dw_BJBMdwyccdvWNZsdAzzh7ko=q4oSpQXo-jJDTfQGkZw@mail.gmail.com>
+ <20210317190151.GA27146@wunner.de>
+ <0a020128-80e8-76a7-6b94-e165d3c6f778@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a020128-80e8-76a7-6b94-e165d3c6f778@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the user selects the very first entry in a page and performs a
-search-up operation (e.g., via [/][a][Up Arrow]), nconf will never
-terminate searching the page.
+On Wed, Mar 17, 2021 at 01:02:07PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> On 3/17/21 12:01 PM, Lukas Wunner wrote:
+> > If the events are ignored, the driver of the device in the hotplug slot
+> > is not unbound and rebound.  So the driver must be able to cope with
+> > loss of TLPs during DPC recovery and it must be able to cope with
+> > whatever state the endpoint device is in after DPC recovery.
+> > Is this really safe?  How does the nvme driver deal with it?
+> 
+> During DPC recovery, in pcie_do_recovery() function, we use
+> report_frozen_detected() to notify all devices attached to the port
+> about the fatal error. After this notification, we expect all
+> affected devices to halt its IO transactions.
+> 
+> Regarding state restoration, after successful recovery, we use
+> report_slot_reset() to notify about the slot/link reset. So device
+> drivers are expected to restore the device to working state after this
+> notification.
 
-The reason is that in this case, the starting point will be set to -1,
-which is then translated into (n - 1) (i.e., the last entry of the
-page) and finally the search begins. This continues to work fine until
-the index reaches 0, at which point it will be decremented to -1, but
-not checked against the starting point right away. Instead, it's
-wrapped around to the bottom again, after which the starting point
-check occurs... and naturally fails.
+Thanks a lot for the explanation.
 
-We can easily avoid it by checking against the starting point directly
-if the current index is -1 (which should be safe, since it's the only
-magic value that can occur) and terminate the matching function.
 
-Amazingly, nobody seems to have been hit by this for 11 years - or at
-the very least nobody bothered to debug and fix this.
+> I am not sure how pure firmware DPC recovery works. Is there a platform
+> which uses this combination? For firmware DPC model, spec does not clarify
+> following points.
+> 
+> 1. Who will notify the affected device drivers to halt the IO transactions.
+> 2. Who is responsible to restore the state of the device after link reset.
+> 
+> IMO, pure firmware DPC does not support seamless recovery. I think after it
+> clears the DPC trigger status, it might expect hotplug handler be responsible
+> for device recovery.
+> 
+> I don't want to add fix to the code path that I don't understand. This is the
+> reason for extending this logic to pure firmware DPC case.
 
-Signed-off-by: Mihai Moldovan <ionic@ionic.de>
----
-v2: swap constant in comparison to right side, as requested by
-    Randy Dunlap <rdunlap@infradead.org>
+I agree, let's just declare synchronization of pciehp with
+pure firmware DPC recovery as unsupported for now.
 
- scripts/kconfig/nconf.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/scripts/kconfig/nconf.c b/scripts/kconfig/nconf.c
-index e0f965529166..db0dc46bc5ee 100644
---- a/scripts/kconfig/nconf.c
-+++ b/scripts/kconfig/nconf.c
-@@ -515,6 +515,15 @@ static int get_mext_match(const char *match_str, match_f flag)
- 			--index;
- 		else
- 			++index;
-+		/*
-+		 * It's fine for index to become negative - think of an
-+		 * initial value for match_start of 0 with a match direction
-+		 * of up, eventually making it -1.
-+		 *
-+		 * Handle this as a special case.
-+		 */
-+		if ((index == -1) && (index == match_start))
-+			return -1;
- 		index = (index + items_num) % items_num;
- 		if (index == match_start)
- 			return -1;
--- 
-2.30.1
+I've just submitted a refined version of my patch to the list:
+https://lore.kernel.org/linux-pci/b70e19324bbdded90b728a5687aa78dc17c20306.1616921228.git.lukas@wunner.de/
 
+If you could give this new version a whirl I'd be grateful.
+
+This version contains more code comments and kernel-doc.
+
+There's now a check in dpc_completed() whether the DPC Status
+register contains "all ones", which can happen when a DPC-capable
+hotplug port is hot-removed, i.e. for cascaded DPC-capable hotplug
+ports.
+
+I've also realized that the previous version was prone to races
+which are theoretical but should nonetheless be avoided:
+E.g., previously the DLLSC event was only removed from "events"
+if the link is still up after DPC recovery.  However if DPC
+triggers and recovers multiple times in a row, the link may
+happen to be up but a new DLLSC event may have been picked up
+in "pending_events" which should be ignored.  I've solved this
+by inverting the logic such that DLLSC is *always* removed from
+"events", and if the link is unexpectedly *down* after successful
+recovery, a DLLSC event is synthesized.
+
+Thanks,
+
+Lukas
