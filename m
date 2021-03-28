@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074C534BC3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D5D34BC3D
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbhC1Lhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 07:37:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41110 "EHLO mail.kernel.org"
+        id S229762AbhC1LrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 07:47:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231260AbhC1LhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 07:37:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E3B96197C;
-        Sun, 28 Mar 2021 11:37:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616931420;
-        bh=8r+E9jML76H0gCn8zByIpf9ts7froA6i3yzLNHuBvN4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DugdbpT4GDM1HZeaem5soSAi/FHElDFHhmz2xIpsZJUkasWv28ZB3zgK93tR/c1EG
-         Wg6UZIL/32OGSKHjIL7I3TejYIFIJatZ2S0hfZTZhMaw3y2P3h3z4TJdRouH33c2P4
-         a0vFE4t1YxIuiIc5HdVc8iBz2z/pz1daXtvTbooBxBTN2T1IZ64j2pxee2ABx/u+UN
-         R9Tpd5W1OnKdE7r9gQzXgqssvnkZagFrOM0DWS5GTeRlV6XS25xWzL3c0iO1XPbWAb
-         sCLOKxIHwnhTcR+YQphOeEdtMjQrjqZYOIz3pgbUdAYY8+PAy495HKeu1P90Dt67iE
-         cgL/CGET6Tr6g==
-Received: by mail-lf1-f44.google.com with SMTP id q29so14175994lfb.4;
-        Sun, 28 Mar 2021 04:37:00 -0700 (PDT)
-X-Gm-Message-State: AOAM5330m1XrE5OgTu5q3ngejJWzGUDNGl8342twXJp9PSj4WYCmr3oD
-        FYrhOux5BGjkQyDNKef7fm0FBwvqH+4PVjgndZw=
-X-Google-Smtp-Source: ABdhPJyj9o7D6hGhD+tmVxlzoBXg46BNhDKM+Nvrw+oWgxcsNgQKl214mB8IGaefEjDYpDQx2VSVsVg9V+sA7ebVJIA=
-X-Received: by 2002:a19:f501:: with SMTP id j1mr14083138lfb.231.1616931418962;
- Sun, 28 Mar 2021 04:36:58 -0700 (PDT)
+        id S229503AbhC1Lqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 07:46:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F175C61941;
+        Sun, 28 Mar 2021 11:46:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616932007;
+        bh=M03bi7a09kKMaiL8zfuIoUIH/ryWLbTyZYNO5lendgk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xxF4LxBCH2dHD3mn+2oOZcEFHMrXY05NG5tAzKyysx9k+8xdqD8ISYgKnVYY090GO
+         4ztdV0uoVpfmbZChASboEXdGLe3KvH7ZRNNNlvhI56dRE3fSiGcFxAjkBrM2+8q4VR
+         71n8A0LJkgPtOg2kPLXpkny/pmC29PEkuDkEbemA=
+Date:   Sun, 28 Mar 2021 13:46:44 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Eli Billauer <eli.billauer@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-usb@vger.kernel.org,
+        arnd@arndb.de, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH v4 1/2] char: xillybus: Move class-related functions to
+ new xillybus_class.c
+Message-ID: <YGBspAmjcIO6agIm@kroah.com>
+References: <20210311095033.20956-1-eli.billauer@gmail.com>
+ <20210311095033.20956-2-eli.billauer@gmail.com>
+ <YFc65bvAN3/ZNsww@kroah.com>
+ <6058792C.90801@gmail.com>
+ <YFh7dlY9cntgoLXD@kroah.com>
+ <6059D983.5080306@gmail.com>
 MIME-Version: 1.0
-References: <1616913028-83376-1-git-send-email-guoren@kernel.org>
- <1616913028-83376-5-git-send-email-guoren@kernel.org> <e27af5e0-a462-cb75-6311-1b5a6b4ee4f1@csgroup.eu>
-In-Reply-To: <e27af5e0-a462-cb75-6311-1b5a6b4ee4f1@csgroup.eu>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sun, 28 Mar 2021 19:36:47 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQvPOZ6aWxof66gzOBfia5mAV0=3pxO+QPdW8xpQrz3aA@mail.gmail.com>
-Message-ID: <CAJF2gTQvPOZ6aWxof66gzOBfia5mAV0=3pxO+QPdW8xpQrz3aA@mail.gmail.com>
-Subject: Re: [PATCH v5 4/7] powerpc/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        linux-xtensa@linux-xtensa.org, Guo Ren <guoren@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
-        Paul Mackerras <paulus@samba.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6059D983.5080306@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 7:14 PM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
->
->
->
-> Le 28/03/2021 =C3=A0 08:30, guoren@kernel.org a =C3=A9crit :
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > We don't have native hw xchg16 instruction, so let qspinlock
-> > generic code to deal with it.
->
-> We have lharx/sthcx pair on some versions of powerpc.
->
-> See https://patchwork.ozlabs.org/project/linuxppc-dev/patch/2020110703232=
-8.2454582-1-npiggin@gmail.com/
-Got it, thx for the information.
+On Tue, Mar 23, 2021 at 02:05:23PM +0200, Eli Billauer wrote:
+> On 22/03/21 13:11, Greg KH wrote:
+> > 
+> > > XILLYBUS and XILLYBUS_PCIE are currently enabled as M in several Linux
+> > > distributions. Making them depend on, rather than select XILLYBUS_CLASS is
+> > > likely to disable the driver in those distributions.
+> > That's not an issue here, depends-on will allow those distros to also
+> > enable this option.
+> > 
+> > But wait, why is this a separate option at all?  Shouldn't the class
+> > code just be part of the "core" XILLYBUS code anyway?
+> > 
+> I'll try to explain the whole picture:
+> 
+>            XILLYBUS_CLASS
+>               /        \
+>              |          |
+>          XILLYBUS   XILLYUSB
+>       /           \
+>      |             |
+> XILLYBUS_PCIE  XILLYBUS_OF
+> 
+> XILLYBUS_CLASS is new and common to all drivers in this group.
+> 
+> XILLYBUS is for drivers based upon memory registers + DMA-based interfaces,
+> and it's combined with XILLYBUS_PCIE and/or XILLYBUS_OF. XILLYUSB is for the
+> USB variant only.
+> 
+> Or a more detailed, bottom-up outline:
+> 
+> * CONFIG_XILLYBUS_PCIE -> xillybus_pcie.c: Functions related to PCIe.
+> * CONFIG_XILLYBUS_OF -> xillybus_of.c: Functions related to Xillybus as a
+> peripheral on an FPGA / Processor combo chip.
+> * CONFIG_XILLYBUS -> xillybus_core.c: Functions that are common to the two
+> above, mainly access to the peripheral with memory-mapped registers and DMA.
+> * CONFIG_XILLYUSB -> xillyusb.c: The driver for the USB variant, accesses
+> the peripheral through the USB framework.
+> * CONFIG_XILLYBUS_CLASS -> xillybus_class.c: The new module, which contains
+> the class and API parts that would otherwise appear both in xillybus_core.c
+> and xillyusb.c. Contains utility functions for the two latter.
+> 
+> Because XILLYBUS_CLASS is new and "N" by default, making a "depends on"
+> relationship means that "make olddefconfig" silently turns off
+> CONFIG_XILLYBUS and CONFIG_XILLYBUS_PCIE. That's a bug: Adding a new driver
+> shouldn't change anything in the existing configuration.
+> 
+> That's why I had the "select XILLYBUS_CLASS" to begin with: It ensures a
+> smooth transition on a kernel upgrade, by adding XILLYBUS_CLASS to kernels
+> that had CONFIG_XILLYBUS enabled. Is there another way to prevent the said
+> bug, without "select"?
 
->
-> Christophe
->
-> >
-> > Using the full-word atomic xchg instructions implement xchg16 has
-> > the semantic risk for atomic operations.
-> >
-> > This patch cancels the dependency of on qspinlock generic code on
-> > architecture's xchg16.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > ---
-> >   arch/powerpc/Kconfig | 1 +
-> >   1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> > index 386ae12d8523..69ec4ade6521 100644
-> > --- a/arch/powerpc/Kconfig
-> > +++ b/arch/powerpc/Kconfig
-> > @@ -151,6 +151,7 @@ config PPC
-> >       select ARCH_USE_CMPXCHG_LOCKREF         if PPC64
-> >       select ARCH_USE_QUEUED_RWLOCKS          if PPC_QUEUED_SPINLOCKS
-> >       select ARCH_USE_QUEUED_SPINLOCKS        if PPC_QUEUED_SPINLOCKS
-> > +     select ARCH_USE_QUEUED_SPINLOCKS_XCHG32 if PPC_QUEUED_SPINLOCKS
-> >       select ARCH_WANT_IPC_PARSE_VERSION
-> >       select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-> >       select ARCH_WANT_LD_ORPHAN_WARN
-> >
+Ok, that explains it a bit better, thanks for taking the time to explain
+it.  At first glance it seems odd, but this looks better, if you include
+this information in the changelog texts for your patches when you send
+the next series, that will help out with the review.
 
+thanks,
 
-
---=20
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+greg k-h
