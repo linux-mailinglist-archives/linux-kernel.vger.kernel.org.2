@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BA034BAE4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 06:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEB734BAEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 06:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhC1EdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 00:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
+        id S231258AbhC1Enq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 00:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhC1EdK (ORCPT
+        with ESMTP id S229531AbhC1EnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 00:33:10 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30656C061762;
-        Sat, 27 Mar 2021 21:33:10 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id l15so10257324ybm.0;
-        Sat, 27 Mar 2021 21:33:10 -0700 (PDT)
+        Sun, 28 Mar 2021 00:43:11 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFC3C0613B2
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 21:42:57 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id g15so9384001qkl.4
+        for <linux-kernel@vger.kernel.org>; Sat, 27 Mar 2021 21:42:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CJibKbE2pHTeyp3O5gbay5BrG2Hry6PfPEoIAMQ+LSk=;
-        b=ilPqnOEh9fQBeGtp0rwT2gyJ4dNWjAulC8oZ0D/S5B2eWMUYSJDsyGYZqlVHSnSCiS
-         1NNlIlTIt4yX7TOVrih/LdAnlhAzW14CMvh1Gux1Ar0diImXDqRYinu2QqDlyeU6cRlR
-         Ze7W/H0V8FrM5T96ZIFQrLIxzgn3n9ePfN+iDi3/AyqmFTW1uZR/vtFr7vFAGNPVa6sF
-         KONaM+2RO5WNqUNBlYgdQEzb3vSZkVSrtoQyFtF1vBL9k+9JGGR4Y+Bubf4doPK9VSOR
-         430uP9lXv7LiQR20e1pSsjGB+HQ/XrpmjehJLOn1PQ1Bn0LKZt0ITxBVYpM+9G2QEmn3
-         2nwg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5igONXEO98vO4FM78LS4gCrljh6JLaa7Yhx+y94h5KA=;
+        b=nQabloX2KA8lOYy/hCAP3squLsBt46DkSx8Vj4i2dtY0E0f2J0rKktQ6p3jCr9zrj4
+         +ZrWuHbI1yHk67FMnZ8fJClT3iQWfjIBbK8SyW18CVVucx0m4uZ5kY1qCFkHKNor19ey
+         UNb4kjw4+7x4jQyWfxLcoXM1iMCvixwl3T2cWt3h9fLPs8KA2y1W0iliE206svQrrvI0
+         FN7P82SnVksQpNwRa9appzQwxapWHCtSsXRbyUquBx5aBfWKurlEgqY+TV6SA6Vf7jLc
+         wn1pmbfWPfMQchbMccVLNChjzmoQF8YKVq6WutO8FNNagKCsb/u2FXZqNhR5kxIb+WB2
+         5IDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CJibKbE2pHTeyp3O5gbay5BrG2Hry6PfPEoIAMQ+LSk=;
-        b=TmtRj3RYgC9hJLk4cI6ARb/bOQKRt6PFbtTGGoZ9w5LUJH8jnmZ14cGF7RNhwjFaBg
-         CQs6wIHFMNBimuYpbT014DvYRjPsQeOF6eWC7JopXEe94OaPOwsN+mAR/zQPAA4p6/NW
-         giAB4MVNx07dT/rGzBR/ql4DH2qE+j/jhmd0156/fNtMRhvYFwIwg0FLDWsXK1YuaLyF
-         lKPB3QTqxZPRxOpN3hpJcWSDU12KkYkghxJVpbGb52WJCiwYxMDcME3CxlYEdmaY0N5E
-         dqjdCGRHq3ghkn/9QOPV9cVCirKD8eaTkQabZ0urrcliyYOn5E/RsIkcie5gb5jJN98w
-         Uinw==
-X-Gm-Message-State: AOAM531Rfyg8n5WzK8lHhgFSWdJLq2sl3RVyqjBlcZR5EHP6ZBG+tNPy
-        QOaQp5qoNjqG3WUUW7AgxacZjWgM7WtWs6EIGso=
-X-Google-Smtp-Source: ABdhPJw+4nuWmp0dJnLLJo8TB3bkZkAg2joGu9L9FqfjWQrWzKjqP3IQ6U9kxxeMpUTCn4ISJc9ccw66DnyOzzlBkLE=
-X-Received: by 2002:a25:7d07:: with SMTP id y7mr29811546ybc.425.1616905989011;
- Sat, 27 Mar 2021 21:33:09 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5igONXEO98vO4FM78LS4gCrljh6JLaa7Yhx+y94h5KA=;
+        b=jOPwlI3lWl0GF7qNcHDPwGkp4HNZkywP5jGo2GPAriVTyyFQfRAPDRW3oCdC8fujhY
+         9ed1f5aNrfgHZJGqfLaQp3ON42/2vQnaquLqwqtxGCf5krQQ7fkAccsibxU3kwd3aLAp
+         kOu3Z01ZQ28MuTL1uoP57CjAT0haQycqwX3GYMC0d9i9Ss3zhqtYIji1hbIW/dELZt+o
+         0yZDWXXHRM9gH+BI7ygRtDmustxW5gtU50tu5bxJ2K1W/lhW/gL/0GFnOgV+6WUzogNc
+         9IRi3K71JWdn3ds58lQhDmb6MR2CP0aJHbWGLuQG+hoPMDxZg4RzG8CQwVE734HK3nwQ
+         mEaQ==
+X-Gm-Message-State: AOAM532VBI70/GlQwILGwABF+HteBCtoOZjd7CHKY9XIh+JydT1OdzVr
+        L/A3Tj375a/zXExVqEG93DA=
+X-Google-Smtp-Source: ABdhPJwhHKNePU6EDnUH6cL3XMcMOd9iXTQx74JSo0GF66mPVq7Y2GfUubDdX5a80QQpfR/3epZ8oQ==
+X-Received: by 2002:a37:ef09:: with SMTP id j9mr20556263qkk.390.1616906576754;
+        Sat, 27 Mar 2021 21:42:56 -0700 (PDT)
+Received: from localhost.localdomain ([156.146.55.118])
+        by smtp.gmail.com with ESMTPSA id l27sm10158915qki.133.2021.03.27.21.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 21:42:56 -0700 (PDT)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, john.ogness@linutronix.de,
+        keescook@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] kernel/printk.c: Fixed mundane typos
+Date:   Sun, 28 Mar 2021 10:09:32 +0530
+Message-Id: <20210328043932.8310-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210325120020.236504-1-memxor@gmail.com> <20210325120020.236504-6-memxor@gmail.com>
- <20210327021534.pjfjctcdczj7facs@ast-mbp>
-In-Reply-To: <20210327021534.pjfjctcdczj7facs@ast-mbp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sat, 27 Mar 2021 21:32:58 -0700
-Message-ID: <CAEf4Bzba_gdTvak_UHqi96-w6GLF5JQcpQRcG7zxnx=kY8Sd5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 7:15 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Mar 25, 2021 at 05:30:03PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > This adds some basic tests for the low level bpf_tc_* API and its
-> > bpf_program__attach_tc_* wrapper on top.
->
-> *_block() apis from patch 3 and 4 are not covered by this selftest.
-> Why were they added ? And how were they tested?
->
-> Pls trim your cc. bpf@vger and netdev@vger would have been enough.
->
-> My main concern with this set is that it adds netlink apis to libbpf while
-> we already agreed to split xdp manipulation pieces out of libbpf.
-> It would be odd to add tc apis now only to split them later.
 
-We weren't going to split out basic attach APIs at all. So
-bpf_set_link_xdp_fd() and bpf_program__attach_xdp() would stay in
-libbpf. libxdp/libxsk would contain higher-level APIs which establish
-additional conventions, beyond the basic operation of attaching BPF
-program to XDP hook. E.g, all the chaining and how individual XDP
-"sub-programs" are ordered, processed, updated/replaced, etc. That's
-all based on one particular convention that libxdp would establish, so
-that part shouldn't live in libbpf.
+s/sempahore/semaphore/
+s/exacly/exactly/
+s/unregistred/unregistered/
+s/interation/iteration/
 
-So in that sense, having TC attach APIs makes sense to complete
-libbpf's APIs. I think it's totally in libbpf's domain to provide APIs
-of the form "attach BPF program to BPF hook".
 
-> I think it's better to start with new library for tc/xdp and have
-> libbpf as a dependency on that new lib.
-> For example we can add it as subdir in tools/lib/bpf/.
->
-> Similarly I think integerating static linking into libbpf was a mistake.
-> It should be a sub library as well.
->
-> If we end up with core libbpf and ten sublibs for tc, xdp, af_xdp, linking,
-> whatever else the users would appreciate that we don't shove single libbpf
-> to them with a ton of features that they might never use.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ kernel/printk/printk.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-What's the concern exactly? The size of the library? Having 10
-micro-libraries has its own set of downsides, I'm not convinced that's
-a better situation for end users. And would certainly cause more
-hassle for libbpf developers and packagers.
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 575a34b88936..95d31886e0d7 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -262,7 +262,7 @@ static void __up_console_sem(unsigned long ip)
+  * definitely not the perfect debug tool (we don't know if _WE_
+  * hold it and are racing, but it helps tracking those weird code
+  * paths in the console code where we end up in places I want
+- * locked without the console sempahore held).
++ * locked without the console semaphore held).
+  */
+ static int console_locked, console_suspended;
 
-And what did you include in "core libbpf"?
+@@ -2262,7 +2262,7 @@ static int __init console_setup(char *str)
+ 	/*
+ 	 * console="" or console=null have been suggested as a way to
+ 	 * disable console output. Use ttynull that has been created
+-	 * for exacly this purpose.
++	 * for exactly this purpose.
+ 	 */
+ 	if (str[0] == 0 || strcmp(str, "null") == 0) {
+ 		__add_preferred_console("ttynull", 0, NULL, NULL, true);
+@@ -3042,7 +3042,7 @@ void __init console_init(void)
+  *
+  * To mitigate this problem somewhat, only unregister consoles whose memory
+  * intersects with the init section. Note that all other boot consoles will
+- * get unregistred when the real preferred console is registered.
++ * get unregistered when the real preferred console is registered.
+  */
+ static int __init printk_late_init(void)
+ {
+@@ -3467,7 +3467,7 @@ bool kmsg_dump_get_buffer(struct kmsg_dumper *dumper, bool syslog,
+ 		seq = r.info->seq + 1;
+ 	}
+
+-	/* last message in next interation */
++	/* last message in next iteration */
+ 	next_seq = seq;
+
+ 	/* actually read text into the buffer now */
+--
+2.26.2
+
