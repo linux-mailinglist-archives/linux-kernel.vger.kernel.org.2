@@ -2,169 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A96E34BA46
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 01:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8E134BA4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 03:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231195AbhC1Axh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 20:53:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35388 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhC1Axh (ORCPT
+        id S231238AbhC1BEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 21:04:40 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:48664 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230464AbhC1BEI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 20:53:37 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616892795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1guLZj0UITC98wYsVvLolqRYd4jIEoTDNUlR+FmfJjs=;
-        b=SmryalnVWhdpqm8CIozQtnSbU3FCWSSHTHXoSQntHpFtQ1imKPlqzSD5Es8lm+qd5SmIw5
-        /GW4PfGZDyTctGPqdqMisQPD29vDfKiaI6u5hhzhu8WAdMmW3vCxjKs9fjOVxAHOL92v6G
-        rAODmxMGcrRHPu7b95XqBjsd+TzmSS0RQ3u8eoOm9gtZE/63nf0T6IpLMRjuOYQaKezApq
-        xmLMHk6vG4uVzeAQRCh9ot+VikfnMXLyMTZhxqvwpnrt2nxnZ/bdt1IqS7FzdFBzG4hrvL
-        z4vLf5Qe8o1HgDdlb2k2+DvymyNX1oEnn8HUl0OORnTGg4tNvO3PZfzbAHWm+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616892795;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1guLZj0UITC98wYsVvLolqRYd4jIEoTDNUlR+FmfJjs=;
-        b=NwGciNTxluXoyiIZdf85vrM+gEDVaEp+26tYWa/edLEgdvq7LQ0R5fykGoyPyOp3SNIa/F
-        Ch3BtCa+1Uk5sdBg==
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-In-Reply-To: <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
-References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com> <CALCETrUBC34NSHj3eLScYtHJk_7ZHOVJZVPkdLUXemPEiyA_uA@mail.gmail.com>
-Date:   Sun, 28 Mar 2021 01:53:15 +0100
-Message-ID: <87o8f4cd50.ffs@nanos.tec.linutronix.de>
+        Sat, 27 Mar 2021 21:04:08 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id B892812802E2;
+        Sat, 27 Mar 2021 18:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1616893448;
+        bh=XNPQapFOZ1LWpqHJWpj0rTpKyIoY8CSRz85nd1PLsRA=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=LrrRCLSYOAIeBXiewmibxwc4UnIEaEDe+b+Q8hhMoiIPEjH3N1ieV4vDmHISRDD00
+         iWbVjLnI0uUsBalYHj7jH7o0WVXJj3OLN6a7R3Jqk1A6wDPY5YDcgLJ3jBvg4rN3V7
+         u5tFYvfb3gDpgXyS+UyousHvfANdR5/vnUbwU/uw=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Hi4V6pLdPgbd; Sat, 27 Mar 2021 18:04:08 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 589D712802CF;
+        Sat, 27 Mar 2021 18:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1616893448;
+        bh=XNPQapFOZ1LWpqHJWpj0rTpKyIoY8CSRz85nd1PLsRA=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=LrrRCLSYOAIeBXiewmibxwc4UnIEaEDe+b+Q8hhMoiIPEjH3N1ieV4vDmHISRDD00
+         iWbVjLnI0uUsBalYHj7jH7o0WVXJj3OLN6a7R3Jqk1A6wDPY5YDcgLJ3jBvg4rN3V7
+         u5tFYvfb3gDpgXyS+UyousHvfANdR5/vnUbwU/uw=
+Message-ID: <466055c2bdf8d6e61b616bc9e1f7393516365bcf.camel@HansenPartnership.com>
+Subject: [GIT PULL] SCSI fixes for 5.12-rc4
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sat, 27 Mar 2021 18:04:06 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy,
+Seven fixes, all in drivers (qla2xxx, mkt3sas, qedi, target, ibmvscsi).
+The most serious are the target pscsi oom and the qla2xxx revert which
+can otherwise cause a use after free.
 
-On Fri, Mar 26 2021 at 16:18, Andy Lutomirski wrote:
-> arch_prctl(ARCH_SET_XCR0, xcr0, lazy_states, sigsave_states,
-> sigclear_states, 0);
->
-> Sets xcr0.  All states are preallocated except that states in
-> lazy_states may be unallocated in the kernel until used.  (Not
-> supported at all in v1.  lazy_states & ~xcr0 != 0 is illegal.)  States
-> in sigsave_states are saved in the signal frame.  States in
-> sigclear_states are reset to the init state on signal delivery.
-> States in sigsave_states are restored by sigreturn, and states not in
-> sigsave_states are left alone by sigreturn.
+The patch is available here:
 
-I like the idea in principle.
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
-> Optionally we come up with a new format for new features in the signal
-> frame, since the current format is showing its age.  Taking 8kB for a
-> signal with AMX is one thing.  Taking another 8kB for a nested signal
-> if AMX is not in use is worse.
+The short changelog is:
 
-I don't think that we should make that optional to begin with. Sizing
-sigaltstack is lottery as of today and making it more so does not help
-at all.
+Bart Van Assche (1):
+      scsi: Revert "qla2xxx: Make sure that aborted commands are freed"
 
-> Optionally we make AVX-512 also default off, which fixes what is
-> arguably a serious ABI break with AVX-512: lots of programs, following
-> POSIX (!), seem to think that they know much much space to allocate
-> for sigaltstack().   AVX-512 is too big.
+Jia-Ju Bai (2):
+      scsi: mpt3sas: Fix error return code of mpt3sas_base_attach()
+      scsi: qedi: Fix error return code of qedi_alloc_global_queues()
 
-I really wish we could do that. That AVX512 disaster is not trivial to
-sort.
+Martin Wilck (2):
+      scsi: target: pscsi: Clean up after failure in pscsi_map_sg()
+      scsi: target: pscsi: Avoid OOM in pscsi_map_sg()
 
-Let's focus on AMX first. That ship at least has not sailed yet, but if
-it does without a proper resolution then it's going to sail deep south.
-Maybe we end up with some ideas about the AVX512 issue as well that way.
+Tyrel Datwyler (2):
+      scsi: ibmvfc: Make ibmvfc_wait_for_ops() MQ aware
+      scsi: ibmvfc: Fix potential race in ibmvfc_wait_for_ops()
 
-The main problem I see is simply historical. Every other part of the
-user stack space from libraries to applications tries to be "smart"
-about utilizing the assumed best instruction set, feature extensions
-which are detected when something is initialized. I can sing a song of
-that because I was casually involved porting debian to an unsupported
-architecture. Magic all over the place. Now add the whole pile of
-proprietary software stacks, libraries on top of that picture and things
-get completely out of control.
+And the diffstat:
 
-Why? Simply because user space has absolutely no concept about
-orchestrating these things at all. That worked for a while by some
-definition of works and this model is still proliferated today even by
-players who should know better.
+ drivers/scsi/ibmvscsi/ibmvfc.c      | 67 ++++++++++++++++++++++++++++++-------
+ drivers/scsi/mpt3sas/mpt3sas_base.c |  8 +++--
+ drivers/scsi/qedi/qedi_main.c       |  1 +
+ drivers/scsi/qla2xxx/qla_target.c   | 13 +++----
+ drivers/scsi/qla2xxx/tcm_qla2xxx.c  |  4 ---
+ drivers/target/target_core_pscsi.c  |  9 ++++-
+ 6 files changed, 74 insertions(+), 28 deletions(-)
 
-Even if you expected that some not so distant events and the experience
-with fleet consistency would have stopped the 'performance first,
-features first' chorus in some way, that's not what reality is.
+With full diff below.
 
-Linux is not necessarily innocent. For years we just crammed features
-into the kernel without thinking too hard about the big picture. But,
-yes we realized the hard way that there is a problem and just adding yet
-another magic 'make it work' hack for AMX is definitely the wrong
-approach.
+James
 
-What are the possible problems when we make it a hard requirement for
-AMX to be requested by an application/task in order to use it?
+---
 
-For the kernel itself. Not really any consequence I can think off
-aside of unhappy campers in user space.
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 6a92891ac488..bb64e3247a6c 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -2371,6 +2371,24 @@ static int ibmvfc_match_lun(struct ibmvfc_event *evt, void *device)
+ 	return 0;
+ }
+ 
++/**
++ * ibmvfc_event_is_free - Check if event is free or not
++ * @evt:	ibmvfc event struct
++ *
++ * Returns:
++ *	true / false
++ **/
++static bool ibmvfc_event_is_free(struct ibmvfc_event *evt)
++{
++	struct ibmvfc_event *loop_evt;
++
++	list_for_each_entry(loop_evt, &evt->queue->free, queue_list)
++		if (loop_evt == evt)
++			return true;
++
++	return false;
++}
++
+ /**
+  * ibmvfc_wait_for_ops - Wait for ops to complete
+  * @vhost:	ibmvfc host struct
+@@ -2385,35 +2403,58 @@ static int ibmvfc_wait_for_ops(struct ibmvfc_host *vhost, void *device,
+ {
+ 	struct ibmvfc_event *evt;
+ 	DECLARE_COMPLETION_ONSTACK(comp);
+-	int wait;
++	int wait, i, q_index, q_size;
+ 	unsigned long flags;
+ 	signed long timeout = IBMVFC_ABORT_WAIT_TIMEOUT * HZ;
++	struct ibmvfc_queue *queues;
+ 
+ 	ENTER;
++	if (vhost->mq_enabled && vhost->using_channels) {
++		queues = vhost->scsi_scrqs.scrqs;
++		q_size = vhost->scsi_scrqs.active_queues;
++	} else {
++		queues = &vhost->crq;
++		q_size = 1;
++	}
++
+ 	do {
+ 		wait = 0;
+-		spin_lock_irqsave(&vhost->crq.l_lock, flags);
+-		list_for_each_entry(evt, &vhost->crq.sent, queue_list) {
+-			if (match(evt, device)) {
+-				evt->eh_comp = &comp;
+-				wait++;
++		spin_lock_irqsave(vhost->host->host_lock, flags);
++		for (q_index = 0; q_index < q_size; q_index++) {
++			spin_lock(&queues[q_index].l_lock);
++			for (i = 0; i < queues[q_index].evt_pool.size; i++) {
++				evt = &queues[q_index].evt_pool.events[i];
++				if (!ibmvfc_event_is_free(evt)) {
++					if (match(evt, device)) {
++						evt->eh_comp = &comp;
++						wait++;
++					}
++				}
+ 			}
++			spin_unlock(&queues[q_index].l_lock);
+ 		}
+-		spin_unlock_irqrestore(&vhost->crq.l_lock, flags);
++		spin_unlock_irqrestore(vhost->host->host_lock, flags);
+ 
+ 		if (wait) {
+ 			timeout = wait_for_completion_timeout(&comp, timeout);
+ 
+ 			if (!timeout) {
+ 				wait = 0;
+-				spin_lock_irqsave(&vhost->crq.l_lock, flags);
+-				list_for_each_entry(evt, &vhost->crq.sent, queue_list) {
+-					if (match(evt, device)) {
+-						evt->eh_comp = NULL;
+-						wait++;
++				spin_lock_irqsave(vhost->host->host_lock, flags);
++				for (q_index = 0; q_index < q_size; q_index++) {
++					spin_lock(&queues[q_index].l_lock);
++					for (i = 0; i < queues[q_index].evt_pool.size; i++) {
++						evt = &queues[q_index].evt_pool.events[i];
++						if (!ibmvfc_event_is_free(evt)) {
++							if (match(evt, device)) {
++								evt->eh_comp = NULL;
++								wait++;
++							}
++						}
+ 					}
++					spin_unlock(&queues[q_index].l_lock);
+ 				}
+-				spin_unlock_irqrestore(&vhost->crq.l_lock, flags);
++				spin_unlock_irqrestore(vhost->host->host_lock, flags);
+ 				if (wait)
+ 					dev_err(vhost->dev, "Timed out waiting for aborted commands\n");
+ 				LEAVE;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index ac066f86bb14..ac0eef975f17 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -7806,14 +7806,18 @@ mpt3sas_base_attach(struct MPT3SAS_ADAPTER *ioc)
+ 		ioc->pend_os_device_add_sz++;
+ 	ioc->pend_os_device_add = kzalloc(ioc->pend_os_device_add_sz,
+ 	    GFP_KERNEL);
+-	if (!ioc->pend_os_device_add)
++	if (!ioc->pend_os_device_add) {
++		r = -ENOMEM;
+ 		goto out_free_resources;
++	}
+ 
+ 	ioc->device_remove_in_progress_sz = ioc->pend_os_device_add_sz;
+ 	ioc->device_remove_in_progress =
+ 		kzalloc(ioc->device_remove_in_progress_sz, GFP_KERNEL);
+-	if (!ioc->device_remove_in_progress)
++	if (!ioc->device_remove_in_progress) {
++		r = -ENOMEM;
+ 		goto out_free_resources;
++	}
+ 
+ 	ioc->fwfault_debug = mpt3sas_fwfault_debug;
+ 
+diff --git a/drivers/scsi/qedi/qedi_main.c b/drivers/scsi/qedi/qedi_main.c
+index 47ad64b06623..69c5b5ee2169 100644
+--- a/drivers/scsi/qedi/qedi_main.c
++++ b/drivers/scsi/qedi/qedi_main.c
+@@ -1675,6 +1675,7 @@ static int qedi_alloc_global_queues(struct qedi_ctx *qedi)
+ 		if (!qedi->global_queues[i]) {
+ 			QEDI_ERR(&qedi->dbg_ctx,
+ 				 "Unable to allocation global queue %d.\n", i);
++			status = -ENOMEM;
+ 			goto mem_alloc_failure;
+ 		}
+ 
+diff --git a/drivers/scsi/qla2xxx/qla_target.c b/drivers/scsi/qla2xxx/qla_target.c
+index c48daf52725d..480e7d2dcf3e 100644
+--- a/drivers/scsi/qla2xxx/qla_target.c
++++ b/drivers/scsi/qla2xxx/qla_target.c
+@@ -3222,8 +3222,7 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
+ 	if (!qpair->fw_started || (cmd->reset_count != qpair->chip_reset) ||
+ 	    (cmd->sess && cmd->sess->deleted)) {
+ 		cmd->state = QLA_TGT_STATE_PROCESSED;
+-		res = 0;
+-		goto free;
++		return 0;
+ 	}
+ 
+ 	ql_dbg_qp(ql_dbg_tgt, qpair, 0xe018,
+@@ -3234,8 +3233,9 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
+ 
+ 	res = qlt_pre_xmit_response(cmd, &prm, xmit_type, scsi_status,
+ 	    &full_req_cnt);
+-	if (unlikely(res != 0))
+-		goto free;
++	if (unlikely(res != 0)) {
++		return res;
++	}
+ 
+ 	spin_lock_irqsave(qpair->qp_lock_ptr, flags);
+ 
+@@ -3255,8 +3255,7 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
+ 			vha->flags.online, qla2x00_reset_active(vha),
+ 			cmd->reset_count, qpair->chip_reset);
+ 		spin_unlock_irqrestore(qpair->qp_lock_ptr, flags);
+-		res = 0;
+-		goto free;
++		return 0;
+ 	}
+ 
+ 	/* Does F/W have an IOCBs for this request */
+@@ -3359,8 +3358,6 @@ int qlt_xmit_response(struct qla_tgt_cmd *cmd, int xmit_type,
+ 	qlt_unmap_sg(vha, cmd);
+ 	spin_unlock_irqrestore(qpair->qp_lock_ptr, flags);
+ 
+-free:
+-	vha->hw->tgt.tgt_ops->free_cmd(cmd);
+ 	return res;
+ }
+ EXPORT_SYMBOL(qlt_xmit_response);
+diff --git a/drivers/scsi/qla2xxx/tcm_qla2xxx.c b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
+index b55fc768a2a7..8b4890cdd4ca 100644
+--- a/drivers/scsi/qla2xxx/tcm_qla2xxx.c
++++ b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
+@@ -644,7 +644,6 @@ static int tcm_qla2xxx_queue_data_in(struct se_cmd *se_cmd)
+ {
+ 	struct qla_tgt_cmd *cmd = container_of(se_cmd,
+ 				struct qla_tgt_cmd, se_cmd);
+-	struct scsi_qla_host *vha = cmd->vha;
+ 
+ 	if (cmd->aborted) {
+ 		/* Cmd can loop during Q-full.  tcm_qla2xxx_aborted_task
+@@ -657,7 +656,6 @@ static int tcm_qla2xxx_queue_data_in(struct se_cmd *se_cmd)
+ 			cmd->se_cmd.transport_state,
+ 			cmd->se_cmd.t_state,
+ 			cmd->se_cmd.se_cmd_flags);
+-		vha->hw->tgt.tgt_ops->free_cmd(cmd);
+ 		return 0;
+ 	}
+ 
+@@ -685,7 +683,6 @@ static int tcm_qla2xxx_queue_status(struct se_cmd *se_cmd)
+ {
+ 	struct qla_tgt_cmd *cmd = container_of(se_cmd,
+ 				struct qla_tgt_cmd, se_cmd);
+-	struct scsi_qla_host *vha = cmd->vha;
+ 	int xmit_type = QLA_TGT_XMIT_STATUS;
+ 
+ 	if (cmd->aborted) {
+@@ -699,7 +696,6 @@ static int tcm_qla2xxx_queue_status(struct se_cmd *se_cmd)
+ 		    cmd, kref_read(&cmd->se_cmd.cmd_kref),
+ 		    cmd->se_cmd.transport_state, cmd->se_cmd.t_state,
+ 		    cmd->se_cmd.se_cmd_flags);
+-		vha->hw->tgt.tgt_ops->free_cmd(cmd);
+ 		return 0;
+ 	}
+ 	cmd->bufflen = se_cmd->data_length;
+diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
+index 3cbc074992bc..9ee797b8cb7e 100644
+--- a/drivers/target/target_core_pscsi.c
++++ b/drivers/target/target_core_pscsi.c
+@@ -882,7 +882,6 @@ pscsi_map_sg(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
+ 			if (!bio) {
+ new_bio:
+ 				nr_vecs = bio_max_segs(nr_pages);
+-				nr_pages -= nr_vecs;
+ 				/*
+ 				 * Calls bio_kmalloc() and sets bio->bi_end_io()
+ 				 */
+@@ -939,6 +938,14 @@ pscsi_map_sg(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
+ 
+ 	return 0;
+ fail:
++	if (bio)
++		bio_put(bio);
++	while (req->bio) {
++		bio = req->bio;
++		req->bio = bio->bi_next;
++		bio_put(bio);
++	}
++	req->biotail = NULL;
+ 	return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+ }
+ 
 
-For user space this is disruptive and we have at least to come up with
-some reasonable model how all involved components with different ideas
-of how to best utilize a given CPU can be handled.
-
-That starts at the very simple problem of feature enumeration. Up to now
-CPUID is non-priviledged and a large amount of user space just takes
-that as the ultimate reference. We can change that when CPUID faulting
-in CPL3 is supported by the CPU which we can't depend on because it is
-not architectural.
-
-Though the little devil in my head tells me, that making AMX support
-depend on the CPUID faulting capability might be not the worst thing.
-
-Then we actually enforce CPUID faulting (finally) on CPUs which support
-it, which would be a first step into the right direction simply because
-then random library X has to go to the kernel and ask for it explicitely
-or just shrug and use whatever the kernel is willing to hand out in
-CPUID.
-
-Now take that one step further. When the first part of some user space
-application asks for it, then you can register that with the process and
-make sane decisions for all other requesters which come after it, which
-is an important step into the direction of having a common orchestration
-for this.
-
-Sure you can do that via XCR0 as well to some extent, but that CPUID
-fault would solve a whole class of other problems which people who care
-about feature consistency face today at least to some extent.
-
-And contrary to XCR0, which is orthogonal and obviously still required
-for the AMX (and hint AVX512) problem, CPUID faulting would just hand
-out the feature bits which the kernel want's to hand out.
-
-If the app, library or whatever still tries to use them, then they get
-the #UD, #GP or whatever penalty is associated to that particular XCR0
-disabled piece. It's not there, you tried, keep the pieces.
-
-Making it solely depend on XCR0 and fault if not requested upfront is
-bringing you into the situation that you broke 'legacy code' which
-relied on the CPUID bit and that worked until now which gets you
-in the no-regression trap.
-
-I haven't thought this through obviously, but depending solely on XCR0
-faults did not really sum up, so I thought I share that evil idea for
-broader discussion.
-
-Thanks,
-
-        tglx
