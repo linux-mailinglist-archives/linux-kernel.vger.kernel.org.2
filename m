@@ -2,161 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1DC34BEB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6662B34BEDD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhC1UDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 16:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
+        id S231623AbhC1UVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 16:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbhC1UDg (ORCPT
+        with ESMTP id S231366AbhC1UVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 16:03:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC0CC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 13:03:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Gr2M1jMug+JO4h08sIzmzmOzqwA2/BwbcA23gnbi9JY=; b=qThYJYzaZWFCYkoEtuavPASvdA
-        zhnEgw76kUh8FFj5PeWUfYW4yZS6dHpvPFAEgTVanOTdJUWyqTpVN/r5xgSH7oKSOJip5DtYVf7cu
-        2sKowgFFkiGnvejOFZuzluKVt/J6ftQmWwh83SrLJYw6QXPs9d8Vn1P03BweFDFRkEAapWZPKbs2V
-        1Pg4pF9vjGiIqPfeM/zkrpQINBCBuBGmk/OVPCSg/Q8Tgdx49JFexDhXAZWMRcmtkMKW9FxjgS/Is
-        iWPiw1MxSeP4S0RpUXOvbebp2YA8lo5mIL8bPCQgdpNH+60NFHR1c6UV5Mh6gJUreo+7bB+mqK7nZ
-        iNbiP2Jg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQbdE-000VZH-GS; Sun, 28 Mar 2021 20:03:32 +0000
-Date:   Sun, 28 Mar 2021 21:03:32 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Chris von Recklinghausen <crecklin@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: tools/testing/radix-tree/idr-test gets a failed assertion on
- single cpu systems
-Message-ID: <20210328200332.GB33249@casper.infradead.org>
-References: <def0fd33-da11-6283-d98f-66eb9a8dd201@redhat.com>
+        Sun, 28 Mar 2021 16:21:03 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 335E3C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 13:21:03 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id r12so1773512vsj.5
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 13:21:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=e/sYQxHTyjPJhHYe5sKGOCyGPsIMrtFIN9S1ufSNmAY=;
+        b=e7/VQKUvRJIOqkJnPgXogbDL4iHytnMkJ58u4jwkfxCsfIA2tDqehEioKkwDaOHqJq
+         VXqQMCB8MsKQinIqDBZI5m4nbTysjMzA1sd+OkYabt1EkQf/UZ40kafFcWSPkZ9Ak9e6
+         ZqhNPPH1bLIA1qJ1nkYzyrLIUdih47m5fWe5TCF6cVq05Vr26KD+AyGhTc6fFePP2DT9
+         j/YCCS86P/oTWQkRrWR3rpiBFYsW6imOTyjPUaj8X30+Lm5ugiJdZExtLX5wy9BA/YTW
+         HUZyyU3opdcFfEUB85Xn3SQ3318qQNJOiO99tgnYlhm07jAoPNHosRH5OII1u7VfgBJ2
+         6Rvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=e/sYQxHTyjPJhHYe5sKGOCyGPsIMrtFIN9S1ufSNmAY=;
+        b=qVdaBoEg9e2u8qdXvZ28MUhohO9Jy0IH0jV6q+EoSALlJtj6jfIx/zpt7nZOOOqH46
+         huK6OgeqN59zvVBMmQpTUGsFqccYBQNZIkuXPEIe1eZaH9FMo8sB4g+jwGUfTGbq3dAx
+         5c4F9U4njbfMwFjZ3iWLYXj+BTbKmWo+2bM3+iQUrRg0nZdyxseXJdRYkQFcu54ZtXvE
+         VKIZS/jT8TyknLAklLhFE2Uksf0/qXTrzpNqQRYiWDoMQC3DdRWR8hPO9yZDJiLDsVnD
+         SO7eyJTTl+Bc2hdkpxyJMRk4MnG+4oeEVSbYgG4D4ZYcSXMABBUSahaN7IRRzhNVjWTk
+         Ewyw==
+X-Gm-Message-State: AOAM532crOzfXZy1XzllLNAzzn40WvEzWopIgAHWqntUCGsTtb2sOc5a
+        sEG3EJUBG40fplavDaAd7DBr5ecrrdkvjRzJ8Xp6qcoPFvc=
+X-Google-Smtp-Source: ABdhPJyfTbDEggOm8nx4eb+bN94r4JmluE6pOQfwkElKQekMk7YkFotupFKsfwu1wlwIw1Rirt26iHd1D10phgYOXkg=
+X-Received: by 2002:a67:ee88:: with SMTP id n8mr12835996vsp.52.1616962862289;
+ Sun, 28 Mar 2021 13:21:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <def0fd33-da11-6283-d98f-66eb9a8dd201@redhat.com>
+From:   Fawad Lateef <fawadlateef@gmail.com>
+Date:   Sun, 28 Mar 2021 22:20:50 +0200
+Message-ID: <CAGgoGu77PEEAJped5bnw4q8rFeDMebL92YWGDGFfNp_ZAnpJ8Q@mail.gmail.com>
+Subject: Compiling kernel-3.4.xxx with gcc-9.x. Need some help.
+To:     kernelnewbies <kernelnewbies@nl.linux.org>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 26, 2021 at 02:23:39PM -0400, Chris von Recklinghausen wrote:
-> Hi Matthew,
-> 
-> I made the observation that while tools/testing/radix-tree/idr-test runs and
-> passes just fine on a system with more than one cpu, it gets an assertion
-> failure when run on a single cpu system. My test system is Fedora 34 running
-> on an x86_64 system. It can be easily reproduced by offlining all cpus but
-> cpu0.
+Hi
 
-I'm delighted (a) that you're running idr-test (sometimes I feel like I'm
-the only one) and (b) to receive such a detailed and thoughtful bug report.
-Thank you.
+I am using an Olimex A20 SOM with NAND and due to some binary blob for
+NAND driver, I am stuck with the sunxi kernel 3.4.xxx version. (Repo
+here: https://github.com/linux-sunxi/linux-sunxi)
 
-There's an easier way to reproduce this than offlining all the CPUs
--- use taskset:
+I am currently using buildroot-2016 and gcc-5.5 for building the
+kernel and every other package needed.
 
-$ taskset -c 3 ./idr-test 
-vvv Ignore these warnings
-assertion failed at idr.c:269
-assertion failed at idr.c:206
-^^^ Warnings over
-idr-test: idr-test.c:312: idr_find_test_1: Assertion `!(entry != xa_mk_value(id))' failed.
-Aborted
+Now the requirement is to move to the latest version of gcc-9.x, so
+that we can have glibc++ provided by the gcc-9.1 toolchain.
 
-After fixing the current build (git rm
-tools/testing/radix-tree/linux/compiler_types.h), I suspected this would fix
-the problem:
+Main problem for moving to later versions of buildroot is the kernel
+3.4 which we couldn't to work with gcc-6 a few years ago _but_ now the
+gcc-9.1 requirement is mandatory so now have to look into compiling
+linux-3.4 with gcc-9.1 or above.
 
-+++ b/tools/testing/radix-tree/idr-test.c
-@@ -577,6 +577,7 @@ void ida_tests(void)
- 
- int __weak main(void)
- {
-+       rcu_register_thread();
-        radix_tree_init();
-        idr_checks();
-        ida_tests();
-@@ -584,5 +585,6 @@ int __weak main(void)
-        rcu_barrier();
-        if (nr_allocated)
-                printf("nr_allocated = %d\n", nr_allocated);
-+       rcu_unregister_thread();
-        return 0;
- }
+Now I need some help.
 
-However, that only gets me to the next problem:
+-- Is it realistic to expect 3.4 kernel compiling and boot
+successfully with gcc-9.1?
+-- Secondly, till now I am able to compile until the point when its
+going to generate the vmlinuz image, it failed with error at LD stage:
+                  arm-none-linux-gnueabihf-ld: no machine record defined
 
-==2312666==ERROR: AddressSanitizer: heap-use-after-free on address 0x60c0048fda80 at pc 0x563186e34300 bp 0x7fffa5d4f2b0 sp 0x7fffa5d4f2a8
-READ of size 1 at 0x60c0048fda80 thread T0
-    #0 0x563186e342ff in radix_tree_descend /home/willy/kernel/linux/tools/testing/radix-tree/radix-tree.c:86
-    #1 0x563186e38e98 in radix_tree_next_chunk /home/willy/kernel/linux/tools/testing/radix-tree/radix-tree.c:1193
-    #2 0x563186e3c429 in idr_get_next_ul /home/willy/kernel/linux/tools/testing/radix-tree/idr.c:236
-    #3 0x563186e3c56a in idr_get_next /home/willy/kernel/linux/tools/testing/radix-tree/idr.c:267
-    #4 0x563186dfbf82 in idr_find_test_1 /home/willy/kernel/linux/tools/testing/radix-tree/idr-test.c:311
-    #5 0x563186dfc146 in idr_find_test /home/willy/kernel/linux/tools/testing/radix-tree/idr-test.c:323
-    #6 0x563186dfc957 in idr_checks /home/willy/kernel/linux/tools/testing/radix-tree/idr-test.c:408
+Last few lines from compile log:
 
-so I'll have to dive into that a bit further.
+---------------------------------------------------------------------------=
+----
+include/linux/init.h:267:24: note: in expansion of macro =E2=80=98__initcal=
+l=E2=80=99
+  267 | #define module_init(x) __initcall(x);
+      |                        ^~~~~~~~~~
+net/sunrpc/auth_gss/auth_gss.c:1721:1: note: in expansion of macro =E2=80=
+=98module_init=E2=80=99
+ 1721 | module_init(init_rpcsec_gss)
+      | ^~~~~~~~~~~
+In file included from include/linux/kernel.h:20,
+                 from include/linux/spinlock.h:55,
+                 from include/linux/mmzone.h:7,
+                 from include/linux/gfp.h:4,
+                 from include/linux/slab.h:12,
+                 from net/sunrpc/auth_gss/svcauth_gss.c:40:
+include/linux/log2.h:22:1: warning: ignoring attribute =E2=80=98noreturn=E2=
+=80=99
+because it conflicts with attribute =E2=80=98const=E2=80=99 [-Wattributes]
+   22 | int ____ilog2_NaN(void);
+      | ^~~
+  LD      net/sunrpc/auth_gss/auth_rpcgss.o
+  LD      net/sunrpc/auth_gss/built-in.o
+  LD      net/sunrpc/built-in.o
+  LD      net/built-in.o
+  LD      vmlinux.o
+  MODPOST vmlinux.o
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+In file included from include/linux/kernel.h:20,
+                 from include/linux/cache.h:4,
+                 from include/linux/time.h:7,
+                 from include/linux/stat.h:60,
+                 from include/linux/module.h:10,
+                 from init/version.c:10:
+include/linux/log2.h:22:1: warning: ignoring attribute =E2=80=98noreturn=E2=
+=80=99
+because it conflicts with attribute =E2=80=98const=E2=80=99 [-Wattributes]
+   22 | int ____ilog2_NaN(void);
+      | ^~~
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+arm-none-linux-gnueabihf-ld: no machine record defined
+Makefile:875: recipe for target '.tmp_vmlinux1' failed
+make: *** [.tmp_vmlinux1] Error 1
+---------------------------------------------------------------------------=
+----
 
-> [root@hpe-ml110g7-01 linux]# tools/testing/radix-tree/idr-test
-> vvv Ignore these warnings
-> assertion failed at idr.c:250
-> assertion failed at idr.c:206
-> ^^^ Warnings over
-> idr-test: idr-test.c:320: idr_find_test_1: Assertion `!(entry !=
-> xa_mk_value(id))' failed.
-> Aborted (core dumped)
-> 
-> I bisected the change to 5c089fd0c734 ("idr: Fix idr_get_next race with
-> idr_remove").
-> 
-> Since idr_get_next can return NULL, I stuck a BUG_ON(!entry) just above the
-> failing assert, and in this case idr_get_next is returning NULL.
-> 
-> Next, I stuck a BUG_ON in the place that idr_get_next_ul returns NULL and
-> commented out the contents of idr_u32_test1 so we're not knowingly passing
-> it bad values, and we seem to fail because the list has been gone through.
-> 
-> void *idr_get_next_ul(struct idr *idr, unsigned long *nextid)
-> {
->     struct radix_tree_iter iter;
->     void __rcu **slot;
->     void *entry = NULL;
->     unsigned long base = idr->idr_base;
->     unsigned long id = *nextid;
-> 
->     id = (id < base) ? 0 : id - base;
->     radix_tree_for_each_slot(slot, &idr->idr_rt, &iter, id) {
->         entry = rcu_dereference_raw(*slot);
->         if (!entry)
->             continue;
->         if (!xa_is_internal(entry))
->             break;
->         if (slot != &idr->idr_rt.xa_head && !xa_is_retry(entry))
->             break;
->         slot = radix_tree_iter_retry(&iter);
->     }
->     if (!slot)
->         return NULL; <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-> 
->     *nextid = iter.index + base;
->     return entry;
-> }
-> EXPORT_SYMBOL(idr_get_next_ul);
-> 
-> I'm not sure if this is a test issue or possibly an issue with user level
-> RCU when there's only a single cpu in the system, but I figured it was worth
-> bringing it to your attention. If there's anything I can do to help to
-> further analyze this or try out a fix, I'm happy to help.
-> 
-> Thanks,
-> 
-> Chris von Recklinghausen
-> 
-> Red Hat
-> 
+
+After some investigation I found that the MACHINE_START macro from
+arch/arm/include/asm/mach/arch.h  is optimised by compiler and removed
+from the object file during compilation of
+"arch/arm/plat-sunxi/core.c" due to the error here:
+
+---------------------------------------------------------------
+
+flateef@flateef-XPS-13-9360:~/src/tmp/linux-custom-venus-gc-9.2$ make
+ARCH=3Darm CROSS_COMPILE=3Darm-none-linux-gnueabihf- EXTRAVERSION=3D-custom=
+1
+uImage LOADADDR=3D"0x40008000" -j4
+  CHK     include/linux/version.h
+  CHK     include/generated/utsrelease.h
+make[1]: 'include/generated/mach-types.h' is up to date.
+  CALL    scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CC      arch/arm/plat-sunxi/core.o
+In file included from include/linux/kernel.h:20,
+                 from arch/arm/plat-sunxi/core.c:20:
+include/linux/log2.h:22:1: warning: ignoring attribute =E2=80=98noreturn=E2=
+=80=99
+because it conflicts with attribute =E2=80=98const=E2=80=99 [-Wattributes]
+   22 | int ____ilog2_NaN(void);
+      | ^~~
+In file included from include/linux/scatterlist.h:10,
+                 from include/linux/dma-mapping.h:9,
+                 from arch/arm/plat-sunxi/core.c:24:
+arch/arm/plat-sunxi/core.c: In function =E2=80=98sw_irq_unmask=E2=80=99:
+arch/arm/plat-sunxi/core.c:287:14: warning: left shift count >=3D width
+of type [-Wshift-count-overflow]
+  287 |    writel((1 << SW_INT_IRQNO_ENMI), SW_INT_IRQ_PENDING_REG0);
+      |              ^~
+/home/flateef/src/tmp/linux-custom-venus-gc-9.2/arch/arm/include/asm/io.h:5=
+2:88:
+note: in definition of macro =E2=80=98__raw_writel=E2=80=99
+   52 | #define __raw_writel(v,a) (__chk_io_ptr(a), *(volatile
+unsigned int __force   *)(a) =3D (v))
+      |
+                        ^
+include/linux/byteorder/generic.h:87:21: note: in expansion of macro
+=E2=80=98__cpu_to_le32=E2=80=99
+   87 | #define cpu_to_le32 __cpu_to_le32
+      |                     ^~~~~~~~~~~~~
+/home/flateef/src/tmp/linux-custom-venus-gc-9.2/arch/arm/include/asm/io.h:2=
+44:36:
+note: in expansion of macro =E2=80=98writel_relaxed=E2=80=99
+  244 | #define writel(v,c)  ({ __iowmb(); writel_relaxed(v,c); })
+      |                                    ^~~~~~~~~~~~~~
+arch/arm/plat-sunxi/core.c:287:4: note: in expansion of macro =E2=80=98writ=
+el=E2=80=99
+  287 |    writel((1 << SW_INT_IRQNO_ENMI), SW_INT_IRQ_PENDING_REG0);
+      |    ^~~~~~
+In file included from arch/arm/plat-sunxi/core.c:53:
+At top level:
+/home/flateef/src/tmp/linux-custom-venus-gc-9.2/arch/arm/include/asm/mach/a=
+rch.h:69:34:
+warning: =E2=80=98__mach_desc_SUN7I=E2=80=99 defined but not used
+[-Wunused-const-variable=3D]
+   69 | static const struct machine_desc __mach_desc_##_type  \
+      |                                  ^~~~~~~~~~~~
+arch/arm/plat-sunxi/core.c:424:1: note: in expansion of macro =E2=80=98MACH=
+INE_START=E2=80=99
+  424 | MACHINE_START(SUN7I, "sun7i")
+      | ^~~~~~~~~~~~~
+/home/flateef/src/tmp/linux-custom-venus-gc-9.2/arch/arm/include/asm/mach/a=
+rch.h:69:34:
+warning: =E2=80=98__mach_desc_SUN5I=E2=80=99 defined but not used
+[-Wunused-const-variable=3D]
+   69 | static const struct machine_desc __mach_desc_##_type  \
+      |                                  ^~~~~~~~~~~~
+arch/arm/plat-sunxi/core.c:410:1: note: in expansion of macro =E2=80=98MACH=
+INE_START=E2=80=99
+  410 | MACHINE_START(SUN5I, "sun5i")
+      | ^~~~~~~~~~~~~
+/home/flateef/src/tmp/linux-custom-venus-gc-9.2/arch/arm/include/asm/mach/a=
+rch.h:69:34:
+warning: =E2=80=98__mach_desc_SUN4I=E2=80=99 defined but not used
+[-Wunused-const-variable=3D]
+   69 | static const struct machine_desc __mach_desc_##_type  \
+      |                                  ^~~~~~~~~~~~
+arch/arm/plat-sunxi/core.c:396:1: note: in expansion of macro =E2=80=98MACH=
+INE_START=E2=80=99
+  396 | MACHINE_START(SUN4I, "sun4i")
+      | ^~~~~~~~~~~~~
+  LD      arch/arm/plat-sunxi/built-in.o
+  LD      vmlinux.o
+  MODPOST vmlinux.o
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+In file included from include/linux/kernel.h:20,
+                 from include/linux/cache.h:4,
+                 from include/linux/time.h:7,
+                 from include/linux/stat.h:60,
+                 from include/linux/module.h:10,
+                 from init/version.c:10:
+include/linux/log2.h:22:1: warning: ignoring attribute =E2=80=98noreturn=E2=
+=80=99
+because it conflicts with attribute =E2=80=98const=E2=80=99 [-Wattributes]
+   22 | int ____ilog2_NaN(void);
+      | ^~~
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+arm-none-linux-gnueabihf-ld: no machine record defined
+Makefile:875: recipe for target '.tmp_vmlinux1' failed
+make: *** [.tmp_vmlinux1] Error 1
+
+---------------------------------------------------------------
+
+I modified the MACHINE_START macro in arch/arm/include/asm/mach/arch.h
+and added "__attribute__((used))" so it became:
+
+            static const struct machine_desc __mach_desc_##_type
+__attribute__((used))    \
+
+And I managed to get the vmlinux image.
+
+-------------------------------------------------------------
+
+
+arch/arm/mm/mmu.c:919:1: note: in expansion of macro =E2=80=98early_param=
+=E2=80=99
+  919 | early_param("vmalloc", early_vmalloc);
+      | ^~~~~~~~~~~
+include/linux/init.h:241:33: warning: =E2=80=98__setup_noalign_setup=E2=80=
+=99 defined
+but not used [-Wunused-variable]
+  241 |  static struct obs_kernel_param __setup_##unique_id \
+      |                                 ^~~~~~~~
+include/linux/init.h:247:2: note: in expansion of macro =E2=80=98__setup_pa=
+ram=E2=80=99
+  247 |  __setup_param(str, fn, fn, 0)
+      |  ^~~~~~~~~~~~~
+arch/arm/mm/mmu.c:175:1: note: in expansion of macro =E2=80=98__setup=E2=80=
+=99
+  175 | __setup("noalign", noalign_setup);
+      | ^~~~~~~
+include/linux/init.h:241:33: warning: =E2=80=98__setup_early_ecc=E2=80=99 d=
+efined but
+not used [-Wunused-variable]
+  241 |  static struct obs_kernel_param __setup_##unique_id \
+      |                                 ^~~~~~~~
+include/linux/init.h:252:2: note: in expansion of macro =E2=80=98__setup_pa=
+ram=E2=80=99
+  252 |  __setup_param(str, fn, fn, 1)
+      |  ^~~~~~~~~~~~~
+arch/arm/mm/mmu.c:165:1: note: in expansion of macro =E2=80=98early_param=
+=E2=80=99
+  165 | early_param("ecc", early_ecc);
+      | ^~~~~~~~~~~
+include/linux/init.h:241:33: warning: =E2=80=98__setup_early_nowrite=E2=80=
+=99 defined
+but not used [-Wunused-variable]
+  241 |  static struct obs_kernel_param __setup_##unique_id \
+      |                                 ^~~~~~~~
+include/linux/init.h:252:2: note: in expansion of macro =E2=80=98__setup_pa=
+ram=E2=80=99
+  252 |  __setup_param(str, fn, fn, 1)
+      |  ^~~~~~~~~~~~~
+arch/arm/mm/mmu.c:154:1: note: in expansion of macro =E2=80=98early_param=
+=E2=80=99
+  154 | early_param("nowb", early_nowrite);
+      | ^~~~~~~~~~~
+include/linux/init.h:241:33: warning: =E2=80=98__setup_early_nocache=E2=80=
+=99 defined
+but not used [-Wunused-variable]
+  241 |  static struct obs_kernel_param __setup_##unique_id \
+      |                                 ^~~~~~~~
+include/linux/init.h:252:2: note: in expansion of macro =E2=80=98__setup_pa=
+ram=E2=80=99
+  252 |  __setup_param(str, fn, fn, 1)
+      |  ^~~~~~~~~~~~~
+arch/arm/mm/mmu.c:145:1: note: in expansion of macro =E2=80=98early_param=
+=E2=80=99
+  145 | early_param("nocache", early_nocache);
+      | ^~~~~~~~~~~
+include/linux/init.h:241:33: warning: =E2=80=98__setup_early_cachepolicy=E2=
+=80=99
+defined but not used [-Wunused-variable]
+  241 |  static struct obs_kernel_param __setup_##unique_id \
+      |                                 ^~~~~~~~
+include/linux/init.h:252:2: note: in expansion of macro =E2=80=98__setup_pa=
+ram=E2=80=99
+  252 |  __setup_param(str, fn, fn, 1)
+      |  ^~~~~~~~~~~~~
+arch/arm/mm/mmu.c:136:1: note: in expansion of macro =E2=80=98early_param=
+=E2=80=99
+  136 | early_param("cachepolicy", early_cachepolicy);
+      | ^~~~~~~~~~~
+  AS      arch/arm/kernel/head.o
+  LD      arch/arm/kernel/built-in.o
+  AS      arch/arm/mm/cache-v7.o
+  AS      arch/arm/mm/tlb-v7.o
+  AS      arch/arm/mm/proc-v7.o
+  LD      arch/arm/mm/built-in.o
+  AS      arch/arm/lib/copy_page.o
+  AS      arch/arm/lib/csumpartialcopyuser.o
+  AR      arch/arm/lib/lib.a
+  LD      vmlinux.o
+  MODPOST vmlinux.o
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+In file included from include/linux/kernel.h:20,
+                 from include/linux/cache.h:4,
+                 from include/linux/time.h:7,
+                 from include/linux/stat.h:60,
+                 from include/linux/module.h:10,
+                 from init/version.c:10:
+include/linux/log2.h:22:1: warning: ignoring attribute =E2=80=98noreturn=E2=
+=80=99
+because it conflicts with attribute =E2=80=98const=E2=80=99 [-Wattributes]
+   22 | int ____ilog2_NaN(void);
+      | ^~~
+  LD      init/built-in.o
+  LD      .tmp_vmlinux1
+  KSYM    .tmp_kallsyms1.S
+  AS      .tmp_kallsyms1.o
+  LD      .tmp_vmlinux2
+  KSYM    .tmp_kallsyms2.S
+  AS      .tmp_kallsyms2.o
+  LD      vmlinux
+  SYSMAP  System.map
+  SYSMAP  .tmp_System.map
+  OBJCOPY arch/arm/boot/Image
+  Kernel: arch/arm/boot/Image is ready
+  AS      arch/arm/boot/compressed/head.o
+  XZKERN  arch/arm/boot/compressed/piggy.xzkern
+  CC      arch/arm/boot/compressed/misc.o
+  CC      arch/arm/boot/compressed/decompress.o
+  CC      arch/arm/boot/compressed/string.o
+In file included from include/linux/kernel.h:20,
+                 from
+arch/arm/boot/compressed/../../../../lib/xz/xz_private.h:15,
+                 from
+arch/arm/boot/compressed/../../../../lib/decompress_unxz.c:145,
+                 from arch/arm/boot/compressed/decompress.c:50:
+include/linux/log2.h:22:1: warning: ignoring attribute =E2=80=98noreturn=E2=
+=80=99
+because it conflicts with attribute =E2=80=98const=E2=80=99 [-Wattributes]
+   22 | int ____ilog2_NaN(void);
+      | ^~~
+  SHIPPED arch/arm/boot/compressed/lib1funcs.S
+  SHIPPED arch/arm/boot/compressed/ashldi3.S
+  AS      arch/arm/boot/compressed/lib1funcs.o
+  AS      arch/arm/boot/compressed/ashldi3.o
+  AS      arch/arm/boot/compressed/piggy.xzkern.o
+  LD      arch/arm/boot/compressed/vmlinux
+  OBJCOPY arch/arm/boot/zImage
+  Kernel: arch/arm/boot/zImage is ready
+  UIMAGE  arch/arm/boot/uImage
+Image Name:   Linux-3.4.113-custom1
+Created:      Sun Mar 28 20:27:03 2021
+Image Type:   ARM Linux Kernel Image (uncompressed)
+Data Size:    1869496 Bytes =3D 1825.68 KiB =3D 1.78 MiB
+Load Address: 40008000
+Entry Point:  40008000
+  Image arch/arm/boot/uImage is ready
+
+
+---------------------------------------------------------------------------=
+--
+
+
+-- I still can't boot the kernel on the platform. I believe its
+because there were lots of warning like above (unused const variables
+etc) and might have removed some other code/functions OR macros?
+
+So please suggest what I can do for compiling working kernel-3.4 with gcc-9=
+.
+
+Thanks in advance,
+
+-- Fawad Lateef
