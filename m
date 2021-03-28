@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6F234BF93
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 00:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4F034BF97
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 00:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbhC1WTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 18:19:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39906 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbhC1WTB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 18:19:01 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616969939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rBnlulUcudFGOrMXbrxctGOnuMwn/8hxknEjvKvwBvM=;
-        b=xX/QeM4Ihfdqs7qopLP9Zw7oOjxZnd+spYdThjM4VDvHjJwvXRPeI/TVp5eC+g2g676oBd
-        wIZJLZul0ox4uxjoO8CeK6SRpEAhQn/0ljUDM4ldaPmnvjd75vTk9Qjtc3So7E2pB1irfe
-        n15a/c/ePdRLPqWicgdPNVfufx6iymua3FIFDZxoJPiUhzwMv7ZuKZMmxis283NdJAEZCx
-        PqnjOFQvUaGzdfW7dTMeIA2tUK2R53KOcCL2IKF3AfYQRtDuA335mw+pSQ/v8gpb+emRbB
-        bMZDkZEqQtbHRxYghRBI17MSjTO7Z7ohIzEGe9DppBbnMYkA7g/YV2PsHHzJkg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616969939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rBnlulUcudFGOrMXbrxctGOnuMwn/8hxknEjvKvwBvM=;
-        b=Ct8K9ehAA9WGeYqFE+2W42BV3Mzw1NHSe+2aZHqytnUI1BIdKP+b0LDXDsGG0d53R2MMqb
-        Qu37alhzvR9w6JBg==
-To:     Willy Tarreau <w@1wt.eu>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Mateusz Jonczyk <mat.jonczyk@o2.pl>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Testers wanted: Atom netbooks with x86_64 disabled by BIOS
-In-Reply-To: <20210328215807.GA26428@1wt.eu>
-References: <20210327203218.119372-1-mat.jonczyk@o2.pl> <20210327211322.121708-1-mat.jonczyk@o2.pl> <20210327232551.GA20783@1wt.eu> <87lfa8cchf.ffs@nanos.tec.linutronix.de> <20210328061837.GA22710@1wt.eu> <CAHp75Ve_Yhs3ib5yk=d-+bhb4vHpx-j6D4jGGBKuD2k1qv38Vg@mail.gmail.com> <20210328215807.GA26428@1wt.eu>
-Date:   Mon, 29 Mar 2021 00:18:59 +0200
-Message-ID: <87y2e6c46k.ffs@nanos.tec.linutronix.de>
+        id S231458AbhC1WaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 18:30:15 -0400
+Received: from ozlabs.org ([203.11.71.1]:53253 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhC1W3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 18:29:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F7r456X41z9sW1;
+        Mon, 29 Mar 2021 09:29:41 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616970582;
+        bh=/Yk/uP3DYf8BIbNht5Dxzz7iypK1cDTflMQYlH5EqdI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TR8/v4bVZ2ICKnSPstoX/gVQOrusbI413SiExBEsNm6h8yblDVVAxX3oZTSToeqF4
+         3ASwSHGLKOS+GnWIYBlp7VvJnoh+yEtLEYpifr+/kaXSmcYDtM1ZN3fa/mPcrbk2X3
+         2Hva4eNDE5L9li0bGl9JBabz//NS8FlOy6WZvYR+N+Bxpl2trA1rgmQaZEUCV8HpL2
+         Ng0R4INDjv6oCK2oVrr4P0bHISHxDYmpHdJbqFarBuVRLyoQMnm1uGtvOZMNHpI6+K
+         OlHUAdSe5hZr1F1zOByt/tnKhEN31QLf8XqOG+jKwq07kyN4zHvZJ1nQhyzfFQtQlt
+         WlEErzTBqY5Kg==
+Date:   Mon, 29 Mar 2021 09:29:40 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rich Wiley <rwiley@nvidia.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>
+Subject: linux-next: manual merge of the arm64 tree with Linus' tree
+Message-ID: <20210329092940.6363f0bb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/Z_H77_2QRaEQDJCFqAixY7d";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28 2021 at 23:58, Willy Tarreau wrote:
-> On Sun, Mar 28, 2021 at 11:14:05PM +0300, Andy Shevchenko wrote:
->> Where did you get an idea that it had 64-bit SoC from?
->
-> It's an N2600, and I bought this laptop because N2600 supports 64-bit
-> (and do have another mini-itx motherboard at work with the same CPU
-> on it working pretty well in 64-bit):
->
->    https://ark.intel.com/content/www/us/en/ark/products/58916/intel-atom-processor-n2600-1m-cache-1-6-ghz.html
+--Sig_/Z_H77_2QRaEQDJCFqAixY7d
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I bet that laptop is forced to 32bit via SMM or whatever because IIRC
-there was some issue with the graphics drivers for 64 bit windows when
-they were hot of the press 10 years ago.
+Hi all,
 
->> Atom Based 64-bit ones are Bay Trail, Cherry Trail, Tangier (Merrifield),
->> Anniedale (Moorefield) and all based on Skylake family (Apollo Lake,
->> Broxton, Gemini Lake, ...).
->
-> Well, to be honest, I've never been able to remind (nor sort) all these
-> totally crazy names. The day someone gives me a mnemotechnic hint to
-> remind them and their ordering, that will make me reconsider them. For
-> now they're all "something lake", and I find it particularly difficult
-> to map them to SKUs.
+Today's linux-next merge of the arm64 tree got a conflict in:
 
-It's more than 'lake'. You'd need also a mindmap for trail, ville and
-whatever magic endings they have. There is no mnemotechnic hint to map
-them into something which makes sense.
+  arch/arm64/include/asm/cpucaps.h
 
-I gave up long ago and the only thing I ask for is to provide me the
-family/model number instead of the random code name of the day.
+between commit:
 
-Thanks,
+  20109a859a9b ("arm64: kernel: disable CNP on Carmel")
 
-        tglx
+from Linus' tree and commit:
+
+  18107f8a2df6 ("arm64: Support execute-only permissions with Enhanced PAN")
+
+from the arm64 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/include/asm/cpucaps.h
+index c40f2490cd7b,9e3ec4dd56d8..000000000000
+--- a/arch/arm64/include/asm/cpucaps.h
++++ b/arch/arm64/include/asm/cpucaps.h
+@@@ -66,8 -66,8 +66,9 @@@
+  #define ARM64_WORKAROUND_1508412		58
+  #define ARM64_HAS_LDAPR				59
+  #define ARM64_KVM_PROTECTED_MODE		60
+ -#define ARM64_HAS_EPAN				61
+ +#define ARM64_WORKAROUND_NVIDIA_CARMEL_CNP	61
+++#define ARM64_HAS_EPAN				62
+ =20
+--#define ARM64_NCAPS				62
+++#define ARM64_NCAPS				63
+ =20
+  #endif /* __ASM_CPUCAPS_H */
+
+--Sig_/Z_H77_2QRaEQDJCFqAixY7d
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBhA1QACgkQAVBC80lX
+0Gy2YggAh8C5PgKUKq1ULP2wMr9BSF3AA5tRSEq4oPvFXOVECZrea7mzePpZMLFN
+LAppINAydSh5+jt2y5k4EGafk0JYJgp+JiW3imRvsdcUL7RXUmHKHUrNZjXOzjAk
+T0qHphRgCKtkLGzkOhSoBtIBJqpTvypn9nfI9hjOwT8E6QFRlAsuIp0sXDR7jABL
+I2kUnLfYOHGP7kEglbF7c3PA0b93s4hs82NX5ji5kFh+dxDvwHknwbzdJvkd/44I
+wQeMeENyAiDMyETX8WxAFcvVZ/b3tCNa/vkWwzmk1Yqz7cEoC6+SRT9KKIK5w2qk
+P/URdClZ61W0q73fb0Iee4s+zQq6Gw==
+=or59
+-----END PGP SIGNATURE-----
+
+--Sig_/Z_H77_2QRaEQDJCFqAixY7d--
