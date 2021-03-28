@@ -2,64 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6505B34BF38
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF5034BF41
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhC1VOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 17:14:25 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:39981 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhC1VOI (ORCPT
+        id S231417AbhC1VXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 17:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhC1VW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 17:14:08 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5A85E20002;
-        Sun, 28 Mar 2021 21:14:04 +0000 (UTC)
-Date:   Sun, 28 Mar 2021 23:14:03 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Kirill Kapranov <kirill.kapranov@compulab.co.il>
-Cc:     a.zummo@towertech.it, phdm@macqel.be, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] rtc:abx80x: Enable distributed digital calibration
-Message-ID: <YGDxm/zJSETUMY4B@piout.net>
-References: <20210328210232.10395-1-kirill.kapranov@compulab.co.il>
+        Sun, 28 Mar 2021 17:22:58 -0400
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCA6C061756;
+        Sun, 28 Mar 2021 14:22:58 -0700 (PDT)
+Received: by sf.home (Postfix, from userid 1000)
+        id BD73D5A22061; Sun, 28 Mar 2021 22:22:52 +0100 (BST)
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        linux-ia64@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Sergei Trofimovich <slyfox@gentoo.org>
+Subject: [PATCH v2] ia64: fix EFI_DEBUG build
+Date:   Sun, 28 Mar 2021 22:22:46 +0100
+Message-Id: <20210328212246.685601-1-slyfox@gentoo.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CAMj1kXEmuVWR=TAmzXHnvKxbtSn1-Zkhr-0rOWV0BB1OGyx_TQ@mail.gmail.com>
+References: <CAMj1kXEmuVWR=TAmzXHnvKxbtSn1-Zkhr-0rOWV0BB1OGyx_TQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210328210232.10395-1-kirill.kapranov@compulab.co.il>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+When enabled local debugging via `#define EFI_DEBUG 1` noticed
+build failure:
+    arch/ia64/kernel/efi.c:564:8: error: 'i' undeclared (first use in this function)
 
-Thank you for working on that!
+While at it fixed benign string format mismatches visible only
+when EFI_DEBUG is enabled:
 
-On 29/03/2021 00:02:28+0300, Kirill Kapranov wrote:
-> This patch series enables a Distributed Digital Calibration function for
-> the RTC of the family. This feature allows to improve the RTC accuracy by
-> means of compensation an XT oscillator drift. To learn more, see:
-> AB08XX Series Ultra Low Power RTC IC User's Guide
-> https://abracon.com/realtimeclock/AB08XX-Application-Manual.pdf
-> 
-> The patches 1 and 2 enable SQW output, that is necessary for subsequent
-> measurement and computation. However, this feature may be enabled and used
-> independently, as is.
-> 
+    arch/ia64/kernel/efi.c:589:11:
+        warning: format '%lx' expects argument of type 'long unsigned int',
+        but argument 5 has type 'u64' {aka 'long long unsigned int'} [-Wformat=]
 
-Please use the common clock framework for this part. You will need a
-dummy userspace user for this to work but I know Stephen is open to that
-as we discussed that use case multiple times already.
+Fixes: 14fb42090943559 ("efi: Merge EFI system table revision and vendor checks")
+CC: Ard Biesheuvel <ardb@kernel.org>
+CC: linux-efi@vger.kernel.org
+CC: linux-ia64@vger.kernel.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+---
+Change since v1: mention explicitly format string change
 
-> The patches 3 and 4 enable the XT calibration feature per se. The SQW
-> output must be enabled for usage of this feature.
+ arch/ia64/kernel/efi.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Please use the .set_offset and .get_offset rtc_ops for this part.
-
-
+diff --git a/arch/ia64/kernel/efi.c b/arch/ia64/kernel/efi.c
+index c5fe21de46a8..31149e41f9be 100644
+--- a/arch/ia64/kernel/efi.c
++++ b/arch/ia64/kernel/efi.c
+@@ -415,10 +415,10 @@ efi_get_pal_addr (void)
+ 		mask  = ~((1 << IA64_GRANULE_SHIFT) - 1);
+ 
+ 		printk(KERN_INFO "CPU %d: mapping PAL code "
+-                       "[0x%lx-0x%lx) into [0x%lx-0x%lx)\n",
+-                       smp_processor_id(), md->phys_addr,
+-                       md->phys_addr + efi_md_size(md),
+-                       vaddr & mask, (vaddr & mask) + IA64_GRANULE_SIZE);
++			"[0x%llx-0x%llx) into [0x%llx-0x%llx)\n",
++			smp_processor_id(), md->phys_addr,
++			md->phys_addr + efi_md_size(md),
++			vaddr & mask, (vaddr & mask) + IA64_GRANULE_SIZE);
+ #endif
+ 		return __va(md->phys_addr);
+ 	}
+@@ -560,6 +560,7 @@ efi_init (void)
+ 	{
+ 		efi_memory_desc_t *md;
+ 		void *p;
++		unsigned int i;
+ 
+ 		for (i = 0, p = efi_map_start; p < efi_map_end;
+ 		     ++i, p += efi_desc_size)
+@@ -586,7 +587,7 @@ efi_init (void)
+ 			}
+ 
+ 			printk("mem%02d: %s "
+-			       "range=[0x%016lx-0x%016lx) (%4lu%s)\n",
++			       "range=[0x%016llx-0x%016llx) (%4lu%s)\n",
+ 			       i, efi_md_typeattr_format(buf, sizeof(buf), md),
+ 			       md->phys_addr,
+ 			       md->phys_addr + efi_md_size(md), size, unit);
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.31.1
+
