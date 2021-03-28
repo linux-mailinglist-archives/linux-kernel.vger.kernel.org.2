@@ -2,77 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1FA34BB68
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2985A34BB74
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhC1GcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 02:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56946 "EHLO mail.kernel.org"
+        id S229609AbhC1Gpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 02:45:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230512AbhC1Gbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 02:31:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4715619A0;
-        Sun, 28 Mar 2021 06:31:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616913102;
-        bh=sUpQ42V7/BeYJXo8xKilrJhdJzUrsLncMVt8E/NbmTI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K1i+Vgp+d0Nt/rDzju12lI4q66EYLkSy5JZ076QiXlZZAxL4Zz1kplBNEVKnDnzeL
-         XUtkjJuzzqCLW32Oy7ysq/RMmkHMZuPYez5Wyxk2SMMxQoDGAf6hQweBSn8yFBqUCW
-         ilcp7x5OfSZ83pAAh9tjiC72g4z2cXm2BDzOz97kdkTOZQbGOFPWZ2VNnDrQitQwTS
-         PSxomOd2/RHIlHwBLl4fVNVs7Ua1PUFN+gK1ipO1IHCQiFh6FVawbp4ISyuFZ29+sQ
-         ZJw6ShzgANhvydDXfVdd/XWVF3Es2P54W9xEgMHObmbb/odl0xgFm9ORAQlNoAWC4v
-         O2brtoUrLFkBQ==
-From:   guoren@kernel.org
-To:     guoren@kernel.org
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-arch@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@arndb.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PATCH v5 7/7] xtensa: qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
-Date:   Sun, 28 Mar 2021 06:30:28 +0000
-Message-Id: <1616913028-83376-8-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1616913028-83376-1-git-send-email-guoren@kernel.org>
-References: <1616913028-83376-1-git-send-email-guoren@kernel.org>
+        id S229485AbhC1Gpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 02:45:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D0256194B;
+        Sun, 28 Mar 2021 06:45:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616913930;
+        bh=V5RpuwVxE2xlFXjlBeiGEZq40sCLDKCXJW5QQK3/0uQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xUbNqFvtb69lRSVGccaQuXiljG+0hoYeyEx7FYAtsdvwcL0D+TQj2RUyHa/qMAaH3
+         c/OmnPeahOocPzuDSgNFSIQRVGFQYHuriIJCBTZTwZ7RK2+brbMMCjxhERS1rJxdjl
+         vburE002jlLlfiIUmPAm/tXL5t6qZGEk7I/vEEFw=
+Date:   Sun, 28 Mar 2021 08:45:27 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1 3/8] software node: Show properties and their values
+ in sysfs
+Message-ID: <YGAmB2Nwph6pArXc@kroah.com>
+References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
+ <20210327222012.54103-3-andriy.shevchenko@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210327222012.54103-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Sun, Mar 28, 2021 at 12:20:07AM +0200, Andy Shevchenko wrote:
+> It's very convenient to see what properties and their values
+> are currently being assigned in the registered software nodes.
+> 
+> Show properties and their values in sysfs.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/base/swnode.c | 137 ++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 132 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 19aa44bc2628..d7fe1a887d2d 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/property.h>
+>  #include <linux/slab.h>
+> +#include <linux/sysfs.h>
+>  
+>  struct swnode {
+>  	int id;
+> @@ -17,6 +18,10 @@ struct swnode {
+>  	struct fwnode_handle fwnode;
+>  	const struct software_node *node;
+>  
+> +	/* properties in sysfs */
+> +	struct kobj_attribute *property_attrs;
+> +	struct attribute_group property_group;
+> +
+>  	/* hierarchy */
+>  	struct ida child_ids;
+>  	struct list_head entry;
+> @@ -25,6 +30,7 @@ struct swnode {
+>  
+>  	unsigned int allocated:1;
+>  	unsigned int managed:1;
+> +	unsigned int properties:1;
+>  };
+>  
+>  static DEFINE_IDA(swnode_root_ids);
+> @@ -299,6 +305,18 @@ static int property_entry_copy_data(struct property_entry *dst,
+>  	return 0;
+>  }
+>  
+> +static int property_entries_count(const struct property_entry *properties)
+> +{
+> +	int n = 0;
+> +
+> +	if (properties) {
+> +		while (properties[n].name)
+> +			n++;
+> +	}
+> +
+> +	return n;
+> +}
+> +
+>  /**
+>   * property_entries_dup - duplicate array of properties
+>   * @properties: array of properties to copy
+> @@ -310,15 +328,13 @@ struct property_entry *
+>  property_entries_dup(const struct property_entry *properties)
+>  {
+>  	struct property_entry *p;
+> -	int i, n = 0;
+> +	int i, n;
+>  	int ret;
+>  
+> -	if (!properties)
+> +	n = property_entries_count(properties);
+> +	if (n == 0)
+>  		return NULL;
+>  
+> -	while (properties[n].name)
+> -		n++;
+> -
+>  	p = kcalloc(n + 1, sizeof(*p), GFP_KERNEL);
+>  	if (!p)
+>  		return ERR_PTR(-ENOMEM);
+> @@ -746,6 +762,108 @@ static void software_node_free(const struct software_node *node)
+>  	kfree(node);
+>  }
+>  
+> +static ssize_t
+> +swnode_property_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> +{
+> +	struct swnode *swnode = kobj_to_swnode(kobj);
+> +	const struct property_entry *prop;
+> +	const void *pointer;
+> +	ssize_t len = 0;
+> +	int i;
+> +
+> +	prop = property_entry_get(swnode->node->properties, attr->attr.name);
+> +	if (!prop)
+> +		return -EINVAL;
+> +
+> +	/* We can't fail here, because it means boolean property */
+> +	pointer = property_get_pointer(prop);
+> +	if (!pointer)
+> +		return sysfs_emit(buf, "\n");
+> +
+> +	switch (prop->type) {
+> +	case DEV_PROP_U8:
+> +		for (i = 0; i < prop->length / sizeof(u8); i++)
+> +			len += sysfs_emit_at(buf, len, "%u,", ((u8 *)pointer)[i]);
 
-We don't have native hw xchg16 instruction, so let qspinlock
-generic code to deal with it.
+No, sysfs is "one value per file", and that is not what you are showing
+here at all :(
 
-Using the full-word atomic xchg instructions implement xchg16 has
-the semantic risk for atomic operations.
+Also, there is no Documentation/ABI/ entries for your new sysfs files,
+so that means we couldn't take this patcheset anyway :(
 
-This patch cancels the dependency of on qspinlock generic code on
-architecture's xchg16.
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
----
- arch/xtensa/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 9ad6b7b82707..f19d780638f7 100644
---- a/arch/xtensa/Kconfig
-+++ b/arch/xtensa/Kconfig
-@@ -9,6 +9,7 @@ config XTENSA
- 	select ARCH_HAS_DMA_SET_UNCACHED if MMU
- 	select ARCH_USE_QUEUED_RWLOCKS
- 	select ARCH_USE_QUEUED_SPINLOCKS
-+	select ARCH_USE_QUEUED_SPINLOCKS_XCHG32
- 	select ARCH_WANT_FRAME_POINTERS
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BUILDTIME_TABLE_SORT
--- 
-2.17.1
-
+greg k-h
