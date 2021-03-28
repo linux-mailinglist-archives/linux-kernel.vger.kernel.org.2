@@ -2,57 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABBC834BEE1
+	by mail.lfdr.de (Postfix) with ESMTP id 6086334BEE0
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhC1UZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 16:25:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59478 "EHLO mail.kernel.org"
+        id S231639AbhC1UZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 16:25:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhC1UZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231489AbhC1UZY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 28 Mar 2021 16:25:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BF9E161951;
+Received: by mail.kernel.org (Postfix) with ESMTPS id D26A66186A;
         Sun, 28 Mar 2021 20:25:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1616963123;
-        bh=zVOIv0XoFa0lOb94n/TY4NMT6JOjEyckLbrkK0z/0SY=;
+        bh=B86lE1aCWFd2fQbiCl+iMxNQ1SIRLjYfWsfMed+CHhc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=SE5JgAYRE28YZwjBkcP0Mxy9FkxZfGPhcCyOqwqYdS7a/oOFqchm1gtBWV81GWAKT
-         Dybn12Mt5WixxfrfLppnJRvufLKvW3sT/NY01KnZiuPhM8F1anA/Wft2FV3cXtz2zv
-         2hLoxcbsH3J05xZzNekY0aZZWN2+l92sWFdO10IDGESjyl1qayhi9kpJQQvDyTGRVr
-         kew9HRuMNiKcY2hjEUbc7D1x3ivEG5KfdGapNvbdb+++vzIbv9nTyDC3u5kcLVYtv2
-         y5yJYv6WtZ8so/g09USU6nvE6dMk3f9jR9syCKXnupiHARjwzdQA090GK5OCaCKQSe
-         C996Ekrn0y7Gw==
+        b=l2WSgzVm0Rfxezq9TQrwIaRI7i9QluLwPf9XOVkMjg9Ta1BjIm7T+o1lmL3+sLOnL
+         qmUrPbt+pmyEQd5nCSmRcRHNrCIllauUdmx7ZeEmBUraikYuFCbp7H7XdOprN+PpqS
+         NHZgWhdvs6eH6/C9rs9SCtUlvL2FxxvDwe96Jn3riOWtfa4Bk71QLMjwdNkFbf7/Ls
+         oCtCE1i/tm78nCeyhPG3vNo4RTFvC29I65vn/BQ6387CN6xQkLHZaKKFQsZCGfdeh8
+         X92FGLxNs1XZKG6NFU02YsAWxfsmQTFD/EQwv7mFOkDn04H886Sz0f/UnAMnp/6q4V
+         IVcQy7BtMp8UA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A6E3D609EA;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C5D5260A3B;
         Sun, 28 Mar 2021 20:25:23 +0000 (UTC)
-Subject: Re: [GIT PULL] auxdisplay for v5.12-rc6
+Subject: Re: [GIT PULL] perf tools changes for v5.12: 2nd batch
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210328165118.GA23099@kernel.org>
-References: <20210328165118.GA23099@kernel.org>
+In-Reply-To: <20210328183838.1529920-1-acme@kernel.org>
+References: <20210328183838.1529920-1-acme@kernel.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210328165118.GA23099@kernel.org>
-X-PR-Tracked-Remote: https://github.com/ojeda/linux.git tags/auxdisplay-for-linus-v5.12-rc6
-X-PR-Tracked-Commit-Id: 701454bce906241ba7f50e2773881560d6404d29
+X-PR-Tracked-Message-Id: <20210328183838.1529920-1-acme@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.12-2020-03-28
+X-PR-Tracked-Commit-Id: 1dc481c0b0cf18d3952d93a73c4ece90dec277f0
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3fef15f872eec8292d4e53e307c1d17530fb16ba
-Message-Id: <161696312361.20511.6275426186371922347.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: f9e2bb42cf0db3a624d295122db3475aa3e7ad18
+Message-Id: <161696312380.20511.11522597886520743848.pr-tracker-bot@kernel.org>
 Date:   Sun, 28 Mar 2021 20:25:23 +0000
-To:     Miguel Ojeda <ojeda@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Jackie Liu <liuyun01@kylinos.cn>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 28 Mar 2021 18:51:51 +0200:
+The pull request you sent on Sun, 28 Mar 2021 15:38:38 -0300:
 
-> https://github.com/ojeda/linux.git tags/auxdisplay-for-linus-v5.12-rc6
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.12-2020-03-28
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3fef15f872eec8292d4e53e307c1d17530fb16ba
+https://git.kernel.org/torvalds/c/f9e2bb42cf0db3a624d295122db3475aa3e7ad18
 
 Thank you!
 
