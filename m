@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3BD34BA58
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 03:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C617D34BA5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 03:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbhC1BVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 21:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S230512AbhC1Bk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 21:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhC1BVD (ORCPT
+        with ESMTP id S230318AbhC1Bk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 21:21:03 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B7FC0613B1;
-        Sat, 27 Mar 2021 18:21:03 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 77AD2527;
-        Sun, 28 Mar 2021 03:21:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616894461;
-        bh=n9NwDJVlinrOdOhKsB7+CQlEiwm+wESdwsQGjOFT46Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HdZEGaeCYEW6FSI8bHdJeeCGwSawdyZ4doI63txBw/jyzj38STemY/Ie7xom59msd
-         /LtMBKvNs5qRHNXvO3tCxHux/p5g77S6C3jrN0xPle7eyDt5jy3e3NKmU3Lxet7iPY
-         e/WQFlxP2pBCE1BYkB+an8A+nQKTQRYj+bKbfZQw=
-Date:   Sun, 28 Mar 2021 04:20:18 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ramesh Shanmugasundaram <rashanmu@gmail.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v5 0/5] Add r8a77965 DRIF support
-Message-ID: <YF/Z0kyepzD2MUJ6@pendragon.ideasonboard.com>
-References: <20201021135332.4928-1-fabrizio.castro.jz@renesas.com>
- <20201021214319.GO3942@pendragon.ideasonboard.com>
- <90cb3777-377c-84d0-9b35-8c4b15084ebd@xs4all.nl>
+        Sat, 27 Mar 2021 21:40:57 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96F5C0613B1;
+        Sat, 27 Mar 2021 18:40:56 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so6926062pjb.1;
+        Sat, 27 Mar 2021 18:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EYlwxcDk4ihQ5s3x3P7ksmY5Gg85jPzumVOLCa8dw0M=;
+        b=o1Fc+wj4hv6iR8+09o6x3h0lu6UgGFnCqykm7zGC6oKgvj1d3pAk4ZGy7V2PAfJ7lA
+         enKq88Wj5vpdBPLqpUz7fwaNBvsBZEMvAE9xAm21iXiwNXIxGE49Gcd96DvuTX97qBEg
+         duKeSA0Yt/vgV7mMrwTktXrdXXoX4IOiPdzKy1BRjD2ruQj9D8wXEbah5jaGJx0dWuyQ
+         T5hehJaX6TQFUce6XRXMIlZ568ApRk7QA62mTXOHaxpVZjdwRtBqtoMhghAIQuHUe8fo
+         7jrrOFVyX2nZpz6OdLcWtmOj26EQ79ZOyr6u8nY5NITEPLlcx772b46ArwgYF0xizZ1/
+         87oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EYlwxcDk4ihQ5s3x3P7ksmY5Gg85jPzumVOLCa8dw0M=;
+        b=sGdUa5ylgAQQ35Uy1anBFFDxjjZemo/sB1XSd0uQYDA0YhLOvI/fh1VbUJVrDP4Yd5
+         h5Igbu3SUFWpBvkPDki7d4s+4gGt2zF4uysPyxjjIqRmGvRCdf7BQmBcPsovCEYtWXuv
+         qFeTzVjIDsCcIh7IDu24ehBRy7ebJeZeoHic0zCeRiYFrXq6la2nLKhwC5J21cgNbVWA
+         kdRHUkR37TKVbBq56riu/4aQXnCpt2abYSKA3ZNcVC5++5+TTtFPwbfNpKKF8bciwsZf
+         iQUECSq88xBTInkgPtxn/HgSxCw92pK6Yp8tSlNqh1rx+MIDw9xp6WnQOEDC68/kBz4x
+         XJqg==
+X-Gm-Message-State: AOAM533HWIFAq1IKSjI8AOjaptQ45FL3rz7xCUw3Hqkjn4BcURb+Q7/b
+        EZHFVGgwmanM7h7q0sxJa4ohO8+Q/SWZozmY
+X-Google-Smtp-Source: ABdhPJz9ViHiVzmx5Hcb5TBLwpVFQooCzsrwwjUY+1aG18ShcUakO4gHC8rgIJjJM+ihDMsJWxkUkA==
+X-Received: by 2002:a17:902:c60b:b029:e7:3b60:34ad with SMTP id r11-20020a170902c60bb02900e73b6034admr2614094plr.7.1616895655852;
+        Sat, 27 Mar 2021 18:40:55 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id 27sm13477476pgq.51.2021.03.27.18.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 18:40:55 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-crypto@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] crypto: mips: add poly1305-core.S to .gitignore
+Date:   Sat, 27 Mar 2021 18:40:52 -0700
+Message-Id: <20210328014052.8645-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <90cb3777-377c-84d0-9b35-8c4b15084ebd@xs4all.nl>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+poly1305-core.S is an auto-generated file, so it should be ignored.
 
-On Sat, Mar 27, 2021 at 11:05:01AM +0100, Hans Verkuil wrote:
-> On 21/10/2020 23:43, Laurent Pinchart wrote:
-> > On Wed, Oct 21, 2020 at 02:53:27PM +0100, Fabrizio Castro wrote:
-> >> Dear All,
-> >>
-> >> this series is to add DRIF support for the r8a77965
-> >> (a.k.a. R-Car M3-N). Version 5 fixes a warning reported
-> >> by 'make dt_binding_check', as reported by Rob.
-> > 
-> > Patch 1/5 to 4/5 taken in my tree, I'll send a pull request to
-> > linux-media when the merge window closes. I expect Geert to handle 5/5.
-> 
-> Patch 5 has been merged, but patches 1-4 aren't. I don't think there
-> was a PR for it. For some reason these patches are delegated to me in
-> patchwork. I've now delegated them to you for further processing.
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/mips/crypto/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 arch/mips/crypto/.gitignore
 
-I've just sent a pull request, for these and other miscellaneous
-changes.
-
-> >> Fabrizio Castro (5):
-> >>   MAINTAINERS: Update MAINTAINERS for Renesas DRIF driver
-> >>   media: dt-bindings: media: renesas,drif: Convert to json-schema
-> >>   media: dt-bindings: media: renesas,drif: Add r8a77990 support
-> >>   media: dt-bindings: media: renesas,drif: Add r8a77965 support
-> >>   arm64: dts: r8a77965: Add DRIF support
-> >>
-> >>  .../bindings/media/renesas,drif.txt           | 177 -----------
-> >>  .../bindings/media/renesas,drif.yaml          | 279 ++++++++++++++++++
-> >>  MAINTAINERS                                   |   4 +-
-> >>  arch/arm64/boot/dts/renesas/r8a77965.dtsi     | 120 ++++++++
-> >>  4 files changed, 401 insertions(+), 179 deletions(-)
-> >>  delete mode 100644 Documentation/devicetree/bindings/media/renesas,drif.txt
-> >>  create mode 100644 Documentation/devicetree/bindings/media/renesas,drif.yaml
-
+diff --git a/arch/mips/crypto/.gitignore b/arch/mips/crypto/.gitignore
+new file mode 100644
+index 000000000000..4882ba199071
+--- /dev/null
++++ b/arch/mips/crypto/.gitignore
+@@ -0,0 +1 @@
++poly1305-core.S
 -- 
-Regards,
+2.31.0
 
-Laurent Pinchart
