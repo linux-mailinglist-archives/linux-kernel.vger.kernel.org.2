@@ -2,178 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61D834BF03
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E1934BF07
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhC1UxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 16:53:07 -0400
-Received: from mail-pg1-f178.google.com ([209.85.215.178]:37678 "EHLO
-        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbhC1Uwm (ORCPT
+        id S229955AbhC1Uxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 16:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhC1UxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 16:52:42 -0400
-Received: by mail-pg1-f178.google.com with SMTP id 33so2264905pgy.4;
-        Sun, 28 Mar 2021 13:52:42 -0700 (PDT)
+        Sun, 28 Mar 2021 16:53:05 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DE2C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 13:53:04 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id f26so13661760ljp.8
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 13:53:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nEcuPIlrbFv4i32V7MaOoGQT9baSKHg2WMT0kEgPWGQ=;
+        b=erMpS5f3Gx7riI95O/PveVMkI/mPp1002UISNI8NWBio0Nn/IQvElsOjr4jWGjN+Hk
+         ytzyEAvgpBn/l0n7kr5NHTZazEmnZ+sfLeV2NJ3oW4CvQecX0rz6Sj8ZXaGMRwILooxR
+         FDXjbMQIrODruIVjURdLI0ibObLIvGmNoVFkItXOJ/Zeviyc+8PWv/O07bGOr6FCuWWQ
+         o6wXx3M06eqpjv4dyELrUi50nOCDVlLLVdYbxAFSJPgQMYTVi4PgE9nU1ShFXHQ+DDLz
+         KwleziLGu+m/KgTHsKVo5Hjq/Iki2q7xZjoOoI03hQ09l7BjU+1CVWjvz1Bq7ZAqCzny
+         g2KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7C6je9CRkl7USBYPCN2QHdfoxDl2CIHBPIaFK+t0uow=;
-        b=C4vfRclZv467Ret/xZnLidwXLNO7PmBUv4icUzCIv/QMrN4Bf6cuGsZLo9odmaqsNO
-         q+FRMKVkuyODLKkU85RBjTFmMJFSOfgKWztR/D8DaZXb1Y8jAarJXN27fAA67X2n0YYl
-         BFEM45+1WzDBkqvvleuh4jZnc+UfKp4Z9nilQteJKvT2GF1fBSusFJ9j7vNf1b/fzJbx
-         nVDCkHaIFzlZ/A3D9cMb9xN3wdp+GmkaP2735dlDAaXCrzkUSRzYTXY+AzQFB0CEElUb
-         jEaaoVbIqwOh4ocQuWG3dhqWumkeJvL9dvK0RJvVqLR77jy2Dn+Sh6gOMCsipdbQHfS2
-         SyUA==
-X-Gm-Message-State: AOAM533a2LMiiTkMenN1NUBY3QzWZ7xNgY5rSJ6rpS3eFthppQ2B8Hyb
-        50NUVLR5MPAeb5wDhADEKHY=
-X-Google-Smtp-Source: ABdhPJy4/029yakqf15+k6YieVoY+FAOZSCZUUOAFqUSyf17lzqcLfDwcMfhqLjnL23FY78Fm5ZLaw==
-X-Received: by 2002:a62:7708:0:b029:1ee:f656:51d5 with SMTP id s8-20020a6277080000b02901eef65651d5mr22915107pfc.59.1616964761882;
-        Sun, 28 Mar 2021 13:52:41 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id g7sm14273683pgb.10.2021.03.28.13.52.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nEcuPIlrbFv4i32V7MaOoGQT9baSKHg2WMT0kEgPWGQ=;
+        b=rKxHcUmOUDUevrFxlPAPm9oulPXprPYxf+ULdkKtd2ALlbXxxsCUlFN6TJD5rAfTMZ
+         xUBJ4aL2nE2v0CpExrdkyMyummUfqOGLHwEv5yYQQiNTuMzhsoRRQFFpVrPpfcxRngn5
+         m1UTVh05g2bNfQPtM67pP+zyjwrqGFiNdmiHE6EBvMo4T6flH73iXmMlWYmiaJnZ054F
+         ph/fNMgbKtflwuI1SVq4wUjRplovQtZNI+tbJT7UOrbmDcZYxkMeM2aV32lAou9sy+Jh
+         8jHDScCDwbSKvg7SDfrylfQbGcXf4dOwv417cbhGhoSCQKep9KaAO4+d8Pkc8aS26Xtg
+         3XHQ==
+X-Gm-Message-State: AOAM532c+6QoYRWxzBQ+m+Qg78JOIROygUTRWbgJVOLICouMtjQXzPbA
+        4aV7MafedFZmtaHP97KUHeFC7A==
+X-Google-Smtp-Source: ABdhPJxUbVdPh6i09IMVjPWHlxl+LrOSWgkYbDh/T4HYkrPDYL9BRD4/PMkSScwJA8ECHC3fhSzlYQ==
+X-Received: by 2002:a2e:9755:: with SMTP id f21mr15577511ljj.319.1616964782563;
+        Sun, 28 Mar 2021 13:53:02 -0700 (PDT)
+Received: from eriador.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id j19sm1589788lfb.15.2021.03.28.13.53.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 13:52:41 -0700 (PDT)
-Date:   Sun, 28 Mar 2021 13:52:39 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     richard.gong@linux.intel.com
-Cc:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCHv5 3/7] firmware: stratix10-svc: extend SVC driver to get
- the firmware version
-Message-ID: <YGDsl3VlIAnyJDzd@epycbox.lan>
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <1612909233-13867-4-git-send-email-richard.gong@linux.intel.com>
+        Sun, 28 Mar 2021 13:53:02 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Manu Gautam <mgautam@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v5 0/7] phy: qcom-qmp: provide DP phy support for sm8250
+Date:   Sun, 28 Mar 2021 23:52:50 +0300
+Message-Id: <20210328205257.3348866-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612909233-13867-4-git-send-email-richard.gong@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 04:20:29PM -0600, richard.gong@linux.intel.com wrote:
-> From: Richard Gong <richard.gong@intel.com>
-> 
-> Extend Intel service layer driver to get the firmware version running at
-> FPGA device. Therefore FPGA manager driver, one of Intel service layer
-> driver's client, can decide whether to handle the newly added bitstream
-> authentication function based on the retrieved firmware version.
-> 
-> Signed-off-by: Richard Gong <richard.gong@intel.com>
-Acked-by: Moritz Fischr <mdf@kernel.org>
-> ---
-> v5: no change
-> v4: no change
-> v3: new added, changes for getting firmware version
-> ---
->  drivers/firmware/stratix10-svc.c                    | 12 ++++++++++--
->  include/linux/firmware/intel/stratix10-smc.h        | 21 +++++++++++++++++++--
->  include/linux/firmware/intel/stratix10-svc-client.h |  4 ++++
->  3 files changed, 33 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/firmware/stratix10-svc.c b/drivers/firmware/stratix10-svc.c
-> index 3aa489d..1443bbd 100644
-> --- a/drivers/firmware/stratix10-svc.c
-> +++ b/drivers/firmware/stratix10-svc.c
-> @@ -306,6 +306,7 @@ static void svc_thread_recv_status_ok(struct stratix10_svc_data *p_data,
->  		break;
->  	case COMMAND_RSU_RETRY:
->  	case COMMAND_RSU_MAX_RETRY:
-> +	case COMMAND_FIRMWARE_VERSION:
->  		cb_data->status = BIT(SVC_STATUS_OK);
->  		cb_data->kaddr1 = &res.a1;
->  		break;
-> @@ -422,6 +423,11 @@ static int svc_normal_to_secure_thread(void *data)
->  			a1 = 0;
->  			a2 = 0;
->  			break;
-> +		case COMMAND_FIRMWARE_VERSION:
-> +			a0 = INTEL_SIP_SMC_FIRMWARE_VERSION;
-> +			a1 = 0;
-> +			a2 = 0;
-> +			break;
->  		default:
->  			pr_warn("it shouldn't happen\n");
->  			break;
-> @@ -487,11 +493,13 @@ static int svc_normal_to_secure_thread(void *data)
->  
->  			/*
->  			 * be compatible with older version firmware which
-> -			 * doesn't support RSU notify or retry
-> +			 * doesn't support RSU notify, retry or bitstream
-> +			 * authentication.
->  			 */
->  			if ((pdata->command == COMMAND_RSU_RETRY) ||
->  			    (pdata->command == COMMAND_RSU_MAX_RETRY) ||
-> -				(pdata->command == COMMAND_RSU_NOTIFY)) {
-> +			    (pdata->command == COMMAND_RSU_NOTIFY) ||
-> +			    (pdata->command == COMMAND_FIRMWARE_VERSION)) {
->  				cbdata->status =
->  					BIT(SVC_STATUS_NO_SUPPORT);
->  				cbdata->kaddr1 = NULL;
-> diff --git a/include/linux/firmware/intel/stratix10-smc.h b/include/linux/firmware/intel/stratix10-smc.h
-> index c3e5ab0..505fcca 100644
-> --- a/include/linux/firmware/intel/stratix10-smc.h
-> +++ b/include/linux/firmware/intel/stratix10-smc.h
-> @@ -321,8 +321,6 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
->  #define INTEL_SIP_SMC_ECC_DBE \
->  	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_ECC_DBE)
->  
-> -#endif
-> -
->  /**
->   * Request INTEL_SIP_SMC_RSU_NOTIFY
->   *
-> @@ -404,3 +402,22 @@ INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FPGA_CONFIG_COMPLETED_WRITE)
->  #define INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY 18
->  #define INTEL_SIP_SMC_RSU_MAX_RETRY \
->  	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_RSU_MAX_RETRY)
-> +
-> +/**
-> + * Request INTEL_SIP_SMC_FIRMWARE_VERSION
-> + *
-> + * Sync call used to query the version of running firmware
-> + *
-> + * Call register usage:
-> + * a0 INTEL_SIP_SMC_FIRMWARE_VERSION
-> + * a1-a7 not used
-> + *
-> + * Return status:
-> + * a0 INTEL_SIP_SMC_STATUS_OK or INTEL_SIP_SMC_STATUS_ERROR
-> + * a1 running firmware version
-> + */
-> +#define INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION 31
-> +#define INTEL_SIP_SMC_FIRMWARE_VERSION \
-> +	INTEL_SIP_SMC_FAST_CALL_VAL(INTEL_SIP_SMC_FUNCID_FIRMWARE_VERSION)
-> +
-> +#endif
-> diff --git a/include/linux/firmware/intel/stratix10-svc-client.h b/include/linux/firmware/intel/stratix10-svc-client.h
-> index fa9581d..193a2cf 100644
-> --- a/include/linux/firmware/intel/stratix10-svc-client.h
-> +++ b/include/linux/firmware/intel/stratix10-svc-client.h
-> @@ -109,6 +109,9 @@ struct stratix10_svc_chan;
->   *
->   * @COMMAND_RSU_DCMF_VERSION: query firmware for the DCMF version, return status
->   * is SVC_STATUS_OK or SVC_STATUS_ERROR
-> + *
-> + * @COMMAND_FIRMWARE_VERSION: query running firmware version, return status
-> + * is SVC_STATUS_OK or SVC_STATUS_ERROR
->   */
->  enum stratix10_svc_command_code {
->  	COMMAND_NOOP = 0,
-> @@ -122,6 +125,7 @@ enum stratix10_svc_command_code {
->  	COMMAND_RSU_RETRY,
->  	COMMAND_RSU_MAX_RETRY,
->  	COMMAND_RSU_DCMF_VERSION,
-> +	COMMAND_FIRMWARE_VERSION,
->  };
->  
->  /**
-> -- 
-> 2.7.4
-> 
+Changes since v4:
+ - Fix typo in the qcom,sc7180-qmp-usb3-phy name in the first patch
 
-Thanks,
-Moritz
+Changes since v3:
+ - Move qcom,sc7180-qmp-usb3-phy and qcom,sdm845-qmp-usb3-phy from
+   qcom,qmp-usb3-dp.yaml to qcom,qmp-phy.yaml
+ - Do not touch qcom,sm8250-qmp-usb3-phy compatible
+
+Changes since v2:
+ - Drop unused qmp_v4_usb3_rx_tbl
+
+Changes since v1:
+ - Provide dt bindings
+ - Split register renaming from sm8250-dp-phy patch
+ - Add respective changes to sm8250 device tree
+
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  https://git.linaro.org/people/dmitry.baryshkov/kernel.git sm8250-dp-phy
+
+for you to fetch changes up to aef044832f8f34495c35f8324ee55e2500dc3db5:
+
+  arm64: dts: qcom: use dp_phy to provide clocks to dispcc (2021-03-28 23:43:31 +0300)
+
+----------------------------------------------------------------
+Dmitry Baryshkov (7):
+      dt-bindings: phy: qcom,qmp-usb3-dp-phy: move usb3 compatibles back to qcom,qmp-phy.yaml
+      dt-bindings: phy: qcom,qmp-usb3-dp: Add support for SM8250
+      phy: qcom-qmp: move DP functions to callbacks
+      phy: qcom-qmp: rename common registers
+      phy: qcom-qmp: add support for sm8250-usb3-dp phy
+      arm64: dts: qcom: sm8250: switch usb1 qmp phy to USB3+DP mode
+      arm64: dts: qcom: use dp_phy to provide clocks to dispcc
+
+ .../devicetree/bindings/phy/qcom,qmp-phy.yaml      |   2 +
+ .../bindings/phy/qcom,qmp-usb3-dp-phy.yaml         |   3 +-
+ arch/arm64/boot/dts/qcom/sm8250.dtsi               |  31 +-
+ drivers/phy/qualcomm/phy-qcom-qmp.c                | 850 +++++++++++++++------
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |  77 +-
+ 5 files changed, 693 insertions(+), 270 deletions(-)
+
+
