@@ -2,382 +2,1173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF08F34BC9A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 16:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8962334BC9C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 16:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbhC1Oak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 10:30:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45330 "EHLO
+        id S231247AbhC1Ocs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 10:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhC1Oag (ORCPT
+        with ESMTP id S229762AbhC1Och (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 10:30:36 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F39AC061756;
-        Sun, 28 Mar 2021 07:30:36 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id g24so7639289qts.6;
-        Sun, 28 Mar 2021 07:30:36 -0700 (PDT)
+        Sun, 28 Mar 2021 10:32:37 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124A4C061756;
+        Sun, 28 Mar 2021 07:32:37 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id w10so3442662pgh.5;
+        Sun, 28 Mar 2021 07:32:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EUT1S2OjDoOPPhGzDB4EoWCqRdDjJ4UDo0htHObv0iE=;
-        b=R+vKwahpev/khXqqKTjJkJvMHl4iM0ooAQtRemsYXrO/BSK0Iwkv0n5NVAnweUGXYf
-         GVfyHYJmFZha0BCwbkM5uXawQpnvvfyxsKUvZs7R8OokCJ+pLf/3fa9+CRb9ohvG1t4d
-         cgweKqfqDfZBTm7sW+9JB5B0sKczG2F9y7v4hRBx1T0VoC7mfW+bU3Jj2JLaKYvORO22
-         qLC0TX50oe/ZxKc8PZO9dfNXIVI+Pltij/5SOBnkTBJXTI9FoMsjRBfUwXT4kSMEl8Ly
-         AfP61WWhMZGIZK+vaIcrk/UbcugU9xPc3oYo0sEFmV6Ouf+PyieE1Ecy0sJaulcyLoqk
-         GYvg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=EGGdsEV6gV6eOTIILYBDi6Mpq6SZvJYSkfxVPRXDIdE=;
+        b=YgHfxCO9WdX27NyBYFTjWXvhS18f3Xz1OxH/q9e+UG75IhEy/mYCbn/Lz/bGCdAMjv
+         jo13wH/uI5ABmxGCw2//QBG5pJ9nZ/xPl3IUJULrb+xl2Rhyx9ja/xApB++mIyhgnTB+
+         Y6sFYjdGiuiBeQv3KyJvDVEN9WztuQALUlJQ8MSGa+x6TAhC+pExf0plvZp68m2SqBFd
+         gd34PrnfJ++QYY9kzaGFUAuiolIewIMLW7ierhu7LVcY8Y4birE431C5f9vGWkBpt3Nz
+         Z3pr1sH/w9qfb2z2JBjHqDO3lqEF+aVGbYm0nIg36Cx4dlrb1Lagk/rdkgkFzzo/INUq
+         bR0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EUT1S2OjDoOPPhGzDB4EoWCqRdDjJ4UDo0htHObv0iE=;
-        b=is7aNy6z4zBwfT8CvqR9RIViIb9Xdqb/RP1fCc/QVnrbQY96HJu9ceZcYR/yQv+1uN
-         7ocR0HtJMJLUFrIvbpaoRxblF8HgY6bSEG326qLQqaT7qk0hnXLsySxy60xO/p37NFkE
-         XoywAK85hZ25Skt2ELsdapiBPL93O1dgcSZGwBeZUifZZLu2tWPZau6la/2Jx81EJpy9
-         YhC1e1jmcrrd7tFBuEhdEP/yTGtUs6uN3poweQVc/b1MWtd35yOPq0166Cx58TXmTScx
-         nzAMcCjww2Er+AVFNtBHrpQ77C/oypUviyQUaKdxPL/O9gAPRqJh6bLPvRKZzOiDxPot
-         OaqA==
-X-Gm-Message-State: AOAM533RpB7GwlZsXnjNQ4LVUAXjW9v0IL3eTvfWiM88XcLHvjFUhc/O
-        6HDEG7cQi+I1W9Mjh0hF/ac=
-X-Google-Smtp-Source: ABdhPJwSaOPE9pUZulvIR/Por0roErjCChtwSShSgUxUmqJaGpXbMUl5Jb3wLaRXiv15AAElSb216A==
-X-Received: by 2002:ac8:4e51:: with SMTP id e17mr19497741qtw.204.1616941834529;
-        Sun, 28 Mar 2021 07:30:34 -0700 (PDT)
-Received: from shane-XPS-13-9380.attlocal.net ([2600:1700:4ca1:ade0:d373:7d57:15e2:e5f6])
-        by smtp.gmail.com with ESMTPSA id s13sm11112571qkg.17.2021.03.28.07.30.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 07:30:33 -0700 (PDT)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Krzysztof Halasa <khc@pm.waw.pl>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net-next] net: x25: Queue received packets in the drivers instead of per-CPU queues
-Date:   Sun, 28 Mar 2021 07:30:25 -0700
-Message-Id: <20210328143025.516747-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=EGGdsEV6gV6eOTIILYBDi6Mpq6SZvJYSkfxVPRXDIdE=;
+        b=tiZoDry4nbJSXNQ52fHcdF3SDXYjZfPStJg0U5ZrZpCGTN5QqO9d4e+u35J3Y//eQG
+         wsOTPhKEc3DX7ljUV5A+MqMobfEdPROOetZo5nFhE0eTsoEfkUsRbwLagdlgZPvaarP8
+         6cXM8W1V/cTZ3NjnMaf7nPg2kC+/bH5coMy8m84dhM5LNIrRWmAWem/OiN/dzCDg39DB
+         BYTr8dQfWEFmtcK5cULdtAiIIcEaWrTrUZw4nb7OE9D9E7CCyPgutOSpcx1x/3YpzV7+
+         nBkqMD19KT3ZSUGJ6xtUrxPdXGR/FOoCZ6aCkUxkqQfCoSr3c/ltRTVVIxgIyiDO87h2
+         ckcw==
+X-Gm-Message-State: AOAM531kvDK+jh8NuKU1huj0mteURbsJZTUEotpHKhE5p7u+sV1mPinh
+        GO8QkwmVtFOoA3s7OV6x4kcy4/V5eNDsMjgmRoQ=
+X-Google-Smtp-Source: ABdhPJxsUJld5LEfFkPlakuhGAtNxtIQoVdf7eDlDcMke++BGDKHp+dBLZyGcqH4CRQ/WZz965Jxbg==
+X-Received: by 2002:a63:5d22:: with SMTP id r34mr20214886pgb.102.1616941955699;
+        Sun, 28 Mar 2021 07:32:35 -0700 (PDT)
+Received: from [0.0.0.0] ([218.190.226.61])
+        by smtp.gmail.com with ESMTPSA id a70sm14161694pfa.202.2021.03.28.07.32.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Mar 2021 07:32:35 -0700 (PDT)
+Subject: Re: [PATCH v5 1/2] platform/x86: dell-privacy: Add support for Dell
+ hardware privacy
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Perry Yuan <Perry.Yuan@dell.com>, pobrn@protonmail.com,
+        pierre-louis.bossart@linux.intel.com, oder_chiou@realtek.com,
+        perex@perex.cz, tiwai@suse.com, mgross@linux.intel.com,
+        Mario.Limonciello@dell.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org
+References: <20210322093841.11840-1-Perry_Yuan@Dell.com>
+ <78effa03-c5ab-ad93-9add-85cdc7134786@redhat.com>
+ <ea2ea8cc-68db-1b8a-ab1a-74664dda2694@redhat.com>
+From:   Perry Yuan <perry979106@gmail.com>
+Message-ID: <2c466746-2de3-3c7c-30cc-d1f76fde377b@gmail.com>
+Date:   Sun, 28 Mar 2021 10:32:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <ea2ea8cc-68db-1b8a-ab1a-74664dda2694@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-X.25 Layer 3 (the Packet Layer) expects layer 2 to provide a reliable
-datalink service such that no packets are reordered or dropped. And
-X.25 Layer 2 (the LAPB layer) is indeed designed to provide such service.
+Hi Hans.
 
-However, this reliability is not preserved when a driver calls "netif_rx"
-to deliver the received packets to layer 3, because "netif_rx" will put
-the packets into per-CPU queues before they are delivered to layer 3.
-If there are multiple CPUs, the order of the packets may not be preserved.
-The per-CPU queues may also drop packets if there are too many.
+Thanks for your suggestion helping to improve the patch.
 
-Therefore, we should not call "netif_rx" to let it queue the packets.
-Instead, we should use our own queue that won't reorder or drop packets.
 
-This patch changes all X.25 drivers to use their own queues instead of
-calling "netif_rx". The patch also documents this requirement in the
-"x25-iface" documentation.
+On 3/24/21 7:39 AM, Hans de Goede wrote:
+> Hi,
+>
+> On 3/24/21 12:19 PM, Hans de Goede wrote:
+>> Hi,
+>>
+>> On 3/22/21 10:38 AM, Perry Yuan wrote:
+>>> From: Perry Yuan <perry_yuan@dell.com>
+>>>
+>>> add support for Dell privacy driver for the Dell units equipped
+>>> hardware privacy design, which protect users privacy of audio and
+>>> camera from hardware level. Once the audio or camera privacy mode
+>>> activated, any applications will not get any audio or video stream
+>>> when user pressed ctrl+F4 hotkey, audio privacy mode will be
+>>> enabled, micmute led will be also changed accordingly
+>>> The micmute led is fully controlled by hardware & EC(embedded controller)
+>>> and camera mute hotkey is Ctrl+F9. Currently design only emmits
+>>> SW_CAMERA_LENS_COVER event while the camera lens shutter will be
+>>> changed by EC & hw(hadware) control
+>>>
+>>> *The flow is like this:
+>>> 1) User presses key. HW does stuff with this key (timeout timer is started)
+>>> 2) WMI event is emitted from BIOS to kernel
+>>> 3) WMI event is received by dell-privacy
+>>> 4) KEY_MICMUTE emitted from dell-privacy
+>>> 5) Userland picks up key and modifies kcontrol for SW mute
+>>> 6) Codec kernel driver catches and calls ledtrig_audio_set, like this:
+>>> 	ledtrig_audio_set(LED_AUDIO_MICMUTE,
+>>> 		rt715->micmute_led ? LED_ON :LED_OFF);
+>>> 7) If "LED" is set to on dell-privacy notifies EC,
+>>> 	and timeout is cancelled, HW mic mute activated.
+>>>
+>>> Signed-off-by: Perry Yuan <perry_yuan@dell.com>
+> One last remark, I think that the dell_privacy_present() function which
+> I suggested in my review should be renamed to:
+>
+> dell_privacy_has_micmute() and then its return should check the micmute
+> feature bit in priv->features_present and this new function should then
+> be used in dell-laptop.c to determine it dell-laptop.c should register
+> its own mic-mute led_classdev.
+>
+> This way if a theoretical future laptop shows up where the micmute feature
+> is not implemented by the privacy interface dell-laptop.c will still
+> register the non-privacy mic-mute led_classdev.
+>
+> Regards,
+>
+> Hans
 
-Acked-by: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
----
+Yes, I rename the micmute checking function to dell_privacy_has_micmute.
 
-Change from RFC (March 5, 2021):
-Rebased onto the latest net-next
-(onto the ndo_stop racing fixes for the drivers).
+and i rewrite it to simplify the micmute checking process.
 
----
- Documentation/networking/x25-iface.rst | 65 ++++----------------------
- drivers/net/wan/hdlc_x25.c             | 27 ++++++++++-
- drivers/net/wan/lapbether.c            | 44 +++++++++++++++--
- 3 files changed, 75 insertions(+), 61 deletions(-)
+I am doing some testing and drive other feedback to be finished.
 
-diff --git a/Documentation/networking/x25-iface.rst b/Documentation/networking/x25-iface.rst
-index df401891dce6..f34e9ec64937 100644
---- a/Documentation/networking/x25-iface.rst
-+++ b/Documentation/networking/x25-iface.rst
-@@ -70,60 +70,13 @@ First Byte = 0x03 (X25_IFACE_PARAMS)
- LAPB parameters. To be defined.
- 
- 
-+Requirements for the device driver
-+----------------------------------
- 
--Possible Problems
--=================
--
--(Henner Eisen, 2000-10-28)
--
--The X.25 packet layer protocol depends on a reliable datalink service.
--The LAPB protocol provides such reliable service. But this reliability
--is not preserved by the Linux network device driver interface:
--
--- With Linux 2.4.x (and above) SMP kernels, packet ordering is not
--  preserved. Even if a device driver calls netif_rx(skb1) and later
--  netif_rx(skb2), skb2 might be delivered to the network layer
--  earlier that skb1.
--- Data passed upstream by means of netif_rx() might be dropped by the
--  kernel if the backlog queue is congested.
--
--The X.25 packet layer protocol will detect this and reset the virtual
--call in question. But many upper layer protocols are not designed to
--handle such N-Reset events gracefully. And frequent N-Reset events
--will always degrade performance.
--
--Thus, driver authors should make netif_rx() as reliable as possible:
--
--SMP re-ordering will not occur if the driver's interrupt handler is
--always executed on the same CPU. Thus,
--
--- Driver authors should use irq affinity for the interrupt handler.
--
--The probability of packet loss due to backlog congestion can be
--reduced by the following measures or a combination thereof:
--
--(1) Drivers for kernel versions 2.4.x and above should always check the
--    return value of netif_rx(). If it returns NET_RX_DROP, the
--    driver's LAPB protocol must not confirm reception of the frame
--    to the peer.
--    This will reliably suppress packet loss. The LAPB protocol will
--    automatically cause the peer to re-transmit the dropped packet
--    later.
--    The lapb module interface was modified to support this. Its
--    data_indication() method should now transparently pass the
--    netif_rx() return value to the (lapb module) caller.
--(2) Drivers for kernel versions 2.2.x should always check the global
--    variable netdev_dropping when a new frame is received. The driver
--    should only call netif_rx() if netdev_dropping is zero. Otherwise
--    the driver should not confirm delivery of the frame and drop it.
--    Alternatively, the driver can queue the frame internally and call
--    netif_rx() later when netif_dropping is 0 again. In that case, delivery
--    confirmation should also be deferred such that the internal queue
--    cannot grow to much.
--    This will not reliably avoid packet loss, but the probability
--    of packet loss in netif_rx() path will be significantly reduced.
--(3) Additionally, driver authors might consider to support
--    CONFIG_NET_HW_FLOWCONTROL. This allows the driver to be woken up
--    when a previously congested backlog queue becomes empty again.
--    The driver could uses this for flow-controlling the peer by means
--    of the LAPB protocol's flow-control service.
-+Packets should not be reordered or dropped when delivering between the
-+Packet Layer and the device driver.
-+
-+To avoid packets from being reordered or dropped when delivering from
-+the device driver to the Packet Layer, the device driver should not
-+call "netif_rx" to deliver the received packets. Instead, it should
-+call "netif_receive_skb_core" from softirq context to deliver them.
-diff --git a/drivers/net/wan/hdlc_x25.c b/drivers/net/wan/hdlc_x25.c
-index 5a6a945f6c81..73184ed4034c 100644
---- a/drivers/net/wan/hdlc_x25.c
-+++ b/drivers/net/wan/hdlc_x25.c
-@@ -25,6 +25,8 @@ struct x25_state {
- 	x25_hdlc_proto settings;
- 	bool up;
- 	spinlock_t up_lock; /* Protects "up" */
-+	struct sk_buff_head rx_queue;
-+	struct tasklet_struct rx_tasklet;
- };
- 
- static int x25_ioctl(struct net_device *dev, struct ifreq *ifr);
-@@ -34,10 +36,22 @@ static struct x25_state *state(hdlc_device *hdlc)
- 	return hdlc->state;
- }
- 
-+static void x25_rx_queue_kick(struct tasklet_struct *t)
-+{
-+	struct x25_state *x25st = from_tasklet(x25st, t, rx_tasklet);
-+	struct sk_buff *skb = skb_dequeue(&x25st->rx_queue);
-+
-+	while (skb) {
-+		netif_receive_skb_core(skb);
-+		skb = skb_dequeue(&x25st->rx_queue);
-+	}
-+}
-+
- /* These functions are callbacks called by LAPB layer */
- 
- static void x25_connect_disconnect(struct net_device *dev, int reason, int code)
- {
-+	struct x25_state *x25st = state(dev_to_hdlc(dev));
- 	struct sk_buff *skb;
- 	unsigned char *ptr;
- 
-@@ -50,7 +64,9 @@ static void x25_connect_disconnect(struct net_device *dev, int reason, int code)
- 	*ptr = code;
- 
- 	skb->protocol = x25_type_trans(skb, dev);
--	netif_rx(skb);
-+
-+	skb_queue_tail(&x25st->rx_queue, skb);
-+	tasklet_schedule(&x25st->rx_tasklet);
- }
- 
- 
-@@ -71,6 +87,7 @@ static void x25_disconnected(struct net_device *dev, int reason)
- 
- static int x25_data_indication(struct net_device *dev, struct sk_buff *skb)
- {
-+	struct x25_state *x25st = state(dev_to_hdlc(dev));
- 	unsigned char *ptr;
- 
- 	if (skb_cow(skb, 1)) {
-@@ -84,7 +101,10 @@ static int x25_data_indication(struct net_device *dev, struct sk_buff *skb)
- 	*ptr = X25_IFACE_DATA;
- 
- 	skb->protocol = x25_type_trans(skb, dev);
--	return netif_rx(skb);
-+
-+	skb_queue_tail(&x25st->rx_queue, skb);
-+	tasklet_schedule(&x25st->rx_tasklet);
-+	return NET_RX_SUCCESS;
- }
- 
- 
-@@ -223,6 +243,7 @@ static void x25_close(struct net_device *dev)
- 	spin_unlock_bh(&x25st->up_lock);
- 
- 	lapb_unregister(dev);
-+	tasklet_kill(&x25st->rx_tasklet);
- }
- 
- 
-@@ -338,6 +359,8 @@ static int x25_ioctl(struct net_device *dev, struct ifreq *ifr)
- 		memcpy(&state(hdlc)->settings, &new_settings, size);
- 		state(hdlc)->up = false;
- 		spin_lock_init(&state(hdlc)->up_lock);
-+		skb_queue_head_init(&state(hdlc)->rx_queue);
-+		tasklet_setup(&state(hdlc)->rx_tasklet, x25_rx_queue_kick);
- 
- 		/* There's no header_ops so hard_header_len should be 0. */
- 		dev->hard_header_len = 0;
-diff --git a/drivers/net/wan/lapbether.c b/drivers/net/wan/lapbether.c
-index 45d74285265a..e321e7fa994b 100644
---- a/drivers/net/wan/lapbether.c
-+++ b/drivers/net/wan/lapbether.c
-@@ -53,6 +53,8 @@ struct lapbethdev {
- 	struct net_device	*axdev;		/* lapbeth device (lapb#) */
- 	bool			up;
- 	spinlock_t		up_lock;	/* Protects "up" */
-+	struct sk_buff_head	rx_queue;
-+	struct napi_struct	napi;
- };
- 
- static LIST_HEAD(lapbeth_devices);
-@@ -83,6 +85,25 @@ static __inline__ int dev_is_ethdev(struct net_device *dev)
- 
- /* ------------------------------------------------------------------------ */
- 
-+static int lapbeth_napi_poll(struct napi_struct *napi, int budget)
-+{
-+	struct lapbethdev *lapbeth = container_of(napi, struct lapbethdev, napi);
-+	struct sk_buff *skb;
-+	int processed = 0;
-+
-+	for (; processed < budget; ++processed) {
-+		skb = skb_dequeue(&lapbeth->rx_queue);
-+		if (!skb)
-+			break;
-+		netif_receive_skb_core(skb);
-+	}
-+
-+	if (processed < budget)
-+		napi_complete(napi);
-+
-+	return processed;
-+}
-+
- /*
-  *	Receive a LAPB frame via an ethernet interface.
-  */
-@@ -135,6 +156,7 @@ static int lapbeth_rcv(struct sk_buff *skb, struct net_device *dev, struct packe
- 
- static int lapbeth_data_indication(struct net_device *dev, struct sk_buff *skb)
- {
-+	struct lapbethdev *lapbeth = netdev_priv(dev);
- 	unsigned char *ptr;
- 
- 	if (skb_cow(skb, 1)) {
-@@ -148,7 +170,10 @@ static int lapbeth_data_indication(struct net_device *dev, struct sk_buff *skb)
- 	*ptr = X25_IFACE_DATA;
- 
- 	skb->protocol = x25_type_trans(skb, dev);
--	return netif_rx(skb);
-+
-+	skb_queue_tail(&lapbeth->rx_queue, skb);
-+	napi_schedule(&lapbeth->napi);
-+	return NET_RX_SUCCESS;
- }
- 
- /*
-@@ -233,6 +258,7 @@ static void lapbeth_data_transmit(struct net_device *ndev, struct sk_buff *skb)
- 
- static void lapbeth_connected(struct net_device *dev, int reason)
- {
-+	struct lapbethdev *lapbeth = netdev_priv(dev);
- 	unsigned char *ptr;
- 	struct sk_buff *skb = dev_alloc_skb(1);
- 
-@@ -245,11 +271,14 @@ static void lapbeth_connected(struct net_device *dev, int reason)
- 	*ptr = X25_IFACE_CONNECT;
- 
- 	skb->protocol = x25_type_trans(skb, dev);
--	netif_rx(skb);
-+
-+	skb_queue_tail(&lapbeth->rx_queue, skb);
-+	napi_schedule(&lapbeth->napi);
- }
- 
- static void lapbeth_disconnected(struct net_device *dev, int reason)
- {
-+	struct lapbethdev *lapbeth = netdev_priv(dev);
- 	unsigned char *ptr;
- 	struct sk_buff *skb = dev_alloc_skb(1);
- 
-@@ -262,7 +291,9 @@ static void lapbeth_disconnected(struct net_device *dev, int reason)
- 	*ptr = X25_IFACE_DISCONNECT;
- 
- 	skb->protocol = x25_type_trans(skb, dev);
--	netif_rx(skb);
-+
-+	skb_queue_tail(&lapbeth->rx_queue, skb);
-+	napi_schedule(&lapbeth->napi);
- }
- 
- /*
-@@ -293,6 +324,8 @@ static int lapbeth_open(struct net_device *dev)
- 	struct lapbethdev *lapbeth = netdev_priv(dev);
- 	int err;
- 
-+	napi_enable(&lapbeth->napi);
-+
- 	if ((err = lapb_register(dev, &lapbeth_callbacks)) != LAPB_OK) {
- 		pr_err("lapb_register error: %d\n", err);
- 		return -ENODEV;
-@@ -317,6 +350,8 @@ static int lapbeth_close(struct net_device *dev)
- 	if ((err = lapb_unregister(dev)) != LAPB_OK)
- 		pr_err("lapb_unregister error: %d\n", err);
- 
-+	napi_disable(&lapbeth->napi);
-+
- 	return 0;
- }
- 
-@@ -374,6 +409,9 @@ static int lapbeth_new_device(struct net_device *dev)
- 	lapbeth->up = false;
- 	spin_lock_init(&lapbeth->up_lock);
- 
-+	skb_queue_head_init(&lapbeth->rx_queue);
-+	netif_napi_add(ndev, &lapbeth->napi, lapbeth_napi_poll, 16);
-+
- 	rc = -EIO;
- 	if (register_netdevice(ndev))
- 		goto fail;
--- 
-2.27.0
+Will post V6 soon for your confirm.
 
+Perry.
+
+>
+>
+>
+>
+>>> ---
+>>> v4 -> v5:
+>>> * addressed feedback from Randy Dunlap
+>>> * addressed feedback from Pierre-Louis Bossart
+>>> * rebase to latest 5.12 rc4 upstream kernel
+>>> * fix some space alignment problem
+>>> v3 -> v4:
+>>> * fix format for Kconfig
+>>> * add sysfs document
+>>> * add flow comments to the privacy wmi/acpi driver
+>>> * addressed feedback from Barnabás Pőcze[Thanks very much]
+>>> * export privacy_valid to make the global state simpler to query
+>>> * fix one issue which will block the dell-laptop driver to load when
+>>>    privacy driver invalid
+>>> * addressed feedback from Pierre-Louis Bossart,remove the EC ID match
+>>> v2 -> v3:
+>>> * add sysfs attributes doc
+>>> v1 -> v2:
+>>> * query EC handle from EC driver directly.
+>>> * fix some code style.
+>>> * add KEY_END to keymap array.
+>>> * clean platform device when cleanup called
+>>> * use hexadecimal format for log print in dev_dbg
+>>> * remove __set_bit for the report keys from probe.
+>>> * fix keymap leak
+>>> * add err_free_keymap in dell_privacy_wmi_probe
+>>> * wmi driver will be unregistered if privacy_acpi_init() fails
+>>> * add sysfs attribute files for user space query.
+>>> * add leds micmute driver to privacy acpi
+>>> * add more design info the commit info
+>>> ---
+>>> ---
+>>>   .../testing/sysfs-platform-dell-privacy-wmi   |  32 ++
+>>>   drivers/platform/x86/dell/Kconfig             |  16 +
+>>>   drivers/platform/x86/dell/Makefile            |   3 +
+>>>   drivers/platform/x86/dell/dell-laptop.c       |  23 +-
+>>>   drivers/platform/x86/dell/dell-privacy-acpi.c | 164 +++++++++
+>>>   drivers/platform/x86/dell/dell-privacy-wmi.c  | 340 ++++++++++++++++++
+>>>   drivers/platform/x86/dell/dell-privacy-wmi.h  |  35 ++
+>>>   drivers/platform/x86/dell/dell-wmi.c          |  27 +-
+>>>   8 files changed, 627 insertions(+), 13 deletions(-)
+>>>   create mode 100644 Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+>>>   create mode 100644 drivers/platform/x86/dell/dell-privacy-acpi.c
+>>>   create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.c
+>>>   create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.h
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi b/Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+>>> new file mode 100644
+>>> index 000000000000..20c15a51ec38
+>>> --- /dev/null
+>>> +++ b/Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+>>> @@ -0,0 +1,32 @@
+>>> +What:		/sys/bus/wmi/devices/6932965F-1671-4CEB-B988-D3AB0A901919/devices_supported
+>>> +Date:		Feb 2021
+>>> +KernelVersion:	5.12
+>>> +Contact:	"perry.yuan@dell.com>"
+>>> +Description:
+>>> +		Display which dell hardware level privacy devices are supported
+>>> +		“Dell Privacy” is a set of HW, FW, and SW features to enhance
+>>> +		Dell’s commitment to platform privacy for MIC, Camera, and
+>>> +		ePrivacy screens.
+>>> +		The supported hardware privacy devices are:
+>>> +		- 0 = Not Supported
+>>> +		- 1 = Supported
+>>> +		- Bit0 -> Microphone
+>>> +		- Bit1 -> Camera
+>>> +		- Bit2 -> ePrivacy Screen
+>>> +
+>>> +What:		/sys/bus/wmi/devices/6932965F-1671-4CEB-B988-D3AB0A901919/current_state
+>>> +Date:		Feb 2021
+>>> +KernelVersion:	5.12
+>>> +Contact:	"perry.yuan@dell.com>"
+>>> +Description:
+>>> +		Allow user space to check current dell privacy device state.
+>>> +		Describes the Device State class exposed by BIOS which can be
+>>> +		consumed by various applications interested in knowing the Privacy
+>>> +		feature capabilities
+>>> +		There are three Bits for available states:
+>>> +		- 0 = Enabled
+>>> +		- 1 = Disabled
+>> What is the definition of enabled/disabled ? Does enabled mean that the device
+>> is enabled, or that the device is in privacy mode, so in case of the microphone
+>> it is actually disabled (muted) ?
+>>
+>>> +		- Bit0 -> Microphone
+>>> +		- Bit1 -> Camera
+>>> +		- Bit2 -> ePrivacyScreen
+>>> +
+>> Normally we would use strings for something like this and not direclty export a bitfield,
+>> this would also allow avoiding the enabled / disabled ambiguity
+>>
+>> E.g. you could have the following:
+>>
+>> # supported devices
+>> $ cat /sys/bus/wmi/devices/6932965F-1671-4CEB-B988-D3AB0A901919/devices_supported
+>> Microphone Mute
+>> Camera Shutter
+>> ePrivacyScreen
+>>
+>> # All devices in privacy mode:
+>> $ cat /sys/bus/wmi/devices/6932965F-1671-4CEB-B988-D3AB0A901919/current_state
+>> Microphone muted
+>> Camera Shutter closed
+>> ePrivacyScreen privacy-filter enabled
+>>
+>> # All devices in non-privacy mode:
+>>
+>> $ cat /sys/bus/wmi/devices/6932965F-1671-4CEB-B988-D3AB0A901919/current_state
+>> Microphone unmuted
+>> Camera Shutter open
+>> ePrivacyScreen privacy-filter disabled
+>>
+>> You can easily do the bitfield -> string mapping in the kernel by having 3
+>> string arrays (support, privacy_on, privacy_off) indexed by the bitfield indices.
+>>
+>>
+>>> diff --git a/drivers/platform/x86/dell/Kconfig b/drivers/platform/x86/dell/Kconfig
+>>> index e0a55337f51a..0e0f1eb35bd6 100644
+>>> --- a/drivers/platform/x86/dell/Kconfig
+>>> +++ b/drivers/platform/x86/dell/Kconfig
+>>> @@ -204,4 +204,20 @@ config DELL_WMI_SYSMAN
+>>>   	  To compile this driver as a module, choose M here: the module will
+>>>   	  be called dell-wmi-sysman.
+>>>   
+>>> +config DELL_PRIVACY
+>>> +	tristate "Dell Hardware Privacy Support"
+>>> +	depends on ACPI
+>>> +	depends on ACPI_WMI
+>>> +	depends on INPUT
+>>> +	depends on DELL_LAPTOP
+>>> +	depends on LEDS_TRIGGER_AUDIO
+>>> +	select DELL_WMI
+>>> +	help
+>>> +	  This driver provides support for the "Dell Hardware Privacy" feature
+>>> +	  of Dell laptops.
+>>> +	  Support for a micmute and camera mute privacy will be provided as
+>>> +	  hardware button Ctrl+F4 and Ctrl+F9 hotkey.
+>> This suggests that that the driver implements the buttons, which is not the
+>> case. How about:
+>>
+>> 	  This driver provides integration with the "Dell Hardware Privacy" feature
+>> 	  of Dell laptops.
+>>
+>>
+>> 	
+>>
+>>> +
+>>> +	  To compile this driver as a module, choose M here: the module will
+>>> +	  be called dell_privacy.
+>>>   endif # X86_PLATFORM_DRIVERS_DELL
+>>> diff --git a/drivers/platform/x86/dell/Makefile b/drivers/platform/x86/dell/Makefile
+>>> index d720a3e42ae3..8b0883ee9412 100644
+>>> --- a/drivers/platform/x86/dell/Makefile
+>>> +++ b/drivers/platform/x86/dell/Makefile
+>>> @@ -19,3 +19,6 @@ obj-$(CONFIG_DELL_WMI_AIO)		+= dell-wmi-aio.o
+>>>   obj-$(CONFIG_DELL_WMI_DESCRIPTOR)	+= dell-wmi-descriptor.o
+>>>   obj-$(CONFIG_DELL_WMI_LED)		+= dell-wmi-led.o
+>>>   obj-$(CONFIG_DELL_WMI_SYSMAN)		+= dell-wmi-sysman/
+>>> +obj-$(CONFIG_DELL_PRIVACY)              += dell-privacy.o
+>>> +dell-privacy-objs                       := dell-privacy-wmi.o \
+>>> +	                                   dell-privacy-acpi.o
+>>> diff --git a/drivers/platform/x86/dell/dell-laptop.c b/drivers/platform/x86/dell/dell-laptop.c
+>>> index 70edc5bb3a14..4c840ab6cb59 100644
+>>> --- a/drivers/platform/x86/dell/dell-laptop.c
+>>> +++ b/drivers/platform/x86/dell/dell-laptop.c
+>>> @@ -31,6 +31,8 @@
+>>>   #include "dell-rbtn.h"
+>>>   #include "dell-smbios.h"
+>>>   
+>>> +#include "dell-privacy-wmi.h"
+>>> +
+>>>   struct quirk_entry {
+>>>   	bool touchpad_led;
+>>>   	bool kbd_led_not_present;
+>>> @@ -90,6 +92,7 @@ static struct rfkill *wifi_rfkill;
+>>>   static struct rfkill *bluetooth_rfkill;
+>>>   static struct rfkill *wwan_rfkill;
+>>>   static bool force_rfkill;
+>>> +static bool has_privacy;
+>>>   
+>>>   module_param(force_rfkill, bool, 0444);
+>>>   MODULE_PARM_DESC(force_rfkill, "enable rfkill on non whitelisted models");
+>>> @@ -2206,10 +2209,16 @@ static int __init dell_init(void)
+>>>   
+>>>   	if (dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE) &&
+>>>   	    dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE)) {
+>>> -		micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+>>> -		ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
+>>> -		if (ret < 0)
+>>> -			goto fail_led;
+>>> +		if (!privacy_valid)
+>> This privacy_valid variable is coming from another module, so you're adding
+>> a "privacy_valid" symbol to the global kernel symbol namespace, even though this is
+>> dell specific. Please use the dell_privacy_present() function (see below) instead, so you get:
+>>
+>> 		if (dell_privacy_present())
+>> 			has_privacy = true;
+>> 		else
+>> 			has_privacy = false;
+>>
+>> Which makes much more sense then "if (!privacy_valid) has_privacy = true;" which
+>> feels as if it is inverted to what it should be.
+>>
+>>> +			has_privacy = true;
+>>> +		else
+>>> +			has_privacy = false;
+>>> +		if (!has_privacy) {
+>>> +			micmute_led_cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+>>> +			ret = led_classdev_register(&platform_device->dev, &micmute_led_cdev);
+>>> +			if (ret < 0)
+>>> +				goto fail_led;
+>>> +		}
+>>>   	}
+>>>   
+>>>   	if (acpi_video_get_backlight_type() != acpi_backlight_vendor)
+>>> @@ -2257,7 +2266,8 @@ static int __init dell_init(void)
+>>>   fail_get_brightness:
+>>>   	backlight_device_unregister(dell_backlight_device);
+>>>   fail_backlight:
+>>> -	led_classdev_unregister(&micmute_led_cdev);
+>>> +	if (!has_privacy)
+>>> +		led_classdev_unregister(&micmute_led_cdev);
+>>>   fail_led:
+>>>   	dell_cleanup_rfkill();
+>>>   fail_rfkill:
+>>> @@ -2278,7 +2288,8 @@ static void __exit dell_exit(void)
+>>>   		touchpad_led_exit();
+>>>   	kbd_led_exit();
+>>>   	backlight_device_unregister(dell_backlight_device);
+>>> -	led_classdev_unregister(&micmute_led_cdev);
+>>> +	if (!has_privacy)
+>>> +		led_classdev_unregister(&micmute_led_cdev);
+>>>   	dell_cleanup_rfkill();
+>>>   	if (platform_device) {
+>>>   		platform_device_unregister(platform_device);
+>>> diff --git a/drivers/platform/x86/dell/dell-privacy-acpi.c b/drivers/platform/x86/dell/dell-privacy-acpi.c
+>>> new file mode 100644
+>>> index 000000000000..4c785b62c7c4
+>>> --- /dev/null
+>>> +++ b/drivers/platform/x86/dell/dell-privacy-acpi.c
+>>> @@ -0,0 +1,164 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +/*
+>>> + * Dell privacy notification driver
+>>> + *
+>>> + * Copyright (C) 2021 Dell Inc. All Rights Reserved.
+>>> + */
+>>> +
+>>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>> +
+>>> +#include <linux/acpi.h>
+>>> +#include <linux/bits.h>
+>>> +#include <linux/device.h>
+>>> +#include <linux/fs.h>
+>>> +#include <linux/kernel.h>
+>>> +#include <linux/leds.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/mutex.h>
+>>> +#include <linux/platform_device.h>
+>>> +#include <linux/string.h>
+>>> +#include <linux/sysfs.h>
+>>> +#include <linux/slab.h>
+>>> +#include <linux/types.h>
+>>> +#include <linux/wmi.h>
+>>> +
+>>> +#include "dell-privacy-wmi.h"
+>>> +
+>>> +#define PRIVACY_PLATFORM_NAME	"dell-privacy-acpi"
+>>> +#define DELL_PRIVACY_GUID	"6932965F-1671-4CEB-B988-D3AB0A901919"
+>>> +
+>>> +struct privacy_acpi_priv {
+>>> +	struct device *dev;
+>>> +	struct platform_device *platform_device;
+>>> +	struct led_classdev cdev;
+>>> +};
+>>> +static struct privacy_acpi_priv *privacy_acpi;
+>>> +
+>>> +static int dell_privacy_micmute_led_set(struct led_classdev *led_cdev,
+>>> +		enum led_brightness brightness)
+>>> +{
+>>> +	struct privacy_acpi_priv *priv = privacy_acpi;
+>> Please use container_of on the passed in led_cdev here instead
+>> of relying on a global variable.
+>>
+>>> +	acpi_status status;
+>>> +	acpi_handle handle;
+>>> +	static char *acpi_method = (char *)"ECAK";
+>>> +
+>>> +	handle = ec_get_handle();
+>>> +	if (!handle)
+>>> +		return -EIO;
+>>> +	if (!acpi_has_method(handle, acpi_method))
+>>> +		return -EIO;
+>>> +	status = acpi_evaluate_object(handle, acpi_method, NULL, NULL);
+>>> +	if (ACPI_FAILURE(status)) {
+>>> +		dev_err(priv->dev, "Error setting privacy EC ack value: %s\n",
+>>> +				acpi_format_exception(status));
+>>> +		return -EIO;
+>>> +	}
+>>> +	pr_debug("set dell privacy micmute ec ack event done\n");
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int dell_privacy_acpi_remove(struct platform_device *pdev)
+>>> +{
+>>> +	struct privacy_acpi_priv *priv = dev_get_drvdata(privacy_acpi->dev);
+>>> +
+>>> +	led_classdev_unregister(&priv->cdev);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +/*
+>>> + * Pressing the mute key activates a time delayed circuit to physically cut
+>>> + * off the mute. The LED is in the same circuit, so it reflects the true
+>>> + * state of the HW mute.  The reason for the EC "ack" is so that software
+>>> + * can first invoke a SW mute before the HW circuit is cut off.  Without SW
+>>> + * cutting this off first does not affect the time delayed muting or status
+>>> + * of the LED but there is a possibility of a "popping" noise.
+>>> + *
+>>> + * If the EC receives the SW ack, the circuit will be activated before the
+>>> + * delay completed.
+>>> + *
+>>> + * Exposing as an LED device allows the codec drivers notification path to
+>>> + * EC ACK to work
+>>> + */
+>>> +static int dell_privacy_leds_setup(struct device *dev)
+>>> +{
+>>> +	struct privacy_acpi_priv *priv = dev_get_drvdata(dev);
+>>> +	int ret = 0;
+>>> +
+>>> +	priv->cdev.name = "dell-privacy::micmute";
+>>> +	priv->cdev.max_brightness = 1;
+>>> +	priv->cdev.brightness_set_blocking = dell_privacy_micmute_led_set;
+>>> +	priv->cdev.default_trigger = "audio-micmute";
+>>> +	priv->cdev.brightness = ledtrig_audio_get(LED_AUDIO_MICMUTE);
+>>> +	ret = devm_led_classdev_register(dev, &priv->cdev);
+>>> +	if (ret)
+>>> +		return ret;
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static int dell_privacy_acpi_probe(struct platform_device *pdev)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	platform_set_drvdata(pdev, privacy_acpi);
+>>> +	privacy_acpi->dev = &pdev->dev;
+>>> +	privacy_acpi->platform_device = pdev;
+>>> +
+>>> +	ret = dell_privacy_leds_setup(&pdev->dev);
+>>> +	if (ret)
+>>> +		return -EIO;
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static struct platform_driver dell_privacy_platform_drv = {
+>>> +	.driver = {
+>>> +		.name = PRIVACY_PLATFORM_NAME,
+>>> +	},
+>>> +	.probe = dell_privacy_acpi_probe,
+>>> +	.remove = dell_privacy_acpi_remove,
+>>> +};
+>>> +
+>>> +int __init dell_privacy_acpi_init(void)
+>>> +{
+>>> +	int err;
+>>> +	struct platform_device *pdev;
+>>> +
+>>> +	if (!wmi_has_guid(DELL_PRIVACY_GUID))
+>>> +		return -ENODEV;
+>>> +
+>>> +	privacy_acpi = kzalloc(sizeof(*privacy_acpi), GFP_KERNEL);
+>>> +	if (!privacy_acpi)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	err = platform_driver_register(&dell_privacy_platform_drv);
+>>> +	if (err)
+>>> +		goto pdrv_err;
+>>> +
+>>> +	pdev = platform_device_register_simple(
+>>> +			PRIVACY_PLATFORM_NAME, PLATFORM_DEVID_NONE, NULL, 0);
+>>> +	if (IS_ERR(pdev)) {
+>>> +		err = PTR_ERR(pdev);
+>>> +		goto pdev_err;
+>>> +	}
+>> So you're creating a platform_device here, from code called from the
+>> init_dell_privacy() function in dell-privacy-wmi.c, just so that
+>> the probe() function for that platform-device can register the
+>> led_classdev for the (alternative) mute LED.
+>>
+>> Please just put the cdev struct inside struct privacy_wmi_data
+>> and call dell_privacy_leds_setup() with the wmi-dev as parameter
+>> from dell_privacy_wmi_probe and have the wmi-dev as the parent
+>> of the led_classdev.
+>>
+>> This allows removing both the platform-driver and the instantiation
+>> of the platform-device.
+>>
+>> After removing the unnecessary platfrom-dev/driver there will be
+>> so little left of dell-privacy-acpi.c, that what remains can and
+>> should just be folded into dell-privacy-wmi.c. At which point
+>> you're down to one file for the module which also simplifies the
+>> Makefile.
+>>
+>>> +
+>>> +	return 0;
+>>> +
+>>> +pdev_err:
+>>> +	platform_device_unregister(pdev);
+>>> +pdrv_err:
+>>> +	kfree(privacy_acpi);
+>>> +	return err;
+>>> +}
+>>> +
+>>> +void __exit dell_privacy_acpi_exit(void)
+>>> +{
+>>> +	struct platform_device *pdev = to_platform_device(privacy_acpi->dev);
+>>> +
+>>> +	platform_device_unregister(pdev);
+>>> +	platform_driver_unregister(&dell_privacy_platform_drv);
+>>> +	kfree(privacy_acpi);
+>>> +}
+>>> +
+>>> +MODULE_AUTHOR("Perry Yuan <perry_yuan@dell.com>");
+>>> +MODULE_DESCRIPTION("DELL Privacy ACPI Driver");
+>>> +MODULE_LICENSE("GPL");
+>>> diff --git a/drivers/platform/x86/dell/dell-privacy-wmi.c b/drivers/platform/x86/dell/dell-privacy-wmi.c
+>>> new file mode 100644
+>>> index 000000000000..8bde97613477
+>>> --- /dev/null
+>>> +++ b/drivers/platform/x86/dell/dell-privacy-wmi.c
+>>> @@ -0,0 +1,340 @@
+>>> +// SPDX-License-Identifier: GPL-2.0-only
+>>> +/*
+>>> + * Dell privacy notification driver
+>>> + *
+>>> + * Copyright (C) 2021 Dell Inc. All Rights Reserved.
+>>> + */
+>>> +
+>>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>> +
+>>> +#include <linux/acpi.h>
+>>> +#include <linux/input.h>
+>>> +#include <linux/input/sparse-keymap.h>
+>>> +#include <linux/list.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/wmi.h>
+>>> +
+>>> +#include "dell-privacy-wmi.h"
+>>> +
+>>> +#define DELL_PRIVACY_GUID "6932965F-1671-4CEB-B988-D3AB0A901919"
+>>> +#define MICROPHONE_STATUS		BIT(0)
+>>> +#define CAMERA_STATUS		        BIT(1)
+>>> +#define PRIVACY_SCREEN_STATUS		BIT(2)
+>>> +
+>>> +/*
+>>> + * The wmi_list is used to store the privacy_priv struct with mutex protecting
+>>> + */
+>>> +static LIST_HEAD(wmi_list);
+>>> +static DEFINE_MUTEX(list_mutex);
+>>> +/*
+>>> + * global privacy state for other modules to query if the privacy driver loaded successfully
+>>> + * or no privacy WMI device was detected at initial probe phase
+>>> + */
+>>> +int privacy_valid = -EPROBE_DEFER;
+>>> +EXPORT_SYMBOL_GPL(privacy_valid);
+>> None of the callers are interpreting the error-codes stored here.
+>> So this is really treated as a bool, and the info stored in the bool
+>> is already available inside the wmi_list-head. So just drop this.
+>>
+>>> +
+>>> +struct privacy_wmi_data {
+>>> +	struct input_dev *input_dev;
+>>> +	struct wmi_device *wdev;
+>>> +	struct list_head list;
+>>> +	u32 features_present;
+>>> +	u32 last_status;
+>>> +};
+>>> +
+>>> +/*
+>>> + * Keymap for WMI privacy events of type 0x0012
+>>> + */
+>>> +static const struct key_entry dell_wmi_keymap_type_0012[] = {
+>>> +	/* privacy mic mute */
+>>> +	{ KE_KEY, 0x0001, { KEY_MICMUTE } },
+>>> +	/* privacy camera mute */
+>>> +	{ KE_SW,  0x0002, { SW_CAMERA_LENS_COVER } },
+>>> +	{ KE_END, 0},
+>>> +};
+>>> +
+>>> +int dell_privacy_state(void)
+>> Please rename this to dell_privacy_present(), "state" is very generic / not descriptive
+>> and use list_first_entry_or_null(&wmi_list) as done in dell_privacy_process_event(), e.g.:
+>>
+>> bool dell_privacy_present(void)
+>> {
+>> 	struct privacy_wmi_data *priv;
+>>
+>> 	mutex_lock(&list_mutex);
+>> 	priv = list_first_entry_or_null(&wmi_list,
+>> 			struct privacy_wmi_data,
+>> 			list);
+>> 	mutex_unlock(&list_mutex);
+>>
+>> 	return priv;
+>> }
+>>
+>>
+>>
+>>> +{
+>>> +	return privacy_valid;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(dell_privacy_state);
+>>> +/*
+>>> + * The flow of privacy event:
+>>> + * 1) User presses key. HW does stuff with this key (timeout is started)
+>>> + * 2) WMI event is emitted from BIOS
+>>> + * 3) WMI event is received by dell-privacy
+>>> + * 4) KEY_MICMUTE emitted from dell-privacy
+>>> + * 5) Userland picks up key and modifies kcontrol for SW mute
+>>> + * 6) Codec kernel driver catches and calls ledtrig_audio_set defined by
+>>> + *    dell-privacy-acpi driver.
+>>> + *    codec driver will call like this to switch micmute led state.
+>>> + *	ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led ? LED_ON :LED_OFF);
+>>> + * 7) If "LED" is set to on dell-privacy notifies EC,and timeout is cancelled,
+>>> + *	HW mic mute activated.
+>>> + */
+>>> +void dell_privacy_process_event(int type, int code, int status)
+>> Please make this return a bool, returning true when it has consumed the event
+>> and false when it did not consume the event. This will allow other 0x0012 0xXXXX
+>> codes to still be handled by the existing dell-wmi.c code for this.
+>>
+>>> +{
+>>> +	struct privacy_wmi_data *priv;
+>>> +	const struct key_entry *key;
+>> 	bool ret = false;
+>>
+>>> +
+>>> +	mutex_lock(&list_mutex);
+>>> +	priv = list_first_entry_or_null(&wmi_list,
+>>> +			struct privacy_wmi_data,
+>>> +			list);
+>>> +	if (!priv) {
+>>> +		pr_err("dell privacy priv is NULL\n");
+>>> +		goto error;
+>>> +	}
+>>> +	key = sparse_keymap_entry_from_scancode(priv->input_dev, (type << 16) | code);
+>>> +	if (!key) {
+>>> +		dev_dbg(&priv->wdev->dev, "Unknown key with type 0x%04x and code 0x%04x pressed\n",
+>>> +				type, code);
+>>> +		goto error;
+>>> +	}
+>>> +	switch (code) {
+>>> +	case DELL_PRIVACY_TYPE_AUDIO: /* Mic mute */
+>>> +		priv->last_status = status;
+>>> +		sparse_keymap_report_entry(priv->input_dev, key, 1, true);
+>> 		ret = true;
+>>
+>>> +		break;
+>>> +	case DELL_PRIVACY_TYPE_CAMERA: /* Camera mute */
+>>> +		priv->last_status = status;
+>>> +		sparse_keymap_report_entry(priv->input_dev, key, 1, true);
+>> 		ret = true;
+>>
+>>> +		break;
+>> These 2 cases are exactly the same, please merge them into a single case.
+>>
+>>> +	default:
+>>> +		dev_dbg(&priv->wdev->dev, "unknown event type 0x%04x 0x%04x",
+>>> +				type, code);
+>>> +	}
+>>> +
+>>> +error:
+>>> +	mutex_unlock(&list_mutex);
+>> 	return ret;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(dell_privacy_process_event);
+>>> +
+>>> +static ssize_t devices_supported_show(struct device *dev,
+>>> +		struct device_attribute *attr,
+>>> +		char *buf)
+>>> +{
+>>> +	struct privacy_wmi_data *priv = dev_get_drvdata(dev);
+>>> +
+>>> +	return sysfs_emit(buf, "%x\n", priv->features_present);
+>>> +}
+>>> +
+>>> +static ssize_t current_state_show(struct device *dev,
+>>> +		struct device_attribute *attr,
+>>> +		char *buf)
+>>> +{
+>>> +	struct privacy_wmi_data *priv = dev_get_drvdata(dev);
+>>> +
+>>> +	return sysfs_emit(buf, "%x\n", priv->last_status);
+>>> +}
+>> Please change these to emit strings as discussed above
+>> (assuming you agree with my above proposal for this).
+>>
+>>> +
+>>> +static DEVICE_ATTR_RO(devices_supported);
+>>> +static DEVICE_ATTR_RO(current_state);
+>>> +
+>>> +static struct attribute *privacy_attributes[] = {
+>>> +	&dev_attr_devices_supported.attr,
+>>> +	&dev_attr_current_state.attr,
+>>> +	NULL,
+>>> +};
+>>> +
+>>> +static const struct attribute_group privacy_attribute_group = {
+>>> +	.attrs = privacy_attributes
+>>> +};
+>>> +
+>>> +/*
+>>> + * Describes the Device State class exposed by BIOS which can be consumed by
+>>> + * various applications interested in knowing the Privacy feature capabilities.
+>>> + * class DeviceState
+>>> + * {
+>>> + *  [key, read] string InstanceName;
+>>> + *  [read] boolean ReadOnly;
+>>> + *  [WmiDataId(1), read] uint32 DevicesSupported;
+>>> + *   0 – None, 0x1 – Microphone, 0x2 – Camera, 0x4 -ePrivacy  Screen
+>>> + *  [WmiDataId(2), read] uint32 CurrentState;
+>>> + *   0:Off; 1:On. Bit0 – Microphone, Bit1 – Camera, Bit2 - ePrivacyScreen
+>>> + * };
+>>> + */
+>>> +
+>>> +static int get_current_status(struct wmi_device *wdev)
+>>> +{
+>>> +	struct privacy_wmi_data *priv = dev_get_drvdata(&wdev->dev);
+>>> +	union acpi_object *obj_present;
+>>> +	u32 *buffer;
+>>> +	int ret = 0;
+>>> +
+>>> +	if (!priv) {
+>>> +		pr_err("dell privacy priv is NULL\n");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +	/* check privacy support features and device states */
+>>> +	obj_present = wmidev_block_query(wdev, 0);
+>>> +	if (!obj_present) {
+>>> +		dev_err(&wdev->dev, "failed to read Binary MOF\n");
+>>> +		ret = -EIO;
+>>> +		privacy_valid = ret;
+>>> +		return ret;
+>>> +	}
+>>> +
+>>> +	if (obj_present->type != ACPI_TYPE_BUFFER) {
+>>> +		dev_err(&wdev->dev, "Binary MOF is not a buffer!\n");
+>>> +		ret = -EIO;
+>>> +		privacy_valid = ret;
+>>> +		goto obj_free;
+>>> +	}
+>>> +	/*  Although it's not technically a failure, this would lead to
+>>> +	 *  unexpected behavior
+>>> +	 */
+>>> +	if (obj_present->buffer.length != 8) {
+>>> +		dev_err(&wdev->dev, "Dell privacy buffer has unexpected length (%d)!\n",
+>>> +				obj_present->buffer.length);
+>>> +		ret = -EINVAL;
+>>> +		privacy_valid = ret;
+>>> +		goto obj_free;
+>>> +	}
+>>> +	buffer = (u32 *)obj_present->buffer.pointer;
+>>> +	priv->features_present = buffer[0];
+>>> +	priv->last_status = buffer[1];
+>>> +	privacy_valid = 0;
+>> As discussed, there is no need for the privacy_valid variable, remove all
+>> references to it here.
+>>
+>>> +
+>>> +obj_free:
+>>> +	kfree(obj_present);
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static int dell_privacy_wmi_probe(struct wmi_device *wdev, const void *context)
+>>> +{
+>>> +	struct privacy_wmi_data *priv;
+>>> +	struct key_entry *keymap;
+>>> +	int ret, i;
+>>> +
+>>> +	priv = devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
+>>> +	if (!priv)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	dev_set_drvdata(&wdev->dev, priv);
+>>> +	priv->wdev = wdev;
+>>> +	/* create evdev passing interface */
+>>> +	priv->input_dev = devm_input_allocate_device(&wdev->dev);
+>>> +	if (!priv->input_dev)
+>>> +		return -ENOMEM;
+>>> +	/* remap the wmi keymap event to new keymap */
+>>> +	keymap = kcalloc(ARRAY_SIZE(dell_wmi_keymap_type_0012),
+>>> +			sizeof(struct key_entry), GFP_KERNEL);
+>>> +	if (!keymap) {
+>>> +		ret = -ENOMEM;
+>>> +		goto err_free_dev;
+>>> +	}
+>> No need for the goto here just simplify this to:
+>>
+>> 	if (!keymap)
+>> 		return -ENOMEM;
+>>
+>>> +	/* remap the keymap code with Dell privacy key type 0x12 as prefix
+>>> +	 * KEY_MICMUTE scancode will be reported as 0x120001
+>>> +	 */
+>>> +	for (i = 0; i < ARRAY_SIZE(dell_wmi_keymap_type_0012); i++) {
+>>> +		keymap[i] = dell_wmi_keymap_type_0012[i];
+>>> +		keymap[i].code |= (0x0012 << 16);
+>>> +	}
+>>> +	ret = sparse_keymap_setup(priv->input_dev, keymap, NULL);
+>> You're done with the keymap here, please put a single:
+>>
+>> 	kfree(keymap);
+>>
+>> Here before the if (ret), then you won't need any goto style
+>> cleanup anywhere in this function.
+>>
+>> This also fixes not free-ing the keymap when sparse_keymap_setup() fails.
+>>
+>>> +	if (ret)
+>>> +		return ret;
+>>> +	priv->input_dev->dev.parent = &wdev->dev;
+>>> +	priv->input_dev->name = "Dell Privacy Driver";
+>>> +	priv->input_dev->id.bustype = BUS_HOST;
+>>> +	if (input_register_device(priv->input_dev)) {
+>>> +		pr_debug("input_register_device failed to register!\n");
+>> You're not setting ret here.
+>>
+>>> +		goto err_free_keymap;
+>>> +	}
+>> No need for the pr_debug, the kernel will already complain if this fails.
+>> Also since all your resources are devm managed and we've already taken
+>> care of the keymap this can be simplified to:
+>>
+>> 	ret = input_register_device(priv->input_dev);
+>> 	if (ret)
+>> 		returm ret;
+>>
+>>> +	mutex_lock(&list_mutex);
+>>> +	list_add_tail(&priv->list, &wmi_list);
+>>> +	mutex_unlock(&list_mutex);
+>> Move this to directly above the return 0; below, see below.
+>>
+>>> +
+>>> +	if (get_current_status(priv->wdev))
+>>> +		goto err_free_input;
+>> You're again not setting ret here before the goto.
+>>
+>> And you are returning with an error here after adding the device to the wmi_list,
+>> the list_add_tail call should be done last, directly above the return 0 call.
+>>
+>> Also since all your resources are devm managed and we've already taken
+>> care of the keymap this can be simplified to:
+>>
+>> 	ret = get_current_status(priv->wdev);
+>> 	if (ret)
+>> 		return ret;
+>>
+>>> +
+>>> +	ret = devm_device_add_group(&wdev->dev, &privacy_attribute_group);
+>>> +	if (ret)
+>>> +		goto err_free_input;
+>> Replace the goto err_free_input() with return ret;
+>>
+>>> +
+>>> +	kfree(keymap);
+>> Drop this kfree() (already done above now).
+>>
+>> Move the list_add_tail() here.
+>>
+>>> +	return 0;
+>>> +
+>>> +err_free_input:
+>>> +	input_unregister_device(priv->input_dev);
+>> This is not necessary for an input_device allocated with devm_input_allocate_device(),
+>> which means that none of these error handling labels are necessary now, so this can
+>> all be removed.
+>>
+>>
+>>
+>>> +err_free_keymap:
+>>> +	privacy_valid = -ENODEV;
+>>> +	kfree(keymap);
+>>> +err_free_dev:
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static int dell_privacy_wmi_remove(struct wmi_device *wdev)
+>>> +{
+>>> +	struct privacy_wmi_data *priv = dev_get_drvdata(&wdev->dev);
+>>> +
+>>> +	mutex_lock(&list_mutex);
+>>> +	list_del(&priv->list);
+>>> +	mutex_unlock(&list_mutex);
+>>> +	privacy_valid = -ENODEV;
+>>> +	input_unregister_device(priv->input_dev);
+>> The input_unregister is not necessary (and privacy_valid is gone too).
+>>
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static const struct wmi_device_id dell_wmi_privacy_wmi_id_table[] = {
+>>> +	{ .guid_string = DELL_PRIVACY_GUID },
+>>> +	{ },
+>>> +};
+>>> +
+>>> +static struct wmi_driver dell_privacy_wmi_driver = {
+>>> +	.driver = {
+>>> +		.name = "dell-privacy",
+>>> +	},
+>>> +	.probe = dell_privacy_wmi_probe,
+>>> +	.remove = dell_privacy_wmi_remove,
+>>> +	.id_table = dell_wmi_privacy_wmi_id_table,
+>>> +};
+>>> +
+>>> +static int __init init_dell_privacy(void)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	ret = wmi_has_guid(DELL_PRIVACY_GUID);> +	if (!ret) {
+>>> +		privacy_valid = -ENODEV;
+>>> +		pr_debug("Unable to detect available Dell privacy devices: %d\n", ret);
+>>> +		return privacy_valid;
+>>> +	}
+>> This driver will only get modprobed if the GUID is present and when it is
+>> not present then loading the driver is a no-op so this can be checked.
+>>
+>>> +
+>>> +	ret = wmi_driver_register(&dell_privacy_wmi_driver);
+>>> +	if (ret) {
+>>> +		pr_err("failed to initialize privacy wmi driver: %d\n", ret);
+>>> +		return ret;
+>>> +	}
+>>> +
+>>> +	ret = dell_privacy_acpi_init();
+>>> +	if (ret) {
+>>> +		pr_err("failed to initialize privacy acpi driver: %d\n", ret);
+>>> +		goto err_init;
+>>> +	}
+>> And with the platform-device/driver removed this is not necessary too,
+>> which means ...
+>>
+>>> +
+>>> +	return 0;
+>>> +
+>>> +err_init:
+>>> +	wmi_driver_unregister(&dell_privacy_wmi_driver);
+>>> +	return ret;
+>>> +}
+>>> +
+>>> +static void dell_privacy_wmi_exit(void)
+>>> +{
+>>> +	wmi_driver_unregister(&dell_privacy_wmi_driver);
+>>> +}
+>>> +
+>>> +static void __exit exit_dell_privacy(void)
+>>> +{
+>>> +	dell_privacy_wmi_exit();
+>>> +	dell_privacy_acpi_exit();
+>>> +}
+>>> +
+>>> +module_init(init_dell_privacy);
+>>> +module_exit(exit_dell_privacy);
+>> That all of the init_dell_privacy / exit_dell_privacy stuff can be replaced with
+>> a single line:
+>>
+>> module_wmi_driver(&dell_privacy_wmi_driver);
+>>
+>>
+>>
+>>
+>>
+>>> +
+>>> +MODULE_DEVICE_TABLE(wmi, dell_wmi_privacy_wmi_id_table);
+>>> +MODULE_AUTHOR("Perry Yuan <perry_yuan@dell.com>");
+>>> +MODULE_DESCRIPTION("Dell Privacy WMI Driver");
+>>> +MODULE_LICENSE("GPL");
+>>> diff --git a/drivers/platform/x86/dell/dell-privacy-wmi.h b/drivers/platform/x86/dell/dell-privacy-wmi.h
+>>> new file mode 100644
+>>> index 000000000000..6dda2990df5d
+>>> --- /dev/null
+>>> +++ b/drivers/platform/x86/dell/dell-privacy-wmi.h
+>>> @@ -0,0 +1,35 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>>> +/*
+>>> + * Dell privacy notification driver
+>>> + *
+>>> + * Copyright (C) 2021 Dell Inc. All Rights Reserved.
+>>> + */
+>>> +
+>>> +#ifndef _DELL_PRIVACY_WMI_H_
+>>> +#define _DELL_PRIVACY_WMI_H_
+>>> +
+>>> +#if IS_ENABLED(CONFIG_DELL_PRIVACY)
+>>> +extern int privacy_valid;
+>> Please remove this from the global kernel namespace
+>> (make it a static global inside the dell-privacy-wmi.c code).
+>>
+>>> +int  dell_privacy_state(void);
+>>> +void dell_privacy_process_event(int type, int code, int status);
+>>> +#else /* CONFIG_DELL_PRIVACY */
+>>> +int privacy_valid = -ENODEV;
+>> Drop this.
+>>
+>>> +static inline int dell_privacy_state(void)
+>>> +{
+>>> +	return privacy_valid;
+>> And directly return -ENODEV here.
+>>
+>>> +}
+>>> +
+>>> +static inline void dell_privacy_process_event(int type, int code, int status)
+>>> +{}
+>>> +#endif /* CONFIG_DELL_PRIVACY */
+>>> +
+>>> +int  dell_privacy_acpi_init(void);
+>>> +void dell_privacy_acpi_exit(void);
+>>> +
+>>> +/* DELL Privacy Type */
+>>> +enum {
+>>> +	DELL_PRIVACY_TYPE_UNKNOWN = 0x0,
+>>> +	DELL_PRIVACY_TYPE_AUDIO,
+>>> +	DELL_PRIVACY_TYPE_CAMERA,
+>>> +};
+>> This enum is only used inside dell-privacy-wmi.c, please move it there.
+>>
+>>> +#endif
+>> With the platform-device/driver removal discussed above all this header file
+>> needs to do is defines the prototypes / stubs for 2 functions:
+>>
+>> int  dell_privacy_state(void);
+>> void dell_privacy_process_event(int type, int code, int status);
+>>
+>> I think it would be best to just add these to dell-smbios.h, rather then
+>> adding a new header just for these 2 prototypes / stubs.
+>>
+>>
+>>> diff --git a/drivers/platform/x86/dell/dell-wmi.c b/drivers/platform/x86/dell/dell-wmi.c
+>>> index bbdb3e860892..389e86de24b0 100644
+>>> --- a/drivers/platform/x86/dell/dell-wmi.c
+>>> +++ b/drivers/platform/x86/dell/dell-wmi.c
+>>> @@ -13,20 +13,22 @@
+>>>   
+>>>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>>   
+>>> -#include <linux/kernel.h>
+>>> -#include <linux/module.h>
+>>> +#include <linux/acpi.h>
+>>> +#include <linux/dmi.h>
+>>>   #include <linux/init.h>
+>>> -#include <linux/slab.h>
+>>> -#include <linux/types.h>
+>>>   #include <linux/input.h>
+>>>   #include <linux/input/sparse-keymap.h>
+>>> -#include <linux/acpi.h>
+>>> +#include <linux/kernel.h>
+>>> +#include <linux/module.h>
+>>> +#include <linux/slab.h>
+>>>   #include <linux/string.h>
+>>> -#include <linux/dmi.h>
+>>> +#include <linux/types.h>
+>>>   #include <linux/wmi.h>
+>>>   #include <acpi/video.h>
+>>> +
+>> Please split the changes sorting these includes alphabetically out
+>> into a separate cleanup patch.
+>>
+>>>   #include "dell-smbios.h"
+>>>   #include "dell-wmi-descriptor.h"
+>>> +#include "dell-privacy-wmi.h"
+>>>   
+>>>   MODULE_AUTHOR("Matthew Garrett <mjg@redhat.com>");
+>>>   MODULE_AUTHOR("Pali Rohár <pali@kernel.org>");
+>>> @@ -381,6 +383,7 @@ static void dell_wmi_notify(struct wmi_device *wdev,
+>>>   	u16 *buffer_entry, *buffer_end;
+>>>   	acpi_size buffer_size;
+>>>   	int len, i;
+>>> +	int err;
+>> Drop this.
+>>
+>>>   
+>>>   	if (obj->type != ACPI_TYPE_BUFFER) {
+>>>   		pr_warn("bad response type %x\n", obj->type);
+>>> @@ -427,7 +430,6 @@ static void dell_wmi_notify(struct wmi_device *wdev,
+>>>   
+>>>   		switch (buffer_entry[1]) {
+>>>   		case 0x0000: /* One key pressed or event occurred */
+>>> -		case 0x0012: /* Event with extended data occurred */
+>>>   			if (len > 2)
+>>>   				dell_wmi_process_key(wdev, buffer_entry[1],
+>>>   						     buffer_entry[2]);
+>>> @@ -439,6 +441,17 @@ static void dell_wmi_notify(struct wmi_device *wdev,
+>>>   				dell_wmi_process_key(wdev, buffer_entry[1],
+>>>   						     buffer_entry[i]);
+>>>   			break;
+>>> +		case 0x0012:
+>>> +			err = dell_privacy_state();
+>>> +			if (err == 0) {
+>>> +				dell_privacy_process_event(buffer_entry[1],
+>>> +							   buffer_entry[3], buffer_entry[4]);
+>> This needs a len > 4 check !
+>>
+>>> +			} else {
+>>> +				if (len > 2)
+>>> +					dell_wmi_process_key(wdev, buffer_entry[1],
+>>> +							     buffer_entry[2]);
+>>> +			}
+>> Combined with the change to have dell_privacy_process_event() return a bool, this should
+>> look something like this:
+>>
+>> 			if (len > 4 && dell_privacy_process_event(buffer_entry[1], buffer_entry[3], buffer_entry[4]))
+>> 				; /* Handled by dell_privacy_process_event() */
+>> 			else if (len > 2)
+>> 				dell_wmi_process_key(wdev, buffer_entry[1], buffer_entry[2]);
+>>
+>>
+>>> +			break;
+>>>   		default: /* Unknown event */
+>>>   			pr_info("Unknown WMI event type 0x%x\n",
+>>>   				(int)buffer_entry[1]);
+>>>
+>> Regards,
+>>
+>> Hans
+>>
