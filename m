@@ -2,106 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3999034BBB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517B934BBB4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbhC1Ije (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 04:39:34 -0400
-Received: from smtprelay0103.hostedemail.com ([216.40.44.103]:37726 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229489AbhC1IjE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 04:39:04 -0400
-Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 64608181D1A04;
-        Sun, 28 Mar 2021 08:39:03 +0000 (UTC)
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA id 31F8027DD24;
-        Sun, 28 Mar 2021 08:39:02 +0000 (UTC)
-Message-ID: <cc86b15eb81f55ce69da3b1169a083dc7ce9d85c.camel@perches.com>
-Subject: Re: [PATCH v2 09/20] staging: rtl8723bs: put parentheses on macros
- with complex values in include/rtw_debug.h
-From:   Joe Perches <joe@perches.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
-Cc:     dan.carpenter@oracle.com, david.laight@aculab.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Date:   Sun, 28 Mar 2021 01:39:01 -0700
-In-Reply-To: <f36448ddc1553a018f700983b5d436eacaef9cb3.1616854134.git.fabioaiuto83@gmail.com>
-References: <cover.1616854134.git.fabioaiuto83@gmail.com>
-         <f36448ddc1553a018f700983b5d436eacaef9cb3.1616854134.git.fabioaiuto83@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S230476AbhC1Ina (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 04:43:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229593AbhC1InE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 04:43:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAECC61966;
+        Sun, 28 Mar 2021 08:43:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616920983;
+        bh=C12zvsMmJIgwjjVR8lLlhOry1XH7ndkALgxogosrSII=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aQhfvQuGN0orJE2YPxaMD3P141ZcKFgBS32IkIPZsIbWQi8eUrVED8bPB4ye4jDRJ
+         wYoz2Rsqkbz3HgKXjbRZ+2FHfNYGjwN+OqCO/js5DN5mogusiK+T0LtJwmgyP8UTa4
+         mOTVDiCH7JqlrL9sjT0NpCGrj8M/K3MqL/qFGmQc=
+Date:   Sun, 28 Mar 2021 10:43:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1 5/8] software node: Imply kobj_to_swnode() to be no-op
+Message-ID: <YGBBlCBMp0P4mVJG@kroah.com>
+References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
+ <20210327222012.54103-5-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 31F8027DD24
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: y3e6yff38rg3subzikg88eh5hgsjiy39
-X-Rspamd-Server: rspamout04
-X-HE-Tag: 1616920742-151709
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210327222012.54103-5-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-03-27 at 15:24 +0100, Fabio Aiuto wrote:
-> fix the following checkpatch warning:
+On Sun, Mar 28, 2021 at 12:20:09AM +0200, Andy Shevchenko wrote:
+> Since we don't use structure field layout randomization
+> the manual shuffling can affect some macros, in particular
+> kobj_to_swnode(), which becomes a no-op when kobj member
+> is the first one in the struct swnode.
 > 
-> ERROR: Macros starting with if should be enclosed by a
-> do - while loop to avoid possible if/else logic defects
-> +	#define RT_PRINT_DATA(_Comp, _Level,
-> 	_TitleString, _HexData, _HexDataLen)			\
+> Bloat-o-meter statistics:
 > 
-> Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
-
-It's good to use checkpatch as a guide to improve code, but this
-particular code is just a mess to begin with and it makes a
-complete mess of the the dmesg log if it's actually enabled.
-
-Try substituting print_hex_dump_debug for this instead.
-
+>   add/remove: 0/0 grow/shrink: 2/10 up/down: 9/-100 (-91)
+>   Total: Before=7217, After=7126, chg -1.26%
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  drivers/staging/rtl8723bs/include/rtw_debug.h | 28 ++++++++++---------
->  1 file changed, 15 insertions(+), 13 deletions(-)
+>  drivers/base/swnode.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-> index d1c557818305..b00f8a6c4312 100644
-> --- a/drivers/staging/rtl8723bs/include/rtw_debug.h
-> +++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
-> @@ -236,19 +236,21 @@
->  #if	defined(_dbgdump)
->  	#undef RT_PRINT_DATA
->  	#define RT_PRINT_DATA(_Comp, _Level, _TitleString, _HexData, _HexDataLen)			\
-> -		if (((_Comp) & GlobalDebugComponents) && (_Level <= GlobalDebugLevel))	\
-> -		{									\
-> -			int __i;								\
-> -			u8 *ptr = (u8 *)_HexData;				\
-> -			_dbgdump("%s", DRIVER_PREFIX);						\
-> -			_dbgdump(_TitleString);						\
-> -			for (__i = 0; __i < (int)_HexDataLen; __i++)				\
-> -			{								\
-> -				_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0)?"  ":" ");	\
-> -				if (((__i + 1) % 16) == 0)	_dbgdump("\n");			\
-> -			}								\
-> -			_dbgdump("\n");							\
-> -		}
-> +		do { \
-> +			if (((_Comp) & GlobalDebugComponents) && (_Level <= GlobalDebugLevel))	\
-> +			{									\
-> +				int __i;								\
-> +				u8 *ptr = (u8 *)_HexData;				\
-> +				_dbgdump("%s", DRIVER_PREFIX);						\
-> +				_dbgdump(_TitleString);						\
-> +				for (__i = 0; __i < (int)_HexDataLen; __i++)				\
-> +				{								\
-> +					_dbgdump("%02X%s", ptr[__i], (((__i + 1) % 4) == 0)?"  ":" ");	\
-> +					if (((__i + 1) % 16) == 0)	_dbgdump("\n");			\
-> +				}								\
-> +				_dbgdump("\n");							\
-> +			} \
-> +		} while (0)
->  #endif /* defined(_dbgdump) */
->  #endif /* DEBUG_RTL871X */
->  
-> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 22f81688af2c..ae53c48f84b1 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -13,10 +13,10 @@
+>  #include <linux/sysfs.h>
+>  
+>  struct swnode {
+> -	int id;
+>  	struct kobject kobj;
+>  	struct fwnode_handle fwnode;
+>  	const struct software_node *node;
+> +	int id;
 
+So you remove one math operation on a pointer and get a 1% size decrease
+of the whole kernel?  Or just one file?
 
+thanks,
+
+greg k-h
