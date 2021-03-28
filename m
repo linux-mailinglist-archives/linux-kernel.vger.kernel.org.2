@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC84C34BC1D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A5734BC22
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhC1LMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 07:12:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37428 "EHLO mail.kernel.org"
+        id S231265AbhC1LPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 07:15:03 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:31264 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229593AbhC1LMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 07:12:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDE126192F;
-        Sun, 28 Mar 2021 11:12:17 +0000 (UTC)
-Date:   Sun, 28 Mar 2021 12:12:15 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH] arm64: move --fix-cortex-a53-843419 linker test to
- Kconfig
-Message-ID: <20210328111213.GA17535@arm.com>
-References: <20210324071128.1723273-1-masahiroy@kernel.org>
- <20210326143630.GD5126@arm.com>
- <CAK7LNATGo1NkcRF7qo1wF1w3jrOpTQPJf1XPryUz13L8OpaSxA@mail.gmail.com>
+        id S229577AbhC1LOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 07:14:42 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F7Y521DWmz9tyJZ;
+        Sun, 28 Mar 2021 13:14:30 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id Vbw5Z44eDhdj; Sun, 28 Mar 2021 13:14:30 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F7Y516Sdvz9v03k;
+        Sun, 28 Mar 2021 13:14:29 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8C8A48B782;
+        Sun, 28 Mar 2021 13:14:30 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id N7crepemd7QU; Sun, 28 Mar 2021 13:14:30 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA0E48B75F;
+        Sun, 28 Mar 2021 13:14:29 +0200 (CEST)
+Subject: Re: [PATCH v5 4/7] powerpc/qspinlock: Add
+ ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     guoren@kernel.org
+Cc:     linux-arch@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        openrisc@lists.librecores.org, Paul Mackerras <paulus@samba.org>,
+        sparclinux@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1616913028-83376-1-git-send-email-guoren@kernel.org>
+ <1616913028-83376-5-git-send-email-guoren@kernel.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <e27af5e0-a462-cb75-6311-1b5a6b4ee4f1@csgroup.eu>
+Date:   Sun, 28 Mar 2021 13:14:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNATGo1NkcRF7qo1wF1w3jrOpTQPJf1XPryUz13L8OpaSxA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1616913028-83376-5-git-send-email-guoren@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 03:59:29PM +0900, Masahiro Yamada wrote:
-> On Fri, Mar 26, 2021 at 11:36 PM Catalin Marinas
-> <catalin.marinas@arm.com> wrote:
-> > On Wed, Mar 24, 2021 at 04:11:28PM +0900, Masahiro Yamada wrote:
-> > > $(call ld-option, --fix-cortex-a53-843419) in arch/arm64/Makefile is
-> > > evaluated every time even for Make targets that do not need the linker,
-> > > such as "make ARCH=arm64 install".
-> > >
-> > > Recently, the Kbuild tree queued up a patch to avoid needless
-> > > compiler/linker flag evaluation. I beleive it is a good improvement
-> > > itself, but causing a false-positive warning for arm64 installation
-> > > in linux-next. (Thanks to Nathan for the report)
-> > >
-> > > Kconfig can test the linker capability just once, and store it in the
-> > > .config file. The build and installation steps that follow do not need
-> > > to test the liniker over again.
-> > >
-> > > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > > ---
-> > >
-> > > I was not sure what the preferred CONFIG option name is.
-> > > Please suggest a one if you have a better idea.
-> > >
-> > >
-> > >  arch/arm64/Kconfig  | 3 +++
-> > >  arch/arm64/Makefile | 2 +-
-> > >  2 files changed, 4 insertions(+), 1 deletion(-)
-> >
-> > Would you like this patch to go in via the arm64 tree or you will queue
-> > it via the kbuild tree?
+
+
+Le 28/03/2021 à 08:30, guoren@kernel.org a écrit :
+> From: Guo Ren <guoren@linux.alibaba.com>
 > 
-> I applied this to linux-kbuild with Will's Ack.
+> We don't have native hw xchg16 instruction, so let qspinlock
+> generic code to deal with it.
 
-Great, I'll cross it off my list. Thanks.
+We have lharx/sthcx pair on some versions of powerpc.
 
--- 
-Catalin
+See https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20201107032328.2454582-1-npiggin@gmail.com/
+
+Christophe
+
+> 
+> Using the full-word atomic xchg instructions implement xchg16 has
+> the semantic risk for atomic operations.
+> 
+> This patch cancels the dependency of on qspinlock generic code on
+> architecture's xchg16.
+> 
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> ---
+>   arch/powerpc/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 386ae12d8523..69ec4ade6521 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -151,6 +151,7 @@ config PPC
+>   	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
+>   	select ARCH_USE_QUEUED_RWLOCKS		if PPC_QUEUED_SPINLOCKS
+>   	select ARCH_USE_QUEUED_SPINLOCKS	if PPC_QUEUED_SPINLOCKS
+> +	select ARCH_USE_QUEUED_SPINLOCKS_XCHG32	if PPC_QUEUED_SPINLOCKS
+>   	select ARCH_WANT_IPC_PARSE_VERSION
+>   	select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+>   	select ARCH_WANT_LD_ORPHAN_WARN
+> 
