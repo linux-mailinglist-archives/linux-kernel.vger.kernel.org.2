@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336F434BDDC
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3D934BDDD
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 20:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhC1SC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 14:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
+        id S230184AbhC1SC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 14:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhC1SCW (ORCPT
+        with ESMTP id S229593AbhC1SB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 14:02:22 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36178C061756;
-        Sun, 28 Mar 2021 11:02:22 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id nh23-20020a17090b3657b02900c0d5e235a8so4856398pjb.0;
-        Sun, 28 Mar 2021 11:02:22 -0700 (PDT)
+        Sun, 28 Mar 2021 14:01:58 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33DEC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 11:01:57 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so5521044wmi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 11:01:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SLrPxpePKe+LtiSm7QDz7eMtAeP6QmwAE1sgXjH2QAw=;
-        b=BaEC2EXljj1cxhwSXJWzOcg0C8k6B/ZuiEmxkwsyu/XF9K/nTj0HZ9NnUY2zHdQBTF
-         ZnwA38OT6VTY10SBRqXZqidQ5ckt6t9moH0ulD2iGPAmhyyCDsxuKNnFC9q//gYsBXTa
-         xXXtPhXGRaiFjPNbVzx5BiNOKicv9hPKNkxdabIeKQmCVP0r8N2ggtKm330UOhH9+LzU
-         gtUw8hm7V/7GsV1zve2spd5ttuzLN+YAzdqCBCDwLDMrpCv5/guvWhg7Yb47AesD5Ms9
-         GsVXxFkrxuOqzAvkOA4BBepsZpF9zEuGxbPcQXtNtTOvUP1MCd+iOinAZQizLqhileUP
-         Jkeg==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FSV6rta3hJrwpk1P4mXDAcDYdRJg95MvBSYZceCodik=;
+        b=oSOYYdNRkdQVtznXgt78DhiwTWTyzGZF3oJMe8w4KEtcPyBLXe+SMFYvGd+1oj9LQU
+         r+3uWqxIghxhPFZU6Wuc3lTsr1obuN/1XT+oueshAk+gbGImzMAYJdf85a6crcqhy0e1
+         +wZlhI6QwSVp9fLFMCSC4+ilP5ANqr7SeCPSHFAjZvo4GtktRLFRtw0ftjbX+D8y7QhE
+         kOKivr+Xaqy/9hlXYLyfK3URX9DHSdP8BlWHVxIGKPZyn5bMqhtXBFITvpGaI+/xd/rM
+         sFNiokpGBV5ArT1Z24VLOrvllQ0LUemSArwJLtk2pUBXbSKIRoROtHU9pA39vqDdmQwk
+         xaSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SLrPxpePKe+LtiSm7QDz7eMtAeP6QmwAE1sgXjH2QAw=;
-        b=d61pyoXKvjciNQ+I31Mfh8idEaiNat5TSHJPLM0IdhNu6yQ5jxK1TXxO174amsnY5O
-         xS6IIMywYGb2lodJus401pGhyUm+cJh6eY3DAwwXH6Zf8qjuWrUpd0yX4xKsMwto2my7
-         gFajOwtAFCWdzk0/OYE0iHR0ugQdNtW3Clgng3No9smIi3LY500qmkniPVQz2sQpYoEK
-         wNrwN6uoqfDnSUNTlG87t/sUJ7TgDYsdhCxcPbZ6HhJUxvpEk+FC1+tFaOmAp4q83ExG
-         zecnb58HPSvLtRt5ThgwmC5z2FWGiVC9Ep40wPM83Is0JjCp3xxf+Y42358JCRKwAggN
-         4ZzQ==
-X-Gm-Message-State: AOAM533huVQhjz0YAnWO88SMzbyOfANm0L5hQ3azWvepQqeBGWhhRA98
-        R5uqCaYRHlvqxK3SDvcameY=
-X-Google-Smtp-Source: ABdhPJzPuuhrDZq2vmxtq3Kd4ZCOil0iw2b8M6DVjcL7xUQMc7rYYPhi5bR8OikNOVNFbjwJ5N7w8A==
-X-Received: by 2002:a17:90a:f28d:: with SMTP id fs13mr22756545pjb.220.1616954541639;
-        Sun, 28 Mar 2021 11:02:21 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:21b:917d:6a69:e0c5:1507:d785])
-        by smtp.googlemail.com with ESMTPSA id g10sm14046755pgh.36.2021.03.28.11.02.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 11:02:21 -0700 (PDT)
-From:   Mugilraj Dhavachelvan <dmugil2000@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mugilraj Dhavachelvan <dmugil2000@gmail.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: accel: da280: Drop unnecessarily used braces
-Date:   Sun, 28 Mar 2021 23:31:23 +0530
-Message-Id: <20210328180124.8762-1-dmugil2000@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=FSV6rta3hJrwpk1P4mXDAcDYdRJg95MvBSYZceCodik=;
+        b=ja1c+fYsdXfsfy0whIsBU48E0r2DXFV6Ufw0bZzE8mX9kB24N0qSt3BkJBlJmMPkmz
+         sCSA7vb+pzoDdnHvoYWlHTWlgtdq5FXqbvY6WA25TWzvnW/z2i1oBfafJgm0X/5i8u6h
+         INJgnEhi9EkjuCEk21S47ccUS6ZmB9wfMyyieJl92mngggmae5MUIEzpIs90x9fWMSvq
+         zJnAN+KxSOyDBuQ6NdQK/JLYiuawII2SW+z8hiQ1wuNRt5Cn9ZsI9V5IcDp4Y5D03mNQ
+         yD/dOH0CSJ67qIu1ugSs/tlHHeKUwOY1ZpEut8ROJFP5hW6h+PHFr8ldvLBVOLK51Nut
+         DdbQ==
+X-Gm-Message-State: AOAM530YddZMDn2QwhiWd62IHGFC2NQsJsqaljoJc7vMjkjsYHW+SZ9U
+        nsc+u9N0V844UFiPepCst4U5iQ==
+X-Google-Smtp-Source: ABdhPJy+gVLRWMbs9MBvQ5wgzJ1R9N4zHUB5GvTCe8IVgfnknokeggtcfnLxxlZFMTEPF9ziKiZFcw==
+X-Received: by 2002:a05:600c:1992:: with SMTP id t18mr21563797wmq.125.1616954516332;
+        Sun, 28 Mar 2021 11:01:56 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:1945:696f:a453:cac9? ([2a01:e34:ed2f:f020:1945:696f:a453:cac9])
+        by smtp.googlemail.com with ESMTPSA id g11sm25154394wrw.89.2021.03.28.11.01.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Mar 2021 11:01:55 -0700 (PDT)
+Subject: Re: [PATCH v4 2/5] powercap/drivers/dtpm: Create a registering system
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, lukasz.luba@arm.com
+References: <20210312130411.29833-1-daniel.lezcano@linaro.org>
+ <20210312130411.29833-2-daniel.lezcano@linaro.org>
+ <YF8qIw4UBLnj9TCA@kroah.com>
+ <433ec4ac-a7a9-ecf9-f1c1-f658d279a2df@linaro.org>
+ <YGAnRx8SiZHFPpY6@kroah.com>
+ <7df276d1-abea-622c-2c7e-2c5e412aa4a9@linaro.org>
+ <YGBng8D+nPS4/LJO@kroah.com>
+ <7ba5094b-7fac-72ff-0e52-6f60eb86f253@linaro.org>
+ <YGC8Yj9OTgc4aU0y@kroah.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <35b543d1-5559-b814-11b0-8a53c1218750@linaro.org>
+Date:   Sun, 28 Mar 2021 20:01:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <YGC8Yj9OTgc4aU0y@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per linux kernel coding style braces are not needed for single
-statement.
-Checkpatch
-warning: braces {} are not necessary for any arm of this statement
-128: FILE: drivers/iio/accel/da280.c:128:
+On 28/03/2021 19:26, Greg KH wrote:
 
-Signed-off-by: Mugilraj Dhavachelvan <dmugil2000@gmail.com>
----
- drivers/iio/accel/da280.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+[ ... ]
 
-diff --git a/drivers/iio/accel/da280.c b/drivers/iio/accel/da280.c
-index 227bea2d738b..31f290ae4386 100644
---- a/drivers/iio/accel/da280.c
-+++ b/drivers/iio/accel/da280.c
-@@ -125,11 +125,10 @@ static int da280_probe(struct i2c_client *client,
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->channels = da280_channels;
- 
--	if (ACPI_HANDLE(&client->dev)) {
-+	if (ACPI_HANDLE(&client->dev))
- 		chip = da280_match_acpi_device(&client->dev);
--	} else {
-+	else
- 		chip = id->driver_data;
--	}
- 
- 	if (chip == da226) {
- 		indio_dev->name = "da226";
+>>> So why are you trying to add a kref here as the structure already has
+>>> support for proper lifetimes?
+>>
+>> Right, I'll revisit that part. Thanks for the review.
+>>
+>> I've a branch which is pulled by Rafael [1]. These parts are already
+>> merged in the dtpm/next branch but not yet in Rafael's tree.
+> 
+> I would recommend fixing that up if you can rebase it.  If not, you need
+> to revert it and start over.  I'll be glad to review it if you cc: me on
+> the patches.
+> 
+>> I think a rebase is possible but I would like to avoid that. Would be a
+>> patch on top of the dtpm/next acceptable given your flow with Android ?
+> 
+> This has nothing to do with the Android kernel workflow, sorry.  I am
+> concerned about proper kernel development and keeping bugs out of it.
+
+
+Fair enough, I will fix it up and send a v5.
+
+Thanks
+
+  -- Daniel
+
+
 -- 
-2.25.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
