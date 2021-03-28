@@ -2,52 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BA334BDB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C88334BDBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbhC1RfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:35:07 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49743 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhC1RfC (ORCPT
+        id S230525AbhC1Rj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:39:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhC1Rjg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:35:02 -0400
-X-Originating-IP: 90.89.138.59
-Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 74AA71BF203;
-        Sun, 28 Mar 2021 17:35:00 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: nand_bbt: Skip bad blocks when searching for the BBT in NAND
-Date:   Sun, 28 Mar 2021 19:35:00 +0200
-Message-Id: <20210328173500.10571-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210325102337.481172-1-s.riedmueller@phytec.de>
-References: 
+        Sun, 28 Mar 2021 13:39:36 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C4EC061756;
+        Sun, 28 Mar 2021 10:39:36 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQZNk-000U9Y-BT; Sun, 28 Mar 2021 17:39:24 +0000
+Date:   Sun, 28 Mar 2021 17:39:24 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        krisman@collabora.com, kernel@collabora.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        Daniel Rosenberg <drosen@google.com>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: Re: [PATCH 1/3] fs/dcache: Add d_clear_dir_neg_dentries()
+Message-ID: <YGC/TNXhpzRoLjGM@zeniv-ca.linux.org.uk>
+References: <20210328144356.12866-1-andrealmeid@collabora.com>
+ <20210328144356.12866-2-andrealmeid@collabora.com>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'bd9c9fe2ad04546940f4a9979d679e62cae6aa51'
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210328144356.12866-2-andrealmeid@collabora.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-03-25 at 10:23:37 UTC, Stefan Riedmueller wrote:
-> The blocks containing the bad block table can become bad as well. So
-> make sure to skip any blocks that are marked bad when searching for the
-> bad block table.
-> 
-> Otherwise in very rare cases where two BBT blocks wear out it might
-> happen that an obsolete BBT is used instead of a newer available
-> version.
-> 
-> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+On Sun, Mar 28, 2021 at 11:43:54AM -0300, André Almeida wrote:
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+> +/**
+> + * d_clear_dir_neg_dentries - Remove negative dentries in an inode
+> + * @dir: Directory to clear negative dentries
+> + *
+> + * For directories with negative dentries that are becoming case-insensitive
+> + * dirs, we need to remove all those negative dentries, otherwise they will
+> + * become dangling dentries. During the creation of a new file, if a d_hash
+> + * collision happens and the names match in a case-insensitive, the name of
+> + * the file will be the name defined at the negative dentry, that can be
+> + * different from the specified by the user. To prevent this from happening, we
+> + * need to remove all dentries in a directory. Given that the directory must be
+> + * empty before we call this function we are sure that all dentries there will
+> + * be negative.
+> + */
+> +void d_clear_dir_neg_dentries(struct inode *dir)
+> +{
+> +	struct dentry *alias, *dentry;
+> +
+> +	hlist_for_each_entry(alias, &dir->i_dentry, d_u.d_alias) {
+> +		list_for_each_entry(dentry, &alias->d_subdirs, d_child) {
+> +			d_drop(dentry);
+> +			dput(dentry);
+> +		}
+> +	}
+> +}
 
-Miquel
+That makes no sense whatsoever.
+	1) directories can never have more than one alias
+	2) what the hell are you doing to refcounts on those children?
