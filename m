@@ -2,86 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C617D34BA5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 03:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A01734BA62
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 03:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhC1Bk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 21:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhC1Bk5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 21:40:57 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96F5C0613B1;
-        Sat, 27 Mar 2021 18:40:56 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id cl21-20020a17090af695b02900c61ac0f0e9so6926062pjb.1;
-        Sat, 27 Mar 2021 18:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EYlwxcDk4ihQ5s3x3P7ksmY5Gg85jPzumVOLCa8dw0M=;
-        b=o1Fc+wj4hv6iR8+09o6x3h0lu6UgGFnCqykm7zGC6oKgvj1d3pAk4ZGy7V2PAfJ7lA
-         enKq88Wj5vpdBPLqpUz7fwaNBvsBZEMvAE9xAm21iXiwNXIxGE49Gcd96DvuTX97qBEg
-         duKeSA0Yt/vgV7mMrwTktXrdXXoX4IOiPdzKy1BRjD2ruQj9D8wXEbah5jaGJx0dWuyQ
-         T5hehJaX6TQFUce6XRXMIlZ568ApRk7QA62mTXOHaxpVZjdwRtBqtoMhghAIQuHUe8fo
-         7jrrOFVyX2nZpz6OdLcWtmOj26EQ79ZOyr6u8nY5NITEPLlcx772b46ArwgYF0xizZ1/
-         87oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EYlwxcDk4ihQ5s3x3P7ksmY5Gg85jPzumVOLCa8dw0M=;
-        b=sGdUa5ylgAQQ35Uy1anBFFDxjjZemo/sB1XSd0uQYDA0YhLOvI/fh1VbUJVrDP4Yd5
-         h5Igbu3SUFWpBvkPDki7d4s+4gGt2zF4uysPyxjjIqRmGvRCdf7BQmBcPsovCEYtWXuv
-         qFeTzVjIDsCcIh7IDu24ehBRy7ebJeZeoHic0zCeRiYFrXq6la2nLKhwC5J21cgNbVWA
-         kdRHUkR37TKVbBq56riu/4aQXnCpt2abYSKA3ZNcVC5++5+TTtFPwbfNpKKF8bciwsZf
-         iQUECSq88xBTInkgPtxn/HgSxCw92pK6Yp8tSlNqh1rx+MIDw9xp6WnQOEDC68/kBz4x
-         XJqg==
-X-Gm-Message-State: AOAM533HWIFAq1IKSjI8AOjaptQ45FL3rz7xCUw3Hqkjn4BcURb+Q7/b
-        EZHFVGgwmanM7h7q0sxJa4ohO8+Q/SWZozmY
-X-Google-Smtp-Source: ABdhPJz9ViHiVzmx5Hcb5TBLwpVFQooCzsrwwjUY+1aG18ShcUakO4gHC8rgIJjJM+ihDMsJWxkUkA==
-X-Received: by 2002:a17:902:c60b:b029:e7:3b60:34ad with SMTP id r11-20020a170902c60bb02900e73b6034admr2614094plr.7.1616895655852;
-        Sat, 27 Mar 2021 18:40:55 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id 27sm13477476pgq.51.2021.03.27.18.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 18:40:55 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-crypto@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH] crypto: mips: add poly1305-core.S to .gitignore
-Date:   Sat, 27 Mar 2021 18:40:52 -0700
-Message-Id: <20210328014052.8645-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        id S231150AbhC1Btn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 21:49:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230318AbhC1BtN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 21:49:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1242E619A6;
+        Sun, 28 Mar 2021 01:49:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616896152;
+        bh=r/CjWLOfQ/Cy98BD8/yfutAJhP32QSWIzkd5wFUy5ec=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J/3+nDTfzogk2FKUnPgpz7x3yL3yM3zZhpqDBfZpclg9rXjQWrm+G24m3YywmAymx
+         Md0cKCkj/tvQwY44pxexcJxlHFJzGURRz+FJbj5hASyEdz1/kXigQDFvnCk5jYZUfd
+         vyU1qhZfoeto/1OnQYsXNRZNx0payLHwBLIjWvNXz6msLBq6t2IIueJUNWIMKmvb0x
+         pHaImY/VZzujOAiMdoXDTIIj2oT2uo8rdkxshBX1JF02cO0LfpMKwjLkI+UqMJ4HMy
+         OwXuvDFwIJK9lnnsMMaS92OMJic8Hb9Ue7L86Avqlk14SIxSehfppjslyXrLMD4csT
+         +XE6nuKmzeskA==
+Received: by mail-lj1-f177.google.com with SMTP id f26so11834373ljp.8;
+        Sat, 27 Mar 2021 18:49:11 -0700 (PDT)
+X-Gm-Message-State: AOAM5327Oo0YpQtWcH+WHRKfXd3lT4yBrAOHA8yl1WZ113tPkmkAkXGT
+        T8l/TP/NCdh9yi9+gTgkvmmX9lST+c45To1EtzI=
+X-Google-Smtp-Source: ABdhPJyW6nHPZZw4sckD4eehDVI2/MTvmJEGaup03eXwH32xXeXXve1gtXcXfT8Prn4CK0frPQIN2pSq8Ty+SoZQm30=
+X-Received: by 2002:a2e:9084:: with SMTP id l4mr13189914ljg.498.1616896150341;
+ Sat, 27 Mar 2021 18:49:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1616868399-82848-1-git-send-email-guoren@kernel.org>
+ <1616868399-82848-4-git-send-email-guoren@kernel.org> <b6466a43-6fb3-dc47-e0ef-d493e0930ab2@redhat.com>
+In-Reply-To: <b6466a43-6fb3-dc47-e0ef-d493e0930ab2@redhat.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 28 Mar 2021 09:48:58 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRROuZOFBM4UDtMCjG0M2Q7c2ZRxHkj2+13amN6jaqvtQ@mail.gmail.com>
+Message-ID: <CAJF2gTRROuZOFBM4UDtMCjG0M2Q7c2ZRxHkj2+13amN6jaqvtQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Waiman Long <longman@redhat.com>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>, Anup Patel <anup@brainfault.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-poly1305-core.S is an auto-generated file, so it should be ignored.
+On Sun, Mar 28, 2021 at 2:43 AM Waiman Long <longman@redhat.com> wrote:
+>
+> On 3/27/21 2:06 PM, guoren@kernel.org wrote:
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > Some architectures don't have sub-word swap atomic instruction,
+> > they only have the full word's one.
+> >
+> > The sub-word swap only improve the performance when:
+> > NR_CPUS < 16K
+> >   *  0- 7: locked byte
+> >   *     8: pending
+> >   *  9-15: not used
+> >   * 16-17: tail index
+> >   * 18-31: tail cpu (+1)
+> >
+> > The 9-15 bits are wasted to use xchg16 in xchg_tail.
+> >
+> > Please let architecture select xchg16/xchg32 to implement
+> > xchg_tail.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Waiman Long <longman@redhat.com>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > ---
+> >   kernel/Kconfig.locks       |  3 +++
+> >   kernel/locking/qspinlock.c | 44 +++++++++++++++++++++-----------------
+> >   2 files changed, 27 insertions(+), 20 deletions(-)
+> >
+> > diff --git a/kernel/Kconfig.locks b/kernel/Kconfig.locks
+> > index 3de8fd11873b..d02f1261f73f 100644
+> > --- a/kernel/Kconfig.locks
+> > +++ b/kernel/Kconfig.locks
+> > @@ -239,6 +239,9 @@ config LOCK_SPIN_ON_OWNER
+> >   config ARCH_USE_QUEUED_SPINLOCKS
+> >       bool
+> >
+> > +config ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+> > +     bool
+> > +
+> >   config QUEUED_SPINLOCKS
+> >       def_bool y if ARCH_USE_QUEUED_SPINLOCKS
+> >       depends on SMP
+> > diff --git a/kernel/locking/qspinlock.c b/kernel/locking/qspinlock.c
+> > index cbff6ba53d56..54de0632c6a8 100644
+> > --- a/kernel/locking/qspinlock.c
+> > +++ b/kernel/locking/qspinlock.c
+> > @@ -163,26 +163,6 @@ static __always_inline void clear_pending_set_locked(struct qspinlock *lock)
+> >       WRITE_ONCE(lock->locked_pending, _Q_LOCKED_VAL);
+> >   }
+> >
+> > -/*
+> > - * xchg_tail - Put in the new queue tail code word & retrieve previous one
+> > - * @lock : Pointer to queued spinlock structure
+> > - * @tail : The new queue tail code word
+> > - * Return: The previous queue tail code word
+> > - *
+> > - * xchg(lock, tail), which heads an address dependency
+> > - *
+> > - * p,*,* -> n,*,* ; prev = xchg(lock, node)
+> > - */
+> > -static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
+> > -{
+> > -     /*
+> > -      * We can use relaxed semantics since the caller ensures that the
+> > -      * MCS node is properly initialized before updating the tail.
+> > -      */
+> > -     return (u32)xchg_relaxed(&lock->tail,
+> > -                              tail >> _Q_TAIL_OFFSET) << _Q_TAIL_OFFSET;
+> > -}
+> > -
+> >   #else /* _Q_PENDING_BITS == 8 */
+> >
+> >   /**
+> > @@ -206,6 +186,30 @@ static __always_inline void clear_pending_set_locked(struct qspinlock *lock)
+> >   {
+> >       atomic_add(-_Q_PENDING_VAL + _Q_LOCKED_VAL, &lock->val);
+> >   }
+> > +#endif
+> > +
+> > +#if _Q_PENDING_BITS == 8 && !defined(CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32)
+> > +/*
+> > + * xchg_tail - Put in the new queue tail code word & retrieve previous one
+> > + * @lock : Pointer to queued spinlock structure
+> > + * @tail : The new queue tail code word
+> > + * Return: The previous queue tail code word
+> > + *
+> > + * xchg(lock, tail), which heads an address dependency
+> > + *
+> > + * p,*,* -> n,*,* ; prev = xchg(lock, node)
+> > + */
+> > +static __always_inline u32 xchg_tail(struct qspinlock *lock, u32 tail)
+> > +{
+> > +     /*
+> > +      * We can use relaxed semantics since the caller ensures that the
+> > +      * MCS node is properly initialized before updating the tail.
+> > +      */
+> > +     return (u32)xchg_relaxed(&lock->tail,
+> > +                              tail >> _Q_TAIL_OFFSET) << _Q_TAIL_OFFSET;
+> > +}
+> > +
+> > +#else
+> >
+> >   /**
+> >    * xchg_tail - Put in the new queue tail code word & retrieve previous one
+>
+> I don't have any problem adding a
+> CONFIG_ARCH_USE_QUEUED_SPINLOCKS_XCHG32 config option to control that.
+Thx
 
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
----
- arch/mips/crypto/.gitignore | 1 +
- 1 file changed, 1 insertion(+)
- create mode 100644 arch/mips/crypto/.gitignore
+>
+> One minor nit:
+>
+> #endif /* _Q_PENDING_BITS == 8 */
+>
+> You should probably remove the comment at the trailing end of the
+> corresponding "#endif" as it is now wrong.
+I'll fix it in next patch
 
-diff --git a/arch/mips/crypto/.gitignore b/arch/mips/crypto/.gitignore
-new file mode 100644
-index 000000000000..4882ba199071
---- /dev/null
-+++ b/arch/mips/crypto/.gitignore
-@@ -0,0 +1 @@
-+poly1305-core.S
 -- 
-2.31.0
+Best Regards
+ Guo Ren
 
+ML: https://lore.kernel.org/linux-csky/
