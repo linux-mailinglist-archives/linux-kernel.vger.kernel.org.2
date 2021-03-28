@@ -2,167 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5335A34BF99
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 00:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2F8334BF9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 00:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhC1WmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 18:42:00 -0400
-Received: from mga01.intel.com ([192.55.52.88]:27762 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhC1Wlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 18:41:40 -0400
-IronPort-SDR: Y02y2E+030OxD/Sw7brxbtlXpXZpbVsI/m4tsbXOZ+Ls4Ti0AjtztljPIP6rsGHrpMYOPoNSI8
- sNIeToD/XdBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="211630465"
-X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
-   d="scan'208";a="211630465"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Mar 2021 15:41:40 -0700
-IronPort-SDR: l/0DsBHReBMuGyhwRQ5rJcxc4FZg5RE2m+WDRzF9KrrI3rX+5RqwODGi/Xca7SSfcleK9xj4b/
- 5IBZX2+5FT1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,285,1610438400"; 
-   d="scan'208";a="454309659"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 28 Mar 2021 15:41:38 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lQe6E-0004Cv-9Y; Sun, 28 Mar 2021 22:41:38 +0000
-Date:   Mon, 29 Mar 2021 06:41:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- f2ea2c3568eb3852fcce1348f9dd56dbc12804c0
-Message-ID: <60610611./YD7PINY4uVjKCQh%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231591AbhC1WpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 18:45:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhC1WpR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 18:45:17 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BA2C061756;
+        Sun, 28 Mar 2021 15:45:17 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id f12so8181058qtq.4;
+        Sun, 28 Mar 2021 15:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8RXOlSm03VbeMbySXyCFRFEgeMcD59AdNwl/nJLNOYw=;
+        b=nsEmdX6mc+ybUXc2Qg6U7WBlqgMs1mkM3+2oHxyzbWkHy5FonGwB+0RRKYSCEShtVZ
+         SkVKyu/K+4s3d5pIpfTWJA6uIrh/6ECdm8/Gt4aFrR1dG9kiG7iG8WBxHXovZTUOuXzN
+         QT+yZ/uAH+6dvOxZB4Y+BHtrZ3HvUzGwpeitMHmE/iQ8yWYq7ZVcUJrfGejWTCX1t/0Q
+         V16nreJSl2wLxlm8EoAr30fsv2Q0KFynXDIuZA9CiOkf0ylWNeEI3y8hJlgRjqNZD9H8
+         5j+eVkqHqYpuGFnuciPIUJuimU47AWOYAkg7G6DcIvwEW7d/g1wcO5+CTliTII81l+L+
+         jB/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8RXOlSm03VbeMbySXyCFRFEgeMcD59AdNwl/nJLNOYw=;
+        b=XiOMBjEGRr1HDoc93V2F82DVTaq+4ii3YitZNY7GCtQ6vHUw3flZXe/2Re3RKFw9xu
+         PIFz7yyeZel5BunPtRaCRHWLHm17MqpZpDqGvFS68/9zE40S0QG78FGWZq6LxVV0XQgE
+         rsko9ylzvdr8Ua3IwDhZ5QSK843vIHbSRjS88NppRrygyiB9UegfOqI3rEaLePIvzdPF
+         VctKBpmLrjM8qe9epE2GhZe6WyfMAOqNIVjgx8t6JJmTWWeVfFNL1ipXrps7wxG+mb5l
+         ilkLmV/Lleru9tdvb39sX+BN1XLEOyNMG2end+aA3vI9N9PyYUWwnlzffblXtx0b5JmF
+         cr8Q==
+X-Gm-Message-State: AOAM532qyw98Y3YOyh/Sidmkb1qJFZ8zdoEOcCV8XjM30ebh+OfW+BzB
+        K1RwYf+opHzSQb5rfaRdWvI=
+X-Google-Smtp-Source: ABdhPJxYLqkBm8dJsbUCNagLo5grTrrqPgxi2R6LQPcesM1Lc6lP/+8e4ZQAQg/MHjkCzYw22ztkXQ==
+X-Received: by 2002:ac8:45c9:: with SMTP id e9mr19842001qto.178.1616971516583;
+        Sun, 28 Mar 2021 15:45:16 -0700 (PDT)
+Received: from localhost.localdomain ([177.189.249.24])
+        by smtp.googlemail.com with ESMTPSA id q24sm11668595qki.120.2021.03.28.15.45.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 15:45:16 -0700 (PDT)
+From:   Rodrigo Figueiredo Zaiden <rodrigoffzz@gmail.com>
+Cc:     rodrigoffzz@gmail.com, Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: atomisp: add ibuf_ctrl_rmgr.c to ISP2401 build only
+Date:   Sun, 28 Mar 2021 19:43:04 -0300
+Message-Id: <20210328224304.90918-1-rodrigoffzz@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
-branch HEAD: f2ea2c3568eb3852fcce1348f9dd56dbc12804c0  Merge branch 'locking/WIP' into locking/urgent
+When CONFIG_VIDEO_ATOMISP_ISP2401 is not set, sparse shows
+the following warnings:
 
-elapsed time: 721m
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:34:6: warning: symbol 'ia_css_isys_ibuf_rmgr_init' was not declared. Should it be static?
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:40:6: warning: symbol 'ia_css_isys_ibuf_rmgr_uninit' was not declared. Should it be static?
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:46:6: warning: symbol 'ia_css_isys_ibuf_rmgr_acquire' was not declared. Should it be static?
+drivers/staging/media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:106:6: warning: symbol 'ia_css_isys_ibuf_rmgr_release' was not declared. Should it be static?
 
-configs tested: 105
-configs skipped: 2
+The symbols stated as not declared are actually declared
+under ISP2401 definition in ia_css_isys.h.
+So, the file ibuf_ctrl_rmgr.c should be compiled only when
+ISP2401 is enabled.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-powerpc                   bluestone_defconfig
-mips                      pic32mzda_defconfig
-arm                           omap1_defconfig
-arm                       versatile_defconfig
-mips                         tb0226_defconfig
-arm                         nhk8815_defconfig
-powerpc                 xes_mpc85xx_defconfig
-xtensa                    xip_kc705_defconfig
-mips                          ath25_defconfig
-mips                       lemote2f_defconfig
-arm                        spear3xx_defconfig
-arm                            pleb_defconfig
-mips                        omega2p_defconfig
-ia64                          tiger_defconfig
-sh                            shmin_defconfig
-arm                          badge4_defconfig
-powerpc                     stx_gp3_defconfig
-arm                         at91_dt_defconfig
-powerpc                      acadia_defconfig
-arm                         assabet_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20210328
-i386                 randconfig-a003-20210328
-i386                 randconfig-a001-20210328
-i386                 randconfig-a002-20210328
-i386                 randconfig-a006-20210328
-i386                 randconfig-a005-20210328
-x86_64               randconfig-a015-20210328
-x86_64               randconfig-a012-20210328
-x86_64               randconfig-a013-20210328
-x86_64               randconfig-a014-20210328
-x86_64               randconfig-a016-20210328
-x86_64               randconfig-a011-20210328
-i386                 randconfig-a014-20210328
-i386                 randconfig-a011-20210328
-i386                 randconfig-a015-20210328
-i386                 randconfig-a016-20210328
-i386                 randconfig-a013-20210328
-i386                 randconfig-a012-20210328
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210329
-x86_64               randconfig-a012-20210329
-x86_64               randconfig-a013-20210329
-x86_64               randconfig-a014-20210329
-x86_64               randconfig-a011-20210329
-x86_64               randconfig-a016-20210329
-x86_64               randconfig-a002-20210328
-x86_64               randconfig-a003-20210328
-x86_64               randconfig-a001-20210328
-x86_64               randconfig-a006-20210328
-x86_64               randconfig-a005-20210328
-x86_64               randconfig-a004-20210328
-
+Signed-off-by: Rodrigo Figueiredo Zaiden <rodrigoffzz@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/staging/media/atomisp/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
+index 1dfad0dd02d0..555f2efa35b7 100644
+--- a/drivers/staging/media/atomisp/Makefile
++++ b/drivers/staging/media/atomisp/Makefile
+@@ -126,7 +126,6 @@ atomisp-objs += \
+ 	pci/runtime/inputfifo/src/inputfifo.o \
+ 	pci/runtime/isp_param/src/isp_param.o \
+ 	pci/runtime/isys/src/csi_rx_rmgr.o \
+-	pci/runtime/isys/src/ibuf_ctrl_rmgr.o \
+ 	pci/runtime/isys/src/isys_dma_rmgr.o \
+ 	pci/runtime/isys/src/isys_init.o \
+ 	pci/runtime/isys/src/isys_stream2mmio_rmgr.o \
+@@ -175,7 +174,8 @@ obj-cht = \
+ 	pci/css_2401_system/host/ibuf_ctrl.o \
+ 	pci/css_2401_system/host/isys_dma.o \
+ 	pci/css_2401_system/host/isys_irq.o \
+-	pci/css_2401_system/host/isys_stream2mmio.o
++	pci/css_2401_system/host/isys_stream2mmio.o \
++	pci/runtime/isys/src/ibuf_ctrl_rmgr.o
+ 
+ INCLUDES += \
+ 	-I$(atomisp)/ \
+-- 
+2.25.1
+
