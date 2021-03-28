@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3D934BDDD
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 20:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F36334BDE2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 20:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhC1SC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 14:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
+        id S231425AbhC1SH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 14:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhC1SB6 (ORCPT
+        with ESMTP id S229950AbhC1SHF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 14:01:58 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33DEC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 11:01:57 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so5521044wmi.3
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 11:01:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FSV6rta3hJrwpk1P4mXDAcDYdRJg95MvBSYZceCodik=;
-        b=oSOYYdNRkdQVtznXgt78DhiwTWTyzGZF3oJMe8w4KEtcPyBLXe+SMFYvGd+1oj9LQU
-         r+3uWqxIghxhPFZU6Wuc3lTsr1obuN/1XT+oueshAk+gbGImzMAYJdf85a6crcqhy0e1
-         +wZlhI6QwSVp9fLFMCSC4+ilP5ANqr7SeCPSHFAjZvo4GtktRLFRtw0ftjbX+D8y7QhE
-         kOKivr+Xaqy/9hlXYLyfK3URX9DHSdP8BlWHVxIGKPZyn5bMqhtXBFITvpGaI+/xd/rM
-         sFNiokpGBV5ArT1Z24VLOrvllQ0LUemSArwJLtk2pUBXbSKIRoROtHU9pA39vqDdmQwk
-         xaSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FSV6rta3hJrwpk1P4mXDAcDYdRJg95MvBSYZceCodik=;
-        b=ja1c+fYsdXfsfy0whIsBU48E0r2DXFV6Ufw0bZzE8mX9kB24N0qSt3BkJBlJmMPkmz
-         sCSA7vb+pzoDdnHvoYWlHTWlgtdq5FXqbvY6WA25TWzvnW/z2i1oBfafJgm0X/5i8u6h
-         INJgnEhi9EkjuCEk21S47ccUS6ZmB9wfMyyieJl92mngggmae5MUIEzpIs90x9fWMSvq
-         zJnAN+KxSOyDBuQ6NdQK/JLYiuawII2SW+z8hiQ1wuNRt5Cn9ZsI9V5IcDp4Y5D03mNQ
-         yD/dOH0CSJ67qIu1ugSs/tlHHeKUwOY1ZpEut8ROJFP5hW6h+PHFr8ldvLBVOLK51Nut
-         DdbQ==
-X-Gm-Message-State: AOAM530YddZMDn2QwhiWd62IHGFC2NQsJsqaljoJc7vMjkjsYHW+SZ9U
-        nsc+u9N0V844UFiPepCst4U5iQ==
-X-Google-Smtp-Source: ABdhPJy+gVLRWMbs9MBvQ5wgzJ1R9N4zHUB5GvTCe8IVgfnknokeggtcfnLxxlZFMTEPF9ziKiZFcw==
-X-Received: by 2002:a05:600c:1992:: with SMTP id t18mr21563797wmq.125.1616954516332;
-        Sun, 28 Mar 2021 11:01:56 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1945:696f:a453:cac9? ([2a01:e34:ed2f:f020:1945:696f:a453:cac9])
-        by smtp.googlemail.com with ESMTPSA id g11sm25154394wrw.89.2021.03.28.11.01.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Mar 2021 11:01:55 -0700 (PDT)
-Subject: Re: [PATCH v4 2/5] powercap/drivers/dtpm: Create a registering system
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, lukasz.luba@arm.com
-References: <20210312130411.29833-1-daniel.lezcano@linaro.org>
- <20210312130411.29833-2-daniel.lezcano@linaro.org>
- <YF8qIw4UBLnj9TCA@kroah.com>
- <433ec4ac-a7a9-ecf9-f1c1-f658d279a2df@linaro.org>
- <YGAnRx8SiZHFPpY6@kroah.com>
- <7df276d1-abea-622c-2c7e-2c5e412aa4a9@linaro.org>
- <YGBng8D+nPS4/LJO@kroah.com>
- <7ba5094b-7fac-72ff-0e52-6f60eb86f253@linaro.org>
- <YGC8Yj9OTgc4aU0y@kroah.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <35b543d1-5559-b814-11b0-8a53c1218750@linaro.org>
-Date:   Sun, 28 Mar 2021 20:01:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 28 Mar 2021 14:07:05 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB0DC061756;
+        Sun, 28 Mar 2021 11:07:05 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQZoU-000UU0-Fw; Sun, 28 Mar 2021 18:07:02 +0000
+Date:   Sun, 28 Mar 2021 18:07:02 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Miklos Szeredi <mszeredi@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Amir Goldstein <amir73il@gmail.com>,
+        David Sterba <dsterba@suse.cz>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/18] vfs: add fileattr ops
+Message-ID: <YGDFxh7+724niztd@zeniv-ca.linux.org.uk>
+References: <20210325193755.294925-1-mszeredi@redhat.com>
+ <20210325193755.294925-2-mszeredi@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YGC8Yj9OTgc4aU0y@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210325193755.294925-2-mszeredi@redhat.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/03/2021 19:26, Greg KH wrote:
+On Thu, Mar 25, 2021 at 08:37:38PM +0100, Miklos Szeredi wrote:
 
-[ ... ]
+> +int vfs_fileattr_get(struct dentry *dentry, struct fileattr *fa)
+> +{
+> +	struct inode *inode = d_inode(dentry);
+> +
+> +	if (d_is_special(dentry))
+> +		return -ENOTTY;
 
->>> So why are you trying to add a kref here as the structure already has
->>> support for proper lifetimes?
->>
->> Right, I'll revisit that part. Thanks for the review.
->>
->> I've a branch which is pulled by Rafael [1]. These parts are already
->> merged in the dtpm/next branch but not yet in Rafael's tree.
-> 
-> I would recommend fixing that up if you can rebase it.  If not, you need
-> to revert it and start over.  I'll be glad to review it if you cc: me on
-> the patches.
-> 
->> I think a rebase is possible but I would like to avoid that. Would be a
->> patch on top of the dtpm/next acceptable given your flow with Android ?
-> 
-> This has nothing to do with the Android kernel workflow, sorry.  I am
-> concerned about proper kernel development and keeping bugs out of it.
+FWIW - why?  For uses via ioctl() you simply won't get there with
+device nodes et.al. - they have file_operations of their own.
+If we add syscall(s) for getting/setting those, there's no reason
+for e.g. a device node not to have those attributes...
 
+> +static int ioctl_getflags(struct file *file, void __user *argp)
 
-Fair enough, I will fix it up and send a v5.
+unsigned int __user *argp, surely?
 
-Thanks
+> +{
+> +	struct fileattr fa = { .flags_valid = true }; /* hint only */
+> +	unsigned int flags;
+> +	int err;
+> +
+> +	err = vfs_fileattr_get(file->f_path.dentry, &fa);
+> +	if (!err) {
+> +		flags = fa.flags;
+> +		if (copy_to_user(argp, &flags, sizeof(flags)))
+> +			err = -EFAULT;
 
-  -- Daniel
+... and put_user() here.
 
+> +	}
+> +	return err;
+> +}
+> +
+> +static int ioctl_setflags(struct file *file, void __user *argp)
+> +{
+> +	struct fileattr fa;
+> +	unsigned int flags;
+> +	int err;
+> +
+> +	if (copy_from_user(&flags, argp, sizeof(flags)))
+> +		return -EFAULT;
+> +
+> +	err = mnt_want_write_file(file);
+> +	if (!err) {
+> +		fileattr_fill_flags(&fa, flags);
+> +		err = vfs_fileattr_set(file_mnt_user_ns(file), file_dentry(file), &fa);
+> +		mnt_drop_write_file(file);
+> +	}
+> +	return err;
+> +}
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Similar here.
