@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FDF34BA75
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 04:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2154134BA7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 04:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhC1COz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 27 Mar 2021 22:14:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:47429 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231184AbhC1COM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 27 Mar 2021 22:14:12 -0400
-IronPort-SDR: cSyaHTRmY892XinflCfrIyYl0WwS/Lrgd06r2GNIr74PfAf+SECy4XcTwOtdLtspGYkDUSUNcO
- 7u4sa/CrboLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9936"; a="188080947"
-X-IronPort-AV: E=Sophos;i="5.81,284,1610438400"; 
-   d="scan'208";a="188080947"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2021 19:14:12 -0700
-IronPort-SDR: PLCvrc1AhKc9g+rlXbpRX/vXfs6dwGo005iEbWFv0XGfv6SHnW134ddsq+nOrEMUfLWT9+dNaZ
- sUQ8prQgE3Lg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,284,1610438400"; 
-   d="scan'208";a="392711034"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 27 Mar 2021 19:14:09 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lQKwK-0003mu-OQ; Sun, 28 Mar 2021 02:14:08 +0000
-Date:   Sun, 28 Mar 2021 10:13:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        linux-fsdevel@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, pali@kernel.org, dsterba@suse.cz,
-        aaptel@suse.com, willy@infradead.org, rdunlap@infradead.org,
-        joe@perches.com, mark@harmstone.com
-Subject: [PATCH] fs/ntfs3: fix d_find_alias.cocci warnings
-Message-ID: <20210328021333.GA68800@116d7529a87d>
-References: <20210327214023.3214923-10-almaz.alexandrovich@paragon-software.com>
+        id S231240AbhC1CkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 27 Mar 2021 22:40:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230451AbhC1Cjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 27 Mar 2021 22:39:48 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC7FC0613B1;
+        Sat, 27 Mar 2021 19:39:48 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id t20so2752816plr.13;
+        Sat, 27 Mar 2021 19:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KY07dtiSbQ3SbfmuZCvFR/go4sGKiptIa+i0kD0WZqc=;
+        b=tdjkd1nOHESNUMfs/T4ucw6BA6QQBvW/f5fplya6uOf0fq/Xmw3o38e5XnxDdwcsGb
+         Wf9pTIaUsK0LvpWrAlkwhOY2xG+5IRRq9tWRUJoyQHM+Q/SEJRfjKd1mrwlWpXeVf4PY
+         Kn5e9vs+FefkbLun0kGdJRUslQ+83PuitX2yMPl34WdFrUar2vsONQRicMiK9bafb+hm
+         ioTW9D4xG8XMC8uRQQk+pwI1B/wAZuTXGE6OhlAjGfi8lxaQqS1yyoeXtE2FDCb8+9/S
+         aenuPQGzaO1BOKM2/Qzwr0rxpD87QQDg8eJ93+w/B1AO3kcsJf1FHa11vgEEZzRJXmAT
+         FMyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KY07dtiSbQ3SbfmuZCvFR/go4sGKiptIa+i0kD0WZqc=;
+        b=Tig+vymru3jep8HgpkdDV17eqYNv77d0JSzWhDh0i6sInbEkG1SvLaHS4Y3fituOEp
+         D8QQuzonB5JlEx+4fgu7Xzq7ruLjOTG16XmQbeuK+iOrTMBHs52x09reSJETgZiyW7Z1
+         nf5W65eDTW40gkmdTOKKhWLv6jA2O4NgoO3qG1r4qBXSon837f7Wm6h789WMk8oUutJI
+         5DGpKa+oNsJcIYdVBxj5AyPGIE2U6rib8wC/N9eKgPE8p1cs3VnO8T3kRay93Jm19i2L
+         CD7fu2lgSiBebPK21tcaIoLk7EQLEpt25PbzeDfq0Q/LMbbV3QBrM1+V7heMIl69KqeL
+         N5Ng==
+X-Gm-Message-State: AOAM5329wumBNvudfABJS0O6xhZjHwNWenfGJkPjwBDHhv6KoUryLYYY
+        c+udtDNoMEFqLATmg1t964k=
+X-Google-Smtp-Source: ABdhPJxh7tUNCHZD2GFQe0k6tjBkNKtK98QJ158nUaZyll9zaON5o/PeyEk5/WE0c9bYkn7F7pZSwQ==
+X-Received: by 2002:a17:90a:2c4b:: with SMTP id p11mr21428264pjm.75.1616899187997;
+        Sat, 27 Mar 2021 19:39:47 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id c128sm13209952pfc.76.2021.03.27.19.39.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 19:39:47 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, tsbogend@alpha.franken.de
+Cc:     ilya.lipnitskiy@gmail.com, ardb@kernel.org
+Subject: [PATCH v3] crypto: mips: add poly1305-core.S to .gitignore
+Date:   Sat, 27 Mar 2021 19:39:43 -0700
+Message-Id: <20210328023943.15540-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210328014052.8645-1-ilya.lipnitskiy@gmail.com>
+References: <20210328014052.8645-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210327214023.3214923-10-almaz.alexandrovich@paragon-software.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+poly1305-core.S is an auto-generated file, so it should be ignored.
 
-fs/ntfs3/super.c:93:17-23: Missing call to dput() at line 121.
-
- Make sure calls to d_find_alias() have a corresponding call to dput().
-Generated by: scripts/coccinelle/api/d_find_alias.cocci
-
-CC: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
+Fixes: a11d055e7a64 ("crypto: mips/poly1305 - incorporate OpenSSL/CRYPTOGAMS optimized implementation")
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>
 ---
+ arch/mips/crypto/.gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 arch/mips/crypto/.gitignore
 
-url:    https://github.com/0day-ci/linux/commits/Konstantin-Komarov/NTFS-read-write-driver-GPL-implementation-by-Paragon-Software/20210328-054516
-base:   931294922e65a23e1aad6398b9ae02df74044679
+diff --git a/arch/mips/crypto/.gitignore b/arch/mips/crypto/.gitignore
+new file mode 100644
+index 000000000000..0d47d4f21c6d
+--- /dev/null
++++ b/arch/mips/crypto/.gitignore
+@@ -0,0 +1,2 @@
++# SPDX-License-Identifier: GPL-2.0-only
++poly1305-core.S
+-- 
+2.31.0
 
-Please take the patch only if it's a positive warning. Thanks!
-
- super.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -118,6 +118,7 @@ void ntfs_inode_printk(struct inode *ino
- 	atomic_inc(&s_name_buf_cnt);
- 	if (name != s_name_buf)
- 		kfree(name);
-+	dput(dentry);
- }
- #endif
- 
