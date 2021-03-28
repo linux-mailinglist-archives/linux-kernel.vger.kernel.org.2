@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BD834BBA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A68434BBAB
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhC1ILi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 04:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
+        id S231150AbhC1IQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 04:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230202AbhC1ILF (ORCPT
+        with ESMTP id S229489AbhC1IQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 04:11:05 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CB83C061762;
-        Sun, 28 Mar 2021 01:11:05 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id c204so7843990pfc.4;
-        Sun, 28 Mar 2021 01:11:05 -0700 (PDT)
+        Sun, 28 Mar 2021 04:16:20 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 20050C061762;
+        Sun, 28 Mar 2021 01:16:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1XdXQKnDghpTP9/KuIBNLvBqdWivOptTKhhbKCDsWIs=;
-        b=BH8FWnR0B3WVQoG8ayN2b+US8Fy2kGqGo/VjmZHcZfM4zwCMsDebfNl6zPlfpDP7aU
-         IXdDaYA3y3cFKVRk9TRy+GkRWHtSMnwYpHgKUkhYemneQJZW0TkjMwRVggxatkAw3rSg
-         3ZILefa4/GcdSdMQ7mQJ4Ae5s5i8f7Xb2HBw8+PAIFQjsYEjF8+O73m/0L389dj4zHtb
-         TfE/1KAFOi+YPMOv2F75Nrgq/h/HWgp7BPTzhvrD7fUmhLE0lcJ8r+zEi6/5jxQEjf4k
-         Cj8dsw+4TlLvNVGw2IdXQvEhwxRLNXVqfLpLDzxgP35Kise2WSTuOLRKspB9chz6VTja
-         eKdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1XdXQKnDghpTP9/KuIBNLvBqdWivOptTKhhbKCDsWIs=;
-        b=cFqEHhjDJsnjQXuF6aLYQSJ2WUa30gPKuw2OImG6BnwTSkycwa44WwtPKB9t2elZt1
-         IlJTiUHn2GpsiAyKty2GXXyu4cjjXHfANcHP1VFiB0vU39ZmVtWynuEhz/2ULdD6fAJl
-         w31Ne0j7dPDFFbsJMojXr3uAsB0qpkl928EhO95iNt9AGfpj6pAIxDhOivl+2t3NnWli
-         yjsTzCXLzEsg6FQPAFVCmHgU5i3b8eP78U+EN8gWnjnar7yYz710tg5k67UPsUM/jGnW
-         53eX7MUifUcsKfU3ONAsSffQ4D9ctq4cEPvSPKQvSYpsokJfaYGXE1utLFcYNzXJNSxm
-         wtIg==
-X-Gm-Message-State: AOAM532MDcjeCoidk/SqOrRe8GAI/lNva/jM1hikccC/YwOsdN7+aGNc
-        TRru37u2TSjgxxQwy0RZnCc=
-X-Google-Smtp-Source: ABdhPJy68PHbCVfGKlMGV3zTiAH7e8wgoAIgOSdv+k4EK0oMeBGyyfP8Kuf7LK1qRBzd5J4gr3IPsQ==
-X-Received: by 2002:a63:3189:: with SMTP id x131mr19282394pgx.430.1616919064473;
-        Sun, 28 Mar 2021 01:11:04 -0700 (PDT)
-Received: from localhost ([112.79.247.28])
-        by smtp.gmail.com with ESMTPSA id f20sm13850191pfa.10.2021.03.28.01.11.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 01:11:03 -0700 (PDT)
-Date:   Sun, 28 Mar 2021 13:41:00 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 3/5] libbpf: add low level TC-BPF API
-Message-ID: <20210328080648.oorx2no2j6zslejk@apollo>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-4-memxor@gmail.com>
- <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=7u9Bgk9oEJ
+        z1bBIjfI12UBnidj1IuNItVEUVU4M2CdE=; b=hd+WDkqbWzLawkk/MHeknDiIgL
+        JO4Q6yCCBnFs5DGcWBgqwetl9+0B59Zku8kzl65bSZU/WfkpPDR5VeZ93tg+pZfA
+        mXVhxMvkgp+TRnusvYNZQc78fWJyR1ukOT4LH4IwTARCStip5Oy3pWjSRnFcn/ou
+        obEKF/t3wkeBArMyk=
+Received: from ubuntu.localdomain (unknown [202.38.69.14])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAHDk5HO2BgDdNcAA--.3711S4;
+        Sun, 28 Mar 2021 16:16:07 +0800 (CST)
+From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+To:     skashyap@marvell.com, jhasan@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Subject: [PATCH] scsi/bnx2fc/bnx2fx_fcore: Fix a double free in bnx2fc_rcv
+Date:   Sun, 28 Mar 2021 01:16:03 -0700
+Message-Id: <20210328081603.5428-1-lyl2019@mail.ustc.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbz9OQ_vfqyenurPV7XRVpK=zcvktwH2Dvj-9kUGL1e7w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LkAmygAHDk5HO2BgDdNcAA--.3711S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7XFyxXFWUWr45ur15JFy5Jwb_yoW8Jr4xpa
+        n2q3W5CFs5Cw4jkr4jq3yUGw15Ca4rJr9xKayxKan8CayfJr1FyF95tay0qr45GFWrCw42
+        qrn5tFyY9a1qqF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUeFALDUUUU
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 10:12:40AM IST, Andrii Nakryiko wrote:
-> Is there some succinct but complete enough documentation/tutorial/etc
-> that I can reasonably read to understand kernel APIs provided by TC
-> (w.r.t. BPF, of course). I'm trying to wrap my head around this and
-> whether API makes sense or not. Please share links, if you have some.
->
+In bnx2fc_rcv, it calls skb_share_check(skb,GFP_ATOMIC) to clone
+the skb. But if skb_clone() failed, skb_share_check() will free
+the skb in the first time and return NULL. Then skb_share_check()
+returns NULL and goto err.
 
-Hi Andrii,
+Unfortunately, the same skb is freed in the second time in err.
 
-Unfortunately for the kernel API part, I couldn't find any when I was working
-on this. So I had to read the iproute2 tc code (tc_filter.c, f_bpf.c,
-m_action.c, m_bpf.c) and the kernel side bits (cls_api.c, cls_bpf.c, act_api.c,
-act_bpf.c) to grok anything I didn't understand. There's also similar code in
-libnl (lib/route/{act,cls}.c).
+I think moving skb = tmp_skb in front of if(!tmp_err) goto err
+is a good solution, because freeing a NULL skb is safe.
 
-Other than that, these resources were useful (perhaps you already went through
-some/all of them):
+Fixes: 01a4cc4d0cd6a ("bnx2fc: do not add shared skbs to the fcoe_rx_list")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+---
+ drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-https://docs.cilium.io/en/latest/bpf/#tc-traffic-control
-https://qmonnet.github.io/whirl-offload/2020/04/11/tc-bpf-direct-action/
-tc(8), and tc-bpf(8) man pages
+diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+index 16bb6d2f98de..2e213d336ebe 100644
+--- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
++++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
+@@ -445,11 +445,11 @@ static int bnx2fc_rcv(struct sk_buff *skb, struct net_device *dev,
+ 	}
+ 
+ 	tmp_skb = skb_share_check(skb, GFP_ATOMIC);
++	skb = tmp_skb;
++
+ 	if (!tmp_skb)
+ 		goto err;
+ 
+-	skb = tmp_skb;
+-
+ 	if (unlikely(eth_hdr(skb)->h_proto != htons(ETH_P_FCOE))) {
+ 		printk(KERN_ERR PFX "bnx2fc_rcv: Wrong FC type frame\n");
+ 		goto err;
+-- 
+2.25.1
 
-I hope this is helpful!
 
---
-Kartikeya
