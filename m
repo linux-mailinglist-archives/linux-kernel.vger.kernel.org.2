@@ -2,95 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673E334BE80
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 21:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5934D34BE87
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 21:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhC1TPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 15:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhC1TO5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 15:14:57 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B178C061756;
-        Sun, 28 Mar 2021 12:14:57 -0700 (PDT)
-Date:   Sun, 28 Mar 2021 19:14:54 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1616958894;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9A5lc1WoC3kflBmrgTZh6RBlAGESo5RzmR20p9Pc60o=;
-        b=x6AvkTOsiEQgx3q9M7OXDg9fLCt5YDzWLFj5KH2yjniHCvVdHXxVECJ9i8807ENuS676WW
-        O+wF7zsHZInZJgjkcxE6RJ2xXK4TB48hiKb8VizeyY/XoGqwdiELnqGnfUp4L/Lx9y3wmk
-        R8vEqQTthtkHt6TtPtGApGZdDiSk2sSxUAgoCVQcSWvAn/+/5+TYpoI+KVpDdligsRaGbL
-        H0Dtz273p5o2ZcWiCdvJEm+Y34Zd67WEb7fvONSIt5gNS2amGzvq35P3vO+A8UYHcsMqhZ
-        9GIg+Bb4pabrOZwSgakevtxwgOQDC8H+mYx9qKUya2zB9Gz/8IINbZphI7m+yg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1616958894;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9A5lc1WoC3kflBmrgTZh6RBlAGESo5RzmR20p9Pc60o=;
-        b=kF/DupYeM/p8Ltjaw2xkcvRoTve5KfHOOpN/TPYoke5IFYBvF1vDrdB8tjlI0Gr1sbYv2w
-        4MXeqBCRfVuRunBA==
-From:   "tip-bot2 for Alexey Makhalov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/vmware] x86/vmware: Avoid TSC recalibration when frequency is known
-Cc:     Alexey Makhalov <amakhalov@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210105004752.131069-1-amakhalov@vmware.com>
-References: <20210105004752.131069-1-amakhalov@vmware.com>
-MIME-Version: 1.0
-Message-ID: <161695889422.398.4252650912091762671.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S229950AbhC1TWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 15:22:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231330AbhC1TWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 15:22:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 43C2261999;
+        Sun, 28 Mar 2021 19:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616959344;
+        bh=tuovERmVoh1FWm4i8Zgj5Ngx1X81AQ9X7HlAFZ8nai0=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=OqLHRgsEJAq4t7tSQYHeRebkGzn6bpQfdj0u4kppc+X8b/7HbzYOtEI3facIDPlbf
+         hD7pg8LhNMkD2fM9oP28E0hvRVtAkn6SAx2ve1pAGx3Fs7YV2ZkVaDVt6Y5SCl0bZF
+         95zme4OsZdaxQ/U8D8d5DS722LFu47zwTDFNg2emVICrtV5JWhUDEeJ0d2GDEZNOt5
+         0IWAdYVefjJ52R3SXHczkUxzh0VvVjiGC/mzku1zK/n4hI0rQrdbIaMw/ytTvnocAi
+         OTVjkJY7BIHDRfd29Ld1525uTvEbzJc/Liic5/EilOrXgLfGFf7w095XDpoxf0hyNG
+         V54tuMiGVVQ2Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2BB0D609EA;
+        Sun, 28 Mar 2021 19:22:24 +0000 (UTC)
+Subject: Re: [GIT PULL] locking fix
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210328102843.GA347473@gmail.com>
+References: <20210328102843.GA347473@gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210328102843.GA347473@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-03-28
+X-PR-Tracked-Commit-Id: 291da9d4a9eb3a1cb0610b7f4480f5b52b1825e7
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 47fbbc94dab61a1385f21a0a209c61b5d6b0a215
+Message-Id: <161695934412.29365.8251458133132294947.pr-tracker-bot@kernel.org>
+Date:   Sun, 28 Mar 2021 19:22:24 +0000
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/vmware branch of tip:
+The pull request you sent on Sun, 28 Mar 2021 12:28:43 +0200:
 
-Commit-ID:     0b4a285e2c65c2c9449c6eccb87298e385213e7b
-Gitweb:        https://git.kernel.org/tip/0b4a285e2c65c2c9449c6eccb87298e385213e7b
-Author:        Alexey Makhalov <amakhalov@vmware.com>
-AuthorDate:    Mon, 04 Jan 2021 16:47:52 -08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 28 Mar 2021 21:11:43 +02:00
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-03-28
 
-x86/vmware: Avoid TSC recalibration when frequency is known
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/47fbbc94dab61a1385f21a0a209c61b5d6b0a215
 
-When the TSC frequency is known because it is retrieved from the
-hypervisor, skip TSC refined calibration by setting X86_FEATURE_TSC_KNOWN_FREQ.
+Thank you!
 
-Signed-off-by: Alexey Makhalov <amakhalov@vmware.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210105004752.131069-1-amakhalov@vmware.com
-
----
- arch/x86/kernel/cpu/vmware.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/vmware.c b/arch/x86/kernel/cpu/vmware.c
-index c6ede3b..8316411 100644
---- a/arch/x86/kernel/cpu/vmware.c
-+++ b/arch/x86/kernel/cpu/vmware.c
-@@ -378,6 +378,8 @@ static void __init vmware_set_capabilities(void)
- {
- 	setup_force_cpu_cap(X86_FEATURE_CONSTANT_TSC);
- 	setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
-+	if (vmware_tsc_khz)
-+		setup_force_cpu_cap(X86_FEATURE_TSC_KNOWN_FREQ);
- 	if (vmware_hypercall_mode == CPUID_VMWARE_FEATURES_ECX_VMCALL)
- 		setup_force_cpu_cap(X86_FEATURE_VMCALL);
- 	else if (vmware_hypercall_mode == CPUID_VMWARE_FEATURES_ECX_VMMCALL)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
