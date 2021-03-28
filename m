@@ -2,126 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B652734BEEA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A528934BF00
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 22:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhC1Uis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 16:38:48 -0400
-Received: from maynard.decadent.org.uk ([95.217.213.242]:37094 "EHLO
-        maynard.decadent.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229950AbhC1UiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 16:38:23 -0400
-Received: from [2a02:1811:d34:3700:3b8d:b310:d327:e418] (helo=deadeye)
-        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1lQcAf-0001v1-GR; Sun, 28 Mar 2021 22:38:05 +0200
-Received: from ben by deadeye with local (Exim 4.94)
-        (envelope-from <ben@decadent.org.uk>)
-        id 1lQcAe-003GQz-0v; Sun, 28 Mar 2021 22:38:04 +0200
-Message-ID: <ec12b32022a7767e1e689e9584725aced5dd160d.camel@decadent.org.uk>
-Subject: Re: [PATCH 4.9 00/78] 4.9.262-rc1 review
-From:   Ben Hutchings <ben@decadent.org.uk>
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Date:   Sun, 28 Mar 2021 22:37:48 +0200
-In-Reply-To: <11774be7-0738-1a23-f186-0875b9e82ef6@gmail.com>
-References: <20210315135212.060847074@linuxfoundation.org>
-         <11774be7-0738-1a23-f186-0875b9e82ef6@gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="=-rIV6XJSGGvsqusd4aWkP"
-User-Agent: Evolution 3.38.2-1 
+        id S230294AbhC1UuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 16:50:18 -0400
+Received: from iodev.co.uk ([46.30.189.100]:49614 "EHLO iodev.co.uk"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230395AbhC1Utq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 16:49:46 -0400
+X-Greylist: delayed 554 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 16:49:45 EDT
+Received: from localhost (121.130.77.188.dynamic.jazztel.es [188.77.130.121])
+        by iodev.co.uk (Postfix) with ESMTPSA id 6640028187;
+        Sun, 28 Mar 2021 22:40:09 +0200 (CEST)
+From:   Ismael Luceno <ismael@iodev.co.uk>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, Ismael Luceno <ismael@iodev.co.uk>
+Subject: [PATCH] checkpatch: Use python3 by default with spdxcheck.py
+Date:   Sun, 28 Mar 2021 22:41:11 +0200
+Message-Id: <20210328204110.12776-1-ismael@iodev.co.uk>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a02:1811:d34:3700:3b8d:b310:d327:e418
-X-SA-Exim-Mail-From: ben@decadent.org.uk
-X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allow to override this via the PYTHON environment variable.
 
---=-rIV6XJSGGvsqusd4aWkP
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Some systems still provide Python 2.x under the python name for
+compatibility reasons; plus the spdxcheck.py script already specifies
+python3 as it's interpreter.
 
-On Mon, 2021-03-15 at 13:42 -0700, Florian Fainelli wrote:
->=20
->=20
-> On 3/15/2021 6:51 AM, gregkh@linuxfoundation.org=C2=A0wrote:
-> > From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >=20
-> > This is the start of the stable review cycle for the 4.9.262
-> > release.
-> > There are 78 patches in this series, all will be posted as a
-> > response
-> > to this one.=C2=A0 If anyone has any issues with these being applied,
-> > please
-> > let me know.
-> >=20
-> > Responses should be made by Wed, 17 Mar 2021 13:51:58 +0000.
-> > Anything received after that time might be too late.
-> >=20
-> > The whole patch series can be found in one patch at:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
-> > https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.26=
-2-rc1.gz
-> > or in the git tree and branch at:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0git://git.kernel.org/pu=
-b/scm/linux/kernel/git/stable/linux-
-> > stable-rc.git linux-4.9.y
-> > and the diffstat can be found below.
-> >=20
-> > thanks,
-> >=20
-> > greg k-h
->=20
-> On ARCH_BRCMSTB using 32-bit and 64-bit kernels, still seeing the
-> following futex warning, unfortunately simply running the function
-> tracers does not allow me to trigger the warning, so I am having a
-> hard
-> time coming up with a simple reproducer:
-[...]
+Signed-off-by: Ismael Luceno <ismael@iodev.co.uk>
+---
+ scripts/checkpatch.pl | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I've now also seen this warning on x86_64 when running Firefox.  I
-don't know why it didn't show up in my earlier testing.
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index df8b23dc1eb0..3f7516e262b3 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -68,6 +68,7 @@ my $allow_c99_comments = 1; # Can be overridden by --ignore C99_COMMENT_TOLERANC
+ my $git_command ='export LANGUAGE=en_US.UTF-8; git';
+ my $tabsize = 8;
+ my ${CONFIG_} = "CONFIG_";
++my $python = $ENV{'PYTHON'} || 'python3';
+ 
+ sub help {
+ 	my ($exitcode) = @_;
+@@ -1000,10 +1001,10 @@ sub is_maintained_obsolete {
+ sub is_SPDX_License_valid {
+ 	my ($license) = @_;
+ 
+-	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
++	return 1 if (!$tree || which($python) eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
+ 
+ 	my $root_path = abs_path($root);
+-	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
++	my $status = `cd "$root_path"; echo "$license" | "$python" scripts/spdxcheck.py -`;
+ 	return 0 if ($status ne "");
+ 	return 1;
+ }
+-- 
+2.31.0
 
-I remain sceptical that a cherry-picking approach is going to work for
-fixing futexes on 4.9.  But I now have an additional patch series that
-seems to fix this warning (and some other older bugs that I didn't
-reproduce) and continues to pass the self-tests.  I'll send that along
-shortly.
-
-Ben.
-
---=20
-Ben Hutchings
-It is a miracle that curiosity survives formal education.
-                                                      - Albert Einstein
-
---=-rIV6XJSGGvsqusd4aWkP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAmBg6RwACgkQ57/I7JWG
-EQmdGRAAh2burezwww+xp9zOuzCBxyrl0PezZoU7nrdXQ/knqglBEJE2JUB3PV6j
-9rmntBtCl1wJylJMArNXjSnp49aNuzwkt8PGlKn6Rp24UqMp7GImWSVGXS9SJq3X
-kapYKRZXZhqi7TbUxGl75YwGz6V7gmW5M/yQxdQgzvyVJOicxJF47GuWoNawrPU0
-MiRz046jOtAEwrJriqFOz0S87HNrlg0QAGAk5YZ4l/WMPX/xHm9KWr0Zj04aKBSQ
-KZVS+PsIKN9Ggdu/GhQquHmykDENLcC5lI1BwlB4y2h5VaMNjrlFNQwEmAzjA+Vb
-999m34iB/Gn9OHkc5G9i6r7bwKsR3vAEYcYZ2EbTzacZE7dQ8pl6kpwetTEuKgTs
-Xwn9B+8XlM5LUi0xsHvbdqAxjklSvekTUqYiPBf/R/FtruuqzJxlWWVqf2p0tx4b
-jaNxXUh+8+yot0s9EOXBF7RQCh/VYxMJm3I4EY4tjUvUlcg4E1dt6I5oYA1guvUJ
-/iPEFjBuGMUacWMTb46eVjTYsya9bf0gtcfArjHQPMTXY7nxk4BocVjILEAsZqlQ
-zU8/mo+V69IHa9QLxp1yXq5SnwTnwJZm7ptl6IQ3BT//UC78QQQuisz3a0KMqW1n
-kl7R7Di87IL3KqVLgA1rzwQmeA0+vjDAde7+pzqHyY0lgTu0ViY=
-=fTa/
------END PGP SIGNATURE-----
-
---=-rIV6XJSGGvsqusd4aWkP--
