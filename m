@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A68434BBAB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4898734BBAD
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhC1IQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 04:16:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbhC1IQU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 04:16:20 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 20050C061762;
-        Sun, 28 Mar 2021 01:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=7u9Bgk9oEJ
-        z1bBIjfI12UBnidj1IuNItVEUVU4M2CdE=; b=hd+WDkqbWzLawkk/MHeknDiIgL
-        JO4Q6yCCBnFs5DGcWBgqwetl9+0B59Zku8kzl65bSZU/WfkpPDR5VeZ93tg+pZfA
-        mXVhxMvkgp+TRnusvYNZQc78fWJyR1ukOT4LH4IwTARCStip5Oy3pWjSRnFcn/ou
-        obEKF/t3wkeBArMyk=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygAHDk5HO2BgDdNcAA--.3711S4;
-        Sun, 28 Mar 2021 16:16:07 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     skashyap@marvell.com, jhasan@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] scsi/bnx2fc/bnx2fx_fcore: Fix a double free in bnx2fc_rcv
-Date:   Sun, 28 Mar 2021 01:16:03 -0700
-Message-Id: <20210328081603.5428-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        id S231313AbhC1IRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 04:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229489AbhC1IQg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 04:16:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5636C61981;
+        Sun, 28 Mar 2021 08:16:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616919396;
+        bh=4CuJQ8EA3X0dLjfVJb0qayzZWmk2CnAh0upi7tGjfZQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dvEgRHFDzql1yoMRxwyQIBY7hwZKlwCvrvRWMifQZAJzxFP51wUYl1wwRFkChRwqa
+         nAJWpvHyohovK2yCZT7Zd9Vb2FJ3eCkxz7WjngQYLKXvFUPrwgZtRgNLKmTeyoj5bZ
+         eYuu9y1xyfCLLLQpexty6dsCVr5PZDV3i54hiQHflRXdTcUCkM01vU/xyHUXHhjeC0
+         /0qC1Kkzid4pX2wjKHX3Wk1ryxdrN/rKfCzQe2MsH35T13YTEq/zzES4bknuGeaIP5
+         S2XvGX3h76e+dZWUJjjp5GTGcSSO5LDH+QriY1qp16oWptychlYdEO+XsTDOTqg37K
+         6yJo+zUEY18WQ==
+Received: by mail-oi1-f181.google.com with SMTP id k25so10228165oic.4;
+        Sun, 28 Mar 2021 01:16:36 -0700 (PDT)
+X-Gm-Message-State: AOAM532Q7lW2w41fTzpfKDTVbGCa1jgumNesXp8nY47NaDkoeKDnJYzQ
+        zM7oZ24rQn+ap0Z3IJQ1KCWy64KqjbYS4HVxiEg=
+X-Google-Smtp-Source: ABdhPJxYtGzJlX1YL6gQiKAp0fD5CeNsvzjXj5b3i+Gzrj0uoEQbigl2nkQkiN29+h9mnMgNHLPZDMPKdVXYW7Gmydc=
+X-Received: by 2002:aca:5945:: with SMTP id n66mr14779649oib.11.1616919395634;
+ Sun, 28 Mar 2021 01:16:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygAHDk5HO2BgDdNcAA--.3711S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7XFyxXFWUWr45ur15JFy5Jwb_yoW8Jr4xpa
-        n2q3W5CFs5Cw4jkr4jq3yUGw15Ca4rJr9xKayxKan8CayfJr1FyF95tay0qr45GFWrCw42
-        qrn5tFyY9a1qqF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfUeFALDUUUU
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
+References: <20210328074009.95932-1-sven@svenpeter.dev> <20210328074009.95932-3-sven@svenpeter.dev>
+In-Reply-To: <20210328074009.95932-3-sven@svenpeter.dev>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 28 Mar 2021 10:16:20 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3a1k9SyrRLammX8dGF3GjojUVUEZ4cMfb2+g6CXkBNCA@mail.gmail.com>
+Message-ID: <CAK8P3a3a1k9SyrRLammX8dGF3GjojUVUEZ4cMfb2+g6CXkBNCA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: iommu: add DART iommu bindings
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Hector Martin <marcan@marcan.st>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In bnx2fc_rcv, it calls skb_share_check(skb,GFP_ATOMIC) to clone
-the skb. But if skb_clone() failed, skb_share_check() will free
-the skb in the first time and return NULL. Then skb_share_check()
-returns NULL and goto err.
+On Sun, Mar 28, 2021 at 9:40 AM Sven Peter <sven@svenpeter.dev> wrote:
 
-Unfortunately, the same skb is freed in the second time in err.
+I noticed only one detail here:
 
-I think moving skb = tmp_skb in front of if(!tmp_err) goto err
-is a good solution, because freeing a NULL skb is safe.
+> +  - |+
+> +    dart2a: dart2a@82f00000 {
+> +      compatible = "apple,t8103-dart";
+> +      reg = <0x82f00000 0x4000>;
+> +      interrupts = <1 781 4>;
+> +      #iommu-cells = <1>;
+> +    };
 
-Fixes: 01a4cc4d0cd6a ("bnx2fc: do not add shared skbs to the fcoe_rx_list")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- drivers/scsi/bnx2fc/bnx2fc_fcoe.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+The name of the iommu should be iommu@82f00000, not dart2a@82f00000.
 
-diff --git a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-index 16bb6d2f98de..2e213d336ebe 100644
---- a/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-+++ b/drivers/scsi/bnx2fc/bnx2fc_fcoe.c
-@@ -445,11 +445,11 @@ static int bnx2fc_rcv(struct sk_buff *skb, struct net_device *dev,
- 	}
- 
- 	tmp_skb = skb_share_check(skb, GFP_ATOMIC);
-+	skb = tmp_skb;
-+
- 	if (!tmp_skb)
- 		goto err;
- 
--	skb = tmp_skb;
--
- 	if (unlikely(eth_hdr(skb)->h_proto != htons(ETH_P_FCOE))) {
- 		printk(KERN_ERR PFX "bnx2fc_rcv: Wrong FC type frame\n");
- 		goto err;
--- 
-2.25.1
-
-
+       Arnd
