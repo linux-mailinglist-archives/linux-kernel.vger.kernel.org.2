@@ -2,93 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFFB34BB8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 09:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D19334BB94
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 09:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbhC1HbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 03:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhC1HbC (ORCPT
+        id S230247AbhC1HlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 03:41:13 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:58063 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229503AbhC1Hke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 03:31:02 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2775DC061762;
-        Sun, 28 Mar 2021 00:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=ySo3LejcKx
-        hpiNYrTW7rYd2XKHLRzJ0Dm1JJ/H0CViE=; b=Y0JTSslWLJr2ilr4o55nMybfXO
-        JhLkgthVElLkm+N1ME4thTBB6koj5fCp4xS/lWSaTpJWZXOgXdjAEm3r6U2Cgp/J
-        JX+6g0F70jHxM5ZbDR2EQ69ETOIFhSptPQQlRLBBpvJ1WZfx8QxtejsMESsRuXJM
-        UIa06KPaqxrVabyVQ=
-Received: from ubuntu.localdomain (unknown [202.38.69.14])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHT0uaMGBgV45cAA--.3225S4;
-        Sun, 28 Mar 2021 15:30:34 +0800 (CST)
-From:   Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-To:     jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Subject: [PATCH] net:tipc: Fix a double free in tipc_sk_mcast_rcv
-Date:   Sun, 28 Mar 2021 00:30:29 -0700
-Message-Id: <20210328073029.4325-1-lyl2019@mail.ustc.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Sun, 28 Mar 2021 03:40:34 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BBA45580830;
+        Sun, 28 Mar 2021 03:40:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sun, 28 Mar 2021 03:40:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=MI94jwmE2zLqhfN/R9l+Jdqfny
+        JcLTSsv9uX8W7RVRE=; b=ssuZv+AFrzSuDD41TBt4dn2cF94qJZKbByHwNkWB8U
+        0MDHj9gb+fzYfS7q0BEUsRFqeoLm910DZH0xfd7YADc3RhgZjDCG2v2raUxMU/fR
+        j04JbluAfqKyQHB0S+PqshL+nZgbYZ6gF/JXAqN1iSKNFnx2pctngaUzizgCnWS/
+        hZlNULm3Jsg2CZAfy/TGumBaUcUg+vnhZpnT7qkLjBsx8Q+l5P9jbqt8RuE0WLay
+        CthyAiIa6be75L+rQDQqY33LQ2K1tFtc6ejsFNKtrZorU/HnyMaFTmZhAsKUa13K
+        j29mv95y2Zs7gDzuqX1hHDAaGsnauNmRapc5fFrfl5Kg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=MI94jwmE2zLqhfN/R
+        9l+JdqfnyJcLTSsv9uX8W7RVRE=; b=ENkFBFRf0FHBKM5TXCf9p+OXBY87FTrZU
+        IkEXDP7nbhhphIwE5P8tj/yEOldBFtrfx7DBm2Jwbh4XKfK2yGPL1tFR5hJQIiQc
+        5m+UIvJr0Jd3cK73W4djH6NpsiMMBHZrvSRm57ZiZwetKJzm8LQGAorc1WVz2oHj
+        BdMly1dGvQRSzjrCTtB9puhe80vcx2Qmbg0j/ZtqlId9idkp3OfDMALyQkODerUV
+        VwzxOfbWP3hOosl9CgxILNbNPhIdkEMa46jAJ2Ib89yPHnxI4mIgYSp+a8A+FxEg
+        wbkRQOycolY4yNOc7gtYqJgFxzmyTpNSP8euXrmJh6rCESLCIUtPQ==
+X-ME-Sender: <xms:7zJgYBopPunbEkBwirC9xV2Bf2z3od4HasX21IdEu5yETq1t62RkIg>
+    <xme:7zJgYDr4UuDabTsxXddDbYO7JC-19ub7H6rubBO4ieFb_9A2nrK6a_bD1QQpNJblg
+    Z10PgtNIKwtywJw0lY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehhedguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfr
+    vghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrh
+    hnpeeiueeljedutdfgvdegleekjeetveehffdvudefteeklefhgffgkeeljeevheelhfen
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhgihhthhhusgdrtghomhenucfkphepud
+    ejiedrudelledrvddutddrudehieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
+    mhepmhgrihhlfhhrohhmpehsvhgvnhesshhvvghnphgvthgvrhdruggvvh
+X-ME-Proxy: <xmx:7zJgYOMkMCfK3IjSwdALAHcf6wJQEFX5dtodFra87xzHb4nOKtg2Ew>
+    <xmx:7zJgYM4SyxDD5JPuUtAKUpw6E1YqphakgiGBf6DzCRkUKGx8tELcow>
+    <xmx:7zJgYA7ah88jsotm5L6JlkoFr7P1WWuZCOliQYinfwx-HwFu5uw8Ug>
+    <xmx:8TJgYAwwm-GvqXyk_59nDfwl9upKKhiC9ZsCR4x8Sxl9nM3J-CTK2S4y96M>
+Received: from localhost.localdomain (ip-176-199-210-156.hsi06.unitymediagroup.de [176.199.210.156])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 41B0624005A;
+        Sun, 28 Mar 2021 03:40:29 -0400 (EDT)
+From:   Sven Peter <sven@svenpeter.dev>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Sven Peter <sven@svenpeter.dev>, Arnd Bergmann <arnd@kernel.org>,
+        devicetree@vger.kernel.org, Hector Martin <marcan@marcan.st>,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH v2 0/3] Apple M1 DART IOMMU driver
+Date:   Sun, 28 Mar 2021 09:40:06 +0200
+Message-Id: <20210328074009.95932-1-sven@svenpeter.dev>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygBHT0uaMGBgV45cAA--.3225S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxJrWxXFWDWrWrCr43JFyftFb_yoW8JFWxpF
-        45Gr15GrZ7Jws09FyIqw40gr43C3yqkrsI9rW7Jr4kZrs0gw1Sqr409F4YgF45JrZ8CF4S
-        qr1IqFs0qrWrZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE14v_GF4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbVHq5UUUUU==
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the if(skb_peek(arrvq) == skb) branch, it calls __skb_dequeue(arrvq) to get
-the skb by skb = skb_peek(arrvq). Then __skb_dequeue() unlinks the skb from arrvq
-and returns the skb which equals to skb_peek(arrvq). After __skb_dequeue(arrvq)
-finished, the skb is freed by kfree_skb(__skb_dequeue(arrvq)) in the first time.
+Hi,
 
-Unfortunately, the same skb is freed in the second time by kfree_skb(skb) after
-the branch completed.
+Here's v2 of my Apple M1 DART IOMMU driver series as a follow up to the original
+version [1].
 
-My patch removes kfree_skb() in the if(skb_peek(arrvq) == skb) branch, because
-this skb will be freed by kfree_skb(skb) finally.
+Short summary: this series adds support for the iommu found in Apple's new M1
+SoC which is required to use DMA on most peripherals. So far this code has been
+tested with dwc3 in host and device mode on a M1 Mac Mini on top of the latest
+version of Hector's bringup series [2,3] together with my m1n1 bootloader
+branch to bring up USB [4]. It will also apply (but not be very useful) on
+top of iommu/next and v5.12-rc3.
 
-Fixes: cb1b728096f54 ("tipc: eliminate race condition at multicast reception")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
----
- net/tipc/socket.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks everyone for the suggestions and discussions so far. I believe they
+have already significantly improved the state of this driver and our
+understanding of the DART iommu!
 
-diff --git a/net/tipc/socket.c b/net/tipc/socket.c
-index cebcc104dc70..022999e0202d 100644
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -1265,7 +1265,7 @@ void tipc_sk_mcast_rcv(struct net *net, struct sk_buff_head *arrvq,
- 		spin_lock_bh(&inputq->lock);
- 		if (skb_peek(arrvq) == skb) {
- 			skb_queue_splice_tail_init(&tmpq, inputq);
--			kfree_skb(__skb_dequeue(arrvq));
-+			__skb_dequeue(arrvq);
- 		}
- 		spin_unlock_bh(&inputq->lock);
- 		__skb_queue_purge(&tmpq);
+The part I'm most unsure about is the way I keep track of the multiple
+iommu nodes attached to a device. I would love to especially get some
+feedback there.
+
+
+Changes for v2:
+ - fixed devicetree binding linting issues pointed out by Rob Herring and
+   reworked that file.
+ - made DART-specific code in io-pgtable.c unconditional and removed flag from
+   Kconfig as proposed by Robin Murphy.
+ - allowed multiple DART nodes in the "iommus" property as proposed by
+   Rob Herring and Robin Murphy. this resulted in significant changes
+   to apple-iommu-dart.c.
+ - the domain aperture is now forced to 32bit if translation is enabled after
+   the original suggestion to limit the aperture by Mark Kettenis and the
+   follow-up discussion and investigation with Mark Kettenis, Arnd Bergmann,
+   Robin Murphy and Rob Herring. This change also simplified the code
+   in io-pgtable.c and made some of the improvements suggested during review
+   not apply anymore.
+ - added support for bypassed and isolated domain modes.
+ - reject IOMMU_MMIO and IOMMU_NOEXEC since it's unknown how to set these up
+   for now or if the hardware even supports these flags.
+ - renamed some registers to be less confusing (mainly s/DOMAIN/STREAM/ to
+   prevent confusion with linux's iommu domain concept).
+
+I have also fixed my email provider so this time the series should actually
+be a single thread and not contain any HTML by accident anymore...
+
+Best,
+
+
+Sven
+
+
+[1] https://lore.kernel.org/linux-iommu/20210320151903.60759-1-sven@svenpeter.dev/
+[2] https://lore.kernel.org/linux-arch/20210304213902.83903-1-marcan@marcan.st/
+[3] https://github.com/AsahiLinux/linux/tree/upstream-bringup-v4
+[4] https://github.com/svenpeter42/m1n1/tree/usb-dwc3-serial-wip
+
+Sven Peter (3):
+  iommu: io-pgtable: add DART pagetable format
+  dt-bindings: iommu: add DART iommu bindings
+  iommu: dart: Add DART iommu driver
+
+ .../devicetree/bindings/iommu/apple,dart.yaml |  81 ++
+ MAINTAINERS                                   |   7 +
+ drivers/iommu/Kconfig                         |  14 +
+ drivers/iommu/Makefile                        |   1 +
+ drivers/iommu/apple-dart-iommu.c              | 858 ++++++++++++++++++
+ drivers/iommu/io-pgtable-arm.c                |  59 ++
+ drivers/iommu/io-pgtable.c                    |   1 +
+ include/linux/io-pgtable.h                    |   6 +
+ 8 files changed, 1027 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iommu/apple,dart.yaml
+ create mode 100644 drivers/iommu/apple-dart-iommu.c
+
 -- 
 2.25.1
-
 
