@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C487F34BC35
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074C534BC3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbhC1Lb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 07:31:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40720 "EHLO mail.kernel.org"
+        id S230526AbhC1Lhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 07:37:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhC1LbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 07:31:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8630B61971;
-        Sun, 28 Mar 2021 11:31:05 +0000 (UTC)
+        id S231260AbhC1LhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 07:37:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E3B96197C;
+        Sun, 28 Mar 2021 11:37:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616931065;
-        bh=ygvSF2Bvmh+H0Ma+sUc7kwaXVrdd1FF8mhiJ8+JAGfY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=acADhzr0jVnivNqQulEMufS5/dn17nejyQXJ1PwzYDzlN9+67zA8tpuyIl2mXZBfo
-         C6u6XgitRCNszbWow5OAmYxHjOof/VgM86sQ41bAjDq4aX0H/EImyqHwgRmYS+JoVD
-         hKbC/yRNCcKEk+eqP7dQBFEzLYRRJ1RxXzsyvkgJdVscRD9r3ICUMcE35fta5LCPV3
-         zCcOzxDhoya2PKyI7mnjayEIgsje1qqXaaEr/Rdrn1PFC+LoeE6RtrIl+HrYHfEN40
-         rOcf7axb+FDUNyuEtP7RrJ+RcLltbmiHZ5rd0cgsVvR6dwFajqPA4BhB0GR3aaIb+9
-         EZG3Ja1aYL0rQ==
-Received: by pali.im (Postfix)
-        id 1B8E956D; Sun, 28 Mar 2021 13:31:03 +0200 (CEST)
-Date:   Sun, 28 Mar 2021 13:31:02 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Andre Heider <a.heider@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        =?utf-8?Q?G=C3=A9rald?= Kerma <gerald@gk2.net>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: Re: [PATCH mvebu v3 00/10] Armada 37xx: Fix cpufreq changing base
- CPU speed to 800 MHz from 1000 MHz
-Message-ID: <20210328113102.jk3os7p56kq43yve@pali>
-References: <20210114124032.12765-1-pali@kernel.org>
- <20210222194158.12342-1-pali@kernel.org>
- <20210301192024.tgvp6f5zscbknepo@pali>
- <87a6r8ka6x.fsf@BL-laptop>
+        s=k20201202; t=1616931420;
+        bh=8r+E9jML76H0gCn8zByIpf9ts7froA6i3yzLNHuBvN4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DugdbpT4GDM1HZeaem5soSAi/FHElDFHhmz2xIpsZJUkasWv28ZB3zgK93tR/c1EG
+         Wg6UZIL/32OGSKHjIL7I3TejYIFIJatZ2S0hfZTZhMaw3y2P3h3z4TJdRouH33c2P4
+         a0vFE4t1YxIuiIc5HdVc8iBz2z/pz1daXtvTbooBxBTN2T1IZ64j2pxee2ABx/u+UN
+         R9Tpd5W1OnKdE7r9gQzXgqssvnkZagFrOM0DWS5GTeRlV6XS25xWzL3c0iO1XPbWAb
+         sCLOKxIHwnhTcR+YQphOeEdtMjQrjqZYOIz3pgbUdAYY8+PAy495HKeu1P90Dt67iE
+         cgL/CGET6Tr6g==
+Received: by mail-lf1-f44.google.com with SMTP id q29so14175994lfb.4;
+        Sun, 28 Mar 2021 04:37:00 -0700 (PDT)
+X-Gm-Message-State: AOAM5330m1XrE5OgTu5q3ngejJWzGUDNGl8342twXJp9PSj4WYCmr3oD
+        FYrhOux5BGjkQyDNKef7fm0FBwvqH+4PVjgndZw=
+X-Google-Smtp-Source: ABdhPJyj9o7D6hGhD+tmVxlzoBXg46BNhDKM+Nvrw+oWgxcsNgQKl214mB8IGaefEjDYpDQx2VSVsVg9V+sA7ebVJIA=
+X-Received: by 2002:a19:f501:: with SMTP id j1mr14083138lfb.231.1616931418962;
+ Sun, 28 Mar 2021 04:36:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6r8ka6x.fsf@BL-laptop>
-User-Agent: NeoMutt/20180716
+References: <1616913028-83376-1-git-send-email-guoren@kernel.org>
+ <1616913028-83376-5-git-send-email-guoren@kernel.org> <e27af5e0-a462-cb75-6311-1b5a6b4ee4f1@csgroup.eu>
+In-Reply-To: <e27af5e0-a462-cb75-6311-1b5a6b4ee4f1@csgroup.eu>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sun, 28 Mar 2021 19:36:47 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQvPOZ6aWxof66gzOBfia5mAV0=3pxO+QPdW8xpQrz3aA@mail.gmail.com>
+Message-ID: <CAJF2gTQvPOZ6aWxof66gzOBfia5mAV0=3pxO+QPdW8xpQrz3aA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/7] powerpc/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        linux-xtensa@linux-xtensa.org, Guo Ren <guoren@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
+        Paul Mackerras <paulus@samba.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 12 March 2021 10:12:06 Gregory CLEMENT wrote:
-> Hello Pali,
-> 
-> > Hello Gregory!
+On Sun, Mar 28, 2021 at 7:14 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
+>
+>
+>
+> Le 28/03/2021 =C3=A0 08:30, guoren@kernel.org a =C3=A9crit :
+> > From: Guo Ren <guoren@linux.alibaba.com>
 > >
-> > Patches are the for almost two months and more people have tested them.
-> > They are marked with Fixed/CC-stable tags, they should go also into
-> > stable trees as they are fixing CPU scaling and instability issues.
-> >
-> > Are there any issues with these patches? If not, could you please merge
-> > them for upcoming Linux version?
-> 
-> Actually I am not the maintainer of the clk and cpufreq subsystems, so
-> the only thing I can apply is the device tree relative patch.
-> 
-> Gregory
+> > We don't have native hw xchg16 instruction, so let qspinlock
+> > generic code to deal with it.
+>
+> We have lharx/sthcx pair on some versions of powerpc.
+>
+> See https://patchwork.ozlabs.org/project/linuxppc-dev/patch/2020110703232=
+8.2454582-1-npiggin@gmail.com/
+Got it, thx for the information.
 
-Hello Gregory! Could you please at least review this patches, so other
-maintainers could merge them?
+>
+> Christophe
+>
+> >
+> > Using the full-word atomic xchg instructions implement xchg16 has
+> > the semantic risk for atomic operations.
+> >
+> > This patch cancels the dependency of on qspinlock generic code on
+> > architecture's xchg16.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > Cc: Paul Mackerras <paulus@samba.org>
+> > ---
+> >   arch/powerpc/Kconfig | 1 +
+> >   1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> > index 386ae12d8523..69ec4ade6521 100644
+> > --- a/arch/powerpc/Kconfig
+> > +++ b/arch/powerpc/Kconfig
+> > @@ -151,6 +151,7 @@ config PPC
+> >       select ARCH_USE_CMPXCHG_LOCKREF         if PPC64
+> >       select ARCH_USE_QUEUED_RWLOCKS          if PPC_QUEUED_SPINLOCKS
+> >       select ARCH_USE_QUEUED_SPINLOCKS        if PPC_QUEUED_SPINLOCKS
+> > +     select ARCH_USE_QUEUED_SPINLOCKS_XCHG32 if PPC_QUEUED_SPINLOCKS
+> >       select ARCH_WANT_IPC_PARSE_VERSION
+> >       select ARCH_WANT_IRQS_OFF_ACTIVATE_MM
+> >       select ARCH_WANT_LD_ORPHAN_WARN
+> >
+
+
+
+--=20
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
