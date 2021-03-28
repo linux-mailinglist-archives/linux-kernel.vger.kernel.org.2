@@ -2,155 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8CF34BCFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 17:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676B234BD05
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 17:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230144AbhC1Pkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 11:40:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34439 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229647AbhC1Pkb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 11:40:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1616946030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5z7V6RMJruOPYGOOMVsLphcjB1pcPNdGrCDqwJRavuY=;
-        b=Isn28Wt0Vf0/SfFNyisS/zdanvN+XmNEPrfxFrhhY+JAosl4ZfAfPRPOBER8L38iZQcUDv
-        QLC5LE+RfRxGra/Cj5eIe2E/mNaWdZuhQlrSO9FrTlS1hinCkOccQpTrd4S2XO74i28SDU
-        CUm0YSxw4oL8uJB1KBNaKWeuKvuWgFI=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-393-YC6SmbpFOymIhRdnErDFug-1; Sun, 28 Mar 2021 11:40:28 -0400
-X-MC-Unique: YC6SmbpFOymIhRdnErDFug-1
-Received: by mail-qk1-f197.google.com with SMTP id c131so10363664qkg.21
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 08:40:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=5z7V6RMJruOPYGOOMVsLphcjB1pcPNdGrCDqwJRavuY=;
-        b=RZKZlWutMTeEaQJnyLQ08UzD2MGSYsBaRFAK0+XsYwt8l8cfuQqjesNoij3QiPQ2O0
-         Ehav4X6cEnCyaXIL+3Oehw3ks7VSnP4JHqPe/i8Max+RlGKs0cFmdBdS/Kev6mm9rO8M
-         0DslvAOcTl7m5stZEppsNLkfibhcwSa4ORTW6Se15EVxF8SjJnAoOpPQJF5vA2Wmx7F2
-         BadCD1Rz9OotdtvS3Lf50i7Ivogay/nOKHfIes5M4Rxwd9+M0tHWLromNVleFZdrkRZP
-         2lu1ib7VtmIgjG++zYQo0iloHv49bLbKuyHk2G+wDi6pD+rX1MdGk1dRuW16jPorjK11
-         EyYw==
-X-Gm-Message-State: AOAM531k/yMeZLHoNA9fHOHTLFkhZbeenqKhLxd/MD9dRNtO6doZ7Web
-        V+icDYLscmeC+zVa14p9tV0L4dVq6nQKi+X177k7BDXn4TU4zfvSh8RTAKH8NXkTSzKVskDPDEK
-        lwY2C8+bOPQlxXj50x16h2r5l
-X-Received: by 2002:ad4:4ae9:: with SMTP id cp9mr21652785qvb.20.1616946028428;
-        Sun, 28 Mar 2021 08:40:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwFBc8Qm2TQ02HNWSRarsKCjaJstalRLV+3PsjWHocmYdSDvb0XjRrobeb45TpK8NxzubiTtw==
-X-Received: by 2002:ad4:4ae9:: with SMTP id cp9mr21652773qvb.20.1616946028243;
-        Sun, 28 Mar 2021 08:40:28 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id o197sm10829852qka.26.2021.03.28.08.40.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Mar 2021 08:40:27 -0700 (PDT)
-Subject: Re: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
-To:     Moritz Fischer <mdf@kernel.org>,
-        "Gong, Richard" <richard.gong@intel.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "richard.gong@linux.intel.com" <richard.gong@linux.intel.com>,
-        russell.h.weight@intel.com
-References: <1612909233-13867-1-git-send-email-richard.gong@linux.intel.com>
- <MWHPR11MB001577B17723C8A046398249879E9@MWHPR11MB0015.namprd11.prod.outlook.com>
- <YF90y3Di4RbuJvr0@epycbox.lan>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <496aa871-cfb0-faf4-4b1c-b53e56b58030@redhat.com>
-Date:   Sun, 28 Mar 2021 08:40:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <YF90y3Di4RbuJvr0@epycbox.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+        id S230525AbhC1PqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 11:46:07 -0400
+Received: from smtp.wifcom.cz ([85.207.3.150]:36824 "EHLO smtp.wifcom.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230247AbhC1Ppp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 11:45:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=eaxlabs.cz; s=mail;
+        h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From; bh=vpikJD29gomwC8ZCLMcKJZFaNKhjOnwb++xunGrRQQY=;
+        b=FjRxjHgQ/JU0splXWne3o9kBFZy2G/z0jd6nmLeR6XSOjhL04ELAZ2IuF++sSM8g8+6wdfvhIg0D5Ob0hV4qL9oLgvrchpXVWi3dhQy1m3o+SUEM8pro7Pt+jHEgGkEumcvg47lccuzQzrr5dkkV/rQcpEOunnzQ8uzZJ+B4ibk=;
+From:   Martin Devera <devik@eaxlabs.cz>
+To:     linux-kernel@vger.kernel.org
+Cc:     Martin Devera <devik@eaxlabs.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jiri Slaby <jirislaby@kernel.org>, Le Ray <erwan.leray@st.com>,
+        fabrice.gasnier@foss.st.com, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v8 1/2] dt-bindings: serial: Add rx-tx-swap to stm32-usart
+Date:   Sun, 28 Mar 2021 17:43:05 +0200
+Message-Id: <20210328154306.22674-1-devik@eaxlabs.cz>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <YF3tKmzX1PtlX59x@kroah.com>
+References: <YF3tKmzX1PtlX59x@kroah.com>
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
+X-Wif-ss: -1.1 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add new rx-tx-swap property to allow for RX & TX pin swapping.
 
-On 3/27/21 11:09 AM, Moritz Fischer wrote:
-> Hi Richard, Russ,
->
-> On Thu, Feb 25, 2021 at 01:07:14PM +0000, Gong, Richard wrote:
->> Hi Moritz,
->>
->> Sorry for asking.
->>
->> When you have chance, can you help review the version 5 patchset submitted on 02/09/21?
->>
->> Regards,
->> Richard
->>
->> -----Original Message-----
->> From: richard.gong@linux.intel.com <richard.gong@linux.intel.com> 
->> Sent: Tuesday, February 9, 2021 4:20 PM
->> To: mdf@kernel.org; trix@redhat.com; gregkh@linuxfoundation.org; linux-fpga@vger.kernel.org; linux-kernel@vger.kernel.org
->> Cc: Gong, Richard <richard.gong@intel.com>
->> Subject: [PATCHv5 0/7] Extend Intel service layer, FPGA manager and region
->>
->> From: Richard Gong <richard.gong@intel.com>
->>
->> This is 5th submission of Intel service layer and FPGA patches, which includes the missing standalone patch in the 4th submission.
->>
->> This submission includes additional changes for Intel service layer driver to get the firmware version running at FPGA SoC device. Then FPGA manager driver, one of Intel service layer driver's client, can decide whether to handle the newly added bitstream authentication function based on the retrieved firmware version. So that we can maintain FPGA manager driver the back compatible.
->>
->> Bitstream authentication makes sure a signed bitstream has valid signatures.
->>
->> The customer sends the bitstream via FPGA framework and overlay, the firmware will authenticate the bitstream but not program the bitstream to device. If the authentication passes, the bitstream will be programmed into QSPI flash and will be expected to boot without issues.
->>
->> Extend Intel service layer, FPGA manager and region drivers to support the bitstream authentication feature. 
->>
->> Richard Gong (7):
->>   firmware: stratix10-svc: reset COMMAND_RECONFIG_FLAG_PARTIAL to 0
->>   firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
->>   firmware: stratix10-svc: extend SVC driver to get the firmware version
->>   fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
->>   fpga: of-fpga-region: add authenticate-fpga-config property
->>   dt-bindings: fpga: add authenticate-fpga-config property
->>   fpga: stratix10-soc: extend driver for bitstream authentication
->>
->>  .../devicetree/bindings/fpga/fpga-region.txt       | 10 ++++
->>  drivers/firmware/stratix10-svc.c                   | 12 ++++-
->>  drivers/fpga/of-fpga-region.c                      | 24 ++++++---
->>  drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
->>  include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
->>  .../linux/firmware/intel/stratix10-svc-client.h    | 11 +++-
->>  include/linux/fpga/fpga-mgr.h                      |  3 ++
->>  7 files changed, 125 insertions(+), 18 deletions(-)
->>
->> --
->> 2.7.4
->>
-> Apologies for the epic delay in getting back to this, I took another
-> look at this patchset and Russ' patchset.
->
-> TL;DR I'm not really a fan of using device-tree overlays for this (and
-> again, apologies, I should've voiced this earlier ...).
->
-> Anyways, let's find a common API for this and Russ' work, they're trying
-> to achieve the same / similar thing, they should use the same API.
->
-> I'd like to re-invetigate the possiblity to extend FPGA Manager with
-> 'secure update' ops that work for both these use-cases (and I susspect
-> hte XRT patchset will follow with a similar requirement, right after).
+Signed-off-by: Martin Devera <devik@eaxlabs.cz>
+Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+v8:
+  - rebase to the latest tty-next
+v7:
+  - fix yaml linter warning
+v6:
+  - add version changelog
+v5:
+  - yaml fixes based on Rob Herring comments
+    - add serial.yaml reference
+    - move compatible from 'then' to 'if'
+v3:
+  - don't allow rx-tx-swap for st,stm32-uart (suggested
+    by Fabrice Gasnier)
+v2:
+  - change st,swap to rx-tx-swap (suggested by Rob Herring)
+---
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  | 29 ++++++++++++++--------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
+---
+ .../devicetree/bindings/serial/st,stm32-uart.yaml  | 29 ++++++++++++++--------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-The xrt patchset makes heavy use of device trees.
-
-What is the general guidance for device tree usage ?
-
-Tom
-
->
-> - Moritz
->
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 8631678283f9..126e07566965 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -9,9 +9,6 @@ maintainers:
+ 
+ title: STMicroelectronics STM32 USART bindings
+ 
+-allOf:
+-  - $ref: rs485.yaml
+-
+ properties:
+   compatible:
+     enum:
+@@ -40,6 +37,8 @@ properties:
+ 
+   uart-has-rtscts: true
+ 
++  rx-tx-swap: true
++
+   dmas:
+     minItems: 1
+     maxItems: 2
+@@ -66,13 +65,23 @@ properties:
+   linux,rs485-enabled-at-boot-time: true
+   rs485-rx-during-tx: true
+ 
+-if:
+-  required:
+-    - st,hw-flow-ctrl
+-then:
+-  properties:
+-    cts-gpios: false
+-    rts-gpios: false
++allOf:
++  - $ref: rs485.yaml#
++  - $ref: serial.yaml#
++  - if:
++      required:
++        - st,hw-flow-ctrl
++    then:
++      properties:
++        cts-gpios: false
++        rts-gpios: false
++  - if:
++      properties:
++        compatible:
++          const: st,stm32-uart
++    then:
++      properties:
++        rx-tx-swap: false
+ 
+ required:
+   - compatible
+-- 
+2.11.0
 
