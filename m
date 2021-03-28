@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9B134BC0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE58C34BC11
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhC1KiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 06:38:01 -0400
-Received: from smtprelay0187.hostedemail.com ([216.40.44.187]:48478 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229560AbhC1Khf (ORCPT
+        id S230092AbhC1KpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 06:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhC1Kor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 06:37:35 -0400
-Received: from omf08.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id D392918041740;
-        Sun, 28 Mar 2021 10:37:34 +0000 (UTC)
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA id D4D0D1A29FB;
-        Sun, 28 Mar 2021 10:37:33 +0000 (UTC)
-Message-ID: <3e7134b15bfbfbf47bf55fce733e8f986865f69b.camel@perches.com>
-Subject: Re: [PATCH] kconfig: nconf: stop endless search-up loops
-From:   Joe Perches <joe@perches.com>
-To:     Mihai Moldovan <ionic@ionic.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Sun, 28 Mar 2021 03:37:32 -0700
-In-Reply-To: <695102ca-0c05-7bf9-2758-08b5405e876b@ionic.de>
-References: <20210327120155.500-1-ionic@ionic.de>
-         <1ca3a90f-799e-d917-370e-1475e33cdb14@infradead.org>
-         <111c5853-e488-0aaa-18e9-36792b648427@ionic.de>
-         <362edad0-daea-1f56-bed3-b1df174cbbf1@infradead.org>
-         <695102ca-0c05-7bf9-2758-08b5405e876b@ionic.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 28 Mar 2021 06:44:47 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9B8C061762
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 03:44:46 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id b9so9913968wrt.8
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 03:44:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=zSdvYuufHuv8g8BJEfkgwXRBjUhdu0Zl6tnzVeqIHSA=;
+        b=Uv9JkF5LPmL7R8WcvXQ2eBNTMpQGj5TS1cxvAPm9Qox+KYpOvUjwZ03vogfAVAZ/+n
+         A6XQGYkIfgNCjSf9KBDdxhnZbC14JSRxMMwQnTXMHCv2eGy7yUXztgRUuf7byD3nSIo1
+         IoAJRLjFRgQXg8fY5bWy53hnOFGaouCrKIq6gMANSra7BOypRrPhl/2TOSga5wzDoG71
+         eTSDMEVFrFn0hVH/p2dsnlp5xHX1Epf4wWORZUBzq6y1TbVtN6/RigdpXULnpGjof4U7
+         iZRMnpU0f2AF8xD0e3d5P+m7769wo0WLAw4FxjkJh/D5/ZAYjLbmOX49cwUIoHy77rMm
+         NjAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=zSdvYuufHuv8g8BJEfkgwXRBjUhdu0Zl6tnzVeqIHSA=;
+        b=JrEdJxWmbXE06RhVWOG+es6c/XJ3vMTnCqfXXO+TVahje3XRrFtKQ1bbwIRb6Vsd3y
+         h0GT5ZI5xSnekmYicdbyukUa/8t0X+sGRLcIsfdqEYHcbumvM+uGp8ppGigG+OYHcZxg
+         UL5gf47XO3w9vg9OEO+rGwto+PwjXoz7+RUQ2b0qORK859NQ0IiHLmUxoOPS1DuRjNpz
+         s4xixVszCqoYMoTq8zLTJ/ZvxnJy8cd2ziyTJPUH7R+jQcTSaEgClNpauIKcFs6Ow9az
+         u75NiB6vnQZgxSSNoD6Y3mvQFOCniLzAA10ynl5HP89oGebwML/1a7/ISsv7fb5aMxB9
+         iz6w==
+X-Gm-Message-State: AOAM532r0eeXy7g4zsgArDGckRiAqU6rT0zCURtI7r8e/3iJwpSXSsnp
+        Iu2I1ZbaCbwJq+HzdpWO+3o=
+X-Google-Smtp-Source: ABdhPJybetk0o9IDLj6rGjCpmJHyzcu8xTDzmbD3P5PBSa91maRD1pKuk4at2me1Gr6MZJtLZwCghw==
+X-Received: by 2002:a5d:5487:: with SMTP id h7mr23694207wrv.348.1616928285569;
+        Sun, 28 Mar 2021 03:44:45 -0700 (PDT)
+Received: from gmail.com (2E8BA22B.catv.pool.telekom.hu. [46.139.162.43])
+        by smtp.gmail.com with ESMTPSA id m15sm21768644wrp.96.2021.03.28.03.44.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 03:44:44 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 28 Mar 2021 12:44:42 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] x86 fixes
+Message-ID: <20210328104442.GA480587@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: 15kq3759yjaifrwfq6poj38pcp4ddzzt
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: D4D0D1A29FB
-X-HE-Tag: 1616927853-443206
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-03-28 at 11:27 +0200, Mihai Moldovan wrote:
-> * On 3/27/21 11:26 PM, Randy Dunlap wrote:
-> > There is a test for it in checkpatch.pl but I also used checkpatch.pl
-> > without it complaining, so I don't know what it takes to make the script
-> > complain.
-> > 
-> > 			if ($lead !~ /(?:$Operators|\.)\s*$/ &&
-> > 			    $to !~ /^(?:Constant|[A-Z_][A-Z0-9_]*)$/ &&
-> > 			    WARN("CONSTANT_COMPARISON",
-> > 				 "Comparisons should place the constant on the right side of the test\n" . $herecurr) &&
-> 
-> There are multiple issues, err, "challenges" there:
->   - literal "Constant" instead of "$Constant"
->   - the left part is misinterpreted as an operation due to the minus sign
->     (arithmetic operator)
->   - $Constant is defined as "qr{$Float|$Binary|$Octal|$Hex|$Int}" (which is
->     okay), but all these types do not include their negative range.
-> 
-> As far as I can tell, the latter is intentional. Making these types compatible
-> with negative values causes a lot of other places to break, so I'm not keen on
-> changing this.
-> 
-> The minus sign being misinterpreted as an operator is highly difficult to fix
-> in a sane manner. The original intention was to avoid misinterpreting
-> expressions like (var - CONSTANT real_op ...) as a constant-on-left expression
-> (and, more importantly, to not misfix it when --fix is given).
-> 
-> The general idea is sane and we probably shouldn't change that, but it would
-> be good to handle negative values as well.
-> 
-> At first, I was thinking of overriding this detection by checking if the
-> leading part matches "(-\s*$", which should only be true for negative values,
-> assuming that there is always an opening parenthesis as part of a conditional
-> statement/loop (if, while). After playing around with this and composing this
-> message for a few hours, it dawned on me that there can easily be free-
-> standing forms (for instance as part of for loops or assignment lines), so
-> that wouldn't cut it.
-> 
-> It really goes downhill from here.
-> 
-> I assume that false negatives are nuisances due to stylistic errors in the
-> code, but false positives actually harmful since a lot of them make code
-> review by maintainers very tedious.
-> 
-> So far, minus signs were always part of the leading capture group. I'd
-> actually like to have them in the constant capture group instead:
-> 
-> -		    $line =~ /^\+(.*)\b($Constant|[A-Z_][A-Z0-9_]*)\s*($Compare)\s*($LvalOrFunc)/) {
-> +		    $line =~ /^\+(.*)(-?\s*$Constant|[A-Z_][A-Z0-9_]*)\s*($Compare)\s*($LvalOrFunc)/) {
-> 
-> With that sorted, the next best thing I could come up with to weed out
-> preceding variables was this (which shouldn't influence non-negative
-> constants):
-> 
-> -			if ($lead !~ /(?:$Operators|\.)\s*$/ &&
-> +			if ($lead !~ /(?:$Operators|\.|[a-z])\s*$/ &&
-> 
-> 
-> There still are a lot of expressions that won't match this, like
-> "-1 + 0 == var" (i.e., "CONSTANT <arith_op> CONSTANT <op> ...") or
-> constellations like a simple "(CONSTANT) <op> ..." (e.g.,
-> "(1) == var").
-> 
-> This is all fuzzy and getting this right would involve moving away from
-> trying to make sense of C code with regular expressions in Perl, but actually
-> parsing it to extract the semantics. Not exactly something I'd like to do...
-> 
-> Thoughts on my workaround for this issue?
+Linus,
 
-Making $Constant not include negative values was very intentional.
+Please pull the latest x86/urgent git tree from:
 
-> Did I miss anything crucial or introduce a new bug inadvertently?
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2021-03-28
 
-Not as far as I can tell from a trivial read.
-My best guess as to what is best or necessary to do is nothing.
-checkpatch isn't a real parser and never will be.
+   # HEAD: 9fcb51c14da2953de585c5c6e50697b8a6e91a7b x86/build: Turn off -fcf-protection for realmode targets
 
-It can miss stuff.  It's imperfect.  It doesn't bother me.
+Two fixes:
 
+ - Fix build failure on Ubuntu with new GCC packages that turn on -fcf-protection
+
+ - Fix SME memory encryption PTE encoding bug - AFAICT the code worked on
+   4K page sizes (level 1) but had the wrong shift at higher page level orders
+   (level 2 and higher).
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+ Thanks,
+
+	Ingo
+
+------------------>
+Arnd Bergmann (1):
+      x86/build: Turn off -fcf-protection for realmode targets
+
+Isaku Yamahata (1):
+      x86/mem_encrypt: Correct physical address calculation in __set_clr_pte_enc()
+
+
+ arch/x86/Makefile         | 2 +-
+ arch/x86/mm/mem_encrypt.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 2d6d5a28c3bf..9a85eae37b17 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -27,7 +27,7 @@ endif
+ REALMODE_CFLAGS	:= -m16 -g -Os -DDISABLE_BRANCH_PROFILING \
+ 		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
+ 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
+-		   -mno-mmx -mno-sse
++		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=none)
+ 
+ REALMODE_CFLAGS += -ffreestanding
+ REALMODE_CFLAGS += -fno-stack-protector
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index 4b01f7dbaf30..ae78cef79980 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -262,7 +262,7 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
+ 	if (pgprot_val(old_prot) == pgprot_val(new_prot))
+ 		return;
+ 
+-	pa = pfn << page_level_shift(level);
++	pa = pfn << PAGE_SHIFT;
+ 	size = page_level_size(level);
+ 
+ 	/*
