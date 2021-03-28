@@ -2,89 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A768C34BDC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6126B34BDD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhC1Rro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:47:44 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:51966 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229593AbhC1Rrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:47:32 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lQZVY-00DUY2-U4; Sun, 28 Mar 2021 19:47:28 +0200
-Date:   Sun, 28 Mar 2021 19:47:28 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Sunil Kovvuri <sunil.kovvuri@gmail.com>
-Cc:     Hariprasad Kelam <hkelam@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
-Subject: Re: [net-next PATCH 0/8] configuration support for switch headers &
- phy
-Message-ID: <YGDBMIICAHylrIyL@lunn.ch>
-References: <MWHPR18MB14217B983EFC521DAA2EEAD2DE649@MWHPR18MB1421.namprd18.prod.outlook.com>
- <YFpO7n9uDt167ANk@lunn.ch>
- <CA+sq2CeT2m2QcrzSn6g5rxUfmJDVQqjYFayW+bcuopCCoYuQ6Q@mail.gmail.com>
- <YFyHKqUpG9th+F62@lunn.ch>
- <CA+sq2CfvscPPNTq4PR-6hjYhQuj=u2nmLa0Jq2cKRNCA-PypGQ@mail.gmail.com>
- <YFyOW5X0Nrjz8w/v@lunn.ch>
- <CA+sq2CeRjJNaNbZhs17LDrBtyvR_fb3uN=Wd=j9sLHJapVB50A@mail.gmail.com>
+        id S231293AbhC1Rwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:52:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230144AbhC1Rwc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 13:52:32 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EABBC061756;
+        Sun, 28 Mar 2021 10:52:28 -0700 (PDT)
+Received: from ipservice-092-217-065-008.092.217.pools.vodafone-ip.de ([92.217.65.8] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1lQZaH-00032y-CK; Sun, 28 Mar 2021 19:52:21 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH] staging: rtl8188eu: (trivial) remove a duplicate comment
+Date:   Sun, 28 Mar 2021 19:52:00 +0200
+Message-Id: <20210328175200.27069-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+sq2CeRjJNaNbZhs17LDrBtyvR_fb3uN=Wd=j9sLHJapVB50A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The usecase is simple, unlike DSA tag, this 4byte FDSA tag doesn't
-> have a ethertype,
-> so HW cannot recognize this header. If such packers arise, then HW parsing will
-> fail and RSS will not work.
-> 
-> Hypothetically if we introduce some communication between MAC driver
-> and DSA driver,
-> wouldn't that also become specific to the device, what generic usecase
-> that communication
-> will have ?
+Keep the one that shows the wakeup capability.
 
-Hi Sunil
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+ drivers/staging/rtl8188eu/os_dep/usb_intf.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-We need to be careful with wording. Due to history, the Linux kernel
-uses dsa to mean any driver to control an Ethernet switch. It does not
-imply the {E}DSA protocol used by Marvell switches, or even that the
-switch is a Marvell switch.
-
-netdev_uses_dsa(ndev) will tell you if the MAC is being used to
-connect to a switch. It is set by the Linux DSA core when the switch
-cluster is setup. That could be before or after the MAC is configured
-up, which makes it a bit hard to use, since you don't have a clear
-indicator when to evaluate to determine if you need to change your
-packet parsing.
-
-netdev_uses_dsa() looks at ndev->dsa_ptr. This is a pointer to the
-structure which represents the port on the switch the MAC is connected
-to. In Linux DSA terms, this is the CPU port. You can follow
-dsa_ptr->tag_ops which gives you the tagger operations, i.e. those
-used to add and remove the header/trailer. One member of that is
-proto. This contains the tagging protocol, so EDSA, DSA, or
-potentially FDSA, if that is ever supported. And this is all within
-the core DSA code, so is generic. It should work for any tagging
-protocol used by any switch which Linux DSA supports.
-
-So actually, everything you need is already present, you don't need a
-private flag. But adding a notifier that the MAC has been connected to
-a switch and ndev->dsa_ptr is set would be useful. We could maybe use
-NETDEV_CHANGE for that, or NETDEV_CHANGELOWERSTATE, since the MAC is
-below the switch slave interfaces.
-
-      Andrew
+diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+index 91a3d34a1050..e18f1fff59ca 100644
+--- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
++++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+@@ -377,7 +377,6 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+ 		dvobj->pusbdev->do_remote_wakeup = 1;
+ 		pusb_intf->needs_remote_wakeup = 1;
+ 		device_init_wakeup(&pusb_intf->dev, 1);
+-		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
+ 		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
+ 			 device_may_wakeup(&pusb_intf->dev));
+ 	}
+-- 
+2.20.1
 
