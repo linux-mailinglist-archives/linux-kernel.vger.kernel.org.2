@@ -2,105 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CF434BC72
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 14:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2581534BC74
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 14:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhC1M5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 08:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhC1M4n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 08:56:43 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56432C061762;
-        Sun, 28 Mar 2021 05:56:43 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso4632552pjb.4;
-        Sun, 28 Mar 2021 05:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I1/uzyA6pOZdXeSGhWpWxUqNW6ImJob8Xs5Y1LIUHB4=;
-        b=ZmnxaWCFRLQNuORE+CiqHdSKgtBFDVCOXTV97sbfSZ6MKnuZLc0Bl6aWX6HzgBQGqi
-         iwcC/C1sTgXzUDTWFONn/1xmSTnfjTPCJy0XO0t8OfMI19HlugXbQ5o5vpK81JtgpVry
-         zgvlpQmmOpjs+1ycYK4YyjIdbeTRAazsFgUlobpBuz4m45+HjsP9f25wgNIfgJwpSUfk
-         m3WA8nLXQ95LHyFwluu92fY24GZqRUqyiq5rtG9mHxKIQyRewqZIOc2lpHEmTQ/AmMYI
-         iPw8wOUzw1F2i3lPGR4peG5CZid0DcZG3LiMUDOpBUe26iJsFW1eBiIJ/6OikfgjEUH3
-         wIwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I1/uzyA6pOZdXeSGhWpWxUqNW6ImJob8Xs5Y1LIUHB4=;
-        b=nyrjQN9HjnJ5mbgWg5wDL/ZysAkeVRHE//1GBokSDyPAxkjPEMPV2qjOxdyVkWj1CC
-         fW6MKYTycgOOvbjG5QmNVHx4pPykbXMSubBMUVmk86EarksBux7Xqw144uFN887e6zIl
-         3CiJRCBvueeTuRrxTtScNnb4wTjlFe1P1anM6F79g8z/d0NS4HJQqmov/TsqY8BmUEC8
-         AtKhVN94KFN7j8oY0N1NjDCTSXHbHvN9i2coN3Ya1BZ7wo1rG3Ytbp0hDeSfvPuSVd9r
-         1MoFjNMxF6qE00KgwyiJfkD+puBXiReiLZEPeFHvDyRKAwO6TW5yYjTjKPyXy0KuEcbN
-         LIRg==
-X-Gm-Message-State: AOAM5326MiY30TEhP8W2LVROMSWtk7SCsDTeBbx/R9042W7SqElLpxYW
-        auS+7sR00XBMH23/6L6I3yOydlRdhp8zzYAe90w=
-X-Google-Smtp-Source: ABdhPJyU9Hy3d1197aDUhlttjiGcwGkNFX4GQCuCMDvaNr68A8LQuVQ530N59OuIntaX43Oo9olLQgL8kya8YgibJtQ=
-X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr22663294pjr.228.1616936202828;
- Sun, 28 Mar 2021 05:56:42 -0700 (PDT)
+        id S230526AbhC1M6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 08:58:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229757AbhC1M5m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 08:57:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B18DC6196D;
+        Sun, 28 Mar 2021 12:57:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616936262;
+        bh=pOX4+0NYh2O97DU5Xq26+Hfg1PTnO3nPtyGDd7KAqB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zCIvCtYWJAgYrjqHB/5AwPVZFSGb94Zc1+d1dmbyBmIZcX6QCLpWlth944DRlBDqL
+         6EHJk7/wUWsEvI6+nMeyGep2UYyFuZdF1OpQIcK2YnB7WTE4OnkfI0f3wIPgw+M1Ph
+         I1Kezx0bDsWCZVXucupccSwz7fQ0pkwclE5bINrM=
+Date:   Sun, 28 Mar 2021 14:57:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mihai Carabas <mihai.carabas@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
+        bobo.shaobowang@huawei.com, rdunlap@infradead.org
+Subject: Re: [PATCH v8] add support for pci in the pvpanic driver
+Message-ID: <YGB9Q4bejSnNlxkv@kroah.com>
+References: <1616597356-20696-1-git-send-email-mihai.carabas@oracle.com>
 MIME-Version: 1.0
-References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
- <20210327222012.54103-3-andriy.shevchenko@linux.intel.com> <YGAmB2Nwph6pArXc@kroah.com>
-In-Reply-To: <YGAmB2Nwph6pArXc@kroah.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 28 Mar 2021 15:56:26 +0300
-Message-ID: <CAHp75VfFzqpdR+6p9vQww-ujQcw3L-V_N7ezUTGhcRmvwvqMZg@mail.gmail.com>
-Subject: Re: [PATCH v1 3/8] software node: Show properties and their values in sysfs
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1616597356-20696-1-git-send-email-mihai.carabas@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 9:47 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Sun, Mar 28, 2021 at 12:20:07AM +0200, Andy Shevchenko wrote:
-> > It's very convenient to see what properties and their values
-> > are currently being assigned in the registered software nodes.
-> >
-> > Show properties and their values in sysfs.
+On Wed, Mar 24, 2021 at 04:49:13PM +0200, Mihai Carabas wrote:
+> This patchset adds support for PCI in the pvpanic driver. The device already
+> got in qemu [1].
+> 
+> v2:
+> - mmio -> MMIO, pci -> PCI suggested by Randy Dunlap.
+> - group pvpanic-common.c and mmio.c in the same module. The intention was to
+>   have only one module and the common code splitted up to be re-used by the
+>   pvpanic-pci module in the next patch.
+> - add a new patch where add the licenses for the new files (when I moved the
+>   code to mmio.c I preserved the original licenses there)
+> - properly clean-up PCI device when driver removed.
+> 
+> v3:
+> - drop patch 3 with licenses and add them when creating files
+> - create a new patch (2/3) which allowes multiple pvpanic instances
+> 
+> v4:
+> - fix Makefile in patch 1/3 and 3/3 for pvpanic.o as suggested by Arnd
+> 
+> v5:
+> - rebase on 5.12
+> - fix a warning caused by one of the patches
+> 
+> v6:
+> - remove pr_fmt as were not used
+> - "remove" functions of type void
+> - moved events/capability per-device structure
+> 
+> v7:
+> - rebased on char-misc-next
+> 
+> v8:
+> - fixed build error while compiling only the first patch (accept
+>   my apologizes Greg)
+> - build and tested pvpanic functionality after each applied patch
 
-...
+Much better, now queued up, thanks for sticking with it.
 
-> > +             for (i = 0; i < prop->length / sizeof(u8); i++)
-> > +                     len += sysfs_emit_at(buf, len, "%u,", ((u8 *)pointer)[i]);
->
-> No, sysfs is "one value per file", and that is not what you are showing
-> here at all :(
-
-It is following: it's a "one value" for property in question,
-
-As we may read in [1]: "...so it is socially acceptable to express an
-array of values of the same type."
-
-And here is exactly the case: *values of the same type*.
-
-> Also, there is no Documentation/ABI/ entries for your new sysfs files,
-> so that means we couldn't take this patcheset anyway :(
-
-True, I'll fix this, thanks!
-
-[1]: https://www.kernel.org/doc/html/latest/filesystems/sysfs.html
-
--- 
-With Best Regards,
-Andy Shevchenko
+greg k-h
