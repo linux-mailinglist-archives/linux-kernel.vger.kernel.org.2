@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D887134BDD7
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBE834BE04
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 20:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbhC1R5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:57:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231164AbhC1R51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:57:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A191361930;
-        Sun, 28 Mar 2021 17:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616954247;
-        bh=h7lWtpzr+nzRZm5zIxllBaJjD+FGFNmyTDDl8+aq6nI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IWdGrspgcZd4s0pFLcCeC1CHp1QWXfeRkGjOruxs9P1EQAI5u+zKmgeYn699xv0YM
-         i/2IR7pvK+PNrYnRbj5Me9s1CsVJHMRD/44yYzz0L12lvqiORm7QbixxA1edgjkASr
-         bXaf6H0oxrNRDyC1XTvlXA33bi2xd+lbQvz039DM=
-Date:   Sun, 28 Mar 2021 19:57:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8188eu: (trivial) remove a duplicate comment
-Message-ID: <YGDDhGvTfd3eGbCz@kroah.com>
-References: <20210328175200.27069-1-martin@kaiser.cx>
+        id S231479AbhC1SHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 14:07:31 -0400
+Received: from mail.hanoi.gov.vn ([113.160.32.33]:31610 "EHLO
+        mx01.hanoi.gov.vn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229647AbhC1SHR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 14:07:17 -0400
+X-Greylist: delayed 474 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Mar 2021 14:07:01 EDT
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 30259EC3D8;
+        Mon, 29 Mar 2021 00:57:51 +0700 (+07)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hanoi.gov.vn;
+        s=default; t=1616954272;
+        bh=FuW10Z6fSdeNlf/0u/BQ1jcwkjYBw0uHUPQgn0LGo7I=; h=Date:From:To;
+        b=R9blPfqJCHUsZAyZxsyyryS61fl4krmBjYKWM6eGGwB8ZdbTBVPL1mmKOmZXMqNlA
+         7CEqA0MXgUAy+X4oK/wthh4vC9Xoov1Ce8tjf/qJvnL7KGsGNVg9ic0krGeHrdNzGM
+         5cIEKsz0emmHL/izbEfCtadst3HYllOJWdonlm5o=
+X-IMSS-DKIM-Authentication-Result: mx01.hanoi.gov.vn; sigcount=0
+Received: from mx01.hanoi.gov.vn (localhost [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50FCBEC3DD;
+        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mx01.hanoi.gov.vn (Postfix) with ESMTPS;
+        Mon, 29 Mar 2021 00:57:49 +0700 (+07)
+Received: from mail.hanoi.gov.vn (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTPS id 02AFC7F41B42;
+        Mon, 29 Mar 2021 00:57:44 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 08FE47F41B5D;
+        Mon, 29 Mar 2021 00:57:41 +0700 (+07)
+Received: from mail.hanoi.gov.vn ([127.0.0.1])
+        by localhost (mail.hanoi.gov.vn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 1D3oZsOAVsx3; Mon, 29 Mar 2021 00:57:36 +0700 (+07)
+Received: from mail.hanoi.gov.vn (mail.hanoi.gov.vn [10.1.1.25])
+        by mail.hanoi.gov.vn (Postfix) with ESMTP id 478CE7F41B59;
+        Mon, 29 Mar 2021 00:57:33 +0700 (+07)
+Date:   Mon, 29 Mar 2021 00:57:33 +0700 (ICT)
+From:   Mackenzie Scott <ttptqd_thanhoai@hanoi.gov.vn>
+Reply-To: Mackenzie Scott <propack@propck.net>
+Message-ID: <354204758.25920932.1616954253215.JavaMail.zimbra@hanoi.gov.vn>
+Subject: Congratulations ($ 100,800,000.00)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210328175200.27069-1-martin@kaiser.cx>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [185.107.80.217]
+X-Mailer: Zimbra 8.8.15_GA_3894 (zclient/8.8.15_GA_3894)
+Thread-Index: ao/APhyKX+JH1nE2Rn/kAmnh2LEgkw==
+Thread-Topic: Congratulations ($ 100,800,000.00)
+To:     undisclosed-recipients:;
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 07:52:00PM +0200, Martin Kaiser wrote:
-> Keep the one that shows the wakeup capability.
-> 
-> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> ---
->  drivers/staging/rtl8188eu/os_dep/usb_intf.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-> index 91a3d34a1050..e18f1fff59ca 100644
-> --- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
-> @@ -377,7 +377,6 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
->  		dvobj->pusbdev->do_remote_wakeup = 1;
->  		pusb_intf->needs_remote_wakeup = 1;
->  		device_init_wakeup(&pusb_intf->dev, 1);
-> -		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
->  		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
 
-This does not match your subject line, it is not a comment.
 
-thanks,
-
-greg k-h
+Hello,i&#39;m Mackenzie Scott,Ex-wife of Amazon founder i&#39;m donating $4 billion to charities,individuals,universities across the Globe from my divorce funds,i&#39;m donating part of it to provide immediate support to people suffering economically during the COVID-19 pandemic,i have a donation worth $100,800,000.00 Dollars for you,you can contact me for more information if you&#39;re interested.
