@@ -2,102 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7129F34BC0D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C0C34BC0E
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhC1K3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 06:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbhC1K2r (ORCPT
+        id S229647AbhC1Kch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 06:32:37 -0400
+Received: from smtprelay0198.hostedemail.com ([216.40.44.198]:58762 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230196AbhC1KcQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 06:28:47 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77AAFC061762
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 03:28:47 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id o16so9972709wrn.0
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 03:28:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=9C9o0jI1d0iLQkL79YD70gp+AFS7VFL+EskN1VJqDG0=;
-        b=fYIF89zxs+oQtyeJUQxasTVn3VmpxnaABwQ3GvLeBtVGUqpe5PJteLOjM1pgKTZMBi
-         tMw6IeIZ5KbhO8E07B6tVn0HWsvr8ltTxNOfuA++3O/9tkCeHpZCSgbR/iMQ+V6CuJeV
-         +mymyf2KigkgCpcGZXfoEkk4SHeG3GsqRI/mKM27ZmoXSIQDDnataQk7IBKlbBFuZEei
-         tMAtq+EX5ulBIinQriZXuTv09cPtZkczpmvwRjwFeAbX/mFC0GtStSJhr1neNn9b7mAn
-         IGdyHHJ1EYhPPmhJ+ZRvALC5QDWlMs4+8KYsF+yqRX/GoWgYBikMojL0hyKnkoHeMXp2
-         mJ2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=9C9o0jI1d0iLQkL79YD70gp+AFS7VFL+EskN1VJqDG0=;
-        b=b9tiU77pCJnSO1r5n3R72YOqhS1QzKn+IZPGWk8/3NnlqkgxfGXh5ZBbwAMN0wK9cP
-         hH+okxJNpES/mLjZ7ll4m5qUosUcI0dTKle560r7KluwQB3rJOONYqsTJVuIjTM1OREP
-         7oFQoukDwvdoEM2J2urVcSfdyKbkKytFX0N1y7iuSxzueeKc1FM3R73d66tyVfyGYewh
-         nvvs4kPWWioWVy5XfZcTvvXZumw6zpaqVhjDmyHGvQIz3rpKfJuVv8HJ0hC8M8AJeI/d
-         HHQ8ng0cQh4Mz4yleYzIonv0lqMSjzeppJ5F7JJqlK7Hqi9K1i9zrEzb5We7ZA3fJTKO
-         Fd+g==
-X-Gm-Message-State: AOAM53367TqwnmZRwehsfcypYWXUEgRLBSu6Kr2QXm0vwPOWJYC36Kfa
-        vbqiRazQ7Cx79Rm59a5aTQurRJY9uEc=
-X-Google-Smtp-Source: ABdhPJyOZntSIiGc9AiYArBi9IKvtuarwH4GztQ/JdTN8e/Fg7VaRYtfe5XZiJGbPl42qs1Z2CC7XQ==
-X-Received: by 2002:a5d:4905:: with SMTP id x5mr23161008wrq.201.1616927326283;
-        Sun, 28 Mar 2021 03:28:46 -0700 (PDT)
-Received: from gmail.com (2E8BA22B.catv.pool.telekom.hu. [46.139.162.43])
-        by smtp.gmail.com with ESMTPSA id y8sm19608123wmi.46.2021.03.28.03.28.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 03:28:45 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 28 Mar 2021 12:28:43 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] locking fix
-Message-ID: <20210328102843.GA347473@gmail.com>
+        Sun, 28 Mar 2021 06:32:16 -0400
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 743CDB9FF;
+        Sun, 28 Mar 2021 10:32:15 +0000 (UTC)
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA id 7436A1D42F5;
+        Sun, 28 Mar 2021 10:32:14 +0000 (UTC)
+Message-ID: <6caae542c6f295a47b1012738b3b35055cf17cc4.camel@perches.com>
+Subject: Re: [PATCH] kconfig: nconf: stop endless search-up loops
+From:   Joe Perches <joe@perches.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Mihai Moldovan <ionic@ionic.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Sun, 28 Mar 2021 03:32:13 -0700
+In-Reply-To: <362edad0-daea-1f56-bed3-b1df174cbbf1@infradead.org>
+References: <20210327120155.500-1-ionic@ionic.de>
+         <1ca3a90f-799e-d917-370e-1475e33cdb14@infradead.org>
+         <111c5853-e488-0aaa-18e9-36792b648427@ionic.de>
+         <362edad0-daea-1f56-bed3-b1df174cbbf1@infradead.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 7436A1D42F5
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: 4nigk8rin35oj356persx9fyc737ioq1
+X-HE-Tag: 1616927534-838904
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sat, 2021-03-27 at 15:26 -0700, Randy Dunlap wrote:
+> On 3/27/21 3:12 PM, Mihai Moldovan wrote:
+> > * On 3/27/21 4:58 PM, Randy Dunlap wrote:
+> > > On 3/27/21 5:01 AM, Mihai Moldovan wrote:
+> > > > +		if ((-1 == index) && (index == match_start))
+> > > 
+> > > checkpatch doesn't complain about this (and I wonder how it's missed), but
+> > > kernel style is (mostly) "constant goes on right hand side of comparison",
+> > > so
+> > > 		if ((index == -1) &&
+> > 
+> > I can naturally send a V2 with that swapped.
+> > 
+> > To my rationale: I made sure to use checkpatch, saw that it was accepted and
+> > even went for a quick git grep -- '-1 ==', which likewise returned enough
+> > results for me to call this consistent with the current code style.
+> > 
+> > Maybe those matches were just frowned-upon, but forgotten-to-be-critized
+> > examples of this pattern being used.
+> 
+> There is a test for it in checkpatch.pl but I also used checkpatch.pl
+> without it complaining, so I don't know what it takes to make the script
+> complain.
+> 
+> 			if ($lead !~ /(?:$Operators|\.)\s*$/ &&
+> 			    $to !~ /^(?:Constant|[A-Z_][A-Z0-9_]*)$/ &&
+> 			    WARN("CONSTANT_COMPARISON",
+> 				 "Comparisons should place the constant on the right side of the test\n" . $herecurr) &&
 
-Please pull the latest locking/urgent git tree from:
+Negative values aren't parsed well by the silly script as checkpatch
+isn't a real parser.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-03-28
+Basically, checkpatch only recognizes positive ints as constants.
 
-   # HEAD: 291da9d4a9eb3a1cb0610b7f4480f5b52b1825e7 locking/mutex: Fix non debug version of mutex_lock_io_nested()
+So it doesn't recognize uses like:
 
-Fix the non-debug mutex_lock_io_nested() method to map to mutex_lock_io() instead of mutex_lock().
+	a * -5 > b
 
-Right now nothing uses this API explicitly, but this is an accident waiting to happen.
+It doesn't parse -5 as a negative constant.
 
- Thanks,
+Though here it does seem the line with
+ 			    $to !~ /^(?:Constant|[A-Z_][A-Z0-9_]*)$/ &&
+should be
+ 			    $to !~ /^(?:$Constant|[A-Z_][A-Z0-9_]*)$/ &&
 
-	Ingo
+You are welcome to try to improve checkpatch, but it seems non-trivial
+and a relatively uncommon use in the kernel, so I won't.
 
------------------->
-Thomas Gleixner (1):
-      locking/mutex: Fix non debug version of mutex_lock_io_nested()
+Most all of the existing uses seem to be in drivers/scsi/pm8001/pm8001_hwi.c
 
+$ git grep -P 'if\s*\(\s*\-\d+\s*(?:<=|>=|==|<|>)' -- '*.[ch]'
+drivers/media/i2c/msp3400-driver.c:		if (-1 == scarts[out][in + 1])
+drivers/media/pci/bt8xx/bttv-driver.c:		if (-1 == formats[i].fourcc)
+drivers/media/pci/saa7134/saa7134-tvaudio.c:	if (-1 == secondary)
+drivers/media/pci/saa7146/mxb.c:			if (-1 == mxb_saa7740_init[i].length)
+drivers/media/usb/s2255/s2255drv.c:		if (-1 == formats[i].fourcc)
+drivers/net/ieee802154/mrf24j40.c:	} else if (-1000 >= mbm && mbm > -2000) {
+drivers/net/ieee802154/mrf24j40.c:	} else if (-2000 >= mbm && mbm > -3000) {
+drivers/net/ieee802154/mrf24j40.c:	} else if (-3000 >= mbm && mbm > -4000) {
+drivers/net/wireless/broadcom/brcm80211/brcmsmac/phy/phy_lcn.c:	if (-1 == *gain_index) {
+drivers/parisc/eisa_enumerator.c:		if (-1==init_slot(i+1, es)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha,
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha,
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha,
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha,
+drivers/scsi/pm8001/pm8001_hwi.c:		if (-1 == pm8001_bar4_shift(pm8001_ha, GSM_SM_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == check_fw_ready(pm8001_ha)) {
+drivers/scsi/pm8001/pm8001_hwi.c:		if (-1 == pm8001_bar4_shift(pm8001_ha, GSM_SM_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:		if (-1 == pm8001_bar4_shift(pm8001_ha, RB6_ACCESS_REG)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, MBIC_AAP1_ADDR_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, MBIC_IOP_ADDR_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, GSM_ADDR_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, GPIO_ADDR_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, SPC_TOP_LEVEL_ADDR_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, GSM_ADDR_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, SPC_TOP_LEVEL_ADDR_BASE)) {
+drivers/scsi/pm8001/pm8001_hwi.c:				if (-1 == pm8001_bar4_shift(pm8001_ha,
+drivers/scsi/pm8001/pm8001_hwi.c:				if (-1 == pm80xx_bar4_shift(pm8001_ha,
+drivers/scsi/pm8001/pm8001_hwi.c:	if (-1 == pm8001_bar4_shift(pm8001_ha, 0))
+drivers/scsi/pm8001/pm8001_sas.c:			if (-1 == pm8001_bar4_shift(pm8001_ha,
+drivers/scsi/pm8001/pm80xx_hwi.c:	if (-1 == check_fw_ready(pm8001_ha)) {
+drivers/scsi/pm8001/pm80xx_hwi.c:	if (-1 == check_fw_ready(pm8001_ha)) {
+drivers/scsi/scsi_debug.c:	if (-1 == res)
+drivers/scsi/scsi_debug.c:	if (-1 == ret) {
+drivers/staging/fbtft/fb_agm1264k-fl.c:			if (-1 == coeff) {
+fs/btrfs/check-integrity.c:		if (-1 == sf->i) {
+fs/btrfs/check-integrity.c:		if (-1 == sf->i) {
+fs/btrfs/check-integrity.c:		} else if (-1 == btrfsic_check_all_ref_blocks(state,
+fs/isofs/util.c:		if (-52 <= tz && tz <= 52)
+lib/test_bpf.c:		"JMP_JSLT_K: Signed jump: if (-2 < -1) return 1",
+lib/test_bpf.c:		"JMP_JSLT_K: Signed jump: if (-1 < -1) return 0",
+lib/test_bpf.c:		"JMP_JSGT_K: Signed jump: if (-1 > -2) return 1",
+lib/test_bpf.c:		"JMP_JSGT_K: Signed jump: if (-1 > -1) return 0",
+lib/test_bpf.c:		"JMP_JSLE_K: Signed jump: if (-2 <= -1) return 1",
+lib/test_bpf.c:		"JMP_JSLE_K: Signed jump: if (-1 <= -1) return 1",
+lib/test_bpf.c:		"JMP_JSGE_K: Signed jump: if (-1 >= -2) return 1",
+lib/test_bpf.c:		"JMP_JSGE_K: Signed jump: if (-1 >= -1) return 1",
+lib/test_bpf.c:		"JMP_JGT_K: Unsigned jump: if (-1 > 1) return 1",
+lib/test_bpf.c:		"JMP_JSGT_X: Signed jump: if (-1 > -2) return 1",
+lib/test_bpf.c:		"JMP_JSGT_X: Signed jump: if (-1 > -1) return 0",
+lib/test_bpf.c:		"JMP_JSLT_X: Signed jump: if (-2 < -1) return 1",
+lib/test_bpf.c:		"JMP_JSLT_X: Signed jump: if (-1 < -1) return 0",
+lib/test_bpf.c:		"JMP_JSGE_X: Signed jump: if (-1 >= -2) return 1",
+lib/test_bpf.c:		"JMP_JSGE_X: Signed jump: if (-1 >= -1) return 1",
+lib/test_bpf.c:		"JMP_JSLE_X: Signed jump: if (-2 <= -1) return 1",
+lib/test_bpf.c:		"JMP_JSLE_X: Signed jump: if (-1 <= -1) return 1",
+lib/test_bpf.c:		"JMP_JGT_X: Unsigned jump: if (-1 > 1) return 1",
+sound/pci/rme9652/hdspm.c:	if (-1 == val)
+sound/usb/usx2y/usbusx2y.c:		if (-2 == us428ctls->CtlSnapShotLast) {
+tools/testing/selftests/net/mptcp/mptcp_connect.c:		if (-1 == setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &one,
 
- include/linux/mutex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-index 0cd631a19727..515cff77a4f4 100644
---- a/include/linux/mutex.h
-+++ b/include/linux/mutex.h
-@@ -185,7 +185,7 @@ extern void mutex_lock_io(struct mutex *lock);
- # define mutex_lock_interruptible_nested(lock, subclass) mutex_lock_interruptible(lock)
- # define mutex_lock_killable_nested(lock, subclass) mutex_lock_killable(lock)
- # define mutex_lock_nest_lock(lock, nest_lock) mutex_lock(lock)
--# define mutex_lock_io_nested(lock, subclass) mutex_lock(lock)
-+# define mutex_lock_io_nested(lock, subclass) mutex_lock_io(lock)
- #endif
- 
- /*
