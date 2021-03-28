@@ -2,151 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A488B34BDBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D887134BDD7
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhC1Riv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:38:51 -0400
-Received: from mail-bn8nam11on2066.outbound.protection.outlook.com ([40.107.236.66]:64603
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230411AbhC1Rig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:38:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j/7iCi7DfdgVf+VlR5JAyIQPZLkq2kmaY5F3DN88cMQNqtqep7t5Y9Y9xDHWuI+PKvi83rGy5v2bvXnjOSIuJRMiGGE3PEgbcELIJkidS36mYZQkrcf88vR5c0NVcMQZ/+2aC/Qg58FWdi7sZrmQgaiLk2q7KQm783yWyUq+rFA0nP2Gb6XOKIHLkCyJ//Dwy61/pM8XZbJ9bOmVrRz8qXrAoXqzUBkP3Eq9Tq64OjI2bqE9zAqZN1UuFTkmokK02fwfrUlo6X0rVf8QkG74AeUiDTTjykZ8Ke9O8m1Z2BfkkX7l1TP2HllI3/Ll1d5NpIiSVQuz9SMjsYG3syAhdA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=di42ajG2Y2bn9XDU5mWjm1z9bW78pmigCC7s9bqgaMM=;
- b=GTEAm+MKnVGoMbOo7obmz18Wy5U1glfTO/0lRUk2pzH095Cg277cSVc39Kbb2xtLkwyqvgmWwAVNRkk0mOYOBtTBmrKJanZx4sW9fkD6w0S1gQGTaKp7Jb4asuHL8Hh1KNO+vqF/Aqc5dG6S66FN5v2yH95g8B7L7/YhqwjJoy+B2mMPeLMrQvPNSgZ9Gf6E7nVu3MKaCHYBE8Pf3pxv1g/uZlvVaKPb1g0GhTRh6BZZeKBj6kwqYZTXZxfv8G2xTz0S2OjP1s3cd6vSJODxyVtcvn7mF29QgcD1FZqnnoPbCkn36wrTei/oylXaAGh6s7sLXkycAPdCxKNHSuQeTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=di42ajG2Y2bn9XDU5mWjm1z9bW78pmigCC7s9bqgaMM=;
- b=ap5rBZXxmh+eDOUeQ/QQkpknSXQY3ZmDM1IoJIiapMfSfvW8/oaodPiBIQcqHjcqX/jVW4zgiKTNFmJ39EuXCnEZTs3AMrmtxQXVByF4RCZ+9oy5Iu/sZ2p977yCdo1PjViKHpyaniLAJCsVaPDtdKdl4/SApokZQ55plBO9AC8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23) by MW3PR12MB4361.namprd12.prod.outlook.com
- (2603:10b6:303:5a::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Sun, 28 Mar
- 2021 17:38:32 +0000
-Received: from MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::c977:4e9:66b8:a7e]) by MWHPR1201MB2557.namprd12.prod.outlook.com
- ([fe80::c977:4e9:66b8:a7e%11]) with mapi id 15.20.3977.033; Sun, 28 Mar 2021
- 17:38:31 +0000
-Subject: Re: [PATCH 2/2] ASoC: amd: fix acpi dependency kernel warning
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Alex Deucher <Alexander.Deucher@amd.com>,
-        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ravulapati Vishnu vardhan rao 
-        <Vishnuvardhanrao.Ravulapati@amd.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1616777074-5151-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1616777074-5151-2-git-send-email-Vijendar.Mukunda@amd.com>
- <CAK8P3a0aM4GRZ62TvNpwtMY0Bw7JGJNVs55UkpdBVYeKgWhMaQ@mail.gmail.com>
-From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Message-ID: <c4d5e624-d922-d338-ca35-72ee06cec08a@amd.com>
-Date:   Sun, 28 Mar 2021 23:25:40 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <CAK8P3a0aM4GRZ62TvNpwtMY0Bw7JGJNVs55UkpdBVYeKgWhMaQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.159.242]
-X-ClientProxiedBy: BMXPR01CA0015.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:d::25) To MWHPR1201MB2557.namprd12.prod.outlook.com
- (2603:10b6:300:e4::23)
+        id S231380AbhC1R5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231164AbhC1R51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 13:57:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A191361930;
+        Sun, 28 Mar 2021 17:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616954247;
+        bh=h7lWtpzr+nzRZm5zIxllBaJjD+FGFNmyTDDl8+aq6nI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IWdGrspgcZd4s0pFLcCeC1CHp1QWXfeRkGjOruxs9P1EQAI5u+zKmgeYn699xv0YM
+         i/2IR7pvK+PNrYnRbj5Me9s1CsVJHMRD/44yYzz0L12lvqiORm7QbixxA1edgjkASr
+         bXaf6H0oxrNRDyC1XTvlXA33bi2xd+lbQvz039DM=
+Date:   Sun, 28 Mar 2021 19:57:24 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8188eu: (trivial) remove a duplicate comment
+Message-ID: <YGDDhGvTfd3eGbCz@kroah.com>
+References: <20210328175200.27069-1-martin@kaiser.cx>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.93.39] (165.204.159.242) by BMXPR01CA0015.INDPRD01.PROD.OUTLOOK.COM (2603:1096:b00:d::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Sun, 28 Mar 2021 17:38:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 63f59c1e-49bb-4914-f30a-08d8f2104dbf
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4361:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW3PR12MB436127799E1E8DCE50BABC8A977F9@MW3PR12MB4361.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:356;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Kj17/elPzMvug6yWtgvvIxodRft+J1AWMkp2YsQKEILVjtegrMNUMl5v8DZ2+lBpGIhTX5q84nx9iUcJBc4VtVKpVxSPY42QcNwiXU4utTXgf5gk+K7I/7eNxflTdIeWuZu9rRHH3GWgPAYAQYctQdFnxBfqYghCIhfAmi90x3fcglojAywkMFoZ85VOZWH4sToSOo/NzHp3s+jKXjzi5FgWJIdXjPXP4k6KBQcg3Fm9DWFYMVBFRGvQmELYhHfM55Z1sBF5RGBiY9hL/QzI4zv42/i6WJlLbjfMMvd244zfhnC+wGbyePIBPtX0M5R3MqcEUOsTUkITpEdLj3Mt7PL4+/dAxm52/X9HaB4LPZADMuZDiTQo7FPty2GSNcSdow0ogQgByI6b6ue7nWZHLKvoT97TiQdbyN2/kJEc2Avu6sPwBW3T9w1swcMH9RdOOzqjK2cjE9AMPnq8d/972MKzxfYKpS6CFzxa+yBRn6nsTy8ON9qiQrTjPiS9uUVleWSkKkZapUOi7TAsB906Z6gQNtOefLGz6xP1vIq1p9tqBg+xN0Q54ehKLzzu6uewC1xkE3HxTfpRHtogDSIiTmg5tFVaK7uiDit8XC3OASbmz/Qcr/XqEy0E6h5x3RIi4eOiUJ51em/EZcnEHNVdxeeo9A/GmC8Kw7/6sRjuDBk8qrWcU0FAVjLL2RlLSKBshVjsFYJwpqQlvtEEbPKhWLPM/tCN015xW8B1K/s/TAo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(396003)(376002)(346002)(4326008)(8676002)(2906002)(956004)(36756003)(2616005)(316002)(52116002)(186003)(16526019)(86362001)(5660300002)(4744005)(31696002)(26005)(6916009)(31686004)(66946007)(66476007)(66556008)(38100700001)(16576012)(6666004)(83380400001)(478600001)(6486002)(8936002)(53546011)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YU0ydVh6MjZkUlhmUUR0Ukg0YU9TbGNMcmM2STB3NjBwY0xON0h2MzJWM2Vu?=
- =?utf-8?B?bmYwa0dpaWxjWXdkMHdWOHNGbE1pblJoeFJ5K0thOExsR3NFbWpxanRtT0d6?=
- =?utf-8?B?ZXVIdDJkR3dpd1p2NENMbW13aDdDYVJ2ejV0eU8rUUIrOHQyNGJCRllRNURP?=
- =?utf-8?B?eTh1cXFRWjFNQVc1N2dKMWc1M2loWDhNbVRta1VVeXRYYm1ZVkYwUXZ1R1Rm?=
- =?utf-8?B?Mzc1Q3Joa3F4aG5GUmlNRUQrM1RESEZsOFp4eEc0eDRvS3RTWStEK1ljNFR5?=
- =?utf-8?B?VzZld3lIUEhFVXlTazBESGRJWTEvT3QxaURiQ0pJY0hLdy9HVWFxc2VzK0dj?=
- =?utf-8?B?L0h0aUVLM1pDTHE1QVd6Z1lXWGF3b2gxNkJ5Q3BGWGE4VGhKTlJySk9qdTlM?=
- =?utf-8?B?cHg3Mm0wcVlaNEN5S21TQzJPTTlKZnZFYVhOTWtpbTJxR21Vc0FVdlpZQjFX?=
- =?utf-8?B?ckd4bExvamtYNllRNkJtVFY0SVVBaTJUcjFHb09WTHAzN0pFNWdocld0WUlL?=
- =?utf-8?B?UTF4T0I1TkhDb20xTFlzcTZweEp3cVg5NEF2VzFrcGREM25RMnVKc3ErUko3?=
- =?utf-8?B?bVZTWXJlbHhEc1pBSVRMWDB3Y08zeUFnRjIyUGVUVWdzcE1xMGU1bzBndm0y?=
- =?utf-8?B?aDd4Q2grUlozOG04MFlpd0g1NW5YUzdHbEY3VTRvQjVZc21yY25rNmRQL3Va?=
- =?utf-8?B?NXlmTjdGUHN3MnBiWXZ5RGxRSUxPY1NwdlFnL0ozdjYxejFoMFVsYmMwN2Zs?=
- =?utf-8?B?WTB0Mjl3Vys1QkFrcE8rcEQyckI0c05LOXNFZ2ZVaGpLUmE2aXFVMFFOUUNR?=
- =?utf-8?B?Uktrc3lnVmtSaFdWNjNuM3M0cVNrbHhOVXQrQVl5cHhCMmw5R1NwbnBpWUJR?=
- =?utf-8?B?YXJIcGg1d3Q4NjIyRkJKOWpnSkpBODNnblZmc0NEeXRCNitDZGtKN1VaM1VC?=
- =?utf-8?B?TWJoNjE4OFMvYzNwMEpWalJkREM4ekNqbXJTMHVTdGdVWllLdmlCV21ZbHhX?=
- =?utf-8?B?RUYvc1RVWmJyVXU4aDQyYnBiWHVvWDZSMFljelFUemp0Y01vNmY5M3plTXdu?=
- =?utf-8?B?bVJlZkxaai83WDhKaFNNQ3Q1aGZJemZocHNYRkY1WklZL252M2t1SFNmQ2FO?=
- =?utf-8?B?NXdSSjJIaTNzeEVNcVNTbklvcDdJaWtTRHc1RWV4OUZ5UGRBYWdwejZGQUFF?=
- =?utf-8?B?TXNHWFV2OGRWTUxMZ1YvQVhLWVVDZytOajRVKzJLNjNxMzdGalM1UVNaOFFq?=
- =?utf-8?B?dkVlVUcrYmRQRE1DdDNIQytMUzBTdWFlWFI5U1BSWjZzdFEwYmh3Wit4VmZa?=
- =?utf-8?B?dHJ1SkFncVJKTkZyREEvMjJmQUpQbGJoYndLeFVFK1FQbGpqNEM4ajVsNEVK?=
- =?utf-8?B?V1hoYkhPcmxPbEpWRC9kVXI3enRaVE5IMkx3U240REhHOGdMWVk3aml1Yk9D?=
- =?utf-8?B?SjVDbmNYUmIvbGJDTzZYS2kxb2hNSjBSK1Z1K3hpUGpGSUprUjJ1TVpmZmN3?=
- =?utf-8?B?Q2hCVXJzNklZZFkzc1BYVG11dllMTE1iSS80Q1JmUDJ1c3J5Z0prM2RZSWNl?=
- =?utf-8?B?WFdHdG9Ja0V0a0d6Y3R6TnhHZ1FPOGZ5aGVqeHNmdXhrZkVOdTYxSC90Wmdn?=
- =?utf-8?B?ZXkzZXhSWlhaUlloQ29MUkpQMFVSSElPd0FqNm1FaTVTZnBGM1kvQmluMnNa?=
- =?utf-8?B?dzhCMG1FWFh3bkNuZUM5LzF6NXc4Mk5LY3p4RGpHdUVTQlRidGpYQWtrM21R?=
- =?utf-8?Q?isOO+PddVs4z3GGTw5OjX87pLIovzrzQpKldnDx?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63f59c1e-49bb-4914-f30a-08d8f2104dbf
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB2557.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Mar 2021 17:38:31.6266
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CuEMau5jJxlBdsLUC1oJV/bDrm9WVq072/rdbFNFjL3awqlDC711VeRgit2nUveYThgLkUB2YrAZGzi6biCKDw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4361
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210328175200.27069-1-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Mar 28, 2021 at 07:52:00PM +0200, Martin Kaiser wrote:
+> Keep the one that shows the wakeup capability.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/staging/rtl8188eu/os_dep/usb_intf.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/os_dep/usb_intf.c b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+> index 91a3d34a1050..e18f1fff59ca 100644
+> --- a/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+> +++ b/drivers/staging/rtl8188eu/os_dep/usb_intf.c
+> @@ -377,7 +377,6 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+>  		dvobj->pusbdev->do_remote_wakeup = 1;
+>  		pusb_intf->needs_remote_wakeup = 1;
+>  		device_init_wakeup(&pusb_intf->dev, 1);
+> -		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~~~~\n");
+>  		pr_debug("\n  padapter->pwrctrlpriv.bSupportRemoteWakeup~~~[%d]~~~\n",
 
+This does not match your subject line, it is not a comment.
 
-On 3/26/21 10:14 PM, Arnd Bergmann wrote:
-> On Fri, Mar 26, 2021 at 5:44 PM Vijendar Mukunda
-> <Vijendar.Mukunda@amd.com> wrote:
->>
->> Fix ACPI dependency kernel warning produced by powerpc
->> allyesconfig.
->>
->> sound/soc/amd/acp-da7219-max98357a.c:684:28: warning:
->> 'cz_rt5682_card' defined but not used [-Wunused-variable]
->>
->> sound/soc/amd/acp-da7219-max98357a.c:671:28: warning: 'cz_card'
->> defined but not used [-Wunused-variable]
-> 
-> I would suggest simply dropping the unnecessary #ifdef and
-> ACPI_PTR() guard.
-> 
-> It might be helpful to hide the Kconfig submenu under
-> 'depends on X86 || COMPILE_TEST'.
-> 
->         Arnd
-> 
+thanks,
 
-Will drop the unnecessary safegaurd and will upload the new version.
+greg k-h
