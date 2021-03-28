@@ -2,120 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7DEE34BBE4
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E1234BBE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbhC1Jxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 05:53:54 -0400
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:57801 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhC1Jxe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 05:53:34 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id E27652800B3E0;
-        Sun, 28 Mar 2021 11:53:32 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id D6C861EEC7; Sun, 28 Mar 2021 11:53:32 +0200 (CEST)
-Date:   Sun, 28 Mar 2021 11:53:32 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Sathyanarayanan Kuppuswamy Natarajan 
-        <sathyanarayanan.nkuppuswamy@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
+        id S230334AbhC1KEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 06:04:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhC1KDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 06:03:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E58B1617ED;
+        Sun, 28 Mar 2021 10:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616925826;
+        bh=hCcz/Ooj3nWB+/PcEjVt64iF8JDVLdfoSqVoYjD5mn8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FX5J4oWCc+cXRZrMqvD4SJzskFNy+k3ZmeXp006X3dUAOkzrEwuWpXPJN1JTtQ+Pm
+         uRI4KD3yIKnNpL9q6mnlNApUqJ2Lg+1pb8ch5u+fMYOZ3SQkRBd6HhX/bXd/6lO5qA
+         rCjyCC6O+sjNRi/DeSJZU+VpLHJI4aq+Usw01sSk=
+Date:   Sun, 28 Mar 2021 12:03:43 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Keith Busch <kbusch@kernel.org>, knsathya@kernel.org,
-        Sinan Kaya <okaya@kernel.org>
-Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
- triggered
-Message-ID: <20210328095332.GA8657@wunner.de>
-References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210317041342.GA19198@wunner.de>
- <CAPcyv4jxTcUEgcfPRckHqrUPy8gR7ZJsxDaeU__pSq6PqJERAQ@mail.gmail.com>
- <20210317053114.GA32370@wunner.de>
- <CAPcyv4j8t4Y=kpRSvOjOfVHd107YemiRcW0BNQRwp-d9oCddUw@mail.gmail.com>
- <CAC41dw8sX4T-FrwBju2H3TbjDhJMLGw_KHqs+20qzvKU1b5QTA@mail.gmail.com>
- <CAPcyv4gfBTuEj494aeg0opeL=PSbk_Cs16fX7A-cLvSV6EZg-Q@mail.gmail.com>
- <CAC41dw_BJBMdwyccdvWNZsdAzzh7ko=q4oSpQXo-jJDTfQGkZw@mail.gmail.com>
- <20210317190151.GA27146@wunner.de>
- <0a020128-80e8-76a7-6b94-e165d3c6f778@linux.intel.com>
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [1/5] reporting-issues: header and TLDR
+Message-ID: <YGBUf6aQhlBzP+a+@kroah.com>
+References: <c396c91f-27c2-de36-7b05-099e03c213f4@leemhuis.info>
+ <6a220d2c-568e-2e41-53a4-0800e206d0a6@leemhuis.info>
+ <14d9b8a3-94ce-00a6-a17b-934ffd999697@leemhuis.info>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a020128-80e8-76a7-6b94-e165d3c6f778@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <14d9b8a3-94ce-00a6-a17b-934ffd999697@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 01:02:07PM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> On 3/17/21 12:01 PM, Lukas Wunner wrote:
-> > If the events are ignored, the driver of the device in the hotplug slot
-> > is not unbound and rebound.  So the driver must be able to cope with
-> > loss of TLPs during DPC recovery and it must be able to cope with
-> > whatever state the endpoint device is in after DPC recovery.
-> > Is this really safe?  How does the nvme driver deal with it?
+On Sun, Mar 28, 2021 at 11:23:30AM +0200, Thorsten Leemhuis wrote:
+> On 26.03.21 07:15, Thorsten Leemhuis wrote:
+> > On 26.03.21 07:13, Thorsten Leemhuis wrote:
+> >>
+> >> Lo! Since a few months mainline in
+> >> Documentation/admin-guide/reporting-issues.rst contains a text written
+> >> to obsolete the good old reporting-bugs text. For now, the new document
+> >> still contains a warning at the top that basically says "this is WIP".
+> >> But I'd like to remove that warning and delete reporting-bugs.rst in the
+> >> next merge window to make reporting-issues.rst fully official. With this
+> >> mail I want to give everyone a chance to take a look at the text and
+> >> speak up if you don't want me to move ahead for now.
+> >>
+> >> For easier review I'll post the text of reporting-issues.rst in reply to
+> >> this mail. I'll do that in a few chunks, as if this was a cover letter
+> >> for a patch-set. 
+> > Here we go:
+> > [...]
+> > Reporting issues
+> > ++++++++++++++++
+> > 
+> > The short guide (aka TL;DR)
+> > ===========================
+> > 
+> > [...]
 > 
-> During DPC recovery, in pcie_do_recovery() function, we use
-> report_frozen_detected() to notify all devices attached to the port
-> about the fatal error. After this notification, we expect all
-> affected devices to halt its IO transactions.
 > 
-> Regarding state restoration, after successful recovery, we use
-> report_slot_reset() to notify about the slot/link reset. So device
-> drivers are expected to restore the device to working state after this
-> notification.
-
-Thanks a lot for the explanation.
-
-
-> I am not sure how pure firmware DPC recovery works. Is there a platform
-> which uses this combination? For firmware DPC model, spec does not clarify
-> following points.
+> FWIW, on another channel someone mentioned the process in the TLDR is
+> quite complicated when it comes to regressions in stable and longterm
+> kernels. I looked at the text and it seemed like a valid complaint, esp.
+> as those regressions are something we really care about.
 > 
-> 1. Who will notify the affected device drivers to halt the IO transactions.
-> 2. Who is responsible to restore the state of the device after link reset.
+> To solve this properly I sadly had to shake up the text in this section
+> completely and rewrite parts of it. Find the result below. I'm quite
+> happy with it, as it afaics is more straight forward and easier to
+> understand. And it matches the step-by-step guide better. And the best
+> thing: it's a bit shorter than the old TLDR.
 > 
-> IMO, pure firmware DPC does not support seamless recovery. I think after it
-> clears the DPC trigger status, it might expect hotplug handler be responsible
-> for device recovery.
+> I'll wait a day or two and then will send it through the regular review
+> together with a few small other fixes that piled up for the text, just
+> wanted to add it here for completeness.
 > 
-> I don't want to add fix to the code path that I don't understand. This is the
-> reason for extending this logic to pure firmware DPC case.
+> ---
+> The short guide (aka TL;DR)
+> ===========================
+> 
+> Are you facing a regression with vanilla kernels from the same stable or
+> longterm series? One still supported? Then search the `LKML
+> <https://lore.kernel.org/lkml/>`_ and the `Linux stable mailing list
+> <https://lore.kernel.org/stable/>_` archives for matching reports to
+> join. If you don't find any, install `the latest release from that
+> series <https://kernel.org/>`_. If it still shows the issue, report it
+> to the stable mailing list and the stable maintainers.
+> 
+> In all other cases try your best guess which kernel part might be
+> causing the issue. Check the :ref:`MAINTAINERS <maintainers>` file for
+> how its developers expect to be told about problems, which most of the
+> time will be by email with a mailing list in CC. Check the destination's
+> archives for matching reports; search the `LKML
+> <https://lore.kernel.org/lkml/>`_ and the web, too. If you don't find
+> any to join, install `the latest mainline kernel
+> <https://kernel.org/>`_. If the issue is present there, send a report.
+> 
+> If you would like to see the issue also fixed in a still supported
+> stable or longterm series, install its latest release. If it shows the
+> problem, search for the change that fixed it in mainline and check if
+> backporting is in the works or was discarded; if it's neither, ask those
+> who handled the change for it.
+> 
+> **General remarks**: When installing and testing a kernel as outlined
+> above, ensure it's vanilla (IOW: not patched and not using add-on
+> modules). Also make sure it's built and running in a healthy environment
+> and not already tainted before the issue occurs.
+> 
+> While writing your report, include all information relevant to the
+> issue, like the kernel and the distro used. In case of a regression try
+> to include the commit-id of the change causing it, which a bisection can
+> find. If you're facing multiple issues with the Linux kernel at once,
+> report each separately.
+> 
+> Once the report is out, answer any questions that come up and help where
+> you can. That includes keeping the ball rolling by occasionally
+> retesting with newer releases and sending a status update afterwards.
+> 
+> ---
 
-I agree, let's just declare synchronization of pciehp with
-pure firmware DPC recovery as unsupported for now.
+The above looks good to me, thanks for doing this work.
 
-
-I've just submitted a refined version of my patch to the list:
-https://lore.kernel.org/linux-pci/b70e19324bbdded90b728a5687aa78dc17c20306.1616921228.git.lukas@wunner.de/
-
-If you could give this new version a whirl I'd be grateful.
-
-This version contains more code comments and kernel-doc.
-
-There's now a check in dpc_completed() whether the DPC Status
-register contains "all ones", which can happen when a DPC-capable
-hotplug port is hot-removed, i.e. for cascaded DPC-capable hotplug
-ports.
-
-I've also realized that the previous version was prone to races
-which are theoretical but should nonetheless be avoided:
-E.g., previously the DLLSC event was only removed from "events"
-if the link is still up after DPC recovery.  However if DPC
-triggers and recovers multiple times in a row, the link may
-happen to be up but a new DLLSC event may have been picked up
-in "pending_events" which should be ignored.  I've solved this
-by inverting the logic such that DLLSC is *always* removed from
-"events", and if the link is unexpectedly *down* after successful
-recovery, a DLLSC event is synthesized.
-
-Thanks,
-
-Lukas
+greg k-h
