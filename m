@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE58C34BC11
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 12:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D3A34BC18
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbhC1KpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 06:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhC1Kor (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 06:44:47 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9B8C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 03:44:46 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id b9so9913968wrt.8
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 03:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=zSdvYuufHuv8g8BJEfkgwXRBjUhdu0Zl6tnzVeqIHSA=;
-        b=Uv9JkF5LPmL7R8WcvXQ2eBNTMpQGj5TS1cxvAPm9Qox+KYpOvUjwZ03vogfAVAZ/+n
-         A6XQGYkIfgNCjSf9KBDdxhnZbC14JSRxMMwQnTXMHCv2eGy7yUXztgRUuf7byD3nSIo1
-         IoAJRLjFRgQXg8fY5bWy53hnOFGaouCrKIq6gMANSra7BOypRrPhl/2TOSga5wzDoG71
-         eTSDMEVFrFn0hVH/p2dsnlp5xHX1Epf4wWORZUBzq6y1TbVtN6/RigdpXULnpGjof4U7
-         iZRMnpU0f2AF8xD0e3d5P+m7769wo0WLAw4FxjkJh/D5/ZAYjLbmOX49cwUIoHy77rMm
-         NjAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=zSdvYuufHuv8g8BJEfkgwXRBjUhdu0Zl6tnzVeqIHSA=;
-        b=JrEdJxWmbXE06RhVWOG+es6c/XJ3vMTnCqfXXO+TVahje3XRrFtKQ1bbwIRb6Vsd3y
-         h0GT5ZI5xSnekmYicdbyukUa/8t0X+sGRLcIsfdqEYHcbumvM+uGp8ppGigG+OYHcZxg
-         UL5gf47XO3w9vg9OEO+rGwto+PwjXoz7+RUQ2b0qORK859NQ0IiHLmUxoOPS1DuRjNpz
-         s4xixVszCqoYMoTq8zLTJ/ZvxnJy8cd2ziyTJPUH7R+jQcTSaEgClNpauIKcFs6Ow9az
-         u75NiB6vnQZgxSSNoD6Y3mvQFOCniLzAA10ynl5HP89oGebwML/1a7/ISsv7fb5aMxB9
-         iz6w==
-X-Gm-Message-State: AOAM532r0eeXy7g4zsgArDGckRiAqU6rT0zCURtI7r8e/3iJwpSXSsnp
-        Iu2I1ZbaCbwJq+HzdpWO+3o=
-X-Google-Smtp-Source: ABdhPJybetk0o9IDLj6rGjCpmJHyzcu8xTDzmbD3P5PBSa91maRD1pKuk4at2me1Gr6MZJtLZwCghw==
-X-Received: by 2002:a5d:5487:: with SMTP id h7mr23694207wrv.348.1616928285569;
-        Sun, 28 Mar 2021 03:44:45 -0700 (PDT)
-Received: from gmail.com (2E8BA22B.catv.pool.telekom.hu. [46.139.162.43])
-        by smtp.gmail.com with ESMTPSA id m15sm21768644wrp.96.2021.03.28.03.44.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 03:44:44 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 28 Mar 2021 12:44:42 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] x86 fixes
-Message-ID: <20210328104442.GA480587@gmail.com>
+        id S230202AbhC1LHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 07:07:23 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:36374 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229503AbhC1LG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 07:06:59 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F7XwK2Cwzz9tyJY;
+        Sun, 28 Mar 2021 13:06:57 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id X7bzXoFdbBWq; Sun, 28 Mar 2021 13:06:57 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F7XwK1C6Rz9tyJV;
+        Sun, 28 Mar 2021 13:06:57 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BE4098B782;
+        Sun, 28 Mar 2021 13:06:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id EfLRhhLErgBp; Sun, 28 Mar 2021 13:06:57 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0EEB08B75F;
+        Sun, 28 Mar 2021 13:06:57 +0200 (CEST)
+Subject: Re: [PATCH] powerpc: Fix HAVE_HARDLOCKUP_DETECTOR_ARCH build
+ configuration
+To:     Chen Huang <chenhuang5@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     Don Zickus <dzickus@redhat.com>, linux-kernel@vger.kernel.org,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210327094900.938555-1-chenhuang5@huawei.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <dd6b25d3-006b-be1e-9c4f-89e66aefb519@csgroup.eu>
+Date:   Sun, 28 Mar 2021 13:06:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210327094900.938555-1-chenhuang5@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
-
-Please pull the latest x86/urgent git tree from:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2021-03-28
-
-   # HEAD: 9fcb51c14da2953de585c5c6e50697b8a6e91a7b x86/build: Turn off -fcf-protection for realmode targets
-
-Two fixes:
-
- - Fix build failure on Ubuntu with new GCC packages that turn on -fcf-protection
-
- - Fix SME memory encryption PTE encoding bug - AFAICT the code worked on
-   4K page sizes (level 1) but had the wrong shift at higher page level orders
-   (level 2 and higher).
-
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
- Thanks,
-
-	Ingo
-
------------------->
-Arnd Bergmann (1):
-      x86/build: Turn off -fcf-protection for realmode targets
-
-Isaku Yamahata (1):
-      x86/mem_encrypt: Correct physical address calculation in __set_clr_pte_enc()
 
 
- arch/x86/Makefile         | 2 +-
- arch/x86/mm/mem_encrypt.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Le 27/03/2021 à 10:49, Chen Huang a écrit :
+> When compiling the powerpc with the SMP disabled, it shows the issue:
+> 
+> arch/powerpc/kernel/watchdog.c: In function ‘watchdog_smp_panic’:
+> arch/powerpc/kernel/watchdog.c:177:4: error: implicit declaration of function ‘smp_send_nmi_ipi’; did you mean ‘smp_send_stop’? [-Werror=implicit-function-declaration]
+>    177 |    smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
+>        |    ^~~~~~~~~~~~~~~~
+>        |    smp_send_stop
+> cc1: all warnings being treated as errors
+> make[2]: *** [scripts/Makefile.build:273: arch/powerpc/kernel/watchdog.o] Error 1
+> make[1]: *** [scripts/Makefile.build:534: arch/powerpc/kernel] Error 2
+> make: *** [Makefile:1980: arch/powerpc] Error 2
+> make: *** Waiting for unfinished jobs....
+> 
+> We found that powerpc used ipi to implement hardlockup watchdog, so the
+> HAVE_HARDLOCKUP_DETECTOR_ARCH should depend on the SMP.
+> 
+> Fixes: 2104180a5369 ("powerpc/64s: implement arch-specific hardlockup watchdog")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+> ---
+>   arch/powerpc/Kconfig | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 764df010baee..2d4f37b117ce 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -225,7 +225,7 @@ config PPC
+>   	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
+>   	select HAVE_MOD_ARCH_SPECIFIC
+>   	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+> -	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if (PPC64 && PPC_BOOK3S)
+> +	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
 
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 2d6d5a28c3bf..9a85eae37b17 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -27,7 +27,7 @@ endif
- REALMODE_CFLAGS	:= -m16 -g -Os -DDISABLE_BRANCH_PROFILING \
- 		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
- 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
--		   -mno-mmx -mno-sse
-+		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=none)
- 
- REALMODE_CFLAGS += -ffreestanding
- REALMODE_CFLAGS += -fno-stack-protector
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index 4b01f7dbaf30..ae78cef79980 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -262,7 +262,7 @@ static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
- 	if (pgprot_val(old_prot) == pgprot_val(new_prot))
- 		return;
- 
--	pa = pfn << page_level_shift(level);
-+	pa = pfn << PAGE_SHIFT;
- 	size = page_level_size(level);
- 
- 	/*
+While modifying this line, you should restore the alphabetic order by moving it up.
+
+You can use PPC_BOOK3S_64 instead of PPC64 && PPC_BOOK3S
+
+>   	select HAVE_OPTPROBES			if PPC64
+>   	select HAVE_PERF_EVENTS
+>   	select HAVE_PERF_EVENTS_NMI		if PPC64
+> 
