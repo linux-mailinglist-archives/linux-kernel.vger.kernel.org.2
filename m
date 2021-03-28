@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C5534BD7B
+	by mail.lfdr.de (Postfix) with ESMTP id 7537634BD7C
 	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbhC1RPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:15:05 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:45883 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230497AbhC1ROt (ORCPT
+        id S231396AbhC1RPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:15:08 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:34867 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhC1ROz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:14:49 -0400
-X-Originating-IP: 90.89.138.59
+        Sun, 28 Mar 2021 13:14:55 -0400
 Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
         (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 46F98240003;
-        Sun, 28 Mar 2021 17:14:46 +0000 (UTC)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 453F8100007;
+        Sun, 28 Mar 2021 17:14:51 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     menglong8.dong@gmail.com, miquel.raynal@bootlin.com
-Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Yunkai <zhang.yunkai@zte.com.cn>
-Subject: Re: [PATCH] mtd:rawnand: remove duplicate include in rawnand.h
-Date:   Sun, 28 Mar 2021 19:14:45 +0200
-Message-Id: <20210328171445.7646-1-miquel.raynal@bootlin.com>
+To:     Kamal Dasu <kdasu.kdev@gmail.com>,
+        Brian Norris <computersforpeace@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     f.fainelli@gmail.com, linux-mtd@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mtd: rawnand: brcmnand: move to polling in pio mode on oops write
+Date:   Sun, 28 Mar 2021 19:14:50 +0200
+Message-Id: <20210328171450.7711-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210313105702.365878-1-zhang.yunkai@zte.com.cn>
+In-Reply-To: <20210311170909.9031-2-kdasu.kdev@gmail.com>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'7a534c5e4159f9bbac9f3c146dc78e163d8858c2'
+X-linux-mtd-patch-commit: b'22ca05b82d3e3abc2b116a11ee41b6b692b95530'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-03-13 at 10:57:02 UTC, menglong8.dong@gmail.com wrote:
-> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+On Thu, 2021-03-11 at 17:09:09 UTC, Kamal Dasu wrote:
+> This change makes sure that Broadcom NAND driver moves to interrupt
+> polling on the first brcmnand_write() call.
 > 
-> 'linux/mtd/nand.h' included in 'rawnand.h' is duplicated.
-> It is also included in the 17th line.
-> 
-> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
