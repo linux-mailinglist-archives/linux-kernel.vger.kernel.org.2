@@ -2,184 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B814534BC89
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 16:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1021434BC8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 16:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbhC1Nt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 09:49:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhC1Nt2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 09:49:28 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8131EC061756;
-        Sun, 28 Mar 2021 06:49:28 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id gb6so4782687pjb.0;
-        Sun, 28 Mar 2021 06:49:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V54Bsftn9AhHdDMdpmEp8JmBOF6GOJkmVF6r6IzLWjw=;
-        b=HHxmvhRX1KM17O5dPF8p44ZaRz6XeJW+Vgx00G3o1ZXuSZT5jAVUvnXMSajN7xxlt5
-         vmrNpwV1rhkqJNJvh6s/LO7R2q4j3AduneG5+KMYNLeWwqEWuV4EKgn7kxsY32gzXfFS
-         T1h4tRC8AWZla11UjR6k2ZJYylCk64xaAii9nQciJjjdXe4uBjQj6tA3vjveSM8PwVUk
-         yBaIQoQjRKTFcsa3sGzHgWe6rfwTqR6aDhKRWyzsl8hP8tgIyqDI2RUSPLLBOzMtll5s
-         qad+S+7zBCvXM1vHqy0AxRLp00+MtGs3KkJe5v1aevQE137YG0tNm9lsZHEKdI8j8WfX
-         7sWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V54Bsftn9AhHdDMdpmEp8JmBOF6GOJkmVF6r6IzLWjw=;
-        b=g0tnIcD3R/In7qb48s3QOgqug67Syqyw82bjvzPfUmZpA0UCFapTiw2ZYmvytWmK1V
-         eNX7FB+EU8BsJPvo5m106eIroIATdqQLdR8ub8pJcNCwB/83rg5Zpb7FgWCXdu4t5TjD
-         b/8BAxpUB1HzM7FwvCLxVBZPi/8BYbMi+31gal+3+hqveCR73BqwYtGTtQxaCZo36cWg
-         LChNSop0xz+3T/NaKKNZQzfG+9f/4cF3LUCmDApodhzOXfXr5j7iLXvSvT2tQT1Zdr//
-         18Xaao9QT/t1J1X9owPpM0Iv5KvYRIqJUydB89nsIOKMJSO10ej7uWNLLNiejhvVJ7Te
-         E9jg==
-X-Gm-Message-State: AOAM533Kgc4OJttYn6J3IC00fUOUJvu7Mafr1362b7r46uVIjkvi+SO0
-        v2WPMeXBb+9+qRCXXJuDElE=
-X-Google-Smtp-Source: ABdhPJyu2qggueAMWM0/PFkf0GnfpDOkdVRJkTWzGaWDxUj4pXyO+TF4QqzMpEXo/cRH6eWWN8uyqQ==
-X-Received: by 2002:a17:902:ac89:b029:e6:d199:29ac with SMTP id h9-20020a170902ac89b02900e6d19929acmr24326784plr.46.1616939368075;
-        Sun, 28 Mar 2021 06:49:28 -0700 (PDT)
-Received: from localhost (185.212.56.149.16clouds.com. [185.212.56.149])
-        by smtp.gmail.com with ESMTPSA id f15sm13935817pgg.84.2021.03.28.06.49.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 06:49:27 -0700 (PDT)
-Date:   Sun, 28 Mar 2021 21:49:25 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     dann frazier <dann.frazier@canonical.com>
-Cc:     tjoseph@cadence.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        bhelgaas@google.com, thierry.reding@gmail.com,
-        toan@os.amperecomputing.com, ley.foon.tan@intel.com,
-        shawn.lin@rock-chips.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] PCI: controller: convert to
- devm_platform_ioremap_resource_byname()
-Message-ID: <20210328134925.GA247508@nuc8i5>
-References: <20200602171601.17630-1-zhengdejin5@gmail.com>
- <YF9zQscGC7T/ZsN+@xps13.dannf>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YF9zQscGC7T/ZsN+@xps13.dannf>
+        id S230294AbhC1OC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 10:02:26 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:29371 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhC1OCL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 10:02:11 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F7cpS6Wxnz9tygR;
+        Sun, 28 Mar 2021 16:02:08 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id beRVMptYWZW9; Sun, 28 Mar 2021 16:02:08 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F7cpS4kf4z9tygP;
+        Sun, 28 Mar 2021 16:02:08 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6BB068B782;
+        Sun, 28 Mar 2021 16:02:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4XNMFRrWu98w; Sun, 28 Mar 2021 16:02:09 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2AB118B75B;
+        Sun, 28 Mar 2021 16:02:09 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id F0FBB6761A; Sun, 28 Mar 2021 14:02:08 +0000 (UTC)
+Message-Id: <79ee6fe13b267b0c81d7626c471a99140f0c9e4a.1616939989.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/signal32: Fix Oops on sigreturn with unmapped VDSO
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sun, 28 Mar 2021 14:02:08 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 12:02:42PM -0600, dann frazier wrote:
-Hi Dann,
+PPC32 encounters a KUAP fault when trying to handle a signal with
+VDSO unmapped.
 
-I'm so sorry for that, And there is a mistake with my patch that caused
-this problem. Thank you very much for telling me this, I will fix it as
-soon as possible.
+	Kernel attempted to read user page (7fc07ec0) - exploit attempt? (uid: 0)
+	BUG: Unable to handle kernel data access on read at 0x7fc07ec0
+	Faulting instruction address: 0xc00111d4
+	Oops: Kernel access of bad area, sig: 11 [#1]
+	BE PAGE_SIZE=16K PREEMPT CMPC885
+	CPU: 0 PID: 353 Comm: sigreturn_vdso Not tainted 5.12.0-rc4-s3k-dev-01553-gb30c310ea220 #4814
+	NIP:  c00111d4 LR: c0005a28 CTR: 00000000
+	REGS: cadb3dd0 TRAP: 0300   Not tainted  (5.12.0-rc4-s3k-dev-01553-gb30c310ea220)
+	MSR:  00009032 <EE,ME,IR,DR,RI>  CR: 48000884  XER: 20000000
+	DAR: 7fc07ec0 DSISR: 88000000
+	GPR00: c0007788 cadb3e90 c28d4a40 7fc07ec0 7fc07ed0 000004e0 7fc07ce0 00000000
+	GPR08: 00000001 00000001 7fc07ec0 00000000 28000282 1001b828 100a0920 00000000
+	GPR16: 100cac0c 100b0000 105c43a4 105c5685 100d0000 100d0000 100d0000 100b2e9e
+	GPR24: ffffffff 105c43c8 00000000 7fc07ec8 cadb3f40 cadb3ec8 c28d4a40 00000000
+	NIP [c00111d4] flush_icache_range+0x90/0xb4
+	LR [c0005a28] handle_signal32+0x1bc/0x1c4
+	Call Trace:
+	[cadb3e90] [100d0000] 0x100d0000 (unreliable)
+	[cadb3ec0] [c0007788] do_notify_resume+0x260/0x314
+	[cadb3f20] [c000c764] syscall_exit_prepare+0x120/0x184
+	[cadb3f30] [c00100b4] ret_from_syscall+0xc/0x28
+	--- interrupt: c00 at 0xfe807f8
+	NIP:  0fe807f8 LR: 10001060 CTR: c0139378
+	REGS: cadb3f40 TRAP: 0c00   Not tainted  (5.12.0-rc4-s3k-dev-01553-gb30c310ea220)
+	MSR:  0000d032 <EE,PR,ME,IR,DR,RI>  CR: 28000482  XER: 20000000
 
-> On Wed, Jun 03, 2020 at 01:16:01AM +0800, Dejin Zheng wrote:
-> > Use devm_platform_ioremap_resource_byname() to simplify codes.
-> > it contains platform_get_resource_byname() and devm_ioremap_resource().
-> > 
-> > Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
-> > ---
-> > v1 -> v2:
-> > 	- Discard changes to the file drivers/pci/controller/pcie-xilinx-nwl.c
-> > 	  Due to my mistakes, my patch will modify pcie-xilinx-nwl.c,
-> > 	  but it still need to use the res variable, but
-> > 	  devm_platform_ioremap_resource_byname() funtion can't assign a
-> > 	  value to the variable res. kbuild test robot report it. Thanks
-> > 	  very much for kbuild test robot <lkp@intel.com>.
-> > 
-> >  drivers/pci/controller/cadence/pcie-cadence-ep.c   | 3 +--
-> >  drivers/pci/controller/cadence/pcie-cadence-host.c | 3 +--
-> >  drivers/pci/controller/pci-tegra.c                 | 8 +++-----
-> >  drivers/pci/controller/pci-xgene.c                 | 3 +--
-> >  drivers/pci/controller/pcie-altera-msi.c           | 3 +--
-> >  drivers/pci/controller/pcie-altera.c               | 9 +++------
-> >  drivers/pci/controller/pcie-mediatek.c             | 4 +---
-> >  drivers/pci/controller/pcie-rockchip.c             | 5 ++---
-> >  8 files changed, 13 insertions(+), 25 deletions(-)
-> > 
-> 
-> hey,
->   I found that recent kernels fail to initialize PCI devices on our HP
-> m400 Moonshot cartridges, which are based on the X-Gene SoC. I
-> bisected the issue down to this commit. I found that just reverting
-> this hunk in pci-xgene.c is enough to get v5.12 rcs booting again:
-> 
-> > diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
-> > index d1efa8ffbae1..1431a18eb02c 100644
-> > --- a/drivers/pci/controller/pci-xgene.c
-> > +++ b/drivers/pci/controller/pci-xgene.c
-> > @@ -355,8 +355,7 @@ static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
-> >  	if (IS_ERR(port->csr_base))
-> >  		return PTR_ERR(port->csr_base);
-> >  
-> > -	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
-> > -	port->cfg_base = devm_ioremap_resource(dev, res);
-> > +	port->cfg_base = devm_platform_ioremap_resource_byname(pdev, "cfg");
-> >  	if (IS_ERR(port->cfg_base))
-> >  		return PTR_ERR(port->cfg_base);
-> >  	port->cfg_addr = res->start;
-The mistake of this patch is here, port->cfg_addr need the res->start,
-But this patch remove the res of get "cfg" resource. here use the wrong
-data by get "csr" resource in the previous.
+	GPR00: 00000025 7fc081c0 77bb1690 00000000 0000000a 28000482 00000001 0ff03a38
+	GPR08: 0000d032 00006de5 c28d4a40 00000009 88000482 1001b828 100a0920 00000000
+	GPR16: 100cac0c 100b0000 105c43a4 105c5685 100d0000 100d0000 100d0000 100b2e9e
+	GPR24: ffffffff 105c43c8 00000000 77ba7628 10002398 10010000 10002124 00024000
+	NIP [0fe807f8] 0xfe807f8
+	LR [10001060] 0x10001060
+	--- interrupt: c00
+	Instruction dump:
+	38630010 7c001fac 38630010 4200fff0 7c0004ac 4c00012c 4e800020 7c001fac
+	2c0a0000 38630010 4082ffcc 4bffffe4 <7c00186c> 2c070000 39430010 4082ff8c
+	---[ end trace 3973fb72b049cb06 ]---
 
-BR,
-Dejin
-> 
-> 
-> In case it helps, here's the PCI initialization portion of dmesg when
-> it fails:
-> 
-> [    0.756359] xgene-pcie 1f500000.pcie: host bridge /soc/pcie@1f500000 ranges:
-> [    0.756372] xgene-pcie 1f500000.pcie:   No bus range found for /soc/pcie@1f500000, using [bus 00-ff]
-> [    0.756387] xgene-pcie 1f500000.pcie:      MEM 0xa130000000..0xa1afffffff -> 0x0030000000
-> [    0.756404] xgene-pcie 1f500000.pcie:   IB MEM 0x4000000000..0x7fffffffff -> 0x4000000000
-> [    0.756459] xgene-pcie 1f500000.pcie: (rc) x8 gen-2 link up
-> [    0.756525] xgene-pcie 1f500000.pcie: PCI host bridge to bus 0000:00
-> [    0.756532] pci_bus 0000:00: root bus resource [bus 00-ff]
-> [    0.756538] pci_bus 0000:00: root bus resource [mem 0xa130000000-0xa1afffffff] (bus address [0x30000000-0xafffffff])
-> 
-> 
-> and here's what it looks like when it works:
-> 
-> [    0.756793] xgene-pcie 1f500000.pcie: host bridge /soc/pcie@1f500000 ranges:
-> [    0.756807] xgene-pcie 1f500000.pcie:   No bus range found for /soc/pcie@1f500000, using [bus 00-ff]
-> [    0.756822] xgene-pcie 1f500000.pcie:      MEM 0xa130000000..0xa1afffffff -> 0x0030000000
-> [    0.756838] xgene-pcie 1f500000.pcie:   IB MEM 0x4000000000..0x7fffffffff -> 0x4000000000
-> [    0.756892] xgene-pcie 1f500000.pcie: (rc) x8 gen-2 link up
-> [    0.756962] xgene-pcie 1f500000.pcie: PCI host bridge to bus 0000:00
-> [    0.756968] pci_bus 0000:00: root bus resource [bus 00-ff]
-> [    0.756974] pci_bus 0000:00: root bus resource [mem 0xa130000000-0xa1afffffff] (bus address [0x30000000-0xafffffff])
-> [    0.757006] pci 0000:00:00.0: [10e8:e004] type 01 class 0x060400
-> [    0.757014] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757022] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757032] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757039] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757046] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757052] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757059] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757068] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x4 may corrupt adjacent RW1C bits
-> [    0.757094] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x3e may corrupt adjacent RW1C bits
-> [    0.757143] pci 0000:00:00.0: supports D1 D2
-> [    0.757589] pci_bus 0000:00: 2-byte config write to 0000:00:00.0 offset 0x3e may corrupt adjacent RW1C bits
-> [    0.757968] pci 0000:01:00.0: [15b3:1007] type 00 class 0x020000
-> [    0.758381] pci 0000:01:00.0: reg 0x10: [mem 0x00100000-0x001fffff 64bit]
-> [    0.758642] pci 0000:01:00.0: reg 0x18: [mem 0x00800000-0x00ffffff 64bit pref]
-> [    0.761110] pci 0000:01:00.0: reg 0x134: [mem 0x00000000-0x007fffff 64bit pref]
-> [    0.761115] pci 0000:01:00.0: VF(n) BAR2 space: [mem 0x00000000-0x03ffffff 64bit pref] (contains BAR2 for 8 VFs)
-> [    0.762921] pci 0000:01:00.0: 32.000 Gb/s available PCIe bandwidth, limited by 5.0 GT/s PCIe x8 link at 0000:00:00.0 (capable of 63.008 Gb/s with 8.0 GT/s PCIe x8 link)
-> [    0.773939] pci 0000:00:00.0: BAR 15: assigned [mem 0xa130000000-0xa1347fffff 64bit pref]
-> [    0.773947] pci 0000:00:00.0: BAR 14: assigned [mem 0xa134800000-0xa1348fffff]
-> [    0.773954] pci 0000:01:00.0: BAR 2: assigned [mem 0xa130000000-0xa1307fffff 64bit pref]
-> [    0.774136] pci 0000:01:00.0: BAR 9: assigned [mem 0xa130800000-0xa1347fffff 64bit pref]
-> [    0.774203] pci 0000:01:00.0: BAR 0: assigned [mem 0xa134800000-0xa1348fffff 64bit]
-> [    0.774384] pci 0000:00:00.0: PCI bridge to [bus 01]
-> [    0.774391] pci 0000:00:00.0:   bridge window [mem 0xa134800000-0xa1348fffff]
-> [    0.774397] pci 0000:00:00.0:   bridge window [mem 0xa130000000-0xa1347fffff 64bit pref]
-> [    0.774576] pcieport 0000:00:00.0: PME: Signaling with IRQ 89
-> [    0.774734] pcieport 0000:00:00.0: AER: enabled with IRQ 89
-> 
-> 
->   -dann
+This is because flush_icache_range() is called on user addresses.
+
+The same problem was detected some time ago on PPC64. It was fixed by
+enabling KUAP in commit 59bee45b9712 ("powerpc/mm: Fix missing KUAP
+disable in flush_coherent_icache()").
+
+PPC32 doesn't use flush_coherent_icache() and fallbacks on
+clean_dcache_range() and invalidate_icache_range().
+
+We could fix it similarly by enabling user access in those functions,
+but this is overkill for just flushing two instructions.
+
+The two instructions are 8 bytes aligned, so a single dcbst/icbi is
+enough to flush them. Do like __patch_instruction() and inline
+a dcbst followed by an icbi just after the write of the instructions,
+while user access is still allowed. The isync is not required because
+rfi will be used to return to user.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/signal_32.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
+index 75ee918a120a..5b2ba2731957 100644
+--- a/arch/powerpc/kernel/signal_32.c
++++ b/arch/powerpc/kernel/signal_32.c
+@@ -809,6 +809,7 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
+ 		unsafe_put_user(PPC_INST_ADDI + __NR_rt_sigreturn, &mctx->mc_pad[0],
+ 				failed);
+ 		unsafe_put_user(PPC_INST_SC, &mctx->mc_pad[1], failed);
++		asm("dcbst %y0; sync; icbi %y0; sync" :: "Z" (mctx->mc_pad[0]));
+ 	}
+ 	unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
+ 
+@@ -817,9 +818,6 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
+ 	if (copy_siginfo_to_user(&frame->info, &ksig->info))
+ 		goto badframe;
+ 
+-	if (tramp == (unsigned long)mctx->mc_pad)
+-		flush_icache_range(tramp, tramp + 2 * sizeof(unsigned long));
+-
+ 	regs->link = tramp;
+ 
+ #ifdef CONFIG_PPC_FPU_REGS
+@@ -908,12 +906,10 @@ int handle_signal32(struct ksignal *ksig, sigset_t *oldset,
+ 		/* Set up the sigreturn trampoline: li r0,sigret; sc */
+ 		unsafe_put_user(PPC_INST_ADDI + __NR_sigreturn, &mctx->mc_pad[0], failed);
+ 		unsafe_put_user(PPC_INST_SC, &mctx->mc_pad[1], failed);
++		asm("dcbst %y0; sync; icbi %y0; sync" :: "Z" (mctx->mc_pad[0]));
+ 	}
+ 	user_write_access_end();
+ 
+-	if (tramp == (unsigned long)mctx->mc_pad)
+-		flush_icache_range(tramp, tramp + 2 * sizeof(unsigned long));
+-
+ 	regs->link = tramp;
+ 
+ #ifdef CONFIG_PPC_FPU_REGS
+-- 
+2.25.0
+
