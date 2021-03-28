@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE7E34BC70
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 14:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CF434BC72
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 14:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhC1Mvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 08:51:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52082 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231285AbhC1MvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 08:51:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D9F36193F;
-        Sun, 28 Mar 2021 12:51:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616935870;
-        bh=5td7gOwGWp/bcwoGdg50qJ48DE8KSZ4XdbEFraiEF0w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U6LuLT2VVCq7bdaTGV0CIR+srCkG6wA+m3KxeyQHd15VHkUmyh8patc4B7XzuEwMs
-         cbEnOg5pw9hxgDkZLLwtmRxFGHznw4lg/aU4I5CCWvvquhVniV6/7mWZKF0vuDxMm1
-         1w5kg6wB/OyliO6aPbBpMbK67H6dsnxIANLnPPnw=
-Date:   Sun, 28 Mar 2021 14:51:08 +0200
-From:   gregkh <gregkh@linuxfoundation.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Xu Jia <xujia39@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH -next] applicom: fix some err codes returned by ac_ioctl
-Message-ID: <YGB7vKk6dDoWpcKn@kroah.com>
-References: <20210324072031.941791-1-xujia39@huawei.com>
- <CAK8P3a2cWFT7BiePJQjYO-_9QjCvWf1mQPE8NEZ4dXgira=iaA@mail.gmail.com>
+        id S230258AbhC1M5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 08:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhC1M4n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 08:56:43 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56432C061762;
+        Sun, 28 Mar 2021 05:56:43 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso4632552pjb.4;
+        Sun, 28 Mar 2021 05:56:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I1/uzyA6pOZdXeSGhWpWxUqNW6ImJob8Xs5Y1LIUHB4=;
+        b=ZmnxaWCFRLQNuORE+CiqHdSKgtBFDVCOXTV97sbfSZ6MKnuZLc0Bl6aWX6HzgBQGqi
+         iwcC/C1sTgXzUDTWFONn/1xmSTnfjTPCJy0XO0t8OfMI19HlugXbQ5o5vpK81JtgpVry
+         zgvlpQmmOpjs+1ycYK4YyjIdbeTRAazsFgUlobpBuz4m45+HjsP9f25wgNIfgJwpSUfk
+         m3WA8nLXQ95LHyFwluu92fY24GZqRUqyiq5rtG9mHxKIQyRewqZIOc2lpHEmTQ/AmMYI
+         iPw8wOUzw1F2i3lPGR4peG5CZid0DcZG3LiMUDOpBUe26iJsFW1eBiIJ/6OikfgjEUH3
+         wIwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I1/uzyA6pOZdXeSGhWpWxUqNW6ImJob8Xs5Y1LIUHB4=;
+        b=nyrjQN9HjnJ5mbgWg5wDL/ZysAkeVRHE//1GBokSDyPAxkjPEMPV2qjOxdyVkWj1CC
+         fW6MKYTycgOOvbjG5QmNVHx4pPykbXMSubBMUVmk86EarksBux7Xqw144uFN887e6zIl
+         3CiJRCBvueeTuRrxTtScNnb4wTjlFe1P1anM6F79g8z/d0NS4HJQqmov/TsqY8BmUEC8
+         AtKhVN94KFN7j8oY0N1NjDCTSXHbHvN9i2coN3Ya1BZ7wo1rG3Ytbp0hDeSfvPuSVd9r
+         1MoFjNMxF6qE00KgwyiJfkD+puBXiReiLZEPeFHvDyRKAwO6TW5yYjTjKPyXy0KuEcbN
+         LIRg==
+X-Gm-Message-State: AOAM5326MiY30TEhP8W2LVROMSWtk7SCsDTeBbx/R9042W7SqElLpxYW
+        auS+7sR00XBMH23/6L6I3yOydlRdhp8zzYAe90w=
+X-Google-Smtp-Source: ABdhPJyU9Hy3d1197aDUhlttjiGcwGkNFX4GQCuCMDvaNr68A8LQuVQ530N59OuIntaX43Oo9olLQgL8kya8YgibJtQ=
+X-Received: by 2002:a17:90a:b311:: with SMTP id d17mr22663294pjr.228.1616936202828;
+ Sun, 28 Mar 2021 05:56:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2cWFT7BiePJQjYO-_9QjCvWf1mQPE8NEZ4dXgira=iaA@mail.gmail.com>
+References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
+ <20210327222012.54103-3-andriy.shevchenko@linux.intel.com> <YGAmB2Nwph6pArXc@kroah.com>
+In-Reply-To: <YGAmB2Nwph6pArXc@kroah.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 28 Mar 2021 15:56:26 +0300
+Message-ID: <CAHp75VfFzqpdR+6p9vQww-ujQcw3L-V_N7ezUTGhcRmvwvqMZg@mail.gmail.com>
+Subject: Re: [PATCH v1 3/8] software node: Show properties and their values in sysfs
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 01:03:50PM +0100, Arnd Bergmann wrote:
-> On Wed, Mar 24, 2021 at 8:20 AM Xu Jia <xujia39@huawei.com> wrote:
+On Sun, Mar 28, 2021 at 9:47 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Sun, Mar 28, 2021 at 12:20:07AM +0200, Andy Shevchenko wrote:
+> > It's very convenient to see what properties and their values
+> > are currently being assigned in the registered software nodes.
 > >
-> > When cmd > 6 or copy_to_user() fail, The variable 'ret' would not be
-> > returned back. Fix the 'ret' set but not used.
-> >
-> > Signed-off-by: Xu Jia <xujia39@huawei.com>
-> 
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> > diff --git a/drivers/char/applicom.c b/drivers/char/applicom.c
-> > index 14b2d8034c51..0ab765143354 100644
-> > --- a/drivers/char/applicom.c
-> > +++ b/drivers/char/applicom.c
-> > @@ -839,7 +839,7 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> >         Dummy = readb(apbs[IndexCard].RamIO + VERS);
-> >         kfree(adgl);
-> >         mutex_unlock(&ac_mutex);
-> > -       return 0;
-> > +       return ret;
-> >
-> 
-> Apparently this has been broken since the driver was first merged in
-> linux-2.3.16. I could find no indication of anyone using the driver
-> and reporting any problems in the git history and it clearly still has
-> the style of drivers writting in the 1990s. On the other hand, this is
-> (was) used in some very long-lived systems and you can still
-> buy old applicom cards from artisan[1].
-> 
-> Is there any chance this driver is still used anywhere with modern
-> kernels? I suspect we could move it to staging to find out.
+> > Show properties and their values in sysfs.
 
-No objection from me to move it to staging, want to send a patch or I
-can.
+...
 
-thanks,
+> > +             for (i = 0; i < prop->length / sizeof(u8); i++)
+> > +                     len += sysfs_emit_at(buf, len, "%u,", ((u8 *)pointer)[i]);
+>
+> No, sysfs is "one value per file", and that is not what you are showing
+> here at all :(
 
-greg k-h
+It is following: it's a "one value" for property in question,
+
+As we may read in [1]: "...so it is socially acceptable to express an
+array of values of the same type."
+
+And here is exactly the case: *values of the same type*.
+
+> Also, there is no Documentation/ABI/ entries for your new sysfs files,
+> so that means we couldn't take this patcheset anyway :(
+
+True, I'll fix this, thanks!
+
+[1]: https://www.kernel.org/doc/html/latest/filesystems/sysfs.html
+
+-- 
+With Best Regards,
+Andy Shevchenko
