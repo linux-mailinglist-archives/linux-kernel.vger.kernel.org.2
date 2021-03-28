@@ -2,160 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2985A34BB74
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 600F334BB76
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhC1Gpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 02:45:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229485AbhC1Gpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 02:45:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D0256194B;
-        Sun, 28 Mar 2021 06:45:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616913930;
-        bh=V5RpuwVxE2xlFXjlBeiGEZq40sCLDKCXJW5QQK3/0uQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xUbNqFvtb69lRSVGccaQuXiljG+0hoYeyEx7FYAtsdvwcL0D+TQj2RUyHa/qMAaH3
-         c/OmnPeahOocPzuDSgNFSIQRVGFQYHuriIJCBTZTwZ7RK2+brbMMCjxhERS1rJxdjl
-         vburE002jlLlfiIUmPAm/tXL5t6qZGEk7I/vEEFw=
-Date:   Sun, 28 Mar 2021 08:45:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v1 3/8] software node: Show properties and their values
- in sysfs
-Message-ID: <YGAmB2Nwph6pArXc@kroah.com>
-References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
- <20210327222012.54103-3-andriy.shevchenko@linux.intel.com>
+        id S230495AbhC1Gqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 02:46:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229485AbhC1Gq1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 02:46:27 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10655C061762;
+        Sat, 27 Mar 2021 23:46:23 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so4418626pjv.1;
+        Sat, 27 Mar 2021 23:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=10OJ48eehjog/V+dgb4pb/cyuAgqbRzv3VcZL+8CiaM=;
+        b=S+t860HWTnpQEylyH0mOnS2RDEF5zNSW/PrN4cjFO3jF+iblqwcj535a5Z24UPxlEl
+         TIO2oKBNhhDD+0MYAH6CFgePjhIJaAGsfEed+TMjsFdIwaIeJthZTeGGITl2L+22hQf1
+         JYnow6kYancYfLIuQn5JWW9V3j7gvD1Hb+yeJcwNazlLJs0jOQGj4Yq3gbkQ/1k5JpF2
+         8KiIuVw1E8SJrc/Uhfm1EOXF7eLgPuWeMjf34uCSLDHzbr2KB+9LR2tYf3Tqs748tGsR
+         6tKZ1m9i+gGHNKJQ/YmPIolPK7zYqoGNLo4KlduhruPQRE9jVLcT9CHgqnU3F4gUcNVO
+         G8eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=10OJ48eehjog/V+dgb4pb/cyuAgqbRzv3VcZL+8CiaM=;
+        b=Uyjhth6zgUDwdOn5f1KzmpsyWV7xS6KdjpJcByL44Cu2VTfxGRaWiq1kz3w1dS92OQ
+         az0BIRgCaowk7CJsZ2PZ2qNrISxF3/fGXk460U24xUEf5FWA5RwP22d8PQRHfvLfosTX
+         /XzNJc6uvCaR9/gwZkFWqEtfko+xvaPB4N+c5nKnh7JxLNR8/RD356fzSAz3A/2iVT81
+         Xuy0PlMvRQjFjWrnEqd+XaxR0SxMoPXTIY+nKe/d5iIYtr1Tl8S30wARzR6CsF4VjgAJ
+         ZmkoPOqyXbl/qmAtzz+7QvntvNCz8wNqBNyThMgzVsvLIXV+9hJGcHoaGA/CuM2PgaZN
+         XnHw==
+X-Gm-Message-State: AOAM531nw2cCBRGo2s1mNKgqkKRZ5gygD69qHwX70bmv32oU2Rc69OmS
+        6WJpZKd9LwSF4jGkRMGtBO+sAKrRUMjG6A==
+X-Google-Smtp-Source: ABdhPJzJm7c6XhCdJT2mO2+FtlsP7dJO9X0TvYIoERktwpCz30OOtYmEbuwQyxX90VHVhYVuEtdXKA==
+X-Received: by 2002:a17:90b:4c0a:: with SMTP id na10mr22135875pjb.227.1616913976127;
+        Sat, 27 Mar 2021 23:46:16 -0700 (PDT)
+Received: from localhost ([112.79.247.28])
+        by smtp.gmail.com with ESMTPSA id y194sm13614598pfb.21.2021.03.27.23.46.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Mar 2021 23:46:15 -0700 (PDT)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Vlad Buslov <vladbu@mellanox.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] net: sched: extend lifetime of new action in replace mode
+Date:   Sun, 28 Mar 2021 12:15:55 +0530
+Message-Id: <20210328064555.93365-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210327222012.54103-3-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 12:20:07AM +0200, Andy Shevchenko wrote:
-> It's very convenient to see what properties and their values
-> are currently being assigned in the registered software nodes.
-> 
-> Show properties and their values in sysfs.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/base/swnode.c | 137 ++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 132 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 19aa44bc2628..d7fe1a887d2d 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -10,6 +10,7 @@
->  #include <linux/kernel.h>
->  #include <linux/property.h>
->  #include <linux/slab.h>
-> +#include <linux/sysfs.h>
->  
->  struct swnode {
->  	int id;
-> @@ -17,6 +18,10 @@ struct swnode {
->  	struct fwnode_handle fwnode;
->  	const struct software_node *node;
->  
-> +	/* properties in sysfs */
-> +	struct kobj_attribute *property_attrs;
-> +	struct attribute_group property_group;
-> +
->  	/* hierarchy */
->  	struct ida child_ids;
->  	struct list_head entry;
-> @@ -25,6 +30,7 @@ struct swnode {
->  
->  	unsigned int allocated:1;
->  	unsigned int managed:1;
-> +	unsigned int properties:1;
->  };
->  
->  static DEFINE_IDA(swnode_root_ids);
-> @@ -299,6 +305,18 @@ static int property_entry_copy_data(struct property_entry *dst,
->  	return 0;
->  }
->  
-> +static int property_entries_count(const struct property_entry *properties)
-> +{
-> +	int n = 0;
-> +
-> +	if (properties) {
-> +		while (properties[n].name)
-> +			n++;
-> +	}
-> +
-> +	return n;
-> +}
-> +
->  /**
->   * property_entries_dup - duplicate array of properties
->   * @properties: array of properties to copy
-> @@ -310,15 +328,13 @@ struct property_entry *
->  property_entries_dup(const struct property_entry *properties)
->  {
->  	struct property_entry *p;
-> -	int i, n = 0;
-> +	int i, n;
->  	int ret;
->  
-> -	if (!properties)
-> +	n = property_entries_count(properties);
-> +	if (n == 0)
->  		return NULL;
->  
-> -	while (properties[n].name)
-> -		n++;
-> -
->  	p = kcalloc(n + 1, sizeof(*p), GFP_KERNEL);
->  	if (!p)
->  		return ERR_PTR(-ENOMEM);
-> @@ -746,6 +762,108 @@ static void software_node_free(const struct software_node *node)
->  	kfree(node);
->  }
->  
-> +static ssize_t
-> +swnode_property_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
-> +{
-> +	struct swnode *swnode = kobj_to_swnode(kobj);
-> +	const struct property_entry *prop;
-> +	const void *pointer;
-> +	ssize_t len = 0;
-> +	int i;
-> +
-> +	prop = property_entry_get(swnode->node->properties, attr->attr.name);
-> +	if (!prop)
-> +		return -EINVAL;
-> +
-> +	/* We can't fail here, because it means boolean property */
-> +	pointer = property_get_pointer(prop);
-> +	if (!pointer)
-> +		return sysfs_emit(buf, "\n");
-> +
-> +	switch (prop->type) {
-> +	case DEV_PROP_U8:
-> +		for (i = 0; i < prop->length / sizeof(u8); i++)
-> +			len += sysfs_emit_at(buf, len, "%u,", ((u8 *)pointer)[i]);
+When creating an action in replace mode, in tcf_action_add, the refcount
+of existing actions is rightly raised during tcf_idr_check_alloc call,
+but for new actions a dummy placeholder entry is created. This is then
+replaced with the actual action during tcf_idr_insert_many, but between
+this and the tcf_action_put_many call made in replace mode, we don't
+hold a reference to the newly created action while it has been
+published. This means that it can disappear under our feet, and that
+newly created actions are destroyed right after their creation as their
+refcount drops to 0 in replace mode.
 
-No, sysfs is "one value per file", and that is not what you are showing
-here at all :(
+This leads to commands like tc action replace reporting success in
+creation of the action and just removing them right after adding the
+action, leading to confusion in userspace.
 
-Also, there is no Documentation/ABI/ entries for your new sysfs files,
-so that means we couldn't take this patcheset anyway :(
+Fix this by raising the refcount of a newly created action and then
+pairing that increment with a tcf_action_put call to release the
+reference held during insertion. This is only needed in replace mode.
+We use a relaxed store as insert will ensure its visibility.
 
-greg k-h
+Fixes: cae422f379f3 ("net: sched: use reference counting action init")
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ include/net/act_api.h | 1 +
+ net/sched/act_api.c   | 5 ++++-
+ net/sched/cls_api.c   | 3 +++
+ 3 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/include/net/act_api.h b/include/net/act_api.h
+index 2bf3092ae7ec..8b375b46cc04 100644
+--- a/include/net/act_api.h
++++ b/include/net/act_api.h
+@@ -181,6 +181,7 @@ int tcf_register_action(struct tc_action_ops *a, struct pernet_operations *ops);
+ int tcf_unregister_action(struct tc_action_ops *a,
+ 			  struct pernet_operations *ops);
+ int tcf_action_destroy(struct tc_action *actions[], int bind);
++void tcf_action_put_many(struct tc_action *actions[]);
+ int tcf_action_exec(struct sk_buff *skb, struct tc_action **actions,
+ 		    int nr_actions, struct tcf_result *res);
+ int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
+diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+index b919826939e0..7e26c18cdb15 100644
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -778,7 +778,7 @@ static int tcf_action_put(struct tc_action *p)
+ }
+ 
+ /* Put all actions in this array, skip those NULL's. */
+-static void tcf_action_put_many(struct tc_action *actions[])
++void tcf_action_put_many(struct tc_action *actions[])
+ {
+ 	int i;
+ 
+@@ -1042,6 +1042,9 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
+ 	if (err != ACT_P_CREATED)
+ 		module_put(a_o->owner);
+ 
++	if (err == ACT_P_CREATED && ovr)
++		refcount_set(&a->tcfa_refcnt, 2);
++
+ 	return a;
+ 
+ err_out:
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index d3db70865d66..666077c23147 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -3074,6 +3074,9 @@ int tcf_exts_validate(struct net *net, struct tcf_proto *tp, struct nlattr **tb,
+ 			exts->nr_actions = err;
+ 		}
+ 	}
++
++	if (ovr)
++		tcf_action_put_many(exts->actions);
+ #else
+ 	if ((exts->action && tb[exts->action]) ||
+ 	    (exts->police && tb[exts->police])) {
+-- 
+2.30.2
+
