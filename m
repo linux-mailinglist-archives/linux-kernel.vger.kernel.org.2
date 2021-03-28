@@ -2,78 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04FD634BB40
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7215C34BB47
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhC1GTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 02:19:20 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:50928 "EHLO 1wt.eu"
+        id S229762AbhC1GbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 02:31:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229577AbhC1GS4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 02:18:56 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 12S6IbCV022735;
-        Sun, 28 Mar 2021 08:18:37 +0200
-Date:   Sun, 28 Mar 2021 08:18:37 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Mateusz Jonczyk <mat.jonczyk@o2.pl>, linux-kernel@vger.kernel.org
-Subject: Re: Testers wanted: Atom netbooks with x86_64 disabled by BIOS
-Message-ID: <20210328061837.GA22710@1wt.eu>
-References: <20210327203218.119372-1-mat.jonczyk@o2.pl>
- <20210327211322.121708-1-mat.jonczyk@o2.pl>
- <20210327232551.GA20783@1wt.eu>
- <87lfa8cchf.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lfa8cchf.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S229485AbhC1GbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 02:31:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A43E36197C;
+        Sun, 28 Mar 2021 06:31:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616913076;
+        bh=fIYmtiiVahTZKgHaQD+jDuMxYY5AvOy62Q+boojOK1E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=TZ3ei7zBeAgVBpKeSMgUIfT7cFEsCeH1gjJAc1Xka+xh1tEnN6M+Juhcxj4cMHSJ6
+         WmILreZnGkimmxPtbMXMLKfedRa/wD37UVBmGCsKO3FB75rnREvgypwcEkfIe51j4u
+         /lAcvsk3EEHh9Hg1GmHcvDQb7ilTxctp3FsxA13LHoejLlR7k2ECSFxo9LF+OTle7G
+         sS1dndQX+pK0CxgW0gsgWvaFbWNF+lH/vurb0mQGAd1dG3eq4gg6flYOpQa4HmQrua
+         0CR5asMfgeWZ1rL4qzvhyivvy1moujsSCNT4SCYn4sfSp0zU71oleIAtjphFxp9yb1
+         MVZVtA9yLHxfA==
+From:   guoren@kernel.org
+To:     guoren@kernel.org
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-arch@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
+        openrisc@lists.librecores.org, sparclinux@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH v5 0/7] riscv: Add qspinlock/qrwlock
+Date:   Sun, 28 Mar 2021 06:30:21 +0000
+Message-Id: <1616913028-83376-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+From: Guo Ren <guoren@linux.alibaba.com>
 
-On Sun, Mar 28, 2021 at 03:07:24AM +0200, Thomas Gleixner wrote:
-> On Sun, Mar 28 2021 at 00:25, Willy Tarreau wrote:
-> > On Sat, Mar 27, 2021 at 10:13:22PM +0100, Mateusz Jonczyk wrote:
-> > FWIW I tested on my ASUS 1025C which runs on an Atom N2600 forced to
-> > 32-bit. I had already tried in the past but wanted to give it a try
-> > again in case I'd have missed anything. Sadly it didn't work, I'm
-> > still getting the "requires an x86-64 CPU" message.
-> >
-> > Given these machines were really cheap, I've always suspected that they
-> > employ cheaper, low-grade CPUs, possibly having been subject to reduced
-> > tests where x86_64-specific parts were not even verified and might be
-> > defective. This may explain why they forcefully disable long mode there,
-> > but that's just speculation.
-> 
-> There are some of these '32bit only' CPUs out there in the wild which
-> actually support long mode. Some of them even do not have the long mode
-> CPUID bit fused out.
+Current riscv is still using baby spinlock implementation. It'll cause
+fairness and cache line bouncing problems. Many people are involved
+and pay the efforts to improve it:
 
-Yes, I'm aware of this as well. We might even have talked to the same
-"victim" :-)
+ - The first version of patch was made in 2019.1:
+   https://lore.kernel.org/linux-riscv/20190211043829.30096-1-michaeljclark@mac.com/#r
 
-> But whether it works is a different story:
-> 
->   - If the CPUID bit is on, then the chance is high, but it runs out of
->     spec (guarantee wise)
-> 
->   - If it's off is still might work by some definition of work as they
->     might have fused off more or there are actual defects in some 64bit
->     only area which are irrelevant when in 32bit mode.
-> 
-> Even if it could work perfectly fine, the BIOS/SMM/ucode can prevent
-> switching to long mode.
-> 
-> It's a lost cause.
+ - The second version was made in 2020.11:
+   https://lore.kernel.org/linux-riscv/1606225437-22948-2-git-send-email-guoren@kernel.org/
 
-I agree. While I bought this netbook to have a 64-bit CPU and was extremely
-disappointed, after seeing that it was not just a matter of "oops we forgot
-to enable LM", I concluded that it was pointless to try to go further, as I
-would never trust it anyway.
+ - A good discussion at Platform HSC.2021-03-08:
+   https://drive.google.com/drive/folders/1ooqdnIsYx7XKor5O1XTtM6D1CHp4hc0p
 
-Cheers,
-Willy
+Hope your comments and Tested-by or Co-developed-by or Reviewed-by ...
+
+Let's kick the qspinlock into riscv right now (Also for the
+architecture which hasn't xchg16 atomic instruction.)
+
+Change V5:
+ - Fixup #endif comment typo by Waiman
+ - Remove cmpxchg coding convention patches which will get into a
+   separate patchset later by Arnd's advice
+ - Try to involve more architectures in the discussion
+
+Change V4:
+ - Remove custom sub-word xchg implementation
+ - Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32 in locking/qspinlock
+
+Change V3:
+ - Coding convention by Peter Zijlstra's advices
+
+Change V2:
+ - Coding convention in cmpxchg.h
+ - Re-implement short xchg
+ - Remove char & cmpxchg implementations
+
+Guo Ren (6):
+  locking/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  csky: Convert custom spinlock/rwlock to generic qspinlock/qrwlock
+  powerpc/qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  openrisc: qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  sparc: qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+  xtensa: qspinlock: Add ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+
+Michael Clark (1):
+  riscv: Convert custom spinlock/rwlock to generic qspinlock/qrwlock
+
+ arch/csky/Kconfig                       |   2 +
+ arch/csky/include/asm/Kbuild            |   2 +
+ arch/csky/include/asm/spinlock.h        |  82 +--------------
+ arch/csky/include/asm/spinlock_types.h  |  16 +--
+ arch/openrisc/Kconfig                   |   1 +
+ arch/powerpc/Kconfig                    |   1 +
+ arch/riscv/Kconfig                      |   3 +
+ arch/riscv/include/asm/Kbuild           |   3 +
+ arch/riscv/include/asm/spinlock.h       | 126 +-----------------------
+ arch/riscv/include/asm/spinlock_types.h |  15 +--
+ arch/sparc/Kconfig                      |   1 +
+ arch/xtensa/Kconfig                     |   1 +
+ kernel/Kconfig.locks                    |   3 +
+ kernel/locking/qspinlock.c              |  46 +++++----
+ 14 files changed, 49 insertions(+), 253 deletions(-)
+
+-- 
+2.17.1
+
