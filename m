@@ -2,285 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1FE34BDB1
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A5234BDB3
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231571AbhC1Rb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231439AbhC1RbW (ORCPT
+        id S231366AbhC1Rdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:33:31 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28380 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230525AbhC1RdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:31:22 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6061EC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 10:31:22 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id k8so10440318iop.12
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 10:31:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SNiUzqwIGoJ8Lmz4c1CZDsu491SmbNxBdZwDX7gQyfE=;
-        b=B+L802KGDYd9n4sIfhgP3o8NraIvIStaKhExGlvIr+TuyVfaZARHGqFZ78fA67OzUQ
-         3IVqqja3LM0tmT4QlWrYh9zWBfFKDt9aw42Htsa9Ai3czUGtAJn4dkFmuNJrf7yODgBX
-         v/ArR5IvQmnUjd5OG2RU1zYkPNUT/bSVsJ8InFJWoFROpmEZt1c8tTRu/vkhyVQPWgF5
-         TQ9PXfBGd8OslUZi+YQ+atTdAQCX4R+wF62SXP7lgpEd+bNpSfFA7l4D9I5ESyZVSVRt
-         FY3UBujr4dynHRisEqPt+HzAJ7jYc7DKX6dU0eGnRrFg6QEgwZUrW4kJcEmL+k05Qsil
-         BSrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SNiUzqwIGoJ8Lmz4c1CZDsu491SmbNxBdZwDX7gQyfE=;
-        b=jaMeYFtHomhIcC2O0JbC9OV+AWlYyZYE7kg1a6NRBn3duWqO76WR6su8khvQwsLeDR
-         riW0gC57i7k1TV7gPcZoWft49gws1tdgzkqKDfbA83EctxTr6YFplrMzOI8wpnLGtMKZ
-         FexD0+VYRYC6NPG8gFniS3Gr5kYtWZrOfRnWisKKoV/GBXCvEcQdyo2Z90YhRtkCXmqF
-         ocxPxM/CT9YSrMIVE+CsUCNzc2QQxTxB6bagw1nxiiUM48UQYkf4ZFGNRVxI/4B/Z5z0
-         puf3x+AbRO5UPOmlw6SoAITyz1g4DrSipoqK0J9Guq5WOKQo7z/2ZuKd1uoxogIOD6gm
-         Pn7w==
-X-Gm-Message-State: AOAM532UV51OM17H3ABg841LrioD6oDyj6NSUn9NK17gQ1S8KO0C3po9
-        vvVU66l1VABzS0aT8IF96cGI5w==
-X-Google-Smtp-Source: ABdhPJxadUfZ/HPbHomcMB8/OGaWHbx1sbb4rsTbAQVFmJ3r0YDkGiDOrk6uYoMtFCE0jSss/SNN6Q==
-X-Received: by 2002:a6b:bf07:: with SMTP id p7mr5739440iof.15.1616952681770;
-        Sun, 28 Mar 2021 10:31:21 -0700 (PDT)
-Received: from localhost.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id d22sm8014422iof.48.2021.03.28.10.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 10:31:21 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 7/7] net: ipa: kill IPA_TABLE_ENTRY_SIZE
-Date:   Sun, 28 Mar 2021 12:31:11 -0500
-Message-Id: <20210328173111.3399063-8-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210328173111.3399063-1-elder@linaro.org>
-References: <20210328173111.3399063-1-elder@linaro.org>
+        Sun, 28 Mar 2021 13:33:08 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12SHNV8Z016456;
+        Sun, 28 Mar 2021 10:31:55 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=eJ1CGeU8HsUglu5ak2QmL8ebkBedZhN1aflE7ugC0pw=;
+ b=YW6ywqLE7pGQfSRoEcJqjWx4TxbVkAROK8ZqOboRC67PzNR2pd0m7v4eGlpALxLej9Gs
+ W1TB2W3qbafs/VZg96MrohUjCyPpXH0mo9zyaXdYwMDKxfYpXk0I4r4fuvD/nysWfS60
+ OwfimMzWxUG/UgXqyrI0WxvwMKvusH2J/PY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 37jmdghg2c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 28 Mar 2021 10:31:55 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sun, 28 Mar 2021 10:31:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gD9HDzLDl4SG2gq3/xgj5GHbiQzgyScomDCNYaOv3JFOWB1vbgVYl+ZkBTLbIEJJgYv/mqXI0H4BuhU7/7ZicTK6DtG+jsiSHloEjTbiYlG5yiuRTfvbxHOdwzfMg9HtmHKaMm7vyFd1IT+j6QYpHMiw+l3mIuqCuPs20k3W35NEfBdrVMhN21zPfZPLxVz7bVQixiNG62gQuTKpV6dERRgPaO+CUWtmDjZvdBjQoN6b0+doQtoiiYdkPXm15AUUwrUThVh9lAeOZ8cpD47Ev3mldYnU4xjUbfb8WdNgXiDYrI6PG+lQdHgquxgcZi9T+8BAzi5rR8eUHrpwxVhUYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eJ1CGeU8HsUglu5ak2QmL8ebkBedZhN1aflE7ugC0pw=;
+ b=h/g4adOQKeqdF1ks3Ij53s/ECt0smvgBrgV4kW7vAK2kcsXOi0LP0jNc+5UFrU72LXaAv3+oif6I3HJMMbR0De4CnyRWWm7ndj/DzCQ2HNk36O461LhXg9aoof1yYy3W8yU8QDdxqc++7xpY7UPyY19pnyoDzcpq3+DDmGQCntHXhJMSCtI/aIGkxIj3g2fZZPWy3C/GKEqo4mbJqFi5gKj20x93XCC4PopzKqqLihOqcu2cYXMTh+Bd8B/zSAY0mKtI1ewk0yKTHLigkvYtF4ujiWOhAde7lHsRXiG5wFpP6aNPWIK9TsnRoC7+QOwfvroKmaYJ9ONVczqIQ/aX5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
+ by BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.29; Sun, 28 Mar
+ 2021 17:31:53 +0000
+Received: from BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1ce0:8b27:f740:6b60]) by BYAPR15MB2999.namprd15.prod.outlook.com
+ ([fe80::1ce0:8b27:f740:6b60%4]) with mapi id 15.20.3933.039; Sun, 28 Mar 2021
+ 17:31:53 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Ian Rogers" <irogers@google.com>
+Subject: Re: [PATCH 2/2] perf/core: Support reading group events with shared
+ cgroups
+Thread-Topic: [PATCH 2/2] perf/core: Support reading group events with shared
+ cgroups
+Thread-Index: AQHXIACu7JGNE4cXD0u4i0rSa+9+76qZsHqA
+Date:   Sun, 28 Mar 2021 17:31:53 +0000
+Message-ID: <E7B865AC-5160-40B1-9C06-0E790EEEB6EC@fb.com>
+References: <20210323162156.1340260-1-namhyung@kernel.org>
+ <20210323162156.1340260-3-namhyung@kernel.org>
+In-Reply-To: <20210323162156.1340260-3-namhyung@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.60.0.2.21)
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+x-originating-ip: [2620:10d:c090:400::5:4e3b]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4a541005-c4d8-43ea-73ca-08d8f20f60f6
+x-ms-traffictypediagnostic: BYAPR15MB4088:
+x-microsoft-antispam-prvs: <BYAPR15MB4088656316A79EEBBCD707BAB37F9@BYAPR15MB4088.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HWKnN5SIYZd5M4PvGHC/j4J9sNf+ZLMh45PpMO0DLTl4sWrdoq18stKfSWLKDl3T8pczA93QNa6uhBwtYdHtGnj8PXcZ7vzHsYN94cbrhSL4Lpn9GxJF47P8VnuD5pZ30fIEXT8pVWuP2BPNa1g52d7E1DQN++rBMHfkWA2cxi6xd9r+6P9xwmUKaMAyEpgiTlAB78Yyho+ho9Y7bUQRuzReR2vpjol/2F3NDNPajXYMRjtKDktmQRUt2iSWExQyEAcYF9AXa6/fkGDhp+y7XM28Y5pDiDCEb0DNOq+J6pdiG1kbkTA1TTDcTbWeY+qFfnSKmEu1S8tXC9XLSSHMQhCQe82lpntMLPupqkPmwqmCyCN7k+kBrv+WI5HM9CnezN5SiWfCsekKuvvbPVpaGa9lt3QVaCU8DCuPCdYOXsoA+oGuyTM0AOedEaypop+UHzyioo+lclzgJCbw5R9jqBsXvM2DMrpj+/QaNCpiFLyVKl1rSGPez3d0pHMQaNh7KbzdapuHA0ltJjWyyF12yuRkshOnUjnYF5DMUAY/IaCxG3W7XFfaPqRNhaznm7vT7ouS96wfhbKklXfV+p9yhy3PWjwX1GCUQSVFX39T9CfXah2uSi/UCBts5Bb6jL+NX3DtNDxims0PrluY8Z4SkqVvdr2hUXlqsBSM71HpdwXQbvj0b6CNH9O4P7PVvRKf
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(39860400002)(136003)(376002)(8676002)(5660300002)(8936002)(2616005)(7416002)(186003)(6506007)(71200400001)(86362001)(53546011)(66946007)(66556008)(66446008)(66476007)(64756008)(76116006)(91956017)(6512007)(6486002)(54906003)(6916009)(478600001)(38100700001)(4326008)(316002)(36756003)(2906002)(83380400001)(33656002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?cGibosWCmUtcGvK0/JHvTwuLzLMpQOLQGXADa3WnuLYfV0X81aweI9pDgIuo?=
+ =?us-ascii?Q?4niy1rSbaYhgOoyTtHFvtqsATXrMJcyJB4G3NXHx8xJK/T5NFfx5hCzN5Z6l?=
+ =?us-ascii?Q?TiRUT3pjN/dSXFAlD/L21hOBCtOEte/DganrsjrlybIkK2scu0Coct8QRZ7I?=
+ =?us-ascii?Q?8KFVCxTuStS12rptsugl3KwJ8umnCLAVIpgQuoLM+bVFZVvNTAbZjhG2mffw?=
+ =?us-ascii?Q?B+tEVNvY3CkV02yoiQB6hRfqtuyYoOH0zfeNyBavzX+MV4SjQrlcgriVtvsJ?=
+ =?us-ascii?Q?LJVh98GKanf4qSRofHkNqlJiDxS+DY62I1hZacgorfiqJkW+Wcrsu8UcCv0B?=
+ =?us-ascii?Q?eLony+xeVuyzmCnNKUc4gAk0q3dGSGPyqBNZbfmPFLzxOCrFLg3ZOKMyCWN+?=
+ =?us-ascii?Q?IM86DyWFn/6AFFsf+mC58SefI+mUUk5kGbVu3n5Govjv0p6pATuA+QlO+KHm?=
+ =?us-ascii?Q?gufwwv3GNCfGWyUzPuILypL1KeF1vkMpbJptghXvYaB4TAu8cne/KU3G6Kl0?=
+ =?us-ascii?Q?sHjxnMPMnt/ckV86fZaNdd2KBqIpuFK9j4kbCYvOw7mVhoyRoBzM8G1OmSNj?=
+ =?us-ascii?Q?bAxIo7SE8oWJGnu5++NAgqo+XgDSgqTFAqlMk//RzERJeZubqxLAi3EDlxGB?=
+ =?us-ascii?Q?8lWLpH+70YedsaSGiM2/mdGLpCKxW+9wTJE+2kWIS2aY66dkySFgZyOF4fJY?=
+ =?us-ascii?Q?/cEGp/U/VDQ5aGqD0y9Om/o7ZN6lK2vPE/fE+jHN52ysEntwuCf6db4VbO34?=
+ =?us-ascii?Q?fS1SPnMnyyBObVs3B+KZqJrs8BAFE8eH3Asn+CGoFnADoUkrTZNj7ygH/oGV?=
+ =?us-ascii?Q?FMIfmBfxiUfFdSaF2HlCbXYEK32q85+kjOYejB+YotRw5s+KZVXhLCdHGC1F?=
+ =?us-ascii?Q?zKHoYXs4muZpPJquN51+qkV14+QM12BoEezovrOKelB0GKNkl1IhLgR2FzaO?=
+ =?us-ascii?Q?bZOT4fwg92/e7/kdlvYLeL5XPzBdJnCThTJ1vmCe/8/+t4mpKwe2ZvdmgBCr?=
+ =?us-ascii?Q?jPROPC22Kk2T8mn2YtM4o9/+gUH9Z6pkeAHUYP3rPL+xnbVc4kQ3eC3kJwPS?=
+ =?us-ascii?Q?PFrYn/GvF02fXiG7YTlJIGsdNCYjIO6CfB8WmtgZNM2eGZ7Sh1ORZ3yjVbD6?=
+ =?us-ascii?Q?K63jJA2jAq9lTGRXOYTZk+x7en7MiBMwVZxBbdHYGu6Wb6/hyFDO1wWAIWhU?=
+ =?us-ascii?Q?/GCJFXZnG9kLmmTLU2jyztYY7acQOPGW/Cj9u8jq+7D58EFjFfO3NB1er688?=
+ =?us-ascii?Q?Kok6A3hC6VJymju9rWlR5sGCsasa2q8I70AGidrf5BHhE7NFoQemiHJcWIaL?=
+ =?us-ascii?Q?wEykX9EClG16lsHhMEArQaeTngd7nSZQDsbkiGy6mNFgLhLIyxpLZI8+q1B4?=
+ =?us-ascii?Q?gp0qnH0=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9FB7B3B98C0E0240A1D2A51820801798@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a541005-c4d8-43ea-73ca-08d8f20f60f6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Mar 2021 17:31:53.6921
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /t9dY2XB1MwSYoDwiSbYFATfJHf8SpjE1inWJeyh/LUifdEFyA3HIaH4f0wVWwX5j8FmP+cui4FG/4hZcejqRA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4088
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: hiFxopfhc_A0JiUpS7GO7YMp14HeJMiX
+X-Proofpoint-ORIG-GUID: hiFxopfhc_A0JiUpS7GO7YMp14HeJMiX
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-28_08:2021-03-26,2021-03-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ lowpriorityscore=0 priorityscore=1501 phishscore=0 spamscore=0 bulkscore=0
+ malwarescore=0 clxscore=1015 mlxscore=0 suspectscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103280134
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Entries in an IPA route or filter table are 64-bit little-endian
-addresses, each of which refers to a routing or filtering rule.
 
-The format of these table slots are fixed, but IPA_TABLE_ENTRY_SIZE
-is used to define their size.  This symbol doesn't really add value,
-and I think it unnecessarily obscures what a table entry *is*.
 
-So get rid of IPA_TABLE_ENTRY_SIZE, and just use sizeof(__le64) in
-its place throughout the code.
+> On Mar 23, 2021, at 9:21 AM, Namhyung Kim <namhyung@kernel.org> wrote:
+>=20
+> This enables reading event group's counter values together with a
+> PERF_EVENT_IOC_READ_CGROUP command like we do in the regular read().
+> Users should give a correct size of buffer to be read.
+>=20
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+> kernel/events/core.c | 119 +++++++++++++++++++++++++++++++++++++++++--
+> 1 file changed, 116 insertions(+), 3 deletions(-)
+>=20
 
-Update the comments in "ipa_table.c" to provide a little better
-explanation of these table slots.
+[...]
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_cmd.c   |  2 +-
- drivers/net/ipa/ipa_qmi.c   | 10 +++----
- drivers/net/ipa/ipa_table.c | 59 +++++++++++++++++++++----------------
- drivers/net/ipa/ipa_table.h |  3 --
- 4 files changed, 39 insertions(+), 35 deletions(-)
+> +}
+> +
+> +static int perf_event_read_cgrp_node_group(struct perf_event *event, u64=
+ cgrp_id,
+> +					   char __user *buf)
+> +{
+> +	struct perf_cgroup_node *cgrp;
+> +	struct perf_event_context *ctx =3D event->ctx;
+> +	struct perf_event *sibling;
+> +	u64 read_format =3D event->attr.read_format;
+> +	unsigned long flags;
+> +	u64 *values;
+> +	int n =3D 1;
+> +	int ret;
+> +
+> +	values =3D kzalloc(event->read_size, GFP_KERNEL);
+> +	if (!values)
+> +		return -ENOMEM;
+> +
+> +	values[0] =3D 1 + event->nr_siblings;
+> +
+> +	/* update event count and times (possibly run on other cpu) */
+> +	(void)perf_event_read(event, true);
+> +
+> +	raw_spin_lock_irqsave(&ctx->lock, flags);
+> +
+> +	cgrp =3D find_cgroup_node(event, cgrp_id);
+> +	if (cgrp =3D=3D NULL) {
+> +		raw_spin_unlock_irqrestore(&ctx->lock, flags);
+> +		kfree(values);
+> +		return -ENOENT;
+> +	}
+> +
+> +	if (read_format & PERF_FORMAT_TOTAL_TIME_ENABLED)
+> +		values[n++] =3D cgrp->time_enabled;
+> +	if (read_format & PERF_FORMAT_TOTAL_TIME_RUNNING)
+> +		values[n++] =3D cgrp->time_running;
+> +
+> +	values[n++] =3D cgrp->count;
+> +	if (read_format & PERF_FORMAT_ID)
+> +		values[n++] =3D primary_event_id(event);
+> +
+> +	for_each_sibling_event(sibling, event) {
+> +		n +=3D perf_event_read_cgrp_node_sibling(sibling, read_format,
+> +						       cgrp_id, &values[n]);
+> +	}
+> +
+> +	raw_spin_unlock_irqrestore(&ctx->lock, flags);
+> +
+> +	ret =3D copy_to_user(buf, values, n * sizeof(u64));
+> +	kfree(values);
+> +	if (ret)
+> +		return -EFAULT;
+> +
+> +	return n * sizeof(u64);
+> +}
+> +
+> +static int perf_event_read_cgroup_node(struct perf_event *event, u64 rea=
+d_size,
+> +				       u64 cgrp_id, char __user *buf)
+> +{
+> +	u64 read_format =3D event->attr.read_format;
+> +
+> +	if (read_size < event->read_size + 2 * sizeof(u64))
 
-diff --git a/drivers/net/ipa/ipa_cmd.c b/drivers/net/ipa/ipa_cmd.c
-index 2ac6dd8413dee..525cdf28d9ea7 100644
---- a/drivers/net/ipa/ipa_cmd.c
-+++ b/drivers/net/ipa/ipa_cmd.c
-@@ -153,7 +153,7 @@ static void ipa_cmd_validate_build(void)
- 	 * of entries, as and IPv4 and IPv6 route tables have the same number
- 	 * of entries.
- 	 */
--#define TABLE_SIZE	(TABLE_COUNT_MAX * IPA_TABLE_ENTRY_SIZE)
-+#define TABLE_SIZE	(TABLE_COUNT_MAX * sizeof(__le64))
- #define TABLE_COUNT_MAX	max_t(u32, IPA_ROUTE_COUNT_MAX, IPA_FILTER_COUNT_MAX)
- 	BUILD_BUG_ON(TABLE_SIZE > field_max(IP_FLTRT_FLAGS_HASH_SIZE_FMASK));
- 	BUILD_BUG_ON(TABLE_SIZE > field_max(IP_FLTRT_FLAGS_NHASH_SIZE_FMASK));
-diff --git a/drivers/net/ipa/ipa_qmi.c b/drivers/net/ipa/ipa_qmi.c
-index ccdb4a6a4c75b..593665efbcf99 100644
---- a/drivers/net/ipa/ipa_qmi.c
-+++ b/drivers/net/ipa/ipa_qmi.c
-@@ -308,12 +308,12 @@ init_modem_driver_req(struct ipa_qmi *ipa_qmi)
- 	mem = &ipa->mem[IPA_MEM_V4_ROUTE];
- 	req.v4_route_tbl_info_valid = 1;
- 	req.v4_route_tbl_info.start = ipa->mem_offset + mem->offset;
--	req.v4_route_tbl_info.count = mem->size / IPA_TABLE_ENTRY_SIZE;
-+	req.v4_route_tbl_info.count = mem->size / sizeof(__le64);
- 
- 	mem = &ipa->mem[IPA_MEM_V6_ROUTE];
- 	req.v6_route_tbl_info_valid = 1;
- 	req.v6_route_tbl_info.start = ipa->mem_offset + mem->offset;
--	req.v6_route_tbl_info.count = mem->size / IPA_TABLE_ENTRY_SIZE;
-+	req.v6_route_tbl_info.count = mem->size / sizeof(__le64);
- 
- 	mem = &ipa->mem[IPA_MEM_V4_FILTER];
- 	req.v4_filter_tbl_start_valid = 1;
-@@ -352,8 +352,7 @@ init_modem_driver_req(struct ipa_qmi *ipa_qmi)
- 		req.v4_hash_route_tbl_info_valid = 1;
- 		req.v4_hash_route_tbl_info.start =
- 				ipa->mem_offset + mem->offset;
--		req.v4_hash_route_tbl_info.count =
--				mem->size / IPA_TABLE_ENTRY_SIZE;
-+		req.v4_hash_route_tbl_info.count = mem->size / sizeof(__le64);
- 	}
- 
- 	mem = &ipa->mem[IPA_MEM_V6_ROUTE_HASHED];
-@@ -361,8 +360,7 @@ init_modem_driver_req(struct ipa_qmi *ipa_qmi)
- 		req.v6_hash_route_tbl_info_valid = 1;
- 		req.v6_hash_route_tbl_info.start =
- 			ipa->mem_offset + mem->offset;
--		req.v6_hash_route_tbl_info.count =
--			mem->size / IPA_TABLE_ENTRY_SIZE;
-+		req.v6_hash_route_tbl_info.count = mem->size / sizeof(__le64);
- 	}
- 
- 	mem = &ipa->mem[IPA_MEM_V4_FILTER_HASHED];
-diff --git a/drivers/net/ipa/ipa_table.c b/drivers/net/ipa/ipa_table.c
-index d9538661755f4..401b568df6a34 100644
---- a/drivers/net/ipa/ipa_table.c
-+++ b/drivers/net/ipa/ipa_table.c
-@@ -27,28 +27,38 @@
- /**
-  * DOC: IPA Filter and Route Tables
-  *
-- * The IPA has tables defined in its local shared memory that define filter
-- * and routing rules.  Each entry in these tables contains a 64-bit DMA
-- * address that refers to DRAM (system memory) containing a rule definition.
-+ * The IPA has tables defined in its local (IPA-resident) memory that define
-+ * filter and routing rules.  An entry in either of these tables is a little
-+ * endian 64-bit "slot" that holds the address of a rule definition.  (The
-+ * size of these slots is 64 bits regardless of the host DMA address size.)
-+ *
-+ * Separate tables (both filter and route) used for IPv4 and IPv6.  There
-+ * are normally another set of "hashed" filter and route tables, which are
-+ * used with a hash of message metadata.  Hashed operation is not supported
-+ * by all IPA hardware (IPA v4.2 doesn't support hashed tables).
-+ *
-+ * Rules can be in local memory or in DRAM (system memory).  The offset of
-+ * an object (such as a route or filter table) in IPA-resident memory must
-+ * 128-byte aligned.  An object in system memory (such as a route or filter
-+ * rule) must be at an 8-byte aligned address.  We currently only place
-+ * route or filter rules in system memory.
-+ *
-  * A rule consists of a contiguous block of 32-bit values terminated with
-  * 32 zero bits.  A special "zero entry" rule consisting of 64 zero bits
-  * represents "no filtering" or "no routing," and is the reset value for
-- * filter or route table rules.  Separate tables (both filter and route)
-- * used for IPv4 and IPv6.  Additionally, there can be hashed filter or
-- * route tables, which are used when a hash of message metadata matches.
-- * Hashed operation is not supported by all IPA hardware.
-+ * filter or route table rules.
-  *
-  * Each filter rule is associated with an AP or modem TX endpoint, though
-- * not all TX endpoints support filtering.  The first 64-bit entry in a
-+ * not all TX endpoints support filtering.  The first 64-bit slot in a
-  * filter table is a bitmap indicating which endpoints have entries in
-  * the table.  The low-order bit (bit 0) in this bitmap represents a
-  * special global filter, which applies to all traffic.  This is not
-  * used in the current code.  Bit 1, if set, indicates that there is an
-- * entry (i.e. a DMA address referring to a rule) for endpoint 0 in the
-- * table.  Bit 2, if set, indicates there is an entry for endpoint 1,
-- * and so on.  Space is set aside in IPA local memory to hold as many
-- * filter table entries as might be required, but typically they are not
-- * all used.
-+ * entry (i.e. slot containing a system address referring to a rule) for
-+ * endpoint 0 in the table.  Bit 3, if set, indicates there is an entry
-+ * for endpoint 2, and so on.  Space is set aside in IPA local memory to
-+ * hold as many filter table entries as might be required, but typically
-+ * they are not all used.
-  *
-  * The AP initializes all entries in a filter table to refer to a "zero"
-  * entry.  Once initialized the modem and AP update the entries for
-@@ -122,8 +132,7 @@ static void ipa_table_validate_build(void)
- 	 * code in ipa_table_init() uses a pointer to __le64 to
- 	 * initialize tables.
- 	 */
--	BUILD_BUG_ON(sizeof(dma_addr_t) > IPA_TABLE_ENTRY_SIZE);
--	BUILD_BUG_ON(sizeof(__le64) != IPA_TABLE_ENTRY_SIZE);
-+	BUILD_BUG_ON(sizeof(dma_addr_t) > sizeof(__le64));
- 
- 	/* A "zero rule" is used to represent no filtering or no routing.
- 	 * It is a 64-bit block of zeroed memory.  Code in ipa_table_init()
-@@ -154,7 +163,7 @@ ipa_table_valid_one(struct ipa *ipa, bool route, bool ipv6, bool hashed)
- 		else
- 			mem = hashed ? &ipa->mem[IPA_MEM_V4_ROUTE_HASHED]
- 				     : &ipa->mem[IPA_MEM_V4_ROUTE];
--		size = IPA_ROUTE_COUNT_MAX * IPA_TABLE_ENTRY_SIZE;
-+		size = IPA_ROUTE_COUNT_MAX * sizeof(__le64);
- 	} else {
- 		if (ipv6)
- 			mem = hashed ? &ipa->mem[IPA_MEM_V6_FILTER_HASHED]
-@@ -162,7 +171,7 @@ ipa_table_valid_one(struct ipa *ipa, bool route, bool ipv6, bool hashed)
- 		else
- 			mem = hashed ? &ipa->mem[IPA_MEM_V4_FILTER_HASHED]
- 				     : &ipa->mem[IPA_MEM_V4_FILTER];
--		size = (1 + IPA_FILTER_COUNT_MAX) * IPA_TABLE_ENTRY_SIZE;
-+		size = (1 + IPA_FILTER_COUNT_MAX) * sizeof(__le64);
- 	}
- 
- 	if (!ipa_cmd_table_valid(ipa, mem, route, ipv6, hashed))
-@@ -261,8 +270,8 @@ static void ipa_table_reset_add(struct gsi_trans *trans, bool filter,
- 	if (filter)
- 		first++;	/* skip over bitmap */
- 
--	offset = mem->offset + first * IPA_TABLE_ENTRY_SIZE;
--	size = count * IPA_TABLE_ENTRY_SIZE;
-+	offset = mem->offset + first * sizeof(__le64);
-+	size = count * sizeof(__le64);
- 	addr = ipa_table_addr(ipa, false, count);
- 
- 	ipa_cmd_dma_shared_mem_add(trans, offset, size, addr, true);
-@@ -444,11 +453,11 @@ static void ipa_table_init_add(struct gsi_trans *trans, bool filter,
- 		count = hweight32(ipa->filter_map);
- 		hash_count = hash_mem->size ? count : 0;
- 	} else {
--		count = mem->size / IPA_TABLE_ENTRY_SIZE;
--		hash_count = hash_mem->size / IPA_TABLE_ENTRY_SIZE;
-+		count = mem->size / sizeof(__le64);
-+		hash_count = hash_mem->size / sizeof(__le64);
- 	}
--	size = count * IPA_TABLE_ENTRY_SIZE;
--	hash_size = hash_count * IPA_TABLE_ENTRY_SIZE;
-+	size = count * sizeof(__le64);
-+	hash_size = hash_count * sizeof(__le64);
- 
- 	addr = ipa_table_addr(ipa, filter, count);
- 	hash_addr = ipa_table_addr(ipa, filter, hash_count);
-@@ -655,7 +664,7 @@ int ipa_table_init(struct ipa *ipa)
- 	 * by dma_alloc_coherent() is guaranteed to be a power-of-2 number
- 	 * of pages, which satisfies the rule alignment requirement.
- 	 */
--	size = IPA_ZERO_RULE_SIZE + (1 + count) * IPA_TABLE_ENTRY_SIZE;
-+	size = IPA_ZERO_RULE_SIZE + (1 + count) * sizeof(__le64);
- 	virt = dma_alloc_coherent(dev, size, &addr, GFP_KERNEL);
- 	if (!virt)
- 		return -ENOMEM;
-@@ -687,7 +696,7 @@ void ipa_table_exit(struct ipa *ipa)
- 	struct device *dev = &ipa->pdev->dev;
- 	size_t size;
- 
--	size = IPA_ZERO_RULE_SIZE + (1 + count) * IPA_TABLE_ENTRY_SIZE;
-+	size = IPA_ZERO_RULE_SIZE + (1 + count) * sizeof(__le64);
- 
- 	dma_free_coherent(dev, size, ipa->table_virt, ipa->table_addr);
- 	ipa->table_addr = 0;
-diff --git a/drivers/net/ipa/ipa_table.h b/drivers/net/ipa/ipa_table.h
-index e14108ed62bdd..018045b95aad8 100644
---- a/drivers/net/ipa/ipa_table.h
-+++ b/drivers/net/ipa/ipa_table.h
-@@ -10,9 +10,6 @@
- 
- struct ipa;
- 
--/* The size of a filter or route table entry */
--#define IPA_TABLE_ENTRY_SIZE	sizeof(__le64)	/* Holds a physical address */
--
- /* The maximum number of filter table entries (IPv4, IPv6; hashed or not) */
- #define IPA_FILTER_COUNT_MAX	14
- 
--- 
-2.27.0
+Why do we need read_size + 2 u64 here?=20
+
+Thanks,
+Song
+
+[...]
 
