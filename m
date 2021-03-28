@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8CE934BC6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 14:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE7E34BC70
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 14:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbhC1MvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 08:51:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhC1Muu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 08:50:50 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C7BC061762;
-        Sun, 28 Mar 2021 05:50:50 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id p12so3037596pgj.10;
-        Sun, 28 Mar 2021 05:50:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=M/f6JcSAxpYcQMaAnW5qhIERWhNfQqqFaf/lVQHff/0=;
-        b=R9F2oyHJuKHCiCMbvDBSiCGciPYeXBLxw/cGofmCcHz2QUFhmdPGv7qkdtdii5cUyk
-         Af9ggEX9DREMPgGHAMYVThJLSTuOAc+u/JYn812eHYAA56LUxTgnn8+/n9ScuEuxo5Kr
-         c+3DZJQl4ynMmZQoFXo/odaaAlmhaM0a172km0naKrn+BtATaBVetwowih9GshmTHMRg
-         oNXlNm03OAuTNF5llOZmBPlPp3l9VRTjmM03Eqt3EU3u2P26SeVXoKPdnIH3cUErmmO0
-         CRsUvSs1/CAsvu1k5uX9zmMdqiEcq2Qj62pwDv3kuG+rZCi10m4h8csQ6+rvLpao6Ljx
-         O/GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=M/f6JcSAxpYcQMaAnW5qhIERWhNfQqqFaf/lVQHff/0=;
-        b=HlQjWc8Tbc/5dIYndqHdVmhgF645IlIrWbWzCmrX4DpuAEdAJIdrZBL4rHiq2hxh/V
-         WhvvKhZiSLtj4VnJ0HiFu6juwgsLbuKPEiNIygquFCICuNIRu3RE2fBzYOMKBtP2TYYB
-         jvQkFwnBwdOFRuCpnd20xa5+jkkbSHoYBfer/R+HAeXYE/c90iv9Mv0GQyxQVptAo15H
-         jIbtlSuxd4SowUBe6UuOoGjvmRcQVwY4UeMXJW1dpKUqkoeMRdfznd38hmrj8j1hgwur
-         az326WiT3/phy0lckJhsFx/t68D9/UAXL4yEMpyC5mQNhIPhB3LHXeDOvRf47wO1GNFf
-         Nkpg==
-X-Gm-Message-State: AOAM533PKMCM+trEmOrz7X7ghOg5KuQoAMqWHB8IJa8k/CeCiQabgD+U
-        itKtTMCQpSkAdRhOxXcXRK9XYocGdCjkMxBkwmfhDHyyejs=
-X-Google-Smtp-Source: ABdhPJwyVengmsYTLXT8Ek198TXirsG56lWDdJccyVIjngZL5NxLnvSor4kK/J8s3OsZtzdVAMQSu5o7/qLLs6VKLNw=
-X-Received: by 2002:a65:4c08:: with SMTP id u8mr19616609pgq.203.1616935850229;
- Sun, 28 Mar 2021 05:50:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210327222012.54103-1-andriy.shevchenko@linux.intel.com>
- <20210327222012.54103-6-andriy.shevchenko@linux.intel.com> <YGBB7D98tNxYsTXo@kroah.com>
-In-Reply-To: <YGBB7D98tNxYsTXo@kroah.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 28 Mar 2021 15:50:34 +0300
-Message-ID: <CAHp75VcuAs_n+g4Cy7Sj99hZLavWBEJrW3xgXCwHaN_GkB-K8g@mail.gmail.com>
-Subject: Re: [PATCH v1 6/8] software node: Simplify swnode_register() a bit
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
+        id S231243AbhC1Mvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 08:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231285AbhC1MvL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 08:51:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D9F36193F;
+        Sun, 28 Mar 2021 12:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616935870;
+        bh=5td7gOwGWp/bcwoGdg50qJ48DE8KSZ4XdbEFraiEF0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U6LuLT2VVCq7bdaTGV0CIR+srCkG6wA+m3KxeyQHd15VHkUmyh8patc4B7XzuEwMs
+         cbEnOg5pw9hxgDkZLLwtmRxFGHznw4lg/aU4I5CCWvvquhVniV6/7mWZKF0vuDxMm1
+         1w5kg6wB/OyliO6aPbBpMbK67H6dsnxIANLnPPnw=
+Date:   Sun, 28 Mar 2021 14:51:08 +0200
+From:   gregkh <gregkh@linuxfoundation.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Xu Jia <xujia39@huawei.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH -next] applicom: fix some err codes returned by ac_ioctl
+Message-ID: <YGB7vKk6dDoWpcKn@kroah.com>
+References: <20210324072031.941791-1-xujia39@huawei.com>
+ <CAK8P3a2cWFT7BiePJQjYO-_9QjCvWf1mQPE8NEZ4dXgira=iaA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2cWFT7BiePJQjYO-_9QjCvWf1mQPE8NEZ4dXgira=iaA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 11:48 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Sun, Mar 28, 2021 at 12:20:10AM +0200, Andy Shevchenko wrote:
-> > By introducing two temporary variables simplify swnode_register() a bit.
-> > No functional change intended.
+On Wed, Mar 24, 2021 at 01:03:50PM +0100, Arnd Bergmann wrote:
+> On Wed, Mar 24, 2021 at 8:20 AM Xu Jia <xujia39@huawei.com> wrote:
 > >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  drivers/base/swnode.c | 11 +++++------
-> >  1 file changed, 5 insertions(+), 6 deletions(-)
+> > When cmd > 6 or copy_to_user() fail, The variable 'ret' would not be
+> > returned back. Fix the 'ret' set but not used.
 > >
-> > diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> > index ae53c48f84b1..1e81aaf5f6a1 100644
-> > --- a/drivers/base/swnode.c
-> > +++ b/drivers/base/swnode.c
-> > @@ -894,6 +894,8 @@ static struct fwnode_handle *
-> >  swnode_register(const struct software_node *node, struct swnode *parent,
-> >               unsigned int allocated)
-> >  {
-> > +     struct ida *ids = parent ? &parent->child_ids : &swnode_root_ids;
-> > +     struct kobject *kobj_parent = parent ? &parent->kobj : NULL;
->
-> ?: operations are horrid.  Please spell this out in real if statements
-> so that we can properly understand and maintain them for the next 20+
-> years.
+> > Signed-off-by: Xu Jia <xujia39@huawei.com>
+> 
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> > diff --git a/drivers/char/applicom.c b/drivers/char/applicom.c
+> > index 14b2d8034c51..0ab765143354 100644
+> > --- a/drivers/char/applicom.c
+> > +++ b/drivers/char/applicom.c
+> > @@ -839,7 +839,7 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+> >         Dummy = readb(apbs[IndexCard].RamIO + VERS);
+> >         kfree(adgl);
+> >         mutex_unlock(&ac_mutex);
+> > -       return 0;
+> > +       return ret;
+> >
+> 
+> Apparently this has been broken since the driver was first merged in
+> linux-2.3.16. I could find no indication of anyone using the driver
+> and reporting any problems in the git history and it clearly still has
+> the style of drivers writting in the 1990s. On the other hand, this is
+> (was) used in some very long-lived systems and you can still
+> buy old applicom cards from artisan[1].
+> 
+> Is there any chance this driver is still used anywhere with modern
+> kernels? I suspect we could move it to staging to find out.
 
-Will do, thanks!
+No objection from me to move it to staging, want to send a patch or I
+can.
 
---
-With Best Regards,
-Andy Shevchenko
+thanks,
+
+greg k-h
