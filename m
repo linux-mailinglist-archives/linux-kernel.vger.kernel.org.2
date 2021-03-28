@@ -2,53 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880F534BD7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C5534BD7B
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 19:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhC1RPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 13:15:04 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:59073 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhC1ROc (ORCPT
+        id S231382AbhC1RPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 13:15:05 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:45883 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhC1ROt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 13:14:32 -0400
+        Sun, 28 Mar 2021 13:14:49 -0400
 X-Originating-IP: 90.89.138.59
 Received: from xps13.home (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
         (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id E3950E0009;
-        Sun, 28 Mar 2021 17:14:29 +0000 (UTC)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 46F98240003;
+        Sun, 28 Mar 2021 17:14:46 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
-Cc:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, bbrezillon@kernel.org,
-        linux-mtd@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Kai Stuhlemmer (ebee Engineering)" <kai.stuhlemmer@ebee.de>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: atmel: Update ecc_stats.corrected counter
-Date:   Sun, 28 Mar 2021 19:14:29 +0200
-Message-Id: <20210328171429.7450-1-miquel.raynal@bootlin.com>
+To:     menglong8.dong@gmail.com, miquel.raynal@bootlin.com
+Cc:     richard@nod.at, vigneshr@ti.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Yunkai <zhang.yunkai@zte.com.cn>
+Subject: Re: [PATCH] mtd:rawnand: remove duplicate include in rawnand.h
+Date:   Sun, 28 Mar 2021 19:14:45 +0200
+Message-Id: <20210328171445.7646-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210322150714.101585-1-tudor.ambarus@microchip.com>
+In-Reply-To: <20210313105702.365878-1-zhang.yunkai@zte.com.cn>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'33cebf701e98dd12b01d39d1c644387b27c1a627'
+X-linux-mtd-patch-commit: b'7a534c5e4159f9bbac9f3c146dc78e163d8858c2'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-22 at 15:07:14 UTC, Tudor Ambarus wrote:
-> From: "Kai Stuhlemmer (ebee Engineering)" <kai.stuhlemmer@ebee.de>
+On Sat, 2021-03-13 at 10:57:02 UTC, menglong8.dong@gmail.com wrote:
+> From: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 > 
-> Update MTD ECC statistics with the number of corrected bits.
+> 'linux/mtd/nand.h' included in 'rawnand.h' is duplicated.
+> It is also included in the 17th line.
 > 
-> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kai Stuhlemmer (ebee Engineering) <kai.stuhlemmer@ebee.de>
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> Signed-off-by: Zhang Yunkai <zhang.yunkai@zte.com.cn>
 
 Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
