@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375F134BBC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 11:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D44C34BBC4
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 11:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231206AbhC1JHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 05:07:39 -0400
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:38107 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbhC1JHK (ORCPT
+        id S231225AbhC1JML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 05:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229560AbhC1JLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 05:07:10 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 6DB092800B3E0;
-        Sun, 28 Mar 2021 11:07:08 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 59BBE8178; Sun, 28 Mar 2021 11:07:08 +0200 (CEST)
-Date:   Sun, 28 Mar 2021 11:07:08 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        dan.j.williams@intel.com, kbusch@kernel.org, knsathya@kernel.org,
-        Sinan Kaya <okaya@kernel.org>
-Subject: Re: [PATCH v2 1/1] PCI: pciehp: Skip DLLSC handling if DPC is
- triggered
-Message-ID: <20210328090708.GA20590@wunner.de>
-References: <59cb30f5e5ac6d65427ceaadf1012b2ba8dbf66c.1615606143.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210317041342.GA19198@wunner.de>
- <b2e456bf-9e01-a8cc-67b3-2c10fcda3949@linux.intel.com>
+        Sun, 28 Mar 2021 05:11:54 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2771C061762;
+        Sun, 28 Mar 2021 02:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID;
+        bh=jSDB76cKI45AnX0KGZxYz6mDtclIJTURQk2j8oHwPlo=; b=qX4JpVuA+TfC6
+        AxKdbzmxUD0LGqSE60Gher5H7rwu1qos8FwUDgaJ6Ot1AY1S8oSu2pdt/wNKq+hZ
+        pVDMkCsOyMPEda/q4bofLOGz9arm3hu1zlr2O+hAKMbPK0kEhDeFE5xPssrKr9oS
+        Brd71zIR5ECkGEAnhEkADyQ3t3T+rQ=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Sun, 28 Mar
+ 2021 17:11:43 +0800 (GMT+08:00)
+X-Originating-IP: [203.184.132.238]
+Date:   Sun, 28 Mar 2021 17:11:43 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     jack@suse.cz, amir73il@gmail.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [BUG] fs/notify/mark: A potential use after free in
+ fsnotify_put_mark_wake
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+X-SendMailWithSms: false
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2e456bf-9e01-a8cc-67b3-2c10fcda3949@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <39095113.1936a.178781a774a.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygBnb0tPSGBgJjNdAA--.0W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoOBlQhn5fqvwABsq
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 27, 2021 at 10:49:45PM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> On 3/16/21 9:13 PM, Lukas Wunner wrote:
-> > --- a/drivers/pci/hotplug/pciehp_hpc.c
-> > +++ b/drivers/pci/hotplug/pciehp_hpc.c
-> > @@ -707,6 +707,17 @@ static irqreturn_t pciehp_ist(int irq, void *dev_id)
-> >   	}
-> >   	/*
-> > +	 * Ignore Link Down/Up caused by Downstream Port Containment
-> > +	 * if recovery from the error succeeded.
-> > +	 */
-> > +	if ((events & PCI_EXP_SLTSTA_DLLSC) && pci_dpc_recovered(pdev) &&
-> > +	    ctrl->state == ON_STATE) {
-> > +		atomic_and(~PCI_EXP_SLTSTA_DLLSC, &ctrl->pending_events);
-> 
-> Why modify pending_events here. It should be already be zero right?
+Hi,
+    My static analyzer tool reported a use after free in fsnotify_put_mark_wake
+of the file: fs/notify/mark.c.
 
-"pending_events" is expected to contain the Link Up event
-after successful recovery, whereas "events" contains the
-Link Down event (if DPC was triggered).
+In fsnotify_put_mark_wake, it calls fsnotify_put_mark(mark). Inside the function
+fsnotify_put_mark(), if conn is NULL, it will call fsnotify_final_mark_destroy(mark)
+to free mark->group by fsnotify_put_group(group) and return. I also had inspected
+the implementation of fsnotify_put_group() and found that there is no cleanup operation
+about group->user_waits.
 
-pciehp is structured around the generic irq core's separation
-of hardirq handler (runs in interrupt context) and irq thread
-(runs in task context).  The hardirq handler pciehp_isr() picks
-up events from the Slot Status register and stores them in
-"pending_events" for later consumption by the irq thread
-pciehp_ist().  The irq thread performs long running tasks such
-as slot bringup and bringdown.  The irq thread is also allowed
-to sleep.
+But after fsnotify_put_mark_wake() returned, mark->group is still used by 
+if (atomic_dec_and_test(&group->user_waits) && group->shutdown) and later.
 
-While pciehp_ist() awaits completion of DPC recovery, a DLLSC
-event will be picked up by pciehp_isr() which is caused by
-link retraining.  That event is contained in "pending_events",
-so after successful recovery, pciehp_ist() can just delete it.
+Is this an issue?
 
-Thanks,
+Thanks.
 
-Lukas
+
+
+
+
