@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C6434BF82
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F78E34BF88
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 00:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhC1V6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 17:58:33 -0400
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:51004 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhC1V6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 17:58:13 -0400
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 12SLw7ZK026449;
-        Sun, 28 Mar 2021 23:58:07 +0200
-Date:   Sun, 28 Mar 2021 23:58:07 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Mateusz Jonczyk <mat.jonczyk@o2.pl>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Testers wanted: Atom netbooks with x86_64 disabled by BIOS
-Message-ID: <20210328215807.GA26428@1wt.eu>
-References: <20210327203218.119372-1-mat.jonczyk@o2.pl>
- <20210327211322.121708-1-mat.jonczyk@o2.pl>
- <20210327232551.GA20783@1wt.eu>
- <87lfa8cchf.ffs@nanos.tec.linutronix.de>
- <20210328061837.GA22710@1wt.eu>
- <CAHp75Ve_Yhs3ib5yk=d-+bhb4vHpx-j6D4jGGBKuD2k1qv38Vg@mail.gmail.com>
+        id S231463AbhC1WB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 18:01:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhC1WBX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 18:01:23 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B63C061756;
+        Sun, 28 Mar 2021 15:01:23 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F7qRM31Fyz9sRf;
+        Mon, 29 Mar 2021 09:01:18 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1616968881;
+        bh=5HhQHmCdYgsPA8RXY8VYh1EyFWPd5mOOiVguF7B+feg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kd3Gu2MbJnjuLrePT/Dbc+t+TFMjNcfw8hENvAuymA+KFzIUMx0BqPRZZWRdMB10a
+         5ncEz6+Exr2VdJ/UBV6lqZMubK+0V+uo7vyZEtgxS55Kq8UCjfukUXO3vdhHBy7rqJ
+         OiE47UGHnsF60GQ/lfdNuxE5m+7fv1TxnGShi0Z4vCpN05HB02mX2QHjsC6rH0//dQ
+         amNX4zSyfwkUlUoqZ/ci0ICJJEQ5498SI9xJyOGVXArACZw2FkBlvTL+98YmnWtlNn
+         Qtt+ySEp+KbyOgtsQ6TANXYcbk0NvnXDGlaDVMGNoHg/IJUi4gMSKhZMnd5Ywza5Br
+         NmuTU/8Ez5V+g==
+Date:   Mon, 29 Mar 2021 09:01:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Imre Deak <imre.deak@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-intel-fixes
+ tree
+Message-ID: <20210329090117.6b224931@canb.auug.org.au>
+In-Reply-To: <20210326195838.5ad4973b@canb.auug.org.au>
+References: <20210326195838.5ad4973b@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Ve_Yhs3ib5yk=d-+bhb4vHpx-j6D4jGGBKuD2k1qv38Vg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_//QsD_AfuZfie_FBZKD_mLXq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 28, 2021 at 11:14:05PM +0300, Andy Shevchenko wrote:
-> On Sunday, March 28, 2021, Willy Tarreau <w@1wt.eu> wrote:
-> 
-> > Hi Thomas,
-> >
-> > On Sun, Mar 28, 2021 at 03:07:24AM +0200, Thomas Gleixner wrote:
-> > > On Sun, Mar 28 2021 at 00:25, Willy Tarreau wrote:
-> > > > On Sat, Mar 27, 2021 at 10:13:22PM +0100, Mateusz Jonczyk wrote:
-> > > > FWIW I tested on my ASUS 1025C which runs on an Atom N2600 forced to
-> > > > 32-bit. I had already tried in the past but wanted to give it a try
-> > > > again in case I'd have missed anything. Sadly it didn't work, I'm
-> > > > still getting the "requires an x86-64 CPU" message.
-> > > >
-> > > > Given these machines were really cheap, I've always suspected that they
-> > > > employ cheaper, low-grade CPUs, possibly having been subject to reduced
-> > > > tests where x86_64-specific parts were not even verified and might be
-> > > > defective. This may explain why they forcefully disable long mode
-> > there,
-> > > > but that's just speculation.
-> > >
-> > > There are some of these '32bit only' CPUs out there in the wild which
-> > > actually support long mode. Some of them even do not have the long mode
-> > > CPUID bit fused out.
-> >
-> > Yes, I'm aware of this as well. We might even have talked to the same
-> > "victim" :-)
-> >
-> > > But whether it works is a different story:
-> > >
-> > >   - If the CPUID bit is on, then the chance is high, but it runs out of
-> > >     spec (guarantee wise)
-> > >
-> > >   - If it's off is still might work by some definition of work as they
-> > >     might have fused off more or there are actual defects in some 64bit
-> > >     only area which are irrelevant when in 32bit mode.
-> > >
-> > > Even if it could work perfectly fine, the BIOS/SMM/ucode can prevent
-> > > switching to long mode.
-> > >
-> > > It's a lost cause.
-> >
-> > I agree. While I bought this netbook to have a 64-bit CPU and was extremely
-> > disappointed,
-> 
-> 
-> Where did you get an idea that it had 64-bit SoC from?
+--Sig_//QsD_AfuZfie_FBZKD_mLXq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It's an N2600, and I bought this laptop because N2600 supports 64-bit
-(and do have another mini-itx motherboard at work with the same CPU
-on it working pretty well in 64-bit):
+Hi all,
 
-   https://ark.intel.com/content/www/us/en/ark/products/58916/intel-atom-processor-n2600-1m-cache-1-6-ghz.html
+On Fri, 26 Mar 2021 19:58:38 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the drm-intel-fixes tree, today's linux-next build
+> (htmldocs) produced this warning:
+>=20
+> Documentation/gpu/i915:22: /drivers/gpu/drm/i915/intel_runtime_pm.c:423: =
+WARNING: Inline strong start-string without end-string.
+>=20
+> Introduced by commit
+>=20
+>   8840e3bd981f ("drm/i915: Fix the GT fence revocation runtime PM logic")
 
-> Atom Based 64-bit ones are Bay Trail, Cherry Trail, Tangier (Merrifield),
-> Anniedale (Moorefield) and all based on Skylake family (Apollo Lake,
-> Broxton, Gemini Lake, ...).
+This warning now exists in Linus' tree.
 
-Well, to be honest, I've never been able to remind (nor sort) all these
-totally crazy names. The day someone gives me a mnemotechnic hint to
-remind them and their ordering, that will make me reconsider them. For
-now they're all "something lake", and I find it particularly difficult
-to map them to SKUs.
-
+--=20
 Cheers,
-Willy
+Stephen Rothwell
+
+--Sig_//QsD_AfuZfie_FBZKD_mLXq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBg/K0ACgkQAVBC80lX
+0GyYwggAj9F/JN4TaL4WF+9DYWxOQ/V8lMzzerBR+N65DxX/5p01HhKhdU/sJUVS
+wbrnNAJViURVtHEpnl28m9jSBgdXVnoCBgt/kMQCtIv+vGREZ9isJ2T0KOw11F2I
+1OeHLooITppCjoFM7Kngnt4yJXWXirSSQk68DD+TWyRAgHDPec7rv+3562nBcfny
+F643OjjAHwkC2AbofvDk/FrlbNR9+3oTYP4FpVna8HNmOgWvYIPEcWZB+maFJwgt
+xPLR5ryD4ReYvIvSILrfo2syTRR0mj11eyiKlH3cDp0FFRfqqOpolKtSc4N3q9eE
+j9CqoH1WiURuS0+Z+C3SAj8jSBXD/w==
+=pIB0
+-----END PGP SIGNATURE-----
+
+--Sig_//QsD_AfuZfie_FBZKD_mLXq--
