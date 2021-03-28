@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D5D34BC3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 13:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B07B734BC44
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 14:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhC1LrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 07:47:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229503AbhC1Lqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 07:46:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F175C61941;
-        Sun, 28 Mar 2021 11:46:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1616932007;
-        bh=M03bi7a09kKMaiL8zfuIoUIH/ryWLbTyZYNO5lendgk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xxF4LxBCH2dHD3mn+2oOZcEFHMrXY05NG5tAzKyysx9k+8xdqD8ISYgKnVYY090GO
-         4ztdV0uoVpfmbZChASboEXdGLe3KvH7ZRNNNlvhI56dRE3fSiGcFxAjkBrM2+8q4VR
-         71n8A0LJkgPtOg2kPLXpkny/pmC29PEkuDkEbemA=
-Date:   Sun, 28 Mar 2021 13:46:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Eli Billauer <eli.billauer@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-usb@vger.kernel.org,
-        arnd@arndb.de, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH v4 1/2] char: xillybus: Move class-related functions to
- new xillybus_class.c
-Message-ID: <YGBspAmjcIO6agIm@kroah.com>
-References: <20210311095033.20956-1-eli.billauer@gmail.com>
- <20210311095033.20956-2-eli.billauer@gmail.com>
- <YFc65bvAN3/ZNsww@kroah.com>
- <6058792C.90801@gmail.com>
- <YFh7dlY9cntgoLXD@kroah.com>
- <6059D983.5080306@gmail.com>
+        id S231256AbhC1MG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 08:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhC1MF5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 08:05:57 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69DA2C061762;
+        Sun, 28 Mar 2021 05:05:57 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 33so1776146pgy.4;
+        Sun, 28 Mar 2021 05:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bh7FpP7ll2rb0ew3xIuqAoIB0GKlnqepEv7+KeRSy+0=;
+        b=aDxFeDSRpHfeC0QquDjRtHbg47SsLq1G3W9Egd6ch/sBvaDCQzTSxBMdTxJfmoDFjn
+         YFfMGJL6f+noevkRJAsTXyjCFNcS0LSXF1DPLqVB6cXVrbRvSzz6+a7hZnlOgdkMZ8iJ
+         uyJigQGqY+pMvbiULBOpJ9KWJSeYnrR48mUsxoMoQ7R18AhfcuScFIojUKHofITBu/XW
+         PYcsN0xCt4iabu/p/EBsAxf2Bp4LQgexzD6cJ0qVqthnR28nOKMWrenZ7oO7aE10Y8BA
+         lOJKk5LX8CrhxMgbw7qDSpJD/hc/Z+zr1JEjUyBCKw9KUTVl0Yy2qMVgULV1h5bACHJn
+         khbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bh7FpP7ll2rb0ew3xIuqAoIB0GKlnqepEv7+KeRSy+0=;
+        b=RsBxQCWshrk+bNmwMGNWboVe3/KmhkVPp2TaJTZ9tNqQxRfzWnk9B2qrFSK3vX/8SA
+         2AE6db2PmJTlAXVdK8fl50pIuwK5D/FQ66XXA2ug4Uo+4Mhgn2pD6Ig73FSu5ENowN6K
+         CrbEKUfBefNw5QU2ddCPOG8MxxxUT7nvhdgipgOM52ZFisxR1zqA1pH6b5RBIbckd+jY
+         oLNubvR4srSVvBgBhPU2mKaoxVD4hPtIWd1yCGUjpv20kngXqPpvX+ny93E/P107wJZu
+         sAA1GuNZrnxuRNUG5bMd6KIWF4zkroirPOs3ae7TbDsDhcfvuroRasOYAkh5q/Jo07/J
+         75zw==
+X-Gm-Message-State: AOAM533/02AnD+KIer4cTPGtQWUmz/tFovjMkqQBWaFQhWJVCNzVRXTF
+        woY/jM5lnybw0HyVa2GQyppk8STaZJq7tFsL
+X-Google-Smtp-Source: ABdhPJw75mA8YVf01PjO5ZIpfSaDgVtNIzdzcXlrnhwXj/Anvfw/E318D2ivs7Os+0erTAXcgD90Mg==
+X-Received: by 2002:a65:538f:: with SMTP id x15mr20180856pgq.429.1616933156973;
+        Sun, 28 Mar 2021 05:05:56 -0700 (PDT)
+Received: from localhost.localdomain ([136.185.95.200])
+        by smtp.gmail.com with ESMTPSA id y12sm14483328pfq.118.2021.03.28.05.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 05:05:56 -0700 (PDT)
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     davem@davemloft.net
+Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Atul Gopinathan <atulgopinathan@gmail.com>,
+        syzbot+0b74d8ec3bf0cc4e4209@syzkaller.appspotmail.com
+Subject: [PATCH bpf-next] bpf: tcp: Remove comma which is causing build error
+Date:   Sun, 28 Mar 2021 17:35:15 +0530
+Message-Id: <20210328120515.113895-1-atulgopinathan@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6059D983.5080306@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 02:05:23PM +0200, Eli Billauer wrote:
-> On 22/03/21 13:11, Greg KH wrote:
-> > 
-> > > XILLYBUS and XILLYBUS_PCIE are currently enabled as M in several Linux
-> > > distributions. Making them depend on, rather than select XILLYBUS_CLASS is
-> > > likely to disable the driver in those distributions.
-> > That's not an issue here, depends-on will allow those distros to also
-> > enable this option.
-> > 
-> > But wait, why is this a separate option at all?  Shouldn't the class
-> > code just be part of the "core" XILLYBUS code anyway?
-> > 
-> I'll try to explain the whole picture:
-> 
->            XILLYBUS_CLASS
->               /        \
->              |          |
->          XILLYBUS   XILLYUSB
->       /           \
->      |             |
-> XILLYBUS_PCIE  XILLYBUS_OF
-> 
-> XILLYBUS_CLASS is new and common to all drivers in this group.
-> 
-> XILLYBUS is for drivers based upon memory registers + DMA-based interfaces,
-> and it's combined with XILLYBUS_PCIE and/or XILLYBUS_OF. XILLYUSB is for the
-> USB variant only.
-> 
-> Or a more detailed, bottom-up outline:
-> 
-> * CONFIG_XILLYBUS_PCIE -> xillybus_pcie.c: Functions related to PCIe.
-> * CONFIG_XILLYBUS_OF -> xillybus_of.c: Functions related to Xillybus as a
-> peripheral on an FPGA / Processor combo chip.
-> * CONFIG_XILLYBUS -> xillybus_core.c: Functions that are common to the two
-> above, mainly access to the peripheral with memory-mapped registers and DMA.
-> * CONFIG_XILLYUSB -> xillyusb.c: The driver for the USB variant, accesses
-> the peripheral through the USB framework.
-> * CONFIG_XILLYBUS_CLASS -> xillybus_class.c: The new module, which contains
-> the class and API parts that would otherwise appear both in xillybus_core.c
-> and xillyusb.c. Contains utility functions for the two latter.
-> 
-> Because XILLYBUS_CLASS is new and "N" by default, making a "depends on"
-> relationship means that "make olddefconfig" silently turns off
-> CONFIG_XILLYBUS and CONFIG_XILLYBUS_PCIE. That's a bug: Adding a new driver
-> shouldn't change anything in the existing configuration.
-> 
-> That's why I had the "select XILLYBUS_CLASS" to begin with: It ensures a
-> smooth transition on a kernel upgrade, by adding XILLYBUS_CLASS to kernels
-> that had CONFIG_XILLYBUS enabled. Is there another way to prevent the said
-> bug, without "select"?
+Currently, building the bpf-next source with the CONFIG_BPF_SYSCALL
+enabled is causing a compilation error:
 
-Ok, that explains it a bit better, thanks for taking the time to explain
-it.  At first glance it seems odd, but this looks better, if you include
-this information in the changelog texts for your patches when you send
-the next series, that will help out with the review.
+"net/ipv4/bpf_tcp_ca.c:209:28: error: expected identifier or '(' before
+',' token"
 
-thanks,
+Fix this by removing an unnecessary comma.
 
-greg k-h
+Reported-by: syzbot+0b74d8ec3bf0cc4e4209@syzkaller.appspotmail.com
+Fixes: e78aea8b2170 ("bpf: tcp: Put some tcp cong functions in allowlist for bpf-tcp-cc")
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+---
+ net/ipv4/bpf_tcp_ca.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index 40520b77a307..12777d444d0f 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -202,15 +202,15 @@ BTF_ID(func, dctcp_cwnd_undo)
+ BTF_ID(func, dctcp_state)
+ #endif
+ #if IS_BUILTIN(CONFIG_TCP_CONG_BBR)
+ BTF_ID(func, bbr_init)
+ BTF_ID(func, bbr_main)
+ BTF_ID(func, bbr_sndbuf_expand)
+ BTF_ID(func, bbr_undo_cwnd)
+-BTF_ID(func, bbr_cwnd_even),
++BTF_ID(func, bbr_cwnd_even)
+ BTF_ID(func, bbr_ssthresh)
+ BTF_ID(func, bbr_min_tso_segs)
+ BTF_ID(func, bbr_set_state)
+ #endif
+ BTF_SET_END(bpf_tcp_ca_kfunc_ids)
+ 
+ static bool bpf_tcp_ca_check_kfunc_call(u32 kfunc_btf_id)
+-- 
+2.25.1
+
