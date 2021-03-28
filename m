@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48D234BBBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 10:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAAA34BBC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 11:05:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhC1IuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 04:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        id S230258AbhC1JEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 05:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhC1Ito (ORCPT
+        with ESMTP id S229542AbhC1JER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 04:49:44 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BD1C061762
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 01:49:43 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 12so3544028lfq.13
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 01:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ztGmBqotixPRZflx2J/booXl45uDsbsceMPBD6M+nqY=;
-        b=f+nF2uWGye8i7l0T+NvpVMQqvplMo+nGFzn7Fegc9rtkxmWAREuTNbiSwgizH+7SGg
-         4KHOWONNdiiDg8WG2oieV9lZyEaGuFH1MWCwx1JFOIi7QMoYNdJYwkRQpewrT31fHapz
-         IuQPORt9xqjM9fPo/OhYNRzN2w/nJtdFfuY3ezcnt57KYTXipynqwHlvEtiacl1SI4AD
-         dv/GkDshuLYsCQkoX4CSimmeBPDQ5HlTozzWCQ4SEsfk9+nkiSAFYjCj2sXnOTau/ZEW
-         hlqNBR9F8tF00zE0GILmfjL6hCAjl8g8uN4vfFpNTkm+8i8e/xk/M1ej7caosBKA9gE1
-         lEiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ztGmBqotixPRZflx2J/booXl45uDsbsceMPBD6M+nqY=;
-        b=VE++kAzzMoqcb6tCvXffz1HH9qvalECESNH8w4TwVqxV7c9F9+Q2mTyOboHjDpf8IW
-         dXQRi69mbE10CDciIGcvJ7h35Hr6TqfaGWE4WYJEVqySrIWAihvmRBHIHYiCiuKuDHU9
-         32cXtw27+3KfMGDz4/58xM1nBoxjZmhdy8LYeTBs7Re8ATEPpCNtMZ+VkdkVuPCnqxrt
-         rPRzKX2LqyBxI0A4tu1H7KUkIGWJBHdasiI8OUVJU2RJvexTS3ZUOJNF7rAwTBKVlp/g
-         uHLZZwmqjt652DOhgSfHWQPdSGsTqaoPPG2v1rCL8IsIQoOkam+U2Qp2X7KS4M+p2/Zt
-         r7eA==
-X-Gm-Message-State: AOAM5334X20Qm26q2dQ8dsN+g872hygwtDRr5PAzcR1T1ywWZvMRpHhy
-        RuQrfI1nPhWu7cUSEmkdIB69OCHpZIiVbPyRIrQ=
-X-Google-Smtp-Source: ABdhPJzz2EgsI5GXhM7PmRSYcVT13Gkx0T1qdXZuRoZfvaGGBSLJpUzn3wZderxg5E/yxyU6bzlbvw==
-X-Received: by 2002:ac2:5ed0:: with SMTP id d16mr12831714lfq.569.1616921381657;
-        Sun, 28 Mar 2021 01:49:41 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.227.42])
-        by smtp.gmail.com with ESMTPSA id h28sm1415616lfv.26.2021.03.28.01.49.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 01:49:41 -0700 (PDT)
-Message-ID: <385f9b15d528a678333b4d008a8dbacc513f2408.camel@gmail.com>
-Subject: Re: [PATCH] tty: fix memory leak in vc_deallocate
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com
-Date:   Sun, 28 Mar 2021 11:49:40 +0300
-In-Reply-To: <YGBCKBtrirh5GmVP@kroah.com>
-References: <20210327214443.21548-1-paskripkin@gmail.com>
-         <YGBCKBtrirh5GmVP@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 
+        Sun, 28 Mar 2021 05:04:17 -0400
+Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797ADC061762
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 02:04:14 -0700 (PDT)
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4F7VBg4Xxdz1ryX8;
+        Sun, 28 Mar 2021 11:04:11 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4F7VBg49LBz1qv9k;
+        Sun, 28 Mar 2021 11:04:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id Dwm1-YOpFPBY; Sun, 28 Mar 2021 11:04:10 +0200 (CEST)
+X-Auth-Info: GHbqMtjSwlyx6Vu7Da4AbOxh0KCBSD4DJSv1SvMweZQtYqezPHy9gMmMgFXypTRY
+Received: from hase.home (ppp-46-244-175-213.dynamic.mnet-online.de [46.244.175.213])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Sun, 28 Mar 2021 11:04:10 +0200 (CEST)
+Received: by hase.home (Postfix, from userid 1000)
+        id 7E92F102A8B; Sun, 28 Mar 2021 11:04:09 +0200 (CEST)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     akpm@linux-foundation.org, geert@linux-m68k.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS
+References: <20210328041359.50149-1-julianbraha@gmail.com>
+X-Yow:  It don't mean a THING if you ain't got that SWING!!
+Date:   Sun, 28 Mar 2021 11:04:08 +0200
+In-Reply-To: <20210328041359.50149-1-julianbraha@gmail.com> (Julian Braha's
+        message of "Sun, 28 Mar 2021 00:13:59 -0400")
+Message-ID: <87lfa7ved3.fsf@linux-m68k.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-On Sun, 2021-03-28 at 10:45 +0200, Greg KH wrote:
-> On Sun, Mar 28, 2021 at 12:44:43AM +0300, Pavel Skripkin wrote:
-> > syzbot reported memory leak in tty/vt.
-> > The problem was in VT_DISALLOCATE ioctl cmd.
-> > After allocating unimap with PIO_UNIMAP it wasn't
-> > freed via VT_DISALLOCATE, but vc_cons[currcons].d was
-> > zeroed.
-> > 
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> > Reported-by: syzbot+bcc922b19ccc64240b42@syzkaller.appspotmail.com
-> > ---
-> >  drivers/tty/vt/vt.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> 
-> Is this patch tested by syzbot to fix the problem?
-> 
-Yeah, it's tested.
-https://syzkaller.appspot.com/bug?id=083cb8bd8468537151a57339ae72d505bb5bded0
-> thanks,
-> 
-> greg k-h
+On Mär 28 2021, Julian Braha wrote:
+
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 2779c29d9981..8d53ed423899 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1665,7 +1665,7 @@ config LATENCYTOP
+>  	depends on DEBUG_KERNEL
+>  	depends on STACKTRACE_SUPPORT
+>  	depends on PROC_FS
+> -	select FRAME_POINTER if !MIPS && !PPC && !S390 && !MICROBLAZE && !ARM && !ARC && !X86
+> +	select FRAME_POINTER if MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+
+That doesn't look correct.  It reverses the condition without reversing
+the result, which means the result is probably the opposite than intended.
+
+The same expression occurs two more times in this file.  Do those need
+to be changed as well?
+
+Andreas.
 
 -- 
-With regards,
-Pavel Skripkin
-
-
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
