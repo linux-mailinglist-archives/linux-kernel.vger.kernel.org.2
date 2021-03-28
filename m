@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF5034BF41
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1974D34BF43
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 23:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhC1VXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 17:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        id S231474AbhC1VYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 17:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhC1VW6 (ORCPT
+        with ESMTP id S229655AbhC1VYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 17:22:58 -0400
-Received: from smtp.gentoo.org (woodpecker.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCA6C061756;
-        Sun, 28 Mar 2021 14:22:58 -0700 (PDT)
-Received: by sf.home (Postfix, from userid 1000)
-        id BD73D5A22061; Sun, 28 Mar 2021 22:22:52 +0100 (BST)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        linux-ia64@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Sergei Trofimovich <slyfox@gentoo.org>
-Subject: [PATCH v2] ia64: fix EFI_DEBUG build
-Date:   Sun, 28 Mar 2021 22:22:46 +0100
-Message-Id: <20210328212246.685601-1-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <CAMj1kXEmuVWR=TAmzXHnvKxbtSn1-Zkhr-0rOWV0BB1OGyx_TQ@mail.gmail.com>
-References: <CAMj1kXEmuVWR=TAmzXHnvKxbtSn1-Zkhr-0rOWV0BB1OGyx_TQ@mail.gmail.com>
+        Sun, 28 Mar 2021 17:24:17 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777FEC061756;
+        Sun, 28 Mar 2021 14:24:17 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id ap14so3280895ejc.0;
+        Sun, 28 Mar 2021 14:24:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h8X3xkCb2iKB1gBnb2OIJ1fkuZbHQANnRKaUSTzssmg=;
+        b=ESp1OIAIKANj6P4M6l2SRGboimfHCB6ez6cMjR5+bnW41ngioW7pLqCe4Nr5o8WPr+
+         nw1AX2EFcyldrHMQslSs7QQP+/XPZQPvNURDiR22UA8jPEfLwta7Icid6eSeWVPss9dH
+         IFBv21gGNGwQZ+Cr129IDO75lofg6HGgLPDy4y0NBhdVe0iW6AkOnjyS6OUFMRmBPA+C
+         Vkt7E20tE4bgZv4MOc5XA52IvweWuGCAkCyKHrgRtYQrs8tXfIaOfR2frcrFZVAUfQuB
+         eq1HBc8KwmgMak16il8V0p82DAjML0EajwgZrYN8+Z5pWzYAdICjxcp4gDNwH47k8T0U
+         3BBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h8X3xkCb2iKB1gBnb2OIJ1fkuZbHQANnRKaUSTzssmg=;
+        b=PHNxsyVaT/W6suAxunbZXhaOLqXsMHF7WNBKR6c36XmGYJnS7qW4kj8HH0XpmoxD/O
+         VICH1eVauiiRoMXpW4krAqHCuNUzDFpkr+O97TVxy8UfedNal07J0/xgX4sQt1JaOQ+t
+         k5ZljEzcnadqFYUPAVycFBpEayfhQq3ctCr+xjVVLof9JPLpuQyD+W8EpWeYR5E5FYCF
+         feTBxWKJcnZ+IRszMUTVIH2+Qw1Kbk3RY4MDVLyeLn/9MuDIy09uzi6ZG4pNbsD3bPmU
+         74XzPoToktXvgzLtOMBdVHNnj75iPfbLuChcgUjDkJ7KQFHMbMhXQNE8jEiFWRBGLKDW
+         vTtw==
+X-Gm-Message-State: AOAM532GIr+BxggRrwlRV9oky41K9SMzVyUJE+t4SecjTK4jiMaNLiAV
+        ODe1aick7CnWzp1aOioJL8x6L9eXQgFfomhAX+zKhQ53+XM=
+X-Google-Smtp-Source: ABdhPJwO88tlg8QBHREqzsFMcEe9Jhi5Z9xZo47eaL0S4suKjsU2w2XhA5xvl8Lf4/MlD1zHmY0pKal0XDGBU0uXrLc=
+X-Received: by 2002:a17:906:52d0:: with SMTP id w16mr25472016ejn.172.1616966655864;
+ Sun, 28 Mar 2021 14:24:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210325152410.1795557-1-narmstrong@baylibre.com> <20210325152410.1795557-3-narmstrong@baylibre.com>
+In-Reply-To: <20210325152410.1795557-3-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 28 Mar 2021 23:24:05 +0200
+Message-ID: <CAFBinCB0_xonzPnZck3Ji6x9x12uLshDYo29nnEjqh8unn_YyA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] tty: serial: meson: retrieve port FIFO size from DT
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     gregkh@linuxfoundation.org, devicetree@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kevin Hilman <khilman@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When enabled local debugging via `#define EFI_DEBUG 1` noticed
-build failure:
-    arch/ia64/kernel/efi.c:564:8: error: 'i' undeclared (first use in this function)
-
-While at it fixed benign string format mismatches visible only
-when EFI_DEBUG is enabled:
-
-    arch/ia64/kernel/efi.c:589:11:
-        warning: format '%lx' expects argument of type 'long unsigned int',
-        but argument 5 has type 'u64' {aka 'long long unsigned int'} [-Wformat=]
-
-Fixes: 14fb42090943559 ("efi: Merge EFI system table revision and vendor checks")
-CC: Ard Biesheuvel <ardb@kernel.org>
-CC: linux-efi@vger.kernel.org
-CC: linux-ia64@vger.kernel.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
-Change since v1: mention explicitly format string change
-
- arch/ia64/kernel/efi.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/arch/ia64/kernel/efi.c b/arch/ia64/kernel/efi.c
-index c5fe21de46a8..31149e41f9be 100644
---- a/arch/ia64/kernel/efi.c
-+++ b/arch/ia64/kernel/efi.c
-@@ -415,10 +415,10 @@ efi_get_pal_addr (void)
- 		mask  = ~((1 << IA64_GRANULE_SHIFT) - 1);
- 
- 		printk(KERN_INFO "CPU %d: mapping PAL code "
--                       "[0x%lx-0x%lx) into [0x%lx-0x%lx)\n",
--                       smp_processor_id(), md->phys_addr,
--                       md->phys_addr + efi_md_size(md),
--                       vaddr & mask, (vaddr & mask) + IA64_GRANULE_SIZE);
-+			"[0x%llx-0x%llx) into [0x%llx-0x%llx)\n",
-+			smp_processor_id(), md->phys_addr,
-+			md->phys_addr + efi_md_size(md),
-+			vaddr & mask, (vaddr & mask) + IA64_GRANULE_SIZE);
- #endif
- 		return __va(md->phys_addr);
- 	}
-@@ -560,6 +560,7 @@ efi_init (void)
- 	{
- 		efi_memory_desc_t *md;
- 		void *p;
-+		unsigned int i;
- 
- 		for (i = 0, p = efi_map_start; p < efi_map_end;
- 		     ++i, p += efi_desc_size)
-@@ -586,7 +587,7 @@ efi_init (void)
- 			}
- 
- 			printk("mem%02d: %s "
--			       "range=[0x%016lx-0x%016lx) (%4lu%s)\n",
-+			       "range=[0x%016llx-0x%016llx) (%4lu%s)\n",
- 			       i, efi_md_typeattr_format(buf, sizeof(buf), md),
- 			       md->phys_addr,
- 			       md->phys_addr + efi_md_size(md), size, unit);
--- 
-2.31.1
-
+On Thu, Mar 25, 2021 at 4:25 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> Now the DT bindings has a property to get the FIFO size for a particular port,
+> retrieve it and use to setup the FIFO interrupts threshold.
+>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> Reviewed-by: Kevin Hilman <khilman@baylibre.com>
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
