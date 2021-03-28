@@ -2,71 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A21A34BD59
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 18:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DED034BD5C
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 18:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhC1Qwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 12:52:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229538AbhC1QwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 12:52:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3455D6195E;
-        Sun, 28 Mar 2021 16:52:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616950327;
-        bh=RETHV+Q8yLnc8fBmV5IYVrkLLmknZ21rMiRl9cQqWo4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ID5MBLtISAolidAOEEkVB5nWFJiDT23fuXKb+cG2XHq2RpxU2bCDO9olglWEqwsLw
-         zxcwqSqTCCQ4QH2Qjx+/uXdIi8EQt9ROQP6NHLQeQmLOJ8rWMu057LuccvsqajWhRI
-         Dww4CCsDu0OVtXXinuQwMZA/INMDs7gUVjub5EnNA98rjV5QIPPQIMD+jQ9pppHOTp
-         gx3e7PK1hWhorhvDtrdT4z12bmIWsXeT7eUlIandkBSoaJM+7XvUQ6hiZ/uI7VX8QT
-         pv6l1Egv9ktJBryDLoxpVjZOnWInsIwviljTnD9A5Mgv8hp17Rp4KuEJ4GK11dfmpq
-         adAKxFWlRjDWA==
-Date:   Sun, 28 Mar 2021 18:51:51 +0200
-From:   Miguel Ojeda <ojeda@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] auxdisplay for v5.12-rc6
-Message-ID: <20210328165118.GA23099@kernel.org>
+        id S231214AbhC1Qxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 12:53:45 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:36752 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231135AbhC1QxT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 12:53:19 -0400
+Received: by mail-pl1-f177.google.com with SMTP id ay2so3259040plb.3;
+        Sun, 28 Mar 2021 09:53:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mvRXE0XLYFueX2SPNFqy9a8VLw6xb54CbbEqC7V6ZA4=;
+        b=mL2fqfb7bakBUGvM/fQZM6ytC8a3DpoevaQLkUTNS4oEOdG0iBnNQ/nQbhw2PB8bWf
+         hWF1CNN8oGg4R3y35SH4aHXIrCAUGwfxVpzmcVcnvSW6FFE5Mh6avLbo4wl2kf+dOIqa
+         48dpNL8Xm/FBqYgm1ed0fWHLuszVH1VBr2RFYd47X08tZrtG/1iNTLWJtcG/K1eK7moX
+         4kwNeVels0qn2lJcJBSdX6L/ZCN62AhkSV7AeTxAsXYR/xwUXnfx/kVpuVTJo1FJg6iO
+         Y+zjC9RMU0CPhcT14l2iZGv6L3/8fXEjWBKuPw9bdnsM8aqVmIvFzDa2QK3b56AqG9N7
+         PYbg==
+X-Gm-Message-State: AOAM530Vav1phE88tU6n3D/rBF26RPu5DeAJ5LaxRUreF3L2UcgxYGuK
+        2VZ2e+FmIcFYd2ecIFS+8VI=
+X-Google-Smtp-Source: ABdhPJykm+1+4pufUSxWSwufMfRHPmgmkjHpV8nY88F5RnutF5q/bMiNGvu+kEZoTslaBi8XdrZy5Q==
+X-Received: by 2002:a17:902:c204:b029:e7:32fd:bc8f with SMTP id 4-20020a170902c204b02900e732fdbc8fmr11901521pll.43.1616950398405;
+        Sun, 28 Mar 2021 09:53:18 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:7123:9470:fec5:1a3a? ([2601:647:4000:d7:7123:9470:fec5:1a3a])
+        by smtp.gmail.com with ESMTPSA id d20sm7767575pfn.166.2021.03.28.09.53.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Mar 2021 09:53:17 -0700 (PDT)
+Subject: Re: [PATCH v3 1/4] scsi: add expecting_media_change flag to error
+ path
+To:     Martin Kepplinger <martin.kepplinger@puri.sm>
+Cc:     jejb@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+        martin.petersen@oracle.com, stern@rowland.harvard.edu
+References: <20210328102531.1114535-1-martin.kepplinger@puri.sm>
+ <20210328102531.1114535-2-martin.kepplinger@puri.sm>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <22533564-9f21-df1a-8cab-7996ccadc788@acm.org>
+Date:   Sun, 28 Mar 2021 09:53:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: elm/2
+In-Reply-To: <20210328102531.1114535-2-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 3/28/21 3:25 AM, Martin Kepplinger wrote:
+> diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+> index 08c06c56331c..c62915d34ba4 100644
+> --- a/drivers/scsi/scsi_error.c
+> +++ b/drivers/scsi/scsi_error.c
+> @@ -585,6 +585,18 @@ int scsi_check_sense(struct scsi_cmnd *scmd)
+>  				return NEEDS_RETRY;
+>  			}
+>  		}
+> +		if (scmd->device->expecting_media_change) {
+> +			if (sshdr.asc == 0x28 && sshdr.ascq == 0x00) {
+> +				/*
+> +				 * clear the expecting_media_change in
+> +				 * scsi_decide_disposition() because we
+> +				 * need to catch possible "fail fast" overrides
+> +				 * that block readahead can cause.
+> +				 */
+> +				return NEEDS_RETRY;
+> +			}
+> +		}
 
-Please pull this fix for auxdisplay.
+Introducing a new state variable carries some risk, namely that a path
+that should set or clear the state variable is overlooked. Is there an
+approach that does not require to introduce a new state variable, e.g.
+to send a REQUEST SENSE command after a resume?
 
-Thanks!
+Thanks,
 
-Cheers,
-Miguel
-
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
-
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/ojeda/linux.git tags/auxdisplay-for-linus-v5.12-rc6
-
-for you to fetch changes up to 701454bce906241ba7f50e2773881560d6404d29:
-
-  auxdisplay: Remove in_interrupt() usage. (2021-03-16 16:32:40 +0100)
-
-----------------------------------------------------------------
-A fix for auxdisplay:
-
-  - Remove in_interrupt() usage (Sebastian Andrzej Siewior)
-
-----------------------------------------------------------------
-Sebastian Andrzej Siewior (1):
-      auxdisplay: Remove in_interrupt() usage.
-
- drivers/auxdisplay/charlcd.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+Bart.
