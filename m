@@ -2,148 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600F334BB76
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C9634BB79
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 08:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhC1Gqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 02:46:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhC1Gq1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 02:46:27 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10655C061762;
-        Sat, 27 Mar 2021 23:46:23 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so4418626pjv.1;
-        Sat, 27 Mar 2021 23:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=10OJ48eehjog/V+dgb4pb/cyuAgqbRzv3VcZL+8CiaM=;
-        b=S+t860HWTnpQEylyH0mOnS2RDEF5zNSW/PrN4cjFO3jF+iblqwcj535a5Z24UPxlEl
-         TIO2oKBNhhDD+0MYAH6CFgePjhIJaAGsfEed+TMjsFdIwaIeJthZTeGGITl2L+22hQf1
-         JYnow6kYancYfLIuQn5JWW9V3j7gvD1Hb+yeJcwNazlLJs0jOQGj4Yq3gbkQ/1k5JpF2
-         8KiIuVw1E8SJrc/Uhfm1EOXF7eLgPuWeMjf34uCSLDHzbr2KB+9LR2tYf3Tqs748tGsR
-         6tKZ1m9i+gGHNKJQ/YmPIolPK7zYqoGNLo4KlduhruPQRE9jVLcT9CHgqnU3F4gUcNVO
-         G8eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=10OJ48eehjog/V+dgb4pb/cyuAgqbRzv3VcZL+8CiaM=;
-        b=Uyjhth6zgUDwdOn5f1KzmpsyWV7xS6KdjpJcByL44Cu2VTfxGRaWiq1kz3w1dS92OQ
-         az0BIRgCaowk7CJsZ2PZ2qNrISxF3/fGXk460U24xUEf5FWA5RwP22d8PQRHfvLfosTX
-         /XzNJc6uvCaR9/gwZkFWqEtfko+xvaPB4N+c5nKnh7JxLNR8/RD356fzSAz3A/2iVT81
-         Xuy0PlMvRQjFjWrnEqd+XaxR0SxMoPXTIY+nKe/d5iIYtr1Tl8S30wARzR6CsF4VjgAJ
-         ZmkoPOqyXbl/qmAtzz+7QvntvNCz8wNqBNyThMgzVsvLIXV+9hJGcHoaGA/CuM2PgaZN
-         XnHw==
-X-Gm-Message-State: AOAM531nw2cCBRGo2s1mNKgqkKRZ5gygD69qHwX70bmv32oU2Rc69OmS
-        6WJpZKd9LwSF4jGkRMGtBO+sAKrRUMjG6A==
-X-Google-Smtp-Source: ABdhPJzJm7c6XhCdJT2mO2+FtlsP7dJO9X0TvYIoERktwpCz30OOtYmEbuwQyxX90VHVhYVuEtdXKA==
-X-Received: by 2002:a17:90b:4c0a:: with SMTP id na10mr22135875pjb.227.1616913976127;
-        Sat, 27 Mar 2021 23:46:16 -0700 (PDT)
-Received: from localhost ([112.79.247.28])
-        by smtp.gmail.com with ESMTPSA id y194sm13614598pfb.21.2021.03.27.23.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 23:46:15 -0700 (PDT)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Vlad Buslov <vladbu@mellanox.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] net: sched: extend lifetime of new action in replace mode
-Date:   Sun, 28 Mar 2021 12:15:55 +0530
-Message-Id: <20210328064555.93365-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S229499AbhC1GvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 02:51:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229485AbhC1Guu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 02:50:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 993A66197E;
+        Sun, 28 Mar 2021 06:50:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616914250;
+        bh=Qfc+jkQiwmRLdku+MjqiGwfs/bzz2AM23GbuUyLm58E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bvo//q4deEJljFDZWWf5Pfddhnhs+qcja05VScZGkygUebRSx4er7lhovAH/ARdXY
+         0gaJynuMDIlEqrpjiwB0bSXjPo2JSxgb1kVTKqEUNironRQxYYpKF7a0RSQ3kNsWKz
+         WfKpBQm8qvmUbtHxqyAkD55lDh37EIjuwahVt9h4=
+Date:   Sun, 28 Mar 2021 08:50:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     rafael@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, lukasz.luba@arm.com
+Subject: Re: [PATCH v4 2/5] powercap/drivers/dtpm: Create a registering system
+Message-ID: <YGAnRx8SiZHFPpY6@kroah.com>
+References: <20210312130411.29833-1-daniel.lezcano@linaro.org>
+ <20210312130411.29833-2-daniel.lezcano@linaro.org>
+ <YF8qIw4UBLnj9TCA@kroah.com>
+ <433ec4ac-a7a9-ecf9-f1c1-f658d279a2df@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <433ec4ac-a7a9-ecf9-f1c1-f658d279a2df@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When creating an action in replace mode, in tcf_action_add, the refcount
-of existing actions is rightly raised during tcf_idr_check_alloc call,
-but for new actions a dummy placeholder entry is created. This is then
-replaced with the actual action during tcf_idr_insert_many, but between
-this and the tcf_action_put_many call made in replace mode, we don't
-hold a reference to the newly created action while it has been
-published. This means that it can disappear under our feet, and that
-newly created actions are destroyed right after their creation as their
-refcount drops to 0 in replace mode.
+On Sat, Mar 27, 2021 at 08:41:24PM +0100, Daniel Lezcano wrote:
+> On 27/03/2021 13:50, Greg KH wrote:
+> > On Fri, Mar 12, 2021 at 02:04:08PM +0100, Daniel Lezcano wrote:
+> >> A SoC can be differently structured depending on the platform and the
+> >> kernel can not be aware of all the combinations, as well as the
+> >> specific tweaks for a particular board.
+> >>
+> >> The creation of the hierarchy must be delegated to userspace.
+> >>
+> >> These changes provide a registering mechanism where the different
+> >> subsystems will initialize their dtpm backends and register with a
+> >> name the dtpm node in a list.
+> >>
+> >> The next changes will provide an userspace interface to create
+> >> hierarchically the different nodes. Those will be created by name and
+> >> found via the list filled by the different subsystem.
+> >>
+> >> If a specified name is not found in the list, it is assumed to be a
+> >> virtual node which will have children and the default is to allocate
+> >> such node.
+> >>
+> >> When the node register in the list, the function will be dtpm_register
+> >> where the previous semantic was to create the node. Thus, the
+> >> functions are renamed to reflect their purpose.
+> >>
+> >> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> >> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> >> ---
+> 
+> [ ... ]
+> 
+> >> +static void dtpm_release(struct kref *kref)
+> >> +{
+> >> +	struct dtpm *dtpm = container_of(kref, struct dtpm, kref);
+> >> +
+> >> +	kfree(dtpm);
+> >> +}
+> >> +
+> >> +/**
+> >> + * dtpm_put - Release a reference on a dtpm device
+> >> + * @dtpm: a pointer to a dtpm structure
+> >> + *
+> >> + * Release the reference on the specified dtpm device. The last
+> >> + * reference leads to a memory release.
+> >> + */
+> >> +void dtpm_put(struct dtpm *dtpm)
+> >> +{
+> >> +	kref_put(&dtpm->kref, dtpm_release);
+> > 
+> > You forgot to also grab the dtpm_lock before calling this, right?  What
+> > is preventing a get and put from being called at the same time?
+> > 
+> > You protect things at get time, but not put from what I can see :(
+> 
+> Thanks for spotting this, I will send a fix for that.
+> 
+> [ ... ]
+> 
+> >> +	list_add(&node->node, &dtpm_list);
+> >> +
+> >> +	pr_info("Registered %s\n", name);
+> > 
+> > When kernel code works properly, it is quiet.  This is debugging code a
+> > the most, never something that everyone should be seeing all the time,
+> > please remove.
+> 
+> Initially, a comment asked for debug traces in the code. There are more
+> traces in the code at the pr_debug level.
+> 
+> Is your suggestion to remove the pr_info as well as other debug traces
+> or convert those pr_info to pr_debug ?
 
-This leads to commands like tc action replace reporting success in
-creation of the action and just removing them right after adding the
-action, leading to confusion in userspace.
+pr_info() should not be used for "debug traces".
 
-Fix this by raising the refcount of a newly created action and then
-pairing that increment with a tcf_action_put call to release the
-reference held during insertion. This is only needed in replace mode.
-We use a relaxed store as insert will ensure its visibility.
+Use real tracepoints for debug traces if you still need them, hopefully
+the code is all now debugged properly, right?
 
-Fixes: cae422f379f3 ("net: sched: use reference counting action init")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- include/net/act_api.h | 1 +
- net/sched/act_api.c   | 5 ++++-
- net/sched/cls_api.c   | 3 +++
- 3 files changed, 8 insertions(+), 1 deletion(-)
+Again, when code is working, it is quiet.  Do not leave debugging stuff
+like this in a working system.
 
-diff --git a/include/net/act_api.h b/include/net/act_api.h
-index 2bf3092ae7ec..8b375b46cc04 100644
---- a/include/net/act_api.h
-+++ b/include/net/act_api.h
-@@ -181,6 +181,7 @@ int tcf_register_action(struct tc_action_ops *a, struct pernet_operations *ops);
- int tcf_unregister_action(struct tc_action_ops *a,
- 			  struct pernet_operations *ops);
- int tcf_action_destroy(struct tc_action *actions[], int bind);
-+void tcf_action_put_many(struct tc_action *actions[]);
- int tcf_action_exec(struct sk_buff *skb, struct tc_action **actions,
- 		    int nr_actions, struct tcf_result *res);
- int tcf_action_init(struct net *net, struct tcf_proto *tp, struct nlattr *nla,
-diff --git a/net/sched/act_api.c b/net/sched/act_api.c
-index b919826939e0..7e26c18cdb15 100644
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -778,7 +778,7 @@ static int tcf_action_put(struct tc_action *p)
- }
- 
- /* Put all actions in this array, skip those NULL's. */
--static void tcf_action_put_many(struct tc_action *actions[])
-+void tcf_action_put_many(struct tc_action *actions[])
- {
- 	int i;
- 
-@@ -1042,6 +1042,9 @@ struct tc_action *tcf_action_init_1(struct net *net, struct tcf_proto *tp,
- 	if (err != ACT_P_CREATED)
- 		module_put(a_o->owner);
- 
-+	if (err == ACT_P_CREATED && ovr)
-+		refcount_set(&a->tcfa_refcnt, 2);
-+
- 	return a;
- 
- err_out:
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index d3db70865d66..666077c23147 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -3074,6 +3074,9 @@ int tcf_exts_validate(struct net *net, struct tcf_proto *tp, struct nlattr **tb,
- 			exts->nr_actions = err;
- 		}
- 	}
-+
-+	if (ovr)
-+		tcf_action_put_many(exts->actions);
- #else
- 	if ((exts->action && tb[exts->action]) ||
- 	    (exts->police && tb[exts->police])) {
--- 
-2.30.2
+> 
+> [ ... ]
+> 
+> > And any reason why you are not using "real" struct devices in this
+> > subsystem?  You seem to be rolling your own infrastructure for no good
+> > reason.  I imagine you want sysfs support next, right?
+> 
+> Actually, the framework is on top of powercap, so it has de facto the
+> sysfs support. On the other side, the dtpm backends are tied with the
+> device they manage.
 
+So why are they not a "real" device in the driver model?  It looks like
+you almost are wanting all of that functionality and are having to
+implement it "by hand" instead.
+
+thanks,
+
+greg k-h
