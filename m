@@ -2,208 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3BD34BD44
-	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 18:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13C534BD45
+	for <lists+linux-kernel@lfdr.de>; Sun, 28 Mar 2021 18:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbhC1QfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 12:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S230196AbhC1Qlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 12:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhC1QfE (ORCPT
+        with ESMTP id S229762AbhC1Qlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 12:35:04 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7188C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 09:35:03 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id m12so14803498lfq.10
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 09:35:03 -0700 (PDT)
+        Sun, 28 Mar 2021 12:41:39 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F38C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 09:41:39 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id m12so14816803lfq.10
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 09:41:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h0ehMJS4X44VeO6a7OrN01uA4bYk3Kd4mEn9HL4pEt0=;
-        b=NRJPzUklUiTmytIdxs5EjpqEGva8UvKDcImWfRlCkL/FY/ZoGf91a/g6FEIfYJT3lF
-         bmvRQgG5refi7DGlRfCU11o02aMUQYN7ANh2TJPTp38Uq9fAiPZ9AcZGdZgPvK9kTNjr
-         nmq7NUanItd7/LoJUT7/5JlEirkrGvumj05bNgEFZ/Hyld/gcws53LslnlLeT8Wr6Bsf
-         kATHAipIzcYcNzMMsM7TGMDAvLCT12ML1h0ylgxPknZ/bmoBHecT9WXyQxhQElvEBwaG
-         O/iu1s6GGNdNuEzF2q+ccnCRDNUs7KvXqIvPlmRl2M6npMAFgkS8P0DYu2Y/wivUFqTl
-         eldQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=nts916T0AVsB66dmFrsq9C5st3DjIh5WtkA5kFsjLSM=;
+        b=QN6aWnI1EReh0nDhRHeucnHwULC4UQhIIIFfkMvjVHFDOOjstJFZuHxZI6bWhR0XOK
+         +5ZSBgdi0g+gGKXdNFLUM58wPni2lfnZ6BQcBEBaoZxckPvoIkSd4yA5zCAYbX+2bhoj
+         MvRFXPwqSbHF130vuN953mr2cerzjN9zNXNG6Z9FgVwj1hIrgrQp3O83zhCO+UWWxGkR
+         64n6EVkn3rWSwTqISaZsNUHxoKWAGzPHwzayjm9M1GmeEm2XB+DPAvtii1L2PaMyIIqg
+         WFPSKi7av35EyH3mR3vmEgMZ0/Fj8wpP8q9zOrshBhGV9LQJRODL4XjHW3HzqeHU/a08
+         zIjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h0ehMJS4X44VeO6a7OrN01uA4bYk3Kd4mEn9HL4pEt0=;
-        b=ZRjUtCw/N4dCiptVrYXrDMGzbabro9ZiCKtSsuROvJTRR9OJHOhMbRPxpvjZHb5ELd
-         BbuTo813PpTmHV79BMyrB7MD1zDMqYTkvF24Y5s4Cqo4pzdqGqK+stw7PeriLGtY0RUy
-         2y2EMWpO2S7aHYeq3l1GkMy91n9WyFSoWLLrMk2HFLKZzvnqlNmMlUOyTHPt0d675h5v
-         lkUBsoMPpjY8a3gPOfobAz8KedB85t75Rg/uTaN0MQYz8GvwKzsLIed43LycQ3fan47G
-         dy6/V/7a1wEWSnq7n05cuKYzHtc4MD0kRBe22apJyzU6p/975g4gzaZsKG4epj5i1x5L
-         CU/w==
-X-Gm-Message-State: AOAM531ltRbrGemCvKkVMMnyPt9RsztU7R2mTeHoPhdxTWc4Yp8jeS0x
-        +L0Z6J6tkrI0I7SMUir9Ia0=
-X-Google-Smtp-Source: ABdhPJzH8BalufhVytwo2U2kFlrcdWwlVICUJWzqeLuK1kAVr2HSdyiPttOc4e3K47BzbGCPCGAUSA==
-X-Received: by 2002:ac2:446d:: with SMTP id y13mr13835988lfl.365.1616949302470;
-        Sun, 28 Mar 2021 09:35:02 -0700 (PDT)
-Received: from alpha (10.177.smarthome.spb.ru. [109.71.177.10])
-        by smtp.gmail.com with ESMTPSA id d4sm1525802lfs.45.2021.03.28.09.35.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 28 Mar 2021 09:35:02 -0700 (PDT)
-Received: (nullmailer pid 53216 invoked by uid 1000);
-        Sun, 28 Mar 2021 16:34:31 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH 2/2] staging:r8188eu: remove dummy handlers from OnAction()
-Date:   Sun, 28 Mar 2021 19:33:25 +0300
-Message-Id: <20210328163323.53163-2-insafonov@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210328163323.53163-1-insafonov@gmail.com>
-References: <20210328163323.53163-1-insafonov@gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=nts916T0AVsB66dmFrsq9C5st3DjIh5WtkA5kFsjLSM=;
+        b=TVpYfTvWRawymSwKxzEMXy3KTFoMLGPGRyKKdYq/7prpLMIeEo1l04xxtoRI0lcfiP
+         Ctj+DwB2u64SRlAczTRSBpibzAYXp9e4w2Q4EYyc8ecfngQuj3fkhWyf+9zOWhJN++0j
+         JI2RD6h0I+BJ2FEE+2L6eo4pIW4DRlzsJr+LRPI9vcqRcUeOuY0BHPepNSXqCKPsUiZh
+         McqikLaAzbY24M21mkHaODaQbRY/YLo8TsZDPZ9bu+olHPrhL9OGpPwMSJ7SvPjqbP9k
+         b6SaDmBVsrPCJeN74FBAAugwSPUkPFVl6NMkV3pFNT1XvAuOVQ05PRDs6emZyP5WlzMS
+         SnBw==
+X-Gm-Message-State: AOAM533rQHlmQlHiiFAbZ/Po0BwjC37NzwNrWWSteP/nEvqxnsqXsd9H
+        J/RLbxhX1KFKMuBHwmtBNZYEf66OBau1tro2Xrz8MxvvBSY=
+X-Google-Smtp-Source: ABdhPJydPxV24T6fV5Xa0wmU2beUBhVnUlqL2wXXxzKE1M0Wjeza8CkQwW7kkYjpoSTihR8kBAM18hoPSkYh2g429zc=
+X-Received: by 2002:a19:e08:: with SMTP id 8mr13347370lfo.199.1616949265043;
+ Sun, 28 Mar 2021 09:34:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a2e:164c:0:0:0:0:0 with HTTP; Sun, 28 Mar 2021 09:34:24
+ -0700 (PDT)
+Reply-To: aishibrahim20212@gmail.com
+From:   miss Aish Ibrahim <barakijabbar52@gmail.com>
+Date:   Sun, 28 Mar 2021 18:34:24 +0200
+Message-ID: <CADKeS5YwUKL78bEAp7VNqjvwa+4xcesx9azt5vBQ4t_FtLX17A@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-on_action_spct() do nothing, because rtw_get_stainfo() has no side
-effects. Other action handlers are trivial.
+Hello Dear,
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
----
- drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 95 -------------------
- 1 file changed, 95 deletions(-)
+Please bear with me, I am writing this mail to you with tears and
+sorrow from my heart. I am Miss Aisha =C2=A0Ibrahim =C2=A0Coulibaly, I am 2=
+4
+years old female =C2=A0and also a medical student from the Republic of
+Ivory Coast, West Africa, I =C2=A0am the Daughter of Late Chief Sgt.Warlor
+Ibrahim Coulibaly (a.k.a General =C2=A0IB). My late beloved father was a
+well known Ivory Coast militia leader. He =C2=A0died on Thursday 28 April
+2011 following a fight with the Republican Forces of Ivory Coast
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-index 4d741737d671..fca02f17ba98 100644
---- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-@@ -3517,56 +3517,6 @@ static unsigned int OnAtim(struct adapter *padapter,
- 	return _SUCCESS;
- }
- 
--static unsigned int on_action_spct(struct adapter *padapter,
--				   struct recv_frame *precv_frame)
--{
--	struct sta_info *psta = NULL;
--	struct sta_priv *pstapriv = &padapter->stapriv;
--	u8 *pframe = precv_frame->pkt->data;
--	u8 *frame_body = pframe + sizeof(struct ieee80211_hdr_3addr);
--	u8 category;
--	u8 action;
--
--	DBG_88E(FUNC_NDEV_FMT"\n", FUNC_NDEV_ARG(padapter->pnetdev));
--
--	psta = rtw_get_stainfo(pstapriv, GetAddr2Ptr(pframe));
--
--	if (!psta)
--		goto exit;
--
--	category = frame_body[0];
--	if (category != RTW_WLAN_CATEGORY_SPECTRUM_MGMT)
--		goto exit;
--
--	action = frame_body[1];
--	switch (action) {
--	case WLAN_ACTION_SPCT_MSR_REQ:
--	case WLAN_ACTION_SPCT_MSR_RPRT:
--	case WLAN_ACTION_SPCT_TPC_REQ:
--	case WLAN_ACTION_SPCT_TPC_RPRT:
--		break;
--	case WLAN_ACTION_SPCT_CHL_SWITCH:
--		break;
--	default:
--		break;
--	}
--
--exit:
--	return _FAIL;
--}
--
--static unsigned int OnAction_qos(struct adapter *padapter,
--				 struct recv_frame *precv_frame)
--{
--	return _SUCCESS;
--}
--
--static unsigned int OnAction_dls(struct adapter *padapter,
--				 struct recv_frame *precv_frame)
--{
--	return _SUCCESS;
--}
--
- static unsigned int OnAction_back(struct adapter *padapter,
- 				  struct recv_frame *precv_frame)
- {
-@@ -3756,24 +3706,6 @@ static unsigned int on_action_public(struct adapter *padapter,
- 	return ret;
- }
- 
--static unsigned int OnAction_ht(struct adapter *padapter,
--				struct recv_frame *precv_frame)
--{
--	return _SUCCESS;
--}
--
--static unsigned int OnAction_wmm(struct adapter *padapter,
--				 struct recv_frame *precv_frame)
--{
--	return _SUCCESS;
--}
--
--static unsigned int OnAction_p2p(struct adapter *padapter,
--				 struct recv_frame *precv_frame)
--{
--	return _SUCCESS;
--}
--
- static unsigned int DoReserved(struct adapter *padapter,
- 			       struct recv_frame *precv_frame)
- {
-@@ -3792,39 +3724,12 @@ static unsigned int OnAction(struct adapter *padapter,
- 	category = frame_body[0];
- 
- 	switch (category) {
--	case RTW_WLAN_CATEGORY_SPECTRUM_MGMT:
--		on_action_spct(padapter, precv_frame);
--		break;
--	case RTW_WLAN_CATEGORY_QOS:
--		OnAction_qos(padapter, precv_frame);
--		break;
--	case RTW_WLAN_CATEGORY_DLS:
--		OnAction_dls(padapter, precv_frame);
--		break;
- 	case RTW_WLAN_CATEGORY_BACK:
- 		OnAction_back(padapter, precv_frame);
- 		break;
- 	case RTW_WLAN_CATEGORY_PUBLIC:
- 		on_action_public(padapter, precv_frame);
- 		break;
--	case RTW_WLAN_CATEGORY_RADIO_MEASUREMENT:
--		DoReserved(padapter, precv_frame);
--		break;
--	case RTW_WLAN_CATEGORY_FT:
--		DoReserved(padapter, precv_frame);
--		break;
--	case RTW_WLAN_CATEGORY_HT:
--		OnAction_ht(padapter, precv_frame);
--		break;
--	case RTW_WLAN_CATEGORY_SA_QUERY:
--		DoReserved(padapter, precv_frame);
--		break;
--	case RTW_WLAN_CATEGORY_WMM:
--		OnAction_wmm(padapter, precv_frame);
--		break;
--	case RTW_WLAN_CATEGORY_P2P:
--		OnAction_p2p(padapter, precv_frame);
--		break;
- 	default:
- 		break;
- 	}
--- 
-2.26.2
+(FRCI).https://en.wikipedia.org/wiki/Ibrahim_Coulibaly
 
+I am constrained to contact you because of the maltreatment which I am
+receiving from my step mother. After several years of the death of my
+beloved father passed, One faithful morning I was cleaning my father=E2=80=
+=99s
+bed =C2=A0room when I discovered a brief case containing some valuable
+documents that =C2=A0states that I am the next of kin to an account deposit
+in the neighboring =C2=A0country Burkina Faso with the total sum of
+US$5.8Million. Ignorantly out of excitement, I rushed and inform my
+step mother and that was when my problem started. =C2=A0She conspired with
+my uncles to kill me by all means but failed, mine wicked step mother
+tried to poison me twice but I survived it all.
+
+After which I escaped to Burkina Faso by road because she seized all
+my traveling documents.
+
+Now I am passing through very difficult situation in the refugee camp
+here =C2=A0in Burkina Faso where I am hiding with total fear and agony
+because my =C2=A0wicked step mother can go to any length to achieve her
+motives. I have =C2=A0contacted the Bank to clear the deposit but the
+Branch Director told me =C2=A0that being a refugee in the country, my
+status according to the local law =C2=A0does not authorize me to carry out
+the operation, and insist that I will =C2=A0have to appoint or present
+someone to stand for me for the claim. However I =C2=A0am seeking for a
+long term relationship and investment assistance from you =C2=A0to stand as
+my trustee and partner so that the bank can transfer the fund =C2=A0to your
+account in your country,=C2=A0And for you to also help me to come over =C2=
+=A0to
+your country for investment and to start a new life again as well as
+complete my studies in the school of medicine which have been the wish
+of =C2=A0my beloved late father. As soon as I receive a positive respond
+from you, I =C2=A0will not hesitate to send across to you all the
+information concerning the =C2=A0deposit. And I promise to give you 30% of
+the total sum for your help and assistant.
+
+Please note that if you must get in touch with me then you must reply
+me back through my private box (aishibrahim021@gmail.com) and please
+if you are not interested do not waste your time to reply kindly
+delete my message from your box ok.
+
+Waiting to hear from you =C2=A0soonest.
+
+Miss Aisha Ibrahim
