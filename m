@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5132934C098
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 02:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D15F34C09C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 02:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhC2Ait (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 20:38:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
+        id S231648AbhC2Ak0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 20:40:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhC2AiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 20:38:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0915161922;
-        Mon, 29 Mar 2021 00:38:18 +0000 (UTC)
+        id S231258AbhC2AkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 20:40:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DE84A61954;
+        Mon, 29 Mar 2021 00:40:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616978300;
-        bh=Xn0UndLnRHTcnV9w5V4XY+G1MloCRyKASA1FTEQj8G4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A2/kj0xb3cFoaVuximJ2D22pa1TqyWlIFAqQQtA7bFQhA4UowrOlJmSAn5fLRw5Bp
-         WKvSutZAIw1kVdmSo7hirDAeLth5z0VCr9l91VsMMxy1IMUowLddMm5IUNSHPPtOcY
-         olo9/AcjjLnUoeYeCOHrqjhauqXFQ1IZA5bc/rrOJpLEitGmdnFnZEROqX6AvBvmIp
-         LglxPQAQth9hljlf4FjR+3RS1faE215HYSbkyjgNNmxfFZGVgu+6lNas2ydZcuEj1L
-         vFP2ip5UmsPzNkrXW2DaptApYmvFJ4n4QrwoOhsfwdvFXouWaKCLZqGin2fKSGolxy
-         zkhJBHVnrESzQ==
-Date:   Mon, 29 Mar 2021 08:38:15 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Li Yang <leoyang.li@nxp.com>
-Cc:     Michael Walle <michael@walle.cc>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sahil Malhotra <sahil.malhotra@nxp.com>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        "kernelci.org bot" <bot@kernelci.org>
-Subject: Re: [PATCH] arm64: dts: ls1028a: fix optee node
-Message-ID: <20210329003814.GC22955@dragon>
-References: <20210318083438.26536-1-michael@walle.cc>
- <CADRPPNR=xy_oBZFS+hmO1k+uu2ckFyrK9EUP77N3buU5XpuHrw@mail.gmail.com>
+        s=k20201202; t=1616978409;
+        bh=cuHaFcw+ilIzpxFiXsGyq1JNFiZocYzN+Pz6k8nCJUc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kTYiOHu9tawSNDBm5L29ItQTfUCX5itUG4Vn78JDhcQJ7hli3npc14Whno3gkCswi
+         nq7t1OI5aqKk7O6hBkbKauP26PTkFSMNXVLu6FC5RS/Kv7wQblFxxCwkKmP37oVjbE
+         uc0Rrl2EWL1PWZMnNNwoKl0sVj6DZuOGRdf2tD1Hh832s/ghQp2MAnaPjmZ76hWAWd
+         LJkgL2u/MjKoLIlVar4/1c1p8WBSfctPYrjsW1mKz4wtYQkIV1P5aW4dRYArVVCIUn
+         GkRd6zlK9k76Xd4sf8w2+gFBtPAQnCCJdzkZ8LIVSwSGQk1KBDUBjMVhLCnsdyWQkL
+         nqQ0RqZ20SyIQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D648960A3B;
+        Mon, 29 Mar 2021 00:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADRPPNR=xy_oBZFS+hmO1k+uu2ckFyrK9EUP77N3buU5XpuHrw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ncsi: internal.h: Fix a spello
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161697840987.22621.9903626943849247862.git-patchwork-notify@kernel.org>
+Date:   Mon, 29 Mar 2021 00:40:09 +0000
+References: <20210326231608.24407-12-unixbhaskar@gmail.com>
+In-Reply-To: <20210326231608.24407-12-unixbhaskar@gmail.com>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 06:12:06PM -0500, Li Yang wrote:
-> On Thu, Mar 18, 2021 at 3:36 AM Michael Walle <michael@walle.cc> wrote:
-> >
-> > Don't enable the optee node in the SoC include. It is an optional
-> > component and actually, if enabled, breaks boards which doesn't have it.
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Sat, 27 Mar 2021 04:42:47 +0530 you wrote:
+> s/Firware/Firmware/
 > 
-> Hi Shawn,
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  net/ncsi/internal.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Shall we make this a general rule?  I see quite a few SoC dtsi files
-> are having the optee node enabled by default.
+> [...]
+
+Here is the summary with links:
+  - ncsi: internal.h: Fix a spello
+    https://git.kernel.org/netdev/net-next/c/195a8ec4033b
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Yeah, we should probably make it a general rule considering the issue
-reported here.  I thought that optee driver is smart enough to stop
-probing if there is no optee os/firmware support found on given platform.
-
-Shawn
