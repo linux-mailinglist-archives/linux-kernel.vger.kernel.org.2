@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C2234CC6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8909934C78C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbhC2JCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:02:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
+        id S232902AbhC2IQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:16:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234942AbhC2Ihi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3147461879;
-        Mon, 29 Mar 2021 08:37:36 +0000 (UTC)
+        id S232373AbhC2IJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:09:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22BB561481;
+        Mon, 29 Mar 2021 08:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007057;
-        bh=9IfONxfl7zOM+uNS+hW2gVz03E0r6Wo4qXb85vEd4j4=;
+        s=korg; t=1617005397;
+        bh=0xRdbrB0xuQ3Ts6p9oWJ0s1cE/ZeXtxrAoJGvZehE34=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lMu24Knxl5QyMTXsVvAMAJkoY/lsI8yXZUyOVzooAA76Le6/t8ciM9brnIliNL05y
-         zGWhvGg4LyJ0fCjMQkh7SP6e6KYXxARf5ErpTqoybUtwaQ808vHkM6nuG+kwvl604n
-         dtS2RK2h0ZTnKJ7B5auMQa5JDttDDN51BBRWNevM=
+        b=e3ZAZskEneR0+iKAjl/fwAbplOwODyg1l7S6qV0rwbpToZyxcPQtcGFDcrV+2bhwq
+         bDV70hrFPbc7GPPPDcsdM1972TwQz2jYo63O4iq6e4Y/C2alXatIgSvrqjBcyCnO8N
+         zDyvlHd2bCxur8n+8yzzVx3qyA+m+jvis91Tnr/0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 206/254] net: bridge: dont notify switchdev for local FDB addresses
+        stable@vger.kernel.org, Isaku Yamahata <isaku.yamahata@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: [PATCH 4.19 66/72] x86/mem_encrypt: Correct physical address calculation in __set_clr_pte_enc()
 Date:   Mon, 29 Mar 2021 09:58:42 +0200
-Message-Id: <20210329075639.863747060@linuxfoundation.org>
+Message-Id: <20210329075612.451242002@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,75 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-[ Upstream commit 6ab4c3117aec4e08007d9e971fa4133e1de1082d ]
+commit 8249d17d3194eac064a8ca5bc5ca0abc86feecde upstream.
 
-As explained in this discussion:
-https://lore.kernel.org/netdev/20210117193009.io3nungdwuzmo5f7@skbuf/
+The pfn variable contains the page frame number as returned by the
+pXX_pfn() functions, shifted to the right by PAGE_SHIFT to remove the
+page bits. After page protection computations are done to it, it gets
+shifted back to the physical address using page_level_shift().
 
-the switchdev notifiers for FDB entries managed to have a zero-day bug.
-The bridge would not say that this entry is local:
+That is wrong, of course, because that function determines the shift
+length based on the level of the page in the page table but in all the
+cases, it was shifted by PAGE_SHIFT before.
 
-ip link add br0 type bridge
-ip link set swp0 master br0
-bridge fdb add dev swp0 00:01:02:03:04:05 master local
+Therefore, shift it back using PAGE_SHIFT to get the correct physical
+address.
 
-and the switchdev driver would be more than happy to offload it as a
-normal static FDB entry. This is despite the fact that 'local' and
-non-'local' entries have completely opposite directions: a local entry
-is locally terminated and not forwarded, whereas a static entry is
-forwarded and not locally terminated. So, for example, DSA would install
-this entry on swp0 instead of installing it on the CPU port as it should.
+ [ bp: Rewrite commit message. ]
 
-There is an even sadder part, which is that the 'local' flag is implicit
-if 'static' is not specified, meaning that this command produces the
-same result of adding a 'local' entry:
-
-bridge fdb add dev swp0 00:01:02:03:04:05 master
-
-I've updated the man pages for 'bridge', and after reading it now, it
-should be pretty clear to any user that the commands above were broken
-and should have never resulted in the 00:01:02:03:04:05 address being
-forwarded (this behavior is coherent with non-switchdev interfaces):
-https://patchwork.kernel.org/project/netdevbpf/cover/20210211104502.2081443-1-olteanv@gmail.com/
-If you're a user reading this and this is what you want, just use:
-
-bridge fdb add dev swp0 00:01:02:03:04:05 master static
-
-Because switchdev should have given drivers the means from day one to
-classify FDB entries as local/non-local, but didn't, it means that all
-drivers are currently broken. So we can just as well omit the switchdev
-notifications for local FDB entries, which is exactly what this patch
-does to close the bug in stable trees. For further development work
-where drivers might want to trap the local FDB entries to the host, we
-can add a 'bool is_local' to br_switchdev_fdb_call_notifiers(), and
-selectively make drivers act upon that bit, while all the others ignore
-those entries if the 'is_local' bit is set.
-
-Fixes: 6b26b51b1d13 ("net: bridge: Add support for notifying devices about FDB add/del")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: dfaaec9033b8 ("x86: Add support for changing memory encryption attribute in early boot")
+Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/81abbae1657053eccc535c16151f63cd049dcb97.1616098294.git.isaku.yamahata@intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/bridge/br_switchdev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/mm/mem_encrypt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
-index 015209bf44aa..3c42095fa75f 100644
---- a/net/bridge/br_switchdev.c
-+++ b/net/bridge/br_switchdev.c
-@@ -123,6 +123,8 @@ br_switchdev_fdb_notify(const struct net_bridge_fdb_entry *fdb, int type)
- {
- 	if (!fdb->dst)
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -228,7 +228,7 @@ static void __init __set_clr_pte_enc(pte
+ 	if (pgprot_val(old_prot) == pgprot_val(new_prot))
  		return;
-+	if (test_bit(BR_FDB_LOCAL, &fdb->flags))
-+		return;
  
- 	switch (type) {
- 	case RTM_DELNEIGH:
--- 
-2.30.1
-
+-	pa = pfn << page_level_shift(level);
++	pa = pfn << PAGE_SHIFT;
+ 	size = page_level_size(level);
+ 
+ 	/*
 
 
