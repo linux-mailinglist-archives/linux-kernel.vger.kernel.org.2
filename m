@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F043934C872
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4467534C5C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbhC2IWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
+        id S231864AbhC2ICz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:02:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232829AbhC2IO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF42F61959;
-        Mon, 29 Mar 2021 08:14:21 +0000 (UTC)
+        id S231794AbhC2IBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:01:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E8E861974;
+        Mon, 29 Mar 2021 08:01:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005662;
-        bh=IbK9jyQI8KiJR0IZteICTrmpT+15gQ4hoLVWkZBduP4=;
+        s=korg; t=1617004911;
+        bh=796XK1fpdEtnF+BeXuqvdxkJ3JhwrCxFlzAY/6NgDkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aO+ymY9dZTQdgI420Vzp6+AUDuqB2amoHlcBTQY+SJ5fce9QufA9PkLNzczLtPLoz
-         Y0+U9e/R3eaqb5OPd+LVDOETsstUCnUx925+xet5vMtMUuPkrwdXzAPZkWAQyuGTI6
-         cYW+BUW+QTfiYMmdd5CDKQ0ibl6w7NssQen+qu+0=
+        b=kreGkA9UM1siSujQlNwUzmzk+htm+dUVoEh+hQy46MCLOsrLrpz08hNdAY+mEulAE
+         j3vp2wdwic49R9IIC8D/00o52zrrUxsPhUnx4O1p8ZgCT0Ywo28Hy5yyk57li9BZib
+         nGIexNlJJwe5WHMnwX5pL+LRWZ7J+gIB8eQ3jg3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 038/111] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
-Date:   Mon, 29 Mar 2021 09:57:46 +0200
-Message-Id: <20210329075616.441743332@linuxfoundation.org>
+Subject: [PATCH 4.9 12/53] atm: idt77252: fix null-ptr-dereference
+Date:   Mon, 29 Mar 2021 09:57:47 +0200
+Message-Id: <20210329075607.953308260@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 61bf318eac2c13356f7bd1c6a05421ef504ccc8a ]
+[ Upstream commit 4416e98594dc04590ebc498fc4e530009535c511 ]
 
-In https://bugs.gentoo.org/769614 Dmitry noticed that
-`ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
+this one is similar to the phy_data allocation fix in uPD98402, the
+driver allocate the idt77105_priv and store to dev_data but later
+dereference using dev->dev_data, which will cause null-ptr-dereference.
 
-The bug is in mismatch between get/set errors:
+fix this issue by changing dev_data to phy_data so that PRIV(dev) can
+work correctly.
 
-static inline long syscall_get_error(struct task_struct *task,
-                                     struct pt_regs *regs)
-{
-        return regs->r10 == -1 ? regs->r8:0;
-}
-
-static inline long syscall_get_return_value(struct task_struct *task,
-                                            struct pt_regs *regs)
-{
-        return regs->r8;
-}
-
-static inline void syscall_set_return_value(struct task_struct *task,
-                                            struct pt_regs *regs,
-                                            int error, long val)
-{
-        if (error) {
-                /* error < 0, but ia64 uses > 0 return value */
-                regs->r8 = -error;
-                regs->r10 = -1;
-        } else {
-                regs->r8 = val;
-                regs->r10 = 0;
-        }
-}
-
-Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
-
-Link: https://lkml.kernel.org/r/20210221002554.333076-2-slyfox@gentoo.org
-Link: https://bugs.gentoo.org/769614
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/include/asm/syscall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/atm/idt77105.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 6c6f16e409a8..0d23c0049301 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -32,7 +32,7 @@ static inline void syscall_rollback(struct task_struct *task,
- static inline long syscall_get_error(struct task_struct *task,
- 				     struct pt_regs *regs)
+diff --git a/drivers/atm/idt77105.c b/drivers/atm/idt77105.c
+index feb023d7eebd..40644670cff2 100644
+--- a/drivers/atm/idt77105.c
++++ b/drivers/atm/idt77105.c
+@@ -261,7 +261,7 @@ static int idt77105_start(struct atm_dev *dev)
  {
--	return regs->r10 == -1 ? regs->r8:0;
-+	return regs->r10 == -1 ? -regs->r8:0;
- }
+ 	unsigned long flags;
  
- static inline long syscall_get_return_value(struct task_struct *task,
+-	if (!(dev->dev_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
++	if (!(dev->phy_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
+ 		return -ENOMEM;
+ 	PRIV(dev)->dev = dev;
+ 	spin_lock_irqsave(&idt77105_priv_lock, flags);
+@@ -338,7 +338,7 @@ static int idt77105_stop(struct atm_dev *dev)
+                 else
+                     idt77105_all = walk->next;
+ 	        dev->phy = NULL;
+-                dev->dev_data = NULL;
++                dev->phy_data = NULL;
+                 kfree(walk);
+                 break;
+             }
 -- 
 2.30.1
 
