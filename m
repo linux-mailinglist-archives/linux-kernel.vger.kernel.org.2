@@ -2,102 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3280834CDBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D1034CDBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232689AbhC2KLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44864 "EHLO
+        id S231529AbhC2KLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232713AbhC2KLR (ORCPT
+        with ESMTP id S232747AbhC2KLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:11:17 -0400
-Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75D07C061574;
-        Mon, 29 Mar 2021 03:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID; bh=Act1HoZZl+zIcAFDQN1jwVGwdefUdm0EiFSF
-        kwRMeuc=; b=hm5QoBLF7/MGTLOBZVTI8+LRyHMyle0xKKw9AneNq+p8q2WeceEC
-        ueUfECuJHYGaK+aGpzp1d/yhpYDYfZy6Feuo3vVhC0PbPPjqSFR3n37nS9AM/UBW
-        MHalqkdo0PsgAxT5fGSfHFCB6m1Kh2dC2naRcGPdrxccJ0Ne8PQlrQY=
-Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Mon, 29 Mar
- 2021 18:11:05 +0800 (GMT+08:00)
-X-Originating-IP: [202.38.69.14]
-Date:   Mon, 29 Mar 2021 18:11:05 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   lyl2019@mail.ustc.edu.cn
-To:     "Heiner Kallweit" <hkallweit1@gmail.com>
-Cc:     nic_swsd@realtek.com, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] ethernet/realtek/r8169: Fix a double free in
- rtl8169_start_xmit
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
- 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
-In-Reply-To: <8d40cd7a-c47e-199d-dccb-e242ec93e143@gmail.com>
-References: <20210329090248.4209-1-lyl2019@mail.ustc.edu.cn>
- <8d40cd7a-c47e-199d-dccb-e242ec93e143@gmail.com>
-X-SendMailWithSms: false
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Mon, 29 Mar 2021 06:11:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1843EC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:11:33 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lQorr-00056a-FI; Mon, 29 Mar 2021 12:11:31 +0200
+Subject: Re: [PATCH v1 3/3] KEYS: trusted: Introduce support for NXP
+ CAAM-based trusted keys
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        David Gstir <david@sigma-star.at>
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Howells <dhowells@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Udit Agarwal <udit.agarwal@nxp.com>,
+        Jan Luebbe <j.luebbe@pengutronix.de>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+References: <cover.56fff82362af6228372ea82e6bd7e586e23f0966.1615914058.git-series.a.fatoum@pengutronix.de>
+ <319e558e1bd19b80ad6447c167a2c3942bdafea2.1615914058.git-series.a.fatoum@pengutronix.de>
+ <01e6e13d-2968-0aa5-c4c8-7458b7bde462@nxp.com>
+ <45a9e159-2dcb-85bf-02bd-2993d50b5748@pengutronix.de>
+ <f9c0087d299be1b9b91b242f41ac6ef7b9ee3ef7.camel@linux.ibm.com>
+ <63dd7d4b-4729-9e03-cd8f-956b94eab0d9@pengutronix.de>
+ <CAFA6WYOw_mQwOUN=onhzb7zCTyYDBrcx0E7C3LRk6nPLAVCWEQ@mail.gmail.com>
+ <557b92d2-f3b8-d136-7431-419429f0e059@pengutronix.de>
+ <CAFA6WYNE44=Y7Erfc-xNtOrf7TkJjh+odmYH5vzhEHR6KqBfeQ@mail.gmail.com>
+ <6F812C20-7585-4718-997E-0306C4118468@sigma-star.at>
+ <YGDpA4yPWmTWEyx+@kernel.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <1171de9c-97b9-3936-707b-16ec34cf94d5@pengutronix.de>
+Date:   Mon, 29 Mar 2021 12:11:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Message-ID: <31f922b3.1c7ca.1787d772dda.Coremail.lyl2019@mail.ustc.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: LkAmygCXnUm5p2FgNYRmAA--.2W
-X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQoPBlQhn5hSTgAFsp
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+In-Reply-To: <YGDpA4yPWmTWEyx+@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkhlaW5lciBLYWxs
-d2VpdCIgPGhrYWxsd2VpdDFAZ21haWwuY29tPg0KPiDlj5HpgIHml7bpl7Q6IDIwMjEtMDMtMjkg
-MTc6NTE6MzAgKOaYn+acn+S4gCkNCj4g5pS25Lu25Lq6OiAiTHYgWXVubG9uZyIgPGx5bDIwMTlA
-bWFpbC51c3RjLmVkdS5jbj4sIG5pY19zd3NkQHJlYWx0ZWsuY29tLCBrdWJhQGtlcm5lbC5vcmcN
-Cj4g5oqE6YCBOiBuZXRkZXZAdmdlci5rZXJuZWwub3JnLCBsaW51eC1rZXJuZWxAdmdlci5rZXJu
-ZWwub3JnDQo+IOS4u+mimDogUmU6IFtQQVRDSF0gZXRoZXJuZXQvcmVhbHRlay9yODE2OTogRml4
-IGEgZG91YmxlIGZyZWUgaW4gcnRsODE2OV9zdGFydF94bWl0DQo+IA0KPiBPbiAyOS4wMy4yMDIx
-IDExOjAyLCBMdiBZdW5sb25nIHdyb3RlOg0KPiA+IEluIHJ0bDgxNjlfc3RhcnRfeG1pdCwgaXQg
-Y2FsbHMgcnRsODE2OV90c29fY3N1bV92Mih0cCwgc2tiLCBvcHRzKSBhbmQNCj4gPiBydGw4MTY5
-X3Rzb19jc3VtX3YyKCkgY2FsbHMgX19za2JfcHV0X3BhZHRvKHNrYiwgcGFkdG8sIGZhbHNlKS4g
-SWYNCj4gPiBfX3NrYl9wdXRfcGFkdG8oKSBmYWlsZWQsIGl0IHdpbGwgZnJlZSB0aGUgc2tiIGlu
-IHRoZSBmaXJzdCB0aW1lIGFuZA0KPiA+IHJldHVybiBlcnJvci4gVGhlbiBydGw4MTY5X3N0YXJ0
-X3htaXQgd2lsbCBnb3RvIGVycl9kbWFfMC4NCj4gPiANCj4gDQo+IE5vLCB0aGUgc2tiIGlzbid0
-IGZyZWVkIGhlcmUgaW4gY2FzZSBvZiBlcnJvci4gSGF2ZSBhIGxvb2sgYXQgdGhlDQo+IGltcGxl
-bWVudGF0aW9uIG9mIF9fc2tiX3B1dF9wYWR0bygpIGFuZCBzZWUgYWxzbyBjYzY1MjhiYzlhMGMN
-Cj4gKCJyODE2OTogZml4IHBvdGVudGlhbCBza2IgZG91YmxlIGZyZWUgaW4gYW4gZXJyb3IgcGF0
-aCIpLg0KPiANCj4gDQo+ID4gQnV0IGluIGVycl9kbWFfMCBsYWJlbCwgdGhlIHNrYiBpcyBmcmVl
-ZCBieSBkZXZfa2ZyZWVfc2tiX2FueShza2IpIGluDQo+ID4gdGhlIHNlY29uZCB0aW1lLg0KPiA+
-IA0KPiA+IE15IHBhdGNoIGFkZHMgYSBuZXcgbGFiZWwgaW5zaWRlIHRoZSBvbGQgZXJyX2RtYV8w
-IGxhYmVsIHRvIGF2b2lkIHRoZQ0KPiA+IGRvdWJsZSBmcmVlIGFuZCByZW5hbWVzIHRoZSBlcnJv
-ciBsYWJlbHMgdG8ga2VlcCB0aGUgb3JpZ2luIGZ1bmN0aW9uDQo+ID4gdW5jaGFuZ2VkLg0KPiA+
-IA0KPiA+IEZpeGVzOiBiODQ0N2FiYzRjOGZiICgicjgxNjk6IGZhY3RvciBvdXQgcnRsODE2OV90
-eF9tYXAiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IEx2IFl1bmxvbmcgPGx5bDIwMTlAbWFpbC51c3Rj
-LmVkdS5jbj4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVhbHRlay9yODE2
-OV9tYWluLmMgfCA5ICsrKysrLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25z
-KCspLCA0IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9l
-dGhlcm5ldC9yZWFsdGVrL3I4MTY5X21haW4uYyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L3JlYWx0
-ZWsvcjgxNjlfbWFpbi5jDQo+ID4gaW5kZXggZjcwNGRhM2YyMTRjLi45MWM0MzM5OTcxMmIgMTAw
-NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvcmVhbHRlay9yODE2OV9tYWluLmMN
-Cj4gPiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9yZWFsdGVrL3I4MTY5X21haW4uYw0KPiA+
-IEBAIC00MjE3LDEzICs0MjE3LDEzIEBAIHN0YXRpYyBuZXRkZXZfdHhfdCBydGw4MTY5X3N0YXJ0
-X3htaXQoc3RydWN0IHNrX2J1ZmYgKnNrYiwNCj4gPiAgDQo+ID4gIAlpZiAodW5saWtlbHkocnRs
-ODE2OV90eF9tYXAodHAsIG9wdHMsIHNrYl9oZWFkbGVuKHNrYiksIHNrYi0+ZGF0YSwNCj4gPiAg
-CQkJCSAgICBlbnRyeSwgZmFsc2UpKSkNCj4gPiAtCQlnb3RvIGVycl9kbWFfMDsNCj4gPiArCQln
-b3RvIGVycl9kbWFfMTsNCj4gPiAgDQo+ID4gIAl0eGRfZmlyc3QgPSB0cC0+VHhEZXNjQXJyYXkg
-KyBlbnRyeTsNCj4gPiAgDQo+ID4gIAlpZiAoZnJhZ3MpIHsNCj4gPiAgCQlpZiAocnRsODE2OV94
-bWl0X2ZyYWdzKHRwLCBza2IsIG9wdHMsIGVudHJ5KSkNCj4gPiAtCQkJZ290byBlcnJfZG1hXzE7
-DQo+ID4gKwkJCWdvdG8gZXJyX2RtYV8yOw0KPiA+ICAJCWVudHJ5ID0gKGVudHJ5ICsgZnJhZ3Mp
-ICUgTlVNX1RYX0RFU0M7DQo+ID4gIAl9DQo+ID4gIA0KPiA+IEBAIC00MjcwLDEwICs0MjcwLDEx
-IEBAIHN0YXRpYyBuZXRkZXZfdHhfdCBydGw4MTY5X3N0YXJ0X3htaXQoc3RydWN0IHNrX2J1ZmYg
-KnNrYiwNCj4gPiAgDQo+ID4gIAlyZXR1cm4gTkVUREVWX1RYX09LOw0KPiA+ICANCj4gPiAtZXJy
-X2RtYV8xOg0KPiA+ICtlcnJfZG1hXzI6DQo+ID4gIAlydGw4MTY5X3VubWFwX3R4X3NrYih0cCwg
-ZW50cnkpOw0KPiA+IC1lcnJfZG1hXzA6DQo+ID4gK2Vycl9kbWFfMToNCj4gPiAgCWRldl9rZnJl
-ZV9za2JfYW55KHNrYik7DQo+ID4gK2Vycl9kbWFfMDoNCj4gPiAgCWRldi0+c3RhdHMudHhfZHJv
-cHBlZCsrOw0KPiA+ICAJcmV0dXJuIE5FVERFVl9UWF9PSzsNCj4gPiAgDQo+ID4gDQo+IA0KDQpP
-aywgaSBzZWUgdGFodCBfX3NrYl9wdXRfcGFkdG8oc2tiLCBwYWR0bywgZmFsc2UpIGlzbid0IGZy
-ZWUgc2tiIG9uIGVycm9yLg0KDQpUaGFua3MuDQo=
+Hello Jarkko,
+
+On 28.03.21 22:37, Jarkko Sakkinen wrote:
+> On Sat, Mar 27, 2021 at 01:41:24PM +0100, David Gstir wrote:
+>> Generally speaking, I’d say trusting the CAAM RNG and trusting in it’s
+>> other features are two separate things. However, reading through the CAAM
+>> key blob spec I’ve got here, CAAM key blob keys (the keys that secure a blob’s
+>> content) are generated using its internal RNG. So I’d save if the CAAM RNG
+>> is insecure, so are generated key blobs. Maybe somebody with more insight
+>> into the CAAM internals can verify that, but I don’t see any point in using
+>> the kernel’s RNG as long as we let CAAM generate the key blob keys for us.
+> 
+> Here's my long'ish analysis. Please read it to the end if by ever means
+> possible, and apologies, I usually try to keep usually my comms short, but
+> this requires some more meat than the usual.
+
+Thanks for the write-up!
+
+> The Bad News
+> ============
+> 
+> Now that we add multiple hardware trust sources for trusted keys, will
+> there ever be a scenario where a trusted key is originally sealed with a
+> backing hardware A, unsealed, and resealed with hardware B?
+> 
+> The hardware and vendor neutral way to generate the key material would be
+> unconditionally always just the kernel RNG.
+> 
+> CAAM is actually worse than TCG because it's not even a standards body, if
+> I got it right. Not a lot but at least a tiny fraction.
+
+CAAM is how NXP calls the crypto accelerator built into some of its SoCs.
+
+> This brings an open item in TEE patches: trusted_tee_get_random() is an
+> issue in generating kernel material. I would rather replace that with
+> kernel RNG *for now*, because the same open question applies also to ARM
+> TEE. It's also a single company controlled backing technology.
+> 
+> By all practical means, I do trust ARM TEE in my personal life but this is
+> not important.
+> 
+> CAAM *and* TEE backends break the golden rule of putting as little trust as
+> possible to anything, even not anything weird is clear at sight, as
+> security is essentially a game of known unknowns and unknown unknowns.
+
+Agreed.
+
+> The GOOD News
+> =============
+> 
+> So there's actually option (C) that also fixes the TPM trustd keys issue:
+> 
+> Add a new kernel patch, which:
+> 
+> 1. Adds the use of kernel RNG as a boot option.
+> 2. If this boot option is not active, the subsystem will print a warning
+>    to klog denoting this.
+> 3. Default is of course vendor RNG given the bad design issue in the TPM
+>    trusted keys, but the warning in klog will help to address it at least
+>    a bit.
+
+Why should the TPM backend's choice influence later backends? We could add
+a new option for key creation time, e.g.:
+
+   keyctl add trusted kmk "new keylen rng=kernel" @s
+
+The default would be rng=vendor if available with a fallback to rng=kernel,
+which should always be available.
+
+> 4. Document all this to Documentation/security/keys/trusted-encrypted.rst.
+
+Yes, backends would then document whether they support a rng=vendor or not.
+
+> I'd prefer the choice between A, B and C be concluded rather sooner than
+> later.
+
+FWIW, my vote is for option C, with the change described above.
+
+Cheers,
+Ahmad
+
+> 
+> /Jarkko
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
