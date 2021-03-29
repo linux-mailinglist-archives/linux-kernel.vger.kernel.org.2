@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99E934C8B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C87434C8C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233779AbhC2IXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:23:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
+        id S234242AbhC2IYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:24:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232967AbhC2IP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:15:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 67F5361960;
-        Mon, 29 Mar 2021 08:15:18 +0000 (UTC)
+        id S231892AbhC2IPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:15:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF8F6196E;
+        Mon, 29 Mar 2021 08:15:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005719;
-        bh=wOyRjuMX93d1O6A4VzggCO8vt2KelYMpdXJWmtpbt3A=;
+        s=korg; t=1617005721;
+        bh=OHCAsr7MAWtX8+VlevmMJtG1ceTBWQ4npATKbT+Ha6k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JcfpDHVOI0MCkEtK/N7yMHgDcvihlL/JYOhiCB7MfPvHdBzsNpHXsqJDh8yozdtpJ
-         uqykEmiPhKtCNrWgIZwMy3COjQT7aq95e3pPkMIkai3mmB6c3qXk+5BBV/8dLt3enQ
-         VJ1TaCF70XP+lYgyMfh6ydKfmUATKuMmTZhOfCyY=
+        b=ZvcqlTxHqli3VHp0WR0LQqeafkkU2jib9Y4gqI6qhI5QQ5zVjP3GtRa3aQEb4lTlN
+         ShTjy2UzK8Zuo5ZNILlVmVNYOpOp9Yg7+T1Qz9Ebg9RKnkHuyaFEaBFdV8qX+LnA6h
+         wKXSDV98KRmbEgAa2cT3a5SPJ7GbBEB3CwdNFLlM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 092/111] RDMA/cxgb4: Fix adapter LE hash errors while destroying ipv6 listening server
-Date:   Mon, 29 Mar 2021 09:58:40 +0200
-Message-Id: <20210329075618.281656979@linuxfoundation.org>
+        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Roman Gushchin <guro@fb.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 093/111] bpf: Dont do bpf_cgroup_storage_set() for kuprobe/tp programs
+Date:   Mon, 29 Mar 2021 09:58:41 +0200
+Message-Id: <20210329075618.312149729@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
 References: <20210329075615.186199980@linuxfoundation.org>
@@ -41,45 +40,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+[ Upstream commit 05a68ce5fa51a83c360381630f823545c5757aa2 ]
 
-[ Upstream commit 3408be145a5d6418ff955fe5badde652be90e700 ]
+For kuprobe and tracepoint bpf programs, kernel calls
+trace_call_bpf() which calls BPF_PROG_RUN_ARRAY_CHECK()
+to run the program array. Currently, BPF_PROG_RUN_ARRAY_CHECK()
+also calls bpf_cgroup_storage_set() to set percpu
+cgroup local storage with NULL value. This is
+due to Commit 394e40a29788 ("bpf: extend bpf_prog_array to store
+pointers to the cgroup storage") which modified
+__BPF_PROG_RUN_ARRAY() to call bpf_cgroup_storage_set()
+and this macro is also used by BPF_PROG_RUN_ARRAY_CHECK().
 
-Not setting the ipv6 bit while destroying ipv6 listening servers may
-result in potential fatal adapter errors due to lookup engine memory hash
-errors. Therefore always set ipv6 field while destroying ipv6 listening
-servers.
+kuprobe and tracepoint programs are not allowed to call
+bpf_get_local_storage() helper hence does not
+access percpu cgroup local storage. Let us
+change BPF_PROG_RUN_ARRAY_CHECK() not to
+modify percpu cgroup local storage.
 
-Fixes: 830662f6f032 ("RDMA/cxgb4: Add support for active and passive open connection with IPv6 address")
-Link: https://lore.kernel.org/r/20210324190453.8171-1-bharat@chelsio.com
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+The issue is observed when I tried to debug [1] where
+percpu data is overwritten due to
+  preempt_disable -> migration_disable
+change. This patch does not completely fix the above issue,
+which will be addressed separately, e.g., multiple cgroup
+prog runs may preempt each other. But it does fix
+any potential issue caused by tracing program
+overwriting percpu cgroup storage:
+ - in a busy system, a tracing program is to run between
+   bpf_cgroup_storage_set() and the cgroup prog run.
+ - a kprobe program is triggered by a helper in cgroup prog
+   before bpf_get_local_storage() is called.
+
+ [1] https://lore.kernel.org/bpf/CAKH8qBuXCfUz=w8L+Fj74OaUpbosO29niYwTki7e3Ag044_aww@mail.gmail.com/T
+
+Fixes: 394e40a29788 ("bpf: extend bpf_prog_array to store pointers to the cgroup storage")
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Roman Gushchin <guro@fb.com>
+Link: https://lore.kernel.org/bpf/20210309185028.3763817-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/cm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/bpf.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 30e08bcc9afb..3c78f8c32d12 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -3610,13 +3610,13 @@ int c4iw_destroy_listen(struct iw_cm_id *cm_id)
- 	    ep->com.local_addr.ss_family == AF_INET) {
- 		err = cxgb4_remove_server_filter(
- 			ep->com.dev->rdev.lldi.ports[0], ep->stid,
--			ep->com.dev->rdev.lldi.rxq_ids[0], 0);
-+			ep->com.dev->rdev.lldi.rxq_ids[0], false);
- 	} else {
- 		struct sockaddr_in6 *sin6;
- 		c4iw_init_wr_wait(ep->com.wr_waitp);
- 		err = cxgb4_remove_server(
- 				ep->com.dev->rdev.lldi.ports[0], ep->stid,
--				ep->com.dev->rdev.lldi.rxq_ids[0], 0);
-+				ep->com.dev->rdev.lldi.rxq_ids[0], true);
- 		if (err)
- 			goto done;
- 		err = c4iw_wait_for_reply(&ep->com.dev->rdev, ep->com.wr_waitp,
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 007147f64390..66590ae89c97 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -535,7 +535,7 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 			struct bpf_prog *include_prog,
+ 			struct bpf_prog_array **new_array);
+ 
+-#define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null)	\
++#define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null, set_cg_storage) \
+ 	({						\
+ 		struct bpf_prog_array_item *_item;	\
+ 		struct bpf_prog *_prog;			\
+@@ -548,7 +548,8 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 			goto _out;			\
+ 		_item = &_array->items[0];		\
+ 		while ((_prog = READ_ONCE(_item->prog))) {		\
+-			bpf_cgroup_storage_set(_item->cgroup_storage);	\
++			if (set_cg_storage)		\
++				bpf_cgroup_storage_set(_item->cgroup_storage);	\
+ 			_ret &= func(_prog, ctx);	\
+ 			_item++;			\
+ 		}					\
+@@ -609,10 +610,10 @@ _out:							\
+ 	})
+ 
+ #define BPF_PROG_RUN_ARRAY(array, ctx, func)		\
+-	__BPF_PROG_RUN_ARRAY(array, ctx, func, false)
++	__BPF_PROG_RUN_ARRAY(array, ctx, func, false, true)
+ 
+ #define BPF_PROG_RUN_ARRAY_CHECK(array, ctx, func)	\
+-	__BPF_PROG_RUN_ARRAY(array, ctx, func, true)
++	__BPF_PROG_RUN_ARRAY(array, ctx, func, true, false)
+ 
+ #ifdef CONFIG_BPF_SYSCALL
+ DECLARE_PER_CPU(int, bpf_prog_active);
 -- 
 2.30.1
 
