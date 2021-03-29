@@ -2,147 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3753534D913
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 814C434D91B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230366AbhC2UeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
+        id S230418AbhC2Ui2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhC2Udn (ORCPT
+        with ESMTP id S229468AbhC2Uh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:33:43 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B692AC061574;
-        Mon, 29 Mar 2021 13:33:42 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so8319343pjb.0;
-        Mon, 29 Mar 2021 13:33:42 -0700 (PDT)
+        Mon, 29 Mar 2021 16:37:57 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D10EC061574;
+        Mon, 29 Mar 2021 13:37:57 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id o16so14180730wrn.0;
+        Mon, 29 Mar 2021 13:37:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5JWGpm2Luw9oA1XrYw8G4eVqUmBGNX4VUAL1U9HUofM=;
-        b=VY6h3tpEWizPKlvA7CBSflg8EXIOPRjaySIAo+boILZIUfNGhMpoPTGpsWT0sWEbv3
-         lytJCj+65unjb3jJHIMPRddLnlH/NBTRhea/BwtmtNCSTc4aftw0S76vSOenAEE3Vs88
-         HG7RU/iHInlxdB3TPsvhTn9VNDq3/2PWoyTV1rilQpzN2N+P5zlzhbMulO4JF5GZZa7E
-         H4c2oR1eSJixpINYZAy4SWPKu2VLkJSdtve4i76tdp8y8pqgSXbnw9L8QQHcQ8rY6yyg
-         NNaDQTUH4DlDxtHLCWepTog59y3X88RGnJouE354JukTcW7Ngn2VqyvhJvmURVA2FSSp
-         Rbwg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Aem0mmjc+m+1Ls4c4+9Q57HeLTfug6e9XtREoWGla0s=;
+        b=Yyz6cO6mfdJ4gTm/q/IIRn+Gd9fo6a0YRZUwTtMq4g0ykMc312Ut403N0L/wIqKGmv
+         towoVO/GPQNCSCpJKtLguC/+QRRMz7J4T8F78TyeFbzQWiohay7whG+PPzrrX7rQrNrg
+         A1IdGgVh+6vl/hbC41SOby1zjIPRFyBw9sGF0zjc1yUkyt0ga9GlSLGsSFoFagGxKAlY
+         0A9zc0fzEBcPjLRbSq9D4aQDe7sP4dHsVrMSHw0qWx+GZg/15SUoCJnatic6Qy2iB6vP
+         y5k5d4/Lbu/KRZMLjwFqXMHqh0g0IAGQtBD+RCpmK14s1pOqibGV+17LEb7JBSKgFCl2
+         4fMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5JWGpm2Luw9oA1XrYw8G4eVqUmBGNX4VUAL1U9HUofM=;
-        b=EF4JZTthN+eJBReaWRZyylMhon8/YfbRjAm/KlqF82T+qDQNmCrsDGfSrYrBZTzlIl
-         742UGg8UIfi9NZhqH15qdD0LhhgiGA+hNk7BspxCJIUusLLt/3B1iLTb30figPYNcD7W
-         +I1Rm23QvCA/tUW82KhQCrfb21Zd0C2Un82r7avadpE5wx/Ki6cFpJpqkktQEbaop1iX
-         Ly6aPAuOcxvR4BQFyzdPyJqT2tXA5hh/VT+lFXF6VO23UNxYGcVF6omchR2B4FOBNiYJ
-         snsUg0I37Q+H5oFaBTffdT1pA+w3RSXdbITo1Q6kICjaKxglN/+h+uAO39Lxf2rdCDKQ
-         S+mA==
-X-Gm-Message-State: AOAM532ZLCV+56zzpaCz9zqIfqot7+umFuJx5SWYTNHiGQtkc35CIMyN
-        sNvKVY7ca4vAXYVmDPhlFp0=
-X-Google-Smtp-Source: ABdhPJxxBdmZ4Of72OqcTVC5WmVMBPDxwy0e8dm3jNMkc7FK7ywP1A1NxxZkPxbK5AkOMCJnBtENaw==
-X-Received: by 2002:a17:902:d64a:b029:e6:30a6:64e3 with SMTP id y10-20020a170902d64ab02900e630a664e3mr30759214plh.28.1617050022009;
-        Mon, 29 Mar 2021 13:33:42 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a82a:a913:988c:7480])
-        by smtp.gmail.com with ESMTPSA id t1sm18202660pfc.173.2021.03.29.13.33.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 13:33:41 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 13:33:38 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        alistair23@gmail.com, Alistair Francis <alistair@alistair22.me>
-Subject: Re: [PATCH v4 07/10] Input: wacom_i2c - Add support for reset control
-Message-ID: <YGI5or9QsfbONo2e@google.com>
-References: <20210326015229.141-1-alistair@alistair23.me>
- <20210326015229.141-7-alistair@alistair23.me>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Aem0mmjc+m+1Ls4c4+9Q57HeLTfug6e9XtREoWGla0s=;
+        b=APKcnnQT+tzpHl+rkhT7sfBpqLWfc57hN2jwm75kJSqUqgBxgSeB8DtejKb6bPJPZr
+         NaMFg002Zg8mb9HA7Dw2y90fjrSW8JOVRSCxYOx1pZHiBhfrn1mTV/7hqG0CN9cJrtEv
+         MndubQgLkr2KW1LPMmWU5wDFxKPCVINDeKH+WYcZsVFspcLFEcbFWWtwHr/C6nKkmrJx
+         mDLhVhTro/diTfIAHCDOxnBLNC3WO4R4s6u2wB8o6cxFbqrh3Xnb69uTeVx2MPeYSL4P
+         zMgfOL6JoFlVIKa6iJha69F39oGnc6v4D32ikRFToY4bkju1rpIsNrdkxoCsgBbsK4iT
+         yZgA==
+X-Gm-Message-State: AOAM530ZaiENetfr1Af+wT16DCey8QH83HKp79EZ92I/6ZKIbXBGmzcG
+        3OLj909T9GBKgxi5lz8c60g=
+X-Google-Smtp-Source: ABdhPJwbk6wDCyr/7t4h+Ru2dj6hjTiJekgD5rahNgY9nQO/QhGp2GU31eI13ujvkwBWaxDTybvuSg==
+X-Received: by 2002:adf:b313:: with SMTP id j19mr29717540wrd.188.1617050275883;
+        Mon, 29 Mar 2021 13:37:55 -0700 (PDT)
+Received: from [192.168.1.211] ([91.110.20.103])
+        by smtp.gmail.com with ESMTPSA id u63sm545862wmg.24.2021.03.29.13.37.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 13:37:55 -0700 (PDT)
+Subject: Re: [PATCH v3 0/6] Introduce intel_skl_int3472 module
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, tfiga@chromium.org,
+        sakari.ailus@linux.intel.com, rajmohan.mani@intel.com,
+        rjw@rjwysocki.net, lenb@kernel.org,
+        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
+        kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com, mgross@linux.intel.com,
+        luzmaximilian@gmail.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, me@fabwu.ch, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org
+References: <20210222130735.1313443-1-djrscally@gmail.com>
+ <fd2fbee6-e620-a594-8377-d2f22131af29@redhat.com>
+ <5d336f50-5f25-fce2-04eb-5ad450c9cd5b@gmail.com>
+ <YGHsWNXha0i1OwCN@smile.fi.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <5bc96e11-ab7a-d084-900b-9b8fdc4a4e72@gmail.com>
+Date:   Mon, 29 Mar 2021 21:37:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210326015229.141-7-alistair@alistair23.me>
+In-Reply-To: <YGHsWNXha0i1OwCN@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alistair,
+Hi Andy
 
-On Thu, Mar 25, 2021 at 09:52:27PM -0400, Alistair Francis wrote:
-> From: Alistair Francis <alistair@alistair22.me>
-> 
-> Signed-off-by: Alistair Francis <alistair@alistair22.me>
-> ---
-> v4:
->  - Initial commit
-> 
->  drivers/input/touchscreen/wacom_i2c.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-> index 84c7ccb737bd..28004b1180c9 100644
-> --- a/drivers/input/touchscreen/wacom_i2c.c
-> +++ b/drivers/input/touchscreen/wacom_i2c.c
-> @@ -55,6 +55,7 @@ struct wacom_features {
->  struct wacom_i2c {
->  	struct i2c_client *client;
->  	struct input_dev *input;
-> +	struct reset_control *rstc;
->  	struct touchscreen_properties props;
->  	u8 data[WACOM_QUERY_SIZE];
->  	bool prox;
-> @@ -175,6 +176,8 @@ static int wacom_i2c_open(struct input_dev *dev)
->  	struct wacom_i2c *wac_i2c = input_get_drvdata(dev);
->  	struct i2c_client *client = wac_i2c->client;
->  
-> +	reset_control_reset(wac_i2c->rstc);
+On 29/03/2021 16:03, Andy Shevchenko wrote:
+> On Thu, Mar 04, 2021 at 01:49:14PM +0000, Daniel Scally wrote:
+>> On 04/03/2021 13:37, Hans de Goede wrote:
+>>> On 2/22/21 2:07 PM, Daniel Scally wrote:
+> ...
+>
+>>>> The existing mfd/tps68470.c driver being thus superseded, it is removed.
+>>> Thank you for this patch series. Since there have already been a whole
+>>> bunch of review-comments, I've not taken a detailed look at this yet.
+>> No problem, I'm hoping to do a v3 over the weekend anyway.
+> Do you mean v4?
 
-Why does this device need to be reset on every open compared to doing it
-in probe?
 
-> +
->  	enable_irq(client->irq);
->  
->  	return 0;
-> @@ -193,6 +196,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  {
->  	struct wacom_i2c *wac_i2c;
->  	struct input_dev *input;
-> +	struct reset_control *rstc;
->  	struct wacom_features features = { 0 };
->  	int error;
->  
-> @@ -201,6 +205,12 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  		return -EIO;
->  	}
->  
-> +	rstc = devm_reset_control_get_optional_exclusive(&client->dev, NULL);
-> +	if (IS_ERR(rstc)) {
-> +		dev_err(&client->dev, "Failed to get reset control before init\n");
-> +		return PTR_ERR(rstc);
-> +	}
+Oops, I do indeed.
 
-I think majority users will have this controller reset line connected to
-a GPIO. I briefly looked into reset controller code and I do not see it
-supporting this case. How is this device connected on your board?
 
-> +
->  	error = wacom_query_device(client, &features);
->  	if (error)
->  		return error;
-> @@ -214,6 +224,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
->  
->  	wac_i2c->client = client;
->  	wac_i2c->input = input;
-> +	wac_i2c->rstc = rstc;
->  
->  	input->name = "Wacom I2C Digitizer";
->  	input->id.bustype = BUS_I2C;
-> -- 
-> 2.31.0
-> 
+> I'm just wondering if you need any help.
 
-Thanks.
 
--- 
-Dmitry
+Thanks - I don't think so; I've just not been working on it very much
+lately. I got sidetracked with a sensor driver [1] that was pretty fun,
+so I've been focused on that instead. I'm just finishing up a v2 for
+that, and then I'll come back to this.
+
+
+[1]
+https://lore.kernel.org/linux-media/20210312103239.279523-2-djrscally@gmail.com/
+
