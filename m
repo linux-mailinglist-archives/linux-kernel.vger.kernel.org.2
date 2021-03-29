@@ -2,180 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDF934CC94
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E776634C59B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237594AbhC2JE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234872AbhC2IkL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:40:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 399F460C41;
-        Mon, 29 Mar 2021 08:39:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007195;
-        bh=J+OJapO/LU9j+9AC6CZF501CwFFDmYzO23IbBdyCzNU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZXNvhtN6o2+ZMXer6aB0a6EEhRecgtJOWAm3ktGmNyDRYftGCv6xfRL4K5IRgZtQg
-         NCXJf0aFt6QoBcjO3D6cTzdueLmb4Qyv9Nbwx8Paif9G+yc2njuZBvtH+rQBubKt4X
-         BURNXdaAVqfa7gVIcvv+wJcI4WutcRaaZj9gp4s0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH 5.11 254/254] selftest/bpf: Add a test to check trampoline freeing logic.
-Date:   Mon, 29 Mar 2021 09:59:30 +0200
-Message-Id: <20210329075641.411827417@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231723AbhC2IBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:01:37 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:6380 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231596AbhC2IA6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:00:58 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12T7w1iT002406;
+        Mon, 29 Mar 2021 10:00:15 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=YARP2pjSPKUGCU0uuAV6W5anS3B8C1Bjy68KpzSsA10=;
+ b=476iQQ/ln+z8k2S6OM44WSlaUduFXgR3sPWrk7EGcvnGpTSfV4PsJ3whyb6fFFUAAijL
+ kphHP5Upu8cPLnbEZ1ohP+9bvlV+bV4uieGCHOdpDKlL7gRAT2VeXgYoPXXQT3uSrAvs
+ MuYk0TJvuqeuAYBl8fHi7qZUa35Lf2ZM6f+aFtrQoc51IVLgQFWkQE5BAGbKQwYrRjzU
+ dycYNFrHmS/RNulAPdCDLucbv0eREmRBbGIXQm3cDX3gbFYubWTMYBiA9WJbMe1vtG8O
+ HcbHTjLkSFcSSDOCr/aLbdXyv3A4KF6DjUTRaTg6KB/TptjMFjvUjG+hNt6fJaVuWhPi ZA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37jy132qvq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 10:00:15 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 79E6110002A;
+        Mon, 29 Mar 2021 10:00:13 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 58DB92397B8;
+        Mon, 29 Mar 2021 10:00:13 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.45) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar
+ 2021 10:00:12 +0200
+Subject: Re: [PATCH v2 8/8] pinctrl: stm32: Add STM32H750 MCU pinctrl support
+To:     <dillon.minfei@gmail.com>, <robh+dt@kernel.org>,
+        <a.fatoum@pengutronix.de>, <mcoquelin.stm32@gmail.com>,
+        <alexandre.torgue@st.com>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux@armlinux.org.uk>,
+        <vladimir.murzin@arm.com>, <afzal.mohd.ma@gmail.com>
+References: <1615530274-31422-1-git-send-email-dillon.minfei@gmail.com>
+ <1615530274-31422-9-git-send-email-dillon.minfei@gmail.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <eb2437ef-ecd2-e258-b77b-2fe9f70205f2@foss.st.com>
+Date:   Mon, 29 Mar 2021 10:00:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1615530274-31422-9-git-send-email-dillon.minfei@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-29_04:2021-03-26,2021-03-29 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+Hi Dillon
 
-commit eddbe8e6521401003e37e7848ef72e75c10ee2aa upstream.
+On 3/12/21 7:24 AM, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> This patch adds STM32H750 pinctrl and GPIO support
+> since stm32h750 has the same pin alternate functions
+> with stm32h743, so just reuse the stm32h743's pinctrl
+> driver
+> 
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+> v2:
+> - add compatible string st,stm32h750-pinctrl to pinctl-stm32h743.c as they
+>    have same pin alternate functions
+> - add STM32H750 to Kconfig description
+> 
+>   drivers/pinctrl/stm32/Kconfig             | 2 +-
+>   drivers/pinctrl/stm32/pinctrl-stm32h743.c | 3 +++
+>   2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pinctrl/stm32/Kconfig b/drivers/pinctrl/stm32/Kconfig
+> index f36f29113370..fb1ffc94c57f 100644
+> --- a/drivers/pinctrl/stm32/Kconfig
+> +++ b/drivers/pinctrl/stm32/Kconfig
+> @@ -35,7 +35,7 @@ config PINCTRL_STM32F769
+>   	select PINCTRL_STM32
+>   
+>   config PINCTRL_STM32H743
+> -	bool "STMicroelectronics STM32H743 pin control" if COMPILE_TEST && !MACH_STM32H743
+> +	bool "STMicroelectronics STM32H743/STM32H750 pin control" if COMPILE_TEST && !MACH_STM32H743
+>   	depends on OF && HAS_IOMEM
+>   	default MACH_STM32H743
+>   	select PINCTRL_STM32
+> diff --git a/drivers/pinctrl/stm32/pinctrl-stm32h743.c b/drivers/pinctrl/stm32/pinctrl-stm32h743.c
+> index ffe7b5271506..700206c7bc11 100644
+> --- a/drivers/pinctrl/stm32/pinctrl-stm32h743.c
+> +++ b/drivers/pinctrl/stm32/pinctrl-stm32h743.c
+> @@ -1966,6 +1966,9 @@ static const struct of_device_id stm32h743_pctrl_match[] = {
+>   		.compatible = "st,stm32h743-pinctrl",
+>   		.data = &stm32h743_match_data,
+>   	},
+> +	{	.compatible = "st,stm32h750-pinctrl",
+> +		.data = &stm32h743_match_data,
+> +	},
 
-Add a selftest for commit e21aa341785c ("bpf: Fix fexit trampoline.")
-to make sure that attaching fexit prog to a sleeping kernel function
-will trigger appropriate trampoline and program destruction.
+If you use exactly the same driver (i.e. same ball out and AF mux) then 
+you don't have to create a new compatible for that. Just use the same 
+than h743.(so you don't have to factorize DT files).
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210318004523.55908-1-alexei.starovoitov@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- tools/testing/selftests/bpf/prog_tests/fexit_sleep.c |   82 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/fexit_sleep.c      |   31 +++++++
- 2 files changed, 113 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
- create mode 100644 tools/testing/selftests/bpf/progs/fexit_sleep.c
+Regards
+Alex
 
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/fexit_sleep.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <test_progs.h>
-+#include <time.h>
-+#include <sys/mman.h>
-+#include <sys/syscall.h>
-+#include "fexit_sleep.skel.h"
-+
-+static int do_sleep(void *skel)
-+{
-+	struct fexit_sleep *fexit_skel = skel;
-+	struct timespec ts1 = { .tv_nsec = 1 };
-+	struct timespec ts2 = { .tv_sec = 10 };
-+
-+	fexit_skel->bss->pid = getpid();
-+	(void)syscall(__NR_nanosleep, &ts1, NULL);
-+	(void)syscall(__NR_nanosleep, &ts2, NULL);
-+	return 0;
-+}
-+
-+#define STACK_SIZE (1024 * 1024)
-+static char child_stack[STACK_SIZE];
-+
-+void test_fexit_sleep(void)
-+{
-+	struct fexit_sleep *fexit_skel = NULL;
-+	int wstatus, duration = 0;
-+	pid_t cpid;
-+	int err, fexit_cnt;
-+
-+	fexit_skel = fexit_sleep__open_and_load();
-+	if (CHECK(!fexit_skel, "fexit_skel_load", "fexit skeleton failed\n"))
-+		goto cleanup;
-+
-+	err = fexit_sleep__attach(fexit_skel);
-+	if (CHECK(err, "fexit_attach", "fexit attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	cpid = clone(do_sleep, child_stack + STACK_SIZE, CLONE_FILES | SIGCHLD, fexit_skel);
-+	if (CHECK(cpid == -1, "clone", strerror(errno)))
-+		goto cleanup;
-+
-+	/* wait until first sys_nanosleep ends and second sys_nanosleep starts */
-+	while (READ_ONCE(fexit_skel->bss->fentry_cnt) != 2);
-+	fexit_cnt = READ_ONCE(fexit_skel->bss->fexit_cnt);
-+	if (CHECK(fexit_cnt != 1, "fexit_cnt", "%d", fexit_cnt))
-+		goto cleanup;
-+
-+	/* close progs and detach them. That will trigger two nop5->jmp5 rewrites
-+	 * in the trampolines to skip nanosleep_fexit prog.
-+	 * The nanosleep_fentry prog will get detached first.
-+	 * The nanosleep_fexit prog will get detached second.
-+	 * Detaching will trigger freeing of both progs JITed images.
-+	 * There will be two dying bpf_tramp_image-s, but only the initial
-+	 * bpf_tramp_image (with both _fentry and _fexit progs will be stuck
-+	 * waiting for percpu_ref_kill to confirm). The other one
-+	 * will be freed quickly.
-+	 */
-+	close(bpf_program__fd(fexit_skel->progs.nanosleep_fentry));
-+	close(bpf_program__fd(fexit_skel->progs.nanosleep_fexit));
-+	fexit_sleep__detach(fexit_skel);
-+
-+	/* kill the thread to unwind sys_nanosleep stack through the trampoline */
-+	kill(cpid, 9);
-+
-+	if (CHECK(waitpid(cpid, &wstatus, 0) == -1, "waitpid", strerror(errno)))
-+		goto cleanup;
-+	if (CHECK(WEXITSTATUS(wstatus) != 0, "exitstatus", "failed"))
-+		goto cleanup;
-+
-+	/* The bypassed nanosleep_fexit prog shouldn't have executed.
-+	 * Unlike progs the maps were not freed and directly accessible.
-+	 */
-+	fexit_cnt = READ_ONCE(fexit_skel->bss->fexit_cnt);
-+	if (CHECK(fexit_cnt != 1, "fexit_cnt", "%d", fexit_cnt))
-+		goto cleanup;
-+
-+cleanup:
-+	fexit_sleep__destroy(fexit_skel);
-+}
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fexit_sleep.c
-@@ -0,0 +1,31 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char LICENSE[] SEC("license") = "GPL";
-+
-+int pid = 0;
-+int fentry_cnt = 0;
-+int fexit_cnt = 0;
-+
-+SEC("fentry/__x64_sys_nanosleep")
-+int BPF_PROG(nanosleep_fentry, const struct pt_regs *regs)
-+{
-+	if ((int)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	fentry_cnt++;
-+	return 0;
-+}
-+
-+SEC("fexit/__x64_sys_nanosleep")
-+int BPF_PROG(nanosleep_fexit, const struct pt_regs *regs, int ret)
-+{
-+	if ((int)bpf_get_current_pid_tgid() != pid)
-+		return 0;
-+
-+	fexit_cnt++;
-+	return 0;
-+}
-
-
+>   	{ }
+>   };
+>   
+> 
