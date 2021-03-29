@@ -2,132 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2BA34CF5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B7D34CF5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhC2Ltf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:49:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12202 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231359AbhC2LtP (ORCPT
+        id S231136AbhC2LuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:50:09 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:37458 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230388AbhC2Ltw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:49:15 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12TBXj3E078240;
-        Mon, 29 Mar 2021 07:49:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : references : date : in-reply-to : message-id : mime-version :
- content-type; s=pp1; bh=qv3anaEnH3dmdnJh+LhoKWtRDkS2LkFaRLofMgA3CI4=;
- b=ZTAXFUzp3YEw4LlqUuqTtu663c1ud+quYLAGk5tvV5qEsTIK5PXkob8taTbdH0K6LB+W
- yhIRJsTxmH1AMgUEPUD0lRe7IseSHoC0uMt/9p7i16KlUocpihiOJTIj2vW1/hqFtwnB
- EEhE5IsTncSnGSaJrWGj2veDjjTNLYTXYXZoPfiY3EbIHWcMGfLFfUxlBcw3TzR3BoaT
- wP9l8DXqRsiJPaR9amPraYHEkOyFD8voo3f6KpEmpI2aHn3DET60JZX83dyeE6Ljkkyh
- LceqeG/6h4i3TaTTdL0RxnBpp3DoJVMmjpvzBbsczSjbEUrPcleM2Rs7u5z33jso0d58 sw== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37jj8acnm9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 07:49:10 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12TBn8cM008669;
-        Mon, 29 Mar 2021 11:49:08 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 37hvb88wvd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 11:49:08 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12TBn60q39780678
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 11:49:06 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D30552063;
-        Mon, 29 Mar 2021 11:49:06 +0000 (GMT)
-Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 2AA055204F;
-        Mon, 29 Mar 2021 11:49:06 +0000 (GMT)
-From:   Sven Schnelle <svens@linux.ibm.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>, X86 ML <x86@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
+        Mon, 29 Mar 2021 07:49:52 -0400
+X-UUID: ddbdf52e650846288a9a09d2c4d7041d-20210329
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=700zl6YmFxv75lk34/wx0WtvqnKIf4i7bpRRlFphdnI=;
+        b=AHzPNTFUi/evXpq/pyNIGpnxTSTLWtQ62edJtxYxuTpgVIC3HfFTJz+c0rzCpSXSYyfhCyMsDl4f7zJcFdDLfWRC6Ulq5o32nOQW0ZFzO2FeQivLP1IDjwCAyt1bKChKB2UCZOh7Y9j5vQ3nuDEKXegbou/IfgIE8jtce5f3sXY=;
+X-UUID: ddbdf52e650846288a9a09d2c4d7041d-20210329
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <zhiyong.tao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 200071948; Mon, 29 Mar 2021 19:49:48 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 29 Mar
+ 2021 19:49:46 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 29 Mar 2021 19:49:45 +0800
+Message-ID: <1617018585.10316.9.camel@mhfsdcap03>
+Subject: Re: [PATCH Resend v0 0/6] Mediatek pinctrl patch on mt8195
+From:   zhiyong tao <zhiyong.tao@mediatek.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Is s390's new generic-using syscall code actually correct?
-References: <CALCETrUx10uHeD7bckVjL9x7S3LEdH3ZfzUbCMWj9j-=nYp8Wg@mail.gmail.com>
-Date:   Mon, 29 Mar 2021 13:49:05 +0200
-In-Reply-To: <CALCETrUx10uHeD7bckVjL9x7S3LEdH3ZfzUbCMWj9j-=nYp8Wg@mail.gmail.com>
-        (Andy Lutomirski's message of "Sat, 20 Mar 2021 20:48:34 -0700")
-Message-ID: <yt9dblb2w572.fsf@linux.ibm.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        <sean.wang@kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        <hui.liu@mediatek.com>, Eddie Huang <eddie.huang@mediatek.com>,
+        <jg_poxu@mediatek.com>, <biao.huang@mediatek.com>,
+        <hongzhou.yang@mediatek.com>, <erin.lo@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>, <seiya.wang@mediatek.com>,
+        Sj Huang <sj.huang@mediatek.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Date:   Mon, 29 Mar 2021 19:49:45 +0800
+In-Reply-To: <CAHp75Vc7x=VoNqQKXOyxhkixR3SivQn3yGkejTkZ8bO0Tv6bDA@mail.gmail.com>
+References: <20210329113103.11003-1-zhiyong.tao@mediatek.com>
+         <CAHp75Vc7x=VoNqQKXOyxhkixR3SivQn3yGkejTkZ8bO0Tv6bDA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: E6pNlFG_Ow7IIA3zu_rxL2DBlkj_f-py
-X-Proofpoint-ORIG-GUID: E6pNlFG_Ow7IIA3zu_rxL2DBlkj_f-py
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-29_08:2021-03-26,2021-03-29 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- malwarescore=0 suspectscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
- impostorscore=0 mlxlogscore=999 priorityscore=1501 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103290091
+X-TM-SNTS-SMTP: AABB6345A8775AA73C4B49EF96DF27E08E9473E30D95DB3D672079749D6477F42000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+T24gTW9uLCAyMDIxLTAzLTI5IGF0IDE0OjM1ICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
+DQo+IE9uIE1vbiwgTWFyIDI5LCAyMDIxIGF0IDI6MzIgUE0gWmhpeW9uZyBUYW8gPHpoaXlvbmcu
+dGFvQG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBUaGlzIHNlcmllcyBpbmNsdWRlcyA2
+IHBhdGNoZXM6DQo+ID4gMS5hZGQgcGluY3RybCBmaWxlIG9uIG10ODE5NS4NCj4gPiAyLmFkZCBw
+aW5jdHJsIGJpbmRpbmcgZG9jdW1lbnQgb24gbXQ4MTk1Lg0KPiA+IDMuYWRkIHBpbmN0cmwgZGV2
+aWNlIG5vZGUgb24gbXQ4MTk1Lg0KPiA+IDQuYWRkIHBpbmN0cmwgZHJpdmVyIG9uIE1UODE5NS4N
+Cj4gPiA1LmFkZCBwaW5jdHJsIGRyaXZlIGZvciBJMkMgcmVsYXRlZCBwaW5zIG9uIE1UODE5NS4N
+Cj4gPiA2LmFkZCBwaW5jdHJsIHJzZWwgc2V0dGluZyBvbiBNVDgxOTUuDQo+IA0KPiBQYXRjaCBz
+ZXJpZXMgdy9vIHZlcnNpb24gaXMgZGUgZmFjdG8gdjEuDQo+IERyb3BwaW5nIHRvIHYwIHNlZW1z
+IG5vdCByaWdodC4NCj4gWW91IG1pc3NlZCBjaGFuZ2Vsb2cuDQo+IA0KPiBTbywgc2VuZCB2MiBw
+cm9wZXJseS4NCj4gDQo+IE1hdGVyaWFsIHRvIHN0dWR5Og0KPiBodHRwczovL3d3dy5rZXJuZWwu
+b3JnL2RvYy9odG1sL2xhdGVzdC9wcm9jZXNzL3N1Ym1pdHRpbmctcGF0Y2hlcy5odG1sDQo+IA0K
+DQpIaSBBbmR5LA0KDQpUaGVyZSBpcyBub3QgYW55IGNoYW5nZSBiZXR3ZWVuIHYwIGFuZCB2MS4g
+c28gd2Ugc2VuZCAiUmVzZW5kIHYwIiBhcyB2Mg0KaW4gdGhpcyB0aW1lLklzIGl0IGFsc28gcHJv
+cGVybHk/IGFuZCB3ZSBzZW5kIHRoZSB2ZXJzaW9uIHdoaWNoIGlzIHYzIGluDQpuZXh0IHRpbWUu
+IA0KDQpUaGFua3MuDQo=
 
-sorry for the late reply, i was away from kernel development for a few
-weeks.
-
-Andy Lutomirski <luto@kernel.org> writes:
-
-> Hi all-
->
-> I'm working on my kentry patchset, and I encountered:
->
-> commit 56e62a73702836017564eaacd5212e4d0fa1c01d
-> Author: Sven Schnelle <svens@linux.ibm.com>
-> Date:   Sat Nov 21 11:14:56 2020 +0100
->
->     s390: convert to generic entry
->
-> As part of this work, I was cleaning up the generic syscall helpers,
-> and I encountered the goodies in do_syscall() and __do_syscall().
->
-> I'm trying to wrap my head around the current code, and I'm rather confused.
->
-> 1. syscall_exit_to_user_mode_work() does *all* the exit work, not just
-> the syscall exit work.  So a do_syscall() that gets called twice will
-> do the loopy part of the exit work (e.g. signal handling) twice.  Is
-> this intentional?  If so, why?
-
-Not really intentional, but i decided to accept the overhead for now and
-fix that later by splitting up the generic entry code. Otherwise the
-patch would have had even more dependencies. I have not looked yet into
-your kentry branch, but will do that later. Maybe there is already a
-better way to do it or we can work something out.
-
-> 2. I don't understand how this PIF_SYSCALL_RESTART thing is supposed
-> to work.  Looking at the code in Linus' tree, if a signal is pending
-> and a syscall returns -ERESTARTSYS, the syscall will return back to
-> do_syscall().  The work (as in (1)) gets run, calling do_signal(),
-> which will notice -ERESTARTSYS and set PIF_SYSCALL_RESTART.
-> Presumably it will also push the signal frame onto the stack and aim
-> the return address at the svc instruction mentioned in the commit
-> message from "s390: convert to generic entry".  Then __do_syscall()
-> will turn interrupts back on and loop right back into do_syscall().
-> That seems incorrect.
-
-That sounds indeed broken. My understanding is that x86 is always
-rewinding the pc in the restart case, and is exiting to user mode. That
-would than also work with signal frames.
-
-However, on s390 we cannot simply rewind the pc as the syscall number
-might be encoded in the system call instruction. If a user would have
-rewritten the system call number (i.e. with seccomp) it would still
-execute the original syscall number.
-
-That makes me wonder why i have not seen problems with signals and system
-call restarting so far. Have to read the code again.
-
-Regards
-Sven
