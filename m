@@ -2,108 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12C234D11E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09C034D123
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhC2N33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:29:29 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:45884 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhC2N3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:29:08 -0400
-Received: by mail-il1-f197.google.com with SMTP id x7so5572535ilp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:29:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=njm30lLdcys9Fbu5KHEo3yxnkqBEADwOZXdym5nv/uc=;
-        b=lhy/r7sJkiXqz4smI5eLx2RZFRVgpI+BGlVUZpgzc04XwS5nFUv6Jwf0aMbUu1wLcQ
-         sM+bqWTvlOto2Sz/EDi7dmwZSPhHd7cBnIxSme1UqgvOeAwCBQ+l3YaHo//lfjsIWhft
-         ZZEbprfTnQQdyFC7zMt1wDEf6/qH7X3BfM849ULP06byO4QNgj6fHhgLPxGb/5g6ueG9
-         +7Chd4XGC1rqR3K34i1QcccOgi64kpGSNgC42hdRLHs6KdR0oxmv8xj9Kh7prPk5MihO
-         5xkZv9jX8jiQfPy0TAUM+paIh6Y36gRy5/Wj0kCeHWT6/3r1y7atyYmEWrQXzapAOHMl
-         aGmA==
-X-Gm-Message-State: AOAM530JkNq8hY4I+eU/ApZavO46dZoAdOWZcLzIRScOUJy/LvvmImmW
-        HkZMU+3MqHgZWOYE+D+sa8FdDVrcFC7G6WuBBjmedkS0M67l
-X-Google-Smtp-Source: ABdhPJwLG42hr66fm/k/yXoQdpdvfBL32PewoWr4++y/gQbAWCA1tHOBg50CsPlF5Ldfq+tTa/zu0oUNO2tDFWos2JiHEHW+ZwP2
+        id S231546AbhC2NaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:30:02 -0400
+Received: from mail-dm6nam12on2051.outbound.protection.outlook.com ([40.107.243.51]:31489
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231219AbhC2N3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:29:44 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hzqoqRLa5LkFcUV6uv3fGlS+/foSAGw3G8aEB0pRQ4ACZrMGuEQ9FC1eIZvAbgEA4A/pi6ro4vOTzO2KXroWzrRaICiKc2WErHLYLfIJjFSV+g0zJm2iezZ1kPoQggUoY0UkQQYjfky8ArFVEr1KV6Pdhxdl1smc1f8wTfrSfAwOjT9Y6d2VCTDnK2uSueGl8zbP+YwmGN4ZxW50WDSBROjltnHP7LVTWEyy/AH2PsZeanRFsTF/2B2P5CB4s1zSnHSxX2AhfAKX6y3lXIw3/+q0m/zYH55YWDLNQMaLZf09u8jPU8goEjI97eOGfWhLX9DWkFfsa0KQ7ftNqI9wfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=729qrDSQ9IEErNxVk5ewoli8SlnFr5eZUF7zON8xjyI=;
+ b=ofQV84pIc+qhc0CZCbkSOjKneEFQQjayLaoRxUGjrX7g7/2KiWQyWWj6xwOidxP1S9Jg9UOnReTA4xwcvRWC7HgJ7luXEhsvfKxvIzhvMIBjRS3hFkoXsAGmynHgGG35nV1gOvozbVzAzY7I09orC/RjbUMS6TmoK2myTDreuuFUQ4/9ol3R2FQIaqcUwjOFfM8C5l3AzstBy/ejXBE5Zr2QBJ8n01TPFb6PtY8repzG5TlaepobJHioJr/a3rFR2/SH1AOdHReSnammXtz7+IoZ/QB7SW14Mxg1T+Br75rXMJ0V3uKj54G+EtHw8dcUDekwrLM0fC1Av8SQ/UsqEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=729qrDSQ9IEErNxVk5ewoli8SlnFr5eZUF7zON8xjyI=;
+ b=VSc0h2Bfbz5jCVrPyZLZWwgyg3dDFYA6J0AlLm/CzXLkr4zD1ZT+Rt1/V0SbCziRhSyBmmZqdtC6TSL6tD0EvtuM7rlNPIri/t/1VHEy19vcjvaXFkzuUIFeQC2GA5FSgJ5Ax2BUxXCYT0VibhvOIfMIFzayc1pJgzT/pD257xyVW+UIoqVYI+AdVQRofe/aUVicXifHoAivnVynduBsUJL6CIxwP878pz5zoBc+7kpTo0XlWssDNDDYBj2eoIdwgSOUpmiAtDHwysKoxWjCVl13ocHfc+I6El88nSmon9n+PUdHnhi9jWF+WuwFNjMDoEW3VthhFMNgeh30rHBJSA==
+Authentication-Results: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3514.namprd12.prod.outlook.com (2603:10b6:5:183::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.24; Mon, 29 Mar
+ 2021 13:29:42 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
+ 13:29:42 +0000
+Date:   Mon, 29 Mar 2021 10:29:39 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 1/3] mm: Add unsafe_follow_pfn
+Message-ID: <20210329132939.GA1168773@nvidia.com>
+References: <20210316153303.3216674-1-daniel.vetter@ffwll.ch>
+ <20210316153303.3216674-2-daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210316153303.3216674-2-daniel.vetter@ffwll.ch>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: BL1PR13CA0081.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:685:: with SMTP id i5mr24439710jab.109.1617024546144;
- Mon, 29 Mar 2021 06:29:06 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 06:29:06 -0700
-In-Reply-To: <61897224-d54b-9390-6721-57bed6a144e5@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa874e05beacddfd@google.com>
-Subject: Re: [syzbot] WARNING: still has locks held in io_sq_thread
-From:   syzbot <syzbot+796d767eb376810256f5@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0081.namprd13.prod.outlook.com (2603:10b6:208:2b8::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.16 via Frontend Transport; Mon, 29 Mar 2021 13:29:41 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lQrxb-004u4f-U4; Mon, 29 Mar 2021 10:29:39 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8e84875c-1522-4706-6b60-08d8f2b6b578
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3514:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3514105C66A9516B629D6A24C27E9@DM6PR12MB3514.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6I89oTpVCFgoeCQdG6nQu7k8Y1TitSzTwFzUD03mWssD5Vd0/AnQRPp4vtZjT3cPuEyPNMD0bB93FtpiGRkbrR6ViqYmNMnXNGxCJBqilZtTUT6z/QFOmjGs3vogFqlSIqmkbclKhZS2LL3wqoBpOk1G20szal4illaTkD25JOerAxRz6TERce3EmaBvYwHpvDeZMwNqe+ZaKoZGhknbPg80Up7VZdyliIBrFBn1QT3G9mGizOO7dBSsKmqozfto9AbU2stzubo0LIn97mZ7xMXkJRKca/Nzo+vRVGUXun01cMmc/IJT5Mwq61MlnWQxyMb1VmAU85//khozhti6Ww/M9NkYiBUXl/9+eqqpkgxuC/38MNTzZlT3aL48BhLXLnzlNP+iSf4EviPWj8sEu1GLuF5zEqZAP/5RHcOnFToSvXUp++ytimUY8FDLmm+LSh0YU7/nVlGyJvE1VAvDwx8zWTlh36TUF0ggikJAwStWS1bnLYypOVQom3K2eFT/K/EOEkb1CyRZ6UXagS6dUjt+X4S8II4J2GOhJ7ofvyKdPXSjyH0lCpUNkO1kjANtEf7gywnVTSPRwr7mPzJTjQRT1axci/yB6O0GdV2DstFLq2VRutLx3aBIALMGM1LSMjljvcDKFxfLicG6NwX4ciYR+nEEFwtdggufB1i5zK8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(136003)(376002)(346002)(4326008)(33656002)(7416002)(54906003)(2906002)(38100700001)(26005)(478600001)(6916009)(36756003)(83380400001)(8676002)(66574015)(316002)(8936002)(9786002)(9746002)(5660300002)(86362001)(66556008)(66476007)(2616005)(186003)(426003)(1076003)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZnlFc3lNQTVPUEdlbFBnZ1N1Vzg4dmMwM2o3TUwvOVcvaEh3Tml3ek1HSlFR?=
+ =?utf-8?B?dDBSQzJKS3lxaVgydHVIRzJkaUd1T011QzlLYjlmaUhoVStCTTg4aHM0bmtO?=
+ =?utf-8?B?L0FWTlZoN0NsOU1INDByZlEvQk0vcyt5Z2ZhTmFpNWRtUFJtMDY5QzgweWtX?=
+ =?utf-8?B?UUNua0luODIrT29kVVN5cEVpRFg4SzdGNVZHekp1VytVRTZraVlZM1pxd3FD?=
+ =?utf-8?B?ZDNaeThDdzY4M1RYcmJROFhuNWZmc2YySlJ0c1ZEME13TXJSOGF2UVVqTTNG?=
+ =?utf-8?B?K1M5c1B0bmtTTThodmM0Sm0rRDVKTXJUQWlwTUlLeWQ3MFF2VStxeFl2S3FR?=
+ =?utf-8?B?MnYxR2xDUXl2UFdJT0Z2aVFzSE1xNE54S1Y4aFBIUU10SHk4dkJyTzI4aGND?=
+ =?utf-8?B?eUt1R0h5QnhlcE9HbUM3SDloWVdqMHZyakwyZC9YZnpqTDVuaFMrQU84YU1J?=
+ =?utf-8?B?UnYvTFdjZ0NKejMzSHpSUmNIRk4wTjB4NEk4VDdLcEE3L2I0VHQ5ZmpXTFJQ?=
+ =?utf-8?B?ZFlldGI3dDJlMWdCM2FOZzcvWm80VkduYjZvbVhDUW9DbFBiaFN4MU9Rdld4?=
+ =?utf-8?B?RHhmbHJCLzVQdlU2akRYQS9FSkpEVDdsMVc5SXpRMWpUUm9pcjl0SDFNR3Bp?=
+ =?utf-8?B?TWxld3EwbnIyTjhkZ3hBSXRteDBxRlFiSVRwVllnUngxczFHcEVta0g3NHF2?=
+ =?utf-8?B?Y0I5aFFid28wOHI3RWRTUnNCVWxtdCt6aWpQVHdWSTV6WkNBS0lNT1l0SlRY?=
+ =?utf-8?B?YjVQU25XSjJIamwveS9EQmFZWUN0eG0rbFVDa0dCb0tPUmhHdnZNNFNROEU5?=
+ =?utf-8?B?VStqejRMVkhIVzVkSkdtcmFhN2pTMHg1UGRXa1dUTmxhekFiOE5QQ3lpSnN1?=
+ =?utf-8?B?NWZNQXliNGU5SzdoUWt1MXlXY0xIb2tkMndaT2dxS0lOUVU2eC90NXhIMzBI?=
+ =?utf-8?B?aDdnNDFqd0haeWR2YUkyeHdNWm1GeWJmU2FyK2NsMEoxYVZDSXhvaUdlUGo2?=
+ =?utf-8?B?T3N3ZnBaY1RhdWpmRlRUVzB6di9Gck5Uci9LOFZJQ1lpQ2s1TFVVR2EyTmFK?=
+ =?utf-8?B?NkNoOThZMm44U2RQdUd2NGl5bnFabitmdHhVTkR2OERTTFBEeDhEZk5GNW5D?=
+ =?utf-8?B?K044Z01rSUY0Sk91T3YwMitBQm5tYVlmbEs3SFRCUEpKVldTTlhtWTd0bHVB?=
+ =?utf-8?B?a3dxUndmZkpkNmZkK3pWZ3hhY1c1em9keU5WU0V6azBsZ0x2a3I4ektWM1F4?=
+ =?utf-8?B?YmEwVkU0VExydEplV0dyOExjNVBwWkJnRU10YzZoZ3RTMm0ydE5nSHVMaGw4?=
+ =?utf-8?B?eEtIR1lBd1VKRmVSVDVaVWR3Y3AyR01ENFk1R3RwR1FhUTVlMGVTZUF3Zzcw?=
+ =?utf-8?B?WDhBTEpKUFZ3SEdramhVM2tYaVBselB2L2FubTRybVpIQS9tK050Q3h6My9K?=
+ =?utf-8?B?YktaOVJDUkJBVi9YdklXVTRHQnRnbTZYS3lmNUhHQzRaSFAyNXp1T0t3Y1NC?=
+ =?utf-8?B?Y0IzUUo5TlJiSU0vNXBTL29rRGZjTGRlTHVVTlJmcXFiNFdYbzlweHdrb3Y3?=
+ =?utf-8?B?VDVXYkdaeDQ2cE45TzN4bkVNVkg2MTZjbEdwdDlKUGpqc1llMldoWmo4bG9m?=
+ =?utf-8?B?ODMzZ1pCWnVlQTdqUS9FYVo5eE05QVBxZVIvaUFSZU0za0ZHajlabjlhUzc2?=
+ =?utf-8?B?aWhLN1NkVU5yajZaY0t5TWMyalNKbktRVGY0dVJNOUlIaCtzaDRlbkdSblNw?=
+ =?utf-8?Q?UQXiITZZYz6tU8FZl4AlgxGueCpz3WtS/HUHmoS?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e84875c-1522-4706-6b60-08d8f2b6b578
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 13:29:42.0809
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IsG1ZgaZN4VriPnotgDifhDjwtODr+Sv2l3nKXn58smn2UpLfJ5mjA5PAodrSIko
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3514
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Mar 16, 2021 at 04:33:01PM +0100, Daniel Vetter wrote:
+> Way back it was a reasonable assumptions that iomem mappings never
+> change the pfn range they point at. But this has changed:
+> 
+> - gpu drivers dynamically manage their memory nowadays, invalidating
+> ptes with unmap_mapping_range when buffers get moved
+> 
+> - contiguous dma allocations have moved from dedicated carvetouts to
+> cma regions. This means if we miss the unmap the pfn might contain
+> pagecache or anon memory (well anything allocated with GFP_MOVEABLE)
+> 
+> - even /dev/mem now invalidates mappings when the kernel requests that
+> iomem region when CONFIG_IO_STRICT_DEVMEM is set, see 3234ac664a87
+> ("/dev/mem: Revoke mappings when a driver claims the region")
+> 
+> Accessing pfns obtained from ptes without holding all the locks is
+> therefore no longer a good idea.
+> 
+> Unfortunately there's some users where this is not fixable (like v4l
+> userptr of iomem mappings) or involves a pile of work (vfio type1
+> iommu). For now annotate these as unsafe and splat appropriately.
+> 
+> This patch adds an unsafe_follow_pfn, which later patches will then
+> roll out to all appropriate places.
+> 
+> Also mark up follow_pfn as EXPORT_SYMBOL_GPL. The only safe way to use
+> that by drivers/modules is together with an mmu_notifier, and that's
+> all _GPL stuff.
+> 
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: Jérôme Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: kvm@vger.kernel.org
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> --
+> v5: Suggestions from Christoph
+> - reindent for less weirdness
+> - use IS_ENABLED instead of #ifdef
+> - same checks for nommu, for consistency
+> - EXPORT_SYMBOL_GPL for follow_pfn.
+> - kerneldoc was already updated in previous versions to explain when
+>   follow_pfn can be used safely
+> ---
+>  include/linux/mm.h |  2 ++
+>  mm/memory.c        | 34 ++++++++++++++++++++++++++++++++--
+>  mm/nommu.c         | 27 ++++++++++++++++++++++++++-
+>  security/Kconfig   | 13 +++++++++++++
+>  4 files changed, 73 insertions(+), 3 deletions(-)
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in kvm_wait
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-------------[ cut here ]------------
-raw_local_irq_restore() called with IRQs enabled
-WARNING: CPU: 1 PID: 5134 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Modules linked in:
-CPU: 1 PID: 5134 Comm: syz-executor.2 Not tainted 5.12.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:warn_bogus_irq_restore+0x1d/0x20 kernel/locking/irqflag-debug.c:10
-Code: bf ff cc cc cc cc cc cc cc cc cc cc cc 80 3d 65 c2 0f 04 00 74 01 c3 48 c7 c7 a0 7b 6b 89 c6 05 54 c2 0f 04 01 e8 65 19 bf ff <0f> 0b c3 48 39 77 10 0f 84 97 00 00 00 66 f7 47 22 f0 ff 74 4b 48
-RSP: 0018:ffffc90002f5f9c0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888023a7d040 RCX: 0000000000000000
-RDX: ffff88801bbcc2c0 RSI: ffffffff815b7375 RDI: fffff520005ebf2a
-RBP: 0000000000000200 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815b00de R11: 0000000000000000 R12: 0000000000000003
-R13: ffffed100474fa08 R14: 0000000000000001 R15: ffff8880b9f36000
-FS:  000000000293e400(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd20e04f88 CR3: 00000000116b8000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- kvm_wait arch/x86/kernel/kvm.c:860 [inline]
- kvm_wait+0xc9/0xe0 arch/x86/kernel/kvm.c:837
- pv_wait arch/x86/include/asm/paravirt.h:564 [inline]
- pv_wait_head_or_lock kernel/locking/qspinlock_paravirt.h:470 [inline]
- __pv_queued_spin_lock_slowpath+0x8b8/0xb40 kernel/locking/qspinlock.c:508
- pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
- queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
- queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
- do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
- spin_lock include/linux/spinlock.h:354 [inline]
- ext4_lock_group fs/ext4/ext4.h:3383 [inline]
- __ext4_new_inode+0x384f/0x5570 fs/ext4/ialloc.c:1188
- ext4_symlink+0x489/0xd50 fs/ext4/namei.c:3347
- vfs_symlink fs/namei.c:4176 [inline]
- vfs_symlink+0x10f/0x270 fs/namei.c:4161
- do_symlinkat+0x27a/0x300 fs/namei.c:4206
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x465d67
-Code: 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 58 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc15a180e8 EFLAGS: 00000206 ORIG_RAX: 0000000000000058
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000465d67
-RDX: 00007ffc15a181d3 RSI: 00000000004bfab2 RDI: 00007ffc15a181c0
-RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffc15a17f80
-R10: 00007ffc15a17e37 R11: 0000000000000206 R12: 0000000000000001
-R13: 0000000000000000 R14: 0000000000000001 R15: 00007ffc15a181c0
-
-
-Tested on:
-
-commit:         d80a59fb io_uring: drop sqd lock before handling signals f..
-git tree:       git://git.kernel.dk/linux-block io_uring-5.12
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a9b21ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=473f8fc78a7207b4
-dashboard link: https://syzkaller.appspot.com/bug?extid=796d767eb376810256f5
-compiler:       
-
+Jason
