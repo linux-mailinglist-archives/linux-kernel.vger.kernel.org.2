@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024A334C849
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E3D34CC42
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbhC2IVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56342 "EHLO mail.kernel.org"
+        id S237089AbhC2I6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:58:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232034AbhC2ING (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:13:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83E6561477;
-        Mon, 29 Mar 2021 08:13:04 +0000 (UTC)
+        id S234906AbhC2Ihe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2857A6195B;
+        Mon, 29 Mar 2021 08:37:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005585;
-        bh=+zP0ABLRRc2hPhyeSSLBrxVtLxNsL4UThJPbaTza8nE=;
+        s=korg; t=1617007034;
+        bh=CPoIX7dP6d66bbp56DcfdrUV7Uqa+Xop0lvyNuYwMPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S189skl+4Vcwn8S5sr/0N5rME/CgyYUFw8cqDLuWtLqkFYEIglMoyfVwPg81GhoZB
-         O5mB3dhhbH453XPedAuxpsikjXek+I5jpFvRO5StUnC3qGj4UCXL5Y4Z1j2d5OfokH
-         MC8gimoeOKDvnysvFBodPu3lcXVDLdGe5aDUWO9g=
+        b=p+txESDsvMBFuM07/jkOTyedf5N5Jjnh/9yUkKvFgMaRZmkJbzXhNdWHjyJT1rt0u
+         +9LDMwtvv993h3eXz+A7/HbWnHRF8Ubqq9gn37E5CKcHlz4NrUT+7B3No2PNuUCeBR
+         NAEioVAGC2Hcabb20VyE4DNnCFyXmFTqoSgfTOcA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 5.4 048/111] arm64: dts: ls1043a: mark crypto engine dma coherent
-Date:   Mon, 29 Mar 2021 09:57:56 +0200
-Message-Id: <20210329075616.791971442@linuxfoundation.org>
+        stable@vger.kernel.org, Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 161/254] nfp: flower: fix pre_tun mask id allocation
+Date:   Mon, 29 Mar 2021 09:57:57 +0200
+Message-Id: <20210329075638.480148440@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +41,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Horia Geantă <horia.geanta@nxp.com>
+From: Louis Peens <louis.peens@corigine.com>
 
-commit 4fb3a074755b7737c4081cffe0ccfa08c2f2d29d upstream.
+[ Upstream commit d8ce0275e45ec809a33f98fc080fe7921b720dfb ]
 
-Crypto engine (CAAM) on LS1043A platform is configured HW-coherent,
-mark accordingly the DT node.
+pre_tun_rule flows does not follow the usual add-flow path, instead
+they are used to update the pre_tun table on the firmware. This means
+that if the mask-id gets allocated here the firmware will never see the
+"NFP_FL_META_FLAG_MANAGE_MASK" flag for the specific mask id, which
+triggers the allocation on the firmware side. This leads to the firmware
+mask being corrupted and causing all sorts of strange behaviour.
 
-Lack of "dma-coherent" property for an IP that is configured HW-coherent
-can lead to problems, similar to what has been reported for LS1046A.
-
-Cc: <stable@vger.kernel.org> # v4.8+
-Fixes: 63dac35b58f4 ("arm64: dts: ls1043a: add crypto node")
-Link: https://lore.kernel.org/linux-crypto/fe6faa24-d8f7-d18f-adfa-44fa0caa1598@arm.com
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
-Acked-by: Li Yang <leoyang.li@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: f12725d98cbe ("nfp: flower: offload pre-tunnel rules")
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@netronome.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi |    1 +
- 1 file changed, 1 insertion(+)
+ .../ethernet/netronome/nfp/flower/metadata.c  | 24 +++++++++++++------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
---- a/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi
-@@ -241,6 +241,7 @@
- 			ranges = <0x0 0x00 0x1700000 0x100000>;
- 			reg = <0x00 0x1700000 0x0 0x100000>;
- 			interrupts = <0 75 0x4>;
-+			dma-coherent;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/metadata.c b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+index 5defd31d481c..aa06fcb38f8b 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/metadata.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+@@ -327,8 +327,14 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 		goto err_free_ctx_entry;
+ 	}
  
- 			sec_jr0: jr@10000 {
- 				compatible = "fsl,sec-v5.4-job-ring",
++	/* Do net allocate a mask-id for pre_tun_rules. These flows are used to
++	 * configure the pre_tun table and are never actually send to the
++	 * firmware as an add-flow message. This causes the mask-id allocation
++	 * on the firmware to get out of sync if allocated here.
++	 */
+ 	new_mask_id = 0;
+-	if (!nfp_check_mask_add(app, nfp_flow->mask_data,
++	if (!nfp_flow->pre_tun_rule.dev &&
++	    !nfp_check_mask_add(app, nfp_flow->mask_data,
+ 				nfp_flow->meta.mask_len,
+ 				&nfp_flow->meta.flags, &new_mask_id)) {
+ 		NL_SET_ERR_MSG_MOD(extack, "invalid entry: cannot allocate a new mask id");
+@@ -359,7 +365,8 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 			goto err_remove_mask;
+ 		}
+ 
+-		if (!nfp_check_mask_remove(app, nfp_flow->mask_data,
++		if (!nfp_flow->pre_tun_rule.dev &&
++		    !nfp_check_mask_remove(app, nfp_flow->mask_data,
+ 					   nfp_flow->meta.mask_len,
+ 					   NULL, &new_mask_id)) {
+ 			NL_SET_ERR_MSG_MOD(extack, "invalid entry: cannot release mask id");
+@@ -374,8 +381,10 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 	return 0;
+ 
+ err_remove_mask:
+-	nfp_check_mask_remove(app, nfp_flow->mask_data, nfp_flow->meta.mask_len,
+-			      NULL, &new_mask_id);
++	if (!nfp_flow->pre_tun_rule.dev)
++		nfp_check_mask_remove(app, nfp_flow->mask_data,
++				      nfp_flow->meta.mask_len,
++				      NULL, &new_mask_id);
+ err_remove_rhash:
+ 	WARN_ON_ONCE(rhashtable_remove_fast(&priv->stats_ctx_table,
+ 					    &ctx_entry->ht_node,
+@@ -406,9 +415,10 @@ int nfp_modify_flow_metadata(struct nfp_app *app,
+ 
+ 	__nfp_modify_flow_metadata(priv, nfp_flow);
+ 
+-	nfp_check_mask_remove(app, nfp_flow->mask_data,
+-			      nfp_flow->meta.mask_len, &nfp_flow->meta.flags,
+-			      &new_mask_id);
++	if (!nfp_flow->pre_tun_rule.dev)
++		nfp_check_mask_remove(app, nfp_flow->mask_data,
++				      nfp_flow->meta.mask_len, &nfp_flow->meta.flags,
++				      &new_mask_id);
+ 
+ 	/* Update flow payload with mask ids. */
+ 	nfp_flow->unmasked_data[NFP_FL_MASK_ID_LOCATION] = new_mask_id;
+-- 
+2.30.1
+
 
 
