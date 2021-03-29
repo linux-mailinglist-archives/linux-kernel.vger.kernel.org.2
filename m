@@ -2,290 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D665D34CCDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C9234CCD0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhC2JRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:17:36 -0400
-Received: from out28-169.mail.aliyun.com ([115.124.28.169]:38285 "EHLO
-        out28-169.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231585AbhC2JRP (ORCPT
+        id S235187AbhC2JP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:15:57 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:44274 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233574AbhC2JPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:17:15 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.695427-0.000532805-0.304041;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.JryDCxS_1617009430;
-Received: from 192.168.88.133(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.JryDCxS_1617009430)
-          by smtp.aliyun-inc.com(10.147.41.187);
-          Mon, 29 Mar 2021 17:17:11 +0800
-Subject: Re: [PATCH v3 08/10] pinctrl: Ingenic: Add pinctrl driver for JZ4755.
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-References: <1615975084-68203-1-git-send-email-zhouyanjie@wanyeetech.com>
- <1615975084-68203-9-git-send-email-zhouyanjie@wanyeetech.com>
- <I4VDQQ.76WDCH9W4MSC3@crapouillou.net>
- <cb82712a-44e8-f960-2a1d-f66788323ca0@wanyeetech.com>
- <3Q4NQQ.ZYKGF9R4T0B82@crapouillou.net>
-From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Message-ID: <72ba8fa4-7b66-aa06-0e14-db883025428d@wanyeetech.com>
-Date:   Mon, 29 Mar 2021 17:15:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Mon, 29 Mar 2021 05:15:22 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 652B531A;
+        Mon, 29 Mar 2021 11:15:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1617009320;
+        bh=w+u8awEcUAIyaWz4n6/GWHf/biGVytR8CCbYVcJiWg4=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Ih4AtuQDpXPwrh27FOawTDhUDEXkafBZT3R/gNhXrQ7VURJnDmvLskosmTiAByRtN
+         9zc0F/tgiYOX7w2aM8/wnaico8PEAJNOJf5N/lZah3UNL8LRZd71iaamFOifrhEHUy
+         qfTP9vXEUMmrENPEXdYXjsMOZG70dOWPIRJf5v4I=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH v2] arm64: dts: renesas: falcon-cpu: Add GP LEDs
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210322172013.1152121-1-kieran.bingham+renesas@ideasonboard.com>
+ <CAMuHMdVzW=pAbJzSmC3Wt3zH4F8kUfd-s0JkQeg5NdPsGJAVrw@mail.gmail.com>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <be500812-d3e3-4499-c6e0-504773520087@ideasonboard.com>
+Date:   Mon, 29 Mar 2021 10:15:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <3Q4NQQ.ZYKGF9R4T0B82@crapouillou.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <CAMuHMdVzW=pAbJzSmC3Wt3zH4F8kUfd-s0JkQeg5NdPsGJAVrw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Hi Geert,
 
-On 2021/3/28 上午2:30, Paul Cercueil wrote:
-> Hi Zhou,
->
-> Le jeu. 25 mars 2021 à 16:38, Zhou Yanjie <zhouyanjie@wanyeetech.com> 
-> a écrit :
->> Hi,
+On 29/03/2021 09:30, Geert Uytterhoeven wrote:
+> Hi Kieran,
+> 
+> On Mon, Mar 22, 2021 at 6:20 PM Kieran Bingham
+> <kieran.bingham+renesas@ideasonboard.com> wrote:
+>> Three general purpose LEDs are provided on the Falcon CPU board.
 >>
->> On 2021/3/23 上午2:24, Paul Cercueil wrote:
->>>
->>>
->>> Le mer. 17 mars 2021 à 17:58, 周琰杰 (Zhou Yanjie) 
->>> <zhouyanjie@wanyeetech.com> a écrit :
->>>> Add support for probing the pinctrl-ingenic driver on the
->>>> JZ4755 SoC from Ingenic.
->>>>
->>>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
->>>> ---
->>>>
->>>> Notes:
->>>>     v3:
->>>>     New patch.
->>>>
->>>>  drivers/pinctrl/pinctrl-ingenic.c | 132 
->>>> ++++++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 132 insertions(+)
->>>>
->>>> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
->>>> b/drivers/pinctrl/pinctrl-ingenic.c
->>>> index d98767b..d8b37fa 100644
->>>> --- a/drivers/pinctrl/pinctrl-ingenic.c
->>>> +++ b/drivers/pinctrl/pinctrl-ingenic.c
->>>> @@ -86,6 +86,7 @@ enum jz_version {
->>>>      ID_JZ4740,
->>>>      ID_JZ4725B,
->>>>      ID_JZ4750,
->>>> +    ID_JZ4755,
->>>>      ID_JZ4760,
->>>>      ID_JZ4770,
->>>>      ID_JZ4780,
->>>> @@ -557,6 +558,131 @@ static const struct ingenic_chip_info 
->>>> jz4750_chip_info = {
->>>>      .pull_downs = jz4750_pull_downs,
->>>>  };
->>>>
->>>> +static const u32 jz4755_pull_ups[6] = {
->>>> +    0xffffffff, 0xffffffff, 0x0fffffff, 0xffffffff, 0x33dc3fff, 
->>>> 0x0000fc00,
->>>> +};
->>>> +
->>>> +static const u32 jz4755_pull_downs[6] = {
->>>> +    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 
->>>> 0x00000000,
->>>> +};
->>>> +
->>>> +static int jz4755_uart0_data_pins[] = { 0x7c, 0x7d, };
->>>> +static int jz4755_uart0_hwflow_pins[] = { 0x7e, 0x7f, };
->>>> +static int jz4755_uart1_data_pins[] = { 0x97, 0x99, };
->>>> +static int jz4755_uart2_data_pins[] = { 0x9f, };
->>>> +static int jz4755_mmc0_1bit_pins[] = { 0x2f, 0x50, 0x5c, };
->>>> +static int jz4755_mmc0_4bit_pins[] = { 0x5d, 0x5b, 0x51, };
->>>> +static int jz4755_mmc1_1bit_pins[] = { 0x3a, 0x3d, 0x3c, };
->>>> +static int jz4755_mmc1_4bit_pins[] = { 0x3b, 0x3e, 0x3f, };
->>>> +static int jz4755_i2c_pins[] = { 0x8c, 0x8d, };
->>>> +static int jz4755_cim_pins[] = {
->>>> +    0x89, 0x8b, 0x8a, 0x88,
->>>> +    0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87,
->>>> +};
->>>> +static int jz4755_lcd_24bit_pins[] = {
->>>> +    0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67,
->>>> +    0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f,
->>>> +    0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77,
->>>> +    0x78, 0x79, 0x7a, 0x7b,
->>>> +};
->>>> +static int jz4755_nand_cs1_pins[] = { 0x55, };
->>>> +static int jz4755_nand_cs2_pins[] = { 0x56, };
->>>> +static int jz4755_nand_cs3_pins[] = { 0x57, };
->>>> +static int jz4755_nand_cs4_pins[] = { 0x58, };
->>>> +static int jz4755_nand_fre_fwe_pins[] = { 0x5c, 0x5d, };
->>>> +static int jz4755_pwm_pwm0_pins[] = { 0x94, };
->>>> +static int jz4755_pwm_pwm1_pins[] = { 0xab, };
->>>> +static int jz4755_pwm_pwm2_pins[] = { 0x96, };
->>>> +static int jz4755_pwm_pwm3_pins[] = { 0x97, };
->>>> +static int jz4755_pwm_pwm4_pins[] = { 0x98, };
->>>> +static int jz4755_pwm_pwm5_pins[] = { 0x99, };
->>>> +
->>>> +static u8 jz4755_mmc0_1bit_funcs[] = { 2, 2, 1, };
->>>> +static u8 jz4755_mmc0_4bit_funcs[] = { 1, 0, 1, };
->>>> +static u8 jz4755_lcd_24bit_funcs[] = {
->>>> +    0, 0, 0, 0, 0, 0, 0, 0,
->>>> +    0, 0, 0, 0, 0, 0, 0, 0,
->>>> +    0, 0, 0, 0, 0, 0, 1, 1,
->>>> +    1, 1, 0, 0,
->>>> +};
->>>> +
->>>> +static const struct group_desc jz4755_groups[] = {
->>>> +    INGENIC_PIN_GROUP("uart0-data", jz4755_uart0_data, 0),
->>>> +    INGENIC_PIN_GROUP("uart0-hwflow", jz4755_uart0_hwflow, 0),
->>>> +    INGENIC_PIN_GROUP("uart1-data", jz4755_uart1_data, 0),
->>>> +    INGENIC_PIN_GROUP("uart2-data", jz4755_uart2_data, 1),
->>>> +    INGENIC_PIN_GROUP_FUNCS("mmc0-1bit", jz4755_mmc0_1bit,
->>>> +                jz4755_mmc0_1bit_funcs),
->>>> +    INGENIC_PIN_GROUP_FUNCS("mmc0-4bit", jz4755_mmc0_4bit,
->>>> +                jz4755_mmc0_4bit_funcs),
->>>> +    INGENIC_PIN_GROUP("mmc1-1bit", jz4755_mmc1_1bit, 1),
->>>> +    INGENIC_PIN_GROUP("mmc1-4bit", jz4755_mmc1_4bit, 1),
->>>> +    INGENIC_PIN_GROUP("i2c-data", jz4755_i2c, 0),
->>>> +    INGENIC_PIN_GROUP("cim-data", jz4755_cim, 0),
->>>> +    INGENIC_PIN_GROUP_FUNCS("lcd-24bit", jz4755_lcd_24bit,
->>>> +                jz4755_lcd_24bit_funcs),
->>>
->>> Coud you either split this into several groups (lcd-8bit, lcd-16bit, 
->>> lcd-18bit, lcd-24bit, lcd-special, lcd-generic) like it is done for 
->>> the JZ4725B? Same for the other SoCs.
->>>
+>> Connect GP_LED1, GP_LED2, and GP_LED3 to the gpio-leds frameworks as
+>> indicator LEDs.
 >>
->> Sure, and do we need to change the JZ4740 (and the previous JZ4750) 
->> to the lcd-special + lcd-generic model? It looks more reasonable than 
->> the original lcd-tft and makes the style more uniform.
->
-> Yes, please change it for the JZ4750 too.
->
-> For the JZ4740, in theory it is too late - these are ABI and we 
-> shouldn't change them.
->
-> With that said - the only board that has a JZ4740 and is still 
-> supported (although untested, so it's not even sure it still boots) is 
-> the Ben Nanonote, which only uses the "lcd-8bit" group. So it's 
-> probably fine.
->
+>> These LEDs are arranged in a block of four LEDs on the board itself, but
+>> the fourth LED is as yet unidentified.
+>>
+>> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> Thanks for your patch (which does not apply against renesas-devel)!
 
-Sure, I will do it.
+Oh, I'm sure I was based on renesas-devel/master when submitting that...
+I guess I need to rebase my branch again.
+
+> 
+>> --
+> 
+> --- ;-)
+
+Yup - sorry ;-)
+
+> 
+>> v2:
+>>  - Move to r8a779a0-falcon-cpu.dtsi
+>>  - Define the colour, and function.
+> 
+>> --- a/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+>> +++ b/arch/arm64/boot/dts/renesas/r8a779a0-falcon-cpu.dtsi
+>> @@ -6,12 +6,37 @@
+>>   */
+>>
+>>  #include <dt-bindings/gpio/gpio.h>
+>> +#include <dt-bindings/leds/common.h>
+>> +
+>>  #include "r8a779a0.dtsi"
+>>
+>>  / {
+>>         model = "Renesas Falcon CPU board";
+>>         compatible = "renesas,falcon-cpu", "renesas,r8a779a0";
+>>
+>> +       leds {
+>> +               compatible = "gpio-leds";
+>> +
+>> +               led1 {
+> 
+> led-1?
+> 
+> Documentation/devicetree/bindings/leds/leds-gpio.yaml says:
+> 
+>   # The first form is preferred, but fall back to just 'led' anywhere in the
+>   # node name to at least catch some child nodes.
+>   "(^led-[0-9a-f]$|led)":
+
+Aha so picky ;-)
 
 
-> Cheers,
-> -Paul
->
->>> Alternatively just remove the "lcd" function for now.
->>>
->>>> +    { "lcd-no-pins", },
->>>
->>> And remove this.
->>>
->>> Cheers,
->>> -Paul
->>>
->>>> +    INGENIC_PIN_GROUP("nand-cs1", jz4755_nand_cs1, 0),
->>>> +    INGENIC_PIN_GROUP("nand-cs2", jz4755_nand_cs2, 0),
->>>> +    INGENIC_PIN_GROUP("nand-cs3", jz4755_nand_cs3, 0),
->>>> +    INGENIC_PIN_GROUP("nand-cs4", jz4755_nand_cs4, 0),
->>>> +    INGENIC_PIN_GROUP("nand-fre-fwe", jz4755_nand_fre_fwe, 0),
->>>> +    INGENIC_PIN_GROUP("pwm0", jz4755_pwm_pwm0, 0),
->>>> +    INGENIC_PIN_GROUP("pwm1", jz4755_pwm_pwm1, 1),
->>>> +    INGENIC_PIN_GROUP("pwm2", jz4755_pwm_pwm2, 0),
->>>> +    INGENIC_PIN_GROUP("pwm3", jz4755_pwm_pwm3, 0),
->>>> +    INGENIC_PIN_GROUP("pwm4", jz4755_pwm_pwm4, 0),
->>>> +    INGENIC_PIN_GROUP("pwm5", jz4755_pwm_pwm5, 0),
->>>> +};
->>>> +
->>>> +static const char *jz4755_uart0_groups[] = { "uart0-data", 
->>>> "uart0-hwflow", };
->>>> +static const char *jz4755_uart1_groups[] = { "uart1-data", };
->>>> +static const char *jz4755_uart2_groups[] = { "uart2-data", };
->>>> +static const char *jz4755_mmc0_groups[] = { "mmc0-1bit", 
->>>> "mmc0-4bit", };
->>>> +static const char *jz4755_mmc1_groups[] = { "mmc0-1bit", 
->>>> "mmc0-4bit", };
->>>> +static const char *jz4755_i2c_groups[] = { "i2c-data", };
->>>> +static const char *jz4755_cim_groups[] = { "cim-data", };
->>>> +static const char *jz4755_lcd_groups[] = { "lcd-24bit", 
->>>> "lcd-no-pins", };
->>>> +static const char *jz4755_nand_groups[] = {
->>>> +    "nand-cs1", "nand-cs2", "nand-cs3", "nand-cs4", "nand-fre-fwe",
->>>> +};
->>>> +static const char *jz4755_pwm0_groups[] = { "pwm0", };
->>>> +static const char *jz4755_pwm1_groups[] = { "pwm1", };
->>>> +static const char *jz4755_pwm2_groups[] = { "pwm2", };
->>>> +static const char *jz4755_pwm3_groups[] = { "pwm3", };
->>>> +static const char *jz4755_pwm4_groups[] = { "pwm4", };
->>>> +static const char *jz4755_pwm5_groups[] = { "pwm5", };
->>>> +
->>>> +static const struct function_desc jz4755_functions[] = {
->>>> +    { "uart0", jz4755_uart0_groups, 
->>>> ARRAY_SIZE(jz4755_uart0_groups), },
->>>> +    { "uart1", jz4755_uart1_groups, 
->>>> ARRAY_SIZE(jz4755_uart1_groups), },
->>>> +    { "uart2", jz4755_uart2_groups, 
->>>> ARRAY_SIZE(jz4755_uart2_groups), },
->>>> +    { "mmc0", jz4755_mmc0_groups, ARRAY_SIZE(jz4755_mmc0_groups), },
->>>> +    { "mmc1", jz4755_mmc1_groups, ARRAY_SIZE(jz4755_mmc1_groups), },
->>>> +    { "i2c", jz4755_i2c_groups, ARRAY_SIZE(jz4755_i2c_groups), },
->>>> +    { "cim", jz4755_cim_groups, ARRAY_SIZE(jz4755_cim_groups), },
->>>> +    { "lcd", jz4755_lcd_groups, ARRAY_SIZE(jz4755_lcd_groups), },
->>>> +    { "nand", jz4755_nand_groups, ARRAY_SIZE(jz4755_nand_groups), },
->>>> +    { "pwm0", jz4755_pwm0_groups, ARRAY_SIZE(jz4755_pwm0_groups), },
->>>> +    { "pwm1", jz4755_pwm1_groups, ARRAY_SIZE(jz4755_pwm1_groups), },
->>>> +    { "pwm2", jz4755_pwm2_groups, ARRAY_SIZE(jz4755_pwm2_groups), },
->>>> +    { "pwm3", jz4755_pwm3_groups, ARRAY_SIZE(jz4755_pwm3_groups), },
->>>> +    { "pwm4", jz4755_pwm4_groups, ARRAY_SIZE(jz4755_pwm4_groups), },
->>>> +    { "pwm5", jz4755_pwm5_groups, ARRAY_SIZE(jz4755_pwm5_groups), },
->>>> +};
->>>> +
->>>> +static const struct ingenic_chip_info jz4755_chip_info = {
->>>> +    .num_chips = 6,
->>>> +    .reg_offset = 0x100,
->>>> +    .version = ID_JZ4755,
->>>> +    .groups = jz4755_groups,
->>>> +    .num_groups = ARRAY_SIZE(jz4755_groups),
->>>> +    .functions = jz4755_functions,
->>>> +    .num_functions = ARRAY_SIZE(jz4755_functions),
->>>> +    .pull_ups = jz4755_pull_ups,
->>>> +    .pull_downs = jz4755_pull_downs,
->>>> +};
->>>> +
->>>>  static const u32 jz4760_pull_ups[6] = {
->>>>      0xffffffff, 0xfffcf3ff, 0xffffffff, 0xffffcfff, 0xfffffb7c, 
->>>> 0xfffff00f,
->>>>  };
->>>> @@ -2646,6 +2772,7 @@ static const struct of_device_id 
->>>> ingenic_gpio_of_match[] __initconst = {
->>>>      { .compatible = "ingenic,jz4740-gpio", },
->>>>      { .compatible = "ingenic,jz4725b-gpio", },
->>>>      { .compatible = "ingenic,jz4750-gpio", },
->>>> +    { .compatible = "ingenic,jz4755-gpio", },
->>>>      { .compatible = "ingenic,jz4760-gpio", },
->>>>      { .compatible = "ingenic,jz4770-gpio", },
->>>>      { .compatible = "ingenic,jz4780-gpio", },
->>>> @@ -2853,6 +2980,11 @@ static const struct of_device_id 
->>>> ingenic_pinctrl_of_match[] = {
->>>>          .compatible = "ingenic,jz4750-pinctrl",
->>>>          .data = IF_ENABLED(CONFIG_MACH_JZ4750, &jz4750_chip_info)
->>>>      },
->>>> +    {
->>>> +        .compatible = "ingenic,jz4755-pinctrl",
->>>> +        .data = IF_ENABLED(CONFIG_MACH_JZ4755, &jz4755_chip_info)
->>>> +    },
->>>> +    {
->>>>          .compatible = "ingenic,jz4760-pinctrl",
->>>>          .data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
->>>>      },
->>>> -- 
->>>> 2.7.4
->>>>
->>>
->
+>> +                       gpios = <&gpio4 18 GPIO_ACTIVE_HIGH>;
+>> +                       color = <LED_COLOR_ID_GREEN>;
+>> +                       function = LED_FUNCTION_INDICATOR;
+>> +                       function-enumerator = <1>;
+>> +               };
+>> +               led2 {
+>> +                       gpios = <&gpio4 19 GPIO_ACTIVE_HIGH>;
+>> +                       color = <LED_COLOR_ID_GREEN>;
+>> +                       function = LED_FUNCTION_INDICATOR;
+>> +                       function-enumerator = <2>;
+>> +               };
+>> +               led3 {
+>> +                       gpios = <&gpio4 20 GPIO_ACTIVE_HIGH>;
+>> +                       color = <LED_COLOR_ID_GREEN>;
+>> +                       function = LED_FUNCTION_INDICATOR;
+>> +                       function-enumerator = <3>;
+>> +               };
+>> +       };
+>> +
+>>         memory@48000000 {
+>>                 device_type = "memory";
+>>                 /* first 128MB is reserved for secure area. */
+> 
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel for v5.13, with the above fixed.
+
+Thanks.
+
+For reference only, As previously discussed there is a fourth led in
+this block of LEDs arranged on the board.
+
+I can only confirm that it is not controllable by either GPIO4{17,21}.
+
+But I have not been able to locate what might be controlling it.
+
+So for now, it remains ignored. It might not be the safest to go
+flipping all of the GPIOs randomly on this board ;-)
+
+--
+Kieran
+
+
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+
