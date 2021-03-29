@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0DE34D197
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BAE034D19A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhC2NpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbhC2Nov (ORCPT
+        id S231579AbhC2NqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:46:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58022 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231297AbhC2Npo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:44:51 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1EDC061764
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:44:51 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id b14so18504448lfv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:44:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/xbwOyUoByuGnZGoWKpGwyaF8Ra1/D45zi9BaPI7asA=;
-        b=iLaLQP3gfwQoeqqnF5bgUGM7HmMcRJd2XQHUEp2ZXgZlKyrHNnyDBgzyenG7VRZAkF
-         TkzvXw0PdghuCeoFyIHVAyjML18L6DnL1Hm2qHPdqlUDIqO+7D5DIFdTbqWTL6RsoslN
-         frLA/pVwrLgTFkwzc8E+HCJfWM2a1mHPJxa5YgZ+221DPxMO5Dy422whkdUC9MhzSUh9
-         2rOQox2y9WTkTSEc/xw4jjloCHigCq6GFtgQYrqbSvXYEZAy3M4vdnPZgY+i1bRuZ7CU
-         Z8VriZNADTlteSOp000kLFSykkZfOujZP2h5exuCf3xSPgm0yGnV9sxj3dfzMnrR4+bG
-         c37A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/xbwOyUoByuGnZGoWKpGwyaF8Ra1/D45zi9BaPI7asA=;
-        b=f3GbFHRZB0pK1U0uqUIjLDylfcmzMtSMmrWy7k2Jg0+Ha40ZQ5VK3NHxJyvhiQKiYE
-         QvkPgUg42bJ/9zsAOjqLANMYO9AGTQUWWKYSseloUexDilJYYnJlKYcW41G5V7fZevlw
-         O8gvj6bP9kMZY9ytlYDuUYAKR4Qejt9BbDFvJp9l1rYTCpz5lvFLiW7f4mHI93r8seJR
-         lMJX1SFUF1F3fpKtPlh/PVy5L+qKD3/6Wm4wgT7BRvVJgP2w6EyfD8SHs1Wi+iX9Hwq6
-         zFI7s/I88M3dG0rpt9g0z5MsgXuiAz0QUvUXmf1G4rKTJKjCJ61/dwH6oX+Cy0oVRpOq
-         qvDg==
-X-Gm-Message-State: AOAM531WLfuvZF/H24YUQlqw8BPadqbkUly6pJ5e3dD/asbtwZGA1zO8
-        D4n6j6lIbPHCOp4UnhxYhHDtHuXynwnuLLCLTU7Oqg==
-X-Google-Smtp-Source: ABdhPJx46cwsZAPTk7xADrpjLswh2jZ2RWz0/XBNMefSDCHrAKWZDNbXjH4pAv01Lms1i1d6DR1r6h75l/y09/ITdeY=
-X-Received: by 2002:a05:6512:243:: with SMTP id b3mr16860525lfo.529.1617025489839;
- Mon, 29 Mar 2021 06:44:49 -0700 (PDT)
+        Mon, 29 Mar 2021 09:45:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617025543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0y2XlpOQ1zPIm8nre1SSlzdpsIZsBs0a+WqNhPR+L+k=;
+        b=OV9GAZtOsyP7jyjSWLtjnDKG1tny9xHNedh5N3RH0FgE7sYIxk/fsDmrtBkJ4oKcXlBvIk
+        mVKElFGT1ZYcHF17EJtMLLM9L1VeVfhOQk9ayLw03t22kyDiZw1+OiF+ecio9x4F6VUb1u
+        3H3+tjieTU3lxGOLI2c68sB8k2zr92k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-FMEv17uKOpSmyn2AsymNJA-1; Mon, 29 Mar 2021 09:45:41 -0400
+X-MC-Unique: FMEv17uKOpSmyn2AsymNJA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED4BA84B9A0;
+        Mon, 29 Mar 2021 13:45:39 +0000 (UTC)
+Received: from [10.10.112.16] (ovpn-112-16.rdu2.redhat.com [10.10.112.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5309560CFB;
+        Mon, 29 Mar 2021 13:45:38 +0000 (UTC)
+Subject: Re: [PATCH v2] livepatch: Replace the fake signal sending with
+ TIF_NOTIFY_SIGNAL infrastructure
+To:     Miroslav Benes <mbenes@suse.cz>, jpoimboe@redhat.com,
+        jikos@kernel.org, pmladek@suse.com
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk
+References: <20210329132815.10035-1-mbenes@suse.cz>
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+Message-ID: <c6dd4315-2e90-8786-e5ec-a377ac8c12f9@redhat.com>
+Date:   Mon, 29 Mar 2021 09:45:37 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210329015938.20316-1-brad@pensando.io> <20210329015938.20316-14-brad@pensando.io>
-In-Reply-To: <20210329015938.20316-14-brad@pensando.io>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 29 Mar 2021 15:44:38 +0200
-Message-ID: <CACRpkda78p=aU5xfT+HtC9OCkZdkVEiN64F1jck2FDJB02C+Rg@mail.gmail.com>
-Subject: Re: [PATCH v2 13/13] gpio: Use linux/gpio/driver.h
-To:     Brad Larson <brad@pensando.io>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210329132815.10035-1-mbenes@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 4:00 AM Brad Larson <brad@pensando.io> wrote:
+On 3/29/21 9:28 AM, Miroslav Benes wrote:
+> Livepatch sends a fake signal to all remaining blocking tasks of a
+> running transition after a set period of time. It uses TIF_SIGPENDING
+> flag for the purpose. Commit 12db8b690010 ("entry: Add support for
+> TIF_NOTIFY_SIGNAL") added a generic infrastructure to achieve the same.
+> Replace our bespoke solution with the generic one.
+> 
+> Reviewed-by: Jens Axboe <axboe@kernel.dk>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Miroslav Benes <mbenes@suse.cz>
+> ---
+> v2:
+> - #include from kernel/signal.c removed [Petr]
+> 
+>   kernel/livepatch/transition.c | 5 ++---
+>   kernel/signal.c               | 4 +---
+>   2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/kernel/livepatch/transition.c b/kernel/livepatch/transition.c
+> index f6310f848f34..3a4beb9395c4 100644
+> --- a/kernel/livepatch/transition.c
+> +++ b/kernel/livepatch/transition.c
+> @@ -9,6 +9,7 @@
+>   
+>   #include <linux/cpu.h>
+>   #include <linux/stacktrace.h>
+> +#include <linux/tracehook.h>
+>   #include "core.h"
+>   #include "patch.h"
+>   #include "transition.h"
+> @@ -369,9 +370,7 @@ static void klp_send_signals(void)
+>   			 * Send fake signal to all non-kthread tasks which are
+>   			 * still not migrated.
+>   			 */
+> -			spin_lock_irq(&task->sighand->siglock);
+> -			signal_wake_up(task, 0);
+> -			spin_unlock_irq(&task->sighand->siglock);
+> +			set_notify_signal(task);
+>   		}
+>   	}
+>   	read_unlock(&tasklist_lock);
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index f2a1b898da29..604290a8ca89 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -43,7 +43,6 @@
+>   #include <linux/cn_proc.h>
+>   #include <linux/compiler.h>
+>   #include <linux/posix-timers.h>
+> -#include <linux/livepatch.h>
+>   #include <linux/cgroup.h>
+>   #include <linux/audit.h>
+>   
+> @@ -181,8 +180,7 @@ void recalc_sigpending_and_wake(struct task_struct *t)
+>   
+>   void recalc_sigpending(void)
+>   {
+> -	if (!recalc_sigpending_tsk(current) && !freezing(current) &&
+> -	    !klp_patch_pending(current))
+> +	if (!recalc_sigpending_tsk(current) && !freezing(current))
+>   		clear_thread_flag(TIF_SIGPENDING);
+>   
+>   }
+> 
 
-> New drivers should include <linux/gpio/driver.h> instead
-> of legacy <linux/gpio.h>.
->
-> Signed-off-by: Brad Larson <brad@pensando.io>
+Looks good to me.  Thanks for checking on this and updating.
 
-Fold into patch 1 as indicated by Greg.
+Acked-by: Joe Lawrence <joe.lawrence@redhat.com>
 
-Yours,
-Linus Walleij
+-- Joe
+
