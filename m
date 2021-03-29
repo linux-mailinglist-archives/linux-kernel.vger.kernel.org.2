@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F82D34CDCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451BB34CDD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhC2KPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:15:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59204 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232172AbhC2KOa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:14:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6B271B3DF;
-        Mon, 29 Mar 2021 10:14:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 0EFC01E4353; Mon, 29 Mar 2021 12:14:29 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 12:14:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Alexander Lochmann <alexander.lochmann@tu-dortmund.de>
-Cc:     Jan Kara <jack@suse.cz>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] Updated locking documentation for transaction_t
-Message-ID: <20210329101429.GA4283@quack2.suse.cz>
-References: <20210210095740.54881-1-alexander.lochmann@tu-dortmund.de>
- <20210210095740.54881-2-alexander.lochmann@tu-dortmund.de>
- <20210211093027.GI19070@quack2.suse.cz>
- <ec682a4c-f4f7-35fe-dc35-6c0b53d6ecda@tu-dortmund.de>
+        id S231704AbhC2KSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:18:37 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37528 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229655AbhC2KSO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 06:18:14 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 314991C0B81; Mon, 29 Mar 2021 12:18:12 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 12:18:10 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/33] 4.4.264-rc1 review
+Message-ID: <20210329101810.GA31197@amd>
+References: <20210329075605.290845195@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
 Content-Disposition: inline
-In-Reply-To: <ec682a4c-f4f7-35fe-dc35-6c0b53d6ecda@tu-dortmund.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 26-03-21 09:18:45, Alexander Lochmann wrote:
-> On 11.02.21 10:30, Jan Kara wrote:
-> >> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> >> index 99d3cd051ac3..18f77d9b1745 100644
-> >> --- a/include/linux/jbd2.h
-> >> +++ b/include/linux/jbd2.h
-> >> @@ -594,18 +594,18 @@ struct transaction_s
-> >>  	 */
-> >>  	unsigned long		t_log_start;
-> >>  
-> >> -	/* Number of buffers on the t_buffers list [j_list_lock] */
-> >> +	/* Number of buffers on the t_buffers list [j_list_lock, no lock for quick racy checks] */
-> >>  	int			t_nr_buffers;
-> > 
-> > So this case is actually somewhat different now that I audited the uses.
-> > There are two types of users - commit code (fs/jbd2/commit.c) and others.
-> > Other users properly use j_list_lock to access t_nr_buffers. Commit code
-> > does not use any locks because committing transaction is fully in
-> > ownership of the jbd2 thread and all other users need to check & wait for
-> > commit to be finished before doing anything with the transaction's buffers.
-> 
-> I'm still trying understand how thinks work:
-> Accesses to transaction_t might occur from different contexts. Thus,
-> locks are necessary. If it comes to the commit phase, every other
-> context has to wait until jbd2 thread has done its work. Therefore, jbd2
-> thread does not need any locks to access a transaction_t (or just parts
-> of it?) during commit phase.
-> Is that correct?
 
-Yes, that is correct.
+--mP3DRpeJDSE+ciuQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> If so: I was thinking whether it make sense to ignore all memory
-> accesses to a transaction_t (or parts of it) that happen in the commit
-> phase. They deliberately ignore the locking policy, and would confuse
-> our approach.
-> 
-> Is the commit phase performed by jbd2_journal_commit_transaction()?
-> We would add this function to our blacklist for transaction_t.
+Hi!
 
-Yes, commit phase is implemented by jbd2_journal_commit_transaction() and
-the functions it calls.
+> This is the start of the stable review cycle for the 4.4.264 release.
+> There are 33 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+CIP testing did not find any problems here:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+5.10.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+								Pavel
+								=09
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--mP3DRpeJDSE+ciuQ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBhqWIACgkQMOfwapXb+vIiswCfQ3uEAlu/EDEbL3ExaHDBNOOq
+8z0Anjs9nQxecq5QIpaX7X6h0yDzlf0Q
+=6xA+
+-----END PGP SIGNATURE-----
+
+--mP3DRpeJDSE+ciuQ--
