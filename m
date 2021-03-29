@@ -2,98 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0E8734D15D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF5634D170
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhC2NhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:37:10 -0400
-Received: from mga09.intel.com ([134.134.136.24]:31833 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231650AbhC2Ngw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:36:52 -0400
-IronPort-SDR: svhutYRDrxRmUVufpF1L/Y4SyUsezzL29KwbMTlFSbQFE8qtLycFaLdFepL2rvrdtbY2VU9pcA
- 0/Xdl/pBssrw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="191648475"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="191648475"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 06:36:52 -0700
-IronPort-SDR: v+D+pZwVI4TovMEJ7F0yqJodzYypb5nEhQ6RTZHPxQKaz11RYGmvF/BLvL80xnzMUw4a72gKba
- 1zNAwoLfr1qg==
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="393178570"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 06:36:50 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lQs4V-00H25j-5V; Mon, 29 Mar 2021 16:36:47 +0300
-Date:   Mon, 29 Mar 2021 16:36:47 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        shuah@kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH v7 2/4] lib: vsprintf: Fix handling of number field
- widths in vsscanf
-Message-ID: <YGHX73vumna0AfwD@smile.fi.intel.com>
-References: <20210329120824.3006-1-rf@opensource.cirrus.com>
- <20210329120824.3006-2-rf@opensource.cirrus.com>
+        id S231837AbhC2NiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:38:01 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15384 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231839AbhC2Nhy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 09:37:54 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F8D9t0FKLzlW3Q;
+        Mon, 29 Mar 2021 21:36:02 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
+ 21:37:39 +0800
+Subject: Re: [Linuxarm] Re: [PATCH v3 00/12] acpi: fix some coding style
+ issues
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+References: <1616846904-25719-1-git-send-email-tanxiaofei@huawei.com>
+ <CAJZ5v0i=RPyvWfVuGQ0nWf_0QRw70=qZd6j85CTPWaaWPa_5KQ@mail.gmail.com>
+CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>, <linuxarm@openeuler.org>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <6c4f84ca-1a31-d2a7-5566-0e5fea408181@huawei.com>
+Date:   Mon, 29 Mar 2021 21:37:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329120824.3006-2-rf@opensource.cirrus.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <CAJZ5v0i=RPyvWfVuGQ0nWf_0QRw70=qZd6j85CTPWaaWPa_5KQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 01:08:22PM +0100, Richard Fitzgerald wrote:
-> The existing code attempted to handle numbers by doing a strto[u]l(),
-> ignoring the field width, and then repeatedly dividing to extract the
-> field out of the full converted value. If the string contains a run of
-> valid digits longer than will fit in a long or long long, this would
-> overflow and no amount of dividing can recover the correct value.
-> 
-> This patch fixes vsscanf() to obey number field widths when parsing
-> the number.
-> 
-> A new _parse_integer_limit() is added that takes a limit for the number
-> of characters to parse. The number field conversion in vsscanf is changed
-> to use this new function.
-> 
-> If a number starts with a radix prefix, the field width  must be long
-> enough for at last one digit after the prefix. If not, it will be handled
-> like this:
-> 
->  sscanf("0x4", "%1i", &i): i=0, scanning continues with the 'x'
->  sscanf("0x4", "%2i", &i): i=0, scanning continues with the '4'
-> 
-> This is consistent with the observed behaviour of userland sscanf.
-> 
-> Note that this patch does NOT fix the problem of a single field value
-> overflowing the target type. So for example:
-> 
->   sscanf("123456789abcdef", "%x", &i);
-> 
-> Will not produce the correct result because the value obviously overflows
-> INT_MAX. But sscanf will report a successful conversion.
-> 
-> Note that where a very large number is used to mean "unlimited", the value
-> INT_MAX is used for consistency with the behaviour of vsnprintf().
+Hi Rafael,
 
-...
+On 2021/3/29 20:50, Rafael J. Wysocki wrote:
+> On Sat, Mar 27, 2021 at 1:11 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
+>>
+>> Fix some coding style issues reported by checkpatch.pl.
+>> Only cleanup and no function changes.
+>>
+>> Differences from v2 to v3:
+>> - Remove the modifications that may cause function change.
+>>
+>> Differences from v1 to v2:
+>> - Add subsystem and module name in the name of patch 05/15.
+>> - Change to use more proper module name for some patch names.
+>>
+>> Xiaofei Tan (12):
+>>   ACPI: APD: fix a block comment align issue
+>>   ACPI: processor: fix some coding style issues
+>>   ACPI: ipmi: remove useless return statement for void function
+>>   ACPI: LPSS: add a missed blank line after declarations
+>>   ACPI: acpi_pad: add a missed blank line after declarations
+>>   ACPI: battery: fix some coding style issues
+>>   ACPI: button: fix some coding style issues
+>>   ACPI: CPPC: fix some coding style issues
+>>   ACPI: custom_method: fix a coding style issue
+>>   ACPI: PM: add a missed blank line after declarations
+>>   ACPI: sysfs: fix some coding style issues
+>>   ACPI: dock: fix some coding style issues
+>>
+>>  drivers/acpi/acpi_apd.c       |  8 ++---
+>>  drivers/acpi/acpi_ipmi.c      |  1 -
+>>  drivers/acpi/acpi_lpss.c      |  2 ++
+>>  drivers/acpi/acpi_pad.c       |  4 +++
+>>  drivers/acpi/acpi_processor.c | 18 +++--------
+>>  drivers/acpi/battery.c        | 63 ++++++++++++++++++++------------------
+>>  drivers/acpi/button.c         |  9 ++----
+>>  drivers/acpi/cppc_acpi.c      | 71 ++++++++++++++++++++++---------------------
+>>  drivers/acpi/custom_method.c  |  2 +-
+>>  drivers/acpi/device_pm.c      |  3 ++
+>>  drivers/acpi/device_sysfs.c   | 15 ++++++---
+>>  drivers/acpi/dock.c           |  7 +++--
+>>  12 files changed, 106 insertions(+), 97 deletions(-)
+>>
+>> --
+>
+> Can you please stop sending new versions of this for a while?
+>
 
->  unsigned long simple_strtoul(const char *cp, char **endp, unsigned int base)
->  {
-> -	return simple_strtoull(cp, endp, base);
-> +	return simple_strntoull(cp, INT_MAX, endp, base);
-
-Why do you need this change?
+OK.
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+> You've sent three of them over the last weekend and honestly I haven't
+> had a chance to look at the first one even.
 
+
+I tried to fix a low-level mistake as quickly as possible. I'm sorry for 
+that
+
+
+
+> _______________________________________________
+> Linuxarm mailing list -- linuxarm@openeuler.org
+> To unsubscribe send an email to linuxarm-leave@openeuler.org
+>
 
