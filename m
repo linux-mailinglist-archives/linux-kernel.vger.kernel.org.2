@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD8934CF50
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C337A34CF4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231268AbhC2Lrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
+        id S231224AbhC2Lr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230470AbhC2LrW (ORCPT
+        with ESMTP id S230467AbhC2LrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:47:22 -0400
-Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff8a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20E3C061574;
-        Mon, 29 Mar 2021 04:47:21 -0700 (PDT)
-Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
-        by postout2.mail.lrz.de (Postfix) with ESMTP id 4F89mM0gbfzyY0;
-        Mon, 29 Mar 2021 13:47:15 +0200 (CEST)
-Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
-        reason="pass (just generated, assumed good)" header.d=tum.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :x-mailer:organization:references:in-reply-to:message-id:subject
-        :subject:from:from:date:date:received:received; s=postout; t=
-        1617018434; bh=fyRt8Q17qbrtWYv3G4QVMKWyQh6rQJdkL/LO34jc++M=; b=g
-        b9Hx45R+RV+qCvyvFB+N6Waj9Vi8+pEopX2H6I3roXVgEEd71m9p19cYcaSKrYmv
-        p9V/HN9FO7yYvEudZssVY8ATHeWAvzGVzqQai+FRvqCArzhloZ1p3n4YnWtv439g
-        /86f+5h7sjObEoYRAe6E4zSabqZaOiuqlrzijmfRCyA/T/B54v900ARYzgumCQal
-        KopxfZqi4dF5Dhpb/sr179gyrw1dKTFRFltNX2KFq3PcUKHEGIpDffqEPZuBbrE+
-        mfMMosHqSWGaMNvIOekk2zHzgQiBOHeV1QmxWLvIdg9epKkHpbNvpxAHchC1wHu2
-        1RPzyO2NX+vyk4FBf8T/A==
-X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
-X-Spam-Flag: NO
-X-Spam-Score: -2.875
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.875 tagged_above=-999 required=5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
-        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
-        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
-        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
-        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
-        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
-        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
-        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
-        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
-        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
-        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
-        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
-        LRZ_MSGID_AN_AN=0.001, LRZ_URL_HTTP_SINGLE=0.001,
-        LRZ_URL_PLAIN_SINGLE=0.001] autolearn=no autolearn_force=no
-Received: from postout2.mail.lrz.de ([127.0.0.1])
-        by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
-        with LMTP id 4_lPgwMgQBi1; Mon, 29 Mar 2021 13:47:14 +0200 (CEST)
-Received: from yaviniv.e18.physik.tu-muenchen.de (yaviniv.e18.physik.tu-muenchen.de [10.152.72.81])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4F89mL0C8xzyY3;
-        Mon, 29 Mar 2021 13:47:13 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 13:47:13 +0200
-From:   Andrei Rabusov <a.rabusov@tum.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/221] 5.10.27-rc1 review
-Message-ID: <20210329134713.05d7ffaf@yaviniv.e18.physik.tu-muenchen.de>
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
-Organization: TUM E18
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 29 Mar 2021 07:47:18 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113E1C061574;
+        Mon, 29 Mar 2021 04:47:18 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so6515774wmj.2;
+        Mon, 29 Mar 2021 04:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/+Lj/2HaePE9ZbmLrkf0oDmdmPYd6wO1doOsEpNfmzk=;
+        b=PZgKOycvkhuVEF8tOTQP+bdoe4R1L0KUCVi9bDR1Ync5LAYraWl+5ilxmPkKZOltou
+         kp14FSZmOi9km59EwQmlxrbWiIj14qKW1Br4KzbWlT6KKbxrkTruUOqA3ljgxwbShptE
+         pdlE12Cqk4j4yf+jtK0P2v2gMHY+bDD+O2cpYPTg4C7lpxqk0QlPKUDKS0vNiXqlTZpN
+         oZBoo9qEI6zU/Gfpophy1pProg00WYcjFOfUSsIBHp8fd6YfzFOzX1aPt8DL8SWa2esL
+         4Mif7iz7yHeb4ZIFBWdfLCN3DrPlV4zQObYTiE+BFexnmIkP6C0YNIMBXDEOv7yYp7T3
+         1L8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/+Lj/2HaePE9ZbmLrkf0oDmdmPYd6wO1doOsEpNfmzk=;
+        b=ed1wvL8fEYZp2u8fzTguGuuIqz0/k/KjrLhyx0PqYEeUZ/UK/PNyI+GDhVB+1/htY8
+         qfi9MSKeGY/PZOjIJwix/kfkMoc+37jRc59mdNzjzaZ+QiaHPKwK70qqiSOtC55zUpEi
+         l/YsxKyfSFlHJ0LNponFBuGUQx5lAa7aC1zXsbqcL4ypms/qRpMkDY5apDb1Qd8EkdUQ
+         1nhiMHMU83IzgDIGbf3jFw0bQYK90GIUiDBwZX3Rsf7EQPqXLc8Ug7cGg8B6QwTJNGEu
+         VFIiJZnjzJ9y7wQVEsrE16/7thxz74ssnBQbejzEdP8KDZPqODa0UUMG/YjVNIhLe+5g
+         c6pQ==
+X-Gm-Message-State: AOAM533e1Yvoot8UCtqVuKr7qxWyn3t7IzlUl30aQXFi4spPPGexFnSA
+        lEtttMXNO/TVwwzbrlTh0O0=
+X-Google-Smtp-Source: ABdhPJzE5G8N/olo2jafAg3eQ871kyiQXpS6UKbqstv3IT1K7rSSv/tb4wT1nCl68AXIzS5QCdcyjA==
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr24202271wmi.107.1617018436804;
+        Mon, 29 Mar 2021 04:47:16 -0700 (PDT)
+Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
+        by smtp.gmail.com with ESMTPSA id 1sm25030535wmj.2.2021.03.29.04.47.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 04:47:16 -0700 (PDT)
+Subject: Re: [PATCH v4 1/4] dt-bindings: arm64: dts: mediatek: Add
+ mt8183-kukui-jacuzzi-damu
+To:     Hsin-Yi Wang <hsinyi@chromium.org>, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Ben Ho <Ben.Ho@mediatek.com>
+References: <20210319035245.2751911-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <16cc2611-c2d3-e283-2f40-a424b2067f72@gmail.com>
+Date:   Mon, 29 Mar 2021 13:47:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210319035245.2751911-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 09:55:31 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 5.10.27 release.
-> There are 221 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied,
-> please let me know.
-> 
-> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.27-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-> linux-5.10.y and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-No issues were found (tested on i686, gcc 10.2, localmodconfig).
-Selftest status [ok/not ok]: [1434/81] (the same as for 26-rc3).
+On 19/03/2021 04:52, Hsin-Yi Wang wrote:
+> mt8183-kukui-jacuzzi-damu board also known as ASUS Chromebook Flip CM3,
+> using mediatek mt8183 SoC.
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-Tested-by: Andrei Rabusov <a.rabusov@tum.de>
+Whole series applied to v5.12-next/dts64
+
+Thanks
+
+> ---
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index 93b3bdf6eaeb..a86716cdd408 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -125,6 +125,10 @@ properties:
+>                - google,krane-sku176
+>            - const: google,krane
+>            - const: mediatek,mt8183
+> +      - description: Google Damu (ASUS Chromebook Flip CM3)
+> +        items:
+> +          - const: google,damu
+> +          - const: mediatek,mt8183
+>  
+>  additionalProperties: true
+>  
+> 
