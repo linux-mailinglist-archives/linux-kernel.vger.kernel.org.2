@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC35634CA3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8991A34CBDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhC2IgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S236549AbhC2Ixv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:53:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233664AbhC2IWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:22:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB48461580;
-        Mon, 29 Mar 2021 08:21:56 +0000 (UTC)
+        id S232173AbhC2Iet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:34:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3552619C4;
+        Mon, 29 Mar 2021 08:34:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006117;
-        bh=NeTDmqExK33DDSXztD0tqyYX3UUgV9WwtedQqfkOSnk=;
+        s=korg; t=1617006888;
+        bh=Ub2kdMwNXi3brJbLP5F1N8eiE0AWvwvsQkRInf7Uy6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tQWCFMCr1VM8liUVr7rO+xWtbQqsZcvN2rkWlpiIaEdMBVA6460dPokz7geNpbfs6
-         tEL0k9xVvnPdy6yuhv9Ep8B8ZSBKaM2oQLZSsLiD2KzZ6e2IJD6OdF/BgNRkVI/asK
-         gTcvoLPTkOpNNkFcx5ZKly6wtX7oyAcPKJbGVzNY=
+        b=SgBe062QG8W5vx3MVANfyrwYXYi5UNNY7Wjty8B2vbKvob9EGKeqfWxGpidEvNJ2Y
+         o9543EsrirwijtDiH/XgVI5TAIlQuEkWLkyEU9FqJziaL0XqCUtay+seV8vwajcgZx
+         GeZwYiik7K7Hy14Wn7TpIYz5ukrprMKPRIrCC27M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 124/221] can: isotp: isotp_setsockopt(): only allow to set low level TX flags for CAN-FD
+Subject: [PATCH 5.11 139/254] flow_dissector: fix byteorder of dissected ICMP ID
 Date:   Mon, 29 Mar 2021 09:57:35 +0200
-Message-Id: <20210329075633.349658475@linuxfoundation.org>
+Message-Id: <20210329075637.787588432@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Alexander Lobakin <alobakin@pm.me>
 
-[ Upstream commit e4912459bd5edd493b61bc7c3a5d9b2eb17f5a89 ]
+[ Upstream commit a25f822285420486f5da434efc8d940d42a83bce ]
 
-CAN-FD frames have struct canfd_frame::flags, while classic CAN frames
-don't.
+flow_dissector_key_icmp::id is of type u16 (CPU byteorder),
+ICMP header has its ID field in network byteorder obviously.
+Sparse says:
 
-This patch refuses to set TX flags (struct
-can_isotp_ll_options::tx_flags) on non CAN-FD isotp sockets.
+net/core/flow_dissector.c:178:43: warning: restricted __be16 degrades to integer
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Link: https://lore.kernel.org/r/20210218215434.1708249-2-mkl@pengutronix.de
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Convert ID value to CPU byteorder when storing it into
+flow_dissector_key_icmp.
+
+Fixes: 5dec597e5cd0 ("flow_dissector: extract more ICMP information")
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/isotp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/core/flow_dissector.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 8bd565f2073e..a9b96a6e6317 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1212,7 +1212,8 @@ static int isotp_setsockopt(struct socket *sock, int level, int optname,
- 			if (ll.mtu != CAN_MTU && ll.mtu != CANFD_MTU)
- 				return -EINVAL;
- 
--			if (ll.mtu == CAN_MTU && ll.tx_dl > CAN_MAX_DLEN)
-+			if (ll.mtu == CAN_MTU &&
-+			    (ll.tx_dl > CAN_MAX_DLEN || ll.tx_flags != 0))
- 				return -EINVAL;
- 
- 			memcpy(&so->ll, &ll, sizeof(ll));
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 6f1adba6695f..7a06d4301617 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -175,7 +175,7 @@ void skb_flow_get_icmp_tci(const struct sk_buff *skb,
+ 	 * avoid confusion with packets without such field
+ 	 */
+ 	if (icmp_has_id(ih->type))
+-		key_icmp->id = ih->un.echo.id ? : 1;
++		key_icmp->id = ih->un.echo.id ? ntohs(ih->un.echo.id) : 1;
+ 	else
+ 		key_icmp->id = 0;
+ }
 -- 
 2.30.1
 
