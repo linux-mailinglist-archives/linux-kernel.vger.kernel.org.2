@@ -2,144 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D096334CF32
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8E334CF33
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbhC2Lgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:36:47 -0400
-Received: from mail-lf1-f50.google.com ([209.85.167.50]:45763 "EHLO
-        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230470AbhC2LgS (ORCPT
+        id S231139AbhC2Lht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:37:49 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:45716 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231204AbhC2Lhp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:36:18 -0400
-Received: by mail-lf1-f50.google.com with SMTP id g8so17893875lfv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 04:36:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bu4Nyj0ob4cbzjgzDMDApmQMSmzS0WCqRPLdHYz7dU4=;
-        b=Zz2FiN+XgOaXVodCyZ/Z2m5OmKL9S/MIztrKWYOV+P90TZehECHnCr80zd2qievNzi
-         UJ32jhGwk7Sh1Y5xIyWqxaHX1LZmFjpu3CHZKzLH6bvZ45fyh7FABE6s2kAOu4IrvIH9
-         gPhCUBdbj8Jx5F4w2nahRGRNDliBT1RpgP3nOnKOR8q2iTZB9CUPyUEML8qdl1pyt9aq
-         RW+mmq1cw6ar4o0j3mlaCNkazVHivE4GZxTijcE1K5kVxNJAEvHKQR//S88x3fChB69W
-         HLpU1QmJP5COmFpa686ZbbOtYehwuPA77/vPLY26IwCkIJMtav3KJPNuN70lflYRtIzu
-         y/Cw==
-X-Gm-Message-State: AOAM531JW8pcLm6ltMeMjwnrRvQjtLdb+o6etmXG/Yy/B7VaQh+80+ZL
-        +o6dGnUrm7SEwvcKl9dYhx7mnc11At+vZ/1Pvxg=
-X-Google-Smtp-Source: ABdhPJwVsJ9zXfroqWRHBWeJ5ocdrhjGw+nbSFE5qJJBIpRp4CuM670Tkf/SVUaqgH+Kp9jBlyhQ9xSl9Vi+j4++aqw=
-X-Received: by 2002:a05:6512:36c8:: with SMTP id e8mr15510382lfs.635.1617017777328;
- Mon, 29 Mar 2021 04:36:17 -0700 (PDT)
+        Mon, 29 Mar 2021 07:37:45 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TBYMu0085326;
+        Mon, 29 Mar 2021 11:37:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=OOb1Fya1Wf9CaCNPMc9ECGWVI3ep7Ep6tFPKBV5qXYk=;
+ b=a+epRsriwQQO20nE46uhMPO6GkPeIGLqeWqzLnRk+XWs50TLmucDhTbGQh4JKi4xPX/M
+ Ao9sUHnOUmWPFPWkjX+Fk4cV40ru7Hme9F/DZeSuUB1zlCwIxiWtdWLurY6+fjqndv/P
+ xqS/KO4+NWVBMeC/ywn5Sp+BvOLzIb4I76zHbklcKs6W3zKCE/IpGRyd97ugMlMwjORv
+ EtwRDFruRl2J3XhkrfzPQGhLH3DGUZqrE87UcRjB0qAUUTFQTUC77kbuQR/noLZFIaZD
+ royMmauqUnG/TvhLjV7QlNCSuVGNjQWIOIaTNN12b9mznFQ9nZJ1AKBGobJWALxax7K4 4g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 37hwbnb6sk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 11:37:40 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TBYkN9046505;
+        Mon, 29 Mar 2021 11:37:39 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 37jekx1ngr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 11:37:39 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 12TBbaqT008839;
+        Mon, 29 Mar 2021 11:37:36 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 29 Mar 2021 04:37:35 -0700
+Date:   Mon, 29 Mar 2021 14:37:28 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Alex Deucher <alexander.deucher@amd.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Evan Quan <evan.quan@amd.com>
+Subject: [kbuild] drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c:1370:4: warning:
+ Variable 'num_of_active_display' is modified but its new value is never
+ used. [unreadVariable]
+Message-ID: <20210329113728.GQ1667@kadam>
 MIME-Version: 1.0
-References: <20210323162156.1340260-1-namhyung@kernel.org> <20210323162156.1340260-3-namhyung@kernel.org>
- <E7B865AC-5160-40B1-9C06-0E790EEEB6EC@fb.com>
-In-Reply-To: <E7B865AC-5160-40B1-9C06-0E790EEEB6EC@fb.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 29 Mar 2021 20:36:06 +0900
-Message-ID: <CAM9d7cjqPrASpnVsE-cmG1ZxM4mim=aop4k2dUGNKrcNzzK6-Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf/core: Support reading group events with shared cgroups
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Message-ID-Hash: MNKFTVQD4P54ZIAC2EMA5V4OLTLOSIH6
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290091
+X-Proofpoint-GUID: b0wxVL1a2WD0sNp4KHK9c_WM6iXT2FEV
+X-Proofpoint-ORIG-GUID: b0wxVL1a2WD0sNp4KHK9c_WM6iXT2FEV
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9937 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 clxscore=1011
+ phishscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 2:32 AM Song Liu <songliubraving@fb.com> wrote:
-> > On Mar 23, 2021, at 9:21 AM, Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > This enables reading event group's counter values together with a
-> > PERF_EVENT_IOC_READ_CGROUP command like we do in the regular read().
-> > Users should give a correct size of buffer to be read.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> > kernel/events/core.c | 119 +++++++++++++++++++++++++++++++++++++++++--
-> > 1 file changed, 116 insertions(+), 3 deletions(-)
-> >
->
-> [...]
->
-> > +}
-> > +
-> > +static int perf_event_read_cgrp_node_group(struct perf_event *event, u64 cgrp_id,
-> > +                                        char __user *buf)
-> > +{
-> > +     struct perf_cgroup_node *cgrp;
-> > +     struct perf_event_context *ctx = event->ctx;
-> > +     struct perf_event *sibling;
-> > +     u64 read_format = event->attr.read_format;
-> > +     unsigned long flags;
-> > +     u64 *values;
-> > +     int n = 1;
-> > +     int ret;
-> > +
-> > +     values = kzalloc(event->read_size, GFP_KERNEL);
-> > +     if (!values)
-> > +             return -ENOMEM;
-> > +
-> > +     values[0] = 1 + event->nr_siblings;
-> > +
-> > +     /* update event count and times (possibly run on other cpu) */
-> > +     (void)perf_event_read(event, true);
-> > +
-> > +     raw_spin_lock_irqsave(&ctx->lock, flags);
-> > +
-> > +     cgrp = find_cgroup_node(event, cgrp_id);
-> > +     if (cgrp == NULL) {
-> > +             raw_spin_unlock_irqrestore(&ctx->lock, flags);
-> > +             kfree(values);
-> > +             return -ENOENT;
-> > +     }
-> > +
-> > +     if (read_format & PERF_FORMAT_TOTAL_TIME_ENABLED)
-> > +             values[n++] = cgrp->time_enabled;
-> > +     if (read_format & PERF_FORMAT_TOTAL_TIME_RUNNING)
-> > +             values[n++] = cgrp->time_running;
-> > +
-> > +     values[n++] = cgrp->count;
-> > +     if (read_format & PERF_FORMAT_ID)
-> > +             values[n++] = primary_event_id(event);
-> > +
-> > +     for_each_sibling_event(sibling, event) {
-> > +             n += perf_event_read_cgrp_node_sibling(sibling, read_format,
-> > +                                                    cgrp_id, &values[n]);
-> > +     }
-> > +
-> > +     raw_spin_unlock_irqrestore(&ctx->lock, flags);
-> > +
-> > +     ret = copy_to_user(buf, values, n * sizeof(u64));
-> > +     kfree(values);
-> > +     if (ret)
-> > +             return -EFAULT;
-> > +
-> > +     return n * sizeof(u64);
-> > +}
-> > +
-> > +static int perf_event_read_cgroup_node(struct perf_event *event, u64 read_size,
-> > +                                    u64 cgrp_id, char __user *buf)
-> > +{
-> > +     u64 read_format = event->attr.read_format;
-> > +
-> > +     if (read_size < event->read_size + 2 * sizeof(u64))
->
-> Why do we need read_size + 2 u64 here?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+head:   a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
+commit: 75145aab7a0d865b361de687b201e8c4b76425eb drm/amdgpu/swsmu: clean up a bunch of stale interfaces
+compiler: alpha-linux-gcc (GCC) 9.3.0
 
-I should've repeated the following description in the patch 1.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
- * PERF_EVENT_IOC_READ_CGROUP - it takes a buffer consists of a 64-bit
-     array to get the event counter values.  The first element is size
-     of the array in byte, and the second element is a cgroup id to
-     read.  The rest is to save the counter value and timings.
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
-Thanks,
-Namhyung
+   In file included from drivers/gpu/drm/amd/amdgpu/../pm/swsmu/amdgpu_smu.c:
+>> drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c:1370:4: warning: Variable 'num_of_active_display' is modified but its new value is never used. [unreadVariable]
+      num_of_active_display++;
+      ^
+
+vim +/num_of_active_display +1370 drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
+
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1351  int smu_display_configuration_change(struct smu_context *smu,
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1352  				     const struct amd_pp_display_configuration *display_config)
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1353  {
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1354  	int index = 0;
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1355  	int num_of_active_display = 0;
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1356  
+2b7ad277e96577 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Evan Quan 2020-05-25  1357  	if (!smu->pm_enabled || !smu->adev->pm.dpm_enabled)
+2b7ad277e96577 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Evan Quan 2020-05-25  1358  		return -EOPNOTSUPP;
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1359  
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1360  	if (!display_config)
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1361  		return -EINVAL;
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1362  
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1363  	mutex_lock(&smu->mutex);
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1364  
+ce63d8f8b55d28 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Evan Quan 2020-06-08  1365  	smu_set_min_dcef_deep_sleep(smu,
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1366  				    display_config->min_dcef_deep_sleep_set_clk / 100);
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1367  
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1368  	for (index = 0; index < display_config->num_path_including_non_display; index++) {
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1369  		if (display_config->displays[index].controller_id != 0)
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11 @1370  			num_of_active_display++;
+                                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^
+unused
+
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1371  	}
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1372  
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1373  	mutex_unlock(&smu->mutex);
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1374  
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1375  	return 0;
+94ed6d0cfdb867 drivers/gpu/drm/amd/powerplay/amdgpu_smu.c Huang Rui 2019-01-11  1376  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org 
+_______________________________________________
+kbuild mailing list -- kbuild@lists.01.org
+To unsubscribe send an email to kbuild-leave@lists.01.org
