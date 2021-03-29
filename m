@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD39734DBFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DBD34DC02
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhC2WnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:43:21 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45995 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230161AbhC2WnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:43:01 -0400
-IronPort-SDR: IrDIstuF2mvzeRV3NeguReGOO8PwuvjxQIv0fthU9O08kFh0QXiFN85del6LRrYW/NrQor1Jef
- ZMdA6EyCvdXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="211842365"
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="211842365"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 15:42:59 -0700
-IronPort-SDR: rAzl/u12UhV5AsFp1B8Fst+yy4vupG/DRj2BhmvDTxDGCd/hloM55dj6uXNd6RBZnCkpyVAHuu
- U4we0eHzQB9g==
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="444814260"
-Received: from ajzangar-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.145.70])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 15:42:58 -0700
-Subject: Re: [PATCH v2 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <91C0F6F1-B8C3-4130-B903-C63CD4B87F3F@amacapital.net>
- <ed7e96ba7a271e36bdfe61ee34c6d61eb78000c5.1616885306.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <498f078c-5196-a608-7f1a-8425ff056135@intel.com>
- <8e02ce39-f672-e652-b314-418b7ec5f52a@linux.intel.com>
- <d4fe4a10-7c29-5f26-25d2-b23369c38f3e@intel.com>
- <dac078b4-e50c-42b9-db52-6dc65b99406e@linux.intel.com>
- <0356a84a-765e-b20b-2efd-c5d94fc2347e@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <bab2b4b1-fa65-ecb9-e275-3e5ca4008d43@linux.intel.com>
-Date:   Mon, 29 Mar 2021 15:42:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231322AbhC2WoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhC2WoW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:44:22 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7521C061762;
+        Mon, 29 Mar 2021 15:44:22 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id EA6595CC;
+        Mon, 29 Mar 2021 22:44:21 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EA6595CC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1617057862; bh=EKvmVbzD//QNEEEuaeTgAwCcHafiUeTm6qRa1v6UhRU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=sYOtGao+7Dz0cFmHAFPNFvdh2Yu9lNiRnH7BZooXPXQ03s006cMRFxZ7lELQrk7Ht
+         DAuw9DQgpfKLCJcKPcl/aflDdDk61+qlhrkWTImsKVIoekHLDsHtdYhR+5q6wrDnGD
+         CsU2AGIQJGF9ao20InPcr+7B2SFMcmjNDCiNSbwhhJjyrvGsUjghj78rdRUa1doXSN
+         6nNP4nAY9zrYtndA+Se8wPQqE52twACfVAnlfv/FduafJkEsCab5htgpUXiKPLfKGc
+         3un9ieOFYZHYOyaEQ5SH85S7jeuevYTugykM66xQQA7/8o1ecI56g6F63qLmKWfc/O
+         1o/bwKaHRjHYw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        ksummit <ksummit-discuss@lists.linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [1/5] reporting-issues: header and TLDR
+In-Reply-To: <14d9b8a3-94ce-00a6-a17b-934ffd999697@leemhuis.info>
+References: <c396c91f-27c2-de36-7b05-099e03c213f4@leemhuis.info>
+ <6a220d2c-568e-2e41-53a4-0800e206d0a6@leemhuis.info>
+ <14d9b8a3-94ce-00a6-a17b-934ffd999697@leemhuis.info>
+Date:   Mon, 29 Mar 2021 16:44:21 -0600
+Message-ID: <87r1jxpol6.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <0356a84a-765e-b20b-2efd-c5d94fc2347e@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thorsten Leemhuis <linux@leemhuis.info> writes:
 
+> FWIW, on another channel someone mentioned the process in the TLDR is
+> quite complicated when it comes to regressions in stable and longterm
+> kernels. I looked at the text and it seemed like a valid complaint, esp.
+> as those regressions are something we really care about.
+>
+> To solve this properly I sadly had to shake up the text in this section
+> completely and rewrite parts of it. Find the result below. I'm quite
+> happy with it, as it afaics is more straight forward and easier to
+> understand. And it matches the step-by-step guide better. And the best
+> thing: it's a bit shorter than the old TLDR.
 
-On 3/29/21 3:12 PM, Dave Hansen wrote:
-> On 3/29/21 3:09 PM, Kuppuswamy, Sathyanarayanan wrote:
->>>>>> +    case EXIT_REASON_MWAIT_INSTRUCTION:
->>>>>> +        /* MWAIT is supressed, not supposed to reach here. */
->>>>>> +        WARN(1, "MWAIT unexpected #VE Exception\n");
->>>>>> +        return -EFAULT;
->>>>>
->>>>> How is MWAIT "supppressed"?
->>>> I am clearing the MWAIT feature flag in early init code. We should also
->>>> disable this feature in firmware.
->>>> setup_clear_cpu_cap(X86_FEATURE_MWAIT);
->>>
->>> I'd be more explicit about that.  Maybe even reference the code that
->>> clears the X86_FEATURE.
->> This change is part of the same patch.
-> 
-> Right, but if someone goes and looks at the switch() statement in 10
-> years is it going to be obvious how MWAIT was "suppressed"?
-Ok. I can add a comment line for it.
-> 
+I think this is much improved - concise is good! :)  I really just have
+one little comment...
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+> I'll wait a day or two and then will send it through the regular review
+> together with a few small other fixes that piled up for the text, just
+> wanted to add it here for completeness.
+>
+> ---
+> The short guide (aka TL;DR)
+> ===========================
+>
+> Are you facing a regression with vanilla kernels from the same stable or
+> longterm series? One still supported? Then search the `LKML
+> <https://lore.kernel.org/lkml/>`_ and the `Linux stable mailing list
+> <https://lore.kernel.org/stable/>_` archives for matching reports to
+> join. If you don't find any, install `the latest release from that
+> series <https://kernel.org/>`_. If it still shows the issue, report it
+> to the stable mailing list and the stable maintainers.
+
+If we really want this to be a short guide that gets people to the
+answer quickly, we might as well put the addresses to report to right
+here rather than making people search for them.
+
+Thanks,
+
+jon
+
