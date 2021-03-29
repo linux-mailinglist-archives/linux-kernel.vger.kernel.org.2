@@ -2,119 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D066B34D482
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BE9234D487
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhC2QH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:07:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:56346 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhC2QGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:06:52 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4987C142F;
-        Mon, 29 Mar 2021 09:06:52 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 971D63F719;
-        Mon, 29 Mar 2021 09:06:49 -0700 (PDT)
-Subject: Re: [PATCH v10 2/6] arm64: kvm: Introduce MTE VM feature
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210312151902.17853-1-steven.price@arm.com>
- <20210312151902.17853-3-steven.price@arm.com>
- <20210327152324.GA28167@arm.com> <20210328122131.GB17535@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <e0b88560-34e1-dcc4-aaa7-9a7a5b771824@arm.com>
-Date:   Mon, 29 Mar 2021 17:06:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229557AbhC2QHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229910AbhC2QHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:07:21 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5E6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:07:20 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id y18so12858086qky.11
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h2tJ34SW4jrHJri6gw67H0wvGraWyIt4USuLVf0C2eM=;
+        b=GC462xaBMRhJ2Eg7lkA6WeeOnHsYjJbAp7YGB3uHNWWsUKUWq0+/KNHc6unUex7fOZ
+         OyjUJ86cSqxt7XZpVIceOdbPGydX1JHY2Wo3UptaJvygqAWzsXDJwjju3fXAElFrutDI
+         HIyemZPRzo1F6TDoJ53UFlWlq4YWUTEmyu6hI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h2tJ34SW4jrHJri6gw67H0wvGraWyIt4USuLVf0C2eM=;
+        b=Ma+7nFlmCtpHgBMKD04xMCe5ompnS4vyy5Nx0n3AhDp01g/KdBFZ+GzrxDXx6jIF7D
+         L/mcpu9HCWxd7JIkq7i+IX9svsfcBbqf8ALlgG+kvtPUy9klgA7wzQCkX/nOkgwTcB1h
+         gkJK4Si99W9jtXLqedDvapobogowxC5d1YbDO3SaODNxXqKf7AhF24oMscLw5E4FCTV/
+         kT10Sxa3DLKzELOyBUBjFCNpgedEVNYyz+KiVcSa981VDOOXTssu1LT8y+OHMZv8aL2i
+         +KFlae3PKz1K23dMgwkE8MzqARbmTK9oPB/6RiBUbvnn1MDc8e7ntsTCVzZ1zC/ug7U2
+         2Ilg==
+X-Gm-Message-State: AOAM533sohxFHaPfeQZOjm0uFl7JfuCOYvxH17NrsKtF/WXrA+7Mx5Rd
+        S+cnx5KRNnyLVS5UgsNCgL6T+9/6I8p+dA==
+X-Google-Smtp-Source: ABdhPJy5dPjUqeQ3ujkOgss5S/HrUvNN8QrJb+1Xn+Mk/Wde6cQRW4axRlNEmkjiWyQ+rX3W81Ektw==
+X-Received: by 2002:a05:620a:954:: with SMTP id w20mr26729381qkw.57.1617034039484;
+        Mon, 29 Mar 2021 09:07:19 -0700 (PDT)
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
+        by smtp.gmail.com with ESMTPSA id b21sm13291512qkl.14.2021.03.29.09.07.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 09:07:18 -0700 (PDT)
+Received: by mail-yb1-f171.google.com with SMTP id i144so14312917ybg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:07:18 -0700 (PDT)
+X-Received: by 2002:a25:69c1:: with SMTP id e184mr39188232ybc.345.1617034038260;
+ Mon, 29 Mar 2021 09:07:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210328122131.GB17535@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210316140707.RFC.1.I3a21995726282f1e9fcb70da5eb96f19ed96634f@changeid>
+ <YFKQaXOmOwYyeqvM@google.com> <CAF6AEGtu+GBwYfkH3x=UuPs5Ouj0TxqbVjpjFEtMKKWvd1-Gbg@mail.gmail.com>
+ <YF3V8d4wB6i81fLN@orome.fritz.box>
+In-Reply-To: <YF3V8d4wB6i81fLN@orome.fritz.box>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 29 Mar 2021 09:07:07 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VDKQCMtxd2NMRefxQm5uzDS6_rUVP5YsTsDEYX+jSipw@mail.gmail.com>
+Message-ID: <CAD=FV=VDKQCMtxd2NMRefxQm5uzDS6_rUVP5YsTsDEYX+jSipw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] dt-bindings: display: simple: Add the panel on sc7180-trogdor-pompom
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/03/2021 13:21, Catalin Marinas wrote:
-> On Sat, Mar 27, 2021 at 03:23:24PM +0000, Catalin Marinas wrote:
->> On Fri, Mar 12, 2021 at 03:18:58PM +0000, Steven Price wrote:
->>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->>> index 77cb2d28f2a4..b31b7a821f90 100644
->>> --- a/arch/arm64/kvm/mmu.c
->>> +++ b/arch/arm64/kvm/mmu.c
->>> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>>   	if (vma_pagesize == PAGE_SIZE && !force_pte)
->>>   		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->>>   							   &pfn, &fault_ipa);
->>> +
->>> +	if (fault_status != FSC_PERM && kvm_has_mte(kvm) && pfn_valid(pfn)) {
->>> +		/*
->>> +		 * VM will be able to see the page's tags, so we must ensure
->>> +		 * they have been initialised. if PG_mte_tagged is set, tags
->>> +		 * have already been initialised.
->>> +		 */
->>> +		struct page *page = pfn_to_page(pfn);
->>> +		unsigned long i, nr_pages = vma_pagesize >> PAGE_SHIFT;
->>> +
->>> +		for (i = 0; i < nr_pages; i++, page++) {
->>> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
->>> +				mte_clear_page_tags(page_address(page));
->>> +		}
->>> +	}
->>
->> This pfn_valid() check may be problematic. Following commit eeb0753ba27b
->> ("arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory"), it returns
->> true for ZONE_DEVICE memory but such memory is allowed not to support
->> MTE.
-> 
-> Some more thinking, this should be safe as any ZONE_DEVICE would be
-> mapped as untagged memory in the kernel linear map. It could be slightly
-> inefficient if it unnecessarily tries to clear tags in ZONE_DEVICE,
-> untagged memory. Another overhead is pfn_valid() which will likely end
-> up calling memblock_is_map_memory().
-> 
-> However, the bigger issue is that Stage 2 cannot disable tagging for
-> Stage 1 unless the memory is Non-cacheable or Device at S2. Is there a
-> way to detect what gets mapped in the guest as Normal Cacheable memory
-> and make sure it's only early memory or hotplug but no ZONE_DEVICE (or
-> something else like on-chip memory)?  If we can't guarantee that all
-> Cacheable memory given to a guest supports tags, we should disable the
-> feature altogether.
+Hi,
 
-In stage 2 I believe we only have two types of mapping - 'normal' or 
-DEVICE_nGnRE (see stage2_map_set_prot_attr()). Filtering out the latter 
-is a case of checking the 'device' variable, and makes sense to avoid 
-the overhead you describe.
+On Fri, Mar 26, 2021 at 5:38 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+>
+> The point remains that unless we describe exactly which panel we're
+> dealing with, we ultimately have no way of properly quirking anything if
+> we ever have to.
 
-This should also guarantee that all stage-2 cacheable memory supports 
-tags, as kvm_is_device_pfn() is simply !pfn_valid(), and pfn_valid() 
-should only be true for memory that Linux considers "normal".
+Just to clarify here: with my initial proposal we actually could still
+quirk things if we had to. If the quirk needed to be applied before
+power on we'd just have to apply the quirk to the whole board (which
+we'd have to do anyway). After the panel was powered on then we could
+read the EDID and apply a quirk based on what the EDID tells us,
+right?
 
->> I now wonder if we can get a MAP_ANONYMOUS mapping of ZONE_DEVICE pfn
->> even without virtualisation.
-> 
-> I haven't checked all the code paths but I don't think we can get a
-> MAP_ANONYMOUS mapping of ZONE_DEVICE memory as we normally need a file
-> descriptor.
-> 
 
-I certainly hope this is the case - it's the weird corner cases of 
-device drivers that worry me. E.g. I know i915 has a "hidden" mmap 
-behind an ioctl (see i915_gem_mmap_ioctl(), although this case is fine - 
-it's MAP_SHARED). Mali's kbase did something similar in the past.
+> Also, once we allow this kind of wildcard we can
+> suddenly get into a situation where people might want to reuse this on
+> something that's not at all a google-pompom board because the same
+> particular power sequence happens to work on on some other board.
 
-Steve
+That's a legit concern. Of course, people could already do that with
+existing panels right? One would also hope that if they reused this
+they also used the "more specific to least specific" rule, so someone
+could reuse (without any problems) with:
+
+compatible = "some-other-company,some-other-board-panel", "google,pompom-panel"
+
+That doesn't seem like it would be terrible.
+
+
+> Similarly I can imagine a situation where we could now have the same
+> panel supported by multiple different wildcard compatible strings. How
+> is that supposed to be any cleaner than what we have now?
+
+I'm tempted to call this (same panel supported by multiple different
+compatible strings) a feature, actually. Specifically:
+
+Even if the exact same hardware is shipped with more than one board,
+it may have a different EDID programmed into it. From what I've seen
+the timings used on a panel may need to be adjusted based on the SoC
+used (and what clock rates it can provide / features of the underlying
+display driver), EMI concerns, and power consumption concerns. Once a
+different EDID is programmed in it then it sorta becomes a "different"
+panel, right? I think sometimes (?) panel vendors assign a slightly
+different model number per board, but I'm not sure.
+
+
+-Doug
