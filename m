@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7847334C715
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2984934C817
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhC2IMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:12:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
+        id S233196AbhC2ITm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232450AbhC2IHm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:07:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42141619A9;
-        Mon, 29 Mar 2021 08:07:33 +0000 (UTC)
+        id S232750AbhC2IMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:12:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14AF061494;
+        Mon, 29 Mar 2021 08:11:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005253;
-        bh=2mwziOYKT3pRWQtNG0ZVuTpdkoBbG0Y6HR+EIoH3K70=;
+        s=korg; t=1617005520;
+        bh=M0Yxxg9pKy4Ew+My0qn2D8Jeghgx0EHiZjXlgpr5U44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KPeGWUGgjTXtjX2QZvEBHEx81OVB7ZALbXSo9rxrFfxoq6yleMqFfT93febhqQtzc
-         IEv5t/cDsppwOPw4mBITLB4728JySd2wdmiHHkfkl9ZXganoOgmmHk1EIx+G2tHf/R
-         jRk6IKTFOj13OGda+Axjnsq8Qtti22u4Yx7SiNLc=
+        b=gzKFI7oMk5At7GkCAKXOV7GTjf54zx9+DugsnG1gkBW/CHgF/mOOKGASvE7ntDxn+
+         IgtjW1KgKikLEXeNBH/6LEPXfNMKu/JpZCau1AwAgHXG/8nGda+trUwdbBSikwvHxo
+         nOEXsQMy1YokSUVCas6qMvu/7Wfyo6dUBZHlR9co=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Feng Tang <feng.tang@intel.com>,
+        stable@vger.kernel.org, Nirmoy Das <nirmoy.das@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 02/72] powerpc/4xx: Fix build errors from mfdcr()
+Subject: [PATCH 5.4 030/111] drm/amdgpu: fb BO should be ttm_bo_type_device
 Date:   Mon, 29 Mar 2021 09:57:38 +0200
-Message-Id: <20210329075610.374057885@linuxfoundation.org>
+Message-Id: <20210329075616.180915213@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,70 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Nirmoy Das <nirmoy.das@amd.com>
 
-[ Upstream commit eead089311f4d935ab5d1d8fbb0c42ad44699ada ]
+[ Upstream commit 521f04f9e3ffc73ef96c776035f8a0a31b4cdd81 ]
 
-lkp reported a build error in fsp2.o:
+FB BO should not be ttm_bo_type_kernel type and
+amdgpufb_create_pinned_object() pins the FB BO anyway.
 
-  CC      arch/powerpc/platforms/44x/fsp2.o
-  {standard input}:577: Error: unsupported relocation against base
-
-Which comes from:
-
-  pr_err("GESR0: 0x%08x\n", mfdcr(base + PLB4OPB_GESR0));
-
-Where our mfdcr() macro is stringifying "base + PLB4OPB_GESR0", and
-passing that to the assembler, which obviously doesn't work.
-
-The mfdcr() macro already checks that the argument is constant using
-__builtin_constant_p(), and if not calls the out-of-line version of
-mfdcr(). But in this case GCC is smart enough to notice that "base +
-PLB4OPB_GESR0" will be constant, even though it's not something we can
-immediately stringify into a register number.
-
-Segher pointed out that passing the register number to the inline asm
-as a constant would be better, and in fact it fixes the build error,
-presumably because it gives GCC a chance to resolve the value.
-
-While we're at it, change mtdcr() similarly.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Segher Boessenkool <segher@kernel.crashing.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Link: https://lore.kernel.org/r/20210218123058.748882-1-mpe@ellerman.id.au
+Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
+Acked-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/dcr-native.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/include/asm/dcr-native.h b/arch/powerpc/include/asm/dcr-native.h
-index 151dff555f50..9d9e323f5e9b 100644
---- a/arch/powerpc/include/asm/dcr-native.h
-+++ b/arch/powerpc/include/asm/dcr-native.h
-@@ -66,8 +66,8 @@ static inline void mtdcrx(unsigned int reg, unsigned int val)
- #define mfdcr(rn)						\
- 	({unsigned int rval;					\
- 	if (__builtin_constant_p(rn) && rn < 1024)		\
--		asm volatile("mfdcr %0," __stringify(rn)	\
--		              : "=r" (rval));			\
-+		asm volatile("mfdcr %0, %1" : "=r" (rval)	\
-+			      : "n" (rn));			\
- 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
- 		rval = mfdcrx(rn);				\
- 	else							\
-@@ -77,8 +77,8 @@ static inline void mtdcrx(unsigned int reg, unsigned int val)
- #define mtdcr(rn, v)						\
- do {								\
- 	if (__builtin_constant_p(rn) && rn < 1024)		\
--		asm volatile("mtdcr " __stringify(rn) ",%0"	\
--			      : : "r" (v)); 			\
-+		asm volatile("mtdcr %0, %1"			\
-+			      : : "n" (rn), "r" (v));		\
- 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
- 		mtdcrx(rn, v);					\
- 	else							\
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
+index eaa5e7b7c19d..fd94a17fb2c6 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_fb.c
+@@ -146,7 +146,7 @@ static int amdgpufb_create_pinned_object(struct amdgpu_fbdev *rfbdev,
+ 	size = mode_cmd->pitches[0] * height;
+ 	aligned_size = ALIGN(size, PAGE_SIZE);
+ 	ret = amdgpu_gem_object_create(adev, aligned_size, 0, domain, flags,
+-				       ttm_bo_type_kernel, NULL, &gobj);
++				       ttm_bo_type_device, NULL, &gobj);
+ 	if (ret) {
+ 		pr_err("failed to allocate framebuffer (%d)\n", aligned_size);
+ 		return -ENOMEM;
 -- 
 2.30.1
 
