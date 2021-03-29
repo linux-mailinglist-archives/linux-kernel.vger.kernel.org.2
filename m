@@ -2,116 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0771F34D78C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA63D34D78E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhC2SpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
+        id S231565AbhC2Spr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:45:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbhC2Soy (ORCPT
+        with ESMTP id S229750AbhC2Spg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:44:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2ED8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 11:44:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=vmsx7Izy3wRv8jlDW+rJXfVq200TFsqarucnACsW650=; b=XNSuBR/SIgoI+hFeIAiDjbXYGn
-        aAI8EYWJtwNER0m/VGH7hfj4sklD55vbwncb/rYvu/rBOb7HrW/mqh04jFO/henTznsf0jjJOM76I
-        AOlrcxdY1DFDkW/8NpxzqgfIOJxrLCDVza3jUOWFyQVctOSBL2xOzgO6IgSFL9zPTekLc6TuM7LnX
-        0apHvEoO8YIoRT1WAxVnQStPVlbfC4mGkMKmcTKRB2ob4nhslHWLgy3bx9W4xWasmKmzJidbccHWy
-        8H2ZULjMVOT3t2q8ugKwcDey8X1GEQWfC2p9f8KwWJG5fvMGqNmR7C/obesTVR4wBi8Ki6Vso+1fS
-        5Fr0bjHA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQwsJ-001y6W-Pl; Mon, 29 Mar 2021 18:44:36 +0000
-Date:   Mon, 29 Mar 2021 19:44:31 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: change size_t to unsigned int for cma_alloc
-Message-ID: <20210329184431.GJ351017@casper.infradead.org>
-References: <20210329182553.3129234-1-minchan@kernel.org>
+        Mon, 29 Mar 2021 14:45:36 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A4BC061574;
+        Mon, 29 Mar 2021 11:45:35 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id s21so6454295pjq.1;
+        Mon, 29 Mar 2021 11:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9zPFzNv0edS8p5RMF07T1H1eOs0z4CTd8BF8diVxZFU=;
+        b=U7RBCBBCgMte8Sem7mxyAN/Uspoanb8GPWqfOc7eT8lDTgqqDPpkvqFKLfUKwJ9MTO
+         hBvVisSrS4L4qyLp4Jd2HyagWQe4hM8HiRTWhabuAR/upMIpGNkLDqW8HvtmWP4Zcs14
+         ogss1xDBajEucYTEzV0Yq/33WnIRWlKKbDZqPLzjHHmmQA7U+KEzxk9B+j8HLPsjXVdF
+         ZkygvswkYXtJB9j2pj7euWvUJ0M5iS6posC9Sit+MXWvFPcNayViTfbK6jc6lRHY5o3N
+         6YZjQxRXm0t8LeNq5njZHybDdh3EGBkRjghmJ4DGi4NsfQKV+5VpeEg5+qO2N9qVYDI4
+         w7hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9zPFzNv0edS8p5RMF07T1H1eOs0z4CTd8BF8diVxZFU=;
+        b=k8NWsVq6ZG0qdrNWI3dfooiaSBJKJDCvitLlcr2TVTsswqqhf3sVJKCUIkEih/LIjt
+         ChwIIXyj3bY5YbImHz38CPsnXdnSJCbaUX/IVHx66mM92/4ie2zi5Djj58dSX7JHu+UH
+         rom26SHAe1rVmYs/OEyEceOk/butp1sk9ns895C7XzkkRPKIKHSByEM8x8YvSB+fMwRs
+         X4mEKNhoaRijwEyBgA+eghu+FjjoHL0UdtL+rhsj6zqp+PWudQNG5RAdgdYtQoVXee8H
+         XZvbHyOXFbgv9xb5Mlw0jiCDoaxOkE+Pm2vagkrQ4uo1WJ+ZHRBiOW0Br/pS5IGE/Ytx
+         ZM/g==
+X-Gm-Message-State: AOAM530pZqTPHmVI/lVZLGrjZBt8U+t9GLrfzTpvJL2yKiD9324TddXe
+        wmN9pqHPxwnueaF2nEG7/MRsnYExIeA=
+X-Google-Smtp-Source: ABdhPJw03xSpq+k575bTR4Xqbp2HxnY+G3LHqRAqJAxKBbqLlEkPQwwWhabSSUeXEenQIjf9DDOM+g==
+X-Received: by 2002:a17:902:c084:b029:e7:3266:180c with SMTP id j4-20020a170902c084b02900e73266180cmr17666190pld.7.1617043535167;
+        Mon, 29 Mar 2021 11:45:35 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id i10sm1424005pjm.1.2021.03.29.11.45.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 11:45:34 -0700 (PDT)
+Subject: Re: [PATCH 4.9 00/53] 4.9.264-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        "ben@decadent.org.uk" <ben@decadent.org.uk>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210329075607.561619583@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <654bd7de-aebb-be9a-cf57-4f15459d72e2@gmail.com>
+Date:   Mon, 29 Mar 2021 11:45:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329182553.3129234-1-minchan@kernel.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 11:25:53AM -0700, Minchan Kim wrote:
-> size_t in cma_alloc is confusing since it makes people think
-> it's byte count, not pages. Fix it.
-
-i think it has to be unsigned long.
-
-67a2e213e7e937c41c52ab5bc46bf3f4de469f6e
-
-> Link: https://lore.kernel.org/linux-mm/20210324043434.GP1719932@casper.infradead.org/
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  include/linux/cma.h | 2 +-
->  mm/cma.c            | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
+On 3/29/21 12:57 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.264 release.
+> There are 53 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> diff --git a/include/linux/cma.h b/include/linux/cma.h
-> index 217999c8a762..a873edc20ca2 100644
-> --- a/include/linux/cma.h
-> +++ b/include/linux/cma.h
-> @@ -44,7 +44,7 @@ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->  					unsigned int order_per_bit,
->  					const char *name,
->  					struct cma **res_cma);
-> -extern struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> +extern struct page *cma_alloc(struct cma *cma, unsigned int count, unsigned int align,
->  			      bool no_warn);
->  extern bool cma_release(struct cma *cma, const struct page *pages, unsigned int count);
->  
-> diff --git a/mm/cma.c b/mm/cma.c
-> index 08c45157911a..24dc01e26d45 100644
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -423,21 +423,21 @@ static inline void cma_debug_show_areas(struct cma *cma) { }
->   * This function allocates part of contiguous memory on specific
->   * contiguous memory area.
->   */
-> -struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
-> +struct page *cma_alloc(struct cma *cma, unsigned int count, unsigned int align,
->  		       bool no_warn)
->  {
->  	unsigned long mask, offset;
->  	unsigned long pfn = -1;
->  	unsigned long start = 0;
->  	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
-> -	size_t i;
-> +	unsigned int i;
->  	struct page *page = NULL;
->  	int ret = -ENOMEM;
->  
->  	if (!cma || !cma->count || !cma->bitmap)
->  		goto out;
->  
-> -	pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
-> +	pr_debug("%s(cma %p, count %u, align %d)\n", __func__, (void *)cma,
->  		 count, align);
->  
->  	if (!count)
-> @@ -500,7 +500,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
->  	}
->  
->  	if (ret && !no_warn) {
-> -		pr_err_ratelimited("%s: %s: alloc failed, req-size: %zu pages, ret: %d\n",
-> +		pr_err_ratelimited("%s: %s: alloc failed, req-size: %u pages, ret: %d\n",
->  				   __func__, cma->name, count, ret);
->  		cma_debug_show_areas(cma);
->  	}
-> -- 
-> 2.31.0.291.g576ba9dcdaf-goog
+> Responses should be made by Wed, 31 Mar 2021 07:55:56 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.264-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
 > 
+> thanks,
+> 
+> greg k-h
+> 
+>
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+
+and thanks to Ben's latest back ports, no longer seeing the do_futex
+warning that I was seeing, thanks a lot Ben!
+-- 
+Florian
