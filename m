@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12AD434D091
+	by mail.lfdr.de (Postfix) with ESMTP id 5F08734D092
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhC2Mz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:55:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231267AbhC2My4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:54:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 411E2614A5;
-        Mon, 29 Mar 2021 12:54:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617022495;
-        bh=gD8OAL8ZgrZxmhmfXI5U0FkI+CeYRCz8TgCwsSh8ha0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DQIvO4y/SdhfupNIesMRydJjNf02VMTjYdEQVa5Vmz0fAuzU2QZWHfmCPBCFkHqB6
-         OHocQmKEPGCOKUAvcNoyL2owm0o3O4UYX4zbkIVC1O54ZvGVfVRzSTfbhSreOwJ1P5
-         xBbSmmn/RUV0Iz7Bm5pEmdmy8twaTwZAfmMqdh31wbOwy3hwYS1ogL4FrH6j0Pupci
-         UmJ8ggu1V1fnHg/sjHYn8LXC79uzEevjsmeQ/SjEYg8a3wn9VpJDegL/QQHkYcKzue
-         vZ/IxUmJjFVrRe6T2QizkS/CEhbB+4E0NSIr+VXCjNN274kIlkTNlCQrLKrsNtOX7T
-         WQqiMsrOf40zw==
-Date:   Mon, 29 Mar 2021 13:54:49 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, catalin.marinas@arm.com,
-        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        dvyukov@google.com, akpm@linux-foundation.org,
-        tyhicks@linux.microsoft.com, maz@kernel.org, rppt@kernel.org,
-        linux@roeck-us.net, gustavoars@kernel.org, yj.chiang@mediatek.com
-Subject: Re: [PATCH v4 5/5] arm64: Kconfig: select KASAN_VMALLOC if
- KANSAN_GENERIC is enabled
-Message-ID: <20210329125449.GA3805@willie-the-truck>
-References: <20210324040522.15548-1-lecopzer.chen@mediatek.com>
- <20210324040522.15548-6-lecopzer.chen@mediatek.com>
+        id S231727AbhC2Mza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:55:30 -0400
+Received: from mail-lj1-f180.google.com ([209.85.208.180]:41622 "EHLO
+        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231451AbhC2MzC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:55:02 -0400
+Received: by mail-lj1-f180.google.com with SMTP id f26so15783083ljp.8;
+        Mon, 29 Mar 2021 05:55:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R0xVhG+7U53SPH5jmQHpTxLXFPcZAS60NbwSQReNzRI=;
+        b=MLttORhjriQ72uc9YncdPJXqSiGMxmyeP58nWAK8G2Xfj4g6JKPVm56F2Prsr2oNUC
+         PkTDKKhU1REk+EeP9WESNiTffdvVXWCypdxpx5MUdlhWoUHtZd/9Ku42v4sEJXWScOBT
+         9yendUYAkWLs0zcTiAI0K4I4MxZrp87mUv8YXxdmYH3mlBPVMb9Vv9g0CbDkoozTjh4O
+         wr/duFPIi+bbkqtfTs1B63NR7xz0yct/ux307S/Zkys5ekvappXb5V56V8FEhc4O4T0q
+         U1tG4L9SGM7jeB++HOw3VptQ3sfy7Sgnx5W8XYWAiXp5lJD7hgESTS1Z9/HceVoxrJrQ
+         mN7A==
+X-Gm-Message-State: AOAM531clKeem3dK4mEw3EIlahOzafcOYiv8IcoNVgGjGGZlnH9IAiyL
+        Z2YcHJb7ghSsQ76obnvTBwNHvmUgBvf8kg==
+X-Google-Smtp-Source: ABdhPJyjRQbvzLntcR9xnLbrzd8ikCWldpOVxLvCccmidkhppEi3DIiRn0b8vBc/wQ1zDsejAliXGQ==
+X-Received: by 2002:a2e:2a44:: with SMTP id q65mr18437325ljq.238.1617022500199;
+        Mon, 29 Mar 2021 05:55:00 -0700 (PDT)
+Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id t192sm1826376lff.295.2021.03.29.05.54.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 05:54:59 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 15:54:53 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        matti.vaittinen@fi.rohmeurope.com, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: [PATCH v5 06/19] mfd: Add ROHM BD71815 ID
+Message-ID: <334c2fdfb79e8082144b11b18c976bcf86202f4f.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324040522.15548-6-lecopzer.chen@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1617020713.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 12:05:22PM +0800, Lecopzer Chen wrote:
-> Before this patch, someone who wants to use VMAP_STACK when
-> KASAN_GENERIC enabled must explicitly select KASAN_VMALLOC.
-> 
-> From Will's suggestion [1]:
->   > I would _really_ like to move to VMAP stack unconditionally, and
->   > that would effectively force KASAN_VMALLOC to be set if KASAN is in use
-> 
-> Because VMAP_STACK now depends on either HW_TAGS or KASAN_VMALLOC if
-> KASAN enabled, in order to make VMAP_STACK selected unconditionally,
-> we bind KANSAN_GENERIC and KASAN_VMALLOC together.
-> 
-> Note that SW_TAGS supports neither VMAP_STACK nor KASAN_VMALLOC now,
-> so this is the first step to make VMAP_STACK selected unconditionally.
+Add chip ID for ROHM BD71815 and PMIC so that drivers can identify
+this IC.
 
-Do you know if anybody is working on this? It's really unfortunate that
-we can't move exclusively to VMAP_STACK just because of SW_TAGS KASAN.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+---
+No changes since v4
 
-That said, what is there to do? As things stand, won't kernel stack
-addresses end up using KASAN_TAG_KERNEL?
+ include/linux/mfd/rohm-generic.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Will
+diff --git a/include/linux/mfd/rohm-generic.h b/include/linux/mfd/rohm-generic.h
+index 66f673c35303..e107b4769101 100644
+--- a/include/linux/mfd/rohm-generic.h
++++ b/include/linux/mfd/rohm-generic.h
+@@ -11,6 +11,7 @@ enum rohm_chip_type {
+ 	ROHM_CHIP_TYPE_BD71837 = 0,
+ 	ROHM_CHIP_TYPE_BD71847,
+ 	ROHM_CHIP_TYPE_BD70528,
++	ROHM_CHIP_TYPE_BD71815,
+ 	ROHM_CHIP_TYPE_BD71828,
+ 	ROHM_CHIP_TYPE_BD9571,
+ 	ROHM_CHIP_TYPE_BD9574,
+-- 
+2.25.4
+
+
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
