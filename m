@@ -2,139 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2513834CEE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C4134CEED
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhC2L1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:27:13 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:20435 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232566AbhC2L0u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:26:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617017210; x=1648553210;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SkLgfceD3jGyBvYhKR7Ld4heOTFCvFyo68HJmqDcdb8=;
-  b=HdcCDBVsHlarBygmWXy9QB8CdORF12/vIRTO3RTPWx0fqpazJGZY9Iuw
-   ztTSmtlhdUDbcToa1RTH6rvF1QUBAf3GU+9E7SR56QOdh6UZehh2LQckW
-   J+hXq748TabLuhHQ4y04GRYhhxNW3da5mApvWd8ls9saypjhdSEPzNdXe
-   XH9zdN51gp/vsgSneAO1TrbPS2rwKkWk7nase5EHazGiafzUWe6Grst6n
-   84Ny6tKnKsJee978/WBfO0cUe30xHlFqnBJAUHpB+QwR+vNTkD0OxxHce
-   lfNZjo8ms63BBWe9bAjAY/aBcwkagQfkKgOW8CzYwEhiGdcfEHpCSjiXX
-   Q==;
-IronPort-SDR: iN4mH5A/7yqlckVYppBxUJkymBVVl/TBd0mt673JovpS80UQNzxauLLQfKNu3xcNv3aKqkkpHx
- aFwkGfc9Jb3g+4ppaz+jWppsXTrynVYHwsAXbhGyKop8R0BE3mn07ylIkO3sJupUih/M8bHuCB
- GVMuj921Bm+tqJ6qWeJYFyJiusMn288fg0Q0Dj9xjeQpdJYqicysJXbSKb4RqKLnsiHPBIa+UK
- yE24EEf8t27qhri7ScITR3ReviYxiYIieuKakQ/i4+taZ3PJ0mXBM3HcQ7CPfvPponXNIFOdmE
- zEw=
-X-IronPort-AV: E=Sophos;i="5.81,287,1610434800"; 
-   d="scan'208";a="49226472"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 29 Mar 2021 04:26:49 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 29 Mar 2021 04:26:49 -0700
-Received: from den-her-m31857h.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 29 Mar 2021 04:26:48 -0700
-Message-ID: <f47350cef78ffbb65f7488d50bdb369d30daddef.camel@microchip.com>
-Subject: Re: [PATCH v8 0/3] Adding the Sparx5 Switch Reset Driver
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 29 Mar 2021 13:26:47 +0200
-In-Reply-To: <20210316090839.3207930-1-steen.hegelund@microchip.com>
-References: <20210316090839.3207930-1-steen.hegelund@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S232312AbhC2L1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:27:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232152AbhC2L1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 07:27:08 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD18B61585;
+        Mon, 29 Mar 2021 11:27:01 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 12:27:08 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Kosina <jikos@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 22/25] HID: hid-sensor-hub: Remove unused struct member
+ 'quirks'
+Message-ID: <20210329122708.010a36a9@jic23-huawei>
+In-Reply-To: <20210326143458.508959-24-lee.jones@linaro.org>
+References: <20210326143458.508959-1-lee.jones@linaro.org>
+        <20210326143458.508959-24-lee.jones@linaro.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Fri, 26 Mar 2021 14:34:55 +0000
+Lee Jones <lee.jones@linaro.org> wrote:
 
-I just wanted to know if there are any outstanding items, or you think 
-that the driver is acceptable as it is now?
+> Commit b0f847e16c1ea ("HID: hid-sensor-hub: Force logical minimum to 1
+> for power and report state") removed the last used quirk handled by
+> this driver.
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/hid/hid-sensor-hub.c:39: warning: Function parameter or member 'quirks' not described in 'sensor_hub_data'
+> 
+> Cc: Jiri Kosina <jikos@kernel.org>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-iio@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-BR
-Steen
-
-On Tue, 2021-03-16 at 10:08 +0100, Steen Hegelund wrote:
-> This series provides the Microchip Sparx5 Switch Reset Driver
+> ---
+>  drivers/hid/hid-sensor-hub.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> The Sparx5 Switch SoC has a number of components that can be reset
-> individually, but at least the Switch Core needs to be in a well defined
-> state at power on, when any of the Sparx5 drivers starts to access the
-> Switch Core, this reset driver is available.
-> 
-> The reset driver is loaded early via the postcore_initcall interface, and
-> will then be available for the other Sparx5 drivers (SGPIO, SwitchDev etc)
-> that are loaded next, and the first of them to be loaded can perform the
-> one-time Switch Core reset that is needed.
-> 
-> The driver has protection so that the system busses, DDR controller, PCI-E
-> and ARM A53 CPU and a few other subsystems are not touched by the reset.
-> 
-> Sparx5 will no longer use the existing Ocelot chip reset driver, but use
-> this new switch reset driver as it has the reset controller interface that
-> allows the first client to perform the reset on behalf of all the Sparx5
-> component drivers.
-> 
-> The Sparx5 Chip Register Model can be browsed at this location:
-> https://github.com/microchip-ung/sparx-5_reginfo
-> and the datasheet is available here:
-> https://ww1.microchip.com/downloads/en/DeviceDoc/SparX-5_Family_L2L3_Enterprise_10G_Ethernet_Switches_Datasheet_00003822B.pdf
-> 
-> History:
-> 
-> v7 -> v8 Updated the commit descriptions to explain the change from using
->          the existing Ocelot chip reset driver to use a new switch reset
->          driver.
-> 
-> v6 -> v7 Use devm_platform_get_and_ioremap_resource to get the IO range.
->          Rebase on v5.12-rc1
-> 
-> v5 -> v6 Using the existing CPU syscon for reset protection and add a small
->          IO range for the GCB Reset Register.
-> 
-> v4 -> v5 Changed the two syscons into IO ranges and updated the bindings to
->          reflect this change.
-> 
-> v3 -> v4 Added commit message descriptions
-> 
-> v2 -> v3 Removed unused headers
->          Renamed the reset controller dev member.
->          Use regmap_read_poll_timeout instead of polling a function.
->          Used two separate syscon entries in the binding
->          Simplified the syscon error handling.
->          Simplified the devm_reset_controller_register error handling.
->          Moved the contents of the mchp_sparx5_reset_config function into
->          the probe function.
-> 
-> v1 -> v2 Removed debug prints
->          Changed the error handling to save the error code before jumping.
-> 
-> Steen Hegelund (3):
->   dt-bindings: reset: microchip sparx5 reset driver bindings
->   reset: mchp: sparx5: add switch reset driver
->   arm64: dts: reset: add microchip sparx5 switch reset driver
-> 
->  .../bindings/reset/microchip,rst.yaml         |  58 +++++++
->  arch/arm64/boot/dts/microchip/sparx5.dtsi     |   7 +-
->  drivers/reset/Kconfig                         |   8 +
->  drivers/reset/Makefile                        |   1 +
->  drivers/reset/reset-microchip-sparx5.c        | 146 ++++++++++++++++++
->  5 files changed, 218 insertions(+), 2 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/reset/microchip,rst.yaml
->  create mode 100644 drivers/reset/reset-microchip-sparx5.c
-> 
-
+> diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
+> index 3dd7d32467378..36b6852f75dd5 100644
+> --- a/drivers/hid/hid-sensor-hub.c
+> +++ b/drivers/hid/hid-sensor-hub.c
+> @@ -34,7 +34,6 @@ struct sensor_hub_data {
+>  	spinlock_t dyn_callback_lock;
+>  	struct mfd_cell *hid_sensor_hub_client_devs;
+>  	int hid_sensor_client_cnt;
+> -	unsigned long quirks;
+>  	int ref_cnt;
+>  };
+>  
+> @@ -615,7 +614,6 @@ static int sensor_hub_probe(struct hid_device *hdev,
+>  	}
+>  
+>  	hid_set_drvdata(hdev, sd);
+> -	sd->quirks = id->driver_data;
+>  
+>  	spin_lock_init(&sd->lock);
+>  	spin_lock_init(&sd->dyn_callback_lock);
 
