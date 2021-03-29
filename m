@@ -2,40 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C11E934C5D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE07C34CBF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhC2IDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:03:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44384 "EHLO mail.kernel.org"
+        id S232422AbhC2Iyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:54:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhC2ICD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:02:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BD936196B;
-        Mon, 29 Mar 2021 08:02:01 +0000 (UTC)
+        id S233837AbhC2Ifx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:35:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BBC361601;
+        Mon, 29 Mar 2021 08:35:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004922;
-        bh=6doY695fcNFJgCQPeD37/bzJKzw8f4iXkCzcMtRpyCU=;
+        s=korg; t=1617006930;
+        bh=5bzssBjW/KOEzduNrNgJ8l+A9etlBpDxW72zasxvtT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=leeyaJ5NC8Mw4GWMDJT0wPhHMUPZRs7EbKhIweQxIPgXa1GxUaWqCP4BefSCguRqU
-         pi8uHPdJMh5GhSejYf0nI9F8frSt1jsHauF7cfYssBppOT+j40aU7GY1R1yK4u9Wen
-         QxlbnL10piuO4QgsqW29KFujMAzlYTNQ3EqSLHOs=
+        b=mSXRpU95v3+bNMR4XIz8mYTCW1AfeFs2ViilHMhxvdarpzW5TZ5LjWFse+Ny0YdEl
+         fBNzRUw64mXTcUtcFF5LjizyVuBGLe+lD+OckMAadqwJrDT57aIkPmQ7/3X8W+Cc5z
+         BF6V7sRaJIDvSlICL8PPpdTvFcuXoO6wVOf1WiUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        "Dmitry V. Levin" <ldv@altlinux.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Torin Cooper-Bennun <torin@maxiluxsystems.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 16/53] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
+Subject: [PATCH 5.11 155/254] can: m_can: m_can_rx_peripheral(): fix RX being blocked by errors
 Date:   Mon, 29 Mar 2021 09:57:51 +0200
-Message-Id: <20210329075608.085917535@linuxfoundation.org>
+Message-Id: <20210329075638.298974919@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 
-[ Upstream commit 61bf318eac2c13356f7bd1c6a05421ef504ccc8a ]
+[ Upstream commit e98d9ee64ee2cc9b1d1a8e26610ec4d0392ebe50 ]
 
-In https://bugs.gentoo.org/769614 Dmitry noticed that
-`ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
+For M_CAN peripherals, m_can_rx_handler() was called with quota = 1,
+which caused any error handling to block RX from taking place until
+the next time the IRQ handler is called. This had been observed to
+cause RX to be blocked indefinitely in some cases.
 
-The bug is in mismatch between get/set errors:
+This is fixed by calling m_can_rx_handler with a sensibly high quota.
 
-static inline long syscall_get_error(struct task_struct *task,
-                                     struct pt_regs *regs)
-{
-        return regs->r10 == -1 ? regs->r8:0;
-}
-
-static inline long syscall_get_return_value(struct task_struct *task,
-                                            struct pt_regs *regs)
-{
-        return regs->r8;
-}
-
-static inline void syscall_set_return_value(struct task_struct *task,
-                                            struct pt_regs *regs,
-                                            int error, long val)
-{
-        if (error) {
-                /* error < 0, but ia64 uses > 0 return value */
-                regs->r8 = -error;
-                regs->r10 = -1;
-        } else {
-                regs->r8 = val;
-                regs->r10 = 0;
-        }
-}
-
-Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
-
-Link: https://lkml.kernel.org/r/20210221002554.333076-2-slyfox@gentoo.org
-Link: https://bugs.gentoo.org/769614
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
-Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
+Link: https://lore.kernel.org/r/20210303144350.4093750-1-torin@maxiluxsystems.com
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/include/asm/syscall.h | 2 +-
+ drivers/net/can/m_can/m_can.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 1d0b875fec44..ec909eec0b4c 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -35,7 +35,7 @@ static inline void syscall_rollback(struct task_struct *task,
- static inline long syscall_get_error(struct task_struct *task,
- 				     struct pt_regs *regs)
+diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
+index 678679a8c907..44b3f4b3aea5 100644
+--- a/drivers/net/can/m_can/m_can.c
++++ b/drivers/net/can/m_can/m_can.c
+@@ -873,7 +873,7 @@ static int m_can_rx_peripheral(struct net_device *dev)
  {
--	return regs->r10 == -1 ? regs->r8:0;
-+	return regs->r10 == -1 ? -regs->r8:0;
- }
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
  
- static inline long syscall_get_return_value(struct task_struct *task,
+-	m_can_rx_handler(dev, 1);
++	m_can_rx_handler(dev, M_CAN_NAPI_WEIGHT);
+ 
+ 	m_can_enable_all_interrupts(cdev);
+ 
 -- 
 2.30.1
 
