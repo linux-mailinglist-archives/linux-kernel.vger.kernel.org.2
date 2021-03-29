@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBE534CC67
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ACCF34C877
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236286AbhC2JCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:02:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55668 "EHLO mail.kernel.org"
+        id S233986AbhC2IWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:22:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233722AbhC2Ifw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:35:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4856161580;
-        Mon, 29 Mar 2021 08:35:25 +0000 (UTC)
+        id S232097AbhC2IOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:14:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D74F619AD;
+        Mon, 29 Mar 2021 08:14:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006925;
-        bh=6QDRJsZ/Lobw4oRypTwN0X6SStAw2BVEpLwDn8fLqTI=;
+        s=korg; t=1617005671;
+        bh=IqqgAef8aMSmr7MlycYjfyp1izlvDR167gZ7Dbm1wOw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RyrQMf3cpJg3TdRA4kp6RURJ2wgcGfu/qT1SmQlsgQ4FSw4DrNiv3fWqWcwKAWEua
-         obaVZWl/QSlBvFdD+k4ntCCqrjNoEknqwZqIksKq+nGTH6GVBjxmAyC23vxsMNGqHh
-         3J5l1zOpykCEs/cWnK2fADLvAhDiDpbh+hxaIHHs=
+        b=BLZu7610v5ud4iTlsWeMT3ooZ8TcLPRthyhqIc97TB2lmUKPVSd+rhwLq6RCqGMND
+         UeziSD9Y8A/9mE6Um3uLPv5VYcHxr75BtAPIX6DlBoqkreYzp1Y+ooyVas/ut2PEB9
+         6z6Y4Ndak2MvCxye4wxYhPltHVWwqHAIP0mqCGE8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 153/254] can: c_can: move runtime PM enable/disable to c_can_platform
+        stable@vger.kernel.org, Sean Nyekjaer <sean@geanix.com>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 041/111] squashfs: fix inode lookup sanity checks
 Date:   Mon, 29 Mar 2021 09:57:49 +0200
-Message-Id: <20210329075638.238444443@linuxfoundation.org>
+Message-Id: <20210329075616.544131883@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,133 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Sean Nyekjaer <sean@geanix.com>
 
-[ Upstream commit 6e2fe01dd6f98da6cae8b07cd5cfa67abc70d97d ]
+commit c1b2028315c6b15e8d6725e0d5884b15887d3daa upstream.
 
-Currently doing modprobe c_can_pci will make the kernel complain:
+When mouting a squashfs image created without inode compression it fails
+with: "unable to read inode lookup table"
 
-    Unbalanced pm_runtime_enable!
+It turns out that the BLOCK_OFFSET is missing when checking the
+SQUASHFS_METADATA_SIZE agaist the actual size.
 
-this is caused by pm_runtime_enable() called before pm is initialized.
-
-This fix is similar to 227619c3ff7c, move those pm_enable/disable code
-to c_can_platform.
-
-Fixes: 4cdd34b26826 ("can: c_can: Add runtime PM support to Bosch C_CAN/D_CAN controller")
-Link: http://lore.kernel.org/r/20210302025542.987600-1-ztong0001@gmail.com
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Tested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/20210226092903.1473545-1-sean@geanix.com
+Fixes: eabac19e40c0 ("squashfs: add more sanity checks in inode lookup")
+Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Acked-by: Phillip Lougher <phillip@squashfs.org.uk>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/can/c_can/c_can.c          | 24 +-----------------------
- drivers/net/can/c_can/c_can_platform.c |  6 +++++-
- 2 files changed, 6 insertions(+), 24 deletions(-)
+ fs/squashfs/export.c      |    8 ++++++--
+ fs/squashfs/squashfs_fs.h |    1 +
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can.c b/drivers/net/can/c_can/c_can.c
-index 63f48b016ecd..716d1a5bf17b 100644
---- a/drivers/net/can/c_can/c_can.c
-+++ b/drivers/net/can/c_can/c_can.c
-@@ -212,18 +212,6 @@ static const struct can_bittiming_const c_can_bittiming_const = {
- 	.brp_inc = 1,
- };
+--- a/fs/squashfs/export.c
++++ b/fs/squashfs/export.c
+@@ -152,14 +152,18 @@ __le64 *squashfs_read_inode_lookup_table
+ 		start = le64_to_cpu(table[n]);
+ 		end = le64_to_cpu(table[n + 1]);
  
--static inline void c_can_pm_runtime_enable(const struct c_can_priv *priv)
--{
--	if (priv->device)
--		pm_runtime_enable(priv->device);
--}
--
--static inline void c_can_pm_runtime_disable(const struct c_can_priv *priv)
--{
--	if (priv->device)
--		pm_runtime_disable(priv->device);
--}
--
- static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
- {
- 	if (priv->device)
-@@ -1335,7 +1323,6 @@ static const struct net_device_ops c_can_netdev_ops = {
+-		if (start >= end || (end - start) > SQUASHFS_METADATA_SIZE) {
++		if (start >= end
++		    || (end - start) >
++		    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 			kfree(table);
+ 			return ERR_PTR(-EINVAL);
+ 		}
+ 	}
  
- int register_c_can_dev(struct net_device *dev)
- {
--	struct c_can_priv *priv = netdev_priv(dev);
- 	int err;
+ 	start = le64_to_cpu(table[indexes - 1]);
+-	if (start >= lookup_table_start || (lookup_table_start - start) > SQUASHFS_METADATA_SIZE) {
++	if (start >= lookup_table_start ||
++	    (lookup_table_start - start) >
++	    (SQUASHFS_METADATA_SIZE + SQUASHFS_BLOCK_OFFSET)) {
+ 		kfree(table);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+--- a/fs/squashfs/squashfs_fs.h
++++ b/fs/squashfs/squashfs_fs.h
+@@ -17,6 +17,7 @@
  
- 	/* Deactivate pins to prevent DRA7 DCAN IP from being
-@@ -1345,28 +1332,19 @@ int register_c_can_dev(struct net_device *dev)
- 	 */
- 	pinctrl_pm_select_sleep_state(dev->dev.parent);
+ /* size of metadata (inode and directory) blocks */
+ #define SQUASHFS_METADATA_SIZE		8192
++#define SQUASHFS_BLOCK_OFFSET		2
  
--	c_can_pm_runtime_enable(priv);
--
- 	dev->flags |= IFF_ECHO;	/* we support local echo */
- 	dev->netdev_ops = &c_can_netdev_ops;
- 
- 	err = register_candev(dev);
--	if (err)
--		c_can_pm_runtime_disable(priv);
--	else
-+	if (!err)
- 		devm_can_led_init(dev);
--
- 	return err;
- }
- EXPORT_SYMBOL_GPL(register_c_can_dev);
- 
- void unregister_c_can_dev(struct net_device *dev)
- {
--	struct c_can_priv *priv = netdev_priv(dev);
--
- 	unregister_candev(dev);
--
--	c_can_pm_runtime_disable(priv);
- }
- EXPORT_SYMBOL_GPL(unregister_c_can_dev);
- 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index 05f425ceb53a..47b251b1607c 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -29,6 +29,7 @@
- #include <linux/list.h>
- #include <linux/io.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
- #include <linux/clk.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-@@ -386,6 +387,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, dev);
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
-+	pm_runtime_enable(priv->device);
- 	ret = register_c_can_dev(dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
-@@ -398,6 +400,7 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	return 0;
- 
- exit_free_device:
-+	pm_runtime_disable(priv->device);
- 	free_c_can_dev(dev);
- exit:
- 	dev_err(&pdev->dev, "probe failed\n");
-@@ -408,9 +411,10 @@ exit:
- static int c_can_plat_remove(struct platform_device *pdev)
- {
- 	struct net_device *dev = platform_get_drvdata(pdev);
-+	struct c_can_priv *priv = netdev_priv(dev);
- 
- 	unregister_c_can_dev(dev);
--
-+	pm_runtime_disable(priv->device);
- 	free_c_can_dev(dev);
- 
- 	return 0;
--- 
-2.30.1
-
+ /* default size of block device I/O */
+ #ifdef CONFIG_SQUASHFS_4K_DEVBLK_SIZE
 
 
