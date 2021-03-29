@@ -2,88 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C42AE34C0BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 02:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C6E34C0C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231644AbhC2AzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 20:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhC2Ay7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 20:54:59 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567E9C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 17:54:59 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id h10so12348527edt.13
-        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 17:54:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yVAc9b+mBnGmiPe0hQUBS5bq7gPTXTsIqeLgC0QKuYo=;
-        b=NoS1GIebv3iSWHAId4v66ODhmcXKQ/qQgeX+r/F705yNSzRoWkVkukYHE2U4SXzj7l
-         3idkz2/42j4ZbHW78CX53X7tItXmV94qnWB5OdZOyQnbEsoGPsYkSWpOSMDnWm16M77n
-         hxLk9rcJsK2WKGOofwpCR6fzZNHzRZZeic4Bas0Ki4nLhez/wE3QZpZS5gvML/zDm3gi
-         g9leOVIkOl3WZlwloo/rXhtFJIOSID1WTvNwZfezLQYLQIB7EwNVLn3S61HwpAQcPDRX
-         zaOUJcL6r/q364sBH0DBnzDGmlTYrO8r0TFMDJUmBAMxfPzwh2rVjOLSrojRZRucPjUH
-         TVZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yVAc9b+mBnGmiPe0hQUBS5bq7gPTXTsIqeLgC0QKuYo=;
-        b=cEyYc79Kj9Rr23zMVBQ8I0sWAGmNQI/e158fxHxMc7suXa20WjWVKhRv/+DWTW3+EG
-         0Mg8piDpR8EQyHQ9T6JCeaJis/YNqwtRBfmd9GD0dtIbOZfgF7ZLoXrSimljdJ4gT92+
-         tAxhki4g/gvT+TBljdkwu0GgXnag4OomOfMG+rizbqt3dfYt/g5gZlW20cnjIFTs6Gp/
-         Xulz4USS0og4Q5I09ahyZXy086PgO8wGaC0JDEi3gn+y8Nv31XQzYiA4xYIUS3EJGSXS
-         2Fs5Fysh8kvPfogBM+0O3uzrEAYeumM4ehAxLNhxQ/E7TVQbd2vyFDr1043uZq/aH3Rj
-         5byg==
-X-Gm-Message-State: AOAM530ml4wlOtq1oEPiSed7oTqAGJJT43CsHG/WdkmLEEFM2ZJUyS+t
-        023U75lxF0sJeE7Gu0dXRfvVOSb++IbRI/+kVLUAqQ==
-X-Google-Smtp-Source: ABdhPJx+4A/Txkzyq838knHsu1E43Gon6mva2bR+kHkuk+1ju7bFnu+zuJhSeTQ6qkrvnEusq0RO4FBMrBSodVEvcoE=
-X-Received: by 2002:a05:6402:10c9:: with SMTP id p9mr26382778edu.268.1616979297849;
- Sun, 28 Mar 2021 17:54:57 -0700 (PDT)
+        id S231600AbhC2BAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 21:00:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229861AbhC2A75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 20:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2D7961879;
+        Mon, 29 Mar 2021 00:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616979597;
+        bh=OevAKViQWBfdT16CE4GyR+nY9lrxPiNu+4V4jgret8c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rTminsS00Cw2+efwXvVv0F/6KDOjDW5qC5A/BGUbG4ZS7OM0xgVby58ZJThjSHfgx
+         fRsjLxobk9GU6kWqwvJgFV/4BcDeo70MUWbNZ6DxEU7ErDNPk28mTA17gcHde6ohsK
+         FKwpg3krWJYV8tvjvuk+YD4MA7Kt/W3bD2NQVVDXwUVQYhte5jNNXVAJ0sw5VexifA
+         qCx6Opd1/c+HaEPGuqeyTRaI4z7MbIRgOApe2d+FvyehipYbW8vrfVJt0YEi87+0Ng
+         vZIUiLibWOQbKG2lFUetWgjrdSPNW+5BfYQPUS263U1oTpkEY/WMHeQLhsKHLYNo2J
+         LZSdlsBSa3q8Q==
+Date:   Mon, 29 Mar 2021 08:59:52 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Liu Ying <victor.liu@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: imx: scu-pd: Update comments for single global
+ power domain
+Message-ID: <20210329005951.GE22955@dragon>
+References: <20210317093117.16091-1-ulf.hansson@linaro.org>
 MIME-Version: 1.0
-References: <20210304034141.7062-1-brad@pensando.io> <20210304034141.7062-8-brad@pensando.io>
- <CACRpkdZr8qrQ+b15z_zRP3wAntQeW7T0Z515sUv6e2gL9GzDyg@mail.gmail.com>
-In-Reply-To: <CACRpkdZr8qrQ+b15z_zRP3wAntQeW7T0Z515sUv6e2gL9GzDyg@mail.gmail.com>
-From:   Brad Larson <brad@pensando.io>
-Date:   Sun, 28 Mar 2021 17:54:47 -0700
-Message-ID: <CAK9rFnw6cM9UsNoD1-37JfM0n2h6fATSTZYqAP0DBhwwigqBzA@mail.gmail.com>
-Subject: Re: [PATCH 7/8] arm64: dts: Add Pensando Elba SoC support
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Olof Johansson <olof@lixom.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210317093117.16091-1-ulf.hansson@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 4, 2021 at 12:52 AM Linus Walleij <linus.walleij@linaro.org> wrote:
->
-> On Thu, Mar 4, 2021 at 4:42 AM Brad Larson <brad@pensando.io> wrote:
->
-> > Add Pensando common and Elba SoC specific device nodes
-> > and corresponding binding documentation.
-> >
-> > Signed-off-by: Brad Larson <brad@pensando.io>
-> (...)
-> >  .../bindings/gpio/pensando,elba-spics.txt     |  24 ++
->
-> Please use YAML schema for this.
+On Wed, Mar 17, 2021 at 10:31:17AM +0100, Ulf Hansson wrote:
+> Since the introduction of the PM domain support for the scu-pd, the genpd
+> framework has been continuously improved. More preciously, using a single
+> global power domain can quite easily be deployed for imx platforms.
+> 
+> To avoid confusions, let's therefore make an update to the comments about
+> the missing pieces.
+> 
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-In patchset v2 changed to YAML schema and passed dt_binding_check and
-dtbs_check.
+Applied, thanks.
