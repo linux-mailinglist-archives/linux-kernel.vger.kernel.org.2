@@ -2,89 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E61E34D354
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F08E34D358
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhC2PJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:09:05 -0400
-Received: from smtprelay0184.hostedemail.com ([216.40.44.184]:47718 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229479AbhC2PI4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:08:56 -0400
-Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 47A6B180A5B1F;
-        Mon, 29 Mar 2021 15:08:55 +0000 (UTC)
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA id 77FC918A608;
-        Mon, 29 Mar 2021 15:08:53 +0000 (UTC)
-Message-ID: <1ceb7dc5c2fa376470ab9274020fddf1c2f1584f.camel@perches.com>
-Subject: Re: [PATCH 2/2] gpiolib: Allow drivers to return EOPNOTSUPP from
- config
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 29 Mar 2021 08:08:52 -0700
-In-Reply-To: <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
-References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-         <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
-         <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S230271AbhC2PJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:09:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230202AbhC2PJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:09:25 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4E956187E;
+        Mon, 29 Mar 2021 15:09:21 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 16:09:28 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, coproscefalo@gmail.com,
+        hdegoede@redhat.com, mgross@linux.intel.com, linux@deviqon.com
+Subject: Re: [PATCH 09/10] platform/x86: toshiba_acpi: use device-managed
+ for sysfs removal
+Message-ID: <20210329160928.0f8d6b44@jic23-huawei>
+In-Reply-To: <20210324125548.45983-10-aardelean@deviqon.com>
+References: <20210324125548.45983-1-aardelean@deviqon.com>
+        <20210324125548.45983-10-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 77FC918A608
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: fdhzygs6faxkxwbfropctuqsjth8c68u
-X-Rspamd-Server: rspamout04
-X-HE-Tag: 1617030533-220374
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-03-29 at 14:59 +0300, Andy Shevchenko wrote:
-> On Mon, Mar 29, 2021 at 2:43 PM Matti Vaittinen
-> <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > 
-> > The checkpacth instructs to switch from ENOSUPP to EOPNOTSUPP.
-> > > WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP
-> > 
-> > Make the gpiolib allow drivers to return both so driver developers
-> > can avoid one of the checkpatch complaints.
+On Wed, 24 Mar 2021 14:55:47 +0200
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
+
+> This change moves the creation of the Toshiba ACPI group to be
+> automatically removed when the parent refcount goes to zero.
 > 
-> Internally we are fine to use the ENOTSUPP.
-> Checkpatch false positives there.
+> The main reason to do this, is to also enforce that the order of removal is
+> mirroring the order of initialization.
 > 
-> I doubt we need this change. Rather checkpatch should rephrase this to
-> point out that this is only applicable to _user-visible_ error path.
-> Cc'ed Joe.
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+Hmm. The manual handling of the sysfs_create_group() is unfortunate (as opposed
+to just setting a groups pointer) but there doesn't seem to be an easy way to fix
+that with the current architecture.  Ah well
 
-Adding CC for Jakub Kicinski who added that particular rule/test.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-And the output message report of the rule is merely a suggestion indicating
-a preference.  It's always up to an individual to accept/reject.
-
-At best, perhaps wordsmithing the checkpatch message might be an OK option.
-
-+# ENOTSUPP is not a standard error code and should be avoided in new patches.
-+# Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.
-+# Similarly to ENOSYS warning a small number of false positives is expected.
-+               if (!$file && $line =~ /\bENOTSUPP\b/) {
-+                       if (WARN("ENOTSUPP",
-+                                "ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP\n" . $herecurr) &&
-+                           $fix) {
-+                               $fixed[$fixlinenr] =~ s/\bENOTSUPP\b/EOPNOTSUPP/;
-+                       }
-+               }
-+
-
+> ---
+>  drivers/platform/x86/toshiba_acpi.c | 29 +++++++++++++++--------------
+>  1 file changed, 15 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
+> index a1249f6dde9a..8e8917979047 100644
+> --- a/drivers/platform/x86/toshiba_acpi.c
+> +++ b/drivers/platform/x86/toshiba_acpi.c
+> @@ -200,7 +200,6 @@ struct toshiba_acpi_dev {
+>  	unsigned int usb_three_supported:1;
+>  	unsigned int wwan_supported:1;
+>  	unsigned int cooling_method_supported:1;
+> -	unsigned int sysfs_created:1;
+>  	unsigned int special_functions;
+>  
+>  	bool kbd_event_generated;
+> @@ -3019,10 +3018,6 @@ static int toshiba_acpi_remove(struct acpi_device *acpi_dev)
+>  
+>  	remove_toshiba_proc_entries(dev);
+>  
+> -	if (dev->sysfs_created)
+> -		sysfs_remove_group(&dev->acpi_dev->dev.kobj,
+> -				   &toshiba_attr_group);
+> -
+>  	return 0;
+>  }
+>  
+> @@ -3049,6 +3044,13 @@ static void toshiba_acpi_misc_deregister(void *data)
+>  	misc_deregister(miscdev);
+>  }
+>  
+> +static void toshiba_acpi_sysfs_remove(void *data)
+> +{
+> +	struct kobject *kobj = data;
+> +
+> +	sysfs_remove_group(kobj, &toshiba_attr_group);
+> +}
+> +
+>  static int toshiba_acpi_add(struct acpi_device *acpi_dev)
+>  {
+>  	struct device *parent = &acpi_dev->dev;
+> @@ -3219,21 +3221,20 @@ static int toshiba_acpi_add(struct acpi_device *acpi_dev)
+>  
+>  	ret = sysfs_create_group(&dev->acpi_dev->dev.kobj,
+>  				 &toshiba_attr_group);
+> -	if (ret) {
+> -		dev->sysfs_created = 0;
+> -		goto error;
+> -	}
+> -	dev->sysfs_created = !ret;
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = devm_add_action_or_reset(parent,
+> +				       toshiba_acpi_sysfs_remove,
+> +				       &dev->acpi_dev->dev.kobj);
+> +	if (ret)
+> +		return ret;
+>  
+>  	create_toshiba_proc_entries(dev);
+>  
+>  	toshiba_acpi = dev;
+>  
+>  	return 0;
+> -
+> -error:
+> -	toshiba_acpi_remove(acpi_dev);
+> -	return ret;
+>  }
+>  
+>  static void toshiba_acpi_notify(struct acpi_device *acpi_dev, u32 event)
 
