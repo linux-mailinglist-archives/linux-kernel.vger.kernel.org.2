@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DADA034CB07
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A849434C900
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235300AbhC2Imj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:42:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42442 "EHLO mail.kernel.org"
+        id S233686AbhC2IZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:25:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232904AbhC2IYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:24:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED00E619C2;
-        Mon, 29 Mar 2021 08:24:19 +0000 (UTC)
+        id S232756AbhC2IQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:16:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5471619A7;
+        Mon, 29 Mar 2021 08:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006260;
-        bh=9IfONxfl7zOM+uNS+hW2gVz03E0r6Wo4qXb85vEd4j4=;
+        s=korg; t=1617005777;
+        bh=CPoIX7dP6d66bbp56DcfdrUV7Uqa+Xop0lvyNuYwMPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gn5YU7EWaoR4KqLjv1OcjQ7w1TWj7S5XqHKnv/XNuzve1/VanT9+52FLiUh6T8pkU
-         9/JAL3sGdfsxoaBjoFL+yZrfv1s3w/tkGgwZscI/7OulJAtdOKVFPio9xzcpIWbekM
-         v7k/9KhW88W1UxmPZzJHFlzm4y+u94VlBTSbKPz0=
+        b=G1WAOiXQhfxig2HGiCI7cC0REMKboZa6tAVJ/9RGN+MwJpAu5dxSzELd3168WRl3W
+         WPZJGsSb0kBIHKn3CJm0Ynj4yEkcaEXIcyherIo4UN343no3naPNf4Ye+t/aqcBuPf
+         ikHwWTQKhO3LPI9r0e4G33GpswYbqF62lNW2jgiU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@netronome.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 175/221] net: bridge: dont notify switchdev for local FDB addresses
+Subject: [PATCH 5.4 078/111] nfp: flower: fix pre_tun mask id allocation
 Date:   Mon, 29 Mar 2021 09:58:26 +0200
-Message-Id: <20210329075634.986056008@linuxfoundation.org>
+Message-Id: <20210329075617.813665488@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,73 +41,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Louis Peens <louis.peens@corigine.com>
 
-[ Upstream commit 6ab4c3117aec4e08007d9e971fa4133e1de1082d ]
+[ Upstream commit d8ce0275e45ec809a33f98fc080fe7921b720dfb ]
 
-As explained in this discussion:
-https://lore.kernel.org/netdev/20210117193009.io3nungdwuzmo5f7@skbuf/
+pre_tun_rule flows does not follow the usual add-flow path, instead
+they are used to update the pre_tun table on the firmware. This means
+that if the mask-id gets allocated here the firmware will never see the
+"NFP_FL_META_FLAG_MANAGE_MASK" flag for the specific mask id, which
+triggers the allocation on the firmware side. This leads to the firmware
+mask being corrupted and causing all sorts of strange behaviour.
 
-the switchdev notifiers for FDB entries managed to have a zero-day bug.
-The bridge would not say that this entry is local:
-
-ip link add br0 type bridge
-ip link set swp0 master br0
-bridge fdb add dev swp0 00:01:02:03:04:05 master local
-
-and the switchdev driver would be more than happy to offload it as a
-normal static FDB entry. This is despite the fact that 'local' and
-non-'local' entries have completely opposite directions: a local entry
-is locally terminated and not forwarded, whereas a static entry is
-forwarded and not locally terminated. So, for example, DSA would install
-this entry on swp0 instead of installing it on the CPU port as it should.
-
-There is an even sadder part, which is that the 'local' flag is implicit
-if 'static' is not specified, meaning that this command produces the
-same result of adding a 'local' entry:
-
-bridge fdb add dev swp0 00:01:02:03:04:05 master
-
-I've updated the man pages for 'bridge', and after reading it now, it
-should be pretty clear to any user that the commands above were broken
-and should have never resulted in the 00:01:02:03:04:05 address being
-forwarded (this behavior is coherent with non-switchdev interfaces):
-https://patchwork.kernel.org/project/netdevbpf/cover/20210211104502.2081443-1-olteanv@gmail.com/
-If you're a user reading this and this is what you want, just use:
-
-bridge fdb add dev swp0 00:01:02:03:04:05 master static
-
-Because switchdev should have given drivers the means from day one to
-classify FDB entries as local/non-local, but didn't, it means that all
-drivers are currently broken. So we can just as well omit the switchdev
-notifications for local FDB entries, which is exactly what this patch
-does to close the bug in stable trees. For further development work
-where drivers might want to trap the local FDB entries to the host, we
-can add a 'bool is_local' to br_switchdev_fdb_call_notifiers(), and
-selectively make drivers act upon that bit, while all the others ignore
-those entries if the 'is_local' bit is set.
-
-Fixes: 6b26b51b1d13 ("net: bridge: Add support for notifying devices about FDB add/del")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Fixes: f12725d98cbe ("nfp: flower: offload pre-tunnel rules")
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@netronome.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_switchdev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../ethernet/netronome/nfp/flower/metadata.c  | 24 +++++++++++++------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/net/bridge/br_switchdev.c b/net/bridge/br_switchdev.c
-index 015209bf44aa..3c42095fa75f 100644
---- a/net/bridge/br_switchdev.c
-+++ b/net/bridge/br_switchdev.c
-@@ -123,6 +123,8 @@ br_switchdev_fdb_notify(const struct net_bridge_fdb_entry *fdb, int type)
- {
- 	if (!fdb->dst)
- 		return;
-+	if (test_bit(BR_FDB_LOCAL, &fdb->flags))
-+		return;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/metadata.c b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+index 5defd31d481c..aa06fcb38f8b 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/metadata.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/metadata.c
+@@ -327,8 +327,14 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 		goto err_free_ctx_entry;
+ 	}
  
- 	switch (type) {
- 	case RTM_DELNEIGH:
++	/* Do net allocate a mask-id for pre_tun_rules. These flows are used to
++	 * configure the pre_tun table and are never actually send to the
++	 * firmware as an add-flow message. This causes the mask-id allocation
++	 * on the firmware to get out of sync if allocated here.
++	 */
+ 	new_mask_id = 0;
+-	if (!nfp_check_mask_add(app, nfp_flow->mask_data,
++	if (!nfp_flow->pre_tun_rule.dev &&
++	    !nfp_check_mask_add(app, nfp_flow->mask_data,
+ 				nfp_flow->meta.mask_len,
+ 				&nfp_flow->meta.flags, &new_mask_id)) {
+ 		NL_SET_ERR_MSG_MOD(extack, "invalid entry: cannot allocate a new mask id");
+@@ -359,7 +365,8 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 			goto err_remove_mask;
+ 		}
+ 
+-		if (!nfp_check_mask_remove(app, nfp_flow->mask_data,
++		if (!nfp_flow->pre_tun_rule.dev &&
++		    !nfp_check_mask_remove(app, nfp_flow->mask_data,
+ 					   nfp_flow->meta.mask_len,
+ 					   NULL, &new_mask_id)) {
+ 			NL_SET_ERR_MSG_MOD(extack, "invalid entry: cannot release mask id");
+@@ -374,8 +381,10 @@ int nfp_compile_flow_metadata(struct nfp_app *app,
+ 	return 0;
+ 
+ err_remove_mask:
+-	nfp_check_mask_remove(app, nfp_flow->mask_data, nfp_flow->meta.mask_len,
+-			      NULL, &new_mask_id);
++	if (!nfp_flow->pre_tun_rule.dev)
++		nfp_check_mask_remove(app, nfp_flow->mask_data,
++				      nfp_flow->meta.mask_len,
++				      NULL, &new_mask_id);
+ err_remove_rhash:
+ 	WARN_ON_ONCE(rhashtable_remove_fast(&priv->stats_ctx_table,
+ 					    &ctx_entry->ht_node,
+@@ -406,9 +415,10 @@ int nfp_modify_flow_metadata(struct nfp_app *app,
+ 
+ 	__nfp_modify_flow_metadata(priv, nfp_flow);
+ 
+-	nfp_check_mask_remove(app, nfp_flow->mask_data,
+-			      nfp_flow->meta.mask_len, &nfp_flow->meta.flags,
+-			      &new_mask_id);
++	if (!nfp_flow->pre_tun_rule.dev)
++		nfp_check_mask_remove(app, nfp_flow->mask_data,
++				      nfp_flow->meta.mask_len, &nfp_flow->meta.flags,
++				      &new_mask_id);
+ 
+ 	/* Update flow payload with mask ids. */
+ 	nfp_flow->unmasked_data[NFP_FL_MASK_ID_LOCATION] = new_mask_id;
 -- 
 2.30.1
 
