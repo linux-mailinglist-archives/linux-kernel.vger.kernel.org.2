@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9191D34CC4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA7F34C8D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbhC2I7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:59:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55110 "EHLO mail.kernel.org"
+        id S233045AbhC2IYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:24:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234950AbhC2Ihk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00CC361613;
-        Mon, 29 Mar 2021 08:37:39 +0000 (UTC)
+        id S233046AbhC2IPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:15:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D59546196D;
+        Mon, 29 Mar 2021 08:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617007060;
-        bh=atK0IFSXyZaB9N5YS8aCzMT9DSGHF4kQf1csFMDfuMU=;
+        s=korg; t=1617005727;
+        bh=43SFuyqFDg25OjiCtBvWthzGUpSNIkUtCbK5kUNqPKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=13ham1UToiF1YWpQF/x2szszbj6vrigv8+jPpomvbHSamYp57xIzTcooSB37xu8D2
-         i+BM7sO69fAhYYAvtCXHyOElDIuv0z02PdlE9qtDRKY0fpFPBkhF4rbUNMushnTtwb
-         lH3rQTJZKY1I+ho+eIhV0+YLAloAB8DveGxJP+Kw=
+        b=0AxwziBZNUNTd8RDABUV3XIGFKno5el/5F+HRbPrcpROmKC/kaI8Gc8s4u0V6Dkis
+         i6PF7BuRNOGhY741AhJ5xXN8JSNdr1FZ5fLKBMkiP9pqhIwMPA7Vgw8v0VO5o1zYMz
+         FHLcNKgXqVhNjOozYMv3muDFEKnGiJUIoHGZRTsk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 207/254] octeontx2-af: Fix memory leak of object buf
+Subject: [PATCH 5.4 095/111] netfilter: x_tables: Use correct memory barriers.
 Date:   Mon, 29 Mar 2021 09:58:43 +0200
-Message-Id: <20210329075639.898720661@linuxfoundation.org>
+Message-Id: <20210329075618.372991371@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
 
-[ Upstream commit 9e0a537d06fc36861e4f78d0a7df1fe2b3592714 ]
+[ Upstream commit 175e476b8cdf2a4de7432583b49c871345e4f8a1 ]
 
-Currently the error return path when lfs fails to allocate is not free'ing
-the memory allocated to buf. Fix this by adding the missing kfree.
+When a new table value was assigned, it was followed by a write memory
+barrier. This ensured that all writes before this point would complete
+before any writes after this point. However, to determine whether the
+rules are unused, the sequence counter is read. To ensure that all
+writes have been done before these reads, a full memory barrier is
+needed, not just a write memory barrier. The same argument applies when
+incrementing the counter, before the rules are read.
 
-Addresses-Coverity: ("Resource leak")
-Fixes: f7884097141b ("octeontx2-af: Formatting debugfs entry rsrc_alloc.")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Sunil Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Changing to using smp_mb() instead of smp_wmb() fixes the kernel panic
+reported in cc00bcaa5899 (which is still present), while still
+maintaining the same speed of replacing tables.
+
+The smb_mb() barriers potentially slow the packet path, however testing
+has shown no measurable change in performance on a 4-core MIPS64
+platform.
+
+Fixes: 7f5c6d4f665b ("netfilter: get rid of atomic ops in fast path")
+Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/linux/netfilter/x_tables.h | 2 +-
+ net/netfilter/x_tables.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index ea1e520b6552..0488651a68d0 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -169,8 +169,10 @@ static ssize_t rvu_dbg_rsrc_attach_status(struct file *filp,
- 		return -ENOSPC;
+diff --git a/include/linux/netfilter/x_tables.h b/include/linux/netfilter/x_tables.h
+index 1b261c51b3a3..04e7f5630509 100644
+--- a/include/linux/netfilter/x_tables.h
++++ b/include/linux/netfilter/x_tables.h
+@@ -376,7 +376,7 @@ static inline unsigned int xt_write_recseq_begin(void)
+ 	 * since addend is most likely 1
+ 	 */
+ 	__this_cpu_add(xt_recseq.sequence, addend);
+-	smp_wmb();
++	smp_mb();
  
- 	lfs = kzalloc(lf_str_size, GFP_KERNEL);
--	if (!lfs)
-+	if (!lfs) {
-+		kfree(buf);
- 		return -ENOMEM;
-+	}
- 	off +=	scnprintf(&buf[off], buf_size - 1 - off, "%-*s", lf_str_size,
- 			  "pcifunc");
- 	for (index = 0; index < BLK_COUNT; index++)
+ 	return addend;
+ }
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index ef6d51a3798b..5c35d64d1f34 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1389,7 +1389,7 @@ xt_replace_table(struct xt_table *table,
+ 	table->private = newinfo;
+ 
+ 	/* make sure all cpus see new ->private value */
+-	smp_wmb();
++	smp_mb();
+ 
+ 	/*
+ 	 * Even though table entries have now been swapped, other CPU's
 -- 
 2.30.1
 
