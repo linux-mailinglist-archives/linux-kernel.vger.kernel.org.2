@@ -2,288 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4A234DC1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0D034DC45
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhC2WxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:53:07 -0400
-Received: from mga03.intel.com ([134.134.136.65]:36209 "EHLO mga03.intel.com"
+        id S230303AbhC2W7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:59:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhC2Ww5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:52:57 -0400
-IronPort-SDR: IqGIXe9PukViKnNX1STa9vDTfUHKr7D4+YXlH0mg5xRqCSRjig7xkoKVlSC0+1RrJL96AcNjwk
- XqHk6nS13zeQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="191671984"
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="191671984"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 15:52:56 -0700
-IronPort-SDR: BbuVBvkJFfwvrB6unbwRQKYGhL6XPctz9D0tCu6eZh40ZhOgWyBcdI39fFDo7z1lXLu7R+xtfS
- GsUhsM5+sVDA==
-X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
-   d="scan'208";a="417883683"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 15:52:56 -0700
-Date:   Mon, 29 Mar 2021 15:55:26 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210329155526.2ad791a9@jacob-builder>
-In-Reply-To: <20210329163147.GG2356281@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20210318172234.3e8c34f7@jacob-builder>
-        <YFR10eeDVf5ZHV5l@myrica>
-        <20210319124645.GP2356281@nvidia.com>
-        <YFSqDNJ5yagk4eO+@myrica>
-        <20210319135432.GT2356281@nvidia.com>
-        <20210319112221.5123b984@jacob-builder>
-        <20210322120300.GU2356281@nvidia.com>
-        <20210324120528.24d82dbd@jacob-builder>
-        <20210329163147.GG2356281@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230161AbhC2W6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:58:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E6761987;
+        Mon, 29 Mar 2021 22:58:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617058718;
+        bh=jhysSetweRUJdS8VenXWdDpmgxH3meIzQdLA2n+rNm0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NX3jpCkg50kc51Psd4U6zDewVQFQWSR2kXksn3BxHwIudf8SBsko8ehoG3HOi7ujV
+         1slDQ533ySqgv5YqvAXuO11FrXhiX/iv+8p9oGHz0GvXy5Uz5DrB+c7W8mNRaBqYok
+         5rY8oD3x8lYdsWu1EWHhKnk9cMTMQFDZRB/Cc56SH3eofsTWzNIA08RdWG1iAwwMbG
+         sb5+OlZREYqIz19u8KIwGYX2lkDefSMoiTK33xlN84ZFTXcz5aapzHdjSxhVj3EyPC
+         NA/XOqYB9xIMoLA5y+9MyJj1dDgdUoIkLq0F7f58WhJzmMP5BNjy2ixirK0Yxb+Qss
+         VKMeJCgQHDZWA==
+Received: by pali.im (Postfix)
+        id 515CBA79; Tue, 30 Mar 2021 00:58:35 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 00:58:35 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Jianjun Wang <jianjun.wang@mediatek.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
+        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
+        sin_jieyang@mediatek.com, drinkcat@chromium.org,
+        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
+Subject: Re: [v8,3/7] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
+Message-ID: <20210329225835.cv2ev5ou5szvrws2@pali>
+References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
+ <20210224061132.26526-4-jianjun.wang@mediatek.com>
+ <20210311123844.qzl264ungtk7b6xz@pali>
+ <1615621394.25662.70.camel@mhfsdcap03>
+ <20210318000211.ykjsfavfc7suu2sb@pali>
+ <1616046487.31760.16.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1616046487.31760.16.camel@mhfsdcap03>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
-
-On Mon, 29 Mar 2021 13:31:47 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> On Wed, Mar 24, 2021 at 12:05:28PM -0700, Jacob Pan wrote:
-> 
-> > > IMHO a use created PASID is either bound to a mm (current) at creation
-> > > time, or it will never be bound to a mm and its page table is under
-> > > user control via /dev/ioasid.
-> > >   
-> > True for PASID used in native SVA bind. But for binding with a guest mm,
-> > PASID is allocated first (VT-d virtual cmd interface Spec 10.4.44), the
-> > bind with the host IOMMU when vIOMMU PASID cache is invalidated.
+On Thursday 18 March 2021 13:48:07 Jianjun Wang wrote:
+> On Thu, 2021-03-18 at 01:02 +0100, Pali Rohár wrote:
+> > On Saturday 13 March 2021 15:43:14 Jianjun Wang wrote:
+> > > On Thu, 2021-03-11 at 13:38 +0100, Pali Rohár wrote:
+> > > > On Wednesday 24 February 2021 14:11:28 Jianjun Wang wrote:
+> > > > > +
+> > > > > +	/* Check if the link is up or not */
+> > > > > +	err = readl_poll_timeout(port->base + PCIE_LINK_STATUS_REG, val,
+> > > > > +				 !!(val & PCIE_PORT_LINKUP), 20,
+> > > > > +				 50 * USEC_PER_MSEC);
+> > > > 
+> > > > IIRC, you need to wait at least 100ms after de-asserting PERST# signal
+> > > > as it is required by PCIe specs and also because experiments proved that
+> > > > some Compex wifi cards (e.g. WLE900VX) are not detected if you do not
+> > > > wait this minimal time.
+> > > 
+> > > Yes, this should be 100ms, I will fix it at next version, thanks for
+> > > your review.
 > > 
-> > Our intention is to have two separate interfaces:
-> > 1. /dev/ioasid (allocation/free only)
-> > 2. /dev/sva (handles all SVA related activities including page tables)  
-> 
-> I'm not sure I understand why you'd want to have two things. Doesn't
-> that just complicate everything?
-> 
-> Manipulating the ioasid, including filling it with page tables, seems
-> an integral inseperable part of the whole interface. Why have two ?
-> 
-In one of the earlier discussions, I was made aware of some use cases (by
-AMD, iirc) where PASID can be used w/o IOMMU. That is why I tried to keep
-ioasid a separate subsystem. Other than that, I don't see an issue
-combining the two.
-
-> > > I thought the whole point of something like a /dev/ioasid was to get
-> > > away from each and every device creating its own PASID interface?
-> > >   
-> > yes, but only for the use cases that need to expose PASID to the
-> > userspace.  
-> 
-> Why "but only"? This thing should reach for a higher generality, not
-> just be contained to solve some problem within qemu.
-> 
-I totally agree in terms of generality. I was just trying to point out
-existing framework or drivers such as uacce and idxd driver does not have a
-need to use /dev/ioasid.
-
-> > > It maybe somewhat reasonable that some devices could have some easy
-> > > 'make a SVA PASID on current' interface built in,  
-> > I agree, this is the case PASID is hidden from the userspace, right?
-> > e.g. uacce.  
-> 
-> "hidden", I guess, but does it matter so much?
-> 
-it matters when it comes to which interface to choose. Use /dev/ioasid to
-allocate if PASID value cannot be hidden. Use some other interface for bind
-current and allocate if a PASID is not visible to the user.
-
-> The PASID would still consume a cgroup credit
-> 
-yes, credit still consumed. Just the PASID value is hidden.
-
-> > > but anything more
-> > > complicated should use /dev/ioasid, and anything consuming PASID
-> > > should also have an API to import and attach a PASID from /dev/ioasid.
-> > >   
-> > Would the above two use cases constitute the "complicated" criteria? Or
-> > we should say anything that need the explicit PASID value has to through
-> > /dev/ioasid?  
-> 
-> Anything that needs more that creating a hidden PASID link'd to
-> current should use the full interface.
-> 
-Yes, I think we are on the same page. For example, today's uacce or idxd
-driver creates a hidden PASID when user does open(), where a new WQ is
-provisioned and bound to current mm. This is the case where /dev/ioasid is
-not needed.
-
-> > In terms of usage for guest SVA, an ioasid_set is mostly tied to a host
-> > mm, the use case is as the following:  
-> 
-> From that doc:
-> 
->   It is imperative to enforce
->   VM-IOASID ownership such that a malicious guest cannot target DMA
->   traffic outside its own IOASIDs, or free an active IOASID that belongs
->   to another VM.
-> 
-> Huh?
-> 
-Sorry, I am not following. In the doc, I have an example to show the
-ioasid_set to VM/mm mapping. We use mm as the ioasid_set token to identify
-who the owner of an IOASID is. i.e. who allocated the IOASID. Non-owner
-cannot perform bind page table or free operations.
-
-Section: IOASID Set Private ID (SPID)
- .------------------.    .------------------.
- |   VM 1           |    |   VM 2           |
- |                  |    |                  |
- |------------------|    |------------------|
- | GPASID/SPID 101  |    | GPASID/SPID 101  |
- '------------------'    -------------------'     Guest
- __________|______________________|____________________
-           |                      |               Host
-           v                      v
- .------------------.    .------------------.
- | Host IOASID 201  |    | Host IOASID 202  |
- '------------------'    '------------------'
- |   IOASID set 1   |    |   IOASID set 2   |
- '------------------'    '------------------'
-
-
-> Security in a PASID world comes from the IOMMU blocking access to the
-> PASID except from approved PCI-ID's. If a VF/PF is assigned to a guest
-> then that guest can cause the device to issue any PASID by having
-> complete control and the vIOMMU is supposed to tell the real IOMMU
-> what PASID's the device is alowed to access.
-> 
-Yes, each PF/VF has its own PASID table. The device can do whatever
-it wants as long as the PASID is present in the table. Programming of the
-pIOMMU PASID table entry, however, is controlled by the host.
-
-IMHO, there are two levels of security here:
-1. A PASID can only be used by a secure context
-2. A device can only use allowed PASIDs (PASID namespace is system-wide but
-PASID table storage is per PF/VF)
-
-IOASID set is designed for #1.
-
-> If a device is sharing a single PCI function with different security
-> contexts (eg vfio mdev) then the device itself is responsible to
-> ensure that only the secure interface can program a PASID and a less
-> secure context can never self-enroll. 
-> 
-If two mdevs from the same PF dev are assigned to two VMs, the PASID
-table will be shared. IOASID set ensures one VM cannot program another VM's
-PASIDs. I assume 'secure context' is per VM when it comes to host PASID.
-
-> Here the mdev driver would have to consule with the vIOMMU to ensure
-> the mdev device is allowed to access the PASID - is that what this
-> set stuff is about? 
-> 
-No. the mdev driver consults with IOASID core When the guest programs a
-guest PASID on to he mdev. VDCM driver does a lookup:
-host_pasid = ioasid_find_by_spid(ioasid_set, guest_pasid);
-
-If the guest_pasid does not exist in the ioasid_set, the mdev programming
-fails; if the guest_pasid does exist but it maps to a wrong host PASID, the
-damage is limited to the guest itself.
-
-> If yes, it is backwards. The MDEV is the thing doing the security, the
-> MDEV should have the list of allowed PASID's and a single PASID
-> created under /dev/ioasid should be loaded into MDEV with some 'Ok you
-> can use PASID xyz from FD abc' command.
-> 
-I guess that is not the case. For VT-d dedicated WQ, there is only one
-PASID can be programmed onto the device. Programming the PASID with
-/dev/sva FD abc command will be checked against its mm where /dev/ioasid is
-used to do the allocation.
-
-For a single shared WQ assigned to multiple VMs, there will be one mdev per
-VM. Again, FD commands is limited to the PASIDs allocated for the VM.
-
-For a single share WQ assigned to one VM, it can be bound to multiple guest
-processes/PASIDs. Host IOMMU driver maintains a list of the PASIDs and
-ensures that they are only programmed on to the per device PASID table.
-
-> Because you absolutely don't want to have a generic 'set' that all the
-> mdevs are sharing as that violates the basic security principle at the
-> start - each and every device must have a unique list of what PASID's
-> it can talk to.
-> 
-I agree, I don't think this is the case. The ioasid_set is some what
-orthogonal to mdev collections.
-
-> > 1. Identify a pool of PASIDs for permission checking (below to the same
-> > VM), e.g. only allow SVA binding for PASIDs allocated from the same set.
+> > In past Bjorn suggested to use msleep(PCI_PM_D3COLD_WAIT); macro for
+> > this step during reviewing aardvark driver.
 > > 
-> > 2. Allow different PASID-aware kernel subsystems to associate, e.g. KVM,
-> > device drivers, and IOMMU driver. i.e. each KVM instance only cares
-> > about the ioasid_set associated with the VM. Events notifications are
-> > also within the ioasid_set to synchronize PASID states.
+> > https://lore.kernel.org/linux-pci/20190426161050.GA189964@google.com/
 > > 
-> > 3. Guest-Host PASID look up (each set has its own XArray to store the
-> > mapping)
+> > And next iteration used this PCI_PM_D3COLD_WAIT macro instead of 100:
 > > 
-> > 4. Quota control (going away once we have cgroup)  
+> > https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/
 > 
-> It sounds worrysome things have gone this way.
+> Sure, I will use PCI_PM_D3COLD_WAIT macro instead in the next version.
 > 
-Could you expand on that? Guaranteeing quota is very difficult. cgroup
-limit model fits most scalar resources.
+> Thanks.
 
-> I'd say you shoul have a single /dev/ioasid per VM and KVM should
-> attach to that - it should get all the global events/etc that are not
-> device specific.
-> 
-You mean a single /dev/ioasid FD per VM and KVM? I think that is what we
-are doing in this set. A VM process can only open /dev/ioasid once, then
-use the FD for allocation and pass the PASID for bind page table etc.
+Anyway, now I found out that kernel has functions for this waiting:
+pcie_wait_for_link_delay() and pcie_wait_for_link()
 
-> permission checking *must* be done on a per-device level, either inside
-> the mdev driver, or inside the IOMMU at a per-PCI device level.
-> 
-I think we are on the same page. For mdev, VDCM driver makes sure the guest
-PASID programmed is allocated by the same VM that also performed the bind SVA.
+Function is called from pci_bridge_wait_for_secondary_bus().
 
-For PF/VF which is not mediated, the permission is implied by the IOMMU
-driver/HW since PASID table is per device.
+But in current form it is not usable for native controller drivers.
 
-> Not sure what guest-host PASID means, these have to be 1:1 for device
-> assignment to work - why would use something else for mdev?
-> 
-We have G-H PASID translation. They don't have to be 1:1.
-IOASID Set Private ID (SPID) is intended as a generic solution for guest PASID.
-Could you review the secion Section: IOASID Set Private ID (SPID) in the
-doc patch?
-
-We also had some slides from last year. Slide 3s-6 mostly.
-https://static.sched.com/hosted_files/kvmforum2020/9f/KVM_forum_2020_PASID_MGMT_Yi_Jacob_final.pdf
-
-Really appreciated your time!
+This looks like another candidate for code de-duplication or providing
+"framework".
 
 
-Jacob
+Lorenzo, as maintainer of native controller drivers, do you have some
+ideas about providing "framework", common functions or something for
+avoiding to implement same code patterns in every native controller
+driver, which is de-facto standard PCIe codepath? Including a way how to
+export PERST# reset gpio?
