@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503B634D899
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399E234D89E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhC2TxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:53:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbhC2Twt (ORCPT
+        id S231809AbhC2Txo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:53:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:13377 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhC2TxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:52:49 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25743C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:52:49 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id i26so20181287lfl.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 12:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LVaNtyqpmAO63m1s9LIcA3e9oGAv9PR4s9Zo1hpVIaI=;
-        b=ouf1eR0EAiuh8+KvnQRm6oQZxsGxrv50BvfH8qQLs/34IWJg7jeBGtlotIQkdQxMTs
-         RSMYPEjNJUvlzQT7rVbWnW75BzMKalYUt8Xa3QpNR3f0rPAq3A5uagkEPoD2GBOtsqMm
-         89vtZ4mgogkyjXBDd806+m2LERGrv/3fFwFeD5mYchVIr6daX5/6xr8UiIR7BKXUzhg3
-         9cjCoZGUWELxMhUymtvjUIajkZlbHjondY0SNU9inIrTciutx8IkBLYtm2aYH3qFCVhv
-         K5ZJ/Tnjbb7KjKd4quUDkQ/mcrrTu2VAWMFVgtWVjatBbEwKEx868h+7v41Fh6CUiMg7
-         djug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LVaNtyqpmAO63m1s9LIcA3e9oGAv9PR4s9Zo1hpVIaI=;
-        b=Hj9GODiD04FJ382mtI/BmmtBICXq6edIna23Yjne8vXsbZs3tmCO2iNjcsmblptZf4
-         NWrLZiSGK9h93eIFBcDRr6xAHiz3a2d1dhV+x0PTmMXHdzglx546P/QzCkhYaLox7zOd
-         iaCqUeIZ2fHz6G15VZqpjxefiLFXHPHTdlGZwNcIpVbUGAovou3ztRK9ia0SglEfgfW+
-         xiX9BwNydZumwHO6ZhhnnjoqsfYPkY0OrpRAIPWPHjl5/pjiBEQuCTneoDeZobrEFnNN
-         MnO5VsB7uaV8vKi423Y8wMA1melcHAyZWK4m7Ix7Gvk7+Np0QoTWdEy9TIytM6Eh9yTb
-         dptA==
-X-Gm-Message-State: AOAM532g3eC9ddJQR1kwuDscHdCLuVdZYSy8lrdpUaiBLHebTgOpHiey
-        BwLt8jBvadXVGLubvgxOCVp/PA==
-X-Google-Smtp-Source: ABdhPJwb1AaRiGLFqYY/0RAUVvJPzCAmHQRleTFa6K8lYjUEYoSKb2qk6H/CSzS01nJPZojNsofXWw==
-X-Received: by 2002:a19:740f:: with SMTP id v15mr16749480lfe.247.1617047567470;
-        Mon, 29 Mar 2021 12:52:47 -0700 (PDT)
-Received: from localhost.localdomain (host-193.106.246.138.static.3s.pl. [193.106.246.138])
-        by smtp.gmail.com with ESMTPSA id v2sm2535743ljg.89.2021.03.29.12.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 12:52:47 -0700 (PDT)
-From:   Angela Czubak <acz@semihalf.com>
-To:     rafael.j.wysocki@intel.com
-Cc:     akpm@linux-foundation.org, john.garry@huawei.com,
-        linux-kernel@vger.kernel.org, upstream@semihalf.com,
-        dtor@chromium.org, Angela Czubak <acz@semihalf.com>
-Subject: [PATCH] resource: Prevent irqresource_disabled() from erasing flags
-Date:   Mon, 29 Mar 2021 21:52:38 +0200
-Message-Id: <20210329195238.9455-1-acz@semihalf.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Mon, 29 Mar 2021 15:53:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617047598; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ILpcC/45O6BYH3Fs0WBPgvv/ScmmEng5mDUsxp+BOpM=; b=ltUbcOaKPFM8I1rADBfU/CMZFKMMYagez5QQ6rfDh8892PCF6sNHYHjnURxtxfa1YF7x5Xuk
+ FtOv4aXXrHbncd3ZOYcC8CsRxVVJ789enHTfjAf7MqGFW7je7oLLyY3mJM8eIBEY77KoloLN
+ qSholaxfNvqEgamjczPukQTT4KY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60623027876af85fc47c3b70 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Mar 2021 19:53:11
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E2C26C43461; Mon, 29 Mar 2021 19:53:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D4BEEC433C6;
+        Mon, 29 Mar 2021 19:53:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D4BEEC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v5 0/2] Polling for MHI ready
+Date:   Mon, 29 Mar 2021 12:53:01 -0700
+Message-Id: <1617047583-12104-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not overwrite flags as it leads to erasing triggering and polarity
-information which might be useful in case of hard-coded interrupts.
-This way the information can be read later on even though mapping to
-APIC domain failed.
+v5:
+-Use fsleep in place of udelay or usleep_range to accommodate better delay use
+-Drop patch for polling during RDDM panic path as new API cannot be used there
 
-Signed-off-by: Angela Czubak <acz@semihalf.com>
----
-Some Chromebooks use hard-coded interrupts in their ACPI tables.
-This is an excerpt as dumped on Relm:
+v4:
+-Added reviewed-by tag
+-Return appropriate error code from mhi_poll_reg_field()
+-Fixed bug where mhi_poll_reg_field() returns success if polling times out
+-Added an interval_us variable in mhi_ready_state_transition()
 
-...
-            Name (_HID, "ELAN0001")  // _HID: Hardware ID
-            Name (_DDN, "Elan Touchscreen ")  // _DDN: DOS Device Name
-            Name (_UID, 0x05)  // _UID: Unique ID
-            Name (ISTP, Zero)
-            Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
-            {
-                Name (BUF0, ResourceTemplate ()
-                {
-                    I2cSerialBusV2 (0x0010, ControllerInitiated, 0x00061A80,
-                        AddressingMode7Bit, "\\_SB.I2C1", 
-                        0x00, ResourceConsumer, , Exclusive,
-                        )
-                    Interrupt (ResourceConsumer, Edge, ActiveLow, Exclusive, ,, )
-                    {
-                        0x000000B8,
-                    }
-                })
-                Return (BUF0) /* \_SB_.I2C1.ETSA._CRS.BUF0 */ 
-            }
-...
+v3:
+-Removed config changes that crept in in the first patch
 
-This interrupt is hard-coded to 0xB8 = 184 which is too high to be mapped
-to IO-APIC, so no triggering information is propagated as acpi_register_gsi()
-fails and irqresource_disabled() is issued, which leads to erasing triggering
-and polarity information.
-If that function added its flags instead of overwriting them the correct IRQ
-type would be set even for the hard-coded interrupts, which allows device driver
-to retrieve it.
-Please, let me know if this kind of modification is acceptable.
-Best Regards,
-Angela
+v2:
+-Addressed review comments
+-Introduce new patch for to use controller defined read_reg() for polling
+-Add usage in RDDM download panic path as well
 
- include/linux/ioport.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Use polling instead of interrupt driven approach to wait for MHI ready state.
 
-diff --git a/include/linux/ioport.h b/include/linux/ioport.h
-index 55de385c839cf..647744d8514e0 100644
---- a/include/linux/ioport.h
-+++ b/include/linux/ioport.h
-@@ -331,7 +331,7 @@ static inline void irqresource_disabled(struct resource *res, u32 irq)
- {
- 	res->start = irq;
- 	res->end = irq;
--	res->flags = IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
-+	res->flags |= IORESOURCE_IRQ | IORESOURCE_DISABLED | IORESOURCE_UNSET;
- }
- 
- extern struct address_space *iomem_get_mapping(void);
+In certain devices, it is likely that there is no incoming MHI
+interrupt for a transition to MHI READY state. One such example
+is the move from Pass Through to an SBL or AMSS execution
+environment. In order to facilitate faster bootup times as there
+is no need to wait until timeout_ms completes, MHI host can poll
+every 25 milliseconds to check if device has entered MHI READY
+until a maximum timeout of twice the timeout_ms is reached.
+
+This patch series has been tested on an arm64 device.
+
+Bhaumik Bhatt (2):
+  bus: mhi: core: Introduce internal register poll helper function
+  bus: mhi: core: Move to polling method to wait for MHI ready
+
+ drivers/bus/mhi/core/internal.h |  3 +++
+ drivers/bus/mhi/core/main.c     | 23 +++++++++++++++++++++++
+ drivers/bus/mhi/core/pm.c       | 32 +++++++++++++++-----------------
+ 3 files changed, 41 insertions(+), 17 deletions(-)
+
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
