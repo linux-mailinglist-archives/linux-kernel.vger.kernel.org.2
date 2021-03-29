@@ -2,111 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF5634D170
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458B634D186
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbhC2NiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:38:01 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:15384 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231839AbhC2Nhy (ORCPT
+        id S231509AbhC2Njj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:39:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhC2NjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:37:54 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F8D9t0FKLzlW3Q;
-        Mon, 29 Mar 2021 21:36:02 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.162) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
- 21:37:39 +0800
-Subject: Re: [Linuxarm] Re: [PATCH v3 00/12] acpi: fix some coding style
- issues
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-References: <1616846904-25719-1-git-send-email-tanxiaofei@huawei.com>
- <CAJZ5v0i=RPyvWfVuGQ0nWf_0QRw70=qZd6j85CTPWaaWPa_5KQ@mail.gmail.com>
-CC:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "ACPI Devel Maling List" <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>, <linuxarm@openeuler.org>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <6c4f84ca-1a31-d2a7-5566-0e5fea408181@huawei.com>
-Date:   Mon, 29 Mar 2021 21:37:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 29 Mar 2021 09:39:11 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B6EC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:39:11 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso5182084pjh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PTI+L6ax+/N+yMG1MXdvXBKRXCBtboFyHdTE1wtJx+k=;
+        b=pWIp11nHFW7KdnNAiA9K1BL1Od6BgMAM7GRbTXqtMPyZ7gtqHQXCOkLdSG3wcT5UJE
+         aj2G6x+OC5ELOVlMUvospOx5QDhace1cy5WW2FUoRbaZaR4/HCepnU+gIuH1c2TuEhVL
+         zFN+UEnXJikrfluMdBrX6+RTs8xYNzSJNUR7fTnFypB8a892d27IAYuTudTMWxB8dteU
+         mkABKWFlCP8rzp1OI1TAimg+bL9zTuKU9vcLC31IYPzWTZGvXkmeacqdy1Qh7Qt/MAlL
+         Y7GrMMkjCj8hIP9UtDRnsCcyXjdQ9ObiX0sZEq2PlNof1lR62WjpGp1rOGY3PC5EFnXn
+         AlSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PTI+L6ax+/N+yMG1MXdvXBKRXCBtboFyHdTE1wtJx+k=;
+        b=sTfFCW1byC6LrNCrDuJERfuML/3jDwAVHWNStGZvxet66JnCv5dtM7jsagt/qfCeMb
+         weD5un0COVcVGI7IMxLy9Bvh0Dwt5fA09WTM3GMuP5idzxycd/WWkiL35Mvbpimam9Yr
+         IzThXZGkKFzsfLAokoj3JQc4g0dciNbHw0N+MGo2L3Jf/3iqaF6vtSTLy6ftZlXv6o+2
+         fKSlFvqujcz38lSOTQe2EIgr14A4NR+aYkgC579g9K6hTBQ67YreAVy1+SnIUyckzpAq
+         /s6zWSm4rEnura/clb96MqR4+0kyu8IV/8EgnjnzC02aJIXg/x2H6pG8KHEMKAUJtZYk
+         7GUQ==
+X-Gm-Message-State: AOAM531oKNsjnKOZ09eOc+ceiiqrFerQQHf+SOiEgo8J6FyAr8U6EZ8b
+        mDJSpsmGg+nI3bZUUWSQZEJz+NOskKcYiA==
+X-Google-Smtp-Source: ABdhPJzuj3M/DsqXiV9zd8IxnhRo608IcZgTiobsDDdPzYZif5V8Z1u24W8jhK9cloHgqxbQJPdjAQ==
+X-Received: by 2002:a17:90a:9f43:: with SMTP id q3mr26582711pjv.50.1617025150517;
+        Mon, 29 Mar 2021 06:39:10 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id 8sm15739525pjj.53.2021.03.29.06.39.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 06:39:10 -0700 (PDT)
+Subject: Re: [PATCH -next 1/2] mtip32xx: use DEFINE_SPINLOCK() for spinlock
+To:     Shixin Liu <liushixin2@huawei.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210329095349.4170870-1-liushixin2@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <11e068c7-0022-8c7e-23d9-c1bd8ee90896@kernel.dk>
+Date:   Mon, 29 Mar 2021 07:39:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0i=RPyvWfVuGQ0nWf_0QRw70=qZd6j85CTPWaaWPa_5KQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210329095349.4170870-1-liushixin2@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.192.162]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+On 3/29/21 3:53 AM, Shixin Liu wrote:
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
 
-On 2021/3/29 20:50, Rafael J. Wysocki wrote:
-> On Sat, Mar 27, 2021 at 1:11 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
->>
->> Fix some coding style issues reported by checkpatch.pl.
->> Only cleanup and no function changes.
->>
->> Differences from v2 to v3:
->> - Remove the modifications that may cause function change.
->>
->> Differences from v1 to v2:
->> - Add subsystem and module name in the name of patch 05/15.
->> - Change to use more proper module name for some patch names.
->>
->> Xiaofei Tan (12):
->>   ACPI: APD: fix a block comment align issue
->>   ACPI: processor: fix some coding style issues
->>   ACPI: ipmi: remove useless return statement for void function
->>   ACPI: LPSS: add a missed blank line after declarations
->>   ACPI: acpi_pad: add a missed blank line after declarations
->>   ACPI: battery: fix some coding style issues
->>   ACPI: button: fix some coding style issues
->>   ACPI: CPPC: fix some coding style issues
->>   ACPI: custom_method: fix a coding style issue
->>   ACPI: PM: add a missed blank line after declarations
->>   ACPI: sysfs: fix some coding style issues
->>   ACPI: dock: fix some coding style issues
->>
->>  drivers/acpi/acpi_apd.c       |  8 ++---
->>  drivers/acpi/acpi_ipmi.c      |  1 -
->>  drivers/acpi/acpi_lpss.c      |  2 ++
->>  drivers/acpi/acpi_pad.c       |  4 +++
->>  drivers/acpi/acpi_processor.c | 18 +++--------
->>  drivers/acpi/battery.c        | 63 ++++++++++++++++++++------------------
->>  drivers/acpi/button.c         |  9 ++----
->>  drivers/acpi/cppc_acpi.c      | 71 ++++++++++++++++++++++---------------------
->>  drivers/acpi/custom_method.c  |  2 +-
->>  drivers/acpi/device_pm.c      |  3 ++
->>  drivers/acpi/device_sysfs.c   | 15 ++++++---
->>  drivers/acpi/dock.c           |  7 +++--
->>  12 files changed, 106 insertions(+), 97 deletions(-)
->>
->> --
->
-> Can you please stop sending new versions of this for a while?
->
+Applied both, thanks.
 
-OK.
-
-
-> You've sent three of them over the last weekend and honestly I haven't
-> had a chance to look at the first one even.
-
-
-I tried to fix a low-level mistake as quickly as possible. I'm sorry for 
-that
-
-
-
-> _______________________________________________
-> Linuxarm mailing list -- linuxarm@openeuler.org
-> To unsubscribe send an email to linuxarm-leave@openeuler.org
->
+-- 
+Jens Axboe
 
