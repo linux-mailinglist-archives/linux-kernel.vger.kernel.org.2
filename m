@@ -2,46 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1657834CB21
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144DD34CC52
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234533AbhC2Ind (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:43:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41084 "EHLO mail.kernel.org"
+        id S236136AbhC2JAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:00:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233662AbhC2IZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:25:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A2D25619AD;
-        Mon, 29 Mar 2021 08:25:06 +0000 (UTC)
+        id S234973AbhC2Ihs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5295B61580;
+        Mon, 29 Mar 2021 08:37:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006307;
-        bh=KaYd8dVXMt9M6AZMf3IdFWvp7nB0CJPh5ckzuu6pDN4=;
+        s=korg; t=1617007067;
+        bh=5x0KH8zIlb7Ip2blmdQLhK9UoQYyr2+nHpC8RdR1KsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=doL8Pshs/udgVD69/bl4xwS+o3/YnT4H1k9MgCBKKG/QvTDECyRCX9oQeFZMLErJA
-         qRk+e1/zQJSwYv36RSRI11eqKOwD6NDJnDTaSTWRs76rwPurnHEHlHHBmuF0nyxVd8
-         czKTtj6DLxUbUfGJLkc5t+ZLvKtJ3KdbZH2h6p+0=
+        b=VVA6MYNWUA5z5DW138LhWqC+w70x6J+sVt5TR5mK8mhgnnlFVG4j5XcVqsHNAoFbi
+         DHuZXYJqjoUqex251ypt+uN6ihYQr31kAfXN91DLSsS1x67+0086q9y1088+3MPiDE
+         XtlVnFdOHjHiGmAqxtvaVG9PBAAxi48GyUIM1slE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        stable@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kernel test robot <lkp@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 194/221] mm/mmu_notifiers: ensure range_end() is paired with range_start()
-Date:   Mon, 29 Mar 2021 09:58:45 +0200
-Message-Id: <20210329075635.600543100@linuxfoundation.org>
+Subject: [PATCH 5.11 210/254] mm: memblock: fix section mismatch warning again
+Date:   Mon, 29 Mar 2021 09:58:46 +0200
+Message-Id: <20210329075639.990770018@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,121 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-[ Upstream commit c2655835fd8cabdfe7dab737253de3ffb88da126 ]
+[ Upstream commit a024b7c2850dddd01e65b8270f0971deaf272f27 ]
 
-If one or more notifiers fails .invalidate_range_start(), invoke
-.invalidate_range_end() for "all" notifiers.  If there are multiple
-notifiers, those that did not fail are expecting _start() and _end() to
-be paired, e.g.  KVM's mmu_notifier_count would become imbalanced.
-Disallow notifiers that can fail _start() from implementing _end() so
-that it's unnecessary to either track which notifiers rejected _start(),
-or had already succeeded prior to a failed _start().
+Commit 34dc2efb39a2 ("memblock: fix section mismatch warning") marked
+memblock_bottom_up() and memblock_set_bottom_up() as __init, but they
+could be referenced from non-init functions like
+memblock_find_in_range_node() on architectures that enable
+CONFIG_ARCH_KEEP_MEMBLOCK.
 
-Note, the existing behavior of calling _start() on all notifiers even
-after a previous notifier failed _start() was an unintented "feature".
-Make it canon now that the behavior is depended on for correctness.
+For such builds kernel test robot reports:
 
-As of today, the bug is likely benign:
+   WARNING: modpost: vmlinux.o(.text+0x74fea4): Section mismatch in reference from the function memblock_find_in_range_node() to the function .init.text:memblock_bottom_up()
+   The function memblock_find_in_range_node() references the function __init memblock_bottom_up().
+   This is often because memblock_find_in_range_node lacks a __init  annotation or the annotation of memblock_bottom_up is wrong.
 
-  1. The only caller of the non-blocking notifier is OOM kill.
-  2. The only notifiers that can fail _start() are the i915 and Nouveau
-     drivers.
-  3. The only notifiers that utilize _end() are the SGI UV GRU driver
-     and KVM.
-  4. The GRU driver will never coincide with the i195/Nouveau drivers.
-  5. An imbalanced kvm->mmu_notifier_count only causes soft lockup in the
-     _guest_, and the guest is already doomed due to being an OOM victim.
+Replace __init annotations with __init_memblock annotations so that the
+appropriate section will be selected depending on
+CONFIG_ARCH_KEEP_MEMBLOCK.
 
-Fix the bug now to play nice with future usage, e.g.  KVM has a
-potential use case for blocking memslot updates in KVM while an
-invalidation is in-progress, and failure to unblock would result in said
-updates being blocked indefinitely and hanging.
-
-Found by inspection.  Verified by adding a second notifier in KVM that
-periodically returns -EAGAIN on non-blockable ranges, triggering OOM,
-and observing that KVM exits with an elevated notifier count.
-
-Link: https://lkml.kernel.org/r/20210311180057.1582638-1-seanjc@google.com
-Fixes: 93065ac753e4 ("mm, oom: distinguish blockable mode for mmu notifiers")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Suggested-by: Jason Gunthorpe <jgg@ziepe.ca>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Ben Gardon <bgardon@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: "Jérôme Glisse" <jglisse@redhat.com>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Dimitri Sivanich <dimitri.sivanich@hpe.com>
+Link: https://lore.kernel.org/lkml/202103160133.UzhgY0wt-lkp@intel.com
+Link: https://lkml.kernel.org/r/20210316171347.14084-1-rppt@kernel.org
+Fixes: 34dc2efb39a2 ("memblock: fix section mismatch warning")
+Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mmu_notifier.h | 10 +++++-----
- mm/mmu_notifier.c            | 23 +++++++++++++++++++++++
- 2 files changed, 28 insertions(+), 5 deletions(-)
+ include/linux/memblock.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-index b8200782dede..1a6a9eb6d3fa 100644
---- a/include/linux/mmu_notifier.h
-+++ b/include/linux/mmu_notifier.h
-@@ -169,11 +169,11 @@ struct mmu_notifier_ops {
- 	 * the last refcount is dropped.
- 	 *
- 	 * If blockable argument is set to false then the callback cannot
--	 * sleep and has to return with -EAGAIN. 0 should be returned
--	 * otherwise. Please note that if invalidate_range_start approves
--	 * a non-blocking behavior then the same applies to
--	 * invalidate_range_end.
--	 *
-+	 * sleep and has to return with -EAGAIN if sleeping would be required.
-+	 * 0 should be returned otherwise. Please note that notifiers that can
-+	 * fail invalidate_range_start are not allowed to implement
-+	 * invalidate_range_end, as there is no mechanism for informing the
-+	 * notifier that its start failed.
- 	 */
- 	int (*invalidate_range_start)(struct mmu_notifier *subscription,
- 				      const struct mmu_notifier_range *range);
-diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-index 5654dd19addc..07f42a7a6065 100644
---- a/mm/mmu_notifier.c
-+++ b/mm/mmu_notifier.c
-@@ -501,10 +501,33 @@ static int mn_hlist_invalidate_range_start(
- 						"");
- 				WARN_ON(mmu_notifier_range_blockable(range) ||
- 					_ret != -EAGAIN);
-+				/*
-+				 * We call all the notifiers on any EAGAIN,
-+				 * there is no way for a notifier to know if
-+				 * its start method failed, thus a start that
-+				 * does EAGAIN can't also do end.
-+				 */
-+				WARN_ON(ops->invalidate_range_end);
- 				ret = _ret;
- 			}
- 		}
- 	}
-+
-+	if (ret) {
-+		/*
-+		 * Must be non-blocking to get here.  If there are multiple
-+		 * notifiers and one or more failed start, any that succeeded
-+		 * start are expecting their end to be called.  Do so now.
-+		 */
-+		hlist_for_each_entry_rcu(subscription, &subscriptions->list,
-+					 hlist, srcu_read_lock_held(&srcu)) {
-+			if (!subscription->ops->invalidate_range_end)
-+				continue;
-+
-+			subscription->ops->invalidate_range_end(subscription,
-+								range);
-+		}
-+	}
- 	srcu_read_unlock(&srcu, id);
- 
- 	return ret;
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index 7643d2dfa959..4ce9c8f9e684 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -460,7 +460,7 @@ static inline void memblock_free_late(phys_addr_t base, phys_addr_t size)
+ /*
+  * Set the allocation direction to bottom-up or top-down.
+  */
+-static inline __init void memblock_set_bottom_up(bool enable)
++static inline __init_memblock void memblock_set_bottom_up(bool enable)
+ {
+ 	memblock.bottom_up = enable;
+ }
+@@ -470,7 +470,7 @@ static inline __init void memblock_set_bottom_up(bool enable)
+  * if this is true, that said, memblock will allocate memory
+  * in bottom-up direction.
+  */
+-static inline __init bool memblock_bottom_up(void)
++static inline __init_memblock bool memblock_bottom_up(void)
+ {
+ 	return memblock.bottom_up;
+ }
 -- 
 2.30.1
 
