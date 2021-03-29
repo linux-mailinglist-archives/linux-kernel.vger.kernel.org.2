@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A04434C6B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D4634CAED
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhC2IJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:09:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48792 "EHLO mail.kernel.org"
+        id S234510AbhC2IlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:41:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232271AbhC2IFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:05:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94EDC619AA;
-        Mon, 29 Mar 2021 08:05:36 +0000 (UTC)
+        id S232410AbhC2IHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:07:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F736197C;
+        Mon, 29 Mar 2021 08:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005137;
-        bh=sdD4i8whrLRHixwaDFmWa2G1KZpuZnNUZRwWqsqmb08=;
+        s=korg; t=1617005233;
+        bh=Jb7J8ybGRwKaJZxg5YiVhsYyJlD8UuxxVDlBolx7tHo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0hjaSK126J25OiVn2B0AHRUbJEIv2LYmdfv+GlhXuSU/Oqo/OSPaQKharTfXHvwwP
-         V31Nx5R8V1+qoKEZRtemHmkLd1cTUt/vCEWpCFtWgYS2winEFs+VnZohyA6DFMQ56T
-         OPAKZfLIiRGiGAFWTQnKD8f6pEap2Y0YSyse1CwI=
+        b=H9vI0ZdWlZynwSrXHGbfvBG8axfNa7U89UXJ8LkQaw6tRlfCC+BNYPTmD7IIUp1jR
+         XgH5f8xKV+sJwAUBSp3fcbCDIkpYEsZZrEi849KhUPFxnD4Il6nO7+6/Sm1UNJvYHm
+         hkGAfVkkJAoTTew3ID2Wp8cSniDfa8A+ZExe+VFs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 09/59] gpiolib: acpi: Add missing IRQF_ONESHOT
+Subject: [PATCH 4.19 13/72] net: hisilicon: hns: fix error return code of hns_nic_clear_all_rx_fetch()
 Date:   Mon, 29 Mar 2021 09:57:49 +0200
-Message-Id: <20210329075609.201191769@linuxfoundation.org>
+Message-Id: <20210329075610.714005918@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
+References: <20210329075610.300795746@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Li <yang.lee@linux.alibaba.com>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit 6e5d5791730b55a1f987e1db84b078b91eb49e99 ]
+[ Upstream commit 143c253f42bad20357e7e4432087aca747c43384 ]
 
-fixed the following coccicheck:
-./drivers/gpio/gpiolib-acpi.c:176:7-27: ERROR: Threaded IRQ with no
-primary handler requested without IRQF_ONESHOT
+When hns_assemble_skb() returns NULL to skb, no error return code of
+hns_nic_clear_all_rx_fetch() is assigned.
+To fix this bug, ret is assigned with -ENOMEM in this case.
 
-Make sure threaded IRQs without a primary handler are always request
-with IRQF_ONESHOT
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpio/gpiolib-acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/hisilicon/hns/hns_enet.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index 7c06f4541c5d..ab5de5196080 100644
---- a/drivers/gpio/gpiolib-acpi.c
-+++ b/drivers/gpio/gpiolib-acpi.c
-@@ -234,7 +234,7 @@ static void acpi_gpiochip_request_irq(struct acpi_gpio_chip *acpi_gpio,
- 	int ret, value;
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_enet.c b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
+index 4de65a9de0a6..b7fe3e849872 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
+@@ -1677,8 +1677,10 @@ static int hns_nic_clear_all_rx_fetch(struct net_device *ndev)
+ 			for (j = 0; j < fetch_num; j++) {
+ 				/* alloc one skb and init */
+ 				skb = hns_assemble_skb(ndev);
+-				if (!skb)
++				if (!skb) {
++					ret = -ENOMEM;
+ 					goto out;
++				}
+ 				rd = &tx_ring_data(priv, skb->queue_mapping);
+ 				hns_nic_net_xmit_hw(ndev, skb, rd);
  
- 	ret = request_threaded_irq(event->irq, NULL, event->handler,
--				   event->irqflags, "ACPI:Event", event);
-+				   event->irqflags | IRQF_ONESHOT, "ACPI:Event", event);
- 	if (ret) {
- 		dev_err(acpi_gpio->chip->parent,
- 			"Failed to setup interrupt handler for %d\n",
 -- 
 2.30.1
 
