@@ -2,135 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0ADC34D1B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF1534D1B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231724AbhC2NrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        id S231890AbhC2NrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbhC2Nqv (ORCPT
+        with ESMTP id S231719AbhC2NrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:46:51 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849EBC061574;
-        Mon, 29 Mar 2021 06:46:50 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id o16so12986863wrn.0;
-        Mon, 29 Mar 2021 06:46:50 -0700 (PDT)
+        Mon, 29 Mar 2021 09:47:02 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441F0C0613D8;
+        Mon, 29 Mar 2021 06:47:02 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id i26so18478677lfl.1;
+        Mon, 29 Mar 2021 06:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VSdiOrRt5A5A6ik3jTpUtYldOZfvz8Pi38YucpFr6l8=;
-        b=MCxyXVvcvdvVoXMVp3fxHBlxeNbm0IApsEt53rYdfT2KvWP0Fy3id135pTc+dZdIDX
-         6QFBnBke6LhWl4locC7ajLCVbNeUazqfvD9XrUawL/6kzf1V6XNjNAFSALC3tSpoX+kR
-         KaR/AMntZT04YpyR7jX3BQ1+YuPpe+yebmmeIaZ9UsI67dSoXTQLk37WTCDQnhOYrN4d
-         evwlIxgxwKu25DZsI2jtFL5GI4oUY/L0SEqeAs6Lk7ItE8f3sZt+MfZsD4ZAHomL6tPs
-         H9y5KR/OkI47MRN93bfq3yW2kfx4kzR6usGKGrwuCtHV4Ss9EFHrsRBzPBhpM0xPNpX1
-         +VEA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/ZN6EMo52SbaQUsmKOCXmommiFRM5AB/xm3XewoiYhs=;
+        b=Oeqyc89nK7UnF76eztri1XWlbwhf1LqxwgbhcM9yI/hhu1u6x6zmnZ4pTQEh4Qu2QJ
+         VNe4qmDHvddpFurC0edRtdwKXXnwyISy/lF1QI7mFWAy/E37nYjRYOPWuiPKV+RAHjs9
+         wpTNLXkRf1R/HBh4B9dzflVKia/LBF9qvfntHXLyz7z0WG4fkYZA3xYtavUP0DlbuN0j
+         Sud0yBuNt5IzQyVcmvG8eKp8BBZqfJBWM+IGLDkp6rYJJAaCSum1c5CRx401QsOrYyaZ
+         JTkWUShzmUjF1/Kdpb3yn1B906vNJ1Az8ghhJ3J8tlifMW+DDmFlIOzNEEptZQdFLI8l
+         vZOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VSdiOrRt5A5A6ik3jTpUtYldOZfvz8Pi38YucpFr6l8=;
-        b=lO9aZWqm4Cxg3orzrZGD35Su+AtZuMgLBe0YEOvvThfx/X6PIxMI26Hg6X53rttPgo
-         kobV/crmlJfeZR4D0SdIlFkLg1sY9pZ51sWF+/kx/r+SNE7aMqnkKCWFwTfJgOzRiKKY
-         amAiRwAiRUoAZVFM04KqbkR2fzO/7/TuaipruubMPWaLXNyPK3R/t3VJS5lTTZ3E/Bkp
-         TEi+N7KM8j13HaKspUhvCgmV7g9IorStVmkJ+/qN09m0Irw4r72WJkyfdQEm4lWqaqZ6
-         HTXyKfDb8h23Fd843oERD28czr0/GqHfUDBAdpw6R3ZA2bf72SNZnj1gPC2Bf1oM1K01
-         mHWQ==
-X-Gm-Message-State: AOAM532fvBb2VMdzHHJ2VyY8r7OlOLNM+JgP+pDhPFdIVsqGC64q1oFD
-        c2m19K6vGr5Pzf4vILhEAO+lt1/50hoCNQ==
-X-Google-Smtp-Source: ABdhPJzGJUBfC8jn1gAhsDG4i4XVmBFR5fUJC6pZnEJYT0DqoJ040+EuDixRc4Y8BFCQ2QHGOqdung==
-X-Received: by 2002:a05:6000:1a8a:: with SMTP id f10mr27951844wry.232.1617025609329;
-        Mon, 29 Mar 2021 06:46:49 -0700 (PDT)
-Received: from ziggy.stardust (80.174.240.175.dyn.user.ono.com. [80.174.240.175])
-        by smtp.gmail.com with ESMTPSA id x14sm29409219wrw.13.2021.03.29.06.46.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 06:46:48 -0700 (PDT)
-Subject: Re: [PATCH v5 07/13] arm64: dts: mediatek: mt2712: harmonize node
- names
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Jie Qiu <jie.qiu@mediatek.com>, CK Hu <ck.hu@mediatek.com>,
-        Cawa Cheng <cawa.cheng@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-usb@vger.kernel.org
-References: <20210316092232.9806-1-chunfeng.yun@mediatek.com>
- <20210316092232.9806-7-chunfeng.yun@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <f4ab274f-3dd4-69f3-2bd3-cc786491bad8@gmail.com>
-Date:   Mon, 29 Mar 2021 15:46:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/ZN6EMo52SbaQUsmKOCXmommiFRM5AB/xm3XewoiYhs=;
+        b=EX0Y+gK98gKY8EoiUH1s8hoN53hAeg9BWE2Kkar2ibAkFqbSsKiogNyhPHR3nqVvlj
+         KCqWn/5fZEawNYNXIVsXj7wcXp7/ExrdDrba06CAlBhuW+RGw1uUPANMUZ1Q/byGX82D
+         q/xYsioAehElENpfrGmztVPt3i8tL+kDtXp5bcJktIzKAUyISsfAIedmlOiQowOeXuE9
+         3aVCjx+8WckzLf1g6P6aKNI+Yq/3St4jqE6hYMPkhxFq3/5lLVK0wBJ42HZalaL+cwuN
+         IgCMMPOwrkzz7UnToFhV743l6JBSayTHo8TayI3wo5Gz7tvG4OyNeXumLrfPTOajE6yV
+         LSrg==
+X-Gm-Message-State: AOAM530xvI+95A/lhPd2gz/QY5qmNj9JwZe3NJeIZevlRz7SEG162t7/
+        XVPW8AIq/ApWmyaIY2gs9Te6tuowqeCT8jRXS3w=
+X-Google-Smtp-Source: ABdhPJwlTFxxxoL8t/ryBWeJEvoDMU/sXt5+NYDNZCURvjifVPNLUJdBS/C8njMLX/RRBW8oiED2xNB9qFYS5yRZUdo=
+X-Received: by 2002:a05:6512:1192:: with SMTP id g18mr15585545lfr.408.1617025620636;
+ Mon, 29 Mar 2021 06:47:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210316092232.9806-7-chunfeng.yun@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1616945059-8718-1-git-send-email-u0084500@gmail.com>
+ <1616945059-8718-4-git-send-email-u0084500@gmail.com> <20210329102631.sh5ttefjvfsfg6tk@maple.lan>
+In-Reply-To: <20210329102631.sh5ttefjvfsfg6tk@maple.lan>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Mon, 29 Mar 2021 21:46:48 +0800
+Message-ID: <CADiBU3-2LvLzUZA08EKvzZ7qG8xKPbzbbFzTE3H-Z_8DMP=5OA@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] backlight: rt4831: Adds support for Richtek RT4831 backlight
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>, jingoohan1@gmail.com,
+        b.zolnierkie@samsung.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        ChiYuan Huang <cy_huang@richtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Daniel:
 
-
-On 16/03/2021 10:22, Chunfeng Yun wrote:
-> This is used to fix dtbs_check warning.
-> 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-
-Applied now to v5.12-next/dts64
-
-> ---
-> v2~v5: no changes
-> ---
->  arch/arm64/boot/dts/mediatek/mt2712e.dtsi | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
-> index db17d0a4ed57..a9cca9c146fd 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt2712e.dtsi
-> @@ -805,7 +805,7 @@
->  		ranges;
->  		status = "disabled";
->  
-> -		usb_host0: xhci@11270000 {
-> +		usb_host0: usb@11270000 {
->  			compatible = "mediatek,mt2712-xhci",
->  				     "mediatek,mtk-xhci";
->  			reg = <0 0x11270000 0 0x1000>;
-> @@ -818,7 +818,7 @@
->  		};
->  	};
->  
-> -	u3phy0: usb-phy@11290000 {
-> +	u3phy0: t-phy@11290000 {
->  		compatible = "mediatek,mt2712-tphy",
->  			     "mediatek,generic-tphy-v2";
->  		#address-cells = <1>;
-> @@ -869,7 +869,7 @@
->  		ranges;
->  		status = "disabled";
->  
-> -		usb_host1: xhci@112c0000 {
-> +		usb_host1: usb@112c0000 {
->  			compatible = "mediatek,mt2712-xhci",
->  				     "mediatek,mtk-xhci";
->  			reg = <0 0x112c0000 0 0x1000>;
-> @@ -882,7 +882,7 @@
->  		};
->  	};
->  
-> -	u3phy1: usb-phy@112e0000 {
-> +	u3phy1: t-phy@112e0000 {
->  		compatible = "mediatek,mt2712-tphy",
->  			     "mediatek,generic-tphy-v2";
->  		#address-cells = <1>;
-> 
+Daniel Thompson <daniel.thompson@linaro.org> =E6=96=BC 2021=E5=B9=B43=E6=9C=
+=8829=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=886:26=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> On Sun, Mar 28, 2021 at 11:24:19PM +0800, cy_huang wrote:
+> > From: ChiYuan Huang <cy_huang@richtek.com>
+> >
+> > Adds support for Richtek RT4831 backlight.
+> >
+> > Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+> > ---
+> > since v6
+> > - Fix Kconfig typo.
+> > - Remove internal mutex lock.
+> > - Add the prefix for max brightness.
+> > - rename init_device_properties to parse_backlight_properties.
+> > - Remove some warning message if default value is adopted.
+> > - Add backlight property scale to LINEAR mapping.
+> > - Fix regmap get to check NULL not IS_ERR.
+> > ---
+> >  drivers/video/backlight/Kconfig            |   8 ++
+> >  drivers/video/backlight/Makefile           |   1 +
+> >  drivers/video/backlight/rt4831-backlight.c | 203 +++++++++++++++++++++=
+++++++++
+> >  3 files changed, 212 insertions(+)
+> >  create mode 100644 drivers/video/backlight/rt4831-backlight.c
+> >
+> > diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/=
+Kconfig
+> > index d83c87b..de96441 100644
+> > --- a/drivers/video/backlight/Kconfig
+> > +++ b/drivers/video/backlight/Kconfig
+> > @@ -289,6 +289,14 @@ config BACKLIGHT_QCOM_WLED
+> >         If you have the Qualcomm PMIC, say Y to enable a driver for the
+> >         WLED block. Currently it supports PM8941 and PMI8998.
+> >
+> > +config BACKLIGHT_RT4831
+> > +     tristate "Richtek RT4831 Backlight Driver"
+> > +     depends on MFD_RT4831
+> > +     help
+> > +       This enables support for Richtek RT4831 Backlight driver.
+> > +       It's common used to drive the display WLED. There're four chann=
+els
+>
+> Nitpicking but I was expecting the original typo be converted to
+> "commonly".
+>
+OK, I'll correct this typo in v7 next.
+And will merge the reviewed-by line.
+Thx.
+>
+> With that addressed:
+> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+>
+>
+> Daniel.
