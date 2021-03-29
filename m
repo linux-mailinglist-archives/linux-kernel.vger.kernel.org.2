@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7391E34C75F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758CB34CC6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbhC2IOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:14:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52796 "EHLO mail.kernel.org"
+        id S236375AbhC2JCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55278 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231707AbhC2IJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:09:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24D8061601;
-        Mon, 29 Mar 2021 08:09:01 +0000 (UTC)
+        id S234879AbhC2Iha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01388619CA;
+        Mon, 29 Mar 2021 08:36:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005342;
-        bh=v4kgBf59sePydDE3V+pt/j20NEXhADvol6n1p2zDM38=;
+        s=korg; t=1617007015;
+        bh=D69HUUVSB9o1O3V5LnTAspBhe3FxSt43ShUTCttYZ9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GTcQ8CiYNeEI4+MkbHwmY6yxrJRnlPuk/YvP7b1YoGyfeZ2KZG2tPEotnQWm9/By/
-         JcF6mjwzPZDrUxglj017BFBFcXEgcNYg9Gc49E3ihgUOnU8UZtYu2vw4G1DpK9pJTl
-         DWBWVA9WGA95OLQ5DUUbagzT4eg77jYk4N7wjqyo=
+        b=0G2eMecyNFMQYjHn8JvrmFxjm4AUctcvG1PHWJQxYdB4KKaM5nNtTk7JC5JRt6Wyw
+         NSvdhSpQn96NCDGTe2lWdYwiaNtWC4aXPaZLLquU9rFfLocLjE09Ov1vZSgsnGZLAv
+         J6MJ6gHU6rsGrpWJx3emqYkYNSk8g8ZOFuReesCs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 48/72] mac80211: fix rate mask reset
+Subject: [PATCH 5.11 188/254] can: isotp: tx-path: zero initialize outgoing CAN frames
 Date:   Mon, 29 Mar 2021 09:58:24 +0200
-Message-Id: <20210329075611.870401797@linuxfoundation.org>
+Message-Id: <20210329075639.303778978@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,55 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-[ Upstream commit 1944015fe9c1d9fa5e9eb7ffbbb5ef8954d6753b ]
+[ Upstream commit b5f020f82a8e41201c6ede20fa00389d6980b223 ]
 
-Coverity reported the strange "if (~...)" condition that's
-always true. It suggested that ! was intended instead of ~,
-but upon further analysis I'm convinced that what really was
-intended was a comparison to 0xff/0xffff (in HT/VHT cases
-respectively), since this indicates that all of the rates
-are enabled.
+Commit d4eb538e1f48 ("can: isotp: TX-path: ensure that CAN frame flags are
+initialized") ensured the TX flags to be properly set for outgoing CAN
+frames.
 
-Change the comparison accordingly.
+In fact the root cause of the issue results from a missing initialization
+of outgoing CAN frames created by isotp. This is no problem on the CAN bus
+as the CAN driver only picks the correctly defined content from the struct
+can(fd)_frame. But when the outgoing frames are monitored (e.g. with
+candump) we potentially leak some bytes in the unused content of
+struct can(fd)_frame.
 
-I'm guessing this never really mattered because a reset to
-not having a rate mask is basically equivalent to having a
-mask that enables all rates.
-
-Reported-by: Colin Ian King <colin.king@canonical.com>
-Fixes: 2ffbe6d33366 ("mac80211: fix and optimize MCS mask handling")
-Fixes: b119ad6e726c ("mac80211: add rate mask logic for vht rates")
-Reviewed-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210212112213.36b38078f569.I8546a20c80bc1669058eb453e213630b846e107b@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/r/20210319100619.10858-1-socketcan@hartkopp.net
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/cfg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/can/isotp.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
-index 9926455dd546..f484f9fc62ca 100644
---- a/net/mac80211/cfg.c
-+++ b/net/mac80211/cfg.c
-@@ -2777,14 +2777,14 @@ static int ieee80211_set_bitrate_mask(struct wiphy *wiphy,
- 			continue;
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 430976485d95..15ea1234d457 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -196,7 +196,7 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
+ 	nskb->dev = dev;
+ 	can_skb_set_owner(nskb, sk);
+ 	ncf = (struct canfd_frame *)nskb->data;
+-	skb_put(nskb, so->ll.mtu);
++	skb_put_zero(nskb, so->ll.mtu);
  
- 		for (j = 0; j < IEEE80211_HT_MCS_MASK_LEN; j++) {
--			if (~sdata->rc_rateidx_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_mcs_mask[i][j] != 0xff) {
- 				sdata->rc_has_mcs_mask[i] = true;
- 				break;
- 			}
- 		}
+ 	/* create & send flow control reply */
+ 	ncf->can_id = so->txid;
+@@ -779,7 +779,7 @@ isotp_tx_burst:
+ 		can_skb_prv(skb)->skbcnt = 0;
  
- 		for (j = 0; j < NL80211_VHT_NSS_MAX; j++) {
--			if (~sdata->rc_rateidx_vht_mcs_mask[i][j]) {
-+			if (sdata->rc_rateidx_vht_mcs_mask[i][j] != 0xffff) {
- 				sdata->rc_has_vht_mcs_mask[i] = true;
- 				break;
- 			}
+ 		cf = (struct canfd_frame *)skb->data;
+-		skb_put(skb, so->ll.mtu);
++		skb_put_zero(skb, so->ll.mtu);
+ 
+ 		/* create consecutive frame */
+ 		isotp_fill_dataframe(cf, so, ae, 0);
+@@ -895,7 +895,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	so->tx.idx = 0;
+ 
+ 	cf = (struct canfd_frame *)skb->data;
+-	skb_put(skb, so->ll.mtu);
++	skb_put_zero(skb, so->ll.mtu);
+ 
+ 	/* check for single frame transmission depending on TX_DL */
+ 	if (size <= so->tx.ll_dl - SF_PCI_SZ4 - ae - off) {
 -- 
 2.30.1
 
