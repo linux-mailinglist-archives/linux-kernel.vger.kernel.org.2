@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2AF34CDD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E95D34CDD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbhC2KUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        id S231638AbhC2KTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232213AbhC2KTo (ORCPT
+        with ESMTP id S231724AbhC2KSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:19:44 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45791C061756;
-        Mon, 29 Mar 2021 03:19:44 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v23so4168448ple.9;
-        Mon, 29 Mar 2021 03:19:44 -0700 (PDT)
+        Mon, 29 Mar 2021 06:18:55 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C058CC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:18:53 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so11783219otr.4
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 03:18:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
-        b=blBg1faRPY6sCJR6ifGvqEhMWndnvwGjRSGVSpn60NS7iymSH1GfJL/UFbZZUOn8+2
-         UtU0mjfO3+KeBxgy28/OYPPduknbnXxt3Mxo9wM2GiZC3Mi6pr+TiEQSXcM8TmZT4BtT
-         8LHAFcAQ/HQ9W5AnecPEvcBPiK4bFtDabwSAXd8QJG6QPQnYQ6AdNyggWYjbGGxGsLjs
-         eDumJoKX78/0fL32UbSuxIU/XxLwBJIKIUtZDv1B8SHx3xFFzjFkQc/I8fmC/Oij63c8
-         s0fnMdSdPEjpaFWcV2S7tYC9PWTEgoEYcJ+4IttMgMthTNtaftiwHE7iKZNsHk25s7xH
-         GHsA==
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=59bVk1U3eAVs4AcTUq5Uzd81CXfJ27eB6Tb5HoqJbm8=;
+        b=O7z2KPqex9OWV7rS0vW975GuYu72swPQwIu0JStsGX+5blMKnxF4JEN969+cGkQcUx
+         RRAIZCaWVM6UvKRHQZPbSAZAMbND8NkoPZj/pPMFhyPbCIod4KjhS5UC4fhJK4swTo8L
+         eDRakI0I851rDSdJIeBVLxdGygwSBLJYHfMkF3i8SiQEgpgJVGIKsxXFNADOE8H2fF5L
+         PARIy4Jj0eTGdOO6EJ+FeENXgGnjvxDjY27eIKTOSzZaakkWxL4PBK8iEtxg00HeeAWC
+         fo6/CJzNn2hlMDiGOXpFAH/LcDvVyL7OpeoE5X3fIJ7aXM/HOL+Tc4X7VUUQBJSn5354
+         g8Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
-        b=olgs3J6PuKZOQgU+ewcq7HyaN/OtRjoWk78oKQ4dxZ/MLaY2P7qdWyLmsvP89M9JWg
-         n1AIFXRN+xjI6Q6ELA1T4pkqoDUtuFYAvd/IxPLp8mVqX+72dFfojLcV9XjiGP26O36C
-         oc1NaumzDv9XrTxTKZlM8UsJa4WaslaLeyVoX7hM9HAfVA/LPVfpKr3pvnd0lDa8G3GN
-         VJ8T54Gqk2FayAQi/96qLntvRVGoU98tQ8By8HSirmAF8PE2kexGdti/LnU+S9OSGWX9
-         LTGimXlbikXsvPDP8kJp6WSBhssT8LSy8pEVUwDD2oIgQM8isSBuTEZqtco+N4hEfdtJ
-         UC/Q==
-X-Gm-Message-State: AOAM5328135gO5qc9Dc6TwwhxcT6GE1prB/HaB27Btd6Ywu3gnYcKsPb
-        oA2dnODq4hOmjc4ohCz5rVDl9wphKopqGg==
-X-Google-Smtp-Source: ABdhPJzlXACmwDqcN0NdMFWh8QPZ9ik9FcNe9QNS5Yz+NT/akmWqOh45PT55X6N44HADqijYhEQpuQ==
-X-Received: by 2002:a17:902:e884:b029:e5:fece:3bb0 with SMTP id w4-20020a170902e884b02900e5fece3bb0mr28620569plg.61.1617013183614;
-        Mon, 29 Mar 2021 03:19:43 -0700 (PDT)
-Received: from [10.43.90.134] ([103.114.158.1])
-        by smtp.gmail.com with ESMTPSA id x186sm16480450pfc.65.2021.03.29.03.19.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 03:19:43 -0700 (PDT)
-Subject: Re: [PATCH] integrity/ima: Add declarations to init_once void
- arguments.
-To:     serge@hallyn.com, jmorris@namei.org
-Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210323013318.296993-1-unclexiaole@gmail.com>
-From:   Jiele Zhao <unclexiaole@gmail.com>
-Message-ID: <62b05182-e46e-4ef8-e9af-6d2bd00784b9@gmail.com>
-Date:   Mon, 29 Mar 2021 18:18:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=59bVk1U3eAVs4AcTUq5Uzd81CXfJ27eB6Tb5HoqJbm8=;
+        b=DmJyWKJpA0Q66qLJAmFYgERpgoQupHXrqvk2jZ3ZDzClSngEjQA9ed5w/azbYGpB1q
+         XOVYJw5GJ/ME6q9okPx6wgZcbHb5db8Uc0rdzAkMS2t48T0K2QebvG/tTgXD5tQZ1hlT
+         0nwdDIv/Py7G3N5oC097WuaRLgid/Q1WEJvdbVh2VEPjCFFjmbrFIjtID408Gdn3af+x
+         CeDOvpLhaayTJsUOfCJeod1fhVTIISDfzqm03r8f2FGEMasnGe9p+Y9UNnANgSDRXJrA
+         UfpYnqmYlCnyICTZPpjbmhKZW4N6jAMzfJ6a5DlOnoOnjiDnu9HGD9AEMEaiLsUhEISQ
+         58vQ==
+X-Gm-Message-State: AOAM5329R0QNwKGWQUEQoqIzRKfucZvVz17SXAFRbyud09oZ7fa72IcY
+        I2umqx/sQktr5myouHqpipGQAa1/taL1bxTwp9/5pg==
+X-Google-Smtp-Source: ABdhPJzlGZ/D+OmhIRfsTVba9K6RjVylLGLXIUf2URPu2C4G3q7Koa/dAuoNoQPZI+ZZ6IltV4gHAZx065pDvYORC7g=
+X-Received: by 2002:a9d:6249:: with SMTP id i9mr22150688otk.166.1617013133098;
+ Mon, 29 Mar 2021 03:18:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210323013318.296993-1-unclexiaole@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20201209094916.17383-1-zong.li@sifive.com> <87v99qyjaz.fsf@igel.home>
+ <CANXhq0oLxFK1431WmTj5HRO5k_omYkQZCBTG+HORTk9=W_XyNg@mail.gmail.com>
+ <CANXhq0p90Cgha_zLzxamK9mxmVPn3effh_cZq_CTLrcAkKZg2Q@mail.gmail.com>
+ <87lfaj7cki.fsf@igel.home> <871rc4on36.fsf@igel.home> <CANXhq0pDge0BPgAjoLrX7Y2qtofb3dhV1_CPHBaCg0o4cEMrbQ@mail.gmail.com>
+ <87a6qrk2pw.fsf@igel.home> <CANXhq0rOeAWnRYHAYKJfDeY4kYz6+5mU_dJSqU67+2p9u0STHQ@mail.gmail.com>
+ <874kgyfetu.fsf@igel.home>
+In-Reply-To: <874kgyfetu.fsf@igel.home>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Mon, 29 Mar 2021 18:18:42 +0800
+Message-ID: <CANXhq0rE-ZcPBp02Pvozpk_s-j6NhxHUmso75uz6ji9bejO8gA@mail.gmail.com>
+Subject: Re: [PATCH v7 0/5] clk: add driver for the SiFive FU740
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Pragnesh Patel <pragnesh.patel@openfive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping.
+On Fri, Mar 26, 2021 at 5:24 PM Andreas Schwab <schwab@linux-m68k.org> wrot=
+e:
+>
+> On M=C3=A4r 26 2021, Zong Li wrote:
+>
+> > 1. Boot on openSUSE-Tumbleweed-RISC-V-JeOS-hifiveunleashed.riscv64.raw.=
+xz
+> > w/ plugging ethernet cable
+> >   - It seems that I encountered a different situation with you, my
+> > system hung up and I didn't see the boot message you mentioned yet.
+>
+> That's exactly the issue.  The process is stuck in D.
+>
 
-On 2021/3/23 9:33, Jiele Zhao wrote:
-> init_once is a callback to kmem_cache_create. The parameter
-> type of this function is void *, so it's better to give a
-> explicit cast here.
+Yes, I could get the network problem by using the defconfig you
+provided, the system hung up when executing 'ifconfig' immediately
+after installing macb driver module, the network can work by only
+reverting the commit 732374a0b440d9a79c8412f318a25cd37ba6f4e2. But the
+network is fine by using the mainline's defconfig, this is a little
+bit weird, I will check that and try to find the difference.
+
+> Andreas.
 >
-> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
-> ---
->   security/integrity/iint.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> index 1d20003243c3..5f3f2de997e1 100644
-> --- a/security/integrity/iint.c
-> +++ b/security/integrity/iint.c
-> @@ -152,7 +152,7 @@ void integrity_inode_free(struct inode *inode)
->   
->   static void init_once(void *foo)
->   {
-> -	struct integrity_iint_cache *iint = foo;
-> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *)foo;
->   
->   	memset(iint, 0, sizeof(*iint));
->   	iint->ima_file_status = INTEGRITY_UNKNOWN;
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint =3D 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC=
+1
+> "And now for something completely different."
