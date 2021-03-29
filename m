@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9476E34C8D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E586034C8DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhC2IYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:24:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58912 "EHLO mail.kernel.org"
+        id S232486AbhC2IYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:24:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233045AbhC2IPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:15:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B63B61959;
-        Mon, 29 Mar 2021 08:15:29 +0000 (UTC)
+        id S233056AbhC2IPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:15:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 492AB6193A;
+        Mon, 29 Mar 2021 08:15:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005730;
-        bh=ATi5ccoVKsqKmD1D8NsF2tx63RLYduU5eu00IddEJcc=;
+        s=korg; t=1617005732;
+        bh=CeoNitQE++bKHTFhUFTJm9K0pH1PpHQ7kcj7cq45BFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QiNycyD9/S2++sdJhDAfZdkH4KBspknvXKdhDnPhWmCmDLycQjImJzPihiQ3WoYCp
-         rrWZDETvo2x5VX34BD9Ce83qcneBHHEWW7pnUm9LAWJwArsi4h1bCTU3m5e9yOd9zF
-         b89oznt8YGTYPExpFozGuuRKaj17GpPwN+rQudeA=
+        b=usaNMUOvUhwrZVmav5d55BNZ9kp7EC9ouAsDrs286BYVUbRoY086KwPKE3D0Esnrw
+         39Gy8FOzmklIQ5fWV+x7bxA/jUud6mf/w//iaqv1sWUmZzacJSPkN7BNc4g2PQqxm9
+         rANCuodW1YY7y77JwHeruOQeJ+hNCDhUuOA1kFz4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 096/111] Revert "netfilter: x_tables: Update remaining dereference to RCU"
-Date:   Mon, 29 Mar 2021 09:58:44 +0200
-Message-Id: <20210329075618.412408710@linuxfoundation.org>
+Subject: [PATCH 5.4 097/111] ACPI: scan: Rearrange memory allocation in acpi_device_add()
+Date:   Mon, 29 Mar 2021 09:58:45 +0200
+Message-Id: <20210329075618.443697323@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
 References: <20210329075615.186199980@linuxfoundation.org>
@@ -41,68 +41,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit abe7034b9a8d57737e80cc16d60ed3666990bdbf ]
+[ Upstream commit c1013ff7a5472db637c56bb6237f8343398c03a7 ]
 
-This reverts commit 443d6e86f821a165fae3fc3fc13086d27ac140b1.
+The upfront allocation of new_bus_id is done to avoid allocating
+memory under acpi_device_lock, but it doesn't really help,
+because (1) it leads to many unnecessary memory allocations for
+_ADR devices, (2) kstrdup_const() is run under that lock anyway and
+(3) it complicates the code.
 
-This (and the following) patch basically re-implemented the RCU
-mechanisms of patch 784544739a25. That patch was replaced because of the
-performance problems that it created when replacing tables. Now, we have
-the same issue: the call to synchronize_rcu() makes replacing tables
-slower by as much as an order of magnitude.
+Rearrange acpi_device_add() to allocate memory for a new struct
+acpi_device_bus_id instance only when necessary, eliminate a redundant
+local variable from it and reduce the number of labels in there.
 
-Revert these patches and fix the issue in a different way.
+No intentional functional impact.
 
-Signed-off-by: Mark Tomlinson <mark.tomlinson@alliedtelesis.co.nz>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/netfilter/arp_tables.c | 2 +-
- net/ipv4/netfilter/ip_tables.c  | 2 +-
- net/ipv6/netfilter/ip6_tables.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/acpi/scan.c | 57 +++++++++++++++++++++------------------------
+ 1 file changed, 26 insertions(+), 31 deletions(-)
 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 680a1320399d..f1f78a742b36 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -1406,7 +1406,7 @@ static int compat_get_entries(struct net *net,
- 	xt_compat_lock(NFPROTO_ARP);
- 	t = xt_find_table_lock(net, NFPROTO_ARP, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = xt_table_get_private_protected(t);
-+		const struct xt_table_info *private = t->private;
- 		struct xt_table_info info;
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 8887a72712d4..ddde1229e2b3 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -624,12 +624,23 @@ void acpi_bus_put_acpi_device(struct acpi_device *adev)
+ 	put_device(&adev->dev);
+ }
  
- 		ret = compat_table_info(private, &info);
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 8c320b7a423c..10b91ebdf213 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -1616,7 +1616,7 @@ compat_get_entries(struct net *net, struct compat_ipt_get_entries __user *uptr,
- 	xt_compat_lock(AF_INET);
- 	t = xt_find_table_lock(net, AF_INET, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = xt_table_get_private_protected(t);
-+		const struct xt_table_info *private = t->private;
- 		struct xt_table_info info;
- 		ret = compat_table_info(private, &info);
- 		if (!ret && get.size == info.size)
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index 85d8ed970cdc..c973ace208c5 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1625,7 +1625,7 @@ compat_get_entries(struct net *net, struct compat_ip6t_get_entries __user *uptr,
- 	xt_compat_lock(AF_INET6);
- 	t = xt_find_table_lock(net, AF_INET6, get.name);
- 	if (!IS_ERR(t)) {
--		const struct xt_table_info *private = xt_table_get_private_protected(t);
-+		const struct xt_table_info *private = t->private;
- 		struct xt_table_info info;
- 		ret = compat_table_info(private, &info);
- 		if (!ret && get.size == info.size)
++static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
++{
++	struct acpi_device_bus_id *acpi_device_bus_id;
++
++	/* Find suitable bus_id and instance number in acpi_bus_id_list. */
++	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
++		if (!strcmp(acpi_device_bus_id->bus_id, dev_id))
++			return acpi_device_bus_id;
++	}
++	return NULL;
++}
++
+ int acpi_device_add(struct acpi_device *device,
+ 		    void (*release)(struct device *))
+ {
++	struct acpi_device_bus_id *acpi_device_bus_id;
+ 	int result;
+-	struct acpi_device_bus_id *acpi_device_bus_id, *new_bus_id;
+-	int found = 0;
+ 
+ 	if (device->handle) {
+ 		acpi_status status;
+@@ -655,38 +666,26 @@ int acpi_device_add(struct acpi_device *device,
+ 	INIT_LIST_HEAD(&device->del_list);
+ 	mutex_init(&device->physical_node_lock);
+ 
+-	new_bus_id = kzalloc(sizeof(struct acpi_device_bus_id), GFP_KERNEL);
+-	if (!new_bus_id) {
+-		pr_err(PREFIX "Memory allocation error\n");
+-		result = -ENOMEM;
+-		goto err_detach;
+-	}
+-
+ 	mutex_lock(&acpi_device_lock);
+-	/*
+-	 * Find suitable bus_id and instance number in acpi_bus_id_list
+-	 * If failed, create one and link it into acpi_bus_id_list
+-	 */
+-	list_for_each_entry(acpi_device_bus_id, &acpi_bus_id_list, node) {
+-		if (!strcmp(acpi_device_bus_id->bus_id,
+-			    acpi_device_hid(device))) {
+-			acpi_device_bus_id->instance_no++;
+-			found = 1;
+-			kfree(new_bus_id);
+-			break;
++
++	acpi_device_bus_id = acpi_device_bus_id_match(acpi_device_hid(device));
++	if (acpi_device_bus_id) {
++		acpi_device_bus_id->instance_no++;
++	} else {
++		acpi_device_bus_id = kzalloc(sizeof(*acpi_device_bus_id),
++					     GFP_KERNEL);
++		if (!acpi_device_bus_id) {
++			result = -ENOMEM;
++			goto err_unlock;
+ 		}
+-	}
+-	if (!found) {
+-		acpi_device_bus_id = new_bus_id;
+ 		acpi_device_bus_id->bus_id =
+ 			kstrdup_const(acpi_device_hid(device), GFP_KERNEL);
+ 		if (!acpi_device_bus_id->bus_id) {
+-			pr_err(PREFIX "Memory allocation error for bus id\n");
++			kfree(acpi_device_bus_id);
+ 			result = -ENOMEM;
+-			goto err_free_new_bus_id;
++			goto err_unlock;
+ 		}
+ 
+-		acpi_device_bus_id->instance_no = 0;
+ 		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+ 	}
+ 	dev_set_name(&device->dev, "%s:%02x", acpi_device_bus_id->bus_id, acpi_device_bus_id->instance_no);
+@@ -721,13 +720,9 @@ int acpi_device_add(struct acpi_device *device,
+ 		list_del(&device->node);
+ 	list_del(&device->wakeup_list);
+ 
+- err_free_new_bus_id:
+-	if (!found)
+-		kfree(new_bus_id);
+-
++ err_unlock:
+ 	mutex_unlock(&acpi_device_lock);
+ 
+- err_detach:
+ 	acpi_detach_data(device->handle, acpi_scan_drop_device);
+ 	return result;
+ }
 -- 
 2.30.1
 
