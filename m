@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CEA34C14A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E4C34C15F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhC2BwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 21:52:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229822AbhC2Bv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 21:51:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFEEB61941;
-        Mon, 29 Mar 2021 01:51:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616982715;
-        bh=U0Y5HEp4vLgEt3OrK0G+AlzV4k+/QymqO4rrPYmLDWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dT20VNVeUoj8H3ChZPXZla+P99WfnHv8Mnzy2scGz5waqBEfSy+U6dS4xFIjkgZBv
-         mUtVCce8MHgk0yjq23piVjgyicmtuPZhWZBPQU+0UyD3C1l4BksxhkKYY7yOk2+L4n
-         t0d+A2RlrWVAr2yH8iSFLpN2iv0r690Fe/0D2Me2tAwcFV2JqyaB0RNp7JlOxr+yXP
-         vpKN5E9MmoNk0HuUbft0UATSY1FhXAO6qfGe7KH+OhGREhjgJvTkHGXMBBjl6Bq9Dw
-         wv4dLzGz03UVgAsdM0kgklMdjqhMEPo1k80R9W+AAejxvYsO2f5zOI2wpwX5BQKzCK
-         1xOBcDX50CuTQ==
-Date:   Mon, 29 Mar 2021 09:51:50 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Heiko Thiery <heiko.thiery@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH v2] arm64: dts: imx8mq-kontron-pitx-imx8m: pass phy reset
- delays
-Message-ID: <20210329015149.GL22955@dragon>
-References: <20210323140019.14388-1-heiko.thiery@gmail.com>
+        id S231201AbhC2Bwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 21:52:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230466AbhC2BwO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 21:52:14 -0400
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD1AC061762
+        for <linux-kernel@vger.kernel.org>; Sun, 28 Mar 2021 18:52:13 -0700 (PDT)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 184D58364E;
+        Mon, 29 Mar 2021 14:52:08 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1616982728;
+        bh=1nLQSp7vbLAvlN7Fzi+XfVrJA24mf4rcWMaEhiGM8Tc=;
+        h=From:To:Cc:Subject:Date;
+        b=2gKB76rC4hhu4nZ91dmKLBUMRpKgiFJLWN89EWmb7ZGOP6hUCzAQnm238BfH1cA66
+         5u/BFfydtpLy0Pl4fa2Ow2WPuM8v1FjkwQxkC0Kg7bypj+xmf0ElJlnb260JWrofsv
+         gp0zsessYn6dL9U/4lG70maIpUbH7pzBzl2gJPZPQakGMZddaNbMGJrOdIQwl8Sk61
+         CgfplJbdL3es78aTjhW+QbI8cuh/q7y1E4OmvjdlJicTz4HRaWWC2L6nKVlx9erZgW
+         zhLHEhi05NWc7iP7t+4JR6XgSCpaNDNbSrr+nU1Ztb3TsR2Bpg7fdsDbNjUmQu7vzK
+         ZzosK5vOFb6aw==
+Received: from smtp (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B606132c70000>; Mon, 29 Mar 2021 14:52:07 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 4D7B213EED4;
+        Mon, 29 Mar 2021 14:52:25 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 73096284081; Mon, 29 Mar 2021 14:52:08 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     robh+dt@kernel.org, linux@roeck-us.net, wsa@kernel.org,
+        jdelvare@suse.com
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 0/6] i2c: mpc: Refactor to improve responsiveness
+Date:   Mon, 29 Mar 2021 14:52:00 +1300
+Message-Id: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323140019.14388-1-heiko.thiery@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=GfppYjfL c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=dESyimp9J3IA:10 a=peonOtBRVIPhQsqlob0A:9 a=fCgQI5UlmZDRPDxm0A3o:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 03:00:21PM +0100, Heiko Thiery wrote:
-> The TI DP83867 PHY datasheet says:
-> T1: Post RESET stabilization time == 195us
-> T3: Hardware configuration pins transition to output drivers == 64us
-> T4: RESET pulse width == 1us
-> 
-> So with a little overhead set 'reset-assert-us' to 10us (T4) and
-> 'reset-deassert-us' to 280us (T1+T3).
-> 
-> Without these reset delays the board will hang during startup when
-> bootargs has ip=dhcp set.
-> 
-> Fixes: 1dc7f3d79a1a ("arm64: dts: fsl: add support for Kontron pitx-imx8m board")
-> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
-> ---
-> v2:
->  - add desciption what issue will be fixed
->  - add Fixes tag
+The "meat" of this series is in the last patch which is the change that
+actually starts making use of the interrupts to drive a state machine.
+The dt-bindings patches can probably go in at any time, the rest of the
+series isn't dependent on them.
 
-My branch is not a stable one, so I just squashed it into the original
-commit.
+I've tested on T2081 and P2041 based systems with a number of i2c and smb=
+us
+devices.
 
-Shawn
+Chris Packham (6):
+  dt-bindings: i2c-mpc: Document interrupt property as required
+  dt-bindings: i2c: convert i2c-mpc to json-schema
+  i2c: mpc: Make use of i2c_recover_bus()
+  i2c: mpc: make interrupt mandatory and remove polling code
+  i2c: mpc: use device managed APIs
+  i2c: mpc: Interrupt driven transfer
+
+ .../devicetree/bindings/i2c/i2c-mpc.txt       |  62 ---
+ .../devicetree/bindings/i2c/i2c-mpc.yaml      |  91 +++
+ drivers/i2c/busses/i2c-mpc.c                  | 517 ++++++++++--------
+ 3 files changed, 369 insertions(+), 301 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
+
+--=20
+2.31.0
+
