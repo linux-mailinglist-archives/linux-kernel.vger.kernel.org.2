@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4429434CC2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1B234C6D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbhC2I46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:56:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54462 "EHLO mail.kernel.org"
+        id S232417AbhC2IK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234706AbhC2IhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:37:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A74461864;
-        Mon, 29 Mar 2021 08:36:23 +0000 (UTC)
+        id S232212AbhC2IGO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:06:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1E846196F;
+        Mon, 29 Mar 2021 08:06:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006983;
-        bh=cmKZcmgutAP/LE069QLnOK/eWTJvd8gv+WoBYBihBu4=;
+        s=korg; t=1617005173;
+        bh=Saq7w/ssETlKBWPzpC8PWPV69Yt91Ew4E56s6zxsJ6Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U4XzG0Ef4oY1f1IndTvWRBIvceyFnHGcjTP4XSQ8WqWiMw3XyQc6rvBv351ezerZu
-         2f4owqowge2YrKg8U3EzVjAQJwhssUWZ1Ozl/lHtexpBsLyBTtTSV+/myqEZGJOaWL
-         f4UkqHrZ8WoIj7zm3Q2RDPDChDPmvqTgrYYwRPQw=
+        b=2VGGHs98EzD3rdAj60e7qowToWt9D4bEpe0k63khUELkrUEaby9WxRCG1dQpE93ot
+         79YpGyTd/6t6UbEMAAfPt33jqDeaB0+/soEWaLCmWyVq6h/654v2dXuee9MNqzRD86
+         zz1NRL5e5u3G7L38KGAAYCbiPcYnJaCzV43nQZGU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hariprasad Kelam <hkelam@marvell.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Vitaly Lifshits <vitaly.lifshits@intel.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 177/254] octeontx2-af: fix infinite loop in unmapping NPC counter
+Subject: [PATCH 4.14 33/59] e1000e: add rtnl_lock() to e1000_reset_task
 Date:   Mon, 29 Mar 2021 09:58:13 +0200
-Message-Id: <20210329075638.970508270@linuxfoundation.org>
+Message-Id: <20210329075609.979745120@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
+References: <20210329075608.898173317@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +42,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hariprasad Kelam <hkelam@marvell.com>
+From: Vitaly Lifshits <vitaly.lifshits@intel.com>
 
-[ Upstream commit 64451b98306bf1334a62bcd020ec92bdb4cb68db ]
+[ Upstream commit 21f857f0321d0d0ea9b1a758bd55dc63d1cb2437 ]
 
-unmapping npc counter works in a way by traversing all mcam
-entries to find which mcam rule is associated with counter.
-But loop cursor variable 'entry' is not incremented before
-checking next mcam entry which resulting in infinite loop.
+A possible race condition was found in e1000_reset_task,
+after discovering a similar issue in igb driver via
+commit 024a8168b749 ("igb: reinit_locked() should be called
+with rtnl_lock").
 
-This in turn hogs the kworker thread forever and no other
-mbox message is processed by AF driver after that.
-Fix this by updating entry value before checking next
-mcam entry.
+Added rtnl_lock() and rtnl_unlock() to avoid this.
 
-Fixes: a958dd59f9ce ("octeontx2-af: Map or unmap NPC MCAM entry and counter")
-Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-Signed-off-by: Sunil Kovvuri Goutham <sgoutham@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Vitaly Lifshits <vitaly.lifshits@intel.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/e1000e/netdev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 5cf9b7a907ae..b81539f3b2ac 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -2490,10 +2490,10 @@ int rvu_mbox_handler_npc_mcam_free_counter(struct rvu *rvu,
- 		index = find_next_bit(mcam->bmap, mcam->bmap_entries, entry);
- 		if (index >= mcam->bmap_entries)
- 			break;
-+		entry = index + 1;
- 		if (mcam->entry2cntr_map[index] != req->cntr)
- 			continue;
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index fff55f0bed30..f50d0da8fefe 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -5942,15 +5942,19 @@ static void e1000_reset_task(struct work_struct *work)
+ 	struct e1000_adapter *adapter;
+ 	adapter = container_of(work, struct e1000_adapter, reset_task);
  
--		entry = index + 1;
- 		npc_unmap_mcam_entry_and_cntr(rvu, mcam, blkaddr,
- 					      index, req->cntr);
++	rtnl_lock();
+ 	/* don't run the task if already down */
+-	if (test_bit(__E1000_DOWN, &adapter->state))
++	if (test_bit(__E1000_DOWN, &adapter->state)) {
++		rtnl_unlock();
+ 		return;
++	}
+ 
+ 	if (!(adapter->flags & FLAG_RESTART_NOW)) {
+ 		e1000e_dump(adapter);
+ 		e_err("Reset adapter unexpectedly\n");
  	}
+ 	e1000e_reinit_locked(adapter);
++	rtnl_unlock();
+ }
+ 
+ /**
 -- 
 2.30.1
 
