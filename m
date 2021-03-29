@@ -2,132 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEA134D910
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3753534D913
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbhC2Ub0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:31:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
+        id S230366AbhC2UeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhC2UbN (ORCPT
+        with ESMTP id S229468AbhC2Udn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:31:13 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11D80C061574;
-        Mon, 29 Mar 2021 13:31:13 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id j7so14149632wrd.1;
-        Mon, 29 Mar 2021 13:31:12 -0700 (PDT)
+        Mon, 29 Mar 2021 16:33:43 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B692AC061574;
+        Mon, 29 Mar 2021 13:33:42 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so8319343pjb.0;
+        Mon, 29 Mar 2021 13:33:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=6txOJ7qOb/CCnuU8RJH/xS5l0FL0VtX/BfP8joMK7bU=;
-        b=OJ3tgPvRaG4ckLFZk/g8lQyrzsOKnsY980ciYLFVucwbSmuAqZQF/68e7bLIP4b0sr
-         9gxy0E5ndRoXhnePBjbZp2CT7n2tfV+WwKNrvktjWeC0LOvnuja4DQqxyptxko4jSU59
-         j82ptWAyRQmWjs1UCIg712DxXA9xzQFAwLBsq47Rr6GMAaPDosQB4MOGOeV0WiYB6+O+
-         bkHspiDF2A8CwsuGcdrgD4y2SGktkfDiWlTC4wbknXNosbeh+nFBBaG6spA92P/LeMgA
-         O25aepCPo7JOHpdtUjAqhlsQV9T4AkCdOb6dpoTe6uiQDuYv5KRoCZUgZx97G+9gPE8q
-         oT9w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5JWGpm2Luw9oA1XrYw8G4eVqUmBGNX4VUAL1U9HUofM=;
+        b=VY6h3tpEWizPKlvA7CBSflg8EXIOPRjaySIAo+boILZIUfNGhMpoPTGpsWT0sWEbv3
+         lytJCj+65unjb3jJHIMPRddLnlH/NBTRhea/BwtmtNCSTc4aftw0S76vSOenAEE3Vs88
+         HG7RU/iHInlxdB3TPsvhTn9VNDq3/2PWoyTV1rilQpzN2N+P5zlzhbMulO4JF5GZZa7E
+         H4c2oR1eSJixpINYZAy4SWPKu2VLkJSdtve4i76tdp8y8pqgSXbnw9L8QQHcQ8rY6yyg
+         NNaDQTUH4DlDxtHLCWepTog59y3X88RGnJouE354JukTcW7Ngn2VqyvhJvmURVA2FSSp
+         Rbwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6txOJ7qOb/CCnuU8RJH/xS5l0FL0VtX/BfP8joMK7bU=;
-        b=n/6gBFLEwZk+qDruoCw6iGl/FGQqjbtFFd5j8xw9ZeFCD5L5IuwYtAPj+Ff+a0vzVU
-         RWWwFg1AItcOV9Rh2IeBvtwHkSt6/R8DXc+p3xu5b0K1D/y+d6Nun2AWZEBsEMzb5uWL
-         Ochnuzc1GHwDmtIOSCrnbE8wrAOBllPIricqMK/Y4B1lavmU2rPD0aJ89BMChph6bA5D
-         8OUojTsWe/L6aCR4743jKE8U32Q7qe9LHbb1aFgtqjcbCCxmDfC1NbG9B0g55vgp1S5N
-         bMpkxPOKBFIkcQ1vOXXkqRWd5Q1reK7nVKgdNkU7e+6jdeTr9q5Qm0JP5ueQu+CAdmxp
-         ptQg==
-X-Gm-Message-State: AOAM5335Wdcw1RhD2vCsTaS2x1AlgR2n5H1t6Zgt5qLkpnH5wYMaUd7r
-        iRNBrf1zJOUpwgZnns6bOgA=
-X-Google-Smtp-Source: ABdhPJw1pXpwEwqzt3DGLb1K0VQrxrbwxcP3RoWlJc/HKSOyyLY6ym4XHtsoe4SRuX3OJsv/kQUB4w==
-X-Received: by 2002:adf:f711:: with SMTP id r17mr30093723wrp.358.1617049871867;
-        Mon, 29 Mar 2021 13:31:11 -0700 (PDT)
-Received: from [192.168.1.101] ([37.173.175.207])
-        by smtp.gmail.com with ESMTPSA id h10sm32432410wrp.22.2021.03.29.13.31.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 13:31:11 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in xfrm_alloc_compat (2)
-To:     Dmitry Safonov <dima@arista.com>,
-        syzbot <syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com>,
-        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-References: <000000000000ceb65005beb18c8f@google.com>
- <06c56a34-b7c6-f397-568d-3cdf6b044858@arista.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <a4f2d6c8-b4cf-c993-d0b4-952c16b2317d@gmail.com>
-Date:   Mon, 29 Mar 2021 22:31:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5JWGpm2Luw9oA1XrYw8G4eVqUmBGNX4VUAL1U9HUofM=;
+        b=EF4JZTthN+eJBReaWRZyylMhon8/YfbRjAm/KlqF82T+qDQNmCrsDGfSrYrBZTzlIl
+         742UGg8UIfi9NZhqH15qdD0LhhgiGA+hNk7BspxCJIUusLLt/3B1iLTb30figPYNcD7W
+         +I1Rm23QvCA/tUW82KhQCrfb21Zd0C2Un82r7avadpE5wx/Ki6cFpJpqkktQEbaop1iX
+         Ly6aPAuOcxvR4BQFyzdPyJqT2tXA5hh/VT+lFXF6VO23UNxYGcVF6omchR2B4FOBNiYJ
+         snsUg0I37Q+H5oFaBTffdT1pA+w3RSXdbITo1Q6kICjaKxglN/+h+uAO39Lxf2rdCDKQ
+         S+mA==
+X-Gm-Message-State: AOAM532ZLCV+56zzpaCz9zqIfqot7+umFuJx5SWYTNHiGQtkc35CIMyN
+        sNvKVY7ca4vAXYVmDPhlFp0=
+X-Google-Smtp-Source: ABdhPJxxBdmZ4Of72OqcTVC5WmVMBPDxwy0e8dm3jNMkc7FK7ywP1A1NxxZkPxbK5AkOMCJnBtENaw==
+X-Received: by 2002:a17:902:d64a:b029:e6:30a6:64e3 with SMTP id y10-20020a170902d64ab02900e630a664e3mr30759214plh.28.1617050022009;
+        Mon, 29 Mar 2021 13:33:42 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a82a:a913:988c:7480])
+        by smtp.gmail.com with ESMTPSA id t1sm18202660pfc.173.2021.03.29.13.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 13:33:41 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 13:33:38 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     linux-input@vger.kernel.org, linux-imx@nxp.com,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com, Alistair Francis <alistair@alistair22.me>
+Subject: Re: [PATCH v4 07/10] Input: wacom_i2c - Add support for reset control
+Message-ID: <YGI5or9QsfbONo2e@google.com>
+References: <20210326015229.141-1-alistair@alistair23.me>
+ <20210326015229.141-7-alistair@alistair23.me>
 MIME-Version: 1.0
-In-Reply-To: <06c56a34-b7c6-f397-568d-3cdf6b044858@arista.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326015229.141-7-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Alistair,
 
-
-On 3/29/21 9:57 PM, Dmitry Safonov wrote:
-> Hi,
+On Thu, Mar 25, 2021 at 09:52:27PM -0400, Alistair Francis wrote:
+> From: Alistair Francis <alistair@alistair22.me>
 > 
-> On 3/29/21 8:04 PM, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    6c996e19 net: change netdev_unregister_timeout_secs min va..
->> git tree:       net-next
->> console output: https://syzkaller.appspot.com/x/log.txt?x=102e5926d00000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=c0ac79756537274e
->> dashboard link: https://syzkaller.appspot.com/bug?extid=834ffd1afc7212eb8147
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a7b1aad00000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ae6b7cd00000
->>
->> The issue was bisected to:
->>
->> commit 5f3eea6b7e8f58cf5c8a9d4b9679dc19e9e67ba3
->> Author: Dmitry Safonov <dima@arista.com>
->> Date:   Mon Sep 21 14:36:53 2020 +0000
->>
->>     xfrm/compat: Attach xfrm dumps to 64=>32 bit translator
->>
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10694b3ad00000
->> final oops:     https://syzkaller.appspot.com/x/report.txt?x=12694b3ad00000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=14694b3ad00000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com
->> Fixes: 5f3eea6b7e8f ("xfrm/compat: Attach xfrm dumps to 64=>32 bit translator")
->>
->> netlink: 208 bytes leftover after parsing attributes in process `syz-executor193'.
->> ------------[ cut here ]------------
->> unsupported nla_type 356
+> Signed-off-by: Alistair Francis <alistair@alistair22.me>
+> ---
+> v4:
+>  - Initial commit
 > 
-> This doesn't seem to be an issue.
-> Userspace sent message with nla_type 356, which is > __XFRM_MSG_MAX, so
-> this warning is expected. I've added it so when a new XFRM_MSG_* will be
-> added, to make sure that there will be translations to such messages in
-> xfrm_compat.ko (if the translation needed).
-> This is WARN_ON_ONCE(), so it can't be used as DOS.
+>  drivers/input/touchscreen/wacom_i2c.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> Ping me if you'd expect something else than once-a-boot warning for
-> this. Not sure how-to close syzkaller bug, docs have only `invalid' tag,
-> which isn't `not-a-bug'/`expected' tag:
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md
+> diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
+> index 84c7ccb737bd..28004b1180c9 100644
+> --- a/drivers/input/touchscreen/wacom_i2c.c
+> +++ b/drivers/input/touchscreen/wacom_i2c.c
+> @@ -55,6 +55,7 @@ struct wacom_features {
+>  struct wacom_i2c {
+>  	struct i2c_client *client;
+>  	struct input_dev *input;
+> +	struct reset_control *rstc;
+>  	struct touchscreen_properties props;
+>  	u8 data[WACOM_QUERY_SIZE];
+>  	bool prox;
+> @@ -175,6 +176,8 @@ static int wacom_i2c_open(struct input_dev *dev)
+>  	struct wacom_i2c *wac_i2c = input_get_drvdata(dev);
+>  	struct i2c_client *client = wac_i2c->client;
+>  
+> +	reset_control_reset(wac_i2c->rstc);
+
+Why does this device need to be reset on every open compared to doing it
+in probe?
+
+> +
+>  	enable_irq(client->irq);
+>  
+>  	return 0;
+> @@ -193,6 +196,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
+>  {
+>  	struct wacom_i2c *wac_i2c;
+>  	struct input_dev *input;
+> +	struct reset_control *rstc;
+>  	struct wacom_features features = { 0 };
+>  	int error;
+>  
+> @@ -201,6 +205,12 @@ static int wacom_i2c_probe(struct i2c_client *client,
+>  		return -EIO;
+>  	}
+>  
+> +	rstc = devm_reset_control_get_optional_exclusive(&client->dev, NULL);
+> +	if (IS_ERR(rstc)) {
+> +		dev_err(&client->dev, "Failed to get reset control before init\n");
+> +		return PTR_ERR(rstc);
+> +	}
+
+I think majority users will have this controller reset line connected to
+a GPIO. I briefly looked into reset controller code and I do not see it
+supporting this case. How is this device connected on your board?
+
+> +
+>  	error = wacom_query_device(client, &features);
+>  	if (error)
+>  		return error;
+> @@ -214,6 +224,7 @@ static int wacom_i2c_probe(struct i2c_client *client,
+>  
+>  	wac_i2c->client = client;
+>  	wac_i2c->input = input;
+> +	wac_i2c->rstc = rstc;
+>  
+>  	input->name = "Wacom I2C Digitizer";
+>  	input->id.bustype = BUS_I2C;
+> -- 
+> 2.31.0
 > 
 
-You should not use WARN_ON_ONCE() for this case (if user space can trigger it)
+Thanks.
 
-https://lwn.net/Articles/769365/
-
-<quote>
-Greg Kroah-Hartman raised the problem of core kernel API code that will use WARN_ON_ONCE() to complain about bad usage; that will not generate the desired result if WARN_ON_ONCE() is configured to crash the machine. He was told that the code should just call pr_warn() instead, and that the called function should return an error in such situations. It was generally agreed that any WARN_ON() or WARN_ON_ONCE() calls that can be triggered from user space need to be fixed. 
-</quote>
-
-
+-- 
+Dmitry
