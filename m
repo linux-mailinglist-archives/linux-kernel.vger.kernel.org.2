@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E9734D444
+	by mail.lfdr.de (Postfix) with ESMTP id 5E54134D445
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhC2PsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        id S231528AbhC2PsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231346AbhC2Pr7 (ORCPT
+        with ESMTP id S231359AbhC2PsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:47:59 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB98C061574;
-        Mon, 29 Mar 2021 08:47:58 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id b9so13327866wrt.8;
-        Mon, 29 Mar 2021 08:47:58 -0700 (PDT)
+        Mon, 29 Mar 2021 11:48:00 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A8DC061574;
+        Mon, 29 Mar 2021 08:48:00 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id u5-20020a7bcb050000b029010e9316b9d5so6915391wmj.2;
+        Mon, 29 Mar 2021 08:48:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Qih3TtMHQJLAXNG5X3gxadti71q6KlG7tdechBjfyGU=;
-        b=cFhvG5IwuGl4H4NE2yJmORHRAmmmgxRDFtVc8PQUf9wUwHYK1OUXlqAVyJFWX6QAbI
-         ULyxl8sPBIdyT6XTDdemJ0jEl+TznffN5mvH+tKdjI1stKx57AG47XgHFqBt7jlTvs6i
-         2Kx1KTlao8qc/OKGAkI0tsMzFrnjPWy815Zwyk/tV2MiaKTe/zY680fH/gijUSm+Zk68
-         14K/3OKh0OeadWbCWVwNpiyaud4P4liQPRAKRQzuUqrA4G0FueMQPKPlNI1xNIe0/t61
-         eja39RcO+OMvXBn0OoAc6cqH8P3/ipsaz/Uok5YRsiKoP9KT692UJcbsboPbdOk2lOgT
-         qFOQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=PUSTRl8mQTF4xVmOy5MvVS/tUAWi6N4QqKrYUsHXAcQ=;
+        b=SwYNslT4lMw6mV5mSelCU6WjkKcYLUK2yVIAz2XyPDx7xqKwefVqlNBXbQbaWMz+RM
+         2+nCHRPQijlGzdzBz8GWpP/CtT3qkstHNFo3PHTqm92f6KR0n2FJ7QFPKqmqXVhtbyaI
+         v5FCym8CaNgUEpUC1MF02zzCiBUZWbBcvnLsN2+TdUzOJ8lpd2k66zG/2za8Pet9xkCm
+         xYyO3PFTUn1fllellqIsyvzJITFbUBd5qkf1TfZG6j4xBpR/6Ot+DytAGFgxBKUuI2R2
+         Zn/VEbseS/gRMo956nlWJzk8OTmHKa98Ri8rGk9p0EQd1ESYKG4bVbZOEmuAM+CQxFlQ
+         UNAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Qih3TtMHQJLAXNG5X3gxadti71q6KlG7tdechBjfyGU=;
-        b=pS3kAYKwVH+wv/Y798F1vxv3I4eaZQwrdj5THCiwhwCzkVg5TGR9Y0wJ2o/BIH1xUV
-         BRwEer3zX0AYBoamZ/eCqHJxtKwS60caIXaGRSId3KtYsNugQsSkN+woRn6ovVekkJ3E
-         Ry36EDmW+Y2uhpccd2Elfx9uy0wb0O46TlGrRmev1N+Yrwax442ge2w9kD1NBXFja6OD
-         KEi1ubH5lzM70xhcJgOLW007qFuiAZBzn84XvK3CTW9QhT4VuTsAdCaqGMgI5sdIf/ti
-         xHEDaeq0rv1AGhKnQGafStA8FBo81AwLVXRp+VVLqjLLmeX8dgdikUv64mKAeqpML8kE
-         rlbw==
-X-Gm-Message-State: AOAM532w+IMDO7MC0QHmm4HIhGA6GLLvYK1fTn2RrKyP0CbHs34UI20L
-        /SoJzPrpvVl4C02NAQeYNsg=
-X-Google-Smtp-Source: ABdhPJxIauCgVfivl0+YJXVppDpW+s3lOtd68GaioqwWVWUWe+zQWVqp5ZMIUwzMoBnHbYBTC71nmg==
-X-Received: by 2002:a5d:65cd:: with SMTP id e13mr29848822wrw.334.1617032877429;
-        Mon, 29 Mar 2021 08:47:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=PUSTRl8mQTF4xVmOy5MvVS/tUAWi6N4QqKrYUsHXAcQ=;
+        b=J6J6A9kvXybjIbZ3ySlrMRXtiNSeZ7l9NB1wa2mCiHX3m4I1541/uL15vS44Y9IE5M
+         dMnpPiY/BA1Xdtf9r4BhJaEoyAcLz7OoiwgjrL8b+OuNymK49ORwuabg6mZAgUinF7EM
+         +PRFE7IdP0sjKOrM85XW7w73zv071/i/NDOgUmxP4Wmoo1shw+y/ayy8lNqwvhJG75/3
+         8dT0TrcMMNyyefSLFU+Fe8ly1jZK1ZMvLIxvxB76adVZ982o/nmmgnywRY9quzj6bipG
+         huwEB2U4f1YUF02EqOfK/bEWO4T/kAJm73zBnKVt649DzlBdhgka8wI5zYS5UJ4UGcKx
+         35TA==
+X-Gm-Message-State: AOAM533QcoFIaF5V0aj95DYnSShbqpPpBd46FVF+K8emBYN/iHLymjxP
+        SDADLmPM2ocxHi2V/doVds0=
+X-Google-Smtp-Source: ABdhPJylCNRMxIPd1v/0cuu0IT7zY7iPYYqsbP6tfLVsvlgWvSTUjOR45j04hdnISf2uAJbuyZdWnw==
+X-Received: by 2002:a1c:ac02:: with SMTP id v2mr25472774wme.111.1617032879404;
+        Mon, 29 Mar 2021 08:47:59 -0700 (PDT)
 Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id b131sm24987323wmb.34.2021.03.29.08.47.55
+        by smtp.gmail.com with ESMTPSA id b131sm24987323wmb.34.2021.03.29.08.47.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 08:47:56 -0700 (PDT)
+        Mon, 29 Mar 2021 08:47:59 -0700 (PDT)
 From:   Christian Hewitt <christianshewitt@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -54,41 +55,44 @@ To:     Rob Herring <robh+dt@kernel.org>,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Christian Hewitt <christianshewitt@gmail.com>,
         Drazen Spio <drazsp@gmail.com>
-Subject: [PATCH 0/3] arm64: dts: meson: add support for MeCool KII-Pro/KIII-Pro
-Date:   Mon, 29 Mar 2021 15:47:50 +0000
-Message-Id: <20210329154753.30074-1-christianshewitt@gmail.com>
+Subject: [PATCH 1/3] dt-bindings: arm: amlogic: add MeCool KII/KIII Pro bindings
+Date:   Mon, 29 Mar 2021 15:47:51 +0000
+Message-Id: <20210329154753.30074-2-christianshewitt@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210329154753.30074-1-christianshewitt@gmail.com>
+References: <20210329154753.30074-1-christianshewitt@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds support for the MeCool (Videostrong) KII Pro (GXL)
-and KIII Pro (GXM) Android STB devices. These are quite popular due
-to the embedded multi-standard tuner card (which is sadly not-yet
-supported in the kernel). Both devices closely follow the Amlogic
-reference designs with keys/buttons/LED details taken from known-
-working vendor kernel device-trees.
+Add the board bindings for the MeCool (Videostrong Technology Co., Ltd)
+KII-Pro (S905D) and KIII-Pro (S912) devices.
 
-Testing was made by Drazen Spio via the LibreELEC forums [0] as I
-don't own either device. Since dts files were added to LibreELEC
-nightly test images I've seen the number of active installs grow
-without reported issues.
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ Documentation/devicetree/bindings/arm/amlogic.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[0] https://forum.libreelec.tv/thread/23590-nightbuild-on-mecool-kiii-pro/
-
-Christian Hewitt (3):
-  dt-bindings: arm: amlogic: add MeCool KII/KIII Pro bindings
-  arm64: dts: meson: add initial device-tree for MeCool KII Pro
-  arm64: dts: meson: add initial device-tree for MeCool KIII Pro
-
- .../devicetree/bindings/arm/amlogic.yaml      |   2 +
- arch/arm64/boot/dts/amlogic/Makefile          |   2 +
- .../meson-gxl-s905d-mecool-kii-pro.dts        |  86 +++++++++++++
- .../dts/amlogic/meson-gxm-mecool-kiii-pro.dts | 113 ++++++++++++++++++
- 4 files changed, 203 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905d-mecool-kii-pro.dts
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxm-mecool-kiii-pro.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
+index d24334e1e166..97fb96266344 100644
+--- a/Documentation/devicetree/bindings/arm/amlogic.yaml
++++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
+@@ -109,6 +109,7 @@ properties:
+               - libretech,aml-s905d-pc
+               - phicomm,n1
+               - smartlabs,sml5442tw
++              - videostrong,gxl-kii-pro
+           - const: amlogic,s905d
+           - const: amlogic,meson-gxl
+ 
+@@ -123,6 +124,7 @@ properties:
+               - minix,neo-u9h
+               - nexbox,a1
+               - tronsmart,vega-s96
++              - videostrong,gxm-kiii-pro
+               - wetek,core2
+           - const: amlogic,s912
+           - const: amlogic,meson-gxm
 -- 
 2.17.1
 
