@@ -2,134 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B00D134D49D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8085934D49F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhC2QN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39712 "EHLO
+        id S231228AbhC2QNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:13:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231151AbhC2QNI (ORCPT
+        with ESMTP id S231340AbhC2QNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:13:08 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AEAC061574;
-        Mon, 29 Mar 2021 09:13:08 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id j9so11716494wrx.12;
-        Mon, 29 Mar 2021 09:13:07 -0700 (PDT)
+        Mon, 29 Mar 2021 12:13:39 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2686FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:13:39 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id v186so9717665pgv.7
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:13:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=fZhzW4vGlptf3m5Yu0AgcPAv1OEq7UcLKHN0eiSAYY8=;
-        b=SVM7M0Wc+ARI0ldCbAG8m88O4CdzrXYjMS0ZXc2LoTt27YeCA7FaEcxPzVd3pGLogr
-         l5dMg6SVL978LlqtxAKwxP1sUWizPwL2FkTw5wfeoUj49DGoOnDkIoPSIt3TvxQnS5Pr
-         gJQCRpP2HbJS65HVb5eF7NCcHwEws3Rz/mzSU6iDk09QzzU51tvUGrQtYYsqSsftak0h
-         OPWNMbC/D/DsqhISu1zRO8zYKLEJkMqf3m9RPugowarXrWrBvdAxqHnvLzR0RWvnkJR9
-         xqyP0E0wZW+OCLXDCLfEbbMhvkc5O6kS63olvMVM/hDzsz3WhVGmTup68P+go8y2wGJT
-         ZMRA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iwgqrSQ7OtcTD6Kmq+G2j4+SoTiaaT1H8kRq2h2aVwg=;
+        b=B9aWLAKZAcMxqzTDYkFoN6eV0fA9YoPBu44LBrfz1T4nCQajwJ1+96uuUowCoffKP7
+         MBg0CU2oSAFSCKP0UMxIFoaCf8MgRmHFgZ7w4sCHhaHykw5JmWgJZSohSe4SVtfP8lx3
+         2BK6kH92QLkrAsORbl2SG85f70wbzRu95WMoIyW9+Ci/QgcNuz5se6sTzgaWUnAr2v5V
+         S913EZLQMV3S20eRdWWJ40lcdNl+T0T96Wl44fH9J7mbgaPeVwj0PmfTEoSyD5a+f6fL
+         sVSU06qRWs+2PQvOE/d6zfVul1SWs3lkSBX4GkdKDi1XGP84/Ms+8vrYWqdpPd0NI3zz
+         JcRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=fZhzW4vGlptf3m5Yu0AgcPAv1OEq7UcLKHN0eiSAYY8=;
-        b=GMJKkbaQMcchCGMqYg02IRPe8JkjsD1xYFxTlhhYqa+fEGfT6VuUhfLZEC+IY5pKW7
-         Jr1oxtqcjU2JwrdTSdn/BMybKd55Q4eZFSlt+9x71L6aGMSrIdPfr/SXq5Zl/AzXDTbj
-         gniZ1cOvCDdYEWsRGrnbgj1Rvza2GlcCvg9PNlIYq5lVJFtTad7Wmh9Hx69NMp5V/Hm7
-         bArb5sB4VvrR8xvVMWrAuA/z0IU3rJRjBVVRDKhx5KSr5i3V6YniOiIsL+0Cw4nmEdsf
-         5TLt2Hu38LmTH5iJCB1WgL7Ocie4o3k2tDsgj4k4Aebqpl6apJArpP8KDUzLzuuxUiAv
-         FRNg==
-X-Gm-Message-State: AOAM531nz5RTMai0WE4CC0NsX81DAy2r3k3jHav3zkZd4X4g14EYOj2U
-        wJjWT22yFIchBugV9notnMc=
-X-Google-Smtp-Source: ABdhPJxUCY6a+zgeNnE4fZUYOqKSMnPB8ZuOGJnXFf8Fa2+bMk8tyCxiNJ73gCeGKLgoM3en55VbOQ==
-X-Received: by 2002:a5d:5007:: with SMTP id e7mr12140559wrt.10.1617034386830;
-        Mon, 29 Mar 2021 09:13:06 -0700 (PDT)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id a6sm28570964wmm.0.2021.03.29.09.13.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 09:13:06 -0700 (PDT)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        Hyeonki Hong <hhk7734@gmail.com>
-Subject: [PATCH 3/3] arm64: dts: meson: add GPIO line names to ODROID N2/N2+
-Date:   Mon, 29 Mar 2021 16:12:56 +0000
-Message-Id: <20210329161256.31171-4-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210329161256.31171-1-christianshewitt@gmail.com>
-References: <20210329161256.31171-1-christianshewitt@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iwgqrSQ7OtcTD6Kmq+G2j4+SoTiaaT1H8kRq2h2aVwg=;
+        b=SieC2Yy0I+Gaa1Mm+SrmmQSZPC8KrFGaxwqC72uSqNAi6cO/vHpnPBxNyBio4Q577J
+         KeQO5FJ9zPnl1BStKIegba2L3LLDqPOsqJ+q7bhXCxjH8zHr74pyGw9FdCEMPRNcYObf
+         XtDckXpfRek/Ne2FFcAZ+Oez+1bIs74fclgohn5rl8Aok1zxrPL7F1JP7BnJIuGnOC5j
+         DsAS2bWW81GTA/QsNq+4vgdrnbyZK1sBOLnLbHMnvSkRuTpjRjLeDzlI5aK3NBNbVVWx
+         FbVIY2CcRVLGyrA6zBb0Xi/RVS9QYLxEV0BihEBn0VKqImme+kV+FBTl+TCO0bO1LTNL
+         LaRg==
+X-Gm-Message-State: AOAM532A/+uBnguEYcC5fEGrlP5myaC/cQl89cBTTegnQrM0nKRsCZZr
+        cgetdY5iyoDDZOwP3tz/wPZuWH1rgS2HRcnv6okwhA==
+X-Google-Smtp-Source: ABdhPJzDdNHn7lMvpiWlglXJdENyPLTvYYnykndFE+76WwdSXAzELmjvsy99r2VOdgLpipcV5gwxvwvJ7dxByTXMd6U=
+X-Received: by 2002:aa7:9614:0:b029:1fa:e77b:722 with SMTP id
+ q20-20020aa796140000b02901fae77b0722mr26913282pfg.2.1617034418611; Mon, 29
+ Mar 2021 09:13:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210329144829.1834347-1-schatzberg.dan@gmail.com> <20210329144829.1834347-3-schatzberg.dan@gmail.com>
+In-Reply-To: <20210329144829.1834347-3-schatzberg.dan@gmail.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 30 Mar 2021 00:13:01 +0800
+Message-ID: <CAMZfGtVT85+1_Bu9LBaG6DUsr1kYsepQ-1-K7BDD0Wn3L+BQgg@mail.gmail.com>
+Subject: Re: [External] [PATCH 2/3] mm: Charge active memcg when no mm is set
+To:     Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Chris Down <chris@chrisdown.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hyeonki Hong <hhk7734@gmail.com>
+On Mon, Mar 29, 2021 at 10:49 PM Dan Schatzberg
+<schatzberg.dan@gmail.com> wrote:
+>
+> set_active_memcg() worked for kernel allocations but was silently
+> ignored for user pages.
+>
+> This patch establishes a precedence order for who gets charged:
+>
+> 1. If there is a memcg associated with the page already, that memcg is
+>    charged. This happens during swapin.
+>
+> 2. If an explicit mm is passed, mm->memcg is charged. This happens
+>    during page faults, which can be triggered in remote VMs (eg gup).
+>
+> 3. Otherwise consult the current process context. If there is an
+>    active_memcg, use that. Otherwise, current->mm->memcg.
+>
+> Previously, if a NULL mm was passed to mem_cgroup_charge (case 3) it
+> would always charge the root cgroup. Now it looks up the active_memcg
+> first (falling back to charging the root cgroup if not set).
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> Acked-by: Chris Down <chris@chrisdown.name>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  mm/filemap.c    |  2 +-
+>  mm/memcontrol.c | 72 ++++++++++++++++++++++++++++---------------------
+>  mm/shmem.c      |  4 +--
+>  3 files changed, 44 insertions(+), 34 deletions(-)
+>
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index eeeb8e2cc36a..63fd980e863a 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -872,7 +872,7 @@ noinline int __add_to_page_cache_locked(struct page *=
+page,
+>         page->index =3D offset;
+>
+>         if (!huge) {
+> -               error =3D mem_cgroup_charge(page, current->mm, gfp);
+> +               error =3D mem_cgroup_charge(page, NULL, gfp);
+>                 if (error)
+>                         goto error;
+>                 charged =3D true;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 668d1d7c2645..adc618814fd2 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -884,13 +884,38 @@ struct mem_cgroup *mem_cgroup_from_task(struct task=
+_struct *p)
+>  }
+>  EXPORT_SYMBOL(mem_cgroup_from_task);
+>
+> +static __always_inline struct mem_cgroup *active_memcg(void)
+> +{
+> +       if (in_interrupt())
+> +               return this_cpu_read(int_active_memcg);
+> +       else
+> +               return current->active_memcg;
+> +}
+> +
+> +static __always_inline struct mem_cgroup *get_active_memcg(void)
+> +{
+> +       struct mem_cgroup *memcg;
+> +
+> +       rcu_read_lock();
+> +       memcg =3D active_memcg();
+> +       /* remote memcg must hold a ref. */
+> +       if (memcg && WARN_ON_ONCE(!css_tryget(&memcg->css)))
+> +               memcg =3D root_mem_cgroup;
+> +       rcu_read_unlock();
+> +
+> +       return memcg;
+> +}
 
-Add GPIO line-name identifiers to the ODROID N2/N2+ common dtsi.
+This function is already removed since the patchset below.
 
-Signed-off-by: Hyeonki Hong <hhk7734@gmail.com>
----
- .../dts/amlogic/meson-g12b-odroid-n2.dtsi     | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
+  Use obj_cgroup APIs to charge kmem pages
+  https://lore.kernel.org/patchwork/cover/1399132/
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-index 139c12cf9f66..4489715fc4f3 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-@@ -446,6 +446,51 @@
- };
- 
- &gpio {
-+	gpio-line-names =
-+		/* GPIOZ */
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		/* GPIOH */
-+		"", "", "", "", "", "", "", "",
-+		"",
-+		/* BOOT */
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		/* GPIOC */
-+		"", "", "", "", "", "", "", "",
-+		/* GPIOA */
-+		"PIN_44", /* GPIOA_0 */
-+		"PIN_46", /* GPIOA_1 */
-+		"PIN_45", /* GPIOA_2 */
-+		"PIN_47", /* GPIOA_3 */
-+		"PIN_26", /* GPIOA_4 */
-+		"", "", "", "", "", "",
-+		"PIN_42", /* GPIOA_11 */
-+		"PIN_32", /* GPIOA_12 */
-+		"PIN_7",  /* GPIOA_13 */
-+		"PIN_27", /* GPIOA_14 */
-+		"PIN_28", /* GPIOA_15 */
-+		/* GPIOX */
-+		"PIN_16", /* GPIOX_0 */
-+		"PIN_18", /* GPIOX_1 */
-+		"PIN_22", /* GPIOX_2 */
-+		"PIN_11", /* GPIOX_3 */
-+		"PIN_13", /* GPIOX_4 */
-+		"PIN_33", /* GPIOX_5 */
-+		"PIN_35", /* GPIOX_6 */
-+		"PIN_15", /* GPIOX_7 */
-+		"PIN_19", /* GPIOX_8 */
-+		"PIN_21", /* GPIOX_9 */
-+		"PIN_24", /* GPIOX_10 */
-+		"PIN_23", /* GPIOX_11 */
-+		"PIN_8",  /* GPIOX_12 */
-+		"PIN_10", /* GPIOX_13 */
-+		"PIN_29", /* GPIOX_14 */
-+		"PIN_31", /* GPIOX_15 */
-+		"PIN_12", /* GPIOX_16 */
-+		"PIN_3",  /* GPIOX_17 */
-+		"PIN_5",  /* GPIOX_18 */
-+		"PIN_36"; /* GPIOX_19 */
- 	/*
- 	 * WARNING: The USB Hub on the Odroid-N2 needs a reset signal
- 	 * to be turned high in order to be detected by the USB Controller
--- 
-2.17.1
+I also suggest not reintroducing get_active_memcg.
+There is only one user of it, just inline it into
+get_mem_cgroup_from_mm(). Actually we don=E2=80=99t
+need get_active_memcg() either.
 
+> +
+>  /**
+>   * get_mem_cgroup_from_mm: Obtain a reference on given mm_struct's memcg=
+.
+>   * @mm: mm from which memcg should be extracted. It can be NULL.
+>   *
+> - * Obtain a reference on mm->memcg and returns it if successful. Otherwi=
+se
+> - * root_mem_cgroup is returned. However if mem_cgroup is disabled, NULL =
+is
+> - * returned.
+> + * Obtain a reference on mm->memcg and returns it if successful. If mm
+> + * is NULL, then the memcg is chosen as follows:
+> + * 1) The active memcg, if set.
+> + * 2) current->mm->memcg, if available
+> + * 3) root memcg
+> + * If mem_cgroup is disabled, NULL is returned.
+>   */
+>  struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+>  {
+> @@ -899,13 +924,19 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm=
+_struct *mm)
+>         if (mem_cgroup_disabled())
+>                 return NULL;
+>
+> +       /*
+> +        * Page cache insertions can happen without an
+> +        * actual mm context, e.g. during disk probing
+> +        * on boot, loopback IO, acct() writes etc.
+> +        */
+> +       if (unlikely(!mm)) {
+> +               if (unlikely(active_memcg()))
+> +                       return get_active_memcg();
+
+Since remote memcg must hold a reference, we do not
+need to do something like get_active_memcg() does.
+Just use css_get to obtain a ref, it is simpler. Just
+Like below.
+
++       if (unlikely(!mm)) {
++               memcg =3D active_memcg();
++               if (unlikely(memcg)) {
++                       /* remote memcg must hold a ref. */
++                       css_get(memcg);
++                       return memcg;
++               }
+
+Thanks.
+
+> +               mm =3D current->mm;
+> +       }
+> +
+>         rcu_read_lock();
+>         do {
+> -               /*
+> -                * Page cache insertions can happen withou an
+> -                * actual mm context, e.g. during disk probing
+> -                * on boot, loopback IO, acct() writes etc.
+> -                */
+>                 if (unlikely(!mm))
+>                         memcg =3D root_mem_cgroup;
+>                 else {
+> @@ -919,28 +950,6 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_=
+struct *mm)
+>  }
+>  EXPORT_SYMBOL(get_mem_cgroup_from_mm);
+>
+> -static __always_inline struct mem_cgroup *active_memcg(void)
+> -{
+> -       if (in_interrupt())
+> -               return this_cpu_read(int_active_memcg);
+> -       else
+> -               return current->active_memcg;
+> -}
+> -
+> -static __always_inline struct mem_cgroup *get_active_memcg(void)
+> -{
+> -       struct mem_cgroup *memcg;
+> -
+> -       rcu_read_lock();
+> -       memcg =3D active_memcg();
+> -       /* remote memcg must hold a ref. */
+> -       if (memcg && WARN_ON_ONCE(!css_tryget(&memcg->css)))
+> -               memcg =3D root_mem_cgroup;
+> -       rcu_read_unlock();
+> -
+> -       return memcg;
+> -}
+> -
+>  static __always_inline bool memcg_kmem_bypass(void)
+>  {
+>         /* Allow remote memcg charging from any context. */
+> @@ -6549,7 +6558,8 @@ static int __mem_cgroup_charge(struct page *page, s=
+truct mem_cgroup *memcg,
+>   * @gfp_mask: reclaim mode
+>   *
+>   * Try to charge @page to the memcg that @mm belongs to, reclaiming
+> - * pages according to @gfp_mask if necessary.
+> + * pages according to @gfp_mask if necessary. if @mm is NULL, try to
+> + * charge to the active memcg.
+>   *
+>   * Do not use this for pages allocated for swapin.
+>   *
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 78ab81a62b29..7c09276125d5 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1694,7 +1694,7 @@ static int shmem_swapin_page(struct inode *inode, p=
+goff_t index,
+>  {
+>         struct address_space *mapping =3D inode->i_mapping;
+>         struct shmem_inode_info *info =3D SHMEM_I(inode);
+> -       struct mm_struct *charge_mm =3D vma ? vma->vm_mm : current->mm;
+> +       struct mm_struct *charge_mm =3D vma ? vma->vm_mm : NULL;
+>         struct page *page;
+>         swp_entry_t swap;
+>         int error;
+> @@ -1815,7 +1815,7 @@ static int shmem_getpage_gfp(struct inode *inode, p=
+goff_t index,
+>         }
+>
+>         sbinfo =3D SHMEM_SB(inode->i_sb);
+> -       charge_mm =3D vma ? vma->vm_mm : current->mm;
+> +       charge_mm =3D vma ? vma->vm_mm : NULL;
+>
+>         page =3D pagecache_get_page(mapping, index,
+>                                         FGP_ENTRY | FGP_HEAD | FGP_LOCK, =
+0);
+> --
+> 2.30.2
+>
