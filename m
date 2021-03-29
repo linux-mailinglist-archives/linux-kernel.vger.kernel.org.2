@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F08E34D358
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23DF34D35C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhC2PJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:09:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51506 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230202AbhC2PJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:09:25 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4E956187E;
-        Mon, 29 Mar 2021 15:09:21 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 16:09:28 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, coproscefalo@gmail.com,
-        hdegoede@redhat.com, mgross@linux.intel.com, linux@deviqon.com
-Subject: Re: [PATCH 09/10] platform/x86: toshiba_acpi: use device-managed
- for sysfs removal
-Message-ID: <20210329160928.0f8d6b44@jic23-huawei>
-In-Reply-To: <20210324125548.45983-10-aardelean@deviqon.com>
-References: <20210324125548.45983-1-aardelean@deviqon.com>
-        <20210324125548.45983-10-aardelean@deviqon.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230338AbhC2PKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:10:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37130 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230347AbhC2PKF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:10:05 -0400
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617030603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=czaWfQDmWfTZZyk40/r3fn5m8w82rCTMKw/DG6KyCoA=;
+        b=3lmkfVXQ6Kn8x60NUjbCQEHJ6ITAaNLJLrTnRuRX79GChppNS9h4DSkLF9ihUdwo1uxBBf
+        nRbSqQ7ZgOFX/uwi8bTzSHRM2J7jRcMz+LBfdbllOjxGHkLMkCsWez4kglhEbvuHhpEUUs
+        IckgkHO26+svKMgFIWzihmC95ey6tfnNRWzz33LTUZn5t6psLWN5YNgYffoS5d/azDT+4F
+        R8YtzpNyVod55yDrfeqRVze0rWL4ZPvemU3Qvb7xvlqL2wEbZQrLZmQwA+f2tlDQdvYNHz
+        XcUrWIXlJ6UH4PiTv6M/UYTqpmgVxiA3F7vils6OtvtTO4ZQW7Dv93hVGX8P2w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617030603;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=czaWfQDmWfTZZyk40/r3fn5m8w82rCTMKw/DG6KyCoA=;
+        b=IAdBFzE0yMQolHI4rDtJPaIUbjeNL+Gd3Mx/YUdTHGxrOCZhymDMIWuCIWSOB9MI2RgLFn
+        p9Fb5UQys2JfXMAg==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alistair Popple <alistair@popple.id.au>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Rafael Aquini <aquini@redhat.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
+Subject: Re: [PATCH next v1 2/3] printk: remove safe buffers
+In-Reply-To: <YGGmNu5ilDnSKH3g@alley>
+References: <20210316233326.10778-1-john.ogness@linutronix.de> <20210316233326.10778-3-john.ogness@linutronix.de> <YFnHKlCvIA2nI41c@alley> <87pmzmi2xm.fsf@jogness.linutronix.de> <YGGmNu5ilDnSKH3g@alley>
+Date:   Mon, 29 Mar 2021 17:10:02 +0200
+Message-ID: <87sg4e6lo5.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Mar 2021 14:55:47 +0200
-Alexandru Ardelean <aardelean@deviqon.com> wrote:
+On 2021-03-29, Petr Mladek <pmladek@suse.com> wrote:
+> I wonder if some console drivers rely on the fact that the write()
+> callback is called with interrupts disabled.
+>
+> IMHO, it would be a bug when any write() callback expects that
+> callers disabled the interrupts.
 
-> This change moves the creation of the Toshiba ACPI group to be
-> automatically removed when the parent refcount goes to zero.
-> 
-> The main reason to do this, is to also enforce that the order of removal is
-> mirroring the order of initialization.
-> 
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-Hmm. The manual handling of the sysfs_create_group() is unfortunate (as opposed
-to just setting a groups pointer) but there doesn't seem to be an easy way to fix
-that with the current architecture.  Ah well
+Agreed.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Do you plan to remove the console-spinning stuff after offloading
+> consoles to the kthreads?
 
-> ---
->  drivers/platform/x86/toshiba_acpi.c | 29 +++++++++++++++--------------
->  1 file changed, 15 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/toshiba_acpi.c b/drivers/platform/x86/toshiba_acpi.c
-> index a1249f6dde9a..8e8917979047 100644
-> --- a/drivers/platform/x86/toshiba_acpi.c
-> +++ b/drivers/platform/x86/toshiba_acpi.c
-> @@ -200,7 +200,6 @@ struct toshiba_acpi_dev {
->  	unsigned int usb_three_supported:1;
->  	unsigned int wwan_supported:1;
->  	unsigned int cooling_method_supported:1;
-> -	unsigned int sysfs_created:1;
->  	unsigned int special_functions;
->  
->  	bool kbd_event_generated;
-> @@ -3019,10 +3018,6 @@ static int toshiba_acpi_remove(struct acpi_device *acpi_dev)
->  
->  	remove_toshiba_proc_entries(dev);
->  
-> -	if (dev->sysfs_created)
-> -		sysfs_remove_group(&dev->acpi_dev->dev.kobj,
-> -				   &toshiba_attr_group);
-> -
->  	return 0;
->  }
->  
-> @@ -3049,6 +3044,13 @@ static void toshiba_acpi_misc_deregister(void *data)
->  	misc_deregister(miscdev);
->  }
->  
-> +static void toshiba_acpi_sysfs_remove(void *data)
-> +{
-> +	struct kobject *kobj = data;
-> +
-> +	sysfs_remove_group(kobj, &toshiba_attr_group);
-> +}
-> +
->  static int toshiba_acpi_add(struct acpi_device *acpi_dev)
->  {
->  	struct device *parent = &acpi_dev->dev;
-> @@ -3219,21 +3221,20 @@ static int toshiba_acpi_add(struct acpi_device *acpi_dev)
->  
->  	ret = sysfs_create_group(&dev->acpi_dev->dev.kobj,
->  				 &toshiba_attr_group);
-> -	if (ret) {
-> -		dev->sysfs_created = 0;
-> -		goto error;
-> -	}
-> -	dev->sysfs_created = !ret;
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = devm_add_action_or_reset(parent,
-> +				       toshiba_acpi_sysfs_remove,
-> +				       &dev->acpi_dev->dev.kobj);
-> +	if (ret)
-> +		return ret;
->  
->  	create_toshiba_proc_entries(dev);
->  
->  	toshiba_acpi = dev;
->  
->  	return 0;
-> -
-> -error:
-> -	toshiba_acpi_remove(acpi_dev);
-> -	return ret;
->  }
->  
->  static void toshiba_acpi_notify(struct acpi_device *acpi_dev, u32 event)
+Yes. Although a similar concept will be introduced to allow the threaded
+printers and the atomic consoles to compete.
 
+> Will you call console write() callback with irq enabled from the
+> kthread?
+
+No. That defeats the fundamental purpose of this entire rework
+excercise. ;-)
+
+> Anyway, we should at least add a comment why the interrupts are
+> disabled.
+
+I decided to move the local_irq_save/restore inside the console-spinning
+functions and added a comment for v2.
+
+John Ogness
