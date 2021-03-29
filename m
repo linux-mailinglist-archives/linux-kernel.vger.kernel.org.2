@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC1734C61C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C889934C86D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbhC2IE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:04:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45670 "EHLO mail.kernel.org"
+        id S233789AbhC2IW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231154AbhC2IDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:03:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6E4D61969;
-        Mon, 29 Mar 2021 08:02:58 +0000 (UTC)
+        id S232590AbhC2IOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:14:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D53C66196E;
+        Mon, 29 Mar 2021 08:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004979;
-        bh=g2vrgh2c805/HPJwRpNuUE/eHD2ka+kPptCk+sRlgDs=;
+        s=korg; t=1617005642;
+        bh=AKLAihQ2Lv+aD1fMnM/vH8LCZkbuoFhLX/jvRzntyrM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CfDCYFdWU5ESX7SiBZG8xGmgKwaGaNZsF2BxRgeajL8ZSSBZLM80aLAspwq3qwWnP
-         xKbpLdnp0BK/QEkAxetb7DgbRGCefJM94k1uazcjgv+3TPJrqeI707Wcxg28jZYmj7
-         wD6LuICHpZM0FbOGY4FqDrU8H7TXU2jJt/8BjqCQ=
+        b=DmxL+5Q7pfKXUUjvLcT4dOoHLbzAMTy1DUs2NLdr+Djl/Uot9kz2Sm84RNl8voi24
+         +Od/A6ldgDiYmYZACn+GtDht3UJA0lSOnEMQihRwo2dclCH5r2xejclQPqh7n5Eedi
+         wbs5imnwV03dSZUFhAshR+kNDG2KxXR2RXcBU5+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        juri.lelli@arm.com, bigeasy@linutronix.de, xlpang@redhat.com,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jdesfossez@efficios.com, dvhart@infradead.org, bristot@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.9 37/53] futex: Use smp_store_release() in mark_wake_futex()
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 064/111] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
 Date:   Mon, 29 Mar 2021 09:58:12 +0200
-Message-Id: <20210329075608.735190492@linuxfoundation.org>
+Message-Id: <20210329075617.341749913@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra <peterz@infradead.org>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 1b367ece0d7e696cab1c8501bab282cc6a538b3f upstream.
+[ Upstream commit b52912b8293f2c496f42583e65599aee606a0c18 ]
 
-Since the futex_q can dissapear the instruction after assigning NULL,
-this really should be a RELEASE barrier. That stops loads from hitting
-dead memory too.
+There is one e1e_wphy() call in e1000_set_d0_lplu_state_82571
+that we have caught its return value but lack further handling.
+Check and terminate the execution flow just like other e1e_wphy()
+in this function.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: juri.lelli@arm.com
-Cc: bigeasy@linutronix.de
-Cc: xlpang@redhat.com
-Cc: rostedt@goodmis.org
-Cc: mathieu.desnoyers@efficios.com
-Cc: jdesfossez@efficios.com
-Cc: dvhart@infradead.org
-Cc: bristot@redhat.com
-Link: http://lkml.kernel.org/r/20170322104151.604296452@infradead.org
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/futex.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/ethernet/intel/e1000e/82571.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1565,8 +1565,7 @@ static void mark_wake_futex(struct wake_
- 	 * memory barrier is required here to prevent the following
- 	 * store to lock_ptr from getting ahead of the plist_del.
- 	 */
--	smp_wmb();
--	q->lock_ptr = NULL;
-+	smp_store_release(&q->lock_ptr, NULL);
- }
- 
- /*
+diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
+index 2c1bab377b2a..1fd4406173a8 100644
+--- a/drivers/net/ethernet/intel/e1000e/82571.c
++++ b/drivers/net/ethernet/intel/e1000e/82571.c
+@@ -899,6 +899,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
+ 	} else {
+ 		data &= ~IGP02E1000_PM_D0_LPLU;
+ 		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
++		if (ret_val)
++			return ret_val;
+ 		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
+ 		 * during Dx states where the power conservation is most
+ 		 * important.  During driver activity we should enable
+-- 
+2.30.1
+
 
 
