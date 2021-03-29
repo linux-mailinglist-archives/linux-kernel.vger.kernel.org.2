@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D6B34D343
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA4334D349
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhC2PEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:04:21 -0400
-Received: from mga02.intel.com ([134.134.136.20]:40984 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229711AbhC2PEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:04:04 -0400
-IronPort-SDR: hCpRzlmiI/2TGJVQ5HQe3QGk8rtq0ERUc++YX6ZS8lt89hR3D7Dab8mpKbjf5U9pB8H0D7sRaU
- 2Q3N9b5xa0Lg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="178694879"
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="178694879"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:04:02 -0700
-IronPort-SDR: M4gkVW7u/AgypQOBXEwIVeagAuv7wqNZGsC6WKfkjdTrFQWMSX/O65nYfA2mMSx6rwNhPXDKFm
- N5c9qreGZmnQ==
-X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
-   d="scan'208";a="376458095"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 08:03:56 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lQtQm-00H3Eu-RE; Mon, 29 Mar 2021 18:03:52 +0300
-Date:   Mon, 29 Mar 2021 18:03:52 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, tfiga@chromium.org,
-        sakari.ailus@linux.intel.com, rajmohan.mani@intel.com,
-        rjw@rjwysocki.net, lenb@kernel.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, lee.jones@linaro.org,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart@ideasonboard.com, mgross@linux.intel.com,
-        luzmaximilian@gmail.com, robert.moore@intel.com,
-        erik.kaneda@intel.com, me@fabwu.ch, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        devel@acpica.org
-Subject: Re: [PATCH v3 0/6] Introduce intel_skl_int3472 module
-Message-ID: <YGHsWNXha0i1OwCN@smile.fi.intel.com>
-References: <20210222130735.1313443-1-djrscally@gmail.com>
- <fd2fbee6-e620-a594-8377-d2f22131af29@redhat.com>
- <5d336f50-5f25-fce2-04eb-5ad450c9cd5b@gmail.com>
+        id S229873AbhC2PFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:05:54 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15033 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229822AbhC2PFi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 11:05:38 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F8G692hljzPm24;
+        Mon, 29 Mar 2021 23:02:57 +0800 (CST)
+Received: from localhost (10.174.179.96) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
+ 23:05:26 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <yuehaibing@huawei.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] ASoC: dwc: Fix -Wmissing-prototypes warnings
+Date:   Mon, 29 Mar 2021 23:05:24 +0800
+Message-ID: <20210329150524.18184-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d336f50-5f25-fce2-04eb-5ad450c9cd5b@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.96]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 04, 2021 at 01:49:14PM +0000, Daniel Scally wrote:
-> On 04/03/2021 13:37, Hans de Goede wrote:
-> > On 2/22/21 2:07 PM, Daniel Scally wrote:
+while CONFIG_SND_DESIGNWARE_PCM is not set, building with W=1 shows this:
 
-...
+sound/soc/dwc/local.h:127:6: warning: no previous prototype for ‘dw_pcm_push_tx’ [-Wmissing-prototypes]
+ void dw_pcm_push_tx(struct dw_i2s_dev *dev) { }
+      ^~~~~~~~~~~~~~
+sound/soc/dwc/local.h:128:6: warning: no previous prototype for ‘dw_pcm_pop_rx’ [-Wmissing-prototypes]
+ void dw_pcm_pop_rx(struct dw_i2s_dev *dev) { }
+      ^~~~~~~~~~~~~
+sound/soc/dwc/local.h:129:5: warning: no previous prototype for ‘dw_pcm_register’ [-Wmissing-prototypes]
+ int dw_pcm_register(struct platform_device *pdev)
+     ^~~~~~~~~~~~~~~
 
-> >> The existing mfd/tps68470.c driver being thus superseded, it is removed.
-> > Thank you for this patch series. Since there have already been a whole
-> > bunch of review-comments, I've not taken a detailed look at this yet.
-> 
-> No problem, I'm hoping to do a v3 over the weekend anyway.
+Change these to inline functions to fix the warnings.
 
-Do you mean v4?
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/dwc/local.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I'm just wondering if you need any help.
-
-
+diff --git a/sound/soc/dwc/local.h b/sound/soc/dwc/local.h
+index 91dc70a826f8..1c361eb6127e 100644
+--- a/sound/soc/dwc/local.h
++++ b/sound/soc/dwc/local.h
+@@ -124,9 +124,9 @@ void dw_pcm_push_tx(struct dw_i2s_dev *dev);
+ void dw_pcm_pop_rx(struct dw_i2s_dev *dev);
+ int dw_pcm_register(struct platform_device *pdev);
+ #else
+-void dw_pcm_push_tx(struct dw_i2s_dev *dev) { }
+-void dw_pcm_pop_rx(struct dw_i2s_dev *dev) { }
+-int dw_pcm_register(struct platform_device *pdev)
++static inline void dw_pcm_push_tx(struct dw_i2s_dev *dev) { }
++static inline void dw_pcm_pop_rx(struct dw_i2s_dev *dev) { }
++static inline int dw_pcm_register(struct platform_device *pdev)
+ {
+ 	return -EINVAL;
+ }
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
