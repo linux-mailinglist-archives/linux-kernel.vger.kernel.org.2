@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E35A34C876
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA2F34C5E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbhC2IWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:22:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58912 "EHLO mail.kernel.org"
+        id S231732AbhC2IDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:03:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232101AbhC2IOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:14:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 357C4619B6;
-        Mon, 29 Mar 2021 08:14:33 +0000 (UTC)
+        id S231739AbhC2ICU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:02:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D220D61969;
+        Mon, 29 Mar 2021 08:02:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005673;
-        bh=EOnjA+3pLbDJNxTO1rcFVt5YZFr2aDn0wl7rCd/rzT8=;
+        s=korg; t=1617004940;
+        bh=Lw244POhdlwttd+pyLgsWKoLcDose81w/p0dOZupmnM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sIGjhf5r2aXERAqhTytZ9PWCgkW6d5GPQU1K/uqK7WisGynlglXTBVaryuvi7ysHt
-         70xT8H5hXFvqv5y5cy/BlGe38vQ5Bb5kwIfYWrrjO8fnRtd5GiPOD8U3A4zKDDKL/j
-         QoYHRiesx7sXSg5hjB8NkfUzLJH3cTLTYU/8Ctvs=
+        b=llJW9BKwVTnY3aVZELgjo364QngCdHJmhEUPUOvL/Pvhpc9Qih6HWzGIRaEpNujeG
+         ERUvckcAZ8cm4XRor+Hj3yLSQk/kB23RttFobTXLXFwpfpekzvanZu32mDgGFDceRX
+         PvdaugbrYGDrXsRd/5DnjKBvJ3KxnF3aBJhVCT/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chao Leng <lengchao@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 032/111] nvme: add NVME_REQ_CANCELLED flag in nvme_cancel_request()
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 05/53] ixgbe: Fix memleak in ixgbe_configure_clsu32
 Date:   Mon, 29 Mar 2021 09:57:40 +0200
-Message-Id: <20210329075616.247197475@linuxfoundation.org>
+Message-Id: <20210329075607.734238239@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
+References: <20210329075607.561619583@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit d3589381987ec879b03f8ce3039df57e87f05901 ]
+[ Upstream commit 7a766381634da19fc837619b0a34590498d9d29a ]
 
-NVME_REQ_CANCELLED is translated into -EINTR in nvme_submit_sync_cmd(),
-so we should be setting this flags during nvme_cancel_request() to
-ensure that the callers to nvme_submit_sync_cmd() will get the correct
-error code when the controller is reset.
+When ixgbe_fdir_write_perfect_filter_82599() fails,
+input allocated by kzalloc() has not been freed,
+which leads to memleak.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: Chao Leng <lengchao@huawei.com>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 308f3a28e12a..67ea531e8b34 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -312,6 +312,7 @@ bool nvme_cancel_request(struct request *req, void *data, bool reserved)
- 		return true;
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index 36d73bf32f4f..8e2aaf774693 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -8677,8 +8677,10 @@ static int ixgbe_configure_clsu32(struct ixgbe_adapter *adapter,
+ 	ixgbe_atr_compute_perfect_hash_82599(&input->filter, mask);
+ 	err = ixgbe_fdir_write_perfect_filter_82599(hw, &input->filter,
+ 						    input->sw_idx, queue);
+-	if (!err)
+-		ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
++	if (err)
++		goto err_out_w_lock;
++
++	ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
+ 	spin_unlock(&adapter->fdir_perfect_lock);
  
- 	nvme_req(req)->status = NVME_SC_HOST_ABORTED_CMD;
-+	nvme_req(req)->flags |= NVME_REQ_CANCELLED;
- 	blk_mq_complete_request(req);
- 	return true;
- }
+ 	if ((uhtid != 0x800) && (adapter->jump_tables[uhtid]))
 -- 
 2.30.1
 
