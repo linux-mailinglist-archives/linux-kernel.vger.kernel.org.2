@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637BE34D4DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD5B34D4ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhC2QXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:23:34 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:54847 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbhC2QXY (ORCPT
+        id S231421AbhC2QYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:24:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37608 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229822AbhC2QYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:23:24 -0400
-Received: by mail-io1-f69.google.com with SMTP id s6so11211486iom.21
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:23:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=d1Y41bekLPlXWYNgg5+HGDMcXEAwwxN+aPYbycrvlNY=;
-        b=Dz8C8eCCtPOOrv5sH2qInqme9Puu5iGwQfEpc6GgsbCAlU6RGLe0ymmlTJIG6waIrM
-         fWu4o9/BELAxn3Wr3DzffHfxn7zfpKv50RPt/DbAL8pjvTkn/F9bagfC+fHmth9Ie0H3
-         0MuJ1ZIRVm8w9ygcrKycmQO/TkOi+HifrmMjcEXTD4JOzS+lpXBdXrz23ZShb+l5GDnT
-         Rer9BvWSo0CiwrTdt6xSqmG+0lNZd6pyszMeSyIdGO9T0rPWJswSD6DTnFeXwOmNDRKb
-         beLW0m66f81mHhYZmm88U8SoEXJqTI9pZzmnH11OueuqisOieq0pmooYCYebtCQAsKi4
-         hFtA==
-X-Gm-Message-State: AOAM532vk3N4urCl/qNqvL8dqFBJDLK4gR7Zk9cJMT53mkZWaLpiHaOG
-        fx1gPTD7L4kwvVHNpgLw6jzswHyPzgUKwRgvMNRvOd12r62T
-X-Google-Smtp-Source: ABdhPJy+He+jZ2TETS4rf/lgYdmEckBHqEaWmLtXvZBulFxgvxLezFlo6vPTtnQkJ57YAZzm5WYO3Ry3dt+8F1b1HZIQLD5SiIDf
+        Mon, 29 Mar 2021 12:24:09 -0400
+Date:   Mon, 29 Mar 2021 16:24:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617035048;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bNqTDQnvvd1MjmMYKMkM8e5ZVwHJl4jSOSADJL8lhAU=;
+        b=KIMjS1qZqTyeQWaj5y9yulG7oeCmU0zSmCRXIX4UnkuM0noQFi9KjCn3Fd27s1uxSr1sYp
+        6QacNFAp4LeRbGTJX0eICbpg9tJcF6X/9kk9uPMT3yVlkVbs+PXIkXWy0eteYrhHyfkEoS
+        E7S4UYKMUskrfzX6wJ2LoMk7g/sOqPWKUSqBaY2/P45AljSSdp7PiKDoEOvhn/XgAbWbaZ
+        exxWctrAR4S9lJ0CrOZTf+AMW8Euqxb0UQ5ZvWWjLGV52/9pJPL/MNWLSqq7XM4DFSAf3h
+        nwYGnTajbWGykp6uki9qhhQ82w3mmM2fZN+boeYUTiLgFGMnu+Y0Y0NwvZK/bQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617035048;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bNqTDQnvvd1MjmMYKMkM8e5ZVwHJl4jSOSADJL8lhAU=;
+        b=c6BU/WDgCcf38XqmoDFUStKnpTv4+eMQLLNUZ33vBL8fsqe+4QMQ2mdipTzwVhT0BdR82L
+        T1KjEw7bgMW9MaCA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] locking/rtmutex: Clean up signal handling in
+ __rt_mutex_slowlock()
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210326153944.533811987@linutronix.de>
+References: <20210326153944.533811987@linutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:ed2:: with SMTP id i18mr22362665ilk.173.1617035004044;
- Mon, 29 Mar 2021 09:23:24 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 09:23:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000016ca805beaf4d26@google.com>
-Subject: [syzbot] WARNING in emulate_vsyscall
-From:   syzbot <syzbot+2698183e871d8a137f9d@syzkaller.appspotmail.com>
-To:     bp@alien8.de, bp@suse.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, keescook@chromium.org, krisman@collabora.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, wad@chromium.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161703504736.29796.5573161276586106576.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The following commit has been merged into the locking/core branch of tip:
 
-syzbot found the following issue on:
+Commit-ID:     a51a327f3bcdcb1a37ed9325ad07e1456cd4d426
+Gitweb:        https://git.kernel.org/tip/a51a327f3bcdcb1a37ed9325ad07e1456cd4d426
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Fri, 26 Mar 2021 16:29:44 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 29 Mar 2021 15:57:05 +02:00
 
-HEAD commit:    0f4498ce Merge tag 'for-5.12/dm-fixes-2' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1658754ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-dashboard link: https://syzkaller.appspot.com/bug?extid=2698183e871d8a137f9d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122aab01d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11004d06d00000
+locking/rtmutex: Clean up signal handling in __rt_mutex_slowlock()
 
-The issue was bisected to:
+The signal handling in __rt_mutex_slowlock() is open coded.
 
-commit 5042d40a264c8a508d58ed71e4c07b05175b3635
-Author: Andy Lutomirski <luto@kernel.org>
-Date:   Wed Feb 10 02:33:42 2021 +0000
+Use signal_pending_state() instead.
 
-    x86/fault: Bypass no_context() for implicit kernel faults from usermode
+Aside of the cleanup this also prepares for the RT lock substituions which
+require support for TASK_KILLABLE.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1004e126d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1204e126d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1404e126d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2698183e871d8a137f9d@syzkaller.appspotmail.com
-Fixes: 5042d40a264c ("x86/fault: Bypass no_context() for implicit kernel faults from usermode")
-
-syz-executor412[8390] vsyscall fault (exploit attempt?) ip:ffffffffff600000 cs:33 sp:7ffe5492ae00 ax:ffffffffffffffda si:600000001 di:aa060
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8390 at arch/x86/entry/vsyscall/vsyscall_64.c:276 emulate_vsyscall+0x317/0xbf0 arch/x86/entry/vsyscall/vsyscall_64.c:276
-Modules linked in:
-CPU: 1 PID: 8390 Comm: syz-executor412 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:emulate_vsyscall+0x317/0xbf0 arch/x86/entry/vsyscall/vsyscall_64.c:276
-Code: 80 01 00 00 e8 0a 88 73 00 48 c1 eb 0a 31 ff 41 bc 01 00 00 00 f7 d3 83 e3 01 89 de e8 a2 8f 73 00 85 db 74 0f e8 e9 87 73 00 <0f> 0b e9 44 01 00 00 45 31 e4 e8 da 87 73 00 44 89 e0 48 83 c4 38
-RSP: 0000:ffffc9000151fe48 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff888017243880 RSI: ffffffff81006987 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8100697e R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc9000151ffd8 R14: ffffc9000151fff0 R15: 0000000000000000
-FS:  00000000006c63c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fae07369000 CR3: 0000000018320000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_user_addr_fault+0x9a5/0x1210 arch/x86/mm/fault.c:1314
- handle_page_fault arch/x86/mm/fault.c:1475 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
-RIP: 0033:_end+0x6f3da000/0x0
-Code: Unable to access opcode bytes at RIP 0xffffffffff5fffd6.
-RSP: 002b:00007ffe5492ae00 EFLAGS: 00010246
-RAX: ffffffffffffffda RBX: 0000000000001000 RCX: 00000000000266c5
-RDX: 0000000000001000 RSI: 0000000600000001 RDI: 00000000000aa060
-RBP: 00000000000812c1 R08: 0000000000483000 R09: 0000000000483000
-R10: 0000000000083000 R11: 0000000400000001 R12: 00000000000812c1
-R13: 0000000000401000 R14: 0000000000401000 R15: 0000000000001000
-
-
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210326153944.533811987@linutronix.de
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ kernel/locking/rtmutex.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index c68542d..4068181 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -1146,18 +1146,13 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex *lock, int state,
+ 		if (try_to_take_rt_mutex(lock, current, waiter))
+ 			break;
+ 
+-		/*
+-		 * TASK_INTERRUPTIBLE checks for signals and
+-		 * timeout. Ignored otherwise.
+-		 */
+-		if (likely(state == TASK_INTERRUPTIBLE)) {
+-			/* Signal pending? */
+-			if (signal_pending(current))
+-				ret = -EINTR;
+-			if (timeout && !timeout->task)
+-				ret = -ETIMEDOUT;
+-			if (ret)
+-				break;
++		if (timeout && !timeout->task) {
++			ret = -ETIMEDOUT;
++			break;
++		}
++		if (signal_pending_state(state, current)) {
++			ret = -EINTR;
++			break;
+ 		}
+ 
+ 		raw_spin_unlock_irq(&lock->wait_lock);
