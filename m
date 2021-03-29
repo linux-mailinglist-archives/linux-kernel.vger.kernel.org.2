@@ -2,214 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5749B34D894
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6EB34D897
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhC2TrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:47:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57740 "EHLO
+        id S231174AbhC2TtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:49:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231725AbhC2TrB (ORCPT
+        with ESMTP id S230298AbhC2Ts7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:47:01 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660B9C061574;
-        Mon, 29 Mar 2021 12:47:01 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id f26so17249081ljp.8;
-        Mon, 29 Mar 2021 12:47:01 -0700 (PDT)
+        Mon, 29 Mar 2021 15:48:59 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE66C061574;
+        Mon, 29 Mar 2021 12:48:59 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 68-20020a9d0f4a0000b02901b663e6258dso13370102ott.13;
+        Mon, 29 Mar 2021 12:48:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZoPfJ20qL3JwR6uAZFsq+CQb14ssqPbFmakTE1Xqn8E=;
-        b=gAEcf3kjHc73g/2UFR2E9nA+6aSTsgjfl2HKNT5W1j/XCJHwU09gmucK7o9P3KbbaJ
-         hEJ+WPYDfacZHK5EXuaUrglNDgQmIxEeK8Pm//BSWYEuSIdlFID43fq720I7Wm+rsSvr
-         eaCefeWR7jT73hE/lhy93+ai1U8QCWq+sOwkQAj/obMxadvJ4RcNCpDBKkIjT+i9Hftz
-         gKP2Zib3T7bz+n/y827/r+5egHBPUh8c32W3kEkpDLNQh+yVK9QUiukyCazcogUY1FpB
-         7Q+pEHldNkxbm2rvDKryjOO3KcD4NI1uKQAn/FICdTK+xNARmuC62Cgi+cATMe8pqmRX
-         cdWw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EZJVh4jd4a7TViDLcP04oFUzaFvaj6RI7ATnPFJO1yM=;
+        b=H2a94AgTvVjaw6KwaLPzrKcmZfLzLo8GlBiQgL3VcBNcBQSR+1bLTOyLcsqLiVGGgp
+         punqsas8H2DOguJtqgkIotHyJHlnPQoc1/19aaMm1IeOZEv6jvEhEsJYWFR2m0KNC7S1
+         dO996YPCv4bKaD62O3HIxuY6Re7lcI6hRidHNN6y7Db/yRyIyNBBMczh9/lbfXI0xpfN
+         SCWJe9eIq6paiXR5nFzl5YIz892oGsfvrwV1JN8LArztC168jssSDg6Vum5TJkiqfAIU
+         ESLdqQNuBLqIBxEp78hfAN+RKPaaxUqhinvC20FUnpBH5WkTgHP5nD+8B1mFz3O5Gusp
+         tybQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZoPfJ20qL3JwR6uAZFsq+CQb14ssqPbFmakTE1Xqn8E=;
-        b=kH7TBKFX2EUqUS82bpUwm1IhFppa9ODScXUouAi3r/OIYHpmqUPmRAxV1eXn85uXXo
-         tjoyrEhtCzbgPnBhs7/lq/I8ML23qr+/mT1K9lTQRzY2Fx+Svs8QaPbU9nTB+ng6I6/v
-         qn+/al+HQFenqy2GX9EFYdmPibEvzMkFPKk9hZlQQNkejg45tPQXm69TfsEdKkGRJvhm
-         2RR/GozQJu5VNxQwxSLS15ZUURaGvM8RHGJF6g3NohAW1MnTWPezEt8vgoFDcEQnLDT/
-         +vm+d6iflT/vkAu46Ig13R7lFXD13/UG2SH4fnAipjHubiE1m5b31+Z5bG3jDdLUXHAK
-         4VjA==
-X-Gm-Message-State: AOAM533Z9Rw6Yr3jzgiKJS2HN6EwdkPJCVDfMFbWkBZLhhwunC0kprsz
-        AhrVOYU+LK2KdPqUYxTNSWnIycRb/LM=
-X-Google-Smtp-Source: ABdhPJyIVPdqkZkCmcg1E40ZR1lMcmNWqYzvl1gkaba/okG1lAD9Fcp4MZooTrtxIJuyz/pVi7s2Yw==
-X-Received: by 2002:a05:651c:110a:: with SMTP id d10mr19285949ljo.307.1617047219990;
-        Mon, 29 Mar 2021 12:46:59 -0700 (PDT)
-Received: from localhost.localdomain ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.gmail.com with ESMTPSA id p24sm1927693lfj.76.2021.03.29.12.46.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 12:46:59 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v1 6/6] memory: tegra: Print out info-level once per driver probe
-Date:   Mon, 29 Mar 2021 22:46:02 +0300
-Message-Id: <20210329194602.17049-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210329194602.17049-1-digetx@gmail.com>
-References: <20210329194602.17049-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EZJVh4jd4a7TViDLcP04oFUzaFvaj6RI7ATnPFJO1yM=;
+        b=c2RPovby7cBnWxkE65mPJvnCZRKIjJ7ygZ8QPhXS/xNE6af2aY9iNivnK9d6R01mOs
+         gEfvA0EhHPehlXIorlBcfQvl3vdTyFBQbGLgiHfZPV69WP9gRwHor3fFMEDalnLRU9eD
+         Kc/mokN/xX42nYEq7lihp1nQaFGQu754498z2N8k1fGzodFizSAaB9ZMGk+ALQ8KDxC6
+         hmThLvwHasU6LROpqQQrGDTYSsuqYvgkHHm79MHeY1IiYIVtwpZhgM/hrT1h0HxE+Ho4
+         YAusJqN5tl8x/CiI+o96GzORVXB2i6bi3mBr3r5FxRiOaF4q4V+zqSUTLGBH9rfCmrOE
+         djeg==
+X-Gm-Message-State: AOAM532zVgGksrTwQs0iqYRnB1FWKZMEsVGrzP6jc1m8xX3fv0Nw7iky
+        AeWnhbBhpKVR7z4ZUq7nMIFmiU3rgbnXgIBsKAE=
+X-Google-Smtp-Source: ABdhPJzZr4eOPtKELL2M99QxmfoGY3CfOePRuNX1fBdWQkPJxQeBu1FOT9tfG6nTvVdBvg+isR+dM1b84PqhQW4p2Ms=
+X-Received: by 2002:a9d:5508:: with SMTP id l8mr24687829oth.233.1617047338712;
+ Mon, 29 Mar 2021 12:48:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210326191906.43567-1-jim2101024@gmail.com> <20210326191906.43567-3-jim2101024@gmail.com>
+ <20210329162539.GG5166@sirena.org.uk> <CANCKTBsBNhwG8VQQAQfAfw9jaWLkT+yYJ0oG-HBhA9xiO+jLvA@mail.gmail.com>
+ <20210329171613.GI5166@sirena.org.uk>
+In-Reply-To: <20210329171613.GI5166@sirena.org.uk>
+From:   Jim Quinlan <jim2101024@gmail.com>
+Date:   Mon, 29 Mar 2021 15:48:46 -0400
+Message-ID: <CANCKTBvwWdVgjgTf620KqaAyyMwPkRgO3FHOqs_Gen+bnYTJFw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] PCI: brcmstb: Add control of EP voltage regulators
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Probing of EMC drivers may be deferred and in this case we get duplicated
-info messages during kernel boot. Use dev_info_once() helper to silence
-the duplicated messages.
+    /* Pmap_idx to avs pmap number */
+    const uint8_t pmap_idx_to_avs_id[20];
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/memory/tegra/tegra124-emc.c | 12 ++++++------
- drivers/memory/tegra/tegra20-emc.c  | 20 ++++++++++----------
- drivers/memory/tegra/tegra30-emc.c  | 18 +++++++++---------
- 3 files changed, 25 insertions(+), 25 deletions(-)
+On Mon, Mar 29, 2021 at 1:16 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Mon, Mar 29, 2021 at 12:39:50PM -0400, Jim Quinlan wrote:
+> > On Mon, Mar 29, 2021 at 12:25 PM Mark Brown <broonie@kernel.org>
+>
+> > > Here you are figuring out a device local supply name...
+>
+> > > > +     /*
+> > > > +      * Get the regulators that the EP devianswerces require.  We cannot use
+> > > > +      * pcie->dev as the device argument in regulator_bulk_get() since
+> > > > +      * it will not find the regulators.  Instead, use NULL and the
+> > > > +      * regulators are looked up by their name.
+> > > > +      */
+> > > > +     return regulator_bulk_get(NULL, pcie->num_supplies, pcie->supplies);
+>
+> > > ...and here you are trying to look up that device local name in the
+> > > global namespace.  That's not going to work well, the global names that
+> > > supplies are labelled with may be completely different to what the chip
+> > > designer called them and there could easily be naming collisions between
+> > > different chips.
+>
+> > "devm_regulator_bulk_get(pcie->dev, ...)"; is your concern about the
+> > NULL for the device and if so does this fix it?  If not, what do you
+> > suggest that I do?
+>
+> If you use the struct device for the PCIe controller then that's going
+> to first try the PCIe controller then the global namespace so you still
+> have all the same problems.  You really need to use the struct device
+> for the device that is being supplied not some random other struct
+> device you happened to find in the system.
+Hello Mark,
+I'm not concerned about a namespace collision and I don't think you
+should be concerned either.  First, this driver is for Broadcom STB
+PCIe chips and boards, and we also deliver the DT to the customers.
+We typically do not have any other regulators in the DT besides the
+ones I am proposing.  For example, the 7216 SOC DT has 0 other
+regulators -- no namespace collision possible.  Our DT-generating
+scripts also flag namespace issues.  I admit that this driver is also
+used by RPi chips, but I can easily exclude this feature from the RPI
+if Nicolas has any objection.
 
-diff --git a/drivers/memory/tegra/tegra124-emc.c b/drivers/memory/tegra/tegra124-emc.c
-index 874e1a0f23cd..5699d909abc2 100644
---- a/drivers/memory/tegra/tegra124-emc.c
-+++ b/drivers/memory/tegra/tegra124-emc.c
-@@ -905,7 +905,7 @@ static int emc_init(struct tegra_emc *emc)
- 	else
- 		emc->dram_bus_width = 32;
- 
--	dev_info(emc->dev, "%ubit DRAM bus\n", emc->dram_bus_width);
-+	dev_info_once(emc->dev, "%ubit DRAM bus\n", emc->dram_bus_width);
- 
- 	emc->dram_type &= EMC_FBIO_CFG5_DRAM_TYPE_MASK;
- 	emc->dram_type >>= EMC_FBIO_CFG5_DRAM_TYPE_SHIFT;
-@@ -1419,8 +1419,8 @@ static int tegra_emc_opp_table_init(struct tegra_emc *emc)
- 		goto put_hw_table;
- 	}
- 
--	dev_info(emc->dev, "OPP HW ver. 0x%x, current clock rate %lu MHz\n",
--		 hw_version, clk_get_rate(emc->clk) / 1000000);
-+	dev_info_once(emc->dev, "OPP HW ver. 0x%x, current clock rate %lu MHz\n",
-+		      hw_version, clk_get_rate(emc->clk) / 1000000);
- 
- 	/* first dummy rate-set initializes voltage state */
- 	err = dev_pm_opp_set_rate(emc->dev, clk_get_rate(emc->clk));
-@@ -1475,9 +1475,9 @@ static int tegra_emc_probe(struct platform_device *pdev)
- 		if (err)
- 			return err;
- 	} else {
--		dev_info(&pdev->dev,
--			 "no memory timings for RAM code %u found in DT\n",
--			 ram_code);
-+		dev_info_once(&pdev->dev,
-+			      "no memory timings for RAM code %u found in DT\n",
-+			      ram_code);
- 	}
- 
- 	err = emc_init(emc);
-diff --git a/drivers/memory/tegra/tegra20-emc.c b/drivers/memory/tegra/tegra20-emc.c
-index d653a6be8d7f..da8a0da8da79 100644
---- a/drivers/memory/tegra/tegra20-emc.c
-+++ b/drivers/memory/tegra/tegra20-emc.c
-@@ -411,12 +411,12 @@ static int tegra_emc_load_timings_from_dt(struct tegra_emc *emc,
- 	sort(emc->timings, emc->num_timings, sizeof(*timing), cmp_timings,
- 	     NULL);
- 
--	dev_info(emc->dev,
--		 "got %u timings for RAM code %u (min %luMHz max %luMHz)\n",
--		 emc->num_timings,
--		 tegra_read_ram_code(),
--		 emc->timings[0].rate / 1000000,
--		 emc->timings[emc->num_timings - 1].rate / 1000000);
-+	dev_info_once(emc->dev,
-+		      "got %u timings for RAM code %u (min %luMHz max %luMHz)\n",
-+		      emc->num_timings,
-+		      tegra_read_ram_code(),
-+		      emc->timings[0].rate / 1000000,
-+		      emc->timings[emc->num_timings - 1].rate / 1000000);
- 
- 	return 0;
- }
-@@ -429,7 +429,7 @@ tegra_emc_find_node_by_ram_code(struct device *dev)
- 	int err;
- 
- 	if (of_get_child_count(dev->of_node) == 0) {
--		dev_info(dev, "device-tree doesn't have memory timings\n");
-+		dev_info_once(dev, "device-tree doesn't have memory timings\n");
- 		return NULL;
- 	}
- 
-@@ -496,7 +496,7 @@ static int emc_setup_hw(struct tegra_emc *emc)
- 	else
- 		emc->dram_bus_width = 32;
- 
--	dev_info(emc->dev, "%ubit DRAM bus\n", emc->dram_bus_width);
-+	dev_info_once(emc->dev, "%ubit DRAM bus\n", emc->dram_bus_width);
- 
- 	return 0;
- }
-@@ -931,8 +931,8 @@ static int tegra_emc_opp_table_init(struct tegra_emc *emc)
- 		goto put_hw_table;
- 	}
- 
--	dev_info(emc->dev, "OPP HW ver. 0x%x, current clock rate %lu MHz\n",
--		 hw_version, clk_get_rate(emc->clk) / 1000000);
-+	dev_info_once(emc->dev, "OPP HW ver. 0x%x, current clock rate %lu MHz\n",
-+		      hw_version, clk_get_rate(emc->clk) / 1000000);
- 
- 	/* first dummy rate-set initializes voltage state */
- 	err = dev_pm_opp_set_rate(emc->dev, clk_get_rate(emc->clk));
-diff --git a/drivers/memory/tegra/tegra30-emc.c b/drivers/memory/tegra/tegra30-emc.c
-index 6985da0ffb35..829f6d673c96 100644
---- a/drivers/memory/tegra/tegra30-emc.c
-+++ b/drivers/memory/tegra/tegra30-emc.c
-@@ -998,12 +998,12 @@ static int emc_load_timings_from_dt(struct tegra_emc *emc,
- 	if (err)
- 		return err;
- 
--	dev_info(emc->dev,
--		 "got %u timings for RAM code %u (min %luMHz max %luMHz)\n",
--		 emc->num_timings,
--		 tegra_read_ram_code(),
--		 emc->timings[0].rate / 1000000,
--		 emc->timings[emc->num_timings - 1].rate / 1000000);
-+	dev_info_once(emc->dev,
-+		      "got %u timings for RAM code %u (min %luMHz max %luMHz)\n",
-+		      emc->num_timings,
-+		      tegra_read_ram_code(),
-+		      emc->timings[0].rate / 1000000,
-+		      emc->timings[emc->num_timings - 1].rate / 1000000);
- 
- 	return 0;
- }
-@@ -1015,7 +1015,7 @@ static struct device_node *emc_find_node_by_ram_code(struct device *dev)
- 	int err;
- 
- 	if (of_get_child_count(dev->of_node) == 0) {
--		dev_info(dev, "device-tree doesn't have memory timings\n");
-+		dev_info_once(dev, "device-tree doesn't have memory timings\n");
- 		return NULL;
- 	}
- 
-@@ -1503,8 +1503,8 @@ static int tegra_emc_opp_table_init(struct tegra_emc *emc)
- 		goto put_hw_table;
- 	}
- 
--	dev_info(emc->dev, "OPP HW ver. 0x%x, current clock rate %lu MHz\n",
--		 hw_version, clk_get_rate(emc->clk) / 1000000);
-+	dev_info_once(emc->dev, "OPP HW ver. 0x%x, current clock rate %lu MHz\n",
-+		      hw_version, clk_get_rate(emc->clk) / 1000000);
- 
- 	/* first dummy rate-set initializes voltage state */
- 	err = dev_pm_opp_set_rate(emc->dev, clk_get_rate(emc->clk));
--- 
-2.30.2
+Further, if you want, I can restrict the search to the two regulators
+I am proposing to add to pci-bus.yaml:  "vpcie12v-supply" and
+"vpcie3v3-supply".
 
+Is the above enough to alleviate your concerns about global namespace collision?
+
+>
+> As I said in my earlier reply I think either the driver core or PCI
+> needs something like Soundwire has which lets it create struct devices
+> for things that have been enumerated via software but not enumerated by
+> hardware and a callback or something which lets those devices take
+> whatever steps are needed to trigger probe.
+
+Can you please elaborate this further and in detail?  This sounds like
+a decent-size undertaking, and the last time I followed a review
+suggestion that was similar in spirit to this, the pullreq was
+ironically NAKed by the person who suggested it.  Do you really think
+it is necessary to construct such a subsystem just to avoid the  very
+remote possibility of a namespace collision which is our (Broadcom
+STB) responsibility and consequence to avoid?
+
+Regards,
+Jim Quinlan
+Broadcom STB
