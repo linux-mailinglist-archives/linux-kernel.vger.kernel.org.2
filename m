@@ -2,138 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5DE34D455
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A9134D45C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhC2Px7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:53:59 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:33748 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbhC2Px0 (ORCPT
+        id S230214AbhC2P4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230434AbhC2Pzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:53:26 -0400
-Received: by mail-il1-f200.google.com with SMTP id j9so3294695ilu.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:53:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xexZrPOC/JkSM7BGy7xMMywLm9VNuEHIelH+LRXXkPk=;
-        b=Vo48HhX1dCKXXrgw/0aziwMHK+sjjES5/7Upg256zONYrcs/GyUNUn1kQmGXA08owk
-         LCQ7eMiWztMW8/Nup2gIy+OiTiLqhHdR2/xOcfnz4RXV5F/Jw0BUNyVqjMvdvBKkIjes
-         cLYkxKE4YmPcrGkqd06U9avhLlMYw82f0jToNd4kClJyoCSXY8gAaH2ygrGYWPgpeHzI
-         4XAgGRwOR4Ihk0NOCkcKS4YCZnFOuMOCqirV55VOUfk+tTkuKVLCUgXoTBpfTkv5FB+k
-         Es3mBDOYyZQgc2/M2Sr4JXKHDhcnTcyTbpKk/9XPqtqSwH2GBXiVVMfLiLgfIGP39TrI
-         oyEA==
-X-Gm-Message-State: AOAM5311EO9ESSTN9q4DbfbGvazhxHr6dl8AdEeUD4nMJ0b1GFR1DK3A
-        rNPd+eGGI6n26l4jMx7gTSK3I4n/VANCzqnk8hXvFnhL2e2Y
-X-Google-Smtp-Source: ABdhPJzYbRh6VfoSvFixhIbacAK24HM3mTeepga8rAAZQyQiQ8uydiubagx8ofleAiQxtZwE3S+Ks1tmHz1uMhndnkGK1UWoZRLo
+        Mon, 29 Mar 2021 11:55:33 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFAAC061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:55:31 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQuEh-00076z-Qe; Mon, 29 Mar 2021 17:55:27 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lQuEh-0001hX-HH; Mon, 29 Mar 2021 17:55:27 +0200
+Date:   Mon, 29 Mar 2021 17:55:27 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/7] pwm: pca9685: Improve runtime PM behavior
+Message-ID: <20210329155527.q3o25ubh33pmszsi@pengutronix.de>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-3-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:7f8c:: with SMTP id r134mr24510700jac.95.1617033206064;
- Mon, 29 Mar 2021 08:53:26 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 08:53:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d6689d05beaee1c9@google.com>
-Subject: [syzbot] WARNING: refcount bug in nfc_llcp_local_put
-From:   syzbot <syzbot+0aabbccfb4ec7b744ffd@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, davem@davemloft.net,
-        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kuba@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, masahiroy@kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, pbonzini@redhat.com, peterz@infradead.org,
-        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, will@kernel.org,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="anui7dfz743pecr5"
+Content-Disposition: inline
+In-Reply-To: <20210329125707.182732-3-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+--anui7dfz743pecr5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-HEAD commit:    75887e88 Merge branch '40GbE' of git://git.kernel.org/pub/..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=131a634ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5adab0bdee099d7a
-dashboard link: https://syzkaller.appspot.com/bug?extid=0aabbccfb4ec7b744ffd
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bcd6f6d00000
+On Mon, Mar 29, 2021 at 02:57:03PM +0200, Clemens Gruber wrote:
+> The chip does not come out of POR in active state but in sleep state.
+> To be sure (in case the bootloader woke it up) we force it to sleep in
+> probe.
+>=20
+> On kernels without CONFIG_PM, we wake the chip in .probe and put it to
+> sleep in .remove.
 
-The issue was bisected to:
-
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
-
-    lockdep: report broken irq restoration
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12279b4ed00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11279b4ed00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16279b4ed00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0aabbccfb4ec7b744ffd@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 11133 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Modules linked in:
-CPU: 1 PID: 11133 Comm: syz-executor.0 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-Code: e9 db fe ff ff 48 89 df e8 fc ee ee fd e9 8a fe ff ff e8 42 44 ab fd 48 c7 c7 c0 d8 c1 89 c6 05 eb 44 e9 09 01 e8 7c 9b fc 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
-RSP: 0018:ffffc900033f7b10 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888040038000 RSI: ffffffff815c4d15 RDI: fffff5200067ef54
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815bdaae R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88814429f018 R14: ffffffff8dab2ec0 R15: ffff888030b20d38
-FS:  0000000001fa6400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000540198 CR3: 00000000142c1000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __refcount_sub_and_test include/linux/refcount.h:283 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- kref_put include/linux/kref.h:64 [inline]
- nfc_llcp_local_put net/nfc/llcp_core.c:183 [inline]
- nfc_llcp_local_put+0x1ab/0x200 net/nfc/llcp_core.c:178
- llcp_sock_destruct+0x81/0x150 net/nfc/llcp_sock.c:950
- __sk_destruct+0x4b/0x900 net/core/sock.c:1795
- sk_destruct+0xbd/0xe0 net/core/sock.c:1839
- __sk_free+0xef/0x3d0 net/core/sock.c:1850
- sock_wfree+0x129/0x240 net/core/sock.c:2074
- skb_release_head_state+0x9f/0x250 net/core/skbuff.c:712
- skb_release_all net/core/skbuff.c:723 [inline]
- __kfree_skb net/core/skbuff.c:739 [inline]
- kfree_skb net/core/skbuff.c:757 [inline]
- kfree_skb+0xfa/0x3f0 net/core/skbuff.c:751
- skb_queue_purge+0x14/0x30 net/core/skbuff.c:3133
- nfc_llcp_socket_release+0x2e/0x870 net/nfc/llcp_core.c:73
- local_cleanup+0x18/0xb0 net/nfc/llcp_core.c:155
- local_release net/nfc/llcp_core.c:174 [inline]
- kref_put include/linux/kref.h:65 [inline]
- nfc_llcp_local_put net/nfc/llcp_core.c:183 [inline]
- nfc_llcp_local_put+0x18c/0x200 net/nfc/llcp_core.c:178
- llcp_sock_destruct+0x81/0x150 net/nfc/llcp_sock.c:950
- __sk_destruct+0x4b/0x900 net/core/sock.c:1795
- sk_destruct+0xbd/0xe0 net/core/sock.c:1839
- __sk_free+0xef/0x3d0 net/core/sock.c:1850
- sk_free+0x78/0xa0 net/core/sock.c:1861
+What is the effect of sleep state? Does it continue to oscilate it the
+bootloader set up some configuration?
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+>  drivers/pwm/pwm-pca9685.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> index fb026a25fb61..4d6684b90819 100644
+> --- a/drivers/pwm/pwm-pca9685.c
+> +++ b/drivers/pwm/pwm-pca9685.c
+> @@ -469,14 +469,19 @@ static int pca9685_pwm_probe(struct i2c_client *cli=
+ent,
+>  		return ret;
+>  	}
+> =20
+> -	/* The chip comes out of power-up in the active state */
+> -	pm_runtime_set_active(&client->dev);
+>  	/*
+> -	 * Enable will put the chip into suspend, which is what we
+> -	 * want as all outputs are disabled at this point
+> +	 * The chip comes out of power-up in the sleep state,
+> +	 * but force it to sleep in case it was woken up before
+>  	 */
+> +	pca9685_set_sleep_mode(pca, true);
+> +	pm_runtime_set_suspended(&client->dev);
+>  	pm_runtime_enable(&client->dev);
+> =20
+> +	if (!IS_ENABLED(CONFIG_PM)) {
+> +		/* Wake the chip up on non-PM environments */
+> +		pca9685_set_sleep_mode(pca, false);
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+I admit I didn't grasp all the PM framework details, but I wonder if
+it's right to first call set_sleep_mode(true) and then in some cases to
+false again.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--anui7dfz743pecr5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBh+GwACgkQwfwUeK3K
+7AkbOggAjYvZJ4yGp4lADVNTwgOi0pKpb9Dp/MLD1RJO3uK16kZsTD5MQu2W/5hu
+wlxYxQ4E2C0cBKwq6dpphiCf2aC+wdF91SQx+ylH1jsLoDVwsVRISHre62252aRI
+6ph+w1/xoi3taNeLwB4g6Bt7/c7nKz1nFope2UJuMRvD5yq6WykfBkVvygpOxs9q
+I7OQuzb2swBYCRm5TVaZeU6M96yZDzqEuLoiXD3PqbsoDxjqZ5axt4cgiVUb1PTr
+o5xbGzjthqNZd8V1BjkBQ4cHHlZy1YO0VSiTlvTPSyu3j7zwrXTQjJODNbOOluxS
+OXXMPJvHfZY8h1KJvSVjlvEz32FBkA==
+=aroP
+-----END PGP SIGNATURE-----
+
+--anui7dfz743pecr5--
