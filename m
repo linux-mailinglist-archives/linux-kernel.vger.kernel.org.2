@@ -2,220 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BCA334D2CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4442034D2D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhC2OuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:50:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43740 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhC2OtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:49:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6F825AD71;
-        Mon, 29 Mar 2021 14:49:17 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 4290c4bd;
-        Mon, 29 Mar 2021 14:50:37 +0000 (UTC)
-Date:   Mon, 29 Mar 2021 15:50:37 +0100
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, miklos@szeredi.hu, dgilbert@redhat.com,
-        seth.forshee@canonical.com
-Subject: Re: [PATCH v2 1/2] fuse: Add support for FUSE_SETXATTR_V2
-Message-ID: <YGHpPWcZYQQWMvAi@suse.de>
-References: <20210325151823.572089-1-vgoyal@redhat.com>
- <20210325151823.572089-2-vgoyal@redhat.com>
+        id S231297AbhC2Ov3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:51:29 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:15376 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231145AbhC2Ou4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 10:50:56 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4F8Fnn6wQqz9sMm;
+        Mon, 29 Mar 2021 22:48:45 +0800 (CST)
+Received: from localhost (10.174.179.96) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 29 Mar 2021
+ 22:50:41 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>, <Vijendar.Mukunda@amd.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: amd: acp-da7219-max98357a: Fix -Wunused-variable warning
+Date:   Mon, 29 Mar 2021 22:50:37 +0800
+Message-ID: <20210329145037.23756-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210325151823.572089-2-vgoyal@redhat.com>
+X-Originating-IP: [10.174.179.96]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 11:18:22AM -0400, Vivek Goyal wrote:
-> Fuse client needs to send additional information to file server when
-> it calls SETXATTR(system.posix_acl_access). Right now there is no extra
-> space in fuse_setxattr_in. So introduce a v2 of the structure which has
-> more space in it and can be used to send extra flags.
-> 
-> "struct fuse_setxattr_in_v2" is only used if file server opts-in for it using
-> flag FUSE_SETXATTR_V2 during feature negotiations.
-> 
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
->  fs/fuse/acl.c             |  2 +-
->  fs/fuse/fuse_i.h          |  5 ++++-
->  fs/fuse/inode.c           |  4 +++-
->  fs/fuse/xattr.c           | 21 +++++++++++++++------
->  include/uapi/linux/fuse.h | 10 ++++++++++
->  5 files changed, 33 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/fuse/acl.c b/fs/fuse/acl.c
-> index e9c0f916349d..d31260a139d4 100644
-> --- a/fs/fuse/acl.c
-> +++ b/fs/fuse/acl.c
-> @@ -94,7 +94,7 @@ int fuse_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  			return ret;
->  		}
->  
-> -		ret = fuse_setxattr(inode, name, value, size, 0);
-> +		ret = fuse_setxattr(inode, name, value, size, 0, 0);
->  		kfree(value);
->  	} else {
->  		ret = fuse_removexattr(inode, name);
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 63d97a15ffde..d00bf0b9a38c 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -668,6 +668,9 @@ struct fuse_conn {
->  	/** Is setxattr not implemented by fs? */
->  	unsigned no_setxattr:1;
->  
-> +	/** Does file server support setxattr_v2 */
-> +	unsigned setxattr_v2:1;
-> +
+While ACPI is not set, make W=1 warns:
 
-Minor (pedantic!) comment: most of the fields here start with 'no_*', so
-maybe it's worth setting the logic to use 'no_setxattr_v2' instead?
+sound/soc/amd/acp-da7219-max98357a.c:684:28: warning: ‘cz_rt5682_card’ defined but not used [-Wunused-variable]
+ static struct snd_soc_card cz_rt5682_card = {
+                            ^~~~~~~~~~~~~~
+sound/soc/amd/acp-da7219-max98357a.c:671:28: warning: ‘cz_card’ defined but not used [-Wunused-variable]
+ static struct snd_soc_card cz_card = {
 
-Cheers,
---
-Lu�s
+Use #ifdef block to guard this.
 
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/amd/acp-da7219-max98357a.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
->  	/** Is getxattr not implemented by fs? */
->  	unsigned no_getxattr:1;
->  
-> @@ -1170,7 +1173,7 @@ void fuse_unlock_inode(struct inode *inode, bool locked);
->  bool fuse_lock_inode(struct inode *inode);
->  
->  int fuse_setxattr(struct inode *inode, const char *name, const void *value,
-> -		  size_t size, int flags);
-> +		  size_t size, int flags, unsigned extra_flags);
->  ssize_t fuse_getxattr(struct inode *inode, const char *name, void *value,
->  		      size_t size);
->  ssize_t fuse_listxattr(struct dentry *entry, char *list, size_t size);
-> diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-> index b0e18b470e91..1c726df13f80 100644
-> --- a/fs/fuse/inode.c
-> +++ b/fs/fuse/inode.c
-> @@ -1052,6 +1052,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
->  				fc->handle_killpriv_v2 = 1;
->  				fm->sb->s_flags |= SB_NOSEC;
->  			}
-> +			if (arg->flags & FUSE_SETXATTR_V2)
-> +				fc->setxattr_v2 = 1;
->  		} else {
->  			ra_pages = fc->max_read / PAGE_SIZE;
->  			fc->no_lock = 1;
-> @@ -1095,7 +1097,7 @@ void fuse_send_init(struct fuse_mount *fm)
->  		FUSE_PARALLEL_DIROPS | FUSE_HANDLE_KILLPRIV | FUSE_POSIX_ACL |
->  		FUSE_ABORT_ERROR | FUSE_MAX_PAGES | FUSE_CACHE_SYMLINKS |
->  		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
-> -		FUSE_HANDLE_KILLPRIV_V2;
-> +		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_V2;
->  #ifdef CONFIG_FUSE_DAX
->  	if (fm->fc->dax)
->  		ia->in.flags |= FUSE_MAP_ALIGNMENT;
-> diff --git a/fs/fuse/xattr.c b/fs/fuse/xattr.c
-> index 1a7d7ace54e1..f2aae72653dc 100644
-> --- a/fs/fuse/xattr.c
-> +++ b/fs/fuse/xattr.c
-> @@ -12,24 +12,33 @@
->  #include <linux/posix_acl_xattr.h>
->  
->  int fuse_setxattr(struct inode *inode, const char *name, const void *value,
-> -		  size_t size, int flags)
-> +		  size_t size, int flags, unsigned extra_flags)
->  {
->  	struct fuse_mount *fm = get_fuse_mount(inode);
->  	FUSE_ARGS(args);
->  	struct fuse_setxattr_in inarg;
-> +	struct fuse_setxattr_in_v2 inarg_v2;
-> +	bool setxattr_v2 = fm->fc->setxattr_v2;
->  	int err;
->  
->  	if (fm->fc->no_setxattr)
->  		return -EOPNOTSUPP;
->  
->  	memset(&inarg, 0, sizeof(inarg));
-> -	inarg.size = size;
-> -	inarg.flags = flags;
-> +	memset(&inarg_v2, 0, sizeof(inarg_v2));
-> +	if (setxattr_v2) {
-> +		inarg_v2.size = size;
-> +		inarg_v2.flags = flags;
-> +		inarg_v2.setxattr_flags = extra_flags;
-> +	} else {
-> +		inarg.size = size;
-> +		inarg.flags = flags;
-> +	}
->  	args.opcode = FUSE_SETXATTR;
->  	args.nodeid = get_node_id(inode);
->  	args.in_numargs = 3;
-> -	args.in_args[0].size = sizeof(inarg);
-> -	args.in_args[0].value = &inarg;
-> +	args.in_args[0].size = setxattr_v2 ? sizeof(inarg_v2) : sizeof(inarg);
-> +	args.in_args[0].value = setxattr_v2 ? &inarg_v2 : (void *)&inarg;
->  	args.in_args[1].size = strlen(name) + 1;
->  	args.in_args[1].value = name;
->  	args.in_args[2].size = size;
-> @@ -199,7 +208,7 @@ static int fuse_xattr_set(const struct xattr_handler *handler,
->  	if (!value)
->  		return fuse_removexattr(inode, name);
->  
-> -	return fuse_setxattr(inode, name, value, size, flags);
-> +	return fuse_setxattr(inode, name, value, size, flags, 0);
->  }
->  
->  static bool no_xattr_list(struct dentry *dentry)
-> diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-> index 54442612c48b..1bb555c1c117 100644
-> --- a/include/uapi/linux/fuse.h
-> +++ b/include/uapi/linux/fuse.h
-> @@ -179,6 +179,7 @@
->   *  7.33
->   *  - add FUSE_HANDLE_KILLPRIV_V2, FUSE_WRITE_KILL_SUIDGID, FATTR_KILL_SUIDGID
->   *  - add FUSE_OPEN_KILL_SUIDGID
-> + *  - add FUSE_SETXATTR_V2
->   */
->  
->  #ifndef _LINUX_FUSE_H
-> @@ -330,6 +331,7 @@ struct fuse_file_lock {
->   *			does not have CAP_FSETID. Additionally upon
->   *			write/truncate sgid is killed only if file has group
->   *			execute permission. (Same as Linux VFS behavior).
-> + * FUSE_SETXATTR_V2:	Does file server support V2 of struct fuse_setxattr_in
->   */
->  #define FUSE_ASYNC_READ		(1 << 0)
->  #define FUSE_POSIX_LOCKS	(1 << 1)
-> @@ -360,6 +362,7 @@ struct fuse_file_lock {
->  #define FUSE_MAP_ALIGNMENT	(1 << 26)
->  #define FUSE_SUBMOUNTS		(1 << 27)
->  #define FUSE_HANDLE_KILLPRIV_V2	(1 << 28)
-> +#define FUSE_SETXATTR_V2	(1 << 29)
->  
->  /**
->   * CUSE INIT request/reply flags
-> @@ -686,6 +689,13 @@ struct fuse_setxattr_in {
->  	uint32_t	flags;
->  };
->  
-> +struct fuse_setxattr_in_v2 {
-> +	uint32_t	size;
-> +	uint32_t	flags;
-> +	uint32_t	setxattr_flags;
-> +	uint32_t	padding;
-> +};
-> +
->  struct fuse_getxattr_in {
->  	uint32_t	size;
->  	uint32_t	padding;
-> -- 
-> 2.25.4
-> 
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index e65e007fc604..1bf0458e22a8 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -47,13 +47,15 @@
+ #define DUAL_CHANNEL		2
+ #define RT5682_PLL_FREQ (48000 * 512)
+ 
++extern bool bt_uart_enable;
++void *acp_soc_is_rltk_max(struct device *dev);
++
++#ifdef CONFIG_ACPI
+ static struct snd_soc_jack cz_jack;
+ static struct clk *da7219_dai_wclk;
+ static struct clk *da7219_dai_bclk;
+ static struct clk *rt5682_dai_wclk;
+ static struct clk *rt5682_dai_bclk;
+-extern bool bt_uart_enable;
+-void *acp_soc_is_rltk_max(struct device *dev);
+ 
+ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ {
+@@ -692,6 +694,7 @@ static struct snd_soc_card cz_rt5682_card = {
+ 	.controls = cz_mc_controls,
+ 	.num_controls = ARRAY_SIZE(cz_mc_controls),
+ };
++#endif
+ 
+ void *acp_soc_is_rltk_max(struct device *dev)
+ {
+-- 
+2.17.1
+
