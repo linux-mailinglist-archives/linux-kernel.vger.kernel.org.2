@@ -2,99 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E30234D105
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A15F34D10B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhC2NPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:15:02 -0400
-Received: from mail-ej1-f47.google.com ([209.85.218.47]:43795 "EHLO
-        mail-ej1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhC2NOp (ORCPT
+        id S230244AbhC2NSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:18:49 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:15383 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229479AbhC2NS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 09:14:45 -0400
-Received: by mail-ej1-f47.google.com with SMTP id l4so19357475ejc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:14:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dnqiPCkVIEJi01KAtqY0u4lzQdPIy0jyuru+wKEGT1U=;
-        b=czpmDZAcOvXEhlt4XaR7t7E/j5wZabTqRKGW9bi228Shq48HNcNgxdRJ+b5arrpSky
-         I6CmyV0dbPDIIC1ZrKyOUKEHq+Sfyo/iUedeMr1PU4I3xSC1Kv6W5Yjgyjgp0aMOdbLW
-         pU0GsTsFPk4qUJGN5zpJRznL2otD8wLpIORgyV+OgI3sYniytyCljo78m+b8R7P/+WfC
-         qfhMQpSWQXQ3NQKVIxBjuatt/I1xJvjSGaCnECMzQro2occcubZmVyoud8x2iUUfsbOg
-         Y21jI3iw+N+Aen1Xlo2+oOomeG/LG4vL3Up9lIsa9QE3c8GGSNhY50JV0DndkNeXz9uG
-         apUg==
-X-Gm-Message-State: AOAM531koegd0a38mS3OwnUuo5/WABOwrw+UlbDdZQDOFcQKXWZI6f3i
-        Fz1e9MtmD523nDtYwMWZOfDB6q91L0AyB/QXKSc=
-X-Google-Smtp-Source: ABdhPJwj9BzblTYaaTw3ARsfD5TUcpq+qL9ChEZji+L5+PQa5b6laa/sSGRQSr1WaQwLoHanFF0jb8IEPXFMytL49dQ=
-X-Received: by 2002:a17:906:6d01:: with SMTP id m1mr18692903ejr.501.1617023684793;
- Mon, 29 Mar 2021 06:14:44 -0700 (PDT)
+        Mon, 29 Mar 2021 09:18:27 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4F8ClY19r6zlVrV;
+        Mon, 29 Mar 2021 21:16:41 +0800 (CST)
+Received: from [10.174.179.86] (10.174.179.86) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 29 Mar 2021 21:18:21 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Subject: [Question] Is there a race window between swapoff vs synchronous
+ swap_readpage
+To:     Linux-MM <linux-mm@kvack.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>
+Message-ID: <364d7ce9-ccb7-fa04-7067-44a96be87060@huawei.com>
+Date:   Mon, 29 Mar 2021 21:18:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-15-chang.seok.bae@intel.com> <87o8fda2ye.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87o8fda2ye.fsf@nanos.tec.linutronix.de>
-From:   Len Brown <lenb@kernel.org>
-Date:   Mon, 29 Mar 2021 09:14:33 -0400
-Message-ID: <CAJvTdKkZEWTsqhXLC+qiQ49c2xn7GDF95PfTBi0rw1FnE--JKQ@mail.gmail.com>
-Subject: Re: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the
- first use of dynamic user state
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.86]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 20, 2021 at 6:14 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> On Sun, Feb 21 2021 at 10:56, Chang S. Bae wrote:
-> > +
-> > +/* Update MSR IA32_XFD with xfirstuse_not_detected() if needed. */
-> > +static inline void xdisable_switch(struct fpu *prev, struct fpu *next)
-> > +{
-> > +     if (!static_cpu_has(X86_FEATURE_XFD) || !xfirstuse_enabled())
-> > +             return;
-> > +
-> > +     if (unlikely(prev->state_mask != next->state_mask))
-> > +             xdisable_setbits(xfirstuse_not_detected(next));
-> > +}
->
-> So this is invoked on context switch. Toggling bit 18 of MSR_IA32_XFD
-> when it does not match. The spec document says:
->
->   "System software may disable use of Intel AMX by clearing XCR0[18:17], by
->    clearing CR4.OSXSAVE, or by setting IA32_XFD[18]. It is recommended that
->    system software initialize AMX state (e.g., by executing TILERELEASE)
->    before doing so. This is because maintaining AMX state in a
->    non-initialized state may have negative power and performance
->    implications."
->
-> I'm not seeing anything related to this. Is this a recommendation
-> which can be ignored or is that going to be duct taped into the code
-> base once the first user complains about slowdowns of their non AMX
-> workloads on that machine?
+Hi all,
+I am investigating the swap code, and I found the below possible race window:
 
-I found the author of this passage, and he agreed to revise it to say this
-was targeted primarily at VMMs.
+CPU 1							CPU 2
+-----							-----
+do_swap_page
+  skip swapcache case (synchronous swap_readpage)
+    alloc_page_vma
+							swapoff
+							  release swap_file, bdev, or ...
+      swap_readpage
+	check sis->flags is ok
+	  access swap_file, bdev or ...[oops!]
+							    si->flags = 0
 
-"negative power and performance implications" refers to the fact that
-the processor will not enter C6 when AMX INIT=0, instead it will demote
-to the next shallower C-state, eg C1E.
-
-(this is because the C6 flow doesn't save the AMX registers)
-
-For customers that have C6 enabled, the inability of a core to enter C6
-may impact the maximum turbo frequency of other cores.
-
-thanks,
--Len Brown
-Intel Open Source Technology Center
+The swapcache case is ok because swapoff will wait on the page_lock of swapcache page.
+Is this will really happen or Am I miss something ?
+Any reply would be really grateful. Thanks! :)
