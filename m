@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F7734CBE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F043934C872
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236742AbhC2Iye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:54:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
+        id S233888AbhC2IWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234166AbhC2Ifp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:35:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8398619C1;
-        Mon, 29 Mar 2021 08:35:17 +0000 (UTC)
+        id S232829AbhC2IO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:14:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF42F61959;
+        Mon, 29 Mar 2021 08:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006918;
-        bh=nWwZMBbHDGySQIls979FUmWdlGjDxo5ApWKN9T37VD4=;
+        s=korg; t=1617005662;
+        bh=IbK9jyQI8KiJR0IZteICTrmpT+15gQ4hoLVWkZBduP4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cQh13/fER5+OanO6e4ljnm3ijQIbS6qE35rif9V5GuojlTRSWsmCsavM/ToaRPrlD
-         f+amoGjvuSuylsnfstBOWgsYpm+pAAP6ZIuYoftrevTDLx5po8beFp7v2016CZixvg
-         6/KgRIfTy1oeJiQj5cvz59DGFDGp0R5bPcpLIAWo=
+        b=aO+ymY9dZTQdgI420Vzp6+AUDuqB2amoHlcBTQY+SJ5fce9QufA9PkLNzczLtPLoz
+         Y0+U9e/R3eaqb5OPd+LVDOETsstUCnUx925+xet5vMtMUuPkrwdXzAPZkWAQyuGTI6
+         cYW+BUW+QTfiYMmdd5CDKQ0ibl6w7NssQen+qu+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Angelo Dureghello <angelo@kernel-space.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 150/254] can: flexcan: flexcan_chip_freeze(): fix chip freeze for missing bitrate
+Subject: [PATCH 5.4 038/111] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
 Date:   Mon, 29 Mar 2021 09:57:46 +0200
-Message-Id: <20210329075638.135306988@linuxfoundation.org>
+Message-Id: <20210329075616.441743332@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Angelo Dureghello <angelo@kernel-space.org>
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-[ Upstream commit 47c5e474bc1e1061fb037d13b5000b38967eb070 ]
+[ Upstream commit 61bf318eac2c13356f7bd1c6a05421ef504ccc8a ]
 
-For cases when flexcan is built-in, bitrate is still not set at
-registering. So flexcan_chip_freeze() generates:
+In https://bugs.gentoo.org/769614 Dmitry noticed that
+`ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
 
-[    1.860000] *** ZERO DIVIDE ***   FORMAT=4
-[    1.860000] Current process id is 1
-[    1.860000] BAD KERNEL TRAP: 00000000
-[    1.860000] PC: [<402e70c8>] flexcan_chip_freeze+0x1a/0xa8
+The bug is in mismatch between get/set errors:
 
-To allow chip freeze, using an hardcoded timeout when bitrate is still
-not set.
+static inline long syscall_get_error(struct task_struct *task,
+                                     struct pt_regs *regs)
+{
+        return regs->r10 == -1 ? regs->r8:0;
+}
 
-Fixes: ec15e27cc890 ("can: flexcan: enable RX FIFO after FRZ/HALT valid")
-Link: https://lore.kernel.org/r/20210315231510.650593-1-angelo@kernel-space.org
-Signed-off-by: Angelo Dureghello <angelo@kernel-space.org>
-[mkl: use if instead of ? operator]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+static inline long syscall_get_return_value(struct task_struct *task,
+                                            struct pt_regs *regs)
+{
+        return regs->r8;
+}
+
+static inline void syscall_set_return_value(struct task_struct *task,
+                                            struct pt_regs *regs,
+                                            int error, long val)
+{
+        if (error) {
+                /* error < 0, but ia64 uses > 0 return value */
+                regs->r8 = -error;
+                regs->r10 = -1;
+        } else {
+                regs->r8 = val;
+                regs->r10 = 0;
+        }
+}
+
+Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
+
+Link: https://lkml.kernel.org/r/20210221002554.333076-2-slyfox@gentoo.org
+Link: https://bugs.gentoo.org/769614
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+Reported-by: Dmitry V. Levin <ldv@altlinux.org>
+Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
+Cc: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/ia64/include/asm/syscall.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 2893297555eb..a9502fbc6dd6 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -697,9 +697,15 @@ static int flexcan_chip_disable(struct flexcan_priv *priv)
- static int flexcan_chip_freeze(struct flexcan_priv *priv)
+diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
+index 6c6f16e409a8..0d23c0049301 100644
+--- a/arch/ia64/include/asm/syscall.h
++++ b/arch/ia64/include/asm/syscall.h
+@@ -32,7 +32,7 @@ static inline void syscall_rollback(struct task_struct *task,
+ static inline long syscall_get_error(struct task_struct *task,
+ 				     struct pt_regs *regs)
  {
- 	struct flexcan_regs __iomem *regs = priv->regs;
--	unsigned int timeout = 1000 * 1000 * 10 / priv->can.bittiming.bitrate;
-+	unsigned int timeout;
-+	u32 bitrate = priv->can.bittiming.bitrate;
- 	u32 reg;
+-	return regs->r10 == -1 ? regs->r8:0;
++	return regs->r10 == -1 ? -regs->r8:0;
+ }
  
-+	if (bitrate)
-+		timeout = 1000 * 1000 * 10 / bitrate;
-+	else
-+		timeout = FLEXCAN_TIMEOUT_US / 10;
-+
- 	reg = priv->read(&regs->mcr);
- 	reg |= FLEXCAN_MCR_FRZ | FLEXCAN_MCR_HALT;
- 	priv->write(reg, &regs->mcr);
+ static inline long syscall_get_return_value(struct task_struct *task,
 -- 
 2.30.1
 
