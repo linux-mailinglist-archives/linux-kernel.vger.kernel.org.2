@@ -2,157 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E23E34D627
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5217E34D628
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhC2RiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:38:10 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43632 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhC2Rho (ORCPT
+        id S230292AbhC2RjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:39:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230475AbhC2Ri4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:37:44 -0400
-Received: by mail-ot1-f43.google.com with SMTP id m21-20020a9d7ad50000b02901b83efc84a0so13009216otn.10;
-        Mon, 29 Mar 2021 10:37:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GQhrQowW8xIEfUyJDufAx+rPZsQDmTvEu9++gWrDQO0=;
-        b=lo0MuY14nX3KYjW7Tx+q5U9nGHuE6fCw/M0ao8GV7TywU2J7zu54C3BsB+5588PIEg
-         dVmQrNOSBuphNzq4NoXEf+0qtikNyNqN5SaY6Rnp2mLTFP48SqyN8MC+T3+rkhSo0y5C
-         tFGWh3SEXvucXIs0bcSnBlgrHiBu4OhYPRx/LQtM2WyaAfg8eYc2PU6n/F3DZbl0WRap
-         7n4g6niQdjEqmcVy6MxJkAAmzvzcUqZ6c38+IxhZeimd0AzcqZBwkzTEH6dK1q+ocUlW
-         2lBz3TgTdeilOS0ncFwPBW9mRQsfBz1xTfDdbi2Np4pJIu43MGZiYY2nJLyq+8uzcxBv
-         X/3A==
-X-Gm-Message-State: AOAM532NtJ0PJ+9OiZTZFUnAlXLfWuBOzzHVzsnoUiJay7pv+RJ3opAh
-        NF6RYhx0JlEFj+f1uTv6cDrppg207fZk2RhvEMs=
-X-Google-Smtp-Source: ABdhPJzM1TGowHVgIa6UwFzMtretdTIZcL5OKDWcEZSb1ZAJeFWDuASsX/InfFqyD1VLPpNN83xTsoXxcShEchKt85w=
-X-Received: by 2002:a05:6830:20d2:: with SMTP id z18mr23368258otq.260.1617039463407;
- Mon, 29 Mar 2021 10:37:43 -0700 (PDT)
+        Mon, 29 Mar 2021 13:38:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617039536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WJW4TnVUJ4bhGHSGrgous6BbDZSVb6GpQoAwG+aui6U=;
+        b=cKe1KGaOtN1m2Jjm/d/tfrkv34keamhMs9AMUSeHZMnJcpqg63PCoGhekNe5y6ajxqUrEY
+        GTh85L9wzMjTcWJV6Ci2I5UKFf8R4bNGhqwqDMS9aQ5tL7ckaZcG55wsW3Kpucbi88CpdZ
+        7S80mtfrM0bhBxSztU0bQaKrl6B8Ebk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-596-1LdUAWD0P9CMN-QLrNF8ZQ-1; Mon, 29 Mar 2021 13:38:51 -0400
+X-MC-Unique: 1LdUAWD0P9CMN-QLrNF8ZQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE22D801814;
+        Mon, 29 Mar 2021 17:38:50 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.193.79])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CFFF51017CF5;
+        Mon, 29 Mar 2021 17:38:49 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 29 Mar 2021 19:38:50 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 19:38:48 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Igor Zhbanov <i.zhbanov@omprussia.ru>
+Cc:     linux-trace-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Mutual debugging of 2 processes can stuck in unkillable stopped
+ state
+Message-ID: <20210329173848.GC24849@redhat.com>
+References: <f2f32ffa-52ad-ff67-19d8-95305a70a6f8@omprussia.ru>
+ <20210329164900.GB24849@redhat.com>
+ <4124a89e-a62e-0c51-1f46-8409867a626a@omprussia.ru>
 MIME-Version: 1.0
-References: <20210324152219.1456012-1-vkuznets@redhat.com> <CAJZ5v0jFRhgVPtH=NJy9NJ+PGV3OXsEjb3U7_0q6fOLUqYJXZA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jFRhgVPtH=NJy9NJ+PGV3OXsEjb3U7_0q6fOLUqYJXZA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 29 Mar 2021 19:37:32 +0200
-Message-ID: <CAJZ5v0g0PcRD=PPMkzM-GNrxpmy4on0RyBE8ujoiDi6TJ6W8KQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Al Stone <ahs3@redhat.com>, Zhang Rui <rui.zhang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4124a89e-a62e-0c51-1f46-8409867a626a@omprussia.ru>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 4:37 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Wed, Mar 24, 2021 at 4:23 PM Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
-> >
-> > Commit 496121c02127 ("ACPI: processor: idle: Allow probing on platforms
-> > with one ACPI C-state") broke CPU0 hotplug on certain systems, e.g.
-> > I'm observing the following on AWS Nitro (e.g r5b.xlarge but other
-> > instance types are affected as well):
-> >
-> >  # echo 0 > /sys/devices/system/cpu/cpu0/online
-> >  # echo 1 > /sys/devices/system/cpu/cpu0/online
-> >  <10 seconds delay>
-> >  -bash: echo: write error: Input/output error
-> >
-> > In fact, the above mentioned commit only revealed the problem and did
-> > not introduce it. On x86, to wakeup CPU an NMI is being used and
-> > hlt_play_dead()/mwait_play_dead() loops are prepared to handle it:
-> >
-> >         /*
-> >          * If NMI wants to wake up CPU0, start CPU0.
-> >          */
-> >         if (wakeup_cpu0())
-> >                 start_cpu0();
-> >
-> > cpuidle_play_dead() -> acpi_idle_play_dead() (which is now being called on
-> > systems where it wasn't called before the above mentioned commit) serves
-> > the same purpose but it doesn't have a path for CPU0. What happens now on
-> > wakeup is:
-> > - NMI is sent to CPU0
-> > - wakeup_cpu0_nmi() works as expected
-> > - we get back to while (1) loop in acpi_idle_play_dead()
-> > - safe_halt() puts CPU0 to sleep again.
-> >
-> > The straightforward/minimal fix is add the special handling for CPU0 on x86
-> > and that's what the patch is doing.
-> >
-> > Fixes: 496121c02127 ("ACPI: processor: idle: Allow probing on platforms with one ACPI C-state")
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->
-> This looks reasonable to me, but I'll give others some time to respond.
+Hi Igor,
 
-No comments, so applied as 5.12-rc material, thanks!
+So. As expected, they sleep in EVENT_EXIT _after_ you have already sent SIGKILL.
 
-> > ---
-> >  arch/x86/include/asm/smp.h    | 1 +
-> >  arch/x86/kernel/smpboot.c     | 2 +-
-> >  drivers/acpi/processor_idle.c | 7 +++++++
-> >  3 files changed, 9 insertions(+), 1 deletion(-)
+Oh. I can only repeat that PTRACE_EVENT_EXIT must die ;) Or at least we should
+finally define its semantics.
+
+Igor, thanks for your report, but (I think) this has nothing to do with mutual
+debugging. I'll return to this problem in a couple of days, I'm a bit busy right
+now.
+
+Thanks,
+
+Oleg.
+
+On 03/29, Igor Zhbanov wrote:
+> Hi Oleg!
+> 
+> I've tried both 5.3.18 and 5.10.0. The behavior is the same.
+> The important thing is to run "exec strace -p ..." on the second terminal
+> to create the loop A->B->A.
+> 
+> So the last line from the first strace we see is:
+> ptrace(PTRACE_SEIZE, 1990, NULL, PTRACE_O_TRACESYSGOOD|PTRACE_O_TRACEEXEC|PTRACE_O_TRACEEXIT
+> 
+> I.e. it printed the syscall prior to its execution and hanged after the
+> execution.
+> 
+> izh@suse2:~> ps awux|grep strace
+> izh       1891  0.0  0.0  24752  3828 pts/1    ts+  19:52   0:00 strace -p 1990
+> izh       1990  0.0  0.0  24752  3628 pts/0    t+   19:53   0:00 strace -p 1891
+> 
+> izh@suse2:~> kill 1990 1891
+> izh@suse2:~> kill -9 1990 1891
+> 
+> izh@suse2:~> sudo cat /proc/1891/stack
+> [sudo] password for root:
+> [<0>] ptrace_stop+0x14a/0x260
+> [<0>] ptrace_do_notify+0x91/0xb0
+> [<0>] ptrace_notify+0x4e/0x70
+> [<0>] do_exit+0x910/0xb70
+> [<0>] do_group_exit+0x3a/0xa0
+> [<0>] get_signal+0x124/0x800
+> [<0>] arch_do_signal_or_restart+0xa9/0x290
+> [<0>] exit_to_user_mode_prepare+0xe7/0x1a0
+> [<0>] syscall_exit_to_user_mode+0x18/0x40
+> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> izh@suse2:~> sudo cat /proc/1990/stack
+> [<0>] ptrace_stop+0x14a/0x260
+> [<0>] ptrace_do_notify+0x91/0xb0
+> [<0>] ptrace_notify+0x4e/0x70
+> [<0>] do_exit+0x910/0xb70
+> [<0>] do_group_exit+0x3a/0xa0
+> [<0>] get_signal+0x124/0x800
+> [<0>] arch_do_signal_or_restart+0xa9/0x290
+> [<0>] exit_to_user_mode_prepare+0xe7/0x1a0
+> [<0>] syscall_exit_to_user_mode+0x18/0x40
+> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> izh@suse2:~> cat /proc/1891/status
+> Name:   strace
+> Umask:  0022
+> State:  t (tracing stop)
+> Tgid:   1891
+> Ngid:   0
+> Pid:    1891
+> PPid:   1890
+> TracerPid:      1990
+> Uid:    1000    1000    1000    1000
+> Gid:    100     100     100     100
+> FDSize: 256
+> Groups: 100
+> NStgid: 1891
+> NSpid:  1891
+> NSpgid: 1891
+> NSsid:  1891
+> VmPeak:    24752 kB
+> VmSize:    24752 kB
+> VmLck:         0 kB
+> VmPin:         0 kB
+> VmHWM:      3828 kB
+> VmRSS:      3828 kB
+> RssAnon:             520 kB
+> RssFile:            3308 kB
+> RssShmem:              0 kB
+> VmData:      284 kB
+> VmStk:       132 kB
+> VmExe:      1108 kB
+> VmLib:      2828 kB
+> VmPTE:        80 kB
+> VmSwap:        0 kB
+> HugetlbPages:          0 kB
+> CoreDumping:    0
+> THP_enabled:    1
+> Threads:        1
+> SigQ:   4/15639
+> SigPnd: 0000000000000000
+> ShdPnd: 0000000000014100
+> SigBlk: 0000000000002000
+> SigIgn: 0000000000300000
+> SigCgt: 0000000180007007
+> CapInh: 0000000000000000
+> CapPrm: 0000000000000000
+> CapEff: 0000000000000000
+> CapBnd: 000001ffffffffff
+> CapAmb: 0000000000000000
+> NoNewPrivs:     0
+> Seccomp:        0
+> Seccomp_filters:        0
+> Speculation_Store_Bypass:       vulnerable
+> SpeculationIndirectBranch:      always enabled
+> Cpus_allowed:   7
+> Cpus_allowed_list:      0-2
+> Mems_allowed:   00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
+> Mems_allowed_list:      0
+> voluntary_ctxt_switches:        1561
+> nonvoluntary_ctxt_switches:     7
+> 
+> izh@suse2:~> cat /proc/1990/status
+> Name:   strace
+> Umask:  0022
+> State:  t (tracing stop)
+> Tgid:   1990
+> Ngid:   0
+> Pid:    1990
+> PPid:   1847
+> TracerPid:      1891
+> Uid:    1000    1000    1000    1000
+> Gid:    100     100     100     100
+> FDSize: 256
+> Groups: 100
+> NStgid: 1990
+> NSpid:  1990
+> NSpgid: 1990
+> NSsid:  1847
+> VmPeak:    24752 kB
+> VmSize:    24752 kB
+> VmLck:         0 kB
+> VmPin:         0 kB
+> VmHWM:      3628 kB
+> VmRSS:      3628 kB
+> RssAnon:             520 kB
+> RssFile:            3108 kB
+> RssShmem:              0 kB
+> VmData:      284 kB
+> VmStk:       132 kB
+> VmExe:      1108 kB
+> VmLib:      2828 kB
+> VmPTE:        88 kB
+> VmSwap:        0 kB
+> HugetlbPages:          0 kB
+> CoreDumping:    0
+> THP_enabled:    1
+> Threads:        1
+> SigQ:   4/15639
+> SigPnd: 0000000000000000
+> ShdPnd: 0000000000014100
+> SigBlk: 0000000000002000
+> SigIgn: 0000000000300000
+> SigCgt: 0000000180007007
+> CapInh: 0000000000000000
+> CapPrm: 0000000000000000
+> CapEff: 0000000000000000
+> CapBnd: 000001ffffffffff
+> CapAmb: 0000000000000000
+> NoNewPrivs:     0
+> Seccomp:        0
+> Seccomp_filters:        0
+> Speculation_Store_Bypass:       vulnerable
+> SpeculationIndirectBranch:      always enabled
+> Cpus_allowed:   7
+> Cpus_allowed_list:      0-2
+> Mems_allowed:   00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
+> Mems_allowed_list:      0
+> voluntary_ctxt_switches:        180
+> nonvoluntary_ctxt_switches:     848
+> 
+> On 29.03.2021 19:49, Oleg Nesterov wrote:
+> >On 03/29, Igor Zhbanov wrote:
+> >>
+> >>Mutual debugging of 2 processes can stuck in unkillable stopped state
 > >
-> > diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> > index c0538f82c9a2..57ef2094af93 100644
-> > --- a/arch/x86/include/asm/smp.h
-> > +++ b/arch/x86/include/asm/smp.h
-> > @@ -132,6 +132,7 @@ void native_play_dead(void);
-> >  void play_dead_common(void);
-> >  void wbinvd_on_cpu(int cpu);
-> >  int wbinvd_on_all_cpus(void);
-> > +bool wakeup_cpu0(void);
+> >can't reproduce and can't understand...
 > >
-> >  void native_smp_send_reschedule(int cpu);
-> >  void native_send_call_func_ipi(const struct cpumask *mask);
-> > diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> > index 02813a7f3a7c..f877150a91da 100644
-> > --- a/arch/x86/kernel/smpboot.c
-> > +++ b/arch/x86/kernel/smpboot.c
-> > @@ -1659,7 +1659,7 @@ void play_dead_common(void)
-> >         local_irq_disable();
-> >  }
+> >>Hi!
+> >>
+> >>When one process, let's say "A", is tracing the another process "B", and the
+> >>process "B" is trying to attach to the process "A", then both of them are
+> >>getting stuck in the "t+" state. And they are ignoring all of the signals
+> >>including the SIGKILL,
 > >
-> > -static bool wakeup_cpu0(void)
-> > +bool wakeup_cpu0(void)
-> >  {
-> >         if (smp_processor_id() == 0 && enable_start_cpu0)
-> >                 return true;
-> > diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> > index d93e400940a3..eb1101b16c08 100644
-> > --- a/drivers/acpi/processor_idle.c
-> > +++ b/drivers/acpi/processor_idle.c
-> > @@ -29,6 +29,7 @@
-> >   */
-> >  #ifdef CONFIG_X86
-> >  #include <asm/apic.h>
-> > +#include <asm/cpu.h>
-> >  #endif
+> >Why do you think so? What is your kernel version?
 > >
-> >  #define _COMPONENT              ACPI_PROCESSOR_COMPONENT
-> > @@ -541,6 +542,12 @@ static int acpi_idle_play_dead(struct cpuidle_device *dev, int index)
-> >                         wait_for_freeze();
-> >                 } else
-> >                         return -ENODEV;
-> > +
-> > +#ifdef CONFIG_X86
-> > +               /* If NMI wants to wake up CPU0, start CPU0. */
-> > +               if (wakeup_cpu0())
-> > +                       start_cpu0();
-> > +#endif
-> >         }
+> >"t" means TASK_TRACED, SIGKILL should wake it up and terminate.
 > >
-> >         /* Never reached */
-> > --
-> > 2.30.2
+> >>so it is not possible to terminate them without
+> >>a reboot.
+> >>
+> >>To reproduce:
+> >>1) Run two terminals
+> >>2) Attach with "strace -p ..." from the first terminal to the shell (bash) of
+> >>    the second terminal.
+> >>3) In the second terminal run "exec strace -p ..." to attach to the PID of the
+> >>    first strace.
+> >>
+> >>Then you'll see that the second strace is hanging without any output. And the
+> >>first strace will output following and hang too:
+> >>ptrace(PTRACE_SEIZE, 11795, NULL,
+> >>        PTRACE_O_TRACESYSGOOD|PTRACE_O_TRACEEXEC|PTRACE_O_TRACEEXIT
+> >>
+> >>(The 11795 is the PID of the first strace itself.)
+> >>
+> >>And in the process list you will see following:
+> >>ps awux | grep strace
+> >>user   11776  0.0  0.0  24752  2248 pts/3    t+   13:53   0:00 strace -p 11795
+> >>user   11795  0.0  0.0  24752  3888 pts/1    t+   13:54   0:00 strace -p 11776
 > >
+> >OK, may be they sleep in PTRACE_EVENT_EXIT? After you tried to send SIGKILL?
+> >
+> >please show us the output from "cat /proc/{11795,11776}/stack". And
+> >"cat /proc/{11795,11776}/status" just in case.
+> 
+
