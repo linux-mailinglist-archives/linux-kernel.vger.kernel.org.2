@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247C634D639
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F8C34D63B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhC2RqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbhC2RqH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:46:07 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063B9C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:46:06 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso13072061otq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BQKkZ6Ug92WKVE3kMUgFwD2xtwQ5flzTIZnOczAKft4=;
-        b=mcP8xaGRZwMkDj1Qn5ZmTkvj3oKV7IA/5psShr7lH1lBPM3dFr8DTdRTE1HQ8e9DdV
-         eqQtjM/f32h5k9oX4VqjKwSGsozy78u2h6wG7J3hz0S3bQhu/cb9eib1zQlwXr7K8NK8
-         4GmIEVsxwOSu0K+zYi47gBFaXQcbWftXhNqJ5WSfsXF5d3xP+2+QT9hKQpDnV6w3H1S6
-         YF3IqbY98ZmtNc/49Q5kHjr8DDA2LV1AGl8n0ive8taKPPvsukRtm0yHS3D0sfXETkFD
-         PImLPWYfdJvOaPKnZqgEYaTOe6HJ0mP+NsYnXbmtTd20MVvo+awXXg0WT4bKTGQlNBGu
-         J40Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BQKkZ6Ug92WKVE3kMUgFwD2xtwQ5flzTIZnOczAKft4=;
-        b=HnHOYi/ouy2XuTe/lT7wRw7lLdHMUvWbQZWUANXPvH0MqN1kZqPSeZHINnwlMVDt0m
-         jU5O3uwpHU/Ae4UQwC6Yh5A5xdt7IB0f7oZuL9XmOn+p9/j8gkLJa8hOaMRTg3zNRNB0
-         1CmB+bSRD5pH2kVIMaCDsf8J8zC4i9CEGOze+tF9YXGI2IeG5KhTtWWjMnV8X6dBfiMJ
-         YTTIG+NKFrCgbSB4LH35B843p+MIbOLX4Q7P9idqfxF9RE3X27a0oc5Kyf7TbHIpXQ8u
-         +P/pSZzCZhlTrXktn5SLvnX+SYrPK+dq0ufM7k0u1aAvQVtoAKK6sMDx0IYJA37emK6c
-         mzOg==
-X-Gm-Message-State: AOAM532RCbmm50z7gIg1WQ6dlXQGyfJpvZ4hw+Qy+LLUAHP5+U5EUkl5
-        22ozbkKKJzShY3SgEkkxQJQglO2njMpeNRcwsXfkMw==
-X-Google-Smtp-Source: ABdhPJwI3CW1GvqXIdh+5roVEauaGWQxqiSWxba/K29H/WAJHncRfA1BmGgyd7qwGLHvXAKHKf4swPmQaUc4Z9TKig8=
-X-Received: by 2002:a05:6830:1c6e:: with SMTP id s14mr23850224otg.17.1617039965937;
- Mon, 29 Mar 2021 10:46:05 -0700 (PDT)
+        id S230420AbhC2RrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230298AbhC2Rqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 13:46:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA1F56192E;
+        Mon, 29 Mar 2021 17:46:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617040010;
+        bh=hFsIuqdNEm7bApfHZANY05w0cyfllwS7fRcgazdqxuk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tqijS85JKL5wU3IwLk9aSl12pvJ3r1NEP2/tNswDK3Ai2GJUD1tpUMQxPaD8HlCeh
+         W6MIjurh5VU6Ue2uCglMsFqs6ltUDJyPLjnOnth22E+IgKHErySaluHdKW4t34PSqe
+         qUfPisRlh5YV70y9NNgN4EHGaUtrGwxcsjtnw4OLuaaROLcOHV3vOO3lz0mfRtMPAv
+         PjchE9qcOmH+nj/3kUdj/sDkpaXEgbUpd+UxzM65+p4Hp2TIyJYKV8eu6NANgOCLMA
+         FL+UvM5HLDiXSkut2uhwfQoIDS6TmSukvimgOCeDoDvwMpoWkPFg0mMcna66Nr07Un
+         DG3Cu9Mr5mkZw==
+Date:   Mon, 29 Mar 2021 10:46:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] gpiolib: Allow drivers to return EOPNOTSUPP from
+ config
+Message-ID: <20210329104649.6e2ca6c7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YGHxejGI2x4X3EEe@smile.fi.intel.com>
+References: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+        <d2c8b7f9a3b420c2764f645da531a57db16905f3.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
+        <CAHp75VdXa2bkJ+ej+HNYstLeK4TF+L5H3wTgm0CgJ9hYQeU+ZQ@mail.gmail.com>
+        <1ceb7dc5c2fa376470ab9274020fddf1c2f1584f.camel@perches.com>
+        <YGHxejGI2x4X3EEe@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <d60bba0e6f354cbdbd0ae16314edeb9a@intel.com> <66f453a79f2541d4b05bcd933204f1c9@intel.com>
- <YGIDBAboELGgMgXy@elver.google.com> <796ff05e-c137-cbd4-252b-7b114abaced9@intel.com>
-In-Reply-To: <796ff05e-c137-cbd4-252b-7b114abaced9@intel.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 29 Mar 2021 19:45:53 +0200
-Message-ID: <CANpmjNP4Jjo2W2K_2nVv3UmOGB8c5k9Z0iOFRFD9bQpeWr+8mA@mail.gmail.com>
-Subject: Re: I915 CI-run with kfence enabled, issues found
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 19:32, Dave Hansen <dave.hansen@intel.com> wrote:
->
-> On 3/29/21 9:40 AM, Marco Elver wrote:
-> > It looks like the code path from flush_tlb_one_kernel() to
-> > invalidate_user_asid()'s this_cpu_ptr() has several feature checks, so
-> > probably some feature difference between systems where it triggers and
-> > it doesn't.
-> >
-> > As far as I'm aware, there is no restriction on where
-> > flush_tlb_one_kernel() is called. We could of course guard it but I
-> > think that's wrong.
-> >
-> > Other than that, I hope the x86 maintainers know what's going on here.
-> >
-> > Just for reference, the stack traces in the above logs start with:
-> >
-> > | <3> [31.556004] BUG: using smp_processor_id() in preemptible [00000000] code: dmesg/1075
-> > | <4> [31.556070] caller is invalidate_user_asid+0x13/0x50
-> > | <4> [31.556078] CPU: 6 PID: 1075 Comm: dmesg Not tainted 5.12.0-rc4-gda4a2b1a5479-kfence_1+ #1
-> > | <4> [31.556081] Hardware name: Hewlett-Packard HP Pro 3500 Series/2ABF, BIOS 8.11 10/24/2012
-> > | <4> [31.556084] Call Trace:
-> > | <4> [31.556088]  dump_stack+0x7f/0xad
-> > | <4> [31.556097]  check_preemption_disabled+0xc8/0xd0
-> > | <4> [31.556104]  invalidate_user_asid+0x13/0x50
-> > | <4> [31.556109]  flush_tlb_one_kernel+0x5/0x20
-> > | <4> [31.556113]  kfence_protect+0x56/0x80
-> > |     ...........
->
-> Our naming here isn't great.
->
-> But, the "one" in flush_tlb_one_kernel() really refers to two "ones":
-> 1. Flush one single address
-> 2. Flush that address from one CPU's TLB
->
-> The reason preempt needs to be off is that it doesn't make any sense to
-> flush one TLB entry from a "random" CPU.  It only makes sense to flush
-> it when preempt is disabled and you *know* which CPU's TLB you're flushing.
+On Mon, 29 Mar 2021 18:25:46 +0300 Andy Shevchenko wrote:
+> On Mon, Mar 29, 2021 at 08:08:52AM -0700, Joe Perches wrote:
+> > On Mon, 2021-03-29 at 14:59 +0300, Andy Shevchenko wrote:  
+> > > On Mon, Mar 29, 2021 at 2:43 PM Matti Vaittinen
+> > > <matti.vaittinen@fi.rohmeurope.com> wrote:  
+> > > > 
+> > > > The checkpacth instructs to switch from ENOSUPP to EOPNOTSUPP.  
+> > > > > WARNING: ENOTSUPP is not a SUSV4 error code, prefer EOPNOTSUPP  
+> > > > 
+> > > > Make the gpiolib allow drivers to return both so driver developers
+> > > > can avoid one of the checkpatch complaints.  
+> > > 
+> > > Internally we are fine to use the ENOTSUPP.
+> > > Checkpatch false positives there.
+> > > 
+> > > I doubt we need this change. Rather checkpatch should rephrase this to
+> > > point out that this is only applicable to _user-visible_ error path.
+> > > Cc'ed Joe.  
+> > 
+> > Adding CC for Jakub Kicinski who added that particular rule/test.
+> > 
+> > And the output message report of the rule is merely a suggestion indicating
+> > a preference.  It's always up to an individual to accept/reject.
+> > 
+> > At best, perhaps wordsmithing the checkpatch message might be an OK option.  
+> 
+> Thanks, Joe!
+> 
+> Jakub, what do you think?
 
-Thanks for the rationale behind needing preempt off.
-
-Though in our case it really is best-effort, as long as we hit the CPU
-of the currently running task most of the time.
-
-Doing it to all CPUs is too expensive, and we can tolerate this being
-approximate (nothing bad will happen, KFENCE might just miss a bug and
-that's ok).
-
-> I think kfence needs to be using flush_tlb_kernel_range().  That does
-> all the IPI fanciness to flush the TLBs on *ALL* CPUs, not just the
-> current one.
-
-The other problem is that this code can be called from interrupts.
-This is already documented in arch/x86/include/asm/kfence.h
-
-> BTW, the preempt checks in flush_tlb_one_kernel() are dependent on KPTI
-> being enabled.  That's probably why you don't see this everywhere.  We
-> should probably have unconditional preempt checks in there.
-
-In which case I'll add a preempt_disable/enable() pair to
-kfence_protect_page() in arch/x86/include/asm/kfence.h.
-
-Thanks,
--- Marco
+Agreed, weaving into the message that ENOTSUPP is okay internally
+sounds good. Perhaps we should append "if error may be returned to 
+user space"?
