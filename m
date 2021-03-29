@@ -2,119 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CE734D739
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B937234D6FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231781AbhC2Sb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 14:31:26 -0400
-Received: from forward2-smtp.messagingengine.com ([66.111.4.226]:50627 "EHLO
-        forward2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231750AbhC2SbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 14:31:08 -0400
-X-Greylist: delayed 448 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Mar 2021 14:31:08 EDT
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailforward.nyi.internal (Postfix) with ESMTP id 69AC21940D29;
-        Mon, 29 Mar 2021 14:23:40 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 29 Mar 2021 14:23:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+jhRBl
-        mzSn44QvKDx4qZJ6h57R67+gDRjs5ayVeerd8=; b=ZxgPDIIiXEncekbQMrrRFr
-        PGtJDQFOmevpqcLFnVIDzgBmnGwvsEtjd8z09H2HZPe4feklM/lp1a9u+MpzA6VE
-        SfNIVu1d7RWnq1+wqnv21zzciyOy3t99z9L0CmQMHfoNY5Pox/9thzPOLX/oWrdW
-        gC3BoJ+sxsDVcOIbFxqckeWrj7Ejl7AjTh6nAURtILHYOslY0epRX55TkUol6t4c
-        jix8Vb47IbA9vD+GJ0b2rG499fcrfz1LPmYvgpSO8CzAaZfXruHrz8w+2a8x9Zg5
-        pTct2N8vfwBakXVJeNEq93hcc4koScjM17y14dQ41y8MRK2wBahlGTLZ1aaEisrg
-        ==
-X-ME-Sender: <xms:KRtiYO09-l6KBNv4CI4_EsqOP84c61ayhKIKBkyywWIxjW_taRbItg>
-    <xme:KRtiYPXRI0MYF1Wu1oQw2ui1AOh_p9p1UUQPHmIlHue7MCwYzACfj2UMhvBdbB9Dp
-    MnoM0BHmqAWH3Ai-ck>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedguddvhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefvufgjfhfhfffkgggtsehttdertddttddtnecuhfhrohhmpeffrghvihgu
-    ucfgughmohhnughsohhnuceouggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrd
-    gtohhmqeenucggtffrrghtthgvrhhnpeehleeffeduiedugedulefgteegteekleevueei
-    teduleehjeekieelkeevueektdenucfkphepkedurddukeejrddviedrvdefkeenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegurghvihgurdgv
-    ughmohhnughsohhnsehorhgrtghlvgdrtghomh
-X-ME-Proxy: <xmx:KRtiYAPHDMAi0bftmtLomUUdfY23u8tcuxUu33b7NwRdkpYHzQzAIA>
-    <xmx:KRtiYC1B5kc2xMbA_BxEffWIp0Upgbf1zrmaf6mON2okusMFbFmGgg>
-    <xmx:KRtiYERJ32ZML-XwRDRnEjOIsOZD2g-lOgk_XyazyGl8SlxDuzTcXw>
-    <xmx:LBtiYJv98AtyKK4FHN8V6zm-_H9DwXh0K9CDKYgkbYqyDvQVfmlkGlKpkZ4>
-Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net [81.187.26.238])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8AC001080057;
-        Mon, 29 Mar 2021 14:23:36 -0400 (EDT)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id b3066ee5;
-        Mon, 29 Mar 2021 18:23:35 +0000 (UTC)
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>, x86@kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Subject: Re: [PATCH v5 0/5] KVM: x86: dump_vmcs: don't assume
- GUEST_IA32_EFER, show MSR autoloads/autosaves
-In-Reply-To: <20210318120841.133123-1-david.edmondson@oracle.com>
-References: <20210318120841.133123-1-david.edmondson@oracle.com>
-X-HGTTG: zarquon
-From:   David Edmondson <david.edmondson@oracle.com>
-Date:   Mon, 29 Mar 2021 19:23:35 +0100
-Message-ID: <cunsg4dhl94.fsf@oracle.com>
+        id S231629AbhC2SXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:23:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:14602 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231426AbhC2SXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:23:41 -0400
+IronPort-SDR: Ks1g1z38f7Lu7mG7BWLb1SZL2wwE1sW/7Jz2Am/q/xk9DGJrsnuHil9E0YnoearUIYAacL4EWQ
+ uRdNu5rBAPIw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="276769306"
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="276769306"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 11:23:41 -0700
+IronPort-SDR: PfbSoC5Bfjr/c97hjEXpMdg4SIvj++py/gb8iqdJksfVrBWn1O/QAVuo+dY3pZW/DjNl+AYJuS
+ qsbz0BxiZcyw==
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="417789074"
+Received: from ideak-desk.fi.intel.com ([10.237.68.141])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 11:23:38 -0700
+Date:   Mon, 29 Mar 2021 21:23:35 +0300
+From:   Imre Deak <imre.deak@intel.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm-intel-fixes tree
+Message-ID: <20210329182335.GE233691@ideak-desk.fi.intel.com>
+References: <20210326195838.5ad4973b@canb.auug.org.au>
+ <20210329090117.6b224931@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329090117.6b224931@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2021-03-18 at 12:08:36 GMT, David Edmondson wrote:
+Hi Stephen,
 
-> v2:
-> - Don't use vcpu->arch.efer when GUEST_IA32_EFER is not available (Paolo).
-> - Dump the MSR autoload/autosave lists (Paolo).
->
-> v3:
-> - Rebase to master.
-> - Check only the load controls (Sean).
-> - Always show the PTPRs from the VMCS if they exist (Jim/Sean).
-> - Dig EFER out of the MSR autoload list if it's there (Paulo).
-> - Calculate and show the effective EFER if it is not coming from
->   either the VMCS or the MSR autoload list (Sean).
->
-> v4:
-> - Ensure that each changeset builds with just the previous set.
->
-> v5:
-> - Rebase.
-> - Remove some cruft from changeset comments.
-> - Add S-by as appropriate.
+thanks for the report.
 
-Any further comments or suggestions?
+On Mon, Mar 29, 2021 at 09:01:17AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Fri, 26 Mar 2021 19:58:38 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > After merging the drm-intel-fixes tree, today's linux-next build
+> > (htmldocs) produced this warning:
+> > 
+> > Documentation/gpu/i915:22: /drivers/gpu/drm/i915/intel_runtime_pm.c:423: WARNING: Inline strong start-string without end-string.
 
-Thanks.
+The problem seems to be the
 
-> David Edmondson (5):
->   KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is valid
->   KVM: x86: dump_vmcs should not conflate EFER and PAT presence in VMCS
->   KVM: x86: dump_vmcs should consider only the load controls of EFER/PAT
->   KVM: x86: dump_vmcs should show the effective EFER
->   KVM: x86: dump_vmcs should include the autoload/autostore MSR lists
->
->  arch/x86/kvm/vmx/vmx.c | 58 +++++++++++++++++++++++++++++-------------
->  arch/x86/kvm/vmx/vmx.h |  2 +-
->  2 files changed, 42 insertions(+), 18 deletions(-)
->
+	@ignore_usecount=true
+
+part in __intel_runtime_pm_get_if_active()'s docbook documentation. I
+can't see the problem with it, it was meant as a reference to the
+function parameter, granted I'm not sure what's the proper markup syntax
+for this.
+
+I will follow up with the following change which suppresses the warning
+and renders the html as expected unless someone can suggest a better
+way:
+
+- * If @ignore_usecount=true, a reference will be acquired even if there is no
++ * If @ignore_usecount is true, a reference will be acquired even if there is no
+
+--Imre
+
+> > 
+> > Introduced by commit
+> > 
+> >   8840e3bd981f ("drm/i915: Fix the GT fence revocation runtime PM logic")
+> 
+> This warning now exists in Linus' tree.
+> 
 > -- 
-> 2.30.2
+> Cheers,
+> Stephen Rothwell
 
-dme.
--- 
-Everybody's got something to hide, 'cept me and my monkey.
+
