@@ -2,210 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3F634C5C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5BA34C560
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 09:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhC2ICw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:02:52 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:6828 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231779AbhC2IBs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:48 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12T7w1VU002436;
-        Mon, 29 Mar 2021 10:00:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=yIOLZdcWTg/i/hNAy7PCnYN7jCAFFNCKIJbaV9azq4c=;
- b=UyGlS34ozvlveaccKfqtwmSnjvW0+eHbE1PQppNKlmPoGv9YFwsgYRaNsHA/30+zDOyN
- BzRGRX2xE/S6A5VhbBx0mFm2vnKtb5niTj/5KJ/4AfvPZJYXd2uumHqoAD+wbzs2zbK0
- TyAgDqLAlqHVDTIABlVBtgqd/XgyzTHWxf5QcgKPhBz66YUUd7bExEcft6DlNkJwtZ8E
- 5eX7apXUPP0re3mvc8yTIus8MZtyxv1Kf7jR2Suxltdt3Pcl0NJ5fnPUPFNEYdRO8ii1
- oFxgPJizjK2wKLX9c8dzIhFUkObGotJcsu+NH9lsemKktwDvYyechm3q5bCrfR/NPRIP eA== 
-Received: from eur04-vi1-obe.outbound.protection.outlook.com (mail-vi1eur04lp2058.outbound.protection.outlook.com [104.47.14.58])
-        by mx07-00178001.pphosted.com with ESMTP id 37jy132qyp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 29 Mar 2021 10:00:38 +0200
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q6Pl8a2w0tO0//sXy2aKK2Bobo3eUgowE+6TWeyZxarTWZd9sa2I0EQ2lJH5epSnJ7K+svtrdqrjU5fu022UqVnf3m4NhZh540AS7250OBA8yI/LyOUUoD7b4Cjn7C+hP3Qzr0JziBVSkepAQ9gw4X2jE531NkQRs3Op6hSsea1mOPrF0A1z9rXraQmxb37FLEqbQW7DQ15al3RFqeyxQq9jEGNE9zifEBNSsmWjKpk77CLSwoh8qJiUE9QSkDEvGpNhSLaZa9t0qFt8NBeYnslMhPWgTdyN59Q4cwC1JG1N4eKK0Yxqun7uMNXxrsb1Q2WhF+We4zRQuKZRRpOm7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yIOLZdcWTg/i/hNAy7PCnYN7jCAFFNCKIJbaV9azq4c=;
- b=ercn/N2YUg8WKu/Az8cT7W9zzaHzb+mzH7tzNPhjSxqJgn4RNvFsgtj3ZGunfDYSpdj15ZUT7qNh+jgP+ytgLc0SSb7GLBASrNyAizkh+BGzJw1Iy/RdKHHzT+JFEKk7DPS/TIILXPMIR9ZtFAUSoqRvof5cc3jmBCGH3oWnrld+K3wC998SkX8+1Y8HVj9YPknDUMK2GvhFleRM0O05f+MG4guOXCg+nloud9LRZzvltfT4iU5qpG4Jow9SXykKVabuF65qowhRRv+hJAMboS031Mah+BlFtGDM70sh2VdAJwVm4+/24kM7IBBBM+t0EuA8jbpi/lbj6nFVpwTeHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=st.com; dmarc=pass action=none header.from=st.com; dkim=pass
- header.d=st.com; arc=none
-Received: from DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:23d::22)
- by DB6PR1001MB1429.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:4:b5::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.30; Mon, 29 Mar
- 2021 08:00:31 +0000
-Received: from DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::81ed:3852:ada8:9b98]) by DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::81ed:3852:ada8:9b98%6]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
- 08:00:31 +0000
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-CC:     "tiwai@suse.de" <tiwai@suse.de>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Subject: RE: [PATCH 09/17] ASoC: sti: uniperif: align function prototypes
-Thread-Topic: [PATCH 09/17] ASoC: sti: uniperif: align function prototypes
-Thread-Index: AQHXIotsEijZJQHh4E+llmTFXyVB9aqanZQA
-Date:   Mon, 29 Mar 2021 08:00:31 +0000
-Message-ID: <DB9PR10MB4746BFA99998CD92D43521BAF17E9@DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM>
-References: <20210326215927.936377-1-pierre-louis.bossart@linux.intel.com>
- <20210326215927.936377-10-pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20210326215927.936377-10-pierre-louis.bossart@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=st.com;
-x-originating-ip: [165.225.76.79]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1de9be7b-c681-41d5-e72f-08d8f288b9a7
-x-ms-traffictypediagnostic: DB6PR1001MB1429:
-x-microsoft-antispam-prvs: <DB6PR1001MB1429389E1049BDA259D2D771F17E9@DB6PR1001MB1429.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:449;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NFpZ840wp1n4ueqhNC/z6UeKv1bcbUdX57gIWbw+UGE5JQ4ekGg6wftPe3zvixkGemIuo54CqbQ37np5IaKtIwPjtxZgN3DoMEd9oEPLiFZlE3qSTup4q79KpZSvot1IZI1zat2bWYcFlyCSo1tmsQGCvCjBodwLiGwBQ9l5R/E9Evu4VgjsRl0gqr1EEMtJD+PU2RTLDpjFGqOKX6EUMy0mkmRQyaVv/LGGXAd+rH1RNEiyHiAj2cv1nYMLgUs4zfhFEtfkFrBDbf6AjZGQWAur65qeJCLf0EbrjVKm/9xo1bFF9QPG/rVBHYrX5t4O7cVq693cpn2e6T4uOGrLWM0ynXTwW24cfMUT0hcV9P7bw3kpFH/Wla9OBNfiSzCtzSbI7lE2KNn2j6/vsnMr2ACZqpO479IObzmYoTtaKWz7FuzPddbjWwwBkNUxWeLTK/seHEgUn/YWqMX7KUa0NH2537iedb5VdrEKwiLGXtkKIDE5q+PDOhuMaViqPyO/ooeGo1+CMqOU8n7wBmzySq8vsk7UgqkMHirenvdQun7ETWJnpj5XGEi/uuy71gmlRubJqEmd0JR1xpNgvdr/2PYjgufSEwInIKsZPs633lsc1X7vQ8m2grvaOWcNiIAT4RM3jlbB7qsa6agGpBZAOg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(396003)(136003)(478600001)(86362001)(5660300002)(4326008)(38100700001)(110136005)(54906003)(66946007)(6506007)(316002)(53546011)(83380400001)(8936002)(55236004)(26005)(9686003)(52536014)(7696005)(76116006)(64756008)(66556008)(66446008)(66476007)(2906002)(186003)(71200400001)(8676002)(55016002)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?7dSc54ZYX+pi1Z7jxDlVJfUAWtHHKLMd343T3JEDc3MHMBc5w+Fm+NX5lUyk?=
- =?us-ascii?Q?1rnvICjINSmCG6LVCiNtJw4xBshJdPafo/tbaauEpX6W3Y9QVfODXvvmJefi?=
- =?us-ascii?Q?P0uq5357gtv/YT8Q+ptGR8XKoV0dS5bNHubYJhen25Xf22AeUuCMhD9bYi1C?=
- =?us-ascii?Q?epCjDcfhczYpILAOVyWdG/oAFJRf67D5P+8gQ2jhfiI5wLWLpjjjTMKj8flg?=
- =?us-ascii?Q?9JqqZcP+nS8hx7VkKWhX3N2NiPBrSqZFKldZ4kMAiM9a7ftec/xRQya9iMoR?=
- =?us-ascii?Q?9wkzqrJ01fagskyvniSRpoKiXW6rG3vJBF46ewSUuB/PUiCl6IQ5pee908y8?=
- =?us-ascii?Q?tcGUF0LOKHBSCb7Mp4lhVQNnF8mEBaJG7zW6Wq3LtL+klEG5VJ+hQMtbcCcU?=
- =?us-ascii?Q?W20flDd2JXWKCcEG1RhnuuoSC83Hqic1VMTvTVbI4h0gzLWTyDOLkTfPvL1O?=
- =?us-ascii?Q?0QtYEnPmgtR2n8N1ezRka1UZxwDplmBypyU6yUXdwpHiTXMyHmVQ7lNKvu41?=
- =?us-ascii?Q?a7Rbr9QhObUxb45tnw+dfYv79ObS64sTC9mh+JLGmvx6fSJNnRa5hPVdQ79Y?=
- =?us-ascii?Q?Tsd+qJz2i3Gir8G+sX/2EQy5dO61zn1mhWrnuYF+SoQ9ADKPsnBFuUjdTgnr?=
- =?us-ascii?Q?xVQA0uSyX+2CGnpRkx5jsGwLQxZdMEFYiXthEmQ76U/cOwz1S9zx7cAXltw5?=
- =?us-ascii?Q?8hJt35Gy9oXkwKLahgiGRufz3BIQUxPq61XXjor1zVWF/9SHDMtGUgKMtBhO?=
- =?us-ascii?Q?I9ydkTwsWeDE7tiewdYdjLem6o9w0vI7Tzjq0A9OH7/pjrbHKxdxWF2ldPTl?=
- =?us-ascii?Q?6oxTvy/kXTW2uo4m+mevawWYP4KrcfC1ivPm90oziUk0o5Vq+8Jm9pbZflMz?=
- =?us-ascii?Q?+rc2nc1iZ+OBABYJuTuZwbXXkFxXImNJgX2i90s9pz/hcSI4x1FSynfgYq7R?=
- =?us-ascii?Q?+mOeQE/MrKXnYun3qeg147ZxJ5BPTvdllxM2MHR4MYfvBPtgJYPcmyrZ6DhZ?=
- =?us-ascii?Q?cR43u3Bo5bhNOVy+241KEIvcREc1kQT5okLuemwElQPHNd0Qpqgqyef4zpMz?=
- =?us-ascii?Q?gcExDhVXlhPMw079UodcfotDszru3/SL+YZVvVfr3VMHLH5GMI1cnEBd/1+Z?=
- =?us-ascii?Q?gcO8GYat+2SF0VX9SqxRc0WQwcu0U/fk5nksTmUC5YZl3qhD5GipusNsW+sL?=
- =?us-ascii?Q?PwWQ8bEz15GeZDWr64ZjtJWHbuPTf3l8kdhl2CpMxZLHlwY3jyQUF40NCwMH?=
- =?us-ascii?Q?T7WT9fzZrnvyn9XUSNqZhoSUEgRl0LPkkj/ASJ4uX3ZQtPvP8H/Xhqv9Td2V?=
- =?us-ascii?Q?MTw=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231305AbhC2H5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 03:57:00 -0400
+Received: from mga12.intel.com ([192.55.52.136]:45546 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229873AbhC2H4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 03:56:38 -0400
+IronPort-SDR: 204H9fM/sa1Hx08e6eWxIN5rufE+umgHijetPnNxs4aNCHaboqvKbXIcLFNFl4lxIeXsXB1R5f
+ 4BvciCCMiHLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="170902063"
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="170902063"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 00:56:37 -0700
+IronPort-SDR: ZFyBHCYC06SwwoqQpsRe3C6SngPxBjApGKfIFwyAVOUAppYzUZaUydiczd9LUIYqCg84kg2TnR
+ DQ4VenUd49eg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="410960207"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by fmsmga008.fm.intel.com with ESMTP; 29 Mar 2021 00:56:34 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net 1/1] xdp: fix xdp_return_frame() kernel BUG throw for page_pool memory model
+Date:   Mon, 29 Mar 2021 16:00:39 +0800
+Message-Id: <20210329080039.32753-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: ST.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4746.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1de9be7b-c681-41d5-e72f-08d8f288b9a7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Mar 2021 08:00:31.4629
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 75e027c9-20d5-47d5-b82f-77d7cd041e8f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bEjRkS2mWTw5CK408oi/53kpDUiUP+RLVZqP+jf9pAfhqeRXWKdA57FvqLskbHcdcnh8UeQSg0BYGL657kNSQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR1001MB1429
-X-Proofpoint-GUID: JCQx20V0OoNtLXLBD5y0nlS1K_wYNuZo
-X-Proofpoint-ORIG-GUID: JCQx20V0OoNtLXLBD5y0nlS1K_wYNuZo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-03-29_04:2021-03-26,2021-03-29 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 spamscore=0 malwarescore=0 impostorscore=0 adultscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 clxscore=1011 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
- definitions=main-2103290061
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+xdp_return_frame() may be called outside of NAPI context to return
+xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
+napi_direct = false. For page_pool memory model, __xdp_return() calls
+xdp_return_frame_no_direct() unconditionally and below false negative
+kernel BUG throw happened under preempt-rt build:
 
-> -----Original Message-----
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Sent: vendredi 26 mars 2021 22:59
-> To: alsa-devel@alsa-project.org
-> Cc: tiwai@suse.de; broonie@kernel.org; linux-kernel@vger.kernel.org; Pier=
-re-
-> Louis Bossart <pierre-louis.bossart@linux.intel.com>; Arnaud POULIQUEN
-> <arnaud.pouliquen@st.com>; Liam Girdwood <lgirdwood@gmail.com>;
-> Jaroslav Kysela <perex@perex.cz>; Takashi Iwai <tiwai@suse.com>
-> Subject: [PATCH 09/17] ASoC: sti: uniperif: align function prototypes
->=20
-> cppcheck warning:
->=20
-> sound/soc/sti/uniperif_player.c:1049:24: style:inconclusive: Function
-> 'uni_player_init' argument 2 names different: declaration 'uni_player'
-> definition 'player'. [funcArgNamesDifferent]
->       struct uniperif *player)
->                        ^
-> sound/soc/sti/uniperif.h:1375:24: note: Function 'uni_player_init'
-> argument 2 names different: declaration 'uni_player' definition 'player'.
->       struct uniperif *uni_player);
->                        ^
-> sound/soc/sti/uniperif_player.c:1049:24: note: Function 'uni_player_init'
-> argument 2 names different: declaration 'uni_player'
-> definition 'player'.
->       struct uniperif *player)
->                        ^
-> sound/soc/sti/uniperif_reader.c:411:24: style:inconclusive: Function
-> 'uni_reader_init' argument 2 names different: declaration 'uni_reader'
-> definition 'reader'. [funcArgNamesDifferent]
->       struct uniperif *reader)
->                        ^
-> sound/soc/sti/uniperif.h:1380:24: note: Function 'uni_reader_init'
-> argument 2 names different: declaration 'uni_reader' definition 'reader'.
->       struct uniperif *uni_reader);
->                        ^
-> sound/soc/sti/uniperif_reader.c:411:24: note: Function 'uni_reader_init'
-> argument 2 names different: declaration 'uni_reader'
-> definition 'reader'.
->       struct uniperif *reader)
->                        ^
->=20
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com=
->
+[  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
+[  430.451678] caller is __xdp_return+0x1ff/0x2e0
+[  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
 
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+So, this patch fixes the issue by adding "if (napi_direct)" condition
+to skip calling xdp_return_frame_no_direct() if napi_direct = false.
 
-Thanks
-Arnaud
+Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+---
+ net/core/xdp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> ---
->  sound/soc/sti/uniperif.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h index
-> a16adeb7c1e9..2a5de328501c 100644
-> --- a/sound/soc/sti/uniperif.h
-> +++ b/sound/soc/sti/uniperif.h
-> @@ -1372,12 +1372,12 @@ static __maybe_unused const struct
-> snd_pcm_hardware uni_tdm_hw =3D {
->=20
->  /* uniperiph player*/
->  int uni_player_init(struct platform_device *pdev,
-> -		    struct uniperif *uni_player);
-> +		    struct uniperif *player);
->  int uni_player_resume(struct uniperif *player);
->=20
->  /* uniperiph reader */
->  int uni_reader_init(struct platform_device *pdev,
-> -		    struct uniperif *uni_reader);
-> +		    struct uniperif *reader);
->=20
->  /* common */
->  int sti_uniperiph_dai_set_fmt(struct snd_soc_dai *dai,
-> --
-> 2.25.1
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 05354976c1fc..4eaa28972af2 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -350,7 +350,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+ 		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
+ 		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+ 		page = virt_to_head_page(data);
+-		napi_direct &= !xdp_return_frame_no_direct();
++		if (napi_direct)
++			napi_direct &= !xdp_return_frame_no_direct();
+ 		page_pool_put_full_page(xa->page_pool, page, napi_direct);
+ 		rcu_read_unlock();
+ 		break;
+-- 
+2.25.1
 
