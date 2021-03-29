@@ -2,149 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E805034D658
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938E834D67F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhC2Rxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:53:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhC2RxV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:53:21 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED076C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:53:20 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so8876726wmq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:53:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telliq.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N6EnRd/MY7h8IstQCaZRWpBwbfFtnJv4s7DJ21C8TVU=;
-        b=CAYs0tgpe8vK037DR+QKaY/dFao1NgmTdZvmoJDVBWeLeSuPcF3sVB1RqBALma6L8e
-         60P2lVgiHv00myzkjExiWiTZHHsP7a/koD0WhGQ+zNK1slD/vjgM6DrhEZVhmH2+Tnmu
-         Z/mI+39OQ3DTCUwCqMrlnG5aMbvmKzhNwdyUvJ44OPCCWxE0MdElOpdyvE7VNhXccv/5
-         HebYIbIELrPYac0N9mRrcLivnzbn51nOkbB2tL/qlB5Q0pwMejygyEGxzUBbSykJ3YuR
-         LLyWHvkBLRHBMbVOTCYKZhA1cUYOPBjFs2k3h6OlZiJnMiAZoytiL8wzI5xn/HtZmzbW
-         zm+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N6EnRd/MY7h8IstQCaZRWpBwbfFtnJv4s7DJ21C8TVU=;
-        b=fDLpJ6sqcxhlK0GO3UyHXMXXqCQMjIL4gtCtUnr+DhfH1OmpU/FQePaThwtlPOaFiS
-         9I1GBToqlqVK5Do8XmkoWTffQH1R2Vu7B8SaLB6E5mXgZ9SOlNcEjM0uy37DfmE43rPy
-         j5RyHUeu+jYQzb4w65krXeNQS6lrq2l43yHHPUdkvmNu6+P+INaqbhGTntkzFi+hujZt
-         eWQBhlxT78mLznvXpLHvReJapbEiVP7g2APCxgA3JFhQep4PBjhA6tFOtNFU2TEztHVK
-         yH+1pyFe3BLZGT4lUuXS2J6niKUJH9Dhr0VxEqy0HqVXc8gAutSgPW0WuGzfoCvhfrRI
-         lMVg==
-X-Gm-Message-State: AOAM5314LZXCAFpq6t+JbMQfIkGHzFF1ENewExUDEEdn+P7Dj57Qx2Vs
-        /lcdzZzePDzFWwSE4QssAX3Y/g==
-X-Google-Smtp-Source: ABdhPJzNvL5rgMlYeb3DLyMYlNh0fTGWd7RQJVVnvzJUaoumN5K/evaFhoN2SSC65l7mRBlLfxAODg==
-X-Received: by 2002:a7b:c841:: with SMTP id c1mr232796wml.123.1617040399629;
-        Mon, 29 Mar 2021 10:53:19 -0700 (PDT)
-Received: from emu.mida (static-212-247-121-18.cust.tele2.se. [212.247.121.18])
-        by smtp.gmail.com with ESMTPSA id q4sm154209wma.20.2021.03.29.10.53.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 10:53:19 -0700 (PDT)
-From:   Jan Kardell <jan.kardell@telliq.com>
-To:     Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        linux-omap@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Subject: [PATCH] arm: Define arch_is_kernel_initmem_freed() for lockdep
-Date:   Mon, 29 Mar 2021 19:53:18 +0200
-Message-Id: <20210329175318.21393-1-jan.kardell@telliq.com>
-X-Mailer: git-send-email 2.26.2
+        id S230271AbhC2SBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:01:15 -0400
+Received: from mengyan1223.wang ([89.208.246.23]:52630 "EHLO mengyan1223.wang"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231368AbhC2SAx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:00:53 -0400
+X-Greylist: delayed 351 seconds by postgrey-1.27 at vger.kernel.org; Mon, 29 Mar 2021 14:00:53 EDT
+Received: from xry111-X57S1.. (unknown [IPv6:240e:35a:1037:8a00:70b2:e35d:833c:af3e])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@mengyan1223.wang)
+        by mengyan1223.wang (Postfix) with ESMTPSA id 27C1965B2D;
+        Mon, 29 Mar 2021 13:54:42 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mengyan1223.wang;
+        s=mail; t=1617040502;
+        bh=Zbib90WcD3Bj0OIpXKzlZugk4FNdHitNgQA0jv+MLiU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RU+YMOzQvm+gW5FvX3GXZLNVPhBUjDloPV82MoeNw7oievKXs/gIQiWpL5SBftjTW
+         d80gOOr+DddPwloNLOzXp0GCnIqS4W/QbxFmYxRJ4hxQM4kiLJuUw2EePkXE0aVs/Y
+         uBoJIXzvqR/4zCsmk6uTiAuRooaRityvTiWnlpgtq/jHPAHy1TjtfggLtue9OQWuuN
+         4IWWrENjuf1vXeIibEui8gWSZqNaGpIDucg85Hg+Ngyb2oNEdeff6GEQAt5NIz0QZC
+         1i2W4g7bEOK+b6d3v+3RGHoKP6ez8+NS8SJVCp+1AiooXOScYkg3zc2OQk3yA+piYk
+         ReaBEHE9AvPfQ==
+From:   =?UTF-8?q?X=E2=84=B9=20Ruoyao?= <xry111@mengyan1223.wang>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        =?UTF-8?q?X=E2=84=B9=20Ruoyao?= <xry111@mengyan1223.wang>,
+        =?UTF-8?q?Dan=20Hor=C3=A1k?= <dan@danny.cz>,
+        stable@vger.kernel.org
+Subject: [PATCH] drm/amdgpu: fix an underflow on non-4KB-page systems
+Date:   Tue, 30 Mar 2021 01:53:48 +0800
+Message-Id: <20210329175348.26859-1-xry111@mengyan1223.wang>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes the warning:
+If the initial value of `num_entires` (calculated at line 1654) is not
+an integral multiple of `AMDGPU_GPU_PAGES_IN_CPU_PAGE`, in line 1681 a
+value greater than the initial value will be assigned to it.  That causes
+`start > last + 1` after line 1708.  Then in the next iteration an
+underflow happens at line 1654.  It causes message
 
-WARNING: CPU: 0 PID: 1994 at kernel/locking/lockdep.c:1119 alloc_netdev_mqs+0xb4/0x3b0
+    *ERROR* Couldn't update BO_VA (-12)
 
-This warning is because the check in static_obj() assumes that all
-memory within [_stext, _end] belongs to static objects. The init
-section is also part of this range, and freeing it allows the buddy
-allocator to allocate memory from it.
+printed in kernel log, and GPU hanging.
 
-To fix this, define arch_is_kernel_initmem_freed() for arm, it will
-return 1 if initmem has been freed and the address is in the range
-[__init_begin, __init_end], and this function is called by the
-static_obj() function in lockdep.
+Fortify the criteria of the loop to fix this issue.
 
-Tested on TI am3352 (Cortex A8).
-
-This change is modelled after commit 7a5da02de8d6eafba995
-("locking/lockdep: check for freed initmem in static_obj()") for s390 by
-Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-
-Signed-off-by: Jan Kardell <jan.kardell@telliq.com>
+BugLink: https://gitlab.freedesktop.org/drm/amd/-/issues/1549
+Fixes: a39f2a8d7066 ("drm/amdgpu: nuke amdgpu_vm_bo_split_mapping v2")
+Reported-by: Xi Ruoyao <xry111@mengyan1223.wang>
+Reported-by: Dan Horák <dan@danny.cz>
+Cc: stable@vger.kernel.org
+Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
 ---
- arch/arm/include/asm/sections.h | 13 +++++++++++++
- arch/arm/mm/init.c              |  6 +++++-
- 2 files changed, 18 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/include/asm/sections.h b/arch/arm/include/asm/sections.h
-index 700b8bcdf9bd..1dd64c90c1ac 100644
---- a/arch/arm/include/asm/sections.h
-+++ b/arch/arm/include/asm/sections.h
-@@ -2,6 +2,8 @@
- #ifndef _ASM_ARM_SECTIONS_H
- #define _ASM_ARM_SECTIONS_H
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index ad91c0c3c423..cee0cc9c8085 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@ -1707,7 +1707,7 @@ static int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
+ 		}
+ 		start = tmp;
  
-+#define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
-+
- #include <asm-generic/sections.h>
+-	} while (unlikely(start != last + 1));
++	} while (unlikely(start < last + 1));
  
- extern char _exiprom[];
-@@ -11,6 +13,17 @@ extern char __idmap_text_end[];
- extern char __entry_text_start[];
- extern char __entry_text_end[];
+ 	r = vm->update_funcs->commit(&params, fence);
  
-+extern bool initmem_freed;
-+
-+static inline int arch_is_kernel_initmem_freed(unsigned long addr)
-+{
-+	if (!initmem_freed)
-+		return 0;
-+	return addr >= (unsigned long)__init_begin &&
-+	       addr < (unsigned long)__init_end;
-+}
-+
-+
- static inline bool in_entry_text(unsigned long addr)
- {
- 	return memory_contains(__entry_text_start, __entry_text_end,
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 828a2561b229..cd7a4273797a 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -41,6 +41,8 @@
- 
- #include "mm.h"
- 
-+bool initmem_freed;
-+
- #ifdef CONFIG_CPU_CP15_MMU
- unsigned long __init __clear_cr(unsigned long mask)
- {
-@@ -523,8 +525,10 @@ void free_initmem(void)
- 	fix_kernmem_perms();
- 
- 	poison_init_mem(__init_begin, __init_end - __init_begin);
--	if (!machine_is_integrator() && !machine_is_cintegrator())
-+	if (!machine_is_integrator() && !machine_is_cintegrator()) {
-+		initmem_freed = true;
- 		free_initmem_default(-1);
-+	}
- }
- 
- #ifdef CONFIG_BLK_DEV_INITRD
+
+base-commit: a5e13c6df0e41702d2b2c77c8ad41677ebb065b3
 -- 
-2.26.2
+2.31.1
 
