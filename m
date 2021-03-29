@@ -2,104 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B3034D48C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E889034D48E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbhC2QKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhC2QKd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:10:33 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED22C061574;
-        Mon, 29 Mar 2021 09:10:32 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id o2so4620325plg.1;
-        Mon, 29 Mar 2021 09:10:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GLY3ymCl5yT9GXpslLzZrF5s6T8lhJSvt/auSZruXfQ=;
-        b=SS7rYxURdRFmyT8+DqnMEGRlWazLI0t4f4bknpfN6C/T7fb7ZG5GkDwSDJk/g86UdC
-         uLSUuXZuovWKry6ythBCWhXmDZsqYI47o4fyMI0iZOASm8XuIGaAn7DFaSwS0uUQtVO4
-         +fawJ6vWw1MsFMxpmeDB4eaWX3O97dqoF+8sw23w8b0vsmENlArckSF7dpYcvMC7qLNy
-         B87Y++pNVXcXExCeXKKaT+hMivd1/vgNR5nVXohUwSYzKTb95Krf1VCxURT4eR/YlFh8
-         ZEwx4zDPjyr5SdyaEblR/dpKIjtmrK3uV2IF8vQmpz//pUNICuzpyC6uSbqIqy5RAI+v
-         1vmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GLY3ymCl5yT9GXpslLzZrF5s6T8lhJSvt/auSZruXfQ=;
-        b=QUxJ+qny7WuIiD/4vhmJJ8fqUgEwsOUSZjK6RCWM4+HTK7WbDrrvss/pGIyQUniI1G
-         9oXNGDIOCpKeCuQfkmDm3e4DCLaoXBk7EJ+/OaI9F1Tw9vc2s8XBPoKH5QU6mKC3v62s
-         eHB4FIHe94J/n7awFq1bxskRtn3MaMhMPf7AUSZ7PC8IwqGpPoXj+4mxsHYkvCoO/1v1
-         CvzQ0ZAgQ0CbOuN+gtaPFTLoEp9UHpKkp0zAnbkpl3zZdQNYA+NJijhbLfaKga3SThZT
-         o9ipK5yiy8M6t7fLQoTQQXNdHie8HvuGAPrppy6JXDBtViwRXKJy+MaEH1Uxqn59co+C
-         hdHw==
-X-Gm-Message-State: AOAM531kSYJ+AF28KRRNs98HrsdGZBDbIxOYorlE0tPI/pv6JYeIwrQW
-        ngLjpgc0CrqGjLW35K9ZNUg=
-X-Google-Smtp-Source: ABdhPJx8fWM+QByHKswdlWX1ZeEgyyPCiXaQbkm41Iv2W6QvvMrGpHB700aH6K1vE4LDLHOmowI1Wg==
-X-Received: by 2002:a17:90a:7186:: with SMTP id i6mr28458814pjk.191.1617034232430;
-        Mon, 29 Mar 2021 09:10:32 -0700 (PDT)
-Received: from nirenjan.com ([138.68.227.108])
-        by smtp.gmail.com with ESMTPSA id q1sm8403016pgf.20.2021.03.29.09.10.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 09:10:31 -0700 (PDT)
-From:   Nirenjan Krishnan <nirenjan@gmail.com>
-To:     jikos@kernel.org, benjamin.tissoires@redhat.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nirenjan Krishnan <nirenjan@gmail.com>
-Subject: [PATCH] HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for Saitek X65
-Date:   Mon, 29 Mar 2021 09:10:02 -0700
-Message-Id: <20210329161002.13202-1-nirenjan@gmail.com>
-In-Reply-To: <20210323053511.17887-1-nirenjan@gmail.com>
-References: <20210323053511.17887-1-nirenjan@gmail.com>
+        id S230252AbhC2QLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:11:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:56482 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229709AbhC2QKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 12:10:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 25516142F;
+        Mon, 29 Mar 2021 09:10:44 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D3B63F719;
+        Mon, 29 Mar 2021 09:10:42 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 17:10:40 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Jim Quinlan <jquinlan@broadcom.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/2] PCI: brcmstb: Use reset/rearm instead of
+ deassert/assert
+Message-ID: <20210329161040.GB9677@lpieralisi>
+References: <20210312204556.5387-1-jim2101024@gmail.com>
+ <20210312204556.5387-3-jim2101024@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210312204556.5387-3-jim2101024@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Saitek X65 joystick has a pair of axes that were used as mouse
-pointer controls by the Windows driver. The corresponding usage page is
-the Game Controls page, which is not recognized by the generic HID
-driver, and therefore, both axes get mapped to ABS_MISC. The quirk makes
-the second axis get mapped to ABS_MISC+1, and therefore made available
-separately.
+On Fri, Mar 12, 2021 at 03:45:55PM -0500, Jim Quinlan wrote:
+> The Broadcom STB PCIe RC uses a reset control "rescal" for certain chips.
+> The "rescal" implements a "pulse reset" so using assert/deassert is wrong
+> for this device.  Instead, we use reset/rearm.  We need to use rearm so
+> that we can reset it after a suspend/resume cycle; w/o using "rearm", the
+> "rescal" device will only ever fire once.
+> 
+> Of course for suspend/resume to work we also need to put the reset/rearm
+> calls in the suspend and resume routines.
 
-Signed-off-by: Nirenjan Krishnan <nirenjan@gmail.com>
----
- drivers/hid/hid-ids.h    | 1 +
- drivers/hid/hid-quirks.c | 1 +
- 2 files changed, 2 insertions(+)
+Actually - I am sorry but it looks like you will have to split the patch
+in two since this is two logical changes.
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index e42aaae..413a06a0 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -1039,6 +1039,7 @@
- #define USB_DEVICE_ID_SAITEK_X52	0x075c
- #define USB_DEVICE_ID_SAITEK_X52_2	0x0255
- #define USB_DEVICE_ID_SAITEK_X52_PRO	0x0762
-+#define USB_DEVICE_ID_SAITEK_X65	0x0b6a
- 
- #define USB_VENDOR_ID_SAMSUNG		0x0419
- #define USB_DEVICE_ID_SAMSUNG_IR_REMOTE	0x0001
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index 1a9daf0..df68dd7 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -158,6 +158,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_2), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_PRO), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X65), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD2), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SENNHEISER, USB_DEVICE_ID_SENNHEISER_BTD500USB), HID_QUIRK_NOGET },
--- 
-2.7.4
+Thanks,
+Lorenzo
 
+> Fixes: 740d6c3708a9 ("PCI: brcmstb: Add control of rescal reset")
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-brcmstb.c | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
+> index e330e6811f0b..3b35d629035e 100644
+> --- a/drivers/pci/controller/pcie-brcmstb.c
+> +++ b/drivers/pci/controller/pcie-brcmstb.c
+> @@ -1148,6 +1148,7 @@ static int brcm_pcie_suspend(struct device *dev)
+>  
+>  	brcm_pcie_turn_off(pcie);
+>  	ret = brcm_phy_stop(pcie);
+> +	reset_control_rearm(pcie->rescal);
+>  	clk_disable_unprepare(pcie->clk);
+>  
+>  	return ret;
+> @@ -1163,9 +1164,13 @@ static int brcm_pcie_resume(struct device *dev)
+>  	base = pcie->base;
+>  	clk_prepare_enable(pcie->clk);
+>  
+> +	ret = reset_control_reset(pcie->rescal);
+> +	if (ret)
+> +		goto err_disable_clk;
+> +
+>  	ret = brcm_phy_start(pcie);
+>  	if (ret)
+> -		goto err;
+> +		goto err_reset;
+>  
+>  	/* Take bridge out of reset so we can access the SERDES reg */
+>  	pcie->bridge_sw_init_set(pcie, 0);
+> @@ -1180,14 +1185,16 @@ static int brcm_pcie_resume(struct device *dev)
+>  
+>  	ret = brcm_pcie_setup(pcie);
+>  	if (ret)
+> -		goto err;
+> +		goto err_reset;
+>  
+>  	if (pcie->msi)
+>  		brcm_msi_set_regs(pcie->msi);
+>  
+>  	return 0;
+>  
+> -err:
+> +err_reset:
+> +	reset_control_rearm(pcie->rescal);
+> +err_disable_clk:
+>  	clk_disable_unprepare(pcie->clk);
+>  	return ret;
+>  }
+> @@ -1197,7 +1204,7 @@ static void __brcm_pcie_remove(struct brcm_pcie *pcie)
+>  	brcm_msi_remove(pcie);
+>  	brcm_pcie_turn_off(pcie);
+>  	brcm_phy_stop(pcie);
+> -	reset_control_assert(pcie->rescal);
+> +	reset_control_rearm(pcie->rescal);
+>  	clk_disable_unprepare(pcie->clk);
+>  }
+>  
+> @@ -1278,13 +1285,13 @@ static int brcm_pcie_probe(struct platform_device *pdev)
+>  		return PTR_ERR(pcie->perst_reset);
+>  	}
+>  
+> -	ret = reset_control_deassert(pcie->rescal);
+> +	ret = reset_control_reset(pcie->rescal);
+>  	if (ret)
+>  		dev_err(&pdev->dev, "failed to deassert 'rescal'\n");
+>  
+>  	ret = brcm_phy_start(pcie);
+>  	if (ret) {
+> -		reset_control_assert(pcie->rescal);
+> +		reset_control_rearm(pcie->rescal);
+>  		clk_disable_unprepare(pcie->clk);
+>  		return ret;
+>  	}
+> -- 
+> 2.17.1
+> 
