@@ -2,173 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FDF34CD70
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE2734CD84
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhC2J5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:57:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20471 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231651AbhC2J5C (ORCPT
+        id S232482AbhC2KAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:00:12 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:44306 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232013AbhC2J7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:57:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617011821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xiWJV3ko1190mDpLoLQdBpnnHOr0EFaCU4Guy+26tGU=;
-        b=AdWR3App76xedyVwMaWtX3fRx5lJ4G9gsjlR3g9YaKWFTBh2EzOxEq8PyvFcYsY3wPvjUb
-        Ug3HRNK5L8rkBLEo8zyTEqgeto4ZyVw1VvQmHhJaTfyXrp9eUfEJTmG2mZDtmh8Qv9HgFd
-        Hjt/RnauqKF5EgT2/WDh8udSPhzKCOo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-567-7ylDwRgzMGCKXsgASUNIsQ-1; Mon, 29 Mar 2021 05:56:58 -0400
-X-MC-Unique: 7ylDwRgzMGCKXsgASUNIsQ-1
-Received: by mail-ed1-f69.google.com with SMTP id a2so8342220edx.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:56:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xiWJV3ko1190mDpLoLQdBpnnHOr0EFaCU4Guy+26tGU=;
-        b=EkoXBd8yX5/vZMXx1fadOLFDKlHH0nZWwaegTWhxho/YXegYmYZgbi362ueuDk7a2q
-         HSSg4Yti+w8FpUVmumJwVOQ715yBrKEA0S1XdpKqEWklJdKc/5o2E25umkgmPVULpd/b
-         vLb2cc+olkEv2rkPXyc0bM4zW0ZgWIv0ncnVLZXqnwHQLslGDnroL1q4tpUZJcZhgeom
-         TpylueiVDaa0kDbragCndrJM9sUqax68TtlZE0U9fZfo282B8KwZ6+KpXe9moSc2XTGS
-         /fwNE0KP3f0RGUaMlAgHbcYzJj+FiQDf/vC7nvlcg+n/a8+mjKoy5pCCfuij2NTl9MvF
-         t7rg==
-X-Gm-Message-State: AOAM530ez5JKF8Yi5RhpQIgmWrxodnpyexNkjRbJ3YtRala7iaWHeqWO
-        ARBJlkP/et0/ndgy1Wvk+wine4FjvX/qCRFDbHWe7dgLOfjPbmxikd2kpUZ243FBWAQnUlftjCf
-        u18Mjcc+QnxH3hhwPy/q3cUWx
-X-Received: by 2002:a50:ed83:: with SMTP id h3mr28469772edr.140.1617011817510;
-        Mon, 29 Mar 2021 02:56:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyDlRH4ZFa+9wQzQgxfAWLizNcm57g67QjLhEohcKPFUr4Hm2YCdzaKDDcmOWBKfZRfKGZWFQ==
-X-Received: by 2002:a50:ed83:: with SMTP id h3mr28469745edr.140.1617011817342;
-        Mon, 29 Mar 2021 02:56:57 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id de17sm7894616ejc.16.2021.03.29.02.56.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 02:56:56 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3E766180293; Mon, 29 Mar 2021 11:56:55 +0200 (CEST)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
-In-Reply-To: <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
-References: <20210325120020.236504-1-memxor@gmail.com>
- <20210325120020.236504-6-memxor@gmail.com>
- <20210327021534.pjfjctcdczj7facs@ast-mbp>
- <CAEf4Bzba_gdTvak_UHqi96-w6GLF5JQcpQRcG7zxnx=kY8Sd5w@mail.gmail.com>
- <20210329014044.fkmusoeaqs2hjiek@ast-mbp>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 29 Mar 2021 11:56:55 +0200
-Message-ID: <87r1jyth94.fsf@toke.dk>
+        Mon, 29 Mar 2021 05:59:52 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 9779140490;
+        Mon, 29 Mar 2021 09:59:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1617011992; bh=z4/KDbW/ZDm2Tsa1QFrw+71G+BJJhrGsl2qnjkAoTIk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NNi0WkgmJhflwcJLWLLF0lOC/NtrRSA92dcwYphbGwi3dAhMISojVlBhSO2p2Jz2F
+         Ym1u3CBDfS2aqfx68CmHtqqThebvaEWGl8Ez4if2FImfexQ2VR7nO9u3RWInvxOnWi
+         F2ZuKkvijRs1Z1amxPfSL/97gmCETSbX1gMsdcoTKFlV5+WfEEdstRrArpU9hcpn8+
+         oXPnRwpe8KX7St9LG0j7911gJUVWm50DJpmBhzW2bc4ywpx1C6y7u4Dos/yqSYYm7D
+         0fXVu5RRXmzC0rc6RSzDQIL8LTY631fGkNVMmGFQdYSScSelqOlquvJ7bErMJp088O
+         HeM1KFRukf4LA==
+Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 20FA4A022E;
+        Mon, 29 Mar 2021 09:59:50 +0000 (UTC)
+X-SNPS-Relay: synopsys.com
+From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+To:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Subject: [PATCH v9 0/4] misc: Add Add Synopsys DesignWare xData IP driver
+Date:   Mon, 29 Mar 2021 11:59:36 +0200
+Message-Id: <cover.1617011831.git.gustavo.pimentel@synopsys.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+This patch series adds a new driver called xData-pcie for the Synopsys
+DesignWare PCIe prototype.
 
-> On Sat, Mar 27, 2021 at 09:32:58PM -0700, Andrii Nakryiko wrote:
->> > I think it's better to start with new library for tc/xdp and have
->> > libbpf as a dependency on that new lib.
->> > For example we can add it as subdir in tools/lib/bpf/.
->> >
->> > Similarly I think integerating static linking into libbpf was a mistake.
->> > It should be a sub library as well.
->> >
->> > If we end up with core libbpf and ten sublibs for tc, xdp, af_xdp, linking,
->> > whatever else the users would appreciate that we don't shove single libbpf
->> > to them with a ton of features that they might never use.
->> 
->> What's the concern exactly? The size of the library? Having 10
->> micro-libraries has its own set of downsides, 
->
-> specifically?
->
->> I'm not convinced that's
->> a better situation for end users. And would certainly cause more
->> hassle for libbpf developers and packagers.
->
-> For developers and packagers.. yes.
-> For users.. quite the opposite.
-> The skel gen and static linking must be split out before the next libbpf release.
-> Not a single application linked with libbpf is going to use those pieces.
+The driver configures and enables the Synopsys DesignWare PCIe traffic
+generator IP inside of prototype Endpoint which will generate upstream
+and downstream PCIe traffic. This allows to quickly test the PCIe link
+throughput speed and check is the prototype solution has some limitation
+or not.
 
-I'd tend to agree about the skeleton generation, but I have one use case
-in mind where having the linker in library form would be handy:
-dynamically building an XDP program at load time from pre-compiled
-pieces.
+Changes:
+ V2: Rework driver according to Greg Kroah-Hartman' feedback
+     - Replace module parameter by sysfs use.
+     - Replace bit fields structure with macros and masks use.
+     - Removed SET() and GET() macros by the writel() and readl().
+     - Removed some noisy info messages.
+ V3: Fixed issues detected while running on 64 bits platforms
+     Rebased patches on top of v5.11-rc1 version
+ V4: Rework driver according to Greg Kroah-Hartman' feedback
+     - Add the ABI doc related to the sysfs implemented on this driver
+ V5: Rework driver accordingly to Leon Romanovsky' feedback
+     - Removed "default n" on Kconfig
+     Rework driver accordingly to Krzysztof Wilczyński' feedback
+     - Added some explanatory comments for some steps
+     - Added some bit defines instead of magic numbers
+ V6: Rework driver according to Greg Kroah-Hartman' feedback
+     - Squashed patches #2 and #3
+     - Removed units (MB/s) on the sys file
+     - Reduced mutex scope on the functions called by sysfs
+     Rework driver accordingly to Krzysztof Wilczyński' feedback
+     - Fix typo "DesignWare"
+ V7: Rework driver according to Greg Kroah-Hartman' feedback
+     - Created a sub device (misc device) that will be associated with the PCI driver
+     - sysfs group is now associated with the misc drivers instead of the PCI driver
+ V8: Rework driver according to Greg Kroah-Hartman' feedback
+     - Added more detail to the version changes on the cover letter
+     - Squashed patches #1 and #2
+     - Removed struct device from the dw_xdata_pcie structure
+     - Replaced the pci_*() use by dev_*()
+     - Added free call for the misc driver name allocation
+     - Added reference counting
+     - Removed snps_edda_data structure and their usage
+     Rebased patches on top of v5.12-rc4 version
+ V9: Squashed temporary development patch into the driver patch #1
 
-Consider xdp-filter[0]: it's a simplistic packet filter that can filter
-on different bits of the packet header, mostly meant as a demonstration
-of XDP packet filtering performance. It's also using conditional
-compilation so that it can be loaded in a mode that skips parsing L4
-headers entirely if port-based filtering is not enabled. Right now we do
-that by pre-compiling five different variants of the XDP program and
-loading based on the selected feature set, but with linking in libbpf,
-we could instead have a single BPF program with granular filtering
-functions and just assemble the final program from those bits at load
-time.
+Cc: linux-doc@vger.kernel.org
+Cc: linux-pci@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Krzysztof Wilczyński <kw@linux.com>
 
-The actual xdp-filter program may be too simplistic to gain any
-performance for this, but I believe the general approach could be a way
-to realise the "improved performance through skipping code" promise of
-an XDP-based data path. Having linking be part of libbpf will make this
-straight-forward to integrate into applications.
+Gustavo Pimentel (4):
+  misc: Add Synopsys DesignWare xData IP driver
+  Documentation: misc-devices: Add Documentation for dw-xdata-pcie
+    driver
+  MAINTAINERS: Add Synopsys xData IP driver maintainer
+  docs: ABI: Add sysfs documentation interface of dw-xdata-pcie driver
 
-[0] https://github.com/xdp-project/xdp-tools/tree/master/xdp-filter
+ Documentation/ABI/testing/sysfs-driver-xdata |  46 +++
+ Documentation/misc-devices/dw-xdata-pcie.rst |  40 +++
+ MAINTAINERS                                  |   7 +
+ drivers/misc/Kconfig                         |  10 +
+ drivers/misc/Makefile                        |   1 +
+ drivers/misc/dw-xdata-pcie.c                 | 416 +++++++++++++++++++++++++++
+ 6 files changed, 520 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-xdata
+ create mode 100644 Documentation/misc-devices/dw-xdata-pcie.rst
+ create mode 100644 drivers/misc/dw-xdata-pcie.c
 
-> bpftool is one and only that needs them. Hence forcing libbpf users
-> to increase their .text with a dead code is a selfish call of libbpf
-> developers and packagers. The user's priorities must come first.
->
->> And what did you include in "core libbpf"?
->
-> I would take this opportunity to split libbpf into maintainable pieces:
-> - libsysbpf - sys_bpf wrappers (pretty much tools/lib/bpf/bpf.c)
-> - libbpfutil - hash, strset
-> - libbtf - BTF read/write
-> - libbpfelf - ELF parsing, CORE, ksym, kconfig
-> - libbpfskel - skeleton gen used by bpftool only
-> - libbpflink - linker used by bpftool only
-> - libbpfnet - networking attachment via netlink including TC and XDP
-> - libbpftrace - perfbuf, ringbuf
-> - libxdp - Toke's xdp chaining
-> - libxsk - af_xdp logic
-
-Huh? You've got to be joking? How is that going to improve things for
-users? Just the cognitive load of figuring out which linker flags to use
-is going to be prohibitive. Not to mention the hassle of keeping
-multiple library versions in sync etc.
-
-If the concern is .text size, surely there are better ways to fix that?
-LTO is the obvious "automagic" solution, but even without that, just
-supporting conditional compilation via defines in the existing libbpf
-ought to achieve the same thing without exposing the gory details to the
-users?
-
--Toke
+-- 
+2.7.4
 
