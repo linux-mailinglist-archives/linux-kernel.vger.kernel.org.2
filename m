@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BED334C92D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4606834CC64
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbhC2I2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:28:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58896 "EHLO mail.kernel.org"
+        id S232160AbhC2JB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:01:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233446AbhC2IRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:17:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9271861960;
-        Mon, 29 Mar 2021 08:17:46 +0000 (UTC)
+        id S234629AbhC2IdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:33:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A62D0619C6;
+        Mon, 29 Mar 2021 08:32:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005867;
-        bh=t549l9Uw5gYRXHZbXiDetHBjMekwEXPSC78muQDnEsI=;
+        s=korg; t=1617006763;
+        bh=b8HTdB8dEgGxq3xAyhJeIyiIQQ0MCBcW4/8irapTZP8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ugi4zYHiA8jGEwI8TdMVOJVksyLrgtLLmwbG2h3zVntT1hIYgsPSwZp9JpzeqJAbQ
-         CZDxsgDX1FNHujpWrCwWhXPNL9pVEuKirB4BGQlk1bHVRpyUgAPpzZlEsKMRAcoZIo
-         7fDt/6IHSD8VuqKrBXxrVpmJI9aCKqNf6CmqMLfs=
+        b=OdaQHlgp/2JMkX4g5cV7dzlfQzGdRotBP+y/WsJLN4vu5Hw7jVaf3cwUjcrCajpoo
+         7TgRYrmdx6uFuSZhyjHrus0PGD7ovKaY5UGS3NNQ2DHLcOsNoAYWtb5UnI4mC/TlY1
+         yj60HZBT6K3kSbaosUTiedAbuAD6tfySWEGBbSKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 034/221] umem: fix error return code in mm_pci_probe()
-Date:   Mon, 29 Mar 2021 09:56:05 +0200
-Message-Id: <20210329075630.299087227@linuxfoundation.org>
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chao Leng <lengchao@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 050/254] nvme: add NVME_REQ_CANCELLED flag in nvme_cancel_request()
+Date:   Mon, 29 Mar 2021 09:56:06 +0200
+Message-Id: <20210329075634.821690453@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit eeb05595d22c19c8f814ff893dcf88ec277a2365 ]
+[ Upstream commit d3589381987ec879b03f8ce3039df57e87f05901 ]
 
-Fix to return negative error code -ENOMEM from the blk_alloc_queue()
-and dma_alloc_coherent() error handling cases instead of 0, as done
-elsewhere in this function.
+NVME_REQ_CANCELLED is translated into -EINTR in nvme_submit_sync_cmd(),
+so we should be setting this flags during nvme_cancel_request() to
+ensure that the callers to nvme_submit_sync_cmd() will get the correct
+error code when the controller is reset.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Link: https://lore.kernel.org/r/20210308123501.2573816-1-weiyongjun1@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Chao Leng <lengchao@huawei.com>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/block/umem.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/block/umem.c b/drivers/block/umem.c
-index 2b95d7b33b91..5eb44e4a91ee 100644
---- a/drivers/block/umem.c
-+++ b/drivers/block/umem.c
-@@ -877,6 +877,7 @@ static int mm_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	if (card->mm_pages[0].desc == NULL ||
- 	    card->mm_pages[1].desc == NULL) {
- 		dev_printk(KERN_ERR, &card->dev->dev, "alloc failed\n");
-+		ret = -ENOMEM;
- 		goto failed_alloc;
- 	}
- 	reset_page(&card->mm_pages[0]);
-@@ -888,8 +889,10 @@ static int mm_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	spin_lock_init(&card->lock);
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index a0f169a2d96f..206bf0a50487 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -366,6 +366,7 @@ bool nvme_cancel_request(struct request *req, void *data, bool reserved)
+ 		return true;
  
- 	card->queue = blk_alloc_queue(NUMA_NO_NODE);
--	if (!card->queue)
-+	if (!card->queue) {
-+		ret = -ENOMEM;
- 		goto failed_alloc;
-+	}
- 
- 	tasklet_init(&card->tasklet, process_page, (unsigned long)card);
- 
+ 	nvme_req(req)->status = NVME_SC_HOST_ABORTED_CMD;
++	nvme_req(req)->flags |= NVME_REQ_CANCELLED;
+ 	blk_mq_complete_request(req);
+ 	return true;
+ }
 -- 
 2.30.1
 
