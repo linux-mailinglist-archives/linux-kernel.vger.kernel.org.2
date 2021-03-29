@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4467534C5C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE01F34CA59
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhC2ICz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:02:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43868 "EHLO mail.kernel.org"
+        id S234767AbhC2IhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:37:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231794AbhC2IBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E8E861974;
-        Mon, 29 Mar 2021 08:01:50 +0000 (UTC)
+        id S233969AbhC2IWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0107C6044F;
+        Mon, 29 Mar 2021 08:22:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004911;
-        bh=796XK1fpdEtnF+BeXuqvdxkJ3JhwrCxFlzAY/6NgDkY=;
+        s=korg; t=1617006153;
+        bh=nkqi4Jbyl0Uzy75QU92FnrknwYWEDlHlfIZNVoCIv+A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kreGkA9UM1siSujQlNwUzmzk+htm+dUVoEh+hQy46MCLOsrLrpz08hNdAY+mEulAE
-         j3vp2wdwic49R9IIC8D/00o52zrrUxsPhUnx4O1p8ZgCT0Ywo28Hy5yyk57li9BZib
-         nGIexNlJJwe5WHMnwX5pL+LRWZ7J+gIB8eQ3jg3M=
+        b=o2eOCleY14GS3a3UHsCclPhhcpbCqtesKu12pLppcMgyjwh92s/Tq52lXlYWBaC6o
+         jxRZbus/jA1C0TZ9K6Fp2fR2TOuqsQrU7UVWP5amVShBJ50ZLGqygD+7nFORH/KZ63
+         v2vtON3ZREpO2FGIg7J430RYDFBc7+ppJWaUvvAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        stable@vger.kernel.org, Louis Peens <louis.peens@corigine.com>,
+        Simon Horman <simon.horman@netronome.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 12/53] atm: idt77252: fix null-ptr-dereference
+Subject: [PATCH 5.10 136/221] nfp: flower: fix unsupported pre_tunnel flows
 Date:   Mon, 29 Mar 2021 09:57:47 +0200
-Message-Id: <20210329075607.953308260@linuxfoundation.org>
+Message-Id: <20210329075633.723005706@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +41,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Louis Peens <louis.peens@corigine.com>
 
-[ Upstream commit 4416e98594dc04590ebc498fc4e530009535c511 ]
+[ Upstream commit 982e5ee23d764fe6158f67a7813d416335e978b0 ]
 
-this one is similar to the phy_data allocation fix in uPD98402, the
-driver allocate the idt77105_priv and store to dev_data but later
-dereference using dev->dev_data, which will cause null-ptr-dereference.
+There are some pre_tunnel flows combinations which are incorrectly being
+offloaded without proper support, fix these.
 
-fix this issue by changing dev_data to phy_data so that PRIV(dev) can
-work correctly.
+- Matching on MPLS is not supported for pre_tun.
+- Match on IPv4/IPv6 layer must be present.
+- Destination MAC address must match pre_tun.dev MAC
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Fixes: 120ffd84a9ec ("nfp: flower: verify pre-tunnel rules")
+Signed-off-by: Louis Peens <louis.peens@corigine.com>
+Signed-off-by: Simon Horman <simon.horman@netronome.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/idt77105.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../ethernet/netronome/nfp/flower/offload.c    | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/atm/idt77105.c b/drivers/atm/idt77105.c
-index feb023d7eebd..40644670cff2 100644
---- a/drivers/atm/idt77105.c
-+++ b/drivers/atm/idt77105.c
-@@ -261,7 +261,7 @@ static int idt77105_start(struct atm_dev *dev)
- {
- 	unsigned long flags;
+diff --git a/drivers/net/ethernet/netronome/nfp/flower/offload.c b/drivers/net/ethernet/netronome/nfp/flower/offload.c
+index 1c59aff2163c..d72225d64a75 100644
+--- a/drivers/net/ethernet/netronome/nfp/flower/offload.c
++++ b/drivers/net/ethernet/netronome/nfp/flower/offload.c
+@@ -1142,6 +1142,12 @@ nfp_flower_validate_pre_tun_rule(struct nfp_app *app,
+ 		return -EOPNOTSUPP;
+ 	}
  
--	if (!(dev->dev_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
-+	if (!(dev->phy_data = kmalloc(sizeof(struct idt77105_priv),GFP_KERNEL)))
- 		return -ENOMEM;
- 	PRIV(dev)->dev = dev;
- 	spin_lock_irqsave(&idt77105_priv_lock, flags);
-@@ -338,7 +338,7 @@ static int idt77105_stop(struct atm_dev *dev)
-                 else
-                     idt77105_all = walk->next;
- 	        dev->phy = NULL;
--                dev->dev_data = NULL;
-+                dev->phy_data = NULL;
-                 kfree(walk);
-                 break;
-             }
++	if (!(key_layer & NFP_FLOWER_LAYER_IPV4) &&
++	    !(key_layer & NFP_FLOWER_LAYER_IPV6)) {
++		NL_SET_ERR_MSG_MOD(extack, "unsupported pre-tunnel rule: match on ipv4/ipv6 eth_type must be present");
++		return -EOPNOTSUPP;
++	}
++
+ 	/* Skip fields known to exist. */
+ 	mask += sizeof(struct nfp_flower_meta_tci);
+ 	ext += sizeof(struct nfp_flower_meta_tci);
+@@ -1152,6 +1158,13 @@ nfp_flower_validate_pre_tun_rule(struct nfp_app *app,
+ 	mask += sizeof(struct nfp_flower_in_port);
+ 	ext += sizeof(struct nfp_flower_in_port);
+ 
++	/* Ensure destination MAC address matches pre_tun_dev. */
++	mac = (struct nfp_flower_mac_mpls *)ext;
++	if (memcmp(&mac->mac_dst[0], flow->pre_tun_rule.dev->dev_addr, 6)) {
++		NL_SET_ERR_MSG_MOD(extack, "unsupported pre-tunnel rule: dest MAC must match output dev MAC");
++		return -EOPNOTSUPP;
++	}
++
+ 	/* Ensure destination MAC address is fully matched. */
+ 	mac = (struct nfp_flower_mac_mpls *)mask;
+ 	if (!is_broadcast_ether_addr(&mac->mac_dst[0])) {
+@@ -1159,6 +1172,11 @@ nfp_flower_validate_pre_tun_rule(struct nfp_app *app,
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	if (mac->mpls_lse) {
++		NL_SET_ERR_MSG_MOD(extack, "unsupported pre-tunnel rule: MPLS not supported");
++		return -EOPNOTSUPP;
++	}
++
+ 	mask += sizeof(struct nfp_flower_mac_mpls);
+ 	ext += sizeof(struct nfp_flower_mac_mpls);
+ 	if (key_layer & NFP_FLOWER_LAYER_IPV4 ||
 -- 
 2.30.1
 
