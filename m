@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7454E34C84A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C0D34CB0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233487AbhC2IVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:21:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56686 "EHLO mail.kernel.org"
+        id S235440AbhC2Imx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:42:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232281AbhC2INL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:13:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8606E6196E;
-        Mon, 29 Mar 2021 08:13:10 +0000 (UTC)
+        id S232503AbhC2IYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:24:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9FD56196F;
+        Mon, 29 Mar 2021 08:24:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005591;
-        bh=gWG08SJzlkwVLZuHI+e6+/2t5hxyDmtsDJfIQU21Tlg=;
+        s=korg; t=1617006274;
+        bh=4f1Ps+4rjDBimtcdCio9qz+OSNwK5wlcNv1Zn//1gik=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FRRwpIYESgnvYIU5nXNkytQvEMzVeNN+N7JOJRfIQakfuP/8wVizNLjkG9vO99Bko
-         VmjVzfyv6g6MA1RmUBzVU5BoKKPItiKt9uyShIuvmJiPxBjBZxT70sSLzvoY6iEeMt
-         HwZVm/yZr1UONOeYi3qHRY+dkkACDHNjzmAkun14=
+        b=SMbWBP5AEWqJuaykwPQmSVXDHpnN/QFqHCrhSYJrujHVDY7bCTp2vK28+3sVoRvoh
+         56C4anGkOGMm2EcN5oDa9InL461Isb8+fcjbXD4vqccRfimCEb/EE3o2LRXOTMAg7b
+         C6Y0hda9UXUZ3vsUp3FVWkK/DYNtQKi7RhUc3bDA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-Subject: [PATCH 5.4 049/111] ARM: dts: at91-sama5d27_som1: fix phy address to 7
+        stable@vger.kernel.org, Namhyung Kim <namhyung@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 146/221] libbpf: Fix error path in bpf_object__elf_init()
 Date:   Mon, 29 Mar 2021 09:57:57 +0200
-Message-Id: <20210329075616.823748620@linuxfoundation.org>
+Message-Id: <20210329075634.046674312@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Namhyung Kim <namhyung@kernel.org>
 
-commit 221c3a09ddf70a0a51715e6c2878d8305e95c558 upstream.
+[ Upstream commit 8f3f5792f2940c16ab63c614b26494c8689c9c1e ]
 
-Fix the phy address to 7 for Ethernet PHY on SAMA5D27 SOM1. No
-connection established if phy address 0 is used.
+When it failed to get section names, it should call into
+bpf_object__elf_finish() like others.
 
-The board uses the 24 pins version of the KSZ8081RNA part, KSZ8081RNA
-pin 16 REFCLK as PHYAD bit [2] has weak internal pull-down.  But at
-reset, connected to PD09 of the MPU it's connected with an internal
-pull-up forming PHYAD[2:0] = 7.
-
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Fixes: 2f61929eb10a ("ARM: dts: at91: at91-sama5d27_som1: fix PHY ID")
-Cc: Ludovic Desroches <ludovic.desroches@microchip.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: <stable@vger.kernel.org> # 4.14+
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 88a82120282b ("libbpf: Factor out common ELF operations and improve logging")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210317145414.884817-1-namhyung@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/at91-sama5d27_som1.dtsi |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/lib/bpf/libbpf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
-+++ b/arch/arm/boot/dts/at91-sama5d27_som1.dtsi
-@@ -44,8 +44,8 @@
- 				pinctrl-0 = <&pinctrl_macb0_default>;
- 				phy-mode = "rmii";
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index b954db52bb80..95eef7ebdac5 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -1162,7 +1162,8 @@ static int bpf_object__elf_init(struct bpf_object *obj)
+ 	if (!elf_rawdata(elf_getscn(obj->efile.elf, obj->efile.shstrndx), NULL)) {
+ 		pr_warn("elf: failed to get section names strings from %s: %s\n",
+ 			obj->path, elf_errmsg(-1));
+-		return -LIBBPF_ERRNO__FORMAT;
++		err = -LIBBPF_ERRNO__FORMAT;
++		goto errout;
+ 	}
  
--				ethernet-phy@0 {
--					reg = <0x0>;
-+				ethernet-phy@7 {
-+					reg = <0x7>;
- 					interrupt-parent = <&pioA>;
- 					interrupts = <PIN_PD31 IRQ_TYPE_LEVEL_LOW>;
- 					pinctrl-names = "default";
+ 	/* Old LLVM set e_machine to EM_NONE */
+-- 
+2.30.1
+
 
 
