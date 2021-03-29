@@ -2,84 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E0134D830
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:29:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DADF34D839
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhC2T2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
+        id S231839AbhC2T3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbhC2T2Q (ORCPT
+        with ESMTP id S231835AbhC2T2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:28:16 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888BBC061574;
-        Mon, 29 Mar 2021 12:28:16 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id u4so17218159ljo.6;
-        Mon, 29 Mar 2021 12:28:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=GQrZO+7mqiYzqAmSSzQn1gDRn2Mbnb/SUnnWgNTEkqI=;
-        b=bhpsR/F29ROiyh6PG+lxUa+1SbMauPFwXd6L4MfGriKfW+iFzZrL6cCEV+JEPVAPhL
-         FI93iR9dw5yH6DtdcqKRuwE2O7S+VtQDdJ09irdCEUYg0LN45Ch312oKEQMFnUEzfPmC
-         7jggbtriBu65br6BAf0w/nyjamLV0KkAh2R7xGsPfhlrsdlEMACjG6Le72E7sEoyVf9G
-         Ij9Z6sqTLwLXmfI+M34KqilMht+w3V5LKge7WFBwB+/aU07gShDJ/JKCjUTRfBUm05l/
-         kKfwX0R6Nxi1kaUzzgRQTUczMYNjiZTPepfcN1qrCPv8XB0lKnNjTTrw5kfxACpbXxet
-         Tx8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GQrZO+7mqiYzqAmSSzQn1gDRn2Mbnb/SUnnWgNTEkqI=;
-        b=ZfwkTk0+ieUd3gyv+5hSLAvzBcKNGt4mG22fbzDe2DBZzFfWVk/DAqjQzhxSDeWpS5
-         0nSEw1uOEMY/CI6v1jiBC/D/cZR+96lAJwRv84jHMtnOVoWXvaNIaB3geduNSjcUGgna
-         KsZY7eCRZbWTvV32BK6ZE6nnz0zp5zPmEE4xWcOmFXxhBh9ALa+C3vD9gbDXT61TYPLy
-         RbFLLjIDpc17eeotILMJgRkUy6FNq96SkQrdw3VWoZaF/YmTClZNnPzumR8X+gDEedcy
-         WLnwdb/o7+dkwLSS5etYMvREnP13TBbDwPNcKTp3L+a39nTBYc1DiNDsJw+Zkin9pP+k
-         7MDQ==
-X-Gm-Message-State: AOAM531R5uh6MNf15wiy32TkA9d7jdo11HatfoCUiyvVIxnkjPc01ZQI
-        mJ+pz4uH/zoVcp6QmVhRtmiHjnCJU1E=
-X-Google-Smtp-Source: ABdhPJyNHRDzvCjP4qOOKnZzqdYALof2GTGF9Gkmzwk/dS1OSaDbhKGf1V+NMI9KvKs0wcSYp9viCA==
-X-Received: by 2002:a2e:a48f:: with SMTP id h15mr19093669lji.234.1617046094927;
-        Mon, 29 Mar 2021 12:28:14 -0700 (PDT)
-Received: from ?IPv6:2a00:1370:814d:b259:a10:76ff:fe69:21b6? ([2a00:1370:814d:b259:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id i123sm2526715lji.108.2021.03.29.12.28.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 12:28:14 -0700 (PDT)
-Subject: Re: [PATCH v1] i2c: tegra: Improve handling of i2c_recover_bus()
-To:     Wolfram Sang <wsa@the-dreams.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Laxman Dewangan <ldewangan@nvidia.com>,
-        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210329190546.24869-1-digetx@gmail.com>
- <20210329191531.GA6654@kunai>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <7b5e8060-abee-a9e1-1c88-78f0a20e2e96@gmail.com>
-Date:   Mon, 29 Mar 2021 22:28:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 29 Mar 2021 15:28:47 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FACC061574;
+        Mon, 29 Mar 2021 12:28:47 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 09D661F454DE
+Message-ID: <aa7fad73a4f06d94273a1e26d36a96f51c477929.camel@collabora.com>
+Subject: Re: [PATCH v7 08/13] media: hantro: Only use postproc when post
+ processed formats are defined
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        lee.jones@linaro.org, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Mon, 29 Mar 2021 16:28:35 -0300
+In-Reply-To: <20210329065743.11961-9-benjamin.gaignard@collabora.com>
+References: <20210329065743.11961-1-benjamin.gaignard@collabora.com>
+         <20210329065743.11961-9-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-In-Reply-To: <20210329191531.GA6654@kunai>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-29.03.2021 22:15, Wolfram Sang пишет:
-> On Mon, Mar 29, 2021 at 10:05:46PM +0300, Dmitry Osipenko wrote:
->> The i2c_recover_bus() returns -EOPNOTSUPP if bus recovery isn't wired up,
->> which the case for older Tegra SoCs at the moment. This error code is then
->> propagated to I2C client and might be confusing, thus return -EIO instead.
+On Mon, 2021-03-29 at 08:57 +0200, Benjamin Gaignard wrote:
+> If the variant doesn't offert postprocessed formats make sure it will
+> be ok.
 > 
-> Hmm, makes sense. Maybe we should change it in the core? But with EBUSY
-> instead?
-> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 
-This also should be a good variant. I'll update the patch, thanks.
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+
+> ---
+>  drivers/staging/media/hantro/hantro.h          |  8 ++------
+>  drivers/staging/media/hantro/hantro_postproc.c | 14 ++++++++++++++
+>  drivers/staging/media/hantro/hantro_v4l2.c     |  4 +++-
+>  3 files changed, 19 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index edb4561a6887..7a5ad93466c8 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -414,12 +414,8 @@ hantro_get_dst_buf(struct hantro_ctx *ctx)
+>         return v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+>  }
+>  
+> -static inline bool
+> -hantro_needs_postproc(const struct hantro_ctx *ctx,
+> -                     const struct hantro_fmt *fmt)
+> -{
+> -       return !ctx->is_encoder && fmt->fourcc != V4L2_PIX_FMT_NV12;
+> -}
+> +bool hantro_needs_postproc(const struct hantro_ctx *ctx,
+> +                          const struct hantro_fmt *fmt);
+>  
+>  static inline dma_addr_t
+>  hantro_get_dec_buf_addr(struct hantro_ctx *ctx, struct vb2_buffer *vb)
+> diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
+> index 6d2a8f2a8f0b..ed8916c950a4 100644
+> --- a/drivers/staging/media/hantro/hantro_postproc.c
+> +++ b/drivers/staging/media/hantro/hantro_postproc.c
+> @@ -50,6 +50,20 @@ const struct hantro_postproc_regs hantro_g1_postproc_regs = {
+>         .display_width = {G1_REG_PP_DISPLAY_WIDTH, 0, 0xfff},
+>  };
+>  
+> +bool hantro_needs_postproc(const struct hantro_ctx *ctx,
+> +                          const struct hantro_fmt *fmt)
+> +{
+> +       struct hantro_dev *vpu = ctx->dev;
+> +
+> +       if (ctx->is_encoder)
+> +               return false;
+> +
+> +       if (!vpu->variant->postproc_fmts)
+> +               return false;
+> +
+> +       return fmt->fourcc != V4L2_PIX_FMT_NV12;
+> +}
+> +
+>  void hantro_postproc_enable(struct hantro_ctx *ctx)
+>  {
+>         struct hantro_dev *vpu = ctx->dev;
+> diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+> index 1bc118e375a1..77d7fe62ce81 100644
+> --- a/drivers/staging/media/hantro/hantro_v4l2.c
+> +++ b/drivers/staging/media/hantro/hantro_v4l2.c
+> @@ -55,7 +55,9 @@ static const struct hantro_fmt *
+>  hantro_get_postproc_formats(const struct hantro_ctx *ctx,
+>                             unsigned int *num_fmts)
+>  {
+> -       if (ctx->is_encoder) {
+> +       struct hantro_dev *vpu = ctx->dev;
+> +
+> +       if (ctx->is_encoder || !vpu->variant->postproc_fmts) {
+>                 *num_fmts = 0;
+>                 return NULL;
+>         }
+
+
