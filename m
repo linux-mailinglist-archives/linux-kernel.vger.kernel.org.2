@@ -2,236 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0B134D52A
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B512534D52B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 18:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhC2Qb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 12:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
+        id S231366AbhC2Qbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 12:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhC2Qa5 (ORCPT
+        with ESMTP id S231283AbhC2QbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 12:30:57 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AACAC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:30:57 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id 97so4130589uav.7
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 09:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dfxPhxpg4b8lCmkp3iLn4etcQuwvO0zGBVZNc4LN+EM=;
-        b=gGkbggNe33AgSvMTwHgphedlU4KM7rQ3ggd9E8II2NNggKS66Q55uB0eks7MAOA6Ra
-         JchEKjyYvkYk5XoMa6hTF057Vg910pGr5sWUcTxWOs2ctsLTjJwbwf1dOjwN/LbSANn1
-         LrMKhn5ToIUabP4pdthySmMhdqRhSH7LQcW/9TrhI5bYe0Iv8PWl7+ARzjvK2zns2D4a
-         QjaaTOPghpJ6uCrS9J/DpCn/puPFePcWITvG6jnP0IGS28VLByxCoe99gKbwpxHXRkcj
-         O8JUlYSYhPgawjY8U6AwiKbeShLzRy5QsAaT80F6xtnwoUl0578fhc1yd9Y18Uo73uCv
-         vsRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dfxPhxpg4b8lCmkp3iLn4etcQuwvO0zGBVZNc4LN+EM=;
-        b=cgS8jDEBMuK+QFeBsqqNeWWL7mCFPDUiBilKti76zvyPTP2u+9EE2/rytzaps2BHEf
-         n60In9NfKuIIxuoptrkdWBP5PejdwwRWQH/TH4KaQTVgvDKz4fp2nkx4SQubvgkeUemv
-         6I9aZUNrSBkhFvXb3rk37pIvYP3yr8172oy3zzrmccnCBhR2adUKJMbYMiOu9W//xM6f
-         pTOg0UNBuiT2/k/T3TxSz1jpO1GW5B8rvYgp//HioyvGxx1D1fLqGj10bMu2uXAkQSOg
-         83JhhC0pPQLNzSPZFOg1MMd9BgB66EwmcSYN/DiY8QcqHgc3br0APnmC838Phw4bxzB6
-         OqcA==
-X-Gm-Message-State: AOAM532osnfSakWwvwY76c+ZD7vt2O5WHf2CRfEOuq+l2oDUUP9L2p4e
-        iYD7fCD+IYT/EkjTuKB8q/S6KGGPK7lwaEG539fvrQ==
-X-Google-Smtp-Source: ABdhPJyfsLMtYu1J2WIv7eCWt4CHlZHwc2c18Ln62Y++833SXnpe9EsELMR/mM8tQ7FUbt+LXcSwx7ZIcM2VcKZDE9s=
-X-Received: by 2002:ab0:45e1:: with SMTP id u88mr14475627uau.25.1617035456045;
- Mon, 29 Mar 2021 09:30:56 -0700 (PDT)
+        Mon, 29 Mar 2021 12:31:20 -0400
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4FEC061574;
+        Mon, 29 Mar 2021 09:31:20 -0700 (PDT)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id CACBDC72850;
+        Mon, 29 Mar 2021 18:31:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1617035479;
+        bh=Y4P1l6qGT0FozQveYBvpyYlZHzj8F1XucMPVUYIroBE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=meNHS3C5343RDj5b6FfGXyJRjxwws2ZnIOCObwv9h3qs//WKb2VxUUvgX8TB4YD4w
+         mwVySCAMmi9uYqoCyHYb0SBIxQtdBxDbUnhfkRXl6atFBKp6UpvOFL0K08W6TwWUB3
+         Fa5+lCiEx00bHigSE0MaZxJVSiTQktwCt7Y2Gbak=
+Date:   Mon, 29 Mar 2021 18:31:17 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 3/7] pwm: pca9685: Improve runtime PM behavior
+Message-ID: <YGIA1ZX9PrPlRvkb@workstation.tuxnet>
+References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
+ <20210329125707.182732-3-clemens.gruber@pqgruber.com>
+ <20210329155527.q3o25ubh33pmszsi@pengutronix.de>
 MIME-Version: 1.0
-References: <20210324114645.v2.1.I53e6be1f7df0be198b7e55ae9fc45c7f5760132d@changeid>
- <CAP2xMbvooqbwpVUWzLOTBt55ob1R-kZ80OPd8r4K0mQVrQP7kA@mail.gmail.com>
-In-Reply-To: <CAP2xMbvooqbwpVUWzLOTBt55ob1R-kZ80OPd8r4K0mQVrQP7kA@mail.gmail.com>
-From:   Daniel Winkler <danielwinkler@google.com>
-Date:   Mon, 29 Mar 2021 09:30:44 -0700
-Message-ID: <CAP2xMbsObjrHoV_nzQPA4bj9wSbQCfjhxhPvb_BS99fL23ynMg@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: Always call advertising disable before
- setting params
-To:     BlueZ <linux-bluetooth@vger.kernel.org>
-Cc:     chromeos-bluetooth-upstreaming 
-        <chromeos-bluetooth-upstreaming@chromium.org>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210329155527.q3o25ubh33pmszsi@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi maintainers,
+Hi Uwe,
 
-Please disregard this patch. While most chipsets honor the "Disabling
-advertising when it is already disabled has no effect" clause in the
-spec, I discovered over the weekend that some (WP2, ThP2, for
-instance) controllers will return an error status if there is no
-advertising active when the disable request is submitted. This patch
-regresses advertising on these platforms, so I will look into a
-different approach to solve this race condition.
+On Mon, Mar 29, 2021 at 05:55:27PM +0200, Uwe Kleine-König wrote:
+> On Mon, Mar 29, 2021 at 02:57:03PM +0200, Clemens Gruber wrote:
+> > The chip does not come out of POR in active state but in sleep state.
+> > To be sure (in case the bootloader woke it up) we force it to sleep in
+> > probe.
+> > 
+> > On kernels without CONFIG_PM, we wake the chip in .probe and put it to
+> > sleep in .remove.
+> 
+> What is the effect of sleep state? Does it continue to oscilate it the
+> bootloader set up some configuration?
 
-Best,
-Daniel Winkler
+The datasheet says: "When the oscillator is off (Sleep mode) the LEDn
+outputs cannot be turned on, off or dimmed/blinked."
 
+At the moment, we reset the output registers anyway, so everything is
+turned off at probe time, even if the bootloader did set something up.
 
-On Thu, Mar 25, 2021 at 10:27 AM Daniel Winkler
-<danielwinkler@google.com> wrote:
->
-> Hi all,
->
-> It looks like my change breaks the expectations of one mgmt-tester
-> test, which uses an Adv Enable (True) as a test condition. It is
-> surprised to first see an Adv Enable (False) in the HCI traffic, and
-> fails. I think my suggested approach here is the simplest and most
-> robust to solve this race condition, so if the maintainers are happy
-> with it, I can look into changing the test expectations to suit the
-> new scenario. Please advise.
->
-> Thanks in advance,
-> Daniel
->
-> On Wed, Mar 24, 2021 at 11:47 AM Daniel Winkler
-> <danielwinkler@google.com> wrote:
-> >
-> > In __hci_req_enable_advertising, the HCI_LE_ADV hdev flag is temporarily
-> > cleared to allow the random address to be set, which exposes a race
-> > condition when an advertisement is configured immediately (<10ms) after
-> > software rotation starts to refresh an advertisement.
-> >
-> > In normal operation, the HCI_LE_ADV flag is updated as follows:
-> >
-> > 1. adv_timeout_expire is called, HCI_LE_ADV gets cleared in
-> >    __hci_req_enable_advertising, but hci_req configures an enable
-> >    request
-> > 2. hci_req is run, enable callback re-sets HCI_LE_ADV flag
-> >
-> > However, in this race condition, the following occurs:
-> >
-> > 1. adv_timeout_expire is called, HCI_LE_ADV gets cleared in
-> >    __hci_req_enable_advertising, but hci_req configures an enable
-> >    request
-> > 2. add_advertising is called, which also calls
-> >    __hci_req_enable_advertising. Because HCI_LE_ADV was cleared in Step
-> >    1, no "disable" command is queued.
-> > 3. hci_req for adv_timeout_expire is run, which enables advertising and
-> >    re-sets HCI_LE_ADV
-> > 4. hci_req for add_advertising is run, but because no "disable" command
-> >    was queued, we try to set advertising parameters while advertising is
-> >    active, causing a Command Disallowed error, failing the registration.
-> >
-> > To resolve the issue, this patch removes the check for the HCI_LE_ADV
-> > flag, and always queues the "disable" request, since HCI_LE_ADV could be
-> > very temporarily out-of-sync. According to the spec, there is no harm in
-> > calling "disable" when advertising is not active.
-> >
-> > An example trace showing the HCI error in setting advertising parameters
-> > is included below, with some notes annotating the states I mentioned
-> > above:
-> >
-> > @ MGMT Command: Add Ext Adv.. (0x0055) plen 35  {0x0001} [hci0]04:05.884
-> >         Instance: 3
-> >         Advertising data length: 24
-> >         16-bit Service UUIDs (complete): 2 entries
-> >           Location and Navigation (0x1819)
-> >           Phone Alert Status Service (0x180e)
-> >         Company: not assigned (65283)
-> >           Data: 3a3b3c3d3e
-> >         Service Data (UUID 0x9993): 3132333435
-> >         Scan response length: 0
-> > @ MGMT Event: Advertising Ad.. (0x0023) plen 1  {0x0005} [hci0]04:05.885
-> >         Instance: 3
-> >
-> > === adv_timeout_expire request starts running. This request was created
-> > before our add advertising request
-> > > HCI Event: Command Complete (0x0e) plen 4         #220 [hci0]04:05.993
-> >       LE Set Advertising Data (0x08|0x0008) ncmd 1
-> >         Status: Success (0x00)
-> > < HCI Command: LE Set Scan.. (0x08|0x0009) plen 32  #221 [hci0]04:05.993
-> >         Length: 24
-> >         Service Data (UUID 0xabcd): 161718191a1b1c1d1e1f2021222324252627
-> > > HCI Event: Command Complete (0x0e) plen 4         #222 [hci0]04:05.995
-> >       LE Set Scan Response Data (0x08|0x0009) ncmd 1
-> >         Status: Success (0x00)
-> > < HCI Command: LE Set Adver.. (0x08|0x000a) plen 1  #223 [hci0]04:05.995
-> >         Advertising: Disabled (0x00)
-> > > HCI Event: Command Complete (0x0e) plen 4         #224 [hci0]04:05.997
-> >       LE Set Advertise Enable (0x08|0x000a) ncmd 1
-> >         Status: Success (0x00)
-> > < HCI Command: LE Set Adve.. (0x08|0x0006) plen 15  #225 [hci0]04:05.997
-> >         Min advertising interval: 200.000 msec (0x0140)
-> >         Max advertising interval: 200.000 msec (0x0140)
-> >         Type: Connectable undirected - ADV_IND (0x00)
-> >         Own address type: Public (0x00)
-> >         Direct address type: Public (0x00)
-> >         Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
-> >         Channel map: 37, 38, 39 (0x07)
-> >         Filter policy: Allow Scan Request, Connect from Any (0x00)
-> > > HCI Event: Command Complete (0x0e) plen 4         #226 [hci0]04:05.998
-> >       LE Set Advertising Parameters (0x08|0x0006) ncmd 1
-> >         Status: Success (0x00)
-> > < HCI Command: LE Set Adver.. (0x08|0x000a) plen 1  #227 [hci0]04:05.999
-> >         Advertising: Enabled (0x01)
-> > > HCI Event: Command Complete (0x0e) plen 4         #228 [hci0]04:06.000
-> >       LE Set Advertise Enable (0x08|0x000a) ncmd 1
-> >         Status: Success (0x00)
-> >
-> > === Our new add_advertising request starts running
-> > < HCI Command: Read Local N.. (0x03|0x0014) plen 0  #229 [hci0]04:06.001
-> > > HCI Event: Command Complete (0x0e) plen 252       #230 [hci0]04:06.005
-> >       Read Local Name (0x03|0x0014) ncmd 1
-> >         Status: Success (0x00)
-> >         Name: Chromebook_FB3D
-> >
-> > === Although the controller is advertising, no disable command is sent
-> > < HCI Command: LE Set Adve.. (0x08|0x0006) plen 15  #231 [hci0]04:06.005
-> >         Min advertising interval: 200.000 msec (0x0140)
-> >         Max advertising interval: 200.000 msec (0x0140)
-> >         Type: Connectable undirected - ADV_IND (0x00)
-> >         Own address type: Public (0x00)
-> >         Direct address type: Public (0x00)
-> >         Direct address: 00:00:00:00:00:00 (OUI 00-00-00)
-> >         Channel map: 37, 38, 39 (0x07)
-> >         Filter policy: Allow Scan Request, Connect from Any (0x00)
-> > > HCI Event: Command Complete (0x0e) plen 4         #232 [hci0]04:06.005
-> >       LE Set Advertising Parameters (0x08|0x0006) ncmd 1
-> >         Status: Command Disallowed (0x0c)
-> >
-> > Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> > Signed-off-by: Daniel Winkler <danielwinkler@google.com>
+When removing the resets in the future, I would read out the state of
+the SLEEP bit at probe time and set the pm runtime state accordingly.
+
+> 
+> 
+> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
 > > ---
-> >
-> > Changes in v2:
-> > - Added btmon snippet showing HCI command failure
-> >
-> >  net/bluetooth/hci_request.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-> > index 8ace5d34b01efe..2b4b99f4cedf21 100644
-> > --- a/net/bluetooth/hci_request.c
-> > +++ b/net/bluetooth/hci_request.c
-> > @@ -1547,8 +1547,10 @@ void __hci_req_enable_advertising(struct hci_request *req)
-> >         if (!is_advertising_allowed(hdev, connectable))
-> >                 return;
-> >
-> > -       if (hci_dev_test_flag(hdev, HCI_LE_ADV))
-> > -               __hci_req_disable_advertising(req);
-> > +       /* Request that the controller stop advertising. This can be called
-> > +        * whether or not there is an active advertisement.
-> > +        */
-> > +       __hci_req_disable_advertising(req);
-> >
-> >         /* Clear the HCI_LE_ADV bit temporarily so that the
-> >          * hci_update_random_address knows that it's safe to go ahead
-> > --
-> > 2.31.0.291.g576ba9dcdaf-goog
-> >
+> >  drivers/pwm/pwm-pca9685.c | 20 ++++++++++++++++----
+> >  1 file changed, 16 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
+> > index fb026a25fb61..4d6684b90819 100644
+> > --- a/drivers/pwm/pwm-pca9685.c
+> > +++ b/drivers/pwm/pwm-pca9685.c
+> > @@ -469,14 +469,19 @@ static int pca9685_pwm_probe(struct i2c_client *client,
+> >  		return ret;
+> >  	}
+> >  
+> > -	/* The chip comes out of power-up in the active state */
+> > -	pm_runtime_set_active(&client->dev);
+> >  	/*
+> > -	 * Enable will put the chip into suspend, which is what we
+> > -	 * want as all outputs are disabled at this point
+> > +	 * The chip comes out of power-up in the sleep state,
+> > +	 * but force it to sleep in case it was woken up before
+> >  	 */
+> > +	pca9685_set_sleep_mode(pca, true);
+> > +	pm_runtime_set_suspended(&client->dev);
+> >  	pm_runtime_enable(&client->dev);
+> >  
+> > +	if (!IS_ENABLED(CONFIG_PM)) {
+> > +		/* Wake the chip up on non-PM environments */
+> > +		pca9685_set_sleep_mode(pca, false);
+> 
+> I admit I didn't grasp all the PM framework details, but I wonder if
+> it's right to first call set_sleep_mode(true) and then in some cases to
+> false again.
+
+That was done for readability reasons, however, I admit that after we no
+longer reset the period (deemed not necessary by me due to the planned
+removal of the resets) it would probably be as readable to have:
+
+if (IS_ENABLED(CONFIG_PM)) {
+	pca9685_set_sleep_mode(pca, true);
+	pm_runtime_set_suspended..
+	pm_runtime_enable..
+} else
+	pca9685_set_sleep_mode(pca, false);
+
+Thanks,
+Clemens
