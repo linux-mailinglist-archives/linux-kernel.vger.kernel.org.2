@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F3534C5B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F070434CC2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhC2ICL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:02:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43482 "EHLO mail.kernel.org"
+        id S235213AbhC2I4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:56:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231653AbhC2IBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:01:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8041F6196B;
-        Mon, 29 Mar 2021 08:01:24 +0000 (UTC)
+        id S234717AbhC2IhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:37:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0782619B6;
+        Mon, 29 Mar 2021 08:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004885;
-        bh=i6PZcyS32+Q2rUoQb+Rle8pEw7OWb2VASrVtpl35CK0=;
+        s=korg; t=1617006986;
+        bh=62WyzoZ0JdP08Pgur3ltztB9/oKbl23z0a/nNBzZgFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bgCDKUJn+1XecB+Iz/FNR6/o7nXYWhpKWGhTkMIa0IHXoWK9t2HKTBZqdvdKNRWK7
-         267YCW7ftJ1I+b4QLZp4teWeoqGBYt3MopFL8YU98JO1EBVwkgbkPOHqJ7f9pwYJ0p
-         8zt4PZns3cQ3nERiJaV3Np+fX+v4tKsms11Hfjts=
+        b=bEQL47y+iEbwrRmRtswL35jE+AaUElcjY1vvIiEvlZKU+psRqit75WtRZfqAMBXHN
+         tZEAEm8T1HnoAPSxG2L0c0b60JTOkdL6EeM4iBESng+nxJ9hKIy8NvULBgKdMAZWMm
+         y1VhGI4lqYzbbMLQC4OiCZkSZ9Xzlma7pbRCfYt4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org, Jiri Bohac <jbohac@suse.cz>,
+        Jiri Pirko <jiri@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 28/33] net: cdc-phonet: fix data-interface release on probe failure
-Date:   Mon, 29 Mar 2021 09:58:13 +0200
-Message-Id: <20210329075606.163325635@linuxfoundation.org>
+Subject: [PATCH 5.11 178/254] net: check all name nodes in __dev_alloc_name
+Date:   Mon, 29 Mar 2021 09:58:14 +0200
+Message-Id: <20210329075638.999849481@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-References: <20210329075605.290845195@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +41,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Jiri Bohac <jbohac@suse.cz>
 
-[ Upstream commit c79a707072fe3fea0e3c92edee6ca85c1e53c29f ]
+[ Upstream commit 6c015a2256801597fadcbc11d287774c9c512fa5 ]
 
-Set the disconnected flag before releasing the data interface in case
-netdev registration fails to avoid having the disconnect callback try to
-deregister the never registered netdev (and trigger a WARN_ON()).
+__dev_alloc_name(), when supplied with a name containing '%d',
+will search for the first available device number to generate a
+unique device name.
 
-Fixes: 87cf65601e17 ("USB host CDC Phonet network interface driver")
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Since commit ff92741270bf8b6e78aa885f166b68c7a67ab13a ("net:
+introduce name_node struct to be used in hashlist") network
+devices may have alternate names.  __dev_alloc_name() does take
+these alternate names into account, possibly generating a name
+that is already taken and failing with -ENFILE as a result.
+
+This demonstrates the bug:
+
+    # rmmod dummy 2>/dev/null
+    # ip link property add dev lo altname dummy0
+    # modprobe dummy numdummies=1
+    modprobe: ERROR: could not insert 'dummy': Too many open files in system
+
+Instead of creating a device named dummy1, modprobe fails.
+
+Fix this by checking all the names in the d->name_node list, not just d->name.
+
+Signed-off-by: Jiri Bohac <jbohac@suse.cz>
+Fixes: ff92741270bf ("net: introduce name_node struct to be used in hashlist")
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc-phonet.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/core/dev.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/usb/cdc-phonet.c b/drivers/net/usb/cdc-phonet.c
-index ff2270ead2e6..84e0e7f78029 100644
---- a/drivers/net/usb/cdc-phonet.c
-+++ b/drivers/net/usb/cdc-phonet.c
-@@ -406,6 +406,8 @@ static int usbpn_probe(struct usb_interface *intf, const struct usb_device_id *i
+diff --git a/net/core/dev.c b/net/core/dev.c
+index a5a1dbe66b76..541ee3bc467b 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -1182,6 +1182,18 @@ static int __dev_alloc_name(struct net *net, const char *name, char *buf)
+ 			return -ENOMEM;
  
- 	err = register_netdev(dev);
- 	if (err) {
-+		/* Set disconnected flag so that disconnect() returns early. */
-+		pnd->disconnected = 1;
- 		usb_driver_release_interface(&usbpn_driver, data_intf);
- 		goto out;
- 	}
+ 		for_each_netdev(net, d) {
++			struct netdev_name_node *name_node;
++			list_for_each_entry(name_node, &d->name_node->list, list) {
++				if (!sscanf(name_node->name, name, &i))
++					continue;
++				if (i < 0 || i >= max_netdevices)
++					continue;
++
++				/*  avoid cases where sscanf is not exact inverse of printf */
++				snprintf(buf, IFNAMSIZ, name, i);
++				if (!strncmp(buf, name_node->name, IFNAMSIZ))
++					set_bit(i, inuse);
++			}
+ 			if (!sscanf(d->name, name, &i))
+ 				continue;
+ 			if (i < 0 || i >= max_netdevices)
 -- 
 2.30.1
 
