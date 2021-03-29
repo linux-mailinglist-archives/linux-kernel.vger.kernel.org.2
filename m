@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BA734CBD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7652434CA21
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236361AbhC2IxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:53:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54124 "EHLO mail.kernel.org"
+        id S234261AbhC2IfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:35:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38466 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233938AbhC2Ie1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:34:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F16A6196E;
-        Mon, 29 Mar 2021 08:34:26 +0000 (UTC)
+        id S232065AbhC2IVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:21:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C4E76197C;
+        Mon, 29 Mar 2021 08:21:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006866;
-        bh=VmcGbA1/O5Oasqt+SD5cP8LTH5dJT6oFG0I36E9xXhw=;
+        s=korg; t=1617006093;
+        bh=NFRGoH2I14XIttQ8SkMKpRIyZdGV73E3L7CqyUTrvXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WUvenv0XMCJQda4ZyzZaO+Sg8hUYPuQ2HdwCBNSbFLeQYs44eZka4mCOJzCaohzex
-         qwp/YyuuRUT6cTfXq4jjlF3Ved6CrXI38/eS0zGWfMJRICcPa3IpDtFCYcYLrQerC7
-         tVFsGiTxI5sMap3gCUF5GxH2SjNqUMgkVwK9vZ6E=
+        b=ZPENFdV4enYQ7KMpyIq6xxbZUQygBRifsmdGoHIaOIKuktuG7ZAhrNlG7yd62kKF2
+         NpLN7IAyNGJ8eZCR5VPfRm4iEIc1R7IwBJcB3OReiqKq0w6uBLUzmyALlJg2tlMNyu
+         AZPYCHKQYQLn72I/Mjz+jkJJMRcpGsTcT7mg6+es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Gow <davidgow@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 131/254] kunit: tool: Disable PAGE_POISONING under --alltests
+Subject: [PATCH 5.10 116/221] net: qrtr: fix a kernel-infoleak in qrtr_recvmsg()
 Date:   Mon, 29 Mar 2021 09:57:27 +0200
-Message-Id: <20210329075637.530027341@linuxfoundation.org>
+Message-Id: <20210329075633.080146853@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,51 +42,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Gow <davidgow@google.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 7fd53f41f771d250eb08db08650940f017e37c26 ]
+[ Upstream commit 50535249f624d0072cd885bcdce4e4b6fb770160 ]
 
-kunit_tool maintains a list of config options which are broken under
-UML, which we exclude from an otherwise 'make ARCH=um allyesconfig'
-build used to run all tests with the --alltests option.
+struct sockaddr_qrtr has a 2-byte hole, and qrtr_recvmsg() currently
+does not clear it before copying kernel data to user space.
 
-Something in UML allyesconfig is causing segfaults when page poisining
-is enabled (and is poisoning with a non-zero value). Previously, this
-didn't occur, as allyesconfig enabled the CONFIG_PAGE_POISONING_ZERO
-option, which worked around the problem by zeroing memory. This option
-has since been removed, and memory is now poisoned with 0xAA, which
-triggers segfaults in many different codepaths, preventing UML from
-booting.
+It might be too late to name the hole since sockaddr_qrtr structure is uapi.
 
-Note that we have to disable both CONFIG_PAGE_POISONING and
-CONFIG_DEBUG_PAGEALLOC, as the latter will 'select' the former on
-architectures (such as UML) which don't implement __kernel_map_pages().
+BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+CPU: 0 PID: 29705 Comm: syz-executor.3 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ kmsan_internal_check_memory+0x202/0x520 mm/kmsan/kmsan.c:402
+ kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+ instrument_copy_to_user include/linux/instrumented.h:121 [inline]
+ _copy_to_user+0x1ac/0x270 lib/usercopy.c:33
+ copy_to_user include/linux/uaccess.h:209 [inline]
+ move_addr_to_user+0x3a2/0x640 net/socket.c:237
+ ____sys_recvmsg+0x696/0xd50 net/socket.c:2575
+ ___sys_recvmsg net/socket.c:2610 [inline]
+ do_recvmmsg+0xa97/0x22d0 net/socket.c:2710
+ __sys_recvmmsg net/socket.c:2789 [inline]
+ __do_sys_recvmmsg net/socket.c:2812 [inline]
+ __se_sys_recvmmsg+0x24a/0x410 net/socket.c:2805
+ __x64_sys_recvmmsg+0x62/0x80 net/socket.c:2805
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465f69
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f43659d6188 EFLAGS: 00000246 ORIG_RAX: 000000000000012b
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465f69
+RDX: 0000000000000008 RSI: 0000000020003e40 RDI: 0000000000000003
+RBP: 00000000004bfa8f R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000010060 R11: 0000000000000246 R12: 000000000056bf60
+R13: 0000000000a9fb1f R14: 00007f43659d6300 R15: 0000000000022000
 
-Ideally, we'd fix this properly by tracking down the real root cause,
-but since this is breaking KUnit's --alltests feature, it's worth
-disabling there in the meantime so the kernel can boot to the point
-where tests can actually run.
+Local variable ----addr@____sys_recvmsg created at:
+ ____sys_recvmsg+0x168/0xd50 net/socket.c:2550
+ ____sys_recvmsg+0x168/0xd50 net/socket.c:2550
 
-Fixes: f289041ed4cf ("mm, page_poison: remove CONFIG_PAGE_POISONING_ZERO")
-Signed-off-by: David Gow <davidgow@google.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Bytes 2-3 of 12 are uninitialized
+Memory access of size 12 starts at ffff88817c627b40
+Data copied to user address 0000000020000140
+
+Fixes: bdabad3e363d ("net: Add Qualcomm IPC router")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Courtney Cavin <courtney.cavin@sonymobile.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/kunit/configs/broken_on_uml.config | 2 ++
- 1 file changed, 2 insertions(+)
+ net/qrtr/qrtr.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/testing/kunit/configs/broken_on_uml.config b/tools/testing/kunit/configs/broken_on_uml.config
-index a7f0603d33f6..690870043ac0 100644
---- a/tools/testing/kunit/configs/broken_on_uml.config
-+++ b/tools/testing/kunit/configs/broken_on_uml.config
-@@ -40,3 +40,5 @@
- # CONFIG_RESET_BRCMSTB_RESCAL is not set
- # CONFIG_RESET_INTEL_GW is not set
- # CONFIG_ADI_AXI_ADC is not set
-+# CONFIG_DEBUG_PAGEALLOC is not set
-+# CONFIG_PAGE_POISONING is not set
+diff --git a/net/qrtr/qrtr.c b/net/qrtr/qrtr.c
+index 54031ee079a2..45fbf5f4dcd2 100644
+--- a/net/qrtr/qrtr.c
++++ b/net/qrtr/qrtr.c
+@@ -1035,6 +1035,11 @@ static int qrtr_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	rc = copied;
+ 
+ 	if (addr) {
++		/* There is an anonymous 2-byte hole after sq_family,
++		 * make sure to clear it.
++		 */
++		memset(addr, 0, sizeof(*addr));
++
+ 		addr->sq_family = AF_QIPCRTR;
+ 		addr->sq_node = cb->src_node;
+ 		addr->sq_port = cb->src_port;
 -- 
 2.30.1
 
