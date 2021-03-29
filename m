@@ -2,53 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 800CD34C1EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A369734C1F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 04:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhC2CZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 22:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229719AbhC2CZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 22:25:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3E5061554;
-        Mon, 29 Mar 2021 02:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1616984735;
-        bh=QWb/HF9UilknbtV40E2RWyidJoP+mF2Xzwk3N0FcIZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b4eBbqabuaDEvyEgdx4kiGdmCAKVeeXQcLNGN39y8qyReSeAQbOZ0lvFa3WTKmarI
-         R21Ylo75DtDN0Sr7qFdFD8M1jlScwFWR1svvOIjUdtJ3HKBpMUJQSkshM34HN9IUwG
-         PbFJHfROp+Q0BPIdVHlV/T80JS8QbrM0ryK31Zu/Ew4zKpH6KGhq7TamljA0VAgm47
-         vtwL//g7eoFYoJ/pxtqCH4YWm6BuUi38EcCVFdoMKGJ0pjl0bKeJWl58cu/t3AQ+ge
-         L6A7TvNCerY6NoaEkhLgUqAvuV/sMIQF3J27o+QWASEeYxxUyrvVA60rW6KMObMZhv
-         SrfHb3t+F7Tkw==
-Date:   Mon, 29 Mar 2021 10:25:30 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oliver =?iso-8859-1?Q?St=E4bler?= <oliver.staebler@bytesatwork.ch>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: imx8mm/q: Fix pad control of SD1_DATA0
-Message-ID: <20210329022529.GN22955@dragon>
-References: <CAOMZO5B_uHS_Z2LuMwHDmn9erORrsrNBMHMjkW-hW+pnfHZThQ@mail.gmail.com>
- <20210324132841.5841-1-oliver.staebler@bytesatwork.ch>
+        id S230223AbhC2C1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 22:27:50 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14504 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229719AbhC2C1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 22:27:15 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4F7xHl4PXrzwPW0;
+        Mon, 29 Mar 2021 10:25:07 +0800 (CST)
+Received: from [10.174.177.134] (10.174.177.134) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 29 Mar 2021 10:27:01 +0800
+Subject: [PATCH v2] powerpc: Fix HAVE_HARDLOCKUP_DETECTOR_ARCH build
+ configuration
+From:   Chen Huang <chenhuang5@huawei.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        "Paul Mackerras" <paulus@samba.org>
+CC:     Don Zickus <dzickus@redhat.com>, <linux-kernel@vger.kernel.org>,
+        "Nicholas Piggin" <npiggin@gmail.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linuxppc-dev@lists.ozlabs.org>
+References: <20210327094900.938555-1-chenhuang5@huawei.com>
+ <dd6b25d3-006b-be1e-9c4f-89e66aefb519@csgroup.eu>
+ <e8eddfd4-ca07-f2ba-42de-19e636dc2ce9@huawei.com>
+Message-ID: <4b8f8335-0a29-93fc-7943-b4dc16efb908@huawei.com>
+Date:   Mon, 29 Mar 2021 10:27:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <e8eddfd4-ca07-f2ba-42de-19e636dc2ce9@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210324132841.5841-1-oliver.staebler@bytesatwork.ch>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.174.177.134]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 02:28:41PM +0100, Oliver St�bler wrote:
-> Fix address of the pad control register
-> (IOMUXC_SW_PAD_CTL_PAD_SD1_DATA0) for SD1_DATA0_GPIO2_IO2.  This seems
-> to be a typo but it leads to an exception when pinctrl is applied due to
-> wrong memory address access.
-> 
-> Signed-off-by: Oliver St�bler <oliver.staebler@bytesatwork.ch>
+When compiling the powerpc with the SMP disabled, it shows the issue:
 
-Applied, thanks.
+arch/powerpc/kernel/watchdog.c: In function ‘watchdog_smp_panic’:
+arch/powerpc/kernel/watchdog.c:177:4: error: implicit declaration of function ‘smp_send_nmi_ipi’; did you mean ‘smp_send_stop’? [-Werror=implicit-function-declaration]
+  177 |    smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
+      |    ^~~~~~~~~~~~~~~~
+      |    smp_send_stop
+cc1: all warnings being treated as errors
+make[2]: *** [scripts/Makefile.build:273: arch/powerpc/kernel/watchdog.o] Error 1
+make[1]: *** [scripts/Makefile.build:534: arch/powerpc/kernel] Error 2
+make: *** [Makefile:1980: arch/powerpc] Error 2
+make: *** Waiting for unfinished jobs....
+
+We found that powerpc used ipi to implement hardlockup watchdog, so the
+HAVE_HARDLOCKUP_DETECTOR_ARCH should depend on the SMP.
+
+Fixes: 2104180a5369 ("powerpc/64s: implement arch-specific hardlockup watchdog")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Huang <chenhuang5@huawei.com>
+---
+ arch/powerpc/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 764df010baee..a5196e1a1281 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -210,6 +210,7 @@ config PPC
+    select HAVE_FUNCTION_TRACER
+    select HAVE_GCC_PLUGINS         if GCC_VERSION >= 50200   # plugin support on gcc <= 5.1 is buggy on PPC
+    select HAVE_GENERIC_VDSO
++   select HAVE_HARDLOCKUP_DETECTOR_ARCH    if PPC_BOOK3S_64 && SMP
+    select HAVE_HW_BREAKPOINT       if PERF_EVENTS && (PPC_BOOK3S || PPC_8xx)
+    select HAVE_IDE
+    select HAVE_IOREMAP_PROT
+@@ -225,7 +226,6 @@ config PPC
+    select HAVE_LIVEPATCH           if HAVE_DYNAMIC_FTRACE_WITH_REGS
+    select HAVE_MOD_ARCH_SPECIFIC
+    select HAVE_NMI             if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+-   select HAVE_HARDLOCKUP_DETECTOR_ARCH    if (PPC64 && PPC_BOOK3S)
+    select HAVE_OPTPROBES           if PPC64
+    select HAVE_PERF_EVENTS
+    select HAVE_PERF_EVENTS_NMI     if PPC64
+--
+2.17.1
+
+
