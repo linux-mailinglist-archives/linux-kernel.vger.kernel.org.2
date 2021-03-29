@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC54C34C146
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CEA34C14A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhC2Bub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 21:50:31 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15079 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhC2Bt6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 21:49:58 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4F7wSm74M8z19JQK;
-        Mon, 29 Mar 2021 09:47:52 +0800 (CST)
-Received: from mdc.localdomain (10.175.104.57) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 29 Mar 2021 09:49:45 +0800
-From:   Huang Guobin <huangguobin4@huawei.com>
-To:     <huangguobin4@huawei.com>, Vinod Koul <vkoul@kernel.org>,
-        "Giuseppe Cavallaro" <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>
-CC:     <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next v2] net: stmmac: remove redundant dev_err call in qcom_ethqos_probe()
-Date:   Mon, 29 Mar 2021 09:49:32 +0800
-Message-ID: <1616982572-14473-1-git-send-email-huangguobin4@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        id S230274AbhC2BwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 21:52:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229822AbhC2Bv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 28 Mar 2021 21:51:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFEEB61941;
+        Mon, 29 Mar 2021 01:51:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1616982715;
+        bh=U0Y5HEp4vLgEt3OrK0G+AlzV4k+/QymqO4rrPYmLDWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dT20VNVeUoj8H3ChZPXZla+P99WfnHv8Mnzy2scGz5waqBEfSy+U6dS4xFIjkgZBv
+         mUtVCce8MHgk0yjq23piVjgyicmtuPZhWZBPQU+0UyD3C1l4BksxhkKYY7yOk2+L4n
+         t0d+A2RlrWVAr2yH8iSFLpN2iv0r690Fe/0D2Me2tAwcFV2JqyaB0RNp7JlOxr+yXP
+         vpKN5E9MmoNk0HuUbft0UATSY1FhXAO6qfGe7KH+OhGREhjgJvTkHGXMBBjl6Bq9Dw
+         wv4dLzGz03UVgAsdM0kgklMdjqhMEPo1k80R9W+AAejxvYsO2f5zOI2wpwX5BQKzCK
+         1xOBcDX50CuTQ==
+Date:   Mon, 29 Mar 2021 09:51:50 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Heiko Thiery <heiko.thiery@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Michael Walle <michael@walle.cc>
+Subject: Re: [PATCH v2] arm64: dts: imx8mq-kontron-pitx-imx8m: pass phy reset
+ delays
+Message-ID: <20210329015149.GL22955@dragon>
+References: <20210323140019.14388-1-heiko.thiery@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.104.57]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323140019.14388-1-heiko.thiery@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guobin Huang <huangguobin4@huawei.com>
+On Tue, Mar 23, 2021 at 03:00:21PM +0100, Heiko Thiery wrote:
+> The TI DP83867 PHY datasheet says:
+> T1: Post RESET stabilization time == 195us
+> T3: Hardware configuration pins transition to output drivers == 64us
+> T4: RESET pulse width == 1us
+> 
+> So with a little overhead set 'reset-assert-us' to 10us (T4) and
+> 'reset-deassert-us' to 280us (T1+T3).
+> 
+> Without these reset delays the board will hang during startup when
+> bootargs has ip=dhcp set.
+> 
+> Fixes: 1dc7f3d79a1a ("arm64: dts: fsl: add support for Kontron pitx-imx8m board")
+> Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
+> ---
+> v2:
+>  - add desciption what issue will be fixed
+>  - add Fixes tag
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+My branch is not a stable one, so I just squashed it into the original
+commit.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Guobin Huang <huangguobin4@huawei.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c  | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index bfc4a92f1d92..a674b7d6b49a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -477,7 +477,6 @@ static int qcom_ethqos_probe(struct platform_device *pdev)
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "rgmii");
- 	ethqos->rgmii_base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(ethqos->rgmii_base)) {
--		dev_err(&pdev->dev, "Can't get rgmii base\n");
- 		ret = PTR_ERR(ethqos->rgmii_base);
- 		goto err_mem;
- 	}
-
+Shawn
