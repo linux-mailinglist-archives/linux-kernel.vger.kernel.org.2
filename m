@@ -2,132 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A681D34D9EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290F534D9F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhC2WMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:12:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbhC2WMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:12:16 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58154C061762
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:12:16 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id 17so1685214qtt.11
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 15:12:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ekCF2vvcLsdB3w/7DhoYThMPMaRHrvLWv1Vl8Jy7w1I=;
-        b=m6mRmHasW2CUfIqjeOLJjTmqe7jpWbLqCpMyS4UjSz15CBgj3Z/6MIX6P2SGCPN+2a
-         uOjKHQKXIpb9v6UTTw1sZFoY2R8DFJwdxWSDqKqvPzhqPjwKx+LvddeI6FGcPMgNpviZ
-         0aHtQOZCODLTgy3WBSfrulpkw2jqkYOoUwXqFLYxjI0d6z/+4U9IAtgfjTPLuAlrOG8W
-         4yBMM44hCZ/n686/A99TA8pQhgsmjDBitZs6otjZTWUSTjMXioLXG3/8+iQl5JlEpsco
-         qYHtk8upMZGcNypAk1Zr8v8tgn0jg/ZfaC9Te5J/m3KVvxOQ3qY0+WGGvdL8U/2Hwz1L
-         gODA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ekCF2vvcLsdB3w/7DhoYThMPMaRHrvLWv1Vl8Jy7w1I=;
-        b=rM5mDNNxLkKErLKPtdmlRqgK25N0nqImaDfQHTlj18QwzCFSDpRJJIb594wlSKk+uq
-         8nCfEXS4BShy1t4lVk6Om+ySO8Ub0sqRiUdNwenGUiClOpciKk16SBr3TIuRLuaIkx4V
-         I6N23F4nkWtiXmFNaFf/amy3qwpQocInQ6mwdN9FrCwJlxPLfk8DyVTWJZQaWuwoJMyr
-         l9HWXK8/pH4B3MUQyLCMI3t9tR7e+vHlh5BFTpvp8LX5UiYMmcHSlDbEqmJsTUY/YtkB
-         SaAcW1qtseBzeXkKe3+QBgXRa9HK8aTMP+AKcpMhnsCGuZeQKlFT/K/rwU9uAVOqj/BK
-         4RYw==
-X-Gm-Message-State: AOAM533vsnz01o7vgEozGyVhOY+Si9+XBrp9ERzNf796vvp2Eo/A/4VM
-        /u/tpAJZLJOWHsREZIgWCbgmTTyh13qsniTbr6A=
-X-Google-Smtp-Source: ABdhPJxlrxFWJ1uH4w6BOY1fugaPfBLFs2slmCsH1utiMKigXAVV6bzviq0qukxiy7S7XN0ThzH7Pi3yiwSdrFEBD6E=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:c959:2751:3fb4:47b1])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:204:: with SMTP id
- i4mr27848771qvt.47.1617055935550; Mon, 29 Mar 2021 15:12:15 -0700 (PDT)
-Date:   Mon, 29 Mar 2021 15:12:06 -0700
-Message-Id: <20210329221209.1718079-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH v2] ARM: kprobes: test-thumb: fix for LLVM_IAS=1
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Russell King <linux@armlinux.org.uk>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        David Spickett <david.spickett@linaro.org>,
-        Stephen Hines <srhines@google.com>,
-        Jian Cai <jiancai@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S229655AbhC2WNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 18:13:09 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64343 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230329AbhC2WM6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 18:12:58 -0400
+IronPort-SDR: QJUx8o6ef5kaDmFo2TXg16eaqLFvmB4jOh7JdXoiAOXzkgr95Sa7T4Grq0PHDS8+QlP1wBCbC0
+ Sm8ZPNNRPRpw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="189388133"
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="189388133"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 15:12:58 -0700
+IronPort-SDR: W3mNV5rWHpz6yPpF4v74lBWjQFBVOOrRySejGHs4AlyN65T1TeESoZYnM1Bfc+W8LetE5Azinh
+ xE2c+4EEW9Pg==
+X-IronPort-AV: E=Sophos;i="5.81,289,1610438400"; 
+   d="scan'208";a="411297203"
+Received: from jmwolcot-mobl.amr.corp.intel.com (HELO [10.209.158.84]) ([10.209.158.84])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 15:12:57 -0700
+Subject: Re: [PATCH v2 1/1] x86/tdx: Handle MWAIT, MONITOR and WBINVD
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <91C0F6F1-B8C3-4130-B903-C63CD4B87F3F@amacapital.net>
+ <ed7e96ba7a271e36bdfe61ee34c6d61eb78000c5.1616885306.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <498f078c-5196-a608-7f1a-8425ff056135@intel.com>
+ <8e02ce39-f672-e652-b314-418b7ec5f52a@linux.intel.com>
+ <d4fe4a10-7c29-5f26-25d2-b23369c38f3e@intel.com>
+ <dac078b4-e50c-42b9-db52-6dc65b99406e@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0356a84a-765e-b20b-2efd-c5d94fc2347e@intel.com>
+Date:   Mon, 29 Mar 2021 15:12:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <dac078b4-e50c-42b9-db52-6dc65b99406e@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a few instructions that GAS infers operands but Clang doesn't;
-from what I can tell the Arm ARM doesn't say these are optional.
+On 3/29/21 3:09 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>>>> +    case EXIT_REASON_MWAIT_INSTRUCTION:
+>>>>> +        /* MWAIT is supressed, not supposed to reach here. */
+>>>>> +        WARN(1, "MWAIT unexpected #VE Exception\n");
+>>>>> +        return -EFAULT;
+>>>>
+>>>> How is MWAIT "supppressed"?
+>>> I am clearing the MWAIT feature flag in early init code. We should also
+>>> disable this feature in firmware.
+>>> setup_clear_cpu_cap(X86_FEATURE_MWAIT);
+>>
+>> I'd be more explicit about that.  Maybe even reference the code that
+>> clears the X86_FEATURE.
+> This change is part of the same patch.
 
-F5.1.257 TBB, TBH T1 Halfword variant
-F5.1.238 STREXD T1 variant
-F5.1.84 LDREXD T1 variant
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1309
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
-See:
-https://lore.kernel.org/linux-arm-kernel/CAMj1kXE5uw4+zV3JVpfA2drOD5TZVMs5a_E5wrrnzjEYc=E_fA@mail.gmail.com/
-for what I'd consider V1. The previous issues with .w suffixes have been
-fixed or have fixes pending in LLVM:
-* BL+DBG:   https://reviews.llvm.org/D97236
-* ORN/ORNS: https://reviews.llvm.org/D99538
-* RSB/RSBS: https://reviews.llvm.org/D99542
-I'd have expected the Arm ARM to use curly braces to denote optional
-operands (see also "F5.1.167 RSB, RSBS (register)" for an example).
-
- arch/arm/probes/kprobes/test-thumb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm/probes/kprobes/test-thumb.c b/arch/arm/probes/kprobes/test-thumb.c
-index 456c181a7bfe..4e11f0b760f8 100644
---- a/arch/arm/probes/kprobes/test-thumb.c
-+++ b/arch/arm/probes/kprobes/test-thumb.c
-@@ -441,21 +441,21 @@ void kprobe_thumb32_test_cases(void)
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
- 
--	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,"]",
-+	TEST_RX("tbh	[pc, r",7, (9f-(1f+4))>>1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
- 
--	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,"]",
-+	TEST_RX("tbh	[pc, r",12, ((9f-(1f+4))>>1)+1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
- 		"3:	mvn	r0, r0	\n\t"
- 		"2:	nop		\n\t")
- 
--	TEST_RRX("tbh	[r",1,9f, ", r",14,1,"]",
-+	TEST_RRX("tbh	[r",1,9f, ", r",14,1,", lsl #1]",
- 		"9:			\n\t"
- 		".short	(2f-1b-4)>>1	\n\t"
- 		".short	(3f-1b-4)>>1	\n\t"
-@@ -468,10 +468,10 @@ void kprobe_thumb32_test_cases(void)
- 
- 	TEST_UNSUPPORTED("strexb	r0, r1, [r2]")
- 	TEST_UNSUPPORTED("strexh	r0, r1, [r2]")
--	TEST_UNSUPPORTED("strexd	r0, r1, [r2]")
-+	TEST_UNSUPPORTED("strexd	r0, r1, r2, [r2]")
- 	TEST_UNSUPPORTED("ldrexb	r0, [r1]")
- 	TEST_UNSUPPORTED("ldrexh	r0, [r1]")
--	TEST_UNSUPPORTED("ldrexd	r0, [r1]")
-+	TEST_UNSUPPORTED("ldrexd	r0, r1, [r1]")
- 
- 	TEST_GROUP("Data-processing (shifted register) and (modified immediate)")
- 
--- 
-2.31.0.291.g576ba9dcdaf-goog
-
+Right, but if someone goes and looks at the switch() statement in 10
+years is it going to be obvious how MWAIT was "suppressed"?
