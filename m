@@ -2,112 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7455434D92D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4190C34D93C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 22:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhC2Ump (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 16:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhC2UmK (ORCPT
+        id S231493AbhC2UnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 16:43:17 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:54432 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231300AbhC2UnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 16:42:10 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34224C061574;
-        Mon, 29 Mar 2021 13:42:10 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id j9so12415447wrx.12;
-        Mon, 29 Mar 2021 13:42:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=YsyGDYfvXwEJDtWChaMM7lgQPGvMlpmnsSX15I+kaJU=;
-        b=gq5ltCRyG/204YJ6mgRFKoCcplb1FAG7fPgKrj9s0BC7lIDU/bIQke5qmvRzdqwW43
-         jgXbE8H6G86d5w+tMZgHP9hRic4nLK68VwhdFmc+5e19pJplTkuLTjkqi5VCz2LqG/V3
-         C52kFXzkchR6OZh8jl9m9tItS981lVoxn0HMVBpIZ09ONkf9XvJTkWjzntj40ecELwyq
-         cUBDUkl3Jl37SBe18WkOwqjHI/SyEfJWaC/zWMRfoEtRQZXm3zHL/J4ChU5RMNxhM2uC
-         3GDxldMm3iYB/qsLb5P5EuPvxHmF+1nYg7ALKg2qXWT2OQJVRRBkSIPE0SL2dUxJKkHg
-         XzPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YsyGDYfvXwEJDtWChaMM7lgQPGvMlpmnsSX15I+kaJU=;
-        b=OkwZFRYwJtOmaWIqsPzMR3K17gwVzN8mib16Vs3GbVqUWqA/422odunUicdydu4DDr
-         iYfGrze/TRQkklB9O01WKR5aNy28LANNKa+HuvVW1wMmMeWcNJIirqmDI/AdImyWawfW
-         HkfcS5goF+QOGdZsOwFdplGFeB2mKyQTCeO4kqeD7eu2yPaAVwU3dz3r43r/bSxHYWG+
-         +ncLp9HA91YQBAJ8KG9+rQjxj1Nb9Ybh+0bLJPBXrgB8MJLGDY4cTYNo+erNPEoARw2P
-         0RaARTrM98d9vd39ErU95HdUjhZTzIj66d0/tR8NJTUmXTHKvlF8Yb7tHmvcdb9RZD4o
-         xMZA==
-X-Gm-Message-State: AOAM533mIeQY83vFwu8nAnHAfsmaZeSNiAaACKkR8ZHO3b9E1jq8zokx
-        w/QNEeRJFMx5Swm3BnGtTNc=
-X-Google-Smtp-Source: ABdhPJyM5JkhN0/IBQC7lI2hStdvflNBUPMnix67gZGRbbzqlV+SFWDzOsfd2xkHYiyQ7pRORPvceg==
-X-Received: by 2002:adf:e64d:: with SMTP id b13mr30457895wrn.204.1617050528949;
-        Mon, 29 Mar 2021 13:42:08 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id 135sm540850wma.44.2021.03.29.13.42.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 13:42:08 -0700 (PDT)
-Subject: Re: [syzbot] WARNING in xfrm_alloc_compat (2)
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        syzbot <syzbot+834ffd1afc7212eb8147@syzkaller.appspotmail.com>,
-        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-References: <000000000000ceb65005beb18c8f@google.com>
- <06c56a34-b7c6-f397-568d-3cdf6b044858@arista.com>
- <a4f2d6c8-b4cf-c993-d0b4-952c16b2317d@gmail.com>
-From:   Dmitry Safonov <0x7f454c46@gmail.com>
-Message-ID: <e675bba0-b14d-1448-172e-e3ed66c2c9ef@gmail.com>
-Date:   Mon, 29 Mar 2021 21:42:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 29 Mar 2021 16:43:00 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: shreeya)
+        with ESMTPSA id 152C21F40EFE
+From:   Shreeya Patel <shreeya.patel@collabora.com>
+To:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, krisman@collabora.com, ebiggers@google.com,
+        drosen@google.com, ebiggers@kernel.org, yuchao0@huawei.com
+Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: [PATCH v5 0/4] Make UTF-8 encoding loadable
+Date:   Tue, 30 Mar 2021 02:12:36 +0530
+Message-Id: <20210329204240.359184-1-shreeya.patel@collabora.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-In-Reply-To: <a4f2d6c8-b4cf-c993-d0b4-952c16b2317d@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 9:31 PM, Eric Dumazet wrote:
-> 
-> 
-> On 3/29/21 9:57 PM, Dmitry Safonov wrote:
-[..]
->>> ------------[ cut here ]------------
->>> unsupported nla_type 356
->>
->> This doesn't seem to be an issue.
->> Userspace sent message with nla_type 356, which is > __XFRM_MSG_MAX, so
->> this warning is expected. I've added it so when a new XFRM_MSG_* will be
->> added, to make sure that there will be translations to such messages in
->> xfrm_compat.ko (if the translation needed).
->> This is WARN_ON_ONCE(), so it can't be used as DOS.
->>
->> Ping me if you'd expect something else than once-a-boot warning for
->> this. Not sure how-to close syzkaller bug, docs have only `invalid' tag,
->> which isn't `not-a-bug'/`expected' tag:
->> https://github.com/google/syzkaller/blob/master/docs/syzbot.md
->>
-> 
-> You should not use WARN_ON_ONCE() for this case (if user space can trigger it)
-> 
-> https://lwn.net/Articles/769365/
-> 
-> <quote>
-> Greg Kroah-Hartman raised the problem of core kernel API code that will use WARN_ON_ONCE() to complain about bad usage; that will not generate the desired result if WARN_ON_ONCE() is configured to crash the machine. He was told that the code should just call pr_warn() instead, and that the called function should return an error in such situations. It was generally agreed that any WARN_ON() or WARN_ON_ONCE() calls that can be triggered from user space need to be fixed. 
-> </quote>
+utf8data.h_shipped has a large database table which is an auto-generated
+decodification trie for the unicode normalization functions and it is not
+necessary to carry this large table in the kernel.
+Goal is to make UTF-8 encoding loadable by converting it into a module
+and adding a layer between the filesystems and the utf8 module which will
+load the module whenever any filesystem that needs unicode is mounted.
 
-Yeah, fair enough, I've already thought after sending the reply that
-WARN_ON*() prints registers and that may be unwanted.
-I'll cook a patch to convert this and other WARNs in the module.
+1st patch in the series resolves the warning reported by kernel test
+robot by using strscpy instead of strncpy.
 
-I wish there was something like pr_warn_backtrace_once(), but I guess
-it's fine without dumpstack(), after all.
+Unicode is the subsystem and utf8 is a charachter encoding for the
+subsystem, hence 2nd and 3rd patches in the series are renaming functions
+and file name to unicode for better understanding the difference between
+UTF-8 module and unicode layer.
 
-Thanks,
-         Dmitry
+Last patch in the series adds the layer and utf8 module and also uses
+static calls which gives performance benefit when compared to indirect
+calls using function pointers.
+
+---
+Changes in v5
+  - Remove patch which adds NULL check in ext4/super.c and f2fs/super.c
+    before calling unicode_unload().
+  - Rename global variables and default static call functions for better
+    understanding
+  - Make only config UNICODE_UTF8 visible and config UNICODE to be always
+    enabled provided UNICODE_UTF8 is enabled.  
+  - Improve the documentation for Kconfig
+  - Improve the commit message.
+ 
+Changes in v4
+  - Return error from the static calls instead of doing nothing and
+    succeeding even without loading the module.
+  - Remove the complete usage of utf8_ops and use static calls at all
+    places.
+  - Restore the static calls to default values when module is unloaded.
+  - Decrement the reference of module after calling the unload function.
+  - Remove spinlock as there will be no race conditions after removing
+    utf8_ops.
+
+Changes in v3
+  - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+    in ext4 and f2fs filesystems
+  - Return error if strscpy() returns value < 0
+  - Correct the conditions to prevent NULL pointer dereference while
+    accessing functions via utf8_ops variable.
+  - Add spinlock to avoid race conditions.
+  - Use static_call() for preventing speculative execution attacks.
+
+Changes in v2
+  - Remove the duplicate file from the last patch.
+  - Make the wrapper functions inline.
+  - Remove msleep and use try_module_get() and module_put()
+    for ensuring that module is loaded correctly and also
+    doesn't get unloaded while in use.
+  - Resolve the warning reported by kernel test robot.
+  - Resolve all the checkpatch.pl warnings.
+
+Shreeya Patel (4):
+  fs: unicode: Use strscpy() instead of strncpy()
+  fs: unicode: Rename function names from utf8 to unicode
+  fs: unicode: Rename utf8-core file to unicode-core
+  fs: unicode: Add utf8 module and a unicode layer
+
+ fs/ext4/hash.c                             |   2 +-
+ fs/ext4/namei.c                            |  12 +-
+ fs/ext4/super.c                            |   6 +-
+ fs/f2fs/dir.c                              |  12 +-
+ fs/f2fs/super.c                            |   6 +-
+ fs/libfs.c                                 |   6 +-
+ fs/unicode/Kconfig                         |  17 ++-
+ fs/unicode/Makefile                        |   5 +-
+ fs/unicode/unicode-core.c                  |  80 +++++++++++++
+ fs/unicode/{utf8-core.c => unicode-utf8.c} |  90 +++++++++------
+ fs/unicode/utf8-selftest.c                 |   8 +-
+ include/linux/unicode.h                    | 127 ++++++++++++++++++---
+ 12 files changed, 291 insertions(+), 80 deletions(-)
+ create mode 100644 fs/unicode/unicode-core.c
+ rename fs/unicode/{utf8-core.c => unicode-utf8.c} (59%)
+
+-- 
+2.30.1
+
