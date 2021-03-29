@@ -2,157 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A6B34C31F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C5134C307
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 07:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhC2FmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 01:42:07 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:43064 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhC2FmB (ORCPT
+        id S230436AbhC2F3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 01:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhC2F32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 01:42:01 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210329054159epoutp01c8a51b0b24518ee021b8550229145995~wucRYAnhj3157831578epoutp01b
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 05:41:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210329054159epoutp01c8a51b0b24518ee021b8550229145995~wucRYAnhj3157831578epoutp01b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1616996519;
-        bh=fnjnlce7c5+O8UaVulFJGkolaqrYx/wpAW4FBl6bkMk=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=E5AMwnzy0JfckqjMH3ciGedjPh1fA4/lUOa60oaYNBIqxga3QlftxZCaqewY+2CBa
-         4LX4ZCFisRxOgl/d8dWzD2NB12i8v2laaYQZ5ysjiYXNru2DpepcoTgRQWIKbKgc/s
-         Vo7l4+xVmmsww4FZeC/Ht0LZUeAPRA0NfOeKEKuo=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210329054158epcas2p494a583daa1d7b81536a0e3a5394269c0~wucQ_XwrA0567605676epcas2p47;
-        Mon, 29 Mar 2021 05:41:58 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.188]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4F81fs2GmKz4x9QJ; Mon, 29 Mar
-        2021 05:41:57 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BF.FE.52511.4A861606; Mon, 29 Mar 2021 14:41:56 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210329054156epcas2p31650fa755e6cbcc55c4f33a79878256f~wucOdq1_V2894328943epcas2p3H;
-        Mon, 29 Mar 2021 05:41:56 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210329054156epsmtrp166e2d348e077ea4866c08bbd9f8653e7~wucOc-2ty1579715797epsmtrp1I;
-        Mon, 29 Mar 2021 05:41:56 +0000 (GMT)
-X-AuditID: b6c32a48-50fff7000000cd1f-62-606168a4135c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F7.82.08745.3A861606; Mon, 29 Mar 2021 14:41:55 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210329054155epsmtip154223f5978ff85a542569ba6add062ae~wucOQF2_C2876528765epsmtip1n;
-        Mon, 29 Mar 2021 05:41:55 +0000 (GMT)
-From:   Hyunsoon Kim <h10.kim@samsung.com>
-To:     "Andrew Morton" <akpm@linux-foundation.org>
-Cc:     dseok.yi@samsung.com, h10.kim@samsung.com, linux-mm@kvack.org,
+        Mon, 29 Mar 2021 01:29:28 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E41C061574;
+        Sun, 28 Mar 2021 22:29:27 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id w8so5450497pjf.4;
+        Sun, 28 Mar 2021 22:29:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=nwW3wqGlwvgCl7fK73mXwZYZab2mQtuORLVwBoAbxgY=;
+        b=qDos5l8euTHvWyys+1Vbt06YDZopfjoD9EcakCMdojFTtzovx7hLCAEQS4vRpkUyvJ
+         x3qeS8Q/L6n4GeatU2IQfCR2Nd5/5HSoiJ8o3UdYXI0qrrN/7V7nTLFdtBe/khMr8wmH
+         0ZNw72Q39445uDG9f+62zDK+4UImr0LprtNmr2Z846j90bPrwpO68riVvWqjIW4cpaV9
+         6TV3P0JrRSfeQrmxC+5S+Rr1Wi+Ocn2rNO7fpLsdex50yJQvrT/wO8w9L5OBeWLTp+1g
+         xUPeIR2ehpP2L77FbwuM3689Asewnp2fGIRdu2rUuzqQXAarSam9HKVByVYSDMUyCD1y
+         14Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=nwW3wqGlwvgCl7fK73mXwZYZab2mQtuORLVwBoAbxgY=;
+        b=Fy4WFuUaEjg2Ha04vhqX1quuJtEBzkWCR3BJg3pHVdxoQjEf6XyN6mWW4fZsUW49a1
+         ncnwoqmVPqzD3A4/G6PGRuMwBj4o7RNUlIXcFkZsL/9s+C0w/m7Fw9cOO9Sgp48vxS3b
+         IhGr+yshqNh9PBb5y1JZ26Sx2awYsbndEY0yizVxlNABZc1yIX9I+mVrew8mxOipfhYz
+         J6tdbLH6dI2ya1OxZRlXCrSCm/IzrpJsyukiUguE0ltd8fsj29Lt5TAEwjpsP7xswSRo
+         pU6les0edH7NaUCnjCsHZM3AHhxVJ7vCmILz2dVvPms9QujU2oR7xEK6xj5LeTxRQl+F
+         i5hw==
+X-Gm-Message-State: AOAM530qGO/Q/iTxfLT4WH41ILsonUqAGvpt94yDxWdkP7Kyvrhn8LmH
+        JYGGH9cayyGKeKbJKAzEfYc=
+X-Google-Smtp-Source: ABdhPJxSp0W3ypZlEfQWK22Bf8igEvCO5VyssScOVHbZclh1AP0AIw0oNX+mIFRaapWFIcMO4Retdw==
+X-Received: by 2002:a17:90b:94c:: with SMTP id dw12mr24734883pjb.119.1616995766893;
+        Sun, 28 Mar 2021 22:29:26 -0700 (PDT)
+Received: from z640-arch.lan ([2602:61:7344:f100::678])
+        by smtp.gmail.com with ESMTPSA id y9sm15897460pgc.9.2021.03.28.22.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 22:29:26 -0700 (PDT)
+From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: add ___GFP_NOINIT flag which disables zeroing on alloc
-Date:   Mon, 29 Mar 2021 14:29:10 +0900
-Message-Id: <1616995751-83180-1-git-send-email-h10.kim@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAKsWRmVeSWpSXmKPExsWy7bCmhe6SjMQEg70r9C3mrF/DZnFl2h9G
-        i7+3L7JaXN41h83i3pr/rA6sHps+TWL3ODHjN4tH35ZVjB6fN8kFsETl2GSkJqakFimk5iXn
-        p2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYA7VVSKEvMKQUKBSQWFyvp29kU
-        5ZeWpCpk5BeX2CqlFqTkFBgaFugVJ+YWl+al6yXn51oZGhgYmQJVJuRk7Lt3l73gj0BF02XW
-        BsbpfF2MnBwSAiYSUzYtZeti5OIQEtjBKNH9cwMrSEJI4BOjRP+RJIjEZ0aJsz/bmGA6Gu89
-        ZIRI7GKUWHL8BxOE84NR4tWcdjaQKjYBDYnbU2ayg9giAvoS85ZMButmFkiUmH7xAQuILSzg
-        LXHwUidYDYuAqsTbP7vBangFnCXWvdzDBrFNTuLmuU5mkAUSApPZJT5+aIZKuEi8Wj6PGcIW
-        lnh1fAs7hC0l8bK/Dcqul5h9+SRU8wRGiZfn+qF+MJaY9awd6AcOoIs0Jdbv0gcxJQSUJY7c
-        YoG4k0+i4/Bfdogwr0RHmxBEo6LEihMzoaaLS7Q1boe6wENi3qrXTJCQi5W4sHUH6wRG2VkI
-        8xcwMq5iFEstKM5NTy02KjBBjqNNjOCkpOWxg3H22w96hxiZOBgPMUpwMCuJ8LKejk0Q4k1J
-        rKxKLcqPLyrNSS0+xGgKDK+JzFKiyfnAtJhXEm9oamRmZmBpamFqZmShJM5bZPAgXkggPbEk
-        NTs1tSC1CKaPiYNTqoFpZ3e+4tUY4+Isvy3qu6+2Cv6sSzl/MCbdfWXyQ1HeXS+36bWdl7HY
-        M/nEEj61nUUC3Xf2zj02aXm99qEncn3he8LWJ5XZq9oel305lX9pmn/RXa60AxymX/ZufsGX
-        sWN/5tG6DovdcVVHJl8/5vZllvLcuNycqSZNQi4/Z/pWlK9033g2sCqI6VGeQCd7q9jMBL7k
-        o5KKHw6GHFJTtb/wocrxEqt8V7veEp7IzSYi809s1G/NnuS3X1DOXrGd/0XZAw7997ryHzbm
-        V7D/ePYl+uGU9Y9ka7sqLLZNWXgv56XipWWWH4UlO7fb1dkzTBTwCf9aes7wYq+wm5KZrp54
-        nWa06r0D65P/s7Bt/63EUpyRaKjFXFScCABV67Tn0wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPJMWRmVeSWpSXmKPExsWy7bCSnO7ijMQEgyvXzCzmrF/DZnFl2h9G
-        i7+3L7JaXN41h83i3pr/rA6sHps+TWL3ODHjN4tH35ZVjB6fN8kFsERx2aSk5mSWpRbp2yVw
-        Zey7d5e94I9ARdNl1gbG6XxdjJwcEgImEo33HjJ2MXJxCAnsYJS4sb+NGSIhLvF0yQVGCFtY
-        4n7LEVaIom+MEn3Xp7CBJNgENCRuT5nJDmKLCOhLzFsymQnEZhZIlbh5YjVYs7CAt8TBS51g
-        NSwCqhJv/+wGq+EVcJZY93IPG8QCOYmb5zqZJzDyLGBkWMUomVpQnJueW2xYYJSXWq5XnJhb
-        XJqXrpecn7uJERwmWlo7GPes+qB3iJGJg/EQowQHs5IIL+vp2AQh3pTEyqrUovz4otKc1OJD
-        jNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamDL3TDLdc8fHZRtHlmxDXny8FduSJ5U5
-        U3SOBLM83Faq82FDqhKflvqtoLmia6t9lB17867d2T5rq/v2hYsbK1M6tuw9mXNocs2/jr1N
-        TAJrF0fb3//1n+/yk3LB1oXvay8G/ivxD5VQ3WIlt3uulp9J9Enpr0+YPlyeLpuv3f5D7q1O
-        jtP53sfre57mHV2wRfZiUPeSoN6y2jfHHT8xZ3Dq/89bEXtx3Y3FZh6yrAsyWx4t+Lj6xmpH
-        +y8iERE1Sv795/wnX7lwsd7ZXy0lUNOPZ2t9UL7wm888dt17OPtF36ssPWbyhzt67bvq608n
-        M6/KjPSd9MflUsuXKx2JH5cllYgGOHN7tC01641/qsRSnJFoqMVcVJwIAIQ58C2CAgAA
-X-CMS-MailID: 20210329054156epcas2p31650fa755e6cbcc55c4f33a79878256f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210329054156epcas2p31650fa755e6cbcc55c4f33a79878256f
-References: <CGME20210329054156epcas2p31650fa755e6cbcc55c4f33a79878256f@epcas2p3.samsung.com>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>, stable@vger.kernel.org
+Subject: [PATCH v2] mm: fix race by making init_zero_pfn() early_initcall
+Date:   Sun, 28 Mar 2021 22:29:22 -0700
+Message-Id: <20210329052922.1130493-1-ilya.lipnitskiy@gmail.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210329052426.1130040-1-ilya.lipnitskiy@gmail.com>
+References: <20210329052426.1130040-1-ilya.lipnitskiy@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch allows programmer to avoid zero initialization on page
-allocation even when the kernel config "CONFIG_INIT_ON_ALLOC_DEFAULT"
-is enabled. The configuration is made to prevent uninitialized
-heap memory flaws, and Android has applied this for security and
-deterministic execution times. Please refer to below.
+There are code paths that rely on zero_pfn to be fully initialized
+before core_initcall. For example, wq_sysfs_init() is a core_initcall
+function that eventually results in a call to kernel_execve, which
+causes a page fault with a subsequent mmput. If zero_pfn is not
+initialized by then it may not get cleaned up properly and result in an
+error:
+  BUG: Bad rss-counter state mm:(ptrval) type:MM_ANONPAGES val:1
 
-https://android-review.googlesource.com/c/kernel/common/+/1235132
+Here is an analysis of the race as seen on a MIPS device. On this
+particular MT7621 device (Ubiquiti ER-X), zero_pfn is PFN 0 until
+initialized, at which point it becomes PFN 5120:
+  1. wq_sysfs_init calls into kobject_uevent_env at core_initcall:
+       [<80340dc8>] kobject_uevent_env+0x7e4/0x7ec
+       [<8033f8b8>] kset_register+0x68/0x88
+       [<803cf824>] bus_register+0xdc/0x34c
+       [<803cfac8>] subsys_virtual_register+0x34/0x78
+       [<8086afb0>] wq_sysfs_init+0x1c/0x4c
+       [<80001648>] do_one_initcall+0x50/0x1a8
+       [<8086503c>] kernel_init_freeable+0x230/0x2c8
+       [<8066bca0>] kernel_init+0x10/0x100
+       [<80003038>] ret_from_kernel_thread+0x14/0x1c
 
-However, there is a case that the zeroing page memory is unnecessary
-when the page is used on specific purpose and will be zeroed
-automatically by hardware that accesses the memory through DMA.
-For instance, page allocation used for IP packet reception from Exynos
-modem is solely used for packet reception. Although the page will be
-freed eventually and reused for some other purpose, initialization at
-that moment of reuse will be sufficient to avoid uninitialized heap
-memory flaws. To support this kind of control, this patch creates new
-gfp type called ___GFP_NOINIT, that allows no zeroing at the moment
-of page allocation, called by many related APIs such as page_frag_alloc,
-alloc_pages, etc.
+  2. kobject_uevent_env() calls call_usermodehelper_exec() which executes
+     kernel_execve asynchronously.
 
-Signed-off-by: Hyunsoon Kim <h10.kim@samsung.com>
+  3. Memory allocations in kernel_execve cause a page fault, bumping the
+     MM reference counter:
+       [<8015adb4>] add_mm_counter_fast+0xb4/0xc0
+       [<80160d58>] handle_mm_fault+0x6e4/0xea0
+       [<80158aa4>] __get_user_pages.part.78+0x190/0x37c
+       [<8015992c>] __get_user_pages_remote+0x128/0x360
+       [<801a6d9c>] get_arg_page+0x34/0xa0
+       [<801a7394>] copy_string_kernel+0x194/0x2a4
+       [<801a880c>] kernel_execve+0x11c/0x298
+       [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
+
+  4. In case zero_pfn has not been initialized yet, zap_pte_range does
+     not decrement the MM_ANONPAGES RSS counter and the BUG message is
+     triggered shortly afterwards when __mmdrop checks the ref counters:
+       [<800285e8>] __mmdrop+0x98/0x1d0
+       [<801a6de8>] free_bprm+0x44/0x118
+       [<801a86a8>] kernel_execve+0x160/0x1d8
+       [<800420f4>] call_usermodehelper_exec_async+0x114/0x194
+       [<80003198>] ret_from_kernel_thread+0x14/0x1c
+
+To avoid races such as described above, initialize init_zero_pfn at
+early_initcall level. Depending on the architecture, ZERO_PAGE is either
+constant or gets initialized even earlier, at paging_init, so there is
+no issue with initializing zero_pfn earlier.
+
+ML discussion: https://lore.kernel.org/lkml/CALCv0x2YqOXEAy2Q=hafjhHCtTHVodChv1qpM=niAXOpqEbt7w@mail.gmail.com/
+
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+Cc: stable@vger.kernel.org
 ---
- include/linux/gfp.h | 2 ++
- include/linux/mm.h  | 4 +++-
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 8572a14..4ddd947 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -58,6 +58,8 @@ struct vm_area_struct;
- #else
- #define ___GFP_NOLOCKDEP	0
- #endif
-+#define ___GFP_NOINIT		0x1000000u
-+
- /* If the above are modified, __GFP_BITS_SHIFT may need updating */
- 
- /*
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 8ba4342..06a23bb 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2907,7 +2907,9 @@ static inline void kernel_unpoison_pages(struct page *page, int numpages) { }
- DECLARE_STATIC_KEY_FALSE(init_on_alloc);
- static inline bool want_init_on_alloc(gfp_t flags)
- {
--	if (static_branch_unlikely(&init_on_alloc))
-+	if (flags & ___GFP_NOINIT)
-+		return false;
-+	else if (static_branch_unlikely(&init_on_alloc))
- 		return true;
- 	return flags & __GFP_ZERO;
+diff --git a/mm/memory.c b/mm/memory.c
+index 46ef306375bd..a8bbc4fc121f 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -166,7 +166,7 @@ static int __init init_zero_pfn(void)
+ 	zero_pfn = page_to_pfn(ZERO_PAGE(0));
+ 	return 0;
  }
+-core_initcall(init_zero_pfn);
++early_initcall(init_zero_pfn);
+ 
+ void mm_trace_rss_stat(struct mm_struct *mm, int member, long count)
+ {
 -- 
-2.7.4
+2.31.0
 
