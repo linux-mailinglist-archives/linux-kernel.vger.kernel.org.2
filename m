@@ -2,214 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C2E34D84E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA3D34D850
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 21:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhC2Tdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 15:33:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
+        id S231775AbhC2TeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 15:34:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbhC2TdR (ORCPT
+        with ESMTP id S231167AbhC2TeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 15:33:17 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E466C061574;
-        Mon, 29 Mar 2021 12:33:16 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id f9so14136094oiw.5;
-        Mon, 29 Mar 2021 12:33:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jPScsdRkQfFjP+HYKirx6Bz5sPBqP9dzj9KzBot1OO8=;
-        b=l1LjTiWsLuGSCfzvRxju8eWyfJE4nZL1WoqxzQ8O34pXA1i0vlyCjNUSO9h2xF9m5q
-         5nYg4U8dnZrOFN21WSOa2uTPaLiJeiI5szmYPORfqoHI02xv89GCQqBrDeLbmnhi4Ulh
-         3qLDJW+w21l4Jz0t6zBKmZEc5Nc+ki3lpkTAqyfyZsqtQbBmE503rZJKzwmyknYFKydr
-         uEZE4I1dvAO29bxjfppYRguWpw/4T5f+/rj3TljaRFboDknP5/rWDUim8ldKN30xjQKA
-         oKWJdO3UMACEre6HqNx2cdf1MUvyLa05djhX09K+Y1VTqZ9uBgjpgbkQFD9N+seDynDq
-         fNRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=jPScsdRkQfFjP+HYKirx6Bz5sPBqP9dzj9KzBot1OO8=;
-        b=KpyYj1SqR+1kpa6hqBj/SZ2F070v2Ks7EKqQ3WAHybSkuQlNbiCFlsCJDoQSg/2pm5
-         eE0GDp4gcaSosIhNz6ow212XxAiFgC1jM85TLSzrareF6ChmJrpHPJ4a5Iqrkki6XvgH
-         riL/gRB79BWWxE75zSxIHPMmi3/Dm7dEgPTlWFNPbKwthc/mSgaIDXBa3RPuDkwU4vKM
-         6yrlAsDLkZjMSCgwNdNu4qjnl9LdgIuJ02RPgZvu0clUB+4aKNqw9bKrKaczMwWsZCVk
-         jdlvWNdIO+ImTXeCiA2gMyGugCILe4fPzQau84EhKkloMThmJM+ykDXOomuhu+YHN3G5
-         QBgg==
-X-Gm-Message-State: AOAM5315Jl/CjAy+aBkk3lX/DCOnUoJ7Rb9eVWZuKyWyOlYq1IYoLVia
-        Lko5FAMuwWp9cjWlMsE5XkRxZW539aQ=
-X-Google-Smtp-Source: ABdhPJxmz6VMDuVEjaxY+xsVkCuL589ETKpl8DRnRVp55MLg4ryeGtf1JXVpHEuOrwa2nUn/RaQeHg==
-X-Received: by 2002:aca:1204:: with SMTP id 4mr508824ois.92.1617046395435;
-        Mon, 29 Mar 2021 12:33:15 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g84sm3701155oia.45.2021.03.29.12.33.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 12:33:14 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH] of/fdt: Improve error checking
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210327224116.69309-1-linux@roeck-us.net>
- <CAL_JsqK6r=hfXdSZhsWb72O0QMDaOPnWTiYnOjp1fvztRj865A@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <9d720238-fd72-f38e-be3c-ec9f66d95ebb@roeck-us.net>
-Date:   Mon, 29 Mar 2021 12:33:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 29 Mar 2021 15:34:15 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A686EC061574;
+        Mon, 29 Mar 2021 12:34:15 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 5598E5CC;
+        Mon, 29 Mar 2021 19:34:15 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 5598E5CC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1617046455; bh=uzFXcG0h/iYERcvHtbYCNxggA1K+2rAr3AVX/yFCPd8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=hdTGzRUX36cS3AH7waEjn9eMbrPj1cCWz1qv0+eWGCZqcpX9jXF3tjIiIMy9cWoPm
+         WuZiviyQ/iwy48hj0CId1CbERQjHPsg4GUs25pFajjfk9I+H0JUhaAetWmgSMRHT/L
+         ulms3pTcjQgJPkMaYlIqmFMbNXJVIV+KrPFPNx4H3DdqiE2bdUtYsxhNWqlR3ZZO++
+         dtMQ9EnQ9/5PebdGSqa7slpq8A/cqhgXSGM45sWOXLh+OStH7JHyrX847A+6BD97yh
+         5ky61eqcz97I97sB3aQ0TmvBUf+ZcV+vC/b4mUzBw+vBLMWtR0TqJbhOsjnLPKcXLi
+         vFs+p08/7DGCg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: Re: kerneldoc and rust (was [PATCH] kernel-doc: better handle '::'
+ sequences)
+In-Reply-To: <20210329144204.GF351017@casper.infradead.org>
+References: <20210325184615.08526aed@coco.lan>
+ <2cf44cf1fa42588632735d4fbc8e84304bdc235f.1616696051.git.mchehab+huawei@kernel.org>
+ <87tuozyslu.fsf@meer.lwn.net>
+ <20210325191435.GZ1719932@casper.infradead.org>
+ <87a6qrx7wf.fsf@meer.lwn.net>
+ <20210325221437.GA1719932@casper.infradead.org>
+ <87wntux3w7.fsf@meer.lwn.net>
+ <20210329144204.GF351017@casper.infradead.org>
+Date:   Mon, 29 Mar 2021 13:34:14 -0600
+Message-ID: <87czvhrbyh.fsf@meer.lwn.net>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqK6r=hfXdSZhsWb72O0QMDaOPnWTiYnOjp1fvztRj865A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/29/21 11:21 AM, Rob Herring wrote:
-> On Sat, Mar 27, 2021 at 5:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> If an unaligned pointer is passed to of_fdt_unflatten_tree(),
->> populate_node() as called from unflatten_dt_nodes() will fail.
->> unflatten_dt_nodes() will return 0 and set *nodepp to NULL.
->> This is not expected to happen in __unflatten_device_tree(),
->> which then tries to write into the NULL pointer, causing a crash
->> on openrisc if CONFIG_OF_UNITTEST=y.
->>
->>  ### dt-test ### start of unittest - you will see error messages
->> Unable to handle kernel NULL pointer dereference
->>  at virtual address 0x00000064
->>
->> Oops#: 0000
->> CPU #: 0
->>    PC: c03a25d4    SR: 0000807f    SP: c102dd50
->> GPR00: 00000000 GPR01: c102dd50 GPR02: c102dd78 GPR03: c1704004
->> GPR04: 00000000 GPR05: c102dc18 GPR06: c102ddc8 GPR07: c102dcf7
->> GPR08: 00000001 GPR09: c03a25a0 GPR10: c102c000 GPR11: c16fd75c
->> GPR12: 0000ffb7 GPR13: 00000000 GPR14: 00000008 GPR15: 00000000
->> GPR16: c16fd75c GPR17: 00000064 GPR18: c1704004 GPR19: 00000004
->> GPR20: 00000000 GPR21: 00000000 GPR22: c102ddc8 GPR23: 00000018
->> GPR24: 00000001 GPR25: 00000010 GPR26: c16fd75c GPR27: 00000008
->> GPR28: deadbeef GPR29: 00000000 GPR30: c0720128 GPR31: 00060000
->>   RES: c16fd75c oGPR11: ffffffff
->> Process swapper (pid: 1, stackpage=c1028ba0)
->>
->> Stack:
->> Call trace:
->> [<(ptrval)>] __unflatten_device_tree+0xe0/0x184
->> [<(ptrval)>] of_fdt_unflatten_tree+0x60/0x90
->> [<(ptrval)>] of_unittest+0xb4/0x3614
->> [<(ptrval)>] ? __kernfs_create_file+0x130/0x188
->> [<(ptrval)>] ? sysfs_add_file_mode_ns+0x13c/0x288
->> [<(ptrval)>] ? of_unittest+0x0/0x3614
->> [<(ptrval)>] ? lock_is_held_type+0x160/0x20c
->> [<(ptrval)>] ? of_unittest+0x0/0x3614
->> [<(ptrval)>] ? ignore_unknown_bootoption+0x0/0x24
->> [<(ptrval)>] do_one_initcall+0x98/0x340
->> [<(ptrval)>] ? parse_args+0x220/0x4e4
->> [<(ptrval)>] ? lock_is_held_type+0x160/0x20c
->> [<(ptrval)>] ? ignore_unknown_bootoption+0x0/0x24
->> [<(ptrval)>] ? rcu_read_lock_sched_held+0x34/0x88
->> [<(ptrval)>] kernel_init_freeable+0x1c0/0x240
->> [<(ptrval)>] ? ignore_unknown_bootoption+0x0/0x24
->> [<(ptrval)>] ? kernel_init+0x0/0x154
->> [<(ptrval)>] kernel_init+0x1c/0x154
->> [<(ptrval)>] ? calculate_sigpending+0x54/0x64
->> [<(ptrval)>] ret_from_fork+0x1c/0x150
->>
->> This problem affects all architectures with a 4-byte memory alignment.
->> Since commit 79edff12060f ("scripts/dtc: Update to upstream version
->> v1.6.0-51-g183df9e9c2b9"), devicetree code in the Linux kernel mandates
->> an 8-byte memory alignment of devicetree pointers, but it does not take
->> into account that functions such as kmalloc() or kmemdup() may not return
->> accordingly aligned pointers.
-> 
-> AFAICT, openrisc would get:
-> 
-> #define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long long)
-> 
-> Is that not 8 bytes?
-> 
-No. I checked. Quite surprisingly, it is 4. sizeof(unsigned long long)
-is 8, though.
+Matthew Wilcox <willy@infradead.org> writes:
 
-> Specifically, the problem is here is the unittest DT is copied with
-> kmemdup(). I don't think there are other allocations which could be a
-> problem.
-> 
+If we're going to talk about incorporating Rust into the doc system, we
+should probably include some Rust folks - thus, I'm adding Miguel.
 
-Plus, as Frank points out, there is a copy in overlays, and I wasn't
-sure if the other uses of kmalloc()/kmemdup() in devicetree code are safe.
-That is why I didn't try to fix that.
+> On Thu, Mar 25, 2021 at 04:30:32PM -0600, Jonathan Corbet wrote:
+>> Matthew Wilcox <willy@infradead.org> writes:
+>> 
+>> We did come to the mutual agreement that teaching kernel-doc to parse
+>> Rust code as well was not an ideal solution.  Probably there will be
+>> some sort of tool to translate between rustdoc and our sphinx setup.
+>> Beyond that, we'll see how it goes.
+>
+> In the spirit of groping around for the best solution, I did some looking
+> around at various options, including using rustdoc for .c files (that
+> uses Markdown, which appears to be strictly worse than rST for our
+> purposes).
+>
+> So here's my "modest proposal":
+>
+>  - Similar to our ".. kernel-doc::" invocation in .rst files, handle
+>    ".. rustdoc::" (insert weeks of hacking here)
+>  - Now add ".. rst-doc::" which parses .c files like [1] kernel-doc
+>    does, but interprets a different style of comment and actually does
+>    most of the repetitive boring bits for you.
+>
+> For example, xa_load:
+>
+> /**
+>  * xa_load() - Load an entry from an XArray.
+>  * @xa: XArray.
+>  * @index: index into array.
+>  *
+>  * Context: Any context.  Takes and releases the RCU lock.
+>  * Return: The entry at @index in @xa.
+>  */
+> void *xa_load(struct xarray *xa, unsigned long index)
+>
+> //rST
+> // Load an entry from an XArray.
+> //
+> // :Context: Any context.  Takes and releases the RCU lock.
+> // :Return: The entry in `xa` at `index`.
+> void *xa_load(struct xarray *xa, unsigned long index)
+>
+> (more complex example below [2])
+>
+> Things I considered:
+>
+>  - Explicitly document that this is rST markup instead of Markdown or
+>    whatever.
+>  - Don't repeat the name of the function.  The tool can figure it out.
 
->> To fix the immediate crash, check if *mynodes is NULL in
->> __unflatten_device_tree() before writing into it.
->>
->> Also affected by this problem is the code calling of_fdt_unflatten_tree().
->> That code checks for errors using the content of the mynodes pointer,
->> which is not set by the devicetree code if the alignment problem is
->> observed. Result is that the callers of of_fdt_unflatten_tree() check
->> if an uninitialized pointer is set to NULL. Preinitialize that pointer
->> to avoid the problem.
->>
->> With this code in place, devicetree code on openrisc (and any other
-> 
-> "devicetree unittest code"
-> 
-> The only other dtb copy is unflatten_and_copy_device_tree() which
-> should be fine since it gives memblock the alignment requirement.
-> 
-Plus overlays.
+That worries me a wee bit just because a common source of problems is
+kerneldoc comments becoming separated from the functions they describe
+over time.  We finally have tooling to notice that; this seems like a
+step in the other direction.
+
+>  - Don't force documenting each parameter.  Often they are obvious
+>    and there's really nothing interesting to say about the parameter.
+>    Witness the number of '@foo: The foo' (of type struct foo) that we
+>    have scattered throughout the tree.  It's not that the documenter is
+>    lazy, it's that there's genuinely nothing to say here.
+
+...another failure mode is developers adding parameters and not
+documenting them; this would mask that problem too.
+
+>  - Use `interpreted text` to refer to parameters instead of *emphasis* or
+>    **strong emphasis**.  The tool can turn that into whatever markup
+>    is appropriate.
+>  - Use field lists for Context and Return instead of sections.  The markup
+>    is simpler to use, and I think the rendered output is better.
+>
+> [1] by which i mean "in a completely different way from, but similar in
+>     concept"
+>
+> [2] More complex example:
+>
+> /**
+>  * xa_store() - Store this entry in the XArray.
+>  * @xa: XArray.
+>  * @index: Index into array.
+>  * @entry: New entry.
+>  * @gfp: Memory allocation flags.
+>  *
+>  * After this function returns, loads from this index will return @entry.
+>  * Storing into an existing multi-index entry updates the entry of every index.
+>  * The marks associated with @index are unaffected unless @entry is %NULL.
+>  *
+>  * Context: Any context.  Takes and releases the xa_lock.
+>  * May sleep if the @gfp flags permit.
+>  * Return: The old entry at this index on success, xa_err(-EINVAL) if @entry
+>  * cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
+>  * failed.
+>  */
+> void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
+>
+> //rST
+> // Store an entry in the XArray.
+> //
+> // After this function returns, loads from `index` will return `entry`.
+> // Storing into an existing multi-index entry updates the entry of every index.
+> // The marks associated with `index` are unaffected unless `entry` is ``NULL``.
+> //
+> // :Context: Any context.  Takes and releases the xa_lock.
+> //    May sleep if the `gfp` flags permit.
+> // :Return: The old entry at this index on success, xa_err(-EINVAL) if `entry`
+> //    cannot be stored in an XArray, or xa_err(-ENOMEM) if memory allocation
+> //    failed.
+> void *xa_store(struct xarray *xa, unsigned long index, void *entry, gfp_t gfp)
 
 Thanks,
-Guenter
+
+jon
