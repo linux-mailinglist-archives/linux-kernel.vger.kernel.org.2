@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4EC34D21D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318F934D220
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhC2OIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:08:00 -0400
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:60007 "EHLO
-        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229502AbhC2OHh (ORCPT
+        id S230307AbhC2OIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230271AbhC2OIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:07:37 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 6EC9617A9;
-        Mon, 29 Mar 2021 10:07:36 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 29 Mar 2021 10:07:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=e7OaR4l6KaD5n4UnPI6CYcLv6KC
-        5usIANcXzbQv2syo=; b=KlqRsgIWH3+HiU/khNzVntBtxW9EA3p05bUPkxuIQ4H
-        qZTJBUZCqbcKZp6ttzcIpQtqJYySw2pNqIpbxMaTwNDgFSAnL1YHj0ibd8jVLHS6
-        EVvhFDkhGC09JLeB5GyMMckHBGR5dqyrTQ7eLmiCV9zbdeucF2qAjjKwpd4KKWUf
-        dc6hyODv6Q559NCemcPrTuvd71gSPeW+IPdudib/xsBJC+Wzf/Q8WTNf7zkTlhDm
-        e1cIaIZ6rdpBnZ0BnlZr0X+lBmFDP1JjETerPjTKdi42rR0TWn/U99zi71wanCb2
-        VLoi7AVYJSBD1xoyi0pyHfktrGT5XoCvn2Q01//B0Wg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=e7OaR4
-        l6KaD5n4UnPI6CYcLv6KC5usIANcXzbQv2syo=; b=wfY+dSbW3LRSqqUWUj9SC0
-        mQIHzNv1HgLEvMVHr8kAIFUUEGUHUdDu2Esj3AYnRJ05bNBJTy3zv1NGhMd3cLNd
-        Pxyx2vsoykz2atgka1Nz1Ic3MlHDXdRzJNCup0elQFzwzc56EcKn1eM1UaT3IrvY
-        0bWfXl9/tQt9iWcTwdkQsgIwKqqLeudWMIwxLTnjdfx1qWA0+EzH/SgWDz6GXXIj
-        56g4jgrkDps9OA+o0dpQ/e3Af1ECLL7+U5pEocY/GRIZCiq++pIjFoHm1CUdXVip
-        lmuTnL0Bt510CwD80aW/iFAruvCqkW71YmPnvHjqxRwAlD/7YYViGbwK2jWGWETw
-        ==
-X-ME-Sender: <xms:Jt9hYKgZTUNE4_NhoNprUdiL5PwGafHrQQjt8M2WAOJ6m6Yo4GtIKw>
-    <xme:Jt9hYLD4tot5cHC_7tDDijvvMqGWYr3nXao2bWZP6QjAa1rNJvM2_Flsi8BpGd3KK
-    SavGQrqIbYzU7fre4o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudehkedgjeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Jt9hYCFb9rnpmhX2nzZhKRqUF3LZOf8_2GXhU0CCobBBH-lWU_4Bbw>
-    <xmx:Jt9hYDTfE2ndM76EphWv3SL_ri8o46Q6CxlPiz2RosrU9JMalIH4VQ>
-    <xmx:Jt9hYHyFMrCjq0GKxcCAs3YdguVcmZEfc3zYtkQMgyqVUupYkRjIMg>
-    <xmx:KN9hYOwOkIllRqQyNky0O3BczfasznFyR7zHRzFlfHsn476192vfUw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AD5741080067;
-        Mon, 29 Mar 2021 10:07:33 -0400 (EDT)
-Date:   Mon, 29 Mar 2021 16:07:31 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Simon Ser <contact@emersion.fr>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] drm: DON'T require each CRTC to have a unique primary
- plane
-Message-ID: <20210329140731.tvkfxic4fu47v3rz@gilmour>
-References: <20210327112214.10252-1-paul@crapouillou.net>
+        Mon, 29 Mar 2021 10:08:05 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4DBA9C061574;
+        Mon, 29 Mar 2021 07:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=VfPMjDwjvWO/gvhh8XIRrpTbM/hsolKR49fm
+        bl1K1rc=; b=phb/yo/G0uXyYTms1ENnmZ6GqqHBEdAwGMO94Nz8fWVZZB1rhJEN
+        Ocq9V48XfbiWTZKJzCPeXIfFe/qmm/YB1rSNpC6P0Ck1ABtSIidtVGfadzRwmAdL
+        IOQkuLGVA8ZD8kv7CS6fLLJerkc00BuHHUgXgWtUuTt16VzjlkfvPeE=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Mon, 29 Mar
+ 2021 22:07:52 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Mon, 29 Mar 2021 22:07:52 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Jan Kara" <jack@suse.cz>
+Cc:     amir73il@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [BUG] fs/notify/mark: A potential use after free in
+ fsnotify_put_mark_wake
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <20210329135740.GB4283@quack2.suse.cz>
+References: <39095113.1936a.178781a774a.Coremail.lyl2019@mail.ustc.edu.cn>
+ <20210329135740.GB4283@quack2.suse.cz>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ma4fyhct6ctei5gf"
-Content-Disposition: inline
-In-Reply-To: <20210327112214.10252-1-paul@crapouillou.net>
+Message-ID: <560cb051.1d0ba.1787e4ff42a.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygAHD0M532FgxERoAA--.0W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsPBlQhn5hpXgAGsA
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---ma4fyhct6ctei5gf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Mar 27, 2021 at 11:22:14AM +0000, Paul Cercueil wrote:
-> The ingenic-drm driver has two mutually exclusive primary planes
-> already; so the fact that a CRTC must have one and only one primary
-> plane is an invalid assumption.
-
-I mean, no? It's been documented for a while that a CRTC should only
-have a single primary, so I'd say that the invalid assumption was that
-it was possible to have multiple primary planes for a CRTC.
-
-Since it looks like you have two mutually exclusive planes, just expose
-one and be done with it?
-
-Maxime
-
---ma4fyhct6ctei5gf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYGHfIwAKCRDj7w1vZxhR
-xUSDAPsGqc5zzSnYZCfcmnojYZS7LuvWh9Kha68wIFR3M6Oh3QEAqnn4XrHQSQK6
-VUKwLex2PKocNX/KvUrb6Mi0W++SgQo=
-=PloT
------END PGP SIGNATURE-----
-
---ma4fyhct6ctei5gf--
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkphbiBLYXJhIiA8
+amFja0BzdXNlLmN6Pg0KPiDlj5HpgIHml7bpl7Q6IDIwMjEtMDMtMjkgMjE6NTc6NDAgKOaYn+ac
+n+S4gCkNCj4g5pS25Lu25Lq6OiBseWwyMDE5QG1haWwudXN0Yy5lZHUuY24NCj4g5oqE6YCBOiBq
+YWNrQHN1c2UuY3osIGFtaXI3M2lsQGdtYWlsLmNvbSwgbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5l
+bC5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4g5Li76aKYOiBSZTogW0JVR10g
+ZnMvbm90aWZ5L21hcms6IEEgcG90ZW50aWFsIHVzZSBhZnRlciBmcmVlIGluIGZzbm90aWZ5X3B1
+dF9tYXJrX3dha2UNCj4gDQo+IEhlbGxvIQ0KPiANCj4gDQo+IE9uIFN1biAyOC0wMy0yMSAxNzox
+MTo0MywgbHlsMjAxOUBtYWlsLnVzdGMuZWR1LmNuIHdyb3RlOg0KPiA+ICAgICBNeSBzdGF0aWMg
+YW5hbHl6ZXIgdG9vbCByZXBvcnRlZCBhIHVzZSBhZnRlciBmcmVlIGluIGZzbm90aWZ5X3B1dF9t
+YXJrX3dha2UNCj4gPiBvZiB0aGUgZmlsZTogZnMvbm90aWZ5L21hcmsuYy4NCj4gPiANCj4gPiBJ
+biBmc25vdGlmeV9wdXRfbWFya193YWtlLCBpdCBjYWxscyBmc25vdGlmeV9wdXRfbWFyayhtYXJr
+KS4gSW5zaWRlIHRoZSBmdW5jdGlvbg0KPiA+IGZzbm90aWZ5X3B1dF9tYXJrKCksIGlmIGNvbm4g
+aXMgTlVMTCwgaXQgd2lsbCBjYWxsIGZzbm90aWZ5X2ZpbmFsX21hcmtfZGVzdHJveShtYXJrKQ0K
+PiA+IHRvIGZyZWUgbWFyay0+Z3JvdXAgYnkgZnNub3RpZnlfcHV0X2dyb3VwKGdyb3VwKSBhbmQg
+cmV0dXJuLiBJIGFsc28gaGFkIGluc3BlY3RlZA0KPiA+IHRoZSBpbXBsZW1lbnRhdGlvbiBvZiBm
+c25vdGlmeV9wdXRfZ3JvdXAoKSBhbmQgZm91bmQgdGhhdCB0aGVyZSBpcyBubyBjbGVhbnVwIG9w
+ZXJhdGlvbg0KPiA+IGFib3V0IGdyb3VwLT51c2VyX3dhaXRzLg0KPiA+IA0KPiA+IEJ1dCBhZnRl
+ciBmc25vdGlmeV9wdXRfbWFya193YWtlKCkgcmV0dXJuZWQsIG1hcmstPmdyb3VwIGlzIHN0aWxs
+IHVzZWQgYnkgDQo+ID4gaWYgKGF0b21pY19kZWNfYW5kX3Rlc3QoJmdyb3VwLT51c2VyX3dhaXRz
+KSAmJiBncm91cC0+c2h1dGRvd24pIGFuZCBsYXRlci4NCj4gPiANCj4gPiBJcyB0aGlzIGFuIGlz
+c3VlPw0KPiANCj4gSSBkb24ndCB0aGluayB0aGlzIHNjZW5hcmlvIGlzIHBvc3NpYmxlLiBmc25v
+dGlmeV9wdXRfbWFya193YWtlKCkgY2FuIGJlDQo+IGNhbGxlZCBvbmx5IGZvciBtYXJrcyBhdHRh
+Y2hlZCB0byBvYmplY3RzIGFuZCB0aGVzZSBoYXZlIG1hcmstPmNvbm4gIT0NCj4gTlVMTCBhbmQg
+d2UgYXJlIHN1cmUgdGhhdCBmc25vdGlmeV9kZXN0cm95X2dyb3VwKCkgd2lsbCB3YWl0IGZvciBh
+bGwgc3VjaA0KPiBtYXJrcyB0byBiZSB0b3JuIGRvd24gYW5kIGZyZWVkIGJlZm9yZSBkcm9wcGlu
+ZyBsYXN0IGdyb3VwIHJlZmVyZW5jZSBhbmQNCj4gZnJlZWluZyB0aGUgZ3JvdXAuDQo+IA0KPiAJ
+CQkJCQkJCUhvbnphDQo+IC0tIA0KPiBKYW4gS2FyYSA8amFja0BzdXNlLmNvbT4NCj4gU1VTRSBM
+YWJzLCBDUg0KDQoNCk9rLCB0aGFua3MgZm9yIHlvdXIgYW5zd2VyLg0K
