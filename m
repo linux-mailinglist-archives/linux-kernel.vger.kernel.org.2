@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01B934D045
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55EB34D046
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhC2Mm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:42:27 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:64720 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhC2Ml7 (ORCPT
+        id S231390AbhC2MnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:43:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36134 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231363AbhC2Mma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:41:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1617021716; x=1619613716;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XHa/uvdSReX/Iz6rxPW8tM4ztE/6qivKRg5PaEzjBh0=;
-        b=bDgO7WSQEoKRBKRxd2LC/3F2N1hoU6KhcLvX47C1riRUHHGhtdJvEWRWJn/AaUxT
-        9FIJ2fEhrTgBU03nTp1D4acLoBVIIG7g3U7uixQrb1Ucx6s6Hzfxuf2aUrXeJ7jG
-        XP4Xdfkm8jZWheIwegdGYGkOlbl8WNVTtiB+zlE7B0Q=;
-X-AuditID: c39127d2-868b870000001c91-fe-6061cb14dc80
-Received: from florix.phytec.de (florix.phytec.de [172.16.0.118])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 7D.1B.07313.41BC1606; Mon, 29 Mar 2021 14:41:56 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 29 Mar
- 2021 14:41:56 +0200
-Received: from Berlix.phytec.de ([fe80::f594:d241:d581:a5be]) by
- berlix.phytec.de ([fe80::f594:d241:d581:a5be%3]) with mapi id 15.01.2176.009;
- Mon, 29 Mar 2021 14:41:56 +0200
-From:   =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To:     "festevam@gmail.com" <festevam@gmail.com>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "linux-imx@nxp.com" <linux-imx@nxp.com>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH 3/3] ARM: dts: imx6: pbab01: Set vmmc supply for both SD
- interfaces
-Thread-Topic: [PATCH 3/3] ARM: dts: imx6: pbab01: Set vmmc supply for both SD
- interfaces
-Thread-Index: AQHXJI6oDU6feJ4y+02SO/HWBz4AL6qatFcAgAAS0YA=
-Date:   Mon, 29 Mar 2021 12:41:56 +0000
-Message-ID: <64f317c57ef0493e221482d68bc0a06c83cb15d9.camel@phytec.de>
-References: <20210329112819.64043-1-s.riedmueller@phytec.de>
-         <20210329112819.64043-3-s.riedmueller@phytec.de>
-         <CAOMZO5DMnqZTedg_bb=NCZ4_cfP1sDam=N0-FrDRYTeKi+4n-g@mail.gmail.com>
-In-Reply-To: <CAOMZO5DMnqZTedg_bb=NCZ4_cfP1sDam=N0-FrDRYTeKi+4n-g@mail.gmail.com>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <94DBDCB091F67341831183E311EF8641@phytec.de>
-Content-Transfer-Encoding: base64
+        Mon, 29 Mar 2021 08:42:30 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617021749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MD07HADXLC3/GOZUxS2FFQo7igF57C3e09wAtmaN2jw=;
+        b=nuO9E8WS6enpBvNOmsNkXVnsjTJejRHibkw4Z/n3QvNUkPSUibYHHblV2qCeK61TLJP1oZ
+        cYO5gHELKOXKB54ZIdsyNTcsHtfolsDGkrQ6wMhZT2789MiN01t2y+2ADpTM72JEch2Si+
+        qztbVkTYdX9NIVMtTjVfQxug1zLRR9+1bkwA6/r1SgXQO+xC80fkr9n1A0G7qDZNuvdbL2
+        KdNwOJoim6bykRHpiPvpOkGVrSNhZj7nTw5/esdmr8k4Xg5jUivw9M0c0K6UbLKSngrx49
+        7kO6FJ5X2XpzX3/H2M37y0u/0Z7X5OA090ZvrjtfWSt3Pv3z1VeCu2KT3qu4OQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617021749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MD07HADXLC3/GOZUxS2FFQo7igF57C3e09wAtmaN2jw=;
+        b=Zw1DKJZHMibgzO9HoVM6bi3uaqCW3UODWJit7+ko/YucUzw/CmuC3Ocsx+0hAIQDBeeOnA
+        cUI/zDE3pQZxGlDw==
+To:     Waiman Long <longman@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
+        Marc Zyngier <maz@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>, x86@kernel.org,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH v2] x86/apic/vector: Move pr_warn() out of vector_lock
+In-Reply-To: <20210329005236.1218-1-longman@redhat.com>
+References: <20210329005236.1218-1-longman@redhat.com>
+Date:   Mon, 29 Mar 2021 14:42:28 +0200
+Message-ID: <87tuoub07f.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrIIsWRmVeSWpSXmKPExsWyRoChTFfkdGKCwf11Ohbzj5xjtXh41d9i
-        1dSdLBabHl9jtej6tZLZ4vKuOWwWrXuPsFv83b6JxeLFFnEHTo+ds+6ye2xa1cnmsXlJvcfG
-        dzuYPPr/Gnh83iQXwBbFZZOSmpNZllqkb5fAlbGr+xhrwQr2iuvb77A1ME5g72Lk4JAQMJH4
-        sVOhi5GLQ0hgOZPEnb4rrBDOQ0aJDbOuMkI4mxgltj68xtLFyMnBJuAi8bntGxuILSKgK7Hi
-        RBdYEbPAHmaJE63/2EESwgKREg8n9jNCFEVJNNzpg2qwkpi8agkTyGoWAVWJk4ejQcK8Am4S
-        i44uZIZYtoNRYnb/elaQBKdAoMTHdQ1gMxkFZCU6G94xgdjMAuISm559B6uREBCQWLLnPDOE
-        LSrx8vE/qLiCRFtPJ9guZgFNifW79CFaLSRubHsLNUZRYkr3Q3aIGwQlTs58wjKBUXwWkg2z
-        ELpnIemehaR7FpLuBYysqxiFcjOTs1OLMrP1CjIqS1KT9VJSNzECo/nwRPVLOxj75ngcYmTi
-        YDzEKMHBrCTCK3wgMUGINyWxsiq1KD++qDQntfgQozQHi5I47wbekjAhgfTEktTs1NSC1CKY
-        LBMHp1QDoyFn/dvmCQFLZjX5fMg9y97xZteB1A3SZQYKC669Pjmt/+yP6LwNbuxS8x9aPfA5
-        vTLobPLui69+HYnQe3dB2ujdT4OX5abS59gOrbdkTFoYu6Z+s7/92TQ3L6Vn3/Z8++XeNans
-        uuhpm0L/hla7Hf/3b096xRyYlHj+Vq6sTPV8lbx/zzO5spRYijMSDbWYi4oTATuxG9nUAgAA
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRmFiaW8sDQoNCk9uIE1vbiwgMjAyMS0wMy0yOSBhdCAwODozNCAtMDMwMCwgRmFiaW8gRXN0
-ZXZhbSB3cm90ZToNCj4gT24gTW9uLCBNYXIgMjksIDIwMjEgYXQgODoyOCBBTSBTdGVmYW4gUmll
-ZG11ZWxsZXINCj4gPHMucmllZG11ZWxsZXJAcGh5dGVjLmRlPiB3cm90ZToNCj4gPiBTZXR0aW5n
-IHRoZSB2bW1jIHN1cHBsaWVzIGlzIGNydWNpYWwgc2luY2Ugb3RoZXJ3aXNlIHRoZSBzdXBwbHlp
-bmcNCj4gPiByZWd1bGF0b3JzIGdldCBkaXNhYmxlZCBhbmQgdGhlIFNEIGludGVyZmFjZXMgYXJl
-IG5vIGxvbmdlciBwb3dlcmVkDQo+ID4gd2hpY2ggbGVhZHMgdG8gc3lzdGVtIGZhaWx1cmVzIGlm
-IHRoZSBzeXN0ZW0gaXMgYm9vdGVkIGZyb20gdGhhdCBTRA0KPiA+IGludGVyZmFjZS4NCj4gDQo+
-IEl0IHNlZW1zIHRoYXQgdGhpcyBkZXNlcnZlcyBhIEZpeGVzIHRhZy4NCg0KSSB0aGluayB0aGlz
-IG11c3QgYmUgYnJva2VuIGZvciBzb21lIHRpbWUgbm93LiBNeSBndWVzcyBpcyB0aGF0IGl0IGJy
-b2tlIHdoZW4NCnRoZSBQTUlDIHN1cHBvcnQgZm9yIHRoZSBTT00gd2FzIGFkZGVkLiBTbyBJIGNh
-biBhZGQgYSBmaXhlcyB0YWcgZm9yIHRoYXQNCmNvbW1pdC4NCg0KVGhhbmtzLA0KU3RlZmFuDQoN
-Cj4gDQo+IFJldmlld2VkLWJ5OiBGYWJpbyBFc3RldmFtIDxmZXN0ZXZhbUBnbWFpbC5jb20+DQo=
+Waiman,
+
+On Sun, Mar 28 2021 at 20:52, Waiman Long wrote:
+> It was found that the following circular locking dependency warning
+> could happen in some systems:
+>
+> [  218.097878] ======================================================
+> [  218.097879] WARNING: possible circular locking dependency detected
+> [  218.097880] 4.18.0-228.el8.x86_64+debug #1 Not tainted
+
+Reports have to be against latest mainline and not against the random
+distro frankenkernel of the day. That's nothing new.
+
+Plus I was asking you to provide a full splat to look at so this can be
+discussed _upfront_. Oh well...
+
+> [  218.097914] -> #2 (&irq_desc_lock_class){-.-.}:
+> [  218.097917]        _raw_spin_lock_irqsave+0x48/0x81
+> [  218.097918]        __irq_get_desc_lock+0xcf/0x140
+> [  218.097919]        __dble_irq_nosync+0x6e/0x110
+
+This function does not even exist in mainline and never existed...
+
+> [  218.097967]
+> [  218.097967] Chain exists of:
+> [  218.097968]   console_oc_lock_class --> vector_lock
+> [  218.097972]
+> [  218.097973]  Possible unsafe locking scenario:
+> [  218.097973]
+> [  218.097974]        CPU0                    CPU1
+> [  218.097975]        ----                    ----
+> [  218.097975]   lock(vector_lock);
+> [  218.097977]                                lock(&irq_desc_lock_class);
+> [  218.097980]                                lock(vector_lock);
+> [  218.097981]   lock(console_owner);
+> [  218.097983]
+> [  218.097984]  *** DEADLOCK ***
+> [  218.097984]
+> [  218.097985] 6 locks held by systemd/1:
+> [  218.097986]  #0: ffff88822b5cc1e8 (&tty->legacy_mutex){+.+.}, at: tty_init_dev+0x79/0x440
+> [  218.097989]  #1: ffff88832ee00770 (&port->mutex){+.+.}, at: tty_port_open+0x85/0x190
+> [  218.097993]  #2: ffff88813be85a88 (&desc->request_mutex){+.+.}, at: __setup_irq+0x249/0x1e60
+> [  218.097996]  #3: ffff88813be858c0 (&irq_desc_lock_class){-.-.}, at: __setup_irq+0x2d9/0x1e60
+> [  218.098000]  #4: ffffffff84afca78 (vector_lock){-.-.}, at: x86_vector_activate+0xca/0xab0
+> [  218.098003]  #5: ffffffff84c27e20 (console_lock){+.+.}, at: vprintk_emit+0x13a/0x450
+
+This is a more fundamental problem than just vector lock and the same
+problem exists with any other printk over serial which is nested in the
+interrupt activation chain not only on X86.
+
+> -static int activate_reserved(struct irq_data *irqd)
+> +static int activate_reserved(struct irq_data *irqd, char *wbuf, size_t wsize)
+>  {
+
+...
+
+>  	if (!cpumask_subset(irq_data_get_effective_affinity_mask(irqd),
+>  			    irq_data_get_affinity_mask(irqd))) {
+> -		pr_warn("irq %u: Affinity broken due to vector space exhaustion.\n",
+> -			irqd->irq);
+> +		snprintf(wbuf, wsize, KERN_WARNING
+> +			 "irq %u: Affinity broken due to vector space exhaustion.\n",
+> +			 irqd->irq);
+
+This is not really any more tasteful than the previous one and it does
+not fix the fundamental underlying problem.
+
+But, because I'm curious and printk is a constant source of trouble, I
+just added unconditional pr_warns into those functions under vector_lock
+on 5.12-rc5.
+
+Still waiting for the lockdep splat to show up while enjoying the
+trickle of printks over serial.
+
+If you really think this is an upstream problem then please provide a
+corresponding lockdep splat on plain 5.12-rc5 along with a .config and
+the scenario which triggers this. Not less, not more.
+
+Thanks,
+
+        tglx
+
