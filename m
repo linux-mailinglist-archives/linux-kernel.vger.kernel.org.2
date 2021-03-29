@@ -2,37 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5B134CB56
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C003034CB60
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235504AbhC2IqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43598 "EHLO mail.kernel.org"
+        id S234979AbhC2Iqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:46:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234347AbhC2I2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234348AbhC2I2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 04:28:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 71C1A614A7;
-        Mon, 29 Mar 2021 08:27:36 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D3A2061996;
+        Mon, 29 Mar 2021 08:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006457;
-        bh=kND7Cz2zXPj+L8zoy0kdq0IzF1L4MlyVpJsPhHES+DI=;
+        s=korg; t=1617006462;
+        bh=Fki+6t2i693xmHEl2L3+HBbS1O+MLL5WTpNnEgLEha8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npNFjthbsHwmkj2MG17Gfo5qsB+sPLJIUjlwqkMlBvgd25T81WN/pqh86wZFcvsWj
-         jSJCp8KrbwLa8++O5dsX8aEC17vCdMshFO9jsi1RkcYV+tBbpSPBbcOOtH4iCkGAna
-         OBLk0PFMkBf+rWEfAMsdjjDq1VcXV5VTA1xeR7EA=
+        b=x/JSCnIpRZO6hb/DSr/nlxkPDLPR8gZ6lHpcgaFfh6yDttDD7khY8yN0MpMRt3p5o
+         QflGhDw3TloCpb6RgvoBJfHNSlW9dLGoF7HfA3W7pYKZDnwe6hQG/S7RR9rf2gCk3Y
+         l+dnHhGXOC0fSjJA01q+uhHJpwHclUv+dSvdCseE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alex Marginean <alexandru.marginean@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Jason Liu <jason.hui.liu@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 026/254] net: enetc: set MAC RX FIFO to recommended value
-Date:   Mon, 29 Mar 2021 09:55:42 +0200
-Message-Id: <20210329075634.004206230@linuxfoundation.org>
+Subject: [PATCH 5.11 027/254] atm: uPD98402: fix incorrect allocation
+Date:   Mon, 29 Mar 2021 09:55:43 +0200
+Message-Id: <20210329075634.036662533@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
 References: <20210329075633.135869143@linuxfoundation.org>
@@ -44,56 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Marginean <alexandru.marginean@nxp.com>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 1b2395dfff5bb40228a187f21f577cd90673d344 ]
+[ Upstream commit 3153724fc084d8ef640c611f269ddfb576d1dcb1 ]
 
-On LS1028A, the MAC RX FIFO defaults to the value 2, which is too high
-and may lead to RX lock-up under traffic at a rate higher than 6 Gbps.
-Set it to 1 instead, as recommended by the hardware design team and by
-later versions of the ENETC block guide.
+dev->dev_data is set in zatm.c, calling zatm_start() will overwrite this
+dev->dev_data in uPD98402_start() and a subsequent PRIV(dev)->lock
+(i.e dev->phy_data->lock) will result in a null-ptr-dereference.
 
-Signed-off-by: Alex Marginean <alexandru.marginean@nxp.com>
-Reviewed-by: Claudiu Manoil <claudiu.manoil@nxp.com>
-Reviewed-by: Jason Liu <jason.hui.liu@nxp.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+I believe this is a typo and what it actually want to do is to allocate
+phy_data instead of dev_data.
+
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/enetc/enetc_hw.h | 2 ++
- drivers/net/ethernet/freescale/enetc/enetc_pf.c | 6 ++++++
- 2 files changed, 8 insertions(+)
+ drivers/atm/uPD98402.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_hw.h b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-index de0d20b0f489..00938f7960a4 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_hw.h
-@@ -234,6 +234,8 @@ enum enetc_bdr_type {TX, RX};
- #define ENETC_PM0_MAXFRM	0x8014
- #define ENETC_SET_TX_MTU(val)	((val) << 16)
- #define ENETC_SET_MAXFRM(val)	((val) & 0xffff)
-+#define ENETC_PM0_RX_FIFO	0x801c
-+#define ENETC_PM0_RX_FIFO_VAL	1
- 
- #define ENETC_PM_IMDIO_BASE	0x8030
- 
-diff --git a/drivers/net/ethernet/freescale/enetc/enetc_pf.c b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-index ca02f033bea2..224fc37a6757 100644
---- a/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-+++ b/drivers/net/ethernet/freescale/enetc/enetc_pf.c
-@@ -490,6 +490,12 @@ static void enetc_configure_port_mac(struct enetc_hw *hw)
- 
- 	enetc_port_wr(hw, ENETC_PM1_CMD_CFG, ENETC_PM0_CMD_PHY_TX_EN |
- 		      ENETC_PM0_CMD_TXP	| ENETC_PM0_PROMISC);
-+
-+	/* On LS1028A, the MAC RX FIFO defaults to 2, which is too high
-+	 * and may lead to RX lock-up under traffic. Set it to 1 instead,
-+	 * as recommended by the hardware team.
-+	 */
-+	enetc_port_wr(hw, ENETC_PM0_RX_FIFO, ENETC_PM0_RX_FIFO_VAL);
- }
- 
- static void enetc_mac_config(struct enetc_hw *hw, phy_interface_t phy_mode)
+diff --git a/drivers/atm/uPD98402.c b/drivers/atm/uPD98402.c
+index 7850758b5bb8..239852d85558 100644
+--- a/drivers/atm/uPD98402.c
++++ b/drivers/atm/uPD98402.c
+@@ -211,7 +211,7 @@ static void uPD98402_int(struct atm_dev *dev)
+ static int uPD98402_start(struct atm_dev *dev)
+ {
+ 	DPRINTK("phy_start\n");
+-	if (!(dev->dev_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
++	if (!(dev->phy_data = kmalloc(sizeof(struct uPD98402_priv),GFP_KERNEL)))
+ 		return -ENOMEM;
+ 	spin_lock_init(&PRIV(dev)->lock);
+ 	memset(&PRIV(dev)->sonet_stats,0,sizeof(struct k_sonet_stats));
 -- 
 2.30.1
 
