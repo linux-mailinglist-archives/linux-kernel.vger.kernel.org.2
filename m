@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1546C34DC66
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAC834DC65
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhC2XZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 19:25:32 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43408 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbhC2XZA (ORCPT
+        id S230487AbhC2XZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:25:30 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:46376 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhC2XZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 19:25:00 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNJUtW085997;
-        Mon, 29 Mar 2021 23:24:15 GMT
+        Mon, 29 Mar 2021 19:25:01 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNIwoQ153749;
+        Mon, 29 Mar 2021 23:24:21 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=sB3A7aiUtMRe5ib6VHFdFODXzOZyEuLNBcHaJG9eo54=;
- b=hVvxfCyaKFiFAqmT3AWu1ijytRAuLzmoat4OIPURK3TGXjoWgx9ZEVY8e9qsnw2rsBP6
- 9KI5bQAGUBqWW6JHX4+95AXtvjqx8aSZGe8nROE5k9BOkRyeUZwAacBRgZMQoqGTY2iq
- Ct65x44SZmZGFTnSyNzmF5JGlvZujE4d64Q2CDEzgKExhwnPGsHBYh7ADBVUOoXIM9cd
- L4JblvlYLFVYymJQITYJDL6R2Hi//50ZkPhVCmqSX6uxfxrEgKohe6wmPOYvjU0IslY1
- dnZ1k5gNx3lWwiFFFPUv1JhsY7tEvWSAq4/t2IP3AaspOO1J7BOE59kqqMlQfEerySNQ tw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 37hv4r57tw-1
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=kiYEXAzkj8k19ZaDk6k1MsXea5isDu5qDl+c5dI1+mk=;
+ b=JyTDHQf7k9I1YjCEB7TIMjVqCbi6QtC8u243HxRy/HaLxrVLUH1I6c0K/f/PgZsXs5St
+ acN/ZqHcissDPVNwsv4QhMvcjYRAf2gqRaUn01vPeFlWpENMyscdSUz6zACOsmFcQTl7
+ zC2rgKSJO/1/oZpe44fFCDF1IFxYY81RtS9WwmmPmxcTJ5rXnRaZA8Bt6eRdZPAz2ur3
+ ECvGcDgcOuC/sCiWYJmQj1lAdCDwPRYRoxxKgyvITSs+F+n6uRXBoBosSgFMZgYNVNU2
+ jeI5SsCykbKKdj+ObI/y+OVWj+zbdq9fJ60OdYf/Fnyt6Y3QIFRnTc+77HldH5rwexVY 9w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 37ht7bdbr5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 23:24:15 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNGW9J132701;
-        Mon, 29 Mar 2021 23:24:15 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
-        by userp3020.oracle.com with ESMTP id 37jefrct5d-1
+        Mon, 29 Mar 2021 23:24:20 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 12TNFYFk055873;
+        Mon, 29 Mar 2021 23:24:20 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2174.outbound.protection.outlook.com [104.47.59.174])
+        by aserp3030.oracle.com with ESMTP id 37je9p06mw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 29 Mar 2021 23:24:15 +0000
+        Mon, 29 Mar 2021 23:24:20 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMv9pdDnlAX6igwAiWwKahToidOONpxi3rI1r+HqzBxDBfxH8oahwwKqxYeL7Nagzaii0jf4uto/aWdxTEkzsxOvTdJ96Wvl7MuZ7urlgh763YZTDAUS4HrvNgcsWREyBVEwdedNoKqW3XRbq2u6fmqHXBftLntiK/3BN8hN1/jHebJqIoXSqWLjY/6ZBhhVUDW7Mo5l9Gueb5aK5S+dC1HZDrtymynYN12IPPh8FRcenPovh5EgbdSIdLBlJ/OgsaRN3hqx7pPS9XtFXN6Nkd7ln4UhXepOhu0d/WQEbiqPhsuxStYp2gDWpraCFnKTvx2WY+FrPy8w1MJn88+FSA==
+ b=Bqg2lHTur8yQyoZ5r1CubbEBTJ4q9/T1DAOd2/6mMDjtw67f3cqHZ7otrGA38E4n8GP8IzaT5KCYXL23bCHF40r4Z3riZSJSUT8pETMFftigYh50c2sLjGJCa6dt7mykXmW0yINjA+DESWtQ1PfF/j/P84yDUu927bd9gUQJgXvbNRCY6G7mkSfGziW/mkaGi+9gf0R4JlPmLAdcvipp1PtmNWG+XmhCAgturTgnww9DZNO+j4ih4EY/LY+Wev2Efm8/XtsaU+Ir8yE53cteiNwobndE6HL1Uc+zskaF9k1UvIgI30P5AL73czwIbsFmJLCoibyhHciZERxMsGO3TQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sB3A7aiUtMRe5ib6VHFdFODXzOZyEuLNBcHaJG9eo54=;
- b=PGGV1OD/qfZDA7fC9ZeXg9sO9Xq6a7SissEKwJXAqtBQNIM8qb5Z5JumKwzyJCnd9RLjCZyRFjk7F7fVcH/HIIT0sUlAsQMdJ9AWEHRaWxEaG18WF++Ici6/RqFLHO2/Emseh+7zPtfWn70De8M4E8mwOiLbNrb4AlqSv/vSHv/mK7NQAFolGnydvaTk1F0R4T7I//nXK6S61Wo+QyrIMrw0v+V7/qGH004xO7U5MEeAaDpIPMcjAMsHT6yLJ6ELA0IvJG5dCaYlBe15kY695eHlrUWXuFGtrJUyTZAeMvuJ+x/ImY0h0UW0Ji7Lh9PkuVVwpuY9y+DeT3JADrYuag==
+ bh=kiYEXAzkj8k19ZaDk6k1MsXea5isDu5qDl+c5dI1+mk=;
+ b=D5eF2YS+Hfeu3PnSfNKB/+gSADLdApPbZlRbPr++fjYO2JLKCjM/YC0peCo+n7/TxXvgRzPzQTz5pTOUZ29Z5k57uBlqhEry+wIzeigizch9UBvibiCrk0JoEoAm0Tj5QZmbGd0HXIkjW1Pea6dHXo8mqZO2I2ixlYsfvShQrm6Yrd2dO9B2UmvQhke2d74KKPZb+ue8B0YPadcGnLl458TnlEKXA8gpH9xZUXFHd9HBpNv8Qm7nHGG+Hgpv7mdj1vQML1W8siIbCXRyzX2C+gv7qf+evjcAIUL9ykyUFYlJpIMVuPKJEO2G9s0tXcFWsvc9GdL1FBA+H65/daEv9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sB3A7aiUtMRe5ib6VHFdFODXzOZyEuLNBcHaJG9eo54=;
- b=vZ11gYsMOOym4wRFejV8OtU+16r6DB7+XFDP8+hA561/PUTK7W2LWDmuJdODD1ixdAvHcUlWz7Z293hgBqvALuWez7nZbCjZ3WkeensDyFm9AP7zLV7QJf+Dezgihz9vDUh/+2xtLurZrXMMxUTLK7BXH8PHokCDnrX+Ll/W8RU=
+ bh=kiYEXAzkj8k19ZaDk6k1MsXea5isDu5qDl+c5dI1+mk=;
+ b=sby6V7cP1Kabc14igMr67e/ykN533VXMKN9XJc9ZFlo4CWYei9+9Lx1gUS8svTfR1erHGqW0Ewq9CvdPEv+oZG2vEd+WO57YxvON/qo40FFxovcKCNVZUsnZscTgxazRdBRm18dcOVREB18n0LKKy+aiivPca30WZByVqBX2XB0=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by BY5PR10MB4148.namprd10.prod.outlook.com (2603:10b6:a03:211::19) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25; Mon, 29 Mar
- 2021 23:24:13 +0000
+ 2021 23:24:18 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee%8]) with mapi id 15.20.3977.033; Mon, 29 Mar 2021
- 23:24:13 +0000
+ 23:24:18 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
@@ -82,10 +82,12 @@ Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
         Will Deacon <will@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v2 0/8] make hugetlb put_page safe for all calling contexts
-Date:   Mon, 29 Mar 2021 16:23:54 -0700
-Message-Id: <20210329232402.575396-1-mike.kravetz@oracle.com>
+Subject: [PATCH v2 1/8] mm/cma: change cma mutex to irq safe spinlock
+Date:   Mon, 29 Mar 2021 16:23:55 -0700
+Message-Id: <20210329232402.575396-2-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210329232402.575396-1-mike.kravetz@oracle.com>
+References: <20210329232402.575396-1-mike.kravetz@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-Originating-IP: [50.38.35.18]
@@ -94,129 +96,221 @@ X-ClientProxiedBy: MWHPR10CA0065.namprd10.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by MWHPR10CA0065.namprd10.prod.outlook.com (2603:10b6:300:2c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 23:24:12 +0000
+Received: from monkey.oracle.com (50.38.35.18) by MWHPR10CA0065.namprd10.prod.outlook.com (2603:10b6:300:2c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.25 via Frontend Transport; Mon, 29 Mar 2021 23:24:17 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e290e0ab-e3f4-4dfd-eae5-08d8f309c339
+X-MS-Office365-Filtering-Correlation-Id: e9ef4317-bd97-4616-4d6f-08d8f309c667
 X-MS-TrafficTypeDiagnostic: BY5PR10MB4148:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR10MB4148914CBD6D729C5249C44EE27E9@BY5PR10MB4148.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-Microsoft-Antispam-PRVS: <BY5PR10MB414868E4A0E859A71BFE666CE27E9@BY5PR10MB4148.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AGq3bh+bK675EJRQFISyrg/MFFjMXaFaB1oKsFWfSjeLFMhbnwMmHGH82lItDsuE8rGW/EdUqq/fBtdgXQiwURqd1PjSdFPhC53tYZJJ6w7GY4Tf0sZ9LCkNyHDAZ0th5xRRGfOOjPzDKQ0pZJp5sqYWIPob+cWHpTg0shgVDZ0bBYM0iK62ANlvs6V3Nvg9PqA0W1h/RUardGqRfMeuUyEyyO7qcZITYzFJkKVrfJqJ9dEvSs1joyo++vv1m2I2huBZyNsY1MX846B/CylrrssDoxu/pxHNTyprRaVuE/cKmW+7xAcGEZCXAhzN02d+lSyLSOM5fdcrlZE8VVuYhFtcEP8HIQBcM+cyw1pCnTzNsV/1ejNM/M0HE8kZ0CnOBEdhlcDVEGORk6DePnVmCcPT3wfVscAXmay1QhHEJ72z8yiFRxOSV1BepIEq74uaxkP6PLIXM0X3xmfMbljGxSpe58p1KvSNYIl2rZ8GIjRNDXgYeh+OvZ842OjCVlhD3pC1OXWZvxncAVnx2Hl6wi1g/oH/kRxEg2cvTHVTBotYygROZ9IeLfMpr52Mw3oV7ooQ2B6lsldYsMksrwWTCadT4/p5m61Z9M6PZj0HTOHUiW3AdxVUaeAp0Cxt5f+5LeBmA/29eAG6Xx+og2zWKaI/NpTG7QqHGeRc6V4MgRDg/APYwJTs+VcBs3XDDdgB3mVTxmxYf9YBdqNCnZYpVdCBpyD7L74yEwVyeafBAqs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(396003)(39860400002)(16526019)(44832011)(52116002)(26005)(2616005)(36756003)(186003)(7696005)(7416002)(956004)(478600001)(4326008)(6486002)(54906003)(6666004)(86362001)(5660300002)(66946007)(66556008)(1076003)(66476007)(83380400001)(38100700001)(8676002)(316002)(8936002)(966005)(2906002)(107886003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?aRVStHrfquRrypKS5BTGBH+MpVL1mCkz8jkwnaOZltMkDRfpmvaQpNYKVTqZ?=
- =?us-ascii?Q?TeXaVZcSTOhuA+xHm02bZq3Jx136iS5zfCdQKAoutsz3a0RgNqsk9QE2k98h?=
- =?us-ascii?Q?fEzyZ71/JPMF/nE4E2YawMPzNsepf8GtwWAZOwhKmKA5J1B9ysshrA6mskGj?=
- =?us-ascii?Q?x84D1D4wG4Ytn+mt7U+TjVgSxWtYDP32zbaxJcyz/JAn2qei5QVgBAqOm+A9?=
- =?us-ascii?Q?+qVPTe7p2Bye/R1KslOopvSOGeGdmZzhCcx4nkYeyTD2EYsUDQ0iRCl2hZQg?=
- =?us-ascii?Q?EsJ++aVZzy/4qMCYkOwTwRdigXeDVhJKxWeC717xfoliI3c06hwPom2PAFZU?=
- =?us-ascii?Q?GXtruTzprQnsbbD19R2EdiQaHezcRzoQl/YgeM+b05gOqdKQrknOjluI4npx?=
- =?us-ascii?Q?1W2cS7CQTn3R9u+oypKV8gt/OMsfRNDAGnmzyTRsG0+UHzMt150MFP590t2o?=
- =?us-ascii?Q?SqGBE6O7zZ+3TFKZw22StgCXVCZ2/8NXhIMs2yquSsQXiI+oUsoClSLW0z/O?=
- =?us-ascii?Q?1+yNwfQVGag6whXOm3qnoJH0qRjg550od6kWFXvGh2+ciguyFoOsetBynU5m?=
- =?us-ascii?Q?fg4Iz/fyXTeE9Qvawh5RDH2UtEriS/+pjPE1XOoL2JO89T3IaDLJNXVplVTy?=
- =?us-ascii?Q?b1JeYgeL2I2nVCl54pz/kCexOh40KTHx4CUtuNav8GKEkc6VzUOV7K47t5wO?=
- =?us-ascii?Q?CBPid68C+GaWCEmNRGDJZsOGroLhopIMcOodaZ+byuJhU4GBXffnNzc+0YS0?=
- =?us-ascii?Q?xdslzI0Q5D8MKA5Wp3KKD5wl633daz9waH/wU+/Z1jMg1U54wYhnvIEDuC5F?=
- =?us-ascii?Q?AfNfNN5+Eg1ycF7qZSpVQl/jznFTSkV1tV5IWcxZMkyBHSzD2DiNJeFsJkMt?=
- =?us-ascii?Q?l+vJYRO0AUiaCD0V/5jSOj5byZaiOKZistPS30fgfGzpwDF+YAgCA04RpsCk?=
- =?us-ascii?Q?xq8s5oE/LxpvJzL+elOFrk/I4A1Mv71w+46B1OWQZlWZaiMr6Vzwko4ezhNU?=
- =?us-ascii?Q?BxC04PKgNELWS5v8KU1Ul1lDCZoiRnYLlTtRwjNaj60vzbh/S4PbuBAj+zCk?=
- =?us-ascii?Q?bswdu1t+vY3G4bU09zUyPdiy1G8XNz90wpQRzL8mU5GAl71xN8vKgzBSF0pl?=
- =?us-ascii?Q?s1Q1bJQoZHCa5Ml7nxrYVqYIra7u/YrPugHCAv7FdY0Il588MhAi1DK4hs+H?=
- =?us-ascii?Q?69UndxWXL9FmOb71KRRF++O2UyJrrVAB/mG3juyf1l26gDILHE7wqduYN3Rs?=
- =?us-ascii?Q?YPae6m4GvSDjjWBWuNotZzhAMdqjdcFvG58wOUMhFxO3rhSh3B2JykvyvZux?=
- =?us-ascii?Q?B0wapK2SUfneNdIiyR9kLrv2?=
+X-Microsoft-Antispam-Message-Info: UxOv8S+tQU5gxfDaj+DmZnvZ/pYidg5LzArqQn7OO/R2bPfzgtvz4MKalpWIKa4WKs+l05VvunCrp6N15b4aWAQinGJQZnOFL1NOOqeryd07oMKhjjn73SXRVhDJ3uCvyAkcIyNbviPyq11SRVyvCjCghBl6/Wc0jIJiEcCIqrKaqLiiFvMEPdNGxHE0BoDJZwj46ox55t+vjyBigIyrkFL8kh/zRJAdEuO60E/BLFoFhx15jAR8M9bMPKU1ybGDsM4tlqBHYyzyKUTmT2JPio7Je5H0jbv6KrFczZG/l64XkHAfQochtYVzkeVTzQOiVueqJJ3OKYmom2uevTGjCbuQq7p0ozYvWe5nBCW1ZynnBAKTVBWZ9MNNmK+dT/fMFNs81d4YjdPp9CCCEucUcQ7QTQm53FIpQDi4xEricx6G0nn55o+9+0BghrkuqXgtbtq842Ck39rA3SjVVWAzZDVr/1v5MgIIdO+D39qLTkx+E+NSxFqLG7Kl8lcNTJP7pAZ7d/dlaF8K9AT7NbjWOOvzicgx30OpEZbEWxWq+dcF2PEnJ5nt9yTZG0cfTS9j97sumWY/vRsxFTRGvk6HYSf1H5c7+J6RoPuBJk8O8rTTlBMW7Y57+fgZNYkfypmOVYyTpsRHv36uhvF4oYb+0Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(136003)(396003)(39860400002)(16526019)(44832011)(52116002)(26005)(2616005)(36756003)(186003)(7696005)(7416002)(956004)(478600001)(4326008)(6486002)(54906003)(6666004)(86362001)(5660300002)(66946007)(66556008)(1076003)(66476007)(83380400001)(38100700001)(8676002)(316002)(8936002)(2906002)(107886003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+TIliutXksls0XFOEchQDlU3IuGWwL/lvpmGbPVzG5e3Xs7qn+0OB2cwObu7?=
+ =?us-ascii?Q?2PTQRa/6jVpEzZK7xPg+rRIoKqHJSUd+r0SHxwPAk+TT3x4vJuDtb+GCY0RA?=
+ =?us-ascii?Q?j41UVbC9iDrwwMgBY86m+nwUUPOBufTeVfqTGxjCmKsQHYnLu033Iyk4H4ye?=
+ =?us-ascii?Q?FucZQmI/2oHgTfoqbE724SKlkmhXRT/MHddAsao7n+uLB7HOtiOkPeYWLSbk?=
+ =?us-ascii?Q?qu/CFZXjd3m88fxpVwjgF9iIj5CED1ynSCgyDXqiS6d6cRH9GpuYkV1xac/B?=
+ =?us-ascii?Q?L9KEeqMNxjoAgv/87VTCb44cqeNLJ2FDkjlVs8pxB4SHrZs5DIxYqRFh2QT9?=
+ =?us-ascii?Q?akTfLu9DrMxtcMIyG2F/9J6N+Ye64FxFIEzr4zlp994iI+6AmHxXwzSyDbNN?=
+ =?us-ascii?Q?V3togVc1mx/ZQFzyKNUyMgMvMuRs/Bf0jVIj3ykx3pXv3S3NOj23+EmZa8+J?=
+ =?us-ascii?Q?L7oU9OXQboLr1dCU1etpc9Nn/S6o2+p0RUefCL5GxThmhWnIEKC0HbinFHtR?=
+ =?us-ascii?Q?VBGzFDdQ2r1HVlDxxO2zXOZe1VybuqinjnhFibLAng8ckzr4hD5VAq2SBpYZ?=
+ =?us-ascii?Q?Oy4LNvx/5R6SKbdhmFML78fzmlckXgNbMMwtjwxsFm/FeuTRxKIZZqgxBVj+?=
+ =?us-ascii?Q?KyIW5NpfU/wj9e3Lqcx9Hevuy/pdXthWbnQ/gHh+3z9lowc51PyNzJXB987V?=
+ =?us-ascii?Q?KnyhwjR8r28woOuBq6At7olv9Kq2xMWq9NwGd5AOQGCk1T96fkF7pBJi6rG6?=
+ =?us-ascii?Q?/YJHxXttxfz3Dt8cubFKpt2RwTEDzXTPcD80p4ORNiAr5DnYtfv3exm7hF/7?=
+ =?us-ascii?Q?DcQoVkUV3Nhj7DkKlb7CfjDEdfmhUGKYbVmfOiREWop+p9FcR7WOSd7tPszJ?=
+ =?us-ascii?Q?5ETJLYRZyP1xW15ZYncgsjXKIuujFtJfSStqjgfKmCZ50yMKXyNUIgNktC+J?=
+ =?us-ascii?Q?dQ5gPqMgSttZmb80f5FzJvlzixCN9w9AsjEt0YadjNjQ1eC+MS26qMXL8Wwe?=
+ =?us-ascii?Q?0swVHh58iFvzo4uqZkPOyrjrhkWSJUXorgUyDr05VNOyhAqjJx6zXmTWAH9Q?=
+ =?us-ascii?Q?5vZxifWv7dOJENnucwsEmCfWoC4SHkc9XKoEJ2si9+BLmyjEBJujKGye3i0t?=
+ =?us-ascii?Q?XJjBe/3EU1KNrSoxrMZ0vs+n1GaTy9Rb2KckXQCFECCwDZK9A1jVWeZwDe8G?=
+ =?us-ascii?Q?YjhJH+1BoU17e5xJq/a1GT/eVWkjRIIO8ZIOPH2U7P9Gn1p46aBK1hdkjhp9?=
+ =?us-ascii?Q?vebw7upSrQDFTmY7NrfzuZGD8EVQDeqEpf8TJmI16LBg/QQeWfZp7NizWBj2?=
+ =?us-ascii?Q?xLLA1rDn1PftkzFbciSOMCSl?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e290e0ab-e3f4-4dfd-eae5-08d8f309c339
+X-MS-Exchange-CrossTenant-Network-Message-Id: e9ef4317-bd97-4616-4d6f-08d8f309c667
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 23:24:13.1460
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Mar 2021 23:24:18.2904
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F7lZH6+9GoKlRp+GYFtzQfJKcH+v0ug9h0hBP1sjXE9fawZUn968H7lz6u36+RkF6wTrAabs4s4KqCKg/achDg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3JoasxsPKAUBepD+ogeDZHCApTRfeP8ZZGSbHxkrNa2Zlcoo2GgnYcUwZ5XfMk11IW24sfr+PrHc9V7+xTZEQg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4148
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2103250000 definitions=main-2103290173
-X-Proofpoint-ORIG-GUID: glj5-8FQHHIO4umLjiEhdbMQXx2vJypn
-X-Proofpoint-GUID: glj5-8FQHHIO4umLjiEhdbMQXx2vJypn
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ suspectscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290173
+X-Proofpoint-GUID: XDF7oFZfr-wMC_Zy1E4FC0_fKoGFD3LS
+X-Proofpoint-ORIG-GUID: XDF7oFZfr-wMC_Zy1E4FC0_fKoGFD3LS
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9938 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 phishscore=0
- adultscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0
- clxscore=1015 bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ clxscore=1015 mlxscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
  definitions=main-2103290173
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This effort is the result a recent bug report [1].  Syzbot found a
-potential deadlock in the hugetlb put_page/free_huge_page_path.
-WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock order detected
-Since the free_huge_page_path already has code to 'hand off' page
-free requests to a workqueue, a suggestion was proposed to make
-the in_irq() detection accurate by always enabling PREEMPT_COUNT [2].
-The outcome of that discussion was that the hugetlb put_page path
-(free_huge_page) path should be properly fixed and safe for all calling
-contexts.
+Ideally, cma_release could be called from any context.  However, that is
+not possible because a mutex is used to protect the per-area bitmap.
+Change the bitmap to an irq safe spinlock.
 
-This series is based on v5.12-rc3-mmotm-2021-03-17-22-24.  At a high
-level, the series provides:
-- Patches 1 & 2 change CMA bitmap mutex to an irq safe spinlock
-- Patch 3 adds a mutex for proc/sysfs interfaces changing hugetlb counts
-- Patches 4, 5 & 6 are aimed at reducing lock hold times.  To be clear
-  the goal is to eliminate single lock hold times of a long duration.
-  Overall lock hold time is not addressed.
-- Patch 7 makes hugetlb_lock and subpool lock IRQ safe.  It also reverts
-  the code which defers calls to a workqueue if !in_task.
-- Patch 8 adds some lockdep_assert_held() calls
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ mm/cma.c       | 20 +++++++++++---------
+ mm/cma.h       |  2 +-
+ mm/cma_debug.c | 10 ++++++----
+ 3 files changed, 18 insertions(+), 14 deletions(-)
 
-[1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
-[2] http://lkml.kernel.org/r/20210311021321.127500-1-mike.kravetz@oracle.com
-
-v1 -> v2
-- Drop Roman's cma_release_nowait() patches and just change CMA mutex
-  to an IRQ safe spinlock.
-- Cleanups to variable names, commets and commit messages as suggested
-  by Michal, Oscar, Miaohe and Muchun.
-- Dropped unnecessary INIT_LIST_HEAD as suggested by Michal and list_del
-  as suggested by Muchun.
-- Created update_and_free_pages_bulk helper as suggested by Michal.
-- Rebased on v5.12-rc4-mmotm-2021-03-28-16-37
-- Added Acked-by: and Reviewed-by: from v1
-
-RFC -> v1
-- Add Roman's cma_release_nowait() patches.  This eliminated the need
-  to do a workqueue handoff in hugetlb code.
-- Use Michal's suggestion to batch pages for freeing.  This eliminated
-  the need to recalculate loop control variables when dropping the lock.
-- Added lockdep_assert_held() calls
-- Rebased to v5.12-rc3-mmotm-2021-03-17-22-24
-
-Mike Kravetz (8):
-  mm/cma: change cma mutex to irq safe spinlock
-  hugetlb: no need to drop hugetlb_lock to call cma_release
-  hugetlb: add per-hstate mutex to synchronize user adjustments
-  hugetlb: create remove_hugetlb_page() to separate functionality
-  hugetlb: call update_and_free_page without hugetlb_lock
-  hugetlb: change free_pool_huge_page to remove_pool_huge_page
-  hugetlb: make free_huge_page irq safe
-  hugetlb: add lockdep_assert_held() calls for hugetlb_lock
-
- include/linux/hugetlb.h |   1 +
- mm/cma.c                |  20 +--
- mm/cma.h                |   2 +-
- mm/cma_debug.c          |  10 +-
- mm/hugetlb.c            | 340 +++++++++++++++++++++-------------------
- mm/hugetlb_cgroup.c     |   8 +-
- 6 files changed, 202 insertions(+), 179 deletions(-)
-
+diff --git a/mm/cma.c b/mm/cma.c
+index b2393b892d3b..80875fd4487b 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -24,7 +24,6 @@
+ #include <linux/memblock.h>
+ #include <linux/err.h>
+ #include <linux/mm.h>
+-#include <linux/mutex.h>
+ #include <linux/sizes.h>
+ #include <linux/slab.h>
+ #include <linux/log2.h>
+@@ -83,13 +82,14 @@ static void cma_clear_bitmap(struct cma *cma, unsigned long pfn,
+ 			     unsigned int count)
+ {
+ 	unsigned long bitmap_no, bitmap_count;
++	unsigned long flags;
+ 
+ 	bitmap_no = (pfn - cma->base_pfn) >> cma->order_per_bit;
+ 	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+ 
+-	mutex_lock(&cma->lock);
++	spin_lock_irqsave(&cma->lock, flags);
+ 	bitmap_clear(cma->bitmap, bitmap_no, bitmap_count);
+-	mutex_unlock(&cma->lock);
++	spin_unlock_irqrestore(&cma->lock, flags);
+ }
+ 
+ static void __init cma_activate_area(struct cma *cma)
+@@ -118,7 +118,7 @@ static void __init cma_activate_area(struct cma *cma)
+ 	     pfn += pageblock_nr_pages)
+ 		init_cma_reserved_pageblock(pfn_to_page(pfn));
+ 
+-	mutex_init(&cma->lock);
++	spin_lock_init(&cma->lock);
+ 
+ #ifdef CONFIG_CMA_DEBUGFS
+ 	INIT_HLIST_HEAD(&cma->mem_head);
+@@ -391,8 +391,9 @@ static void cma_debug_show_areas(struct cma *cma)
+ 	unsigned long start = 0;
+ 	unsigned long nr_part, nr_total = 0;
+ 	unsigned long nbits = cma_bitmap_maxno(cma);
++	unsigned long flags;
+ 
+-	mutex_lock(&cma->lock);
++	spin_lock_irqsave(&cma->lock, flags);
+ 	pr_info("number of available pages: ");
+ 	for (;;) {
+ 		next_zero_bit = find_next_zero_bit(cma->bitmap, nbits, start);
+@@ -407,7 +408,7 @@ static void cma_debug_show_areas(struct cma *cma)
+ 		start = next_zero_bit + nr_zero;
+ 	}
+ 	pr_cont("=> %lu free of %lu total pages\n", nr_total, cma->count);
+-	mutex_unlock(&cma->lock);
++	spin_unlock_irqrestore(&cma->lock, flags);
+ }
+ #else
+ static inline void cma_debug_show_areas(struct cma *cma) { }
+@@ -430,6 +431,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 	unsigned long pfn = -1;
+ 	unsigned long start = 0;
+ 	unsigned long bitmap_maxno, bitmap_no, bitmap_count;
++	unsigned long flags;
+ 	size_t i;
+ 	struct page *page = NULL;
+ 	int ret = -ENOMEM;
+@@ -454,12 +456,12 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 		goto out;
+ 
+ 	for (;;) {
+-		mutex_lock(&cma->lock);
++		spin_lock_irqsave(&cma->lock, flags);
+ 		bitmap_no = bitmap_find_next_zero_area_off(cma->bitmap,
+ 				bitmap_maxno, start, bitmap_count, mask,
+ 				offset);
+ 		if (bitmap_no >= bitmap_maxno) {
+-			mutex_unlock(&cma->lock);
++			spin_unlock_irqrestore(&cma->lock, flags);
+ 			break;
+ 		}
+ 		bitmap_set(cma->bitmap, bitmap_no, bitmap_count);
+@@ -468,7 +470,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 		 * our exclusive use. If the migration fails we will take the
+ 		 * lock again and unmark it.
+ 		 */
+-		mutex_unlock(&cma->lock);
++		spin_unlock_irqrestore(&cma->lock, flags);
+ 
+ 		pfn = cma->base_pfn + (bitmap_no << cma->order_per_bit);
+ 		ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
+diff --git a/mm/cma.h b/mm/cma.h
+index 68ffad4e430d..2c775877eae2 100644
+--- a/mm/cma.h
++++ b/mm/cma.h
+@@ -15,7 +15,7 @@ struct cma {
+ 	unsigned long   count;
+ 	unsigned long   *bitmap;
+ 	unsigned int order_per_bit; /* Order of pages represented by one bit */
+-	struct mutex    lock;
++	spinlock_t	lock;
+ #ifdef CONFIG_CMA_DEBUGFS
+ 	struct hlist_head mem_head;
+ 	spinlock_t mem_head_lock;
+diff --git a/mm/cma_debug.c b/mm/cma_debug.c
+index d5bf8aa34fdc..6379cfbfd568 100644
+--- a/mm/cma_debug.c
++++ b/mm/cma_debug.c
+@@ -35,11 +35,12 @@ static int cma_used_get(void *data, u64 *val)
+ {
+ 	struct cma *cma = data;
+ 	unsigned long used;
++	unsigned long flags;
+ 
+-	mutex_lock(&cma->lock);
++	spin_lock_irqsave(&cma->lock, flags);
+ 	/* pages counter is smaller than sizeof(int) */
+ 	used = bitmap_weight(cma->bitmap, (int)cma_bitmap_maxno(cma));
+-	mutex_unlock(&cma->lock);
++	spin_unlock_irqrestore(&cma->lock, flags);
+ 	*val = (u64)used << cma->order_per_bit;
+ 
+ 	return 0;
+@@ -52,8 +53,9 @@ static int cma_maxchunk_get(void *data, u64 *val)
+ 	unsigned long maxchunk = 0;
+ 	unsigned long start, end = 0;
+ 	unsigned long bitmap_maxno = cma_bitmap_maxno(cma);
++	unsigned long flags;
+ 
+-	mutex_lock(&cma->lock);
++	spin_lock_irqsave(&cma->lock, flags);
+ 	for (;;) {
+ 		start = find_next_zero_bit(cma->bitmap, bitmap_maxno, end);
+ 		if (start >= bitmap_maxno)
+@@ -61,7 +63,7 @@ static int cma_maxchunk_get(void *data, u64 *val)
+ 		end = find_next_bit(cma->bitmap, bitmap_maxno, start);
+ 		maxchunk = max(end - start, maxchunk);
+ 	}
+-	mutex_unlock(&cma->lock);
++	spin_unlock_irqrestore(&cma->lock, flags);
+ 	*val = (u64)maxchunk << cma->order_per_bit;
+ 
+ 	return 0;
 -- 
 2.30.2
 
