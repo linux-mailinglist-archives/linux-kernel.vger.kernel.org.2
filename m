@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CA334C7B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEDA34CAFA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232861AbhC2ISE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:18:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54656 "EHLO mail.kernel.org"
+        id S235011AbhC2Iln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:41:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232018AbhC2IKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:10:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC7EB61477;
-        Mon, 29 Mar 2021 08:10:45 +0000 (UTC)
+        id S233627AbhC2IXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:23:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72BAB61481;
+        Mon, 29 Mar 2021 08:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005446;
-        bh=HwukG46VcgwTfcvCr9gsEuhLiPDNyfjRG02ZDWkT5ks=;
+        s=korg; t=1617006222;
+        bh=iBauD/YwGNRCek8/X8z7f22gVG1rUIanDYdTEaY0FK4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=APcIuUetn7D55kVAWZQCYBUtCEtkVSsjpLi6oVopfu7CwGlE/6PBb9/PeB5CIH9BM
-         JmAWrVe3YfCe6CHcMvgL4Ato4V84OOQf2ix36kIDbIvMxkvanwtxcaosLBwbCdZS88
-         8gDUi2CmnmmHUhS564RRVbn4IXtYR/omtaX/RK9U=
+        b=vXKE8jxhmSQTd4nPwF+taU8dBEGBNtFJye7qVYJNba7bEKhacVw2jhpEaYwoLDzn8
+         XwI6EZvP1j1vYYXYjg4pAzNlyoYyYa8eg2YMkMVlghL9RAZVHThrsf2fcUiSyhJDEi
+         3jZnb/jELjcKi+GNcdjOzgZg1mpPJ/PgouSXO/gs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 37/72] net: dsa: bcm_sf2: Qualify phydev->dev_flags based on port
+Subject: [PATCH 5.10 162/221] selftests: forwarding: vxlan_bridge_1d: Fix vxlan ecn decapsulate value
 Date:   Mon, 29 Mar 2021 09:58:13 +0200
-Message-Id: <20210329075611.517047716@linuxfoundation.org>
+Message-Id: <20210329075634.555865507@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-[ Upstream commit 47142ed6c34d544ae9f0463e58d482289cbe0d46 ]
+[ Upstream commit 5aa3c334a449bab24519c4967f5ac2b3304c8dcf ]
 
-Similar to commit 92696286f3bb37ba50e4bd8d1beb24afb759a799 ("net:
-bcmgenet: Set phydev->dev_flags only for internal PHYs") we need to
-qualify the phydev->dev_flags based on whether the port is connected to
-an internal or external PHY otherwise we risk having a flags collision
-with a completely different interpretation depending on the driver.
+The ECN bit defines ECT(1) = 1, ECT(0) = 2. So inner 0x02 + outer 0x01
+should be inner ECT(0) + outer ECT(1). Based on the description of
+__INET_ECN_decapsulate, the final decapsulate value should be
+ECT(1). So fix the test expect value to 0x01.
 
-Fixes: aa9aef77c761 ("net: dsa: bcm_sf2: communicate integrated PHY revision to PHY driver")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Before the fix:
+TEST: VXLAN: ECN decap: 01/02->0x02                                 [FAIL]
+        Expected to capture 10 packets, got 0.
+
+After the fix:
+TEST: VXLAN: ECN decap: 01/02->0x01                                 [ OK ]
+
+Fixes: a0b61f3d8ebf ("selftests: forwarding: vxlan_bridge_1d: Add an ECN decap test")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/bcm_sf2.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/bcm_sf2.c b/drivers/net/dsa/bcm_sf2.c
-index e9fe3897bd9c..3deda0321c00 100644
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -482,8 +482,10 @@ static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
- 	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
- 	 * the REG_PHY_REVISION register layout is.
- 	 */
--
--	return priv->hw_params.gphy_rev;
-+	if (priv->int_phy_mask & BIT(port))
-+		return priv->hw_params.gphy_rev;
-+	else
-+		return 0;
- }
- 
- static void bcm_sf2_sw_validate(struct dsa_switch *ds, int port,
+diff --git a/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh b/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
+index ce6bea9675c0..0ccb1dda099a 100755
+--- a/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
++++ b/tools/testing/selftests/net/forwarding/vxlan_bridge_1d.sh
+@@ -658,7 +658,7 @@ test_ecn_decap()
+ 	# In accordance with INET_ECN_decapsulate()
+ 	__test_ecn_decap 00 00 0x00
+ 	__test_ecn_decap 01 01 0x01
+-	__test_ecn_decap 02 01 0x02
++	__test_ecn_decap 02 01 0x01
+ 	__test_ecn_decap 01 03 0x03
+ 	__test_ecn_decap 02 03 0x03
+ 	test_ecn_decap_error
 -- 
 2.30.1
 
