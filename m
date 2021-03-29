@@ -2,118 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B896B34CFBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60FD34CFC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhC2MIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:08:17 -0400
-Received: from outbound-smtp17.blacknight.com ([46.22.139.234]:40837 "EHLO
-        outbound-smtp17.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231340AbhC2MID (ORCPT
+        id S231753AbhC2MIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231731AbhC2MIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:08:03 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp17.blacknight.com (Postfix) with ESMTPS id 46E601C35B5
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 13:08:00 +0100 (IST)
-Received: (qmail 20566 invoked from network); 29 Mar 2021 12:08:00 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 29 Mar 2021 12:08:00 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Linux-MM <linux-mm@kvack.org>
-Cc:     Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 6/6] mm/page_alloc: Reduce duration that IRQs are disabled for VM counters
-Date:   Mon, 29 Mar 2021 13:06:48 +0100
-Message-Id: <20210329120648.19040-7-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210329120648.19040-1-mgorman@techsingularity.net>
-References: <20210329120648.19040-1-mgorman@techsingularity.net>
+        Mon, 29 Mar 2021 08:08:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82BAC061574;
+        Mon, 29 Mar 2021 05:08:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Njn/KvV5Snuv3RW7HAFUHdZEr2iaxCFGr7M1vBWlqyE=; b=HItK73o0bQo72HLTdxmUfNE+Tx
+        5RC7H0/B82q23CUYsvFs3+5H8CYap7vGcfq0YcTFFhKd5km8DdGvhmT4fnKoYz9ZE3vucoJ+2e5Rj
+        mZG4oju+VZl5ri5ckYwXVae1tbFoFCSmsPqAvAJW48MZmiws+JLzDkUENY9Z45KTju7JPqvLLaChv
+        pRyQfWKopxnNivlzrjrXRhnUXf43yDuNsAoPHohWhLRzhmg19LtEKMgjX25v9t2cgNfwDMtidlkw0
+        xR56RxWS6dOWGRZolAj79Ss/uzt26prrNSUD+nrBUUQJq6ffU99UownAzF74gEXF3/xIqrE09E6Qv
+        jeMw0Dxw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lQqfm-001WyJ-TV; Mon, 29 Mar 2021 12:07:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5B5B304B90;
+        Mon, 29 Mar 2021 14:07:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9D5F52071A3CB; Mon, 29 Mar 2021 14:07:09 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 14:07:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     alexander.shishkin@linux.intel.com, acme@kernel.org,
+        mingo@redhat.com, jolsa@redhat.com, mark.rutland@arm.com,
+        namhyung@kernel.org, tglx@linutronix.de, glider@google.com,
+        viro@zeniv.linux.org.uk, arnd@arndb.de, christian@brauner.io,
+        dvyukov@google.com, jannh@google.com, axboe@kernel.dk,
+        mascasa@google.com, pcc@google.com, irogers@google.com,
+        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-kselftest@vger.kernel.org,
+        Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH v3 06/11] perf: Add support for SIGTRAP on perf events
+Message-ID: <YGHC7V3bbCxhRWTK@hirez.programming.kicks-ass.net>
+References: <20210324112503.623833-1-elver@google.com>
+ <20210324112503.623833-7-elver@google.com>
+ <YFxGb+QHEumZB6G8@elver.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YFxGb+QHEumZB6G8@elver.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IRQs are left disabled for the zone and node VM event counters. On some
-architectures this is unnecessary and it confuses what the scope of the
-locking for per-cpu lists and VM counters are.
+On Thu, Mar 25, 2021 at 09:14:39AM +0100, Marco Elver wrote:
+> On Wed, Mar 24, 2021 at 12:24PM +0100, Marco Elver wrote:
+> [...]
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index b6434697c516..1e4c949bf75f 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -6391,6 +6391,17 @@ void perf_event_wakeup(struct perf_event *event)
+> >  	}
+> >  }
+> >  
+> > +static void perf_sigtrap(struct perf_event *event)
+> > +{
+> > +	struct kernel_siginfo info;
+> > +
+> 
+> I think we need to add something like this here:
+> 
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index 4b82788fbaab..4fcd6b45ce66 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -6395,6 +6395,13 @@ static void perf_sigtrap(struct perf_event *event)
+>  {
+>  	struct kernel_siginfo info;
+>  
+> +	/*
+> +	 * This irq_work can race with an exiting task; bail out if sighand has
+> +	 * already been released in release_task().
+> +	 */
+> +	if (!current->sighand)
+> +		return;
+> +
+>  	clear_siginfo(&info);
+>  	info.si_signo = SIGTRAP;
+>  	info.si_code = TRAP_PERF;
+> 
+> 
 
-This patch reduces the scope of IRQs being disabled via local_[lock|unlock]
-and relies on preemption disabling for the per-cpu counters. This
-is not completely free on all architectures as architectures
-without HAVE_CMPXCHG_DOUBLE will disable/enable IRQs again for the
-mod_zone_freepage_state call. However, it clarifies what the per-cpu
-pages lock protects and how zone stats may need IRQs disabled if ever
-called from an IRQ context.
+Urgh.. I'm not entirely sure that check is correct, but I always forget
+the rules with signal. It could be we ought to be testing PF_EXISTING
+instead.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- mm/page_alloc.c | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
+But also, I think Jiri Olsa was going to poke around here because all of
+this is broken on PREEMPT_RT. IIRC the plan was to add yet another stage
+to the construct. So where today we have:
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 32c64839c145..25d9351e75d8 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3461,11 +3461,17 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
- 	list = &pcp->lists[migratetype];
- 	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- 	if (page) {
-+		/*
-+		 * per-cpu counter updates are not preempt-safe but is
-+		 * acceptable to race versus interrupts.
-+		 */
-+		preempt_disable();
- 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
- 		zone_statistics(preferred_zone, zone, 1);
-+		preempt_enable();
- 	}
--	local_unlock_irqrestore(&pagesets.lock, flags);
- 	return page;
- }
- 
-@@ -3517,15 +3523,17 @@ struct page *rmqueue(struct zone *preferred_zone,
- 		if (!page)
- 			page = __rmqueue(zone, order, migratetype, alloc_flags);
- 	} while (page && check_new_pages(page, order));
--	spin_unlock(&zone->lock);
-+	spin_unlock_irqrestore(&zone->lock, flags);
-+
- 	if (!page)
- 		goto failed;
-+
-+	preempt_disable();
- 	__mod_zone_freepage_state(zone, -(1 << order),
- 				  get_pcppage_migratetype(page));
--
- 	__count_zid_vm_events(PGALLOC, page_zonenum(page), 1 << order);
- 	zone_statistics(preferred_zone, zone, 1);
--	local_irq_restore(flags);
-+	preempt_enable();
- 
- out:
- 	/* Separate test+clear to avoid unnecessary atomics */
-@@ -5090,10 +5098,12 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		nr_populated++;
- 	}
- 
-+	local_unlock_irqrestore(&pagesets.lock, flags);
-+
-+	preempt_disable();
- 	__count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
- 	zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
--
--	local_unlock_irqrestore(&pagesets.lock, flags);
-+	preempt_enable();
- 
- 	return nr_populated;
- 
--- 
-2.26.2
+
+	<NMI>
+		irq_work_queue()
+	</NMI>
+	...
+	<IRQ>
+		perf_pending_event()
+	</IRQ>
+
+(and we might already have a problem on some architectures where there
+can be significant time between these due to not having
+arch_irq_work_raise(), so ideally we ought to double check current in
+your case)
+
+The idea was, I think to add a task_work(), such that we get:
+
+	<NMI>
+		irq_work_queue()
+	</NMI>
+	...
+	<IRQ>
+		perf_pending_event()
+		  task_work_add()
+	</IRQ>
+
+	<ret-to-user>
+		run_task_work()
+		  ...
+		    kill_fasync();
+
 
