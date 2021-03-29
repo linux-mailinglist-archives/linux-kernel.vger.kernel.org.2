@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1784634D0EA
+	by mail.lfdr.de (Postfix) with ESMTP id AD97334D0EC
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 15:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhC2NGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 09:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S231571AbhC2NGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 09:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhC2NFw (ORCPT
+        with ESMTP id S231213AbhC2NFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 29 Mar 2021 09:05:52 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A38C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:51 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id ce10so19348168ejb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:51 -0700 (PDT)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39373C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:52 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id b7so19357085ejv.1
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 06:05:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0G6CjvHclW//LpDCf+tDPu2/tIHhMhu0kmCrwXfNY8I=;
-        b=uvg6N/hKfUGIrUfcuso86PEbeHeOTY6ChMcpKOds7eGKdFGqRSen0T35kEm/iuDr2U
-         opCBycm32G+Hta8IGG9y6ov9bR53kZeqsy36EW3Yfo3cUATSWPB82tbUYJh95oFz9Orl
-         CDrwIqGUa7VBDObFF5S/H6xN7eKe1Ck4TAQNfuTWrK7R4Mdan9mz/k/1nRgZWEjZlGZd
-         XQrqADR1GLNEq/YB9IY2d52AmiWgXvgLpljyRwHpSSpCW/2McOs6m7LFTpwggzy7A9Sw
-         PALGUdmLs3a4wTZrVRB9A2r0/usyZEBKY4C4d6AUarxk/5mTnMlnYhisr43e9rHdUYyJ
-         tdDA==
+        bh=TfmWstfgWnCbHg9rnkjek9riYg3fM66wKs6w8SPlE0w=;
+        b=l0flWtEPyaNMs2+bA5mjia5N67GOVC71pNOdwbh0m6r837ccqGc4byP1fFS6NDhCFd
+         Cq9pYFO8yBmY/B0ZR6mvWxfX1RyxM8PXq/tI4SNY55EqZW6cMHBY4Znlk72E6YyRt4k2
+         Q7OCYsDdYk3PoRHFAgwqcmfwaPPqNxkJ1Tv/cd6GeD8kdIIGu28kRJ5GPCsqj4SczEYk
+         kRUMterWcvRx017EYBD/CTAT0ZT86mFFSK1Xb5KBsJPYkZjv7edCLSbUrUbKjKPe6lNc
+         dC/T7AwKhxeJO92VDwgU5huFlheyyZN0g2F4ZxE6TAzJ4rcZAhXP8Y1bYQI5c7fNCc6y
+         OnvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0G6CjvHclW//LpDCf+tDPu2/tIHhMhu0kmCrwXfNY8I=;
-        b=DT99MZiCXM6peoDKJfLqoekUdQHVwYVCE2GH7Icysk3IfUeFSkhfXLc2aQZe04VmAl
-         dz5CDj39iAfu0fLZRHFT2KKonh88JDmstCB2+jI8BCk9G6qiv9O7ukt3f1MftJr6DjaK
-         Nf9smsnkKajzEkaBBXyEQMdTDjK98cc2M6ruf6J+PL+I3+Dc9dOx4gfiwMVFG+Z5sPlT
-         PJkCGk1CerJE8jegudTW06pgOLJ4mmLlJXEET5Qrc/YrO8pTZ52SAroJqaw+tqEF+twe
-         7WF00JGmEnMwYbXiQoiJQjMZI0CwHgZNSqDJtKwREz2+PiBAH5PaNZlf9Kom0N2G5Vvs
-         /qow==
-X-Gm-Message-State: AOAM533eRruq5YWz8vQAGdafYUOI8WKocPXUJomWJBNW5N0thT4ByCRT
-        ZgdQV5bd9MwErhztqktUpzV/bNYKHgYBeg==
-X-Google-Smtp-Source: ABdhPJxZhxpE++gZMx8hQGvdv0HqTsWVnssvmA8d3cLCDPlH2FzMdKwuiffBhQ85S8VZI8SLNh5p4A==
-X-Received: by 2002:a17:906:8593:: with SMTP id v19mr28429539ejx.32.1617023149606;
-        Mon, 29 Mar 2021 06:05:49 -0700 (PDT)
+        bh=TfmWstfgWnCbHg9rnkjek9riYg3fM66wKs6w8SPlE0w=;
+        b=Lci/TdK+qDKCQBfoiVQBEyvKjRBPuYT9ftHVQdLv3A0QC7zIdDC7I3MEc0zz/SWhrB
+         WlxfPQE5eHKVs8K7/hif96bT5HDWOw+Syk9vwOBte882jS/5SS2mc+oyx0e8WT4apLnt
+         lGhLvTIEcDNqu318mi5vs/SjEu409/qS64ZIuhbda4IlCLaP4Eu0nBg98EnIOE5T+HIs
+         NgM83WeR6ZYphKQ+z4nd+7SP+3YR74Tnd6UiXC6oIsINugVLKQ1NzziRz8PjJX/VYqgJ
+         gere5mUO37fwXcydo5QVhuDqLFMNVOBhAPIcF2Hyd03kRLNZ2hr91+aNmc3t6+bFmX+b
+         M+2A==
+X-Gm-Message-State: AOAM530Axv15xRCLtGPrzDJzL2aaIkybarjPhIk3HToTBrJ0Srwa2zXt
+        6YCQ4JL5plvaHCXCGJyueU6NiSc7j2HB3w==
+X-Google-Smtp-Source: ABdhPJxUStgOO/r7L6nhd5/NKdeg5ZUmn7iFVviYZ1BMGBZ8xjWQb4k4F6qnHHBhu8EgZnQp/g7qeQ==
+X-Received: by 2002:a17:906:3b41:: with SMTP id h1mr27493506ejf.506.1617023150510;
+        Mon, 29 Mar 2021 06:05:50 -0700 (PDT)
 Received: from localhost.localdomain ([95.87.199.133])
-        by smtp.gmail.com with ESMTPSA id gt37sm8123905ejc.12.2021.03.29.06.05.48
+        by smtp.gmail.com with ESMTPSA id gt37sm8123905ejc.12.2021.03.29.06.05.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Mar 2021 06:05:49 -0700 (PDT)
+        Mon, 29 Mar 2021 06:05:50 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     rostedt@goodmis.org, tglx@linutronix.de, peterz@infradead.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v2 4/5] tracing: Unify the logic for function tracing options
-Date:   Mon, 29 Mar 2021 16:05:32 +0300
-Message-Id: <20210329130533.199507-5-y.karadz@gmail.com>
+Subject: [PATCH v2 5/5] tracing: Add "func_no_repeats" option for function tracing
+Date:   Mon, 29 Mar 2021 16:05:33 +0300
+Message-Id: <20210329130533.199507-6-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210329130533.199507-1-y.karadz@gmail.com>
 References: <20210329130533.199507-1-y.karadz@gmail.com>
@@ -64,138 +64,240 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the logic for dealing with the options for function tracing
-has two different implementations. One is used when we set the flags
-(in "static int func_set_flag()") and another used when we initialize
-the tracer (in "static int function_trace_init()"). Those two
-implementations are meant to do essentially the same thing and they
-are both not very convenient for adding new options. In this patch
-we add a helper function that provides a single implementation of
-the logic for dealing with the options and we make it such that new
-options can be easily added.
+If the option is activated the function tracing record gets
+consolidated in the cases when a single function is called number
+of times consecutively. Instead of having an identical record for
+each call of the function we will record only the first call
+following by event showing the number of repeats.
 
 Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+
+fix last
 ---
- kernel/trace/trace_functions.c | 66 ++++++++++++++++++++--------------
- 1 file changed, 40 insertions(+), 26 deletions(-)
+ kernel/trace/trace_functions.c | 161 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 158 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index f93723ca66bc..6c912eb0508a 100644
+index 6c912eb0508a..72d2e07dc103 100644
 --- a/kernel/trace/trace_functions.c
 +++ b/kernel/trace/trace_functions.c
-@@ -27,13 +27,17 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
+@@ -27,16 +27,28 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
  static void
  function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
  			  struct ftrace_ops *op, struct ftrace_regs *fregs);
-+static ftrace_func_t select_trace_function(u32 flags_val);
++static void
++function_no_repeats_trace_call(unsigned long ip, unsigned long parent_ip,
++			       struct ftrace_ops *op, struct ftrace_regs *fregs);
++static void
++function_stack_no_repeats_trace_call(unsigned long ip, unsigned long parent_ip,
++				     struct ftrace_ops *op,
++				     struct ftrace_regs *fregs);
+ static ftrace_func_t select_trace_function(u32 flags_val);
  static struct tracer_flags func_flags;
  
  /* Our option */
  enum {
-+	TRACE_FUNC_NO_OPTS	= 0x0, /* No flags set. */
- 	TRACE_FUNC_OPT_STACK	= 0x1,
+-	TRACE_FUNC_NO_OPTS	= 0x0, /* No flags set. */
+-	TRACE_FUNC_OPT_STACK	= 0x1,
++
++	TRACE_FUNC_NO_OPTS		= 0x0, /* No flags set. */
++	TRACE_FUNC_OPT_STACK		= 0x1,
++	TRACE_FUNC_OPT_NO_REPEATS	= 0x2,
++
++	/* Update this to next highest bit. */
++	TRACE_FUNC_OPT_HIGHEST_BIT	= 0x4
  };
  
-+#define TRACE_FUNC_OPT_MASK	(TRACE_FUNC_OPT_STACK)
-+
+-#define TRACE_FUNC_OPT_MASK	(TRACE_FUNC_OPT_STACK)
++#define TRACE_FUNC_OPT_MASK	(TRACE_FUNC_OPT_HIGHEST_BIT - 1)
+ 
  int ftrace_allocate_ftrace_ops(struct trace_array *tr)
  {
- 	struct ftrace_ops *ops;
-@@ -97,12 +101,9 @@ static int function_trace_init(struct trace_array *tr)
- 	if (!tr->ops)
- 		return -ENOMEM;
+@@ -90,6 +102,17 @@ void ftrace_destroy_function_files(struct trace_array *tr)
+ 	ftrace_free_ftrace_ops(tr);
+ }
  
--	/* Currently only the global instance can do stack tracing */
--	if (tr->flags & TRACE_ARRAY_FL_GLOBAL &&
--	    func_flags.val & TRACE_FUNC_OPT_STACK)
--		func = function_stack_trace_call;
--	else
--		func = function_trace_call;
-+	func = select_trace_function(func_flags.val);
-+	if (!func)
-+		return -EINVAL;
++static bool handle_func_repeats(struct trace_array *tr, u32 flags_val)
++{
++	if (!tr->last_func_repeats &&
++	    (flags_val & TRACE_FUNC_OPT_NO_REPEATS)) {
++		if (!tracer_alloc_func_repeats(tr))
++			return false;
++	}
++
++	return true;
++}
++
+ static int function_trace_init(struct trace_array *tr)
+ {
+ 	ftrace_func_t func;
+@@ -105,6 +128,9 @@ static int function_trace_init(struct trace_array *tr)
+ 	if (!func)
+ 		return -EINVAL;
  
++	if (!handle_func_repeats(tr, func_flags.val))
++		return -ENOMEM;
++
  	ftrace_init_array_ops(tr, func);
  
-@@ -205,6 +206,18 @@ function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
+ 	tr->array_buffer.cpu = raw_smp_processor_id();
+@@ -206,6 +232,127 @@ function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
  	local_irq_restore(flags);
  }
  
-+static ftrace_func_t select_trace_function(u32 flags_val)
++static inline bool is_repeat_check(struct trace_array *tr,
++				   struct trace_func_repeats *last_info,
++				   unsigned long ip, unsigned long parent_ip)
 +{
-+	switch (flags_val & TRACE_FUNC_OPT_MASK) {
-+	case TRACE_FUNC_NO_OPTS:
-+		return function_trace_call;
-+	case TRACE_FUNC_OPT_STACK:
-+		return function_stack_trace_call;
-+	default:
-+		return NULL;
++	if (last_info->ip == ip &&
++	    last_info->parent_ip == parent_ip &&
++	    last_info->count < U16_MAX) {
++		last_info->ts_last_call =
++			ring_buffer_time_stamp(tr->array_buffer.buffer);
++		last_info->count++;
++		return true;
 +	}
++
++	return false;
 +}
 +
- static struct tracer_opt func_opts[] = {
++static inline void process_repeats(struct trace_array *tr,
++				   unsigned long ip, unsigned long parent_ip,
++				   struct trace_func_repeats *last_info,
++				   unsigned int trace_ctx)
++{
++	if (last_info->count) {
++		trace_last_func_repeats(tr, last_info, trace_ctx);
++		last_info->count = 0;
++	}
++
++	last_info->ip = ip;
++	last_info->parent_ip = parent_ip;
++}
++
++static void
++function_no_repeats_trace_call(unsigned long ip, unsigned long parent_ip,
++			       struct ftrace_ops *op,
++			       struct ftrace_regs *fregs)
++{
++	struct trace_func_repeats *last_info;
++	struct trace_array *tr = op->private;
++	struct trace_array_cpu *data;
++	unsigned int trace_ctx;
++	unsigned long flags;
++	int bit;
++	int cpu;
++
++	if (unlikely(!tr->function_enabled))
++		return;
++
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
++	if (bit < 0)
++		return;
++
++	preempt_disable_notrace();
++
++	cpu = smp_processor_id();
++	data = per_cpu_ptr(tr->array_buffer.data, cpu);
++	if (atomic_read(&data->disabled))
++		goto out;
++
++	/*
++	 * An interrupt may happen at any place here. But as far as I can see,
++	 * the only damage that this can cause is to mess up the repetition
++	 * counter without valuable data being lost.
++	 * TODO: think about a solution that is better than just hoping to be
++	 * lucky.
++	 */
++	last_info = per_cpu_ptr(tr->last_func_repeats, cpu);
++	if (is_repeat_check(tr, last_info, ip, parent_ip))
++		goto out;
++
++	local_save_flags(flags);
++	trace_ctx = tracing_gen_ctx_flags(flags);
++	process_repeats(tr, ip, parent_ip, last_info, trace_ctx);
++
++	trace_function(tr, ip, parent_ip, trace_ctx);
++
++out:
++	ftrace_test_recursion_unlock(bit);
++	preempt_enable_notrace();
++}
++
++static void
++function_stack_no_repeats_trace_call(unsigned long ip, unsigned long parent_ip,
++				     struct ftrace_ops *op,
++				     struct ftrace_regs *fregs)
++{
++	struct trace_func_repeats *last_info;
++	struct trace_array *tr = op->private;
++	struct trace_array_cpu *data;
++	unsigned long flags;
++	long disabled;
++	int cpu;
++	unsigned int trace_ctx;
++
++	if (unlikely(!tr->function_enabled))
++		return;
++
++	/*
++	 * Need to use raw, since this must be called before the
++	 * recursive protection is performed.
++	 */
++	local_irq_save(flags);
++	cpu = raw_smp_processor_id();
++	data = per_cpu_ptr(tr->array_buffer.data, cpu);
++	disabled = atomic_inc_return(&data->disabled);
++
++	if (likely(disabled == 1)) {
++		last_info = per_cpu_ptr(tr->last_func_repeats, cpu);
++		if (is_repeat_check(tr, last_info, ip, parent_ip))
++			goto out;
++
++		trace_ctx = tracing_gen_ctx_flags(flags);
++		process_repeats(tr, ip, parent_ip, last_info, trace_ctx);
++
++		trace_function(tr, ip, parent_ip, trace_ctx);
++		__trace_stack(tr, trace_ctx, STACK_SKIP);
++	}
++
++ out:
++	atomic_dec(&data->disabled);
++	local_irq_restore(flags);
++}
++
+ static ftrace_func_t select_trace_function(u32 flags_val)
+ {
+ 	switch (flags_val & TRACE_FUNC_OPT_MASK) {
+@@ -213,6 +360,10 @@ static ftrace_func_t select_trace_function(u32 flags_val)
+ 		return function_trace_call;
+ 	case TRACE_FUNC_OPT_STACK:
+ 		return function_stack_trace_call;
++	case TRACE_FUNC_OPT_NO_REPEATS:
++		return function_no_repeats_trace_call;
++	case TRACE_FUNC_OPT_STACK | TRACE_FUNC_OPT_NO_REPEATS:
++		return function_stack_no_repeats_trace_call;
+ 	default:
+ 		return NULL;
+ 	}
+@@ -222,6 +373,7 @@ static struct tracer_opt func_opts[] = {
  #ifdef CONFIG_STACKTRACE
  	{ TRACER_OPT(func_stack_trace, TRACE_FUNC_OPT_STACK) },
-@@ -213,7 +226,7 @@ static struct tracer_opt func_opts[] = {
+ #endif
++	{ TRACER_OPT(func-no-repeats, TRACE_FUNC_OPT_NO_REPEATS) },
+ 	{ } /* Always set a last empty entry */
  };
  
- static struct tracer_flags func_flags = {
--	.val = 0, /* By default: all flags disabled */
-+	.val = TRACE_FUNC_NO_OPTS, /* By default: all flags disabled */
- 	.opts = func_opts
- };
+@@ -270,6 +422,9 @@ func_set_flag(struct trace_array *tr, u32 old_flags, u32 bit, int set)
+ 	if (tr->ops->func == func)
+ 		return 0;
  
-@@ -235,30 +248,31 @@ static struct tracer function_trace;
- static int
- func_set_flag(struct trace_array *tr, u32 old_flags, u32 bit, int set)
- {
--	switch (bit) {
--	case TRACE_FUNC_OPT_STACK:
--		/* do nothing if already set */
--		if (!!set == !!(func_flags.val & TRACE_FUNC_OPT_STACK))
--			break;
-+	ftrace_func_t func;
-+	u32 new_flags_val;
- 
--		/* We can change this flag when not running. */
--		if (tr->current_trace != &function_trace)
--			break;
-+	/* Do nothing if already set. */
-+	if (!!set == !!(func_flags.val & bit))
-+		return 0;
- 
--		unregister_ftrace_function(tr->ops);
-+	/* We can change this flag only when not running. */
-+	if (tr->current_trace != &function_trace)
-+		return 0;
- 
--		if (set) {
--			tr->ops->func = function_stack_trace_call;
--			register_ftrace_function(tr->ops);
--		} else {
--			tr->ops->func = function_trace_call;
--			register_ftrace_function(tr->ops);
--		}
-+	new_flags_val = (func_flags.val & ~(1UL << (bit - 1)));
-+	new_flags_val |= (set << (bit - 1));
- 
--		break;
--	default:
-+	func = select_trace_function(new_flags_val);
-+	if (!func)
- 		return -EINVAL;
--	}
++	if (!handle_func_repeats(tr, new_flags_val))
++		return -ENOMEM;
 +
-+	/* Check if there's anything to change. */
-+	if (tr->ops->func == func)
-+		return 0;
-+
-+	unregister_ftrace_function(tr->ops);
-+	tr->ops->func = func;
-+	register_ftrace_function(tr->ops);
- 
- 	return 0;
- }
+ 	unregister_ftrace_function(tr->ops);
+ 	tr->ops->func = func;
+ 	register_ftrace_function(tr->ops);
 -- 
 2.25.1
 
