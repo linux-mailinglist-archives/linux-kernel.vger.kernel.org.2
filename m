@@ -2,164 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF4134D966
+	by mail.lfdr.de (Postfix) with ESMTP id 63FEF34D965
 	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhC2VD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 17:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhC2VDu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 17:03:50 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75426C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 14:03:49 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id dm8so15763103edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 14:03:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sOIzusR3RaOLn+apOKVFE+YN8K3J+XLAoyC9RgaKsaY=;
-        b=wHX/D/4qmRBY2ifT9YnjFc9D7tN8KEaMl2+eyX3rIxT86n7vk7t2sQR5LLHTyo5/07
-         94v7OZLk8gyLph2GlQ71QVyQQaa6+IETn45wTwKIa7v7i/3D5AxJ5G/DZTChpX3WJhmg
-         ymMWqVLDSpoN93fR/6u9v87JwEcVYefGMHTGgt+G/ncW++b+scuvGOD7jfCGZejALN4j
-         aVF5J0Nl2hjV1pjxcnW6dRa5VgYNCYvTc1v+AUZm7MqpE3q8e1vCx+XJ5Jt5uJxFKh0M
-         oJAckCglXV26N3osTyMU/oBIB6GndSMEE9ELm8H3yoSOi/qu06mmsQhzwNuNtZ4HNMZp
-         C4xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sOIzusR3RaOLn+apOKVFE+YN8K3J+XLAoyC9RgaKsaY=;
-        b=tPA2zFyp1gZ4IrUTpbR0gx+eX1SVvIYnXNflf6liTmThW7HieOoIohIfHY5fFWOTtA
-         AOobtCrvMCLLYWaCUFPnPQpHIRX6FHx8MofFLJmZdBZcXxBfHpMxtmf6dG9vaX408ey1
-         modCwiGZCY2YNbahTzCt84ez3Bb4D4dLs4j1lHClGsxxhwFji4e57F5y4StrVvmBLQdX
-         Ec4fyYaMmSIYljYWUiLLwxOO+FKIAj1X7dHXBl5Klg57p/LOw9p5TeyKvTPESnQexL2m
-         K1lVR8PXHOy+VmLvGPkgSL+NzpPIJckj9wM6BHnjqIOCs86mmPVYakG2vyRQuVmXtSg1
-         2lQg==
-X-Gm-Message-State: AOAM532gk+5p/9UUFc3N5R6YfeAI1UlnUt/h9rj8C3FNrwce+8/mr0ud
-        g8yDDMe9/k4DcNfMRAtqwxWgjstOy8ex7TROpDeh/w==
-X-Google-Smtp-Source: ABdhPJztl5Gocmnp+xygLzAn7o5w+wwI50xM03oEph5E03jvUNnSbrxq2vl+RtRfQ+Vol2cC7fYoJRlXEyXkmq0U1Sc=
-X-Received: by 2002:a05:6402:11c9:: with SMTP id j9mr30390835edw.348.1617051828094;
- Mon, 29 Mar 2021 14:03:48 -0700 (PDT)
+        id S231260AbhC2VDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 17:03:55 -0400
+Received: from mga06.intel.com ([134.134.136.31]:48312 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229555AbhC2VDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 17:03:42 -0400
+IronPort-SDR: gD/H4/T46Y1fbY+dg76Jv1OfyjmkZOoLL5WNAx9x7CtW77yXQ8KgFWEXxUVVDW/D9kuCm4JI3u
+ wFFsfnpG+rRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9938"; a="252970997"
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="252970997"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 14:03:42 -0700
+IronPort-SDR: lzTsoGTpeGUNutDxGIcoQyA2JBxCXayDDEM4oMNIBef2LKg/nMeuOImLRswPvXJXSnTW2FnP1v
+ JsYRselswgBg==
+X-IronPort-AV: E=Sophos;i="5.81,288,1610438400"; 
+   d="scan'208";a="411273851"
+Received: from jmwolcot-mobl.amr.corp.intel.com (HELO [10.209.158.84]) ([10.209.158.84])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 14:03:41 -0700
+Subject: Re: I915 CI-run with kfence enabled, issues found
+To:     Marco Elver <elver@google.com>
+Cc:     "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <d60bba0e6f354cbdbd0ae16314edeb9a@intel.com>
+ <66f453a79f2541d4b05bcd933204f1c9@intel.com>
+ <YGIDBAboELGgMgXy@elver.google.com>
+ <796ff05e-c137-cbd4-252b-7b114abaced9@intel.com>
+ <CANpmjNP4Jjo2W2K_2nVv3UmOGB8c5k9Z0iOFRFD9bQpeWr+8mA@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ef4956a3-c14b-f56a-3527-23fcecf7e1a3@intel.com>
+Date:   Mon, 29 Mar 2021 14:03:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <161661970558.1721612.10441826898835759137.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161661971651.1721612.7457823773061754064.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210325171126.GD2356281@nvidia.com>
-In-Reply-To: <20210325171126.GD2356281@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 29 Mar 2021 14:03:37 -0700
-Message-ID: <CAPcyv4hMHAK4=eGuvP5Bg_2YfQCLt5cd5ku0tUUNY3VCxkKmaQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] cxl/mem: Fix cdev_device_add() error handling
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-cxl@vger.kernel.org, "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CANpmjNP4Jjo2W2K_2nVv3UmOGB8c5k9Z0iOFRFD9bQpeWr+8mA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 10:12 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Wed, Mar 24, 2021 at 02:01:56PM -0700, Dan Williams wrote:
-> > If cdev_device_add() fails then the allocation performed by
-> > dev_set_name() is leaked. Use put_device(), not open coded release, for
-> > device_add() failures.
-> >
-> > The comment is obsolete because direct err_id failures need not worry
-> > about the device being live.
-> >
-> > The release method expects the percpu_ref is already dead, so
-> > percpu_ref_kill() is needed before put_device(). However, given that the
-> > cdev was partially live wait_for_completion() also belongs in the
-> > release method.
-> >
-> > Fixes: b39cb1052a5c ("cxl/mem: Register CXL memX devices")
-> > Reported-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> >  drivers/cxl/mem.c |   16 ++++++----------
-> >  1 file changed, 6 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index 30bf4f0f3c17..e53d573ae4ab 100644
-> > +++ b/drivers/cxl/mem.c
-> > @@ -1049,6 +1049,7 @@ static void cxl_memdev_release(struct device *dev)
-> >  {
-> >       struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> >
-> > +     wait_for_completion(&cxlmd->ops_dead);
->
-> This only works because the fops stuff is not right, a kref shouldn't
-> have a completion like this.
->
-> Also, don't use devm for unregister. That just makes it extra-hard to
-> write the driver remove function correctly.
+On 3/29/21 10:45 AM, Marco Elver wrote:
+> On Mon, 29 Mar 2021 at 19:32, Dave Hansen <dave.hansen@intel.com> wrote:
+> Doing it to all CPUs is too expensive, and we can tolerate this being
+> approximate (nothing bad will happen, KFENCE might just miss a bug and
+> that's ok).
+...
+>> BTW, the preempt checks in flush_tlb_one_kernel() are dependent on KPTI
+>> being enabled.  That's probably why you don't see this everywhere.  We
+>> should probably have unconditional preempt checks in there.
+> 
+> In which case I'll add a preempt_disable/enable() pair to
+> kfence_protect_page() in arch/x86/include/asm/kfence.h.
 
-To date there is no driver remove function, however if that changes
-then I expect all the devm needs to go.
+That sounds sane to me.  I'd just plead that the special situation (not
+needing deterministic TLB flushes) is obvious.  We don't want any folks
+copying this code.
 
->
-> > @@ -1157,7 +1158,6 @@ static void cxlmdev_unregister(void *_cxlmd)
-> >
-> >       percpu_ref_kill(&cxlmd->ops_active);
-> >       cdev_device_del(&cxlmd->cdev, dev);
-> > -     wait_for_completion(&cxlmd->ops_dead);
-> >       cxlmd->cxlm = NULL;
-> >       put_device(dev);
-> >  }
-> > @@ -1210,20 +1210,16 @@ static int cxl_mem_add_memdev(struct cxl_mem *cxlm)
-> >       cdev_init(cdev, &cxl_memdev_fops);
-> >
-> >       rc = cdev_device_add(cdev, dev);
-> > -     if (rc)
-> > -             goto err_add;
-> > +     if (rc) {
-> > +             percpu_ref_kill(&cxlmd->ops_active);
-> > +             put_device(dev);
->
-> This must be one high performance ioctl to warrant the percpu ref.. If
-> it is not high performance use a rwsem, otherwise I'd suggest srcu as
-> a faster/simpler alternative.
-
-The plan is to refactor and share the same reference counted fops
-mechanism as debugfs and make that common infrastructure. However, in
-the meantime I think global srcu is suitable.
-
->
-> This is a use-after-free:
->
-> static long cxl_memdev_ioctl(struct file *file, unsigned int cmd,
->                              unsigned long arg)
-> {
->         struct cxl_memdev *cxlmd;
->         struct inode *inode;
->         int rc = -ENOTTY;
->
->         inode = file_inode(file);
->         cxlmd = container_of(inode->i_cdev, typeof(*cxlmd), cdev);
->        ^^^^^ can be freed memory
->
-> ioctl needs to store the cxlmd in file->private_data and
-> open()/release() need to do get/put device on it so the memory stays
-> around. This is why open gets the inode as an argument and ioctl/etc
-> does not.
-
-Ugh, exactly why I was motivated to attempt to preclude this with new
-core infrastructure that attempted to fix this centrally [1]. Remove
-the  possibility of "others" getting this wrong. However after my
-initial idea bounced off Greg then I ended up shipping this bug in the
-local rewrite. I think the debugfs api gets this right in terms of
-centralizing the reference count management, and I want to see
-something similar for common driver ioctl patterns.
-
-[1]: http://lore.kernel.org/r/CAPcyv4hGxLZGEkfnqdLfF-a1CzfEjLux-TBxXztbknFhEe9mYA@mail.gmail.com
-
->
-> The ordering cxlmdev_unregister should mirror the ordering in create
-> so cdev_device_del should be first
-
-Sure.
+BTW, I know you want to avoid the cost of IPIs, but have you considered
+any other low-cost ways to get quicker TLB flushes?  For instance, you
+could loop over all CPUs and set cpu_tlbstate.invalidate_other=1.  That
+would induce a context switch at the next context switch without needing
+an IPI.
