@@ -2,363 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA4734C112
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D5734C117
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 03:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhC2BYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 28 Mar 2021 21:24:10 -0400
-Received: from sonic313-21.consmr.mail.gq1.yahoo.com ([98.137.65.84]:38981
-        "EHLO sonic313-21.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230512AbhC2BXd (ORCPT
+        id S229630AbhC2B0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 28 Mar 2021 21:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230413AbhC2B0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 28 Mar 2021 21:23:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1616981013; bh=+QGIxuTVDaE4kP9FGvt0H0qV4YwkRrrFaOWKTa/Wmns=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=T2D9zkZT45Ej15VtVBzrMvKnDWnImT9rIIq9TWrUsI4n2jvhK0kY/KFBRC3wjwBXw4ReiDZGoNhzAchoRrHDoElRh6qOt7LnG7OrBYfnZ50TFhiAs5qbDlFEEhxDLHo44APTNotYopryQKL6tMR8zko8X3t5SlonAjoO0mHscNUagWtj1imKgSGgp40bhH0Ps5XNDkQaLsQHVMxdqSgO1DCBqKVq5cpwnOKc+lbuwI0oVfFomwDXVnozhArbxm961JicboZvmd2SYp/F9+sQG8uklbGvUscS1+fF/NXyTJhFbGuSg3FgxUPhZ50fN/oa9XHcVwsKXbcboYOq19uqlA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1616981013; bh=ksldMW+XtLRpIQGaYvS95k/fgDuK+rLBKC4x0MAaMDb=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=ajLVbtCZKeB4uMM2izM8c7ny7YHoRfRdLZjZuQZ0Ganop3oOWpWmm0HT/8d8WjvQwdQBxcZcjgvfz3JDaG/TMPYcQ4gEep9bD3QPoA0GpfDZv+bhoKQ4oDSXP0+vthfOSYqZvTbyndO3rcQcM3xlRplRxg3o+PU7Kik2JkH/DnuF+JjZYz5oWTVQhxM0EX85BP+2bJ/qiC0u3DO11relCQtvisDR1GcqJxDxzYE46ZxR93lYDFWnr7yBsjaa0yrOWih/olrZ5o4Nbacn78GBYKpzmgnkZ6mYgd9mzkrs3Vqqd5UViRfyJ0Eu71VKLwAXpXheVJinmQ0rtv4+yERxwg==
-X-YMail-OSG: QJqzrjEVM1l6PHQmj5RKlyIiS.VFOjpiixO1eNbwjTxLVuDrGwbB9eVGLhJZDvj
- 1sOOULzPo83amkcSsdM1HKD4GoEbTlpBibXFbtTTjzsO4dIXjaoBwgrITN5PDRX3b4NpOiueOQ38
- jp0CLd5O3JB4tdsT3PgT9UOO9yn52HsYr0Nw0GTmTXsUWpdZJFfY0V2rJUJdz.APyOk2tjD1e8fn
- WU79jH9ztkaS0Oa.jWZw3WyrCiR9fHH5tQMtKdXe8KwXejBQu5ABa1l_cZkWlop90qI24EIQkmrI
- QFCuKV0QFv6TIpKK_sJ89mNEk6O0IqNEezUYj5Yspr.gvlMFJTk05JcQS1BCQrfa7q6I7GKKk1Vn
- WJu4m0jSYROHfIv.BXClSAWcuKyaEybQ_WIVirYiLA41MuNV6QX2kB6PldWQEp6rp.vC.7RJIIOo
- 745EKfy0zGT8EGcFxpoQ87JcJbtIPt5_FCcQ0Phe5ut1vswfDDrFgmxaKDZJIRk5c8HHfB5mMu9.
- oFNQB64xHlwEEAD4p6VnjpvKQikWPxenoQrw76slwYEqm0ZZeKDtReAoau9yvueqFrs6frc7wOcz
- ZgSGtJlcKby6Uzql2j05l4G.2RQd47.CBevQPM9FYBbKkzU3lK4R95PROp7tTSlHR9zo0lq8mkEf
- pmWbPAw1loLvlqJJnpIeGLHAELnACe.tFtQHupSkeqRmNVr8lEmHrHRfu8UfxfTzKZ09s9HsJQFO
- Z0so43tLX4CZ2hibUkEEPHuamZaGmnsHsBPF9axxHr6t9qQkNDSzz7V7o80c49ejK3mfjWEv4Dgd
- ScWJNiQ4jHem4oVJSGnZIrYR880_W_EZSnbJsTCJhTQBmTMRiXWuZdxd6GekwBz83dKmCI7mwtFB
- uySHZImENt399dXZNpsrVnd.caAFy4R6MZ.C18701jkZ4GY0rVkKavsKjuN_D4DlF36S5Mbo5YNC
- ag8HZp1b9VfunhXsMv21FnPo_pH3u3qV2heenSUwoDRqe_0c.bizu.TOvCIrNk8BMmTaKPEYu9v4
- RidKuThfUDfARbKHlHq1rMTerNKz_0zP3LtEAuUWqhrVTb_87ozwz5ILVKSrom30yWsqmO.YNIZn
- PC2FNFoLOB7K.x35cv6pmwECVXlvX3SEC9khiqc0IvNrgYF5Uos4tx6dAEZ3gTPH0FW3bRPC7DbY
- nouCCw0i.V.i8ab8A2pzRq652kSQVaqDDY0OS6rggMm_Bk6L8A.xHCuUmH2XCychOyBmoNb4xeYY
- KRsIR0nbWSouQMDa2J3hURTj34pxgfa2qLdopBiuEGLXIeJTCbqo6cPMl3q8ajaNhHrO1stdvFaW
- YMyzxOvlxPX_76G1k858EEVyoB13sH2EbveURJFH9eVvBI5ne.Qpyd9ZJtK4p9T11fl1x4OsI8wm
- I2s0xl4JzyMHQYQ58RjebjWKzFa5xfNRN4LoEJhIaPvJnMAD4Wet4A81KDiltZo83hRUnJTE5IP0
- je5cTygrpcKC10Xcw7GxRXIwUg5q54oKVoLohZCDTG9drL9jsjlgTCc93zeUurO.eCQqoiT1AXDk
- VAKWNon37bGNdBBe5UG6jk3UZoMTYQ_UglSkj3u6jFAw1LIwi3fUFabcD0wVl.dJMkil_emwhZUm
- KZmnLSveQESu9HdKiIkEfPcNk_.VXd1iFcdsCufVtXp_hG7thde4EgsRbx73iIXI88_dvKukuGWd
- TGSgoLkGcfY56ljer_t_G8kkJlPDws5DmnpQBQzuRkeaTkVQtaaj3kV0iZwT2xgpzCda6w1QP2Uj
- u.pzAKYWXVwQq4rkGc0e4TuJi21eG6C7o49sp5UwhWDVTa8T6IRkIm8YB5fUe8B_wLkCFYeZjMCW
- 3lwKk3VJXh4ut6wlxdf.u47hZnXV_FkOluBYNJH32NwmCpjrm4Lj8hWeQfuCNNWVEWtuo8rbsGlb
- QNPFDxL16deyGCia2ys4_m4.i2KIkz3Jbm2d1D8XFSt89gnX43v8Jxe907Rf92ObSx5o1MzMJvvR
- BNTzYWT4roMwkegDUMqHP_ytrLJ98riHFftE2TXQki1MEz2VFHUG0nnQOJmZOqBAt.zxejWLi91Z
- ToCMZba92cBsa6nAI7jKAlHbcVMIQOtGBXy.IP_X6ACbRAJs8UMmDzR1vyODZo0IpgIGn4dFJl6u
- DQWjtts88_RzCaF8Hy6eQvpQt5.lhvn8tl03upqN6ahYqCaJD71.D8AMeLFsUXVprpCu94NUEb2I
- 8ZKmGTuDVJqqC6gKqUUK84v2L8O2RfpjvozqktOANViw6JXbhTaLSrvDCMbj667PVnzA4.GvA9dH
- V8tr0d6lEPpqR6TlbUfugxP_rgZVh8Bu1MKoY3AIaTjc1HJgTBpxwovnWnVP1SF0gIkp9fDz04Rr
- 4sjMze6XuBNcQ2t92w_74ob.J9CjBFpMu6FIb8isB.exL9mP5OWRIha4BP3WpvMBNurd8OHTeshR
- sZPFJH0t6jPG_cl1zMn2ZiKqRb.9BsLXLcsOZPFvdAUE8MZSDkU6XPOdTPI0CjG_.yA9D6g33UYc
- 4hZDt25rKhqqohcIOwCGhY5B7ndLmJwPV20Ke.z1e.Omn8LXgLHnvt6RvzQ5oHTJqbjKb0no5V4q
- aeDD0GbSAHwtDvJJzT1M2hlkzlQcaRKwUfaoEB0Wln3Ct
-X-Sonic-MF: <hsiangkao@aol.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.gq1.yahoo.com with HTTP; Mon, 29 Mar 2021 01:23:33 +0000
-Received: by kubenode575.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 3d9d64f8790c67205a0f6cb47abdabe6;
-          Mon, 29 Mar 2021 01:23:29 +0000 (UTC)
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>,
-        Chao Yu <chao@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH v2 4/4] erofs: add on-disk compression configurations
-Date:   Mon, 29 Mar 2021 09:23:08 +0800
-Message-Id: <20210329012308.28743-5-hsiangkao@aol.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210329012308.28743-1-hsiangkao@aol.com>
-References: <20210329012308.28743-1-hsiangkao@aol.com>
+        Sun, 28 Mar 2021 21:26:06 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135FFC061574;
+        Sun, 28 Mar 2021 18:26:06 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id kr3-20020a17090b4903b02900c096fc01deso5145987pjb.4;
+        Sun, 28 Mar 2021 18:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=D2qDTN7silotp2//OnN3/0i2DnrKYAYRXZS1eDoRb7Q=;
+        b=XobvU2uNpiHXgiqr20IGZVGwVnLsirMFL+2eoeCGHVygqUKiA8jdIzKWn8ZjGiJOnH
+         SkwzmKUiFguztt2b8nX3+//w8eSgQD6MAFC56xs+zHws0Xt/iscQfl7BxIsVS7049qYW
+         98SDzALrFGk1dHUS2Uz5AQul1daKjZl1S0WK/i7UsLJ5M9qugVCPisgizndFt82/lzX4
+         Ty1aBWMIVw2Gqgr3OGCpjvFKCwomm5zLlZk4HKz0q9NafFDh5onokMsXhoaaQd4JEKvz
+         maC/l8QAEN4VrJvAfc6dn12zdwro4ql332/Twzg0PlcgHw+bSH75eG8CWb8r1d045TZi
+         IeTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=D2qDTN7silotp2//OnN3/0i2DnrKYAYRXZS1eDoRb7Q=;
+        b=pymkGGTlnBfG+ma+/Rnb90PdOP1ROiQxl12KvBPTjovTrsh8JnzKU0aVjCeAkd+OcD
+         S9+2APGdNaIWSdnpUwj0lyaa+U1tZFvqLmNBhyUcH1Zj5n8cdyWAU6llpES28O1YSDzW
+         ASP9YMXNxZ6vMJRBZZY0jzdwOaauOOnP6FtM5bgIE5MhsusoElunu/gAAWlUpexN0wE+
+         w+C71N4mQYn4vtf47XdD1O+dxoKoXGUaZbMfOiFQXSMBkz1dYJZDXlDARuQciZZo/hCw
+         C/J9qQh6Z4BC5fuiUpfXraQPfsaKc9mfvhTVdaBgDob2Dqfww8Vpd0A7T9iF6z83aRrQ
+         j5fQ==
+X-Gm-Message-State: AOAM531wYJOUWkby9uivKCQjwZb/RiAsHw4nSvtaJ02E92uVW6zaHNdV
+        G2fYpuM+X2b5EdCXJfuit3s=
+X-Google-Smtp-Source: ABdhPJxjxzFXOqkBT6dy5DhXM8Uzx3EwHv1iP1Tibnt6sgZd+CfXJJggAP+Ef0IC0A65OPpzuSG5DQ==
+X-Received: by 2002:a17:90a:cb8c:: with SMTP id a12mr24654662pju.35.1616981165633;
+        Sun, 28 Mar 2021 18:26:05 -0700 (PDT)
+Received: from ast-mbp ([2620:10d:c090:400::5:1b8f])
+        by smtp.gmail.com with ESMTPSA id w79sm15674455pfc.87.2021.03.28.18.26.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Mar 2021 18:26:05 -0700 (PDT)
+Date:   Sun, 28 Mar 2021 18:26:02 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+        brouer@redhat.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 5/5] libbpf: add selftests for TC-BPF API
+Message-ID: <20210329012602.4zzysn2ewbarbn3d@ast-mbp>
+References: <20210325120020.236504-1-memxor@gmail.com>
+ <20210325120020.236504-6-memxor@gmail.com>
+ <20210327021534.pjfjctcdczj7facs@ast-mbp>
+ <87h7kwaao3.fsf@toke.dk>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <87h7kwaao3.fsf@toke.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+On Sat, Mar 27, 2021 at 04:17:16PM +0100, Toke Høiland-Jørgensen wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> 
+> > On Thu, Mar 25, 2021 at 05:30:03PM +0530, Kumar Kartikeya Dwivedi wrote:
+> >> This adds some basic tests for the low level bpf_tc_* API and its
+> >> bpf_program__attach_tc_* wrapper on top.
+> >
+> > *_block() apis from patch 3 and 4 are not covered by this selftest.
+> > Why were they added ? And how were they tested?
+> >
+> > Pls trim your cc. bpf@vger and netdev@vger would have been enough.
+> >
+> > My main concern with this set is that it adds netlink apis to libbpf while
+> > we already agreed to split xdp manipulation pieces out of libbpf.
+> > It would be odd to add tc apis now only to split them later.
+> 
+> We're not removing the ability to attach an XDP program via netlink from
+> libxdp, though. This is the equivalent for TC: the minimum support to
+> attach a program, and if you want to do more, you pull in another
+> library or roll your own.
+> 
+> I'm fine with cutting out more stuff and making this even more minimal
+> (e.g., remove the block stuff and only support attach/detach on ifaces),
+> but we figured we'd err on the side of including too much and getting
+> some feedback from others on which bits are the essential ones to keep,
+> and which can be dropped.
 
-Add a bitmap for available compression algorithms and a variable-sized
-on-disk table for compression options in preparation for upcoming big
-pcluster and LZMA algorithm, which follows the end of super block.
+This is up to you. I'm trying to understand the motivation for *_block() apis.
+I'm not taking a stance for/against them.
 
-To parse the compression options, the bitmap is scanned one by one.
-For each available algorithm, there is data followed by 2-byte `length'
-correspondingly (it's enough for most cases, or entire fs blocks should
-be used.)
+> > I think it's better to start with new library for tc/xdp and have
+> > libbpf as a dependency on that new lib.
+> > For example we can add it as subdir in tools/lib/bpf/.
+> 
+> I agree for the higher-level stuff (though I'm not sure what that would
+> be for TC), but right now TC programs are the only ones that cannot be
+> attached by libbpf, which is annoying; that's what we're trying to fix.
 
-With such available algorithm bitmap, kernel itself can also refuse to
-mount such filesystem if any unsupported compression algorithm exists.
-
-Note that COMPR_CFGS feature will be enabled with BIG_PCLUSTER.
-
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
- fs/erofs/decompressor.c |   2 +-
- fs/erofs/erofs_fs.h     |  14 ++--
- fs/erofs/internal.h     |   5 +-
- fs/erofs/super.c        | 143 +++++++++++++++++++++++++++++++++++++++-
- 4 files changed, 157 insertions(+), 7 deletions(-)
-
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 97538ff24a19..27aa6a99b371 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -41,7 +41,7 @@ int z_erofs_load_lz4_config(struct super_block *sb,
- 		}
- 		distance = le16_to_cpu(lz4->max_distance);
- 	} else {
--		distance = le16_to_cpu(dsb->lz4_max_distance);
-+		distance = le16_to_cpu(dsb->u1.lz4_max_distance);
- 	}
- 
- 	EROFS_SB(sb)->lz4.max_distance_pages = distance ?
-diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
-index e0f3c0db1f82..5a126493d4d9 100644
---- a/fs/erofs/erofs_fs.h
-+++ b/fs/erofs/erofs_fs.h
-@@ -18,15 +18,16 @@
-  * be incompatible with this kernel version.
-  */
- #define EROFS_FEATURE_INCOMPAT_LZ4_0PADDING	0x00000001
-+#define EROFS_FEATURE_INCOMPAT_COMPR_CFGS	0x00000002
- #define EROFS_ALL_FEATURE_INCOMPAT		EROFS_FEATURE_INCOMPAT_LZ4_0PADDING
- 
--/* 128-byte erofs on-disk super block */
-+/* erofs on-disk super block (currently 128 bytes) */
- struct erofs_super_block {
- 	__le32 magic;           /* file system magic number */
- 	__le32 checksum;        /* crc32c(super_block) */
- 	__le32 feature_compat;
- 	__u8 blkszbits;         /* support block_size == PAGE_SIZE only */
--	__u8 reserved;
-+	__u8 sb_extslots;	/* superblock size = 128 + sb_extslots * 16 */
- 
- 	__le16 root_nid;	/* nid of root directory */
- 	__le64 inos;            /* total valid ino # (== f_files - f_favail) */
-@@ -39,8 +40,12 @@ struct erofs_super_block {
- 	__u8 uuid[16];          /* 128-bit uuid for volume */
- 	__u8 volume_name[16];   /* volume name */
- 	__le32 feature_incompat;
--	/* customized lz4 sliding window size instead of 64k by default */
--	__le16 lz4_max_distance;
-+	union {
-+		/* bitmap for available compression algorithms */
-+		__le16 available_compr_algs;
-+		/* customized sliding window size instead of 64k by default */
-+		__le16 lz4_max_distance;
-+	} __packed u1;
- 	__u8 reserved2[42];
- };
- 
-@@ -196,6 +201,7 @@ enum {
- 	Z_EROFS_COMPRESSION_LZ4	= 0,
- 	Z_EROFS_COMPRESSION_MAX
- };
-+#define Z_EROFS_ALL_COMPR_ALGS		(1 << (Z_EROFS_COMPRESSION_MAX - 1))
- 
- /* 14 bytes (+ length field = 16 bytes) */
- struct z_erofs_lz4_cfgs {
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 46b977f348eb..f3fa895d809f 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -75,6 +75,7 @@ struct erofs_sb_info {
- 	struct xarray managed_pslots;
- 
- 	unsigned int shrinker_run_no;
-+	u16 available_compr_algs;
- 
- 	/* pseudo inode to manage cached pages */
- 	struct inode *managed_cache;
-@@ -90,6 +91,7 @@ struct erofs_sb_info {
- 	/* inode slot unit size in bit shift */
- 	unsigned char islotbits;
- 
-+	u32 sb_size;			/* total superblock size */
- 	u32 build_time_nsec;
- 	u64 build_time;
- 
-@@ -233,6 +235,7 @@ static inline bool erofs_sb_has_##name(struct erofs_sb_info *sbi) \
- }
- 
- EROFS_FEATURE_FUNCS(lz4_0padding, incompat, INCOMPAT_LZ4_0PADDING)
-+EROFS_FEATURE_FUNCS(compr_cfgs, incompat, INCOMPAT_COMPR_CFGS)
- EROFS_FEATURE_FUNCS(sb_chksum, compat, COMPAT_SB_CHKSUM)
- 
- /* atomic flag definitions */
-@@ -454,7 +457,7 @@ static inline int z_erofs_load_lz4_config(struct super_block *sb,
- 				  struct erofs_super_block *dsb,
- 				  struct z_erofs_lz4_cfgs *lz4, int len)
- {
--	if (lz4 || dsb->lz4_max_distance) {
-+	if (lz4 || dsb->u1.lz4_max_distance) {
- 		erofs_err(sb, "lz4 algorithm isn't enabled");
- 		return -EINVAL;
- 	}
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index 1ca8da3f2125..628c751634fe 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -122,6 +122,138 @@ static bool check_layout_compatibility(struct super_block *sb,
- 	return true;
- }
- 
-+#ifdef CONFIG_EROFS_FS_ZIP
-+/* read variable-sized metadata, offset will be aligned by 4-byte */
-+static void *erofs_read_metadata(struct super_block *sb, struct page **pagep,
-+				 erofs_off_t *offset, int *lengthp)
-+{
-+	struct page *page = *pagep;
-+	u8 *buffer, *ptr;
-+	int len, i, cnt;
-+	erofs_blk_t blk;
-+
-+	*offset = round_up(*offset, 4);
-+	blk = erofs_blknr(*offset);
-+
-+	if (!page || page->index != blk) {
-+		if (page) {
-+			unlock_page(page);
-+			put_page(page);
-+		}
-+		page = erofs_get_meta_page(sb, blk);
-+		if (IS_ERR(page))
-+			goto err_nullpage;
-+	}
-+
-+	ptr = kmap(page);
-+	len = le16_to_cpu(*(__le16 *)&ptr[erofs_blkoff(*offset)]);
-+	if (!len)
-+		len = U16_MAX + 1;
-+	buffer = kmalloc(len, GFP_KERNEL);
-+	if (!buffer) {
-+		buffer = ERR_PTR(-ENOMEM);
-+		goto out;
-+	}
-+	*offset += sizeof(__le16);
-+	*lengthp = len;
-+
-+	for (i = 0; i < len; i += cnt) {
-+		cnt = min(EROFS_BLKSIZ - (int)erofs_blkoff(*offset), len - i);
-+		blk = erofs_blknr(*offset);
-+
-+		if (!page || page->index != blk) {
-+			if (page) {
-+				kunmap(page);
-+				unlock_page(page);
-+				put_page(page);
-+			}
-+			page = erofs_get_meta_page(sb, blk);
-+			if (IS_ERR(page)) {
-+				kfree(buffer);
-+				goto err_nullpage;
-+			}
-+			ptr = kmap(page);
-+		}
-+		memcpy(buffer + i, ptr + erofs_blkoff(*offset), cnt);
-+		*offset += cnt;
-+	}
-+out:
-+	kunmap(page);
-+	*pagep = page;
-+	return buffer;
-+err_nullpage:
-+	*pagep = NULL;
-+	return page;
-+}
-+
-+static int erofs_load_compr_cfgs(struct super_block *sb,
-+				 struct erofs_super_block *dsb)
-+{
-+	struct erofs_sb_info *sbi;
-+	struct page *page;
-+	unsigned int algs, alg;
-+	erofs_off_t offset;
-+	int size, ret;
-+
-+	sbi = EROFS_SB(sb);
-+	sbi->available_compr_algs = le16_to_cpu(dsb->u1.available_compr_algs);
-+
-+	if (sbi->available_compr_algs & ~Z_EROFS_ALL_COMPR_ALGS) {
-+		erofs_err(sb,
-+"try to load compressed image with unsupported algorithms %x",
-+			  sbi->available_compr_algs & ~Z_EROFS_ALL_COMPR_ALGS);
-+		return -EINVAL;
-+	}
-+
-+	offset = EROFS_SUPER_OFFSET + sbi->sb_size;
-+	page = NULL;
-+	alg = 0;
-+	ret = 0;
-+
-+	for (algs = sbi->available_compr_algs; algs; algs >>= 1, ++alg) {
-+		void *data;
-+
-+		if (!(algs & 1))
-+			continue;
-+
-+		data = erofs_read_metadata(sb, &page, &offset, &size);
-+		if (IS_ERR(data)) {
-+			ret = PTR_ERR(data);
-+			goto err;
-+		}
-+
-+		switch (alg) {
-+		case Z_EROFS_COMPRESSION_LZ4:
-+			ret = z_erofs_load_lz4_config(sb, dsb, data, size);
-+			break;
-+		default:
-+			DBG_BUGON(1);
-+			ret = -EFAULT;
-+		}
-+		kfree(data);
-+		if (ret)
-+			goto err;
-+	}
-+err:
-+	if (page) {
-+		unlock_page(page);
-+		put_page(page);
-+	}
-+	return ret;
-+}
-+#else
-+static int erofs_load_compr_cfgs(struct super_block *sb,
-+				 struct erofs_super_block *dsb)
-+{
-+	if (dsb->u1.available_compr_algs) {
-+		erofs_err(sb,
-+"try to load compressed image when compression is disabled");
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+#endif
-+
- static int erofs_read_superblock(struct super_block *sb)
- {
- 	struct erofs_sb_info *sbi;
-@@ -166,6 +298,12 @@ static int erofs_read_superblock(struct super_block *sb)
- 	if (!check_layout_compatibility(sb, dsb))
- 		goto out;
- 
-+	sbi->sb_size = 128 + dsb->sb_extslots * 16;
-+	if (sbi->sb_size > EROFS_BLKSIZ) {
-+		erofs_err(sb, "invalid sb_extslots %u (more than a fs block)",
-+			  sbi->sb_size);
-+		goto out;
-+	}
- 	sbi->blocks = le32_to_cpu(dsb->blocks);
- 	sbi->meta_blkaddr = le32_to_cpu(dsb->meta_blkaddr);
- #ifdef CONFIG_EROFS_FS_XATTR
-@@ -189,7 +327,10 @@ static int erofs_read_superblock(struct super_block *sb)
- 	}
- 
- 	/* parse on-disk compression configurations */
--	ret = z_erofs_load_lz4_config(sb, dsb, NULL, 0);
-+	if (erofs_sb_has_compr_cfgs(sbi))
-+		ret = erofs_load_compr_cfgs(sb, dsb);
-+	else
-+		ret = z_erofs_load_lz4_config(sb, dsb, NULL, 0);
- out:
- 	kunmap(page);
- 	put_page(page);
--- 
-2.20.1
-
+Sure. I wasn't saying that there is no place for these APIs in libbpf+.
+Just that existing libbpf is already became a kitchen sink of features
+that users are not going to use like static linking.
+tc-api was a straw that broke the camel's back.
+I think we must move static linking and skeleton out of libbpf before
+the next release.
