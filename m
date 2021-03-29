@@ -2,146 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE9D34D9B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F015534D9B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhC2Vt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 17:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229910AbhC2Vt3 (ORCPT
+        id S230361AbhC2VwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 17:52:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29069 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230280AbhC2Vvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 17:49:29 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C642C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 14:49:29 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id r17so6320023ilt.0
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 14:49:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:references:from:cc:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OTRMqDMmVjOSM+8r4ljF7+vW0yLz7ssBKcqyHVjTTDo=;
-        b=Z3rhMlqM/giLnUFw4LSy8zWfm1lJfeNgvg9MpwSq03tA6QpxM3ADZZs0EQ7g9Q4P7d
-         o6hL3y00TaxxzYf8pS8T1HVixAw1d/XXklDlY1mgjK+2RB3t7mcULAsMg4LGOhzb3VFQ
-         fS1Hl+CPnHBRZTT29mtOCaYREbs3XF+8Dcj14=
+        Mon, 29 Mar 2021 17:51:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617054710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fXA20eIAi5LvcsVse5nWTOxsx9pyCiUtKEPvP36UGXE=;
+        b=BpVyN35ybJv5IAA+hDLYWHtdvxN8BsvHGDuRNtv0UzDnxF9sUHUf6SCWCHs+WNRKZMxZuA
+        cPUX6EEG/LDgE5z1TZeTgFTdcLJgcc26tYMjVTjb0ewLY0S+H8A6Cp/0NNQP8ylcV3m6Xv
+        wmIEg/poa94dMdUSqV3VhqeNMoO/1Vs=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-478-LBhOqR-2PSGts37C1p5wJA-1; Mon, 29 Mar 2021 17:51:48 -0400
+X-MC-Unique: LBhOqR-2PSGts37C1p5wJA-1
+Received: by mail-qv1-f72.google.com with SMTP id n3so4407879qvr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 14:51:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:cc:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=OTRMqDMmVjOSM+8r4ljF7+vW0yLz7ssBKcqyHVjTTDo=;
-        b=P+N25HFLbqe9ovAzRP/opjc+XFU6cexPScYwUa/hvGvhRTx8bbfdpuvqtRw8kpsAQU
-         9C2thW2JPcP23JRvb3sm+pZtm4CU0OkS+/7Au2Tf7MuwMrSEho/Pib3vjBkYDD9lLWN2
-         xyhNFB82C/pDkz9ClXq1c2UXBkLlxAJQ/Ei3WMIZhQdz64s2qz6n9wh8MZ3cAwTu4Nw6
-         AH0xTxaHfRDELRzBY52a2XQNgnbhs4Tohqw+OeOOe3TuWTmKIcF0A9G6T6/o9qCKhJkL
-         PNnYfZW8LJK+0vrHRz6FiVliwYa/S4DU/U5Nd0P63fZGimLi2ZfUerR06ZVpiwlsyfqW
-         PwrA==
-X-Gm-Message-State: AOAM5303LKvGGcgcYKAVti9r3SHDPpUVq8KnE4XAedhY8oI9ourwQRMq
-        x1IGyFRjaZvl5SvP2UgtopM0Pw==
-X-Google-Smtp-Source: ABdhPJy3Z/yXG62jQZyDsMJX/hNaY9lbdg//V857tdDfliwXCHKbNymhX8Yyl7Tpjntsn6Gf2AkIow==
-X-Received: by 2002:a05:6e02:1e01:: with SMTP id g1mr22359572ila.192.1617054568828;
-        Mon, 29 Mar 2021 14:49:28 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id e6sm10039732ioq.13.2021.03.29.14.49.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 14:49:28 -0700 (PDT)
-Subject: Re: [PATCH] sched/psi.c: Rudimentary typo fixes
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-References: <20210326124233.7586-1-unixbhaskar@gmail.com>
- <YF4hMn4rCftcdsSm@cmpxchg.org>
- <20210326184122.GO4746@worktop.programming.kicks-ass.net>
- <YF45Qi+/eB+/m7y/@Gentoo>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, dietmar.eggemann@arm.com,
-        bsegall@google.com, Johannes Weiner <hannes@cmpxchg.org>,
-        mingo@redhat.com, vincent.guittot@linaro.org, bristot@redhat.com,
-        rostedt@goodmis.org, juri.lelli@redhat.com, mgorman@suse.de,
-        rdunlap@infradead.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <1f5fb434-ca4b-bc10-92c4-411087ddf717@linuxfoundation.org>
-Date:   Mon, 29 Mar 2021 15:49:27 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fXA20eIAi5LvcsVse5nWTOxsx9pyCiUtKEPvP36UGXE=;
+        b=TnjfmqJHLIIWcOyyjrhxP+ynhsxqHSEJUopCdxuMHQbVCi2J/Lm4Yb2vo3gtkAFOh4
+         5X0ygxMN+IdOWKFUDFY8UjosHMfl2TkQAumHbUCyHDYtiUy/JbQD0BsFrtGLGQnTLw/y
+         PcdGGgKXdssYbuFe8ICElnAXQDPKj/rJvcJCDJfPRcEa7dnLogBwWv2YQSXmFqrJDikE
+         JGmB4LeNBA050idaayHJECEiGYDnt7Vn+eaFxmaNR/j5TKxSoJJUQ4nDC2puaJrfLOoj
+         kvOUmijKy5DqcluyLBfl4H2RB81VHVyeUC1+GhpJrm0hxu8A/CeNGg3Gg0dzQjuj3Uny
+         gHKQ==
+X-Gm-Message-State: AOAM532Mx7Ij2L7rcqq05W3etIW8I06BV9AkoK+0EPGlhTmLTZp4w8eT
+        VRN136DxTwEX4d+ZM42JwCZtFY8gt7kyZYnlF29Y4ImQNCgOhigwS6RtTvbD58nRru3xF5OINJ4
+        nzZH2L08fGpqG/a/U2MaUDl0H
+X-Received: by 2002:ac8:72c5:: with SMTP id o5mr11257651qtp.279.1617054707746;
+        Mon, 29 Mar 2021 14:51:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyYqUX7O065WJ20RVczGrXZkxbkD6gVD9ttPGilIKHPwaK9Q7WWKLF50gkedOIcUAW02b2IoA==
+X-Received: by 2002:ac8:72c5:: with SMTP id o5mr11257633qtp.279.1617054707409;
+        Mon, 29 Mar 2021 14:51:47 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-82-174-91-135-175.dsl.bell.ca. [174.91.135.175])
+        by smtp.gmail.com with ESMTPSA id d24sm13846143qkl.49.2021.03.29.14.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 14:51:46 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 17:51:45 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 4/4] ioctl_userfaultfd.2: Add write-protect mode docs
+Message-ID: <20210329215145.GE429942@xz-x1>
+References: <20210322220848.52162-1-peterx@redhat.com>
+ <20210322220848.52162-5-peterx@redhat.com>
+ <c65b5f04-4620-4c7e-e71f-91fc8394d164@gmail.com>
+ <20210323191618.GJ6486@xz-x1>
+ <dbc37834-9fb1-ca44-7ed5-9f8f6cc53741@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YF45Qi+/eB+/m7y/@Gentoo>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <dbc37834-9fb1-ca44-7ed5-9f8f6cc53741@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/21 1:42 PM, Bhaskar Chowdhury wrote:
-> On 19:41 Fri 26 Mar 2021, Peter Zijlstra wrote:
->> On Fri, Mar 26, 2021 at 02:00:18PM -0400, Johannes Weiner wrote:
->>> On Fri, Mar 26, 2021 at 06:12:33PM +0530, Bhaskar Chowdhury wrote:
->>> >
->>> > s/possible/possible/
->>> > s/ exceution/execution/
->>> > s/manupulations/manipulations/
->>> >
->>> > Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->>> > ---
->>> >  kernel/sched/psi.c | 6 +++---
->>> >  1 file changed, 3 insertions(+), 3 deletions(-)
->>> >
->>> > diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
->>> > index 967732c0766c..316ebc57a115 100644
->>> > --- a/kernel/sched/psi.c
->>> > +++ b/kernel/sched/psi.c
->>> > @@ -59,7 +59,7 @@
->>> >   * states, we would have to conclude a CPU SOME pressure number of
->>> >   * 100%, since *somebody* is waiting on a runqueue at all
->>> >   * times. However, that is clearly not the amount of contention the
->>> > - * workload is experiencing: only one out of 256 possible exceution
->>> > + * workload is experiencing: only one out of 256 possible execution
->>>
->>> I thought this was the french spelling.
->>>
->>> Joking aside, the corrections look right, but I also had no trouble
->>> understanding what those sentences mean. Typos happen, plus we have a
->>> lot of non-native speakers who won't use perfect spelling or grammar.
->>>
->>> So for me, the bar is "this can be easily understood", not "needs to
->>> be perfect English", and I'd say let's skip patches like these unless
->>> they fix something truly unintelligble.
->>
->> Ignore this robot, lots of people already have a special mail rule for
->> him. On top of that, this spelling mistake was already fixed by Ingo in:
->>
+On Thu, Mar 25, 2021 at 10:32:20PM +0100, Alejandro Colomar (man-pages) wrote:
+> Hi Peter,
 > 
-> Dude, this is a human being and you are suggesting a fucking stupid 
-> solution
-> to others. I know what Ingo did and very appreciable. Please try to be
-> cooperative and help. Stop spreading FUD ...for fuck's sake ...man..
+> On 3/23/21 8:16 PM, Peter Xu wrote:
+> > On Tue, Mar 23, 2021 at 07:11:04PM +0100, Alejandro Colomar (man-pages) wrote:
+> > > > +.TP
+> > > > +.B UFFDIO_COPY_MODE_WP
+> > > > +Copy the page with read-only permission.
+> > > > +This allows the user to trap the next write to the page,
+> > > > +which will block and generate another write-protect userfault message.
+> > > 
+> > > s/write-protect/write-protected/
+> > > ?
+> > 
+> > I think here "write-protect" is the wording I wanted to use, it is the name of
+> > the type of the message in plain text.
 > 
-> I am not doing it fun...you need to understand that . ...
+> Okay.
 > 
+> > 
+> > [...]
+> > 
+> > > > +.B EAGAIN
+> > > > +The process was interrupted and need to retry.
+> > > 
+> > > Maybe: "The process was interrupted; retry this call."?
+> > > I don't know what other pager say about this kind of error.
+> > 
+> > Frankly I see no difference between the two..  If you prefer the latter, I can
+> > switch.
 > 
-> ..and I have some special rule for some people to ...who the fuck care
-> ...ahhhhhhhhhh
+> I understand yours, but technically it's a bit incorrect:  The subject of
+> the sentence changes: in "The process was interrupted" it's the process, and
+> in "need to retry" it's [you].  By separating the sentence into two, it's
+> more natural. :)
 
-Bhaskar Chowdhury,
+Sure, I'll change.
 
-Please be advised that we have received a CoC complaint about your
-responses to the following patch discussions:
+> 
+> > 
+> > > 
+> > > > +.TP
+> > > > +.B ENOENT
+> > > > +The range specified in
+> > > > +.I range
+> > > > +is not valid.
+> > > 
+> > > I'm not sure how this is different from the wording above in EINVAL.  An
+> > > "otherwise invalid range" was already giving EINVAL?
+> > 
+> > This can be returned when vma is not found (mwriteprotect_range()):
+> > 
+> > 	err = -ENOENT;
+> > 	dst_vma = find_dst_vma(dst_mm, start, len);
+> > 
+> > 	if (!dst_vma)
+> > 		goto out_unlock;
+> > 
+> > I think maybe I could simply remove this entry, because from an user app
+> > developer pov I'd only be interested in specific error that I'd be able to
+> > detect and (even better) recover from.  For such error I'd say there's not much
+> > to do besides failing the app.
+> 
+> If there's any possibility that the error can happen, it should be
+> documented, even if it's to say "Fatal error; abort!".  Just try to explain
+> the causes and how to avoid causing them and/or possibly what to do when
+> they happen (abort?).
 
-- https://lore.kernel.org/lkml/YGFrvwX8QngvwPbA@Gentoo/
-- https://lore.kernel.org/lkml/YF45Qi+%2FeB+%2Fm7y%2F@Gentoo/
-- https://lore.kernel.org/lkml/YF44jiYiAVkuwE0P@Gentoo/
-- https://lore.kernel.org/r/YGHOxwiqwhGAs819@Gentoo
+Okay.  Would you mind me keeping my original wording?  Because IMHO that
+exactly does what you said as "trying to explain the causes" and so on:
 
-There is no requirement that anyone accept your patches. Accepting
-feedback and working with the community will ensure that your work
-will be taken seriously now and in the future.
+        .B ENOENT
+        The range specified in
+        .I range
+        is not valid.
+        For example, the virtual address does not exist,
+        or not registered with userfaultfd write-protect mode.
 
-Your responses go against the CoC. If this continues, we will take
-action to add you to the kernel wide blacklist.
+It's indeed slightly duplicated with EINVAL, but if you don't agree with the
+wording meanwhile if you don't agree on overlapping of the errors, then what I
+need is not reworking this patchset, but proposing a kernel patch to change the
+error retval to make them match. I am not against proposing a kernel patch, but
+I just don't see it extremely necessary.
 
-Please refer to:
-https://www.kernel.org/doc/html/latest/process/code-of-conduct.html
+For my own experience on working with the kernel, the return value sometimes is
+not that strict - say, it's hard to control every single bit of the possible
+return code of a syscall/ioctl to reflect everything matching the document.  We
+should always try to do it accurate but it seems not easy to me.  It's also
+hard to write up the document that 100% matching the kernel code, because at
+least that'll require a full-path workthrough of every single piece of kernel
+code that the syscall/ioctl has called, so as to collect all the errors, then
+summarize their meanings.  That could be a lot of work.
 
-thanks,
--- Shuah (on behalf of the Code of Conduct Committee)
+> 
+> > 
+> > > 
+> > > > +For example, the virtual address does not exist,
+> > > > +or not registered with userfaultfd write-protect mode.
+> > > > +.TP
+> > > > +.B EFAULT
+> > > > +Encountered a generic fault during processing.
+> > > 
+> > > What is a "generic fault"?
+> > 
+> > For example when the user copy failed due to some reason.  See
+> > userfaultfd_writeprotect():
+> > 
+> > 	if (copy_from_user(&uffdio_wp, user_uffdio_wp,
+> > 			   sizeof(struct uffdio_writeprotect)))
+> > 		return -EFAULT;
+> > 
+> > But I didn't check other places, generally I'd return -EFAULT if I can't find a
+> > proper other replacement which has a clearer meaning.
+> > 
+> > I don't think this is really helpful to user app too because no user app would
+> > start to read this -EFAULT to do anything useful.. how about I drop it too if
+> > you think the description is confusing?
+> 
+> Same as above.
+
+Above copy_from_user() is the only place that could trigger -EFAULT so far I
+can find.  So either I can change above into:
+
+        .TP
+        .B EFAULT
+        Failure on copying ioctl parameters into the kernel.
+
+Would you think it okay (before I repost)?  I'd still prefer my original
+wording because I bet 90% user developer may not even know what does it mean
+when the kernel cannot copy the user parameter, and what he/she can do with
+it..  However if you think it's proper I'll use it.
+
+Thanks,
+
+-- 
+Peter Xu
 
