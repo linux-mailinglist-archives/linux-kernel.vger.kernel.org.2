@@ -2,82 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE9F34D37C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A250434D37F
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 17:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhC2PNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 11:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhC2PNd (ORCPT
+        id S230509AbhC2PO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 11:14:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:14506 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229655AbhC2POB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 11:13:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDD5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 08:13:33 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617030811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lAwcHh6VjZxvqu3eesE1syVGkWZBlzSGzupXo8CqfAQ=;
-        b=IHRwqqJ/d8imEGKqIbKlA/qGFQR4bQ7Mhspabxdc3MX3R7eN5G7MQ4m5yMDEPE07Lv+phx
-        zHEhhYkohJ8y/1HxidHAV34j6T1NDKgbBGWl861sk+fSQTqFBgAyx+mn+iamm2DCjBxNr8
-        FSS5Pe4mAqzC65UdyPCNXbajLcCGJ7RH28rT2g8VbNzOtgT/36qjtM0xobnnIkx1daTNY6
-        ct98FPnxEMo/We+aNUTa0BhSI17YnG4onDaQqN6q3BTiEy5TWC9ZhccI9GrfEQEEV2vbiJ
-        RAdsnOm6LcHaaNMaxzoJHU7fUWyXNWeo2tkJ24JgIIySm8sS4q3ecgzXOE6HTg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617030811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lAwcHh6VjZxvqu3eesE1syVGkWZBlzSGzupXo8CqfAQ=;
-        b=U8WYssHxW3bwbN8MrVn1MezAusXrDPWH1/e3X2mo5XDOhiiwBibO2wcYpGLnSm7tmW4Q/W
-        +BAOUaJ5F1W6NoAQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alistair Popple <alistair@popple.id.au>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?Q?C?= =?utf-8?Q?=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>, Yue Hu <huyue2@yulong.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Rafael Aquini <aquini@redhat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, kexec@lists.infradead.org
-Subject: Re: [PATCH next v1 2/3] printk: remove safe buffers
-In-Reply-To: <87sg4e6lo5.fsf@jogness.linutronix.de>
-References: <20210316233326.10778-1-john.ogness@linutronix.de> <20210316233326.10778-3-john.ogness@linutronix.de> <YFnHKlCvIA2nI41c@alley> <87pmzmi2xm.fsf@jogness.linutronix.de> <YGGmNu5ilDnSKH3g@alley> <87sg4e6lo5.fsf@jogness.linutronix.de>
-Date:   Mon, 29 Mar 2021 17:13:30 +0200
-Message-ID: <87o8f26lid.fsf@jogness.linutronix.de>
+        Mon, 29 Mar 2021 11:14:01 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12TF4BtS115546;
+        Mon, 29 Mar 2021 11:13:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=XGTNU9FxbYfquQDFBTIKYBOYaGE5VvL/e/xPpeX00WQ=;
+ b=jOAdOSeJKyWcbhBBaTpwHaAkKAnvy/8Uj23xacWtf57Wpslsrojj8wH1+JzLXly+FJld
+ pTwd0JzEii2EOP3cKWpgBsyrstcwx6IEtJwIF5+717B1i6jja/Fy3E8jZX+vglu0Zefd
+ fRnnKvf1LTYKBBqmlKPtf/oonr6cC8Qu1KqYgsgW51tlBUVhm0ys19AGEkcbVNvJrqDQ
+ VK0c9IS5ziclVv2sJu42/b+tSX8kOa9704/HjZBAIuK4j8nJePiz2MSY1wRFLoyZOopa
+ hVjWYdNGuCrowi+4Q7rMyz96p9nssPemI2LI29F8pKqT3fMB9xL+nxkqilhXFbquEVEO Cw== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37jhnkkfya-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 11:13:54 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12TFCv6p010683;
+        Mon, 29 Mar 2021 15:13:53 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma03dal.us.ibm.com with ESMTP id 37jtub0327-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 15:13:53 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12TFDqp525100612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 15:13:52 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F06AAC6057;
+        Mon, 29 Mar 2021 15:13:51 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A7218C605B;
+        Mon, 29 Mar 2021 15:13:51 +0000 (GMT)
+Received: from v0005c16.aus.stglabs.ibm.com (unknown [9.163.3.96])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 29 Mar 2021 15:13:51 +0000 (GMT)
+From:   Eddie James <eajames@linux.ibm.com>
+To:     joel@jms.id.au
+Cc:     jk@ozlabs.org, alistair@popple.id.au, linux-fsi@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
+Subject: [PATCH] fsi: scom: Reset the FSI2PIB engine for any error
+Date:   Mon, 29 Mar 2021 10:13:44 -0500
+Message-Id: <20210329151344.14246-1-eajames@linux.ibm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AReOFunNlgNZlDZuWjDoK5eAzYpfvmVX
+X-Proofpoint-ORIG-GUID: AReOFunNlgNZlDZuWjDoK5eAzYpfvmVX
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-29_10:2021-03-26,2021-03-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
+ mlxscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 spamscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2103250000 definitions=main-2103290114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-03-29, John Ogness <john.ogness@linutronix.de> wrote:
->> Will you call console write() callback with irq enabled from the
->> kthread?
->
-> No. That defeats the fundamental purpose of this entire rework
-> excercise. ;-)
+The error bits in the FSI2PIB status are only cleared by a reset. So
+the driver needs to perform a reset after seeing any of the FSI2PIB
+errors, otherwise subsequent operations will also look like failures.
 
-Sorry, I misread your question. The answer is "yes". We want to avoid a
-local_irq_save() when calling into console->write().
+Fixes: 6b293258cded ("fsi: scom: Major overhaul")
+Signed-off-by: Eddie James <eajames@linux.ibm.com>
+---
+ drivers/fsi/fsi-scom.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-John Ogness
+diff --git a/drivers/fsi/fsi-scom.c b/drivers/fsi/fsi-scom.c
+index b45bfab7b7f5..75d1389e2626 100644
+--- a/drivers/fsi/fsi-scom.c
++++ b/drivers/fsi/fsi-scom.c
+@@ -38,9 +38,10 @@
+ #define SCOM_STATUS_PIB_RESP_MASK	0x00007000
+ #define SCOM_STATUS_PIB_RESP_SHIFT	12
+ 
+-#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_PROTECTION | \
+-					 SCOM_STATUS_PARITY |	  \
+-					 SCOM_STATUS_PIB_ABORT | \
++#define SCOM_STATUS_FSI2PIB_ERROR	(SCOM_STATUS_PROTECTION |	\
++					 SCOM_STATUS_PARITY |		\
++					 SCOM_STATUS_PIB_ABORT)
++#define SCOM_STATUS_ANY_ERR		(SCOM_STATUS_FSI2PIB_ERROR |	\
+ 					 SCOM_STATUS_PIB_RESP_MASK)
+ /* SCOM address encodings */
+ #define XSCOM_ADDR_IND_FLAG		BIT_ULL(63)
+@@ -240,13 +241,14 @@ static int handle_fsi2pib_status(struct scom_device *scom, uint32_t status)
+ {
+ 	uint32_t dummy = -1;
+ 
+-	if (status & SCOM_STATUS_PROTECTION)
+-		return -EPERM;
+-	if (status & SCOM_STATUS_PARITY) {
++	if (status & SCOM_STATUS_FSI2PIB_ERROR)
+ 		fsi_device_write(scom->fsi_dev, SCOM_FSI2PIB_RESET_REG, &dummy,
+ 				 sizeof(uint32_t));
++
++	if (status & SCOM_STATUS_PROTECTION)
++		return -EPERM;
++	if (status & SCOM_STATUS_PARITY)
+ 		return -EIO;
+-	}
+ 	/* Return -EBUSY on PIB abort to force a retry */
+ 	if (status & SCOM_STATUS_PIB_ABORT)
+ 		return -EBUSY;
+-- 
+2.27.0
+
