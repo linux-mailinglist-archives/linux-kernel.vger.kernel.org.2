@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2650534CAE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F7434C879
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234865AbhC2Ikq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:40:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50542 "EHLO mail.kernel.org"
+        id S234025AbhC2IWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:22:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232263AbhC2IHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:07:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E6D861974;
-        Mon, 29 Mar 2021 08:07:07 +0000 (UTC)
+        id S231610AbhC2IOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:14:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DA1619B9;
+        Mon, 29 Mar 2021 08:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005228;
-        bh=hxKPIy9xQ4pAbVLd6IuSOXfvIsSt1TcXC72K92hLpB8=;
+        s=korg; t=1617005665;
+        bh=S4DiG8oj0WRZkZr0KnsFJXHx9WwR6hooWtKkYHCW+vc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wZXKjsIh+B4Dy96uwXNYYMDPxa/yXUaZxJaMOvcKMDZp7OCu0DFRKpuY4GTpdCehk
-         aWWrO7YSeW5SX6Fq96mypM3R9TDKlTeSS0IrrUwUHux03mS9WuacUcfYLTndlZlCgo
-         yvvcDFHY8ALF5R9Hgqjwt4cxpkvcxFlfrprTxxfw=
+        b=RW/ZRbW8YWNE+YpwIa0i1ZY9EnYVXD1DNPiEon49FnpeYdg1sjqvqzi6rhfT8KIcG
+         BitwofXqT5ICD/lLsWM+guV79w0MFO3b7XWe/4en1R7ah4VvHX8Boz6Cjw7mWiZCLg
+         EVmc1hG0D0Xwpijwxudqjv1ijTeQ4ZmyY+hDP5Vk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Timo Rothenpieler <timo@rothenpieler.org>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/72] nfs: fix PNFS_FLEXFILE_LAYOUT Kconfig default
+        stable@vger.kernel.org, Mian Yousaf Kaukab <ykaukab@suse.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 039/111] netsec: restore phy power state after controller reset
 Date:   Mon, 29 Mar 2021 09:57:47 +0200
-Message-Id: <20210329075610.656522316@linuxfoundation.org>
+Message-Id: <20210329075616.480711294@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timo Rothenpieler <timo@rothenpieler.org>
+From: Mian Yousaf Kaukab <ykaukab@suse.de>
 
-[ Upstream commit a0590473c5e6c4ef17c3132ad08fbad170f72d55 ]
+commit 804741ac7b9f2fdebe3740cb0579cb8d94d49e60 upstream.
 
-This follows what was done in 8c2fabc6542d9d0f8b16bd1045c2eda59bdcde13.
-With the default being m, it's impossible to build the module into the
-kernel.
+Since commit 8e850f25b581 ("net: socionext: Stop PHY before resetting
+netsec") netsec_netdev_init() power downs phy before resetting the
+controller. However, the state is not restored once the reset is
+complete. As a result it is not possible to bring up network on a
+platform with Broadcom BCM5482 phy.
 
-Signed-off-by: Timo Rothenpieler <timo@rothenpieler.org>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix the issue by restoring phy power state after controller reset is
+complete.
+
+Fixes: 8e850f25b581 ("net: socionext: Stop PHY before resetting netsec")
+Cc: stable@vger.kernel.org
+Signed-off-by: Mian Yousaf Kaukab <ykaukab@suse.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/socionext/netsec.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/fs/nfs/Kconfig b/fs/nfs/Kconfig
-index ac3e06367cb6..e55f86713948 100644
---- a/fs/nfs/Kconfig
-+++ b/fs/nfs/Kconfig
-@@ -127,7 +127,7 @@ config PNFS_BLOCK
- config PNFS_FLEXFILE_LAYOUT
- 	tristate
- 	depends on NFS_V4_1 && NFS_V3
--	default m
-+	default NFS_V4
+--- a/drivers/net/ethernet/socionext/netsec.c
++++ b/drivers/net/ethernet/socionext/netsec.c
+@@ -1693,14 +1693,17 @@ static int netsec_netdev_init(struct net
+ 		goto err1;
  
- config NFS_V4_1_IMPLEMENTATION_ID_DOMAIN
- 	string "NFSv4.1 Implementation ID Domain"
--- 
-2.30.1
-
+ 	/* set phy power down */
+-	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR) |
+-		BMCR_PDOWN;
+-	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
++	data = netsec_phy_read(priv->mii_bus, priv->phy_addr, MII_BMCR);
++	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR,
++			 data | BMCR_PDOWN);
+ 
+ 	ret = netsec_reset_hardware(priv, true);
+ 	if (ret)
+ 		goto err2;
+ 
++	/* Restore phy power state */
++	netsec_phy_write(priv->mii_bus, priv->phy_addr, MII_BMCR, data);
++
+ 	spin_lock_init(&priv->desc_ring[NETSEC_RING_TX].lock);
+ 	spin_lock_init(&priv->desc_ring[NETSEC_RING_RX].lock);
+ 
 
 
