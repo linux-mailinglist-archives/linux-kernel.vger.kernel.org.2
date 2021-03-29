@@ -2,149 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F2634CD06
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC79A34CD09
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232011AbhC2J2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:28:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26921 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231660AbhC2J14 (ORCPT
+        id S231470AbhC2J2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230319AbhC2J2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:27:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617010075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HY/7K3I1NjYPuWdSB8Mk/0A7Ott2fmPK37yIBwtI/8c=;
-        b=YeXsajPn2EBXfUOsIBGfGD7y8+jFD4F/WGetS+efOnHdRxho3zs5NUZHYabS1vS7f1T8A/
-        kKdPQ9YlRjpvsPc6FHB2ZAEBSuvm8etFerlyqg2T0TtQpc5qCEGvzcXZFlT05DEL/TJyDm
-        ZkdAgIPjvH8EDkCakiuDdi/a1SeV04E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-jsx6eAjpNm2XesKNsbZMeg-1; Mon, 29 Mar 2021 05:27:53 -0400
-X-MC-Unique: jsx6eAjpNm2XesKNsbZMeg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BCCA9CDA0;
-        Mon, 29 Mar 2021 09:27:51 +0000 (UTC)
-Received: from [10.36.114.205] (ovpn-114-205.ams2.redhat.com [10.36.114.205])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ED27C5D9F0;
-        Mon, 29 Mar 2021 09:27:48 +0000 (UTC)
-Subject: Re: [PATCH v2] kernel/resource: Fix locking in
- request_free_mem_region
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        daniel.vetter@ffwll.ch, dan.j.williams@intel.com,
-        gregkh@linuxfoundation.org, jhubbard@nvidia.com,
-        jglisse@redhat.com, linux-mm@kvack.org
-References: <20210326012035.3853-1-apopple@nvidia.com>
- <9eef1283-28a3-845e-0e3e-80b763c9ec59@redhat.com>
- <3158185.bARUjMUeyn@nvdebian>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <88bca3c7-7958-7bab-317d-1918e47061ee@redhat.com>
-Date:   Mon, 29 Mar 2021 11:27:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 29 Mar 2021 05:28:31 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9504CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:28:21 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id r12so2432313vsj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:28:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PlfJgtRT8nBB4ig4/WqZyrKPRSIskxsk0bidAac7oR0=;
+        b=hXGwSHDRv0UvpC2upZ4njNU/tXxfXh7UgVZb8eJWQBSShULE94Nh6Ye8OzzxiRhXq8
+         /bzekzhgp/PWs5DAO6KgCovwVzJ+Z4/aunj8pUYYztrjolvqjCee0QS9irtXNyYf0Ilf
+         ncAXyf/g7qvBbJqTt325Zf+EHHSqPNhr21g4c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PlfJgtRT8nBB4ig4/WqZyrKPRSIskxsk0bidAac7oR0=;
+        b=jDHwYR2ZrB3o/dy8dnEJ6iWNpY+mme91BoB25AQx8NiI2VmOP4PBqSPGvYDiydv2Zp
+         OmXh0Rt/lhvxiCMM6NzsS+nXrBstki6NNL3HZVjsNiJatD5Xxdr+MSRBfVQoPT2pKj7M
+         iz3cb7zrG17XOqhzqXQLBgVQt/Dgqjn479FLxwuC+53XumXItz8hXw34p1se3/BNmJFv
+         nW/5qZJiHF26zmbEC99q2U5djvmlpe1W1XYJOGSwNXPfgjPSVkzSGI7yx/uNGqX3OQ0c
+         NS2hDALDNqZVnKycTZVyTUetIXX/CH7+v3Y0pb2mfDCW732faZSZRnJsxn5k0duRm5Gl
+         5fXw==
+X-Gm-Message-State: AOAM531e2DPFo9M3GfZukw3noDlZMMGdnadEy4eNyyAxLbAQGyzD4ggl
+        qU6tocEtbfp3fnOUpVA7e5DgnDiV88EdXkukw+rWRXcPSXobrpWU
+X-Google-Smtp-Source: ABdhPJxyabzZnwOPIy8z8D5saMOlARulAE/muNaXxj/+m5FvlWC8xS5whDZcTzH6ZOraZ+LRzHwnX289BYKF0UqtELA=
+X-Received: by 2002:a67:e056:: with SMTP id n22mr6466748vsl.0.1617010100811;
+ Mon, 29 Mar 2021 02:28:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3158185.bARUjMUeyn@nvdebian>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210329201426.78d4b28b@canb.auug.org.au>
+In-Reply-To: <20210329201426.78d4b28b@canb.auug.org.au>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 29 Mar 2021 11:28:10 +0200
+Message-ID: <CAJfpeguWeWp=648jtvaxNc+RFShTGDa=_gMDuq72qznt5LqQvw@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the overlayfs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Frank Rowand <frank.rowand@sony.com>,
+        Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.03.21 03:37, Alistair Popple wrote:
-> On Friday, 26 March 2021 7:57:51 PM AEDT David Hildenbrand wrote:
->> On 26.03.21 02:20, Alistair Popple wrote:
->>> request_free_mem_region() is used to find an empty range of physical
->>> addresses for hotplugging ZONE_DEVICE memory. It does this by iterating
->>> over the range of possible addresses using region_intersects() to see if
->>> the range is free.
->>
->> Just a high-level question: how does this iteract with memory
->> hot(un)plug? IOW, how defines and manages the "range of possible
->> addresses" ?
-> 
-> Both the driver and the maximum physical address bits available define the
-> range of possible addresses for device private memory. From
-> __request_free_mem_region():
-> 
-> end = min_t(unsigned long, base->end, (1UL << MAX_PHYSMEM_BITS) - 1);
-> addr = end - size + 1UL;
-> 
-> There is no lower address range bound here so it is effectively zero. The code
-> will try to allocate the highest possible physical address first and continue
-> searching down for a free block. Does that answer your question?
+On Mon, Mar 29, 2021 at 11:14 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the overlayfs tree, today's linux-next build (htmldocs)
 
-Ah, yes, thanks - that makes sense.
+Hi Stephen,
 
-> 
->>>
->>> region_intersects() obtains a read lock before walking the resource tree
->>> to protect against concurrent changes. However it drops the lock prior
->>> to returning. This means by the time request_mem_region() is called in
->>> request_free_mem_region() another thread may have already reserved the
->>> requested region resulting in unexpected failures and a message in the
->>> kernel log from hitting this condition:
->>
->> I am confused. Why can't we return an error to the caller and let the
->> caller continue searching? This feels much simpler than what you propose
->> here. What am I missing?
-> 
-> The search occurs as part of the allocation. To allocate memory free space
-> needs to be located and allocated as a single operation. However in this case
-> the lock is dropped between locating a free region and allocating it resulting
-> in an extra debug check firing and subsequent failure.
-> 
-> I did originally consider just allowing the caller to retry, but in the end it
-> didn't seem any simpler. Callers would have to differentiate between transient
-> and permanent failures and figure out how often to retry and no doubt each
-> caller would do this differently. There is also the issue of starvation if one
+I think you mixed up drivers/of/overlay.c with fs/overlay/.
 
-Right, you would want to return -EBUSY, -ENOMEM,... from 
-__request_region() - which somehow seems like the right thing to do 
-considering that we can have both types of errors already.
-
-> thread constantly looses the race to allocate after the search. Overall it
-> seems simpler to me to just have a call that allocates a region (or fails due
-> to lack of free space).
-
-Fair enough, but I doubt the starvation is a real issue ...
-
-> 
-> I also don't think what I am proposing is particularly complex. I agree the
-
-Well, it adds another 42 LOC to kernel/resource.c for a rather special 
-case that just needs a better return value from __request_region() to 
-make a decision.
-
-> diff makes it look complex, but at a high level all I'm doing is moving the
-> locking to outer function calls. It ends up looking more complex because there
-> are some memory allocations which need reordering, but I don't think if things
-> were originally written this way it would be considered complex.
-> 
->   - Alistair
-> 
->> --
->> Thanks,
->>
->> David / dhildenb
->>
-> 
-> 
-> 
-> 
-
-
--- 
 Thanks,
-
-David / dhildenb
-
+Miklos
