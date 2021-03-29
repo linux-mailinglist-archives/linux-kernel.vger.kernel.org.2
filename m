@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81EE34C74F
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF59734CBF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbhC2IOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:14:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51978 "EHLO mail.kernel.org"
+        id S236620AbhC2IyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:54:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231789AbhC2IId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:08:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F307E619A6;
-        Mon, 29 Mar 2021 08:08:31 +0000 (UTC)
+        id S234323AbhC2IfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:35:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8041D619B4;
+        Mon, 29 Mar 2021 08:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005312;
-        bh=0FRrAQoE0FT2zMGF5vNcmoy3XCurXopyRcZKoXp6tOs=;
+        s=korg; t=1617006903;
+        bh=aNVPLI7ebc87h2oaL+qeNkrPh52+V6rtZmz1fQJ63SY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fx/X7qo1eIwrcWR9KnkAOYABnZGSa7R8RWbMP2F760oKmkYWHuGYcjwNY+c4tBz7h
-         KSNfInvP0V0H/vP77bVA8aAH+D0oz+iR3Am/79OKbnFD/GNpuU7ErZrIfP91T96P32
-         KlcRwti2f9tor3iVd38yZH7elJwW2MqSWuavIk8w=
+        b=NeEszOoAikuQCZzwuUZpI4nqOVoMd3HcvdTUQXeVjMpeC59lHj1DPgWpE5+vbr6Xi
+         /ppHMeO8kYkZlaasqZkdHkZ20+mTin3J/6HMO4VwM0bVEw0KYf1MkV8LWvvmmm8/sJ
+         FoTeaLc0o6T2cpP7jMMneuszaSTeaaImAxAP1oMg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hayes Wang <hayeswang@realtek.com>,
+        stable@vger.kernel.org, Alexander Ovechkin <ovov@yandex-team.ru>,
+        Oleg Senin <olegsenin@yandex-team.ru>,
+        Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 05/72] Revert "r8152: adjust the settings about MAC clock speed down for RTL8153"
+Subject: [PATCH 5.11 145/254] tcp: relookup sock for RST+ACK packets handled by obsolete req sock
 Date:   Mon, 29 Mar 2021 09:57:41 +0200
-Message-Id: <20210329075610.478319459@linuxfoundation.org>
+Message-Id: <20210329075637.975017246@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
+References: <20210329075633.135869143@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,108 +42,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hayes Wang <hayeswang@realtek.com>
+From: Alexander Ovechkin <ovov@yandex-team.ru>
 
-[ Upstream commit 4b5dc1a94d4f92b5845e98bd9ae344b26d933aad ]
+[ Upstream commit 7233da86697efef41288f8b713c10c2499cffe85 ]
 
-This reverts commit 134f98bcf1b898fb9d6f2b91bc85dd2e5478b4b8.
+Currently tcp_check_req can be called with obsolete req socket for which big
+socket have been already created (because of CPU race or early demux
+assigning req socket to multiple packets in gro batch).
 
-The r8153_mac_clk_spd() is used for RTL8153A only, because the register
-table of RTL8153B is different from RTL8153A. However, this function would
-be called when RTL8153B calls r8153_first_init() and r8153_enter_oob().
-That causes RTL8153B becomes unstable when suspending and resuming. The
-worst case may let the device stop working.
+Commit e0f9759f530bf789e984 ("tcp: try to keep packet if SYN_RCV race
+is lost") added retry in case when tcp_check_req is called for PSH|ACK packet.
+But if client sends RST+ACK immediatly after connection being
+established (it is performing healthcheck, for example) retry does not
+occur. In that case tcp_check_req tries to close req socket,
+leaving big socket active.
 
-Besides, revert this commit to disable MAC clock speed down for RTL8153A.
-It would avoid the known issue when enabling U1. The data of the first
-control transfer may be wrong when exiting U1.
-
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Fixes: e0f9759f530 ("tcp: try to keep packet if SYN_RCV race is lost")
+Signed-off-by: Alexander Ovechkin <ovov@yandex-team.ru>
+Reported-by: Oleg Senin <olegsenin@yandex-team.ru>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/r8152.c | 35 ++++++-----------------------------
- 1 file changed, 6 insertions(+), 29 deletions(-)
+ include/net/inet_connection_sock.h | 2 +-
+ net/ipv4/inet_connection_sock.c    | 7 +++++--
+ net/ipv4/tcp_minisocks.c           | 7 +++++--
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 7dc605585535..a27ea04cfa6c 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -2593,29 +2593,6 @@ static void __rtl_set_wol(struct r8152 *tp, u32 wolopts)
- 		device_set_wakeup_enable(&tp->udev->dev, false);
+diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
+index 111d7771b208..aa92af3dd444 100644
+--- a/include/net/inet_connection_sock.h
++++ b/include/net/inet_connection_sock.h
+@@ -284,7 +284,7 @@ static inline int inet_csk_reqsk_queue_is_full(const struct sock *sk)
+ 	return inet_csk_reqsk_queue_len(sk) >= sk->sk_max_ack_backlog;
  }
  
--static void r8153_mac_clk_spd(struct r8152 *tp, bool enable)
--{
--	/* MAC clock speed down */
--	if (enable) {
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL,
--			       ALDPS_SPDWN_RATIO);
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL2,
--			       EEE_SPDWN_RATIO);
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL3,
--			       PKT_AVAIL_SPDWN_EN | SUSPEND_SPDWN_EN |
--			       U1U2_SPDWN_EN | L1_SPDWN_EN);
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL4,
--			       PWRSAVE_SPDWN_EN | RXDV_SPDWN_EN | TX10MIDLE_EN |
--			       TP100_SPDWN_EN | TP500_SPDWN_EN | EEE_SPDWN_EN |
--			       TP1000_SPDWN_EN);
--	} else {
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL, 0);
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL2, 0);
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL3, 0);
--		ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL4, 0);
--	}
--}
--
- static void r8153_u1u2en(struct r8152 *tp, bool enable)
+-void inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req);
++bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req);
+ void inet_csk_reqsk_queue_drop_and_put(struct sock *sk, struct request_sock *req);
+ 
+ static inline void inet_csk_prepare_for_destroy_sock(struct sock *sk)
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index 6bd7ca09af03..fd472eae4f5c 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -705,12 +705,15 @@ static bool reqsk_queue_unlink(struct request_sock *req)
+ 	return found;
+ }
+ 
+-void inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
++bool inet_csk_reqsk_queue_drop(struct sock *sk, struct request_sock *req)
  {
- 	u8 u1u2[8];
-@@ -2847,11 +2824,9 @@ static void rtl8153_runtime_enable(struct r8152 *tp, bool enable)
- 	if (enable) {
- 		r8153_u1u2en(tp, false);
- 		r8153_u2p3en(tp, false);
--		r8153_mac_clk_spd(tp, true);
- 		rtl_runtime_suspend_enable(tp, true);
- 	} else {
- 		rtl_runtime_suspend_enable(tp, false);
--		r8153_mac_clk_spd(tp, false);
- 
- 		switch (tp->version) {
- 		case RTL_VER_03:
-@@ -3413,7 +3388,6 @@ static void r8153_first_init(struct r8152 *tp)
- 	u32 ocp_data;
- 	int i;
- 
--	r8153_mac_clk_spd(tp, false);
- 	rxdy_gated_en(tp, true);
- 	r8153_teredo_off(tp);
- 
-@@ -3475,8 +3449,6 @@ static void r8153_enter_oob(struct r8152 *tp)
- 	u32 ocp_data;
- 	int i;
- 
--	r8153_mac_clk_spd(tp, true);
--
- 	ocp_data = ocp_read_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL);
- 	ocp_data &= ~NOW_IS_OOB;
- 	ocp_write_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL, ocp_data);
-@@ -4141,9 +4113,14 @@ static void r8153_init(struct r8152 *tp)
- 
- 	ocp_write_word(tp, MCU_TYPE_USB, USB_CONNECT_TIMER, 0x0001);
- 
-+	/* MAC clock speed down */
-+	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL, 0);
-+	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL2, 0);
-+	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL3, 0);
-+	ocp_write_word(tp, MCU_TYPE_PLA, PLA_MAC_PWR_CTRL4, 0);
+-	if (reqsk_queue_unlink(req)) {
++	bool unlinked = reqsk_queue_unlink(req);
 +
- 	r8153_power_cut_en(tp, false);
- 	r8153_u1u2en(tp, true);
--	r8153_mac_clk_spd(tp, false);
- 	usb_enable_lpm(tp->udev);
++	if (unlinked) {
+ 		reqsk_queue_removed(&inet_csk(sk)->icsk_accept_queue, req);
+ 		reqsk_put(req);
+ 	}
++	return unlinked;
+ }
+ EXPORT_SYMBOL(inet_csk_reqsk_queue_drop);
  
- 	/* rx aggregation */
+diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
+index 0055ae0a3bf8..7513ba45553d 100644
+--- a/net/ipv4/tcp_minisocks.c
++++ b/net/ipv4/tcp_minisocks.c
+@@ -804,8 +804,11 @@ embryonic_reset:
+ 		tcp_reset(sk, skb);
+ 	}
+ 	if (!fastopen) {
+-		inet_csk_reqsk_queue_drop(sk, req);
+-		__NET_INC_STATS(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
++		bool unlinked = inet_csk_reqsk_queue_drop(sk, req);
++
++		if (unlinked)
++			__NET_INC_STATS(sock_net(sk), LINUX_MIB_EMBRYONICRSTS);
++		*req_stolen = !unlinked;
+ 	}
+ 	return NULL;
+ }
 -- 
 2.30.1
 
