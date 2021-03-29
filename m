@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1960B34CBAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C9734C930
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235650AbhC2IvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:51:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52662 "EHLO mail.kernel.org"
+        id S234452AbhC2I2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:28:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234653AbhC2IdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:33:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0A42619CA;
-        Mon, 29 Mar 2021 08:32:44 +0000 (UTC)
+        id S232372AbhC2IR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:17:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57E4561959;
+        Mon, 29 Mar 2021 08:17:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006765;
-        bh=u2WoqnrokWYYEN1yuapQYMfVOIeZTzxABQuyxzush1I=;
+        s=korg; t=1617005875;
+        bh=zAtzDfQAXaeOAB0+XE+qy9KzeC4/LjIy8j9dzfmTH9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KPxmLP4I/04TMEDnOaKtdjgAu/+Kz2qCKM2r9OXz3w5xWXm0BNl4dazqnjuVpZ7P/
-         7+5Z1Y7lIEnAqN4PqKKhUKgDhILKBDDOS+H1/O/0pNRkgqdXAi0qPKqa3zgF+DQKcR
-         KZZVolTkHhpZlM+A1CR9hMqy9oP3uRCkq2GfkR24=
+        b=ajPj6lh1Q3cBwF1TSFEKSq5lTk92+vw1q+cDLl3yiVgsC9RERG1djet9NkjzOVh9v
+         JYWaOK5Ao9YfIJsCE+TgWhOsB1pw3qGAcfHJer/ITahXTXq29ZGIiP1tSA8Mh2Quzy
+         uO719MDb0W3NbFkfjYKUBTPHR6mcQ/0kYxstMD28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <jsmart2021@gmail.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 051/254] nvme-fc: set NVME_REQ_CANCELLED in nvme_fc_terminate_exchange()
-Date:   Mon, 29 Mar 2021 09:56:07 +0200
-Message-Id: <20210329075634.851433311@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Julian Braha <julianbraha@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 037/221] staging: rtl8192e: fix kconfig dependency on CRYPTO
+Date:   Mon, 29 Mar 2021 09:56:08 +0200
+Message-Id: <20210329075630.410705265@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Julian Braha <julianbraha@gmail.com>
 
-[ Upstream commit 3c7aafbc8d3d4d90430dfa126847a796c3e4ecfc ]
+[ Upstream commit 7c36194558cf49a86a53b5f60db8046c5e3013ae ]
 
-nvme_fc_terminate_exchange() is being called when exchanges are
-being deleted, and as such we should be setting the NVME_REQ_CANCELLED
-flag to have identical behaviour on all transports.
+When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
+Kbuild gives the following warning:
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Reviewed-by: James Smart <jsmart2021@gmail.com>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+
+WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+  - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
+
+This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and
+CRYPTO_LIB_ARC4, without depending on or selecting CRYPTO,
+despite those config options being subordinate to CRYPTO.
+
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Link: https://lore.kernel.org/r/20210222180607.399753-1-julianbraha@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/fc.c | 1 +
+ drivers/staging/rtl8192e/Kconfig | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
-index 7ec6869b3e5b..0ddd2514b401 100644
---- a/drivers/nvme/host/fc.c
-+++ b/drivers/nvme/host/fc.c
-@@ -2443,6 +2443,7 @@ nvme_fc_terminate_exchange(struct request *req, void *data, bool reserved)
- 	struct nvme_fc_ctrl *ctrl = to_fc_ctrl(nctrl);
- 	struct nvme_fc_fcp_op *op = blk_mq_rq_to_pdu(req);
- 
-+	op->nreq.flags |= NVME_REQ_CANCELLED;
- 	__nvme_fc_abort_op(ctrl, op);
- 	return true;
- }
+diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+index 03fcc23516fd..6e7d84ac06f5 100644
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
+ config RTLLIB_CRYPTO_TKIP
+ 	tristate "Support for rtllib TKIP crypto"
+ 	depends on RTLLIB
++	select CRYPTO
+ 	select CRYPTO_LIB_ARC4
+ 	select CRYPTO_MICHAEL_MIC
+ 	default y
 -- 
 2.30.1
 
