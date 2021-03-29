@@ -2,163 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8926A34D02C
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD0B34D02E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 14:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhC2MgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 08:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbhC2Mfm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 08:35:42 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09557C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 05:35:42 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id n138so18194997lfa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 05:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=n1IncH0o+Fbn3l3HmjK+H5MF2/RPQONn5amAdScKdNE=;
-        b=QVsEe5lWyfXAcX2wfBOXkhtl56eNC3CrPHVpXJuZsXUsKRjp8YWrwOacO+tdzxAD4a
-         Lf3E/cCTbatm4a+3j9ioIbb8yZnhcSUAN1n7hVZ1ygwMyBkT649cd/FPz451/KBe9N7W
-         RVyTE5nYZ92LSqYgNccbfx7RAAsHbTF4KgAPoCh+dI85/ck8gyRSDoKzTK+nTxoH9k6o
-         JL4q3gVNAniEu5FKxL9YP4TGlzkmP7MO1nPQVVJU71AMGlWlGflUBW8lYpqIFcZF3rGG
-         h/9M/974WYnX6dKTugPLTxEp71BAydtGLv+b/tvDjfRfs8TPP+X9I6MvmeA31jAmeEcY
-         pLrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n1IncH0o+Fbn3l3HmjK+H5MF2/RPQONn5amAdScKdNE=;
-        b=A4hGEa+HF3EEKVBnK/uEseXaAMyFhmdi14SPTD4RYScgp+my9U117lfRyD8hRtY9vW
-         hi1nPT3rIdd55w0jjqML2d2l847GjgoJ1WuQxK/EPFqthz86Puj4JGQHxHrbZ4nCmJO5
-         lT7OjK+Vs59PFm9H2khZoV0lD14pgv4PYcDLjahAr1g17dFFrQoXm+4D641txloK11/i
-         X1LqcdzVwmOyLfrS+38mpusE3E3RDKq5sq3WjheNakdhQvmoDOhyupse7ZAGThq0Khby
-         DEAp95Mn75mwbaKl7BaZpjshyRmV4zfxdAJicxcycHq7YIIG0xpeD+7NWgRjX/DweZRO
-         MNCg==
-X-Gm-Message-State: AOAM533n3lMFrwyfdiUScTmK8VFUCGnPlFWh0rIGYF5EEYE3tEZz9rPV
-        XHyb/3k4tmBTBckIKnQo2z65u8J9qh2j1kuGHh01RFm73PzyNA==
-X-Google-Smtp-Source: ABdhPJzA9qkF5Zo4NEI1gmtTvoNWNLwSTVFUbI7qlMepk+VbxYaqJ8m3aB1cd6o2cx4pnBa6OOjxHxG9xewEQYgsruE=
-X-Received: by 2002:a19:f812:: with SMTP id a18mr16865082lff.254.1617021340508;
- Mon, 29 Mar 2021 05:35:40 -0700 (PDT)
+        id S231295AbhC2Mgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 08:36:35 -0400
+Received: from mga06.intel.com ([134.134.136.31]:9856 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231308AbhC2Mg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 08:36:28 -0400
+IronPort-SDR: hi8kNdTvqqa6RIsd/iMWzWWqqzipmnl5XZ/SfIDvFdxWoZR0iVNNMsGRO6I0+DsSKRdw+rKGRM
+ 9G3sWID7wlOg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="252883549"
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="252883549"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 05:36:24 -0700
+IronPort-SDR: ar9LaWDocC739DTpnXV9AmV0TGJ2lc9QVcD7qUIU5tlyFAKDGE6RCgY6WJpAU5ciJA/rvCxucy
+ 4f6BLVIp0Ysg==
+X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
+   d="scan'208";a="411059216"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 05:36:22 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lQr7z-00H11y-Kd; Mon, 29 Mar 2021 15:36:19 +0300
+Date:   Mon, 29 Mar 2021 15:36:19 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Goswami, Sanket" <Sanket.Goswami@amd.com>
+Cc:     jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+Subject: Re: [PATCH] i2c: add i2c bus driver for amd navi gpu
+Message-ID: <YGHJwxBl8igqY6VR@smile.fi.intel.com>
+References: <20210309133147.1042775-1-Sanket.Goswami@amd.com>
+ <YEeFgZSIY5lb2ubP@smile.fi.intel.com>
+ <fa1a59fb-a7fa-44bb-1629-5e726f164b94@amd.com>
+ <YFzC19IiGZdmLCOR@smile.fi.intel.com>
+ <617d0164-1290-250f-ae34-828c6b4b390a@amd.com>
+ <YF26F8IFmbo80rMq@smile.fi.intel.com>
+ <0ec22c6a-ec19-774d-bcc7-04a7f69c841c@amd.com>
 MIME-Version: 1.0
-References: <20210327135600.27836-1-yuehaibing@huawei.com>
-In-Reply-To: <20210327135600.27836-1-yuehaibing@huawei.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 29 Mar 2021 14:35:29 +0200
-Message-ID: <CAKfTPtDtfD2B+5AeTYaZCGJZiRtqvnGBdK0Hp4AqC40r5=3=Dw@mail.gmail.com>
-Subject: Re: [PATCH -next] sched/fair: Fix unused function warning
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0ec22c6a-ec19-774d-bcc7-04a7f69c841c@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Mar 29, 2021 at 11:25:58AM +0530, Goswami, Sanket wrote:
+> On 26-Mar-21 16:10, Andy Shevchenko wrote:
+> > On Fri, Mar 26, 2021 at 03:53:34PM +0530, Goswami, Sanket wrote:
+> >> On 25-Mar-21 22:35, Andy Shevchenko wrote:
+> >>> On Mon, Mar 22, 2021 at 10:26:55PM +0530, Goswami, Sanket wrote:
+> >>>> On 09-Mar-21 19:56, Andy Shevchenko wrote:
+> >>>>> On Tue, Mar 09, 2021 at 07:01:47PM +0530, Sanket Goswami wrote:
 
-On Sat, 27 Mar 2021 at 14:59, YueHaibing <yuehaibing@huawei.com> wrote:
->
-> while CONFIG_NO_HZ_COMMON is not enabled, gcc warn this:
->
-> kernel/sched/fair.c:8398:13: warning: =E2=80=98update_nohz_stats=E2=80=99=
- defined but not used [-Wunused-function]
->  static bool update_nohz_stats(struct rq *rq)
->              ^~~~~~~~~~~~~~~~~
->
-> Move update_nohz_stats() to #ifdef block fix this.
+...
 
-Could you add a fix tag  ?
-Fixes: 0826530de3cb ("sched/fair: Remove update of blocked load from
-newidle_balance")
+> >>> And I think I already have told you that I prefer to see rather MODEL_ quirk.
+> >>
+> >> I did not find MODEL_ quirk reference in the PCI device tree, It is actually
+> >> used in platform device tree which is completely different from our PCI
+> >> based configuration, can you please provide some reference of MODEL_ quirk
+> >> which will be part of the PCI device tree?
+> > 
+> > I meant the name of new definition for quirk.
+> 
+> Can you please elaborate this? i am not able to comprehend.
 
-Also could you move update_nohz_stats() closer to its only caller
-_nohz_idle_balance()
+Define in the i2c-designware-core.h something like
+#define MODEL_AMD_BLA_BLA_BLA   BIT(FOO)
 
-With these small nits above:
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+-- 
+With Best Regards,
+Andy Shevchenko
 
->
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  kernel/sched/fair.c | 40 ++++++++++++++++++----------------------
->  1 file changed, 18 insertions(+), 22 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 6d73bdbb2d40..c7a7ef97d167 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -8395,28 +8395,6 @@ group_type group_classify(unsigned int imbalance_p=
-ct,
->         return group_has_spare;
->  }
->
-> -static bool update_nohz_stats(struct rq *rq)
-> -{
-> -#ifdef CONFIG_NO_HZ_COMMON
-> -       unsigned int cpu =3D rq->cpu;
-> -
-> -       if (!rq->has_blocked_load)
-> -               return false;
-> -
-> -       if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
-> -               return false;
-> -
-> -       if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_t=
-ick)))
-> -               return true;
-> -
-> -       update_blocked_averages(cpu);
-> -
-> -       return rq->has_blocked_load;
-> -#else
-> -       return false;
-> -#endif
-> -}
-> -
->  /**
->   * update_sg_lb_stats - Update sched_group's statistics for load balanci=
-ng.
->   * @env: The load balancing environment.
-> @@ -10097,6 +10075,24 @@ static inline int on_null_domain(struct rq *rq)
->  }
->
->  #ifdef CONFIG_NO_HZ_COMMON
-> +static bool update_nohz_stats(struct rq *rq)
-> +{
-> +       unsigned int cpu =3D rq->cpu;
-> +
-> +       if (!rq->has_blocked_load)
-> +               return false;
-> +
-> +       if (!cpumask_test_cpu(cpu, nohz.idle_cpus_mask))
-> +               return false;
-> +
-> +       if (!time_after(jiffies, READ_ONCE(rq->last_blocked_load_update_t=
-ick)))
-> +               return true;
-> +
-> +       update_blocked_averages(cpu);
-> +
-> +       return rq->has_blocked_load;
-> +}
-> +
->  /*
->   * idle load balancing details
->   * - When one of the busy CPUs notice that there may be an idle rebalanc=
-ing
-> --
-> 2.17.1
->
+
