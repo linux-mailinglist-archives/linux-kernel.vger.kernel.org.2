@@ -2,195 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D972234CCAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A9834CCAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235417AbhC2JFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:05:32 -0400
-Received: from mga06.intel.com ([134.134.136.31]:14117 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233504AbhC2IpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:45:16 -0400
-IronPort-SDR: YKg2yh6n7GPKCdq6ejins/yMETi8uAJP4JB0kpAUwVEYAxN/se27AQ0vOTMjUaPuEGxu5sGPSn
- aDzYJSFXrC9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="252854867"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="252854867"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 01:44:30 -0700
-IronPort-SDR: iv9cyEmyKZXmx7LUUcE+NwMOJ90DONPMJhzFU9J5IZ8R2WvzjBAqvmEXTgZjqIYmICu5dJOrqU
- OEqjeiKtVHpQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="515918764"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 29 Mar 2021 01:44:28 -0700
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        Benson Leung <bleung@google.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] usb: typec: Link all ports during connector registration
-Date:   Mon, 29 Mar 2021 11:44:26 +0300
-Message-Id: <20210329084426.78138-7-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210329084426.78138-1-heikki.krogerus@linux.intel.com>
-References: <20210329084426.78138-1-heikki.krogerus@linux.intel.com>
+        id S235812AbhC2JFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234933AbhC2Ipc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:45:32 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADD3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 01:45:26 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:10ad:c55e:881:6a16])
+        by laurent.telenet-ops.be with bizsmtp
+        id m8lP240025FAFk5018lPY3; Mon, 29 Mar 2021 10:45:23 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lQnWU-00BJ2d-RJ
+        for linux-kernel@vger.kernel.org; Mon, 29 Mar 2021 10:45:22 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lQnWU-00FX7L-CY
+        for linux-kernel@vger.kernel.org; Mon, 29 Mar 2021 10:45:22 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     linux-kernel@vger.kernel.org
+Subject: Build regressions/improvements in v5.12-rc5
+Date:   Mon, 29 Mar 2021 10:45:22 +0200
+Message-Id: <20210329084522.3702180-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The connectors may be registered after the ports, so the
-"connector" links need to be created for the ports also when
-ever a new connector gets registered.
+Below is the list of build error/warning regressions/improvements in
+v5.12-rc5[1] compared to v5.11[2].
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/usb/typec/class.c       |  9 +++--
- drivers/usb/typec/class.h       |  4 +-
- drivers/usb/typec/port-mapper.c | 65 ++++++++++++++++++++++++++++++++-
- 3 files changed, 71 insertions(+), 7 deletions(-)
+Summarized:
+  - build errors: +5/-0
+  - build warnings: +110/-8
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index ff199e2d26c7b..f1c2d823c6509 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -1601,7 +1601,6 @@ static void typec_release(struct device *dev)
- 	ida_destroy(&port->mode_ids);
- 	typec_switch_put(port->sw);
- 	typec_mux_put(port->mux);
--	free_pld(port->pld);
- 	kfree(port->cap);
- 	kfree(port);
- }
-@@ -2027,7 +2026,9 @@ struct typec_port *typec_register_port(struct device *parent,
- 		return ERR_PTR(ret);
- 	}
- 
--	port->pld = get_pld(&port->dev);
-+	ret = typec_link_ports(port);
-+	if (ret)
-+		dev_warn(&port->dev, "failed to create symlinks (%d)\n", ret);
- 
- 	return port;
- }
-@@ -2041,8 +2042,10 @@ EXPORT_SYMBOL_GPL(typec_register_port);
-  */
- void typec_unregister_port(struct typec_port *port)
- {
--	if (!IS_ERR_OR_NULL(port))
-+	if (!IS_ERR_OR_NULL(port)) {
-+		typec_unlink_ports(port);
- 		device_unregister(&port->dev);
-+	}
- }
- EXPORT_SYMBOL_GPL(typec_unregister_port);
- 
-diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
-index 52294f7020a8b..aef03eb7e1523 100644
---- a/drivers/usb/typec/class.h
-+++ b/drivers/usb/typec/class.h
-@@ -79,7 +79,7 @@ extern const struct device_type typec_port_dev_type;
- extern struct class typec_mux_class;
- extern struct class typec_class;
- 
--void *get_pld(struct device *dev);
--void free_pld(void *pld);
-+int typec_link_ports(struct typec_port *connector);
-+void typec_unlink_ports(struct typec_port *connector);
- 
- #endif /* __USB_TYPEC_CLASS__ */
-diff --git a/drivers/usb/typec/port-mapper.c b/drivers/usb/typec/port-mapper.c
-index 5bee7a97242fe..fafd98de89df5 100644
---- a/drivers/usb/typec/port-mapper.c
-+++ b/drivers/usb/typec/port-mapper.c
-@@ -34,7 +34,7 @@ static int acpi_pld_match(const struct acpi_pld_info *pld1,
- 	return 0;
- }
- 
--void *get_pld(struct device *dev)
-+static void *get_pld(struct device *dev)
- {
- #ifdef CONFIG_ACPI
- 	struct acpi_pld_info *pld;
-@@ -53,7 +53,7 @@ void *get_pld(struct device *dev)
- #endif
- }
- 
--void free_pld(void *pld)
-+static void free_pld(void *pld)
- {
- #ifdef CONFIG_ACPI
- 	ACPI_FREE(pld);
-@@ -217,3 +217,64 @@ void typec_unlink_port(struct device *port)
- 	class_for_each_device(&typec_class, NULL, port, port_match_and_unlink);
- }
- EXPORT_SYMBOL_GPL(typec_unlink_port);
-+
-+#ifdef CONFIG_USB
-+static int each_port(struct device *port, void *connector)
-+{
-+	struct port_node *node;
-+	int ret;
-+
-+	node = create_port_node(port);
-+	if (IS_ERR(node))
-+		return PTR_ERR(node);
-+
-+	if (!connector_match(connector, node)) {
-+		remove_port_node(node);
-+		return 0;
-+	}
-+
-+	ret = link_port(to_typec_port(connector), node);
-+	if (ret) {
-+		remove_port_node(node->pld);
-+		return ret;
-+	}
-+
-+	get_device(connector);
-+
-+	return 0;
-+}
-+#endif
-+
-+int typec_link_ports(struct typec_port *con)
-+{
-+	int ret = 0;
-+
-+	con->pld = get_pld(&con->dev);
-+	if (!con->pld)
-+		return 0;
-+
-+#ifdef CONFIG_USB
-+	ret = usb_for_each_port(&con->dev, each_port);
-+	if (ret)
-+		typec_unlink_ports(con);
-+#endif
-+	return ret;
-+}
-+
-+void typec_unlink_ports(struct typec_port *con)
-+{
-+	struct port_node *node;
-+	struct port_node *tmp;
-+
-+	mutex_lock(&con->port_list_lock);
-+
-+	list_for_each_entry_safe(node, tmp, &con->port_list, list) {
-+		__unlink_port(con, node);
-+		remove_port_node(node);
-+		put_device(&con->dev);
-+	}
-+
-+	mutex_unlock(&con->port_list_lock);
-+
-+	free_pld(con->pld);
-+}
--- 
-2.30.2
+JFYI, when comparing v5.12-rc5[1] to v5.12-rc4[3], the summaries are:
+  - build errors: +0/-1
+  - build warnings: +0/-0
 
+Happy fixing! ;-)
+
+Thanks to the linux-next team for providing the build service.
+
+[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/a5e13c6df0e41702d2b2c77c8ad41677ebb065b3/ (all 192 configs)
+[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/f40ddce88593482919761f74910f42f4b84c004b/ (all 192 configs)
+[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b/ (all 192 configs)
+
+
+*** ERRORS ***
+
+5 error regressions:
+  + error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emac.ko] undefined!:  => N/A
+  + error: modpost: "devm_ioremap_resource" [drivers/net/ethernet/xilinx/xilinx_emaclite.ko] undefined!:  => N/A
+  + error: modpost: "devm_of_iomap" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+  + error: modpost: "devm_platform_ioremap_resource_byname" [drivers/net/ethernet/xilinx/ll_temac.ko] undefined!:  => N/A
+
+
+*** WARNINGS ***
+
+110 warning regressions:
+  + /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation:  => 176:1
+  + /kisskb/src/drivers/clk/xilinx/xlnx_vcu.c: warning: (near initialization for 'parent_data[0]') [-Wmissing-braces]:  => 524:9
+  + /kisskb/src/drivers/clk/xilinx/xlnx_vcu.c: warning: missing braces around initializer [-Wmissing-braces]:  => 524:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: (near initialization for 'clock_table.DcfClocks') [-Wmissing-braces]:  => 880:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 880:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/dcn301_smu.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 198:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/dcn301_smu.c: warning: missing braces around initializer [-Wmissing-braces]:  => 198:8
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: (near initialization for 'dummy_wms.WatermarkRow') [-Wmissing-braces]:  => 704:15
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: (near initialization for 'idle_info.idle_info') [-Wmissing-braces]:  => 129:10, 116:11
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn301/vg_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]:  => 704:15, 129:10, 116:11
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 1802:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1802:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]:  => 1273:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1273:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]:  => 1229:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]:  => 1229:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'dcn2_0_nv12_soc.clock_limits') [-Wmissing-braces]:  => 451:15
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]:  => 451:15
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]:  => 258:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: missing braces around initializer [-Wmissing-braces]:  => 258:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_hwseq.c: warning: (near initialization for 'warmup_params.start_address') [-Wmissing-braces]:  => 264:9
+  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn30/dcn30_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]:  => 264:9
+  + /kisskb/src/drivers/media/i2c/imx334.c: warning: (near initialization for 'msgs[0]') [-Wmissing-braces]:  => 288:9
+  + /kisskb/src/drivers/media/i2c/imx334.c: warning: missing braces around initializer [-Wmissing-braces]:  => 288:9
+  + /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation:  => 444:1
+  + /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551584' to '-32' [-Woverflow]:  => 844:2
+  + /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in implicit constant conversion [-Woverflow]:  => 844:2
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'req.hdr') [-Wmissing-braces]:  => 604:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: (near initialization for 'rsp.hdr') [-Wmissing-braces]:  => 605:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c: warning: missing braces around initializer [-Wmissing-braces]:  => 605:9, 604:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'cntr_req.hdr') [-Wmissing-braces]:  => 878:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'cntr_rsp.hdr') [-Wmissing-braces]:  => 879:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'dis_req.hdr') [-Wmissing-braces]:  => 1198:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'dummy.packet') [-Wmissing-braces]:  => 974:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'free_req.hdr') [-Wmissing-braces]:  => 861:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: (near initialization for 'write_req.hdr') [-Wmissing-braces]:  => 1263:9, 972:9
+  + /kisskb/src/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c: warning: missing braces around initializer [-Wmissing-braces]:  => 972:9, 974:9, 878:9, 1198:9, 1263:9, 879:9, 861:9
+  + /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation:  => 1092:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_add_vlan_id' uses dynamic stack allocation:  => 317:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_del_vlan_id' uses dynamic stack allocation:  => 331:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_probe' uses dynamic stack allocation:  => 590:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_query_rgid' uses dynamic stack allocation:  => 216:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_register_dmb' uses dynamic stack allocation:  => 282:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_signal_ieq' uses dynamic stack allocation:  => 359:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_unregister_dmb' uses dynamic stack allocation:  => 303:1
+  + /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'query_info' uses dynamic stack allocation:  => 85:1
+  + /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation:  => 481:1
+  + /kisskb/src/drivers/target/iscsi/iscsi_target.c: warning: 'iscsit_send_datain' uses dynamic stack allocation:  => 2886:1
+  + /kisskb/src/fs/nfs/super.c: warning: 'nfs_show_stats' uses dynamic stack allocation:  => 723:1
+  + /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2224 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 1311:1
+  + /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.10' uses dynamic stack allocation:  => 238:1
+  + /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.26' uses dynamic stack allocation:  => 3675:1
+  + /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_show_fdinfo' uses dynamic stack allocation:  => 1789:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_free_coherent' uses dynamic stack allocation:  => 1439:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_cpu' uses dynamic stack allocation:  => 1549:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_device' uses dynamic stack allocation:  => 1580:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_cpu' uses dynamic stack allocation:  => 1498:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_device' uses dynamic stack allocation:  => 1517:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_page' uses dynamic stack allocation:  => 1290:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_resource' uses dynamic stack allocation:  => 1480:1
+  + /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_sg' uses dynamic stack allocation:  => 1378:1
+  + /kisskb/src/kernel/events/core.c: warning: '___perf_sw_event' uses dynamic stack allocation:  => 9268:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_aux_event' uses dynamic stack allocation:  => 8455:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_bpf_output' uses dynamic stack allocation:  => 8752:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_cgroup_output' uses dynamic stack allocation:  => 8005:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_comm_output' uses dynamic stack allocation:  => 7783:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_ksymbol_output' uses dynamic stack allocation:  => 8663:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_mmap_output' uses dynamic stack allocation:  => 8161:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_namespaces_output' uses dynamic stack allocation:  => 7882:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_read_event' uses dynamic stack allocation:  => 7402:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_switch_output' uses dynamic stack allocation:  => 8547:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_task_output' uses dynamic stack allocation:  => 7689:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation:  => 8870:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_log_itrace_start' uses dynamic stack allocation:  => 8943:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_log_lost_samples' uses dynamic stack allocation:  => 8488:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_log_throttle' uses dynamic stack allocation:  => 8618:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_swevent_hrtimer' uses dynamic stack allocation:  => 10427:1
+  + /kisskb/src/kernel/events/core.c: warning: 'perf_tp_event' uses dynamic stack allocation:  => 9582:1
+  + /kisskb/src/kernel/rseq.c: warning: '__rseq_handle_notify_resume' uses dynamic stack allocation:  => 281:1
+  + /kisskb/src/kernel/rseq.c: warning: 'rseq_syscall' uses dynamic stack allocation:  => 300:1
+  + /kisskb/src/kernel/smp.c: warning: 'smp_call_function_single' uses dynamic stack allocation:  => 521:1
+  + /kisskb/src/kernel/static_call.c: warning: unused variable 'mod' [-Wunused-variable]:  => 153:18
+  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7424 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
+  + /kisskb/src/lib/crypto/chacha20poly1305.c: warning: 'chacha20poly1305_crypt_sg_inplace' uses dynamic stack allocation:  => 331:1
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_all' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_partial.isra.29' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_none.isra.63' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_all.isra.49' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_partial.isra.41' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_all' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_partial.isra.17' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_zero.isra.9' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_all' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_partial' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_none' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_all' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_partial' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_all' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_partial' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_zero' uses dynamic stack allocation:  => 255:15
+  + /kisskb/src/mm/slub.c: warning: '___slab_alloc' uses dynamic stack allocation:  => 2768:1
+  + /kisskb/src/mm/slub.c: warning: '__slab_free' uses dynamic stack allocation:  => 3092:1
+  + /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.65' uses dynamic stack allocation:  => 2304:1
+  + /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.64' uses dynamic stack allocation:  => 2014:1
+  + /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.63' uses dynamic stack allocation:  => 2372:1
+  + /kisskb/src/mm/z3fold.c: warning: 'z3fold_reclaim_page.constprop' uses dynamic stack allocation:  => 1485:1
+  + /kisskb/src/net/bridge/br_netlink.c: warning: 'br_fill_linkxstats' uses dynamic stack allocation:  => 1753:1
+  + /kisskb/src/net/bridge/br_vlan.c: warning: 'br_vlan_fill_vids' uses dynamic stack allocation:  => 1672:1
+  + /kisskb/src/net/bridge/netfilter/ebtables.c: warning: 'compat_copy_everything_to_user' uses dynamic stack allocation:  => 1767:1
+  + modpost: WARNING: modpost: Symbol info of vmlinux is missing. Unresolved symbol check will be entirely skipped.:  => N/A
+
+8 warning improvements:
+  - /kisskb/src/arch/sparc/include/asm/cmpxchg_32.h: warning: value computed is not used [-Wunused-value]: 28:22 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: (near initialization for 'cmd.lock_hw') [-Wmissing-braces]: 36:8 => 
+  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dmub_hw_lock_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 36:8 => 
+  - /kisskb/src/drivers/net/ethernet/aurora/nb8800.h: warning: "TCR_DIE" redefined: 92 => 
+  - /kisskb/src/drivers/net/ethernet/freescale/fec_main.c: warning: unused variable 'pdata' [-Wunused-variable]: 1667:28 => 
+  - /kisskb/src/drivers/net/ethernet/freescale/fec_main.c: warning: unused variable 'val' [-Wunused-variable]: 948:6 => 
+  - /kisskb/src/drivers/rtc/rtc-rx6110.c: warning: 'rx6110_probe' defined but not used [-Wunused-function]: 314:12 => 
+  - warning: unmet direct dependencies detected for COMPAT_BINFMT_ELF: N/A => 
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
