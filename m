@@ -2,223 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57EA34D238
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC37F34D244
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 16:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhC2ONz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 10:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        id S230220AbhC2OSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 10:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhC2ONd (ORCPT
+        with ESMTP id S229709AbhC2OSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 10:13:33 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF8D5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:13:32 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id hq27so19678433ejc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:13:32 -0700 (PDT)
+        Mon, 29 Mar 2021 10:18:11 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591B0C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:18:11 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id e14so4460418plj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 07:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=86TeMxQ89yb3/ndTsuX1OXubFkK/BuTbuolAbXSLSik=;
-        b=IFcI9jEg+O3A4eONHkvWRe1r0Ehi05s9eFnLPDMXl/ML+/aAId2nVpJOovAvSVhp0O
-         MKMhZp59G47NRct/PMdnLWMJcSO6VSuAnLdR2uJCk3Olr0LJBEXI5SZ4tItb91xw2B4j
-         0qNUyYfaicfLW8GsBq5DS8xqEJ2oFVQNijZ+fwgCxGLP2LQyZ4UrvN/00obi7n26wrMs
-         9QYvqQIB2ZtzoQjt42Da3LSG2/hNFTKaqA/1hCWag7hmglxvXR6hWxM+vS28ie1xKolK
-         QxCIev16OgLnqY0SP8Q5QDrsFZwX0NY/A11zoxT8W3uyKKkzfEl52U7lNSZ9PzZ7uf7m
-         FrEg==
+        bh=XkWm2uoX5PGUd0zTaPdRUkrT9tpPWJ/vjLUkOrtu204=;
+        b=UA30wCfs5nO+qxQceTlHPRwZMSd8MOIfNshtSoUs7cBBtGOsLJtJ662UUZGduUhTUD
+         PAr4/XYr2pRzFmO06086UJ+zaQpL/YHNKVQeSscCUpBXPKffbStpwoHxFYtK6/P7DSEZ
+         ZSYkfb+/+VYBx6/7WX+uPwWXJBohiyAWsz6iFXUKyjG33X9LDEbQdV+NbdeLl0Q5cD3N
+         q710mocMdyU0q3Umyx8CzkC48QhnOpj3lEVxMyePPGLNFZ/EOMwl8VxhQLWCWRuOKwEA
+         lqGLf9A2ZWwUrAnjTn965VZ52V6tZ/TnNmJTTep5zRT0nzzS+HlVJjZQ3j8hHC1b3pd8
+         7Mow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=86TeMxQ89yb3/ndTsuX1OXubFkK/BuTbuolAbXSLSik=;
-        b=mkVhBX9i2weXRcJSn8lIYvlgctXDBtba6nUVbyxflWAsBDm3SMSzlP504RbkyrioEe
-         30xoOAVl5QhB4xH4a8fWVu4LgyT/jRbPO2eZykXWSeiTEN7gVzIZ6I36nFevru5Tkdip
-         1F5p7bpIxcWmk9Exg2P46wBATsz73kWvgvH8qjWDQbOreWV+3MceR3nUBBZAnws6Of7g
-         ECMPB7RpIBh0bvInlqGIORLDIe09RkwqldX0+NK74TUbyJgsvjHlPcvF5yvGJbqQw2Z5
-         M+IbptTrsSUQv6UcILo7HYEzqjHxiRljNgO6+p531U7BiFwMc0H2juz9BgejxddQyAtb
-         OcnA==
-X-Gm-Message-State: AOAM530JTDwTOjMV378ShbQIHcT4DQz5ogk5JjL/4Ir865+vHR07frhf
-        5/HJou2/ntoV07tWxHT7mr4ftxneAe+owfI4htScvg==
-X-Google-Smtp-Source: ABdhPJwHlCSU+a2hL0/WMfvHzMD/fGVmeeFv/HnoEbiKZWgsmdcvNRudPSIVstBfAPD6a6CCb9LpRXyXZed2Y0Se0B0=
-X-Received: by 2002:a17:907:9482:: with SMTP id dm2mr2503093ejc.303.1617027211640;
- Mon, 29 Mar 2021 07:13:31 -0700 (PDT)
+        bh=XkWm2uoX5PGUd0zTaPdRUkrT9tpPWJ/vjLUkOrtu204=;
+        b=OD0yWrKtNYltjZNEy3QNBEz6uERxG+7X7BeM695nRMzNBIQUYmtyGzCyAuWF6dHvIt
+         D0K5jmJDu8DZo2AkuvDVonjqkACuPwYsQ4Kqphhg+u4nomZPF7VhdxIwkt1bLxFvrrY0
+         p4ptKggSM1xZZbylu0xlI8d6oLD1KOiJxmoDx7yYmt1zZvQiVjrxi4zQkggk9kEfiVTw
+         XmuceU0Kgsii1GwHKIPrYrBNnUJL2+qZyyfvCcCJbuIvXf9pLHuGCN3Y1PR0KIcLP8qh
+         qbrzBDYh6b5f7evUVfq1yE1i0vRI7DDvlA2wXl5DE/I2ASelCD9cU2J4wNiEDNdT8ZmO
+         nibg==
+X-Gm-Message-State: AOAM5309ydLaamXaC7H5oRJ2tk4we9UxzMz2HvcnU2btnPwbLwohlHSH
+        mPxQvMNoY+Y3hOINQ7EBCgdxutBUGSZR+y/naljDQA==
+X-Google-Smtp-Source: ABdhPJwRl43yxX2wogTr17ggEWSJRHuhBCv1opItQmAerLNpbYmDuMsp+DH3dlo7xrZ4+tbHg5yIahu6UX1G5IoPJlA=
+X-Received: by 2002:a17:902:7404:b029:e4:503b:f83d with SMTP id
+ g4-20020a1709027404b02900e4503bf83dmr28417127pll.35.1617027490669; Mon, 29
+ Mar 2021 07:18:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210329075633.135869143@linuxfoundation.org> <20210329075640.480623043@linuxfoundation.org>
- <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com>
- <YGGoHdprUT/AscHa@kroah.com> <CADYN=9K-rV+efCDBoF4a_rKbg77d1o-uWH1oTgjZ+v-4MUjo5Q@mail.gmail.com>
- <YGG7hTYP2gGwuBCJ@kroah.com>
-In-Reply-To: <YGG7hTYP2gGwuBCJ@kroah.com>
-From:   Anders Roxell <anders.roxell@linaro.org>
-Date:   Mon, 29 Mar 2021 16:13:20 +0200
-Message-ID: <CADYN=9+kQwBUbq_Na-Y1Cz4Y7w16Quh+utMtVuDOsBjZk_jJYA@mail.gmail.com>
-Subject: Re: [PATCH 5.11 225/254] arm64/mm: define arch_get_mappable_range()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        teawater <teawaterz@linux.alibaba.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
+References: <20210329082416.40b7f449@canb.auug.org.au>
+In-Reply-To: <20210329082416.40b7f449@canb.auug.org.au>
+From:   Mark Yacoub <markyacoub@google.com>
+Date:   Mon, 29 Mar 2021 10:17:59 -0400
+Message-ID: <CAC0gqY5+tcmNOoRrjiNMsffWbrQEF_pwjvne-oP+sGbr+84suA@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the amdgpu tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 13:35, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+oh this sucks. I'll look into my config and fix it. Thanks Stephen for
+bringing it to my attention!
+
+On Sun, Mar 28, 2021 at 5:24 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
-> On Mon, Mar 29, 2021 at 01:06:47PM +0200, Anders Roxell wrote:
-> > On Mon, 29 Mar 2021 at 12:13, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Mon, Mar 29, 2021 at 03:05:25PM +0530, Naresh Kamboju wrote:
-> > > > On Mon, 29 Mar 2021 at 14:10, Greg Kroah-Hartman
-> > > > <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > From: Anshuman Khandual <anshuman.khandual@arm.com>
-> > > > >
-> > > > > [ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
-> > > > >
-> > > > > This overrides arch_get_mappable_range() on arm64 platform which will be
-> > > > > used with recently added generic framework.  It drops
-> > > > > inside_linear_region() and subsequent check in arch_add_memory() which are
-> > > > > no longer required.  It also adds a VM_BUG_ON() check that would ensure
-> > > > > that mhp_range_allowed() has already been called.
-> > > > >
-> > > > > Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
-> > > > > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> > > > > Reviewed-by: David Hildenbrand <david@redhat.com>
-> > > > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> > > > > Cc: Will Deacon <will@kernel.org>
-> > > > > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > > > > Cc: Mark Rutland <mark.rutland@arm.com>
-> > > > > Cc: Heiko Carstens <hca@linux.ibm.com>
-> > > > > Cc: Jason Wang <jasowang@redhat.com>
-> > > > > Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> > > > > Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> > > > > Cc: Michal Hocko <mhocko@kernel.org>
-> > > > > Cc: Oscar Salvador <osalvador@suse.de>
-> > > > > Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-> > > > > Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> > > > > Cc: teawater <teawaterz@linux.alibaba.com>
-> > > > > Cc: Vasily Gorbik <gor@linux.ibm.com>
-> > > > > Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> > > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > > > Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > > ---
-> > > > >  arch/arm64/mm/mmu.c | 15 +++++++--------
-> > > > >  1 file changed, 7 insertions(+), 8 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> > > > > index 6f0648777d34..92b3be127796 100644
-> > > > > --- a/arch/arm64/mm/mmu.c
-> > > > > +++ b/arch/arm64/mm/mmu.c
-> > > > > @@ -1443,16 +1443,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
-> > > > >         free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
-> > > > >  }
-> > > > >
-> > > > > -static bool inside_linear_region(u64 start, u64 size)
-> > > > > +struct range arch_get_mappable_range(void)
-> > > > >  {
-> > > > > +       struct range mhp_range;
-> > > > > +
-> > > > >         /*
-> > > > >          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
-> > > > >          * accommodating both its ends but excluding PAGE_END. Max physical
-> > > > >          * range which can be mapped inside this linear mapping range, must
-> > > > >          * also be derived from its end points.
-> > > > >          */
-> > > > > -       return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
-> > > > > -              (start + size - 1) <= __pa(PAGE_END - 1);
-> > > > > +       mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
-> > > > > +       mhp_range.end =  __pa(PAGE_END - 1);
-> > > > > +       return mhp_range;
-> > > > >  }
-> > > > >
-> > > > >  int arch_add_memory(int nid, u64 start, u64 size,
-> > > > > @@ -1460,11 +1463,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
-> > > > >  {
-> > > > >         int ret, flags = 0;
-> > > > >
-> > > > > -       if (!inside_linear_region(start, size)) {
-> > > > > -               pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
-> > > > > -               return -EINVAL;
-> > > > > -       }
-> > > > > -
-> > > > > +       VM_BUG_ON(!mhp_range_allowed(start, size, true));
-> > > > >         if (rodata_full || debug_pagealloc_enabled())
-> > > > >                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
-> > > >
-> > > > The stable rc 5.10 and 5.11 builds failed for arm64 architecture
-> > > > due to below warnings / errors,
-> > > >
-> > > > > Anshuman Khandual <anshuman.khandual@arm.com>
-> > > > >     arm64/mm: define arch_get_mappable_range()
-> > > >
-> > > >
-> > > >   arch/arm64/mm/mmu.c: In function 'arch_add_memory':
-> > > >   arch/arm64/mm/mmu.c:1483:13: error: implicit declaration of function
-> > > > 'mhp_range_allowed'; did you mean 'cpu_map_prog_allowed'?
-> > > > [-Werror=implicit-function-declaration]
-> > > >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
-> > > >                ^
-> > > >   include/linux/build_bug.h:30:63: note: in definition of macro
-> > > > 'BUILD_BUG_ON_INVALID'
-> > > >    #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
-> > > >                                                                  ^
-> > > >   arch/arm64/mm/mmu.c:1483:2: note: in expansion of macro 'VM_BUG_ON'
-> > > >     VM_BUG_ON(!mhp_range_allowed(start, size, true));
-> > > >     ^~~~~~~~~
-> > > >
-> > > > Build link,
-> > > > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.11/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/41/consoleText
-> > > > https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=dragonboard-410c,label=docker-buster-lkft/120/consoleFull
-> > >
-> > > thanks, will go drop this, and the patch that was after it in the
-> > > series, from both trees and will push out a -rc2.
-> > >
-> > > Note, I used tuxbuild before doing this release, and it does not show
-> > > this error in the arm64 defconfigs. What config did you use to trigger
-> > > this?
-> >
-> > We have a build with CONFIG_MEMORY_HOTPLUG=y enabled too.
-> >
-> > This is a way to reproduce it locally:
-> > tuxmake --runtime podman --target-arch arm64 --toolchain gcc --kconfig
-> > defconfig --kconfig-add CONFIG_MEMORY_HOTPLUG=y
+> Hi all,
 >
-> Ah, that wasn't expected, but makes sense, thanks.
+> Commit
 >
-> Does 'allmodconfig' also trigger that?
-
-Yes that would trigger it. I tried this:
-tuxmake --runtime docker --target-arch arm64 --toolchain gcc --kconfig
-allmodconfig --build-dir=$(pwd)/obj/test-allmod-arm64
-
->  Maybe I'll go add that to my
-> build tests for arm64...
-
-It will take a few minutes to build an allmodconfig kernel on tuxsuite.
-
-Cheers,
-Anders
+>   0ea5088407fa ("drm/amdgpu: Ensure that the modifier requested is supported by plane.")
+>
+> is missing a Signed-off-by from its author.
+>
+> The author is "Mark Yacoub <markyacoub@google.com>", but the SOB is
+> "default avatarMark Yacoub <markyacoub@chromium.org>" :-(
+>
+> --
+> Cheers,
+> Stephen Rothwell
