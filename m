@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4913F34CEC0
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78EFE34CF3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 13:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbhC2LUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 07:20:44 -0400
-Received: from mga06.intel.com ([134.134.136.31]:42644 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232756AbhC2LUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 07:20:37 -0400
-IronPort-SDR: 9qgv0h0CdeBk2nKlLx6pa8FFfTonH0Q70npkitKMRCdTWvIfy/cT6GF+J/INkxCkLJfrx/Ub2j
- Ct3LIykB+43w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9937"; a="252875193"
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="252875193"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2021 04:20:35 -0700
-IronPort-SDR: 2I84hON4v+DOOSjSljmZJEbCneRUS58o/nIPJIXoubNKhvLOTsnuxwupCLyNv88RpTBoDpmspM
- N1bZOjE4zTzA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,287,1610438400"; 
-   d="scan'208";a="444513440"
-Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
-  by fmsmga002.fm.intel.com with ESMTP; 29 Mar 2021 04:20:35 -0700
-Subject: Re: [PATCH] MAINTAINERS: add self as reviewer to INTEL STRATIX10
- FIRMWARE DRIVERS
-To:     trix@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-References: <20210327151919.453669-1-trix@redhat.com>
-From:   Richard Gong <richard.gong@linux.intel.com>
-Message-ID: <b29479f6-e6d7-076b-7004-4ecfa0425bd7@linux.intel.com>
-Date:   Mon, 29 Mar 2021 06:40:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230482AbhC2Lld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 07:41:33 -0400
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:46789 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229441AbhC2LlD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 07:41:03 -0400
+Received: by mail-lf1-f51.google.com with SMTP id 12so7552198lfq.13;
+        Mon, 29 Mar 2021 04:41:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=0NXghuK6J2p/ROcymalVkTDQkV7uB5KSR64W6RUq5WU=;
+        b=H4RgJNgK3lxQa8nULbqrEdmmu6SgcGeDXLA9KaiGbLWfIrx5vylTImN8XoxgxAZAHk
+         YHwhRiEAo9wzHS23pJYwpf5dCn1d77+Lgrnze5IWqcBrwo/PyTKltDRHvCVbW3LQXpde
+         lltKYgG20BvzGibZGz2o2BCK5I3tO4nDc+BiAtwqGcw/D6dbUmDncJkSxI9TWN+g7wnr
+         3JsTMNLWoBwazbLt2VaQQfSRw8APz8fx32X/GijsLxfKX9QH1LLlHdbGWbpWUBZK25Cs
+         fPg/VBaGTRQQHeqnqU3ervOnPHQjCn/V7Wg5KzOzK5IwxMqhXvUsmAmvkrzRbsyRaKsP
+         hVdA==
+X-Gm-Message-State: AOAM530LC9myUFXeLHqGJBDJ62WvBrvGxp/nXFnHwTXDfEywtwR7qVCI
+        a2xGaTW/yMFP3BbpwKnBr+A=
+X-Google-Smtp-Source: ABdhPJy9wjEmvwWzgpE8+6dO7bbkmx8DNwI+fDv6Wx9APGvhVvbn5OSE4fk/hPhmggCIMpxXZaQG6w==
+X-Received: by 2002:a05:6512:b26:: with SMTP id w38mr16264361lfu.152.1617018061778;
+        Mon, 29 Mar 2021 04:41:01 -0700 (PDT)
+Received: from dc7vkhyh15000m40t6jht-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
+        by smtp.gmail.com with ESMTPSA id f20sm984843lfk.207.2021.03.29.04.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Mar 2021 04:41:01 -0700 (PDT)
+Date:   Mon, 29 Mar 2021 14:40:55 +0300
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] gpiolib: misc fixups
+Message-ID: <cover.1617017060.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-In-Reply-To: <20210327151919.453669-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+Patch 1/2:
+The deprecated and obsoleted - but still used (especially in older
+releases) /sys/class/gpio interface allows modifying GPIOs which are
+excluded by the "valid_mask". This makes the valid_mask not suitable for
+cases where toggling GPIO can cause damage. Patch adds validity
+check to export.
 
-On 3/27/21 10:19 AM, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> The Intel stratix 10 is a fpga.  I review fpga's. So I want to help
-> in this related subsystem.
-> 
+I assume many people are still using the /sys/class/gpio at least for
+testing purposes - especially with older releases. Thus it might be
+worth the hassle to exclude invalid GPIOs - they're probably set invalid
+for a good reason. (Actually, I noticed this when trying to use the
+valid_mask to invalidate undocumented GPO on BD71815 - which may be
+connected to GND. The people using BD71815 are likely to be using some
+stable-release, which probably supports the (deprected, obsolete) sysfs
+until the end of the days => valid_mask is not safe way unless fix to
+this is backported to stable).
 
-Intel Stratix10 service layer driver is not a FPGA.
+Patch 2/2:
+checkpatch nowadays reminds us that ENOTSUPP is not valid error and
+should be replaced by EOPNOTSUPP. It'd be nice if GPIO drivers could
+return also the EOPNOTSUPP from config and avoid being nagged by
+checkpatch.
 
-Intel FPGA SoC is composed of ARM Cortex hard processor system (HPS) and 
-Secure Device Manager (SDM). SDM is the hardware which does FPGA 
-configuration, remote system update (RSU), crypto service (FCS), warm 
-reset and other features.
+Matti Vaittinen (2):
+  gpio: sysfs: Obey valid_mask
+  gpiolib: Allow drivers to return EOPNOTSUPP from config
 
-To meet the whole system security needs and support virtual machine 
-requesting communication with SDM, only the secure world of software 
-(EL3) can interfaces with SDM. All software entities running on the 
-other exception level must channel through the EL3 software whenever it 
-needs service from SDM.
+ drivers/gpio/gpiolib-sysfs.c | 8 ++++++++
+ drivers/gpio/gpiolib.c       | 2 +-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-Intel Stratix 10 service layer driver, added into Opensource kernel 
-mainlines since version 5.0, interfaces with the service provides at EL1 
-(FPGA manager, RSU and FPGA crypto service drivers as today) and 
-managers secure monitor call (SMC) to communicate with the secure 
-monitor software at the secure world (EL3).
+-- 
+2.25.4
 
-Regards,
-Richard
 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->   MAINTAINERS | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 67b104202602..00828de0a7bc 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9266,6 +9266,7 @@ F:	tools/power/x86/intel-speed-select/
->   
->   INTEL STRATIX10 FIRMWARE DRIVERS
->   M:	Richard Gong <richard.gong@linux.intel.com>
-> +R:	Tom Rix <trix@redhat.com >   L:	linux-kernel@vger.kernel.org
->   S:	Maintained
->   F:	Documentation/ABI/testing/sysfs-devices-platform-stratix10-rsu
-> 
+-- 
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
