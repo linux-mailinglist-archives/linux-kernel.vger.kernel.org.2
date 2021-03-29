@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520BC34C90B
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B1A34C921
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhC2I0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:26:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59002 "EHLO mail.kernel.org"
+        id S233906AbhC2I1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233193AbhC2IRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:17:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18EE961878;
-        Mon, 29 Mar 2021 08:16:36 +0000 (UTC)
+        id S233276AbhC2IRY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:17:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DFE86196D;
+        Mon, 29 Mar 2021 08:17:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005796;
-        bh=+GMuBe7YXhCwuPEwA/qmcdT63q+40w2qaBExFqlb20o=;
+        s=korg; t=1617005827;
+        bh=2bjAv5Fs5S1VVQ1vyDYcjvTd18sHruOka5bhkInAEyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QBFUNXvCaRfNlTDjH0CcrAuv0fOSMgmPJnRq574gVFVCxBpMEASVM0wo7OgWXBHoj
-         vLQ3PrDr4AqwELL4hAx/595y1E99ytdLyc6ZPNIgryrQa9H8g/LzXpvXKIJHZTzYem
-         U+cpiEtcBiaFzT0tpFY23+plmdo3DiV+Dis1m0x0=
+        b=C8Yo2v2dWfosBmS8feo2d512iV0mWZZ7z/VhJ/1grUoRSxW0OSf4g6qmgJoVpFQyh
+         EW5GokOz1U1X7xLTllR006vItpmz3KyQFo2GQeBoghIiJJN3SkF1lXqTN3ShJ/7VpY
+         viH0xQYBj7pglhHGil2GFpfaP9xMkt+lSiInpEms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,25 +27,23 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>, Zi Yan <ziy@nvidia.com>,
         Shakeel Butt <shakeelb@google.com>,
         Michal Hocko <mhocko@suse.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
         Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Nicholas Piggin <npiggin@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
+        Rui Xiang <rui.xiang@huawei.com>,
         Tianhong Ding <dingtianhong@huawei.com>,
         Weilong Chen <chenweilong@huawei.com>,
-        Rui Xiang <rui.xiang@huawei.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 001/221] mm/memcg: rename mem_cgroup_split_huge_fixup to split_page_memcg and add nr_pages argument
-Date:   Mon, 29 Mar 2021 09:55:32 +0200
-Message-Id: <20210329075629.220507977@linuxfoundation.org>
+Subject: [PATCH 5.10 002/221] mm/memcg: set memcg when splitting page
+Date:   Mon, 29 Mar 2021 09:55:33 +0200
+Message-Id: <20210329075629.257262010@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
 References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -55,106 +53,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhou Guanghui <zhouguanghui1@huawei.com>
 
-commit be6c8982e4ab9a41907555f601b711a7e2a17d4c upstream.
+commit e1baddf8475b06cc56f4bafecf9a32a124343d9f upstream.
 
-Rename mem_cgroup_split_huge_fixup to split_page_memcg and explicitly pass
-in page number argument.
+As described in the split_page() comment, for the non-compound high order
+page, the sub-pages must be freed individually.  If the memcg of the first
+page is valid, the tail pages cannot be uncharged when be freed.
 
-In this way, the interface name is more common and can be used by
-potential users.  In addition, the complete info(memcg and flag) of the
-memcg needs to be set to the tail pages.
+For example, when alloc_pages_exact is used to allocate 1MB continuous
+physical memory, 2MB is charged(kmemcg is enabled and __GFP_ACCOUNT is
+set).  When make_alloc_exact free the unused 1MB and free_pages_exact free
+the applied 1MB, actually, only 4KB(one page) is uncharged.
 
-Link: https://lkml.kernel.org/r/20210304074053.65527-2-zhouguanghui1@huawei.com
+Therefore, the memcg of the tail page needs to be set when splitting a
+page.
+
+Michel:
+
+There are at least two explicit users of __GFP_ACCOUNT with
+alloc_exact_pages added recently.  See 7efe8ef274024 ("KVM: arm64:
+Allocate stage-2 pgd pages with GFP_KERNEL_ACCOUNT") and c419621873713
+("KVM: s390: Add memcg accounting to KVM allocations"), so this is not
+just a theoretical issue.
+
+Link: https://lkml.kernel.org/r/20210304074053.65527-3-zhouguanghui1@huawei.com
 Signed-off-by: Zhou Guanghui <zhouguanghui1@huawei.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Reviewed-by: Zi Yan <ziy@nvidia.com>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Hanjun Guo <guohanjun@huawei.com>
 Cc: Hugh Dickins <hughd@google.com>
+Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
 Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Cc: Nicholas Piggin <npiggin@gmail.com>
-Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: Hanjun Guo <guohanjun@huawei.com>
+Cc: Rui Xiang <rui.xiang@huawei.com>
 Cc: Tianhong Ding <dingtianhong@huawei.com>
 Cc: Weilong Chen <chenweilong@huawei.com>
-Cc: Rui Xiang <rui.xiang@huawei.com>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Hugh Dickins <hughd@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/memcontrol.h |    6 ++----
- mm/huge_memory.c           |    2 +-
- mm/memcontrol.c            |   15 +++++----------
- 3 files changed, 8 insertions(+), 15 deletions(-)
+ mm/page_alloc.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -937,9 +937,7 @@ static inline void memcg_memory_event_mm
- 	rcu_read_unlock();
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3272,6 +3272,7 @@ void split_page(struct page *page, unsig
+ 	for (i = 1; i < (1 << order); i++)
+ 		set_page_refcounted(page + i);
+ 	split_page_owner(page, 1 << order);
++	split_page_memcg(page, 1 << order);
  }
+ EXPORT_SYMBOL_GPL(split_page);
  
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--void mem_cgroup_split_huge_fixup(struct page *head);
--#endif
-+void split_page_memcg(struct page *head, unsigned int nr);
- 
- #else /* CONFIG_MEMCG */
- 
-@@ -1267,7 +1265,7 @@ unsigned long mem_cgroup_soft_limit_recl
- 	return 0;
- }
- 
--static inline void mem_cgroup_split_huge_fixup(struct page *head)
-+static inline void split_page_memcg(struct page *head, unsigned int nr)
- {
- }
- 
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2433,7 +2433,7 @@ static void __split_huge_page(struct pag
- 	lruvec = mem_cgroup_page_lruvec(head, pgdat);
- 
- 	/* complete memcg works before add pages to LRU */
--	mem_cgroup_split_huge_fixup(head);
-+	split_page_memcg(head, nr);
- 
- 	if (PageAnon(head) && PageSwapCache(head)) {
- 		swp_entry_t entry = { .val = page_private(head) };
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3268,26 +3268,21 @@ void obj_cgroup_uncharge(struct obj_cgro
- 
- #endif /* CONFIG_MEMCG_KMEM */
- 
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--
- /*
-- * Because tail pages are not marked as "used", set it. We're under
-- * pgdat->lru_lock and migration entries setup in all page mappings.
-+ * Because head->mem_cgroup is not set on tails, set it now.
-  */
--void mem_cgroup_split_huge_fixup(struct page *head)
-+void split_page_memcg(struct page *head, unsigned int nr)
- {
- 	struct mem_cgroup *memcg = head->mem_cgroup;
- 	int i;
- 
--	if (mem_cgroup_disabled())
-+	if (mem_cgroup_disabled() || !memcg)
- 		return;
- 
--	for (i = 1; i < HPAGE_PMD_NR; i++) {
--		css_get(&memcg->css);
-+	for (i = 1; i < nr; i++)
- 		head[i].mem_cgroup = memcg;
--	}
-+	css_get_many(&memcg->css, nr - 1);
- }
--#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
- #ifdef CONFIG_MEMCG_SWAP
- /**
 
 
