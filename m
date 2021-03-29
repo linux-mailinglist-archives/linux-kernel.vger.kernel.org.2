@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA2F34C5E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57F834CAF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhC2IDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:03:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44556 "EHLO mail.kernel.org"
+        id S234969AbhC2Ilg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:41:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231739AbhC2ICU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:02:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D220D61969;
-        Mon, 29 Mar 2021 08:02:19 +0000 (UTC)
+        id S233712AbhC2IWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:22:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94B3B61481;
+        Mon, 29 Mar 2021 08:22:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617004940;
-        bh=Lw244POhdlwttd+pyLgsWKoLcDose81w/p0dOZupmnM=;
+        s=korg; t=1617006134;
+        bh=JqQYKn1ZTnx1pruKnmZr2f/O7Y9btMH/+S13rtg3ZGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=llJW9BKwVTnY3aVZELgjo364QngCdHJmhEUPUOvL/Pvhpc9Qih6HWzGIRaEpNujeG
-         ERUvckcAZ8cm4XRor+Hj3yLSQk/kB23RttFobTXLXFwpfpekzvanZu32mDgGFDceRX
-         PvdaugbrYGDrXsRd/5DnjKBvJ3KxnF3aBJhVCT/s=
+        b=B+mJaCZxtshPEzpOPiV9chIfhQWH9fcVAQJM26TI5lcag1cJuSZDKy3RNuWwm3Nqa
+         aaX/uqAYlp2CUwyc7FO0Q6nIbFQwL8kHBEV0SzLNJqDErDA6uXwWs4d9AyZYr87UFI
+         BqLojjuXhfNzJQ6GzGP/P1HX2sf7syohyIVQRwVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 05/53] ixgbe: Fix memleak in ixgbe_configure_clsu32
+Subject: [PATCH 5.10 129/221] can: c_can_pci: c_can_pci_remove(): fix use-after-free
 Date:   Mon, 29 Mar 2021 09:57:40 +0200
-Message-Id: <20210329075607.734238239@linuxfoundation.org>
+Message-Id: <20210329075633.503752924@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075607.561619583@linuxfoundation.org>
-References: <20210329075607.561619583@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 7a766381634da19fc837619b0a34590498d9d29a ]
+[ Upstream commit 0429d6d89f97ebff4f17f13f5b5069c66bde8138 ]
 
-When ixgbe_fdir_write_perfect_filter_82599() fails,
-input allocated by kzalloc() has not been freed,
-which leads to memleak.
+There is a UAF in c_can_pci_remove(). dev is released by
+free_c_can_dev() and is used by pci_iounmap(pdev, priv->base) later.
+To fix this issue, save the mmio address before releasing dev.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 5b92da0443c2 ("c_can_pci: generic module for C_CAN/D_CAN on PCI")
+Link: https://lore.kernel.org/r/20210301024512.539039-1-ztong0001@gmail.com
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/can/c_can/c_can_pci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 36d73bf32f4f..8e2aaf774693 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -8677,8 +8677,10 @@ static int ixgbe_configure_clsu32(struct ixgbe_adapter *adapter,
- 	ixgbe_atr_compute_perfect_hash_82599(&input->filter, mask);
- 	err = ixgbe_fdir_write_perfect_filter_82599(hw, &input->filter,
- 						    input->sw_idx, queue);
--	if (!err)
--		ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
-+	if (err)
-+		goto err_out_w_lock;
-+
-+	ixgbe_update_ethtool_fdir_entry(adapter, input, input->sw_idx);
- 	spin_unlock(&adapter->fdir_perfect_lock);
+diff --git a/drivers/net/can/c_can/c_can_pci.c b/drivers/net/can/c_can/c_can_pci.c
+index 406b4847e5dc..7efb60b50876 100644
+--- a/drivers/net/can/c_can/c_can_pci.c
++++ b/drivers/net/can/c_can/c_can_pci.c
+@@ -239,12 +239,13 @@ static void c_can_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct net_device *dev = pci_get_drvdata(pdev);
+ 	struct c_can_priv *priv = netdev_priv(dev);
++	void __iomem *addr = priv->base;
  
- 	if ((uhtid != 0x800) && (adapter->jump_tables[uhtid]))
+ 	unregister_c_can_dev(dev);
+ 
+ 	free_c_can_dev(dev);
+ 
+-	pci_iounmap(pdev, priv->base);
++	pci_iounmap(pdev, addr);
+ 	pci_disable_msi(pdev);
+ 	pci_clear_master(pdev);
+ 	pci_release_regions(pdev);
 -- 
 2.30.1
 
