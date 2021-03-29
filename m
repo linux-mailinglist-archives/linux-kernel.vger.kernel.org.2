@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564B434C708
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E9634C8AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhC2ILo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:11:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49162 "EHLO mail.kernel.org"
+        id S233608AbhC2IXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232369AbhC2IGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:06:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F3E661477;
-        Mon, 29 Mar 2021 08:06:35 +0000 (UTC)
+        id S232966AbhC2IP1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:15:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3352619A0;
+        Mon, 29 Mar 2021 08:15:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005196;
-        bh=EOvfSR2zZnuuYQRmLsCwFvncGUc8rhfGvu4gbiiYr1M=;
+        s=korg; t=1617005716;
+        bh=WNK3rGVTrtO9otSoe+n1TMu4uX/bbLFza7ZJFLP2WII=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FDF6sxhEadG7HrZJnwNF+mNUsLyGtF+65GjsWolQBSEsT22LuRVwSy3xmS4UAgagX
-         cfBbnecwGh1jwU9cqIdH4U/shXnWUbpp0wrP5VtaqyXOuQbGxZJM7XHap8o1qZHl/5
-         VN1/hjmqqHm+/0HW+83xQ1TtbqMQrt8psd0kroVs=
+        b=l5hWHAPQVy2c3k2WOx9oStyvIc6vdEQa+/OodL9Pz0/cObwpCHbp5wBeSm3zOLUXc
+         fvDVA5gkC1CjCXplXx446zz4BSrMDUoyOB+9RyLw7qx0Qn9wFbJhH1JfinpQAiqwoL
+         Lw2BUyxaW6DttNWhLTpc18Wq/o8MgDrej5W6R8Ng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
-        Stephane Grosjean <s.grosjean@peak-system.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 4.14 59/59] can: peak_usb: Revert "can: peak_usb: add forgotten supported devices"
+        stable@vger.kernel.org, Ionela Voinescu <ionela.voinescu@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 091/111] PM: EM: postpone creating the debugfs dir till fs_initcall
 Date:   Mon, 29 Mar 2021 09:58:39 +0200
-Message-Id: <20210329075610.816474169@linuxfoundation.org>
+Message-Id: <20210329075618.252474746@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075608.898173317@linuxfoundation.org>
-References: <20210329075608.898173317@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Lukasz Luba <lukasz.luba@arm.com>
 
-commit 5d7047ed6b7214fbabc16d8712a822e256b1aa44 upstream.
+[ Upstream commit fb9d62b27ab1e07d625591549c314b7d406d21df ]
 
-In commit 6417f03132a6 ("module: remove never implemented
-MODULE_SUPPORTED_DEVICE") the MODULE_SUPPORTED_DEVICE macro was
-removed from the kerne entirely. Shortly before this patch was applied
-mainline the commit 59ec7b89ed3e ("can: peak_usb: add forgotten
-supported devices") was added to net/master. As this would result in a
-merge conflict, let's revert this patch.
+The debugfs directory '/sys/kernel/debug/energy_model' is needed before
+the Energy Model registration can happen. With the recent change in
+debugfs subsystem it's not allowed to create this directory at early
+stage (core_initcall). Thus creating this directory would fail.
 
-Fixes: 59ec7b89ed3e ("can: peak_usb: add forgotten supported devices")
-Link: https://lore.kernel.org/r/20210320192649.341832-1-mkl@pengutronix.de
-Suggested-by: Leon Romanovsky <leon@kernel.org>
-Cc: Stephane Grosjean <s.grosjean@peak-system.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Postpone the creation of the EM debug dir to later stage: fs_initcall.
+
+It should be safe since all clients: CPUFreq drivers, Devfreq drivers
+will be initialized in later stages.
+
+The custom debug log below prints the time of creation the EM debug dir
+at fs_initcall and successful registration of EMs at later stages.
+
+[    1.505717] energy_model: creating rootdir
+[    3.698307] cpu cpu0: EM: created perf domain
+[    3.709022] cpu cpu1: EM: created perf domain
+
+Fixes: 56348560d495 ("debugfs: do not attempt to create a new file before the filesystem is initalized")
+Reported-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c |    2 --
- 1 file changed, 2 deletions(-)
+ kernel/power/energy_model.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -26,8 +26,6 @@
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index 0a9326f5f421..8dac32bd9089 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -74,7 +74,7 @@ static int __init em_debug_init(void)
  
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB FD adapter");
- MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB Pro FD adapter");
--MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-Chip USB");
--MODULE_SUPPORTED_DEVICE("PEAK-System PCAN-USB X6 adapter");
- 
- #define PCAN_USBPROFD_CHANNEL_COUNT	2
- #define PCAN_USBFD_CHANNEL_COUNT	1
+ 	return 0;
+ }
+-core_initcall(em_debug_init);
++fs_initcall(em_debug_init);
+ #else /* CONFIG_DEBUG_FS */
+ static void em_debug_create_pd(struct em_perf_domain *pd, int cpu) {}
+ #endif
+-- 
+2.30.1
+
 
 
