@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D1B34CBBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:54:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1F834C9C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235816AbhC2Iv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:51:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53566 "EHLO mail.kernel.org"
+        id S234318AbhC2Ict (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:32:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234748AbhC2Idf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:33:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A5E161601;
-        Mon, 29 Mar 2021 08:33:25 +0000 (UTC)
+        id S232209AbhC2IUZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:20:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C201761959;
+        Mon, 29 Mar 2021 08:20:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006805;
-        bh=zV74FDpV7KdgKP8lu0FW+fH5DmD7xWIndgTpypGpvAs=;
+        s=korg; t=1617006022;
+        bh=0IXQZf3dDztMvaSdtq5qt7YZM/yfrIAaDdJhNr36Yog=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZpRMVHUQO4M/dD2J7IYuoreysjE01CT8X+ajBniZS/wIwTEmumHy08OXYw//E1MnA
-         F3V3JYCNlIHFFJPRrMQlmM+Gaaiw8OS90Je+kI02Z9MIwOX/HL54rrCFmi0RmdX6dp
-         52R/U5v2LDxr/nlijAzEN75BvrGOFA1+mM/ssgHA=
+        b=nj1UCvXQG4R4s8ip+hTrgar5p8mq4TpDntRHe8plHaGyykRXjFaC1tbRIbVJmnKID
+         kvXqyTdowMcfHjfJOxDETNqCoH861aQ2/CDmy1C732T9ZeimwFOU/lQIVVQhpWgQ1w
+         AyeVdk1wHDn3TPbF29ZL3eRBp6OMlUd9vwUKIyDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        stable@vger.kernel.org, JeongHyeon Lee <jhs2.lee@samsung.com>,
         Mike Snitzer <snitzer@redhat.com>
-Subject: [PATCH 5.11 104/254] dm: dont report "detected capacity change" on device creation
+Subject: [PATCH 5.10 089/221] dm verity: fix DM_VERITY_OPTS_MAX value
 Date:   Mon, 29 Mar 2021 09:57:00 +0200
-Message-Id: <20210329075636.620321082@linuxfoundation.org>
+Message-Id: <20210329075632.183656895@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075633.135869143@linuxfoundation.org>
-References: <20210329075633.135869143@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: JeongHyeon Lee <jhs2.lee@samsung.com>
 
-commit 5424a0b867e65f1ecf34ffe88d091a4fcbb35bc1 upstream.
+commit 160f99db943224e55906dd83880da1a704c6e6b9 upstream.
 
-When a DM device is first created it doesn't yet have an established
-capacity, therefore the use of set_capacity_and_notify() should be
-conditional given the potential for needless pr_info "detected
-capacity change" noise even if capacity is 0.
+Three optional parameters must be accepted at once in a DM verity table, e.g.:
+  (verity_error_handling_mode) (ignore_zero_block) (check_at_most_once)
+Fix this to be possible by incrementing DM_VERITY_OPTS_MAX.
 
-One could argue that the pr_info() in set_capacity_and_notify() is
-misplaced, but that position is not held uniformly.
-
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Fixes: f64d9b2eacb9 ("dm: use set_capacity_and_notify")
+Signed-off-by: JeongHyeon Lee <jhs2.lee@samsung.com>
+Fixes: 843f38d382b1 ("dm verity: add 'check_at_most_once' option to only validate hashes once")
 Cc: stable@vger.kernel.org
 Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/md/dm-verity-target.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -2016,7 +2016,10 @@ static struct dm_table *__bind(struct ma
- 	if (size != dm_get_size(md))
- 		memset(&md->geometry, 0, sizeof(md->geometry));
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -34,7 +34,7 @@
+ #define DM_VERITY_OPT_IGN_ZEROES	"ignore_zero_blocks"
+ #define DM_VERITY_OPT_AT_MOST_ONCE	"check_at_most_once"
  
--	set_capacity_and_notify(md->disk, size);
-+	if (!get_capacity(md->disk))
-+		set_capacity(md->disk, size);
-+	else
-+		set_capacity_and_notify(md->disk, size);
+-#define DM_VERITY_OPTS_MAX		(2 + DM_VERITY_OPTS_FEC + \
++#define DM_VERITY_OPTS_MAX		(3 + DM_VERITY_OPTS_FEC + \
+ 					 DM_VERITY_ROOT_HASH_VERIFICATION_OPTS)
  
- 	dm_table_event_callback(t, event_callback, md);
- 
+ static unsigned dm_verity_prefetch_cluster = DM_VERITY_DEFAULT_PREFETCH_SIZE;
 
 
