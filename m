@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EF934D5DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97A834D5E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhC2RQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:16:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhC2RQE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:16:04 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5A6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 10:16:04 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQvUe-0008Bk-Cw; Mon, 29 Mar 2021 19:16:00 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lQvUe-0007Vq-2L; Mon, 29 Mar 2021 19:16:00 +0200
-Date:   Mon, 29 Mar 2021 19:15:59 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH v6 6/7] pwm: pca9685: Restrict period change for
- prescaler users
-Message-ID: <20210329171559.rfelpt42shlebct5@pengutronix.de>
-References: <20210329125707.182732-1-clemens.gruber@pqgruber.com>
- <20210329125707.182732-6-clemens.gruber@pqgruber.com>
+        id S230307AbhC2RQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 13:16:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231341AbhC2RQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 13:16:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D5C66192C;
+        Mon, 29 Mar 2021 17:16:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617038185;
+        bh=lOk2rEpOBpmcphuPTnLaYGl/F2yce+3XWy8O2WeWrLU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mH1go9hmGq6rFQJXrykFffRlR5xbIrdEHI+q0sevwDLEOnC1tz8apgB9ANemB05J2
+         Fs38WiXXMS1oaK5QkZMnFcUWSGssuNhPvwdhyOcFNQkZejLHhMyz8DTUR7zkYU/bzx
+         hzou/tnxu0IB1VSf4unI80Xyy9Bo+FwJ/MTDLbsafyk/z04oFhnzs8vcA18gV4AsVp
+         VgPqABCtUUGNIDDPDAHeKjGbeWArRyMAUPQ4gcDyDGfYx13IAncmYtiVNZKQeo1yvR
+         Kh3wGxNkHY4sCI3+uKWpQAf5VH8tYM9pz8Fj1Ho2DUNJ9L2hQWFkkNATpKxnpvCZzM
+         1zcpBPMEK9PXQ==
+Date:   Mon, 29 Mar 2021 18:16:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Rob Herring <robh@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/6] PCI: brcmstb: Add control of EP voltage regulators
+Message-ID: <20210329171613.GI5166@sirena.org.uk>
+References: <20210326191906.43567-1-jim2101024@gmail.com>
+ <20210326191906.43567-3-jim2101024@gmail.com>
+ <20210329162539.GG5166@sirena.org.uk>
+ <CANCKTBsBNhwG8VQQAQfAfw9jaWLkT+yYJ0oG-HBhA9xiO+jLvA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="axmib6bx2qpqrpz4"
+        protocol="application/pgp-signature"; boundary="J+eNKFoVC4T1DV3f"
 Content-Disposition: inline
-In-Reply-To: <20210329125707.182732-6-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CANCKTBsBNhwG8VQQAQfAfw9jaWLkT+yYJ0oG-HBhA9xiO+jLvA@mail.gmail.com>
+X-Cookie: Never give an inch!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---axmib6bx2qpqrpz4
-Content-Type: text/plain; charset=iso-8859-1
+--J+eNKFoVC4T1DV3f
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 29, 2021 at 02:57:06PM +0200, Clemens Gruber wrote:
-> @@ -330,14 +345,22 @@ static int pca9685_pwm_apply(struct pwm_chip *chip,=
- struct pwm_device *pwm,
-> =20
->  	if (!state->enabled || duty < 1) {
->  		pca9685_pwm_set_duty(pca, pwm->hwpwm, 0);
-> +		clear_bit(pwm->hwpwm, pca->prescaler_users);
+On Mon, Mar 29, 2021 at 12:39:50PM -0400, Jim Quinlan wrote:
+> On Mon, Mar 29, 2021 at 12:25 PM Mark Brown <broonie@kernel.org>
 
-Hmm, so if "my" channel runs at say
+> > Here you are figuring out a device local supply name...
 
-	.duty_cycle =3D 2539520 ns
-	.period =3D 5079040 ns
+> > > +     /*
+> > > +      * Get the regulators that the EP devianswerces require.  We cannot use
+> > > +      * pcie->dev as the device argument in regulator_bulk_get() since
+> > > +      * it will not find the regulators.  Instead, use NULL and the
+> > > +      * regulators are looked up by their name.
+> > > +      */
+> > > +     return regulator_bulk_get(NULL, pcie->num_supplies, pcie->supplies);
 
-and I call pwm_apply_state(mypwm, { .duty_cycle =3D 0, .period =3D 5079040,
-enabled =3D true }); it might happen that another channel modifies the
-period and I won't be able to return to the initial setting.
+> > ...and here you are trying to look up that device local name in the
+> > global namespace.  That's not going to work well, the global names that
+> > supplies are labelled with may be completely different to what the chip
+> > designer called them and there could easily be naming collisions between
+> > different chips.
 
-So I think it's sensible to only clear the user bit if the PWM is
-disabled, but not if it is configured for duty_cycle =3D 0.
+> "devm_regulator_bulk_get(pcie->dev, ...)"; is your concern about the
+> NULL for the device and if so does this fix it?  If not, what do you
+> suggest that I do?
 
-Does this make sense?
+If you use the struct device for the PCIe controller then that's going
+to first try the PCIe controller then the global namespace so you still
+have all the same problems.  You really need to use the struct device
+for the device that is being supplied not some random other struct
+device you happened to find in the system.
 
-Best regards
-Uwe
+As I said in my earlier reply I think either the driver core or PCI
+needs something like Soundwire has which lets it create struct devices
+for things that have been enumerated via software but not enumerated by
+hardware and a callback or something which lets those devices take
+whatever steps are needed to trigger probe.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---axmib6bx2qpqrpz4
+--J+eNKFoVC4T1DV3f
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBiC0wACgkQwfwUeK3K
-7AlkBgf/ZsIVifdArIudb+NAdINg7Trcn1pB1kFTd+KLscaLK5SsgfynrgY9Wspu
-zTNGm71C8o17Yw24uyrAhUZF1Vt7BMFjaPPhOulBFEKVWDDkmm6XoB8WP96djYH8
-fhg1pjZ/EvM8CmYZqmfnGnMDO2huSZNWlj8a1V7gPyzFKflZ1Jy82+K/SCvlQVSQ
-B0yYhvLF/rHPCqWvS1u2OJVZJ5jpzM0MsgmOHXqka+Y+u2FaRI1dg+M9AVRBOPsi
-lF183kQLJEaiMlJAuzPp8KWd30WTb2I7Mcy8tv4TY9PTg6TpUqmRc4oCB/5cBIt6
-LeXwv0Rz3KJkQeBK8bnF2NQj8LmwZA==
-=gKsr
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBiC10ACgkQJNaLcl1U
+h9DUJwf/VqPUciW9k3R4OCtAkqo9U5IDvuxu7r6XmO6YhMfYpZsdRQjZ7WVq2kd4
+g12beRu3Qrwd9rxNX4pPNrk8QX/FdG14s5Ontfo0CczozmMfHCdMal9KjYr28Vfn
+ls3Efc9obaW5PIvMXfk6D2om5EKueR171Sp3Do5HbHGap+KeZ0NTXEMmG3+n49h6
+nn60OESqTZkS6tISfAWOVYx9JgCVomtWNOklGG4Bv9I1i/PZ+ta4i9/ajTFDZRCv
+HC48/0pzLorlGSY04FsfQ3hXGFN1Oi332GOaJF4p0uaEKh0jNjYWdYAEpRkWG4zJ
+7BX/ON0quzuXskns96Qfl7ISw89Hbw==
+=+Rlm
 -----END PGP SIGNATURE-----
 
---axmib6bx2qpqrpz4--
+--J+eNKFoVC4T1DV3f--
