@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1D234C9F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E627234C7D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233987AbhC2Ie3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:34:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36736 "EHLO mail.kernel.org"
+        id S232318AbhC2ISS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:18:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233525AbhC2IVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:21:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D091161601;
-        Mon, 29 Mar 2021 08:21:15 +0000 (UTC)
+        id S231754AbhC2ILG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:11:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 731B26196F;
+        Mon, 29 Mar 2021 08:11:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617006076;
-        bh=0lk667QrNTk1uGXBGMcmQArzTf7hHjurO3OmPT+KT2Y=;
+        s=korg; t=1617005466;
+        bh=xqcx6d71Un00AaqJTis7UNPrbtDRn8FQVFgouZYa7lU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kJAWu7T0jUF+RoSaC63mR3b1nFZ14iDwCcjryJfm9rPBRabVaPbFxatudgFvI/yqe
-         WITN/re79aSmQXip8iQZ7KQGvqvd/GtY7VYpeXNvXm3lCXxiPuu+X+1HijZH2aGZjI
-         e4lMeKGMwsGp/SymVsbEj7ac34bycf0p9e8OT76c=
+        b=K4Rm48JxlbaS2iR/eGD+ls2Jp388batxuKU6jmf35jTclASYGqgDDzzRy8ScLA5Xi
+         DqKMAxAn4MB4JS5ImQif60+z24GLuGSNHv6emQfq5o85qjGLgItdTDipR347qulwd+
+         q69+1zPVhr7fCqViGZ5934c7uQj8Tn4K2Ycu75sA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Sasha Neftin <sasha.neftin@intel.com>,
-        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 110/221] e1000e: Fix error handling in e1000_set_d0_lplu_state_82571
-Date:   Mon, 29 Mar 2021 09:57:21 +0200
-Message-Id: <20210329075632.886991812@linuxfoundation.org>
+Subject: [PATCH 5.4 014/111] cpufreq: blacklist Arm Vexpress platforms in cpufreq-dt-platdev
+Date:   Mon, 29 Mar 2021 09:57:22 +0200
+Message-Id: <20210329075615.671330504@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
-References: <20210329075629.172032742@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Sudeep Holla <sudeep.holla@arm.com>
 
-[ Upstream commit b52912b8293f2c496f42583e65599aee606a0c18 ]
+[ Upstream commit fbb31cb805fd3574d3be7defc06a7fd2fd9af7d2 ]
 
-There is one e1e_wphy() call in e1000_set_d0_lplu_state_82571
-that we have caught its return value but lack further handling.
-Check and terminate the execution flow just like other e1e_wphy()
-in this function.
+Add "arm,vexpress" to cpufreq-dt-platdev blacklist since the actual
+scaling is handled by the firmware cpufreq drivers(scpi, scmi and
+vexpress-spc).
 
-Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver (currently for ICH9 devices only)")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
-Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/82571.c | 2 ++
+ drivers/cpufreq/cpufreq-dt-platdev.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/e1000e/82571.c b/drivers/net/ethernet/intel/e1000e/82571.c
-index 88faf05e23ba..0b1e890dd583 100644
---- a/drivers/net/ethernet/intel/e1000e/82571.c
-+++ b/drivers/net/ethernet/intel/e1000e/82571.c
-@@ -899,6 +899,8 @@ static s32 e1000_set_d0_lplu_state_82571(struct e1000_hw *hw, bool active)
- 	} else {
- 		data &= ~IGP02E1000_PM_D0_LPLU;
- 		ret_val = e1e_wphy(hw, IGP02E1000_PHY_POWER_MGMT, data);
-+		if (ret_val)
-+			return ret_val;
- 		/* LPLU and SmartSpeed are mutually exclusive.  LPLU is used
- 		 * during Dx states where the power conservation is most
- 		 * important.  During driver activity we should enable
+diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+index bca8d1f47fd2..1200842c3da4 100644
+--- a/drivers/cpufreq/cpufreq-dt-platdev.c
++++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+@@ -103,6 +103,8 @@ static const struct of_device_id whitelist[] __initconst = {
+ static const struct of_device_id blacklist[] __initconst = {
+ 	{ .compatible = "allwinner,sun50i-h6", },
+ 
++	{ .compatible = "arm,vexpress", },
++
+ 	{ .compatible = "calxeda,highbank", },
+ 	{ .compatible = "calxeda,ecx-2000", },
+ 
 -- 
 2.30.1
 
