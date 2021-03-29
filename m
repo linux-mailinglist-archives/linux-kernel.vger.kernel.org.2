@@ -2,186 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D7634CD28
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9036034CD2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhC2JgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbhC2Jft (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:35:49 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8A5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:35:49 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id o19so13476380edc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 29 Mar 2021 02:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ofP8ZrkKdrb2jW02UKASuGexUcGhv2J0NvhfsNoA2rw=;
-        b=LWhxFew4ersP1bNrrS/NlQ7W5Wfn+B7qayH3xpRbTUpQ8/ZFI7VhGpZAoHTlpbSI9x
-         4p7LvtBL4kSOJXZ+Cd9e5O04DN1347CpU8/Qggx18/vHhrxLyOJvWanTfiJo3wK0pXQe
-         jXhhNPuPbJISHvJjCT3Pgu7yGZdO1Ma+27xw6nUshbKcIZEXE5GcOiuTGdXti7t2MKB0
-         tUM68KaL/IUiIauovo+qemQLHynrPpjlrmalMOBwb5XCnRH2Pxd3q/a3tonUcKTW+BMN
-         0HBi6osGVojmYTfxrlfjJU40cq62HaXJ7RAPPgpBN4BEbiLYElPZdM6JvTaMhcozOd9x
-         sNjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ofP8ZrkKdrb2jW02UKASuGexUcGhv2J0NvhfsNoA2rw=;
-        b=GOsP8ybVNW0kj6y6oShtyktx3wPuPFYvrhWyK8ro/FBMRKnIHDefVFj7Qqv/2LTdXF
-         uVoZ/J6I8QSYbj9AsM7LCXijRumItSl9EFz7p/WjZ/Iw1WbJfm0BYaeSRVs1jpaU/njk
-         XqbQFpdHoxlFRaSuAO63tWHIdpzX16FQLZqd5I9ub9HZaJTRutCaKi6uemHjgpE6r/v7
-         OIM9vzRheCq5QH9nQstseh4k59ZlOeNuYQLoyFCmnP6nTDNTFFjh5f7+NsWhwo64D8TQ
-         CKQMGu7BFtb3rNBRknbqf6pApI9Xt9PLei01U03LwuVZ9t5HiF9ppi8YrBPd1BPbZf5k
-         U/QQ==
-X-Gm-Message-State: AOAM531kKRHX+bYcCIBAg8WJIFO/wYfKsQ/FqjgwPuS3E2dynxzp8zh4
-        7mtazYoAaNERRHPWBlOYzgSbW/kqUdvLe0EIczMeVJ+W5m0O8fPV
-X-Google-Smtp-Source: ABdhPJzeKGOpzQe8OSdOFHA+TWaSykrMP4h6yj9CHmlZ7q7eF7+gw/6ai54C/CvIxbfcszi3ibuCpUW50QCMakOQAqA=
-X-Received: by 2002:a17:907:720a:: with SMTP id dr10mr27144667ejc.375.1617010537417;
- Mon, 29 Mar 2021 02:35:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210329075633.135869143@linuxfoundation.org> <20210329075640.480623043@linuxfoundation.org>
-In-Reply-To: <20210329075640.480623043@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 29 Mar 2021 15:05:25 +0530
-Message-ID: <CA+G9fYvHsa0TAqPBvHwPhhe_0qt8syEWkGV_GPjOyEOAO9q5Sw@mail.gmail.com>
-Subject: Re: [PATCH 5.11 225/254] arm64/mm: define arch_get_mappable_range()
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        id S231706AbhC2JjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:39:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53338 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231499AbhC2Ji6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:38:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0E2E9B148;
+        Mon, 29 Mar 2021 09:38:57 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 11:38:56 +0200 (CEST)
+From:   Richard Biener <rguenther@suse.de>
+To:     Jiri Slaby <jslaby@suse.cz>
+cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        teawater <teawaterz@linux.alibaba.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, "H.J. Lu" <hjl.tools@gmail.com>
+Subject: Re: perf does not resolve plt symbols from libstdc++ right (.plt.sec
+ problem)
+In-Reply-To: <68eb3576-66dd-9155-aae2-b3cde1ebcbdf@suse.cz>
+Message-ID: <nycvar.YFH.7.76.2103291136070.17979@zhemvz.fhfr.qr>
+References: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz> <68eb3576-66dd-9155-aae2-b3cde1ebcbdf@suse.cz>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="-1609908220-1657771642-1617010737=:17979"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 at 14:10, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Anshuman Khandual <anshuman.khandual@arm.com>
->
-> [ Upstream commit 03aaf83fba6e5af08b5dd174c72edee9b7d9ed9b ]
->
-> This overrides arch_get_mappable_range() on arm64 platform which will be
-> used with recently added generic framework.  It drops
-> inside_linear_region() and subsequent check in arch_add_memory() which are
-> no longer required.  It also adds a VM_BUG_ON() check that would ensure
-> that mhp_range_allowed() has already been called.
->
-> Link: https://lkml.kernel.org/r/1612149902-7867-3-git-send-email-anshuman.khandual@arm.com
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: teawater <teawaterz@linux.alibaba.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  arch/arm64/mm/mmu.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-> index 6f0648777d34..92b3be127796 100644
-> --- a/arch/arm64/mm/mmu.c
-> +++ b/arch/arm64/mm/mmu.c
-> @@ -1443,16 +1443,19 @@ static void __remove_pgd_mapping(pgd_t *pgdir, unsigned long start, u64 size)
->         free_empty_tables(start, end, PAGE_OFFSET, PAGE_END);
->  }
->
-> -static bool inside_linear_region(u64 start, u64 size)
-> +struct range arch_get_mappable_range(void)
->  {
-> +       struct range mhp_range;
-> +
->         /*
->          * Linear mapping region is the range [PAGE_OFFSET..(PAGE_END - 1)]
->          * accommodating both its ends but excluding PAGE_END. Max physical
->          * range which can be mapped inside this linear mapping range, must
->          * also be derived from its end points.
->          */
-> -       return start >= __pa(_PAGE_OFFSET(vabits_actual)) &&
-> -              (start + size - 1) <= __pa(PAGE_END - 1);
-> +       mhp_range.start = __pa(_PAGE_OFFSET(vabits_actual));
-> +       mhp_range.end =  __pa(PAGE_END - 1);
-> +       return mhp_range;
->  }
->
->  int arch_add_memory(int nid, u64 start, u64 size,
-> @@ -1460,11 +1463,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->  {
->         int ret, flags = 0;
->
-> -       if (!inside_linear_region(start, size)) {
-> -               pr_err("[%llx %llx] is outside linear mapping region\n", start, start + size);
-> -               return -EINVAL;
-> -       }
-> -
-> +       VM_BUG_ON(!mhp_range_allowed(start, size, true));
->         if (rodata_full || debug_pagealloc_enabled())
->                 flags = NO_BLOCK_MAPPINGS | NO_CONT_MAPPINGS;
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-The stable rc 5.10 and 5.11 builds failed for arm64 architecture
-due to below warnings / errors,
+---1609908220-1657771642-1617010737=:17979
+Content-Type: text/plain; charset=iso-8859-2
+Content-Transfer-Encoding: 8BIT
 
-> Anshuman Khandual <anshuman.khandual@arm.com>
->     arm64/mm: define arch_get_mappable_range()
+On Mon, 29 Mar 2021, Jiri Slaby wrote:
 
+> Any ideas on this?
+> 
+> On 11. 01. 21, 7:31, Jiri Slaby wrote:
+> > Hi,
+> > 
+> > this e-mails is a follow-up of my report at:
+> > https://bugzilla.suse.com/show_bug.cgi?id=1180681
+> > 
+> > There is a problem with *@plt symbols in some libraries, they are unresolved
+> > by perf (memcmp@plt in this case):
+> >  >     0.26%  main2    /usr/lib64/libstdc++.so.6.0.28            0xa51a0 
+> >             l [.] 0x00000000000a51a0
+> > 
+> > On the other hand, plt symbols in other libraries are fine (memset@plt in
+> > this case):
+> >  >     0.17%  main2    /usr/lib64/libantlr4-runtime.so.4.8       0x4ed10 
+> >             l [.] memset@plt
+> > 
+> > I dumped memcmp's .plt.rela entries in perf:
+> > /usr/lib64/libantlr4-runtime.so.4.8: 154th addr=4e9d0 plt_off=4e020 hdr=10
+> > entry=10
+> > /usr/lib64/libstdc++.so.6.0.28: 772th addr=a1070 plt_off=9e020 hdr=10
+> > entry=10
+> > 
+> > The difference (offset) of stdc++'s memcmp is 0xa51a0 (correct) - 0xa1070
+> > (perf's computed) = 0x4130.
+> > 
+> > The problem is perf assumes nth entry of .plt.rela to correspond to nth
+> > function in .plt, but memcmp is in .plt.sec in libstdc++.so:
+> > 
+> >  >Relocation section '.rela.plt' at offset 0x97900 contains 1018 entries:
+> >  >     Offset             Info             Type               Symbol's 
+> > Value  Symbol's Name + Addend
+> >  > ...
+> >  > 00000000001dc838  0000007800000007 R_X86_64_JUMP_SLOT 
+> > 0000000000000000 memcmp@GLIBC_2.2.5 + 0
+> > 
+> > Perf does this with the rela entries:
+> > https://github.com/torvalds/linux/blob/f5e6c330254ae691f6d7befe61c786eb5056007e/tools/perf/util/symbol-elf.c#L385 
+> > 
+> > It takes a symbol index from sym.r_info. Then it resolves its name from
+> > .dynsym, appending "@plt" to it. Then this name is added to perf's symbol
+> > table along with address which is computed as .rela.plt index multiplied by
+> > entry size (shdr_plt.sh_entsize) plus plt header (shdr_plt.sh_entsize on
+> > x86_64 too).
+> > 
+> > And from this comes (almost) the offset above:
+> >  >$ objdump -h /usr/lib64/libstdc++.so.6|grep -E ' .plt(\.sec)? '
+> >  >  12 .plt          00003fb0  000000000009e020  000000000009e020 
+> > 0009e020  2**4
+> >  >  14 .plt.sec      00003fa0  00000000000a2160  00000000000a2160 
+> > 000a2160  2**4
+> > 
+> > 0xa2160-0x9e020 = 0x4140. I assume the 0x10 difference is that perf adds
+> > shdr_plt.sh_entsize (0x10) to the offset to skip the first .plt entry
+> > (header).
+> > 
+> > Richard writes:
+> > ======
+> > .plt.sec is IIRC the "second" (sec) PLT entry - the one that will be used on
+> > the second call (and on).  This is used / emitted for ELF object
+> > instrumented for Intel CET.  The details escape me for the moment but I hope
+> > the x86 ABI documents this (and the constraints) in detail.
 
-  arch/arm64/mm/mmu.c: In function 'arch_add_memory':
-  arch/arm64/mm/mmu.c:1483:13: error: implicit declaration of function
-'mhp_range_allowed'; did you mean 'cpu_map_prog_allowed'?
-[-Werror=implicit-function-declaration]
-    VM_BUG_ON(!mhp_range_allowed(start, size, true));
-               ^
-  include/linux/build_bug.h:30:63: note: in definition of macro
-'BUILD_BUG_ON_INVALID'
-   #define BUILD_BUG_ON_INVALID(e) ((void)(sizeof((__force long)(e))))
-                                                                 ^
-  arch/arm64/mm/mmu.c:1483:2: note: in expansion of macro 'VM_BUG_ON'
-    VM_BUG_ON(!mhp_range_allowed(start, size, true));
-    ^~~~~~~~~
+I just checked and the x86_64 psABI doesn't say anything about .plt.sec
 
-Build link,
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.11/DISTRO=lkft,MACHINE=juno,label=docker-buster-lkft/41/consoleText
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-5.10/DISTRO=lkft,MACHINE=dragonboard-410c,label=docker-buster-lkft/120/consoleFull
+> > ======
+> > 
+> > How should perf find out whether to consider .plt or .plt.sec? Or generally,
+> > how to properly find an address of *@plt symbols like memcmp@plt above?
+> > thanks,
+> 
+> 
+> 
 
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+Richard Biener <rguenther@suse.de>
+SUSE Software Solutions Germany GmbH, Maxfeldstrasse 5, 90409 Nuernberg,
+Germany; GF: Felix Imendörffer; HRB 36809 (AG Nuernberg)
+---1609908220-1657771642-1617010737=:17979--
