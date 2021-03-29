@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DB934C75E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D96B34C8F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhC2IOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:14:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52760 "EHLO mail.kernel.org"
+        id S231913AbhC2IZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:25:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231597AbhC2IJA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:09:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3179D61976;
-        Mon, 29 Mar 2021 08:08:59 +0000 (UTC)
+        id S233149AbhC2IQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:16:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18C636044F;
+        Mon, 29 Mar 2021 08:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005339;
-        bh=l0TnfoC3iwcbasXlWt60i7coeKpZBz6xlaNVQi6hvsA=;
+        s=korg; t=1617005771;
+        bh=qoUxGxk9gJE2+hpBf/VZrCxTVRJNIWJ2wIMtvFpXqW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IQRwYwPQomoV/kXXumyYn2I1oIrNsFZ5wGdS3FOtjTix7oEdhpqIwOaaZxzn+65TJ
-         54r8XbFrvKx5gNcMbp+LAhAdnsc2Y/OHIPtI0w5OIERSCN2ADQiiZ6+qHS3EfOq1ZU
-         Qc+Bu6Yl8ofk+j2/m1vnSDtqRZbzpoSPd84ROaLw=
+        b=t7+rtNnpjzqKn3kDi0Vq6DgUOcBWZ1ZsesYJP44NN+vMcxiF0bYJtsQLgzspu0kk8
+         ENac1mXOiBcEFSRmstfkHtb9y10dAVUg9TG6k9ZnvZvtiIJz2y2Z5hDWudj+bIdvNR
+         BLrdyByQMXv3g/GjfkO0Ya0dF9yZ73M7FbVqCIcU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mariusz Madej <mariusz.madej@xtrack.com>,
+        stable@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Torin Cooper-Bennun <torin@maxiluxsystems.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 47/72] can: m_can: m_can_do_rx_poll(): fix extraneous msg loss warning
-Date:   Mon, 29 Mar 2021 09:58:23 +0200
-Message-Id: <20210329075611.837841245@linuxfoundation.org>
+Subject: [PATCH 5.4 076/111] can: m_can: m_can_rx_peripheral(): fix RX being blocked by errors
+Date:   Mon, 29 Mar 2021 09:58:24 +0200
+Message-Id: <20210329075617.744814279@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075610.300795746@linuxfoundation.org>
-References: <20210329075610.300795746@linuxfoundation.org>
+In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
+References: <20210329075615.186199980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +42,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 
-[ Upstream commit c0e399f3baf42279f48991554240af8c457535d1 ]
+[ Upstream commit e98d9ee64ee2cc9b1d1a8e26610ec4d0392ebe50 ]
 
-Message loss from RX FIFO 0 is already handled in
-m_can_handle_lost_msg(), with netdev output included.
+For M_CAN peripherals, m_can_rx_handler() was called with quota = 1,
+which caused any error handling to block RX from taking place until
+the next time the IRQ handler is called. This had been observed to
+cause RX to be blocked indefinitely in some cases.
 
-Removing this warning also improves driver performance under heavy
-load, where m_can_do_rx_poll() may be called many times before this
-interrupt is cleared, causing this message to be output many
-times (thanks Mariusz Madej for this report).
+This is fixed by calling m_can_rx_handler with a sensibly high quota.
 
-Fixes: e0d1f4816f2a ("can: m_can: add Bosch M_CAN controller support")
-Link: https://lore.kernel.org/r/20210303103151.3760532-1-torin@maxiluxsystems.com
-Reported-by: Mariusz Madej <mariusz.madej@xtrack.com>
+Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
+Link: https://lore.kernel.org/r/20210303144350.4093750-1-torin@maxiluxsystems.com
+Suggested-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Torin Cooper-Bennun <torin@maxiluxsystems.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/m_can/m_can.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/can/m_can/m_can.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index fbb970220c2d..e87c3bb82081 100644
+index cf72a7e464ec..b2224113987c 100644
 --- a/drivers/net/can/m_can/m_can.c
 +++ b/drivers/net/can/m_can/m_can.c
-@@ -520,9 +520,6 @@ static int m_can_do_rx_poll(struct net_device *dev, int quota)
- 	}
+@@ -839,7 +839,7 @@ static int m_can_rx_peripheral(struct net_device *dev)
+ {
+ 	struct m_can_classdev *cdev = netdev_priv(dev);
  
- 	while ((rxfs & RXFS_FFL_MASK) && (quota > 0)) {
--		if (rxfs & RXFS_RFL)
--			netdev_warn(dev, "Rx FIFO 0 Message Lost\n");
--
- 		m_can_read_fifo(dev, rxfs);
+-	m_can_rx_handler(dev, 1);
++	m_can_rx_handler(dev, M_CAN_NAPI_WEIGHT);
  
- 		quota--;
+ 	m_can_enable_all_interrupts(cdev);
+ 
 -- 
 2.30.1
 
