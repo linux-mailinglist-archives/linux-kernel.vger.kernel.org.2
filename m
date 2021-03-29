@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451BB34CDD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2AF34CDD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 12:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhC2KSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 06:18:37 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:37528 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbhC2KSO (ORCPT
+        id S232010AbhC2KUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 06:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232213AbhC2KTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 06:18:14 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 314991C0B81; Mon, 29 Mar 2021 12:18:12 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 12:18:10 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/33] 4.4.264-rc1 review
-Message-ID: <20210329101810.GA31197@amd>
-References: <20210329075605.290845195@linuxfoundation.org>
+        Mon, 29 Mar 2021 06:19:44 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45791C061756;
+        Mon, 29 Mar 2021 03:19:44 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id v23so4168448ple.9;
+        Mon, 29 Mar 2021 03:19:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
+        b=blBg1faRPY6sCJR6ifGvqEhMWndnvwGjRSGVSpn60NS7iymSH1GfJL/UFbZZUOn8+2
+         UtU0mjfO3+KeBxgy28/OYPPduknbnXxt3Mxo9wM2GiZC3Mi6pr+TiEQSXcM8TmZT4BtT
+         8LHAFcAQ/HQ9W5AnecPEvcBPiK4bFtDabwSAXd8QJG6QPQnYQ6AdNyggWYjbGGxGsLjs
+         eDumJoKX78/0fL32UbSuxIU/XxLwBJIKIUtZDv1B8SHx3xFFzjFkQc/I8fmC/Oij63c8
+         s0fnMdSdPEjpaFWcV2S7tYC9PWTEgoEYcJ+4IttMgMthTNtaftiwHE7iKZNsHk25s7xH
+         GHsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=3TmfUi913hGSu3ZvDqEVjODmv0swjr1+6VGvT6E5bKM=;
+        b=olgs3J6PuKZOQgU+ewcq7HyaN/OtRjoWk78oKQ4dxZ/MLaY2P7qdWyLmsvP89M9JWg
+         n1AIFXRN+xjI6Q6ELA1T4pkqoDUtuFYAvd/IxPLp8mVqX+72dFfojLcV9XjiGP26O36C
+         oc1NaumzDv9XrTxTKZlM8UsJa4WaslaLeyVoX7hM9HAfVA/LPVfpKr3pvnd0lDa8G3GN
+         VJ8T54Gqk2FayAQi/96qLntvRVGoU98tQ8By8HSirmAF8PE2kexGdti/LnU+S9OSGWX9
+         LTGimXlbikXsvPDP8kJp6WSBhssT8LSy8pEVUwDD2oIgQM8isSBuTEZqtco+N4hEfdtJ
+         UC/Q==
+X-Gm-Message-State: AOAM5328135gO5qc9Dc6TwwhxcT6GE1prB/HaB27Btd6Ywu3gnYcKsPb
+        oA2dnODq4hOmjc4ohCz5rVDl9wphKopqGg==
+X-Google-Smtp-Source: ABdhPJzlXACmwDqcN0NdMFWh8QPZ9ik9FcNe9QNS5Yz+NT/akmWqOh45PT55X6N44HADqijYhEQpuQ==
+X-Received: by 2002:a17:902:e884:b029:e5:fece:3bb0 with SMTP id w4-20020a170902e884b02900e5fece3bb0mr28620569plg.61.1617013183614;
+        Mon, 29 Mar 2021 03:19:43 -0700 (PDT)
+Received: from [10.43.90.134] ([103.114.158.1])
+        by smtp.gmail.com with ESMTPSA id x186sm16480450pfc.65.2021.03.29.03.19.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Mar 2021 03:19:43 -0700 (PDT)
+Subject: Re: [PATCH] integrity/ima: Add declarations to init_once void
+ arguments.
+To:     serge@hallyn.com, jmorris@namei.org
+Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210323013318.296993-1-unclexiaole@gmail.com>
+From:   Jiele Zhao <unclexiaole@gmail.com>
+Message-ID: <62b05182-e46e-4ef8-e9af-6d2bd00784b9@gmail.com>
+Date:   Mon, 29 Mar 2021 18:18:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="mP3DRpeJDSE+ciuQ"
-Content-Disposition: inline
-In-Reply-To: <20210329075605.290845195@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210323013318.296993-1-unclexiaole@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ping.
 
---mP3DRpeJDSE+ciuQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> This is the start of the stable review cycle for the 4.4.264 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-
-CIP testing did not find any problems here:
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-								Pavel
-								=09
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---mP3DRpeJDSE+ciuQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBhqWIACgkQMOfwapXb+vIiswCfQ3uEAlu/EDEbL3ExaHDBNOOq
-8z0Anjs9nQxecq5QIpaX7X6h0yDzlf0Q
-=6xA+
------END PGP SIGNATURE-----
-
---mP3DRpeJDSE+ciuQ--
+On 2021/3/23 9:33, Jiele Zhao wrote:
+> init_once is a callback to kmem_cache_create. The parameter
+> type of this function is void *, so it's better to give a
+> explicit cast here.
+>
+> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
+> ---
+>   security/integrity/iint.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> index 1d20003243c3..5f3f2de997e1 100644
+> --- a/security/integrity/iint.c
+> +++ b/security/integrity/iint.c
+> @@ -152,7 +152,7 @@ void integrity_inode_free(struct inode *inode)
+>   
+>   static void init_once(void *foo)
+>   {
+> -	struct integrity_iint_cache *iint = foo;
+> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *)foo;
+>   
+>   	memset(iint, 0, sizeof(*iint));
+>   	iint->ima_file_status = INTEGRITY_UNKNOWN;
