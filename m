@@ -2,124 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6697334D96D
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C599F34D974
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 23:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhC2VHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 17:07:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbhC2VHC (ORCPT
+        id S231146AbhC2VJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 17:09:49 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11584 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231303AbhC2VJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 17:07:02 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E20C061574;
-        Mon, 29 Mar 2021 14:07:01 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso7329268wmi.0;
-        Mon, 29 Mar 2021 14:07:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=wymBNLQAb/qlX8skiczhdYWHj6Aq/qxq8MM3GFnILNk=;
-        b=QVOE8LnKESKbPxunJ6fQ9EXEX+saGlPLvUljMlASbWCVGt5Z5v5JJ/1XrJ1SwqhLwj
-         BVf10Wz+LCPJn/fexc0jfYp1j+HoH9+7Mlz030SCb/GGeZnwG0S8Ih12G3YEXMGoOi6t
-         OWa6ClmRZTt+dAsNnC2Pwv/f/QUPamz/35uxAhubNGzPgDMyVFmHeJ8MQopcy5o1KNL5
-         8pOawJu36repMumXomXPTuVvHbxFISk82GfRNNJT5ATjbScIMChU03DHyNnMdniDy+5W
-         6a1V2OrDdNN/qyhNJt76EIaqWJdlVanuGEmTHoFajZkWaaYl08Z6w+Cykqpu58WYSckT
-         LI9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wymBNLQAb/qlX8skiczhdYWHj6Aq/qxq8MM3GFnILNk=;
-        b=c2UUIGfm0wTOCnoKFXUHqJCnNxn+31bduI7rdWW60dVJugWYABxixXLKvdvoV9uJCt
-         0C7S99ihA7/8Yz7BrZhvSus3zvxAehSpx1JvjnUKhtH/GEZBiDsUHqvIWENje1d+j7ye
-         DEuaGhJReRTExIEfdPoorD0niNwh9S8Yg9j43Y5ipHneq+O//Ejar2bn40JbhqxWmQoC
-         aYU+Jio2/UnKaq7FQFgcYiU9XIU9leeRGn4e/AGrG94N/9xNt/t4SVwHK7QaINZyf496
-         UvQtUnTDilEDElhwcTP3boOSi3ShhIkcPlez2C+HJ7xvcmwaVQKNLmLrCwUFHAdINh2o
-         dDZA==
-X-Gm-Message-State: AOAM533byK9GlQDXpXY0DKt1RYdLoCQefHzvjh095/Xb/dRv/qdTPM9t
-        Oogo9L4m/3XS5iGxZanfeRz7Ri6WqBU=
-X-Google-Smtp-Source: ABdhPJzrCb3hXadhWOgxbjhl5szV15i9EJFpYsUh+E3AMNwO/aTgKe+zuY5tAvDd6aIFy++rKE6Qog==
-X-Received: by 2002:a05:600c:2145:: with SMTP id v5mr790346wml.65.1617052020546;
-        Mon, 29 Mar 2021 14:07:00 -0700 (PDT)
-Received: from [192.168.1.211] ([91.110.20.103])
-        by smtp.gmail.com with ESMTPSA id a15sm21389883wrr.53.2021.03.29.14.06.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Mar 2021 14:07:00 -0700 (PDT)
-Subject: Re: [PATCH v2 3/6] software node: Deduplicate code in
- fwnode_create_software_node()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
- <20210329151207.36619-3-andriy.shevchenko@linux.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <4e922df6-4c87-9a95-538c-dc777ebaccab@gmail.com>
-Date:   Mon, 29 Mar 2021 22:06:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 29 Mar 2021 17:09:16 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12TL36uo133759;
+        Mon, 29 Mar 2021 17:07:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ message-id : references : content-type : in-reply-to : mime-version :
+ subject; s=pp1; bh=84FSmOxSe00ijv5LL4qlj56mILtsHfbF9ZKiO/6taZw=;
+ b=NVfTPT1Jgy1IH9pzAXV5odz0UaeY0sTzQU+WatDkSn7COTbbJTQthy74jm3iMflIxXCa
+ uxdbtg5d89vFeHP4i6kBHglVutDvEsdzMp+/SingE/wwcSaqzuni8ixO05XVGV5GbsQg
+ fsPMKtV4ec4JfEOlnfVhxa/7UGXXRPJZegNy6W+bOz2xrxhMej/PrO98aulp7qKi7S32
+ XdRZel2JtNppkwmCDKMEaTZ4qXqzcJT0cEf8IxvkYx9JK2910rbZbcuF462Fx4In+afW
+ bzcnnaWd+qza2ytB0WhE80FSQ4YCcJqiKriMqc6sMzurhrgxeZcJlsFhXrDZhUf0dli3 5Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37jhsb3vqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 17:07:24 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 12TL5FgO143865;
+        Mon, 29 Mar 2021 17:07:24 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37jhsb3vq2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 17:07:24 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 12TL1jVD010119;
+        Mon, 29 Mar 2021 21:07:23 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma03wdc.us.ibm.com with ESMTP id 37jqmn154v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 29 Mar 2021 21:07:23 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 12TL7MKm30605726
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 21:07:22 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1CC6D6A04F;
+        Mon, 29 Mar 2021 21:07:22 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C95BA6A054;
+        Mon, 29 Mar 2021 21:07:19 +0000 (GMT)
+Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.80.204.95])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Mon, 29 Mar 2021 21:07:19 +0000 (GMT)
+Date:   Mon, 29 Mar 2021 16:07:17 -0500
+From:   "Paul A. Clarke" <pc@us.ibm.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     will@kernel.org, mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, irogers@google.com,
+        linuxarm@huawei.com, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, zhangshaokun@hisilicon.com
+Message-ID: <20210329210717.GF8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+References: <1616668398-144648-1-git-send-email-john.garry@huawei.com>
+ <20210325203944.GD8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
+ <dc17013d-2dcb-8ddf-a15a-e98cad3e2ae3@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dc17013d-2dcb-8ddf-a15a-e98cad3e2ae3@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: N7PTF-kQ-25AhyM4F_NNmDqAKWWzSobJ
+X-Proofpoint-GUID: RwizZF46QlD5oQdnPCFSCAlndJErbdAE
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <20210329151207.36619-3-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Subject: RE: [PATCH v2 0/6] perf arm64 metricgroup support
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-29_12:2021-03-26,2021-03-29 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ clxscore=1015 adultscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2103250000
+ definitions=main-2103290156
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
+On Fri, Mar 26, 2021 at 10:57:40AM +0000, John Garry wrote:
+> On 25/03/2021 20:39, Paul A. Clarke wrote:
+> > On Thu, Mar 25, 2021 at 06:33:12PM +0800, John Garry wrote:
+> > > Metric reuse support is added for pmu-events parse metric testcase.
+> > > This had been broken on power9 recentlty:
+> > > https://lore.kernel.org/lkml/20210324015418.GC8931@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com/
+> > 
+> > Much better.  Before:
+> > --
+> > $ perf test -v 10 2>&1 | grep -i error | wc -l
+> > 112
+> > --
+> > After:
+> > --
+> > $ perf test -v 10 2>&1 | grep -i error | wc -l
+> > 17
+> > --
+> > 
+> > And these seem like different types of issues:
+> > --
+> > $ perf test -v 10 2>&1 | grep -i error
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_powerbus0_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs01_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > Error string 'Cannot find PMU `nest_mcs23_imc'. Missing kernel support?' help '(null)'
+> > --
+> > 
+> 
+> This looks suspicious.
+> 
+> Firstly, does /sys/bus/event_source/devices/nest_mcs01_imc (or others,
+> above) exist on your system? I guess not.
+> 
+> Secondly, checking Documentation/powerpc/imc.rst, we have examples of:
+> nest_mcs01/PM_MCS01_64B_R...
+> 
+> So is the PMU name correct in the metric file for nest_mcs01_imc? Looking at
+> the kernel driver file, arch/powerpc/perf/imc-pmu.c, it seems to be correct.
+> Not sure.
 
-On 29/03/2021 16:12, Andy Shevchenko wrote:
-> Deduplicate conditional and assignment in fwnode_create_software_node(),
-> i.e. parent is checked in two out of three cases and parent software node
-> is assigned by to_swnode() call.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+I ran with a newer kernel, and the above errors disappeared, replaced with
+about 10 of:
+--
+Error string 'Cannot find PMU `hv_24x7'. Missing kernel support?' help '(null)'
+--
 
+...but I was running without a hypervisor, so I tried the same kernel on a
+PowerVM-virtualized system and the "hv_24x7" messages went away, but the
+"nest" messages returned.  This may all be expected behavior... I confess
+I haven't followed these new perf capabilities closely.
 
-Reviewed-by: Daniel Scally <djrscally@gmail.com>
+It's extremely likely that none of these errors has anything to do with your
+changes. :-)
 
-> ---
-> v2: no changes
->  drivers/base/swnode.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 19aa44bc2628..db982859171e 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -973,15 +973,14 @@ fwnode_create_software_node(const struct property_entry *properties,
->  {
->  	struct fwnode_handle *fwnode;
->  	struct software_node *node;
-> -	struct swnode *p = NULL;
-> -
-> -	if (parent) {
-> -		if (IS_ERR(parent))
-> -			return ERR_CAST(parent);
-> -		if (!is_software_node(parent))
-> -			return ERR_PTR(-EINVAL);
-> -		p = to_swnode(parent);
-> -	}
-> +	struct swnode *p;
-> +
-> +	if (IS_ERR(parent))
-> +		return ERR_CAST(parent);
-> +
-> +	p = to_swnode(parent);
-> +	if (parent && !p)
-> +		return ERR_PTR(-EINVAL);
->  
->  	node = software_node_alloc(properties);
->  	if (IS_ERR(node))
+PC
