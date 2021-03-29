@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EB634D668
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 19:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A841134D696
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 20:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhC2R45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 13:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhC2R4p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 13:56:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085A3C061574;
-        Mon, 29 Mar 2021 10:56:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Cxw+JCcYcswc0qxSo1ev5vTzWZI927ejNHC9F/PjA+w=; b=IrghJ/yHRWb00tupxZWeZEI7N2
-        vdPqRo1h4g8VyWVRkTF1LoibgO5L2icT4+NW6CQJJwx+gKCT1bUKQKRWBauWDgsoIhPh/YRuX5Lrk
-        hqg11JeywdyFfKkKR3dvQ0kshQ5HRgenIDKOyQHH2ZZbfA1kLcRGBS3jdkbxmfR+oZ6NKR3aZZ6ue
-        2qJgvi4PrEg2u3HHVc5U6HoW8fk/ZCsnKiqC1TSze8+Lj31GWYUDZ4iV69OwdMUP2P0PHsfoGvVPv
-        /QF+fBzLRmown/q19Tic/bs/Epie96f6YiQE6MAV4SrIarJCdLZ2vZGGd/jqprCL9m5ReaQpqPnrE
-        KurVKA5Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lQw7k-001uZf-GA; Mon, 29 Mar 2021 17:56:27 +0000
-Date:   Mon, 29 Mar 2021 18:56:24 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org
-Subject: Re: [PATCH v5 00/27] Memory Folios
-Message-ID: <20210329175624.GI351017@casper.infradead.org>
-References: <20210320054104.1300774-1-willy@infradead.org>
- <YFja/LRC1NI6quL6@cmpxchg.org>
- <20210322184744.GU1719932@casper.infradead.org>
- <YFqH3B80Gn8pcPqB@cmpxchg.org>
- <20210324062421.GQ1719932@casper.infradead.org>
- <YF4eX/VBPLmontA+@cmpxchg.org>
- <20210329165832.GG351017@casper.infradead.org>
+        id S230448AbhC2SGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 14:06:05 -0400
+Received: from gecko.sbs.de ([194.138.37.40]:36142 "EHLO gecko.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230506AbhC2SF3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 14:05:29 -0400
+Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
+        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 12TI56ik029191
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 29 Mar 2021 20:05:06 +0200
+Received: from md1za8fc.ad001.siemens.net ([167.87.41.127])
+        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 12TI05Ad030820;
+        Mon, 29 Mar 2021 20:00:05 +0200
+Date:   Mon, 29 Mar 2021 20:00:01 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>
+Cc:     Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        "Gerd Haeussler" <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Enrico Weigelt <lkml@metux.net>
+Subject: Re: [PATCH v3 0/4] add device drivers for Siemens Industrial PCs
+Message-ID: <20210329200001.7b65e4af@md1za8fc.ad001.siemens.net>
+In-Reply-To: <20210329174928.18816-1-henning.schild@siemens.com>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210329165832.GG351017@casper.infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 05:58:32PM +0100, Matthew Wilcox wrote:
-> In broad strokes, I think that having a Power Of Two Allocator
-> with Descriptor (POTAD) is a useful foundational allocator to have.
-> The specific allocator that we call the buddy allocator is very clever for
-> the 1990s, but touches too many cachelines to be good with today's CPUs.
-> The generalisation of the buddy allocator to the POTAD lets us allocate
-> smaller quantities (eg a 512 byte block) and allocate descriptors which
-> differ in size from a struct page.  For an extreme example, see xfs_buf
-> which is 360 bytes and is the descriptor for an allocation between 512
-> and 65536 bytes.
+Guys,
+
+sorry for the delay. This one did in fact not change too much after all.
+
+The biggest points that are still kind of open are the naming of the
+LEDs. If what is proposed here is acceptable it is not open from my
+side.
+
+The other big point was "using a generic gpio" driver as a basis. My
+current understanding of that point is, that such a driver does not yet
+exist. Meaning an introduction of the abstractions can and probably
+should wait for a second user. Without the second user it is just hard
+to test and find the right abstraction, plus we will end up with more
+code meaning more work for everyone.
+
+regards,
+Henning
+
+Am Mon, 29 Mar 2021 19:49:24 +0200
+schrieb Henning Schild <henning.schild@siemens.com>:
+
+> changes since v2:
 > 
-> There are times when we need to get from the physical address to
-> the descriptor, eg memory-failure.c or get_user_pages().  This is the
-> equivalent of phys_to_page(), and it's going to have to be a lookup tree.
-> I think this is a role for the Maple Tree, but it's not ready yet.
-> I don't know if it'll be fast enough for this case.  There's also the
-> need (particularly for memory-failure) to determine exactly what kind
-> of descriptor we're dealing with, and also its size.  Even its owner,
-> so we can notify them of memory failure.
+> - remove "simatic-ipc" prefix from LED names
+> - fix style issues found in v2, mainly LED driver
+> - fix OEM specific dmi code, and remove magic numbers
+> - more "simatic_ipc" name prefixing
+> - improved pmc quirk code using callbacks
+> 
+> changes since v1:
+> 
+> - fixed lots of style issues found in v1
+>   - (debug) printing
+>   - header ordering
+> - fixed license issues GPLv2 and SPDX in all files
+> - module_platform_driver instead of __init __exit
+> - wdt simplifications cleanup
+> - lots of fixes in wdt driver, all that was found in v1
+> - fixed dmi length in dmi helper
+> - changed LED names to allowed ones
+> - move led driver to simple/
+> - switched pmc_atom to dmi callback with global variable
+> 
+> --
+> 
+> This series adds support for watchdogs and leds of several x86 devices
+> from Siemens.
+> 
+> It is structured with a platform driver that mainly does
+> identification of the machines. It might trigger loading of the
+> actual device drivers by attaching devices to the platform bus.
+> 
+> The identification is vendor specific, parsing a special binary DMI
+> entry. The implementation of that platform identification is applied
+> on pmc_atom clock quirks in the final patch.
+> 
+> It is all structured in a way that we can easily add more devices and
+> more platform drivers later. Internally we have some more code for
+> hardware monitoring, more leds, watchdogs etc. This will follow some
+> day.
+> 
+> Henning Schild (4):
+>   platform/x86: simatic-ipc: add main driver for Siemens devices
+>   leds: simatic-ipc-leds: add new driver for Siemens Industial PCs
+>   watchdog: simatic-ipc-wdt: add new driver for Siemens Industrial PCs
+>   platform/x86: pmc_atom: improve critclk_systems matching for Siemens
+>     PCs
+> 
+>  drivers/leds/Kconfig                          |   3 +
+>  drivers/leds/Makefile                         |   3 +
+>  drivers/leds/simple/Kconfig                   |  11 +
+>  drivers/leds/simple/Makefile                  |   2 +
+>  drivers/leds/simple/simatic-ipc-leds.c        | 202 ++++++++++++++++
+>  drivers/platform/x86/Kconfig                  |  12 +
+>  drivers/platform/x86/Makefile                 |   3 +
+>  drivers/platform/x86/pmc_atom.c               |  57 +++--
+>  drivers/platform/x86/simatic-ipc.c            | 169 ++++++++++++++
+>  drivers/watchdog/Kconfig                      |  11 +
+>  drivers/watchdog/Makefile                     |   1 +
+>  drivers/watchdog/simatic-ipc-wdt.c            | 215
+> ++++++++++++++++++ .../platform_data/x86/simatic-ipc-base.h      |
+> 29 +++ include/linux/platform_data/x86/simatic-ipc.h |  72 ++++++
+>  14 files changed, 769 insertions(+), 21 deletions(-)
+>  create mode 100644 drivers/leds/simple/Kconfig
+>  create mode 100644 drivers/leds/simple/Makefile
+>  create mode 100644 drivers/leds/simple/simatic-ipc-leds.c
+>  create mode 100644 drivers/platform/x86/simatic-ipc.c
+>  create mode 100644 drivers/watchdog/simatic-ipc-wdt.c
+>  create mode 100644 include/linux/platform_data/x86/simatic-ipc-base.h
+>  create mode 100644 include/linux/platform_data/x86/simatic-ipc.h
+> 
 
-A couple of things I forgot to mention ...
-
-I'd like the POTAD to be not necessarily tied to allocating memory.
-For example, I think it could be used to allocate swap space.  eg the swap
-code could register the space in a swap file as allocatable through the
-POTAD, and then later ask the POTAD to allocate a POT from the swap space.
-
-The POTAD wouldn't need to be limited to MAX_ORDER.  It should be
-perfectly capable of allocating 1TB if your machine has 1.5TB of RAM
-in it (... and things haven't got too fragmented)
-
-I think the POTAD can be used to replace the CMA.  The CMA supports
-weirdo things like "Allocate 8MB of memory at a 1MB alignment", and I
-think that's doable within the data structures that I'm thinking about
-for the POTAD.  It'd first try to allocate an 8MB chunk at 8MB alignment,
-and then if that's not possible, try to allocate two adjacent 4MB chunks;
-continuing down until it finds that there aren't 8x1MB chunks, at which
-point it can give up.
