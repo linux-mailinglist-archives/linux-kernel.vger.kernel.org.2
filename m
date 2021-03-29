@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB35834C81E
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6EB34CA5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 10:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbhC2IT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 04:19:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56088 "EHLO mail.kernel.org"
+        id S234815AbhC2IhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 04:37:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232840AbhC2IMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:12:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3001761601;
-        Mon, 29 Mar 2021 08:12:19 +0000 (UTC)
+        id S233983AbhC2IWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 04:22:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AC9E61481;
+        Mon, 29 Mar 2021 08:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617005540;
-        bh=/Wev9aWio+1f6LqRo9VXP2U1nNSFmlbOudj9KbBovlc=;
+        s=korg; t=1617006168;
+        bh=OwXO/HiN+vWFBMyr5p8yncZ3dYdxBpPbHIb7UfnZ9O4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GpzBMVkOYTqZIRIW+9tH3uY3U6FXxE8lbFZbKaP4t0eN16TWrazPOoGa+V8SwNx5Q
-         vUIUMp2+T71Ko6bA453P7Q8jdY3FC/Ff56ctW9oiavgYDSZFaCgDdnCYaRd83GhP6Q
-         hpuGiqLNVUcmOs2ERtli0QH1T4Y8l7sTX9hzsYsg=
+        b=NSHVMgHn9vfOjLu8IKUZJFcxcgksmlxA9WXcyrWf5h9EZ80B8Yma6SUmHgxzuE+xd
+         d7f9+mGhmKEHvD6gqktOYx3lKDNQCBROn7KGQzVU1QDo0IZTVd/UiXyNsxzzQTkw4P
+         J1QUTR7Lvxsa/o7aqSZZAefQQIhRgW06RobsClhc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
+        Malli C <mallikarjuna.chilakala@intel.com>,
+        Sasha Neftin <sasha.neftin@intel.com>,
+        Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/111] net: tehuti: fix error return code in bdx_probe()
+Subject: [PATCH 5.10 106/221] igc: Fix Pause Frame Advertising
 Date:   Mon, 29 Mar 2021 09:57:17 +0200
-Message-Id: <20210329075615.512708428@linuxfoundation.org>
+Message-Id: <20210329075632.753359677@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210329075615.186199980@linuxfoundation.org>
-References: <20210329075615.186199980@linuxfoundation.org>
+In-Reply-To: <20210329075629.172032742@linuxfoundation.org>
+References: <20210329075629.172032742@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
 
-[ Upstream commit 38c26ff3048af50eee3fcd591921357ee5bfd9ee ]
+[ Upstream commit 8876529465c368beafd51a70f79d7a738f2aadf4 ]
 
-When bdx_read_mac() fails, no error return code of bdx_probe()
-is assigned.
-To fix this bug, err is assigned with -EFAULT as error return code.
+Fix Pause Frame Advertising when getting the advertisement via ethtool.
+Remove setting the "advertising" bit in link_ksettings during default
+case when Tx and Rx are in off state with Auto Negotiate off.
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Below is the original output of advertisement link during Tx and Rx off:
+Advertised pause frame use: Symmetric Receive-only
+
+Expected output:
+Advertised pause frame use: No
+
+Fixes: 8c5ad0dae93c ("igc: Add ethtool support")
+Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
+Reviewed-by: Malli C <mallikarjuna.chilakala@intel.com>
+Acked-by: Sasha Neftin <sasha.neftin@intel.com>
+Tested-by: Dvora Fuxbrumer <dvorax.fuxbrumer@linux.intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/tehuti/tehuti.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/igc/igc_ethtool.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
-index 0f8a924fc60c..c6c1bb15557f 100644
---- a/drivers/net/ethernet/tehuti/tehuti.c
-+++ b/drivers/net/ethernet/tehuti/tehuti.c
-@@ -2052,6 +2052,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		/*bdx_hw_reset(priv); */
- 		if (bdx_read_mac(priv)) {
- 			pr_err("load MAC address failed\n");
-+			err = -EFAULT;
- 			goto err_out_iomap;
- 		}
- 		SET_NETDEV_DEV(ndev, &pdev->dev);
+diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+index ec8cd69d4992..35c104a02bed 100644
+--- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
++++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
+@@ -1709,9 +1709,7 @@ static int igc_ethtool_get_link_ksettings(struct net_device *netdev,
+ 						     Asym_Pause);
+ 		break;
+ 	default:
+-		ethtool_link_ksettings_add_link_mode(cmd, advertising, Pause);
+-		ethtool_link_ksettings_add_link_mode(cmd, advertising,
+-						     Asym_Pause);
++		break;
+ 	}
+ 
+ 	status = pm_runtime_suspended(&adapter->pdev->dev) ?
 -- 
 2.30.1
 
