@@ -2,108 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0D034DC45
-	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 00:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE0434DC4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 30 Mar 2021 01:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhC2W7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 18:59:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230161AbhC2W6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 18:58:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3E6761987;
-        Mon, 29 Mar 2021 22:58:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617058718;
-        bh=jhysSetweRUJdS8VenXWdDpmgxH3meIzQdLA2n+rNm0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NX3jpCkg50kc51Psd4U6zDewVQFQWSR2kXksn3BxHwIudf8SBsko8ehoG3HOi7ujV
-         1slDQ533ySqgv5YqvAXuO11FrXhiX/iv+8p9oGHz0GvXy5Uz5DrB+c7W8mNRaBqYok
-         5rY8oD3x8lYdsWu1EWHhKnk9cMTMQFDZRB/Cc56SH3eofsTWzNIA08RdWG1iAwwMbG
-         sb5+OlZREYqIz19u8KIwGYX2lkDefSMoiTK33xlN84ZFTXcz5aapzHdjSxhVj3EyPC
-         NA/XOqYB9xIMoLA5y+9MyJj1dDgdUoIkLq0F7f58WhJzmMP5BNjy2ixirK0Yxb+Qss
-         VKMeJCgQHDZWA==
-Received: by pali.im (Postfix)
-        id 515CBA79; Tue, 30 Mar 2021 00:58:35 +0200 (CEST)
-Date:   Tue, 30 Mar 2021 00:58:35 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>, maz@kernel.org,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-pci@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com, drinkcat@chromium.org,
-        Rex-BC.Chen@mediatek.com, anson.chuang@mediatek.com
-Subject: Re: [v8,3/7] PCI: mediatek-gen3: Add MediaTek Gen3 driver for MT8192
-Message-ID: <20210329225835.cv2ev5ou5szvrws2@pali>
-References: <20210224061132.26526-1-jianjun.wang@mediatek.com>
- <20210224061132.26526-4-jianjun.wang@mediatek.com>
- <20210311123844.qzl264ungtk7b6xz@pali>
- <1615621394.25662.70.camel@mhfsdcap03>
- <20210318000211.ykjsfavfc7suu2sb@pali>
- <1616046487.31760.16.camel@mhfsdcap03>
+        id S230418AbhC2XLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 19:11:20 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55942 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229950AbhC2XKu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 19:10:50 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 7822E1F454D3
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, ebiggers@google.com, drosen@google.com,
+        ebiggers@kernel.org, yuchao0@huawei.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v5 4/4] fs: unicode: Add utf8 module and a unicode layer
+Organization: Collabora
+References: <20210329204240.359184-1-shreeya.patel@collabora.com>
+        <20210329204240.359184-5-shreeya.patel@collabora.com>
+        <87o8f1r71p.fsf@collabora.com>
+        <bf430ae7-16a1-d4ca-3241-6f654524e7f9@collabora.com>
+Date:   Mon, 29 Mar 2021 19:10:45 -0400
+In-Reply-To: <bf430ae7-16a1-d4ca-3241-6f654524e7f9@collabora.com> (Shreeya
+        Patel's message of "Tue, 30 Mar 2021 04:08:40 +0530")
+Message-ID: <87a6qlr1xm.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1616046487.31760.16.camel@mhfsdcap03>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 18 March 2021 13:48:07 Jianjun Wang wrote:
-> On Thu, 2021-03-18 at 01:02 +0100, Pali Rohár wrote:
-> > On Saturday 13 March 2021 15:43:14 Jianjun Wang wrote:
-> > > On Thu, 2021-03-11 at 13:38 +0100, Pali Rohár wrote:
-> > > > On Wednesday 24 February 2021 14:11:28 Jianjun Wang wrote:
-> > > > > +
-> > > > > +	/* Check if the link is up or not */
-> > > > > +	err = readl_poll_timeout(port->base + PCIE_LINK_STATUS_REG, val,
-> > > > > +				 !!(val & PCIE_PORT_LINKUP), 20,
-> > > > > +				 50 * USEC_PER_MSEC);
-> > > > 
-> > > > IIRC, you need to wait at least 100ms after de-asserting PERST# signal
-> > > > as it is required by PCIe specs and also because experiments proved that
-> > > > some Compex wifi cards (e.g. WLE900VX) are not detected if you do not
-> > > > wait this minimal time.
-> > > 
-> > > Yes, this should be 100ms, I will fix it at next version, thanks for
-> > > your review.
-> > 
-> > In past Bjorn suggested to use msleep(PCI_PM_D3COLD_WAIT); macro for
-> > this step during reviewing aardvark driver.
-> > 
-> > https://lore.kernel.org/linux-pci/20190426161050.GA189964@google.com/
-> > 
-> > And next iteration used this PCI_PM_D3COLD_WAIT macro instead of 100:
-> > 
-> > https://lore.kernel.org/linux-pci/20190522213351.21366-2-repk@triplefau.lt/
-> 
-> Sure, I will use PCI_PM_D3COLD_WAIT macro instead in the next version.
-> 
-> Thanks.
+Shreeya Patel <shreeya.patel@collabora.com> writes:
 
-Anyway, now I found out that kernel has functions for this waiting:
-pcie_wait_for_link_delay() and pcie_wait_for_link()
+> On 30/03/21 2:50 am, Gabriel Krisman Bertazi wrote:
 
-Function is called from pci_bridge_wait_for_secondary_bus().
+>>> +DEFINE_STATIC_CALL(_unicode_strncmp, unicode_strncmp_default);
+>>> +EXPORT_STATIC_CALL(_unicode_strncmp);
+>>>   -int unicode_strncmp(const struct unicode_map *um,
+>>> -		    const struct qstr *s1, const struct qstr *s2)
+>>> -{
+>>> -	const struct utf8data *data = utf8nfdi(um->version);
+>>> -	struct utf8cursor cur1, cur2;
+>>> -	int c1, c2;
+>>> +DEFINE_STATIC_CALL(_unicode_strncasecmp, unicode_strncasecmp_default);
+>>> +EXPORT_STATIC_CALL(_unicode_strncasecmp);
+>> Why are these here if the _default functions are defined in the header
+>> file?  I think the definitions could be in this file. No?
+>
+>
+> Inline functions defined in header file are using these functions so
+> cannot define them here in .c file.
 
-But in current form it is not usable for native controller drivers.
+That is not a problem.  It is regular C code, you can just move the
+definition to the C code and add the declaration to the header file, and
+it will work fine.
 
-This looks like another candidate for code de-duplication or providing
-"framework".
-
-
-Lorenzo, as maintainer of native controller drivers, do you have some
-ideas about providing "framework", common functions or something for
-avoiding to implement same code patterns in every native controller
-driver, which is de-facto standard PCIe codepath? Including a way how to
-export PERST# reset gpio?
+-- 
+Gabriel Krisman Bertazi
