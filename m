@@ -2,91 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEBB34CCB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0316134CCBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 29 Mar 2021 11:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236102AbhC2JGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 29 Mar 2021 05:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236589AbhC2Ix4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 29 Mar 2021 04:53:56 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC167C061574;
-        Mon, 29 Mar 2021 01:53:55 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4F85wJ0VSpz9rx6;
-        Mon, 29 Mar 2021 19:53:52 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617008032;
-        bh=9FpZTIiAkO/KGWTSSQIdoqFfbj5h3r5oJRwFFZQa5no=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oPg6t4s8hf7jnwNkkGgWauv+71ojy2Lr0iEBVzZAnxl+zkLRIL0A8yMSQVgwRrOia
-         /4OGskR55mpwZR8eaSJK2OSNUN7m0RoiEBt60nu7mC2SAB+Cq6jNVf7fhUNO708I5O
-         EdpSQywshkt7ObmxdlkoT5+HmtXOJCWjy/k/Al8s2n78DKkxF/QPspv2WO7lrdaLiu
-         tKTEZMdngr3kRZCiIbTR2uRoOaa0+tf5OX41c55mmUY81m1w+TByl0CjTnXjjkqPNe
-         V9r6mf0Y7fI2hlwIyTcYZgX8mkkG+LbfVugSAyTeSj34PwGb++q9WzRXWtneSCJjcy
-         WlCz8uq7WflLQ==
-Date:   Mon, 29 Mar 2021 19:53:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Rob Herring <robherring2@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the devicetree tree
-Message-ID: <20210329195351.3322aee1@canb.auug.org.au>
+        id S236175AbhC2JHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 29 Mar 2021 05:07:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55590 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235902AbhC2JAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:00:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C6365B3C1;
+        Mon, 29 Mar 2021 09:00:38 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 637eba85;
+        Mon, 29 Mar 2021 09:01:59 +0000 (UTC)
+Date:   Mon, 29 Mar 2021 10:01:58 +0100
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: fuse: kernel BUG at mm/truncate.c:763!
+Message-ID: <YGGXhomAy9SF3VwN@suse.de>
+References: <YEtc54pWLLjb6SgL@suse.de>
+ <20210312131123.GZ3479805@casper.infradead.org>
+ <YE8tQc66C6MW7EqY@suse.de>
+ <20210315110659.GT2577561@casper.infradead.org>
+ <YFMct4z1gEa8tXkh@suse.de>
+ <CAJfpeguX7NrdTH4JLbCtkQ1u7TFvUh+8s7RmwB_wmuPHJsQyiA@mail.gmail.com>
+ <20210318110302.nxddmrhmgmlw4adq@black.fi.intel.com>
+ <YFM5mEZ8dZBhZWLI@suse.de>
+ <20210318115543.GM3420@casper.infradead.org>
+ <YFRoqYYqATd6R9GF@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7+1rzaokd/d=75ydLZbYNgw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YFRoqYYqATd6R9GF@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7+1rzaokd/d=75ydLZbYNgw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Mar 19, 2021 at 09:02:33AM +0000, Luis Henriques wrote:
+> On Thu, Mar 18, 2021 at 11:55:43AM +0000, Matthew Wilcox wrote:
+> > On Thu, Mar 18, 2021 at 11:29:28AM +0000, Luis Henriques wrote:
+> > > On Thu, Mar 18, 2021 at 02:03:02PM +0300, Kirill A. Shutemov wrote:
+> > > > On Thu, Mar 18, 2021 at 11:59:59AM +0100, Miklos Szeredi wrote:
+> > > > > > [16247.536348] page:00000000dfe36ab1 refcount:673 mapcount:0 mapping:00000000f982a7f8 index:0x1400 pfn:0x4c65e00
+> > > > > > [16247.536359] head:00000000dfe36ab1 order:9 compound_mapcount:0 compound_pincount:0
+> > > > > 
+> > > > > This is a compound page alright.   Have no idea how it got into fuse's
+> > > > > pagecache.
+> > > > 
+> > > > 
+> > > > Luis, do you have CONFIG_READ_ONLY_THP_FOR_FS enabled?
+> > > 
+> > > Yes, it looks like Tumbleweed kernels have that config option enabled by
+> > > default.  And it this feature was introduced in 5.4 (the bug doesn't seem
+> > > to be reproducible in 5.3).
+> > 
+> > Can you try adding this patch?
+> > 
+> > https://git.infradead.org/users/willy/pagecache.git/commitdiff/369a4fcd78369b7a026bdef465af9669bde98ef4
+> 
+> Good news, looks like this patch fixes the issue[1].  Thanks a lot
+> everyone.  Is this already queued somewhere for 5.12?  Also, it would be
+> nice to have it Cc'ed for stable kernels >= 5.4.
 
-Hi all,
+Ping.  Are you planning to push this for 5.12, or is that queued for the
+5.13 merged window?  Or "none of the above"? :)
 
-After merging the devicetree tree, today's linux-next build (htmldocs)
-produced these warnings:
-
-drivers/of/base.c:1781: warning: Excess function parameter 'prob' descripti=
-on in '__of_add_property'
-drivers/of/base.c:1804: warning: Excess function parameter 'prob' descripti=
-on in 'of_add_property'
-drivers/of/base.c:1855: warning: Function parameter or member 'prop' not de=
-scribed in 'of_remove_property'
-drivers/of/base.c:1855: warning: Excess function parameter 'prob' descripti=
-on in 'of_remove_property'
-
-Introduced by commit
-
-  3637d49e1121 ("of: base: Fix some formatting issues and provide missing d=
-escriptions")
-
---=20
 Cheers,
-Stephen Rothwell
-
---Sig_/7+1rzaokd/d=75ydLZbYNgw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBhlZ8ACgkQAVBC80lX
-0GzeRwgAnMWic/qIZ6hmld7934po26vsc0QOzwY8UZto7aiDmTyx5ujmy8T+roHR
-phryMNZzZyntqBMbwqxJZYowD63dXcLIfpIyWZvN6KnIjb1i0Fuct+PJgTAIZx4E
-x9dxJkAWxcdiWy1Ak9ShBtYvLPKuRRCS21BNBKVxygmgkh6YQSBk8FZVQxh1Mxa3
-B3t22W3x7QjGUCC/CDsiJakiqDHwnxUhAZ2N/r/ZGCqz3UACJhyU0/pW1YUvTL3R
-M/4sGhTBOumyaTofWfuXUYM1OdtFr//5G6EXPAa0wEDABCsiZIi44zE3VGlIUPRR
-yU9qbYrXGmwj5vTYAV6uzV5pySO7jg==
-=xASS
------END PGP SIGNATURE-----
-
---Sig_/7+1rzaokd/d=75ydLZbYNgw--
+--
+Luís
